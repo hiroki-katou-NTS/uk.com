@@ -379,7 +379,18 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 						AlarmListCheckType.FreeCheck,
 						Collections.singletonList(detail)
 				));
-				alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+
+				if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
+					alarmEmployeeList.forEach(i -> {
+						if (i.getEmployeeID().equals(sid)) {
+							List<AlarmExtractInfoResult> temp = new ArrayList<>(i.getAlarmExtractInfoResults());
+							temp.addAll(lstExtractInfoResult);
+							i.setAlarmExtractInfoResults(temp);
+						}
+					});
+				} else {
+					alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+				}
 
 				List<AlarmExtractionCondition> lstExtractCondition = alarmExtractConditions.stream()
 						.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(condScheYear.getSortOrder())))

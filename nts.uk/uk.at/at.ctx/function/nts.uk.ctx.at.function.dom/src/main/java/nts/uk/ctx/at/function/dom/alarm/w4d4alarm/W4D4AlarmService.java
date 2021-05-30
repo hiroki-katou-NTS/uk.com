@@ -400,7 +400,9 @@ public class W4D4AlarmService {
 					} else {
 						for (AlarmEmployeeList emp : alarmEmployeeList) {
 							if(emp.getEmployeeID().equals(sid)){
-								emp.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults);
+								List<AlarmExtractInfoResult> temp = new ArrayList<>(emp.getAlarmExtractInfoResults());
+								temp.addAll(alarmExtractInfoResults);
+								emp.setAlarmExtractInfoResults(temp);
 							}
 						}
 					}

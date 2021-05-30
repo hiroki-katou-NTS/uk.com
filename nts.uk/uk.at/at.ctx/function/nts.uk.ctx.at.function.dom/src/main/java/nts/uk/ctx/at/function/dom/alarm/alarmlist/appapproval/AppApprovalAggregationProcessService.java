@@ -450,21 +450,53 @@ public class AppApprovalAggregationProcessService {
 				fixedExtractCond.getMessage().isPresent() ? Optional.ofNullable(fixedExtractCond.getMessage().get().v()) : Optional.empty(),
 				Optional.ofNullable(alarmTaget));
 
-		List<AlarmExtractInfoResult> alarmExtractInfoResults = Arrays.asList(new AlarmExtractInfoResult(
-				String.valueOf(fixedExtractCond.getNo().value),
-				new AlarmCheckConditionCode(alarmCheckConditionCode),
-				AlarmCategory.APPLICATION_APPROVAL,
-				AlarmListCheckType.FixCheck,
-				Arrays.asList(detail)));
-
-		val checkExist = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid) && x.getAlarmExtractInfoResults().stream()
-				.anyMatch(y -> y.getAlarmCategory().value == AlarmCategory.APPLICATION_APPROVAL.value
-						&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
-						&& y.getAlarmListCheckType().value == AlarmListCheckType.FixCheck.value
-						&& y.getAlarmCheckConditionNo().equals(String.valueOf(fixedExtractCond.getNo().value))
-				&& y.getExtractionResultDetails().stream().anyMatch(z -> z.getPeriodDate().getStartDate().get().compareTo(pDate.getStartDate().get()) == 0)))
-				.findFirst();
-		if (!checkExist.isPresent()){
+		if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
+			alarmEmployeeList.forEach(i -> {
+				if (i.getEmployeeID().equals(sid)) {
+					if (i.getAlarmExtractInfoResults().stream()
+							.anyMatch(y -> y.getAlarmCategory().value == AlarmCategory.APPLICATION_APPROVAL.value
+									&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+									&& y.getAlarmListCheckType().value == AlarmListCheckType.FixCheck.value
+									&& y.getAlarmCheckConditionNo().equals(String.valueOf(fixedExtractCond.getNo().value)))) {
+						i.getAlarmExtractInfoResults().forEach(y -> {
+							if (y.getAlarmCategory().value == AlarmCategory.APPLICATION_APPROVAL.value
+									&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+									&& y.getAlarmListCheckType().value == AlarmListCheckType.FixCheck.value
+									&& y.getAlarmCheckConditionNo().equals(String.valueOf(fixedExtractCond.getNo().value))) {
+								if (y.getExtractionResultDetails().stream().noneMatch(z -> z.getPeriodDate().getStartDate().get().compareTo(pDate.getStartDate().get()) == 0)) {
+									List<ExtractResultDetail> details = new ArrayList<>(y.getExtractionResultDetails());
+									details.add(detail);
+									y.setExtractionResultDetails(details);
+								}
+							}
+						});
+					} else {
+						List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(detail));
+						List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(i.getAlarmExtractInfoResults());
+						alarmExtractInfoResults.add(
+								new AlarmExtractInfoResult(
+										String.valueOf(fixedExtractCond.getNo().value),
+										new AlarmCheckConditionCode(alarmCheckConditionCode),
+										AlarmCategory.APPLICATION_APPROVAL,
+										AlarmListCheckType.FixCheck,
+										details
+								)
+						);
+						i.setAlarmExtractInfoResults(alarmExtractInfoResults);
+					}
+				}
+			});
+		} else {
+			List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(detail));
+			List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(Arrays.asList(
+					new AlarmExtractInfoResult(
+							String.valueOf(fixedExtractCond.getNo().value),
+							new AlarmCheckConditionCode(alarmCheckConditionCode),
+							AlarmCategory.APPLICATION_APPROVAL,
+							AlarmListCheckType.FixCheck,
+							details
+					)
+			));
 			alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
 		}
 

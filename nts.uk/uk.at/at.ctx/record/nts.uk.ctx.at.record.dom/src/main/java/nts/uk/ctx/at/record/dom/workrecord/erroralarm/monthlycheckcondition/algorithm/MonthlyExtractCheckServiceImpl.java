@@ -477,7 +477,18 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 								AlarmListCheckType.FixCheck
 						));
 					}
-					alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+
+					if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
+						alarmEmployeeList.forEach(i -> {
+							if (i.getEmployeeID().equals(sid)) {
+								List<AlarmExtractInfoResult> temp = new ArrayList<>(i.getAlarmExtractInfoResults());
+								temp.addAll(lstExtractInfoResult);
+								i.setAlarmExtractInfoResults(temp);
+							}
+						});
+					} else {
+						alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+					}
 				}
 			}
 			synchronized (this) {
@@ -607,7 +618,18 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 								AlarmListCheckType.FreeCheck
 						));
 					}
-					alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+
+					if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
+						alarmEmployeeList.forEach(i -> {
+							if (i.getEmployeeID().equals(sid)) {
+								List<AlarmExtractInfoResult> temp = new ArrayList<>(i.getAlarmExtractInfoResults());
+								temp.addAll(lstExtractInfoResult);
+								i.setAlarmExtractInfoResults(temp);
+							}
+						});
+					} else {
+						alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+					}
 				}
 			}	
 			synchronized (this) {
