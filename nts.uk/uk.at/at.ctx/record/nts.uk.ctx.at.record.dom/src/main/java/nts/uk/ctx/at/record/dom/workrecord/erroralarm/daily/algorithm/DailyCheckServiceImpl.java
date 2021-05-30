@@ -280,13 +280,15 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 				}
                 if (!lstExtractInfoResult.isEmpty()) {
 					if (alarmEmployeeLists.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
-						alarmEmployeeLists.forEach(i -> {
+						for (AlarmEmployeeList i : alarmEmployeeLists) {
 							if (i.getEmployeeID().equals(sid)) {
 								List<AlarmExtractInfoResult> temp = new ArrayList<>(i.getAlarmExtractInfoResults());
 								temp.addAll(lstExtractInfoResult);
+
 								i.setAlarmExtractInfoResults(temp);
+								break;
 							}
-						});
+						}
 					} else {
 						alarmEmployeeLists.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
 					}
@@ -823,44 +825,43 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		}
 
 		ExtractResultDetail detail = new ExtractResultDetail(
-				new ExtractionAlarmPeriodDate(Optional.ofNullable(dateP.start()),
-						Optional.ofNullable(dateP.end())), 
-				alarmName, 
-				alarmContent, 
-				GeneralDateTime.now(), 
-				Optional.ofNullable(wplId), 
-				alarmMess, 
-				Optional.ofNullable(TextResource.localize("KAL010_625", String.valueOf(dayRenzoku))));
-//		List<ResultOfEachCondition> lstResultTmp = listResultCond.stream()
-//				.filter(x -> x.getCheckType().value == checkType.value && x.getNo().equals(alarmCode)).collect(Collectors.toList());
-//		List<ExtractResultDetail> listDetail = new ArrayList<>();
-//		if(lstResultTmp.isEmpty()) {
-//			listDetail.add(detail);
-//			listResultCond.add(new ResultOfEachCondition(EnumAdaptor.valueOf(1, AlarmListCheckType.class), alarmCode,
-//					listDetail));
-//		} else {
-//			listResultCond.stream().forEach(x -> x.getLstResultDetail().add(detail));
-//		}
+				new ExtractionAlarmPeriodDate(
+						Optional.ofNullable(dateP.start()),
+						Optional.ofNullable(dateP.end())
+				),
+				alarmName,
+				alarmContent,
+				GeneralDateTime.now(),
+				Optional.ofNullable(wplId),
+				alarmMess,
+				Optional.ofNullable(TextResource.localize("KAL010_625", String.valueOf(dayRenzoku)))
+		);
 
 		//「アラーム抽出情報結果」を作
-		List<AlarmExtractInfoResult> lstResultTmp = alarmExtractInfoResults.stream()
-				.filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(alarmCode)
-				&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode) && x.getAlarmCategory().value == AlarmCategory.DAILY.value)
-				.collect(Collectors.toList());
-		List<ExtractResultDetail> listDetail = new ArrayList<>();
-		if (lstResultTmp.isEmpty()) {
-			listDetail.add(detail);
+		if (alarmExtractInfoResults.stream()
+				.anyMatch(x -> x.getAlarmListCheckType().value == checkType.value
+						&& x.getAlarmCheckConditionNo().equals(alarmCode)
+						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+						&& x.getAlarmCategory().value == AlarmCategory.DAILY.value)) {
+			for (AlarmExtractInfoResult x : alarmExtractInfoResults) {
+				if (x.getAlarmListCheckType().value == checkType.value
+						&& x.getAlarmCheckConditionNo().equals(alarmCode)
+						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+						&& x.getAlarmCategory().value == AlarmCategory.DAILY.value) {
+					List<ExtractResultDetail> tmp = new ArrayList<>(x.getExtractionResultDetails());
+					tmp.add(detail);
+					x.setExtractionResultDetails(tmp);
+					break;
+				}
+			}
+		} else {
 			alarmExtractInfoResults.add(new AlarmExtractInfoResult(
 					alarmCode,
 					new AlarmCheckConditionCode(alarmCheckConditionCode),
 					AlarmCategory.DAILY,
 					checkType,
-					listDetail)
-			);
-		} else {
-			alarmExtractInfoResults.stream().filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(alarmCode)
-					&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode) && x.getAlarmCategory().value == AlarmCategory.DAILY.value)
-					.forEach(x -> x.getExtractionResultDetails().add(detail));
+					new ArrayList<>(Arrays.asList(detail))
+			));
 		}
 	}
 
@@ -1064,29 +1065,42 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			}
 		}
 		ExtractResultDetail detail = new ExtractResultDetail(
-				new ExtractionAlarmPeriodDate(Optional.ofNullable(day),
-						Optional.empty()), 
+				new ExtractionAlarmPeriodDate(
+						Optional.ofNullable(day),
+						Optional.empty()
+				),
 				alarmName, 
 				alarmContent, 
 				GeneralDateTime.now(), 
 				Optional.ofNullable(wplId), 
 				alarmMess, 
-				Optional.ofNullable(checkValue));
+				Optional.ofNullable(checkValue)
+		);
 
-		List<AlarmExtractInfoResult> lstResultTmp = alarmExtractInfoResults.stream()
-				.filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(alarmCode)
-						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode) && x.getAlarmCategory().value == AlarmCategory.DAILY.value)
-				.collect(Collectors.toList());
-		List<ExtractResultDetail> listDetail = new ArrayList<>();
-		if (lstResultTmp.isEmpty()) {
-			listDetail.add(detail);
+		if (alarmExtractInfoResults.stream()
+				.anyMatch(x -> x.getAlarmListCheckType().value == checkType.value
+						&& x.getAlarmCheckConditionNo().equals(alarmCode)
+						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+						&& x.getAlarmCategory().value == AlarmCategory.DAILY.value)) {
+			for (AlarmExtractInfoResult x : alarmExtractInfoResults) {
+				if (x.getAlarmCategory() == AlarmCategory.DAILY
+						&& x.getAlarmCheckConditionNo().equals(alarmCode)
+						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+						&& x.getAlarmListCheckType().value == checkType.value) {
+					List<ExtractResultDetail> tmp = new ArrayList<>(x.getExtractionResultDetails());
+					tmp.add(detail);
+					x.setExtractionResultDetails(tmp);
+					break;
+				}
+			}
+		} else {
 			alarmExtractInfoResults.add(new AlarmExtractInfoResult(
 					alarmCode,
 					new AlarmCheckConditionCode(alarmCheckConditionCode),
 					AlarmCategory.DAILY,
 					checkType,
-					listDetail)
-			);
+					new ArrayList<>(Arrays.asList(detail))
+			));
 		}
 	}
 	

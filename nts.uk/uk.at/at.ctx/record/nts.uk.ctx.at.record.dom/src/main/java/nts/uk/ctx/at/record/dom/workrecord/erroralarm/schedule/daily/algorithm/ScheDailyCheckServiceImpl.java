@@ -52,10 +52,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -451,20 +448,31 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				Optional.ofNullable(wplId), 
 				alarmMess, 
 				Optional.ofNullable(checkValue));
-		List<AlarmExtractInfoResult> lstResultTmp = alarmExtractInfoResults.stream()
-				.filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(alarmCode)
-						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode) && x.getAlarmCategory().value == AlarmCategory.SCHEDULE_DAILY.value)
-				.collect(Collectors.toList());
-		List<ExtractResultDetail> listDetail = new ArrayList<>();
-		if (lstResultTmp.isEmpty()) {
-			listDetail.add(detail);
+
+		if (alarmExtractInfoResults.stream()
+				.anyMatch(x -> x.getAlarmListCheckType().value == checkType.value
+						&& x.getAlarmCheckConditionNo().equals(alarmCode)
+						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+						&& x.getAlarmCategory().value == AlarmCategory.SCHEDULE_DAILY.value)) {
+			alarmExtractInfoResults.forEach(x -> {
+				if (x.getAlarmListCheckType().value == checkType.value
+						&& x.getAlarmCheckConditionNo().equals(alarmCode)
+						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+						&& x.getAlarmCategory().value == AlarmCategory.SCHEDULE_DAILY.value) {
+					List<ExtractResultDetail> tmp = new ArrayList<>(x.getExtractionResultDetails());
+					tmp.add(detail);
+					x.setExtractionResultDetails(tmp);
+				}
+			});
+		} else {
+			List<ExtractResultDetail> listDetail = new ArrayList<>(Arrays.asList(detail));
 			alarmExtractInfoResults.add(new AlarmExtractInfoResult(
 					alarmCode,
 					new AlarmCheckConditionCode(alarmCheckConditionCode),
 					AlarmCategory.SCHEDULE_DAILY,
 					checkType,
-					listDetail)
-			);
+					listDetail
+			));
 		}
 	}
 	

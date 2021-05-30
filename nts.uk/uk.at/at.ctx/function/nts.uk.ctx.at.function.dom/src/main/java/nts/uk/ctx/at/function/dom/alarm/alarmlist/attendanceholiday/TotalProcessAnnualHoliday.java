@@ -348,42 +348,23 @@ public class TotalProcessAnnualHoliday {
 
 
 			if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
-				String finalCheckCondNo1 = checkCondNo;
-				alarmEmployeeList.forEach(i -> {
+				for (AlarmEmployeeList i : alarmEmployeeList) {
 					if (i.getEmployeeID().equals(sid)) {
-						if (i.getAlarmExtractInfoResults().stream()
-								.anyMatch(y -> y.getAlarmCategory().value == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY.value
-										&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
-										&& y.getAlarmListCheckType().value == AlarmListCheckType.FixCheck.value
-										&& y.getAlarmCheckConditionNo().equals(String.valueOf(finalCheckCondNo1)))) {
-							i.getAlarmExtractInfoResults().forEach(y -> {
-								if (y.getAlarmCategory().value == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY.value
-										&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
-										&& y.getAlarmListCheckType().value == AlarmListCheckType.FixCheck.value
-										&& y.getAlarmCheckConditionNo().equals(String.valueOf(finalCheckCondNo1))) {
-									if (y.getExtractionResultDetails().stream().noneMatch(z -> z.getPeriodDate().getStartDate().get().compareTo(pDate.getStartDate().get()) == 0)) {
-										List<ExtractResultDetail> details = new ArrayList<>(y.getExtractionResultDetails());
-										details.add(detail);
-										y.setExtractionResultDetails(details);
-									}
-								}
-							});
-						} else {
-							List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(detail));
-							List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(i.getAlarmExtractInfoResults());
-							alarmExtractInfoResults.add(
-									new AlarmExtractInfoResult(
-											String.valueOf(finalCheckCondNo1),
-											new AlarmCheckConditionCode(alarmCheckConditionCode),
-											AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY,
-											AlarmListCheckType.FixCheck,
-											details
-									)
-							);
-							i.setAlarmExtractInfoResults(alarmExtractInfoResults);
-						}
+						List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(detail));
+						List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(i.getAlarmExtractInfoResults());
+						alarmExtractInfoResults.add(
+								new AlarmExtractInfoResult(
+										String.valueOf(checkCondNo),
+										new AlarmCheckConditionCode(alarmCheckConditionCode),
+										AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY,
+										AlarmListCheckType.FixCheck,
+										details
+								)
+						);
+						i.setAlarmExtractInfoResults(alarmExtractInfoResults);
+						break;
 					}
-				});
+				}
 			} else {
 				List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(detail));
 				List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(Arrays.asList(

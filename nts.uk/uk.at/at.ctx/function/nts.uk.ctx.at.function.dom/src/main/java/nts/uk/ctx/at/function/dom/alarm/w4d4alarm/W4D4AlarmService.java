@@ -385,17 +385,17 @@ public class W4D4AlarmService {
 						));
 					}
 
-					List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>();
-					alarmExtractInfoResults.add(new AlarmExtractInfoResult(
-							String.valueOf(w4dCheckCond.value),
-							new AlarmCheckConditionCode(alarmCheckConditionCode),
-							AlarmCategory.SCHEDULE_4WEEK,
-							AlarmListCheckType.FixCheck,
-							lstDetail
+					List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(Arrays.asList(
+							new AlarmExtractInfoResult(
+									String.valueOf(w4dCheckCond.value),
+									new AlarmCheckConditionCode(alarmCheckConditionCode),
+									AlarmCategory.SCHEDULE_4WEEK,
+									AlarmListCheckType.FixCheck,
+									lstDetail
+							)
 					));
 
-					val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-					if (empIds.isEmpty()) {
+					if (alarmEmployeeList.stream().noneMatch(i -> i.getEmployeeID().equals(sid))) {
 						alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
 					} else {
 						for (AlarmEmployeeList emp : alarmEmployeeList) {
@@ -403,6 +403,7 @@ public class W4D4AlarmService {
 								List<AlarmExtractInfoResult> temp = new ArrayList<>(emp.getAlarmExtractInfoResults());
 								temp.addAll(alarmExtractInfoResults);
 								emp.setAlarmExtractInfoResults(temp);
+								break;
 							}
 						}
 					}

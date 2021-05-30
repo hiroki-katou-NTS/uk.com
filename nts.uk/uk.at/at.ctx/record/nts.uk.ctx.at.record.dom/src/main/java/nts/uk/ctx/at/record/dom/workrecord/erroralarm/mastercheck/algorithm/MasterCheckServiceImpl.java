@@ -195,56 +195,30 @@ public class MasterCheckServiceImpl implements MasterCheckService {
 								exCond.getMessage().isPresent() ? Optional.ofNullable(exCond.getMessage().get().v()) : Optional.empty(),
 								Optional.ofNullable(targetValues));
 
+						List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(resultDetail));
+						List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(Arrays.asList(
+								new AlarmExtractInfoResult(
+										String.valueOf(exCond.getNo().value),
+										new AlarmCheckConditionCode(alarmCheckConditionCode),
+										AlarmCategory.MASTER_CHECK,
+										AlarmListCheckType.FixCheck,
+										details
+								)
+						));
+
 						if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
-							alarmEmployeeList.forEach(i -> {
+							for (AlarmEmployeeList i : alarmEmployeeList) {
 								if (i.getEmployeeID().equals(sid)) {
-									if (i.getAlarmExtractInfoResults().stream()
-											.anyMatch(y -> y.getAlarmCategory().value == AlarmCategory.MASTER_CHECK.value
-													&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
-													&& y.getAlarmListCheckType().value == AlarmListCheckType.FixCheck.value
-													&& y.getAlarmCheckConditionNo().equals(String.valueOf(exCond.getNo().value)))) {
-										i.getAlarmExtractInfoResults().forEach(y -> {
-											if (y.getAlarmCategory().value == AlarmCategory.MASTER_CHECK.value
-													&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
-													&& y.getAlarmListCheckType().value == AlarmListCheckType.FixCheck.value
-													&& y.getAlarmCheckConditionNo().equals(String.valueOf(exCond.getNo().value))) {
-												if (y.getExtractionResultDetails().stream().noneMatch(z -> z.getPeriodDate().getStartDate().get().compareTo(dPeriodR.getStartDate().get()) == 0)) {
-													List<ExtractResultDetail> details = new ArrayList<>(y.getExtractionResultDetails());
-													details.add(resultDetail);
-													y.setExtractionResultDetails(details);
-												}
-											}
-										});
-									} else {
-										List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(resultDetail));
-										List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(i.getAlarmExtractInfoResults());
-										alarmExtractInfoResults.add(
-												new AlarmExtractInfoResult(
-														String.valueOf(exCond.getNo().value),
-														new AlarmCheckConditionCode(alarmCheckConditionCode),
-														AlarmCategory.MASTER_CHECK,
-														AlarmListCheckType.FixCheck,
-														details
-												)
-										);
-										i.setAlarmExtractInfoResults(alarmExtractInfoResults);
-									}
+									List<AlarmExtractInfoResult> tmp = new ArrayList<>();
+									tmp.addAll(i.getAlarmExtractInfoResults());
+									tmp.addAll(alarmExtractInfoResults);
+									i.setAlarmExtractInfoResults(tmp);
+									break;
 								}
-							});
+							}
 						} else {
-							List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(resultDetail));
-							List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(Arrays.asList(
-									new AlarmExtractInfoResult(
-											String.valueOf(exCond.getNo().value),
-											new AlarmCheckConditionCode(alarmCheckConditionCode),
-											AlarmCategory.MASTER_CHECK,
-											AlarmListCheckType.FixCheck,
-											details
-									)
-							));
 							alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
 						}
-						
 					}
 				});
 				synchronized (this) {

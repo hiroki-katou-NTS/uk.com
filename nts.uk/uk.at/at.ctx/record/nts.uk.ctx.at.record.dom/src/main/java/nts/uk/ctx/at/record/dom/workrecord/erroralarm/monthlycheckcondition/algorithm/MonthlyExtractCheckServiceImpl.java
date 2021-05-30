@@ -264,9 +264,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 							.collect(Collectors.toList());
 					if(affiliationStatus.isEmpty()) continue;
 					
-					YearMonth endMonthTemp = mPeriod.end().addMonths(1);
-					GeneralDate endDateTemp = GeneralDate.ymd(endMonthTemp.year(), endMonthTemp.month(), 1);
-					GeneralDate enDate = endDateTemp.addDays(-1);
+					GeneralDate enDate = GeneralDate.ymd(mPeriod.end().year(), mPeriod.end().month() + 1, 1).addDays(-1);
 					GeneralDate startDate = GeneralDate.ymd(mPeriod.start().year(), mPeriod.start().month(), 1);
 					String checkValue = "";
 					String alarmContent = "";
@@ -439,28 +437,30 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 								Optional.ofNullable(fixCond.getMessage().isPresent() ? fixCond.getMessage().get().v() : null),
 								Optional.ofNullable(checkValue));
 
-						lstExtractInfoResult.addAll(Collections.singletonList(new AlarmExtractInfoResult(
-								String.valueOf(fixCond.getFixedExtraItemMonNo().value),
-								new AlarmCheckConditionCode(alarmCheckConditionCode),
-								AlarmCategory.MONTHLY,
-								AlarmListCheckType.FixCheck,
-								Collections.singletonList(exDetail))));
-
-//						List<ResultOfEachCondition> result = lstResultCondition.stream()
-//								.filter(x -> x.getCheckType() == AlarmListCheckType.FixCheck && x.getNo().equals(String.valueOf(fixCond.getFixedExtraItemMonNo().value)))
-//								.collect(Collectors.toList());
-//						if(result.isEmpty()) {
-//							ResultOfEachCondition resultCon = new ResultOfEachCondition(AlarmListCheckType.FixCheck,
-//									String.valueOf(fixCond.getFixedExtraItemMonNo().value),
-//									new ArrayList<>());
-//							resultCon.getLstResultDetail().add(exDetail);
-//							lstResultCondition.add(resultCon);
-//						} else {
-//							ResultOfEachCondition ex = result.get(0);
-//							lstResultCondition.remove(ex);
-//							ex.getLstResultDetail().add(exDetail);
-//							lstResultCondition.add(ex);
-//						}
+						if (lstExtractInfoResult.stream().anyMatch(i -> i.getAlarmCategory() == AlarmCategory.MONTHLY
+								&& i.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+								&& i.getAlarmListCheckType() == AlarmListCheckType.FixCheck
+								&& i.getAlarmCheckConditionNo().equals(String.valueOf(fixCond.getFixedExtraItemMonNo().value)))) {
+							for (AlarmExtractInfoResult i : lstExtractInfoResult) {
+								if (i.getAlarmCategory() == AlarmCategory.MONTHLY
+										&& i.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+										&& i.getAlarmListCheckType() == AlarmListCheckType.FixCheck
+										&& i.getAlarmCheckConditionNo().equals(String.valueOf(fixCond.getFixedExtraItemMonNo().value))) {
+									List<ExtractResultDetail> tmp = new ArrayList<>(i.getExtractionResultDetails());
+									tmp.add(exDetail);
+									i.setExtractionResultDetails(tmp);
+									break;
+								}
+							}
+						} else {
+							lstExtractInfoResult.add(new AlarmExtractInfoResult(
+									String.valueOf(fixCond.getFixedExtraItemMonNo().value),
+									new AlarmCheckConditionCode(alarmCheckConditionCode),
+									AlarmCategory.MONTHLY,
+									AlarmListCheckType.FixCheck,
+									new ArrayList<>(Arrays.asList(exDetail))
+							));
+						}
 					}
 				}
 				if (!lstExtractInfoResult.isEmpty()) {
@@ -479,13 +479,14 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 					}
 
 					if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
-						alarmEmployeeList.forEach(i -> {
+						for (AlarmEmployeeList i : alarmEmployeeList) {
 							if (i.getEmployeeID().equals(sid)) {
 								List<AlarmExtractInfoResult> temp = new ArrayList<>(i.getAlarmExtractInfoResults());
 								temp.addAll(lstExtractInfoResult);
 								i.setAlarmExtractInfoResults(temp);
+								break;
 							}
-						});
+						}
 					} else {
 						alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
 					}
@@ -849,13 +850,13 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 				Optional.ofNullable(anyCond.getDisplayMessage().isPresent() ? anyCond.getDisplayMessage().get().v() : null),
 				Optional.ofNullable(checkerValue));
 
-		List<AlarmExtractInfoResult> lstResultTmp = alarmExtractInfoResults.stream()
-				.filter(x -> x.getAlarmListCheckType().value == AlarmListCheckType.FreeCheck.value && x.getAlarmCheckConditionNo().equals(String.valueOf(anyCond.getSortBy()))
-						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode) && x.getAlarmCategory().value == AlarmCategory.MONTHLY.value)
-				.collect(Collectors.toList());
-		List<ExtractResultDetail> listDetail = new ArrayList<>();
-		if (lstResultTmp.isEmpty()) {
-			listDetail.add(detail);
+		List<ExtractResultDetail> listDetail;
+		if (alarmExtractInfoResults.stream()
+				.noneMatch(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck
+						&& x.getAlarmCheckConditionNo().equals(String.valueOf(anyCond.getSortBy()))
+						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+						&& x.getAlarmCategory() == AlarmCategory.MONTHLY)) {
+			listDetail = new ArrayList<>(Arrays.asList(detail));
 			alarmExtractInfoResults.add(new AlarmExtractInfoResult(
 					String.valueOf(anyCond.getSortBy()),
 					new AlarmCheckConditionCode(alarmCheckConditionCode),
@@ -864,29 +865,19 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 					listDetail)
 			);
 		} else {
-			alarmExtractInfoResults.forEach(x -> {
-				if (x.getAlarmListCheckType().value == AlarmListCheckType.FreeCheck.value && x.getAlarmCheckConditionNo().equals(String.valueOf(anyCond.getSortBy()))
-						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode) && x.getAlarmCategory().value == AlarmCategory.MONTHLY.value) {
-					x.getExtractionResultDetails().add(detail);
+			for (AlarmExtractInfoResult x : alarmExtractInfoResults) {
+				if (x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck
+						&& x.getAlarmCheckConditionNo().equals(String.valueOf(anyCond.getSortBy()))
+						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+						&& x.getAlarmCategory().value == AlarmCategory.MONTHLY.value) {
+					listDetail = new ArrayList<>(x.getExtractionResultDetails());
+					listDetail.add(detail);
+					x.setExtractionResultDetails(listDetail);
+					break;
 				}
-			});
+			}
 		}
 
-//		List<ResultOfEachCondition> result = lstResultCondition.stream()
-//				.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(anyCond.getSortBy())))
-//				.collect(Collectors.toList());
-//		if(result.isEmpty()) {
-//			ResultOfEachCondition resultCon = new ResultOfEachCondition(AlarmListCheckType.FreeCheck,
-//					String.valueOf(anyCond.getSortBy()),
-//					new ArrayList<>());
-//			resultCon.getLstResultDetail().add(detail);
-//			lstResultCondition.add(resultCon);
-//		} else {
-//			ResultOfEachCondition ex = result.get(0);
-//			lstResultCondition.remove(ex);
-//			ex.getLstResultDetail().add(detail);
-//			lstResultCondition.add(ex);
-//		}
 	}
 	/**
 	 * 複合条件

@@ -293,13 +293,14 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				}
 				if (!lstExtractInfoResult.isEmpty()) {
 					if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
-						alarmEmployeeList.forEach(i -> {
+						for (AlarmEmployeeList i : alarmEmployeeList) {
 							if (i.getEmployeeID().equals(sid)) {
 								List<AlarmExtractInfoResult> temp = new ArrayList<>(i.getAlarmExtractInfoResults());
 								temp.addAll(lstExtractInfoResult);
 								i.setAlarmExtractInfoResults(temp);
+								break;
 							}
-						});
+						}
 					} else {
 						alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
 					}
@@ -691,20 +692,31 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 
 	private void addToAlarmExtractInfoList(List<AlarmExtractInfoResult> alarmExtractInfoResults, String no, String conditionCode,
 										   AlarmCategory category, AlarmListCheckType checkType, ExtractResultDetail detail){
-		List<AlarmExtractInfoResult> lstResultTmp = alarmExtractInfoResults.stream()
-				.filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(no)
-						&& x.getAlarmCheckConditionCode().v().equals(conditionCode) && x.getAlarmCategory().value == category.value)
-				.collect(Collectors.toList());
-		List<ExtractResultDetail> listDetail = new ArrayList<>();
-		if (lstResultTmp.isEmpty()) {
-			listDetail.add(detail);
+		if (alarmExtractInfoResults.stream()
+				.anyMatch(x -> x.getAlarmListCheckType().value == checkType.value
+						&& x.getAlarmCheckConditionNo().equals(no)
+						&& x.getAlarmCheckConditionCode().v().equals(conditionCode)
+						&& x.getAlarmCategory().value == category.value)) {
+			for (AlarmExtractInfoResult x : alarmExtractInfoResults) {
+				if (x.getAlarmListCheckType().value == checkType.value
+						&& x.getAlarmCheckConditionNo().equals(no)
+						&& x.getAlarmCheckConditionCode().v().equals(conditionCode)
+						&& x.getAlarmCategory() == category) {
+					List<ExtractResultDetail> tmp = new ArrayList<>(x.getExtractionResultDetails());
+					tmp.add(detail);
+					x.setExtractionResultDetails(tmp);
+					break;
+				}
+			}
+		} else {
+			List<ExtractResultDetail> listDetail = new ArrayList<>(Arrays.asList(detail));
 			alarmExtractInfoResults.add(new AlarmExtractInfoResult(
 					no,
 					new AlarmCheckConditionCode(conditionCode),
 					category,
 					checkType,
-					listDetail)
-			);
+					listDetail
+			));
 		}
 	}
 	

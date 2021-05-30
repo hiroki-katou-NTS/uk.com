@@ -451,14 +451,14 @@ public class AppApprovalAggregationProcessService {
 				Optional.ofNullable(alarmTaget));
 
 		if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
-			alarmEmployeeList.forEach(i -> {
+			for (AlarmEmployeeList i : alarmEmployeeList) {
 				if (i.getEmployeeID().equals(sid)) {
 					if (i.getAlarmExtractInfoResults().stream()
 							.anyMatch(y -> y.getAlarmCategory().value == AlarmCategory.APPLICATION_APPROVAL.value
 									&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
 									&& y.getAlarmListCheckType().value == AlarmListCheckType.FixCheck.value
 									&& y.getAlarmCheckConditionNo().equals(String.valueOf(fixedExtractCond.getNo().value)))) {
-						i.getAlarmExtractInfoResults().forEach(y -> {
+						for (AlarmExtractInfoResult y : i.getAlarmExtractInfoResults()) {
 							if (y.getAlarmCategory().value == AlarmCategory.APPLICATION_APPROVAL.value
 									&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
 									&& y.getAlarmListCheckType().value == AlarmListCheckType.FixCheck.value
@@ -468,8 +468,9 @@ public class AppApprovalAggregationProcessService {
 									details.add(detail);
 									y.setExtractionResultDetails(details);
 								}
+								break;
 							}
-						});
+						}
 					} else {
 						List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(detail));
 						List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(i.getAlarmExtractInfoResults());
@@ -484,8 +485,9 @@ public class AppApprovalAggregationProcessService {
 						);
 						i.setAlarmExtractInfoResults(alarmExtractInfoResults);
 					}
+					break;
 				}
-			});
+			}
 		} else {
 			List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(detail));
 			List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(Arrays.asList(

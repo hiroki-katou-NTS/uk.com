@@ -330,7 +330,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 				}
 				
 				// 条件をチェックする
-				boolean checkValue = false;
+				boolean checkValue;
 				if (condScheYear.getCheckConditions() instanceof CompareRange) {
 					checkValue = compareValueRangeChecking.checkCompareRange((CompareRange)condScheYear.getCheckConditions(), totalTime);
 				} else {
@@ -372,22 +372,25 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 						comment, 
 						Optional.ofNullable(getCheckValue(totalTime, condScheYear.getCheckItemType())));
 
-				List<AlarmExtractInfoResult> lstExtractInfoResult = Collections.singletonList(new AlarmExtractInfoResult(
-						alarmCode,
-						new AlarmCheckConditionCode(alarmCheckConditionCode),
-						AlarmCategory.SCHEDULE_YEAR,
-						AlarmListCheckType.FreeCheck,
-						Collections.singletonList(detail)
+				List<AlarmExtractInfoResult> lstExtractInfoResult = new ArrayList<>(Arrays.asList(
+						new AlarmExtractInfoResult(
+								alarmCode,
+								new AlarmCheckConditionCode(alarmCheckConditionCode),
+								AlarmCategory.SCHEDULE_YEAR,
+								AlarmListCheckType.FreeCheck,
+								new ArrayList<>(Arrays.asList(detail))
+						)
 				));
 
 				if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
-					alarmEmployeeList.forEach(i -> {
+					for (AlarmEmployeeList i : alarmEmployeeList) {
 						if (i.getEmployeeID().equals(sid)) {
 							List<AlarmExtractInfoResult> temp = new ArrayList<>(i.getAlarmExtractInfoResults());
 							temp.addAll(lstExtractInfoResult);
 							i.setAlarmExtractInfoResults(temp);
+							break;
 						}
-					});
+					}
 				} else {
 					alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
 				}

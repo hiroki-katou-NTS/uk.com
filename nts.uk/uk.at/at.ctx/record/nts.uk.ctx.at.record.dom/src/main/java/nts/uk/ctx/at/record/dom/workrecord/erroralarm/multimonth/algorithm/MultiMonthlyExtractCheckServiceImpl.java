@@ -320,44 +320,23 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 							Optional.ofNullable(checkValue)
 					);
 
+					List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(detail));
 					if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
-						alarmEmployeeList.forEach(i -> {
+						for (AlarmEmployeeList i : alarmEmployeeList) {
 							if (i.getEmployeeID().equals(sid)) {
-								if (i.getAlarmExtractInfoResults().stream()
-										.anyMatch(y -> y.getAlarmCategory().value == AlarmCategory.MULTIPLE_MONTH.value
-												&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
-												&& y.getAlarmListCheckType().value == AlarmListCheckType.FreeCheck.value
-												&& y.getAlarmCheckConditionNo().equals(String.valueOf(anyCond.getCondNo())))) {
-									i.getAlarmExtractInfoResults().forEach(y -> {
-										if (y.getAlarmCategory().value == AlarmCategory.MULTIPLE_MONTH.value
-												&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
-												&& y.getAlarmListCheckType().value == AlarmListCheckType.FreeCheck.value
-												&& y.getAlarmCheckConditionNo().equals(String.valueOf(anyCond.getCondNo()))) {
-											if (y.getExtractionResultDetails().stream().noneMatch(z -> z.getPeriodDate().getStartDate().get().compareTo(pDate.getStartDate().get()) == 0)) {
-												List<ExtractResultDetail> details = new ArrayList<>(y.getExtractionResultDetails());
-												details.add(detail);
-												y.setExtractionResultDetails(details);
-											}
-										}
-									});
-								} else {
-									List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(detail));
-									List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(i.getAlarmExtractInfoResults());
-									alarmExtractInfoResults.add(
-											new AlarmExtractInfoResult(
-													String.valueOf(anyCond.getCondNo()),
-													new AlarmCheckConditionCode(alarmCheckConditionCode),
-													AlarmCategory.MULTIPLE_MONTH,
-													AlarmListCheckType.FreeCheck,
-													details
-											)
-									);
-									i.setAlarmExtractInfoResults(alarmExtractInfoResults);
-								}
+								List<AlarmExtractInfoResult> tmp = new ArrayList<>(i.getAlarmExtractInfoResults());
+								tmp.add(new AlarmExtractInfoResult(
+										String.valueOf(anyCond.getCondNo()),
+										new AlarmCheckConditionCode(alarmCheckConditionCode),
+										AlarmCategory.MULTIPLE_MONTH,
+										AlarmListCheckType.FreeCheck,
+										details
+								));
+								i.setAlarmExtractInfoResults(tmp);
+								break;
 							}
-						});
+						}
 					} else {
-						List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(detail));
 						List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(Arrays.asList(
 								new AlarmExtractInfoResult(
 										String.valueOf(anyCond.getCondNo()),
