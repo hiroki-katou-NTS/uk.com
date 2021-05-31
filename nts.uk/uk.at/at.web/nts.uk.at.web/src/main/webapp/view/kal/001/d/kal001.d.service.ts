@@ -162,7 +162,7 @@ module nts.uk.at.view.kal001.d.service {
                 let sDate = p.startDate + '01';
                 let eDate = new Date(p.endDate.substr(0,4), parseInt(p.endDate.substr(4,2)), 0);
                 this.startDate = nts.uk.time.parseMoment(sDate).momentObject.toISOString();
-                this.endDate = nts.uk.time.parseMoment(eDate).momentObject.add(1, 'M').subtract(1, 'd').toISOString();
+                this.endDate = nts.uk.time.parseMoment(eDate).momentObject.toISOString();
 
             } else if (p.category == 12) {
                 this.name = nts.uk.resource.getText("KAL010_208");

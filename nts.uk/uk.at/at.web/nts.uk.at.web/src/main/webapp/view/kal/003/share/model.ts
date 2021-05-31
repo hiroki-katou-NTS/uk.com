@@ -2602,6 +2602,7 @@ module nts.uk.at.view.kal003.share.model {
         times: number;
         compareOperator: number;
         rowId: number;
+		condNo: number;
     }
 
     export class MulMonCheckCondSet {
@@ -2616,7 +2617,7 @@ module nts.uk.at.view.kal003.share.model {
         continuousMonths: KnockoutObservable<number> = ko.observable(0);
         times: KnockoutObservable<number> = ko.observable(0);
         compareOperator: KnockoutObservable<number> = ko.observable(0);
-        rowId: KnockoutObservable<number> = ko.observable(0);
+        rowId: KnockoutObservable<number> = ko.observable(1);
         condNo: KnockoutComputed<number> = ko.computed(() => this.rowId());
         useCheckSwitch: KnockoutObservable<string> = ko.observable('');
         deleteAtr: KnockoutObservable<boolean> = ko.observable(false);
@@ -2636,7 +2637,7 @@ module nts.uk.at.view.kal003.share.model {
             self.continuousMonths(param.continuousMonths || 0);
             self.times = ko.observable(param.times || 0);
             self.compareOperator(param.compareOperator || 0);
-            self.rowId(param.rowId || 0);
+            self.rowId(param.rowId || param.condNo || 1);
             self.useCheckSwitch(param.useAtr ? '1' : '0');
             self.useAtr = ko.computed(function() {
                 return self.useCheckSwitch() == '1' ? true : false;
