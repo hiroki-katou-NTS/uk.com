@@ -143,10 +143,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         hasChangeModeBg = false; 
         listCellUpdatedWhenChangeModeBg = [];
         
-        // listWorkTypecombobox
-        listWorkTypeInfo = [];
-        
+        listWorkTypeInfo = [];// listWorkTypecombobox
         listCellRetained = [];
+        listCellError = []; // chưa những cell not valid khi sửa time
         
         visibleA4_234: KnockoutObservable<boolean>   = ko.observable(true);
         visibleA4_567: KnockoutObservable<boolean>   = ko.observable(true);
@@ -998,15 +997,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         validTimeInEditMode(dataCellUpdated: any, userInfor: any, isRetaine: boolean) {
             let self = this;
             let strTime, endTime, workTypeCode, workTimeCode, rowIndex, columnKey;
-
+            rowIndex = dataCellUpdated.originalEvent.detail.rowIndex;
+            columnKey = dataCellUpdated.originalEvent.detail.columnKey;
             if (!isRetaine) {
                 strTime = dataCellUpdated.originalEvent.detail.value.startTime;
                 endTime = dataCellUpdated.originalEvent.detail.value.endTime;
             } else {
                 let dataSource = $("#extable").exTable('dataSource', 'detail').body;
                 let innerIdx = dataCellUpdated.originalEvent.detail.innerIdx;
-                rowIndex = dataCellUpdated.originalEvent.detail.rowIndex;
-                columnKey = dataCellUpdated.originalEvent.detail.columnKey;
                 let cellData = dataSource[rowIndex][columnKey];
                 workTypeCode = cellData.workTypeCode;
                 workTimeCode = cellData.workTimeCode;
@@ -1028,11 +1026,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
 
             if (startTimeCal >= endTimeCal) {
+                self.addCellNotValidInTimeInputMode(rowIndex + '', columnKey);
+                self.checkExitCellUpdated();
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
                 return;
             }
 
-            if (strTime == '' || endTime == '') {
+            if (strTime == '' || endTime == '' || _.isNaN(startTimeCal) || _.isNaN(endTimeCal)) {
+                self.addCellNotValidInTimeInputMode(rowIndex+'', columnKey);
                 self.checkExitCellUpdated();
                 return;
             }
@@ -1085,14 +1086,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
 
                 if (errors.length > 0) {
-                    let errorsInfo = _.uniqBy(errors, x => { return x.message });
-                    bundledErrors({ errors: errorsInfo }).then(() => {
-                        nts.uk.ui.block.clear();
-                    });
+                    nts.uk.ui.block.clear();
                     self.enableBtnReg(false);
+                    let errorsInfo = _.uniqBy(errors, x => { return x.message });
+                    bundledErrors({ errors: errorsInfo }).then(() => {});
                 } else {
                     nts.uk.ui.block.clear();
                 }
+                self.removeCellNotValidInTimeInputMode(rowIndex+'', columnKey);
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
                 nts.uk.ui.dialog.alertError(error);
@@ -1216,6 +1217,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.listTimeDisable = [];
             self.listWorkTypeInfo = data.listWorkTypeInfo;
             self.listCellRetained = [];
+            self.listCellError = [];
             
             for (let i = 0; i < data.listEmpInfo.length; i++) {
                 let rowId = i+'';
@@ -3580,7 +3582,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 $('.iconToLeft').css('background-image', 'url(' + self.pathToRight + ')');
                 
-                $(".toLeft").css("margin-left", "190px");
+                $(".toLeft").css("margin-left", self.widthA8 + self.distanceLeftToGrid+"px");
                 
                 let marginleft = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight*2 - self.distanceLeftToGrid;
                 $(".toRight").css('margin-left', marginleft + 'px');
@@ -3589,7 +3591,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $("#extable").exTable("showMiddle");
                 }
                 $('.iconToLeft').css('background-image', 'url(' + self.pathToLeft + ')');
-                let marginleftOfbtnToLeft: number = 190 + self.widthMid;
+                let marginleftOfbtnToLeft: number = self.widthA8 + self.distanceLeftToGrid + self.widthMid;
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
                 
                 let marginleftOfbtnToRight = $("#extable").width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight*2 - self.distanceLeftToGrid;
@@ -3913,6 +3915,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
                     self.enableBtnReg(true);
+                    self.listCellError = [];
                     self.convertDataToGrid(self.dataSource, self.selectedModeDisplayInBody());
                     self.updateExTableWhenChangeMode(self.selectedModeDisplayInBody() , "determine");
                     self.confirmModeAct();
@@ -4056,6 +4059,25 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 return cell.rowId == rowIdx && cell.columnId == key;
             });
             console.log(self.listTimeDisable.length);
+        }
+
+        // add cell có time sửa tay không đúng (bao gồm trương hợp bằng'', NaN, startTime>endTime)(mode TimeInput)
+        addCellNotValidInTimeInputMode(rowIdx, key) {
+            let self = this;
+            let exit = _.filter(self.listCellError, function(o: TimeError) { return o.rowId == rowIdx + '' && o.columnId == key + '' });
+            if (exit.length == 0) {
+                self.listCellError.push(new TimeError(rowIdx, key));
+            }
+            console.log('addCellNotValidInTimeInputMode');
+        }
+
+        // remove cell có time sửa tay không đúng trước đấy (bao gồm trương hợp bằng'', NaN, startTime>endTime)(mode TimeInput)
+        removeCellNotValidInTimeInputMode(rowIdx, key) {
+            let self = this;
+            _.remove(self.listCellError, function(cell: TimeDisable) {
+                return cell.rowId == rowIdx && cell.columnId == key;
+            });
+            console.log('removeCellNotValidInTimeInputMode');
         }
 
         /**
@@ -4624,12 +4646,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let updatedCells = $("#extable").exTable("updatedCells");
                 if (_.size(updatedCells) > 0 || isRetaine == true) {
                     self.enableBtnReg(true);
+                    if (userInfor.updateMode == 'edit' && self.listCellError.length > 0)
+                        self.enableBtnReg(false);
                 } else {
                     self.enableBtnReg(false);
                 }
                 
                 if (userInfor.updateMode == 'stick') {
-                    
                     // check undo
                     let $grid1   = $("#extable").find("." + "ex-body-detail");
                     let histories = $grid1.data("stick-history");
@@ -4713,6 +4736,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         openDialogG(): void {
             let self = this;
+            $('div > iframe').contents().find('#btnCloseG').trigger('click');
             // listEmpData : {id : '' , code : '', name : ''}
             setShared('dataShareDialogG', {
                 startDate   : moment(self.dtPrev()).format('YYYY/MM/DD'),
@@ -5262,7 +5286,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             setShared("dataFromA", param);
             setShared("dataTooltip", self.tooltipShare);
-            nts.uk.ui.windows.sub.modeless("/view/ksu/003/a/index.xhtml").onClosed(() => { });
+            nts.uk.ui.windows.sub.modal("/view/ksu/003/a/index.xhtml").onClosed(() => { });
         }
 
         // check cell edit truoc khi open ksu003
