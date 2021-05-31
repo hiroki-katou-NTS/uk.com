@@ -256,13 +256,13 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 												integrationOfDaily.getYmd(),
 												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.LEAVE_EARLY);
-			//出勤打刻漏れ
+			//出勤打刻漏れ - 出退勤打刻漏れ
 			case TIME_LEAVING_STAMP_LEAKAGE:
 				return dailyRecordCreateErrorAlermService.lackOfTimeLeavingStamping(integrationOfDaily);
-			//入退門漏
+			//入退門漏 - 入退門打刻漏れ
 			case ENTRANCE_STAMP_LACKING:
 				return dailyRecordCreateErrorAlermService.lackOfAttendanceGateStamping(integrationOfDaily);
-			//PCログ打刻漏れ
+			//PCログ打刻漏れ - PCログオン打刻漏れ
 			case PCLOG_STAMP_LEAKAGE:
 				return dailyRecordCreateErrorAlermService.lackOfAttendancePCLogOnStamping(integrationOfDaily);
 			//打刻順序不正

@@ -2512,6 +2512,7 @@ module cmm045.a.viewmodel {
 							linkItem.appDate = item.opComplementLeaveApp.linkAppDate;
 							linkItem.opAppStartDate = item.opComplementLeaveApp.linkAppDate;
 							linkItem.opAppEndDate = item.opComplementLeaveApp.linkAppDate;
+							linkItem.application = item.opComplementLeaveApp.application;
 							listOfApplicationCmds.push(item);
 	                    	listOfApplicationCmds.push(linkItem);	
 						}

@@ -45,10 +45,12 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.ExtractResultDetail;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.HolidayNumberManagement;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.TreatmentHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.TreatmentHolidayRepository;
@@ -264,14 +266,29 @@ public class W4D4AlarmService {
 	 * @param lstStatusEmp
 	 * @return
 	 */
-	public List<ExtractionResultDetail> extractCheck4W4d(String cid, List<String> lstSid,
-			DatePeriod dPeriod, 
+	public List<ExtractResultDetail> extractCheck4W4d(String cid, List<String> lstSid,
+			DatePeriod dPeriod,
 			FourW4DCheckCond w4dCheckCond,
 			List<WorkPlaceHistImport> getWplByListSidAndPeriod,
 			List<StatusOfEmployeeAdapter> lstStatusEmp, Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop){
-		List<ExtractionResultDetail> lstResult = new ArrayList<>();
-	
+			Supplier<Boolean> shouldStop,
+			List<AlarmEmployeeList> alarmEmployeeList, String alarmCheckConditionCode,
+			List<AlarmExtractionCondition> alarmExtractConditions){
+		List<ExtractResultDetail> lstResult = new ArrayList<>();
+		// 「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞に追加
+		val extractionCon = alarmExtractConditions.stream()
+				.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck
+						&& x.getAlarmCheckConditionNo().equals(String.valueOf(w4dCheckCond.value)))
+				.findAny();
+		if (!extractionCon.isPresent()) {
+			alarmExtractConditions.add(new AlarmExtractionCondition(
+					String.valueOf(w4dCheckCond.value),
+					new AlarmCheckConditionCode(alarmCheckConditionCode),
+					AlarmCategory.SCHEDULE_4WEEK,
+					AlarmListCheckType.FixCheck
+			));
+		}
+
 		//ドメインモデル「休日の扱い」を取得
 		Optional<TreatmentHoliday> optTreatHolidaySet = treatHolidayRepos.get(cid);
 		if(!optTreatHolidaySet.isPresent()) return lstResult;
@@ -350,13 +367,13 @@ public class W4D4AlarmService {
 					}
 					
 				}
+				List<ExtractResultDetail> lstDetail = new ArrayList<>();
 				if(mapWorkInfor.isEmpty()) continue;
 				
 				int holidays = holidayNumberMana.countNumberHolidays(require, mapWorkInfor);
-				
 				if(holidays < holidayNumberMana.getHolidayDays().v()) {
 					ExtractionAlarmPeriodDate alarmDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(dPeriod.start()), Optional.ofNullable(dPeriod.end()));
-					ExtractionResultDetail alarmDetail = new ExtractionResultDetail(sid,
+					ExtractResultDetail alarmDetail = new ExtractResultDetail(
 							alarmDate, 
 							w4dCheckCond.nameId,
 							TextResource.localize("KAL010_64"), 
@@ -364,14 +381,38 @@ public class W4D4AlarmService {
 							Optional.ofNullable(workplaceId),
 							Optional.ofNullable(""),
 							Optional.ofNullable(TextResource.localize("KAL010_63", String.valueOf(holidays))));
-					lstResult.add(alarmDetail);
+					lstDetail.add(alarmDetail);
+				}
+
+				if (!lstDetail.isEmpty()) {
+					List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(Arrays.asList(
+							new AlarmExtractInfoResult(
+									String.valueOf(w4dCheckCond.value),
+									new AlarmCheckConditionCode(alarmCheckConditionCode),
+									AlarmCategory.SCHEDULE_4WEEK,
+									AlarmListCheckType.FixCheck,
+									lstDetail
+							)
+					));
+
+					if (alarmEmployeeList.stream().noneMatch(i -> i.getEmployeeID().equals(sid))) {
+						alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
+					} else {
+						for (AlarmEmployeeList emp : alarmEmployeeList) {
+							if(emp.getEmployeeID().equals(sid)){
+								List<AlarmExtractInfoResult> temp = new ArrayList<>(emp.getAlarmExtractInfoResults());
+								temp.addAll(alarmExtractInfoResults);
+								emp.setAlarmExtractInfoResults(temp);
+								break;
+							}
+						}
+					}
 				}
 			}
 			synchronized (this) {
 				counter.accept(emps.size());
 			}
 		});
-		
 		return lstResult;
 	}
 	/**

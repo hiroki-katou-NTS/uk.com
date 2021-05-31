@@ -257,7 +257,7 @@ public class GetRemainingNumberChildCareService {
 		}
 
 		// 上書きフラグを確認
-		if (isOverWrite.orElse(false)){
+		if (isOverWrite.orElse(false) && periodOverWrite.isPresent()) {
 			// ※残数共通処理にする必要あり：一時対応
 			// 上書き用暫定残数データで置き換える
 			//	ドメインモデル「暫定子の看護介護管理データ」．作成元区分 = パラメータ「作成元区分」

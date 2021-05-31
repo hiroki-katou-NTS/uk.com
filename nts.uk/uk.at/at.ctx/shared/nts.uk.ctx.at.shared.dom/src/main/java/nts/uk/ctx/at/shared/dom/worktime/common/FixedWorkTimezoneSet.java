@@ -191,7 +191,7 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 					int nextIndex = this.lstOTTimezone.indexOf(ot) + 1;
 					if (nextIndex < this.lstOTTimezone.size()){
 						val nextOt = this.lstOTTimezone.get(nextIndex);
-						return !ot.getTimezone().getEnd().equals(nextOt.getTimezone().getStart());
+						return !ot.getTimezone().getEnd().equals(nextOt.getTimezone().getStart()) && !ot.isEarlyOTUse();
 					}
 					else return false;
 				})
