@@ -47,5 +47,22 @@ public interface LeaveComDayOffManaRepository {
 	 * @param occDate
 	 * @param digestDate
 	 */
-	void delete(String sid1, String sid2, List<GeneralDate> occDate, List<GeneralDate> digestDate);
+	void delete(String sid1, String sid2, List<GeneralDate> occDate, List<GeneralDate> digestDate);/**
+	 * ＜条件＞
+	 * ・社員ID＝逐次発生の休暇明細.社員ID
+	 * ・使用日＝逐次発生の休暇明細．年月日．年月日
+	 * ・発生日 >= INPUT．基準日
+	*/
+	//LeaveComDayOffManaRepository.getLeaveComWithDateUse
+	List<LeaveComDayOffManagement> getLeaveComWithDateUse(String sid, GeneralDate dateOfUse, GeneralDate baseDate);
+	
+	/**
+	 * ＜条件＞
+	 * 逐次発生の休暇明細．年月日．日付不明 = false
+	 * ・社員ID＝逐次発生の休暇明細.社員ID
+	 * ・発生日＝逐次発生の休暇明細．年月日．年月日
+	 * ・使用日 >= INPUT．基準日
+	*/
+	//LeaveComDayOffManaRepository.getLeaveComWithOutbreakDay
+	List<LeaveComDayOffManagement> getLeaveComWithOutbreakDay(String sid, GeneralDate outbreakDay, GeneralDate baseDate);
 }
