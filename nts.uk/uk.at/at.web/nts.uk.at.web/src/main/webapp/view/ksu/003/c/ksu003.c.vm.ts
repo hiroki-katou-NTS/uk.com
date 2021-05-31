@@ -70,7 +70,9 @@ module nts.uk.at.view.ksu003.c {
                 maxRows: 10,        
                 disableSelection: self.disableSelection()
             };
-            $('#component-items-list').ntsListComponent(self.listComponentOption);
+            $('#component-items-list').ntsListComponent(self.listComponentOption).done(function(){
+                $('#component-items-list').focusComponent();
+            });
 
             self.selectedMode.subscribe((mode) => {
                 if(mode == 0){
@@ -97,6 +99,12 @@ module nts.uk.at.view.ksu003.c {
 
         mounted(){
             $('#task-list').focus();
+            setTimeout(function(){ 
+                let g = $('[tabindex=0]');
+                for (let i = 0; i< g.length; i++) 
+                    {
+                    $(g[i]).attr("tabindex" , -1);
+                    }},200);
         }
         
         loadData(): void {
