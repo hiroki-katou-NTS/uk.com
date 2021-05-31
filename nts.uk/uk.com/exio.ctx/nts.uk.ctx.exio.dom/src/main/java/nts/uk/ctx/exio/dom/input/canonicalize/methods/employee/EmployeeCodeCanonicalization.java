@@ -19,10 +19,10 @@ import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 	
 	/** 社員コードの項目No */
-	int itemNoEmployeeCode;
+	final int itemNoEmployeeCode;
 	
 	/** 社員IDの項目No */
-	int itemNoEmployeeId;
+	final int itemNoEmployeeId;
 
 	/**
 	 * 正準化する
@@ -74,7 +74,7 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 	 * @return
 	 */
 	public void canonicalize(
-			CanonicalizationMethod.Require require,
+			Require require,
 			ExecutionContext context,
 			String employeeCode,
 			Consumer<IntermediateResult> intermediateResultProvider) {
@@ -90,7 +90,6 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 						itemNoEmployeeCode))
 				.forEach(r -> intermediateResultProvider.accept(r));
 	}
-
 	
 	public static interface Require {
 		

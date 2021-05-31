@@ -37,16 +37,16 @@ import nts.uk.shr.com.history.History;
 public abstract class EmployeeContinuousHistoryCanonicalization implements CanonicalizationMethod {
 	
 	/** 履歴開始日の項目No */
-	int itemNoStartDate;
+	final int itemNoStartDate;
 	
 	/** 履歴終了日の項目No */
-	int itemNoEndDate;
+	final int itemNoEndDate;
 	
 	/** 履歴IDの項目No */
-	int itemNoHistoryId;
+	final int itemNoHistoryId;
 	
 	/** 社員コードの正準化 */
-	EmployeeCodeCanonicalization employeeCodeCanonicalization;
+	final EmployeeCodeCanonicalization employeeCodeCanonicalization;
 
 	/**
 	 * 対象の履歴のドメインを取得する
@@ -79,6 +79,21 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Canon
 		List<IntermediateResult> employeeCanonicalized = new ArrayList<>();
 		employeeCodeCanonicalization.canonicalize(
 				require, context, employeeCode, r -> employeeCanonicalized.add(r));
+		
+		return canonicalizeHistory(require, context, employeeCanonicalized);
+	}
+
+	/**
+	 * 履歴を正準化する
+	 * @param require
+	 * @param context
+	 * @param employeeCanonicalized
+	 * @return
+	 */
+	private List<IntermediateResult> canonicalizeHistory(
+			CanonicalizationMethod.Require require,
+			ExecutionContext context,
+			List<IntermediateResult> employeeCanonicalized) {
 		
 		if (employeeCanonicalized.isEmpty()) {
 			return Collections.emptyList();
@@ -114,17 +129,11 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Canon
 		// 追加する分と重複する未来の履歴は全て削除
 		removeDuplications(require, context, employeeId, containers, existingHistory);
 		
-		List<IntermediateResult> results = new ArrayList<>();
-		
-		for (Container container : containers) {
-			
-			// 受入する期間を既存の履歴に繋がるように補正する
-			adjustAdding(require, context, employeeId, container.addingHistoryItem, existingHistory);
-			
-			results.add(container.complete());
-		}
-		
-		return results;
+		return containers.stream()
+				// 受入する期間を既存の履歴に繋がるように補正する
+				.peek(c -> adjustAdding(require, context, employeeId, c.addingHistoryItem, existingHistory))
+				.map(c -> c.complete())
+				.collect(toList());
 	}
 
 	
