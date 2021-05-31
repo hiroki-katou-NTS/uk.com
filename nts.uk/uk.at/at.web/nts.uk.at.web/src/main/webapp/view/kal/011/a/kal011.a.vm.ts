@@ -107,6 +107,7 @@ module nts.uk.at.kal011.a {
                         parterns.push(new AlarmPattern(item.alarmPatternCode, item.alarmPatternName));
                     })
                     vm.alarmPatterns(parterns);
+					vm.workplaceIds([res.workplaceId]);
                 }
                 dfd.resolve();
             }).fail((err: any) => {
@@ -299,6 +300,7 @@ module nts.uk.at.kal011.a {
         processingYm: number;
         closureStartDate: any;
         closureEndDate: any;
+		workplaceId: string;
     }
 
     interface IAlarmPatternSettingWorkPlace {
