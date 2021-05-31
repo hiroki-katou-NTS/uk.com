@@ -94,6 +94,7 @@ module nts.uk.at.view.ksu003.b {
             }).always(() => {
                 self.$blockui("hide");
             });
+            $('input#pageName').focus();
         }
 
         loadDetail(page?: number): void {
@@ -154,8 +155,8 @@ module nts.uk.at.view.ksu003.b {
             }).always(() => {
                 self.$blockui("hide");
             });
-            
-            $('input#pageName').focus();
+            $('input#pageName').focus();           
+           
         }
         
         registerOrUpdate(): void {
@@ -193,9 +194,10 @@ module nts.uk.at.view.ksu003.b {
                 self.$blockui("hide");
             });
 
-            $('input#pageName').focus();
+            
             self.endStatus('Update');
             self.enableDelete(true);
+            $('input#pageName').focus();           
         }
 
         remove(): void {
@@ -218,13 +220,15 @@ module nts.uk.at.view.ksu003.b {
                         self.$blockui("hide");
                     });    
                     self.$blockui("hide");      
-                    $('input#pageName').focus();          
+                    $('#pageName').focus();          
                 }
                 if(result === 'no'){
                     self.$blockui("hide");
-                    $('input#pageName').focus();
+                    $('#pageName').focus();
                 }
             }); 
+            self.isClickLink(true);
+            $('input#pageName').focus(); 
         }
 
        
@@ -300,7 +304,7 @@ module nts.uk.at.view.ksu003.b {
                     self.taskPaletteOrgnization().keys.push(position);
                     self.taskPaletteOrgnization().taskCodes.push(dataFromKdl012[0].code);
                     self.taskPaletteOrgnization().taskNames.push(dataFromKdl012[0].taskName);
-                    // self.taskPaletteOrgnization().taskAbNames.push(dataFromKdl012);
+                    self.taskPaletteOrgnization().taskAbNames.push(dataFromKdl012[0].taskAbNames);
                     dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: dataFromKdl012[0] });
                 }
             });
