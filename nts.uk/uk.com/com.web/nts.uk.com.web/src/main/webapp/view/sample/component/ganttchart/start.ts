@@ -264,7 +264,8 @@ __viewContext.ready(function() {
                 color: "#ccccff",
                 lineWidth: 30,
                 canSlide: false,
-                unitToPx: 4
+                unitToPx: 4,
+                canPaste: true
             });
             
             this.ruler.addType({
@@ -273,7 +274,8 @@ __viewContext.ready(function() {
                 lineWidth: 30,
                 canSlide: true,
                 unitToPx: 4,
-                bePassedThrough: false
+                bePassedThrough: false,
+                canPaste: true
             });
             
             this.ruler.addType({
@@ -281,7 +283,8 @@ __viewContext.ready(function() {
                 color: "#ccccff",
                 lineWidth: 30,
                 canSlide: true,
-                unitToPx: 4
+                unitToPx: 4,
+                canPaste: true
             });
             
             this.ruler.addType({
@@ -307,7 +310,8 @@ __viewContext.ready(function() {
                 unitToPx: 4,
                 pin: true,
                 rollup: true,
-                fixed: "Both"
+                fixed: "Both",
+                canPaste: true
             });
             
             this.ruler.addType({
@@ -315,7 +319,8 @@ __viewContext.ready(function() {
                 color: "#00ffcc",
                 lineWidth: 30,
                 unitToPx: 4,
-                fixed: "Both"
+                fixed: "Both",
+                canPaste: true
             });
             
             for (let i = 0; i < 300; i++) {
