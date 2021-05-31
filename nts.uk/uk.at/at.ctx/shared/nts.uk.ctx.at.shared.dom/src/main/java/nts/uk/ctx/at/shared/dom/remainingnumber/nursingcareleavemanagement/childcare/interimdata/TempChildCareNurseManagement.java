@@ -2,13 +2,17 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.chil
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 
 /**
@@ -17,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 */
 @Getter
 @Setter
+@AllArgsConstructor
 public class TempChildCareNurseManagement extends InterimRemain{
 
 	/** 使用数 */
@@ -32,10 +37,18 @@ public class TempChildCareNurseManagement extends InterimRemain{
 		this.usedNumber = new ChildCareNurseUsedNumber();
 		this.appTimeType = Optional.empty();
 	}
+
+	public TempChildCareNurseManagement(TempChildCareNurseManagement c) {
+		super(c.getRemainManaID(), c.getSID(), c.getYmd(), c.getCreatorAtr(), c.getRemainType());
+		this.usedNumber = c.getUsedNumber().clone();
+		this.appTimeType = c.getAppTimeType()
+				.map(mapper->new DigestionHourlyTimeType(mapper.isHourlyTimeType(),mapper.getAppTimeType()));
+
+	}
 	/**
 	 * コンストラクタ
 	 */
-	public TempChildCareNurseManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainType,
+	public TempChildCareNurseManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainType, RemainAtr remainAtr,
 			ChildCareNurseUsedNumber usedNumber, Optional<DigestionHourlyTimeType> appTimeType){
 		super(remainManaID, sID, ymd, creatorAtr, remainType);
 		this.usedNumber = usedNumber;
@@ -46,10 +59,10 @@ public class TempChildCareNurseManagement extends InterimRemain{
 	 * ファクトリー
 	 * @param usedNumber 使用数
 	 * @param timezoneToUseHourlyHoliday 時間休暇種類
-	 * @return 暫定子の看護管理データ
+	 * @return 暫定子の看護介護管理データ
 	 */
 	public static TempChildCareNurseManagement of(
-			String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainType,
+			String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainType, RemainAtr remainAtr,
 			ChildCareNurseUsedNumber usedNumber,
 			Optional<DigestionHourlyTimeType>  appTimeType) {
 

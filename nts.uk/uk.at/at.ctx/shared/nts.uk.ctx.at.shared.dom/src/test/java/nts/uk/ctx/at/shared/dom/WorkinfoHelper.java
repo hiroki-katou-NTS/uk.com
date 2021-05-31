@@ -24,7 +24,7 @@ public class WorkinfoHelper {
 	public static WorkTimeSetting getWorkTimeSettingDefault() {
 		return new WorkTimeSetting("companyId",
 				new WorkTimeCode("WorkTimeCode"),
-				new WorkTimeDivision(), AbolishAtr.ABOLISH, new ColorCode("colorCode"),
+				new WorkTimeDivision(), AbolishAtr.ABOLISH,
 				new WorkTimeDisplayName(), new Memo("memo"), new WorkTimeNote("WorkTimeNote"));
 
 	}

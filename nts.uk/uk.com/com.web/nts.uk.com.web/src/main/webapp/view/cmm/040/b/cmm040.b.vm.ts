@@ -37,10 +37,12 @@ module nts.uk.com.view.cmm040.b.viewmodel {
             self.selectCode.subscribe(function(value) {
                 if (value == null) return;
                 if (value == "") {
-
+                    self.isCreate(true);
+                    //self.isCreate.valueHasMutated();
+                    self.newMode();
                     $("#target").focus();
                     errors.clearAll();
-
+                    return;
                 }
                 self.isCreate(false);
                 self.valueB3_4_ipaddress1(value.split(".")[0]);
@@ -268,10 +270,16 @@ module nts.uk.com.view.cmm040.b.viewmodel {
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                         self.checkDel = true;
                         //self.startPage().done(() => {
+                         if(self.workLocationList().length == 0){
+                             self.newMode();
+                            errors.clearAll();
+                             }   
                         if (index == -1) {
                             self.selectCode(null);
                             self.workLocationList([]);
+                            self.newMode();
                             errors.clearAll();
+                            
                         }
                         else {
                             self.findByIndex(index == self.workLocationList().length ? index - 1 : index);

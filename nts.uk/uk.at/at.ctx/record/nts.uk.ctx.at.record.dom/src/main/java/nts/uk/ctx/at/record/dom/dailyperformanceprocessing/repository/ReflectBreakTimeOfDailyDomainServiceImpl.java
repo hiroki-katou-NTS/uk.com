@@ -715,7 +715,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 					|| (item.getDayAtr() == AmPmAtr.PM && checkWorkDay == WorkStyle.AFTERNOON_WORK)).findFirst();
 			
 			if (optional.isPresent()) {
-				List<DeductionTime> timezones = optional.get().getRestTimezone().getLstTimezone();
+				List<DeductionTime> timezones = optional.get().getRestTimezone().getTimezones();
 				breakTimeZoneSettingOutPut.getLstTimezone().addAll(timezones);
 			}
 
@@ -731,7 +731,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		}
 
 		breakTimeZoneSettingOutPut.getLstTimezone()
-				.addAll(fixedWorkSetting.getOffdayWorkTimezone().getRestTimezone().getLstTimezone());
+				.addAll(fixedWorkSetting.getOffdayWorkTimezone().getRestTimezone().getTimezones());
 		return true;
 	}
 

@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.app.find.application.approvalstatus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -10,14 +9,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -26,22 +22,18 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailType;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.AggregateApprovalStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.InitDisplayOfApprovalStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttComfirmSet;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttConfirmEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttConfirmEmpMonthDay;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ConfirmWorkplaceInfoOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DisplayWorkplace;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnConfrSendMailParam;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Content;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Subject;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
@@ -266,51 +258,6 @@ public class ApprovalStatusFinder {
 //		}).collect(Collectors.toList());
 //		return lstClosureDto;
 	}
-	
-	@Inject
-	private AggregateApprovalStatus aggregateApprovalStatus;
-	
-	@Inject
-	private ManagedParallelWithContext parallel;
-	
-	/**
-	 * アルゴリズム「承認状況職場別起動」を実行する
-	 * 
-	 * @param appStatus
-	 */
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<ApprovalSttAppOutput> getAppSttByWorkpace(ApprovalStatusActivityData appStatus) {
-		List<ApprovalSttAppOutput> listAppSttApp = Collections.synchronizedList(new ArrayList<>());
-		GeneralDate startDate = appStatus.getStartDate();
-		GeneralDate endDate = appStatus.getEndDate();
-		String companyId = AppContexts.user().companyId();
-		List<WorkplaceInfor> listWorkPlaceInfor = appStatus.getListWorkplace();
-		
-		
-		this.parallel.forEach(listWorkPlaceInfor, wkp -> {
-			// アルゴリズム「承認状況取得職場社員」を実行する
-			List<ApprovalStatusEmployeeOutput> listAppStatusEmp = appSttService.getApprovalStatusEmployee(wkp.getCode(),
-					startDate, endDate, appStatus.getListEmpCd());
-			
-			// アルゴリズム「承認状況取得申請承認」を実行する
-			ApprovalSttAppOutput approvalSttApp = this.aggregateApprovalStatus.aggregate(companyId, wkp, listAppStatusEmp);
-			listAppSttApp.add(approvalSttApp);
-		});
-		//vì sử dụng parallel (bất đồng bộ) nên phải sắp xếp sau
-		// 「職場IDから階層コードを取得する」を実行する
-		// List<String> wPIDs = listWorkPlaceInfor.stream().map(WorkplaceInfor::getCode).collect(Collectors.toList());
-		// List<WorkplaceHierarchyImport> wpHis = GetHCodeByWorkPlaceID(companyId, wPIDs, GeneralDate.today());
-		
-		// [No.560]職場IDから職場の情報をすべて取得する
-		List<String> wPIDs = listWorkPlaceInfor.stream().map(WorkplaceInfor::getCode).collect(Collectors.toList());
-		List<WorkplaceHierarchyImport> wpHis = this.configInfoAdapter.getWorkplaceInforByWkpIds(companyId, wPIDs, GeneralDate.today())
-				.stream().map(item -> new WorkplaceHierarchyImport(item.getWorkplaceId(), item.getHierarchyCode())).collect(Collectors.toList());
-		
-		// 取得した「職場ID、職場階層コード」を階層コード順に並び替える
-		List<ApprovalSttAppOutput> result = sortList(wpHis, listAppSttApp);
-
-		return result;
-	}
 
 	public List<ApprovalSttAppOutput> sortList(List<WorkplaceHierarchyImport> wpHis, List<ApprovalSttAppOutput> listAppSttApp) {
 		List<ApprovalSttAppOutput> result = new ArrayList<>();
@@ -398,21 +345,6 @@ public class ApprovalStatusFinder {
 		}
 		return false;
 
-	}
-	/**
-	 * アルゴリズム「承認状況未承認メール送信実行」を実行する
-	 */
-	public SendMailResultOutput exeSendUnconfirmedMail(UnAppMailTransmisDto unAppMail) {
-		return appSttService.exeSendUnconfirmedMail(unAppMail.getListWkpId(), unAppMail.getClosureStart(),
-				unAppMail.getClosureEnd(), unAppMail.getListEmpCd());
-	}
-
-	/**
-	 * アルゴリズム「承認状況社員別起動」を実行する
-	 */
-	public List<ApprovalSttByEmpListOutput> initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById) {
-		return appSttService.getApprovalSttById(appSttById.getSelectedWkpId(), appSttById.getListWkpId(),
-				appSttById.getStartDate(), appSttById.getEndDate(), appSttById.getListEmpCode());
 	}
 	
 	// refactor 5

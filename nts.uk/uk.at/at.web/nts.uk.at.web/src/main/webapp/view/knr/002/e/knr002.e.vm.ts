@@ -220,6 +220,12 @@ module nts.uk.at.view.knr002.e {
                 service.getLocationSetting(code)
                 .done((res: Array<LocationSettingDto>) => {
                     if (res) {
+                        res.sort((item1: LocationSettingDto, item2: LocationSettingDto) => { 
+                            if (item1.majorNo == item2.majorNo) {
+                                return item1.smallNo - item2.smallNo;
+                            }
+                            return item1.majorNo - item2.majorNo;
+                        });
                         let selectedObject = _.find(vm.initData().listEmpInfoTerminal, (item) => { return item.empInfoTerCode == code; });
                         vm.selectedName(selectedObject.empInfoTerName);
                         vm.settingContentGrid(res);
@@ -244,6 +250,13 @@ module nts.uk.at.view.knr002.e {
                 service.getBackupContent(code)
                 .done((res: Array<LocationSettingDto>) => {
                     if (res) {
+                        res.sort((item1: LocationSettingDto, item2: LocationSettingDto) => { 
+                            if (item1.majorNo == item2.majorNo) {
+                                return item1.smallNo - item2.smallNo;
+                            }
+                            return item1.majorNo - item2.majorNo;
+                        });
+                        console.log('pub');
                         vm.settingContentGrid(res);
                         console.log(vm.settingContentGrid(), 'content');
                         $("#detail-grid").igGrid("dataSourceObject", vm.settingContentGrid()).igGrid("dataBind");

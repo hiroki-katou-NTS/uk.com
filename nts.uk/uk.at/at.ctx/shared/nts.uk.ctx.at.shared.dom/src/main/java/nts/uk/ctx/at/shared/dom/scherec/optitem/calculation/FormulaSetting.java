@@ -116,8 +116,8 @@ public class FormulaSetting extends DomainObject {
 		memento.setLeftItem(this.leftItem);
 		memento.setRightItem(this.rightItem);
 	}
-	
-	
+
+
 	/**
 	 * 計算式による計算
 	 * @return
@@ -138,8 +138,8 @@ public class FormulaSetting extends DomainObject {
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * 設定方法に基づいて計算項目を取得、作成する
 	 * @return
@@ -169,7 +169,7 @@ public class FormulaSetting extends DomainObject {
 		calcItem.setValueByOrder(formulaSettingItem.getDispOrder(), BigDecimal.valueOf(0));
 		return calcItem;
 	}
-	
+
 	/**
 	 * 計算式の結果Listから計算式項目IDに一致する計算式の結果を取得する
 	 * @param resultOfCalcFormulaList
@@ -183,7 +183,7 @@ public class FormulaSetting extends DomainObject {
 		}
 		return Optional.empty();
 	}
-	
+
 	/**
 	 * 指定された順番の計算式項目設定を取得する
 	 * 必ず順番1、2の両方が存在する前提の処理（そうでない場合は修正が必要）
@@ -195,7 +195,7 @@ public class FormulaSetting extends DomainObject {
 		}
 		return this.rightItem;
 	}
-	
+
 	/**
 	 * 自身の持つ演算子を基に計算
 	 * @param calcItem
@@ -216,7 +216,7 @@ public class FormulaSetting extends DomainObject {
 			throw new RuntimeException("unknown operator:"+operator);
 		}
 	}
-	
-	
-	
+
+
+
 }

@@ -10,6 +10,7 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForRemandService;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationForSendService;
+import nts.uk.ctx.at.request.dom.application.common.service.application.SendMailDialogParam;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForRemandOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.application.output.ApplicationForSendOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
@@ -40,8 +41,8 @@ public class ApplicationFinder {
 		return appForRemandService.getApplicationForRemand(lstAppID);
 	}
 
-	public ApplicationSendDto getAppByIdForSend(List<String> appIDLst){
-		ApplicationForSendOutput appOutput = appForSendService.getApplicationForSend(appIDLst);
+	public ApplicationSendDto getAppByIdForSend(SendMailDialogParam param){
+		ApplicationForSendOutput appOutput = appForSendService.getApplicationForSend(param);
 		return ApplicationSendDto.fromDomain(appOutput);
 	}
 

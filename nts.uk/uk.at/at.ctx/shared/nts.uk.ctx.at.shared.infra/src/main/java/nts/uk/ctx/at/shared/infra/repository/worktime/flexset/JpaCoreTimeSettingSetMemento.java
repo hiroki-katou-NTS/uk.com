@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flexset;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.OutingCalcWithinCoreTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFle;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
@@ -71,6 +72,13 @@ public class JpaCoreTimeSettingSetMemento implements CoreTimeSettingSetMemento {
 			this.entity.setLeastWorkTime(minWorkTime.valueAsMinutes());
 		}
 	}
-	
+
+	@Override
+	public void setGoOutCalc(OutingCalcWithinCoreTime goOutCalc) {
+		if (goOutCalc != null) {
+			this.entity.setDeductFromWorkTime(goOutCalc.getRemoveFromWorkTime().value);
+			this.entity.setEspecialCalc(goOutCalc.getEspecialCalc().value);
+		}
+	}
 
 }
