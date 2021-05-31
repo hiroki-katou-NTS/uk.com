@@ -130,9 +130,7 @@ module nts.uk.at.view.kdp004.a {
 					} else {
 						return ButtonDisplayMode.NoShow;
 					}
-
 				}
-
 				return ButtonDisplayMode.ShowAll;
 			}
 
@@ -208,10 +206,19 @@ module nts.uk.at.view.kdp004.a {
 				}).done((loginResult) => {
 					const exest = false;
 
-					if (!loginResult.result) {
+					if (loginResult !== undefined) {
+						if (!loginResult.result) {
+							loginResult = undefined;
+						}
+					} else {
 						loginResult = undefined;
 					}
 
+					if (loginResult == undefined) {
+						self.errorMessage(getMessage("Msg_1647"));
+						dfd.resolve();
+						return;
+					}
 
 					if (!loginResult || !loginResult.result) {
 						self.errorMessage(getMessage(!loginResult ? "Msg_1647" : loginResult.msgErrorId));
@@ -254,7 +261,8 @@ module nts.uk.at.view.kdp004.a {
 									.then((data: any) => {
 										if (data) {
 											service.getLogginSetting(data.contractCode).done((res) => {
-												self.listCompany(_.filter(res, 'fingerAuthStamp'));
+												var list = _.filter(res, 'fingerAuthStamp');
+												self.listCompany(list);
 												if (self.listCompany.length == 0) {
 													self.errorMessage(getMessage("Msg_1527"));
 												}
@@ -473,8 +481,6 @@ module nts.uk.at.view.kdp004.a {
 						self.loginInfo = loginResult.em;
 						self.basyo()
 							.then(() => {
-
-								console.log(ko.unwrap(self.modeBasyo));
 
 								if (!ko.unwrap(self.modeBasyo)) {
 									self.openScreenK().done((result) => {
@@ -814,7 +820,7 @@ module nts.uk.at.view.kdp004.a {
 											dfd.resolve();
 										}
 									});
-							}else {
+							} else {
 								dfd.resolve();
 							}
 						});
