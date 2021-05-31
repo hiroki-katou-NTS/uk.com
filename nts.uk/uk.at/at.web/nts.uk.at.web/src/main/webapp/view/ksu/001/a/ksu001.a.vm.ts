@@ -1063,21 +1063,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
 
                 if (errors.length > 0) {
-                    let errorsInfo = _.uniqBy(errors, x => { return x.message });
-                    bundledErrors({ errors: errorsInfo }).then(() => {
-                        nts.uk.ui.block.clear();
-                    });
+                    nts.uk.ui.block.clear();
                     self.enableBtnReg(false);
+                    let errorsInfo = _.uniqBy(errors, x => { return x.message });
+                    bundledErrors({ errors: errorsInfo }).then(() => {});
                 } else {
                     nts.uk.ui.block.clear();
                 }
                 self.removeCellNotValidInTimeInputMode(rowIndex+'', columnKey);
-                self.checkExitCellUpdated(isRetaine);
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
                 nts.uk.ui.dialog.alertError(error);
                 dfd.reject();
             });
+            self.checkExitCellUpdated(isRetaine);
         }
         
         saveDataGrid(data: any) {
