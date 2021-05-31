@@ -1,8 +1,5 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.methods.employee;
 
-import static java.util.stream.Collectors.*;
-
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -16,6 +13,7 @@ import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 
 /**
  * 社員コードを社員IDに正準化する
+ * 複数レコードを処理する場合は、行数（メモリ負荷）が予測できないので、1行ずつ処理してConsumerで結果を送り返す設計思想としてある
  */
 @Value
 public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
@@ -35,7 +33,6 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 			ExecutionContext context,
 			Consumer<IntermediateResult> intermediateResultProvider) {
 		
-		// 処理単位の判断ができるだけの情報が無いので、単純に1行ずつ読んで処理していく
 		int rows = require.getNumberOfRowsRevisedData();
 		for (int rowNo = 0; rowNo < rows; rowNo++) {
 			
@@ -46,6 +43,13 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 		}
 	}
 
+	/**
+	 * 渡された編集済みデータを正準化する
+	 * @param require
+	 * @param context
+	 * @param revisedData
+	 * @return
+	 */
 	public IntermediateResult canonicalize(
 			CanonicalizationMethod.Require require,
 			ExecutionContext context,
@@ -61,43 +65,38 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 				itemNoEmployeeCode);
 	}
 
-	public List<IntermediateResult> canonicalize(
+	/**
+	 * 指定された社員の編集済みデータを正準化する
+	 * @param require
+	 * @param context
+	 * @param employeeCode
+	 * @param intermediateResultProvider
+	 * @return
+	 */
+	public void canonicalize(
 			CanonicalizationMethod.Require require,
 			ExecutionContext context,
 			String employeeCode,
-			List<RevisedDataRecord> revisedDataRecords) {
+			Consumer<IntermediateResult> intermediateResultProvider) {
 		
-		if (revisedDataRecords.isEmpty()) {
-			return Collections.emptyList();
-		}
-		
-		// 社員コードのチェック
-		checkEmployeeCode(employeeCode, revisedDataRecords);
+		val revisedDataRecords = require.getRevisedDataRecordsByEmployeeCode(context, employeeCode);
 		
 		String employeeId = require.getEmployeeIdByEmployeeCode(context.getCompanyId(), employeeCode);
 		
-		return revisedDataRecords.stream()
+		revisedDataRecords.stream()
 				.map(revisedData -> IntermediateResult.create(
 						revisedData.getItems(),
 						DataItem.of(itemNoEmployeeId, employeeId),
 						itemNoEmployeeCode))
-				.collect(toList());
+				.forEach(r -> intermediateResultProvider.accept(r));
 	}
 
-	private void checkEmployeeCode(String employeeCode, List<RevisedDataRecord> revisedDataRecords) {
-		
-		revisedDataRecords.stream()
-				.map(r -> r.getItemByNo(itemNoEmployeeCode).get().getString())
-				.filter(code -> !code.equals(employeeCode))
-				.findFirst()
-				.ifPresent(code -> {
-					throw new RuntimeException("指定外の社員コードが混在している（指定：" + employeeCode  +", 混在：" + code + "）");
-				});
-	}
 	
 	public static interface Require {
 		
 		String getEmployeeIdByEmployeeCode(String companyId, String employeeCode);
+
+		List<RevisedDataRecord> getRevisedDataRecordsByEmployeeCode(ExecutionContext context, String employeeCode);
 		
 		RevisedDataRecord getRevisedDataRecordByRowNo(ExecutionContext context, int rowNo);
 	}

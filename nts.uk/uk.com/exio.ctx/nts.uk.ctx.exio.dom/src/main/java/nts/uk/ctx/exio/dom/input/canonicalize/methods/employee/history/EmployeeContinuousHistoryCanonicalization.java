@@ -22,7 +22,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.groups.EmployementHistoryCanonical
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.EmployeeCodeCanonicalization;
-import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.History;
 
@@ -68,28 +67,22 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Canon
 		List<String> employeeCodes = require.getAllEmployeeCodesOfImportingData(context);
 		
 		for (String employeeCode : employeeCodes) {
-			
-			List<RevisedDataRecord> records = require.getRevisedDataRecordsByEmployeeCode(context, employeeCode);
-			
-			canonicalize(require, context, employeeCode, records).forEach(result -> {
-				intermediateResultProvider.accept(result);
-			});
+			canonicalize(require, context, employeeCode).forEach(intermediateResultProvider);
 		}
 	}
 
 	private List<IntermediateResult> canonicalize(
 			CanonicalizationMethod.Require require,
 			ExecutionContext context,
-			String employeeCode,
-			List<RevisedDataRecord> revisedDataRecords) {
+			String employeeCode) {
 		
-		if (revisedDataRecords.isEmpty()) {
+		List<IntermediateResult> employeeCanonicalized = new ArrayList<>();
+		employeeCodeCanonicalization.canonicalize(
+				require, context, employeeCode, r -> employeeCanonicalized.add(r));
+		
+		if (employeeCanonicalized.isEmpty()) {
 			return Collections.emptyList();
 		}
-		
-		// 先に社員IDを入手（無かったらどーする？
-		val employeeCanonicalized = employeeCodeCanonicalization.canonicalize(
-				require, context, employeeCode, revisedDataRecords);
 		
 		String employeeId = employeeCanonicalized.get(0)
 				.getItemByNo(employeeCodeCanonicalization.getItemNoEmployeeId())
@@ -225,7 +218,6 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Canon
 			EmployementHistoryCanonicalization.RequireGetHistory {
 
 		List<String> getAllEmployeeCodesOfImportingData(ExecutionContext context);
-		List<RevisedDataRecord> getRevisedDataRecordsByEmployeeCode(ExecutionContext context, String employeeCode);
 		
 		void save(EmployeeHistoryToAdjust toAdjust);
 		void save(EmployeeHistoryToRemove toRemove);
