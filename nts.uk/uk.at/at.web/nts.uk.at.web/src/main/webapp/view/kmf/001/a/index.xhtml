@@ -50,17 +50,6 @@
 							<span class="setting_caret caret-right"></span>
 						</div>
 					</div>
-					<div id="A5"
-						class="panel panel-frame contents-area-left border-style">
-						<div data-itemno="A5_1"
-							class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMF001_317')}</div>
-						<div data-itemno="A5_2" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_318')}</div>
-						<div class="btn-icon">
-							<button data-itemno="A5_3" class="btn-unit-setting" data-bind = "click :openKMF001J">#{i18n.getText('KMF001_319')}
-							</button>
-							<span class="setting_caret caret-right"></span>
-						</div>
-					</div>
 				</div>
 				<div class="column-center">
 					<div id="A3"
@@ -84,7 +73,7 @@
 					</div>
 
 
-					<div id="A6"
+					<!-- <div id="A6"
 						class="panel panel-frame contents-area-left border-style">
 						<div data-itemno="A6_1"
 							class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMF001_320')}</div>
@@ -95,51 +84,64 @@
 							<span class="setting_caret caret-right"></span>
 						</div>
 
-					</div>
+					</div> -->
 				</div>
 				<div class="column-right">
 					<div id="A4"
-						class="panel panel-frame contents-area-left border-style">
-						<div data-itemno="A4_1"
-							class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMF001_309')}</div>
-						<div data-itemno="A4_9" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_324')}</div>
+						class="panel panel-frame contents-area-left border-style flex">
+						<div id="A4-left">
+              <div data-itemno="A4_1"
+                class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMF001_309')}</div>
+              <div data-itemno="A4_9" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_324')}</div>
 
-						<button class="btn-unit-fix" id="A4_10" data-bind = "click : openKMK007B ">#{i18n.getText('KMF001_323')}
-						</button>
-						<div class="caret-kmf001">
-							<span class=" master_setting_caret caret-bottom caret-inline"></span>
-						</div>
-						<div data-itemno="A4_11"
-							class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_326')}</div>
-						<button class="btn-unit-fix" id="A4_12" data-bind = "click : openKMK007 ">#{i18n.getText('KMF001_325')}
-						</button>
-						<div class="caret-kmf001">
-							<span class=" master_setting_caret caret-bottom caret-inline"></span>
-						</div>
-						<div data-itemno="A4_2" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_310')}</div>
-						<div class="btn-icon">
-							<button class="btn-unit-setting" id="A4_3" data-bind = "click : openKMF004A ">#{i18n.getText('KMF001_311')}
-							</button>
-							<span class="setting_caret caret-right"></span>
-						</div>
-						<div data-itemno="A4_4" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_312')}</div>
-						<div class="btn-icon">
-							<button class="btn-unit-setting" id="A4_5"  data-bind = "click : openKMK004I ">#{i18n.getText('KMF001_313')}
-							</button>
-							<span class="setting_caret caret-right"></span>
-						</div>
-						<div data-itemno="A4_6" style="margin-top: 18px;"
-							class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMF001_314')}</div>
-						<div data-itemno="A4_7" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_315')}</div>
-						<div class="btn-icon">
-							<button class="btn-unit-setting" id="A4_8" style="margin-top: 28px;" data-bind = " click :openKMF001L">#{i18n.getText('KMF001_316')}
-							</button>
-							<span class="setting_caret caret-right"></span>
-						</div>
+              <button class="btn-unit-fix" id="A4_10" data-bind = "click : openKMK007B ">#{i18n.getText('KMF001_323')}
+              </button>
+              <div class="caret-kmf001">
+                <span class=" master_setting_caret caret-bottom caret-inline"></span>
+              </div>
+              <div data-itemno="A4_11"
+                class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_326')}</div>
+              <button class="btn-unit-fix" id="A4_12" data-bind = "click : openKMK007 ">#{i18n.getText('KMF001_325')}
+              </button>
+              <div class="caret-kmf001">
+                <span class=" master_setting_caret caret-bottom caret-inline"></span>
+              </div>
+              <div data-itemno="A4_2" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_310')}</div>
+              <div class="btn-icon">
+                <button class="btn-unit-setting" id="A4_3" data-bind = "click : openKMF004A ">#{i18n.getText('KMF001_311')}
+                </button>
+                <span class="setting_caret caret-right"></span>
+              </div>
+              <div data-itemno="A4_4" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_312')}</div>
+              <div class="btn-icon">
+                <button class="btn-unit-setting" id="A4_5"  data-bind = "click : openKMK004I ">#{i18n.getText('KMF001_313')}
+                </button>
+                <span class="setting_caret caret-right"></span>
+              </div>
+            </div>
+						<div id="A4-right">
+              <div data-itemno="A4_6"
+                class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMF001_314')}</div>
+              <div data-itemno="A4_7" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_315')}</div>
+              <div class="btn-icon">
+                <button class="btn-unit-setting" id="A4_8" style="margin-top: 28px;" data-bind = " click :openKMF001L">#{i18n.getText('KMF001_316')}
+                </button>
+                <span class="setting_caret caret-right"></span>
+              </div>
+            </div>
 					</div>
-
 				</div>
-
+        <div id="A5"
+          class="panel panel-frame contents-area-left border-style">
+          <div data-itemno="A5_1"
+            class="panel panel-gray-bg panel-custom-font-size">#{i18n.getText('KMF001_317')}</div>
+          <div data-itemno="A5_2" class="label lbl-unit-setting-explanation">#{i18n.getText('KMF001_318')}</div>
+          <div class="btn-icon">
+            <button data-itemno="A5_3" class="btn-unit-setting" data-bind = "click :openKMF001J">#{i18n.getText('KMF001_319')}
+            </button>
+            <span class="setting_caret caret-right"></span>
+          </div>
+        </div>
 			</div>
 
 		</ui:define>

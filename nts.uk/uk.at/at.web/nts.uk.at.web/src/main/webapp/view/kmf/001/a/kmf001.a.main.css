@@ -6,6 +6,8 @@
 
 .column-right {
 	display: inline-block;
+  float: left;
+  margin-right: 40px;
 }
 
 .column-center {
@@ -55,20 +57,21 @@
 	color: #97D155;
 }
 
-#A5 {
-	margin-top: 40px;
-}
-
 #A2 {
-	height: 380px;
+	height: 440px;
 }
 
 #A3 {
-	height: 380px;
+	height: 440px;
 }
 
 #A4 {
-	height: 615px;
+	height: 440px;
+  width: 410px;
+}
+
+#A5 {
+  display: inline-block;
 }
 
 #A6 {
@@ -99,4 +102,13 @@ div.caret-kmf001 {
 #A5.panel-frame {
 	height: 170px;
 	width: 195px;
+}
+
+#A4-left {
+  width: 195px;
+}
+
+#A4-right {
+  margin-left: 20px;
+  width: 195px;
 }
