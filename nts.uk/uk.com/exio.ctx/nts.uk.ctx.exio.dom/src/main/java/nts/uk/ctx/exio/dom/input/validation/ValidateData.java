@@ -4,6 +4,9 @@ import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.validation.systemrange.ValidateSystemRange;
 import nts.uk.ctx.exio.dom.input.validation.userrange.ValidateUserRange;
 
+/**
+ * 値の検証　とは誰に何を指示することなのか知っている。
+ */
 public class ValidateData{
 	
 	/**

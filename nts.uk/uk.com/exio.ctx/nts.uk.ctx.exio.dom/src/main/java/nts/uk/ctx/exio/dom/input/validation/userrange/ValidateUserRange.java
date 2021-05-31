@@ -18,9 +18,7 @@ public class ValidateUserRange {
 				if(master.getCategoryItemNo() == item.getItemNo()) {
 					master.getAcceptScreenConditionSetting()
 					.ifPresent(userSetting ->{
-						userSetting.checkCondNumber(
-								   			record, 
-								   			master.getItemType());						
+						userSetting.checkCondNumber(item);						
 					});
 				}
 			});

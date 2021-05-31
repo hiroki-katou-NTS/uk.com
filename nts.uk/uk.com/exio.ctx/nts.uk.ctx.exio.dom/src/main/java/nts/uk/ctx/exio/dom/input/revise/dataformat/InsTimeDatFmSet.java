@@ -11,7 +11,7 @@ import nts.uk.ctx.exio.dom.dataformat.value.DecimalSelection;
 import nts.uk.ctx.exio.dom.dataformat.value.DelimiterSetting;
 import nts.uk.ctx.exio.dom.dataformat.value.HourlySegment;
 import nts.uk.ctx.exio.dom.dataformat.value.TimeRounding;
-import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionTimeMoment;
+import nts.uk.ctx.exio.dom.exi.condset.type.time.ImportingConditionTimeMoment;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -53,7 +53,7 @@ public class InsTimeDatFmSet extends DataFormatSetting {
 	/**
 	 * 固定値の値
 	 */
-	private Optional<AcceptanceConditionTimeMoment> valueOfFixedValue;
+	private Optional<ImportingConditionTimeMoment> valueOfFixedValue;
 
 	/**
 	 * 有効桁数開始桁
@@ -80,7 +80,7 @@ public class InsTimeDatFmSet extends DataFormatSetting {
 		this.hourMinSelect = EnumAdaptor.valueOf(hourMinSelect, HourlySegment.class);
 		this.roundProc = EnumAdaptor.valueOf(roundProc, NotUseAtr.class);
 		this.decimalSelect = EnumAdaptor.valueOf(decimalSelect, DecimalSelection.class);
-		this.valueOfFixedValue = Optional.ofNullable(valueOfFixedValue == null ? null : new AcceptanceConditionTimeMoment(valueOfFixedValue));
+		this.valueOfFixedValue = Optional.ofNullable(valueOfFixedValue == null ? null : new ImportingConditionTimeMoment(valueOfFixedValue));
 		this.startDigit = Optional.ofNullable(startDigit == null ? null : new AcceptedDigit(startDigit));
 		this.endDigit =  Optional.ofNullable(endDigit == null ? null : new AcceptedDigit(endDigit));
 		this.roundProcCls = Optional.ofNullable(roundProcCls == null ? null : EnumAdaptor.valueOf(roundProcCls, TimeRounding.class));
