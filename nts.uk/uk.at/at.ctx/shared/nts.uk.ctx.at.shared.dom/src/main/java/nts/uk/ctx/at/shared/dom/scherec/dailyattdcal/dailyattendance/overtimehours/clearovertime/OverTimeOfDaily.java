@@ -47,7 +47,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareFrameSet;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
@@ -56,7 +55,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.ExceededPredAddVacationCalc;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeCalcNoBreak;
@@ -240,8 +238,6 @@ public class OverTimeOfDaily {
 			VacationClass vacationClass,
 			StatutoryDivision statutoryDivision,
 			Optional<WorkTimeCode> siftCode,
-			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 			AttendanceTime flexPreAppTime,
 			WorkingConditionItem conditionItem,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
@@ -251,14 +247,23 @@ public class OverTimeOfDaily {
 		
 		val overTimeSheet = recordReGet.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().get();
 		//残業枠時間帯の作成
-		val overTimeFrameTimeSheet = overTimeSheet.changeOverTimeFrameTimeSheet();
+		val overTimeFrameTimeSheet = overTimeSheet.changeOverTimeFrameTimeSheet(
+				recordReGet.getPersonDailySetting().getOverTimeSheetReq(),
+				workType.getCompanyId(), 
+				recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(),
+				workType,
+				siftCode.map(x -> x.v()),
+				recordReGet.getIntegrationOfDaily(), 
+				recordReGet.getStatutoryFrameNoList(),
+				true,
+				recordReGet.getCompanyCommonSetting().getOvertimeFrameList());
 		//残業時間の計算
 		val overTimeFrame = overTimeSheet.collectOverTimeWorkTime(
 				recordReGet.getPersonDailySetting().getOverTimeSheetReq(),
+				workType.getCompanyId(), 
 				recordReGet.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(),
 				workType,
-				eachWorkTimeSet,
-				eachCompanyTimeSet,
+				siftCode.map(x -> x.v()),
 				recordReGet.getIntegrationOfDaily(), 
 				recordReGet.getStatutoryFrameNoList(),
 				declareResult,
@@ -938,5 +943,14 @@ public class OverTimeOfDaily {
 				this.overTimeWorkFrameTime.add(frameTime);
 			}
 		}
+	}
+	
+	// 事前申請時間の前にデフォルトを作成
+	public static OverTimeOfDaily createDefaultBeforeApp(List<Integer> lstNo) {
+		List<OverTimeFrameTime> workFrameTime = lstNo.stream().map(x -> {
+			return new OverTimeFrameTime(new OverTimeFrameNo(x), TimeDivergenceWithCalculation.emptyTime(),
+					TimeDivergenceWithCalculation.emptyTime(), new AttendanceTime(0), new AttendanceTime(0));
+		}).collect(Collectors.toList());
+		return new OverTimeOfDaily(new ArrayList<>(), workFrameTime, Finally.empty());
 	}
 }
