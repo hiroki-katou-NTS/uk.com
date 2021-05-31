@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -61,10 +61,10 @@ public class AnnualLeaveUsedDaysDto implements ItemConst, AttendanceItemDataGate
 	public void set(String path, ItemValue value) {
 		switch (path) {
 		case DAYS:
-			this.usedDays = value.valueOrDefault(null);
+			this.usedDays = value.valueOrDefault(0);
 			break;
 		case GRANT + BEFORE:
-			this.usedDaysBeforeGrant = value.valueOrDefault(null);
+			this.usedDaysBeforeGrant = value.valueOrDefault(0);
 			break;
 		case GRANT + AFTER:
 			this.usedDaysAfterGrant = value.valueOrDefault(null);
