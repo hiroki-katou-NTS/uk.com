@@ -78,6 +78,7 @@ public class IntermediateResult {
 		after.addAll(canonicalizedItems);
 		
 		val before = new DataItemList();
+		before.addAll(itemsBeforeCanonicalize);
 		val not = new DataItemList();
 		itemsNotCanonicalize.separate(before, not, targetItemNos);
 		
