@@ -26,6 +26,26 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 	/** 社員IDの項目No */
 	int itemNoEmployeeId;
 
+	/**
+	 * 正準化する
+	 */
+	@Override
+	public void canonicalize(
+			CanonicalizationMethod.Require require,
+			ExecutionContext context,
+			Consumer<IntermediateResult> intermediateResultProvider) {
+		
+		// 処理単位の判断ができるだけの情報が無いので、単純に1行ずつ読んで処理していく
+		int rows = require.getNumberOfRowsRevisedData();
+		for (int rowNo = 0; rowNo < rows; rowNo++) {
+			
+			val revisedData = require.getRevisedDataRecordByRowNo(context, rowNo);
+			val result = canonicalize(require, context, revisedData);
+			
+			intermediateResultProvider.accept(result);
+		}
+	}
+
 	public IntermediateResult canonicalize(
 			CanonicalizationMethod.Require require,
 			ExecutionContext context,
@@ -52,13 +72,7 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 		}
 		
 		// 社員コードのチェック
-		revisedDataRecords.stream()
-				.map(r -> r.getItemByNo(itemNoEmployeeCode).get().getString())
-				.filter(code -> !code.equals(employeeCode))
-				.findFirst()
-				.ifPresent(code -> {
-					throw new RuntimeException("指定外の社員コードが混在している（指定：" + employeeCode  +", 混在：" + code + "）");
-				});
+		checkEmployeeCode(employeeCode, revisedDataRecords);
 		
 		String employeeId = require.getEmployeeIdByEmployeeCode(context.getCompanyId(), employeeCode);
 		
@@ -70,20 +84,15 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 				.collect(toList());
 	}
 
-	@Override
-	public void canonicalize(
-			CanonicalizationMethod.Require require,
-			ExecutionContext context,
-			Consumer<IntermediateResult> intermediateResultProvider) {
+	private void checkEmployeeCode(String employeeCode, List<RevisedDataRecord> revisedDataRecords) {
 		
-		int rows = require.getNumberOfRowsRevisedData();
-		for (int rowNo = 0; rowNo < rows; rowNo++) {
-			
-			val revisedData = require.getRevisedDataRecordByRowNo(context, rowNo);
-			val result = canonicalize(require, context, revisedData);
-			
-			intermediateResultProvider.accept(result);
-		}
+		revisedDataRecords.stream()
+				.map(r -> r.getItemByNo(itemNoEmployeeCode).get().getString())
+				.filter(code -> !code.equals(employeeCode))
+				.findFirst()
+				.ifPresent(code -> {
+					throw new RuntimeException("指定外の社員コードが混在している（指定：" + employeeCode  +", 混在：" + code + "）");
+				});
 	}
 	
 	public static interface Require {
