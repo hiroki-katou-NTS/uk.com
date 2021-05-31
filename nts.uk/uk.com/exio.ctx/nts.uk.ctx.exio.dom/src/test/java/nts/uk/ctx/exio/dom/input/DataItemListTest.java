@@ -41,4 +41,23 @@ public class DataItemListTest {
 		assertThat(actual.start()).isEqualTo(ymd(2000, 1, 1));
 		assertThat(actual.end()).isEqualTo(ymd(2000, 1, 5));
 	}
+	
+	@Test
+	public void separate() {
+		val target = new DataItemList()
+				.add(0, "a")
+				.add(1, "b")
+				.add(2, "c");
+
+		val list1 = new DataItemList();
+		val list2 = new DataItemList();
+		target.separate(list1, list2, 0, 2);
+
+		assertThat(list1.size()).isEqualTo(2);
+		assertThat(list1.get(0).getString()).isEqualTo("a");
+		assertThat(list1.get(1).getString()).isEqualTo("c");
+		
+		assertThat(list2.size()).isEqualTo(1);
+		assertThat(list2.get(0).getString()).isEqualTo("b");
+	}
 }

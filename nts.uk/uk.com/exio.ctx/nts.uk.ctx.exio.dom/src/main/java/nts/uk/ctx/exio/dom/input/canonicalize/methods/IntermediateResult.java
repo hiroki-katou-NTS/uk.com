@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.methods;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Optional;
 
 import lombok.Value;
@@ -39,7 +38,10 @@ public class IntermediateResult {
 			DataItem canonicalizedItem,
 			Integer... targetItemNos) {
 		
-		return create(source, new DataItemList(Arrays.asList(canonicalizedItem)), targetItemNos);
+		return create(
+				source,
+				new DataItemList(Arrays.asList(canonicalizedItem)),
+				targetItemNos);
 	}
 	
 	/**
@@ -56,7 +58,7 @@ public class IntermediateResult {
 		
 		val before = new DataItemList();
 		val not = new DataItemList();
-		separate(source, before, not, targetItemNos);
+		source.separate(before, not, targetItemNos);
 		
 		return new IntermediateResult(canonicalizedItems, before, not);
 	}
@@ -77,7 +79,7 @@ public class IntermediateResult {
 		
 		val before = new DataItemList();
 		val not = new DataItemList();
-		separate(itemsNotCanonicalize, before, not, targetItemNos);
+		itemsNotCanonicalize.separate(before, not, targetItemNos);
 		
 		return new IntermediateResult(after, before, not);
 	}
@@ -95,30 +97,6 @@ public class IntermediateResult {
 				.orElseGet(() -> itemsBeforeCanonicalize.getItemByNo(itemNo))
 				.map(item -> Optional.of(item))
 				.orElseGet(() -> itemsNotCanonicalize.getItemByNo(itemNo));
-	}
-
-	/**
-	 * sourceの内容をtargetItemNosに指定されたものとそうでないもの仕分ける
-	 * @param source
-	 * @param targetList
-	 * @param notTargetList
-	 * @param targetItemNos
-	 */
-	private static void separate(
-			DataItemList source,
-			DataItemList targetList,
-			DataItemList notTargetList,
-			Integer... targetItemNos) {
-		
-		val targetItemNoSet = new HashSet<>(Arrays.asList(targetItemNos));
-		
-		for (DataItem item : source) {
-			if (targetItemNoSet.contains(item.getItemNo())) {
-				targetList.add(item);
-			} else {
-				notTargetList.add(item);
-			}
-		}
 	}
 	
 	public CanonicalizedDataRecord complete(ExecutionContext context) {
