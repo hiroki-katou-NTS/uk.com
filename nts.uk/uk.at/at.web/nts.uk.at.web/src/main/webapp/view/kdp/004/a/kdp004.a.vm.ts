@@ -263,7 +263,7 @@ module nts.uk.at.view.kdp004.a {
 											service.getLogginSetting(data.contractCode).done((res) => {
 												var list = _.filter(res, 'fingerAuthStamp');
 												self.listCompany(list);
-												if (self.listCompany.length == 0) {
+												if (list.length == 0) {
 													self.errorMessage(getMessage("Msg_1527"));
 												}
 											});
