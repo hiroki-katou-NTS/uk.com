@@ -160,7 +160,7 @@ module nts.uk.at.view.kal001.d.service {
 
             } else if (p.category == 7 || p.category == 9 || p.category == 3 || p.category == 4) { //月次、複数月次
                 let sDate = p.startDate + '01';
-                let eDate = p.endDate + '01';
+                let eDate = new Date(p.endDate.substr(0,4), parseInt(p.endDate.substr(4,2)), 0);
                 this.startDate = nts.uk.time.parseMoment(sDate).momentObject.toISOString();
                 this.endDate = nts.uk.time.parseMoment(eDate).momentObject.toISOString();
 
