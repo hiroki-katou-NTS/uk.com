@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.VacationDetails;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 
@@ -25,13 +26,13 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmplo
 public class GetNumberOfCompenLeavObtainBaseDate {
 
 	// 取得する
-	public static MonthVacationRemainDays process(Require require, String cid, String sid, GeneralDate baseDate) {
+	public static LeaveRemainingDayNumber process(Require require, String cid, String sid, GeneralDate baseDate) {
 
 		double remainResult = 0d;
 		// Require．社員に対応締め開始日を取得する
 		Optional<GeneralDate> closureStartOpt = GetClosureStartForEmployee.algorithm(require, new CacheCarrier(), sid);
 		if (!closureStartOpt.isPresent())
-			return new MonthVacationRemainDays(remainResult);
+			return new LeaveRemainingDayNumber(remainResult);
 
 		// 期間内の振出振休を取得する
 		val inputParam = new AbsRecMngInPeriodRefactParamInput(cid, sid,
@@ -41,52 +42,52 @@ public class GetNumberOfCompenLeavObtainBaseDate {
 		CompenLeaveAggrResult compenLeavResult = NumberCompensatoryLeavePeriodQuery.process(require, inputParam);
 
 		// 基準日以降に紐づけされている発生数を計算
-		MonthVacationRemainDays monthOcc = calcNumberOfOccurrence(require, compenLeavResult.getVacationDetails(),
+		LeaveRemainingDayNumber monthOcc = calcNumberOfOccurrence(require, compenLeavResult.getVacationDetails(),
 				baseDate);
 		// 残日数に発生数を加算
 		remainResult = compenLeavResult.getRemainDay().v() + monthOcc.v();
 
 		// 基準日以降に紐づけされている消化数を計算
-		MonthVacationRemainDays monthDigest = calcNumberOfDigest(require, compenLeavResult.getVacationDetails(),
+		LeaveRemainingDayNumber monthDigest = calcNumberOfDigest(require, compenLeavResult.getVacationDetails(),
 				baseDate);
 		// 残日数に消化数を減算
 		remainResult -= monthDigest.v();
 
 		// outputの残数を返す
-		return new MonthVacationRemainDays(remainResult);
+		return new LeaveRemainingDayNumber(remainResult);
 	}
 
 	// 基準日以降に紐づけされている発生数を計算
-	private static MonthVacationRemainDays calcNumberOfOccurrence(Require require, VacationDetails vacationDetails,
+	private static LeaveRemainingDayNumber calcNumberOfOccurrence(Require require, VacationDetails vacationDetails,
 			GeneralDate baseDate) {
 
 		// 日付不明ではない消化の一覧を取得
 		List<AccumulationAbsenceDetail> lstOccurence = vacationDetails.getDigestNotDateUnknown();
 
 		// loop
-		// 基準日以降の紐づけされてる振出と相殺
+		// 基準日以降の紐づけされてる振出日数を取得
 		// 合計発生数に加算
 		// 合計発生数を返す
 		return lstOccurence.stream()
 				.collect(Collectors.collectingAndThen(
 						Collectors.summingDouble(x -> x.offsetOssociSwingAftRefDate(require, baseDate).v()),
-						x -> new MonthVacationRemainDays(x)));
+						x -> new LeaveRemainingDayNumber(x)));
 	}
 
 	// 基準日以降に紐づけされている消化数を計算
-	private static MonthVacationRemainDays calcNumberOfDigest(Require require, VacationDetails vacationDetails,
+	private static LeaveRemainingDayNumber calcNumberOfDigest(Require require, VacationDetails vacationDetails,
 			GeneralDate baseDate) {
 
 		// 日付不明ではない発生の一覧を取得
 		List<AccumulationAbsenceDetail> lstOccurence = vacationDetails.getOccurrenceNotDateUnknown();
 
-		// 基準日以降の紐づけされてる消化と相殺
+		// 基準日以降の紐づけされてる振休日数を取得
 		// 合計消化数に加算
 		// 合計消化数を返す
 		return lstOccurence.stream()
 				.collect(Collectors.collectingAndThen(
 						Collectors.summingDouble(x -> x.offsetDigestSwingAftRefDate(require, baseDate).v()),
-						x -> new MonthVacationRemainDays(x)));
+						x -> new LeaveRemainingDayNumber(x)));
 
 	}
 

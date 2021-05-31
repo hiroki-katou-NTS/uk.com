@@ -14,8 +14,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 
 /**
@@ -105,48 +105,48 @@ public class AccumulationAbsenceDetail {
 		return false;
 	}
 
-	// 基準日以降の紐づけされてる振出と相殺
-	public ReserveLeaveRemainingDayNumber offsetOssociSwingAftRefDate(Require require, GeneralDate baseDate) {
+	// 基準日以降の紐づけされてる振出日数を取得
+	public LeaveRemainingDayNumber offsetOssociSwingAftRefDate(Require require, GeneralDate baseDate) {
 		// Require．基準日以降の紐づけを取得
 		List<PayoutSubofHDManagement> lstPayoutSubs = require.getPayoutSubWithDateUse(employeeId,
 				dateOccur.getDayoffDate().get(), baseDate);
 		return lstPayoutSubs.stream()
 				.collect(Collectors.collectingAndThen(
 						Collectors.summingDouble(x -> x.getAssocialInfo().getDayNumberUsed().v()),
-						x -> new ReserveLeaveRemainingDayNumber(x)));
+						x -> new LeaveRemainingDayNumber(x)));
 	}
 
-	// 基準日以降の紐づけされてる振休と相殺
-	public ReserveLeaveRemainingDayNumber offsetDigestSwingAftRefDate(Require require, GeneralDate baseDate) {
+	// 基準日以降の紐づけされてる振休日数を取得
+	public LeaveRemainingDayNumber offsetDigestSwingAftRefDate(Require require, GeneralDate baseDate) {
 		// Require．基準日以降の紐づけを取得
 		List<PayoutSubofHDManagement> lstPayoutSubs = require.getPayoutSubWithOutbreakDay(employeeId,
 				dateOccur.getDayoffDate().get(), baseDate);
 		return lstPayoutSubs.stream()
 				.collect(Collectors.collectingAndThen(
 						Collectors.summingDouble(x -> x.getAssocialInfo().getDayNumberUsed().v()),
-						x -> new ReserveLeaveRemainingDayNumber(x)));
+						x -> new LeaveRemainingDayNumber(x)));
 	}
 
-	// 基準日以降の紐づけされてる休出と相殺
-	public ReserveLeaveRemainingDayNumber offsetHolAftRefDate(Require require, GeneralDate baseDate) {
+	// 基準日以降の紐づけされてる休出日数を取得
+	public LeaveRemainingDayNumber offsetHolAftRefDate(Require require, GeneralDate baseDate) {
 		// Require．基準日以降の紐づけを取得
 		List<LeaveComDayOffManagement> lstLeavCom = require.getLeaveComWithDateUse(employeeId,
 				dateOccur.getDayoffDate().get(), baseDate);
 		return lstLeavCom.stream()
 				.collect(Collectors.collectingAndThen(
 						Collectors.summingDouble(x -> x.getAssocialInfo().getDayNumberUsed().v()),
-						x -> new ReserveLeaveRemainingDayNumber(x)));
+						x -> new LeaveRemainingDayNumber(x)));
 	}
 
-	// 基準日以降の紐づけされてる代休と相殺
-	public ReserveLeaveRemainingDayNumber offsetSubsHolAftRefDate(Require require, GeneralDate baseDate) {
+	// 基準日以降の紐づけされてる代休日数を取得
+	public LeaveRemainingDayNumber offsetSubsHolAftRefDate(Require require, GeneralDate baseDate) {
 		// Require．基準日以降の紐づけを取得
 		List<LeaveComDayOffManagement> lstLeavCom = require.getLeaveComWithOutbreakDay(employeeId,
 				dateOccur.getDayoffDate().get(), baseDate);
 		return lstLeavCom.stream()
 				.collect(Collectors.collectingAndThen(
 						Collectors.summingDouble(x -> x.getAssocialInfo().getDayNumberUsed().v()),
-						x -> new ReserveLeaveRemainingDayNumber(x)));
+						x -> new LeaveRemainingDayNumber(x)));
 	}
 
 	public static interface Require {

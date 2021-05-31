@@ -2,22 +2,22 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.num
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.procwithbasedate.MonthVacationRemainDays;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingTime;
 
 /**
  * @author thanh_nx
  *
- *         逐次発生の休暇の休暇数
+ *         取得可能な代休日数
  */
 @AllArgsConstructor
 @Data
 public class NumberConsecutiveVacation {
 
-	// 残日数
-	private MonthVacationRemainDays days;
+	// 日数
+	private LeaveRemainingDayNumber days;
 
-	// 残時間
-	private RemainingMinutes remainTime;
+	// 時間
+	private LeaveRemainingTime remainTime;
 
 }
