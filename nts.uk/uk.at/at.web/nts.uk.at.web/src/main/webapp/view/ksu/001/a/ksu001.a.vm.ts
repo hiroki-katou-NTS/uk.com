@@ -2347,7 +2347,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                     setShared("dataFromA", param);
                     setShared("dataTooltip", self.tooltipShare);
-                    nts.uk.ui.windows.sub.modeless("/view/ksu/003/a/index.xhtml").onClosed(() => { });
+                    nts.uk.ui.windows.sub.modal("/view/ksu/003/a/index.xhtml").onClosed(() => { });
                     return false;
                 };
             });
