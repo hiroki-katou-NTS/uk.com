@@ -19,7 +19,7 @@ public class EmploymentRolesFinder implements EmploymentRoleAdapter {
 	@Override
 	public List<EmploymentRole> getEmploymentRoleByCompany(String companyId) {
 		return employmentRolePub.getAllByCompanyId(companyId).stream().map(item -> {
-			return new EmploymentRole(item.getCompanyId(), item.getRoleId());
+			return EmploymentRole.createEmploymentRole(item.getCompanyId(), item.getRoleId());
 		}).collect(Collectors.toList());
 	}
 

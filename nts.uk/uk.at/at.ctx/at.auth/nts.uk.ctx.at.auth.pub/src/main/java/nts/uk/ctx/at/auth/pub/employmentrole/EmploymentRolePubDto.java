@@ -16,5 +16,8 @@ public class EmploymentRolePubDto {
 	 * ロールID
 	 */
 	private String roleId;
-
+	/**
+	 * 未来日参照許可 FUTURE_DATE_REF_PERMIT
+	 */
+	private int futureDateRefPermit;
 }

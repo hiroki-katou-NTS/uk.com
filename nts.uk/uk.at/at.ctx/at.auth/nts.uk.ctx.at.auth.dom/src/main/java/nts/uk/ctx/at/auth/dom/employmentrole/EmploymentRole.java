@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-
-/*
+/**
  * 就業ロール
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.権限管理.就業ロール.就業ロール
  */
@@ -20,13 +19,6 @@ public class EmploymentRole extends AggregateRoot {
 
 	/**	未来日参照許可	*/
 	private NotUseAtr futureDateRefPermit;
-	
-	public EmploymentRole(String companyId, String roleId) {
-		super();
-		this.companyId = companyId;
-		this.roleId = roleId;
-	}
-	
 	/**
 	 * 作る
 	 * @param roleId ロールID
