@@ -1537,7 +1537,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 eventOverlap: false,
                 selectOverlap: false,
                 // rerenderDelay: 500,
-                dateClick: () => {
+                dateClick: (info) => {
                     const events = vm.calendar.getEvents();
 
                     _.each(events, (e: EventApi) => {
@@ -1551,6 +1551,27 @@ module nts.uk.ui.at.kdw013.calendar {
                             e.setProp(DURATION_EDITABLE, true);
                         }
                     });
+                    
+                    const event = vm.calendar
+                        .addEvent({
+                            id: randomId(),
+                            start: formatDate(info.date),
+                            end: formatDate(moment(info.date).add( vm.params.slotDuration(), 'm').toDate()),
+                            [BORDER_COLOR]: BLACK,
+                            [GROUP_ID]: SELECTED,
+                            extendedProps: {
+                                status: 'new'
+                            }
+                        });
+
+                    $caches.new(event);
+                    const el: HTMLElement = vm.$el.querySelector(`[event-id="${event.id}"]`);
+
+                    if (el) {
+                        const { view } = vm.calendar;
+
+                        vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view });
+                    } 
                 },
                 dropAccept: () => !!ko.unwrap(editable),
                 dayHeaderContent: (opts: DayHeaderContentArg) => moment(opts.date).format('DD(ddd)'),
