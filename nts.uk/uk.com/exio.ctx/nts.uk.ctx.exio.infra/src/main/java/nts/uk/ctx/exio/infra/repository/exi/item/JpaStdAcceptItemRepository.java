@@ -23,13 +23,14 @@ public class JpaStdAcceptItemRepository extends JpaRepository implements StdAcce
 	@Override
 	public Optional<StdAcceptItem> getStdAcceptItemById(String cid, String conditionSetCd,
 			int acceptItemNumber) {
-		Optional<OiomtExAcItem> entity = this.queryProxy().find(
-				new OiomtStdAcceptItemPk(cid, conditionSetCd, acceptItemNumber), OiomtExAcItem.class);
-		if (entity.isPresent()) {
-			return Optional.of(OiomtExAcItem.toDomain(entity.get()));
-		} else {
-			return Optional.empty();
-		}
+//		Optional<OiomtExAcItem> entity = this.queryProxy().find(
+//				new OiomtStdAcceptItemPk(cid, conditionSetCd, acceptItemNumber), OiomtExAcItem.class);
+//		if (entity.isPresent()) {
+//			return Optional.of(OiomtExAcItem.toDomain(entity.get()));
+//		} else {
+//			return Optional.empty();
+//		}
+		return Optional.empty();
 	}
 
 	@Override
@@ -39,21 +40,21 @@ public class JpaStdAcceptItemRepository extends JpaRepository implements StdAcce
 
 	@Override
 	public void update(StdAcceptItem domain) {
-		Optional<OiomtExAcItem> entityOpt = this
-				.queryProxy().find(
-						new OiomtStdAcceptItemPk(domain.getCid(), 
-								domain.getConditionSetCd().v(), domain.getAcceptItemNumber()),
-						OiomtExAcItem.class);
-		if (entityOpt.isPresent()) {
-			OiomtExAcItem entity = entityOpt.get();
-			this.commandProxy().update(entity);
-		}
+//		Optional<OiomtExAcItem> entityOpt = this
+//				.queryProxy().find(
+//						new OiomtStdAcceptItemPk(domain.getCid(), 
+//								domain.getConditionSetCd().v(), domain.getAcceptItemNumber()),
+//						OiomtExAcItem.class);
+//		if (entityOpt.isPresent()) {
+//			OiomtExAcItem entity = entityOpt.get();
+//			this.commandProxy().update(entity);
+//		}
 	}
 
 	@Override
 	public void remove(String cid, String conditionSetCd, int acceptItemNumber) {
-		this.commandProxy().remove(OiomtExAcItem.class,
-				new OiomtStdAcceptItemPk(cid, conditionSetCd, acceptItemNumber));
+//		this.commandProxy().remove(OiomtExAcItem.class,
+//				new OiomtStdAcceptItemPk(cid, conditionSetCd, acceptItemNumber));
 	}
 
 	@Override

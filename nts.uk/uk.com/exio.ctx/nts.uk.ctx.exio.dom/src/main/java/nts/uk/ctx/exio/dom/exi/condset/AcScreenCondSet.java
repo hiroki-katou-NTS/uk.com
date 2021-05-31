@@ -7,7 +7,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.exio.dom.input.revise.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 
 /**
  * 受入選別条件設定
@@ -128,7 +128,7 @@ public class AcScreenCondSet extends DomainObject {
 				condValue1 = this.timeMomentConditionValue1.isPresent() ? this.timeMomentConditionValue1.get() : null;
 				condValue2 = this.timeMomentConditionValue2.isPresent() ? this.timeMomentConditionValue1.get() : null;
 				break;
-			case INT:
+			case NUMERIC:
 				condValue1 = this.numberConditionValue1.isPresent() ? this.numberConditionValue1.get() : null;
 				condValue2 = this.numberConditionValue2.isPresent() ? this.numberConditionValue2.get() : null;
 				break;

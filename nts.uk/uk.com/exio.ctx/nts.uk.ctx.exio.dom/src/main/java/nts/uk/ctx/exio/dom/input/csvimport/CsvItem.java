@@ -9,11 +9,11 @@ import lombok.Getter;
 import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
 import nts.uk.ctx.exio.dom.exi.codeconvert.CdConvertDetails;
 import nts.uk.ctx.exio.dom.exi.codeconvert.CodeConvertCode;
+import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryItem;
 import nts.uk.ctx.exio.dom.exi.item.AcceptItemEditValueDto;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 import nts.uk.ctx.exio.dom.input.revise.dataformat.ChrDataFormatSet;
-import nts.uk.ctx.exio.dom.input.revise.dataformat.ItemType;
 import nts.uk.ctx.exio.dom.input.revise.dataformat.NumDataFormatSet;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -40,8 +40,7 @@ public class CsvItem {
 		AcceptItemEditValueDto condEditAndCheck = accSetItem.checkCondition(this, value);
 		
 		if ((accSetItem.getItemType() == ItemType.CHARACTER
-				|| accSetItem.getItemType() == ItemType.INT
-				|| accSetItem.getItemType() == ItemType.REAL)
+				|| accSetItem.getItemType() == ItemType.NUMERIC)
 				&& accSetItem.getDataFormatSetting().isPresent()) {
 			Optional<CodeConvertCode> cdConvertSt;
 			if(accSetItem.getItemType() == ItemType.CHARACTER) {

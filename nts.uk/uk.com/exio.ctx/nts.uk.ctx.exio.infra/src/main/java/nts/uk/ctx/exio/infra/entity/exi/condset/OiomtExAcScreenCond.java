@@ -148,7 +148,7 @@ public class OiomtExAcScreenCond extends ContractUkJpaEntity implements Serializ
 	}
 
 	public static OiomtExAcScreenCond fromDomain(StdAcceptItem item, AcScreenCondSet domain) {
-		return new OiomtExAcScreenCond(item.getCid(), item.getSystemType().value, item.getConditionSetCd().v(),
+		return new OiomtExAcScreenCond(item.getCid(), item.getItemType().value, item.getConditionSetCd().v(),
 				item.getAcceptItemNumber(),
 				null,
 				domain.getTimeConditionValue1().isPresent() ? domain.getTimeConditionValue1().get().v() : null,

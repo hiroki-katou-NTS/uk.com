@@ -49,7 +49,6 @@ public class StdAcceptCondSetServiceImpl implements StdAcceptCondSetService {
 						param.getCId(), 
 						new AcceptanceConditionCode(param.getDestCondSetCode()), 
 						item.getAcceptItemNumber(),
-						EnumAdaptor.valueOf(param.getSystemType(), SystemType.class), 
 						item.getCsvItemNumber(), 
 						item.getCsvItemName(), 
 						item.getItemType(), 

@@ -84,16 +84,17 @@ public class StdAcceptItemCommand {
 			dataFormatSet = this.timeFormatSetting == null ? null : this.timeFormatSetting.toDomain();
 			break;
 		}
-		StdAcceptItem domain = new StdAcceptItem(companyId,
-				new AcceptanceConditionCode(this.conditionSettingCode),
-				this.acceptItemNumber,
-				Optional.ofNullable(this.csvItemNumber),
-				Optional.ofNullable(this.csvItemName),
-				EnumAdaptor.valueOf(this.itemType, ItemType.class),
-				this.categoryItemNo,
-				Optional.ofNullable(this.screenConditionSetting == null ? null : this.screenConditionSetting.toDomain()),
-				Optional.ofNullable(dataFormatSet));
-		return domain;
+//		StdAcceptItem domain = new StdAcceptItem(companyId,
+//				new AcceptanceConditionCode(this.conditionSettingCode),
+//				this.acceptItemNumber,
+//				Optional.ofNullable(this.csvItemNumber),
+//				Optional.ofNullable(this.csvItemName),
+//				EnumAdaptor.valueOf(this.itemType, ItemType.class),
+//				this.categoryItemNo,
+//				Optional.ofNullable(this.screenConditionSetting == null ? null : this.screenConditionSetting.toDomain()),
+//				Optional.ofNullable(dataFormatSet));
+		
+		return null;
 	}
 
 }
