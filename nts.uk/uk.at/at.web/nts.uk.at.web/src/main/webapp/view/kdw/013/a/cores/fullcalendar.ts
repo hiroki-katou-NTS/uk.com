@@ -2165,8 +2165,9 @@ module nts.uk.ui.at.kdw013.calendar {
             ko.computed({
                 read: () => {
                     const sc = ko.unwrap<number>(scrollTime);
-
-                    vm.calendar.scrollToTime(formatTime(sc));
+                    setTimeout(() => {
+                        vm.calendar.scrollToTime(formatTime(sc));
+                    }, 500);
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
