@@ -25,4 +25,12 @@ public class StandardMenuNameImport {
 	 * 表示名称
 	 */
 	private String displayName;
+
+	private String url;
+
+	private String menuCode;
+
+	private Integer system;
+
+	private Integer menuClassification;
 }

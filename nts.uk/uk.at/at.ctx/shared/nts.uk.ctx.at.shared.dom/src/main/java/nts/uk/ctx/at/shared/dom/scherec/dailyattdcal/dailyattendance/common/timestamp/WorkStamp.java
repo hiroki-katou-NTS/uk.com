@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.calculationsetting.ActualStampOfPriorityClass;
+import nts.uk.ctx.at.shared.dom.calculationsetting.AutoStampReflectionClass;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -116,16 +117,21 @@ public class WorkStamp extends DomainObject{
 				|| timeChangeMeansNew == TimeChangeMeans.APPLICATION) {
 			return true;
 		}
-		//true 2,true4
+		//true 2
 		if((timeChangeMeansNew == TimeChangeMeans.REAL_STAMP || timeChangeMeansNew == TimeChangeMeans.SPR_COOPERATION )
-			&& 	(timeChangeMeansOld == TimeChangeMeans.REAL_STAMP || timeChangeMeansOld == TimeChangeMeans.SPR_COOPERATION
-					|| timeChangeMeansOld == TimeChangeMeans.DIRECT_BOUNCE || timeChangeMeansOld == TimeChangeMeans.AUTOMATIC_SET)) {
+			&& 	(timeChangeMeansOld == TimeChangeMeans.REAL_STAMP || timeChangeMeansOld == TimeChangeMeans.SPR_COOPERATION)) {
 			return true;
 		}
 		//true 3
 		if((timeChangeMeansNew == TimeChangeMeans.REAL_STAMP || timeChangeMeansNew == TimeChangeMeans.SPR_COOPERATION )
 				&& 	timeChangeMeansOld == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION
 				&& 	(optTimePriority.isPresent() && optTimePriority.get().getActualStampOfPriorityClass() == ActualStampOfPriorityClass.ACTUAL_STAMP_PRIORITY)) {
+			return true;
+		}
+		// true4
+		if((timeChangeMeansNew == TimeChangeMeans.REAL_STAMP || timeChangeMeansNew == TimeChangeMeans.SPR_COOPERATION )
+			&& 	(timeChangeMeansOld == TimeChangeMeans.DIRECT_BOUNCE || timeChangeMeansOld == TimeChangeMeans.AUTOMATIC_SET) 
+			&& optTimePriority.get().getAutoStampReflectionClass() ==  AutoStampReflectionClass.STAMP_REFLECT) {
 			return true;
 		}
 		//true 6

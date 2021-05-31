@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.application.stamp;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-//開始終了区分
+//開始終了区分(反映用)
 public enum StartEndClassificationShare {
 
 	START(0, "開始"),

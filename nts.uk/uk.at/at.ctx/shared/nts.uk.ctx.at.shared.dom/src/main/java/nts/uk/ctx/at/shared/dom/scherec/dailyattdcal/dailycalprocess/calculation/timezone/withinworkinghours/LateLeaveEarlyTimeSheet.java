@@ -156,6 +156,23 @@ public class LateLeaveEarlyTimeSheet extends TimeVacationOffSetItem{
 	}
 	
 	/**
+	 * 控除時間帯の登録（遅刻早退時間帯）
+	 * @param actualAtr 実働時間帯区分
+	 * @param deductionTimeSheet 控除時間帯
+	 * @param commonSet 就業時間帯の共通設定
+	 */
+	public void registDeductionList(
+			ActualWorkTimeSheetAtrForLate actualAtr,
+			DeductionTimeSheet deductionTimeSheet,
+			WorkTimezoneCommonSet commonSet){
+		
+		// 控除時間帯の登録
+		this.registDeductionList(deductionTimeSheet, Optional.empty());
+		// 控除時間帯へ丸め設定を付与
+		this.grantRoundingToDeductionTimeSheetForLate(actualAtr, commonSet);
+	}
+	
+	/**
 	 * 控除時間帯へ丸め設定を付与
 	 * @param actualAtr 実働時間帯区分
 	 * @param commonSet 就業時間帯の共通設定

@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.change.state.SCReflectStatusResult;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.change.state.SCReflectedState;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
@@ -16,9 +18,6 @@ import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationDateShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectedStateShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectionStatusShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.reflect.ReflectStatusResultShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.DestinationTimeAppShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.DestinationTimeZoneAppShare;
@@ -60,7 +59,7 @@ public class SCReflectApplicationHelper {
 	public static ApplicationShare createApp(ApplicationTypeShare appType, PrePostAtrShare pre) {
 
 		return new ApplicationShare(1, "1", pre, "1", appType, new ApplicationDateShare(GeneralDate.today()), "1",
-				GeneralDateTime.now(), new ReflectionStatusShare(new ArrayList<>()));
+				GeneralDateTime.now());
 	}
 
 	public static ApplicationShare createApp(PrePostAtrShare pre) {
@@ -94,8 +93,8 @@ public class SCReflectApplicationHelper {
 				ReflectApplicationHelper.createAppShare(ApplicationTypeShare.STAMP_APPLICATION, pre));
 	}
 
-	public static ReflectStatusResultShare createReflectStatusResult() {
-		return new ReflectStatusResultShare(ReflectedStateShare.NOTREFLECTED, null, null);
+	public static SCReflectStatusResult createReflectStatusResult() {
+		return new SCReflectStatusResult(SCReflectedState.NOTREFLECTED, null, null);
 	}
 
 	public static WorkSchedule createWorkSchedule() {

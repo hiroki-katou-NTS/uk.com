@@ -876,9 +876,12 @@ export class KafS06AComponent extends KafS00ShrComponent {
         } else {
             commandCheck.applicationUpdate = vm.toApplication();
         }
+        let appDates = [];
         vm.$http.post('at', API.checkBeforeInsert, commandCheck)
         .then((result: any) => {
             if (result) {
+                appDates = result.data.holidayDateLst;
+
                 // xử lý confirmMsg
                 return vm.handleConfirmMessage(result.data.confirmMsgLst);
             }
@@ -889,7 +892,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
                 let commandUpdate = {} as UpdateAppAbsenceMobileCommand;
                 if (vm.modeNew) {
                     command.applyForLeave = commandCheck.applyForLeave;
-                    command.appDates = vm.getDates();
+                    command.appDates = appDates;
                     // 休暇申請起動時の表示情報．申請表示情報．申請設定（基準日関係なし）．メールサーバ設定済区分
                     command.mailServerSet = vm.model.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoNoDateOutput.mailServerSet;
                     command.approvalRoot = vm.model.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.opListApprovalPhaseState;
@@ -906,7 +909,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
                     commandUpdate.application = commandCheck.applicationUpdate;
                     commandUpdate.applyForLeave = commandCheck.applyForLeave;
                     commandUpdate.appDispInfoStartupOutput = vm.appDispInfoStartupOutput;
-                    commandUpdate.holidayAppDates = vm.getDates();
+                    commandUpdate.holidayAppDates = appDates;
                     let leaveComDayOffManaDto = _.cloneDeep(vm.model.appAbsenceStartInfoDto.leaveComDayOffManas);
                     vm.changeDateFromList(leaveComDayOffManaDto);
                     let payoutSubofHDManagementDto = _.cloneDeep(vm.model.appAbsenceStartInfoDto.payoutSubofHDManas);

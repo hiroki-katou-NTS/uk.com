@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;
 
@@ -28,11 +29,13 @@ public class DailyAttendanceUpdateStatus {
 	/**
 	 * 実績反映不可理由
 	 */
+	@Setter
 	private Optional<ReasonNotReflectDaily> opReasonActualCantReflect;
 	
 	/**
 	 * 予定反映不可理由
 	 */
+	@Setter
 	private Optional<ReasonNotReflect> opReasonScheCantReflect;
 	
 	public DailyAttendanceUpdateStatus(Optional<GeneralDateTime> opActualReflectDateTime, Optional<GeneralDateTime> opScheReflectDateTime,

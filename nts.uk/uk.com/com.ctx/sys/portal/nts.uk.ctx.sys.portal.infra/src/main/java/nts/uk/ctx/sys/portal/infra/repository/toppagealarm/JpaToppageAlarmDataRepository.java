@@ -108,7 +108,7 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 		
 		if (!entities.isEmpty()) {
 			// get lastest index no
-			indexNo = entities.get(entities.size() - 1).getPk().getIndexNo();
+			indexNo = entities.get(entities.size() - 1).getPk().getIndexNo() + 1;
 		}
 		
 		// Convert data to entity
