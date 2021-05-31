@@ -115,7 +115,7 @@ public class ImportResultTest {
 					,	ImportResultHelper.createDetail( "EmpId#3", GeneralDate.ymd( 2021, 5, 31 ), "ImpCd#3", ImportStatus.SCHEDULE_IS_NOTUSE )
 				)
 			,	Arrays.asList( GeneralDate.ymd( 2021, 5, 31 ), GeneralDate.ymd( 2021, 5, 27 ) )
-			,	Arrays.asList( "EmpId#2" )
+			,	Collections.emptyList()
 			,	Collections.emptyList()
 		).getImportableDates();
 
@@ -134,11 +134,49 @@ public class ImportResultTest {
 	}
 
 
-	// TODO
-//	@Test
-//	public void test_getImportableEmployees() {
-//		fail("まだ実装されていません");
-//	}
+	/**
+	 * Target	: getImportableEmployees
+	 */
+	@Test
+	public void test_getImportableEmployees() {
+
+		// 実行
+		val result = new ImportResult(
+				Arrays.asList(
+						ImportResultHelper.createDetail( "Id#0101", GeneralDate.ymd( 2021, 6, 16 ), "Imp#AAA", ImportStatus.UNCHECKED )
+					,	ImportResultHelper.createDetail( "Id#0104", GeneralDate.ymd( 2021, 6, 16 ), "Imp#XYZ", ImportStatus.UNCHECKED )
+					,	ImportResultHelper.createDetail( "Id#0100", GeneralDate.ymd( 2021, 6, 18 ), "Imp#QvQ", ImportStatus.UNCHECKED )
+					,	ImportResultHelper.createDetail( "Id#0103", GeneralDate.ymd( 2021, 6, 20 ), "Imp#DDD", ImportStatus.UNCHECKED )
+					,	ImportResultHelper.createDetail( "Id#0205", GeneralDate.ymd( 2021, 6, 21 ), "Imp#AAA", ImportStatus.UNCHECKED )
+					,	ImportResultHelper.createDetail( "Id#0302", GeneralDate.ymd( 2021, 6, 21 ), "Imp#EEE", ImportStatus.UNCHECKED )
+					,	ImportResultHelper.createDetail( "Id#0101", GeneralDate.ymd( 2021, 6, 21 ), "Imp#ABC", ImportStatus.UNCHECKED )
+					,	ImportResultHelper.createDetail( "Id#0205", GeneralDate.ymd( 2021, 7,  1 ), "Imp#CCC", ImportStatus.UNCHECKED )
+				)
+			,	Collections.emptyList()
+			,	Collections.emptyList()
+			,	Stream.of(
+						"Id#0301", "Id#0302", "Id#0303"
+					,	"Id#0201", "Id#0202", "Id#0203", "Id#0204", "Id#0205"
+					,	"Id#0101", "Id#0102", "Id#0103", "Id#0104"
+				).map(EmployeeId::new).collect(Collectors.toList())
+		).getImportableEmployees();
+
+
+		// 検証
+		/* ※通常は発生しない条件を含む※
+		 * - 『社員の並び順』に存在するが『取込内容』には存在しないID⇒含まれない
+		 * - 『社員の並び順』に存在しないID⇒先頭
+		 */
+		assertThat( result ).containsExactly(
+							new EmployeeId("Id#0100")
+						,	new EmployeeId("Id#0302")
+						,	new EmployeeId("Id#0205")
+						,	new EmployeeId("Id#0101")
+						,	new EmployeeId("Id#0103")
+						,	new EmployeeId("Id#0104")
+					);
+
+	}
 
 
 	/**

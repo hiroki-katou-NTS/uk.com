@@ -108,34 +108,34 @@ public class WorkScheduleImportServiceTest {
 		@SuppressWarnings("serial")
 		val rawDataOfCells = new ArrayList<CapturedRawDataOfCell>() {{
 			// 社員CD: Cd#WS01 / 社員ID: なし
-			add( new CapturedRawDataOfCell( "Cd#WS01", GeneralDate.ymd( 2021, 5, 31 ), "Imp#YYY" ) );
-			add( new CapturedRawDataOfCell( "Cd#WS01", GeneralDate.ymd( 2021, 6, 10 ), "Imp#FFF" ) );
-			add( new CapturedRawDataOfCell( "Cd#WS01", GeneralDate.ymd( 2021, 6, 14 ), "Imp#DDD" ) );
-			add( new CapturedRawDataOfCell( "Cd#WS01", GeneralDate.ymd( 2021, 6, 20 ), "Imp#MMM" ) );
-			add( new CapturedRawDataOfCell( "Cd#WS01", GeneralDate.ymd( 2021, 6, 22 ), "Imp#GGG" ) );
+			add( new CapturedRawDataOfCell( "Cd#WS01", GeneralDate.ymd( 2021, 5, 31 ), new ShiftMasterImportCode("Imp#YYY") ) );
+			add( new CapturedRawDataOfCell( "Cd#WS01", GeneralDate.ymd( 2021, 6, 10 ), new ShiftMasterImportCode("Imp#FFF") ) );
+			add( new CapturedRawDataOfCell( "Cd#WS01", GeneralDate.ymd( 2021, 6, 14 ), new ShiftMasterImportCode("Imp#DDD") ) );
+			add( new CapturedRawDataOfCell( "Cd#WS01", GeneralDate.ymd( 2021, 6, 20 ), new ShiftMasterImportCode("Imp#MMM") ) );
+			add( new CapturedRawDataOfCell( "Cd#WS01", GeneralDate.ymd( 2021, 6, 22 ), new ShiftMasterImportCode("Imp#GGG") ) );
 			// 社員CD: Cd#Li04 / 社員ID: なし
-			add( new CapturedRawDataOfCell( "Cd#Li04", GeneralDate.ymd( 2021, 6, 11 ), "Imp#GGG" ) );
-			add( new CapturedRawDataOfCell( "Cd#Li04", GeneralDate.ymd( 2021, 6, 13 ), "Imp#KKK" ) );
-			add( new CapturedRawDataOfCell( "Cd#Li04", GeneralDate.ymd( 2021, 6, 14 ), "Imp#XXX" ) );
+			add( new CapturedRawDataOfCell( "Cd#Li04", GeneralDate.ymd( 2021, 6, 11 ), new ShiftMasterImportCode("Imp#GGG") ) );
+			add( new CapturedRawDataOfCell( "Cd#Li04", GeneralDate.ymd( 2021, 6, 13 ), new ShiftMasterImportCode("Imp#KKK") ) );
+			add( new CapturedRawDataOfCell( "Cd#Li04", GeneralDate.ymd( 2021, 6, 14 ), new ShiftMasterImportCode("Imp#XXX") ) );
 			// 社員CD: Cd#MB08 / 社員ID: Id#0205
-			add( new CapturedRawDataOfCell( "Cd#MB08", GeneralDate.ymd( 2021, 6, 21 ), "Imp#AAA" ) );
-			add( new CapturedRawDataOfCell( "Cd#MB08", GeneralDate.ymd( 2021, 7,  1 ), "Imp#CCC" ) );
+			add( new CapturedRawDataOfCell( "Cd#MB08", GeneralDate.ymd( 2021, 6, 21 ), new ShiftMasterImportCode("Imp#AAA") ) );
+			add( new CapturedRawDataOfCell( "Cd#MB08", GeneralDate.ymd( 2021, 7,  1 ), new ShiftMasterImportCode("Imp#CCC") ) );
 			// 社員CD: Cd#St09 / 社員ID: なし
-			add( new CapturedRawDataOfCell( "Cd#St09", GeneralDate.ymd( 2021, 6, 13 ), "Imp#TXS" ) );
+			add( new CapturedRawDataOfCell( "Cd#St09", GeneralDate.ymd( 2021, 6, 13 ), new ShiftMasterImportCode("Imp#TXS") ) );
 			// 社員CD: Cd#MB10 / 社員ID: Id#0102
-			add( new CapturedRawDataOfCell( "Cd#MB10", GeneralDate.ymd( 2021, 6,  9 ), "Imp#AAA" ) );
-			add( new CapturedRawDataOfCell( "Cd#MB10", GeneralDate.ymd( 2021, 6, 10 ), "Imp#AAA" ) );
-			add( new CapturedRawDataOfCell( "Cd#MB10", GeneralDate.ymd( 2021, 6, 11 ), "Imp#AAA" ) );
+			add( new CapturedRawDataOfCell( "Cd#MB10", GeneralDate.ymd( 2021, 6,  9 ), new ShiftMasterImportCode("Imp#AAA") ) );
+			add( new CapturedRawDataOfCell( "Cd#MB10", GeneralDate.ymd( 2021, 6, 10 ), new ShiftMasterImportCode("Imp#AAA") ) );
+			add( new CapturedRawDataOfCell( "Cd#MB10", GeneralDate.ymd( 2021, 6, 11 ), new ShiftMasterImportCode("Imp#AAA") ) );
 			// 社員CD: Cd#MB11 / 社員ID: Id#0103
-			add( new CapturedRawDataOfCell( "Cd#MB11", GeneralDate.ymd( 2021, 6, 10 ), "Imp#BBB" ) );
-			add( new CapturedRawDataOfCell( "Cd#MB11", GeneralDate.ymd( 2021, 6, 15 ), "Imp#CCC" ) );
-			add( new CapturedRawDataOfCell( "Cd#MB11", GeneralDate.ymd( 2021, 6, 16 ), "Imp#AAA" ) );
-			add( new CapturedRawDataOfCell( "Cd#MB11", GeneralDate.ymd( 2021, 6, 20 ), "Imp#DDD" ) );
-			add( new CapturedRawDataOfCell( "Cd#MB11", GeneralDate.ymd( 2021, 6, 21 ), "Imp#EEE" ) );
+			add( new CapturedRawDataOfCell( "Cd#MB11", GeneralDate.ymd( 2021, 6, 10 ), new ShiftMasterImportCode("Imp#BBB") ) );
+			add( new CapturedRawDataOfCell( "Cd#MB11", GeneralDate.ymd( 2021, 6, 15 ), new ShiftMasterImportCode("Imp#CCC") ) );
+			add( new CapturedRawDataOfCell( "Cd#MB11", GeneralDate.ymd( 2021, 6, 16 ), new ShiftMasterImportCode("Imp#AAA") ) );
+			add( new CapturedRawDataOfCell( "Cd#MB11", GeneralDate.ymd( 2021, 6, 20 ), new ShiftMasterImportCode("Imp#DDD") ) );
+			add( new CapturedRawDataOfCell( "Cd#MB11", GeneralDate.ymd( 2021, 6, 21 ), new ShiftMasterImportCode("Imp#EEE") ) );
 			// 社員CD: Cd#MB12 / 社員ID: Id#0104
-			add( new CapturedRawDataOfCell( "Cd#MB12", GeneralDate.ymd( 2021, 6, 15 ), "Imp#CCC" ) );
-			add( new CapturedRawDataOfCell( "Cd#MB12", GeneralDate.ymd( 2021, 6, 16 ), "Imp#XYZ" ) );
-			add( new CapturedRawDataOfCell( "Cd#MB12", GeneralDate.ymd( 2021, 6, 21 ), "Imp#ABC" ) );
+			add( new CapturedRawDataOfCell( "Cd#MB12", GeneralDate.ymd( 2021, 6, 15 ), new ShiftMasterImportCode("Imp#CCC") ) );
+			add( new CapturedRawDataOfCell( "Cd#MB12", GeneralDate.ymd( 2021, 6, 16 ), new ShiftMasterImportCode("Imp#XYZ") ) );
+			add( new CapturedRawDataOfCell( "Cd#MB12", GeneralDate.ymd( 2021, 6, 21 ), new ShiftMasterImportCode("Imp#ABC") ) );
 		}};
 
 		new Expectations( ScheModifyStartDateService.class ) {{
@@ -150,7 +150,7 @@ public class WorkScheduleImportServiceTest {
 
 
 		/* 実行 */
-		ImportResult result = NtsAssert.Invoke.privateMethod( new WorkScheduleImportService()
+		ImportResult result = NtsAssert.Invoke.staticMethod( WorkScheduleImportService.class
 			, "checkIfIsImportableData"
 				, require
 				, new CapturedRawData( rawDataOfCells, orderedEmployees )
@@ -282,7 +282,7 @@ public class WorkScheduleImportServiceTest {
 
 
 		/* 実行 */
-		ImportResult result = NtsAssert.Invoke.privateMethod( new WorkScheduleImportService()
+		ImportResult result = NtsAssert.Invoke.staticMethod( WorkScheduleImportService.class
 			, "checkIfEmployeeIsTarget"
 				, require, interimResult
 		);
@@ -381,7 +381,7 @@ public class WorkScheduleImportServiceTest {
 
 
 		/* 実行 */
-		ImportResult result = NtsAssert.Invoke.privateMethod( new WorkScheduleImportService()
+		ImportResult result = NtsAssert.Invoke.staticMethod( WorkScheduleImportService.class
 			, "checkForContentIntegrity"
 				, require, interimResult
 		);
@@ -468,7 +468,7 @@ public class WorkScheduleImportServiceTest {
 
 
 		/* 実行 */
-		ImportResult result = NtsAssert.Invoke.privateMethod( new WorkScheduleImportService()
+		ImportResult result = NtsAssert.Invoke.staticMethod( WorkScheduleImportService.class
 			, "checkForExistingWorkSchedule"
 				, require, interimResult
 		);
@@ -673,7 +673,7 @@ public class WorkScheduleImportServiceTest {
 		/** 実行 **/
 		// 実行
 		val rawDataOfCells = importSeeds.stream().map( ExpectImportFromRawData::getAsCapturedRaw ).collect(Collectors.toList());
-		val result = WorkScheduleImportService.imoprtFrom( require, new CapturedRawData( rawDataOfCells, orderedEmployeeCodes ) );
+		val result = WorkScheduleImportService.importFrom( require, new CapturedRawData( rawDataOfCells, orderedEmployeeCodes ) );
 
 
 		/** 検証 **/
@@ -690,7 +690,7 @@ public class WorkScheduleImportServiceTest {
 		assertThat( result.getUnexistsEmployees() )
 			.containsExactlyInAnyOrderElementsOf(
 					importSeeds.stream()
-						.filter( seed -> !employeeInfos.stream().anyMatch( info -> info.getEmployeeCode().equals(seed.getEmployeeCode()) ) )
+						.filter( seed -> !seed.getEmployeeId().isPresent() )
 						.map(ExpectImportFromRawData::getEmployeeCode)
 						.distinct()
 						.collect(Collectors.toList())
@@ -705,6 +705,11 @@ public class WorkScheduleImportServiceTest {
 						.flatMap(OptionalUtil::stream)
 						.collect(Collectors.toList())
 				);
+
+		// 未チェックの取り込み結果が存在しない
+		assertThat( result.getResults() )
+			.extracting( ImportResultDetail::getStatus )
+			.doesNotContain( ImportStatus.UNCHECKED );
 
 	}
 
@@ -837,10 +842,10 @@ public class WorkScheduleImportServiceTest {
 			this.needWorkSchedule = this.confirmedStatus.isPresent()
 					|| this.expectedStatus.orElse(ImportStatus.UNCHECKED) == ImportStatus.IMPORTABLE;
 
-			this.asCapturedRaw = new CapturedRawDataOfCell( employeeCode, ymd, importCode );
+			this.asCapturedRaw = new CapturedRawDataOfCell( this.employeeCode, this.ymd, this.importCode );
 
 			this.asExpectedImportResult = this.expectedStatus
-					.map( status -> ImportResultHelper.createDetail( this.employeeId.get().v(), ymd, importCode, status ) );
+					.map( status -> ImportResultHelper.createDetail( this.employeeId.get().v(), this.ymd, this.importCode.v(), status ) );
 
 		}
 

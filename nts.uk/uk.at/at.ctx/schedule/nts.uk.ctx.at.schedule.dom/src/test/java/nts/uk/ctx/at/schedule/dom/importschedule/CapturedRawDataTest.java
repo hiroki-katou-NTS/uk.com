@@ -12,6 +12,7 @@ import lombok.val;
 import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterImportCode;
 
 /**
  * Test for CapturedRawData
@@ -84,20 +85,20 @@ public class CapturedRawDataTest {
 		// 実行
 		val result = new CapturedRawData(
 			Arrays.asList(
-					new CapturedRawDataOfCell( "EmpCd#1", GeneralDate.ymd( 2021, 5, 15 ), "ImpCd#1" )
-				,	new CapturedRawDataOfCell( "EmpCd#1", GeneralDate.ymd( 2021, 5, 22 ), "ImpCd#0" )
-				,	new CapturedRawDataOfCell( "EmpCd#1", GeneralDate.ymd( 2021, 5, 31 ), "ImpCd#1" )
+					new CapturedRawDataOfCell( "EmpCd#1", GeneralDate.ymd( 2021, 5, 15 ), new ShiftMasterImportCode("ImpCd#1") )
+				,	new CapturedRawDataOfCell( "EmpCd#1", GeneralDate.ymd( 2021, 5, 22 ), new ShiftMasterImportCode("ImpCd#0") )
+				,	new CapturedRawDataOfCell( "EmpCd#1", GeneralDate.ymd( 2021, 5, 31 ), new ShiftMasterImportCode("ImpCd#1") )
 
-				,	new CapturedRawDataOfCell( "EmpCd#2", GeneralDate.ymd( 2021, 5, 13 ), "ImpCd#5" )
-				,	new CapturedRawDataOfCell( "EmpCd#2", GeneralDate.ymd( 2021, 5, 15 ), "ImpCd#5" )
-				,	new CapturedRawDataOfCell( "EmpCd#2", GeneralDate.ymd( 2021, 5, 27 ), "ImpCd#9" )
-				,	new CapturedRawDataOfCell( "EmpCd#2", GeneralDate.ymd( 2021, 5, 31 ), "ImpCd#3" )
+				,	new CapturedRawDataOfCell( "EmpCd#2", GeneralDate.ymd( 2021, 5, 13 ), new ShiftMasterImportCode("ImpCd#5") )
+				,	new CapturedRawDataOfCell( "EmpCd#2", GeneralDate.ymd( 2021, 5, 15 ), new ShiftMasterImportCode("ImpCd#5") )
+				,	new CapturedRawDataOfCell( "EmpCd#2", GeneralDate.ymd( 2021, 5, 27 ), new ShiftMasterImportCode("ImpCd#9") )
+				,	new CapturedRawDataOfCell( "EmpCd#2", GeneralDate.ymd( 2021, 5, 31 ), new ShiftMasterImportCode("ImpCd#3") )
 
-				,	new CapturedRawDataOfCell( "EmpCd#3", GeneralDate.ymd( 2021, 5, 14 ), "ImpCd#3" )
-				,	new CapturedRawDataOfCell( "EmpCd#3", GeneralDate.ymd( 2021, 5, 15 ), "ImpCd#3" )
-				,	new CapturedRawDataOfCell( "EmpCd#3", GeneralDate.ymd( 2021, 5, 17 ), "ImpCd#7" )
-				,	new CapturedRawDataOfCell( "EmpCd#3", GeneralDate.ymd( 2021, 5, 27 ), "ImpCd#2" )
-				,	new CapturedRawDataOfCell( "EmpCd#3", GeneralDate.ymd( 2021, 5, 31 ), "ImpCd#3" )
+				,	new CapturedRawDataOfCell( "EmpCd#3", GeneralDate.ymd( 2021, 5, 14 ), new ShiftMasterImportCode("ImpCd#3") )
+				,	new CapturedRawDataOfCell( "EmpCd#3", GeneralDate.ymd( 2021, 5, 15 ), new ShiftMasterImportCode("ImpCd#3") )
+				,	new CapturedRawDataOfCell( "EmpCd#3", GeneralDate.ymd( 2021, 5, 17 ), new ShiftMasterImportCode("ImpCd#7") )
+				,	new CapturedRawDataOfCell( "EmpCd#3", GeneralDate.ymd( 2021, 5, 27 ), new ShiftMasterImportCode("ImpCd#2") )
+				,	new CapturedRawDataOfCell( "EmpCd#3", GeneralDate.ymd( 2021, 5, 31 ), new ShiftMasterImportCode("ImpCd#3") )
 			)
 			,	Arrays.asList( "EmpCd#3", "EmpCd#1", "EmpCd#0", "EmpCd#2" )
 		).getYmdList();

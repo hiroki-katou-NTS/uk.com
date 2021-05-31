@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.dom.importschedule;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterImportCode;
 
 /**
  * 1セル分の内容
@@ -16,6 +17,6 @@ public class CapturedRawDataOfCell {
 	/** 年月日 **/
 	private final GeneralDate ymd;
 	/** 取り込みコード **/
-	private final String importCode;
+	private final ShiftMasterImportCode importCode;
 
 }

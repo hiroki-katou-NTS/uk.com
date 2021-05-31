@@ -32,7 +32,7 @@ public class WorkScheduleImportService {
 	 * @param rawData 取り込み内容
 	 * @return 取り込み結果
 	 */
-	public static ImportResult imoprtFrom(Require require, CapturedRawData rawData) {
+	public static ImportResult importFrom(Require require, CapturedRawData rawData) {
 
 		// 取り込み可能な内容かチェックする
 		val importable = WorkScheduleImportService.checkIfIsImportableData( require, rawData );
@@ -82,13 +82,13 @@ public class WorkScheduleImportService {
 		// エラーではない結果のみ抽出
 		// チェック結果：未チェック
 		val uncheckedContents = rawData.getContents().stream()
-				.filter( detail -> detail.getYmd().afterOrEquals( modifiableStartDate ) )	// 取り込み可能日
-				.filter( detail -> empCdIdMap.containsKey( detail.getEmployeeCode() ) )	// 存在する社員
+				.filter( detail -> !unmodifiableDateList.contains( detail.getYmd() ) )			// 年月日
+				.filter( detail -> !unexistsEmployeeList.contains( detail.getEmployeeCode() ) )	// 社員
 				.map( detail -> ImportResultDetail.createNew(
-											empCdIdMap.get( detail.getEmployeeCode() )
-										,	detail.getYmd()
-										,	new ShiftMasterImportCode( detail.getImportCode() )
-									) )
+						empCdIdMap.get( detail.getEmployeeCode() )
+					,	detail.getYmd()
+					,	detail.getImportCode()
+				) )
 				.collect(Collectors.toList());
 
 		// 社員の並び順の変換：社員コード⇒ID
