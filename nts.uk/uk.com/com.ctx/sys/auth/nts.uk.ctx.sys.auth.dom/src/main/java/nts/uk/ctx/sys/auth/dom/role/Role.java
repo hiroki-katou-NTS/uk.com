@@ -111,7 +111,7 @@ public class Role extends AggregateRoot {
 		}
 		
 		if(roleType == RoleType.EMPLOYMENT && !approvalAuthority.isPresent()) {
-			throw new RuntimeException("担当区分が一般だった、承認権限が必要です！");
+			throw new RuntimeException("担当区分 が一般とロール種類 が 就業の場合は、承認権限が必要です。！");
 		}
 		
 		return new Role(	roleId,		contractCode,
