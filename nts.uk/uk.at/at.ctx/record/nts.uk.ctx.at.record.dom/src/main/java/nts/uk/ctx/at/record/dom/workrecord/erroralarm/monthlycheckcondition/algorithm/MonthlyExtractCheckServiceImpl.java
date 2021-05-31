@@ -253,7 +253,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 				.findAny();
 		if (!extractionCond.isPresent()) {
 			alarmExtractConditions.add(new AlarmExtractionCondition(
-					String.valueOf(fixCond.getFixedExtraItemMonNo()),
+					String.valueOf(fixCond.getFixedExtraItemMonNo().value),
 					new AlarmCheckConditionCode(alarmCheckConditionCode),
 					AlarmCategory.MONTHLY,
 					AlarmListCheckType.FixCheck
