@@ -86,6 +86,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 
 		temp.put(28, join(DAILY_WORK_INFO_NAME, ACTUAL, WORK_TYPE));
 		temp.put(29, join(DAILY_WORK_INFO_NAME, ACTUAL, WORK_TIME));
+		temp.put(859, join(DAILY_WORK_INFO_NAME, STRAIGHT_GO));
+		temp.put(860, join(DAILY_WORK_INFO_NAME, STRAIGHT_BACK));
 		temp.put(3, join(DAILY_WORK_INFO_NAME, joinNS(PLAN, TIME_ZONE), joinNS(ATTENDANCE, NUMBER_1)));
 		temp.put(5, join(DAILY_WORK_INFO_NAME, joinNS(PLAN, TIME_ZONE), joinNS(ATTENDANCE, NUMBER_2)));
 		temp.put(4, join(DAILY_WORK_INFO_NAME, joinNS(PLAN, TIME_ZONE), joinNS(LEAVE, NUMBER_1)));
