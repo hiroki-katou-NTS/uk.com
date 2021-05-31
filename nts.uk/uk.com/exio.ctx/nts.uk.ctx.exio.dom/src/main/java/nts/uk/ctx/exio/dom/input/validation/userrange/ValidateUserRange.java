@@ -14,24 +14,22 @@ public class ValidateUserRange {
 	public static void validate(
 			UserRequire require,
 			ExecutionContext context,
-			RevisedDataRecord record,
-			String externalOutputCode ){
+			RevisedDataRecord record ){
 		
-		val masters = require.getStdAcceptItem(context.getGroupId(), externalOutputCode);
-		
-		record.getItems().stream().forEach(item ->{
-			masters.forEach(master -> {
-				if(master.getCategoryItemNo() == item.getItemNo()) {
-					master.getAcceptScreenConditionSetting()
-					.ifPresent(userSetting ->{
-						userSetting.checkCondNumber(item);						
-					});
-				}
-			});
-		});
+//		val masters = require.getStdAcceptItem(context.getGroupId(), context.getSettingCode());
+//		
+//		record.getItems().stream().forEach(item ->{
+//			masters.forEach(master -> {
+//				if(master.getCategoryItemNo() == item.getItemNo()) {
+//					master.getAcceptScreenConditionSetting()
+//					.ifPresent(userSetting ->{
+//						userSetting.checkCondition(item);						
+//					});
+//				}
+//			});
+//		});
 	}
 	
 	public static interface UserRequire{
-		List<StdAcceptItem> getStdAcceptItem(int groupId, String externalCode);
 	}
 }

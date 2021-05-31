@@ -2,8 +2,8 @@ package nts.uk.ctx.exio.dom.input.validation;
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.uk.ctx.exio.dom.input.validation.classtype.ValidationEnum;
-import nts.uk.ctx.exio.dom.input.validation.classtype.ValidationPrimitiveValue;
+import nts.uk.ctx.exio.dom.input.validation.systemrange.ValidationEnum;
+import nts.uk.ctx.exio.dom.input.validation.systemrange.ValidationPrimitiveValue;
 
 /**
  * 受入可能項目の定義
@@ -11,15 +11,15 @@ import nts.uk.ctx.exio.dom.input.validation.classtype.ValidationPrimitiveValue;
 @Getter
 public class ImportableItem implements DomainAggregate{
 
-	private int categoryId;
+	private int groupId;
 	private int itemNo;
 	private String fqn;
 	private CheckMethod atr;
 	
 	
-	public ImportableItem(int categoryId, int itemNo, String fqn, CheckMethod atr) {
+	public ImportableItem(int groupId, int itemNo, String fqn, CheckMethod atr) {
 		super();
-		this.categoryId = categoryId;
+		this.groupId = groupId;
 		this.itemNo = itemNo;
 		this.fqn = fqn;
 		this.atr = atr;
