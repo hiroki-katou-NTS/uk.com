@@ -37,34 +37,61 @@ public class RoleTest {
 	 */
 	@Test
 	public void createGeneralRole() {
-		val roleType = RoleType.PERSONAL_INFO;
 		val employeeReferenceRange = EmployeeReferenceRange.DEPARTMENT_AND_CHILD;
-		val approvalAuthority = Boolean.valueOf(true);
-		
-		val generalRole = Role.createGeneralRoll(
+		val approvalAuthority = Boolean.TRUE;
+		{
+			/**　ロール種類 = 個人情報**/
+			val roleType = RoleType.PERSONAL_INFO;
+			val generalRole = Role.createGeneralRoll(
+						this.roleId, this.contractCode, this.companyId
+					,	this.roleCode,	this.roleName
+					,	roleType, employeeReferenceRange
+					,	Optional.of(approvalAuthority)
+					);
+			
+			assertThat(generalRole.getContractCode()).isEqualTo(this.contractCode);
+			assertThat(generalRole.getCompanyId()).isEqualTo(this.companyId);
+			
+			assertThat(generalRole.getRoleId()).isEqualTo(this.roleId);
+			assertThat(generalRole.getRoleCode()).isEqualTo(roleCode);
+			assertThat(generalRole.getName()).isEqualTo(roleName);
+			assertThat(generalRole.getRoleType()).isEqualTo(roleType);
+			
+			/** 担当区分　＝　一般　**/
+			assertThat(generalRole.getAssignAtr()).isEqualTo(RoleAtr.GENERAL);
+			assertThat(generalRole.getEmployeeReferenceRange()).isEqualTo(employeeReferenceRange);
+			assertThat(generalRole.getApprovalAuthority().get()).isEqualTo(approvalAuthority);			
+			
+		}
+
+		{
+			/**　ロール種類 = 就業**/
+			val roleType = RoleType.EMPLOYMENT;
+			val roleAttendance = Role.createGeneralRoll(
 					this.roleId, this.contractCode, this.companyId
 				,	this.roleCode,	this.roleName
-				,	roleType, employeeReferenceRange
+				,	RoleType.EMPLOYMENT, employeeReferenceRange
 				,	Optional.of(approvalAuthority)
 				);
-		
-		assertThat(generalRole.getContractCode()).isEqualTo(this.contractCode);
-		assertThat(generalRole.getCompanyId()).isEqualTo(this.companyId);
-		
-		assertThat(generalRole.getRoleId()).isEqualTo(this.roleId);
-		assertThat(generalRole.getRoleCode()).isEqualTo(roleCode);
-		assertThat(generalRole.getName()).isEqualTo(roleName);
-		assertThat(generalRole.getRoleType()).isEqualTo(roleType);
-		
-		/** 担当区分　＝　一般　**/
-		assertThat(generalRole.getAssignAtr()).isEqualTo(RoleAtr.GENERAL);
-		assertThat(generalRole.getEmployeeReferenceRange()).isEqualTo(employeeReferenceRange);
-		assertThat(generalRole.getApprovalAuthority()).isPresent();
-		assertThat(generalRole.getApprovalAuthority().get()).isEqualTo(approvalAuthority);
+			
+			assertThat(roleAttendance.getContractCode()).isEqualTo(this.contractCode);
+			assertThat(roleAttendance.getCompanyId()).isEqualTo(this.companyId);
+			
+			assertThat(roleAttendance.getRoleId()).isEqualTo(this.roleId);
+			assertThat(roleAttendance.getRoleCode()).isEqualTo(roleCode);
+			assertThat(roleAttendance.getName()).isEqualTo(roleName);
+			assertThat(roleAttendance.getRoleType()).isEqualTo(roleType);
+			
+			/** 担当区分　＝　一般　**/
+			assertThat(roleAttendance.getAssignAtr()).isEqualTo(RoleAtr.GENERAL);
+			assertThat(roleAttendance.getEmployeeReferenceRange()).isEqualTo(employeeReferenceRange);
+			assertThat(roleAttendance.getApprovalAuthority().get()).isEqualTo(approvalAuthority);
+		}
 		
 	}
 	
 	/**
+	 * ロール種類　＝　就業
 	 * 担当区分　＝　一般
 	 * 参照範囲　＝　全員
 	 * 期待： runtime エラー
@@ -76,23 +103,24 @@ public class RoleTest {
 					this.roleId, this.contractCode, this.companyId
 				,	this.roleCode,	this.roleName
 				,	RoleType.PERSONAL_INFO, EmployeeReferenceRange.ALL_EMPLOYEE
-				,	Optional.of(Boolean.valueOf(true))
+				,	Optional.of(Boolean.TRUE)
 				);	
 		});
 	}
 	
 	/**
 	 * 担当区分 = 一般
+	 * ロール種類 = 就業
 	 * 承認権限がない
 	 * 期待： runtime エラー
 	 * 	 */
 	@Test
-	public void createGeneralRole_approvalAuthority_empty() {
+	public void createGeneralRole_roleAttendance_approvalAuthority_empty() {
 		NtsAssert.systemError(() -> {
 				Role.createGeneralRoll(
 					this.roleId, this.contractCode, this.companyId
 				,	this.roleCode,	this.roleName
-				,	RoleType.PERSONAL_INFO, EmployeeReferenceRange.DEPARTMENT_AND_CHILD
+				,	RoleType.EMPLOYMENT, EmployeeReferenceRange.DEPARTMENT_AND_CHILD
 				,	Optional.empty()
 				);	
 		});

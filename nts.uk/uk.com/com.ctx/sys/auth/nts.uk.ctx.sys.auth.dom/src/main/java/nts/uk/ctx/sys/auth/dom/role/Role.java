@@ -110,7 +110,7 @@ public class Role extends AggregateRoot {
 			throw new RuntimeException("担当区分が一般だった、参照範囲が全社員場合ダメです！");
 		}
 		
-		if(!approvalAuthority.isPresent()) {
+		if(roleType == RoleType.EMPLOYMENT && !approvalAuthority.isPresent()) {
 			throw new RuntimeException("担当区分が一般だった、承認権限が必要です！");
 		}
 		
