@@ -13,9 +13,9 @@ public class ValidateData{
 	/**
 	 * 妥当な数値であるか検証する
 	 */
-	public static void validate(ValidateRequire require, ExecutionContext context, RevisedDataRecord record, String externalOutputCode) {
+	public static void validate(ValidateRequire require, ExecutionContext context, RevisedDataRecord record) {
 		ValidateSystemRange.validate(require, context, record);
-		ValidateUserRange.validate(require, context, record, externalOutputCode);
+		ValidateUserRange.validate(require, context, record);
 	}
 	
 	public static interface ValidateRequire extends ValidateUserRange.UserRequire,
