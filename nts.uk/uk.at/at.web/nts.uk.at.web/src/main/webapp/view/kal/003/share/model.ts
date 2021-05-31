@@ -2617,8 +2617,10 @@ module nts.uk.at.view.kal003.share.model {
         times: KnockoutObservable<number> = ko.observable(0);
         compareOperator: KnockoutObservable<number> = ko.observable(0);
         rowId: KnockoutObservable<number> = ko.observable(0);
+        condNo: KnockoutComputed<number> = ko.computed(() => this.rowId());
         useCheckSwitch: KnockoutObservable<string> = ko.observable('');
         deleteAtr: KnockoutObservable<boolean> = ko.observable(false);
+
         constructor(param: IMulMonCheckCondSet) {
             let self = this;
             self.errorAlarmCheckID = param.errorAlarmCheckID || '';
