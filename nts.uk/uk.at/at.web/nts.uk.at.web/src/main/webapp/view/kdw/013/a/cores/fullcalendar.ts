@@ -262,8 +262,13 @@ module nts.uk.ui.at.kdw013.calendar {
         .fc-container .fc-timegrid-slot-label-even {
             background-color: #d9e3f4;
         }
+        
         .fc-container .fc-day-today {
             background-color: #fffadf;
+        }
+
+        .fc-timegrid-cols .fc-day-today {
+            background-color: white !important;
         }
         .fc-container .fc-day-sat {
             color: #0086EA;
@@ -2905,7 +2910,7 @@ module nts.uk.ui.at.kdw013.calendar {
             template:
                 `<td data-bind="i18n: 'KDW013_20'"></td>
                 <!-- ko foreach: { data: $component.data, as: 'day' } -->
-                <td class="fc-event-note fc-day" data-bind="css: { 'no-data': !day.events.length }, attr: { 'data-date': day.date }, css: { 'fc-day-today': day.date === $component.today }">
+                <td class="fc-event-note fc-day" data-bind="css: { 'no-data': !day.events.length }, attr: { 'data-date': day.date }">
                     <div data-bind="foreach: { data: day.events, as: 'note' }">
                         <div class="text-note limited-label abc" data-bind="text: note"></div>
                     </div>
@@ -2952,7 +2957,7 @@ module nts.uk.ui.at.kdw013.calendar {
             template:
                 `<td data-bind="i18n: 'KDW013_25'"></td>
                 <!-- ko foreach: { data: $component.data, as: 'time' } -->
-                <td class="fc-day" data-bind="html: $component.formatTime(time.value), attr: { 'data-date': time.date }, css: { 'fc-day-today': time.date === $component.today }"></td>
+                <td class="fc-day" data-bind="html: $component.formatTime(time.value), attr: { 'data-date': time.date }"></td>
                 <!-- /ko -->`
         })
         export class FullCalendarTimesHeaderComponent extends ko.ViewModel {
