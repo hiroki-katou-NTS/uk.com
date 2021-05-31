@@ -12,6 +12,9 @@ import nts.uk.ctx.exio.dom.input.DataItemList;
 @Value
 public class RevisedDataRecord {
 	
+	/** 受入グループID */
+	int groupId;
+	
 	/** 受入行番号 */
 	int rowNo;
 
