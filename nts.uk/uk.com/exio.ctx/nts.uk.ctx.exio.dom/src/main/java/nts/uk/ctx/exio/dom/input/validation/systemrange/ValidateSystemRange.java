@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.dom.input.validation.systemrange;
 import java.util.List;
 
 import lombok.val;
+import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.validation.ImportableItem;
 
@@ -10,8 +11,8 @@ public class ValidateSystemRange {
 	/**
 	 * UKのPV、Enumを使って値を検証
 	 */
-	public static void validate(SystemRequire require, RevisedDataRecord record) {
-		val importableItems = require.getDefinition(record.getCategoryId());
+	public static void validate(SystemRequire require, ExecutionContext context, RevisedDataRecord record) {
+		val importableItems = require.getDefinition(context.getGroupId());
 		
 		record.getItems().forEach(dataitem ->{
 			importableItems.forEach(importableItem ->{
