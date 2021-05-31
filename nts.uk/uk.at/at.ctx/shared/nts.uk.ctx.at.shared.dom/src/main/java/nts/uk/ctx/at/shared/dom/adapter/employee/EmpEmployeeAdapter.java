@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.adapter.employee;
 
 import java.util.List;
+import java.util.Map;
 
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
@@ -77,10 +78,11 @@ public interface EmpEmployeeAdapter {
 	List<EmployeeBasicInfoImport> getEmpInfoLstBySids(List<String> sids, DatePeriod period, boolean isDelete, boolean isGetAffCompany);
 
 	/**
-	 * 社員コードを指定して社員を取得する
+	 * 社員コードから社員IDを取得する
+	 * @param companyId 会社ID
 	 * @param employeeCodes 社員コード(List)
-	 * @return 社員情報(List)
+	 * @return Map<社員コード, 社員ID>
 	 */
-	List<EmployeeBasicInfoImport> getEmployeeInfoListByCode(List<String> employeeCodes);
+	Map<String, String> getEmployeeIDListByCode(String companyId, List<String> employeeCodes);
 
 }

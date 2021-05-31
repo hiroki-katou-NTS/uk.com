@@ -32,7 +32,6 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatus;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
@@ -66,12 +65,13 @@ public class WorkScheduleImportServiceTest {
 		// 修正可能開始日
 		val modifiableStartDate = GeneralDate.ymd( 2021, 6, 16 );
 		// 社員情報
-		val employeeInfos = Arrays.asList(
-				new EmployeeBasicInfoImport( "Id#0102", "Cd#MB10", "Shoyo Hinata" )
-			,	new EmployeeBasicInfoImport( "Id#0103", "Cd#MB11", "Kei Tsukishima" )
-			,	new EmployeeBasicInfoImport( "Id#0104", "Cd#MB12", "Tadashi Yamaguchi" )
-			,	new EmployeeBasicInfoImport( "Id#0205", "Cd#MB08", "Kazuhito Narita" )
-		);
+		@SuppressWarnings("serial")
+		val empCdIdMap = new HashMap<String, String>() {{
+			put( "Cd#MB10", "Id#0102" );
+			put( "Cd#MB11", "Id#0103" );
+			put( "Cd#MB12", "Id#0104" );
+			put( "Cd#MB08", "Id#0205" );
+		}};
 		// 社員の並び順
 		val orderedEmployees = Arrays.asList(
 				"Cd#WS01"	// 社員ID: なし
@@ -144,8 +144,8 @@ public class WorkScheduleImportServiceTest {
 			result = modifiableStartDate;
 			// 社員情報を取得する
 			@SuppressWarnings("unchecked") val anyCodes = (List<String>)any;
-			require.getEmployeeInfo(anyCodes);
-			result = employeeInfos;
+			require.getEmployeeIds(anyCodes);
+			result = empCdIdMap;
 		}};
 
 
@@ -502,20 +502,21 @@ public class WorkScheduleImportServiceTest {
 		// 修正可能開始日
 		val modifiableStartDate = GeneralDate.ymd( 2021, 6, 8 );
 		// 社員情報
-		val employeeInfos = Arrays.asList(
-				new EmployeeBasicInfoImport( "Id#0301", "Cd#WS01", "Daichi Sawamura" )
-			,	new EmployeeBasicInfoImport( "Id#0303", "Cd#WS03", "Asahi Azumane" )
-			,	new EmployeeBasicInfoImport( "Id#0202", "Cd#WS05", "Ryunosuke Tanaka" )
-			,	new EmployeeBasicInfoImport( "Id#0203", "Cd#WS06", "Chikara Ennoshita" )
-			,	new EmployeeBasicInfoImport( "Id#0204", "Cd#WS07", "Hisashi Kinoshita" )
-			,	new EmployeeBasicInfoImport( "Id#0302", "Cd#St02", "Koushi Suga" )
-			,	new EmployeeBasicInfoImport( "Id#0101", "Cd#St09", "Tobio Kageyama" )
-			,	new EmployeeBasicInfoImport( "Id#0205", "Cd#MB08", "Kazuhito Narita" )
-			,	new EmployeeBasicInfoImport( "Id#0102", "Cd#MB10", "Shoyo Hinata" )
-			,	new EmployeeBasicInfoImport( "Id#0103", "Cd#MB11", "Kei Tsukishima" )
-			,	new EmployeeBasicInfoImport( "Id#0104", "Cd#MB12", "Tadashi Yamaguchi" )
-			,	new EmployeeBasicInfoImport( "Id#0201", "Cd#Li04", "Yu Nishinoya" )
-		);
+		@SuppressWarnings("serial")
+		val empCdIdMap = new HashMap<String, String>() {{
+			put( "Cd#WS01", "Id#0301" );
+			put( "Cd#WS03", "Id#0303" );
+			put( "Cd#WS05", "Id#0202" );
+			put( "Cd#WS06", "Id#0203" );
+			put( "Cd#WS07", "Id#0204" );
+			put( "Cd#St02", "Id#0302" );
+			put( "Cd#St09", "Id#0101" );
+			put( "Cd#MB08", "Id#0205" );
+			put( "Cd#MB10", "Id#0102" );
+			put( "Cd#MB11", "Id#0103" );
+			put( "Cd#MB12", "Id#0104" );
+			put( "Cd#Li04", "Id#0201" );
+		}};
 		// 社員の並び順
 		val orderedEmployeeCodes = Arrays.asList(
 				"Cd#WS01", "Cd#St02", "Cd#WS03", "Cd#Mng1"
@@ -552,56 +553,56 @@ public class WorkScheduleImportServiceTest {
 		@SuppressWarnings("serial")
 		val importSeeds = new ArrayList<ExpectImportFromRawData>() {{
 
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#WS01", GeneralDate.ymd( 2021, 6,  5 ), "Imp#629" ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#WS01", GeneralDate.ymd( 2021, 6, 13 ), "Imp#563", ImportStatus.SCHEDULE_IS_NOTUSE, ScheManaStatus.DO_NOT_MANAGE_SCHEDULE ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#WS01", GeneralDate.ymd( 2021, 6,  5 ), "Imp#629" ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#WS01", GeneralDate.ymd( 2021, 6, 13 ), "Imp#563", ImportStatus.SCHEDULE_IS_NOTUSE, ScheManaStatus.DO_NOT_MANAGE_SCHEDULE ) );
 
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#St02", GeneralDate.ymd( 2021, 6,  5 ), "Imp#310" ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#St02", GeneralDate.ymd( 2021, 6,  6 ), "Imp#610" ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#St02", GeneralDate.ymd( 2021, 6, 13 ), "Imp#310", ImportStatus.SHIFTMASTER_IS_NOTFOUND, ScheManaStatus.SCHEDULE_MANAGEMENT ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#St02", GeneralDate.ymd( 2021, 6,  5 ), "Imp#310" ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#St02", GeneralDate.ymd( 2021, 6,  6 ), "Imp#610" ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#St02", GeneralDate.ymd( 2021, 6, 13 ), "Imp#310", ImportStatus.SHIFTMASTER_IS_NOTFOUND, ScheManaStatus.SCHEDULE_MANAGEMENT ) );
 
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#WS03", GeneralDate.ymd( 2021, 6,  8 ), "Imp#251", ImportStatus.IMPORTABLE, ScheManaStatus.ON_LEAVE ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#WS03", GeneralDate.ymd( 2021, 6, 11 ), "Imp#629", ImportStatus.SCHEDULE_IS_EXISTS, ScheManaStatus.SCHEDULE_MANAGEMENT, ConfirmedATR.UNSETTLED ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#WS03", GeneralDate.ymd( 2021, 6, 13 ), "Imp#610", ImportStatus.EMPLOYEEINFO_IS_INVALID, ScheManaStatus.INVALID_DATA ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#WS03", GeneralDate.ymd( 2021, 6,  8 ), "Imp#251", ImportStatus.IMPORTABLE, ScheManaStatus.ON_LEAVE ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#WS03", GeneralDate.ymd( 2021, 6, 11 ), "Imp#629", ImportStatus.SCHEDULE_IS_EXISTS, ScheManaStatus.SCHEDULE_MANAGEMENT, ConfirmedATR.UNSETTLED ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#WS03", GeneralDate.ymd( 2021, 6, 13 ), "Imp#610", ImportStatus.EMPLOYEEINFO_IS_INVALID, ScheManaStatus.INVALID_DATA ) );
 
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#Mng1", GeneralDate.ymd( 2021, 6,  8 ), "Imp#170" ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#Mng1", GeneralDate.ymd( 2021, 6, 11 ), "Imp#934" ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#Mng1", GeneralDate.ymd( 2021, 6, 12 ), "Imp#610" ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#Mng1", GeneralDate.ymd( 2021, 6,  8 ), "Imp#170" ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#Mng1", GeneralDate.ymd( 2021, 6, 11 ), "Imp#934" ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#Mng1", GeneralDate.ymd( 2021, 6, 12 ), "Imp#610" ) );
 
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#Li04", GeneralDate.ymd( 2021, 6,  6 ), "Imp#352" ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#Li04", GeneralDate.ymd( 2021, 6,  6 ), "Imp#352" ) );
 
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#WS05", GeneralDate.ymd( 2021, 6, 12 ), "Imp#629", ImportStatus.SCHEDULE_IS_EXISTS, ScheManaStatus.SCHEDULE_MANAGEMENT, ConfirmedATR.UNSETTLED ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#WS05", GeneralDate.ymd( 2021, 6, 12 ), "Imp#629", ImportStatus.SCHEDULE_IS_EXISTS, ScheManaStatus.SCHEDULE_MANAGEMENT, ConfirmedATR.UNSETTLED ) );
 
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#WS06", GeneralDate.ymd( 2021, 6, 10 ), "Imp#251", ImportStatus.OUT_OF_REFERENCE ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#WS06", GeneralDate.ymd( 2021, 6, 12 ), "Imp#934", ImportStatus.OUT_OF_REFERENCE ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#WS06", GeneralDate.ymd( 2021, 6, 10 ), "Imp#251", ImportStatus.OUT_OF_REFERENCE ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#WS06", GeneralDate.ymd( 2021, 6, 12 ), "Imp#934", ImportStatus.OUT_OF_REFERENCE ) );
 
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#WS07", GeneralDate.ymd( 2021, 6,  7 ), "Imp#610" ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#WS07", GeneralDate.ymd( 2021, 6,  8 ), "Imp#934", ImportStatus.OUT_OF_REFERENCE ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#WS07", GeneralDate.ymd( 2021, 6, 10 ), "Imp#352", ImportStatus.OUT_OF_REFERENCE ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#WS07", GeneralDate.ymd( 2021, 6, 13 ), "Imp#046", ImportStatus.OUT_OF_REFERENCE ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#WS07", GeneralDate.ymd( 2021, 6, 14 ), "Imp#251", ImportStatus.OUT_OF_REFERENCE ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#WS07", GeneralDate.ymd( 2021, 6,  7 ), "Imp#610" ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#WS07", GeneralDate.ymd( 2021, 6,  8 ), "Imp#934", ImportStatus.OUT_OF_REFERENCE ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#WS07", GeneralDate.ymd( 2021, 6, 10 ), "Imp#352", ImportStatus.OUT_OF_REFERENCE ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#WS07", GeneralDate.ymd( 2021, 6, 13 ), "Imp#046", ImportStatus.OUT_OF_REFERENCE ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#WS07", GeneralDate.ymd( 2021, 6, 14 ), "Imp#251", ImportStatus.OUT_OF_REFERENCE ) );
 
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#MB08", GeneralDate.ymd( 2021, 6, 12 ), "Imp#627", ImportStatus.OUT_OF_REFERENCE ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#MB08", GeneralDate.ymd( 2021, 6, 12 ), "Imp#627", ImportStatus.OUT_OF_REFERENCE ) );
 
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#St09", GeneralDate.ymd( 2021, 6,  7 ), "Imp#046" ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#St09", GeneralDate.ymd( 2021, 6, 10 ), "Imp#251", ImportStatus.SCHEDULE_IS_EXISTS, ScheManaStatus.SCHEDULE_MANAGEMENT, ConfirmedATR.UNSETTLED ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#St09", GeneralDate.ymd( 2021, 6, 13 ), "Imp#310", ImportStatus.EMPLOYEE_IS_NOT_ENROLLED, ScheManaStatus.NOT_ENROLLED ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#St09", GeneralDate.ymd( 2021, 6,  7 ), "Imp#046" ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#St09", GeneralDate.ymd( 2021, 6, 10 ), "Imp#251", ImportStatus.SCHEDULE_IS_EXISTS, ScheManaStatus.SCHEDULE_MANAGEMENT, ConfirmedATR.UNSETTLED ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#St09", GeneralDate.ymd( 2021, 6, 13 ), "Imp#310", ImportStatus.EMPLOYEE_IS_NOT_ENROLLED, ScheManaStatus.NOT_ENROLLED ) );
 
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#MB10", GeneralDate.ymd( 2021, 6,  5 ), "Imp#251" ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#MB10", GeneralDate.ymd( 2021, 6,  8 ), "Imp#046", ImportStatus.SCHEDULE_IS_EXISTS, ScheManaStatus.SCHEDULE_MANAGEMENT, ConfirmedATR.UNSETTLED ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#MB10", GeneralDate.ymd( 2021, 6, 13 ), "Imp#627", ImportStatus.SCHEDULE_IS_COMFIRMED, ScheManaStatus.SCHEDULE_MANAGEMENT, ConfirmedATR.CONFIRMED ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#MB10", GeneralDate.ymd( 2021, 6, 14 ), "Imp#251", ImportStatus.IMPORTABLE, ScheManaStatus.SCHEDULE_MANAGEMENT ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#MB10", GeneralDate.ymd( 2021, 6,  5 ), "Imp#251" ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#MB10", GeneralDate.ymd( 2021, 6,  8 ), "Imp#046", ImportStatus.SCHEDULE_IS_EXISTS, ScheManaStatus.SCHEDULE_MANAGEMENT, ConfirmedATR.UNSETTLED ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#MB10", GeneralDate.ymd( 2021, 6, 13 ), "Imp#627", ImportStatus.SCHEDULE_IS_COMFIRMED, ScheManaStatus.SCHEDULE_MANAGEMENT, ConfirmedATR.CONFIRMED ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#MB10", GeneralDate.ymd( 2021, 6, 14 ), "Imp#251", ImportStatus.IMPORTABLE, ScheManaStatus.SCHEDULE_MANAGEMENT ) );
 
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#MB11", GeneralDate.ymd( 2021, 6, 10 ), "Imp#170", ImportStatus.SCHEDULE_IS_NOTUSE, ScheManaStatus.DO_NOT_MANAGE_SCHEDULE ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#MB11", GeneralDate.ymd( 2021, 6, 10 ), "Imp#170", ImportStatus.SCHEDULE_IS_NOTUSE, ScheManaStatus.DO_NOT_MANAGE_SCHEDULE ) );
 
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#MB12", GeneralDate.ymd( 2021, 6,  6 ), "Imp#627" ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#MB12", GeneralDate.ymd( 2021, 6,  8 ), "Imp#310", ImportStatus.EMPLOYEEINFO_IS_INVALID, ScheManaStatus.INVALID_DATA ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#MB12", GeneralDate.ymd( 2021, 6,  9 ), "Imp#610", ImportStatus.EMPLOYEEINFO_IS_INVALID, ScheManaStatus.INVALID_DATA ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#MB12", GeneralDate.ymd( 2021, 6, 13 ), "Imp#352", ImportStatus.IMPORTABLE, ScheManaStatus.ON_LEAVE ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#MB12", GeneralDate.ymd( 2021, 6, 15 ), "Imp#934", ImportStatus.SHIFTMASTER_IS_ERROR, ScheManaStatus.SCHEDULE_MANAGEMENT ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#MB12", GeneralDate.ymd( 2021, 6,  6 ), "Imp#627" ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#MB12", GeneralDate.ymd( 2021, 6,  8 ), "Imp#310", ImportStatus.EMPLOYEEINFO_IS_INVALID, ScheManaStatus.INVALID_DATA ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#MB12", GeneralDate.ymd( 2021, 6,  9 ), "Imp#610", ImportStatus.EMPLOYEEINFO_IS_INVALID, ScheManaStatus.INVALID_DATA ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#MB12", GeneralDate.ymd( 2021, 6, 13 ), "Imp#352", ImportStatus.IMPORTABLE, ScheManaStatus.ON_LEAVE ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#MB12", GeneralDate.ymd( 2021, 6, 15 ), "Imp#934", ImportStatus.SHIFTMASTER_IS_ERROR, ScheManaStatus.SCHEDULE_MANAGEMENT ) );
 
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#Mng2", GeneralDate.ymd( 2021, 6,  9 ), "Imp#352" ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#Mng2", GeneralDate.ymd( 2021, 6, 10 ), "Imp#563" ) );
-			add( new ExpectImportFromRawData( employeeInfos, "Cd#Mng2", GeneralDate.ymd( 2021, 6, 11 ), "Imp#251" ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#Mng2", GeneralDate.ymd( 2021, 6,  9 ), "Imp#352" ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#Mng2", GeneralDate.ymd( 2021, 6, 10 ), "Imp#563" ) );
+			add( new ExpectImportFromRawData( empCdIdMap, "Cd#Mng2", GeneralDate.ymd( 2021, 6, 11 ), "Imp#251" ) );
 
 		}};
 
@@ -615,8 +616,8 @@ public class WorkScheduleImportServiceTest {
 
 			// 社員情報を取得する
 			@SuppressWarnings("unchecked") val anyCodes = (List<String>)any;
-			require.getEmployeeInfo(anyCodes);
-			result = employeeInfos;
+			require.getEmployeeIds(anyCodes);
+			result = empCdIdMap;
 
 		}};
 
@@ -811,19 +812,19 @@ public class WorkScheduleImportServiceTest {
 		private final Optional<ImportResultDetail> asExpectedImportResult;
 
 
-		public ExpectImportFromRawData(List<EmployeeBasicInfoImport> employeeInfos, String employeeCode, GeneralDate ymd, String importCode) {
-			this(employeeInfos, employeeCode, ymd, importCode, null, null, null);
+		public ExpectImportFromRawData(Map<String, String> empCdIdMap, String employeeCode, GeneralDate ymd, String importCode) {
+			this(empCdIdMap, employeeCode, ymd, importCode, null, null, null);
 		}
-		public ExpectImportFromRawData(List<EmployeeBasicInfoImport> employeeInfos, String employeeCode, GeneralDate ymd, String importCode, ImportStatus expectedStatus) {
-			this(employeeInfos, employeeCode, ymd, importCode, expectedStatus, null, null);
+		public ExpectImportFromRawData(Map<String, String> empCdIdMap, String employeeCode, GeneralDate ymd, String importCode, ImportStatus expectedStatus) {
+			this(empCdIdMap, employeeCode, ymd, importCode, expectedStatus, null, null);
 		}
-		public ExpectImportFromRawData(List<EmployeeBasicInfoImport> employeeInfos
+		public ExpectImportFromRawData(Map<String, String> empCdIdMap
 				,	String employeeCode, GeneralDate ymd, String importCode
 				,	ImportStatus expectedStatus, ScheManaStatus scheMngStatus
 		) {
-			this(employeeInfos, employeeCode, ymd, importCode, expectedStatus, scheMngStatus, null);
+			this(empCdIdMap, employeeCode, ymd, importCode, expectedStatus, scheMngStatus, null);
 		}
-		public ExpectImportFromRawData(List<EmployeeBasicInfoImport> employeeInfos
+		public ExpectImportFromRawData(Map<String, String> empCdIdMap
 				,	String employeeCode, GeneralDate ymd, String importCode
 				,	ImportStatus expectedStatus, ScheManaStatus scheMngStatus, ConfirmedATR confirmedStatus
 		) {
@@ -834,9 +835,9 @@ public class WorkScheduleImportServiceTest {
 			this.scheMngStatus = Optional.ofNullable(scheMngStatus);
 			this.confirmedStatus = Optional.ofNullable(confirmedStatus);
 
-			this.employeeId = employeeInfos.stream()
-					.filter( info -> info.getEmployeeCode().equals(employeeCode) )
-					.map(EmployeeBasicInfoImport::getSid)
+			this.employeeId = empCdIdMap.entrySet().stream()
+					.filter( entry -> entry.getKey().equals(employeeCode) )
+					.map(Map.Entry::getValue)
 					.findFirst().map(EmployeeId::new);
 
 			this.needWorkSchedule = this.confirmedStatus.isPresent()

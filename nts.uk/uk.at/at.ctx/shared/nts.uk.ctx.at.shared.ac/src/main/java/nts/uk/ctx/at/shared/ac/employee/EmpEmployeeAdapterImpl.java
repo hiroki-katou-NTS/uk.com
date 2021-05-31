@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.ac.employee;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -212,7 +213,7 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 	}
 
 	@Override
-	public List<EmployeeBasicInfoImport> getEmployeeInfoListByCode(List<String> employeeCodes) {
+	public Map<String, String> getEmployeeIDListByCode(String companyId, List<String> employeeCodes) {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;
 	}

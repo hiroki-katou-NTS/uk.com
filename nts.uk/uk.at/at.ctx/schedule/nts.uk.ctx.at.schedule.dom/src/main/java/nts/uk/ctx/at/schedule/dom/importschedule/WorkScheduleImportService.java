@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.dom.importschedule;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,7 +14,6 @@ import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyStartDate
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
-import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetEmpCanReferService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
@@ -68,8 +68,8 @@ public class WorkScheduleImportService {
 
 		/* 社員コードのチェック */
 		// 社員情報を取得
-		val empCdIdMap = require.getEmployeeInfo( rawData.getEmployeeCodes() ).stream()
-				.collect(Collectors.toMap( EmployeeBasicInfoImport::getEmployeeCode, info -> new EmployeeId( info.getSid() ) ));
+		val empCdIdMap = require.getEmployeeIds( rawData.getEmployeeCodes() ).entrySet().stream()
+				.collect(Collectors.toMap( Map.Entry::getKey, entry -> new EmployeeId( entry.getValue() ) ));
 
 		// 社員の存在チェック
 		// チェック結果：存在しない社員
@@ -253,11 +253,11 @@ public class WorkScheduleImportService {
 		 */
 		EmployeeId getEmployeeId();
 		/**
-		 * 社員を取得する
+		 * 社員コードから社員IDを取得する
 		 * @param employeeCodes 社員コードリスト
-		 * @return 社員情報(List)
+		 * @return 社員コード/社員ID(Map)
 		 */
-		List<EmployeeBasicInfoImport> getEmployeeInfo(List<String> employeeCodes);
+		Map<String, String> getEmployeeIds(List<String> employeeCodes);
 		/**
 		 * シフトマスタを取得する
 		 * @param importCodes 取り込みコードリスト
