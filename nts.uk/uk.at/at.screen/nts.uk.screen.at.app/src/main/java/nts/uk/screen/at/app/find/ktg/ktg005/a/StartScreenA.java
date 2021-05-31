@@ -9,16 +9,20 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.DeadlineLimitCurrentMonth;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.service.AppDeadlineSettingGet;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.EmployeeIdClosureIdDto;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureIdReferEmployeeIds;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService.RequireM3;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApplicationStatusWidgetItem;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApproveWidgetRepository;
@@ -62,6 +66,9 @@ public class StartScreenA {
 	
 	@Inject
 	private KTG004Finder KTG004Finder;
+	
+	@Inject 
+	private ShareEmploymentAdapter shareEmploymentAdapter;
 
 	/**
 	 * @name 申請件数起動
@@ -77,8 +84,17 @@ public class StartScreenA {
 			//アルゴリズム「社員(list)に対応する処理締めを取得する」を実行する
 			employeeIdClosureId = getClosureIdReferEmployeeIds.get( Arrays.asList(employeeId));
 		}
+		
+		
 		//アルゴリズム「指定した年月の期間を算出する」を実行する
-		DatePeriod datePeriod = ClosureService.getClosurePeriod(ClosureService.createRequireM1(closureRepository, closureEmploymentRepo), topPageDisplayDate.isPresent()?topPageDisplayDate.get().getClosureId():employeeIdClosureId.get(0).getClosureId(), GeneralDate.today().yearMonth());
+		//DatePeriod datePeriod = ClosureService.getClosurePeriod(ClosureService.createRequireM1(closureRepository, closureEmploymentRepo), topPageDisplayDate.isPresent()?topPageDisplayDate.get().getClosureId():employeeIdClosureId.get(0).getClosureId(), GeneralDate.today().yearMonth());
+		
+		//Get the processing deadline for employees - 社員に対応する処理締めを取得する
+		RequireM3 require = ClosureService.createRequireM3(closureRepository, closureEmploymentRepo, shareEmploymentAdapter);
+		Closure closure = ClosureService.getClosureDataByEmployee(require, new CacheCarrier(), employeeId, GeneralDate.today());
+		
+		//Calculate the period of the specified year and month - 指定した年月の期間を算出する
+		DatePeriod datePeriod = ClosureService.getClosurePeriod(closure, closure.getClosureMonth().getProcessingYm());
 		
 		// 指定するウィジェットの設定を取得する
 		Optional<StandardWidget> standardWidgetOpt = approveWidgetRepo.findByWidgetTypeAndCompanyId(StandardWidgetType.APPLICATION_STATUS, cid);
