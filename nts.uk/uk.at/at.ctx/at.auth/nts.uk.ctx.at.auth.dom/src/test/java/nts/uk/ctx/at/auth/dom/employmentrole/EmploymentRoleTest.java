@@ -16,12 +16,11 @@ public class EmploymentRoleTest {
 	public void testCreateRoleAttendance() {
 		val roleId = "roleId";
 		val companyId = "000000000001-0001";
-		val approvalAuthority = true;
-		val roleAttendance = EmploymentRole.createEmploymentRole(roleId, companyId, approvalAuthority);
+	
+		val roleAttendance = EmploymentRole.createEmploymentRole(roleId, companyId);
 		
 		assertThat(roleAttendance.getRoleId()).isEqualTo(roleId);
 		assertThat(roleAttendance.getCompanyId()).isEqualTo(companyId);
-		assertThat(roleAttendance.isApprovalAuthority()).isTrue();
 		assertThat(roleAttendance.getFutureDateRefPermit()).isEqualTo(NotUseAtr.NOT_USE);
 		
 	}

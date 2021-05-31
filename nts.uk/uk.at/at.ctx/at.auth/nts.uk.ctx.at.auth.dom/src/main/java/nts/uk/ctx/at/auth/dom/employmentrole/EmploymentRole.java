@@ -21,9 +21,6 @@ public class EmploymentRole extends AggregateRoot {
 	/**	未来日参照許可	*/
 	private NotUseAtr futureDateRefPermit;
 	
-	/**	承認権限	**/
-	private boolean approvalAuthority;
-	
 	public EmploymentRole(String companyId, String roleId) {
 		super();
 		this.companyId = companyId;
@@ -34,11 +31,10 @@ public class EmploymentRole extends AggregateRoot {
 	 * 作る
 	 * @param roleId ロールID
 	 * @param companyId 会社ID
-	 * @param approvalAuthority 承認権限
 	 * @return 就業ロール
 	 */
-	public static EmploymentRole createEmploymentRole(String roleId, String companyId, boolean approvalAuthority) {
-		return new EmploymentRole(roleId, companyId, NotUseAtr.NOT_USE, approvalAuthority); 
+	public static EmploymentRole createEmploymentRole(String roleId, String companyId) {
+		return new EmploymentRole(roleId, companyId, NotUseAtr.NOT_USE); 
 	}
 
 }
