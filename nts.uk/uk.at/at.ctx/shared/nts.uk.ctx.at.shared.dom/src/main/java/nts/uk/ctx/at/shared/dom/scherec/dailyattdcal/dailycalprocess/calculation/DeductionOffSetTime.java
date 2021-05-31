@@ -53,10 +53,10 @@ public class DeductionOffSetTime  implements Cloneable {
 	 * @param remainingTime	 時間休暇使用残時間
 	 */
 	public static DeductionOffSetTime create(CompanyHolidayPriorityOrder priorityOrder, TimevacationUseTimeOfDaily useTime, AttendanceTime remainingTime) {
-		AttendanceTime annualHoliday = AttendanceTime.ZERO;
-		AttendanceTime subHoliday = AttendanceTime.ZERO;
-		AttendanceTime sixtyhourHoliday = AttendanceTime.ZERO;
-		AttendanceTime specialHoliday = AttendanceTime.ZERO;
+		int annualHoliday = 0;
+		int subHoliday = 0;
+		int sixtyhourHoliday = 0;
+		int specialHoliday = 0;
 		
 		// 時間休暇の優先順に処理
 		for (HolidayPriorityOrder holiday : priorityOrder.getHolidayPriorityOrders()) {
@@ -65,24 +65,28 @@ public class DeductionOffSetTime  implements Cloneable {
 			}
 			switch (holiday) {
 			case ANNUAL_HOLIDAY:
-				annualHoliday = calcOffsetTime(useTime.getTimeAnnualLeaveUseTime(), remainingTime);
-				remainingTime = remainingTime.minusMinutes(annualHoliday.valueAsMinutes());
+				annualHoliday = Math.min(useTime.getTimeAnnualLeaveUseTime().valueAsMinutes(), remainingTime.valueAsMinutes());
+				remainingTime = remainingTime.minusMinutes(annualHoliday);
 				break;
 			case SUB_HOLIDAY:
-				subHoliday = calcOffsetTime(useTime.getTimeCompensatoryLeaveUseTime(), remainingTime);
-				remainingTime = remainingTime.minusMinutes(subHoliday.valueAsMinutes());
+				subHoliday = Math.min(useTime.getTimeCompensatoryLeaveUseTime().valueAsMinutes(), remainingTime.valueAsMinutes());
+				remainingTime = remainingTime.minusMinutes(subHoliday);
 				break;
 			case SIXTYHOUR_HOLIDAY:
-				sixtyhourHoliday = calcOffsetTime(useTime.getSixtyHourExcessHolidayUseTime(), remainingTime);
-				remainingTime = remainingTime.minusMinutes(sixtyhourHoliday.valueAsMinutes());
+				sixtyhourHoliday = Math.min(useTime.getSixtyHourExcessHolidayUseTime().valueAsMinutes(), remainingTime.valueAsMinutes());
+				remainingTime = remainingTime.minusMinutes(sixtyhourHoliday);
 				break;
 			case SPECIAL_HOLIDAY:
-				specialHoliday = calcOffsetTime(useTime.getTimeSpecialHolidayUseTime(), remainingTime);
-				remainingTime = remainingTime.minusMinutes(specialHoliday.valueAsMinutes());
+				specialHoliday = Math.min(useTime.getTimeSpecialHolidayUseTime().valueAsMinutes(), remainingTime.valueAsMinutes());
+				remainingTime = remainingTime.minusMinutes(specialHoliday);
 				break;
 			}
 		}
-		return new DeductionOffSetTime(annualHoliday, subHoliday, sixtyhourHoliday, specialHoliday);
+		return new DeductionOffSetTime(
+				new AttendanceTime(annualHoliday),
+				new AttendanceTime(subHoliday),
+				new AttendanceTime(sixtyhourHoliday),
+				new AttendanceTime(specialHoliday));
 	}
 	
 	/**
@@ -106,21 +110,5 @@ public class DeductionOffSetTime  implements Cloneable {
 			throw new RuntimeException("DeductionOffSetTime clone error.");
 		}
 		return clone;
-	}
-	
-	/**
-	 * 相殺する時間を計算（比較）する
-	 * @param timeVacationUseTime 時間休暇使用時間
-	 * @param remainingTime  遅刻 or 早退 or 外出 の残時間
-	 * @return 相殺する時間
-	 */
-	private static AttendanceTime calcOffsetTime(AttendanceTime timeVacationUseTime, AttendanceTime remainingTime) {
-		int offSetTime;
-		if (timeVacationUseTime.lessThanOrEqualTo(remainingTime)) {
-			offSetTime = timeVacationUseTime.valueAsMinutes();
-		} else {
-			offSetTime = remainingTime.valueAsMinutes();
-		}
-		return new AttendanceTime(offSetTime);
 	}
 }

@@ -42,6 +42,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -346,13 +347,14 @@ public class LateTimeOfDaily {
 	 * 休暇加算時間の計算
 	 * @param calcMethodSet 休暇の計算方法の設定
 	 * @param holidayAddtionSet 休暇加算時間設定
+	 * @param workTimeForm 就業時間帯の勤務形態
 	 * @return 時間休暇加算時間
 	 */
-	public AttendanceTime calcVacationAddTime(HolidayCalcMethodSet calcMethodSet, Optional<HolidayAddtionSet> holidayAddtionSet) {
+	public AttendanceTime calcVacationAddTime(HolidayCalcMethodSet calcMethodSet, Optional<HolidayAddtionSet> holidayAddtionSet, WorkTimeForm workTimeForm) {
 		if(calcMethodSet.getNotUseAtr(PremiumAtr.RegularWork).isNotUse()) {
 			return AttendanceTime.ZERO;
 		}
-		return holidayAddtionSet.get().getAddTime(this.timePaidUseTime, this.lateTime.getCalcTime());
+		return holidayAddtionSet.get().getAddTime(this.timePaidUseTime, this.lateTime.getCalcTime(), workTimeForm);
 	}
 	
 	/**
@@ -360,9 +362,11 @@ public class LateTimeOfDaily {
 	 * @param calcMethodSet 休暇の計算方法の設定
 	 * @param holidayAddtionSet 休暇加算時間設定
 	 * @param frames 就業時間内時間枠(List)
+	 * @param workTimeForm 就業時間帯の勤務形態
 	 * @return 時間休暇加算時間
 	 */
-	public AttendanceTime calcVacationAddTime(HolidayCalcMethodSet calcMethodSet, Optional<HolidayAddtionSet> holidayAddtionSet, List<WithinWorkTimeFrame> frames) {
+	public AttendanceTime calcVacationAddTime(HolidayCalcMethodSet calcMethodSet, Optional<HolidayAddtionSet> holidayAddtionSet,
+			List<WithinWorkTimeFrame> frames, WorkTimeForm workTimeForm) {
 		if(calcMethodSet.getNotUseAtr(PremiumAtr.RegularWork).isNotUse()) {
 			return AttendanceTime.ZERO;
 		}
@@ -373,7 +377,7 @@ public class LateTimeOfDaily {
 		//計算遅刻計上時間
 		AttendanceTime lateCalcTime = late.isPresent() ? late.get().calcForRecordTime(true).getCalcTime() : AttendanceTime.ZERO;
 		
-		return holidayAddtionSet.get().getAddTime(this.timePaidUseTime, lateCalcTime);
+		return holidayAddtionSet.get().getAddTime(this.timePaidUseTime, lateCalcTime, workTimeForm);
 	}
 	
 	public void resetData() {

@@ -71,6 +71,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -1422,7 +1423,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 					integrationOfDaily,
 					deductionTimeSheet,
 					personDailySetting.getAddSetting().getVacationCalcMethodSet(),
-					holidayAdditionSet);
+					holidayAdditionSet,
+					integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm());
 			
 			endTime = endTime.backByMinutes(timeVacationAddTime.addMinutes(vacationAddTime.calcTotaladdVacationAddTime()).valueAsMinutes());
 			
@@ -1457,10 +1459,11 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param deductionTimeSheet 控除時間帯
 	 * @param calcMethodSet 休暇の計算方法の設定
 	 * @param addtionSet 休暇加算時間設定
+	 * @param workTimeForm 就業時間帯の勤務形態
 	 * @return 時間休暇加算時間
 	 */
 	private AttendanceTime calcTimeVacationAddTime(IntegrationOfDaily integrationOfDaily, DeductionTimeSheet deductionTimeSheet,
-			HolidayCalcMethodSet calcMethodSet, Optional<HolidayAddtionSet> addtionSet) {
+			HolidayCalcMethodSet calcMethodSet, Optional<HolidayAddtionSet> addtionSet, WorkTimeForm workTimeForm) {
 		if(!addtionSet.isPresent()) {
 			return AttendanceTime.ZERO;
 		}
@@ -1470,19 +1473,19 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		//遅刻の時間休暇加算時間を取得する
 		List<LateTimeOfDaily> lateDailies = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily();
 		AttendanceTime lateTime = new AttendanceTime(lateDailies.stream()
-				.map(l -> l.calcVacationAddTime(calcMethodSet, addtionSet, this.withinWorkTimeFrame))
+				.map(l -> l.calcVacationAddTime(calcMethodSet, addtionSet, this.withinWorkTimeFrame, workTimeForm))
 				.collect(Collectors.summingInt(a -> a.valueAsMinutes())));
 		
 		//早退の時間休暇加算時間を取得する
 		List<LeaveEarlyTimeOfDaily> leaveEarlyDailies = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily();
 		AttendanceTime leaveEarlyTime = new AttendanceTime(leaveEarlyDailies.stream()
-				.map(l -> l.calcVacationAddTime(calcMethodSet, addtionSet, this.withinWorkTimeFrame))
+				.map(l -> l.calcVacationAddTime(calcMethodSet, addtionSet, this.withinWorkTimeFrame, workTimeForm))
 				.collect(Collectors.summingInt(a -> a.valueAsMinutes())));
 		
 		//外出の時間休暇加算時間を取得する
 		AttendanceTime outTime = new AttendanceTime(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().stream()
 					.filter(o -> o.getReason().isPrivateOrUnion())
-					.map(o -> o.calcVacationAddTime(calcMethodSet, addtionSet, deductionTimeSheet))
+					.map(o -> o.calcVacationAddTime(calcMethodSet, addtionSet, deductionTimeSheet, workTimeForm))
 					.collect(Collectors.summingInt(a -> a.valueAsMinutes())));
 		
 		AttendanceTime totalTime = AttendanceTime.ZERO;
