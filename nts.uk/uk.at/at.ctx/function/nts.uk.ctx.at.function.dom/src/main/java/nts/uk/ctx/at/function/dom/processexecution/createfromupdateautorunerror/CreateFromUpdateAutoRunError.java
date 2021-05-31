@@ -61,7 +61,7 @@ public class CreateFromUpdateAutoRunError {
 						.occurrenceDateTime(lastItem.map(i -> i.getLastEndExecDateTime().orElse(null)).orElse(null))
 						.displaySId(sid)
 						.displayAtr(1) // 上長
-						.subSids(Collections.emptyList()) //#116503
+						.subEmployeeIds(Collections.emptyList()) //#116503
 						.patternCode(Optional.empty())
 						.patternName(Optional.empty())
 						.linkUrl(Optional.empty())
