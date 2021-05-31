@@ -615,7 +615,7 @@ public class SupportWorkReflection {
 			// 最大応援回数で補正する
 			dataAutoSetNew = this
 					.correctWithMaxNumberCheers(judgmentSupport != null &&
-					judgmentSupport.getSupportMaxFrame() != null ? judgmentSupport.getSupportMaxFrame().v() - 1 : null,
+					judgmentSupport.getSupportMaxFrame() != null ? judgmentSupport.getSupportMaxFrame().v() - 1 : 0,
 					dataAutoSet);
 			if (judgmentSupport!=null&& judgmentSupport.getSupportMaxFrame().v() == 1) {
 				// 最後の退勤の応援データを補正する
