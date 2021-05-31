@@ -46,7 +46,7 @@ module nts.uk.ui.at.kdw013.b {
                 <div data-bind="i18n: 'KDW013_26'"></div>
                 <div class="actions">
                     <!-- ko if: $component.params.mode -->
-                    <button data-bind="click: $component.params.update, icon: 204, size: 12"></button>
+                    <button id='edit' data-bind="click: $component.params.update, icon: 204, size: 12"></button>
                     <button data-bind="click: $component.remove, icon: 203, size: 12"></button>
                     <!-- /ko -->
                     <button data-bind="click: $component.params.close, icon: 202, size: 12"></button>
@@ -313,6 +313,7 @@ module nts.uk.ui.at.kdw013.b {
                 .removeAttr('data-bind')
                 .find('[data-bind]')
                 .removeAttr('data-bind');
+            //$('#edit').focus();
         }
 
         remove() {
