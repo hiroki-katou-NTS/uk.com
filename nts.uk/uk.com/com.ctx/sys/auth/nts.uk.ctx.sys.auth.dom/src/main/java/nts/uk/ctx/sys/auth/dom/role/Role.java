@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.role;
 
+import java.util.Optional;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
@@ -14,6 +17,7 @@ import nts.gul.text.IdentifierUtil;
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.権限管理.ロール.ロール
  */
 @Getter
+@AllArgsConstructor
 public class Role extends AggregateRoot {
 
 	/** The role id. */
@@ -47,6 +51,9 @@ public class Role extends AggregateRoot {
 	/** The employee reference range. */
 	// 参照範囲
 	private EmployeeReferenceRange employeeReferenceRange;
+	
+	/** 承認権限*/
+	private Optional<Boolean> approvalAuthority;
 
 	/**
 	 * Instantiates a new role.
@@ -90,21 +97,28 @@ public class Role extends AggregateRoot {
 	 * @param roleName ロール名称	 
 	 * @param roleType ロール種類
 	 * @param employeeReferenceRange 参照範囲
+	 * @param approvalAuthority 承認権限
 	 * @return
 	 */
 	public static Role createGeneralRoll(String roleId
 			,	ContractCode contractCode,	String companyId
 			,	RoleCode roleCode,	RoleName roleName
-			,	RoleType roleType,	EmployeeReferenceRange employeeReferenceRange) {
+			,	RoleType roleType,	EmployeeReferenceRange employeeReferenceRange
+			,	Optional<Boolean> approvalAuthority) {
 		
 		if(employeeReferenceRange == EmployeeReferenceRange.ALL_EMPLOYEE) {
 			throw new RuntimeException("担当区分が一般だった、参照範囲が全社員場合ダメです！");
 		}
 		
-		return new Role(	roleId,	roleCode
-						,	roleType,	employeeReferenceRange
-						,	roleName, contractCode
-						,	RoleAtr.GENERAL, companyId);
+		if(!approvalAuthority.isPresent()) {
+			throw new RuntimeException("担当区分が一般だった、承認権限が必要です！");
+		}
+		
+		return new Role(	roleId,		contractCode,
+							companyId,	roleCode,
+							roleName,	roleType,	
+							RoleAtr.GENERAL,	employeeReferenceRange,
+							approvalAuthority);
 	}
 	
 	/**
@@ -121,11 +135,11 @@ public class Role extends AggregateRoot {
 			,	String companyId,	RoleCode roleCode
 			,	RoleName roleName,	RoleType roleType) {
 		
-		return new Role(	roleId,	roleCode
-						,	roleType
-						,	EmployeeReferenceRange.ALL_EMPLOYEE
-						,	roleName, contractCode
-						,	RoleAtr.INCHARGE, companyId);
+		return new Role(	roleId,		contractCode,
+				companyId,	roleCode,
+				roleName,	roleType,	
+				RoleAtr.INCHARGE,	EmployeeReferenceRange.ALL_EMPLOYEE,
+				Optional.empty());
 	}
 	
 	/**

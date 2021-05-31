@@ -2,6 +2,8 @@ package nts.uk.ctx.sys.auth.dom.role;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,15 +30,23 @@ public class RoleTest {
 		this.contractCode = new ContractCode("contractCode");
 	}
 	
+	/**
+	 * 担当区分　＝　一般
+	 * 参照範囲　＝　部門（配下含む）
+	 * 承認権限がある
+	 */
 	@Test
 	public void createGeneralRole() {
 		val roleType = RoleType.PERSONAL_INFO;
 		val employeeReferenceRange = EmployeeReferenceRange.DEPARTMENT_AND_CHILD;
+		val approvalAuthority = Boolean.valueOf(true);
 		
 		val generalRole = Role.createGeneralRoll(
 					this.roleId, this.contractCode, this.companyId
 				,	this.roleCode,	this.roleName
-				,	roleType, employeeReferenceRange);
+				,	roleType, employeeReferenceRange
+				,	Optional.of(approvalAuthority)
+				);
 		
 		assertThat(generalRole.getContractCode()).isEqualTo(this.contractCode);
 		assertThat(generalRole.getCompanyId()).isEqualTo(this.companyId);
@@ -49,12 +59,14 @@ public class RoleTest {
 		/** 担当区分　＝　一般　**/
 		assertThat(generalRole.getAssignAtr()).isEqualTo(RoleAtr.GENERAL);
 		assertThat(generalRole.getEmployeeReferenceRange()).isEqualTo(employeeReferenceRange);
+		assertThat(generalRole.getApprovalAuthority()).isPresent();
+		assertThat(generalRole.getApprovalAuthority().get()).isEqualTo(approvalAuthority);
 		
 	}
 	
 	/**
 	 * 担当区分　＝　一般
-	 * 照範囲　＝　全員
+	 * 参照範囲　＝　全員
 	 * 期待： runtime エラー
 	 * 	 */
 	@Test
@@ -63,10 +75,34 @@ public class RoleTest {
 				Role.createGeneralRoll(
 					this.roleId, this.contractCode, this.companyId
 				,	this.roleCode,	this.roleName
-				,	RoleType.PERSONAL_INFO, EmployeeReferenceRange.ALL_EMPLOYEE);	
+				,	RoleType.PERSONAL_INFO, EmployeeReferenceRange.ALL_EMPLOYEE
+				,	Optional.of(Boolean.valueOf(true))
+				);	
 		});
 	}
 	
+	/**
+	 * 担当区分 = 一般
+	 * 承認権限がない
+	 * 期待： runtime エラー
+	 * 	 */
+	@Test
+	public void createGeneralRole_approvalAuthority_empty() {
+		NtsAssert.systemError(() -> {
+				Role.createGeneralRoll(
+					this.roleId, this.contractCode, this.companyId
+				,	this.roleCode,	this.roleName
+				,	RoleType.PERSONAL_INFO, EmployeeReferenceRange.DEPARTMENT_AND_CHILD
+				,	Optional.empty()
+				);	
+		});
+	}
+	
+	/**
+	 * 担当区分 = 担当
+	 * ロール種類 = 就業
+	 * 承認権限 = empty
+	 */
 	@Test
 	public void createInChargeRole() {
 		val roleType = RoleType.EMPLOYMENT;
@@ -87,6 +123,7 @@ public class RoleTest {
 		/** 担当区分　＝　担当　**/
 		assertThat(inchargelRole.getAssignAtr()).isEqualTo(RoleAtr.INCHARGE);
 		assertThat(inchargelRole.getEmployeeReferenceRange()).isEqualTo(EmployeeReferenceRange.ALL_EMPLOYEE);
+		assertThat(inchargelRole.getApprovalAuthority()).isEmpty();
 
 	}
 
