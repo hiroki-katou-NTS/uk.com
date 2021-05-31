@@ -42,7 +42,7 @@
             <div class="selectionHoliday">
                 <div class="panel"
                      data-bind="ntsPanel:{width: '260px', height: '420px', direction: 'right', showIcon: true, visible: true}">
-                    <div data-bind="ntsSearchBox: {
+                    <div tabindex="4" data-bind="ntsSearchBox: {
                     targetKey: 'layoutId',
                     comId: 'multi-list',
 					items: lstHolidays,
@@ -93,7 +93,7 @@
                     <div class="labelWork" style="border-color: #97D155 !important;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_43')}
                     </div>
                     <!-- B4_2  -->
-                        <table class="fixed-checkbox-table" id = "outputItems" tabindex="8" style="width: 680px; margin-top: 5px;">
+                        <table class="fixed-checkbox-table" id = "outputItems"  style="width: 680px; margin-top: 5px;">
                         <tr id="rowYearlyHoliday" >
                             <td>
                                 <!-- B4_3  -->
@@ -178,8 +178,7 @@
                         </tr>
                         <tr id="rowSpecialHoliday">
                             <td>
-                                <div tabindex="25"
-                                     data-bind="ntsMultiCheckBox: {
+                                <div tabindex="25" data-bind="ntsMultiCheckBox: {
 											options: $parent.allSpecialHolidays,
 											optionsValue: 'specialHolidayCode',
 											optionsText: 'specialHolidayName',

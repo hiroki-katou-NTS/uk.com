@@ -74,7 +74,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
     @Inject
     private SpecialHolidayFrameRepository specialHolidayFrameRepository;
 
-    private static final String TEMPLATE_FILE = "report/KDR001_V5.xlsx";
+    private static final String TEMPLATE_FILE = "report/KDR001_V6.xlsx";
     private static final String REPORT_FILE_NAME = "休暇残数管理表.xlsx";
     private static final int NUMBER_ROW_OF_PAGE = 32;
     private static final int NUMBER_ROW_OF_HEADER = 5;
@@ -82,7 +82,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
     private static final int MIN_ROW_DETAILS = 4;
     private static final int TOTAL_MONTH_IN_YEAR = 12;
     private static final int MAX_ROW_IN_PAGE = 32;
-    private static final int MAX_ROW_IN_PAGE_TEMPLATE = 53;
+    private static final int MAX_ROW_IN_PAGE_TEMPLATE = 56;
 
     @Override
     public void generate(FileGeneratorContext generatorContext, HolidayRemainingDataSource dataSource) {
@@ -118,8 +118,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             pageSetup.setLeftMarginInch(1);
             pageSetup.setTopMarginInch(1.5);
             pageSetup.setBottomMarginInch(1.5);
-            Cells cells = worksheet.getCells();
-
             removeTemplate(worksheet);
             designer.getDesigner().setWorkbook(workbook);
             designer.processDesigner();
@@ -136,7 +134,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         YearMonth startMonth = dataSource.getStartMonth().yearMonth();
         YearMonth endMonth = dataSource.getEndMonth().yearMonth();
 
-        double columnWidth= 11.7/MAX_ROW_IN_PAGE;
+        double columnWidth= 0.4;
         for (int i = 0; i < NUMBER_COLUMN ; i++) {
             cells.setColumnWidthInch(i,columnWidth);
         }
@@ -2671,7 +2669,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
     private void removeTemplate(Worksheet worksheet) {
         removeFirstShapes(worksheet);
         Cells cells = worksheet.getCells();
-        cells.deleteRows(0, 53);
+        cells.deleteRows(0, MAX_ROW_IN_PAGE_TEMPLATE);
     }
 
     private void removeFirstShapes(Worksheet worksheet) {
