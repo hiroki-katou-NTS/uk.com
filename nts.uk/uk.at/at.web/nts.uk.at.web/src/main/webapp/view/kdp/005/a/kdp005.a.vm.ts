@@ -1,3 +1,6 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+/// <reference path="../../../kdp/003/f/kdp003.f.vm.ts" />
+
 module nts.uk.at.view.kdp005.a {
 
 	export module viewmodel {
@@ -85,8 +88,6 @@ module nts.uk.at.view.kdp005.a {
 				let dfd = $.Deferred<void>();
 				const vm = new ko.ViewModel();
 
-
-
 				self.getWorkPlacesInfo();
 				self.basyo().done(() => {
 					vm.$window.storage("contractInfo")
@@ -139,6 +140,12 @@ module nts.uk.at.view.kdp005.a {
 										});
 									}
 								});
+							}else {
+								self.openDialogF({
+									mode: 'admin',
+									companyId: __viewContext.user.companyId
+								})
+								dfd.resolve();
 							}
 						});
 				});
