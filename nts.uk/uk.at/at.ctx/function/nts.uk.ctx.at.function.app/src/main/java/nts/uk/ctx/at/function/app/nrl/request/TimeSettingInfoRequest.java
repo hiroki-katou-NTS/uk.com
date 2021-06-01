@@ -57,8 +57,7 @@ public class TimeSettingInfoRequest extends NRLRequest<Frame> {
 
 	@Override
 	public String responseLength() {
-		// TODO Auto-generated method stub
-		return null;
+		return "0032";
 	}
 
 }

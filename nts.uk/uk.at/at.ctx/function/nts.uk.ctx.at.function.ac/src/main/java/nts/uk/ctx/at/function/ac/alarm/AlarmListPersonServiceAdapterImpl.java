@@ -32,8 +32,6 @@ import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.AlarmExtracti
 public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonServiceAdapter{
 	@Inject
 	private AlarmListPersonExtractServicePub extractService;
-	@Inject
-	private AttendanceItemNameDomainService attendanceItemNameDomainService;
 
 	@Override
 	public void extractMasterCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,

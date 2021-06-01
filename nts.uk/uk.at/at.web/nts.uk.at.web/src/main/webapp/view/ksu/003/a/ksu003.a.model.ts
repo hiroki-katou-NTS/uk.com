@@ -1261,13 +1261,22 @@ module nts.uk.at.view.ksu003.a.model {
 		FLOW = 2,
 		TIMEDIFFERENCE = 3
 	}
-
+	
 	export class ItemModel {
 		code: string;
 		name: string;
 		constructor(code: string, name: string) {
 			this.code = code;
 			this.name = name;
+		}
+	}
+	
+	export class RangeModel {
+		name : string;
+		code: number;
+		constructor(name : string,code: number) {
+			this.name = name;
+			this.code = code;
 		}
 	}
 
