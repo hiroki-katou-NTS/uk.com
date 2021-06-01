@@ -18,20 +18,20 @@ public class DisplayInformation extends ValueObject {
 
     /**
      * [C-1] 削除済みマスタ
+     *
      * @return 表示情報
      */
-    public DisplayInformation() {
-        this.code = TextResource.localize("KHA003_101");
-        this.name = TextResource.localize("KHA003_101");
+    public static DisplayInformation deletedMaster() {
+        return new DisplayInformation(TextResource.localize("KHA003_101"), TextResource.localize("KHA003_101"));
     }
 
     /**
      * [C-2] 名称取得できない
+     *
      * @param code コード
-     * @return 	表示情報
+     * @return 表示情報
      */
-    public DisplayInformation(String code) {
-        this.code = code;
-        this.name = TextResource.localize("KHA003_101");
+    public static DisplayInformation cannotGetName(String code) {
+        return new DisplayInformation(code, TextResource.localize("KHA003_101"));
     }
 }
