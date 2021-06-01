@@ -467,7 +467,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     const attendanceItems: model.AttendanceItemDto[] = vm.attendanceItem.filter((atdItem) => atdItem.attendanceItemId === item.itemId);
                     const targetItem = attendanceItems.length > 0 ? attendanceItems[0] : null;
                     if (targetItem) {
-                        if (operationName) {
+                        if (operationName || item.operator.equals("－")) {
                             operationName = operationName + " " +  item.operator + " " + targetItem.attendanceItemName;
                         } else {
                             operationName = targetItem.attendanceItemName;
@@ -491,7 +491,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     const attendanceItems: model.AttendanceItemDto[] = vm.attendanceItem.filter((atdItem) => atdItem.attendanceItemId === item.attendanceItemId());
                     const targetItem = attendanceItems.length > 0 ? attendanceItems[0] : null;
                     if (targetItem) {
-                        if (operationName) {
+                        if (operationName || item.operation() !== 1) {
                             operationName = operationName + " "
                                           + (item.operation() === 1 ? ADDITION : SUBTRACTION)
                                           + " " + targetItem.attendanceItemName;
