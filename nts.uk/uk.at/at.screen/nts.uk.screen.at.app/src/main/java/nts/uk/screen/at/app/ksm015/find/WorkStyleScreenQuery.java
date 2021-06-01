@@ -8,12 +8,7 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ColorCodeChar6;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.*;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
@@ -35,7 +30,7 @@ public class WorkStyleScreenQuery {
 		String companyId = AppContexts.user().companyId();
 		ShiftMasterDisInfor shiftMasterDisInfor = new ShiftMasterDisInfor(new ShiftMasterName(dto.getShiftMasterName()), new ColorCodeChar6(dto.getColor()),new ColorCodeChar6(dto.getColor()), Optional.of(new Remarks(dto.getRemarks())));
 		//TODO 取り込みコード追加
-		ShiftMaster shiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(dto.getShiftMasterCode()), shiftMasterDisInfor, dto.getWorkTypeCode(), dto.getWorkTimeCode(), Optional.empty());
+		ShiftMaster shiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(dto.getShiftMasterCode()), shiftMasterDisInfor, dto.getWorkTypeCode(), dto.getWorkTimeCode(), Optional.of(new ShiftMasterImportCode(dto.getImportCode())));
 		WorkInformation.Require require = new WorkStyleScreenQueryImpl(workTypeRepository);
 		Integer workStyle = shiftMaster.getWorkStyle(require).get().value;
 		return workStyle;

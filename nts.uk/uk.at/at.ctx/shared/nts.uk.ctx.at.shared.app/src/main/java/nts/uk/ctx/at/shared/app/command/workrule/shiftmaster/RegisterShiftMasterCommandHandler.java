@@ -76,14 +76,14 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 							, new WorkTypeCode(cmd.getWorkTypeCd())
 							, Optional.ofNullable( cmd.getWorkTimeSetCd() == null ? null : new WorkTimeCode(cmd.getWorkTimeSetCd()) )
 							, dom.getDisplayInfor()
-							, Optional.empty()	//TODO 取り込みコード追加
+							, dom.getImportCode()
 						);
 		} else {
 			persist = UpdateShiftMasterService.update(updateRequired
 							, new ShiftMasterCode(cmd.getShiftMasterCode())
 							, dom.getDisplayInfor()
 							, new WorkInformation(cmd.getWorkTypeCd(), cmd.getWorkTimeSetCd())
-							, Optional.empty()	//TODO 取り込みコード追加
+							, dom.getImportCode()
 						);
 		}
 
@@ -128,8 +128,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 
 		@Override
 		public boolean checkDuplicateImportCode(ShiftMasterImportCode importCode) {
-			// TODO Auto-generated method stub
-			return false;
+			return shiftMasterRepo.exists(companyId, importCode);
 		}
 
 		@Override

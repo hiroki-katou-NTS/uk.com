@@ -18,8 +18,6 @@ public interface ShiftMasterRepository {
 	
 	public boolean checkExistsByCd(String companyId, String shiftMaterCode);
 
-	boolean checkExistsByCaptureCode(String companyId, ShiftMasterImportCode importCode);
-
 	public void insert(ShiftMaster shiftMater);
 
 	public void update(ShiftMaster shiftMater);

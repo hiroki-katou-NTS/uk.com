@@ -33,7 +33,7 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 	private static final String SELECT_ALL = "SELECT c FROM KshmtShiftMater c ";
 
 	private static final String SELECT_ALL_DTO = " SELECT "
-			+ " new nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto(c.kshmtShiftMaterPK.companyId, c.name, c.kshmtShiftMaterPK.shiftMaterCode, c.color, c.remarks, c.workTypeCd, wt.name, wt.kshmtWorkTypePK.companyId, c.workTimeCd, wts.name, wts.kshmtWorkTimeSetPK.cid,c.colorMobile ) "
+			+ " new nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto(c.kshmtShiftMaterPK.companyId, c.name, c.kshmtShiftMaterPK.shiftMaterCode, c.color, c.remarks, c.importCode, c.workTypeCd, wt.name, wt.kshmtWorkTypePK.companyId, c.workTimeCd, wts.name, wts.kshmtWorkTimeSetPK.cid,c.colorMobile ) "
 			+ " FROM KshmtShiftMater c "
 			+ " LEFT JOIN KshmtWorkType wt on c.workTypeCd = wt.kshmtWorkTypePK.workTypeCode and c.kshmtShiftMaterPK.companyId = wt.kshmtWorkTypePK.companyId "
 			+ " LEFT JOIN KshmtWt wts on c.workTimeCd = wts.kshmtWorkTimeSetPK.worktimeCd and c.kshmtShiftMaterPK.companyId = wts.kshmtWorkTimeSetPK.cid "
@@ -53,6 +53,8 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 
 	private static final String SELECT_BY_LIST_CD_AND_CID = SELECT_ALL_DTO
 			+ " AND c.kshmtShiftMaterPK.shiftMaterCode IN :listShiftMaterCode";
+
+	private static final String SELECT_BY_IMPORT_CD_AND_CID = SELECT_BY_CID +" AND c.importCode = :importCode";
 
 	@Override
 	public List<ShiftMasterDto> getAllByCid(String companyId) {
@@ -109,7 +111,7 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 												Optional.ofNullable( rec.getString("NOTE") == null ? null : new Remarks(rec.getString("NOTE")) )),
 							rec.getString("WORKTYPE_CD"),
 							rec.getString("WORKTIME_CD"),
-							Optional.empty()	//TODO 取り込みコード追加
+						Optional.ofNullable(rec.getString("IMPORT_CD") == null ? null : new ShiftMasterImportCode(rec.getString("IMPORT_CD")))
 						);
 			});
 
@@ -202,14 +204,19 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 
 	@Override
 	public boolean exists(String companyId, ShiftMasterImportCode importCode) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.queryProxy().query(SELECT_BY_IMPORT_CD_AND_CID, KshmtShiftMater.class)
+				.setParameter("companyId", companyId)
+				.setParameter("importCode", importCode.v())
+				.getSingle(c -> c.toDomain())
+				.isPresent();
 	}
 
 	@Override
 	public Optional<ShiftMaster> getShiftMaster(String companyId, ShiftMasterImportCode importCode) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy().query(SELECT_BY_IMPORT_CD_AND_CID, KshmtShiftMater.class)
+				.setParameter("companyId", companyId)
+				.setParameter("importCode", importCode.v())
+				.getSingle(c -> c.toDomain());
 	}
 
 }
