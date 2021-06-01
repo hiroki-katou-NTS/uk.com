@@ -606,7 +606,8 @@ module nts.uk.at.view.kdp.share {
 		workUse: boolean;
 	}
 	let changeFontSize = function(element: HTMLButtonElement, type : number){
-		if(element.innerText.length < 9){
+		let text = element.innerText.replace(/(\r\n|\n|\r)/gm,"");
+		if(text.length < 9){
 			if(type == 0 && $('.btn-layout-type-0>div').length > 0) {
 				element.style.fontSize = '26px';	
 			}else{
@@ -616,9 +617,9 @@ module nts.uk.at.view.kdp.share {
 		}
 		let maxSize : number = 16;
 		if(type == 0 && $('.btn-layout-type-0>div').length > 0 ) {
-			maxSize = 16;	
+			maxSize = 20;	
 		} 
-		let fontSize = (element.offsetWidth / element.innerText.length) + (type == 0 && $('.btn-layout-type-0>div').length > 0 ? 4 : $('.btn-layout-type-0>div').length > 0 ? 4 : 1);
+		let fontSize = (element.offsetWidth / text.length) + (type == 0 && $('.btn-layout-type-0>div').length > 0 ? 4 : $('.btn-layout-type-0>div').length > 0 ? 4 : 1);
 		if(fontSize > maxSize) fontSize = maxSize;
 		element.style.fontSize = fontSize + 'px';
 	}
