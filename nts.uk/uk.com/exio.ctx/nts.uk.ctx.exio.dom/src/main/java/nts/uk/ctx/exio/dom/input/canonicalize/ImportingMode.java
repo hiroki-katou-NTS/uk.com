@@ -1,5 +1,7 @@
 package nts.uk.ctx.exio.dom.input.canonicalize;
 
+import java.util.Optional;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
@@ -40,5 +42,22 @@ public enum ImportingMode {
 	
 	public static ImportingMode valueOf(int value) {
 		return EnumAdaptor.valueOf(value, ImportingMode.class);
+	}
+	
+	/**
+	 * レコードの存在有無によって受け入れできるかどうか判定する
+	 * @param isExisting 既存データがあるか
+	 * @return
+	 */
+	public boolean canImport(boolean isExisting) {
+		
+		// 対象データを受け入れないケースは以下の2つ：
+		// 1: INSERT_ONLY だが既存データがある
+		// 2: UPDATE_ONLY だが既存データが無い
+		boolean notImportable =
+				this == INSERT_ONLY && isExisting
+				|| this == UPDATE_ONLY && !isExisting;
+		
+		return !notImportable;
 	}
 }

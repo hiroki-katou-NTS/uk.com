@@ -18,6 +18,10 @@ public interface History<H extends HistoryItem<S, D>, S extends GeneralPeriod<S,
 	
 	List<H> items();
 	
+	default boolean isPresent() {
+		return !isEmpty();
+	}
+	
 	default boolean isEmpty() {
 		return items().isEmpty();
 	}

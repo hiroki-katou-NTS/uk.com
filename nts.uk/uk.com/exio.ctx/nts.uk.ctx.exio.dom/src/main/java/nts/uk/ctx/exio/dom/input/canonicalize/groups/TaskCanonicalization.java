@@ -87,13 +87,8 @@ public class TaskCanonicalization implements GroupCanonicalization {
 		val key = createUniqueKey(revisedData);
 		Optional<Task> existing = require.getTask(context.getCompanyId(), key.frameNo, key.code);
 		
-		if (context.getMode() == INSERT_ONLY && existing.isPresent()) {
-			// 既存データがあるなら受け入れない
-			return;
-		}
-		
-		if (context.getMode() == UPDATE_ONLY && !existing.isPresent()) {
-			// 既存データが無いなら受け入れない
+		// 受け入れず無視するケース
+		if (context.getMode().canImport(existing.isPresent())) {
 			return;
 		}
 		

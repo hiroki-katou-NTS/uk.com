@@ -110,8 +110,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Canon
 		// 以下の2ケースでは受け入れない
 		// 1:「新規のみ」で既存の履歴がある
 		// 2:「上書きのみ」で既存の履歴が無い
-		if (context.getMode() == INSERT_ONLY && !existingHistory.isEmpty()
-				|| context.getMode() == UPDATE_ONLY && existingHistory.isEmpty()) {
+		if (context.getMode().canImport(existingHistory.isPresent())) {
 			return Collections.emptyList();
 		}
 		
