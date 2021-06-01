@@ -339,12 +339,7 @@ module nts.uk.at.view.kdp.share {
 							const buttons: ButtonSetting[] = [];
 							const { buttonSettings, buttonLayoutType } = cloned;
 							const { SMALL_8, LARGE_2_SMALL_4 } = LAYOUT_TYPE;
-							
-							let tg = _.maxBy(_.filter(buttonSettings, function(b) { 
-								let btnType = checkType(b.changeClockArt, b.changeCalArt, b.setPreClockArt, b.changeHalfDay, b.btnReservationArt);
-								return !(b.usrArt == 0 || (supportUsed === false && _.includes([14, 15, 16, 17, 18], btnType)) || (temporaryUsed === false && _.includes([12, 13], btnType)));
-							}), function(o) { return o.btnPositionNo; });
-							const size = tg ? tg.btnPositionNo : 0 ;
+							const size = (buttonLayoutType === LARGE_2_SMALL_4) ? 6 : 8;
 
 							for (let j = 1; j <= size; j++) {
 								const btn = _.find(buttonSettings, (btn) => btn.btnPositionNo === j);
