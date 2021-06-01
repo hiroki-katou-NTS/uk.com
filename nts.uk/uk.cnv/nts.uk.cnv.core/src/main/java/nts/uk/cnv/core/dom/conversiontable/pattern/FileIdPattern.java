@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.JoinAtr;
 import nts.uk.cnv.core.dom.conversionsql.OnSentence;
-import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
 import nts.uk.cnv.core.dom.conversionsql.TableFullName;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 
@@ -25,26 +25,30 @@ public class FileIdPattern extends ConversionPattern  {
 	private static String MAPPING_IN_COLUMN_NAME = "FILE_PATH";
 	private static String MAPPING_OUT_COLUMN_NAME = "FILE_ID";
 
+	private ConversionInfo info;
+
 	/** 変換元 **/
 	private Join sourceJoin;
 
 	private String sourceColumnName;
 
 	public FileIdPattern(ConversionInfo info, Join sourceJoin, String sourceColumnName) {
-		super(info);
+		this.info = info;
 		this.sourceJoin = sourceJoin;
 		this.sourceColumnName = sourceColumnName;
 	}
 
 	@Override
-	public ConversionSQL apply(ConversionSQL conversionSql) {
-		conversionSql.getFrom().addJoin(sourceJoin);
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
+		conversionSql.addJoin(sourceJoin);
 
 		Join mappingTableJoin = this.mappingJoin();
-		conversionSql.getFrom().addJoin(mappingTableJoin);
-
-		conversionSql.getSelect().add(
-				SelectSentence.createNotFormat(mappingTableJoin.tableName.getAlias(), MAPPING_OUT_COLUMN_NAME));
+		conversionSql.addJoin(mappingTableJoin);
+		conversionSql.add(
+				column,
+				new ColumnExpression(
+						mappingTableJoin.tableName.getAlias(),
+						MAPPING_OUT_COLUMN_NAME));
 
 		return conversionSql;
 	}

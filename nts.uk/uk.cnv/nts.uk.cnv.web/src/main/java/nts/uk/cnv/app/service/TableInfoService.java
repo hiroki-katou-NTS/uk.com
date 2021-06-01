@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.uk.cnv.app.dto.GetErpColumnsResultDto;
-import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
 import nts.uk.cnv.dom.conversiontable.ConversionTableRepository;
 import nts.uk.cnv.dom.tabledesign.ErpTableDesign;
 import nts.uk.cnv.dom.tabledesign.ErpTableDesignRepository;
@@ -25,8 +24,10 @@ public class TableInfoService {
 		return erpTableDesignRepository.getAllTableList();
 	}
 
-	public List<OneColumnConversion> getUkColumns(String category, String tableName, int recordNo) {
-		return conversionTableRepository.find(category, tableName, recordNo);
+	public List<String> getUkColumns(String category, String tableName, int recordNo) {
+		return conversionTableRepository.find(category, tableName, recordNo).stream()
+			.map(oneColCnv -> oneColCnv.getTargetColumn())
+			.collect(Collectors.toList());
 	}
 
 	public List<GetErpColumnsResultDto> getErpColumns(String tableName) {

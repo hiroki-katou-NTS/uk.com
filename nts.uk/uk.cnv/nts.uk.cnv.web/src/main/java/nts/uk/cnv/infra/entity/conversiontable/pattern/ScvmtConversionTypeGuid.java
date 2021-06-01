@@ -12,8 +12,8 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.GuidPattern;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
@@ -44,8 +44,8 @@ public class ScvmtConversionTypeGuid extends JpaEntity implements Serializable {
 		return pk;
 	}
 
-	public GuidPattern toDomain(ConversionInfo info) {
-		return new GuidPattern(info);
+	public GuidPattern toDomain(DatabaseSpec spec) {
+		return new GuidPattern(spec);
 	}
 
 	public static ScvmtConversionTypeGuid toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {

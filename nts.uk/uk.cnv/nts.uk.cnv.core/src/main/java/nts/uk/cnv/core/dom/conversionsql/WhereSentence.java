@@ -27,7 +27,7 @@ public class WhereSentence {
 	private Optional<ColumnExpression> right;
 
 	private String sql() {
-		return left.sql() + " " + operator.getSign() + " " + right.orElse(new ColumnExpression()).sql();
+		return left.sql() + " " + operator.getSign() + " " + right.orElse(new ColumnExpression("")).sql();
 	}
 
 	public static String join(List<WhereSentence> sentences) {
@@ -48,7 +48,7 @@ public class WhereSentence {
 					 whereList.add(new WhereSentence(
 							 new ColumnName("", expressions[0]),
 							 operator,
-							 Optional.of(new ColumnExpression(Optional.empty(), expressions[1]))
+							 Optional.of(new ColumnExpression(expressions[1]))
 						));
 					 break;
 				}

@@ -13,10 +13,10 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.RelationalOperator;
-import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.FixedValueWithConditionPattern;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
@@ -62,9 +62,9 @@ public class ScvmtConversionTypeFixedValueWithCondition extends JpaEntity implem
 		return pk;
 	}
 
-	public FixedValueWithConditionPattern toDomain(ConversionInfo info, Join sourcejoin) {
+	public FixedValueWithConditionPattern toDomain(DatabaseSpec spec, Join sourcejoin) {
 		return new FixedValueWithConditionPattern(
-				info,
+				spec,
 				sourcejoin,
 				this.sourceColumnName,
 				RelationalOperator.valueOf(this.operator),

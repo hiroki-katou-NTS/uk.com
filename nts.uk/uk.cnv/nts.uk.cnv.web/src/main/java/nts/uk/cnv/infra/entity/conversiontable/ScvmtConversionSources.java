@@ -1,6 +1,7 @@
 package nts.uk.cnv.infra.entity.conversiontable;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.Column;
@@ -61,7 +62,7 @@ public class ScvmtConversionSources extends JpaEntity implements Serializable  {
 		return sourceId;
 	}
 
-	public ConversionSource toDomain() {
+	public ConversionSource toDomain(List<String> columns) {
 		return
 			new ConversionSource(
 				this.getSourceId(),
@@ -72,7 +73,8 @@ public class ScvmtConversionSources extends JpaEntity implements Serializable  {
 				wrapOptional(this.dateColumnName),
 				wrapOptional(this.startColumnName),
 				wrapOptional(this.endColumnName),
-				wrapOptional(this.dateType)
+				wrapOptional(this.dateType),
+				columns
 			);
 	}
 

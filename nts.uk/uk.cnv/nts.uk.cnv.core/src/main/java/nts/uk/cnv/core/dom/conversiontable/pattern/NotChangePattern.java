@@ -1,9 +1,11 @@
 package nts.uk.cnv.core.dom.conversiontable.pattern;
 
 import lombok.Getter;
+import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
+import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.Join;
-import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
+import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 
 /**
@@ -12,22 +14,31 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
  */
 @Getter
 public class NotChangePattern extends ConversionPattern {
+	ConversionInfo info;
 
 	private Join join;
 
 	private String sourceColumn;
 
 	public NotChangePattern(ConversionInfo info, Join join, String sourceColumn) {
-		super(info);
+		this.info = info;
 		this.join = join;
 		this.sourceColumn = sourceColumn;
 	}
 
 	@Override
-	public ConversionSQL apply(ConversionSQL conversionSql) {
-		conversionSql.getFrom().addJoin(join);
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
 
-		conversionSql.getSelect().add(SelectSentence.createNotFormat(join.tableName.getAlias(), sourceColumn));
+		conversionSql.addJoin(join);
+
+		if(info.getType() == ConversionCodeType.UPDATE) {
+			boolean isPkColumn = join.onSentences.stream().anyMatch(on -> on.getRight().equals(column));
+			if (isPkColumn) return conversionSql;
+		}
+
+		conversionSql.add(
+				column,
+				new ColumnExpression(join.tableName.getAlias(), sourceColumn));
 		return conversionSql;
 	}
 

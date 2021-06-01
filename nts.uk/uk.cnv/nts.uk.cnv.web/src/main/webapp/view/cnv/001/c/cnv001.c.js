@@ -29,7 +29,8 @@ var servicePath = {
     geterpcolumns: "/nts.uk.cnv.web/webapi/cnv/tableinfo/geterpcolumns",
     find: "/nts.uk.cnv.web/webapi/cnv/conversiontable/find",
     regist: "/nts.uk.cnv.web/webapi/cnv/conversiontable/regist",
-    test: "/nts.uk.cnv.web/webapi/cnv/conversiontable/test"
+    test: "/nts.uk.cnv.web/webapi/cnv/conversiontable/test",
+    test_update: "/nts.uk.cnv.web/webapi/cnv/conversiontable/test_update"
 }
 
 var category;
@@ -44,6 +45,7 @@ var erpColumnsList;
 var registeredColumnList;
 
 var TabMap = {
+	"NULL": "#null",
 	"NONE": "#none",
 	"CODE_TO_ID": "#codeToId",
 	"CODE_TO_CODE": "#codeToCode",
@@ -120,35 +122,33 @@ $(function(){
 				tableName: ukTable,
 				recordNo: recordNo
 			})).done(function (res) {
-				registeredColumnList = $.map(res, function (value, index) {
-					return value.targetColumn;
-				});
+				registeredColumnList = res;
 
 				viewUkColumnList();
 			}).fail(function(rej){
 				console.log(rej);
 			});
-		}).fail(function(rej){
-			console.log(rej);
-		});
 
-		$.ajax(ajaxOption.build(servicePath.geterpcolumns,{
-			tableName: erpTable
-		})).done(function (res) {
-			var options = $.map(res, function (value, index) {
-				return $('<option>', { value: value.columnName, text: value.columnName + String.fromCharCode( 160 ).repeat(25-getLen(value.columnName)) + " : " + value.dataType });
-			});
-
-			erpColumnsList = $.map(res, function (value, index) {
-					return new columnData(value.name, value.type);
+			$.ajax(ajaxOption.build(servicePath.geterpcolumns,{
+				tableName: erpTable
+			})).done(function (res) {
+				var options = $.map(res, function (value, index) {
+					return $('<option>', { value: value.columnName, text: value.columnName + String.fromCharCode( 160 ).repeat(25-getLen(value.columnName)) + " : " + value.dataType });
 				});
 
-			$(".selSourceColumn > option").remove();
-			$(".selSourceColumn").append(options);
+				erpColumnsList = $.map(res, function (value, index) {
+						return new columnData(value.name, value.type);
+					});
 
-			$(".selNullable").prepend($('<option>', { value: "", text:"-- 未選択 --" }));
-			$(".selNullable").val("");
+				$(".selSourceColumn > option").remove();
+				$(".selSourceColumn").append(options);
 
+				$(".selNullable").prepend($('<option>', { value: "", text:"-- 未選択 --" }));
+				$(".selNullable").val("");
+
+			}).fail(function(rej){
+				console.log(rej);
+			});
 		}).fail(function(rej){
 			console.log(rej);
 		});
@@ -235,6 +235,31 @@ $(function(){
 
 	});
 
+	$("#btnTest_update").click(function() {
+
+		var targetColumn = $("#selUkColumns option:selected").val();
+
+		if(targetColumn == null || targetColumn === "" || typeof targetColumn === "undefined") {
+			showMsg("対象のUK列名を選択してください");
+			return;
+		}
+
+		$("#txtTestOutput").val("");
+		$.ajax(ajaxOption.buildWithDataType(servicePath.test_update, "text", {
+			category: category,
+			table: ukTable,
+			recordNo: recordNo,
+			ukColumn: targetColumn
+		})).done(function (res) {
+			$("#txtTestOutput").val(res);
+			$("#msgTestDialog").dialog('open');
+		}).fail(function(rej){
+			console.log(rej);
+			$("#txtTestOutput").val("テスト出力処理でエラーが発生しました");
+			$("#msgTestDialog").dialog('open');
+		});
+	});
+
 	$("#selConvType").change(function() {
 		changeConvType();
 	});
@@ -243,7 +268,7 @@ $(function(){
 		var selectedType = $("#selConvType").val();
 
 		loadPage();
-		if(selectedType === null || selectedType === "NULL") return;
+		if(selectedType === null) return;
 
 		var tabId = TabMap[selectedType];
 		$(".ui-tab a[href='" + tabId + "']").trigger("click");
@@ -264,13 +289,11 @@ $(function(){
 			return;
 		}
 
-		$.ajax(ajaxOption.build(servicePath.getukcolumns,{
-			category: category,
-			tableName: parentTable,
-			recordNo: recordNo
-		})).done(function (res) {
+		$.ajax(
+				$.extend({url:server + servicePath.getukcolumns_oruta + '/' + tableId + '/not-accepted'}, {type: "GET"})
+		).done(function (res) {
 			var options = $.map(res, function (value, index) {
-				return $('<option>', { value: value.columnName, text: value.columnName + String.fromCharCode(160).repeat(25-getLen(value.columnName)) + " : " + value.dataType });
+				return $('<option>', { value: value.name, text: value.name + String.fromCharCode(160).repeat(25-getLen(value.name)) + " : " + value.dataType });
 			});
 
 			$(".selSourceParentColumn > option").remove();

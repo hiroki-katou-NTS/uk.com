@@ -1,8 +1,12 @@
 package nts.uk.cnv.core.dom.conversiontable.pattern;
 
 import lombok.Getter;
+import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
+import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
-import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
+import nts.uk.cnv.core.dom.conversionsql.ConversionUpdateSQL;
+import nts.uk.cnv.core.dom.conversionsql.Join;
+import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 
 /**
@@ -12,23 +16,34 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
  */
 @Getter
 public class FixedValuePattern extends ConversionPattern {
+	private ConversionInfo info;
+
+	private Join source;
 
 	private boolean isParamater;
 
 	private String expression;
 
-	public FixedValuePattern(ConversionInfo info, boolean isParamater, String expression) {
-		super(info);
+	public FixedValuePattern(ConversionInfo info, Join source, boolean isParamater, String expression) {
+		this.info = info;
+		this.source = source;
 		this.isParamater = isParamater;
 		this.expression = expression;
 	}
 
 	@Override
-	public ConversionSQL apply(ConversionSQL conversionSql) {
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
 		String newExpression = (isParamater)
 				? info.getDatebaseType().spec().param(expression)
 				: expression;
-		conversionSql.getSelect().add(SelectSentence.createNotFormat("", newExpression));
+		if(info.getType() == ConversionCodeType.UPDATE) {
+			conversionSql.addJoin(source);
+			((ConversionUpdateSQL)conversionSql).addOnSentense(column, newExpression);
+		}
+		else {
+			conversionSql.add(column, new ColumnExpression(newExpression));
+		}
+
 		return conversionSql;
 	}
 

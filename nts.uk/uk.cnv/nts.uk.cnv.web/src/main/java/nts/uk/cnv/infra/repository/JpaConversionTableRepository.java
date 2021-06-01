@@ -36,7 +36,7 @@ public class JpaConversionTableRepository extends JpaRepository implements Conve
 			.getList();
 
 		List<OneColumnConversion> columns = entities.stream()
-				.map(entity -> entity.toDomain(info, source.getJoin(info)))
+				.map(entity -> entity.toDomain(info, info.getJoin(source)))
 				.collect(Collectors.toList());
 
 		return entities.stream()
@@ -81,6 +81,9 @@ public class JpaConversionTableRepository extends JpaRepository implements Conve
 		this.getEntityManager().flush();
 	}
 
+	/**
+	 * 画面表示用のためConversionInfoとJoinがダミー。コンバートコードは構築不可
+	 */
 	@Override
 	public List<OneColumnConversion> find(String category, String tableName, int recordNo) {
 		String query =
@@ -93,7 +96,6 @@ public class JpaConversionTableRepository extends JpaRepository implements Conve
 			.setParameter("table", tableName)
 			.setParameter("recordNo", recordNo)
 			.getList();
-
 
 		return entities.stream()
 				.map(entity -> entity.toDomain(

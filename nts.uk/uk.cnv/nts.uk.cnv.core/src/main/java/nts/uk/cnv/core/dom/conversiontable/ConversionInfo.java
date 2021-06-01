@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nemunoki.oruta.shr.tabledefinetype.databasetype.DatabaseType;
+import nts.uk.cnv.core.dom.conversionsql.Join;
+import nts.uk.cnv.core.dom.conversionsql.TableFullName;
 
 /**
  * コンバート情報
@@ -33,6 +35,8 @@ public class ConversionInfo {
 	/** 契約コード (オンプレの場合、オール0) **/
 	private String ContractCode;
 
+	private ConversionCodeType type;
+
 	public static ConversionInfo createDummry() {
 		return new ConversionInfo(
 				DatabaseType.sqlserver,
@@ -42,7 +46,20 @@ public class ConversionInfo {
 				"dbo",
 				"UK_CNV",
 				"dbo",
-				"000000000000"
+				"000000000000",
+				ConversionCodeType.INSERT
 			);
+	}
+
+	public TableFullName getTargetTable(String tableName) {
+		return new TableFullName(
+				this.targetDatabaseName,
+				this.targetSchema, tableName, type.getTagetAlias());
+	}
+
+	public Join getJoin(ConversionSource source) {
+		return this.type == ConversionCodeType.INSERT
+				? source.getMainJoin()
+				: source.getInnerJoin();
 	}
 }

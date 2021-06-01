@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.cnv.dom.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.tabledesign.ErpTableDesign;
@@ -13,6 +15,7 @@ import nts.uk.cnv.infra.entity.tabledesign.ScvmtErpColumnDesign;
 import nts.uk.cnv.infra.entity.tabledesign.ScvmtErpColumnDesignPk;
 import nts.uk.cnv.infra.entity.tabledesign.ScvmtErpTableDesign;
 
+@Stateless
 public class JpaErpTableDesignRepository extends JpaRepository implements ErpTableDesignRepository {
 
 	@Override
@@ -51,6 +54,7 @@ public class JpaErpTableDesignRepository extends JpaRepository implements ErpTab
 					columnDesign.getDefaultValue(),
 					columnDesign.getComment(),
 					columnDesign.getDispOrder(),
+					(columnDesign.isPk() ? 1 : 0),
 					null
 				);
 	}
@@ -78,5 +82,15 @@ public class JpaErpTableDesignRepository extends JpaRepository implements ErpTab
 		});
 
 		return tablelist;
+	}
+
+	@Override
+	public List<String> getPkColumns(String tableName) {
+		String sql = "SELECT cd FROM ScvmtErpColumnDesign cd"
+				+ " WHERE cd.scvmtErpColumnDesignPk.tableName = :tableName"
+				+ " AND cd.pk = 1";
+		return this.queryProxy().query(sql, ScvmtErpColumnDesign.class)
+				.setParameter("tableName", tableName)
+				.getList(cd -> cd.getName());
 	}
 }

@@ -1,14 +1,10 @@
 package nts.uk.cnv.core.dom.conversiontable.pattern;
 
-import java.util.Optional;
-import java.util.TreeMap;
-
 import lombok.Getter;
 import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
+import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.Join;
-import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
-import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 
 @Getter
 public class TimeWithDayAttrPattern extends ConversionPattern {
@@ -19,17 +15,14 @@ public class TimeWithDayAttrPattern extends ConversionPattern {
 
 	private String dayAttrColumn;
 
-	public TimeWithDayAttrPattern(ConversionInfo info, Join sourceJoin, String timeColumn, String dayAttrColumn) {
-		super(info);
+	public TimeWithDayAttrPattern(Join sourceJoin, String timeColumn, String dayAttrColumn) {
 		this.sourceJoin = sourceJoin;
 		this.timeColumn = timeColumn;
 		this.dayAttrColumn = dayAttrColumn;
 	}
 
 	@Override
-	public ConversionSQL apply(ConversionSQL conversionSql) {
-		conversionSql.getFrom().addJoin(sourceJoin);
-
+	public ConversionSQL apply(ColumnName columnName, ConversionSQL conversionSql) {
 		//0:当日　1:翌日　2:翌々日　9:前日
 		String caseSentence =
 			"CASE " + this.dayAttrColumn
@@ -40,12 +33,8 @@ public class TimeWithDayAttrPattern extends ConversionPattern {
 			+ "   ELSE 0 "
 			+ " END";
 
-		conversionSql.getSelect().add(
-			new SelectSentence(
-				new ColumnExpression(Optional.empty(), caseSentence),
-				new TreeMap<>()
-			)
-		);
+		conversionSql.addJoin(sourceJoin);
+		conversionSql.add(columnName, new ColumnExpression(caseSentence));
 		return conversionSql;
 	}
 

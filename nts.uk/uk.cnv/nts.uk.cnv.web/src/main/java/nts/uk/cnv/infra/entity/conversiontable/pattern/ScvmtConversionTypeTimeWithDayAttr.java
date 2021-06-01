@@ -15,7 +15,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.core.dom.conversionsql.Join;
-import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.TimeWithDayAttrPattern;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
@@ -52,9 +51,8 @@ public class ScvmtConversionTypeTimeWithDayAttr extends JpaEntity implements Ser
 		return pk;
 	}
 
-	public TimeWithDayAttrPattern toDomain(ConversionInfo info, Join sourceJoin) {
+	public TimeWithDayAttrPattern toDomain(Join sourceJoin) {
 		return new TimeWithDayAttrPattern(
-				info,
 				sourceJoin,
 				this.timeColumnName,
 				this.dayAttrColumnName

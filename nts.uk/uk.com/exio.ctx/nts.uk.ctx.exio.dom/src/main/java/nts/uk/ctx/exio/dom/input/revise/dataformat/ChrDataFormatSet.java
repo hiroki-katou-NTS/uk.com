@@ -9,8 +9,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.dom.dataformat.value.AcceptedDigit;
 import nts.uk.ctx.exio.dom.dataformat.value.DataFormatCharacterDigit;
 import nts.uk.ctx.exio.dom.dataformat.value.FixedLengthEditingMethod;
-import nts.uk.ctx.exio.dom.exi.codeconvert.CodeConvertCode;
 import nts.uk.ctx.exio.dom.exi.dataformat.DataSettingFixedValue;
+import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.CodeConvertCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**

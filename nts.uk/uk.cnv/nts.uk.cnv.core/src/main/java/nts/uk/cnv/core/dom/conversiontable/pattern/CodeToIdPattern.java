@@ -12,7 +12,6 @@ import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.JoinAtr;
 import nts.uk.cnv.core.dom.conversionsql.OnSentence;
 import nts.uk.cnv.core.dom.conversionsql.RelationalOperator;
-import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
 import nts.uk.cnv.core.dom.conversionsql.TableFullName;
 import nts.uk.cnv.core.dom.conversionsql.WhereSentence;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
@@ -59,6 +58,8 @@ public class CodeToIdPattern extends ConversionPattern {
 		}
 	}
 
+	private ConversionInfo info;
+
 	/** 変換元 **/
 	private Join sourceJoin;
 
@@ -69,7 +70,7 @@ public class CodeToIdPattern extends ConversionPattern {
 	private Optional<String> sourceCcdColumnName;
 
 	public CodeToIdPattern(ConversionInfo info, Join join, String sourceColumnName, String codeToIdType, String sourceCcdColumnName) {
-		super(info);
+		this.info = info;
 		this.sourceJoin = join;
 		this.sourceColumnName = sourceColumnName;
 		this.codeToIdType = CodeToIdType.valueOf(codeToIdType);
@@ -80,21 +81,24 @@ public class CodeToIdPattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ConversionSQL conversionSql) {
-		conversionSql.getFrom().addJoin(sourceJoin);
+	public ConversionSQL apply(ColumnName columnName, ConversionSQL conversionSql) {
+		conversionSql.addJoin(sourceJoin);
 
 		Join idConvertJoin = this.idConvertJoin();
-		conversionSql.getFrom().addJoin(idConvertJoin);
+		conversionSql.addJoin(idConvertJoin);
 
-		conversionSql.getSelect().add(
-				SelectSentence.createNotFormat(idConvertJoin.getTableName().getAlias(), this.codeToIdType.getIdColumnName()));
+		conversionSql.add(
+			columnName,
+			new ColumnExpression(
+				idConvertJoin.getTableName().getAlias(),
+				this.codeToIdType.getIdColumnName()));
 
 		if (this.sourceCcdColumnName.isPresent()) {
-			conversionSql.getWhere().add( new WhereSentence(
+			conversionSql.addWhere( new WhereSentence(
 					new ColumnName(idConvertJoin.getTableName().getAlias(), this.codeToIdType.getCcdColumnName()),
 					RelationalOperator.Equal,
 					Optional.of(new ColumnExpression(
-							Optional.of(this.sourceJoin.getTableName().getAlias()),
+							this.sourceJoin.getTableName().getAlias(),
 							this.sourceCcdColumnName.get()
 						))
 				));

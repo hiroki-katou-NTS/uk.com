@@ -27,12 +27,12 @@ public class ExacErrorLogManager {
         		lastLogSeqNumber,
     			this.cid,
     			this.externalProcessId,
-    			Optional.ofNullable(csvItem.getName()),
+    			Optional.ofNullable(csvItem.getCsvItemName()),
     			Optional.ofNullable(editedValue),
     			Optional.ofNullable(TextResource.localize(errorId)),
     			new AcceptanceLineNumber(lineNo),
 				GeneralDateTime.now(),
-				Optional.ofNullable(csvItem.getAcceptItem().getItemName()),
+				Optional.ofNullable(csvItem.getItemName()),
 				errorDiv
     		);
     	this.logs.add(log);
@@ -40,17 +40,16 @@ public class ExacErrorLogManager {
 
 	public void addLogByTableName(CsvItem csvItem, String editedValue, int lineNo, String errorId, ErrorOccurrenceIndicator errorDiv) {
     	this.lastLogSeqNumber+=1;
-    	val acceptItem = csvItem.getAcceptItem();
         val log = new ExacErrorLog(
         		lastLogSeqNumber,
     			this.cid,
     			this.externalProcessId,
-    			Optional.ofNullable(acceptItem.getTableName() + "[" + acceptItem.getColumnName() + "]"),
+    			Optional.ofNullable("" + "[" + "" + "]"),
     			Optional.ofNullable(editedValue),
     			Optional.ofNullable(TextResource.localize(errorId)),
     			new AcceptanceLineNumber(lineNo),
 				GeneralDateTime.now(),
-				Optional.ofNullable(acceptItem.getItemName()),
+				Optional.ofNullable(csvItem.getCsvItemName()),
 				errorDiv
     		);
     	this.logs.add(log);

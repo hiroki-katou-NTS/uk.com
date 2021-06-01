@@ -1,21 +1,24 @@
 package nts.uk.cnv.core.dom.conversionsql;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import lombok.AllArgsConstructor;
 
 /**
  * INSERT句
  * @author ai_muto
  *
  */
-@AllArgsConstructor
 public class InsertSentence {
 	/** テーブル名 **/
 	private TableFullName table;
 	/** 列の式リスト **/
 	private List<ColumnExpression> expressions;
+
+	public InsertSentence(TableFullName table) {
+		this.table = table;
+		this.expressions = new ArrayList<>();
+	}
 
 	public void addExpression(ColumnExpression value) {
 		expressions.add(value);

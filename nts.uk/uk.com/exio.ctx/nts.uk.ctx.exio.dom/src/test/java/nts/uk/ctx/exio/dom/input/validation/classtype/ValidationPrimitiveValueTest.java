@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
-import nts.uk.ctx.exio.dom.input.validation.systemrange.ValidationPrimitiveValue;
+import nts.uk.ctx.exio.dom.input.validation.condition.system.ValidationPrimitiveValue;
 
 public class ValidationPrimitiveValueTest {
 

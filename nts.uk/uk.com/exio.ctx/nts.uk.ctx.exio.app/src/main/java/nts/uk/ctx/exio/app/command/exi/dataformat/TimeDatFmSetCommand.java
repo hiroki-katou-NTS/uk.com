@@ -1,7 +1,7 @@
 package nts.uk.ctx.exio.app.command.exi.dataformat;
 
 import lombok.Value;
-import nts.uk.ctx.exio.dom.input.revise.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.input.revise.ItemType;
 import nts.uk.ctx.exio.dom.input.revise.dataformat.TimeDataFormatSet;
 
 @Value

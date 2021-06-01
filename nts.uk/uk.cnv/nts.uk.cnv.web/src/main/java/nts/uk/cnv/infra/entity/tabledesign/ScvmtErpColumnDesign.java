@@ -49,6 +49,9 @@ public class ScvmtErpColumnDesign extends JpaEntity implements Serializable {
 	@Column(name = "DISPORDER")
 	private int dispOrder;
 
+	@Column(name = "PK")
+	private int pk;
+
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "TABLE_NAME", referencedColumnName = "NAME")
@@ -68,7 +71,9 @@ public class ScvmtErpColumnDesign extends JpaEntity implements Serializable {
 				(nullable == 1 ? true : false),
 				defaultValue,
 				comment,
-				dispOrder);
+				dispOrder,
+				(pk == 1 ? true : false)
+			);
 	}
 
 }

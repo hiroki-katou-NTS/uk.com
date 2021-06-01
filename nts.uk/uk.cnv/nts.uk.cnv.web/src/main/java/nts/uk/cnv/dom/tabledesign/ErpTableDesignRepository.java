@@ -10,5 +10,6 @@ public interface ErpTableDesignRepository {
 	boolean exists(String tableName);
 
 	Optional<ErpTableDesign> find(String tablename);
-	public List<String> getAllTableList();
+	List<String> getAllTableList();
+	List<String> getPkColumns(String tablename);
 }

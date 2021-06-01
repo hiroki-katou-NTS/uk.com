@@ -1,6 +1,6 @@
 package nts.uk.cnv.core.dom.conversionsql;
 
-import java.util.Arrays;
+import com.google.common.base.Strings;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -33,7 +33,18 @@ public class TableFullName {
 	/** エイリアス */
 	protected String alias;
 
+	public static TableFullName createMainTableName(String mainTableName) {
+		return new TableFullName("", "", mainTableName, "");
+	}
+
 	public String fullName() {
-		return String.join(".", Arrays.asList(this.databaseName, this.schema, this.name));
+		return
+				(Strings.isNullOrEmpty(this.schema)
+						? ""
+						: Strings.isNullOrEmpty(this.databaseName)
+							? this.schema + "."
+							: this.databaseName + "." + this.schema + "."
+				)
+				+ this.name;
 	}
 }

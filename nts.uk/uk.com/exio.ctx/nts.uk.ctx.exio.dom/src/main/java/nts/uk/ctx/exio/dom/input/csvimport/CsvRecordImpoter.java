@@ -19,6 +19,7 @@ import nts.uk.ctx.exio.dom.exi.csvimport.RequiredMasterDataNotFoundException;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryItem;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 import nts.uk.ctx.exio.dom.input.revise.ReviseService;
+import nts.uk.ctx.exio.dom.input.setting.source.ExternalImportCharset;
 
 /**
  * CSVの1レコードを取り込む
@@ -41,7 +42,7 @@ public class CsvRecordImpoter {
 	/**
 	 * 文字コード
 	 */
-	private ExiCharset charset;
+	private ExternalImportCharset charset;
 	
 	public Integer getCsvDataItemLineNumber() {
 		return this.csvDataItemLineNumber.isPresent()
@@ -68,7 +69,7 @@ public class CsvRecordImpoter {
 				? Optional.empty()
 				: Optional.of(new AcceptanceLineNumber(startLine));
 
-		this.charset = ExiCharset.valueOf(encoding);
+		this.charset = ExternalImportCharset.valueOf(encoding);
 	}
 	
 	public List<CsvRecord> read(Require require) throws IOException, RequiredMasterDataNotFoundException {
@@ -101,9 +102,9 @@ public class CsvRecordImpoter {
 
 				val acceptSetItem = require.getStdAcceptItem(csvItemNo);
 				val accItem = require.getExternalAcceptCategoryItem(acceptSetItem.getAcceptItemNumber());
-				items.add(new CsvItem(itemName, csvParsedLine.getColumn(itemName).toString(), acceptSetItem, accItem));
+//				items.add(new CsvItem(itemName, csvParsedLine.getColumn(itemName).toString(), acceptSetItem, accItem));
 			}
-			result.add(new CsvRecord(items));
+//			result.add(new CsvRecord(items));
 		}
 		return result;
 	}

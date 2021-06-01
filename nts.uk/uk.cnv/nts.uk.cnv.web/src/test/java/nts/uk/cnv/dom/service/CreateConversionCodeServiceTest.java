@@ -16,6 +16,7 @@ import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nemunoki.oruta.shr.tabledefinetype.databasetype.DatabaseType;
+import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.ConversionRecord;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
@@ -36,7 +37,10 @@ public class CreateConversionCodeServiceTest {
 
 	@Test
 	public void test_methodCall() {
-		ConversionInfo info = new ConversionInfo(DatabaseType.sqlserver, "KINJIROU", "dbo", "UK", "dbo", "UK_CNV", "dbo", "000000000000");
+		ConversionInfo info = new ConversionInfo(
+				DatabaseType.sqlserver,
+				"KINJIROU", "dbo", "UK", "dbo", "UK_CNV", "dbo", "000000000000",
+				ConversionCodeType.INSERT);
 		List<String> dummyCategories = Arrays.asList("", "2_PERSON", "3_WEBMENU");
 		List<String> dummyTables = Arrays.asList("TABLE_1", "TABLE_2");
 		List<ConversionRecord> dummyRecords = new ArrayList<>();
@@ -96,7 +100,10 @@ public class CreateConversionCodeServiceTest {
 
 	@Test
 	public void test_sqlServer_simple() {
-		ConversionInfo info = new ConversionInfo(DatabaseType.sqlserver, "KINJIROU", "dbo", "UK", "dbo", "UK_CNV", "dbo", "000000000000");
+		ConversionInfo info = new ConversionInfo(
+				DatabaseType.sqlserver,
+				"KINJIROU", "dbo", "UK", "dbo", "UK_CNV", "dbo", "000000000000",
+				ConversionCodeType.INSERT);
 		List<ConversionRecord> dummyRecords = new ArrayList<>();
 		dummyRecords.add(new ConversionRecord("1_COMPANY", "TABLE_1", 1, "guidxxxxxxxxx", "レコードの説明"));
 

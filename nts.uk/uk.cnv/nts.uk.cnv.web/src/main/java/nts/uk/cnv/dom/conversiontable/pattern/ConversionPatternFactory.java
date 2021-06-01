@@ -11,6 +11,7 @@ import nts.uk.cnv.core.dom.conversionsql.JoinAtr;
 import nts.uk.cnv.core.dom.conversionsql.OnSentence;
 import nts.uk.cnv.core.dom.conversionsql.RelationalOperator;
 import nts.uk.cnv.core.dom.conversionsql.TableFullName;
+import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.CodeToCodePattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.CodeToIdPattern;
@@ -36,7 +37,8 @@ public class ConversionPatternFactory {
 				"KINJIROU_ERP", "dbo",
 				"KINJIROU_UK", "dbo",
 				"UK_CNV", "dbo",
-				"000000000000"
+				"000000000000",
+				ConversionCodeType.INSERT
 			);
 		Join join = new Join(
 				new TableFullName("KINJIROU_ERP", "dbo", param.getSourceTable(), "base"),
@@ -61,11 +63,11 @@ public class ConversionPatternFactory {
 						param.getSourceColumn_codeToCode(),
 						param.getCodeToCodeType());
 			case FixedValue:
-				return new FixedValuePattern(info,
+				return new FixedValuePattern(info, join,
 						param.isFixedValueIsParam(),
 						param.getFixedValue());
 			case FixedValueWithCondition:
-				return new FixedValueWithConditionPattern(info, join,
+				return new FixedValueWithConditionPattern(info.getDatebaseType().spec(), join,
 						param.getSourceColumn_fixedCalueWithCond(),
 						RelationalOperator.parse(param.getOperator()),
 						param.getConditionValue(),
@@ -83,7 +85,7 @@ public class ConversionPatternFactory {
 					);
 				}
 
-				return new ParentJoinPattern(info, join,
+				return new ParentJoinPattern(join,
 						new Join(
 								new TableFullName("KINJIROU_ERP", "dbo", param.getParentTable(), "parent"),
 								JoinAtr.InnerJoin,
@@ -91,12 +93,12 @@ public class ConversionPatternFactory {
 						param.getParentTable(),
 						param.getSourceColumn_parent());
 			case StringConcat:
-				return new StringConcatPattern(info, join,
+				return new StringConcatPattern(info.getDatebaseType().spec(), join,
 						param.getSourceColumn1(),
 						param.getSourceColumn2(),
 						(param.getDelimiter().isEmpty()) ? Optional.empty() : Optional.of(param.getDelimiter()));
 			case TimeWithDayAttr:
-				return new TimeWithDayAttrPattern(info, join,
+				return new TimeWithDayAttrPattern(join,
 						param.getSourceColumn_timeWithDayAttr_time(),
 						param.getSourceColumn_timeWithDayAttr_dayAttr());
 			case DateTimeMerge:
@@ -116,7 +118,7 @@ public class ConversionPatternFactory {
 						.yyyymmddhhmiss(param.getSourceColumn_yyyymmddhhmiss())
 						.build();
 			case Guid:
-				return new GuidPattern(info);
+				return new GuidPattern(info.getDatebaseType().spec());
 			case Password:
 				return new PasswordPattern(info, join, param.getSourceColumn_password());
 			case FileId:

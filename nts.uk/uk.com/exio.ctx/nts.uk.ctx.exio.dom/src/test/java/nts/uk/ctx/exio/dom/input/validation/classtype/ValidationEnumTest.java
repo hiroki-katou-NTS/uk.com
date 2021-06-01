@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
-import nts.uk.ctx.exio.dom.input.validation.systemrange.ValidationEnum;
+import nts.uk.ctx.exio.dom.input.validation.condition.system.ValidationEnum;
 
 public class ValidationEnumTest {
 

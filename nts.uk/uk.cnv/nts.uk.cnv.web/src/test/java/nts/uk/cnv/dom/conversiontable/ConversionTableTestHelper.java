@@ -59,7 +59,6 @@ public class ConversionTableTestHelper {
 							"CCD",
 							"PARENT",
 							new ParentJoinPattern(
-									info,
 									new Join(new TableFullName(info.getSourceDatabaseName(), info.getSourceSchema(), "kyotukaisya_m", Constants.BaseTableAlias),
 									JoinAtr.Main,
 									null),
@@ -73,7 +72,13 @@ public class ConversionTableTestHelper {
 					new OneColumnConversion(
 							"CONTRACT_CD",
 							"FIXED_VALUE",
-							new FixedValuePattern(info, true, Constants.ContractCodeParamName)
+							new FixedValuePattern(
+									info,
+									new Join(new TableFullName(info.getSourceDatabaseName(), info.getSourceSchema(), "kyotukaisya_m", Constants.BaseTableAlias),
+											JoinAtr.Main,
+											null),
+									true,
+									Constants.ContractCodeParamName)
 					),
 					new OneColumnConversion(
 							"NAME",
