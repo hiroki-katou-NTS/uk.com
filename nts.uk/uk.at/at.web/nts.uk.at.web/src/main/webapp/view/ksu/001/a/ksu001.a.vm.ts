@@ -4993,6 +4993,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.A1_7_3_line2(line2);
         }
 
+        checkVisableByAuth(scheModifyAuth, functionNo) {
+            let obj = _.find(scheModifyAuth, function(o) { return o.functionNo == functionNo; });
+            return !_.isNil(obj) ? obj.isAvailable : false;
+        }
+
         displayButtonsHerder(data) {
             let self = this;
             // các domain liên quan đến phần ẩn hiện
@@ -5010,24 +5015,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let scheModifyAuthCtrlCommon = data.dataBasicDto.scheModifyAuthCtrlCommon;  // list
             let scheModifyAuthCtrlByWorkplace = data.dataBasicDto.scheModifyAuthCtrlByWorkplace; // list
 
-            let funcNo1_Common = true; // _.find(scheModifyAuthCtrlCommon, function(o) { return o.functionNo==1; }).isAvailable; // 休暇状況参照 Vacation status reference
-            let funcNo2_Common = true; // _.find(scheModifyAuthCtrlCommon, function(o) { return o.functionNo==2; }).isAvailable; // 修正履歴参照 Refer to revision history
-            let funcNo1_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==1; }).isAvailable; // 登録 Registration
-            let funcNo2_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==2; }).isAvailable; // 確定 Confirm
-            let funcNo3_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==3; }).isAvailable; // 完了 Done
-            let funcNo4_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==4; }).isAvailable; // アラームチェック Alarm check
-            let funcNo5_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==5; }).isAvailable; // 出力 output
-            let funcNo6_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==6; }).isAvailable; // 取り込み Capture
-            let funcNo7_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==7; }).isAvailable; // 勤務希望 Hope to work
-            let funcNo8_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==8; }).isAvailable; // 公開 Release
-            let funcNo9_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==9; }).isAvailable; // 応援登録 Support registration
-            let funcNo10_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==10; }).isAvailable; // 並び順設定 Sort order setting
-            let funcNo11_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==11; }).isAvailable; // チーム設定 Team settings
-            let funcNo12_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==12; }).isAvailable; // ランク分け Ranking
-            let funcNo13_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==13; }).isAvailable; // 行事登録 Event registration
-            let funcNo14_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==14; }).isAvailable; // 集計欄の金額表示 Amount display in the summary column
-            let funcNo15_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==15; }).isAvailable; // 予算実績入力 Budget actual input
-            let funcNo16_WorkPlace = true; //_.find(scheModifyAuthCtrlByWorkplace, function(o) { return o.functionNo==16; }).isAvailable; // 計画人数入力 Enter the planned number of people
+            let funcNo1_Common = self.checkVisableByAuth(scheModifyAuthCtrlCommon, 1); // 休暇状況参照 Vacation status reference
+            let funcNo2_Common = self.checkVisableByAuth(scheModifyAuthCtrlCommon, 2); // 修正履歴参照 Refer to revision history
+            let funcNo1_WorkPlace = self.checkVisableByAuth(scheModifyAuthCtrlByWorkplace, 1); // 登録 Registration
+            let funcNo2_WorkPlace = self.checkVisableByAuth(scheModifyAuthCtrlByWorkplace, 2); // 確定 Confirm
+            let funcNo3_WorkPlace = self.checkVisableByAuth(scheModifyAuthCtrlByWorkplace, 3); // 完了 Done
+            let funcNo4_WorkPlace = self.checkVisableByAuth(scheModifyAuthCtrlByWorkplace, 4); // アラームチェック Alarm check
+            let funcNo5_WorkPlace = self.checkVisableByAuth(scheModifyAuthCtrlByWorkplace, 5); // 出力 output
+            let funcNo6_WorkPlace = self.checkVisableByAuth(scheModifyAuthCtrlByWorkplace, 6); // 取り込み Capture
+            let funcNo7_WorkPlace = self.checkVisableByAuth(scheModifyAuthCtrlByWorkplace, 7)  // 勤務希望 Hope to work
+            let funcNo8_WorkPlace = self.checkVisableByAuth(scheModifyAuthCtrlByWorkplace, 8); // 公開 Release
+            let funcNo9_WorkPlace = self.checkVisableByAuth(scheModifyAuthCtrlByWorkplace, 9); // 応援登録 Support registration
+            let funcNo10_WorkPlace = self.checkVisableByAuth(scheModifyAuthCtrlByWorkplace, 10); // 並び順設定 Sort order setting
+            let funcNo11_WorkPlace = self.checkVisableByAuth(scheModifyAuthCtrlByWorkplace, 11); // チーム設定 Team settings
+            let funcNo12_WorkPlace = self.checkVisableByAuth(scheModifyAuthCtrlByWorkplace, 12); // ランク分け Ranking
+            let funcNo13_WorkPlace = self.checkVisableByAuth(scheModifyAuthCtrlByWorkplace, 13); // 行事登録 Event registration
+            let funcNo14_WorkPlace = self.checkVisableByAuth(scheModifyAuthCtrlByWorkplace, 14); // 集計欄の金額表示 Amount display in the summary column
+            let funcNo15_WorkPlace = self.checkVisableByAuth(scheModifyAuthCtrlByWorkplace, 15); // 予算実績入力 Budget actual input
+            let funcNo16_WorkPlace = self.checkVisableByAuth(scheModifyAuthCtrlByWorkplace, 16); // 計画人数入力 Enter the planned number of people
             // button A1_1  職1
             if (funcNo1_WorkPlace == false) {
                 $('#A1_1').css('visibility', 'hidden');
