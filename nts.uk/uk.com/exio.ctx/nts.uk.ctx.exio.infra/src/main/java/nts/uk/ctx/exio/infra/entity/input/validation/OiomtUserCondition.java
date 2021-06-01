@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.exio.dom.input.revise.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.input.revise.ItemType;
 import nts.uk.ctx.exio.dom.input.validation.Validation;
 import nts.uk.ctx.exio.dom.input.validation.condition.ImportingUserCondition;
 import nts.uk.ctx.exio.dom.input.validation.condition.user.type.date.DateCondition;
@@ -75,7 +75,7 @@ public class OiomtUserCondition extends ContractUkJpaEntity implements Serializa
 
 	private Validation getValidation() {
 		switch(EnumAdaptor.valueOf(itemType, ItemType.class)) {
-			case CHARACTER:
+			case STRING:
 				return (Validation) StringCondition.create(string1, compareConditon);
 			case DATE:
 				return DateCondition.create(date1, date2, compareConditon);

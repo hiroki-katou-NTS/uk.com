@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.exio.dom.input.revise.dataformat.ItemType;
 import nts.uk.ctx.exio.dom.input.validation.ImportableItem;
 import nts.uk.ctx.exio.dom.input.validation.ImportableItemsRepository;
 import nts.uk.ctx.exio.infra.entity.input.validation.OioctImportableItem;
