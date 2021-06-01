@@ -543,7 +543,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                   , valOutFormat: number) {
             let self = this;
             self.valOutFormat.subscribe((data) => {
-                if (!_.isNull(self.oldValOutFormat) && data !== self.oldValOutFormat) {
+                if (!_.isNull(self.oldValOutFormat) && data !== self.oldValOutFormat && !nts.uk.text.isNullOrEmpty(self.calculationExpression())) {
                     confirm({ messageId: "Msg_2088" }).ifYes(() => {
                         self.oldValOutFormat = data;
                         self.buildOutputTargetItem([]);
