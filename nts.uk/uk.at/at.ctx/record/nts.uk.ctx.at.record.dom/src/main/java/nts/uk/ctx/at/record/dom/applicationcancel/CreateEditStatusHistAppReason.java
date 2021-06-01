@@ -32,7 +32,7 @@ public class CreateEditStatusHistAppReason {
 					.filter(x -> x.getEditState().getAttendanceItemId() == key).findFirst().orElse(null);
 			if (edit == null) {
 				// 申請反映前の勤怠へセットする
-				lstAttBeforeReflect.add(new AttendanceBeforeApplicationReflect(key, value, Optional.empty()));
+				lstAttBeforeReflect.add(new AttendanceBeforeApplicationReflect(key, Optional.ofNullable(value), Optional.empty()));
 
 				// 日別実績の更新（日別勤怠の編集状態を追加する）
 				require.addAndUpdate(Arrays.asList(
@@ -41,7 +41,7 @@ public class CreateEditStatusHistAppReason {
 
 				// 申請反映前の勤怠へセット
 				lstAttBeforeReflect
-						.add(new AttendanceBeforeApplicationReflect(key, value, Optional.of(edit.getEditState())));
+						.add(new AttendanceBeforeApplicationReflect(key, Optional.ofNullable(value), Optional.of(edit.getEditState())));
 
 				// 日別実績の更新（日別勤怠の編集状態を更新する）
 				require.addAndUpdate(Arrays.asList(

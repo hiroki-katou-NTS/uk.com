@@ -151,7 +151,7 @@ public class RequestDispatcher {
 			if (Objects.nonNull(result)) {
 				result.dispose();
 			}
-			if(UKServerSystemProperties.isCloud()) {
+			if(UKServerSystemProperties.usesTenantLocator()) {
 				TenantLocatorService.disconnect();
 			}
 		}

@@ -20,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -34,10 +33,11 @@ public class WorkStyleScreenQuery {
 	// 出勤・休日系を判定する
 	public Integer getWorkStyle(WorkStyleDto dto) {
 		String companyId = AppContexts.user().companyId();
-		ShiftMasterDisInfor shiftMasterDisInfor = new ShiftMasterDisInfor(new ShiftMasterName(dto.getShiftMasterName()), new ColorCodeChar6(dto.getColor()),new ColorCodeChar6(dto.getColor()), new Remarks(dto.getRemarks()));
-		ShiftMaster shiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(dto.getShiftMasterCode()), shiftMasterDisInfor, Optional.empty(), dto.getWorkTypeCode(), dto.getWorkTimeCode());
+		ShiftMasterDisInfor shiftMasterDisInfor = new ShiftMasterDisInfor(new ShiftMasterName(dto.getShiftMasterName()), new ColorCodeChar6(dto.getColor()),new ColorCodeChar6(dto.getColor()), Optional.of(new Remarks(dto.getRemarks())));
+		//TODO 取り込みコード追加
+		ShiftMaster shiftMaster = new ShiftMaster(companyId, new ShiftMasterCode(dto.getShiftMasterCode()), shiftMasterDisInfor, dto.getWorkTypeCode(), dto.getWorkTimeCode(), Optional.empty());
 		WorkInformation.Require require = new WorkStyleScreenQueryImpl(workTypeRepository);
-		Integer workStyle = shiftMaster.getWorkStyle(require).map(ws -> ws.value).orElse(0);
+		Integer workStyle = shiftMaster.getWorkStyle(require).get().value;
 		return workStyle;
 	}
 
@@ -64,7 +64,7 @@ public class WorkStyleScreenQuery {
 			return null;
 		}
 
-// fix bug 113211		
+// fix bug 113211
 //		@Override
 //		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
 //			return null;

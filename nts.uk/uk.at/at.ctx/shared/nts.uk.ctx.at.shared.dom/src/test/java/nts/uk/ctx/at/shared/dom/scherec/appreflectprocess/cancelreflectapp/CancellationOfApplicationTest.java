@@ -312,7 +312,7 @@ public class CancellationOfApplicationTest {
 	
 	private ApplicationReflectHistory createAppReflectHistAll(EditStateSetting editState, GeneralDateTime maxDate, Pair<Integer, String>... lstItemValue) {
 		List<AttendanceBeforeApplicationReflect> lstAttBeforeAppReflect = Arrays.asList(lstItemValue).stream()
-				.map(x -> new AttendanceBeforeApplicationReflect(x.getKey(), x.getValue(),
+				.map(x -> new AttendanceBeforeApplicationReflect(x.getKey(), Optional.of(x.getValue()),
 						editState == null ? Optional.empty() : Optional.of(new EditStateOfDailyAttd(x.getKey(), editState))))
 				.collect(Collectors.toList());
 		return new ApplicationReflectHistory("1",  GeneralDate.ymd(2021, 4, 21) , "1",
