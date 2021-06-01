@@ -953,4 +953,26 @@ public class OverTimeOfDaily {
 		}).collect(Collectors.toList());
 		return new OverTimeOfDaily(new ArrayList<>(), workFrameTime, Finally.empty());
 	}
+	
+	@Override
+	public OverTimeOfDaily clone() {
+		// 残業枠時間帯
+		List<OverTimeFrameTimeSheet> overTimeWorkFrameTimeSheetClone = this.overTimeWorkFrameTimeSheet.stream()
+				.map(x -> x.clone()).collect(Collectors.toList());
+		// 残業枠時間
+		List<OverTimeFrameTime> overTimeWorkFrameTimeClone = this.overTimeWorkFrameTime.stream().map(x -> x.clone())
+				.collect(Collectors.toList());
+		// 法定外深夜時間 (所定外深夜時間)
+		Finally<ExcessOverTimeWorkMidNightTime> excessOverTimeWorkMidNightTimeClone = excessOverTimeWorkMidNightTime
+				.isPresent() ? Finally.of(excessOverTimeWorkMidNightTime.get().clone()) : Finally.empty();
+		// 残業拘束時間
+		AttendanceTime overTimeWorkClone = new AttendanceTime(overTimeWorkSpentAtWork.v());
+		// 変形法定内残業
+		AttendanceTime irregularTimeClone = new AttendanceTime(irregularWithinPrescribedOverTimeWork.v());
+		// フレックス時間
+		FlexTime flexTimeClone = flexTime.clone();
+		
+		return new OverTimeOfDaily(overTimeWorkFrameTimeSheetClone, overTimeWorkFrameTimeClone,
+				excessOverTimeWorkMidNightTimeClone, irregularTimeClone, flexTimeClone, overTimeWorkClone);
+	}
 }
