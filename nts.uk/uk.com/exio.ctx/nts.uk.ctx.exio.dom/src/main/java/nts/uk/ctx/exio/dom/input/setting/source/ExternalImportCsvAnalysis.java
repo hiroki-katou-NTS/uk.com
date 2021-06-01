@@ -9,6 +9,9 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.mapping.ExternalImportItemMapping;
 
+/**
+ * 受入CSVの解析
+ */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor

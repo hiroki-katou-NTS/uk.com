@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 
+/**
+ * 受入設定
+ */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
