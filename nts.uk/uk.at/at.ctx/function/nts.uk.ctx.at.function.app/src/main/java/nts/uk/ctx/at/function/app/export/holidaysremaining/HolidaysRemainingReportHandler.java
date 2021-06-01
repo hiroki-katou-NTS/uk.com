@@ -47,7 +47,6 @@ import nts.uk.ctx.at.function.dom.adapter.vacation.StatusHolidayImported;
 import nts.uk.ctx.at.function.dom.holidaysremaining.VariousVacationControl;
 import nts.uk.ctx.at.function.dom.holidaysremaining.VariousVacationControlService;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.*;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export.SpecialHolidayRemainDataOutput;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export.SpecialHolidayRemainDataSevice;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
@@ -351,7 +350,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         CurrentHolidayRemainImported currentHolidayRemainLeft = null;
 
         List<AggrResultOfAnnualLeaveEachMonthKdr> getRs363 = new ArrayList<>();
-
+        //  RQ 203 right
+        Map<YearMonth,SubstituteHolidayAggrResult> substituteHolidayAggrResultsRight = new HashMap<>();
+        //  RQ 203 left
+        SubstituteHolidayAggrResult substituteHolidayAggrResult = null;
 
         if (!closureInforOpt.isPresent()) {
             return null;
@@ -564,7 +566,6 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             nursingLeave = nursingLeaveAdapter.getNursingLeaveCurrentSituation(cId, employeeId, datePeriod);
         }
         val rq = requireService.createRequire();
-        SubstituteHolidayAggrResult substituteHolidayAggrResult = null;
         // 期間内の休出代休残数を取得する
         DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1),
                 GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1).addMonths(1).addDays(-1));
@@ -582,7 +583,30 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 Optional.empty(), new FixedManagementDataMonth());
         substituteHolidayAggrResult = NumberRemainVacationLeaveRangeQuery
                 .getBreakDayOffMngInPeriod(rq, inputRefactor);
-        // RequestList204
+
+        // RequestList203
+        for (YearMonth s = currentMonth; s.lessThanOrEqualTo(endDate.yearMonth()); s = s.addMonths(1)) {
+            GeneralDate end = GeneralDate.ymd(s.year(), s.month(), 1).addMonths(1).addDays(-1);
+            DatePeriod periods = new DatePeriod(GeneralDate.ymd(s.year(), s.month(), 1),
+                    endDate.before(end) ? endDate : end);
+
+            BreakDayOffRemainMngRefactParam input = new BreakDayOffRemainMngRefactParam(
+                    cId, employeeId,
+                    periods,
+                    false,
+                    closureInforOpt.get().getPeriod().end(),
+                    false,
+                    new ArrayList<>(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    new ArrayList<>(),
+                    new ArrayList<>(),
+                    Optional.empty(), new FixedManagementDataMonth());
+            val  item =   substituteHolidayAggrResult = NumberRemainVacationLeaveRangeQuery
+                    .getBreakDayOffMngInPeriod(rq, input);
+            substituteHolidayAggrResultsRight.put(s,item);
+        }
+
         CompenLeaveAggrResult subVaca = null;
         if (closureInforOpt.isPresent()) {
             val param = new AbsRecMngInPeriodRefactParamInput(
@@ -633,7 +657,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 listAnnLeaveUsageStatusOfThisMonth, reserveHoliday, listReservedYearHoliday, listRsvLeaUsedCurrentMon,
                 listCurrentHoliday, listStatusHoliday, listCurrentHolidayRemain, listStatusOfHoliday, mapSpecVaca,
                 lstMapSPVaCurrMon, mapSpeHd, childNursingLeave, nursingLeave, currentHolidayLeft,
-                currentHolidayRemainLeft, substituteHolidayAggrResult, subVaca, aggrResultOfHolidayOver60h,getRs363,getSpeHdOfConfMonVer2);
+                currentHolidayRemainLeft, substituteHolidayAggrResult, subVaca, aggrResultOfHolidayOver60h,getRs363,getSpeHdOfConfMonVer2,substituteHolidayAggrResultsRight);
     }
     private Optional<ClosureInfo> getClosureInfor(int closureId) {
         val listClosureInfo = ClosureService.getAllClosureInfo(ClosureService.createRequireM2(closureRepository));

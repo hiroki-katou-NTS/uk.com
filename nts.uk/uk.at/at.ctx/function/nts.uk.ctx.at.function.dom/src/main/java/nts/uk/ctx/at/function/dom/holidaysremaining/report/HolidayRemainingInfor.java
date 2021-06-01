@@ -70,6 +70,7 @@ public class HolidayRemainingInfor {
     //363
     List<AggrResultOfAnnualLeaveEachMonthKdr> rs363New;
     List<SpecialHolidayRemainDataOutputKdr> getSpeHdOfConfMonVer2;
+    Map<YearMonth,SubstituteHolidayAggrResult> substituteHolidayAggrResultsRight;
 
     public HolidayRemainingInfor(Optional<GeneralDate> grantDate, List<AnnLeaGrantNumberImported> listAnnLeaGrantNumber,
                                  AnnLeaveOfThisMonthImported annLeaveOfThisMonth, List<AnnualLeaveUsageImported> listAnnualLeaveUsage,
@@ -89,7 +90,8 @@ public class HolidayRemainingInfor {
                                  CompenLeaveAggrResult compenLeaveAggrResult,
                                  AggrResultOfHolidayOver60hImport aggrResultOfHolidayOver60h,
                                  List<AggrResultOfAnnualLeaveEachMonthKdr> rs363New,
-                                 List<SpecialHolidayRemainDataOutputKdr> getSpeHdOfConfMonVer2) {
+                                 List<SpecialHolidayRemainDataOutputKdr> getSpeHdOfConfMonVer2,
+                                 Map<YearMonth,SubstituteHolidayAggrResult> substituteHolidayAggrResultsRight) {
         super();
         this.grantDate = grantDate;
         this.listAnnLeaGrantNumber = listAnnLeaGrantNumber;
@@ -115,6 +117,7 @@ public class HolidayRemainingInfor {
         this.aggrResultOfHolidayOver60h = aggrResultOfHolidayOver60h;
         this.rs363New = rs363New;
         this.getSpeHdOfConfMonVer2 = getSpeHdOfConfMonVer2;
+        this.substituteHolidayAggrResultsRight = substituteHolidayAggrResultsRight;
     }
 
 
