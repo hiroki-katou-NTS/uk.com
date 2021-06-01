@@ -212,7 +212,7 @@ module nts.uk.ui.layout {
                     element.id = "functions-area";
                 }
 
-                if (title && mode === 'view') {
+                /*if (title && mode === 'view') {
                     const pgName = $(element).find('.pg-name');
                     const $title = pgName.get(0) || document.createElement('div');
 
@@ -222,7 +222,7 @@ module nts.uk.ui.layout {
 
                     $(element).prepend($title);
 
-                    /*if (element.childNodes.length > 1) {
+                    if (element.childNodes.length > 1) {
                         const $btnGroup = document.createElement('div');
                         $btnGroup.classList.add('button-group');
                         const $pgName = $(element).find('.pg-name');
@@ -236,8 +236,8 @@ module nts.uk.ui.layout {
                         $($btnGroup).insertAfter($pgName);
 
                         ko.applyBindingsToNode($btnGroup, null, bindingContext);
-                    }*/
-                }
+                    }
+                }*/
 
                 // button error in function bar
                 ko.applyBindingsToNode($('<button>').appendTo(element).get(0), { 'c-error': '' }, bindingContext);
