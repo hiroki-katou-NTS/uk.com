@@ -3,6 +3,7 @@
  */
 package nts.uk.screen.at.app.ksu001.getaggregatedInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -69,6 +70,10 @@ public class GetAggregatedInfoFinder {
 
 	private List<ExternalBudgetMapDtoList> convertExternalBudget(
 			Map<GeneralDate, Map<ExternalBudgetDto, String>> externalBudget) {
+		
+		if (externalBudget.isEmpty()) {
+			return new ArrayList<ExternalBudgetMapDtoList>();
+		}
 
 		return externalBudget.entrySet().stream()
 				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().entrySet().stream()

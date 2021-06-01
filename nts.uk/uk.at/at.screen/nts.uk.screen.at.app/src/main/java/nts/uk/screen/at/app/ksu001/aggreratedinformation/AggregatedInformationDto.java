@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.ksu001.aggreratedinformation;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ import nts.uk.screen.at.app.ksu001.aggrerateschedule.AggregateScheduleDto;
 @Data
 public class AggregatedInformationDto {
 
-	public Map<GeneralDate, Map<ExternalBudgetDto, String>> externalBudget;
+	public Map<GeneralDate, Map<ExternalBudgetDto, String>> externalBudget = new HashMap<>();
 	
 	public AggregateScheduleDto aggrerateSchedule;
 	

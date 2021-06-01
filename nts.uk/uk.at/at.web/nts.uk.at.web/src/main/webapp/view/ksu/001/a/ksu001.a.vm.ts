@@ -3020,6 +3020,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 			return horizontalSumContent;
 		}
 		
+        // update A11
 		updateVertSumGrid() {
 			let self = this;
 			let vertSumHeader = self.createVertSumHeader();
@@ -3027,6 +3028,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 			$("#extable").exTable("updateTable", "verticalSummaries", vertSumHeader, vertSumContent);	
 		}
 		
+        // update A12
 		updateHorzSumGrid() {
 			let self = this;
 			let leftHorzSumHeader = self.createLeftHorzSumHeader();
@@ -5311,18 +5313,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         getAggregatedInfo(updateA11, updateA12) {
             let self = this;
             nts.uk.ui.block.grayout();
-            let personTotalSelected, workplaceSelected;
-            if (updateA11 && updateA12) {
-                personTotalSelected = self.useCategoriesPersonalValue();
-                workplaceSelected = self.useCategoriesWorkplaceValue();
-            } else if (updateA11) {
-                personTotalSelected = self.useCategoriesPersonalValue();
-                workplaceSelected = null;
-            } else if (updateA12) {
-                workplaceSelected = self.useCategoriesWorkplaceValue();
-                personTotalSelected = null;
-            }
-
             let param = {
                 listSid: self.listSid(),
                 startDate: self.dateTimePrev(),
@@ -5334,8 +5324,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 workplaceGroupId: self.userInfor.workplaceGroupId,
                 unit: self.userInfor.unit,
                 isShiftMode: self.selectedModeDisplayInBody() == 'shift' ? true : false, // time | shortName | shift
-                personTotalSelected: personTotalSelected, // A11_1
-                workplaceSelected: workplaceSelected // A12_1
+                personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
+                workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
             };
             
             service.getAggregatedInfo(param).done((data: any) => {
@@ -5345,13 +5335,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let externalBudget     = data.externalBudget; 
                 
                 if(updateA11){
-                    
+                    self.createVertSumData(data);
+                    self.updateVertSumGrid();
                 }
                 
                 if(updateA12){
-                    
+                    self.createHorzSumData(data);
+                    self.updateHorzSumGrid();
                 }
-
                 nts.uk.ui.block.clear();
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
