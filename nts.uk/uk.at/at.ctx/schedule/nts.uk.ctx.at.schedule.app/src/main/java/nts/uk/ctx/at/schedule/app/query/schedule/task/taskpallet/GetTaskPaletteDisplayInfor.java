@@ -44,7 +44,7 @@ public WorkPaletteDisplayInforDto get( int targetUnit , String organizationID ,G
 		Optional<TaskPalette> taskPalette;
 		TaskPaletteDto taskPaletteDto = null;
 		//1: <call>() 
-		if (targetUnit == TargetOrganizationUnit.WORKPLACE_GROUP.value) {
+		if (targetUnit == TargetOrganizationUnit.WORKPLACE.value) {
 			targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace(organizationID);
 		} else {
 			targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(organizationID);

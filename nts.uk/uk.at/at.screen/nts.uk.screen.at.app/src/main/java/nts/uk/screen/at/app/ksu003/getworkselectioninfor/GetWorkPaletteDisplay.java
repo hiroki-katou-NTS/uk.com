@@ -48,7 +48,7 @@ public class GetWorkPaletteDisplay {
 		TaskPaletteDto taskPaletteDto = null;
 
 		Optional<TaskPalette> taskPalette;
-		if (targetUnit == TargetOrganizationUnit.WORKPLACE_GROUP.value) {
+		if (targetUnit == TargetOrganizationUnit.WORKPLACE.value) {
 			targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace(organizationID);
 		} else {
 			targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(organizationID);
