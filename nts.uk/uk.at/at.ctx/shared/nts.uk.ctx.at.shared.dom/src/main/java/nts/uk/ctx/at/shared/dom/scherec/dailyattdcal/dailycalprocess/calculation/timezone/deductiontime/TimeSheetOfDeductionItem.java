@@ -573,6 +573,12 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		TimeWithDayAttr newStart = oneDayRange.getStart();
 		TimeWithDayAttr newEnd = oneDayRange.getEnd();
 		
+		//出勤時刻が含まれているか判断する
+		if(oneDayRange.getStart().lessThan(time.getTimespan().getStart())
+				&& time.getTimespan().getStart().lessThanOrEqualTo(oneDayRange.getEnd())
+				&& dedAtr.isAppropriate()) {
+			return result;
+		}
 		//退勤時間を含んでいるかチェック
 		if(oneDayRange.contains(time.getTimespan().getEnd())) {
 			//出勤時間を含んでいるチェック
