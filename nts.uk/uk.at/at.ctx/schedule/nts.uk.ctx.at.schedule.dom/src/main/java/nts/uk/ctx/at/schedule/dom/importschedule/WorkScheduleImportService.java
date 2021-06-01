@@ -59,7 +59,7 @@ public class WorkScheduleImportService {
 
 		/* 日付のチェック */
 		// 修正可能開始日との比較
-		val modifiableStartDate = ScheModifyStartDateService.getModifyStartDate(require, require.getAtRoleId());
+		val modifiableStartDate = ScheModifyStartDateService.getModifyStartDate(require, require.getOwnAttendanceRoleId());
 		// チェック結果：取り込み不可日
 		val unmodifiableDateList = rawData.getYmdList().stream()
 				.filter( e -> e.before( modifiableStartDate ) )
@@ -117,7 +117,7 @@ public class WorkScheduleImportService {
 
 		/* 参照範囲チェック */
 		// 参照可能な社員を取得する
-		val referableEmployees = GetEmpCanReferService.getAll(require, GeneralDate.today(), require.getEmployeeId().v());
+		val referableEmployees = GetEmpCanReferService.getAll(require, GeneralDate.today(), require.getOwnEmployeeId().v());
 		// 参照可否でグループ化
 		// [Key] true: 参照範囲内(正常) / false: 参照範囲外(エラー)
 		val referableStatus = interimResult.getUncheckedResults().stream()
@@ -246,12 +246,12 @@ public class WorkScheduleImportService {
 		 * ログイン者の就業ロールIDを取得する
 		 * @return 就業ロールID
 		 */
-		String getAtRoleId();
+		String getOwnAttendanceRoleId();
 		/**
 		 * ログイン者の社員IDを取得する
 		 * @return 社員ID
 		 */
-		EmployeeId getEmployeeId();
+		EmployeeId getOwnEmployeeId();
 		/**
 		 * 社員コードから社員IDを取得する
 		 * @param employeeCodes 社員コードリスト
