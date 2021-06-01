@@ -41,6 +41,7 @@ module nts.uk.at.kdp003.f {
 	export type SCREEN_NAME = 'KDP001' | 'KDP002' | 'KDP003' | 'KDP004' | 'KDP005';
 
 	export const LOGINDATA = 'KDP003F_LOGINDATA';
+	const CONTRACTDATA = 'contractInfo';
 
 	export const API = {
 		LOGIN_ADMIN: '/ctx/sys/gateway/kdp/login/adminmode',
@@ -61,6 +62,8 @@ module nts.uk.at.kdp003.f {
 		listCompany: KnockoutObservableArray<CompanyItem> = ko.observableArray([]);
 
 		parentName: KnockoutObservable<SCREEN_NAME> = ko.observable('KDP003');
+
+		contractCd: string = null;
 
 		constructor(private params?: AdminModeParam | EmployeeModeParam | FingerVeinModeParam | NotiModeParam) {
 			super();
@@ -206,75 +209,83 @@ module nts.uk.at.kdp003.f {
 			}
 
 			vm.$blockui('show')
-				.then(() => vm.$ajax(API.COMPANIES))
-				.then((data: CompanyItem[]) => {
-					const valueHasMutated = () => {
-						const companyId = ko.toJS(params.companyId);
-						const exist: CompanyItem = _.find(data, (c) => c.companyId === companyId);
-
-						vm.listCompany(data);
-
-						if (exist) {
-							if (ko.unwrap(model.companyId) !== exist.companyId) {
-								model.companyId(exist.companyId);
-							} else {
-								model.companyId.valueHasMutated();
-							}
-						} else if (data.length === 1) {
-							model.companyId(data[0].companyId);
-						}
-					};
-
-					if (params.mode === 'admin') {
-						let showMsg1527 = false;
-						const parentName = ko.unwrap(vm.parentName);
-
-						switch (parentName) {
-							case 'KDP001':
-								break;
-							case 'KDP002':
-								break;
-							default:
-							case 'KDP003':
-								showMsg1527 = _.every(data, d => d.selectUseOfName === false) || !data.length;
-								break;
-							case 'KDP004':
-								showMsg1527 = _.every(data, d => d.fingerAuthStamp === false) || !data.length;
-								break;
-							case 'KDP005':
-								showMsg1527 = _.every(data, d => d.icCardStamp === false) || !data.length;
-								break;
-						}
-
-						if (showMsg1527 === true) {
-							vm.$dialog
-								.error({ messageId: 'Msg_1527' })
-								.then(() => vm.$window.close({ msgErrorId: 'Msg_1527' }));
-						} else {
-							valueHasMutated();
-						}
-					} else {
-						valueHasMutated();
-					}
-				})
-				.then(() => vm.$ajax('at', API.FINGER_STAMP_SETTING, params))
-				.then((data: a.FingerStampSetting) => {
-					const { stampSetting } = data;
-
-					_.extend(vm.params, {
-						passwordRequired: stampSetting ? stampSetting.passwordRequiredArt : true
-					});
-				})
 				.then(() => {
-					if (vm.params.mode === 'admin') {
-						vm.$window.size.height(270);
-					} else if (vm.params.mode === 'employee') {
-						if (!vm.params.passwordRequired) {
-							vm.$window.size.height(225);
-						} else {
-							vm.$window.size.height(270);
-						}
-					}
+					vm.$window.storage(CONTRACTDATA)
+						.then((data: any) => {
+							if (data) {
+								vm.contractCd = data.contractCode;
+							}
+						})
+						.then(() => vm.$ajax(API.COMPANIES, {contractCode: vm.contractCd}))
+						.then((data: CompanyItem[]) => {
+							const valueHasMutated = () => {
+								const companyId = ko.toJS(params.companyId);
+								const exist: CompanyItem = _.find(data, (c) => c.companyId === companyId);
+
+								vm.listCompany(data);
+
+								if (exist) {
+									if (ko.unwrap(model.companyId) !== exist.companyId) {
+										model.companyId(exist.companyId);
+									} else {
+										model.companyId.valueHasMutated();
+									}
+								} else if (data.length === 1) {
+									model.companyId(data[0].companyId);
+								}
+							};
+
+							if (params.mode === 'admin') {
+								let showMsg1527 = false;
+								const parentName = ko.unwrap(vm.parentName);
+
+								switch (parentName) {
+									case 'KDP001':
+										break;
+									case 'KDP002':
+										break;
+									default:
+									case 'KDP003':
+										showMsg1527 = _.every(data, d => d.selectUseOfName === false) || !data.length;
+										break;
+									case 'KDP004':
+										showMsg1527 = _.every(data, d => d.fingerAuthStamp === false) || !data.length;
+										break;
+									case 'KDP005':
+										showMsg1527 = _.every(data, d => d.icCardStamp === false) || !data.length;
+										break;
+								}
+
+								if (showMsg1527 === true) {
+									vm.$dialog
+										.error({ messageId: 'Msg_1527' })
+										.then(() => vm.$window.close({ msgErrorId: 'Msg_1527' }));
+								} else {
+									valueHasMutated();
+								}
+							} else {
+								valueHasMutated();
+							}
+						})
+						.then(() => vm.$ajax('at', API.FINGER_STAMP_SETTING, params))
+						.then((data: a.FingerStampSetting) => {
+							const { stampSetting } = data;
+
+							_.extend(vm.params, {
+								passwordRequired: stampSetting ? stampSetting.passwordRequiredArt : true
+							});
+						})
+						.then(() => {
+							if (vm.params.mode === 'admin') {
+								vm.$window.size.height(270);
+							} else if (vm.params.mode === 'employee') {
+								if (!vm.params.passwordRequired) {
+									vm.$window.size.height(225);
+								} else {
+									vm.$window.size.height(270);
+								}
+							}
+						})
 				})
 				// get mode from params or set default
 				.always(() => {
