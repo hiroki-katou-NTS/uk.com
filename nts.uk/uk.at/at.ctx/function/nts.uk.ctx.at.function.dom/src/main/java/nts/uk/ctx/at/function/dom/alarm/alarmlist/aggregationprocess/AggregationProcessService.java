@@ -213,10 +213,10 @@ public class AggregationProcessService {
 			
 			if(!periodCheck.isEmpty() && periodCheck.get(0).getStartDate() != null) {
 				datePeriod = new DatePeriod(periodCheck.get(0).getStartDate(),periodCheck.get(0).getEndDate());
-				if(x.getCategory() == AlarmCategory.MONTHLY || x.getCategory() == AlarmCategory.MULTIPLE_MONTH) {
-					datePeriod = new DatePeriod(periodCheck.get(0).getStartDate(),
-							periodCheck.get(0).getEndDate().addMonths(1).addDays(-1));
-				}
+//				if(x.getCategory() == AlarmCategory.MONTHLY || x.getCategory() == AlarmCategory.MULTIPLE_MONTH) {
+//					datePeriod = new DatePeriod(periodCheck.get(0).getStartDate(),
+//							periodCheck.get(0).getEndDate().addMonths(1).addDays(-1));
+//				}
 			}
 			
 			List<String> lstSidTmp = new ArrayList<>(lstSid);

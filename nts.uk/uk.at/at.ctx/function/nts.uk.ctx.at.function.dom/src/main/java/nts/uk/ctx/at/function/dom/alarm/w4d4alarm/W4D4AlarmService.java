@@ -275,6 +275,20 @@ public class W4D4AlarmService {
 			List<AlarmEmployeeList> alarmEmployeeList, String alarmCheckConditionCode,
 			List<AlarmExtractionCondition> alarmExtractConditions){
 		List<ExtractResultDetail> lstResult = new ArrayList<>();
+		// 「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞に追加
+		val extractionCon = alarmExtractConditions.stream()
+				.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck
+						&& x.getAlarmCheckConditionNo().equals(String.valueOf(w4dCheckCond.value)))
+				.findAny();
+		if (!extractionCon.isPresent()) {
+			alarmExtractConditions.add(new AlarmExtractionCondition(
+					String.valueOf(w4dCheckCond.value),
+					new AlarmCheckConditionCode(alarmCheckConditionCode),
+					AlarmCategory.SCHEDULE_4WEEK,
+					AlarmListCheckType.FixCheck
+			));
+		}
+
 		//ドメインモデル「休日の扱い」を取得
 		Optional<TreatmentHoliday> optTreatHolidaySet = treatHolidayRepos.get(cid);
 		if(!optTreatHolidaySet.isPresent()) return lstResult;
@@ -353,6 +367,7 @@ public class W4D4AlarmService {
 					}
 					
 				}
+				List<ExtractResultDetail> lstDetail = new ArrayList<>();
 				if(mapWorkInfor.isEmpty()) continue;
 				
 				int holidays = holidayNumberMana.countNumberHolidays(require, mapWorkInfor);
@@ -366,39 +381,31 @@ public class W4D4AlarmService {
 							Optional.ofNullable(workplaceId),
 							Optional.ofNullable(""),
 							Optional.ofNullable(TextResource.localize("KAL010_63", String.valueOf(holidays))));
-					lstResult.add(alarmDetail);
+					lstDetail.add(alarmDetail);
 				}
 
-				if (!lstResult.isEmpty()) {
-					// 「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞に追加
-					List<AlarmExtractionCondition> extractionConditions = alarmExtractConditions.stream()
-							.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck
-									&& x.getAlarmCheckConditionNo().equals(String.valueOf(w4dCheckCond.value)))
-							.collect(Collectors.toList());
-					if (extractionConditions.isEmpty()) {
-						alarmExtractConditions.add(new AlarmExtractionCondition(
-								String.valueOf(w4dCheckCond.value),
-								new AlarmCheckConditionCode(alarmCheckConditionCode),
-								AlarmCategory.SCHEDULE_4WEEK,
-								AlarmListCheckType.FixCheck
-						));
-					}
-
-					List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>();
-					alarmExtractInfoResults.add(new AlarmExtractInfoResult(
-							String.valueOf(w4dCheckCond.value),
-							new AlarmCheckConditionCode(alarmCheckConditionCode),
-							AlarmCategory.SCHEDULE_4WEEK,
-							AlarmListCheckType.FixCheck,
-							lstResult
+				if (!lstDetail.isEmpty()) {
+					List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(Arrays.asList(
+							new AlarmExtractInfoResult(
+									String.valueOf(w4dCheckCond.value),
+									new AlarmCheckConditionCode(alarmCheckConditionCode),
+									AlarmCategory.SCHEDULE_4WEEK,
+									AlarmListCheckType.FixCheck,
+									lstDetail
+							)
 					));
 
-					val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-					if (empIds.isEmpty()) {
+					if (alarmEmployeeList.stream().noneMatch(i -> i.getEmployeeID().equals(sid))) {
 						alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
 					} else {
-						alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid))
-								.forEach(e -> e.getAlarmExtractInfoResults().addAll(alarmExtractInfoResults));
+						for (AlarmEmployeeList emp : alarmEmployeeList) {
+							if(emp.getEmployeeID().equals(sid)){
+								List<AlarmExtractInfoResult> temp = new ArrayList<>(emp.getAlarmExtractInfoResults());
+								temp.addAll(alarmExtractInfoResults);
+								emp.setAlarmExtractInfoResults(temp);
+								break;
+							}
+						}
 					}
 				}
 			}

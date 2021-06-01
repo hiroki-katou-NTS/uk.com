@@ -149,7 +149,7 @@ module nts.uk.at.view.kdl012 {
                 let result: Array<ItemModel> = [];
                 if (data) {
                     data.forEach(item => {
-                        result.push(new ItemModel(item.code, item.taskName, item.expirationStartDate, item.expirationEndDate, item.remark));
+                        result.push(new ItemModel(item.code, item.taskName, item.taskAbName, item.expirationStartDate, item.expirationEndDate, item.remark));
                     });
                     vm.items(result);
                 }
@@ -171,10 +171,10 @@ module nts.uk.at.view.kdl012 {
         expireDate: string;
         remark: string;
 
-        constructor(code: string | number, taskName: string, expirationStartDate?: string, expirationEndDate?: string, remark?: string) {
+        constructor(code: string | number, taskName: string, taskAbName: string, expirationStartDate?: string, expirationEndDate?: string, remark?: string) {
             this.code = code;
             this.taskName = taskName;
-            // this.taskAbName = this.taskAbName;
+            this.taskAbName = taskAbName;
             this.expirationStartDate = expirationStartDate;
             this.expirationEndDate = expirationEndDate;
             this.expireDate = expirationStartDate + CONCAT_DATE + expirationEndDate;

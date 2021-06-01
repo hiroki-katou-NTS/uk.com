@@ -452,9 +452,9 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	public List<InterimRecMng> getRecByIds(String employeeId,
 			DatePeriod period) {
 		return this.queryProxy()
-				.query("SELECT a FROM KrcdtInterimRecMng a" +
+				.query("SELECT a FROM KrcdtInterimRecMng a " +
 						"WHERE a.pk.sid = :sid " +
-                        "AND AND a.pk.ymd <= :start AND a.pk.ymd >= :end" +
+                        "AND a.pk.ymd <= :start AND a.pk.ymd >= :end " +
                         "ORDER BY a.pk.ymd", KrcdtInterimRecMng.class)
 				.setParameter("sid", employeeId)
 				.setParameter("start", period.start())

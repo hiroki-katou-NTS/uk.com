@@ -125,4 +125,20 @@ public class TimevacationUseTimeOfDaily {
 				+ this.timeCareHolidayUseTime.valueAsMinutes();
 		return result;
 	}
+	
+	/**
+	 * 引く
+	 * @param offSetTime 控除相殺時間
+	 * @return 時間休暇使用時間
+	 */
+	public TimevacationUseTimeOfDaily minus(DeductionOffSetTime offSetTime) {
+		return new TimevacationUseTimeOfDaily(
+			this.timeAnnualLeaveUseTime.minusMinutes(offSetTime.getAnnualLeave().valueAsMinutes()),
+			this.timeCompensatoryLeaveUseTime.minusMinutes(offSetTime.getCompensatoryLeave().valueAsMinutes()),
+			this.sixtyHourExcessHolidayUseTime.minusMinutes(offSetTime.getSixtyHourHoliday().valueAsMinutes()),
+			this.timeSpecialHolidayUseTime.minusMinutes(offSetTime.getSpecialHoliday().valueAsMinutes()),
+			this.specialHolidayFrameNo.map(s -> new SpecialHdFrameNo(s.v())),
+			new AttendanceTime(this.timeChildCareHolidayUseTime.valueAsMinutes()),
+			new AttendanceTime(this.timeCareHolidayUseTime.valueAsMinutes()));
+	}
 }

@@ -52,10 +52,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -124,10 +121,8 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 						prepareData.getListWorkType(),
 						prepareData.getListIntegrationDai(),
 						alarmCheckConditionCode,
-						lstExtractInfoResult);
-				if (!checkTab2.getAlarmExtractConditions().isEmpty()) {
-					alarmExtractConditions.addAll(checkTab2.getAlarmExtractConditions());
-				}
+						lstExtractInfoResult,
+						alarmExtractConditions);
 
 				// 固定抽出条件のアラーム値を作成する
 				OutputCheckResult checkTab3 = extractAlarmConditionTab3(
@@ -143,19 +138,21 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 						lstStatusEmp,
 						prepareData.getListIntegrationDai(),
 						alarmCheckConditionCode,
-						lstExtractInfoResult);
-				if (!checkTab3.getAlarmExtractConditions().isEmpty()) {
-					alarmExtractConditions.addAll(checkTab3.getAlarmExtractConditions());
-				}
+						lstExtractInfoResult,
+						alarmExtractConditions);
 
 				if (!lstExtractInfoResult.isEmpty()) {
-                    val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-                    if (empIds.isEmpty()) {
-                        alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
-                    } else {
-                        alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid))
-                                .forEach(e -> e.getAlarmExtractInfoResults().addAll(lstExtractInfoResult));
-                    }
+					if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
+						alarmEmployeeList.forEach(i -> {
+							if (i.getEmployeeID().equals(sid)) {
+								List<AlarmExtractInfoResult> temp = new ArrayList<>(i.getAlarmExtractInfoResults());
+								temp.addAll(lstExtractInfoResult);
+								i.setAlarmExtractInfoResults(temp);
+							}
+						});
+					} else {
+						alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
+					}
 				}
 			}
 			
@@ -226,11 +223,23 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			List<WorkType> listWorkType,
 			List<IntegrationOfDaily> listIntegrationDai, String alarmCheckConditionCode,
-			List<AlarmExtractInfoResult> lstExtractInfoResult) {
+			List<AlarmExtractInfoResult> lstExtractInfoResult, List<AlarmExtractionCondition> alarmExtractConditions) {
 		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		
 		// Input．List＜スケジュール日次の任意抽出条件＞をループ
 		for (ExtractionCondScheduleDay scheCondItem: scheCondItems) {
+			val extractionConditions = alarmExtractConditions.stream()
+					.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(scheCondItem.getSortOrder())))
+					.findAny();
+			if (!extractionConditions.isPresent()) {
+				alarmExtractConditions.add(new AlarmExtractionCondition(
+						String.valueOf(scheCondItem.getSortOrder()),
+						new AlarmCheckConditionCode(alarmCheckConditionCode),
+						AlarmCategory.SCHEDULE_DAILY,
+						AlarmListCheckType.FreeCheck
+				));
+			}
+
 			// カウント＝0
 			int count = 0;
 			
@@ -365,18 +374,6 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 						result.getLstCheckType().add(new AlarmListCheckInfor(String.valueOf(scheCondItem.getSortOrder()), AlarmListCheckType.FreeCheck));
 					}
 
-					List<AlarmExtractionCondition> extractionConditions = result.getAlarmExtractConditions().stream()
-							.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(scheCondItem.getSortOrder())))
-							.collect(Collectors.toList());
-					if (extractionConditions.isEmpty()) {
-						result.getAlarmExtractConditions().add(new AlarmExtractionCondition(
-								String.valueOf(scheCondItem.getSortOrder()),
-								new AlarmCheckConditionCode(alarmCheckConditionCode),
-								AlarmCategory.SCHEDULE_DAILY,
-								AlarmListCheckType.FreeCheck
-						));
-					}
-
 					// スケジュール日次のアラーム抽出値を作成
 					this.createExtractAlarm(sid,
 							exDate,
@@ -447,24 +444,31 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				Optional.ofNullable(wplId), 
 				alarmMess, 
 				Optional.ofNullable(checkValue));
-		List<AlarmExtractInfoResult> lstResultTmp = alarmExtractInfoResults.stream()
-				.filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(alarmCode)
-						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode) && x.getAlarmCategory().value == AlarmCategory.SCHEDULE_DAILY.value)
-				.collect(Collectors.toList());
-		List<ExtractResultDetail> listDetail = new ArrayList<>();
-		if (lstResultTmp.isEmpty()) {
-			listDetail.add(detail);
+
+		if (alarmExtractInfoResults.stream()
+				.anyMatch(x -> x.getAlarmListCheckType().value == checkType.value
+						&& x.getAlarmCheckConditionNo().equals(alarmCode)
+						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+						&& x.getAlarmCategory().value == AlarmCategory.SCHEDULE_DAILY.value)) {
+			alarmExtractInfoResults.forEach(x -> {
+				if (x.getAlarmListCheckType().value == checkType.value
+						&& x.getAlarmCheckConditionNo().equals(alarmCode)
+						&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+						&& x.getAlarmCategory().value == AlarmCategory.SCHEDULE_DAILY.value) {
+					List<ExtractResultDetail> tmp = new ArrayList<>(x.getExtractionResultDetails());
+					tmp.add(detail);
+					x.setExtractionResultDetails(tmp);
+				}
+			});
+		} else {
+			List<ExtractResultDetail> listDetail = new ArrayList<>(Arrays.asList(detail));
 			alarmExtractInfoResults.add(new AlarmExtractInfoResult(
 					alarmCode,
 					new AlarmCheckConditionCode(alarmCheckConditionCode),
 					AlarmCategory.SCHEDULE_DAILY,
 					checkType,
-					listDetail)
-			);
-		} else {
-			alarmExtractInfoResults.stream().filter(x -> x.getAlarmListCheckType().value == checkType.value && x.getAlarmCheckConditionNo().equals(alarmCode)
-					&& x.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode) && x.getAlarmCategory().value == AlarmCategory.SCHEDULE_DAILY.value)
-					.forEach(x -> x.getExtractionResultDetails().add(detail));
+					listDetail
+			));
 		}
 	}
 	
@@ -725,7 +729,8 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp,
 			List<IntegrationOfDaily> listIntegrationDai,
 			String alarmCheckConditionCode,
-			List<AlarmExtractInfoResult> alarmExtractInfoResults) {
+			List<AlarmExtractInfoResult> alarmExtractInfoResults,
+			List<AlarmExtractionCondition> alarmExtractConditions) {
 		OutputCheckResult result = new OutputCheckResult(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 
 		List<GeneralDate> listDate = dPeriod.datesBetween();
@@ -753,6 +758,18 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				
 				// ループ中のスケジュール日次の固有抽出条件をチェック
 				FixedCheckSDailyItems fixedAtr = fixScheCondItem.getFixedCheckDayItems();
+
+				val extractionCon = alarmExtractConditions.stream()
+						.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(fixedAtr.value)))
+						.findAny();
+				if (!extractionCon.isPresent()) {
+					alarmExtractConditions.add(new AlarmExtractionCondition(
+							String.valueOf(fixedAtr.value),
+							new AlarmCheckConditionCode(alarmCheckConditionCode),
+							AlarmCategory.SCHEDULE_DAILY,
+							AlarmListCheckType.FixCheck
+					));
+				}
 				
 				switch (fixedAtr) {
 				case SCHEDULE_CREATE_NOTCREATE:
@@ -863,18 +880,6 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 						.findFirst();
 				if(!optCheckInfor.isPresent()) {
 					result.getLstCheckType().add(new AlarmListCheckInfor(String.valueOf(fixedAtr.value), AlarmListCheckType.FreeCheck));
-				}
-
-				List<AlarmExtractionCondition> extractionConditions = result.getAlarmExtractConditions().stream()
-						.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(fixedAtr.value)))
-						.collect(Collectors.toList());
-				if (extractionConditions.isEmpty()) {
-					result.getAlarmExtractConditions().add(new AlarmExtractionCondition(
-							String.valueOf(fixedAtr.value),
-							new AlarmCheckConditionCode(alarmCheckConditionCode),
-							AlarmCategory.SCHEDULE_DAILY,
-							AlarmListCheckType.FixCheck
-					));
 				}
 				
 				// 「抽出結果詳細」を作成する

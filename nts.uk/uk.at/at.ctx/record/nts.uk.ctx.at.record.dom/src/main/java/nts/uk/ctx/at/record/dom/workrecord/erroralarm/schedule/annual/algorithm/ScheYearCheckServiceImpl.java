@@ -246,6 +246,18 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode) {
 		
 		for (ExtractionCondScheduleYear condScheYear: prepareData.getScheCondItems()) {
+			val lstExtractCon = alarmExtractConditions.stream()
+					.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(condScheYear.getSortOrder())))
+					.findAny();
+			if (!lstExtractCon.isPresent()) {
+				alarmExtractConditions.add(new AlarmExtractionCondition(
+						String.valueOf(condScheYear.getSortOrder()),
+						new AlarmCheckConditionCode(alarmCheckConditionCode),
+						AlarmCategory.SCHEDULE_YEAR,
+						AlarmListCheckType.FreeCheck
+				));
+			}
+
 			for (String sid: listSid) {
 				// 総取得結果＝0
 				Double totalTime = 0.0;
@@ -330,7 +342,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 				}
 				
 				// 条件をチェックする
-				boolean checkValue = false;
+				boolean checkValue;
 				if (condScheYear.getCheckConditions() instanceof CompareRange) {
 					checkValue = compareValueRangeChecking.checkCompareRange((CompareRange)condScheYear.getCheckConditions(), totalTime);
 				} else {
@@ -371,63 +383,28 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 						Optional.ofNullable(wplId), 
 						comment, 
 						Optional.ofNullable(getCheckValue(totalTime, condScheYear.getCheckItemType())));
-				
-				// 各チェック条件の結果を作成する
-				// ・チェック種類　＝　自由チェック
-				// ・コード　＝　ループ中のスケジュール年間の任意抽出条件．並び順
-				// ・抽出結果　＝　作成した抽出結果
-//				List<AlarmExtractInfoResult> lstResultTmp = result.getAlarmExtractInfoResults().stream()
-//						.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(alarmCode)).collect(Collectors.toList());
-//				List<ExtractResultDetail> listDetail = new ArrayList<>();
-//				if(lstResultTmp.isEmpty()) {
-//					listDetail.add(detail);
-//					result.getAlarmExtractInfoResults().add(new AlarmExtractInfoResult(
-//							alarmCode,
-//							new AlarmCheckConditionCode(alarmCheckConditionCode),
-//							AlarmCategory.SCHEDULE_YEAR,
-//							AlarmListCheckType.FreeCheck,
-//							listDetail
-//					));
-//				} else {
-//					result.getAlarmExtractInfoResults().stream().forEach(x -> x.getExtractionResultDetails().add(detail));
-//				}
-				
-//				Optional<AlarmListCheckInfor> optCheckInfor = result.getLstCheckType().stream()
-//						.filter(x -> x.getChekType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(condScheYear.getSortOrder())))
-//						.findFirst();
-//				if(!optCheckInfor.isPresent()) {
-//					result.getLstCheckType().add(new AlarmListCheckInfor(String.valueOf(condScheYear.getSortOrder()), AlarmListCheckType.FreeCheck));
-//				}
 
-				List<AlarmExtractInfoResult> lstExtractInfoResult = Collections.singletonList(new AlarmExtractInfoResult(
-						alarmCode,
-						new AlarmCheckConditionCode(alarmCheckConditionCode),
-						AlarmCategory.SCHEDULE_YEAR,
-						AlarmListCheckType.FreeCheck,
-						Collections.singletonList(detail)
+				List<AlarmExtractInfoResult> lstExtractInfoResult = new ArrayList<>(Arrays.asList(
+						new AlarmExtractInfoResult(
+								alarmCode,
+								new AlarmCheckConditionCode(alarmCheckConditionCode),
+								AlarmCategory.SCHEDULE_YEAR,
+								AlarmListCheckType.FreeCheck,
+								new ArrayList<>(Arrays.asList(detail))
+						)
 				));
 
-                val empIds = alarmEmployeeList.stream().filter(x -> x.getEmployeeID().equals(sid)).collect(Collectors.toList());
-                if (empIds.isEmpty()) {
-                    alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
-                } else {
-                    alarmEmployeeList.forEach(x -> {
-                        if (x.getEmployeeID().equals(sid)) {
-                            x.getAlarmExtractInfoResults().addAll(lstExtractInfoResult);
-                        }
-                    });
-                }
-
-				List<AlarmExtractionCondition> lstExtractCondition = alarmExtractConditions.stream()
-						.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(condScheYear.getSortOrder())))
-						.collect(Collectors.toList());
-				if (lstExtractCondition.isEmpty()) {
-					alarmExtractConditions.add(new AlarmExtractionCondition(
-							String.valueOf(condScheYear.getSortOrder()),
-							new AlarmCheckConditionCode(alarmCheckConditionCode),
-							AlarmCategory.SCHEDULE_YEAR,
-							AlarmListCheckType.FreeCheck
-					));
+				if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
+					for (AlarmEmployeeList i : alarmEmployeeList) {
+						if (i.getEmployeeID().equals(sid)) {
+							List<AlarmExtractInfoResult> temp = new ArrayList<>(i.getAlarmExtractInfoResults());
+							temp.addAll(lstExtractInfoResult);
+							i.setAlarmExtractInfoResults(temp);
+							break;
+						}
+					}
+				} else {
+					alarmEmployeeList.add(new AlarmEmployeeList(lstExtractInfoResult, sid));
 				}
 			}
 		}
