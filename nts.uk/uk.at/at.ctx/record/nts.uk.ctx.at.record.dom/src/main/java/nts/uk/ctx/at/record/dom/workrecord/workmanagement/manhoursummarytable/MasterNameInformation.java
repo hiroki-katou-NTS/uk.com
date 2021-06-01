@@ -6,7 +6,6 @@ import lombok.val;
 import nts.uk.ctx.at.record.dom.adapter.function.alarmworkplace.EmployeeInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
-import nts.uk.ctx.at.shared.dom.workplace.WorkplaceInformation;
 
 import java.util.List;
 import java.util.Optional;
@@ -112,19 +111,23 @@ public class MasterNameInformation {
      * @return List<作業詳細データ>
      */
     public List<WorkDetailData> filterWorkDetailData(List<WorkDetailData> workDetailList) {
-//        val wkplIds = //TODO
-        val empIds = employeeInfoList.stream().map(EmployeeInfoImport::getSid).collect(Collectors.toList());
         val affWkplIds = affWorkplaceInfoList.stream().map(WorkplaceInfor::getWorkplaceId).collect(Collectors.toList());
+        val wkplIds = workPlaceInfoList.stream().map(WorkplaceInfor::getWorkplaceId).collect(Collectors.toList());
+        val empIds = employeeInfoList.stream().map(EmployeeInfoImport::getSid).collect(Collectors.toList());
+        val task1Codes = work1List.stream().map(x -> x.getCode().v()).collect(Collectors.toList());
+        val task2Codes = work2List.stream().map(x -> x.getCode().v()).collect(Collectors.toList());
+        val task3Codes = work3List.stream().map(x -> x.getCode().v()).collect(Collectors.toList());
+        val task4Codes = work4List.stream().map(x -> x.getCode().v()).collect(Collectors.toList());
+        val task5Codes = work5List.stream().map(x -> x.getCode().v()).collect(Collectors.toList());
 
         return workDetailList.stream().filter(x -> (!empIds.isEmpty() && empIds.contains(x.getEmployeeId()))
                 && (!affWkplIds.isEmpty() && affWkplIds.contains(x.getAffWorkplaceId()))
-//        && 	filter @勤務職場情報リスト.含む($.所属職場ID) //TODO
-//                        && (!wkplIds.isEmpty() && wkplIds.contains(x.getWorkplaceId())) //TODO
-                && (!work1List.isEmpty() && work1List.stream().filter(x -> x.getCode().contains(x.getWorkCode1())))
-                && (!work2List.isEmpty() && work2List.contains(x.getWorkCode2()))
-                && (!work3List.isEmpty() && work3List.contains(x.getWorkCode3()))
-                && (!work4List.isEmpty() && work4List.contains(x.getWorkCode4()))
-                && (!work5List.isEmpty() && work5List.contains(x.getWorkCode5())))
+                && (!wkplIds.isEmpty() && wkplIds.contains(x.getWorkplaceId()))
+                && (!task1Codes.isEmpty() && task1Codes.contains(x.getWorkCode1()))
+                && (!task2Codes.isEmpty() && task2Codes.contains(x.getWorkCode2()))
+                && (!task3Codes.isEmpty() && task3Codes.contains(x.getWorkCode3()))
+                && (!task4Codes.isEmpty() && task4Codes.contains(x.getWorkCode4()))
+                && (!task5Codes.isEmpty() && task5Codes.contains(x.getWorkCode5())))
                 .collect(Collectors.toList());
     }
 

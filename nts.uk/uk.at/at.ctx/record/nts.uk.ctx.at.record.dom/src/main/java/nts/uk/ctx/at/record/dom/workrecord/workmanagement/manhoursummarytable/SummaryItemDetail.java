@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
 import java.util.Collections;
@@ -38,7 +39,15 @@ public class SummaryItemDetail extends ValueObject {
         this.totalPeriod = Optional.empty();
     }
 
-    private void calculateVerticalByDate(List<GeneralDate> dateList){
+    public void calculate(TotalUnit totalUnit, List<GeneralDate> dateList, List<YearMonth> yearList){
+//        List<VerticalValueDaily> lstVertical = dateList.
+    }
+
+    /**
+     * [prv-1] 年月日別に縦計を計算する
+     * @param dateList 	List<年月日>
+     */
+    private void calculateVerticalTotalByDate(List<GeneralDate> dateList){
 //        List<VerticalValueDaily> lstVertical = dateList.
     }
 }
