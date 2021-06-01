@@ -19,44 +19,44 @@ public class CreateAlarmDataTopPageServiceTest {
     @Injectable
     private CreateAlarmDataTopPageService.Require require;
 
-    /**
-     * WkplIdListNotError Empty
-     * wkplIdListErrors NotEmpty
-     */
-    @Test
-    public void testCreateAlarmTopPage_WorkplaceIdListNotError_Empty() {
-        DeleteInfoAlarmImport deleteInfoAlarmImport = new DeleteInfoAlarmImport(
-                1,
-                Arrays.asList("del001", "del002"),
-                0,
-                Optional.of("patternCode1"));
-        List<TopPageAlarmImport> alarmListInfo = DumData.alarmListInfos;
-        List<AffAtWorkplaceExport> affAtWorkplaceExports = DumData.affAtWorkplaceExports01;
-        List<String> employeeIds = Arrays.asList("sya001", "sya002", "sya003", "sya004", "sya005", "del001", "del002");
-
-        String companyId = "companyId";
-
-        new Expectations(AppContexts.class) {
-            {
-                AppContexts.user().companyId();
-                result = companyId;
-
-                require.getWorkplaceId(employeeIds, GeneralDate.today());
-                result = affAtWorkplaceExports;
-
-                require.getListEmployeeId("S001", GeneralDate.today());
-                result = Arrays.asList("sya001", "sya002", "sya003","sya004", "sya005");
-
-                require.getListEmployeeId("S002", GeneralDate.today());
-                result = Arrays.asList("del001", "del002");
-            }
-        };
-
-        NtsAssert.atomTask(() ->
-                        CreateAlarmDataTopPageService.create(require, Optional.of(deleteInfoAlarmImport), alarmListInfo),
-                any -> require.create(companyId, any.get(), any.get())
-        );
-    }
+//    /**
+//     * WkplIdListNotError Empty
+//     * wkplIdListErrors NotEmpty
+//     */
+//    @Test
+//    public void testCreateAlarmTopPage_WorkplaceIdListNotError_Empty() {
+//        DeleteInfoAlarmImport deleteInfoAlarmImport = new DeleteInfoAlarmImport(
+//                1,
+//                Arrays.asList("del001", "del002"),
+//                0,
+//                Optional.of("patternCode1"));
+//        List<TopPageAlarmImport> alarmListInfo = DumData.alarmListInfos;
+//        List<AffAtWorkplaceExport> affAtWorkplaceExports = DumData.affAtWorkplaceExports01;
+//        List<String> employeeIds = Arrays.asList("sya001", "sya002", "sya003", "sya004", "sya005", "del001", "del002");
+//
+//        String companyId = "companyId";
+//
+//        new Expectations(AppContexts.class) {
+//            {
+//                AppContexts.user().companyId();
+//                result = companyId;
+//
+//                require.getWorkplaceId(employeeIds, GeneralDate.today());
+//                result = affAtWorkplaceExports;
+//
+//                require.getListEmployeeId("S001", GeneralDate.today());
+//                result = Arrays.asList("sya001", "sya002", "sya003","sya004", "sya005");
+//
+//                require.getListEmployeeId("S002", GeneralDate.today());
+//                result = Arrays.asList("del001", "del002");
+//            }
+//        };
+//
+//        NtsAssert.atomTask(() ->
+//                        CreateAlarmDataTopPageService.create(require, Optional.of(deleteInfoAlarmImport), alarmListInfo),
+//                any -> require.create(companyId, any.get(), any.get())
+//        );
+//    }
 
     /**
      * WkplIdListNotError NotEmpty
