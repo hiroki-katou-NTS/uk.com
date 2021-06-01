@@ -836,7 +836,10 @@ module nts.uk.ui.at.kdw013.a {
                     <div data-bind="style: {
                         'background-color': item.backgroundColor
                     }"></div>
-                    <div data-bind="text: item.title"></div>
+                    <div>
+                        <label  class='limited-label' style='width:190px'  data-bind='text: item.title'>
+                        </label>
+                    </div>
                 </li>
             </ul>`
         })
