@@ -271,17 +271,18 @@ public class GetEmpCanReferByWorkplaceGroupServiceTest {
 			result = EmployeeAffiliationHelper.createListWithEmployeeIds("emp-id4", "emp-id5");
 		}};
 		
-		Map<String, List<String>> result = NtsAssert.Invoke.staticMethod(GetEmpCanReferByWorkplaceGroupService.class, 
-				"getAll", 
+		// Run
+		Map<String, List<String>> resultGet = NtsAssert.Invoke.staticMethod(GetEmpCanReferByWorkplaceGroupService.class, 
+				"get", 
 				require,
 				date,
-				empId);
+				empId,
+				Collections.emptyList());
+		Map<String, List<String>> resultGetAll = GetEmpCanReferByWorkplaceGroupService.getAll(require, date, empId);
 		
-		assertThat( result.keySet() ).containsExactlyInAnyOrder("wpl-group1", "wpl-group2", "wpl-group3");
+		// Assert
+		assertThat( resultGetAll ).isEqualTo( resultGet );
 		
-		assertThat( result.get("wpl-group1") ).containsExactlyInAnyOrder("emp-id1", "emp-id2", "emp-id3");
-		assertThat( result.get("wpl-group2") ).containsExactlyInAnyOrder(empId);
-		assertThat( result.get("wpl-group3") ).containsExactlyInAnyOrder("emp-id4", "emp-id5");
 	}
 
 }

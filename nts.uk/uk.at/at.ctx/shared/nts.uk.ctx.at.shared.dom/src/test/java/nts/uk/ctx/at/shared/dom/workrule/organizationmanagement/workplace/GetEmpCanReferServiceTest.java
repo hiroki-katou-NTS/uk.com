@@ -95,8 +95,8 @@ public class GetEmpCanReferServiceTest {
 	 * Condition:
 	 * 	parameter's workplaceId is empty
 	 * Expect
-	 * 		setFilterByWorkplace 0回も呼ばれない
-	 * 		setWorkplaceIds 0回も呼ばれない
+	 * 		setFilterByWorkplace 呼ばれない
+	 * 		setWorkplaceIds 呼ばれない
 	 * 		require.searchEmployeeの戻り値を返してもらう
 	 */
 	
