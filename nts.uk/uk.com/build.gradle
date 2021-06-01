@@ -1726,6 +1726,9 @@ project (':exio.ctx:nts.uk.ctx.exio.dom') {
 		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.dom', version: version
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: version
 		compile group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.dom', version: version
+		
+		compile group: 'nemunoki.oruta', name: 'nemunoki.oruta.shr', version: version
+		compile group: 'cnv.core', name: 'nts.uk.cnv.core', version: version
 	}
 }
 
