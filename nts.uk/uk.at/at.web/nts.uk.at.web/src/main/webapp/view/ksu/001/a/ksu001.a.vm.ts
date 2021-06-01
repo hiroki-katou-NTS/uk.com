@@ -105,6 +105,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 		horizontalDetailColumns: any = [];
 		leftHorzContentDs: any = [];
 		horizontalSumContentDs: any = [];
+		rightHorzContentDs: any = [];
         dataSource = {};
         listEmpInfo = [];
         listWorkScheduleWorkInfor  = [];
@@ -2424,6 +2425,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 		    let leftHorzSumContent = self.createLeftHorzSumContent();
 			let horizontalSumHeader = self.createHorizontalSumHeader();
 		    let horizontalSumContent = self.createHorizontalSumContent();
+			let rightHorzSumHeader = self.createRightHorzSumHeader();
+			let rightHorzSumContent = self.createRightHorzSumContent();
             
             function customValidate(idx, key, innerIdx, value, obj) {
                 let startTime, endTime;
@@ -2503,7 +2506,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 			}
 			if (self.showA12()) {
 				extbl.LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent);
-        		extbl.HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent);	
+        		extbl.HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent);
+				extbl.RightHorzSumHeader(rightHorzSumHeader).RightHorzSumContent(rightHorzSumContent);
 			}
             extbl.create();
 
@@ -2713,9 +2717,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 		
 		createHorzSumData(data: any) {
 			let self = this,
-				detailColumns = self.detailColumns,
+				keys = _.keys(new ExItem(undefined, null, null, null, true, self.arrDay)),
 				leftHorzContentDs: any = [],
-				horizontalSumContentDs: any = [];
+				horizontalSumContentDs: any = [],
+				rightHorzContentDs: any = [];
 			switch(self.useCategoriesWorkplaceValue()) {
 				// 人件費・時間
 				case WorkplaceCounterCategory.LABOR_COSTS_AND_TIME: 
@@ -2732,13 +2737,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					leftHorzContentDs.push({ id: 'id6', title: '', subtitle: getText("KSU001_60") });
 					leftHorzContentDs.push({ id: 'id7', title: '', subtitle: getText("KSU001_61") });
 					for(let i=1; i<=7; i++) {
-						let objectlaborCostAndTime = {};
-						_.set(objectlaborCostAndTime, 'id', 'id'+i);
-						_.forEach(detailColumns, detailColumn => {
-							if(_.includes(['employeeId', 'sid'], detailColumn.key)) {
+						let objectLaborCostAndTime = {}, sumLaborCostAndTime = 0;
+						_.set(objectLaborCostAndTime, 'id', 'id'+i);
+						_.forEach(keys, key => {
+							if(_.includes(['employeeId', 'sid'], key)) {
 								return;	
 							}
-							let findObject: any = _.find(laborCostAndTime, item => detailColumn.key==moment(item.date).format('_YYYYMMDD'));
+							let findObject: any = _.find(laborCostAndTime, item => key==moment(item.date).format('_YYYYMMDD'));
 							if(!_.isEmpty(findObject)) {
 								let findValueObject: any = null;
 								switch(i) {
@@ -2765,12 +2770,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 											break;
 									default: break;
 								}
-								_.set(objectlaborCostAndTime, detailColumn.key, _.isEmpty(findValueObject) ? '' : findValueObject.value);	
+								_.set(objectLaborCostAndTime, key, _.isEmpty(findValueObject) ? '' : findValueObject.value);	
+								sumLaborCostAndTime += _.isEmpty(findValueObject) ? 0 : findValueObject.value;
 							} else {
-								_.set(objectlaborCostAndTime, detailColumn.key, '');	
+								_.set(objectLaborCostAndTime, key, '');	
 							}
 						});
-						horizontalSumContentDs.push(objectlaborCostAndTime);	
+						horizontalSumContentDs.push(objectLaborCostAndTime);	
+						rightHorzContentDs.push({ id: 'id'+i, sum: sumLaborCostAndTime });
 					}
 					break;
 					
@@ -2781,21 +2788,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					if(_.isEmpty(externalBudgetValue)) {
 						break;
 					}
-					let objectExternalBudget = {};
+					let objectExternalBudget = {}, sumExternalBudget = 0;
 					leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(externalBudget).externalBudget[0], 'name'), subtitle: '' });
 					_.set(objectExternalBudget, 'id', 'id1');
-					_.forEach(detailColumns, detailColumn => {
-						if(_.includes(['employeeId', 'sid'], detailColumn.key)) {
+					_.forEach(keys, key => {
+						if(_.includes(['employeeId', 'sid'], key)) {
 							return;	
 						}
-						let findObject: any = _.find(externalBudget, item => detailColumn.key==moment(item.date).format('_YYYYMMDD'));
+						let findObject: any = _.find(externalBudget, item => key==moment(item.date).format('_YYYYMMDD'));
 						if(!_.isEmpty(findObject)) {
-							_.set(objectExternalBudget, detailColumn.key, findObject.externalBudget[0].value);	
+							_.set(objectExternalBudget, key, findObject.externalBudget[0].value);	
+							sumExternalBudget += findObject.externalBudget[0].value;
 						} else {
-							_.set(objectExternalBudget, detailColumn.key, '');	
+							_.set(objectExternalBudget, key, '');	
 						}
 					});
 					horizontalSumContentDs.push(objectExternalBudget);
+					rightHorzContentDs.push({ id: 'id1', sum: sumExternalBudget });
 					break;
 					
 				// 回数集計
@@ -2805,21 +2814,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					if(_.isEmpty(timeCountValue)) {
 						break;
 					}
-					let objectTimeCount = {};
+					let objectTimeCount = {}, sumTimeCount = 0;
 					leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(timeCount).timeCount[0], 'totalTimesName'), subtitle: '' });
 					_.set(objectTimeCount, 'id', 'id1');
-					_.forEach(detailColumns, detailColumn => {
-						if(_.includes(['employeeId', 'sid'], detailColumn.key)) {
+					_.forEach(keys, key => {
+						if(_.includes(['employeeId', 'sid'], key)) {
 							return;	
 						}
-						let findObject: any = _.find(timeCount, item => detailColumn.key==moment(item.date).format('_YYYYMMDD'));
+						let findObject: any = _.find(timeCount, item => key==moment(item.date).format('_YYYYMMDD'));
 						if(!_.isEmpty(findObject)) {
-							_.set(objectTimeCount, detailColumn.key, findObject.timeCount[0].value);	
+							_.set(objectTimeCount, key, findObject.timeCount[0].value);	
+							sumTimeCount += findObject.timeCount[0].value;
 						} else {
-							_.set(objectTimeCount, detailColumn.key, '');	
+							_.set(objectTimeCount, key, '');	
 						}
 					});
 					horizontalSumContentDs.push(objectTimeCount);
+					rightHorzContentDs.push({ id: 'id1', sum: sumTimeCount });
 					break;
 					
 				// 就業時間帯別の利用人数
@@ -2833,28 +2844,31 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					leftHorzContentDs.push({ id: 'id2', title: '', subtitle: getText("KSU001_71") });
 					leftHorzContentDs.push({ id: 'id3', title: '', subtitle: getText("KSU001_72") });
 					for(let i=1; i<=3; i++) {
-						let objectPeopleMethod = {};
+						let objectPeopleMethod = {}, sumPeopleMethod = 0;
 						_.set(objectPeopleMethod, 'id', 'id'+i);
-						_.forEach(detailColumns, detailColumn => {
-							if(_.includes(['employeeId', 'sid'], detailColumn.key)) {
+						_.forEach(keys, key => {
+							if(_.includes(['employeeId', 'sid'], key)) {
 								return;	
 							}
-							let findObject: any = _.find(peopleMethod, item => detailColumn.key==moment(item.date).format('_YYYYMMDD'));
+							let findObject: any = _.find(peopleMethod, item => key==moment(item.date).format('_YYYYMMDD'));
 							if(!_.isEmpty(findObject)) {
 								switch(i) {
-									case 1: _.set(objectPeopleMethod, detailColumn.key, _.get(findObject.peopleMethod[0], 'planNumber'));
+									case 1: _.set(objectPeopleMethod, key, _.get(findObject.peopleMethod[0], 'planNumber'));
 											break;
-									case 2: _.set(objectPeopleMethod, detailColumn.key, _.get(findObject.peopleMethod[0], 'scheduleNumber'));
+									case 2: _.set(objectPeopleMethod, key, _.get(findObject.peopleMethod[0], 'scheduleNumber'));
 											break;
-									case 3: _.set(objectPeopleMethod, detailColumn.key, _.get(findObject.peopleMethod[0], 'actualNumber'));
+									case 3: _.set(objectPeopleMethod, key, _.get(findObject.peopleMethod[0], 'actualNumber'));
 											break;
 									default: break;
 								}
+								let subValue: number = _.get(objectPeopleMethod, key);
+								sumPeopleMethod += subValue;
 							} else {
-								_.set(objectPeopleMethod, detailColumn.key, '');	
+								_.set(objectPeopleMethod, key, '');	
 							}
 						});
 						horizontalSumContentDs.push(objectPeopleMethod);	
+						rightHorzContentDs.push({ id: 'id'+i, sum: sumPeopleMethod });
 					}
 					break;
 					
@@ -2865,21 +2879,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					if(_.isEmpty(employmentValue)) {
 						break;
 					}
-					let objectEmployment = {};
+					let objectEmployment = {}, sumEmployment = 0;
 					leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(employment).numberPeople[0], 'name'), subtitle: '' });
 					_.set(objectEmployment, 'id', 'id1');
-					_.forEach(detailColumns, detailColumn => {
-						if(_.includes(['employeeId', 'sid'], detailColumn.key)) {
+					_.forEach(keys, key => {
+						if(_.includes(['employeeId', 'sid'], key)) {
 							return;	
 						}
-						let findObject: any = _.find(employment, item => detailColumn.key==moment(item.date).format('_YYYYMMDD'));
+						let findObject: any = _.find(employment, item => key==moment(item.date).format('_YYYYMMDD'));
 						if(!_.isEmpty(findObject)) {
-							_.set(objectEmployment, detailColumn.key, findObject.numberPeople[0].value);	
+							_.set(objectEmployment, key, findObject.numberPeople[0].value);	
+							sumEmployment += findObject.numberPeople[0].value;
 						} else {
-							_.set(objectEmployment, detailColumn.key, '');	
+							_.set(objectEmployment, key, '');	
 						}
 					});
 					horizontalSumContentDs.push(objectEmployment);
+					rightHorzContentDs.push({ id: 'id1', sum: sumEmployment });
 					break;
 					
 				// 分類人数
@@ -2889,21 +2905,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					if(_.isEmpty(classificationValue)) {
 						break;
 					}
-					let objectClassification = {};
+					let objectClassification = {}, sumClassification = 0;
 					leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(classification).numberPeople[0], 'name'), subtitle: '' });
 					_.set(objectClassification, 'id', 'id1');
-					_.forEach(detailColumns, detailColumn => {
-						if(_.includes(['employeeId', 'sid'], detailColumn.key)) {
+					_.forEach(keys, key => {
+						if(_.includes(['employeeId', 'sid'], key)) {
 							return;	
 						}
-						let findObject: any = _.find(classification, item => detailColumn.key==moment(item.date).format('_YYYYMMDD'));
+						let findObject: any = _.find(classification, item => key==moment(item.date).format('_YYYYMMDD'));
 						if(!_.isEmpty(findObject)) {
-							_.set(objectClassification, detailColumn.key, findObject.numberPeople[0].value);	
+							_.set(objectClassification, key, findObject.numberPeople[0].value);	
+							sumClassification += findObject.numberPeople[0].value;
 						} else {
-							_.set(objectClassification, detailColumn.key, '');	
+							_.set(objectClassification, key, '');	
 						}
 					});
 					horizontalSumContentDs.push(objectClassification);
+					rightHorzContentDs.push({ id: 'id1', sum: sumClassification });
 					break;
 					
 				// 職位人数
@@ -2913,27 +2931,30 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					if(_.isEmpty(jobTitleInfoValue)) {
 						break;
 					}
-					let objectJobTitle = {};
+					let objectJobTitle = {}, sumJobTitleInfo = 0;
 					leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(jobTitleInfo).numberPeople[0], 'name'), subtitle: '' });
 					_.set(objectJobTitle, 'id', 'id1');
-					_.forEach(detailColumns, detailColumn => {
-						if(_.includes(['employeeId', 'sid'], detailColumn.key)) {
+					_.forEach(keys, key => {
+						if(_.includes(['employeeId', 'sid'], key)) {
 							return;	
 						}
-						let findObject: any = _.find(jobTitleInfo, item => detailColumn.key==moment(item.date).format('_YYYYMMDD'));
+						let findObject: any = _.find(jobTitleInfo, item => key==moment(item.date).format('_YYYYMMDD'));
 						if(!_.isEmpty(findObject)) {
-							_.set(objectJobTitle, detailColumn.key, findObject.numberPeople[0].value);	
+							_.set(objectJobTitle, key, findObject.numberPeople[0].value);	
+							sumJobTitleInfo += findObject.numberPeople[0].value;
 						} else {
-							_.set(objectJobTitle, detailColumn.key, '');	
+							_.set(objectJobTitle, key, '');	
 						}
 					});
 					horizontalSumContentDs.push(objectJobTitle);
+					rightHorzContentDs.push({ id: 'id1', sum: sumJobTitleInfo });
 					break;
 					
 				default: break;
 			}	
 			self.leftHorzContentDs = leftHorzContentDs;
 			self.horizontalSumContentDs = horizontalSumContentDs;
+			self.rightHorzContentDs = rightHorzContentDs;
 		}
 		
 		createVertSumHeader() {
@@ -3018,6 +3039,29 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 		            primaryKey: "employeeId",
 			    };	
 			return horizontalSumContent;
+		}
+		
+		createRightHorzSumColumns() {
+			let rightHorzSumColumns = [{ headerText: "合計", key: "sum", width: "35px" }];
+			return rightHorzSumColumns;
+		}
+		
+		createRightHorzSumHeader() {
+		    let self = this,
+				rightHorzSumHeader = {
+			        columns: self.createRightHorzSumColumns(),
+			        rowHeight: "40px"
+			    };
+			return rightHorzSumHeader;
+		}
+		createRightHorzSumContent() {
+			let self = this,
+				rightHorzSumContent = {
+			        columns: self.createRightHorzSumColumns(),
+			        dataSource: self.rightHorzContentDs,
+			        primaryKey: "id"
+			    };
+			return rightHorzSumContent;
 		}
 		
         // update A11
