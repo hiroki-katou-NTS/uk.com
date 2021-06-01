@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.history;
+package nts.uk.ctx.exio.dom.input.canonicalize.existing.employee.history;
 
 import lombok.Value;
 import nts.arc.time.calendar.period.DatePeriod;

@@ -18,6 +18,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.canonicalize.existing.employee.history.EmployeeHistoryToAdjust;
+import nts.uk.ctx.exio.dom.input.canonicalize.existing.employee.history.EmployeeHistoryToRemove;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.EmployementHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
