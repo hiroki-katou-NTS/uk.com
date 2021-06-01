@@ -1,9 +1,12 @@
 package nts.uk.ctx.exio.dom.input.validation;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.uk.ctx.exio.dom.input.validation.systemrange.ValidationEnum;
-import nts.uk.ctx.exio.dom.input.validation.systemrange.ValidationPrimitiveValue;
+import nts.uk.ctx.exio.dom.input.DataItem;
+import nts.uk.ctx.exio.dom.input.revise.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.input.validation.condition.system.DomainConstraint;
 
 /**
  * 受入可能項目の定義
@@ -13,30 +16,19 @@ public class ImportableItem implements DomainAggregate{
 
 	private int groupId;
 	private int itemNo;
-	private String fqn;
-	private CheckMethod atr;
+	private ItemType itemType;
+	private Optional<DomainConstraint> domainConstraint;
 	
-	
-	public ImportableItem(int groupId, int itemNo, String fqn, CheckMethod atr) {
+	public ImportableItem(int groupId, int itemNo, Optional<DomainConstraint> domainConstraint) {
 		super();
 		this.groupId = groupId;
 		this.itemNo = itemNo;
-		this.fqn = fqn;
-		this.atr = atr;
+		this.domainConstraint = domainConstraint;
 	}
-
-	public void validate(Object value) {
-		switch(this.atr) {
-			case PRIMITIVE_VALUE:
-				ValidationPrimitiveValue.run(this.fqn, value);
-				break;
-			case ENUM:
-				ValidationEnum.run(this.fqn, value);
-				break;
-			case NO_CHECK:
-				break;
-			default:
-				throw new RuntimeException("チェック方法が定義されていません。:" + this.atr);
-		}
+	
+	public boolean validate(DataItem dataItem) {
+		return domainConstraint.map(constraint -> constraint.validate(dataItem))
+				//↓はそもそも制限が無いという意図.
+				.orElse(true);
 	}
 }
