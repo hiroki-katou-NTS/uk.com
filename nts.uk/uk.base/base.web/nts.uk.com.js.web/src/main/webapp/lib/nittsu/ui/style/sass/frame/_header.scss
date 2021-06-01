@@ -45,6 +45,7 @@ div#master-wrapper {
 		position: relative;
 		background-color: #127D09;
 		height: $header_height;
+		border-bottom: solid 1px #B1B1B1;
 
 		&>div.hamberger {
 			cursor: pointer;
@@ -352,6 +353,24 @@ div#master-wrapper {
 					background-color: #2DCD3D;
 					transition: visibility 0s ease 0.1s;
 				}
+			}
+		}
+
+		&>.pg-area {
+			background: white;
+			min-height: 31px;
+
+			&>.pg-name {
+				font-size: 18px;
+				letter-spacing: 5%;
+				font-weight: 500;
+				line-height: 30px;
+				position: relative;
+				overflow: hidden;
+				cursor: pointer;
+				color: #2b2e44;
+				padding-right: 2px;
+				padding-left: 10px;
 			}
 		}
 

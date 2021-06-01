@@ -114,6 +114,11 @@ module nts.uk.ui.header {
                 <i id="new-mark-msg" style="display: none" data-bind="ntsIcon: { no: 165, width: 13, height: 13 }"></i>
             </div>
         </div>
+        <div class="pg-area">
+            <div class="pg-name">
+                <span data-bind="text: pgName"></span>
+            </div>
+        </div>
         `
     })
     export class HeaderViewModel extends ko.ViewModel {
@@ -137,6 +142,8 @@ module nts.uk.ui.header {
         companies: KnockoutObservableArray<any> = ko.observableArray([]);
 
         companyName!: KnockoutComputed<string>;
+
+        pgName: KnockoutObservable<string> = ko.observable('');
 
         created() {
             const vm = this;
@@ -213,6 +220,20 @@ module nts.uk.ui.header {
                         vm
                             .$ajax('com', '/sys/portal/webmenu/companies')
                             .then((data) => vm.companies(data));
+
+                        vm
+                            .$ajax('com', '/sys/portal/webmenu/program')
+                            .then((response: { name: string }[]) => {
+                                const [first] = response;
+            
+                                if (first) {
+                                    const { name } = first;
+            
+                                    if (name) {
+                                        vm.pgName(name);
+                                    }
+                                }
+                            });
 
                         vm.$nextTick(() => {
                             $(window).trigger('wd.resize');
