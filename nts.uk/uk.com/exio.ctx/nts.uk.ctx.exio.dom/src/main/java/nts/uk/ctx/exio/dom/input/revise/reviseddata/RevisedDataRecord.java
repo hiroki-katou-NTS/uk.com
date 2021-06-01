@@ -15,7 +15,7 @@ public class RevisedDataRecord {
 	/** 受入行番号 */
 	int rowNo;
 
-	/** データ項目一覧 */
+	/** 編集済みの項目 */
 	DataItemList items;
 	
 	public Optional<DataItem> getItemByNo(int itemNo) {

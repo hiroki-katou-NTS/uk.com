@@ -1,11 +1,10 @@
 package nts.uk.ctx.exio.dom.input;
 
-import static nts.uk.ctx.exio.dom.input.DataItem.Type.*;
-
 import java.math.BigDecimal;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.exio.dom.input.revise.ItemType;
 
 /**
  * 1項目分のデータ
@@ -13,65 +12,58 @@ import nts.arc.time.GeneralDate;
 @Value
 public class DataItem {
 
-	/** 項目No */
+	/** 受入項目NO */
 	int itemNo;
 	
-	/** 型 */
-	Type type;
+	/** 項目型 */
+	ItemType type;
 	
 	/** 値 */
 	Object value;
 	
 	public static DataItem of(int itemNo, String value) {
-		return new DataItem(itemNo, STRING, value);
+		return new DataItem(itemNo, ItemType.STRING, value);
 	}
 	
 	public static DataItem of(int itemNo, long value) {
-		return new DataItem(itemNo, INT, value);
+		return new DataItem(itemNo, ItemType.INT, value);
 	}
 	
 	public static DataItem of(int itemNo, BigDecimal value) {
-		return new DataItem(itemNo, REAL, value);
+		return new DataItem(itemNo, ItemType.REAL, value);
 	}
 	
 	public static DataItem of(int itemNo, GeneralDate value) {
-		return new DataItem(itemNo, DATE, value);
+		return new DataItem(itemNo, ItemType.DATE, value);
 	}
 	
 	public String getString() {
-		checkType(STRING);
+		checkType(ItemType.STRING);
 		return value != null ? (String) value : null;
 	}
 	
 	public Long getInt() {
-		checkType(INT);
+		checkType(ItemType.INT);
 		return value != null ? (long) value : null;
 	}
 	
 	public BigDecimal getReal() {
-		checkType(REAL);
+		checkType(ItemType.REAL);
 		return value != null ? (BigDecimal) value : null;
 	}
 	
 	public GeneralDate getDate() {
-		checkType(DATE);
+		checkType(ItemType.DATE);
 		return value != null ? (GeneralDate) value : null;
 	}
 	
-	private void checkType(Type... validTypes) {
-		for (Type validType : validTypes) {
+	private void checkType(ItemType... validTypes) {
+		for (ItemType validType : validTypes) {
 			if (type == validType) {
 				return;
 			}
 		}
 		
 		throw new RuntimeException("typeが合致しないため実行できません：type: " + type);
-	}
-
-	public enum Type {
-		STRING,
-		INT,
-		REAL,
-		DATE,
 	}
 }

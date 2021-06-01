@@ -1,8 +1,14 @@
-package nts.uk.ctx.exio.dom.input.csvimport;
+package nts.uk.ctx.exio.dom.input.setting.source;
 
-public enum ExiCharset {
-    
-    /** The Shift JIS. */
+/**
+ * 
+ * 受入CSV文字コード
+ *
+ */
+public enum ExternalImportCharset {
+    // 現状　Shift JIS　にのみ対応
+	
+    /** Shift JIS. */
     Shift_JIS(3, "Shift JIS", "Shift JIS");
 
     /** The value. */
@@ -15,22 +21,22 @@ public enum ExiCharset {
     public String description;
 
     /** The Constant values. */
-    private final static ExiCharset[] values = ExiCharset.values();
+    private final static ExternalImportCharset[] values = ExternalImportCharset.values();
 
-    private ExiCharset(Integer value, String nameId, String description) {
+    private ExternalImportCharset(Integer value, String nameId, String description) {
         this.value = value;
         this.nameId = nameId;
         this.description = description;
     }
 
-    public static ExiCharset valueOf(Integer value) {
+    public static ExternalImportCharset valueOf(Integer value) {
         // Invalid object.
         if (value == null) {
             return null;
         }
 
         // Find value.
-        for (ExiCharset val : ExiCharset.values) {
+        for (ExternalImportCharset val : ExternalImportCharset.values) {
             if (val.value == value) {
                 return val;
             }
