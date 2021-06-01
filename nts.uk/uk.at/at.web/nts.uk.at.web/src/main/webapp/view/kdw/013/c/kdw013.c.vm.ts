@@ -85,7 +85,7 @@ module nts.uk.ui.at.kdw013.c {
     }`;
 
     const { randomId } = nts.uk.util;
-    const { number2String, string2Number, validateNumb, getTimeOfDate, setTimeOfDate } = share;
+    const { number2String, string2Number, validateNumb, getTimeOfDate, setTimeOfDate, getTitles } = share;
 
     const API: API = {
         START: '/screen/at/kdw013/c/start',
@@ -965,48 +965,86 @@ module nts.uk.ui.at.kdw013.c {
             const t5 = ko.unwrap(task5);
 
             const getTaskInfo = (): TaskDto | null => {
-                if (t5) {
-                    const selected = _.find(ko.unwrap(taskList5), ({ id }) => t5 === id);
+            if (t1) {
+                const selected = _.find(ko.unwrap(taskList1), ({ id }) => t1 === id);
 
-                    if (selected) {
-                        return selected.$raw;
-                    }
+                if (selected) {
+                    return selected.$raw;
                 }
+            }
+            if (t2) {
+                const selected = _.find(ko.unwrap(taskList2), ({ id }) => t2 === id);
 
-                if (t4) {
-                    const selected = _.find(ko.unwrap(taskList4), ({ id }) => t4 === id);
-
-                    if (selected) {
-                        return selected.$raw;
-                    }
+                if (selected) {
+                    return selected.$raw;
                 }
+            }
+            if (t3) {
+                const selected = _.find(ko.unwrap(taskList3), ({ id }) => t3 === id);
 
-                if (t3) {
-                    const selected = _.find(ko.unwrap(taskList3), ({ id }) => t3 === id);
-
-                    if (selected) {
-                        return selected.$raw;
-                    }
+                if (selected) {
+                    return selected.$raw;
                 }
+            }
+            if (t4) {
+                const selected = _.find(ko.unwrap(taskList4), ({ id }) => t4 === id);
 
-                if (t2) {
-                    const selected = _.find(ko.unwrap(taskList2), ({ id }) => t2 === id);
-
-                    if (selected) {
-                        return selected.$raw;
-                    }
+                if (selected) {
+                    return selected.$raw;
                 }
+            }
+            if (t5) {
+                const selected = _.find(ko.unwrap(taskList5), ({ id }) => t5 === id);
 
+                if (selected) {
+                    return selected.$raw;
+                }
+            }
+
+                return null;
+            };
+        
+            const getTitles = (): string |null=>{
+            
+            let tastNames = [];
                 if (t1) {
                     const selected = _.find(ko.unwrap(taskList1), ({ id }) => t1 === id);
 
                     if (selected) {
-                        return selected.$raw;
+                       tastNames.push(selected.name);
+                    }
+                }
+                if (t2) {
+                    const selected = _.find(ko.unwrap(taskList2), ({ id }) => t2 === id);
+
+                    if (selected) {
+                        tastNames.push(selected.name);
+                    }
+                }
+                if (t3) {
+                    const selected = _.find(ko.unwrap(taskList3), ({ id }) => t3 === id);
+
+                    if (selected) {
+                       tastNames.push(selected.name);
+                    }
+                }
+                if (t4) {
+                    const selected = _.find(ko.unwrap(taskList4), ({ id }) => t4 === id);
+
+                    if (selected) {
+                        tastNames.push(selected.name);
+                    }
+                }
+                if (t5) {
+                    const selected = _.find(ko.unwrap(taskList5), ({ id }) => t5 === id);
+
+                    if (selected) {
+                       tastNames.push(selected.name);
                     }
                 }
 
-                return null;
-            };
+                return tastNames.join("\n");
+            }
 
             $.Deferred()
                 .resolve(true)
@@ -1041,7 +1079,7 @@ module nts.uk.ui.at.kdw013.c {
                                 if (displayInfo) {
                                     const { color, taskName } = displayInfo;
 
-                                    event.setProp('title', taskName);
+                                    event.setProp('title', getTitles());
                                     event.setProp('backgroundColor', color);
                                 }
                             }

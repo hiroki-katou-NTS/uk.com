@@ -1621,7 +1621,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     if (['timeGridDay', 'timeGridWeek'].indexOf(type) !== -1) {
                         return {
                             html: `<div class="fc-event-title-container">
-                                <div class="fc-event-title fc-sticky"><h4>${title}</h4></div>
+                                <div class="fc-event-title fc-sticky"><pre>${title}</pre></div>
                                 ${_.isString(remarks) ? remarks.split('\n').map((m: string) => `<div class="fc-event-description fc-sticky">${m}</div>`).join('') : ''}
                             </div>`
                         };
@@ -1630,13 +1630,13 @@ module nts.uk.ui.at.kdw013.calendar {
                     if (type === 'dayGridMonth') {
                         return {
                             html: `<div class="fc-daygrid-event-dot"></div>
-                            <div class="fc-event-title"><h4>${title}</h4></div>`
+                            <div class="fc-event-title"><pre>${title}</pre></div>`
                         };
                     }
 
                     if (type === 'listWeek') {
                         return {
-                            html: `<h4>${title}</h4>
+                            html: `<pre>${title}</pre>
                             ${_.isString(remarks) ? remarks.split('\n').map((m: string) => `<div class="fc-event-description fc-sticky">${m}</div>`).join('') : ''}`
                         };
                     }
