@@ -256,7 +256,6 @@ module nts.uk.at.view.kdp004.a {
 					service.startPage()
 						.done((res: any) => {
 							if (!res.stampSetting || !res.stampResultDisplay) {
-								self.errorMessage(self.getErrorNotUsed(1));
 								vm.$window.storage("contractInfo")
 									.then((data: any) => {
 										if (data) {
@@ -269,7 +268,9 @@ module nts.uk.at.view.kdp004.a {
 											});
 										}
 									})
-								self.errorMessage(self.getErrorNotUsed(1));
+									if (ko.unwrap(self.errorMessage) === "") {
+										self.errorMessage(self.getErrorNotUsed(1));
+									}
 								self.isUsed(false);
 								return;
 							}
@@ -507,6 +508,8 @@ module nts.uk.at.view.kdp004.a {
 								self.modeBasyo(false);
 							});
 					} else {
+						console.log(loginResult.msgErrorId);
+						
 						if (loginResult.msgErrorId == "Msg_1527") {
 							self.isUsed(false);
 							self.errorMessage(getMessage("Msg_1527"));
