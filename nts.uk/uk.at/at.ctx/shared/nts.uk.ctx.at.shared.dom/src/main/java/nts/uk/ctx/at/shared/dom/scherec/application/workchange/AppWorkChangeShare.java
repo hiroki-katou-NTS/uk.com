@@ -12,9 +12,10 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * 勤務変更申請
- * 
  * @author thanh_nx
+ * 
+ *         勤務変更申請(反映用)
+ * 
  *
  */
 @Getter

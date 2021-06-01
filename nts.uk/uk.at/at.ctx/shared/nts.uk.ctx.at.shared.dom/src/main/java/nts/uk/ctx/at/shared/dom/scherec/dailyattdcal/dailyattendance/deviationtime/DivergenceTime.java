@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationt
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 
@@ -23,9 +24,11 @@ public class DivergenceTime {
 	private int divTimeId;
 	
 	//乖離理由
+	@Setter
 	private Optional<DivergenceReasonContent> divReason;
 	
 	//乖離理由コード
+	@Setter
 	private Optional<DiverdenceReasonCode> divResonCode;
 
 	public DivergenceTime(AttendanceTimeOfExistMinus divTimeAfterDeduction, AttendanceTimeOfExistMinus deductionTime, AttendanceTimeOfExistMinus divTime,
@@ -56,5 +59,10 @@ public class DivergenceTime {
 	 */
 	public Optional<EmployeeDailyPerError> checkDivergenceTime(){
 		return Optional.empty();
+	}
+	
+	public static DivergenceTime createDefaultWithNo(int no) {
+		return new DivergenceTime(new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0),
+				new AttendanceTimeOfExistMinus(0), no, Optional.empty(), Optional.empty());
 	}
 }

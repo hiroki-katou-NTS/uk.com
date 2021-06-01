@@ -120,7 +120,7 @@ public class RemainSubstitutionHolidayUpdating {
 	private static List<AtomTask> updateSubstitutionHolidayMngData(RequireM1 require, 
 			String companyId, List<AccumulationAbsenceDetail> lstAbsRecMng) {
 		//大塚カスタマイズ　振休残数がマイナスの場合でも、常にクリアする。
-		boolean isOotsuka = true;
+		boolean isOotsuka = AppContexts.optionLicense().customize().ootsuka();
 		
 		List<AtomTask> atomTasks = new ArrayList<>();
 		

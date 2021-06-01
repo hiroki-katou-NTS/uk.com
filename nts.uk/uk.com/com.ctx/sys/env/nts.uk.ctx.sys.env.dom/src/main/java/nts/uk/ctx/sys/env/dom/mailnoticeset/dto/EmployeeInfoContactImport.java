@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.sys.env.dom.mailnoticeset.dto;
 
-import java.util.Optional;
-
 import lombok.Getter;
 
 /**
@@ -22,35 +20,20 @@ public class EmployeeInfoContactImport {
 	// メールアドレス
 	/** The mail address. */
 	private String mailAddress;
-	
-	//メールアドレスが在席照会に表示するか
-	private Optional<Boolean> isMailAddressDisplay;
 
 	// 携帯メールアドレス
 	/** The mobile mail address. */
 	private String mobileMailAddress;
-	
-	//携帯メールアドレスが在席照会に表示するか
-	private Optional<Boolean> isMobileMailAddressDisplay;
 
 	// 携帯電話番号
 	/** The cell phone no. */
 	private String cellPhoneNo;
 	
-	//携帯電話番号が在席照会に表示するか
-	private Optional<Boolean> isCellPhoneNumberDisplay;
-	
 	// 座席ダイヤルイン
 	private String seatDialIn;
 	
-	//座席ダイヤルインが在席照会に表示するか
-	private Optional<Boolean> isSeatDialInDisplay;
-	
 	//座席内線番号
 	private String seatExtensionNumber;
-	
-	//座席内線番号が在席照会に表示するか
-	private Optional<Boolean> isSeatExtensionNumberDisplay;
 
 	/**
 	 * Instantiates a new employee info contact import.
@@ -69,23 +52,13 @@ public class EmployeeInfoContactImport {
 			String mobileMailAddress,
 			String cellPhoneNo,
 			String seatDialIn,
-			String seatExtensionNumber,
-			Optional<Boolean> isMailAddressDisplay,
-			Optional<Boolean> isMobileMailAddressDisplay,
-			Optional<Boolean> isCellPhoneNumberDisplay,
-			Optional<Boolean> isSeatDialInDisplay,
-			Optional<Boolean> isSeatExtensionNumberDisplay) {
+			String seatExtensionNumber) {
 		this.employeeId = employeeId;
 		this.mailAddress = mailAddress;
 		this.mobileMailAddress = mobileMailAddress;
 		this.cellPhoneNo = cellPhoneNo;
 		this.seatDialIn = seatDialIn;
 		this.seatExtensionNumber = seatExtensionNumber;
-		this.isMailAddressDisplay = isMailAddressDisplay;
-		this.isMobileMailAddressDisplay = isMobileMailAddressDisplay;
-		this.isCellPhoneNumberDisplay = isCellPhoneNumberDisplay;
-		this.isSeatDialInDisplay = isSeatDialInDisplay;
-		this.isSeatExtensionNumberDisplay = isSeatExtensionNumberDisplay;
 	}
 
 	/**

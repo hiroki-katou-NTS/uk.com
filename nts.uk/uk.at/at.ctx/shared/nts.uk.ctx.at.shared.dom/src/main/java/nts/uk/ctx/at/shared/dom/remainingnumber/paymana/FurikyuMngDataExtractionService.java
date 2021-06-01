@@ -155,8 +155,8 @@ public class FurikyuMngDataExtractionService {
 					.endDate(closing.get().getClosureEndDate())
 					.closureId(closureId)
 					.wkHistory(sWkpHistImport.orElse(null))
-					.employeeCode(personEmpBasicInfoImport.getEmployeeCode())
-					.employeeName(personEmpBasicInfoImport.getBusinessName())
+					.employeeCode(personEmpBasicInfoImport == null ? "" : personEmpBasicInfoImport.getEmployeeCode())
+					.employeeName(personEmpBasicInfoImport == null ? "" : personEmpBasicInfoImport.getBusinessName())
 					.build();
 			return result;
 		}
@@ -186,7 +186,7 @@ public class FurikyuMngDataExtractionService {
 
 		return EmploymentManageDistinctDto.builder()
 				.employmentCode(employmentHist.map(EmploymentHistShareImport::getEmploymentCode).orElse(null))
-				.isManage(manageSetting.getManageDistinct())
+				.isManage(manageSetting == null ? ManageDistinct.NO : manageSetting.getManageDistinct())
 				.build();
 	}
 

@@ -1,31 +1,35 @@
 package nts.uk.ctx.bs.employee.app.find.wkpdep;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.dom.access.role.SyRoleAdapter;
-import nts.uk.ctx.bs.employee.dom.department.master.service.DepartmentExportSerivce;
-import nts.uk.ctx.bs.employee.dom.department.master.service.DepartmentPastCodeCheckOutput;
-import nts.uk.ctx.bs.employee.dom.department.master.service.DepartmentQueryService;
-import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
-import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplacePastCodeCheckOutput;
-import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceQueryService;
-
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.access.role.SyRoleAdapter;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfiguration;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentConfigurationRepository;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformation;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformationRepository;
+import nts.uk.ctx.bs.employee.dom.department.master.service.DepartmentExportSerivce;
+import nts.uk.ctx.bs.employee.dom.department.master.service.DepartmentPastCodeCheckOutput;
+import nts.uk.ctx.bs.employee.dom.department.master.service.DepartmentQueryService;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfiguration;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfigurationRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
+import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplacePastCodeCheckOutput;
+import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceQueryService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
@@ -195,7 +199,7 @@ public class WkpDepFinder {
 													wkpHierarchy.getHierarchyCode(),
 													wkpHierarchy.getGenericName(),
 													wkpHierarchy.getDispName(),
-													new ArrayList<>());
+													new ArrayList<WkpDepTreeDto>());
 			// build List
 			this.pushToList(lstReturn, dto, wkpHierarchy.getHierarchyCode(), Strings.EMPTY, highestHierarchy);
 		}
@@ -217,17 +221,36 @@ public class WkpDepFinder {
 				}
 			}
 		} else {
-			String searchCode = preCode.isEmpty() ? preCode + hierarchyCode.substring(0, highestHierarchy)
-					: preCode + hierarchyCode.substring(0, HIERARCHY_LENGTH);
-			Optional<WkpDepTreeDto> optWorkplaceFindDto = lstReturn.stream()
-					.filter(item -> item.getHierarchyCode().equals(searchCode)).findFirst();
-			if (!optWorkplaceFindDto.isPresent()) {
+			String searchCode = hierarchyCode.substring(0, hierarchyCode.length() - HIERARCHY_LENGTH);
+			
+			WkpDepTreeDto optWorkplaceFindDto = find(lstReturn , searchCode);
+			
+			if (optWorkplaceFindDto == null) {
 				return;
 			}
-			List<WkpDepTreeDto> currentItemChilds = optWorkplaceFindDto.get().getChildren();
-			pushToList(currentItemChilds, dto, hierarchyCode.substring(HIERARCHY_LENGTH, hierarchyCode.length()),
-					searchCode, highestHierarchy);
+			optWorkplaceFindDto.getChildren().add(dto);
 		}
+	}
+	
+	private WkpDepTreeDto find(List<WkpDepTreeDto> lstReturn, String searchCode){
+		WkpDepTreeDto result = null;
+		
+		
+		for (WkpDepTreeDto wkp : lstReturn) {
+			if (result != null) {
+				break;
+			}
+
+			if (wkp.getHierarchyCode().equals(searchCode)) {
+				result = wkp;
+			}
+
+			if (result == null) {
+				result = find(wkp.getChildren(), searchCode);
+			}
+		}
+
+		return result;
 	}
 
 	public WkpDepCheckCodeDto checkWkpDepCodeInThePast(int initMode, String historyId, String code) {

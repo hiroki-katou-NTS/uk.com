@@ -2195,8 +2195,12 @@ public class ProgramsManager {
             "/view/ksm/011/b/index.xhtml");
     public static final Program KSM011C = new Program(WebAppId.AT, ProgramIdConsts.KSM011C, null,
             "/view/ksm/011/c/index.xhtml");
+    public static final Program KSM011D = new Program(WebAppId.AT, ProgramIdConsts.KSM011D, "KSM011_4",
+            "/view/ksm/011/d/index.xhtml");
     public static final Program KSM011E = new Program(WebAppId.AT, ProgramIdConsts.KSM011E, "KSM011_44",
             "/view/ksm/011/e/index.xhtml");
+    public static final Program KSM011F = new Program(WebAppId.AT, ProgramIdConsts.KSM011F, "KSM011_109",
+            "/view/ksm/011/f/index.xhtml");
 
     /**
      * KSC001A
@@ -2441,6 +2445,10 @@ public class ProgramsManager {
             "/view/kal/011/c/index.xhtml");
     public static final Program KAL011D = new Program(WebAppId.AT, ProgramIdConsts.KAL011D, "KAL011_4",
             "/view/kal/011/d/index.xhtml");
+
+    // KAL012A
+    public static final Program KAL012A = new Program(WebAppId.AT, ProgramIdConsts.KAL012A, "KAL012_1",
+            "/view/kal/012/a/index.xhtml");
 
     // KAL013A
     public static final Program KAL013A = new Program(WebAppId.AT, ProgramIdConsts.KAL013A, "KAL013_1",

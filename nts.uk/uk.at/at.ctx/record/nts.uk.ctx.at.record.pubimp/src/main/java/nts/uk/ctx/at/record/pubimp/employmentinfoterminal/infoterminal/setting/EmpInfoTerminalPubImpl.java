@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.EmpInfoTerminalRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.setting.EmpInfoTerminalPub;
@@ -36,5 +37,10 @@ public class EmpInfoTerminalPubImpl implements EmpInfoTerminalPub {
 				setting.getEmpInfoTerName().v(), setting.getContractCode().v())
 						.modelEmpInfoTer(setting.getModelEmpInfoTer().value).intervalTime(setting.getIntervalTime().v())
 						.empInfoTerMemo(setting.getEmpInfoTerMemo().map(x -> x.v())).build();
+	}
+
+	@Override
+	public Optional<String> getEmpInfoTerminalCode(String contractCode, String macAddr) {
+		return repo.getEmpInfoTerWithMac(new MacAddress(macAddr), new ContractCode(contractCode)).map(x -> x.getEmpInfoTerCode().v());
 	}
 }

@@ -106,8 +106,8 @@ public class JpaExternalBudgetActualResultRepository extends JpaRepository imple
 		List<String> listTargetID = lstTargetOrg.stream().map(c -> c.getTargetId()).collect(Collectors.toList());
 
 		return this.queryProxy().query(GetDailyByListTarget,  KscdtExtBudgetDailyNew.class)
-				.setParameter("targetUnit", listTargetUnit)
-				.setParameter("targetID", listTargetID)
+				.setParameter("listTargetUnit", listTargetUnit)
+				.setParameter("listTargetID", listTargetID)
 				.setParameter("startDate", datePeriod.start())
 				.setParameter("endDate", datePeriod.end())
 				.getList(c -> toDomain(c));
