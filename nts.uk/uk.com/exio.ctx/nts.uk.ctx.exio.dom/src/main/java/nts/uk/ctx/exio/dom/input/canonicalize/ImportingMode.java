@@ -10,20 +10,23 @@ import nts.arc.enums.EnumAdaptor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum ImportingMode {
 
-	/** 新規受入のみ */
-	INSERT_ONLY(1, "ImportingMode_INSERT_ONLY"),
+	/** 既存データが存在しないデータのみ受け入れる */
+	INSERT_ONLY(1),
 	
-	/** 上書き受入のみ */
-	UPDATE_ONLY(2, "ImportingMode_UPDATE_ONLY"),
+	/** 既存データが存在するデータのみ受け入れる */
+	UPDATE_ONLY(2),
 	
-	/** 新規受入と上書き受入 */
-	INSERT_AND_UPDATE(3, "ImportingMode_INSERT_AND_UPDATE"),
+	/** 既存データの存在に関わらず受け入れる */
+	INSERT_AND_UPDATE(3),
+
+	/** 受入対象レコードを削除して受け入れる */
+	DELETE_RECORD_BEFOREHAND(4),
 	
+	/** 受入対象グループのデータをすべて削除して受け入れる */
+	DELETE_GROUP_BEFOREHAND(5),
 	;
 	
 	public final int value;
-	
-	public final String nameId;
 	
 	public static ImportingMode valueOf(int value) {
 		return EnumAdaptor.valueOf(value, ImportingMode.class);
