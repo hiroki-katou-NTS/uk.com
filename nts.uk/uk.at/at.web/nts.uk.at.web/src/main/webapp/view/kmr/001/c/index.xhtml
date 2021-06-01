@@ -97,8 +97,12 @@
 
             <div class="kmr001-c-right-content1 panel panel-frame">
                 <table data-bind="with: model">
+                    <colgroup>
+                        <col width="100px" />
+                        <col width="auto" />
+                    </colgroup>
                     <tr>
-                        <th>
+                        <th colspan="2">
                             <!--C5_2-->
                             <span class="label" data-bind="
 									text: $vm.$i18n('KMR001_43')
@@ -244,8 +248,12 @@
             <div data-bind="if: vm.operationDistinction() == 1">
                 <div class="kmr001-c-right-content2 panel panel-frame">
                     <table>
+                        <colgroup>
+                            <col width="100px" />
+                            <col width="auto" />
+                        </colgroup>
                         <tr>
-                            <th>
+                            <th colspan="2">
                                 <!--C 14_2-->
                                 <span class="label" data-bind="text: $vm.$i18n('KMR001_51')"></span>
                             </th>
