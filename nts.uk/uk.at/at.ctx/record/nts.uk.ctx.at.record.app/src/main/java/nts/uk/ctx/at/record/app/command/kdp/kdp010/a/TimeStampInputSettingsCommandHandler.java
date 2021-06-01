@@ -91,6 +91,9 @@ public class TimeStampInputSettingsCommandHandler {
 		Optional<CommonSettingsStampInput> commonDomain = commonSettingsStampInputRepo.get(companyId);
 		if (commonDomain.isPresent()) {
 			commonDomain.get().setGooglemap(command.getGoogleMap() == 1);
+			if(!commonDomain.get().getMapAddres().isPresent()) {
+				commonDomain.get().setMapAddres(Optional.of(new MapAddress("https://www.google.co.jp/maps/place/")));
+			}
 			commonSettingsStampInputRepo.update(commonDomain.get());
 		} else {
 			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(companyId, command.getGoogleMap() == 1, Optional.of(new MapAddress("https://www.google.co.jp/maps/place/")), NotUseAtr.NOT_USE));
