@@ -22,7 +22,8 @@
 
 		<ui:define name="content">
 			
-			<div id="contents-area">
+			<div id="content-area" class="body">
+        <div id="swap-list">
 				<table id="multi-list"
 					data-bind="ntsGridList: {
 						width: 300,
@@ -44,19 +45,18 @@
 						}"
 					class="swap-contents">
 				</div>
+        </div>
+        <div id="functions-area-bottom">
+          <button id="C_BTN_001" class="x-large proceed"
+            data-bind="click: decide">#{i18n.getText('KMK007_60')}</button>
+            
+          <button id="C_BTN_002" data-bind="click: initialize"
+            class="large">#{i18n.getText('KMK007_61')}</button>
+            
+          <button id="C_BTN_003" data-bind="click: cancel"
+            class="small">#{i18n.getText('KMK007_62')}</button>
+        </div>
 			</div>
-			
-			<div id="functions-area-bottom">
-				<button id="C_BTN_001" class="x-large proceed"
-					data-bind="click: decide">#{i18n.getText('KMK007_60')}</button>
-					
-				<button id="C_BTN_002" data-bind="click: initialize"
-					class="large">#{i18n.getText('KMK007_61')}</button>
-					
-				<button id="C_BTN_003" data-bind="click: cancel"
-					class="small">#{i18n.getText('KMK007_62')}</button>
-			</div>
-			
 		</ui:define>
 	</ui:composition>
 </body>

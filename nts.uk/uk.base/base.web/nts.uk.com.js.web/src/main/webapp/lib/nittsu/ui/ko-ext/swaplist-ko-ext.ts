@@ -101,7 +101,7 @@ module nts.uk.ui.koExtentions {
                     $SearchArea.find(".ntsSearchTextContainer")
                         .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSwap_Component ntsSearchBox nts-editor ntsSearchBox_Component'/>");
                     $SearchArea.find(".ntsSearchTextContainer")
-                        .append("<i id='swap-search-icon' class='img-icon' style='background-image: url(&quot;http://localhost:8080/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/1.png&quot;); background-size: contain; width: 22px; height: 25px;'></i>");
+                        .append("<i id='swap-search-icon' class='img-icon'></i>");
                     $SearchArea.find(".ntsSearchButtonContainer")
                         .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom ntsSwap_Component'/>");
                     $SearchArea.find(".ntsSearchInput").attr("placeholder", searchText).wrap("<span class='nts-editor-wrapped ntsControl'/>");
