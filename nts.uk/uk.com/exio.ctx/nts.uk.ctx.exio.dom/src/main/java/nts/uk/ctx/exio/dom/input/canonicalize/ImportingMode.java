@@ -15,15 +15,12 @@ public enum ImportingMode {
 	
 	/** 既存データが存在するデータのみ受け入れる */
 	UPDATE_ONLY(2),
-	
-	/** 既存データの存在に関わらず受け入れる */
-	INSERT_AND_UPDATE(3),
 
 	/** 受入対象レコードを削除して受け入れる */
-	DELETE_RECORD_BEFOREHAND(4),
+	DELETE_RECORD_BEFOREHAND(3),
 	
 	/** 受入対象グループのデータをすべて削除して受け入れる */
-	DELETE_GROUP_BEFOREHAND(5),
+	DELETE_GROUP_BEFOREHAND(4),
 	;
 	
 	public final int value;
