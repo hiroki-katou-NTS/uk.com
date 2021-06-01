@@ -140,7 +140,7 @@ public class CreateAlarmDataTopPageService {
      */
     private static List<String> getEmployeeIdsWithChildWkpError(String workplaceId, Map<String, List<TopPageAlarmImport>> workplaceMap) {
         List<TopPageAlarmImport> topAlarmParamList = workplaceMap.getOrDefault(workplaceId, new ArrayList<>());
-        return topAlarmParamList.stream().map(i -> i.getDisplaySId()).collect(Collectors.toList());
+        return topAlarmParamList.stream().filter(x -> x != null).map(i -> i.getDisplaySId()).collect(Collectors.toList());
     }
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
