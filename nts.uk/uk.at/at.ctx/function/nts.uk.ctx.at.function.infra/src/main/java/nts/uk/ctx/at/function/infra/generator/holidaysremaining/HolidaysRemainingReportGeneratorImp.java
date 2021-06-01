@@ -134,7 +134,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         YearMonth startMonth = dataSource.getStartMonth().yearMonth();
         YearMonth endMonth = dataSource.getEndMonth().yearMonth();
 
-        double columnWidth= 0.4;
+        double columnWidth= 0.35;
         for (int i = 0; i < NUMBER_COLUMN ; i++) {
             cells.setColumnWidthInch(i,columnWidth);
         }
