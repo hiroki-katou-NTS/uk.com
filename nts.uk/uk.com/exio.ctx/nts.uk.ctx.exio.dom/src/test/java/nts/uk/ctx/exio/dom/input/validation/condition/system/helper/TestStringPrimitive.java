@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.validation.classtype.helper;
+package nts.uk.ctx.exio.dom.input.validation.condition.system.helper;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

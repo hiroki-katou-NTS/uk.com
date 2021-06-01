@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.validation.classtype.helper;
+package nts.uk.ctx.exio.dom.input.validation.condition.system.helper;
 
 public enum TestEnum {
 	/**	履歴を継続しなくてもよい */

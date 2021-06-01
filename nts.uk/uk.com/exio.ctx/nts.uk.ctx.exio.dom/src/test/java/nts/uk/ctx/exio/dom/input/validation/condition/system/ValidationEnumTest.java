@@ -1,10 +1,8 @@
-package nts.uk.ctx.exio.dom.input.validation.classtype;
+package nts.uk.ctx.exio.dom.input.validation.condition.system;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
-
-import nts.uk.ctx.exio.dom.input.validation.condition.system.ValidationEnum;
 
 public class ValidationEnumTest {
 
