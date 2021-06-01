@@ -44,7 +44,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Getter
 @Setter
-public class HolidayWorkTimeOfDaily {
+public class HolidayWorkTimeOfDaily implements Cloneable{
 	//休出枠時間帯
 	private List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheet;
 	//休出枠時間
@@ -445,4 +445,31 @@ public class HolidayWorkTimeOfDaily {
 				Finally.empty(), 
 				new AttendanceTime(0));
 	}
+
+	@Override
+	public HolidayWorkTimeOfDaily clone() {
+
+		// 休出枠時間帯
+		List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheetClone = this.holidayWorkFrameTimeSheet.stream().map(x -> {
+			return x.clone();
+		}).collect(Collectors.toList());
+
+		// 休出枠時間
+		List<HolidayWorkFrameTime> holidayWorkFrameTimeClone = this.holidayWorkFrameTime.stream().map(x -> {
+			return x.clone();
+		}).collect(Collectors.toList());
+
+		// 休出深夜
+		Finally<HolidayMidnightWork> holidayMidNightWorkClone = holidayMidNightWork.isPresent()
+				? Finally.of(holidayMidNightWork.get().clone())
+				: Finally.empty();
+
+		// 休出拘束時間
+		AttendanceTime holidayTimeSpentAtWorkClone = new AttendanceTime(this.holidayTimeSpentAtWork.v());
+
+		return new HolidayWorkTimeOfDaily(holidayWorkFrameTimeSheetClone, holidayWorkFrameTimeClone,
+				holidayMidNightWorkClone, holidayTimeSpentAtWorkClone);
+	}
+	
+	
 }

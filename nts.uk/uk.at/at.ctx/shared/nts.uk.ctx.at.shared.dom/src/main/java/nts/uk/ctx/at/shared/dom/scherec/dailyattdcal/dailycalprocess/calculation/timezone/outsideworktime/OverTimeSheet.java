@@ -139,8 +139,9 @@ public class OverTimeSheet {
 	 */
 	private void advanceAppUpperLimitControl(OverTimeOfDaily overTimeOfDaily, AutoCalOvertimeSetting autoCalcSet,
 			List<OverTimeFrameNo> statutoryFrameNoList) {
+		val overHoliday = overTimeOfDaily.clone();
 		//各時間ごとの制御する時間を計算
-		List<TimeDeductByPriorAppOutput> lstTimeDeductOut = calculateTimeToControlEachTime(overTimeOfDaily, autoCalcSet,
+		List<TimeDeductByPriorAppOutput> lstTimeDeductOut = calculateTimeToControlEachTime(overHoliday, autoCalcSet,
 				statutoryFrameNoList);
 
 		//残業枠時間帯(WORK)を時系列の逆順に取得
@@ -150,7 +151,7 @@ public class OverTimeSheet {
 		frameTimeSheets.forEach(frameSheet -> {
 			// 控除する時間を計算
 			Optional<TimeDeductByPriorAppOutput> frameSheetOpt = lstTimeDeductOut.stream()
-					.filter(frame -> frame.getOverTimeNo().v() == frameSheet.getOverTimeWorkSheetNo().v()).findFirst();
+					.filter(frame -> frame.getOverTimeNo().v().intValue() == frameSheet.getOverTimeWorkSheetNo().v().intValue()).findFirst();
 			
 			
 			AttendanceTime timeDeductCalc = new AttendanceTime(
@@ -188,7 +189,7 @@ public class OverTimeSheet {
 		// 事前残業時間をセットする
 		lstOverTimeFrame.forEach(overTime -> {
 			val beforeApp = overTimeOfDaily.getOverTimeWorkFrameTime().stream()
-					.filter(x -> x.getOverWorkFrameNo().v() == overTime.getOverWorkFrameNo().v()).findFirst()
+					.filter(x -> x.getOverWorkFrameNo().v().intValue() == overTime.getOverWorkFrameNo().v().intValue()).findFirst()
 					.map(x -> x.getBeforeApplicationTime()).orElse(new AttendanceTime(0));
 			overTime.addBeforeTime(beforeApp);
 		});
@@ -201,7 +202,7 @@ public class OverTimeSheet {
 		//制御する前の時間と比較して制御する時間を計算
 		return lstOverTimeFrameForAfter.stream().map(x -> {
 			val afterUpperCon = afterUpperControl.stream()
-					.filter(aftUp -> aftUp.getOverWorkFrameNo().v() == x.getOverWorkFrameNo().v()).findFirst()
+					.filter(aftUp -> aftUp.getOverWorkFrameNo().v().intValue() == x.getOverWorkFrameNo().v().intValue()).findFirst()
 					.map(aftUp -> aftUp.getOverTimeWork().getTime()).orElse(new AttendanceTime(0));
 			return new TimeDeductByPriorAppOutput(x.getOverWorkFrameNo(),
 					new AttendanceTime(x.getOverTimeWork().getTime().v() - afterUpperCon.v()));
@@ -217,13 +218,9 @@ public class OverTimeSheet {
 					.filter(x -> x.getOverWorkFrameNo().v() == frameTime.getOverTimeWorkSheetNo().v()).findFirst();
 			overTime.ifPresent(data -> {
 				//B.残業時間+=A.残業時間
-				data.getOverTimeWork().setTime(new AttendanceTime(data.getOverTimeWork().getTime().v()
-						+ frameTime.getFrameTime().getOverTimeWork().getTime().v()));
-				data.getOverTimeWork().calcDiverGenceTime();
+				data.getOverTimeWork().addMinutesNotReturn(frameTime.getFrameTime().getOverTimeWork());
 				//B.振替時間+=A.振替時間
-				data.getTransferTime().setTime(new AttendanceTime(data.getTransferTime().getTime().v()
-						+ frameTime.getFrameTime().getTransferTime().getTime().v()));
-				data.getTransferTime().calcDiverGenceTime();
+				data.getTransferTime().addMinutesNotReturn(frameTime.getFrameTime().getTransferTime());
 				
 			});
 		});
