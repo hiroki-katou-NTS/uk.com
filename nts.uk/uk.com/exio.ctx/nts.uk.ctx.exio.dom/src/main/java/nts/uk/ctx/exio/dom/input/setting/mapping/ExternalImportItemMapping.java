@@ -5,9 +5,7 @@ import lombok.Getter;
 import nts.uk.ctx.exio.dom.input.revise.ItemType;
 
 /**
- * 
  * 項目マッピング
- *
  */
 @Getter
 @AllArgsConstructor

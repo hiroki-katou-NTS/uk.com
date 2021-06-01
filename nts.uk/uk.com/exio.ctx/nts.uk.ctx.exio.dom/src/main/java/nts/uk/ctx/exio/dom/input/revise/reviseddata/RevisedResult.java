@@ -9,9 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 
  * データの編集結果
- *
  */
 @Getter
 @NoArgsConstructor

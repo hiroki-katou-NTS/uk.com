@@ -5,6 +5,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.history.EmployeeContinuousHistoryCanonicalization;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.History;
@@ -15,6 +16,15 @@ import nts.uk.shr.com.history.History;
 public class EmployementHistoryCanonicalization
 		extends EmployeeContinuousHistoryCanonicalization
 		implements GroupCanonicalization {
+
+	public EmployementHistoryCanonicalization(
+			int itemNoStartDate,
+			int itemNoEndDate,
+			int itemNoHistoryId,
+			EmployeeCodeCanonicalization employeeCodeCanonicalization) {
+		
+		super(itemNoStartDate, itemNoEndDate, itemNoHistoryId, employeeCodeCanonicalization);
+	}
 
 	@Override
 	public void canonicalize(GroupCanonicalization.Require require, ExecutionContext context) {
