@@ -169,6 +169,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                     }
                     self.$dialog.info({ messageId: "Msg_15" }).then(function() {
                         //self.selectedCode.valueHasMutated();
+                        location.reload();
                         self.$blockui("hide");
                     });
                 }).fail(() => {
