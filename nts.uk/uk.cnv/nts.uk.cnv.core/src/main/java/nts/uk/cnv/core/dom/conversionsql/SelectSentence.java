@@ -47,10 +47,7 @@ public class SelectSentence {
 
 	public static SelectSentence createNotFormat(String alias, String column) {
 		return new SelectSentence(
-				new ColumnExpression(
-						(alias.isEmpty() ? Optional.empty() : Optional.of(alias)),
-						column
-				),
+				new ColumnExpression(alias, column),
 				new TreeMap<>()
 			);
 	}

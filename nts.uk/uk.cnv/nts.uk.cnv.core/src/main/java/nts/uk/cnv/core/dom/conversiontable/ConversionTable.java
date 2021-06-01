@@ -11,9 +11,10 @@ import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
 import nts.uk.cnv.core.dom.constants.Constants;
 import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.core.dom.conversionsql.ColumnName;
+import nts.uk.cnv.core.dom.conversionsql.ConversionInsertSQL;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
-import nts.uk.cnv.core.dom.conversionsql.FromSentence;
-import nts.uk.cnv.core.dom.conversionsql.InsertSentence;
+import nts.uk.cnv.core.dom.conversionsql.ConversionUpdateSQL;
+import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.RelationalOperator;
 import nts.uk.cnv.core.dom.conversionsql.TableFullName;
 import nts.uk.cnv.core.dom.conversionsql.WhereSentence;
@@ -37,18 +38,26 @@ public class ConversionTable {
 
 	public ConversionSQL createConversionSql() {
 		val newWhereList = new ArrayList<WhereSentence>(whereList);
-//		val spec = new SqlServerSpec();		// コンバートコードはSqlServerでのみ動作させる仕様のため直指定
 		addPeriodCondition(spec, newWhereList);
 
-		ConversionSQL result = new ConversionSQL(
-					new InsertSentence(targetTableName, new ArrayList<>()),
-					new ArrayList<>(),
-					new FromSentence(Optional.empty(), new ArrayList<>()),
-					newWhereList
-				);
+		ConversionSQL result = new ConversionInsertSQL(targetTableName, newWhereList);
 
 		for(OneColumnConversion oneColumnConversion : conversionMap) {
-			result = oneColumnConversion.apply(result);
+			result = oneColumnConversion.apply(targetTableName.getAlias(), result);
+		}
+
+		return result;
+	}
+
+	public ConversionSQL createUpdateConversionSql() {
+		val newWhereList = new ArrayList<WhereSentence>(whereList);
+		addPeriodCondition(spec, newWhereList);
+
+		ConversionSQL result = new ConversionUpdateSQL(targetTableName, newWhereList);
+		result.addJoin(Join.createMain(targetTableName));
+
+		for(OneColumnConversion oneColumnConversion : conversionMap) {
+			result = oneColumnConversion.apply(targetTableName.getAlias(), result);
 		}
 
 		return result;
@@ -60,14 +69,14 @@ public class ConversionTable {
 				new WhereSentence(
 					new ColumnName("", dateColumnName.get()),
 					RelationalOperator.GreagerThanOrEqual,
-					Optional.of(new ColumnExpression(Optional.empty(), spec.param(Constants.StartDateParamName)))
+					Optional.of(new ColumnExpression(spec.param(Constants.StartDateParamName)))
 				)
 			);
 			newWhereList.add(
 				new WhereSentence(
 					new ColumnName("", dateColumnName.get()),
 					RelationalOperator.LessThanOrEqual,
-					Optional.of(new ColumnExpression(Optional.empty(), spec.param(Constants.EndDateParamName)))
+					Optional.of(new ColumnExpression(spec.param(Constants.EndDateParamName)))
 				)
 			);
 		}
@@ -77,7 +86,7 @@ public class ConversionTable {
 				new WhereSentence(
 					new ColumnName("", startDateColumnName.get()),
 					RelationalOperator.LessThanOrEqual,
-					Optional.of(new ColumnExpression(Optional.empty(), spec.param(Constants.EndDateParamName)))
+					Optional.of(new ColumnExpression(spec.param(Constants.EndDateParamName)))
 				)
 			);
 		}
@@ -87,7 +96,7 @@ public class ConversionTable {
 				new WhereSentence(
 					new ColumnName("", endDateColumnName.get()),
 					RelationalOperator.GreagerThanOrEqual,
-					Optional.of(new ColumnExpression(Optional.empty(), spec.param(Constants.StartDateParamName)))
+					Optional.of(new ColumnExpression(spec.param(Constants.StartDateParamName)))
 				)
 			);
 		}

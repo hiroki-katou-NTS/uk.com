@@ -63,7 +63,7 @@ subprojects {
 
 	task upver (type: Copy, dependsOn: ['compileJava', 'jar']) {
         from "build/libs"
-		localRepo = "$rootDir/../uk.repo"
+		into "$rootDir/../uk.repo"
         include "nts*.jar"
         exclude "nts*web.jar"
 	}
@@ -185,7 +185,8 @@ project (':nts.uk.cnv.web') {
 
 	dependencies {
         compile group: 'nemunoki', name: 'nemunoki.oruta.shr', version: version
-        compile project(':nts.uk.cnv.core')
+        compile group: 'nemunoki', name: 'nemunoki.oruta.shr', version: version
+        compile group: 'uk.cnv.core', name: 'nts.uk.cnv.core'
 	}
 
 	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {

@@ -1,9 +1,8 @@
 package nts.uk.cnv.core.dom.conversiontable;
 
-import java.util.Optional;
-
 import lombok.Getter;
-import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
+import lombok.val;
+import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ReferencedParentPattern;
@@ -33,16 +32,15 @@ public class OneColumnConversion {
 		this.isReferenced = false;
 	}
 
-	public ConversionSQL apply(ConversionSQL conversionSql) {
+	public ConversionSQL apply(String targetTableAlias, ConversionSQL conversionSql) {
 
+		val column = new ColumnName(targetTableAlias, this.targetColumn);
 		if (this.isReferenced) {
-			conversionSql = this.referencedPattern.apply(conversionSql);
+			conversionSql = this.referencedPattern.apply(column, conversionSql);
 		}
 		else {
-			conversionSql = this.pattern.apply(conversionSql);
+			conversionSql = this.pattern.apply(column, conversionSql);
 		}
-
-		conversionSql.getInsert().addExpression(new ColumnExpression(Optional.empty(), targetColumn));
 
 		return conversionSql;
 	}

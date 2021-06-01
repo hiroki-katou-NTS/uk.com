@@ -6,17 +6,18 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.cnv.core.dom.constants.Constants;
+import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.JoinAtr;
 import nts.uk.cnv.core.dom.conversionsql.OnSentence;
-import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.manager.ParentJoinPatternManager;
 
 @Getter
 public class ReferencedParentPattern extends ConversionPattern {
+	private ConversionInfo info;
 
 	private String category;
 
@@ -28,7 +29,7 @@ public class ReferencedParentPattern extends ConversionPattern {
 
 
 	public ReferencedParentPattern(ConversionInfo info, String category, String parentTable, String parentColumn, List<String> columns) {
-		super(info);
+		this.info = info;
 		this.category = category;
 		this.parentTable = parentTable;
 		this.parentColumn = parentColumn;
@@ -36,18 +37,20 @@ public class ReferencedParentPattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ConversionSQL conversionSql) {
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
 		String alias = "parent_" + this.parentColumn;
-		Join mapping = this.getMappingTableJoin(info, alias);
+		Join mapping = this.getMappingTableJoin(alias);
 
-		conversionSql.getFrom().addJoin(mapping);
+		conversionSql.addJoin(mapping);
 
-		conversionSql.getSelect().add(SelectSentence.createNotFormat(alias, ParentJoinPatternManager.parentValueColumnName));
+		conversionSql.add(
+				column,
+				new ColumnExpression(alias, ParentJoinPatternManager.parentValueColumnName));
 
 		return conversionSql;
 	}
 
-	private Join getMappingTableJoin(ConversionInfo info, String alias) {
+	private Join getMappingTableJoin(String alias) {
 
 		List<OnSentence> on  = new ArrayList<>();
 		on.add(new OnSentence(new ColumnName(alias, ParentJoinPatternManager.pk[0]), new ColumnName("", "'" + category + "'"), Optional.empty()));

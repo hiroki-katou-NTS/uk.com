@@ -5,9 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -15,12 +13,11 @@ import javax.inject.Inject;
 
 import nemunoki.oruta.shr.tabledefinetype.DataType;
 import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
+import nts.uk.cnv.core.dom.conversionsql.ColumnName;
+import nts.uk.cnv.core.dom.conversionsql.ConversionInsertSQL;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
-import nts.uk.cnv.core.dom.conversionsql.FromSentence;
-import nts.uk.cnv.core.dom.conversionsql.InsertSentence;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.JoinAtr;
-import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
 import nts.uk.cnv.core.dom.conversionsql.TableFullName;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
@@ -33,21 +30,21 @@ public class ParentJoinPatternManager {
 	private static String sourcePkName = "SOURCE_PK";
 	public static String parentValueColumnName = "PARENT_VALUE";
 	public static String parentMappingTable = "SCVMT_MAPPING_PARENT";
-	public static List<ColumnExpression> mappingTableColumns = Arrays.asList(
-			new ColumnExpression(Optional.empty(), "CATEGORY_NAME"),
-			new ColumnExpression(Optional.empty(), "PARENT_TBL_NAME"),
-			new ColumnExpression(Optional.empty(), "TARGET_COLUMN_NAME"),
-			new ColumnExpression(Optional.empty(), "SOURCE_PK1"),
-			new ColumnExpression(Optional.empty(), "SOURCE_PK2"),
-			new ColumnExpression(Optional.empty(), "SOURCE_PK3"),
-			new ColumnExpression(Optional.empty(), "SOURCE_PK4"),
-			new ColumnExpression(Optional.empty(), "SOURCE_PK5"),
-			new ColumnExpression(Optional.empty(), "SOURCE_PK6"),
-			new ColumnExpression(Optional.empty(), "SOURCE_PK7"),
-			new ColumnExpression(Optional.empty(), "SOURCE_PK8"),
-			new ColumnExpression(Optional.empty(), "SOURCE_PK9"),
-			new ColumnExpression(Optional.empty(), "SOURCE_PK10"),
-			new ColumnExpression(Optional.empty(), "PARENT_VALUE")
+	public static List<ColumnName> mappingTableColumns = Arrays.asList(
+			new ColumnName("CATEGORY_NAME"),
+			new ColumnName("PARENT_TBL_NAME"),
+			new ColumnName("TARGET_COLUMN_NAME"),
+			new ColumnName("SOURCE_PK1"),
+			new ColumnName("SOURCE_PK2"),
+			new ColumnName("SOURCE_PK3"),
+			new ColumnName("SOURCE_PK4"),
+			new ColumnName("SOURCE_PK5"),
+			new ColumnName("SOURCE_PK6"),
+			new ColumnName("SOURCE_PK7"),
+			new ColumnName("SOURCE_PK8"),
+			new ColumnName("SOURCE_PK9"),
+			new ColumnName("SOURCE_PK10"),
+			new ColumnName("PARENT_VALUE")
 		);
 	public static String[] pk = {
 		"CATEGORY_NAME", "PARENT_TBL_NAME", "TARGET_COLUMN_NAME",
@@ -106,52 +103,34 @@ public class ParentJoinPatternManager {
 			value.put(parentColumn, columns);
 			referencedColumnList.put(ct.getTargetTableName().getName(), value);
 
-			ConversionSQL cnvSql = new ConversionSQL(
-					new InsertSentence(mappingTableName, new ArrayList<>()),
-					new ArrayList<>(),
-					new FromSentence(Optional.empty(), new ArrayList<>()),
-					new ArrayList<> (ct.getWhereList())
-				);
+			ConversionSQL cnvSql = new ConversionInsertSQL(
+					mappingTableName,
+					ct.getWhereList());
+
 			ConversionSQL parentConversionSql = ct.createConversionSql();	// apply実行される
-			cnvSql.getFrom().addJoin(
+			cnvSql.addJoin(
 				new Join(
-					parentConversionSql.getFrom().getBaseTable().get(),
-					JoinAtr.Main,
+					parentConversionSql.getBaseTable(),
+					JoinAtr.InnerJoin,
 					new ArrayList<>()
 				));
 
-			cnvSql.getInsert().addExpression(mappingTableColumns.get(0));
-			cnvSql.getInsert().addExpression(mappingTableColumns.get(1));
-			cnvSql.getInsert().addExpression(mappingTableColumns.get(2));
-			cnvSql.getSelect().add(new SelectSentence(new ColumnExpression(Optional.empty(), "'" + category + "'"), new TreeMap<>()));
-			cnvSql.getSelect().add(new SelectSentence(new ColumnExpression(Optional.empty(), "'" + ct.getTargetTableName().getName() + "'"), new TreeMap<>()));
-			cnvSql.getSelect().add(new SelectSentence(new ColumnExpression(Optional.empty(), "'" + parentColumn + "'"), new TreeMap<>()));
+			cnvSql.add(mappingTableColumns.get(0), new ColumnExpression("'" + category + "'"));
+			cnvSql.add(mappingTableColumns.get(1), new ColumnExpression("'" + ct.getTargetTableName().getName() + "'"));
+			cnvSql.add(mappingTableColumns.get(2), new ColumnExpression("'" + parentColumn + "'"));
 
 			int index = 1;
 			for (String column : columns) {
-				cnvSql.getInsert().addExpression(mappingTableColumns.get(2 + index));
+				cnvSql.add(mappingTableColumns.get(2 + index), new ColumnExpression(column));
 				index += 1;
-
-				SelectSentence select = new SelectSentence(
-						new ColumnExpression(Optional.empty(), column),
-						new TreeMap<>()
-					);
-				cnvSql.getSelect().add(select);
 			}
 			for (; index <= 10; index++) {
-				cnvSql.getInsert().addExpression(mappingTableColumns.get(2 + index));
-
-				SelectSentence select = new SelectSentence(
-						new ColumnExpression(Optional.empty(), "''"),
-						new TreeMap<>()
-					);
-				cnvSql.getSelect().add(select);
+				cnvSql.add(mappingTableColumns.get(2 + index), new ColumnExpression("''"));
 			}
-			cnvSql.getInsert().addExpression(mappingTableColumns.get(13));
 			OneColumnConversion colmnConversion = ct.getConversionMap().stream()
 				.filter(colConv -> colConv.getTargetColumn().equals(parentColumn))
 				.findFirst().get();
-			cnvSql = colmnConversion.getPattern().apply(cnvSql);
+			cnvSql = colmnConversion.getPattern().apply(mappingTableColumns.get(13), cnvSql);
 
 			if (!preProcessing.isEmpty()) {
 				preProcessing += "\r\n";
@@ -179,20 +158,20 @@ public class ParentJoinPatternManager {
 		String type2 = info.getDatebaseType().spec().dataType(DataType.NVARCHAR, 30);
 
 		return "CREATE TABLE " + mappingTableName.fullName() + "(\r\n"
-			+ mappingTableColumns.get(0).getExpression() + " " + type + " NOT NULL,\r\n"
-			+ mappingTableColumns.get(1).getExpression() + " " + type + " NOT NULL,\r\n"
-			+ mappingTableColumns.get(2).getExpression() + " " + type + " NOT NULL,\r\n"
-			+ mappingTableColumns.get(3).getExpression() + " " + type2 + " NOT NULL,\r\n"
-			+ mappingTableColumns.get(4).getExpression() + " " + type2 + " NOT NULL,\r\n"
-			+ mappingTableColumns.get(5).getExpression() + " " + type2 + " NOT NULL,\r\n"
-			+ mappingTableColumns.get(6).getExpression() + " " + type2 + " NOT NULL,\r\n"
-			+ mappingTableColumns.get(7).getExpression() + " " + type2 + " NOT NULL,\r\n"
-			+ mappingTableColumns.get(8).getExpression() + " " + type2 + " NOT NULL,\r\n"
-			+ mappingTableColumns.get(9).getExpression() + " " + type2 + " NOT NULL,\r\n"
-			+ mappingTableColumns.get(10).getExpression() + " " + type2 + " NOT NULL,\r\n"
-			+ mappingTableColumns.get(11).getExpression() + " " + type2 + " NOT NULL,\r\n"
-			+ mappingTableColumns.get(12).getExpression() + " " + type2 + " NOT NULL,\r\n"
-			+ mappingTableColumns.get(13).getExpression() + " " + type + " NOT NULL,\r\n"
+			+ mappingTableColumns.get(0).getName() + " " + type + " NOT NULL,\r\n"
+			+ mappingTableColumns.get(1).getName() + " " + type + " NOT NULL,\r\n"
+			+ mappingTableColumns.get(2).getName() + " " + type + " NOT NULL,\r\n"
+			+ mappingTableColumns.get(3).getName() + " " + type2 + " NOT NULL,\r\n"
+			+ mappingTableColumns.get(4).getName() + " " + type2 + " NOT NULL,\r\n"
+			+ mappingTableColumns.get(5).getName() + " " + type2 + " NOT NULL,\r\n"
+			+ mappingTableColumns.get(6).getName() + " " + type2 + " NOT NULL,\r\n"
+			+ mappingTableColumns.get(7).getName() + " " + type2 + " NOT NULL,\r\n"
+			+ mappingTableColumns.get(8).getName() + " " + type2 + " NOT NULL,\r\n"
+			+ mappingTableColumns.get(9).getName() + " " + type2 + " NOT NULL,\r\n"
+			+ mappingTableColumns.get(10).getName() + " " + type2 + " NOT NULL,\r\n"
+			+ mappingTableColumns.get(11).getName() + " " + type2 + " NOT NULL,\r\n"
+			+ mappingTableColumns.get(12).getName() + " " + type2 + " NOT NULL,\r\n"
+			+ mappingTableColumns.get(13).getName() + " " + type + " NOT NULL,\r\n"
 			+ "CONSTRAINT PK_" + mappingTableName.getName() + " PRIMARY KEY CLUSTERED ("
 			+ String.join(",", pk) + ")\r\n"
 			+ ");";

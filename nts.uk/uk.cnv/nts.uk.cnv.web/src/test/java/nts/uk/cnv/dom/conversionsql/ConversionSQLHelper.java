@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import lombok.val;
 import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.core.dom.conversionsql.ColumnName;
+import nts.uk.cnv.core.dom.conversionsql.ConversionInsertSQL;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.FormatType;
 import nts.uk.cnv.core.dom.conversionsql.FromSentence;
@@ -25,7 +26,7 @@ import nts.uk.cnv.core.dom.conversionsql.WhereSentence;
 public class ConversionSQLHelper {
 	public static ConversionSQL create_emptyDummy() {
 
-		return new ConversionSQL(
+		return new ConversionInsertSQL(
 				Insert.createDummy(),
 				Select.createDummy(),
 				From.createDummy(),
@@ -34,7 +35,7 @@ public class ConversionSQLHelper {
 	}
 
 	public static ConversionSQL create() {
-		return new ConversionSQL(
+		return new ConversionInsertSQL(
 				Insert.createDummy(),
 				Select.createDummy(),
 				From.createDummy(),
@@ -44,65 +45,65 @@ public class ConversionSQLHelper {
 
 	public static class Insert {
 		public static InsertSentence createDummy() {
-			return new InsertSentence(
-					new TableFullName("TEST", "dbo", "BSYMT_EMP_DTA_MNG_INFO", "T"),
-					Arrays.asList(
-							new ColumnExpression(Optional.empty(), "INS_DATE"),
-							new ColumnExpression(Optional.empty(), "INS_CCD"),
-							new ColumnExpression(Optional.empty(), "INS_SCD"),
-							new ColumnExpression(Optional.empty(), "INS_PG"),
-							new ColumnExpression(Optional.empty(), "UPD_DATE"),
-							new ColumnExpression(Optional.empty(), "UPD_CCD"),
-							new ColumnExpression(Optional.empty(), "UPD_SCD"),
-							new ColumnExpression(Optional.empty(), "UPD_PG"),
-							new ColumnExpression(Optional.empty(), "EXCLUS_VER"),
-							new ColumnExpression(Optional.empty(), "SID"),
-							new ColumnExpression(Optional.empty(), "PID"),
-							new ColumnExpression(Optional.empty(), "CID"),
-							new ColumnExpression(Optional.empty(), "SCD"),
-							new ColumnExpression(Optional.empty(), "DEL_STATUS_ATR"),
-							new ColumnExpression(Optional.empty(), "DEL_DATE"),
-							new ColumnExpression(Optional.empty(), "REMV_REASON"),
-							new ColumnExpression(Optional.empty(), "EXT_CD"))
-				);
+			val insert = new InsertSentence(new TableFullName("TEST", "dbo", "BSYMT_EMP_DTA_MNG_INFO", "T"));
+			val expressions = Arrays.asList(
+					new ColumnExpression("INS_DATE"),
+					new ColumnExpression("INS_CCD"),
+					new ColumnExpression("INS_SCD"),
+					new ColumnExpression("INS_PG"),
+					new ColumnExpression("UPD_DATE"),
+					new ColumnExpression("UPD_CCD"),
+					new ColumnExpression("UPD_SCD"),
+					new ColumnExpression("UPD_PG"),
+					new ColumnExpression("EXCLUS_VER"),
+					new ColumnExpression("SID"),
+					new ColumnExpression("PID"),
+					new ColumnExpression("CID"),
+					new ColumnExpression("SCD"),
+					new ColumnExpression("DEL_STATUS_ATR"),
+					new ColumnExpression("DEL_DATE"),
+					new ColumnExpression("REMV_REASON"),
+					new ColumnExpression("EXT_CD"));
+			expressions.stream().forEach(e -> insert.addExpression(e));
+			return insert;
 		}
 	}
 
 	public static class Select {
 		public static SelectSentence CASE_DUMMY = new SelectSentence(
-				new ColumnExpression(Optional.of("SOURCE_ALIAS"), "SOURCE_COL2"),
+				new ColumnExpression("SOURCE_ALIAS", "SOURCE_COL2"),
 				caseDummy()
 			);
 
 		public static SelectSentence CONVERT_DUMMY = new SelectSentence(
-				new ColumnExpression(Optional.of("SOURCE_ALIAS"), "SOURCE_COL3"),
+				new ColumnExpression("SOURCE_ALIAS", "SOURCE_COL3"),
 				convertDummy()
 			);
 
 		public static SelectSentence FUNCTION_DUMMY = new SelectSentence(
-				new ColumnExpression(Optional.of("SOURCE_ALIAS"), "SOURCE_COL4"),
+				new ColumnExpression("SOURCE_ALIAS", "SOURCE_COL4"),
 				functionDummy()
 			);
 
 		private static List<SelectSentence> createDummy() {
 			List<SelectSentence> result = new ArrayList<SelectSentence>();
 			SelectSentence now = new SelectSentence(
-					new ColumnExpression(Optional.empty(), "SYSDATETIME()"),
+					new ColumnExpression("SYSDATETIME()"),
 					new TreeMap<FormatType, String>());
 			SelectSentence ccd = new SelectSentence(
-					new ColumnExpression(Optional.of("CIDVIEW"), "CCD"),
+					new ColumnExpression("CIDVIEW", "CCD"),
 					new TreeMap<FormatType, String>());
 			SelectSentence insupdrecord = new SelectSentence(
-					new ColumnExpression(Optional.empty(), "'CONVERT'"),
+					new ColumnExpression("'CONVERT'"),
 					new TreeMap<FormatType, String>());
 			SelectSentence newid = new SelectSentence(
-					new ColumnExpression(Optional.empty(), "NEWID()"),
+					new ColumnExpression("NEWID()"),
 					new TreeMap<FormatType, String>());
 			SelectSentence nullValue = new SelectSentence(
-					new ColumnExpression(Optional.empty(), "NULL"),
+					new ColumnExpression("NULL"),
 					new TreeMap<FormatType, String>());
 			SelectSentence zeroValue = new SelectSentence(
-					new ColumnExpression(Optional.empty(), "0"),
+					new ColumnExpression("0"),
 					new TreeMap<FormatType, String>());
 
 			result.add(now);
@@ -117,10 +118,10 @@ public class ConversionSQLHelper {
 			result.add(newid);
 			result.add(newid);
 			result.add(new SelectSentence(
-					new ColumnExpression(Optional.of("CIDVIEW"), "CID"),
+					new ColumnExpression("CIDVIEW", "CID"),
 					new TreeMap<FormatType, String>()));
 			result.add(new SelectSentence(
-					new ColumnExpression(Optional.of("SOURCE"), "社員CD"),
+					new ColumnExpression("SOURCE", "社員CD"),
 					new TreeMap<FormatType, String>()));
 			result.add(zeroValue);
 			result.add(nullValue);
@@ -199,7 +200,7 @@ public class ConversionSQLHelper {
 		public static WhereSentence DUMMY = new WhereSentence(
 				new ColumnName("TARGET_ALIAS", "申請区分"),
 				RelationalOperator.Equal,
-				Optional.of(new ColumnExpression(Optional.empty(), "'0'"))
+				Optional.of(new ColumnExpression("'0'"))
 			);
 	}
 }

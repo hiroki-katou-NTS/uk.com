@@ -11,7 +11,6 @@ import nts.uk.cnv.app.dto.GetErpColumnsParamDto;
 import nts.uk.cnv.app.dto.GetErpColumnsResultDto;
 import nts.uk.cnv.app.dto.GetUkColumnsParamDto;
 import nts.uk.cnv.app.service.TableInfoService;
-import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
 
 @Path("cnv/tableinfo")
 @Produces("application/json")
@@ -21,7 +20,7 @@ public class TableInfoWebService {
 
 	@POST
 	@Path("getukcolumns")
-	public List<OneColumnConversion> getUkColumns(GetUkColumnsParamDto param) {
+	public List<String> getUkColumns(GetUkColumnsParamDto param) {
 		return tableInfoService.getUkColumns(param.getCategory(), param.getTableName(), param.getRecordNo());
 	}
 

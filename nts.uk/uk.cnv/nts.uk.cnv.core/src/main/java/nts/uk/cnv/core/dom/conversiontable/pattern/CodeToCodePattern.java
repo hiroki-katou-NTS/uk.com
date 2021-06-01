@@ -6,12 +6,12 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.cnv.core.dom.constants.Constants;
+import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.JoinAtr;
 import nts.uk.cnv.core.dom.conversionsql.OnSentence;
-import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
 import nts.uk.cnv.core.dom.conversionsql.TableFullName;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 
@@ -24,6 +24,7 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
  */
 @Getter
 public class CodeToCodePattern extends ConversionPattern  {
+	private ConversionInfo info;
 
 	/** 変換元 **/
 	private Join sourceJoin;
@@ -34,32 +35,22 @@ public class CodeToCodePattern extends ConversionPattern  {
 	private String mappingType;
 
 	public CodeToCodePattern(ConversionInfo info, Join sourceJoin, String sourceColumnName, String mappingType) {
-		super(info);
+		this.info = info;
 		this.sourceJoin = sourceJoin;
 		this.sourceColumnName = sourceColumnName;
 		this.mappingType = mappingType;
 	}
 
 	@Override
-	public ConversionSQL apply(ConversionSQL conversionSql) {
-		conversionSql.getFrom().addJoin(sourceJoin);
+	public ConversionSQL apply(ColumnName columnName, ConversionSQL conversionSql) {
+		conversionSql.addJoin(sourceJoin);
 
-		Join mappingTableJoin = this.mappingJoin();
-		conversionSql.getFrom().addJoin(mappingTableJoin);
-
-		conversionSql.getSelect().add(
-				SelectSentence.createNotFormat(
-					mappingTableJoin.tableName.getAlias(),
+		conversionSql.addJoin(this.mappingJoin());
+		conversionSql.add(
+				columnName,
+				new ColumnExpression(
+					this.mappingJoin().tableName.getAlias(),
 					Constants.MAPPING_OUT_COLUMN_NAME));
-
-//		conversionSql.getWhere().add(new WhereSentence(
-//				new ColumnName(mappingAlias(), Constants.MAPPING_TYPE_COLUMN_NAME),
-//				RelationalOperator.Equal,
-//				Optional.of(new ColumnExpression(
-//						Optional.empty(),
-//						"'" + this.mappingType + "'"
-//					))
-//			));
 
 		return conversionSql;
 	}

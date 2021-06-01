@@ -3,16 +3,16 @@ package nts.uk.cnv.core.dom.conversionsql;
 import java.util.Arrays;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 /**
  * 列名
  * @author ai_muto
  *
  */
+@EqualsAndHashCode
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 public class ColumnName {
 
@@ -20,6 +20,11 @@ public class ColumnName {
 	private String alias;
 	/** 列名 */
 	private String name;
+
+	public ColumnName(String name) {
+		this.alias = "";
+		this.name = name;
+	}
 
 	public String sql() {
 		return (alias.isEmpty())

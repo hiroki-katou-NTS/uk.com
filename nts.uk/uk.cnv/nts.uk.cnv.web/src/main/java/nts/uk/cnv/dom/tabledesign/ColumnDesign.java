@@ -16,4 +16,5 @@ public class ColumnDesign {
 	String defaultValue;
 	String comment;
 	int dispOrder;
+	boolean isPk;
 }

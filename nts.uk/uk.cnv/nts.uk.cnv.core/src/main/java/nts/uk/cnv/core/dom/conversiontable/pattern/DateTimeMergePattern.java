@@ -2,17 +2,15 @@ package nts.uk.cnv.core.dom.conversiontable.pattern;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.TreeMap;
 
 import lombok.Builder;
 import lombok.Getter;
 import nemunoki.oruta.shr.tabledefinetype.DataType;
 import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
 import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
+import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.Join;
-import nts.uk.cnv.core.dom.conversionsql.SelectSentence;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 
 /**
@@ -23,6 +21,7 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 @Getter
 public class DateTimeMergePattern extends ConversionPattern {
 
+	private ConversionInfo info;
 	/** 変換元 **/
 	private Join sourceJoin;
 
@@ -57,7 +56,7 @@ public class DateTimeMergePattern extends ConversionPattern {
 			String minutes,
 			String yyyymmddhhmi,
 			String yyyymmddhhmiss) {
-		super(info);
+		this.info = info;
 		this.sourceJoin = sourceJoin;
 		this.yyyymmdd = yyyymmdd;
 		this.yyyy = yyyy;
@@ -75,10 +74,8 @@ public class DateTimeMergePattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ConversionSQL conversionSql) {
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
 		DatabaseSpec spec = this.info.getDatebaseType().spec();
-
-		conversionSql.getFrom().addJoin(sourceJoin);
 
 		List<String> datetime = new ArrayList<>();
 		if(   (this.yyyymmddhhmi != null && !this.yyyymmddhhmi.isEmpty())
@@ -121,12 +118,9 @@ public class DateTimeMergePattern extends ConversionPattern {
 		}
 
 		String expression = spec.cast(spec.join(datetime), DataType.DATETIME, 0);
-		conversionSql.getSelect().add(
-			new SelectSentence(
-				new ColumnExpression(Optional.empty(), expression),
-				new TreeMap<>()
-			)
-		);
+
+		conversionSql.addJoin(sourceJoin);
+		conversionSql.add(column, new ColumnExpression(expression));
 		return conversionSql;
 	}
 
