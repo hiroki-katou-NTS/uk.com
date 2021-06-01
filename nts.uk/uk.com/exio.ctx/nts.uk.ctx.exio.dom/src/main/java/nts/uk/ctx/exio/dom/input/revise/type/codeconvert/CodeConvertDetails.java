@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.exi.codeconvert;
+package nts.uk.ctx.exio.dom.input.revise.type.codeconvert;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
@@ -7,7 +7,7 @@ import nts.arc.layer.dom.DomainObject;
  * コード変換詳細
  */
 @Getter
-public class CdConvertDetails extends DomainObject {
+public class CodeConvertDetails extends DomainObject {
 
 	/**
 	 * 会社ID
@@ -41,7 +41,7 @@ public class CdConvertDetails extends DomainObject {
 	 * @param outputItem
 	 * @param systemCd
 	 */
-	public CdConvertDetails(String cid, String convertCd, int lineNumber, String outputItem, String systemCd) {
+	public CodeConvertDetails(String cid, String convertCd, int lineNumber, String outputItem, String systemCd) {
 		super();
 		this.cid = cid;
 		this.convertCd = convertCd;

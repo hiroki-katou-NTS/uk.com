@@ -11,7 +11,7 @@ import nts.uk.ctx.exio.dom.dataformat.value.DecimalDigitNumber;
 import nts.uk.ctx.exio.dom.dataformat.value.DecimalDivision;
 import nts.uk.ctx.exio.dom.dataformat.value.DecimalPointClassification;
 import nts.uk.ctx.exio.dom.dataformat.value.Rounding;
-import nts.uk.ctx.exio.dom.exi.codeconvert.CodeConvertCode;
+import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.CodeConvertCode;
 import nts.uk.ctx.exio.dom.input.validation.condition.user.type.numeric.real.ImportingConditionReal;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 

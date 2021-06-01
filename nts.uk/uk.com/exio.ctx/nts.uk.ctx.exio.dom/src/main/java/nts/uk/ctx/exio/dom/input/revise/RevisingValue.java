@@ -1,11 +1,15 @@
-package nts.uk.ctx.exio.dom.input.revise.value;
+package nts.uk.ctx.exio.dom.input.revise;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.exio.dom.input.revise.ItemType;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 
+/**
+ * 
+ * 値の編集
+ *
+ */
 @Getter
 @AllArgsConstructor
 public class RevisingValue extends AggregateRoot {

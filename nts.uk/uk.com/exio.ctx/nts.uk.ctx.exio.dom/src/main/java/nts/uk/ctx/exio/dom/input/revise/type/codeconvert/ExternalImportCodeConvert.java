@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.exi.codeconvert;
+package nts.uk.ctx.exio.dom.input.revise.type.codeconvert;
 
 import java.util.List;
 
@@ -11,17 +11,17 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * 受入コード変換
  */
 @Getter
-public class AcceptCdConvert extends AggregateRoot {
+public class ExternalImportCodeConvert extends AggregateRoot {
 
 	/**
 	 * 会社ID
 	 */
-	private String cid;
+	private String companyId;
 
 	/**
 	 * コード変換コード
 	 */
-	private CodeConvertCode convertCd;
+	private CodeConvertCode convertCode;
 
 	/**
 	 * コード変換名称
@@ -36,7 +36,7 @@ public class AcceptCdConvert extends AggregateRoot {
 	/**
 	 * List convert detail data
 	 */
-	private List<CdConvertDetails> listConvertDetails;
+	private List<CodeConvertDetails> listConvertDetails;
 
 	/**
 	 * @param cid
@@ -45,11 +45,11 @@ public class AcceptCdConvert extends AggregateRoot {
 	 * @param acceptWithoutSetting
 	 * @param listConvertDetails
 	 */
-	public AcceptCdConvert(String cid, String convertCd, String convertName, int acceptWithoutSetting,
-			List<CdConvertDetails> listConvertDetails) {
+	public ExternalImportCodeConvert(String cid, String convertCd, String convertName, int acceptWithoutSetting,
+			List<CodeConvertDetails> listConvertDetails) {
 		super();
-		this.cid = cid;
-		this.convertCd = new CodeConvertCode(convertCd);
+		this.companyId = cid;
+		this.convertCode = new CodeConvertCode(convertCd);
 		this.convertName = new CodeConvertName(convertName);
 		this.acceptWithoutSetting = EnumAdaptor.valueOf(acceptWithoutSetting, NotUseAtr.class);
 		this.listConvertDetails = listConvertDetails;

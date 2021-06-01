@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.revise.value;
+package nts.uk.ctx.exio.dom.input.revise;
 
 import java.util.Optional;
 
@@ -25,7 +25,7 @@ public class RevisedValueResult {
 	 * @param dataItem
 	 * @return
 	 */
-	public RevisedValueResult succeeded(DataItem dataItem) {
+	public static RevisedValueResult succeeded(DataItem dataItem) {
 		return new RevisedValueResult(true, Optional.of(dataItem), Optional.empty());
 	}
 	
@@ -34,7 +34,7 @@ public class RevisedValueResult {
 	 * @param errorMessageId
 	 * @return
 	 */
-	public RevisedValueResult failed(String errorMessageId) {
+	public static RevisedValueResult failed(String errorMessageId) {
 		return new RevisedValueResult(false, Optional.empty(), Optional.of(errorMessageId));
 	}
 }

@@ -19,8 +19,6 @@ import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.exi.canonicalize.SpecialExternalItem;
 import nts.uk.ctx.exio.dom.exi.canonicalize.specialedit.SpecialEdit;
-import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
-import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvertRepository;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
 import nts.uk.ctx.exio.dom.exi.csvimport.RequiredMasterDataNotFoundException;
@@ -38,8 +36,8 @@ import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItemRepository;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecordImpoter;
-import nts.uk.ctx.exio.dom.input.revise.ItemCheck;
-import nts.uk.ctx.exio.dom.input.revise.ReviseService;
+import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvert;
+import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvertRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateful
@@ -53,7 +51,7 @@ public class AsyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<C
 	@Inject
 	private ExternalAcceptCategoryRepository acceptCategoryRepos;
 	@Inject
-	private AcceptCdConvertRepository cdConvertRepos;
+	private ExternalImportCodeConvertRepository cdConvertRepos;
 	@Inject
 	protected StoredFileStreamService fileStreamService;
 	@Inject
@@ -109,20 +107,20 @@ public class AsyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<C
 			List<Map<Integer, Object>> lstCsvContent = new ArrayList<>();
 			for (CsvRecord csvRecord : csvRecords) { // line
 				//アルゴリズム「受入項目チェック＆編集」を実行する
-				ReviseService csvItemImporter = new ReviseService(csvRecord, csvRecords.indexOf(csvRecord) + 1,  condSet.getAcceptMode());
-				ItemCheck checkAndEditItemOfLine = csvItemImporter.readLine(require);
-				
-				if(!checkAndEditItemOfLine.isLineError()) {
-					errorCount += 1; 
-					setter.updateData(NUMBER_OF_ERROR, errorCount);
-				} else {
-					successCount += 1;
-					if(checkAndEditItemOfLine.isCond()) {
-						//TODO insert vao db	
-						lstCsvContent.add(checkAndEditItemOfLine.getMapLineContent());
-					}			
-					setter.updateData(NUMBER_OF_SUCCESS, successCount);
-				}
+//				ReviseService csvItemImporter = new ReviseService(csvRecord, csvRecords.indexOf(csvRecord) + 1,  condSet.getAcceptMode());
+//				ItemCheck checkAndEditItemOfLine = csvItemImporter.readLine(require);
+//				
+//				if(!checkAndEditItemOfLine.isLineError()) {
+//					errorCount += 1; 
+//					setter.updateData(NUMBER_OF_ERROR, errorCount);
+//				} else {
+//					successCount += 1;
+//					if(checkAndEditItemOfLine.isCond()) {
+//						//TODO insert vao db	
+//						lstCsvContent.add(checkAndEditItemOfLine.getMapLineContent());
+//					}			
+//					setter.updateData(NUMBER_OF_SUCCESS, successCount);
+//				}
 							
 				//↓-----------lan truoc
 				if (asyncTask.hasBeenRequestedToCancel()) {
@@ -165,7 +163,7 @@ public class AsyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<C
 
 		List<StdAcceptItem> listStdAcceptItems;
 		Optional<ExternalAcceptCategory> acceptCategory;
-		List<AcceptCdConvert> acceptCdConvert;
+		List<ExternalImportCodeConvert> acceptCdConvert;
 		
 		public RequireImpl(String fileId, String cid, String conditionSetCd, int categoryId, ExacErrorLogManager logManager) {
 			this.fileId=fileId;
@@ -214,10 +212,10 @@ public class AsyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<C
 		}
 		
 		@Override
-		public List<AcceptCdConvert> getAcceptCdConvertByCompanyId(){
+		public List<ExternalImportCodeConvert> getAcceptCdConvertByCompanyId(){
 			//受入コード変換
 			if (this.acceptCdConvert == null) {
-				this.acceptCdConvert = cdConvertRepos.getAcceptCdConvertByCompanyId(this.cid);
+				this.acceptCdConvert = cdConvertRepos.get(this.cid);
 			}
 			return this.acceptCdConvert;
 		}

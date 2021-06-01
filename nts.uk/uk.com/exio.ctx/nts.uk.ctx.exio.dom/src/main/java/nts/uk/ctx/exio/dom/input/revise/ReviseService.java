@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.exio.dom.exi.canonicalize.SpecialExternalItem;
 import nts.uk.ctx.exio.dom.exi.canonicalize.specialedit.SpecialEdit;
-import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLogManager;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategory;
 import nts.uk.ctx.exio.dom.exi.extcategory.SpecialEditValue;
@@ -15,6 +14,7 @@ import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedResult;
+import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvert;
 
 @AllArgsConstructor
 public class ReviseService {
@@ -36,7 +36,7 @@ public class ReviseService {
 		
 		List<StdAcceptItem> getListStdAcceptItems();
 		Optional<ExternalAcceptCategory> getAcceptCategory();
-		List<AcceptCdConvert> getAcceptCdConvertByCompanyId();
+		List<ExternalImportCodeConvert> getAcceptCdConvertByCompanyId();
 		
 		ExacErrorLogManager getLogManager();
 	}

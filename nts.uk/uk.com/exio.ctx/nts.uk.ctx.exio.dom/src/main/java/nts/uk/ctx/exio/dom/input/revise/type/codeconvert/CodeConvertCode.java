@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.exi.codeconvert;
+package nts.uk.ctx.exio.dom.input.revise.type.codeconvert;
 
 import nts.arc.primitive.PrimitiveValue;
 import nts.arc.primitive.StringPrimitiveValue;

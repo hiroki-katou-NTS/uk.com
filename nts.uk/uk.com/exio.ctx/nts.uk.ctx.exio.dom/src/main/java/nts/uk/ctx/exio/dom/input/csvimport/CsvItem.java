@@ -2,7 +2,7 @@ package nts.uk.ctx.exio.dom.input.csvimport;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.input.revise.ItemType;
 
 
 @Getter
