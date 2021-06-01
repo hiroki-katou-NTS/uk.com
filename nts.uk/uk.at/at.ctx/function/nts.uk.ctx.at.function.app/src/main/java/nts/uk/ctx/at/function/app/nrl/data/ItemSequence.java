@@ -157,7 +157,7 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			break;
 
 		case WORKTIME_INFO:
-			orders = request ? WORKTIME_INFO_REQ_ORDER : PERSONAL_INFO_RES_ORDER;
+			orders = request ? WORKTIME_INFO_REQ_ORDER : WORKTIME_INFO_RES_ORDER;
 			break;
 
 		case RESERVATION_INFO:
@@ -169,7 +169,7 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			break;
 
 		case TIMESET_INFO:
-			orders = request ? PERSONAL_INFO_REQ_ORDER : TIMESET_INFO_RES_ORDER;
+			orders = request ? TIMESET_INFO_REQ_ORDER : TIMESET_INFO_RES_ORDER;
 			break;
 			
 		case TR_REMOTE:
