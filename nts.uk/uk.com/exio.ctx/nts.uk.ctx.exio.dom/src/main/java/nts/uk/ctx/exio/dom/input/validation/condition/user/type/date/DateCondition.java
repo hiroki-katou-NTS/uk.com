@@ -15,7 +15,7 @@ import nts.uk.ctx.exio.dom.input.validation.condition.user.CompareValueCondition
  */
 @Getter
 @AllArgsConstructor
-public class DataCondition implements ComparableValidation<GeneralDate>{
+public class DateCondition implements ComparableValidation<GeneralDate>{
 
 	CompareValueCondition condition;
 	Optional<GeneralDate> value1;
@@ -38,7 +38,7 @@ public class DataCondition implements ComparableValidation<GeneralDate>{
 						? Optional.empty() 
 						: Optional.of(value2);		
 				
-		return new DataCondition(
+		return new DateCondition(
 				CompareValueCondition.values()[conditionNo],
 				result1,
 				result2);

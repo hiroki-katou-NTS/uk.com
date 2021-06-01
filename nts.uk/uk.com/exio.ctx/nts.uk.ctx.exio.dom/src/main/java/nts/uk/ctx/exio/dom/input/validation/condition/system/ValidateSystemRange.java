@@ -18,7 +18,7 @@ public class ValidateSystemRange {
 	 * @return 
 	 */
 	public static boolean validate(SystemRequire require, ExecutionContext context, RevisedDataRecord record) {
-		val importableItems = require.getDefinition(context.getGroupId());
+		val importableItems = require.getDefinition(context.getCompanyId(), context.getGroupId());
 		List<Boolean> successFlags = new ArrayList<Boolean>();
 		
 		for(DataItem dataItem : record.getItems()) {
@@ -40,6 +40,6 @@ public class ValidateSystemRange {
 	}
 	
 	public static interface SystemRequire{
-		List<ImportableItem> getDefinition(int categoryId);
+		List<ImportableItem> getDefinition(String companyId, int categoryId);
 	}
 }
