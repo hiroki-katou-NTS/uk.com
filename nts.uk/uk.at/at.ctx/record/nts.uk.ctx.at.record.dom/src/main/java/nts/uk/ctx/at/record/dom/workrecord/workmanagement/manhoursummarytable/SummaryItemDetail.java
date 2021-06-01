@@ -74,7 +74,7 @@ public class SummaryItemDetail extends ValueObject {
         for (GeneralDate date : dateList) {
             val childVerticalList = childHierarchyList.stream().flatMap(x -> verticalTotalList.stream()).collect(Collectors.toList());
             val workingTime = childVerticalList.stream().filter(x -> x.getDate().equals(date)).mapToInt(VerticalValueDaily::getWorkingHours).sum();
-            lstVertical.add(new VerticalValueDaily(workingTime, null, date)); //TODO
+            lstVertical.add(new VerticalValueDaily(workingTime, null, date)); //TODO 日々縦計値#日々縦計値($対象年月日,Optional.empty,$作業時間)
         }
         if (!lstVertical.isEmpty())
             verticalTotalList = lstVertical;
@@ -89,7 +89,7 @@ public class SummaryItemDetail extends ValueObject {
         for (val ym : yearMonthList) {
             val childVerticalList = childHierarchyList.stream().flatMap(x -> verticalTotalList.stream()).collect(Collectors.toList());
             val workingTime = childVerticalList.stream().filter(x -> x.getYearMonth().year() == ym.year()).mapToInt(VerticalValueDaily::getWorkingHours).sum();
-            lstVertical.add(new VerticalValueDaily(workingTime, ym, null));  //TODO
+            lstVertical.add(new VerticalValueDaily(workingTime, ym, null));  //TODO 日々縦計値#日々縦計値(Optional.empty,$対象年月,$作業時間)
         }
         if (!lstVertical.isEmpty())
             verticalTotalList = lstVertical;
