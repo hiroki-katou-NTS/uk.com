@@ -6,9 +6,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 
 /**
- * 
  * 値の編集
- *
  */
 @Getter
 @AllArgsConstructor
