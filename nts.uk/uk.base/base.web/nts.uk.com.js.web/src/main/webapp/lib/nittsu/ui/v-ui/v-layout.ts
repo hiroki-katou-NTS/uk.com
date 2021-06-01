@@ -212,7 +212,7 @@ module nts.uk.ui.layout {
                     element.id = "functions-area";
                 }
 
-                if (title && mode === 'view') {
+                /*if (title && mode === 'view') {
                     const pgName = $(element).find('.pg-name');
                     const $title = pgName.get(0) || document.createElement('div');
 
@@ -237,13 +237,10 @@ module nts.uk.ui.layout {
 
                         ko.applyBindingsToNode($btnGroup, null, bindingContext);
                     }
+                }*/
 
-                    // button error in function bar
-                    ko.applyBindingsToNode($('<button>').appendTo($title).get(0), { 'c-error': '' }, bindingContext);
-                } else {
-                    // button error in function bar
-                    ko.applyBindingsToNode($('<button>').appendTo(element).get(0), { 'c-error': '' }, bindingContext);
-                }
+                // button error in function bar
+                ko.applyBindingsToNode($('<button>').appendTo(element).get(0), { 'c-error': '' }, bindingContext);
             } else {
                 if (!element.id) {
                     element.id = "functions-area-bottom";
