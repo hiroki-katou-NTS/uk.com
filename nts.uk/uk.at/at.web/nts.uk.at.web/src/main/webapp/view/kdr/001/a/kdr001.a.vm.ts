@@ -81,10 +81,10 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         //radio test
         selectedId: KnockoutObservable<number> = ko.observable(0);
         enable: KnockoutObservable<boolean> = ko.observable(true);
-        listFreeSetting:KnockoutObservableArray<ItemNewModel> = ko.observableArray([]);
+        listFreeSetting: KnockoutObservableArray<ItemNewModel> = ko.observableArray([]);
         listStandard: KnockoutObservableArray<ItemNewModel> = ko.observableArray([]);
 
-        getCheckauthor:KnockoutObservable<boolean> = ko.observable(false);
+        getCheckauthor: KnockoutObservable<boolean> = ko.observable(false);
 
         //end
         constructor() {
@@ -144,7 +144,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             });
 
             //radio test
-             self.selectedId = ko.observable(0);
+            self.selectedId = ko.observable(0);
             // self.enable = ko.observable(true);
             self.selectedId.subscribe((value) => {
                 self.enable(value === StandardOrFree.Standard);
@@ -275,7 +275,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             ).done((holidayRemainings: any,
                     dateData: GetDate,
                     role: any,
-                    author:boolean,
+                    author: boolean,
                     userSpecific) => {
                 self.loadAllHolidayRemaining(holidayRemainings);
                 self.getCheckauthor(author);
@@ -386,8 +386,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             let startMonth = moment(self.dateValue().startDate, 'YYYY/MM');
             let endMonth = moment(self.dateValue().endDate, 'YYYY/MM');
             let end = (parseInt(endMonth.format("YYYY")) * 12 + parseInt(endMonth.format("MM")))
-            let start =   (parseInt(startMonth.format("YYYY")) * 12 + parseInt(startMonth.format("MM"))) ;
-            let totalMonths= (end - start) +1;
+            let start = (parseInt(startMonth.format("YYYY")) * 12 + parseInt(startMonth.format("MM")));
+            let totalMonths = (end - start) + 1;
             if (totalMonths < 0) {
                 nts.uk.ui.dialog.alertError({messageId: 'Msg_1217'});
                 nts.uk.ui.block.clear();
@@ -426,7 +426,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 self.selectedCode()
             );
             nts.uk.characteristics.save("UserSpecific_" + user.employeeId, userSpecificInformation);
-            let layOutId = self.selectedId() == 0? self.standardCode(): self.freeCode();
+            let layOutId = self.selectedId() == 0 ? self.standardCode() : self.freeCode();
             let holidayRemainingOutputCondition = new HolidayRemainingOutputCondition(
                 startMonth.format("YYYY/MM/DD"),
                 endMonth.endOf('month').format("YYYY/MM/DD"),
@@ -437,8 +437,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 objComboxSelected != undefined ? objComboxSelected.name : ""
             );
             let lstSelected: Array<EmployeeQuery> = [];
-            for (let i = 0; i < lstSelectedEployee.length; i++){
-                let e  = lstSelectedEployee[i];
+            for (let i = 0; i < lstSelectedEployee.length; i++) {
+                let e = lstSelectedEployee[i];
                 lstSelected.push(new EmployeeQuery(
                     e.employeeCode,
                     e.employeeId,
@@ -449,17 +449,33 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 ))
             }
             let data = new ReportInfor(holidayRemainingOutputCondition, lstSelected);
-            if(nts.uk.util.isNullOrUndefined(data.holidayRemainingOutputCondition.layOutId )){
-                nts.uk.ui.dialog.alertError({messageId: 'Msg_880'});
+            if (nts.uk.util.isNullOrUndefined(data.holidayRemainingOutputCondition.layOutId)) {
+                $('#listFreeSetting').ntsError('set', {messageId: 'Msg_880'});
+                $('#listFreeSetting').focus();
+                $('#residence-code').ntsError('set', {messageId: 'Msg_880'});
                 nts.uk.ui.block.clear();
-                return;
+            } else {
+                service.saveAsExcel(data).always(() => {
+
+                }).done(() => {
+                }).fail(function (res: any) {
+                    nts.uk.ui.dialog.alertError({messageId: res.messageId});
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
             }
-            service.saveAsExcel(data).done(() => {
-            }).fail(function (res: any) {
-                nts.uk.ui.dialog.alertError({messageId: res.messageId});
-            }).always(() => {
-                nts.uk.ui.block.clear();
+            self.selectedId.subscribe(() => {
+                nts.uk.ui.errors.clearAll();
             });
+
+            self.freeCode.subscribe(() => {
+                nts.uk.ui.errors.clearAll();
+            })
+
+            self.standardCode.subscribe(() => {
+                nts.uk.ui.errors.clearAll();
+            })
+
         }
 
         /**
@@ -468,13 +484,14 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         openKDR001b(settingId: number) {
             let self = this;
             nts.uk.ui.block.invisible();
+            nts.uk.ui.errors.clearAll();
             let id: any;
-            if(settingId == 1){
+            if (settingId == 1) {
                 id = this.freeCode();
-            }else {
+            } else {
                 id = this.standardCode();
             }
-            let params = new PramToScrrenB(settingId,id );
+            let params = new PramToScrrenB(settingId, id);
             setShared('KDR001Params', params);
             modal("/view/kdr/001/b/index.xhtml").onClosed(function () {
                 self.freeCode(getShared('KDR001B2A_cd'));
@@ -507,25 +524,28 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         }
 
     }
-export class EmployeeQuery {
-    employeeCode :string;
-    employeeId :string;
-    employeeName  :string;
-    workplaceCode: string;
-    workplaceId : string;
-    workplaceName: string;
-    constructor( employeeCode :string,employeeId :string, employeeName  :string,   workplaceCode: string,
-                 workplaceId : string, workplaceName: string){
-        this.employeeCode = employeeCode;
-        this.employeeId = employeeId;
-        this.employeeName = employeeName;
-        this.workplaceCode = workplaceCode;
-        this.workplaceId = workplaceId;
-        this.workplaceName = workplaceName;
+
+    export class EmployeeQuery {
+        employeeCode: string;
+        employeeId: string;
+        employeeName: string;
+        workplaceCode: string;
+        workplaceId: string;
+        workplaceName: string;
+
+        constructor(employeeCode: string, employeeId: string, employeeName: string, workplaceCode: string,
+                    workplaceId: string, workplaceName: string) {
+            this.employeeCode = employeeCode;
+            this.employeeId = employeeId;
+            this.employeeName = employeeName;
+            this.workplaceCode = workplaceCode;
+            this.workplaceId = workplaceId;
+            this.workplaceName = workplaceName;
+        }
+
+
     }
 
-
-}
     export class HolidayRemainingModel {
         cd: string;
         name: string;
@@ -550,15 +570,18 @@ export class EmployeeQuery {
         layoutId: string;
         cd: string;
         name: string;
+
         constructor(layoutId: string, name: string, cd: string) {
             this.layoutId = layoutId;
             this.name = name;
             this.cd = cd;
         }
     }
+
     export class Datta {
         listFreeSetting: [ItemNewModel];
         listStandard: [ItemNewModel];
+
         constructor(listFreeSetting: [ItemNewModel], listStandard: [ItemNewModel]) {
             this.listFreeSetting = listFreeSetting;
             this.listStandard = listStandard;
@@ -718,7 +741,7 @@ export class EmployeeQuery {
         closureId: number;
         title: string;
 
-        constructor(startMonth: string, endMonth: string,layOutId: string, pageBreak: string,
+        constructor(startMonth: string, endMonth: string, layOutId: string, pageBreak: string,
                     baseDate: string, closureId: number, title: string) {
             this.startMonth = startMonth;
             this.endMonth = endMonth;
