@@ -4,21 +4,26 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.dom.conversiontable.ConversionSourcesRepository;
+import nts.uk.cnv.dom.tabledesign.ErpTableDesignRepository;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionSources;
 
 @Stateless
 public class JpaConversionSourcesRepository extends JpaRepository implements ConversionSourcesRepository {
 
+	@Inject
+	ErpTableDesignRepository erpTableRepo;
+
 	@Override
 	public Optional<ConversionSource> get(String sourceId) {
 		Optional<ScvmtConversionSources> entity = this.queryProxy().find(sourceId, ScvmtConversionSources.class);
 
-		return entity.map(e -> e.toDomain());
+		return entity.map(e -> e.toDomain(erpTableRepo.getPkColumns(e.getSourceTableName())));
 	}
 
 	@Override
@@ -27,7 +32,7 @@ public class JpaConversionSourcesRepository extends JpaRepository implements Con
 
 		return this.queryProxy().query(query, ScvmtConversionSources.class)
 			.setParameter("category", category)
-			.getList(entity -> entity.toDomain());
+			.getList(entity -> entity.toDomain(erpTableRepo.getPkColumns(entity.getSourceTableName())));
 	}
 
 	@Override

@@ -45,6 +45,7 @@ var erpColumnsList;
 var registeredColumnList;
 
 var TabMap = {
+	"NULL": "#null",
 	"NONE": "#none",
 	"CODE_TO_ID": "#codeToId",
 	"CODE_TO_CODE": "#codeToCode",
@@ -267,7 +268,7 @@ $(function(){
 		var selectedType = $("#selConvType").val();
 
 		loadPage();
-		if(selectedType === null || selectedType === "NULL") return;
+		if(selectedType === null) return;
 
 		var tabId = TabMap[selectedType];
 		$(".ui-tab a[href='" + tabId + "']").trigger("click");

@@ -32,9 +32,9 @@ public class OneColumnConversion {
 		this.isReferenced = false;
 	}
 
-	public ConversionSQL apply(ConversionSQL conversionSql) {
+	public ConversionSQL apply(String targetTableAlias, ConversionSQL conversionSql) {
 
-		val column = new ColumnName("", this.targetColumn);
+		val column = new ColumnName(targetTableAlias, this.targetColumn);
 		if (this.isReferenced) {
 			conversionSql = this.referencedPattern.apply(column, conversionSql);
 		}

@@ -72,12 +72,19 @@ public class ConversionTableTestHelper {
 					new OneColumnConversion(
 							"CONTRACT_CD",
 							"FIXED_VALUE",
-							new FixedValuePattern(info.getDatebaseType().spec(), true, Constants.ContractCodeParamName)
+							new FixedValuePattern(
+									info,
+									new Join(new TableFullName(info.getSourceDatabaseName(), info.getSourceSchema(), "kyotukaisya_m", Constants.BaseTableAlias),
+											JoinAtr.Main,
+											null),
+									true,
+									Constants.ContractCodeParamName)
 					),
 					new OneColumnConversion(
 							"NAME",
 							"NONE",
 							new NotChangePattern(
+									info,
 									new Join(new TableFullName(info.getSourceDatabaseName(), info.getSourceSchema(), "kyotukaisya_m", Constants.BaseTableAlias),
 										JoinAtr.Main,
 										null),
@@ -101,6 +108,7 @@ public class ConversionTableTestHelper {
 						"PERSON_NAME",
 						"NONE",
 						new NotChangePattern(
+								info,
 								new Join(new TableFullName(info.getSourceDatabaseName(), info.getSourceSchema(), "jm_kihon", Constants.BaseTableAlias),
 									JoinAtr.Main,
 									null),

@@ -13,8 +13,9 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
 import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.uk.cnv.core.dom.conversionsql.Join;
+import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.FixedValuePattern;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
@@ -51,9 +52,10 @@ public class ScvmtConversionTypeFixedValue extends JpaEntity implements Serializ
 		return pk;
 	}
 
-	public FixedValuePattern toDomain(DatabaseSpec spec) {
+	public FixedValuePattern toDomain(ConversionInfo info, Join join) {
 		return new FixedValuePattern(
-				spec,
+				info,
+				join,
 				this.isParameter,
 				this.fixedValue
 			);

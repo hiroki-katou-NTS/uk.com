@@ -11,16 +11,20 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.cnv.app.dto.AddSourceResult;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.dom.conversiontable.ConversionSourcesRepository;
+import nts.uk.cnv.dom.tabledesign.ErpTableDesignRepository;
 
 @Stateless
 public class RegistConversionSourceCommandHandler extends CommandHandlerWithResult<RegistConversionSourceCommand, AddSourceResult>{
 
 	@Inject
 	ConversionSourcesRepository repository;
+	@Inject
+	ErpTableDesignRepository erpTableDesignRepo;
 
 	@Override
 	protected AddSourceResult handle(CommandHandlerContext<RegistConversionSourceCommand> context) {
 		RegistConversionSourceCommand command = context.getCommand();
+
 		val domain = new ConversionSource(
 				command.getSourceId(),
 				command.getCategory(),
@@ -30,7 +34,8 @@ public class RegistConversionSourceCommandHandler extends CommandHandlerWithResu
 				wrapOptional(command.getDateColumnName()),
 				wrapOptional(command.getStartDateColumnName()),
 				wrapOptional(command.getEndDateColumnName()),
-				wrapOptional(command.getDateType())
+				wrapOptional(command.getDateType()),
+				null	//sourceの登録時には不要（取得時にinfraでScvmtErpColumnDesignからセットする）
 			);
 
 		if(command.getSourceId() != null && !command.getSourceId().isEmpty()) {

@@ -14,7 +14,8 @@ var ajaxOption = {
 	}
 };
 var servicePath = {
-	testExport: "/nts.uk.cnv.web/webapi/cnv/codegenerator/excecute"
+	testExport: "/nts.uk.cnv.web/webapi/cnv/codegenerator/excecute",
+	testExportUpdate: "/nts.uk.cnv.web/webapi/cnv/codegenerator/excecute_update"
 }
 
 $(function(){
@@ -39,7 +40,7 @@ $(function(){
 	$("#btnExport").click(function() {
 		var filePath = $("#txtFilepath").val();
 
-		var dbtype = $('[name="dbtype"]:checked').val()
+		var dbtype = $('[name="dbtype"]:checked').val();
 		var sourceDbName = $("#txtSourceDbName").val();
 		var sourceSchema = $("#txtSourceSchema").val();
 		var targetDbName = $("#txtTargetDbName").val();
@@ -62,6 +63,27 @@ $(function(){
 			workDbName: workDbName,
 			workSchema: workSchema,
 			contractCode: contractCode,
+			filePath : filePath
+		})).done(function (res) {
+			showMsg("ファイル出力を完了しました");
+		}).fail(function(rej){
+			console.log(rej);
+			showMsg("テスト出力でエラーが発生しました。" + rej);
+			return;
+		});
+	});
+
+	$("#btnExport_update").click(function() {
+		var filePath = $("#txtFilepath").val();
+		var dbtype = $('[name="dbtype"]:checked').val();
+
+		if (typeof filePath === "undefined" || filePath === "") {
+			showMsg("ファイルパスを指定してください");
+			return;
+		}
+
+		$.ajax(ajaxOption.build(servicePath.testExportUpdate, {
+			dbtype: dbtype,
 			filePath : filePath
 		})).done(function (res) {
 			showMsg("ファイル出力を完了しました");

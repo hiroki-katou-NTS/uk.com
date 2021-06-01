@@ -3,6 +3,7 @@ package nts.uk.cnv.core.dom.conversionsql;
 import java.util.Arrays;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
@@ -10,6 +11,7 @@ import lombok.Getter;
  * @author ai_muto
  *
  */
+@EqualsAndHashCode
 @Getter
 @AllArgsConstructor
 public class ColumnName {

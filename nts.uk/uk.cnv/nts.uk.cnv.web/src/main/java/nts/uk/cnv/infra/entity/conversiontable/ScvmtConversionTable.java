@@ -22,7 +22,6 @@ import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.RelationalOperator;
-import nts.uk.cnv.core.dom.conversionsql.TableFullName;
 import nts.uk.cnv.core.dom.conversionsql.WhereSentence;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
@@ -111,7 +110,7 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 
 		return new ConversionTable(
 					info.getDatebaseType().spec(),
-					new TableFullName(info.getTargetDatabaseName(), info.getTargetSchema(), pk.getTargetTableName(), "base"),
+					info.getTargetTable(pk.getTargetTableName()),
 					source.getDateColumnName(),
 					source.getStartDateColumnName(),
 					source.getEndDateColumnName(),
@@ -155,13 +154,13 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 
 		switch(type) {
 			case None:
-				return typeNone.toDomain(sourceJoin);
+				return typeNone.toDomain(info, sourceJoin);
 			case CodeToId:
 				return typeCodeToId.toDomain(info, sourceJoin);
 			case CodeToCode:
 				return typeCodeToCode.toDomain(info, sourceJoin);
 			case FixedValue:
-				return typeFixedValue.toDomain(info.getDatebaseType().spec());
+				return typeFixedValue.toDomain(info, sourceJoin);
 			case FixedValueWithCondition:
 				return typeFixedValueWithCondition.toDomain(info.getDatebaseType().spec(), sourceJoin);
 			case Parent:

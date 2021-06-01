@@ -49,7 +49,12 @@ public class FromSentence {
 			join = String.join("\r\n", joinTables.stream().map(f -> f.sql(spec)).collect(Collectors.toList())) + "\r\n";
 		}
 
-		return " FROM " + baseTable.get().fullName() + " AS "+ baseTable.get().getAlias() + "\r\n" + join;
+		return " FROM "
+			+ baseTable.get().fullName()
+			+ (baseTable.get().getAlias() == null || baseTable.get().getAlias().isEmpty()
+				? ""
+				: " AS "+ baseTable.get().getAlias())
+			+ "\r\n" + join;
 	}
 }
 

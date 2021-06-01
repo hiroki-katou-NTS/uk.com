@@ -23,7 +23,7 @@ public class UpdateSentence {
 	}
 
 	public String sql() {
-		return "UPDATE " + table.fullName() + "\r\n"
+		return "UPDATE " + table.alias + "\r\n"
 				+ SetSentence.join(this.set);
 	}
 }

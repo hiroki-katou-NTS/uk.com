@@ -14,6 +14,7 @@ import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionInsertSQL;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.ConversionUpdateSQL;
+import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.RelationalOperator;
 import nts.uk.cnv.core.dom.conversionsql.TableFullName;
 import nts.uk.cnv.core.dom.conversionsql.WhereSentence;
@@ -42,7 +43,7 @@ public class ConversionTable {
 		ConversionSQL result = new ConversionInsertSQL(targetTableName, newWhereList);
 
 		for(OneColumnConversion oneColumnConversion : conversionMap) {
-			result = oneColumnConversion.apply(result);
+			result = oneColumnConversion.apply(targetTableName.getAlias(), result);
 		}
 
 		return result;
@@ -53,9 +54,10 @@ public class ConversionTable {
 		addPeriodCondition(spec, newWhereList);
 
 		ConversionSQL result = new ConversionUpdateSQL(targetTableName, newWhereList);
+		result.addJoin(Join.createMain(targetTableName));
 
 		for(OneColumnConversion oneColumnConversion : conversionMap) {
-			result = oneColumnConversion.apply(result);
+			result = oneColumnConversion.apply(targetTableName.getAlias(), result);
 		}
 
 		return result;

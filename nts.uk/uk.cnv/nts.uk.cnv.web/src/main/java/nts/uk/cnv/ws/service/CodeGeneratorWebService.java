@@ -9,6 +9,7 @@ import nemunoki.oruta.shr.tabledefinetype.databasetype.DatabaseType;
 import nts.arc.layer.ws.WebService;
 import nts.uk.cnv.app.dto.CodeGeneratorExcecuteDto;
 import nts.uk.cnv.app.service.CodeGenerator;
+import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 
 @Path("cnv/codegenerator")
@@ -29,9 +30,20 @@ public class CodeGeneratorWebService extends WebService{
 				param.getTargetSchema(),
 				param.getWorkDbName(),
 				param.getWorkSchema(),
-				param.getContractCode()
+				param.getContractCode(),
+				ConversionCodeType.INSERT
 			);
 
 		this.codeGeneratorService.excecute(info, param.getFilePath());
+	}
+	@POST
+	@Path("excecute_update")
+	public void excecuteUpdate(CodeGeneratorExcecuteDto param) {
+		ConversionInfo info = new ConversionInfo(
+				Enum.valueOf(DatabaseType.class, param.getDbtype()),
+				"","","","","","","",
+				ConversionCodeType.UPDATE);
+
+		this.codeGeneratorService.excecuteUpdate(info, param.getFilePath());
 	}
 }

@@ -13,6 +13,7 @@ import lombok.val;
 import nemunoki.oruta.shr.tabledefinetype.DataType;
 import nts.arc.time.GeneralDate;
 import nts.uk.cnv.core.dom.constants.Constants;
+import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.TableFullName;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.ConversionRecord;
@@ -47,6 +48,17 @@ public class CreateConversionCodeService {
 		return this.preprocessing(require, info) + "\r\n" +
 				String.join("\r\n", conversionSqlList) + "\r\n" +
 				this.postprocessing(require, info);
+	}
+
+	public String createForUpdate(Require require, ConversionInfo info) {
+
+		List<String> categorys = require.getCategoryPriorities();
+
+		List<String> conversionSqlList = categorys.stream()
+			.map(category -> createByCategory(require, category, info))
+			.collect(Collectors.toList());
+
+		return String.join("\r\n", conversionSqlList);
 	}
 
 	private String createByCategory(Require require, String category, ConversionInfo info){
@@ -130,7 +142,7 @@ public class CreateConversionCodeService {
 			.collect(Collectors.toList());
 
 		List<String> convertCodes = conversionTables.stream()
-			.map(ct -> ct.createConversionSql())
+			.map(ct -> require.createConversionSQL(ct))
 			.map(conversionSql -> conversionSql.build(info.getDatebaseType().spec()))
 			.collect(Collectors.toList());
 
@@ -144,6 +156,7 @@ public class CreateConversionCodeService {
 		List<ConversionRecord> getRecords(String category, String tableName);
 		Optional<ConversionTable> getConversionTable(ConversionInfo info, String category, String tableName, int recordNo, ConversionSource source);
 		ConversionSource getSource(String sourceId);
+		ConversionSQL createConversionSQL(ConversionTable ct);
 
 		void addPreProcessing(String sql);
 		void addPostProcessing(String sql);

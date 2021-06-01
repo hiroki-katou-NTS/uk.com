@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nemunoki.oruta.shr.tabledefinetype.databasetype.DatabaseType;
 import nts.arc.error.BusinessException;
 import nts.uk.cnv.app.dto.FindConversionTableDto;
 import nts.uk.cnv.app.dto.FindConversionTableResult;
@@ -15,6 +16,7 @@ import nts.uk.cnv.app.dto.GetCategoryTablesDto;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.TableFullName;
 import nts.uk.cnv.core.dom.conversionsql.WhereSentence;
+import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.ConversionRecord;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
@@ -60,7 +62,13 @@ public class ConversionTableService {
 		ConversionRecord record = recordRepo.getRecord(dto.getCategory(), dto.getTable(), dto.getRecordNo());
 
 		ConversionSource source = conversionSourceRepo.get(record.getSourceId()).get();
-		return repo.findColumnConversion(info, dto.getCategory(), dto.getTable(), dto.getRecordNo(), dto.getUkColumn(), source.getJoin()).orElse(null);
+		return repo.findColumnConversion(
+				info,
+				dto.getCategory(),
+				dto.getTable(),
+				dto.getRecordNo(),
+				dto.getUkColumn(),
+				info.getJoin(source)).orElse(null);
 	}
 
 	public List<GetCategoryTablesDto> getCategoryTables(String category) {
@@ -78,28 +86,49 @@ public class ConversionTableService {
 	 */
 	public String test(FindConversionTableDto dto) {
 		ConversionInfo info = ConversionInfo.createDummry();
-		ConversionTable conversonTable = createConversionTable(info, dto);
+
+		ConversionRecord record = recordRepo.getRecord(dto.getCategory(), dto.getTable(), dto.getRecordNo());
+		ConversionSource source = conversionSourceRepo.get(record.getSourceId()).get();
+		Optional<OneColumnConversion> onColumn =
+				repo.findColumnConversion(
+						info,
+						dto.getCategory(),
+						dto.getTable(),
+						dto.getRecordNo(),
+						dto.getUkColumn(),
+						info.getJoin(source));
+
+		ConversionTable conversonTable = createConversionTable(onColumn, source, info, dto, info.getType().getTagetAlias());
 		ConversionSQL sql = conversonTable.createConversionSql();
 
 		return sql.build(info.getDatebaseType().spec());
 	}
 
 	public String testForUpdate(FindConversionTableDto dto) {
-		ConversionInfo info = ConversionInfo.createDummry();
-		ConversionTable conversonTable = createConversionTable(info, dto);
+		ConversionInfo info = new ConversionInfo(
+				DatabaseType.sqlserver, "", "", "", "", "", "", "", ConversionCodeType.UPDATE);
+
+		ConversionRecord record = recordRepo.getRecord(dto.getCategory(), dto.getTable(), dto.getRecordNo());
+		ConversionSource source = conversionSourceRepo.get(record.getSourceId()).get();
+		Optional<OneColumnConversion> onColumn =
+				repo.findColumnConversion(
+						info,
+						dto.getCategory(),
+						dto.getTable(),
+						dto.getRecordNo(),
+						dto.getUkColumn(),
+						info.getJoin(source));
+
+		ConversionTable conversonTable = createConversionTable(onColumn, source, info, dto, info.getType().getTagetAlias());
 		ConversionSQL sql = conversonTable.createUpdateConversionSql();
 
 		return sql.build(info.getDatebaseType().spec());
 	}
 
-	private ConversionTable createConversionTable(ConversionInfo info, FindConversionTableDto dto) {
-		ConversionRecord record = recordRepo.getRecord(dto.getCategory(), dto.getTable(), dto.getRecordNo());
+	private ConversionTable createConversionTable(Optional<OneColumnConversion> onColumn, ConversionSource source, ConversionInfo info, FindConversionTableDto dto, String alias) {
 
 		List<WhereSentence> whereList = new ArrayList<>();
 		List<OneColumnConversion> conversionMap = new ArrayList<>();
-
-		ConversionSource source = conversionSourceRepo.get(record.getSourceId()).get();
-		Optional<OneColumnConversion> onColumn = repo.findColumnConversion(info, dto.getCategory(), dto.getTable(), dto.getRecordNo(), dto.getUkColumn(), source.getJoin());
 
 		if(!onColumn.isPresent()) {
 			throw new BusinessException("コンバート表が登録されていません");
@@ -113,7 +142,7 @@ public class ConversionTableService {
 
 		return  new ConversionTable(
 				info.getDatebaseType().spec(),
-				new TableFullName(info.getTargetDatabaseName(), info.getSourceSchema(), dto.getTable(), ""),
+				new TableFullName(info.getTargetDatabaseName(), info.getSourceSchema(), dto.getTable(), alias),
 				source.getDateColumnName(),
 				source.getStartDateColumnName(),
 				source.getEndDateColumnName(),

@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.core.dom.conversionsql.Join;
+import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.NotChangePattern;
 import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
@@ -48,8 +49,9 @@ public class ScvmtConversionTypeNone extends JpaEntity implements Serializable {
 		return pk;
 	}
 
-	public NotChangePattern toDomain(Join sourcejoin) {
+	public NotChangePattern toDomain(ConversionInfo info, Join sourcejoin) {
 		return new NotChangePattern(
+				info,
 				sourcejoin,
 				this.sourceColumnName
 			);

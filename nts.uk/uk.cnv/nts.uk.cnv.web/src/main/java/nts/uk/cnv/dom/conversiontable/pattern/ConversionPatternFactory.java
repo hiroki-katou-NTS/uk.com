@@ -11,6 +11,7 @@ import nts.uk.cnv.core.dom.conversionsql.JoinAtr;
 import nts.uk.cnv.core.dom.conversionsql.OnSentence;
 import nts.uk.cnv.core.dom.conversionsql.RelationalOperator;
 import nts.uk.cnv.core.dom.conversionsql.TableFullName;
+import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.CodeToCodePattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.CodeToIdPattern;
@@ -36,7 +37,8 @@ public class ConversionPatternFactory {
 				"KINJIROU_ERP", "dbo",
 				"KINJIROU_UK", "dbo",
 				"UK_CNV", "dbo",
-				"000000000000"
+				"000000000000",
+				ConversionCodeType.INSERT
 			);
 		Join join = new Join(
 				new TableFullName("KINJIROU_ERP", "dbo", param.getSourceTable(), "base"),
@@ -50,7 +52,7 @@ public class ConversionPatternFactory {
 
 		switch(type) {
 			case None:
-				return new NotChangePattern(join, param.getSourceColumn_none());
+				return new NotChangePattern(info, join, param.getSourceColumn_none());
 			case CodeToId:
 				return new CodeToIdPattern(info, join,
 						param.getSourceColumn_codeToId(),
@@ -61,7 +63,7 @@ public class ConversionPatternFactory {
 						param.getSourceColumn_codeToCode(),
 						param.getCodeToCodeType());
 			case FixedValue:
-				return new FixedValuePattern(info.getDatebaseType().spec(),
+				return new FixedValuePattern(info, join,
 						param.isFixedValueIsParam(),
 						param.getFixedValue());
 			case FixedValueWithCondition:

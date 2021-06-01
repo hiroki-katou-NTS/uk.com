@@ -1,6 +1,7 @@
 package nts.uk.cnv.core.dom.conversionsql;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import lombok.Getter;
@@ -46,8 +47,13 @@ public class ConversionUpdateSQL implements ConversionSQL {
 
 	public String build(DatabaseSpec spec) {
 		String whereString = (from.getBaseTable().isPresent() && where.size() > 0) ? WhereSentence.join(where) : "";
-		return this.update.sql() +
-				from.sql(spec) +
+		return this.update.sql() + "\r\n" +
+				from.sql(spec) + "\r\n" +
 				whereString;
+	}
+
+	public void addOnSentense(ColumnName column, String newExpression) {
+		Join source = this.from.getJoinTables().stream().findFirst().get();
+		source.onSentences.add(new OnSentence(column, new ColumnName(newExpression), Optional.empty()));
 	}
 }

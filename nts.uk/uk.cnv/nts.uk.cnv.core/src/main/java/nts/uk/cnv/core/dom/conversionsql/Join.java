@@ -16,14 +16,14 @@ public class Join {
 	/** 結合条件 */
 	public List<OnSentence> onSentences;
 
-	public static Join createMain(String baseTableName) {
+	public static Join createMain(TableFullName baseTableName) {
 		return new Join(
-				TableFullName.createMainTableName(baseTableName),
+				baseTableName,
 				JoinAtr.Main,
 				null
 			);
 	}
-	
+
 	public String sql(DatabaseSpec spec) {
 		return
 				" " + joinAtr.getSql() + " " + tableName.fullName() + " AS " + tableName.getAlias() + "\r\n" +

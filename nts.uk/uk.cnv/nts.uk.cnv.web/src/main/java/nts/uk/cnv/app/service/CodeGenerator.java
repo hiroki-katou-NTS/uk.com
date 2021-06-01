@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.RequiredArgsConstructor;
+import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.ConversionRecord;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
@@ -26,34 +26,42 @@ import nts.uk.cnv.dom.service.CreateConversionCodeService;
 public class CodeGenerator {
 
 	@Inject
-	CategoryPriorityRepository categoryPriorityRepository;
+	protected CategoryPriorityRepository categoryPriorityRepository;
 
 	@Inject
-	ConversionRecordRepository conversionRecordRepository;
+	protected ConversionRecordRepository conversionRecordRepository;
 
 	@Inject
-	ConversionSourcesRepository conversionSourceRepository;
+	protected ConversionSourcesRepository conversionSourceRepository;
 
 	@Inject
-	ConversionTableRepository conversionTableRepository;
+	protected ConversionTableRepository conversionTableRepository;
 
 	@Inject
-	ConversionCategoryTableRepository conversionCategoryTableRepository;
+	protected ConversionCategoryTableRepository conversionCategoryTableRepository;
 
 	@Inject
-	CreateConversionCodeService service;
+	protected CreateConversionCodeService service;
 
 	public void excecute(ConversionInfo info, String filePath) {
 
-		CreateConversionCodeService.Require require = new RequireImpl(
-			categoryPriorityRepository,
-			conversionRecordRepository,
-			conversionSourceRepository,
-			conversionTableRepository,
-			conversionCategoryTableRepository);
+		CreateConversionCodeService.Require require = new RequireImplForInsert();
 
 		String conversionCode = service.create(require, info);
 
+		outputToFile(conversionCode, filePath);
+	}
+
+	public void excecuteUpdate(ConversionInfo info, String filePath) {
+
+		CreateConversionCodeService.Require require = new RequireImplForUpdate();
+
+		String conversionCode = service.createForUpdate(require, info);
+
+		outputToFile(conversionCode, filePath);
+	}
+
+	private void outputToFile(String conversionCode, String filePath) {
 		File file = new File(filePath);
 
 		try {
@@ -71,18 +79,21 @@ public class CodeGenerator {
 		}
 	}
 
-	@RequiredArgsConstructor
-	private static class RequireImpl implements CreateConversionCodeService.Require{
+	private class RequireImplForInsert extends RequireImpl{
+		@Override
+		public ConversionSQL createConversionSQL(ConversionTable ct) {
+			return ct.createConversionSql();
+		}
+	}
 
-		private final CategoryPriorityRepository categoryPriorityRepository;
+	private class RequireImplForUpdate extends RequireImpl{
+		@Override
+		public ConversionSQL createConversionSQL(ConversionTable ct) {
+			return ct.createUpdateConversionSql();
+		}
+	}
 
-		private final ConversionRecordRepository conversionRecordRepository;
-
-		private final ConversionSourcesRepository conversionSourceRepository;
-
-		private final ConversionTableRepository conversionTableRepository;
-
-		private final ConversionCategoryTableRepository conversionCategoryTableRepository;
+	private abstract class RequireImpl implements CreateConversionCodeService.Require{
 
 		private List<String> preProcessing = new ArrayList<>();
 		private List<String> postProcessing = new ArrayList<>();
@@ -139,6 +150,9 @@ public class CodeGenerator {
 					.filter(sql -> !sql.isEmpty())
 					.collect(Collectors.toList()));
 		}
+
+		@Override
+		public abstract ConversionSQL createConversionSQL(ConversionTable ct);
 
 	}
 }

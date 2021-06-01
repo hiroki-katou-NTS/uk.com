@@ -57,7 +57,7 @@ public class ConversionInsertSQL implements ConversionSQL {
 		String whereString = (from.getBaseTable().isPresent() && where.size() > 0) ? WhereSentence.join(where) : "";
 		return insert.sql(
 				SelectSentence.join(select) + "\r\n" +
-				from.sql(spec) +
+				from.sql(spec) + "\r\n" +
 				whereString
 			);
 	}
