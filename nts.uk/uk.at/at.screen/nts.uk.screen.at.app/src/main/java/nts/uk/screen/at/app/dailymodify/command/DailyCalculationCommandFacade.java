@@ -30,8 +30,10 @@ import nts.uk.ctx.at.record.app.service.dailycheck.CheckCalcMonthService;
 import nts.uk.ctx.at.record.dom.daily.export.AggregateSpecifiedDailys;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtilRes;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -242,7 +244,7 @@ public class DailyCalculationCommandFacade {
 			List<DPItemValue> lstNotFoundWorkType) {
 		Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> lstResultReturnDailyError = new HashMap<>();
 		List<DailyModifyResult> resultNews = editedDtos.stream()
-				.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c))
+				.map(c -> DailyModifyResult.builder().items(AttendanceItemUtilRes.collect(c, AttendanceItemType.DAILY_ITEM))
 						.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
 				.collect(Collectors.toList());
 

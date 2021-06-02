@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.TimeUsedNumberDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
 
