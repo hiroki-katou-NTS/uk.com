@@ -7,7 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.FlexTimeByPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -17,6 +18,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalcu
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.RegAndIrgTimeOfWeekly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.WeeklyCalculation;
 
 @Data
 @NoArgsConstructor
@@ -75,11 +78,30 @@ public class MonthlyCalculationDto implements ItemConst, AttendanceItemDataGate 
 			dto.setActualWorkingTime(RegularAndIrregularTimeOfMonthlyDto.from(domain.getActualWorkingTime()));
 			dto.setAggregateTime(AggregateTotalWorkingTimeDto.from(domain.getAggregateTime()));
 			dto.setTotalTimeSpentAtWork(AggregateTotalTimeSpentAtWorkDto.from(domain.getTotalTimeSpentAtWork()));
-			dto.setTotalWorkingTime(domain.getTotalWorkingTime() == null ? null : domain.getTotalWorkingTime().valueAsMinutes());
-			dto.setStatutoryWorkingTime(domain.getStatutoryWorkingTime() == null ? null : domain.getStatutoryWorkingTime().valueAsMinutes());
+			dto.setTotalWorkingTime(domain.getTotalWorkingTime() == null ? 0 : domain.getTotalWorkingTime().valueAsMinutes());
+			dto.setStatutoryWorkingTime(domain.getStatutoryWorkingTime() == null ? 0 : domain.getStatutoryWorkingTime().valueAsMinutes());
 //			dto.setAgreMaxTime(AgreMaxTimeOfMonthlyDto.from(domain.getAgreMaxTime()));
 		}
 		return dto;
+	}
+	
+	public static MonthlyCalculationDto from(WeeklyCalculation domain) {
+		MonthlyCalculationDto dto = new MonthlyCalculationDto();
+		if(domain != null) {
+			dto.setFlexTime(FlexTimeOfMonthlyDto.from(domain.getFlexTime()));
+			dto.setActualWorkingTime(RegularAndIrregularTimeOfMonthlyDto.from(domain.getRegAndIrgTime()));
+			dto.setAggregateTime(AggregateTotalWorkingTimeDto.from(domain.getTotalWorkingTime()));
+			dto.setTotalTimeSpentAtWork(AggregateTotalTimeSpentAtWorkDto.from(domain.getTotalSpentTime()));
+			dto.setTotalWorkingTime(0);
+		}
+		return dto;
+	}
+	
+	public WeeklyCalculation toDomainWeekly() {
+		return WeeklyCalculation.of(this.actualWorkingTime == null ? new RegAndIrgTimeOfWeekly() : this.actualWorkingTime.toDomainWeekly(),
+				this.flexTime == null ? new FlexTimeByPeriod() : this.flexTime.toDomainPeriod(), 
+				this.aggregateTime == null ? new AggregateTotalWorkingTime() : this.aggregateTime.toDomain(), 
+				this.totalTimeSpentAtWork == null ? new AggregateTotalTimeSpentAtWork() : this.totalTimeSpentAtWork.toDomain());
 	}
 
 	@Override
