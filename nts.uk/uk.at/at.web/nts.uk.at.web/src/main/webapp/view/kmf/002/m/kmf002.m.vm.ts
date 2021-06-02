@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmf001.m {
+module nts.uk.at.view.kmf002.m {
     export module viewmodel {
 
         import invisible = nts.uk.ui.block.invisible;
@@ -86,7 +86,7 @@ module nts.uk.at.view.kmf001.m {
                 // AND　休日の設定情報.起算曜日がEmpty                              
                 //→　RETURN　エラーメッセージ（）を表示する Msg_2048
                 if (self.holidaySetting().selectedCategory() == 0
-                    && self.holidaySetting().startingDay() == getText('KMF001_336')) {
+                    && self.holidaySetting().startingDay() == getText('KMF002_115')) {
                     alertError({ messageId: "Msg_2048" });
                     nts.uk.ui.block.clear();
                     return;
@@ -191,7 +191,7 @@ module nts.uk.at.view.kmf001.m {
                 width: ''
             });
             //M8_2
-            startingDay: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText('KMF001_336'));
+            startingDay: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText('KMF002_115'));
             //M8_3
 //            description: KnockoutObservable<string> = ko.observable('');
             is4weeksAndMonthDay: KnockoutObservable<boolean> = ko.observable(false);
@@ -230,10 +230,10 @@ module nts.uk.at.view.kmf001.m {
                     if (data.monthDay !== null)
                         self.monthDay(data.monthDay)
                     if (data.hdDay !== null)
-                        self.startingDay(getText(('KMF001_292'),[data.hdDay]));
+                        self.startingDay(getText(('KMF002_111'),[data.hdDay]));
                     // KMF001_292 {０}から７日間 : {０} = 起算曜日
-                    // 休日の設定情報.起算曜日がEmpty場合：KMF001_336を表示する       
-                    // self.startingDay( data.startDay == null ? getText( 'KMF001_336' ) : getText( 'KMF001_292', [data.startDay] ) );
+                    // 休日の設定情報.起算曜日がEmpty場合：KMF002_115を表示する       
+                    // self.startingDay( data.startDay == null ? getText( 'KMF002_115' ) : getText( 'KMF001_292', [data.startDay] ) );
                     //＃KMF001_293　｛0｝：　休日の設定情報.計算設定画面名
                     
                   //  self.description(getText('KMF001_293', [data.description]));

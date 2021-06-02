@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmf001.m {
+module nts.uk.at.view.kmf002.m {
     export module service {
         /**
          *  Service paths
