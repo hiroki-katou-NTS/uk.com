@@ -47,8 +47,8 @@ module nts.uk.at.view.kdp005.a {
 		export function getStampToSuppress(): JQueryPromise<any> {
 			return ajax("at", url.getStampToSuppress);
 		}
-        export function getLogginSetting(): JQueryPromise<any> {
-            return ajax("at", url.getLogginSetting);
+        export function getLogginSetting(param): JQueryPromise<any> {
+            return ajax("at", url.getLogginSetting, {contractCode: param});
         }
 	}
 
