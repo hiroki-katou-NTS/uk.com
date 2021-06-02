@@ -67,7 +67,22 @@ module nts.uk.ui.koExtentions {
 
                 const $span = $('<span>').appendTo($label).get(0);
 
-                ko.applyBindingsToNode($span, { i18n: text }, bindingContext);
+                const isHTML = (str: any) => {
+                    var a = document.createElement('div');
+                    a.innerHTML = str;
+                  
+                    for (var c = a.childNodes, i = c.length; i--; ) {
+                      if (c[i].nodeType == 1) return true; 
+                    }
+                  
+                    return false;
+                }
+                
+                if(isHTML(text())){
+                    $span.innerHTML = text();
+                } else {
+                    ko.applyBindingsToNode($span, { i18n: text }, bindingContext);
+                }
 
                 if (accessor.dataBind) {
                     $span.classList.add('button');
