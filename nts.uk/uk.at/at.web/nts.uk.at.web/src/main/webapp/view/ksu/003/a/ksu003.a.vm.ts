@@ -3966,6 +3966,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			
 			nts.uk.ui.windows.sub.modeless('/view/kdl/053/a/index.xhtml').onClosed(function(): any {
 				console.log('closed');
+				block.clear();
 			});
 			block.clear();
 			
