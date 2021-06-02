@@ -94,13 +94,14 @@ module nts.uk.at.view.ksu003.b {
             }).always(() => {
                 self.$blockui("hide");
             });
+            $('input#pageName').focus();
         }
 
         loadDetail(page?: number): void {
             const self = this;  
             let request = getShared("dataShareKsu003b");
             request.page = page;
-            let dataSource: Array<any> = _.clone(self.sourceEmpty);
+            let dataSource: Array<any> = _.clone(self.sourceEmpty), idxExp: Array<number> = [], idxDel: Array<number> = [];
             self.$blockui("invisible");
             self.isEditing(false);
             self.enableDelete(false);
@@ -117,18 +118,19 @@ module nts.uk.at.view.ksu003.b {
                         for (let i = 0; i < self.taskPaletteOrgnization().keys().length; i++) {
                             if(self.taskPaletteOrgnization().listTaskStatus()[i] == 0){
                                 dataSource.splice(self.taskPaletteOrgnization().keys()[i] - 1, 1, {
-                                    text: self.taskPaletteOrgnization().taskNames()[i], 
+                                    text: self.taskPaletteOrgnization().taskAbNames()[i], 
                                     tooltip: self.taskPaletteOrgnization().taskNames()[i] });
                             } else if(self.taskPaletteOrgnization().listTaskStatus()[i] == 1){
                                 dataSource.splice(self.taskPaletteOrgnization().keys()[i] - 1, 1, {
                                     text: getText("KSU003_70"), 
                                     tooltip: ''});
+                                    idxDel.push(self.taskPaletteOrgnization().keys()[i] - 1);
                             } else if(self.taskPaletteOrgnization().listTaskStatus()[i] == 2){
                                 dataSource.splice(self.taskPaletteOrgnization().keys()[i] - 1, 1, {
                                     text: getText("KSU003_82"), 
                                     tooltip: ''});
 
-                                // $('#task button')[data-idx = "1"].addClass('color-gray');
+                                    idxExp.push(self.taskPaletteOrgnization().keys()[i] - 1);                              
                             }                            
                         }                        
                     } else {
@@ -138,11 +140,23 @@ module nts.uk.at.view.ksu003.b {
                         self.enableDelete(false);
                     }                   
                     self.tasks(dataSource);
+                    if(idxExp && idxExp.length > 0) {
+                        _.each(idxExp, idx => {
+                            $($('#task button')[idx]).css("border","1px solid red");
+                        });                       
+                    }
+
+                    if(idxDel && idxDel.length > 0) {
+                        _.each(idxDel, idx => {
+                            $($('#task button')[idx]).css("border","1px solid red");
+                        });                       
+                    }                   
                 }
             }).always(() => {
                 self.$blockui("hide");
             });
-            $('input#pageName').focus();
+            $('input#pageName').focus();           
+           
         }
         
         registerOrUpdate(): void {
@@ -180,9 +194,10 @@ module nts.uk.at.view.ksu003.b {
                 self.$blockui("hide");
             });
 
-            $('input#pageName').focus();
+            
             self.endStatus('Update');
             self.enableDelete(true);
+            $('input#pageName').focus();           
         }
 
         remove(): void {
@@ -205,13 +220,15 @@ module nts.uk.at.view.ksu003.b {
                         self.$blockui("hide");
                     });    
                     self.$blockui("hide");      
-                    $('input#pageName').focus();          
+                    $('#pageName').focus();          
                 }
                 if(result === 'no'){
                     self.$blockui("hide");
-                    $('input#pageName').focus();
+                    $('#pageName').focus();
                 }
             }); 
+            self.isClickLink(true);
+            $('input#pageName').focus(); 
         }
 
        
@@ -287,7 +304,7 @@ module nts.uk.at.view.ksu003.b {
                     self.taskPaletteOrgnization().keys.push(position);
                     self.taskPaletteOrgnization().taskCodes.push(dataFromKdl012[0].code);
                     self.taskPaletteOrgnization().taskNames.push(dataFromKdl012[0].taskName);
-                    // self.taskPaletteOrgnization().taskAbNames.push(dataFromKdl012);
+                    self.taskPaletteOrgnization().taskAbNames.push(dataFromKdl012[0].taskAbNames);
                     dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: dataFromKdl012[0] });
                 }
             });
