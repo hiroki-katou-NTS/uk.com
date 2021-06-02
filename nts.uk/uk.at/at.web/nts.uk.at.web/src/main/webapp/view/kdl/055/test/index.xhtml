@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+
+			<com:stylefile path="kdl055.test.style.css" />
+			<com:scriptfile path="kdl055.test.vm.js" />
+
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button data-bind="click: openDialog">Open KDL055</button>
+			</div>
+			<div id="content-area">		
+				<table style="margin: 20px;">
+					<thead>
+						<tr>
+							<th style="border: solid 1px">No.</th>
+							<th style="border: solid 1px">sID</th>
+						</tr>
+					</thead>
+					<tbody data-bind="foreach: listSid">
+						<tr>
+							<td style="border: solid 1px" data-bind="text: $index"></td>
+							<td style="border: solid 1px" data-bind="text: $data"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+
+</html>
