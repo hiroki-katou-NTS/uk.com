@@ -1207,6 +1207,10 @@ module nts.uk.at.view.ksu003.a.model {
 		displayFormat: number;
 		showHide: number;
 		lstEmpIdSort: Array<any>;
+		workSelection ?: number;
+		work1Selection ?: string;
+		pageNo ?: number;
+		workPalletDetails ?: any; 
 	}
 
 	export interface IHolidayTime {

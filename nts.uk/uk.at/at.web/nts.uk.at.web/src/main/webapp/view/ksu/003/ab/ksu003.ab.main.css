@@ -1,68 +1,3 @@
-#oViewModel #label, #oViewModel  #listWorkType, #oViewModel  #group-button,
-	#oViewModel  #set-work-type, #oViewModel #set-work-time {
-	float: left;
-}
-
-#oViewModel  #set-work-type, #oViewModel #set-work-time {
-	position: absolute;
-}
-
-#oViewModel{
-	top: 29px;
-}
-
-#set-work-time {
-	top: 32px;
-}
-
-#oViewModel #time-edit1 {
-	text-align: center !important;
-	width: 43px !important;
-	margin-left: 16px
-}
-
-#oViewModel #time-edit2 {
-	text-align: center !important;
-	width: 43px !important;
-}
-
-#oViewModel .reserved {
-	margin-left: 10px;
-}
-
-#oViewModel #switch-o {
-	margin-left: 10px;
-}
-
-#oViewModel #group-button {
-	margin-left: 170px;
-}
-
-#oViewModel #image100 {
-	margin-left: 280px;
-	vertical-align: middle;
-	background: url(../image/image100.png) no-repeat center;
-	background-size: 20px 20px;
-	height: 24px;
-	width: 24px;
-}
-
-#oViewModel div.form-label {
-	height: 27px
-}
-
-#oViewModel label {
-	line-height: 27px;
-}
-
-.workstyleclassfication {
-	width: 100px !important;
-}
-
-.inline {
-	display: inline-block;
-}
-
 #listWorkTime{
 	margin-left: 50px;
 }
@@ -74,14 +9,14 @@
     background-repeat: no-repeat;
     background-position: center;
 }
-.openDialogJA {
-    width: 25px;
-    height: 25px;
+.openDialogB {
+    width: 22px;
+    height: 22px;
     vertical-align: top;
 }
 .closeAb{
-    width: 25px;
-    height: 25px;
+    width: 22px;
+    height: 22px;
 }
 .closeAb .icon.icon-close {
     width: 16px;
@@ -92,6 +27,8 @@
 
 #tableButton1 {
 	background-color: rgb(237,250,194);
+	height: 60px;
+	margin-top: 3px;
 }
 
 #tableButton1 button {
@@ -99,7 +36,35 @@
 	height: 20px;
 	line-height: 18px;
 	box-shadow : 0 1px rgba(0, 0, 0, 0.4);
+	padding: 0px;
+}
+
+.ntsButtonTableButton button {
+	width: 194px !important;
+	height: 20px;
+	line-height: 18px;
+	box-shadow : 0 1px rgba(0, 0, 0, 0.4);
+	border : 1px solid #D3D3D3;
+	color : black;
+	padding: 0px;
+}
+
+.ntsButtonCellData button {
+	width: 194px !important;
+	height: 20px;
+	line-height: 18px;
+	box-shadow : 0 1px rgba(0, 0, 0, 0.4);
 	border : 1px solid grey;
+	color : black;
+	padding: 0px;
+}
+
+.ntsButtonUnabledData button {
+	width: 194px !important;
+	height: 20px;
+	line-height: 18px;
+	box-shadow : 0 1px rgba(0, 0, 0, 0.4);
+	border : 1px solid #ffcccb;
 	color : black;
 	padding: 0px;
 }
@@ -112,6 +77,7 @@
 	width: 990px;
 	margin-bottom: -6px;
 }
+
 #screen-Ab2 .listLink .hyperlink {
 	color: #0066CC;
 	width: max-content;
@@ -119,6 +85,32 @@
 	display: inline-block;
 	padding: 3px;
 }
+
 #screen-Ab2 .listLink .hyperlink.active {
 	background-color: #edfac2;
+}
+
+#ab2-area{
+	margin-top: -7px;
+}
+
+#comboTime{
+	width: 874px;
+}
+
+#tableButton1 button {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.ntsTable .ntsButtonCellSelected {
+    background-color: #007fff;
+    color: white !important;
+    border : 1px solid grey;
+    box-shadow : none;
+    top: 2px;
+}
+
+.ntsTable .ntsButtonCellData {
+	border : 1px solid grey;
 }

@@ -38,7 +38,7 @@ public class GetTaskPaletteDisplayInfor {
 	@Inject
 	private TaskingRepository taskingRepository;
 	
-public WorkPaletteDisplayInforDto get( int targetUnit , String organizationID ,GeneralDate date , int page){
+public WorkPaletteDisplayInforDto get( GeneralDate date , int page , int targetUnit , String organizationID){
 		//取得する (対象組織の単位: 対象組織の単位, 組織ID: String, 対象日: 年月日, ページ: int): List＜組織の作業パレット＞，作業パレット
 		TargetOrgIdenInfor targetOrgIdenInfor = null;
 		Optional<TaskPalette> taskPalette;

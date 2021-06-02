@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.app.command.schedule.workschedule;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -23,6 +24,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author HieuLt
  *
  */
+@Stateless
 public class AddScheduleByDisplaySettingCommandHandler extends CommandHandler<AddScheduleByDisplaySettingCommand> {
 
 	@Inject

@@ -37,17 +37,17 @@ public class GetTaskPalletQuery {
 		
 	public TaskPaletteDto get(GeneralDate date , int page , int targetUnit , String organizationID){
 		//取得する (対象日: 基準日, ページ: int, 対象組織の単位: 対象組織の単位, 組織ID: String): 作業パレット
-		TargetOrgIdenInfor targetOrgIdenInfor = null;
+		TargetOrgIdenInfor targetInfor = null;
 		Optional<TaskPalette> taskPalette;
 		TaskPaletteDto taskPaletteDto = null;
 		//1: <call>
 		if (targetUnit == TargetOrganizationUnit.WORKPLACE_GROUP.value) {
-			targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace(organizationID);
+			targetInfor = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(organizationID);
 		} else {
-			targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(organizationID);
+			targetInfor = TargetOrgIdenInfor.creatIdentifiWorkplace(organizationID);
 		}
 		//2 : get(ページ、対象組織): Optional<組織の作業パレット>
-		Optional<TaskPaletteOrganization> data = repo.getByPage(targetOrgIdenInfor, page);
+		Optional<TaskPaletteOrganization> data = repo.getByPage(targetInfor, page);
 		
 		//3 : Optional<組織の作業パレット> isPresent :表示情報を取得する(Require, 年月日) : 作業パレット
 		if (data.isPresent()) {

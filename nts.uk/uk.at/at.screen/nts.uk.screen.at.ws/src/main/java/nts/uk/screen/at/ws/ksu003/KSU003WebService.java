@@ -10,19 +10,40 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.NumberOfDaySuspensionDto;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.AddScheduleByDisplaySettingCommand;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.AddScheduleByDisplaySettingCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.AddWorkScheduleCommand;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.AddWorkScheduleCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.RegisterWorkScheduleKsu003;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.ResultRegisWorkSchedule;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.WorkInformationDto;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.WorkScheduleParam;
+import nts.uk.ctx.at.schedule.app.query.schedule.task.taskpallet.GetTaskPaletteDisplayInfor;
+import nts.uk.ctx.at.schedule.app.query.schedule.task.taskpallet.GetTaskPalletQuery;
+import nts.uk.ctx.at.schedule.app.query.schedule.task.taskpallet.dto.TaskPaletteDto;
+import nts.uk.ctx.at.schedule.app.query.schedule.task.taskpallet.dto.WorkPaletteDisplayInforDto;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.TargetOrgIdenInforDto;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.ScheduleTimeSheetDto;
 import nts.uk.screen.at.app.ksu003.changeworktype.ChangeWorkTypeDto;
 import nts.uk.screen.at.app.ksu003.changeworktype.ChangeWorkTypeSc;
 import nts.uk.screen.at.app.ksu003.changeworktype.CheckWorkType;
 import nts.uk.screen.at.app.ksu003.changeworktype.CheckWorkTypeDto;
+import nts.uk.screen.at.app.ksu003.checkempattendancesystem.CheckEmpAttParam;
+import nts.uk.screen.at.app.ksu003.checkempattendancesystem.CheckEmpAttendanceSystem;
+import nts.uk.screen.at.app.ksu003.checkempattendancesystem.WorkInfoOfDailyAttendanceDto;
 import nts.uk.screen.at.app.ksu003.getempworkfixedworkkinfo.EmpWorkFixedWorkInfoDto;
 import nts.uk.screen.at.app.ksu003.getempworkfixedworkkinfo.GetEmpWorkFixedWorkInfoSc;
+import nts.uk.screen.at.app.ksu003.getlistempworkhours.EmpTaskInfoDto;
+import nts.uk.screen.at.app.ksu003.getworkscheduleinfor.GetWorkScheduleInfor;
+import nts.uk.screen.at.app.ksu003.getworkselectioninfor.GetTaskParam;
+import nts.uk.screen.at.app.ksu003.getworkselectioninfor.GetWorkSelectionInfor;
+import nts.uk.screen.at.app.ksu003.getworkselectioninfor.dto.GetWorkSelectionInforDto;
 import nts.uk.screen.at.app.ksu003.sortemployee.SortEmployeeParam;
 import nts.uk.screen.at.app.ksu003.sortemployee.SortEmployeesSc;
 import nts.uk.screen.at.app.ksu003.start.DisplayWorkInfoByDateSc;
@@ -66,6 +87,27 @@ public class KSU003WebService extends WebService{
 	
 	@Inject
 	private RegisterWorkScheduleKsu003 regWorkSchedule;
+	
+	@Inject 
+	private GetWorkSelectionInfor selectTaskInfor;
+	
+	@Inject
+	private GetTaskPalletQuery taskPalletQuery;
+	
+	@Inject
+	private GetTaskPaletteDisplayInfor taskPaletteDisplay;
+	
+	@Inject
+	private CheckEmpAttendanceSystem checkEmpAttendance;
+	
+	@Inject
+	private GetWorkScheduleInfor workScheduleInfor;
+	
+	@Inject
+	private AddWorkScheduleCommandHandler commandHandler;
+	
+	@Inject
+	private AddScheduleByDisplaySettingCommandHandler settingCommandHandler;
 	
 	@POST
 	@Path("getinfo-initstart")
@@ -136,5 +178,68 @@ public class KSU003WebService extends WebService{
 		return rs;
 	}
 	
+	@POST
+	@Path("getTaskInfo")
+	// 作業選択準備情報を取得する
+	public GetWorkSelectionInforDto getTaskInfo (GetTaskParam param){
+		GetWorkSelectionInforDto rs = selectTaskInfor.get(GeneralDate.fromString(param.getBaseDate(), "yyyy/MM/dd"), param.getPage(), param.getTargetUnit(), param.getOrganizationID());
+		return rs;
+	}
 	
+	@POST
+	@Path("getTaskPallet")
+	// 作業パレットを取得する
+	public TaskPaletteDto getTaskPallet (GetTaskParam param){
+		TaskPaletteDto rs = taskPalletQuery.get(GeneralDate.fromString(param.getBaseDate(), "yyyy/MM/dd"), param.getPage(), param.getTargetUnit(),  param.getOrganizationID());
+		return rs;
+	}
+	
+	@POST
+	@Path("getTaskPaletteDisplay")
+	// 作業パレット表示情報を取得する taskPaletteDisplay
+	public WorkPaletteDisplayInforDto getTaskPaletteDisplay (GetTaskParam param){
+		WorkPaletteDisplayInforDto rs = taskPaletteDisplay.get(GeneralDate.fromString(param.getBaseDate(), "yyyy/MM/dd"),param.getPage(), param.getTargetUnit(),  param.getOrganizationID());
+		return rs;
+	}
+	@POST
+	@Path("checkEmpAttendance")
+	// 社員の出勤系をチェックする 
+	public List<WorkInfoOfDailyAttendanceDto> checkEmpAttendance (CheckEmpAttParam param){
+		DatePeriod date = new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd"));
+		List<WorkInfoOfDailyAttendanceDto> rs = checkEmpAttendance.get(param.getLstEmpId(), date, param.getDisplayMode()).stream()
+				.map(x -> new WorkInfoOfDailyAttendanceDto(
+						new WorkInformationDto(x.getRecordInfo().getWorkTypeCode().v(), x.getRecordInfo().getWorkTimeCode().v()), 
+						x.getCalculationState().value, 
+						x.getGoStraightAtr().value, 
+						x.getBackStraightAtr().value, 
+						x.getDayOfWeek().value, 
+						x.getScheduleTimeSheets().stream().map(y -> new ScheduleTimeSheetDto(y.getWorkNo().v(), y.getAttendance().v(), y.getLeaveWork().v())).collect(Collectors.toList()), 
+						x.getNumberDaySuspension().map(z -> new NumberOfDaySuspensionDto(z.getDays().v(), z.getClassifiction().value)).orElse(null)))
+				.collect(Collectors.toList());
+		return rs;
+	}
+	
+	@POST
+	@Path("getWorkScheduleInfor")
+	// 作業予定情報を取得する 
+	public List<EmpTaskInfoDto> getTaskPaletteDisplay (CheckEmpAttParam param){
+		DatePeriod date = new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd"));
+		List<EmpTaskInfoDto> rs = workScheduleInfor.get(param.getLstEmpId(), date);
+		return rs;
+	}
+	
+	
+	@POST
+	@Path("addTaskWorkSchedule")
+	// 作業予定を登録する
+	public void getTaskPaletteDisplay (AddWorkScheduleCommand param){
+		commandHandler.handle(param);
+	}
+	
+	@POST
+	@Path("addScheduleByDisplaySet")
+	// 組織別スケジュール修正日付別の表示設定を登録する  
+	public void addScheduleByDisplaySet (AddScheduleByDisplaySettingCommand param){
+		settingCommandHandler.handle(param);
+	}
 }

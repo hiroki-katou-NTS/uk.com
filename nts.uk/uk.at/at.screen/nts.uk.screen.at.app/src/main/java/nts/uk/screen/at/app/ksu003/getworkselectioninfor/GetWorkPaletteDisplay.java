@@ -70,7 +70,7 @@ public class GetWorkPaletteDisplay {
 			taskPalette = Optional.of(otpTaskPaletteOrganization.get().getDisplayInfo(require, targetDate));
 			taskPaletteDto = TaskPaletteDto.toDto(taskPalette.get());
 		}
-		WorkPaletteDisplayInforDto data = new WorkPaletteDisplayInforDto(dtos, Optional.ofNullable(taskPaletteDto));
+		WorkPaletteDisplayInforDto data = new WorkPaletteDisplayInforDto(dtos, taskPaletteDto);
 		return data;
 	}
 

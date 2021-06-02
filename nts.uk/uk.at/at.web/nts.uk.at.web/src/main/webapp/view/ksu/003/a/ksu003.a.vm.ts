@@ -81,11 +81,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		checkCalcSum : boolean = true;
 		checkDrop : boolean = false;
 		// ver 4
-		displayRangeSelect : KnockoutObservable<number> = ko.observable(1); // A14
+		dataAb : KnockoutObservableArray<any> =  ko.observableArray([]);
+		displayRangeSelect : KnockoutObservable<number> = ko.observable(1); // A14 表示範囲
 		rangeList : KnockoutObservableArray<model.RangeModel>;
-		initDispStartChecked : KnockoutObservable<number> = ko.observable(0);
-		dispStartChecked : KnockoutObservable<number> = ko.observable(0);
-		selectedTimeRange: KnockoutObservable<number> = ko.observable(1);
+		initDispStartChecked : KnockoutObservable<number> = ko.observable(0); // 開始時刻
+		dispStartChecked : KnockoutObservable<number> = ko.observable(0); // 初期表示の開始時刻	
+		selectedTimeRange: KnockoutObservable<number> = ko.observable(1); 
+
 		constructor(data: any) {
 			let self = this;
 			// get data from sc A
@@ -149,12 +151,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			/** A3_4 */
 			self.checkedName.subscribe((value) => {
+				self.getLocalStore();
 				self.localStore().showWplName = value;
 				characteristics.save(self.KEY, self.localStore());
 			});
 
 			/** A2_5 */
 			self.selectedDisplayPeriod.subscribe((value) => {
+				self.getLocalStore();
 				self.localStore().displayFormat = value;
 				characteristics.save(self.KEY, self.localStore());
 			});
@@ -165,6 +169,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (value == '3') c = 6
 				if (value == '4') c = 12;
 				if (!_.isNil(ruler)) ruler.setSnatchInterval(c);
+				
+				self.getLocalStore();
 				self.localStore().operationUnit = value;
 				characteristics.save(self.KEY, self.localStore());
 			});
@@ -557,7 +563,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				showHide: self.indexBtnToLeft(),
 				lstEmpIdSort: _.map(self.lstEmpId, (x: model.IEmpidName) => { return x.empId })
 			}
+			self.getLocalStore();
 			self.localStore(local);
+			let dataToAb = {
+				targetDate : self.targetDate(),
+				dataScreen003A : self.dataScreen003A(),
+				localStore : self.localStore()
+			}
+			setShared("dataShareAbFromA", dataToAb);
 
 			self.getWorkingByDate(self.targetDate(), 1).done(() => {
 				self.convertDataIntoExtable();
@@ -914,6 +927,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.dataScreen003A().employeeInfo = self.dataScreen003A().employeeInfo.sort(function(a: any, b: any) {
 					return _.findIndex(self.lstEmpId, x => { return x.empId == a.empId }) - _.findIndex(self.lstEmpId, x => { return x.empId == b.empId });
 				});
+				self.getLocalStore();
 				self.localStore().lstEmpIdSort = self.lstEmpId;
 				characteristics.save(self.KEY, self.localStore());
 				self.destroyAndCreateGrid(self.lstEmpId, 1);
@@ -922,10 +936,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.dataScreen003A().employeeInfo = self.dataScreen003A().employeeInfo.sort(function(a: any, b: any) {
 					return _.findIndex(self.lstEmpId, x => { return x.empId == a.empId }) - _.findIndex(self.lstEmpId, x => { return x.empId == b.empId });
 				});
+				self.getLocalStore();
 				self.localStore().lstEmpIdSort = self.lstEmpId;
 				characteristics.save(self.KEY, self.localStore());
 				self.destroyAndCreateGrid(self.lstEmpId, 1);
 			}
+			self.getLocalStore();
 			self.localStore().startTimeSort = value;
 			characteristics.save(self.KEY, self.localStore());
 			block.clear();
@@ -1782,7 +1798,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			self.initGantChart(self.dataOfGantChart, self.midDataGC);
 
 			$("#hr-row2").css("width", window.innerWidth - 40 + 'px');
-			if (!_.isNil(self.localStore)) {
+			if (!_.isNil(self.localStore())) {
 				if (self.localStore().operationUnit === "0") {
 					ruler.setSnatchInterval(1);
 				} else if (self.localStore().operationUnit === "1") {
@@ -2564,7 +2580,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}*/
 				// OVER-TIME
 				let overTime = datafilter[0].gcOverTime;
-				if (overTime.length > 0 && datafilter[0].typeOfTime !== "Changeable" && datafilter[0].typeOfTime != "Flex") {
+				if (overTime.length > 0 && timeChart != null && datafilter[0].typeOfTime !== "Changeable" && datafilter[0].typeOfTime != "Flex") {
 					for (let o = 0; o < overTime[0].lstOverTime.length; o++) {
 						let y = overTime[0].lstOverTime[o];
 						timeChartOver = model.convertTimeToChart(y.startTime, y.endTime);
@@ -2612,7 +2628,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 
 				// Add BREAK-TIME
-				if (breakTime.length > 0) {
+				if (breakTime.length > 0  && timeChart != null) {
 					for (let o = 0; o < breakTime.length; o++) {
 						let y = breakTime[o];
 						breakTime = _.sortBy(breakTime, [function(o: any) { return o.start; }])
@@ -2702,7 +2718,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 				// Add short-time
 				let shortTime = datafilter[0].gcShortTime;
-				if (shortTime.length > 0) {
+				if (shortTime.length > 0 && timeChart != null) {
 					for (let o = 0; o < shortTime[0].listShortTime.length; o++) {
 						let y = shortTime[0].listShortTime[o];
 						timeChartShort = model.convertTimeToChart(y.startTime, y.endTime);
@@ -2746,7 +2762,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 				// Add holiday-time
 				let holidayTime = datafilter[0].gcHolidayTime;
-				if (holidayTime.length > 0) {
+				if (holidayTime.length > 0 && timeChart != null) {
 					for (let o = 0; o < holidayTime[0].listTimeVacationAndType.length; o++) {
 						let y = holidayTime[0].listTimeVacationAndType[o];
 						for (let e = 0; e < y.timeVacation.timeZone.length; e++) {
@@ -3392,6 +3408,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 
 			self.indexBtnToLeft(self.indexBtnToLeft() + 1);
+			self.getLocalStore();
 			self.localStore().showHide = self.indexBtnToLeft();
 			characteristics.save(self.KEY, self.localStore());
 
@@ -4732,7 +4749,34 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 		}
 		
-		public closePopupA14(): void {
+		getLocalStore(){
+			let self = this;
+			characteristics.restore("USER_KSU003_INFOR").done(function(data : any) {
+				if(!_.isNil)
+				self.localStore(data);
+			})
+		}
+		
+		// 作業登録処理 (Xử lý Đăng ký Task)
+		public saveTask(){
+			let self = this;
+			let param = {
+				dispRange : self.displayRangeSelect(),
+				startTime : self.initDispStartChecked(),
+				initDispStart : self.dispStartChecked(), 
+				targetUnit : self.dataScreen003A().unit,
+				organizationID : self.dataScreen003A().id
+			}
+			service.addTaskWorkSchedule(param).done(() => {
+				
+			}).fail(function(error) {
+				errorDialog({ messageId: error.messageId });
+			}).always(function() {
+			});
+		}
+		
+		// 決定（A14_11）をクリックする (click A14_11)
+		public closePopupA14() {
 			let self = this;
 			$('#A14').ntsPopup("hide");
 			self.timeRange = self.selectedTimeRange() == 0 ? 24 : 48;// tổng số cột ở phần detail (24 or 48)
@@ -4740,7 +4784,24 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			self.dispStart = (self.dispStartChecked() * 60) / 5;// thời gian bắt đầu ở header phần detail
 			self.dispStartHours = self.dispStartChecked();
 			self.destroyAndCreateGrid(self.lstEmpId, 0);
+			
+			let param = {
+				dispRange : self.displayRangeSelect(),
+				startTime : self.initDispStartChecked(),
+				initDispStart : self.dispStartChecked(), 
+				targetUnit : self.dataScreen003A().unit,
+				organizationID : self.dataScreen003A().id
+			}
+			
+			service.addScheduleByDisplaySet(param).done(() => {
+				
+			}).fail(function(error) {
+				errorDialog({ messageId: error.messageId });
+			}).always(function() {
+			});
 		}
+		
+		// Xử lý ver 4
 
 		public closeDialog(): void {
 			let self = this;

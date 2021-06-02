@@ -303,10 +303,18 @@ html {
     margin-bottom: 12px !important;
 }
 
-#display-range, #combo-box-start{
+#combo-box-start{
 	margin-left: 39px;
 }
 
+#display-range {
+	margin-left: 35px;
+}
+
 #A14_11 {
-    margin-left: 150px;
+    margin-left: 138px;
+}
+
+#init-disp-start, #disp-start-time{
+	display: flex;
 }

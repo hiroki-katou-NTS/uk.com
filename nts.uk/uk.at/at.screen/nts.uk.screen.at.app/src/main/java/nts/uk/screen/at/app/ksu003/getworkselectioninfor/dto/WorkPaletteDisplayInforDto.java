@@ -10,5 +10,5 @@ public class WorkPaletteDisplayInforDto {
 
 	private List<TaskPaletteOrganizationDto> lstTaskPaletteOrganizationDto;
 	
-	private Optional<TaskPaletteDto> taskPalette;
+	private TaskPaletteDto taskPalette;
 }
