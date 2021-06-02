@@ -921,9 +921,9 @@ module nts.uk.ui.at.kdw013.c {
 
             vm.confirm(null);
 
-            if (!vm.hasError()) {
-                vm.save('cancel');
-            }
+//            if (!vm.hasError()) {
+//                vm.save('cancel');
+//            }
         }
 
         close() {
