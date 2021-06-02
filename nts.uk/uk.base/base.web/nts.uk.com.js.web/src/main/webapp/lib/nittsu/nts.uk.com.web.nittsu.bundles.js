@@ -6612,7 +6612,8 @@ var nts;
                             maxHeight: 500,
                             closeOnEscape: false,
                             open: function () {
-                                errorBoard.css({ "overflow": "auto", "max-height": "300px", "margin-bottom": "65px" });
+                                container.css({ "display": "flex", "flex-direction": "column-reverse", "align-items": "center" });
+                                errorBoard.css({ "overflow": "auto", "max-height": "300px", "margin-bottom": "20px", "padding": "10px" });
                                 functionArea.css({ "left": "0px" });
                                 closeButton.text(ui_1.toBeResource.close).click(function (evt) {
                                     container.dialog("destroy");
@@ -21939,7 +21940,21 @@ var nts;
                                 }
                             });
                             var $span = $('<span>').appendTo($label).get(0);
-                            ko.applyBindingsToNode($span, { i18n: text }, bindingContext);
+                            var isHTML = function (str) {
+                                var a = document.createElement('div');
+                                a.innerHTML = str;
+                                for (var c = a.childNodes, i = c.length; i--;) {
+                                    if (c[i].nodeType == 1)
+                                        return true;
+                                }
+                                return false;
+                            };
+                            if (isHTML(text())) {
+                                $span.innerHTML = text();
+                            }
+                            else {
+                                ko.applyBindingsToNode($span, { i18n: text }, bindingContext);
+                            }
                             if (accessor.dataBind) {
                                 $span.classList.add('button');
                                 ko.applyBindingsToNode($span, accessor.dataBind, bindingContext);
