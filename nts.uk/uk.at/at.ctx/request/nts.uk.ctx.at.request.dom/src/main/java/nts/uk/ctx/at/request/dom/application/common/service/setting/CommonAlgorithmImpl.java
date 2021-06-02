@@ -742,12 +742,12 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		WorkTypeSet actualWorkTypeSet = workTypeActual.getWorkTypeSetList().stream().filter(x -> {
 			// 1日
 			if (workTypeActual.isOneDay()) {
-				return workTypeActual.getDailyWork().getOneDay()==WorkTypeClassification.Holiday;
+				return workTypeActual.getDailyWork().getOneDay()==WorkTypeClassification.HolidayWork;
 			}
 			// 午前と午後
 			else {
-				return workTypeActual.getDailyWork().getMorning()==WorkTypeClassification.Holiday || 
-						workTypeActual.getDailyWork().getAfternoon()==WorkTypeClassification.Holiday;
+				return workTypeActual.getDailyWork().getMorning()==WorkTypeClassification.HolidayWork || 
+						workTypeActual.getDailyWork().getAfternoon()==WorkTypeClassification.HolidayWork;
 			}
 		}).findFirst().orElse(null);
 		if(appWorkTypeSet == null || actualWorkTypeSet == null) {
