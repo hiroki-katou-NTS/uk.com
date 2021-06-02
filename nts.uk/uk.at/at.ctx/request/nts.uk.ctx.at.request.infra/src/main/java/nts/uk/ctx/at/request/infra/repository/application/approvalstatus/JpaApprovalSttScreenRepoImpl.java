@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.infra.repository.application.approvalstatus;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -621,11 +622,11 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 	}
 
 	@Override
-	public Map<String, String> getMailCountUnConfirmDay(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst) {
+	public List<Pair<String, String>> getMailCountUnConfirmDay(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst) {
 		if(CollectionUtil.isEmpty(wkpIDLst)) {
-			return Collections.emptyMap();
+			return Collections.emptyList();
 		}
-		Map<String, String> result = new HashMap<>();
+		List<Pair<String, String>> result = new ArrayList<>();
 		String sql = 
 				"SELECT DISTINCT SKBSYITERM.WORKPLACE_ID,SKBSYITERM.SID " +
 				"FROM        ( " +
@@ -685,18 +686,18 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				.paramString("wkpIDLst", wkpIDLst)
 				.paramString("employmentCDLst", employmentCDLst)
 				.getList(rec -> {
-					result.put(rec.getString("WORKPLACE_ID"), rec.getString("SID"));
+					result.add(Pair.of(rec.getString("WORKPLACE_ID"), rec.getString("SID")));
 					return null;
 		});
 		return result;
 	}
 
 	@Override
-	public Map<String, Pair<String, GeneralDate>> getMailCountUnApprDay(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst) {
+	public List<Pair<String, Pair<String, GeneralDate>>> getMailCountUnApprDay(GeneralDate startDate, GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst) {
 		if(CollectionUtil.isEmpty(wkpIDLst)) {
-			return Collections.emptyMap();
+			return Collections.emptyList();
 		}
-		Map<String, Pair<String, GeneralDate>> result = new HashMap<>();
+		List<Pair<String, Pair<String, GeneralDate>>> result = new ArrayList<>();
 		String sql = 
 				"SELECT DISTINCT SKBSYITERM.WORKPLACE_ID,SKBSYITERM.SID,JCHOSN.RECORD_DATE " +
 				"FROM  ( " +
@@ -795,18 +796,18 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				.paramString("wkpIDLst", wkpIDLst)
 				.paramString("employmentCDLst", employmentCDLst)
 				.getList(rec -> {
-					result.put(rec.getString("WORKPLACE_ID"), Pair.of(rec.getString("SID"), rec.getGeneralDate("RECORD_DATE")) );
+					result.add(Pair.of(rec.getString("WORKPLACE_ID"), Pair.of(rec.getString("SID"), rec.getGeneralDate("RECORD_DATE"))));
 					return null;
 		});
 		return result;
 	}
 
 	@Override
-	public Map<String, String> getMailCountUnConfirmMonth(GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst) {
+	public List<Pair<String, String>> getMailCountUnConfirmMonth(GeneralDate endDate, List<String> wkpIDLst, List<String> employmentCDLst) {
 		if(CollectionUtil.isEmpty(wkpIDLst)) {
-			return Collections.emptyMap();
+			return Collections.emptyList();
 		}
-		Map<String, String> result = new HashMap<>();
+		List<Pair<String, String>> result = new ArrayList<>();
 		String sql = 
 				"SELECT DISTINCT SKBSYITERM_MON.WORKPLACE_ID,SKBSYITERM_MON.SID " +
 				"FROM   ( " +
@@ -859,18 +860,18 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				.paramString("wkpIDLst", wkpIDLst)
 				.paramString("employmentCDLst", employmentCDLst)
 				.getList(rec -> {
-					result.put(rec.getString("WORKPLACE_ID"), rec.getString("SID"));
+					result.add(Pair.of(rec.getString("WORKPLACE_ID"), rec.getString("SID")));
 					return null;
 		});
 		return result;
 	}
 
 	@Override
-	public Map<String, String> getMailCountUnApprMonth(GeneralDate endDate, YearMonth yearMonth, List<String> wkpIDLst, List<String> employmentCDLst) {
+	public List<Pair<String, String>> getMailCountUnApprMonth(GeneralDate endDate, YearMonth yearMonth, List<String> wkpIDLst, List<String> employmentCDLst) {
 		if(CollectionUtil.isEmpty(wkpIDLst)) {
-			return Collections.emptyMap();
+			return Collections.emptyList();
 		}
-		Map<String, String> result = new HashMap<>();
+		List<Pair<String, String>> result = new ArrayList<>();
 		String sql = 
 				"SELECT DISTINCT SKBSYITERM_MON.WORKPLACE_ID,SKBSYITERM_MON.SID " +
 				"FROM                ( " +
@@ -958,7 +959,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				.paramString("wkpIDLst", wkpIDLst)
 				.paramString("employmentCDLst", employmentCDLst)
 				.getList(rec -> {
-					result.put(rec.getString("WORKPLACE_ID"), rec.getString("SID"));
+					result.add(Pair.of(rec.getString("WORKPLACE_ID"), rec.getString("SID")));
 					return null;
 		});
 		return result;
