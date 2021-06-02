@@ -3,12 +3,14 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.num
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ProcessDataTemporary;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
@@ -16,7 +18,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
@@ -41,17 +42,11 @@ public class GetUnbalancedLeaveTemporary {
 		if (param.isModeMonth()) {
 			// INPUT．上書き用の暫定管理データを受け取る
 			// 代休
-//			lstInterimDayoff = param.getInterimMng().stream()
-//					.filter(x -> x.getYmd().afterOrEquals(param.getDateData().start())
-//							&& x.getYmd().beforeOrEquals(param.getDateData().end())
-//							&& x.getRemainType() == RemainType.SUBHOLIDAY)
-//					.collect(Collectors.toList());
-//			lstInterimDayoff.stream().forEach(a -> {
-//				List<InterimDayOffMng> temp = .stream()
-//						.filter(y -> y.getRemainManaID().equals(a.getRemainManaID())).collect(Collectors.toList());
-//			
-//			});
-			lstDayoffMng.addAll(param.getDayOffMng());
+			lstDayoffMng.addAll(param.getDayOffMng().stream()
+					.filter(x -> x.getYmd().afterOrEquals(param.getDateData().start())
+							&& x.getYmd().beforeOrEquals(param.getDateData().end())
+							&& x.getRemainType() == RemainType.SUBHOLIDAY)
+					.collect(Collectors.toList()));
 
 		} else {
 			// ドメインモデル「暫定代休管理データ」を取得する
@@ -61,7 +56,7 @@ public class GetUnbalancedLeaveTemporary {
 		}
 
 		// 対象期間のドメインモデル「暫定代休管理データ」を上書き用の暫定管理データに置き換える
-		//ProcessDataTemporary.processOverride(param, param.getDayOffMng(), lstDayoffMng);
+		ProcessDataTemporary.processOverride(param, param.getDayOffMng(), lstDayoffMng);
 
 		// アルゴリズム「休出と紐付けをしない代休を取得する」を実行する
 		for (InterimDayOffMng interimDayOffMng : lstDayoffMng) {

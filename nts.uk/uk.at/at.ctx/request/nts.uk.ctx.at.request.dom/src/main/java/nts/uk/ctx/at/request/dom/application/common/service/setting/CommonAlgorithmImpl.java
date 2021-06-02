@@ -549,7 +549,11 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				
 			} else { // Listに存在しない
 				// INPUT「就業時間帯リスト」Listの先頭の就業時間帯を選択する
-				processWorkTime = workTimeLst.get(0).getWorktimeCode().v();
+				if (CollectionUtil.isEmpty(workTimeLst)) {
+					processWorkTime = null;
+				} else {
+					processWorkTime = workTimeLst.get(0).getWorktimeCode().v();	
+				}
 			}
 			
 		} else {
@@ -738,12 +742,12 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		WorkTypeSet actualWorkTypeSet = workTypeActual.getWorkTypeSetList().stream().filter(x -> {
 			// 1日
 			if (workTypeActual.isOneDay()) {
-				return workTypeActual.getDailyWork().getOneDay()==WorkTypeClassification.Holiday;
+				return workTypeActual.getDailyWork().getOneDay()==WorkTypeClassification.HolidayWork;
 			}
 			// 午前と午後
 			else {
-				return workTypeActual.getDailyWork().getMorning()==WorkTypeClassification.Holiday || 
-						workTypeActual.getDailyWork().getAfternoon()==WorkTypeClassification.Holiday;
+				return workTypeActual.getDailyWork().getMorning()==WorkTypeClassification.HolidayWork || 
+						workTypeActual.getDailyWork().getAfternoon()==WorkTypeClassification.HolidayWork;
 			}
 		}).findFirst().orElse(null);
 		if(appWorkTypeSet == null || actualWorkTypeSet == null) {

@@ -168,7 +168,7 @@ public class TempRemainCreateEachData {
 						new RequiredDay(occUseDetail.get().getDays()),
 						new UnOffsetTime(occUseDetail.get().getSubstituteHolidayTime().map(x -> x.v()).orElse(0)),
 						new UnOffsetDay(occUseDetail.get().getDays()),
-						Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.empty()))
+						Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty()))
 						);
 				mngData.setDayOffData(Optional.of(dayoffMng));
 				mngData.getRecAbsData().add(dayoffMng);

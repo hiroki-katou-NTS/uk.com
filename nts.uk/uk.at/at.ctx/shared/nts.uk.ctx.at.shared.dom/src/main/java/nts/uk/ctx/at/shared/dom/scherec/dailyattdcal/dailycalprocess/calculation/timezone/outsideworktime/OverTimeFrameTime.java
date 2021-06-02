@@ -206,7 +206,7 @@ public class OverTimeFrameTime implements Cloneable{
 
 
 	@Override
-	protected OverTimeFrameTime clone() {
+	public OverTimeFrameTime clone() {
 		return new OverTimeFrameTime(new OverTimeFrameNo(this.getOverWorkFrameNo().v()), 
 				new TimeDivergenceWithCalculation(new AttendanceTime(this.OverTimeWork.getTime().v()),
 						new AttendanceTime(this.OverTimeWork.getCalcTime().v()),
@@ -218,5 +218,8 @@ public class OverTimeFrameTime implements Cloneable{
 				new AttendanceTime(this.orderTime.v()));
 	}
 	
-	
+	public void cleanTimeAndTransfer() {
+		OverTimeWork.resetDefaultValue();
+		TransferTime.resetDefaultValue();
+	}
 }

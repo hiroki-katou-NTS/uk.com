@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.portal.pubimp.standardmenu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -48,11 +49,21 @@ public class StandardMenuPubImpl implements StandardMenuPub {
 		return displayNames;
 	}
 
+	@Override
+	public List<StandardMenuNameExport> getMenus(String companyId, int system) {
+		return standardMenuRepo.findBySystem(companyId, system).stream().map(this::toExport).collect(Collectors.toList());
+	}
+
 	private StandardMenuNameExport toExport(StandardMenu domain) {
 		return new StandardMenuNameExport(
 				domain.getProgramId(), 
 				domain.getScreenId(), 
 				domain.getQueryString(),
-				domain.getDisplayName() != null ? domain.getDisplayName().v() : "");
+				domain.getDisplayName() != null ? domain.getDisplayName().v() : "",
+				domain.getUrl(),
+				domain.getCode().v(),
+				domain.getSystem().value,
+				domain.getClassification().value
+		);
 	}
 }

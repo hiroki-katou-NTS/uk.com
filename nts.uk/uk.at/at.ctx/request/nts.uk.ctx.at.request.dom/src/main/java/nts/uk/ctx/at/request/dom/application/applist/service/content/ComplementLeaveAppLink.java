@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.applist.service.content;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.Application;
 
 /**
  * refactor 5
@@ -17,6 +18,11 @@ public class ComplementLeaveAppLink {
 	 * 振休振出フラグ
 	 */
 	private Integer complementLeaveFlg;
+	
+	/**
+	 * 申請
+	 */
+	private Application application;
 	
 	/**
 	 * 紐付け申請ID

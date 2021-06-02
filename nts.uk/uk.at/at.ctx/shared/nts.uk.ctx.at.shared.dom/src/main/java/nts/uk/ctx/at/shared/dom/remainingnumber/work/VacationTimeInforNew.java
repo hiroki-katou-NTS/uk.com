@@ -28,7 +28,7 @@ public class VacationTimeInforNew {
 	/**
 	 * 時間休種類
 	 */
-	private AppTimeType timeType = AppTimeType.USEDAY;
+	private AppTimeType timeType ;
 	/**
 	 * 時間年休使用時間
 	 */
@@ -58,7 +58,7 @@ public class VacationTimeInforNew {
 	 */
 	private Optional<SpecialHdFrameNo> spcVacationFrameNo;
 	
-	public static VacationTimeInforNew fromLateDomain(LateTimeOfDaily domain ,AppTimeType appTimeType) {
+	public static VacationTimeInforNew fromLateDomain(LateTimeOfDaily domain, AppTimeType appTimeType) {
 		
 		TimevacationUseTimeOfDaily timeUse = domain.getTimePaidUseTime();
 		

@@ -173,7 +173,7 @@ public class JudgingStatusDomainService {
 		}
 		
 		// case 10
-		if (workDivision.get() == WORK) {
+		if (workDivision.get().equals(WORK)) {
 			return buildData(StatusClassfication.NOT_PRESENT, workingNow);
 		}
 		

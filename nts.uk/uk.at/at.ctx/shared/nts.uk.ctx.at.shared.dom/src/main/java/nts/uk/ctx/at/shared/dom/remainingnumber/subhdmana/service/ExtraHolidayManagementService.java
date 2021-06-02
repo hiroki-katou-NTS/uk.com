@@ -273,8 +273,8 @@ public class ExtraHolidayManagementService {
 				.closureEmploy(closureEmployment.orElse(null))
 				.wkHistory(sWkpHistImport.orElse(null))
 				.sempHistoryImport(empHistoryImport)
-				.employeeCode(personEmpBasicInfoImport.getEmployeeCode())
-				.employeeName(personEmpBasicInfoImport.getBusinessName())
+				.employeeCode(personEmpBasicInfoImport == null ? "" : personEmpBasicInfoImport.getEmployeeCode())
+				.employeeName(personEmpBasicInfoImport == null ? "" : personEmpBasicInfoImport.getBusinessName())
 				.build();
 
 		// 作成した「表示残数データ情報」を返す Trả về "Thông tin dữ liệu còn lại hiển thị" đã tạo

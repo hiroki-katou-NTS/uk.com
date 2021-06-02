@@ -193,4 +193,14 @@ public class HolidayWorkFrameTime implements Cloneable{
 						? Finally.of(new AttendanceTime(this.beforeApplicationTime.get().v()))
 						: Finally.empty());
 	}
+	
+	public void cleanTimeAndTransfer() {
+		if(holidayWorkTime.isPresent()) {
+			holidayWorkTime.get().resetDefaultValue();
+		}
+		
+		if(transferTime.isPresent()) {
+			transferTime.get().resetDefaultValue();
+		}
+	}
 }

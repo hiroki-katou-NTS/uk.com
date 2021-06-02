@@ -7,19 +7,17 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum AppTimeType {
-	/** 日数使用 */
-	USEDAY(0),
 	/**	出勤前 */
-	ATWORK(1),
+	ATWORK(0),
 	/**	退勤後 */
-	OFFWORK(2),
+	OFFWORK(1),
 	/**	出勤前2 */
-	ATWORK2(3),
+	ATWORK2(2),
 	/**	退勤後2 */
-	OFFWORK2(4),
+	OFFWORK2(3),
 	/**	私用外出 */
-	PRIVATE(5),
+	PRIVATE(4),
 	/**	組合外出 */
-	UNION(6);
+	UNION(5);
 	public final Integer value;
 }
