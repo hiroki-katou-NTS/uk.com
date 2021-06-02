@@ -180,9 +180,10 @@ public class AttendanceInformationScreenQuery {
 			Map<String, Integer> mapAppIdAndOTAttr = appOverTimeRepo.getByAppIdAndOTAttr(loginCid, appIds); //#115387
 			 
 			// 14: create()
-			List<ApplicationDto> applicationDtos = applications.stream().map(item -> ApplicationDto.toDto(item, mapAppIdAndOTAttr))
+			List<ApplicationDto> applicationDtos = applications.stream()
+					.map(item -> ApplicationDto.toDto(item, mapAppIdAndOTAttr))
 					.collect(Collectors.toMap(ApplicationDto::getAppType, p -> p, (p, q) -> p)).values().stream()
-					.collect(Collectors.toList());
+						.collect(Collectors.toList());
 			
 			// 6: create() - start
 			String sid = empId.getSid();
