@@ -284,10 +284,10 @@ module nts.uk.ui.at.kdw013.a {
                 }),
             };
 
-            if (mode) {
-                // URLの値元に画面モードを判定する
-                vm.editable(mode === '0');
-            }
+//            if (mode) {
+//                // URLの値元に画面モードを判定する
+//                vm.editable(mode === '0');
+//            }
 
             ko.computed({
                 read: () => {

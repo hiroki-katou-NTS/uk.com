@@ -282,7 +282,6 @@ module nts.uk.ui.at.kdw013.calendar {
         }
         .fc-container .fc-event-description {
             margin-top: 10px;
-            font-size: 11px;
         }
         .fc-container .fc-event-note.no-data {
             background-color: #f3f3f3;
