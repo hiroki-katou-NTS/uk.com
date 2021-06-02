@@ -15,3 +15,9 @@
 .form-data tr:nth-child(1)  label.radio-wrapper:nth-child(2){
 	margin-left: 70px;
 } 
+.rowHelpButton .ntsHelpButton{
+	vertical-align: top;
+}
+.rowHelpButton .ntsHelpButton button{
+	top: 0 !important;
+}
