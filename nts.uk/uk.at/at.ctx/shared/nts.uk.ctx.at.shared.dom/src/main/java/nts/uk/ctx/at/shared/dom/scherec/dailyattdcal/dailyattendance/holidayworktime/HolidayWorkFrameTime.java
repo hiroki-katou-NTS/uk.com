@@ -20,6 +20,7 @@ public class HolidayWorkFrameTime {
 	@Setter
 	private Finally<TimeDivergenceWithCalculation> holidayWorkTime;
 	//振替時間
+	@Setter
 	private Finally<TimeDivergenceWithCalculation> transferTime;
 	//事前申請時間
 	@Setter	
@@ -162,6 +163,12 @@ public class HolidayWorkFrameTime {
 		TimeDivergenceWithCalculation transferTime = this.transferTime.isPresent()?this.transferTime.get().calcDiverGenceTime():TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0));
 		
 		return new HolidayWorkFrameTime(this.holidayFrameNo,Finally.of(holidayWorkTime),Finally.of(transferTime),this.beforeApplicationTime);
+	}
+	
+	public static HolidayWorkFrameTime createDefaultWithNo(int no) {
+		return new HolidayWorkFrameTime(new HolidayWorkFrameNo(no),
+				Finally.of(TimeDivergenceWithCalculation.defaultValue()),
+				Finally.of(TimeDivergenceWithCalculation.defaultValue()), Finally.of(new AttendanceTime(0)));
 	}
 	
 }

@@ -117,7 +117,8 @@ public class JpaWorkplaceConfigurationRepository extends JpaRepository implement
 				.setParameter("endPeriod", period.start())
 				.setParameter("startPeriod", period.end()).getList();
 		List<WorkplaceConfiguration> resultList = new ArrayList<WorkplaceConfiguration>();
-		resultList.add(BsymtWorkplaceConfig.toDomain(listEntities));
+		WorkplaceConfiguration domain = BsymtWorkplaceConfig.toDomain(listEntities);
+		if (domain != null) resultList.add(domain);
 		return resultList;
 	}
 	

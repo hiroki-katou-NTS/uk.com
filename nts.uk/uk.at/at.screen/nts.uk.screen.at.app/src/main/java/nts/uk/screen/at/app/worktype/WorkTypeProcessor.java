@@ -141,4 +141,13 @@ public class WorkTypeProcessor {
 		String companyId = AppContexts.user().companyId();
 		return this.workTypeQueryRepository.findAllWorkTypeDisp(companyId, DeprecateClassification.NotDeprecated.value);
 	}
+	
+	/**
+	 * UKDesign.UniversalK.就業.KDW_日別実績.KMK_計算マスタ.KMK007_勤務種類の登録.A：勤務種類の登録.アルゴリズム.医療オプション情報を取得する.医療オプション情報を取得する
+	 *
+	 * @return the medical option
+	 */
+	public boolean getMedicalOption() {
+		return AppContexts.optionLicense().attendance().schedule().medical();
+	}
 }

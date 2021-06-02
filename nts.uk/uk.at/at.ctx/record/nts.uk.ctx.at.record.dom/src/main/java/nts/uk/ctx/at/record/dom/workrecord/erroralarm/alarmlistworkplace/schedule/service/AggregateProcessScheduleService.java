@@ -63,16 +63,16 @@ public class AggregateProcessScheduleService {
         if (empInfosByWpMap.size() == 0) return alarmListResults;
 
         // スケジュールの勤怠項目を取得する
-        attendanceItemNameAdapter.getAttendanceItemNameAsMapName(0); // TODO Q&A 38756
+//        attendanceItemNameAdapter.getAttendanceItemNameAsMapName(0); // TODO Q&A 38756
 
         // 日次の勤怠項目を取得する
-        attendanceItemNameAdapter.getAttendanceItemNameAsMapName(cid, 1); // TODO Q&A 38756
+//        attendanceItemNameAdapter.getAttendanceItemNameAsMapName(cid, 1); // TODO Q&A 38756
 
         // 社員ID(List)、期間を設定して勤務予定を取得する
         List<WorkScheduleWorkInforImport> workScheduleWorkInfos = workScheduleWorkInforAdapter.getBy(employeeIds, period);
 
         // ドメインモデル「アラームリスト（職場別）スケジュール／日次の抽出条件」を取得する
-        List<ExtractionScheduleCon> extractScheduleCons = extractionScheduleConRepo.getBy(extractCondIds, true);
+//        List<ExtractionScheduleCon> extractScheduleCons = extractionScheduleConRepo.getBy(extractCondIds, true);
 
         // ドメインモデル「アラームリスト（職場別）スケジュール／日次の固定抽出条件」を取得する
         List<FixedExtractionScheduleCon> fixedExtractScheduleCons = fixedExtractionScheduleConRepo.getBy(fixedExtractCondIds, true);

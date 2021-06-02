@@ -36,7 +36,7 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento#
 	 * setClosureName(nts.uk.ctx.at.shared.dom.workrule.closure.ClosureName)
 	 */
@@ -47,7 +47,7 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento#
 	 * setClosureId(nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId)
 	 */
@@ -58,7 +58,7 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento#
 	 * setEndDate(nts.arc.time.YearMonth)
 	 */
@@ -69,7 +69,7 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento#
 	 * setClosureDate(nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate)
 	 */
@@ -85,7 +85,7 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento#
 	 * setStartDate(nts.arc.time.YearMonth)
 	 */
@@ -96,7 +96,7 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento#
 	 * setCompanyId(nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId)
 	 */

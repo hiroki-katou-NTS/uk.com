@@ -11,4 +11,6 @@ public interface StandardMenuAdaptor {
 		 * @return List<StandardMenuNameExport>
 		 */
 		public List<StandardMenuNameImport> getMenuDisplayName(String companyId, List<StandardMenuNameQueryImport> query);
+
+		List<StandardMenuNameImport> getMenus(String companyId, int system);
 }

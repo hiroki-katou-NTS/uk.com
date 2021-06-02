@@ -33,7 +33,7 @@ public class ReflectSupportStartEnd {
 	public static List<Integer> reflect(Require require, DailyRecordOfApplication dailyApp,
 			List<TimeStampAppShare> listTimeStampApp) {
 		List<Integer> lstItemId = new ArrayList<>();
-		Optional<EmployeeWorkDataSetting> empSetOpt = require.getEmpWorkDataSetting(dailyApp.getEmployeeId());
+		//input.応援(List）でループ
 		listTimeStampApp.stream().forEach(data -> {
 
 			Optional<OuenWorkTimeSheetOfDailyAttendance> ouenOpt = dailyApp.getOuenTimeSheet().stream().filter(
@@ -48,8 +48,8 @@ public class ReflectSupportStartEnd {
 				dailyApp.getOuenTimeSheet().add(update);
 				lstItemId.addAll(result.getRight());
 			} else {
-
-				val result = create(require, empSetOpt, data);
+				//処理中の応援枠NOをキーに[日別勤怠の応援作業時間帯]を作成する
+				val result = create(require, dailyApp, data);
 				dailyApp.getOuenTimeSheet().add(result.getLeft());
 				lstItemId.addAll(result.getRight());
 			}
@@ -61,7 +61,7 @@ public class ReflectSupportStartEnd {
 	}
 
 	private static Pair<OuenWorkTimeSheetOfDailyAttendance, List<Integer>> create(Require require,
-			Optional<EmployeeWorkDataSetting> empSetOpt, TimeStampAppShare data) {
+			DailyRecordOfApplication dailyApp, TimeStampAppShare data) {
 
 		List<Integer> lstItemId = new ArrayList<>();
 		TimeSheetOfAttendanceEachOuenSheet sheet = null;
@@ -135,11 +135,5 @@ public class ReflectSupportStartEnd {
 	public static interface Require {
 		
 		public String getCId();
-		/**
-		 * 
-		 * require{ 社員の作業データ設定を取得する(社員ID） }
-		 * 
-		 */
-		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId);
 	}
 }

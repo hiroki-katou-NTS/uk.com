@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ProcessDataTemporary;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
@@ -18,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
@@ -46,26 +47,20 @@ public class GetUnusedCompenTemporary {
 		if (input.isMode()) {
 			// INPUT．上書き用の暫定管理データを受け取る
 			// INPUT．上書き用の暫定管理データから「暫定振出管理データ」を取得する
-//			lstInterimMngOfRec.addAll(input.getInterimMng().stream()
-//					.filter(x -> x.getSID().equals(input.getSid())
-//							&& x.getYmd().afterOrEquals(input.getDateData().start())
-//							&& x.getYmd().beforeOrEquals(input.getDateData().end())
-//							&& x.getRemainType() == RemainType.PICKINGUP)
-//					.collect(Collectors.toList()));
-//			Map<String, String> mapId = lstInterimMngOfRec.stream()
-//					.collect(Collectors.toMap(x -> x.getRemainManaID(), x -> x.getRemainManaID()));
-			lstRecMng.addAll(input.getUseRecMng());
+			lstRecMng.addAll(input.getUseRecMng().stream().filter(x -> x.getSID().equals(input.getSid())
+					&& x.getYmd().afterOrEquals(input.getDateData().start())
+					&& x.getYmd().beforeOrEquals(input.getDateData().end())
+					&& x.getRemainType() == RemainType.PICKINGUP)
+			.collect(Collectors.toList()));
 
 		} else {
 			// ドメインモデル「暫定振出管理データ」を取得する
-//			lstInterimMngOfRec
-//					.addAll(require.getRemainBySidPriod(input.getSid(), input.getDateData(), RemainType.PICKINGUP));
 			lstRecMng.addAll(require.getRecBySidDatePeriod(input.getSid(), input.getDateData()));
 
 		}
 
 		// 対象期間のドメインモデル「暫定振出管理データ」を上書き用の暫定管理データに置き換える
-		//ProcessDataTemporary.processOverride(input, input.getUseRecMng(), lstInterimMngOfRec, lstRecMng);
+		ProcessDataTemporary.processOverride(input, input.getUseRecMng(), lstRecMng);
 
 		// 振休の設定を取得する
 		LeaveSetOutput leaveSetOut = GetSettingCompensaLeave.process(require, input.getCid(), input.getSid(),
@@ -73,10 +68,6 @@ public class GetUnusedCompenTemporary {
 
 		// 取得した件数をチェックする
 		for (InterimRecMng interimRecMng : lstRecMng) {
-//			InterimRemain remainData = lstInterimMngOfRec.stream()
-//					.filter(x -> x.getRemainManaID().equals(interimRecMng.getRemainManaID()))
-//					.collect(Collectors.toList()).get(0);
-			// アルゴリズム「振休と紐付けをしない振出を取得する」を実行する
 			lstOutput.add(getNotTypeRec(require, interimRecMng, input.getCid(), input.getSid(),
 					input.getDateData().end(), leaveSetOut));
 		}

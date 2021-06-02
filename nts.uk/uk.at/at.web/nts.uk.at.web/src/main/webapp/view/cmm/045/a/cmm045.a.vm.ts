@@ -1927,13 +1927,15 @@ module cmm045.a.viewmodel {
 				appDate = '<div class = "sundayCell ' + classApp + '" >' + '<div>' + date + priod + '</div></div>';
 			}
             if(linkAppDate) {
+            	let linkAppDateHtml = "<div style='margin-top: 5px;'>" + linkAppDate + priod + "</div>";
 				let linkAppDateDay = linkAppDate.split("(")[1].substring(0,1);
 				if (linkAppDateDay == '土') {
-					appDate += '<div class="saturdayCell" style="margin-top: 5px;">' + linkAppDate + priod + '</div>';
+					linkAppDateHtml = '<div class="saturdayCell" style="margin-top: 5px;">' + linkAppDate + priod + '</div>';
 				}
 				if (linkAppDateDay == '日') {
-					appDate += '<div class="sundayCell" style="margin-top: 5px;">' + linkAppDate + priod + '</div>';
+					linkAppDateHtml = '<div class="sundayCell" style="margin-top: 5px;">' + linkAppDate + priod + '</div>';
 				}
+				appDate += linkAppDateHtml;
             }
 
             return appDate;
@@ -2510,6 +2512,7 @@ module cmm045.a.viewmodel {
 							linkItem.appDate = item.opComplementLeaveApp.linkAppDate;
 							linkItem.opAppStartDate = item.opComplementLeaveApp.linkAppDate;
 							linkItem.opAppEndDate = item.opComplementLeaveApp.linkAppDate;
+							linkItem.application = item.opComplementLeaveApp.application;
 							listOfApplicationCmds.push(item);
 	                    	listOfApplicationCmds.push(linkItem);	
 						}
