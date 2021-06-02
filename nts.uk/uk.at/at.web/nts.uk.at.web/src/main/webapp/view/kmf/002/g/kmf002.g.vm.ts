@@ -33,7 +33,7 @@ module nts.uk.at.view.kmf002.g {
 
     public openDialogA() {
       const vm = this;
-      vm.$window.modal("/view/kmf/002/a/a_index.xhtml").then(() =>{
+      vm.$window.modal("/view/kmf/002/a/index.xhtml").then(() =>{
 
       });
     }
@@ -47,7 +47,7 @@ module nts.uk.at.view.kmf002.g {
 
     public openSidebarScreen() {
       const vm = this;
-      vm.$jump("/view/kmf/002/a/index.xhtml");
+      vm.$jump("/view/kmf/002/e/index.xhtml");
     }
 
     private exportExcel(startDate: string, endDate: string) {

@@ -2059,7 +2059,7 @@ public class ProgramsManager {
     public static final Program CDL023A = new Program(WebAppId.COM, ProgramIdConsts.CDL023A, "CDL023_1",
             "/view/cdl/023/a/index.xhtml");
 
-    public static final Program KMF002A = new Program(WebAppId.AT, ProgramIdConsts.KMF002A, null,
+    public static final Program KMF002A = new Program(WebAppId.AT, ProgramIdConsts.KMF002A, "KMF002_89",
             "/view/kmf/002/a/index.xhtml");
 
     public static final Program KMF002B = new Program(WebAppId.AT, ProgramIdConsts.KMF002B, "KMF002_1",
