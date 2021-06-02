@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.exi.canonicalize;
+package nts.uk.ctx.exio.dom.exi.extcategory;
 
 import lombok.AllArgsConstructor;
 

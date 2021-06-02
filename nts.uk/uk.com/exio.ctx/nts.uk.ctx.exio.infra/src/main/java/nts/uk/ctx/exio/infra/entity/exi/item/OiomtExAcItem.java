@@ -17,10 +17,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionCode;
+import nts.uk.ctx.exio.dom.exi.dataformat.ChrDataFormatSet;
+import nts.uk.ctx.exio.dom.exi.dataformat.DataFormatSetting;
+import nts.uk.ctx.exio.dom.exi.dataformat.DateDataFormSet;
+import nts.uk.ctx.exio.dom.exi.dataformat.InsTimeDatFmSet;
 import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.exi.dataformat.NumDataFormatSet;
+import nts.uk.ctx.exio.dom.exi.dataformat.TimeDataFormatSet;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
-import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatSetting;
-import nts.uk.ctx.exio.dom.input.revise.dataformat.NumDataFormatSet;
 import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtExAcScreenCond;
 import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtExAcFmChac;
 import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtExAcFmDate;
@@ -106,16 +110,23 @@ public class OiomtExAcItem extends ContractUkJpaEntity implements Serializable {
 				? OiomtExAcScreenCond.fromDomain(domain, domain.getAcceptScreenConditionSetting().get())
 				: null;
 		OiomtExAcFmNum numDataFormatSet = domain.getItemType() == ItemType.NUMERIC && domain.getDataFormatSetting().isPresent()
-				?  null : null;
+				? OiomtExAcFmNum.fromDomain(domain,
+						(NumDataFormatSet) domain.getDataFormatSetting().get())
+				: null;
 		OiomtExAcFmChac chrDataFormatSet = domain.getItemType() == ItemType.CHARACTER && domain.getDataFormatSetting().isPresent()
-				?  null : null;
+				? OiomtExAcFmChac.fromDomain(domain,
+						(ChrDataFormatSet) domain.getDataFormatSetting().get())
+				: null;
 		OiomtExAcFmDate dateDataFormatSet = domain.getItemType() == ItemType.DATE && domain.getDataFormatSetting().isPresent()
-				?  null : null;
+				? OiomtExAcFmDate.fromDomain(domain, (DateDataFormSet) domain.getDataFormatSetting().get())
+				: null;
 		OiomtExAcFmTime insTimeFormatSet =  domain.getItemType() == ItemType.INS_TIME && domain.getDataFormatSetting().isPresent()
-				?  null : null;
+				? OiomtExAcFmTime.fromDomain(domain, (InsTimeDatFmSet) domain.getDataFormatSetting().get())
+				: null;
 		OiomtTimeDataFmSet timeDateFormatSet = domain.getItemType() == ItemType.TIME && domain.getDataFormatSetting().isPresent()
-				?  null : null;
-		OiomtStdAcceptItemPk pk = 	null; 
+				? OiomtTimeDataFmSet.fromDomain(domain, (TimeDataFormatSet) domain.getDataFormatSetting().get())
+				: null;
+		OiomtStdAcceptItemPk pk = new OiomtStdAcceptItemPk(domain.getCid(), domain.getConditionSetCd().v(), domain.getAcceptItemNumber());
 		OiomtExAcItem entity = new OiomtExAcItem(pk,
 				domain.getCategoryItemNo(),
 				domain.getCsvItemNumber().isPresent() ? domain.getCsvItemNumber().get() : null,
@@ -135,23 +146,32 @@ public class OiomtExAcItem extends ContractUkJpaEntity implements Serializable {
 		ItemType itemType = ItemType.values()[entity.itemType];
 		switch (itemType) {
 		case NUMERIC:
-			dataFormatSet = null;
+			dataFormatSet = entity.numDataFormatSet == null ? null : entity.numDataFormatSet.toDomain();
 			break;
 		case CHARACTER:
-			dataFormatSet = null;
+			dataFormatSet = entity.charDataFormatSet == null ? null : entity.charDataFormatSet.toDomain();
 			break;
 		case DATE:
-			dataFormatSet = null;
+			dataFormatSet = entity.dateDataFormatSet == null ? null : entity.dateDataFormatSet.toDomain();
 			break;
 		case INS_TIME:
-			dataFormatSet = null;
+			dataFormatSet = entity.insTimeDataFormatSet == null ? null : entity.insTimeDataFormatSet.toDomain();
 			break;
 		case TIME:
-			dataFormatSet = null;
+			dataFormatSet = entity.timeDataFormatSet == null ? null : entity.timeDataFormatSet.toDomain();
 			break;
 		}
 		
-		return null;
+		return new StdAcceptItem(entity.getStdAcceptItemPk().cid,
+				new AcceptanceConditionCode(entity.getStdAcceptItemPk().conditionSetCd),
+				entity.getStdAcceptItemPk().acceptItemNumber,
+				Optional.ofNullable(entity.getCsvItemNumber()),
+				Optional.ofNullable(entity.getCsvItemName()),
+				EnumAdaptor.valueOf(entity.getItemType(), ItemType.class),
+				entity.getCategoryItemNo(),
+				Optional.ofNullable(entity.getAcceptScreenCondSet() == null ? null : entity.getAcceptScreenCondSet().toDomain()),
+				Optional.ofNullable(dataFormatSet));
+		
 	}
 
 }

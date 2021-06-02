@@ -3,8 +3,8 @@ package nts.uk.ctx.exio.app.command.exi.dataformat;
 import java.math.BigDecimal;
 
 import lombok.Value;
-import nts.uk.ctx.exio.dom.input.revise.ItemType;
-import nts.uk.ctx.exio.dom.input.revise.dataformat.NumDataFormatSet;
+import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.exi.dataformat.NumDataFormatSet;
 
 @Value
 public class NumDataFormatSetCommand {
@@ -60,7 +60,7 @@ public class NumDataFormatSetCommand {
 	private Integer decimalFraction;
 
 	public NumDataFormatSet toDomain() {
-		return new NumDataFormatSet(ItemType.REAL.value, this.fixedValue, this.decimalDivision,
+		return new NumDataFormatSet(ItemType.NUMERIC.value, this.fixedValue, this.decimalDivision,
 				this.effectiveDigitLength, this.codeConvertCode, this.valueOfFixedValue, this.decimalDigitNumber,
 				this.startDigit, this.endDigit, this.decimalPointClassification, this.decimalFraction);
 	}

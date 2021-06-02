@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvert;
+import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
 
 /**
  * 受入コード変換
@@ -36,13 +36,13 @@ public class AcceptCdConvertDto {
 
 	private Long version;
 
-	private List<CodeConvertDetailsDto> cdConvertDetails;
+	private List<CdConvertDetailsDto> cdConvertDetails;
 
-	public static AcceptCdConvertDto fromDomain(ExternalImportCodeConvert domain) {
-		return new AcceptCdConvertDto(domain.getCompanyId(), domain.getConvertCode().v(), domain.getConvertName().v(),
+	public static AcceptCdConvertDto fromDomain(AcceptCdConvert domain) {
+		return new AcceptCdConvertDto(domain.getCid(), domain.getConvertCd().v(), domain.getConvertName().v(),
 				domain.getAcceptWithoutSetting().value, domain.getVersion(),
 				domain.getListConvertDetails().stream().map(itemDetails -> {
-					return new CodeConvertDetailsDto(itemDetails.getCid(), itemDetails.getConvertCd(),
+					return new CdConvertDetailsDto(itemDetails.getCid(), itemDetails.getConvertCd(),
 							itemDetails.getLineNumber(), itemDetails.getOutputItem().v(),
 							itemDetails.getSystemCd().v());
 				}).collect(Collectors.toList()));
