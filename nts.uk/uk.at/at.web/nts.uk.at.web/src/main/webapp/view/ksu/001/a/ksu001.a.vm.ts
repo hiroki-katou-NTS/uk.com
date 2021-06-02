@@ -1795,9 +1795,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     objDetailHeaderDs['_' + ymd] = "<img class='header-image-no-event'>";
                 }
             });
-
-			self.createVertSumData(data);
-			self.createHorzSumData(data);
             
             self.setIconEventHeader();
             
@@ -1817,6 +1814,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 			self.detailHeaderDeco = detailHeaderDeco;
             self.detailContentDeco = detailContentDeco;
             self.detailContentDecoModeConfirm = detailContentDecoModeConfirm;
+
+			self.createVertSumData(data);
+			self.createHorzSumData(data);
+
 			self.horizontalDetailColumns = horizontalDetailColumns;
             
             let empLogin = _.filter(detailContentDs, function(o) { return o.employeeId == self.employeeIdLogin; });
@@ -2853,7 +2854,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 								return;	
 							}
 							let findObject: any = _.find(peopleMethod, item => key==moment(item.date).format('_YYYYMMDD'));
-							if(!_.isEmpty(findObject)) {
+							if(!_.isEmpty(findObject) && !_.isEmpty(findObject.peopleMethod)) {
 								switch(i) {
 									case 1: _.set(objectPeopleMethod, key, _.get(findObject.peopleMethod[0], 'planNumber'));
 											break;
