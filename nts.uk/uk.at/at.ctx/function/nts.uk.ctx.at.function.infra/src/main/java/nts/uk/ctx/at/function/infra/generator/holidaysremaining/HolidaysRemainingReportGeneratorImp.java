@@ -1090,7 +1090,14 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 cells.get(firstRow, 10 + totalMonth).setValue(rsvLeaUsedCurrentMonItem.getUsedNumber() != null
                         && rsvLeaUsedCurrentMonItem.getUsedNumber() == 0 ? null : df.format(rsvLeaUsedCurrentMonItem.getUsedNumber().doubleValue()));
                 // H2_4 当月以降
-                setBackgroundGray(cells.get(firstRow + 1, 10 + totalMonth));
+                if(currentMonth.compareTo(rsvLeaUsedCurrentMonItem.getYearMonth()) ==0){
+                    cells.get(firstRow + 1, 10 + totalMonth)
+                            .setValue(rsvLeaUsedCurrentMonItem.getRemainNumber() != null
+                            && rsvLeaUsedCurrentMonItem.getRemainNumber() == 0 ? null : df.format(rsvLeaUsedCurrentMonItem.getRemainNumber().doubleValue()));
+                }else if (currentMonth.compareTo(rsvLeaUsedCurrentMonItem.getYearMonth()) <0){
+                    setBackgroundGray(cells.get(firstRow + 1, 10 + totalMonth));
+                }
+
             }
         }
         firstRow += 2;
@@ -2848,11 +2855,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         val checkEmLeave = compensLeaveEmSetRepository.find(cid, employmentCode);
         if (checkEmLeave == null || !holidaysRemainingManagement.getListItemsOutput().getSubstituteHoliday().isOutputItemSubstitute()) {
             return false;
-        } else if (checkEmLeave.getIsManaged() == ManageDistinct.NO) {
+        } else
+//            if (checkEmLeave.getIsManaged() == ManageDistinct.NO) {
+//            return compensatoryLeaveComSetting.isManaged();
+//        } else {
             return compensatoryLeaveComSetting.isManaged();
-        } else {
-            return compensatoryLeaveComSetting.isManaged();
-        }
+//        }
 
     }
 
