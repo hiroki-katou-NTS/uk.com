@@ -11,6 +11,13 @@ export enum AppTimeType {
     UNION = 5
 }
 
+export enum GoingOutReason {
+    PRIVATE = 0,        /* 私用 */
+    PUBLIC = 1,         /* 公用 */
+    COMPENSATION = 2,   /* 有償 */
+    UNION = 3           /* 組合 */
+}
+
 export enum LeaveType {
     SUBSTITUTE = 0, // 時間代休
     ANNUAL = 1, // 時間年休
@@ -143,7 +150,7 @@ export class LateEarlyTimeZone {
                 break;
         }
         if (params) {
-            self.timeValue = type == AppTimeType.ATWORK || AppTimeType.ATWORK ? params.timeZones[0].startTime : params.timeZones[0].endTime;
+            self.timeValue = type == AppTimeType.ATWORK || AppTimeType.ATWORK ? params.timeZones[0].endTime : params.timeZones[0].startTime;
         } else {
             self.timeValue = null;
         }
@@ -161,7 +168,7 @@ export class OutingTimeZone {
 
     constructor(no: number, display: boolean, params?: any) {
         const self = this;
-        self.appTimeType = AppTimeType.PRIVATE;
+        self.appTimeType = GoingOutReason.PRIVATE;
         self.workNo = no;
         self.timeZone = {
             start: null,

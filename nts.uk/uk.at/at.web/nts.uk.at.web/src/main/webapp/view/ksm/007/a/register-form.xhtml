@@ -44,7 +44,7 @@
     data-bind="if: registerForm().workplaceGroupTypes().length &gt; 0"
   >
     <div data-bind="ntsFormLabel: {required: true, enable: true}">
-      #{i18n.getText('KSM007_10')}
+      #{i18n.getText('KSM007_50')}
     </div>
     <div
       tabindex="7"
@@ -60,20 +60,19 @@
   <!-- A9 ver10 -->
   <div
     class="valign-center control-group"
-    data-bind="if: registerForm().workplaceGroupTypes().length &gt; 0"
+    data-bind="if: registerForm().selectedWkpType() != 0"
   >
     <div class="table">
       <div class="cell">
         <button
           class="small"
-          data-bind="click: openDialogScreenB, 
-          enable: registerForm().selectedWkpType() !== 0 &amp;&amp; !isModeNew()"
-        >
+          data-bind="click: openDialogScreenB,
+          enable: !isModeNew()">
           #{i18n.getText('KSM007_47')}
         </button>
       </div>      
-      <div class="cell" data-bind="if: registerForm().selectedWkpType() !== 0">
-        <div class="table">
+      <div class="cell">
+        <div class="table" data-bind="if: nightShiftOperationAtr() == 1">
           <div
             class="cell"
             data-bind="text: '#{i18n.getText('KSM007_48')}'"
@@ -101,8 +100,7 @@
     <table
       id="workplace-list"
       data-bind="ntsGridList: {
-                height: 281,
-                width: 650,
+                height: 251,
                 dataSource: registerForm().workplaces,
                 optionsValue: 'workplaceId',
                 columns: registerForm().gridColumns,

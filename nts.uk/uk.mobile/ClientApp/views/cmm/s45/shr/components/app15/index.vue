@@ -51,7 +51,7 @@
               </div>
               <div class="collapse">
                 <div class="card-body">
-                  <span>{{item.description}}</span><br>
+                  <span style="display: block;">{{item.description}}</span>
                   <span v-if="item.lowerCheck || item.upperCheck || item.unit || item.optionalItemAtr == 0">
                     {{ 'KAF020_25' | i18n }}
                   </span>

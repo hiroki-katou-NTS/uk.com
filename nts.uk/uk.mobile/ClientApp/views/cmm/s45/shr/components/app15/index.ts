@@ -27,34 +27,29 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
             appDetail: null
         })
     })
-    public readonly params!: {
+    public readonly params: {
         appDispInfoStartupOutput: IAppDispInfoStartupOutput,
         appDetail: IAppDetail,
     };
 
     @Watch('params.appDispInfoStartupOutput')
-    public appDispInfoStartupOutputWatcher() {
+    public appDispInfoStartupOutputWatcher(value: any) {
         const vm = this;
-
-        vm.fetchData(vm.params);
+        vm.optionalItemApplication = [];
+        vm.fetchData(value);
     }
 
     public created() {
         const vm = this;
-
-        vm.fetchData(vm.params);
+        vm.fetchData(vm.params.appDispInfoStartupOutput);
     }
 
-    public fetchData(getParams: any) {
+    public fetchData(appDispInfoStartupOutput: any) {
         const vm = this;
 
         vm.$auth.user.then((user: any) => {
             const { companyId } = user;
-            const { params } = vm;
-
-            const { appDispInfoStartupOutput } = params;
             const { appDetailScreenInfo } = appDispInfoStartupOutput;
-
             const { application } = appDetailScreenInfo;
             const { appID } = application;
 
@@ -67,41 +62,36 @@ export class CmmS45ShrComponentsApp15Component extends Vue {
                 
                 const { params } = vm;
                 const { appDetail } = params;
-                const { controlOfAttendanceItems, optionalItems,application } = appDetail;
+                const { controlOfAttendanceItems, optionalItems, application } = appDetail;
 
                 vm.settingItems = application;
 
-                optionalItemSetting.forEach((item) => {
-                    let optionalItem = optionalItems.find((optionalItem) => optionalItem.optionalItemNo == item.itemNo);
-                    if (optionalItem) {
-                        let controlAttendance = controlOfAttendanceItems.find((controlAttendance) => item.itemNo == controlAttendance.itemDailyID - 640);
+                optionalItems.forEach((optionalItem) => {
+                    const item = optionalItemSetting.find((o) => o.itemNo == optionalItem.optionalItemNo);
+                    const controlAttendance = controlOfAttendanceItems.find((controlAttendance) => optionalItem.optionalItemNo == controlAttendance.itemDailyID - 640);
+                    const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description,dispOrder, } = optionalItem;
+                    const { lowerCheck, upperCheck,amountLower,amountUpper,numberLower,numberUpper,timeLower,timeUpper } = calcResultRange;
 
-                        const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description,dispOrder, } = optionalItem;
-                        const { lowerCheck, upperCheck,amountLower,amountUpper,numberLower,numberUpper,timeLower,timeUpper } = calcResultRange;
-
-                        const { amount, times, time } = item;
-
-                        vm.optionalItemApplication.push({
-                            lowerCheck,
-                            upperCheck,
-                            amountLower,
-                            amountUpper,
-                            numberLower,
-                            numberUpper,
-                            timeLower,
-                            timeUpper,
-                            amount,
-                            number: times,
-                            time,
-                            inputUnitOfTimeItem: controlAttendance ? controlAttendance.inputUnitOfTimeItem : null,
-                            optionalItemAtr,
-                            optionalItemName,
-                            optionalItemNo,
-                            unit,
-                            description,
-                            dispOrder,
-                        });
-                    }
+                    vm.optionalItemApplication.push({
+                        lowerCheck,
+                        upperCheck,
+                        amountLower,
+                        amountUpper,
+                        numberLower,
+                        numberUpper,
+                        timeLower,
+                        timeUpper,
+                        amount: item ? item.amount : null,
+                        number: item ? item.times : null,
+                        time: item ? item.time : null,
+                        inputUnitOfTimeItem: controlAttendance ? controlAttendance.inputUnitOfTimeItem : null,
+                        optionalItemAtr,
+                        optionalItemName,
+                        optionalItemNo,
+                        unit,
+                        description,
+                        dispOrder,
+                    });
                 });
                 vm.optionalItemApplication.sort((a,b) => a.dispOrder - b.dispOrder );
                 vm.$emit('loading-complete');

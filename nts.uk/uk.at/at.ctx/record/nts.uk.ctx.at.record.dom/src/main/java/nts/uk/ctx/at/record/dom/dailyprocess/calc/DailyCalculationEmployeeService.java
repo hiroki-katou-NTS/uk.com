@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.ProcessState;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
 /**

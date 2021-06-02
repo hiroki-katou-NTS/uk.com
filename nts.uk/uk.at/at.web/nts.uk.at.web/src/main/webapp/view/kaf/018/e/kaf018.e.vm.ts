@@ -43,6 +43,13 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 			vm.refreshDataSource().then(() => {
 				$("#kaf018-e-cancel-btn").focus();	
 			});
+			$(window).resize(() => {
+				let topRange = document.getElementById('eGrid').getBoundingClientRect().top,
+					bottomRange = document.getElementById('functions-area-bottom').getBoundingClientRect().height,
+					height = window.innerHeight - topRange - bottomRange - 10;
+				$("#eGrid").igGrid("option", "height", height + "px");
+				$("#eGrid").igGrid("option", "width", window.innerWidth - 40 + "px");
+			});
 		}
 		
 		createIggrid() {
@@ -206,6 +213,10 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 			return vm.$ajax(API.getApprSttStartByEmpDate, wsParam).done((data: Array<ApprSttEmpDateContentDto>) => {
 				vm.dataSource = _.map(data, o => new EmpDateContent(o, vm));
 				vm.createIggrid();
+				let topRange = document.getElementById('eGrid').getBoundingClientRect().top,
+					bottomRange = document.getElementById('functions-area-bottom').getBoundingClientRect().height,
+					height = window.innerHeight - topRange - bottomRange - 10;
+				$("#eGrid").igGrid("option", "height", height + "px");
 			});
 		}
 	}

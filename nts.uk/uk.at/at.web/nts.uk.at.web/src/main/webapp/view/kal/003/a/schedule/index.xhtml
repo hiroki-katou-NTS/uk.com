@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component"
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+  <div class="table">
+    <div class="cell">
+      <button data-bind="">#{i18n.getText('KAL003_21')}</button>
+    </div>
+    <div class="cell">
+      <button data-bind="">#{i18n.getText('KAL003_22')}</button>
+    </div>
+  </div>
+  <div class="table">
+    <div class="cell ui-iggrid">     
+      <table id="fixed-table" class="fix-table">     
+        <thead>
+          <tr>
+            <th class="ui-widget-header col-checkbox"><div data-bind="ntsCheckBox: { checked: true}"></div></th>
+            <th class="ui-widget-header col-num" data-bind="text: $vm.$i18n('KAL003_24')"></th>
+            <th class="ui-widget-header col-name" data-bind="text: $vm.$i18n('KAL003_12')"></th>
+            <th class="ui-widget-header" data-bind="text: $vm.$i18n('KAL003_23')"></th>
+            <th class="ui-widget-header col-message" data-bind="text: $vm.$i18n('KAL003_25')"></th>
+            <th class="ui-widget-header col-use" data-bind="text: $vm.$i18n('KAL003_188')"></th>
+          </tr>
+        </thead>
+        <tbody data-bind="foreach: checkConditionList">          
+            <tr>
+              <td class="col-checkbox"><div data-bind="ntsCheckBox: {checked: checked}"></div></td>
+              <td class="col-num">1</td>
+              <td class="col-name"><input data-bind="ntsTextEditor: {value: name, 
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                  width: '160px'
+                }))
+              }" /></td>
+              <td><button>#{i18n.getText('KAL003_14')}</button></td>
+              <td class="col-message">fsd</td>
+              <td class="col-use">
+                <div class="cf" data-bind="ntsSwitchButton: {
+                  name: '#[KAL003_188]',
+                  options: $parent.userAtrCheck,
+                  optionsValue: 'code',
+                  optionsText: 'name',
+                  value: ko.observable(1),
+                  required: true,
+                  enable: true }"></div>
+              </td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+  </div>
+</ui:composition>

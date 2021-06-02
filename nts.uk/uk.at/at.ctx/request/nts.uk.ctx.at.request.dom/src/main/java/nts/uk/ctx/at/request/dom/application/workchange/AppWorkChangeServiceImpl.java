@@ -431,8 +431,22 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 
 	@Override
 	public List<ConfirmMsgOutput> checkBeforeUpdate(String companyID, Application application,
-			AppWorkChange appWorkChange, boolean agentAtr, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+			AppWorkChange appWorkChange, boolean agentAtr, AppDispInfoStartupOutput appDispInfoStartupOutput, AppWorkChangeDispInfo appWorkChangeDispInfo) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
+		String workTypeCD = null;
+		String workTimeCD = null;
+		if (appWorkChange.getOpWorkTypeCD().isPresent() && appWorkChangeDispInfo.getWorkInformationForApplication().isPresent()) {
+		    if (!appWorkChange.getOpWorkTypeCD().get().v()
+		            .equals(appWorkChangeDispInfo.getWorkInformationForApplication().get().getWorkTypeCode().v())) {
+		        workTypeCD = appWorkChange.getOpWorkTypeCD().get().v();
+		    }
+		}
+		if (appWorkChange.getOpWorkTimeCD().isPresent() && appWorkChangeDispInfo.getWorkInformationForApplication().isPresent()) {
+            if (!appWorkChange.getOpWorkTimeCD().get().v()
+                    .equals(appWorkChangeDispInfo.getWorkInformationForApplication().get().getWorkTimeCode().v())) {
+                workTimeCD = appWorkChange.getOpWorkTimeCD().get().v();
+            }
+        }
 		// 詳細画面の登録時チェック処理（全申請共通）
 		detailBeforeUpdate.processBeforeDetailScreenRegistration(
 				companyID, 
@@ -442,8 +456,8 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				application.getAppID(), 
 				application.getPrePostAtr(), 
 				application.getVersion(), 
-				appWorkChange.getOpWorkTypeCD().isPresent() ? appWorkChange.getOpWorkTypeCD().get().v() : null , 
-				appWorkChange.getOpWorkTimeCD().isPresent() ? appWorkChange.getOpWorkTimeCD().get().v(): null,
+				workTypeCD , 
+				workTimeCD,
 				appDispInfoStartupOutput);
 		// 登録時チェック処理（勤務変更申請）
 		this.checkRegisterWorkChange(application, appWorkChange);
@@ -579,7 +593,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	
 	@Override
 	public WorkChangeCheckRegOutput checkBeforeRegister(Boolean mode, String companyId, Application application,
-			AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+			AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag, AppDispInfoStartupOutput appDispInfoStartupOutput, AppWorkChangeDispInfo appWorkChangeDispInfo) {
 		WorkChangeCheckRegOutput workChangeCheckRegOutput = new WorkChangeCheckRegOutput();
 //		INPUT．「画面モード」をチェックする
 		if (mode ) {
@@ -587,7 +601,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 			workChangeCheckRegOutput = this.checkBeforeRegister(companyId, opErrorFlag, application, appWorkChange, appDispInfoStartupOutput);
 		}else {
 //			更新前のエラーチェック処理
-			workChangeCheckRegOutput.setConfirmMsgLst(this.checkBeforeUpdate(companyId, application, appWorkChange, false, appDispInfoStartupOutput));
+			workChangeCheckRegOutput.setConfirmMsgLst(this.checkBeforeUpdate(companyId, application, appWorkChange, false, appDispInfoStartupOutput, appWorkChangeDispInfo));
 		}
 
 		return workChangeCheckRegOutput;

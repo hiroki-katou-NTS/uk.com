@@ -47,6 +47,8 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 	
 	protected abstract boolean isMonthly();
 
+	protected abstract boolean isAnyPeriod();
+
 	protected abstract Object correctOptionalItem(Object dto);
 	
 	protected abstract boolean isOpyionalItem(String type);
@@ -128,7 +130,7 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 
 	private void loadMergeGroup() {
 		if (clearMergeGroups || this.mergeGroups.isEmpty()) {
-			this.mergeGroups = AttendanceItemIdContainer.groupItemByDomain(this.needMergeItems, ItemValue::itemId, isMonthly());
+			this.mergeGroups = AttendanceItemIdContainer.groupItemByDomain(this.needMergeItems, ItemValue::itemId, isMonthly(), isAnyPeriod());
 		}
 	}
 
@@ -198,7 +200,7 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 
 	private List<ItemValue> internalConvert(Collection<Integer> attendanceItemIds) {
 		Map<String, List<Integer>> groups = AttendanceItemIdContainer.groupItemByDomain(
-													attendanceItemIds, id -> id, isMonthly());
+													attendanceItemIds, id -> id, isMonthly(), isAnyPeriod());
 		
 //		List<ItemValue> converted = Collections.synchronizedList(new ArrayList<>());
 		List<ItemValue> converted = new ArrayList<>();
@@ -245,9 +247,13 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 		if (dto == null) {
 			return new ArrayList<>();
 		} else {
-			
-			return AttendanceItemUtilRes.collect((AttendanceItemDataGate) dto, itemIds,
-					isMonthly() ? AttendanceItemType.MONTHLY_ITEM : AttendanceItemType.DAILY_ITEM);
+			if (isMonthly()) {
+				return AttendanceItemUtilRes.collect((AttendanceItemDataGate) dto, itemIds, AttendanceItemType.MONTHLY_ITEM);
+			} else if (isAnyPeriod()) {
+				return AttendanceItemUtilRes.collect((AttendanceItemDataGate) dto, itemIds, AttendanceItemType.ANY_PERIOD_ITEM);
+			} else {
+				return AttendanceItemUtilRes.collect((AttendanceItemDataGate) dto, itemIds, AttendanceItemType.DAILY_ITEM);
+			}
 		}
 	}
 }

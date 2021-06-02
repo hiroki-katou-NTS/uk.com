@@ -17,6 +17,7 @@ module nts.uk.at.view.kmk003.a {
             saveDiffTimeWorkSetting: "at/shared/worktimesetting/difftimeset/save",
             removeWorkTimeByCode: "at/shared/worktimesetting/remove",
             findSettingFlexWork: "shared/selection/func/settingflexwork/get",
+            findSettingWorkMultiple: "shared/selection/func/settingworkmultiple/get",
             findAllUsedOvertimeWorkFrame: "at/shared/overtimeworkframe/findall/used",
             saveAsExcel: "at/file/worktime/report/export",
             insertWorkTimeLang: "at/share/worktime/language/insert",
@@ -28,6 +29,13 @@ module nts.uk.at.view.kmk003.a {
          */
         export function findSettingFlexWork(): JQueryPromise<model.common.SettingFlexWorkDto> {
             return nts.uk.request.ajax(servicePath.findSettingFlexWork);
+        }
+
+        /**
+         * function find setting work multiple
+         */
+        export function findSettingWorkMultiple() : JQueryPromise<model.common.SettingWorkMultipleDto> {
+            return nts.uk.request.ajax(servicePath.findSettingWorkMultiple);
         }
 
         /**

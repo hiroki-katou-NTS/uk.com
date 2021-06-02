@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 回数集計結果
@@ -108,7 +109,8 @@ public class TotalCount implements Cloneable, Serializable {
 	 * @return true:対象、false:対象外
 	 */
 	public boolean checkOotsukaCustomize(int totalCountNo, String workTypeCode){
-		
+		/** 大塚モードかを確認する */
+		if (!AppContexts.optionLicense().customize().ootsuka()) return true;
 		// 回数集計NOの判断
 		if (totalCountNo != 25 && totalCountNo != 29) return true;
 		

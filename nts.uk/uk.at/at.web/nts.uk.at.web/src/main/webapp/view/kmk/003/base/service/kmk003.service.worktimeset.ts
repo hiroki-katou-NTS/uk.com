@@ -18,7 +18,6 @@ module nts.uk.at.view.kmk003.a {
                 export interface WorkTimeDisplayNameDto {
                     workTimeName: string;
                     workTimeAbName: string;
-                    workTimeSymbol: string;
                 }
 
                 export interface WorkTimeSettingDto {
@@ -71,8 +70,6 @@ module nts.uk.at.view.kmk003.a {
                     calcMethodExceededPredAddVacation: EnumConstantDto[];
                     roundingTimeUnit: EnumConstantDto[];
                 }
-
-
                 
                 // Worktime Setting Enum
                 export enum WorkTimeDailyAtr {

@@ -11,19 +11,18 @@ import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.appreflect.SCAppReflectionSetting;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.change.state.SCReflectStatusResult;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.change.state.SCReflectedState;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.snapshot.DailySnapshotWork;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
-import nts.uk.ctx.at.shared.dom.application.common.ReflectedStateShare;
-import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.cancellation.CreateApplicationReflectionHist;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
-import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.cancellation.CreateApplicationReflectionHist;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.DailyAfterAppReflectResult;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.CorrectDailyAttendanceService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
@@ -31,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
 /**
@@ -40,8 +40,8 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
  */
 public class ReflectApplicationWorkSchedule {
 
-	public static Pair<ReflectStatusResultShare, AtomTask> process(Require require, String companyId,  ApplicationShare application,
-			GeneralDate date, ReflectStatusResultShare reflectStatus, int preAppWorkScheReflectAttr) {
+	public static Pair<SCReflectStatusResult, AtomTask> process(Require require, String companyId,  ApplicationShare application,
+			GeneralDate date, SCReflectStatusResult reflectStatus, int preAppWorkScheReflectAttr) {
 		// 勤務予定から日別実績(work）を取得する
 		WorkSchedule workSchedule = require.get(application.getEmployeeID(), date).orElse(null);
 		if (workSchedule == null)
@@ -116,7 +116,7 @@ public class ReflectApplicationWorkSchedule {
 					dailyRecordApp, domainBeforeReflect);
 		});
 
-		reflectStatus.setReflectStatus(ReflectedStateShare.REFLECTED);
+		reflectStatus.setReflectStatus(SCReflectedState.REFLECTED);
 
 		return Pair.of(reflectStatus, atomTask);
 

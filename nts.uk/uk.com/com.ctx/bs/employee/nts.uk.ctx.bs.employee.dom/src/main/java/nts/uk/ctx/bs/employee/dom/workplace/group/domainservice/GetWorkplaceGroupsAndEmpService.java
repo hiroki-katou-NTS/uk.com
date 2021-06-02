@@ -1,7 +1,6 @@
 package nts.uk.ctx.bs.employee.dom.workplace.group.domainservice;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupGettingService;
 /**
  * 社員が参照可能な職場グループと社員参照範囲を取得する
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".基幹.社員.職場.職場グループ
- * 
+ *
  * @author HieuLt
  *
  */
@@ -25,7 +24,7 @@ public class GetWorkplaceGroupsAndEmpService {
 
 	/**
 	 * [1] 取得する
-	 * 
+	 *
 	 * @param require
 	 * @param baseDate
 	 * @param empId
@@ -37,7 +36,7 @@ public class GetWorkplaceGroupsAndEmpService {
 		if (require.whetherThePersonInCharge(empId)) {
 			List<WorkplaceGroup> lstWorkplaceGroup = require.getAll();
 			lstWorkplaceGroup.stream().forEach(c -> {
-				ressult.put(c.getWKPGRPID(), ScopeReferWorkplaceGroup.ALL_EMPLOYEE);
+				ressult.put(c.getId(), ScopeReferWorkplaceGroup.ALL_EMPLOYEE);
 			});
 			return ressult;
 		}
@@ -60,16 +59,15 @@ public class GetWorkplaceGroupsAndEmpService {
 		 * $参照可能職場グループ .put Key $所属組織.職場グループID Value 職場グループ内の参照範囲#参照範囲を判定する(
 		 * $社員参照範囲 )
 		 */
-		ScopeReferWorkplaceGroup scopeReferWorkplaceGroup = ScopeReferWorkplaceGroup.of(0);
 		data.put(employeeAffiliation.getWorkplaceGroupID().get(),
-				scopeReferWorkplaceGroup.determineTheReferenceRange(empRefeRange));
+				ScopeReferWorkplaceGroup.determineTheReferenceRange(empRefeRange));
 		return data;
 
 	}
 
 	/**
 	 * [prv-1] 管理対象職場から取得する
-	 * 
+	 *
 	 * @param require
 	 * @param baseDate
 	 * @param empId
@@ -90,7 +88,7 @@ public class GetWorkplaceGroupsAndEmpService {
 		 * return require.指定職場の職場グループ所属情報を取得する( $管理職場IDリスト ): map $.職場グループID
 		 * distinct map Key $.職場グループID Value 職場グループ内の参照範囲.全社員
 		 */
-		List<String> lstAffWorkplaceGroup = require.getByListWKPID(listWorkplaceID).stream().map(c -> c.getWKPGRPID())
+		List<String> lstAffWorkplaceGroup = require.getByListWKPID(listWorkplaceID).stream().map(c -> c.getWorkplaceGroupId())
 				.distinct().collect(Collectors.toList());
 		lstAffWorkplaceGroup.stream().forEach(c -> {
 			ressult.put(c, ScopeReferWorkplaceGroup.ALL_EMPLOYEE);
@@ -102,7 +100,7 @@ public class GetWorkplaceGroupsAndEmpService {
 	public static interface Require extends WorkplaceGroupGettingService.Require {
 		/**
 		 * [R-1] 職場グループをすべて取得する 職場グループRepository.getAll( 会社ID )
-		 * 
+		 *
 		 * @return
 		 */
 		List<WorkplaceGroup> getAll();
@@ -110,7 +108,7 @@ public class GetWorkplaceGroupsAndEmpService {
 		/**
 		 * [R-2] 指定職場の職場グループ所属情報を取得する 職場グループ所属情報Repository.*get( 会社ID,
 		 * List<職場ID> )
-		 * 
+		 *
 		 * @param WKPID
 		 * @return
 		 */
@@ -123,7 +121,7 @@ public class GetWorkplaceGroupsAndEmpService {
 
 		/**
 		 * [R-4] 社員参照範囲を取得する ※ログイン社員の社員参照範囲
-		 * 
+		 *
 		 */
 		EmployeeReferenceRangeImport getEmployeeReferRangeOfLoginEmployees(String empId);
 

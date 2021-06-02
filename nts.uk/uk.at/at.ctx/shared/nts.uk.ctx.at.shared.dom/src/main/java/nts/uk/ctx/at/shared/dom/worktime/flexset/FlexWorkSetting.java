@@ -4,20 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -25,21 +15,22 @@ import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.*;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * フレックス勤務設定
@@ -75,7 +66,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 
 	/** The use half day shift. */
 	// 半日用シフトを使用する
-	private boolean useHalfDayShift;
+	private HalfDayWorkSet useHalfDayShift;
 
 	/** The lst half day work timezone. */
 	// 平日勤務時間帯
@@ -84,10 +75,6 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	/** The lst stamp reflect timezone. */
 	// 打刻反映時間帯
 	private List<StampReflectTimezone> lstStampReflectTimezone;
-
-	/** The calculate setting. */
-	// 計算設定
-	private FlexCalcSetting calculateSetting;
 
 	/**
 	 * Instantiates a new flex work setting.
@@ -102,9 +89,12 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		this.offdayWorkTime = memento.getOffdayWorkTime();
 		this.commonSetting = memento.getCommonSetting();
 		this.useHalfDayShift = memento.getUseHalfDayShift();
-		this.lstHalfDayWorkTimezone = memento.getLstHalfDayWorkTimezone();
 		this.lstStampReflectTimezone = memento.getLstStampReflectTimezone();
-		this.calculateSetting = memento.getCalculateSetting();
+		
+		if (!this.validateHalfDayWorkTime(memento.getLstHalfDayWorkTimezone())) {
+		    throw new BusinessException("Msg_2143");
+		}
+		this.lstHalfDayWorkTimezone = memento.getLstHalfDayWorkTimezone();
 	}
 
 	@Override
@@ -125,9 +115,12 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		memento.setOffdayWorkTime(this.offdayWorkTime);
 		memento.setCommonSetting(this.commonSetting);
 		memento.setUseHalfDayShift(this.useHalfDayShift);
-		memento.setLstHalfDayWorkTimezone(this.lstHalfDayWorkTimezone);
 		memento.setLstStampReflectTimezone(this.lstStampReflectTimezone);
-		memento.setCalculateSetting(this.calculateSetting);
+		
+		if (!this.validateHalfDayWorkTime(this.lstHalfDayWorkTimezone)) {
+            throw new BusinessException("Msg_2143");
+        }
+		memento.setLstHalfDayWorkTimezone(this.lstHalfDayWorkTimezone);
 	}
 
 	/**
@@ -157,6 +150,11 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 				this.getLstHalfDayWorkTimezone().size() > 0
 						? this.getLstHalfDayWorkTimezone().get(0).getRestTimezone().isFixRestTime()
 						: false);
+		
+		this.lstHalfDayWorkTimezone
+		    .forEach(x -> x.getRestTimezone().correctData(
+		            other.getLstHalfDayWorkTimezone().stream()
+		            .filter(y -> y.getAmpmAtr().value == x.getAmpmAtr().value).findFirst().get().getRestTimezone()));
 	}
 
 	/**
@@ -194,12 +192,11 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 			cloned.restSetting = this.restSetting.clone();
 			cloned.offdayWorkTime = this.offdayWorkTime.clone();
 			cloned.commonSetting = this.commonSetting.clone();
-			cloned.useHalfDayShift = this.useHalfDayShift ? true : false;
+			cloned.useHalfDayShift = this.useHalfDayShift;
 			cloned.lstHalfDayWorkTimezone = this.lstHalfDayWorkTimezone.stream().map(c -> c.clone())
 					.collect(Collectors.toList());
 			cloned.lstStampReflectTimezone = this.lstStampReflectTimezone.stream().map(c -> c.clone())
 					.collect(Collectors.toList());
-			cloned.calculateSetting = this.calculateSetting.clone();
 		} catch (Exception e) {
 			throw new RuntimeException("AggregateTotalTimeSpentAtWork clone error.");
 		}
@@ -240,7 +237,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 
 	public FlowWorkRestTimezone getFlowWorkRestTimezone(WorkType workType) {
 		val attenHolAtr = workType.getAttendanceHolidayAttr();
-		if (attenHolAtr == AttendanceHolidayAttr.HOLIDAY) {
+		if (workType.isHolidayWork()) {
 			return this.offdayWorkTime.getRestTimezone();
 		}
 		if (this.getFlexHalfDayWorkTime(attenHolAtr).isPresent()) {
@@ -264,9 +261,6 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 
 		val oneDay = this.createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.ONE_DAY);
 		val workOnDayOff = this.createWorkOnDayOffTime(require);
-		if (!this.isUseHalfDayShift()) {
-			return ChangeableWorkingTimeZone.createWithoutSeparationOfHalfDay(oneDay, workOnDayOff);
-		}
 
 		val morning = this.createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.AM);
 		val evening = this.createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.PM);
@@ -402,4 +396,23 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	public static interface Require {
 	}
 
+	
+	/**
+     * inv-1
+     */
+    private boolean validateHalfDayWorkTime(List<FlexHalfDayWorkTime> lstHalfDayWorkTimezone){
+        val onlyOneAllDay = lstHalfDayWorkTimezone
+                .stream()
+                .filter(tz -> tz.getAmpmAtr() == AmPmAtr.ONE_DAY)
+                .count() == 1;
+        val onlyOneAM = lstHalfDayWorkTimezone
+                .stream()
+                .filter(tz -> tz.getAmpmAtr() == AmPmAtr.AM)
+                .count() == 1;
+        val onlyOnePM = lstHalfDayWorkTimezone
+                .stream()
+                .filter(tz -> tz.getAmpmAtr() == AmPmAtr.PM)
+                .count() == 1;
+        return onlyOneAllDay && onlyOneAM && onlyOnePM;
+    }
 }

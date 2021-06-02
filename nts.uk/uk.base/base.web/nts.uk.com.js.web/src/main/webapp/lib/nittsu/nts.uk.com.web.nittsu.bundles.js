@@ -6297,34 +6297,67 @@ var nts;
                 // ボタンの上部分をクリックすると、ボタンの範囲からマウスカーソルが外れてしまい、
                 // clickイベントが発生しなくなる不具合がある。
                 // ダミーのdivを生成し、そこでmouseupイベントを拾うことで不具合を回避。
+                // Emulate click event by cache & trigger
                 $(function () {
-                    $("body").on("mousedown", "button", function (e) {
-                        var $button = $(e.target);
-                        var $dammy = $("<div>")
-                            .css({
-                            background: "transparent",
-                            position: "absolute",
-                            width: $button.outerWidth(),
-                            height: parseInt($button.css("top"), 10),
-                            cursor: "pointer",
-                            opacity: 100
-                        })
-                            .appendTo("body")
-                            .position({
-                            my: "left bottom",
-                            at: "left top",
-                            of: e.target
-                        })
-                            .on("mouseup", function (eup) {
-                            $dammy.remove();
-                            $button.click();
-                        });
-                        $(window).on("mouseup.dammyevent", function () {
-                            $dammy.remove();
-                            $(window).off("mouseup.dammyevent");
-                        });
+                    var cache = {
+                        button: null,
+                        position: null
+                    };
+                    $(document)
+                        .on('mouseup', function (evt) {
+                        var button = cache.button, position = cache.position;
+                        var target = evt.target, pageX = evt.pageX, pageY = evt.pageY;
+                        if (target.tagName !== 'BUTTON' && !$(target).closest('button').is(button)) {
+                            if (button && position) {
+                                var x = position.x, y = position.y;
+                                if (x === pageX && y === pageY) {
+                                    // trigger click event of button if mouseup outside
+                                    $(button).trigger('click');
+                                }
+                            }
+                        }
+                        cache.button = null;
+                        cache.position = null;
+                    })
+                        .on('mousedown', 'button', function (evt) {
+                        var target = evt.target;
+                        cache.button = target.tagName === 'BUTTON' ? target : $(target).closest('button').get(0);
+                        cache.position = {
+                            x: evt.pageX,
+                            y: evt.pageY
+                        };
                     });
                 });
+                /*$(() => {
+                    $("body")
+                        .on("mousedown", "button", e => {
+                            var $button = $(e.target);
+                            var $dammy = $("<div>")
+                                .css({
+                                    background: "transparent",
+                                    position: "absolute",
+                                    width: $button.outerWidth(),
+                                    height: parseInt($button.css("top"), 10),
+                                    cursor: "pointer",
+                                    opacity: 100
+                                })
+                                .appendTo("body")
+                                .position({
+                                    my: "left bottom",
+                                    at: "left top",
+                                    of: e.target
+                                })
+                                .on("mouseup", eup => {
+                                    $dammy.remove();
+                                    $button.click();
+                                });
+        
+                            $(window).on("mouseup.dammyevent", () => {
+                                $dammy.remove();
+                                $(window).off("mouseup.dammyevent");
+                            });
+                        });
+                });*/
             })(buttonExtension || (buttonExtension = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -9115,13 +9148,13 @@ var nts;
                                     }
                                     else if (cStyle) {
                                         if (cStyle.textColor) {
-                                            $c.style.color = null;
+                                            $c.style.color = (helper.isIE() ? '' : null);
                                         }
                                         if (cStyle.class) {
                                             $c.classList.remove(cStyle.class);
                                         }
                                         if (cStyle.background) {
-                                            $c.style.backgroundColor = null;
+                                            $c.style.backgroundColor = (helper.isIE() ? '' : null);
                                         }
                                     }
                                     // Compare each inner separately to color
@@ -15719,6 +15752,18 @@ var nts;
                                 delete disables[i];
                             helper.stripCellWith(style.SEAL_CLS, $cell, innerIdx);
                         }
+                        else {
+                            var cellStyles = $.data($table, internal.CELLS_STYLE);
+                            var removed = _.remove(cellStyles, function (s) {
+                                return s.rowId === rowId && s.columnKey === columnKey
+                                    && ((_.isNil(innerIdx) && _.isNil(s.innerIdx)) ? true : innerIdx === s.innerIdx)
+                                    && s.clazz === style.SEAL_CLS;
+                            });
+                            if (removed.length > 0) {
+                                var $cell = selection.cellAt($table, i, columnKey);
+                                helper.stripCellWith(style.SEAL_CLS, $cell, innerIdx);
+                            }
+                        }
                     }
                     /**
                      * Return popup value.
@@ -19719,21 +19764,25 @@ var nts;
                             }
                             var id = 'ntsErrorDialog_' + idX;
                             var $dialog = $("<div>", { "id": id, "class": "ntsErrorDialog" });
-                            if (self.isRoot) {
+                            // get top object (jQuery & document)
+                            var $$ = window.top.window.$;
+                            var $document = window.top.document;
+                            // move error dialog to top windows
+                            $$($document).find('body').append($dialog);
+                            // shit code
+                            /*if (self.isRoot) {
                                 PS.$('body').append($dialog);
-                            }
-                            else {
-                                var temp = self;
+                            } else {
+                                let temp = self;
                                 while (!nts.uk.util.isNullOrUndefined(temp)) {
                                     if (temp.isRoot) {
                                         $(temp.globalContext.document.getElementsByTagName("body")).append($dialog);
                                         temp = null;
-                                    }
-                                    else {
+                                    } else {
                                         temp = temp.parent;
                                     }
                                 }
-                            }
+                            }*/
                             // Create Buttons
                             var dialogbuttons = [];
                             var _loop_2 = function (button) {
@@ -36619,19 +36668,34 @@ var nts;
                                             return;
                                         child.reposition({ start: childSlide.start + step_1, end: childSlide.end + step_1, left: childSlide.left + step_1 * child.unitToPx });
                                     }
-                                    else if (diff > 0 && child.start < pDec_1.start && !child.pin) {
-                                        childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
-                                        if (!childSlide)
-                                            return;
-                                        child.reposition({ width: childSlide.length + (childSlide.start - pDec_1.start) * child.unitToPx, left: pDec_1.start * child.unitToPx, start: pDec_1.start });
-                                    }
-                                    else if (diff < 0 && child.end > pDec_1.end && !child.pin) {
-                                        childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
-                                        if (!childSlide)
-                                            return;
-                                        child.reposition({ width: childSlide.length + (pDec_1.end - childSlide.end) * child.unitToPx, end: pDec_1.end });
+                                    else if (!child.pin || (child.pin && child.pruneOnSlide)) {
+                                        var childStart = Math.max(child.initStart, pDec_1.start), childEnd = Math.min(child.initEnd, pDec_1.end);
+                                        if (childStart < childEnd) {
+                                            var childLength = (childEnd - childStart) * child.unitToPx - 1;
+                                            if (child.pin && child.rollup) {
+                                                child.reposition({
+                                                    width: childLength,
+                                                    left: childStart * child.unitToPx
+                                                });
+                                            }
+                                            else {
+                                                child.reposition({
+                                                    width: childLength,
+                                                    start: childStart,
+                                                    end: childEnd,
+                                                    left: childStart * child.unitToPx
+                                                });
+                                            }
+                                            if (childLength > 0 && !self.chartArea.contains(child.html)) {
+                                                self.chartArea.appendChild(child.html);
+                                            }
+                                        }
+                                        else
+                                            child.reposition({ width: 0 });
                                     }
                                 });
+                                pDec_1.initStart = pDec_1.start;
+                                pDec_1.initEnd = pDec_1.end;
                                 chart.reposition(pDec_1);
                             }
                             else if (self.slideTrigger.holdPos === HOLD_POS.START) {
@@ -36851,7 +36915,17 @@ var nts;
                                 length: parseFloat(chart.html.style.width),
                                 start: chart.start,
                                 end: chart.end,
-                                children: _.map(chart.children, function (c) { return ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }); }),
+                                children: _.map(chart.children, function (c) {
+                                    return ({
+                                        id: c.id,
+                                        start: c.start,
+                                        end: c.end,
+                                        initStart: c.initStart,
+                                        initEnd: c.initEnd,
+                                        length: parseFloat(c.html.style.width),
+                                        left: parseFloat(c.html.style.left)
+                                    });
+                                }),
                                 edgeCharts: []
                             };
                             if (!_.isNil(chart.parent)) {
@@ -37166,6 +37240,7 @@ var nts;
                         this.drawerSize = options.drawerSize;
                         this.bePassedThrough = options.bePassedThrough;
                         this.pin = options.pin;
+                        this.pruneOnSlide = options.pruneOnSlide;
                         this.rollup = options.rollup;
                         this.roundEdge = options.roundEdge;
                         this.resizeFinished = options.resizeFinished;
@@ -37194,6 +37269,7 @@ var nts;
                         this.locked = false;
                         this.rollup = false;
                         this.pin = false;
+                        this.pruneOnSlide = false;
                         this.roundEdge = false;
                         var self = this;
                         if (!_.keys(options).length)
@@ -37201,6 +37277,8 @@ var nts;
                         self.limitStartMax = options.limitStartMax || options.maxArea || self.maxArea;
                         self.limitEndMax = options.limitEndMax || options.maxArea || self.maxArea;
                         $.extend(self, options);
+                        self.initStart = self.start;
+                        self.initEnd = self.end;
                     }
                     GanttChart.prototype.newChart = function () {
                         if (_.isNil(this.id)) {
@@ -37235,6 +37313,12 @@ var nts;
                         if (_.has(style, "end")) {
                             self.end = style.end;
                         }
+                        if (_.has(style, "initStart")) {
+                            self.initStart = style.initStart;
+                        }
+                        if (_.has(style, "initEnd")) {
+                            self.initEnd = style.initEnd;
+                        }
                         if (_.has(style, "top")) {
                             self.html.style.top = style.top + "px";
                         }
@@ -37244,6 +37328,7 @@ var nts;
                         if (_.has(style, "width")) {
                             if (style.width <= 0) {
                                 if (self.html.parentNode) {
+                                    self.html.style.width = "0px";
                                     self.html.parentNode.removeChild(self.html);
                                 }
                             }
@@ -37457,6 +37542,17 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="./viewcontext.d.ts" />
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __spreadArray = (this && this.__spreadArray) || function (to, from) {
     for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
         to[j] = from[i];
@@ -37466,12 +37562,15 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from) {
 function bean(dialogOption) {
     return function (ctor) {
         __viewContext.ready(function () {
-            nts.uk.ui.viewmodel.$storage().then(function ($params) {
-                var $viewModel = new ctor($params), $created = $viewModel['created'];
+            var localShared = nts.uk.ui.windows.container.localShared;
+            nts.uk.ui.viewmodel
+                .$storage()
+                .then(function ($params) {
+                var $viewModel = new ctor($params || (_.isEmpty(localShared) ? undefined : localShared)), $created = $viewModel['created'];
                 _.extend($viewModel, { $el: undefined });
                 // hook to created function
                 if ($created && _.isFunction($created)) {
-                    $created.apply($viewModel, [$params]);
+                    $created.apply($viewModel, [$params || (_.isEmpty(localShared) ? undefined : localShared)]);
                 }
                 // hook to mounted function
                 $viewModel.$nextTick(function () {
@@ -37498,13 +37597,26 @@ function bean(dialogOption) {
 }
 function component(options) {
     return function (ctor) {
-        return $.Deferred().resolve(options.template.match(/\.html$/))
+        var name = options.name, template = options.template, alternalBinding = options.alternalBinding;
+        if (alternalBinding) {
+            ko.bindingHandlers[name] = {
+                init: function (element, __, allBindingsAccessor, ___, bindingContext) {
+                    var allBinding = __assign({}, allBindingsAccessor());
+                    var params = _.mapKeys(allBinding, function (_v, key) { return _.camelCase(key); });
+                    ko.applyBindingsToNode(element, { component: { name: name, params: params } }, bindingContext);
+                    element.removeAttribute('data-bind');
+                    return { controlsDescendantBindings: true };
+                }
+            };
+        }
+        return $.Deferred()
+            .resolve(template.match(/\.html$/))
             .then(function (url) {
-            return url ? $.get(options.template) : options.template;
+            return url ? $.get(template) : template;
         })
             .then(function (template) {
-            if (!ko.components.isRegistered(options.name)) {
-                ko.components.register(options.name, {
+            if (!ko.components.isRegistered(name)) {
+                ko.components.register(name, {
                     template: template,
                     viewModel: {
                         createViewModel: function ($params, $el) {
@@ -38091,6 +38203,13 @@ var nts;
                     }
                 });
                 BaseViewModel.prototype.$validate = $validate;
+                BaseViewModel.prototype.$query = (function () {
+                    var query = location.search.substring(1);
+                    if (!query || !query.match(/=/)) {
+                        return {};
+                    }
+                    return JSON.parse('{"' + decodeURI(query).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
+                })();
                 Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
             })(viewmodel = ui_21.viewmodel || (ui_21.viewmodel = {}));
         })(ui = uk.ui || (uk.ui = {}));
@@ -49280,6 +49399,89 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                /**
+                 * Wrapper by ko binding for JqueryUI.Draggable
+                 * Use: data-bind="draggable: true, enable: true, disable: false"
+                 * Or use by full options: data-bind="draggable: JQueryUI.DraggableOptions"
+                 */
+                var DraggableBindingHandler = /** @class */ (function () {
+                    function DraggableBindingHandler() {
+                        this.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            var $element = $(element);
+                            var accessor = valueAccessor();
+                            var enable = allBindingsAccessor.get('enable');
+                            var disable = allBindingsAccessor.get('disable');
+                            ko.computed({
+                                read: function () {
+                                    var options = ko.toJS(accessor);
+                                    $element
+                                        .css({
+                                        top: '',
+                                        left: '',
+                                        right: '',
+                                        bottom: ''
+                                    });
+                                    if ($element.data('draggable')) {
+                                        $element.draggable('destroy');
+                                    }
+                                    if (options) {
+                                        if (!_.isObject) {
+                                            // if empty binding (draggable: true)
+                                            $element.draggable();
+                                        }
+                                        else {
+                                            // if has options
+                                            $element.draggable(options);
+                                        }
+                                    }
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            ko.computed({
+                                read: function () {
+                                    // toggle enable
+                                    var $ena = ko.unwrap(enable) !== false;
+                                    if ($ena && $element.data('draggable')) {
+                                        $element.draggable('enable');
+                                    }
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            ko.computed({
+                                read: function () {
+                                    // toggle disble
+                                    var $dis = ko.unwrap(disable) === true;
+                                    if ($dis && $element.data('draggable')) {
+                                        $element.draggable('disable');
+                                    }
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            $element.removeAttr('data-bind');
+                        };
+                    }
+                    DraggableBindingHandler = __decorate([
+                        handler({
+                            bindingName: 'draggable',
+                            validatable: true,
+                            virtual: false
+                        })
+                    ], DraggableBindingHandler);
+                    return DraggableBindingHandler;
+                }());
+                koExtentions.DraggableBindingHandler = DraggableBindingHandler;
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 /// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
@@ -50961,6 +51163,58 @@ var NtsSortableBindingHandler = /** @class */ (function () {
     return NtsSortableBindingHandler;
 }());
 ko.bindingHandlers["ntsSortable"] = new NtsSortableBindingHandler();
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                var tabrounded;
+                (function (tabrounded) {
+                    var TabRoundedBindingHandler = /** @class */ (function () {
+                        function TabRoundedBindingHandler() {
+                        }
+                        TabRoundedBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            var $element = $(element);
+                            var rounded = valueAccessor();
+                            $element
+                                // prevent tabable to out of popup control
+                                .on("keydown", ":tabbable", function (evt) {
+                                if (ko.unwrap(rounded)) {
+                                    var fable = $element
+                                        .find(':tabbable')
+                                        .toArray();
+                                    var $chain = _.chain(fable).orderBy(function (el) { return el.getAttribute('tabindex'); });
+                                    var last = $chain.last().value() || _.last(fable);
+                                    var first = $chain.first().value() || _.first(fable);
+                                    if (evt.keyCode === 9) {
+                                        if ($(evt.target).is(last) && evt.shiftKey === false) {
+                                            first.focus();
+                                            evt.preventDefault();
+                                        }
+                                        else if ($(evt.target).is(first) && evt.shiftKey === true) {
+                                            last.focus();
+                                            evt.preventDefault();
+                                        }
+                                    }
+                                }
+                            });
+                        };
+                        TabRoundedBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'tab-rounded'
+                            })
+                        ], TabRoundedBindingHandler);
+                        return TabRoundedBindingHandler;
+                    }());
+                    tabrounded.TabRoundedBindingHandler = TabRoundedBindingHandler;
+                })(tabrounded = koExtentions.tabrounded || (koExtentions.tabrounded = {}));
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 /// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {

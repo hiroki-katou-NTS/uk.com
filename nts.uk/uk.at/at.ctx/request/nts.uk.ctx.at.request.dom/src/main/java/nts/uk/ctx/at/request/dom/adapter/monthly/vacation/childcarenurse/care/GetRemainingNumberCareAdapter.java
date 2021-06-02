@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.ChildCareNursePeriodImport;
-import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.TmpChildCareNurseMngWorkImport;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.TempChildCareNurseManagementImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 
@@ -19,6 +19,7 @@ public interface GetRemainingNumberCareAdapter {
 
 		/**
 		 * 期間中の介護休暇残数を取得
+		 * @param companyId 会社ID
 		 * @param employeeId 社員ID
 		 * @param period 集計期間
 		 * @param performReferenceAtr 実績のみ参照区分(月次モード orその他)
@@ -32,14 +33,15 @@ public interface GetRemainingNumberCareAdapter {
 		 */
 		 // RequestList207
 		ChildCareNursePeriodImport getCareRemNumWithinPeriod(
+				String companyId,
 				String employeeId,
 				DatePeriod period,
 				InterimRemainMngMode performReferenceAtr,
 				GeneralDate criteriaDate,
 				Optional<Boolean> isOverWrite,
-				Optional<List<TmpChildCareNurseMngWorkImport>> tempCareDataforOverWriteList,
+				List<TempChildCareNurseManagementImport> tempCareDataforOverWriteList,
 				Optional<ChildCareNursePeriodImport> prevCareLeave,
 				Optional<CreateAtr> createAtr,
-				Optional<GeneralDate> periodOverWrite
+				Optional<DatePeriod> periodOverWrite
 		);
 }

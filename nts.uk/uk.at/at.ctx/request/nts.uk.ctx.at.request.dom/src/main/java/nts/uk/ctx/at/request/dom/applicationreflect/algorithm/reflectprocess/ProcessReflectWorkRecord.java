@@ -9,16 +9,12 @@ import org.apache.commons.lang3.tuple.Pair;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.reflect.convert.ConvertApplicationToShare;
+import nts.uk.ctx.at.request.dom.application.common.adapter.scherec.convert.ConvertApplicationToShare;
 import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkSchedule.PreCheckProcessResult;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.ReflectStatusResult;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
-import nts.uk.ctx.at.shared.dom.application.common.ReasonNotReflectDailyShare;
-import nts.uk.ctx.at.shared.dom.application.common.ReasonNotReflectShare;
-import nts.uk.ctx.at.shared.dom.application.common.ReflectedStateShare;
-import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -47,20 +43,13 @@ public class ProcessReflectWorkRecord {
 
 		List<AtomTask> tasks = new ArrayList<>();
 		// 勤務実績に反映 -- in process
-		ReflectStatusResultShare reflectShare = new ReflectStatusResultShare(ReflectedStateShare.valueOf(statusWorkRecord.getReflectStatus().value),
-				statusWorkRecord.getReasonNotReflectWorkRecord() == null ? null
-						: ReasonNotReflectDailyShare
-								.valueOf(statusWorkRecord.getReasonNotReflectWorkRecord().value),
-				statusWorkRecord.getReasonNotReflectWorkSchedule() == null ? null
-						: ReasonNotReflectShare
-								.valueOf(statusWorkRecord.getReasonNotReflectWorkSchedule().value));
-		Pair<ReflectStatusResultShare, Optional<AtomTask>> result = require.processWork(ConvertApplicationToShare.toAppliction(application), targetDate, reflectShare);
+		Pair<ReflectStatusResult, Optional<AtomTask>> result = require.processWork(ConvertApplicationToShare.toAppliction(application), targetDate, statusWorkRecord);
 		result.getRight().ifPresent(x -> tasks.add(x));
 		// 申請理由の反映-- in process chua co don xin lam them
 		Optional<AtomTask> task = ReflectApplicationReason.reflectReason(require, application, targetDate);
 		task.ifPresent(x -> tasks.add(x));
 
-		return Pair.of(ProcessReflectWorkSchedule.statusResult(result.getLeft()), Optional.of(AtomTask.bundle(tasks)));
+		return Pair.of(ProcessReflectWorkSchedule.statusResult(result.getLeft(), statusWorkRecord), Optional.of(AtomTask.bundle(tasks)));
 	}
 
 	public static interface Require extends PreCheckProcessWorkRecord.Require, ReflectApplicationReason.Require {
@@ -78,7 +67,7 @@ public class ProcessReflectWorkRecord {
 //		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId);
 
 		// ReflectApplicationWorkRecordAdapter
-		public Pair<ReflectStatusResultShare, Optional<AtomTask>> processWork(ApplicationShare application, GeneralDate date,
-				ReflectStatusResultShare reflectStatus);
+		public Pair<ReflectStatusResult, Optional<AtomTask>> processWork(ApplicationShare application, GeneralDate date,
+				ReflectStatusResult reflectStatus);
 	}
 }

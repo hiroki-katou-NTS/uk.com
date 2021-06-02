@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
@@ -20,11 +21,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.Inte
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.MngHistDataAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.export.ClosureRemainPeriodOutputData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.export.RemainManagementExport;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
@@ -32,14 +30,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuery{
 	
 	@Inject
 	private RemainManagementExport remainManaExport;
-	@Inject
-	private InterimRemainRepository remainRepo;
 	@Inject
 	private InterimRecAbasMngRepository recAbsRepo;
 	@Inject
@@ -162,14 +157,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 			outputData = optOutputData.get();
 		}
 		//指定期間内に使用した暫定振休を取得する  ドメインモデル「暫定振休管理データ」を取得する
-		List<InterimRemain> lstRemain = remainRepo.getRemainBySidPriod(sid, adjustDate, RemainType.PAUSE);
-		List<InterimAbsMng> interimAbsMngInfor = new ArrayList<>(outputData.getInterimAbsMngInfor());
-		for (InterimRemain interimRemain : lstRemain) {
-			Optional<InterimAbsMng> optAbsMng = recAbsRepo.getAbsById(interimRemain.getRemainManaID());
-			if(optAbsMng.isPresent()) {
-				interimAbsMngInfor.add(optAbsMng.get());
-			}
-		}
+		List<InterimAbsMng> interimAbsMngInfor = recAbsRepo.getAbsBySidDatePeriod(sid, adjustDate);
 		outputData.setInterimAbsMngInfor(interimAbsMngInfor);
 		//未消化の確定振出に紐付いた暫定振休を取得する
 		outputData = this.getNotInterimAbsMng(sid, adjustDate, outputData, confirmData);
@@ -183,7 +171,7 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		List<InterimRecMng> lstRecData = recAbsRepo.getRecBySidDatePeriod(sid, dateData);
 		for (InterimRecMng x : lstRecData) {
 			//ドメインモデル「暫定振出振休紐付け管理」を取得する
-			lstRecAbsMng = recAbsRepo.getRecOrAbsMng(x.getRecruitmentMngId(), true, DataManagementAtr.INTERIM);
+			lstRecAbsMng = recAbsRepo.getRecOrAbsMng(x.getRemainManaID(), true, DataManagementAtr.INTERIM);
 			lstRecAbsMng.stream().forEach(y -> {
 				//ドメインモデル「暫定振休管理データ」を取得する
 				Optional<InterimAbsMng> optAbsMng = recAbsRepo.getAbsById(y.getAbsenceMngId());
@@ -247,24 +235,23 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 			lstOutputData.add(hisData);
 		});
 		//暫定振出管理データの件数分ループ
+		
+		
 		interimData.stream().forEach(y -> {
 			RecruitmentHistoryOutPara hisData = new RecruitmentHistoryOutPara();
-			hisData.setRecId(y.getRecruitmentMngId());
+			hisData.setRecId(y.getRemainManaID());
 			hisData.setExpirationDate(y.getExpirationDate());
 			hisData.setOccurrenceDays(y.getOccurrenceDays().v());
 			hisData.setUnUseDays(y.getUnUsedDays().v());
 			hisData.setChkDisappeared(false);
-			Optional<InterimRemain> optRemainData = remainRepo.getById(y.getRecruitmentMngId());
-			optRemainData.ifPresent(z -> {
-				MngHistDataAtr atr = MngHistDataAtr.NOTREFLECT;
-				if(z.getCreatorAtr() == CreateAtr.RECORD) {
-					atr = MngHistDataAtr.RECORD;
-				} else if (z.getCreatorAtr() == CreateAtr.SCHEDULE) {
-					atr = MngHistDataAtr.SCHEDULE;
-				}
-				hisData.setDataAtr(atr);
-				hisData.setRecDate(new CompensatoryDayoffDate(false, Optional.of(z.getYmd())));
-			});			
+			MngHistDataAtr atr = MngHistDataAtr.NOTREFLECT;
+			if(y.getCreatorAtr() == CreateAtr.RECORD) {
+				atr = MngHistDataAtr.RECORD;
+			} else if (y.getCreatorAtr() == CreateAtr.SCHEDULE) {
+				atr = MngHistDataAtr.SCHEDULE;
+			}
+			hisData.setDataAtr(atr);
+			hisData.setRecDate(new CompensatoryDayoffDate(false, Optional.of(y.getYmd())));	
 			lstOutputData.add(hisData);
 		});	
 		
@@ -294,19 +281,16 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		//暫定振休管理データの件数分ループ
 		interimData.stream().forEach(x -> {
 			AbsenceHistoryOutputPara hisData = new AbsenceHistoryOutputPara();
-			Optional<InterimRemain> optRemainData = remainRepo.getById(x.getAbsenceMngId());
-			optRemainData.ifPresent(z -> {
-				MngHistDataAtr atr = MngHistDataAtr.NOTREFLECT;
-				if(z.getCreatorAtr() == CreateAtr.RECORD) {
-					atr = MngHistDataAtr.RECORD;
-				} else if (z.getCreatorAtr() == CreateAtr.SCHEDULE) {
-					atr = MngHistDataAtr.SCHEDULE;
-				}
-				CompensatoryDayoffDate date = new CompensatoryDayoffDate(false, Optional.of(z.getYmd()));
-				hisData.setAbsDate(date);				
-				hisData.setCreateAtr(atr);
-			});
-			hisData.setAbsId(x.getAbsenceMngId());
+			MngHistDataAtr atr = MngHistDataAtr.NOTREFLECT;
+			if(x.getCreatorAtr() == CreateAtr.RECORD) {
+				atr = MngHistDataAtr.RECORD;
+			} else if (x.getCreatorAtr() == CreateAtr.SCHEDULE) {
+				atr = MngHistDataAtr.SCHEDULE;
+			}
+			CompensatoryDayoffDate date = new CompensatoryDayoffDate(false, Optional.of(x.getYmd()));
+			hisData.setAbsDate(date);				
+			hisData.setCreateAtr(atr);
+			hisData.setAbsId(x.getRemainManaID());
 			hisData.setRequeiredDays(x.getRequeiredDays().v());
 			hisData.setUnOffsetDays(x.getUnOffsetDays().v());
 			lstOuputData.add(hisData);

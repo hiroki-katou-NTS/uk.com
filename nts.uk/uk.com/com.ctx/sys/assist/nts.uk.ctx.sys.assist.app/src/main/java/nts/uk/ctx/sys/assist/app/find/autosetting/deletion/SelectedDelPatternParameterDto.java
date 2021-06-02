@@ -15,5 +15,5 @@ public class SelectedDelPatternParameterDto {
 	/**
 	 * 選択カテゴリ名称一覧
 	 */
-	private List<SelectionDelCategoryNameDto> selectedCategories;
+	private DataDeletionPatternSettingDto<SelectionDelCategoryNameDto> pattern;
 }

@@ -27,7 +27,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.Time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
@@ -42,18 +41,16 @@ import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
-import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.childcareset.ShortTimeWorkGetRange;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 控除時間帯
- * 
  * @author keisuke_hoshina
- *
  */
 @RequiredArgsConstructor
 @Getter
@@ -262,25 +259,30 @@ public class DeductionTimeSheet {
 			ManagePerCompanySet companyCommonSetting,
 			ManagePerPersonDailySet personCommonSetting) {
 		
-		/** 休憩時間帯取得 */
-		val sheetList = getBreakTimeDeductionForCalc(integrationOfDaily);
+		List<TimeSheetOfDeductionItem> sheetList = new ArrayList<>();
 		
-		/** 勤務間休憩時間帯を取得 */
-		betweenWorkTimeSheets.ifPresent(bwt -> sheetList.add(bwt));
-		
-		/** 外出時間帯取得 */
-		val goOutDeduct = integrationOfDaily.getOutingTime().map(c -> c.removeUnuseItemBaseOnAtr(
-																	deductionAtr,
-																	integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
-																	integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType),
-																	integrationOfWorkTime.getFlowWorkRestSettingDetail(),
-																	integrationOfWorkTime.getCommonSetting().getStampSet().getRoundingTime()))
-													.orElseGet(() -> new ArrayList<>());
-		sheetList.addAll(goOutDeduct);
+		// 休日系でない時
+		if (!todayWorkType.getDecisionAttendanceHolidayAttr()){
+			/** 休憩時間帯取得 */
+			sheetList.addAll(getBreakTimeDeductionForCalc(integrationOfDaily));
+			
+			/** 勤務間休憩時間帯を取得 */
+			betweenWorkTimeSheets.ifPresent(bwt -> sheetList.add(bwt));
+			
+			/** 外出時間帯取得 */
+			val goOutDeduct = integrationOfDaily.getOutingTime().map(c -> c.removeUnuseItemBaseOnAtr(
+					deductionAtr,
+					integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
+					integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType),
+					integrationOfWorkTime.getFlowWorkRestSettingDetail(),
+					integrationOfWorkTime.getCommonSetting().getStampSet().getRoundingTime()))
+					.orElseGet(() -> new ArrayList<>());
+			sheetList.addAll(goOutDeduct);
+		}
 		
 		/** 短時間勤務時間帯を取得 */
 		sheetList.addAll(getShortTimeWorkSheet(
-				integrationOfWorkTime, integrationOfDaily, attendanceLeaveWork, deductionAtr,
+				integrationOfWorkTime, integrationOfDaily, attendanceLeaveWork, deductionAtr, todayWorkType,
 				companyCommonSetting, personCommonSetting));
 		
 		/** ソート処理 */
@@ -388,7 +390,7 @@ public class DeductionTimeSheet {
 		
 		/* 短時間勤務時間帯を取得 */
 		sheetList.addAll(getShortTimeWorkSheet(
-				integrationOfWorkTime, integrationOfDaily, attendanceLeaveWork, dedAtr,
+				integrationOfWorkTime, integrationOfDaily, attendanceLeaveWork, dedAtr, todayWorkType,
 				companyCommonSetting, personCommonSetting));
 		
 		/* ソート処理 */
@@ -419,6 +421,7 @@ public class DeductionTimeSheet {
 	 * @param integrationOfDaily 日別勤怠(WORK)
 	 * @param attendanceLeaveWork 日別勤怠の出退勤
 	 * @param dedAtr 控除区分
+	 * @param todayWorkType 勤務区分
 	 * @param companyCommonSetting 会社別設定管理
 	 * @param personCommonSetting 社員設定管理
 	 * @return 控除項目の時間帯(List)
@@ -428,9 +431,14 @@ public class DeductionTimeSheet {
 			IntegrationOfDaily integrationOfDaily,
 			TimeLeavingOfDailyAttd attendanceLeaveWork,
 			DeductionAtr dedAtr,
+			WorkType todayWorkType,
 			ManagePerCompanySet companyCommonSetting,
 			ManagePerPersonDailySet personCommonSetting) {
 		
+		// 休出かどうかの判断
+		if (todayWorkType.isHolidayWork()){
+			return new ArrayList<>();
+		}
 		return integrationOfDaily.getShortTime().map(st -> {
 			List<TimeSheetOfDeductionItem> deduct = new ArrayList<>();
 			st.getShortWorkingTimeSheets().stream().forEach(c -> {
@@ -464,8 +472,7 @@ public class DeductionTimeSheet {
 		List<TimeSpanForDailyCalc> results = new ArrayList<>();
 	
 		// 育児介護区分の確認
-		ChildCareAtr childCareAtr = ChildCareAtr.CHILD_CARE;
-		if (shortTimeWorkSheet.getChildCareAttr() == ChildCareAttribute.CARE) childCareAtr = ChildCareAtr.CARE;
+		ChildCareAtr childCareAtr = shortTimeWorkSheet.getChildCareAttr();
 		
 		// 控除区分を確認する
 		ShortTimeWorkGetRange checkResult = ShortTimeWorkGetRange.NOT_GET;
@@ -519,12 +526,11 @@ public class DeductionTimeSheet {
 				Finally.empty(),
 				decisionShortTimeAtr(attendanceLeaveWork.getTimeLeavingWorks(), sts),
 				DeductionClassification.CHILD_CARE,
-				Optional.of(getChildCareAtr(sts.getChildCareAttr())));
+				Optional.of(sts.getChildCareAttr()));
 	}
 	
 	/**
 	 * 計算範囲による絞り込みを行うためのループ
-	 * 
 	 * @param dedTimeSheets 控除項目の時間帯
 	 * @param oneDayRange 1日の範囲
 	 * @return 控除項目の時間帯リスト
@@ -567,24 +573,7 @@ public class DeductionTimeSheet {
 	}
 
 	/**
-	 * 全控除項目の時間帯の合計を算出する
-	 * 
-	 * @return 控除時間
-	 */
-	public AttendanceTime calcDeductionAllTimeSheet(DeductionAtr dedAtr, TimeSpanForDailyCalc workTimeSpan) {
-		List<TimeSheetOfDeductionItem> duplicatitedworkTime = getCalcRange(workTimeSpan);
-		AttendanceTime sumTime = new AttendanceTime(0);
-
-		/* stream.collect.summingInt() */
-		for (TimeSheetOfDeductionItem dedItem : duplicatitedworkTime) {
-			sumTime = sumTime.addMinutes(dedItem.calcTotalTime().valueAsMinutes());
-		}
-		return sumTime;
-	}
-
-	/**
 	 * 休憩時間帯の合計時間を算出する
-	 * 
 	 * @param deductionTimeSheetList
 	 * @return
 	 */
@@ -595,33 +584,9 @@ public class DeductionTimeSheet {
 		}
 		return totalTime;
 	}
-
-	/**
-	 * 算出された休憩時間の合計を取得する
-	 * 
-	 * @param dedAtr
-	 * @return
-	 */
-	public DeductionTotalTime getTotalBreakTime(DeductionAtr dedAtr) {
-		DeductionTotalTime dedTotalTime;
-		switch (dedAtr) {
-		case Appropriate:
-			dedTotalTime = getDeductionTotalTime(forDeductionTimeZoneList.stream()
-					.filter(tc -> tc.getDeductionAtr().isBreak()).collect(Collectors.toList()),dedAtr);
-			break;
-		case Deduction:
-			dedTotalTime = getDeductionTotalTime(forRecordTimeZoneList.stream()
-					.filter(tc -> tc.getDeductionAtr().isBreak()).collect(Collectors.toList()),dedAtr);
-			break;
-		default:
-			throw new RuntimeException("unknown DeductionAtr" + dedAtr);
-		}
-		return dedTotalTime;
-	}
-
+	
 	/**
 	 * 算出された外出時間の合計を取得する
-	 * 
 	 * @param dedAtr
 	 * @return
 	 */
@@ -664,7 +629,6 @@ public class DeductionTimeSheet {
 
 	/**
 	 * 法定内・外、相殺時間から合計時間算出
-	 * 
 	 * @param deductionTimeSheetList
 	 * @return
 	 */
@@ -684,7 +648,6 @@ public class DeductionTimeSheet {
 
 	/**
 	 * 計算を行う範囲に存在する控除時間帯の抽出
-	 * 
 	 * @param workTimeSpan 計算範囲
 	 * @return 計算範囲内に存在する控除時間帯
 	 */
@@ -695,7 +658,6 @@ public class DeductionTimeSheet {
 
 	/**
 	 * 法定内区分を法定外へ変更する
-	 * 
 	 * @return 法定内区分変更後の控除時間帯
 	 */
 	public List<TimeSheetOfDeductionItem> replaceStatutoryAtrToExcess() {
@@ -848,14 +810,20 @@ public class DeductionTimeSheet {
 			val startTime = timeLeave.flatMap(c -> c.getAttendanceTime()).orElse(oneDayOfRange.getStart());
 			
 			if (workTime.getWorkTimeSetting().getWorkTimeDivision().isFlow()) { /** 流動勤務の場合 */
+				/** 出勤時刻を予定開始時刻にする */
+				calcRange.setScheduleStartTimeForFlow(
+						integrationOfDaily.getWorkInformation(),
+						workTime.getFlowWorkSetting().get().getFlowSetting().getCalculateSetting());
+				
+				Optional<TimeLeavingWork> firstTimeLeave = calcRange.getAttendanceLeavingWork().getAttendanceLeavingWork(new WorkNo(1));
 				
 				/** 計算範囲を判断 */
 				val within = calcRange.createWithinWorkTimeFrameIncludingCalculationRange(workType,
-						integrationOfDaily, workTime.getFlowWorkSetting().get(), 
-						getTimeLeaveWork(integrationOfDaily), predetermineTimeSet);
+						firstTimeLeave.orElse(getTimeLeaveWork(integrationOfDaily)), predetermineTimeSet);
 				
 				/** 計算開始時刻を取得 */
 				return within.getTimeSheet().getStart();
+				
 			} else if(workTime.getWorkTimeSetting().getWorkTimeDivision().isFlex()) { /** フレックス勤務用　の場合 */
 				
 				/** ○就業時間帯の計算開始時刻を取得 */
@@ -894,7 +862,6 @@ public class DeductionTimeSheet {
 
 	/**
 	 * 控除時間中の時間休暇相殺時間の計算
-	 * 
 	 * @return
 	 */
 	public DeductionOffSetTime calcTotalDeductionOffSetTime(LateTimeOfDaily lateTimeOfDaily,
@@ -917,29 +884,31 @@ public class DeductionTimeSheet {
 	}
 
 	/**
-	 * 受け取った計算範囲へ控除時間帯を補正＆絞り込む
-	 * 
-	 * @param timeSpan 計算範囲
+	 * 指定時間帯に含まれる控除時間帯リストを取得
+	 * @param timeSpan 時間帯
 	 * @param atr 控除区分
-	 * @return 控除項目の時間帯リスト(控除区分に従ってＬｉｓｔ取得)
+	 * @return 控除項目の時間帯リスト(控除区分に従ってList取得)
 	 */
 	public List<TimeSheetOfDeductionItem> getDupliRangeTimeSheet(TimeSpanForDailyCalc timeSpan, DeductionAtr atr) {
+		// 控除区分に合うListを取得
 		List<TimeSheetOfDeductionItem> dedList = getDedListWithAtr(atr);
 		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
 		for (TimeSheetOfDeductionItem timeSheet : dedList) {
+			// 重複している時間帯を返す
 			val dupCalcRange = timeSheet.getTimeSheet().getDuplicatedWith(timeSpan);
 			if (dupCalcRange.isPresent()) {
+				// 処理中の「控除項目の時間帯」を重複した時間帯で作り直す
 				TimeSheetOfDeductionItem divideStartTime = timeSheet.reCreateOwn(dupCalcRange.get().getTimeSpan().getStart(), false);
 				TimeSheetOfDeductionItem correctAfterTimeSheet = divideStartTime.reCreateOwn(dupCalcRange.get().getTimeSpan().getEnd(), true);
 				returnList.add(correctAfterTimeSheet);
 			}
 		}
+		// 結果を返す
 		return returnList;
 	}
 	
 	/**
 	 * 控除区分に従って控除リスト取得
-	 * 
 	 * @param atr
 	 * @return
 	 */
@@ -949,13 +918,6 @@ public class DeductionTimeSheet {
 		} else {
 			return this.forRecordTimeZoneList;
 		}
-	}
-	
-	private static ChildCareAtr getChildCareAtr(ChildCareAttribute childCareAttr) {
-		if(childCareAttr==ChildCareAttribute.CHILD_CARE) {
-			return ChildCareAtr.CHILD_CARE;
-		}
-		return ChildCareAtr.CARE;
 	}
 	
 	/**

@@ -22,6 +22,7 @@ import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -94,8 +95,8 @@ import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 @Stateless
 public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<ScheduleCreatorExecutionCommand> {
 
-//	@Inject
-//	private ManagedParallelWithContext parallel;
+	@Inject
+	private ManagedParallelWithContext parallel;
 
 	/** The basic schedule repository. */
 	@Inject
@@ -330,9 +331,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		Object companySetting = scTimeAdapter.getCompanySettingForCalculation();
 		AtomicBoolean checkStop = new AtomicBoolean(false);
 		CacheCarrier carrier = new CacheCarrier();
-		scheduleCreators.stream()
-			.sorted((a, b) -> a.getEmployeeId().compareTo(b.getEmployeeId()))
-			.forEach(scheduleCreator -> {
+		this.parallel.forEach(
+				scheduleCreators.stream().sorted((a,b) -> a.getEmployeeId().compareTo(b.getEmployeeId())).collect(Collectors.toList()),
+				scheduleCreator -> {
 				if (scheduleCreator == null)
 					return;
 				if (scheduleExecutionLog.getExeAtr() == ExecutionAtr.AUTOMATIC) {
@@ -712,12 +713,14 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// Input「対象開始日」と、取得した「開始年月日」を比較
 		DatePeriod dateAfterCorrection = dateBeforeCorrection;
 		if (dateBeforeCorrection.start().before(dateP.start())) {
-			dateAfterCorrection = dateBeforeCorrection.cutOffWithNewStart(dateP.start());
+//			dateAfterCorrection = dateBeforeCorrection.cutOffWithNewStart(dateP.start());
+			dateAfterCorrection = new DatePeriod(dateP.start(), dateAfterCorrection.end());
 		}
 		// Output「対象開始日(補正後)」に、取得した「締め期間. 開始日年月日」を設定する
 		if (dateAfterCorrection.start().beforeOrEquals(dateBeforeCorrection.end())) {
 			// Out「対象終了日(補正後)」に、Input「対象終了日」を設定する
-			dateAfterCorrection = dateAfterCorrection.cutOffWithNewEnd(dateBeforeCorrection.end());
+//			dateAfterCorrection = dateAfterCorrection.cutOffWithNewEnd(dateBeforeCorrection.end());
+			dateAfterCorrection = new DatePeriod(dateAfterCorrection.start(), dateBeforeCorrection.end());
 			return new StateAndValueDatePeriod(dateAfterCorrection, StateValueDate.TARGET_PERIOD); // true
 		}
 

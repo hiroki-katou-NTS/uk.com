@@ -1,10 +1,11 @@
 module nts.uk.at.view.kmk003.a {
     import common = nts.uk.at.view.kmk003.a.service.model.common;
-    
+    import HalfDayWorkSetDto = nts.uk.at.view.kmk003.a.service.model.common.HalfDayWorkSetDto;
+
     export module service {
         export module model {
             export module fixedset {
-                
+
                 export interface FixOffdayWorkTimezoneDto {
                     restTimezone: common.TimezoneOfFixedRestTimeSetDto;
                     lstWorkTimezone: common.HDWorkTimeSheetSettingDto[];
@@ -25,8 +26,9 @@ module nts.uk.at.view.kmk003.a {
                     workTimeCode: string;
                     offdayWorkTimezone: FixOffdayWorkTimezoneDto;
                     commonSetting: common.WorkTimezoneCommonSetDto;
-                    useHalfDayShift: boolean;
-                    fixedWorkRestSetting: common.FixedWorkRestSetDto;
+                    useHalfDayShift: HalfDayWorkSetDto;
+                    commonRestSet: common.CommonRestSettingDto;
+                    // fixedWorkRestSetting: common.FixedWorkRestSetDto;
                     lstHalfDayWorkTimezone: FixHalfDayWorkTimezoneDto[];
                     lstStampReflectTimezone: common.StampReflectTimezoneDto[];
                     legalOTSetting: number;

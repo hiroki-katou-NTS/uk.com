@@ -5,8 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectatt.AutoCorrectStampOfTimeZone;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectatt.ClearConflictTimeWithDay;
@@ -32,9 +31,6 @@ public class TimeCorrectionProcess {
 		if (!workCondition.isPresent()) {
 			return;
 		}
-		String employeeId = domainDaily.getEmployeeId();
-
-		GeneralDate date = domainDaily.getYmd();
 
 		// 予定実績区分をチェクする
 		if (classification == ScheduleRecordClassifi.RECORD) {
@@ -43,8 +39,8 @@ public class TimeCorrectionProcess {
 		}
 
 		// 矛盾した時刻をクリアする
-		clearConflictTimeWithDay.clear(cid, employeeId, date, workCondition.get(), domainDaily.getWorkInformation(),
-				domainDaily.getAttendanceLeave(), domainDaily.getEditState());
+		clearConflictTimeWithDay.clear(cid, workCondition.get(), domainDaily,
+				domainDaily.getAttendanceLeave());
 
 	}
 

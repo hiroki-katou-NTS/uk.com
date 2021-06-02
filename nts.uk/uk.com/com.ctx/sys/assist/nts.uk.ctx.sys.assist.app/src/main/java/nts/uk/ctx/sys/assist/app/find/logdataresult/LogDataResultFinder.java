@@ -21,7 +21,7 @@ import nts.uk.ctx.sys.assist.app.find.resultofrestoration.ResultOfRestorationDto
 import nts.uk.ctx.sys.assist.app.find.resultofrestoration.ResultOfRestorationFinder;
 import nts.uk.ctx.sys.assist.app.find.resultofsaving.ResultOfSavingDto;
 import nts.uk.ctx.sys.assist.app.find.resultofsaving.ResultOfSavingFinder;
-
+import nts.uk.ctx.sys.assist.dom.deletedata.ErrorContent;
 import nts.uk.ctx.sys.assist.dom.reference.record.EmpBasicInfoAdapter;
 import nts.uk.ctx.sys.assist.dom.reference.record.EmpBasicInfoImport;
 
@@ -179,10 +179,10 @@ public class LogDataResultFinder {
 								.map(resultLogDeletion -> {
 									int logNumber = resultLogDeletion.getSeqId();
 									String processingContent = resultLogDeletion.getProcessingContent().v();
-									String errorContent = resultLogDeletion.getErrorContent().v();
+									String errorContent = resultLogDeletion.getErrorContent().map(ErrorContent::v).orElse(null);
 									String contentSql = "";
-									GeneralDate errorDate = resultLogDeletion.getErrorDate();
-									String errorEmployeeId = resultLogDeletion.getErrorEmployeeId();
+									GeneralDate errorDate = resultLogDeletion.getErrorDate().orElse(null);
+									String errorEmployeeId = resultLogDeletion.getErrorEmployeeId().orElse(null);
 									return new LogResultDto(logNumber, processingContent, errorContent, contentSql, errorDate, errorEmployeeId);
 								})
 								.collect(Collectors.toList());
