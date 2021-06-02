@@ -90,7 +90,7 @@ public class HolidayWorkTimeSheet{
 		HolidayWorkTimeOfDaily holidayWorkTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance()
 				.flatMap(x -> x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()
 						.getWorkHolidayTime()).orElse(HolidayWorkTimeOfDaily.createDefaultBeforeApp(
-					workHolidayTime.stream().map(x -> x.getHolidayWorkTimeSheetNo().v()).collect(Collectors.toList())));
+					workHolidayTime.stream().map(x -> x.getFrameTime().getHolidayFrameNo().v()).collect(Collectors.toList())));
 		List<HolidayWorkFrameTime> aftertransTimeList  = new ArrayList<HolidayWorkFrameTime>();
 		// 時間帯毎に休出時間を計算する(補正、制御含む)
 		calculateHolidayEachTimeZone(require, cid, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
@@ -182,7 +182,7 @@ public class HolidayWorkTimeSheet{
 		 this.workHolidayTime.forEach(frameSheet -> {
 			// 控除する時間を計算
 			Optional<HolTimeDeductByPriorAppOutput> frameSheetOpt = lstTimeDeductOut.stream()
-					.filter(frame -> frame.getHolidayTimeNo().v().intValue() == frameSheet.getHolidayWorkTimeSheetNo().v().intValue()).findFirst();
+					.filter(frame -> frame.getHolidayTimeNo().v().intValue() == frameSheet.getFrameTime().getHolidayFrameNo().v().intValue()).findFirst();
 
 			AttendanceTime timeDeductCalc = new AttendanceTime(
 					Math.min(frameSheetOpt.map(x -> x.getTimeDeduct().v()).orElse(0),
@@ -411,7 +411,7 @@ public class HolidayWorkTimeSheet{
 		this.workHolidayTime.forEach(frameTime -> {
 			// 休出時間へ加算
 			val holTime = hol.getHolidayWorkFrameTime().stream()
-					.filter(x -> x.getHolidayFrameNo().v().intValue() == frameTime.getHolidayWorkTimeSheetNo().v().intValue()).findFirst();
+					.filter(x -> x.getHolidayFrameNo().v().intValue() == frameTime.getFrameTime().getHolidayFrameNo().v().intValue()).findFirst();
 			holTime.ifPresent(data -> {
 				// B休出時間+=A.休出時間
 				if (data.getHolidayWorkTime().isPresent()
@@ -483,7 +483,7 @@ public class HolidayWorkTimeSheet{
 		HolidayWorkTimeOfDaily holidayWorkTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance()
 				.flatMap(x -> x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()
 						.getWorkHolidayTime()).orElse(HolidayWorkTimeOfDaily.createDefaultBeforeApp(
-					workHolidayTime.stream().map(x -> x.getHolidayWorkTimeSheetNo().v()).collect(Collectors.toList())));
+					workHolidayTime.stream().map(x -> x.getFrameTime().getHolidayFrameNo().v()).collect(Collectors.toList())));
 		// 時間帯毎に休出時間を計算する(補正、制御含む)
 		calculateHolidayEachTimeZone(require, cid, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
 				workType.getWorkTypeCode().v(), workTimeCode, holidayWorkTime, holidayAutoCalcSetting,
