@@ -1086,24 +1086,15 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     public resetLastestData() {
       const vm = this;
-      //reset attendance information
-      vm.attendanceInformationDtos([]);
-      vm.attendanceInformationDtosDisplay([]);
-      // vm.attendanceInformationDtosDisplayClone([]);
 
       //reset search value
       vm.workplaceNameFromCDL008('');
       vm.searchValue('');
 
-      //reset selected date to today
-      vm.selectedDate(moment().format('YYYYMMDD'));
-
       //reset pagination
-      vm.currentPage(0);
-      vm.totalElement(0);
+      vm.currentPage(1);
 
-      //re-subscribe favorite (with characteristics)
-      setTimeout(() => vm.subscribeFavorite(), 1);
+      vm.subscribeFavorite();
     }
 
     private updateLoginData(atds: any) {
