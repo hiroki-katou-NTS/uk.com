@@ -76,5 +76,5 @@ td.employment-tdpad {
 }
 
 .kcp009-display-content {
-  display: contents;
+  display: table-cell;
 }
