@@ -338,14 +338,16 @@
 	padding-bottom: 2px;
 	border-bottom: 1px solid #B1B1B1;
 	white-space: nowrap;
-	width: fit-content;
+	width: 1190px;
+	float: left;
 }
 
 #functon-area-row2-left {
-	width: 612px;
+	width: 617px;
 	margin-top: 5px;
 	height: 45px;
 	display: inline-block;
+	float: left;
 }
 
 #functon-area-row2-center {
@@ -353,6 +355,7 @@
 	height: 45px;
 	display: inline-block;
 	margin-bottom: 4px;
+	float: left;
 }
 
 #functon-area-row2-right {
@@ -361,6 +364,7 @@
 	margin-left: 26px;
 	height: 45px;
 	display: inline-block;
+	float: right;
 }
 
 #date-time-prev, #date-time-after {

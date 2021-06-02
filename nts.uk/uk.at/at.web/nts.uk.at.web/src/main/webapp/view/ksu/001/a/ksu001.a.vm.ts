@@ -5219,7 +5219,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // code tam ghep data server sau
             let useDisplayPeriods = data.dataBasicDto.scheFunctionCtrlByWorkplace.useDisplayPeriod;
             if (useDisplayPeriods.length == 0) {
-                self.selectedDisplayPeriod(1)
+                self.selectedDisplayPeriod(1);
+                $('#A3_2').empty();
             } else if (useDisplayPeriods.length == 1) {
                 self.disPeriodSelectionList().push({ id: 1, name: getText("KSU001_39") });
                 if (useDisplayPeriods[0] == 0) {
