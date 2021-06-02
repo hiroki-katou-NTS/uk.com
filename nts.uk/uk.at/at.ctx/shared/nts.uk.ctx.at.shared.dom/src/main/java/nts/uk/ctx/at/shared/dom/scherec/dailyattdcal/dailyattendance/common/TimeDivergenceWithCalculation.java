@@ -56,6 +56,11 @@ public class TimeDivergenceWithCalculation implements Cloneable{
 		
 	}
 	
+	public void resetDefaultValue() {
+		this.time = AttendanceTime.ZERO;
+		this.calcTime = AttendanceTime.ZERO;
+	}
+	
 	/**
 	 * 時間のみを入れ替える(乖離計算無し)
 	 * @param time

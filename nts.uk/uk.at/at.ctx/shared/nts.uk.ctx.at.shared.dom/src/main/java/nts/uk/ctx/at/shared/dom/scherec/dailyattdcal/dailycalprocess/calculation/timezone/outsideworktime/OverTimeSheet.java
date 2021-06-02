@@ -211,10 +211,12 @@ public class OverTimeSheet {
 	
 	//時間帯毎の時間から残業枠毎の時間を集計
 	public  List<OverTimeFrameTime> aggregateTimeForOvertime(OverTimeOfDaily overTimeOfDaily) {
+		val hol = overTimeOfDaily.clone();
+		hol.getOverTimeWorkFrameTime().forEach(x -> x.cleanTimeAndTransfer());
 		//残業時間帯でループ
 		this.frameTimeSheets.forEach(frameTime -> {
 			// 残業時間へ加算
-			val overTime = overTimeOfDaily.getOverTimeWorkFrameTime().stream()
+			val overTime = hol.getOverTimeWorkFrameTime().stream()
 					.filter(x -> x.getOverWorkFrameNo().v() == frameTime.getOverTimeWorkSheetNo().v()).findFirst();
 			overTime.ifPresent(data -> {
 				//B.残業時間+=A.残業時間
@@ -227,7 +229,7 @@ public class OverTimeSheet {
 	
 		//残業枠時間を返す
 		
-		return overTimeOfDaily.getOverTimeWorkFrameTime();
+		return hol.getOverTimeWorkFrameTime();
 	}
 	
 	/**

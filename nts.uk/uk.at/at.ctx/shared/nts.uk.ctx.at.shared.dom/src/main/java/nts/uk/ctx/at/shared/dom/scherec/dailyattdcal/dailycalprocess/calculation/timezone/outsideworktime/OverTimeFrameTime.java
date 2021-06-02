@@ -218,5 +218,8 @@ public class OverTimeFrameTime implements Cloneable{
 				new AttendanceTime(this.orderTime.v()));
 	}
 	
-	
+	public void cleanTimeAndTransfer() {
+		OverTimeWork.resetDefaultValue();
+		TransferTime.resetDefaultValue();
+	}
 }

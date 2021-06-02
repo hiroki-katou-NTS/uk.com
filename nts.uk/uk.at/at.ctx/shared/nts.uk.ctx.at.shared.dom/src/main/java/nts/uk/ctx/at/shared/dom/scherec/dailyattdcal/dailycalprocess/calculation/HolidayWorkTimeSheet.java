@@ -404,10 +404,13 @@ public class HolidayWorkTimeSheet{
 
 	// 時間帯毎の時間から休出枠毎の時間を集計
 	public List<HolidayWorkFrameTime> aggregateTimeForHol(HolidayWorkTimeOfDaily holidayOfDaily) {
+		val hol = holidayOfDaily.clone();
+		//clean time old
+		hol.getHolidayWorkFrameTime().forEach(x -> x.cleanTimeAndTransfer());
 		// 休出時間帯でループ
 		this.workHolidayTime.forEach(frameTime -> {
 			// 休出時間へ加算
-			val holTime = holidayOfDaily.getHolidayWorkFrameTime().stream()
+			val holTime = hol.getHolidayWorkFrameTime().stream()
 					.filter(x -> x.getHolidayFrameNo().v().intValue() == frameTime.getHolidayWorkTimeSheetNo().v().intValue()).findFirst();
 			holTime.ifPresent(data -> {
 				// B休出時間+=A.休出時間
@@ -425,7 +428,7 @@ public class HolidayWorkTimeSheet{
 
 		// 休出枠時間を返す
 
-		return holidayOfDaily.getHolidayWorkFrameTime();
+		return hol.getHolidayWorkFrameTime();
 	}
 	
 	/**
