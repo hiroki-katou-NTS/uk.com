@@ -264,7 +264,7 @@ module nts.uk.ui.at.kdw013.calendar {
         }
         
         .fc-container .fc-day-today {
-            background-color: #fffadf;
+            background-color: #ffff00;
         }
 
         .fc-timegrid-cols .fc-day-today {
@@ -2854,6 +2854,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             $(fabl).focus();
                         }
                     });
+                $('#btn_register').focus();
             }
 
             destroyed() {
