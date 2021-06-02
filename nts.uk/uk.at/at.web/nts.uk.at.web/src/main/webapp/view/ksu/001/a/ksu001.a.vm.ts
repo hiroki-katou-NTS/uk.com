@@ -544,6 +544,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 				self.useCategoriesWorkplaceValue.subscribe(value => {
 					self.userInfor.useCategoriesWorkplaceValue = value;
 					characteristics.save(self.KEY, self.userInfor);
+					self.showA12_2(_.includes([WorkplaceCounterCategory.WORKTIME_PEOPLE, WorkplaceCounterCategory.LABOR_COSTS_AND_TIME], value) ||
+							(_.includes([WorkplaceCounterCategory.EXTERNAL_BUDGET], value) && self.funcNo15_WorkPlace));
 					// $("#cacheDiv").append($('#horzDiv'));
                     self.getAggregatedInfo(false, true);
 				});
@@ -3067,20 +3069,39 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // update A11
 		updateVertSumGrid() {
 			let self = this;
+			$("#cacheDiv").append($('#vertDiv'));
 			let vertSumHeader = self.createVertSumHeader();
 		    let vertSumContent = self.createVertSumContent();
 			$("#extable").exTable("updateTable", "verticalSummaries", vertSumHeader, vertSumContent);	
+			if (self.showA11()) {
+				$("#vertDropDown").html(function() { return $('#vertDiv'); });
+				$('#vertDiv').css('display', '');	
+				
+				$('.ex-body-vert-sum').scroll(() => {
+					$('#vertDiv').css('margin-left', $('.ex-body-vert-sum').scrollLeft().valueOf() + 'px');
+				});
+			}
 		}
 		
         // update A12
 		updateHorzSumGrid() {
 			let self = this;
+			$("#cacheDiv").append($('#horzDiv'));
 			let leftHorzSumHeader = self.createLeftHorzSumHeader();
 		    let leftHorzSumContent = self.createLeftHorzSumContent();
 			let horizontalSumHeader = self.createHorizontalSumHeader();
 		    let horizontalSumContent = self.createHorizontalSumContent();
 			$("#extable").exTable("updateTable", "leftHorizontalSummaries", leftHorzSumHeader, leftHorzSumContent);
 			$("#extable").exTable("updateTable", "horizontalSummaries", horizontalSumHeader, horizontalSumContent);
+			if (self.showA12()) {
+				$("#horzDropDown").html(function() { return $('#horzDiv'); });
+				$('#horzDiv').css('display', '');
+			
+				$('.extable-body-left-horz-sum tbody tr td:first-child()').css('border-right', '1px solid transparent');	
+				
+				self.showA12_2(_.includes([WorkplaceCounterCategory.WORKTIME_PEOPLE, WorkplaceCounterCategory.LABOR_COSTS_AND_TIME], self.useCategoriesWorkplaceValue()) ||
+							(_.includes([WorkplaceCounterCategory.EXTERNAL_BUDGET], self.useCategoriesWorkplaceValue()) && self.funcNo15_WorkPlace));
+			}
 		}
         
         bindingEventClickFlower() {
