@@ -494,17 +494,20 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			if(nowWorkingItem.isPresent()) {
 				
 				Optional<ManagePerPersonDailySet> personSetting = factoryManagePerPersonDailySet.create(companyId, companyCommonSetting, record, nowWorkingItem.get().getValue());
-				if(!personSetting.isPresent())
-					continue;
-		
-				//実績計算
-				ManageCalcStateAndResult result = calculate.calculate(calcOption, record, 
-													companyCommonSetting,
-													personSetting.get(),
-													justCorrectionAtr,
-													findAndGetWorkInfo(record.getEmployeeId(),map,record.getYmd().addDays(-1)),
-													findAndGetWorkInfo(record.getEmployeeId(),map,record.getYmd().addDays(1)));
-
+				
+				ManageCalcStateAndResult result;
+				if(personSetting.isPresent()) {
+					//実績計算
+					result = calculate.calculate(calcOption, record, 
+														companyCommonSetting,
+														personSetting.get(),
+														justCorrectionAtr,
+														findAndGetWorkInfo(record.getEmployeeId(),map,record.getYmd().addDays(-1)),
+														findAndGetWorkInfo(record.getEmployeeId(),map,record.getYmd().addDays(1)));
+				} else {
+					result = ManageCalcStateAndResult.failCalc(record, attendanceItemConvertFactory);
+				}
+				
 				if(result.isCalc()) {
 					result.getIntegrationOfDaily().getWorkInformation().changeCalcState(CalculationState.Calculated);
 				}

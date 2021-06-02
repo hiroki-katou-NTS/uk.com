@@ -57,8 +57,12 @@ public class CorrectWorkSchedule {
 		integrationOfDaily = rule.process(integrationOfDaily, changeAtt);
 		
 		//勤務予定情報を計算する
-		integrationOfDaily = this.calcWorkScheduleInfo(integrationOfDaily, employeeId, targetDate).get(0);
-
+		List<IntegrationOfDaily> integrationOfDailies = this.calcWorkScheduleInfo(integrationOfDaily, employeeId, targetDate);
+		if(integrationOfDailies.isEmpty()) {
+			return workSchedule;
+		}
+		integrationOfDaily = integrationOfDailies.get(0);
+		
 		// 勤務予定の出退勤を補正する
 		correctStampOfWorkSchedule(integrationOfDaily);
 		
