@@ -44,7 +44,7 @@ public WorkPaletteDisplayInforDto get( GeneralDate date , int page , int targetU
 		Optional<TaskPalette> taskPalette;
 		TaskPaletteDto taskPaletteDto = null;
 		//1: <call>() 
-		if (targetUnit == TargetOrganizationUnit.WORKPLACE_GROUP.value) {
+		if (targetUnit == TargetOrganizationUnit.WORKPLACE.value) {
 			targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace(organizationID);
 		} else {
 			targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(organizationID);

@@ -34,12 +34,12 @@
                 </div>
                 <hr id="line" />
                 <!--C4-->
-                <div tabindex="3" id="left-content" class="fixed-flex-layout-left">
+                <div id="left-content" tabindex="3" class="fixed-flex-layout-left">
                     <div class="container-custom">
                         <!-- <div class="custom">
                                             <i class="icon icon-searchbox"></i>
                                         </div> -->
-                        <div style="width: 360px"
+                        <div style="width: 360px" tabindex="-1"
                             data-bind="ntsSearchBox: {targetKey: 'code', mode: 'ListBox', comId:'component-items-list', items: listEmp(), 
                                                 			searchMode: 'highlight', selected: singleSelectedCode, selectedKey: 'code', fields: ['name', 'code']}" />                
                 
@@ -78,7 +78,8 @@
                             constraint: 'TimeWithDayAttr',
                             option: {width: '60px', timeWithDay: false},
                             name: '#[KSU003_93]',
-                           
+                            mode: 'time',
+                            inputFormat: 'time',
                             required: true,
                             enable: enableTimeZone,
                             readonly: false,
@@ -93,7 +94,8 @@
                             constraint: 'TimeWithDayAttr',                           
                             option: {width: '60px', timeWithDay: false},
                             name: '#[KSU003_95]',
-                           
+                            mode: 'time',
+                            inputFormat: 'time',                           
                             required: true,
                             enable: enableTimeZone,
                             readonly: false,
@@ -109,11 +111,12 @@
                                     options: taskMasterList,
                                     width: 230,
                                     optionsValue: 'code',
-                                    visibleItemsCount: 10,
+                                    visibleItemsCount: 5,
                                     value: selectedTaskCode,
+                                    editable: true,
                                     optionsText: 'taskName',                                  
                                     columns: [
-                                        { prop: 'code', length: 6 },
+                                        { prop: 'code', length: 20 },
                                         { prop: 'taskName', length: 16 },
                                     ]}"></div>
                     </div>
