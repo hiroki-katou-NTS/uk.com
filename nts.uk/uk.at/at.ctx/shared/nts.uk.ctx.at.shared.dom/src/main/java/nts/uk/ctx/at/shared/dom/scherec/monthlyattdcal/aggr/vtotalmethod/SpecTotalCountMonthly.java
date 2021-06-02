@@ -41,8 +41,12 @@ public class SpecTotalCountMonthly {
 		/** パラメータ「労働制」を判断 */
 		if (workingSystem == WorkingSystem.EXCLUDED_WORKING_CALCULATE) { /** 就業計算対象外 */
 			/** 属性「計算対象外のカウント条件」を取得 */
-			if (this.specCount != SpecCountNotCalcSubject.NoUncondition) /** 「無条件にカウントしない」以外 */
-				return true;
+			switch (this.specCount) {
+			case Uncondition: return true; /** 無条件にカウントする */
+			case NoUncondition: return false; /** 無条件にカウントしない */
+			default: /** 勤務日のみカウントする →　①　*/
+				break;
+			} 
 			
 		} else { /** 以外*/
 			/** パラメータ「勤務種類」を取得 */
@@ -54,10 +58,10 @@ public class SpecTotalCountMonthly {
 			if (this.notWorkCount) 
 				return true;
 				
-			/** 「勤務日数」のカウント方法を判断 */
+			/** 「勤務日数」のカウント方法を判断 →　① */
 		}
 		
-		/** 「勤務日数」のカウント方法を判断 */
+		/** 「勤務日数」のカウント方法を判断 ① */
 		if (workTypeDaysCountTable.getWorkDays().v() > 0)
 			/** ○出勤状態を判断する */
 			return isAttendanceDay;
