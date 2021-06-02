@@ -110,7 +110,6 @@ public class CreateAlarmDataTopPageService {
             val optWkplTopAlarm = topAlarmParamList.stream().filter(Objects::nonNull).map(TopPageAlarmImport::getOccurrenceDateTime).max(GeneralDateTime::compareTo);
             GeneralDateTime occurrenceDateTime = optWkplTopAlarm.isPresent() ? optWkplTopAlarm.get() : GeneralDateTime.now();
 
-            val lstEmp = topAlarmParamList.stream().filter(Objects::nonNull).map(i -> i.getDisplaySId()).collect(Collectors.toList());
             //$上長１　＝　$上長の社員IDList　：　トップアラームParam#作成する(アラームリスト、$発生日時、$、上長、[prv-1]部下のエラーがある社員IDを判断する（Loopしてる職場ID、$職場Map)、$パターンコード、Empty、Empty、$パターン名称）
             topAlarmList.addAll(empIds.stream().map(empId -> new TopPageAlarmImport(
                             deleteInfo.isPresent() ? deleteInfo.get().getAlarmClassification() : 0,
@@ -121,7 +120,7 @@ public class CreateAlarmDataTopPageService {
                             patternName,
                             Optional.empty(),
                             Optional.empty(),
-                            lstEmp
+                            getEmployeeIdsWithChildWkpError(wkpl, workplaceMap)
                     )
             ).collect(Collectors.toList()));
         }
@@ -131,6 +130,17 @@ public class CreateAlarmDataTopPageService {
 
         Optional<DeleteInfoAlarmImport> finalDelInfo = delInfo;
         return AtomTask.of(() -> require.create(companyId, topAlarmList, finalDelInfo));
+    }
+
+    /**
+     * [prv-1]部下のエラーがある社員IDを判断する
+     * @param workplaceId
+     * @param workplaceMap
+     * @return 部下のエラーがある社員ID
+     */
+    private static List<String> getEmployeeIdsWithChildWkpError(String workplaceId, Map<String, List<TopPageAlarmImport>> workplaceMap) {
+        List<TopPageAlarmImport> topAlarmParamList = workplaceMap.getOrDefault(workplaceId, new ArrayList<>());
+        return topAlarmParamList.stream().filter(x -> x != null).map(i -> i.getDisplaySId()).collect(Collectors.toList());
     }
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {

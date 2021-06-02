@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -15,10 +16,12 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.FluidFixedAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeVacationOffSetItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductGoOutRoundingSet;
@@ -31,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -569,6 +573,12 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		TimeWithDayAttr newStart = oneDayRange.getStart();
 		TimeWithDayAttr newEnd = oneDayRange.getEnd();
 		
+		//出勤時刻が含まれているか判断する
+		if(oneDayRange.getStart().lessThan(time.getTimespan().getStart())
+				&& time.getTimespan().getStart().lessThanOrEqualTo(oneDayRange.getEnd())
+				&& dedAtr.isAppropriate()) {
+			return result;
+		}
 		//退勤時間を含んでいるかチェック
 		if(oneDayRange.contains(time.getTimespan().getEnd())) {
 			//出勤時間を含んでいるチェック
@@ -641,6 +651,25 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		default:
 			throw new RuntimeException("Unknown DeductionAtr:"+this.getDeductionAtr());
 		}
+	}
+	
+	/**
+	 * 外出の控除相殺時間をセットする
+	 * @param deductionAtr 控除区分
+	 * @param priorityOrder 時間休暇相殺優先順位
+	 * @param useTimes 時間休暇使用時間
+	 */
+	public void setOutOffsetTime(CompanyHolidayPriorityOrder priorityOrder, Map<GoingOutReason,TimevacationUseTimeOfDaily> useTimes) {
+		if(!this.getGoOutReason().isPresent() || !this.goOutReason.get().isPrivateOrUnion()) {
+			return;
+		}
+		if(!useTimes.containsKey(this.getGoOutReason().get())){
+			return;
+		}
+		this.deductionOffSetTime = Optional.of(this.offsetProcess(
+				priorityOrder,
+				useTimes.get(this.getGoOutReason().get()),
+				NotUseAtr.USE));
 	}
 	
 	private Optional<TimeRoundingSetting> getShortTimeRounding(DeductionAtr dedAtr, WorkTimezoneCommonSet commonSet,TimeRoundingSetting rounding) {
