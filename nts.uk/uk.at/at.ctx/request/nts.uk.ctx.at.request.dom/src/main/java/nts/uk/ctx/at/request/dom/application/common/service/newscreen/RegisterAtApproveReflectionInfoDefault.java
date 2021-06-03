@@ -32,15 +32,9 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 			reflectionStatusOfDay.setActualReflectStatus(ReflectedState.WAITREFLECTION);
 		}
 		applicationRepository.update(application);
-		// 反映対象なのかチェックする(check xem có phải đối tượng phản ánh hay k?)
-		if((application.isPreApp() && (application.isOverTimeApp() || application.isHolidayWorkApp()))
-				|| application.isWorkChangeApp()
-				|| application.isGoReturnDirectlyApp()){
-			// 社員の雇用履歴を全て取得する
-			// 指定した期間の申請を反映する
-			// xử lý trên UI
-			return application.getAppID();
-		}
-		return "";
+		// 社員の雇用履歴を全て取得する
+		// 指定した期間の申請を反映する
+		// xử lý trên UI
+		return application.getAppID();
 	}
 }

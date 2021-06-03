@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -101,9 +100,6 @@ public class AttendanceInformationScreenQuery {
 	
 	@Inject
 	private AttendanceAdapter attendanceAdapter;
-	
-	@Inject
-	private ManagedParallelWithContext parallel;
 
 	public List<AttendanceInformationDto> getAttendanceInformation( List<EmpIdParam> empIds,
 			GeneralDate baseDate, boolean emojiUsage) {
@@ -176,159 +172,158 @@ public class AttendanceInformationScreenQuery {
 		List<String> pids = empIds.stream().map(empId -> empId.getPid()).collect(Collectors.toList());
 		List<UserAvatar> avatarList = avatarRepo.getAvatarByPersonalIds(pids);
 		
-		List<AttendanceInformationDto> returnList = Collections.synchronizedList(new ArrayList<>());
-		
-		this.parallel.forEach(empIds, empId -> { //#115360
-			if(empId != null) {
-				// 13:  get(申請IDリスト): List<残業申請>
-				List<Application> applications = mapListApplication.get(empId.getSid());
-				List <String> appIds = applications.stream().map(item -> item.getAppID()).collect(Collectors.toList());
-				Map<String, Integer> mapAppIdAndOTAttr = appOverTimeRepo.getByAppIdAndOTAttr(loginCid, appIds); //#115387
-				 
-				// 14: create()
-				List<ApplicationDto> applicationDtos = applications.stream().map(item -> ApplicationDto.toDto(item, mapAppIdAndOTAttr))
-						.collect(Collectors.toMap(ApplicationDto::getAppType, p -> p, (p, q) -> p)).values().stream()
+		return empIds.stream().map(empId -> {
+
+			// 13:  get(申請IDリスト): List<残業申請>
+			List<Application> applications = mapListApplication.get(empId.getSid());
+			List <String> appIds = applications.stream().map(item -> item.getAppID()).collect(Collectors.toList());
+			Map<String, Integer> mapAppIdAndOTAttr = appOverTimeRepo.getByAppIdAndOTAttr(loginCid, appIds); //#115387
+			 
+			// 14: create()
+			List<ApplicationDto> applicationDtos = applications.stream()
+					.map(item -> ApplicationDto.toDto(item, mapAppIdAndOTAttr))
+					.collect(Collectors.toMap(ApplicationDto::getAppType, p -> p, (p, q) -> p)).values().stream()
 						.collect(Collectors.toList());
+			
+			// 6: create() - start
+			String sid = empId.getSid();
+			WorkInfoOfDailyPerformance workInfo = workInfoList.stream().filter(wi -> wi.getEmployeeId().equalsIgnoreCase(sid)).findFirst().orElse(null);
+			WorkSchedule workSchedule = workScheduleList.stream().filter(ws -> ws.getEmployeeID().equalsIgnoreCase(sid)).findFirst().orElse(null);
+			TimeLeavingOfDailyPerformance timeLeave = timeLeaveList.stream().filter(tl -> tl.getEmployeeId().equalsIgnoreCase(sid)).findFirst().orElse(null);
+			List<EmployeeDailyPerErrorDto> employeeDailyErrors = employeeDailyErrorList.stream()
+					.filter(tl -> tl.getEmployeeID().equalsIgnoreCase(sid))
+					.map(mapper -> EmployeeWorkInformationDto.employeeDailyPerErrorToDto(mapper))
+					.collect(Collectors.toList());
+			WorkTypeDto workTypeDto = WorkTypeDto.builder().build();
+			
+			//条件：日別実績の勤務情報.勤務情報.勤務種類コード　＝　「勤務種類」.コード
+			if(workInfo != null) {
+				String workTypeCode = workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v();
+				WorkType workType = workTypeList.stream().filter(wt -> (wt.getWorkTypeCode().v()).equalsIgnoreCase(workTypeCode)).findFirst().orElse(null);
+				workTypeDto = EmployeeWorkInformationDto.workTypeToDto(workType);
 				
-				// 6: create() - start
-				String sid = empId.getSid();
-				WorkInfoOfDailyPerformance workInfo = workInfoList.stream().filter(wi -> wi.getEmployeeId().equalsIgnoreCase(sid)).findFirst().orElse(null);
-				WorkSchedule workSchedule = workScheduleList.stream().filter(ws -> ws.getEmployeeID().equalsIgnoreCase(sid)).findFirst().orElse(null);
-				TimeLeavingOfDailyPerformance timeLeave = timeLeaveList.stream().filter(tl -> tl.getEmployeeId().equalsIgnoreCase(sid)).findFirst().orElse(null);
-				List<EmployeeDailyPerErrorDto> employeeDailyErrors = employeeDailyErrorList.stream()
-						.filter(tl -> tl.getEmployeeID().equalsIgnoreCase(sid))
-						.map(mapper -> EmployeeWorkInformationDto.employeeDailyPerErrorToDto(mapper))
-						.collect(Collectors.toList());
-				WorkTypeDto workTypeDto = WorkTypeDto.builder().build();
-				
-				//条件：日別実績の勤務情報.勤務情報.勤務種類コード　＝　「勤務種類」.コード
-				if(workInfo != null) {
-					String workTypeCode = workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v();
-					WorkType workType = workTypeList.stream().filter(wt -> (wt.getWorkTypeCode().v()).equalsIgnoreCase(workTypeCode)).findFirst().orElse(null);
-					workTypeDto = EmployeeWorkInformationDto.workTypeToDto(workType);
-					
-				//日別実績の勤務情報がない場合：勤務予定.勤務情報.勤務情報.勤務種類コード　＝　「勤務種類」.コード
-				} else {
-					String workTypeCode = workSchedule == null ? null : workSchedule.getWorkInfo().getRecordInfo().getWorkTypeCode().v();
-					WorkType workType = workTypeList.stream().filter(wt -> (wt.getWorkTypeCode().v()).equalsIgnoreCase(workTypeCode)).findFirst().orElse(null);
-					workTypeDto = EmployeeWorkInformationDto.workTypeToDto(workType);
-				}
-				
-				EmployeeWorkInformationDto workInformation = EmployeeWorkInformationDto.builder()
-						.sid(sid)
-						.workScheduleDto(EmployeeWorkInformationDto.workScheduleToDto(workSchedule))
-						.workTypeDto(workTypeDto)
-						.timeLeavingOfDailyPerformanceDto(EmployeeWorkInformationDto.timeLeavingOfDailyPerformanceToDto(timeLeave))
-						.workPerformanceDto(EmployeeWorkInformationDto.workInfoOfDailyPerformanceToDto(workInfo))
-						.employeeDailyPerErrorDtos(employeeDailyErrors)
-						.build();
-				// 6: create() - end
-				
-				// 7 [基準日＝＝システム日] : 在席のステータスの判断(Require, 社員ID): 在席ステータス
-				AttendanceAccordActualData activityStatus = null;
-				if (baseDate.equals(GeneralDate.today())) {
-					activityStatus = AttendanceStatusJudgmentService.getActivityStatus(rq, empId.getSid());
-				}
-				
-				// 15: create()
-				// １．勤務区分
-				Integer workDivision = null;
-				// システム日の場合：
-				if (baseDate.equals(GeneralDate.today())) {
-					if (activityStatus != null && activityStatus.getWorkingNow().isPresent()) {
-						if (activityStatus.getWorkingNow().get()) {
-							workDivision = WorkDivision.WORK.value;
-						} else {
-							workDivision = WorkDivision.HOLIDAY.value;
-						}
-					}
-				} else {
-					//システム日ではない場合
-					if(workInformation.getWorkTypeDto().getDailyWork() != null) {
-						List<Integer> notIn = new ArrayList<>();
-						notIn.add(WorkTypeClassification.Attendance.value);
-						notIn.add(WorkTypeClassification.HolidayWork.value);
-						notIn.add(WorkTypeClassification.Shooting.value);
-						notIn.add(WorkTypeClassification.ContinuousWork.value);
-						DailyWorkDto daily = workInformation.getWorkTypeDto().getDailyWork();
-						// 1日場合、「出勤、休日出勤、振出、連続勤務」 → 出勤 || その他 → 休み
-						if (workInformation.getWorkTypeDto().getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay.value && !notIn.stream().anyMatch(item -> item == daily.getOneDay())) {
-							workDivision = WorkDivision.HOLIDAY.value;
-						}
-						// 午前と午後の場合、午前が休み AND 午後が休み → 休み || その他 → 出勤
-						else if (daily.getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon.value && !notIn.stream().anyMatch(item -> item == daily.getMorning())
-								&& !notIn.stream().anyMatch(item -> item == daily.getAfternoon())) {
-							workDivision = WorkDivision.HOLIDAY.value;
-						}
-						else workDivision = WorkDivision.WORK.value;
+			//日別実績の勤務情報がない場合：勤務予定.勤務情報.勤務情報.勤務種類コード　＝　「勤務種類」.コード
+			} else {
+				String workTypeCode = workSchedule == null ? null : workSchedule.getWorkInfo().getRecordInfo().getWorkTypeCode().v();
+				WorkType workType = workTypeList.stream().filter(wt -> (wt.getWorkTypeCode().v()).equalsIgnoreCase(workTypeCode)).findFirst().orElse(null);
+				workTypeDto = EmployeeWorkInformationDto.workTypeToDto(workType);
+			}
+			
+			EmployeeWorkInformationDto workInformation = EmployeeWorkInformationDto.builder()
+					.sid(sid)
+					.workScheduleDto(EmployeeWorkInformationDto.workScheduleToDto(workSchedule))
+					.workTypeDto(workTypeDto)
+					.timeLeavingOfDailyPerformanceDto(EmployeeWorkInformationDto.timeLeavingOfDailyPerformanceToDto(timeLeave))
+					.workPerformanceDto(EmployeeWorkInformationDto.workInfoOfDailyPerformanceToDto(workInfo))
+					.employeeDailyPerErrorDtos(employeeDailyErrors)
+					.build();
+			// 6: create() - end
+			
+			// 7 [基準日＝＝システム日] : 在席のステータスの判断(Require, 社員ID): 在席ステータス
+			AttendanceAccordActualData activityStatus = null;
+			if (baseDate.equals(GeneralDate.today())) {
+				activityStatus = AttendanceStatusJudgmentService.getActivityStatus(rq, empId.getSid());
+			}
+			
+			// 15: create()
+			// １．勤務区分
+			Integer workDivision = null;
+			// システム日の場合：
+			if (baseDate.equals(GeneralDate.today())) {
+				if (activityStatus != null && activityStatus.getWorkingNow().isPresent()) {
+					if (activityStatus.getWorkingNow().get()) {
+						workDivision = WorkDivision.WORK.value;
+					} else {
+						workDivision = WorkDivision.HOLIDAY.value;
 					}
 				}
-				
-				// 2.勤務色
-				Integer workColor = DisplayColor.ACHIEVEMENT.value;
-				if (baseDate.after(GeneralDate.today())) {
-					workColor = DisplayColor.SCHEDULED.value;
+			} else {
+				//システム日ではない場合
+				if(workInformation.getWorkTypeDto().getDailyWork() != null) {
+					List<Integer> notIn = new ArrayList<>();
+					notIn.add(WorkTypeClassification.Attendance.value);
+					notIn.add(WorkTypeClassification.HolidayWork.value);
+					notIn.add(WorkTypeClassification.Shooting.value);
+					notIn.add(WorkTypeClassification.ContinuousWork.value);
+					DailyWorkDto daily = workInformation.getWorkTypeDto().getDailyWork();
+					// 1日場合、「出勤、休日出勤、振出、連続勤務」 → 出勤 || その他 → 休み
+					if (workInformation.getWorkTypeDto().getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay.value && !notIn.stream().anyMatch(item -> item == daily.getOneDay())) {
+						workDivision = WorkDivision.HOLIDAY.value;
+					}
+					// 午前と午後の場合、午前が休み AND 午後が休み → 休み || その他 → 出勤
+					else if (daily.getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon.value && !notIn.stream().anyMatch(item -> item == daily.getMorning())
+							&& !notIn.stream().anyMatch(item -> item == daily.getAfternoon())) {
+						workDivision = WorkDivision.HOLIDAY.value;
+					}
+					else workDivision = WorkDivision.WORK.value;
 				}
-	
-				// ３．勤務名
-				String workName = "";
-				if (workDivision == null) {
-					workName = "";
-				} else if (workDivision == WorkDivision.HOLIDAY.value) {
-					workName = TextResource.localize("CCG005_24");
-				} else {
-					workName = workInformation.getWorkTypeDto().getDisplayName();
-				}
-	
-				// 4. 開始時刻 AND 開始の色
-				String checkInTime;
-				Integer checkInColor;
-				Integer actualAttendance = workInformation.getTimeLeavingOfDailyPerformanceDto().getAttendanceTime();
-				boolean actualStraight = this.getIntegerIsOne(workInformation.getWorkPerformanceDto().getGoStraightAtr());
-				Integer futureAttendance = workInformation.getWorkScheduleDto().getAttendanceTime();
-				boolean futureStraight = this.getIntegerIsOne(workInformation.getWorkScheduleDto().getGoStraightAtr());
-	
-				if (actualAttendance != null) {
-					checkInTime = actualStraight ? TextResource.localize("CCG005_25") + this.covertNumberToTime(actualAttendance)
-							: this.covertNumberToTime(actualAttendance);
-					checkInColor = DisplayColor.ACHIEVEMENT.value;
-				} else {
-					checkInTime = futureStraight ? TextResource.localize("CCG005_25") + this.covertNumberToTime(futureAttendance)
-							: this.covertNumberToTime(futureAttendance);
-					checkInColor = DisplayColor.SCHEDULED.value;
-				}
-	
-				// ５．終了時刻 AND 終了の色
-				String checkOutTime;
-				Integer checkOutColor;
-				Integer actualLeave = workInformation.getTimeLeavingOfDailyPerformanceDto().getLeaveTime();
-				boolean actualLeaveStraight = this.getIntegerIsOne(workInformation.getWorkPerformanceDto().getBackStraightAtr());
-				Integer futureLeave = workInformation.getWorkScheduleDto().getLeaveTime();
-				boolean futureLeaveStraight = this.getIntegerIsOne(workInformation.getWorkScheduleDto().getBackStraightAtr());
-	
-				if (actualLeave != null) {
-					checkOutTime = actualLeaveStraight ? TextResource.localize("CCG005_25") + this.covertNumberToTime(actualLeave)
-							: this.covertNumberToTime(actualLeave);
-					checkOutColor = DisplayColor.ACHIEVEMENT.value;
-				} else {
-					checkOutTime = futureLeaveStraight ? TextResource.localize("CCG005_25") + this.covertNumberToTime(futureLeave)
-							: this.covertNumberToTime(futureLeave);
-					checkOutColor = DisplayColor.SCHEDULED.value;
-				}
-	
-				// ６．アラーム色
-				List<EmployeeDailyPerErrorDto> list007 = workInformation.getEmployeeDailyPerErrorDtos().stream()
-						.filter(i -> i.getErrorAlarmWorkRecordCode().equalsIgnoreCase("S007")).collect(Collectors.toList());
-				List<EmployeeDailyPerErrorDto> list008 = workInformation.getEmployeeDailyPerErrorDtos().stream()
-						.filter(i -> i.getErrorAlarmWorkRecordCode().equalsIgnoreCase("S008")).collect(Collectors.toList());
-				if (workInformation.getEmployeeDailyPerErrorDtos().size() > 0 && list007.size() > 0) {
-					checkInColor = DisplayColor.ALARM.value;
-				}
-				if (workInformation.getEmployeeDailyPerErrorDtos().size() > 0 && list008.size() > 0) {
-					checkOutColor = DisplayColor.ALARM.value;
-				}
-				
-				AttendanceDetailDto attendanceDetailDto = AttendanceDetailDto.builder()
+			}
+			
+			// 2.勤務色
+			Integer workColor = DisplayColor.ACHIEVEMENT.value;
+			if (baseDate.after(GeneralDate.today())) {
+				workColor = DisplayColor.SCHEDULED.value;
+			}
+
+			// ３．勤務名
+			String workName = "";
+			if (workDivision == null) {
+				workName = "";
+			} else if (workDivision == WorkDivision.HOLIDAY.value) {
+				workName = TextResource.localize("CCG005_24");
+			} else {
+				workName = workInformation.getWorkTypeDto().getDisplayName();
+			}
+
+			// 4. 開始時刻 AND 開始の色
+			String checkInTime;
+			Integer checkInColor;
+			Integer actualAttendance = workInformation.getTimeLeavingOfDailyPerformanceDto().getAttendanceTime();
+			boolean actualStraight = this.getIntegerIsOne(workInformation.getWorkPerformanceDto().getGoStraightAtr());
+			Integer futureAttendance = workInformation.getWorkScheduleDto().getAttendanceTime();
+			boolean futureStraight = this.getIntegerIsOne(workInformation.getWorkScheduleDto().getGoStraightAtr());
+
+			if (actualAttendance != null) {
+				checkInTime = actualStraight ? TextResource.localize("CCG005_25") + this.covertNumberToTime(actualAttendance)
+						: this.covertNumberToTime(actualAttendance);
+				checkInColor = DisplayColor.ACHIEVEMENT.value;
+			} else {
+				checkInTime = futureStraight ? TextResource.localize("CCG005_25") + this.covertNumberToTime(futureAttendance)
+						: this.covertNumberToTime(futureAttendance);
+				checkInColor = DisplayColor.SCHEDULED.value;
+			}
+
+			// ５．終了時刻 AND 終了の色
+			String checkOutTime;
+			Integer checkOutColor;
+			Integer actualLeave = workInformation.getTimeLeavingOfDailyPerformanceDto().getLeaveTime();
+			boolean actualLeaveStraight = this.getIntegerIsOne(workInformation.getWorkPerformanceDto().getBackStraightAtr());
+			Integer futureLeave = workInformation.getWorkScheduleDto().getLeaveTime();
+			boolean futureLeaveStraight = this.getIntegerIsOne(workInformation.getWorkScheduleDto().getBackStraightAtr());
+
+			if (actualLeave != null) {
+				checkOutTime = actualLeaveStraight ? TextResource.localize("CCG005_25") + this.covertNumberToTime(actualLeave)
+						: this.covertNumberToTime(actualLeave);
+				checkOutColor = DisplayColor.ACHIEVEMENT.value;
+			} else {
+				checkOutTime = futureLeaveStraight ? TextResource.localize("CCG005_25") + this.covertNumberToTime(futureLeave)
+						: this.covertNumberToTime(futureLeave);
+				checkOutColor = DisplayColor.SCHEDULED.value;
+			}
+
+			// ６．アラーム色
+			List<EmployeeDailyPerErrorDto> list007 = workInformation.getEmployeeDailyPerErrorDtos().stream()
+					.filter(i -> i.getErrorAlarmWorkRecordCode().equalsIgnoreCase("S007")).collect(Collectors.toList());
+			List<EmployeeDailyPerErrorDto> list008 = workInformation.getEmployeeDailyPerErrorDtos().stream()
+					.filter(i -> i.getErrorAlarmWorkRecordCode().equalsIgnoreCase("S008")).collect(Collectors.toList());
+			if (workInformation.getEmployeeDailyPerErrorDtos().size() > 0 && list007.size() > 0) {
+				checkInColor = DisplayColor.ALARM.value;
+			}
+			if (workInformation.getEmployeeDailyPerErrorDtos().size() > 0 && list008.size() > 0) {
+				checkOutColor = DisplayColor.ALARM.value;
+			}
+			
+			AttendanceDetailDto attendanceDetailDto = AttendanceDetailDto.builder()
 				.workColor(workColor)
 				.workName(workName)
 				.checkOutColor(checkOutColor)
@@ -337,50 +332,44 @@ public class AttendanceInformationScreenQuery {
 				.checkInTime(checkInTime)
 				.workDivision(workDivision)
 				.build();
-					
-				// UserAvatarDto
-				Optional<UserAvatar> avatarDomain = avatarList.stream().filter(ava -> ava.getPersonalId().equalsIgnoreCase(empId.getPid())).findFirst();
-				UserAvatarDto avatarDto = UserAvatarDto.builder().build();
-				avatarDomain.ifPresent(ava -> ava.setMemento(avatarDto));
 				
-				// commentDto
-				CommentQueryExport commentExp = commentData.get(empId.getSid());
-				EmployeeCommentInformationDto commentDto = EmployeeCommentInformationDto.builder().build();
-				if(commentExp != null) {
-					commentDto.setComment(commentExp.getComment());
-					commentDto.setDate(commentExp.getDate());
-					commentDto.setSid(commentExp.getSid());
-				}
-	
-				// goOutDto
-				Optional<GoOutEmployeeInformation> goOutDomain = goOutList.stream().filter(goOut -> goOut.getSid().equalsIgnoreCase(empId.getSid()))
-						.findFirst();
-				GoOutEmployeeInformationDto goOutDto = GoOutEmployeeInformationDto.builder().build();
-				goOutDomain.ifPresent(item -> item.setMemento(goOutDto));
-	
-				// emojiDto
-				Optional<EmployeeEmojiState> emojiDomain = emojiList.stream().filter(emoji -> emoji.getSid().equalsIgnoreCase(empId.getSid()))
-						.findFirst();
-				EmployeeEmojiStateDto emojiDto = EmployeeEmojiStateDto.builder().build();
-				emojiDomain.ifPresent(consumer -> consumer.setMemento(emojiDto));
-	
-				synchronized (returnList) {
-					returnList.add(
-						 AttendanceInformationDto.builder()
-								.applicationDtos(applicationDtos)
-								.sid(empId.getSid())
-								.attendanceDetailDto(attendanceDetailDto)
-								.avatarDto(avatarDto)
-								.activityStatusDto(activityStatus == null ? null : activityStatus.getAttendanceState().value)
-								.commentDto(commentDto)
-								.goOutDto(goOutDto)
-								.emojiDto(emojiDto)
-								.build()
-						);
-				};
+			// UserAvatarDto
+			Optional<UserAvatar> avatarDomain = avatarList.stream().filter(ava -> ava.getPersonalId().equalsIgnoreCase(empId.getPid())).findFirst();
+			UserAvatarDto avatarDto = UserAvatarDto.builder().build();
+			avatarDomain.ifPresent(ava -> ava.setMemento(avatarDto));
+			
+			// commentDto
+			CommentQueryExport commentExp = commentData.get(empId.getSid());
+			EmployeeCommentInformationDto commentDto = EmployeeCommentInformationDto.builder().build();
+			if(commentExp != null) {
+				commentDto.setComment(commentExp.getComment());
+				commentDto.setDate(commentExp.getDate());
+				commentDto.setSid(commentExp.getSid());
 			}
-		});
-		return returnList;
+
+			// goOutDto
+			Optional<GoOutEmployeeInformation> goOutDomain = goOutList.stream().filter(goOut -> goOut.getSid().equalsIgnoreCase(empId.getSid()))
+					.findFirst();
+			GoOutEmployeeInformationDto goOutDto = GoOutEmployeeInformationDto.builder().build();
+			goOutDomain.ifPresent(item -> item.setMemento(goOutDto));
+
+			// emojiDto
+			Optional<EmployeeEmojiState> emojiDomain = emojiList.stream().filter(emoji -> emoji.getSid().equalsIgnoreCase(empId.getSid()))
+					.findFirst();
+			EmployeeEmojiStateDto emojiDto = EmployeeEmojiStateDto.builder().build();
+			emojiDomain.ifPresent(consumer -> consumer.setMemento(emojiDto));
+
+			return AttendanceInformationDto.builder()
+						.applicationDtos(applicationDtos)
+						.sid(empId.getSid())
+						.attendanceDetailDto(attendanceDetailDto)
+						.avatarDto(avatarDto)
+						.activityStatusDto(activityStatus == null ? null : activityStatus.getAttendanceState().value)
+						.commentDto(commentDto)
+						.goOutDto(goOutDto)
+						.emojiDto(emojiDto)
+						.build();
+		}).collect(Collectors.toList());
 	}
 	
 	private String covertNumberToTime(Integer minutes) {

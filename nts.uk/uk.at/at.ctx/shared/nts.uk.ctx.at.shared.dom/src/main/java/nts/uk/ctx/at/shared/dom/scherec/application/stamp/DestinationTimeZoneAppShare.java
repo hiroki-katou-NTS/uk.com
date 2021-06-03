@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-//時間帯申請の反映先情報
+//時間帯申請の反映先情報(反映用)
 public class DestinationTimeZoneAppShare {
 //	分類
 	private TimeZoneStampClassificationShare timeZoneStampClassification;

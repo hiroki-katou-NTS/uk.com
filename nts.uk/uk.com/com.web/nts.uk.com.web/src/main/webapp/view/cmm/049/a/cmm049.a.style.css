@@ -84,6 +84,19 @@ table#A4_2 tbody tr td:not(.style-normal):not(.contactName) {
   float: right !important;
 }
 
-.secondCheckbox {
-  margin-left: 40px !important;
+.margin-l-20 {
+  margin-left: 20px !important;
+}
+
+.margin-r-10 {
+  margin-right: 10px !important;
+}
+
+.w-85 {
+  width: 85px;
+  text-align: center;
+}
+
+.w-145 {
+  width: 145px;
 }

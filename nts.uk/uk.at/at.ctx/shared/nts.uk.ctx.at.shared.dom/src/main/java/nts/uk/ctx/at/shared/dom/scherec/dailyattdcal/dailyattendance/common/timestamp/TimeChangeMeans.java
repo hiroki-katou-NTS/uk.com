@@ -25,7 +25,7 @@ public enum TimeChangeMeans {
 	//手修正(他人)
 	HAND_CORRECTION_OTHERS(5, "Enum_TimeChangeMeans_HAND_CORRECTION_OTHERS", "手修正(他人)"),
 	
-	//自動セット
+	//自動セット - 打刻自動セット（個人情報）
 	AUTOMATIC_SET(6, "Enum_TimeChangeMeans_AUTOMATIC_SET", "自動セット"),
 	
 	//SPR連携打刻

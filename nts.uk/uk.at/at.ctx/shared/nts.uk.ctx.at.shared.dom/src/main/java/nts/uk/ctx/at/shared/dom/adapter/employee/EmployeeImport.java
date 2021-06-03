@@ -9,6 +9,7 @@ import java.io.Serializable;
 import lombok.Builder;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 
 
 /**
@@ -68,6 +69,12 @@ public class EmployeeImport implements Serializable{
 		this.employeeMailAddress = employeeMailAddress;
 		this.employeeName = employeeName;
 		this.retiredDate = retiredDate;
+	}
+	
+	/** 期間中に退職しているかどうかの判断 */
+	public boolean isRetired(DatePeriod period) {
+		
+		return period.contains(retiredDate);
 	}
 	
 }

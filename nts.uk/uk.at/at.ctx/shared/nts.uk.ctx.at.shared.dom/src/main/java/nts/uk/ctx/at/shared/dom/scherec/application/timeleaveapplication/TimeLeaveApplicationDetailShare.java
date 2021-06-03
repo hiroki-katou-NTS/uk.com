@@ -10,7 +10,10 @@ import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 
 /**
- * 時間休暇申請詳細
+ * @author thanh_nx
+ * 
+ *         時間休暇申請詳細(反映用)
+ *
  */
 @Getter
 @Setter
