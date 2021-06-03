@@ -48,17 +48,17 @@ module nts.uk.at.view.kdp.share {
         }
 
         .kdp-message-error .company {
-            padding: 3px;
-            height: 62px;
-            max-height: 62px;
+            padding: 5px 3px;
+            height: 47px;
+            max-height: 47px;
             word-break: break-all;
         }
 
         .kdp-message-error .workPlace {
-            padding: 3px;
+            padding: 5px 3px;
             margin-top: 5px;
-            height: 62px;
-            max-height: 62px;
+            height: 47px;
+            max-height: 47px;
             position: relative;
         }
 
@@ -72,7 +72,7 @@ module nts.uk.at.view.kdp.share {
         .kdp-message-error .workPlace .text-company {
             box-sizing: border-box;
             margin-right:40px;
-            max-height:62px;
+            max-height:47px;
         }
 
         .kdp-message-error .workPlace .title .name-title {
@@ -93,7 +93,7 @@ module nts.uk.at.view.kdp.share {
         .kdp-message-error .workPlace .text-content {
             box-sizing: border-box;
             margin-right:40px;
-            max-height:62px;
+            max-height:47px;
             text-overflow: ellipsis;
             overflow: hidden;
             word-break: break-all;
