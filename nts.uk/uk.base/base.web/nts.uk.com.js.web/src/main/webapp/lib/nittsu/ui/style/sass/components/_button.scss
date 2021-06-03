@@ -25,6 +25,7 @@ $button-disabled-base-color: #888888;
     margin: 0;
     position: relative;
     vertical-align: bottom;
+    box-shadow: 0 3px 0 -1px #888;
 }
 
 button,
@@ -135,12 +136,20 @@ span.button {
     &:active {
         border-color: #eae8f2;
         background-color: #eae8f2;
+        transform: translateY(4px);
     }
 
     &:focus,
     &:active {
         border-color: $focused_color;
         box-shadow: 0 0 0 2px lighten($color: $focused_color, $amount: 30);
+    }
+
+    &:focus {
+        &:not(:active){
+            box-shadow: 0 0 0 2px lighten($color: $focused_color, $amount: 30),
+                        0 3px 0 -1px lighten($color: $focused_color, $amount: 30);
+        }  
     }
 
     &.white {
@@ -158,6 +167,7 @@ span.button {
     &.danger {
         color: #da0d4f;
         border-color: #da0d4f;
+        box-shadow: 0 3px 0 -1px #9a0c13;
 
         &:disabled {
             color: lighten($color: #da0d4f, $amount: 35);
@@ -183,12 +193,20 @@ span.button {
         &:active {
             box-shadow: 0 0 0 2px lighten($color: #da0d4f, $amount: 30);
         }
+
+        &:focus {
+            &:not(:active){
+                box-shadow: 0 0 0 2px lighten($color: #da0d4f, $amount: 30),
+                            0 3px 0 -1px lighten($color: #da0d4f, $amount: 30);
+            }  
+        }
     }
 
     &.green,
     &.proceed {
         color: #30cc40;
         border-color: #30cc40;
+        box-shadow: 0 3px 0 -1px #1a883a;
 
         &:disabled {
             color: lighten($color: #30cc40, $amount: 25);
@@ -215,6 +233,13 @@ span.button {
         &:focus,
         &:active {
             box-shadow: 0 0 0 2px lighten($color: #30cc40, $amount: 30);
+        }
+
+        &:focus {
+            &:not(:active){
+                box-shadow: 0 0 0 2px lighten($color: #30cc40, $amount: 30),
+                            0 3px 0 -1px lighten($color: #30cc40, $amount: 30);
+            }  
         }
 
         &.solid {
@@ -383,4 +408,19 @@ span.button {
             }
         }
     }
+}
+
+#functions-area,
+#functions-area-bottom,
+.sidebar-content-header {
+	font-size: 0;
+	button {
+		margin-left: 15px;
+		min-width: 65px;
+		
+		&.danger {
+			margin-left: 45px;
+			margin-right: 30px;
+		}
+	}
 }
