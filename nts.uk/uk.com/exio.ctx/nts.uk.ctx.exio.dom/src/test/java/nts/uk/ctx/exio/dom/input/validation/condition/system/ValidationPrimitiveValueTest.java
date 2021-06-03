@@ -8,7 +8,7 @@ public class ValidationPrimitiveValueTest {
 
 	@Test
 	public void success() {
-		String fqn = "nts.uk.ctx.exio.dom.input.validation.classtype.helper.StringTestPrimitive";
+		String fqn = "nts.uk.ctx.exio.dom.input.validation.classtype.helper.TestStringPrimitive";
 		
 		String lengthThree = "123";
 		ValidationPrimitiveValue.run(fqn, lengthThree);
@@ -16,14 +16,17 @@ public class ValidationPrimitiveValueTest {
 	
 	@Test
 	public void error_overAnnotatoinLength() {
-		String fqn = "nts.uk.ctx.exio.dom.input.validation.classtype.helper.StringTestPrimitive";
+		String fqn = "nts.uk.ctx.exio.dom.input.validation.classtype.helper.TestStringPrimitive";
 		
 		String lengthFour = "1234";
 		try {
 			ValidationPrimitiveValue.run(fqn, lengthFour);
+			//Exceptionが飛ぶことを想定しているため、
+			//処理が正常終了したらテストは失敗
+			assertThat(true).isFalse();
 		}
 		catch(RuntimeException e) {
-			assertThat(e.getMessage()).isEqualTo("くすくす");
+			assertThat(e.getMessage()).isEqualTo("PrimitiveValueの検証　仮置きエクスセプションです。");
 		}
 	}
 

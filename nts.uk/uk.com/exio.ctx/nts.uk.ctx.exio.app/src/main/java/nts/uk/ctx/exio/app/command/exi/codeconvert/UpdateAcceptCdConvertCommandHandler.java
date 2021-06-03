@@ -8,26 +8,26 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.CodeConvertDetails;
-import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvert;
-import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvertRepository;
+import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvertRepository;
+import nts.uk.ctx.exio.dom.exi.codeconvert.CdConvertDetails;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvert;
 
 @Stateless
 @Transactional
 public class UpdateAcceptCdConvertCommandHandler extends CommandHandler<AcceptCdConvertCommand> {
 
 	@Inject
-	private ExternalImportCodeConvertRepository repository;
+	private AcceptCdConvertRepository repository;
 
 	@Override
 	protected void handle(CommandHandlerContext<AcceptCdConvertCommand> context) {
 		AcceptCdConvertCommand updateCommand = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		repository.update(new ExternalImportCodeConvert(companyId, updateCommand.getConvertCd(), updateCommand.getConvertName(),
+		repository.update(new AcceptCdConvert(companyId, updateCommand.getConvertCd(), updateCommand.getConvertName(),
 				updateCommand.getAcceptWithoutSetting(),
 				updateCommand.getCdConvertDetails().stream().map(itemDetail -> {
-					return new CodeConvertDetails(companyId, itemDetail.getConvertCd(), itemDetail.getLineNumber(),
+					return new CdConvertDetails(companyId, itemDetail.getConvertCd(), itemDetail.getLineNumber(),
 							itemDetail.getOutputItem(), itemDetail.getSystemCd());
 				}).collect(Collectors.toList())));
 

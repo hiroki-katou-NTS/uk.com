@@ -17,25 +17,28 @@ public class TransferCanonicalData {
 		List<ConversionTable> conversionTables = require.getConversionTable(meta.getContext().getGroupId());
 		
 		for(ConversionTable conversionTable : conversionTables) {
-			List<String> enabledColumns = require.getEnabledColumnList(conversionTable.getTargetTableName().getName());
-			
-			ConversionTable filteredConversionTable = conversionTable.filterColumns(enabledColumns);
+			// 受入項目の列名リストを元に移送する列をフィルタ
+			ConversionTable filteredConversionTable = conversionTable.filterColumns(meta.getImportingItemNames());
 			
 			ConversionSQL conversionSql;
+			// TODO: Insert & Update両方のモードは未対応
 			if(meta.getContext().getMode().getType() == ConversionCodeType.INSERT) {
 				conversionSql = filteredConversionTable.createConversionSql();
 			}
 			else {
 				conversionSql = filteredConversionTable.createUpdateConversionSql();
 			}
+			// TODO: 移送前のデータ削除処理の組み込み
+			
+			// 移送処理の実行
 			int count = require.execute(conversionSql);
+			// 処理件数のチェック…？
 		}
 	}
 	
 	public interface Require{
 		CanonicalizedDataMeta getMetaData();
 		List<ConversionTable> getConversionTable(int groupId);
-		List<String> getEnabledColumnList(String tableName);
 		int execute(ConversionSQL conversionSql);
 	}
 	

@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.exio.dom.exi.canonicalize.ExternalHistoryContiFlg;
-import nts.uk.ctx.exio.dom.exi.canonicalize.SpecialExternalItem;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**

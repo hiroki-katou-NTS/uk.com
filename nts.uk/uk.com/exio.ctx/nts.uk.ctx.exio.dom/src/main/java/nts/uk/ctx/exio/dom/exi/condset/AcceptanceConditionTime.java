@@ -1,4 +1,3 @@
-  
 package nts.uk.ctx.exio.dom.exi.condset;
 
 import nts.arc.primitive.TimeDurationPrimitiveValue;

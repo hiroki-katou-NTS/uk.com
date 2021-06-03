@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.val;
-import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.validation.ImportableItem;
@@ -21,25 +20,20 @@ public class ValidateSystemRange {
 		val importableItems = require.getDefinition(context.getCompanyId(), context.getGroupId());
 		List<Boolean> successFlags = new ArrayList<Boolean>();
 		
-		for(DataItem dataItem : record.getItems()) {
-			boolean existSetting = false;
-			for(ImportableItem importableItem : importableItems) {
-				//編集済みデータと受入可能項目を突合させ、受入できるかチェック
-				if(importableItem.getItemNo() == dataItem.getItemNo()) {
-					successFlags.add(importableItem.validate(dataItem));
-					existSetting = true;
-				}
-			}
-			if(!existSetting) {
-				throw new RuntimeException("システムが許容していない項目を受入ようとしています。"+ dataItem.getItemNo());
-			}
-		}
-
+		record.getItems().forEach(recordItem ->{
+			successFlags.add(
+				importableItems.stream()
+				.filter(importableItem -> recordItem.getItemNo() == importableItem.getItemNo())
+				.findFirst()
+				.get()
+				.validate(recordItem)
+			);
+		});
 		//falseが含まれてたら失敗したことを伝えたい
 		return !successFlags.contains(false);
 	}
 	
 	public static interface SystemRequire{
-		List<ImportableItem> getDefinition(String companyId, int categoryId);
+		List<ImportableItem> getDefinition(String companyId, int groupId);
 	}
 }

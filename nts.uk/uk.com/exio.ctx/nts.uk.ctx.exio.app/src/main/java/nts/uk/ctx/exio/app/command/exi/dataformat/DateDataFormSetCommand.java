@@ -2,8 +2,8 @@ package nts.uk.ctx.exio.app.command.exi.dataformat;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.exio.dom.input.revise.ItemType;
-import nts.uk.ctx.exio.dom.input.revise.dataformat.DateDataFormSet;
+import nts.uk.ctx.exio.dom.exi.dataformat.DateDataFormSet;
+import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 
 @Value
 public class DateDataFormSetCommand {

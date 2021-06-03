@@ -5,13 +5,6 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.exio.dom.dataformat.value.DataFormatDecimalDigit;
-import nts.uk.ctx.exio.dom.dataformat.value.DataFormatFixedValueOperation;
-import nts.uk.ctx.exio.dom.dataformat.value.DataTypeFixedValue;
-import nts.uk.ctx.exio.dom.dataformat.value.DecimalDivision;
-import nts.uk.ctx.exio.dom.dataformat.value.DecimalPointClassification;
-import nts.uk.ctx.exio.dom.dataformat.value.FixedValueOperationSymbol;
-import nts.uk.ctx.exio.dom.dataformat.value.Rounding;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 

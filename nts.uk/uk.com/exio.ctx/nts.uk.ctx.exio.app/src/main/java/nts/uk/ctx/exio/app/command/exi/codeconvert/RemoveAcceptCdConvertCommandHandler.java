@@ -6,7 +6,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvertRepository;
+import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvertRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -14,7 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class RemoveAcceptCdConvertCommandHandler extends CommandHandler<AcceptCdConvertCommand> {
 
 	@Inject
-	private ExternalImportCodeConvertRepository repository;
+	private AcceptCdConvertRepository repository;
 
 	@Override
 	protected void handle(CommandHandlerContext<AcceptCdConvertCommand> context) {
