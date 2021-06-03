@@ -25,8 +25,12 @@ module nts.uk.at.view.kmf002.m {
             // return dfd.promise();
         }
         export function getM8_3(): JQueryPromise<any> {
-            let namePath =  nts.uk.text.format("sys/portal/standardmenu/findPgName/{0}/{1}/{2}", 'KMK013', 'A', null);
-            return nts.uk.request.ajax("com", namePath );
+            // let namePath =  nts.uk.text.format("sys/portal/standardmenu/findPgName/{0}/{1}/{2}", 'KMK013', 'A', null);
+            return nts.uk.request.ajax("com", "sys/portal/standardmenu/findPgName", {
+              programId: 'KMK013',
+              screenId: 'A',
+              queryString: null
+            } );
         }
     }
 }

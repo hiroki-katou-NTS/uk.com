@@ -49,7 +49,7 @@ module nts.uk.at.view.kmf002.m {
                 service.getM8_3(command).done((data) => {
                     console.log(data);
                     if (data != null) {
-                        self.description(data.screenQuery);
+                        self.description(data);
                     }
                     else {
                          //self.startingDay(getText(('KMF001_292'),[data.hdDay]));
