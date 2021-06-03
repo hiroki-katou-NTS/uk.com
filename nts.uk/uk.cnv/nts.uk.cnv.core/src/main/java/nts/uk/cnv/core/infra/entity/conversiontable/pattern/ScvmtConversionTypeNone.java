@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.entity.conversiontable.pattern;
+package nts.uk.cnv.core.infra.entity.conversiontable.pattern;
 
 import java.io.Serializable;
 
@@ -17,27 +17,24 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
-import nts.uk.cnv.core.dom.conversiontable.pattern.FixedValuePattern;
-import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
-import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTablePk;
+import nts.uk.cnv.core.dom.conversiontable.pattern.NotChangePattern;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionTable;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionTablePk;
 
 @Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SCVMT_CONVERSION_TYPE_FIXED_VALUE")
-public class ScvmtConversionTypeFixedValue extends JpaEntity implements Serializable {
+@Table(name = "SCVMT_CONVERSION_TYPE_NONE")
+public class ScvmtConversionTypeNone extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	public ScvmtConversionTablePk pk;
 
-	@Column(name = "IS_PARAMATER")
-	private boolean isParameter;
-
-	@Column(name = "FIXED_VALUE")
-	private String fixedValue;
+	@Column(name = "SOURCE_COLUMN_NAME")
+	private String sourceColumnName;
 
 	@OneToOne(optional=true) @PrimaryKeyJoinColumns({
         @PrimaryKeyJoinColumn(name="CATEGORY_NAME", referencedColumnName="CATEGORY_NAME"),
@@ -52,22 +49,22 @@ public class ScvmtConversionTypeFixedValue extends JpaEntity implements Serializ
 		return pk;
 	}
 
-	public FixedValuePattern toDomain(ConversionInfo info, Join join) {
-		return new FixedValuePattern(
+	public NotChangePattern toDomain(ConversionInfo info, Join sourcejoin) {
+		return new NotChangePattern(
 				info,
-				join,
-				this.isParameter,
-				this.fixedValue
+				sourcejoin,
+				this.sourceColumnName
 			);
 	}
 
-	public static ScvmtConversionTypeFixedValue toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
-		if (!(conversionPattern instanceof FixedValuePattern)) {
+	public static ScvmtConversionTypeNone toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
+		if (!(conversionPattern instanceof NotChangePattern)) {
 			return null;
 		}
 
-		FixedValuePattern domain = (FixedValuePattern) conversionPattern;
+		NotChangePattern domain = (NotChangePattern) conversionPattern;
 
-		return new ScvmtConversionTypeFixedValue(pk, domain.isParamater(), domain.getExpression(), null);
+		return new ScvmtConversionTypeNone(pk, domain.getSourceColumn(), null);
 	}
+
 }

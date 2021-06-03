@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.entity.conversiontable.pattern;
+package nts.uk.cnv.core.infra.entity.conversiontable.pattern;
 
 import java.io.Serializable;
 
@@ -18,8 +18,8 @@ import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.DateTimeMergePattern;
-import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
-import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTablePk;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionTable;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionTablePk;
 
 @Getter
 @Entity

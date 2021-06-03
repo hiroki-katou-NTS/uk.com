@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.entity.conversiontable.pattern;
+package nts.uk.cnv.core.infra.entity.conversiontable.pattern;
 
 import java.io.Serializable;
 
@@ -17,16 +17,16 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
-import nts.uk.cnv.core.dom.conversiontable.pattern.NotChangePattern;
-import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
-import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTablePk;
+import nts.uk.cnv.core.dom.conversiontable.pattern.FileIdPattern;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionTable;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionTablePk;
 
 @Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SCVMT_CONVERSION_TYPE_NONE")
-public class ScvmtConversionTypeNone extends JpaEntity implements Serializable {
+@Table(name = "SCVMT_CONVERSION_TYPE_FILEID")
+public class ScvmtConversionTypeFileId extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -49,22 +49,22 @@ public class ScvmtConversionTypeNone extends JpaEntity implements Serializable {
 		return pk;
 	}
 
-	public NotChangePattern toDomain(ConversionInfo info, Join sourcejoin) {
-		return new NotChangePattern(
+	public FileIdPattern toDomain(ConversionInfo info, Join sourcejoin) {
+		return new FileIdPattern(
 				info,
 				sourcejoin,
 				this.sourceColumnName
 			);
 	}
 
-	public static ScvmtConversionTypeNone toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
-		if (!(conversionPattern instanceof NotChangePattern)) {
+	public static ScvmtConversionTypeFileId toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
+		if (!(conversionPattern instanceof FileIdPattern)) {
 			return null;
 		}
 
-		NotChangePattern domain = (NotChangePattern) conversionPattern;
+		FileIdPattern domain = (FileIdPattern) conversionPattern;
 
-		return new ScvmtConversionTypeNone(pk, domain.getSourceColumn(), null);
+		return new ScvmtConversionTypeFileId(pk, domain.getSourceColumnName(), null);
 	}
 
 }

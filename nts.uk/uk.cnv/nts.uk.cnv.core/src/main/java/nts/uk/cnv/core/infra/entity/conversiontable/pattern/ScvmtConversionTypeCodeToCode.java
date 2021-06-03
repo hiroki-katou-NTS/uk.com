@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.entity.conversiontable.pattern;
+package nts.uk.cnv.core.infra.entity.conversiontable.pattern;
 
 import java.io.Serializable;
 
@@ -16,17 +16,17 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
+import nts.uk.cnv.core.dom.conversiontable.pattern.CodeToCodePattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
-import nts.uk.cnv.core.dom.conversiontable.pattern.FileIdPattern;
-import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
-import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTablePk;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionTable;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionTablePk;
 
 @Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SCVMT_CONVERSION_TYPE_FILEID")
-public class ScvmtConversionTypeFileId extends JpaEntity implements Serializable {
+@Table(name = "SCVMT_CONVERSION_TYPE_CODE_TO_CODE")
+public class ScvmtConversionTypeCodeToCode extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -35,6 +35,9 @@ public class ScvmtConversionTypeFileId extends JpaEntity implements Serializable
 
 	@Column(name = "SOURCE_COLUMN_NAME")
 	private String sourceColumnName;
+
+	@Column(name = "MAPPING_TYPE")
+	private String mappingType;
 
 	@OneToOne(optional=true) @PrimaryKeyJoinColumns({
         @PrimaryKeyJoinColumn(name="CATEGORY_NAME", referencedColumnName="CATEGORY_NAME"),
@@ -49,22 +52,22 @@ public class ScvmtConversionTypeFileId extends JpaEntity implements Serializable
 		return pk;
 	}
 
-	public FileIdPattern toDomain(ConversionInfo info, Join sourcejoin) {
-		return new FileIdPattern(
+	public CodeToCodePattern toDomain(ConversionInfo info, Join sourcejoin) {
+		return new CodeToCodePattern(
 				info,
 				sourcejoin,
-				this.sourceColumnName
+				this.sourceColumnName,
+				mappingType
 			);
 	}
 
-	public static ScvmtConversionTypeFileId toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
-		if (!(conversionPattern instanceof FileIdPattern)) {
+	public static ScvmtConversionTypeCodeToCode toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
+		if (!(conversionPattern instanceof CodeToCodePattern)) {
 			return null;
 		}
 
-		FileIdPattern domain = (FileIdPattern) conversionPattern;
+		CodeToCodePattern domain = (CodeToCodePattern) conversionPattern;
 
-		return new ScvmtConversionTypeFileId(pk, domain.getSourceColumnName(), null);
+		return new ScvmtConversionTypeCodeToCode(pk, domain.getSourceColumnName(), domain.getMappingType(), null);
 	}
-
 }
