@@ -51,4 +51,5 @@
 }
 .pageComent {
 	word-break: break-all !important;
+	white-space: pre-wrap !important;
 }
