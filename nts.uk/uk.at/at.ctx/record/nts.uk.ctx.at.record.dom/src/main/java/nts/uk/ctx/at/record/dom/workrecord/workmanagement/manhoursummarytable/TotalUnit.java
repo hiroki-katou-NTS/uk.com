@@ -10,7 +10,7 @@ public enum TotalUnit {
     /** 年月日 */
     DATE(0),
     /** 年月 */
-    MONTH(1);
+    YEAR_MONTH(1);
 
     public final int value;
     TotalUnit(int type){

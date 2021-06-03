@@ -71,5 +71,4 @@ public class WorkDetailData {
         }
         return workItem;
     }
-
 }

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 /**
  * 	集計項目詳細
  */
+@AllArgsConstructor
 @Getter
 public class SummaryItemDetail extends ValueObject {
     /** コード */
@@ -33,13 +35,32 @@ public class SummaryItemDetail extends ValueObject {
      * @param code コード
      * @param displayInfo 表示情報
      * @param childHierarchyList 子階層リスト
+     * @return 集計項目詳細
      */
-    public SummaryItemDetail(String code, DisplayInformation displayInfo, List<SummaryItemDetail> childHierarchyList) {
-        this.code = code;
-        this.displayInfo = displayInfo;
-        this.childHierarchyList = childHierarchyList;
-        this.verticalTotalList = Collections.emptyList();
-        this.totalPeriod = Optional.empty();
+    public static SummaryItemDetail createNew(String code, DisplayInformation displayInfo, List<SummaryItemDetail> childHierarchyList) {
+        return new SummaryItemDetail(code, displayInfo, childHierarchyList, Collections.emptyList(), Optional.empty());
+    }
+
+    /**
+     * [C-2] 最下層を新規作成
+     * @param code コード
+     * @param displayInfo 表示情報
+     * @param totalUnit 合計単位
+     * @param dateList List<年月日>
+     * @param yearMonthList List<年月>
+     * @param workDetailList List<作業詳細データ>
+     * @return 集計項目詳細
+     */
+    public static SummaryItemDetail createNewBottomLayer(String code, DisplayInformation displayInfo, TotalUnit totalUnit,
+                                                         List<GeneralDate> dateList, List<YearMonth> yearMonthList,
+                                                         List<WorkDetailData> workDetailList) {
+        List<VerticalValueDaily> verticalTotalList;
+        if (totalUnit == TotalUnit.DATE)
+            verticalTotalList = createWorkTimeDetailByDate(dateList, workDetailList);
+        else
+            verticalTotalList = createWorkTimeDetailByYearMonth(yearMonthList, workDetailList);
+
+        return new SummaryItemDetail(code, displayInfo, Collections.emptyList(), verticalTotalList, Optional.empty());
     }
 
     /**
@@ -72,7 +93,7 @@ public class SummaryItemDetail extends ValueObject {
     private void calculateVerticalTotalByDate(List<GeneralDate> dateList) {
         List<VerticalValueDaily> lstVertical = new ArrayList<>();
         for (GeneralDate date : dateList) {
-            val childVerticalList = childHierarchyList.stream().flatMap(x -> verticalTotalList.stream()).collect(Collectors.toList());
+            val childVerticalList = childHierarchyList.stream().flatMap(x -> x.getVerticalTotalList().stream()).collect(Collectors.toList());
             val workingTime = childVerticalList.stream().filter(x -> x.getDate().equals(date)).mapToInt(VerticalValueDaily::getWorkingHours).sum();
             lstVertical.add(new VerticalValueDaily(workingTime, null, date)); //TODO 日々縦計値#日々縦計値($対象年月日,Optional.empty,$作業時間)
         }
@@ -87,11 +108,43 @@ public class SummaryItemDetail extends ValueObject {
     private void calculateVerticalTotalByYearMonth(List<YearMonth> yearMonthList) {
         List<VerticalValueDaily> lstVertical = new ArrayList<>();
         for (val ym : yearMonthList) {
-            val childVerticalList = childHierarchyList.stream().flatMap(x -> verticalTotalList.stream()).collect(Collectors.toList());
+            val childVerticalList = childHierarchyList.stream().flatMap(x -> x.getVerticalTotalList().stream()).collect(Collectors.toList());
             val workingTime = childVerticalList.stream().filter(x -> x.getYearMonth().year() == ym.year()).mapToInt(VerticalValueDaily::getWorkingHours).sum();
             lstVertical.add(new VerticalValueDaily(workingTime, ym, null));  //TODO 日々縦計値#日々縦計値(Optional.empty,$対象年月,$作業時間)
         }
         if (!lstVertical.isEmpty())
             verticalTotalList = lstVertical;
+    }
+
+    /**
+     * [prv-3] 年月日別に作業時間明細を作成する
+     * @param dateList List<年月日>
+     * @param workDetailList List<作業詳細データ>
+     * @return List<日々縦計値>
+     */
+    private static List<VerticalValueDaily> createWorkTimeDetailByDate(List<GeneralDate> dateList, List<WorkDetailData> workDetailList) {
+        List<VerticalValueDaily> lstVertical = new ArrayList<>();
+        for (val date : dateList) {
+            val workingTime = workDetailList.stream().filter(x -> x.getDate().equals(date)).mapToInt(WorkDetailData::getTotalWorkingHours).sum();
+            lstVertical.add(new VerticalValueDaily(workingTime, null, date));  //TODO 日々縦計値#日々縦計値($対象年月日,Optional.empty,$作業時間)
+        }
+
+        return lstVertical;
+    }
+
+    /**
+     * [prv-4] 年月別に作業時間明細を作成する
+     * @param yearMonthList List<年月>
+     * @param workDetailList List<作業詳細データ>
+     * @return List<日々縦計値>
+     */
+    private static List<VerticalValueDaily> createWorkTimeDetailByYearMonth(List<YearMonth> yearMonthList, List<WorkDetailData> workDetailList) {
+        List<VerticalValueDaily> lstVertical = new ArrayList<>();
+        for (val ym : yearMonthList) {
+            val workingTime = workDetailList.stream().filter(x -> x.getDate().yearMonth().equals(ym)).mapToInt(WorkDetailData::getTotalWorkingHours).sum();
+            lstVertical.add(new VerticalValueDaily(workingTime, ym, null));  //TODO 日々縦計値#日々縦計値(Optional.empty,$対象年月,$作業時間)
+        }
+
+        return lstVertical;
     }
 }
