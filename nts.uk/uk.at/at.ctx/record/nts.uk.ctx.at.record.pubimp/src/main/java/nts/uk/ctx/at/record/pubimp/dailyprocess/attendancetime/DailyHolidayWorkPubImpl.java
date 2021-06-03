@@ -22,6 +22,17 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CheckDateForManageCmpLeaveService.Require;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -42,10 +53,26 @@ public class DailyHolidayWorkPubImpl implements DailyHolidayWorkPub{
 	@Inject
 	private CompensLeaveEmSetRepository compensLeaveEmSetRepo;
 	
+	@Inject
+	private WorkTypeRepository workTypeRepository;
+	
+	@Inject
+	private FixedWorkSettingRepository fixedWorkSet;
+	
+	@Inject
+	private FlowWorkSettingRepository flowWorkSet;
+	
+	@Inject
+	private FlexWorkSettingRepository flexWorkSet;
+	
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
+	
 	@Override
 	public DailyHolidayWorkPubExport calcHolidayWorkTransTime(DailyHolidayWorkPubImport imp) {
 		
 		OverTimeSheet.TransProcRequire require = new TransProcRequireImpl(
+				AppContexts.user().companyId(),
 				this.checkDateForManageCmpLeaveService,
 				this.sysEmploymentHisAdapter,
 				this.compensLeaveComSetRepo,
@@ -108,10 +135,12 @@ public class DailyHolidayWorkPubImpl implements DailyHolidayWorkPub{
 	 */
 	private class TransProcRequireImpl extends CheckDateRequireImpl implements OverTimeSheet.TransProcRequire{
 		
+		private String cid;
 		/** 代休を管理する年月日かどうかを判断する */
 		private CheckDateForManageCmpLeaveService checkDateForManageCmpLeaveService;
 		
 		public TransProcRequireImpl(
+				String cid, 
 				CheckDateForManageCmpLeaveService checkDateForManageCmpLeaveService,
 				SysEmploymentHisAdapter sysEmploymentHisAdapter,
 				CompensLeaveComSetRepository compensLeaveComSetRepo,
@@ -119,12 +148,46 @@ public class DailyHolidayWorkPubImpl implements DailyHolidayWorkPub{
 			
 			super(sysEmploymentHisAdapter, compensLeaveComSetRepo, compensLeaveEmSetRepo);
 			this.checkDateForManageCmpLeaveService = checkDateForManageCmpLeaveService;
+			this.cid = cid;
 		}
 		
 		@Override
 		public boolean checkDateForManageCmpLeave(
 				Require require, String companyId, String employeeId, GeneralDate ymd) {
 			return this.checkDateForManageCmpLeaveService.check(require, companyId, employeeId, ymd);
+		}
+
+		@Override
+		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+			return super.compensLeaveComSetRepo.find(companyId);
+		}
+
+		@Override
+		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+			return workTypeRepository.findByPK(companyId, workTypeCd);
+		}
+
+		@Override
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
+			return workTimeSettingRepository.findByCode(cid, workTimeCode);
+		}
+
+		@Override
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			Optional<FixedWorkSetting> workSetting = fixedWorkSet.findByKey(cid, code.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
+		}
+
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			Optional<FlowWorkSetting> workSetting = flowWorkSet.find(cid, code.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			Optional<FlexWorkSetting> workSetting = flexWorkSet.find(cid, code.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
 		}
 	}
 }

@@ -96,9 +96,13 @@ public class ChildCareCheckOverUsedNumberWork {
 		// INPUT．Require．子の看護・介護休暇基本情報を取得する
 		Optional<NursingCareLeaveRemainingInfo> employeeInfo = require.employeeInfo(employeeId, nursingCategory);
 
+		if(!employeeInfo.isPresent()){
+			return shortageRemainingNumberWork;
+		}
+		
 		// 期間ごとの上限日数を求める
 		List<ChildCareNurseUpperLimitPeriod> childCareNurseUpperLimitPeriod = new ArrayList<>();
-		if(employeeInfo.isPresent())
+		
 			childCareNurseUpperLimitPeriod= employeeInfo.get().childCareNurseUpperLimitPeriod(companyId, employeeId, period, criteriaDate, require);
 
 		// 期間終了日時点の上限日数を確認
@@ -254,22 +258,25 @@ public class ChildCareCheckOverUsedNumberWork {
 		// INPUT．Require．子の看護・介護休暇基本情報を取得する
 		Optional<NursingCareLeaveRemainingInfo> employeeInfo = require.employeeInfo(employeeId, nursingCategory);
 
+		if(!employeeInfo.isPresent()) {
+			return childCareNurseErrors;
+		}
+		
 		// 期間ごとの上限日数を求める
 		List<ChildCareNurseUpperLimitPeriod> childCareNurseUpperLimitPeriod = new ArrayList<>();
-		if(employeeInfo.isPresent()) {
-			childCareNurseUpperLimitPeriod =
-					employeeInfo.get().childCareNurseUpperLimitPeriod(companyId,employeeId, period, criteriaDate, require);
-		}
+		childCareNurseUpperLimitPeriod =
+				employeeInfo.get().childCareNurseUpperLimitPeriod(companyId,employeeId, period, criteriaDate, require);
+	
 
 		// 対象日の上限日数を確認
 		// ===上限日数期間．期間．開始日 <=暫定残数管理データ．対象日<= 上限日数期間．期間．終了日
 		ChildCareNurseUpperLimitPeriod upperLimitPeriod =
 				childCareNurseUpperLimitPeriod.stream().filter(x -> x.getPeriod().start().beforeOrEquals(interimDate.getYmd())
 				&&  x.getPeriod().end().afterOrEquals(interimDate.getYmd())).findFirst().get();
-
+	
 		// 子の看護介護残数を使い過ぎていないか
 		boolean checkRemainingNumber = checkRemainingNumber(companyId, employeeId, upperLimitPeriod, criteriaDate, require);
-
+	
 		if (!checkRemainingNumber) {
 			// 上限超過エラーリストに追加
 			// ===年月日←暫定子の看護介護管理データ．対象日

@@ -1,10 +1,11 @@
-package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util;
+package nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util;
 
 public interface ItemConst extends Cloneable {
 	
 	public final String DAILY = "日次";
 	public final String MONTHLY = "月次";
 	public final String ANY_PERIOD = "任意期間";
+	public final String WEEKLY = "週次";
 	
 	public final int DEFAULT_IDX = 0;
 	public final int DEFAULT_NEXT_IDX = 1;
@@ -172,6 +173,9 @@ public interface ItemConst extends Cloneable {
 
 	public final String ANY_PERIOD_ATTENDANCE_TIME_CODE = LAYOUT_C;
 	public final String ANY_PERIOD_ATTENDANCE_TIME_NAME = "任意期間別実績の勤怠時間";
+	
+	public final String WEEKLY_ATTENDANCE_TIME_CODE = LAYOUT_M;
+	public final String WEEKLY_ATTENDANCE_TIME_NAME = "週別実績の勤怠時間";
 
 	public final String OPTIONAL_ITEM = "任意項目";
 	public final String OPTIONAL_ITEM_VALUE = "任意項目値";
@@ -321,4 +325,6 @@ public interface ItemConst extends Cloneable {
 	public final String CUR_MONTH = "当月";
 	public final String NO = "不可";
 	public final String STANDARD = "基準";
+	
+	public final String WEEKLY_ATTENDANCE_TIME_EXESS = "週別実績の勤怠時間．時間外超過";
 }

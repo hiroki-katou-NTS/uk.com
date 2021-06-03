@@ -142,7 +142,7 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 	
 	@Inject
 	private SubstituteWorkAppReflectRepository substituteWorkAppReflectRepository;
-
+	
 	@Override
 	public Optional<IntegrationOfDaily> getApp(String companyId, Object application, GeneralDate baseDate,
 			Optional<IntegrationOfDaily> dailyData) {
@@ -210,7 +210,7 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 		private final SubLeaveAppReflectRepository subLeaveAppReflectRepository;
     	
     	private final SubstituteWorkAppReflectRepository substituteWorkAppReflectRepository;
-		
+    	
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 			return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -344,11 +344,6 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 		@Override
 		public DailyRecordToAttendanceItemConverter createDailyConverter() {
 			return dailyRecordConverter.createDailyConverter();
-		}
-
-		@Override
-		public Optional<FlowWorkSetting> findFlowWorkSetting(String companyId, String workTimeCode) {
-			return flowWorkSettingRepository.find(companyId, workTimeCode);
 		}
 
 		@Override
