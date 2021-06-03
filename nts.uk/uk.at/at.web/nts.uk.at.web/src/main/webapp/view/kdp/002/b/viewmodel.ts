@@ -165,14 +165,14 @@ class KDP002BViewModel extends ko.ViewModel {
             if (!ko.unwrap(vm.modeNikoNiko)) {
                 vm.$window.size(590, 470);
             } else {
-                vm.$window.size(610, 470);
+                vm.$window.size(605, 470);
             }
 
         } else {
             if (!ko.unwrap(vm.modeNikoNiko)) {
                 vm.$window.size(630, 470);
             } else {
-                vm.$window.size(650, 470);
+                vm.$window.size(645, 470);
             }
         }
     }
