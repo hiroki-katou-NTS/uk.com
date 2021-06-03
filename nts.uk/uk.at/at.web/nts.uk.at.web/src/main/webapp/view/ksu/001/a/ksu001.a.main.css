@@ -532,32 +532,39 @@ html {
 .toLeft {
 	margin-left: 308px;  
 	float: left;
-    height: 18px;
+    height: 15px;
+    width: 30px;
 }
 
 .toRight {
 	float: left;
-    height: 18px;
+    height: 15px;
+    width: 30px;
 }
 
 .toDown {
-	height: 25px;
-	margin-left: 9px;
+	margin-left: 11px; 
+	margin-right: 1px;
 	float: left;
-	width: 18px;
+	width: 15px;
+	box-shadow: 1px 0px 0px 0px rgb(0 0 0 / 40%) !important;
 }
 
 .iconToDown {
-	margin-left: -8px;
-	margin-top: -1px;
+	margin-left: -6px;
 }
 
 .iconToLeft {
-	margin-top: -5px;
+	margin-top: -7px;
 }
 
 .iconToRight {
-	margin-top: -5px;
+	margin-top: -7px;
+}
+
+#btnControlLeftRight {
+	width: max-content;
+	height: 10px;
 }
 
 #A5 {

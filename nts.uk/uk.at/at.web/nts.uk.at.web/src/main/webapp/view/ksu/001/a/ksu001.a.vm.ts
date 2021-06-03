@@ -169,8 +169,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         medicalOP = false;
         nursingCareOP = false;
         widthA8 : number = 200;
-        widthBtnToLeftToRight : number = 32;
-        distanceLeftToGrid : number = 30;
+        widthBtnToLeftToRight : number = 30; // width button 
+        distanceLeftToGrid : number = 30; // khoang cách từ mép trái vào đến grid
+        widthVertSum : number = 200;
 
 		showA11: KnockoutObservable<boolean>   = ko.observable(false);
 		showA12: KnockoutObservable<boolean>   = ko.observable(false);
@@ -2516,7 +2517,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             // set height grid theo localStorage đã lưu
             self.setPositionButonDownAndHeightGrid();
-            $('#btnControlLeftRight').width($("#extable").width() + 10);
             $("#sub-content-main").width($('#extable').width() + 30);
             console.log(performance.now() - start);
 			
@@ -2964,7 +2964,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 			let self = this,
 				vertSumHeader = {
 		        columns: self.vertSumColumns,
-		        width: "200px",
+		        width: self.widthVertSum+"px",
 		        features: [{
 		            name: "HeaderRowHeight",
 		            rows: { 0: "40px", 1: "20px" }   
@@ -3644,48 +3644,89 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // xử lý cho button A13
         toLeft() {
             let self = this;
+            if (!self.showA9)
+                return;
+            let widthScrollRG = 30; // width thanh scroll, vì grid tính cả width của thằng này vào độ rộng, nên phải trừ nó đi khi tính toán.
             if (self.indexBtnToLeft % 2 == 0) {
-                if (self.showA9) {
-                    $("#extable").exTable("hideMiddle");
-                }
+                $("#extable").exTable("hideMiddle");
                 $('.iconToLeft').css('background-image', 'url(' + self.pathToRight + ')');
+                $(".toLeft").css("margin-left", self.widthA8 + self.distanceLeftToGrid + "px");
                 
-                $(".toLeft").css("margin-left", self.widthA8 + self.distanceLeftToGrid+"px");
-                
-                let marginleft = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight*2 - self.distanceLeftToGrid;
+                let marginleft = 0;
+                if (self.showA11() && self.indexBtnToRight % 2 == 0) {
+                    marginleft = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight * 2 - self.widthVertSum - widthScrollRG;
+                }else{
+                    marginleft = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight * 2 - widthScrollRG;
+                }
                 $(".toRight").css('margin-left', marginleft + 'px');
             } else {
-                if (self.showA9) {
-                    $("#extable").exTable("showMiddle");
-                }
+                $("#extable").exTable("showMiddle");
                 $('.iconToLeft').css('background-image', 'url(' + self.pathToLeft + ')');
                 let marginleftOfbtnToLeft: number = self.widthA8 + self.distanceLeftToGrid + self.widthMid;
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
-                
-                let marginleftOfbtnToRight = $("#extable").width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight*2 - self.distanceLeftToGrid;
-                $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
+
+                let marginleft = 0;
+                if (self.showA11() && self.indexBtnToRight % 2 == 0) {
+                    marginleft = $('#extable').width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight * 2 - self.widthVertSum - widthScrollRG;
+                }else{
+                    marginleft = $('#extable').width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight * 2 - widthScrollRG;
+                }
+                $(".toRight").css('margin-left', marginleft + 'px');
             }
-            $('#btnControlLeftRight').width($("#extable").width() + 10);
-            $("#sub-content-main").width($('#extable').width() + 30);
             self.indexBtnToLeft = self.indexBtnToLeft + 1;
         }
 
         toRight() {
             let self = this;
+            if(self.showA11() == false)
+                return;
+            let widthScrollRG = 30; // width thanh scroll, vì grid tính cả width của thằng này vào độ rộng, nên phải trừ nó đi khi tính toán.
             if (self.indexBtnToRight % 2 == 0) {
+                $("#extable").exTable("hideVerticalSummary");
                 $('.iconToRight').css('background-image', 'url(' + self.pathToLeft + ')');
+                if (self.showA9 && self.indexBtnToLeft % 2 == 0) {
+                    // trong truong hop nay phải check thêm là A9 đang show hay hidden do click btn toLeft
+                    let marginleft = $('#extable').width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight * 2 - widthScrollRG; 
+                    $(".toRight").css('margin-left', marginleft + 'px');
+                } else {
+                    let marginleft = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight * 2 - widthScrollRG;
+                    $(".toRight").css('margin-left', marginleft + 'px');
+                }
             } else {
+                $("#extable").exTable("showVerticalSummary");
                 $('.iconToRight').css('background-image', 'url(' + self.pathToRight + ')');
+                if (self.showA9 && self.indexBtnToLeft % 2 == 0) {
+                    // trong truong hop nay phải check thêm là A9 đang show hay hidden do click btn toLeft
+                    let marginleft = $('#extable').width() - self.widthA8 - self.widthMid - self.widthVertSum - self.widthBtnToLeftToRight * 2  - widthScrollRG;
+                    $(".toRight").css('margin-left', marginleft + 'px');
+                } else {
+                    let marginleft = $('#extable').width() - self.widthA8 - self.widthVertSum - self.widthBtnToLeftToRight * 2 - widthScrollRG;
+                    $(".toRight").css('margin-left', marginleft + 'px');
+                }
             }
             self.indexBtnToRight = self.indexBtnToRight + 1;
         }
 
         toDown() {
             let self = this;
+            if (!self.showA12())
+                return;
+            let heightHozSum = 200 + 30 + 2; // 200 laf height cua HozSum, 30 la khoang cach A8 va A12
+            let heightBtn = 30;
             if (self.indexBtnToDown % 2 == 0) {
+                $("#extable").exTable("hideHorizontalSummary");
                 $('.iconToDown').css('background-image', 'url(' + self.pathToUp + ')');
+
+                let heightEtbl = $("#extable").height();
+                let margintop = heightEtbl - heightBtn - 24;
+                $(".toDown").css({ "margin-top": margintop + 'px' });
             } else {
+                $("#extable").exTable("showHorizontalSummary");
                 $('.iconToDown').css('background-image', 'url(' + self.pathToDown + ')');
+                
+                let heightEtbl = $("#extable").height();
+                let margintop = heightEtbl - heightHozSum  - heightBtn;
+                $(".toDown").css({ "margin-top": margintop + 'px' });
             }
             self.indexBtnToDown = self.indexBtnToDown + 1;
         }
@@ -3693,7 +3734,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         setPositionButonToRightToLeft() {
             let self = this;
             self.indexBtnToLeft = 0;
-            $('#btnControlLeftRight').width($("#extable").width() + 10);
+            $("#sub-content-main").width($('#extable').width() + 30);
 
             let marginleftOfbtnToRight: number = 0;
             let marginleftOfbtnToLeft: number = self.widthA8 + self.distanceLeftToGrid + self.widthMid;
@@ -3704,6 +3745,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $(".toLeft").css("display", "none");
                 marginleftOfbtnToRight = $("#extable").width() - self.widthBtnToLeftToRight - 3;
             }
+            
+            if(self.showA11()){
+                marginleftOfbtnToRight = marginleftOfbtnToRight - self.widthVertSum;
+            }
+            
             $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
         }
         
@@ -3725,7 +3771,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         setPositionButonToRight() {
             let self = this;
             let marginleftOfbtnToRight: number = 0;
-            $('#btnControlLeftRight').width($("#extable").width() + 10);
             if (self.showA9) {
                 let displayA9 = $('.ex-body-middle').css('display');
                 if(displayA9 == 'none'){
@@ -3741,20 +3786,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         setPositionButonDownAndHeightGrid() {
             let self = this;
+            let heightHozSum = 200 + 30 + 2; // 200 laf height cua HozSum, 30 la khoang cach A8 va A12
+            let heightBtn = 30;
             if (!_.isNil(self.userInfor)) {
                 if (self.userInfor.gridHeightSelection == 2) {
                     $("#extable").exTable("setHeight", self.userInfor.heightGridSetting);
                     let heightBodySetting: number = + self.userInfor.heightGridSetting;
-                    let heightBody = heightBodySetting + 60 - 25 - 16; // 60 chieu cao header, 25 chieu cao button
+                    let heightBody = heightBodySetting + 60 - 30 - ( self.showA12() ? heightHozSum : 0) - 16; // 60 chieu cao header, 30 chieu cao button
                     $(".toDown").css({ "margin-top": heightBody + 'px' });
                 } else {
                     let heightExtable = $("#extable").height();
-                    let margintop = heightExtable - 52;
+                    let margintop = heightExtable - ( self.showA12() ? heightHozSum : 0)  - heightBtn;
                     $(".toDown").css({ "margin-top": margintop + 'px' });
                 }
             } else {
                 let heightExtable = $("#extable").height();
-                let margintop = heightExtable - 52;
+                let margintop = heightExtable - ( self.showA12() ? heightHozSum : 0) - heightBtn;
                 $(".toDown").css({ "margin-top": margintop + 'px' });
             }
         }
