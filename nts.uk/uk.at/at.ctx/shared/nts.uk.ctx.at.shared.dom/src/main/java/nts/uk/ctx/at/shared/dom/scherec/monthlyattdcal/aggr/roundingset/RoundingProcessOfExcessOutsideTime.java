@@ -6,38 +6,14 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset;
  */
 public enum RoundingProcessOfExcessOutsideTime {
 	/** 切り捨て */
-	ROUNDING_DOWN(0, "切り捨て", "Enum_Rounding_Down"),
+	ROUNDING_DOWN(0),
 	/** 切り上げ */
-	ROUNDING_UP(1, "切り上げ", "Enum_Rounding_Up"),
+	ROUNDING_UP(1),
 	/** 要素の丸めに従う */
-	FOLLOW_ELEMENTS(2, "要素の丸めに従う", "Enum_Follow_Elements");
+	FOLLOW_ELEMENTS(2);
 	
 	public int value;
-	public String nameId;
-	public String description;
-
-	RoundingProcessOfExcessOutsideTime(int value, String nameId, String description){
+	private RoundingProcessOfExcessOutsideTime(int value){
 		this.value = value;
-		this.nameId = nameId;
-		this.description = description;
-	}
-
-	private final static RoundingProcessOfExcessOutsideTime[] values = RoundingProcessOfExcessOutsideTime.values();
-
-	public static RoundingProcessOfExcessOutsideTime valueOf(Integer value) {
-		// Invalid object.
-		if (value == null) {
-			return null;
-		}
-
-		// Find value.
-		for (RoundingProcessOfExcessOutsideTime val : RoundingProcessOfExcessOutsideTime.values) {
-			if (val.value == value) {
-				return val;
-			}
-		}
-
-		// Not found.
-		return null;
 	}
 }

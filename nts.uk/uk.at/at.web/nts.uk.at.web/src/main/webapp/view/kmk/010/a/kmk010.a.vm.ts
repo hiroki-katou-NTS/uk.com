@@ -38,9 +38,9 @@ module nts.uk.at.view.kmk010.a {
                 self.isManage = ko.observable(true);
                 self.checkRounding = ko.observable(0);
                 //self.superHD60HConMedModel.roundingTime.subscribe(function(selectUnit: number) {         
-                self.outsideOTSettingModel.roundingUnit.subscribe(function(selectUnit: number) {
-                    self.updateSelectUnitRounding(selectUnit);
-                });
+                // self.outsideOTSettingModel.roundingUnit.subscribe(function(selectUnit: number) {
+                //     self.updateSelectUnitRounding(selectUnit);
+                // });
                 self.tabFinalArray = ko.observable(12);
                 
                 self.tabFinalArray.subscribe(item => {
@@ -350,11 +350,11 @@ module nts.uk.at.view.kmk010.a {
             private updateSelectUnitRounding(selectUnit: number){
                 var self = this;
                 // if rounding time is 15 or 30 minute             
-                // if (selectUnit == 4 || selectUnit == 6) {
+                if (selectUnit == 4 || selectUnit == 6) {
                     self.lstRoundingSet(self.lstRounding);
-                // } else {
-                //     self.lstRoundingSet(self.lstRoundingSub);
-                // }
+                } else {
+                    self.lstRoundingSet(self.lstRoundingSub);
+                }
             }
 
             /**
