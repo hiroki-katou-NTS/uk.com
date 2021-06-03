@@ -5490,6 +5490,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 self.setPositionButonToRightToLeft();
                 
+                self.mode() === 'edit' ? self.editMode() : self.confirmMode();
+
+                if (self.userInfor.disPlayFormat == 'time') {
+                    self.diseableCellsTime();
+                }
+                
                 // fix bug khong coppyPaste dc 
                 if (self.userInfor.updateMode == 'copyPaste') {
                     $("#extable").exTable("updateMode", "stick");
