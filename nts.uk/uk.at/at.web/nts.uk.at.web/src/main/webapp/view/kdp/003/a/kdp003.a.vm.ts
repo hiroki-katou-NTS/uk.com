@@ -57,6 +57,7 @@ module nts.uk.at.kdp003.a {
 
 		worklocationCode: null | string = null;
 		workPlaceId: string = null;
+		contractCd: string = '';
 
 		// setting for button A3
 		showClockButton: {
@@ -97,8 +98,6 @@ module nts.uk.at.kdp003.a {
 		created() {
 			const vm = this;
 
-			vm.basyo();
-
 			// show or hide stampHistoryButton
 			vm.message.subscribe((value) => {
 
@@ -130,7 +129,6 @@ module nts.uk.at.kdp003.a {
 
 		// get WorkPlace from basyo -> save locastorage.
 		basyo() {
-
 			$.urlParam = function (name) {
 				var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
 				if (results == null) {
@@ -275,7 +273,8 @@ module nts.uk.at.kdp003.a {
 
 					// auto login by storage data of preview login
 					// <<ScreenQuery>> 打刻管理者でログインする
-					return vm.$ajax('at', API.COMPANIES)
+
+					return vm.$ajax('at', API.COMPANIES, { contractCode: vm.$user.contractCode })
 						.then((data: f.CompanyItem[]) => {
 
 							if (!data.length || _.every(data, d => d.selectUseOfName === false)) {
@@ -341,6 +340,9 @@ module nts.uk.at.kdp003.a {
 					return data;
 				})
 				.then((data: LoginData) => {
+
+					console.log(data);
+
 					var exest = false;
 					var check1527 = false;
 
@@ -351,12 +353,14 @@ module nts.uk.at.kdp003.a {
 					}
 
 					if (!check1527) {
-						if (data.loginData.notification == null) {
-							exest = true;
-						}
+						if (data.loginData !== undefined) {
+							if (data.loginData.notification == null) {
+								exest = true;
+							}
 
-						if (data.loginData.result) {
-							exest = false;
+							if (data.loginData.result) {
+								exest = false;
+							}
 						}
 					}
 
@@ -379,8 +383,13 @@ module nts.uk.at.kdp003.a {
 					return data;
 				})
 				.then((data: LoginData) => {
-
 					var check1527 = false;
+					
+					if (data.loginData === undefined) {
+						vm.setMessage({ messageId: 'Msg_1647' });
+
+						return false;
+					}
 
 					if (ko.unwrap(vm.message)) {
 						if (ko.unwrap(vm.message).messageId === 'Msg_1527') {

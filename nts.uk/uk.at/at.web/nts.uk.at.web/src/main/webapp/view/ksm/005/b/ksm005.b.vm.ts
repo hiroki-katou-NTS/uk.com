@@ -234,7 +234,7 @@ module nts.uk.at.view.ksm005.b {
                     // show message 15
                     nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function () {
                         nts.uk.ui.windows.setShared("isCancelSave", false);
-                        nts.uk.ui.windows.setShared("endYearMonth", moment.utc(self.dateValue().endDate).format("YYYYMM"));
+                        nts.uk.ui.windows.setShared("endYearMonth", moment.utc(self.dateValue().endDate, "YYYY/MM").format("YYYYMM"));
                         nts.uk.ui.windows.close();
                     });
 
@@ -290,8 +290,8 @@ module nts.uk.at.view.ksm005.b {
                     settingNoneStatutoryHolidays: self.monthlyPatternSettingBatchNoneStatutoryHolidays(),
                     settingPublicHolidays: self.settingForHolidays() ? self.monthlyPatternSettingBatchPublicHolidays() : null,
                     overwrite: self.overwirte(),
-                    startYearMonth: Number(moment.utc(self.dateValue().startDate).format("YYYYMM")),
-                    endYearMonth: Number(moment.utc(self.dateValue().endDate).format("YYYYMM")),
+                    startYearMonth: Number(moment.utc(self.dateValue().startDate, "YYYY/MM").format("YYYYMM")),
+                    endYearMonth: Number(moment.utc(self.dateValue().endDate, "YYYY/MM").format("YYYYMM")),
                     monthlyPatternCode: self.monthlyPatternCode,
                     monthlyPatternName: self.monthlyPatternName
                 };

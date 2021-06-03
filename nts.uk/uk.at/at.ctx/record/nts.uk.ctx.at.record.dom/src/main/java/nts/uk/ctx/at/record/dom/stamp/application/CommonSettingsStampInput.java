@@ -35,6 +35,7 @@ public class CommonSettingsStampInput implements DomainAggregate{
 	 * マップ表示アドレス
 	 */
 	@Getter
+	@Setter
 	private Optional<MapAddress> mapAddres;
 	
 	/**
