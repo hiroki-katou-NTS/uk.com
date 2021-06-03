@@ -158,16 +158,12 @@ public class WorkDaysOfMonthly implements Serializable{
 	 * @param predTimeSetOnWeekday 所定時間設定（平日時）
 	 */
 	public void aggregate(
-			RequireM1 require,
-			WorkingSystem workingSystem,
-			WorkType workType,
+			RequireM1 require, WorkingSystem workingSystem, WorkType workType,
 			AttendanceTimeOfDailyAttendance attendanceTimeOfDaily,
 			SpecificDateAttrOfDailyAttd specificDateAttrOfDaily,
 			WorkTypeDaysCountTable workTypeDaysCountTable,
-			WorkInfoOfDailyAttendance workInfo,
-			PredetemineTimeSetting predetermineTimeSet,
-			boolean isAttendanceDay,
-			boolean isTwoTimesStampExists,
+			WorkInfoOfDailyAttendance workInfo, PredetemineTimeSetting predetermineTimeSet,
+			boolean isAttendanceDay, boolean isTwoTimesStampExists,
 			PredetemineTimeSetting predTimeSetOnWeekday){
 		
 		// 出勤日数の集計
@@ -209,7 +205,7 @@ public class WorkDaysOfMonthly implements Serializable{
 		this.leave.aggregate(workTypeDaysCountTable);
 		
 		// 振出日数の集計
-		this.recruitmentDays.aggregate(workingSystem, workTypeDaysCountTable, isAttendanceDay);
+		this.recruitmentDays.aggregate(require, workingSystem, workTypeDaysCountTable, isAttendanceDay);
 		
 		// 特別休暇日数の集計
 		this.specialVacationDays.aggregate(workingSystem, workType, workTypeDaysCountTable, isAttendanceDay,
@@ -242,7 +238,7 @@ public class WorkDaysOfMonthly implements Serializable{
 		this.timeConsumpDays.sum(target.timeConsumpDays);
 	}
 	
-	public static interface RequireM1 extends SpecificDaysOfMonthly.RequireM1{
+	public static interface RequireM1 extends SpecificDaysOfMonthly.RequireM1, RecruitmentDaysOfMonthly.RequireM1 {
 
 	}
 }
