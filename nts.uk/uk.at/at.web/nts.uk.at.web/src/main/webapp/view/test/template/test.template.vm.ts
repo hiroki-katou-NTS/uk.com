@@ -1,31 +1,29 @@
 module nts.uk.at.view.test.template.viewmodel {
 
     @bean()
-    export class ViewModel{
+    export class ViewModel extends ko.ViewModel {
 
         fileName: KnockoutObservable<string> = ko.observable("");
         fileType: KnockoutObservable<number> = ko.observable(1);
-        accept: KnockoutObservableArray<string> = ko.observableArray(['.xls','.xlsx']);
+        accept: KnockoutObservableArray<string> = ko.observableArray(['.xlsx']);
         fileId: KnockoutObservable<string> = ko.observable("");
         changeList: KnockoutObservableArray<InsertCell> = ko.observableArray([]);
+        approverName: KnockoutObservable<string> = ko.observable("");
+        status: KnockoutObservable<string> = ko.observable("");
 
-        constructor() {
+        created() {
             let self = this;
             self.fileType.subscribe(v => {
                 if (v === 1) {
-                    self.accept(['.xls','.xlsx']);
+                    self.accept(['.xlsx']);
                 } else {
                     self.accept(['.pdf']);
                 }
             })
         }
 
-        start(): JQueryPromise<void> {
-            let self = this;
-            let dfd = $.Deferred<void>();
+        mounted() {
 
-            dfd.resolve();
-            return dfd.promise();
         }
 
         addChange() {
@@ -35,7 +33,7 @@ module nts.uk.at.view.test.template.viewmodel {
             self.changeList(newLst);
         }
 
-        removeChange(index) {
+        removeChange(index: number) {
             let self = this;
             let newLst = self.changeList();
             newLst.splice(index, 1);
@@ -44,12 +42,26 @@ module nts.uk.at.view.test.template.viewmodel {
 
         upload() {
             let self = this;
-            $("#file-upload").ntsFileUpload({}).done(function(res) {
+            $("#file-upload").ntsFileUpload({}).done(function(res: any) {
                 self.fileId(res[0].id);
-                nts.uk.request.specials.donwloadFile(self.fileId());
-            }).fail(function(err) {
+                // nts.uk.request.specials.donwloadFile(self.fileId());
+            }).fail(function(err: any) {
                 nts.uk.ui.dialog.alertError(err);
             });
+        }
+
+        download() {
+            let self = this;
+            // nts.uk.request.specials.donwloadFile(this.fileId());
+            let query = {
+                fileName: self.fileName(),
+                fileID: self.fileId(),
+                approverName: self.approverName(),
+                status: self.status(),
+                isExcel: self.fileType() == 1 ? true : false
+            }
+
+            nts.uk.request.exportFile(paths.export, query);
         }
     }
 
@@ -61,5 +73,9 @@ module nts.uk.at.view.test.template.viewmodel {
             this.id = ko.observable("");
             this.content = ko.observable("");
         }
+    }
+
+    const paths = {
+        export: 'at/template/request/export'
     }
 }
