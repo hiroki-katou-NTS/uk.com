@@ -249,8 +249,8 @@ module nts.uk.at.view.kdp002.a {
 
 let reCalGridWidthHeight = () => {
     const resize = () => {
-		let h = $('#stampBtnContainer').height() - 43;
-        let stampBtnHeight =  (h < 160 ? 160 : h) + 'px';
+		let h = $('#kdp002a').height() - $('#stamp-header').height() - 60 - ($('.tabs-panel').length > 0 ? 42 : 0) - ($('.pageComent').length > 0 ? $('.pageComent').height() + 10 : 0);
+        let stampBtnHeight =  (h < $('#stampBtnContainer').height() ? $('#stampBtnContainer').height() : h) + 'px';
         const $hgrid = $('#stamp-history-list');
         const $cgrid = $('#time-card-list');
 

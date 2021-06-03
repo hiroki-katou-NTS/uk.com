@@ -1,10 +1,10 @@
 #contents-area {
 	overflow-y: auto;
-    height: calc(100vh - 20px);
+    height: calc(100vh - 10px);
 }
 
 .kdp-003-a {
-	padding: 10px;
+	padding: 10px 0 0;
 	background: linear-gradient(#EBFCF6, #F5F5F5);
 }
 

@@ -352,7 +352,7 @@
 }
 .pageComent {
 	white-space: break-spaces;
-    padding: 0 1vmin 1vmin;
+    padding: 0 1vmin 10px;
     word-break: break-word;
 }
 .not_used_label {

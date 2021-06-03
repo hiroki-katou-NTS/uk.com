@@ -3,6 +3,9 @@ module nts.uk.at.view.kdp002.a {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+			 setInterval(function () {
+                    reCalGridWidthHeight();
+                });			
 			$(window).resize(function () {reCalGridWidthHeight()});
         });
     });

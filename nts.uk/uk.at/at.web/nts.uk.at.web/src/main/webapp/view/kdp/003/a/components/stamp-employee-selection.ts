@@ -257,18 +257,21 @@ module nts.uk.at.kdp003.a {
 
 			setInterval(function () {
 
-				var paramSize = '0px';
+				var paramSize = 0;
 
 				const grid = $grid.get(0);
 
 				if (grid && $grid.data('igGrid')) {
 					// const top = grid.getBoundingClientRect().top;
 					// const maxHeight = size.y + size.height;
-					const param: string = $('#stamp-input').height() - 178 + "px";
+					let param: number = $('#contents-area').height() - 178;
+					if(param <  ($('#stamp-input').height() - 178)){
+						param = ($('#stamp-input').height() - 178);
+					}
 
 					if (paramSize !== param) {
 						paramSize = param;
-						$grid.igGrid('option', 'height', param);
+						$grid.igGrid('option', 'height', param + 'px');
 					}
 				}
 			}, 100);

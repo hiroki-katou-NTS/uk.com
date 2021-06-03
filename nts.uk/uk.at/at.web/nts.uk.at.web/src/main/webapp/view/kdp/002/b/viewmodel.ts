@@ -49,7 +49,7 @@ class KDP002BViewModel extends ko.ViewModel {
     items: KnockoutObservableArray<ItemModels> = ko.observableArray([]);
     columns2: KnockoutObservableArray<any> = ko.observableArray([
         { headerText: "id", key: 'id', width: 100, hidden: true },
-        { headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText("KDP002_45") + "</div>", key: 'stampDate', width: 130 },
+        { headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText("KDP002_45") + "</div>", key: 'stampDate', width: 135 },
         { headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText("KDP002_46") + "</div>", key: 'stampHowAndTime', width: 90 },
         { headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText("KDP002_47") + "</div>", key: 'timeStampType', width: 180 }
     ]);
