@@ -27,12 +27,12 @@ public class ExacErrorLogManager {
         		lastLogSeqNumber,
     			this.cid,
     			this.externalProcessId,
-    			Optional.ofNullable(csvItem.getCsvItemName()),
+    			Optional.ofNullable(""),
     			Optional.ofNullable(editedValue),
     			Optional.ofNullable(TextResource.localize(errorId)),
     			new AcceptanceLineNumber(lineNo),
 				GeneralDateTime.now(),
-				Optional.ofNullable(csvItem.getItemName()),
+				Optional.ofNullable(""),
 				errorDiv
     		);
     	this.logs.add(log);
@@ -49,7 +49,7 @@ public class ExacErrorLogManager {
     			Optional.ofNullable(TextResource.localize(errorId)),
     			new AcceptanceLineNumber(lineNo),
 				GeneralDateTime.now(),
-				Optional.ofNullable(csvItem.getCsvItemName()),
+				Optional.ofNullable(""),
 				errorDiv
     		);
     	this.logs.add(log);
