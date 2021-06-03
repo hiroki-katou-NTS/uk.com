@@ -1,7 +1,5 @@
 package nts.uk.ctx.exio.dom.input.canonicalize;
 
-import java.util.Optional;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
