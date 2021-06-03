@@ -83,3 +83,6 @@ html{
 	color: red;
 	font-size: 1.2rem !important;
 }
+.pageComent {
+	word-break: break-all !important;
+}
