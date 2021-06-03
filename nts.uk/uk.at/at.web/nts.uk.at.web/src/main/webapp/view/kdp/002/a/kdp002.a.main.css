@@ -129,3 +129,6 @@ html{
 	padding-top: 0px;
 	padding-bottom: 0px;
 }
+.pageComent {
+	word-break: break-all !important;
+}
