@@ -102,7 +102,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Canon
 		}
 		
 		String employeeId = employeeCanonicalized.get(0)
-				.getItemByNo(employeeCodeCanonicalization.getItemNoEmployeeId())
+				.getItemByNo(itemNoEmployeeId())
 				.get().getString();
 
 		val existingHistory = getHistory(require, employeeId);
@@ -232,5 +232,8 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Canon
 		void save(EmployeeHistoryToAdjust toAdjust);
 		void save(EmployeeHistoryToRemove toRemove);
 		
+	
+	private int itemNoEmployeeId() {
+		return employeeCodeCanonicalization.getItemNoEmployeeId();
 	}
 }
