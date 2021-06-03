@@ -81,6 +81,10 @@ module nts.uk.at.view.kdp005.a {
 						self.btnHistory(false);
 					}
 				});
+
+				setInterval(() => {
+					self.loadNotice();
+				}, 5000);
 			}
 
 			public startPage(): JQueryPromise<void> {
@@ -724,25 +728,52 @@ module nts.uk.at.view.kdp005.a {
 							vm.$window.modal('at', DIALOG.F, { mode, companyId })
 								.then((output: string) => {
 									if (output === 'loginSuccess') {
-										vm.$window.modal('at', DIALOG.P)
-											.then(() => {
-												// self.loadNotice(self.loginInfo);
-												window.location.reload(false);
-											})
+										vm.$window.modal('at', DIALOG.P);
 									}
 								});
 						}
 					});
 			}
 
-			loadNotice(loginInfo: any): JQueryPromise<any> {
+			loadNotice(loginInfo?: any): JQueryPromise<any> {
 				let vm = new ko.ViewModel();
 				const self = this;
 				let dfd = $.Deferred<any>();
 				let startDate = vm.$date.now();
 				startDate.setDate(startDate.getDate() - 3);
+				var wkpIds: string[];
 
-				if (loginInfo.selectedWP) {
+				if (loginInfo) {
+					wkpIds = loginInfo.selectedWP;
+				} else {
+					vm.$window
+						.storage('loginKDP005')
+						.then((data: any) => {
+							if (data.selectedWP.length > 0) {
+								wkpIds = data.selectedWP;
+							}
+						})
+						.then(() => {
+							if (wkpIds && wkpIds.length > 0) {
+								const param = {
+									periodDto: {
+										startDate: startDate,
+										endDate: vm.$date.now()
+									},
+									wkpIds: wkpIds
+								}
+
+								vm.$ajax(API.NOTICE, param)
+									.done((data: IMessage) => {
+										self.messageNoti(data);
+									});
+							}
+						});
+				}
+
+
+
+				if (wkpIds && wkpIds.length > 0) {
 					const param = {
 						periodDto: {
 							startDate: startDate,
@@ -762,8 +793,8 @@ module nts.uk.at.view.kdp005.a {
 							dfd.resolve();
 							vm.$blockui('clear');
 						});
-					return dfd.promise();
 				}
+				return dfd.promise();
 			}
 
 			getWorkPlacesInfo() {
