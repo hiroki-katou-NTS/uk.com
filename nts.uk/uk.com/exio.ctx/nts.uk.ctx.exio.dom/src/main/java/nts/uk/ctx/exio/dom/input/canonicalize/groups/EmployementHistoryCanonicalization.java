@@ -4,7 +4,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.history.EmployeeContinuousHistoryCanonicalization;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -25,18 +24,10 @@ public class EmployementHistoryCanonicalization
 		
 		super(itemNoStartDate, itemNoEndDate, itemNoHistoryId, employeeCodeCanonicalization);
 	}
-
-	@Override
-	public void canonicalize(GroupCanonicalization.Require require, ExecutionContext context) {
-		
-		canonicalize(require, context, result -> {
-			require.save(result.complete(context));
-		});
-	}
 	
 	@Override
 	protected History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(
-			CanonicalizationMethod.Require require,
+			GroupCanonicalization.Require require,
 			String employeeId) {
 		
 		return require.getEmploymentHistory(employeeId);
@@ -45,5 +36,30 @@ public class EmployementHistoryCanonicalization
 	public static interface RequireGetHistory {
 		
 		EmploymentHistory getEmploymentHistory(String employeeId);
+	}
+
+	@Override
+	protected void adjustChanging(RequireAdjsut require, ExecutionContext context, EmployeeHistoryItem historyItem) {
+		require.changeEmploymentHistory(
+				context.getCompanyId(),
+				historyItem.getEmployeeId(),
+				historyItem.toDateHistoryItem());
+	}
+
+	@Override
+	protected void adjustDeleting(RequireAdjsut require, ExecutionContext context, EmployeeHistoryItem historyItem) {
+		require.deleteEmploymentHistory(
+				context.getCompanyId(),
+				historyItem.getEmployeeId(),
+				historyItem.toDateHistoryItem());
+	}
+
+	public static interface RequireAdjust {
+		
+		/** 雇用履歴を変更する */
+		void changeEmploymentHistory(String companyId, String employeeId, DateHistoryItem historyItem);
+		
+		/** 雇用履歴を削除する */
+		void deleteEmploymentHistory(String companyId, String employeeId, DateHistoryItem historyItem);
 	}
 }

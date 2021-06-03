@@ -1,21 +1,22 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.groups;
 
-import java.util.Arrays;
+import static nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode.*;
+
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
+import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
-
-import static nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode.*;
+import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 
 /**
@@ -48,7 +49,7 @@ public class TaskCanonicalization implements GroupCanonicalization {
 			
 			val revisedData = require.getRevisedDataRecordByRowNo(context, rowNo);
 			
-			val uniqueKey = createUniqueKey(revisedData);
+			val uniqueKey = new UniqueKey(revisedData);
 			if (importingKeys.contains(uniqueKey)) {
 				throw new RuntimeException("重複データ" + uniqueKey);
 			}
@@ -56,35 +57,13 @@ public class TaskCanonicalization implements GroupCanonicalization {
 			canonicalize(require, context, revisedData);
 		}
 	}
-
-	private UniqueKey createUniqueKey(RevisedDataRecord revisedData) {
-		
-		int taskFrameNo = (int) (long) (revisedData.getItemByNo(itemNoFrameNo).get().getInt());
-		String taskCode = revisedData.getItemByNo(itemNoTaskCode).get().getString();
-		
-		return new UniqueKey(taskFrameNo, taskCode);
-	}
 	
-	/**
-	 * 作業のユニークキー
-	 */
-	@Value
-	private static class UniqueKey {
+	private void canonicalize(
+			GroupCanonicalization.Require require,
+			ExecutionContext context,
+			RevisedDataRecord revisedData) {
 		
-		/** 作業枠NO */
-		int frameNo;
-		
-		/** 作業コード */
-		String code;
-		
-		public AnyRecordToDelete toDelete(ExecutionContext context) {
-			return new AnyRecordToDelete(context, Arrays.asList(frameNo, code));
-		}
-	}
-	
-	private void canonicalize(GroupCanonicalization.Require require, ExecutionContext context, RevisedDataRecord revisedData) {
-		
-		val key = createUniqueKey(revisedData);
+		val key = new UniqueKey(revisedData);
 		Optional<Task> existing = require.getTask(context.getCompanyId(), key.frameNo, key.code);
 		
 		// 受け入れず無視するケース
@@ -102,9 +81,62 @@ public class TaskCanonicalization implements GroupCanonicalization {
 		require.save(result);
 	}
 
-	public static interface Require {
+	public static interface RequireCanonicalize {
 		
 		Optional<Task> getTask(String companyId, int taskFrameNo, String taskCode);
 		
+	}
+
+	@Override
+	public void adjust(
+			RequireAdjsut require,
+			ExecutionContext context,
+			List<AnyRecordToChange> recordsToChange,
+			List<AnyRecordToDelete> recordsToDelete) {
+		
+		if (!recordsToChange.isEmpty()) {
+			throw new RuntimeException("既存データの変更はありえない");
+		}
+		
+		for (val record : recordsToDelete) {
+			val key = new UniqueKey(record);
+			require.deleteTask(context.getCompanyId(), key.frameNo, key.code);
+		}
+	}
+	
+	public static interface RequireAdjust {
+		
+		void deleteTask(String companyId, int taskFrameNo, String taskCode);
+	}
+	
+	/**
+	 * 作業のユニークキー
+	 */
+	@RequiredArgsConstructor
+	private class UniqueKey {
+		
+		/** 作業枠NO */
+		final int frameNo;
+		
+		/** 作業コード */
+		final String code;
+		
+		public UniqueKey(RevisedDataRecord revisedData) {
+			this(
+					(int) (long) (revisedData.getItemByNo(itemNoFrameNo).get().getInt()),
+					revisedData.getItemByNo(itemNoTaskCode).get().getString());
+		}
+		
+		public UniqueKey(AnyRecordToDelete record) {
+			this(
+					record.getKey(itemNoFrameNo).asInteger(),
+					record.getKey(itemNoTaskCode).asString());
+		}
+		
+		public AnyRecordToDelete toDelete(ExecutionContext context) {
+			return AnyRecordToDelete.create(context)
+					.addKey(itemNoFrameNo, StringifiedValue.of(frameNo))
+					.addKey(itemNoTaskCode, StringifiedValue.of(code));
+		}
 	}
 }

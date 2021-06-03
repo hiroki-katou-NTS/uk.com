@@ -1,9 +1,13 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.groups;
 
+import java.util.List;
+
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
+import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.history.EmployeeContinuousHistoryCanonicalization;
 
 /**
  * 受入グループ別の正準化
@@ -17,12 +21,31 @@ public interface GroupCanonicalization {
 	 */
 	void canonicalize(Require require, ExecutionContext context);
 	
+	/**
+	 * 受入に影響される既存データを補正する
+	 * @param require
+	 * @param context
+	 * @param recordsToChange
+	 * @param recordsToDelete
+	 */
+	void adjust(
+			RequireAdjsut require,
+			ExecutionContext context,
+			List<AnyRecordToChange> recordsToChange,
+			List<AnyRecordToDelete> recordsToDelete);
+	
 	public static interface Require extends
 		CanonicalizationMethod.Require,
-		TaskCanonicalization.Require {
+		TaskCanonicalization.RequireCanonicalize {
 		
 		void save(AnyRecordToDelete toDelete);
 		
 		void save(CanonicalizedDataRecord canonicalizedDataRecord);
+	}
+	
+	public static interface RequireAdjsut extends
+		TaskCanonicalization.RequireAdjust,
+		EmployeeContinuousHistoryCanonicalization.RequireAdjust {
+		
 	}
 }
