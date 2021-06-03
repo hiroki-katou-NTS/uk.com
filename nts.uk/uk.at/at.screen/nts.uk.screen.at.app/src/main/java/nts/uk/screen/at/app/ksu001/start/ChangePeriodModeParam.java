@@ -38,7 +38,6 @@ public class ChangePeriodModeParam {
 	public String workplaceSelected;   // 職場計選択A12_1
 	public int day; // 締め日
 	public boolean isLastDay;// 締め日
-	public String modePeriodSelected;
 	
 	
 }

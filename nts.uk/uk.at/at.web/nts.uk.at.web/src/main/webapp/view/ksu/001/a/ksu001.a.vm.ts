@@ -209,25 +209,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
             
             self.disPeriodSelectionList = ko.observableArray([]);
-            
+
             self.selectedDisplayPeriod.subscribe(function(value) { // value = 1 || 2 || 3
                 if (value == null || value == undefined)
                     return;
                 if (value == 3) { // 1日～末日で表示する  ：   A3_2_3選択時               
-                    let date = new Date(self.dateTimeAfter());
-                    let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-                    let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-
-                    let startDate = moment(firstDay).format('YYYY/MM/DD');
-                    let endDate = moment(lastDay).format('YYYY/MM/DD');
-
-                    if ((self.dateTimeAfter() != endDate) || (self.dateTimePrev() != startDate)) {
-                        self.getDataWhenChangeModePeriod();
-                    }
+                    self.getDataInModeA3_2_3();
                 } else if (value == 2) { // 28日周期で表示する  ：   A3_2_2選択時               
-                    self.getDataWhenChangeModePeriod();
+                    self.getDataInModeA3_2_2();
                 } else if (value == 1) { // 抽出期間を表示する  ：   A3_2_1選択時           
-                    self.getDataWhenChangeModePeriod();
+                    self.getDataInModeA3_2_1();
                 }
             });
 
@@ -511,16 +502,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 				_.remove(data.dataBasicDto.useCategoriesWorkplace, (item: any) => item.value == 4);
 				self.useCategoriesPersonal(data.dataBasicDto.useCategoriesPersonal);
 				self.useCategoriesWorkplace(data.dataBasicDto.useCategoriesWorkplace);
-				if(_.isEmpty(self.useCategoriesPersonal())) {
-					self.showA11(false);
-				} else {
-					self.showA11(true);
-				}
-				if(_.isEmpty(self.useCategoriesWorkplace())) {
-					self.showA12(false);
-				} else {
-					self.showA12(true);
-				}
+                
+				_.isEmpty(self.useCategoriesPersonal()) ? self.showA11(false) : self.showA11(true);
+				_.isEmpty(self.useCategoriesWorkplace()) ? self.showA12(false) : self.showA12(true);
+				
 				if(self.userInfor && _.includes(_.map(self.useCategoriesPersonal(), o => o.value), self.userInfor.useCategoriesPersonalValue)) {
 					self.useCategoriesPersonalValue(self.userInfor.useCategoriesPersonalValue);		
 				} else {
@@ -578,73 +563,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
         
-        getDataWhenChangeModePeriod() {
-            let self = this;
-            let viewMode = self.selectedModeDisplayInBody();
-            nts.uk.ui.block.grayout();
-
-            let param = {
-                viewMode: self.selectedModeDisplayInBody(), // time | shortName | shift
-                startDate: self.dateTimePrev(),
-                endDate: self.dateTimeAfter(),
-                workplaceId: self.userInfor.workplaceId,
-                workplaceGroupId: self.userInfor.workplaceGroupId,
-                unit: self.userInfor.unit,
-                getActualData: !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false,
-                listShiftMasterNotNeedGetNew: self.userInfor.shiftMasterWithWorkStyleLst,
-                sids: self.listSid(),
-                day: self.closeDate.day, 
-                isLastDay: self.closeDate.lastDay,
-                personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
-                workplaceSelected: self.useCategoriesWorkplaceValue(), // A12_1
-                modePeriodSelected: self.selectedDisplayPeriod(), // 1 |2|3
-            };
-
-            service.getDataWhenChangeModePeriod(param).done((data: any) => {
-                if (self.userInfor.disPlayFormat == 'shift') {
-                    self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
-                }
-                
-                self.saveDataGrid(data);
-                self.dtPrev(data.dataBasicDto.startDateNew);
-                self.dtAft(data.dataBasicDto.endDateNew);
-
-                let dataGrid: any = {
-                    listDateInfo: data.listDateInfo,
-                    listEmpInfo: data.listEmpInfo,
-                    displayControlPersonalCond: data.displayControlPersonalCond,
-                    listPersonalConditions: data.listPersonalConditions,
-                    listWorkScheduleWorkInfor: data.listWorkScheduleWorkInfor,
-                    listWorkScheduleShift: data.listWorkScheduleShift,
-                    aggreratePersonal: data.aggreratePersonal,
-                    aggrerateWorkplace: data.aggrerateWorkplace
-                }
-                let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
-
-                // remove va tao lai grid
-                self.destroyAndCreateGrid(dataBindGrid, self.selectedModeDisplayInBody());
-
-                self.setUpdateMode();
-                
-                if (self.mode() == 'confirm') {
-                    $("#extable").exTable("updateMode", "determine");
-                }
-
-                self.setPositionButonToRightToLeft();
-                
-                // fix bug khong coppyPaste dc 
-                if (self.userInfor.updateMode == 'copyPaste') {
-                    $("#extable").exTable("updateMode", "stick");
-                    $("#extable").exTable("updateMode", "copyPaste");
-                }
-
-                nts.uk.ui.block.clear();
-            }).fail(function(error) {
-                nts.uk.ui.block.clear();
-                nts.uk.ui.dialog.alertError(error);
-            });
-        }
-
         getNewData(viewMode): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             if (viewMode == 'shift') { // mode シフト表示   
@@ -5463,6 +5381,126 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 nts.uk.ui.dialog.alertError(error);
             });
         }
+        // select A3-2-1
+        getDataInModeA3_2_1() {
+            let self = this;
+            nts.uk.ui.block.grayout();
+            let startDate = self.dateTimePrev(); // start Hiển thị trên màn hình
+            let endDate = self.dateTimeAfter(); //end Hiển thị trên màn hình
+            // A3_2_① - 表示切替の期間のチェック①
+            if (startDate == self.startDateInitStart && endDate == self.endDateInitStart) {
+                nts.uk.ui.block.clear();
+                return;
+            }
+            self.getDataWhenChangeModePeriod(self.startDateInitStart, self.endDateInitStart);
+        }
+        // select A3-2-2
+        getDataInModeA3_2_2() {
+            let self = this;
+            nts.uk.ui.block.grayout();
+            // call <<ScreenQuery>> 28日の期間を取得する
+            service.get28DayPeriod({ endDate: self.dateTimeAfter() }).done((data: any) => {
+                let startDateOnScreen = self.dateTimePrev(); // start Hiển thị trên màn hình
+                let endDateOnScreen = self.dateTimeAfter(); //end Hiển thị trên màn hình
+                // A3_2_② 表示切替の期間のチェック②
+                if (data.start == startDateOnScreen && data.end == endDateOnScreen) {
+                    nts.uk.ui.block.clear();
+                    return;
+                }
+                self.dtPrev(data.start);
+                self.dtAft(data.end);
+                self.getDataWhenChangeModePeriod(data.start, data.end);
+
+            }).fail(function(error) {
+                nts.uk.ui.block.clear();
+                nts.uk.ui.dialog.alertError(error);
+            });
+        }
+
+        // select A3-2-3
+        getDataInModeA3_2_3() {
+            let self = this;
+            nts.uk.ui.block.grayout();
+            // A3_2_3  末日までの1ヶ月の期間を取得する    
+            let date = new Date(self.dateTimeAfter());
+            let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+            let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+            let startDate = moment(firstDay).format('YYYY/MM/DD');
+            let endDate   = moment(lastDay).format('YYYY/MM/DD');
+
+            // A3_2_② 表示切替の期間のチェック②
+            if ((self.dateTimeAfter() == endDate) && (self.dateTimePrev() == startDate)) {
+                nts.uk.ui.block.clear();
+                return;
+            }
+            self.getDataWhenChangeModePeriod(startDate, endDate);
+        }
+
+        getDataWhenChangeModePeriod(startDate, endDate) {
+            let self = this;
+            let viewMode = self.selectedModeDisplayInBody();
+            nts.uk.ui.block.grayout();
+
+            let param = {
+                viewMode: self.selectedModeDisplayInBody(), // time | shortName | shift
+                startDate: startDate,
+                endDate: endDate,
+                workplaceId: self.userInfor.workplaceId,
+                workplaceGroupId: self.userInfor.workplaceGroupId,
+                unit: self.userInfor.unit,
+                getActualData: !_.isNil(self.userInfor) ? self.userInfor.achievementDisplaySelected : false,
+                listShiftMasterNotNeedGetNew: self.userInfor.shiftMasterWithWorkStyleLst,
+                sids: self.listSid(),
+                day: self.closeDate.day, 
+                isLastDay: self.closeDate.lastDay,
+                personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
+                workplaceSelected: self.useCategoriesWorkplaceValue(), // A12_1
+            };
+
+            service.getDataWhenChangeModePeriod(param).done((data: any) => {
+                if (self.userInfor.disPlayFormat == 'shift') {
+                    self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                }
+                
+                self.saveDataGrid(data);
+                self.dtPrev(data.dataBasicDto.startDate);
+                self.dtAft(data.dataBasicDto.endDate);
+
+                let dataGrid: any = {
+                    listDateInfo: data.listDateInfo,
+                    listEmpInfo: data.listEmpInfo,
+                    displayControlPersonalCond: data.displayControlPersonalCond,
+                    listPersonalConditions: data.listPersonalConditions,
+                    listWorkScheduleWorkInfor: data.listWorkScheduleWorkInfor,
+                    listWorkScheduleShift: data.listWorkScheduleShift,
+                    aggreratePersonal: data.aggreratePersonal,
+                    aggrerateWorkplace: data.aggrerateWorkplace
+                }
+                let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
+
+                // remove va tao lai grid
+                self.destroyAndCreateGrid(dataBindGrid, self.selectedModeDisplayInBody());
+
+                self.setUpdateMode();
+                
+                if (self.mode() == 'confirm') {
+                    $("#extable").exTable("updateMode", "determine");
+                }
+
+                self.setPositionButonToRightToLeft();
+                
+                // fix bug khong coppyPaste dc 
+                if (self.userInfor.updateMode == 'copyPaste') {
+                    $("#extable").exTable("updateMode", "stick");
+                    $("#extable").exTable("updateMode", "copyPaste");
+                }
+                nts.uk.ui.block.clear();
+            }).fail(function(error) {
+                nts.uk.ui.block.clear();
+                nts.uk.ui.dialog.alertError(error);
+            });
+        }
     }
 
     export enum viewMode {
@@ -5862,4 +5900,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 		CLASSIFICATION_PEOPLE = 6, // 分類人数
 		POSITION_PEOPLE = 7, // 職位人数
 	}
+    
+    enum DisplayPeriod {
+        ANY_PERIOD = 1, // 任意期間
+        TH28 = 2, // ２８日  
+        END = 3, // 末日
+    }
 }

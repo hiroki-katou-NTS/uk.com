@@ -8,6 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.ChangeConfirmedStateCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.ChangeConfirmedStateCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.RegisterWorkSchedule;
@@ -20,6 +22,8 @@ import nts.uk.screen.at.app.ksu001.changepage.GetShiftPalChangePageResult;
 import nts.uk.screen.at.app.ksu001.changeworkplace.ChangeWorkPlaceFinder;
 import nts.uk.screen.at.app.ksu001.changeworkplace.ChangeWorkPlaceParam;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DateInformationDto;
+import nts.uk.screen.at.app.ksu001.get28dateperiod.ModePeriodParam;
+import nts.uk.screen.at.app.ksu001.get28dateperiod.ScreenQuery28DayPeriod;
 import nts.uk.screen.at.app.ksu001.getaggregatedInfo.AggregatedInfoParam;
 import nts.uk.screen.at.app.ksu001.getaggregatedInfo.AggregatedInformationRs;
 import nts.uk.screen.at.app.ksu001.getaggregatedInfo.GetAggregatedInfoFinder;
@@ -88,6 +92,8 @@ public class KSU001WebService extends WebService{
 	private ChangeConfirmedStateCommandHandler changeConfirmedStateHandler;
 	@Inject
 	private GetAggregatedInfoFinder getdataA11A12;
+	@Inject
+	private ScreenQuery28DayPeriod mode28DayPeriod;
 	
 	@POST
 	@Path("start")
@@ -205,6 +211,14 @@ public class KSU001WebService extends WebService{
 	@Path("get-aggregated-info") // get lai data A11, A12 
 	public AggregatedInformationRs getAggregatedInfo(AggregatedInfoParam param){
 		AggregatedInformationRs data = getdataA11A12.getData(param);
+		return data;
+	}
+	
+	@POST
+	@Path("get-28day-period") // get lai data A11, A12 
+	public DatePeriodDto get28DaysPeriod(ModePeriodParam param){
+		GeneralDate endDate = GeneralDate.fromString(param.endDate, "yyyy/MM/dd");
+		DatePeriodDto data = mode28DayPeriod.get(endDate);
 		return data;
 	}
 	

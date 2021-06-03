@@ -30,8 +30,6 @@ import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScheModifyAuthCtrlCommon
 public class DataBasicDto {
 	public GeneralDate startDate; // ・期間 A3_1_2
 	public GeneralDate endDate;   // ・期間 A3_1_4
-	public GeneralDate startDateNew; // ・ trường hợp chọn A3_2_2 và A3_2_3 thì tính toán date trên server rồi trả về 2 biến này
-	public GeneralDate endDateNew;   // ・
 	public  int unit; //WORKPLACE(0), //WORKPLACE_GROUP(1);
 	public  String workplaceId;
 	public  String workplaceGroupId;
