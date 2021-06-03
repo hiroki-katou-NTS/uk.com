@@ -7,7 +7,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.exio.dom.input.DataItem;
 
 /**
  * 値の編集結果

@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.csvimport;
+package nts.uk.ctx.exio.dom.exi.csvimport;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,10 +15,10 @@ import nts.gul.csv.CSVParsedResult;
 import nts.gul.csv.NtsCsvReader;
 import nts.gul.csv.NtsCsvRecord;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceLineNumber;
-import nts.uk.ctx.exio.dom.exi.csvimport.RequiredMasterDataNotFoundException;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryItem;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
-import nts.uk.ctx.exio.dom.input.revise.ReviseService;
+import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
+import nts.uk.ctx.exio.dom.input.revise.ReviseCsvRecord;
 import nts.uk.ctx.exio.dom.input.setting.source.ExternalImportCharset;
 
 /**
@@ -94,18 +94,18 @@ public class CsvRecordImpoter {
 		val csvParsedLines = csvParsedResult.getRecords().subList(startLine - 1, csvParsedResult.getRecords().size());
 
 		List<CsvRecord> result = new ArrayList<>();
-		for (NtsCsvRecord csvParsedLine : csvParsedLines) {
-			List<CsvItem> items = new ArrayList<>();
-			for (int i = 0; i<colHeader.columnLength(); i++) {
-				String itemName = colHeader.getColumn(i).toString();
-				int csvItemNo = i +1;
-
-				val acceptSetItem = require.getStdAcceptItem(csvItemNo);
-				val accItem = require.getExternalAcceptCategoryItem(acceptSetItem.getAcceptItemNumber());
+//		for (NtsCsvRecord csvParsedLine : csvParsedLines) {
+//			List<String> items = new ArrayList<>();
+//			for (int i = 0; i<colHeader.columnLength(); i++) {
+//				String itemName = colHeader.getColumn(i).toString();
+//				int csvItemNo = i +1;
+//
+//				val acceptSetItem = require.getStdAcceptItem(csvItemNo);
+//				val accItem = require.getExternalAcceptCategoryItem(acceptSetItem.getAcceptItemNumber());
 //				items.add(new CsvItem(itemName, csvParsedLine.getColumn(itemName).toString(), acceptSetItem, accItem));
-			}
+//			}
 //			result.add(new CsvRecord(items));
-		}
+//		}
 		return result;
 	}
 	
@@ -118,7 +118,7 @@ public class CsvRecordImpoter {
         }
     }
 	
-	public interface Require extends ReviseService.Require{
+	public interface Require extends ReviseCsvRecord.Require{
 		InputStream get();
 
 		StdAcceptItem getStdAcceptItem(int csvItemNo);

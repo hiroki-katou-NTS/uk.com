@@ -3,7 +3,6 @@ package nts.uk.ctx.exio.dom.input.revise.type.integer;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.exio.dom.input.csvimport.CsvItem;
 import nts.uk.ctx.exio.dom.input.revise.RevisedValueResult;
 import nts.uk.ctx.exio.dom.input.revise.RevisingValueType;
 import nts.uk.ctx.exio.dom.input.revise.type.RangeOfValue;
@@ -27,11 +26,11 @@ public class IntegerRevise implements RevisingValueType {
 	
 
 	@Override
-	public RevisedValueResult revise(CsvItem target) {
+	public RevisedValueResult revise(String target) {
 		
 		int result;
 		try {
-			result = Integer.parseInt(target.getValue());
+			result = Integer.parseInt(target);
 		}
 		catch(Exception e){
 			return RevisedValueResult.failed("Msg_1017");

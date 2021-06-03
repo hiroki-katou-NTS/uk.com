@@ -8,5 +8,4 @@ public class AssembleExternalImportData {
 	public ExternalImportData assemble() {
 		return null;
 	}
-
 }
