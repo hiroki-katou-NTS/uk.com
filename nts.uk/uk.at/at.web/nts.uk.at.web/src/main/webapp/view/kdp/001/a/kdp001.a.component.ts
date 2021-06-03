@@ -72,7 +72,8 @@ module nts.uk.ui.kdp001.a {
         name: 'kdp-001-a',
         template: `
             <div class="kdp-001-a widget-title">
-                <div class="text-time" data-bind="i18n: 'KDP001_5'"></div>
+                <div class="text-time" data-bind="i18n: 'KDP001_5', 
+                            css: { 'ie': $component.state() === 'IE' , 'not-ie': $component.state() === 'NOT_IE'}"></div>
                 <div class="date" data-bind="date: $component.time.now, format: 'YYYY/MM/DD(ddd)', attr: { style: $component.time.style }"></div>
                 <div>
                     <span class="hours-minutes" data-bind="date: $component.time.now, format: 'HH:mm',attr: { style: $component.time.style }"></span>
@@ -201,6 +202,12 @@ module nts.uk.ui.kdp001.a {
                 <!-- /ko -->
             <!-- /ko -->
             <style rel="stylesheet">
+                .ie {
+                    top: -15px;
+                }
+                .not-ie {
+                    top: -23px;
+                }
                 .widget-title {
                     position: relative;
                     width: 450px;
@@ -354,7 +361,6 @@ module nts.uk.ui.kdp001.a {
                     position: absolute;
                     font-size: 70px;
                     color: #E5F7F9;
-                    top: -23px;
                     right: 22px;
                 }
                 .kdp-001-a.widget-title .date {
@@ -428,10 +434,23 @@ module nts.uk.ui.kdp001.a {
 
         lengthStamps!: KnockoutComputed<LENGTH>;
         poral!: KnockoutComputed<boolean>;
+        state!: KnockoutComputed<string>;
 
         constructor(private mode: 'a' | 'b' | 'c' | 'd' | KnockoutObservable<'a' | 'b' | 'c' | 'd'> = 'a') {
             super();
             const vm = this;
+
+            vm.state = ko.computed({
+                read: () => {
+                    var isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+                    if (isIE) {
+                        return 'IE';
+                    }
+                    return 'NOT_IE';
+                }
+            });
+
             if (mode === 'a') {
                 vm.modeA(true);
             }
