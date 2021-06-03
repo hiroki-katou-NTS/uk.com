@@ -68,6 +68,11 @@ module nts.uk.at.view.ksu001.testR {
                 };
 
                 $('#tree-grid').ntsTreeComponent(self.treeGrid);
+                  $('#tree-grid').ntsTreeComponent(self.treeGrid).done(function () {
+                                    var lwps = $('#tree-grid').getDataList();
+                                    self.selectedWorkplaceId(lwps[0].id);
+                                    self.name(lwps[0].name);
+                                });
 
 
                 self.options = {
@@ -121,8 +126,12 @@ module nts.uk.at.view.ksu001.testR {
                 }
                 setShare('targetR', target);
                 setShare('periodR', period);
+                if(self.unit === '0'){
                 setShare('name', self.name());
-
+                 }
+                else{
+                 setShare('name', self.currentNames());   
+                    }
                 self.currentScreen = nts.uk.ui.windows.sub.modeless("/view/ksu/001/r/index.xhtml");
             }
             public startPage(): JQueryPromise<any> {
