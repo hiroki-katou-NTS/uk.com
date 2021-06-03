@@ -51,6 +51,7 @@ module nts.uk.at.view.kdp.share {
             padding: 3px;
             height: 62px;
             max-height: 62px;
+            word-break: break-all;
         }
 
         .kdp-message-error .workPlace {
@@ -58,6 +59,7 @@ module nts.uk.at.view.kdp.share {
             margin-top: 5px;
             height: 62px;
             max-height: 62px;
+            position: relative;
         }
 
         .kdp-message-error .workPlace .title {
@@ -71,12 +73,15 @@ module nts.uk.at.view.kdp.share {
             box-sizing: border-box;
             margin-right:40px;
             max-height:62px;
-            text-overflow: ellipsis;
-            overflow: hidden;
         }
 
         .kdp-message-error .workPlace .title .name-title {
             box-sizing: border-box;
+        }
+
+        .kdp-message-error .workPlace .title .btn-title {
+            position: absolute;
+            top: 25px;
         }
         
         .kdp-message-error .workPlace .content {
@@ -91,6 +96,7 @@ module nts.uk.at.view.kdp.share {
             max-height:62px;
             text-overflow: ellipsis;
             overflow: hidden;
+            word-break: break-all;
         }
 
         .kdp-message-error .workPlace .btn-content {
@@ -267,8 +273,7 @@ module nts.uk.at.view.kdp.share {
 
             if (type == DestinationClassification.ALL) {
                 if (setting) {
-
-                    vm.title(setting.companyTitle + ':');
+                    vm.title(setting.companyTitle + ' ');
                     vm.textColor(setting.comMsgColor.textColor);
                     vm.backGroudColor(setting.comMsgColor.backGroundColor);
                 }
@@ -277,7 +282,7 @@ module nts.uk.at.view.kdp.share {
             if (type == DestinationClassification.WORKPLACE) {
                 if (setting) {
 
-                    vm.title(setting.wkpTitle + ':');
+                    vm.title(setting.wkpTitle + ' ');
                     vm.textColor(setting.wkpMsgColor.textColor);
                     vm.backGroudColor(setting.wkpMsgColor.backGroundColor);
                 }
