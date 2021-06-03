@@ -31,7 +31,6 @@ public class Helper {
 	public static List<DataItem> DUMMY_dataItems(int itemNo){
 		return Arrays.asList(new DataItem(
 				itemNo, 
-				Helper.DUMMY.ITEM_TYPE, 
 				Helper.DUMMY.VALUE));
 	}
 	
