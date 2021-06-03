@@ -12,8 +12,6 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectStatusResult;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectedState;
-import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
-import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
@@ -72,7 +70,7 @@ public class ReflectApplicationWorkRecord {
 		ChangeDailyAttendance changeAtt;
 		if (application.getOpStampRequestMode().isPresent()
 				&& application.getOpStampRequestMode().get() == StampRequestModeShare.STAMP_ONLINE_RECORD) {
-			changeAtt = new ChangeDailyAttendance(true, true, false, false, ScheduleRecordClassifi.RECORD);
+			changeAtt = new ChangeDailyAttendance(true, true, false, false, ScheduleRecordClassifi.RECORD, true);
 			/// 打刻申請（NRモード）を反映する -- itemId
 			TimeStampApplicationNRMode.process(require, dateTarget,
 					(AppRecordImageShare) application, dailyRecordApp, stamp, changeAtt);
@@ -125,7 +123,10 @@ public class ReflectApplicationWorkRecord {
 		boolean attendance = lstItemId.stream()
 				.filter(x -> x.intValue() == 31 || x.intValue() == 34 || x.intValue() == 41 || x.intValue() == 44)
 				.findFirst().isPresent();
-		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.RECORD);
+		boolean directBounceClassifi = lstItemId.stream()
+				.filter(x -> x.intValue() == 859 || x.intValue() == 860)
+				.findFirst().isPresent();
+		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.RECORD, directBounceClassifi);
 	}
 
 	private static IntegrationOfDaily createDailyDomain(Require require, IntegrationOfDaily domainDaily) {
