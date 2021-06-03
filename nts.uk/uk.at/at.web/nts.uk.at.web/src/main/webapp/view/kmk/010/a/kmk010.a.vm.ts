@@ -38,9 +38,9 @@ module nts.uk.at.view.kmk010.a {
                 self.isManage = ko.observable(true);
                 self.checkRounding = ko.observable(0);
                 //self.superHD60HConMedModel.roundingTime.subscribe(function(selectUnit: number) {         
-                // self.outsideOTSettingModel.roundingUnit.subscribe(function(selectUnit: number) {
-                //     self.updateSelectUnitRounding(selectUnit);
-                // });
+                self.outsideOTSettingModel.roundingUnit.subscribe(function(selectUnit: number) {         
+                    self.updateSelectUnitRounding(selectUnit);
+                });
                 self.tabFinalArray = ko.observable(12);
                 
                 self.tabFinalArray.subscribe(item => {

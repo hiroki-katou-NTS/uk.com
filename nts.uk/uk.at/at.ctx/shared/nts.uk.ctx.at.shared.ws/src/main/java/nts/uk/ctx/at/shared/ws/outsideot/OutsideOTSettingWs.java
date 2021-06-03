@@ -25,7 +25,6 @@ import nts.uk.ctx.at.shared.app.find.outsideot.OutsideOTSettingFinder;
 import nts.uk.ctx.at.shared.app.find.outsideot.dto.OutsideOTSettingDto;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingProcessOfExcessOutsideTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTCalMed;
 
 /**
@@ -156,11 +155,5 @@ public class OutsideOTSettingWs extends WebService {
 	@Path("save/allPremiumExtra60H")
 	public void savePremiumExtra60H(PremiumExtra60HComand command) {
 		this.premiumExtra60HCommandHandler.handle(command);
-	}
-
-	@POST
-	@Path("findAll/roundingOfExcessOutsideTime")
-	public List<EnumConstant> findAllRoundingOfExcessOutsideTime() {
-		return EnumAdaptor.convertToValueNameList(RoundingProcessOfExcessOutsideTime.class);
 	}
 }
