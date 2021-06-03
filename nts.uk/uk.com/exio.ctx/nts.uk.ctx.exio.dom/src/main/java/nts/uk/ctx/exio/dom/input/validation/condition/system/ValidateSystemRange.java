@@ -21,20 +21,15 @@ public class ValidateSystemRange {
 		val importableItems = require.getDefinition(context.getCompanyId(), context.getGroupId());
 		List<Boolean> successFlags = new ArrayList<Boolean>();
 		
-		for(DataItem dataItem : record.getItems()) {
-			boolean existSetting = false;
-			for(ImportableItem importableItem : importableItems) {
-				//編集済みデータと受入可能項目を突合させ、受入できるかチェック
-				if(importableItem.getItemNo() == dataItem.getItemNo()) {
-					successFlags.add(importableItem.validate(dataItem));
-					existSetting = true;
-				}
-			}
-			if(!existSetting) {
-				throw new RuntimeException("システムが許容していない項目を受入ようとしています。"+ dataItem.getItemNo());
-			}
-		}
-
+		record.getItems().forEach(recordItem ->{
+			successFlags.add(
+				importableItems.stream()
+				.filter(importableItem -> recordItem.getItemNo() == importableItem.getItemNo())
+				.findFirst()
+				.get()
+				.validate(recordItem)
+			);
+		});
 		//falseが含まれてたら失敗したことを伝えたい
 		return !successFlags.contains(false);
 	}
