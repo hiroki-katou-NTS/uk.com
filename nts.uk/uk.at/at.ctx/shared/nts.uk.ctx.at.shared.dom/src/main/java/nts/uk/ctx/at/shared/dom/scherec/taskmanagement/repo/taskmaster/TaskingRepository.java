@@ -113,7 +113,7 @@ public interface TaskingRepository {
      * @param code
      * @return
      */
-    List<Task> getListTask(String cid, TaskFrameNo taskFrameNo, TaskCode code);
+    List<Task> getListChildTask(String cid, TaskFrameNo taskFrameNo, TaskCode code);
 
     /**
      * 作業枠NOと作業コードリストを作業を全て取得する

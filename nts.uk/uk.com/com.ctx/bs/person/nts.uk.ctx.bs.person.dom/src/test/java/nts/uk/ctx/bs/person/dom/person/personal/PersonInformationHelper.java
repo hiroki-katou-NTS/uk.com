@@ -49,11 +49,14 @@ public class PersonInformationHelper {
 			mockOtherContacts.add(OtherContactDto.builder().otherContactNo(4).isDisplay(true).address("address4").build());
 			mockOtherContacts.add(OtherContactDto.builder().otherContactNo(5).isDisplay(true).address("address5").build());
 			
-			return PersonalContactDto.builder().personalId("personalId").mailAddress("mailAddress")
-					.isMailAddressDisplay(true).mobileEmailAddress("mobileEmailAddress").isMobileEmailAddressDisplay(true)
-					.phoneNumber("phoneNumber").isPhoneNumberDisplay(true).emergencyContact1(mockEmergencyContact1)
-					.isEmergencyContact1Display(true).emergencyContact2(mockEmergencyContact2)
-					.isEmergencyContact2Display(true).otherContacts(mockOtherContacts).build();
+			return PersonalContactDto.builder()
+					.personalId("personalId")
+					.mailAddress("mailAddress")
+					.mobileEmailAddress("mobileEmailAddress")
+					.phoneNumber("phoneNumber")
+					.emergencyContact1(mockEmergencyContact1)
+					.emergencyContact2(mockEmergencyContact2)
+					.otherContacts(mockOtherContacts).build();
 		}
 	}
 

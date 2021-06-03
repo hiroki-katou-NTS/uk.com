@@ -1,18 +1,3 @@
-.time-editor input {
-  width: 70px;
-  text-align: center !important;
-}
-.time-editor .cell:nth-child(2) {
-  padding-left: 5px;
-  padding-right: 5px;
-}
-.table-row {
-  margin-bottom: 20px;
-}
-.table-row:first-child {
-  margin-top: 20px;
-}
-
 #master-wrapper #contents-area.ksm-007 {
   padding: 15px 20px;
   height: auto !important;
@@ -22,22 +7,31 @@
   width: 100%;
   max-width: 290px;
 }
-.workplace-group .cell {
-  width: 50%;
-  padding-bottom: 5px;
-}
-.workplace-group .cell:last-child {
-  text-align: right;
-}
+
 .ksm-007 .note {
   margin-top: 10px;
 }
+
 .direction-right .buttons {
   margin-bottom: 10px;
 }
+
 .direction-right .buttons button:last-child {
   float: right;
 }
+
 #history-list-panel_headers_v {
   display: none;
+}
+
+.control-group .form-label {
+  width: 125px;
+}
+
+.nightShiftHours {
+  width: 70px;
+}
+
+.nts-switch-button {
+  width: 54px;
 }

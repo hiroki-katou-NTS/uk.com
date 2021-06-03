@@ -44,7 +44,13 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 			+ " WHERE (ps.krcmtPayoutSubOfHDManaPK.sid = :sid1 OR ps.krcmtPayoutSubOfHDManaPK.sid = :sid2)"
 			+ " AND (ps.krcmtPayoutSubOfHDManaPK.digestDate IN :digestDates"
 			+ " OR ps.krcmtPayoutSubOfHDManaPK.occDate IN :occDates)";
-
+	
+	private static final String QUERY_BY_DIGEST_OCC = String.join(" ", QUERY,
+			" WHERE ps.krcmtPayoutSubOfHDManaPK.sid = :sid and ps.krcmtPayoutSubOfHDManaPK.digestDate = :digestDate and ps.krcmtPayoutSubOfHDManaPK.occDate >= :baseDate");
+	
+	private static final String QUERY_BY_OCC_DIGEST = String.join(" ", QUERY,
+			" WHERE ps.krcmtPayoutSubOfHDManaPK.sid = :sid and ps.krcmtPayoutSubOfHDManaPK.occDate = :occDate and ps.krcmtPayoutSubOfHDManaPK.digestDate >= :baseDate");
+	
 	@Override
 	public void add(PayoutSubofHDManagement domain) {
 		this.commandProxy().insert(toEntity(domain));
@@ -171,6 +177,25 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 	public List<PayoutSubofHDManagement> getByListSubID(String sid, DatePeriod date) {
 		return this.queryProxy().query(QUERY_BY_LIST_SUB_ID, KrcmtPayoutSubOfHDMana.class).setParameter("sid", sid)
 				.setParameter("startDate", date.start()).setParameter("endDate", date.end()).getList().stream()
+				.map(item -> toDomain(item)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<PayoutSubofHDManagement> getWithDateUse(String sid, GeneralDate dateOfUse, GeneralDate baseDate) {
+		return this.queryProxy().query(QUERY_BY_DIGEST_OCC, KrcmtPayoutSubOfHDMana.class)
+		.setParameter("sid", sid)
+		.setParameter("digestDate", dateOfUse)
+		.setParameter("baseDate", baseDate).getList().stream()
+		.map(item -> toDomain(item)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<PayoutSubofHDManagement> getWithOutbreakDay(String sid, GeneralDate outbreakDay,
+			GeneralDate baseDate) {
+		return this.queryProxy().query(QUERY_BY_OCC_DIGEST, KrcmtPayoutSubOfHDMana.class)
+				.setParameter("sid", sid)
+				.setParameter("occDate", outbreakDay)
+				.setParameter("baseDate", baseDate).getList().stream()
 				.map(item -> toDomain(item)).collect(Collectors.toList());
 	}
 

@@ -1,9 +1,9 @@
 package nts.uk.file.at.infra.worktime;
 
 import java.util.List;
-import java.util.Objects;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import com.aspose.cells.Cells;
 import com.aspose.cells.Workbook;
@@ -11,6 +11,7 @@ import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
 import nts.uk.file.at.app.export.worktime.WorkTimeReportDatasource;
 import nts.uk.file.at.app.export.worktime.WorkTimeReportGenerator;
 import nts.uk.shr.com.i18n.TextResource;
@@ -28,6 +29,9 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 	private static final int WORK_TIME_NORMAL_NUM_ROW = 10;
 	private static final int WORK_TIME_FLOW_NUM_ROW = 10;
 	private static final int WORK_TIME_FLEX_NUM_ROW = 10;
+	
+	@Inject
+	private WorkTimeReportService reportService;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, WorkTimeReportDatasource dataSource) {
@@ -45,9 +49,9 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 			String normalSheetName = TextResource.localize("KMK003_309");
 			String flowSheetName = TextResource.localize("KMK003_310");
 			String flexSheetName = TextResource.localize("KMK003_311");
-			List<Object[]> normalData = dataSource.getWorkTimeNormal();
-			List<Object[]> flowData = dataSource.getWorkTimeFlow();
-			List<Object[]> flexData = dataSource.getWorkTimeFlex();
+			List<WorkTimeSettingInfoDto> normalData = dataSource.getWorkTimeNormal();
+			List<WorkTimeSettingInfoDto> flowData = dataSource.getWorkTimeFlow();
+			List<WorkTimeSettingInfoDto> flexData = dataSource.getWorkTimeFlex();
 
 			printData(normalSheet, programName, companyName, exportTime, normalData, normalSheetName,
 					WORK_TIME_NORMAL_START_INDEX, WORK_TIME_NORMAL_NUM_ROW);
@@ -66,8 +70,12 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 
 	}
 
-	private void printData(Worksheet worksheet, String programId, String companyName, String exportTime, List<Object[]> data,
+	private void printData(Worksheet worksheet, String programId, String companyName, String exportTime, List<WorkTimeSettingInfoDto> data,
 			String sheetName, int startIndex, int numRow) {
+	    String normalSheetName = TextResource.localize("KMK003_309");
+        String flowSheetName = TextResource.localize("KMK003_310");
+        String flexSheetName = TextResource.localize("KMK003_311");
+        
 		try {
 			worksheet.setName(sheetName);
 			Cells cells = worksheet.getCells();
@@ -79,15 +87,24 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 
 			// Main Data
 			for (int i = 0; i < data.size(); i++) {
-				Object[] dataRow = data.get(i);
-				if (i % numRow == 0 && i + numRow < data.size()) {
-					cells.copyRows(cells, startIndex + i, startIndex + i + numRow, numRow);
+				if (i < data.size() - 1) {
+					cells.copyRows(cells, startIndex + i*numRow, startIndex + (i + 1)*numRow, numRow);
 				}
-				for (int j = 0; j < dataRow.length; j++) {
-					cells.get(startIndex + i, j).setValue(Objects.toString(dataRow[j], ""));
+				
+				// bind data to cell by type
+				if (sheetName.equals(normalSheetName)) {
+				    reportService.insertDataOneLineNormal(data.get(i), cells, startIndex + i*numRow);
+				}
+				
+				if (sheetName.equals(flowSheetName)) {
+				    reportService.insertDataOneLineFlow(data.get(i), cells, startIndex + i*numRow);
+				}
+				
+				if (sheetName.equals(flexSheetName)) {
+				    reportService.insertDataOneLineFlex(data.get(i), cells, startIndex + i*numRow);
 				}
 			}
-			cells.deleteRows(startIndex + data.size(), numRow);
+//			cells.deleteRows(startIndex + data.size(), numRow);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

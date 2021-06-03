@@ -35,7 +35,7 @@ public class StoragePatternSettingWebService {
 	
 	@POST
 	@Path("/storagePattern/initialDisplay")
-	public StartupParameterDto<CategoryDto, DataStoragePatternSettingDto> initDisplay() {
+	public StartupParameterDto<CategoryDto, DataStoragePatternSettingDto<?>> initDisplay() {
 		return categoryInitDisplayFinder.initDisplay();
 	}
 	

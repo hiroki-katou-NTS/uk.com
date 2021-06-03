@@ -37,17 +37,17 @@ public class SpecHdFrameForWkTypeSetService {
 		//1日⇒午前⇒午後の優先順位で、集計枠があれば、その集計枠を取得する
 		//1日
 		frameNo = this.findByWorkAtr(lstWkTset, WorkAtr.OneDay);
-		if(frameNo != null){
+		if(frameNo != null && workType.getDailyWork().getOneDay().equals(WorkTypeClassification.SpecialHoliday)){
 			return Optional.of(frameNo);
 		}
 		//午前
 		frameNo = this.findByWorkAtr(lstWkTset, WorkAtr.Monring);
-		if(frameNo != null){
+		if(frameNo != null && workType.getDailyWork().getMorning().equals(WorkTypeClassification.SpecialHoliday)){
 			return Optional.of(frameNo);
 		}
 		//午後
 		frameNo = this.findByWorkAtr(lstWkTset, WorkAtr.Afternoon);
-		if(frameNo != null){
+		if(frameNo != null && workType.getDailyWork().getAfternoon().equals(WorkTypeClassification.SpecialHoliday)){
 			return Optional.of(frameNo);
 		}
 		return Optional.empty();

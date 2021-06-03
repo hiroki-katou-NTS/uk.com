@@ -11,6 +11,16 @@
 		.table-fixed-kmk003 tbody tr{
 			height: 33px;
 		}
+
+		.nts-fixed-body-wrapper {
+			height: unset !important;
+			max-height: 450px;
+		}
+
+		.accordion {
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
 	</style>
 
 	<div class="ui-iggrid kmk003-table-component" data-bind="attr: {tabindex: tabindex}">
@@ -23,6 +33,10 @@
 		<com:ko tag="if" bind="helpImageUrl">
 			<button class="fixed-table-help"
 				data-bind="ntsHelpButton: {image: helpImageUrl, position: 'right top'}, attr: {tabindex: tabindex}">?</button>
+		</com:ko>
+		<com:ko tag="if" bind="helpTextId">
+			<button class="fixed-table-help"
+				data-bind="ntsHelpButton: {textId: helpTextId, position: 'right top'}, attr: {tabindex: tabindex}">?</button>
 		</com:ko>
 		</div>
 

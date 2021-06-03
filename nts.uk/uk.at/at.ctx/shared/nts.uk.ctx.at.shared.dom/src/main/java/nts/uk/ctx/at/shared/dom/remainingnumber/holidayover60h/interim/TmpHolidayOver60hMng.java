@@ -3,18 +3,15 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim;
 import java.io.Serializable;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+//import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 
 /**
  * 暫定60H超休管理データ 
@@ -33,11 +30,8 @@ public class TmpHolidayOver60hMng extends InterimRemain implements Serializable 
 	/** 使用時間 */
 	private Optional<UseTime> useTime;
 	
-	/** 時間消化休暇かどうか */
-	private boolean isTimeDigestLeave;
-    
 	/** 時間休暇種類 */
-	private Optional<AppTimeType> appTimeType;
+	private Optional<DigestionHourlyTimeType> appTimeType;
 	
 	/**
 	 * コンストラクタ
@@ -57,6 +51,15 @@ public class TmpHolidayOver60hMng extends InterimRemain implements Serializable 
 	public TmpHolidayOver60hMng(String employeeId, GeneralDate end) {
 		super(employeeId, end);
 	}
+
+	public TmpHolidayOver60hMng(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr,
+			RemainType remainType, Optional<UseTime> useTime, Optional<DigestionHourlyTimeType> appTimeType) {
+		super(remainManaID, sID, ymd, creatorAtr, remainType);
+		this.useTime = useTime;
+		this.appTimeType = appTimeType;
+	}
+	
+	
 	
 //	/**
 //	 * 等しいかどうか

@@ -1,23 +1,36 @@
 package nts.uk.ctx.at.schedule.pubimp.schedule.workschedule;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
+import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkScheduleExport_New;
+import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ShortWorkingTimeSheetExport;
+import nts.uk.ctx.at.schedule.pub.schedule.workschedule.ActualWorkingTimeOfDailyExport;
+import nts.uk.ctx.at.schedule.pub.schedule.workschedule.AttendanceTimeOfDailyAttendanceExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.BreakTimeOfDailyAttdExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.BreakTimeSheetExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.ReasonTimeChangeExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.TimeActualStampExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.TimeLeavingOfDailyAttdExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.TimeLeavingWorkExport;
+import nts.uk.ctx.at.schedule.pub.schedule.workschedule.TotalWorkingTimeExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkScheduleBasicInforExport;
+import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkScheduleConfirmExport;
+import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkScheduleConfirmExport.SCConfirmedAtrExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkScheduleExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkSchedulePub;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkStampExport;
@@ -25,6 +38,8 @@ import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkTimeInformationExpor
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 
@@ -46,6 +61,14 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 		return Optional.empty();
 	}
 
+	@Override
+	public List<WorkScheduleExport> getList(List<String> sids, DatePeriod period) {
+
+		List<WorkSchedule> data = workScheduleRepository.getList(sids, period);
+		return data.stream().map(this::convertToWorkSchedule).collect(Collectors.toList());
+
+	}
+
 	private WorkScheduleExport convertToWorkSchedule(WorkSchedule data) {
 		
 		TimeLeavingOfDailyAttdExport timeLeavingOfDailyAttd = null;
@@ -64,11 +87,28 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 								.collect(Collectors.toList()));
 
 		WorkScheduleExport workScheduleExport = new WorkScheduleExport(
+				data.getEmployeeID(),
+				data.getConfirmedATR().value,
 				data.getWorkInfo().getRecordInfo().getWorkTypeCode().v(),
 				data.getWorkInfo().getRecordInfo().getWorkTimeCode() == null ? null
 						: data.getWorkInfo().getRecordInfo().getWorkTimeCode().v(),
 				data.getWorkInfo().getGoStraightAtr().value, data.getWorkInfo().getBackStraightAtr().value,
-				timeLeavingOfDailyAttd,listBreakTimeOfDaily);
+				timeLeavingOfDailyAttd,Optional.of(listBreakTimeOfDaily));
+		
+		workScheduleExport.setYmd(data.getYmd());
+		if (data.getOptAttendanceTime() != null && data.getOptAttendanceTime().isPresent()) {
+			ActualWorkingTimeOfDailyExport actualWorkingTimeOfDaily = ActualWorkingTimeOfDailyExport.builder()
+					.totalWorkingTime(TotalWorkingTimeExport.builder()
+							.actualTime(data.getOptAttendanceTime().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime().v())
+							.workTimes(data.getOptAttendanceTime().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getWorkTimes().v())
+							.build())
+					.build();
+			AttendanceTimeOfDailyAttendanceExport attendanceExport = AttendanceTimeOfDailyAttendanceExport.builder()
+					.actualWorkingTimeOfDaily(actualWorkingTimeOfDaily)
+					.build();
+			workScheduleExport.setOptAttendanceTime(Optional.ofNullable(attendanceExport));
+		}
+		
 		return workScheduleExport;
 
 	}
@@ -114,5 +154,79 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 	@Override
 	public Optional<String> getWorkTypeCode(String sid, GeneralDate baseDate) {
 		return Optional.ofNullable(workScheduleRepository.get(sid, baseDate).map(i -> i.getWorkInfo().getRecordInfo().getWorkTypeCode().v()).orElse(null));
+	}
+
+	@Override
+	public Optional<GeneralDate> acquireMaxDateBasicSchedule(List<String> sIds) {
+		return this.workScheduleRepository.getMaxDateWorkSche(sIds);
+	}
+	
+	@Override
+    public Optional<ScWorkScheduleExport_New> findByIdNewV2(String employeeId, GeneralDate baseDate) {
+        ScWorkScheduleExport_New result = new ScWorkScheduleExport_New();
+//      get 勤務予定
+        Optional<WorkSchedule> workSchedule =  workScheduleRepository.get(employeeId, baseDate);
+        workSchedule.ifPresent(x -> {
+            result.setEmployeeId(x.getEmployeeID());
+            result.setDate(x.getYmd());
+            result.setWorkTypeCode(x.getWorkInfo().getRecordInfo().getWorkTypeCode().v());
+            result.setWorkTimeCode(Optional.ofNullable(x.getWorkInfo().getRecordInfo().getWorkTimeCodeNotNull().map(y -> y.v()).orElse(null)));
+            x.getOptTimeLeaving().ifPresent(a -> {
+                
+                if (!CollectionUtil.isEmpty(a.getTimeLeavingWorks())) {
+                    a.getTimeLeavingWorks()
+                        .stream()
+                        .forEach(b -> {
+                            Optional<TimeWithDayAttr> start = b.getAttendanceStamp().map(g -> g.getStamp().map(h -> h.getTimeDay().getTimeWithDay()).orElse(Optional.empty())).orElse(Optional.empty());
+                            
+                            Optional<TimeWithDayAttr> end = b.getLeaveStamp().map(g -> g.getStamp().map(h -> h.getTimeDay().getTimeWithDay()).orElse(Optional.empty())).orElse(Optional.empty());
+                            if (b.getWorkNo().v() == 1) {
+                                result.setScheduleStartClock1(start);
+                                result.setScheduleEndClock1(end);
+                            } else if (b.getWorkNo().v() == 2) {
+                                result.setScheduleStartClock2(start);
+                                result.setScheduleEndClock2(end);
+                            }
+                        });
+                }
+            });
+            
+            
+            
+            result.setChildTime(0);
+            x.getOptSortTimeWork().ifPresent(y -> {
+                List<ShortWorkingTimeSheet> shortWorkingTimeSheet = y.getShortWorkingTimeSheets();
+                List<ShortWorkingTimeSheetExport> listExport = shortWorkingTimeSheet.stream().map(a ->{
+                    return new ShortWorkingTimeSheetExport(
+                            a.getShortWorkTimeFrameNo().v(),
+                            a.getChildCareAttr().value,
+                            a.getStartTime().v(),
+                            a.getEndTime().v());
+                }).collect(Collectors.toList());
+                result.setListShortWorkingTimeSheetExport(listExport);                          
+            });     
+        });
+        
+
+        
+        return workSchedule.isPresent() ? Optional.of(result) : Optional.empty();
+    }
+
+	@Override
+	public List<WorkScheduleConfirmExport> findConfirmById(List<String> employeeID, DatePeriod date) {
+		List<WorkSchedule> workSchedules = workScheduleRepository.getList(employeeID, date);
+		Map<Pair<String, GeneralDate>, WorkSchedule> mapData = workSchedules.stream()
+				.collect(Collectors.toMap(x -> Pair.of(x.getEmployeeID(), x.getYmd()), x -> x));
+
+		List<WorkScheduleConfirmExport> result = new ArrayList<>();
+		employeeID.stream().forEach(x -> {
+			date.datesBetween().forEach(dateB -> {
+				WorkSchedule data = mapData.get(Pair.of(x, dateB));
+				result.add(data == null ? new WorkScheduleConfirmExport(x, dateB, SCConfirmedAtrExport.UNSETTLED)
+						: new WorkScheduleConfirmExport(x, dateB,
+								EnumAdaptor.valueOf(data.getConfirmedATR().value, SCConfirmedAtrExport.class)));
+			});
+		});
+		return result;
 	}
 }

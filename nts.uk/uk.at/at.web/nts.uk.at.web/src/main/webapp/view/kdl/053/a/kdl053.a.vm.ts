@@ -43,8 +43,15 @@ module nts.uk.at.view.kdl053.a {
             if (_.isNull(data) || _.isEmpty(data)) {
                 self.closeDialog();
             }
-            errorRegistrationListTmp = data.errorRegistrationList;
-            employeeIds = data.employeeIds;  
+			if(_.isNil(data.errorRegistrationList)){
+				if(!_.isNil(data.dataShareDialogKDL053.errorRegistrationList))
+				errorRegistrationListTmp = data.dataShareDialogKDL053.errorRegistrationList;
+				employeeIds = data.dataShareDialogKDL053.employeeIds;
+			} else {
+				errorRegistrationListTmp = data.errorRegistrationList;
+				employeeIds = data.employeeIds;
+			}
+              
             _.each(employeeIds, id =>{      
                 let temp: any = [];
                 _.each(errorRegistrationListTmp, err => {                   
@@ -63,24 +70,31 @@ module nts.uk.at.view.kdl053.a {
                 switch (self.getDayfromDate(errorLog.date)) {
                     case 0:
                         errorLog.dateCss = '<span>' + errorLog.date + '<span style="color:red">' + " (" + moment.weekdaysShort(0) + ')</span></span>';
+                        errorLog.dateCsv =  errorLog.date + " (" + moment.weekdaysShort(0) + ")";
                         break;
                     case 1:
                         errorLog.dateCss = '<span>' + errorLog.date + " (" + moment.weekdaysShort(1) + ')</span>';
+                        errorLog.dateCsv =  errorLog.date + " (" + moment.weekdaysShort(1) + ")";
                         break;
                     case 2:
                         errorLog.dateCss = '<span>' + errorLog.date + " (" + moment.weekdaysShort(2) + ')</span>';
+                        errorLog.dateCsv =  errorLog.date + " (" + moment.weekdaysShort(2) + ")";
                         break;
                     case 3:
                         errorLog.dateCss = '<span>' + errorLog.date + " (" + moment.weekdaysShort(3) + ')</span>';
+                        errorLog.dateCsv =  errorLog.date + " (" + moment.weekdaysShort(3) + ")";
                         break;
                     case 4:
                         errorLog.dateCss = '<span>' + errorLog.date + " (" + moment.weekdaysShort(4) + ')</span>';
+                        errorLog.dateCsv =  errorLog.date + " (" + moment.weekdaysShort(4) + ")";
                         break;
                     case 5:
                         errorLog.dateCss = '<span>' + errorLog.date + " (" + moment.weekdaysShort(5) + ')</span>';
+                        errorLog.dateCsv =  errorLog.date + " (" + moment.weekdaysShort(5) + ")";
                         break;
                     case 6:
                         errorLog.dateCss = '<span>' + errorLog.date + '<span style="color:blue">'+ " (" + moment.weekdaysShort(6) + ')</span></span>';
+                        errorLog.dateCsv =  errorLog.date + " (" + moment.weekdaysShort(6) + ")";
                         break;
                 }
                 countNo = countNo + 1;
@@ -153,7 +167,7 @@ module nts.uk.at.view.kdl053.a {
         exportCsv(): void {
             const self = this;
             self.$blockui("invisible"); 
-            nts.uk.request.exportFile(Paths.EXPORT_CSV, self.registrationErrorListCsv()).always(() => {
+            nts.uk.request.exportFile(Paths.EXPORT_CSV, self.registrationErrorList()).always(() => {
                 self.$blockui("clear");
             });
         }

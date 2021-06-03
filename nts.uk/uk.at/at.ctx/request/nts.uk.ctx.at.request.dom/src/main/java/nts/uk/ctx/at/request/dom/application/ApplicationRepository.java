@@ -12,11 +12,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 
 public interface ApplicationRepository {
 	
-	// public Optional<Application_New> findByID(String companyID, String appID);
-	
 	public List<Application> findByListID(String companyID, List<String> listAppID);
-	
-	public List<Application_New> getApplicationIdByDate(String companyId, GeneralDate startDate, GeneralDate endDate);
 	
 	/**
 	 * getApplicationBySIDs
@@ -26,36 +22,7 @@ public interface ApplicationRepository {
 	 * @return
 	 */
 	public List<Application> getApplicationBySIDs(List<String> employeeID,GeneralDate startDate, GeneralDate endDate);
-
-	public List<Application_New> getApp(String applicantSID, GeneralDate appDate, int prePostAtr, int appType);
 	
-	/**
-	 * 事前申請を取得したい
-	 * @param companyId: 社員ID
-	 * @param appDate: 申請日
-	 * @param inputDate: 入力日
-	 * @param appType: 申請種類
-	 * @param prePostAtr: 事前事後区分
-	 * @return
-	 */
-	public List<Application_New>  getBeforeApplication(String companyId, String employeeID, GeneralDate appDate, int appType, int prePostAtr);
-	
-	public void insert(Application_New application);
-	
-	public void update(Application_New application);
-	
-	public void updateWithVersion(Application_New application);
-	
-	public void delete(String companyID, String appID);
-	/**
-	 * get list application by sID
-	 * @param companyId
-	 * @param sID
-	 * @param startDate
-	 * @param endDate
-	 * @return
-	 */
-	public List<Application_New> getListAppBySID(String companyId, String sID, GeneralDate startDate, GeneralDate endDate);
 	/**
 	 * refactor 4
 	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.アルゴリズム.承認一覧の申請を取得.承認一覧の申請を取得
@@ -71,25 +38,6 @@ public interface ApplicationRepository {
 			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, boolean agentApprovalStatus, 
 			boolean remandStatus, boolean cancelStatus, List<Integer> lstType, List<PrePostAtr> prePostAtrLst, 
 			List<String> employeeIDLst, List<StampRequestMode> stampRequestModeLst, List<OvertimeAppAtr> overtimeAppAtrLst);
-
-	/**
-	 * get List Application Pre
-	 * @param companyId
-	 * @param sID
-	 * @param appDate
-	 * @param prePostAtr
-	 * @return
-	 */
-	public List<Application_New> getListAppPre(String companyId, String sID, GeneralDate appDate, int prePostAtr);
-	
-	/**
-	 * Request list No.236
-	 * @param sID
-	 * @param startDate
-	 * @param endDate
-	 * @return
-	 */
-	public List<Application_New> getListApp(String sID, GeneralDate startDate, GeneralDate endDate);
 	
 	public List<Application> getByListRefStatus(String companyID, String employeeID ,GeneralDate startDate, GeneralDate endDate , List<Integer> listReflecInfor  );
 	
@@ -103,28 +51,7 @@ public interface ApplicationRepository {
 	 * @return
 	 */
 	public List<Application> getByPeriodReflectType(String sid, DatePeriod dateData, List<Integer> reflect, List<Integer> appType);
-	/**
-	 * @author hoatt
-	 * 申請者ID＝社員ID（リスト）　　または　入力者ID＝社員ID（リスト）
-	 * get By List SID
-	 * @param companyId
-	 * @param lstSID
-	 * @param sDate
-	 * @param eDate
-	 * @return
-	 */
-	public List<Application_New> getByListSID(String companyId, List<String> lstSID, GeneralDate sDate, GeneralDate eDate);
-	/**
-	 * @author hoatt
-	 * 申請者ID＝社員ID（リスト）
-	 * get By List Applicant
-	 * @param companyId
-	 * @param lstSID
-	 * @param sDate
-	 * @param eDate
-	 * @return
-	 */
-	public List<Application_New> getByListApplicant(String companyId, List<String> lstSID, GeneralDate sDate, GeneralDate eDate, List<Integer> lstType);
+	
 	/**
 	 * getListAppByType
 	 * sort：申請日（ASC）、入力日（DESC）
@@ -159,6 +86,15 @@ public interface ApplicationRepository {
 	 * @return
 	 */
 	public List<Application> getByListDateReflectType(String sid, List<GeneralDate> dateData, List<Integer> reflect, List<Integer> appType);
+	/**
+	 * 
+	 * @param sid
+	 * @param period
+	 * @param reflect
+	 * @param appType
+	 * @return
+	 */
+	public List<Application> getByListDateReflectType(String sid, DatePeriod period, List<Integer> reflect, List<Integer> appType);
 	/**
 	 * 
 	 * @param companyId
@@ -206,6 +142,8 @@ public interface ApplicationRepository {
 	public List<Application> getApprSttByEmpPeriod(String employeeID, DatePeriod period);
 	
 	public Optional<String> getNewestPreAppIDByEmpDate(String employeeID, GeneralDate date, ApplicationType appType);
+	
+	public List<Application> findByIDLst(List<String> appIDLst);
 
 	// 期間に一致する申請を取得する
 	public List<Application> getAllApplication(List<String> sID, DatePeriod period);

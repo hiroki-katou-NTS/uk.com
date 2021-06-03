@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationDateShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectionStatusShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppRecordImageShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.DestinationTimeAppShare;
@@ -51,7 +50,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
@@ -69,6 +67,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.Ac
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.AttendanceClock;
@@ -182,7 +181,7 @@ public class ReflectApplicationHelper {
 
 		// 日別勤怠の短時間勤務時間帯
 		List<ShortWorkingTimeSheet> shortWorkingTimeSheets = new ArrayList<>();
-		shortWorkingTimeSheets.add(new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(no), ChildCareAttribute.CARE,
+		shortWorkingTimeSheets.add(new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(no), ChildCareAtr.CARE,
 				new TimeWithDayAttr(480), new TimeWithDayAttr(1020)));
 		Optional<ShortTimeOfDailyAttd> shortTime = Optional.of(new ShortTimeOfDailyAttd(shortWorkingTimeSheets));
 
@@ -234,13 +233,13 @@ public class ReflectApplicationHelper {
 	public static ApplicationShare createAppShare(ApplicationTypeShare appType, PrePostAtrShare pre) {
 
 		return new ApplicationShare(1, "1", pre, "1", appType, new ApplicationDateShare(GeneralDate.today()), "1",
-				GeneralDateTime.now(), new ReflectionStatusShare(new ArrayList<>()));
+				GeneralDateTime.now());
 	}
 
 	public static ApplicationShare createAppShare(ApplicationTypeShare appType, PrePostAtrShare pre, GeneralDate date) {
 
 		return new ApplicationShare(1, "1", pre, "1", appType, new ApplicationDateShare(date), "1",
-				GeneralDateTime.now(), new ReflectionStatusShare(new ArrayList<>()));
+				GeneralDateTime.now());
 	}
 
 	public static ApplicationShare createAppShare(PrePostAtrShare pre) {
@@ -253,7 +252,7 @@ public class ReflectApplicationHelper {
 		List<TimeStampAppShare> lstResult = new ArrayList<>();
 		TimeStampAppShare timeStamp = new TimeStampAppShare(
 				new DestinationTimeAppShare(timeStampApp, no, startOrEnd, Optional.of(no)), new TimeWithDayAttr(time),
-				Optional.of(new WorkLocationCD(location)), Optional.empty());
+				Optional.of(new WorkLocationCD(location)), Optional.empty(), Optional.empty());
 
 		lstResult.add(timeStamp);
 

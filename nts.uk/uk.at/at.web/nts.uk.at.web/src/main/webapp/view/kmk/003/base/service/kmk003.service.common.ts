@@ -4,8 +4,18 @@ module nts.uk.at.view.kmk003.a {
         export module model {
             export module common {
 
+                export interface HalfDayWorkSetDto {
+                    workingTimes: boolean,
+                    overTime: boolean,
+                    breakTime: boolean
+                }
+
                 export interface SettingFlexWorkDto {
                     flexWorkManaging: number;
+                }
+
+                export interface SettingWorkMultipleDto {
+                    workMultiple: number;
                 }
 
                 export interface CommonRestSettingDto {
@@ -65,7 +75,7 @@ module nts.uk.at.view.kmk003.a {
 
                 export interface FlowFixedRestSetDto {
                     calculateMethod: number;
-                    calculateFromSchedule: ScheduleBreakCalculationDto;
+                   // calculateFromSchedule: ScheduleBreakCalculationDto;
                     calculateFromStamp: StampBreakCalculationDto;
                 }
 
@@ -152,13 +162,6 @@ module nts.uk.at.view.kmk003.a {
                     rounding: TimeRoundingSettingDto;
                 }
 
-                export interface IntervalTimeSettingDto {
-                    useIntervalExemptionTime: boolean;
-                    intervalExemptionTimeRound: TimeRoundingSettingDto;
-                    intervalTime: IntervalTimeDto;
-                    useIntervalTime: boolean;
-                }
-
                 export interface OtherEmTimezoneLateEarlySetDto {
                     delTimeRoundingSet: TimeRoundingSettingDto;
                     stampExactlyTimeIsLateEarly: boolean;
@@ -224,8 +227,14 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 export interface WorkTimezoneStampSetDto {
-                    roundingSets: RoundingSetDto[];
+                    roundingTime: RoundingTimeDto;
                     prioritySets: PrioritySettingDto[];
+                }
+
+                export interface RoundingTimeDto {
+                    attendanceMinuteLaterCalculate: number;
+                    leaveWorkMinuteAgoCalculate: number;
+                    roundingSets: RoundingSetDto[];
                 }
 
                 export interface WorkTimezoneLateNightTimeSetDto {
@@ -252,7 +261,6 @@ module nts.uk.at.view.kmk003.a {
 
                 export interface WorkTimezoneCommonSetDto {
                     zeroHStraddCalculateSet: boolean;
-                    intervalSet: IntervalTimeSettingDto;
                     subHolTimeSet: WorkTimezoneOtherSubHolTimeSetDto[];
                     raisingSalarySet: string;
                     medicalSet: WorkTimezoneMedicalSetDto[];

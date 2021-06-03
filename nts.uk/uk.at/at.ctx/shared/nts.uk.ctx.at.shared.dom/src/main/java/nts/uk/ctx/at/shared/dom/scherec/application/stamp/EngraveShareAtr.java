@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.application.stamp;
 /**
  * @author thanh_nx
  * 
- *打刻区分
+ *打刻区分(反映用)
  */
 public enum EngraveShareAtr {
 

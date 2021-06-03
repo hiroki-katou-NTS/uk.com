@@ -110,6 +110,9 @@ module nts.uk.at.view.kwr003.b {
         vm.shareParam.attendanceItems = vm.diligenceProjects();
         vm.shareParam.diligenceProjectList = vm.diligenceProjectsDKL48();
       });
+        // vm.settingRules.subscribe((value)=>{
+        //     console.log("ABABABA" + value)
+        // })
     }
 
     created(params: any) {
@@ -121,6 +124,7 @@ module nts.uk.at.view.kwr003.b {
       } */
     }
 
+
     mounted() {
       const vm = this;
       if (!!navigator.userAgent.match(/Trident.*rv\:11\./)) {
@@ -128,6 +132,7 @@ module nts.uk.at.view.kwr003.b {
         $('.kwr-003b').addClass('ie');
       } else
         $("#multiGridList").ntsFixedTable({ height: 370 });
+
     }
 
     addRowItem(newRow?: SettingForPrint) {
@@ -243,7 +248,7 @@ module nts.uk.at.view.kwr003.b {
           let outputItemDetails: Array<Attribute> = [];
           _.forEach(item.selectedTimeList(), (o) => {
             outputItemDetails.push({
-              operator: (o.operator) ? (o.operator == '+' ? 1 : 2) : null,
+              operator: (o.operator) ? (o.operator == '+' || o.operator ==1 ? 1 : 2) : null,
               attendanceItemId: o.itemId
             });
           });
@@ -907,6 +912,10 @@ module nts.uk.at.view.kwr003.b {
       this.selectedTimeList(selectedTimeList || []);
       this.selected = selected;
       this.selectedTime = selectedTime;
+
+      this.setting.subscribe((value)=>{
+          nts.uk.ui.dialog.info({ messageId: "Msg_2087" });
+      })
     }
   }
 

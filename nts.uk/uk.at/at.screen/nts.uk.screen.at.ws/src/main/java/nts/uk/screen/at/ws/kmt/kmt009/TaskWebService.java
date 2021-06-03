@@ -44,7 +44,7 @@ public class TaskWebService extends WebService {
     @Path("getlistchild")
     public List<TaskDto> getListTaskChild(TaskParamDto param) {
         val cid = AppContexts.user().companyId();
-        val tk = getsTheChildTaskOfTheSpecifiedTask.getAllChildTask(cid,param.getFrameNo(),param.getCode());
+        val tk = getsTheChildTaskOfTheSpecifiedTask.getAllChildTask(cid, param.getFrameNo(), param.getCode());
         return tk.stream().map(e ->
                 new TaskDto(
                         e.getCode().v(),

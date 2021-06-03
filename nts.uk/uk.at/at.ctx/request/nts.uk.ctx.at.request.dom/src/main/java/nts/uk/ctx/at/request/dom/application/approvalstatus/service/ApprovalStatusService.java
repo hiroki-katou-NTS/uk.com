@@ -24,8 +24,6 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprS
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttSendMailInfoOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttWkpEmpMailOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ConfirmWorkplaceInfoOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyConfirmOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DisplayWorkplace;
@@ -35,7 +33,6 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailT
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.PhaseApproverStt;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AppRootInsImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
@@ -57,15 +54,6 @@ public interface ApprovalStatusService {
 	 */
 	List<ApprovalStatusEmployeeOutput> getApprovalStatusEmployee(String wkpId, GeneralDate closureStart,
 			GeneralDate closureEnd, List<String> listEmpCd);
-
-	/**
-	 * アルゴリズム「承認状況取得申請承認」を実行する
-	 * 
-	 * @param wkpInfoDto
-	 * @return ApprovalSttAppDto
-	 */
-	ApprovalSttAppOutput getApprovalSttApp(WorkplaceInfor wkpInfor,
-			List<ApprovalStatusEmployeeOutput> listAppStatusEmp);
 
 	/**
 	 * 承認状況社員メールアドレス取得
@@ -118,21 +106,6 @@ public interface ApprovalStatusService {
 	 * @return 取得社員ID＜社員ID、社員名、メールアドレス＞
 	 */
 	EmployeeEmailOutput findEmpMailAddr();
-
-	/**
-	 * アルゴリズム「承認状況未承認メール送信実行」を実行する
-	 * 
-	 * @param unAppMailTransmis
-	 * @return 
-	 */
-	SendMailResultOutput exeSendUnconfirmedMail(List<String> listWkpId, GeneralDate closureStart, GeneralDate closureEnd, List<String> listEmpCd);
-
-	/**
-	 * アルゴリズム「承認状況社員別一覧作成」を実行する
-	 * @return 
-	 */
-	List<ApprovalSttByEmpListOutput> getApprovalSttById(String selectedWkpId, List<String> listWkpId,
-			GeneralDate startDate, GeneralDate endDate, List<String> listEmpCode);
 	
 	// refactor 5
 	/**
@@ -295,7 +268,7 @@ public interface ApprovalStatusService {
 	 * @param employmentCDLst
 	 * @return
 	 */
-	public Map<String, String> getMailCountUnConfirmDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
+	public List<Pair<String, String>> getMailCountUnConfirmDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_対象再取得_日別上長.C:メール送信_対象再取得_日別上長
@@ -304,7 +277,7 @@ public interface ApprovalStatusService {
 	 * @param employmentCDLst
 	 * @return
 	 */
-	public Map<String, Pair<String, GeneralDate>> getMailCountUnApprDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
+	public List<Pair<String, Pair<String, GeneralDate>>> getMailCountUnApprDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_対象再取得_月別本人.C:メール送信_対象再取得_月別本人
@@ -313,7 +286,7 @@ public interface ApprovalStatusService {
 	 * @param employmentCDLst
 	 * @return
 	 */
-	public Map<String, String> getMailCountUnConfirmMonth(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
+	public List<Pair<String, String>> getMailCountUnConfirmMonth(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_対象再取得_月別上長.C:メール送信_対象再取得_月別上長
@@ -322,7 +295,7 @@ public interface ApprovalStatusService {
 	 * @param employmentCDLst
 	 * @return
 	 */
-	public Map<String, String> getMailCountUnApprMonth(DatePeriod period, YearMonth processingYm, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
+	public List<Pair<String, String>> getMailCountUnApprMonth(DatePeriod period, YearMonth processingYm, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_対象再取得_就業確定.C:メール送信_対象再取得_就業確定
@@ -348,7 +321,7 @@ public interface ApprovalStatusService {
 	 * @param paramPeriod
 	 * @return
 	 */
-	public List<ApprSttWkpEmpMailOutput> getDayApproverToSendMail(Map<String, Pair<String, GeneralDate>> mapDayApproval);
+	public List<ApprSttWkpEmpMailOutput> getDayApproverToSendMail(List<Pair<String, Pair<String, GeneralDate>>> lstDayApproval);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_月別上長の情報を取得.C:メール送信_月別上長の情報を取得
@@ -356,7 +329,7 @@ public interface ApprovalStatusService {
 	 * @param paramPeriod
 	 * @return
 	 */
-	public List<ApprSttWkpEmpMailOutput> getMonthApproverToSendMail(Map<String, String> mapMonthApproval, DatePeriod paramPeriod,
+	public List<ApprSttWkpEmpMailOutput> getMonthApproverToSendMail(List<Pair<String, String>> lstMonthApproval, DatePeriod paramPeriod,
 			Integer closureID, YearMonth yearMonth, ClosureDate closureDate);
 	
 	/**

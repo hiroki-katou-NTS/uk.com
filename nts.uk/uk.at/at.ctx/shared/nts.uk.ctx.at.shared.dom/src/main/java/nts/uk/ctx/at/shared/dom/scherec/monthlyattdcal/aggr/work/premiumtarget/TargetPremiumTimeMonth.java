@@ -2,11 +2,16 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.DefoAggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget.getvacationaddtime.AddSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 /**
  * 月割増対象時間
@@ -40,12 +45,12 @@ public class TargetPremiumTimeMonth {
 	 * @param statutoryWorkingTimeMonth 月間法定労働時間
 	 * @param isAddVacation 休暇加算　（true=する）
 	 */
-	public void askTime(
+	public void askTime(Require require, CacheCarrier cacheCarrier,
 			String companyId, String employeeId, DatePeriod datePeriod,
+			YearMonth targetYm, GeneralDate baseDate, String employmentCode, ClosureId closureId,
 			AttendanceTimeMonth weeklyTotalPremiumTime,
 			AddSet addSet, AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			AttendanceTimeMonth statutoryWorkingTimeMonth,
-			boolean isAddVacation){
+			boolean isAddVacation, DefoAggregateMethodOfMonthly defoAggregateMethod){
 		
 		// 変形労働勤務の月割増時間の対象となる時間を求める
 		val targetPremiumTimeMonthOfIrregular = new TargetPremiumTimeMonthOfIrregular();
@@ -54,18 +59,23 @@ public class TargetPremiumTimeMonth {
 		
 		this.addedVacationUseTime = targetPremiumTimeMonthOfIrregular.getAddedVacationUseTime();
 		
-		
 		val targetPremiumTimeMonthSrc = targetPremiumTimeMonthOfIrregular.getTargetPremiumTimeMonth();
 
+		/** 総枠時間を取得する */
+		val totalStatutory = defoAggregateMethod.calc(require, cacheCarrier, employeeId, targetYm,
+														baseDate, companyId, employmentCode, datePeriod, closureId);
+		
 		// 月割増対象時間と法定労働時間を比較する
-		if (targetPremiumTimeMonthSrc.lessThanOrEqualTo(statutoryWorkingTimeMonth.v())) 
+		if (targetPremiumTimeMonthSrc.lessThanOrEqualTo(totalStatutory.v())) 
 			return;
 		
 		// 月割増対象時間（過不足分）を求める
-		int premiumTime = targetPremiumTimeMonthSrc.v() - statutoryWorkingTimeMonth.v();
+		int premiumTime = targetPremiumTimeMonthSrc.v() - totalStatutory.v();
 		val excessOrDificiency = new AttendanceTimeMonthWithMinus(premiumTime);
 		
 		// 月割増対象時間を求める
 		this.time = excessOrDificiency.minusMinutes(weeklyTotalPremiumTime.v());
 	}
+	
+	public static interface Require extends DefoAggregateMethodOfMonthly.Require {}
 }

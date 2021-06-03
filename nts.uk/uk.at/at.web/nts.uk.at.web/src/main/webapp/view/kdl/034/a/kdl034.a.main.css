@@ -27,3 +27,9 @@
 #combo-box{
 	width: 450px;
 }
+
+.nts-combo-column-0 {
+	width: auto !important;
+	display: table !important;
+	min-width: 442px;
+}

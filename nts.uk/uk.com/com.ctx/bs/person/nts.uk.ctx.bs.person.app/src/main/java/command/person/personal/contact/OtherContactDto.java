@@ -15,11 +15,6 @@ public class OtherContactDto  {
     private Integer otherContactNo;
 
     /**
-     * 在席照会に表示するか
-     */
-    private Boolean isDisplay;
-
-    /**
      * 連絡先のアドレス
      */
     private String address;

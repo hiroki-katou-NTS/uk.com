@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 
 @Getter
 @Setter

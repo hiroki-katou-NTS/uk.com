@@ -1,14 +1,11 @@
 package nts.uk.screen.com.app.find.ccg005.attendance.information.dto;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import lombok.Builder;
 import lombok.Data;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 
 @Builder
 @Data
@@ -33,7 +30,7 @@ public class ApplicationDto {
 			return ApplicationDto.builder()
 					.appType(domain.getAppType().value)
 					.sid(domain.getEmployeeID())
-					.otherType(ApplicationType.STAMP_APPLICATION.value)
+					.otherType(domain.getOpStampRequestMode().map(item -> item.value).orElse(null))
 					.build();
 		//②申請種類 = 残業申請
 		} else if (domain.getAppType() == ApplicationType.OVER_TIME_APPLICATION) {

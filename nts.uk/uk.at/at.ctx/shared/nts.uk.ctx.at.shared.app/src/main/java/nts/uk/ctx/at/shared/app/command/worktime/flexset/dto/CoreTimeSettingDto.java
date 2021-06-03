@@ -9,6 +9,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.OutingCalcWithinCoreTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheet;
 
 /**
@@ -27,6 +28,9 @@ public class CoreTimeSettingDto implements CoreTimeSettingGetMemento{
 	
 	/** The min work time. */
 	private Integer minWorkTime;
+
+	/** The go out calc. */
+	private OutingCalcWithinCoreTimeDto goOutCalc;
 
 	/*
 	 * (non-Javadoc)
@@ -61,4 +65,14 @@ public class CoreTimeSettingDto implements CoreTimeSettingGetMemento{
 		return this.minWorkTime == null ? null : new AttendanceTime(this.minWorkTime);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSettingGetMemento#
+	 * getGoOutCalc()
+	 */
+	@Override
+	public OutingCalcWithinCoreTime getGoOutCalc() {
+		return new OutingCalcWithinCoreTime(this.goOutCalc);
+	}
 }

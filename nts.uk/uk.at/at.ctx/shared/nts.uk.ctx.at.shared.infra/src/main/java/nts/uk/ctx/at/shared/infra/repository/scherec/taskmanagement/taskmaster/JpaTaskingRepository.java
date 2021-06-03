@@ -203,12 +203,12 @@ public class JpaTaskingRepository extends JpaRepository implements TaskingReposi
     }
 
     @Override
-    public List<Task> getListTask(String cid, TaskFrameNo taskFrameNo, TaskCode code) {
+    public List<Task> getListChildTask(String cid, TaskFrameNo taskFrameNo, TaskCode code) {
         Optional<Task> optionalTask = this.getOptionalTask(cid, taskFrameNo, code);
         if (!optionalTask.isPresent() || optionalTask.get().getChildTaskList().isEmpty())
             return Collections.emptyList();
         val listCode = optionalTask.get().getChildTaskList();
-        return this.getListTask(cid, taskFrameNo, listCode);
+        return this.getListTask(cid, new TaskFrameNo(taskFrameNo.v() + 1), listCode);
 
     }
 

@@ -109,6 +109,10 @@ public class BreakTimeSheet extends DomainObject {
 		return returnList;
 	}
 	
+	//NOとデフォルトを作成する
+	public static BreakTimeSheet createDefaultWithNo(int no) {
+		return new BreakTimeSheet(new BreakFrameNo(no), null, null);
+	}
 	/**
 	 * 計算用時間帯に変換する
 	 * @return

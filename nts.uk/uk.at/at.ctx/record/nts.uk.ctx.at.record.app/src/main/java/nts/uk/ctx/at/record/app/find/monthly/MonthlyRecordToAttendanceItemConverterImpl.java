@@ -20,7 +20,7 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.SpecialHolidayRemainDataDtoWrap;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConverterCommonService;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
@@ -28,11 +28,11 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfM
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemain;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdRemain;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remarks.RemarksMonthlyRecord;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.care.CareRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
@@ -193,7 +193,7 @@ public class MonthlyRecordToAttendanceItemConverterImpl  extends AttendanceItemC
 	}
 
 	@Override
-	public MonthlyRecordToAttendanceItemConverter withMonChildHd(MonChildHdRemain monChildHdRemain) {
+	public MonthlyRecordToAttendanceItemConverter withMonChildHd(ChildcareRemNumEachMonth monChildHdRemain) {
 
 		this.domainSource.put(ItemConst.MONTHLY_CHILD_CARE_HD_REMAIN_NAME, monChildHdRemain);
 		this.dtoSource.put(ItemConst.MONTHLY_CHILD_CARE_HD_REMAIN_NAME, null);
@@ -203,7 +203,7 @@ public class MonthlyRecordToAttendanceItemConverterImpl  extends AttendanceItemC
 	}
 
 	@Override
-	public MonthlyRecordToAttendanceItemConverter withMonCareHd(MonCareHdRemain monCareHdRemain) {
+	public MonthlyRecordToAttendanceItemConverter withMonCareHd(CareRemNumEachMonth monCareHdRemain) {
 		
 		this.domainSource.put(ItemConst.MONTHLY_CARE_HD_REMAIN_NAME, monCareHdRemain);
 		this.dtoSource.put(ItemConst.MONTHLY_CARE_HD_REMAIN_NAME, null);
@@ -301,21 +301,26 @@ public class MonthlyRecordToAttendanceItemConverterImpl  extends AttendanceItemC
 	}
 
 	@Override
-	public Optional<MonCareHdRemain> toMonCareHd() {
+	public Optional<CareRemNumEachMonth> toMonCareHd() {
 		
-		return Optional.ofNullable((MonCareHdRemain) getDomain(ItemConst.MONTHLY_CARE_HD_REMAIN_NAME));
+		return Optional.ofNullable((CareRemNumEachMonth) getDomain(ItemConst.MONTHLY_CARE_HD_REMAIN_NAME));
 	}
 
 	@Override
-	public Optional<MonChildHdRemain> toMonChildHd() {
+	public Optional<ChildcareRemNumEachMonth> toMonChildHd() {
 		
-		return Optional.ofNullable((MonChildHdRemain) getDomain(ItemConst.MONTHLY_CHILD_CARE_HD_REMAIN_NAME));
+		return Optional.ofNullable((ChildcareRemNumEachMonth) getDomain(ItemConst.MONTHLY_CHILD_CARE_HD_REMAIN_NAME));
 	}
 
 	@Override
 	protected boolean isMonthly() {
 		
 		return true;
+	}
+
+	@Override
+	protected boolean isAnyPeriod() {
+		return false;
 	}
 
 	@Override
@@ -369,10 +374,10 @@ public class MonthlyRecordToAttendanceItemConverterImpl  extends AttendanceItemC
 			processOnDomain(type, c -> MonthlyRemarksDto.from((List<RemarksMonthlyRecord>) c));
 			break;
 		case ItemConst.MONTHLY_CARE_HD_REMAIN_NAME:
-			processOnDomain(type, c -> MonthlyCareHdRemainDto.from((MonCareHdRemain) c));
+			processOnDomain(type, c -> MonthlyCareHdRemainDto.from((CareRemNumEachMonth) c));
 			break;
 		case ItemConst.MONTHLY_CHILD_CARE_HD_REMAIN_NAME:
-			processOnDomain(type, c -> MonthlyChildCareHdRemainDto.from((MonChildHdRemain) c));
+			processOnDomain(type, c -> MonthlyChildCareHdRemainDto.from((ChildcareRemNumEachMonth) c));
 			break;
 		case ItemConst.AGREEMENT_TIME_OF_MANAGE_PERIOD_NAME:
 			processOnDomain(type, c -> AgreementTimeOfManagePeriodDto.from((AgreementTimeOfManagePeriod) c));

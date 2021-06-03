@@ -116,7 +116,7 @@ public class NursingLeaveCommandHandler extends CommandHandler<NursingLeaveComma
 //         一時対応
 //        command.setStartMonthDay(settingDb.getStartMonthDay());
 //        command.setNursingNumberLeaveDay(settingDb.getMaxPersonSetting().getNursingNumberLeaveDay().v());
-//        command.setNursingNumberPerson(settingDb.getMaxPersonSetting().getNursingNumberLeaveDay2().v());
+//        command.setNursingNumberPerson(settingDb.getMaxPersonSetting().getNursingNumberPerson().v());
     }
 
     /**

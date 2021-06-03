@@ -7,7 +7,7 @@ module nts.uk.at.view.kmt001.a {
         saveRegistrationWork: 'at/shared/scherec/workmanagement/work/kmt001/register',
         updateRegistrationWork: 'at/shared/scherec/workmanagement/work/kmt001/update',
         deleteRegistrationWork: 'at/shared/scherec/workmanagement/work/kmt001/delete',
-        getRegistrationWork: 'at/shared/scherec/workmanagement/work/kmt001/find',
+        // getRegistrationWork: 'at/shared/scherec/workmanagement/work/kmt001/find',
         getTaskList: 'at/shared/scherec/taskmanagement/task/kmt009/getlist'
     };
 

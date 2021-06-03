@@ -6,6 +6,7 @@ module nts.uk.com.view.ktg031.a {
     findAlarmData: "sys/portal/toppageAlarm/findAlarmData",
     changeToRead: 'sys/portal/toppageAlarm/changeAlarmToReaded',
     changeToUnread: 'sys/portal/toppageAlarm/changeAlarmToUnread',
+    checkUpdateAutoExecError: 'screen/at/ktg/ktg031/check-update-auto-exec-error',
   }
 
   @component({
@@ -50,7 +51,7 @@ module nts.uk.com.view.ktg031.a {
                       <div data-bind="ntsCheckBox: { checked: isReaded }"></div>
                     </td>
                     <td class="column-action">
-                      <i class="img-icon" data-bind="ntsIcon: {no: 178, width: 20, height: 20}, click: function() { $component.openUrl(linkUrl); }"></i>
+                      <i class="img-icon" data-bind="ntsIcon: {no: 178, width: 20, height: 20}, click: function() { $component.onClickUrl(alarmClassification, displayAtr, subSids, linkUrl); }"></i>
                     </td>
                   </tr>
                 </tbody>
@@ -74,7 +75,6 @@ module nts.uk.com.view.ktg031.a {
           padding: 5px;
           box-sizing: border-box;
           width: 100%;
-          height: 245px;
           display: flex;
           flex-direction: column;
         }
@@ -144,7 +144,13 @@ module nts.uk.com.view.ktg031.a {
       ]);
       vm.selectedAlarmType.subscribe(value => vm.loadAlarmData(value));
       vm.selectedAlarmType(0);
+      vm.checkUpdateAutoExecError();
       vm.isEmployee(__viewContext.user.role.isInCharge.attendance);
+    }
+
+    checkUpdateAutoExecError() {
+      const vm = this;
+      vm.$ajax('at', API.checkUpdateAutoExecError).always(() => vm.$blockui('clear'));
     }
 
     loadAlarmData(displayType: number) {
@@ -155,14 +161,15 @@ module nts.uk.com.view.ktg031.a {
         .always(() => vm.$blockui('clear'));
     }
 
-    changeToRead(companyId: string, sid: string, displayAtr: number, alarmClassification: number, identificationKey: string) {
+    changeToRead(companyId: string, sid: string, displayAtr: number, alarmClassification: number, patternCode: string, notificationId: string) {
       const vm = this;
       const command = new ToppageAlarmDataReadCommand({
         companyId: companyId,
         sid: sid,
         displayAtr: displayAtr,
         alarmClassification: alarmClassification,
-        identificationKey: identificationKey,
+        patternCode: patternCode,
+        notificationId: notificationId
       });
       vm.$blockui('grayout');
       vm.$ajax(API.changeToRead, command)
@@ -172,11 +179,18 @@ module nts.uk.com.view.ktg031.a {
     }
 
     setListAlarm(res: any[], stopReload?: boolean) {
+
       if (stopReload) {
         return;
       }
+
       const vm = this;
-      vm.listAlarm(_.map(res, (item) => new AlarmDisplayDataDto(vm, item)));
+
+      const alarmList = _.map(res, (item) => new AlarmDisplayDataDto(vm, item));
+      
+      const sortedList = _.orderBy(alarmList, ["order", "occurrenceDateTime", "patternCode", "notificationId", "displayAtr"]);
+
+      vm.listAlarm(sortedList);
       // Render row backgournd color
       vm.$nextTick(() => {
         vm.$grid = $('#ktg031-grid');
@@ -185,20 +199,18 @@ module nts.uk.com.view.ktg031.a {
       });
     }
 
-    changeToUnread(companyId: string, sid: string, displayAtr: number, alarmClassification: number, identificationKey: string) {
+    changeToUnread(companyId: string, sid: string, displayAtr: number, alarmClassification: number, patternCode: string, notificationId: string) {
       const vm = this;
       const command = new ToppageAlarmDataUnreadCommand({
         companyId: companyId,
         sid: sid,
         displayAtr: displayAtr,
         alarmClassification: alarmClassification,
-        identificationKey: identificationKey,
+        patternCode: patternCode,
+        notificationId: notificationId,
       });
       vm.$blockui('grayout');
       vm.$ajax(API.changeToUnread, command)
-        .then((res) => {
-          console.log(res);
-        })
         .always(() => vm.$blockui('clear'));
     }
 
@@ -207,7 +219,45 @@ module nts.uk.com.view.ktg031.a {
       vm.$window.modal('/view/ktg/031/b/index.xhtml');
     }
 
-    openUrl(url: string) {
+    onClickUrl (alarmClassification: number, displayAtr: number, subSids: string[], url: string) {
+
+      const vm = this;
+
+      switch (alarmClassification) {
+
+        case AlarmClassification.ALARM_LIST:
+          let kal001BParam = new Kal001BParam({
+            extractingFlg: false,
+            isExtracting: false,
+            listAlarmExtraValueWkReDto: [],
+            processId: undefined,
+            totalErAlRecord: 0,
+            currentAlarmCode: undefined,
+            employeeIds: [],
+            isTopPage: true
+          });
+
+          if (displayAtr === DisplayAtr.PRINCIPAL) {
+            kal001BParam.employeeIds = [__viewContext.user.employeeId];
+          } else if (displayAtr === DisplayAtr.SUPERIOR) {
+            kal001BParam.employeeIds = subSids;
+          }
+          nts.uk.ui.windows.setShared("extractedAlarmData", kal001BParam);
+          vm.openDialogUrl(url);
+        break;
+
+        case AlarmClassification.AUTO_EXEC_BUSINESS_ERR: 
+        case AlarmClassification.AUTO_EXEC_OPERATION_ERR:
+        case AlarmClassification.HEALTH_LIFE_MESSAGE:
+          vm.openUrl(url);
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    openUrl (url: string): JQueryPromise<any> {
       const vm = this;
       if (url) {
         const origin: string = window.location.origin;
@@ -233,6 +283,23 @@ module nts.uk.com.view.ktg031.a {
       }
     }
 
+    openDialogUrl (url: string): JQueryPromise<any> {
+      const vm = this;
+      if (url) {
+        const comPath = '/nts.uk.com.web';
+          if (url.indexOf(comPath) !== -1) {
+            vm.$window.modal("com", url.replace(comPath, ""));
+            return;
+          }
+
+        const atPath = '/nts.uk.at.web';
+        if (url.indexOf(atPath) !== -1) {
+          vm.$window.modal("at", url.replace(atPath, ""));
+          return;
+        }
+      }
+    }
+
     private getUKSystemPath(url: string, path: string): string {
       const pathIndex = url.lastIndexOf(path);
       if (pathIndex !== -1) {
@@ -250,12 +317,15 @@ module nts.uk.com.view.ktg031.a {
     companyId: string;
     sid: string;
     displayAtr: number;
-    identificationKey: string;
+    subSids: string[];
+    patternCode: string;
+    notificationId: string;
     linkUrl: string;
     alreadyDatetime: string;
     // Client info
     dateMonth: string;
     isReaded: KnockoutObservable<boolean>;
+    order: number;
 
     constructor(vm: Ktg031ComponentViewModel, init?: Partial<AlarmDisplayDataDto>) {
       $.extend(this, init);
@@ -270,11 +340,39 @@ module nts.uk.com.view.ktg031.a {
       model.isReaded = ko.observable(isReaded);
       model.isReaded.subscribe((value) => {
         if (value) {
-          vm.changeToRead(model.companyId, model.sid, model.displayAtr, model.alarmClassification, model.identificationKey);
+          vm.changeToRead(model.companyId, model.sid, model.displayAtr, model.alarmClassification, model.patternCode, model.notificationId);
         } else {
-          vm.changeToUnread(model.companyId, model.sid, model.displayAtr, model.alarmClassification, model.identificationKey);
+          vm.changeToUnread(model.companyId, model.sid, model.displayAtr, model.alarmClassification, model.patternCode, model.notificationId);
         }
       });
+
+      /**
+       * set order
+       * 
+       * 1：アラームリスト
+       * 2：更新処理自動実行業務エラー
+       * 3：更新処理自動実行動作異常
+       * 4：ヘルス×ライフメッセージ
+       * 
+       * order 3/2/1/4  => 2/1/0/3
+       */
+      switch(model.alarmClassification) {
+        case 0:
+          model.order = 2;
+        break;
+        case 1:
+          model.order = 1;
+        break;
+        case 2:
+          model.order = 0;
+        break;
+        case 3:
+          model.order = 3;
+        break;
+        default:
+          model.order = 4;
+        break;
+      }
     }
   }
 
@@ -283,7 +381,8 @@ module nts.uk.com.view.ktg031.a {
     sid: string;
     displayAtr: number;
     alarmClassification: number;
-    identificationKey: string;
+    patternCode: string;
+    notificationId: string;
 
     constructor(init?: Partial<ToppageAlarmDataReadCommand>) {
       $.extend(this, init);
@@ -295,10 +394,53 @@ module nts.uk.com.view.ktg031.a {
     sid: string;
     displayAtr: number;
     alarmClassification: number;
-    identificationKey: string;
+    patternCode: string;
+    notificationId: string;
 
     constructor(init?: Partial<ToppageAlarmDataUnreadCommand>) {
       $.extend(this, init);
     }
+  }
+
+  class Kal001BParam {
+
+      extractingFlg: boolean; //処理中フラグ
+      isExtracting: boolean; //処理中区分	
+      listAlarmExtraValueWkReDto: any[]; //アラーム抽出結果	
+      processId: any; //プロセスID	
+      totalErAlRecord: number; //アラーム抽出結果の件数	
+      currentAlarmCode: any; //アラームコード	
+      employeeIds: string[]; //List＜社員ID＞
+      isTopPage: boolean; //Toppage区分
+
+    constructor(init?: Partial<Kal001BParam>) {
+      $.extend(this, init);
+    } 
+
+  }
+
+  enum AlarmClassification {
+    /** アラームリスト */
+    ALARM_LIST = 0,
+	
+    /** 更新処理自動実行業務エラー */
+    AUTO_EXEC_BUSINESS_ERR = 1,
+    
+    /** 更新処理自動実行動作異常 */
+    AUTO_EXEC_OPERATION_ERR = 2,
+    
+    /** ヘルス×ライフメッセージ */
+    HEALTH_LIFE_MESSAGE = 3
+  }
+
+  enum DisplayAtr {
+	/** 本人 */
+	PRINCIPAL = 0,
+	
+	/** 上長 */
+	SUPERIOR = 1,
+	
+	/** 担当者 */
+	PIC =2
   }
 }

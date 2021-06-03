@@ -12,7 +12,6 @@ module nts.uk.at.view.kmk003.a {
     import FlowRestSettingDto = service.model.common.FlowRestSettingDto;
     import FlowRestTimezoneDto = service.model.common.FlowRestTimezoneDto;
     import IntervalTimeDto = service.model.common.IntervalTimeDto;
-    import IntervalTimeSettingDto = service.model.common.IntervalTimeSettingDto;
     import DesignatedTimeDto = service.model.common.DesignatedTimeDto;
     import SubHolTransferSetDto = service.model.common.SubHolTransferSetDto;
     import WorkTimezoneOtherSubHolTimeSetDto = service.model.common.WorkTimezoneOtherSubHolTimeSetDto;
@@ -57,9 +56,43 @@ module nts.uk.at.view.kmk003.a {
     import StampPiorityAtr = service.model.common.StampPiorityAtr;
     import Superiority = service.model.common.Superiority;
     import TimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.predset.TimezoneModel;
+    import RoundingTimeDto = nts.uk.at.view.kmk003.a.service.model.common.RoundingTimeDto;
+    import HalfDayWorkSetDto = nts.uk.at.view.kmk003.a.service.model.common.HalfDayWorkSetDto;
 
     export module viewmodel {
         export module common {
+
+            export class HalfDayWorkSetModel {
+                workingTime: KnockoutObservable<boolean>;
+                overTime: KnockoutObservable<boolean>;
+                breakingTime: KnockoutObservable<boolean>
+
+                constructor() {
+                    this.workingTime = ko.observable(false);
+                    this.overTime = ko.observable(false);
+                    this.breakingTime = ko.observable(false);
+                }
+
+                update(data : HalfDayWorkSetDto): void {
+                    this.workingTime = ko.observable(data.workingTimes);
+                    this.overTime = ko.observable(data.overTime);
+                    this.breakingTime = ko.observable(data.breakTime);
+                }
+
+                reset(): void{
+                    this.workingTime = ko.observable(false);
+                    this.overTime = ko.observable(false);
+                    this.breakingTime = ko.observable(false);
+                }
+
+                toDto(): HalfDayWorkSetDto {
+                    return {
+                        workingTimes: this.workingTime(),
+                        overTime: this.overTime(),
+                        breakTime: this.breakingTime()
+                    }
+                }
+            }
 
             export class DesignatedTimeModel {
                 oneDayTime: KnockoutObservable<number>;
@@ -77,8 +110,8 @@ module nts.uk.at.view.kmk003.a {
 
                 toDto(): DesignatedTimeDto {
                     var dataDTO: DesignatedTimeDto = {
-                        oneDayTime: nts.uk.util.isNullOrEmpty(this.oneDayTime()) ? 0 : this.oneDayTime(),
-                        halfDayTime: nts.uk.util.isNullOrEmpty(this.halfDayTime()) ? 0 : this.halfDayTime()
+                        oneDayTime: this.oneDayTime() ? this.oneDayTime() : 0,
+                        halfDayTime: this.halfDayTime() ? this.halfDayTime() : 0
                     };
                     return dataDTO;
                 }
@@ -90,6 +123,7 @@ module nts.uk.at.view.kmk003.a {
                 designatedTime: DesignatedTimeModel;
                 subHolTransferSetAtr: KnockoutObservable<number>;
 
+                //it's not a code
                 constructor() {
                     this.certainTime = ko.observable(0);
                     this.useDivision = ko.observable(false);
@@ -226,7 +260,6 @@ module nts.uk.at.view.kmk003.a {
 
             export class WorkTimezoneCommonSetModel {
                 zeroHStraddCalculateSet: KnockoutObservable<boolean>;
-                intervalSet: IntervalTimeSettingModel;
                 subHolTimeSet: WorkTimezoneOtherSubHolTimeSetModel[];
                 raisingSalarySet: KnockoutObservable<string>;
                 medicalSet: WorkTimezoneMedicalSetModel[];
@@ -240,7 +273,6 @@ module nts.uk.at.view.kmk003.a {
 
                 constructor() {
                     this.zeroHStraddCalculateSet = ko.observable(false);
-                    this.intervalSet = new IntervalTimeSettingModel();
                     this.subHolTimeSet = WorkTimezoneOtherSubHolTimeSetModel.getDefaultData();
                     this.raisingSalarySet = ko.observable('');
                     this.medicalSet = WorkTimezoneMedicalSetModel.getDefaultData();
@@ -256,8 +288,6 @@ module nts.uk.at.view.kmk003.a {
                 updateData(data: WorkTimezoneCommonSetDto) {
                     if (data) {
                         this.zeroHStraddCalculateSet(data.zeroHStraddCalculateSet);
-                        this.intervalSet.updateData(data.intervalSet);
-
                         let newSubHolTimeSet: WorkTimezoneOtherSubHolTimeSetModel[] = _.map(data.subHolTimeSet, (dataDTO) => {
                             let dataModel: WorkTimezoneOtherSubHolTimeSetModel = new WorkTimezoneOtherSubHolTimeSetModel();
                             dataModel.updateData(dataDTO);
@@ -315,7 +345,6 @@ module nts.uk.at.view.kmk003.a {
                     let medicalSet: WorkTimezoneMedicalSetDto[] = _.map(this.medicalSet, (dataModel) => dataModel.toDto());
                     var dataDTO: WorkTimezoneCommonSetDto = {
                         zeroHStraddCalculateSet: this.zeroHStraddCalculateSet(),
-                        intervalSet: this.intervalSet.toDto(),
                         subHolTimeSet: subHolTimeSet,
                         raisingSalarySet: this.raisingSalarySet(),
                         medicalSet: medicalSet,
@@ -332,8 +361,6 @@ module nts.uk.at.view.kmk003.a {
 
                 resetData() {
                     this.zeroHStraddCalculateSet(false);
-                    this.intervalSet.resetData();
-
                     let workDayOffTimeSet = _.find(this.subHolTimeSet, o => o.originAtr() == SubHolidayOriginAtr.WORK_DAY_OFF_TIME);
                     workDayOffTimeSet.updateData(WorkTimezoneCommonSetModel.getDefaultSubHol(SubHolidayOriginAtr.WORK_DAY_OFF_TIME).toDto());
                     let overTimeSet = _.find(this.subHolTimeSet, o => o.originAtr() == SubHolidayOriginAtr.FROM_OVER_TIME);
@@ -480,25 +507,25 @@ module nts.uk.at.view.kmk003.a {
 
             export class FlowFixedRestSetModel {
                 calculateMethod: KnockoutObservable<number>;
-                calculateFromSchedule: ScheduleBreakCalculationModel;
+               // calculateFromSchedule: ScheduleBreakCalculationModel;
                 calculateFromStamp: StampBreakCalculationModel;
 
                 constructor() {
                     this.calculateMethod = ko.observable(0);
-                    this.calculateFromSchedule = new ScheduleBreakCalculationModel();
+                 //   this.calculateFromSchedule = new ScheduleBreakCalculationModel();
                     this.calculateFromStamp = new StampBreakCalculationModel();
                 }
 
                 updatedData(data: FlowFixedRestSetDto) {
                     this.calculateMethod(data.calculateMethod);
-                    this.calculateFromSchedule.updatedData(data.calculateFromSchedule);
+                  //  this.calculateFromSchedule.updatedData(data.calculateFromSchedule);
                     this.calculateFromStamp.updatedData(data.calculateFromStamp);
                 }
 
                 toDto(): FlowFixedRestSetDto {
                     var dataDTO: FlowFixedRestSetDto = {
                         calculateMethod: this.calculateMethod(),
-                        calculateFromSchedule: this.calculateFromSchedule.toDto(),
+                      //  calculateFromSchedule: this.calculateFromSchedule.toDto(),
                         calculateFromStamp: this.calculateFromStamp.toDto()
                     };
                     return dataDTO;
@@ -506,7 +533,7 @@ module nts.uk.at.view.kmk003.a {
 
                 resetData() {
                     this.calculateMethod(0);
-                    this.calculateFromSchedule.resetData();
+                   // this.calculateFromSchedule.resetData();
                     this.calculateFromStamp.resetData();
                 }
             }
@@ -1229,42 +1256,6 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class IntervalTimeSettingModel {
-                useIntervalExemptionTime: KnockoutObservable<boolean>;
-                intervalExemptionTimeRound: TimeRoundingSettingModel;
-                intervalTime: IntervalTimeModel;
-                useIntervalTime: KnockoutObservable<boolean>;
-
-                constructor() {
-                    this.useIntervalExemptionTime = ko.observable(false);
-                    this.intervalExemptionTimeRound = new TimeRoundingSettingModel();
-                    this.intervalTime = new IntervalTimeModel();
-                    this.useIntervalTime = ko.observable(false);
-                }
-
-                updateData(data: IntervalTimeSettingDto) {
-                    this.useIntervalExemptionTime(data.useIntervalExemptionTime);
-                    this.intervalExemptionTimeRound.updateData(data.intervalExemptionTimeRound);
-                    this.intervalTime.updateData(data.intervalTime);
-                    this.useIntervalTime(data.useIntervalTime);
-                }
-
-                toDto(): IntervalTimeSettingDto {
-                    var dataDTO: IntervalTimeSettingDto = {
-                        useIntervalExemptionTime: this.useIntervalExemptionTime(),
-                        intervalExemptionTimeRound: this.intervalExemptionTimeRound.toDto(),
-                        intervalTime: this.intervalTime.toDto(),
-                        useIntervalTime: this.useIntervalTime()
-                    };
-                    return dataDTO;
-                }
-
-                resetData() {
-                    this.useIntervalExemptionTime(false);
-
-                }
-            }
-
             export class GoOutTimeRoundingSettingModel {
                 roundingMethod: KnockoutObservable<number>;
                 roundingSetting: TimeRoundingSettingModel;
@@ -1500,14 +1491,13 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class WorkTimezoneStampSetModel {
-                roundingSets: RoundingSetModel[];
+                roundingTime: RoundingTimeModel;
                 prioritySets: PrioritySettingModel[];
 
                 constructor() {
-                    this.roundingSets = [];
+                    this.roundingTime = new RoundingTimeModel();
                     this.prioritySets = [];
                     this.initPrioritySets();
-                    this.initRoundingSets();
                 }
 
                 initPrioritySets() {
@@ -1519,23 +1509,18 @@ module nts.uk.at.view.kmk003.a {
                     }
                 }
 
-                initRoundingSets() {
-                    for (let item in Superiority) {
-                        if (!isNaN(Number(item))) {
-                            let dataRoundingModel: RoundingSetModel = new RoundingSetModel(Number(item));
-                            this.roundingSets.push(dataRoundingModel);
-                        }
-                    }
-                }
-
                 updateData(data: WorkTimezoneStampSetDto) {
-                    var self = this;
+                    let self = this;
                     data.roundingTime.roundingSets.forEach((dataRoundingDTO, index) => {
-                        let currentItem: RoundingSetModel = _.find(self.roundingSets, p => p.section() == dataRoundingDTO.section);
+                        let currentItem: RoundingSetModel = _.find(self.roundingTime.roundingSets, p => {
+                            return p.section() == dataRoundingDTO.section;
+                        });
                         if (!nts.uk.util.isNullOrUndefined(currentItem)) {
                             currentItem.updateData(dataRoundingDTO);
                         }
                     });
+                    self.roundingTime.attendanceMinuteLaterCalculate(data.roundingTime.attendanceMinuteLaterCalculate == NotUseAtr.USE);
+                    self.roundingTime.leaveWorkMinuteAgoCalculate(data.roundingTime.leaveWorkMinuteAgoCalculate == NotUseAtr.USE);
 
                     data.prioritySets.forEach(function(dataPriorityDTO, index) {
                         let currentItem: PrioritySettingModel = _.find(self.prioritySets, p => p.stampAtr() == dataPriorityDTO.stampAtr);
@@ -1546,24 +1531,20 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 toDto(): WorkTimezoneStampSetDto {
-                    var roundingSets: RoundingSetDto[] = [];
-                    for (var dataRoundingModel of this.roundingSets) {
-                        roundingSets.push(dataRoundingModel.toDto());
-                    }
-                    var prioritySets: PrioritySettingDto[] = [];
-                    for (var dataPriorityModel of this.prioritySets) {
+                    let self = this;
+                    let prioritySets: PrioritySettingDto[] = [];
+                    for (let dataPriorityModel of self.prioritySets) {
                         prioritySets.push(dataPriorityModel.toDto());
                     }
-                    var dataDTO: WorkTimezoneStampSetDto = {
-                        roundingSets: roundingSets,
+
+                    return {
+                        roundingTime: this.roundingTime.toDto(),
                         prioritySets: prioritySets
                     };
-
-                    return dataDTO;
                 }
 
                 resetData() {
-                    this.roundingSets.forEach(function(item, index) {
+                    this.roundingTime.roundingSets.forEach(function(item, index) {
                         item.resetData();
                     });
 
@@ -1579,10 +1560,46 @@ module nts.uk.at.view.kmk003.a {
                 getPrioritySetsPcLogin(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.PCLOGIN) }
                 getPrioritySetsPcLogout(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.PC_LOGOUT) }
 
-                getRoundingSetsAttendance(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.ATTENDANCE) }
-                getRoundingSetsOfficeWork(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.OFFICE_WORK) }
-                getRoundingSetsGoOut(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.GO_OUT) }
-                getRoundingSetsTurnBack(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.TURN_BACK) }
+                getRoundingSetsAttendance(): RoundingSetModel { let self = this; return _.find(self.roundingTime.roundingSets, p => p.section() == Superiority.ATTENDANCE) }
+                getRoundingSetsOfficeWork(): RoundingSetModel { let self = this; return _.find(self.roundingTime.roundingSets, p => p.section() == Superiority.OFFICE_WORK) }
+                getRoundingSetsGoOut(): RoundingSetModel { let self = this; return _.find(self.roundingTime.roundingSets, p => p.section() == Superiority.GO_OUT) }
+                getRoundingSetsTurnBack(): RoundingSetModel { let self = this; return _.find(self.roundingTime.roundingSets, p => p.section() == Superiority.TURN_BACK) }
+            }
+
+            //update in ver 16.8
+            export class RoundingTimeModel {
+                attendanceMinuteLaterCalculate: KnockoutObservable<boolean>;
+                leaveWorkMinuteAgoCalculate: KnockoutObservable<boolean>;
+                roundingSets: RoundingSetModel[];
+                
+                constructor() {
+                    this.attendanceMinuteLaterCalculate = ko.observable(false);
+                    this.leaveWorkMinuteAgoCalculate = ko.observable(false);
+                    this.roundingSets = [];
+                    this.initRoundingSets();
+                }
+
+                initRoundingSets() {
+                    for (let item in Superiority) {
+                        if (!isNaN(Number(item))) {
+                            let dataRoundingModel: RoundingSetModel = new RoundingSetModel(Number(item));
+                            this.roundingSets.push(dataRoundingModel);
+                        }
+                    }
+                }
+
+                toDto(): RoundingTimeDto {
+                    let roundingSets: RoundingSetDto[] = [];
+                    for (let roundingModel of this.roundingSets) {
+                        roundingSets.push(roundingModel.toDto());
+                    }
+
+                    return {
+                        attendanceMinuteLaterCalculate: this.attendanceMinuteLaterCalculate() ? NotUseAtr.USE : NotUseAtr.NOT_USE,
+                        leaveWorkMinuteAgoCalculate: this.leaveWorkMinuteAgoCalculate() ? NotUseAtr.USE : NotUseAtr.NOT_USE,
+                        roundingSets: roundingSets
+                    };
+                }
             }
 
             export class WorkTimezoneLateNightTimeSetModel {
@@ -2317,6 +2334,14 @@ module nts.uk.at.view.kmk003.a {
                     this.inLawOT(0);
                     this.notInLawOT(0);
                 }
+            }
+
+            export enum NotUseAtr {
+                /** The use. */
+                USE = 1,
+
+                /** The not use. */
+                NOT_USE = 0
             }
 
             export class ExceededPredAddVacationCalcModel {

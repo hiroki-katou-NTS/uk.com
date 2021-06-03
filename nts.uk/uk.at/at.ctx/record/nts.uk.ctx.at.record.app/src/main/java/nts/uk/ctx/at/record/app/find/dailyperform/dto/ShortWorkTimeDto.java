@@ -6,15 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.DeductionTotalTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 
 /** 日別実績の短時間勤務時間 */
 @Data
@@ -167,8 +167,7 @@ public class ShortWorkTimeDto implements ItemConst, AttendanceItemDataGate {
 				new WorkTimes(times == null ? 0 : times),
 				createDeductionTime(totalTime),
 				createDeductionTime(totalDeductionTime),
-				attr == ChildCareAttribute.CARE.value 
-						? ChildCareAttribute.CARE : ChildCareAttribute.CHILD_CARE);
+				attr == ChildCareAtr.CARE.value ? ChildCareAtr.CARE : ChildCareAtr.CHILD_CARE);
 	}
 	
 	public static ShortWorkTimeOfDaily defaultDomain(){
@@ -176,7 +175,7 @@ public class ShortWorkTimeDto implements ItemConst, AttendanceItemDataGate {
 				new WorkTimes(0),
 				DeductionTotalTime.defaultValue(),
 				DeductionTotalTime.defaultValue(),
-				ChildCareAttribute.CHILD_CARE);
+				ChildCareAtr.CHILD_CARE);
 	}
 
 	private DeductionTotalTime createDeductionTime(TotalDeductionTimeDto dto) {

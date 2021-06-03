@@ -36,4 +36,15 @@ public interface AgreementTimeByPeriodAdapter {
 	 * @return
 	 */
 	Map<String, List<AgreementTimeOfManagePeriodImport>> getAgreement(List<String> sids, Year year);
+	
+	/**
+	 * 指定年36協定年間時間の取得
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param criteria 基準日
+	 * @param year 年度
+	 * @return 36協定年間時間
+	 */
+	// RequestList549
+	Optional<AgreementTimeYearImport> timeYear(String employeeId, GeneralDate criteria, Year year);
 }

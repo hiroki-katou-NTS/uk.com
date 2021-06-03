@@ -1,0 +1,71 @@
+.d-fix {
+  align-items: center;
+  display: flex;
+}
+.tableList {
+  margin-top: 10px;
+}
+.grid-list {
+  padding: 15px;
+}
+.pull-left-right {
+  padding-left: 32px;
+}
+
+.current-alarm .row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.current-alarm .row div {
+  line-height: 37px;
+}
+
+.current-alarm .row > div {
+  width: 150px;
+}
+.current-alarm .row > div:nth-child(3),
+.current-alarm .row > div:first-child {
+  width: 80px;
+}
+.category-name {
+  flex: 2;
+}
+
+table th.text-center,
+table td.text-center {
+  text-align: center;
+}
+
+.pull-left-right .buttons {
+  margin-bottom: 10px;
+}
+
+.pull-left-right .buttons button {
+  margin-right: 15px;
+}
+
+#fixedTable .nts-input {
+  width: 222px !important;
+}
+
+#fixedTable .nts-switch-button {
+  width: 60px !important;
+}
+
+#fixedTableCCDT .nts-input {
+  width: 122px !important;
+}
+
+#fixedTableCCDT .nts-switch-button {
+  width: 60px !important;
+}
+
+.tab-content-2 .nts-fixed-table .nts-fixed-body-wrapper {
+  overflow-x: hidden;
+}
+
+.ui-tabs-panel {
+  width: fit-content;
+}

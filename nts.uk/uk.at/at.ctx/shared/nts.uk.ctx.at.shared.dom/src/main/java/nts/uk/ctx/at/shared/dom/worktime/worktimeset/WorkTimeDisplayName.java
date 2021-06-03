@@ -28,14 +28,13 @@ public class WorkTimeDisplayName extends WorkTimeDomainObject implements Cloneab
 	
 	/** The work time symbol. */
 	//記号
-	private WorkTimeSymbol workTimeSymbol;
+//	private WorkTimeSymbol workTimeSymbol;
 
-	public WorkTimeDisplayName(WorkTimeName workTimeName, WorkTimeAbName workTimeAbName,
-			WorkTimeSymbol workTimeSymbol) {
+	public WorkTimeDisplayName(WorkTimeName workTimeName, WorkTimeAbName workTimeAbName) {
 		super();
 		this.workTimeName = workTimeName;
 		this.workTimeAbName = workTimeAbName;
-		this.workTimeSymbol = workTimeSymbol;
+//		this.workTimeSymbol = workTimeSymbol;
 	}
 	
 	@Override
@@ -44,7 +43,7 @@ public class WorkTimeDisplayName extends WorkTimeDomainObject implements Cloneab
 		try {
 			cloned.workTimeName = new WorkTimeName(this.workTimeName.v());
 			cloned.workTimeAbName = new WorkTimeAbName(this.workTimeAbName.v());
-			cloned.workTimeSymbol = new WorkTimeSymbol(workTimeSymbol.v());
+//			cloned.workTimeSymbol = new WorkTimeSymbol(workTimeSymbol.v());
 		}
 		catch (Exception e){
 			throw new RuntimeException("WorkTimeDisplayName clone error.");

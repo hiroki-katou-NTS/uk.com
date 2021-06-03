@@ -419,7 +419,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     if (success) {
                         vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 							nts.uk.request.ajax("at", API.reflectApp, success.reflectAppIdLst);
-							CommonProcess.handleAfterRegister(success, vm.isSendMail(), vm);
+							CommonProcess.handleAfterRegister(success, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
                         });
                     }
                 }).fail((fail: any) => {

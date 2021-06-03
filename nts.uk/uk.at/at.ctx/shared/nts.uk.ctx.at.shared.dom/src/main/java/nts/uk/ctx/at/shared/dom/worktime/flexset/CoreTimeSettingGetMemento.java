@@ -18,8 +18,7 @@ public interface CoreTimeSettingGetMemento {
 	 * @return the core time sheet
 	 */
 	TimeSheet getCoreTimeSheet();
-	
-	
+
 	/**
 	 * Gets the timesheet.
 	 *
@@ -34,4 +33,10 @@ public interface CoreTimeSettingGetMemento {
 	 * @return the min work time
 	 */
 	AttendanceTime getMinWorkTime();
+
+	/**
+	 * Gets the go out calculation
+	 * @return go out calculation
+	 */
+	OutingCalcWithinCoreTime getGoOutCalc();
 }

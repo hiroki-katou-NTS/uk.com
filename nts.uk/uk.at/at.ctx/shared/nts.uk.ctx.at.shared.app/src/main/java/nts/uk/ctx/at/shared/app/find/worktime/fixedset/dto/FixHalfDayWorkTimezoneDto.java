@@ -6,11 +6,12 @@ package nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.TimezoneOfFixedRestTimeSetDto;
 import nts.uk.ctx.at.shared.app.find.worktime.flexset.dto.FixedWorkTimezoneSetDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezoneSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 
 /**
  * The Class FixHalfDayWorkTimezoneDto.
@@ -20,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 public class FixHalfDayWorkTimezoneDto implements FixHalfDayWorkTimezoneSetMemento {
 
 	/** The rest time zone. */
-	private FixRestTimezoneSetDto restTimezone;
+	private TimezoneOfFixedRestTimeSetDto restTimezone;
 
 	/** The work timezone. */
 	private FixedWorkTimezoneSetDto workTimezone;
@@ -36,9 +37,9 @@ public class FixHalfDayWorkTimezoneDto implements FixHalfDayWorkTimezoneSetMemen
 	 * .worktime.fixedset.FixRestTimezoneSet)
 	 */
 	@Override
-	public void setRestTimezone(FixRestTimezoneSet restTimezone) {
+	public void setRestTimezone(TimezoneOfFixedRestTimeSet restTimezone) {
 		if (restTimezone != null) {
-			this.restTimezone = new FixRestTimezoneSetDto();
+			this.restTimezone = new TimezoneOfFixedRestTimeSetDto();
 			restTimezone.saveToMemento(this.restTimezone);
 		}
 	}

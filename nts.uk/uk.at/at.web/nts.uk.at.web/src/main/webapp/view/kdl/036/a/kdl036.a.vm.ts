@@ -86,8 +86,9 @@ module nts.uk.at.view.kdl036.a.viewmodel {
                 self.targetSelectionAtr = result.targetSelectionAtr;
                 self.substituteHolidayList(result.substituteHolidayList);
                 self.substituteWorkInfoList(result.holidayWorkInfoList.map(info => {
-                    const tmp = _.find(self.managementData, i => i.outbreakDay == info.holidayWorkDate);
-                    return new HolidayWorkInfo(!!tmp, info, self.requiredNumberOfDays, self.startDate(), tmp ? tmp.dayNumberUsed : 0);
+                    const tmp = _.filter(self.managementData, i => i.outbreakDay == info.holidayWorkDate);
+                    const totalUsed = _.sum(tmp.map(i => i.dayNumberUsed));
+                    return new HolidayWorkInfo(!_.isEmpty(tmp), info, self.requiredNumberOfDays, self.startDate(), totalUsed);
                 }));
                 dfd.resolve();
             }).fail(function(error: any) {
@@ -210,14 +211,14 @@ module nts.uk.at.view.kdl036.a.viewmodel {
         usedNumber: number;
 
         constructor(checked: boolean, params: IHolidayWorkInfo, requiredNumberOfDays: KnockoutObservable<number>, startDate: string, usedNumber?: number) {
-            this.enabled = ko.observable(new Date(params.expirationDate).getTime() > new Date(startDate).getTime());
+            this.enabled = ko.observable(new Date(params.expirationDate).getTime() >= new Date(startDate).getTime());
             this.checked = ko.observable(checked);
             this.holidayWorkDate = params.holidayWorkDate;
-            this.displayedHolidayWorkDate = (params.expiringThisMonth ? "［" : "")
+            this.displayedHolidayWorkDate = (params.expiringThisMonth ? "【" : "")
                 + (params.dataType == DataType.APPLICATION_OR_SCHEDULE ? "〈" : "")
                 + nts.uk.time.formatPattern(params.holidayWorkDate, "YYYY/MM/DD", "YYYY/MM/DD(ddd)")
                 + (params.dataType == DataType.APPLICATION_OR_SCHEDULE ? "〉" : "")
-                + (params.expiringThisMonth ? "］" : "");
+                + (params.expiringThisMonth ? "】" : "");
             this.remainingNumber = params.remainingNumber;
             this.displayedRemainingNumber = getText("KDL036_4", [nts.uk.ntsNumber.formatNumber(this.remainingNumber, {decimallength: 1})]);
             this.expiredDate = params.expirationDate;
