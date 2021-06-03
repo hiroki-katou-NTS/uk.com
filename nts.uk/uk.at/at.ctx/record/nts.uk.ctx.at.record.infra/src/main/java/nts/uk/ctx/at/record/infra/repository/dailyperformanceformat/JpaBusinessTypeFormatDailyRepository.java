@@ -251,10 +251,10 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 		
 		List<BusinessTypeFormatDaily> listBusinessTypeFormatDailyBySelectedCode = this.getBusinessTypeFormat(companyId, businessTypeCode);
 		
-		KrcmtBusinessFormatSheet krcmtBusinessFormatSheetBySelectedCode = this.queryProxy().query(FIND_SHEET_NAME, KrcmtBusinessFormatSheet.class)
+		List<KrcmtBusinessFormatSheet> listKrcmtBusinessFormatSheetBySelectedCode = this.queryProxy().query(FIND_SHEET_NAME, KrcmtBusinessFormatSheet.class)
 					.setParameter("companyId", companyId)
 					.setParameter("businessTypeCode", businessTypeCode)
-					.getSingle().get();
+					.getList();
 		
 		List<KrcmtBusinessTypeDaily> listKrcmtBusinessTypeDaily = this.queryProxy().query(FIND_LISTCODE, KrcmtBusinessTypeDaily.class)
 					.setParameter("companyId", companyId)
@@ -266,31 +266,44 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 					.setParameter("listBusinessTypeCode", listBusinessTypeCode)
 					.getList();
 		
-		if (!listKrcmtBusinessTypeDaily.isEmpty()) {
-			this.commandProxy().removeAll(listKrcmtBusinessTypeDaily);
-			this.commandProxy().removeAll(listKrcmtBusinessFormatSheet);
-			this.getEntityManager().flush();
+		this.commandProxy().removeAll(listKrcmtBusinessTypeDaily);
+		this.commandProxy().removeAll(listKrcmtBusinessFormatSheet);
+		this.getEntityManager().flush();
+		
+		List<KrcmtBusinessFormatSheet> newListKrcmtBusinessFormatSheet = new ArrayList<KrcmtBusinessFormatSheet>();
+		List<KrcmtBusinessTypeDaily> newListKrcmtBusinessTypeDaily = new ArrayList<KrcmtBusinessTypeDaily>();
+		for (String code : listBusinessTypeCode) {
+			newListKrcmtBusinessFormatSheet.addAll(cloneKrcmtBusinessFormatSheetWithOtherCode(code, listKrcmtBusinessFormatSheetBySelectedCode));
+			newListKrcmtBusinessTypeDaily.addAll(toKrcmtBusinessTypeDailyFromList(code, listBusinessTypeFormatDailyBySelectedCode));
 		}
 		
-		listBusinessTypeCode.forEach(e -> {
-			List<KrcmtBusinessTypeDaily> newListEntity = listBusinessTypeFormatDailyBySelectedCode.stream()
-						.map(k -> toEntity(k))
-						.collect(Collectors.toList());
-			
-			newListEntity.forEach(a -> {
-				a.krcmtBusinessTypeDailyPK.businessTypeCode = e;
-			});
-			
-			this.commandProxy().insertAll(newListEntity);
-			
-			KrcmtBusinessFormatSheet newEntity = new KrcmtBusinessFormatSheet();
-			newEntity.krcmtBusinessFormatSheetPK = new KrcmtBusinessFormatSheetPK();
-			newEntity.krcmtBusinessFormatSheetPK.companyId        = krcmtBusinessFormatSheetBySelectedCode.krcmtBusinessFormatSheetPK.companyId;
-			newEntity.krcmtBusinessFormatSheetPK.businessTypeCode = e;
-			newEntity.krcmtBusinessFormatSheetPK.sheetNo          = krcmtBusinessFormatSheetBySelectedCode.krcmtBusinessFormatSheetPK.sheetNo;
-			newEntity.sheetName 								  = krcmtBusinessFormatSheetBySelectedCode.sheetName;
-			
-			this.commandProxy().insert(newEntity);
-		});
+		this.commandProxy().insertAll(newListKrcmtBusinessFormatSheet);
+		this.commandProxy().insertAll(newListKrcmtBusinessTypeDaily);
+		
 	}	
+	
+	private List<KrcmtBusinessFormatSheet> cloneKrcmtBusinessFormatSheetWithOtherCode(String businessTypeCode, List<KrcmtBusinessFormatSheet> listEntity) {
+		List<KrcmtBusinessFormatSheet> result = listEntity.stream()
+				.map(e -> new KrcmtBusinessFormatSheet(
+						new KrcmtBusinessFormatSheetPK(e.krcmtBusinessFormatSheetPK.companyId, businessTypeCode, e.krcmtBusinessFormatSheetPK.sheetNo),
+						e.sheetName))
+				.collect(Collectors.toList());
+		 
+		return result;
+	}
+	
+	private List<KrcmtBusinessTypeDaily> toKrcmtBusinessTypeDailyFromList(String businessTypeCode, List<BusinessTypeFormatDaily> listBusinessTypeFormatDaily) {
+		
+		List<BusinessTypeFormatDaily> newListBusinessTypeFormatDaily = listBusinessTypeFormatDaily.stream()
+				.map(e -> {
+					BusinessTypeFormatDaily businessTypeFormatDaily = e.clone();
+					businessTypeFormatDaily.setBusinessTypeCode(new BusinessTypeCode(businessTypeCode));
+					return businessTypeFormatDaily;
+				}).collect(Collectors.toList());
+		
+		List<KrcmtBusinessTypeDaily> result = newListBusinessTypeFormatDaily.stream()
+				.map(e -> toEntity(e))
+				.collect(Collectors.toList());
+		return result;
+	}
 }

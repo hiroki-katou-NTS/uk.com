@@ -36,8 +36,14 @@ module nts.uk.at.view.kdw008.b.service {
         // copy
         getListMonthlyRecordWorkType: "at/function/monthlycorrection/findall",
         copyMonthly: "at/function/monthlycorrection/copy",
-        copyDaily: "at/record/businesstype/copy"
+        copyDaily: "at/record/businesstype/copy",
+        checkMode: "at/record/businesstype/checkDailyMode/{0}"
 
+    }
+
+    export function checkMode(businessTypeCode: string): JQueryPromise <any> {
+        let _path = nts.uk.text.format(paths.checkMode, businessTypeCode);
+        return nts.uk.request.ajax("at", _path);
     }
 
     export function getListMonthlyRecordWorkType(): JQueryPromise<any> {

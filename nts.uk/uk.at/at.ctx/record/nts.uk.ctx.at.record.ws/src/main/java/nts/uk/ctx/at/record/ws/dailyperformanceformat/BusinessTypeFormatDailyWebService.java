@@ -58,6 +58,12 @@ public class BusinessTypeFormatDailyWebService extends WebService {
 			@PathParam("sheetNo") BigDecimal sheetNo) {
 		return this.businessTypeDailyDetailFinder.getDetail(businessTypeCode, sheetNo);
 	}
+	
+	@POST
+	@Path("checkDailyMode/{businessTypeCode}")
+	public int checkDailyMode(@PathParam("businessTypeCode") String businessTypeCode) {
+		return this.businessTypeDailyDetailFinder.checkDailyMode(businessTypeCode);
+	}
 
 	@POST
 	@Path("addBusinessTypeDailyDetail")

@@ -93,4 +93,16 @@ public class BusinessTypeDailyDetailFinder {
 				businessTypeFormatDetailDtos);
 		return businessTypeFormatDailyDto;
 	}
+	
+	public int checkDailyMode(String businessTypeCode) {
+		
+		String companyId = AppContexts.user().companyId();
+		List<BusinessTypeFormatDaily> listBusinessTypeFormatDaily = workTypeFormatDailyRepository.getBusinessTypeFormatDailyDetail(companyId, businessTypeCode);
+		
+		if (listBusinessTypeFormatDaily.isEmpty()) {
+			return 0;
+		}
+		
+		return 1;
+	}
 }

@@ -49,7 +49,8 @@ module nts.uk.at.view.kdw008.b {
             enableSheetNo: KnockoutObservable<boolean>;
 
             listBusinessCode: KnockoutObservableArray<string> = ko.observableArray([]);
-            copyDailyDone: KnockoutObservable<number> = ko.observable(0);
+            dailyHasData: boolean = false;
+            copyButtonStatus: KnockoutObservable<boolean> = ko.observable(false);
 
             constructor(dataShare: any) {
                 var self = this;
@@ -85,6 +86,7 @@ module nts.uk.at.view.kdw008.b {
                         self.getMonthlyDetail(newValue).done(() => {
                             self.initSelectedSheetNoHasMutated();
                         });
+                        
                     } else {
                         self.getMonthRight(newValue, self.selectedSheetNo()).done(() => {
                             self.initSelectedSheetNoHasMutated();
@@ -148,22 +150,27 @@ module nts.uk.at.view.kdw008.b {
                     }
                     if (self.isDaily) {
                         self.getDailyDetail(self.selectedCode(), value).done(() => {
-                            block.clear();
+                            service.checkMode(self.selectedCode()).done((res) => {
+                                self.dailyHasData = res == 0 ? false : true;
+                                if (self.hasdata && self.dailyHasData || self.hasdata && self.businessTypeFormatMonthlyValue().length !== 0) {
+                                    self.copyButtonStatus(true);
+                                } else {
+                                    self.copyButtonStatus(false);
+                                }
+                                block.clear();
+                            })
+                            
                         })
                     } else {
                         self.getMonthRightDetail(value);
+                        if (self.hasdata && self.sheetCorrectedMonthly().length !== 0) {
+                            self.copyButtonStatus(true);
+                        } else {
+                            self.copyButtonStatus(false);
+                        }
                         block.clear();
                     }
                 });
-
-                self.copyDailyDone.subscribe((value: number) => {
-                    if (value == 2) {
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {
-                            self.initSelectedCodeHasMutated();
-                            console.log('msg15');
-                        });
-                    }
-                })
 
                 //swap list 1
                 self.businessTypeFormatDailyValue = ko.observableArray([]);
@@ -238,10 +245,9 @@ module nts.uk.at.view.kdw008.b {
 
             copy() {
                 let self = this;
-                console.log('copy hihi');
                 block.invisible();
                 service.getListMonthlyRecordWorkType().done((res: Array<MonthlyRecordWorkTypeDto>) => {
-                    self.listBusinessCode(res.map((item) => item.businessTypeCode).filter((e: string) => e !== self.selectedCode()));
+                    self.listBusinessCode(res.map((item) => item.businessTypeCode));
 
                     let param = {
                         code: self.selectedCode(),
@@ -249,37 +255,36 @@ module nts.uk.at.view.kdw008.b {
                         targetType: 9,
                         itemListSetting: self.listBusinessCode()
                     };
-                    console.log(param, 'param');
                     nts.uk.ui.windows.setShared("CDL023Input", param);
                     nts.uk.ui.windows.sub.modal("com", "/view/cdl/023/a/index.xhtml").onClosed(() => {
                         let output: Array<string> = nts.uk.ui.windows.getShared("CDL023Output");
-                        let command = {
-                            businessTypeCode: self.selectedCode(),
-                            listBusinessTypeCode: output
+                        if (output) {
+                            let command = {
+                                businessTypeCode: self.selectedCode(),
+                                listBusinessTypeCode: output
+                            }
+
+                            console.log(command, 'param');
+
+                            if (self.isDaily) {
+                                service.copyDaily(command).done(() => {
+                                    nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {
+                                        self.initSelectedCodeHasMutated();
+                                        console.log('msg15');
+                                    });
+                                })
+                                .fail(() => {});
+
+    
+                            } else {
+                                service.copyMonthly(command).done(() => {
+                                    nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {
+                                        self.initSelectedCodeHasMutated();
+                                        console.log('msg15');
+                                    });
+                                }).fail(() => {});
+                            }
                         }
-                        if (self.isDaily) {
-
-                            service.copyDaily(command).done(() => {
-                                let check = self.copyDailyDone() + 1;
-                                self.copyDailyDone(check);
-                            })
-                            .fail(() => {});
-
-                            service.copyMonthly(command).done(() => {
-                                let check = self.copyDailyDone() + 1;
-                                self.copyDailyDone(check);
-                            })
-                            .fail(() => {});
-
-                        } else {
-                            service.copyMonthly(command).done(() => {
-                                nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {
-                                    self.initSelectedCodeHasMutated();
-                                    console.log('msg15');
-                                });
-                            }).fail(() => console.log('fail'));
-                        }
-                        
                     })
 
                 }).fail((err) => {})
@@ -363,7 +368,6 @@ module nts.uk.at.view.kdw008.b {
 
                     if (data) {
                         let dat = self.mapAttItemFormatDetail(self.monthlyAttItems(), data.businessTypeFormatMonthlyDtos);
-                        console.log(dat);
                         self.businessTypeFormatMonthlyValue(dat);
                     }
                     dfd.resolve();
@@ -400,9 +404,11 @@ module nts.uk.at.view.kdw008.b {
                 service.getListMonthRight(code).done(function(data) {
                     if (data) {
                         self.sheetCorrectedMonthly(SheetCorrectedMonthlyDto.fromApp(data.displayItem.listSheetCorrectedMonthly));
+                        
                     }else{
                         self.sheetCorrectedMonthly(SheetCorrectedMonthlyDto.fromApp([]));
                     }
+                    console.log(self.sheetCorrectedMonthly(), 'sheet corected monthly');
                     dfd.resolve();
                 }).fail(err => {
                     dfd.reject(err);

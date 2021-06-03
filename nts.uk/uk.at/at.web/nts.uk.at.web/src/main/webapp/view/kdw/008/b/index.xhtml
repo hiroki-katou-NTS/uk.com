@@ -28,7 +28,7 @@
 						data-bind="click : addOrUpdateClick , enable: $root.errors.isEmpty || hasdata">#{i18n.getText('KDW008_3')}</button>
 				</span>
 				<span>
-					<button class="normal" data-bind="click: copy, enable: hasdata">
+					<button class="normal" data-bind="click: copy, enable: copyButtonStatus()">
 						#{i18n.getText('KDW008_36')}
 					</button>
 				</span>
