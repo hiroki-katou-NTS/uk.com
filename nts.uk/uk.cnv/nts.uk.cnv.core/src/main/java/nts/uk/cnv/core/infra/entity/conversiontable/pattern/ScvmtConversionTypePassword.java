@@ -1,7 +1,8 @@
-package nts.uk.cnv.infra.entity.conversiontable.pattern;
+package nts.uk.cnv.core.infra.entity.conversiontable.pattern;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
@@ -12,24 +13,28 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
 import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.uk.cnv.core.dom.conversionsql.Join;
+import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
-import nts.uk.cnv.core.dom.conversiontable.pattern.GuidPattern;
-import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
-import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTablePk;
+import nts.uk.cnv.core.dom.conversiontable.pattern.PasswordPattern;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionTable;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionTablePk;
 
 @Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SCVMT_CONVERSION_TYPE_GUID")
-public class ScvmtConversionTypeGuid extends JpaEntity implements Serializable {
+@Table(name = "SCVMT_CONVERSION_TYPE_PASSWORD")
+public class ScvmtConversionTypePassword extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	public ScvmtConversionTablePk pk;
+
+	@Column(name = "SOURCE_COLUMN_NAME")
+	private String SourceColumnName;
 
 	@OneToOne(optional=true) @PrimaryKeyJoinColumns({
         @PrimaryKeyJoinColumn(name="CATEGORY_NAME", referencedColumnName="CATEGORY_NAME"),
@@ -44,16 +49,22 @@ public class ScvmtConversionTypeGuid extends JpaEntity implements Serializable {
 		return pk;
 	}
 
-	public GuidPattern toDomain(DatabaseSpec spec) {
-		return new GuidPattern(spec);
+	public PasswordPattern toDomain(ConversionInfo info, Join sourceJoin) {
+		return new PasswordPattern(
+				info,
+				sourceJoin,
+				this.SourceColumnName
+			);
 	}
 
-	public static ScvmtConversionTypeGuid toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
-		if (!(conversionPattern instanceof GuidPattern)) {
+	public static ScvmtConversionTypePassword toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
+		if (!(conversionPattern instanceof PasswordPattern)) {
 			return null;
 		}
 
-		return new ScvmtConversionTypeGuid(pk, null);
+		PasswordPattern domain = (PasswordPattern) conversionPattern;
+
+		return new ScvmtConversionTypePassword(pk, domain.getSourceColumnName(), null);
 	}
 
 }

@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.repository;
+package nts.uk.cnv.core.infra.repository.conversiontable.pattern.manager;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,7 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ParentJoinPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.manager.ParentJoinPatternRepository;
-import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionTable;
 
 @Stateless
 public class JpaParentJoinPatternRepository extends JpaRepository implements ParentJoinPatternRepository {

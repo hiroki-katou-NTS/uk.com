@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.entity.conversiontable;
+package nts.uk.cnv.core.infra.entity.conversiontable;
 
 import java.io.Serializable;
 

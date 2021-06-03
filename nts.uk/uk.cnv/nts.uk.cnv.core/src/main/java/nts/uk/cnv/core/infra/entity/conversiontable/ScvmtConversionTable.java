@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.entity.conversiontable;
+package nts.uk.cnv.core.infra.entity.conversiontable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,18 +29,18 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionType;
-import nts.uk.cnv.infra.entity.conversiontable.pattern.ScvmtConversionTypeCodeToCode;
-import nts.uk.cnv.infra.entity.conversiontable.pattern.ScvmtConversionTypeCodeToId;
-import nts.uk.cnv.infra.entity.conversiontable.pattern.ScvmtConversionTypeDateTimeMerge;
-import nts.uk.cnv.infra.entity.conversiontable.pattern.ScvmtConversionTypeFileId;
-import nts.uk.cnv.infra.entity.conversiontable.pattern.ScvmtConversionTypeFixedValue;
-import nts.uk.cnv.infra.entity.conversiontable.pattern.ScvmtConversionTypeFixedValueWithCondition;
-import nts.uk.cnv.infra.entity.conversiontable.pattern.ScvmtConversionTypeGuid;
-import nts.uk.cnv.infra.entity.conversiontable.pattern.ScvmtConversionTypeNone;
-import nts.uk.cnv.infra.entity.conversiontable.pattern.ScvmtConversionTypeParent;
-import nts.uk.cnv.infra.entity.conversiontable.pattern.ScvmtConversionTypePassword;
-import nts.uk.cnv.infra.entity.conversiontable.pattern.ScvmtConversionTypeStringConcat;
-import nts.uk.cnv.infra.entity.conversiontable.pattern.ScvmtConversionTypeTimeWithDayAttr;
+import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeCodeToCode;
+import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeCodeToId;
+import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeDateTimeMerge;
+import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeFileId;
+import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeFixedValue;
+import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeFixedValueWithCondition;
+import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeGuid;
+import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeNone;
+import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeParent;
+import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypePassword;
+import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeStringConcat;
+import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeTimeWithDayAttr;
 
 /**
  * コンバート表
