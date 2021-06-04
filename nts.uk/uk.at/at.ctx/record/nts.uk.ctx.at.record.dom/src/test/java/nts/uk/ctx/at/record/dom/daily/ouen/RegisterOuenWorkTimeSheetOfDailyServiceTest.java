@@ -90,6 +90,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 	public void test3() {
 		this.editStateOfDailyPerformance.add(editStateOfDaily);
 		this.editStateOfDailyPerformance.add(editStateOfDaily);
+		this.editStateOfDailyPerformance.add(editStateOfDaily);
 
 		List<Integer> atendentceIds = new ArrayList<>();
 		atendentceIds.add(0);
@@ -161,8 +162,8 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 		NtsAssert.atomTask(() -> atomtask, any -> require.delete(domain));
 	}
 
-	// $実績の作業時間帯 notPresent
-	// if $更新時間帯.isNotEmpty
+//	// $実績の作業時間帯 notPresent
+//	// if $更新時間帯.isNotEmpty
 	@Test
 	public void test5() {
 

@@ -57,7 +57,8 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesServiceTest {
 	// if $職場別作業の絞込 Not .isPresent()
 	@Test
 	public void testGetEmployeesServiceTestTest_1() {
-
+		
+		listWpkIds.add("0000003");
 		listWpkIds.add("0000001");
 		listWpkIds.add("0000002");
 
@@ -81,6 +82,7 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesServiceTest {
 	@Test
 	public void testGetEmployeesServiceTestTest_2() {
 
+		listWpkIds.add("0000003");
 		listWpkIds.add("0000001");
 		listWpkIds.add("0000002");
 
@@ -90,7 +92,7 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesServiceTest {
 				result = listWpkIds;
 
 				require.getNarrowingDownTaskByWorkplace("0000001", taskFrameNo);
-				result = Optional.of(narrowingDownTask);
+				result = Optional.of(narrowingDownTask2);
 			}
 		};
 
@@ -99,7 +101,7 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesServiceTest {
 
 		assertThat(result.isPresent()).isTrue();
 		assertThat(result.get().getTaskCodeList()).isEmpty();
-		assertThat(result.get().getWorkPlaceId()).isEqualTo("0000001");
+		assertThat(result.get().getWorkPlaceId()).isEqualTo("0000003");
 	}
 	
 	// $職場リスト = require.職場を取得する(会社ID,社員ID,基準日) == notEmpty
