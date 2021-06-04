@@ -58,4 +58,11 @@
 	padding-right: 20px;
     max-width: 100%;
 }
+
+#area-notice {
+	width: 438px;
+  	overflow-y: scroll;
+  	resize: none;
+}
+
  
