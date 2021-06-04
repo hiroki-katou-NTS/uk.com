@@ -22,6 +22,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.CheckCareResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
@@ -46,6 +48,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManageme
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
@@ -222,6 +225,8 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	protected LeaveComDayOffManaRepository leaveComDayOffManaRepo;
 
+	protected RemainCreateInforByRecordData remainCreateInforByRecordData;
+
 
 	private Optional<OutsideOTSetting> outsideOTSettingCache = Optional.empty();
 
@@ -238,7 +243,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	private HashMap<Integer, Optional<Closure>> closureMap = new HashMap<Integer, Optional<Closure>>();
 
 	private CheckCareService checkCareService;
-	
+
 	private WorkingConditionItemService workingConditionItemService;
 
 	public RequireImp(ComSubstVacationRepository comSubstVacationRepo,
@@ -272,7 +277,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 			SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter, LengthServiceRepository lengthServiceRepo,
 			GrantYearHolidayRepository grantYearHolidayRepo, PayoutSubofHDManaRepository payoutSubofHDManaRepo,
 			LeaveComDayOffManaRepository leaveComDayOffManaRepo, CheckCareService checkChildCareService,
-			WorkingConditionItemService workingConditionItemService
+			WorkingConditionItemService workingConditionItemService, RemainCreateInforByRecordData remainCreateInforByRecordData
 			) {
 		this.comSubstVacationRepo = comSubstVacationRepo;
 		this.compensLeaveComSetRepo = compensLeaveComSetRepo;
@@ -327,6 +332,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		this.payoutSubofHDManaRepo = payoutSubofHDManaRepo;
 		this.checkCareService = checkChildCareService;
 		this.workingConditionItemService = workingConditionItemService;
+		this.remainCreateInforByRecordData = remainCreateInforByRecordData;
 	}
 
 	@Override
@@ -726,13 +732,17 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public CompanyDto getFirstMonth(String companyId) {
-		// TODO Auto-generated method stub
-		return null;
+		return companyAdapter.getFirstMonth(companyId);
 	}
 
 	@Override
 	public Optional<SingleDaySchedule> getHolidayWorkSchedule(String companyId, String employeeId, GeneralDate baseDate,
 			String workTypeCode) {
 		return this.workingConditionItemService.getHolidayWorkSchedule(companyId, employeeId, baseDate, workTypeCode);
+	}
+
+	@Override
+	public List<RecordRemainCreateInfor> lstResultFromRecord(String sid, List<DailyResult> dailyResults) {
+		return remainCreateInforByRecordData.lstResultFromRecord(sid, dailyResults);
 	}
 }
