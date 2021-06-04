@@ -790,27 +790,35 @@ module nts.uk.ui.kdp001.a {
                 .then((employees: Employee[]) => employees || vm.$ajax('at', REST_API.getEmployeeStampData))
                 .then((employees: Employee[]) => {
                     const [employee] = employees;
+                    const result: any = [];
 
-                    // stamp data
-                    if (employee) {
-                        const { stampRecords } = employee;
-                        if (stampRecords && stampRecords.length) {
-                            const mappeds = _
-                                .chain(stampRecords)
-                                .orderBy(['stampTimeWithSec'], ['desc'])
-                                .map(({ stampTimeWithSec, stampArt, stampHow, buttonValueType }) => {
-                                    const textAlign = $textAlign(buttonValueType);
-                                    const mm = moment(stampTimeWithSec, D_FORMAT);
-                                    const date = mm.toDate();
-                                    const forceColor = mm.locale('en').format('dddd').toLowerCase();
+                    _.forEach(employees, (value) => {
+                        // stamp data
 
-                                    return { date, stampArt, stampHow, textAlign, forceColor };
+                        if (employee) {
+                            const { stampRecords } = value;
+                            if (stampRecords && stampRecords.length) {
+                                const mappeds = _
+                                    .chain(stampRecords)
+                                    .orderBy(['stampTimeWithSec'], ['desc'])
+                                    .map(({ stampTimeWithSec, stampArt, stampHow, buttonValueType }) => {
+                                        const textAlign = $textAlign(buttonValueType);
+                                        const mm = moment(stampTimeWithSec, D_FORMAT);
+                                        const date = mm.toDate();
+                                        const forceColor = mm.locale('en').format('dddd').toLowerCase();
+
+                                        return { date, stampArt, stampHow, textAlign, forceColor };
+                                    })
+                                    .value();
+                                result.push(mappeds)
+                                _.forEach(mappeds, (value1) => {
+                                    result.push(value1);
                                 })
-                                .value();
-
-                            vm.stamps(mappeds);
+                            }
                         }
-                    }
+                        vm.stamps(result);
+
+                    })
                 });
         }
 

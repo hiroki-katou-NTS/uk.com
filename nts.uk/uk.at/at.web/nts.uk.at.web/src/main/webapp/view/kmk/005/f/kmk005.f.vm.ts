@@ -131,7 +131,7 @@ module nts.uk.at.view.kmk005.f {
                             self.currentBonusPayTimesheets.push(new BonusPayTimesheet(
                                 item.companyId,
                                 item.timeSheetNO,
-                                item.useAtr,
+                                item.useAtr+'',
                                 item.bonusPaySettingCode,
                                 item.timeItemID,
                                 item.startTime,
@@ -144,7 +144,7 @@ module nts.uk.at.view.kmk005.f {
                             self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet(
                                 item.companyId,
                                 item.timeSheetNO,
-                                item.useAtr,
+                                item.useAtr+'',
                                 item.bonusPaySettingCode,
                                 item.timeItemID,
                                 item.startTime,
