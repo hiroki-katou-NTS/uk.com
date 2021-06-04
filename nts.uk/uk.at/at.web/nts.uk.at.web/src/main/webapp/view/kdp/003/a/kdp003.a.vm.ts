@@ -663,6 +663,7 @@ module nts.uk.at.kdp003.a {
 
 			return vm.$ajax('at', API.EMPLOYEE_LIST, params)
 				.then((data: Employee[]) => {
+					data = _.orderBy(data, 'employeeName', 'desc');
 					vm.employeeData.employees(data);
 				}) as JQueryPromise<any>;
 		}
