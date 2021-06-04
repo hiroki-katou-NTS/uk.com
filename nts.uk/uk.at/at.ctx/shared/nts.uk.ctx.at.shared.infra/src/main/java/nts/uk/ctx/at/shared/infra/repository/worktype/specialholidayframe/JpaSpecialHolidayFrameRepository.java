@@ -21,20 +21,20 @@ import nts.uk.ctx.at.shared.infra.entity.worktype.specialholidayframe.KshmtSpeci
 @Stateless
 public class JpaSpecialHolidayFrameRepository extends JpaRepository implements SpecialHolidayFrameRepository  {
 	
-	private static final String SEL_1 = "SELECT a FROM KshmtSpecialHolidayFrame a  WHERE a.kshmtSpecialHolidayFramePK.companyId = :companyId AND a.abolishAtr = :abolishAtr ";
+	private static final String SEL_1 = "SELECT a FROM KshmtSpecialHolidayFrame a  WHERE a.kshmtSpecialHolidayFramePK.companyId = :companyId AND a.useAtr = :useAtr ";
 	private static final String GET_ALL = "SELECT a FROM KshmtSpecialHolidayFrame a  WHERE a.kshmtSpecialHolidayFramePK.companyId = :companyId ";
 	private static final String GET_ALL_BY_LIST_FRAME_NO = GET_ALL
 			+ " AND a.kshmtSpecialHolidayFramePK.specialHdFrameNo IN :frameNos ";
 	
 	private static final String FIND_BY_COMPANY_ID_AND_USE_CLS = "SELECT a FROM KshmtSpecialHolidayFrame a"
 			+ "	WHERE a.kshmtSpecialHolidayFramePK.companyId = :companyId"
-			+ "		AND a.abolishAtr = :abolishAtr";
+			+ "		AND a.useAtr = :useAtr";
 
 	private static SpecialHolidayFrame toDomain(KshmtSpecialHolidayFrame entity) {
 		SpecialHolidayFrame domain = SpecialHolidayFrame.createSimpleFromJavaType(entity.kshmtSpecialHolidayFramePK.companyId,
 				entity.kshmtSpecialHolidayFramePK.specialHdFrameNo,
 				entity.name,
-				entity.abolishAtr,
+				entity.useAtr,
 				entity.timeMngAtr);
 		return domain;
 	}		
@@ -43,7 +43,7 @@ public class JpaSpecialHolidayFrameRepository extends JpaRepository implements S
 	public List<SpecialHolidayFrame> findSpecialHolidayFrame(String companyId) {
 		return this.queryProxy().query(SEL_1, KshmtSpecialHolidayFrame.class)
 				.setParameter("companyId", companyId)
-				.setParameter("abolishAtr", 0)
+				.setParameter("useAtr", 0)
 				.getList(a -> toDomain(a));
 	}
 
@@ -75,7 +75,7 @@ public class JpaSpecialHolidayFrameRepository extends JpaRepository implements S
 		return SpecialHolidayFrame.createFromJavaType(x.kshmtSpecialHolidayFramePK.companyId, 
 				x.kshmtSpecialHolidayFramePK.specialHdFrameNo,
 				x.name,
-				x.abolishAtr,
+				x.useAtr,
 				x.timeMngAtr);
 	}
 
@@ -112,7 +112,7 @@ public class JpaSpecialHolidayFrameRepository extends JpaRepository implements S
 	public List<SpecialHolidayFrame> findByCompanyIdAndUseCls(String companyId, int useCls) {
 		return this.queryProxy().query(FIND_BY_COMPANY_ID_AND_USE_CLS, KshmtSpecialHolidayFrame.class)
 				.setParameter("companyId", companyId)
-				.setParameter("abolishAtr", useCls)
+				.setParameter("useAtr", useCls)
 				.getList().stream()
 				.map(x -> toDomain(x))
 				.collect(Collectors.toList());

@@ -133,7 +133,7 @@ public class OvertimeOfDailyService {
 		if(itemIdList.contains(556)) {
 			Optional<OverTimeOfDaily> optOverTimeOfDaily = timeOfDaily.getOverTimeWork();
 			optOverTimeOfDaily.ifPresent(z -> {
-				z.getFlexTime().getFlexTime().setTime(new AttendanceTimeOfExistMinus(0));
+				z.getFlexTime().getFlexTime().replaceTimeAndCalcDiv(new AttendanceTimeOfExistMinus(0));
 			});
 		}
 		

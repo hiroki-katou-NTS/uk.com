@@ -249,13 +249,13 @@ module nts.uk.com.view.kal004.b.viewmodel {
                 // ②開始の前後区分＝「前」　AND　終了の前後区分＝「前」 　AND　開始の日数　＜　終了の日数
                 else if (self.strPreviousDay() === model.PreviousClassification.BEFORE
                         && self.endPreviousDay() === model.PreviousClassification.BEFORE
-                        && self.strDay() < self.endDay()) {
+                        && Number(self.strDay()) < Number(self.endDay())) {
                     return "Msg_812";
                 }
                 // ③開始の前後区分＝「後」　AND　終了の前後区分＝「後」
                 else if (self.strPreviousDay() === model.PreviousClassification.AHEAD
                     && self.endPreviousDay() === model.PreviousClassification.AHEAD
-                    && self.strDay() > self.endDay()) {
+                    && Number(self.strDay()) > Number(self.endDay())) {
                     return "Msg_812";
                 } else if (self.strPreviousDay() === model.PreviousClassification.BEFORE
                     && self.endPreviousDay() === model.PreviousClassification.AHEAD) {

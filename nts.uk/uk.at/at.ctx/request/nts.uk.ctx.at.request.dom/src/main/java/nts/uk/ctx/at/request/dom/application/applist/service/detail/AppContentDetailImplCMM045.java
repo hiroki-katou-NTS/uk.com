@@ -702,6 +702,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		if(Strings.isNotBlank(linkComplementLeaveOutput.getAppID())) {
 			// ドメインモデル「申請」を取得 (Lấy domain model 「application」)
 			Application applicationLink = applicationRepository.findByID(linkComplementLeaveOutput.getAppID()).get();
+			complementLeaveAppLink.setApplication(applicationLink);
 			// 振休振出申請紐付け．紐づけ申請日　＝　取得した申請．申請日 ( AbsResSub.AppDate =  AppDate của đơn lấy được)
 			complementLeaveAppLink.setLinkAppDate(applicationLink.getAppDate().getApplicationDate());
 		}

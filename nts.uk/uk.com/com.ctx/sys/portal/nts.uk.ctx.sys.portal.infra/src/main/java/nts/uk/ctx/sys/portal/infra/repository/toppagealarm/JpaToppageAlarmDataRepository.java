@@ -108,7 +108,7 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 		
 		if (!entities.isEmpty()) {
 			// get lastest index no
-			indexNo = entities.get(entities.size() - 1).getPk().getIndexNo();
+			indexNo = entities.get(entities.size() - 1).getPk().getIndexNo() + 1;
 		}
 		
 		// Convert data to entity
@@ -145,6 +145,8 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 			updateEntity.setLinkUrl(domain.getLinkUrl().map(LinkURL::v).orElse(null));
 			updateEntity.setReadDateTime(domain.getReadDateTime().orElse(null));
 			updateEntity.setResolved(domain.getIsResolved() ? 1 : 0);
+			updateEntity.setSubSids(SptdtToppageAlarm.subSidsToEntity(domain.getCid(), domain.getDisplaySId(), domain.getSubSids()));
+			
 			// Update entity
 			this.commandProxy().update(updateEntity);
 		});
@@ -232,6 +234,7 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 				oldEntity.setLinkUrl(updateEntity.getLinkUrl());
 				oldEntity.setReadDateTime(updateEntity.getReadDateTime());
 				oldEntity.setResolved(updateEntity.getResolved());
+				oldEntity.setSubSids(updateEntity.getSubSids());
 				
 				// Update entity
 				updateEntities.add(oldEntity);

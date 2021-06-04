@@ -1,10 +1,8 @@
 package nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.record.pub.remainnumber.work.InterimRemainExport;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.pub.remainnumber.work.DigestionHourlyTimeTypeExport;
 
@@ -21,16 +19,6 @@ public class TempChildCareNurseManagementExport extends InterimRemainExport {
 	/** 時間休暇種類 */
 	private  Optional<DigestionHourlyTimeTypeExport> appTimeType;
 
-	/**
-	 * ドメインへ変換
-	 * @return
-	 */
-	public TempChildCareNurseManagement toDomain() {
-
-		return new TempChildCareNurseManagement(
-				usedNumber.toDomain(),
-				appTimeType.map(mapper->mapper.toDomain()));
-	}
 
 	/**
 	 * コンストラクタ

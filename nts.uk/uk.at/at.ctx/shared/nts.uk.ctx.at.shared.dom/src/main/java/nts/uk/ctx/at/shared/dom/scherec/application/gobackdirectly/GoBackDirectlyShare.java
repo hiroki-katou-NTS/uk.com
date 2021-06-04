@@ -12,7 +12,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * @author thanh_nx
  *
- *         直行直帰申請
+ *         直行直帰申請(反映用)
  */
 @Getter
 @Setter
@@ -30,11 +30,6 @@ public class GoBackDirectlyShare extends ApplicationShare {
 
 	public GoBackDirectlyShare() {
 
-	}
-
-	// 申請内容
-	public String getContent() {
-		return null;
 	}
 
 	public GoBackDirectlyShare(NotUseAtr straightDistinction, NotUseAtr straightLine, Optional<NotUseAtr> isChangedWork,

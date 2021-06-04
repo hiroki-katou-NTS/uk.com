@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
+import nts.uk.shr.com.context.AppContexts;
 
 /** Workを考慮した月次処理用の暫定残数管理データを作成する */
 public class CreateDailyInterimRemainMngs {
@@ -23,27 +24,32 @@ public class CreateDailyInterimRemainMngs {
 	/**
 	 * Workを考慮した月次処理用の暫定残数管理データを作成する
 	 */
-	public static List<DailyInterimRemainMngData> createDailyInterimRemainMngs(Require require, CacheCarrier cacheCarrier, 
+	public static List<DailyInterimRemainMngData> createDailyInterimRemainMngs(Require require, CacheCarrier cacheCarrier,
 			String cid, String sid, DatePeriod period, List<IntegrationOfDaily> dailyRecord, Optional<ComSubstVacation> absSettingOpt,
 			CompensatoryLeaveComSetting dayOffSetting, Optional<AttendanceTimeOfMonthly> monthlyAttendanceTime) {
 
+		/** 日別勤怠（Work）から暫定管理データを作成*/
 		val dailyRemains = createDailyRemains( require, cacheCarrier, cid, sid, period, dailyRecord, absSettingOpt, dayOffSetting);
 		
-		createRemainFromMonthly(dailyRemains, monthlyAttendanceTime, period);
-		
-		return dailyRemains;
+		/** ○月別実績(Work)から年休フレックス補填分の暫定年休管理データを作成する */
+		return createRemainFromMonthly(dailyRemains, monthlyAttendanceTime, period);
 	}
-	
+
 	private static List<DailyInterimRemainMngData> createRemainFromMonthly(List<DailyInterimRemainMngData> daily,
 			Optional<AttendanceTimeOfMonthly> monthlyAttendanceTime, DatePeriod period) {
-		
+
 		/** ○パラメータ「月別実績(Work)」が存在するかチェック */
 		if (monthlyAttendanceTime.isPresent()) {
 
+			/** 大塚モードかを確認する */
+			if (!AppContexts.optionLicense().customize().ootsuka()) 
+				return daily;
+			
 			/** ○月別実績(Work)から年休フレックス補填分の暫定年休管理データを作成する */
-			CreateInterimAnnualMngData.ofCompensFlex(monthlyAttendanceTime.get(), period.end()).ifPresent(c -> daily.add(c));
+			CreateInterimAnnualMngData.ofCompensFlex(monthlyAttendanceTime.get(), period.end())
+										.ifPresent(c -> daily.add(c));
 		}
-		
+
 		return daily;
 	}
 
@@ -52,13 +58,13 @@ public class CreateDailyInterimRemainMngs {
 			CompensatoryLeaveComSetting dayOffSetting) {
 
 		val workInfoMap = dailyRecord.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getWorkInformation()));
-		
+
 		/** ○パラメータ「日別実績(Work)」が存在するかチェック */
 		if (workInfoMap.isEmpty()) {
-			
+
 			return new ArrayList<>();
 		}
-		
+
 		val attendanceTimeMap = dailyRecord.stream().filter(c -> c.getAttendanceTimeOfDailyPerformance().isPresent())
 				.collect(Collectors.toMap(c -> c.getYmd(), c -> c.getAttendanceTimeOfDailyPerformance().get()));
 
@@ -69,15 +75,16 @@ public class CreateDailyInterimRemainMngs {
 		InterimRemainCreateDataInputPara inputPara = new InterimRemainCreateDataInputPara(cid,
 				sid, period, recordRemains, Collections.emptyList(), Collections.emptyList(), false);
 		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(cid, absSettingOpt, dayOffSetting);
-		
+
 		/** 指定期間の暫定残数管理データを作成する */
 		val dailyRemains = InterimRemainOffPeriodCreateData.createInterimRemainDataMng(require, cacheCarrier, inputPara, comHolidaySetting);
-		
-		return dailyRemains.entrySet().stream().map(c -> new DailyInterimRemainMngData(c.getKey(), c.getValue().getInterimAbsData(), 
+
+		return dailyRemains.entrySet().stream().map(c -> new DailyInterimRemainMngData(c.getKey(), c.getValue().getInterimAbsData(),
 																c.getValue().getRecAbsData(), c.getValue().getRecData(), c.getValue().getDayOffData(), c.getValue().getAnnualHolidayData(),
-																c.getValue().getResereData(), c.getValue().getBreakData(), c.getValue().getSpecialHolidayData()))
+																c.getValue().getResereData(), c.getValue().getBreakData(), c.getValue().getSpecialHolidayData(),
+																c.getValue().getChildCareData(),c.getValue().getCareData()))
 							.collect(Collectors.toList());
 	}
-	
+
 	public static interface Require extends InterimRemainOffPeriodCreateData.RequireM4 {}
 }

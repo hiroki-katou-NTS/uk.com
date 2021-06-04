@@ -49,8 +49,9 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 				EnumAdaptor.valueOf(c.mngAtr, ManagermentAtr.class),
 				Optional.of(new UseTime(c.usedTime == null ? 0 : c.usedTime)),
 				Optional.of(new UseDay(c.usedDays)),
-				Optional.of(DigestionHourlyTimeType.of(c.pk.timeDigestiveAtr == 1,
-						Optional.of(EnumAdaptor.valueOf(c.pk.timeHdType, AppTimeType.class))))
+				Optional.of(DigestionHourlyTimeType.of(c.pk.timeDigestiveAtr == 1, c.pk.timeHdType == 0
+						? Optional.empty() :
+						Optional.of(EnumAdaptor.valueOf(c.pk.timeHdType - 1, AppTimeType.class))))
 				);
 	}
 
@@ -63,7 +64,7 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 				domain.getYmd(),
 				domain.getSpecialHolidayCode(),
 				domain.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0),
-				domain.getAppTimeType().map(x -> x.getAppTimeType().map(time -> time.value).orElse(0)).orElse(0));
+				domain.getAppTimeType().map(x -> x.getAppTimeType().map(time -> time.value + 1).orElse(0)).orElse(0));
 		KrcdtInterimHdSpMng entity = this.getEntityManager().find(KrcdtInterimHdSpMng.class, key);
 
 		if (entity == null) {

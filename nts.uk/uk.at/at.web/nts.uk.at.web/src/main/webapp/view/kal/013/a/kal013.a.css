@@ -47,21 +47,25 @@ table td.text-center {
 }
 
 #fixedTable .nts-input {
-  width: 222px;
+  width: 222px !important;
 }
 
 #fixedTable .nts-switch-button {
-  width: 60px;
+  width: 60px !important;
 }
 
 #fixedTableCCDT .nts-input {
-  width: 122px;
+  width: 122px !important;
 }
 
 #fixedTableCCDT .nts-switch-button {
-  width: 60px;
+  width: 60px !important;
 }
 
 .tab-content-2 .nts-fixed-table .nts-fixed-body-wrapper {
   overflow-x: hidden;
+}
+
+.ui-tabs-panel {
+  width: fit-content;
 }
