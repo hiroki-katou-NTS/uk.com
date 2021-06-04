@@ -20,7 +20,7 @@ public interface GroupCanonicalization {
 	 * @param require
 	 * @param context
 	 */
-	void canonicalize(Require require, ExecutionContext context);
+	void canonicalize(RequireCanonicalize require, ExecutionContext context);
 	
 	/**
 	 * 受入に影響される既存データを補正する
@@ -35,7 +35,7 @@ public interface GroupCanonicalization {
 			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete);
 	
-	public static interface Require extends
+	public static interface RequireCanonicalize extends
 		CanonicalizationMethod.Require,
 		TaskCanonicalization.RequireCanonicalize {
 		

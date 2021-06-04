@@ -27,7 +27,7 @@ public class EmployementHistoryCanonicalization
 	
 	@Override
 	protected History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(
-			GroupCanonicalization.Require require,
+			GroupCanonicalization.RequireCanonicalize require,
 			String employeeId) {
 		
 		return require.getEmploymentHistory(employeeId);

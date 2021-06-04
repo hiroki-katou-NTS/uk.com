@@ -23,7 +23,7 @@ public class CanonicalizeRevisedData {
 		canonicalization.canonicalize(require, context);
 	}
 	
-	public static interface Require extends GroupCanonicalization.Require {
+	public static interface Require extends GroupCanonicalization.RequireCanonicalize {
 		
 		GroupCanonicalization getGroupCanonicalization(int groupId);
 	}

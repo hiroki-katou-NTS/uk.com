@@ -58,12 +58,12 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 	 * @return
 	 */
 	protected abstract History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(
-			GroupCanonicalization.Require require,
+			GroupCanonicalization.RequireCanonicalize require,
 			String employeeId);
 	
 	@Override
 	public void canonicalize(
-			GroupCanonicalization.Require require,
+			GroupCanonicalization.RequireCanonicalize require,
 			ExecutionContext context) {
 		
 		List<String> employeeCodes = require.getAllEmployeeCodesOfImportingData(context);
@@ -76,7 +76,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 	}
 
 	private List<IntermediateResult> canonicalize(
-			GroupCanonicalization.Require require,
+			GroupCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
 			String employeeCode) {
 		
@@ -95,7 +95,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 	 * @return
 	 */
 	private List<IntermediateResult> canonicalizeHistory(
-			GroupCanonicalization.Require require,
+			GroupCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
 			List<IntermediateResult> employeeCanonicalized) {
 		

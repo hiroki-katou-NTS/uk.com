@@ -40,7 +40,9 @@ public class TaskCanonicalization implements GroupCanonicalization {
 	 * レコード数が多いことが予想されるので、1行ずつ処理する
 	 */
 	@Override
-	public void canonicalize(GroupCanonicalization.Require require, ExecutionContext context) {
+	public void canonicalize(
+			GroupCanonicalization.RequireCanonicalize require,
+			ExecutionContext context) {
 		
 		// 重複チェック用のセット
 		Set<UniqueKey> importingKeys = new HashSet<>();
@@ -60,7 +62,7 @@ public class TaskCanonicalization implements GroupCanonicalization {
 	}
 	
 	private void canonicalize(
-			GroupCanonicalization.Require require,
+			GroupCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
 			RevisedDataRecord revisedData) {
 		
