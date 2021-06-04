@@ -1002,6 +1002,18 @@ export class KafS06AComponent extends KafS00ShrComponent {
             });
         });
     }
+    // 勤務種類を変更する
+    public bindOpenWorkType(vacationCheckOutputDto?: VacationCheckOutputDto) {
+        const self = this;
+
+        // self.bindHolidayType();
+        self.bindWorkInfo(true);
+        self.bindWorkHours(true);
+        self.bindRelationship();
+        self.bindLinkWithVacation(vacationCheckOutputDto);
+        
+    }
+
     // 就業時間帯を選択する bind after select wortime
     public bindOpenWorkTime() {
         const self = this;
@@ -1418,7 +1430,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
                         let model = {} as Model;
                         model.appAbsenceStartInfoDto = res.data.appAbsenceStartInfoDto;
                         self.model = model;
-                        self.bindComponent(res.data.vacationCheckOutputDto);
+                        self.bindOpenWorkType(res.data.vacationCheckOutputDto);
                     }
                 })
                 .catch((res: any) => {
