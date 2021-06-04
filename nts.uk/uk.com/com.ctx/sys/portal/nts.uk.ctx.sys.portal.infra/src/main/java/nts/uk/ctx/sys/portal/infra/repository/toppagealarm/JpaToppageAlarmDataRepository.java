@@ -12,10 +12,11 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmListPatternCode;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.DisplayAtr;
-import nts.uk.ctx.sys.portal.dom.toppagealarm.LinkURL;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.NotificationId;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmDataRepository;
+import nts.uk.ctx.sys.portal.infra.entity.toppagealarm.SptdtTopAlarmSubSya;
+import nts.uk.ctx.sys.portal.infra.entity.toppagealarm.SptdtTopAlarmSubSyaPK;
 import nts.uk.ctx.sys.portal.infra.entity.toppagealarm.SptdtToppageAlarm;
 import nts.uk.ctx.sys.portal.infra.entity.toppagealarm.SptdtToppageAlarmPK;
 
@@ -136,20 +137,19 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 				.setParameter("patternCode", domain.getPatternCode().map(AlarmListPatternCode::v).orElse(""))
 				.setParameter("notificationId", domain.getNotificationId().map(NotificationId::v).orElse(""))
 				.getSingle();
+	
+		if (oldEntity.isPresent()) {
+			
+			List<SptdtTopAlarmSubSya> listSubSids = SptdtToppageAlarm.subSidsToEntity(domain.getCid(), domain.getDisplaySId(), domain.getSubSids());
 
-		oldEntity.ifPresent(updateEntity -> {
-			updateEntity.setPatternCode(domain.getPatternCode().map(AlarmListPatternCode::v).orElse(null));
-			updateEntity.setNotificationId(domain.getNotificationId().map(NotificationId::v).orElse(null));
-			updateEntity.setCrtDatetime(domain.getOccurrenceDateTime());
-			updateEntity.setMessege(domain.getDisplayMessage().v());
-			updateEntity.setLinkUrl(domain.getLinkUrl().map(LinkURL::v).orElse(null));
-			updateEntity.setReadDateTime(domain.getReadDateTime().orElse(null));
-			updateEntity.setResolved(domain.getIsResolved() ? 1 : 0);
-			updateEntity.setSubSids(SptdtToppageAlarm.subSidsToEntity(domain.getCid(), domain.getDisplaySId(), domain.getSubSids()));
+			//delete subSids
+			List<SptdtTopAlarmSubSyaPK> listPk = listSubSids.stream().map(sub -> sub.getPk()).collect(Collectors.toList());
+			this.commandProxy().removeAll(SptdtTopAlarmSubSya.class, listPk);
+			this.getEntityManager().flush();
 			
 			// Update entity
-			this.commandProxy().update(updateEntity);
-		});
+			this.commandProxy().update(SptdtToppageAlarm.toEntity(domain, oldEntity.get().getPk().getIndexNo()));
+		};
 
 	}
 	
