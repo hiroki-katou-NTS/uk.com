@@ -207,7 +207,7 @@ module nts.uk.at.view.kmk017.a {
       const vm = this;
       if (vm.workplaceSelectedCode().length <= 0) {
         vm.$dialog.error({ messageId: 'Msg_2060' }).then(() => {
-          $('.grid-list').focus();
+            $('#grid-list_container').focus();
         });
         return;
       }
@@ -224,7 +224,7 @@ module nts.uk.at.view.kmk017.a {
       const workPlace = $('#kcp004').getRowSelected();
       if (vm.workplaceWorkingTimeList().length === 0) {
         vm.$dialog.error({ messageId: "Msg_1911" }).then(() => {
-          $('.grid-list').focus();
+            $('#grid-list_container').focus();
         });
         return;
       } else {

@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		selectWorkplaceInfo: Array<DisplayWorkplace> = [];
 		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = {
 			// ページング行数
-			numberOfPage: 0,
+			numberOfPage: 100,
 			// ユーザーID
 			userID: '',
 			// 会社ID
@@ -42,6 +42,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			const vm = this;
 			vm.params = params;
 			vm.$blockui('show');
+			vm.initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus;
 			vm.appNameLst = params.appNameLst;
 			vm.closureItem = params.closureItem;
 			vm.startDate = params.startDate;
@@ -139,6 +140,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 							character.restore('InitDisplayOfApprovalStatus').then((obj: InitDisplayOfApprovalStatus) => {
 								if(obj) {
 									vm.initDisplayOfApprovalStatus = obj;
+									$("#bGrid").igGridPaging("option", "pageSize", vm.initDisplayOfApprovalStatus.numberOfPage);
 									if(!vm.initDisplayOfApprovalStatus.applicationApprovalFlg) {
 										$("#bGrid").igGrid("hideColumn", "countUnApprApp");
 									}
@@ -348,12 +350,15 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 						pageIndexChanged: () => {
 							$(".ui-iggrid").focus();
 							vm.getPageData();
-							vm.loadData(false);
+							vm.loadData(false);	
 						},
 						pageSizeChanged: () => {
-							$(".ui-iggrid").focus();
-							vm.getPageData();
-							vm.loadData(false);
+							vm.initDisplayOfApprovalStatus.numberOfPage = $("#bGrid").igGridPaging("option", "pageSize");
+							character.save('InitDisplayOfApprovalStatus', vm.initDisplayOfApprovalStatus).then(() => {
+								$(".ui-iggrid").focus();
+								vm.getPageData();
+								vm.loadData(false);	
+							});
 						}
 					},
 				],
@@ -501,6 +506,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		
 		goBackA() {
 			const vm = this;
+			vm.params.initDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus;
 			vm.$jump('/view/kaf/018/a/index.xhtml', vm.params);
 		}
 	}

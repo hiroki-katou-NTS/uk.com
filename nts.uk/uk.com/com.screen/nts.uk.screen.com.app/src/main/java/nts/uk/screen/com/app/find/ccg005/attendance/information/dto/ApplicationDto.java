@@ -30,7 +30,7 @@ public class ApplicationDto {
 			return ApplicationDto.builder()
 					.appType(domain.getAppType().value)
 					.sid(domain.getEmployeeID())
-					.otherType(ApplicationType.STAMP_APPLICATION.value)
+					.otherType(domain.getOpStampRequestMode().map(item -> item.value).orElse(null))
 					.build();
 		//②申請種類 = 残業申請
 		} else if (domain.getAppType() == ApplicationType.OVER_TIME_APPLICATION) {

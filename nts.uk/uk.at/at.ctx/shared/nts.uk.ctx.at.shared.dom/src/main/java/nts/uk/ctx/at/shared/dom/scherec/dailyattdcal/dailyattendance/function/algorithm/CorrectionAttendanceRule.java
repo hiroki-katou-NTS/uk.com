@@ -14,9 +14,9 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.dailyprocess.createdailyoneday.SupportDataWorkImport;
 import nts.uk.ctx.at.shared.dom.adapter.dailyprocess.createdailyoneday.SupportWorkAdapter;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.FactoryManagePerPersonDailySet;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectatt.CorrectionAfterTimeChange;
@@ -118,7 +118,7 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 
 		DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory.createDailyConverter(optionalItems)
 																					.setData(domainDaily).completed();
-		List<Integer> atendanceId = converter.editStates().stream().filter(x -> x.isHandCorrect())
+		List<Integer> atendanceId = converter.editStates().stream()
 				.map(x -> x.getAttendanceItemId()).distinct().collect(Collectors.toList());
 
 		// 補正前の状態を保持
@@ -131,13 +131,13 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 		
 		// 勤怠変更後の補正
 		IntegrationOfDaily afterDomain = correctionAfterTimeChange
-				.corection(companyId, domainDaily, changeAtt, workCondOpt).getRight();
+				.corection(domainDaily, changeAtt, workCondOpt).getRight();
 
-		if (changeAtt.workInfo) {
+		if (changeAtt.workInfo || changeAtt.isDirectBounceClassifi()) {
 			// 変更する勤怠項目を確認
 			//// 勤務情報変更後の補正
 			afterDomain = correctionAfterChangeWorkInfo.correction(companyId, afterDomain, workCondOpt,
-					changeAtt.getClassification());
+					changeAtt);
 
 		}
 		

@@ -59,7 +59,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Regi
                 EnumAdaptor.valueOf(command.getApplication().getPrePostAtr(), PrePostAtr.class),
                 command.getApplication().getEmployeeID(), EnumAdaptor.valueOf(command.getApplication().getAppType(), ApplicationType.class),
                 new ApplicationDate(GeneralDate.fromString(command.getApplication().getAppDate(), "yyyy/MM/dd")),
-                command.getApplication().getEmployeeID(),
+                command.getApplication().getEnteredPerson(),
                 command.getApplication().getOpStampRequestMode() == null ? Optional.empty()
                         : Optional.of(EnumAdaptor.valueOf(command.getApplication().getOpStampRequestMode(),
                                 StampRequestMode.class)),

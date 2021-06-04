@@ -47,7 +47,7 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTy
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHistory;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeOfEmployeeRepository;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
@@ -299,7 +299,6 @@ public class DivTimeSysFixedCheckService {
 	}
 	
 	/** 確認解除 */
-
 	public List<EmployeeDailyPerError> removeconfirm(String comId, String empId, GeneralDate tarD, 
 			List<EmployeeDailyPerError> errors, Optional<IdentityProcessUseSet> iPUSOpt, Optional<ApprovalProcessingUseSetting>  approvalSet) {
 		List<EmployeeDailyPerError> divEr67 = errors.stream().filter(c -> c.getErrorAlarmWorkRecordCode() != null

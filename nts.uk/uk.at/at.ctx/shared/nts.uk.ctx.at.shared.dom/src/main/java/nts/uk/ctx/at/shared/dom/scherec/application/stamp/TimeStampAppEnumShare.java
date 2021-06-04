@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 /**
  * @author thanh_nx
  *
- *         打刻申請時刻分類
+ *         打刻申請時刻分類(反映用)
  */
 @AllArgsConstructor
 public enum TimeStampAppEnumShare {

@@ -9,6 +9,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplac
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.*;
 import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CompareRange;
 import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CompareSingleValue;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -25,17 +26,17 @@ public class JpaExtractionScheduleConRepository extends JpaRepository implements
     private static final String SELECT_COMPARE_SINGLE =
         " SELECT a FROM KrcstErAlCompareSingle a " +
             " JOIN KrcmtWkpMonExtracCon b ON a.krcstEralCompareSinglePK.conditionGroupId = b.errorAlarmCheckID " +
-            " WHERE a.krcstEralCompareSinglePK.atdItemConNo = 0 AND a.conditionType = 0 ";
+            " WHERE a.krcstEralCompareSinglePK.atdItemConNo = 0 AND a.conditionType = 0 AND a.contractCd = :contractCd ";
 
     private static final String SELECT_COMPARE_RANGE =
         " SELECT a FROM KrcstErAlCompareRange a " +
             " JOIN KrcmtWkpMonExtracCon b ON a.krcstEralCompareRangePK.conditionGroupId = b.errorAlarmCheckID " +
-            " WHERE a.krcstEralCompareRangePK.atdItemConNo = 0 ";
+            " WHERE a.krcstEralCompareRangePK.atdItemConNo = 0 AND a.contractCd = :contractCd";
 
     private static final String SELECT_SINGLE_FIXED =
         " SELECT a FROM KrcstErAlSingleFixed a " +
             " JOIN KrcmtWkpMonExtracCon b ON a.krcstEralSingleFixedPK.conditionGroupId = b.errorAlarmCheckID " +
-            " WHERE a.krcstEralSingleFixedPK.atdItemConNo = 0 ";
+            " WHERE a.krcstEralSingleFixedPK.atdItemConNo = 0 AND a.contractCd = :contractCd ";
 
     private static final String SELECT;
 
@@ -64,9 +65,19 @@ public class JpaExtractionScheduleConRepository extends JpaRepository implements
     public List<ExtractionScheduleCon> getBy(List<String> ids, boolean useAtr) {
         if (CollectionUtil.isEmpty(ids)) return new ArrayList<>();
 
-        Optional<KrcstErAlCompareSingle> krcstErAlCompareSingle = this.queryProxy().query(SELECT_COMPARE_SINGLE, KrcstErAlCompareSingle.class).getSingle();
-        Optional<KrcstErAlCompareRange> krcstErAlCompareRange = this.queryProxy().query(SELECT_COMPARE_RANGE, KrcstErAlCompareRange.class).getSingle();
-        Optional<KrcstErAlSingleFixed> krcstErAlSingleFixed = this.queryProxy().query(SELECT_SINGLE_FIXED, KrcstErAlSingleFixed.class).getSingle();
+        String contractCode = AppContexts.user().contractCode();
+        Optional<KrcstErAlCompareSingle> krcstErAlCompareSingle = this.queryProxy()
+                .query(SELECT_COMPARE_SINGLE, KrcstErAlCompareSingle.class)
+                .setParameter("contractCd", contractCode)
+                .getSingle();
+        Optional<KrcstErAlCompareRange> krcstErAlCompareRange = this.queryProxy()
+                .query(SELECT_COMPARE_RANGE, KrcstErAlCompareRange.class)
+                .setParameter("contractCd", contractCode)
+                .getSingle();
+        Optional<KrcstErAlSingleFixed> krcstErAlSingleFixed = this.queryProxy()
+                .query(SELECT_SINGLE_FIXED, KrcstErAlSingleFixed.class)
+                .setParameter("contractCd", contractCode)
+                .getSingle();
 
         return this.queryProxy().query(FIND_BY_IDS_AND_USEATR, KrcmtWkpSchedaiExCon.class)
             .setParameter("ids", ids)

@@ -29,15 +29,14 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Rema
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdMinutes;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemain;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdMinutes;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.MonthMergeKey;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMerge;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
@@ -62,6 +61,11 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualle
 //import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.TimeAnnualLeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.UndigestedAnnualLeaveDays;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.UndigestedTimeAnnualLeaveTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.care.CareRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.ChildcareRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseRemainingNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseUsedInfo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildcareNurseRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.DayOffDayAndTimes;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.DayOffRemainDayAndTimes;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
@@ -1702,6 +1706,34 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 	@Column(name = "CA_USED_MINUTES_AFTER")
 	public Integer careUsedMinutesAfter;
 
+
+	/** 子の看護残日数本年 */
+	@Column(name = "CH_REMAIN_DAYS_BEFORE")
+	public double childRemainDaysBefore;
+	/** 子の看護残時間本年 */
+	@Column(name = "CH_REMAIN_MINUTES_BEFORE")
+	public Integer childRemainMinutesBefore;
+	/** 子の看護残日数翌年 */
+	@Column(name = "CH_REMAIN_DAYS_AFTER")
+	public Double childRemainDaysAfter;
+	/** 子の看護残時間翌年 */
+	@Column(name = "CH_REMAIN_MINUTES_AFTER")
+	public Integer childRemainMinutesAfter;
+	/** 介護残日数本年 */
+	@Column(name = "CA_REMAIN_DAYS_BEFORE")
+	public double careRemainDaysBefore;
+	/** 介護護残時間本年 */
+	@Column(name = "CA_REMAIN_MINUTES_BEFORE")
+	public Integer careRemainMinutesBefore;
+	/** 介護残日数翌年 */
+	@Column(name = "CA_REMAIN_DAYS_AFTER")
+	public Double careRemainDaysAfter;
+	/** 介護残時間翌年 */
+	@Column(name = "CA_REMAIN_MINUTES_AFTER")
+	public Integer careRemainMinutesAfter;
+
+
+
 	@Override
 	protected Object getKey() {
 		return krcdtMonRemainPk;
@@ -3063,18 +3095,22 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 	}
 
 	/** KRCDT_MON_CHILD_HD_REMAIN **/
-	public void toEntityChildRemainData(MonChildHdRemain domain){
+	public void toEntityChildRemainData(ChildcareRemNumEachMonth domain){
 		this.deleteChildRemainData();
 		if (domain == null) return;
 		this.closureStatus = domain.getClosureStatus().value;
-		this.startDate = domain.getStartDate();
-		this.endDate = domain.getEndDate();
-		this.childUsedDays = domain.getUsedDays().v();
-		this.childUsedDaysBefore = domain.getUsedDaysBefore().v();
-		this.childUsedDaysAfter = domain.getUsedDaysAfter().v();
-		this.childUsedMinutes = domain.getUsedMinutes().v();
-		this.childUsedMinutesBefore = domain.getUsedMinutesBefore().v();
-		this.childUsedMinutesAfter = domain.getUsedMinutesAfter().v();
+//		this.startDate = domain.getStartDate();
+//		this.endDate = domain.getEndDate();
+		this.childUsedDays = domain.getRemNumEachMonth().getUsedInfo().getUsedNumber().getUsedDay().v();
+		this.childUsedDaysBefore = domain.getRemNumEachMonth().getThisYearUsedInfo().getUsedNumber().getUsedDay().v();
+		this.childUsedDaysAfter = domain.getRemNumEachMonth().getNextYearUsedInfo().map(mapper->mapper.getUsedNumber().getUsedDay().v()).orElse(0.0);
+		this.childUsedMinutes = domain.getRemNumEachMonth().getUsedInfo().getUsedNumber().getUsedTimes().map(mapper->mapper.v()).orElse(0);
+		this.childUsedMinutesBefore = domain.getRemNumEachMonth().getThisYearUsedInfo().getUsedNumber().getUsedTimes().map(mapper->mapper.v()).orElse(0);
+		this.childUsedMinutesAfter = domain.getRemNumEachMonth().getNextYearUsedInfo().map(mapper->mapper.getUsedNumber().getUsedTimes().map(mapper2->mapper2.v()).orElse(0)).orElse(0);
+		this.childRemainDaysBefore=domain.getRemNumEachMonth().getThisYearRemainNumber().getRemainDay().v();
+		this.childRemainDaysAfter=domain.getRemNumEachMonth().getNextYearRemainNumber().map(mapper->mapper.getRemainDay().v()).orElse(0.0);
+		this.childRemainMinutesBefore=domain.getRemNumEachMonth().getThisYearRemainNumber().getRemainTimes().map(mapper->mapper.v()).orElse(0);
+		this.childRemainMinutesAfter=domain.getRemNumEachMonth().getNextYearRemainNumber().map(mapper->mapper.getRemainTimes().map(c->c.v()).orElse(0)).orElse(0);
 	}
 
 	public void deleteChildRemainData(){
@@ -3084,21 +3120,29 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.childUsedMinutes = null;
 		this.childUsedMinutesBefore = null;
 		this.childUsedMinutesAfter = null;
+		this.childRemainDaysBefore=0.0;
+		this.childRemainDaysAfter=null;
+		this.childRemainMinutesBefore=null;
+		this.childRemainMinutesAfter=null;
 	}
 
 	/** KRCDT_MON_CARE_HD_REMAIN **/
-	public void toEntityCareRemainData(MonCareHdRemain domain){
+	public void toEntityCareRemainData(CareRemNumEachMonth domain){
 		this.deleteCareRemainData();
 		if (domain == null) return;
 		this.closureStatus = domain.getClosureStatus().value;
-		this.startDate = domain.getStartDate();
-		this.endDate = domain.getEndDate();
-		this.careUsedDays = domain.getUsedDays().v();
-		this.careUsedDaysBefore = domain.getUsedDaysBefore().v();
-		this.careUsedDaysAfter = domain.getUsedDaysAfter().v();
-		this.careUsedMinutes = domain.getUsedMinutes().v();
-		this.careUsedMinutesBefore = domain.getUsedMinutesBefore().v();
-		this.careUsedMinutesAfter = domain.getUsedMinutesAfter().v();
+//		this.startDate = domain.getStartDate();
+//		this.endDate = domain.getEndDate();
+		this.careUsedDays = domain.getRemNumEachMonth().getUsedInfo().getUsedNumber().getUsedDay().v();
+		this.careUsedDaysBefore = domain.getRemNumEachMonth().getThisYearUsedInfo().getUsedNumber().getUsedDay().v();
+		this.careUsedDaysAfter = domain.getRemNumEachMonth().getNextYearUsedInfo().map(mapper->mapper.getUsedNumber().getUsedDay().v()).orElse(0.0);
+		this.careUsedMinutes = domain.getRemNumEachMonth().getUsedInfo().getUsedNumber().getUsedTimes().map(mapper->mapper.v()).orElse(0);
+		this.careUsedMinutesBefore = domain.getRemNumEachMonth().getThisYearUsedInfo().getUsedNumber().getUsedTimes().map(mapper->mapper.v()).orElse(0);
+		this.careUsedMinutesAfter = domain.getRemNumEachMonth().getNextYearUsedInfo().map(mapper->mapper.getUsedNumber().getUsedTimes().map(mapper2->mapper2.v()).orElse(0)).orElse(0);
+		this.careRemainDaysBefore=domain.getRemNumEachMonth().getThisYearRemainNumber().getRemainDay().v();
+		this.careRemainDaysAfter=domain.getRemNumEachMonth().getNextYearRemainNumber().map(mapper->mapper.getRemainDay().v()).orElse(0.0);
+		this.careRemainMinutesBefore=domain.getRemNumEachMonth().getThisYearRemainNumber().getRemainTimes().map(mapper->mapper.v()).orElse(0);
+		this.careRemainMinutesAfter=domain.getRemNumEachMonth().getNextYearRemainNumber().map(mapper->mapper.getRemainTimes().map(c->c.v()).orElse(0)).orElse(0);
 	}
 
 	public void deleteCareRemainData(){
@@ -3108,6 +3152,10 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.careUsedMinutes = null;
 		this.careUsedMinutesBefore = null;
 		this.careUsedMinutesAfter = null;
+		this.careRemainDaysBefore=0.0;
+		this.careRemainDaysAfter=null;
+		this.careRemainMinutesBefore=null;
+		this.careRemainMinutesAfter=null;
 	}
 
 	/**
@@ -3123,14 +3171,14 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		AnnualLeaveUsedDayNumber val_annleaUsedDays = new AnnualLeaveUsedDayNumber(this.annleaUsedDays);
 
 		/** 年休.使用情報.合計.使用時間.使用時間 */
-		Optional<UsedMinutes> val_annleaUsedMinutes = Optional.ofNullable(this.annleaUsedMinutes == null ? null 
+		Optional<UsedMinutes> val_annleaUsedMinutes = Optional.ofNullable(this.annleaUsedMinutes == null ? null
 				: new UsedMinutes(this.annleaUsedMinutes));
 
 		/** 年休.使用情報.付与前.使用日数.使用日数 */
 		AnnualLeaveUsedDayNumber val_annleaUsedDaysBefore = new AnnualLeaveUsedDayNumber(this.annleaUsedDaysBefore);
 
 		/** 年休.使用情報.付与前.使用時間.使用時間 */
-		Optional<UsedMinutes> val_annleaUsedMinutesBefore = Optional.ofNullable(this.annleaUsedMinutesBefore == null ? null 
+		Optional<UsedMinutes> val_annleaUsedMinutesBefore = Optional.ofNullable(this.annleaUsedMinutesBefore == null ? null
 				: new UsedMinutes(this.annleaUsedMinutesBefore));
 
 		/** 年休.使用情報.時間年休使用回数 （1日2回使用した場合２回でカウント） */
@@ -3146,7 +3194,7 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		}
 
 		/** 年休.使用情報.付与後.使用時間.使用時間 */
-		Optional<UsedMinutes> val_annleaUsedMinutesAfter = Optional.ofNullable(this.annleaUsedMinutesAfter == null ? null 
+		Optional<UsedMinutes> val_annleaUsedMinutesAfter = Optional.ofNullable(this.annleaUsedMinutesAfter == null ? null
 				: new UsedMinutes(this.annleaUsedMinutesAfter));
 
 		/** 年休.残数情報.合計.合計残日数 */
@@ -3188,7 +3236,7 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 
 		/** 年休.残数情報.付与後.明細 */
 		List<AnnualLeaveRemainingDetail>  val_details23 = new ArrayList<>();
- 
+
 		AnnualLeave annualLeave = createAnnualLeave(val_annleaUsedDays, val_annleaUsedMinutes, val_annleaUsedDaysBefore,
 				val_annleaUsedMinutesBefore, val_annleaUsedTimes, val_annualLeaveUsedDayTimes12,
 				val_annleaUsedDaysAfter, val_annleaUsedMinutesAfter, val_annleaRemainingDays,
@@ -3200,14 +3248,14 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		AnnualLeaveUsedDayNumber val_annleaFactUsedDays = new AnnualLeaveUsedDayNumber(this.annleaFactUsedDays);
 
 		/** 実年休.使用情報.合計.使用時間.使用時間 */
-		Optional<UsedMinutes> val_annleaFactUsedMinutes = Optional.ofNullable(this.annleaFactUsedMinutes == null ? null 
+		Optional<UsedMinutes> val_annleaFactUsedMinutes = Optional.ofNullable(this.annleaFactUsedMinutes == null ? null
 				: new UsedMinutes(this.annleaFactUsedMinutes));
 
 		/** 実年休.使用情報.付与前.使用日数.使用日数 */
 		AnnualLeaveUsedDayNumber val_annleaFactUsedDaysBefore = new AnnualLeaveUsedDayNumber(this.annleaFactUsedDaysBefore);
 
 		/** 実年休.使用情報.付与前.使用時間.使用時間 */
-		Optional<UsedMinutes> val_annleaFactUsedMinutesBefore = Optional.ofNullable(this.annleaFactUsedMinutesBefore == null ? null 
+		Optional<UsedMinutes> val_annleaFactUsedMinutesBefore = Optional.ofNullable(this.annleaFactUsedMinutesBefore == null ? null
 				: new UsedMinutes(this.annleaFactUsedMinutesBefore));
 
 		/** 実年休.使用情報.時間年休使用回数 （1日2回使用した場合２回でカウント） */
@@ -3217,11 +3265,11 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		UsedTimes val_annualLeaveUsedDayTimes29 = new UsedTimes(0);
 
 		/** 実年休.使用情報.付与後.使用日数.使用日数 */
-		AnnualLeaveUsedDayNumber val_annleaFactUsedDaysAfter = this.annleaFactUsedDaysAfter == null ? null 
+		AnnualLeaveUsedDayNumber val_annleaFactUsedDaysAfter = this.annleaFactUsedDaysAfter == null ? null
 				: new AnnualLeaveUsedDayNumber(this.annleaFactUsedDaysAfter);
 
 		/** 実年休.使用情報.付与後.使用時間.使用時間 */
-		Optional<UsedMinutes> val_annleaFactUsedMinutesAfter = Optional.ofNullable(this.annleaFactUsedMinutesAfter == null ? null 
+		Optional<UsedMinutes> val_annleaFactUsedMinutesAfter = Optional.ofNullable(this.annleaFactUsedMinutesAfter == null ? null
 				: new UsedMinutes(this.annleaFactUsedMinutesAfter));
 
 		/** 実年休.残数情報.合計.合計残日数 */
@@ -3411,12 +3459,12 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 			List<AnnualLeaveRemainingDetail> val_details20, AnnualLeaveRemainingDayNumber val_annleaRemainingDaysAfter,
 			Optional<AnnualLeaveRemainingTime> val_annleaRemainingMinutesAfter,
 			List<AnnualLeaveRemainingDetail> val_details23) {
-		
+
 		return AnnualLeave.of(
 			AnnualLeaveUsedInfo.of(
-				AnnualLeaveUsedNumber.of(Optional.of(val_annleaUsedDays), val_annleaUsedMinutes), 
-				AnnualLeaveUsedNumber.of(Optional.of(val_annleaUsedDaysBefore), val_annleaUsedMinutesBefore), 
-				val_annleaUsedTimes, 
+				AnnualLeaveUsedNumber.of(Optional.of(val_annleaUsedDays), val_annleaUsedMinutes),
+				AnnualLeaveUsedNumber.of(Optional.of(val_annleaUsedDaysBefore), val_annleaUsedMinutesBefore),
+				val_annleaUsedTimes,
 				val_annualLeaveUsedDayTimes12,
 				Optional.ofNullable(val_annleaUsedDaysAfter == null ? null : AnnualLeaveUsedNumber.of(Optional.of(val_annleaUsedDaysAfter), val_annleaUsedMinutesAfter))),
 			AnnualLeaveRemainingNumberInfo.of(
@@ -3551,46 +3599,46 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		return merge;
 	}
 
-	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData(int dataNo, 
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData(int dataNo,
 			double useDays, double beforeUseDays, Double afterUseDays,
-			Integer useMinutes, Integer beforeUseMinutes, Integer afterUseMinutes, Integer useTimes, 
-			double factUseDays, double beforeFactUseDays, Double afterFactUseDays, 
+			Integer useMinutes, Integer beforeUseMinutes, Integer afterUseMinutes, Integer useTimes,
+			double factUseDays, double beforeFactUseDays, Double afterFactUseDays,
 			Integer factUseMinutes, Integer beforeFactUseMinutes, Integer afterFactUseMinutes, Integer factUseTimes,
-			double remainDays, Integer remainMinutes, double factRemainDays, Integer factRemainMinutes, 
+			double remainDays, Integer remainMinutes, double factRemainDays, Integer factRemainMinutes,
 			double beforeRemainDays, Integer beforeRemainMinutes, double beforeFactRemainDays, Integer beforeFactRemainMinutes,
-			Double afterRemainDays, Integer afterRemainMinutes, Double afterFactRemainDays, Integer afterFactRemainMinutes, 
+			Double afterRemainDays, Integer afterRemainMinutes, Double afterFactRemainDays, Integer afterFactRemainMinutes,
 			double notUseDays, Integer notUseMinutes, int grantAtr, Double grantDays) {
-		
+
 		return new SpecialHolidayRemainData(
-				this.krcdtMonRemainPk.getEmployeeId(), 
-				new YearMonth(this.krcdtMonRemainPk.getYearMonth()), 
-				this.krcdtMonRemainPk.getClosureId(), 
-				new DatePeriod(this.startDate, this.endDate), 
-				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class), 
-				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1), 
-				dataNo, 
-				SpecialLeave.of(SpecialLeaveUsedInfo.of(SpecialLeaveUseNumber.of(factUseDays, factUseMinutes), 
-														SpecialLeaveUseNumber.of(beforeFactUseDays, beforeFactUseMinutes), 
-														factUseTimes == null ? new UsedTimes(0) : new UsedTimes(factUseTimes), 
-														new UsedTimes(0), 
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				this.krcdtMonRemainPk.getClosureId(),
+				new DatePeriod(this.startDate, this.endDate),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
+				dataNo,
+				SpecialLeave.of(SpecialLeaveUsedInfo.of(SpecialLeaveUseNumber.of(factUseDays, factUseMinutes),
+														SpecialLeaveUseNumber.of(beforeFactUseDays, beforeFactUseMinutes),
+														factUseTimes == null ? new UsedTimes(0) : new UsedTimes(factUseTimes),
+														new UsedTimes(0),
 														afterFactUseDays == null && afterFactUseMinutes == null ? Optional.empty() : Optional.of(SpecialLeaveUseNumber.of(afterFactUseDays, afterFactUseMinutes))),
 								SpecialLeaveRemainingNumberInfo.of(
 														SpecialLeaveRemainingNumber.createFromJavaType(factRemainDays, factRemainMinutes),
-														SpecialLeaveRemainingNumber.createFromJavaType(beforeFactRemainDays, beforeFactRemainMinutes), 
+														SpecialLeaveRemainingNumber.createFromJavaType(beforeFactRemainDays, beforeFactRemainMinutes),
 														afterFactRemainDays == null && afterFactRemainMinutes == null ? Optional.empty() : Optional.of(SpecialLeaveRemainingNumber.createFromJavaType(afterFactRemainDays, afterFactRemainMinutes)))),
-				SpecialLeave.of(SpecialLeaveUsedInfo.of(SpecialLeaveUseNumber.of(useDays, useMinutes), 
-														SpecialLeaveUseNumber.of(beforeUseDays, beforeUseMinutes), 
-														useTimes == null ? new UsedTimes(0) : new UsedTimes(useTimes), 
-														new UsedTimes(0), 
+				SpecialLeave.of(SpecialLeaveUsedInfo.of(SpecialLeaveUseNumber.of(useDays, useMinutes),
+														SpecialLeaveUseNumber.of(beforeUseDays, beforeUseMinutes),
+														useTimes == null ? new UsedTimes(0) : new UsedTimes(useTimes),
+														new UsedTimes(0),
 														afterUseDays == null && afterUseMinutes == null ? Optional.empty() : Optional.of(SpecialLeaveUseNumber.of(afterUseDays, afterUseMinutes))),
 								SpecialLeaveRemainingNumberInfo.of(
 														SpecialLeaveRemainingNumber.createFromJavaType(remainDays, remainMinutes),
-														SpecialLeaveRemainingNumber.createFromJavaType(beforeRemainDays, beforeRemainMinutes), 
-														afterRemainDays == null && afterRemainMinutes == null ? Optional.empty() : Optional.of(SpecialLeaveRemainingNumber.createFromJavaType(afterRemainDays, afterRemainMinutes)))), 
+														SpecialLeaveRemainingNumber.createFromJavaType(beforeRemainDays, beforeRemainMinutes),
+														afterRemainDays == null && afterRemainMinutes == null ? Optional.empty() : Optional.of(SpecialLeaveRemainingNumber.createFromJavaType(afterRemainDays, afterRemainMinutes)))),
 				grantAtr == 1,
 				new SpecialLeaveUnDigestion(
 						new SpecialLeaveRemainDay(notUseDays),
-						Optional.ofNullable(notUseMinutes == null ? null : new SpecialLeavaRemainTime(notUseMinutes))), 
+						Optional.ofNullable(notUseMinutes == null ? null : new SpecialLeavaRemainTime(notUseMinutes))),
 				Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)));
 	}
 
@@ -4357,23 +4405,73 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 	 * 子の看護月別残数データ
 	 * @return MonChildHdRemain
 	 */
-	public MonChildHdRemain toDomainMonChildHdRemain(){
+	public ChildcareRemNumEachMonth toDomainMonChildHdRemain(){
 
-		return new MonChildHdRemain(
+		/** 子の看護休暇月別残数データ */
+		ChildcareNurseRemNumEachMonth childcareNurseRemNumEachMonth
+			= ChildcareNurseRemNumEachMonth.of(
+					/** 本年使用数 */
+					ChildCareNurseUsedInfo.of(
+							/** 使用数 */
+							ChildCareNurseUsedNumber.of(
+									/** 日数 */
+									new DayNumberOfUse(this.childUsedDaysBefore),
+									/** 時間 */
+									this.childUsedMinutesBefore == null ? Optional.empty() : Optional.of(new TimeOfUse(this.childUsedMinutesBefore))
+									),
+							/** 時間休暇使用回数 */
+							new UsedTimes(0),
+							/** 時間休暇使用日数 */
+							new UsedTimes(0)
+							),
+					/** 合計使用数 */
+					ChildCareNurseUsedInfo.of(
+							/** 使用数 */
+							ChildCareNurseUsedNumber.of(
+									/** 日数 */
+									new DayNumberOfUse(this.childUsedDays),
+									/** 時間 */
+									this.childUsedMinutes == null ? Optional.empty() : Optional.of(new TimeOfUse(this.childUsedMinutes))
+									),
+							/** 時間休暇使用回数 */
+							new UsedTimes(0),
+							/** 時間休暇使用日数 */
+							new UsedTimes(0)
+							),
+					/** 本年残数 */
+					ChildCareNurseRemainingNumber.of(
+							new DayNumberOfRemain(this.careRemainDaysBefore),
+							this.careRemainMinutesBefore==null? Optional.empty(): Optional.of(new TimeOfRemain(this.careRemainMinutesBefore))
+							),
+					/** 翌年使用数 */
+					Optional.of(ChildCareNurseUsedInfo.of(
+							ChildCareNurseUsedNumber.of(
+								/** 日数 */
+								new DayNumberOfUse(this.childUsedDaysAfter),
+								/** 時間 */
+								this.childUsedMinutesAfter == null ? Optional.empty() : Optional.of(new TimeOfUse(this.childUsedMinutesAfter))
+								),
+							/** 時間休暇使用回数 */
+							new UsedTimes(0),
+							/** 時間休暇使用日数 */
+							new UsedTimes(0)
+							)),
+					/** 翌年残数 */
+					Optional.of(ChildCareNurseRemainingNumber.of(
+							new DayNumberOfRemain(this.careRemainDaysAfter),
+							this.careRemainMinutesAfter == null? Optional.empty(): Optional.of(new TimeOfRemain(this.careRemainMinutesAfter))
+							))
+				);
+		return new ChildcareRemNumEachMonth(
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				EnumAdaptor.valueOf(this.krcdtMonRemainPk.getClosureId(), ClosureId.class),
-				new Day(this.krcdtMonRemainPk.getClosureDay()),
-				this.krcdtMonRemainPk.getIsLastDay(),
+				new ClosureDate(
+					this.krcdtMonRemainPk.getClosureDay(),
+					this.krcdtMonRemainPk.getIsLastDay()==1),
 				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
-				this.startDate,
-				this.endDate,
-				new MonChildHdNumber(this.childUsedDays),
-				new MonChildHdNumber(this.childUsedDaysBefore),
-				new MonChildHdNumber(this.childUsedDaysAfter == null ? 0.0 : this.childUsedDaysAfter),
-				new MonChildHdMinutes(this.childUsedMinutes == null ? 0 : this.childUsedMinutes),
-				new MonChildHdMinutes(this.childUsedMinutesBefore == null ? 0 : this.childUsedMinutesBefore),
-				new MonChildHdMinutes(this.childUsedMinutesAfter == null ? 0 : this.childUsedMinutesAfter));
+				childcareNurseRemNumEachMonth
+				);
 	}
 
 	/**
@@ -4381,22 +4479,73 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 	 * 介護休暇月別残数データ
 	 * @return MonCareHdRemain
 	 */
-	public MonCareHdRemain toDomainMonCareHdRemain(){
+	public CareRemNumEachMonth toDomainMonCareHdRemain(){
 
-		return new MonCareHdRemain(
+		/** 介護休暇月別残数データ */
+		ChildcareNurseRemNumEachMonth careRemNumEachMonth
+			= ChildcareNurseRemNumEachMonth.of(
+					/** 本年使用数 */
+					ChildCareNurseUsedInfo.of(
+							/** 使用数 */
+							ChildCareNurseUsedNumber.of(
+									/** 日数 */
+									new DayNumberOfUse(this.careUsedDaysBefore),
+									/** 時間 */
+									this.careUsedMinutesBefore == null ? Optional.empty() : Optional.of(new TimeOfUse(this.careUsedMinutesBefore))
+									),
+							/** 時間休暇使用回数 */
+							new UsedTimes(0),
+							/** 時間休暇使用日数 */
+							new UsedTimes(0)
+							),
+					/** 合計使用数 */
+					ChildCareNurseUsedInfo.of(
+							/** 使用数 */
+							ChildCareNurseUsedNumber.of(
+									/** 日数 */
+									new DayNumberOfUse(this.careUsedDays),
+									/** 時間 */
+									this.careUsedMinutes == null ? Optional.empty() : Optional.of(new TimeOfUse(this.careUsedMinutes))
+									),
+							/** 時間休暇使用回数 */
+							new UsedTimes(0),
+							/** 時間休暇使用日数 */
+							new UsedTimes(0)
+							),
+					/** 本年残数 */
+					ChildCareNurseRemainingNumber.of(
+							new DayNumberOfRemain(this.childRemainDaysBefore),
+							this.childRemainMinutesBefore == null?Optional.empty() : Optional.of(new TimeOfRemain(this.childRemainMinutesBefore))
+							),
+					/** 翌年使用数 */
+					Optional.of(ChildCareNurseUsedInfo.of(
+							ChildCareNurseUsedNumber.of(
+								/** 日数 */
+								new DayNumberOfUse(this.careUsedDaysAfter),
+								/** 時間 */
+								this.careUsedMinutesAfter == null ? Optional.empty() : Optional.of(new TimeOfUse(this.careUsedMinutesAfter))
+								),
+							/** 時間休暇使用回数 */
+							new UsedTimes(0),
+							/** 時間休暇使用日数 */
+							new UsedTimes(0)
+							)),
+					/** 翌年残数 */
+					Optional.of(ChildCareNurseRemainingNumber.of(
+							new DayNumberOfRemain(this.childRemainDaysAfter),
+							this.childRemainMinutesAfter == null? Optional.empty(): Optional.of(new TimeOfRemain(this.childRemainMinutesAfter))
+							))
+				);
+		return new CareRemNumEachMonth(
 				this.krcdtMonRemainPk.getEmployeeId(),
 				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
 				EnumAdaptor.valueOf(this.krcdtMonRemainPk.getClosureId(), ClosureId.class),
-				new Day(this.krcdtMonRemainPk.getClosureDay()),
-				this.krcdtMonRemainPk.getIsLastDay(),
+				new ClosureDate(
+					this.krcdtMonRemainPk.getClosureDay(),
+					this.krcdtMonRemainPk.getIsLastDay()==1),
 				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
-				this.startDate,
-				this.endDate,
-				new MonCareHdNumber(this.careUsedDays),
-				new MonCareHdNumber(this.careUsedDaysBefore),
-				new MonCareHdNumber(this.careUsedDaysAfter == null ? 0.0 : this.careUsedDaysAfter),
-				new MonCareHdMinutes(this.careUsedMinutes == null ? 0 : this.careUsedMinutes),
-				new MonCareHdMinutes(this.careUsedMinutesBefore == null ? 0 : this.careUsedMinutesBefore),
-				new MonCareHdMinutes(this.careUsedMinutesAfter == null ? 0 : this.careUsedMinutesAfter));
+				careRemNumEachMonth
+				);
+
 	}
 }
