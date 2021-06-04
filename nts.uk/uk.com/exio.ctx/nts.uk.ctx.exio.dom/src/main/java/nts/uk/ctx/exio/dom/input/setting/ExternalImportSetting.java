@@ -5,13 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
+import nts.uk.ctx.exio.dom.input.setting.source.ExternalImportCsvFileInfo;
 
 /**
  * 受入設定
  */
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class ExternalImportSetting extends AggregateRoot {
 	
 	/** 会社ID */
@@ -28,4 +28,8 @@ public class ExternalImportSetting extends AggregateRoot {
 	
 	/** 受入モード */
 	private ImportingMode importingMode;
+	
+	/** CSVファイル情報 */
+	private ExternalImportCsvFileInfo csvFileInfo;
+	
 }
