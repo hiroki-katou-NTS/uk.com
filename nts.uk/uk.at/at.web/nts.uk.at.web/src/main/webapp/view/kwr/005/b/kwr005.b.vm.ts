@@ -267,7 +267,7 @@ module nts.uk.at.view.kwr005.b {
      */
     getSettingListItemsDetails(settingId: string) {
       const vm = this;
-
+      vm.printPropertyCode(-1);
       vm.currentCodeListSwap([]);
       vm.resetListItemsSwap();
       vm.clearSelection();

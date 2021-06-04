@@ -56,12 +56,12 @@ module nts.uk.at.view.kdl035.a.viewmodel {
 
             self.legendOptions = {
                 items: [
-                    {labelText: nts.uk.resource.getText("KDL009_29")},
-                    {labelText: nts.uk.resource.getText("KDL009_30")}
+                    {labelText: nts.uk.resource.getText("KDL035_6")},
+                    {labelText: nts.uk.resource.getText("KDL035_7")}
                 ],
                 template : '<div class="label">#{labelText}</div>'
             };
-            $("#fixed-table").ntsFixedTable({ height: 315 });
+            $("#fixed-table").ntsFixedTable({ height: 314 });
         }
 
         startPage(): JQueryPromise<any> {
