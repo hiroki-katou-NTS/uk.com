@@ -81,10 +81,6 @@ module nts.uk.at.view.kdp005.a {
 						self.btnHistory(false);
 					}
 				});
-
-				setInterval(() => {
-					self.loadNotice();
-				}, 5000);
 			}
 
 			public startPage(): JQueryPromise<void> {
@@ -156,6 +152,14 @@ module nts.uk.at.view.kdp005.a {
 				return dfd.promise();
 			}
 
+			alwaysLoadMessage(param: number) {
+				if (param > 0) {
+					setInterval(() => {
+						this.loadNotice();
+					}, param * 60 * 1000);
+				}
+			}
+
 			getErrorNotUsed(errorType) {
 				const notUseMessage = [
 					{ text: "Msg_1644", value: 1 },
@@ -181,6 +185,8 @@ module nts.uk.at.view.kdp005.a {
 								dfd.resolve();
 								return;
 							}
+
+							self.alwaysLoadMessage(res.stampSetting.resultDisplayTime);
 							self.stampSetting(res.stampSetting);
 							self.stampTab().bindData(res.stampSetting.pageLayouts);
 							self.stampResultDisplay(res.stampResultDisplay);

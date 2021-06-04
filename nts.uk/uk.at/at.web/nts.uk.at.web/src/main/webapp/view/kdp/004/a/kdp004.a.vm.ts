@@ -72,9 +72,6 @@ module nts.uk.at.view.kdp004.a {
 			constructor() {
 				let self = this;
 
-				setInterval(() => {
-					self.loadNotice();
-				}, 5000);
 			}
 
 			public startPage(): JQueryPromise<void> {
@@ -148,6 +145,14 @@ module nts.uk.at.view.kdp004.a {
 				return item ? getMessage(item.text, [getText('KDP002_3')]) : '';
 			}
 
+			alwaysLoadMessage(param: number) {
+				if (param > 0) {
+					setInterval(() => {
+						this.loadNotice();
+					}, param * 60 * 1000);
+				}
+			}
+
 			doFirstLoad(): JQueryPromise<any> {
 				let dfd = $.Deferred<any>(), self = this;
 				let loginInfo = self.loginInfo;
@@ -160,12 +165,15 @@ module nts.uk.at.view.kdp004.a {
 							block.grayout();
 							service.startPage()
 								.done((res: any) => {
+									
 									if (!res.stampSetting || !res.stampResultDisplay || !res.stampSetting.pageLayouts.length) {
 										self.errorMessage(self.getErrorNotUsed(1));
 										self.isUsed(false);
 										dfd.resolve();
 										return;
 									}
+
+									self.alwaysLoadMessage(res.stampSetting.resultDisplayTime);
 									self.stampSetting(res.stampSetting);
 									self.stampTab().bindData(res.stampSetting.pageLayouts);
 									self.stampResultDisplay(res.stampResultDisplay);
