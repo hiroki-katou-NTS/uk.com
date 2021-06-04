@@ -429,83 +429,61 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 			FlexTime flexTime, SettingRequiredByFlex settingsByFlex,
 			WorkInformation workInfo,
 			MonAggrCompanySettings companySets){
-
-		val flexAggrSet = settingsByFlex.getFlexAggrSet();
-		val roleHolidayWorkFrameMap = settingsByFlex.getRoleHolidayWorkFrameMap();
 		
 		// 「休出枠時間」を取得する（日別）
-		val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
-		val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
-		val excessOfStatutoryTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
-		val holidayWorkTimeOfDaily = excessOfStatutoryTimeOfDaily.getWorkHolidayTime();
-		// 休出時間がない時、集計しない
-		if (!holidayWorkTimeOfDaily.isPresent()) return flexTime;
+		val holidayWorkTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+				.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().orElse(null);
 		
-		val holidayWorkFrameTimeSrcs = holidayWorkTimeOfDaily.get().getHolidayWorkFrameTime();
-		for (val holidayWorkFrameTimeSrc : holidayWorkFrameTimeSrcs){
-			val holidayWorkFrameNo = holidayWorkFrameTimeSrc.getHolidayFrameNo();
+		// 休出時間がない時、集計しない
+		if (holidayWorkTimeOfDaily == null) return flexTime;
+		
+		for (val holFrame : holidayWorkTimeOfDaily.getHolidayWorkFrameTime()){
 
 			// 対象の時系列ワークを確認する
-			val targetHolidayWorkTime = this.getTargetAggregateHolidayWorkTime(holidayWorkFrameNo);
+			val targetHolidayWorkTime = this.getTargetAggregateHolidayWorkTime(holFrame.getHolidayFrameNo());
 			val timeSeriesWork = targetHolidayWorkTime.getAndPutTimeSeriesWork(ymd);
 			
-			boolean isStatutory = false;	// 法定内処理かどうか　（false=法定外処理）	
-			boolean isAddHdwk = true;		// 休出時間に入れるかどうか
-			
 			// 「休出枠．役割」を取得する
-			if (!roleHolidayWorkFrameMap.containsKey(holidayWorkFrameNo.v())) continue;			// 取得できない場合
-			val roleHolidayWorkFrame = roleHolidayWorkFrameMap.get(holidayWorkFrameNo.v());
+			val roleHolidayWorkFrame = settingsByFlex.getRoleHolidayWorkFrameMap().get(holFrame.getHolidayFrameNo().v());
+			if (roleHolidayWorkFrame == null) continue;			// 取得できない場合
 			switch (roleHolidayWorkFrame){
+			
+			case STATUTORY_HOLIDAYS:		// 法定内休出
+				break;
 			case MIX_WITHIN_OUTSIDE_STATUTORY:		// 法定内・外混在
 				// 「日別実績の勤務情報」を取得する
-				if (workInfo.getWorkTypeCode() != null){
-					// 勤務種類から法定内休日か判断する
-					val workType = companySets.getWorkTypeMap(require, workInfo.getWorkTypeCode().v());
-					if (workType != null){
-						val workTypeSet = workType.getWorkTypeSet();
-						if (workTypeSet != null){
-							val holidayAtr = workTypeSet.getHolidayAtr();
-							// 法定内休日なら、法定内処理をする　（以外なら、法定外処理になる）
-							if (holidayAtr == HolidayAtr.STATUTORY_HOLIDAYS) isStatutory = true;
-						}
-					}
-				}
-				break;
-				
-			case STATUTORY_HOLIDAYS:		// 法定内休出
-				isAddHdwk = false;
-				break;
-				
-			case NON_STATUTORY_HOLIDAYS:	// 法定外休出
-				isStatutory = false;
-				break;
-			}
+				// 勤務種類から法定内休日か判断する
+				val workType = companySets.getWorkTypeMap(require, workInfo.getWorkTypeCode().v());
+				if (workType == null) {
 
-			// 入れる条件の確認
-			if (isStatutory == false){		// 法定外
-				// 「フレックス時間の扱い．法定外休出時間をフレックス時間に含める」を取得する　→　false（含めない）なら法定内処理にする
-				if (flexAggrSet.getFlexTimeHandle().isIncludeIllegalHdwk()) isStatutory = true;
-			}
-			
-			// 休出時間を入れる
-			if (isAddHdwk){
-				if (isStatutory){		// 法定内
+					break;
+				}
+				if (workType.isHolidayWork() && workType.getWorkTypeSet().getHolidayAtr() == HolidayAtr.STATUTORY_HOLIDAYS) {
 					// 取得した休出枠時間を「集計休出時間」に入れる
-					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(holidayWorkFrameTimeSrc.getHolidayWorkTime().get());
-					timeSeriesWork.addTransferTimeInHolidayWorkTime(holidayWorkFrameTimeSrc.getTransferTime().get());
+					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(holFrame.getHolidayWorkTime().get());
+					timeSeriesWork.addTransferTimeInHolidayWorkTime(holFrame.getTransferTime().get());
+					break;
 				}
-				else {					// 法定外
-					// 取得した休出枠時間を「集計休出時間」に入れる　（法定内休出時間）
-					timeSeriesWork.addHolidayWorkTimeInLegalHolidayWorkTime(holidayWorkFrameTimeSrc.getHolidayWorkTime().get());
-					timeSeriesWork.addTransferTimeInLegalHolidayWorkTime(holidayWorkFrameTimeSrc.getTransferTime().get());
-					
-					// 取得した休出枠時間を「フレックス時間」に入れる
-					flexTime.addHolidayWorkTimeFrameTime(ymd, holidayWorkFrameTimeSrc);
-				}
+				/** 法定内休日以外のケース、下のケースに入る */
+			case NON_STATUTORY_HOLIDAYS:	// 法定外休出
+				if (!settingsByFlex.getFlexAggrSet().getFlexTimeHandle().isIncludeIllegalHdwk()) {
+
+					// 取得した休出枠時間を「集計休出時間」に入れる
+					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(holFrame.getHolidayWorkTime().get());
+					timeSeriesWork.addTransferTimeInHolidayWorkTime(holFrame.getTransferTime().get());
+					break;
+				} 
+				
+				// 取得した休出枠時間を「集計休出時間」に入れる　（就業内休出時間）
+				timeSeriesWork.addHolidayWorkTimeInLegalHolidayWorkTime(holFrame.getHolidayWorkTime().get());
+				timeSeriesWork.addTransferTimeInLegalHolidayWorkTime(holFrame.getTransferTime().get());
+				
+				// 取得した休出枠時間を「フレックス時間」に入れる
+				flexTime.addHolidayWorkTimeFrameTime(ymd, holFrame);
 			}
 			
 			// 取得した休出枠時間の「事前申請時間」を入れる
-			timeSeriesWork.addBeforeAppTimeInHolidayWorkTime(holidayWorkFrameTimeSrc.getBeforeApplicationTime().get());
+			timeSeriesWork.addBeforeAppTimeInHolidayWorkTime(holFrame.getBeforeApplicationTime().get());
 		}
 		
 		return flexTime;
@@ -518,9 +496,8 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 	 * @param roleHolidayWorkFrameMap 休出枠の役割
 	 */
 	public void aggregateForByPeriod(
-			DatePeriod datePeriod,
-			Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyMap,
-			Map<Integer, WorkdayoffFrameRole> roleHolidayWorkFrameMap){
+			DatePeriod datePeriod, WorkingSystem workingSystem,
+			Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyMap){
 		
 		// 休出時間を縦計する
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.entrySet()) {
@@ -546,7 +523,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 		}
 		
 		// 休出合計時間を集計する
-		this.aggregateTotal(datePeriod);
+		this.aggregateTotal(datePeriod, workingSystem);
 	}
 	
 	/**
@@ -575,14 +552,14 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 	 * 休出合計時間を集計する
 	 * @param datePeriod 期間
 	 */
-	public void aggregateTotal(DatePeriod datePeriod){
+	public void aggregateTotal(DatePeriod datePeriod, WorkingSystem workingSystem){
 
 		this.totalHolidayWorkTime = TimeMonthWithCalculation.ofSameTime(0);
 		this.beforeHolidayWorkTime = new AttendanceTimeMonth(0);
 		this.totalTransferTime = TimeMonthWithCalculation.ofSameTime(0);
 
 		for (val aggregateHolidayWorkTime : this.aggregateHolidayWorkTimeMap.values()){
-			aggregateHolidayWorkTime.aggregate(datePeriod);
+			aggregateHolidayWorkTime.aggregate(datePeriod, workingSystem);
 			this.totalHolidayWorkTime = this.totalHolidayWorkTime.addMinutes(
 					aggregateHolidayWorkTime.getHolidayWorkTime().getTime().v(),
 					aggregateHolidayWorkTime.getHolidayWorkTime().getCalcTime().v());

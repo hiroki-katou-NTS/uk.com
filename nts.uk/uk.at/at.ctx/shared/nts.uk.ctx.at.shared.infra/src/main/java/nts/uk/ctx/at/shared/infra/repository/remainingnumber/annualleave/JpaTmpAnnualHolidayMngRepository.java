@@ -37,8 +37,9 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 				RemainType.ANNUAL,
 				new WorkTypeCode(workTypeCode),
 				new LeaveUsedNumber(useDays, useTime),
-				Optional.ofNullable(DigestionHourlyTimeType.of(timeDigestAtr == 1,
-						Optional.ofNullable(EnumAdaptor.valueOf(timeHdType, AppTimeType.class)))));
+				Optional.ofNullable(DigestionHourlyTimeType.of(timeDigestAtr == 1, 
+				timeHdType == 0 ? Optional.empty():
+						Optional.ofNullable(EnumAdaptor.valueOf(timeHdType - 1, AppTimeType.class)))));
 	}
 
 	@Override
@@ -55,7 +56,7 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 				dataMng.getSID(),
 				dataMng.getYmd(),
 				dataMng.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0),
-				dataMng.getAppTimeType().map(x-> x.getAppTimeType().map(appTime-> appTime.value).orElse(0)).orElse(0)
+				dataMng.getAppTimeType().map(x-> x.getAppTimeType().map(appTime-> appTime.value + 1).orElse(0)).orElse(0)
 				);
 
 		Optional<KshdtInterimHdpaid> optTmpAnnualHolidayMng = this.queryProxy().find(pk, KshdtInterimHdpaid.class);

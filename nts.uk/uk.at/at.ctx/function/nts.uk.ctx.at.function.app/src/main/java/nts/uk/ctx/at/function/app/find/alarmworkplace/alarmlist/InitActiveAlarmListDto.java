@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Getter
 public class InitActiveAlarmListDto {
     public  InitActiveAlarmListDto(String employmentCode, List<AlarmPatternSettingWorkPlace> domains,
-                                   Integer processingYm, DatePeriod datePeriodClosure){
+                                   Integer processingYm, DatePeriod datePeriodClosure, String workplaceId){
         this.employmentCode = employmentCode;
         this.alarmPatterns = domains.stream().map(AlarmPatternSettingWorkPlaceDto::new).collect(Collectors.toList());
         this.processingYm = processingYm;
@@ -19,6 +19,7 @@ public class InitActiveAlarmListDto {
             closureStartDate = datePeriodClosure.start();
             closureEndDate = datePeriodClosure.end();
         }
+        this.workplaceId = workplaceId;
     }
 
     /**
@@ -45,4 +46,6 @@ public class InitActiveAlarmListDto {
      * 締め期間．終了日の日
      */
     private GeneralDate closureEndDate;
+
+    private String workplaceId;
 }

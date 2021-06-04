@@ -1,12 +1,19 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation;
 
+import java.util.Optional;
+
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 
 /**
  * 所定内外出合計時間
  * @author keisuke_hoshina
- *
  */
 @Getter
 public class WithinOutingTotalTime {
@@ -36,4 +43,58 @@ public class WithinOutingTotalTime {
 		return new WithinOutingTotalTime(time, time, time);
 	}
 	
+	/**
+	 * コアタイム内外を分けて計算
+	 * @param oneDay 1日の計算範囲
+	 * @param dedAtr 控除区分
+	 * @param roundAtr 丸め区分
+	 * @param reason 外出理由
+	 * @return 外出合計時間
+	 */
+	public static WithinOutingTotalTime calcCoreTimeSeparate(
+			CalculationRangeOfOneDay oneDay,
+			DeductionAtr dedAtr,
+			TimeSheetRoundingAtr roundAtr,
+			GoingOutReason reason) {
+		
+		// 所定内合計時間の計算
+		TimeWithCalculation withinDedTime = oneDay.getDeductionTime(
+				ConditionAtr.convertFromGoOutReason(reason),
+				dedAtr, StatutoryAtr.Statutory, roundAtr, Optional.empty());
+		// コア内の外出時間の計算
+		FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)oneDay.getWithinWorkingTimeSheet().get();
+		AttendanceTime withinFlex = changedFlexTimeSheet.calcOutingTimeInFlex(true, dedAtr, roundAtr);
+		// コア外外出時間の計算
+		AttendanceTime excessFlex = changedFlexTimeSheet.calcOutingTimeInFlex(false, dedAtr, roundAtr);
+		// 外出合計時間を返す
+		return WithinOutingTotalTime.of(
+				withinDedTime,
+				TimeWithCalculation.sameTime(withinFlex),
+				TimeWithCalculation.sameTime(excessFlex));
+	}
+	
+	/**
+	 * コアタイム内外を分けずに計算
+	 * @param oneDay 1日の計算範囲
+	 * @param dedAtr 控除区分
+	 * @param roundAtr 丸め区分
+	 * @param reason 外出理由
+	 * @return 外出合計時間
+	 */
+	public static WithinOutingTotalTime calcCoreTimeNotSeparate(
+			CalculationRangeOfOneDay oneDay,
+			DeductionAtr dedAtr,
+			TimeSheetRoundingAtr roundAtr,
+			GoingOutReason reason) {
+		
+		// 所定内合計時間の計算
+		TimeWithCalculation withinDedTime = oneDay.getDeductionTime(
+				ConditionAtr.convertFromGoOutReason(reason),
+				dedAtr, StatutoryAtr.Statutory, roundAtr, Optional.empty());
+		// 外出合計時間を返す（所定内合計時間だけ返す）
+		return WithinOutingTotalTime.of(
+				withinDedTime,
+				TimeWithCalculation.sameTime(AttendanceTime.ZERO),
+				TimeWithCalculation.sameTime(AttendanceTime.ZERO));
+	}
 }

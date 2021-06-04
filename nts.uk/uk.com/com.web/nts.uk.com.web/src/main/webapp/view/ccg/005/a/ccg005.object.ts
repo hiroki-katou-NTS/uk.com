@@ -66,7 +66,6 @@ module nts.uk.at.view.ccg005.a.object {
   }
 
   export interface DisplayInformationDto {
-    attendanceInformationDtos: AttendanceInformationDto[],  //在席情報DTO（List）
     listPersonalInfo: EmployeeBasicImport[]                 //個人基本情報（List）
   }
 

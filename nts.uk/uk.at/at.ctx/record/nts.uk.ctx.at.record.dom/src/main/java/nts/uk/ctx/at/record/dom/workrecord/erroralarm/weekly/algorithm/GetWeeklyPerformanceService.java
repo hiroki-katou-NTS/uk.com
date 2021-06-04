@@ -23,7 +23,7 @@ public class GetWeeklyPerformanceService {
 	 * @return List 週別実績の勤怠時間
 	 */
 	public List<AttendanceTimeOfWeekly> getValues(List<String> lstSid, DatePeriod period) {
-		// ドメインモデル「週別実績の勤怠時間」を取得する TODO QA need function code
-		return attendanceTimeOfWeeklyRepository.findBySidsAndYearMonths(lstSid, period.yearMonthsBetween());
+		// ドメインモデル「週別実績の勤怠時間」を取得する  QA#116337
+		return attendanceTimeOfWeeklyRepository.findBySidsAndDatePeriod(lstSid, period);
 	}
 }

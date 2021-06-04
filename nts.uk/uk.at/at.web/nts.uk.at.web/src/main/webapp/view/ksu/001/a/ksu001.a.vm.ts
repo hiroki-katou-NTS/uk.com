@@ -137,8 +137,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         scheduleModifyStartDate = null;
         canOpenKsu003 = true;
         
-        // lưu nhưng cell bí disalble do không có worktime
-        listTimeDisable = [];
+        listTimeDisable = []; // lưu nhưng cell bí disalble do không có worktime
         
         // dùng cho trường hợp thay đổi modeBackground
         hasChangeModeBg = false; 
@@ -146,7 +145,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         listWorkTypeInfo = [];// listWorkTypecombobox
         listCellRetained = [];
+<<<<<<< HEAD
         listCellError = []; // chưa những cell not valid khi sửa time
+=======
+        listCellError = []; // chưa những cell not valid khi sửa time 
+        
+        widthA8 : number = 200;
+        widthBtnToLeftToRight : number = 32;
+        distanceLeftToGrid : number = 30;
+>>>>>>> pj/at/release_ver4
         
         visibleA4_234: KnockoutObservable<boolean>   = ko.observable(true);
         visibleA4_567: KnockoutObservable<boolean>   = ko.observable(true);
@@ -948,7 +955,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
 
             if (startTimeCal >= endTimeCal) {
+<<<<<<< HEAD
                 self.addCellNotValidInTimeInputMode(rowIndex + '', columnKey);
+=======
+                self.addCellNotValidInTimeInputMode(rowIndex+'', columnKey);
+>>>>>>> pj/at/release_ver4
                 self.checkExitCellUpdated();
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
                 return;
@@ -2188,7 +2199,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let leftmostDs = dataBindGrid.leftmostDs;
 
             leftmostColumns = [{
+<<<<<<< HEAD
                 key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8 +"px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+=======
+                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8+"px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
+>>>>>>> pj/at/release_ver4
                 css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { console.log(rowIdx); },
                 headerControl: "link", headerHandler: function() {  }
             }];
@@ -2306,6 +2321,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
             
             // Open KSU003
+<<<<<<< HEAD
             if (self.canOpenKsu003) {
                 detailColumns.forEach((col: any) => {
                     if (col.visible === false) return;
@@ -2315,6 +2331,34 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     };
                 });
             }
+=======
+            detailColumns.forEach((col: any) => {
+                if (col.visible === false) return;
+                col.headerHandler = (ui: any) => {
+                    let detailContentData: any = [];
+                    for (let i = 0; i < detailContentDs.length; i++) {
+                        detailContentData.add({ employeeId: detailContentDs[i].employeeId, datas: detailContentDs[i][ui.columnKey] });
+                    }
+                    let dayEdit = new Date();
+                    let param = {
+                        detailContentDs: detailContentData,
+                        unit: userInfor.unit,
+                        workplaceId: userInfor.workplaceId,
+                        workplaceGroupId: userInfor.workplaceGroupId,
+                        workplaceName: userInfor.workPlaceName,
+                        listEmp: self.listEmpData,
+                        daySelect: moment(ui.columnKey.slice(1)).format('YYYY/MM/DD'),
+                        startDate: self.dateTimePrev(),
+                        endDate: self.dateTimeAfter(),
+                        dayEdit: moment(self.scheduleModifyStartDate).format('YYYY/MM/DD') 
+                    }
+                    setShared("dataFromA", param);
+                    setShared("dataTooltip", self.tooltipShare);
+                    nts.uk.ui.windows.sub.modal("/view/ksu/003/a/index.xhtml").onClosed(() => { });
+                    return false;
+                };
+            });
+>>>>>>> pj/at/release_ver4
 
             let detailContent = {
                 columns: detailColumns,
@@ -3570,18 +3614,25 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $('.iconToLeft').css('background-image', 'url(' + self.pathToRight + ')');
                 $(".toLeft").css("margin-left", self.widthA8 + self.distanceLeftToGrid + "px");
                 
+<<<<<<< HEAD
                 let marginleft = 0;
                 if (self.showA11() && self.indexBtnToRight % 2 == 0) {
                     marginleft = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight * 2 - self.widthVertSum - widthScrollRG;
                 }else{
                     marginleft = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight * 2 - widthScrollRG;
                 }
+=======
+                $(".toLeft").css("margin-left", self.widthA8 + self.distanceLeftToGrid+"px");
+                
+                let marginleft = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight*2 - self.distanceLeftToGrid;
+>>>>>>> pj/at/release_ver4
                 $(".toRight").css('margin-left', marginleft + 'px');
             } else {
                 $("#extable").exTable("showMiddle");
                 $('.iconToLeft').css('background-image', 'url(' + self.pathToLeft + ')');
                 let marginleftOfbtnToLeft: number = self.widthA8 + self.distanceLeftToGrid + self.widthMid;
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
+<<<<<<< HEAD
 
                 let marginleft = 0;
                 if (self.showA11() && self.indexBtnToRight % 2 == 0) {
@@ -3590,6 +3641,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     marginleft = $('#extable').width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight * 2 - widthScrollRG;
                 }
                 $(".toRight").css('margin-left', marginleft + 'px');
+=======
+                
+                let marginleftOfbtnToRight = $("#extable").width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight*2 - self.distanceLeftToGrid;
+                $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
+>>>>>>> pj/at/release_ver4
             }
             self.indexBtnToLeft = self.indexBtnToLeft + 1;
         }
@@ -3697,7 +3753,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     marginleftOfbtnToRight = $('#extable').width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight*2 - self.distanceLeftToGrid;
                 }
             } else {
+<<<<<<< HEAD
                 marginleftOfbtnToRight = $('#extable').width() - self.distanceLeftToGrid - 3;
+=======
+                marginleftOfbtnToRight = $('#extable').width() - self.widthBtnToLeftToRight - 3;
+>>>>>>> pj/at/release_ver4
             }
             $('.toRight').css('margin-left', marginleftOfbtnToRight <= 101 ? 101 : marginleftOfbtnToRight + 'px');
         }
@@ -3947,7 +4007,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let arrCellUpdated = $("#extable").exTable("updatedCells");
             if (arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
+<<<<<<< HEAD
                     self.enableBtnReg(true);
+=======
+                    self.enableBtnReg(false);
+>>>>>>> pj/at/release_ver4
                     self.listCellError = [];
                     self.convertDataToGrid(self.dataSource, self.selectedModeDisplayInBody());
                     self.updateExTableWhenChangeMode(self.selectedModeDisplayInBody() , "determine");
@@ -4092,6 +4156,25 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 return cell.rowId == rowIdx && cell.columnId == key;
             });
             console.log(self.listTimeDisable.length);
+        }
+        
+        // add cell có time sửa tay không đúng (bao gồm trương hợp bằng'', NaN, startTime>endTime)(mode TimeInput)
+        addCellNotValidInTimeInputMode(rowIdx, key) {
+            let self = this;
+            let exit = _.filter(self.listCellError, function(o: TimeError) { return o.rowId == rowIdx + '' && o.columnId == key + '' });
+            if (exit.length == 0) {
+                self.listCellError.push(new TimeError(rowIdx, key));
+            }
+            console.log('addCellNotValidInTimeInputMode');
+        }
+
+        // remove cell có time sửa tay không đúng trước đấy (bao gồm trương hợp bằng'', NaN, startTime>endTime)(mode TimeInput)
+        removeCellNotValidInTimeInputMode(rowIdx, key) {
+            let self = this;
+            _.remove(self.listCellError, function(cell: TimeDisable) {
+                return cell.rowId == rowIdx && cell.columnId == key;
+            });
+            console.log('removeCellNotValidInTimeInputMode');
         }
 
         // add cell có time sửa tay không đúng (bao gồm trương hợp bằng'', NaN, startTime>endTime)(mode TimeInput)
@@ -4769,7 +4852,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         openDialogG(): void {
             let self = this;
+<<<<<<< HEAD
             $('div > iframe').contents().find('#btnCloseG').trigger('click');
+=======
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = JSON.parse(item.get());
+            
+            $('div > iframe').contents().find('#btnCloseG').trigger('click');
+
+>>>>>>> pj/at/release_ver4
             // listEmpData : {id : '' , code : '', name : ''}
             setShared('dataShareDialogG', {
                 startDate   : moment(self.dtPrev()).format('YYYY/MM/DD'),
@@ -5722,6 +5813,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         columnId: string;
         constructor(rowId: string, columnId: string) {
             this.rowId    = rowId;
+            this.columnId = columnId;
+        }
+    }
+
+    class TimeError {
+        rowId: string;
+        columnId: string;
+        constructor(rowId: string, columnId: string) {
+            this.rowId = rowId;
             this.columnId = columnId;
         }
     }

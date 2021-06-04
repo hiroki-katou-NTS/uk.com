@@ -51,13 +51,13 @@ public class CreateApplicationReflectionHistTest {
 		};
 
 		List<AttendanceBeforeApplicationReflect> before = new ArrayList<>();
-		before.add(new AttendanceBeforeApplicationReflect(31, "200", Optional.empty()));
-		before.add(new AttendanceBeforeApplicationReflect(34, "201",
+		before.add(new AttendanceBeforeApplicationReflect(31, Optional.of("200"), Optional.empty()));
+		before.add(new AttendanceBeforeApplicationReflect(34, Optional.of("201"),
 				Optional.of(new EditStateOfDailyAttd(34, EditStateSetting.HAND_CORRECTION_MYSELF))));
 		NtsAssert.Invoke.privateMethod(new CreateApplicationReflectionHist(), "addDataBeforeAppReflect", require,
 				before, domainBefore);
 
-		assertThat(before).extracting(x -> x.getAttendanceId(), x -> x.getEditState(), x -> x.getValue())
+		assertThat(before).extracting(x -> x.getAttendanceId(), x -> x.getEditState(), x -> x.getValue().orElse(null))
 				.containsExactly(Tuple.tuple(31, Optional.empty(), "600"), Tuple.tuple(34, Optional.empty(), "600"));
 
 	}

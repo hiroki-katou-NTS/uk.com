@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.actualworkin
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
@@ -121,7 +122,8 @@ public class TotalTimeBeforeRound {
 	 * @param excessOutsideWorkDetail 時間外超過明細
 	 * @param datePeriod 期間
 	 */
-	public void aggregateValues(ExcessOutsideWorkDetail excessOutsideWorkDetail, DatePeriod datePeriod){
+	public void aggregateValues(ExcessOutsideWorkDetail excessOutsideWorkDetail, DatePeriod datePeriod,
+			WorkingSystem workingSystem) {
 		
 		// 就業時間・所定内割増時間
 		int workTimeMinutes = 0;
@@ -136,7 +138,7 @@ public class TotalTimeBeforeRound {
 		// 残業時間
 		for (val overTimeEachFrameNo : excessOutsideWorkDetail.getOverTime().values()){
 			val overTimeFrameNo = overTimeEachFrameNo.getOverTimeFrameNo();
-			overTimeEachFrameNo.aggregate(datePeriod);
+			overTimeEachFrameNo.aggregate(datePeriod, workingSystem);
 			this.overTime.putIfAbsent(overTimeFrameNo, OverTimeFrameTotalTime.of(
 					overTimeFrameNo,
 					overTimeEachFrameNo.getOverTime(),
@@ -146,7 +148,7 @@ public class TotalTimeBeforeRound {
 		// 休出時間
 		for (val holidayWorkTimeEachFrameNo : excessOutsideWorkDetail.getHolidayWorkTime().values()){
 			val holidayWorkFrameNo = holidayWorkTimeEachFrameNo.getHolidayWorkFrameNo();
-			holidayWorkTimeEachFrameNo.aggregate(datePeriod);
+			holidayWorkTimeEachFrameNo.aggregate(datePeriod, workingSystem);
 			this.holidayWorkTime.putIfAbsent(holidayWorkFrameNo, HolidayWorkFrameTotalTime.of(
 					holidayWorkFrameNo,
 					holidayWorkTimeEachFrameNo.getHolidayWorkTime(),
