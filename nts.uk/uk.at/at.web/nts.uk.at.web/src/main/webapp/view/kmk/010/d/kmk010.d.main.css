@@ -11,9 +11,9 @@ table.fixed-table thead tr:first-child th:first-child {
   vertical-align: bottom;
   padding-bottom: 6px;
 }
-table.fixed-table tbody tr:last-child td {
-  width: 70px;
-}
+/*table.fixed-table tbody tr:last-child td {*/
+  /*width: 70px;*/
+/*}*/
 
 table.fixed-table tbody td {
   height: 28px;
