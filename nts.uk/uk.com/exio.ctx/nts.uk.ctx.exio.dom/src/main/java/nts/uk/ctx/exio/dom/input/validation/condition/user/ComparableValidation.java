@@ -40,11 +40,11 @@ public interface ComparableValidation <T extends Comparable<T>> extends Validati
 					&&  (targetValue.compareTo(getValue2().get()) <= 0);
 				
 			case VAL_LESS_COND1_OR_COND2_LESS_VAL:
-				return (getValue1().get().compareTo(targetValue) < 0)
+				return (targetValue.compareTo(getValue1().get()) < 0)
 					  ||  (getValue2().get().compareTo(targetValue) < 0);
 				
 			case VAL_LESS_EQUAL_COND1_OR_COND2_LESS_EQUAL_VAL:
-				return (getValue1().get().compareTo(targetValue) <= 0)
+				return (targetValue.compareTo(getValue1().get()) <= 0)
 					  ||  (getValue2().get().compareTo(targetValue) <= 0);
 				
 			case EQUAL:
