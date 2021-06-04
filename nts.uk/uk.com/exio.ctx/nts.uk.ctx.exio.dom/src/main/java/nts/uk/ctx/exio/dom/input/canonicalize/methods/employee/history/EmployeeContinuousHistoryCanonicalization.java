@@ -2,7 +2,6 @@ package nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.history;
 
 import static java.util.stream.Collectors.*;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -80,9 +79,9 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 			ExecutionContext context,
 			String employeeCode) {
 		
-		List<IntermediateResult> employeeCanonicalized = new ArrayList<>();
-		employeeCodeCanonicalization.canonicalize(
-				require, context, employeeCode, r -> employeeCanonicalized.add(r));
+		val employeeCanonicalized = employeeCodeCanonicalization
+				.canonicalize(require, context, employeeCode)
+				.collect(toList());
 		
 		return canonicalizeHistory(require, context, employeeCanonicalized);
 	}
