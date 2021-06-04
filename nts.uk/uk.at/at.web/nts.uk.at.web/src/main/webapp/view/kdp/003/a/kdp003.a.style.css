@@ -49,7 +49,7 @@
 	color: red;
 	font-size: 1.2rem !important;
 }
-
-/* .kdp-003-a #stamp-input {
-	width: 33.2rem;
-} */
+.pageComent {
+	word-break: break-all !important;
+	white-space: pre-wrap !important;
+}

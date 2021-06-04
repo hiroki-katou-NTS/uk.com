@@ -86,7 +86,7 @@ module nts.uk.at.view.ksm005.b {
                 $(".popup-b72").ntsPopup({
                     trigger: ".showDialogB72",
                     position: {
-                        my: "left top",
+                        my: "left top+3",
                         at: "left bottom",
                         of: ".showDialogB72"
                     },

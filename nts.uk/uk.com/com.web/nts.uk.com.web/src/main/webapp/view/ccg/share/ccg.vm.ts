@@ -1329,15 +1329,17 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 self.setComponentOptions();
                 $.when(self.loadEmploymentPart(),
-                    self.loadClassificationPart(),
-                    self.loadJobTitlePart(),
                     self.loadDepartmentPart(),
                     self.loadWorkplacePart(),
                     self.loadWorktypePart()
                 ).done(() => {
-                    nts.uk.ui.block.clear();// clear block UI
-                    self.fixComponentWidth();
-                    dfd.resolve();
+					self.loadClassificationPart().done(()=>{
+						self.loadJobTitlePart().done(()=>{
+		                    nts.uk.ui.block.clear();// clear block UI
+		                    self.fixComponentWidth();
+		                    dfd.resolve();							
+						});
+					});
                 });
                 return dfd.promise();
             }

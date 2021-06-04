@@ -66,6 +66,7 @@ public class RequestDispatcher {
 		RequestMapper.put(Command.WORKTIME_INFO.Request, WorkTimeInfoRequest.class);
 		RequestMapper.put(Command.WORKTYPE_INFO.Request, WorkTypeInfoRequest.class);
 		RequestMapper.put(Command.TR_REMOTE.Request, SendToNRLRemote.class);
+		RequestMapper.put(Command.APPLICATION_INFO.Request, ApplicationReasonRequest.class);
 	}
 	
 	/**
@@ -151,7 +152,7 @@ public class RequestDispatcher {
 			if (Objects.nonNull(result)) {
 				result.dispose();
 			}
-			if(UKServerSystemProperties.isCloud()) {
+			if(UKServerSystemProperties.usesTenantLocator()) {
 				TenantLocatorService.disconnect();
 			}
 		}
