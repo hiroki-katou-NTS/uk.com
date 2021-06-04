@@ -124,6 +124,17 @@ public class GetFixedWorkInformation {
 //					throw new RuntimeException("SystemError : List<就業時間帯の設定> is empty");
 //				}
 			}
+			
+			if(timeSettings.isEmpty()) {
+				inforDto = new FixedWorkInforDto(
+						null, null, null, new ArrayList<>(), null, null,
+						type.isPresent() ? type.get().getAbbreviationName().v() : null, null, null, null, null, false, SetupType.OPTIONAL.name());
+				inforDtos.add(inforDto);
+				fixedWorkInforDto = new FixedWorkInformationDto(inforDtos,
+						breakTime != null ? breakTime.getTimeZoneList() : new ArrayList<>());
+
+				return fixedWorkInforDto;
+			}
 			// 1.5 必須任意不要区分 == 任意
 			 if(workTimeSetting == SetupType.OPTIONAL){
 				inforDto = new FixedWorkInforDto(
@@ -168,8 +179,8 @@ public class GetFixedWorkInformation {
 					//  就業時間帯の勤務形態 == フレックス勤務用 : 取得する(勤務種類コード) : コアタイム時間帯
 					Integer coreStartTime = null;
 					Integer coreEndTime = null;
-					String workTimeName = timeSettings.get(0).getWorkTimeDisplayName().getWorkTimeName() != null
-							? timeSettings.get(0).getWorkTimeDisplayName().getWorkTimeName().v()
+					String workTimeName = timeSettings.get(0).getWorkTimeDisplayName().getWorkTimeAbName() != null
+							? timeSettings.get(0).getWorkTimeDisplayName().getWorkTimeAbName().v()
 							: null;
 					if (timeForm == WorkTimeForm.FLEX) {
 						// 1.7.4 就業時間帯の勤務形態 == フレックス勤務用 : 取得する(Require, 勤務種類コード, 就業時間帯コード):

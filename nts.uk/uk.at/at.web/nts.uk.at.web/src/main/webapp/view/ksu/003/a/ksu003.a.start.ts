@@ -1,13 +1,19 @@
 module nts.uk.at.view.ksu003.a {
+	let __viewContexts: any = window["__viewContext"] || {};
+	
 	__viewContext.ready(function() {
 		nts.uk.characteristics.restore("USER_KSU003_INFOR").done(function(data : any) {
-			let screenModel = new viewmodel.ScreenModel(data);
+			let screenModel = {
+			viewmodelA: new viewmodel.ScreenModel(data),
+			// ver 4 - comment
+            //viewmodelAb: new nts.uk.at.view.ksu003.ab.viewmodel.ScreenModel()
+			}
 			nts.uk.ui.block.grayout();
-			screenModel.startPage().done(function() {
+			screenModel.viewmodelA.startPage().done(function() {
 				__viewContext.bind(screenModel);
 				$('#ui-area').css('display','');
 				$(window).resize(function() {
-					screenModel.setPositionButonDownAndHeightGrid();
+					screenModel.viewmodelA.setPositionButonDownAndHeightGrid();
 				});
 			});
 			initEvent();
@@ -37,13 +43,25 @@ module nts.uk.at.view.ksu003.a {
 			position: {
 				my: 'left top',
 				at: 'left bottom+3',
-				of: $('.settingTimeGrid')
-			}
+				of: $('#settingTimeGrid')
+			},
+			showOnStart: false,
+			dismissible: false
 		});
 
-		$('.settingTimeGrid').click(function() {
+		$('#settingTimeGrid').click(function() {
 			$('#A14').ntsPopup("toggle");
 		});
+		
+		$(".ui-igcombo-list").click(function() {
+			$('#A14').ntsPopup("hide");
+		});
+		
+		//$(window).click(function(e) {
+			//if (e.target.classList[1] != "nts-combo-column-0" && e.target.classList[1] != "nts-combo-column-1" && e.target.id != "settingTimeGrid") {
+			//	$('#A14').ntsPopup("hide");
+			//}
+		//});
 	}
 
 	function initEvent2(): void {

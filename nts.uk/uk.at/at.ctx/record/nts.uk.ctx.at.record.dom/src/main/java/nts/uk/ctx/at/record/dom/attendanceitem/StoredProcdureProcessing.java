@@ -297,13 +297,19 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 	@Override
 	public List<AnyItemOfMonthly> monthlyProcessing(String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate, Optional<AttendanceTimeOfMonthly> attendanceTime, List<AnyItemOfMonthly> monthlyOptionalItems) {
+		
+		/** 大塚モードかを確認する */
+		if (!AppContexts.optionLicense().customize().ootsuka())
+			return monthlyOptionalItems;
+		
 		/** 任意項目の件数を取得 */
 		if(!attendanceTime.isPresent()){
 			attendanceTime = attendanceTimeOfMonthly.find(employeeId, yearMonth, closureId, closureDate);
 		}
-		if(!attendanceTime.isPresent()){
+		
+		if(!attendanceTime.isPresent())
 			return new ArrayList<>(monthlyOptionalItems);
-		}
+		
 		
 		/** 任意項目の件数を取得 */
 		List<AnyItemValueOfDailyTempo> optionalItemsInMonth = dailyOptionalItem.finds(Arrays.asList(employeeId), attendanceTime.get().getDatePeriod())

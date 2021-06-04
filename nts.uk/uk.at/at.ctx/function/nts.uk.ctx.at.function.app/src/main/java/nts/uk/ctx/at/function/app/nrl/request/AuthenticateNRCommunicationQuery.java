@@ -20,7 +20,7 @@ public class AuthenticateNRCommunicationQuery {
 	
 	public boolean process(String contractCode, String macAddr) {
 
-		if (UKServerSystemProperties.isCloud()) {
+		if (UKServerSystemProperties.usesTenantLocator()) {
 			TenantLocatorService.connect(contractCode);
 		}
 		
