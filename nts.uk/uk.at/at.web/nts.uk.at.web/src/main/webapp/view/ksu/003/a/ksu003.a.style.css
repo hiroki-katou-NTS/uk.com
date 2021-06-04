@@ -303,7 +303,6 @@ html {
     margin-bottom: 12px !important;
 }
 
-<<<<<<< HEAD
 #combo-box-start{
 	margin-left: 39px;
 }
@@ -316,14 +315,6 @@ html {
     margin-left: 138px;
 }
 
-#init-disp-start, #disp-start-time{
+#init-disp-start, #start-time-label{
 	display: flex;
-=======
-#display-range, #combo-box-start{
-	margin-left: 39px;
-}
-
-#A14_11 {
-    margin-left: 150px;
->>>>>>> pj/at/release_ver4
 }
