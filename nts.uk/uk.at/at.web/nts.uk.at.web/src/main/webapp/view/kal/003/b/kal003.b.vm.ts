@@ -2681,7 +2681,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
         /* 連続時間 */
         CONTINUOUS_DAY = 5,
         /* 連続回数 */
-        CONTINUOUS_TIMES = 5
+        CONTINUOUS_TIMES = 6
     }
 
 
