@@ -21,7 +21,11 @@ public enum ErrorType {
 
 	PUBLIC_HOLIDAY(7, "公休"),
 
-	H60_SUPER_HOLIDAY(8, "60H超休");
+	H60_SUPER_HOLIDAY(8, "60H超休"),
+
+	CHILDCARE_HOLIDAY(9, "子の看護休暇残数"),
+
+	CARE_HOLIDAY(10, "介護休暇残数");
 
 	public int value;
 

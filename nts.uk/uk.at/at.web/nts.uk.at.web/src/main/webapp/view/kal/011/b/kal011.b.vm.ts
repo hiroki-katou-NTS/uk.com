@@ -51,6 +51,7 @@ module nts.uk.at.kal011.B {
                 vm.alarmPatternName = data.alarmPatternName;
                 $("#grid").igGrid({
                     height: '450px',
+                    width: '1225px',
                     dataSource: vm.dataSource,
                     primaryKey: 'recordId',
                     columns: vm.columns,
@@ -61,6 +62,20 @@ module nts.uk.at.kal011.B {
                             name: "Tooltips",
                             columnSettings: [
                                 { columnKey: "workplaceName", allowTooltips: true }
+                            ]
+                        },
+                        {
+                            name: "Resizing",
+                            columnSettings: [
+                                { columnKey: 'recordId', allowResizing: false },
+                                { columnKey: 'workplaceCode', allowResizing: true, minimumWidth: 60 },
+                                { columnKey: 'workplaceName', allowResizing: true, minimumWidth: 60 },
+                                { columnKey: 'alarmValueDate', allowResizing: true, minimumWidth: 60 },
+                                { columnKey: 'categoryName', allowResizing: true, minimumWidth: 60 },
+                                { columnKey: 'alarmValueMessage', allowResizing: true, minimumWidth: 60 },
+                                { columnKey: 'alarmItemName', allowResizing: true, minimumWidth: 60 },
+                                { columnKey: 'checkTargetValue', allowResizing: true, minimumWidth: 60 },
+                                { columnKey: 'comment', allowResizing: true, minimumWidth: 60 }
                             ]
                         }
                     ],

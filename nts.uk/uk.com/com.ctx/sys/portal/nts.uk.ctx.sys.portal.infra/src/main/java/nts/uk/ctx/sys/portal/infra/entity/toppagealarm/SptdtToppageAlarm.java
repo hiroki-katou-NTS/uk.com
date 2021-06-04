@@ -1,12 +1,18 @@
 package nts.uk.ctx.sys.portal.infra.entity.toppagealarm;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -98,6 +104,10 @@ public class SptdtToppageAlarm extends UkJpaEntity implements Serializable {
 	@Column(name = "CANCEL_ATR")
 	private Integer resolved;
 	
+	@OneToMany(cascade = CascadeType.ALL,targetEntity = SptdtTopAlarmSubSya.class, mappedBy = "sptdtToppageAlarm", orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "SPTDT_TOP_ALARM_SUB_SYA")
+	private List<SptdtTopAlarmSubSya> subSids;
+	
 	@Override
 	protected Object getKey() {
 		return this.pk;
@@ -116,6 +126,7 @@ public class SptdtToppageAlarm extends UkJpaEntity implements Serializable {
 				.readDateTime(Optional.ofNullable(this.readDateTime))
 				.patternCode(Optional.ofNullable(new AlarmListPatternCode(this.patternCode)))
 				.notificationId(Optional.ofNullable(new NotificationId(this.notificationId)))
+				.subSids(this.subSidsToListString())
 				.build();
 	}
 	
@@ -136,7 +147,21 @@ public class SptdtToppageAlarm extends UkJpaEntity implements Serializable {
 				.linkUrl(domain.getLinkUrl().map(LinkURL::v).orElse(null))
 				.readDateTime(domain.getReadDateTime().orElse(null))
 				.resolved(domain.getIsResolved() ? 1 : 0)
+				.subSids(subSidsToEntity(domain.getCid(), domain.getDisplaySId(), domain.getSubSids()))
 				.build();
 	}
-
+	
+	public static List<SptdtTopAlarmSubSya> subSidsToEntity(String cid, String dispSid, List<String> subSids) {
+		return subSids.stream().map(sid -> {
+			SptdtTopAlarmSubSya entity = new SptdtTopAlarmSubSya();
+			entity.toEntity(cid, dispSid, sid);
+			return entity;
+		}).collect(Collectors.toList());
+	}
+	
+	public List<String> subSidsToListString() {
+		return this.subSids.stream()
+				.map(item -> item.getPk().getSubSid())
+				.collect(Collectors.toList());
+	}
 }

@@ -109,7 +109,7 @@ module nts.uk.ui.ktg004.a {
             const { currentOrNextMonth } = params || { currentOrNextMonth: 1 };
 
             vm.$blockui('invisibleView')
-                .then(() => vm.$ajax("at", KTG004_API.GET_DATA, { topPageYearMonthEnum: currentOrNextMonth }))
+                .then(() => vm.$ajax("at", KTG004_API.GET_DATA, { currentOrNextMonth: currentOrNextMonth }))
                 .then(function (data: ResponseData) {
                     const {
                         name,

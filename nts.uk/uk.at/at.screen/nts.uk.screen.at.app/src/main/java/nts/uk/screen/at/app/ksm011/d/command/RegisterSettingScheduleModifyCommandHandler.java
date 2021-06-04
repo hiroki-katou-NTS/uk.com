@@ -68,9 +68,12 @@ public class RegisterSettingScheduleModifyCommandHandler extends CommandHandler<
         /** 6 - 7 - 8 **/
         // create DisplaySettingByWorkplace
         DisplaySettingByWorkplace displaySettingByWorkplace = new DisplaySettingByWorkplace(
-                companyID
-                , EnumAdaptor.valueOf(command.getInitDispMonth(), InitDispMonth.class)
-                , new OneMonth(new DateInMonth(command.getEndDay(), EnumAdaptor.valueOf(command.getEndDay(), ClosureDateType.class) == ClosureDateType.LASTDAY)));
+                companyID,
+                EnumAdaptor.valueOf(command.getInitDispMonth(), InitDispMonth.class),
+                new OneMonth(new DateInMonth(
+                        command.getEndDay(),
+                        command.getEndDay() == ClosureDateType.LASTDAY.value
+                )));
 
         // get Optional<DisplaySettingByWorkplace>
         Optional<DisplaySettingByWorkplace> displaySettingByWkp = displaySettingByWkpRepo.get(companyID);
@@ -82,12 +85,15 @@ public class RegisterSettingScheduleModifyCommandHandler extends CommandHandler<
 
         /** 9 - 10 - 11 - 12 **/
         List<PersonInforDisplayControl> listConditionDisplayControl = command.getConditionDisplayControls().stream()
-                .map(x -> new PersonInforDisplayControl(EnumAdaptor.valueOf(x, ConditionATRWorkSchedule.class), NotUseAtr.USE)).collect(Collectors.toList());
+                .map(x -> new PersonInforDisplayControl(
+                        EnumAdaptor.valueOf(x, ConditionATRWorkSchedule.class),
+                        NotUseAtr.USE
+                )).collect(Collectors.toList());
 
         DisplayControlPersonalCondition displayCtrlPersonalCondition = DisplayControlPersonalCondition.get(
-                companyID
-                , listConditionDisplayControl
-                , Optional.empty()
+                companyID,
+                listConditionDisplayControl,
+                Optional.empty()
         );
 
         Optional<DisplayControlPersonalCondition> displayCtrlPersonal = displayCtrlPersonalConditionRepo.get(companyID);

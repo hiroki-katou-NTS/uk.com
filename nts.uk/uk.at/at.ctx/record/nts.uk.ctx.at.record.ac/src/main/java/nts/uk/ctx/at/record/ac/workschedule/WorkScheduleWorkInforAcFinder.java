@@ -78,7 +78,9 @@ public class WorkScheduleWorkInforAcFinder implements WorkScheduleWorkInforAdapt
 		if (data.getOptAttendanceTime().isPresent()) {
 			ActualWorkingTimeOfDailyImport actualWorkingTimeOfDaily = ActualWorkingTimeOfDailyImport.builder()
 					.totalWorkingTime(TotalWorkingTimeImport.builder()
-							.actualTime(data.getOptAttendanceTime().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime()).build())
+							.actualTime(data.getOptAttendanceTime().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime())
+							.workTimes(data.getOptAttendanceTime().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getWorkTimes())
+							.build())
 					.build();
 			attendanceImport = AttendanceTimeOfDailyAttendanceImport.builder()
 					.actualWorkingTimeOfDaily(actualWorkingTimeOfDaily)

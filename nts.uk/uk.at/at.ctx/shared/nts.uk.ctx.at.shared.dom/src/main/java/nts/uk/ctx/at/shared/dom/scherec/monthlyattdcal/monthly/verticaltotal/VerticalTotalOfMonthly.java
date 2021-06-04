@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 期間別の縦計
@@ -204,9 +205,11 @@ public class VerticalTotalOfMonthly implements Serializable{
 			// 勤務時間集計
 			this.workTime.aggregate(require, employeeId, procYmd, workType, attendanceTimeOfDaily);
 			
-			// 勤務時刻集計
-			this.workClock.aggregate(workType, pcLogonInfoOpt, attendanceTimeOfDaily, timeLeavingOfDaily,
-					predTimeSetForCalc, anyItemValueOpt);
+			if (AppContexts.optionLicense().customize().ootsuka()) {
+				// 勤務時刻集計
+				this.workClock.aggregate(workType, pcLogonInfoOpt, attendanceTimeOfDaily, timeLeavingOfDaily,
+						predTimeSetForCalc, anyItemValueOpt);
+			}
 			
 			procYmd = procYmd.addDays(1);
 		}

@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.ot.frame;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWorkEnum;
 
 @Getter
 @Setter
@@ -38,7 +39,7 @@ public class OvertimeWorkFrame extends AggregateRoot{
 	
 	/** The role. */
 	// 役割
-	private RoleOvertimeWork role;
+	private RoleOvertimeWorkEnum role;
 	
 	/** The transfer atr. */
 	// 代休振替対象
