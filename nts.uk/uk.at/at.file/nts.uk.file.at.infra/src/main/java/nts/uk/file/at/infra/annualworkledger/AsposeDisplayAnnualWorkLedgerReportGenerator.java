@@ -83,7 +83,7 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
         pageSetup.setHeaderMarginInch(0.8);
         pageSetup.setCenterHorizontally(true);
         pageSetup.setHeader(0, "&9&\"ＭＳ フォントサイズ\"" + companyName);
-        pageSetup.setHeader(1, "&16&\"ＭＳ フォントサイズ\""
+        pageSetup.setHeader(1, "&16&\"ＭＳ フォントサイズ,Bold\""
                 + dataSource.getOutputSetting().getName());
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
