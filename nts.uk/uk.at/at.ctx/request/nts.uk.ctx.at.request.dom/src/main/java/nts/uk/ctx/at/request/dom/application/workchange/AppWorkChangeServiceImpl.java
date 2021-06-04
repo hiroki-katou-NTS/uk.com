@@ -283,6 +283,11 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 
 	@Override
 	public void checkRegisterWorkChange(Application application, AppWorkChange appWorkChange) {
+		// 勤務種類、就業時間帯チェックのメッセージを表示
+		detailBeforeUpdate.displayWorkingHourCheck(
+						AppContexts.user().companyId(),
+						appWorkChange.getOpWorkTypeCD().map(x -> x.v()).orElse(null),
+						appWorkChange.getOpWorkTimeCD().map(x -> x.v()).orElse(null));
 		BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
 		// アルゴリズム「勤務変更申請就業時間チェックの内容」を実行する
 		List<String> errorLst = this.detailWorkHoursCheck(application, appWorkChange);
