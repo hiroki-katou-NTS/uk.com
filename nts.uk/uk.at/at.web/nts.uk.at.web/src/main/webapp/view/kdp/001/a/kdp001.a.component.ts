@@ -716,7 +716,7 @@ module nts.uk.ui.kdp001.a {
                         if (dailyAttdErrorInfos && dailyAttdErrorInfos.length) {
                             vm.$window
                                 .shared('KDP010_2T', response)
-                                .then(() => vm.$window.modal('/view/kdp/002/t/index.xhtml'))
+                                .then(() => vm.$window.modal('at','/view/kdp/002/t/index.xhtml'))
                                 .then(() => vm.$window.shared('KDP010_T'))
                                 .then(({ isClose, errorDate, btn }) => {
                                     if (!isClose && errorDate) {
