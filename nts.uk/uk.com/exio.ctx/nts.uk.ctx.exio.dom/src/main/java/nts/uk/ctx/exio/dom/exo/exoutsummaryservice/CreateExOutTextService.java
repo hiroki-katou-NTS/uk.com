@@ -31,19 +31,6 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.StringLength;
-import nts.uk.ctx.exio.dom.dataformat.value.DataFormatCharacterDigit;
-import nts.uk.ctx.exio.dom.dataformat.value.DataFormatDecimalDigit;
-import nts.uk.ctx.exio.dom.dataformat.value.DataFormatFixedValueOperation;
-import nts.uk.ctx.exio.dom.dataformat.value.DataTypeFixedValue;
-import nts.uk.ctx.exio.dom.dataformat.value.DecimalDivision;
-import nts.uk.ctx.exio.dom.dataformat.value.DecimalPointClassification;
-import nts.uk.ctx.exio.dom.dataformat.value.DecimalSelection;
-import nts.uk.ctx.exio.dom.dataformat.value.DelimiterSetting;
-import nts.uk.ctx.exio.dom.dataformat.value.EditSpace;
-import nts.uk.ctx.exio.dom.dataformat.value.FixedValueOperationSymbol;
-import nts.uk.ctx.exio.dom.dataformat.value.HourMinuteClassification;
-import nts.uk.ctx.exio.dom.dataformat.value.PreviousDayOutputMethod;
-import nts.uk.ctx.exio.dom.dataformat.value.Rounding;
 import nts.uk.ctx.exio.dom.exo.adapter.bs.employee.PersonInfoAdapter;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.category.Association;
@@ -73,16 +60,29 @@ import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.NumberDataFmSetting;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.TimeDataFmSetting;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.AwDataFormatSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.ChacDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatCharacterDigit;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatDecimalDigit;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatFixedValueOperation;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatIntegerDigit;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatNullReplacement;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatSetting;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatSettingRepository;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DataTypeFixedValue;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DateFormatSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.DateOutputFormat;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DecimalDivision;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DecimalPointClassification;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DecimalSelection;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.DelimiterSetting;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.EditSpace;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.FixedLengthEditingMethod;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.FixedValueOperationSymbol;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.HourMinuteClassification;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.InTimeDataFmSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.NextDayOutputMethod;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.NumberDataFmSet;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.PreviousDayOutputMethod;
+import nts.uk.ctx.exio.dom.exo.dataformat.init.Rounding;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSet;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLog;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLogRepository;
@@ -1200,7 +1200,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		Optional<DataFormatIntegerDigit> fixedLengthIntegerDigit = Optional.empty();
 		FixedLengthEditingMethod fixedLengthEditingMethod = FixedLengthEditingMethod.BEFORE_ZERO;
 		Optional<DataFormatDecimalDigit> decimalDigit = Optional.empty();
-		DecimalPointClassification decimalPointClassification = DecimalPointClassification.OUTPUT_DECIMAL_POINT;
+		DecimalPointClassification decimalPointClassification = DecimalPointClassification.OUT_PUT;
 		Rounding decimalFraction = Rounding.TRUNCATION;
 		DecimalDivision formatSelection = DecimalDivision.DECIMAL;
 
@@ -1370,7 +1370,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				&& setting.getDecimalDigit().isPresent()) ? setting.getDecimalDigit().get().v() : 0;
 				decimaValue = roundDecimal(decimaValue, precision, setting.getDecimalFraction());
 
-		targetValue = (setting.getDecimalPointClassification() == DecimalPointClassification.OUTPUT_DECIMAL_POINT)
+		targetValue = (setting.getDecimalPointClassification() == DecimalPointClassification.OUT_PUT)
 				? decimaValue.toString() : decimaValue.toString().replace(DOT, "");
 
 		if ((setting.getFixedLengthOutput() == NotUseAtr.USE) && setting.getFixedLengthIntegerDigit().isPresent()

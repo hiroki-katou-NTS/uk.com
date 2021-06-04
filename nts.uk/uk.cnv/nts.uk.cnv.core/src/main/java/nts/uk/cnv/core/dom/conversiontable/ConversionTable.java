@@ -3,6 +3,7 @@ package nts.uk.cnv.core.dom.conversiontable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -61,6 +62,22 @@ public class ConversionTable {
 		}
 
 		return result;
+	}
+	
+	public ConversionTable filterColumns(List<String> columns) {
+		val newList = this.conversionMap.stream()
+			.filter(oneColumn -> columns.contains(oneColumn.getTargetColumn()))
+			.collect(Collectors.toList());
+		
+		return new ConversionTable(
+				this.spec,
+				this.targetTableName,
+				this.dateColumnName,
+				this.startDateColumnName,
+				this.endDateColumnName,
+				this.whereList,
+				newList
+			);
 	}
 
 	private void addPeriodCondition(DatabaseSpec spec, List<WhereSentence> newWhereList) {

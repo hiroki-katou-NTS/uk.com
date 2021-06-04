@@ -1,5 +1,10 @@
 package nts.uk.ctx.exio.dom.exi.dataformat;
 
+/**
+ * 
+ * @author HungTT 項目型
+ *
+ */
 public enum ItemType {
 	/**
 	 * 0: 数値型

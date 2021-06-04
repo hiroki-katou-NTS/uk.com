@@ -11,10 +11,11 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptMode;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionCode;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionName;
+import nts.uk.ctx.exio.dom.exi.condset.AcceptanceLineNumber;
 import nts.uk.ctx.exio.dom.exi.condset.DeleteExistDataMethod;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.SystemType;
-import nts.uk.ctx.exio.dom.input.csvimport.CsvRecordImpoter;
+import nts.uk.ctx.exio.dom.exi.csvimport.ExiCharset;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -94,11 +95,10 @@ public class StdAcceptCondSetCommand {
 				Optional.ofNullable(this.getSystemType() == null ? null : EnumAdaptor.valueOf(this.getSystemType(), SystemType.class)),
 				Optional.ofNullable(this.getCategoryId()),
 				EnumAdaptor.valueOf(this.getDeleteExistData(), NotUseAtr.class),
-				new CsvRecordImpoter(
-						csvDataItemLineNumber,
-						csvDataStartLine,
-						characterCode
-					),
+				Optional.ofNullable(this.getCsvDataItemLineNumber() == null ? null : new AcceptanceLineNumber(this.getCsvDataItemLineNumber())),
+				Optional.ofNullable(this.getCsvDataStartLine() == null ? null : new AcceptanceLineNumber(this.getCsvDataStartLine())),
+				Optional.ofNullable(this.getCharacterCode() == null ? null 
+						: EnumAdaptor.valueOf(this.getCharacterCode(),ExiCharset.class)),
 				NotUseAtr.NOT_USE,
 				Optional.ofNullable(this.getDeleteExistDataMethod() == null ? null
 						: EnumAdaptor.valueOf(this.getDeleteExistDataMethod(), DeleteExistDataMethod.class)),

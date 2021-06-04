@@ -1,8 +1,8 @@
 package nts.uk.ctx.exio.app.command.exi.dataformat;
 
 import lombok.Value;
-import nts.uk.ctx.exio.dom.input.revise.ItemType;
-import nts.uk.ctx.exio.dom.input.revise.dataformat.ChrDataFormatSet;
+import nts.uk.ctx.exio.dom.exi.dataformat.ChrDataFormatSet;
+import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 
 @Value
 public class ChrDataFormatSetCommand {
@@ -53,7 +53,7 @@ public class ChrDataFormatSetCommand {
 	private Integer endDigit;
 
 	public ChrDataFormatSet toDomain() {
-		return new ChrDataFormatSet(ItemType.STRING.value, this.codeEditing, this.fixedValue,
+		return new ChrDataFormatSet(ItemType.CHARACTER.value, this.codeEditing, this.fixedValue,
 				this.effectiveDigitLength, this.codeConvertCode, this.codeEditingMethod, this.codeEditDigit,
 				this.fixedVal, this.startDigit, this.endDigit);
 	}

@@ -12,9 +12,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.dom.exi.dataformat.ChrDataFormatSet;
+import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
-import nts.uk.ctx.exio.dom.input.revise.ItemType;
-import nts.uk.ctx.exio.dom.input.revise.dataformat.ChrDataFormatSet;
 import nts.uk.ctx.exio.infra.entity.exi.item.OiomtExAcItem;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -140,7 +140,7 @@ public class OiomtExAcFmChac extends ContractUkJpaEntity implements Serializable
 	}
 
 	public ChrDataFormatSet toDomain() {
-		return new ChrDataFormatSet(ItemType.STRING.value, this.cdEditing, this.fixedValue,
+		return new ChrDataFormatSet(ItemType.CHARACTER.value, this.cdEditing, this.fixedValue,
 				this.effectiveDigitLength, this.cdConvertCd, this.cdEditMethod, this.cdEditDigit, this.fixedVal,
 				this.startDigit, this.endDigit);
 	}

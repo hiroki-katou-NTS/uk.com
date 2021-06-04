@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.dom.input.canonicalize;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 
 /**
  * 受入モード
@@ -57,5 +58,11 @@ public enum ImportingMode {
 				|| this == UPDATE_ONLY && !isExisting;
 		
 		return !notImportable;
+	}
+	
+	public ConversionCodeType getType() {
+		return (this == UPDATE_ONLY)
+				? ConversionCodeType.UPDATE
+				: ConversionCodeType.INSERT;
 	}
 }

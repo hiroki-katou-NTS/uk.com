@@ -11,9 +11,9 @@ import nts.uk.ctx.exio.app.command.exi.dataformat.InsTimeDatFmSetCommand;
 import nts.uk.ctx.exio.app.command.exi.dataformat.NumDataFormatSetCommand;
 import nts.uk.ctx.exio.app.command.exi.dataformat.TimeDatFmSetCommand;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionCode;
+import nts.uk.ctx.exio.dom.exi.dataformat.DataFormatSetting;
+import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
-import nts.uk.ctx.exio.dom.input.revise.ItemType;
-import nts.uk.ctx.exio.dom.input.revise.dataformat.DataFormatSetting;
 
 @Value
 public class StdAcceptItemCommand {
@@ -67,11 +67,10 @@ public class StdAcceptItemCommand {
 		DataFormatSetting dataFormatSet = null;
 		ItemType itemType = ItemType.values()[this.itemType];
 		switch (itemType) {
-		case INT:
-		case REAL:
+		case NUMERIC:
 			dataFormatSet = this.numberFormatSetting == null ? null : this.numberFormatSetting.toDomain();
 			break;
-		case STRING:
+		case CHARACTER:
 			dataFormatSet = this.charFormatSetting == null ? null : this.charFormatSetting.toDomain();
 			break;
 		case DATE:
@@ -84,17 +83,16 @@ public class StdAcceptItemCommand {
 			dataFormatSet = this.timeFormatSetting == null ? null : this.timeFormatSetting.toDomain();
 			break;
 		}
-//		StdAcceptItem domain = new StdAcceptItem(companyId,
-//				new AcceptanceConditionCode(this.conditionSettingCode),
-//				this.acceptItemNumber,
-//				Optional.ofNullable(this.csvItemNumber),
-//				Optional.ofNullable(this.csvItemName),
-//				EnumAdaptor.valueOf(this.itemType, ItemType.class),
-//				this.categoryItemNo,
-//				Optional.ofNullable(this.screenConditionSetting == null ? null : this.screenConditionSetting.toDomain()),
-//				Optional.ofNullable(dataFormatSet));
-		
-		return null;
+		StdAcceptItem domain = new StdAcceptItem(companyId,
+				new AcceptanceConditionCode(this.conditionSettingCode),
+				this.acceptItemNumber,
+				Optional.ofNullable(this.csvItemNumber),
+				Optional.ofNullable(this.csvItemName),
+				EnumAdaptor.valueOf(this.itemType, ItemType.class),
+				this.categoryItemNo,
+				Optional.ofNullable(this.screenConditionSetting == null ? null : this.screenConditionSetting.toDomain()),
+				Optional.ofNullable(dataFormatSet));
+		return domain;
 	}
 
 }

@@ -7,19 +7,19 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.exio.app.command.exi.csvimport.CsvImportDataCommand;
-import nts.uk.ctx.exio.app.command.exi.csvimport.AsyncCsvExecuteImportDataCommandHandler;
 import nts.uk.ctx.exio.app.command.exi.csvimport.CsvImportExecutionRespone;
-import nts.uk.ctx.exio.app.command.exi.csvimport.AsyncCsvCheckImportDataCommandHandler;
+import nts.uk.ctx.exio.app.command.exi.csvimport.SyncCsvCheckImportDataCommandHandler;
+import nts.uk.ctx.exio.app.command.exi.csvimport.SyncCsvExecuteImportDataCommandHandler;
 
 @Path("exio/exi/csvimport")
 @Produces("application/json")
 public class AsyncCsvDataImportService extends WebService {
 
 	@Inject
-	AsyncCsvCheckImportDataCommandHandler checkImportHandler;
+	SyncCsvCheckImportDataCommandHandler checkImportHandler;
 
 	@Inject
-	AsyncCsvExecuteImportDataCommandHandler excuteImportHandler;
+	SyncCsvExecuteImportDataCommandHandler excuteImportHandler;
 
 	@POST
 	@Path("check")

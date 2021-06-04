@@ -6,7 +6,6 @@ import java.util.Optional;
 import lombok.val;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceLineNumber;
-import nts.uk.ctx.exio.dom.input.csvimport.CsvItem;
 import nts.uk.shr.com.i18n.TextResource;
 
 public class ExacErrorLogManager {
@@ -21,24 +20,24 @@ public class ExacErrorLogManager {
     	this.externalProcessId = externalProcessId;
     }
 
-    public void addLog(CsvItem csvItem, String editedValue, int lineNo, String errorId, ErrorOccurrenceIndicator errorDiv) {
+    public void addLog(String csvItem, String editedValue, int lineNo, String errorId, ErrorOccurrenceIndicator errorDiv) {
     	this.lastLogSeqNumber+=1;
         val log = new ExacErrorLog(
         		lastLogSeqNumber,
     			this.cid,
     			this.externalProcessId,
-    			Optional.ofNullable(csvItem.getCsvItemName()),
+    			Optional.ofNullable(""),
     			Optional.ofNullable(editedValue),
     			Optional.ofNullable(TextResource.localize(errorId)),
     			new AcceptanceLineNumber(lineNo),
 				GeneralDateTime.now(),
-				Optional.ofNullable(csvItem.getItemName()),
+				Optional.ofNullable(""),
 				errorDiv
     		);
     	this.logs.add(log);
     }
 
-	public void addLogByTableName(CsvItem csvItem, String editedValue, int lineNo, String errorId, ErrorOccurrenceIndicator errorDiv) {
+	public void addLogByTableName(String csvItem, String editedValue, int lineNo, String errorId, ErrorOccurrenceIndicator errorDiv) {
     	this.lastLogSeqNumber+=1;
         val log = new ExacErrorLog(
         		lastLogSeqNumber,
@@ -49,7 +48,7 @@ public class ExacErrorLogManager {
     			Optional.ofNullable(TextResource.localize(errorId)),
     			new AcceptanceLineNumber(lineNo),
 				GeneralDateTime.now(),
-				Optional.ofNullable(csvItem.getCsvItemName()),
+				Optional.ofNullable(""),
 				errorDiv
     		);
     	this.logs.add(log);

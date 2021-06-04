@@ -19,38 +19,38 @@ public interface ComparableValidation <T extends Comparable<T>> extends Validati
 		switch (getCondition()) {
 			case NOT_COND:
 				return true;
-			case COND1_LESS_VAL:
+			case COND1_LESS_TARGET:
 				return getValue1().get().compareTo(targetValue) < 0 ;
 				
-			case COND1_LESS_EQUAL_VAL:
+			case COND1_LESS_EQUAL_TARGET:
 				return getValue1().get().compareTo(targetValue) <= 0 ;		
 				
-			case VAL_LESS_COND1:
+			case TARGET_LESS_COND1:
 				return targetValue.compareTo(getValue1().get()) < 0 ;
 				
-			case VAL_LESS_EQUAL_COND1:
+			case TARGET_LESS_EQUAL_COND1:
 				return targetValue.compareTo(getValue1().get()) <= 0 ;
 				
-			case COND1_LESS_VAL_AND_VAL_LESS_COND2:
+			case TARGET_BETWEEN_OPEN_COND:
 				return (getValue1().get().compareTo(targetValue) < 0)
 					&&  (targetValue.compareTo(getValue2().get()) < 0);
 				
-			case COND1_LESS_EQUAL_VAL_AND_VAL_LESS_EQUAL_COND2:
+			case TARGET_BETWEEN_CLOSE_COND:
 				return (getValue1().get().compareTo(targetValue) <= 0)
 					&&  (targetValue.compareTo(getValue2().get()) <= 0);
 				
-			case VAL_LESS_COND1_OR_COND2_LESS_VAL:
-				return (getValue1().get().compareTo(targetValue) < 0)
+			case TARGET_OUTSIDE_OPEN_COND:
+				return (targetValue.compareTo(getValue1().get()) < 0)
 					  ||  (getValue2().get().compareTo(targetValue) < 0);
 				
-			case VAL_LESS_EQUAL_COND1_OR_COND2_LESS_EQUAL_VAL:
-				return (getValue1().get().compareTo(targetValue) <= 0)
+			case TARGET_OUTSIDE_CLOSED_COND:
+				return (targetValue.compareTo(getValue1().get()) <= 0)
 					  ||  (getValue2().get().compareTo(targetValue) <= 0);
 				
-			case EQUAL:
+			case TARGET_EQUAL_COND1:
 				return (getValue1().get().compareTo(targetValue) == 0);
 				
-			case NOT_EQUAL:
+			case TARGET_NOT_EQUAL_COND1:
 				return (getValue1().get().compareTo(targetValue) != 0);			
 				
 			default:

@@ -7,13 +7,13 @@ import nts.uk.ctx.exio.app.find.exi.dataformat.DateDataFormSetDto;
 import nts.uk.ctx.exio.app.find.exi.dataformat.InsTimeDatFmSetDto;
 import nts.uk.ctx.exio.app.find.exi.dataformat.NumDataFormatSetDto;
 import nts.uk.ctx.exio.app.find.exi.dataformat.TimeDataFmSetDto;
+import nts.uk.ctx.exio.dom.exi.dataformat.ChrDataFormatSet;
+import nts.uk.ctx.exio.dom.exi.dataformat.DateDataFormSet;
+import nts.uk.ctx.exio.dom.exi.dataformat.InsTimeDatFmSet;
 import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
+import nts.uk.ctx.exio.dom.exi.dataformat.NumDataFormatSet;
+import nts.uk.ctx.exio.dom.exi.dataformat.TimeDataFormatSet;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
-import nts.uk.ctx.exio.dom.input.revise.dataformat.ChrDataFormatSet;
-import nts.uk.ctx.exio.dom.input.revise.dataformat.DateDataFormSet;
-import nts.uk.ctx.exio.dom.input.revise.dataformat.InsTimeDatFmSet;
-import nts.uk.ctx.exio.dom.input.revise.dataformat.NumDataFormatSet;
-import nts.uk.ctx.exio.dom.input.revise.dataformat.TimeDataFormatSet;
 
 /**
  * 受入項目（定型）

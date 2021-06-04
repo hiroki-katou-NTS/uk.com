@@ -3,10 +3,6 @@ package nts.uk.ctx.exio.dom.input.revise.type.integer;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import nts.uk.ctx.exio.dom.input.DataItem;
-import nts.uk.ctx.exio.dom.input.csvimport.CsvItem;
-import nts.uk.ctx.exio.dom.input.revise.ItemType;
 import nts.uk.ctx.exio.dom.input.revise.RevisedValueResult;
 import nts.uk.ctx.exio.dom.input.revise.RevisingValueType;
 import nts.uk.ctx.exio.dom.input.revise.type.RangeOfValue;
@@ -17,12 +13,6 @@ import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.CodeConvertCode;
  */
 @AllArgsConstructor
 public class IntegerRevise implements RevisingValueType {
-	
-	/** 固定値として受け入れる */
-	private boolean useFixedValue;
-	
-	/** 固定値の値 */
-	private Optional<FixedIntegerValue> fixedValue;
 	
 	/** 値の有効範囲を指定する */
 	private boolean useSpecifyRange;
@@ -36,23 +26,14 @@ public class IntegerRevise implements RevisingValueType {
 	
 
 	@Override
-	public RevisedValueResult revise(CsvItem target) {
-		if(target.getType() != ItemType.INT) {
-			throw new RuntimeException("編集しようとしている項目は整数型ではありません。");
-		}
+	public RevisedValueResult revise(String target) {
 		
 		int result;
 		try {
-			result = Integer.parseInt(target.getValue());
+			result = Integer.parseInt(target);
 		}
 		catch(Exception e){
 			return RevisedValueResult.failed("Msg_1017");
-		}
-		
-		if(useFixedValue) {
-			// 固定値を使用する場合
-			result = this.fixedValue.get().v().intValue();
-			return RevisedValueResult.succeeded(DataItem.of(target.getItemNo(), result));
 		}
 		
 		if(useSpecifyRange) {
@@ -64,6 +45,6 @@ public class IntegerRevise implements RevisingValueType {
 			// コード変換を実施する場合
 			// TODO 既存処理で未対応
 		}
-		return RevisedValueResult.succeeded(DataItem.of(target.getItemNo(), result));
+		return RevisedValueResult.succeeded(result);
 	}
 }

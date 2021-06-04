@@ -13,7 +13,7 @@ import nts.arc.error.BusinessException;
 import nts.gul.csv.CSVParsedResult;
 import nts.gul.csv.NtsCsvReader;
 import nts.gul.csv.NtsCsvRecord;
-import nts.uk.ctx.exio.dom.input.setting.source.ExternalImportCharset;
+import nts.uk.ctx.exio.dom.exi.csvimport.ExiCharset;
 
 public class FileUtil {
 	
@@ -77,7 +77,7 @@ public class FileUtil {
 	}
 	
 	private static Charset getCharset(Integer valueEncoding) {
-		ExternalImportCharset encoding = ExternalImportCharset.valueOf(valueEncoding);
+		ExiCharset encoding = ExiCharset.valueOf(valueEncoding);
         switch (encoding) {
         case Shift_JIS:
             return Charset.forName("Shift_JIS");

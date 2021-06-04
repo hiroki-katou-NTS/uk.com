@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvertRepository;
+import nts.uk.ctx.exio.dom.exi.codeconvert.AcceptCdConvertRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -17,7 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class AcceptCdConvertFinder {
 
 	@Inject
-	private ExternalImportCodeConvertRepository finder;
+	private AcceptCdConvertRepository finder;
 
 	/**
 	 * Get accept code by companyId
@@ -26,7 +26,7 @@ public class AcceptCdConvertFinder {
 	 */
 	public List<AcceptCdConvertDto> getAcceptCdConvertByCompanyId() {
 		String companyId = AppContexts.user().companyId();
-		return finder.get(companyId).stream().map(item -> AcceptCdConvertDto.fromDomain(item))
+		return finder.getAcceptCdConvertByCompanyId(companyId).stream().map(item -> AcceptCdConvertDto.fromDomain(item))
 				.collect(Collectors.toList());
 	}
 
@@ -38,7 +38,7 @@ public class AcceptCdConvertFinder {
 	 */
 	public AcceptCdConvertDto getAcceptCdConvertById(String convertCd) {
 		String companyId = AppContexts.user().companyId();
-		Optional<AcceptCdConvertDto> acceptCode = this.finder.get(companyId, convertCd)
+		Optional<AcceptCdConvertDto> acceptCode = this.finder.getAcceptCdConvertById(companyId, convertCd)
 				.map(item -> AcceptCdConvertDto.fromDomain(item));
 		if (acceptCode.isPresent()) {
 			return acceptCode.get();
