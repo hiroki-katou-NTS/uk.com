@@ -1062,7 +1062,7 @@ module nts.uk.at.kdp003.a {
 									.then((dataStorage: StorageData) => {
 										if (dataStorage.WKPID.length > 1) {
 											if (btn.supportWplset == 1) {
-												vm.$window.modal('at', DIALOG.M, { screen: 'KDP003' })
+												vm.$window.modal('at', DIALOG.M, { screen: 'KDP003', employeeId: employeeId })
 													.then((data: string) => {
 														if (data) {
 															if (data.notification !== null) {

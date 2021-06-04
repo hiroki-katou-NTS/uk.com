@@ -569,7 +569,7 @@ module nts.uk.at.view.kdp005.a {
 
 						let btnType = checkType(button.changeClockArt, button.changeCalArt, button.setPreClockArt, button.changeHalfDay, button.btnReservationArt);
 						if (dataStorage.selectedWP.length > 1 && self.supportUse() === true && _.includes([14, 15, 16, 17, 18], btnType)) {
-							vm.$window.modal('at', DIALOG.M, { screen: 'KDP005' })
+							vm.$window.modal('at', DIALOG.M, { screen: 'KDP005', employeeId: employeeId })
 								.then((result: string) => {
 
 									if (result) {
