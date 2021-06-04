@@ -192,6 +192,11 @@ public class RequestDispatcher {
 		public void deleteEmpTerComAbPast(ContractCode contractCode, EmpInfoTerminalCode code, GeneralDate dateDelete) {
 			empInfoTerComAbPeriodRepo.deletePast(contractCode, code, dateDelete);
 		}
+
+		@Override
+		public void insertEmpTerStatus(EmpInfoTerminalComStatus empInfoTerComStatus) {
+			empInfoTerminalComStatusRepo.insert(empInfoTerComStatus);
+		}
 		
 	}
 }
