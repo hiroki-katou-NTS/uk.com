@@ -13,7 +13,7 @@ import nts.uk.ctx.exio.dom.input.validation.condition.user.CompareValueCondition
 import nts.uk.ctx.exio.dom.input.validation.condition.user.type.numeric.integer.ImportingConditionInteger;
 import nts.uk.ctx.exio.dom.input.validation.condition.user.type.numeric.integer.IntegerCondition;
 
-public class ValueLessEqualCond1orCond2LessEqualValue {
+public class ValueOutsideCloseCond {
 
 	@Test
 	public void success_Value1_LessThan_Condition1() {
@@ -22,7 +22,7 @@ public class ValueLessEqualCond1orCond2LessEqualValue {
 		Long validateValue1 = Long.valueOf(-1);
 		
 		Validation validation = new IntegerCondition(
-				CompareValueCondition.VAL_LESS_EQUAL_COND1_OR_COND2_LESS_EQUAL_VAL,
+				CompareValueCondition.TARGET_OUTSIDE_CLOSED_COND,
 				Optional.of(new ImportingConditionInteger(conditionValue1)),
 				Optional.of(new ImportingConditionInteger(conditionValue2)));
 		
@@ -38,7 +38,7 @@ public class ValueLessEqualCond1orCond2LessEqualValue {
 		Long validateValue1 = Long.valueOf(0);
 		
 		Validation validation = new IntegerCondition(
-				CompareValueCondition.VAL_LESS_EQUAL_COND1_OR_COND2_LESS_EQUAL_VAL,
+				CompareValueCondition.TARGET_OUTSIDE_CLOSED_COND,
 				Optional.of(new ImportingConditionInteger(conditionValue1)),
 				Optional.of(new ImportingConditionInteger(conditionValue2)));
 		
@@ -54,7 +54,7 @@ public class ValueLessEqualCond1orCond2LessEqualValue {
 		Long validateValue1 = Long.valueOf(1);
 		
 		Validation validation = new IntegerCondition(
-				CompareValueCondition.VAL_LESS_EQUAL_COND1_OR_COND2_LESS_EQUAL_VAL,
+				CompareValueCondition.TARGET_OUTSIDE_CLOSED_COND,
 				Optional.of(new ImportingConditionInteger(conditionValue1)),
 				Optional.of(new ImportingConditionInteger(conditionValue2)));
 		
@@ -70,7 +70,7 @@ public class ValueLessEqualCond1orCond2LessEqualValue {
 		Long validateValue1 = Long.valueOf(49);
 		
 		Validation validation = new IntegerCondition(
-				CompareValueCondition.VAL_LESS_EQUAL_COND1_OR_COND2_LESS_EQUAL_VAL,
+				CompareValueCondition.TARGET_OUTSIDE_CLOSED_COND,
 				Optional.of(new ImportingConditionInteger(conditionValue1)),
 				Optional.of(new ImportingConditionInteger(conditionValue2)));
 		
@@ -86,7 +86,7 @@ public class ValueLessEqualCond1orCond2LessEqualValue {
 		Long validateValue1 = Long.valueOf(50);
 		
 		Validation validation = new IntegerCondition(
-				CompareValueCondition.VAL_LESS_EQUAL_COND1_OR_COND2_LESS_EQUAL_VAL,
+				CompareValueCondition.TARGET_OUTSIDE_CLOSED_COND,
 				Optional.of(new ImportingConditionInteger(conditionValue1)),
 				Optional.of(new ImportingConditionInteger(conditionValue2)));
 		
@@ -102,7 +102,7 @@ public class ValueLessEqualCond1orCond2LessEqualValue {
 		Long validateValue1 = Long.valueOf(51);
 		
 		Validation validation = new IntegerCondition(
-				CompareValueCondition.VAL_LESS_EQUAL_COND1_OR_COND2_LESS_EQUAL_VAL,
+				CompareValueCondition.TARGET_OUTSIDE_CLOSED_COND,
 				Optional.of(new ImportingConditionInteger(conditionValue1)),
 				Optional.of(new ImportingConditionInteger(conditionValue2)));
 		

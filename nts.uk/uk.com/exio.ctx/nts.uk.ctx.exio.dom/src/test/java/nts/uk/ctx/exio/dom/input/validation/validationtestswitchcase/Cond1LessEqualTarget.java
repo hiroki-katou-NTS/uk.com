@@ -13,7 +13,7 @@ import nts.uk.ctx.exio.dom.input.validation.condition.user.CompareValueCondition
 import nts.uk.ctx.exio.dom.input.validation.condition.user.type.numeric.integer.ImportingConditionInteger;
 import nts.uk.ctx.exio.dom.input.validation.condition.user.type.numeric.integer.IntegerCondition;
 
-public class ConditionLessThanValue1 {
+public class Cond1LessEqualTarget {
 
 	@Test
 	public void failed_Condition_MoreThen_Value1() {
@@ -21,7 +21,7 @@ public class ConditionLessThanValue1 {
 		Long validateValue1 = Long.valueOf(1);
 		
 		Validation validation = new IntegerCondition(
-				CompareValueCondition.COND1_LESS_VAL,
+				CompareValueCondition.COND1_LESS_EQUAL_TARGET,
 				Optional.of(new ImportingConditionInteger(conditionValue)),
 				Optional.of(new ImportingConditionInteger(DUMMY.LONG)));
 		
@@ -29,27 +29,14 @@ public class ConditionLessThanValue1 {
 		
 		assertThat(validation.validate(dummyItem)).isFalse();
 	}
+	
 	@Test
-	public void failed_Condition_Equal_Value1() {
+	public void success_Condition_Equal_Value1() {
 		Long conditionValue = Long.valueOf(50);
 		Long validateValue1 = Long.valueOf(50);
 		
 		Validation validation = new IntegerCondition(
-				CompareValueCondition.COND1_LESS_VAL,
-				Optional.of(new ImportingConditionInteger(conditionValue)),
-				Optional.of(new ImportingConditionInteger(DUMMY.LONG)));
-		
-		DataItem dummyItem = new DataItem(DUMMY.ITEM_NO, validateValue1);
-		
-		assertThat(validation.validate(dummyItem)).isFalse();
-	}		
-	@Test
-	public void success_Condition_LessThen_Value1() {
-		Long conditionValue = Long.valueOf(1);
-		Long validateValue1 = Long.valueOf(50);
-		
-		Validation validation = new IntegerCondition(
-				CompareValueCondition.COND1_LESS_VAL,
+				CompareValueCondition.COND1_LESS_EQUAL_TARGET,
 				Optional.of(new ImportingConditionInteger(conditionValue)),
 				Optional.of(new ImportingConditionInteger(DUMMY.LONG)));
 		
@@ -57,4 +44,20 @@ public class ConditionLessThanValue1 {
 		
 		assertThat(validation.validate(dummyItem)).isTrue();
 	}		
+	
+	@Test
+	public void success_Condition_LessThen_Value1() {
+		Long conditionValue = Long.valueOf(1);
+		Long validateValue1 = Long.valueOf(50);
+		
+		Validation validation = new IntegerCondition(
+				CompareValueCondition.COND1_LESS_EQUAL_TARGET,
+				Optional.of(new ImportingConditionInteger(conditionValue)),
+				Optional.of(new ImportingConditionInteger(DUMMY.LONG)));
+		
+		DataItem dummyItem = new DataItem(DUMMY.ITEM_NO, validateValue1);
+		
+		assertThat(validation.validate(dummyItem)).isTrue();
+	}	
+
 }

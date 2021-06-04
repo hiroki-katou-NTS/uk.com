@@ -13,7 +13,7 @@ import nts.uk.ctx.exio.dom.input.validation.condition.user.CompareValueCondition
 import nts.uk.ctx.exio.dom.input.validation.condition.user.type.numeric.integer.ImportingConditionInteger;
 import nts.uk.ctx.exio.dom.input.validation.condition.user.type.numeric.integer.IntegerCondition;
 
-public class Cond1LessEqualValueandValueLessEqualCond2 {
+public class TargetBetweenCloseCond {
 
 	@Test
 	public void failed_Value1_LessThan_Condition1() {
@@ -22,7 +22,7 @@ public class Cond1LessEqualValueandValueLessEqualCond2 {
 		Long validateValue1 = Long.valueOf(-1);
 		
 		Validation validation = new IntegerCondition(
-				CompareValueCondition.COND1_LESS_EQUAL_VAL_AND_VAL_LESS_EQUAL_COND2,
+				CompareValueCondition.TARGET_BETWEEN_CLOSE_COND,
 				Optional.of(new ImportingConditionInteger(conditionValue1)),
 				Optional.of(new ImportingConditionInteger(conditionValue2)));
 		
@@ -38,7 +38,7 @@ public class Cond1LessEqualValueandValueLessEqualCond2 {
 		Long validateValue1 = Long.valueOf(0);
 		
 		Validation validation = new IntegerCondition(
-				CompareValueCondition.COND1_LESS_EQUAL_VAL_AND_VAL_LESS_EQUAL_COND2,
+				CompareValueCondition.TARGET_BETWEEN_CLOSE_COND,
 				Optional.of(new ImportingConditionInteger(conditionValue1)),
 				Optional.of(new ImportingConditionInteger(conditionValue2)));
 		
@@ -54,7 +54,7 @@ public class Cond1LessEqualValueandValueLessEqualCond2 {
 		Long validateValue1 = Long.valueOf(25);
 		
 		Validation validation = new IntegerCondition(
-				CompareValueCondition.COND1_LESS_EQUAL_VAL_AND_VAL_LESS_EQUAL_COND2,
+				CompareValueCondition.TARGET_BETWEEN_CLOSE_COND,
 				Optional.of(new ImportingConditionInteger(conditionValue1)),
 				Optional.of(new ImportingConditionInteger(conditionValue2)));
 		
@@ -70,7 +70,7 @@ public class Cond1LessEqualValueandValueLessEqualCond2 {
 		Long validateValue1 = Long.valueOf(50);
 		
 		Validation validation = new IntegerCondition(
-				CompareValueCondition.COND1_LESS_EQUAL_VAL_AND_VAL_LESS_EQUAL_COND2,
+				CompareValueCondition.TARGET_BETWEEN_CLOSE_COND,
 				Optional.of(new ImportingConditionInteger(conditionValue1)),
 				Optional.of(new ImportingConditionInteger(conditionValue2)));
 		
@@ -86,7 +86,7 @@ public class Cond1LessEqualValueandValueLessEqualCond2 {
 		Long validateValue1 = Long.valueOf(100);
 		
 		Validation validation = new IntegerCondition(
-				CompareValueCondition.COND1_LESS_EQUAL_VAL_AND_VAL_LESS_EQUAL_COND2,
+				CompareValueCondition.TARGET_BETWEEN_CLOSE_COND,
 				Optional.of(new ImportingConditionInteger(conditionValue1)),
 				Optional.of(new ImportingConditionInteger(conditionValue2)));
 		
