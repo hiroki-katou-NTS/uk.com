@@ -41,9 +41,9 @@
                 data-bind="ntsGridList: {
                     height: 200,
                     dataSource: favoriteList,
-                    primaryKey: 'order',
+                    primaryKey: 'inputDate',
                     columns: columns,
-                    value: selectedFavoriteOrder,
+                    value: selectedFavoriteInputDate,
                     multiple: false
                   }"
                 class=""></table>
@@ -52,7 +52,7 @@
             <div id="grid-up-down"
               data-bind="ntsUpDown: {
                   targetSource: favoriteList,
-                  primaryKey: 'order',
+                  primaryKey: 'inputDate',
                   comId: '#grid-test-single',
                   type: 'grid'
                 }"
