@@ -32,7 +32,7 @@ public class GetListEmpWorkHours {
 	public List<EmpTaskInfoDto> get(Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap) {
 		String companyID = AppContexts.user().companyId();
 		List<EmpTaskInfoDto> dto = new ArrayList<>();
-		List<AllTaskScheduleDetail> all = null;
+		List<AllTaskScheduleDetail> all = new ArrayList<>();
 		// 取得する (勤務予定リスト: 勤務予定リスト): List＜Optional<社員作業情報 dto>＞
 
 		// 1.1[勤務予定.isEmpty]:create()
