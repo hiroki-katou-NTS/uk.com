@@ -9,9 +9,10 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.DeforWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWork;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.DefoAggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
 
 /**
@@ -28,11 +29,11 @@ public class SettingRequiredByDefo {
 	@Setter
 	private LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet;
 	/** 残業枠の役割 */
-	private Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap;
+	private Map<Integer, OvertimeWorkFrame> roleOverTimeFrameMap;
 	/** 休出枠の役割 */
 	private Map<Integer, WorkdayoffFrameRole> roleHolidayWorkFrameMap;
 	/** 自動的に除く残業枠 */
-	private List<RoleOvertimeWork> autoExceptOverTimeFrames;
+	private List<OvertimeWorkFrame> autoExceptOverTimeFrames;
 	/** 自動的に除く休出枠 */
 	private List<Integer> autoExceptHolidayWorkFrames;
 	/** 休暇加算時間設定 */
@@ -43,6 +44,9 @@ public class SettingRequiredByDefo {
 	/** 月間法定労働時間 */
 	@Setter
 	private AttendanceTimeMonth statutoryWorkingTimeMonth;
+	/** 月別実績集計の変形労働集計方法 */
+	@Setter
+	private DefoAggregateMethodOfMonthly defoAggregateMethod;
 
 	/**
 	 * コンストラクタ
@@ -59,5 +63,6 @@ public class SettingRequiredByDefo {
 		this.holidayAdditionMap = new HashMap<>();
 		this.statutoryWorkingTimeMonth = new AttendanceTimeMonth(0);
 		this.statutoryWorkingTimeWeek = new AttendanceTimeMonth(0);
+		this.defoAggregateMethod = new DefoAggregateMethodOfMonthly();
 	}
 }

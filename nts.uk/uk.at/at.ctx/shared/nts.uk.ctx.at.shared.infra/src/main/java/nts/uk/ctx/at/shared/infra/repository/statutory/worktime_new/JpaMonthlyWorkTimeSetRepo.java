@@ -291,7 +291,7 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 		CollectionUtil.split(listSid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			legals.addAll(this.queryProxy().query(SELECT_LEGATIMEMSYA_BY_CID, KshmtLegalTimeMSya.class)
 					.setParameter("cid", cid)
-					.setParameter("", subList)
+					.setParameter("listSid", subList)
 					.getList());
 		});
 		

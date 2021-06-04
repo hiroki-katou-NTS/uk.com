@@ -8,11 +8,11 @@ public enum RoleOvertimeWorkEnum {
 	
 	// 法定内残業
 	/** The ot statutory work. */
-	OT_STATUTORY_WORK(0, "Enum_OvertimeStatutoryWork", "法定内残業"),
+	OT_STATUTORY_WORK(1, "Enum_OvertimeStatutoryWork", "法定内残業"),
 	
 	// 法定外残業
 	/** The out ot statutory. */
-	OUT_OT_STATUTORY(1,"Enum_OutOvertimeStatutory", "法定外残業"),
+	OUT_OT_STATUTORY(0,"Enum_OutOvertimeStatutory", "法定外残業"),
 	
 	// 法定内・外混在
 	/** The mix in out statutory. */

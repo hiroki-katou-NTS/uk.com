@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.dom.toppagealarm.service.registeralarmdata;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
@@ -39,6 +40,7 @@ public class RegisterAlarmDataDsHelper {
 		.displaySId("sid")
 		.displayAtr(DisplayAtr.PIC)
 		.isResolved(false)
+		.subSids(new ArrayList<>())
 		.occurrenceDateTime(GeneralDateTime.now())
 		.displayMessage(new DisplayMessage("testMessage"))
 		.linkUrl(Optional.of(new LinkURL("url")))
@@ -61,6 +63,7 @@ public class RegisterAlarmDataDsHelper {
 		.displaySId("sid")
 		.displayAtr(DisplayAtr.PIC)
 		.isResolved(false)
+		.subSids(new ArrayList<>())
 		.occurrenceDateTime(GeneralDateTime.now())
 		.displayMessage(new DisplayMessage("testMessage"))
 		.linkUrl(Optional.of(new LinkURL("url")))
@@ -83,6 +86,7 @@ public class RegisterAlarmDataDsHelper {
 		.displaySId("sid")
 		.displayAtr(DisplayAtr.PIC)
 		.isResolved(false)
+		.subSids(new ArrayList<>())
 		.occurrenceDateTime(GeneralDateTime.now())
 		.displayMessage(new DisplayMessage("testMessage"))
 		.linkUrl(Optional.of(new LinkURL("url")))
@@ -103,6 +107,7 @@ public class RegisterAlarmDataDsHelper {
 				.alarmClassification(AlarmClassification.HEALTH_LIFE_MESSAGE)
 				.occurrenceDateTime(GeneralDateTime.now())
 				.displaySId("sid")
+				.subSids(new ArrayList<>())
 				.displayEmpClassfication(DisplayAtr.PIC)
 				.patternCode(Optional.of(new AlarmListPatternCode("patternCode")))
 				.displayMessage(Optional.of(new DisplayMessage("testMessage")))
@@ -123,6 +128,7 @@ public class RegisterAlarmDataDsHelper {
 				.alarmClassification(AlarmClassification.ALARM_LIST)
 				.occurrenceDateTime(GeneralDateTime.now())
 				.displaySId("sid")
+				.subSids(new ArrayList<>())
 				.displayEmpClassfication(DisplayAtr.PRINCIPAL)
 				.patternCode(Optional.of(new AlarmListPatternCode("patternCode")))
 				.displayMessage(Optional.of(new DisplayMessage("testMessage")))
@@ -143,6 +149,7 @@ public class RegisterAlarmDataDsHelper {
 				.alarmClassification(AlarmClassification.ALARM_LIST)
 				.occurrenceDateTime(GeneralDateTime.now())
 				.displaySId("sid")
+				.subSids(new ArrayList<>())
 				.displayEmpClassfication(DisplayAtr.SUPERIOR)
 				.patternCode(Optional.of(new AlarmListPatternCode("patternCode")))
 				.displayMessage(Optional.of(new DisplayMessage("testMessage")))
@@ -163,6 +170,7 @@ public class RegisterAlarmDataDsHelper {
 				.alarmClassification(AlarmClassification.ALARM_LIST)
 				.occurrenceDateTime(GeneralDateTime.now())
 				.displaySId("sid")
+				.subSids(new ArrayList<>())
 				.displayEmpClassfication(DisplayAtr.PIC)
 				.patternCode(Optional.of(new AlarmListPatternCode("patternCode")))
 				.displayMessage(Optional.of(new DisplayMessage("testMessage")))
@@ -182,6 +190,7 @@ public class RegisterAlarmDataDsHelper {
 				.alarmClassification(AlarmClassification.AUTO_EXEC_BUSINESS_ERR)
 				.occurrenceDateTime(GeneralDateTime.now())
 				.displaySId("sid")
+				.subSids(new ArrayList<>())
 				.displayEmpClassfication(DisplayAtr.PIC)
 				.patternCode(Optional.of(new AlarmListPatternCode("patternCode")))
 				.displayMessage(Optional.of(new DisplayMessage("testMessage")))

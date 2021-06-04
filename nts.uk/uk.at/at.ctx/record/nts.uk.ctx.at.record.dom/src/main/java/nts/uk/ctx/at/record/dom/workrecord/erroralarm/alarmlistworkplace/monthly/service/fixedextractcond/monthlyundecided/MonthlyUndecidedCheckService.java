@@ -52,12 +52,12 @@ public class MonthlyUndecidedCheckService {
         // Input．Map＜職場ID、List＜社員情報＞＞をループする
         for (Map.Entry<String, List<EmployeeInfoImported>> empInfosByWp : empInfosByWpMap.entrySet()) {
             for (ClosureInfo closure : closures) {
+                // 締め開始日と締め日を取得する
+                DatePeriod closurePeriod = ClosureService.getClosurePeriod(ClosureService.createRequireM1(closureRepository, closureEmpRepo),
+                        closure.getClosureId().value, ym);
+
                 List<EmployeeInfoImported> empInfos = empInfosByWp.getValue();
                 for (EmployeeInfoImported empInfo : empInfos) {
-                    // 締め開始日と締め日を取得する
-                    DatePeriod closurePeriod = ClosureService.getClosurePeriod(ClosureService.createRequireM1(closureRepository, closureEmpRepo),
-                            closure.getClosureId().value, ym);
-
                     // 対象月の月の承認が済んでいるかチェックする
                     ApprovalStatus status = monthlyApprovalProcess.monthlyApprovalCheck(cid, empInfo.getSid(), ym.v(),
                             closure.getClosureId().value, closurePeriod.start(), approvalProcess, Collections.emptyList());
@@ -73,6 +73,7 @@ public class MonthlyUndecidedCheckService {
                             Optional.empty(),
                             empInfosByWp.getKey());
                     results.add(result);
+                    break;
                 }
             }
         }
