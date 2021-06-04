@@ -26,4 +26,12 @@ public class StandardMenuNameExport {
 	 */
 	private String displayName;
 
+	private String url;
+
+	private String menuCode;
+
+	private Integer system;
+
+	private Integer menuClassification;
+
 }

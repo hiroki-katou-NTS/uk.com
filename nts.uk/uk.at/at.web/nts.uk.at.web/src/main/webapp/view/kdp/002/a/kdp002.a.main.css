@@ -8,7 +8,7 @@ html{
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
-  height: auto;
+  height: 100%;
 }
 
 #kdp002a.has-info {
@@ -16,11 +16,12 @@ html{
 }
 
 #kdp002a.has-info-work2 {
-  max-width: 753px;
+  max-width: 763px;
 }
 
 .kdp002a {
   background: linear-gradient(#EBFCF6, #F5F5F5) !important;
+  padding-bottom: 0 !important;
 }
 
 #genText {
@@ -126,4 +127,9 @@ html{
 }
 #stamp-info .panel {
 	padding-top: 0px;
+	padding-bottom: 0px;
+}
+.pageComent {
+	word-break: break-all !important;
+	white-space: pre-wrap !important;
 }

@@ -10,7 +10,7 @@
   width: 120px;
 }
 .size-zone {
-  margin-left: 170px;
+  margin-left: 180px;
 }
 #H2_2 .filenamelabel {
   display: inline !important;
@@ -26,4 +26,7 @@
 }
 .div-line:last-child {
   margin-bottom: 0px !important;
+}
+#H2_4, #H4_3 {
+  width: 140px;
 }

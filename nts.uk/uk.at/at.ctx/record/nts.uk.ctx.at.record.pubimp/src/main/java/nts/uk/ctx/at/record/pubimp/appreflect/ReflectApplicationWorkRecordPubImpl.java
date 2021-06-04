@@ -514,11 +514,6 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		}
 
 		@Override
-		public Optional<FlowWorkSetting> findFlowWorkSetting(String companyId, String workTimeCode) {
-			return flowWorkSettingRepository.find(companyId, workTimeCode);
-		}
-
-		@Override
 		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
 			return compensLeaveComSetRepository.find(companyId);
 		}

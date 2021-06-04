@@ -39,7 +39,7 @@
 				<div class="fixed-flex-layout-left">
 					<table id="single-list"
 						data-bind="ntsGridList: {								
-							height: 255,
+							rows: 5,
 							options: dataSource,
 							optionsValue: 'divergenceTimeNo',
 							columns: columns,
@@ -56,7 +56,7 @@
 						</colgroup>
 
 						<tr class="row" data-bind="if: settingMode">
-							<td style="padding-bottom: 35px">
+							<td style="padding-bottom: 35px; width: 150px">
 								<!--I3-1 -->
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_72')}</div>
 							</td>
@@ -65,7 +65,7 @@
 								<span data-bind="text: wkTypeName"></span></td>
 						</tr>
 						<tr class="row">
-							<td style="padding-bottom: 35px">
+							<td style="padding-bottom: 35px; width: 150px">
 								<!--I4-1 -->
 								<div data-bind="ntsFormLabel: {constraint: 'ErrorAlarmMessage'}">#{i18n.getText('KMK011_76')}</div>
 							</td>

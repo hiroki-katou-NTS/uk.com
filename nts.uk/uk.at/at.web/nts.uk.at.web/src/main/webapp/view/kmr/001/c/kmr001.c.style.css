@@ -23,11 +23,13 @@
 .kmr001-c .kmr001-c-right-content1{
     float: left;
     width: calc(100% - 550px);
+    margin-left: 50px;
 }
 .kmr001-c .kmr001-c-right-content2{
     float: left;
     width: calc(100% - 550px);
     margin-top: 30px;
+    margin-left: 50px;
 }
 .kmr001-c .btn-content {
     float: right;

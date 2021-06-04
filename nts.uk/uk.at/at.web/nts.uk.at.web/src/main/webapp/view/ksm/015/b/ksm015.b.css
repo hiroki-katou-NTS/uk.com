@@ -4,7 +4,10 @@ html {
 #ksm015b{
     width: 1200px;
 }
-#left-content{ float: left; }
+#left-content{
+  float: left;
+  width: 425px;
+}
 #registration-form {
     float: left;
     width: 700px;

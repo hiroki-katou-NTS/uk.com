@@ -97,7 +97,7 @@
                                                 optionsText: 'name',
                                                 value: usageAtr,
                                                 required: true,
-                                                enable: $parent.hasSelected &amp;&amp; $parents[1].langJP()
+                                                enable: ko.computed(() => $parent.hasSelected() &amp;&amp; $parents[1].langJP())
                                              }"></div>
                                  </td>
                               </tr>
@@ -113,7 +113,7 @@
                                                 optionsValue: 'code',
                                                 optionsText: 'name',
                                                 value: selectedClac,
-                                                enable: usageAtr() === 1 &amp;&amp; $parent.hasSelected &amp;&amp; $parents[1].langJP() }"></div>
+                                                enable: ko.computed(() => usageAtr() === 1 &amp;&amp; $parent.hasSelected() &amp;&amp; $parents[1].langJP())}"></div>
                                  </td>
                               </tr>
                               <tr>
@@ -128,7 +128,7 @@
                                                 optionsValue: 'code',
                                                 optionsText: 'name',
                                                 value: performanceAtr,
-                                                enable: usageAtr() === 1 &amp;&amp; $parents[1].langJP()}"></div>
+                                                enable: ko.computed(() => usageAtr() === 1 &amp;&amp; $parents[1].langJP())}"></div>
                                  </td>
                               </tr>
                               <tr>
@@ -378,7 +378,7 @@
                         </div>
                         <div class="cell" style="padding-left: 10px;">
                            <div>
-                              <div class="cell col-1">
+                              <div class="cell col-1" style="width: 75px;">
                                  <div data-bind="ntsFormLabel: {required: false, constraint: 'DescritionOptionalItem'}">
                                     #{i18n.getText('KMK002_105')}</div>
                               </div>
@@ -396,7 +396,7 @@
                               </div>
                            </div>
                            <div style="margin-top: 5px;">
-                              <div class="cell col-1">
+                              <div class="cell col-1" style="width: 75px;">
                                  <div data-bind="ntsFormLabel: {required: false, constraint: 'NoteOptionalItem'}">
                                     #{i18n.getText('KMK002_107')}</div>
                               </div>
@@ -427,15 +427,17 @@
                               <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_16')}</div>
                            </td>
                            <td style="width: 140px;">
-                              <div tabindex="2" data-bind="ntsSwitchButton: {
+                              <div style="display: flex;">
+                                 <div style="margin-right: 5px;" tabindex="2" data-bind="ntsSwitchButton: {
                                     name: '#[KMK002_16]',
                                     options: empConClsDatasource,
                                     optionsValue: 'code',
                                     optionsText: 'name',
                                     value: empConditionAtr,
                                     enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()}"></div>
-                              <button tabindex="2"
-                                 data-bind="click: openDialogB, enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; empConditionAtr() == 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_19')}</button>
+                                 <button tabindex="2"
+                                    data-bind="click: openDialogB, enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; empConditionAtr() == 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_19')}</button>
+                              </div>
                            </td>
                            <td></td>
                         </tr>

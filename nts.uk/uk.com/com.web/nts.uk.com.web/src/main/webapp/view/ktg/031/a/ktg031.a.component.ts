@@ -12,115 +12,60 @@ module nts.uk.com.view.ktg031.a {
   @component({
     name: 'ktg031-component',
     template: `
-      <div class="widget-title">
-        <table style="width: 100%;">
-        <colgroup>
-            <col width="auto" />
-            <col width="110px" />
-            <col width="30px" />
-        </colgroup>
-        <thead>
-            <tr>
-              <th class="ktg031-fontsize">
-                <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG031_11') }"></div>
-              </th>
-              <th>
-                <div data-bind="ntsComboBox: {
-                  name: '#[KTG031_10]',
-                  width: 110,
-                  value: $component.selectedAlarmType,
-                  options: $component.listAlarmType,
-                  optionsValue: 'code',
-                  optionsText: 'name',
-                  visibleItemsCount: 5,
-                  required: true,
-                  selectFirstIfNull: true,
-                  columns: [
-                    { prop: 'name', length: 10 },
-                  ]}"></div>
-              </th>
-              <th>
-                <div data-bind="if: $component.isEmployee">
-                  <i class="img-icon" data-bind="ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openDialogSetting"></i>
-                </div>
-              </th>
-            </tr>
-          </thead>
-        </table>
-      </div>
       <div data-bind="widget-content: 100, default: 410" id="ktg031-container">
-        <div class="body" style="height: calc(100% - 5px);">
-          <div class="table-container">
-            <table id="ktg031-grid" style="width: 100%;">
-              <colgroup>
-                <col width="95px" />
-                <col width="auto" />
-                <col width="1px" />
-                <col width="auto" />
-                <col width="30px" />
-              </colgroup>
-              <tbody data-bind="foreach: $component.listAlarm">
-                <tr>
-                  <td class="column-date border-before">
-                    <span data-bind="text: dateMonth"></span>
-                    <span data-bind="text: $component.$i18n('KTG031_13')"></span>
-                  </td>
-                  <td>
-                    <span class="limited-label" data-bind="text: displayMessage"></span>
-                  </td>
-                  <td class="border-after"></td>
-                  <td class="column-action">
-                    <button style="color: #79E68B; border: 1px solid;" class="small" data-bind="
-                      visible: isReaded,
-                      text: $component.$i18n('KTG031_41'),
-                      click: changeReadStatus">
-                    </button>
-                    <button style="color: #79E68B; border: 1px solid;" class="small" data-bind="
-                      visible: !isReaded(),
-                      text: $component.$i18n('KTG031_42'),
-                      click: changeReadStatus">
-                    </button>
-                  </td>
-                  <td class="column-action">
-                    <i class="img-icon" data-bind="ntsIcon: {no: 178, width: 20, height: 20}, click: function() { $component.openUrl(linkUrl); }"></i>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+        <div class="ktg031-header-line"></div>
+          <div class="body">
+            <div class="body-top-row">
+              <div data-bind="ntsComboBox: {
+                name: '#[KTG031_10]',
+                width: 150,
+                value: $component.selectedAlarmType,
+                options: $component.listAlarmType,
+                optionsValue: 'code',
+                optionsText: 'name',
+                visibleItemsCount: 5,
+                required: true,
+                selectFirstIfNull: true,
+                columns: [
+                  { prop: 'name', length: 10 },
+                ]}"></div>
+              <div class="body-top-label">
+                <span class="label" data-bind="text: $component.$i18n('KTG031_11')"></span>
+                <div data-bind="if: $component.isEmployee">
+                  <i class="img-icon" data-bind="ntsIcon: {no: 5, width: 30, height: 30}, click: $component.openDialogSetting"></i>
+                </div>
+              </div>
+            </div>
+            <div class="table-container">
+              <table id="ktg031-grid">
+                <tbody data-bind="foreach: $component.listAlarm">
+                  <tr>
+                    <td class="column-date">
+                      <span data-bind="text: dateMonth"></span>
+                      <span data-bind="text: $component.$i18n('KTG031_13')"></span>
+                    </td>
+                    <td>
+                      <span class="limited-label" data-bind="text: displayMessage"></span>
+                    </td>
+                    <td class="column-action">
+                      <div data-bind="ntsCheckBox: { checked: isReaded }"></div>
+                    </td>
+                    <td class="column-action">
+                      <i class="img-icon" data-bind="ntsIcon: {no: 178, width: 20, height: 20}, click: function() { $component.onClickUrl(alarmClassification, displayAtr, subSids, linkUrl); }"></i>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
       </div>
       <style type="text/css" rel="stylesheet">
-        .ktg031-fontsize div.form-label>span.text {
-          font-size: 1.2rem !important;
-        }
-        .border-before,
-        .border-after {
-          position: relative;
-        }
-        .border-before:before {
-          content: '';
-          position: absolute;
-          bottom: 7px;
-          left: 0;
-          width: 100%;
-          height: calc(100% - 15px);
-          border-right: 2px solid #C6C6D1;
-        }
-        .border-after:after {
-          content: '';
-          position: absolute;
-          bottom: 7px;
-          left: 0;
-          width: 100%;
-          height: calc(100% - 15px);
-          border-left: 2px solid #C6C6D1;
-        }
         #ktg031-container {
           width: 100%;
           display: flex;
           flex-direction: column;
         }
+
         #ktg031-container .ktg031-header-line {
           width: 100%;
           height: 5px;
@@ -157,17 +102,17 @@ module nts.uk.com.view.ktg031.a {
           height: 100%;
           margin-top: 5px;
           overflow-y: auto;
-          border: 1px solid #C6C6D1;
         }
         #ktg031-container .body .table-container #ktg031-grid {
           width: 100%;
           table-layout: fixed;
         }
-        #ktg031-container .body .table-container #ktg031-grid tr.even {}
+        #ktg031-container .body .table-container #ktg031-grid tr.even {
+          background: #F2F2F2;
+        }
         #ktg031-container .body .table-container #ktg031-grid td {
           padding: 3px;
           box-sizing: border-box;
-          border-bottom: none !important;
         }
         #ktg031-container .body .table-container #ktg031-grid .column-date {
           width: 80px;
@@ -210,10 +155,10 @@ module nts.uk.com.view.ktg031.a {
 
     loadAlarmData(displayType: number) {
       const vm = this;
-      vm.$blockui('grayoutView');
+      vm.$blockui('grayout');
       vm.$ajax(`${API.findAlarmData}/${displayType}`)
         .then((res: any[]) => vm.setListAlarm(res))
-        .always(() => vm.$blockui('clearView'));
+        .always(() => vm.$blockui('clear'));
     }
 
     changeToRead(companyId: string, sid: string, displayAtr: number, alarmClassification: number, patternCode: string, notificationId: string) {
@@ -226,11 +171,11 @@ module nts.uk.com.view.ktg031.a {
         patternCode: patternCode,
         notificationId: notificationId
       });
-      vm.$blockui('grayoutView');
+      vm.$blockui('grayout');
       vm.$ajax(API.changeToRead, command)
         .then((res) => vm.$ajax(`${API.findAlarmData}/${vm.selectedAlarmType()}`))
         .then((res: any[]) => vm.setListAlarm(res, true))
-        .always(() => vm.$blockui('clearView'));
+        .always(() => vm.$blockui('clear'));
     }
 
     setListAlarm(res: any[], stopReload?: boolean) {
@@ -264,9 +209,9 @@ module nts.uk.com.view.ktg031.a {
         patternCode: patternCode,
         notificationId: notificationId,
       });
-      vm.$blockui('grayoutView');
+      vm.$blockui('grayout');
       vm.$ajax(API.changeToUnread, command)
-        .always(() => vm.$blockui('clearView'));
+        .always(() => vm.$blockui('clear'));
     }
 
     openDialogSetting() {
@@ -274,7 +219,45 @@ module nts.uk.com.view.ktg031.a {
       vm.$window.modal('/view/ktg/031/b/index.xhtml');
     }
 
-    openUrl(url: string) {
+    onClickUrl (alarmClassification: number, displayAtr: number, subSids: string[], url: string) {
+
+      const vm = this;
+
+      switch (alarmClassification) {
+
+        case AlarmClassification.ALARM_LIST:
+          let kal001BParam = new Kal001BParam({
+            extractingFlg: false,
+            isExtracting: false,
+            listAlarmExtraValueWkReDto: [],
+            processId: undefined,
+            totalErAlRecord: 0,
+            currentAlarmCode: undefined,
+            employeeIds: [],
+            isTopPage: true
+          });
+
+          if (displayAtr === DisplayAtr.PRINCIPAL) {
+            kal001BParam.employeeIds = [__viewContext.user.employeeId];
+          } else if (displayAtr === DisplayAtr.SUPERIOR) {
+            kal001BParam.employeeIds = subSids;
+          }
+          nts.uk.ui.windows.setShared("extractedAlarmData", kal001BParam);
+          vm.openDialogUrl(url);
+        break;
+
+        case AlarmClassification.AUTO_EXEC_BUSINESS_ERR: 
+        case AlarmClassification.AUTO_EXEC_OPERATION_ERR:
+        case AlarmClassification.HEALTH_LIFE_MESSAGE:
+          vm.openUrl(url);
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    openUrl (url: string): JQueryPromise<any> {
       const vm = this;
       if (url) {
         const origin: string = window.location.origin;
@@ -300,6 +283,23 @@ module nts.uk.com.view.ktg031.a {
       }
     }
 
+    openDialogUrl (url: string): JQueryPromise<any> {
+      const vm = this;
+      if (url) {
+        const comPath = '/nts.uk.com.web';
+          if (url.indexOf(comPath) !== -1) {
+            vm.$window.modal("com", url.replace(comPath, ""));
+            return;
+          }
+
+        const atPath = '/nts.uk.at.web';
+        if (url.indexOf(atPath) !== -1) {
+          vm.$window.modal("at", url.replace(atPath, ""));
+          return;
+        }
+      }
+    }
+
     private getUKSystemPath(url: string, path: string): string {
       const pathIndex = url.lastIndexOf(path);
       if (pathIndex !== -1) {
@@ -317,6 +317,7 @@ module nts.uk.com.view.ktg031.a {
     companyId: string;
     sid: string;
     displayAtr: number;
+    subSids: string[];
     patternCode: string;
     notificationId: string;
     linkUrl: string;
@@ -373,10 +374,6 @@ module nts.uk.com.view.ktg031.a {
         break;
       }
     }
-
-    changeReadStatus() {
-      this.isReaded(!this.isReaded())
-    }
   }
 
   class ToppageAlarmDataReadCommand {
@@ -403,5 +400,47 @@ module nts.uk.com.view.ktg031.a {
     constructor(init?: Partial<ToppageAlarmDataUnreadCommand>) {
       $.extend(this, init);
     }
+  }
+
+  class Kal001BParam {
+
+      extractingFlg: boolean; //処理中フラグ
+      isExtracting: boolean; //処理中区分	
+      listAlarmExtraValueWkReDto: any[]; //アラーム抽出結果	
+      processId: any; //プロセスID	
+      totalErAlRecord: number; //アラーム抽出結果の件数	
+      currentAlarmCode: any; //アラームコード	
+      employeeIds: string[]; //List＜社員ID＞
+      isTopPage: boolean; //Toppage区分
+
+    constructor(init?: Partial<Kal001BParam>) {
+      $.extend(this, init);
+    } 
+
+  }
+
+  enum AlarmClassification {
+    /** アラームリスト */
+    ALARM_LIST = 0,
+	
+    /** 更新処理自動実行業務エラー */
+    AUTO_EXEC_BUSINESS_ERR = 1,
+    
+    /** 更新処理自動実行動作異常 */
+    AUTO_EXEC_OPERATION_ERR = 2,
+    
+    /** ヘルス×ライフメッセージ */
+    HEALTH_LIFE_MESSAGE = 3
+  }
+
+  enum DisplayAtr {
+	/** 本人 */
+	PRINCIPAL = 0,
+	
+	/** 上長 */
+	SUPERIOR = 1,
+	
+	/** 担当者 */
+	PIC =2
   }
 }

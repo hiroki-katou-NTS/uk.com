@@ -20,6 +20,7 @@ import nts.uk.ctx.sys.gateway.app.command.loginkdp.TimeStampLoginCommand;
 import nts.uk.screen.at.app.query.kdp.kdp003.f.AuthenStampEmployee;
 import nts.uk.screen.at.app.query.kdp.kdp003.f.EmployeeRoleStamping;
 import nts.uk.screen.at.app.query.kdp.kdp003.f.GetLoginSettingsStampInput;
+import nts.uk.screen.at.app.query.kdp.kdp003.f.GetLoginSettingsStampParam;
 import nts.uk.screen.at.app.query.kdp.kdp003.f.LoginAsEmbossingAdministrator;
 import nts.uk.screen.at.app.query.kdp.kdp003.f.RoleEmployeeStampingDto;
 import nts.uk.screen.at.app.query.kdp.kdp003.f.dto.GetListCompanyHasStampedDto;
@@ -45,8 +46,8 @@ public class LoginWs extends WebService {
 	
 	 @POST
 	 @Path("getLogginSetting")
-	 public List<GetListCompanyHasStampedDto> getAllCompany() {
-		return loginSetting.getLoginSettingsForTimeStampInput();
+	 public List<GetListCompanyHasStampedDto> getAllCompany(GetLoginSettingsStampParam input) {
+		return loginSetting.getLoginSettingsForTimeStampInput(input);
 	 }
 	 
 	@POST

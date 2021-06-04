@@ -108,3 +108,7 @@ html {
 	text-align: center;
 	font-size: 1.7vmin;
 }
+.pageComent {
+	word-break: break-all !important;
+	white-space: pre-wrap !important;
+}

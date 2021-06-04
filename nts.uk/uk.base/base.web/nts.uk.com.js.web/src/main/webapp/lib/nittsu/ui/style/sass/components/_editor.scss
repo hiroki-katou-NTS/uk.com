@@ -27,6 +27,16 @@ $editor-border-color: #EAE8F2;
 		}
 	}
 
+	input.nts-editor::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+		color: #bbbbbb;
+	}
+	input.nts-editor:-ms-input-placeholder { /* Internet Explorer 10-11 */
+		color: #bbbbbb;
+	}	
+	input.nts-editor::-ms-input-placeholder { /* Microsoft Edge */
+		color: #bbbbbb;
+	}
+
 	&.error {
 		input.nts-input,
 		textarea.nts-input {				

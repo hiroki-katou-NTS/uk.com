@@ -42,14 +42,6 @@ public class SetOutItemsWoScCopyCommandHandler extends CommandHandler<SetOutItem
 				: Optional.of(AppContexts.user().employeeId());
 		
 		// ドメインモデル「年間勤務表の出力項目設定」で コード重複チェックを行う
-		Optional<SettingOutputItemOfAnnualWorkSchedule> outputItem = this.repository.findByLayoutId(command.getLayoutId());
-		
-		// 重複する場合
-		if (outputItem.get().getCd().v().equals(command.getDuplicateCode())) {
-			throw new BusinessException("Msg_1776");
-		}
-
-		// 重複しない場合
 		Optional<SettingOutputItemOfAnnualWorkSchedule> duplicateItem = this.repository.findByCode(
 				command.getDuplicateCode(),
 				employeeId,
@@ -57,9 +49,16 @@ public class SetOutItemsWoScCopyCommandHandler extends CommandHandler<SetOutItem
 				command.getSelectedType(),
 				command.getPrintFormat()
 		);
+		
+		// 重複する場合
+		if (duplicateItem.isPresent()) {
+			throw new BusinessException("Msg_1776");
+		}
+
+		Optional<SettingOutputItemOfAnnualWorkSchedule> outputItem = this.repository.findByLayoutId(command.getLayoutId());
 
 		//複製元の存在チェックを行う
-		if (duplicateItem.isPresent()) {
+		if (!outputItem.isPresent()) {
 			// 複製元出力項目が存在しない場合
 			throw new BusinessException("Msg_1946");
 		} else {

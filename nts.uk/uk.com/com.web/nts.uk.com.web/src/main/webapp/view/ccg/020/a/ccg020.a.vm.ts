@@ -207,6 +207,9 @@ module nts.uk.com.view.ccg020.a {
       const vm = this;
       $('#list-box').remove();
       $('#popup-search').ntsPopup('hide');
+      if (_.isEmpty(vm.treeMenu())) {
+        vm.getListMenu();
+      }
       vm.treeMenuResult([]);
       vm.$validate('#search-input')
         .then((valid) => {

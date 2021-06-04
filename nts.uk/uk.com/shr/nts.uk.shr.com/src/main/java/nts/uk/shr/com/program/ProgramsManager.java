@@ -1796,16 +1796,16 @@ public class ProgramsManager {
             "/view/cdl/003/a/index.xhtml");
 
     public static final Program CMM011A = new Program(WebAppId.COM, ProgramIdConsts.CMM011A, "CMM011_201",
-            "/view/cmm/011_v2/a/index.xhtml");
+            "/view/cmm/011/a/index.xhtml");
 
     public static final Program CMM011B = new Program(WebAppId.COM, ProgramIdConsts.CMM011B, "CMM011_202",
-            "/view/cmm/011_v2/b/index.xhtml");
+            "/view/cmm/011/b/index.xhtml");
 
     public static final Program CMM011C = new Program(WebAppId.COM, ProgramIdConsts.CMM011C, "CMM011_101",
-            "/view/cmm/011_v2/c/index.xhtml");
+            "/view/cmm/011/c/index.xhtml");
 
     public static final Program CMM011D = new Program(WebAppId.COM, ProgramIdConsts.CMM011D, "CMM011_203",
-            "/view/cmm/011_v2/d/index.xhtml");
+            "/view/cmm/011/d/index.xhtml");
 
 //	public static final Program CMM011E = new Program(WebAppId.COM, ProgramIdConsts.CMM011E, "CMM011_4",
 //			"/view/cmm/011/e/index.xhtml");
@@ -2451,6 +2451,10 @@ public class ProgramsManager {
             "/view/kal/011/c/index.xhtml");
     public static final Program KAL011D = new Program(WebAppId.AT, ProgramIdConsts.KAL011D, "KAL011_4",
             "/view/kal/011/d/index.xhtml");
+
+    // KAL012A
+    public static final Program KAL012A = new Program(WebAppId.AT, ProgramIdConsts.KAL012A, "KAL012_1",
+            "/view/kal/012/a/index.xhtml");
 
     // KAL013A
     public static final Program KAL013A = new Program(WebAppId.AT, ProgramIdConsts.KAL013A, "KAL013_1",
@@ -3724,15 +3728,15 @@ public class ProgramsManager {
 	 */
 	public static final Program KWR005A = new Program(WebAppId.AT,
             ProgramIdConsts.KWR005A,
-            "KWR003_1",
+            "KWR005_1",
             "/view/kwr/005/a/index.xhtml");
 	public static final Program KWR005B = new Program(WebAppId.AT,
             ProgramIdConsts.KWR005B,
-            "KWR003_101",
+            "KWR005_101",
             "/view/kwr/005/b/index.xhtml");
 	public static final Program KWR005C = new Program(WebAppId.AT,
             ProgramIdConsts.KWR005C,
-            "KWR003_201",
+            "KWR005_201",
             "/view/kwr/005/c/index.xhtml");/**
 
 	 * KWR007

@@ -7,7 +7,6 @@ import java.util.Optional;
 import lombok.Builder;
 import lombok.Getter;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
 import nts.uk.ctx.at.record.dom.adapter.workrule.closure.ClosureDateOfEmploymentImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforImport;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.ExtractionCondScheduleMonth;
@@ -112,11 +111,6 @@ public class ScheMonPrepareData {
 	 * List＜雇用毎の締め日＞
 	 */
 	private List<ClosureDateOfEmploymentImport> closureDateOfEmps;
-	
-	/**
-	 * 利用単位の設定
-	 */
-	private Optional<PublicHolidayManagementUsageUnit> publicHolidayManagementUsageUnit;
 	
 	/**
 	 * List 雇用月間日数設定

@@ -72,7 +72,8 @@ module nts.uk.ui.kdp001.a {
         name: 'kdp-001-a',
         template: `
             <div class="kdp-001-a widget-title">
-                <div class="text-time" data-bind="i18n: 'KDP001_5'"></div>
+                <div class="text-time" data-bind="i18n: 'KDP001_5', 
+                            css: { 'ie': $component.state() === 'IE' , 'not-ie': $component.state() === 'NOT_IE'}"></div>
                 <div class="date" data-bind="date: $component.time.now, format: 'YYYY/MM/DD(ddd)', attr: { style: $component.time.style }"></div>
                 <div>
                     <span class="hours-minutes" data-bind="date: $component.time.now, format: 'HH:mm',attr: { style: $component.time.style }"></span>
@@ -201,6 +202,12 @@ module nts.uk.ui.kdp001.a {
                 <!-- /ko -->
             <!-- /ko -->
             <style rel="stylesheet">
+                .ie {
+                    top: -15px;
+                }
+                .not-ie {
+                    top: -23px;
+                }
                 .widget-title {
                     position: relative;
                     width: 450px;
@@ -354,7 +361,6 @@ module nts.uk.ui.kdp001.a {
                     position: absolute;
                     font-size: 70px;
                     color: #E5F7F9;
-                    top: -23px;
                     right: 22px;
                 }
                 .kdp-001-a.widget-title .date {
@@ -428,10 +434,23 @@ module nts.uk.ui.kdp001.a {
 
         lengthStamps!: KnockoutComputed<LENGTH>;
         poral!: KnockoutComputed<boolean>;
+        state!: KnockoutComputed<string>;
 
         constructor(private mode: 'a' | 'b' | 'c' | 'd' | KnockoutObservable<'a' | 'b' | 'c' | 'd'> = 'a') {
             super();
             const vm = this;
+
+            vm.state = ko.computed({
+                read: () => {
+                    var isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+                    if (isIE) {
+                        return 'IE';
+                    }
+                    return 'NOT_IE';
+                }
+            });
+
             if (mode === 'a') {
                 vm.modeA(true);
             }
@@ -790,27 +809,35 @@ module nts.uk.ui.kdp001.a {
                 .then((employees: Employee[]) => employees || vm.$ajax('at', REST_API.getEmployeeStampData))
                 .then((employees: Employee[]) => {
                     const [employee] = employees;
+                    const result: any = [];
 
-                    // stamp data
-                    if (employee) {
-                        const { stampRecords } = employee;
-                        if (stampRecords && stampRecords.length) {
-                            const mappeds = _
-                                .chain(stampRecords)
-                                .orderBy(['stampTimeWithSec'], ['desc'])
-                                .map(({ stampTimeWithSec, stampArt, stampHow, buttonValueType }) => {
-                                    const textAlign = $textAlign(buttonValueType);
-                                    const mm = moment(stampTimeWithSec, D_FORMAT);
-                                    const date = mm.toDate();
-                                    const forceColor = mm.locale('en').format('dddd').toLowerCase();
+                    _.forEach(employees, (value) => {
+                        // stamp data
 
-                                    return { date, stampArt, stampHow, textAlign, forceColor };
+                        if (employee) {
+                            const { stampRecords } = value;
+                            if (stampRecords && stampRecords.length) {
+                                const mappeds = _
+                                    .chain(stampRecords)
+                                    .orderBy(['stampTimeWithSec'], ['desc'])
+                                    .map(({ stampTimeWithSec, stampArt, stampHow, buttonValueType }) => {
+                                        const textAlign = $textAlign(buttonValueType);
+                                        const mm = moment(stampTimeWithSec, D_FORMAT);
+                                        const date = mm.toDate();
+                                        const forceColor = mm.locale('en').format('dddd').toLowerCase();
+
+                                        return { date, stampArt, stampHow, textAlign, forceColor };
+                                    })
+                                    .value();
+                                result.push(mappeds)
+                                _.forEach(mappeds, (value1) => {
+                                    result.push(value1);
                                 })
-                                .value();
-
-                            vm.stamps(mappeds);
+                            }
                         }
-                    }
+                        vm.stamps(result);
+
+                    })
                 });
         }
 

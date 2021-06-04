@@ -49,7 +49,7 @@ class KDP002BViewModel extends ko.ViewModel {
     items: KnockoutObservableArray<ItemModels> = ko.observableArray([]);
     columns2: KnockoutObservableArray<any> = ko.observableArray([
         { headerText: "id", key: 'id', width: 100, hidden: true },
-        { headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText("KDP002_45") + "</div>", key: 'stampDate', width: 130 },
+        { headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText("KDP002_45") + "</div>", key: 'stampDate', width: 135 },
         { headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText("KDP002_46") + "</div>", key: 'stampHowAndTime', width: 90 },
         { headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText("KDP002_47") + "</div>", key: 'timeStampType', width: 180 }
     ]);
@@ -163,16 +163,16 @@ class KDP002BViewModel extends ko.ViewModel {
         const vm = this;
         if (!ko.unwrap(vm.showBtnNoti)) {
             if (!ko.unwrap(vm.modeNikoNiko)) {
-                vm.$window.size(630, 470);
+                vm.$window.size(590, 470);
             } else {
-                vm.$window.size(660, 470);
+                vm.$window.size(610, 470);
             }
 
         } else {
             if (!ko.unwrap(vm.modeNikoNiko)) {
                 vm.$window.size(630, 470);
             } else {
-                vm.$window.size(660, 470);
+                vm.$window.size(650, 470);
             }
         }
     }

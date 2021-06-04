@@ -69,13 +69,11 @@ module nts.uk.at.kdp003.q {
 			});
 
 			vm.destination.subscribe(() => {
-				//if (vm.employeeReferenceRange() === EmployeeReferenceRange.DEPARTMENT_ONLY) {
 				if (!_.isNull(vm.notificationCreated().workplaceInfo)) {
 					const workplaceInfo = this.notificationCreated().workplaceInfo;
 					vm.workPlaceIdList([workplaceInfo.workplaceId]);
 					vm.workPlaceTxtRefer(`${workplaceInfo.workplaceCode} ${workplaceInfo.workplaceName}`);
 				}
-				//}
 			});
 		}
 
@@ -303,7 +301,9 @@ module nts.uk.at.kdp003.q {
 			const vm = this;
 			vm.$window.modal('at', '/view/kdp/003/k/index.xhtml', { multiSelect: true })
 				.then((selectedWP) => {
-					vm.workPlaceIdList(selectedWP.selectedId);
+					if (selectedWP.selectedId) {
+						vm.workPlaceIdList(selectedWP.selectedId);
+					}
 
 					if (vm.workPlaceIdList().length > 0) {
 						vm.$ajax('com', API.GET_NAME_OF_DESTINATION_WKP, vm.workPlaceIdList()).then((response: WorkplaceInfo[]) => {

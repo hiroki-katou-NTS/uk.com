@@ -86,7 +86,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		initDispStartChecked : KnockoutObservable<number> = ko.observable(0);
 		dispStartChecked : KnockoutObservable<number> = ko.observable(0);
 		selectedTimeRange: KnockoutObservable<number> = ko.observable(1);
-
 		constructor(data: any) {
 			let self = this;
 			// get data from sc A
@@ -124,6 +123,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				new model.ItemModel('0', getText('KSU003_59')),
 				new model.ItemModel('1', getText('KSU003_60'))
 			]);
+			
 			self.showA9 = true;
 			if (!_.isNil(data)) {
 				self.indexBtnToLeft(data.showHide);
@@ -182,6 +182,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			$("#extable-ksu003").on("extablecellupdated", (dataCell: any) => {
 				self.inputMid(dataCell);
 			});
+			
+			// ver4 
+			self.rangeList = ko.observableArray([
+				new model.RangeModel('0', 0),new model.RangeModel('1', 1),new model.RangeModel('2', 2),new model.RangeModel('3', 3),
+				new model.RangeModel('4', 4),new model.RangeModel('5', 5),new model.RangeModel('6', 6),new model.RangeModel('7', 7),
+				new model.RangeModel('8', 8),new model.RangeModel('9', 9),new model.RangeModel('10', 10),new model.RangeModel('11', 11),
+				new model.RangeModel('12', 12)
+			]);
 		}
 
 		//startPage

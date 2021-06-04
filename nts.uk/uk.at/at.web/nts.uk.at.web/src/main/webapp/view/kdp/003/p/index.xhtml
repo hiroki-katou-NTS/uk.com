@@ -57,7 +57,8 @@
                                     </th>
                                     <!-- P4_2 メッセージ内容 -->
                                     <th class="pl-10">
-                                      <a class="blue-link limited-label w-300" data-bind="text: content, click: $vm.onClickTargetLink.bind($vm, $data)"></a>
+                                      <a class="blue-link w-300" style="display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" 
+                                      data-bind="text: content, click: $vm.onClickTargetLink.bind($vm, $data)"></a>
                                     </th>
                                   </tr>
                                 </com:ko-foreach>

@@ -93,6 +93,7 @@
                                 <input id ="check-condition" data-bind="ntsTextEditor: {
                                         name: '#{i18n.getText('KAL003_59')}',
                                         value: checkCondDis,
+                                        required: true,
                                         readonly: true
                                     }"/>
                             </td>
@@ -138,7 +139,6 @@
                                     <input class ="endValue" tabindex="5" data-bind="ntsNumberEditor: {
                                         name: '#{i18n.getText('KAL003_65')}',
                                         value: maxValue,
-                                        constraint: $vm.constraint,
                                         required: $vm.enableMaxValue,
                                         enable: $vm.enableMaxValue(),
                                         option: $vm.numberEditorOption
@@ -161,7 +161,6 @@
                                 <input class ="endValue" tabindex="5" data-bind="ntsTimeEditor: {
                                         name: '#{i18n.getText('KAL003_65')}',
                                         value: maxValue,
-                                        constraint: $vm.constraint,
                                         required: $vm.enableMaxValue,
                                         enable: $vm.enableMaxValue(),
                                         mode: 'time',

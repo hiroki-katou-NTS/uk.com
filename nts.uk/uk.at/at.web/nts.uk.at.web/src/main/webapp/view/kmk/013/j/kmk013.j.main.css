@@ -74,8 +74,16 @@ table td {
 }
 
 #J8_7, #J8_11 {
-	width: 200px;
+	width: 300px;
 	padding-left: 65px;
-	padding-bottom: 10px;
+}
+
+.switchbox-wrappers {
 	display: inline-block;
+}
+
+.switchbox-wrappers .radio-wrapper span {
+	width: 70px;
+	text-align: center;
+	margin: 0 -3px;
 }
