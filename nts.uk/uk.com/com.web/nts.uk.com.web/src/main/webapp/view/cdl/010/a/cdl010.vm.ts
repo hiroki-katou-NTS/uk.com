@@ -14,7 +14,7 @@ module nts.uk.at.view.cdl010.a.screenModel {
     created(param: ObjectParam) {
       const vm = this;
       vm.$blockui('grayout');
-      vm.$ajax('com', API.getContactInfomation, param.employeeId)
+      vm.$ajax('com', API.getContactInfomation, { employeeId: param.employeeId, startMode: param.startMode })
       .then((detailData: ContactInformationRefer) => {
         if (detailData && detailData.contactInformation) {
           const companyEmailAddress = detailData.contactInformation.companyEmailAddress;
@@ -51,6 +51,7 @@ module nts.uk.at.view.cdl010.a.screenModel {
   class ObjectParam {
     employeeId: string;
     referenceDate: any;
+    startMode: number;
   }
 
   /** 連絡先情報の参照 */

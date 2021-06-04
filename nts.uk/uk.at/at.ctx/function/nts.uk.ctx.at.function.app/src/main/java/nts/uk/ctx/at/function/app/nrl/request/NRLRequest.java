@@ -9,9 +9,7 @@ import nts.uk.ctx.at.function.app.nrl.data.ItemSequence;
 import nts.uk.ctx.at.function.app.nrl.data.checker.BCCCalculable;
 import nts.uk.ctx.at.function.app.nrl.exceptions.ErrorCode;
 import nts.uk.ctx.at.function.app.nrl.exceptions.IllegalCommandException;
-import nts.uk.ctx.at.function.app.nrl.exceptions.ParametersNotAcceptedException;
 import nts.uk.ctx.at.function.app.nrl.repository.Terminal;
-import nts.uk.ctx.at.function.app.nrl.repository.TerminalRepository;
 import nts.uk.ctx.at.function.app.nrl.response.MeanCarryable;
 import nts.uk.ctx.at.function.app.nrl.response.NRLResponse;
 import nts.uk.ctx.at.function.app.nrl.xml.Element;
@@ -28,12 +26,6 @@ import nts.uk.ctx.at.function.app.nrl.xml.Frame;
 public abstract class NRLRequest<T extends MeanCarryable> implements BCCCalculable {
 	
 	/**
-	 * Terminal repository
-	 */
-	@Inject
-	private TerminalRepository terminalRepository;
-	
-	/**
 	 * Frame item arranger
 	 */
 	@Inject
@@ -44,10 +36,10 @@ public abstract class NRLRequest<T extends MeanCarryable> implements BCCCalculab
 	 * @param frame
 	 * @return response
 	 */
-	public NRLResponse responseTo(T frame) {
-		Terminal terminal = terminalRepository.get(frame.pickItem(Element.NRL_NO), frame.pickItem(Element.MAC_ADDR))
-				.orElseThrow(ParametersNotAcceptedException::new);
-		
+	public NRLResponse responseTo(String empInfoTerCode, T frame) {
+		Terminal terminal = new Terminal(frame.pickItem(Element.NRL_NO), frame.pickItem(Element.MAC_ADDR),
+				frame.pickItem(Element.CONTRACT_CODE));
+
 		Named name = this.getClass().getAnnotation(Named.class);
 		if (name == null) throw new RuntimeException("Request must have a name.");
 		Command command = name.value();
@@ -55,12 +47,12 @@ public abstract class NRLRequest<T extends MeanCarryable> implements BCCCalculab
 		byte[] dataBytes = frame.getBytes(ItemSequence.enumerate(command, true)
 								.orElseThrow(IllegalCommandException::new));
 		if (checkSum(dataBytes) != 0) {
-			return NRLResponse.noAccept(terminal.getNrlNo(), terminal.getMacAddress()).build()
+			return NRLResponse.noAccept(terminal.getNrlNo(), terminal.getMacAddress(), frame.pickItem(Element.CONTRACT_CODE)).build()
 					.addPayload(Frame.class, ErrorCode.BCC.value);
 		}
 		
-		ResourceContext<T> context = new ResourceContext<>(frame, terminal, terminalRepository, command, itemArranger);
-		sketch(context);
+		ResourceContext<T> context = new ResourceContext<>(frame, terminal, command, itemArranger);
+		sketch(empInfoTerCode, context);
 		return context.getResponse();
 	} 
 	
@@ -79,7 +71,7 @@ public abstract class NRLRequest<T extends MeanCarryable> implements BCCCalculab
 	 * Sketch.
 	 * @param context
 	 */
-	public abstract void sketch(ResourceContext<T> context);
+	public abstract void sketch(String empInfoTerCode, ResourceContext<T> context);
 	
 	/**
 	 * Response length.

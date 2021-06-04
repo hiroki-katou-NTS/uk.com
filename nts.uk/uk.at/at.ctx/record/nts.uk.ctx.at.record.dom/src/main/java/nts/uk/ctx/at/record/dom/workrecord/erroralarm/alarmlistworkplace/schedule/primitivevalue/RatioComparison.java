@@ -8,7 +8,7 @@ import nts.arc.primitive.constraint.IntegerRange;
  *
  * @author Thanh.LNP
  */
-@IntegerRange(min = 1, max = 999)
+@IntegerRange(min = 1, max = 100)
 public class RatioComparison extends IntegerPrimitiveValue<RatioComparison> {
 
     private static final long serialVersionUID = 1L;

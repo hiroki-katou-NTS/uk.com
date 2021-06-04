@@ -15,7 +15,7 @@ module nts.uk.at.view.kmk003.a {
                 afternoon: KnockoutObservable<number>;
 
                 constructor() {
-                    this.oneDay = ko.observable(null);
+                    this.oneDay = ko.observable(0);
                     this.morning = ko.observable(0);
                     this.afternoon = ko.observable(0);
                 }
@@ -36,7 +36,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 resetData(){
-                    this.oneDay(null);
+                    this.oneDay(0);
                     this.morning(0);
                     this.afternoon(0);
                 }
@@ -80,20 +80,14 @@ module nts.uk.at.view.kmk003.a {
                 constructor() {
                     this.useAtr = ko.observable(false);
                     this.workNo = ko.observable(0);
-                    this.start = ko.observable(null);
-                    this.end = ko.observable(null);
+                    this.start = ko.observable(0);
+                    this.end = ko.observable(0);
                     this.valueChangedNotifier = ko.observable();
                     this.start.subscribe(() => {
                         this.valueChangedNotifier.valueHasMutated();
                     });
                     this.end.subscribe(() => {
                         this.valueChangedNotifier.valueHasMutated();
-                    });
-					this.useAtr.subscribe((useAtr) => {
-						if(!useAtr){
-                        this.start(null);
-						this.end(null);
-						}
                     });
                 }
 
@@ -112,8 +106,8 @@ module nts.uk.at.view.kmk003.a {
                 resetData(): void {
                     let self = this;
                     self.useAtr(false);
-                    self.start(null);
-                    self.end(null);
+                    self.start(0);
+                    self.end(0);
                 }
 
                 updateData(data: TimezoneDto) {
@@ -122,15 +116,18 @@ module nts.uk.at.view.kmk003.a {
 					if(data.useAtr){
 		                    this.end(data.end);
 		                    this.start(data.start);
-		            }
+		            } else {
+                        this.end(null);
+                        this.start(null);
+                    }
 				}
 				
                 toDto(): TimezoneDto {
                     var dataDTO: TimezoneDto = {
                         useAtr: this.useAtr(),
                         workNo: this.workNo(),
-                        end: this.end(),
-                        start: this.start()
+                        end: this.useAtr ? this.end() : null,
+                        start: this.useAtr ? this.start() : null
                     };
                     return dataDTO;
                 }

@@ -19,6 +19,7 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingAdapter;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcess;
+import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcessing.DailyStoredProcessResult;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.CalcDefaultValue;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
@@ -32,9 +33,9 @@ import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalFlexOvertimeSetting;
@@ -59,7 +60,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.breaktime.BreakTimeSheetGetter;
@@ -83,6 +83,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Formula;
@@ -216,9 +217,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			// personCommonSetting, tomorrowDayInfo, tomorrowDayInfo, converter);
 
 			// 任意項目の計算
-			// result.setIntegrationOfDaily(this.calcOptionalItem(afterOOtsukaModeCalc,
-			// converter, companyCommonSetting));
-
 			result.setIntegrationOfDaily(
 					this.calcOptionalItem(result.getIntegrationOfDaily(), converter, companyCommonSetting,personCommonSetting));
 		}
@@ -239,7 +237,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 
 		return result;
 	}
-
 
 	private ManageCalcStateAndResult calcDailyAttendancePerformance(IntegrationOfDaily integrationOfDaily,
 			ManagePerCompanySet companyCommonSetting, ManagePerPersonDailySet personCommonSetting,
@@ -345,6 +342,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	}
 
 	/**
+	 * 時間帯の作成
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @param timeSheetAtr 実働or予定時間帯作成から呼び出されたか
 	 * @param companyCommonSetting 会社別設定管理
@@ -538,6 +536,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				throw new RuntimeException(
 						"unknown workTimeMethodSet" + integrationOfWorkTime.get().getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet());
 		}
+		// 勤務外短時間勤務時間帯の作成
+		oneRange.createShortTimeWSWithoutWork(
+				workType.get(),
+				integrationOfWorkTime.get(),
+				integrationOfDaily,
+				companyCommonSetting,
+				personCommonSetting);
+		// 1日の計算範囲を返す
 		return Optional.of(oneRange);
 	}
 	
@@ -1006,15 +1012,20 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			}
 		}
 
-		val resultProcedure = storedProcdureProcess.dailyProcessing(integrationOfDaily, workType, workTime, predSet);
-		resultProcedure.ifPresent(tt -> {
-			integrationOfDaily.getAttendanceTimeOfDailyPerformance().ifPresent(tc -> {
-				tc.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()
-						.getOverTimeWork().ifPresent(ts -> {
-							ts.mergeOverTimeList(tt.getOverTimes());
-						});
+		Optional<DailyStoredProcessResult> resultProcedure = Optional.empty();
+		// 大塚モードの確認
+		if (AppContexts.optionLicense().customize().ootsuka()){
+			// 任意項目カスタマイズ
+			resultProcedure = this.storedProcdureProcess.dailyProcessing(integrationOfDaily, workType, workTime, predSet);
+			resultProcedure.ifPresent(tt -> {
+				integrationOfDaily.getAttendanceTimeOfDailyPerformance().ifPresent(tc -> {
+					tc.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()
+							.getOverTimeWork().ifPresent(ts -> {
+								ts.mergeOverTimeList(tt.getOverTimes());
+							});
+				});
 			});
-		});
+		}
 
 		// 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
 		List<Integer> attendanceItemIdList = integrationOfDaily.getEditState().stream()

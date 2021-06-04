@@ -268,7 +268,7 @@ public interface ApprovalStatusService {
 	 * @param employmentCDLst
 	 * @return
 	 */
-	public Map<String, String> getMailCountUnConfirmDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
+	public List<Pair<String, String>> getMailCountUnConfirmDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_対象再取得_日別上長.C:メール送信_対象再取得_日別上長
@@ -277,7 +277,7 @@ public interface ApprovalStatusService {
 	 * @param employmentCDLst
 	 * @return
 	 */
-	public Map<String, Pair<String, GeneralDate>> getMailCountUnApprDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
+	public List<Pair<String, Pair<String, GeneralDate>>> getMailCountUnApprDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_対象再取得_月別本人.C:メール送信_対象再取得_月別本人
@@ -286,7 +286,7 @@ public interface ApprovalStatusService {
 	 * @param employmentCDLst
 	 * @return
 	 */
-	public Map<String, String> getMailCountUnConfirmMonth(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
+	public List<Pair<String, String>> getMailCountUnConfirmMonth(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_対象再取得_月別上長.C:メール送信_対象再取得_月別上長
@@ -295,7 +295,7 @@ public interface ApprovalStatusService {
 	 * @param employmentCDLst
 	 * @return
 	 */
-	public Map<String, String> getMailCountUnApprMonth(DatePeriod period, YearMonth processingYm, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
+	public List<Pair<String, String>> getMailCountUnApprMonth(DatePeriod period, YearMonth processingYm, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_対象再取得_就業確定.C:メール送信_対象再取得_就業確定
@@ -321,7 +321,7 @@ public interface ApprovalStatusService {
 	 * @param paramPeriod
 	 * @return
 	 */
-	public List<ApprSttWkpEmpMailOutput> getDayApproverToSendMail(Map<String, Pair<String, GeneralDate>> mapDayApproval);
+	public List<ApprSttWkpEmpMailOutput> getDayApproverToSendMail(List<Pair<String, Pair<String, GeneralDate>>> lstDayApproval);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_月別上長の情報を取得.C:メール送信_月別上長の情報を取得
@@ -329,7 +329,7 @@ public interface ApprovalStatusService {
 	 * @param paramPeriod
 	 * @return
 	 */
-	public List<ApprSttWkpEmpMailOutput> getMonthApproverToSendMail(Map<String, String> mapMonthApproval, DatePeriod paramPeriod,
+	public List<ApprSttWkpEmpMailOutput> getMonthApproverToSendMail(List<Pair<String, String>> lstMonthApproval, DatePeriod paramPeriod,
 			Integer closureID, YearMonth yearMonth, ClosureDate closureDate);
 	
 	/**

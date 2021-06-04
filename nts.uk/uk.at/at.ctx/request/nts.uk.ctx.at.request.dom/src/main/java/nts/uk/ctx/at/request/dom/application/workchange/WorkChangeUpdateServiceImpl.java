@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.D
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 
 @Stateless
 public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
@@ -22,7 +23,8 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 	@Inject
 	private ApplicationRepository appRepository;
 	
-
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
@@ -64,7 +66,7 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 			}
 		}
 		// 暫定データの登録
-//		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, application.getEmployeeID(), listDate);
+		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, application.getEmployeeID(), listDate);
 
 		// アルゴリズム「4-2.詳細画面登録後の処理」を実行する
 		return detailAfterUpdate.processAfterDetailScreenRegistration(companyId, application.getAppID(), appDispInfoStartup);

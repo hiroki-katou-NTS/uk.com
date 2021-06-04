@@ -43,7 +43,7 @@ public class SendToNRLRemote extends NRLRequest<Frame> {
 	private TimeRecordSetUpdateListRepository trSetUpdateListRepository;
 
 	@Override
-	public void sketch(ResourceContext<Frame> context) {
+	public void sketch(String empInfoTerCode, ResourceContext<Frame> context) {
 		List<MapItem> items = new ArrayList<>();
 		items.add(FrameItemArranger.SOH());
 		items.add(new MapItem(Element.HDR, Command.TR_REMOTE.Response));

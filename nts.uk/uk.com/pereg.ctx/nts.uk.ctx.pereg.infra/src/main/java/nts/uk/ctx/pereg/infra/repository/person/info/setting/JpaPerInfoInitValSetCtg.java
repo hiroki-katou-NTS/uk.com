@@ -28,6 +28,7 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 			+ " AND cm.categoryParentCd IS NULL" + " AND b.cid =:companyId "
 			+ " AND cm.personEmployeeType = 2 " + " AND  cm.categoryType <> 2 " + " AND cm.categoryType <> 5 "
 			+ " AND cm.initValMasterObjCls = 1"
+			+ " AND cm.ppemtPerInfoCtgCmPK.contractCd = :contractCode"
 			+ " AND ((cm.salaryUseAtr = 1 AND :salaryUseAtr = 1) OR  (cm.personnelUseAtr = 1 AND :personnelUseAtr = 1) OR  (cm.employmentUseAtr = 1 AND :employmentUseAtr = 1))"
 			+ " OR (:salaryUseAtr =  0 AND  :personnelUseAtr = 0 AND :employmentUseAtr = 0 ))"
 			 + " ORDER BY e.disporder ";
@@ -119,7 +120,7 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 	}
 
 	@Override
-	public List<PerInfoInitValueSettingCtg> getAllCategory(String companyId, String settingId, int salaryUseAtr, int personnelUseAtr, int employmentUseAtr) {
+	public List<PerInfoInitValueSettingCtg> getAllCategory(String companyId, String settingId, int salaryUseAtr, int personnelUseAtr, int employmentUseAtr, String contractCode) {
 		
 		return this.queryProxy().query(SEL_ALL_CTG, Object[].class)
 				.setParameter("companyId", companyId)
@@ -127,6 +128,7 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 				.setParameter("salaryUseAtr", salaryUseAtr)
 				.setParameter("personnelUseAtr", personnelUseAtr)
 				.setParameter("employmentUseAtr", employmentUseAtr)
+				.setParameter("contractCode", contractCode)
 				.getList(c -> toDomain(c));
 	}
 

@@ -14,7 +14,8 @@ import {
     LateEarlyTimeZone,
     OutingTimeZone,
     LeaveType,
-    AppTimeType
+    AppTimeType,
+    GoingOutReason
 } from '../shr';
 
 @component({
@@ -233,7 +234,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
             ],
             outingTimeZones: outingTimeZones.map((i: OutingTimeZone) => ({
                     frameNo: i.workNo,
-                    outingAtr: i.appTimeType,
+                    outingAtr: i.appTimeType == GoingOutReason.PRIVATE ? AppTimeType.PRIVATE : AppTimeType.UNION,
                     startTime: i.timeZone.start,
                     endTime: i.timeZone.end
                 }))
@@ -423,7 +424,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
                 }
             });
         });
-        const privateOutings = outingTimeZones.filter((i: OutingTimeZone) => i.appTimeType == AppTimeType.PRIVATE);
+        const privateOutings = outingTimeZones.filter((i: OutingTimeZone) => i.appTimeType == GoingOutReason.PRIVATE);
         if (privateOutings.length > 0) {
             vm.details.push({
                 appTimeType: AppTimeType.PRIVATE,
@@ -443,7 +444,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
                 }
             });
         }
-        const unionOutings = outingTimeZones.filter((i: OutingTimeZone) => i.appTimeType == AppTimeType.UNION);
+        const unionOutings = outingTimeZones.filter((i: OutingTimeZone) => i.appTimeType == GoingOutReason.UNION);
         if (unionOutings.length > 0) {
             vm.details.push({
                 appTimeType: AppTimeType.UNION,
