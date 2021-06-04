@@ -71,65 +71,59 @@
 											</div>
 										</td>
 									</tr>
-									<tr>
-										<td></td>
-										<td>
-											<table class="form-default">
-												<tr>
-													<td >#{i18n.getText('KMF001_94')}</td>
-													<td>
-														<div tabindex="5"
-															data-bind="ntsComboBox: {
-																			options: $parent.vacationExpirationEnums,
-																			optionsValue: 'value',
-																			visibleItemsCount: 15,
-																			value: expirationDate,
-																			optionsText: 'localizedName',
-																			editable: false,
-																			enable: $parent.isComManaged,
-																			columns: [
-																				{ prop: 'localizedName', length: 10 }
-																			]}"></div>
-													</td>
-												</tr>
-												<tr>
-													<td >#{i18n.getText('KMF001_95')}</td>
-													<td><div tabindex="6"
-															data-bind="ntsSwitchButton: {
-															options: $parent.applyPermissionEnums,
-															optionsValue: 'value',
-															optionsText: 'localizedName',
-															enable: $parent.isComManaged,
-															value: allowPrepaidLeave}">
-														</div></td>
-
-												</tr>
-                        <tr>
-                          <td></td>
-                          <td>#{i18n.getText('KMF001_346')}</td>
-                        </tr>
-												<tr>
-													<td >#{i18n.getText('KMF001_327')}</td>
-													<td><div tabindex="60" id="h3_2"
-															data-bind="ntsRadioBoxGroup: {
-														name: '#[KMF001_327]',
-														options: $parent.h32,
-														optionsValue: 'value',
-														optionsText: 'localizedName',
-														value: manageDeadline,
-														enable:$parent.isComManaged }"></div></td>
-												</tr>
-												<tr>
-													<td >#{i18n.getText('KMF001_330')}</td>
-													<td>#{i18n.getText('KMF001_331')}</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
 								</table>
 							</td>
 						</tr>
 					</table>
+          <div class="setting-zone" data-bind="with: settingModel">
+            <div class="flex valign-center">
+              <div class="col-label">#{i18n.getText('KMF001_94')}</div>
+              <div tabindex="5"
+                data-bind="ntsComboBox: {
+                options: $parent.vacationExpirationEnums,
+                optionsValue: 'value',
+                visibleItemsCount: 15,
+                value: expirationDate,
+                optionsText: 'localizedName',
+                editable: false,
+                enable: $parent.isComManaged,
+                columns: [
+                  { prop: 'localizedName', length: 10 }
+                ]}">
+              </div>
+            </div>
+            <div class="flex valign-center">
+              <div class="col-label">#{i18n.getText('KMF001_95')}</div>
+              <div tabindex="6"
+                data-bind="ntsSwitchButton: {
+                options: $parent.applyPermissionEnums,
+                optionsValue: 'value',
+                optionsText: 'localizedName',
+                enable: $parent.isComManaged,
+                value: allowPrepaidLeave}">
+              </div>
+            </div>
+            <div class="flex valign-center">
+              <div class="col-label"></div>
+              <label>#{i18n.getText('KMF001_346')}</label>
+            </div>
+            <div class="flex valign-center">
+              <div class="col-label">#{i18n.getText('KMF001_327')}</div>
+              <div tabindex="60" id="h3_2"
+                data-bind="ntsRadioBoxGroup: {
+                name: '#[KMF001_327]',
+                options: $parent.h32,
+                optionsValue: 'value',
+                optionsText: 'localizedName',
+                value: manageDeadline,
+                enable:$parent.isComManaged }">
+              </div>
+            </div>
+            <div class="flex valign-center">
+              <label class="col-label">#{i18n.getText('KMF001_330')}</label>
+              <label>#{i18n.getText('KMF001_331')}</label>
+            </div>
+          </div>
 				</div>
 			</div>
 			<div id="tabpanel-2" role="tabpanel">
