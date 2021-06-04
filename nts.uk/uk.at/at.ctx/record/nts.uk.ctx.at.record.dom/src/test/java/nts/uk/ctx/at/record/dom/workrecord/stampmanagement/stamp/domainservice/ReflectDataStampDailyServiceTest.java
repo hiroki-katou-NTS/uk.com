@@ -46,7 +46,7 @@ public class ReflectDataStampDailyServiceTest {
 			true, 
 			true,
 			true,
-			ScheduleRecordClassifi.RECORD);
+			ScheduleRecordClassifi.RECORD, true);
 	
 	OutputTimeReflectForWorkinfo info = new OutputTimeReflectForWorkinfo();
 

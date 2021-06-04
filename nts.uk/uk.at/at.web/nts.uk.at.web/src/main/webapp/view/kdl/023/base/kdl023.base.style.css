@@ -117,11 +117,11 @@
 }
 
 #contents-area.kdl023-content-area.exec-mode {
-	height: calc(100vh - 45px) !important;
+	height: calc(100vh - 85px) !important;
 }
 
 #contents-area.kdl023-content-area.ref-mode {
-	height: calc(100vh - 45px) !important;
+	height: calc(100vh - 85px) !important;
 }
 
 #functions-area-bottom {
