@@ -68,7 +68,7 @@ public class JpaTempCareManagementRepository extends JpaRepository implements Te
 				domain.getSID(),
 				domain.getYmd(),
 				domain.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0),
-				domain.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value).orElse(0));
+				domain.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value + 1).orElse(0));
 
 		// 登録・更新
 		this.queryProxy().find(pk, KshdtInterimCareData.class).ifPresent(entity -> {

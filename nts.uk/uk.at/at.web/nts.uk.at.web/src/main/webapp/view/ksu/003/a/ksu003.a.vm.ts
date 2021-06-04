@@ -81,6 +81,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		checkCalcSum : boolean = true;
 		checkDrop : boolean = false;
 		// ver 4
+<<<<<<< HEAD
 		dataAb : KnockoutObservableArray<any> =  ko.observableArray([]);
 		displayRangeSelect : KnockoutObservable<number> = ko.observable(1); // A14 表示範囲
 		rangeList : KnockoutObservableArray<model.RangeModel>;
@@ -88,6 +89,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		dispStartChecked : KnockoutObservable<number> = ko.observable(0); // 初期表示の開始時刻	
 		selectedTimeRange: KnockoutObservable<number> = ko.observable(1); 
 
+=======
+		displayRangeSelect : KnockoutObservable<number> = ko.observable(1); // A14
+		rangeList : KnockoutObservableArray<model.RangeModel>;
+		initDispStartChecked : KnockoutObservable<number> = ko.observable(0);
+		dispStartChecked : KnockoutObservable<number> = ko.observable(0);
+		selectedTimeRange: KnockoutObservable<number> = ko.observable(1);
+>>>>>>> pj/at/release_ver4
 		constructor(data: any) {
 			let self = this;
 			// get data from sc A
@@ -4749,6 +4757,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 		}
 		
+<<<<<<< HEAD
 		getLocalStore(){
 			let self = this;
 			characteristics.restore("USER_KSU003_INFOR").done(function(data : any) {
@@ -4777,6 +4786,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		
 		// 決定（A14_11）をクリックする (click A14_11)
 		public closePopupA14() {
+=======
+		public closePopupA14(): void {
+>>>>>>> pj/at/release_ver4
 			let self = this;
 			$('#A14').ntsPopup("hide");
 			self.timeRange = self.selectedTimeRange() == 0 ? 24 : 48;// tổng số cột ở phần detail (24 or 48)
@@ -4784,6 +4796,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			self.dispStart = (self.dispStartChecked() * 60) / 5;// thời gian bắt đầu ở header phần detail
 			self.dispStartHours = self.dispStartChecked();
 			self.destroyAndCreateGrid(self.lstEmpId, 0);
+<<<<<<< HEAD
 			
 			let param = {
 				dispRange : self.displayRangeSelect(),
@@ -4802,6 +4815,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		}
 		
 		// Xử lý ver 4
+=======
+		}
+>>>>>>> pj/at/release_ver4
 
 		public closeDialog(): void {
 			let self = this;

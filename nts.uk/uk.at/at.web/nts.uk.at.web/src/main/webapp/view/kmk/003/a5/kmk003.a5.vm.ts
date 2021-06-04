@@ -469,9 +469,9 @@ module a5 {
                         //固定の場合の実績の休憩計算方法
                         fixedCalcMethod: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod(),
                         //私用外出の計上方法
-                        usePrivateGoOutRest: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest(),
+                        usePrivateGoOutRest: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest(),
                         //組合外出の計上方法
-                        useAssoGoOutRest: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest(),
+                        useAssoGoOutRest: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest(),
                     }
                 } else {//flex
                     dataFlexFlow = {

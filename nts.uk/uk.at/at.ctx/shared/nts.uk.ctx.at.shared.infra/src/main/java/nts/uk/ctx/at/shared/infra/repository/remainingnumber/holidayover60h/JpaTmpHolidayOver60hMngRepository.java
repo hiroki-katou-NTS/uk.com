@@ -12,6 +12,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
@@ -52,7 +53,8 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 				RemainType.SIXTYHOUR,
 				Optional.ofNullable(x.getInt("USED_TIME") == null ? null : new UseTime(x.getInt("USED_TIME"))),
 				Optional.ofNullable(new DigestionHourlyTimeType(x.getInt("TIME_DIGESTIVE_ATR") == 1,
-						Optional.ofNullable(x.getEnum("TIME_HD_TYPE", AppTimeType.class)))));
+						x.getInt("TIME_HD_TYPE") == 0 ? Optional.empty()
+								: Optional.ofNullable(EnumAdaptor.valueOf( x.getInt("TIME_HD_TYPE") - 1, AppTimeType.class)))));
 	}
 
 	@Override
@@ -71,7 +73,7 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 				dataMng.getSID(),
 				dataMng.getYmd(),
 				dataMng.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0),
-				dataMng.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value).orElse(0));
+				dataMng.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value + 1).orElse(0));
 
 		this.queryProxy().find(pk, KrcmtInterimHd60h.class).ifPresent(entity-> {
 			entity.remainMngId = dataMng.getRemainManaID();

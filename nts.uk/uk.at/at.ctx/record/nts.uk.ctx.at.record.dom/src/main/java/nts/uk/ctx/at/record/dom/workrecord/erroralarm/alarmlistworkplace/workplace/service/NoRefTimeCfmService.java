@@ -76,7 +76,7 @@ public class NoRefTimeCfmService {
                     }
 
                     // 「アラーム値メッセージ」を作成します。
-                    String message = TextResource.localize("KAL020_200", String.valueOf(startYear), wpCode);
+                    String message = TextResource.localize("KAL020_200", String.valueOf(startYear));
 
                     // ドメインオブジェクト「抽出結果」を作成してリスト「抽出結果」に追加
                     ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),

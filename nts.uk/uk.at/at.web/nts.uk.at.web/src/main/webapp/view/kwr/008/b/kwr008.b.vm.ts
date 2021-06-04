@@ -273,7 +273,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             if (itemOutByName[1].listOperationSetting().length == 0) {
                 itemOutByName[1].listOperationSetting().push(
                     new CalculationFormulaOfItem(
-                        202,    //attendanceItemId
+                        203,    //attendanceItemId
                         1,      // operation
                         getText('KWR008_70')
                     )
@@ -467,7 +467,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     const attendanceItems: model.AttendanceItemDto[] = vm.attendanceItem.filter((atdItem) => atdItem.attendanceItemId === item.itemId);
                     const targetItem = attendanceItems.length > 0 ? attendanceItems[0] : null;
                     if (targetItem) {
-                        if (operationName) {
+                        if (operationName || item.operator.equals("－")) {
                             operationName = operationName + " " +  item.operator + " " + targetItem.attendanceItemName;
                         } else {
                             operationName = targetItem.attendanceItemName;
@@ -491,7 +491,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     const attendanceItems: model.AttendanceItemDto[] = vm.attendanceItem.filter((atdItem) => atdItem.attendanceItemId === item.attendanceItemId());
                     const targetItem = attendanceItems.length > 0 ? attendanceItems[0] : null;
                     if (targetItem) {
-                        if (operationName) {
+                        if (operationName || item.operation() !== 1) {
                             operationName = operationName + " "
                                           + (item.operation() === 1 ? ADDITION : SUBTRACTION)
                                           + " " + targetItem.attendanceItemName;
@@ -543,7 +543,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                   , valOutFormat: number) {
             let self = this;
             self.valOutFormat.subscribe((data) => {
-                if (!_.isNull(self.oldValOutFormat) && data !== self.oldValOutFormat) {
+                if (!_.isNull(self.oldValOutFormat) && data !== self.oldValOutFormat && !nts.uk.text.isNullOrEmpty(self.calculationExpression())) {
                     confirm({ messageId: "Msg_2088" }).ifYes(() => {
                         self.oldValOutFormat = data;
                         self.buildOutputTargetItem([]);

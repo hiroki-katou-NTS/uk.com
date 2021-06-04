@@ -494,6 +494,9 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 vm.application.appDate = appDatesLst[0];
                 vm.application.opAppStartDate = appDatesLst[0];
                 vm.application.opAppEndDate = appDatesLst[0];
+                if (!vm.isValidateAll) {
+                    vm.isValidateAll = true;
+                }
             }
             let params = {
                 appDates: appDatesLst,

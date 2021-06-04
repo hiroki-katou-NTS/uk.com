@@ -6,6 +6,7 @@ import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class AdvanceAcquisitionService {
         // Input．List＜職場ID＞をループする
         for (String workplaceId : workplaceIds) {
             // [No.597]職場の所属社員を取得する
-            List<EmployeeInfoImported> employees = workplaceAdapter.getLstEmpByWorkplaceIdsAndPeriod(workplaceIds, period);
+            List<EmployeeInfoImported> employees = workplaceAdapter.getLstEmpByWorkplaceIdsAndPeriod(Arrays.asList(workplaceId), period);
             // Map＜職場ID、List＜社員ID＞＞を作成
             empsByWp.put(workplaceId, employees);
         }

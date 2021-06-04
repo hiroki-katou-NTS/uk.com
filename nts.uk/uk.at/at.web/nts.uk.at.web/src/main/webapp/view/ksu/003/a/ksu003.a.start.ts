@@ -5,7 +5,12 @@ module nts.uk.at.view.ksu003.a {
 		nts.uk.characteristics.restore("USER_KSU003_INFOR").done(function(data : any) {
 			let screenModel = {
 			viewmodelA: new viewmodel.ScreenModel(data),
+<<<<<<< HEAD
             viewmodelAb: new nts.uk.at.view.ksu003.ab.viewmodel.ScreenModel(data)
+=======
+			// ver 4 - comment
+            //viewmodelAb: new nts.uk.at.view.ksu003.ab.viewmodel.ScreenModel()
+>>>>>>> pj/at/release_ver4
 			}
 			nts.uk.ui.block.grayout();
 			screenModel.viewmodelA.startPage().done(function() {
@@ -13,10 +18,13 @@ module nts.uk.at.view.ksu003.a {
 				$('#ui-area').css('display','');
 				$(window).resize(function() {
 					screenModel.viewmodelA.setPositionButonDownAndHeightGrid();
+<<<<<<< HEAD
 				});
 				screenModel.viewmodelAb.startPage().done(function() {
 					$('#screen-Ab1').css('display','');
 					$('#screen-Ab2').css('display','');
+=======
+>>>>>>> pj/at/release_ver4
 				});
 			});
 			initEvent();

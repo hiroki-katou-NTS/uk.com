@@ -13,8 +13,8 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -132,7 +132,7 @@ public class WorkHolidayTimeDailyPerformDto implements ItemConst, AttendanceItem
 		return domain == null ? null : new WorkHolidayTimeDailyPerformDto(
 				ConvertHelper.mapTo(domain.getHolidayWorkFrameTimeSheet(), c -> new HolidayWorkFrameTimeSheetDto(
 						getTimeSpan(c.getTimeSheet()), 
-						c.getHolidayWorkTimeSheetNo().v())), 
+						c.getHolidayWorkTimeSheetNo().v(), c.getHdTimeCalc().v(), c.getTranferTimeCalc().v())), 
 				HolidayMidnightWorkDto.fromHolidayMidnightWork(domain.getHolidayMidNightWork() == null || !domain.getHolidayMidNightWork().isPresent()
 																? null :domain.getHolidayMidNightWork().get()), 
 				domain.getHolidayTimeSpentAtWork() == null ? null : domain.getHolidayTimeSpentAtWork().valueAsMinutes(), 
@@ -164,7 +164,8 @@ public class WorkHolidayTimeDailyPerformDto implements ItemConst, AttendanceItem
 		return new HolidayWorkTimeOfDaily(
 				ConvertHelper.mapTo(holidyWorkFrameTimeSheet,
 						(c) -> new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(c.getHolidayWorkFrameNo()),
-								createTimeSheet(c.getTimeSheet()))),
+								createTimeSheet(c.getTimeSheet()), new AttendanceTime(c.getHdTimeCalc()),
+								new AttendanceTime(c.getTranferTimeCalc()))),
 				ConvertHelper.mapTo(holidayWorkFrameTime,
 						(c) -> new HolidayWorkFrameTime(new HolidayWorkFrameNo(c.getNo()),
 								createTimeWithCalc(c.getHolidayWorkTime()),
