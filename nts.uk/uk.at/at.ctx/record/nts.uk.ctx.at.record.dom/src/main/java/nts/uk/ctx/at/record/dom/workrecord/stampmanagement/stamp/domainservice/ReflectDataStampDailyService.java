@@ -75,7 +75,8 @@ public class ReflectDataStampDailyService {
 				true, 
 				true,
 				true,
-				ScheduleRecordClassifi.RECORD);
+				ScheduleRecordClassifi.RECORD,
+				true);
 
 		//	$反映後の打刻 = require.打刻を反映する($日別実績, $打刻反映範囲, 打刻)
 		List<ErrorMessageInfo> errorMessageInfos = require.reflectStamp(stamp,
