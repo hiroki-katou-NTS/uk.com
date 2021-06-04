@@ -22,12 +22,12 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         columns: KnockoutObservableArray<any> = ko.observableArray([
                     { headerText: 'id', prop: 'id', width: '0px', hidden: true },
                     { headerText: resource.getText('CMM018_69'), prop: 'code', width: '115px' },
-                    { headerText: resource.getText('CMM018_70'), prop: 'name', width: '170px' }
+                    { headerText: resource.getText('CMM018_70'), prop: 'name', width: '160px' }
                 ]);
         selectFormSet: KnockoutObservable<number> = ko.observable(1);
         //GROUP
         columns2: KnockoutObservableArray<any> = ko.observableArray([
-                    { headerText: resource.getText('CMM018_69'), prop: 'code', width: '115px' },
+                    { headerText: resource.getText('CMM018_69'), prop: 'code', width: '120px' },
                     { headerText: resource.getText('CMM018_70'), prop: 'name', width: '300px' }
                 ]);
         selectFormSetG: KnockoutObservable<number> = ko.observable(1);
@@ -40,8 +40,8 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         selectG2: KnockoutObservable<string> = ko.observable("");
         //CHI DINH
         columns3: KnockoutObservableArray<any> = ko.observableArray([
-                    { headerText: resource.getText('CMM018_69'), prop: 'code', width: '60px' },
-                    { headerText: resource.getText('CMM018_70'), prop: 'name', width: '185px' }
+                    { headerText: resource.getText('CMM018_69'), prop: 'code', width: '120px' },
+                    { headerText: resource.getText('CMM018_70'), prop: 'name', width: '170px' }
                 ]);
         selectFormSetS: KnockoutObservable<number> = ko.observable(1);
         lstJobGS: KnockoutObservableArray<any> = ko.observableArray([]);
