@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -63,7 +64,15 @@ public interface AttendanceTimeOfWeeklyRepository {
 	 * @return 月別実績の勤怠時間　（開始日順）
 	 */
 	List<AttendanceTimeOfWeekly> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths);
-
+	
+	/**
+	 * 検索　（社員IDリストと基準日）
+	 * @param employeeIds 社員IDリスト
+	 * @param datePeriod 基準日
+	 * @return 月別実績の勤怠時間　（開始日順）
+	 */
+	List<AttendanceTimeOfWeekly> findBySidsAndDatePeriod(List<String> employeeIds, DatePeriod datePeriod);
+	
 	/**
 	 * 検索　（基準日）
 	 * @param employeeId 社員ID

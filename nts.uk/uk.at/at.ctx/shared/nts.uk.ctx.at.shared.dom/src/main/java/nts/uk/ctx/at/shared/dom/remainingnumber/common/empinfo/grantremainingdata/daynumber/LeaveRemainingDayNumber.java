@@ -1,12 +1,10 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber;
 
-import java.util.Optional;
-
 import nts.arc.primitive.HalfIntegerPrimitiveValue;
 import nts.arc.primitive.constraint.HalfIntegerRange;
 
 /**
- * 休暇残日数  
+ * 月別休暇残日数  
  * @author masaaki_jinno
  *
  */

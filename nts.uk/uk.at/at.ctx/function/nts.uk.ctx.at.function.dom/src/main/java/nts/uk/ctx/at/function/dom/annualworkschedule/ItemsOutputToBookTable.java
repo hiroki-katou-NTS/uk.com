@@ -47,7 +47,7 @@ public class ItemsOutputToBookTable extends DomainObject {
 			throw new BusinessException("Msg_881");
 		}
 		// 勤怠項目の件数＜＝50でなければならない
-		if (this.sortBy > 2 && this.listOperationSetting.size() >= 50) {
+		if (this.sortBy > 2 && this.listOperationSetting.size() > 50) {
 			// #Msg_882
 			throw new BusinessException("Msg_882");
 		}

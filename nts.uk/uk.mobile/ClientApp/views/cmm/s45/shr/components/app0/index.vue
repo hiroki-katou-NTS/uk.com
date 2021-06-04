@@ -65,7 +65,7 @@
         </div>
     </div>
     <!-- B3_2 -->
-    <div v-if="c3_2">
+    <div v-if="c3_1">
         <div class="row mt-1 mb-1">
             <div class="col-1.5 pl-3 pr-1 text-left">
                 {{workHours2.start}}

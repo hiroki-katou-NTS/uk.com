@@ -969,6 +969,10 @@ module nts.uk.at.view.kwr004.b {
       this.dailyAttributes(dailyAttributes || []);
       this.type = type;
       this.selectedTime = selectedTime
+
+        this.independentCalcClassic.subscribe((value)=>{
+            nts.uk.ui.dialog.info({ messageId: "Msg_2087" });
+        })
     }
   }
 
