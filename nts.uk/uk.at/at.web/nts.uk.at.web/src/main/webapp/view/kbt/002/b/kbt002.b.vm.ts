@@ -20,7 +20,7 @@ module nts.uk.at.view.kbt002.b {
   @bean()
   export class KBT002BViewModel extends ko.ViewModel {
     // Set new mode or update mode
-    isNewMode: KnockoutObservable<boolean> = ko.observable(null);
+    isNewMode: KnockoutObservable<boolean> = ko.observable(true);
 
     execItemList: KnockoutObservableArray<any> = ko.observableArray([]);
     workplaceList: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -88,6 +88,7 @@ module nts.uk.at.view.kbt002.b {
     created() {
       const vm = this;
       vm.selectedTaskEnableSetting(TaskEnableSettingClassificationCode.ENABLED);
+      vm.executionTaskWarning(vm.buildExecutionTaskWarningStr(undefined));
       vm.selectedTab(TabPanelId.TAB_1);
       vm.$ajax(API.getMasterInfo)
         .then((response: any) => {
