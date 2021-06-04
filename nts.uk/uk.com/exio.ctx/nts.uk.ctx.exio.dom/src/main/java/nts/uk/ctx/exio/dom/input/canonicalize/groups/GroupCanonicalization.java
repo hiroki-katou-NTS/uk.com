@@ -2,6 +2,7 @@ package nts.uk.ctx.exio.dom.input.canonicalize.groups;
 
 import java.util.List;
 
+import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
@@ -28,7 +29,7 @@ public interface GroupCanonicalization {
 	 * @param recordsToChange
 	 * @param recordsToDelete
 	 */
-	void adjust(
+	AtomTask adjust(
 			RequireAdjsut require,
 			ExecutionContext context,
 			List<AnyRecordToChange> recordsToChange,

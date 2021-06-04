@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.val;
+import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
@@ -88,7 +89,7 @@ public class TaskCanonicalization implements GroupCanonicalization {
 	}
 
 	@Override
-	public void adjust(
+	public AtomTask adjust(
 			RequireAdjsut require,
 			ExecutionContext context,
 			List<AnyRecordToChange> recordsToChange,
@@ -98,10 +99,12 @@ public class TaskCanonicalization implements GroupCanonicalization {
 			throw new RuntimeException("既存データの変更はありえない");
 		}
 		
-		for (val record : recordsToDelete) {
-			val key = new UniqueKey(record);
-			require.deleteTask(context.getCompanyId(), key.frameNo, key.code);
-		}
+		return AtomTask.of(() -> {
+			for (val record : recordsToDelete) {
+				val key = new UniqueKey(record);
+				require.deleteTask(context.getCompanyId(), key.frameNo, key.code);
+			}
+		});
 	}
 	
 	public static interface RequireAdjust {

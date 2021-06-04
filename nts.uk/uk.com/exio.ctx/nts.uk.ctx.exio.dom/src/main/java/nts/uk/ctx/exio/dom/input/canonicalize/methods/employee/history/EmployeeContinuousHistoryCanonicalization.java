@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.Value;
 import lombok.val;
+import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.exio.dom.input.DataItemList;
@@ -236,19 +237,22 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 	}
 	
 	@Override
-	public void adjust(
+	public AtomTask adjust(
 			RequireAdjsut require,
 			ExecutionContext context,
 			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete) {
 
-		recordsToDelete.stream()
-			.map(EmployeeHistoryItem::new)
-			.forEach(item -> adjustDeleting(require, context, item));
+		return AtomTask.of(() -> {
 
-		recordsToChange.stream()
-			.map(EmployeeHistoryItem::new)
-			.forEach(item -> adjustChanging(require, context, item));
+			recordsToDelete.stream()
+				.map(EmployeeHistoryItem::new)
+				.forEach(item -> adjustDeleting(require, context, item));
+
+			recordsToChange.stream()
+				.map(EmployeeHistoryItem::new)
+				.forEach(item -> adjustChanging(require, context, item));
+		});
 	}
 	
 	/**
