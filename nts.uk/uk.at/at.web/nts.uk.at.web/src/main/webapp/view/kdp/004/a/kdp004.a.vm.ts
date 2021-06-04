@@ -71,10 +71,6 @@ module nts.uk.at.view.kdp004.a {
 
 			constructor() {
 				let self = this;
-
-				setInterval(() => {
-					self.loadNotice();
-				}, 5000);
 			}
 
 			public startPage(): JQueryPromise<void> {
@@ -272,9 +268,9 @@ module nts.uk.at.view.kdp004.a {
 											});
 										}
 									})
-								if (ko.unwrap(self.errorMessage) === "") {
-									self.errorMessage(self.getErrorNotUsed(1));
-								}
+									if (ko.unwrap(self.errorMessage) === "") {
+										self.errorMessage(self.getErrorNotUsed(1));
+									}
 								self.isUsed(false);
 								return;
 							}
@@ -513,7 +509,7 @@ module nts.uk.at.view.kdp004.a {
 							});
 					} else {
 						console.log(loginResult.msgErrorId);
-
+						
 						if (loginResult.msgErrorId == "Msg_1527") {
 							self.isUsed(false);
 							self.errorMessage(getMessage("Msg_1527"));
@@ -720,72 +716,43 @@ module nts.uk.at.view.kdp004.a {
 							vm.$window.modal('at', DIALOG.F, { mode, companyId })
 								.then((output: string) => {
 									if (output === 'loginSuccess') {
-										vm.$window.modal('at', DIALOG.P);
+										vm.$window.modal('at', DIALOG.P)
+											.then(() => {
+												// self.loadNotice(self.loginInfo);
+												window.location.reload(false);
+											})
 									}
 								});
 						}
 					});
 			}
 
-			loadNotice(loginInfo?: any): JQueryPromise<any> {
+			loadNotice(loginInfo: any): JQueryPromise<any> {
 				let vm = new ko.ViewModel();
 				const self = this;
 				let dfd = $.Deferred<any>();
 				let startDate = vm.$date.now();
 				startDate.setDate(startDate.getDate() - 3);
-				var wkpIds: string[];
 
-				if (loginInfo) {
-					wkpIds = loginInfo.selectedWP;
-				} else {
-					vm.$window
-						.storage('loginKDP004')
-						.then((data: any) => {
-							if (data.selectedWP.length > 0) {
-								wkpIds = data.selectedWP;
-							}
-						})
-						.then(() => {
-							if (wkpIds && wkpIds.length > 0) {
-								const param = {
-									periodDto: {
-										startDate: startDate,
-										endDate: vm.$date.now()
-									},
-									wkpIds: wkpIds
-								}
-
-								vm.$ajax(API.NOTICE, param)
-									.done((data: IMessage) => {
-										self.messageNoti(data);
-									});
-							}
-						});
+				const param = {
+					periodDto: {
+						startDate: startDate,
+						endDate: vm.$date.now()
+					},
+					wkpIds: loginInfo.selectedWP
 				}
 
-
-
-				if (wkpIds && wkpIds.length > 0) {
-					const param = {
-						periodDto: {
-							startDate: startDate,
-							endDate: vm.$date.now()
-						},
-						wkpIds: loginInfo.selectedWP
-					}
-
-					vm.$blockui('invisible')
-						.then(() => {
-							vm.$ajax(API.NOTICE, param)
-								.done((data: IMessage) => {
-									self.messageNoti(data);
-								});
-						})
-						.always(() => {
-							dfd.resolve();
-							vm.$blockui('clear');
-						});
-				}
+				vm.$blockui('invisible')
+					.then(() => {
+						vm.$ajax(API.NOTICE, param)
+							.done((data: IMessage) => {
+								self.messageNoti(data);
+							});
+					})
+					.always(() => {
+						dfd.resolve();
+						vm.$blockui('clear');
+					});
 				return dfd.promise();
 			}
 

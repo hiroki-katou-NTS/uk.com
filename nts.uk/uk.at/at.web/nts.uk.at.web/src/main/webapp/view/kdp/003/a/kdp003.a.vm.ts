@@ -125,10 +125,6 @@ module nts.uk.at.kdp003.a {
 						}
 					});
 			});
-
-			setInterval(() => {
-				vm.loadNotice();
-			}, 5000);
 		}
 
 		// get WorkPlace from basyo -> save locastorage.
@@ -191,67 +187,39 @@ module nts.uk.at.kdp003.a {
 						vm.$window.modal('at', DIALOG.F, { mode, companyId })
 							.then((output: string) => {
 								if (output === 'loginSuccess') {
-									vm.$window.modal('at', DIALOG.P);
+									vm.$window.modal('at', DIALOG.P)
+										.then(() => {
+											window.location.reload(false);
+										});
 								}
 							});
 					}
 				});
 		}
 
-		loadNotice(storage?: StorageData) {
+		loadNotice(storage: StorageData) {
 			const vm = this;
 			let startDate = vm.$date.now();
 			startDate.setDate(startDate.getDate() - 3);
-			var wkpIds: string[];
 
-			if (storage) {
-				wkpIds = storage.WKPID;
-			} else {
-				vm.$window
-					.storage('loginKDP003')
-					.then((data: any) => {
-						if (data.WKPID.length > 0) {
-							wkpIds = data.WKPID;
-						}
-					})
-					.then(() => {
-						if (wkpIds && wkpIds.length > 0) {
-							const param = {
-								periodDto: {
-									startDate: startDate,
-									endDate: vm.$date.now()
-								},
-								wkpIds: wkpIds
-							}
-
-							vm.$ajax(API.NOTICE, param)
-								.done((data: IMessage) => {
-									vm.messageNoti(data);
-								});
-						}
-					});
+			const param = {
+				periodDto: {
+					startDate: startDate,
+					endDate: vm.$date.now()
+				},
+				wkpIds: storage.WKPID
 			}
 
-			if (wkpIds && wkpIds.length > 0) {
-				const param = {
-					periodDto: {
-						startDate: startDate,
-						endDate: vm.$date.now()
-					},
-					wkpIds: wkpIds
-				}
-
-				vm.$blockui('invisible')
-					.then(() => {
-						vm.$ajax(API.NOTICE, param)
-							.done((data: IMessage) => {
-								vm.messageNoti(data);
-							});
-					})
-					.always(() => {
-						vm.$blockui('clear');
-					});
-			}
+			vm.$blockui('invisible')
+				.then(() => {
+					vm.$ajax(API.NOTICE, param)
+						.done((data: IMessage) => {
+							vm.messageNoti(data);
+						});
+				})
+				.always(() => {
+					vm.$blockui('clear');
+				});
 		}
 
 		mounted() {
@@ -373,6 +341,8 @@ module nts.uk.at.kdp003.a {
 				})
 				.then((data: LoginData) => {
 
+					console.log(data);
+
 					var exest = false;
 					var check1527 = false;
 
@@ -414,7 +384,7 @@ module nts.uk.at.kdp003.a {
 				})
 				.then((data: LoginData) => {
 					var check1527 = false;
-
+					
 					if (data.loginData === undefined) {
 						vm.setMessage({ messageId: 'Msg_1647' });
 
@@ -753,6 +723,9 @@ module nts.uk.at.kdp003.a {
 					}
 				})
 				.then((data: LoginData) => {
+
+					console.log(data);
+
 					var exist = true;
 					var exist1 = false;
 					var checkExistBasyo = false;
@@ -786,6 +759,8 @@ module nts.uk.at.kdp003.a {
 							checkExistBasyo = false;
 						}
 					}
+
+					console.log(checkExistBasyo);
 
 					if (checkExistBasyo) {
 						checkExistBasyo = false;
