@@ -55,6 +55,8 @@ module nts.uk.at.view.knr002.c {
             // grid setting data
             settingData: Array<SettingValue> = [];
             selectedRowIndex: KnockoutObservable<number> = ko.observable(-1);
+            inputTimeError: boolean = false;
+            inputModeValue: number = 0;
 
             constructor() {
                 const vm = this;   
@@ -84,6 +86,68 @@ module nts.uk.at.view.knr002.c {
                     vm.setInputMode(rowData.inputType);
                     vm.bindDataByType(rowData);
                 });
+
+                vm.updateValue.subscribe((value) => {
+                    console.log(value, 'update value day');
+                });
+
+                $( "#C6_5" ).keyup((event: any) => {
+                    vm.checkLetterModeInput(event);
+                });
+
+                $('#C7_7').keyup((event: any) => {
+                    vm.checkTimeModeInput(event);
+                });
+            }
+
+            private checkLetterModeInput(event: any) {
+                const vm = this;
+                let inputValue = $('#C6_5').val();
+                console.log(inputValue.length, 'input lenght'); 
+                if (event.keyCode  !== 8) {
+                    if (vm.inputModeValue == 0 || vm.inputModeValue == 1) {
+                        let reg = new RegExp('[a-zA-Z]');
+                        if (parseInt(inputValue) < parseInt(vm.fromLetter()) || parseInt(inputValue) > parseInt(vm.toLetter()) || inputValue.length > vm.numOfDigits() || reg.test(inputValue)) {
+                            nts.uk.ui.dialog.error({messageId: "Msg_2184"});
+                        }
+                    }
+
+                    if (vm.inputModeValue == 3) {
+                        if (inputValue.length > vm.numOfDigits()) {
+                            nts.uk.ui.dialog.error({messageId: "Msg_2184"});
+                        }
+                    }
+                }
+            }
+
+            private checkTimeModeInput(event: any) {
+                const vm = this;
+                let inputValue = $('#C7_7').val();
+                if (event.keyCode !== 8) {
+                    if (inputValue.length > vm.numOfDigits()) {
+                        nts.uk.ui.dialog.error({messageId: "Msg_2184"});
+                    } else {
+                        if (vm.rowData().inputRange == '9900') {
+                            if (inputValue !== '9900') {
+                                vm.timeModeCheckInput(inputValue.length, inputValue);
+                            }
+                        } else {
+                            vm.timeModeCheckInput(inputValue.length, inputValue);
+                        }
+                    }
+                }
+            }
+
+            private timeModeCheckInput(numOfDigit: number, input: string) {
+                const vm = this;
+                if (numOfDigit >= 3) {
+                    if (parseInt(input.substr(0, 2)) > 23 || parseInt(input.substr(0, 2)) < 0 || parseInt(input.substr(2)) > 59 || parseInt(input.substr(2)) < 0) {
+                        nts.uk.ui.dialog.error({messageId: "Msg_2184"});
+                        vm.inputTimeError = true;
+                    } else {
+                        vm.inputTimeError = false;
+                    }
+                }
             }
 
             private bindDataByType(rowData: any) {
@@ -189,19 +253,6 @@ module nts.uk.at.view.knr002.c {
                 }
             }
 
-            private checkContainOnlyOneCharacter(setValue: string): boolean {
-                const vm = this; 
-
-                for (let i = 0; i < setValue.length; i++) {
-                    if (setValue.charAt(i) !== '1') {
-                      return false;
-                    }
-                  }
-
-                return true;
-            }
-
-
             public startPage(): JQueryPromise<void> {
                 var vm = this;
                 
@@ -262,7 +313,12 @@ module nts.uk.at.view.knr002.c {
                 blockUI.invisible();
                 service.register(command)
                 .done((res: any) => {
-                    
+                    let updateInput = { 
+                        listEmpTerminalCode: [vm.empInfoTerCode()]
+                    }
+                    service.updateRemoteSettings(updateInput).done(() => {})
+                    .fail(() => {})
+                    .always(() => blockUI.clear());
                 })
                 .fail((err: any) => { 
                     nts.uk.ui.dialog.error({ messageId: err.messageId });
@@ -317,10 +373,38 @@ module nts.uk.at.view.knr002.c {
                     return item1.majorNo - item2.majorNo;
                 });
 
+                let inputValue = $('#C6_5').val();
+
                 switch(vm.inputMode()) {
                     case INPUT_TYPE.LETTER:
                     case INPUT_TYPE.TIME:  
-                        if (!(vm.updateValue().length > 0)) {
+
+                        let reg = new RegExp('[a-zA-Z]');
+                        
+                        if (vm.inputModeValue == 0 || vm.inputModeValue == 1) {
+                            if (parseInt(inputValue) < parseInt(vm.fromLetter()) || parseInt(inputValue) > parseInt(vm.toLetter()) || inputValue.length > vm.numOfDigits() || reg.test(inputValue)) {
+                                nts.uk.ui.dialog.error({messageId: "Msg_2184"});
+                                break;
+                            }
+                        }
+
+                        let inputValue2 = $('#C7_7').val();
+                        if (vm.inputModeValue == 4) {
+                            if (inputValue2.length > vm.numOfDigits()) {
+                                nts.uk.ui.dialog.error({messageId: "Msg_2184"});
+                                break;
+                            } else {
+                                if (vm.rowData().inputRange == '9900') {
+                                    if (inputValue2 !== '9900') {
+                                        vm.timeModeCheckInput(inputValue2.length, inputValue2);
+                                    }
+                                } else {
+                                    vm.timeModeCheckInput(inputValue2.length, inputValue2);
+                                }
+                            }
+                        }
+
+                        if (!(vm.updateValue().length > 0) || vm.inputTimeError) {
                             break;
                         }
                         vm.checkExistBeforeAdd(vm.rowData().smallClassification, vm.rowData().majorClassification);
@@ -328,6 +412,12 @@ module nts.uk.at.view.knr002.c {
                         vm.settingData.push(item);     
                         break;
                     case INPUT_TYPE.LETTER2:  
+                        if (vm.inputModeValue == 3) {
+                            if (inputValue.length > vm.numOfDigits()) {
+                                nts.uk.ui.dialog.error({messageId: "Msg_2184"});
+                                break;
+                            }
+                        }
                         if (!(vm.updateValue().length > 0)) {
                             break;
                         }
@@ -349,7 +439,7 @@ module nts.uk.at.view.knr002.c {
                         if (indexInputRange == -1) {
                             break;
                         }
-                        let newRow = new SettingValue(Math.random(), vm.rowData().majorNo, vm.rowData().majorClassification, vm.rowData().smallNo, vm.rowData().smallClassification, 'yes', '⦿' + vm.updateValueList()[indexInputRange].name, vm.rowData().variableName, vm.selectedUpdateValue());
+                        let newRow = new SettingValue(Math.random(), vm.rowData().majorNo, vm.rowData().majorClassification, vm.rowData().smallNo, vm.rowData().smallClassification, vm.selectedUpdateValue(), vm.rowData().inputRange, vm.rowData().variableName, vm.selectedUpdateValue());
                         vm.settingData.push(newRow);
                         break;
                     case INPUT_TYPE.CHECK:
@@ -541,6 +631,8 @@ module nts.uk.at.view.knr002.c {
             private setInputMode(inputType: number) {
                 const vm = this;
 
+                vm.inputModeValue = inputType;
+
                 switch (inputType) {
                     case 0:
                     case 1:
@@ -612,6 +704,10 @@ module nts.uk.at.view.knr002.c {
                 vm.variableName = variableName;
                 vm.updateValue = updateValue;
             }
+        }
+
+        interface UpdateRemoteInput {
+            listEmpTerminalCode: Array<String>;
         }
         interface SelectionItemsDto {
             majorNo: number;

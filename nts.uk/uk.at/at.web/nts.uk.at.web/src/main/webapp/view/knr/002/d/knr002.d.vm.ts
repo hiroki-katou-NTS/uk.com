@@ -164,6 +164,11 @@ module knr002.d {
             private call_C_Api(command: any): any{
                 delete command.displayName;
                 service.registerAndSubmitChanges(command).done(() => { 
+                    let updateRemoteInput = {
+                        listEmpTerminalCode: command.empInfoTerCode
+                    }
+                    service.updateRemoteSettings(updateRemoteInput).done(() => {})
+
                     nts.uk.ui.windows.close();
                 }).fail(err => {
                     dialog.error({messageId: err.messageId});
