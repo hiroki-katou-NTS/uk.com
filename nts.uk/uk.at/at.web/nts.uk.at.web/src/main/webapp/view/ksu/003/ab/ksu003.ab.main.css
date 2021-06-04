@@ -29,10 +29,12 @@
 	background-color: rgb(237,250,194);
 	height: 60px;
 	margin-top: 3px;
+	width: 981px;
+    margin-left: 9px;
 }
 
 #tableButton1 button {
-	width: 194px !important;
+	width: 190px !important;
 	height: 20px;
 	line-height: 18px;
 	box-shadow : 0 1px rgba(0, 0, 0, 0.4);
@@ -40,7 +42,7 @@
 }
 
 .ntsButtonTableButton button {
-	width: 194px !important;
+	width: 190px !important;
 	height: 20px;
 	line-height: 18px;
 	box-shadow : 0 1px rgba(0, 0, 0, 0.4);
@@ -50,7 +52,7 @@
 }
 
 .ntsButtonCellData button {
-	width: 194px !important;
+	width: 190px !important;
 	height: 20px;
 	line-height: 18px;
 	box-shadow : 0 1px rgba(0, 0, 0, 0.4);
@@ -60,7 +62,7 @@
 }
 
 .ntsButtonUnabledData button {
-	width: 194px !important;
+	width: 190px !important;
 	height: 20px;
 	line-height: 18px;
 	box-shadow : 0 1px rgba(0, 0, 0, 0.4);
@@ -74,7 +76,7 @@
 }
 
 #screen-Ab2 .listLink {
-	width: 990px;
+	width: 981px;
 	margin-bottom: -6px;
 }
 
@@ -92,6 +94,7 @@
 
 #ab2-area{
 	margin-top: -7px;
+	margin-left: 9px;	
 }
 
 #comboTime{

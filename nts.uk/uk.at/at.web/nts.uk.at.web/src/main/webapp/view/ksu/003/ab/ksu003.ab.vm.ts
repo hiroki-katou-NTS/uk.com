@@ -9,9 +9,9 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 
 	export class ScreenModel {
 		KEY: string = 'USER_KSU003_INFOR';
+		view = __viewContext.viewModel;
 		dataFromScrA: any = [];
-		localStore: KnockoutObservable<ksu003.a.model.ILocalStore> = ko.observable();
-
+		characteristic: KnockoutObservable<ksu003.a.model.ILocalStore> = ko.observable();
 		// Screen Ab1
 		width: KnockoutObservable<number>;
 		tabIndex: KnockoutObservable<number | string>;
@@ -35,16 +35,9 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 		contextMenu: Array<any>;
 		dataTaskPallet: any = [];
 		dataTaskInfo: any = [];
-		constructor(data: ksu003.a.model.ILocalStore) { //id : workplaceId || workplaceGroupId; 
+		errButton : any = [];
+		constructor() { //id : workplaceId || workplaceGroupId; 
 			let self = this;
-			self.localStore(data);
-			if (!_.isNil(data) && !_.isNil(data.pageNo)) {
-				self.selectedPage(data.pageNo);
-			}
-			if (_.isNil(data) || _.isNil(data.pageNo)) {
-				self.selectedPage(0);
-			};
-
 			// Screen Ab1
 			self.width = ko.observable(875);
 			self.tabIndex = ko.observable('');
@@ -54,7 +47,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 			self.contextMenu = [
 				{ id: "openDialog", text: getText("作業選択"), action: "" }
 			];
-			
+
 			$('#contain-view-right-ksu003').mousedown(function(event) {
 				if (event.which == 3)
 					setTimeout(function() {
@@ -62,77 +55,64 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 						$('.ntsContextMenu').css("margin-left", "30000px");
 					}, 10);
 			});
-			
+
 			self.selectedButton.subscribe((value) => {
+				
 				if (value.data == null || value.data == {})
+					return;
+				
+				if(value.data.text == getText("KSU003_70") || value.data.text == getText("KSU003_83"))
 					return;
 					
 				if (value.column == -1 || value.row == -1) {
-					let param = {
-						column: 0,
-						data: {
-							page: 6,
-							text: value.data.text,
-							tooltip: value.data.tooltip
-						},
-						row: 1
-					}
-					self.selectedButton(param);
+					self.selectedButton(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails);
 				} else {
-					self.getLocalStore();
-					self.localStore().workPalletDetails = value;
-					characteristics.save(self.KEY, self.localStore());
+					__viewContext.viewModel.viewmodelA.localStore.workPalletDetails = value;
+					characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
 				}
 				//$("#tableButton1").ntsButtonTable("setSelectedCell", value.row, value.column);
 			});
 		}
-		
+
 		public startPage(): JQueryPromise<any> {
 			let self = this, dfd = $.Deferred<any>();
 			self.dataFromScrA = getShared("dataShareAbFromA");
-			
-			if (_.isNil(self.localStore())) {
-				self.localStore(self.dataFromScrA.localStore);
-				self.localStore().pageNo = self.selectedPage();
-				self.localStore().work1Selection = self.taskChecked();
-				self.localStore().workSelection = 0;
-				characteristics.save(self.KEY, self.localStore());
-			}
-			
+			self.setDataDefautStore();
 			self.getTaskInfo().done(() => {
 				//$("#tableButton1").ntsButtonTable("setSelectedCell", 1, 0);
 				self.getTaskPallet().done(() => {
 					self.setDataTaskInfo();
 					self.sourceCompany(self.dataSourceCompany()[self.selectedPage()]);
-					
+
 					if (self.sourceCompany() != null)
 						$("#tableButton1").ntsButtonTable("init", { row: 2, column: 5, source: self.sourceCompany(), contextMenu: self.contextMenu, disableMenuOnDataNotSet: [1], mode: "normal" });
-					
+
 					if (self.sourceCompany() != null)
 						self.checkSelectButton(0);
-						
-					if (_.isNil(self.localStore().workPalletDetails)) {
-						self.localStore().workPalletDetails = self.selectedButton();
+
+					if (_.isNil(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails)) {
+						__viewContext.viewModel.viewmodelA.localStore.workPalletDetails = self.selectedButton();
+						characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
 					}
-					
+					self.setErrButton();
 					self.taskChecked.subscribe((value) => {
-						self.getLocalStore().done(() => {
-							self.localStore().work1Selection = value;
-							characteristics.save(self.KEY, self.localStore());
-						});
+						__viewContext.viewModel.viewmodelA.localStore.work1Selection = value;
+						characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
 					});
 				});
 			});
 			return dfd.promise();
 		}
-		
+
 		// ③<<ScreenQuery>>作業選択準備情報を取得する
 		public getTaskInfo(): JQueryPromise<any> {
 			let self = this, dfd = $.Deferred<any>();
 			let page = 1;
-			if (!_.isNil(self.localStore())) {
-				if (!_.isNil(self.localStore().pageNo))
-					page = self.localStore().pageNo + 1;
+			if (!_.isNil(__viewContext.viewModel.viewmodelA.localStore)) {
+				if (!_.isNil(__viewContext.viewModel.viewmodelA.localStore.pageNo)){
+					page = __viewContext.viewModel.viewmodelA.localStore.pageNo + 1;
+				}
+					
 			}
 			let param = {
 				baseDate: self.dataFromScrA.targetDate,
@@ -151,7 +131,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 				});
 			return dfd.promise();
 		}
-		
+
 		// ①<<Query>> 作業パレットを取得する
 		public getTaskPallet(): JQueryPromise<any> {
 			let self = this, dfd = $.Deferred<any>();
@@ -161,12 +141,12 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 				page: self.selectedPage() + 1, // fake
 				organizationID: self.dataFromScrA.dataScreen003A.id
 			}
-			
+
 			service.getTaskPallet(param)
 				.done((data: any) => {
 					if (!_.isNil(data))
 						self.hasDataButton.add(data.page);
-						
+
 					self.dataTaskPallet = data;
 					dfd.resolve();
 				}).fail(function(error) {
@@ -177,6 +157,8 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 			return dfd.promise();
 		}
 		
+		// ①<<ScreenQuery>>社員の出勤系をチェックする
+
 		setDataTaskInfo() {
 			let datas: any = [];
 			let self = this, data = self.dataTaskInfo, pallet = self.dataTaskPallet;
@@ -192,18 +174,18 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 					new TaskModel('なし', '', '')
 				]);
 			}
-			if (!_.isNil(self.localStore().work1Selection)) {
-				self.taskChecked(self.localStore().work1Selection);
+			if (!_.isNil(__viewContext.viewModel.viewmodelA.localStore.work1Selection)) {
+				self.taskChecked(__viewContext.viewModel.viewmodelA.localStore.work1Selection);
 			}
-			
-			if (self.localStore().workSelection == 0 || _.isNil(self.localStore().workSelection)) {
+
+			if (__viewContext.viewModel.viewmodelA.localStore.workSelection == 0 || _.isNil(__viewContext.viewModel.viewmodelA.localStore.workSelection)) {
 				setTimeout(function() {
 					$("#screen-Ab2").hide();
 				}, 10);
 				setTimeout(function() {
 					$("#screen-Ab1").show();
 				}, 10);
-			} else if (!_.isNil(self.localStore().workSelection) && self.localStore().workSelection == 1) {
+			} else if (!_.isNil(__viewContext.viewModel.viewmodelA.localStore.workSelection) && __viewContext.viewModel.viewmodelA.localStore.workSelection == 1) {
 				setTimeout(function() {
 					$("#screen-Ab1").hide();
 				}, 10);
@@ -211,9 +193,9 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 					$("#screen-Ab2").show();
 				}, 10);
 			}
-			
+
 			self.setPalletButton();
-			
+
 			for (let i = 1; i <= 5; i++) {
 				let dataPallet = data.workPaletteDisplayInforDto.lstTaskPaletteOrganizationDto;
 				if (!_.isNil(dataPallet[i - 1])) {
@@ -225,7 +207,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 				}
 			}
 		}
-		
+
 		setPalletButton() {
 			let self = this, pallet = self.dataTaskPallet;
 			let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}], lstPallet: any = [];
@@ -240,57 +222,57 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 					let name = tsk.name, abName = tsk.abName;
 					if (tsk.status == 1) {
 						abName = name = getText("KSU003_70");
+						self.errButton.add(tsk.page - 1);
 					}
 					else if (tsk.status == 2) {
 						abName = name = getText("KSU003_82");
-						$($(window.parent[0].$('body').contents().find('.ntsButtonCell'))[tsk.page - 1]).css("border", "1px solid #ff9999")
+						self.errButton.add(tsk.page - 1);
 					}
-					
-					source.splice(tsk.page - 1, 1, { text: name, tooltip: abName, page: tsk.page });
+
+					source.splice(tsk.page - 1, 1, { text: abName, tooltip: name, page: tsk.page });
 				});
 				self.dataSourceCompany().splice(self.selectedPage(), 1, source);
 			}
 		}
-		
-		getLocalStore(): JQueryPromise<any> {
-			let self = this, dfd = $.Deferred<any>();
-			characteristics.restore("USER_KSU003_INFOR").done(function(data: any) {
-				self.localStore(data);
-				dfd.resolve();
-			})
-			return dfd.promise();
-		}
-		
+
 		checkSelectButton(type: number) {
 			let self = this;
 			let selectButtonChoice = _.filter(self.sourceCompany(), x => {
-				return !_.isNil(x.page);
+				return !_.isNil(x.page) && (x.text != getText("KSU003_70") && x.text != getText("KSU003_83"));
 			});
-				
-				if (_.isNil(self.localStore().workPalletDetails) || type == 1) {
-					if (!_.isEmpty(self.sourceCompany()[selectButtonChoice[0].page - 1])) {
-						let value = self.getColumn(selectButtonChoice[0].page - 1);
-							$("#tableButton1").ntsButtonTable("setSelectedCell", 
-								selectButtonChoice[0].page > 5 ? 1 : 0, value.column);
-						return;
-					}
-				} else {
-					let value = {
-						column: self.localStore().workPalletDetails.column,
-						data: {
-							page: self.localStore().workPalletDetails.page,
-							text: self.localStore().workPalletDetails.text,
-							tooltip: self.localStore().workPalletDetails.tooltip
-						},
-						row: self.localStore().workPalletDetails.row
-					}
-					if (type == 0) {
-						self.selectedButton(value)
-					}
+
+			if (_.isNil(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails) || type == 1) {
+				if(_.isEmpty(self.sourceCompany())) return;
+				if(_.isEmpty(selectButtonChoice)){
+					self.selectedButton(0);
 					return;
 				}
+				if (!_.isEmpty(self.sourceCompany()[selectButtonChoice[0].page - 1])) {
+					let value = self.getColumn(selectButtonChoice[0].page - 1);
+					$("#tableButton1").ntsButtonTable("setSelectedCell",
+						selectButtonChoice[0].page > 5 ? 1 : 0, value.column);
+					return;
+				}
+			} else {
+				let value = {
+					column: __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.column,
+					data: {
+						page: __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.page,
+						text: __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text,
+						tooltip: __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.tooltip
+					},
+					row: __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.row
+				}
+				if(value.data.text == getText("KSU003_70") || value.data.text == getText("KSU003_83")){
+					self.selectedButton(0);
+				}
+				if (type == 0) {
+					self.selectedButton(value)
+				}
+				return;
+			}
 		}
-		
+
 		getColumn(i: number) {
 			let self = this;
 			let column = 0;
@@ -310,53 +292,96 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 			}
 			return value;
 		}
-		
-		clickLinkButton(element: any, indexLinkBtn?: any): void {
-			let self = this, soure: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+
+		clickLinkPage(element: any, indexLinkBtn?: any): void {
+			let self = this;
 			self.selectedPage(indexLinkBtn());
+			self.setDataPalletToButton(indexLinkBtn());
+			__viewContext.viewModel.viewmodelA.localStore.pageNo = indexLinkBtn();
+			characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
+		}
+		
+		setDataPalletToButton(index : any){
+			let self = this, soure: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+			self.errButton = [];
 			self.getTaskPallet().done(() => {
 				self.setPalletButton();
-				if (_.includes(self.hasDataButton, indexLinkBtn() + 1)) {
+				if (_.includes(self.hasDataButton, index + 1)) {
 					self.sourceCompany(self.dataSourceCompany()[self.selectedPage()]);
 				} else {
 					self.sourceCompany(soure);
 				}
 				self.checkSelectButton(1);
-			});
-			
-			self.getLocalStore().done(() => {
-				self.localStore().pageNo = indexLinkBtn();
-				characteristics.save(self.KEY, self.localStore());
+				self.setErrButton();
 			});
 		}
 		
+		setErrButton(){
+			let self = this;
+			if(self.errButton.length > 0) {
+                _.each(self.errButton, idx => {
+                    $($("#tableButton1 button")[idx]).css("border","1px solid red");
+					$($("#tableButton1 button")[idx]).attr("disabled", "true");
+                });                       
+             } 
+		}
+		
+		setDataDefautStore(){
+			let self = this;
+			if (_.isNil(__viewContext.viewModel.viewmodelA.localStore.pageNo)){
+				self.selectedPage(0);
+				__viewContext.viewModel.viewmodelA.localStore.pageNo = self.selectedPage();
+			} else {
+				self.selectedPage(__viewContext.viewModel.viewmodelA.localStore.pageNo);
+			}
+			
+			if (_.isNil(__viewContext.viewModel.viewmodelA.localStore.work1Selection))
+			__viewContext.viewModel.viewmodelA.localStore.work1Selection = self.taskChecked();
+			
+			if (_.isNil(__viewContext.viewModel.viewmodelA.localStore.workSelection))
+			__viewContext.viewModel.viewmodelA.localStore.workSelection = 0;
+			
+			if (_.isNil(__viewContext.viewModel.viewmodelA.localStore))
+			characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
+		}
+
 		closeAb1() {
 			let self = this;
 			$("#screen-Ab1").hide();
 			$("#screen-Ab2").show();
-			self.getLocalStore().done(() => {
-				self.localStore().workSelection = 1;
-				characteristics.save(self.KEY, self.localStore());
-			});
+			__viewContext.viewModel.viewmodelA.localStore.workSelection = 1;
+			characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
 		}
-		
+
 		closeAb2() {
 			let self = this;
 			$("#screen-Ab2").hide();
 			$("#screen-Ab1").show();
-			self.getLocalStore().done(() => {
-				self.localStore().workSelection = 0;
-				characteristics.save(self.KEY, self.localStore());
+			__viewContext.viewModel.viewmodelA.localStore.workSelection = 0;
+			characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
+		}
+
+		openB() {
+			let self = this;
+			let param = {
+				page: self.selectedPage() + 1,
+				targetUnit: self.dataFromScrA.dataScreen003A.unit,
+				targetId: self.dataFromScrA.dataScreen003A.id,
+				organizationName: self.dataFromScrA.organizationName,
+				referenceDate: self.dataFromScrA.targetDate
+			}
+			setShared("dataShareKsu003b", param);
+			nts.uk.ui.windows.sub.modal('/view/ksu/003/b/index.xhtml').onClosed(() => {
+				let data = getShared("dataShareFromKsu003b");
+				if(data == null) return;
+				self.selectedPage(data - 1);
+				self.setDataPalletToButton(data - 1);
+				
 			});
 		}
-		
+
 		openC() {
 			nts.uk.ui.windows.sub.modal('/view/ksu/003/c/index.xhtml').onClosed(() => {
-			});
-		}
-		
-		openB() {
-			nts.uk.ui.windows.sub.modal('/view/ksu/003/b/index.xhtml').onClosed(() => {
 			});
 		}
 	}

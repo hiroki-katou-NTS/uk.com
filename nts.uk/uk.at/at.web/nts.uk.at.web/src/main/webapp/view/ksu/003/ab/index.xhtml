@@ -40,7 +40,7 @@
 			<div class="listLink cf" data-bind="">
 				<div class="inlineAc cf" style="width: 500px; white-space: nowrap; float: left;"
 					data-bind="foreach: textButtonArr">
-					<a class="hyperlink" data-bind="click: $parent.clickLinkButton.bind($parent,$element, $index), text: name, css: { active: $index()== $parent.selectedPage()}"></a>
+					<a class="hyperlink" data-bind="click: $parent.clickLinkPage.bind($parent,$element, $index), text: name, css: { active: $index()== $parent.selectedPage()}"></a>
 				</div>
 				<div class="inlineAc right-head-shift" style="margin-bottom: 5px; float: right;">
 					<button class="openDialogB inlineAc" data-bind="click : openB">
