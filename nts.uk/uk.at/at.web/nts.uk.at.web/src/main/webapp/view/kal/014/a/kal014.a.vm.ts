@@ -176,7 +176,7 @@ module nts.uk.at.kal014.a {
                     // Set all value of category
                     if (!_.isEmpty(ctg)) {
                         let allCtgCd = _.map(ctg, i => new AlarmCheckCategoryList(i));
-                        vm.listAllCtgCode = allCtgCd;
+                        vm.listAllCtgCode = _.sortBy(allCtgCd, ['category', 'code']);
                     } else{
                         vm.listAllCtgCode = [];
                     }

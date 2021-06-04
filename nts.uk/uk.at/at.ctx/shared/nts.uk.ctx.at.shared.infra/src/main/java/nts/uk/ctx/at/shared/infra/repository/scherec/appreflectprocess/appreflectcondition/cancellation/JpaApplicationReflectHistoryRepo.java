@@ -137,13 +137,13 @@ public class JpaApplicationReflectHistoryRepo extends JpaRepository implements A
 			return new KsrdtReflectAppHistRestore(
 					new KsrdtReflectAppHistRestorePK(dom.getEmployeeId(), dom.getDate(), dom.getApplicationId(),
 							dom.getClassification().value, dom.getReflectionTime(), x.getAttendanceId()), cid, 
-					x.getValue(), x.getEditState().map(y -> y.getEditStateSetting().value).orElse(null));
+					x.getValue().orElse(null), x.getEditState().map(y -> y.getEditStateSetting().value).orElse(null));
 		}).collect(Collectors.toList());
 	}
 
 	private ApplicationReflectHistory toDomain(NtsResultRecord rec) {
 		AttendanceBeforeApplicationReflect restore = new AttendanceBeforeApplicationReflect(rec.getInt("ATTENDANCE_ID"),
-				rec.getString("VALUE"),
+				Optional.ofNullable(rec.getString("VALUE")),
 				Optional.ofNullable(rec.getInt("STATUS") == null ? null
 						: new EditStateOfDailyAttd(rec.getInt("ATTENDANCE_ID"),
 								EnumAdaptor.valueOf(rec.getInt("STATUS"), EditStateSetting.class))));

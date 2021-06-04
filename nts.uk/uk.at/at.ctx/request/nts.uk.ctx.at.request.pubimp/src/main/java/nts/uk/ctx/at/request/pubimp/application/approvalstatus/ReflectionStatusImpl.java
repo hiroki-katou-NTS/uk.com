@@ -34,12 +34,12 @@ public class ReflectionStatusImpl implements ReflectionStatusPub {
 			DatePeriod period) {
 		
 		Map<String, List<ApplicationDateExport>> mapList = new HashMap<>();
-		List<ApplicationDateExport> appdate = new ArrayList<>();
-		
+		List<Application> listAllApp =  repo.getAllApplication(employeeIDS, period);
+
 		for(String employee : employeeIDS) {
-			
+			List<ApplicationDateExport> appdate = new ArrayList<>();
 			// get application from list employee and date period
-			List<Application> listApp =  repo.getAllApplication(employeeIDS, period);
+			List<Application> listApp =  listAllApp.stream().filter(i -> employee.equals(i.getEmployeeID())).collect(Collectors.toList());
 			
 			// convert data type from domain to export 
 			List<ApplicationExport> listAppExport = listApp.stream()
@@ -61,7 +61,6 @@ public class ReflectionStatusImpl implements ReflectionStatusPub {
 			}
 		
 			mapList.put(employee, appdate);
-			
 		}
 		
 		return mapList;

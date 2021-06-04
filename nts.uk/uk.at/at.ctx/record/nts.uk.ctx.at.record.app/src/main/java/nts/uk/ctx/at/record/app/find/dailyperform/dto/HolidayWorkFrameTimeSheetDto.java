@@ -19,8 +19,14 @@ public class HolidayWorkFrameTimeSheetDto {
 //	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer holidayWorkFrameNo;
 	
+	//【追加予定】計算休出時間
+	private Integer hdTimeCalc;
+	
+	//【追加予定】計算振替休出時間
+	private Integer tranferTimeCalc;
+	
 	@Override
 	public HolidayWorkFrameTimeSheetDto clone() {
-		return new HolidayWorkFrameTimeSheetDto(timeSheet == null ? null : timeSheet.clone(), holidayWorkFrameNo);
+		return new HolidayWorkFrameTimeSheetDto(timeSheet == null ? null : timeSheet.clone(), holidayWorkFrameNo, hdTimeCalc, tranferTimeCalc);
 	}
 }

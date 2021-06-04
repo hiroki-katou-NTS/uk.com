@@ -76,6 +76,6 @@ public class StatusPollingRequest extends NRLRequest<Frame> {
 	 */
 	@Override
 	public String responseLength() {
-		return "0030";
+		return "003C";
 	}
 }
