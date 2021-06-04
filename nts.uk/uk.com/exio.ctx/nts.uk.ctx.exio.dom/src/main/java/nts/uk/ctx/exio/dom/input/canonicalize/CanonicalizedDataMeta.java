@@ -13,6 +13,6 @@ public class CanonicalizedDataMeta {
 	/** 会社ID */
 	String companyId;
 
-	/** 受入項目の一覧 */
-	List<Integer> importingItemNos;
+	/** 受入項目の列名一覧 */
+	List<String> importingItemNames;
 }
