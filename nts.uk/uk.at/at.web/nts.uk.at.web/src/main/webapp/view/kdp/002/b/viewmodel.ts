@@ -64,8 +64,8 @@ class KDP002BViewModel extends ko.ViewModel {
     interval: KnockoutObservable<number> = ko.observable(0);
     infoEmpFromScreenA: any;
     notificationStamp: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
-    modeShowPointNoti: KnockoutObservable<boolean | null> = ko.observable(null);
-    showBtnNoti: KnockoutObservable<boolean | null> = ko.observable(null);
+    modeShowPointNoti: KnockoutObservable<boolean | null> = ko.observable(true);
+    showBtnNoti: KnockoutObservable<boolean | null> = ko.observable(true);
     activeViewU: KnockoutObservable<boolean> = ko.observable(false);
 
 
@@ -355,14 +355,14 @@ class KDP002BViewModel extends ko.ViewModel {
                                         if (isShowPoint > 0) {
                                             vm.modeShowPointNoti(true);
                                         } else {
-                                            vm.modeShowPointNoti(false);
+                                           // vm.modeShowPointNoti(false);
                                         }
                                     } else {
-                                        vm.showBtnNoti(false);
+                                        //vm.showBtnNoti(false);
                                     }
                                 });
                         } else {
-                            vm.showBtnNoti(false);
+                            //vm.showBtnNoti(false);
                         }
                     })
                     .then(() => {
@@ -394,7 +394,7 @@ class KDP002BViewModel extends ko.ViewModel {
             .modal('/view/kdp/002/u/index.xhtml', params)
             .then(() => {
                 vm.activeViewU(false);
-                vm.modeShowPointNoti(false);
+                //vm.modeShowPointNoti(false);
                 vm.getNotification();
             });
     }
