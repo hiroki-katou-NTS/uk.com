@@ -98,14 +98,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         detailContentDecoModeConfirm = [];
         detailColumns = [];
         detailContentDs = [];
-		detailHeaderDeco: any = [];
-		vertSumColumns: any = [];
-		vertSumContentDs: any = [];
-		vertContentDeco: any = [];
-		horizontalDetailColumns: any = [];
-		leftHorzContentDs: any = [];
-		horizontalSumContentDs: any = [];
-		rightHorzContentDs: any = [];
+        detailHeaderDeco: any = [];
+        vertSumColumns: any = [];
+        vertSumContentDs: any = [];
+        vertContentDeco: any = [];
+        horizontalDetailColumns: any = [];
+        leftHorzContentDs: any = [];
+        horizontalSumContentDs: any = [];
+        rightHorzContentDs: any = [];
         dataSource = {};
         listEmpInfo = [];
         listWorkScheduleWorkInfor  = [];
@@ -137,7 +137,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         scheduleModifyStartDate = null;
         canOpenKsu003 = true;
         
-        listTimeDisable = []; // lưu nhưng cell bí disalble do không có worktime
+        // lưu nhưng cell bí disalble do không có worktime
+        listTimeDisable = [];
         
         // dùng cho trường hợp thay đổi modeBackground
         hasChangeModeBg = false; 
@@ -145,29 +146,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         listWorkTypeInfo = [];// listWorkTypecombobox
         listCellRetained = [];
-<<<<<<< HEAD
         listCellError = []; // chưa những cell not valid khi sửa time
-=======
-        listCellError = []; // chưa những cell not valid khi sửa time 
-        
-        widthA8 : number = 200;
-        widthBtnToLeftToRight : number = 32;
-        distanceLeftToGrid : number = 30;
->>>>>>> pj/at/release_ver4
         
         visibleA4_234: KnockoutObservable<boolean>   = ko.observable(true);
         visibleA4_567: KnockoutObservable<boolean>   = ko.observable(true);
         visibleA4_8: KnockoutObservable<boolean>   = ko.observable(true);
         visibleA4_9: KnockoutObservable<boolean>   = ko.observable(true);
         canRegisterEvent = true;
-		
-		// 個人計カテゴリ
-		useCategoriesPersonal: KnockoutObservableArray<any> = ko.observableArray([]);
-		useCategoriesPersonalValue: KnockoutObservable<number> = ko.observable(6);
-		
-		// 職場計カテゴリ
-		useCategoriesWorkplace: KnockoutObservableArray<any> = ko.observableArray([]);
-		useCategoriesWorkplaceValue: KnockoutObservable<any> = ko.observable(3);
+        
+        // 個人計カテゴリ
+        useCategoriesPersonal: KnockoutObservableArray<any> = ko.observableArray([]);
+        useCategoriesPersonalValue: KnockoutObservable<number> = ko.observable(6);
+        
+        // 職場計カテゴリ
+        useCategoriesWorkplace: KnockoutObservableArray<any> = ko.observableArray([]);
+        useCategoriesWorkplaceValue: KnockoutObservable<any> = ko.observable(3);
         
         // 締め日 (Deadline) , 初期起動時の期間 ( Initial startup period )
         closeDate = null;
@@ -180,10 +173,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         distanceLeftToGrid : number = 30; // khoang cách từ mép trái vào đến grid
         widthVertSum : number = 200;
 
-		showA11: KnockoutObservable<boolean>   = ko.observable(false);
-		showA12: KnockoutObservable<boolean>   = ko.observable(false);
-		showA12_2: KnockoutObservable<boolean>   = ko.observable(false);
-		funcNo15_WorkPlace: boolean = false;
+        showA11: KnockoutObservable<boolean>   = ko.observable(false);
+        showA12: KnockoutObservable<boolean>   = ko.observable(false);
+        showA12_2: KnockoutObservable<boolean>   = ko.observable(false);
+        funcNo15_WorkPlace: boolean = false;
         
         constructor(dataLocalStorage) {
             let self = this;
@@ -505,44 +498,44 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.bindingToHeader(data);
                 
                 // set data Grid
-				_.remove(data.dataBasicDto.useCategoriesPersonal, (item: any) => _.includes([2, 4, 5], item.value));
-				_.remove(data.dataBasicDto.useCategoriesWorkplace, (item: any) => item.value == 4);
-				self.useCategoriesPersonal(data.dataBasicDto.useCategoriesPersonal);
-				self.useCategoriesWorkplace(data.dataBasicDto.useCategoriesWorkplace);
+                _.remove(data.dataBasicDto.useCategoriesPersonal, (item: any) => _.includes([2, 4, 5], item.value));
+                _.remove(data.dataBasicDto.useCategoriesWorkplace, (item: any) => item.value == 4);
+                self.useCategoriesPersonal(data.dataBasicDto.useCategoriesPersonal);
+                self.useCategoriesWorkplace(data.dataBasicDto.useCategoriesWorkplace);
                 
-				_.isEmpty(self.useCategoriesPersonal()) ? self.showA11(false) : self.showA11(true);
-				_.isEmpty(self.useCategoriesWorkplace()) ? self.showA12(false) : self.showA12(true);
-				
-				if(self.userInfor && _.includes(_.map(self.useCategoriesPersonal(), o => o.value), self.userInfor.useCategoriesPersonalValue)) {
-					self.useCategoriesPersonalValue(self.userInfor.useCategoriesPersonalValue);		
-				} else {
-					self.useCategoriesPersonalValue(_.head(self.useCategoriesPersonal()).value);	
-				}
-				if(self.userInfor && _.includes(_.map(self.useCategoriesWorkplace(), o => o.value), self.userInfor.useCategoriesWorkplaceValue)) {
-					self.useCategoriesWorkplaceValue(self.userInfor.useCategoriesWorkplaceValue);		
-				} else {
-					self.useCategoriesWorkplaceValue(_.head(self.useCategoriesWorkplace()).value);	
-				}
-				self.useCategoriesPersonalValue.subscribe(value => {
-					self.userInfor.useCategoriesPersonalValue = value;
-					characteristics.save(self.KEY, self.userInfor);
-//					let newVertSumHeader = self.createVertSumHeader();
-//				    let newVertSumContent = self.createVertSumContent(detailContent);
-//					$("#cacheDiv").append($('#vertDiv'));
-//	        		$("#extable").exTable("updateTable", "verticalSummaries", newVertSumHeader, newVertSumContent);
-//					$("#vertDropDown").html(function() { return $('#vertDiv'); });
+                _.isEmpty(self.useCategoriesPersonal()) ? self.showA11(false) : self.showA11(true);
+                _.isEmpty(self.useCategoriesWorkplace()) ? self.showA12(false) : self.showA12(true);
+                
+                if(self.userInfor && _.includes(_.map(self.useCategoriesPersonal(), o => o.value), self.userInfor.useCategoriesPersonalValue)) {
+                    self.useCategoriesPersonalValue(self.userInfor.useCategoriesPersonalValue);     
+                } else {
+                    self.useCategoriesPersonalValue(_.head(self.useCategoriesPersonal()).value);    
+                }
+                if(self.userInfor && _.includes(_.map(self.useCategoriesWorkplace(), o => o.value), self.userInfor.useCategoriesWorkplaceValue)) {
+                    self.useCategoriesWorkplaceValue(self.userInfor.useCategoriesWorkplaceValue);       
+                } else {
+                    self.useCategoriesWorkplaceValue(_.head(self.useCategoriesWorkplace()).value);  
+                }
+                self.useCategoriesPersonalValue.subscribe(value => {
+                    self.userInfor.useCategoriesPersonalValue = value;
+                    characteristics.save(self.KEY, self.userInfor);
+//                  let newVertSumHeader = self.createVertSumHeader();
+//                  let newVertSumContent = self.createVertSumContent(detailContent);
+//                  $("#cacheDiv").append($('#vertDiv'));
+//                  $("#extable").exTable("updateTable", "verticalSummaries", newVertSumHeader, newVertSumContent);
+//                  $("#vertDropDown").html(function() { return $('#vertDiv'); });
                     self.getAggregatedInfo(true, false);
-				});
-				
-				self.useCategoriesWorkplaceValue.subscribe(value => {
-					self.userInfor.useCategoriesWorkplaceValue = value;
-					characteristics.save(self.KEY, self.userInfor);
-					self.showA12_2(_.includes([WorkplaceCounterCategory.WORKTIME_PEOPLE, WorkplaceCounterCategory.LABOR_COSTS_AND_TIME], value) ||
-							(_.includes([WorkplaceCounterCategory.EXTERNAL_BUDGET], value) && self.funcNo15_WorkPlace));
-					// $("#cacheDiv").append($('#horzDiv'));
+                });
+                
+                self.useCategoriesWorkplaceValue.subscribe(value => {
+                    self.userInfor.useCategoriesWorkplaceValue = value;
+                    characteristics.save(self.KEY, self.userInfor);
+                    self.showA12_2(_.includes([WorkplaceCounterCategory.WORKTIME_PEOPLE, WorkplaceCounterCategory.LABOR_COSTS_AND_TIME], value) ||
+                            (_.includes([WorkplaceCounterCategory.EXTERNAL_BUDGET], value) && self.funcNo15_WorkPlace));
+                    // $("#cacheDiv").append($('#horzDiv'));
                     self.getAggregatedInfo(false, true);
-				});
-				
+                });
+                
                 let dataBindGrid = self.convertDataToGrid(data, viewMode);
                 self.initExTable(dataBindGrid, viewMode, updateMode);
                 
@@ -855,8 +848,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         destroyAndCreateGrid(dataBindGrid,viewMode){
             let self = this;
-			$("#cacheDiv").append($('#vertDiv'));
-			$("#cacheDiv").append($('#horzDiv'));
+            $("#cacheDiv").append($('#vertDiv'));
+            $("#cacheDiv").append($('#horzDiv'));
             $("#extable").children().remove();
             $("#extable").removeData();
             let extable = $("#extable")[0];
@@ -955,11 +948,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
 
             if (startTimeCal >= endTimeCal) {
-<<<<<<< HEAD
                 self.addCellNotValidInTimeInputMode(rowIndex + '', columnKey);
-=======
-                self.addCellNotValidInTimeInputMode(rowIndex+'', columnKey);
->>>>>>> pj/at/release_ver4
                 self.checkExitCellUpdated();
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
                 return;
@@ -1128,7 +1117,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let detailContentDs   = [];
             let detailContentDeco = [];
             let detailContentDecoModeConfirm = [];
-			let horizontalDetailColumns: any = [];
+            let horizontalDetailColumns: any = [];
             let htmlToolTip       = [];
             let listCellNotEditBg = [];
             let listCellNotEditColor = [];
@@ -1651,7 +1640,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             
             detailColumns.push({ key: "sid", width: "5px", headerText: "ABC", visible: false });
-			horizontalDetailColumns.push({ key: "sid", width: "5px", headerText: "ABC", visible: false });
+            horizontalDetailColumns.push({ key: "sid", width: "5px", headerText: "ABC", visible: false });
             objDetailHeaderDs['sid'] = "";
             self.arrDay = [];
             _.each(data.listDateInfo, (dateInfo: IDateInfo) => {
@@ -1660,7 +1649,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 detailColumns.push({
                     key: "_" + time.yearMonthDay, width: widthColumn + "px", handlerType: "input", dataType: "label/label/duration/duration", primitiveValue: "TimeWithDayAttr", headerControl: "link"
                 });
-				horizontalDetailColumns.push({
+                horizontalDetailColumns.push({
                     key: "_" + time.yearMonthDay, width: widthColumn + "px", handlerType: "input", dataType: "label/label/duration/duration", primitiveValue: "TimeWithDayAttr"
                 });
                 let ymd = time.yearMonthDay;
@@ -1741,14 +1730,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
             self.detailContentDs = detailContentDs;
             self.detailColumns = detailColumns;
-			self.detailHeaderDeco = detailHeaderDeco;
+            self.detailHeaderDeco = detailHeaderDeco;
             self.detailContentDeco = detailContentDeco;
             self.detailContentDecoModeConfirm = detailContentDecoModeConfirm;
 
-			self.createVertSumData(data);
-			self.createHorzSumData(data);
+            self.createVertSumData(data);
+            self.createHorzSumData(data);
 
-			self.horizontalDetailColumns = horizontalDetailColumns;
+            self.horizontalDetailColumns = horizontalDetailColumns;
             
             let empLogin = _.filter(detailContentDs, function(o) { return o.employeeId == self.employeeIdLogin; });
             if (empLogin.length > 0) {
@@ -2199,11 +2188,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let leftmostDs = dataBindGrid.leftmostDs;
 
             leftmostColumns = [{
-<<<<<<< HEAD
                 key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8 +"px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
-=======
-                key: "codeNameOfEmp", headerText: getText("KSU001_205"), width: self.widthA8+"px", icon: { for: "body", class: "icon-leftmost", width: "25px" },
->>>>>>> pj/at/release_ver4
                 css: { whiteSpace: "pre" }, control: "link", handler: function(rData, rowIdx, key) { console.log(rowIdx); },
                 headerControl: "link", headerHandler: function() {  }
             }];
@@ -2321,7 +2306,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
             
             // Open KSU003
-<<<<<<< HEAD
             if (self.canOpenKsu003) {
                 detailColumns.forEach((col: any) => {
                     if (col.visible === false) return;
@@ -2331,34 +2315,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     };
                 });
             }
-=======
-            detailColumns.forEach((col: any) => {
-                if (col.visible === false) return;
-                col.headerHandler = (ui: any) => {
-                    let detailContentData: any = [];
-                    for (let i = 0; i < detailContentDs.length; i++) {
-                        detailContentData.add({ employeeId: detailContentDs[i].employeeId, datas: detailContentDs[i][ui.columnKey] });
-                    }
-                    let dayEdit = new Date();
-                    let param = {
-                        detailContentDs: detailContentData,
-                        unit: userInfor.unit,
-                        workplaceId: userInfor.workplaceId,
-                        workplaceGroupId: userInfor.workplaceGroupId,
-                        workplaceName: userInfor.workPlaceName,
-                        listEmp: self.listEmpData,
-                        daySelect: moment(ui.columnKey.slice(1)).format('YYYY/MM/DD'),
-                        startDate: self.dateTimePrev(),
-                        endDate: self.dateTimeAfter(),
-                        dayEdit: moment(self.scheduleModifyStartDate).format('YYYY/MM/DD') 
-                    }
-                    setShared("dataFromA", param);
-                    setShared("dataTooltip", self.tooltipShare);
-                    nts.uk.ui.windows.sub.modal("/view/ksu/003/a/index.xhtml").onClosed(() => { });
-                    return false;
-                };
-            });
->>>>>>> pj/at/release_ver4
 
             let detailContent = {
                 columns: detailColumns,
@@ -2384,15 +2340,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 },
                 fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime", "shiftCode", "confirmed", "achievements"],
             };
-			
-			let vertSumHeader = self.createVertSumHeader();
-		    let vertSumContent = self.createVertSumContent();
-		    let leftHorzSumHeader = self.createLeftHorzSumHeader();
-		    let leftHorzSumContent = self.createLeftHorzSumContent();
-			let horizontalSumHeader = self.createHorizontalSumHeader();
-		    let horizontalSumContent = self.createHorizontalSumContent();
-			let rightHorzSumHeader = self.createRightHorzSumHeader();
-			let rightHorzSumContent = self.createRightHorzSumContent();
+            
+            let vertSumHeader = self.createVertSumHeader();
+            let vertSumContent = self.createVertSumContent();
+            let leftHorzSumHeader = self.createLeftHorzSumHeader();
+            let leftHorzSumContent = self.createLeftHorzSumContent();
+            let horizontalSumHeader = self.createHorizontalSumHeader();
+            let horizontalSumContent = self.createHorizontalSumContent();
+            let rightHorzSumHeader = self.createRightHorzSumHeader();
+            let rightHorzSumContent = self.createRightHorzSumContent();
             
             function customValidate(idx, key, innerIdx, value, obj) {
                 let startTime, endTime;
@@ -2467,605 +2423,605 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 extbl.MiddleHeader(middleHeader).MiddleContent(middleContent);
             }
             extbl.DetailHeader(detailHeader).DetailContent(detailContent);
-			if (self.showA11()) {
-				extbl.VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent);	
-			}
-			if (self.showA12()) {
-				extbl.LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent);
-        		extbl.HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent);
-				extbl.RightHorzSumHeader(rightHorzSumHeader).RightHorzSumContent(rightHorzSumContent);
-			}
+            if (self.showA11()) {
+                extbl.VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent);  
+            }
+            if (self.showA12()) {
+                extbl.LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent);
+                extbl.HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent);
+                extbl.RightHorzSumHeader(rightHorzSumHeader).RightHorzSumContent(rightHorzSumContent);
+            }
             extbl.create();
 
             // set height grid theo localStorage đã lưu
             self.setPositionButonDownAndHeightGrid();
             $("#sub-content-main").width($('#extable').width() + 30);
             console.log(performance.now() - start);
-			
-			if (self.showA11()) {
-				$("#vertDropDown").html(function() { return $('#vertDiv'); });
-				$('#vertDiv').css('display', '');	
-				
-				$('.ex-body-vert-sum').scroll(() => {
-					$('#vertDiv').css('margin-left', $('.ex-body-vert-sum').scrollLeft().valueOf() + 'px');
-				});
-			}
-			
-			if (self.showA12()) {
-				$("#horzDropDown").html(function() { return $('#horzDiv'); });
-				$('#horzDiv').css('display', '');
-			
-				$('.extable-body-left-horz-sum tbody tr td:first-child()').css('border-right', '1px solid transparent');	
-				
-				self.showA12_2(_.includes([WorkplaceCounterCategory.WORKTIME_PEOPLE, WorkplaceCounterCategory.LABOR_COSTS_AND_TIME], self.useCategoriesWorkplaceValue()) ||
-							(_.includes([WorkplaceCounterCategory.EXTERNAL_BUDGET], self.useCategoriesWorkplaceValue()) && self.funcNo15_WorkPlace));
-			}
+            
+            if (self.showA11()) {
+                $("#vertDropDown").html(function() { return $('#vertDiv'); });
+                $('#vertDiv').css('display', '');   
+                
+                $('.ex-body-vert-sum').scroll(() => {
+                    $('#vertDiv').css('margin-left', $('.ex-body-vert-sum').scrollLeft().valueOf() + 'px');
+                });
+            }
+            
+            if (self.showA12()) {
+                $("#horzDropDown").html(function() { return $('#horzDiv'); });
+                $('#horzDiv').css('display', '');
+            
+                $('.extable-body-left-horz-sum tbody tr td:first-child()').css('border-right', '1px solid transparent');    
+                
+                self.showA12_2(_.includes([WorkplaceCounterCategory.WORKTIME_PEOPLE, WorkplaceCounterCategory.LABOR_COSTS_AND_TIME], self.useCategoriesWorkplaceValue()) ||
+                            (_.includes([WorkplaceCounterCategory.EXTERNAL_BUDGET], self.useCategoriesWorkplaceValue()) && self.funcNo15_WorkPlace));
+            }
         }
 
-		createVertSumData(data: any) {
-			let self = this,
-				detailContentDs = self.detailContentDs,
-				vertSumColumns: any = [],
-				vertSumContentDs: any = [],
-				vertContentDeco: any = [],
-				group: any = [];
-			switch(self.useCategoriesPersonalValue()) {
-				// 月間想定給与額
-				case PersonalCounterCategory.MONTHLY_EXPECTED_SALARY:	
-					group = [
-						{ headerText: getText("KSU001_18"), key: "criterion", width: "100px" },
-	                	{ headerText: getText("KSU001_19"), key: "salary", width: "100px" },
-					];
-					_.forEach(detailContentDs, (item: any, index) => {
-						let object: any = _.find(data.aggreratePersonal.estimatedSalary, loopItem => loopItem.sid==item.employeeId);
-						if(object) {
-							vertSumContentDs.push({ empID: item.employeeId, criterion: object.criterion, salary: object.salary });
-							if(!_.isEmpty(object.background)) {
-								vertContentDeco.push(new CellColor("salary", index.toString(), "bg-daily-alter-self", 0));	
-							}
-						} else {
-							vertSumContentDs.push({ empID: item.employeeId, criterion: null, salary: null });
-						}
-					});
-					break;
-					
-				// 年間想定給与額
-				case PersonalCounterCategory.CUMULATIVE_ESTIMATED_SALARY: 
-					group = [
-						{ headerText: getText("KSU001_18"), key: "criterion", width: "100px" },
-	                	{ headerText: getText("KSU001_19"), key: "salary", width: "100px" },
-					];
-					_.forEach(detailContentDs, (item: any, index) => {
-						let object: any = _.find(data.aggreratePersonal.estimatedSalary, loopItem => loopItem.sid==item.employeeId);
-						if(object) {
-							vertSumContentDs.push({ empID: item.employeeId, criterion: object.criterion, salary: object.salary });
-							if(!_.isEmpty(object.background)) {
-								vertContentDeco.push(new CellColor("salary", index.toString(), "bg-daily-alter-self", 0));	
-							}
-						} else {
-							vertSumContentDs.push({ empID: item.employeeId, criterion: null, salary: null });
-						}
-					});
-					break;
-					
-				// 労働時間
-				case PersonalCounterCategory.WORKING_HOURS: 
-					group = [
-						{ headerText: getText("KSU001_20"), key: "colum1", width: "100px" },
-	                	{ headerText: getText("KSU001_50"), key: "colum2", width: "100px" },
-						{ headerText: getText("KSU001_51"), key: "colum3", width: "100px" },
-					];
-					_.forEach(detailContentDs, (item: any) => {
-						let object: any = _.find(data.aggreratePersonal.workHours, loopItem => loopItem.sid==item.employeeId);
-						if(object) {
-							// enum AttendanceTimesForAggregation
-							let colum1Object = _.find(object.workHours, (objectItem: any) => objectItem.key==AttendanceTimesForAggregation.WORKING_TOTAL),
-								colum2Object = _.find(object.workHours, (objectItem: any) => objectItem.key==AttendanceTimesForAggregation.WORKING_WITHIN),
-								colum3Object = _.find(object.workHours, (objectItem: any) => objectItem.key==AttendanceTimesForAggregation.WORKING_EXTRA);
-							vertSumContentDs.push({ 
-								empID: item.employeeId, 
-								colum1: _.isEmpty(colum1Object) ? '' : colum1Object.value, 
-								colum2: _.isEmpty(colum2Object) ? '' : colum1Object.value, 
-								colum3: _.isEmpty(colum3Object) ? '' : colum1Object.value 
-							});
-						} else {
-							vertSumContentDs.push({ empID: item.employeeId, colum1: null, colum2: null, colum3: null });
-						}
-					});
-					break;
-					
-				// 出勤・休日日数
-				case PersonalCounterCategory.ATTENDANCE_HOLIDAY_DAYS: 
-					group = [
-						{ headerText: getText("KSU001_62"), key: "colum1", width: "100px" },
-	                	{ headerText: getText("KSU001_63"), key: "colum2", width: "100px" },
-					];
-					_.forEach(detailContentDs, (item: any) => {
-						let object: any = _.find(data.aggreratePersonal.workHours, loopItem => loopItem.sid==item.employeeId);
-						if(object) {
-							// WorkClassificationAsAggregationTarget
-							let colum1Object = _.find(object.workHours, (objectItem: any) => objectItem.key==WorkClassificationAsAggregationTarget.WORKING),
-								colum2Object = _.find(object.workHours, (objectItem: any) => objectItem.key==WorkClassificationAsAggregationTarget.HOLIDAY);
-							vertSumContentDs.push({ 
-								empID: item.employeeId, 
-								colum1: _.isEmpty(colum1Object) ? '' : colum1Object.value, 
-								colum2: _.isEmpty(colum2Object) ? '' : colum1Object.value
-							});
-						} else {
-							vertSumContentDs.push({ empID: item.employeeId, colum1: null, colum2: null });
-						}
-					});
-					break;
-					
-				// 回数集計１
-				case PersonalCounterCategory.TIMES_COUNTING_1: 
-					let timeCount1: Array<any> = data.aggreratePersonal.timeCount,
-						timeCount1Value = _.filter(timeCount1, item => !_.isEmpty(item.totalTimesMapDto));
-					if(_.isEmpty(timeCount1Value)) {
-						group = [
-							{ headerText: "", key: "colum1", width: "100px" },
-						];
-						break;
-					}
-					group = [
-						{ headerText: _.get(_.head(timeCount1).totalTimesMapDto[0], 'totalTimesName'), key: "colum1", width: "100px" },
-					];
-					_.forEach(detailContentDs, (item: any) => {
-						let object: any = _.find(timeCount1, loopItem => loopItem.sid==item.employeeId);
-						if(object && !_.isEmpty(object.totalTimesMapDto)) {
-							vertSumContentDs.push({ empID: item.employeeId, colum1: object.totalTimesMapDto[0].value });
-						} else {
-							vertSumContentDs.push({ empID: item.employeeId, colum1: null });
-						}
-					});
-					break;
-					
-				// 回数集計２
-				case PersonalCounterCategory.TIMES_COUNTING_2: 
-					let timeCount2: Array<any> = data.aggreratePersonal.timeCount,
-						timeCount2Value = _.filter(timeCount2, item => !_.isEmpty(item.totalTimesMapDto));
-					if(_.isEmpty(timeCount2Value)) {
-						group = [
-							{ headerText: "", key: "colum1", width: "100px" },
-						];
-						break;
-					}
-					group = [
-						{ headerText: _.get(_.head(timeCount2).totalTimesMapDto[0], 'totalTimesName'), key: "colum1", width: "100px" },
-					];
-					_.forEach(detailContentDs, (item: any) => {
-						let object: any = _.find(timeCount2, loopItem => loopItem.sid==item.employeeId);
-						if(object && !_.isEmpty(object.totalTimesMapDto)) {
-							vertSumContentDs.push({ empID: item.employeeId, colum1: object.totalTimesMapDto[0].value });
-						} else {
-							vertSumContentDs.push({ empID: item.employeeId, colum1: null });
-						}
-					});
-					break;
-					
-				// 回数集計３
-				case PersonalCounterCategory.TIMES_COUNTING_3: 
-					let timeCount3: Array<any> = data.aggreratePersonal.timeCount,
-						timeCount3Value = _.filter(timeCount3, item => !_.isEmpty(item.totalTimesMapDto));
-					if(_.isEmpty(timeCount3Value)) {
-						group = [
-							{ headerText: "", key: "colum1", width: "100px" },
-						];
-						break;
-					}
-					group = [
-						{ headerText: _.get(_.head(timeCount3).totalTimesMapDto[0], 'totalTimesName'), key: "colum1", width: "100px" },
-					];
-					_.forEach(detailContentDs, (item: any) => {
-						let object: any = _.find(timeCount3, loopItem => loopItem.sid==item.employeeId);
-						if(object && !_.isEmpty(object.totalTimesMapDto)) {
-							vertSumContentDs.push({ empID: item.employeeId, colum1: object.totalTimesMapDto[0].value });
-						} else {
-							vertSumContentDs.push({ empID: item.employeeId, colum1: null });
-						}
-					});
-					break;
-					
-				deault: break;
-			}
-			vertSumColumns = [
-		        { 
-		            headerText: '<div id="vertDropDown"></div>',
-					icon: { for: "header", class: "", width: "0px" },
-		            group: group
-		        }
-		    ];	
-			self.vertSumColumns = vertSumColumns;
-			self.vertSumContentDs = vertSumContentDs;
-			self.vertContentDeco = vertContentDeco; 
-		}
-		
-		createHorzSumData(data: any) {
-			let self = this,
-				keys = _.keys(new ExItem(undefined, null, null, null, true, self.arrDay)),
-				leftHorzContentDs: any = [],
-				horizontalSumContentDs: any = [],
-				rightHorzContentDs: any = [];
-			switch(self.useCategoriesWorkplaceValue()) {
-				// 人件費・時間
-				case WorkplaceCounterCategory.LABOR_COSTS_AND_TIME: 
-					let laborCostAndTime: Array<any> = data.aggrerateWorkplace.laborCostAndTime,
-						laborCostAndTimeValue = _.filter(laborCostAndTime, item => !_.isEmpty(item.laborCostAndTime));
-					if(_.isEmpty(laborCostAndTimeValue)) {
-						break;
-					}
-					leftHorzContentDs.push({ id: 'id1', title: getText("KSU001_50"), subtitle: getText("KSU001_59") });
-					leftHorzContentDs.push({ id: 'id2', title: '', subtitle: getText("KSU001_60") });
-					leftHorzContentDs.push({ id: 'id3', title: getText("KSU001_51"), subtitle: getText("KSU001_59") });
-					leftHorzContentDs.push({ id: 'id4', title: '', subtitle: getText("KSU001_60") });
-					leftHorzContentDs.push({ id: 'id5', title: getText("KSU001_50"), subtitle: getText("KSU001_59") });
-					leftHorzContentDs.push({ id: 'id6', title: '', subtitle: getText("KSU001_60") });
-					leftHorzContentDs.push({ id: 'id7', title: '', subtitle: getText("KSU001_61") });
-					for(let i=1; i<=7; i++) {
-						let objectLaborCostAndTime = {}, sumLaborCostAndTime = 0;
-						_.set(objectLaborCostAndTime, 'id', 'id'+i);
-						_.forEach(keys, key => {
-							if(_.includes(['employeeId', 'sid'], key)) {
-								return;	
-							}
-							let findObject: any = _.find(laborCostAndTime, item => key==moment(item.date).format('_YYYYMMDD'));
-							if(!_.isEmpty(findObject)) {
-								let findValueObject: any = null;
-								switch(i) {
-									case 1: findValueObject = _.find(findObject.laborCostAndTime, (findValueObjectItem: any) => 
-															findValueObjectItem.unit==AggregationUnitOfLaborCosts.WITHIN && findValueObjectItem.itemType==LaborCostItemType.TIME); 
-											break;
-									case 2: findValueObject = _.find(findObject.laborCostAndTime, (findValueObjectItem: any) => 
-															findValueObjectItem.unit==AggregationUnitOfLaborCosts.WITHIN && findValueObjectItem.itemType==LaborCostItemType.AMOUNT); 
-											break;
-									case 3: findValueObject = _.find(findObject.laborCostAndTime, (findValueObjectItem: any) => 
-															findValueObjectItem.unit==AggregationUnitOfLaborCosts.EXTRA && findValueObjectItem.itemType==LaborCostItemType.TIME); 
-											break;
-									case 4: findValueObject = _.find(findObject.laborCostAndTime, (findValueObjectItem: any) => 
-															findValueObjectItem.unit==AggregationUnitOfLaborCosts.EXTRA && findValueObjectItem.itemType==LaborCostItemType.AMOUNT); 
-											break;
-									case 5: findValueObject = _.find(findObject.laborCostAndTime, (findValueObjectItem: any) => 
-															findValueObjectItem.unit==AggregationUnitOfLaborCosts.TOTAL && findValueObjectItem.itemType==LaborCostItemType.TIME); 
-											break;
-									case 6: findValueObject = _.find(findObject.laborCostAndTime, (findValueObjectItem: any) => 
-															findValueObjectItem.unit==AggregationUnitOfLaborCosts.TOTAL && findValueObjectItem.itemType==LaborCostItemType.AMOUNT); 
-											break;
-									case 7: findValueObject = _.find(findObject.laborCostAndTime, (findValueObjectItem: any) => 
-															findValueObjectItem.unit==AggregationUnitOfLaborCosts.TOTAL && findValueObjectItem.itemType==LaborCostItemType.BUDGET); 
-											break;
-									default: break;
-								}
-								_.set(objectLaborCostAndTime, key, _.isEmpty(findValueObject) ? '' : findValueObject.value);	
-								sumLaborCostAndTime += _.isEmpty(findValueObject) ? 0 : findValueObject.value;
-							} else {
-								_.set(objectLaborCostAndTime, key, '');	
-							}
-						});
-						horizontalSumContentDs.push(objectLaborCostAndTime);	
-						rightHorzContentDs.push({ id: 'id'+i, sum: sumLaborCostAndTime });
-					}
-					break;
-					
-				// 外部予算実績
-				case WorkplaceCounterCategory.EXTERNAL_BUDGET: 
-					let externalBudget: Array<any> = data.aggrerateWorkplace.externalBudget,
-						externalBudgetValue = _.filter(externalBudget, item => !_.isEmpty(item.externalBudget));
-					if(_.isEmpty(externalBudgetValue)) {
-						break;
-					}
-					let objectExternalBudget = {}, sumExternalBudget = 0;
-					leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(externalBudget).externalBudget[0], 'name'), subtitle: '' });
-					_.set(objectExternalBudget, 'id', 'id1');
-					_.forEach(keys, key => {
-						if(_.includes(['employeeId', 'sid'], key)) {
-							return;	
-						}
-						let findObject: any = _.find(externalBudget, item => key==moment(item.date).format('_YYYYMMDD'));
-						if(!_.isEmpty(findObject)) {
-							_.set(objectExternalBudget, key, findObject.externalBudget[0].value);	
-							sumExternalBudget += findObject.externalBudget[0].value;
-						} else {
-							_.set(objectExternalBudget, key, '');	
-						}
-					});
-					horizontalSumContentDs.push(objectExternalBudget);
-					rightHorzContentDs.push({ id: 'id1', sum: sumExternalBudget });
-					break;
-					
-				// 回数集計
-				case WorkplaceCounterCategory.TIMES_COUNTING: 
-					let timeCount: Array<any> = data.aggrerateWorkplace.timeCount,
-						timeCountValue = _.filter(timeCount, item => !_.isEmpty(item.timeCount));
-					if(_.isEmpty(timeCountValue)) {
-						break;
-					}
-					let objectTimeCount = {}, sumTimeCount = 0;
-					leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(timeCount).timeCount[0], 'totalTimesName'), subtitle: '' });
-					_.set(objectTimeCount, 'id', 'id1');
-					_.forEach(keys, key => {
-						if(_.includes(['employeeId', 'sid'], key)) {
-							return;	
-						}
-						let findObject: any = _.find(timeCount, item => key==moment(item.date).format('_YYYYMMDD'));
-						if(!_.isEmpty(findObject)) {
-							_.set(objectTimeCount, key, findObject.timeCount[0].value);	
-							sumTimeCount += findObject.timeCount[0].value;
-						} else {
-							_.set(objectTimeCount, key, '');	
-						}
-					});
-					horizontalSumContentDs.push(objectTimeCount);
-					rightHorzContentDs.push({ id: 'id1', sum: sumTimeCount });
-					break;
-					
-				// 就業時間帯別の利用人数
-				case WorkplaceCounterCategory.WORKTIME_PEOPLE: 
-					let peopleMethod: Array<any> = data.aggrerateWorkplace.peopleMethod,
-						peopleMethodValue = _.filter(peopleMethod, item => !_.isEmpty(item.peopleMethod));
-					if(_.isEmpty(peopleMethodValue)) {
-						break;
-					}
-					leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(peopleMethod).peopleMethod[0], 'workMethod'), subtitle: getText("KSU001_70") });
-					leftHorzContentDs.push({ id: 'id2', title: '', subtitle: getText("KSU001_71") });
-					leftHorzContentDs.push({ id: 'id3', title: '', subtitle: getText("KSU001_72") });
-					for(let i=1; i<=3; i++) {
-						let objectPeopleMethod = {}, sumPeopleMethod = 0;
-						_.set(objectPeopleMethod, 'id', 'id'+i);
-						_.forEach(keys, key => {
-							if(_.includes(['employeeId', 'sid'], key)) {
-								return;	
-							}
-							let findObject: any = _.find(peopleMethod, item => key==moment(item.date).format('_YYYYMMDD'));
-							if(!_.isEmpty(findObject) && !_.isEmpty(findObject.peopleMethod)) {
-								switch(i) {
-									case 1: _.set(objectPeopleMethod, key, _.get(findObject.peopleMethod[0], 'planNumber'));
-											break;
-									case 2: _.set(objectPeopleMethod, key, _.get(findObject.peopleMethod[0], 'scheduleNumber'));
-											break;
-									case 3: _.set(objectPeopleMethod, key, _.get(findObject.peopleMethod[0], 'actualNumber'));
-											break;
-									default: break;
-								}
-								let subValue: number = _.get(objectPeopleMethod, key);
-								sumPeopleMethod += subValue;
-							} else {
-								_.set(objectPeopleMethod, key, '');	
-							}
-						});
-						horizontalSumContentDs.push(objectPeopleMethod);	
-						rightHorzContentDs.push({ id: 'id'+i, sum: sumPeopleMethod });
-					}
-					break;
-					
-				// 雇用人数
-				case WorkplaceCounterCategory.EMPLOYMENT_PEOPLE: 
-					let employment: Array<any> = data.aggrerateWorkplace.aggrerateNumberPeople.employment,
-						employmentValue = _.filter(employment, item => !_.isEmpty(item.numberPeople));
-					if(_.isEmpty(employmentValue)) {
-						break;
-					}
-					let objectEmployment = {}, sumEmployment = 0;
-					leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(employment).numberPeople[0], 'name'), subtitle: '' });
-					_.set(objectEmployment, 'id', 'id1');
-					_.forEach(keys, key => {
-						if(_.includes(['employeeId', 'sid'], key)) {
-							return;	
-						}
-						let findObject: any = _.find(employment, item => key==moment(item.date).format('_YYYYMMDD'));
-						if(!_.isEmpty(findObject)) {
-							_.set(objectEmployment, key, findObject.numberPeople[0].value);	
-							sumEmployment += findObject.numberPeople[0].value;
-						} else {
-							_.set(objectEmployment, key, '');	
-						}
-					});
-					horizontalSumContentDs.push(objectEmployment);
-					rightHorzContentDs.push({ id: 'id1', sum: sumEmployment });
-					break;
-					
-				// 分類人数
-				case WorkplaceCounterCategory.CLASSIFICATION_PEOPLE: 
-					let classification: Array<any> = data.aggrerateWorkplace.aggrerateNumberPeople.classification,
-						classificationValue = _.filter(classification, item => !_.isEmpty(item.numberPeople));
-					if(_.isEmpty(classificationValue)) {
-						break;
-					}
-					let objectClassification = {}, sumClassification = 0;
-					leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(classification).numberPeople[0], 'name'), subtitle: '' });
-					_.set(objectClassification, 'id', 'id1');
-					_.forEach(keys, key => {
-						if(_.includes(['employeeId', 'sid'], key)) {
-							return;	
-						}
-						let findObject: any = _.find(classification, item => key==moment(item.date).format('_YYYYMMDD'));
-						if(!_.isEmpty(findObject)) {
-							_.set(objectClassification, key, findObject.numberPeople[0].value);	
-							sumClassification += findObject.numberPeople[0].value;
-						} else {
-							_.set(objectClassification, key, '');	
-						}
-					});
-					horizontalSumContentDs.push(objectClassification);
-					rightHorzContentDs.push({ id: 'id1', sum: sumClassification });
-					break;
-					
-				// 職位人数
-				case WorkplaceCounterCategory.POSITION_PEOPLE: 
-					let jobTitleInfo: Array<any> = data.aggrerateWorkplace.aggrerateNumberPeople.jobTitleInfo,
-						jobTitleInfoValue = _.filter(jobTitleInfo, item => !_.isEmpty(item.numberPeople))
-					if(_.isEmpty(jobTitleInfoValue)) {
-						break;
-					}
-					let objectJobTitle = {}, sumJobTitleInfo = 0;
-					leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(jobTitleInfo).numberPeople[0], 'name'), subtitle: '' });
-					_.set(objectJobTitle, 'id', 'id1');
-					_.forEach(keys, key => {
-						if(_.includes(['employeeId', 'sid'], key)) {
-							return;	
-						}
-						let findObject: any = _.find(jobTitleInfo, item => key==moment(item.date).format('_YYYYMMDD'));
-						if(!_.isEmpty(findObject)) {
-							_.set(objectJobTitle, key, findObject.numberPeople[0].value);	
-							sumJobTitleInfo += findObject.numberPeople[0].value;
-						} else {
-							_.set(objectJobTitle, key, '');	
-						}
-					});
-					horizontalSumContentDs.push(objectJobTitle);
-					rightHorzContentDs.push({ id: 'id1', sum: sumJobTitleInfo });
-					break;
-					
-				default: break;
-			}	
-			self.leftHorzContentDs = leftHorzContentDs;
-			self.horizontalSumContentDs = horizontalSumContentDs;
-			self.rightHorzContentDs = rightHorzContentDs;
-		}
-		
-		createVertSumHeader() {
-			let self = this,
-				vertSumHeader = {
-		        columns: self.vertSumColumns,
-		        width: self.widthVertSum+"px",
-		        features: [{
-		            name: "HeaderRowHeight",
-		            rows: { 0: "40px", 1: "20px" }   
-		        }]
-		    };
-			return vertSumHeader;
-		}
-		
-		createVertSumContent() {
-			let self = this,
-				vertSumContent = {
-		        columns: self.vertSumColumns,
-		        dataSource: self.vertSumContentDs,
-		        primaryKey: "empId",
-				features: [{
+        createVertSumData(data: any) {
+            let self = this,
+                detailContentDs = self.detailContentDs,
+                vertSumColumns: any = [],
+                vertSumContentDs: any = [],
+                vertContentDeco: any = [],
+                group: any = [];
+            switch(self.useCategoriesPersonalValue()) {
+                // 月間想定給与額
+                case PersonalCounterCategory.MONTHLY_EXPECTED_SALARY:   
+                    group = [
+                        { headerText: getText("KSU001_18"), key: "criterion", width: "100px" },
+                        { headerText: getText("KSU001_19"), key: "salary", width: "100px" },
+                    ];
+                    _.forEach(detailContentDs, (item: any, index) => {
+                        let object: any = _.find(data.aggreratePersonal.estimatedSalary, loopItem => loopItem.sid==item.employeeId);
+                        if(object) {
+                            vertSumContentDs.push({ empID: item.employeeId, criterion: object.criterion, salary: object.salary });
+                            if(!_.isEmpty(object.background)) {
+                                vertContentDeco.push(new CellColor("salary", index.toString(), "bg-daily-alter-self", 0));  
+                            }
+                        } else {
+                            vertSumContentDs.push({ empID: item.employeeId, criterion: null, salary: null });
+                        }
+                    });
+                    break;
+                    
+                // 年間想定給与額
+                case PersonalCounterCategory.CUMULATIVE_ESTIMATED_SALARY: 
+                    group = [
+                        { headerText: getText("KSU001_18"), key: "criterion", width: "100px" },
+                        { headerText: getText("KSU001_19"), key: "salary", width: "100px" },
+                    ];
+                    _.forEach(detailContentDs, (item: any, index) => {
+                        let object: any = _.find(data.aggreratePersonal.estimatedSalary, loopItem => loopItem.sid==item.employeeId);
+                        if(object) {
+                            vertSumContentDs.push({ empID: item.employeeId, criterion: object.criterion, salary: object.salary });
+                            if(!_.isEmpty(object.background)) {
+                                vertContentDeco.push(new CellColor("salary", index.toString(), "bg-daily-alter-self", 0));  
+                            }
+                        } else {
+                            vertSumContentDs.push({ empID: item.employeeId, criterion: null, salary: null });
+                        }
+                    });
+                    break;
+                    
+                // 労働時間
+                case PersonalCounterCategory.WORKING_HOURS: 
+                    group = [
+                        { headerText: getText("KSU001_20"), key: "colum1", width: "100px" },
+                        { headerText: getText("KSU001_50"), key: "colum2", width: "100px" },
+                        { headerText: getText("KSU001_51"), key: "colum3", width: "100px" },
+                    ];
+                    _.forEach(detailContentDs, (item: any) => {
+                        let object: any = _.find(data.aggreratePersonal.workHours, loopItem => loopItem.sid==item.employeeId);
+                        if(object) {
+                            // enum AttendanceTimesForAggregation
+                            let colum1Object = _.find(object.workHours, (objectItem: any) => objectItem.key==AttendanceTimesForAggregation.WORKING_TOTAL),
+                                colum2Object = _.find(object.workHours, (objectItem: any) => objectItem.key==AttendanceTimesForAggregation.WORKING_WITHIN),
+                                colum3Object = _.find(object.workHours, (objectItem: any) => objectItem.key==AttendanceTimesForAggregation.WORKING_EXTRA);
+                            vertSumContentDs.push({ 
+                                empID: item.employeeId, 
+                                colum1: _.isEmpty(colum1Object) ? '' : colum1Object.value, 
+                                colum2: _.isEmpty(colum2Object) ? '' : colum1Object.value, 
+                                colum3: _.isEmpty(colum3Object) ? '' : colum1Object.value 
+                            });
+                        } else {
+                            vertSumContentDs.push({ empID: item.employeeId, colum1: null, colum2: null, colum3: null });
+                        }
+                    });
+                    break;
+                    
+                // 出勤・休日日数
+                case PersonalCounterCategory.ATTENDANCE_HOLIDAY_DAYS: 
+                    group = [
+                        { headerText: getText("KSU001_62"), key: "colum1", width: "100px" },
+                        { headerText: getText("KSU001_63"), key: "colum2", width: "100px" },
+                    ];
+                    _.forEach(detailContentDs, (item: any) => {
+                        let object: any = _.find(data.aggreratePersonal.workHours, loopItem => loopItem.sid==item.employeeId);
+                        if(object) {
+                            // WorkClassificationAsAggregationTarget
+                            let colum1Object = _.find(object.workHours, (objectItem: any) => objectItem.key==WorkClassificationAsAggregationTarget.WORKING),
+                                colum2Object = _.find(object.workHours, (objectItem: any) => objectItem.key==WorkClassificationAsAggregationTarget.HOLIDAY);
+                            vertSumContentDs.push({ 
+                                empID: item.employeeId, 
+                                colum1: _.isEmpty(colum1Object) ? '' : colum1Object.value, 
+                                colum2: _.isEmpty(colum2Object) ? '' : colum1Object.value
+                            });
+                        } else {
+                            vertSumContentDs.push({ empID: item.employeeId, colum1: null, colum2: null });
+                        }
+                    });
+                    break;
+                    
+                // 回数集計１
+                case PersonalCounterCategory.TIMES_COUNTING_1: 
+                    let timeCount1: Array<any> = data.aggreratePersonal.timeCount,
+                        timeCount1Value = _.filter(timeCount1, item => !_.isEmpty(item.totalTimesMapDto));
+                    if(_.isEmpty(timeCount1Value)) {
+                        group = [
+                            { headerText: "", key: "colum1", width: "100px" },
+                        ];
+                        break;
+                    }
+                    group = [
+                        { headerText: _.get(_.head(timeCount1).totalTimesMapDto[0], 'totalTimesName'), key: "colum1", width: "100px" },
+                    ];
+                    _.forEach(detailContentDs, (item: any) => {
+                        let object: any = _.find(timeCount1, loopItem => loopItem.sid==item.employeeId);
+                        if(object && !_.isEmpty(object.totalTimesMapDto)) {
+                            vertSumContentDs.push({ empID: item.employeeId, colum1: object.totalTimesMapDto[0].value });
+                        } else {
+                            vertSumContentDs.push({ empID: item.employeeId, colum1: null });
+                        }
+                    });
+                    break;
+                    
+                // 回数集計２
+                case PersonalCounterCategory.TIMES_COUNTING_2: 
+                    let timeCount2: Array<any> = data.aggreratePersonal.timeCount,
+                        timeCount2Value = _.filter(timeCount2, item => !_.isEmpty(item.totalTimesMapDto));
+                    if(_.isEmpty(timeCount2Value)) {
+                        group = [
+                            { headerText: "", key: "colum1", width: "100px" },
+                        ];
+                        break;
+                    }
+                    group = [
+                        { headerText: _.get(_.head(timeCount2).totalTimesMapDto[0], 'totalTimesName'), key: "colum1", width: "100px" },
+                    ];
+                    _.forEach(detailContentDs, (item: any) => {
+                        let object: any = _.find(timeCount2, loopItem => loopItem.sid==item.employeeId);
+                        if(object && !_.isEmpty(object.totalTimesMapDto)) {
+                            vertSumContentDs.push({ empID: item.employeeId, colum1: object.totalTimesMapDto[0].value });
+                        } else {
+                            vertSumContentDs.push({ empID: item.employeeId, colum1: null });
+                        }
+                    });
+                    break;
+                    
+                // 回数集計３
+                case PersonalCounterCategory.TIMES_COUNTING_3: 
+                    let timeCount3: Array<any> = data.aggreratePersonal.timeCount,
+                        timeCount3Value = _.filter(timeCount3, item => !_.isEmpty(item.totalTimesMapDto));
+                    if(_.isEmpty(timeCount3Value)) {
+                        group = [
+                            { headerText: "", key: "colum1", width: "100px" },
+                        ];
+                        break;
+                    }
+                    group = [
+                        { headerText: _.get(_.head(timeCount3).totalTimesMapDto[0], 'totalTimesName'), key: "colum1", width: "100px" },
+                    ];
+                    _.forEach(detailContentDs, (item: any) => {
+                        let object: any = _.find(timeCount3, loopItem => loopItem.sid==item.employeeId);
+                        if(object && !_.isEmpty(object.totalTimesMapDto)) {
+                            vertSumContentDs.push({ empID: item.employeeId, colum1: object.totalTimesMapDto[0].value });
+                        } else {
+                            vertSumContentDs.push({ empID: item.employeeId, colum1: null });
+                        }
+                    });
+                    break;
+                    
+                deault: break;
+            }
+            vertSumColumns = [
+                { 
+                    headerText: '<div id="vertDropDown"></div>',
+                    icon: { for: "header", class: "", width: "0px" },
+                    group: group
+                }
+            ];  
+            self.vertSumColumns = vertSumColumns;
+            self.vertSumContentDs = vertSumContentDs;
+            self.vertContentDeco = vertContentDeco; 
+        }
+        
+        createHorzSumData(data: any) {
+            let self = this,
+                keys = _.keys(new ExItem(undefined, null, null, null, true, self.arrDay)),
+                leftHorzContentDs: any = [],
+                horizontalSumContentDs: any = [],
+                rightHorzContentDs: any = [];
+            switch(self.useCategoriesWorkplaceValue()) {
+                // 人件費・時間
+                case WorkplaceCounterCategory.LABOR_COSTS_AND_TIME: 
+                    let laborCostAndTime: Array<any> = data.aggrerateWorkplace.laborCostAndTime,
+                        laborCostAndTimeValue = _.filter(laborCostAndTime, item => !_.isEmpty(item.laborCostAndTime));
+                    if(_.isEmpty(laborCostAndTimeValue)) {
+                        break;
+                    }
+                    leftHorzContentDs.push({ id: 'id1', title: getText("KSU001_50"), subtitle: getText("KSU001_59") });
+                    leftHorzContentDs.push({ id: 'id2', title: '', subtitle: getText("KSU001_60") });
+                    leftHorzContentDs.push({ id: 'id3', title: getText("KSU001_51"), subtitle: getText("KSU001_59") });
+                    leftHorzContentDs.push({ id: 'id4', title: '', subtitle: getText("KSU001_60") });
+                    leftHorzContentDs.push({ id: 'id5', title: getText("KSU001_50"), subtitle: getText("KSU001_59") });
+                    leftHorzContentDs.push({ id: 'id6', title: '', subtitle: getText("KSU001_60") });
+                    leftHorzContentDs.push({ id: 'id7', title: '', subtitle: getText("KSU001_61") });
+                    for(let i=1; i<=7; i++) {
+                        let objectLaborCostAndTime = {}, sumLaborCostAndTime = 0;
+                        _.set(objectLaborCostAndTime, 'id', 'id'+i);
+                        _.forEach(keys, key => {
+                            if(_.includes(['employeeId', 'sid'], key)) {
+                                return; 
+                            }
+                            let findObject: any = _.find(laborCostAndTime, item => key==moment(item.date).format('_YYYYMMDD'));
+                            if(!_.isEmpty(findObject)) {
+                                let findValueObject: any = null;
+                                switch(i) {
+                                    case 1: findValueObject = _.find(findObject.laborCostAndTime, (findValueObjectItem: any) => 
+                                                            findValueObjectItem.unit==AggregationUnitOfLaborCosts.WITHIN && findValueObjectItem.itemType==LaborCostItemType.TIME); 
+                                            break;
+                                    case 2: findValueObject = _.find(findObject.laborCostAndTime, (findValueObjectItem: any) => 
+                                                            findValueObjectItem.unit==AggregationUnitOfLaborCosts.WITHIN && findValueObjectItem.itemType==LaborCostItemType.AMOUNT); 
+                                            break;
+                                    case 3: findValueObject = _.find(findObject.laborCostAndTime, (findValueObjectItem: any) => 
+                                                            findValueObjectItem.unit==AggregationUnitOfLaborCosts.EXTRA && findValueObjectItem.itemType==LaborCostItemType.TIME); 
+                                            break;
+                                    case 4: findValueObject = _.find(findObject.laborCostAndTime, (findValueObjectItem: any) => 
+                                                            findValueObjectItem.unit==AggregationUnitOfLaborCosts.EXTRA && findValueObjectItem.itemType==LaborCostItemType.AMOUNT); 
+                                            break;
+                                    case 5: findValueObject = _.find(findObject.laborCostAndTime, (findValueObjectItem: any) => 
+                                                            findValueObjectItem.unit==AggregationUnitOfLaborCosts.TOTAL && findValueObjectItem.itemType==LaborCostItemType.TIME); 
+                                            break;
+                                    case 6: findValueObject = _.find(findObject.laborCostAndTime, (findValueObjectItem: any) => 
+                                                            findValueObjectItem.unit==AggregationUnitOfLaborCosts.TOTAL && findValueObjectItem.itemType==LaborCostItemType.AMOUNT); 
+                                            break;
+                                    case 7: findValueObject = _.find(findObject.laborCostAndTime, (findValueObjectItem: any) => 
+                                                            findValueObjectItem.unit==AggregationUnitOfLaborCosts.TOTAL && findValueObjectItem.itemType==LaborCostItemType.BUDGET); 
+                                            break;
+                                    default: break;
+                                }
+                                _.set(objectLaborCostAndTime, key, _.isEmpty(findValueObject) ? '' : findValueObject.value);    
+                                sumLaborCostAndTime += _.isEmpty(findValueObject) ? 0 : findValueObject.value;
+                            } else {
+                                _.set(objectLaborCostAndTime, key, ''); 
+                            }
+                        });
+                        horizontalSumContentDs.push(objectLaborCostAndTime);    
+                        rightHorzContentDs.push({ id: 'id'+i, sum: sumLaborCostAndTime });
+                    }
+                    break;
+                    
+                // 外部予算実績
+                case WorkplaceCounterCategory.EXTERNAL_BUDGET: 
+                    let externalBudget: Array<any> = data.aggrerateWorkplace.externalBudget,
+                        externalBudgetValue = _.filter(externalBudget, item => !_.isEmpty(item.externalBudget));
+                    if(_.isEmpty(externalBudgetValue)) {
+                        break;
+                    }
+                    let objectExternalBudget = {}, sumExternalBudget = 0;
+                    leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(externalBudget).externalBudget[0], 'name'), subtitle: '' });
+                    _.set(objectExternalBudget, 'id', 'id1');
+                    _.forEach(keys, key => {
+                        if(_.includes(['employeeId', 'sid'], key)) {
+                            return; 
+                        }
+                        let findObject: any = _.find(externalBudget, item => key==moment(item.date).format('_YYYYMMDD'));
+                        if(!_.isEmpty(findObject)) {
+                            _.set(objectExternalBudget, key, findObject.externalBudget[0].value);   
+                            sumExternalBudget += findObject.externalBudget[0].value;
+                        } else {
+                            _.set(objectExternalBudget, key, '');   
+                        }
+                    });
+                    horizontalSumContentDs.push(objectExternalBudget);
+                    rightHorzContentDs.push({ id: 'id1', sum: sumExternalBudget });
+                    break;
+                    
+                // 回数集計
+                case WorkplaceCounterCategory.TIMES_COUNTING: 
+                    let timeCount: Array<any> = data.aggrerateWorkplace.timeCount,
+                        timeCountValue = _.filter(timeCount, item => !_.isEmpty(item.timeCount));
+                    if(_.isEmpty(timeCountValue)) {
+                        break;
+                    }
+                    let objectTimeCount = {}, sumTimeCount = 0;
+                    leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(timeCount).timeCount[0], 'totalTimesName'), subtitle: '' });
+                    _.set(objectTimeCount, 'id', 'id1');
+                    _.forEach(keys, key => {
+                        if(_.includes(['employeeId', 'sid'], key)) {
+                            return; 
+                        }
+                        let findObject: any = _.find(timeCount, item => key==moment(item.date).format('_YYYYMMDD'));
+                        if(!_.isEmpty(findObject)) {
+                            _.set(objectTimeCount, key, findObject.timeCount[0].value); 
+                            sumTimeCount += findObject.timeCount[0].value;
+                        } else {
+                            _.set(objectTimeCount, key, '');    
+                        }
+                    });
+                    horizontalSumContentDs.push(objectTimeCount);
+                    rightHorzContentDs.push({ id: 'id1', sum: sumTimeCount });
+                    break;
+                    
+                // 就業時間帯別の利用人数
+                case WorkplaceCounterCategory.WORKTIME_PEOPLE: 
+                    let peopleMethod: Array<any> = data.aggrerateWorkplace.peopleMethod,
+                        peopleMethodValue = _.filter(peopleMethod, item => !_.isEmpty(item.peopleMethod));
+                    if(_.isEmpty(peopleMethodValue)) {
+                        break;
+                    }
+                    leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(peopleMethod).peopleMethod[0], 'workMethod'), subtitle: getText("KSU001_70") });
+                    leftHorzContentDs.push({ id: 'id2', title: '', subtitle: getText("KSU001_71") });
+                    leftHorzContentDs.push({ id: 'id3', title: '', subtitle: getText("KSU001_72") });
+                    for(let i=1; i<=3; i++) {
+                        let objectPeopleMethod = {}, sumPeopleMethod = 0;
+                        _.set(objectPeopleMethod, 'id', 'id'+i);
+                        _.forEach(keys, key => {
+                            if(_.includes(['employeeId', 'sid'], key)) {
+                                return; 
+                            }
+                            let findObject: any = _.find(peopleMethod, item => key==moment(item.date).format('_YYYYMMDD'));
+                            if(!_.isEmpty(findObject) && !_.isEmpty(findObject.peopleMethod)) {
+                                switch(i) {
+                                    case 1: _.set(objectPeopleMethod, key, _.get(findObject.peopleMethod[0], 'planNumber'));
+                                            break;
+                                    case 2: _.set(objectPeopleMethod, key, _.get(findObject.peopleMethod[0], 'scheduleNumber'));
+                                            break;
+                                    case 3: _.set(objectPeopleMethod, key, _.get(findObject.peopleMethod[0], 'actualNumber'));
+                                            break;
+                                    default: break;
+                                }
+                                let subValue: number = _.get(objectPeopleMethod, key);
+                                sumPeopleMethod += subValue;
+                            } else {
+                                _.set(objectPeopleMethod, key, ''); 
+                            }
+                        });
+                        horizontalSumContentDs.push(objectPeopleMethod);    
+                        rightHorzContentDs.push({ id: 'id'+i, sum: sumPeopleMethod });
+                    }
+                    break;
+                    
+                // 雇用人数
+                case WorkplaceCounterCategory.EMPLOYMENT_PEOPLE: 
+                    let employment: Array<any> = data.aggrerateWorkplace.aggrerateNumberPeople.employment,
+                        employmentValue = _.filter(employment, item => !_.isEmpty(item.numberPeople));
+                    if(_.isEmpty(employmentValue)) {
+                        break;
+                    }
+                    let objectEmployment = {}, sumEmployment = 0;
+                    leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(employment).numberPeople[0], 'name'), subtitle: '' });
+                    _.set(objectEmployment, 'id', 'id1');
+                    _.forEach(keys, key => {
+                        if(_.includes(['employeeId', 'sid'], key)) {
+                            return; 
+                        }
+                        let findObject: any = _.find(employment, item => key==moment(item.date).format('_YYYYMMDD'));
+                        if(!_.isEmpty(findObject)) {
+                            _.set(objectEmployment, key, findObject.numberPeople[0].value); 
+                            sumEmployment += findObject.numberPeople[0].value;
+                        } else {
+                            _.set(objectEmployment, key, '');   
+                        }
+                    });
+                    horizontalSumContentDs.push(objectEmployment);
+                    rightHorzContentDs.push({ id: 'id1', sum: sumEmployment });
+                    break;
+                    
+                // 分類人数
+                case WorkplaceCounterCategory.CLASSIFICATION_PEOPLE: 
+                    let classification: Array<any> = data.aggrerateWorkplace.aggrerateNumberPeople.classification,
+                        classificationValue = _.filter(classification, item => !_.isEmpty(item.numberPeople));
+                    if(_.isEmpty(classificationValue)) {
+                        break;
+                    }
+                    let objectClassification = {}, sumClassification = 0;
+                    leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(classification).numberPeople[0], 'name'), subtitle: '' });
+                    _.set(objectClassification, 'id', 'id1');
+                    _.forEach(keys, key => {
+                        if(_.includes(['employeeId', 'sid'], key)) {
+                            return; 
+                        }
+                        let findObject: any = _.find(classification, item => key==moment(item.date).format('_YYYYMMDD'));
+                        if(!_.isEmpty(findObject)) {
+                            _.set(objectClassification, key, findObject.numberPeople[0].value); 
+                            sumClassification += findObject.numberPeople[0].value;
+                        } else {
+                            _.set(objectClassification, key, '');   
+                        }
+                    });
+                    horizontalSumContentDs.push(objectClassification);
+                    rightHorzContentDs.push({ id: 'id1', sum: sumClassification });
+                    break;
+                    
+                // 職位人数
+                case WorkplaceCounterCategory.POSITION_PEOPLE: 
+                    let jobTitleInfo: Array<any> = data.aggrerateWorkplace.aggrerateNumberPeople.jobTitleInfo,
+                        jobTitleInfoValue = _.filter(jobTitleInfo, item => !_.isEmpty(item.numberPeople))
+                    if(_.isEmpty(jobTitleInfoValue)) {
+                        break;
+                    }
+                    let objectJobTitle = {}, sumJobTitleInfo = 0;
+                    leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(jobTitleInfo).numberPeople[0], 'name'), subtitle: '' });
+                    _.set(objectJobTitle, 'id', 'id1');
+                    _.forEach(keys, key => {
+                        if(_.includes(['employeeId', 'sid'], key)) {
+                            return; 
+                        }
+                        let findObject: any = _.find(jobTitleInfo, item => key==moment(item.date).format('_YYYYMMDD'));
+                        if(!_.isEmpty(findObject)) {
+                            _.set(objectJobTitle, key, findObject.numberPeople[0].value);   
+                            sumJobTitleInfo += findObject.numberPeople[0].value;
+                        } else {
+                            _.set(objectJobTitle, key, ''); 
+                        }
+                    });
+                    horizontalSumContentDs.push(objectJobTitle);
+                    rightHorzContentDs.push({ id: 'id1', sum: sumJobTitleInfo });
+                    break;
+                    
+                default: break;
+            }   
+            self.leftHorzContentDs = leftHorzContentDs;
+            self.horizontalSumContentDs = horizontalSumContentDs;
+            self.rightHorzContentDs = rightHorzContentDs;
+        }
+        
+        createVertSumHeader() {
+            let self = this,
+                vertSumHeader = {
+                columns: self.vertSumColumns,
+                width: self.widthVertSum+"px",
+                features: [{
+                    name: "HeaderRowHeight",
+                    rows: { 0: "40px", 1: "20px" }   
+                }]
+            };
+            return vertSumHeader;
+        }
+        
+        createVertSumContent() {
+            let self = this,
+                vertSumContent = {
+                columns: self.vertSumColumns,
+                dataSource: self.vertSumContentDs,
+                primaryKey: "empId",
+                features: [{
                     name: "BodyCellStyle",
                     decorator: self.vertContentDeco
                 }]
-		    };
-			return vertSumContent;
-		}
-		
-		createLeftHorzColumns() {
-			let leftHorzColumns = [
-		        { 
-					headerText: '<div id="horzDropDown"></div>', 
-					icon: { for: "header", class: "aaaa", width: "0px"},
-					group: [
-						{ headerText: '', key: "title", width: "40px" },
-						{ headerText: '', key: "subtitle", width: "120px" }
-					]
-				}
-		    ];	
-			return leftHorzColumns;
-		}
-		
-		createLeftHorzSumHeader() {
-			let self =this,
-				leftHorzSumHeader = {
-			        columns: self.createLeftHorzColumns(),
-			        rowHeight: "40px"
-			    };
-			return leftHorzSumHeader;
-		}
-		
-		createLeftHorzSumContent() {
-			let self = this,
-				leftHorzSumContent = {
-			        columns: self.createLeftHorzColumns(),
-			        dataSource: self.leftHorzContentDs,
-			        primaryKey: "itemId"
-			    };	
-			return leftHorzSumContent;
-		}
-	    
-	    createHorizontalSumHeader() {
-			let self = this,
-				horizontalSumHeader = {
-			        columns: self.horizontalDetailColumns,
-			        dataSource: [new ExItem(undefined, null, null, null, true, self.arrDay)],
-					rowHeight: "40px",
-					features: [{
-		                name: "HeaderCellStyle",
-		                decorator: self.detailHeaderDeco
-		            }]
-			    };
-			return horizontalSumHeader;
-		}
-		
-		createHorizontalSumContent() {
-			let self = this,
-				horizontalSumContent = {
-			        columns: self.horizontalDetailColumns,
-			        dataSource: self.horizontalSumContentDs,
-		            primaryKey: "employeeId",
-			    };	
-			return horizontalSumContent;
-		}
-		
-		createRightHorzSumColumns() {
-			let rightHorzSumColumns = [{ headerText: "合計", key: "sum", width: "35px" }];
-			return rightHorzSumColumns;
-		}
-		
-		createRightHorzSumHeader() {
-		    let self = this,
-				rightHorzSumHeader = {
-			        columns: self.createRightHorzSumColumns(),
-			        rowHeight: "40px"
-			    };
-			return rightHorzSumHeader;
-		}
-		createRightHorzSumContent() {
-			let self = this,
-				rightHorzSumContent = {
-			        columns: self.createRightHorzSumColumns(),
-			        dataSource: self.rightHorzContentDs,
-			        primaryKey: "id"
-			    };
-			return rightHorzSumContent;
-		}
-		
+            };
+            return vertSumContent;
+        }
+        
+        createLeftHorzColumns() {
+            let leftHorzColumns = [
+                { 
+                    headerText: '<div id="horzDropDown"></div>', 
+                    icon: { for: "header", class: "aaaa", width: "0px"},
+                    group: [
+                        { headerText: '', key: "title", width: "40px" },
+                        { headerText: '', key: "subtitle", width: "120px" }
+                    ]
+                }
+            ];  
+            return leftHorzColumns;
+        }
+        
+        createLeftHorzSumHeader() {
+            let self =this,
+                leftHorzSumHeader = {
+                    columns: self.createLeftHorzColumns(),
+                    rowHeight: "40px"
+                };
+            return leftHorzSumHeader;
+        }
+        
+        createLeftHorzSumContent() {
+            let self = this,
+                leftHorzSumContent = {
+                    columns: self.createLeftHorzColumns(),
+                    dataSource: self.leftHorzContentDs,
+                    primaryKey: "itemId"
+                };  
+            return leftHorzSumContent;
+        }
+        
+        createHorizontalSumHeader() {
+            let self = this,
+                horizontalSumHeader = {
+                    columns: self.horizontalDetailColumns,
+                    dataSource: [new ExItem(undefined, null, null, null, true, self.arrDay)],
+                    rowHeight: "40px",
+                    features: [{
+                        name: "HeaderCellStyle",
+                        decorator: self.detailHeaderDeco
+                    }]
+                };
+            return horizontalSumHeader;
+        }
+        
+        createHorizontalSumContent() {
+            let self = this,
+                horizontalSumContent = {
+                    columns: self.horizontalDetailColumns,
+                    dataSource: self.horizontalSumContentDs,
+                    primaryKey: "employeeId",
+                };  
+            return horizontalSumContent;
+        }
+        
+        createRightHorzSumColumns() {
+            let rightHorzSumColumns = [{ headerText: "合計", key: "sum", width: "35px" }];
+            return rightHorzSumColumns;
+        }
+        
+        createRightHorzSumHeader() {
+            let self = this,
+                rightHorzSumHeader = {
+                    columns: self.createRightHorzSumColumns(),
+                    rowHeight: "40px"
+                };
+            return rightHorzSumHeader;
+        }
+        createRightHorzSumContent() {
+            let self = this,
+                rightHorzSumContent = {
+                    columns: self.createRightHorzSumColumns(),
+                    dataSource: self.rightHorzContentDs,
+                    primaryKey: "id"
+                };
+            return rightHorzSumContent;
+        }
+        
         // update A11
-		updateVertSumGrid() {
-			let self = this;
-			$("#cacheDiv").append($('#vertDiv'));
-			let vertSumHeader = self.createVertSumHeader();
-		    let vertSumContent = self.createVertSumContent();
-			$("#extable").exTable("updateTable", "verticalSummaries", vertSumHeader, vertSumContent);	
-			if (self.showA11()) {
-				$("#vertDropDown").html(function() { return $('#vertDiv'); });
-				$('#vertDiv').css('display', '');	
-				
-				$('.ex-body-vert-sum').scroll(() => {
-					$('#vertDiv').css('margin-left', $('.ex-body-vert-sum').scrollLeft().valueOf() + 'px');
-				});
-			}
-		}
-		
+        updateVertSumGrid() {
+            let self = this;
+            $("#cacheDiv").append($('#vertDiv'));
+            let vertSumHeader = self.createVertSumHeader();
+            let vertSumContent = self.createVertSumContent();
+            $("#extable").exTable("updateTable", "verticalSummaries", vertSumHeader, vertSumContent);   
+            if (self.showA11()) {
+                $("#vertDropDown").html(function() { return $('#vertDiv'); });
+                $('#vertDiv').css('display', '');   
+                
+                $('.ex-body-vert-sum').scroll(() => {
+                    $('#vertDiv').css('margin-left', $('.ex-body-vert-sum').scrollLeft().valueOf() + 'px');
+                });
+            }
+        }
+        
         // update A12
-		updateHorzSumGrid() {
-			let self = this;
-			$("#cacheDiv").append($('#horzDiv'));
-			let leftHorzSumHeader = self.createLeftHorzSumHeader();
-		    let leftHorzSumContent = self.createLeftHorzSumContent();
-			let horizontalSumHeader = self.createHorizontalSumHeader();
-		    let horizontalSumContent = self.createHorizontalSumContent();
-			$("#extable").exTable("updateTable", "leftHorizontalSummaries", leftHorzSumHeader, leftHorzSumContent);
-			$("#extable").exTable("updateTable", "horizontalSummaries", horizontalSumHeader, horizontalSumContent);
-			if (self.showA12()) {
-				$("#horzDropDown").html(function() { return $('#horzDiv'); });
-				$('#horzDiv').css('display', '');
-			
-				$('.extable-body-left-horz-sum tbody tr td:first-child()').css('border-right', '1px solid transparent');	
-				
-				self.showA12_2(_.includes([WorkplaceCounterCategory.WORKTIME_PEOPLE, WorkplaceCounterCategory.LABOR_COSTS_AND_TIME], self.useCategoriesWorkplaceValue()) ||
-							(_.includes([WorkplaceCounterCategory.EXTERNAL_BUDGET], self.useCategoriesWorkplaceValue()) && self.funcNo15_WorkPlace));
-			}
-		}
+        updateHorzSumGrid() {
+            let self = this;
+            $("#cacheDiv").append($('#horzDiv'));
+            let leftHorzSumHeader = self.createLeftHorzSumHeader();
+            let leftHorzSumContent = self.createLeftHorzSumContent();
+            let horizontalSumHeader = self.createHorizontalSumHeader();
+            let horizontalSumContent = self.createHorizontalSumContent();
+            $("#extable").exTable("updateTable", "leftHorizontalSummaries", leftHorzSumHeader, leftHorzSumContent);
+            $("#extable").exTable("updateTable", "horizontalSummaries", horizontalSumHeader, horizontalSumContent);
+            if (self.showA12()) {
+                $("#horzDropDown").html(function() { return $('#horzDiv'); });
+                $('#horzDiv').css('display', '');
+            
+                $('.extable-body-left-horz-sum tbody tr td:first-child()').css('border-right', '1px solid transparent');    
+                
+                self.showA12_2(_.includes([WorkplaceCounterCategory.WORKTIME_PEOPLE, WorkplaceCounterCategory.LABOR_COSTS_AND_TIME], self.useCategoriesWorkplaceValue()) ||
+                            (_.includes([WorkplaceCounterCategory.EXTERNAL_BUDGET], self.useCategoriesWorkplaceValue()) && self.funcNo15_WorkPlace));
+            }
+        }
         
         bindingEventClickFlower() {
             let self = this;
@@ -3614,25 +3570,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $('.iconToLeft').css('background-image', 'url(' + self.pathToRight + ')');
                 $(".toLeft").css("margin-left", self.widthA8 + self.distanceLeftToGrid + "px");
                 
-<<<<<<< HEAD
                 let marginleft = 0;
                 if (self.showA11() && self.indexBtnToRight % 2 == 0) {
                     marginleft = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight * 2 - self.widthVertSum - widthScrollRG;
                 }else{
                     marginleft = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight * 2 - widthScrollRG;
                 }
-=======
-                $(".toLeft").css("margin-left", self.widthA8 + self.distanceLeftToGrid+"px");
-                
-                let marginleft = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight*2 - self.distanceLeftToGrid;
->>>>>>> pj/at/release_ver4
                 $(".toRight").css('margin-left', marginleft + 'px');
             } else {
                 $("#extable").exTable("showMiddle");
                 $('.iconToLeft').css('background-image', 'url(' + self.pathToLeft + ')');
                 let marginleftOfbtnToLeft: number = self.widthA8 + self.distanceLeftToGrid + self.widthMid;
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
-<<<<<<< HEAD
 
                 let marginleft = 0;
                 if (self.showA11() && self.indexBtnToRight % 2 == 0) {
@@ -3641,11 +3590,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     marginleft = $('#extable').width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight * 2 - widthScrollRG;
                 }
                 $(".toRight").css('margin-left', marginleft + 'px');
-=======
-                
-                let marginleftOfbtnToRight = $("#extable").width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight*2 - self.distanceLeftToGrid;
-                $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
->>>>>>> pj/at/release_ver4
             }
             self.indexBtnToLeft = self.indexBtnToLeft + 1;
         }
@@ -3753,11 +3697,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     marginleftOfbtnToRight = $('#extable').width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight*2 - self.distanceLeftToGrid;
                 }
             } else {
-<<<<<<< HEAD
                 marginleftOfbtnToRight = $('#extable').width() - self.distanceLeftToGrid - 3;
-=======
-                marginleftOfbtnToRight = $('#extable').width() - self.widthBtnToLeftToRight - 3;
->>>>>>> pj/at/release_ver4
             }
             $('.toRight').css('margin-left', marginleftOfbtnToRight <= 101 ? 101 : marginleftOfbtnToRight + 'px');
         }
@@ -4007,11 +3947,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let arrCellUpdated = $("#extable").exTable("updatedCells");
             if (arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
-<<<<<<< HEAD
                     self.enableBtnReg(true);
-=======
-                    self.enableBtnReg(false);
->>>>>>> pj/at/release_ver4
                     self.listCellError = [];
                     self.convertDataToGrid(self.dataSource, self.selectedModeDisplayInBody());
                     self.updateExTableWhenChangeMode(self.selectedModeDisplayInBody() , "determine");
@@ -4156,25 +4092,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 return cell.rowId == rowIdx && cell.columnId == key;
             });
             console.log(self.listTimeDisable.length);
-        }
-        
-        // add cell có time sửa tay không đúng (bao gồm trương hợp bằng'', NaN, startTime>endTime)(mode TimeInput)
-        addCellNotValidInTimeInputMode(rowIdx, key) {
-            let self = this;
-            let exit = _.filter(self.listCellError, function(o: TimeError) { return o.rowId == rowIdx + '' && o.columnId == key + '' });
-            if (exit.length == 0) {
-                self.listCellError.push(new TimeError(rowIdx, key));
-            }
-            console.log('addCellNotValidInTimeInputMode');
-        }
-
-        // remove cell có time sửa tay không đúng trước đấy (bao gồm trương hợp bằng'', NaN, startTime>endTime)(mode TimeInput)
-        removeCellNotValidInTimeInputMode(rowIdx, key) {
-            let self = this;
-            _.remove(self.listCellError, function(cell: TimeDisable) {
-                return cell.rowId == rowIdx && cell.columnId == key;
-            });
-            console.log('removeCellNotValidInTimeInputMode');
         }
 
         // add cell có time sửa tay không đúng (bao gồm trương hợp bằng'', NaN, startTime>endTime)(mode TimeInput)
@@ -4852,15 +4769,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         openDialogG(): void {
             let self = this;
-<<<<<<< HEAD
             $('div > iframe').contents().find('#btnCloseG').trigger('click');
-=======
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = JSON.parse(item.get());
-            
-            $('div > iframe').contents().find('#btnCloseG').trigger('click');
-
->>>>>>> pj/at/release_ver4
             // listEmpData : {id : '' , code : '', name : ''}
             setShared('dataShareDialogG', {
                 startDate   : moment(self.dtPrev()).format('YYYY/MM/DD'),
@@ -5259,7 +5168,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $('#A4').css('visibility', 'hidden');
             }
 
-			self.funcNo15_WorkPlace = funcNo15_WorkPlace;
+            self.funcNo15_WorkPlace = funcNo15_WorkPlace;
         }
 
         calculateDisPlayPopupA12(funcNo10_WorkPlace, funcNo11_WorkPlace, funcNo12_WorkPlace, medicalOP) {
@@ -5733,8 +5642,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         listPageInfo: Array<IPageInfo>,
         shiftMasterWithWorkStyleLst : Array<IShiftMasterMapWithWorkStyle>,
         listWorkScheduleShift: Array<IWorkScheduleShiftInforDto>,
-		aggreratePersonal: AggreratePersonalDto,
-		aggrerateWorkplace: AggrerateWorkplaceDto,
+        aggreratePersonal: AggreratePersonalDto,
+        aggrerateWorkplace: AggrerateWorkplaceDto,
     }
     
     interface IPageInfo {
@@ -5754,8 +5663,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         scheduleModifyStartDate: string,
         usePublicAtr: boolean,
         useWorkAvailabilityAtr: boolean,
-		useCategoriesWorkplace: [],
-		useCategoriesPersonal: [],
+        useCategoriesWorkplace: [],
+        useCategoriesPersonal: [],
         closeDate: any,
         medicalOP: any,
         nursingCareOP: any,
@@ -5813,15 +5722,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         columnId: string;
         constructor(rowId: string, columnId: string) {
             this.rowId    = rowId;
-            this.columnId = columnId;
-        }
-    }
-
-    class TimeError {
-        rowId: string;
-        columnId: string;
-        constructor(rowId: string, columnId: string) {
-            this.rowId = rowId;
             this.columnId = columnId;
         }
     }
@@ -5891,19 +5791,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         isActive: boolean;
     }
 
-	interface AggreratePersonalDto {
-		estimatedSalary: Array<any>;
-		timeCount: Array<any>;
-		workHours: Array<any>;	
-	}
-	
-	interface AggrerateWorkplaceDto {
-		aggrerateNumberPeople: any;
-		externalBudget: Array<any>;
-		laborCostAndTime: Array<any>;
-		timeCount: Array<any>;
-		peopleMethod: Array<any>;
-	}
+    interface AggreratePersonalDto {
+        estimatedSalary: Array<any>;
+        timeCount: Array<any>;
+        workHours: Array<any>;  
+    }
+    
+    interface AggrerateWorkplaceDto {
+        aggrerateNumberPeople: any;
+        externalBudget: Array<any>;
+        laborCostAndTime: Array<any>;
+        timeCount: Array<any>;
+        peopleMethod: Array<any>;
+    }
 
     enum AttendanceHolidayAttr {
         FULL_TIME = 3, //(3, "１日出勤系"),
@@ -5944,8 +5844,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         shiftMasterWithWorkStyleLst : Array<IShiftMasterMapWithWorkStyle>;
         workTypeCodeSelected: any;
         workTimeCodeSelected: any;
-		useCategoriesPersonalValue: number; // 個人計カテゴリ
-		useCategoriesWorkplaceValue: number; // 職場計カテゴリ
+        useCategoriesPersonalValue: number; // 個人計カテゴリ
+        useCategoriesWorkplaceValue: number; // 職場計カテゴリ
     }
     
     interface IShiftMasterMapWithWorkStyle {
@@ -5959,53 +5859,53 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         workStyle: string;
     }
 
-	enum AggregationUnitOfLaborCosts {
-		TOTAL = 0, // 合計
-		WITHIN = 1, // 就業時間
-		EXTRA = 2 // 時間外時間
+    enum AggregationUnitOfLaborCosts {
+        TOTAL = 0, // 合計
+        WITHIN = 1, // 就業時間
+        EXTRA = 2 // 時間外時間
     }
 
-	enum LaborCostItemType {
-		AMOUNT = 0, // 金額
-		TIME = 1, // 時間
-		BUDGET = 2 // 予算
+    enum LaborCostItemType {
+        AMOUNT = 0, // 金額
+        TIME = 1, // 時間
+        BUDGET = 2 // 予算
     }
 
-	enum AttendanceTimesForAggregation {
-		WORKING_TOTAL = 0, // 総労働時間
-		WORKING_WITHIN = 1, // 就業時間
-		WORKING_EXTRA = 2, // 時間外時間
-		NIGHTSHIFT = 3 // 夜勤時間
-	}
-	
-	enum WorkClassificationAsAggregationTarget {
-		WORKING = 0, // 出勤
-		HOLIDAY = 1 // 休日
-	}
-	
-	enum PersonalCounterCategory {
-		MONTHLY_EXPECTED_SALARY = 0, // 月間想定給与額 
-		CUMULATIVE_ESTIMATED_SALARY = 1, // 年間想定給与額
-		STANDARD_WORKING_HOURS_COMPARISON = 2, // 基準労働時間比較
-		WORKING_HOURS = 3, // 労働時間
-		NIGHT_SHIFT_HOURS = 4, // 夜勤時間
-		WEEKS_HOLIDAY_DAYS = 5, // 週間休日日数
-		ATTENDANCE_HOLIDAY_DAYS = 6, // 出勤・休日日数
-		TIMES_COUNTING_1 = 7, // 回数集計１
-		TIMES_COUNTING_2 = 8, // 回数集計２
-		TIMES_COUNTING_3 = 9, // 回数集計３
-	}
-	
-	enum WorkplaceCounterCategory {
-		LABOR_COSTS_AND_TIME = 0, // 人件費・時間 
-		EXTERNAL_BUDGET = 1, // 外部予算実績
-		TIMES_COUNTING = 2, // 回数集計
-		WORKTIME_PEOPLE = 3, // 就業時間帯別の利用人数
-		TIMEZONE_PEOPLE = 4, // 時間帯人数
-		EMPLOYMENT_PEOPLE = 5, // 雇用人数
-		CLASSIFICATION_PEOPLE = 6, // 分類人数
-		POSITION_PEOPLE = 7, // 職位人数
-	}
+    enum AttendanceTimesForAggregation {
+        WORKING_TOTAL = 0, // 総労働時間
+        WORKING_WITHIN = 1, // 就業時間
+        WORKING_EXTRA = 2, // 時間外時間
+        NIGHTSHIFT = 3 // 夜勤時間
+    }
+    
+    enum WorkClassificationAsAggregationTarget {
+        WORKING = 0, // 出勤
+        HOLIDAY = 1 // 休日
+    }
+    
+    enum PersonalCounterCategory {
+        MONTHLY_EXPECTED_SALARY = 0, // 月間想定給与額 
+        CUMULATIVE_ESTIMATED_SALARY = 1, // 年間想定給与額
+        STANDARD_WORKING_HOURS_COMPARISON = 2, // 基準労働時間比較
+        WORKING_HOURS = 3, // 労働時間
+        NIGHT_SHIFT_HOURS = 4, // 夜勤時間
+        WEEKS_HOLIDAY_DAYS = 5, // 週間休日日数
+        ATTENDANCE_HOLIDAY_DAYS = 6, // 出勤・休日日数
+        TIMES_COUNTING_1 = 7, // 回数集計１
+        TIMES_COUNTING_2 = 8, // 回数集計２
+        TIMES_COUNTING_3 = 9, // 回数集計３
+    }
+    
+    enum WorkplaceCounterCategory {
+        LABOR_COSTS_AND_TIME = 0, // 人件費・時間 
+        EXTERNAL_BUDGET = 1, // 外部予算実績
+        TIMES_COUNTING = 2, // 回数集計
+        WORKTIME_PEOPLE = 3, // 就業時間帯別の利用人数
+        TIMEZONE_PEOPLE = 4, // 時間帯人数
+        EMPLOYMENT_PEOPLE = 5, // 雇用人数
+        CLASSIFICATION_PEOPLE = 6, // 分類人数
+        POSITION_PEOPLE = 7, // 職位人数
+    }
     
     enum DisplayPeriod {
         ANY_PERIOD = 1, // 任意期間
