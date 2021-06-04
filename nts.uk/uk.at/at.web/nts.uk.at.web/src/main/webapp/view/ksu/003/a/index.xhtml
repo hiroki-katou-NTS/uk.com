@@ -96,9 +96,11 @@
 						<!-- A2_5 -->
 						<label id="label-display">#{i18n.getText('KSU003_7')}</label> <label
 							id="hai-cham">#{i18n.getText('KSU003_8')}</label>
+							<!-- enable : dataInitStartKsu003Dto().taskOperationMethod == 0, -->
 						<div tabindex="10" id="display-format" class="cf"
 							style="margin-left: 5px"
 							data-bind="ntsSwitchButton: {
+										
 										options: [{id: 1, name: '#{i18n.getText('KSU003_10')}'}, {id: 2, name: '#{i18n.getText('KSU003_11')}'}] ,
 										optionsValue: 'id',
 										optionsText: 'name',

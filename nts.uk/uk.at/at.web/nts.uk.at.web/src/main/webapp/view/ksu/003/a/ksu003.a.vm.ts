@@ -37,12 +37,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		fixedWorkInformationDto: Array<model.FixedWork> = [];
 		employeeScheduleInfo: Array<any> = [];
 		operationUnit: KnockoutObservable<number> = ko.observable(3.5); // A3_2 pixel (mỗi ô đang để 40px)
-		localStore: KnockoutObservable<model.ILocalStore> = ko.observable();
+		localStore: model.ILocalStore = {};
 		lstEmpId: Array<model.IEmpidName> = [];
 		timeRange: number = 0; // tổng số cột ở phần detail (24 or 48)
 		initDispStart: number = 0; // thời gian bắt đầu của scroll phần detail
-		dispStart: number = 0; // thời gian bắt đầu ở header phần detail
-		dispStartHours: number = 0;
+		dispStart: number = 0; // bắt đầu ở phần detail
+		dispStartHours: number = 0; // thời gian bắt đầu ở header phần detail
 		checkGetInfo: boolean = false;
 		dataOfGantChart: Array<model.ITimeGantChart> = []; // data của từng phần trên extable
 		midDataGC: Array<any> = [];
@@ -84,15 +84,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		dataAb : KnockoutObservableArray<any> =  ko.observableArray([]);
 		displayRangeSelect : KnockoutObservable<number> = ko.observable(1); // A14 表示範囲
 		rangeList : KnockoutObservableArray<model.RangeModel>;
-		initDispStartChecked : KnockoutObservable<number> = ko.observable(0); // 開始時刻
-		dispStartChecked : KnockoutObservable<number> = ko.observable(0); // 初期表示の開始時刻	
-		selectedTimeRange: KnockoutObservable<number> = ko.observable(1); 
+		initDispStartChecked : KnockoutObservable<number> = ko.observable(0); // A14_3 開始時刻
+		dispStartChecked : KnockoutObservable<number> = ko.observable(0); // A14_5 初期表示の開始時刻	
+		selectedTimeRange: KnockoutObservable<number> = ko.observable(1); // A14_8
 
 		constructor(data: any) {
 			let self = this;
 			// get data from sc A
 			localStorage.removeItem(nts.uk.request.location.siteRoot.rawUrl + "nts.uk.at.web/view/ksu/003/a/index.xhtml/extable-ksu003/areawidths");
-			self.localStore(data);
+			self.localStore = data;
 			self.dataFromA = ko.observable(getShared('dataFromA'));
 			if ((self.dataFromA().daySelect < self.dataFromA().dayEdit && self.dataFromA().dayEdit !== "1900/01/01") || (self.dataFromA().daySelect < moment(new Date()).format('YYYY/MM/DD') && self.dataFromA().dayEdit !== "1900/01/01")) {
 				self.checkDisByDate = false;
@@ -151,16 +151,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			/** A3_4 */
 			self.checkedName.subscribe((value) => {
-				self.getLocalStore();
-				self.localStore().showWplName = value;
-				characteristics.save(self.KEY, self.localStore());
+				self.localStore.showWplName = value;
+				characteristics.save(self.KEY, self.localStore);
 			});
 
 			/** A2_5 */
 			self.selectedDisplayPeriod.subscribe((value) => {
-				self.getLocalStore();
-				self.localStore().displayFormat = value;
-				characteristics.save(self.KEY, self.localStore());
+				self.localStore.displayFormat = value;
+				characteristics.save(self.KEY, self.localStore);
 			});
 
 			/** 操作単位選択に選択する A3_2 */
@@ -170,9 +168,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (value == '4') c = 12;
 				if (!_.isNil(ruler)) ruler.setSnatchInterval(c);
 				
-				self.getLocalStore();
-				self.localStore().operationUnit = value;
-				characteristics.save(self.KEY, self.localStore());
+				self.localStore.operationUnit = value;
+				characteristics.save(self.KEY, self.localStore);
 			});
 			self.checkUpdateTime = {name: "", id: 0};
 			$('#content').on({
@@ -561,17 +558,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				operationUnit: self.selectOperationUnit(),
 				displayFormat: self.selectedDisplayPeriod(),
 				showHide: self.indexBtnToLeft(),
-				lstEmpIdSort: _.map(self.lstEmpId, (x: model.IEmpidName) => { return x.empId })
+				lstEmpIdSort: _.map(self.lstEmpId, (x: model.IEmpidName) => { return x.empId }),
+				pageNo : !_.isNil(self.localStore) ? self.localStore.pageNo : 0,
+				work1Selection : !_.isNil(self.localStore) ? self.localStore.work1Selection : '',
+				workPalletDetails : !_.isNil(self.localStore) ? self.localStore.workPalletDetails : {column: 0, data: {text: "t", tooltip: "test", page: 1}, row: 0},
+				workSelection: !_.isNil(self.localStore) ? self.localStore.workSelection : 1
 			}
-			self.getLocalStore();
-			self.localStore(local);
-			let dataToAb = {
-				targetDate : self.targetDate(),
-				dataScreen003A : self.dataScreen003A(),
-				localStore : self.localStore()
-			}
-			setShared("dataShareAbFromA", dataToAb);
-
+			self.localStore = local;
 			self.getWorkingByDate(self.targetDate(), 1).done(() => {
 				self.convertDataIntoExtable();
 				self.initExtableData().done(() => {
@@ -594,14 +587,31 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				.done((data: model.GetInfoInitStartKsu003Dto) => {
 					self.dataInitStartKsu003Dto(data);
 					self.organizationName(self.dataInitStartKsu003Dto().displayInforOrganization.displayName);
+					let dataToAb = {
+						targetDate : self.targetDate(),
+						dataScreen003A : self.dataScreen003A(),
+						localStore : self.localStore,
+						organizationName : self.organizationName()
+					}
+					setShared("dataShareAbFromA", dataToAb);
 					self.dataScreen003A().targetInfor = data.manageMultiDto.useATR;
 					self.timeRange = self.dataInitStartKsu003Dto().byDateDto.dispRange == 0 ? 24 : 48;
+					self.selectedTimeRange(self.dataInitStartKsu003Dto().byDateDto.dispRange + 1);
 					self.initDispStart = self.dataInitStartKsu003Dto().byDateDto.initDispStart;
+					self.initDispStartChecked(self.initDispStart);
 					self.dispStart = (self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5;
 					self.dispStartHours = self.dataInitStartKsu003Dto().byDateDto.dispStart;
+					self.dispStartChecked(self.dispStartHours);
 					self.dataScreen003A().targetInfor = self.dataInitStartKsu003Dto().manageMultiDto.useATR;
 					self.dataScreen003A().scheCorrection = self.dataInitStartKsu003Dto().functionControlDto != null
 						? self.dataInitStartKsu003Dto().functionControlDto.changeableWorks : [];
+					
+					if(data.taskOperationMethod != 0)
+					self.selectedDisplayPeriod(1);
+					else
+					self.selectedDisplayPeriod(self.localStore.displayFormat);
+					
+					
 				}).fail(function(error) {
 					errorDialog({ messageId: error.messageId });
 					dfd.reject();
@@ -620,9 +630,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			let lstEmpId = _.flatMap(self.dataFromA().listEmp, c => [c.id]);
 			let param = {
-				targetOrg: targetOrg,
 				lstEmpId: lstEmpId,
-				date: targetDate
+				date: targetDate,
+				selectedDisplayPeriod : self.selectedDisplayPeriod()
 			};
 			service.displayDataKsu003(param)
 				.done((data: any) => {
@@ -927,23 +937,20 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.dataScreen003A().employeeInfo = self.dataScreen003A().employeeInfo.sort(function(a: any, b: any) {
 					return _.findIndex(self.lstEmpId, x => { return x.empId == a.empId }) - _.findIndex(self.lstEmpId, x => { return x.empId == b.empId });
 				});
-				self.getLocalStore();
-				self.localStore().lstEmpIdSort = self.lstEmpId;
-				characteristics.save(self.KEY, self.localStore());
+				self.localStore.lstEmpIdSort = self.lstEmpId;
+				characteristics.save(self.KEY, self.localStore);
 				self.destroyAndCreateGrid(self.lstEmpId, 1);
 			} else {
 				self.lstEmpId = _.flatMap(self.dataFromA().listEmp, c => [{ empId: c.id, name: c.name, code: c.code }]);
 				self.dataScreen003A().employeeInfo = self.dataScreen003A().employeeInfo.sort(function(a: any, b: any) {
 					return _.findIndex(self.lstEmpId, x => { return x.empId == a.empId }) - _.findIndex(self.lstEmpId, x => { return x.empId == b.empId });
 				});
-				self.getLocalStore();
-				self.localStore().lstEmpIdSort = self.lstEmpId;
-				characteristics.save(self.KEY, self.localStore());
+				self.localStore.lstEmpIdSort = self.lstEmpId;
+				characteristics.save(self.KEY, self.localStore);
 				self.destroyAndCreateGrid(self.lstEmpId, 1);
 			}
-			self.getLocalStore();
-			self.localStore().startTimeSort = value;
-			characteristics.save(self.KEY, self.localStore());
+			self.localStore.startTimeSort = value;
+			characteristics.save(self.KEY, self.localStore);
 			block.clear();
 		}
 		// Convert data for extable
@@ -1798,16 +1805,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			self.initGantChart(self.dataOfGantChart, self.midDataGC);
 
 			$("#hr-row2").css("width", window.innerWidth - 40 + 'px');
-			if (!_.isNil(self.localStore())) {
-				if (self.localStore().operationUnit === "0") {
+			if (!_.isNil(self.localStore)) {
+				if (self.localStore.operationUnit === "0") {
 					ruler.setSnatchInterval(1);
-				} else if (self.localStore().operationUnit === "1") {
+				} else if (self.localStore.operationUnit === "1") {
 					ruler.setSnatchInterval(2);
-				} else if (self.localStore().operationUnit === "2") {
+				} else if (self.localStore.operationUnit === "2") {
 					ruler.setSnatchInterval(3);
-				} else if (self.localStore().operationUnit === "3") {
+				} else if (self.localStore.operationUnit === "3") {
 					ruler.setSnatchInterval(6);
-				} else if (self.localStore().operationUnit === "4") {
+				} else if (self.localStore.operationUnit === "4") {
 					ruler.setSnatchInterval(12);
 				}
 			};
@@ -3354,7 +3361,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				$("#extable-ksu003").exTable("scrollBack", 0, { h: 0 });
 			//$("#functon-area-row2-left").focus();
 			let x = $('.ex-header-leftmost').width() + $('.ex-header-middle').width() + $('.ex-header-detail').width() + 10 + 6;
-			if (self.localStore().showHide % 2 == 0)
+			if (self.localStore.showHide % 2 == 0)
 				$("#setting-time-grid").css("margin-left", window.outerWidth < 1920 ? x + 5 : x + 'px');
 			else
 				$("#setting-time-grid").css("margin-left", window.outerWidth < 1920 ? 1224 + 5 : 1224 + 'px');
@@ -3408,9 +3415,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 
 			self.indexBtnToLeft(self.indexBtnToLeft() + 1);
-			self.getLocalStore();
-			self.localStore().showHide = self.indexBtnToLeft();
-			characteristics.save(self.KEY, self.localStore());
+			self.localStore.showHide = self.indexBtnToLeft();
+			characteristics.save(self.KEY, self.localStore);
 
 			if (self.initDispStart != 0)
 				$("#extable-ksu003").exTable("scrollBack", 0, { h: (self.initDispStart * 42 - self.dispStartHours * 42) + 5 });
@@ -4749,13 +4755,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 		}
 		
-		getLocalStore(){
-			let self = this;
-			characteristics.restore("USER_KSU003_INFOR").done(function(data : any) {
-				if(!_.isNil)
-				self.localStore(data);
-			})
-		}
+		// Xử lý ver 4
 		
 		// 作業登録処理 (Xử lý Đăng ký Task)
 		public saveTask(){
@@ -4800,8 +4800,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}).always(function() {
 			});
 		}
-		
-		// Xử lý ver 4
 
 		public closeDialog(): void {
 			let self = this;

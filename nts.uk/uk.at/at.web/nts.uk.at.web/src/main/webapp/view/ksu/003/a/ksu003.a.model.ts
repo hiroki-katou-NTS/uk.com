@@ -1201,12 +1201,12 @@ module nts.uk.at.view.ksu003.a.model {
 	}
 
 	export interface ILocalStore {
-		startTimeSort: string;
-		showWplName: boolean;
-		operationUnit: string;
-		displayFormat: number;
-		showHide: number;
-		lstEmpIdSort: Array<any>;
+		startTimeSort ?: string;
+		showWplName ?: boolean;
+		operationUnit ?: string;
+		displayFormat ?: number;
+		showHide ?: number;
+		lstEmpIdSort ?: Array<any>;
 		workSelection ?: number;
 		work1Selection ?: string;
 		pageNo ?: number;
