@@ -679,7 +679,7 @@ module nts.uk.com.view.cmm018.shr {
                             let appSet = kaf022;       
                             setUnit.employeeUnit = appSet.employeeUnit;
                             setUnit.workplaceUnit = appSet.workplaceUnit;
-                            setUnit.employeeUnit = appSet.employeeUnit;
+                            setUnit.companyUnit = appSet.companyUnit;
                     
                             dfd.resolve(setUnit);
                             

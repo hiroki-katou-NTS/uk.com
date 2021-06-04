@@ -91,6 +91,8 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 				new AttendanceTimeMonth(0),
 				TimeMonthWithCalculation.ofSameTime(0),
 				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0));
 		val aggrOvertime2 =	AggregateOverTime.of(
 				new OverTimeFrameNo(2),
@@ -99,6 +101,8 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 						new AttendanceTimeMonth(240 + randomVal)),
 				new AttendanceTimeMonth(0),
 				TimeMonthWithCalculation.ofSameTime(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0));
 		aggregateTime.getOverTime().getAggregateOverTimeMap().put(
@@ -117,6 +121,8 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 				new AttendanceTimeMonth(0),
 				TimeMonthWithCalculation.ofSameTime(0),
 				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0));
 		val aggrHdwktime2 = AggregateHolidayWorkTime.of(
 				new HolidayWorkFrameNo(2),
@@ -125,6 +131,8 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 						new AttendanceTimeMonth(300 + randomVal)),
 				new AttendanceTimeMonth(0),
 				TimeMonthWithCalculation.ofSameTime(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0));
 		aggregateTime.getHolidayWorkTime().getAggregateHolidayWorkTimeMap().put(

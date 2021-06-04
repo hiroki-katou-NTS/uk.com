@@ -1,16 +1,21 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.ExcessOutsideByPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.ExcessOutsideItemByPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -58,7 +63,6 @@ public class ExcessOutsideWorkOfMonthlyDto implements ItemConst, AttendanceItemD
 	@AttendanceItemLayout(jpPropertyName = SUPER_60 + TRANSFER, layout = LAYOUT_G)
 	private int superHD60ConversionTime;
 	
-	
 	public ExcessOutsideWorkOfMonthly toDomain() {
 		return ExcessOutsideWorkOfMonthly.of(
 						new AttendanceTimeMonth(weeklyTotalPremiumTime), 
@@ -83,6 +87,30 @@ public class ExcessOutsideWorkOfMonthlyDto implements ItemConst, AttendanceItemD
 			dto.superHD60PayoffTime = domain.getSuperHD60Time().getPayoffTime().valueAsMinutes();
 			dto.superHD60GrantTime = domain.getSuperHD60Time().getGrantTime().valueAsMinutes();
 			dto.superHD60ConversionTime = domain.getSuperHD60Time().getConversionTime().valueAsMinutes();
+		}
+		return dto;
+	}
+	
+	public ExcessOutsideByPeriod toDomainPeriod() {
+		val excess = new ArrayList<ExcessOutsideItemByPeriod>();
+		
+		if (this.time != null) {
+			this.time.stream().filter(c -> c.getExcessNo() == 1)
+						.forEach(c -> {
+							excess.add(ExcessOutsideItemByPeriod.of(c.getBreakdownNo(), new AttendanceTimeMonth(c.getBreakdown())));
+						});
+		}
+		
+		return ExcessOutsideByPeriod.of(excess);
+	}
+	
+	public static ExcessOutsideWorkOfMonthlyDto from(ExcessOutsideByPeriod domain) {
+		ExcessOutsideWorkOfMonthlyDto dto = new ExcessOutsideWorkOfMonthlyDto();
+		if(domain != null) {
+			val excess = domain.getExcessOutsideItems().entrySet().stream()
+					.map(c -> new ExcessOutsideWorkDto(1, c.getValue().getBreakdownNo(), c.getValue().getExcessTime().v()))
+					.collect(Collectors.toList());
+			dto.setTime(excess);
 		}
 		return dto;
 	}

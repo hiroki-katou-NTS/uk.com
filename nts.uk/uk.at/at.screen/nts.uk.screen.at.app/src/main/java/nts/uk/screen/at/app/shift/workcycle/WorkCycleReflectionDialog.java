@@ -95,6 +95,7 @@ public class WorkCycleReflectionDialog {
 		dto.setWorkCycleList(workCycleDtoList);
 		// 2. 休日系の勤務種類を取得する [Get holiday type of work]
 		List<WorkType> workTypes = holidayWorkTypeService.acquiredHolidayWorkType();
+		if (workTypes.isEmpty()) throw new BusinessException("Msg_37");
         Map<Optional<HolidayAtr>, List<WorkType>> map = workTypes.stream().collect(
                 Collectors.groupingBy(WorkType::getHolidayAtr)
         );

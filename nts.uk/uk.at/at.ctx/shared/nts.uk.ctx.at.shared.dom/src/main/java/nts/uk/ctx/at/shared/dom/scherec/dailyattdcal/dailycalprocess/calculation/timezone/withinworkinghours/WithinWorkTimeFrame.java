@@ -12,6 +12,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
@@ -43,6 +44,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.ootsuka.OotsukaStaticService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
@@ -115,16 +117,15 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		this.lateVacationUseTime = Optional.empty();
 		this.leaveEarlyVacationUseTime = Optional.empty();
 	}
-
-	
 	
 	/**
 	 * 空で作成する
-	 * @return就業時間内時間枠
+	 * @param frameNo 就業時間枠No
+	 * @return 就業時間内時間枠
 	 */
-	public static WithinWorkTimeFrame createEmpty() {
+	public static WithinWorkTimeFrame createEmpty(EmTimeFrameNo frameNo) {
 		return new WithinWorkTimeFrame(
-				new EmTimeFrameNo(1),
+				frameNo,
 				new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)),
 				new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)),
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
@@ -136,14 +137,6 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 				Optional.empty(),
 				Optional.empty());
 	}
-	
-	
-	public TimeSpanForDailyCalc getTimeSheet() {
-		return this.timeSheet;
-	}
-	
-	
-	
 
 	/**
 	 * 遅刻時間帯の作成
@@ -669,56 +662,69 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 				new EmTimeFrameNo(timeLeavingWork.getWorkNo().v()), 
 				new TimeZoneRounding(startOclock, endOclock, duplicateTimeSheet.getRounding()));
 		
-		// 保持する控除時間帯を取得（計上用）
-		TimeSpanForDailyCalc beforeDeductSheet = duplicateTimeSheet.getBeforeLateEarlyTimeSheet();
-		TimeSpanForDailyCalc afterDeductSheet =  new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan());
-		List<TimeSheetOfDeductionItem> recordTimeSheet = Collections.emptyList(); 
-		recordTimeSheet = WithinWorkTimeFrame.getDeductSheetForSave(
-				beforeDeductSheet, afterDeductSheet, deductionTimeSheet, DeductionAtr.Appropriate);
-		
-		// 保持する控除時間帯を取得（控除用）
-		List<TimeSheetOfDeductionItem> dedTimeSheet = Collections.emptyList();
-		dedTimeSheet = WithinWorkTimeFrame.getDeductSheetForSave(
-				beforeDeductSheet, afterDeductSheet, deductionTimeSheet, DeductionAtr.Deduction);
-		
-		// 控除時間帯に丸め設定を付与
-		recordTimeSheet.forEach(tc ->{
-			tc.changeReverceRounding(tc.getRounding(), ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Appropriate, Optional.of(integrationOfWorkTime.getCommonSetting()));
-		});
-		dedTimeSheet.forEach(tc ->{
-			tc.changeReverceRounding(tc.getRounding(), ActualWorkTimeSheetAtr.WithinWorkTime, DeductionAtr.Deduction, Optional.of(integrationOfWorkTime.getCommonSetting()));
-		});
-		
-		/*
-		 * 就業時間内時間帯に持たせる休憩時間帯を作成
-		 * 加給、深夜に休憩時刻を持たせたい。
-		 * 遅刻早退の時間帯の休憩は遅刻を控除しない場合、加給や深夜にもその休憩時間帯を含める。
-		 */
-		for(TimeSheetOfDeductionItem td : addBreakListInLateEarly) {
-			if(td != null && (!isDeductLeaveEarly || !isDeductLate)) {
-				dedTimeSheet.addAll(addBreakListInLateEarly);
-			}
-		}
-
-		/*加給*/
-		List<BonusPayTimeSheetForCalc> bonusPayTimeSheet = getBonusPayTimeSheetIncludeDedTimeSheet(personDailySetting.getBonusPaySetting(), new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan()), dedTimeSheet, recordTimeSheet);
-		/*特定日*/
-		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet = getSpecBonusPayTimeSheetIncludeDedTimeSheet(personDailySetting.getBonusPaySetting(), new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan()), dedTimeSheet, recordTimeSheet,integrationOfDaily.getSpecDateAttr());
-		/*深夜*/
-		MidNightTimeSheetForCalcList duplicatemidNightTimeSheet = getMidNightTimeSheetIncludeDedTimeSheet(companyCommonSetting.getMidNightTimeSheet(), new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan()), dedTimeSheet, recordTimeSheet,Optional.of(integrationOfWorkTime.getCommonSetting()));
-		
-		return new WithinWorkTimeFrame(
+		// 就業時間内時間枠を作成する
+		WithinWorkTimeFrame result = new WithinWorkTimeFrame(
 				duplicateTimeSheet.getWorkingHoursTimeNo(),
 				new TimeSpanForDailyCalc(dupTimeSheet.getTimezone().getTimeSpan()),
 				duplicateTimeSheet.getBeforeLateEarlyTimeSheet(),
 				duplicateTimeSheet.getRounding(),
-				recordTimeSheet,
-				dedTimeSheet,
-				bonusPayTimeSheet,
-				duplicatemidNightTimeSheet,
-				specifiedBonusPayTimeSheet,
+				new ArrayList<>(),
+				new ArrayList<>(),
+				new ArrayList<>(),
+				MidNightTimeSheetForCalcList.createEmpty(),
+				new ArrayList<>(),
 				lateTimeSheet,
 				LeaveEarlyTimeSheet);
+		
+		// 控除時間帯をクローンする
+		DeductionTimeSheet deductForWithin = new DeductionTimeSheet(
+				new ArrayList<>(deductionTimeSheet.getForDeductionTimeZoneList()),
+				new ArrayList<>(deductionTimeSheet.getForRecordTimeZoneList()),
+				deductionTimeSheet.getBreakTimeOfDailyList(),
+				deductionTimeSheet.getDailyGoOutSheet(),
+				deductionTimeSheet.getShortTimeSheets());
+		
+		// 大塚モードの休憩時間帯取得
+		List<TimeSheetOfDeductionItem> ootsukaBreak = OotsukaStaticService.getBreakTimeSheet(
+				todayWorkType, integrationOfWorkTime, integrationOfDaily.getAttendanceLeave());
+		deductForWithin.getForDeductionTimeZoneList().addAll(ootsukaBreak);
+		deductForWithin.getForRecordTimeZoneList().addAll(ootsukaBreak);
+
+		// 控除時間帯の登録
+		result.registDeductionListForWithin(deductForWithin, Optional.of(integrationOfWorkTime.getCommonSetting()));
+
+		// 加給時間帯を作成
+		result.createBonusPayTimeSheet(
+				personDailySetting.getBonusPaySetting(), integrationOfDaily.getSpecDateAttr(), deductForWithin);
+		
+		// 深夜時間帯を作成
+		result.createMidNightTimeSheet(companyCommonSetting.getMidNightTimeSheet(),
+				Optional.of(integrationOfWorkTime.getCommonSetting()), deductForWithin);
+
+		// 就業時間内時間枠を返す
+		return result;
+	}
+	
+	/**
+	 * 控除時間帯の登録（就業時間内時間枠）
+	 * @param deductTimeSheet 控除時間帯
+	 * @param commonSet 就業時間帯の共通設定
+	 */
+	public void registDeductionListForWithin(
+			DeductionTimeSheet deductTimeSheet,
+			Optional<WorkTimezoneCommonSet> commonSet){
+		
+		// 控除時間帯の登録
+		this.registDeductionList(ActualWorkTimeSheetAtr.WithinWorkTime, deductTimeSheet, commonSet);
+		// 保持する控除時間帯を取得（計上用）
+		List<TimeSheetOfDeductionItem> recordList = WithinWorkTimeFrame.getDeductSheetForSave(
+				this.beforeLateEarlyTimeSheet, this.timeSheet, deductTimeSheet, DeductionAtr.Appropriate);
+		// 保持する控除時間帯を取得（控除用）
+		List<TimeSheetOfDeductionItem> deductList = WithinWorkTimeFrame.getDeductSheetForSave(
+				this.beforeLateEarlyTimeSheet, this.timeSheet, deductTimeSheet, DeductionAtr.Deduction);
+		// 控除時間帯リストを入れ替える
+		this.recordedTimeSheet = recordList;
+		this.deductionTimeSheet = deductList;
 	}
 	
 	/**
@@ -899,8 +905,8 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 				.stream().filter(t -> t.getDeductionAtr().isBreak()).collect(Collectors.toList()));
 		TimeWithDayAttr startOclock = lTSheet.getForDeducationTimeSheet().get().getTimeSheet().getEnd();
 		if(isOOtsuka) {
-			dedList.addAll(LateTimeSheet.getBreakTimeSheetForOOtsuka(
-					todayWorkType, integrationOfWorkTime, integrationOfDaily));
+			dedList.addAll(OotsukaStaticService.getBreakTimeSheet(
+					todayWorkType, integrationOfWorkTime, integrationOfDaily.getAttendanceLeave()));
 		}
 		for(TimeSheetOfDeductionItem tod : dedList) {
 			if(tod.contains(startOclock)) {
@@ -935,8 +941,8 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 				.stream().filter(t -> t.getDeductionAtr().isBreak()).collect(Collectors.toList()));
 		TimeWithDayAttr endOclock = lSheet.getForDeducationTimeSheet().get().getTimeSheet().getStart();
 		if(isOOtsuka) {
-			dedList = LateTimeSheet.getBreakTimeSheetForOOtsuka(
-					todayWorkType, integrationOfWorkTime, integrationOfDaily);
+			dedList = OotsukaStaticService.getBreakTimeSheet(
+					todayWorkType, integrationOfWorkTime, integrationOfDaily.getAttendanceLeave());
 		}
 		for(TimeSheetOfDeductionItem tod : dedList) {
 			if(tod.contains(endOclock)) {
@@ -982,7 +988,6 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		lateTimeSheet = Optional.empty();
 		leaveEarlyTimeSheet = Optional.empty();
 	}
-	
 	
 	/**
 	 * コアタイム時間帯を午前終了、午後開始で補正したコアタイム時間帯の取得
@@ -1136,5 +1141,39 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			this.beforeLateEarlyTimeSheet = this.beforeLateEarlyTimeSheet.shiftOnlyEnd(
 					this.getLeaveEarlyTimeSheet().get().getForDeducationTimeSheet().get().getTimeSheet().getEnd());
 		}
+	}
+	
+	/**
+	 * コアタイムとの重複を判断して時間帯を取得
+	 * @param isWithin コア内外区分（true=コア内、false=コア外）
+	 * @param coreTimeSpan コアタイム時間帯
+	 * @return 就業時間内時間枠
+	 */
+	public List<WithinWorkTimeFrame> getFrameDuplicatedWithCoreTime(
+			boolean isWithin, TimeSpanForCalc coreTimeSpan){
+		
+		List<WithinWorkTimeFrame> results = new ArrayList<>();
+		
+		// 重複を判断して時間帯を取得
+		List<TimeSpanForCalc> targetSpanList = new ArrayList<>();
+		if (isWithin){
+			// コア内（重複している時間帯）
+			Optional<TimeSpanForCalc> dupSpan = this.timeSheet.getTimeSpan().getDuplicatedWith(coreTimeSpan);
+			if (dupSpan.isPresent()) targetSpanList.add(dupSpan.get());
+		}
+		else{
+			// コア外（重複していない時間帯）
+			targetSpanList = this.timeSheet.getTimeSpan().getNotDuplicationWith(coreTimeSpan);
+		}
+		// 就業時間帯時間枠リストに変換
+		// ※　計算時間帯は抽象クラスのため、インスタンスとして返せないため、判断に使う就業時間内時間枠の必要な部分をクローンして返す。
+		for (TimeSpanForCalc targetSpan : targetSpanList){
+			WithinWorkTimeFrame result = WithinWorkTimeFrame.createEmpty(this.workingHoursTimeNo);
+			result.timeSheet = new TimeSpanForDailyCalc(targetSpan);
+			result.addDuplicatedDeductionTimeSheet(this.deductionTimeSheet, DeductionAtr.Deduction, Optional.empty());
+			result.addDuplicatedDeductionTimeSheet(this.recordedTimeSheet, DeductionAtr.Appropriate, Optional.empty());
+			results.add(result);
+		}
+		return results;
 	}
 }
