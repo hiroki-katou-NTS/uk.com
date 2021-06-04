@@ -52,6 +52,9 @@ module nts.uk.at.view.kdp.share {
             height: 47px;
             max-height: 47px;
             word-break: break-all;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            box-sizing: border-box;
         }
 
         .kdp-message-error .workPlace {
@@ -69,10 +72,13 @@ module nts.uk.at.view.kdp.share {
             float: left;
         }
 
-        .kdp-message-error .workPlace .text-company {
+        .kdp-message-error .company .text-company {
             box-sizing: border-box;
             margin-right:40px;
             max-height:47px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            word-break: break-all;
         }
 
         .kdp-message-error .workPlace .title .name-title {
