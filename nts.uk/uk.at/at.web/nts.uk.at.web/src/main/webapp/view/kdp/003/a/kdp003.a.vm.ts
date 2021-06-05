@@ -204,7 +204,7 @@ module nts.uk.at.kdp003.a {
 		loadNotice(storage?: StorageData) {
 			const vm = this;
 			let startDate = vm.$date.now();
-			startDate.setDate(startDate.getDate() - 3);
+			//startDate.setDate(startDate.getDate() - 3);
 			var wkpIds: string[];
 
 			if (storage) {

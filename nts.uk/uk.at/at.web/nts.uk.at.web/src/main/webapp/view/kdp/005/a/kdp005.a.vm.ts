@@ -750,7 +750,7 @@ module nts.uk.at.view.kdp005.a {
 				const self = this;
 				let dfd = $.Deferred<any>();
 				let startDate = vm.$date.now();
-				startDate.setDate(startDate.getDate() - 3);
+				// startDate.setDate(startDate.getDate() - 3);
 				var wkpIds: string[];
 
 				if (loginInfo) {
