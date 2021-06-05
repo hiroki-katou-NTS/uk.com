@@ -440,18 +440,29 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		String workTypeCD = null;
 		String workTimeCD = null;
-		if (appWorkChange.getOpWorkTypeCD().isPresent() && appWorkChangeDispInfo.getWorkInformationForApplication().isPresent()) {
-		    if (!appWorkChange.getOpWorkTypeCD().get().v()
-		            .equals(appWorkChangeDispInfo.getWorkInformationForApplication().get().getWorkTypeCode().v())) {
-		        workTypeCD = appWorkChange.getOpWorkTypeCD().get().v();
-		    }
+		if (appWorkChangeDispInfo.getWorkInformationForApplication().isPresent()) {
+			if (appWorkChange.getOpWorkTypeCD().isPresent()) {
+				workTypeCD = appWorkChange.getOpWorkTypeCD().get().v();
+				if (appWorkChangeDispInfo.getWorkInformationForApplication().get().getWorkTypeCode() != null) {
+					String workType = appWorkChangeDispInfo.getWorkInformationForApplication().get().getWorkTypeCode().v();
+					if (workType.equals(workTypeCD)) {
+						workTypeCD = null;
+					}
+				}
+			}
+			
+			if (appWorkChange.getOpWorkTimeCD().isPresent()) {
+				workTimeCD = appWorkChange.getOpWorkTimeCD().get().v();
+				if (appWorkChangeDispInfo.getWorkInformationForApplication().get().getWorkTimeCode() != null) {
+					String workTime = appWorkChangeDispInfo.getWorkInformationForApplication().get().getWorkTimeCode().v();
+					if (workTime.equals(workTimeCD)) {
+						workTimeCD = null;
+					}
+				}
+			}
 		}
-		if (appWorkChange.getOpWorkTimeCD().isPresent() && appWorkChangeDispInfo.getWorkInformationForApplication().isPresent()) {
-            if (!appWorkChange.getOpWorkTimeCD().get().v()
-                    .equals(appWorkChangeDispInfo.getWorkInformationForApplication().get().getWorkTimeCode().v())) {
-                workTimeCD = appWorkChange.getOpWorkTimeCD().get().v();
-            }
-        }
+		
+		
 		// 詳細画面の登録時チェック処理（全申請共通）
 		detailBeforeUpdate.processBeforeDetailScreenRegistration(
 				companyID, 
