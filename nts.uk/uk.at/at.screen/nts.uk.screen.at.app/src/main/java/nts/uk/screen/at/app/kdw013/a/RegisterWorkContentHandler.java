@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.kdw013.a;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -78,25 +79,30 @@ public class RegisterWorkContentHandler {
 		param.setEditStateSetting(EnumAdaptor.valueOf(command.getEditStateSetting(), EditStateSetting.class));
 
 		List<WorkDetailCommand> lstWorkDetailCmd = command.getWorkDetails();
-
+		
 		List<WorkDetail> workDetails = lstWorkDetailCmd.stream()
-				.map(workDetail -> new WorkDetail(workDetail.getDate(),
-						
-						workDetail.getLstWorkDetailsParamCommand().stream()
-								.map(workDetailParam -> new WorkDetailsParam(new SupportFrameNo(
-										workDetailParam.getSupportFrameNo()),
-										new TimeZone(
-												new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.HAND_CORRECTION_PERSON, Optional.empty()),
-														new TimeWithDayAttr(workDetailParam.getTimeZone().getStart())),
-												new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.HAND_CORRECTION_PERSON, Optional.empty()),
-														new TimeWithDayAttr(workDetailParam.getTimeZone().getEnd())),
-												Optional.empty()),
-										Optional.ofNullable(WorkGroup.create(workDetailParam.getWorkGroup().getWorkCD1(),
-												workDetailParam.getWorkGroup().getWorkCD2(), workDetailParam.getWorkGroup().getWorkCD3(),
-												workDetailParam.getWorkGroup().getWorkCD4(), workDetailParam.getWorkGroup().getWorkCD5())),
-										Optional.ofNullable(new WorkinputRemarks(workDetailParam.getRemarks())),
-										Optional.ofNullable(new WorkLocationCD(workDetailParam.getWorkLocationCD()))))
-								.collect(Collectors.toList())))
+				.map(workDetail -> {
+					 AtomicInteger count = new AtomicInteger(1);
+					return new WorkDetail(workDetail.getDate(),
+							
+							workDetail.getLstWorkDetailsParamCommand().stream()
+									.map(workDetailParam -> new WorkDetailsParam(new SupportFrameNo(
+											workDetailParam.getSupportFrameNo() == 0 ? count.getAndIncrement()
+													: workDetailParam.getSupportFrameNo()),
+											new TimeZone(
+													new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.HAND_CORRECTION_PERSON, Optional.empty()),
+															new TimeWithDayAttr(workDetailParam.getTimeZone().getStart())),
+													new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.HAND_CORRECTION_PERSON, Optional.empty()),
+															new TimeWithDayAttr(workDetailParam.getTimeZone().getEnd())),
+													Optional.empty()),
+											Optional.ofNullable(WorkGroup.create(workDetailParam.getWorkGroup().getWorkCD1(),
+													workDetailParam.getWorkGroup().getWorkCD2(), workDetailParam.getWorkGroup().getWorkCD3(),
+													workDetailParam.getWorkGroup().getWorkCD4(), workDetailParam.getWorkGroup().getWorkCD5())),
+											Optional.ofNullable(new WorkinputRemarks(workDetailParam.getRemarks())),
+											Optional.ofNullable(new WorkLocationCD(workDetailParam.getWorkLocationCD()))))
+									.collect(Collectors.toList()));
+					
+				})
 				.collect(Collectors.toList());
 
 		param.setWorkDetails(workDetails);

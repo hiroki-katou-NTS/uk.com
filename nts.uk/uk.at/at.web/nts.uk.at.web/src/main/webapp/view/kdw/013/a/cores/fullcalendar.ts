@@ -1536,6 +1536,12 @@ module nts.uk.ui.at.kdw013.calendar {
                 slotEventOverlap: false,
                 eventOverlap: false,
                 selectOverlap: false,
+                eventLimit: true, 
+                views: {
+                    timeGrid: {
+                        eventLimit: 20
+                    }
+                },
                 // rerenderDelay: 500,
                 dateClick: (info) => {
                     const events = vm.calendar.getEvents();
