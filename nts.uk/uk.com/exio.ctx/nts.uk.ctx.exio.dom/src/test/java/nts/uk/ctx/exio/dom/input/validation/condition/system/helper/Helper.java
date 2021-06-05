@@ -24,6 +24,7 @@ public class Helper {
 						Helper.DUMMY.GROUP_ID,
 						itemNo,
 						Helper.DUMMY.ITEM_TYPE,
+						Helper.DUMMY.REQUIRED,
 						Optional.empty())
 			);  
 	}
@@ -38,7 +39,8 @@ public class Helper {
 		public static String COMPANY_ID = "company";
 		public static String SETTING_CODE = "settingCode";
 		public static int GROUP_ID = 999;
-		public static int ROW_NO = 999;
+		public static int ROW_NO = 999; 
+		public static boolean REQUIRED = true; 
 		public static Object VALUE = 999;
 		public static ItemType ITEM_TYPE = ItemType.INS_TIME;
 		public static ImportingMode MODE =  ImportingMode.INSERT_ONLY;

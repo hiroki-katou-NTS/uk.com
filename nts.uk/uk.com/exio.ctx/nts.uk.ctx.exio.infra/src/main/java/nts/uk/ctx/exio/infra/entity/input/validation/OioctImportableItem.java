@@ -39,6 +39,9 @@ public class OioctImportableItem extends ContractUkJpaEntity 		implements Serial
 	@Column(name = "ITEM_TYPE")
 	private int itemType;
 	
+	@Column(name = "REQUIRED")
+	private boolean required;
+	
 	@Column(name = "CHECK_METHOD")
 	private Integer checkMethod;
 	
@@ -65,6 +68,7 @@ public class OioctImportableItem extends ContractUkJpaEntity 		implements Serial
 				pk.getGroupdId(),
 				pk.getItemNo(),
 				EnumAdaptor.valueOf(itemType, ItemType.class),
+				required,
 				constraint);
 	}
 	
@@ -85,6 +89,7 @@ public class OioctImportableItem extends ContractUkJpaEntity 		implements Serial
 		return new OioctImportableItem(
 				pk, 
 				target.getItemType().value, 
+				target.isRequired(),
 				checkMethod, 
 				fqn);
 	}
