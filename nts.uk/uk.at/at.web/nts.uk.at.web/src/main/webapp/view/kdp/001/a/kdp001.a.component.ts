@@ -120,7 +120,13 @@ module nts.uk.ui.kdp001.a {
                                 data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
                         <!-- /ko -->
                         <!-- ko if: btn.buttonName.length > 8 -->
-                            <div class="btn-start-2"
+                            <!-- ko if: btn.buttonName.length <= 15 -->
+                                <div class="btn-start-2"
+                                    data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
+                            <!-- /ko -->
+                        <!-- /ko -->
+                        <!-- ko if: btn.buttonName.length > 15 -->
+                            <div class="btn-start-5"
                                 data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
                         <!-- /ko -->
                     <!-- /ko -->
@@ -256,6 +262,7 @@ module nts.uk.ui.kdp001.a {
                     white-space: break-spaces;
                     word-break: break-all;
                     height: 40px;
+                    top: 20px;
                 }
                 .kdp-001-a.kdp-001-a-btn .btn-start-3 {
                     font-size: 20px;
@@ -271,6 +278,14 @@ module nts.uk.ui.kdp001.a {
                     word-break: break-all;
                     height: 37px;
                     top: 2px;
+                }
+                .kdp-001-a.kdp-001-a-btn .btn-start-5 {
+                    font-size: 15px;
+                    position: relative;
+                    white-space: break-spaces;
+                    word-break: break-all;
+                    height: 37px;
+                    top: 20px;
                 }
                 .kdp-001-a.kdp-001-a-btn1 .btn-end {
                     font-size: 20px;
