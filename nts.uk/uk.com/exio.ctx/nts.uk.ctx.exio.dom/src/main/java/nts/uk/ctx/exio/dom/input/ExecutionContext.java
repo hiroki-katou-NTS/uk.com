@@ -2,6 +2,7 @@ package nts.uk.ctx.exio.dom.input;
 
 import lombok.Value;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
+import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 
 /**
  * 外部受入の実行コンテキスト
@@ -20,4 +21,12 @@ public class ExecutionContext {
 	
 	/** 受入モード */
 	ImportingMode mode;
+	
+	public static ExecutionContext create(ExternalImportSetting source) {
+		return new ExecutionContext(
+				source.getCompanyId(),
+				source.getCode().v(),
+				source.getExternalImportGroupId(),
+				source.getImportingMode());
+	}
 }

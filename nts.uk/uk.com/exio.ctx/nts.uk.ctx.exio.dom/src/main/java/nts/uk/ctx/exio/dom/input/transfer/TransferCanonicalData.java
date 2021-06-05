@@ -5,6 +5,7 @@ import java.util.List;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
+import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataMeta;
 
 /**
@@ -12,9 +13,9 @@ import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataMeta;
  * @author ai_muto
  */
 public class TransferCanonicalData {
-	public static void transfer(Require require) {
+	public static void transfer(Require require, ExecutionContext context) {
 		CanonicalizedDataMeta meta = require.getMetaData();
-		List<ConversionTable> conversionTables = require.getConversionTable(meta.getContext().getGroupId());
+		List<ConversionTable> conversionTables = require.getConversionTable(context.getGroupId());
 		
 		for(ConversionTable conversionTable : conversionTables) {
 			// 受入項目の列名リストを元に移送する列をフィルタ
@@ -22,7 +23,7 @@ public class TransferCanonicalData {
 			
 			ConversionSQL conversionSql;
 			// TODO: Insert & Update両方のモードは未対応
-			if(meta.getContext().getMode().getType() == ConversionCodeType.INSERT) {
+			if(context.getMode().getType() == ConversionCodeType.INSERT) {
 				conversionSql = filteredConversionTable.createConversionSql();
 			}
 			else {

@@ -3,6 +3,8 @@ package nts.uk.ctx.exio.dom.input.canonicalize.methods;
 import java.util.function.Consumer;
 
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
+import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.EmployementHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.history.EmployeeContinuousHistoryCanonicalization;
@@ -27,10 +29,14 @@ public interface CanonicalizationMethod {
 
 	public static interface Require extends
 			EmployeeCodeCanonicalization.Require,
-			EmployeeContinuousHistoryCanonicalization.Require,
+			EmployeeContinuousHistoryCanonicalization.RequireCanonicalize,
 			EmployementHistoryCanonicalization.RequireGetHistory {
 		
 		/** 受け入れた編集済みデータの行数を返す */
 		int getNumberOfRowsRevisedData();
+		
+		void save(AnyRecordToChange recordToChange);
+		
+		void save(AnyRecordToDelete recordToDelete);
 	}
 }

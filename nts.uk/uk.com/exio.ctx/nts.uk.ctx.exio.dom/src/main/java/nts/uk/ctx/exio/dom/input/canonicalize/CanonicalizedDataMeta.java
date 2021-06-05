@@ -3,7 +3,6 @@ package nts.uk.ctx.exio.dom.input.canonicalize;
 import java.util.List;
 
 import lombok.Value;
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
 
 /**
  * 正準化データのメタ情報
@@ -11,9 +10,9 @@ import nts.uk.ctx.exio.dom.input.ExecutionContext;
 @Value
 public class CanonicalizedDataMeta {
 	
-	/** 受入実行コンテキスト */
-	ExecutionContext context;
+	/** 会社ID */
+	String companyId;
 
-	/** 受入項目の一覧 */
+	/** 受入項目の列名一覧 */
 	List<String> importingItemNames;
 }
