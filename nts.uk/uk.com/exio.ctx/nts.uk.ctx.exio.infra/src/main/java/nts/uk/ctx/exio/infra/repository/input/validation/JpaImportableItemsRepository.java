@@ -6,8 +6,8 @@ import java.util.Optional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.exio.dom.input.validation.ImportableItem;
-import nts.uk.ctx.exio.dom.input.validation.ImportableItemsRepository;
+import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
+import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.infra.entity.input.validation.OioctImportableItem;
 
 public class JpaImportableItemsRepository extends JpaRepository implements ImportableItemsRepository{

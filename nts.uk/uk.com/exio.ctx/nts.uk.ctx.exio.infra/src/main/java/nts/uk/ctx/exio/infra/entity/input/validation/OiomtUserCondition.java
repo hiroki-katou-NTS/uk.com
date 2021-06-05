@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.exio.dom.input.revise.ItemType;
+import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 import nts.uk.ctx.exio.dom.input.validation.Validation;
 import nts.uk.ctx.exio.dom.input.validation.condition.ImportingUserCondition;
 import nts.uk.ctx.exio.dom.input.validation.condition.user.type.date.DateCondition;

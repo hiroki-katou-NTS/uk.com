@@ -3,7 +3,7 @@ package nts.uk.ctx.exio.dom.input.revise.dataformat;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.exio.dom.input.revise.ItemType;
+import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 
 /**
  * 

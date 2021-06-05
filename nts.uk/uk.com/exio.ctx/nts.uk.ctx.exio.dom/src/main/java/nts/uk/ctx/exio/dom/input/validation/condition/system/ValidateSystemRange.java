@@ -5,8 +5,8 @@ import java.util.List;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
-import nts.uk.ctx.exio.dom.input.validation.ImportableItem;
 
 /**
  * システムが要求する値の範囲で検証

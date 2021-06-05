@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.exio.dom.input.revise.ItemType;
-import nts.uk.ctx.exio.dom.input.validation.ImportableItem;
-import nts.uk.ctx.exio.dom.input.validation.condition.system.CheckMethod;
-import nts.uk.ctx.exio.dom.input.validation.condition.system.DomainConstraint;
+import nts.uk.ctx.exio.dom.input.importableitem.CheckMethod;
+import nts.uk.ctx.exio.dom.input.importableitem.DomainConstraint;
+import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
+import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import java.io.Serializable;

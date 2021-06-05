@@ -1,7 +1,9 @@
-package nts.uk.ctx.exio.dom.input.validation.condition.system;
+package nts.uk.ctx.exio.dom.input.importableitem;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.exio.dom.input.validation.condition.system.ValidationEnum;
+import nts.uk.ctx.exio.dom.input.validation.condition.system.ValidationPrimitiveValue;
 
 /**
  *  値のドメイン制約

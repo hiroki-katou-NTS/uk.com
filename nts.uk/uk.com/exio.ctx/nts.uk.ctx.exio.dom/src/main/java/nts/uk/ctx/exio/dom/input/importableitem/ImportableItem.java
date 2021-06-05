@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.validation;
+package nts.uk.ctx.exio.dom.input.importableitem;
 
 import java.util.Optional;
 
@@ -6,11 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.exio.dom.input.DataItem;
-import nts.uk.ctx.exio.dom.input.revise.ItemType;
-import nts.uk.ctx.exio.dom.input.validation.condition.system.DomainConstraint;
 
 /**
- * 受入可能項目の定義
+ * 受入可能項目
  */
 @Getter
 @AllArgsConstructor

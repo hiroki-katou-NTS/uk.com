@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.revise;
+package nts.uk.ctx.exio.dom.input.importableitem;
 
 import nts.uk.ctx.exio.dom.input.DataType;
 

@@ -12,7 +12,7 @@ import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
 import nts.uk.ctx.exio.dom.input.DataItem;
-import nts.uk.ctx.exio.dom.input.validation.ImportableItem;
+import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.validation.condition.system.helper.Helper;
 
 public class ValidateSystemRangeTest {

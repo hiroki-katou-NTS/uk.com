@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.validation.condition.system;
+package nts.uk.ctx.exio.dom.input.importableitem;
 
 /**
  * 受入値の検証方法
