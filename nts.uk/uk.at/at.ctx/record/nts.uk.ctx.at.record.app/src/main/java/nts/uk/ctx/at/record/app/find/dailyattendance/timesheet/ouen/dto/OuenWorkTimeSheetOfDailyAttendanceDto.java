@@ -179,27 +179,51 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 
 	@Override
 	public OuenWorkTimeSheetOfDailyAttendance toDomain(String employeeId, GeneralDate date) {
+		WorkContent workContent = null;
+		if(this.workContent != null) {
+			workContent = WorkContent.create( 
+					WorkplaceOfWorkEachOuen.create(
+							new WorkplaceId(this.workContent.getWorkplace() == null ? null : this.workContent.getWorkplace().getWorkplaceId()), 
+							new WorkLocationCD(this.workContent.getWorkplace() == null ? null : this.workContent.getWorkplace().getWorkLocationCD())), 
+					Optional.ofNullable(WorkGroup.create(
+							this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD1(), 
+							this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD2(), 
+							this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD3(), 
+							this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD4(), 
+							this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD5())), 
+					this.workContent.getWorkRemarks() == null ? Optional.empty() : Optional.of(new WorkinputRemarks(this.workContent.getWorkRemarks())));
+		} else {
+			workContent = WorkContent.create( 
+					WorkplaceOfWorkEachOuen.create(
+							null, 
+							null), 
+					Optional.ofNullable(WorkGroup.create(
+							null, 
+							Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty())), 
+					Optional.empty());
+		}
+		ReasonTimeChange reasonTimeChangeStart = null;
+		WorkTimeInformation start = null;
+		if(this.timeSheet.getStart() != null) {
+			reasonTimeChangeStart = new ReasonTimeChange(TimeChangeMeans.valueOf(this.timeSheet.getStart().getReasonTimeChange() == null ? null : this.timeSheet.getStart().getReasonTimeChange().getTimeChangeMeans()), 
+					 Optional.ofNullable(EngravingMethod.valueOf(this.timeSheet.getStart().getReasonTimeChange() == null ? null : this.timeSheet.getStart().getReasonTimeChange().getEngravingMethod())));	
+			start = new WorkTimeInformation(reasonTimeChangeStart, this.timeSheet.getStart().getTimeWithDay() == null ? null : new TimeWithDayAttr(this.timeSheet.getStart().getTimeWithDay()));
+		} else {
+			reasonTimeChangeStart = new ReasonTimeChange(null, Optional.empty());	
+			start = new WorkTimeInformation(reasonTimeChangeStart, null);
+		}
 		
-		WorkContent workContent = WorkContent.create( 
-				WorkplaceOfWorkEachOuen.create(
-						new WorkplaceId(this.workContent.getWorkplace() == null ? null : this.workContent.getWorkplace().getWorkplaceId()), 
-						new WorkLocationCD(this.workContent.getWorkplace() == null ? null : this.workContent.getWorkplace().getWorkLocationCD())), 
-				Optional.ofNullable(WorkGroup.create(
-						this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD1(), 
-						this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD2(), 
-						this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD3(), 
-						this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD4(), 
-						this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD5())), 
-				this.workContent.getWorkRemarks() == null ? Optional.empty() : Optional.of(new WorkinputRemarks(this.workContent.getWorkRemarks())));
+		ReasonTimeChange reasonTimeChangeEnd = null;
+		WorkTimeInformation end = null;
+		if(this.timeSheet.getEnd() != null) {
+			reasonTimeChangeEnd = new ReasonTimeChange(TimeChangeMeans.valueOf(this.timeSheet.getEnd().getReasonTimeChange() != null ? this.timeSheet.getEnd().getReasonTimeChange().getTimeChangeMeans() : null), 
+					 Optional.ofNullable(EngravingMethod.valueOf(this.timeSheet.getEnd().getReasonTimeChange() != null ? this.timeSheet.getEnd().getReasonTimeChange().getEngravingMethod() : null)));
+			end = new WorkTimeInformation(reasonTimeChangeEnd, this.timeSheet.getEnd().getTimeWithDay() == null ? null : new TimeWithDayAttr(this.timeSheet.getEnd().getTimeWithDay()));
+		} else {
+			reasonTimeChangeEnd = new ReasonTimeChange(null, Optional.empty());	
+			end = new WorkTimeInformation(reasonTimeChangeStart, null);
+		}
 		
-		ReasonTimeChange reasonTimeChangeStart = new ReasonTimeChange(TimeChangeMeans.valueOf(this.timeSheet.getStart().getReasonTimeChange().getTimeChangeMeans()), 
-																 Optional.ofNullable(EngravingMethod.valueOf(this.timeSheet.getStart().getReasonTimeChange().getEngravingMethod())));
-		
-		ReasonTimeChange reasonTimeChangeEnd = new ReasonTimeChange(TimeChangeMeans.valueOf(this.timeSheet.getEnd().getReasonTimeChange().getTimeChangeMeans()), 
-				 Optional.ofNullable(EngravingMethod.valueOf(this.timeSheet.getEnd().getReasonTimeChange().getEngravingMethod())));
-		
-		WorkTimeInformation start = new WorkTimeInformation(reasonTimeChangeStart, this.timeSheet.getStart().getTimeWithDay() == null ? null : new TimeWithDayAttr(this.timeSheet.getStart().getTimeWithDay()));
-		WorkTimeInformation end = new WorkTimeInformation(reasonTimeChangeEnd, this.timeSheet.getEnd().getTimeWithDay() == null ? null : new TimeWithDayAttr(this.timeSheet.getEnd().getTimeWithDay()));
 		TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(this.timeSheet.getNo()), Optional.ofNullable(start), Optional.ofNullable(end));
 		OuenWorkTimeSheetOfDailyAttendance attendance = OuenWorkTimeSheetOfDailyAttendance.create(this.no, workContent, timeSheet);
 		return attendance;
