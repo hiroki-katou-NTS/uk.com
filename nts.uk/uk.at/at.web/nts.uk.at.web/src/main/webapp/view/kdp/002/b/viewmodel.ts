@@ -163,16 +163,16 @@ class KDP002BViewModel extends ko.ViewModel {
         const vm = this;
         if (!ko.unwrap(vm.showBtnNoti)) {
             if (!ko.unwrap(vm.modeNikoNiko)) {
-                vm.$window.size(590, 470);
+                vm.$window.size(598, 470);
             } else {
-                vm.$window.size(610, 470);
+                vm.$window.size(618, 470);
             }
 
         } else {
             if (!ko.unwrap(vm.modeNikoNiko)) {
-                vm.$window.size(630, 470);
+                vm.$window.size(638, 470);
             } else {
-                vm.$window.size(650, 470);
+                vm.$window.size(658, 470);
             }
         }
     }
