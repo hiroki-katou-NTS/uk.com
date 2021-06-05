@@ -172,7 +172,7 @@ public class ScreenQueryAggregatePeopleMethod {
 		public Optional<ShiftMaster> getShiftMaster(WorkInformation workInformation) {
 			return shiftMasterRepository.getByWorkTypeAndWorkTime(
 					AppContexts.user().companyId(),
-					workInformation.getWorkTimeCode().v(),
+					workInformation.getWorkTypeCode().v(),
 					workInformation.getWorkTimeCodeNotNull().map(x -> x.v()).orElse(null));
 		}
 		
