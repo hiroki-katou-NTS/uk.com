@@ -17,6 +17,10 @@ public class DataItem {
 	/** 値 */
 	Object value;
 	
+	public static DataItem of(int itemNo, Object value) {
+		return new DataItem(itemNo, value);
+	}
+	
 	/**
 	 * 文字型
 	 * @param itemNo

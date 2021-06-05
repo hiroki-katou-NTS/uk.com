@@ -5,14 +5,11 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * コード変換名称
+ * コード変換値
  */
 @StringMaxLength(10)
 public class CodeConvertValue extends StringPrimitiveValue<PrimitiveValue<String>> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -23,5 +20,4 @@ public class CodeConvertValue extends StringPrimitiveValue<PrimitiveValue<String
 	public CodeConvertValue(String rawValue) {
 		super(rawValue);
 	}
-
 }

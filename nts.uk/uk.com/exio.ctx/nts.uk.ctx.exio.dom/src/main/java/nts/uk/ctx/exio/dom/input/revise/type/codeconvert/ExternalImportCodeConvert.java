@@ -3,56 +3,55 @@ package nts.uk.ctx.exio.dom.input.revise.type.codeconvert;
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 受入コード変換
  */
 @Getter
 public class ExternalImportCodeConvert extends AggregateRoot {
-
-	/**
-	 * 会社ID
-	 */
+	
+	/** 会社ID */
 	private String companyId;
-
-	/**
-	 * コード変換コード
-	 */
+	
+	/** コード変換コード*/
 	private CodeConvertCode convertCode;
-
-	/**
-	 * コード変換名称
-	 */
+	
+	/** コード変換名称 */
 	private CodeConvertName convertName;
-
-	/**
-	 * 設定のないコードの受入
-	 */
-	private NotUseAtr acceptWithoutSetting;
-
-	/**
-	 * List convert detail data
-	 */
-	private List<CodeConvertDetails> listConvertDetails;
-
-	/**
-	 * @param cid
-	 * @param convertCd
-	 * @param convertName
-	 * @param acceptWithoutSetting
-	 * @param listConvertDetails
-	 */
-	public ExternalImportCodeConvert(String cid, String convertCd, String convertName, int acceptWithoutSetting,
-			List<CodeConvertDetails> listConvertDetails) {
+	
+	/** 変換対象外を受け入れる */
+	private boolean importWithoutSetting;
+	
+	/** コード変換 */
+	private List<CodeConvertDetail> ConvertDetails;
+	
+	public ExternalImportCodeConvert(String companyId, String convertCode, String convertName, boolean importWithoutSetting,
+			List<CodeConvertDetail> listConvertDetails) {
 		super();
-		this.companyId = cid;
-		this.convertCode = new CodeConvertCode(convertCd);
+		this.companyId = companyId;
+		this.convertCode = new CodeConvertCode(convertCode);
 		this.convertName = new CodeConvertName(convertName);
-		this.acceptWithoutSetting = EnumAdaptor.valueOf(acceptWithoutSetting, NotUseAtr.class);
-		this.listConvertDetails = listConvertDetails;
+		this.importWithoutSetting = importWithoutSetting;
+		this.ConvertDetails = listConvertDetails;
 	}
-
+	
+	/**
+	 * 変換する
+	 * @param target
+	 * @return
+	 */
+	public CodeConvertResult convert(String target) {
+		for(int i = 0; i < ConvertDetails.size(); i++) {
+			if(ConvertDetails.get(i).getTargetCode().toString() == target) {
+				return CodeConvertResult.succeeded(ConvertDetails.get(i).getSystemCode());
+			}
+		}
+		if(importWithoutSetting) {
+			// 変換対象外を受け入れる設定のためINPUTを変換値として返す
+			return CodeConvertResult.succeeded(new CodeConvertValue(target));
+		}
+		// 変換対象がない場合はempty
+		return CodeConvertResult.failed();
+	}
 }

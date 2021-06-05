@@ -27,14 +27,4 @@ public class RangeOfValue {
 	public String extract(String target) {
 		return target.substring(this.startRaw.v(), this.endRaw.v());
 	}
-	
-	/**
-	 * 値の抽出
-	 * @param target
-	 * @return
-	 */
-	public int extract(int target) {
-		return Integer.parseInt(
-				String.valueOf(target).substring(this.startRaw.v(), this.endRaw.v()));
-	}
 }
