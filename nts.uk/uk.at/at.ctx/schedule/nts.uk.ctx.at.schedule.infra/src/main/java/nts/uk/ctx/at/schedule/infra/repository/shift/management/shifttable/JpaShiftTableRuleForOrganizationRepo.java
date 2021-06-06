@@ -51,7 +51,7 @@ public class JpaShiftTableRuleForOrganizationRepo extends JpaRepository implemen
 				oldEntity.kscmtShiftTableRuleForOrgAvai.weekSetStart = newEntity.kscmtShiftTableRuleForOrgAvai.weekSetStart;
 				oldEntity.kscmtShiftTableRuleForOrgAvai.weekSetDeadlineAtr = newEntity.kscmtShiftTableRuleForOrgAvai.weekSetDeadlineAtr;
 				oldEntity.kscmtShiftTableRuleForOrgAvai.weekSetDeadlineWeek = newEntity.kscmtShiftTableRuleForOrgAvai.weekSetDeadlineWeek;
-			} else {
+			} else if (newEntity.kscmtShiftTableRuleForOrgAvai != null) {
                 oldEntity.kscmtShiftTableRuleForOrgAvai = newEntity.kscmtShiftTableRuleForOrgAvai;
             }
 			this.commandProxy().update(oldEntity);

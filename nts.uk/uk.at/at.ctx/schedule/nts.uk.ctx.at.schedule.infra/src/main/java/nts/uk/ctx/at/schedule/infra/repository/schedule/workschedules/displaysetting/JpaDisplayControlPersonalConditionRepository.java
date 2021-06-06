@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.PersonSymbolQualify;
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.ConditionATRWorkSchedule;
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.DisplayControlPersonalCondition;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.PersonInforDisplay
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.QualificationCD;
 import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.WorkscheQualifi;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.displaysetting.KscmtSyacndDispCtl;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.displaysetting.KscmtSyacndDispCtlPK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.displaysetting.KscmtSyacndDispCtlQua;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -54,44 +56,54 @@ public class JpaDisplayControlPersonalConditionRepository extends JpaRepository
 	// [2] Update(個人条件の表示制御)
 	@Override
 	public void update(DisplayControlPersonalCondition condition) {
-		List<Integer> conditionATR = condition.getListConditionDisplayControl().stream()
-				.map(i -> i.getConditionATR().value).collect(Collectors.toList());
-		if (!conditionATR.isEmpty()) {
-			List<KscmtSyacndDispCtl> dispCtls = this.queryProxy().query(query, KscmtSyacndDispCtl.class)
-					.setParameter("cid", condition.getCompanyID()).setParameter("cndAtr", conditionATR).getList();
-			dispCtls.forEach(i -> {
-				Optional<PersonInforDisplayControl> con = condition.getListConditionDisplayControl().stream()
-						.filter(e -> i.pk.cndAtr == e.getConditionATR().value).findFirst();
-				if (con.isPresent()) {
-					i.dispAtr = con.get().getDisplayCategory().value;
+		List<KscmtSyacndDispCtl> dispCtls = this.queryProxy().query(GET_DISPCTL, KscmtSyacndDispCtl.class)
+				.setParameter("cid", condition.getCompanyID()).getList();
+		dispCtls.forEach(i -> {
+			if (condition.getListConditionDisplayControl().stream().anyMatch(e -> i.pk.cndAtr == e.getConditionATR().value)) {
+				condition.getListConditionDisplayControl().stream()
+						.filter(e -> i.pk.cndAtr == e.getConditionATR().value)
+						.findFirst().ifPresent(d -> {
+					i.dispAtr = d.getDisplayCategory().value;
 					i.syname = condition.getOtpWorkscheQualifi().isPresent()
-							? condition.getOtpWorkscheQualifi().get().getQualificationMark().v() : null;
-				}
-			});
-		}
-		if (condition.getOtpWorkscheQualifi().isPresent()) {
-			List<String> qualificationCD = condition.getOtpWorkscheQualifi().get().getListQualificationCD().stream()
-					.map(i -> i.v()).collect(Collectors.toList());
-			if (!qualificationCD.isEmpty()) {
-				List<String> dispCtlQuas = this.queryProxy().query(QUERY_QUALIFICATION, String.class)
-						.setParameter("cid", condition.getCompanyID()).getList();
-
-				List<String> listToDel = dispCtlQuas.stream().filter(e -> !qualificationCD.contains(e))
-						.collect(Collectors.toList());
-				if (!listToDel.isEmpty()) {
-					this.queryProxy().query(DELETE).setParameter("cid", condition.getCompanyID())
-							.setParameter("qualification", listToDel);
-				}
-
-				List<String> listToInsert = qualificationCD.stream().filter(e -> !dispCtlQuas.contains(e))
-						.collect(Collectors.toList());
-				listToInsert.forEach(code -> {
-					this.commandProxy().insert(KscmtSyacndDispCtlQua.toEntity(condition, code));
+							? condition.getOtpWorkscheQualifi().get().getQualificationMark().v()
+							: null;
 				});
+			} else {
+				i.dispAtr = NotUseAtr.NOT_USE.value;
 			}
-		}
-		if (!condition.getOtpWorkscheQualifi().isPresent()
-				|| condition.getOtpWorkscheQualifi().get().getListQualificationCD().isEmpty()) {
+		});
+		condition.getListConditionDisplayControl().stream()
+				.filter(d -> dispCtls.stream().noneMatch(e -> e.pk.cndAtr == d.getConditionATR().value))
+				.forEach(d -> {
+					String qualificationMark = condition.getOtpWorkscheQualifi().isPresent()
+							? condition.getOtpWorkscheQualifi().get().getQualificationMark().v() : null;
+					KscmtSyacndDispCtl entity = new KscmtSyacndDispCtl(
+							new KscmtSyacndDispCtlPK(condition.getCompanyID(), d.getConditionATR().value),
+							d.getDisplayCategory().value,
+							qualificationMark
+					);
+					this.commandProxy().insert(entity);
+				});
+
+		if (condition.getOtpWorkscheQualifi().isPresent() && !condition.getOtpWorkscheQualifi().get().getListQualificationCD().isEmpty()) {
+			List<String> qualificationCD = condition.getOtpWorkscheQualifi().get().getListQualificationCD().stream()
+					.map(PrimitiveValueBase::v).collect(Collectors.toList());
+			List<String> dispCtlQuas = this.queryProxy().query(QUERY_QUALIFICATION, String.class)
+					.setParameter("cid", condition.getCompanyID()).getList();
+
+			List<String> listToDel = dispCtlQuas.stream().filter(e -> !qualificationCD.contains(e))
+					.collect(Collectors.toList());
+			if (!listToDel.isEmpty()) {
+				this.queryProxy().query(DELETE).setParameter("cid", condition.getCompanyID())
+						.setParameter("qualification", listToDel);
+			}
+
+			List<String> listToInsert = qualificationCD.stream().filter(e -> !dispCtlQuas.contains(e))
+					.collect(Collectors.toList());
+			listToInsert.forEach(code -> {
+				this.commandProxy().insert(KscmtSyacndDispCtlQua.toEntity(condition, code));
+			});
+		} else {
 			this.queryProxy().query(DELETE_QUA).setParameter("cid", condition.getCompanyID());
 		}
 
