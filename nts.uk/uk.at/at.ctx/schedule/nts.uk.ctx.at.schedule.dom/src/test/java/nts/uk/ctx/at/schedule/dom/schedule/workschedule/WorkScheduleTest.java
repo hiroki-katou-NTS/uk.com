@@ -31,8 +31,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttdHelper;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyHelper;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
@@ -66,24 +64,6 @@ public class WorkScheduleTest {
 	
 	@Injectable
 	OutingTimeOfDailyAttd outingTime;
-	
-	@Injectable
-	static WorkInfoOfDailyAttendance workInfo;
-	
-	@Mocked
-	static AffiliationInforOfDailyAttd affInfo;
-	
-	@Injectable
-	static TimevacationUseTimeOfDaily timeVacationUseOfDaily;
-	
-	@Injectable
-	static BreakTimeGoOutTimes workTime;
-	
-	@Injectable
-	static OutingTotalTime recordTotalTime;
-	
-	@Injectable
-	static OutingTotalTime deductionTotalTime;
 	
 //	@Test
 //	public void getters() {
