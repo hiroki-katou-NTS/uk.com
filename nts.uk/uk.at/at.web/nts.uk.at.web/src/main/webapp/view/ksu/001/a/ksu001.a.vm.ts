@@ -170,7 +170,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         nursingCareOP = false;
         widthA8 : number = 200;
         widthBtnToLeftToRight : number = 30; // width button 
-        distanceLeftToGrid : number = 30; // khoang cách từ mép trái vào đến grid
+        offetLeftGrid : number = 30; // khoang cách từ mép trái vào đến grid (offetLeftGrid)
         widthVertSum : number = 200;
 
         showA11: KnockoutObservable<boolean>   = ko.observable(false);
@@ -3568,7 +3568,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.indexBtnToLeft % 2 == 0) {
                 $("#extable").exTable("hideMiddle");
                 $('.iconToLeft').css('background-image', 'url(' + self.pathToRight + ')');
-                $(".toLeft").css("margin-left", self.widthA8 + self.distanceLeftToGrid + "px");
+                $(".toLeft").css("margin-left", self.widthA8 + self.offetLeftGrid + "px");
                 
                 let marginleft = 0;
                 if (self.showA11() && self.indexBtnToRight % 2 == 0) {
@@ -3580,7 +3580,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else {
                 $("#extable").exTable("showMiddle");
                 $('.iconToLeft').css('background-image', 'url(' + self.pathToLeft + ')');
-                let marginleftOfbtnToLeft: number = self.widthA8 + self.distanceLeftToGrid + self.widthMid;
+                let marginleftOfbtnToLeft: number = self.widthA8 + self.offetLeftGrid + self.widthMid;
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
 
                 let marginleft = 0;
@@ -3607,7 +3607,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let marginleft = $('#extable').width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight * 2 - widthScrollRG; 
                     $(".toRight").css('margin-left', marginleft + 'px');
                 } else {
-                    let marginleft = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight * 2 - widthScrollRG;
+                    let marginleft =  $("#extable").width() + self.offetLeftGrid - self.widthBtnToLeftToRight - widthScrollRG -  3;
                     $(".toRight").css('margin-left', marginleft + 'px');
                 }
             } else {
@@ -3618,7 +3618,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let marginleft = $('#extable').width() - self.widthA8 - self.widthMid - self.widthVertSum - self.widthBtnToLeftToRight * 2  - widthScrollRG;
                     $(".toRight").css('margin-left', marginleft + 'px');
                 } else {
-                    let marginleft = $('#extable').width() - self.widthA8 - self.widthVertSum - self.widthBtnToLeftToRight * 2 - widthScrollRG;
+                    let marginleft =  $("#extable").width() + self.offetLeftGrid - self.widthBtnToLeftToRight - widthScrollRG -  3 - self.widthVertSum;
                     $(".toRight").css('margin-left', marginleft + 'px');
                 }
             }
@@ -3651,17 +3651,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         setPositionButonToRightToLeft() {
             let self = this;
+            let widthScrollRG = 30; 
             self.indexBtnToLeft = 0;
             $("#sub-content-main").width($('#extable').width() + 30);
 
             let marginleftOfbtnToRight: number = 0;
-            let marginleftOfbtnToLeft: number = self.widthA8 + self.distanceLeftToGrid + self.widthMid;
+            let marginleftOfbtnToLeft: number = self.widthA8 + self.offetLeftGrid + self.widthMid;
             if (self.showA9) {
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
-                marginleftOfbtnToRight = $("#extable").width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight*2 - self.distanceLeftToGrid;
+                marginleftOfbtnToRight = $("#extable").width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight*2 - self.offetLeftGrid;
             } else {
                 $(".toLeft").css("display", "none");
-                marginleftOfbtnToRight = $("#extable").width() - self.widthBtnToLeftToRight - 3;
+                marginleftOfbtnToRight = $("#extable").width() + self.offetLeftGrid - self.widthBtnToLeftToRight - widthScrollRG -  3;
             }
             
             if(self.showA11()){
@@ -3692,12 +3693,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.showA9) {
                 let displayA9 = $('.ex-body-middle').css('display');
                 if(displayA9 == 'none'){
-                    marginleftOfbtnToRight = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight*2 - self.distanceLeftToGrid;
+                    marginleftOfbtnToRight = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight*2 - self.offetLeftGrid;
                 }else{
-                    marginleftOfbtnToRight = $('#extable').width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight*2 - self.distanceLeftToGrid;
+                    marginleftOfbtnToRight = $('#extable').width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight*2 - self.offetLeftGrid;
                 }
             } else {
-                marginleftOfbtnToRight = $('#extable').width() - self.distanceLeftToGrid - 3;
+                marginleftOfbtnToRight = $('#extable').width() - self.offetLeftGrid - 3;
             }
             $('.toRight').css('margin-left', marginleftOfbtnToRight <= 101 ? 101 : marginleftOfbtnToRight + 'px');
         }
