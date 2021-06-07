@@ -1233,7 +1233,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 return {
                     morning: morningTimes,
-                    afternoon: afternoonTimes;
+                    afternoon: afternoonTimes,
                 }
             }
 
@@ -1295,7 +1295,7 @@ module nts.uk.at.view.kmk003.a {
                 };
 
                 //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
-                let times = _self.autoGenerate();
+                let times = self.autoGenerate();
 
                 command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = [];
                 times.morning.forEach(time => {
