@@ -172,6 +172,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         widthBtnToLeftToRight : number = 30; // width button 
         offetLeftGrid : number = 30; // khoang cách từ mép trái vào đến grid (offetLeftGrid)
         widthVertSum : number = 200;
+        widthScrollRG = 30;
 
         showA11: KnockoutObservable<boolean>   = ko.observable(false);
         showA12: KnockoutObservable<boolean>   = ko.observable(false);
@@ -3564,7 +3565,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             if (!self.showA9)
                 return;
-            let widthScrollRG = 30; // width thanh scroll, vì grid tính cả width của thằng này vào độ rộng, nên phải trừ nó đi khi tính toán.
             if (self.indexBtnToLeft % 2 == 0) {
                 $("#extable").exTable("hideMiddle");
                 $('.iconToLeft').css('background-image', 'url(' + self.pathToRight + ')');
@@ -3572,9 +3572,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 let marginleft = 0;
                 if (self.showA11() && self.indexBtnToRight % 2 == 0) {
-                    marginleft = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight * 2 - self.widthVertSum - widthScrollRG;
+                    marginleft = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight * 2 - self.widthVertSum - self.widthScrollRG;
                 }else{
-                    marginleft = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight * 2 - widthScrollRG;
+                    marginleft = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight * 2 -self.widthScrollRG;
                 }
                 $(".toRight").css('margin-left', marginleft + 'px');
             } else {
@@ -3585,9 +3585,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 let marginleft = 0;
                 if (self.showA11() && self.indexBtnToRight % 2 == 0) {
-                    marginleft = $('#extable').width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight * 2 - self.widthVertSum - widthScrollRG;
+                    marginleft = $('#extable').width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight * 2 - self.widthVertSum - self.widthScrollRG;
                 }else{
-                    marginleft = $('#extable').width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight * 2 - widthScrollRG;
+                    marginleft = $('#extable').width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight * 2 - self.widthScrollRG;
                 }
                 $(".toRight").css('margin-left', marginleft + 'px');
             }
@@ -3598,16 +3598,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             if(self.showA11() == false)
                 return;
-            let widthScrollRG = 30; // width thanh scroll, vì grid tính cả width của thằng này vào độ rộng, nên phải trừ nó đi khi tính toán.
             if (self.indexBtnToRight % 2 == 0) {
                 $("#extable").exTable("hideVerticalSummary");
                 $('.iconToRight').css('background-image', 'url(' + self.pathToLeft + ')');
                 if (self.showA9 && self.indexBtnToLeft % 2 == 0) {
                     // trong truong hop nay phải check thêm là A9 đang show hay hidden do click btn toLeft
-                    let marginleft = $('#extable').width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight * 2 - widthScrollRG; 
+                    let marginleft = $('#extable').width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight * 2 - self.widthScrollRG; 
                     $(".toRight").css('margin-left', marginleft + 'px');
                 } else {
-                    let marginleft =  $("#extable").width() + self.offetLeftGrid - self.widthBtnToLeftToRight - widthScrollRG -  3;
+                    let marginleft =  $("#extable").width() + self.offetLeftGrid - self.widthBtnToLeftToRight - self.widthScrollRG -  3;
                     $(".toRight").css('margin-left', marginleft + 'px');
                 }
             } else {
@@ -3615,10 +3614,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $('.iconToRight').css('background-image', 'url(' + self.pathToRight + ')');
                 if (self.showA9 && self.indexBtnToLeft % 2 == 0) {
                     // trong truong hop nay phải check thêm là A9 đang show hay hidden do click btn toLeft
-                    let marginleft = $('#extable').width() - self.widthA8 - self.widthMid - self.widthVertSum - self.widthBtnToLeftToRight * 2  - widthScrollRG;
+                    let marginleft = $('#extable').width() - self.widthA8 - self.widthMid - self.widthVertSum - self.widthBtnToLeftToRight * 2  - self.widthScrollRG;
                     $(".toRight").css('margin-left', marginleft + 'px');
                 } else {
-                    let marginleft =  $("#extable").width() + self.offetLeftGrid - self.widthBtnToLeftToRight - widthScrollRG -  3 - self.widthVertSum;
+                    let marginleft =  $("#extable").width() + self.offetLeftGrid - self.widthBtnToLeftToRight - self.widthScrollRG -  3 - self.widthVertSum;
                     $(".toRight").css('margin-left', marginleft + 'px');
                 }
             }
@@ -3651,7 +3650,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         setPositionButonToRightToLeft() {
             let self = this;
-            let widthScrollRG = 30; 
             self.indexBtnToLeft = 0;
             $("#sub-content-main").width($('#extable').width() + 30);
 
@@ -3662,7 +3660,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 marginleftOfbtnToRight = $("#extable").width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight*2 - self.offetLeftGrid;
             } else {
                 $(".toLeft").css("display", "none");
-                marginleftOfbtnToRight = $("#extable").width() + self.offetLeftGrid - self.widthBtnToLeftToRight - widthScrollRG -  3;
+                marginleftOfbtnToRight = $("#extable").width() + self.offetLeftGrid - self.widthBtnToLeftToRight - self.widthScrollRG -  3;
             }
             
             if(self.showA11()){
@@ -3687,20 +3685,25 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#sub-content-main").width($('#extable').width() + 30);
         }
         
+        // call khi resize
         setPositionButonToRight() {
             let self = this;
             let marginleftOfbtnToRight: number = 0;
             if (self.showA9) {
-                let displayA9 = $('.ex-body-middle').css('display');
+                let displayA9 = $('.ex-body-middle').css('display'); // check xem có đang bị ẩn đi vì click btn A13 hay không.
                 if(displayA9 == 'none'){
-                    marginleftOfbtnToRight = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight*2 - self.offetLeftGrid;
+                    marginleftOfbtnToRight = $('#extable').width() - self.widthA8 - self.widthBtnToLeftToRight*2 - self.widthScrollRG -  3;
                 }else{
-                    marginleftOfbtnToRight = $('#extable').width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight*2 - self.offetLeftGrid;
+                    marginleftOfbtnToRight = $('#extable').width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight*2 - self.widthScrollRG-  3;
                 }
             } else {
-                marginleftOfbtnToRight = $('#extable').width() - self.offetLeftGrid - 3;
+                marginleftOfbtnToRight = $("#extable").width() + self.offetLeftGrid - self.widthBtnToLeftToRight - self.widthScrollRG -  3;
             }
-            $('.toRight').css('margin-left', marginleftOfbtnToRight <= 101 ? 101 : marginleftOfbtnToRight + 'px');
+            
+            if(self.showA11()){
+                marginleftOfbtnToRight = marginleftOfbtnToRight - self.widthVertSum;
+            }
+            $('.toRight').css('margin-left', marginleftOfbtnToRight + 'px');
         }
         
         setPositionButonDownAndHeightGrid() {
