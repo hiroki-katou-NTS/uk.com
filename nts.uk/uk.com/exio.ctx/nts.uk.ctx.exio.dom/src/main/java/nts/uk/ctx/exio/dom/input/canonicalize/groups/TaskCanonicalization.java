@@ -56,6 +56,7 @@ public class TaskCanonicalization implements GroupCanonicalization {
 			if (importingKeys.contains(uniqueKey)) {
 				throw new RuntimeException("重複データ" + uniqueKey);
 			}
+			importingKeys.add(uniqueKey);
 			
 			canonicalize(require, context, revisedData);
 		}

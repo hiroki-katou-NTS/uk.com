@@ -37,7 +37,8 @@ public interface GroupCanonicalization {
 	
 	public static interface RequireCanonicalize extends
 		CanonicalizationMethod.Require,
-		TaskCanonicalization.RequireCanonicalize {
+		TaskCanonicalization.RequireCanonicalize,
+		DailyPerformanceCanonicalization.RequireCanonicalize {
 		
 		void save(AnyRecordToDelete toDelete);
 		
@@ -46,7 +47,8 @@ public interface GroupCanonicalization {
 	
 	public static interface RequireAdjsut extends
 		TaskCanonicalization.RequireAdjust,
-		EmployeeContinuousHistoryCanonicalization.RequireAdjust {
+		EmployeeContinuousHistoryCanonicalization.RequireAdjust,
+		DailyPerformanceCanonicalization.RequireAdjust {
 		
 	}
 }

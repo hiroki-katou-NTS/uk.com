@@ -2,6 +2,7 @@ package nts.uk.ctx.exio.dom.input.canonicalize.methods.employee;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import lombok.Value;
 import lombok.val;
@@ -70,25 +71,22 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 	 * @param require
 	 * @param context
 	 * @param employeeCode
-	 * @param intermediateResultProvider
 	 * @return
 	 */
-	public void canonicalize(
+	public Stream<IntermediateResult> canonicalize(
 			Require require,
 			ExecutionContext context,
-			String employeeCode,
-			Consumer<IntermediateResult> intermediateResultProvider) {
+			String employeeCode) {
 		
 		val revisedDataRecords = require.getRevisedDataRecordsByEmployeeCode(context, employeeCode);
 		
 		String employeeId = require.getEmployeeIdByEmployeeCode(context.getCompanyId(), employeeCode);
 		
-		revisedDataRecords.stream()
+		return revisedDataRecords.stream()
 				.map(revisedData -> IntermediateResult.create(
 						revisedData.getItems(),
 						DataItem.of(itemNoEmployeeId, employeeId),
-						itemNoEmployeeCode))
-				.forEach(r -> intermediateResultProvider.accept(r));
+						itemNoEmployeeCode));
 	}
 	
 	public static interface Require {
