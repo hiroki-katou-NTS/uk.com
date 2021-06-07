@@ -338,7 +338,7 @@ module nts.uk.ui {
                     closeOnEscape: false,
                     open: function() {
                         container.css({"display": "flex", "flex-direction": "column-reverse", "align-items": "center"});
-                        errorBoard.css({"overflow": "auto", "max-height" : "300px", "margin-bottom": "20px", "padding": "10px"});
+                        errorBoard.css({"overflow": "auto", "max-height" : "300px", "max-width" : "400px", "margin-bottom": "20px", "padding": "10px"});
                         functionArea.css({"left": "0px"});
                         closeButton.text(toBeResource.close).click(function(evt){
                             container.dialog("destroy");  
