@@ -1056,6 +1056,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.$window.modal('/view/ccg/005/e/index.xhtml', vm.goOutParams()).then((x: Boolean) => {
         if (x) {
           vm.registerAttendanceStatus(2, 191);
+          vm.contentSelected(1);
         }
         vm.dataToDisplay();
       });
