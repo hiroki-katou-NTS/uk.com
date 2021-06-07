@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -10,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -26,11 +25,12 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFix
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractItem;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractItemRepository;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -44,6 +44,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.shr.com.i18n.TextResource;
+
 @Stateless
 public class MasterCheckServiceImpl implements MasterCheckService {
 	@Inject
@@ -72,7 +73,8 @@ public class MasterCheckServiceImpl implements MasterCheckService {
 	public void extractMasterCheck(String cid, List<String> lstSid, DatePeriod dPeriod, String errorMasterCheckId,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, List<StatusOfEmployeeAdapterAl> lstStatusEmp,
 			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop) {
+			Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode) {
 		//ドメインモデル「マスタチェックの固定抽出条件」を取得
 		List<MasterCheckFixedExtractCondition> lstMasterCheck = masterCheckRepos.findAll(errorMasterCheckId, true);
 		List<MasterCheckFixedCheckItem> lstItemNo = lstMasterCheck.stream().map(x -> x.getNo()).collect(Collectors.toList());
@@ -82,6 +84,20 @@ public class MasterCheckServiceImpl implements MasterCheckService {
 				List<MasterCheckFixedExtractItem> lstMasterCheckItem = masterCheckItemRepos.getFixedMasterCheckByNo(lstNo);
 		DataCheck dataCheck = new DataCheck(cid, lstSid, lstItemNo, dPeriod);
 		lstMasterCheck.stream().forEach(exCond -> {
+			//「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
+			val extractionCond = alarmExtractConditions.stream()
+					.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck
+							&& x.getAlarmCheckConditionNo().equals(String.valueOf(exCond.getNo().value)))
+					.findAny();
+			if (!extractionCond.isPresent()) {
+				alarmExtractConditions.add(new AlarmExtractionCondition(
+						String.valueOf(exCond.getNo()),
+						new AlarmCheckConditionCode(alarmCheckConditionCode),
+						AlarmCategory.MASTER_CHECK,
+						AlarmListCheckType.FixCheck
+				));
+			}
+
 			lstCheckType.add(new AlarmListCheckInfor(String.valueOf(exCond.getNo().value), AlarmListCheckType.FixCheck));
 			MasterCheckFixedExtractItem extractItem = lstMasterCheckItem.stream().filter(x -> x.getNo() == exCond.getNo())
 					.collect(Collectors.toList()).get(0);
@@ -166,7 +182,7 @@ public class MasterCheckServiceImpl implements MasterCheckService {
 							wpl = lstWpl.get(0).getWorkplaceId();
 						}
 						
-						ExtractionResultDetail resultDetail = new ExtractionResultDetail(sid,
+						ExtractResultDetail resultDetail = new ExtractResultDetail(
 								dPeriodR,
 								condName, 
 								alarmValue, 
@@ -174,21 +190,31 @@ public class MasterCheckServiceImpl implements MasterCheckService {
 								Optional.ofNullable(wpl),
 								exCond.getMessage().isPresent() ? Optional.ofNullable(exCond.getMessage().get().v()) : Optional.empty(),
 								Optional.ofNullable(targetValues));
-						List<ResultOfEachCondition> lstResultTmp = lstResultCondition.stream()
-								.filter(r -> r.getNo().equals(String.valueOf(exCond.getNo().value)) && r.getCheckType() == AlarmListCheckType.FixCheck).collect(Collectors.toList());
-						if(!lstResultTmp.isEmpty()) {
-							ResultOfEachCondition resultTemp = lstResultTmp.get(0);
-							lstResultCondition.remove(resultTemp);
-							resultTemp.getLstResultDetail().add(resultDetail);
-							lstResultCondition.add(resultTemp);
+
+						List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(resultDetail));
+						List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(Arrays.asList(
+								new AlarmExtractInfoResult(
+										String.valueOf(exCond.getNo().value),
+										new AlarmCheckConditionCode(alarmCheckConditionCode),
+										AlarmCategory.MASTER_CHECK,
+										AlarmListCheckType.FixCheck,
+										details
+								)
+						));
+
+						if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
+							for (AlarmEmployeeList i : alarmEmployeeList) {
+								if (i.getEmployeeID().equals(sid)) {
+									List<AlarmExtractInfoResult> tmp = new ArrayList<>();
+									tmp.addAll(i.getAlarmExtractInfoResults());
+									tmp.addAll(alarmExtractInfoResults);
+									i.setAlarmExtractInfoResults(tmp);
+									break;
+								}
+							}
 						} else {
-							ResultOfEachCondition cond = new ResultOfEachCondition(AlarmListCheckType.FixCheck, 
-									String.valueOf(exCond.getNo().value), 
-									new ArrayList<>());
-							cond.getLstResultDetail().add(resultDetail);
-							lstResultCondition.add(cond);
+							alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
 						}
-						
 					}
 				});
 				synchronized (this) {

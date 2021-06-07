@@ -30,7 +30,7 @@ module nts.uk.ui {
         export const settingPersonal = "個人情報の設定";
         export const weekDaysShort = ["日", "月", "火", "水", "木", "金", "土"];
         export const searchByCodeName = "コード・名称で検索・・・";
-        export const search = "絞り込む";
+        export const search = "検索";
         export const filter = "絞り込み";
         export const code = "コード";
         export const codeAndName = "コード／名称";

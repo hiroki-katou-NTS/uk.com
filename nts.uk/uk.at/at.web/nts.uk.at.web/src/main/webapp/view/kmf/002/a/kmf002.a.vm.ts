@@ -260,7 +260,13 @@ module nts.uk.at.view.kmf002.a {
                 let self = this;
                 var dfd = $.Deferred();
                 $.when(service.findAll()).done(function(data: any) {  
-                    if (!_.isUndefined(data) && !_.isNull(data) && !_.isEmpty(data)) {
+                    if (
+                        !_.isUndefined(data) && !_.isNull(data) && !_.isEmpty(data)
+                        && !_.isNil(data.carryOverNumberOfPublicHdIsNegative)
+                        && !_.isNil(data.managePublicHoliday)
+                        && !_.isNil(data.publicHolidayPeriod)
+                        && !_.isNil(data.publicHdCarryOverDeadline)
+                    ) {
                         self.managePublicHoliday(data.managePublicHoliday);
                         
                         self.carryOverNumberOfPublicHdIsNegative(data.carryOverNumberOfPublicHdIsNegative);

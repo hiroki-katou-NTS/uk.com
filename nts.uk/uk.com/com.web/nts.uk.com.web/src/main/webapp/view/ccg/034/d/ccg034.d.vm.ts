@@ -955,7 +955,7 @@ module nts.uk.com.view.ccg034.d {
         case MenuPartType.PART_MENU:
           vm.$window.modal('/view/ccg/034/f/index.xhtml', selectedPartData)
             .then((result: PartDataModel) => {
-              if (result) {
+              if (result && result.clientId) {
                 // Update part data
                 vm.mapPartData[partClientId] = result;
                 // Update part DOM
@@ -969,7 +969,7 @@ module nts.uk.com.view.ccg034.d {
         case MenuPartType.PART_LABEL:
           vm.$window.modal('/view/ccg/034/e/index.xhtml', selectedPartData)
             .then((result: PartDataModel) => {
-              if (result) {
+              if (result && result.clientId) {
                 // Update part data
                 vm.mapPartData[partClientId] = result;
                 // Update part DOM
@@ -983,7 +983,7 @@ module nts.uk.com.view.ccg034.d {
         case MenuPartType.PART_LINK:
           vm.$window.modal('/view/ccg/034/g/index.xhtml', selectedPartData)
             .then((result: PartDataModel) => {
-              if (result) {
+              if (result && result.clientId) {
                 // Update part data
                 vm.mapPartData[partClientId] = result;
                 // Update part DOM
@@ -1047,7 +1047,7 @@ module nts.uk.com.view.ccg034.d {
         case MenuPartType.PART_ARROW:
           vm.$window.modal('/view/ccg/034/j/index.xhtml', selectedPartData)
             .then((result: PartDataModel) => {
-              if (result) {
+              if (result && result.clientId) {
                 // Update part data
                 vm.mapPartData[partClientId] = result;
                 // Update part DOM

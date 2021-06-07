@@ -84,7 +84,7 @@
   width: 104px;
 }
 
-.avatar {
+.avatar-container .avatar {
   display: block;
   max-height: 100px;
   max-width: 100px;

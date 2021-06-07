@@ -48,16 +48,21 @@ module nts.uk.at.view.kdp.share {
         }
 
         .kdp-message-error .company {
-            padding: 3px;
-            height: 62px;
-            max-height: 62px;
+            padding: 5px 3px;
+            height: 47px;
+            max-height: 47px;
+            word-break: break-all;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            box-sizing: border-box;
         }
 
         .kdp-message-error .workPlace {
-            padding: 3px;
+            padding: 5px 3px;
             margin-top: 5px;
-            height: 62px;
-            max-height: 62px;
+            height: 47px;
+            max-height: 47px;
+            position: relative;
         }
 
         .kdp-message-error .workPlace .title {
@@ -67,16 +72,22 @@ module nts.uk.at.view.kdp.share {
             float: left;
         }
 
-        .kdp-message-error .workPlace .text-company {
+        .kdp-message-error .company .text-company {
             box-sizing: border-box;
             margin-right:40px;
-            max-height:62px;
+            max-height:47px;
             text-overflow: ellipsis;
             overflow: hidden;
+            word-break: break-all;
         }
 
         .kdp-message-error .workPlace .title .name-title {
             box-sizing: border-box;
+        }
+
+        .kdp-message-error .workPlace .title .btn-title {
+            position: absolute;
+            top: 25px;
         }
         
         .kdp-message-error .workPlace .content {
@@ -88,9 +99,10 @@ module nts.uk.at.view.kdp.share {
         .kdp-message-error .workPlace .text-content {
             box-sizing: border-box;
             margin-right:40px;
-            max-height:62px;
+            max-height:47px;
             text-overflow: ellipsis;
             overflow: hidden;
+            word-break: break-all;
         }
 
         .kdp-message-error .workPlace .btn-content {
@@ -267,8 +279,7 @@ module nts.uk.at.view.kdp.share {
 
             if (type == DestinationClassification.ALL) {
                 if (setting) {
-
-                    vm.title(setting.companyTitle + ':');
+                    vm.title(setting.companyTitle + ' ');
                     vm.textColor(setting.comMsgColor.textColor);
                     vm.backGroudColor(setting.comMsgColor.backGroundColor);
                 }
@@ -277,7 +288,7 @@ module nts.uk.at.view.kdp.share {
             if (type == DestinationClassification.WORKPLACE) {
                 if (setting) {
 
-                    vm.title(setting.wkpTitle + ':');
+                    vm.title(setting.wkpTitle + ' ');
                     vm.textColor(setting.wkpMsgColor.textColor);
                     vm.backGroudColor(setting.wkpMsgColor.backGroundColor);
                 }

@@ -27,9 +27,6 @@ thead, tbody {
 	width: 100%;
 	display: block;
 }
-thead {
-	height: 100px;
-}
 thead label {
 	font-weight: bold;
 }
@@ -43,7 +40,7 @@ td.border-custom {
 	border-top: none;
  }
 .caret-bottom.outline {
-    margin-left: 120px;
+    margin-left: 95px;
     font-size: 30px;
 }
 .nts-switch-button {

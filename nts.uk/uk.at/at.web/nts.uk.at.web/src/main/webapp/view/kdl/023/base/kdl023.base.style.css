@@ -4,6 +4,7 @@
 
 #calendar-reflect-pattern {
 	width: 990px;
+  height: 635px;
 }
 
 #reflect-setting {
@@ -95,9 +96,6 @@
 .reflection-btn-text{
 	white-space: pre-wrap;
 }
-#btnDecide{
-	margin-top: 10px;
-}
 
 .pull-left .control-group {
 	margin-bottom: 3px;
@@ -119,15 +117,17 @@
 }
 
 #contents-area.kdl023-content-area.exec-mode {
-	height: 696px !important;
+	height: calc(100vh - 45px) !important;
 }
 
 #contents-area.kdl023-content-area.ref-mode {
-	height: 665px !important;
+	height: calc(100vh - 45px) !important;
 }
 
 #functions-area-bottom {
 	position: fixed !important;
+  bottom: 0px;
+  z-index: 10001;
 }
 
 #kdl023-holiday-warning-label-replace {

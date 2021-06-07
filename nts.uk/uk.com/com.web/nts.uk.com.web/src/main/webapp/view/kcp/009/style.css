@@ -74,3 +74,7 @@ td.employment-tdpad {
 .search-input {
 	width: 100px;
 }
+
+.kcp009-display-content {
+  display: table-cell;
+}
