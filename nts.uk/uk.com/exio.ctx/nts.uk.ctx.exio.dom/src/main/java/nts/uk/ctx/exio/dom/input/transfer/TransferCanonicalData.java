@@ -15,7 +15,8 @@ import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataMeta;
 public class TransferCanonicalData {
 	public static void transfer(Require require, ExecutionContext context) {
 		CanonicalizedDataMeta meta = require.getMetaData();
-		List<ConversionTable> conversionTables = require.getConversionTable(context.getGroupId());
+		ConversionCodeType cct = context.getMode().getType();
+		List<ConversionTable> conversionTables = require.getConversionTable(context.getGroupId(), cct);
 		
 		for(ConversionTable conversionTable : conversionTables) {
 			// 受入項目の列名リストを元に移送する列をフィルタ
@@ -39,7 +40,7 @@ public class TransferCanonicalData {
 	
 	public interface Require{
 		CanonicalizedDataMeta getMetaData();
-		List<ConversionTable> getConversionTable(int groupId);
+		List<ConversionTable> getConversionTable(int groupId, ConversionCodeType cct);
 		int execute(ConversionSQL conversionSql);
 	}
 	

@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.entity.tabledesign;
+package nts.uk.cnv.core.infra.entity.tabledesign;
 
 import java.io.Serializable;
 
@@ -17,7 +17,7 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 //import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 //import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
 //import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
-import nts.uk.cnv.dom.tabledesign.ColumnDesign;
+import nts.uk.cnv.core.dom.tabledesign.ColumnDesign;
 
 @Getter
 @Entity

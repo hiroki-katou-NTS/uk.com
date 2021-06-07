@@ -3,10 +3,9 @@ package nts.uk.ctx.exio.infra.repository.input.transfer;
 import javax.ejb.Stateless;
 
 import lombok.SneakyThrows;
-import nemunoki.oruta.shr.tabledefinetype.databasetype.PostgresSpec;
-import nemunoki.oruta.shr.tabledefinetype.databasetype.SqlServerSpec;
+import lombok.val;
+import nemunoki.oruta.shr.tabledefinetype.databasetype.DatabaseType;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.database.DatabaseProduct;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.ctx.exio.dom.input.transfer.TransferCanonicalDataRepository;
 
@@ -21,13 +20,8 @@ public class TransferCanonicalDataRepositoryImpl extends JpaRepository implement
 	}
 	
 	private String buildSql(ConversionSQL conversionSql) {
-		if(this.database().is(DatabaseProduct.MSSQLSERVER)) {
-			return conversionSql.build(new SqlServerSpec());
-		}
-		else if (this.database().is(DatabaseProduct.POSTGRESQL)) {
-			return conversionSql.build(new PostgresSpec());
-		}
-		throw new RuntimeException("Current database products are not yet supported!");
+		val spec = DatabaseType.parse(this.database()).spec();
+		return conversionSql.build(spec);
 	}
 
 	@SneakyThrows

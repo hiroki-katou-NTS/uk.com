@@ -9,9 +9,9 @@ import javax.inject.Inject;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionSources;
 import nts.uk.cnv.dom.conversiontable.ConversionSourcesRepository;
 import nts.uk.cnv.dom.tabledesign.ErpTableDesignRepository;
-import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionSources;
 
 @Stateless
 public class JpaConversionSourcesRepository extends JpaRepository implements ConversionSourcesRepository {

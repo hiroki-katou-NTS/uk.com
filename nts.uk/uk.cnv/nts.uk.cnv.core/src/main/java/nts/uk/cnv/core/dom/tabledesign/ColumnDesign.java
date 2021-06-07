@@ -1,4 +1,4 @@
-package nts.uk.cnv.dom.tabledesign;
+package nts.uk.cnv.core.dom.tabledesign;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

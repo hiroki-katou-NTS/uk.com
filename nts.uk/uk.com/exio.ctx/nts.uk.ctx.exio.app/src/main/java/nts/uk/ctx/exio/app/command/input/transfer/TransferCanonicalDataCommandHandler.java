@@ -9,7 +9,9 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
+import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
+import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataMeta;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataMetaRepository;
 import nts.uk.ctx.exio.dom.input.transfer.ConversionTableRepository;
@@ -28,9 +30,15 @@ public class TransferCanonicalDataCommandHandler extends CommandHandler<Transfer
 	TransferCanonicalDataRepository repository;
 
 	@Override
-	protected void handle(CommandHandlerContext<TransferCanonicalDataCommand> context) {
+	protected void handle(CommandHandlerContext<TransferCanonicalDataCommand> command) {
 		val require = new RequireImpl();
-		TransferCanonicalData.transfer(require);
+		ExecutionContext context = new ExecutionContext(
+				command.getCommand().getCompanyId(),
+				command.getCommand().getSettingCode(),
+				command.getCommand().getGroupId(),
+				command.getCommand().getMode()
+				);
+		TransferCanonicalData.transfer(require, context);
 	}
 
 	private class RequireImpl implements TransferCanonicalData.Require{
@@ -42,9 +50,9 @@ public class TransferCanonicalDataCommandHandler extends CommandHandler<Transfer
 		}
 
 		@Override
-		public List<ConversionTable> getConversionTable(int groupId) {
+		public List<ConversionTable> getConversionTable(int groupId, ConversionCodeType cct) {
 			val source = cnvRepo.getSource(groupId);
-			return cnvRepo.get(groupId, source);
+			return cnvRepo.get(groupId, source, cct);
 		}
 
 		@Override

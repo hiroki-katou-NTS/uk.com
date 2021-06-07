@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.entity.tabledesign;
+package nts.uk.cnv.core.infra.entity.tabledesign;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.entity.tabledesign;
+package nts.uk.cnv.core.infra.entity.tabledesign;
 
 import java.io.Serializable;
 import java.util.List;
@@ -18,8 +18,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.uk.cnv.dom.tabledesign.ColumnDesign;
-import nts.uk.cnv.dom.tabledesign.ErpTableDesign;
+import nts.uk.cnv.core.dom.tabledesign.ColumnDesign;
+import nts.uk.cnv.core.dom.tabledesign.ErpTableDesign;
 
 @Getter
 @Entity
