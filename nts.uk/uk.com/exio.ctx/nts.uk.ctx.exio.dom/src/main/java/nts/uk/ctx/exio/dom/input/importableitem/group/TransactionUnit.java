@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.execute;
+package nts.uk.ctx.exio.dom.input.importableitem.group;
 
 /**
  * トランザクション単位

@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.execute;
+package nts.uk.ctx.exio.dom.input;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AdjustExistingData;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 
@@ -72,7 +72,7 @@ public class ExecuteImporting {
 		
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
 		
-		GroupTransactionStrategy getGroupTransactionStrategy(int groupId);
+		ImportingGroup getGroupTransactionStrategy(int groupId);
 		
 		List<String> getAllEmployeeIdsOfCanonicalizedData(ExecutionContext context);
 	}
