@@ -42,16 +42,12 @@
 				<!-- Q3メッセージ -->
 				<div id="txt-area-notice">
 					<textarea id="area-notice" style="height: 126px" rows="6" tabindex="2"
-						data-bind="ntsMultilineEditor: {
+						data-bind="ntsTextEditor: {
 								value: messageText,
 								constraint:'NotificationMessage',
 								name: $i18n('KDP003_61'),
-	                            required: true,
-								option: {
-				                   resizeable: false,
-	                               width: '391px',
-	                               textalign: 'left'}
-				                }"></textarea>
+	                            required: true}
+								"></textarea>
 				</div>
 				<!-- Q2_3 更新日 -->
 				<div id="update-date">

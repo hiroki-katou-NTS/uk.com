@@ -8,15 +8,17 @@
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
         <com:scriptfile path="./kaf020.a.vm.js"/>
+
     </ui:define>
     <ui:define name="content">
-        <div id="functions-area">
+        <div id="functions-area" style="display: none">
+
+        </div>
+        <div id="contents-area">
             <div style="width: fit-content; display: inline-block; position: absolute;" data-bind="visible: isAgentMode">
                 <!--A4_1-->
                 <a class="goback link-button" data-bind="click: goBack,  text: $vm.$i18n('KAF020_15')"/>
             </div>
-        </div>
-        <div id="contents-area">
             <div style="height: 400px; margin-left: 90px;">
                 <div class="control-group valign-center">
                     <!--A1_1-->

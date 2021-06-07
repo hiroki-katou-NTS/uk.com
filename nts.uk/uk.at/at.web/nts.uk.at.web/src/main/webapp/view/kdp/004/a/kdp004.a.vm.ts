@@ -72,9 +72,6 @@ module nts.uk.at.view.kdp004.a {
 			constructor() {
 				let self = this;
 
-				setInterval(() => {
-					self.loadNotice();
-				}, 5000);
 			}
 
 			public startPage(): JQueryPromise<void> {
@@ -148,6 +145,14 @@ module nts.uk.at.view.kdp004.a {
 				return item ? getMessage(item.text, [getText('KDP002_3')]) : '';
 			}
 
+			alwaysLoadMessage(param: number) {
+				if (param > 0) {
+					setInterval(() => {
+						this.loadNotice();
+					}, param * 60000);
+				}
+			}
+
 			doFirstLoad(): JQueryPromise<any> {
 				let dfd = $.Deferred<any>(), self = this;
 				let loginInfo = self.loginInfo;
@@ -160,12 +165,15 @@ module nts.uk.at.view.kdp004.a {
 							block.grayout();
 							service.startPage()
 								.done((res: any) => {
+									
 									if (!res.stampSetting || !res.stampResultDisplay || !res.stampSetting.pageLayouts.length) {
 										self.errorMessage(self.getErrorNotUsed(1));
 										self.isUsed(false);
 										dfd.resolve();
 										return;
 									}
+
+									self.alwaysLoadMessage(res.stampSetting.correctionInterval);
 									self.stampSetting(res.stampSetting);
 									self.stampTab().bindData(res.stampSetting.pageLayouts);
 									self.stampResultDisplay(res.stampResultDisplay);
@@ -560,7 +568,7 @@ module nts.uk.at.view.kdp004.a {
 						let btnType = checkType(button.changeClockArt, button.changeCalArt, button.setPreClockArt, button.changeHalfDay, button.btnReservationArt);
 
 						if (dataStorage.selectedWP.length > 1 && self.supportUse() === true && _.includes([14, 15, 16, 17, 18], btnType)) {
-							vm.$window.modal('at', DIALOG.M, { screen: 'KDP004' })
+							vm.$window.modal('at', DIALOG.M, { screen: 'KDP004', employeeId: employeeId })
 								.then((result: string) => {
 
 									if (result) {
@@ -736,7 +744,7 @@ module nts.uk.at.view.kdp004.a {
 				const self = this;
 				let dfd = $.Deferred<any>();
 				let startDate = vm.$date.now();
-				startDate.setDate(startDate.getDate() - 3);
+				//startDate.setDate(startDate.getDate() - 3);
 				var wkpIds: string[];
 
 				if (loginInfo) {
