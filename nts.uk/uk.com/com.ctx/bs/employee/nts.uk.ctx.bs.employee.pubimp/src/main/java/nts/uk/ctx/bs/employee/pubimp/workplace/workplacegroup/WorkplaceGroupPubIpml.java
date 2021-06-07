@@ -1,9 +1,6 @@
 package nts.uk.ctx.bs.employee.pubimp.workplace.workplacegroup;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -116,10 +113,11 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 	
 	@Override
 	public List<String> getAllReferableEmployees(GeneralDate date, String employeeId) {
-
-		// TODO implement please
-		return new ArrayList<>();
-
+		//	return DS_職場グループ単位で参照可能な社員を取得する#すべて取得する( require, 基準日, 社員ID ): flatMap $.value
+		RequireWorkgroupService require = new RequireWorkgroupService(repoWorkplaceGroup, repoAffWorkplaceGroup,
+				pub, adapter, pub, syRoleAdapter);
+		return GetEmpCanReferByWorkplaceGroupService.getAll(require, date, employeeId)
+				.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
 	}
 
 	@AllArgsConstructor

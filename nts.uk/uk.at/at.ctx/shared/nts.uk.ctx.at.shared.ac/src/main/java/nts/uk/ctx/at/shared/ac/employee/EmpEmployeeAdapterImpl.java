@@ -34,6 +34,7 @@ import nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub;
 import nts.uk.ctx.bs.employee.pub.company.AffCompanyHistExport;
 import nts.uk.ctx.bs.employee.pub.company.SyCompanyPub;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeeDataMngInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.ResultRequest600Export;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.export.PersonEmpBasicInfoPub;
@@ -212,9 +213,10 @@ public class EmpEmployeeAdapterImpl implements EmpEmployeeAdapter {
 				.collect(Collectors.toList());
 	}
 
+	//社員コードから社員IDを取得する
 	@Override
 	public Map<String, String> getEmployeeIDListByCode(String companyId, List<String> employeeCodes) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+		return employeePub.findSdataMngInfoByEmployeeCodes(companyId, employeeCodes)
+				.stream().collect(Collectors.toMap(EmployeeDataMngInfoExport::getEmployeeCode, EmployeeDataMngInfoExport::getEmployeeId));
 	}
 }

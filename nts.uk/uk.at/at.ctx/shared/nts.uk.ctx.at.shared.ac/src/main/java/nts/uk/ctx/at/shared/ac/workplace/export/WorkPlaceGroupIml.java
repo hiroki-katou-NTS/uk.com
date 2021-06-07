@@ -74,9 +74,9 @@ public class WorkPlaceGroupIml implements WorkplaceGroupAdapter{
 
 	@Override
 	public List<String> getAllReferableEmp(GeneralDate date, String employeeId) {
-		
-		// TODO implement please
-		return new ArrayList<>();
+		//return 職場グループPublish.参照可能な社員をすべて取得する( 基準日, 社員ID )
+		List<String> result = workplaceGroupPublish.getAllReferableEmployees(date, employeeId);
+		return result;
 	}
 
 	
