@@ -73,6 +73,7 @@ public class PreUpdateErrorCheck {
 		 this.errorCheckBeforeRegistrationKAF011.checkForInsufficientNumberOfHolidays(companyId, rec.isPresent()?rec.get().getEmployeeID():abs.get().getEmployeeID(), abs, rec);
 	 
 		 if(rec.isPresent()) {
+
 			 //アルゴリズム「登録前共通処理（更新）」を実行する
 			 this.detailBeforeUpdate.processBeforeDetailScreenRegistration(companyId, 
 					 rec.get().getEmployeeID(), 
@@ -81,8 +82,8 @@ public class PreUpdateErrorCheck {
 					 rec.get().getAppID(), 
 					 rec.get().getPrePostAtr(), 
 					 displayInforWhenStarting.appDispInfoStartup.getAppDetailScreenInfo().getApplication().getVersion(), 
-					 rec.get().getWorkInformation().getWorkTypeCode().v(), 
-					 rec.get().getWorkInformation().getWorkTimeCode().v(), 
+					 null,
+					 null,
 					 displayInforWhenStarting.appDispInfoStartup.toDomain());
 		 }
 		 if(abs.isPresent()) {
@@ -94,8 +95,8 @@ public class PreUpdateErrorCheck {
 					 abs.get().getAppID(), 
 					 abs.get().getPrePostAtr(), 
 					 displayInforWhenStarting.appDispInfoStartup.getAppDetailScreenInfo().getApplication().getVersion(), 
-					 abs.get().getWorkInformation().getWorkTypeCode().v(), 
-					 abs.get().getWorkInformation().getWorkTimeCode() == null ? null : abs.get().getWorkInformation().getWorkTimeCode().v(), 
+					 null,
+					 null,
 					 displayInforWhenStarting.appDispInfoStartup.toDomain());
 		 }
 		

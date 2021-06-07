@@ -20,46 +20,46 @@ module nts.uk.com.view.ccg026.component {
             }"></div>
         <!-- /ko -->
         <style type="text/css">
-            #permision_grid td,
-            #permision_grid_headers th {
+            [id^="permision_grid"] td,
+            [id^="permision_grid"][id$="_headers"] th {
                 border-top: 0;
                 border-right: 0;
-                line-height: 25px;
+                line-height: 24px;
             }
 
-            #permision_grid td:first-child,
-            #permision_grid_headers th:first-child {
+            [id^="permision_grid"] td:first-child,
+            [id^="permision_grid"][id$="_headers"] th:first-child {
                 border-left: 0;
             }
+            
+            [id^="permision_grid"] tr:last-child td {
+                border-bottom: 0;
+            }
     
-            #permision_grid td .ntsCheckBox {
+            [id^="permision_grid"] td .ntsCheckBox {
                 display: block;
                 text-align: center;
             }
 
-            #permision_grid tr:last-child td {
-                border-bottom: 0;
-            }
-
-            #container_permision_grid {
+            [id^="container_permision_grid"] {
                 border: 1px solid #ccc;
             }
 
-            #permision_grid .ntsCheckBox-label {
+            [id^="permision_grid"] .ntsCheckBox-label {
                 outline: none;
                 display: inline;
             }
 
-            #permision_grid .ntsCheckBox-label:focus span.box {
+            [id^="permision_grid"] .ntsCheckBox-label:focus span.box {
                 border-color: #0096f2;
                 box-shadow: 0 0 1px 1px #0096f2;
             }
 
-            #permision_grid td[role="gridcell"] {
+            [id^="permision_grid"] td[role="gridcell"] {
                 white-space: nowrap;
             }
 
-            #container_permision_grid .ui-tooltip {
+            [id^="container_permision_grid"] .ui-tooltip {
                 border: none;
                 background: none;
                 box-shadow: none;
@@ -67,7 +67,7 @@ module nts.uk.com.view.ccg026.component {
                 max-width: 800px !important;
             }
 
-            #container_permision_grid .ui-tooltip .ui-tooltip-content {
+            [id^="container_permision_grid"] .ui-tooltip .ui-tooltip-content {
                 white-space: nowrap;
                 background: #ffc;
                 border: solid 1px #b85;
@@ -83,10 +83,18 @@ module nts.uk.com.view.ccg026.component {
     `,
         viewModel: {
             createViewModel: (params: IParam, componentInfo: IComponentInfo) => {
-                let $element = $(componentInfo.element),
-                    $grid = $element.find('#permision_grid'),
-                    $container = $element.find('#container_permision_grid'),
-                    requestDone = (data: Array<IPermision>, rechange: CHANGED = CHANGED.LOAD_AND_CHANGE) => {
+                let defaultGridId = 'permision_grid',
+                    defaultContainerId = 'container_permision_grid',
+                    compId = componentInfo.element.id,
+                    finalGridId = _.isEmpty(compId) ? defaultGridId : defaultGridId + '_' + compId,
+                    $element = $(componentInfo.element),
+                    $grid = $element.find('#' + defaultGridId),
+                    $container = $element.find('#' + defaultContainerId);
+                if (!_.isEmpty(compId)) {
+                    $grid.attr('id', finalGridId);
+                    $container.attr('id', defaultContainerId + '_' + compId);
+                }
+                let requestDone = (data: Array<IPermision>, rechange: CHANGED = CHANGED.LOAD_AND_CHANGE) => {
                         //Get
                         let scrollTop = $(`#${$grid.attr('id')}_scroll`).scrollTop();
 
@@ -97,7 +105,7 @@ module nts.uk.com.view.ccg026.component {
                             params.changeData(data);
                         } else if (rechange == CHANGED.LOAD) {
                             // change grid dataSource
-                            $grid = $element.find('#permision_grid');
+                            $grid = $element.find('#' + finalGridId);
                             $grid.igGrid("option", "dataSource", ko.toJS(data));
 
                             setTimeout(() => {
@@ -106,7 +114,7 @@ module nts.uk.com.view.ccg026.component {
                         } else {
                             params.changeData(data);
                             // change grid dataSource
-                            $grid = $element.find('#permision_grid');
+                            $grid = $element.find('#' + finalGridId);
                             $grid.igGrid("option", "dataSource", ko.toJS(data));
                         }
                     };
@@ -176,7 +184,7 @@ module nts.uk.com.view.ccg026.component {
                 $grid
                     .igGrid({
                         width: "100%",
-                        height: `${(ko.toJS(params.maxRow) || 10) * 36 + 2}px`,
+                        height: `${(ko.toJS(params.maxRow) || 10) * 32 + 27}px`,
                         primaryKey: "functionNo",
                         enableHoverStyles: false,
                         features: [
@@ -215,7 +223,7 @@ module nts.uk.com.view.ccg026.component {
                             // check and bind change event to checkbox
                             $container.find('input[type="checkbox"]')
                                 .each((i, input: HTMLInputElement) => {
-                                    $grid = $element.find('#permision_grid');
+                                    $grid = $element.find('#' + finalGridId);
 
                                     let data = $grid.igGrid("option", "dataSource"),
                                         row = _.find(data, r => _.isEqual(Number(r['functionNo']), Number(input.value)));
@@ -241,12 +249,12 @@ module nts.uk.com.view.ccg026.component {
 
                 if (ko.isObservable(params.changeData)) {
                     (params.changeData as KnockoutObservableArray<any>).subscribe(data => {// change grid dataSource
-                        $grid = $element.find('#permision_grid');
+                        $grid = $element.find('#' + finalGridId);
                         if (!_.isEqual($grid.igGrid("option", "dataSource"), data)) {
                             requestDone(data, CHANGED.LOAD);
                         }
                         // set weight of grid
-                        $grid.igGrid("option", "height", `${_.min([ko.toJS(params.maxRow) || 0, _.size(data)]) * 32 + 25}px`);
+                        $grid.igGrid("option", "height", `${_.min([ko.toJS(params.maxRow) || 0, _.size(data)]) * 32 + 27}px`);
                     });
                 }
 
