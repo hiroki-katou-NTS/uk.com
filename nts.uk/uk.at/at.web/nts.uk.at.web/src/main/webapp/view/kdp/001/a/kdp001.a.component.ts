@@ -120,7 +120,13 @@ module nts.uk.ui.kdp001.a {
                                 data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
                         <!-- /ko -->
                         <!-- ko if: btn.buttonName.length > 8 -->
-                            <div class="btn-start-2"
+                            <!-- ko if: btn.buttonName.length <= 15 -->
+                                <div class="btn-start-2"
+                                    data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
+                            <!-- /ko -->
+                        <!-- /ko -->
+                        <!-- ko if: btn.buttonName.length > 15 -->
+                            <div class="btn-start-5"
                                 data-bind="attr: { style: btn.style }, text: btn.buttonName"></div>
                         <!-- /ko -->
                     <!-- /ko -->
@@ -256,6 +262,7 @@ module nts.uk.ui.kdp001.a {
                     white-space: break-spaces;
                     word-break: break-all;
                     height: 40px;
+                    top: 20px;
                 }
                 .kdp-001-a.kdp-001-a-btn .btn-start-3 {
                     font-size: 20px;
@@ -271,6 +278,14 @@ module nts.uk.ui.kdp001.a {
                     word-break: break-all;
                     height: 37px;
                     top: 2px;
+                }
+                .kdp-001-a.kdp-001-a-btn .btn-start-5 {
+                    font-size: 15px;
+                    position: relative;
+                    white-space: break-spaces;
+                    word-break: break-all;
+                    height: 37px;
+                    top: 20px;
                 }
                 .kdp-001-a.kdp-001-a-btn1 .btn-end {
                     font-size: 20px;
@@ -709,28 +724,43 @@ module nts.uk.ui.kdp001.a {
                     stampMeans: STAMP_MEANS_PORTAL
                 }))
                 .then((response: any) => {
+                    var timeNow = vm.$date.today().getDate().toString() + vm.$date.today().getMonth().toString() + vm.$date.today().getFullYear().toString();
 
                     if (response) {
                         const { dailyAttdErrorInfos } = response;
 
                         if (dailyAttdErrorInfos && dailyAttdErrorInfos.length) {
-                            vm.$window
-                                .shared('KDP010_2T', response)
-                                .then(() => vm.$window.modal('at','/view/kdp/002/t/index.xhtml'))
-                                .then(() => vm.$window.shared('KDP010_T'))
-                                .then(({ isClose, errorDate, btn }) => {
-                                    if (!isClose && errorDate) {
-                                        const { transfer, screen } = btn;
+                            var showViewT = 0;
+                            _.forEach(response.dailyAttdErrorInfos, ((value) => {
+                                var date: Date = new Date(value.lastDateError);
+                                var timeResult = date.getDate().toString() + date.getMonth().toString() + date.getFullYear().toString();
+                                if (timeResult > timeNow) {
+                                    showViewT++;
+                                }
+                            }));
 
-                                        vm.$jump(screen, transfer);
-                                    } else {
-                                        vm.stampData();
-                                    }
-                                });
+                            if (showViewT == 0) {
+                                vm.$window
+                                    .shared('KDP010_2T', response)
+                                    .then(() => vm.$window.modal('at', '/view/kdp/002/t/index.xhtml'))
+                                    .then(() => vm.$window.shared('KDP010_T'))
+                                    .then(({ isClose, errorDate, btn }) => {
+                                        if (!isClose && errorDate) {
+                                            const { transfer, screen } = btn;
+
+                                            vm.$jump(screen, transfer);
+                                        } else {
+                                            vm.stampData();
+                                        }
+                                    });
+                            }
                         } else {
                             vm.stampData();
                         }
                     }
+                })
+                .then(() => {
+                    vm.loadData();
                 })
                 .fail(vm.$dialog.alert)
                 .always(() => vm.$blockui("clearView"));

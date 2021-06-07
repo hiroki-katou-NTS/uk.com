@@ -204,7 +204,7 @@ module nts.uk.at.kdp003.a {
 		loadNotice(storage?: StorageData) {
 			const vm = this;
 			let startDate = vm.$date.now();
-			startDate.setDate(startDate.getDate() - 3);
+			//startDate.setDate(startDate.getDate() - 3);
 			var wkpIds: string[];
 
 			if (storage) {
@@ -544,7 +544,7 @@ module nts.uk.at.kdp003.a {
 							.then((data: FingerStampSetting) => {
 								if (data) {
 									vm.fingerStampSetting(data);
-									var time = data.stampSetting.resultDisplayTime * 60 * 1000;
+									var time = data.stampSetting.correctionInterval * 60000;
 
 									setInterval(() => {
 										vm.loadNotice();

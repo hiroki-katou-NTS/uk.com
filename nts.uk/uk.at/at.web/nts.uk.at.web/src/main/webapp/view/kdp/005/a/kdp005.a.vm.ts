@@ -156,7 +156,7 @@ module nts.uk.at.view.kdp005.a {
 				if (param > 0) {
 					setInterval(() => {
 						this.loadNotice();
-					}, param * 60 * 1000);
+					}, param * 60000);
 				}
 			}
 
@@ -186,7 +186,7 @@ module nts.uk.at.view.kdp005.a {
 								return;
 							}
 
-							self.alwaysLoadMessage(res.stampSetting.resultDisplayTime);
+							self.alwaysLoadMessage(res.stampSetting.correctionInterval);
 							self.stampSetting(res.stampSetting);
 							self.stampTab().bindData(res.stampSetting.pageLayouts);
 							self.stampResultDisplay(res.stampResultDisplay);
@@ -750,7 +750,7 @@ module nts.uk.at.view.kdp005.a {
 				const self = this;
 				let dfd = $.Deferred<any>();
 				let startDate = vm.$date.now();
-				startDate.setDate(startDate.getDate() - 3);
+				// startDate.setDate(startDate.getDate() - 3);
 				var wkpIds: string[];
 
 				if (loginInfo) {
