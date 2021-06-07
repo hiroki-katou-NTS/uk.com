@@ -14,7 +14,8 @@ import {
     LateEarlyTimeZone,
     OutingTimeZone,
     LeaveType,
-    AppTimeType
+    AppTimeType,
+    GoingOutReason
 } from '../shr';
 
 @component({
@@ -200,7 +201,8 @@ export class KafS12AComponent extends KafS00ShrComponent {
             appDate: new Date(date).toISOString(),
             appDisplayInfo: {
                 appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
-                timeLeaveManagement: vm.timeLeaveManagement
+                timeLeaveManagement: vm.timeLeaveManagement,
+                reflectSetting: vm.reflectSetting
             }
         };
 
@@ -232,7 +234,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
             ],
             outingTimeZones: outingTimeZones.map((i: OutingTimeZone) => ({
                     frameNo: i.workNo,
-                    outingAtr: i.appTimeType,
+                    outingAtr: i.appTimeType == GoingOutReason.PRIVATE ? AppTimeType.PRIVATE : AppTimeType.UNION,
                     startTime: i.timeZone.start,
                     endTime: i.timeZone.end
                 }))
@@ -353,6 +355,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
         if (vm.newMode) {
             vm.$http.post('at', API.register, data).then((res: any) => {
                 if (res) {
+                    vm.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
                     vm.appID = res.data.appIDLst[0];
                     vm.step = 'KAFS12_3';
                 }
@@ -406,9 +409,9 @@ export class KafS12AComponent extends KafS00ShrComponent {
             vm.details.push({
                 appTimeType: i.appTimeType,
                 timeZones: [{
-                    workNo: i.workNo,
-                    startTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? this.getScheduledTime(i.appTimeType) : i.timeValue,
-                    endTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? i.timeValue : this.getScheduledTime(i.appTimeType),
+                    workNo: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.OFFWORK ? 1 : 2,
+                    startTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? vm.getScheduledTime(i.appTimeType) : i.timeValue,
+                    endTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? i.timeValue : vm.getScheduledTime(i.appTimeType),
                 }],
                 applyTime: {
                     substituteAppTime: 0,
@@ -421,7 +424,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
                 }
             });
         });
-        const privateOutings = outingTimeZones.filter((i: OutingTimeZone) => i.appTimeType == AppTimeType.PRIVATE);
+        const privateOutings = outingTimeZones.filter((i: OutingTimeZone) => i.appTimeType == GoingOutReason.PRIVATE);
         if (privateOutings.length > 0) {
             vm.details.push({
                 appTimeType: AppTimeType.PRIVATE,
@@ -441,7 +444,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
                 }
             });
         }
-        const unionOutings = outingTimeZones.filter((i: OutingTimeZone) => i.appTimeType == AppTimeType.UNION);
+        const unionOutings = outingTimeZones.filter((i: OutingTimeZone) => i.appTimeType == GoingOutReason.UNION);
         if (unionOutings.length > 0) {
             vm.details.push({
                 appTimeType: AppTimeType.UNION,
@@ -493,4 +496,5 @@ const API = {
     checkBeforeRegister: 'at/request/application/timeLeave/checkBeforeRegister',
     register: 'at/request/application/timeLeave/register',
     update: 'at/request/application/timeLeave/update',
+    reflectApp: 'at/request/application/reflect-app'
 };

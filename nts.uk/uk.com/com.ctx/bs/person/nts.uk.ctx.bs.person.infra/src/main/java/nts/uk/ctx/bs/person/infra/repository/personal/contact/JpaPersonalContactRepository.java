@@ -45,29 +45,19 @@ public class JpaPersonalContactRepository extends JpaRepository implements Perso
         if (oldEntity.isPresent()) {
             BpsmtContactAddrPs updateEntity = oldEntity.get();
             updateEntity.setMailAddress(entity.getMailAddress());
-            updateEntity.setIsMailAddressDisplay(entity.getIsMailAddressDisplay());
             updateEntity.setMobileEmailAddress(entity.getMobileEmailAddress());
-            updateEntity.setIsMobileEmailAddressDisplay(entity.getIsMobileEmailAddressDisplay());
             updateEntity.setPhoneNumber(entity.getPhoneNumber());
-            updateEntity.setIsPhoneNumberDisplay(entity.getIsPhoneNumberDisplay());
             updateEntity.setRemark1(entity.getRemark1());
             updateEntity.setContactName1(entity.getContactName1());
             updateEntity.setPhoneNumber1(entity.getPhoneNumber1());
-            updateEntity.setIsEmergencyContact1Display(entity.getIsEmergencyContact1Display());
             updateEntity.setRemark2(entity.getRemark2());
             updateEntity.setContactName2(entity.getContactName2());
             updateEntity.setPhoneNumber2(entity.getPhoneNumber2());
-            updateEntity.setIsEmergencyContact2Display(entity.getIsEmergencyContact2Display());
             updateEntity.setAddress1(entity.getAddress1());
             updateEntity.setAddress2(entity.getAddress2());
             updateEntity.setAddress3(entity.getAddress3());
             updateEntity.setAddress4(entity.getAddress4());
             updateEntity.setAddress5(entity.getAddress5());
-            updateEntity.setIsDisplay1(entity.getIsDisplay1());
-            updateEntity.setIsDisplay2(entity.getIsDisplay2());
-            updateEntity.setIsDisplay3(entity.getIsDisplay3());
-            updateEntity.setIsDisplay4(entity.getIsDisplay4());
-            updateEntity.setIsDisplay5(entity.getIsDisplay5());
             this.commandProxy().update(updateEntity);
         }
     }
@@ -125,29 +115,19 @@ public class JpaPersonalContactRepository extends JpaRepository implements Perso
 	        if (oldEntity.isPresent()) {
 	            BpsmtContactAddrPs updateEntity = oldEntity.get();
 	            updateEntity.setMailAddress(entity.getMailAddress());
-	            updateEntity.setIsMailAddressDisplay(entity.getIsMailAddressDisplay());
 	            updateEntity.setMobileEmailAddress(entity.getMobileEmailAddress());
-	            updateEntity.setIsMobileEmailAddressDisplay(entity.getIsMobileEmailAddressDisplay());
 	            updateEntity.setPhoneNumber(entity.getPhoneNumber());
-	            updateEntity.setIsPhoneNumberDisplay(entity.getIsPhoneNumberDisplay());
 	            updateEntity.setRemark1(entity.getRemark1());
 	            updateEntity.setContactName1(entity.getContactName1());
 	            updateEntity.setPhoneNumber1(entity.getPhoneNumber1());
-	            updateEntity.setIsEmergencyContact1Display(entity.getIsEmergencyContact1Display());
 	            updateEntity.setRemark2(entity.getRemark2());
 	            updateEntity.setContactName2(entity.getContactName2());
 	            updateEntity.setPhoneNumber2(entity.getPhoneNumber2());
-	            updateEntity.setIsEmergencyContact2Display(entity.getIsEmergencyContact2Display());
 	            updateEntity.setAddress1(entity.getAddress1());
 	            updateEntity.setAddress2(entity.getAddress2());
 	            updateEntity.setAddress3(entity.getAddress3());
 	            updateEntity.setAddress4(entity.getAddress4());
 	            updateEntity.setAddress5(entity.getAddress5());
-	            updateEntity.setIsDisplay1(entity.getIsDisplay1());
-	            updateEntity.setIsDisplay2(entity.getIsDisplay2());
-	            updateEntity.setIsDisplay3(entity.getIsDisplay3());
-	            updateEntity.setIsDisplay4(entity.getIsDisplay4());
-	            updateEntity.setIsDisplay5(entity.getIsDisplay5());
 	            this.commandProxy().update(updateEntity);
 	        }
 		});

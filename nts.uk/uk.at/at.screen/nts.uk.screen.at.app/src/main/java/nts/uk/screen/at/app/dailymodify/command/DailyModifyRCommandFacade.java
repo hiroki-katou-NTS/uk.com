@@ -58,16 +58,17 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EmpProvisionalInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RegisterProvisionalData;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.CorrectDailyAttendanceService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
@@ -176,10 +177,10 @@ public class DailyModifyRCommandFacade {
 
 	@Inject
 	private ProcessMonthlyCalc processMonthlyCalc;
-	
+
 	@Inject
 	private CorrectDaiAttRequireImpl correctDaiAttRequireImpl;
-	
+
 	@Inject
 	private DailyCorrectEventServiceCenter dailyCorrectEventServiceCenter;
 
@@ -216,7 +217,7 @@ public class DailyModifyRCommandFacade {
 					});
 					domainMonth.getAttendanceTime().ifPresent(d -> {
 						d.setVersion(dataParent.getMonthValue().getVersion());
-					}); 
+					});
 					domainMonthOpt = Optional.of(domainMonth);
 				}
 				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(),
@@ -326,14 +327,14 @@ public class DailyModifyRCommandFacade {
 				clearConfirmApprovalService.clearConfirmApproval(dataParent.getSpr().getEmployeeId(),
 						Arrays.asList(dataParent.getSpr().getDate()));
 			}
-			
+
 			// only insert check box
 			// insert sign
 			insertSign(dataParent.getDataCheckSign(), dailyEdits, dataParent.getDailyOlds(), updated);
 			// insert approval
 			Set<Pair<String, GeneralDate>> dataApprovalCheck = insertApproval(dataParent.getDataCheckApproval(),
 					updated);
-						
+
 			List<String> empList = updated.stream().map(x -> x.getLeft()).distinct().collect(Collectors.toList());
 			List<GeneralDate> empDate = updated.stream().map(x -> x.getRight()).sorted((x, y) -> x.compareTo(y))
 					.distinct().collect(Collectors.toList());
@@ -375,7 +376,7 @@ public class DailyModifyRCommandFacade {
 			if (dataParent.isCheckDailyChange() || flagTempCalc) {
 				//勤怠ルールの補正処理
 				//2021/03/19 - 日別修正から補正処理を実行する対応
-				val changeSetting = new ChangeDailyAttendance(false, false, false, true, ScheduleRecordClassifi.RECORD);
+				val changeSetting = new ChangeDailyAttendance(false, false, false, true, ScheduleRecordClassifi.RECORD, false);
 				List<DailyRecordDto> dtoOldTemp = dailyOlds;
 				dailyEdits = dailyEdits.stream().map(x -> {
 					val domDaily = CorrectDailyAttendanceService.processAttendanceRule(
@@ -398,7 +399,7 @@ public class DailyModifyRCommandFacade {
 											it.getValueType() == null ? ValueType.UNKNOWN : ValueType.valueOf(it.getValueType()),
 											it.getLayoutCode(), it.getItemId()))
 									.collect(Collectors.toList());
-							
+
 						DailyModifyRCResult updatedOoTsuka = DailyModifyRCResult.builder().employeeId(x.getEmployeeId())
 								.workingDate(x.getDate()).items(itemValues).completed();
 						EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(DailyRecordDto
@@ -577,13 +578,13 @@ public class DailyModifyRCommandFacade {
 			dataParent.setDataCheckApproval(dataParent.getDataCheckApproval().stream()
 					.filter(x -> !rowRemoveInsert.contains(Pair.of(x.getEmployeeId(), x.getDate())))
 					.collect(Collectors.toList()));
-			
+
 			// SPR連携時の確認承認解除
 			if (dataParent.getSpr() != null) {
 				clearConfirmApprovalService.clearConfirmApproval(dataParent.getSpr().getEmployeeId(),
 						Arrays.asList(dataParent.getSpr().getDate()));
 			}
-			
+
 			// insert sign
 			// 日の本人確認を登録する
 			// TODO: neu ko goi xu ly ngay thi ko co domain loi cho ngay
@@ -899,7 +900,7 @@ public class DailyModifyRCommandFacade {
 					return false;
 				return true;
 			}).collect(Collectors.toList());
-			
+
 			if (!listEmpDate.isEmpty()) {
 				registerProvisionalData.registerProvisionalData(AppContexts.user().companyId(),
 						listEmpDate.stream().map(i -> new EmpProvisionalInput(i.getLeft(), Arrays.asList(i.getRight())))
@@ -914,7 +915,7 @@ public class DailyModifyRCommandFacade {
 					return false;
 				return true;
 			}).collect(Collectors.toList());
-			
+
 			Map<String, List<Pair<String, GeneralDate>>> mapEmpDate = listEmpDate.stream()
 					.collect(Collectors.groupingBy(x -> x.getLeft()));
 			mapEmpDate.entrySet().forEach(x -> {
@@ -934,7 +935,7 @@ public class DailyModifyRCommandFacade {
 			List<ItemValue> niv = ProcessCommonCalc.getFrom(news, o.getKey());
 			if (!CollectionUtil.isEmpty(niv)) {
 				if (niv.stream().anyMatch(c -> o.getValue().stream()
-						.filter(oi -> c.valueAsObjet() != null && c.equals(oi)).findFirst().isPresent())) {
+						.filter(oi -> c.valueAsObjet() != null && !c.equals(oi)).findFirst().isPresent())) {
 					editedDate.add(o.getKey());
 				}
 			}
@@ -1257,7 +1258,7 @@ public class DailyModifyRCommandFacade {
 
 	public List<DailyRecordDto> toDto(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoEdits, boolean isOptional) {
 		List<DailyRecordDto> dtoNews = new ArrayList<>();
-          
+
 		dtoNews = dtoEdits.stream().map(o -> {
 			val itemChanges = querys.stream()
 					.filter(q -> q.getBaseDate().equals(o.workingDate()) && q.getEmployeeId().equals(o.employeeId()))
@@ -1276,7 +1277,7 @@ public class DailyModifyRCommandFacade {
 					.addAll(lstState.stream()
 							.map(c -> EditStateOfDailyPerformanceDto.getDto(o.getEmployeeId(), o.getDate(), c))
 							.collect(Collectors.toList()));
-			
+
 			createStampSourceInfo(o, querys);
 			o.getTimeLeaving().ifPresent(dto -> {
 				if (dto.getWorkAndLeave() != null)
@@ -1284,7 +1285,7 @@ public class DailyModifyRCommandFacade {
 			});
 			return o;
 		}).collect(Collectors.toList());
-		
+
 		if (isOptional) {
 			Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo.findAll(AppContexts.user().companyId())
 					.stream().collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c.getOptionalItemAtr()));

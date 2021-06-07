@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseUsedInfo;
 
 /**
  * 集計期間の休暇情報
@@ -13,35 +13,32 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ChildCareNurseAggrPeriodDaysInfo {
-	/** 子の看護休暇情報（本年） */
-	private ChildCareNurseAggrPeriodInfo thisYear;
-	/** 子の看護休暇情報（翌年） */
-	private Optional<ChildCareNurseAggrPeriodInfo> nextYear;
+	/** 子の看護介護使用情報（本年） */
+	private ChildCareNurseUsedInfo thisYear;
+	/** 子の看護介護使用情報（翌年） */
+	private Optional<ChildCareNurseUsedInfo> nextYear;
 
 	/**
 	 * コンストラクタ
 	 */
 	public ChildCareNurseAggrPeriodDaysInfo(){
-
-		this.thisYear = new ChildCareNurseAggrPeriodInfo();
+		this.thisYear = new ChildCareNurseUsedInfo();
 		this.nextYear =  Optional.empty();
-
 	}
 
 	/**
 	 * ファクトリー
-	 * @param thisYear 子の看護休暇情報（本年）
-	 * @param nextYear 子の看護休暇情報（翌年）
+	 * @param thisYear 子の看護介護使用情報（本年）
+	 * @param nextYear 子の看護介護使用情報（翌年）
 	 * @return 集計期間の休暇情報
 	 */
 	public static ChildCareNurseAggrPeriodDaysInfo of(
-		ChildCareNurseAggrPeriodInfo thisYear,
-		Optional<ChildCareNurseAggrPeriodInfo> nextYear){
+			ChildCareNurseUsedInfo thisYear,
+			Optional<ChildCareNurseUsedInfo> nextYear){
 
-	ChildCareNurseAggrPeriodDaysInfo domain = new ChildCareNurseAggrPeriodDaysInfo();
-	domain.thisYear = thisYear;
-	domain.nextYear = nextYear;
-	return domain;
+		ChildCareNurseAggrPeriodDaysInfo domain = new ChildCareNurseAggrPeriodDaysInfo();
+		domain.thisYear = thisYear;
+		domain.nextYear = nextYear;
+		return domain;
 	}
-
 }

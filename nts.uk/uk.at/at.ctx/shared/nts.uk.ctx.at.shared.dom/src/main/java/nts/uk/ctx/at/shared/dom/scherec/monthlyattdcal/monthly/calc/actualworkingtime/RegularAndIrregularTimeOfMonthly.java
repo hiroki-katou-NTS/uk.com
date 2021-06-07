@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -431,7 +432,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 	 * @param settingsByDefo 変形労働勤務が必要とする設定
 	 * @param aggregateTotalWorkingTime 総労働時間
 	 */
-	public void aggregateMonthlyHours(RequireM1 require, String companyId, String employeeId, YearMonth yearMonth,
+	public void aggregateMonthlyHours(RequireM1 require, CacheCarrier cacheCarrier, String companyId, String employeeId, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod, WorkingSystem workingSystem,
 			MonthlyAggregateAtr aggregateAtr, boolean isRetireMonth, String workplaceId, String employmentCd,
 			SettingRequiredByReg settingsByReg, SettingRequiredByDefo settingsByDefo, 
@@ -467,8 +468,8 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 			}
 			
 			// 変形労働勤務の月単位の時間を集計する
-			this.aggregateTimePerMonthOfIrregular(require, companyId, employeeId, yearMonth, closureId, 
-													closureDate, datePeriod, isRetireMonth,
+			this.aggregateTimePerMonthOfIrregular(require, cacheCarrier, companyId, employeeId, yearMonth, closureId, 
+													closureDate, datePeriod, employmentCd, isRetireMonth,
 													settingsByDefo, addSet, aggregateTotalWorkingTime);
 		}
 	}
@@ -523,16 +524,17 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 	 * @param addSet 加算設定
 	 * @param aggregateTotalWorkingTime 集計総労働時間
 	 */
-	private void aggregateTimePerMonthOfIrregular(RequireM1 require, String companyId, String employeeId,
-			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod,
+	private void aggregateTimePerMonthOfIrregular(RequireM1 require, CacheCarrier cacheCarrier, String companyId, String employeeId,
+			YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, DatePeriod datePeriod, String employmentCode,
 			boolean isRetireMonth, SettingRequiredByDefo settingsByDefo,
 			AddSet addSet, AggregateTotalWorkingTime aggregateTotalWorkingTime){
 		
 		// 当月の変形期間繰越時間を集計する
 		this.irregularPeriodCarryforwardsTime = new IrregularPeriodCarryforwardsTimeOfCurrent();
-		this.irregularPeriodCarryforwardsTime.aggregate(companyId, employeeId, datePeriod,
+		this.irregularPeriodCarryforwardsTime.aggregate(require, cacheCarrier, companyId, employeeId, datePeriod,
+				yearMonth, datePeriod.end(), employmentCode, closureId,
 				this.weeklyTotalPremiumTime, settingsByDefo.getHolidayAdditionMap(),
-				aggregateTotalWorkingTime, settingsByDefo.getStatutoryWorkingTimeMonth());
+				aggregateTotalWorkingTime, settingsByDefo.getDefoAggregateMethod());
 		this.addedVacationUseTime.addMinutesToAddTimePerMonth(
 				this.irregularPeriodCarryforwardsTime.getAddedVacationUseTime().v());
 		
@@ -553,20 +555,25 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 				this.irregularPeriodCarryforwardsTime.getTime().v());
 
 		// 精算月か確認する
-		if (setlPeriod.isSettlementMonth(yearMonth, isRetireMonth)){
-			
+		if (setlPeriod.isSettlementMonth(require, employeeId, datePeriod, yearMonth, isRetireMonth)) {
+
 			// 精算月の時、月割増合計時間に集計結果を入れる
-			this.monthlyTotalPremiumTime = new AttendanceTimeMonth(totalIrregularPeriodCarryforwardsTime.v());
-			
-			// 変形期間繰越時間を 0 にする
+			/** ○月割増合計時間を月割増時間に入れる */
+			if(totalIrregularPeriodCarryforwardsTime.isNegative()) {
+				this.monthlyTotalPremiumTime = new AttendanceTimeMonth(0);
+				this.irregularWorkingTime.setIrregularWorkingShortageTime(new AttendanceTimeMonth(Math.abs(totalIrregularPeriodCarryforwardsTime.valueAsMinutes())));
+			} else {
+				this.monthlyTotalPremiumTime = new AttendanceTimeMonth(totalIrregularPeriodCarryforwardsTime.v());
+				this.irregularWorkingTime.setIrregularWorkingShortageTime(new AttendanceTimeMonth(0));
+			}
+			/** ○変形期間繰越時間を0にする */
 			this.irregularWorkingTime.setIrregularPeriodCarryforwardTime(new AttendanceTimeMonthWithMinus(0));
 		}
 		else{
 			
 			// 精算月でない時、複数月変形途中時間・変形期間繰越時間に集計結果を入れる
 			this.irregularWorkingTime.setMultiMonthIrregularMiddleTime(totalIrregularPeriodCarryforwardsTime);
-			this.irregularWorkingTime.setIrregularPeriodCarryforwardTime(
-					new AttendanceTimeMonthWithMinus(this.irregularPeriodCarryforwardsTime.getTime().v()));
+			this.irregularWorkingTime.setIrregularPeriodCarryforwardTime(totalIrregularPeriodCarryforwardsTime);
 		}
 	}
 	
@@ -624,7 +631,8 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 		this.irregularWorkingTime.sum(target.irregularWorkingTime);
 	}
 	
-	public static interface RequireM1 {
+	
+	public static interface RequireM1 extends IrregularPeriodCarryforwardsTimeOfCurrent.Require, GetSettlementPeriodOfDefor.Require {
 
 		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth);
 	}

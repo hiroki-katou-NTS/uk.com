@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
 
 @Getter
 @Setter
@@ -16,7 +17,7 @@ public class WorkTimeReportDatasource {
 	private String programName;
 	private String companyName;
 	private GeneralDateTime exportTime;
-	private List<Object[]> workTimeNormal;
-	private List<Object[]> workTimeFlow;
-	private List<Object[]> workTimeFlex;
+	private List<WorkTimeSettingInfoDto> workTimeNormal;
+	private List<WorkTimeSettingInfoDto> workTimeFlow;
+	private List<WorkTimeSettingInfoDto> workTimeFlex;
 }

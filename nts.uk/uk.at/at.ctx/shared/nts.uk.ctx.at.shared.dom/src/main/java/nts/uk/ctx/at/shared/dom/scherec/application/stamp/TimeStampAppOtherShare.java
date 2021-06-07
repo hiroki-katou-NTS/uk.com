@@ -6,7 +6,7 @@ import lombok.Getter;
 import nts.uk.shr.com.time.TimeZone;
 @AllArgsConstructor
 @Getter
-//打刻申請時間帯
+//打刻申請時間帯(反映用)
 public class TimeStampAppOtherShare {
 //	反映先
 	private DestinationTimeZoneAppShare destinationTimeZoneApp;

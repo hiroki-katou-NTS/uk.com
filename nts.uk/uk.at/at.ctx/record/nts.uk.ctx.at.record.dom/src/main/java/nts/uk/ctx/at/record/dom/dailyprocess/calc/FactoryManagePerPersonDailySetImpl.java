@@ -16,7 +16,6 @@ import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
-import nts.uk.ctx.at.shared.dom.dailyprocess.calc.FactoryManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
@@ -33,21 +32,31 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.FactoryManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CheckDateForManageCmpLeaveService;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CheckDateForManageCmpLeaveService.Require;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CheckDateForManageCmpLeaveService.Require;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -84,6 +93,21 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 	/** 雇用の代休管理設定 */
 	@Inject
 	private CompensLeaveEmSetRepository compensLeaveEmSetRepo;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepository;
+	
+	@Inject
+	private FixedWorkSettingRepository fixedWorkSet;
+	
+	@Inject
+	private FlowWorkSettingRepository flowWorkSet;
+	
+	@Inject
+	private FlexWorkSettingRepository flexWorkSet;
+	
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
 	
 	@Override
 	public Optional<ManagePerPersonDailySet> create(String companyId, ManagePerCompanySet companySetting, IntegrationOfDaily daily, WorkingConditionItem nowWorkingItem ) {
@@ -136,6 +160,7 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			
 			/** 残業時間帯Require */
 			OverTimeSheet.TransProcRequire overTimeSheetRequire = new TransProcRequireImpl(
+					companyId,
 					this.checkDateForManageCmpLeaveService,
 					this.sysEmploymentHisAdapter,
 					this.compensLeaveComSetRepo,
@@ -287,10 +312,12 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 	 */
 	private class TransProcRequireImpl extends CheckDateRequireImpl implements OverTimeSheet.TransProcRequire{
 		
+		private String cid;
 		/** 代休を管理する年月日かどうかを判断する */
 		private CheckDateForManageCmpLeaveService checkDateForManageCmpLeaveService;
 		
 		public TransProcRequireImpl(
+				String cid, 
 				CheckDateForManageCmpLeaveService checkDateForManageCmpLeaveService,
 				SysEmploymentHisAdapter sysEmploymentHisAdapter,
 				CompensLeaveComSetRepository compensLeaveComSetRepo,
@@ -298,12 +325,46 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			
 			super(sysEmploymentHisAdapter, compensLeaveComSetRepo, compensLeaveEmSetRepo);
 			this.checkDateForManageCmpLeaveService = checkDateForManageCmpLeaveService;
+			this.cid = cid;
 		}
 
 		@Override
 		public boolean checkDateForManageCmpLeave(
 				Require require, String companyId, String employeeId, GeneralDate ymd) {
 			return this.checkDateForManageCmpLeaveService.check(require, companyId, employeeId, ymd);
+		}
+
+		@Override
+		public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+			return super.compensLeaveComSetRepo.find(companyId);
+		}
+
+		@Override
+		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+			return workTypeRepository.findByPK(companyId, workTypeCd);
+		}
+
+		@Override
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
+			return workTimeSettingRepository.findByCode(cid, workTimeCode);
+		}
+
+		@Override
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			Optional<FixedWorkSetting> workSetting = fixedWorkSet.findByKey(cid, code.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
+		}
+
+		@Override
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			Optional<FlowWorkSetting> workSetting = flowWorkSet.find(cid, code.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			Optional<FlexWorkSetting> workSetting = flexWorkSet.find(cid, code.v());
+			return workSetting.isPresent() ? workSetting.get() : null;
 		}
 	}
 }

@@ -51,7 +51,7 @@ module nts.uk.com.view.ktg031.a {
                       <div data-bind="ntsCheckBox: { checked: isReaded }"></div>
                     </td>
                     <td class="column-action">
-                      <i class="img-icon" data-bind="ntsIcon: {no: 178, width: 20, height: 20}, click: function() { $component.openUrl(linkUrl); }"></i>
+                      <i class="img-icon" data-bind="ntsIcon: {no: 178, width: 20, height: 20}, click: function() { $component.onClickUrl(alarmClassification, displayAtr, subSids, linkUrl); }"></i>
                     </td>
                   </tr>
                 </tbody>
@@ -211,9 +211,6 @@ module nts.uk.com.view.ktg031.a {
       });
       vm.$blockui('grayout');
       vm.$ajax(API.changeToUnread, command)
-        .then((res) => {
-          console.log(res);
-        })
         .always(() => vm.$blockui('clear'));
     }
 
@@ -222,7 +219,45 @@ module nts.uk.com.view.ktg031.a {
       vm.$window.modal('/view/ktg/031/b/index.xhtml');
     }
 
-    openUrl(url: string) {
+    onClickUrl (alarmClassification: number, displayAtr: number, subSids: string[], url: string) {
+
+      const vm = this;
+
+      switch (alarmClassification) {
+
+        case AlarmClassification.ALARM_LIST:
+          let kal001BParam = new Kal001BParam({
+            extractingFlg: false,
+            isExtracting: false,
+            listAlarmExtraValueWkReDto: [],
+            processId: undefined,
+            totalErAlRecord: 0,
+            currentAlarmCode: undefined,
+            employeeIds: [],
+            isTopPage: true
+          });
+
+          if (displayAtr === DisplayAtr.PRINCIPAL) {
+            kal001BParam.employeeIds = [__viewContext.user.employeeId];
+          } else if (displayAtr === DisplayAtr.SUPERIOR) {
+            kal001BParam.employeeIds = subSids;
+          }
+          nts.uk.ui.windows.setShared("extractedAlarmData", kal001BParam);
+          vm.openDialogUrl(url);
+        break;
+
+        case AlarmClassification.AUTO_EXEC_BUSINESS_ERR: 
+        case AlarmClassification.AUTO_EXEC_OPERATION_ERR:
+        case AlarmClassification.HEALTH_LIFE_MESSAGE:
+          vm.openUrl(url);
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    openUrl (url: string): JQueryPromise<any> {
       const vm = this;
       if (url) {
         const origin: string = window.location.origin;
@@ -248,6 +283,23 @@ module nts.uk.com.view.ktg031.a {
       }
     }
 
+    openDialogUrl (url: string): JQueryPromise<any> {
+      const vm = this;
+      if (url) {
+        const comPath = '/nts.uk.com.web';
+          if (url.indexOf(comPath) !== -1) {
+            vm.$window.modal("com", url.replace(comPath, ""));
+            return;
+          }
+
+        const atPath = '/nts.uk.at.web';
+        if (url.indexOf(atPath) !== -1) {
+          vm.$window.modal("at", url.replace(atPath, ""));
+          return;
+        }
+      }
+    }
+
     private getUKSystemPath(url: string, path: string): string {
       const pathIndex = url.lastIndexOf(path);
       if (pathIndex !== -1) {
@@ -265,6 +317,7 @@ module nts.uk.com.view.ktg031.a {
     companyId: string;
     sid: string;
     displayAtr: number;
+    subSids: string[];
     patternCode: string;
     notificationId: string;
     linkUrl: string;
@@ -347,5 +400,47 @@ module nts.uk.com.view.ktg031.a {
     constructor(init?: Partial<ToppageAlarmDataUnreadCommand>) {
       $.extend(this, init);
     }
+  }
+
+  class Kal001BParam {
+
+      extractingFlg: boolean; //処理中フラグ
+      isExtracting: boolean; //処理中区分	
+      listAlarmExtraValueWkReDto: any[]; //アラーム抽出結果	
+      processId: any; //プロセスID	
+      totalErAlRecord: number; //アラーム抽出結果の件数	
+      currentAlarmCode: any; //アラームコード	
+      employeeIds: string[]; //List＜社員ID＞
+      isTopPage: boolean; //Toppage区分
+
+    constructor(init?: Partial<Kal001BParam>) {
+      $.extend(this, init);
+    } 
+
+  }
+
+  enum AlarmClassification {
+    /** アラームリスト */
+    ALARM_LIST = 0,
+	
+    /** 更新処理自動実行業務エラー */
+    AUTO_EXEC_BUSINESS_ERR = 1,
+    
+    /** 更新処理自動実行動作異常 */
+    AUTO_EXEC_OPERATION_ERR = 2,
+    
+    /** ヘルス×ライフメッセージ */
+    HEALTH_LIFE_MESSAGE = 3
+  }
+
+  enum DisplayAtr {
+	/** 本人 */
+	PRINCIPAL = 0,
+	
+	/** 上長 */
+	SUPERIOR = 1,
+	
+	/** 担当者 */
+	PIC =2
   }
 }

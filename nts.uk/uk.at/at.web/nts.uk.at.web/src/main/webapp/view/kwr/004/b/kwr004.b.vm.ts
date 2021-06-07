@@ -64,7 +64,7 @@ module nts.uk.at.view.kwr004.b {
     diligenceProjectsDaily: KnockoutObservableArray<DiligenceProject> = ko.observableArray([]);
     attributeList: KnockoutObservableArray<any> = ko.observableArray([]);
     isItemRemoved: KnockoutObservable<boolean> = ko.observable(false);
-
+    currentSelected:  KnockoutObservable<any> = ko.observable(null);
     constructor(params: any) {
       super();
 
@@ -946,7 +946,7 @@ module nts.uk.at.view.kwr004.b {
     selectedTimeList: KnockoutObservableArray<selectedTimeList> = ko.observableArray([]);
     dailyAttributes: KnockoutObservableArray<any> = ko.observableArray([]);
     type: boolean = false;
-
+    temp: number = null;
     constructor(
       id?: number,
       name?: string,
@@ -968,7 +968,20 @@ module nts.uk.at.view.kwr004.b {
       this.selectedTimeList(selectedTimeList || []);
       this.dailyAttributes(dailyAttributes || []);
       this.type = type;
-      this.selectedTime = selectedTime
+      this.selectedTime = selectedTime;
+      this.temp = indCalcClassic;
+      this.independentCalcClassic.subscribe((value)=>{
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_2087" }).ifYes(()=>{
+                // if yes
+                this.temp = value;
+            }).ifNo(()=>{
+                // if no
+                this.independentCalcClassic(this.temp);
+            });
+
+        })
+
+
     }
   }
 

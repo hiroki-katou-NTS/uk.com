@@ -63,8 +63,8 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFun;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFunRepository;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyFinder;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemIdContainer;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
@@ -263,6 +263,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 				param.setYearMonth(yearMonth);
 				// 処理年月
 				screenDto.setProcessDate(yearMonth);
+			}else {
+				throw new BusinessException("Msg_1143");
 			}
 		} else {
 			yearMonth = param.getYearMonth();

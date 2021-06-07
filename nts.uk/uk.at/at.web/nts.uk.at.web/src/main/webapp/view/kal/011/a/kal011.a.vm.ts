@@ -52,38 +52,36 @@ module nts.uk.at.kal011.a {
             const vm = this;
             vm.$blockui("invisible");
             $('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {
+                vm.init().done(() => {
+                    vm.alarmPatternCode.subscribe((code) => {
+                        if (!code) return;
+                        vm.$blockui("invisible");
+
+                        // get alarmPatternName
+                        let pattern = _.find(vm.alarmPatterns(), (item: AlarmPattern) => item.code == code);
+                        vm.alarmPatternName = pattern ? pattern.name : '';
+
+                        vm.getCheckCondition().done(() => {
+                            // reset check all
+                            vm.isCheckAll_Temp = false;
+                            vm.isCheckAll(vm.isCheckAll_Temp);
+
+                            vm.$errors("clear");
+                        }).fail((err: any) => {
+                            vm.$dialog.error(err);
+                        }).always(() => {
+                            vm.$blockui("clear");
+                        });
+                    });
+                    vm.alarmPatternCode.valueHasMutated();
+                }).fail((err: any) => {
+                    vm.$dialog.error(err);
+                }).always(() => {
+                    vm.$blockui("clear");
+                });
                 $('#tree-grid').focusTreeGridComponent();
             });
             $("#fixed-table").ntsFixedTable({ width: 435 });
-
-            vm.init().done(() => {
-                vm.alarmPatternCode.subscribe((code) => {
-                    if (!code) return;
-                    vm.$blockui("invisible");
-
-                    // get alarmPatternName
-                    let pattern = _.find(vm.alarmPatterns(), (item: AlarmPattern) => item.code == code);
-                    vm.alarmPatternName = pattern?.name;
-
-                    vm.getCheckCondition().done(() => {
-                        // reset check all
-                        vm.isCheckAll_Temp = false;
-                        vm.isCheckAll(vm.isCheckAll_Temp);
-
-                        vm.$errors("clear");
-                    }).fail((err: any) => {
-                        vm.$dialog.error(err);
-                    }).always(() => {
-                        vm.$blockui("clear");
-                    });
-                });
-                vm.alarmPatternCode.valueHasMutated();
-            }).fail((err: any) => {
-                vm.$dialog.error(err);
-            }).always(() => {
-                vm.$blockui("clear");
-            });
-
             _.extend(window, { vm });
         }
 
@@ -107,6 +105,7 @@ module nts.uk.at.kal011.a {
                         parterns.push(new AlarmPattern(item.alarmPatternCode, item.alarmPatternName));
                     })
                     vm.alarmPatterns(parterns);
+					vm.workplaceIds([res.workplaceId]);
                 }
                 dfd.resolve();
             }).fail((err: any) => {
@@ -299,6 +298,7 @@ module nts.uk.at.kal011.a {
         processingYm: number;
         closureStartDate: any;
         closureEndDate: any;
+		workplaceId: string;
     }
 
     interface IAlarmPatternSettingWorkPlace {

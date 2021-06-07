@@ -32,13 +32,24 @@ public class EmpInfoTerminalComStatus implements DomainAggregate{
 	/**
 	 * 	最終通信日時	
 	 */
-	private GeneralDateTime signalLastTime;
+	private final GeneralDateTime signalLastTime;
 	
 	//	[1] 通信異常があったか判断する
-	public boolean isCommunicationError(MonitorIntervalTime intervalTime) {
-		if(this.signalLastTime.addMinutes(intervalTime.v()).compareTo(GeneralDateTime.now())<0) {
+	public boolean isCommunicationError(MonitorIntervalTime intervalTime, GeneralDateTime timeToCheck) {
+		if(this.signalLastTime.addMinutes(intervalTime.v()).before(timeToCheck)) {
 			return true;
 		}
 		return false;
 	}
+	
+	//	[2] 最終通信日時を更新する
+	public EmpInfoTerminalComStatus updateLastTime(GeneralDateTime timeToUpdate) {
+		return new EmpInfoTerminalComStatus(contractCode, empInfoTerCode, timeToUpdate);
+	}
+	
+	//	[3]就業情報端末通信異常期間を作成する
+	public EmpInfoTerComAbPeriod createAbnormalPeriod(GeneralDateTime timeToUpdate) {
+		return new EmpInfoTerComAbPeriod(contractCode, empInfoTerCode, signalLastTime, timeToUpdate);
+	}
+	
 }

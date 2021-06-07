@@ -266,16 +266,26 @@ public class CollectAchievementImpl implements CollectAchievement {
 						.collect(Collectors.toList()));
 			}
 			// 打刻実績．勤務時間帯
-			Optional<TimeWithDayAttr> opWorkingTimeStartTime = recordWorkInfoImport.getStartTime1() == null ? Optional.empty() 
-					: recordWorkInfoImport.getStartTime1().map(x -> x.getTimeWithDay()).orElse(Optional.empty());
-			Optional<TimeWithDayAttr> opWorkingTimeEndTime = recordWorkInfoImport.getEndTime1() == null ? Optional.empty()
-					: recordWorkInfoImport.getEndTime1().map(x -> x.getTimeWithDay()).orElse(Optional.empty());
-			stampRecordOutput.setWorkingTime(Arrays.asList(new TimePlaceOutput(
-					Optional.empty(), 
-					Optional.empty(), 
-					new StampFrameNo(1), 
-					opWorkingTimeEndTime, 
-					opWorkingTimeStartTime)));
+			
+			TimePlaceOutput workTime1 = new TimePlaceOutput(
+					Optional.empty(),
+					Optional.empty(),
+					new StampFrameNo(1),
+					recordWorkInfoImport.getEndTime1().flatMap(x -> x.getTimeWithDay()),
+					recordWorkInfoImport.getStartTime1().flatMap(x -> x.getTimeWithDay())
+					);
+			TimePlaceOutput workTime2 = new TimePlaceOutput(
+					Optional.empty(),
+					Optional.empty(),
+					new StampFrameNo(2),
+					recordWorkInfoImport.getEndTime2().flatMap(x -> x.getTimeWithDay()),
+					recordWorkInfoImport.getStartTime2().flatMap(x -> x.getTimeWithDay())
+					);		
+			List<TimePlaceOutput> workTimeList = new ArrayList<TimePlaceOutput>();
+			workTimeList.add(workTime1);
+			workTimeList.add(workTime2);
+			
+			stampRecordOutput.setWorkingTime(workTimeList);
 			// 打刻実績．臨時時間帯
 			if(CollectionUtil.isEmpty(recordWorkInfoImport.getTimeLeavingWorks())) {
 				stampRecordOutput.setExtraordinaryTime(Collections.emptyList());

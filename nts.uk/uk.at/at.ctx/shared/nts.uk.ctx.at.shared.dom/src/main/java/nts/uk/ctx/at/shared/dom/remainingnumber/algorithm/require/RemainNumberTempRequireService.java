@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.Ca
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
@@ -45,12 +44,14 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeave
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.CheckCareService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -63,6 +64,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
@@ -92,8 +94,6 @@ public class RemainNumberTempRequireService {
 	protected InterimRecAbasMngRepository interimRecAbasMngRepo;
 	@Inject
 	protected EmpSubstVacationRepository empSubstVacationRepo;
-	@Inject 
-	protected InterimRemainRepository interimRemainRepo;
 	@Inject
 	protected SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepo;
 	@Inject
@@ -173,13 +173,19 @@ public class RemainNumberTempRequireService {
 	@Inject
 	protected PayoutSubofHDManaRepository payoutSubofHDManaRepo;
 	@Inject
+	protected CheckCareService checkChildCareService;
+	@Inject
 	protected LeaveComDayOffManaRepository leaveComDayOffManaRepo;
-	
+	@Inject
+	protected WorkTimeSettingService workTimeSettingService;
+	@Inject
+	protected WorkingConditionItemService workingConditionItemService;
+
 	public static interface Require
 			extends InterimRemainOffPeriodCreateData.RequireM4, BreakDayOffMngInPeriodQuery.RequireM10,
 			AbsenceReruitmentMngInPeriodQuery.RequireM10, NumberRemainVacationLeaveRangeQuery.Require,
 			GetClosureStartForEmployee.RequireM1, ClosureService.RequireM3,
-			OutsideOTSettingService.RequireM2, OutsideOTSettingService.RequireM1, 
+			OutsideOTSettingService.RequireM2, OutsideOTSettingService.RequireM1,
 			AbsenceTenProcess.RequireM1, AbsenceTenProcess.RequireM2, AbsenceTenProcess.RequireM4,
 			AbsenceTenProcess.RequireM3, AbsenceReruitmentMngInPeriodQuery.RequireM2,
 			WorkingConditionService.RequireM1, DailyStatutoryLaborTime.RequireM1,
@@ -189,21 +195,23 @@ public class RemainNumberTempRequireService {
 
 	public Require createRequire() {
 		return new RequireImp(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo,
-				empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, 
-				interimSpecialHolidayMngRepo, specialLeaveBasicInfoRepo, interimRecAbasMngRepo, 
-				empSubstVacationRepo, interimRemainRepo, substitutionOfHDManaDataRepo, 
+				empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo,
+				interimSpecialHolidayMngRepo, specialLeaveBasicInfoRepo, interimRecAbasMngRepo,
+				empSubstVacationRepo, substitutionOfHDManaDataRepo,
 				payoutManagementDataRepo, interimBreakDayOffMngRepo, comDayOffManaDataRepo,
 				companyAdapter, shareEmploymentAdapter, leaveManaDataRepo, workingConditionItemRepo,
-				workingConditionRepo, workTimeSettingRepo, fixedWorkSettingRepo, flowWorkSettingRepo, 
+				workingConditionRepo, workTimeSettingRepo, fixedWorkSettingRepo, flowWorkSettingRepo,
 				diffTimeWorkSettingRepo, flexWorkSettingRepo, predetemineTimeSettingRepo, closureRepo,
-				closureEmploymentRepo, workTypeRepo, remainCreateInforByApplicationData, 
-				compensLeaveEmSetRepo, employmentSettingRepo, retentionYearlySettingRepo, 
-				annualPaidLeaveSettingRepo, outsideOTSettingRepo, workdayoffFrameRepo, 
+				closureEmploymentRepo, workTypeRepo, remainCreateInforByApplicationData,
+				compensLeaveEmSetRepo, employmentSettingRepo, retentionYearlySettingRepo,
+				annualPaidLeaveSettingRepo, outsideOTSettingRepo, workdayoffFrameRepo,
 				yearHolidayRepo, usageUnitSettingRepo, regularLaborTimeComRepo, deforLaborTimeComRepo,
-				regularLaborTimeWkpRepo, deforLaborTimeWkpRepo, regularLaborTimeEmpRepo, 
-				deforLaborTimeEmpRepo, regularLaborTimeShaRepo, deforLaborTimeShaRepo, 
-				sharedAffWorkPlaceHisAdapter, lengthServiceRepo, grantYearHolidayRepo, payoutSubofHDManaRepo, leaveComDayOffManaRepo);
+				regularLaborTimeWkpRepo, deforLaborTimeWkpRepo, regularLaborTimeEmpRepo,
+				deforLaborTimeEmpRepo, regularLaborTimeShaRepo, deforLaborTimeShaRepo,
+				sharedAffWorkPlaceHisAdapter, lengthServiceRepo, grantYearHolidayRepo,
+				payoutSubofHDManaRepo, leaveComDayOffManaRepo, checkChildCareService, workingConditionItemService
+				);
 	}
-	
+
 
 }

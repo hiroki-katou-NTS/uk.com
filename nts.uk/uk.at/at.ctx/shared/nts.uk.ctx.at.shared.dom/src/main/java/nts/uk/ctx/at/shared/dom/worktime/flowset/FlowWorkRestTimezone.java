@@ -85,12 +85,12 @@ public class FlowWorkRestTimezone extends WorkTimeDomainObject implements Clonea
 	 * @param screenMode the screen mode
 	 * @param oldDomain the old domain
 	 */
-	public void correctData(ScreenMode screenMode, FlowWorkRestTimezone oldDomain) {
+	public void correctData(FlowWorkRestTimezone oldDomain) {
 		if (this.fixRestTime) {
 			this.flowRestTimezone = oldDomain.getFlowRestTimezone();
 		} else {
 			this.fixedRestTimezone = oldDomain.getFixedRestTimezone();
-			this.flowRestTimezone.correctData(screenMode, oldDomain.getFlowRestTimezone());
+			this.flowRestTimezone.correctData(oldDomain.getFlowRestTimezone());
 		}
 	}
 	

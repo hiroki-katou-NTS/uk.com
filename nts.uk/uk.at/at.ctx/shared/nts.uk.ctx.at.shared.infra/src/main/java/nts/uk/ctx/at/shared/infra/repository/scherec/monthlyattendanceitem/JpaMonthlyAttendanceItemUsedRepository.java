@@ -23,7 +23,7 @@ public class JpaMonthlyAttendanceItemUsedRepository extends JpaRepository implem
 			+ " WHERE d.kfnctAtdIdRptMonPK.companyId = :companyId AND d.workMonthly = 1";
 	
 	private static final String SELECT_BY_WORK_YEARLY = "SELECT d FROM KfnctAtdIdRptMon d"
-			+ " WHERE d.kfnctAtdIdRptMonPK.companyId = :companyId AND d.workYearly = 1";
+			+ " WHERE d.kfnctAtdIdRptMonPK.companyId = :companyId AND d.workYearlyAtd = 1";
 	
 	private static final String SELECT_BY_WORK_PERIOD = "SELECT d FROM KfnctAtdIdRptMon d"
 			+ " WHERE d.kfnctAtdIdRptMonPK.companyId = :companyId AND d.workPeriod = 1";
@@ -32,7 +32,10 @@ public class JpaMonthlyAttendanceItemUsedRepository extends JpaRepository implem
 			+ " WHERE d.kfnctAtdIdRptMonPK.companyId = :companyId AND d.atdWorkAttendance = 1";
 	
 	private static final String SELECT_BY_ATD_WORK_YEARLY = "SELECT d FROM KfnctAtdIdRptMon d"
-			+ " WHERE d.kfnctAtdIdRptMonPK.companyId = :companyId AND d.atdWorkYearly = 1";
+			+ " WHERE d.kfnctAtdIdRptMonPK.companyId = :companyId AND d.workYearlyAtd = 1";
+	
+	private static final String SELECT_BY_ATD_WORK_YEARLY_36 = "SELECT d FROM KfnctAtdIdRptMon d"
+			+ " WHERE d.kfnctAtdIdRptMonPK.companyId = :companyId AND d.workYearly36 = 1";
 
 	@Override
 	public List<Integer> getAllMonthlyItemId(String companyId, int reportId) {
@@ -55,6 +58,9 @@ public class JpaMonthlyAttendanceItemUsedRepository extends JpaRepository implem
 				break;
 			case 8:
 				query = SELECT_BY_ATD_WORK_YEARLY;
+				break;
+			case 9:
+				query = SELECT_BY_ATD_WORK_YEARLY_36;
 				break;
 			default:
 				break;

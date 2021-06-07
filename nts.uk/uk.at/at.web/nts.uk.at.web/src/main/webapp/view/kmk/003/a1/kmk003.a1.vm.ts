@@ -26,7 +26,10 @@ module a1 {
         isDetailMode: KnockoutObservable<boolean>;
         isTimezoneTwoEnabled: KnockoutObservable<boolean>;
         isFlexMode: KnockoutObservable<boolean>;
-        useHalfDay: KnockoutObservable<boolean>;
+        isFlowMode: KnockoutObservable<boolean>
+        //useHalfDay: KnockoutObservable<boolean>;
+        //A7_17 condition
+        isDetailAndNotFlexOrFlow: KnockoutComputed<boolean>;
 
         mainSettingModel: MainSettingModel;
         predseting: PredetemineTimeSettingModel;
@@ -39,6 +42,10 @@ module a1 {
 
         linkedWithDialogF: KnockoutObservable<boolean>;
         isNewMode: KnockoutObservable<boolean>;
+        isWorkMultiple: KnockoutObservable<boolean>;
+
+        condition30: KnockoutComputed<boolean>;
+        condition31: KnockoutComputed<boolean>;
         /**
         * Constructor.
         */
@@ -46,6 +53,8 @@ module a1 {
             let self = this;
             self.selectedTab = input.selectedTab;
             self.isNewMode = input.isNewMode;
+            self.isWorkMultiple = input.workMultiple;
+
             self.loadDataFromMainScreen(input);
             self.isTimezoneTwoEnabled = ko.computed(() => {
                 return !self.isFlexMode() && !self.isDiffTimeMode();
@@ -67,13 +76,23 @@ module a1 {
                 width: "50",
             }));
 
-
             self.beforeUpdateWorkTimeOption = ko.observable(new nts.uk.ui.option.TimeEditorOption({
                 width: "50"
             }));
             self.afterUpdateWorkTimeOption = ko.observable(new nts.uk.ui.option.TimeEditorOption({
                 width: "50"
             }));
+
+            self.isNewMode.subscribe(v => {
+                if (v) {
+                    //start timezoneModelTwo
+                    setTimeout(function () {
+                        self.timeZoneModelTwo.start(0);
+                        self.timeZoneModelTwo.end(0);
+                    }, 100);
+
+                }
+            })
 
             self.isDiffTimeMode.subscribe(function(isDifftime: boolean){
                 if(isDifftime && !(self.changeExtent)){
@@ -137,9 +156,23 @@ module a1 {
             self.timeZoneModelTwo = self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo;
             self.coreTimeSettingModel = self.mainSettingModel.flexWorkSetting.coreTimeSetting;
             self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
+            self.isFlowMode = self.mainSettingModel.workTimeSetting.isFlow;
             self.isDiffTimeMode = self.mainSettingModel.workTimeSetting.isDiffTime;
             self.settingEnum = settingEnum;
-            self.useHalfDay = data.useHalfDay;
+            //self.useHalfDay = data.useHalfDay;
+
+            //A7_17 display condition
+            self.isDetailAndNotFlexOrFlow = ko.computed(function (){
+                return self.isDetailMode() && !self.isFlowMode() && !self.isFlexMode();
+            }, this);
+            //A7_13, A7_14, A7_16 display condition
+            self.condition30 = ko.computed(() => {
+                return self.isWorkMultiple() && !self.isFlexMode() && !self.isDiffTimeMode();
+            },this);
+
+            self.condition31 = ko.computed(() => {
+                return self.timeZoneModelTwo.useAtr() && !self.isFlexMode() && !self.isDiffTimeMode();
+            })
                                                    
             // Subscribe event update dialog J interlock for A7_4, A7_6, A7_12, A7_13, A7_14
             self.predseting.startDateClock.subscribe(() => { self.mainSettingModel.updateStampValue(); self.mainSettingModel.updateInterlockDialogJ(); });
@@ -157,13 +190,16 @@ module a1 {
                     self.timeZoneModelTwo.end(0);
                 }
             });
-            self.timeZoneModelTwo.useAtr.subscribe((v) => { 
+            self.timeZoneModelTwo.useAtr.subscribe((v) => {
                 self.mainSettingModel.updateStampValue(); 
                 self.mainSettingModel.updateInterlockDialogJ();
                 if (!v) {
                     $('#shiftTwoStart').ntsError('clear');
                     $('#shiftTwoEnd').ntsError('clear');
-                } 
+                } else {
+                    self.timeZoneModelTwo.start(0);
+                    self.timeZoneModelTwo.end(0);
+                }
             });
         }
 
@@ -186,17 +222,6 @@ module a1 {
                 self.predseting.predTime.addTime.morning(returnObject.morningDialog);
                 self.predseting.predTime.addTime.afternoon(returnObject.afternoonDialog);
                 self.linkedWithDialogF(self.checkLinked(returnObject));
-//                if (self.linkedWithDialogF()) {
-//                    //bind from parent to dialog model
-//                    self.predseting.predTime.addTime.oneDay(self.predseting.predTime.predTime.oneDay());
-//                    self.predseting.predTime.addTime.morning(self.predseting.predTime.predTime.morning());
-//                    self.predseting.predTime.addTime.afternoon(self.predseting.predTime.predTime.afternoon());
-//                }
-//                else {
-//                    self.predseting.predTime.addTime.oneDay(returnObject.oneDayDialog);
-//                    self.predseting.predTime.addTime.morning(returnObject.morningDialog);
-//                    self.predseting.predTime.addTime.afternoon(returnObject.afternoonDialog);
-//                }
             });
         }
         
@@ -211,7 +236,7 @@ module a1 {
         
         private checkLinked(dialogDataObject: any): boolean {
             let self = this;
-            return (dialogDataObject.oneDayDialog == self.predseting.predTime.predTime.oneDay()) && (dialogDataObject.morningDialog == self.predseting.predTime.predTime.morning()) && (dialogDataObject.afternoonDialog == self.predseting.predTime.predTime.afternoon());
+            return (dialogDataObject.oneDayDialog != self.predseting.predTime.predTime.oneDay()) || (dialogDataObject.morningDialog != self.predseting.predTime.predTime.morning()) || (dialogDataObject.afternoonDialog != self.predseting.predTime.predTime.afternoon());
         }
     }
     export class Item {

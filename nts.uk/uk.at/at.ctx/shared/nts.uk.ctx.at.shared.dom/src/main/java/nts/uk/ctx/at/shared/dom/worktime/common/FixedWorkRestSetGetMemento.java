@@ -21,12 +21,12 @@ public interface FixedWorkRestSetGetMemento {
  	 *
  	 * @return the checks if is plan actual not match master refer
  	 */
- 	boolean getIsPlanActualNotMatchMasterRefer();
+// 	boolean getIsPlanActualNotMatchMasterRefer();
 
 	/**
 	 * Gets the calculate method.
 	 *
 	 * @return the calculate method
 	 */
-	 FixedRestCalculateMethod getCalculateMethod();
+//	 FixedRestCalculateMethod getCalculateMethod();
 }

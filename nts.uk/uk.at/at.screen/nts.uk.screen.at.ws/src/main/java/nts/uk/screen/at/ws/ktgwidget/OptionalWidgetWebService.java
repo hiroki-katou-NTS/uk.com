@@ -33,10 +33,5 @@ public class OptionalWidgetWebService extends WebService {
 		return OptionalWidgetFinder.getOptionalWidgetDisplay(topPagePartCode);
 	}
 	
-	@POST
-	@Path("getOptionalWidgetInfo")
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public OptionalWidgetInfoDto getOptionalWidgetInfo(DatePeriodParam datePeriodParam){
-		return OptionalWidgetFinder.getDataRecord(datePeriodParam.code, datePeriodParam.strMonth, datePeriodParam.endMonth);
-	}
+	
 }

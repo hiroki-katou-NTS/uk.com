@@ -17,7 +17,6 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
@@ -41,12 +40,13 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryO
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -177,42 +177,46 @@ public class ActualWorkingTimeOfDaily {
 					recordWorkTimeCode,
 					declareResult);
 		
-		TotalWorkingTime calcResultOotsuka;
-		if(workType.getDailyWork().decisionMatchWorkType(WorkTypeClassification.SpecialHoliday).isFullTime()) {
-			//大塚モード(特休時計算)
-			calcResultOotsuka = totalWorkingTime.SpecialHolidayCalculationForOotsuka(recordClass,
-				    vacationClass,
-				    workType,
-				    workTimeDailyAtr,
-				    flexCalcMethod,
-					bonusPayAutoCalcSet,
-					eachCompanyTimeSet,
-					conditionItem,
-					predetermineTimeSetByPersonInfo,
-					leaveLateSet);
-		}
-		else {
-			/*大塚残業*/
-			calcResultOotsuka = calcOotsuka(recordClass,
-											totalWorkingTime,
-											workType,
-											workScheduleTime.getRecordPrescribedLaborTime(),
-											conditionItem.getLaborSystem());
-		}
-		
+		TotalWorkingTime calcResultOotsuka = totalWorkingTime;
+		// 大塚モードの確認
+		if (AppContexts.optionLicense().customize().ootsuka()){
+			// 勤務種類が1日特休かどうか確認する
+			if (workType.getDailyWork().decisionMatchWorkType(WorkTypeClassification.SpecialHoliday).isFullTime()){
+				// 大塚モード(特休時計算)
+				calcResultOotsuka = totalWorkingTime.SpecialHolidayCalculationForOotsuka(
+						recordClass,
+						vacationClass,
+						workType,
+						workTimeDailyAtr,
+						flexCalcMethod,
+						bonusPayAutoCalcSet,
+						eachCompanyTimeSet,
+						conditionItem,
+						predetermineTimeSetByPersonInfo,
+						leaveLateSet);
+			}
+			else{
+				// 大塚残業
+				calcResultOotsuka = calcOotsuka(
+						recordClass,
+						totalWorkingTime,
+						workType,
+						workScheduleTime.getRecordPrescribedLaborTime(),
+						conditionItem.getLaborSystem());
+			}
+			// 大塚モードの計算（欠勤控除時間）
+			// 1日出勤系の場合は処理を呼ばないように作成が必要
+			if (recordClass.getCalculatable()){
+				// 大塚モード休憩未取得
+				calcResultOotsuka = calcResultOotsuka.reCalcLateLeave(
+						recordClass.getWorkTimezoneCommonSet(),
+						recordClass.getFixRestTimeSetting(),
+						recordClass.getFixWoSetting(),
+						recordClass.getIntegrationOfDaily().getAttendanceLeave(),
+						workScheduleTime.getRecordPrescribedLaborTime(), 
+						workType);	
 
-		
-		/*大塚モードの計算（欠勤控除時間）*/
-		//1日出勤系の場合は処理を呼ばないように作成が必要
-		if(recordClass.getCalculatable()) {
-			//大塚モード休憩未取得
-			calcResultOotsuka = calcResultOotsuka.reCalcLateLeave(recordClass.getWorkTimezoneCommonSet(),
-					  recordClass.getFixRestTimeSetting(),
-					  recordClass.getFixWoSetting(),
-					  recordClass.getIntegrationOfDaily().getAttendanceLeave(),
-					  workScheduleTime.getRecordPrescribedLaborTime(), 
-					  workType);	
-
+			}
 		}
 		
 		/*拘束差異時間*/
@@ -255,7 +259,7 @@ public class ActualWorkingTimeOfDaily {
 	public static DivergenceTimeOfDaily createDivergenceTimeOfDaily(
 			DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
 			List<DivergenceTimeRoot> divergenceTimeList,CalAttrOfDailyAttd calcAtrOfDaily,
-			Optional<FixRestTimezoneSet> breakTimeSheets, TotalWorkingTime calcResultOotsuka, Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType) {
+			Optional<TimezoneOfFixedRestTimeSet> breakTimeSheets, TotalWorkingTime calcResultOotsuka, Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType) {
 		
 		val returnList = calcDivergenceTime(forCalcDivergenceDto, divergenceTimeList,calcAtrOfDaily,breakTimeSheets,calcResultOotsuka,workTimeSetting,workType);
 		//returnする
@@ -273,7 +277,7 @@ public class ActualWorkingTimeOfDaily {
 	 */
 	private static List<DivergenceTime> calcDivergenceTime(DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
 			List<DivergenceTimeRoot> divergenceTimeList, CalAttrOfDailyAttd calcAtrOfDaily,
-			Optional<FixRestTimezoneSet> breakTimeSheets, TotalWorkingTime calcResultOotsuka,
+			Optional<TimezoneOfFixedRestTimeSet> breakTimeSheets, TotalWorkingTime calcResultOotsuka,
 									Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType) {
 		val integrationOfDailyInDto = forCalcDivergenceDto.toDomain();
 		if(integrationOfDailyInDto == null
@@ -325,7 +329,15 @@ public class ActualWorkingTimeOfDaily {
 										.findFirst().ifPresent(tdi -> {
 											int totalTime = 0;
 											int deductionTime = (tdi.getDeductionTime() == null ?  0 : tdi.getDeductionTime().valueAsMinutes());
-											if(1 < tdi.getDivTimeId() && tdi.getDivTimeId() <=7) {
+											boolean isCustom = false;
+											if (AppContexts.optionLicense().customize().ootsuka()){
+												if (1 < tdi.getDivTimeId() && tdi.getDivTimeId() <= 7){
+												}
+												else{
+													isCustom = true;
+												}
+											}
+											if(!isCustom) {
 												totalTime = divergenceTimeClass.totalDivergenceTimeWithAttendanceItemId(forCalcDivergenceDto);
 											}
 											//大塚ｶｽﾀﾏｲｽﾞ(乖離No1,8～10は別の処理をさせる
@@ -397,7 +409,7 @@ public class ActualWorkingTimeOfDaily {
 				//所てない休憩未取得時間を算出する際に使用する所定時間に加算する時間(就業時間帯マスタに設定されている所定内の休憩時間の合計)
 				int withinBreakTime = 0;
 				//就業時間帯に設定されている休憩のループ
-				for(DeductionTime breakTImeSheet : recordClass.getFixRestTimeSetting().get().getLstTimezone()) {
+				for(DeductionTime breakTImeSheet : recordClass.getFixRestTimeSetting().get().getTimezones()) {
 					//就業時間帯に設定されている勤務時間帯のstream
 					withinBreakTime += recordClass.getFixWoSetting().stream().filter(tc -> tc.getTimezone().isOverlap(breakTImeSheet))
 														  .map(tt -> tt.getTimezone().getDuplicatedWith(breakTImeSheet.timeSpan()).get().lengthAsMinutes())
@@ -467,7 +479,7 @@ public class ActualWorkingTimeOfDaily {
 	 * @param breakList 就業時間帯側の休憩リスト
 	 * @param breakOfDaily 
 	 */
-	public static int calcDivergenceNo8910(DivergenceTime tdi, IntegrationOfDaily integrationOfDailyInDto,Optional<FixRestTimezoneSet> masterBreakList, 
+	public static int calcDivergenceNo8910(DivergenceTime tdi, IntegrationOfDaily integrationOfDailyInDto,Optional<TimezoneOfFixedRestTimeSet> masterBreakList, 
 										   TotalWorkingTime calcResultOotsuka, Optional<WorkTimeSetting> workTimeSetting, Optional<WorkType> workType) {
 		//実績がそもそも存在しない(不正)の場合
 		if(!integrationOfDailyInDto.getAttendanceTimeOfDailyPerformance().isPresent()
@@ -475,7 +487,7 @@ public class ActualWorkingTimeOfDaily {
 			return 0;
 		val breakOfDaily = calcResultOotsuka.getBreakTimeOfDaily();
 		//就業時間帯側から実績の休憩時間帯への変換
-		val breakList = BreakTimeSheet.covertFromFixRestTimezoneSet(masterBreakList.get().getLstTimezone());
+		val breakList = BreakTimeSheet.covertFromFixRestTimezoneSet(masterBreakList.get().getTimezones());
 		
 		switch(tdi.getDivTimeId()) {
 		case 1:

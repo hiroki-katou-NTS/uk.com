@@ -353,7 +353,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
         vm.$http.post('at', API.register, params).then((res: IRes) => {
             vm.$mask('hide');
-
+            vm.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
             vm.$emit('nextToStep3', res);
         }).catch((error) => {
             vm.$mask('hide');
@@ -443,4 +443,5 @@ const API = {
     getControlAttendance: 'ctx/at/request/application/optionalitem/getControlAttendance',
     getListItemNo: 'ctx/at/record/optionalitem/findByListItemNo',
     update: 'ctx/at/request/application/optionalitem/update',
+    reflectApp: 'at/request/application/reflect-app'
 };

@@ -88,12 +88,12 @@ public class CreateWorkScheduleWorkInfor {
 		List<WorkTypeCode> workTypeCodes = wTypeWTimeUseDailyAttendRecord.getLstWorkTypeCode().stream().filter(wt -> wt != null).collect(Collectors.toList());
 		List<String> lstWorkTypeCode     = workTypeCodes.stream().map(i -> i.toString()).collect(Collectors.toList());
 		//<<Public>> 指定した勤務種類をすべて取得する
-		List<WorkTypeInfor> lstWorkTypeInfor = this.workTypeRepo.getPossibleWorkTypeAndOrder(companyId, lstWorkTypeCode).stream().filter(wk -> wk.getAbolishAtr() == 0).collect(Collectors.toList());
+		List<WorkTypeInfor> lstWorkTypeInfor = this.workTypeRepo.getPossibleWorkTypeAndOrder(companyId, lstWorkTypeCode).stream().collect(Collectors.toList());
 
 		// step 4
 		List<WorkTimeCode> workTimeCodes   = wTypeWTimeUseDailyAttendRecord.getLstWorkTimeCode().stream().filter(wt -> wt != null).collect(Collectors.toList());
 		List<String> lstWorkTimeCode       = workTimeCodes.stream().map(i -> i.toString()).collect(Collectors.toList());
-		List<WorkTimeSetting> lstWorkTimeSetting =  workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, lstWorkTimeCode);
+		List<WorkTimeSetting> lstWorkTimeSetting =  workTimeSettingRepo.getListWorkTime(companyId, lstWorkTimeCode);
 
 		// step 5
 		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = new ArrayList<>();

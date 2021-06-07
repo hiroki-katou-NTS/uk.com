@@ -1,232 +1,125 @@
-module nts.uk.at.view.ksm011.c.viewmodel {
-    import blockUI = nts.uk.ui.block;
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+module nts.uk.at.view.ksm011.c {
+  
+  const PATH = {
+    getSetting: 'screen/at/schedule/basicsetting/init',
+    registerSetting: 'screen/at/schedule/basicsetting/register'
+  };
 
-    export class ScreenModel {
-        controlUseCls: KnockoutObservableArray<any>;
-        useAtr: KnockoutObservable<number>;
-        workTypeList: KnockoutObservableArray<any>;
-        openDialogEnable: KnockoutObservable<boolean>;
-        workTypeListEnable: KnockoutObservable<boolean>;
-        currentItem: KnockoutObservable<WorktypeDisplayDto>;
-        items: KnockoutObservableArray<WorktypeDisplayDto>;
-        workTypeNames: KnockoutObservable<string>;
+  @bean()
+  class ViewModel extends ko.ViewModel {
 
-        constructor() {
-            var self = this;
+    switchItems: KnockoutObservableArray<any>;
+    switchItems1: KnockoutObservableArray<any>;
+    regularWork: KnockoutObservable<number> = ko.observable(0);
+    fluidWork: KnockoutObservable<number> = ko.observable(1);
+    flexTime: KnockoutObservable<number> = ko.observable(1);
+    workTypeControl: KnockoutObservable<number> = ko.observable(0);
+    achievementDisplay: KnockoutObservable<number> = ko.observable(0);
+    workTypeList: KnockoutObservableArray<string> = ko.observableArray([]);
+    workTypeListText: KnockoutObservable<string>;
 
-            self.controlUseCls = ko.observableArray([
-                { code: 0, name: nts.uk.resource.getText("KSM011_8") },
-                { code: 1, name: nts.uk.resource.getText("KSM011_9") }
-            ]);
+    selectableWorkTypes: KnockoutObservableArray<string> = ko.observableArray([]);
 
-            self.useAtr = ko.observable(0);
-            self.workTypeList = ko.observableArray([]);
-            self.openDialogEnable = ko.observable(true);
-            self.workTypeListEnable = ko.observable(true);
-            self.currentItem = ko.observable(new WorktypeDisplayDto({}));
-            self.workTypeNames = ko.observable(nts.uk.resource.getText("KSM011_75"));
-            self.items = ko.observableArray([]);
+    constructor(params: any) {
+      super();
+      const vm = this;
 
-            self.useAtr.subscribe(function(value) {
-                if (value == 0) {
-                    self.openDialogEnable(true);
-                    self.workTypeListEnable(true);
-                } else {
-                    self.openDialogEnable(false);
-                    self.workTypeListEnable(false);
-                }
-            });
+      vm.switchItems = ko.observableArray([
+        { code: 1, name: vm.$i18n('KSM011_38') },
+        { code: 0, name: vm.$i18n('KSM011_39') }
+      ]);
+
+      vm.switchItems1 = ko.observableArray([
+        { code: 1, name: vm.$i18n('KSM011_21') },
+        { code: 0, name: vm.$i18n('KSM011_22') }
+      ]);
+
+      vm.workTypeListText = ko.computed(() => {
+        return vm.workTypeList().map((code: string) => {
+            const tmp = _.find(vm.selectableWorkTypes(), (i: any) => code == i.code);
+            if (tmp) return tmp.name;
+            else return code + " " + vm.$i18n("KSM011_107");
+        }).join("、");
+      });
+
+      vm.getSetting();
+      vm.workTypeControl.subscribe(value => {
+        if (value != 1) {
+            $('#KSM011_C3_6').ntsError('clear');
         }
-
-        /**
-         * Start page.
-         */
-        start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            $.when(self.getWorkTypeList()).done(function() {
-                self.findAll();
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
-
-        openKDL002Dialog() {
-            let self = this;
-            nts.uk.ui.errors.clearAll();
-            nts.uk.ui.block.invisible();
-            var workTypeCodes = _.map(self.workTypeList(), function(item: IWorkTypeModal) { return item.workTypeCode });
-            nts.uk.ui.windows.setShared('KDL002_Multiple', true);
-            nts.uk.ui.windows.setShared('KDL002_AllItemObj', workTypeCodes);
-            nts.uk.ui.windows.setShared('KDL002_SelectedItemId', self.currentItem().workTypeList());
-
-            nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml').onClosed(function(): any {
-                nts.uk.ui.block.clear();
-                var data = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
-                var name = [];
-                _.forEach(data, function(item: IWorkTypeModal) {
-                    name.push(item.name);
-                });
-                self.workTypeNames(name.join(" + "));
-
-                var workTypeCodes = _.map(data, function(item: any) { return item.code; });
-                self.currentItem().workTypeList(workTypeCodes);
-            });
-            nts.uk.ui.block.clear();
-        }
-
-        getWorkTypeList() {
-            var self = this;
-            var dfd = $.Deferred();
-            service.findWorkType().done(function(res) {
-                self.workTypeList.removeAll();
-                _.forEach(res, function(item) {
-                    self.workTypeList.push({
-                        workTypeCode: item.workTypeCode,
-                        name: item.name,
-                        memo: item.memo
-                    });
-                });
-                dfd.resolve();
-            }).fail(function(error) {
-                alert(error.message);
-                dfd.reject(error);
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * Registration function.
-         */
-        registration() {
-            var self = this;
-            var dfd = $.Deferred();
-            nts.uk.ui.block.invisible();
-
-            var workType = ko.toJS(self.currentItem());
-
-
-            if (self.useAtr() == 0) {
-                if (workType.workTypeList.length > 0) {
-                    var workTypeData: any = {
-                        useAtr: self.useAtr(),
-                        workTypeList: workType.workTypeList
-                    };
-
-                    service.add(workTypeData).done(function() {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message);
-                    }).always(() => {
-                        nts.uk.ui.block.clear();
-                    });
-                } else {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_10" });
-                    nts.uk.ui.block.clear();
-                }
-            } else {
-                var workTypeData: any = {
-                    useAtr: self.useAtr(),
-                    workTypeList: []
-                };
-
-                service.add(workTypeData).done(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message);
-                }).always(() => {
-                    nts.uk.ui.block.clear();
-                });
-
-            }
-
-        }
-
-        findAll(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            self.items.removeAll();
-            service.findAll().done(function(totalTimeArr: Array<any>) {
-                if (totalTimeArr) {
-                    self.useAtr(totalTimeArr.useAtr);
-                    var totalTime: any = {
-                        useAtr: totalTimeArr.useAtr,
-                        workTypeList: totalTimeArr.workTypeList
-                    };
-                    _.each(totalTime.workTypeList, (items: any) => {
-                        self.currentItem().workTypeList().push(items.workTypeCode);
-                    });
-                    self.items.push(new WorktypeDisplayDto(totalTime));
-                    var names = self.getNames(self.workTypeList(), totalTimeArr.workTypeList);
-                    if(names){
-                    self.workTypeNames(names);    
-                    } else {
-                        self.workTypeNames(nts.uk.resource.getText("KSM011_75"));
-                    }
-                    
-                };
-            });
-            return dfd.promise();
-        }
-
-        getNames(data: Array<IWorkTypeModal>, workTypeCodesSelected: Array<string>) {
-            var name = [];
-            var self = this;
-            if (workTypeCodesSelected && workTypeCodesSelected.length > 0) {
-                _.forEach(data, function(item: IWorkTypeModal) {
-                    _.forEach(workTypeCodesSelected, function(items: any) {
-                        if (_.includes(items.workTypeCode, item.workTypeCode)) {
-                            name.push(item.name);
-                        }
-                    });
-                });
-            }
-            return name.join(" + ");
-        }
-
-    }
-    export class WorkTypeModal {
-        workTypeCode: string;
-        name: string;
-        memo: string;
-        constructor(param: IWorkTypeModal) {
-            this.workTypeCode = param.workTypeCode;
-            this.name = param.name;
-            this.memo = param.memo;
-        }
+      });
     }
 
-    export interface IWorkTypeModal {
-        workTypeCode: string;
-        name: string;
-        memo: string;
+    mounted() {
+      const vm = this;
     }
 
-
-
-    export class WorktypeDisplayDto {
-        useAtr: KnockoutObservable<number>;
-        workTypeList: KnockoutObservableArray<WorktypeDisplaySetDto>;
-        constructor(param: IWorktypeDisplayDto) {
-            this.useAtr = ko.observable(param.useAtr || 0);
-            this.workTypeList = ko.observableArray(param.workTypeList || null);
+    openDialogKDl002() {
+      const vm = this;
+      const lstselectedCode = vm.workTypeList();
+      const lstselectableCode = vm.selectableWorkTypes().map((i: any) => i.code);
+      nts.uk.ui.windows.setShared('KDL002_Multiple', true, true);
+      //all possible items
+      nts.uk.ui.windows.setShared('KDL002_AllItemObj', lstselectableCode, true);
+      nts.uk.ui.windows.setShared('kdl002isSelection', true);
+      //selected items
+      nts.uk.ui.windows.setShared('KDL002_SelectedItemId', lstselectedCode, true);
+      nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function (): any {
+        var lst = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
+        if (lst) {
+          vm.workTypeList(lst.map((i: any) => i.code));
+          $('#KSM011_C3_6').ntsError('clear');
         }
+      });
     }
 
-    export interface IWorktypeDisplayDto {
-        useAtr?: number;
-        workTypeList?: Array<WorktypeDisplaySetDto>;
-    }
-
-
-    export class WorktypeDisplaySetDto {
-        workTypeCode: string;
-        constructor(param: IWorktypeDisplaySetDto) {
-            this.workTypeCode = param.workTypeCode;
+    getSetting() {
+      const vm = this;
+      vm.$blockui('show');
+      vm.$ajax(PATH.getSetting).done((data) => {
+        if( data ) {
+          vm.regularWork(data.changeableFix);
+          vm.flexTime(data.changeableFlex);
+          vm.fluidWork(data.changeableFluid);
+          vm.workTypeControl(data.displayWorkTypeControl);
+          vm.workTypeList(data.workTypeCodeList || []);
+          vm.achievementDisplay(data.displayActual);
+          vm.selectableWorkTypes(data.displayableWorkTypeList || []);
         }
+      }).fail(error => {
+        vm.$dialog.error(error);
+      }).always(() => {
+        $(".switchButton-wrapper")[0].focus();
+        vm.$blockui('hide');
+      });
     }
 
-    export interface IWorktypeDisplaySetDto {
-        workTypeCode?: string;
-    }
+    saveData() {
+      const vm = this;
+
+      if(vm.workTypeControl() === 1 && (_.isEmpty(vm.workTypeList()) || vm.workTypeListText().indexOf(vm.$i18n("KSM011_107")) >= 0)) {
+        $('#KSM011_C3_6').ntsError('set', {messageId:'Msg_1690', messageParams:[vm.$i18n("KSM011_47")]});
+        return;
+      }
+
+      let params = {
+          changeableFix: vm.regularWork(),
+          changeableFlex: vm.flexTime(),
+          changeableFluid: vm.fluidWork(),
+          displayWorkTypeControl: vm.workTypeControl(),
+          displayActual: vm.achievementDisplay(),
+          displayableWorkTypeCodeList: vm.workTypeList()
+      };
+      vm.$blockui('show');
+      vm.$ajax(PATH.registerSetting, params).done((data) => {
+        vm.$dialog.info({ messageId: 'Msg_15'});
+      }).fail(error => {
+        vm.$dialog.info(error);
+      }).always(() => {
+        vm.$blockui('hide');
+      });
+
+    }   
+  }
 }

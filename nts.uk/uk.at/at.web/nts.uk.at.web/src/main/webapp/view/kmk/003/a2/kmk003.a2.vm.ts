@@ -19,8 +19,11 @@ module a2 {
      */
     class ScreenModel {
 
+        //use half day
+        useHalfDay: KnockoutObservable<boolean>;
+
         // Defined parameter binding
-        parentModel: MainSettingModel;
+        mainSettingModel: MainSettingModel;
         settingEnum: WorkTimeSettingEnumDto;
 
         dataSourceOneDayFixed: KnockoutObservableArray<EmTimeZoneSetFixedTableModel>;
@@ -67,24 +70,35 @@ module a2 {
         isFlexMode: KnockoutComputed<boolean>;
         isFixedMode: KnockoutComputed<boolean>;
         isDiffTimeMode: KnockoutComputed<boolean>;
-        isUseHalfDay: KnockoutObservable<boolean>;
+
+        //accordion
+        oneDayActive: KnockoutObservable<number>;
+        morningActive: KnockoutObservable<number>;
+        afternoonActive: KnockoutObservable<number>;
 
         /**
         * Constructor.
         */
         constructor(input: any) {
             let self = this;
+
+            //accordion start up
+            self.oneDayActive = ko.observable(0);
+            self.morningActive = ko.observable(0);
+            self.afternoonActive = ko.observable(0);
             
             // ====================================== Set Parameter Binding ======================================
-            self.parentModel = input.mainModel;
+            self.mainSettingModel = input.mainModel;
             self.settingEnum = input.enum;
             
             self.isSimpleMode = input.isSimpleMode;
-            self.isFlowMode = self.parentModel.workTimeSetting.isFlow;
-            self.isFlexMode = self.parentModel.workTimeSetting.isFlex;
-            self.isFixedMode = self.parentModel.workTimeSetting.isFixed;
-            self.isDiffTimeMode = self.parentModel.workTimeSetting.isDiffTime;
-            self.isUseHalfDay = input.useHalfDay; 
+            self.isFlowMode = self.mainSettingModel.workTimeSetting.isFlow;
+            self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
+            self.isFixedMode = self.mainSettingModel.workTimeSetting.isFixed;
+            self.isDiffTimeMode = self.mainSettingModel.workTimeSetting.isDiffTime;
+
+            //use halfDay
+            self.useHalfDay = input.useHalfDayWorking;
 
             // ====================================== Defined Variable Flow Mode ======================================
             
@@ -103,14 +117,14 @@ module a2 {
 
             // force to update value in tab 2
             document.querySelector('#ui-id-2').addEventListener('click', () =>
-                self.parentModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne.valueChangedNotifier.valueHasMutated());
+                self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne.valueChangedNotifier.valueHasMutated());
         }
 
         private setFixedTableDatasource(): void {
             let self = this;
-            const fixed = self.parentModel.fixedWorkSetting;
-            const difftime = self.parentModel.diffWorkSetting;
-            const flex = self.parentModel.flexWorkSetting;
+            const fixed = self.mainSettingModel.fixedWorkSetting;
+            const difftime = self.mainSettingModel.diffWorkSetting;
+            const flex = self.mainSettingModel.flexWorkSetting;
 
             self.dataSourceOneDayFixed = fixed.getHDWtzOneday().workTimezone.convertedList2;
             self.dataSourceMorningFixed = fixed.getHDWtzMorning().workTimezone.convertedList2;
@@ -211,7 +225,7 @@ module a2 {
          */
         private bindDataFlowMode() {
             let self = this;
-            const flowWorkSetting = self.parentModel.flowWorkSetting;
+            const flowWorkSetting = self.mainSettingModel.flowWorkSetting;
 
             self.selectedRoundingTime = flowWorkSetting.halfDayWorkTimezone.workTimeZone
                 .workTimeRounding.roundingTime;

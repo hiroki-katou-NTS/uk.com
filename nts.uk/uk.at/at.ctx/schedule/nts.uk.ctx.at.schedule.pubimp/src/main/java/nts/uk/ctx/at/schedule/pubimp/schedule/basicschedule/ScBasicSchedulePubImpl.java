@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -113,12 +112,6 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 		export.setScheduleEndClock(timezone.getScheduleEndClock().valueAsMinutes());
 		return export;
 	}
-
-	@Override
-	public GeneralDate acquireMaxDateBasicSchedule(List<String> sIds) {
-		return this.repository.findMaxDateByListSid(sIds);
-	}
-
 
 	@Override
 	public Optional<ScWorkScheduleExport> findByIdNew(String employeeId, GeneralDate baseDate) {

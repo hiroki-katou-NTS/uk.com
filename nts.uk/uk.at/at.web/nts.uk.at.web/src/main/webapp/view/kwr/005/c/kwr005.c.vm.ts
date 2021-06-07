@@ -75,7 +75,7 @@ module nts.uk.at.view.kwr005.c {
       vm.isDeleted(false);
       vm.$ajax(PATHS.cloneSettingClassification, vm.params())
         .done((response) => {
-          vm.$dialog.error({ messageId: 'Msg_15' }).then(() => {
+          vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
             vm.$blockui('hide');
             vm.$window.close({ code: vm.newCode(), name: vm.newName() });
           });

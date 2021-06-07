@@ -15,7 +15,7 @@ module nts.uk.at.view.kmk003.a {
                 afternoon: KnockoutObservable<number>;
 
                 constructor() {
-                    this.oneDay = ko.observable(null);
+                    this.oneDay = ko.observable(0);
                     this.morning = ko.observable(0);
                     this.afternoon = ko.observable(0);
                 }
@@ -36,7 +36,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 resetData(){
-                    this.oneDay(null);
+                    this.oneDay(0);
                     this.morning(0);
                     this.afternoon(0);
                 }
@@ -80,20 +80,14 @@ module nts.uk.at.view.kmk003.a {
                 constructor() {
                     this.useAtr = ko.observable(false);
                     this.workNo = ko.observable(0);
-                    this.start = ko.observable(null);
-                    this.end = ko.observable(null);
+                    this.start = ko.observable(0);
+                    this.end = ko.observable(0);
                     this.valueChangedNotifier = ko.observable();
                     this.start.subscribe(() => {
                         this.valueChangedNotifier.valueHasMutated();
                     });
                     this.end.subscribe(() => {
                         this.valueChangedNotifier.valueHasMutated();
-                    });
-					this.useAtr.subscribe((useAtr) => {
-						if(!useAtr){
-                        this.start(null);
-						this.end(null);
-						}
                     });
                 }
 
@@ -112,8 +106,8 @@ module nts.uk.at.view.kmk003.a {
                 resetData(): void {
                     let self = this;
                     self.useAtr(false);
-                    self.start(null);
-                    self.end(null);
+                    self.start(0);
+                    self.end(0);
                 }
 
                 updateData(data: TimezoneDto) {
@@ -122,15 +116,18 @@ module nts.uk.at.view.kmk003.a {
 					if(data.useAtr){
 		                    this.end(data.end);
 		                    this.start(data.start);
-		            }
+		            } else {
+                        this.end(null);
+                        this.start(null);
+                    }
 				}
 				
                 toDto(): TimezoneDto {
                     var dataDTO: TimezoneDto = {
                         useAtr: this.useAtr(),
                         workNo: this.workNo(),
-                        end: this.end(),
-                        start: this.start()
+                        end: this.useAtr() ? this.end() : null,
+                        start: this.useAtr() ? this.start() : null
                     };
                     return dataDTO;
                 }
@@ -199,7 +196,6 @@ module nts.uk.at.view.kmk003.a {
                 rangeTimeDayInHours: KnockoutObservable<number>; // in hours
                 workTimeCode: KnockoutObservable<string>;
                 predTime: PredetermineTimeModel;
-                nightShift: KnockoutObservable<number>;
                 prescribedTimezoneSetting: PrescribedTimezoneSettingModel;
                 startDateClock: KnockoutObservable<number>;
                 predetermine: KnockoutObservable<boolean>;
@@ -211,7 +207,6 @@ module nts.uk.at.view.kmk003.a {
                     this.rangeTimeDay = ko.computed(() => this.rangeTimeDayInHours() * PredetemineTimeSettingModel.TIME_UNIT);
                     this.workTimeCode = ko.observable('');
                     this.predTime = new PredetermineTimeModel();
-                    this.nightShift = ko.observable(0);
                     this.prescribedTimezoneSetting = new PrescribedTimezoneSettingModel();
                     this.startDateClock = ko.observable(0);
                     this.predetermine = ko.observable(false);
@@ -221,7 +216,6 @@ module nts.uk.at.view.kmk003.a {
                     this.rangeTimeDayInHours(data.rangeTimeDay / PredetemineTimeSettingModel.TIME_UNIT); // minutes to hours
                     this.workTimeCode(data.workTimeCode);
                     this.predTime.updateData(data.predTime);
-                    this.nightShift(data.nightShift);
                     this.prescribedTimezoneSetting.updateData(data.prescribedTimezoneSetting);
                     this.startDateClock(data.startDateClock);
                     this.predetermine(data.predetermine);
@@ -232,7 +226,6 @@ module nts.uk.at.view.kmk003.a {
                         rangeTimeDay: this.rangeTimeDay(),
                         workTimeCode: this.workTimeCode(),
                         predTime: this.predTime.toDto(),
-                        nightShift: this.nightShift(),
                         prescribedTimezoneSetting: this.prescribedTimezoneSetting.toDto(),
                         startDateClock: this.startDateClock(),
                         predetermine: this.predetermine()
@@ -243,7 +236,6 @@ module nts.uk.at.view.kmk003.a {
                 resetData() {
                     this.rangeTimeDayInHours(PredetemineTimeSettingModel.ONE_DAY);
                     this.predTime.resetData();
-                    this.nightShift(0);  
                     this.prescribedTimezoneSetting.resetData();
                     this.startDateClock(0);
                     this.predetermine(false);

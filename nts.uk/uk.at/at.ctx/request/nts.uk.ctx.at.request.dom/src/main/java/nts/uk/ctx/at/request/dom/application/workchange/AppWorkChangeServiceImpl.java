@@ -257,6 +257,11 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		WorkChangeCheckRegOutput output = new WorkChangeCheckRegOutput();
 		// 登録時チェック処理（勤務変更申請）
 		this.checkRegisterWorkChange(application, appWorkChange);
+		// 勤務種類、就業時間帯チェックのメッセージを表示
+		detailBeforeUpdate.displayWorkingHourCheck(
+						AppContexts.user().companyId(),
+						appWorkChange.getOpWorkTypeCD().map(x -> x.v()).orElse(null),
+						appWorkChange.getOpWorkTimeCD().map(x -> x.v()).orElse(null));
 		List<GeneralDate> lstDateHd = null;
 		if (application.getOpAppStartDate().isPresent() && application.getOpAppEndDate().isPresent()) {
 			// 休日の申請日を取得する
@@ -431,8 +436,33 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 
 	@Override
 	public List<ConfirmMsgOutput> checkBeforeUpdate(String companyID, Application application,
-			AppWorkChange appWorkChange, boolean agentAtr, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+			AppWorkChange appWorkChange, boolean agentAtr, AppDispInfoStartupOutput appDispInfoStartupOutput, AppWorkChangeDispInfo appWorkChangeDispInfo) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
+		String workTypeCD = null;
+		String workTimeCD = null;
+		if (appWorkChangeDispInfo.getWorkInformationForApplication().isPresent()) {
+			if (appWorkChange.getOpWorkTypeCD().isPresent()) {
+				workTypeCD = appWorkChange.getOpWorkTypeCD().get().v();
+				if (appWorkChangeDispInfo.getWorkInformationForApplication().get().getWorkTypeCode() != null) {
+					String workType = appWorkChangeDispInfo.getWorkInformationForApplication().get().getWorkTypeCode().v();
+					if (workType.equals(workTypeCD)) {
+						workTypeCD = null;
+					}
+				}
+			}
+			
+			if (appWorkChange.getOpWorkTimeCD().isPresent()) {
+				workTimeCD = appWorkChange.getOpWorkTimeCD().get().v();
+				if (appWorkChangeDispInfo.getWorkInformationForApplication().get().getWorkTimeCode() != null) {
+					String workTime = appWorkChangeDispInfo.getWorkInformationForApplication().get().getWorkTimeCode().v();
+					if (workTime.equals(workTimeCD)) {
+						workTimeCD = null;
+					}
+				}
+			}
+		}
+		
+		
 		// 詳細画面の登録時チェック処理（全申請共通）
 		detailBeforeUpdate.processBeforeDetailScreenRegistration(
 				companyID, 
@@ -442,8 +472,8 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				application.getAppID(), 
 				application.getPrePostAtr(), 
 				application.getVersion(), 
-				appWorkChange.getOpWorkTypeCD().isPresent() ? appWorkChange.getOpWorkTypeCD().get().v() : null , 
-				appWorkChange.getOpWorkTimeCD().isPresent() ? appWorkChange.getOpWorkTimeCD().get().v(): null,
+				workTypeCD , 
+				workTimeCD,
 				appDispInfoStartupOutput);
 		// 登録時チェック処理（勤務変更申請）
 		this.checkRegisterWorkChange(application, appWorkChange);
@@ -579,7 +609,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	
 	@Override
 	public WorkChangeCheckRegOutput checkBeforeRegister(Boolean mode, String companyId, Application application,
-			AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+			AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag, AppDispInfoStartupOutput appDispInfoStartupOutput, AppWorkChangeDispInfo appWorkChangeDispInfo) {
 		WorkChangeCheckRegOutput workChangeCheckRegOutput = new WorkChangeCheckRegOutput();
 //		INPUT．「画面モード」をチェックする
 		if (mode ) {
@@ -587,7 +617,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 			workChangeCheckRegOutput = this.checkBeforeRegister(companyId, opErrorFlag, application, appWorkChange, appDispInfoStartupOutput);
 		}else {
 //			更新前のエラーチェック処理
-			workChangeCheckRegOutput.setConfirmMsgLst(this.checkBeforeUpdate(companyId, application, appWorkChange, false, appDispInfoStartupOutput));
+			workChangeCheckRegOutput.setConfirmMsgLst(this.checkBeforeUpdate(companyId, application, appWorkChange, false, appDispInfoStartupOutput, appWorkChangeDispInfo));
 		}
 
 		return workChangeCheckRegOutput;

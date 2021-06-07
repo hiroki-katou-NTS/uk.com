@@ -70,6 +70,9 @@ public interface WorkTimeSettingRepository {
 	 * @return the list work time set by list code
 	 */
 	public List<WorkTimeSetting> getListWorkTimeSetByListCode(String companyId, List<String> workTimeCodes);
+	
+	// có chứa cả những WorkTime bị hủy.
+	public List<WorkTimeSetting> getListWorkTime(String companyId, List<String> workTimeCodes);
 
 	/**
 	 * Insert.
