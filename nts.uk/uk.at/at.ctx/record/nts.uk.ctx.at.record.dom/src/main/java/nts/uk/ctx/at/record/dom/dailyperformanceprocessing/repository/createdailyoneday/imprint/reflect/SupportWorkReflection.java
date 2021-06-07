@@ -18,6 +18,9 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.GetSupportDat
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudCriteriaSameStampOfSupportRepo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudgmentCriteriaSameStampOfSupport;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
@@ -25,9 +28,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemIdContainer;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.enu.DailyDomainGroup;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -512,7 +512,8 @@ public class SupportWorkReflection {
 			WorkTemporary informationWork) {
 		if (startAtr == StartAtr.START_OF_SUPPORT) {
 			if (attendance.getTimeSheet().getEnd().isPresent()) { // check để không lỗi
-				ReasonTimeChange reasonTimeChange = new ReasonTimeChange(TimeChangeMeans.valueOf(attendance.getTimeSheet().getEnd().get().getReasonTimeChange().getTimeChangeMeans().value), 
+				ReasonTimeChange reasonTimeChange = new ReasonTimeChange(TimeChangeMeans.valueOf(attendance.getTimeSheet().getEnd().get().getReasonTimeChange().getTimeChangeMeans() == null ? null : 
+					attendance.getTimeSheet().getEnd().get().getReasonTimeChange().getTimeChangeMeans().value), 
 						Optional.ofNullable(attendance.getTimeSheet().getEnd().get().getReasonTimeChange().getEngravingMethod().isPresent() ? 
 								attendance.getTimeSheet().getEnd().get().getReasonTimeChange().getEngravingMethod().get() : null));
 				Optional<TimeWithDayAttr> timeWithDay = attendance.getTimeSheet().getEnd().get().getTimeWithDay().isPresent() ? 
@@ -527,7 +528,8 @@ public class SupportWorkReflection {
 			}
 		} else {
 			if (attendance.getTimeSheet().getStart().isPresent()) { // check để không lỗi
-				ReasonTimeChange reasonTimeChange = new ReasonTimeChange(TimeChangeMeans.valueOf(attendance.getTimeSheet().getStart().get().getReasonTimeChange().getTimeChangeMeans().value), 
+				ReasonTimeChange reasonTimeChange = new ReasonTimeChange(TimeChangeMeans.valueOf(attendance.getTimeSheet().getStart().get().getReasonTimeChange().getTimeChangeMeans() == null ? null : 
+					attendance.getTimeSheet().getStart().get().getReasonTimeChange().getTimeChangeMeans().value), 
 						Optional.ofNullable(attendance.getTimeSheet().getStart().get().getReasonTimeChange().getEngravingMethod().isPresent() ? 
 								attendance.getTimeSheet().getStart().get().getReasonTimeChange().getEngravingMethod().get() : null));
 				Optional<TimeWithDayAttr> timeWithDay = attendance.getTimeSheet().getStart().get().getTimeWithDay().isPresent() ? 
@@ -574,14 +576,21 @@ public class SupportWorkReflection {
 			// 出勤２時刻より大きい場合 - larger
 			boolean checkTimeLarger = false;
 			if (ouenWorkTime.getTimeSheet().getStart().isPresent()) {
-				if (ouenWorkTime.getTimeSheet().getStart().get().getTimeWithDay().get().v() > informationWork
-						.getTwoHoursWork().get().getStamp().get().getTimeDay().getTimeWithDay().get().v()) {
-					checkTimeLarger = true;
+				if(ouenWorkTime.getTimeSheet().getStart().get().getTimeWithDay().isPresent() && informationWork
+						.getTwoHoursWork().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+					if (ouenWorkTime.getTimeSheet().getStart().get().getTimeWithDay().get().v() > informationWork
+							.getTwoHoursWork().get().getStamp().get().getTimeDay().getTimeWithDay().get().v()) {
+						checkTimeLarger = true;
+					}
 				}
+				
 			} else {
-				if (ouenWorkTime.getTimeSheet().getEnd().get().getTimeWithDay().get().v() > informationWork
-						.getTwoHoursWork().get().getStamp().get().getTimeDay().getTimeWithDay().get().v()) {
-					checkTimeLarger = true;
+				if (ouenWorkTime.getTimeSheet().getEnd().get().getTimeWithDay().isPresent() && informationWork
+						.getTwoHoursWork().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+					if (ouenWorkTime.getTimeSheet().getEnd().get().getTimeWithDay().get().v() > informationWork
+							.getTwoHoursWork().get().getStamp().get().getTimeDay().getTimeWithDay().get().v()) {
+						checkTimeLarger = true;
+					}
 				}
 			}
 
@@ -796,20 +805,20 @@ public class SupportWorkReflection {
 		Optional<OuenWorkTimeSheetOfDailyAttendance> correctMaximumNew = Optional.empty();
 		// 取得できる応援データの開始データが自動セットかどうか確認する
 		if( !ouenBeforeNew.isPresent()) return -1;
-		if (ouenBeforeNew.get().getTimeSheet().getStart().get().getReasonTimeChange()
+		if (ouenBeforeNew.get().getTimeSheet().getStart().isPresent() && ouenBeforeNew.get().getTimeSheet().getStart().get().getReasonTimeChange()
 				.getTimeChangeMeans() == TimeChangeMeans.AUTOMATIC_SET) {
 			// 自動セットの場合
 			// 反映前の応援時刻を取得する
 			Optional<WorkTimeInformation> end = ouenBeforeNew.get().getTimeSheet().getEnd();
 
 			correctMaximumNew = lstCorrectMaximum.stream().filter(x -> {
-				if(!x.getTimeSheet().getEnd().isPresent()) return false;
+				if(!x.getTimeSheet().getEnd().isPresent() || !end.isPresent()) return false;
 				return x.getTimeSheet().getEnd().get().equals(end.get());
 			}).findFirst();
 		} else {
 			Optional<WorkTimeInformation> start = ouenBeforeNew.get().getTimeSheet().getStart();
 			correctMaximumNew = lstCorrectMaximum.stream().filter(x -> {
-				if(!x.getTimeSheet().getStart().isPresent()) return false;
+				if(!x.getTimeSheet().getStart().isPresent() || !start.isPresent()) return false;
 				
 				return x.getTimeSheet().getStart().get().equals(start.get());				
 			}).findFirst();

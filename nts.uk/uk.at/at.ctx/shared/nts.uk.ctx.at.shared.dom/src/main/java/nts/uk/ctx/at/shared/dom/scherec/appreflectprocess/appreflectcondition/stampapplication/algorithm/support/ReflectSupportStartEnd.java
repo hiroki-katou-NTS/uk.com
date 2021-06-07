@@ -80,12 +80,10 @@ public class ReflectSupportStartEnd {
 			lstItemId.add(CancelAppStamp.createItemId(930, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
 		}
 
-		WorkplaceOfWorkEachOuen workplace = null;
-		if (empSetOpt.isPresent()) {
-			workplace = WorkplaceOfWorkEachOuen.create(new WorkplaceId(empSetOpt.get().getWorkplaceId()),
-					empSetOpt.get().getWorkLocationCD());
-			lstItemId.add(CancelAppStamp.createItemId(921, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
-		}
+		WorkplaceOfWorkEachOuen workplace = WorkplaceOfWorkEachOuen.create(
+				data.getWorkPlaceId().map(x -> x.v()).orElse(dailyApp.getAffiliationInfor().getWplID()),
+				data.getWorkLocationCd().orElse(null));
+		lstItemId.add(CancelAppStamp.createItemId(921, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
 
 		WorkContent workContent = WorkContent.create(workplace, Optional.empty(), Optional.empty());
 		return Pair.of(
