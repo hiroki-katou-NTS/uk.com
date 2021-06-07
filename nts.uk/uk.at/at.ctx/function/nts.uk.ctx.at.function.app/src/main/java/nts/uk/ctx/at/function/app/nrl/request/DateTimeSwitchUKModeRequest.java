@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.function.app.nrl.Command;
 import nts.uk.ctx.at.function.app.nrl.NRContentList;
 import nts.uk.ctx.at.function.app.nrl.data.ItemSequence.MapItem;
+import nts.uk.ctx.at.function.app.nrl.exceptions.ErrorCode;
 import nts.uk.ctx.at.function.app.nrl.response.NRLResponse;
 import nts.uk.ctx.at.function.app.nrl.xml.Element;
 import nts.uk.ctx.at.function.app.nrl.xml.Frame;
@@ -38,7 +39,7 @@ public class DateTimeSwitchUKModeRequest extends NRLRequest<Frame> {
 		if (!setting.isPresent()) {
 			// if(<>$data.isPresent()) return NAKを作る();
 			context.setResponse(NRLResponse.noAccept(context.getTerminal().getNrlNo(),
-					context.getTerminal().getMacAddress(), context.getTerminal().getContractCode()).build());
+					context.getTerminal().getMacAddress(), context.getTerminal().getContractCode()).build().addPayload(Frame.class, ErrorCode.PARAM.value));
 			return;
 		}
 

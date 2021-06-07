@@ -83,7 +83,7 @@ public class TimeIORequest extends NRLRequest<Frame> {
 			if (!result.isPresent()) {
 				context.setResponse(NRLResponse
 						.noAccept(context.getTerminal().getNrlNo(), context.getTerminal().getMacAddress(), contractCode)
-						.build());
+						.build().addPayload(Frame.class, ErrorCode.PARAM.value));
 				return;
 			}
 			if (result.get().getLeft().isPresent())
