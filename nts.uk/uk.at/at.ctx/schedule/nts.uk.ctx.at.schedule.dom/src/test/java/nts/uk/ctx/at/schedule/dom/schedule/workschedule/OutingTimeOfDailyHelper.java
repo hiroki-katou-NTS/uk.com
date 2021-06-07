@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting;
+package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 
 import java.util.Collections;
 
