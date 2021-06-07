@@ -1640,74 +1640,94 @@ public class WorkScheduleTest {
 				tuple("code", 20, 0, 23, 0));
 	}
 	
+	/**
+	 * WorkSchedule: holiday
+	 * -----------
+	 * Expect: BusinessException Msg_2103
+	 */
 	@Test
-	public void testAddTaskScheduleWithTimeSpan_taskSchedule_empty() {
+	public void testAddTaskScheduleWithTimeSpan_Msg_2103(
+			@Injectable WorkInfoOfDailyAttendance workInfo) {
 		
-		BreakTimeOfDailyAttd breakTime = new BreakTimeOfDailyAttd(Arrays.asList(
-				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(12, 0), TimeWithDayAttr.hourMinute(13, 0)),
-				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(15, 0), TimeWithDayAttr.hourMinute(15, 30))
-				));
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithWorkInfo(workInfo);
 		
-		WorkSchedule workSchedule = WorkScheduleHelper.createWithBreakTimeAndShortTime( breakTime, Optional.empty() );
-		
-		new Expectations(workSchedule) {{
+		new Expectations() {{
 			
-			workSchedule.getTimeVacation();
-			result = new HashMap<>();
+			workInfo.isAttendanceRate(require);
+			result = false;
 		}};
 		
-		workSchedule.addTaskScheduleWithTimeSpan(
-			require,
-			new TimeSpanForCalc(
-				TimeWithDayAttr.hourMinute(14, 0),
-				TimeWithDayAttr.hourMinute(17, 0)),
-			new TaskCode("001") );
-		
-		assertThat( workSchedule.getTaskSchedule().getDetails() )
-			.extracting(
-				d -> d.getTaskCode().v(),
-				d -> d.getTimeSpan().getStart().hour(),
-				d -> d.getTimeSpan().getStart().minute(),
-				d -> d.getTimeSpan().getEnd().hour(),
-				d -> d.getTimeSpan().getEnd().minute())
-			.containsExactly(
-				tuple( "001", 14, 0, 15, 0),
-				tuple( "001", 15, 30, 17, 0)
-			);
+		NtsAssert.businessException("Msg_2103", () -> {
+			workSchedule.addTaskScheduleWithTimeSpan(
+					require,
+					new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(11, 0),
+						TimeWithDayAttr.hourMinute(18, 0)),
+					new TaskCode("001") );
+		});
 	}
 	
+	/**
+	 * WorkSchedule 8:00~17:00
+	 * 		breakTime: 12:00~13:00
+	 * 		existsTaskSchedule: "000" 8:00~12:00
+	 * ↑
+	 * insertTaskSchedule: "001" 10:00~18:00
+	 * ----------------------------------
+	 * Expect: 
+	 * 		"000" 8:00~10:00
+	 * 		"001" 10:00~12:00
+	 * 		"001" 13:00~17:00
+	 */
 	@Test
-	public void testAddTaskScheduleWithTimeSpan_taskSchedule_exist() {
+	public void testAddTaskScheduleWithTimeSpan_ok(
+			@Injectable WorkInfoOfDailyAttendance workInfo,
+			@Injectable TimeLeavingOfDailyAttd timeLeaving
+			) {
 		
+		// create WorkSchedule and its attributes
 		BreakTimeOfDailyAttd breakTime = new BreakTimeOfDailyAttd(Arrays.asList(
-				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(12, 0), TimeWithDayAttr.hourMinute(13, 0)),
-				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(15, 0), TimeWithDayAttr.hourMinute(15, 30))
+				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(12, 0), TimeWithDayAttr.hourMinute(13, 0))
 				));
 		
 		TaskSchedule taskSchedule = new TaskSchedule(Arrays.asList(
 				new TaskScheduleDetail(
 						new TaskCode("000"),
 						new TimeSpanForCalc(
-								TimeWithDayAttr.hourMinute(13, 00), 
-								TimeWithDayAttr.hourMinute(15, 00))
+								TimeWithDayAttr.hourMinute(8, 00), 
+								TimeWithDayAttr.hourMinute(12, 00))
 						)
 				));
 		
-		WorkSchedule workSchedule = WorkScheduleHelper.createWithBreakTimeAndTaskSchedule( breakTime, taskSchedule );
+		WorkSchedule workSchedule = WorkScheduleHelper.createDefaultWorkSchedule();
+		workSchedule.setWorkInfo(workInfo);
+		workSchedule.setLstBreakTime(breakTime);
+		workSchedule.setTaskSchedule(taskSchedule);
+		workSchedule.setOptTimeLeaving(Optional.of(timeLeaving));
 		
+		// mock
 		new Expectations(workSchedule) {{
+			
+			workInfo.isAttendanceRate(require);
+			result = true;
+			
+			timeLeaving.getTimeOfTimeLeavingAtt();
+			result = Arrays.asList(
+					new TimeSpanForCalc( TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(17, 00)) );
 			
 			workSchedule.getTimeVacation();
 			result = new HashMap<>();
 		}};
 		
+		// run
 		workSchedule.addTaskScheduleWithTimeSpan(
 			require,
 			new TimeSpanForCalc(
-				TimeWithDayAttr.hourMinute(14, 0),
-				TimeWithDayAttr.hourMinute(17, 0)),
+				TimeWithDayAttr.hourMinute(10, 0),
+				TimeWithDayAttr.hourMinute(18, 0)),
 			new TaskCode("001") );
 		
+		// assert
 		assertThat( workSchedule.getTaskSchedule().getDetails() )
 			.extracting(
 				d -> d.getTaskCode().v(),
@@ -1716,9 +1736,9 @@ public class WorkScheduleTest {
 				d -> d.getTimeSpan().getEnd().hour(),
 				d -> d.getTimeSpan().getEnd().minute())
 			.containsExactly(
-				tuple( "000", 13, 0, 14, 0),
-				tuple( "001", 14, 0, 15, 0),
-				tuple( "001", 15, 30, 17, 0)
+				tuple( "000", 8, 0, 10, 0),
+				tuple( "001", 10, 0, 12, 0),
+				tuple( "001", 13, 0, 17, 0)
 			);
 	}
 	

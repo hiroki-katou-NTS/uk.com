@@ -564,9 +564,15 @@ public class WorkSchedule implements DomainAggregate {
 	 */
 	public void addTaskScheduleWithTimeSpan(Require require, TimeSpanForCalc targetTimeSpan, TaskCode taskCode) {
 		
-		List<TaskScheduleDetail> addingDetails = 
-				this.getTimeSpansWhichNotDuplicatedWithTheNotWorkingTimeSpan(require, targetTimeSpan).stream()
-				.map( timeSpan -> new TaskScheduleDetail(taskCode, timeSpan))
+		List<TimeSpanForCalc> workingTimeSpanList = this.getWorkingTimeSpan(require);
+		if ( workingTimeSpanList.isEmpty() ) {
+			throw new BusinessException("Msg_2103");
+		}
+		
+		List<TaskScheduleDetail> addingDetails = workingTimeSpanList.stream()
+				.map( workKingTimeSpan -> workKingTimeSpan.getDuplicatedWith(targetTimeSpan))
+				.filter(Optional::isPresent)
+				.map( timeSpan -> new TaskScheduleDetail(taskCode, timeSpan.get()))
 				.collect( Collectors.toList() );
 		
 		addingDetails.forEach( detail -> {
