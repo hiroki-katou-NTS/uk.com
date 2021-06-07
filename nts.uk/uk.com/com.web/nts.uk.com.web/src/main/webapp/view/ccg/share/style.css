@@ -182,6 +182,7 @@
 	writing-mode: vertical-lr;
 	-ms-writing-mode: tb-lr;
   color: white !important;
+  line-height: 30px;
 }
 .ccg-lbl-search-drawer {
 	height: 96px;
@@ -273,5 +274,12 @@
   height: 93% !important;
 }
 .icon-ml {
-  margin-left: 5px;
+  margin-left: 3px;
+}
+
+/* Fix line height on IE 10+ */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  .ccg-lbl-vertical {
+    line-height: 23px;
+  }
 }
