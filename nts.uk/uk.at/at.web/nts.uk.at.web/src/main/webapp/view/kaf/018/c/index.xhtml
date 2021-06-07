@@ -69,7 +69,7 @@
 						<div data-bind="ntsCheckBox: { checked: urlMonthEmbed }">#{i18n.getText('KAF018_364')}</div>
 					</div>
 				</div>
-				<div class="table" style="margin-left: 5px; margin-top: 10px;">
+				<div class="table" style="margin-left: 5px; margin-top: 10px;" data-bind="if: displayUpdTmpBtn">
 					<div class="cell" style="width: 60px">
 						<button data-bind="click: updateMailTemplate, enable: $root.errors.isEmpty">#{i18n.getText('KAF018_358')}</button>
 					</div>
