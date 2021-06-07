@@ -302,6 +302,7 @@ public class TimeRecordReqSetting implements DomainAggregate {
 			this.employeeIds = employeeIds;
 			this.bentoMenuFrameNumbers = bentoMenuFrameNumbers;
 			this.workTypeCodes = workTypeCodes;
+			this.timeSwitchUKMode = Optional.empty();
 		}
 
 		public ReqSettingBuilder workTime(List<WorkTimeCode> workTimeCodes) {

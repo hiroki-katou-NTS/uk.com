@@ -67,6 +67,7 @@ public class RequestDispatcher {
 		RequestMapper.put(Command.WORKTYPE_INFO.Request, WorkTypeInfoRequest.class);
 		RequestMapper.put(Command.TR_REMOTE.Request, SendToNRLRemote.class);
 		RequestMapper.put(Command.APPLICATION_INFO.Request, ApplicationReasonRequest.class);
+		RequestMapper.put(Command.UK_SWITCH_MODE.Request, DateTimeSwitchUKModeRequest.class);
 	}
 	
 	/**

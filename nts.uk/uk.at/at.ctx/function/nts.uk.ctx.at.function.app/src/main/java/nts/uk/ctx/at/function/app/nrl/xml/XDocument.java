@@ -80,7 +80,8 @@ public abstract class XDocument<T> {
 			return dunmarshal(tmpFile).orElseThrow(InvalidFrameException::new);
 		} finally {
 			if (Objects.nonNull(tmpFile)) {
-				tmpFile.dispose();
+				tmpFile.closeInputStream();
+				tmpFile.closeOutputStream();;
 			}
 		}
 	}

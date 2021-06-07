@@ -54,7 +54,7 @@ public class DateTimeSwitchUKModeRequest extends NRLRequest<Frame> {
 
 	@Override
 	public String responseLength() {
-		return "0026";
+		return "0031";
 	}
 
 }

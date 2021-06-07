@@ -197,7 +197,7 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			
 		case UK_SWITCH_MODE:
 			 orders = request ? UK_SWITCH_MODE_REQ : UK_SWITCH_MODE_RES;
-			
+			 break;
 		default:
 			return Optional.empty();
 		}
