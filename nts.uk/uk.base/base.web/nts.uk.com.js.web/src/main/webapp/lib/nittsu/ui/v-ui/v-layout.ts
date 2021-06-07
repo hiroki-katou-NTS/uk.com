@@ -125,71 +125,50 @@ module nts.uk.ui.layout {
         init(element: HTMLElement, valueAccessor: () => KnockoutObservable<string | boolean>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext & { $vm: nts.uk.ui.vm.ViewModel }): { controlsDescendantBindings: boolean; } {
             const vm = new ko.ViewModel();
             const pgName = valueAccessor();
+            const title = ko.observable('');
             const back = allBindingsAccessor.get('back');
 
-            // const { programId } = __viewContext.program;
-            //    = this.getProgramName();
-
-            const $span = $('<span>').get(0);
             const $title = $(element);
+            const $span = $('<span>').get(0);
+
+            const text = ko.computed({
+                read: () => {
+                    const $pg = ko.unwrap(pgName);
+                    const $title = ko.unwrap(title);
+
+                    if (_.isString($pg)) {
+                        return vm.$i18n($pg);
+                    }
+
+                    if ($pg) {
+                        return $title.trim();
+                    }
+
+                    return '';
+                },
+                disposeWhenNodeIsRemoved: element
+            });
+
+            ko.applyBindingsToNode($span, { text }, bindingContext);
+
+            vm
+                .$ajax('com', '/sys/portal/webmenu/program')
+                .then((response: { name: string }[]) => {
+                    const [first] = response;
+
+                    if (first) {
+                        const { name } = first;
+
+                        if (name) {
+                            title(name);
+                        }
+                    }
+                });
 
             $title
                 .append($span)
                 .addClass('pg-name')
                 .removeAttr('data-bind');
-
-            const sessionProgram = () =>  {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax('com', 'sys/portal/webmenu/program').done(function (pg: any) {
-                    dfd.resolve(pg);
-                });
-                return dfd.promise();
-            }
-
-            let programName = "";
-
-            sessionProgram().done((pg: any) => {
-                
-                if (pg && pg.length > 1) {
-                    var pgParam_1 = uk.localStorage.getItem("UKProgramParam");
-                    if (pgParam_1.isPresent()) {
-                        var program = _.find(pg, function (p: any) {
-                            return p.param === pgParam_1.get();
-                        });
-                        if (program) {
-                            programName = program.name;
-                        }
-                        uk.localStorage.removeItem("UKProgramParam");
-                    }
-                }
-                else (pg && pg.length === 1) {
-                    programName = pg[0].name;
-                }
-
-                const text = ko.computed({
-                    read: () => {
-                        const $pg = ko.unwrap(pgName);
-    
-                        if (_.isString($pg)) {
-                            return vm.$i18n($pg);
-                        }
-    
-                        if ($pg) {
-                            // return `${programId || ''} ${programName || ''}`.trim();
-                            return `${programName || ''}`.trim();
-                        }
-    
-                        return '';
-                    },
-                    disposeWhenNodeIsRemoved: element
-                });
-    
-                ko.applyBindingsToNode($span, { text }, bindingContext);
-            });
-
-            
-
-            
 
             if (back) {
                 $title.addClass('navigator');
@@ -206,9 +185,9 @@ module nts.uk.ui.layout {
             return { controlsDescendantBindings: false };
         }
 
-        
 
-        
+
+
     }
 
     // Handler for fixed functional area on top or bottom page
@@ -233,7 +212,7 @@ module nts.uk.ui.layout {
                     element.id = "functions-area";
                 }
 
-                if (title && mode === 'view') {
+                /*if (title && mode === 'view') {
                     const pgName = $(element).find('.pg-name');
                     const $title = pgName.get(0) || document.createElement('div');
 
@@ -258,13 +237,10 @@ module nts.uk.ui.layout {
 
                         ko.applyBindingsToNode($btnGroup, null, bindingContext);
                     }
+                }*/
 
-                    // button error in function bar
-                    ko.applyBindingsToNode($('<button>').appendTo($title).get(0), { 'c-error': '' }, bindingContext);
-                } else {
-                    // button error in function bar
-                    ko.applyBindingsToNode($('<button>').appendTo(element).get(0), { 'c-error': '' }, bindingContext);
-                }
+                // button error in function bar
+                ko.applyBindingsToNode($('<button>').appendTo(element).get(0), { 'c-error': '' }, bindingContext);
             } else {
                 if (!element.id) {
                     element.id = "functions-area-bottom";

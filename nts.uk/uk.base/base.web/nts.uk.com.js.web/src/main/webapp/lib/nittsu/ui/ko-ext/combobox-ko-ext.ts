@@ -215,7 +215,7 @@ module nts.uk.ui.koExtentions {
                             .css({
                                 'float': 'none',
                                 'width': '100%',
-                                'border': '0px',
+                                'border': '1px solid #ccc',
                                 'padding': '0px',
                                 'position': 'absolute',
                                 'box-sizing': 'border-box',
@@ -233,8 +233,8 @@ module nts.uk.ui.koExtentions {
                                 'width': '30px',
                                 'text-align': 'center',
                                 'line-height': '30px',
-                                'margin': '0px',
-                                'border-left': '1px solid #ccc'
+                                'margin': '-1px',
+                                'border': '1px solid #ccc'
                             })
                             .removeClass('ui-icon')
                             .removeClass('ui-icon-triangle-1-s');

@@ -591,6 +591,11 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                 vm.remainingHours(data.remainVacationInfo.remainingHours);
                 vm.fetchRemainTime(data.remainVacationInfo);
             }
+            if (data.requiredVacationTime) {
+                vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", data.requiredVacationTime));
+            } else {
+                vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", 0));
+            }
 
             vm.requiredVacationTime(data.requiredVacationTime);
 

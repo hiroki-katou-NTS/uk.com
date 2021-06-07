@@ -249,7 +249,7 @@ module nts.uk.at.kaf021.a {
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
                 subWidth: "130px",
                 subHeight: "240px",
-                headerHeight: '60px',
+                headerHeight: '80px',
                 rowHeight: '40px',
                 dataSource: vm.datas,
                 primaryKey: 'employeeId',
@@ -393,11 +393,11 @@ module nts.uk.at.kaf021.a {
             return [
                 { key: "checked", colors: ['padding-5'] },
                 { key: "statusStr", colors: ['padding-5'] },
-                { key: "monthAverage2Str", colors: ['padding-12'] },
-                { key: "monthAverage3Str", colors: ['padding-12'] },
-                { key: "monthAverage4Str", colors: ['padding-12'] },
-                { key: "monthAverage5Str", colors: ['padding-12'] },
-                { key: "monthAverage6Str", colors: ['padding-12'] },
+                { key: "monthAverage3Str", colors: ['padding-10', 'break-jp-cell'] },
+                { key: "monthAverage4Str", colors: ['padding-10', 'break-jp-cell'] },
+                { key: "monthAverage2Str", colors: ['padding-10', 'break-jp-cell'] },
+                { key: "monthAverage5Str", colors: ['padding-10', 'break-jp-cell'] },
+                { key: "monthAverage6Str", colors: ['padding-10', 'break-jp-cell'] },
                 { key: "exceededNumber", colors: ['padding-5'] },
                 { key: currentMonth, colors: ['#ffffff'] }
             ]

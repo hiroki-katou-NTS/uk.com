@@ -6612,7 +6612,8 @@ var nts;
                             maxHeight: 500,
                             closeOnEscape: false,
                             open: function () {
-                                errorBoard.css({ "overflow": "auto", "max-height": "300px", "margin-bottom": "65px" });
+                                container.css({ "display": "flex", "flex-direction": "column-reverse", "align-items": "center" });
+                                errorBoard.css({ "overflow": "auto", "max-height": "300px", "max-width": "400px", "margin-bottom": "20px", "padding": "10px" });
                                 functionArea.css({ "left": "0px" });
                                 closeButton.text(ui_1.toBeResource.close).click(function (evt) {
                                     container.dialog("destroy");
@@ -17355,7 +17356,7 @@ var nts;
                     $dialog.dialog("option", "position", {
                         my: "center",
                         at: "center",
-                        of: window,
+                        of: document.body,
                         collision: "none"
                     });
                     var $container = $dialog.closest(".ui-dialog");
@@ -17974,7 +17975,7 @@ var nts;
                                         .css({
                                         'float': 'none',
                                         'width': '100%',
-                                        'border': '0px',
+                                        'border': '1px solid #ccc',
                                         'padding': '0px',
                                         'position': 'absolute',
                                         'box-sizing': 'border-box',
@@ -17992,8 +17993,8 @@ var nts;
                                         'width': '30px',
                                         'text-align': 'center',
                                         'line-height': '30px',
-                                        'margin': '0px',
-                                        'border-left': '1px solid #ccc'
+                                        'margin': '-1px',
+                                        'border': '1px solid #ccc'
                                     })
                                         .removeClass('ui-icon')
                                         .removeClass('ui-icon-triangle-1-s');
@@ -18368,7 +18369,7 @@ var nts;
                         if (data.dateFormat === "YYYY") {
                             var $yearType = $("<label/>").attr("for", idString)
                                 .css({ "position": "absolute",
-                                "line-height": "30px",
+                                "line-height": "35px",
                                 "right": jumpButtonsDisplay ? "40px" : "5px" });
                             var labelText = fiscalYear ? "年度" : "年";
                             $yearType.text(labelText);
@@ -21939,7 +21940,21 @@ var nts;
                                 }
                             });
                             var $span = $('<span>').appendTo($label).get(0);
-                            ko.applyBindingsToNode($span, { i18n: text }, bindingContext);
+                            var isHTML = function (str) {
+                                var a = document.createElement('div');
+                                a.innerHTML = str;
+                                for (var c = a.childNodes, i = c.length; i--;) {
+                                    if (c[i].nodeType == 1)
+                                        return true;
+                                }
+                                return false;
+                            };
+                            if (isHTML(text())) {
+                                $span.innerHTML = text();
+                            }
+                            else {
+                                ko.applyBindingsToNode($span, { i18n: text }, bindingContext);
+                            }
                             if (accessor.dataBind) {
                                 $span.classList.add('button');
                                 ko.applyBindingsToNode($span, accessor.dataBind, bindingContext);
@@ -22331,6 +22346,7 @@ var nts;
                         var tabIndex = _.isEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
                         $container.addClass("nts-searchbbox-wrapper").removeAttr("tabindex");
                         $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span></div>");
+                        $container.find('.input-wrapper').append("<i id='search-icon' class='img-icon'></i>");
                         $container.append("<div class='input-wrapper'><button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button></div>");
                         if (!_.isEmpty(label)) {
                             var $formLabel = $("<div>", { text: label });
@@ -22343,8 +22359,8 @@ var nts;
                         var $input = $container.find("input.ntsSearchBox");
                         minusWidth += $button.outerWidth(true);
                         if (searchMode === "filter") {
-                            $container.append("<button class='clear-btn ntsSearchBox_Component'>" + nts.uk.ui.toBeResource.clear + "</button>");
-                            var $clearButton = $container.find("button.clear-btn");
+                            $container.append("<button class='clear-icon ntsSearchBox_Component'>");
+                            var $clearButton = $container.find("button.clear-icon");
                             minusWidth += $clearButton.outerWidth(true);
                             $clearButton.click(function (evt, ui) {
                                 var component = $("#" + ko.unwrap(data.comId));
@@ -22551,7 +22567,7 @@ var nts;
                         var CHECKBOX_WIDTH = 40;
                         var SEARCH_AREA_HEIGHT = 45;
                         var BUTTON_SEARCH_WIDTH = 70;
-                        var INPUT_SEARCH_PADDING = 65;
+                        var INPUT_SEARCH_PADDING = 36;
                         var $swap = $(element);
                         var elementId = $swap.attr('id');
                         if (nts.uk.util.isNullOrUndefined(elementId)) {
@@ -22612,14 +22628,16 @@ var nts;
                             var initSearchArea = function ($SearchArea, searchMode, searchText) {
                                 $SearchArea.append("<div class='ntsSearchTextContainer'/>")
                                     .append("<div class='ntsSearchButtonContainer'/>");
-                                if (searchMode === "filter") {
-                                    $SearchArea.append("<div class='ntsClearButtonContainer'/>");
-                                    $SearchArea.find(".ntsClearButtonContainer")
-                                        .append("<button id = " + searchAreaId + "-clear-btn" + " class='ntsSearchButton clear-btn ntsSwap_Component'/>");
-                                    $SearchArea.find(".clear-btn").text(ui_9.toBeResource.clear);
-                                }
+                                // if(searchMode === "filter"){
+                                //     $SearchArea.append("<div class='ntsClearButtonContainer'/>");
+                                //     $SearchArea.find(".ntsClearButtonContainer")
+                                //         .append("<button id = " + searchAreaId + "-clear-btn" + " class='ntsSearchButton clear-btn ntsSwap_Component'/>");  
+                                //     $SearchArea.find(".clear-btn").text(toBeResource.clear);        
+                                // }
                                 $SearchArea.find(".ntsSearchTextContainer")
                                     .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSwap_Component ntsSearchBox nts-editor ntsSearchBox_Component'/>");
+                                $SearchArea.find(".ntsSearchTextContainer")
+                                    .append("<i id='swap-search-icon' class='img-icon'></i>");
                                 $SearchArea.find(".ntsSearchButtonContainer")
                                     .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom ntsSwap_Component'/>");
                                 $SearchArea.find(".ntsSearchInput").attr("placeholder", searchText).wrap("<span class='nts-editor-wrapped ntsControl'/>");
@@ -22636,7 +22654,8 @@ var nts;
                                 var $searchLeftContainer = $swap.find(".ntsSwapSearchLeft");
                                 $searchLeftContainer.width(searchAreaWidth).css({ position: "absolute", left: 0 });
                                 initSearchArea($searchLeftContainer, data.searchMode, data.leftSearchBoxText || defaultSearchText);
-                                $searchLeftContainer.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
+                                // $searchLeftContainer.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
+                                $searchLeftContainer.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING);
                             }
                             if (showSearchBox.showRight) {
                                 var $searchRightContainer = $swap.find(".ntsSwapSearchRight");
@@ -51487,6 +51506,7 @@ var nts;
                         _this.userName = ko.observable('');
                         _this.userNameHover = ko.observable(false);
                         _this.companies = ko.observableArray([]);
+                        _this.pgName = ko.observable('');
                         return _this;
                     }
                     HeaderViewModel.prototype.created = function () {
@@ -51546,6 +51566,17 @@ var nts;
                                     vm
                                         .$ajax('com', '/sys/portal/webmenu/companies')
                                         .then(function (data) { return vm.companies(data); });
+                                    vm
+                                        .$ajax('com', '/sys/portal/webmenu/program')
+                                        .then(function (response) {
+                                        var first = response[0];
+                                        if (first) {
+                                            var name_2 = first.name;
+                                            if (name_2) {
+                                                vm.pgName(name_2);
+                                            }
+                                        }
+                                    });
                                     vm.$nextTick(function () {
                                         $(window).trigger('wd.resize');
                                         $(window).trigger('wd.setAvatar');
@@ -51796,7 +51827,7 @@ var nts;
                     HeaderViewModel = __decorate([
                         component({
                             name: 'ui-header',
-                            template: "\n        <div class=\"hamberger\" data-bind=\"\n                event: {\n                    mouseover: $component.hambergerHover,\n                    mouseout: $component.hambergerMouseOut\n                },\n                css: {\n                    'hover': $component.menuSet.hover\n                }\">\n            <svg viewBox=\"0 0 16 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                <rect width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"6\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"12\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n            </svg>\n            <div class=\"menu-dropdown menu-hamberger\" data-bind=\"css: { hidden: !$component.menuSet.hover() }\">\n                <div class=\"menu-column\">\n                    <div class=\"menu-header\" data-bind=\"i18n: nts.uk.ui.toBeResource.selectMenu\"></div>\n                    <div class=\"menu-item\" data-bind=\"foreach: $component.menuSet.items\">\n                        <div class=\"item\" data-bind=\"\n                            i18n: $data.webMenuName,\n                            click: function() { $component.selectSet($data, true) },\n                            css: { \n                                selected: $component.menuSet.items() && $data.selected\n                            }\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"logo-area\">\n            <i id=\"logo\" data-bind=\"ntsIcon: { no: 162 }\" class=\"img-icon\"></i>\n            <i class=\"control-slider pre-slider\" data-bind=\"\n                ntsIcon: { no: 129, width: 25, height: 25 },\n                click: $component.handlePrevSlider\"></i>\n        </div>\n        <div class=\"menu-groups\" data-bind=\"foreach: { data: $component.menuBars, as: 'bar', afterRender: $component.showPrevOrNextSlider.bind($component) }\">\n            <div class=\"item-group slide-item\" data-bind=\"\n                    event: {\n                        mouseover: function() { $component.itemBarHover(bar) },\n                        mouseout: function() { $component.itemBarMouseOut(bar) }\n                    },\n                    css: {\n                        'hover': bar.hover() && bar.canHover() && $component.click()\n                    },\n                    style: {\n                        'display': bar.display()\n                    },\n                    attr: {\n                        'data-column': (bar.titleMenu || []).length\n                    }\">\n                    <span class=\"bar-item-title\" data-bind=\"text: bar.menuBarName, click: function() { $component.selectBar(bar) }\"></span>\n                <div class=\"menu-dropdown menu-item\" data-bind=\"css: { hidden: !bar.hover() || !bar.titleMenu.length }, foreach: { data: bar.titleMenu, as: 'title' }\">\n                    <div class=\"menu-column\">\n                        <div class=\"menu-header\" data-bind=\"\n                            i18n: title.titleMenuName,\n                            style: {\n                                'color': title.textColor,\n                                'background-color': title.backgroundColor\n                            }\"></div>\n                        <div class=\"menu-items\" data-bind=\"foreach: title.treeMenu\">\n                            <div class=\"item\" data-bind=\"\n                                i18n: $component.getName($data),\n                                click: function() { $component.selectMenu($data, bar) },                        \n                                css: { \n                                    selected: false,\n                                    'divider': !$data.url || $data.url === '-'\n                                }\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"user-info\">\n            <div class=\"next-slider-area\">\n                <i class=\"control-slider next-slider\" data-bind=\"\n                    ntsIcon: { no: 128, width: 25, height: 25 },\n                    click: $component.handleNextSlider\"></i>\n            </div>\n            <div class=\"menu-groups\">\n                <div class=\"item-group\" style=\"margin-right: 10px;\">\n                    <ccg020-component></ccg020-component>\n                </div>\n                <div class=\"item-group\">\n                    <span class=\"bar-item-title company\" data-bind=\"text: $component.companyName\"></span>\n                    <i data-bind=\"ntsIcon: { no: 135, width: 10, height: 10 }\"></i>\n                </div>\n                <span class=\"divider\"></span>\n                <div class=\"item-group\" data-bind=\"\n                        event: {\n                            mouseover: $component.userHover,\n                            mouseout: $component.userMouseOut\n                        },\n                        css: {\n                            hover: $component.userNameHover\n                        }\">\n                    <span class=\"bar-item-title user-name\" data-bind=\"text: $component.userName\"></span>\n                    <div class=\"menu-dropdown menu-item\">\n                        <div class=\"menu-column\">\n                            <div class=\"menu-items\">\n                                <div class=\"item\" data-bind=\"i18n: nts.uk.ui.toBeResource.manual, click: $component.manual\"></div>\n                                <div class=\"item divider\"></div>\n                                <div class=\"item\" data-bind=\"i18n: nts.uk.ui.toBeResource.logout, click: $component.logout\"></div>\n                            </div>\n                        </div>\n                    </div>\n                    <i data-bind=\"ntsIcon: { no: 135, width: 10, height: 10 }\" style=\"margin-right: 5px;\"></i>\n                </div>\n            </div>\n            <div id=\"notice-msg\" class=\"avatar notification\">\n                <i id=\"new-mark-msg\" style=\"display: none\" data-bind=\"ntsIcon: { no: 165, width: 13, height: 13 }\"></i>\n            </div>\n        </div>\n        "
+                            template: "\n        <div class=\"hamberger\" data-bind=\"\n                event: {\n                    mouseover: $component.hambergerHover,\n                    mouseout: $component.hambergerMouseOut\n                },\n                css: {\n                    'hover': $component.menuSet.hover\n                }\">\n            <svg viewBox=\"0 0 16 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                <rect width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"6\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"12\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n            </svg>\n            <div class=\"menu-dropdown menu-hamberger\" data-bind=\"css: { hidden: !$component.menuSet.hover() }\">\n                <div class=\"menu-column\">\n                    <div class=\"menu-header\" data-bind=\"i18n: nts.uk.ui.toBeResource.selectMenu\"></div>\n                    <div class=\"menu-item\" data-bind=\"foreach: $component.menuSet.items\">\n                        <div class=\"item\" data-bind=\"\n                            i18n: $data.webMenuName,\n                            click: function() { $component.selectSet($data, true) },\n                            css: { \n                                selected: $component.menuSet.items() && $data.selected\n                            }\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"logo-area\">\n            <i id=\"logo\" data-bind=\"ntsIcon: { no: 162 }\" class=\"img-icon\"></i>\n            <i class=\"control-slider pre-slider\" data-bind=\"\n                ntsIcon: { no: 129, width: 25, height: 25 },\n                click: $component.handlePrevSlider\"></i>\n        </div>\n        <div class=\"menu-groups\" data-bind=\"foreach: { data: $component.menuBars, as: 'bar', afterRender: $component.showPrevOrNextSlider.bind($component) }\">\n            <div class=\"item-group slide-item\" data-bind=\"\n                    event: {\n                        mouseover: function() { $component.itemBarHover(bar) },\n                        mouseout: function() { $component.itemBarMouseOut(bar) }\n                    },\n                    css: {\n                        'hover': bar.hover() && bar.canHover() && $component.click()\n                    },\n                    style: {\n                        'display': bar.display()\n                    },\n                    attr: {\n                        'data-column': (bar.titleMenu || []).length\n                    }\">\n                    <span class=\"bar-item-title\" data-bind=\"text: bar.menuBarName, click: function() { $component.selectBar(bar) }\"></span>\n                <div class=\"menu-dropdown menu-item\" data-bind=\"css: { hidden: !bar.hover() || !bar.titleMenu.length }, foreach: { data: bar.titleMenu, as: 'title' }\">\n                    <div class=\"menu-column\">\n                        <div class=\"menu-header\" data-bind=\"\n                            i18n: title.titleMenuName,\n                            style: {\n                                'color': title.textColor,\n                                'background-color': title.backgroundColor\n                            }\"></div>\n                        <div class=\"menu-items\" data-bind=\"foreach: title.treeMenu\">\n                            <div class=\"item\" data-bind=\"\n                                i18n: $component.getName($data),\n                                click: function() { $component.selectMenu($data, bar) },                        \n                                css: { \n                                    selected: false,\n                                    'divider': !$data.url || $data.url === '-'\n                                }\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"user-info\">\n            <div class=\"next-slider-area\">\n                <i class=\"control-slider next-slider\" data-bind=\"\n                    ntsIcon: { no: 128, width: 25, height: 25 },\n                    click: $component.handleNextSlider\"></i>\n            </div>\n            <div class=\"menu-groups\">\n                <div class=\"item-group\" style=\"margin-right: 10px;\">\n                    <ccg020-component></ccg020-component>\n                </div>\n                <div class=\"item-group\">\n                    <span class=\"bar-item-title company\" data-bind=\"text: $component.companyName\"></span>\n                    <i data-bind=\"ntsIcon: { no: 135, width: 10, height: 10 }\"></i>\n                </div>\n                <span class=\"divider\"></span>\n                <div class=\"item-group\" data-bind=\"\n                        event: {\n                            mouseover: $component.userHover,\n                            mouseout: $component.userMouseOut\n                        },\n                        css: {\n                            hover: $component.userNameHover\n                        }\">\n                    <span class=\"bar-item-title user-name\" data-bind=\"text: $component.userName\"></span>\n                    <div class=\"menu-dropdown menu-item\">\n                        <div class=\"menu-column\">\n                            <div class=\"menu-items\">\n                                <div class=\"item\" data-bind=\"i18n: nts.uk.ui.toBeResource.manual, click: $component.manual\"></div>\n                                <div class=\"item divider\"></div>\n                                <div class=\"item\" data-bind=\"i18n: nts.uk.ui.toBeResource.logout, click: $component.logout\"></div>\n                            </div>\n                        </div>\n                    </div>\n                    <i data-bind=\"ntsIcon: { no: 135, width: 10, height: 10 }\" style=\"margin-right: 5px;\"></i>\n                </div>\n            </div>\n            <div id=\"notice-msg\" class=\"avatar notification\">\n                <i id=\"new-mark-msg\" style=\"display: none\" data-bind=\"ntsIcon: { no: 165, width: 13, height: 13 }\"></i>\n            </div>\n        </div>\n        <div class=\"pg-area\">\n            <div class=\"pg-name\">\n                <span data-bind=\"text: pgName\"></span>\n            </div>\n        </div>\n        "
                         })
                     ], HeaderViewModel);
                     return HeaderViewModel;
@@ -52619,57 +52650,40 @@ var nts;
                     PGNameBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var vm = new ko.ViewModel();
                         var pgName = valueAccessor();
+                        var title = ko.observable('');
                         var back = allBindingsAccessor.get('back');
-                        // const { programId } = __viewContext.program;
-                        //    = this.getProgramName();
-                        var $span = $('<span>').get(0);
                         var $title = $(element);
+                        var $span = $('<span>').get(0);
+                        var text = ko.computed({
+                            read: function () {
+                                var $pg = ko.unwrap(pgName);
+                                var $title = ko.unwrap(title);
+                                if (_.isString($pg)) {
+                                    return vm.$i18n($pg);
+                                }
+                                if ($pg) {
+                                    return $title.trim();
+                                }
+                                return '';
+                            },
+                            disposeWhenNodeIsRemoved: element
+                        });
+                        ko.applyBindingsToNode($span, { text: text }, bindingContext);
+                        vm
+                            .$ajax('com', '/sys/portal/webmenu/program')
+                            .then(function (response) {
+                            var first = response[0];
+                            if (first) {
+                                var name_3 = first.name;
+                                if (name_3) {
+                                    title(name_3);
+                                }
+                            }
+                        });
                         $title
                             .append($span)
                             .addClass('pg-name')
                             .removeAttr('data-bind');
-                        var sessionProgram = function () {
-                            var dfd = $.Deferred();
-                            nts.uk.request.ajax('com', 'sys/portal/webmenu/program').done(function (pg) {
-                                dfd.resolve(pg);
-                            });
-                            return dfd.promise();
-                        };
-                        var programName = "";
-                        sessionProgram().done(function (pg) {
-                            if (pg && pg.length > 1) {
-                                var pgParam_1 = uk.localStorage.getItem("UKProgramParam");
-                                if (pgParam_1.isPresent()) {
-                                    var program = _.find(pg, function (p) {
-                                        return p.param === pgParam_1.get();
-                                    });
-                                    if (program) {
-                                        programName = program.name;
-                                    }
-                                    uk.localStorage.removeItem("UKProgramParam");
-                                }
-                            }
-                            else
-                                (pg && pg.length === 1);
-                            {
-                                programName = pg[0].name;
-                            }
-                            var text = ko.computed({
-                                read: function () {
-                                    var $pg = ko.unwrap(pgName);
-                                    if (_.isString($pg)) {
-                                        return vm.$i18n($pg);
-                                    }
-                                    if ($pg) {
-                                        // return `${programId || ''} ${programName || ''}`.trim();
-                                        return ("" + (programName || '')).trim();
-                                    }
-                                    return '';
-                                },
-                                disposeWhenNodeIsRemoved: element
-                            });
-                            ko.applyBindingsToNode($span, { text: text }, bindingContext);
-                        });
                         if (back) {
                             $title.addClass('navigator');
                             var svg = document.createElement('svg');
@@ -52704,32 +52718,34 @@ var nts;
                             if (!element.id) {
                                 element.id = "functions-area";
                             }
-                            if (title && mode === 'view') {
-                                var pgName = $(element).find('.pg-name');
-                                var $title = pgName.get(0) || document.createElement('div');
+                            /*if (title && mode === 'view') {
+                                const pgName = $(element).find('.pg-name');
+                                const $title = pgName.get(0) || document.createElement('div');
+            
                                 if (!pgName.length) {
-                                    ko.applyBindingsToNode($title, { 'pg-name': title, back: back }, bindingContext);
+                                    ko.applyBindingsToNode($title, { 'pg-name': title, back }, bindingContext);
                                 }
+            
                                 $(element).prepend($title);
+            
                                 if (element.childNodes.length > 1) {
-                                    var $btnGroup_1 = document.createElement('div');
-                                    $btnGroup_1.classList.add('button-group');
-                                    var $pgName = $(element).find('.pg-name');
-                                    $(element).children().each(function (__, e) {
+                                    const $btnGroup = document.createElement('div');
+                                    $btnGroup.classList.add('button-group');
+                                    const $pgName = $(element).find('.pg-name');
+            
+                                    $(element).children().each((__: null, e: HTMLElement) => {
                                         if (!e.classList.contains('pg-name') && !e.classList.contains('floating-btn')) {
-                                            $($btnGroup_1).append(e);
+                                            $($btnGroup).append(e);
                                         }
                                     });
-                                    $($btnGroup_1).insertAfter($pgName);
-                                    ko.applyBindingsToNode($btnGroup_1, null, bindingContext);
+            
+                                    $($btnGroup).insertAfter($pgName);
+            
+                                    ko.applyBindingsToNode($btnGroup, null, bindingContext);
                                 }
-                                // button error in function bar
-                                ko.applyBindingsToNode($('<button>').appendTo($title).get(0), { 'c-error': '' }, bindingContext);
-                            }
-                            else {
-                                // button error in function bar
-                                ko.applyBindingsToNode($('<button>').appendTo(element).get(0), { 'c-error': '' }, bindingContext);
-                            }
+                            }*/
+                            // button error in function bar
+                            ko.applyBindingsToNode($('<button>').appendTo(element).get(0), { 'c-error': '' }, bindingContext);
                         }
                         else {
                             if (!element.id) {

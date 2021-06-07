@@ -127,10 +127,10 @@ public class TempRemainCreateEachData {
 		Optional<OccurrenceUseDetail> occUseDetail = inforData.getOccurrenceUseDetail(workTypeClass);
 		if(occUseDetail.isPresent()) {
 			String mngId = IdentifierUtil.randomUniqueId();
-			
+
 			WorkTypeRemainInfor Rinfor = inforData.getWorkTypeRemainInfor(workTypeClass).map(ri -> ri)
 					.orElse(inforData.getWorkTypeRemainInforByOd(workTypeClass));
-			
+
 			InterimAbsMng absDataMng = new InterimAbsMng(mngId,inforData.getSid(),
 					inforData.getYmd(),
 					Rinfor.getCreateData(),
@@ -168,7 +168,7 @@ public class TempRemainCreateEachData {
 						new RequiredDay(occUseDetail.get().getDays()),
 						new UnOffsetTime(occUseDetail.get().getSubstituteHolidayTime().map(x -> x.v()).orElse(0)),
 						new UnOffsetDay(occUseDetail.get().getDays()),
-						Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.empty()))
+						Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty()))
 						);
 				mngData.setDayOffData(Optional.of(dayoffMng));
 				mngData.getRecAbsData().add(dayoffMng);
@@ -193,7 +193,7 @@ public class TempRemainCreateEachData {
 		//アルゴリズム「振休使用期限日の算出」を実行する
 		GeneralDate useDate = getUseDays(require, inforData);
 		String mngId = IdentifierUtil.randomUniqueId();
-		
+
 		WorkTypeRemainInfor Rinfor = inforData.getWorkTypeRemainInfor(workTypeClass).map(ri -> ri)
 				.orElse(inforData.getWorkTypeRemainInforByOd(workTypeClass));
 
@@ -287,7 +287,7 @@ public class TempRemainCreateEachData {
 	 * @param inforData
 	 * @param workTypeClass
 	 * @param mngData
-	 * @param workTypeInfor 
+	 * @param workTypeInfor
 	 * @return
 	 */
 	public static DailyInterimRemainMngData createInterimSpecialHoliday(InforFormerRemainData inforData,
@@ -457,10 +457,10 @@ public class TempRemainCreateEachData {
 
 		occUseDetail.ifPresent(x -> {
 			//発生使用明細＝設定あり
-			
+
 			WorkTypeRemainInfor Rinfor = inforData.getWorkTypeRemainInfor(workTypeClass).map(ri -> ri)
 					.orElse(inforData.getWorkTypeRemainInforByOd(workTypeClass));
-			
+
 			InterimHolidayMng holidayMng = new InterimHolidayMng(IdentifierUtil.randomUniqueId(), inforData.getSid(),
 					inforData.getYmd(), Rinfor.getCreateData(),
 					RemainType.PUBLICHOLIDAY, x.getDays());
@@ -542,13 +542,13 @@ public class TempRemainCreateEachData {
 		int  startMonth = companyDto.getStartMonth();
 
 		GeneralDate nextPeriod = GeneralDate.fromString(
-				String.valueOf(date.year()) + "/" + startMonth + "/" + String.valueOf(date.day()), "yyyy/MM/dd");
+				String.valueOf(date.year()) + "/" + String.format("%02d", startMonth) + "/" + String.format("%02d", date.day()), "yyyy/MM/dd");
 		//月　＝　次の期首月 －１
-		String endPeriodMonth = String.valueOf(nextPeriod.addMonths(-1).month());
+		int endPeriodMonth = nextPeriod.addMonths(-1).month();
 		//日　＝　次の期首月－１の月末の日
-		String endPeriodDay = String.valueOf(nextPeriod.addMonths(-1).lastDateInMonth());
+		int endPeriodDay = nextPeriod.addMonths(-1).lastDateInMonth();
 
-		String endPeriodYear = "";
+		String endPeriodYear = ""; 
 
 		//年月日．月　＜　次の期首月
 		if(date.month() < startMonth){
@@ -568,7 +568,7 @@ public class TempRemainCreateEachData {
 			endPeriodYear = String.valueOf(date.addYears(-1).year());
 		}
 
-		return GeneralDate.fromString(endPeriodYear + "/" + endPeriodMonth + "/" + endPeriodDay, "yyyy/MM/dd");
+		return GeneralDate.fromString(endPeriodYear + "/" +  String.format("%02d", endPeriodMonth)  + "/" +  String.format("%02d", endPeriodDay) , "yyyy/MM/dd");
 	}
 
 
@@ -796,7 +796,7 @@ public class TempRemainCreateEachData {
 
 	/**
 	 * 残数作成元情報から暫定介護管理データ（時間）を作成する
-	 * 
+	 *
 	 * @param inforData
 	 * @return
 	 */
@@ -829,7 +829,7 @@ public class TempRemainCreateEachData {
 
 	/**
 	 * 残数作成元情報から暫定子の看護管理データを作成する
-	 * 
+	 *
 	 * @param inforData
 	 * @param care
 	 * @param workTypeClass
@@ -849,6 +849,7 @@ public class TempRemainCreateEachData {
 				ChildCareNurseUsedNumber.of(new DayNumberOfUse(care.getDays()), Optional.empty()),
 				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty())));
 
+		mngData.setChildCareData(Optional.of(childData));
 		mngData.getRecAbsData().add(childData);
 		return mngData;
 
@@ -875,6 +876,7 @@ public class TempRemainCreateEachData {
 				ChildCareNurseUsedNumber.of(new DayNumberOfUse(care.getDays()), Optional.empty()),
 				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty())));
 
+		mngData.setCareData(Optional.of(careData));
 		mngData.getRecAbsData().add(careData);
 		return mngData;
 	}
