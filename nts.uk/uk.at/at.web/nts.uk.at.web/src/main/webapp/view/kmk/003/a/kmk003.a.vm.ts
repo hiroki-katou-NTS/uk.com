@@ -221,7 +221,7 @@ module nts.uk.at.view.kmk003.a {
                 // tabs data source
                     self.tabs = ko.observableArray([
                     new TabItem(TabID.TAB1, nts.uk.resource.getText("KMK003_17"), '.tab-a1', true, true),
-                    new TabItem(TabID.TAB2, `<span id="tab-2-title">${nts.uk.resource.getText("KMK003_18")}</span>` , '.tab-a2', true, true),
+                    new TabItem(TabID.TAB2, nts.uk.resource.getText("KMK003_18"), '.tab-a2', true, true),
                     new TabItem(TabID.TAB3, nts.uk.resource.getText("KMK003_89"), '.tab-a3', true, true),
                     new TabItem(TabID.TAB4, nts.uk.resource.getText("KMK003_19"), '.tab-a4', true, true),
                     new TabItem(TabID.TAB5, nts.uk.resource.getText("KMK003_20"), '.tab-a5', true, true),
@@ -1233,7 +1233,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 return {
                     morning: morningTimes,
-                    afternoon: afternoonTimes;
+                    afternoon: afternoonTimes,
                 }
             }
 
@@ -1295,7 +1295,7 @@ module nts.uk.at.view.kmk003.a {
                 };
 
                 //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
-                let times = _self.autoGenerate();
+                let times = self.autoGenerate();
 
                 command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = [];
                 times.morning.forEach(time => {

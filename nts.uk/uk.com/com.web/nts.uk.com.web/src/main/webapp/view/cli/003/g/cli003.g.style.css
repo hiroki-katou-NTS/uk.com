@@ -59,7 +59,8 @@
 	height: inherit;
 }
 #G4_1 {
-  width: max-content;
+  width: auto;
+  white-space: nowrap;
 }
 
 

@@ -81,10 +81,6 @@ module nts.uk.at.view.kdp005.a {
 						self.btnHistory(false);
 					}
 				});
-
-				setInterval(() => {
-					self.loadNotice();
-				}, 5000);
 			}
 
 			public startPage(): JQueryPromise<void> {
@@ -156,6 +152,14 @@ module nts.uk.at.view.kdp005.a {
 				return dfd.promise();
 			}
 
+			alwaysLoadMessage(param: number) {
+				if (param > 0) {
+					setInterval(() => {
+						this.loadNotice();
+					}, param * 60000);
+				}
+			}
+
 			getErrorNotUsed(errorType) {
 				const notUseMessage = [
 					{ text: "Msg_1644", value: 1 },
@@ -181,6 +185,8 @@ module nts.uk.at.view.kdp005.a {
 								dfd.resolve();
 								return;
 							}
+
+							self.alwaysLoadMessage(res.stampSetting.correctionInterval);
 							self.stampSetting(res.stampSetting);
 							self.stampTab().bindData(res.stampSetting.pageLayouts);
 							self.stampResultDisplay(res.stampResultDisplay);
@@ -563,7 +569,7 @@ module nts.uk.at.view.kdp005.a {
 
 						let btnType = checkType(button.changeClockArt, button.changeCalArt, button.setPreClockArt, button.changeHalfDay, button.btnReservationArt);
 						if (dataStorage.selectedWP.length > 1 && self.supportUse() === true && _.includes([14, 15, 16, 17, 18], btnType)) {
-							vm.$window.modal('at', DIALOG.M, { screen: 'KDP005' })
+							vm.$window.modal('at', DIALOG.M, { screen: 'KDP005', employeeId: employeeId })
 								.then((result: string) => {
 
 									if (result) {
@@ -744,7 +750,7 @@ module nts.uk.at.view.kdp005.a {
 				const self = this;
 				let dfd = $.Deferred<any>();
 				let startDate = vm.$date.now();
-				startDate.setDate(startDate.getDate() - 3);
+				// startDate.setDate(startDate.getDate() - 3);
 				var wkpIds: string[];
 
 				if (loginInfo) {
