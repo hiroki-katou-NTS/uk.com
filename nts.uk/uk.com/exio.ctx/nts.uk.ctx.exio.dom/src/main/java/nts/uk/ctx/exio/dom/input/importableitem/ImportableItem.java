@@ -29,4 +29,13 @@ public class ImportableItem implements DomainAggregate{
 				//↓はそもそも制限が無いという意図.
 				.orElse(true);
 	}
+	
+	/**
+	 * 型を変換する
+	 * @param value
+	 * @return
+	 */
+	public Object parse(String value) {
+		return this.itemType.parse(value);
+	}
 }

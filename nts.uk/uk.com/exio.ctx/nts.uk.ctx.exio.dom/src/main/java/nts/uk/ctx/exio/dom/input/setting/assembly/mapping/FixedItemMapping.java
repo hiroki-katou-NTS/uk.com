@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.setting.mapping;
+package nts.uk.ctx.exio.dom.input.setting.assembly.mapping;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

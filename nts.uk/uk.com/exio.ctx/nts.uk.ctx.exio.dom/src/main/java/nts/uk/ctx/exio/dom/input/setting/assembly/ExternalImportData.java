@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.assemble;
+package nts.uk.ctx.exio.dom.input.setting.assembly;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

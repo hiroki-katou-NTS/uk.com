@@ -2,7 +2,6 @@ package nts.uk.ctx.exio.dom.input.setting.source;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor

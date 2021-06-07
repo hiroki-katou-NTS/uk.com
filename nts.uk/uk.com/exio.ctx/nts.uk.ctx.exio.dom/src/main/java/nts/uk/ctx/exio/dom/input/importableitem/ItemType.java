@@ -1,5 +1,8 @@
 package nts.uk.ctx.exio.dom.input.importableitem;
 
+import java.math.BigDecimal;
+
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.input.DataType;
 
 /**
@@ -58,7 +61,24 @@ public enum ItemType {
 		case DATE:
 			return DataType.DATE;
 		default:
-			throw new RuntimeException("システム上使用できない方が指定されました。");
+			throw new RuntimeException("システム上使用できない型が指定されました。");
+		}
+	}
+	
+	// 文字列を項目方に対応する型に変換する
+	public Object parse(String value) {
+		switch(this) {
+		case INT:
+		case TIME:
+		case INS_TIME:
+			return Long.parseLong(value);
+		case REAL:
+			return new BigDecimal(value);
+		case DATE:
+			// TODO:デフォルトの日付形式が必要
+			return GeneralDate.fromString(value, "YYYY/MM/DD");
+		default:
+			throw new RuntimeException("システム上使用できない型が指定されたか、変換が必要ありません。");
 		}
 	}
 }

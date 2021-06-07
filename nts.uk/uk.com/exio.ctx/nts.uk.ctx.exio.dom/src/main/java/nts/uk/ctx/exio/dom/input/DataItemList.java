@@ -36,6 +36,10 @@ public class DataItemList extends ArrayList<DataItem> {
 		return this;
 	}
 	
+	public DataItemList addObject(int itemNo, Object value) {
+		return addItem(DataItem.of(itemNo, value));
+	}
+		
 	public DataItemList add(int itemNo, String value) {
 		return addItem(DataItem.of(itemNo, value));
 	}
