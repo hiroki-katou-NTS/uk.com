@@ -93,8 +93,8 @@ public class CheckEmpAttendanceSystem {
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSet;
 
-	public List<WorkInfoOfDailyAttendance> get(List<String> lstEmpId, DatePeriod datePeriod, int displayMode) {
-		List<WorkInfoOfDailyAttendance> listWorkInfo = new ArrayList<>();
+	public List<String> get(List<String> lstEmpId, DatePeriod datePeriod, int displayMode) {
+		List<String> listSid = new ArrayList<>();
 		// Require require = new Require(companyId, workTypeRepo,
 		// workTimeSettingRepository, basicScheduleService, fixedWorkSet,
 		// flowWorkSet, flexWorkSet, predetemineTimeSet);
@@ -113,13 +113,13 @@ public class CheckEmpAttendanceSystem {
 		mngStatusAndWScheMap.forEach((k, v) -> {
 			if (v.isPresent()) {
 				if (v.get().getWorkInfo().isAttendanceRate(require)) {
-					listWorkInfo.add(v.get().getWorkInfo());
+					listSid.add(v.get().getEmployeeID());
 				}
 			}
 
 		});
-
-		return listWorkInfo;
+		//3 	
+		return listSid;
 	}
 
 	@AllArgsConstructor
