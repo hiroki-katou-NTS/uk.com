@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.require;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -331,6 +332,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
@@ -2460,7 +2462,14 @@ public class RecordDomRequireService {
 
 		@Override
 		public void deleteSpecialLeaveGrantRemainAfter(String sid, int specialCode, GeneralDate targetDate) {
-				specialLeaveGrantRepo.deleteAfter(sid, specialCode, targetDate);
+			specialLeaveGrantRepo.deleteAfter(sid, specialCode, targetDate);
+		}
+
+		@Override
+		public List<WorkingConditionItemWithPeriod> workingCondition(String employeeId, DatePeriod datePeriod) {
+			return this.workingConditionRepo.getWorkingConditionItemWithPeriod(AppContexts.user().companyId(), Arrays.asList(employeeId), datePeriod)
+					.stream().filter(c -> c.getWorkingConditionItem().getEmployeeId().equals(employeeId))
+					.collect(Collectors.toList());
 		}
 
 		@Override

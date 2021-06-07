@@ -331,6 +331,7 @@ public interface ItemConst extends Cloneable {
 	public final String CUR_MONTH = "当月";
 	public final String NO = "不可";
 	public final String STANDARD = "基準";
+	public final String CONTRACT_TIME = "契約時間";
 	public final String WEEKLY_ATTENDANCE_TIME_EXESS = "週別実績の勤怠時間．時間外超過";
 	public final String WORK_CONTENT = "作業内容";
 	public final String WORKPLACE_BYSUPPORT = "勤務先";
