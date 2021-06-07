@@ -793,7 +793,9 @@ public class SupportWorkReflection {
 		Optional<OuenWorkTimeSheetOfDailyAttendance> ouenBeforeNew = lstOuenBefore.stream()
 				.filter(x -> x.getWorkNo() == workFrameNo).findFirst();
 		Optional<OuenWorkTimeSheetOfDailyAttendance> correctMaximumNew = Optional.empty();
+		
 		// 取得できる応援データの開始データが自動セットかどうか確認する
+		if (ouenBeforeNew.isPresent()) {
 		if (ouenBeforeNew.get().getTimeSheet().getStart().get().getReasonTimeChange()
 				.getTimeChangeMeans() == TimeChangeMeans.AUTOMATIC_SET) {
 			// 自動セットの場合
@@ -806,6 +808,7 @@ public class SupportWorkReflection {
 			Optional<WorkTimeInformation> start = ouenBeforeNew.get().getTimeSheet().getStart();
 			correctMaximumNew = lstCorrectMaximum.stream().filter(x -> x.getTimeSheet().getStart().get() == start.get())
 					.findFirst();
+			}
 		}
 
 		if (correctMaximumNew.isPresent()) {
