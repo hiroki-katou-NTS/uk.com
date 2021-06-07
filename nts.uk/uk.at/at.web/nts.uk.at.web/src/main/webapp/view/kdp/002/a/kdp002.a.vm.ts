@@ -96,7 +96,7 @@ module nts.uk.at.view.kdp002.a {
                 };
                 service.getTimeCardData(data).done((timeCard) => {
                     self.stampGrid().bindItemData(timeCard.listAttendances);
-					reCalGridWidthHeight();
+                    reCalGridWidthHeight();
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                 }).always(() => {
@@ -118,7 +118,7 @@ module nts.uk.at.view.kdp002.a {
 
                 service.getStampData({ startDate, endDate, employeeId }).done((stampDatas) => {
                     self.stampGrid().bindItemData(stampDatas);
-					reCalGridWidthHeight();
+                    reCalGridWidthHeight();
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                 }).always(() => {
@@ -217,23 +217,36 @@ module nts.uk.at.view.kdp002.a {
             }
 
             public openKDP002T(button: ButtonSetting, layout) {
+                const vm = new ko.ViewModel();
                 let data = {
                     pageNo: layout.pageNo,
                     buttonDisNo: button.btnPositionNo
                 }
 
                 service.getError(data).done((res) => {
+                    var timeNow = vm.$date.today().getDate().toString() + vm.$date.today().getMonth().toString() + vm.$date.today().getFullYear().toString();
+
                     if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
-                        nts.uk.ui.windows.setShared('KDP010_2T', res, true);
-                        nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function (): any {
-                            let returnData = nts.uk.ui.windows.getShared('KDP010_T');
-                            if (!returnData.isClose && returnData.errorDate) {
-                                // T1	打刻結果の取得対象項目の追加
-                                // 残業申請（早出）
-                                let transfer = returnData.btn.transfer;
-                                nts.uk.request.jump(returnData.btn.screen, transfer);
+                        var showViewT = 0;
+                        _.forEach(res.dailyAttdErrorInfos, ((value) => {
+                            var date: Date = new Date(value.lastDateError);
+                            var timeResult = date.getDate().toString() + date.getMonth().toString() + date.getFullYear().toString();
+                            if (timeResult > timeNow) {
+                                showViewT++;
                             }
-                        });
+                        }));
+                        if (showViewT == 0) {
+                            nts.uk.ui.windows.setShared('KDP010_2T', res, true);
+                            nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function (): any {
+                                let returnData = nts.uk.ui.windows.getShared('KDP010_T');
+                                if (!returnData.isClose && returnData.errorDate) {
+                                    // T1	打刻結果の取得対象項目の追加
+                                    // 残業申請（早出）
+                                    let transfer = returnData.btn.transfer;
+                                    nts.uk.request.jump(returnData.btn.screen, transfer);
+                                }
+                            });
+                        }
                     }
                 });
             }
@@ -249,18 +262,18 @@ module nts.uk.at.view.kdp002.a {
 
 let reCalGridWidthHeight = () => {
     const resize = () => {
-		let h = $('#kdp002a').height() - $('#stamp-header').height() - 60 - ($('.tabs-panel').length > 0 ? 42 : 0) - ($('.pageComent').length > 0 ? $('.pageComent').height() + 10 : 0);
-        let stampBtnHeight =  (h < $('#stampBtnContainer').height() ? $('#stampBtnContainer').height() : h) + 'px';
+        let h = $('#kdp002a').height() - $('#stamp-header').height() - 60 - ($('.tabs-panel').length > 0 ? 42 : 0) - ($('.pageComent').length > 0 ? $('.pageComent').height() + 10 : 0);
+        let stampBtnHeight = (h < $('#stampBtnContainer').height() ? $('#stampBtnContainer').height() : h) + 'px';
         const $hgrid = $('#stamp-history-list');
         const $cgrid = $('#time-card-list');
 
         if ($hgrid.data('igGrid')) {
-            $hgrid.igGrid("option", "height", stampBtnHeight );
-			$hgrid.data("height", stampBtnHeight );
+            $hgrid.igGrid("option", "height", stampBtnHeight);
+            $hgrid.data("height", stampBtnHeight);
         }
         if ($cgrid.data('igGrid')) {
             $cgrid.igGrid("option", "height", stampBtnHeight);
-			$cgrid.data("height", stampBtnHeight );
+            $cgrid.data("height", stampBtnHeight);
         }
     };
     setTimeout(resize);

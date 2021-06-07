@@ -11,6 +11,7 @@ module nts.uk.at.view.kdp003.m {
 
     interface IParams {
         screen: string;
+        employeeId: string;
     }
 
     @handler({
@@ -59,6 +60,7 @@ module nts.uk.at.view.kdp003.m {
         workplace: WorkPlaceInfo[][] = [];
 
         mode_hiden: KnockoutObservable<boolean | null> = ko.observable(null);
+        employeeId: string;
 
         constructor() {
             super();
@@ -91,6 +93,8 @@ module nts.uk.at.view.kdp003.m {
                     vm.reloadData(KDP003_SAVE_DATA, 'KDP003');
                     break
             }
+
+            vm.employeeId = param.employeeId;
         }
 
         mounted() {
@@ -135,7 +139,7 @@ module nts.uk.at.view.kdp003.m {
                                     } else {
                                         vm.mode_hiden(true);
                                     }
-                                    const param = { sid: data.SID, workPlaceIds: data.WKPID };
+                                    const param = { sid: vm.employeeId, workPlaceIds: data.WKPID };
                                     vm.call(param);
 
                                 });
@@ -156,7 +160,7 @@ module nts.uk.at.view.kdp003.m {
                                     } else {
                                         vm.mode_hiden(true);
                                     }
-                                    const param = { sid: data.employeeId, workPlaceIds: data.selectedWP };
+                                    const param = { sid: vm.employeeId, workPlaceIds: data.selectedWP };
                                     vm.call(param);
 
                                 });
@@ -198,7 +202,7 @@ module nts.uk.at.view.kdp003.m {
                                     } else {
                                         vm.mode_hiden(true);
                                     }
-                                    const param = { sid: data.SID, workPlaceIds: data.WKPID };
+                                    const param = { sid: vm.employeeId, workPlaceIds: data.WKPID };
                                     vm.call(param);
 
                                 });
