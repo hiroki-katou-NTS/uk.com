@@ -1046,7 +1046,7 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
                         { prop: 'name', length: 4 },
                     ]}"></div>
         </div>
-        <div class = "search-filter" style="margin-top:10px " data-bind="style: { width: '420px' }">
+        <div class = "search-filter" style="margin-top:10px " data-bind="style: { width: '450px' }">
             <div style="display: inline-block; float: left" data-bind="attr: {id: searchBoxId, tabindex: tabindex}, style: { width : !isMultipleUse ? '327px' : '268px'}">
             </div>
             <div style="display: inline-block; margin-left: 2px; float: left">
