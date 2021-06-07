@@ -79,13 +79,13 @@ public class OiomtUserCondition extends ContractUkJpaEntity implements Serializa
 				return (Validation) StringCondition.create(string1, compareConditon);
 			case DATE:
 				return DateCondition.create(date1, date2, compareConditon);
-			case INS_TIME:
+			case TIME_POINT:
 				return TimeMomentCondition.create(numeric1.intValue(), numeric2.intValue(), compareConditon);
 			case INT:
 				return IntegerCondition.create(numeric1.longValue(), numeric2.longValue(), compareConditon);
 			case REAL:
 				return RealCondition.create(numeric1, numeric2, compareConditon);
-			case TIME:
+			case TIME_DURATION:
 				return TimeCondition.create(numeric1.intValue(), numeric2.intValue(), compareConditon);
 			default:
 				throw new RuntimeException("項目型に対する実装が存在しません。:" + EnumAdaptor.valueOf(itemType, ItemType.class));

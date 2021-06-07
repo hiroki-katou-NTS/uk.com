@@ -30,11 +30,11 @@ public enum ItemType {
 	/**
 	 * 4: 時間型
 	 */
-	TIME(4, "Enum_ItemType_TIME"),
+	TIME_DURATION(4, "Enum_ItemType_TIME_DURATION"),
 	/**
 	 * 5: 時刻型
 	 */
-	INS_TIME(5, "Enum_ItemType_INS_TIME");
+	TIME_POINT(5, "Enum_ItemType_TIME_POINT");
 
 	
 	/** The value. */
@@ -51,8 +51,8 @@ public enum ItemType {
 	public DataType getDataType() {
 		switch(this) {
 		case INT:
-		case TIME:
-		case INS_TIME:
+		case TIME_DURATION:
+		case TIME_POINT:
 			return DataType.INT;
 		case STRING:
 			return DataType.STRING;
@@ -69,8 +69,8 @@ public enum ItemType {
 	public Object parse(String value) {
 		switch(this) {
 		case INT:
-		case TIME:
-		case INS_TIME:
+		case TIME_DURATION:
+		case TIME_POINT:
 			return Long.parseLong(value);
 		case REAL:
 			return new BigDecimal(value);

@@ -42,7 +42,7 @@ public class Helper {
 		public static int ROW_NO = 999; 
 		public static boolean REQUIRED = true; 
 		public static Object VALUE = 999;
-		public static ItemType ITEM_TYPE = ItemType.INS_TIME;
+		public static ItemType ITEM_TYPE = ItemType.TIME_POINT;
 		public static ImportingMode MODE =  ImportingMode.INSERT_ONLY;
 		public static ExecutionContext CONTEXT = new ExecutionContext(COMPANY_ID, SETTING_CODE, GROUP_ID, MODE);
 	}
