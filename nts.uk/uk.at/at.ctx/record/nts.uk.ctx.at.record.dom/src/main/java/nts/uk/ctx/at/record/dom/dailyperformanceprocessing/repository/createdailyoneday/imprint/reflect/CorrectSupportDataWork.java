@@ -103,7 +103,7 @@ public class CorrectSupportDataWork {
 					StartAtr.START_OF_SUPPORT,
 					leavingWork.get().getAttendanceStamp().get().getStamp().isPresent() ?
 							leavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay() : null, 
-					Optional.of(new WorkLocationCD("000")),
+					Optional.empty(),
 					Optional.empty());
 			workReflection.supportWorkReflect(param, integrationOfDaily, stampReflectRangeOutput);
 			// 「反映状態＝反映済み」を返す
