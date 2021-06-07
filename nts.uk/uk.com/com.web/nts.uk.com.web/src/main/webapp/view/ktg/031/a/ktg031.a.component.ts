@@ -24,7 +24,7 @@ module nts.uk.com.view.ktg031.a {
               <th class="ktg031-fontsize">
                 <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG031_11') }"></div>
               </th>
-              <th class="flex valign-center">
+              <th class="flex valign-center" style="text-align: left;">
                 <div data-bind="ntsComboBox: {
                   name: '#[KTG031_10]',
                   width: 110,
@@ -36,7 +36,7 @@ module nts.uk.com.view.ktg031.a {
                   required: true,
                   selectFirstIfNull: true,
                   columns: [
-                    { prop: 'name', length: 10 },
+                    { prop: 'name' }
                   ]}"></div>
               </th>
               <th>
