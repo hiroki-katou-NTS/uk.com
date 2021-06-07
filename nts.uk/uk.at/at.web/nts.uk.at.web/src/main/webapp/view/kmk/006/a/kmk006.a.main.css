@@ -133,3 +133,7 @@
 #input-date {
     margin-left: 20px;
 }
+.sidebar-content {
+	height: 100%;
+	overflow-y: auto;
+}
