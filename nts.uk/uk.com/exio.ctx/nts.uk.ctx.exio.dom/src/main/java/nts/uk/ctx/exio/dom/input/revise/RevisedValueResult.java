@@ -32,7 +32,7 @@ public class RevisedValueResult {
 	public static RevisedValueResult succeeded(String value) {
 		return new RevisedValueResult(true, Optional.of(value), Optional.empty());
 	}
-
+	
 	public static RevisedValueResult succeeded(long value) {
 		return new RevisedValueResult(true, Optional.of(value), Optional.empty());
 	}

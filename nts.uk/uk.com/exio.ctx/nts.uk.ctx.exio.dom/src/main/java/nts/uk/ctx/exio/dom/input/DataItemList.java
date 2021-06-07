@@ -20,7 +20,7 @@ public class DataItemList extends ArrayList<DataItem> {
 	public DataItemList() {
 		super();
 	}
-
+	
 	public DataItemList(Collection<DataItem> items) {
 		super(items);
 	}
@@ -29,6 +29,11 @@ public class DataItemList extends ArrayList<DataItem> {
 		return stream()
 				.filter(item -> item.getItemNo() == itemNo)
 				.findFirst();
+	}
+	
+	public DataItemList addItemList(DataItemList itemList) {
+		this.addAll(itemList);
+		return this;
 	}
 	
 	public DataItemList add(int itemNo, String value) {

@@ -2,7 +2,6 @@ package nts.uk.ctx.exio.dom.input.setting;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.setting.source.ExternalImportCsvFileInfo;

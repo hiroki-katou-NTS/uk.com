@@ -17,4 +17,8 @@ public class ExternalImportData {
 	/** 1行分のデータ */
 	private DataItemList oneRecordData;
 	
+	public void addItemList(DataItemList itemList) {
+		this.oneRecordData.addItemList(itemList);
+	}
+	
 }
