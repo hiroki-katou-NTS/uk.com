@@ -1173,7 +1173,7 @@ module nts.uk.at.view.kmk003.a {
                     }
                     afternoonTimes.push(timeZonePMDto);
                 } else {
-                    if (shiftOneEnd >= morningEnd) {
+                    if (shiftOneEnd > morningEnd) {
                         //morning1
                         morningTimes.push({
                             employmentTimeFrameNo: 1,
