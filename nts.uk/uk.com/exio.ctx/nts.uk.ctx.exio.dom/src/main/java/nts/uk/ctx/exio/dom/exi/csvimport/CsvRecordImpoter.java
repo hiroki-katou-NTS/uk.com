@@ -18,7 +18,7 @@ import nts.uk.ctx.exio.dom.exi.condset.AcceptanceLineNumber;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryItem;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
-import nts.uk.ctx.exio.dom.input.revise.ReviseCsvRecord;
+import nts.uk.ctx.exio.dom.input.revise.AssembleCsvRecord;
 import nts.uk.ctx.exio.dom.input.setting.source.ExternalImportCharset;
 
 /**
@@ -118,7 +118,7 @@ public class CsvRecordImpoter {
         }
     }
 	
-	public interface Require extends ReviseCsvRecord.Require{
+	public interface Require extends AssembleCsvRecord.Require{
 		InputStream get();
 
 		StdAcceptItem getStdAcceptItem(int csvItemNo);

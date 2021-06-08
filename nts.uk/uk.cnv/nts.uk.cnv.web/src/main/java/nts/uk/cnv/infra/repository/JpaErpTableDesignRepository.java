@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.cnv.dom.tabledesign.ColumnDesign;
-import nts.uk.cnv.dom.tabledesign.ErpTableDesign;
+import nts.uk.cnv.core.dom.tabledesign.ColumnDesign;
+import nts.uk.cnv.core.dom.tabledesign.ErpTableDesign;
 import nts.uk.cnv.dom.tabledesign.ErpTableDesignRepository;
 import nts.uk.cnv.infra.entity.tabledesign.ScvmtErpColumnDesign;
 import nts.uk.cnv.infra.entity.tabledesign.ScvmtErpColumnDesignPk;

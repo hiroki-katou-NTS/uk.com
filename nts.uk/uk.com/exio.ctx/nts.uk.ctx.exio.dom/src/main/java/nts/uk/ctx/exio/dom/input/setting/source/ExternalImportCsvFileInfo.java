@@ -15,7 +15,6 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -26,14 +25,14 @@ import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
  * CSVファイル情報
  */
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ExternalImportCsvFileInfo {
 	
 	/** CSVの項目名取得行 */
-	private ExternalImportRawNumber itemNameRawNumber;
+	private final ExternalImportRawNumber itemNameRawNumber;
 	
 	/** CSVの取込開始行 */
-	private ExternalImportRawNumber importStartRawNumber;
+	private final ExternalImportRawNumber importStartRawNumber;
 	
 	public Parser createParser() {
 		return new Parser(itemNameRawNumber.v(), importStartRawNumber.v());

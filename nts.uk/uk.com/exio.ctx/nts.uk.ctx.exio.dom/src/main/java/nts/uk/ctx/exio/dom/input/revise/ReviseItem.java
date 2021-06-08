@@ -45,15 +45,14 @@ public class ReviseItem extends AggregateRoot {
 	 * @param targetValue
 	 * @return
 	 */
-	public static RevisedItemResult revise(Require require, ExecutionContext context, int importItemNumber, String targetValue) {
-		// 項目の編集の取得
-		val revisionist = require.getRevise(context, importItemNumber);
+	public RevisedItemResult revise(Require require, ExecutionContext context, 
+			int importItemNumber, String targetValue) {
 		
-		val result = revisionist.revisingValue.revise(targetValue);
+		val result = this.revisingValue.revise(targetValue);
 		
-		if(revisionist.codeConvertCode.isPresent()) {
+		if(this.codeConvertCode.isPresent()) {
 			// コード変換を実施する場合
-			val convertor = require.getCodeConvert(revisionist.codeConvertCode.get());
+			val convertor = require.getCodeConvert(this.codeConvertCode.get());
 			val cnvResult = convertor.convert(result.getRevisedvalue().get().toString());
 			return new RevisedItemResult(importItemNumber, result, Optional.of(cnvResult));
 		}
@@ -61,7 +60,6 @@ public class ReviseItem extends AggregateRoot {
 	}
 	
 	public interface Require{
-		ReviseItem getRevise(ExecutionContext context, int importItemNumber);
 		ExternalImportCodeConvert getCodeConvert(CodeConvertCode code);
 	}
 }

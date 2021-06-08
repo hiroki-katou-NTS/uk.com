@@ -1,12 +1,14 @@
 package nts.uk.ctx.exio.infra.repository.input.transfer;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 
 import lombok.SneakyThrows;
-import nemunoki.oruta.shr.tabledefinetype.databasetype.PostgresSpec;
-import nemunoki.oruta.shr.tabledefinetype.databasetype.SqlServerSpec;
+import lombok.val;
+import nemunoki.oruta.shr.tabledefinetype.databasetype.DatabaseType;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.database.DatabaseProduct;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.ctx.exio.dom.input.transfer.TransferCanonicalDataRepository;
 
@@ -14,20 +16,17 @@ import nts.uk.ctx.exio.dom.input.transfer.TransferCanonicalDataRepository;
 public class TransferCanonicalDataRepositoryImpl extends JpaRepository implements TransferCanonicalDataRepository {
 
 	@Override
-	public int execute(ConversionSQL conversionSql) {
-		String sql = buildSql(conversionSql);
-		int result = executeTransfer(sql);
+	public int execute(List<ConversionSQL> conversionSqls) {
+		List<String> sqls = conversionSqls.stream()
+				.map(conversionSql -> buildSql(conversionSql))
+				.collect(Collectors.toList());
+		int result = executeTransfer(String.join(";\r\n\r\n", sqls) );
 		return result;
 	}
 	
 	private String buildSql(ConversionSQL conversionSql) {
-		if(this.database().is(DatabaseProduct.MSSQLSERVER)) {
-			return conversionSql.build(new SqlServerSpec());
-		}
-		else if (this.database().is(DatabaseProduct.POSTGRESQL)) {
-			return conversionSql.build(new PostgresSpec());
-		}
-		throw new RuntimeException("Current database products are not yet supported!");
+		val spec = DatabaseType.parse(this.database()).spec();
+		return conversionSql.build(spec);
 	}
 
 	@SneakyThrows

@@ -29,6 +29,10 @@ public class RevisedValueResult {
 	 * @param dataItem
 	 * @return
 	 */
+	public static RevisedValueResult succeeded(Object value) {
+		return new RevisedValueResult(true, Optional.of(value), Optional.empty());
+	}
+	
 	public static RevisedValueResult succeeded(String value) {
 		return new RevisedValueResult(true, Optional.of(value), Optional.empty());
 	}
