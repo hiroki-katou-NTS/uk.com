@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.app.command.input.transfer;
 
 import lombok.Value;
-import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 
 @Value
 public class TransferCanonicalDataCommand {
@@ -16,5 +15,5 @@ public class TransferCanonicalDataCommand {
 	int groupId;
 	
 	/** 受入モード */
-	ImportingMode mode;
+	int mode;
 }

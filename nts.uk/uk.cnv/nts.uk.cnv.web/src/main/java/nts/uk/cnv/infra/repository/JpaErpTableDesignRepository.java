@@ -10,10 +10,10 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.cnv.core.dom.tabledesign.ColumnDesign;
 import nts.uk.cnv.core.dom.tabledesign.ErpTableDesign;
-import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtErpColumnDesign;
-import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtErpColumnDesignPk;
-import nts.uk.cnv.core.infra.entity.tabledesign.ScvmtErpTableDesign;
 import nts.uk.cnv.dom.tabledesign.ErpTableDesignRepository;
+import nts.uk.cnv.infra.entity.tabledesign.ScvmtErpColumnDesign;
+import nts.uk.cnv.infra.entity.tabledesign.ScvmtErpColumnDesignPk;
+import nts.uk.cnv.infra.entity.tabledesign.ScvmtErpTableDesign;
 
 @Stateless
 public class JpaErpTableDesignRepository extends JpaRepository implements ErpTableDesignRepository {

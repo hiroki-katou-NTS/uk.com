@@ -1,5 +1,8 @@
 package nts.uk.ctx.exio.infra.repository.input.transfer;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 
 import lombok.SneakyThrows;
@@ -13,9 +16,11 @@ import nts.uk.ctx.exio.dom.input.transfer.TransferCanonicalDataRepository;
 public class TransferCanonicalDataRepositoryImpl extends JpaRepository implements TransferCanonicalDataRepository {
 
 	@Override
-	public int execute(ConversionSQL conversionSql) {
-		String sql = buildSql(conversionSql);
-		int result = executeTransfer(sql);
+	public int execute(List<ConversionSQL> conversionSqls) {
+		List<String> sqls = conversionSqls.stream()
+				.map(conversionSql -> buildSql(conversionSql))
+				.collect(Collectors.toList());
+		int result = executeTransfer(String.join(";\r\n\r\n", sqls) );
 		return result;
 	}
 	

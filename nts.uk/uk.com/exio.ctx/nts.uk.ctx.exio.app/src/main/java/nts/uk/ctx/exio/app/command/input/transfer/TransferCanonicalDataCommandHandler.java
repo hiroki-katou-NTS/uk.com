@@ -8,12 +8,13 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.task.tran.AtomTask;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataMeta;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataMetaRepository;
+import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.transfer.ConversionTableRepository;
 import nts.uk.ctx.exio.dom.input.transfer.TransferCanonicalData;
 import nts.uk.ctx.exio.dom.input.transfer.TransferCanonicalDataRepository;
@@ -36,15 +37,16 @@ public class TransferCanonicalDataCommandHandler extends CommandHandler<Transfer
 				command.getCommand().getCompanyId(),
 				command.getCommand().getSettingCode(),
 				command.getCommand().getGroupId(),
-				command.getCommand().getMode()
-				);
-		TransferCanonicalData.transfer(require, context);
+				ImportingMode.valueOf(command.getCommand().getMode())
+			);
+		AtomTask result = TransferCanonicalData.transferAll(require, context);
+		result.run();
 	}
 
 	private class RequireImpl implements TransferCanonicalData.Require{
 
 		@Override
-		public CanonicalizedDataMeta getMetaData() {
+		public List<String> getImportiongItem() {
 			String cid = AppContexts.user().companyId();
 			return metaRepo.get(cid);
 		}
@@ -56,8 +58,8 @@ public class TransferCanonicalDataCommandHandler extends CommandHandler<Transfer
 		}
 
 		@Override
-		public int execute(ConversionSQL conversionSql) {
-			return repository.execute(conversionSql);
+		public int execute(List<ConversionSQL> conversionSqls) {
+			return repository.execute(conversionSqls);
 		}
 		
 	}
