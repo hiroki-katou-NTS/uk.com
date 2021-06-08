@@ -19,7 +19,7 @@ public class ManHourSummaryTableFormat extends AggregateRoot {
     /** 工数集計表名称 */
     private ManHourSummaryTableName name;
     /** フォーマット詳細設定 */
-    private FormatAdvancedSetting formatAdvancedSetting;
+    private DetailFormatSetting detailFormatSetting;
 
     /**
      * [1] 工数集計表出力内容を作成する
@@ -31,6 +31,6 @@ public class ManHourSummaryTableFormat extends AggregateRoot {
      */
     public ManHourSummaryTableOutputContent createOutputContent(List<GeneralDate> dateList, List<YearMonth> yearMonthList,
                                                                 List<WorkDetailData> workDetailList, MasterNameInformation masterNameInfo) {
-        return formatAdvancedSetting.createManHourSummaryTableOutputContent(dateList, yearMonthList, workDetailList, masterNameInfo);
+        return detailFormatSetting.createManHourSummaryTableOutputContent(dateList, yearMonthList, workDetailList, masterNameInfo);
     }
 }

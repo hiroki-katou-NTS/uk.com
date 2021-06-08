@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * 	フォーマット詳細設定
  */
 @Getter
-public class FormatAdvancedSetting extends ValueObject {
+public class DetailFormatSetting extends ValueObject {
     /** 表示形式 */
     private DisplayFormat displayFormat;
     /** 合計単位 */
@@ -28,8 +28,8 @@ public class FormatAdvancedSetting extends ValueObject {
      * [C-1] フォーマット詳細設定
      * @return 工数集計表出力内容
      */
-    public FormatAdvancedSetting(DisplayFormat displayFormat, TotalUnit totalUnit, NotUseAtr displayVertHoriTotal,
-                                 List<SummaryItem> summaryItemList) {
+    public DetailFormatSetting(DisplayFormat displayFormat, TotalUnit totalUnit, NotUseAtr displayVertHoriTotal,
+                               List<SummaryItem> summaryItemList) {
         this.displayFormat = displayFormat;
         this.totalUnit = totalUnit;
         this.displayVerticalHorizontalTotal = displayVertHoriTotal;
@@ -49,8 +49,8 @@ public class FormatAdvancedSetting extends ValueObject {
                                                                                    List<WorkDetailData> workDetailList,
                                                                                    MasterNameInformation masterNameInfo) {
         val firstItem = summaryItemList.stream().findFirst().orElse(null);
-        val itemDetail = createSummaryItemDetail(dateList, yearMonthList, firstItem, workDetailList, masterNameInfo);
-        val outputContent = new ManHourSummaryTableOutputContent(Collections.singletonList(itemDetail));  //TODO: param is: List or Object ???
+        val itemDetail = createSummaryItemDetail(dateList, yearMonthList, firstItem, workDetailList, masterNameInfo); //TODO: return List or Object ???
+        val outputContent = new ManHourSummaryTableOutputContent(Collections.singletonList(itemDetail));
 
         if (displayVerticalHorizontalTotal == NotUseAtr.USE)
             outputContent.calculateTotal(totalUnit, dateList, yearMonthList);
@@ -74,17 +74,17 @@ public class FormatAdvancedSetting extends ValueObject {
         boolean lastFlag = hierarchyNo >= summaryItemList.size() - 1;
         //$作業データグループ = 作業詳細リスト：map groupingBy $.集計項目をマッピングする(対象項目)
         Map<String, List<WorkDetailData>> workDataGroup = workDetailList.stream().collect(Collectors.groupingBy(x -> x.mapSummaryItem(summaryItem.getSummaryItemType())));
-        String key = workDataGroup.entrySet().stream().map(Map.Entry::getKey)
-                .findFirst()
-                .orElse(null);
 
         SummaryItemDetail summaryItemDetail = null;
-        if (lastFlag)
-            summaryItemDetail = createItemDetailForBottomLayer(dateList, yearMonthList, key, summaryItem.getSummaryItemType(), workDetailList, masterNameInfo);
-        else {
-            SummaryItem nextTargetItem = summaryItemList.stream().filter(x -> x.getHierarchicalOrder() == summaryItem.getHierarchicalOrder() + 1).findFirst().orElse(null);
-            if (nextTargetItem != null)
-                summaryItemDetail = createItemDetailOtherThanBottomLayer(dateList, yearMonthList, key, nextTargetItem, workDetailList, masterNameInfo);
+        for (val entry : workDataGroup.entrySet()) {
+            val key = entry.getKey();
+            if (lastFlag)
+                summaryItemDetail = createItemDetailForBottomLayer(dateList, yearMonthList, key, summaryItem.getSummaryItemType(), workDetailList, masterNameInfo);
+            else {
+                SummaryItem nextTargetItem = summaryItemList.stream().filter(x -> x.getHierarchicalOrder() == summaryItem.getHierarchicalOrder() + 1).findFirst().orElse(null);
+                if (nextTargetItem != null)
+                    summaryItemDetail = createItemDetailOtherThanBottomLayer(dateList, yearMonthList, key, nextTargetItem, workDetailList, masterNameInfo);
+            }
         }
 
         return summaryItemDetail;

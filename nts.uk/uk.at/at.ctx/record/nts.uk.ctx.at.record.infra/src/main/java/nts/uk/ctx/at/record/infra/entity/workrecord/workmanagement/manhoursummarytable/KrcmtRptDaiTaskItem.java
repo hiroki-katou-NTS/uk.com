@@ -29,7 +29,7 @@ public class KrcmtRptDaiTaskItem extends ContractUkJpaEntity implements Serializ
                     @JoinColumn(name = "CODE", referencedColumnName = "CODE", insertable = false, updatable = false)})
     public KrcmtRptDaiTask rptDaiTask;
 
-    private KrcmtRptDaiTaskItem(KrcmtRptDaiTaskItemPk pk, int displayOrder) {
+    public KrcmtRptDaiTaskItem(KrcmtRptDaiTaskItemPk pk, int displayOrder) {
         super();
         this.pk = pk;
         this.displayOrder = displayOrder;
@@ -47,14 +47,8 @@ public class KrcmtRptDaiTaskItem extends ContractUkJpaEntity implements Serializ
         );
     }
 
-    public KrcmtRptDaiTaskItem toEntity(KrcmtRptDaiTaskItem entity) {
-        return new KrcmtRptDaiTaskItem(
-                new KrcmtRptDaiTaskItemPk(
-                        entity.pk.cid,
-                        entity.pk.code,
-                        entity.pk.summaryType
-                ),
-                entity.displayOrder
-        );
+    public void fromEntity(KrcmtRptDaiTaskItem entity) {
+        this.pk.summaryType = entity.pk.summaryType;
+        this.displayOrder = entity.displayOrder;
     }
 }

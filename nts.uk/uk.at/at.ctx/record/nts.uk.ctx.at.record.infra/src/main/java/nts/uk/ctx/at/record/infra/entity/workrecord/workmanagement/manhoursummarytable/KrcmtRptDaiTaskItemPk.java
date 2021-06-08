@@ -10,7 +10,6 @@ import java.io.Serializable;
 
 @EqualsAndHashCode
 @AllArgsConstructor
-@NoArgsConstructor
 @Embeddable
 public class KrcmtRptDaiTaskItemPk implements Serializable {
     private static final long serialVersionUID = 1L;
