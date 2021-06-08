@@ -12,11 +12,11 @@ import nts.uk.shr.com.history.History;
 /**
  * 雇用履歴グループの正準化
  */
-public class EmployementHistoryCanonicalization
+public class EmploymentHistoryCanonicalization
 		extends EmployeeContinuousHistoryCanonicalization
 		implements GroupCanonicalization {
 
-	public EmployementHistoryCanonicalization(
+	public EmploymentHistoryCanonicalization(
 			int itemNoStartDate,
 			int itemNoEndDate,
 			int itemNoHistoryId,

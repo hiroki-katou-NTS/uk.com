@@ -19,7 +19,7 @@ import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
-import nts.uk.ctx.exio.dom.input.canonicalize.groups.EmployementHistoryCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.groups.EmploymentHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
@@ -230,7 +230,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 	}
 
 	public static interface RequireCanonicalize extends
-			EmployementHistoryCanonicalization.RequireGetHistory {
+			EmploymentHistoryCanonicalization.RequireGetHistory {
 
 		List<String> getAllEmployeeCodesOfImportingData(ExecutionContext context);
 	}
@@ -271,7 +271,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 	protected abstract void adjustDeleting(GroupCanonicalization.RequireAdjsut require, ExecutionContext context, EmployeeHistoryItem historyItem);
 	
 	public static interface RequireAdjust extends
-			EmployementHistoryCanonicalization.RequireAdjust {
+			EmploymentHistoryCanonicalization.RequireAdjust {
 		
 	}
 	

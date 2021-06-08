@@ -24,7 +24,7 @@ public class EmployementHistoryCanonicalizationTest {
 	public void canonicalizeHistory() {
 		
 		val empCodeCano = new EmployeeCodeCanonicalization(0, 1);
-		val target = new EmployementHistoryCanonicalization(2, 3, 4, empCodeCano);
+		val target = new EmploymentHistoryCanonicalization(2, 3, 4, empCodeCano);
 		val context = Helper.context(ImportingMode.DELETE_RECORD_BEFOREHAND);
 		List<IntermediateResult> employeeCanonicalized = Arrays.asList(
 				new IntermediateResult(null, null, null)
