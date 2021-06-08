@@ -542,13 +542,13 @@ public class TempRemainCreateEachData {
 		int  startMonth = companyDto.getStartMonth();
 
 		GeneralDate nextPeriod = GeneralDate.fromString(
-				String.valueOf(date.year()) + "/" + startMonth + "/" + String.valueOf(date.day()), "yyyy/MM/dd");
+				String.valueOf(date.year()) + "/" + String.format("%02d", startMonth) + "/" + String.format("%02d", date.day()), "yyyy/MM/dd");
 		//月　＝　次の期首月 －１
-		String endPeriodMonth = String.valueOf(nextPeriod.addMonths(-1).month());
+		int endPeriodMonth = nextPeriod.addMonths(-1).month();
 		//日　＝　次の期首月－１の月末の日
-		String endPeriodDay = String.valueOf(nextPeriod.addMonths(-1).lastDateInMonth());
+		int endPeriodDay = nextPeriod.addMonths(-1).lastDateInMonth();
 
-		String endPeriodYear = "";
+		String endPeriodYear = ""; 
 
 		//年月日．月　＜　次の期首月
 		if(date.month() < startMonth){
@@ -568,7 +568,7 @@ public class TempRemainCreateEachData {
 			endPeriodYear = String.valueOf(date.addYears(-1).year());
 		}
 
-		return GeneralDate.fromString(endPeriodYear + "/" + endPeriodMonth + "/" + endPeriodDay, "yyyy/MM/dd");
+		return GeneralDate.fromString(endPeriodYear + "/" +  String.format("%02d", endPeriodMonth)  + "/" +  String.format("%02d", endPeriodDay) , "yyyy/MM/dd");
 	}
 
 

@@ -41,11 +41,6 @@ public class CheckTranmissionImpl implements CheckTransmission {
 		List<SendMailApproverInfoParam> approverInfoLst = sendMailAppInfoParam.getApproverInfoLst();
 		// 申請者にメールを送信するかチェックする
 		if(sendMailApplicant) {
-			// 申請者のメールアドレスをチェックする
-			if(!sendMailAppInfoParam.getOpApplicantMail().isPresent()) {
-				// エラーメッセージを表示する（Msg_1309）
-				throw new BusinessException("Msg_1309");
-			}
 			// メール送信する承認者リストに追加する
 			approverInfoLst.add(new SendMailApproverInfoParam(sendMailAppInfoParam.getApplication().getEmployeeID(), sendMailAppInfoParam.getOpApplicantMail().get(), ""));
 		}

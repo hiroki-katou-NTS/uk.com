@@ -115,7 +115,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public updateValidateWorkHours1(data: boolean) {
         const self = this;
 
-        if (data) {
+        if (!data) {
             self.$updateValidator('workHours1', {
                 validate: false
             });
@@ -349,7 +349,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public get isValidateWorkHours1() {
         const self = this;
 
-        return self.c9 || !self.c11;
+        return (self.c9 && self.c11);
     }
 
     // 休暇申請起動時の表示情報．就業時間帯表示フラグ = true
@@ -564,7 +564,11 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public get c20() {
         const self = this;
         let model = self.model as Model;
-        let c20 = _.get(model, 'appAbsenceStartInfoDto.specAbsenceDispInfo.dateSpecHdRelationLst[0].threeParentOrLess');
+
+        const { selectedRelationship } = self;
+        const dateSpecHdRelationLst = _.get(model, 'appAbsenceStartInfoDto.specAbsenceDispInfo.dateSpecHdRelationLst');
+        const indexSelect = _.findLastIndex(dateSpecHdRelationLst , (o: any) => o.relationCD == selectedRelationship);
+        let c20 = _.get(model, `appAbsenceStartInfoDto.specAbsenceDispInfo.dateSpecHdRelationLst[${indexSelect == -1 ? 0 : indexSelect}].threeParentOrLess`);
         
         return self.c18 && (c20 || false);
     }
@@ -653,7 +657,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         const self = this;
         self.fetchData();
         if (!self.modeNew) {
-            if (self.isValidateWorkHours1) {
+            if (!self.isValidateWorkHours1) {
                 self.$updateValidator('workHours1', {
                     validate: false
                 });
@@ -1002,6 +1006,18 @@ export class KafS06AComponent extends KafS00ShrComponent {
             });
         });
     }
+    // 勤務種類を変更する
+    public bindOpenWorkType(vacationCheckOutputDto?: VacationCheckOutputDto) {
+        const self = this;
+
+        // self.bindHolidayType();
+        self.bindWorkInfo(true);
+        self.bindWorkHours(true);
+        self.bindRelationship();
+        self.bindLinkWithVacation(vacationCheckOutputDto);
+        
+    }
+
     // 就業時間帯を選択する bind after select wortime
     public bindOpenWorkTime() {
         const self = this;
@@ -1418,7 +1434,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
                         let model = {} as Model;
                         model.appAbsenceStartInfoDto = res.data.appAbsenceStartInfoDto;
                         self.model = model;
-                        self.bindComponent(res.data.vacationCheckOutputDto);
+                        self.bindOpenWorkType(res.data.vacationCheckOutputDto);
                     }
                 })
                 .catch((res: any) => {

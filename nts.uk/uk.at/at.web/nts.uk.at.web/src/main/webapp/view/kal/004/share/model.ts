@@ -591,6 +591,16 @@ module nts.uk.at.view.kal004.share.model {
         SPECIFY_CLOSE_END_MONTH = 2    
     }
     
+    /**
+     * アラームリストで指定する年の種類
+     */
+    export enum YearSpecifiedType {
+         // 本年
+        FISCAL_YEAR = 1,
+        // 本年度
+        CURRENT_YEAR = 2    
+    }
+    
     /*
      * Alarm Category 
      */   

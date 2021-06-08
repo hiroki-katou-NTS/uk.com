@@ -1213,6 +1213,30 @@ export class KafS11AComponent extends KafS00ShrComponent {
             
             return;
         }
+        if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT_LEAVE) {
+            if (_.isEmpty(vm.complementWorkInfo.workTypeCD) || _.isEmpty(vm.complementWorkInfo.workTimeCD)) {
+                vm.$modal.error({ messageId: 'Msg_218', messageParams: [vm.$i18n('KAFS11_9')] });
+    
+                return;
+            }
+            if (_.isEmpty(vm.leaveWorkInfo.workTypeCD)) {
+                vm.$modal.error({ messageId: 'Msg_218', messageParams: [vm.$i18n('KAFS11_16')] });
+                
+                return;
+            }
+        } else if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT) {
+            if (_.isEmpty(vm.complementWorkInfo.workTypeCD) || _.isEmpty(vm.complementWorkInfo.workTimeCD)) {
+                vm.$modal.error({ messageId: 'Msg_218', messageParams: [vm.$i18n('KAFS11_9')] });
+    
+                return;
+            }
+        } else {
+            if (_.isEmpty(vm.leaveWorkInfo.workTypeCD)) {
+                vm.$modal.error({ messageId: 'Msg_218', messageParams: [vm.$i18n('KAFS11_16')] });
+                
+                return;
+            }
+        }
         vm.$mask('show');
         let command = vm.getCommandSubmit();
         vm.$http.post('at', API.checkBeforeSubmit, command)
