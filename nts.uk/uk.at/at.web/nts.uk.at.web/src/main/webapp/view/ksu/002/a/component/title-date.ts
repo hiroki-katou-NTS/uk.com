@@ -250,6 +250,8 @@ module nts.uk.ui.at.ksu002.a {
 						cache.yearMonth = cmd.yearMonth;
 						// vm.$ajax('at', API.BASE_DATE, cmd).then(proccesPeriod);
 					} else if (cache.yearMonth !== cmd.yearMonth) {
+						if(nts.uk.ui.errors.hasError())
+							return;
 						if (hasChange) {
 							vm.$dialog
 								.confirm({ messageId: 'Msg_1732' })
