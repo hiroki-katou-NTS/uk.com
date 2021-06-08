@@ -442,8 +442,9 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 	@Override
 	public List<EmployeeDataMngInfoExport> findSdataMngInfoByEmployeeCodes(String companyId, List<String> employeeCodes) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+		return sDataMngInfoRepo.findByListEmployeeCode(companyId, employeeCodes)
+				.stream()
+				.map(e -> toExport(e)).collect(Collectors.toList());
 	}
 
 	private static EmployeeDataMngInfoExport toExport(EmployeeDataMngInfo mngInfo) {
