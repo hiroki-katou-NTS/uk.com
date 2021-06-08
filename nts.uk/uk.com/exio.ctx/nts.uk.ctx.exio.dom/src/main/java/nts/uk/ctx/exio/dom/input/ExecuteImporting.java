@@ -10,6 +10,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AdjustExistingData;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
+import nts.uk.ctx.exio.dom.input.transfer.TransferCanonicalData;
 
 /**
  * 受入処理を実行する
@@ -45,7 +46,9 @@ public class ExecuteImporting {
 		
 		AtomTask atomTaskAdjust = AdjustExistingData.adjust(require, context);
 		
-		return Arrays.asList(atomTaskAdjust);
+		AtomTask atomTaskTransfer = TransferCanonicalData.transferAll(require, context);
+		
+		return Arrays.asList(atomTaskAdjust.then(atomTaskTransfer));
 	}
 	
 	/**
@@ -62,13 +65,16 @@ public class ExecuteImporting {
 			
 			AtomTask atomTaskAdjust = AdjustExistingData.adjust(require, context, employeeId);
 			
+			// TODO: 移送
+			
 			return atomTaskAdjust;
 		});
 	}
 	
 	public static interface Require extends
 			AdjustExistingData.RequireAll,
-			AdjustExistingData.RequireEmployee {
+			AdjustExistingData.RequireEmployee,
+			TransferCanonicalData.Require {
 		
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
 		
