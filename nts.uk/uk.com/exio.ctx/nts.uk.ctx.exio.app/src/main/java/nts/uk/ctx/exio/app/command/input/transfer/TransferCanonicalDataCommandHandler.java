@@ -30,7 +30,7 @@ public class TransferCanonicalDataCommandHandler extends CommandHandler<Transfer
 	@Override
 	protected void handle(CommandHandlerContext<TransferCanonicalDataCommand> context) {
 		val require = new RequireImpl();
-		TransferCanonicalData.transfer(require);
+		TransferCanonicalData.transfer(require, null);
 	}
 
 	private class RequireImpl implements TransferCanonicalData.Require{
