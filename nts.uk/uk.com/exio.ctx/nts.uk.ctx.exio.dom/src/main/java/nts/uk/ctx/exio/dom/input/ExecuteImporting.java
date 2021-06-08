@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.dom.input;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,11 +43,14 @@ public class ExecuteImporting {
 	 */
 	private static Iterable<AtomTask> executeAll(Require require, ExecutionContext context) {
 		
-		AtomTask atomTaskAdjust = AdjustExistingData.adjust(require, context);
-		
-		AtomTask atomTaskTransfer = TransferCanonicalData.transferAll(require, context);
-		
-		return Arrays.asList(atomTaskAdjust.then(atomTaskTransfer));
+		return AtomTask.iterateSingle(() -> {
+
+			AtomTask atomTaskAdjust = AdjustExistingData.adjust(require, context);
+			
+			AtomTask atomTaskTransfer = TransferCanonicalData.transferAll(require, context);
+			
+			return atomTaskAdjust.then(atomTaskTransfer);
+		});
 	}
 	
 	/**
