@@ -114,7 +114,7 @@ public class AsposeWorkScheduleGenerator extends AsposeCellsReportGenerator impl
         List<GeneralDate> period = datePeriod.datesBetween();
         for(int i = 0; i < period.size(); i++) {
             Cell cell = cells.get(0, i + 2);
-            cell.setValue(period.get(i).toString("dd/MM/yyyy"));
+            cell.setValue(period.get(i).toString("yyyy/MM/dd"));
             this.setHeaderDateStyle(cell, period.get(i), holidayList);
             this.setBorder(cell);
         }
@@ -154,7 +154,7 @@ public class AsposeWorkScheduleGenerator extends AsposeCellsReportGenerator impl
         this.setHeaderStyle(cell);
         
         Style style = cell.getStyle();
-        style.setCustom("dd/MM/yyyy");
+        style.setCustom("yyyy/MM/dd");
         if (holidayList.contains(generalDate) || generalDate.dayOfWeekEnum().equals(DayOfWeek.SUNDAY)) {
             style.getFont().setColor(SUNDAY);
         } else if (generalDate.dayOfWeekEnum().equals(DayOfWeek.SATURDAY)) {

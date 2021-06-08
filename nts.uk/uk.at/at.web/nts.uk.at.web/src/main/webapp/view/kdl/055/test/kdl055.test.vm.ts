@@ -61,7 +61,7 @@ module nts.uk.at.view.kdl055.test.viewmodel {
             let param: any = {unit: vm.targetInfo.unit, workplaceId: vm.targetInfo.workplaceId, workplaceGroupId: vm.targetInfo.workplaceGroupId, 
                 sIDs: vm.listSid(), startDate: vm.startDate, endDate: vm.endDate};
 
-            vm.$window.modeless('at', '/view/kdl/055/a/index.xhtml', param);
+            vm.$window.modal('at', '/view/kdl/055/a/index.xhtml', param);
         }
     }
 

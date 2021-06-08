@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+        <ui:define name="htmlHead">
+            <script>var dialogSize = { width: 900, height: 600 };</script>
+
+            <com:scriptfile set="IGNITE" />
+            <com:scriptfile path="kdl055.b.vm.js" />
+            <com:stylefile path="kdl055.b.style.css" />
+        </ui:define>
+
+        <ui:define name="content">       
+            <div id="functions-area">		
+                <!-- B1_1 -->
+                <button tabindex="1" class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KDL055_22')}</button>
+                <!-- B1_2 -->
+                <button tabindex="2" data-bind="click: openKDL053">#{i18n.getText('KDL055_23')}</button>
+                <!-- B1_3 -->
+                <button tabindex="3" data-bind="click: close">#{i18n.getText('KDL055_24')}</button>
+            </div>     
+            <div id="contents-area" style="overflow:hidden">               
+                <div class="table">
+                    <div class="cell" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KDL055_33')"></div>
+                    <div class="cell" data-bind="text: filename"></div>
+                </div>
+                <div id="grid"></div>
+            </div>           
+        </ui:define>
+    </ui:composition>
+</body>
+</html>

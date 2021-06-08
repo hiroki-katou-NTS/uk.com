@@ -61,13 +61,7 @@ module nts.uk.at.view.kdl055.a.viewmodel {
 
         intakeInput() {
             const vm = this;
-            vm.upload();
-            
-        }
-        
-        upload() {
-            const vm = this;
-            
+            // vm.upload();
             vm.$blockui('show');
             // call api upload file
             $('#file-upload').ntsFileUpload({ stereoType: "excelFile" }).done((res: any) => {
@@ -76,11 +70,30 @@ module nts.uk.at.view.kdl055.a.viewmodel {
                 vm.filename(res[0].originalName);
                 // save to cache
                 characteristics.save('ScheduleImport', ko.toJS(vm.scheduleImport));
+            }).then((res: any) => {
+                if (res) {
+                    let param = {
+                        fileID: vm.fileID(),
+                        captureSheet: vm.scheduleImport.captureSheet(),
+                        captureCheckSheet: vm.scheduleImport.captureCheckSheet(),
+                        captureCell: vm.scheduleImport.captureCell(),
+                        captureCheckCell: vm.scheduleImport.captureCheckCell(),
+                        overwrite: vm.scheduleImport.overwrite()
+                    };
+    
+                    return vm.$ajax(paths.checkFileUpload, param);
+                }
+            }).done((res: any) => {
+                if (res) {
+                    vm.$window.modeless('at', '/view/kdl/055/b/index.xhtml', res).then(() => {
+                        vm.close();
+                    });
+                }
             }).fail((err: any) => {
                 if (err) {
                     vm.$dialog.error({ messageId: err.messageId, messageParams: err.parameterIds });
                 }
-            }).always(vm.$blockui('hide'));
+            }).always(() => vm.$blockui('hide'));
         }
 
         outputExcel() {
@@ -128,7 +141,7 @@ module nts.uk.at.view.kdl055.a.viewmodel {
         }
     }
 
-    interface IScheduleImport {
+    export interface IScheduleImport {
         // 取込ファイル
         mappingFile: string;
         // 取込シート_チェック
@@ -144,7 +157,7 @@ module nts.uk.at.view.kdl055.a.viewmodel {
     }
 
     // 個人スケジュールの取込
-    class ScheduleImport {
+    export class ScheduleImport {
         // 取込ファイル
         mappingFile: KnockoutObservable<string> = ko.observable(null);
         // 取込シート_チェック

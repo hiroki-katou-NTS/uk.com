@@ -1,4 +1,4 @@
-package nts.uk.file.at.app.schedule.export;
+package nts.uk.at.app.schedule.filemanagement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
