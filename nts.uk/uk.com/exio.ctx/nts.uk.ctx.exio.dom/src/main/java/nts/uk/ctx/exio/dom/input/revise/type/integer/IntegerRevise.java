@@ -21,12 +21,12 @@ public class IntegerRevise implements ReviseValue {
 	
 	@Override
 	public RevisedValueResult revise(String target) {
-		String resultStr = target;
+		String strResult = target;
 		if(useSpecifyRange) {
 			// 値の有効範囲を指定する場合
-			resultStr = this.rangeOfValue.get().extract(target);
+			strResult = this.rangeOfValue.get().extract(strResult);
 		}
-		return stringToInt(resultStr);
+		return stringToInt(strResult);
 	}
 	
 	// 文字列→整数変換
@@ -38,6 +38,5 @@ public class IntegerRevise implements ReviseValue {
 		catch(Exception e){
 			return RevisedValueResult.failed("Msg_1017");
 		}
-		
 	}
 }

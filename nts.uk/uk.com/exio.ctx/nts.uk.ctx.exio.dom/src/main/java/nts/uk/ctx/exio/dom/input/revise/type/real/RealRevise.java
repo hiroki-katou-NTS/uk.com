@@ -25,40 +25,40 @@ public class RealRevise implements ReviseValue {
 	
 	@Override
 	public RevisedValueResult revise(String target) {
-		String resultStr = target;
+		String strResult = target;
 		if(useSpecifyRange) {
 			// 値の有効範囲を指定する場合
-			resultStr = this.rangeOfValue.get().extract(target);
+			strResult = this.rangeOfValue.get().extract(strResult);
 		}
 		
 		if(isDecimalization) {
 			// 整数　→　小数編集する場合
-			return stringToIntToDecimal(resultStr);
+			return stringToIntToDecimal(strResult);
 		}
 		else {
 			// 整数　→　小数編集しない場合
-			return stringToDecimal(resultStr);
+			return stringToDecimal(strResult);
 		}
 	}
 	
 	// 文字列　→　整数　→　実数変換
 	private RevisedValueResult stringToIntToDecimal(String resultStr) {
-		Long resultInt;
+		Long intResult;
 		try {
-			resultInt = Long.parseLong(resultStr);
+			intResult = Long.parseLong(resultStr);
 		}
 		catch(Exception e){
 			return RevisedValueResult.failed("Msg_1017");
 		}
-		BigDecimal resultDecimal = decimalize(resultInt);
+		BigDecimal resultDecimal = decimalize(intResult);
 		return RevisedValueResult.succeeded(resultDecimal);
 	}
 	
 	//　文字列　→　実数変換
 	private RevisedValueResult stringToDecimal(String resultStr) {
 		try {
-			BigDecimal resultDecimal = new BigDecimal(resultStr);
-			return RevisedValueResult.succeeded(resultDecimal);
+			BigDecimal decimalResult = new BigDecimal(resultStr);
+			return RevisedValueResult.succeeded(decimalResult);
 		}
 		catch(Exception e){
 			return RevisedValueResult.failed("Msg_1017");
@@ -68,7 +68,7 @@ public class RealRevise implements ReviseValue {
 	// 小数化
 	public BigDecimal decimalize(Long target) {
 		BigDecimal result = BigDecimal.valueOf(target);
-		// 10のLength乗することで小数化する		
+		// 10のLength乗で割ることで小数化する		
 		return result.divide(BigDecimal.valueOf(Math.pow(10, Double.valueOf(length.toString()))));
 	}
 }
