@@ -99,7 +99,8 @@ public class RegisterWorkContentHandler {
 													workDetailParam.getWorkGroup().getWorkCD2(), workDetailParam.getWorkGroup().getWorkCD3(),
 													workDetailParam.getWorkGroup().getWorkCD4(), workDetailParam.getWorkGroup().getWorkCD5())),
 											Optional.ofNullable(new WorkinputRemarks(workDetailParam.getRemarks())),
-											Optional.ofNullable(new WorkLocationCD(workDetailParam.getWorkLocationCD()))))
+											Optional.ofNullable(workDetailParam.getWorkLocationCD() == null ? null
+													: new WorkLocationCD(workDetailParam.getWorkLocationCD()))))
 									.collect(Collectors.toList()));
 					
 				})

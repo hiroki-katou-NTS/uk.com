@@ -521,7 +521,7 @@ module nts.uk.ui.at.kdw013.a {
                                     workCD4,
                                     workCD5
                                 },
-                                workLocationCD,
+                                workLocationCD: workLocationCD == "" ? null :workLocationCD,
                                 timeZone: {
                                     end: getTimeOfDate(end),
                                     start: getTimeOfDate(start)
