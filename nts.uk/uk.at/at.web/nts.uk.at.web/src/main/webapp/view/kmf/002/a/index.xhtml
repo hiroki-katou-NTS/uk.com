@@ -24,74 +24,76 @@
 		</ui:define>
 		<ui:define name="content">
       <div id="contents-area">
-        <div style="display: flex; margin-top: 10px">
-          <div class="content-row-A">
-            <!-- A3_1 -->
-            <div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_3')}</div>
-          </div>
-          <!-- A3_2 -->
-          <div id="managePubHDDiv" class="flex valign-center" tabindex="4" name="#[KMF002_3]">
-            <!-- A3_3, A3_4 -->
-            <div tabindex="-1" id="managePubHD" data-bind="ntsRadioBoxGroup: { options: companyManageClassification,
-                              optionsText: 'name',
-                              optionsValue: 'value',
-                              value: managePublicHoliday,
-                              checked: 1,
-                              enable: true }"></div>														
-          </div>
-        </div>
-        
-        <div style="display: flex; align-items: center; padding-top: 30px;">
-          <div class="content-row-A">
-            <!-- A3_6 -->
-            <div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_4')}</div>
-          </div>
-          <div>
-            <!-- A3_7 -->
-            <!-- A3_8 -->
-            <div tabindex="5" id="combo-box" style="width: 160px" 
-                    data-bind="ntsComboBox: { options: lstCarryOverDeadline,
-                                  optionsValue: 'value',
-                                  value: publicHdCarryOverDeadline,
-                                  optionsText: 'name',
-                                  editable: false,
-                                  enable: managePublicHoliday() === 1,
-                                  columns: [
-                                    { prop: 'name', length: 10 },
-                                  ],
-                                  name: '#[KMF002_4]'}"></div>
-          </div>
-        </div>
-
-        <div style="display: flex">
-          <div class="content-row-A"></div>
-          <!-- A3_9 -->
-          <div tabindex="6" id="ckbcarryOverNumberOfPublicHdIsNegative" data-bind="ntsCheckBox: { 
-            checked: carryOverNumberOfPublicHdIsNegative, 
-            enable: managePublicHoliday() === 1,
-            name:'#[KMF002_7]'
-          }">#{i18n.getText('KMF002_7')}</div>
-        </div>
-        
-        
-        <div style="display: flex; padding-top: 30px" >
-          <div class="content-row-A">
-            <!-- A4_5 -->
-            <div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_6')}</div>
+        <div class="contents">
+          <div style="display: flex; margin-top: 10px">
+            <div class="content-row-A">
+              <!-- A3_1 -->
+              <div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_3')}</div>
+            </div>
+            <!-- A3_2 -->
+            <div id="managePubHDDiv" class="flex valign-center" tabindex="4" name="#[KMF002_3]">
+              <!-- A3_3, A3_4 -->
+              <div tabindex="-1" id="managePubHD" data-bind="ntsRadioBoxGroup: { options: companyManageClassification,
+                                optionsText: 'name',
+                                optionsValue: 'value',
+                                value: managePublicHoliday,
+                                checked: 1,
+                                enable: true }"></div>														
+            </div>
           </div>
           
-          <!-- A4_6 -->
-          <div tabindex="8" id="combo-box7" style="width: 160px" data-bind="ntsComboBox: { options: lstManagementPeriod,
-                                  optionsValue: 'value',
-                                  value: publicHolidayPeriod,
-                                  optionsText: 'name',
-                                  editable: false,
-                                  enable: managePublicHoliday() === 1,
-                                  columns: [
-                                    { prop: 'name', length: 4 },
-                                  ],
-                                  name:'#[KMF002_6]'}"></div>
-        </div>	
+          <div style="display: flex; align-items: center; padding-top: 30px;">
+            <div class="content-row-A">
+              <!-- A3_6 -->
+              <div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_4')}</div>
+            </div>
+            <div>
+              <!-- A3_7 -->
+              <!-- A3_8 -->
+              <div tabindex="5" id="combo-box" style="width: 160px" 
+                      data-bind="ntsComboBox: { options: lstCarryOverDeadline,
+                                    optionsValue: 'value',
+                                    value: publicHdCarryOverDeadline,
+                                    optionsText: 'name',
+                                    editable: false,
+                                    enable: managePublicHoliday() === 1,
+                                    columns: [
+                                      { prop: 'name', length: 10 },
+                                    ],
+                                    name: '#[KMF002_4]'}"></div>
+            </div>
+          </div>
+  
+          <div style="display: flex">
+            <div class="content-row-A"></div>
+            <!-- A3_9 -->
+            <div tabindex="6" id="ckbcarryOverNumberOfPublicHdIsNegative" data-bind="ntsCheckBox: { 
+              checked: carryOverNumberOfPublicHdIsNegative, 
+              enable: managePublicHoliday() === 1,
+              name:'#[KMF002_7]'
+            }">#{i18n.getText('KMF002_7')}</div>
+          </div>
+          
+          
+          <div style="display: flex; padding-top: 30px" >
+            <div class="content-row-A">
+              <!-- A4_5 -->
+              <div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_6')}</div>
+            </div>
+            
+            <!-- A4_6 -->
+            <div tabindex="8" id="combo-box7" style="width: 160px" data-bind="ntsComboBox: { options: lstManagementPeriod,
+                                    optionsValue: 'value',
+                                    value: publicHolidayPeriod,
+                                    optionsText: 'name',
+                                    editable: false,
+                                    enable: managePublicHoliday() === 1,
+                                    columns: [
+                                      { prop: 'name', length: 4 },
+                                    ],
+                                    name:'#[KMF002_6]'}"></div>
+          </div>	
+        </div>
       </div>
       <div id="functions-area-bottom">
         <!-- A2_1 -->
