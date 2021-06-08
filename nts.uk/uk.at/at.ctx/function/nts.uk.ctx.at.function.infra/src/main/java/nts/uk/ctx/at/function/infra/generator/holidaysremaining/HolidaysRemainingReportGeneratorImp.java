@@ -606,7 +606,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 ? TextResource.localize("KDR001_15")
                 : "";
         cells.get(firstRow + 2, 9).setValue(text);
-        if (listAnnLeaGrant != null && grantDate.isPresent()) {
+        if (listAnnLeaGrant != null) {
             for (int i = 0; i < listAnnLeaGrant.size(); i++) {
                 if (i >= 2) {
                     cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 5, firstRow + i * 2, 2);
@@ -629,7 +629,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         List<AggrResultOfAnnualLeaveEachMonthKdr> rs363New = hdRemainingInfor.getRs363New();
         val listItemGrant = rs363New.stream().flatMap(e -> e.getAggrResultOfAnnualLeave()
                 .getAsOfGrant().stream()).collect(Collectors.toList());
-        if (dataSource != null && listAnnLeaveUsageStatusOfThisMonth != null && grantDate.isPresent()) {
+        if (dataSource != null && listAnnLeaveUsageStatusOfThisMonth != null ) {
             // E1_4 - SUM VALUE 281
             val valueE14 = listAnnLeaGrant.stream().mapToDouble(AnnLeaGrantNumberImported::getRemainDay).sum();
             Double leave_DaysRemain = checkShowAreaAnnualBreak1(
