@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.FlexTimeByPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexCarryforwardTime;
@@ -68,6 +69,25 @@ public class FlexTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 		return dto;
 	}
 
+	public static FlexTimeOfMonthlyDto from(FlexTimeByPeriod domain) {
+		FlexTimeOfMonthlyDto dto = new FlexTimeOfMonthlyDto();
+		if(domain != null) {
+			dto.setFlexTime(new FlexTimeMDto(new TimeMonthWithCalculationDto(domain.getFlexTime().v(), domain.getFlexTime().v()), 
+												domain.getBeforeFlexTime().valueAsMinutes(), 0, 0, null));
+			dto.setExcessTime(domain.getFlexExcessTime() == null ? 0 : domain.getFlexExcessTime().valueAsMinutes());
+			dto.setShortageTime(domain.getFlexShortageTime() == null ? 0 : domain.getFlexShortageTime().valueAsMinutes());
+		}
+		return dto;
+	}
+
+	public FlexTimeByPeriod toDomainPeriod() {
+		return FlexTimeByPeriod.of(
+				new AttendanceTimeMonthWithMinus(this.flexTime == null || this.flexTime.getFlexTime() == null
+														? 0 : this.flexTime.getFlexTime().getTime()), 
+				new AttendanceTimeMonth(this.excessTime), 
+				new AttendanceTimeMonth(this.shortageTime), 
+				new AttendanceTimeMonth(this.flexTime == null ? 0 : this.flexTime.getBeforeFlexTime()));
+	}
 	
 	@Override
 	public Optional<ItemValue> valueOf(String path) {

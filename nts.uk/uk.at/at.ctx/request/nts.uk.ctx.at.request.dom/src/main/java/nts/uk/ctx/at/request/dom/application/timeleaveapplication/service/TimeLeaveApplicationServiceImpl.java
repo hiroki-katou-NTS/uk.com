@@ -566,7 +566,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
                 Collections.emptyList(),
                 getAppData(timeLeaveApplication),
                 timeDigestAppType == TimeDigestAppType.USE_COMBINATION ? chkHoursOfSubHoliday : timeDigestAppType == TimeDigestAppType.TIME_OFF,
-                false,
+                true,
                 timeDigestAppType == TimeDigestAppType.USE_COMBINATION ? chkHoursOfHoliday : timeDigestAppType == TimeDigestAppType.TIME_ANNUAL_LEAVE,
                 false,
                 false,

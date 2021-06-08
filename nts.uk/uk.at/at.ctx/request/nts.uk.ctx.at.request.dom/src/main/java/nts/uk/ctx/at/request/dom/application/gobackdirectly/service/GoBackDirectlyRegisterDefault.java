@@ -178,9 +178,13 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			String workTimeCode = goBackDirectly.getDataWork().flatMap(x -> x.getWorkTimeCodeNotNull()).map(x -> x.v()).orElse(null);
 			
 			if (inforGoBackCommonDirectOutput.getWorkInfo().isPresent()) {
-				workTypeCode = !workTypeCode.equals(inforGoBackCommonDirectOutput.getWorkInfo().get().getWorkType()) ? workTypeCode : null;
-				workTimeCode = !workTimeCode.equals(inforGoBackCommonDirectOutput.getWorkInfo().get().getWorkTime()) ? workTimeCode : null;			
-			}
+				if (workTypeCode != null) {
+					workTypeCode = !workTypeCode.equals(inforGoBackCommonDirectOutput.getWorkInfo().get().getWorkType()) ? workTypeCode : null;
+				}
+				if (workTimeCode != null) {
+					workTimeCode = !workTimeCode.equals(inforGoBackCommonDirectOutput.getWorkInfo().get().getWorkTime()) ? workTimeCode : null;
+				}
+				}
 			
 			// アルゴリズム「4-1.詳細画面登録前の処理」を実行する
 			detailBeforeUpdate.processBeforeDetailScreenRegistration(

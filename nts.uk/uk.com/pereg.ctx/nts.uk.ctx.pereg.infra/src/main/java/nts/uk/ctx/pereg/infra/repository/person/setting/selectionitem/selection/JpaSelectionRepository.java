@@ -42,23 +42,23 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 			+ " WHERE si.selectionId = :selectionId";
 	
 	// selection for company
-	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE_BY_CID = " SELECT se , item.selectionName FROM PpemtSelectionItem item"
-			+ " INNER JOIN PpemtSelectionHist his ON item.selectionId.selectionId = his.selectionItemId" 
-			+ " INNER JOIN PpemtSelectionDef se ON his.histidPK.histId = se.histId" 
+	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE_BY_CID = " SELECT item , def.selectionItemName FROM PpemtSelectionDef def"
+			+ " INNER JOIN PpemtSelectionHist his ON def.selectionItemPk.selectionItemId = his.selectionItemId" 
+			+ " INNER JOIN PpemtSelectionItem item ON his.histidPK.histId = item.selectionId.selectionId" 
 			+ " INNER JOIN PpemtSelectionItemSort order ON his.histidPK.histId = order.histId"
-			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId " 
+			+ " AND item.selectionId.selectionId = order.selectionIdPK.selectionId " 
 			+ " WHERE his.startDate <= :baseDate AND his.endDate >= :baseDate " 
-			+ " AND item.selectionId.selectionId =:selectionItemId"
+			+ " AND def.selectionItemPk.selectionItemId =:selectionItemId"
 			+ " AND his.companyId =:companyId"
 			+ " ORDER BY order.dispOrder";
 	
-	private static final String SEL_ALL_BY_SEL_ID = " SELECT se FROM PpemtSelectionItem  item"
+	private static final String SEL_ALL_BY_SEL_ID = " SELECT item FROM PpemtSelectionDef def"
 			+ " INNER JOIN PpemtSelectionHist his "
-			+ " ON item.selectionId.selectionId = his.selectionItemId" + " INNER JOIN PpemtSelectionDef se"
-			+ " ON his.histidPK.histId = se.histId" + " INNER JOIN PpemtSelectionItemSort order"
+			+ " ON def.selectionItemPk.selectionItemId = his.selectionItemId" + " INNER JOIN PpemtSelectionItem item"
+			+ " ON his.histidPK.histId = item.selectionId.selectionId" + " INNER JOIN PpemtSelectionItemSort order"
 			+ " ON his.histidPK.histId = order.histId "
-			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId " + " WHERE his.startDate <= :baseDate"
-			+ " AND his.endDate >= :baseDate " + " AND item.selectionItemPk.selectionItemId =:selectionItemId"
+			+ " AND item.selectionId.selectionId = order.selectionIdPK.selectionId " + " WHERE his.startDate <= :baseDate"
+			+ " AND his.endDate >= :baseDate " + " AND def.selectionItemPk.selectionItemId =:selectionItemId"
 			+ " ORDER BY order.dispOrder";
 	// Lanlt
 

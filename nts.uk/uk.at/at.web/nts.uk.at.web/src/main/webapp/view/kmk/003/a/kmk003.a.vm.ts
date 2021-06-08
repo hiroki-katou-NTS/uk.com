@@ -1137,6 +1137,106 @@ module nts.uk.at.view.kmk003.a {
                 return dfd.promise();
             }
 
+            //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
+            autoGenerate(): any {
+                let _self = this;
+                let presSetting = _self.predetemineTimeSetting.prescribedTimezoneSetting;
+                let morningEnd = presSetting.morningEndTime();
+                let afterStart = presSetting.afternoonStartTime();
+                let shiftOneStart = presSetting.shiftOne.start();
+                let shiftOneEnd = presSetting.shiftOne.end();
+                let isShiftTwo = presSetting.shiftTwo.useAtr();
+                let shiftTwoStart = presSetting.shiftTwo.start();
+                let shiftTwoEnd = presSetting.shiftTwo.end();
+
+                //morning
+                let morningTimes = [];
+                let afternoonTimes = [];
+                if (!isShiftTwo) {
+                    let timeZoneAMDto: EmTimeZoneSetDto = {
+                        employmentTimeFrameNo: 1,
+                        timezone: {
+                            start: presSetting.shiftOne.start(),
+                            end: morningEnd,
+                            rounding: {rounding: 0, roundingTime: 0}
+                        }
+                    }
+                    morningTimes.push(timeZoneAMDto);
+                    //afternoon
+                    let timeZonePMDto: EmTimeZoneSetDto = {
+                        employmentTimeFrameNo: 1,
+                        timezone: {
+                            start: afterStart,
+                            end: presSetting.shiftTwo.useAtr() ? presSetting.shiftTwo.end() : presSetting.shiftOne.end(),
+                            rounding: {rounding: 0, roundingTime: 0}
+                        }
+                    }
+                    afternoonTimes.push(timeZonePMDto);
+                } else {
+                    if (shiftOneEnd >= morningEnd) {
+                        //morning1
+                        morningTimes.push({
+                            employmentTimeFrameNo: 1,
+                            timezone: {
+                                start: shiftOneStart,
+                                end: morningEnd,
+                                rounding: {rounding: 0, roundingTime: 0}
+                            }
+                        });
+                        //afternoon1
+                        afternoonTimes.push({
+                            employmentTimeFrameNo: 1,
+                            timezone: {
+                                start: afterStart,
+                                end: shiftOneEnd,
+                                rounding: {rounding: 0, roundingTime: 0}
+                            }
+                        })
+                        //afternoon2
+                        afternoonTimes.push({
+                            employmentTimeFrameNo: 1,
+                            timezone: {
+                                start: shiftTwoStart,
+                                end: shiftTwoEnd,
+                                rounding: {rounding: 0, roundingTime: 0}
+                            }
+                        })
+                    } else {
+                        //morning1
+                        morningTimes.push({
+                            employmentTimeFrameNo: 1,
+                            timezone: {
+                                start: shiftOneStart,
+                                end: shiftOneEnd,
+                                rounding: {rounding: 0, roundingTime: 0}
+                            }
+                        });
+                        //morning2
+                        morningTimes.push({
+                            employmentTimeFrameNo: 1,
+                            timezone: {
+                                start: shiftTwoStart,
+                                end: morningEnd,
+                                rounding: {rounding: 0, roundingTime: 0}
+                            }
+                        });
+                        //afternoon1
+                        afternoonTimes.push({
+                            employmentTimeFrameNo: 1,
+                            timezone: {
+                                start: afterStart,
+                                end: shiftTwoEnd,
+                                rounding: {rounding: 0, roundingTime: 0}
+                            }
+                        })
+                    }
+                }
+                return {
+                    morning: morningTimes,
+                    afternoon: afternoonTimes
+                }
+            }
+
             /**
              * Collect fixed data and convert to command dto
              */
@@ -1149,37 +1249,19 @@ module nts.uk.at.view.kmk003.a {
                     fixedWorkSetting: _self.fixedWorkSetting.toDto(_self.commonSetting),
                     screenMode: _self.tabMode()
                 };
-                //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
-                if (_self.addMode()){
-                    let presSetting = _self.predetemineTimeSetting.prescribedTimezoneSetting;
-                    let morningEnd = presSetting.morningEndTime();
-                    let afterStart = presSetting.afternoonStartTime();
 
-                    //morning
-                    let timeZoneAMDto : EmTimeZoneSetDto = {
-                        employmentTimeFrameNo : 1,
-                        timezone : {
-                            start: presSetting.shiftOne.start(),
-                            end: morningEnd,
-                            rounding: {rounding: 0, roundingTime: 0}
-                        }
-                    }
-                    command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = [];
-                    command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone.push(timeZoneAMDto);
+                let times = _self.autoGenerate();
 
-                    //afternoon
-                    let timeZonePMDto : EmTimeZoneSetDto = {
-                        employmentTimeFrameNo : 1,
-                        timezone : {
-                            start: afterStart,
-                            end: presSetting.shiftTwo.useAtr() ? presSetting.shiftTwo.end() : presSetting.shiftOne.end(),
-                            rounding: {rounding: 0, roundingTime: 0}
-                        }
-                    }
+                command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = [];
+                times.morning.forEach(time => {
+                    command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone.push(time);
+                })
 
-                    command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone = [];
-                    command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone.push(timeZonePMDto);
-                }
+                command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone = [];
+                times.afternoon.forEach(time => {
+                    command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone.push(time);
+                })
+
                 return command;
             }
 
@@ -1213,37 +1295,17 @@ module nts.uk.at.view.kmk003.a {
                 };
 
                 //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
-                if (!self.useHalfDayWorking()){
-                    let presSetting = self.predetemineTimeSetting.prescribedTimezoneSetting;
-                    let morningEnd = presSetting.morningEndTime();
-                    let afterStart = presSetting.afternoonStartTime();
+                let times = self.autoGenerate();
 
-                    //default timeZone
-                    let timeZoneAMDto : EmTimeZoneSetDto = {
-                        employmentTimeFrameNo : 1,
-                        timezone : {
-                            start: presSetting.shiftOne.start(),
-                            end: morningEnd,
-                            rounding: {rounding: 0, roundingTime: 0}
-                        }
-                    }
-                    //morning
-                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = [];
-                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone.push(timeZoneAMDto);
+                command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = [];
+                times.morning.forEach(time => {
+                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone.push(time);
+                })
 
-                    //afternoon
-                    let timeZonePMDto : EmTimeZoneSetDto = {
-                        employmentTimeFrameNo : 1,
-                        timezone : {
-                            start: afterStart,
-                            end: presSetting.shiftTwo.useAtr() ? presSetting.shiftTwo.end() : presSetting.shiftOne.end(),
-                            rounding: {rounding: 0, roundingTime: 0}
-                        }
-                    }
-
-                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone = [];
-                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone.push(timeZonePMDto);
-                }
+                command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone = [];
+                times.afternoon.forEach(time => {
+                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone.push(time);
+                })
                 return command;
             }
             

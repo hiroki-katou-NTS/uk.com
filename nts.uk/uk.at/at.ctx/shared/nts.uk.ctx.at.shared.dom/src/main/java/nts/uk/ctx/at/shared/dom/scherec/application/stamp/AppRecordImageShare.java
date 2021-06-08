@@ -10,7 +10,7 @@ import nts.uk.shr.com.time.AttendanceClock;
 /**
  * @author thanh_nx
  * 
- *         レコーダイメージ申請
+ *         レコーダイメージ申請(反映用)
  *
  */
 @Getter

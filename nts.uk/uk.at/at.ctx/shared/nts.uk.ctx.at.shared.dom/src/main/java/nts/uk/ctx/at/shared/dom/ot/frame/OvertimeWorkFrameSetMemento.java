@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.ot.frame;
 
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWorkEnum;
+
 /**
  * The Interface OvertimeWorkFrameSetMemento.
  */
@@ -49,7 +51,7 @@ public interface OvertimeWorkFrameSetMemento {
 	 * 
 	 * @param role the role
 	 */
-	public void setRole(RoleOvertimeWork role);
+	public void setRole(RoleOvertimeWorkEnum role);
 	
 	/**
 	 * Sets the transfer atr.

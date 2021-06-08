@@ -17,7 +17,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 		useSet: any = null;
 		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = {
 			// ページング行数
-			numberOfPage: 0,
+			numberOfPage: 100,
 			// ユーザーID
 			userID: __viewContext.user.employeeId,
 			// 会社ID
@@ -155,7 +155,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 							o.closureHistories[0].closureDate.lastDayOfMonth);
 					}));
 					vm.employmentCDLst = data.listEmploymentCD;
-					if(params) {
+					if(!_.isEmpty(params)) {
 						vm.multiSelectedWorkplaceId(_.map(params.selectWorkplaceInfo, o => o.id));
 						vm.selectedClosureId(params.closureItem.closureId);
 						vm.dateValue().startDate = params.startDate;

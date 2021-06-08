@@ -27,9 +27,22 @@ public class StandardMenuAdaptorImpl implements StandardMenuAdaptor {
 				.stream().map(x -> toStandardMenuNameImport(x)).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<StandardMenuNameImport> getMenus(String companyId, int system) {
+		return standardMenuPub.getMenus(companyId, system).stream().map(this::toStandardMenuNameImport).collect(Collectors.toList());
+	}
+
 	private StandardMenuNameImport toStandardMenuNameImport(StandardMenuNameExport export) {
-		return new StandardMenuNameImport(export.getProgramId(), export.getScreenId(), export.getQueryString(),
-				export.getDisplayName());
+		return new StandardMenuNameImport(
+				export.getProgramId(),
+				export.getScreenId(),
+				export.getQueryString(),
+				export.getDisplayName(),
+				export.getUrl(),
+				export.getMenuCode(),
+				export.getSystem(),
+				export.getMenuClassification()
+		);
 	}
 
 	private StandardMenuNameQuery toStandardMenuNameQuery(StandardMenuNameQueryImport query) {

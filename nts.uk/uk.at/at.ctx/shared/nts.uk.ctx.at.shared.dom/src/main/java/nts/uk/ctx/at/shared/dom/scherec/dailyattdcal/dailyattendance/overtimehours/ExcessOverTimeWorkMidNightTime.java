@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.Time
  *
  */
 @Value
-public class ExcessOverTimeWorkMidNightTime {
+public class ExcessOverTimeWorkMidNightTime implements Cloneable{
 	//時間
 	private TimeDivergenceWithCalculation time;
 	
@@ -37,4 +37,8 @@ public class ExcessOverTimeWorkMidNightTime {
 		return new ExcessOverTimeWorkMidNightTime(this.time!=null?this.time.calcDiverGenceTime():TimeDivergenceWithCalculation.emptyTime());
 	}
 	
+	@Override
+	public ExcessOverTimeWorkMidNightTime clone() {
+		return new ExcessOverTimeWorkMidNightTime(time.clone());
+	}
 }

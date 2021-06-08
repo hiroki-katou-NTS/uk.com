@@ -54,7 +54,7 @@ export class CmmS45EComponent extends Vue {
                 for (let i = 0; i < approverLst.length; i++) {
                     if (result.data.phaseLogin == 0 || approverLst[i].phaseOrder > result.data.phaseLogin) {
                         if (approverLst[i].agentFlag) {
-                            name = name.concat(self.$i18n('CMMS45_72', [approverLst[i].approverName]));
+                            name = name.concat(self.$i18n('CMMS45_73', [approverLst[i].approverName]));
                         } else {
                             name = name.concat(approverLst[i].approverName);
                         }

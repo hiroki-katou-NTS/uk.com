@@ -173,29 +173,27 @@ public class KscmtShiftTableRuleForCompanyAvai extends ContractUkJpaEntity imple
 		Integer weekSetStart = null;
 		Integer weekSetDeadlineAtr = null;
 		Integer weekSetDeadlineWeek = null;
+
 		if (shiftTableRule.getShiftTableSetting().get().getShiftPeriodUnit() == WorkAvailabilityPeriodUnit.MONTHLY) {
-			WorkAvailabilityRuleDateSetting data = (WorkAvailabilityRuleDateSetting) shiftTableRule
-					.getShiftTableSetting().get();
+			WorkAvailabilityRuleDateSetting data = (WorkAvailabilityRuleDateSetting) shiftTableRule.getShiftTableSetting().get();
 			dateCloseDay = data.getClosureDate().getClosingDate().getDay();
-			dateCloseIsLastDay = data.getClosureDate().getClosingDate().isLastDay()?1:0;
-			
+			dateCloseIsLastDay = data.getClosureDate().getClosingDate().isLastDay() ? 1 : 0;
 			dateDeadlineDay = data.getAvailabilityDeadLine().getDay();
-			dateDeadlineIsLastDay = data.getAvailabilityDeadLine().isLastDay()?1:0;
+			dateDeadlineIsLastDay = data.getAvailabilityDeadLine().isLastDay() ? 1 : 0;
 			dateHDUpperlimit = data.getHolidayMaxDays().v();
 		} else {
-			WorkAvailabilityRuleWeekSetting data = (WorkAvailabilityRuleWeekSetting) shiftTableRule
-					.getShiftTableSetting().get();
+			WorkAvailabilityRuleWeekSetting data = (WorkAvailabilityRuleWeekSetting) shiftTableRule.getShiftTableSetting().get();
 			weekSetStart = data.getFirstDayOfWeek().value;
 			weekSetDeadlineAtr = data.getExpectDeadLine().getWeekAtr().value;
 			weekSetDeadlineWeek = data.getExpectDeadLine().getDayOfWeek().value;
 		}
-		KscmtShiftTableRuleForCompanyAvai entity = new KscmtShiftTableRuleForCompanyAvai(companyId,
-				shiftTableRule.getAvailabilityAssignMethodList().stream().filter(c -> c == AssignmentMethod.HOLIDAY)
-						.findFirst().isPresent() ? 1 : 0,
-				shiftTableRule.getAvailabilityAssignMethodList().stream().filter(c -> c == AssignmentMethod.SHIFT)
-						.findFirst().isPresent() ? 1 : 0,
-				shiftTableRule.getAvailabilityAssignMethodList().stream().filter(c-> c ==AssignmentMethod.TIME_ZONE).findFirst().isPresent()?1:0, 
-				shiftTableRule.getFromNoticeDays().isPresent()?shiftTableRule.getFromNoticeDays().get().v():null,
+
+		return new KscmtShiftTableRuleForCompanyAvai(
+				companyId,
+				shiftTableRule.getAvailabilityAssignMethodList().stream().anyMatch(c -> c == AssignmentMethod.HOLIDAY) ? 1 : 0,
+				shiftTableRule.getAvailabilityAssignMethodList().stream().anyMatch(c -> c == AssignmentMethod.SHIFT) ? 1 : 0,
+				shiftTableRule.getAvailabilityAssignMethodList().stream().anyMatch(c-> c ==AssignmentMethod.TIME_ZONE) ? 1 : 0,
+				shiftTableRule.getFromNoticeDays().isPresent() ? shiftTableRule.getFromNoticeDays().get().v() : null,
 				shiftTableRule.getShiftTableSetting().get().getShiftPeriodUnit().value,
 				dateCloseDay,
 				dateCloseIsLastDay,
@@ -204,50 +202,51 @@ public class KscmtShiftTableRuleForCompanyAvai extends ContractUkJpaEntity imple
 				dateHDUpperlimit, 
 				weekSetStart, 
 				weekSetDeadlineAtr,
-				weekSetDeadlineWeek);
-		return entity;
-		
+				weekSetDeadlineWeek
+		);
 	}
-	
-	public ShiftTableRule toDomain(int usePublicAtr,int useWorkAvailabilityAtr) {
-		Optional<WorkAvailabilityRule> shiftTableSetting  = Optional.empty();
-		if(this.periodUnit !=null) {
-			if(this.periodUnit == WorkAvailabilityPeriodUnit.MONTHLY.value) {
-				shiftTableSetting = Optional.of(new WorkAvailabilityRuleDateSetting(
-						new OneMonth(new DateInMonth(this.dateCloseDay, this.dateCloseIsLastDay == 1?true:false)),
-						new DateInMonth(this.dateDeadlineDay, this.dateDeadlineIsLastDay == 1?true:false),
-						new HolidayAvailabilityMaxdays(this.dateHDUpperlimit)
-						));
+
+	public ShiftTableRule toDomain(int usePublicAtr, int useWorkAvailabilityAtr) {
+		Optional<WorkAvailabilityRule> shiftTableSetting = Optional.empty();
+		if (this.periodUnit != null) {
+			if (this.periodUnit == WorkAvailabilityPeriodUnit.MONTHLY.value) {
+				shiftTableSetting = Optional.of(
+						new WorkAvailabilityRuleDateSetting(
+								new OneMonth(new DateInMonth(this.dateCloseDay, this.dateCloseIsLastDay == 1)),
+                                new DateInMonth(this.dateDeadlineDay, this.dateDeadlineIsLastDay == 1),
+                                new HolidayAvailabilityMaxdays(this.dateHDUpperlimit)
+						)
+				);
 			} else {
-				shiftTableSetting = Optional.of(new WorkAvailabilityRuleWeekSetting(
-						DayOfWeek.valueOf(this.weekSetStart),
-						new DeadlineDayOfWeek(DeadlineWeekAtr.of(this.weekSetDeadlineAtr),DayOfWeek.valueOf(this.weekSetDeadlineWeek))
-						));
-				
+				shiftTableSetting = Optional.of(
+						new WorkAvailabilityRuleWeekSetting(
+								DayOfWeek.valueOf(this.weekSetStart),
+								new DeadlineDayOfWeek(
+										DeadlineWeekAtr.of(this.weekSetDeadlineAtr),
+										DayOfWeek.valueOf(this.weekSetDeadlineWeek)
+								)
+						)
+				);
 			}
 		}
-		
+
 		List<AssignmentMethod> availabilityAssignMethodList = new ArrayList<>();
-		if(this.holidayAtr == 1) {
+		if (this.holidayAtr == 1) {
 			availabilityAssignMethodList.add(AssignmentMethod.HOLIDAY);
 		}
-		if(this.shiftAtr == 1) {
+		if (this.shiftAtr == 1) {
 			availabilityAssignMethodList.add(AssignmentMethod.SHIFT);
 		}
-		
-		if(this.timeSheetAtr == 1) {
+		if (this.timeSheetAtr == 1) {
 			availabilityAssignMethodList.add(AssignmentMethod.TIME_ZONE);
 		}
-		
-		ShiftTableRule shiftTableRule = new ShiftTableRule(
-				NotUseAtr.valueOf(usePublicAtr), 
+
+		return new ShiftTableRule(
+				NotUseAtr.valueOf(usePublicAtr),
 				NotUseAtr.valueOf(useWorkAvailabilityAtr),
-				shiftTableSetting, 
+				shiftTableSetting,
 				availabilityAssignMethodList,
-				this.fromNoticeDays !=null? Optional.of(new  FromNoticeDays(this.fromNoticeDays)): Optional.empty()
-						
-				);
-		return shiftTableRule;
-		
+				this.fromNoticeDays != null ? Optional.of(new FromNoticeDays(this.fromNoticeDays)) : Optional.empty()
+		);
 	}
 }
