@@ -10,15 +10,15 @@ import javax.inject.Inject;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.time.GeneralDate;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
+import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.ctx.exio.dom.input.ExecuteImporting;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataMetaRepository;
+import nts.uk.ctx.exio.dom.input.canonicalize.ImportiongItemRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
@@ -42,7 +42,7 @@ public class ExternalImportExecuteRequire {
 	}
 	
 	@Inject
-	CanonicalizedDataMetaRepository canonicalizedDataMetaRepo;
+	ImportiongItemRepository importingItemRepo;
 	
 	@Inject
 	ConversionTableRepository conversionTableRepo;
@@ -129,13 +129,17 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public List<String> getImportiongItem() {
-			return canonicalizedDataMetaRepo.get(companyId);
+		public List<String> getImportingItem() {
+			return importingItemRepo.get(companyId);
 		}
 
 		@Override
-		public List<ConversionTable> getConversionTable(int groupId, ConversionCodeType cct) {
-			val source = conversionTableRepo.getSource(groupId);
+		public ConversionSource getConversionSource(int groupId) {
+			return conversionTableRepo.getSource(groupId);
+		}
+		
+		@Override
+		public List<ConversionTable> getConversionTable(ConversionSource source, int groupId, ConversionCodeType cct) {
 			return conversionTableRepo.get(groupId, source, cct);
 		}
 

@@ -5,11 +5,11 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataMetaRepository;
+import nts.uk.ctx.exio.dom.input.canonicalize.ImportiongItemRepository;
 import nts.uk.ctx.exio.infra.entity.input.canonicalize.OiottImportingItem;
 
 @Stateless
-public class JpaCanonicalizedDataMeta extends JpaRepository implements CanonicalizedDataMetaRepository {
+public class JpaImportiongItemRepository extends JpaRepository implements ImportiongItemRepository {
 
 	@Override
 	public List<String> get(String cid) {
