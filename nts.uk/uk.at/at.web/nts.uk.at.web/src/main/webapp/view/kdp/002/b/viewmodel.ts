@@ -98,7 +98,6 @@ class KDP002BViewModel extends ko.ViewModel {
                     case 'KDP001':
                     case 'KDP002':
                         // vm.showBtnNoti(false);
-                        vm.settingSizeView();
                         break
                     case 'KDP003':
                     case 'KDP004':
@@ -112,7 +111,6 @@ class KDP002BViewModel extends ko.ViewModel {
         vm.$ajax(kDP002RequestUrl.SETTING_NIKONIKO)
             .then((data: boolean) => {
                 vm.modeNikoNiko(data);
-                vm.settingSizeView();
             });
 
         vm.resultDisplayTime.subscribe(() => {
@@ -122,6 +120,10 @@ class KDP002BViewModel extends ko.ViewModel {
                 }
             }
         });
+
+        vm.showBtnNoti.subscribe(() => {
+            vm.settingSizeView();
+        })
     }
 
     mounted() {
@@ -137,8 +139,6 @@ class KDP002BViewModel extends ko.ViewModel {
                 });
             }
         }, 300);
-
-        vm.settingSizeView();
     }
 
     getWorkPlacwName(workPlaceId: string) {
@@ -161,18 +161,18 @@ class KDP002BViewModel extends ko.ViewModel {
 
     settingSizeView() {
         const vm = this;
+        
         if (!ko.unwrap(vm.showBtnNoti)) {
             if (!ko.unwrap(vm.modeNikoNiko)) {
-                vm.$window.size(598, 470);
+                vm.$window.size(588, 470);
             } else {
-                vm.$window.size(618, 470);
+                vm.$window.size(605, 470);
             }
-
         } else {
             if (!ko.unwrap(vm.modeNikoNiko)) {
-                vm.$window.size(638, 470);
+                vm.$window.size(620, 470);
             } else {
-                vm.$window.size(658, 470);
+                vm.$window.size(640, 470);
             }
         }
     }
@@ -329,7 +329,6 @@ class KDP002BViewModel extends ko.ViewModel {
             .then(() => {
                 vm.$ajax(kDP002RequestUrl.GET_SETTING)
                     .then((data: boolean) => {
-
                         if (data) {
                             vm.$ajax(kDP002RequestUrl.NOTIFICATION_STAMP, param)
                                 .done((data: IMsgNotices[]) => {
@@ -365,9 +364,9 @@ class KDP002BViewModel extends ko.ViewModel {
                             vm.showBtnNoti(false);
                         }
                     })
-                    .then(() => {
-                        vm.settingSizeView();
-                    });
+            })
+            .then(() => {
+                vm.showBtnNoti.valueHasMutated();
             })
             .always(() => {
                 vm.$blockui('clear');
