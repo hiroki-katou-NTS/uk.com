@@ -16,6 +16,7 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -42,9 +43,12 @@ public class TransferCanonicalData {
 	private static AtomTask transfer(Require require, ExecutionContext context, List<WhereSentence> wherelist) {
 		List<String> importiongItem = require.getImportingItem();
 		ConversionCodeType cct = context.getMode().getType();
-		ConversionSource source = require.getConversionSource(context.getGroupId());
+		
+		ImportingGroup importingGroup = require.getImportingGroup(context.getGroupId());
+		
+		ConversionSource source = require.getConversionSource(importingGroup.getName());
 		ConversionSource sourceWithSuffix = editSourceTableName(source);
-		List<ConversionTable> conversionTables = require.getConversionTable(sourceWithSuffix, context.getGroupId(), cct);
+		List<ConversionTable> conversionTables = require.getConversionTable(sourceWithSuffix, importingGroup.getName(), cct);
 		
 		List<ConversionSQL> conversionSql = new ArrayList<>();
 		for(ConversionTable conversionTable : conversionTables) {
@@ -89,8 +93,9 @@ public class TransferCanonicalData {
 
 	public interface Require{
 		List<String> getImportingItem();
-		ConversionSource getConversionSource(int groupId);
-		List<ConversionTable> getConversionTable(ConversionSource source, int groupId, ConversionCodeType cct);
+		ImportingGroup getImportingGroup(int groupId);
+		ConversionSource getConversionSource(String groupName);
+		List<ConversionTable> getConversionTable(ConversionSource source, String groupName, ConversionCodeType cct);
 		int execute(List<ConversionSQL> conversionSqls);
 	}
 	
