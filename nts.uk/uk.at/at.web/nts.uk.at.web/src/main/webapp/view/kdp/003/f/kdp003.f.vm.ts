@@ -295,7 +295,8 @@ module nts.uk.at.kdp003.f {
 							const cbi = '.ui-igcombo-field';
 							const cbw = '.ui-igcombo-wrapper';
 
-							$(vm.$el).find(`[tabindex]:not(${cbw}):not(${cbi})`).first().focus();
+							//$(vm.$el).find(`[tabindex]:not(${cbw}):not(${cbi})`).first().focus();
+							$("#master-content").find("[tabindex]:not(" + cbw + "):not(" + cbi + ")").first().focus()
 						});
 				});
 
