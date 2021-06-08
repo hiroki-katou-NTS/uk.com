@@ -95,3 +95,7 @@
   .nts-datepicker-wrapper .ntsDatepicker {
     width: 97px !important;
   }
+  
+  #functions-area button, #functions-area-bottom button, .sidebar-content-header button {
+  	margin-left: 0!important;
+  }
