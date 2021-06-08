@@ -5,7 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@IdClass(OiottImportingItemPK.class)
 @Table(name = "OIOTT_IMPORTING_ITEM")
 public class OiottImportingItem implements Serializable{
 	
@@ -22,9 +23,8 @@ public class OiottImportingItem implements Serializable{
 	@Column(name = "CID")
 	public String cid;
 	
-	@ManyToOne
-	public OiottCanonicalizedDataMeta canonicalizedDataMeta;
-
+	/*import対象列名*/
+	@Id
 	@Column(name = "NAME")
 	public String name;
 }

@@ -12,10 +12,10 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
-import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionSources;
-import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionTable;
-import nts.uk.cnv.core.infra.entity.tabledesign.ScvmtErpColumnDesign;
 import nts.uk.ctx.exio.dom.input.transfer.ConversionTableRepository;
+import nts.uk.ctx.exio.infra.entity.input.conversiontable.ScvmtConversionSources;
+import nts.uk.ctx.exio.infra.entity.input.conversiontable.ScvmtConversionTable;
+import nts.uk.ctx.exio.infra.entity.input.tabledesign.ScvmtErpColumnDesign;
 
 @Stateless
 public class ConversionTableRepositoryImpl extends JpaRepository implements ConversionTableRepository {
@@ -25,7 +25,7 @@ public class ConversionTableRepositoryImpl extends JpaRepository implements Conv
 		String query = "SELECT cs FROM ScvmtConversionSources cs WHERE cs.categoryName = :category";
 
 		return this.queryProxy().query(query, ScvmtConversionSources.class)
-			.setParameter("category", groupId)
+			.setParameter("category", String.valueOf(groupId))
 			.getList(entity -> entity.toDomain(getPkColumns(entity.getSourceTableName())))
 			.stream()
 			.findFirst()
@@ -47,7 +47,7 @@ public class ConversionTableRepositoryImpl extends JpaRepository implements Conv
 				  "SELECT c FROM ScvmtConversionTable c"
 				+ " WHERE c.pk.categoryName = :category";
 		List<ScvmtConversionTable> entities = this.queryProxy().query(query, ScvmtConversionTable.class)
-			.setParameter("category", groupId)
+			.setParameter("category", String.valueOf(groupId))
 			.getList();
 		
 		DatabaseType  type = DatabaseType.parse(this.database());
@@ -58,7 +58,9 @@ public class ConversionTableRepositoryImpl extends JpaRepository implements Conv
 				.collect(Collectors.toList());
 		
 		return entities.stream()
-				.map(entity -> entity.toDomain(info, columns, source))
+				.map(entity -> entity.pk.getTargetTableName())
+				.distinct()
+				.map(targetTableName -> ScvmtConversionTable.toDomain(targetTableName, info, columns, source))
 				.collect(Collectors.toList());
 	}
 

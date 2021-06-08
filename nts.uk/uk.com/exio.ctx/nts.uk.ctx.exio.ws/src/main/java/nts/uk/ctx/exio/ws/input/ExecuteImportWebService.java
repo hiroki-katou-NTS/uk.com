@@ -8,7 +8,7 @@ import javax.ws.rs.Produces;
 import nts.uk.ctx.exio.app.command.input.transfer.TransferCanonicalDataCommand;
 import nts.uk.ctx.exio.app.command.input.transfer.TransferCanonicalDataCommandHandler;
 
-@Path("input")
+@Path("exio/input")
 @Produces("application/json")
 public class ExecuteImportWebService {
 	
