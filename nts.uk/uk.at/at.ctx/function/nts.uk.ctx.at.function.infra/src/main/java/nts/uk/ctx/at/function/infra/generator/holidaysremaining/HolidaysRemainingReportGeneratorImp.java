@@ -810,7 +810,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             }
         }
         // Result RequestList363
-        if (listAnnLeaveUsageStatusOfThisMonth != null && grantDate.isPresent()) {
+        if (listAnnLeaveUsageStatusOfThisMonth != null ) {
             for (AggrResultOfAnnualLeaveEachMonthKdr item : rs363New) {
                 if (currentMonth.compareTo(item.getYearMonth()) > 0) {
                     continue;
