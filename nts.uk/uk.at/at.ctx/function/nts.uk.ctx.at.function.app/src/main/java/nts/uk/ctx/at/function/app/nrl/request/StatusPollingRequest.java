@@ -53,8 +53,8 @@ public class StatusPollingRequest extends NRLRequest<Frame> {
 		items.add(new MapItem(Element.REQUEST9, setting.isRequest9() ? Element.Value.FLAG_ON : Element.Value.FLAG_OFF));
 		items.add(new MapItem(Element.REQUEST10, setting.isRequest10() ? Element.Value.FLAG_ON : Element.Value.FLAG_OFF));
 		items.add(new MapItem(Element.REQUEST11, setting.isRequest11() ? Element.Value.FLAG_ON : Element.Value.FLAG_OFF));
-		items.add(new MapItem(Element.REQUEST12, Element.Value.FLAG_OFF));
-		items.add(new MapItem(Element.REQUEST13, Element.Value.FLAG_OFF));
+		items.add(new MapItem(Element.REQUEST12, setting.isRequest12() ? Element.Value.FLAG_ON : Element.Value.FLAG_OFF));
+		items.add(new MapItem(Element.REQUEST13, setting.isRequest13() ? Element.Value.FLAG_ON : Element.Value.FLAG_OFF));
 		items.add(new MapItem(Element.REQUEST14, Element.Value.FLAG_OFF));
 		items.add(new MapItem(Element.REQUEST15, Element.Value.FLAG_OFF));
 		items.add(new MapItem(Element.REQUEST16, Element.Value.FLAG_OFF));

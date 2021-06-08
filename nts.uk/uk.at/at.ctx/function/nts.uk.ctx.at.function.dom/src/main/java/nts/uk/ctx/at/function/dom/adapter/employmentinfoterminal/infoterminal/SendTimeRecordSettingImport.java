@@ -59,6 +59,16 @@ public class SendTimeRecordSettingImport {
 	 * 申請理由名称送信要求フラグ
 	 */
 	private final boolean request11;
+	
+	/**
+	 * リモート設定送信要求フラグ
+	 */
+	private final boolean request12;
+	
+	/**
+	 * 切替日時送信要求フラグ
+	 */
+	private final boolean request13;
 
 	public SendTimeRecordSettingImport(SettingImportBuilder builder) {
 		this.request1 = builder.request1;
@@ -71,6 +81,8 @@ public class SendTimeRecordSettingImport {
 		this.request9 = builder.request9;
 		this.request10 = builder.request10;
 		this.request11 = builder.request11;
+		this.request12 = builder.request12;
+		this.request13 = builder.request13;
 	}
 	
 	public SendTimeRecordSettingImport() {
@@ -84,6 +96,8 @@ public class SendTimeRecordSettingImport {
 		this.request9 = false;
 		this.request10 = false;
 		this.request11 = false;
+		this.request12 = false;
+		this.request13 = false;
 	}
 
 	public static class SettingImportBuilder {
@@ -137,6 +151,16 @@ public class SendTimeRecordSettingImport {
 		 * 申請理由名称送信要求フラグ
 		 */
 		private boolean request11;
+		
+		/**
+		 * リモート設定送信要求フラグ
+		 */
+		private boolean request12;
+		
+		/**
+		 * 切替日時送信要求フラグ
+		 */
+		private boolean request13;
 
 		public SettingImportBuilder(boolean request1, boolean request2, boolean request3, boolean request4,
 				boolean request6) {
@@ -173,6 +197,16 @@ public class SendTimeRecordSettingImport {
 
 		public SettingImportBuilder createReq11(boolean request11) {
 			this.request11 = request11;
+			return this;
+		}
+		
+		public SettingImportBuilder createReq12(boolean request12) {
+			this.request12 = request12;
+			return this;
+		}
+
+		public SettingImportBuilder createReq13(boolean request13) {
+			this.request13 = request13;
 			return this;
 		}
 

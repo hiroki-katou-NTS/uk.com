@@ -73,7 +73,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 		StringBuilder getTrRequest = new StringBuilder();
 		getTrRequest.append("SELECT a.CONTRACT_CD, a.CID, a.COMPANY_CD, a.TIMERECORDER_CD, a.SEND_OVERTIME_NAME,");
 		getTrRequest.append(
-				"a.SEND_SID, a.SEND_RESERVATION, a.SEND_WORKTYPE, SEND_WORKTIME, a.REMOTE_SETTING, a.REBOOT, a.SWITCH_DATE, ");
+				"a.SEND_SID, a.SEND_RESERVATION, a.SEND_WORKTYPE, SEND_WORKTIME, a.REMOTE_SETTING, a.REBOOT,  a.SEND_SWITCH_DATE, a.SWITCH_DATE, ");
 		getTrRequest.append(
 				"a.SEND_REASON_APP, a.SEND_SERVERTIME, a.RECV_ALL_STAMP, a.RECV_ALL_RESERVATION, a.RECV_ALL_APPLICATION");
 		getTrRequest.append(" FROM KRCMT_TR_REQUEST a");
@@ -83,7 +83,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 		StringBuilder getByMasterTypeBuilder = new StringBuilder();
 		getByMasterTypeBuilder.append("SELECT a.CONTRACT_CD, a.CID, a.COMPANY_CD, a.TIMERECORDER_CD, a.SEND_OVERTIME_NAME,");
 		getByMasterTypeBuilder.append(
-				"a.SEND_SID, a.SEND_RESERVATION, a.SEND_WORKTYPE, SEND_WORKTIME, a.REMOTE_SETTING, a.REBOOT, a.SWITCH_DATE, ");
+				"a.SEND_SID, a.SEND_RESERVATION, a.SEND_WORKTYPE, SEND_WORKTIME, a.REMOTE_SETTING, a.REBOOT, a.SEND_SWITCH_DATE, a.SWITCH_DATE, ");
 		getByMasterTypeBuilder.append(
 				"a.SEND_REASON_APP, a.SEND_SERVERTIME, a.RECV_ALL_STAMP, a.RECV_ALL_RESERVATION, a.RECV_ALL_APPLICATION");
 		getByMasterTypeBuilder.append(", @MASTER_COLUMN");
@@ -121,6 +121,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 					.sendWorkTime(resultMaster.isSendWorkTime())
 					.remoteSetting(resultMaster.isRemoteSetting())
 					.reboot(resultMaster.isReboot())
+					.sendTimeSwitchUKMode(resultMaster.isSendTimeSwitchUKMode())
 					.timeSwitchUKMode(resultMaster.getTimeSwitchUKMode())
 					.build();
 		}
@@ -298,6 +299,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 									.sendWorkType(rs.getInt("SEND_WORKTYPE") == 1)
 									.sendWorkTime(rs.getInt("SEND_WORKTIME") == 1)
 									.remoteSetting(rs.getInt("REMOTE_SETTING") == 1).reboot(rs.getInt("REBOOT") == 1)
+									.sendTimeSwitchUKMode(rs.getInt("SEND_SWITCH_DATE") == 1)
 									.timeSwitchUKMode(rs.getTimestamp("SWITCH_DATE") == null ? Optional.empty()
 											: Optional.of(
 													GeneralDateTime.localDateTime(rs.getTimestamp("SWITCH_DATE").toLocalDateTime())));
@@ -344,7 +346,9 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 								.sendWorkTime(reqTemp.isSendWorkTime())
 								.sendBentoMenu(reqTemp.isSendBentoMenu())
 								.reboot(reqTemp.isReboot())
+								.remoteSetting(reqTemp.isRemoteSetting())
 								.timeSwitchUKMode(reqTemp.getTimeSwitchUKMode())
+								.sendTimeSwitchUKMode(reqTemp.isSendTimeSwitchUKMode())
 								.build());
 	}
 
@@ -361,7 +365,8 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 				setting.isSendEmployeeId() ? 1 : 0, setting.isSendBentoMenu() ? 1 : 0, setting.isSendWorkType() ? 1 : 0,
 				setting.isSendWorkTime() ? 1 : 0, setting.isStampReceive() ? 1 : 0,
 				setting.isReservationReceive() ? 1 : 0, setting.isApplicationReceive() ? 1 : 0,
-				setting.isRemoteSetting() ? 1 : 0, setting.isReboot() ? 1 : 0, setting.getTimeSwitchUKMode().orElse(null));
+				setting.isRemoteSetting() ? 1 : 0, setting.isReboot() ? 1 : 0, setting.isSendTimeSwitchUKMode()? 1 : 0, 
+				setting.getTimeSwitchUKMode().orElse(null));
 	}
 
 	@Override
@@ -393,6 +398,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 													.sendWorkType(e.sendWorkType == 1)
 													.sendWorkTime(e.sendWorkTime == 1)
 													.remoteSetting(e.remoteSetting == 1).reboot(e.reboot == 1)
+													.sendTimeSwitchUKMode(e.sendSwitchDate == 1)
 													.timeSwitchUKMode(Optional.ofNullable(e.switchDate))
 													.build())
 									.collect(Collectors.toList());

@@ -37,7 +37,7 @@ public class SendTimeRecordSettingService {
 						.createReq9(setting.isOverTimeHoliday()).createReq10(setting.isSendBentoMenu())
 						.createReq11(setting.isApplicationReason())
 						.createReq12(setting.isRemoteSetting())
-						.createReq13(setting.getTimeSwitchUKMode().isPresent())
+						.createReq13(setting.isSendTimeSwitchUKMode())
 						.build();
 	}
 

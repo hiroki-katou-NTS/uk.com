@@ -59,6 +59,16 @@ public class SendTimeRecordSettingExport {
 	 * 申請理由名称送信要求フラグ
 	 */
 	private final boolean request11;
+	
+	/**
+	 * リモート設定送信要求フラグ
+	 */
+	private final boolean request12;
+	
+	/**
+	 * 切替日時送信要求フラグ
+	 */
+	private final boolean request13;
 
 	public SendTimeRecordSettingExport(SettingExportBuilder builder) {
 		this.request1 = builder.request1;
@@ -71,6 +81,8 @@ public class SendTimeRecordSettingExport {
 		this.request9 = builder.request9;
 		this.request10 = builder.request10;
 		this.request11 = builder.request11;
+		this.request12 = builder.request12;
+		this.request13 = builder.request13;
 	}
 
 	public static class SettingExportBuilder {
@@ -124,6 +136,16 @@ public class SendTimeRecordSettingExport {
 		 * 申請理由名称送信要求フラグ
 		 */
 		private boolean request11;
+		
+		/**
+		 * リモート設定送信要求フラグ
+		 */
+		private boolean request12;
+		
+		/**
+		 * 切替日時送信要求フラグ
+		 */
+		private boolean request13;
 
 		public SettingExportBuilder(boolean request1, boolean request2, boolean request3, boolean request4,
 				boolean request6) {
@@ -160,6 +182,16 @@ public class SendTimeRecordSettingExport {
 
 		public SettingExportBuilder createReq11(boolean request11) {
 			this.request11 = request11;
+			return this;
+		}
+		
+		public SettingExportBuilder createReq12(boolean request12) {
+			this.request12 = request12;
+			return this;
+		}
+
+		public SettingExportBuilder createReq13(boolean request13) {
+			this.request13 = request13;
 			return this;
 		}
 

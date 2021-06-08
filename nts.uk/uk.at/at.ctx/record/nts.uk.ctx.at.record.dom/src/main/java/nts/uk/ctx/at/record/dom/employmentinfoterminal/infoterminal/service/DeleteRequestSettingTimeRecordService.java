@@ -32,7 +32,8 @@ public class DeleteRequestSettingTimeRecordService {
 							.stampReceive(false).reservationReceive(false).applicationReceive(false).timeSetting(false)
 							.sendBentoMenu(false).sendWorkType(false).sendWorkTime(false)
 							.remoteSetting(setting.get().isRemoteSetting()).reboot(setting.get().isReboot())
-							.timeSwitchUKMode(Optional.empty()).build();
+							.timeSwitchUKMode(setting.get().getTimeSwitchUKMode())
+							.sendTimeSwitchUKMode(false).build();
 
 			require.updateSetting(domainUpdate);
 		});

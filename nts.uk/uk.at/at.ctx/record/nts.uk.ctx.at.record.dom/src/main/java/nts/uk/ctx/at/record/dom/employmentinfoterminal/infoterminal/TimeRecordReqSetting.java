@@ -141,6 +141,12 @@ public class TimeRecordReqSetting implements DomainAggregate {
 	private final boolean reboot;
 	
 	/**
+	 * 切替日時送信
+	 */
+	@Getter
+	private final boolean sendTimeSwitchUKMode;
+	
+	/**
 	 * 切替日時
 	 */
 	@Getter
@@ -168,6 +174,7 @@ public class TimeRecordReqSetting implements DomainAggregate {
 		this.timeSetting = builder.timeSetting;
 		this.remoteSetting = builder.remoteSetting;
 		this.reboot = builder.reboot;
+		this.sendTimeSwitchUKMode = builder.sendTimeSwitchUKMode;
 		this.timeSwitchUKMode = builder.timeSwitchUKMode;
 	}
 	
@@ -288,6 +295,12 @@ public class TimeRecordReqSetting implements DomainAggregate {
 		private  boolean reboot;
 		
 		/**
+		 * 切替日時送信
+		 */
+		@Getter
+		private boolean sendTimeSwitchUKMode;
+		
+		/**
 		 * 切替日時
 		 */
 		private Optional<GeneralDateTime> timeSwitchUKMode;
@@ -367,6 +380,11 @@ public class TimeRecordReqSetting implements DomainAggregate {
 
 		public ReqSettingBuilder reboot(boolean reboot) {
 			this.reboot = reboot;
+			return this;
+		}
+		
+		public ReqSettingBuilder sendTimeSwitchUKMode(boolean sendTimeSwitchUKMode) {
+			this.sendTimeSwitchUKMode = sendTimeSwitchUKMode;
 			return this;
 		}
 		
