@@ -453,9 +453,9 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			DatePeriod period) {
 		return this.queryProxy()
 				.query("SELECT a FROM KrcdtInterimRecMng a" +
-						"WHERE a.pk.sid = :sid " +
-                        "AND AND a.pk.ymd <= :start AND a.pk.ymd >= :end" +
-                        "ORDER BY a.pk.ymd", KrcdtInterimRecMng.class)
+						" WHERE a.pk.sid = :sid" +
+                        " AND a.pk.ymd <= :start AND a.pk.ymd >= :end" +
+                        " ORDER BY a.pk.ymd", KrcdtInterimRecMng.class)
 				.setParameter("sid", employeeId)
 				.setParameter("start", period.start())
 				.setParameter("end", period.end())
