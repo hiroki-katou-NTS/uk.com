@@ -85,7 +85,7 @@ public class TempRemainCreateEachData {
 				Optional.empty());
 		mngData.getRecAbsData().add(annualMng);
 
-		mngData.setAnnualHolidayData(Optional.of(annualMng));
+		mngData.getAnnualHolidayData().add(annualMng);
 		return mngData;
 	}
 
@@ -170,7 +170,7 @@ public class TempRemainCreateEachData {
 						new UnOffsetDay(occUseDetail.get().getDays()),
 						Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty()))
 						);
-				mngData.setDayOffData(Optional.of(dayoffMng));
+				mngData.getDayOffData().add(dayoffMng);
 				mngData.getRecAbsData().add(dayoffMng);
 		}
 		return mngData;
@@ -800,7 +800,7 @@ public class TempRemainCreateEachData {
 	 * @param inforData
 	 * @return
 	 */
-	public static Collection<? extends InterimRemain> createCareTime(InforFormerRemainData inforData) {
+	public static List<TempCareManagement> createCareTime(InforFormerRemainData inforData) {
 		List<TempCareManagement> cares = new ArrayList<TempCareManagement>();
 
 		// 休暇種類を指定して時間休暇使用時間を取得する
@@ -849,7 +849,7 @@ public class TempRemainCreateEachData {
 				ChildCareNurseUsedNumber.of(new DayNumberOfUse(care.getDays()), Optional.empty()),
 				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty())));
 
-		mngData.setChildCareData(Optional.of(childData));
+		mngData.getChildCareData().add(childData);
 		mngData.getRecAbsData().add(childData);
 		return mngData;
 
@@ -876,7 +876,7 @@ public class TempRemainCreateEachData {
 				ChildCareNurseUsedNumber.of(new DayNumberOfUse(care.getDays()), Optional.empty()),
 				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty())));
 
-		mngData.setCareData(Optional.of(careData));
+		mngData.getCareData().add(careData);
 		mngData.getRecAbsData().add(careData);
 		return mngData;
 	}
