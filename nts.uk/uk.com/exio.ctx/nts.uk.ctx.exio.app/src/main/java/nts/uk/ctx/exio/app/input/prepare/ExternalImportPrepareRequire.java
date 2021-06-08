@@ -26,9 +26,9 @@ import nts.uk.ctx.exio.dom.input.validation.condition.ImportingUserCondition;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class ExternalImportPrepareRequireProvider {
+public class ExternalImportPrepareRequire {
 
-	public Require getRequire() {
+	public Require create() {
 		
 		return EmbedStopwatch.embed(new RequireImpl());
 	}

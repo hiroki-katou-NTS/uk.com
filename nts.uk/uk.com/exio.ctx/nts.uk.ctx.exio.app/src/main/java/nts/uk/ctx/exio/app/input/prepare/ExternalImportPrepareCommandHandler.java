@@ -21,7 +21,7 @@ public class ExternalImportPrepareCommandHandler extends AsyncCommandHandler<Ext
 	private FileStorage fileStorage;
 	
 	@Inject
-	private ExternalImportPrepareRequireProvider requireProvider;
+	private ExternalImportPrepareRequire require;
 	
 	@Override
 	@SneakyThrows
@@ -29,7 +29,7 @@ public class ExternalImportPrepareCommandHandler extends AsyncCommandHandler<Ext
 		
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		val require = requireProvider.getRequire();
+		val require = require.create();
 		
 		String fileId = command.getUploadedCsvFileId();
 		try (val inputStream = fileStorage.getStream(fileId)
