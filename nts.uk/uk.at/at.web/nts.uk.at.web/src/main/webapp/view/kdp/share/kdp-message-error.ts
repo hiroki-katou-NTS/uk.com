@@ -14,8 +14,8 @@ module nts.uk.at.view.kdp.share {
 
     const template = `
     <div class="company" data-bind="style: { 'background-color': $component.headOfficeNotice.backGroudColor }">
-        <span data-bind="i18n: $component.headOfficeNotice.title,
-            style: { 'color': $component.headOfficeNotice.textColor }"></span>
+        <div class="title-company" data-bind="i18n: $component.headOfficeNotice.title,
+            style: { 'color': $component.headOfficeNotice.textColor }"></div>
         <span class="text-company" data-bind="i18n: $component.headOfficeNotice.contentMessager,
             style: { 'color': $component.headOfficeNotice.textColor }"></span>
     </div>
@@ -55,6 +55,12 @@ module nts.uk.at.view.kdp.share {
             text-overflow: ellipsis;
             overflow: hidden;
             box-sizing: border-box;
+        }
+
+        .kdp-message-error .company .title-company {
+            box-sizing: border-box;
+            float: left;
+            height: 100px;
         }
 
         .kdp-message-error .workPlace {
