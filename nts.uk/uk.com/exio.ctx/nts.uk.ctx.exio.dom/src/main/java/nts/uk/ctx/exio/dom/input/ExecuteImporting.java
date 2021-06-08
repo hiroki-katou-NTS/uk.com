@@ -67,9 +67,9 @@ public class ExecuteImporting {
 			
 			AtomTask atomTaskAdjust = AdjustExistingData.adjust(require, context, employeeId);
 			
-			// TODO: 移送
+			AtomTask atomTaskTransfer = TransferCanonicalData.transferByEmployee(require, context, employeeId);
 			
-			return atomTaskAdjust;
+			return atomTaskAdjust.then(atomTaskTransfer);
 		});
 	}
 	

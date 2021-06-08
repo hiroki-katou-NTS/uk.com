@@ -23,15 +23,17 @@ import nts.uk.shr.com.context.AppContexts;
  * @author ai_muto
  */
 public class TransferCanonicalData {
+	private static final String EMPROYEE_ID_COLUMN_NAME = "SID";
+	
 	public static AtomTask transferAll(Require require, ExecutionContext context) {
 		return transfer(require, context, Collections.emptyList());
 	}
 	
-	public static AtomTask transferWithWhere(Require require, ExecutionContext context, String columnName, String value) {
+	public static AtomTask transferByEmployee(Require require, ExecutionContext context, String employeeId) {
 		WhereSentence whereSentence = new WhereSentence(
-				new ColumnName("", columnName),
+				new ColumnName(EMPROYEE_ID_COLUMN_NAME),
 				RelationalOperator.Equal,
-				Optional.of(new ColumnExpression("'" + value + "'"))
+				Optional.of(new ColumnExpression("'" + employeeId + "'"))
 			);
 		
 		return transfer(require, context, Arrays.asList(whereSentence));
