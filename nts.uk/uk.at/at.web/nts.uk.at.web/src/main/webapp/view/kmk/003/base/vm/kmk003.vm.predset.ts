@@ -126,8 +126,8 @@ module nts.uk.at.view.kmk003.a {
                     var dataDTO: TimezoneDto = {
                         useAtr: this.useAtr(),
                         workNo: this.workNo(),
-                        end: this.useAtr ? this.end() : null,
-                        start: this.useAtr ? this.start() : null
+                        end: this.useAtr() ? this.end() : null,
+                        start: this.useAtr() ? this.start() : null
                     };
                     return dataDTO;
                 }

@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.ac.toppagealarmpub;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,7 +55,7 @@ public class TopPageAlarmAdapterImpl implements TopPageAlarmAdapter {
 		alarmInformation.setOccurrenceDateTime(alarmInfo.getOccurrenceDateTime());
 		alarmInformation.setDisplaySId(alarmInfo.getDisplaySId());
 		alarmInformation.setDisplayEmpClassfication(EnumAdaptor.valueOf(alarmInfo.getDisplayAtr(), DisplayEmpClassfication.class));
-		alarmInformation.setSubSids(Collections.emptyList()); //#116503
+		alarmInformation.setSubSids(alarmInfo.getSubEmployeeIds()); //#116503
 		alarmInformation.setPatternCode(alarmInfo.getPatternCode());
 		alarmInformation.setPatternName(alarmInfo.getPatternName());
 		alarmInformation.setLinkUrl(alarmInfo.getLinkUrl());

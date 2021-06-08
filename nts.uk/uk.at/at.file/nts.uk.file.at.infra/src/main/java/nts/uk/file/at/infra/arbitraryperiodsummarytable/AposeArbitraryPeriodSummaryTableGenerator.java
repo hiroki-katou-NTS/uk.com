@@ -80,13 +80,13 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
 
-        pageSetup.setHeader(0, "&7&\"ＭＳ フォントサイズ\"" + companyName);
-        pageSetup.setHeader(1, "&12&\"ＭＳ フォントサイズ\"" + title);
+        pageSetup.setHeader(0, "&9&\"ＭＳ フォントサイズ\"" + companyName);
+        pageSetup.setHeader(1, "&16&\"ＭＳ フォントサイズ,Bold\"" + title);
 
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
         pageSetup.setHeader(2,
-                "&7&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
+                "&9&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
         pageSetup.setFitToPagesTall(0);
         pageSetup.setFitToPagesWide(0);

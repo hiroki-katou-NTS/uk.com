@@ -726,8 +726,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	@Override
 	public CompanyDto getFirstMonth(String companyId) {
-		// TODO Auto-generated method stub
-		return null;
+		return companyAdapter.getFirstMonth(companyId);
 	}
 
 	@Override

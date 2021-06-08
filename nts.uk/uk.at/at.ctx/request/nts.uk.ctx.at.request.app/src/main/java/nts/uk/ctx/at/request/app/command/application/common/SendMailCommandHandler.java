@@ -42,6 +42,13 @@ public class SendMailCommandHandler extends CommandHandlerWithResult<SendMailCom
 			}
 		}
 		
+		// 申請者のメールアドレスをチェックする
+		List<SendMailAppInfoParam> listNotExistApplicantMail = sendMailParam.getAppInfoLst().stream().filter(x -> !x.getOpApplicantMail().isPresent()).collect(Collectors.toList());
+		if(!CollectionUtil.isEmpty(listNotExistApplicantMail)) {
+			// エラーメッセージを表示する（Msg_1309）
+			throw new BusinessException("Msg_1309");
+		}
+		
 		List<String> successList = new ArrayList<>();
 		for(SendMailAppInfoParam sendMailAppInfoParam : sendMailParam.getAppInfoLst()) {
 			// 「メール送信する」の承認者全員に対してメールを送信する
