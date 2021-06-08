@@ -2,8 +2,6 @@ package nts.uk.ctx.exio.dom.input.revise.type.time;
 
 import java.math.BigDecimal;
 
-import lombok.val;
-
 /**
  * 時分区分
  */
@@ -29,15 +27,18 @@ public enum HourlySegment {
 	}
 	
 	/**
-	 * 時分から分へ変換
+	 * 分へ変換
 	 * @param target
 	 * @param rounding
 	 * @return
 	 */
-	public Long hourToMinute(BigDecimal target, TimeRounding rounding) {
+	public BigDecimal toMinute(BigDecimal target) {
+		
+		if (this == MINUTE) {
+			return target;
+		}
+		
 		// 分へ変換
-		val min = target.multiply(new BigDecimal("60.00"));
-		// 端数を指定された方法で処理する
-		return min.setScale(0, BigDecimal.ROUND_UP).longValue();
+		return target.multiply(new BigDecimal("60.00"));
 	}
 }
