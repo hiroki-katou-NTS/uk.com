@@ -75,7 +75,7 @@ public class AgreementOneMonthTest {
                 result = rs;
             }
         };
-        assertThat(agreementsOneMonth.check(agreementTarget,legalLimitTarget, false)).isEqualTo(
+        assertThat(agreementsOneMonth.check(agreementTarget,legalLimitTarget)).isEqualTo(
                 AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM);
     }
     @Test
@@ -92,7 +92,7 @@ public class AgreementOneMonthTest {
                 result = rs;
             }
         };
-        assertThat(agreementsOneMonth.check(agreementTarget,legalLimitTarget, false))
+        assertThat(agreementsOneMonth.check(agreementTarget,legalLimitTarget))
                 .isEqualTo(AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR);
     }
     @Test
@@ -110,7 +110,7 @@ public class AgreementOneMonthTest {
             }
         };
         assertThat(AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY).isEqualTo(
-                agreementsOneMonth.check(agreementTarget,legalLimitTarget, false));
+                agreementsOneMonth.check(agreementTarget,legalLimitTarget));
     }
     @Test
     public void check_04() {
@@ -128,7 +128,7 @@ public class AgreementOneMonthTest {
                 result = ExcessState.ALARM_OVER;
             }
         };
-        assertThat(agreementsOneMonth.check(agreementTarget,legalLimitTarget, false))
+        assertThat(agreementsOneMonth.check(agreementTarget,legalLimitTarget))
                 .isEqualTo(AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM);
     }
     @Test
@@ -147,7 +147,7 @@ public class AgreementOneMonthTest {
                 result = ExcessState.ERROR_OVER;
             }
         };
-        assertThat(agreementsOneMonth.check(agreementTarget,legalLimitTarget, false))
+        assertThat(agreementsOneMonth.check(agreementTarget,legalLimitTarget))
                 .isEqualTo(AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR);
     }
     @Test
@@ -166,7 +166,7 @@ public class AgreementOneMonthTest {
                 result = ExcessState.UPPER_LIMIT_OVER;
             }
         };
-        assertThat(agreementsOneMonth.check(agreementTarget,legalLimitTarget, false))
+        assertThat(agreementsOneMonth.check(agreementTarget,legalLimitTarget))
                 .isEqualTo(AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR);
     }
     @Test
@@ -186,7 +186,7 @@ public class AgreementOneMonthTest {
                 result = null;
             }
         };
-        assertThat(agreementsOneMonth.check(agreementTarget,legalLimitTarget, false))
+        assertThat(agreementsOneMonth.check(agreementTarget,legalLimitTarget))
                 .isEqualTo(AgreementTimeStatusOfMonthly.NORMAL);
     }
 
