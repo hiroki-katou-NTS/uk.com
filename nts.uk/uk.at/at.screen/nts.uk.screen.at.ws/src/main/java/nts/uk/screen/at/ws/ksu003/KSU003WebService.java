@@ -204,25 +204,16 @@ public class KSU003WebService extends WebService{
 	@POST
 	@Path("checkEmpAttendance")
 	// 社員の出勤系をチェックする 
-	public List<WorkInfoOfDailyAttendanceDto> checkEmpAttendance (CheckEmpAttParam param){
+	public List<String> checkEmpAttendance (CheckEmpAttParam param){
 		DatePeriod date = new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd"));
-		List<WorkInfoOfDailyAttendanceDto> rs = checkEmpAttendance.get(param.getLstEmpId(), date, param.getDisplayMode()).stream()
-				.map(x -> new WorkInfoOfDailyAttendanceDto(
-						new WorkInformationDto(x.getRecordInfo().getWorkTypeCode().v(), x.getRecordInfo().getWorkTimeCode().v()), 
-						x.getCalculationState().value, 
-						x.getGoStraightAtr().value, 
-						x.getBackStraightAtr().value, 
-						x.getDayOfWeek().value, 
-						x.getScheduleTimeSheets().stream().map(y -> new ScheduleTimeSheetDto(y.getWorkNo().v(), y.getAttendance().v(), y.getLeaveWork().v())).collect(Collectors.toList()), 
-						x.getNumberDaySuspension().map(z -> new NumberOfDaySuspensionDto(z.getDays().v(), z.getClassifiction().value)).orElse(null)))
-				.collect(Collectors.toList());
+		List<String> rs = checkEmpAttendance.get(param.getLstEmpId(), date, param.getDisplayMode());
 		return rs;
 	}
 	
 	@POST
-	@Path("getWorkScheduleInfor")
+	@Path("getTaskWorkSchedule")
 	// 作業予定情報を取得する 
-	public List<EmpTaskInfoDto> getTaskPaletteDisplay (CheckEmpAttParam param){
+	public List<EmpTaskInfoDto> getTaskWorkSchedule (CheckEmpAttParam param){
 		DatePeriod date = new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd"));
 		List<EmpTaskInfoDto> rs = workScheduleInfor.get(param.getLstEmpId(), date);
 		return rs;
@@ -232,7 +223,7 @@ public class KSU003WebService extends WebService{
 	@POST
 	@Path("addTaskWorkSchedule")
 	// 作業予定を登録する
-	public void getTaskPaletteDisplay (AddWorkScheduleCommand param){
+	public void addTaskPaletteDisplay (AddWorkScheduleCommand param){
 		commandHandler.handle(param);
 	}
 	

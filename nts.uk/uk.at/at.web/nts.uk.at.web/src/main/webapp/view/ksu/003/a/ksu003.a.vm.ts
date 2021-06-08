@@ -4757,18 +4757,39 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		
 		// Xử lý ver 4
 		
-		// 作業登録処理 (Xử lý Đăng ký Task)
+		// ①<<ScreenQuery>> 作業予定を登録する
 		public saveTask(){
-			let self = this;
+			let self = this,
+			timeSpanForCalcDto = {start : 1 , end : 2},
+			taskScheduleDetail = {taskCode : '1', timeSpanForCalcDto : timeSpanForCalcDto},
+			taskScheduleDetailEmp = {empId : '1', taskScheduleDetail : taskScheduleDetail},
+			lstTaskScheduleDetailEmp : any = [];
+			
+			lstTaskScheduleDetailEmp.push(taskScheduleDetailEmp);
 			let param = {
-				dispRange : self.displayRangeSelect(),
-				startTime : self.initDispStartChecked(),
-				initDispStart : self.dispStartChecked(), 
-				targetUnit : self.dataScreen003A().unit,
-				organizationID : self.dataScreen003A().id
+				lstTaskScheduleDetailEmp : lstTaskScheduleDetailEmp,
+				ymd : self.targetDate()
 			}
 			service.addTaskWorkSchedule(param).done(() => {
 				
+			}).fail(function(error) {
+				errorDialog({ messageId: error.messageId });
+			}).always(function() {
+			});
+		}
+		
+		// ①<<ScreenQuery>> 作業予定情報を取得する
+		public getTask(){
+			let self = this;
+			
+			let param = {
+				lstEmpId : _.map(self.lstEmpId, (x: model.IEmpidName) => { return x.empId }),
+				startDate : self.targetDate(),
+				endDate : self.targetDate(),
+				displayMode : 1
+			}
+			service.addTaskWorkSchedule(param).done((data : any) => {
+				console.log(data);
 			}).fail(function(error) {
 				errorDialog({ messageId: error.messageId });
 			}).always(function() {
@@ -4792,7 +4813,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				targetUnit : self.dataScreen003A().unit,
 				organizationID : self.dataScreen003A().id
 			}
-			
+			// 組織別スケジュール修正日付別の表示設定を登録する
 			service.addScheduleByDisplaySet(param).done(() => {
 				
 			}).fail(function(error) {

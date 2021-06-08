@@ -1233,7 +1233,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 return {
                     morning: morningTimes,
-                    afternoon: afternoonTimes;
+                    afternoon: afternoonTimes
                 }
             }
 
