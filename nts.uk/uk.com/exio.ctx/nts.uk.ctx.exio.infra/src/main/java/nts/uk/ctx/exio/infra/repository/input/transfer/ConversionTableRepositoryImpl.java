@@ -21,11 +21,11 @@ import nts.uk.ctx.exio.infra.entity.input.tabledesign.ScvmtErpColumnDesign;
 public class ConversionTableRepositoryImpl extends JpaRepository implements ConversionTableRepository {
 
 	@Override
-	public ConversionSource getSource(int groupId) {
+	public ConversionSource getSource(String groupName) {
 		String query = "SELECT cs FROM ScvmtConversionSources cs WHERE cs.categoryName = :category";
 
 		return this.queryProxy().query(query, ScvmtConversionSources.class)
-			.setParameter("category", String.valueOf(groupId))
+			.setParameter("category", groupName)
 			.getList(entity -> entity.toDomain(getPkColumns(entity.getSourceTableName())))
 			.stream()
 			.findFirst()
@@ -42,12 +42,12 @@ public class ConversionTableRepositoryImpl extends JpaRepository implements Conv
 	}
 
 	@Override
-	public List<ConversionTable> get(int groupId, ConversionSource source, ConversionCodeType cct) {
+	public List<ConversionTable> get(String groupName, ConversionSource source, ConversionCodeType cct) {
 		String query =
 				  "SELECT c FROM ScvmtConversionTable c"
 				+ " WHERE c.pk.categoryName = :category";
 		List<ScvmtConversionTable> entities = this.queryProxy().query(query, ScvmtConversionTable.class)
-			.setParameter("category", String.valueOf(groupId))
+			.setParameter("category", groupName)
 			.getList();
 		
 		DatabaseType  type = DatabaseType.parse(this.database());

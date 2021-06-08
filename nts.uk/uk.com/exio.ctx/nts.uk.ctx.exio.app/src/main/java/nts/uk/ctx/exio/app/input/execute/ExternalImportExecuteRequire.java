@@ -63,7 +63,7 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public ImportingGroup getGroupTransactionStrategy(int groupId) {
+		public ImportingGroup getImportingGroup(int groupId) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -134,13 +134,13 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public ConversionSource getConversionSource(int groupId) {
-			return conversionTableRepo.getSource(groupId);
+		public ConversionSource getConversionSource(String groupName) {
+			return conversionTableRepo.getSource(groupName);
 		}
 		
 		@Override
-		public List<ConversionTable> getConversionTable(ConversionSource source, int groupId, ConversionCodeType cct) {
-			return conversionTableRepo.get(groupId, source, cct);
+		public List<ConversionTable> getConversionTable(ConversionSource source, String groupName, ConversionCodeType cct) {
+			return conversionTableRepo.get(groupName, source, cct);
 		}
 
 		@Override
