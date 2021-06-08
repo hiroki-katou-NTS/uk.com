@@ -21,14 +21,4 @@ public enum TimeBaseNumber {
 		this.value = value;
 		this.nameId = nameId;
 	}
-	
-	/**
-	 * 60進数から10進数へ変換
-	 * @param h
-	 * @param m
-	 * @return
-	 */
-	public static Long change60To10(Long h, Long m) {
-		return h * 60 + m;
-	}
 }

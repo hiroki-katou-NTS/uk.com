@@ -7,6 +7,9 @@ import nts.uk.ctx.exio.dom.input.revise.ReviseValue;
 import nts.uk.ctx.exio.dom.input.revise.RevisedValueResult;
 import nts.uk.ctx.exio.dom.input.revise.type.RangeOfValue;
 
+/**
+ * 時間・時刻型編集
+ */
 public class TimeRevise implements ReviseValue {
 	
 	/** 値の有効範囲を指定する */
@@ -22,7 +25,7 @@ public class TimeRevise implements ReviseValue {
 	private TimeBaseNumber baseNumber;
 	
 	/** 区切り文字 */
-	private Optional<TimeDelimiter> delimiter;
+	private Optional<TimeBase60Delimiter> delimiter;
 	
 	/** 端数処理 */
 	private TimeRounding rounding;
@@ -36,22 +39,17 @@ public class TimeRevise implements ReviseValue {
 		}
 		
 		Long longResult;
-		if (hourly == HourlySegment.HOUR_MINUTE) {
-			// 時分の場合
-			if (baseNumber == TimeBaseNumber.HEXA_DECIMAL) {
-				// 60進数の場合
-				// 区切り文字を用いて時分→分変換
-				longResult = delimiter.get().convert(strTarget);
-			}else {
-				// 10進数の場合
-				// 時分区分を用いて時分→分変換
-				BigDecimal decimalTarget = new BigDecimal(strTarget);
-				longResult = hourly.hourToMinute(decimalTarget, rounding);
-			}
+		
+		if (baseNumber == TimeBaseNumber.HEXA_DECIMAL) {
+			// 60進数の場合
+			// 区切り文字を用いて時分→分変換
+			longResult = delimiter.get().convert(strTarget);
 		}else {
-			// 分の場合
+			// 10進数の場合
+			// 分に揃える
+			BigDecimal decimalTarget = hourly.toMinute(new BigDecimal(strTarget));
+			
 			// 端数処理を用いて端数を処理
-			BigDecimal decimalTarget = new BigDecimal(strTarget);
 			longResult = rounding.round(decimalTarget);
 		}
 		return RevisedValueResult.succeeded(longResult);
