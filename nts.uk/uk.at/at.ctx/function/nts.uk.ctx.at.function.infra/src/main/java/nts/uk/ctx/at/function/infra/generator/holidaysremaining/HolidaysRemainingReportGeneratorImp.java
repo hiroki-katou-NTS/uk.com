@@ -2848,7 +2848,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         String cid = AppContexts.user().companyId();
         CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepository.find(cid);
         val checkEmLeave = compensLeaveEmSetRepository.find(cid, employmentCode);
-        if (checkEmLeave == null || !holidaysRemainingManagement.getListItemsOutput().getSubstituteHoliday().isOutputItemSubstitute()) {
+        if (!holidaysRemainingManagement.getListItemsOutput().getSubstituteHoliday().isOutputItemSubstitute()) {
             return false;
         } else
 //            if (checkEmLeave.getIsManaged() == ManageDistinct.NO) {
