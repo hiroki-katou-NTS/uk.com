@@ -36,11 +36,13 @@ import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionTaskSetting
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDateParam;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogHistoryDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.SelectedProcessExecutionDto;
+import nts.uk.ctx.at.function.app.find.processexecution.dto.SystemPropertiesDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.UpdateProcessAutoExecutionDto;
 import nts.uk.ctx.at.function.ws.processexecution.batchserver.BatchTaskResult;
 import nts.uk.shr.com.communicate.PathToWebApi;
 import nts.uk.shr.com.communicate.batch.BatchServer;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.system.property.UKServerSystemProperties;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 @Path("at/function/processexec")
@@ -224,5 +226,11 @@ public class ProcessExecutionWebService extends WebService {
 	@Path("findProcessExecution/{execItemCd}")
 	public SelectedProcessExecutionDto findProcessExecution(@PathParam("execItemCd") String execItemCd) {
 		return this.updateProcessAutoExecutionFinder.findByCode(execItemCd);
+	}
+	
+	@POST
+	@Path("getSystemProperties")
+	public SystemPropertiesDto getSystemProperties() {
+		return new SystemPropertiesDto(AppContexts.optionLicense().customize().ootsuka(), UKServerSystemProperties.isCloud());
 	}
 }

@@ -10,7 +10,8 @@ module nts.uk.at.view.kbt002.b {
     getAlarmByUser: 'at/function/alarm/kal/001/pattern/setting',
     findWorkplaceTree: "bs/employee/workplace/config/info/findAll",
     findWkpTreeNew: 'bs/employee/wkpdep/get-wkpdepinfo-kcp004',
-    selectProcExec: 'at/function/processexec/findProcessExecution/{0}'
+    selectProcExec: 'at/function/processexec/findProcessExecution/{0}',
+    getSystemProperties: 'at/function/processexec/getSystemProperties'
   };
 
   const getTextResource = nts.uk.resource.getText;
@@ -82,12 +83,18 @@ module nts.uk.at.view.kbt002.b {
     deletionPattern: KnockoutObservable<string> = ko.observable('');
     defaultMasterData: DefaultMasterData = null;
     taskSetting: KnockoutObservable<any> = ko.observable(null);
-    otsukaOption: KnockoutObservable<boolean> = ko.observable(Math.random() < 0.5 ? true : false);
-    isCompany0001: KnockoutObservable<boolean> = ko.observable(__viewContext.user.companyId === '000000000000-0001');
+    otsukaOption: KnockoutObservable<boolean> = ko.observable(false);
+    isCompany0001: KnockoutObservable<boolean> = ko.observable(__viewContext.user.companyCode === '0001');
+    isCloud: KnockoutObservable<boolean> = ko.observable(false);
+    hasExecTaskSetting: KnockoutObservable<boolean> = ko.observable(false);
+    execRangeList: KnockoutObservableArray<any> = ko.observableArray([
+      { code: 0, name: getTextResource('Com_Company') },
+      { code: 1, name: getTextResource('Com_Workplace') },
+    ]);
 
     created() {
       const vm = this;
-      vm.selectedTaskEnableSetting(TaskEnableSettingClassificationCode.ENABLED);
+      vm.selectedTaskEnableSetting(TaskEnableSettingClassificationCode.DISABLED);
       vm.executionTaskWarning(vm.buildExecutionTaskWarningStr(undefined));
       vm.selectedTab(TabPanelId.TAB_1);
       vm.$ajax(API.getMasterInfo)
@@ -107,6 +114,7 @@ module nts.uk.at.view.kbt002.b {
           });
         })
         .fail(err => { errors.clearAll(); });
+        (__viewContext as any).viewModel = vm;
     }
 
     mounted() {
@@ -140,12 +148,17 @@ module nts.uk.at.view.kbt002.b {
               vm.updateList();
               vm.currentExecItem().workplaceList(res.workplaceInfos);
               vm.buildWorkplaceStr(_.map(vm.currentExecItem().workplaceList(), 'workplaceId')); // B4_6, 7, 9, 10
+              vm.hasExecTaskSetting(res.taskSetting);
               if (vm.currentExecItem().perScheduleCls()) {
                 vm.targetDateText(vm.buildTargetDateStr(vm.currentExecItem()));
               }
             })
             .always(() => vm.$blockui("clear"));
         }
+        vm.$ajax(API.getSystemProperties).then((value: any) => {
+          vm.otsukaOption(value.otsukaOption);
+          vm.isCloud(value.isCloud);
+        });
 
         vm.$nextTick(() => {
           vm.focusInput();
@@ -344,6 +357,9 @@ module nts.uk.at.view.kbt002.b {
           if (result) {
             vm.taskSetting(result);
             vm.executionTaskWarning(vm.buildExecutionTaskWarningStr(result));
+            vm.hasExecTaskSetting(true);
+          } else {
+            vm.hasExecTaskSetting(false);
           }
         });
     }
@@ -371,7 +387,7 @@ module nts.uk.at.view.kbt002.b {
     public openDialogCDL008() {
       const vm = this;
       vm.$blockui('grayout');
-      const canSelected = vm.currentExecItem().workplaceList() ? vm.currentExecItem().workplaceList() : [];
+      const canSelected = vm.currentExecItem().workplaceList() ? _.map(vm.currentExecItem().workplaceList(), data => data.workplaceId) : [];
       // Data send to dialog CDL008
       nts.uk.ui.windows.setShared('inputCDL008', {
         baseDate: moment.utc().toDate(),
@@ -447,7 +463,7 @@ module nts.uk.at.view.kbt002.b {
           });
           if (workplaceList.length > 1) {
             workplaceList = _.sortBy(workplaceList, (wkp) => {
-              return parseInt(wkp.hierarchyCode);
+              return wkp.hierarchyCode;
             });
             const firstWkp = workplaceList[0];
             const lastWkp = workplaceList[workplaceList.length - 1];
@@ -466,7 +482,7 @@ module nts.uk.at.view.kbt002.b {
      * Build target date string
      * @param execItem the exec item
      */
-    private buildTargetDateStr(execItem: any) {
+    public buildTargetDateStr(execItem: any) {
       const vm = this;
       let startTargetDate;
       let endTargetDate;
@@ -482,7 +498,8 @@ module nts.uk.at.view.kbt002.b {
       } else if (execItem.targetMonth() === 2) {
         startTargetDate = moment([today.year(), today.month(), execItem.targetDate()]).add(2, 'months');
       } else if (execItem.targetMonth() === 3) {
-        startTargetDate = moment([today.year(), today.month(), execItem.targetDate()]);
+        // startTargetDate = moment([today.year(), today.month(), execItem.targetDate()]);
+        return null;
       }
       if (startTargetDate.isValid()) {
         targetDateStr += startTargetDate.format("YYYY/MM/DD");
@@ -509,10 +526,13 @@ module nts.uk.at.view.kbt002.b {
 
     private buildExecutionTaskWarningStr(data: any): string {
       const vm = this;
+      $("#B5_6").removeClass("color-holiday");
       if (vm.isNewMode()) {
+        $("#B5_6").addClass("color-holiday");
         return vm.$i18n("KBT002_305");
       }
       if (!data) {
+        $("#B5_6").addClass("color-holiday");
         return vm.$i18n("KBT002_278");
       }
       const startDate = data.startDate;
@@ -730,7 +750,7 @@ module nts.uk.at.view.kbt002.b {
         if (item.children && item.children.length > 0) {
           res = res.concat(vm.convertTreeToArray(item.children));
         }
-        res.push({ workplaceId: item.id, hierarchyCode: item.code, name: item.name });
+        res.push({ workplaceId: item.id, hierarchyCode: item.hierarchyCode, name: item.name });
       })
       return res;
     }
@@ -884,6 +904,9 @@ module nts.uk.at.view.kbt002.b {
         vm.disableYearMonthDate(data === 3);
       });
       vm.enableMonthDay = ko.computed(() => vm.perScheduleClsNormal() && vm.processExecType() === 0 && !vm.cloudCreFlag());
+      vm.targetDate.subscribe(() => (__viewContext as any).viewModel.targetDateText((__viewContext as any).viewModel.buildTargetDateStr(vm)));
+      vm.creationPeriod.subscribe(() => (__viewContext as any).viewModel.targetDateText((__viewContext as any).viewModel.buildTargetDateStr(vm)));
+      vm.targetMonth.subscribe(() => (__viewContext as any).viewModel.targetDateText((__viewContext as any).viewModel.buildTargetDateStr(vm)));
     }
 
     createData(param: any) {
