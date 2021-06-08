@@ -30,7 +30,7 @@ import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 public class TaskCanonicalization implements GroupCanonicalization {
 
 	/** 作業枠Noの項目No */
-	final int itemNoFrameNo;
+	final int itemNoTaskFrameNo;
 	
 	/** 作業コードの項目No */
 	final int itemNoTaskCode;
@@ -129,19 +129,19 @@ public class TaskCanonicalization implements GroupCanonicalization {
 		
 		public UniqueKey(RevisedDataRecord revisedData) {
 			this(
-					(int) (long) (revisedData.getItemByNo(itemNoFrameNo).get().getInt()),
+					(int) (long) (revisedData.getItemByNo(itemNoTaskFrameNo).get().getInt()),
 					revisedData.getItemByNo(itemNoTaskCode).get().getString());
 		}
 		
 		public UniqueKey(AnyRecordToDelete record) {
 			this(
-					record.getKey(itemNoFrameNo).asInteger(),
+					record.getKey(itemNoTaskFrameNo).asInteger(),
 					record.getKey(itemNoTaskCode).asString());
 		}
 		
 		public AnyRecordToDelete toDelete(ExecutionContext context) {
 			return AnyRecordToDelete.create(context)
-					.addKey(itemNoFrameNo, StringifiedValue.of(frameNo))
+					.addKey(itemNoTaskFrameNo, StringifiedValue.of(frameNo))
 					.addKey(itemNoTaskCode, StringifiedValue.of(code));
 		}
 	}
