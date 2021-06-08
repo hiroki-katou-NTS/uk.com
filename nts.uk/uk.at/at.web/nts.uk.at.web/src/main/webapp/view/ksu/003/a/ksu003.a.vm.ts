@@ -1844,18 +1844,19 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 								timeChart = lstTimeChart[lstTimeChart.length - 1].timeChart;
 								timeChart2 = lstTimeChart[lstTimeChart.length - 1].timeChart2;
+								time = _.endsWith(time.toString(),'9') == true ? time - 1 : time;
 								if (detail.columnKey === "startTime1") {
+									if (time == "") return;
 									ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, ((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : ((time / 5 - self.dispStart))));
-									if (time == "") return;
 								} else if (detail.columnKey === "endTime1") {
+									if (time == "") return;
 									ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, null, ((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : ((time / 5 - self.dispStart))));
-									if (time == "") return;
 								} else if (detail.columnKey === "startTime2" && timeChart2 != null) {
+									if (time == "") return;
 									ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, ((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : ((time / 5 - self.dispStart))));
-									if (time == "") return;
 								} else if (detail.columnKey === "endTime2" && timeChart2 != null) {
-									ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, null, ((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : ((time / 5 - self.dispStart))));
 									if (time == "") return;
+									ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, null, ((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : ((time / 5 - self.dispStart))));
 								}
 
 							}
