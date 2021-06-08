@@ -1147,6 +1147,18 @@ export class KafS02AComponent extends KafS00ShrComponent {
         }
     }
 
+    public getValidAllValue() {
+        const vm = this;
+        let validAll: boolean = true;
+        for (let child of vm.$children) {
+            if (!child.$valid) {
+                validAll = false;
+            }
+        }
+        
+        return validAll;
+    }
+
     public register() {
         const self = this;
         let validAll: boolean = true;
@@ -1717,6 +1729,16 @@ export class KafS02AComponent extends KafS00ShrComponent {
     public kaf000CChangeAppReason(opAppReason) {
         const self = this;
         self.application.opAppReason = opAppReason;
+    }
+
+    public kafs00BValid(kafs00BValid) {
+        const self = this;
+        self.isValidateAll = self.getValidAllValue();
+    }
+
+    public kafs00CValid(kafs00CValid) {
+        const self = this;
+        self.isValidateAll = self.getValidAllValue();
     }
 }
 
