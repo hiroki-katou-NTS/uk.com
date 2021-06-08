@@ -133,9 +133,3 @@
 #input-date {
     margin-left: 20px;
 }
-#tabpanel-1,
-#tabpanel-2,
-#tabpanel-3,
-#tabpanel-4 {
-	height: calc(100vh - 95px);
-}
