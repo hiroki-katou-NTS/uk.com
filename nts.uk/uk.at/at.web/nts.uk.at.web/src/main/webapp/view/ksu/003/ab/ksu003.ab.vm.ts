@@ -37,6 +37,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 		dataTaskPalletDis: any = [];
 		dataTaskInfo: any = [];
 		errButton: any = [];
+		lstEmpToC: any = [];
 		constructor() { //id : workplaceId || workplaceGroupId; 
 			let self = this;
 			// Screen Ab1
@@ -86,10 +87,11 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 					self.sourceCompany(self.dataSourceCompany()[self.selectedPage()]);
 
 					if (self.sourceCompany() != null)
-						$("#tableButton1").ntsButtonTable("init", { 
-							row: 2, column: 5, source: self.sourceCompany(), 
-							contextMenu: self.contextMenu, 
-							disableMenuOnDataNotSet: [1], mode: "normal" });
+						$("#tableButton1").ntsButtonTable("init", {
+							row: 2, column: 5, source: self.sourceCompany(),
+							contextMenu: self.contextMenu,
+							disableMenuOnDataNotSet: [1], mode: "normal"
+						});
 
 					if (self.sourceCompany() != null)
 						self.checkSelectButton(0);
@@ -194,7 +196,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 			let self = this, data = self.dataTaskInfo, pallet = self.dataTaskPallet;
 			for (let i = 0; i < data.lstTaskDto.length; i++) {
 				let taskData = new TaskModel(
-					data.lstTaskDto[i].code, data.lstTaskDto[i].taskDisplayInfoDto.taskName, 
+					data.lstTaskDto[i].code, data.lstTaskDto[i].taskDisplayInfoDto.taskName,
 					data.lstTaskDto[i].taskDisplayInfoDto.taskNote);
 				datas.add(taskData);
 			}
@@ -442,38 +444,48 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 
 		openC() {
 			let self = this;
-			self.checkEmpAttendance().done(() =>{
-				let param = {
-					date : __viewContext.viewModel.viewmodelA.targetDate(),
-					employeeCodes : [],
-					employeeIds : [], 
-					employeeNames : []
-				}
-				setShared("dataShareKsu003c", param);
+			self.checkEmpAttendance().done((data: any) => {
+				setShared("dataShareKsu003c", self.lstEmpToC);
 				nts.uk.ui.windows.sub.modal('/view/ksu/003/c/index.xhtml').onClosed(() => {
 					console.log();
 				});
 			});
 		}
-		
+
 		// ①<<ScreenQuery>> 社員の出勤系をチェックする
-		
+
 		public checkEmpAttendance(): JQueryPromise<any> {
 			let self = this, dfd = $.Deferred<any>();
 			let param = {
-				lstEmpId : _.map(__viewContext.viewModel.viewmodelA.lstEmpId, (x: ksu003.a.model.IEmpidName) => { return x.empId }),
-				startDate : __viewContext.viewModel.viewmodelA.targetDate(),
-				endDate : __viewContext.viewModel.viewmodelA.targetDate(), 
-				displayMode : __viewContext.viewModel.viewmodelA.selectedDisplayPeriod()
+				lstEmpId: _.map(__viewContext.viewModel.viewmodelA.lstEmpId, (x: ksu003.a.model.IEmpidName) => { return x.empId }),
+				startDate: __viewContext.viewModel.viewmodelA.targetDate(),
+				endDate: __viewContext.viewModel.viewmodelA.targetDate(),
+				displayMode: __viewContext.viewModel.viewmodelA.selectedDisplayPeriod()
 			}
-			service.checkEmpAttendance(param).done((data : any) => {
+
+			service.checkEmpAttendance(param).done((data: any) => {
+				let lstParam = _.filter(__viewContext.viewModel.viewmodelA.lstEmpId, (x: ksu003.a.model.IEmpidName) => {
+					return _.includes(data, x.empId)
+				});
+				self.lstEmpToC = {
+					date: __viewContext.viewModel.viewmodelA.targetDate(),
+					employeeCodes: [],
+					employeeIds: [],
+					employeeNames: []
+				}
+				_.each(lstParam, idx => {
+					self.lstEmpToC.employeeCodes.push(idx.code);
+					self.lstEmpToC.employeeIds.push(idx.empId);
+					self.lstEmpToC.employeeNames.push(idx.name);
+				});
+
 				console.log();
 				dfd.resolve();
-			}).fail(function(error : any) {
+			}).fail(function(error: any) {
 				alertError({ messageId: error.messageId });
 			}).always(function() {
 			});
-			
+
 			return dfd.promise();
 		}
 	}

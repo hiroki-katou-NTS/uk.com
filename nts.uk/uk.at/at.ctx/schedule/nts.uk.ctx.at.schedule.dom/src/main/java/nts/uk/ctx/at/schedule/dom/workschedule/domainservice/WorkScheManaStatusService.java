@@ -30,19 +30,12 @@ public class WorkScheManaStatusService {
 			List<String> lstEmployeeID, DatePeriod period) {
 		/*	return 社員IDリスト:																										
 			map [prv-1] 社員別に取得する( require, $, 期間 )																
-			flatMap		*/									
-		Map<ScheManaStatuTempo, Optional<WorkSchedule>> rs = new HashMap<ScheManaStatuTempo, Optional<WorkSchedule>>();
-		Map<ScheManaStatuTempo, Optional<WorkSchedule>> map = new HashMap<ScheManaStatuTempo, Optional<WorkSchedule>>();
+			flatMap		*/												
+		Map<ScheManaStatuTempo, Optional<WorkSchedule>> map = new HashMap<>();
 		for (int i = 0; i < lstEmployeeID.size(); i++) {
 			long start = System.nanoTime();
 			
-			map = WorkScheManaStatusService.getByEmployee(require,lstEmployeeID.get(i), period);
-			rs.putAll(map);
-			map.entrySet().stream().forEach(x -> {
-				rs.put(x.getKey(), x.getValue());;
-			});
-			
-			
+			map.putAll(WorkScheManaStatusService.getByEmployee(require,lstEmployeeID.get(i), period));
 			System.out.println("employee: " + ((System.nanoTime() - start )/1000000) + "ms");	
 
 		}
@@ -57,7 +50,7 @@ public class WorkScheManaStatusService {
 	 * @return Map<社員の予定管理状態, Optional<勤務予定>>
 	 */
 	private static Map<ScheManaStatuTempo, Optional<WorkSchedule>> getByEmployee(Require require,String employeeID, DatePeriod datePeriod) {
-		Map<ScheManaStatuTempo, Optional<WorkSchedule>> map = new HashMap<ScheManaStatuTempo, Optional<WorkSchedule>>();
+		Map<ScheManaStatuTempo, Optional<WorkSchedule>> map = new HashMap<>();
 		
 		//期間.stream():
 		datePeriod.datesBetween().stream().forEach(x->{

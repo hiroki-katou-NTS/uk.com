@@ -50,12 +50,6 @@ declare module nts.uk.ui.vm {
 	}
 
 	export interface ViewContext {
-        viewModel: any;
-        viewModel: any;
-        viewModel: any;
-        viewModel: any;
-        viewModel: any;
-        [x: string]: any;
 		readonly noHeader: boolean;
 
 		readonly rootPath: string;
