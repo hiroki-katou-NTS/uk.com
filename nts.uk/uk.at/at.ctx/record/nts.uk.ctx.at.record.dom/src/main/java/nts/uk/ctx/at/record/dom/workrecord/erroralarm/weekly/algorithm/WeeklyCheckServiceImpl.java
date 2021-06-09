@@ -234,6 +234,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		@SuppressWarnings("rawtypes")
 		WeeklyAttendanceItemCondition cond = convertToErAlAttendanceItem(cid, weeklyCond);
 		
+		// Input．週別実績の任意抽出条件．チェック項目の種類をチェック
 		WeeklyCheckItemType checkItemType = weeklyCond.getCheckItemType();
 		switch (checkItemType) {
 		case TIME:
@@ -356,18 +357,21 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			return convert.stream().filter(x -> item.contains(x.getItemId())).map(iv -> getValue(iv))
 					.collect(Collectors.toList());
 		});
-		// 
+		
+		//
 		int continuousPeriod = 0;
 		if (weeklyCond.getContinuousPeriod().isPresent()) {
 			continuousPeriod = weeklyCond.getContinuousPeriod().get().v();
 		}
 		
+		// 連続期間のカウントを計算
 		CalCountForConsecutivePeriodOutput calCountForConsecutivePeriodOutput = calCountForConsecutivePeriodChecking.getContinuousCount(
 				count, 
 				continuousPeriod, 
 				errorAtr, 
 				null);
-		ouput.check = errorAtr;
+				
+		ouput.check = calCountForConsecutivePeriodOutput.getOptContinuousCount().isPresent();
 		ouput.continuousCountOpt = calCountForConsecutivePeriodOutput.getOptContinuousCount();
 		ouput.count = calCountForConsecutivePeriodOutput.getCount();
 		
