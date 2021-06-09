@@ -99,9 +99,11 @@ public class RegisterWorkManHoursCommandHandler
 			if (manHourInputResult.getIntegrationOfDaily().isPresent()) {
 				result.add(manHourInputResult.getIntegrationOfDaily().get());
 			}
+			transaction.execute(() -> {
+				// 2:persist
+				manHourInputResult.getAtomTask().run();
+			});
 			
-			// 2:persist
-			manHourInputResult.getAtomTask().run();
 		}
 		
 		return result;
