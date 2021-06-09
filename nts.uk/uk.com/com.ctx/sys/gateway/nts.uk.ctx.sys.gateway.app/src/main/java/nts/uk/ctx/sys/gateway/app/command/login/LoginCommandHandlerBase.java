@@ -43,30 +43,13 @@ public abstract class LoginCommandHandlerBase<
 		
 		Command command = context.getCommand();
 		
-		/* テナントロケーター処理 */
-		if (UKServerSystemProperties.usesTenantLocator()) {
-			TenantLocatorService.connect(command.getTenantCode());
-		}
-		
 		Req require = getRequire(command);
 
-		// テナント認証
-		val opTenant = require.getTenantAuthentication(command.getTenantCode());
-		if(!opTenant.isPresent()) {
-			return tenantAuthencationFailed();
-		}
-		val tenant = opTenant.get();
-		
-		val passwordVerify = tenant.verify(command.getTenantPasswordPlainText());		
-		val available = tenant.isAvailableAt(GeneralDate.today());
-		
-		if(!passwordVerify || !available) {
-			// テナント認証失敗
-			if (UKServerSystemProperties.usesTenantLocator()) {
-				TenantLocatorService.disconnect();
+		if (UKServerSystemProperties.isCloud()) {
+			if (authenticateTanant(require, command)) {
+				// テナント認証失敗
+				return tenantAuthencationFailed();
 			}
-			
-			return tenantAuthencationFailed();
 		}
 		
 		Authen authen = authenticate(require, command);
@@ -88,6 +71,36 @@ public abstract class LoginCommandHandlerBase<
 		});
 		
 		return loginCompleted(require, authen);
+	}
+	
+	private boolean authenticateTanant(Req require, Command command) {
+		
+		// テナントロケーター処理
+		if (UKServerSystemProperties.usesTenantLocator()) {
+			TenantLocatorService.connect(command.getTenantCode());
+		}
+
+		// テナント認証
+		val opTenant = require.getTenantAuthentication(command.getTenantCode());
+		if (!opTenant.isPresent()) {
+			return false;
+		}
+		
+		val tenant = opTenant.get();
+		
+		val passwordVerify = tenant.verify(command.getTenantPasswordPlainText());		
+		val available = tenant.isAvailableAt(GeneralDate.today());
+
+		// テナント認証失敗
+		if (!passwordVerify || !available) {
+			if (UKServerSystemProperties.usesTenantLocator()) {
+				TenantLocatorService.disconnect();
+			}
+			
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
