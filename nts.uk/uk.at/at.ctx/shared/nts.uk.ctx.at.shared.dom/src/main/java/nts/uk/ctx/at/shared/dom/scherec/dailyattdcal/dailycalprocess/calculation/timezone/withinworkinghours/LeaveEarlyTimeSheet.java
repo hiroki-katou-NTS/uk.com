@@ -188,8 +188,8 @@ public class LeaveEarlyTimeSheet {
 	 * @param leaveEarlyDecisionClock 早退判断時刻
 	 * @return true:早退している	false:早退していない
 	 */
-	public boolean isLeaveEarly(TimeLeavingOfDailyAttd attendanceLeavingWork, Optional<LeaveEarlyDecisionClock> leaveEarlyDecisionClock) {
-		Optional<TimeWithDayAttr> leave = attendanceLeavingWork.getAttendanceLeavingWork(this.workNo).flatMap(t -> t.getLeaveTime());
+	public boolean isLeaveEarly(Optional<TimeLeavingWork> timeLeavingWork, Optional<LeaveEarlyDecisionClock> leaveEarlyDecisionClock) {
+		Optional<TimeWithDayAttr> leave = timeLeavingWork.flatMap(t -> t.getLeaveTime());
 		if(!leave.isPresent() || !leaveEarlyDecisionClock.isPresent()) {
 			return false;
 		}

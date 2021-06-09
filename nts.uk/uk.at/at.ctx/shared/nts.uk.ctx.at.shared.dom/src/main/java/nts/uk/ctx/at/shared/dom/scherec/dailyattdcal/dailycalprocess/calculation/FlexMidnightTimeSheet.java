@@ -91,7 +91,7 @@ public class FlexMidnightTimeSheet {
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
 			Optional<CoreTimeSetting> coreTimeSetting,
 			NotUseAtr lateEarlyMinusAtr,
-			TimeLeavingOfDailyAttd attendanceLeavingWork) {
+			Optional<TimeLeavingOfDailyAttd> attendanceLeavingWork) {
 
 		// クラスを作成する
 		FlexMidnightTimeSheet domain = new FlexMidnightTimeSheet();

@@ -187,8 +187,8 @@ public class LateTimeSheet {
 	 * @param lateDecisionClock 遅刻判断時刻
 	 * @return true:遅刻している	false:遅刻していない
 	 */
-	public boolean isLate(TimeLeavingOfDailyAttd attendanceLeavingWork, Optional<LateDecisionClock> lateDecisionClock) {
-		Optional<TimeWithDayAttr> attendance = attendanceLeavingWork.getAttendanceLeavingWork(this.workNo).flatMap(t -> t.getAttendanceTime());
+	public boolean isLate(Optional<TimeLeavingWork> timeLeavingWork, Optional<LateDecisionClock> lateDecisionClock) {
+		Optional<TimeWithDayAttr> attendance = timeLeavingWork.flatMap(t -> t.getAttendanceTime());
 		if(!attendance.isPresent() || !lateDecisionClock.isPresent()) {
 			return false;
 		}

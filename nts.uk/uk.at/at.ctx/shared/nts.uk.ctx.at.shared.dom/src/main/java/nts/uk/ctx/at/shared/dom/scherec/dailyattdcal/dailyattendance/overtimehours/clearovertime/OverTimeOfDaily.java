@@ -284,8 +284,7 @@ public class OverTimeOfDaily {
 				statutoryDivision,
 				siftCode,
 				predetermineTimeSetByPersonInfo,
-				coreTimeSetting,
-				recordReGet.getCalculationRangeOfOneDay().getAttendanceLeavingWork()));
+				coreTimeSetting));
 		//変形法定内残業時間の計算
 		val irregularTime = overTimeSheet.calcIrregularTime();
 		//フレックス時間
@@ -318,7 +317,7 @@ public class OverTimeOfDaily {
 					coreTimeSetting,
 					NotUseAtr.NOT_USE,
 					Optional.of(DeductionAtr.Appropriate),
-					recordReGet.getCalculationRangeOfOneDay().getAttendanceLeavingWork());
+					Optional.of(recordReGet.getCalculationRangeOfOneDay().getAttendanceLeavingWork()));
 		}
 
 		val overTimeWork = new AttendanceTime(0);
@@ -362,8 +361,7 @@ public class OverTimeOfDaily {
 			StatutoryDivision statutoryDivision,
 			Optional<WorkTimeCode> siftCode,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			Optional<CoreTimeSetting> coreTimeSetting,
-			TimeLeavingOfDailyAttd attendanceLeavingWork) {
+			Optional<CoreTimeSetting> coreTimeSetting) {
 		
 		AttendanceTime flexWithoutTime = new AttendanceTime(0);
 		
@@ -398,7 +396,7 @@ public class OverTimeOfDaily {
 							predetermineTimeSetByPersonInfo,
 							coreTimeSetting,
 							NotUseAtr.NOT_USE,
-							attendanceLeavingWork);
+							Optional.of(recordReGet.getCalculationRangeOfOneDay().getAttendanceLeavingWork()));
 				}
 			}
 		}

@@ -346,7 +346,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 						Optional.of(personDailySetting.getPredetermineTimeSetByPersonWeekDay()),
 						Optional.of(new DeductLeaveEarly(0, 1)),
 						NotUseAtr.NOT_USE,
-						integrationOfDaily.getAttendanceLeave().get());
+						integrationOfDaily.getAttendanceLeave());
 			}
 		
 			AttendanceTime ableRangeTime = new AttendanceTime(personDailySetting.getDailyUnit().getDailyTime().valueAsMinutes() - workTime.valueAsMinutes());

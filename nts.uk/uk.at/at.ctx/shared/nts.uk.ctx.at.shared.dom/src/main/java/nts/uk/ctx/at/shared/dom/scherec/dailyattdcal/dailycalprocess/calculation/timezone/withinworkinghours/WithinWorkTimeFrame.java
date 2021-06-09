@@ -267,7 +267,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			PremiumAtr premiumAtr,
 			Optional<WorkTimezoneCommonSet> commonSetting,
 			NotUseAtr lateEarlyMinusAtr,
-			TimeLeavingOfDailyAttd attendanceLeavingWork,
+			Optional<TimeLeavingWork> timeLeavingWork,
 			Optional<LateDecisionClock> lateDecisionClock,
 			Optional<LeaveEarlyDecisionClock> leaveEarlyDecisionClock) {
 		
@@ -287,7 +287,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 				premiumAtr,
 				commonSetting,
 				lateEarlyMinusAtr,
-				attendanceLeavingWork,
+				timeLeavingWork,
 				lateDecisionClock,
 				leaveEarlyDecisionClock);
 		workTime = new AttendanceTime(workTime.valueAsMinutes() - lateEarlyDiductionTime.valueAsMinutes());
@@ -311,12 +311,12 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	 * 
 	 * 遅刻早退を強制的に控除する==true				=>	控除する
 	 * 遅刻早退を強制的に控除する==false
-	 * 		加算設定==控除する
+	 * 		休暇の計算方法の設定==控除する
 	 * 				就業時間に猶予時間を含む
 	 * 						遅刻(早退)している		=>	控除する
 	 * 						遅刻(早退)していない	=>	控除しない①
 	 * 				就業時間に猶予時間を含まない	=>	控除する
-	 * 		加算設定=控除しない						=>	控除しない②
+	 * 		休暇の計算方法の設定=控除しない			=>	控除しない②
 	 * 
 	 * @param autoCalcOfLeaveEarlySetting 遅刻早退の自動計算設定
 	 * @param holidayCalcMethodSet 休暇の計算方法の設定
@@ -334,7 +334,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			PremiumAtr premiumAtr,
 			Optional<WorkTimezoneCommonSet> commonSetting,
 			NotUseAtr lateEarlyMinusAtr,
-			TimeLeavingOfDailyAttd attendanceLeavingWork,
+			Optional<TimeLeavingWork> timeLeavingWork,
 			Optional<LateDecisionClock> lateDecisionClock,
 			Optional<LeaveEarlyDecisionClock> leaveEarlyDecisionClock) {
 		
@@ -346,7 +346,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		int lateDeductTime = 0;
 		if(commonSetting.get().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).getGraceTimeSet().isIncludeWorkingHour()
 				&& (!this.lateTimeSheet.flatMap(l -> l.getForDeducationTimeSheet()).isPresent()
-						|| !this.lateTimeSheet.get().isLate(attendanceLeavingWork, lateDecisionClock)
+						|| !this.lateTimeSheet.get().isLate(timeLeavingWork, lateDecisionClock)
 				&& lateEarlyMinusAtr.equals(NotUseAtr.NOT_USE))) {
 			//控除しない①
 			lateDeductTime = 0;
@@ -368,7 +368,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		int leaveEarlyDeductTime = 0;
 		if(commonSetting.get().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY).getGraceTimeSet().isIncludeWorkingHour()
 				&& (!this.leaveEarlyTimeSheet.flatMap(l -> l.getForDeducationTimeSheet()).isPresent()
-						|| !this.leaveEarlyTimeSheet.get().isLeaveEarly(attendanceLeavingWork, leaveEarlyDecisionClock)
+						|| !this.leaveEarlyTimeSheet.get().isLeaveEarly(timeLeavingWork, leaveEarlyDecisionClock)
 				&& lateEarlyMinusAtr.equals(NotUseAtr.NOT_USE))) {
 			//控除しない①
 			leaveEarlyDeductTime = 0;

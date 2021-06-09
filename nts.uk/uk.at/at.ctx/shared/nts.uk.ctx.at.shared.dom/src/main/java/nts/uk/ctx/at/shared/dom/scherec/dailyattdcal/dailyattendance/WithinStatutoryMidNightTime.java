@@ -85,7 +85,7 @@ public class WithinStatutoryMidNightTime {
 						predetermineTimeSetByPersonInfo,
 						recordReGet.getCoreTimeSetting(),
 						NotUseAtr.NOT_USE,
-						recordReGet.getCalculationRangeOfOneDay().getAttendanceLeavingWork());
+						Optional.of(recordReGet.getCalculationRangeOfOneDay().getAttendanceLeavingWork()));
 			}
 			else{
 				calcTime = withinWorkTimeSheet.calcMidNightTime();
