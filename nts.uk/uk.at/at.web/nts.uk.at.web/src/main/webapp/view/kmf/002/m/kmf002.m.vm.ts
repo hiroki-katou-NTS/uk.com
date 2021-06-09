@@ -5,6 +5,7 @@ module nts.uk.at.view.kmf002.m {
         import alertError = nts.uk.ui.dialog.alertError;
         import clear = nts.uk.ui.block.clear;
         import getText = nts.uk.resource.getText;
+        import getMessage = nts.uk.resource.getMessage;
 
         export class ScreenModel {
 
@@ -49,7 +50,7 @@ module nts.uk.at.view.kmf002.m {
                 service.getM8_3(command).done((data) => {
                     console.log(data);
                     if (data != null) {
-                        self.description(data);
+                        self.description(nts.uk.text.format(getText(('KMF002_112')), data));
                     }
                     else {
                          //self.startingDay(getText(('KMF001_292'),[data.hdDay]));
