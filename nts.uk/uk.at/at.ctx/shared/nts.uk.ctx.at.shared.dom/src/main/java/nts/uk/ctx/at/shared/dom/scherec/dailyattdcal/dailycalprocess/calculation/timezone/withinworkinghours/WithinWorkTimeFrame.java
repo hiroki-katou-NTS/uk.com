@@ -345,9 +345,9 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		//遅刻控除時間
 		int lateDeductTime = 0;
 		if(commonSetting.get().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.LATE).getGraceTimeSet().isIncludeWorkingHour()
-				&& (!this.lateTimeSheet.flatMap(l -> l.getForDeducationTimeSheet()).isPresent()
-						|| !this.lateTimeSheet.get().isLate(timeLeavingWork, lateDecisionClock)
-				&& lateEarlyMinusAtr.equals(NotUseAtr.NOT_USE))) {
+				&& (lateDecisionClock.isPresent() && timeLeavingWork.map(t -> t.getAttendanceTime()).isPresent()
+						&& !lateDecisionClock.get().isLate(timeLeavingWork.get().getAttendanceTime().get()))
+				&& lateEarlyMinusAtr.equals(NotUseAtr.NOT_USE)) {
 			//控除しない①
 			lateDeductTime = 0;
 		} else {
@@ -367,9 +367,9 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		//早退控除時間
 		int leaveEarlyDeductTime = 0;
 		if(commonSetting.get().getLateEarlySet().getOtherEmTimezoneLateEarlySet(LateEarlyAtr.EARLY).getGraceTimeSet().isIncludeWorkingHour()
-				&& (!this.leaveEarlyTimeSheet.flatMap(l -> l.getForDeducationTimeSheet()).isPresent()
-						|| !this.leaveEarlyTimeSheet.get().isLeaveEarly(timeLeavingWork, leaveEarlyDecisionClock)
-				&& lateEarlyMinusAtr.equals(NotUseAtr.NOT_USE))) {
+				&& (leaveEarlyDecisionClock.isPresent() && timeLeavingWork.map(t -> t.getLeaveTime()).isPresent()
+						&& !leaveEarlyDecisionClock.get().isLeaveEarly(timeLeavingWork.get().getLeaveTime().get()))
+				&& lateEarlyMinusAtr.equals(NotUseAtr.NOT_USE)) {
 			//控除しない①
 			leaveEarlyDeductTime = 0;
 		} else {

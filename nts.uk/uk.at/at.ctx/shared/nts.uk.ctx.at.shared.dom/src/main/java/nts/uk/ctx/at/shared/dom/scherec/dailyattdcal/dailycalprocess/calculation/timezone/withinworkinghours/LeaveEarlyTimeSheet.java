@@ -183,23 +183,6 @@ public class LeaveEarlyTimeSheet {
 	}
 	
 	/**
-	 * 早退しているか判断する
-	 * @param attendanceLeavingWork 日別勤怠の出退勤
-	 * @param leaveEarlyDecisionClock 早退判断時刻
-	 * @return true:早退している	false:早退していない
-	 */
-	public boolean isLeaveEarly(Optional<TimeLeavingWork> timeLeavingWork, Optional<LeaveEarlyDecisionClock> leaveEarlyDecisionClock) {
-		Optional<TimeWithDayAttr> leave = timeLeavingWork.flatMap(t -> t.getLeaveTime());
-		if(!leave.isPresent() || !leaveEarlyDecisionClock.isPresent()) {
-			return false;
-		}
-		if(!leaveEarlyDecisionClock.get().isLeaveEarly(leave.get())) {
-			return false;
-		}
-		return true;
-	}
-	
-	/**
 	 * 作成処理
 	 * @param deductionAtr 控除区分
 	 * @param timeLeavingWork 出退勤

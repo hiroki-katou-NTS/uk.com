@@ -182,23 +182,6 @@ public class LateTimeSheet {
 	}
 	
 	/**
-	 * 遅刻しているか判断する
-	 * @param attendanceLeavingWork 日別勤怠の出退勤
-	 * @param lateDecisionClock 遅刻判断時刻
-	 * @return true:遅刻している	false:遅刻していない
-	 */
-	public boolean isLate(Optional<TimeLeavingWork> timeLeavingWork, Optional<LateDecisionClock> lateDecisionClock) {
-		Optional<TimeWithDayAttr> attendance = timeLeavingWork.flatMap(t -> t.getAttendanceTime());
-		if(!attendance.isPresent() || !lateDecisionClock.isPresent()) {
-			return false;
-		}
-		if(!lateDecisionClock.get().isLate(attendance.get())) {
-			return false;
-		}
-		return true;
-	}
-	
-	/**
 	 * 作成処理
 	 * @param deductionAtr 控除区分
 	 * @param timeLeavingWork 出退勤
