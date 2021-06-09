@@ -1855,6 +1855,9 @@ public class ProgramsManager {
     public static final Program KMK010C = new Program(WebAppId.AT, ProgramIdConsts.KMK010C, "KMK010_3",
             "/view/kmk/010/c/index.xhtml");
 
+    public static final Program KMK010D = new Program(WebAppId.AT, ProgramIdConsts.KMK010D, "KMK010_71",
+            "/view/kmk/010/d/index.xhtml");
+
     public static final Program KMK015A = new Program(WebAppId.AT, ProgramIdConsts.KMK015A, "KMK015_1",
             "/view/kmk/015/a/index.xhtml");
 

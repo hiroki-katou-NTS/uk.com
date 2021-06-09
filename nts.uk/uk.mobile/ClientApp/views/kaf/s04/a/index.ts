@@ -108,6 +108,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
 
     public mode: boolean = true;
     private errorInfo: string = null;
+    private init: boolean = true;
 
     @Prop({ default: () => ({}) }) public readonly res: IResDetail;
 
@@ -235,7 +236,10 @@ export class KafS04AComponent extends KafS00ShrComponent {
             }
         }).catch((error: any) => {
             vm.handleErrorCommon(error);
-        }).then(() => vm.$mask('hide'));
+        }).then(() => {
+            vm.init = false;
+            vm.$mask('hide');
+        });
     }
 
     @Watch('application.prePostAtr')
@@ -410,28 +414,36 @@ export class KafS04AComponent extends KafS00ShrComponent {
         });
     }
 
-    public checkValidAll() {
+    public handleClickRegister() {
         const vm = this;
-        let validAll: boolean = true;
+        if (vm.checkValidAll()) {
+            if (vm.application.prePostAtr == 1 && vm.errorInfo) {
+                vm.$modal.error({ messageId: vm.errorInfo, messageParams: [vm.application.opAppStartDate] });
+
+                return;
+            }
+            vm.checkBeforeRegister();
+        }
+    }
+
+    private checkValidAll() {
+        const vm = this;
+        let validAllChild: boolean = true;
         for (let child of vm.$children) {
             child.$validate();
             if (!child.$valid) {
-                validAll = false;
+                validAllChild = false;
             }
         }
-        vm.isValidateAll = validAll;
+        vm.isValidateAll = validAllChild;
         vm.$validate();
-        if (!vm.$valid || !validAll) {
+        if (!vm.$valid || !validAllChild) {
             window.scrollTo(500, 0);
 
-            return;
+            return false;
         }
-        if (vm.application.prePostAtr == 1 && vm.errorInfo) {
-            vm.$modal.error({ messageId: vm.errorInfo, messageParams: [vm.application.opAppStartDate] });
 
-            return;
-        }
-        vm.checkBeforeRegister();
+        return true;
     }
 
     public register() {
@@ -498,9 +510,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 vm.application.appDate = appDatesLst[0];
                 vm.application.opAppStartDate = appDatesLst[0];
                 vm.application.opAppEndDate = appDatesLst[0];
-                if (!vm.isValidateAll) {
-                    vm.isValidateAll = true;
-                }
+                vm.checkValidAll();
             }
             let params = {
                 appDates: appDatesLst,
@@ -532,29 +542,32 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     vm.time.leaveTime2 = null;
 
                     if (item.opAchievementDetail) {
-                        const {opWorkTime, opLeaveTime, opWorkTime2, opDepartureTime2} = item.opAchievementDetail;
+                        const {opWorkTime, opLeaveTime, opWorkTime2, opDepartureTime2, trackRecordAtr} = item.opAchievementDetail;
                         const {scheAttendanceTime1, scheDepartureTime1, scheAttendanceTime2, scheDepartureTime2} = item.opAchievementDetail.achievementEarly;
 
                         vm.kafS00P1Params1.scheduleTime = scheAttendanceTime1;
                         vm.kafS00P1Params2.scheduleTime = scheDepartureTime1;
                         vm.kafS00P1Params3.scheduleTime = scheAttendanceTime2;
                         vm.kafS00P1Params4.scheduleTime = scheDepartureTime2;
-                        vm.time.attendanceTime = opWorkTime;
-                        vm.time.leaveTime = opLeaveTime;
-                        vm.time.attendanceTime2 = opWorkTime2;
-                        vm.time.leaveTime2 = opDepartureTime2;
 
-                        if (opWorkTime != null && scheAttendanceTime1 != null && scheAttendanceTime1 < opWorkTime) {
-                            vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.ALARM;
-                        }
-                        if (opLeaveTime != null && scheDepartureTime1 != null && scheDepartureTime1 > opLeaveTime) {
-                            vm.kafS00P1Params2.scheduleExcess = ExcessTimeStatus.ALARM;
-                        }
-                        if (opWorkTime2 != null && scheAttendanceTime2 != null && scheAttendanceTime2 < opWorkTime2) {
-                            vm.kafS00P1Params3.scheduleExcess = ExcessTimeStatus.ALARM;
-                        }
-                        if (opDepartureTime2 != null && scheDepartureTime2 != null && scheDepartureTime2 > opDepartureTime2) {
-                            vm.kafS00P1Params4.scheduleExcess = ExcessTimeStatus.ALARM;
+                        if (trackRecordAtr == 0) {
+                            vm.time.attendanceTime = opWorkTime;
+                            vm.time.leaveTime = opLeaveTime;
+                            vm.time.attendanceTime2 = opWorkTime2;
+                            vm.time.leaveTime2 = opDepartureTime2;
+
+                            if (opWorkTime != null && scheAttendanceTime1 != null && scheAttendanceTime1 < opWorkTime) {
+                                vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.ALARM;
+                            }
+                            if (opLeaveTime != null && scheDepartureTime1 != null && scheDepartureTime1 > opLeaveTime) {
+                                vm.kafS00P1Params2.scheduleExcess = ExcessTimeStatus.ALARM;
+                            }
+                            if (opWorkTime2 != null && scheAttendanceTime2 != null && scheAttendanceTime2 < opWorkTime2) {
+                                vm.kafS00P1Params3.scheduleExcess = ExcessTimeStatus.ALARM;
+                            }
+                            if (opDepartureTime2 != null && scheDepartureTime2 != null && scheDepartureTime2 > opDepartureTime2) {
+                                vm.kafS00P1Params4.scheduleExcess = ExcessTimeStatus.ALARM;
+                            }
                         }
                     }
                 });
@@ -566,14 +579,16 @@ export class KafS04AComponent extends KafS00ShrComponent {
 
     public handleChangeAppReason(appReason) {
         const vm = this;
-
         vm.application.opAppReason = appReason;
+        vm.checkValidAll();
     }
 
     public handleChangeReasonCD(reasonCD) {
         const vm = this;
-
         vm.application.opAppStandardReasonCD = reasonCD;
+        if (!vm.init) {
+            vm.checkValidAll();
+        }
     }
 
     public handleChangePrePost(prePost) {

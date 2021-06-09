@@ -1967,6 +1967,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.scheduleDailyShowTimeEditor(itemCheck);
                 
                 self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual(0);
+                if (itemCheck == 2) {
+                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual(1);    
+                }
                 self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition().comparePlanAndActual(0);
                 self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().planLstWorkType([]);
                 self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition().planLstWorkTime([]);
@@ -2681,7 +2684,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
         /* 連続時間 */
         CONTINUOUS_DAY = 5,
         /* 連続回数 */
-        CONTINUOUS_TIMES = 5
+        CONTINUOUS_TIMES = 6
     }
 
 

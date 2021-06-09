@@ -1173,7 +1173,7 @@ module nts.uk.at.view.kmk003.a {
                     }
                     afternoonTimes.push(timeZonePMDto);
                 } else {
-                    if (shiftOneEnd >= morningEnd) {
+                    if (shiftOneEnd > morningEnd) {
                         //morning1
                         morningTimes.push({
                             employmentTimeFrameNo: 1,
@@ -1194,7 +1194,7 @@ module nts.uk.at.view.kmk003.a {
                         })
                         //afternoon2
                         afternoonTimes.push({
-                            employmentTimeFrameNo: 1,
+                            employmentTimeFrameNo: 2,
                             timezone: {
                                 start: shiftTwoStart,
                                 end: shiftTwoEnd,
@@ -1213,7 +1213,7 @@ module nts.uk.at.view.kmk003.a {
                         });
                         //morning2
                         morningTimes.push({
-                            employmentTimeFrameNo: 1,
+                            employmentTimeFrameNo: 2,
                             timezone: {
                                 start: shiftTwoStart,
                                 end: morningEnd,
