@@ -2534,7 +2534,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								limitStartMin, limitStartMax, limitEndMin, limitEndMax));
 							indexLeft = ++indexLeft;
 							// Add CORE-TIME
-							if (coreTime.length > 0 && (_.inRange(coreTime[0].coreStartTime, timeMinus[0].startTime, timeMinus[0].endTime) ||
+							if (coreTime.length > 0 && timeChart != null && (_.inRange(coreTime[0].coreStartTime, timeMinus[0].startTime, timeMinus[0].endTime) ||
 								_.inRange(coreTime[0].coreEndTime, timeMinus[0].startTime, timeMinus[0].endTime))) {
 								ruler.addChartWithType("CoreTime", {
 									id: `lgc${i}_` + indexLeft,
@@ -2564,7 +2564,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}*/
 				// OVER-TIME
 				let overTime = datafilter[0].gcOverTime;
-				if (overTime.length > 0 && datafilter[0].typeOfTime !== "Changeable" && datafilter[0].typeOfTime != "Flex") {
+				if (overTime.length > 0 && timeChart != null && datafilter[0].typeOfTime !== "Changeable" && datafilter[0].typeOfTime != "Flex") {
 					for (let o = 0; o < overTime[0].lstOverTime.length; o++) {
 						let y = overTime[0].lstOverTime[o];
 						timeChartOver = model.convertTimeToChart(y.startTime, y.endTime);
@@ -2612,7 +2612,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 
 				// Add BREAK-TIME
-				if (breakTime.length > 0) {
+				if (breakTime.length > 0 && timeChart != null) {
 					for (let o = 0; o < breakTime.length; o++) {
 						let y = breakTime[o];
 						breakTime = _.sortBy(breakTime, [function(o: any) { return o.start; }])
@@ -2702,7 +2702,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 				// Add short-time
 				let shortTime = datafilter[0].gcShortTime;
-				if (shortTime.length > 0) {
+				if (shortTime.length > 0 && timeChart != null) {
 					for (let o = 0; o < shortTime[0].listShortTime.length; o++) {
 						let y = shortTime[0].listShortTime[o];
 						timeChartShort = model.convertTimeToChart(y.startTime, y.endTime);
@@ -2746,7 +2746,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 				// Add holiday-time
 				let holidayTime = datafilter[0].gcHolidayTime;
-				if (holidayTime.length > 0) {
+				if (holidayTime.length > 0 && timeChart != null) {
 					for (let o = 0; o < holidayTime[0].listTimeVacationAndType.length; o++) {
 						let y = holidayTime[0].listTimeVacationAndType[o];
 						for (let e = 0; e < y.timeVacation.timeZone.length; e++) {

@@ -5,6 +5,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
  *
  */
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,11 +43,11 @@ public class DailyInterimRemainMngData {
 	/**
 	 * 暫定代休管理データ
 	 */
-	private Optional<InterimDayOffMng> dayOffData;
+	private List<InterimDayOffMng> dayOffData;
 	/**
 	 * 暫定年休管理データ
 	 */
-	private Optional<TempAnnualLeaveMngs> annualHolidayData;
+	private List<TempAnnualLeaveMngs> annualHolidayData;
 	/**
 	 * 暫定積立年休管理データ
 	 */
@@ -62,12 +63,27 @@ public class DailyInterimRemainMngData {
 	/**
 	 * 暫定子の看護休暇データ
 	 */
-	private Optional<TempChildCareManagement> childCareData;
+	private List<TempChildCareManagement> childCareData;
 	/**
 	 * 暫定介護休暇データ
 	 */
-	private Optional<TempCareManagement> careData;
+	private List<TempCareManagement> careData;
 
 
+	public static DailyInterimRemainMngData createEmpty(GeneralDate ymd) {
+		DailyInterimRemainMngData dom = new DailyInterimRemainMngData();
+		dom.ymd = ymd;
+		dom.interimAbsData=Optional.empty();
+		dom.recAbsData = new ArrayList<>();
+		dom.recData = Optional.empty();
+		dom.dayOffData = new ArrayList<>();
+		dom.annualHolidayData = new ArrayList<>();
+		dom.resereData = Optional.empty();
+		dom.breakData = Optional.empty();
+		dom.specialHolidayData = new ArrayList<>();
+		dom.childCareData = new ArrayList<>();
+		dom.careData = new ArrayList<>();
 
+		return dom;
+	}
 }

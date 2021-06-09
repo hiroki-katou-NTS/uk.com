@@ -8,7 +8,12 @@ import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CareUseDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
@@ -1058,7 +1063,7 @@ public class InterimRemainOffDateCreateData {
 	 */
 	public static DailyInterimRemainMngData createDataInterimRemain(RequireM6 require, InforFormerRemainData inforData) {
 		DailyInterimRemainMngData outputData = new DailyInterimRemainMngData(inforData.getYmd(), Optional.empty(), new ArrayList<>(), Optional.empty(),
-				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), new ArrayList<>(),Optional.empty(),Optional.empty());
+				new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
 
 		List<OccurrenceUseDetail> occList = inforData.getWorkTypeRemain().stream().map(x -> x.getOccurrenceDetailData())
 				.flatMap(List::stream).collect(Collectors.toList());
@@ -1132,22 +1137,30 @@ public class InterimRemainOffDateCreateData {
 		}
 
 
-		//時間暫定残数管理データを作成する
+		//時間暫定残数管理データを作成する -> 作成された暫定残数管理データをListに追加する
 
 		// 時間年休
-		outputData.getRecAbsData().addAll(TempRemainCreateEachData.createAnnualHolidayTime(inforData));
+		List<TempAnnualLeaveMngs> annual = TempRemainCreateEachData.createAnnualHolidayTime(inforData);
+		outputData.getRecAbsData().addAll(annual);
+		outputData.getAnnualHolidayData().addAll(annual);
 		// 時間代休
-		outputData.getRecAbsData().addAll(TempRemainCreateEachData.createSubstituteHolidayTime(inforData));
+		List<InterimDayOffMng> sub = TempRemainCreateEachData.createSubstituteHolidayTime(inforData);
+		outputData.getRecAbsData().addAll(sub);
+		outputData.getDayOffData().addAll(sub);
 		// 時間特休
-		outputData.getRecAbsData().addAll(TempRemainCreateEachData.createSpecialHolidayTime(inforData));
+		List<InterimSpecialHolidayMng> special = TempRemainCreateEachData.createSpecialHolidayTime(inforData);
+		outputData.getRecAbsData().addAll(special);
+		outputData.getSpecialHolidayData().addAll(special);
 		// 60H超休
 		outputData.getRecAbsData().addAll(TempRemainCreateEachData.createHolidayOver60hTime(inforData));
 		// 時間子の看護
-		outputData.getRecAbsData().addAll(TempRemainCreateEachData.createChildCareTime(inforData));
+		List<TempChildCareManagement> childCare = TempRemainCreateEachData.createChildCareTime(inforData);
+		outputData.getRecAbsData().addAll(childCare);
+		outputData.getChildCareData().addAll(childCare);
 		// 時間介護
-		outputData.getRecAbsData().addAll(TempRemainCreateEachData.createCareTime(inforData));
-		//作成された暫定残数管理データをListに追加する
-
+		List<TempCareManagement> care = TempRemainCreateEachData.createCareTime(inforData);
+		outputData.getRecAbsData().addAll(care);
+		outputData.getCareData().addAll(care);
 
 		return outputData;
 	}
