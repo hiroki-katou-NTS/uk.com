@@ -1,6 +1,6 @@
-import { _, Vue } from '@app/provider';
+import { _} from '@app/provider';
 import { TrackRecordAtr, OverTimeShiftNight, BreakTime, TimeZoneNew, TimeZoneWithWorkNo, AppOverTime, ParamCalculateMobile, ParamSelectWorkMobile, InfoWithDateApplication, ParamStartMobile, OvertimeAppAtr, Model, DisplayInfoOverTime, NotUseAtr, ApplicationTime, OvertimeApplicationSetting, AttendanceType, HolidayMidNightTime, StaturoryAtrOfHolidayWork, ParamBreakTime, WorkInformation, WorkHoursDto, AppDateContradictionAtr, ExcessState } from '../a/define.interface';
-import { component, Prop, Watch } from '@app/core/component';
+import { component, Prop } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
 import { KafS05Step1Component } from '../step1';
 import { HolidayTime, KafS05Step2Component } from '../step2';
@@ -53,24 +53,24 @@ export class KafS05Component extends KafS00ShrComponent {
     @Prop()
     public readonly params: InitParam;
 
-    public get getNumb(): number {
+    public get getoverTimeClf(): number {
         const self = this;
 
-        return self.numb;
+        return self.overTimeClf;
     }
 
-    @Watch('numb', {deep: true})
-    public changeNumb(data: any) {
-        const self = this;
+    // @Watch('numb', {deep: true})
+    // public changeoverTimeClf(data: any) {
+    //     const self = this;
 
-        if (self.numb == 1) {
-            self.pgName = 'kafs05step1';
-        } else if (self.numb == 2) {
-            self.pgName = 'kafs05step2';
-        } else {
-            self.pgName = 'kafs05step3';
-        }
-    }
+    //     if (self.numb == 1) {
+    //         self.pgName = 'kafs05step1';
+    //     } else if (self.numb == 2) {
+    //         self.pgName = 'kafs05step2';
+    //     } else {
+    //         self.pgName = 'kafs05step3';
+    //     }
+    // }
    
 
     public get step() {
@@ -367,6 +367,18 @@ export class KafS05Component extends KafS00ShrComponent {
         const vm = this;
 
         vm.pgName = 'kafs05step1';
+
+        if (vm.modeNew) {
+            if (vm.$route.query.a == '0') {
+                vm.overTimeClf = 0;
+            } else if (vm.$route.query.a == '1') {
+                vm.overTimeClf = 1;
+            } else {
+                vm.overTimeClf = 2;
+            }
+        } else {
+            vm.overTimeClf = _.get(vm.model, 'displayInfoOverTime.overtimeAppAtr') || 3;
+        }
 
         if (!_.isNil(vm.params)) {
             vm.modeNew = false;
