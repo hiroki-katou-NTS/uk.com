@@ -131,8 +131,15 @@ public class KrcdtDayOuenTimeSheet extends ContractCompanyUkJpaEntity implements
 			});
 			
 			oTimeSheetAtt.getTimeSheet().getEnd().ifPresent(end -> {
-				entity.endTimeChangeWay = end.getReasonTimeChange().getTimeChangeMeans().value;
-				entity.endStampMethod = end.getReasonTimeChange().getEngravingMethod().map(c -> c.value).orElse(null);
+				entity.endTimeChangeWay = null;
+				entity.endStampMethod = null;
+				if(end.getReasonTimeChange() != null) {
+					if(end.getReasonTimeChange().getTimeChangeMeans() != null) {
+						entity.endTimeChangeWay = end.getReasonTimeChange().getTimeChangeMeans().value;
+					}
+					entity.endStampMethod = end.getReasonTimeChange().getEngravingMethod().map(c -> c.value).orElse(null);
+				}
+				
 				entity.endTime = end.getTimeWithDay().map(c -> c.v()).orElse(null); 
 			});
 			

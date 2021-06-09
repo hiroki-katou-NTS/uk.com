@@ -204,7 +204,7 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 		}
 		ReasonTimeChange reasonTimeChangeStart = null;
 		WorkTimeInformation start = null;
-		if(this.timeSheet.getStart() != null) {
+		if(this.timeSheet != null && this.timeSheet.getStart() != null) {
 			reasonTimeChangeStart = new ReasonTimeChange(TimeChangeMeans.valueOf(this.timeSheet.getStart().getReasonTimeChange() == null ? null : this.timeSheet.getStart().getReasonTimeChange().getTimeChangeMeans()), 
 					 Optional.ofNullable(EngravingMethod.valueOf(this.timeSheet.getStart().getReasonTimeChange() == null ? null : this.timeSheet.getStart().getReasonTimeChange().getEngravingMethod())));	
 			start = new WorkTimeInformation(reasonTimeChangeStart, this.timeSheet.getStart().getTimeWithDay() == null ? null : new TimeWithDayAttr(this.timeSheet.getStart().getTimeWithDay()));
@@ -215,7 +215,7 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 		
 		ReasonTimeChange reasonTimeChangeEnd = null;
 		WorkTimeInformation end = null;
-		if(this.timeSheet.getEnd() != null) {
+		if(this.timeSheet != null && this.timeSheet.getEnd() != null) {
 			reasonTimeChangeEnd = new ReasonTimeChange(TimeChangeMeans.valueOf(this.timeSheet.getEnd().getReasonTimeChange() != null ? this.timeSheet.getEnd().getReasonTimeChange().getTimeChangeMeans() : null), 
 					 Optional.ofNullable(EngravingMethod.valueOf(this.timeSheet.getEnd().getReasonTimeChange() != null ? this.timeSheet.getEnd().getReasonTimeChange().getEngravingMethod() : null)));
 			end = new WorkTimeInformation(reasonTimeChangeEnd, this.timeSheet.getEnd().getTimeWithDay() == null ? null : new TimeWithDayAttr(this.timeSheet.getEnd().getTimeWithDay()));
@@ -224,7 +224,7 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 			end = new WorkTimeInformation(reasonTimeChangeStart, null);
 		}
 		
-		TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(this.timeSheet.getNo()), Optional.ofNullable(start), Optional.ofNullable(end));
+		TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(this.timeSheet == null ? 1 : this.timeSheet.getNo()), Optional.ofNullable(start), Optional.ofNullable(end));
 		OuenWorkTimeSheetOfDailyAttendance attendance = OuenWorkTimeSheetOfDailyAttendance.create(this.no, workContent, timeSheet);
 		return attendance;
 	}
