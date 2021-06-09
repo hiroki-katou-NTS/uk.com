@@ -1096,7 +1096,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public bindHolidayTypeByDetailInfo() {
         const self = this;
 
-        self.bindHolidayType();
+        self.bindHolidayType(true);
         self.selectedValueHolidayType = Number(self.model.applyForLeaveDto.vacationInfo.holidayApplicationType);
 
     }
@@ -1263,7 +1263,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         return (0 <= time && time < 1440) ? nameTime + self.$dt.timewd(time) : self.$dt.timewd(time);
     }
 
-    public bindHolidayType() {
+    public bindHolidayType(isUpdateMode?: boolean) {
         const self = this;
 
         if (!self.model.appAbsenceStartInfoDto) {
@@ -1280,14 +1280,126 @@ export class KafS06AComponent extends KafS00ShrComponent {
                 text: item.displayName
             };
         });
+        dropDownList = _.filter(dropDownList, 
+            (item: any) => 
+                                ((item.code == HolidayAppType.ANNUAL_PAID_LEAVE && self.isAnnualPaidLeave) ||
+                                (item.code == HolidayAppType.SUBSTITUTE_HOLIDAY && self.isSubstituteHoliday) ||
+                                (item.code == HolidayAppType.ABSENCE && self.isAbsence) ||
+                                (item.code == HolidayAppType.SPECIAL_HOLIDAY && self.isSpecialHoliday) ||
+                                (item.code == HolidayAppType.YEARLY_RESERVE && self.isYearlyReserve) ||
+                                (item.code == HolidayAppType.HOLIDAY && self.isHoliday) ||
+                                (item.code == HolidayAppType.DIGESTION_TIME && self.isDigestionTime))
+                                || (isUpdateMode && item.code == _.get(self.model, 'applyForLeaveDto.vacationInfo.holidayApplicationType'))
+            );
+
+
         dropDownList.unshift({
             code: null,
             text: '--- 選択してください ---'
         });
         self.dropdownList = dropDownList;
-        self.selectedValueHolidayType = !_.isNil(self.getSelectedValue()) ?  String(self.getSelectedValue()) : null;
+        self.selectedValueHolidayType = null;
+        // = !_.isNil(self.getSelectedValue()) ?  String(self.getSelectedValue()) : null;
         // 
 
+    }
+
+    public get isAnnualPaidLeave() {
+        const self = this;
+
+
+        // 休暇申請起動時の表示情報．休暇残数情報．年休管理区分　＝　管理する
+        const c1_1 = _.get(self.model, 'appAbsenceStartInfoDto.remainVacationInfo.annualLeaveManagement.annualLeaveManageDistinct') == ManageDistinct.YES;
+        // 休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇種類を利用しない = false
+        // AND　休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇申請の種類 = 年次有休
+        const c1_2 = 
+        !_.isNil(
+            _.find(_.get(self.model, 'appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst')
+            , (item: TargetWorkTypeByApp) => (item.appType == ApplicationType.ABSENCE_APPLICATION && item.opHolidayAppType == HolidayAppType.ANNUAL_PAID_LEAVE && !item.opHolidayTypeUse))
+        );
+        
+        return c1_1 && c1_2;
+    }
+
+    public get isSubstituteHoliday() {
+
+        const self = this;
+
+        // 休暇申請起動時の表示情報．休暇残数情報．代休管理区分　＝　管理する
+        const c1_3 = _.get(self.model, 'appAbsenceStartInfoDto.remainVacationInfo.substituteLeaveManagement.substituteLeaveManagement') == ManageDistinct.YES;
+        //休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇種類を利用しない = false
+        // AND　休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇申請の種類 = 代休
+        const c1_4 = 
+        !_.isNil(_.find(_.get(self.model, 'appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst')
+        , (item: TargetWorkTypeByApp) => item.appType == ApplicationType.ABSENCE_APPLICATION && item.opHolidayAppType == HolidayAppType.SUBSTITUTE_HOLIDAY && !item.opHolidayTypeUse));
+        // ※1-3 = ○　AND　※1-4 = ○ -> 代休
+
+        return c1_3 && c1_4;
+    }
+
+    public get isAbsence() {
+        const self = this;
+
+        // 休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇種類を利用しない = false
+        // AND　休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇申請の種類 = 欠勤
+        const c1_5 =
+        !_.isNil(_.find(_.get(self.model, 'appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst')
+        , (item: TargetWorkTypeByApp) => item.appType == ApplicationType.ABSENCE_APPLICATION && item.opHolidayAppType == HolidayAppType.ABSENCE && !item.opHolidayTypeUse));
+        // ※1-5 = ○ -> 欠勤
+
+        return c1_5;
+    }
+
+    public get isSpecialHoliday() {
+        const self = this;
+
+        // 休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇種類を利用しない = false
+        // AND　休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇申請の種類 = 特別休暇
+        const c1_6 =
+        !_.isNil(_.find(_.get(self.model, 'appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst')
+        , (item: TargetWorkTypeByApp) => item.appType == ApplicationType.ABSENCE_APPLICATION && item.opHolidayAppType == HolidayAppType.SPECIAL_HOLIDAY && !item.opHolidayTypeUse));
+        // ※1-6 = ○ -> 特別休暇
+
+        return c1_6;
+    }
+
+    public get isYearlyReserve() {
+        const self = this;
+
+        // 休暇申請起動時の表示情報．休暇残数情報．積休管理区分　＝　管理する
+        const c1_7 = self.model.appAbsenceStartInfoDto.remainVacationInfo.accumulatedRestManagement.accumulatedManage == ManageDistinct.YES;
+        // 休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇種類を利用しない = false
+        // AND　休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇申請の種類 = 積立年休
+        const c1_8 = 
+        !_.isNil(_.find(_.get(self.model, 'appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst')
+        , (item: TargetWorkTypeByApp) => item.appType == ApplicationType.ABSENCE_APPLICATION && item.opHolidayAppType == HolidayAppType.YEARLY_RESERVE && !item.opHolidayTypeUse));
+        // ※1-7 = ○　AND　※8 = ○ -> 積立年休
+
+        return c1_7 && c1_8;
+    }
+    public get isHoliday() {
+        const self = this;
+
+        // 休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇種類を利用しない = false
+        // AND　休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇申請の種類 = 休日
+        const c1_9 =
+        !_.isNil(_.find(_.get(self.model, 'appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst')
+        , (item: TargetWorkTypeByApp) => item.appType == ApplicationType.ABSENCE_APPLICATION && item.opHolidayAppType == HolidayAppType.HOLIDAY && !item.opHolidayTypeUse));
+        // ※1-9 = ○ -> 休日
+
+        return c1_9;
+    }
+    public get isDigestionTime() {
+        const self = this;
+
+        // 休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇種類を利用しない = false
+        // AND　休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇申請の種類 = 時間消化
+        const c1_10 =
+        !_.isNil(_.find(_.get(self.model, 'appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst')
+        , (item: TargetWorkTypeByApp) => item.appType == ApplicationType.ABSENCE_APPLICATION && item.opHolidayAppType == HolidayAppType.DIGESTION_TIME && !item.opHolidayTypeUse));
+
+        // ※1-10 = ○ -> 時間消化
+        return c1_10;
     }
 
     public getSelectedValue(): HolidayAppType {
