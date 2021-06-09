@@ -14,7 +14,6 @@
 			<com:scriptfile path="kmf001.h.vm.js" />
 			<com:scriptfile path="kmf001.h.start.js" />
 		</ui:define>
-
 		<ui:define name="sidebar">
 			<ul tabindex="1" class="navigator">
 				<li><a tabindex="-1" href="#tabpanel-1" role="tab-navigator"
@@ -43,7 +42,7 @@
 				</div>
 				<div class="contents-area">
 					<table style="width: 600px;" data-bind="with: settingModel">
-						<tr>
+						<tr style="height: 40px;">
 							<td class="row_head"><div
 									data-bind="ntsFormLabel: { required: true }">
 									#{i18n.getText('KMF001_93')}</div></td>
@@ -77,7 +76,7 @@
 											<table class="form-default">
 												<tr>
 													<td >#{i18n.getText('KMF001_94')}</td>
-													<td>
+													<td style="padding-left: 15px;">
 														<div tabindex="5"
 															data-bind="ntsComboBox: {
 																			options: $parent.vacationExpirationEnums,
@@ -94,7 +93,7 @@
 												</tr>
 												<tr>
 													<td >#{i18n.getText('KMF001_95')}</td>
-													<td><div tabindex="6"
+													<td style="padding-left: 15px;"><div tabindex="6"
 															data-bind="ntsSwitchButton: {
 															options: $parent.applyPermissionEnums,
 															optionsValue: 'value',
@@ -106,7 +105,7 @@
 												</tr>
 												<tr>
 													<td >#{i18n.getText('KMF001_327')}</td>
-													<td><div tabindex="60" id="h3_2"
+													<td style="padding-left: 15px;"><div tabindex="60" id="h3_2"
 															data-bind="ntsRadioBoxGroup: {
 														name: '#[KMF001_327]',
 														options: $parent.h32,
@@ -117,7 +116,7 @@
 												</tr>
 												<tr>
 													<td >#{i18n.getText('KMF001_330')}</td>
-													<td><div tabindex="6" id = "h3-4"
+													<td style="padding-left: 15px;"><div tabindex="6" id = "h3-4"
 															data-bind="ntsSwitchButton: {
 															name: '#[KMF001_337]',
 															options: $parent.h34,
@@ -160,17 +159,17 @@
 							</td>
 							<td id="right-content">
 								<table class="form-default" data-bind="with: empSettingModel"
-									style="margin-left: 87px;">
+									style="margin-left: 50px;">
 									<tr>
-										<td colspan="2" style="padding-bottom: 20px;">
+										<td style="padding-bottom: 20px; width: 100px;">
 											<div>#{i18n.getText('KMF001_150')}</div>
 										</td>
-										<td colspan="2" style="padding-bottom: 20px;"><span
+										<td style="padding-bottom: 20px;"><span
 											data-bind="text: $parent.selectedItem"></span> <span
 											data-bind="text: $parent.selectedName"></span></td>
 									</tr>
 									<tr>
-										<td colspan="3">
+										<td style="width: 100px;">
 											<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF001_93')}</div>
 										</td>
 										<td>

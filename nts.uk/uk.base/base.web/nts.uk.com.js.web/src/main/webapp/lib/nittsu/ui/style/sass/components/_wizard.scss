@@ -1,346 +1,199 @@
-$wizard_background_color_yellow: #E2F79F;
-$wizard_background_color_yellow_darker: #4FCE3A;
-$wizard_background_color_blue: #ABEBF5;
-$wizard_background_color_blue_darker: #37B0F0;
-$wizard_image_size: 60px;
-@mixin border-radius($radius) {
-  -webkit-border-radius: $radius;
-     -moz-border-radius: $radius;
-      -ms-border-radius: $radius;
-          border-radius: $radius;
-}
-@mixin width-calc($calc) {
-	width: calc($calc);
-	width: -webkit-calc($calc);
-	width: -moz-calc($calc);
-}
-
 .nts-wizard {
-    display: block;
-    width: 1000px;
-    height: 100%;
-    overflow: hidden;
-	
-	a { outline: 0; }
-	
-	ul {
-	    list-style: none !important;
-	    padding: 0;
-	    margin: 5px;
-	}
-	
-	ul > li {
-	    display: block;
-	    padding: 0;
-	}
-	
-	.header {
-		margin:5px 5px 5px 8px;
-		
-		.image {
-		    position: absolute;
-			width: $wizard_image_size;
-		    height: $wizard_image_size;
-		    background-size: $wizard_image_size;
-   		    border-radius: 50%;
-		    border: 3px solid #fff;
-		    z-index: 3;
-		}
-		
-		.content {
-			display: block;
-		    margin: 8px 0 5px 0;
-		    text-decoration: none;
-		    @include border-radius(5px);
-		    float: right;
-			width: calc(100% - 50px);
-		    min-height: 50px;
-		    word-wrap: break-word;
-			background: $wizard_background_color_yellow;
-		    cursor: default;
-		    padding: 1em 1em 1em 3em;
-		    box-sizing: border-box;
-   		}
-	}
-		
-	/* Accessibility */
-	> .steps {
-	    position: relative;
-	    display: block;
-	    width: 100%;
-	    
-		.number {font-size: 1.429em;}
-		
-		> ul > li {width: 25%;}
-		
-		a,
-		a:hover,
-		a:active {
-		    display: block;
-		    margin: 5px 0 5px 0;
-		    text-decoration: none;
-		    @include border-radius(5px);
-		    color: #fff;
-		    float: right;
-		    width: 75%;
-		    min-height: 50px;
-		    word-wrap: break-word;
-		    cursor: default;
-		}
-		
-		.disabled a,
-		.disabled a:hover,
-		.disabled a:active {
-		    color: #fff;
-		}
-		
-		.current a,
-		.current a:hover,
-		.current a:active {
-			color: #000;
-		    background: #fff;
-		}
-		
-		.begin a div {
-			margin-left: 20px;
-		}
-		
-		.done a,
-		.done a:hover,
-		.done a:active {
-		    
-		}
-		
-		.error a,
-		.error a:hover,
-		.error a:active {
-			
-		}
-		
-		> ul > .nts-steps {
-			float: left;
-		} 
-		> ul > .end {
-			> a, > a:hover, > a:active{
-				display:table;
-				background-color: $wizard_background_color_yellow;
-				color: #000;
-				width: 80%;
-				font-size:1.8em;
-				margin-top: 10px;
-				text-align: center;
-				width: calc(100% - 25px);
-				width: -webkit-calc(100% - 25px);
-				width: -moz-calc(100% - 25px);
-				
-				> div{display:table-cell;padding:0;vertical-align:middle;}
-			}
-			&.current a,
-			&.current a:hover,
-			&.current a:active {
-				color: #fff;
-			    background: $wizard_background_color_yellow_darker;
-			    box-shadow: 0 0 0 1px #fff inset;
-			}
-		}
-		
-		> ul > li > .nts-steps-middle {
-		    height: 100%;
-		    float: left;
-		    width: -webkit-calc(35% - 33px);
-		    width: -moz-calc(35% - 33px);
-		    width: calc(35% - 33px);
-		    padding-left: 33px;
-		    position: absolute;
-		}
-		> ul > li > .nts-steps-middle > .nts-vertical-line {
-			background-color: #4D4D4D;
-		    width: 5px;
-		    border-right: 2px solid white;
-		    height: 100%;
-		    border-left: 2px solid white;
-		}
-		> ul > li > .nts-steps-middle > .nts-bridge > .nts-point  {
-			width: 18px;
-			height: 18px;
-			border-radius: 50%;
-			z-index: 2;
-			background: white;
-			border: 3px solid #4d4d4d;
-			box-shadow: 0 0 0 3px #fff;
-			left: -5px;
+	width: 100%;
+	position: relative;
+
+	.steps {
+		float: left;
+		width: 220px;
+		box-sizing: border-box;
+		border: 1px solid #eae8f2;
+		border-radius: 2px;
+
+		&>.header {
+			background-color: #F2FFCF;
+			position: relative;
+			height: 86px;
 			box-sizing: border-box;
+			vertical-align: middle;
+			border-bottom: 1px solid #eae8f2;
+			overflow: hidden;
+
+			&>.step-icon {
+				float: left;
+				width: 75px;
+				height: 86px;
+			}
+
+			&>.content {
+				color: #30CC40;
+				font-size: 13px;
+				font-weight: 700;
+				margin-left: 75px;
+				padding-top: 34px;
+
+				&::after {
+					content: '';
+					clear: both;
+				}
+			}
 		}
-		> ul > li.current > .nts-steps-middle > .nts-bridge > .nts-horizontal-line {
-		    width: -webkit-calc(100% - 62px);
-		    width: -moz-calc(100% - 62px);
-		    width: calc(100% - 62px);
-		    height: 5px;
-		    background-color: white;
-		    z-index: 1;
-		    top: 7px;
+
+		&>div.step-list {
+			&>.step {
+				height: 86px;
+				box-sizing: border-box;
+				vertical-align: middle;
+				overflow: hidden;
+				position: relative;
+
+				&>.step-icon {
+					float: left;
+					width: 75px;
+					height: 86px;
+					position: relative;
+
+					&::before {
+						content: '';
+						display: block;
+						position: absolute;
+						width: 32px;
+						height: 32px;
+						border-radius: 2px;
+						background-color: #44E08C;
+						left: 21px;
+    					top: 28px;
+					}
+
+					&::after {
+						content: '';
+						width: 12px;
+						height: 5px;
+						position: absolute;
+						top: 38px;
+						left: 30px;
+						opacity: 1;
+						border: 3px solid #fff;
+						border-top: none;
+						border-right: none;
+						border-radius: 1px;
+						transform: rotate(-59deg);
+					}
+				}
+
+				&>.content {
+					margin-left: 75px;
+					padding-top: 34px;
+				}
+
+				&:not(:last-child) {
+					margin-top: -1px;
+					border-bottom: 1px solid #eae8f2;					
+				}
+
+				&:last-child {
+					margin-top: -1px;
+				}
+
+				&:not(:first-child){
+					&::after {
+						content: '';
+						width: 10px;
+						height: 10px;
+						background-color: #fff;
+						border: 1px solid #eae8f2;
+						display: block;
+						transform: rotate(-45deg);
+						clear: both;
+						position: absolute;
+						top: -6px;	
+						left: 25px;
+					}
+				}
+
+				&.preview {
+					color: #2B2E44;
+				}
+
+				&.current {
+					color: #30CC40;
+					&>.step-icon {
+						&::before {
+							background-color: #30CC40;
+						}
+						&::after {
+							color: #fff;
+							content: attr(data-step);
+							transform: rotate(0deg);
+							border-width: 0;
+							font-size: 16px;
+							font-weight: 400;
+							top: 33px;
+							left: 32px;
+						}
+					}
+
+					&~.step {
+						color: #898989;
+						background-color: #C6C6D1;
+						&+.step {
+							&::after {
+								border-color: #C6C6D1;
+								background-color: #C6C6D1;
+							}
+						}
+						&>.step-icon {	
+							&::before {
+								background-color: #898989;
+							}
+							&::after {
+								color: #C6C6D1;
+								content: attr(data-step);
+								transform: rotate(0deg);
+								border-width: 0;
+								font-size: 16px;
+								font-weight: 400;
+								top: 33px;
+								left: 32px;
+							}
+						}
+					}
+				}
+				
+				&.next {
+					color: #898989;
+					background-color: #C6C6D1;
+					&+.step {
+						&::after {
+							border-color: #C6C6D1;
+							background-color: #C6C6D1;
+						}
+					}
+					&>.step-icon {	
+						&::before {
+							background-color: #898989;
+						}
+						&::after {
+							color: #C6C6D1;
+							content: attr(data-step);
+							transform: rotate(0deg);
+							border-width: 0;
+							font-size: 16px;
+							font-weight: 400;
+							top: 33px;
+							left: 32px;
+						}
+					}
+				}
+			}
 		}
-		a > div {
-			padding: 1em 1em;
-		}
-		> ul > li > .nts-steps-middle > div {
-			position: absolute;
-		}
-		> ul > li > .nts-steps-middle > .nts-bridge > div {
-			position: absolute;
-		}
-		> ul > li > .nts-steps-middle > .nts-bridge {
-			top: 35%;
-			width: 100%;
-		}
-		> ul > .end > .nts-steps {
-			width: 0px;
-			height: 0px;
-			border-left: 10px solid transparent;
-			border-right: 10px solid transparent;
-			border-top: 10px solid #4D4D4D;
-			position: absolute;
-			left: 27px;
-		}
-		> ul > .current > .nts-steps > .nts-bridge > .nts-point  {
-			background: #4d4d4d;
-			border: 3px solid #4d4d4d;
-		}
-		> ul > .first {
-			z-index: 1;
-		}
-		> ul > .begin.current > .nts-steps {
-		    border: 3px solid white;
-		}
-	}
-	
-	&.vertical > .steps {
-	    float: left;
-	    width: 30%;
-	    height: 100%;
-	    background-color: rgb(160,160,160);
-	    
-	    > ul > li {
-		    width: 100%;
-		    height: 100%;
-		    position: relative;
-		}
-	}
-	
-	
-	> .steps > ul > li,
-	> .actions > ul > li {
-	    float: left;
-	}
-	
-	> .steps .current-info {
-	    position: absolute;
-	    left: -999em;
-	}
-	
-	> .content > .title {
-	    position: absolute;
-	    left: -999em;
-	}
-	
-	> .content {
-	    background: #eee;
-	    display: block;
-	    margin: 0.5em;
-	    min-height: 35em;
-	    overflow: hidden;
-	    position: relative;
-	    width: auto;
-	    -webkit-border-radius: 5px;
-	    -moz-border-radius: 5px;
-	    border-radius: 5px;
-	}
-	
-	&.vertical > .content {
-	    display: inline;
-	    float: left;
-	    margin: 0 2.5% 0.5em 2.5%;
-	    width: 65%;
-	}
-	
-	> .content > .body {
-		display: block !important;
-		visibility: hidden;
-	    float: left;
-	    position: absolute;
-	    width: 95%;
-	    height: 95%;
-	    padding: 2.5%;
-	}
-	
-	> .content > .current {
-		visibility: visible;
-	}
+
+		&+.contents {
+			margin-left: 235px;
 			
-	> .actions {
-	    position: relative;
-	    display: block;
-	    text-align: right;
-	    width: 100%;
-	}
-	
-	&.vertical > .actions {
-	    display: inline;
-	    float: right;
-	    margin: 0 2.5%;
-	    width: 95%;
-	}
-	
-	> .actions > ul {
-	    display: inline-block;
-	    text-align: right;
-	}
-	
-	> .actions > ul > li {
-	    margin: 0 0.5em;
-	}
-	
-	&.vertical > .actions > ul > li {
-	    margin: 0 0 0 1em;
-	}
-	
-	> .actions a,
-	> .actions a:hover,
-	> .actions a:active {
-	    background: $wizard_background_color_yellow;
-	    color: #fff;
-	    display: block;
-	    padding: 0.5em 1em;
-	    text-decoration: none;
-	    -webkit-border-radius: 5px;
-	    -moz-border-radius: 5px;
-	    border-radius: 5px;
-	}
-	
-	> .actions .disabled a,
-	> .actions .disabled a:hover,
-	> .actions .disabled a:active {
-	    background: #eee;
-	    color: #aaa;
-	}
-	
-	> .loading {
-	}
-	
-	> .loading .spinner {
-	}
-	
-	&.theme-blue {
-		.header .content {background: $wizard_background_color_blue;}
-		> .steps > ul > .end {
-			> a,
-			> a:hover,
-			> a:active{ background-color: $wizard_background_color_blue; }
-			
-			&.current a,
-			&.current a:hover,
-			&.current a:active { background-color: $wizard_background_color_blue_darker; }
+			&::after {
+				content: '';
+				clear: both;
+			}
 		}
-		> .actions a:active { background: $wizard_background_color_blue; }
 	}
 }

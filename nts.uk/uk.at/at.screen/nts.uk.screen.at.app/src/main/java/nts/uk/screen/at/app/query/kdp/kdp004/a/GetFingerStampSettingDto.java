@@ -9,6 +9,7 @@ import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.Stam
  * 【output】
  * ・共有打刻の打刻設定
  * ・打刻後の実績表示
+ * ・ お知らせメッセージ設定
  * @author sonnlb
  *
  */
@@ -22,5 +23,8 @@ public class GetFingerStampSettingDto {
 
 	// 打刻後の実績表示
 	private StampResultDisplayDto stampResultDisplay;
+	
+	// お知らせメッセージ設定
+	private NoticeSetDto noticeSetDto;
 
 }

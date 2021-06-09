@@ -33,7 +33,7 @@ public class JudgCurrentStatusEmpInfoTerminalTestHelper {
 				new MacAddress("AABBCCDD"), empInfoTerminalCode, Optional.of(new EmpInfoTerSerialNo("1")),
 				new EmpInfoTerminalName(""), contractCode)
 						.createStampInfo(new CreateStampInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.empty()),
-								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty()))
+								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty(),Optional.empty()))
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
 
 		return empInfoTerminal;

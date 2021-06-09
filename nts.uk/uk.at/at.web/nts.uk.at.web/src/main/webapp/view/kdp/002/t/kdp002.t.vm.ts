@@ -12,9 +12,9 @@ module nts.uk.at.view.kdp002.t {
 			errorDateStr: KnockoutObservable<string> = ko.observable('');
 			constructor() {
 			}
-            /**
-             * start page  
-             */
+			/**
+			 * start page  
+			 */
 			public startPage(): JQueryPromise<any> {
 				let self = this,
 					dfd = $.Deferred();
@@ -30,6 +30,7 @@ module nts.uk.at.view.kdp002.t {
 						messageColor: '',
 						listRequired: []
 					}
+
 				} else {
 					self.share.dailyAttdErrorInfos = _.orderBy(self.share.dailyAttdErrorInfos, ['lastDateError'], ['desc']);
 					let error = self.share.dailyAttdErrorInfos[0];
@@ -43,6 +44,9 @@ module nts.uk.at.view.kdp002.t {
 						let btn = self.getBtn(error.listRequired[idx]);
 						if (btn) {
 							listRequired.push(btn);
+							// if (btn.appType == 1 || btn.appType == 2 || btn.appType == 3 || btn.appType == 4 || btn.appType == 5 || btn.appType == 6) {
+							// 	listRequired.push(btn);
+							// }
 						}
 					}
 					self.dataShare = {
@@ -51,6 +55,11 @@ module nts.uk.at.view.kdp002.t {
 				}
 
 				dfd.resolve();
+
+				console.log(self.share);
+				console.log(lstButton);
+				console.log(self.dataShare);
+
 				return dfd.promise();
 			}
 
@@ -70,9 +79,9 @@ module nts.uk.at.view.kdp002.t {
 				return btn;
 			}
 
-            /**
-             * Close dialog
-             */
+			/**
+			 * Close dialog
+			 */
 			public closeDialog(): void {
 				let self = this;
 				let shareG = {
@@ -86,9 +95,9 @@ module nts.uk.at.view.kdp002.t {
 				nts.uk.ui.windows.close();
 			}
 
-            /**
-             * Close dialog
-             */
+			/**
+			 * Close dialog
+			 */
 			public jumpScreen(data, vm): void {
 				let shareG = {
 					messageContent: vm.labelNames(),

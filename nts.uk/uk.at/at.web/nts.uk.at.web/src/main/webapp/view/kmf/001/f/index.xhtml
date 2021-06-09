@@ -139,7 +139,7 @@
 						<!-- F4_3, F4_4, F4_5 -->
 						<tr>
 							<td class="pad_left_30" colspan="2"><label>#{i18n.getText('KMF001_330')}</label></td>
-							<td class="pad_over_left_80">
+							<td class="pad_over_left_80 flex valign-center">
 								<span 
 								data-bind="ntsSwitchButton: {
 												name: '#[KMF001_330]',
@@ -151,7 +151,7 @@
 												optionsText: 'name',
 												value: managementClassification,
 												enable: isManageCompen }"/>
-								<label>#{i18n.getText('KMF001_333')}</label>
+								<label style="margin-left: 5px;">#{i18n.getText('KMF001_333')}</label>
 							</td>
 						</tr>
 						
@@ -363,7 +363,7 @@
 											<div data-bind="ntsFormLabel: {required: true}"
 												class="margin_right_50">#{i18n.getText('KMF001_85')}</div>
 										</td>
-										<td class="padding_over" style="width:160px;"><span tabindex="9" id="emCompenManage"
+										<td class="padding_over" style="width:165px;"><span tabindex="9" id="emCompenManage"
 											data-bind="ntsSwitchButton: {
 												options: manageDistinctEnums,
 												optionsValue: 'value',

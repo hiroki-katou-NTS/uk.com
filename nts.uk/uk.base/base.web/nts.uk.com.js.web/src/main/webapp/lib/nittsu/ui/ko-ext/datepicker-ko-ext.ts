@@ -25,6 +25,8 @@ module nts.uk.ui.koExtentions {
             var tabIndex = nts.uk.util.isNullOrEmpty(container.attr("tabindex")) ? "0" : container.attr("tabindex");
             var fiscalYear = data.fiscalYear !== undefined ? ko.unwrap(data.fiscalYear) : false;
             var dateType: string = (data.type !== undefined) ? ko.unwrap(data.type) : "";
+
+            const $cache = { value: '' };
             
             if (dateType === "yearmonth") {
                 dateFormat = 'yearmonth';
@@ -108,7 +110,7 @@ module nts.uk.ui.koExtentions {
             if (data.dateFormat === "YYYY") {                
                 let $yearType = $("<label/>").attr("for", idString)
                                                 .css({ "position": "absolute",
-                                                      "line-height": "30px",
+                                                      "line-height": "35px",
                                                       "right": jumpButtonsDisplay ? "40px" : "5px"});
                 let labelText = fiscalYear ? "年度" : "年"; 
                 $yearType.text(labelText);
@@ -142,7 +144,7 @@ module nts.uk.ui.koExtentions {
                 $input.css("cursor", "default");
             }
             
-            $input.on("change", (e) => {
+            $input.on("change", (e: JQueryEventObject) => {
 //                var onChanging = container.data("changed");
 //                if(onChanging === true){
 //                    return;
@@ -152,6 +154,12 @@ module nts.uk.ui.koExtentions {
                     $input.data("change", false);
                     return;
                 }
+
+                if ($cache.value === $input.val()) {
+                    return;
+                }
+
+                $cache.value = $input.val();
                 
                 var newText = $input.val();
                 var validator = new validation.TimeValidator(name, constraintName, {required: $input.data("required"), 
@@ -262,6 +270,7 @@ module nts.uk.ui.koExtentions {
 
 
             $input.on('validate', (function(e: Event) {
+                $cache.value = '';
                 var newText = $input.val();
                 var validator = new validation.TimeValidator(name, constraintName, {required: $input.data("required"), 
                                                     outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, 

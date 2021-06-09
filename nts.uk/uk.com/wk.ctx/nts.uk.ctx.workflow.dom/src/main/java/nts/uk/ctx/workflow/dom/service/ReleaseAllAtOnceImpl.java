@@ -14,6 +14,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalComment;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.service.output.ApproverApprovedOutput;
@@ -47,7 +48,7 @@ public class ReleaseAllAtOnceImpl implements ReleaseAllAtOnceService {
 					approverInfor.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 					approverInfor.setAgentID("");
 					approverInfor.setApprovalDate(null);
-					approverInfor.setApprovalReason("");
+					approverInfor.setApprovalReason(new ApprovalComment(""));
 				});
 			});
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);

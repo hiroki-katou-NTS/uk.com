@@ -312,7 +312,7 @@ module nts.uk.ui.mgrid {
                         headPart.width = freeWrapperWidth + "px";
                     }
                     headPart.isHeader = true;
-                    let $headerWrapper = v.createWrapper("0px", left, headPart);
+                    let $headerWrapper = v.createWrapper(_sheeting ? gp.SHEET_HEIGHT + "px" : "0px", left, headPart);
                     pTable.owner.headers.push($headerWrapper); 
                     $headerWrapper.classList.add(HEADER);
 //                    self.$container.appendChild($headerWrapper);
@@ -329,7 +329,7 @@ module nts.uk.ui.mgrid {
                     } else {
                         if ($fixedHeaderTbl) $fixedHeaderTbl.style.height = self.headerHeight;
                         $tbl.style.height = self.headerHeight;
-                        top = (parseFloat(self.headerHeight) + DISTANCE) + "px";
+                        top = (parseFloat(self.headerHeight) + DISTANCE + (_sheeting ? gp.SHEET_HEIGHT : 0)) + "px";
                         _mafollicle[_currentPage][_currentSheet] = {};
                         _vessel().$hGroup = $tbl.querySelector("colgroup");
                         _vessel().$hBody = $tbl.querySelector("tbody");
@@ -406,7 +406,7 @@ module nts.uk.ui.mgrid {
             let dWrapper = _hasFixed ? bodyWrappers[1] : bodyWrappers[0];
             _vessel().$bBody = dWrapper.querySelector("tbody");
             
-            top = parseFloat(self.height) + DISTANCE - scrollWidth - SUM_HEIGHT;
+            top = parseFloat(self.height) + DISTANCE - scrollWidth - SUM_HEIGHT + (_sheeting ? gp.SHEET_HEIGHT : 0);
             ti.calcTotal();
             [ self.fixedSummaries, self.summaries ].filter(s => s && s.columns).forEach((sumPart, i) => {
                 if (!sumPart.columns || sumPart.columns.length === 0) return;
@@ -2385,7 +2385,7 @@ module nts.uk.ui.mgrid {
                 
                 if (key === "rowNumber") {
                     td.innerHTML = cData; //!_.isNil(numText) ? numText : rowIdx + 1;
-                    tdStyle += "; background-color: #CFF1A5; ";
+                    //tdStyle += "; background-color: #CFF1A5; ";
                     td.style.cssText += tdStyle;
                     td.classList.add(STT_CLS);
                     return td;
@@ -3051,10 +3051,15 @@ module nts.uk.ui.mgrid {
                 style = wrapperStyles(top, left, _maxFixedWidth + "px", undefined, options.height);
                 style["background-color"] = "#F3F3F3";
                 style["padding-right"] = "1px";
-            } else if (options.containerClass === gp.PAGING_CLS || options.containerClass === gp.SHEET_CLS) {
+            } else if (options.containerClass === gp.PAGING_CLS) {
                 style = wrapperStyles(top, left, options.width, undefined, options.height);
                 style["background-color"] = "#E9E9E9";
                 style["border"] = "1px solid #dddddd";
+                style["color"] = "#333333";
+            } else if (options.containerClass === gp.SHEET_CLS) {
+                style = wrapperStyles(top, left, options.width, undefined, options.height);
+//                style["background-color"] = "#E9E9E9";
+                style["border"] = "0px solid #dddddd";
                 style["color"] = "#333333";
             } else {
                 width = options.containerClass === FIXED + "-summaries" ? _maxFixedWidth + "px" : options.width;
@@ -4743,7 +4748,7 @@ module nts.uk.ui.mgrid {
                 }
                 if (sheetDiv) {
                     sheetDiv.style.width = btmw + "px";
-                    sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
+//                    sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
                     let sheetBtn = sheetDiv.querySelector(".mgrid-sheet-buttonlist");
                     let scrollbar = sheetDiv.querySelector(".mgrid-sheet-scrollbar");
                     if (sheetBtn.offsetHeight <= gp.SHEET_HEIGHT) {
@@ -4781,7 +4786,7 @@ module nts.uk.ui.mgrid {
             }
             if (sheetDiv) {
                 sheetDiv.style.width = btmw + "px";
-                sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
+//                sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
             }
             _bodyWrappers[0].style.height = height + "px";
         }
@@ -7725,7 +7730,7 @@ module nts.uk.ui.mgrid {
         export const PAGING_CLS = "mgrid-paging";
         export const SHEET_CLS = "mgrid-sheet";
         export const PAGE_HEIGHT = 44;
-        export const SHEET_HEIGHT = 30;
+        export const SHEET_HEIGHT = 45;
         export let $sheetArea;
         
         /**
@@ -7828,7 +7833,7 @@ module nts.uk.ui.mgrid {
          */
         export function imiSheets($container: HTMLElement, top: any, width: any) {
             if (!_sheeting) return;
-            $sheetArea = v.createWrapper(top + ti.getScrollWidth() + SUM_HEIGHT + "px", 0, 
+            $sheetArea = v.createWrapper("0px" /*top + ti.getScrollWidth() + SUM_HEIGHT + "px"*/, 0, 
                 { width: parseFloat(width) + ti.getScrollWidth() + "px", height: SHEET_HEIGHT + "px", containerClass: SHEET_CLS });
             $container.appendChild($sheetArea);
             let $scrollBar = document.createElement("ul");
@@ -7850,7 +7855,7 @@ module nts.uk.ui.mgrid {
             _.forEach(Object.keys(_mafollicle[SheetDef]), s => {
                 let $btn = document.createElement("li");
                 $btn.classList.add("mgrid-sheet-button");
-                $btn.classList.add("ui-state-default");
+//                $btn.classList.add("ui-state-default");
                 $btn.textContent = _mafollicle[SheetDef][s].text;
                 if (s === _currentSheet) $btn.classList.add("ui-state-active");
                 $btn.addXEventListener(ssk.CLICK_EVT, evt => {
@@ -8268,7 +8273,7 @@ module nts.uk.ui.mgrid {
         /**
          * Get control.
          */
-        export function getControl(name: string): NtsControlBase {
+        export function getControl(name: string): any {
             switch (name) {
                 case TEXTBOX:
                     return textBox();
