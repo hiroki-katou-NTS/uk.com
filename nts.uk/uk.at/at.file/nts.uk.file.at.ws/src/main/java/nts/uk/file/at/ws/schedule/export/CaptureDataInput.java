@@ -3,7 +3,7 @@ package nts.uk.file.at.ws.schedule.export;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.at.app.schedule.filemanagement.CapturedRawDataDto;
+import nts.uk.file.at.app.schedule.filemanagement.CapturedRawDataDto;
 
 @Getter
 @Setter

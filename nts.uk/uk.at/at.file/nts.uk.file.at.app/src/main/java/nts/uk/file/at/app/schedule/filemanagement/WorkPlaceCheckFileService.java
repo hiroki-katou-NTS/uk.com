@@ -1,4 +1,4 @@
-package nts.uk.at.app.schedule.filemanagement;
+package nts.uk.file.at.app.schedule.filemanagement;
 
 
 import java.util.ArrayList;

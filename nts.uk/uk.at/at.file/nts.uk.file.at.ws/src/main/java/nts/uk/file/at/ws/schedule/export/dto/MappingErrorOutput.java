@@ -3,7 +3,7 @@ package nts.uk.file.at.ws.schedule.export.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.at.app.schedule.filemanagement.MappingErrorDto;
+import nts.uk.file.at.app.schedule.filemanagement.MappingErrorDto;
 
 /**
  * @author anhnm

@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.at.app.schedule.filemanagement.CaptureDataOutput;
+import nts.uk.file.at.app.schedule.filemanagement.CaptureDataOutput;
 
 /**
  * @author anhnm

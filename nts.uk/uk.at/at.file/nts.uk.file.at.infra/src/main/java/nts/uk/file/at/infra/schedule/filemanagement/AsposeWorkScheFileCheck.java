@@ -21,13 +21,13 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.time.GeneralDate;
-import nts.uk.at.app.schedule.filemanagement.CheckFileService;
-import nts.uk.at.app.schedule.filemanagement.WorkPlaceScheCheckFileParam;
 import nts.uk.ctx.at.schedule.dom.importschedule.CapturedRawData;
 import nts.uk.ctx.at.schedule.dom.importschedule.CapturedRawDataOfCell;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterImportCode;
 import nts.uk.ctx.bs.employee.dom.setting.code.EmployeeCEMethodAttr;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.setting.code.EmployeeCodeEditSettingExport;
+import nts.uk.file.at.app.schedule.filemanagement.CheckFileService;
+import nts.uk.file.at.app.schedule.filemanagement.WorkPlaceScheCheckFileParam;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 
 @Stateless
