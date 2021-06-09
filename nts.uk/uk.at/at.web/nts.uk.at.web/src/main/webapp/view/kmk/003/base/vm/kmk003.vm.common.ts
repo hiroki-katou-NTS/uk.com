@@ -2033,8 +2033,13 @@ module nts.uk.at.view.kmk003.a {
                 updateData(data: StampReflectTimezoneDto) {
                     this.workNo(data.workNo);
                     this.classification(data.classification);
-                    this.endTime(data.endTime);
-                    this.startTime(data.startTime);
+                    if (data.startTime === 0 && data.endTime === 0){
+                        this.endTime(null);
+                        this.startTime(null);
+                    } else {
+                        this.endTime(data.endTime);
+                        this.startTime(data.startTime);
+                    }
                 }
 
                 toDto(): StampReflectTimezoneDto {

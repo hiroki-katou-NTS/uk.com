@@ -97,7 +97,7 @@
                                                 optionsText: 'name',
                                                 value: usageAtr,
                                                 required: true,
-                                                enable: ko.computed(() => $parent.hasSelected() &amp;&amp; $parents[1].langJP())
+                                                enable: ko.computed(function() { return $parent.hasSelected() &amp;&amp; $parents[1].langJP(); }, this )
                                              }"></div>
                                  </td>
                               </tr>
@@ -113,7 +113,8 @@
                                                 optionsValue: 'code',
                                                 optionsText: 'name',
                                                 value: selectedClac,
-                                                enable: ko.computed(() => usageAtr() === 1 &amp;&amp; $parent.hasSelected() &amp;&amp; $parents[1].langJP())}"></div>
+                                                enable: ko.computed(function() { return usageAtr() === 1 &amp;&amp; $parent.hasSelected() &amp;&amp; $parents[1].langJP(); }, this )
+                                    }"></div>
                                  </td>
                               </tr>
                               <tr>
@@ -128,7 +129,8 @@
                                                 optionsValue: 'code',
                                                 optionsText: 'name',
                                                 value: performanceAtr,
-                                                enable: ko.computed(() => usageAtr() === 1 &amp;&amp; $parents[1].langJP())}"></div>
+                                                enable: ko.computed(function() { return usageAtr() === 1 &amp;&amp; $parents[1].langJP(); }, this )
+                                    }"></div>
                                  </td>
                               </tr>
                               <tr>
@@ -379,7 +381,7 @@
                         <div class="cell" style="padding-left: 10px;">
                            <div>
                               <div class="cell col-1" style="width: 75px;">
-                                 <div data-bind="ntsFormLabel: {required: false, constraint: 'DescritionOptionalItem'}">
+                                 <div style="width: 75px;" data-bind="ntsFormLabel: {required: false, constraint: 'DescritionOptionalItem'}">
                                     #{i18n.getText('KMK002_105')}</div>
                               </div>
                               <div class="cell" style="vertical-align: bottom;">
@@ -397,7 +399,7 @@
                            </div>
                            <div style="margin-top: 5px;">
                               <div class="cell col-1" style="width: 75px;">
-                                 <div data-bind="ntsFormLabel: {required: false, constraint: 'NoteOptionalItem'}">
+                                 <div style="width: 75px;" data-bind="ntsFormLabel: {required: false, constraint: 'NoteOptionalItem'}">
                                     #{i18n.getText('KMK002_107')}</div>
                               </div>
                               <div class="cell" style="vertical-align: bottom;">

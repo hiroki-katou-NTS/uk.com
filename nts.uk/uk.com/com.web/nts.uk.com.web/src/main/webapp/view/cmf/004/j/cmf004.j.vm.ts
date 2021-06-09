@@ -148,8 +148,8 @@ module nts.uk.com.view.cmf004.j {
         $("#J6").mGrid("destroy");
       }
       vm.dataGrid = new (nts.uk.ui as any).mgrid.MGrid($("#J6")[0], {
-        height: "800px",
-        subHeight: "350px",
+        height: 800,
+        subHeight: 575,
         headerHeight: "40px",
         autoFitWindow: false,
         dataSource: vm.resultItems(),

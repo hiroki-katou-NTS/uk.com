@@ -58,4 +58,20 @@
 	padding-right: 20px;
     max-width: 100%;
 }
+
+#area-notice {
+	width: 407px;
+  	overflow-y: scroll;
+  	resize: none;
+}
+ 
+#functions-area button.danger, #functions-area-bottom button.danger, .sidebar-content-header button.danger {
+	margin-right: 10px !important;
+	margin-left: 13px !important;
+}
+
+#functions-area button, #functions-area-bottom button, .sidebar-content-header button {
+	margin-left: 12px !important;
+}
+
  

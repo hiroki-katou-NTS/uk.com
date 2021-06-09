@@ -142,6 +142,21 @@ module nts.uk.at.kdp003.q {
 				vm.workPlaceTxtRefer(_.map(wkpList, wkp => wkp.workplaceName).join(COMMA));
 				vm.workPlaceIdList(_.map(wkpList, wkp => wkp.workplaceId));
 			}
+
+			if (_.isEmpty(vm.workPlaceTxtRefer()) && !_.isNil(this.notificationCreated().workplaceInfo)) {
+				const workplaceInfo = this.notificationCreated().workplaceInfo;
+				vm.workPlaceIdList([workplaceInfo.workplaceId]);
+				vm.workPlaceTxtRefer(workplaceInfo.workplaceName);
+			}
+			
+			// ※　ロール.参照範囲＝全社員　OR　部門・職場(配下含む）の場合
+			if (vm.employeeReferenceRange() === EmployeeReferenceRange.ALL_EMPLOYEE || vm.employeeReferenceRange() === EmployeeReferenceRange.DEPARTMENT_AND_CHILD) {
+				const targetWkps = data.targetWkps;
+				const workPlaceIdList = _.map(targetWkps, wkp => wkp.workplaceId);
+				const workPlaceName = _.map(targetWkps, wkp => wkp.workplaceName);
+				vm.workPlaceIdList(workPlaceIdList);
+				vm.workPlaceName(workPlaceName);
+			}
 		}
 
         /**
@@ -190,7 +205,7 @@ module nts.uk.at.kdp003.q {
 				notificationMessage: vm.messageText(),
 				targetInformation: new TargetInformation({
 					destination: vm.destination(),
-					targetWpids: vm.isActiveWorkplaceBtn() ? vm.workPlaceIdList() : [],
+					targetWpids: vm.workPlaceIdList(),
 					targetSIDs: []
 				}),
 				startDate: moment.utc(vm.dateValue().startDate).toISOString(),
