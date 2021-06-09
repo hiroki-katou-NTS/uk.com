@@ -331,7 +331,7 @@ public class WorkPlaceCheckFileService {
                     .baseDate(GeneralDateTime.fromString(regulationInfoEmpQuery.getBaseDate().toString() + " " + "00:00", "yyyy/MM/dd HH:mm"))
                     .referenceRange(regulationInfoEmpQuery.getReferenceRange().value)
                     .systemType(regulationInfoEmpQuery.getSystemType().value)
-                    .filterByWorkplace(regulationInfoEmpQuery.getFilterByWorkplace())
+                    .filterByWorkplace(regulationInfoEmpQuery.getFilterByWorkplace() == null ? false : regulationInfoEmpQuery.getFilterByWorkplace())
                     .workplaceCodes(regulationInfoEmpQuery.getWorkplaceIds())
                     .filterByEmployment(false)
                     .employmentCodes(new ArrayList<String>())

@@ -2,6 +2,8 @@
 
 import TargetOrgIdenInfor = nts.uk.at.view.kdl055.shr.TargetOrgIdenInfor;
 import characteristics = nts.uk.characteristics;
+import setShared = nts.uk.ui.windows.setShared;
+import getShared = nts.uk.ui.windows.getShared;
 
 module nts.uk.at.view.kdl055.a.viewmodel {
 
@@ -10,6 +12,7 @@ module nts.uk.at.view.kdl055.a.viewmodel {
         scheduleImport: ScheduleImport = new ScheduleImport({mappingFile: null, captureCheckSheet: false, captureSheet: null, captureCheckCell: false, captureCell: null, overwrite: false});
         filename: KnockoutObservable<string> = ko.observable(null);
         fileID: KnockoutObservable<string> = ko.observable(null);
+        paramB: any = null;
         overwriteOptions: any = ko.observableArray([
             { overwrite: true, name: this.$i18n("KDL055_20") },
             { overwrite: false, name: this.$i18n("KDL055_21") }
@@ -41,6 +44,11 @@ module nts.uk.at.view.kdl055.a.viewmodel {
 
             $('#file-upload button').focus();
 
+            // $('.fileinput').change(() => {
+            //     let filePath = $('.fileinput').val();
+            //     vm.filename(filePath);
+            // });
+
             vm.filename.subscribe(value => {
                 if (value) {
                     vm.scheduleImport.mappingFile(value);
@@ -53,10 +61,6 @@ module nts.uk.at.view.kdl055.a.viewmodel {
                 }
             });
 
-            // $('.fileinput').change(() => {
-            //     let filePath = $('.fileinput').val();
-            //     vm.filename(filePath);
-            // });
         }
 
         intakeInput() {
@@ -85,9 +89,10 @@ module nts.uk.at.view.kdl055.a.viewmodel {
                 }
             }).done((res: any) => {
                 if (res) {
-                    vm.$window.modeless('at', '/view/kdl/055/b/index.xhtml', res).then(() => {
-                        vm.close();
-                    });
+                    vm.paramB = res;
+                    // vm.$window.modeless('at', '/view/kdl/055/b/index.xhtml', res).then(() => {
+                    // });
+                    vm.close();
                 }
             }).fail((err: any) => {
                 if (err) {
@@ -118,6 +123,9 @@ module nts.uk.at.view.kdl055.a.viewmodel {
         }
 
         close() {
+            const vm = this;
+
+            setShared('paramB', vm.paramB);
             this.$window.close();
         }
     }

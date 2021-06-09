@@ -6,11 +6,14 @@
 <body>
     <ui:composition template="../../../../master/dialog.xhtml">
         <ui:define name="htmlHead">
-            <script>var dialogSize = { width: 900, height: 600 };</script>
+            <script>var dialogSize = { width: 1200, height: 755 };</script>
 
             <com:scriptfile set="IGNITE" />
             <com:scriptfile path="kdl055.b.vm.js" />
             <com:stylefile path="kdl055.b.style.css" />
+            <com:ValidatorScript>
+                nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterImportCode
+			</com:ValidatorScript>
         </ui:define>
 
         <ui:define name="content">       
@@ -22,12 +25,12 @@
                 <!-- B1_3 -->
                 <button tabindex="3" data-bind="click: close">#{i18n.getText('KDL055_24')}</button>
             </div>     
-            <div id="contents-area" style="overflow:hidden">               
-                <div class="table">
-                    <div class="cell" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KDL055_33')"></div>
-                    <div class="cell" data-bind="text: filename"></div>
+            <div id="contents-area" style="overflow:hidden;">               
+                <div class="table" style=" margin-left: 20px; margin-right: 20px; margin-bottom: 20px;">
+                    <div class="cell valign-center" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KDL055_33')" style="width: 150px;"></div>
+                    <div class="cell valign-center" data-bind="text: filename"></div>
                 </div>
-                <div id="grid"></div>
+                <div id="grid" style="margin: 0 20px;"></div>
             </div>           
         </ui:define>
     </ui:composition>

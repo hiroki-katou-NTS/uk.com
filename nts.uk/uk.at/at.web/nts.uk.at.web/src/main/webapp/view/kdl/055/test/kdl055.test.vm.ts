@@ -1,5 +1,7 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
-// import KDL055AParam = nts.uk.at.view.kdl055.a.viewmodel.KDL055Param;
+import setShared = nts.uk.ui.windows.setShared;
+import getShared = nts.uk.ui.windows.getShared;
+
 
 module nts.uk.at.view.kdl055.test.viewmodel {
 
@@ -61,7 +63,15 @@ module nts.uk.at.view.kdl055.test.viewmodel {
             let param: any = {unit: vm.targetInfo.unit, workplaceId: vm.targetInfo.workplaceId, workplaceGroupId: vm.targetInfo.workplaceGroupId, 
                 sIDs: vm.listSid(), startDate: vm.startDate, endDate: vm.endDate};
 
-            vm.$window.modal('at', '/view/kdl/055/a/index.xhtml', param);
+            vm.$window.modal('at', '/view/kdl/055/a/index.xhtml', param)
+            .then(() => {
+                let paramB = getShared('paramB');
+                if (paramB) {
+                    return vm.$window.modal('at', '/view/kdl/055/b/index.xhtml', paramB).then(() => {
+                        vm.openDialog();
+                    });
+                }
+            });
         }
     }
 
