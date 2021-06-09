@@ -2244,6 +2244,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
         }
         
         private validateStartEnd(el: string = '.endValue'): void {
+            $(el).ntsError("clear");
+            
             const vm = this;
             let maxValue = parseInt(vm.comparisonRange().maxValue());
             let minValue = parseInt(vm.comparisonRange().minValue());
