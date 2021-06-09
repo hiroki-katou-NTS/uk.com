@@ -2,13 +2,10 @@ package nts.uk.screen.at.app.find.ktg.ktg005.a;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.DeadlineLimitCurrentMonth;
-import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApplicationStatusDetailedSetting;
 
 /**
  * 
@@ -41,26 +38,16 @@ public class ExecutionResultNumberOfApplicationDto {
 	int numberRemand = 0;
 	
 	// 名称
-	String topPagePartName = "トップページ部品名称";
+	String topPagePartName;
 	
 	// 勤怠担当者である
 	boolean employeeCharge = false;
 
-	public ExecutionResultNumberOfApplicationDto(
-			List<ApplicationStatusDetailedSetting> applicationStatusDetailedSettings,
-			DeadlineLimitCurrentMonth deadLine, NumberOfAppDto number, String topPagePartName, boolean employeeCharge) {
-		super();
-		this.deadlineSetting = deadLine.isUseAtr();
-		this.dueDate = deadLine.getOpAppDeadline().map(x -> x).orElse(GeneralDate.today());
-		this.appSettings = applicationStatusDetailedSettings.stream()
-				.map(x -> new ApplicationStatusDetailedSettingDto(x.getDisplayType().value, x.getItem().value))
-				.collect(Collectors.toList());
+	public void setNumberOfApp(NumberOfAppDto number) {
 		this.numberApprovals = number.getNumberApprovals();
 		this.numberNotApprovals = number.getNumberNotApprovals();
 		this.numberDenials = number.getNumberDenials();
 		this.numberRemand = number.getNumberRemand();
-		this.topPagePartName = topPagePartName;
-		this.employeeCharge = employeeCharge;
 	}
 
 }

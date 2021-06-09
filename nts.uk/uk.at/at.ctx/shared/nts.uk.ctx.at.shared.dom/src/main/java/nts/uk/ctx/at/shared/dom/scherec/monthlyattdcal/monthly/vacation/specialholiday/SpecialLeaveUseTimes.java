@@ -31,17 +31,10 @@ public class SpecialLeaveUseTimes extends DomainObject{
 //	private Optional<SpecialLeavaRemainTime> afterUseGrantTimes;
 
 	/**
-	 * 日数を使用日数に加算する
-	 */
-	public void addUseTimes(SpecialLeaveUseTimes useTimes){
-		this.useTimes.addMinutes(useTimes.getUseTimes().v());
-	}
-
-	/**
 	 * 使用時間を加算する
 	 */
-	public void addUsedNumber(SpecialLeaveUseTimes useTimes){
-		this.useTimes.addMinutes(useTimes.getUseTimes().v());
+	public void addUseTimes(SpecialLeaveUseTimes useTimes){
+		this.useTimes = this.useTimes.addMinutes(useTimes.getUseTimes().v());
 	}
 
 	@Override
