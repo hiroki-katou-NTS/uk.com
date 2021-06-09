@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.BonusPayAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculationMinusExist;
@@ -278,7 +279,8 @@ public class OverTimeOfDaily {
 				statutoryDivision,
 				siftCode,
 				predetermineTimeSetByPersonInfo,
-				coreTimeSetting));
+				coreTimeSetting,
+				recordReGet.getCalculationRangeOfOneDay().getAttendanceLeavingWork()));
 		//変形法定内残業時間の計算
 		val irregularTime = overTimeSheet.calcIrregularTime();
 		//フレックス時間
@@ -310,7 +312,8 @@ public class OverTimeOfDaily {
 					predetermineTimeSetByPersonInfo,
 					coreTimeSetting,
 					NotUseAtr.NOT_USE,
-					Optional.of(DeductionAtr.Appropriate));
+					Optional.of(DeductionAtr.Appropriate),
+					recordReGet.getCalculationRangeOfOneDay().getAttendanceLeavingWork());
 		}
 
 		val overTimeWork = new AttendanceTime(0);
@@ -354,7 +357,8 @@ public class OverTimeOfDaily {
 			StatutoryDivision statutoryDivision,
 			Optional<WorkTimeCode> siftCode,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			Optional<CoreTimeSetting> coreTimeSetting) {
+			Optional<CoreTimeSetting> coreTimeSetting,
+			TimeLeavingOfDailyAttd attendanceLeavingWork) {
 		
 		AttendanceTime flexWithoutTime = new AttendanceTime(0);
 		
@@ -388,7 +392,8 @@ public class OverTimeOfDaily {
 							conditionItem,
 							predetermineTimeSetByPersonInfo,
 							coreTimeSetting,
-							NotUseAtr.NOT_USE);
+							NotUseAtr.NOT_USE,
+							attendanceLeavingWork);
 				}
 			}
 		}

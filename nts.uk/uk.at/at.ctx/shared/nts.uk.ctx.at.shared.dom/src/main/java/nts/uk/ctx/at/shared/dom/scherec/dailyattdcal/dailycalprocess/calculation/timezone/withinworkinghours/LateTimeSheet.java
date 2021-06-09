@@ -8,6 +8,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
@@ -161,25 +162,40 @@ public class LateTimeSheet {
 					predetermineTimeSetForCalc,
 					otherEmTimezoneLateEarlySet);
 		}else {
-			if(!otherEmTimezoneLateEarlySet.getGraceTimeSet().isIncludeWorkingHour()){//猶予時間を加算しない場合
-				//遅刻控除時間帯の作成
-				lateDeductTimeSheet = createLateLeaveEarlyTimeSheet(
-						DeductionAtr.Deduction,
-						timeLeavingWork,
-						integrationOfWorkTime,
-						integrationOfDaily,
-						predetermineTimeSet.get(),
-						withinWorkTimeFrame,
-						deductionTimeSheet,
-						workType,
-						predetermineTimeSetForCalc,
-						otherEmTimezoneLateEarlySet);
-			}
+			//遅刻控除時間帯の作成
+			lateDeductTimeSheet = createLateLeaveEarlyTimeSheet(
+					DeductionAtr.Deduction,
+					timeLeavingWork,
+					integrationOfWorkTime,
+					integrationOfDaily,
+					predetermineTimeSet.get(),
+					withinWorkTimeFrame,
+					deductionTimeSheet,
+					workType,
+					predetermineTimeSetForCalc,
+					otherEmTimezoneLateEarlySet);
 		}
 		if(!lateAppTimeSheet.isPresent() && !lateDeductTimeSheet.isPresent()) {
 			return Optional.empty();
 		}
 		return Optional.of(new LateTimeSheet(lateAppTimeSheet, lateDeductTimeSheet, workNo, Optional.empty()));
+	}
+	
+	/**
+	 * 遅刻しているか判断する
+	 * @param attendanceLeavingWork 日別勤怠の出退勤
+	 * @param lateDecisionClock 遅刻判断時刻
+	 * @return true:遅刻している	false:遅刻していない
+	 */
+	public boolean isLate(TimeLeavingOfDailyAttd attendanceLeavingWork, Optional<LateDecisionClock> lateDecisionClock) {
+		Optional<TimeWithDayAttr> attendance = attendanceLeavingWork.getAttendanceLeavingWork(this.workNo).flatMap(t -> t.getAttendanceTime());
+		if(!attendance.isPresent() || !lateDecisionClock.isPresent()) {
+			return false;
+		}
+		if(!lateDecisionClock.get().isLate(attendance.get())) {
+			return false;
+		}
+		return true;
 	}
 	
 	/**

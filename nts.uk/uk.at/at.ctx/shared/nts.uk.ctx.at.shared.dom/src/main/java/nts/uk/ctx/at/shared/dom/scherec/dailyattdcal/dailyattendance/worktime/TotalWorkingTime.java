@@ -999,7 +999,8 @@ public class TotalWorkingTime {
 					conditionItem,
 					predetermineTimeSetByPersonInfo,
 					recordClass.getCoreTimeSetting(),
-					NotUseAtr.NOT_USE);
+					NotUseAtr.NOT_USE,
+					recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork());
 			dailyvacationAddTime = flexTime.getVacationAddTime().valueAsMinutes();
 		}else {
 			//フレックス以外の場合
@@ -1020,7 +1021,8 @@ public class TotalWorkingTime {
 					predetermineTimeSetByPersonInfo,
 					recordClass.getCoreTimeSetting(),
 					HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(recordClass.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()),
-					NotUseAtr.NOT_USE);
+					NotUseAtr.NOT_USE,
+					recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork());
 			dailyvacationAddTime = workHour.getVacationAddTime().valueAsMinutes();
 		}
 			
