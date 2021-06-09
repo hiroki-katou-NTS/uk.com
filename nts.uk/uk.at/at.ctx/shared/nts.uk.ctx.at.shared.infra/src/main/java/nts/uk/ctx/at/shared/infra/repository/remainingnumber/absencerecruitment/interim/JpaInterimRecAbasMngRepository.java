@@ -443,36 +443,6 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 		}
 	}
 
-    /**
-     * kdl035 ドメインモデル「暫定振出管理データ」を取得する
-     * @param mngIds
-     * @return
-     */
-	@Override
-	public List<InterimRecMng> getRecByIds(String employeeId,
-			DatePeriod period) {
-		return this.queryProxy()
-				.query("SELECT a FROM KrcdtInterimRecMng a " +
-						"WHERE a.pk.sid = :sid " +
-                        "AND a.pk.ymd <= :start AND a.pk.ymd >= :end " +
-                        "ORDER BY a.pk.ymd", KrcdtInterimRecMng.class)
-				.setParameter("sid", employeeId)
-				.setParameter("start", period.start())
-				.setParameter("end", period.end())
-				.getList((KrcdtInterimRecMng i) -> new InterimRecMng(
-						i.remainMngId,
-						i.pk.sid,
-						i.pk.ymd,
-						EnumAdaptor.valueOf(i.createAtr, CreateAtr.class),
-						RemainType.PICKINGUP,
-						i.expirationDate,
-						new OccurrenceDay(i.occurrenceDays),
-						new UnUsedDay(i.unUsedDays)
-                    )
-				);
-
-	}
-
 	private InterimAbsMng toDomainAbs(NtsResultRecord x) {
 		return new InterimAbsMng(
 				x.getString("REMAIN_MNG_ID"),

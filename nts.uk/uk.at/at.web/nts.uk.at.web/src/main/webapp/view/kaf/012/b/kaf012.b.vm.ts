@@ -265,6 +265,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                         const outingTimes = vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
                         outingTimes.forEach((time: any) => {
                             if (!vm.applyTimeData()[4].timeZones[time.frameNo - 1].startTime() && !vm.applyTimeData()[4].timeZones[time.frameNo - 1].endTime()) {
+                                maxWorkNoHasData = Math.max(maxWorkNoHasData, time.frameNo);
                                 vm.applyTimeData()[4].timeZones[time.frameNo - 1].startTime(time.opStartTime);
                                 vm.applyTimeData()[4].timeZones[time.frameNo - 1].endTime(time.opEndTime);
                                 vm.applyTimeData()[4].timeZones[time.frameNo - 1].appTimeType(time.opGoOutReasonAtr);
@@ -272,10 +273,12 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                         });
                     }
 
-                    if (maxWorkNoHasData > 3) {
-                        vm.applyTimeData()[4].timeZones.forEach(i => {
-                            i.display(true);
-                        });
+                    for (let no = 1; no <= maxWorkNoHasData; no++) {
+                        if (!vm.applyTimeData()[4].timeZones[no - 1].display()) {
+                            vm.applyTimeData()[4].timeZones[no - 1].display(true);
+                        }
+                    }
+                    if (maxWorkNoHasData >= 10) {
                         vm.applyTimeData()[4].displayShowMore(false);
                     }
 

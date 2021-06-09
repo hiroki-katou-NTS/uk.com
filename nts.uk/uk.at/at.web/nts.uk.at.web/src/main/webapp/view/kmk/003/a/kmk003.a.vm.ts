@@ -1173,7 +1173,7 @@ module nts.uk.at.view.kmk003.a {
                     }
                     afternoonTimes.push(timeZonePMDto);
                 } else {
-                    if (shiftOneEnd >= morningEnd) {
+                    if (shiftOneEnd > morningEnd) {
                         //morning1
                         morningTimes.push({
                             employmentTimeFrameNo: 1,
@@ -1194,7 +1194,7 @@ module nts.uk.at.view.kmk003.a {
                         })
                         //afternoon2
                         afternoonTimes.push({
-                            employmentTimeFrameNo: 1,
+                            employmentTimeFrameNo: 2,
                             timezone: {
                                 start: shiftTwoStart,
                                 end: shiftTwoEnd,
@@ -1213,7 +1213,7 @@ module nts.uk.at.view.kmk003.a {
                         });
                         //morning2
                         morningTimes.push({
-                            employmentTimeFrameNo: 1,
+                            employmentTimeFrameNo: 2,
                             timezone: {
                                 start: shiftTwoStart,
                                 end: morningEnd,
@@ -1233,7 +1233,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 return {
                     morning: morningTimes,
-                    afternoon: afternoonTimes;
+                    afternoon: afternoonTimes
                 }
             }
 
@@ -1295,7 +1295,7 @@ module nts.uk.at.view.kmk003.a {
                 };
 
                 //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
-                let times = _self.autoGenerate();
+                let times = self.autoGenerate();
 
                 command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = [];
                 times.morning.forEach(time => {

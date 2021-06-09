@@ -61,7 +61,7 @@ module nts.uk.at.view.kdl036.a.viewmodel {
                 ],
                 template : '<div class="label">#{labelText}</div>'
             };
-            $("#fixed-table").ntsFixedTable({ height: 313 });
+            $("#fixed-table").ntsFixedTable({ height: 314 });
         }
 
         startPage(): JQueryPromise<any> {

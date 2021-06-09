@@ -17,7 +17,6 @@ import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationReposi
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionUsageInfor;
-import nts.uk.ctx.at.shared.dom.remainingnumber.service.RemainNumberCreateInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
@@ -43,38 +42,38 @@ public class RemainCreateInforByRecordDataImpl implements RemainCreateInforByRec
 		List<AttendanceTimeOfDailyPerformance> lstAttendanceTimeData =  attendanceRespo.findByPeriodOrderByYmd(sid, dateData);
 		//ドメインモデル「日別実績の勤務情報」を取得する
 		List<WorkInfoOfDailyPerformance> lstWorkInfor = workRespo.findByPeriodOrderByYmd(sid, dateData);
+
 		//残数作成元情報を作成する
-		return RemainNumberCreateInformation.createRemainInfor(sid,
-				lstAttendanceTimeData.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTime())), 
-				lstWorkInfor.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getWorkInformation())));
+		return this.lstResultFromRecord(sid, DailyResultCreator.create(lstWorkInfor, lstAttendanceTimeData));
 	}
-	
-	
+
+
 	@Override
 	public List<RecordRemainCreateInfor> lstRecordRemainData(CacheCarrier cacheCarrier, String cid, String sid, List<GeneralDate> dateData) {
 		//ドメインモデル「日別実績の勤怠時間」を取得する
 		List<AttendanceTimeOfDailyPerformance> lstAttendanceTimeData = attendanceRespo.find(sid, dateData);
 		//ドメインモデル「日別実績の勤務情報」を取得する
-		List<WorkInfoOfDailyPerformance> lstWorkInfor = workRespo.findByListDate(sid, dateData);	
-		
-		return RemainNumberCreateInformation.createRemainInfor(sid,
-				lstAttendanceTimeData.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTime())), 
-				lstWorkInfor.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getWorkInformation())));
+		List<WorkInfoOfDailyPerformance> lstWorkInfor = workRespo.findByListDate(sid, dateData);
+
+		//残数作成元情報を作成する
+		return this.lstResultFromRecord(sid, DailyResultCreator.create(lstWorkInfor, lstAttendanceTimeData));
 	}
+
 
 
 	@Override
 	public List<RecordRemainCreateInfor> lstRecordRemainData(String sid, List<GeneralDate> dateData) {
 		//勤務実績を取得する
 		List<DailyResult> dailyResults = getWorkRecord(sid, dateData);
-		
+
 		//(Imported)「残数作成元情報(実績)」を取得する
 		//残数作成元情報を返す
-		
+
 		return lstResultFromRecord(sid, dailyResults);
 	}
-	
-	private List<RecordRemainCreateInfor> lstResultFromRecord(String sid, List<DailyResult> dailyResults) {
+
+	@Override
+	public List<RecordRemainCreateInfor> lstResultFromRecord(String sid, List<DailyResult> dailyResults) {
 		// 残数作成元情報Listを作成する
 		return dailyResults.stream()
 				.map(
@@ -124,7 +123,7 @@ public class RemainCreateInforByRecordDataImpl implements RemainCreateInforByRec
 					.build();
 		}).collect(Collectors.toList());
 	}
-	
+
 	public static int getTotalOvertimeTransferTime(Optional<AttendanceTimeOfDailyAttendance> optAttendanceTime) {
 
 		if (!optAttendanceTime.isPresent()) {
@@ -142,7 +141,7 @@ public class RemainCreateInforByRecordDataImpl implements RemainCreateInforByRec
 		}
 		return overTimes;
 	}
-	
+
 	public static int getTransferTotal(Optional<AttendanceTimeOfDailyAttendance> optAttendanceTime) {
 		if (!optAttendanceTime.isPresent()) {
 			return 0;
@@ -160,64 +159,64 @@ public class RemainCreateInforByRecordDataImpl implements RemainCreateInforByRec
 		}
 		return transferTotal;
 	}
-	
+
 	/**
 	 * 時間休暇使用情報を作成する
-	 * @param optional 
+	 * @param optional
 	 * @return List<時間休暇使用情報>
 	 */
 	public List<VacationTimeInforNew> getLstVacationTimeInfor(Optional<AttendanceTimeOfDailyAttendance> attenTime){
 
-		List<VacationTimeInforNew> result = new ArrayList<VacationTimeInforNew>();		
-		
+		List<VacationTimeInforNew> result = new ArrayList<VacationTimeInforNew>();
+
 		if(!attenTime.isPresent()){
 			return result;
 		}
-		
+
 		List<LateTimeOfDaily> lateTimes =  attenTime.get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getLateTimeOfDaily();
-		
+
 		if (!lateTimes.isEmpty()) {
 			// 日別勤怠の遅刻時間.勤怠NO = 1
 			lateTimes.stream().filter(x -> x.getWorkNo().v() == 1).findFirst().ifPresent(x -> {result.add(VacationTimeInforNew.fromLateDomain(x,AppTimeType.ATWORK));});
-		
+
 			// 日別勤怠の遅刻時間.勤怠NO = 2
 			lateTimes.stream().filter(x -> x.getWorkNo().v() == 2).findFirst().ifPresent(x -> {result.add(VacationTimeInforNew.fromLateDomain(x,AppTimeType.ATWORK2));});
 		}
-		
+
 		List<LeaveEarlyTimeOfDaily> earlyTimes =  attenTime.get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getLeaveEarlyTimeOfDaily();
-		
+
 		if (!earlyTimes.isEmpty()) {
 			// 日別勤怠の早退時間.勤怠NO = 1
 			earlyTimes.stream().filter(x -> x.getWorkNo().v() == 1).findFirst().ifPresent(x -> {result.add(VacationTimeInforNew.fromEarlyDomain(x,AppTimeType.OFFWORK));});
-					
+
 			// 日別勤怠の早退時間.勤怠NO = 2
 			earlyTimes.stream().filter(x -> x.getWorkNo().v() == 2).findFirst().ifPresent(x -> {result.add(VacationTimeInforNew.fromEarlyDomain(x,AppTimeType.OFFWORK2));});
 		}
-		
+
 		List<OutingTimeOfDaily> outingTimes =  attenTime.get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getOutingTimeOfDailyPerformance();
-		
+
 		if (!outingTimes.isEmpty()) {
 			// 日別勤怠の外出時間.外出時間 = 私用
 			outingTimes.stream().filter(x -> x.getReason().equals(GoingOutReason.PRIVATE)).findFirst().ifPresent(x -> {result.add(VacationTimeInforNew.fromOutDomain(x,AppTimeType.PRIVATE));});
-					
+
 			// 日別勤怠の外出時間.外出時間 = 組合
 			outingTimes.stream().filter(x -> x.getReason().equals(GoingOutReason.UNION)).findFirst().ifPresent(x -> {result.add(VacationTimeInforNew.fromOutDomain(x,AppTimeType.UNION));});
 		}
-		
+
 		return result;
 	}
 	/**
 	 * 時間消化使用情報を作成する
-	 * @param attenTime 
+	 * @param attenTime
 	 * @return 時間消化使用情報
 	 */
 	public TimeDigestionUsageInfor getTimeDigestionUsageInfor(Optional<AttendanceTimeOfDailyAttendance> attenTime) {
-		
+
 		TimeDigestionUsageInfor result = new TimeDigestionUsageInfor();
 		if(!attenTime.isPresent()){
 			return result;
 		}
-		
+
 		HolidayOfDaily holiday = attenTime.get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getHolidayOfDaily();
 		//時間年休使用時間 = 年休.時間消化休暇使用時間
 		result.setNenkyuTime(holiday.getAnnual().getDigestionUseTime().v());
@@ -230,8 +229,8 @@ public class RemainCreateInforByRecordDataImpl implements RemainCreateInforByRec
 		result.setChildCareTime(0);
 		//介護使用時間 = 子の看護介護．有償休暇．介護＋子の看護介護．無償休暇．介護
 		result.setLongCareTime(0);
-		
+
 		return result;
 	}
-	
+
 }
