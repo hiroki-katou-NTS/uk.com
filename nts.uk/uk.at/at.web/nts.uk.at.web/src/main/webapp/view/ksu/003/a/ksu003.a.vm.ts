@@ -2557,7 +2557,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								limitStartMin, limitStartMax, limitEndMin, limitEndMax));
 							indexLeft = ++indexLeft;
 							// Add CORE-TIME
-							if (coreTime.length > 0 && (_.inRange(coreTime[0].coreStartTime, timeMinus[0].startTime, timeMinus[0].endTime) ||
+							if (coreTime.length > 0 && timeChart != null && (_.inRange(coreTime[0].coreStartTime, timeMinus[0].startTime, timeMinus[0].endTime) ||
 								_.inRange(coreTime[0].coreEndTime, timeMinus[0].startTime, timeMinus[0].endTime))) {
 								ruler.addChartWithType("CoreTime", {
 									id: `lgc${i}_` + indexLeft,

@@ -1,6 +1,6 @@
 import { _, Vue } from '@app/provider';
 import { TrackRecordAtr, OverTimeShiftNight, BreakTime, TimeZoneNew, TimeZoneWithWorkNo, AppOverTime, ParamCalculateMobile, ParamSelectWorkMobile, InfoWithDateApplication, ParamStartMobile, OvertimeAppAtr, Model, DisplayInfoOverTime, NotUseAtr, ApplicationTime, OvertimeApplicationSetting, AttendanceType, HolidayMidNightTime, StaturoryAtrOfHolidayWork, ParamBreakTime, WorkInformation, WorkHoursDto, AppDateContradictionAtr, ExcessState } from '../a/define.interface';
-import { component, Prop } from '@app/core/component';
+import { component, Prop, Watch } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
 import { KafS05Step1Component } from '../step1';
 import { HolidayTime, KafS05Step2Component } from '../step2';
@@ -53,8 +53,32 @@ export class KafS05Component extends KafS00ShrComponent {
     @Prop()
     public readonly params: InitParam;
 
+    public get getNumb(): number {
+        const self = this;
+
+        return self.numb;
+    }
+
+    @Watch('numb', {deep: true})
+    public changeNumb(data: any) {
+        const self = this;
+
+        if (self.numb == 1) {
+            self.pgName = 'kafs05step1';
+        } else if (self.numb == 2) {
+            self.pgName = 'kafs05step2';
+        } else {
+            self.pgName = 'kafs05step3';
+        }
+    }
+   
+
     public get step() {
-        return `step_${this.numb}`;
+
+        const self = this;
+        
+
+        return `step_${self.numb}`;
     }
     public get overTimeWorkHoursDto(): OverTimeWorkHoursDto {
         const self = this;
@@ -341,6 +365,8 @@ export class KafS05Component extends KafS00ShrComponent {
 
     public created() {
         const vm = this;
+
+        vm.pgName = 'kafs05step1';
 
         if (!_.isNil(vm.params)) {
             vm.modeNew = false;
