@@ -716,6 +716,7 @@ module nts.uk.ui.at.ksu002.a {
                                     if (model.begin() !== b) {
                                         model.begin(b)
                                     } else {
+										$begin.trigger(VALIDATE);
                                         model.begin.valueHasMutated();
                                     }
 
@@ -753,6 +754,7 @@ module nts.uk.ui.at.ksu002.a {
                                     if (model.finish() !== f) {
                                         model.finish(f);
                                     } else {
+										$finish.trigger(VALIDATE);
                                         model.finish.valueHasMutated();
                                     }
 

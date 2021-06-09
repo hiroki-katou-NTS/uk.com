@@ -564,7 +564,11 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public get c20() {
         const self = this;
         let model = self.model as Model;
-        let c20 = _.get(model, 'appAbsenceStartInfoDto.specAbsenceDispInfo.dateSpecHdRelationLst[0].threeParentOrLess');
+
+        const { selectedRelationship } = self;
+        const dateSpecHdRelationLst = _.get(model, 'appAbsenceStartInfoDto.specAbsenceDispInfo.dateSpecHdRelationLst');
+        const indexSelect = _.findLastIndex(dateSpecHdRelationLst , (o: any) => o.relationCD == selectedRelationship);
+        let c20 = _.get(model, `appAbsenceStartInfoDto.specAbsenceDispInfo.dateSpecHdRelationLst[${indexSelect == -1 ? 0 : indexSelect}].threeParentOrLess`);
         
         return self.c18 && (c20 || false);
     }

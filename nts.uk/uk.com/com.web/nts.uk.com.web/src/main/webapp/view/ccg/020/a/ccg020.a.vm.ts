@@ -2,6 +2,8 @@
 
 module nts.uk.com.view.ccg020.a {
 
+  import ukText = nts.uk.text;
+
   const API = {
     get10LastResults: "sys/portal/generalsearch/history/get-10-last-result",
     getByContent: "sys/portal/generalsearch/history/get-by-content",
@@ -25,7 +27,6 @@ module nts.uk.com.view.ccg020.a {
     <input id="search-input" autocomplete="off" data-bind="ntsTextEditor: {
       value: valueSearch,
       enterkey: submit,
-      constraint: 'SearchContent',
       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
         textmode: 'text',
         width: '162px',
@@ -216,7 +217,13 @@ module nts.uk.com.view.ccg020.a {
           if (!valid) {
             return;
           }
+          
           if (vm.valueSearch() !== '') {
+            const valueSearch = vm.valueSearch();
+            if (ukText.countHalf(valueSearch) > 50) {
+              vm.valueSearch(vm.subString(valueSearch, 50));
+            }
+
             vm.treeMenuResult(vm.filterItems(vm.valueSearch(), vm.treeMenu()));
             const $tableResult = $('<div/>').attr('id', 'list-box');
             const list = vm.treeMenuResult();
@@ -245,6 +252,19 @@ module nts.uk.com.view.ccg020.a {
           }
         });
     }
+
+    private subString(value: string, length: number): string {
+      let maxCountHalfSizeCharacter = length;
+      let valueTemp = "";
+      const valueSplip = value.split("");
+      valueSplip.forEach((character: string) => {
+          maxCountHalfSizeCharacter -= ukText.countHalf(character);
+          if (maxCountHalfSizeCharacter >= 0) {
+              valueTemp += character;
+          }
+      });
+      return valueTemp;
+  }
 
     private addHistoryResult() {
       const vm = this;
