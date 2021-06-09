@@ -29,18 +29,6 @@ public interface StampSetPerRepository {
 	public Optional<StampSettingPerson> getStampSet (String companyId);
 
 	/**
-	 * insert 打刻ページレイアウト
-	 * @param layout
-	 */
-	public void insertPage(StampPageLayout layout);
-
-	/**
-	 * update 打刻ページレイアウト
-	 * @paramStampPageLayout layout
-	 */
-	public void updatePage(StampPageLayout layout);
-
-	/**
 	 * find 打刻ページレイアウト
 	 * @param companyId
 	 * @param pageNo
@@ -62,13 +50,6 @@ public interface StampSetPerRepository {
 	 * @return
 	 */
 	Optional<StampPageLayout> getStampSetPageByCid(String companyId);
-
-	/**
-	 * delete 打刻ページレイアウト
-	 * @param companyId
-	 * @param pageNo
-	 */
-	void delete(String companyId, int pageNo);
 
 	Optional<StampSettingPerson> getStampSetting(String companyId);
 

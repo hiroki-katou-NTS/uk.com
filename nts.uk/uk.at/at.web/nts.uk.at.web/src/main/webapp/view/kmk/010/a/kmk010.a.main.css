@@ -89,6 +89,7 @@
 .sixtySetting thead td {
 	padding-top: 7px;
 	padding-bottom: 7px;
+	text-align: center;
 }
 .sixtySetting table td:nth-child(1){
 	width: 30%;
@@ -221,12 +222,6 @@ table td .cell .limited-label {
 	margin-left: 5px;
 	height: 17px;
 	text-align: left;
-}
-.float-left {
-	float: left;
-}
-#functions-area {
-	display: flex;
 }
 .fixed-flex-layout-left {
 	width: 100%;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -15,10 +16,12 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.FluidFixedAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeVacationOffSetItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductGoOutRoundingSet;
@@ -31,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -205,19 +209,19 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		if(this.getDeductionAtr().isChildCare() && compareTimeSheet.getDeductionAtr().isChildCare()) {
 			map.add(this);
 			map.addAll(baseCompareNotDupSpan.stream().map(tc -> compareTimeSheet.cloneWithNewTimeSpan(Optional.of(tc))).collect(Collectors.toList()));
-			return map;
+			return map.stream().sorted((a, b) -> a.timeSheet.getStart().compareTo(b.timeSheet.getStart())).collect(Collectors.toList());
 		}
 		/*前半育児　　後半外出*/
 		else if(this.getDeductionAtr().isChildCare() && compareTimeSheet.getDeductionAtr().isGoOut()) {
 			map.add(this);
 			map.addAll(baseCompareNotDupSpan.stream().map(tc -> compareTimeSheet.cloneWithNewTimeSpan(Optional.of(tc))).collect(Collectors.toList()));
-			return map;
+			return map.stream().sorted((a, b) -> a.timeSheet.getStart().compareTo(b.timeSheet.getStart())).collect(Collectors.toList());
 		}
 		/*前半外出、、後半育児*/
 		else if(this.getDeductionAtr().isGoOut() && compareTimeSheet.getDeductionAtr().isChildCare()) {
 			map.addAll(baseThisNotDupSpan.stream().map(tc -> this.cloneWithNewTimeSpan(Optional.of(tc))).collect(Collectors.toList()));
 			map.add(compareTimeSheet);
-			return map;
+			return map.stream().sorted((a, b) -> a.timeSheet.getStart().compareTo(b.timeSheet.getStart())).collect(Collectors.toList());
 		}
 		
 		/*前半休憩、後半外出*/
@@ -299,7 +303,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 			map.add(this);
 			//後半外出
 			map.addAll(baseCompareNotDupSpan.stream().map(tc -> compareTimeSheet.cloneWithNewTimeSpan(Optional.of(tc))).collect(Collectors.toList()));
-			return map;
+			return map.stream().sorted((a, b) -> a.timeSheet.getStart().compareTo(b.timeSheet.getStart())).collect(Collectors.toList());
 		}
 		/*前半外出、後半休憩*/
 		else if(this.getDeductionAtr().isGoOut() && compareTimeSheet.getDeductionAtr().isBreak()){
@@ -343,7 +347,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 					map.add(this);
 					//休憩を入れる
 					map.addAll(baseCompareNotDupSpan.stream().map(tc -> compareTimeSheet.cloneWithNewTimeSpan(Optional.of(tc))).collect(Collectors.toList()));
-					return map;
+					return map.stream().sorted((a, b) -> a.timeSheet.getStart().compareTo(b.timeSheet.getStart())).collect(Collectors.toList());
 				}
 			}
 			//外出入れる
@@ -358,13 +362,13 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 			if(this.getBreakAtr().get().isBreak() && compareTimeSheet.getBreakAtr().get().isBreakStamp()) {
 				map.addAll(baseThisNotDupSpan.stream().map(tc -> this.cloneWithNewTimeSpan(Optional.of(tc))).collect(Collectors.toList()));
 				map.add(compareTimeSheet);
-				return map;
+				return map.stream().sorted((a, b) -> a.timeSheet.getStart().compareTo(b.timeSheet.getStart())).collect(Collectors.toList());
 			}
 			/*前半休憩打刻、後半休憩*/
 			else if((this.getBreakAtr().get().isBreakStamp() && compareTimeSheet.getBreakAtr().get().isBreak())){
 				map.add(this);
 				map.addAll(baseCompareNotDupSpan.stream().map(tc -> compareTimeSheet.cloneWithNewTimeSpan(Optional.of(tc))).collect(Collectors.toList()));
-				return map;
+				return map.stream().sorted((a, b) -> a.timeSheet.getStart().compareTo(b.timeSheet.getStart())).collect(Collectors.toList());
 			}
 			/*休憩と休憩　→　育児と育児の重複と同じにする(後ろにある時間の開始を前の終了に合わせる)*/
 			else if(this.getBreakAtr().get().isBreak() && compareTimeSheet.getBreakAtr().get().isBreak()) {
@@ -376,7 +380,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 					map.add(compareTimeSheet.cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(this.timeSheet.getTimeSpan().getStart(),this.timeSheet.getTimeSpan().getStart()))));
 				}
 				
-				return map;
+				return map.stream().sorted((a, b) -> a.timeSheet.getStart().compareTo(b.timeSheet.getStart())).collect(Collectors.toList());
 			}
 		}
 		
@@ -569,6 +573,12 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		TimeWithDayAttr newStart = oneDayRange.getStart();
 		TimeWithDayAttr newEnd = oneDayRange.getEnd();
 		
+		//出勤時刻が含まれているか判断する
+		if(oneDayRange.getStart().lessThan(time.getTimespan().getStart())
+				&& time.getTimespan().getStart().lessThanOrEqualTo(oneDayRange.getEnd())
+				&& dedAtr.isAppropriate()) {
+			return result;
+		}
 		//退勤時間を含んでいるかチェック
 		if(oneDayRange.contains(time.getTimespan().getEnd())) {
 			//出勤時間を含んでいるチェック
@@ -641,6 +651,25 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		default:
 			throw new RuntimeException("Unknown DeductionAtr:"+this.getDeductionAtr());
 		}
+	}
+	
+	/**
+	 * 外出の控除相殺時間をセットする
+	 * @param deductionAtr 控除区分
+	 * @param priorityOrder 時間休暇相殺優先順位
+	 * @param useTimes 時間休暇使用時間
+	 */
+	public void setOutOffsetTime(CompanyHolidayPriorityOrder priorityOrder, Map<GoingOutReason,TimevacationUseTimeOfDaily> useTimes) {
+		if(!this.getGoOutReason().isPresent() || !this.goOutReason.get().isPrivateOrUnion()) {
+			return;
+		}
+		if(!useTimes.containsKey(this.getGoOutReason().get())){
+			return;
+		}
+		this.deductionOffSetTime = Optional.of(this.offsetProcess(
+				priorityOrder,
+				useTimes.get(this.getGoOutReason().get()),
+				NotUseAtr.USE));
 	}
 	
 	private Optional<TimeRoundingSetting> getShortTimeRounding(DeductionAtr dedAtr, WorkTimezoneCommonSet commonSet,TimeRoundingSetting rounding) {

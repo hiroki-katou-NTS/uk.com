@@ -193,7 +193,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						vm.setComboDivergenceReason(vm.dataSource);
 						
 						//prePostAtr = 2 when none is selected
-						if (vm.application().prePostAtr() == 0 || vm.mode() == MODE.MULTiPLE_AGENT || vm.application().prePostAtr() == 2) {
+						if (vm.application().prePostAtr() == 0 || vm.mode() == MODE.MULTiPLE_AGENT || _.isNil(vm.application().prePostAtr())) {
 							$('.table-time2 .nts-fixed-header-wrapper').width(224);
 							if (vm.holidayTime().length > 3) {
 								$('.table-time2 .nts-fixed-body-wrapper').width(208);

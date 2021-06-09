@@ -21,8 +21,8 @@ input.txtEmpCodeFirstChar {
 	margin: 5px 0px;
 }
 
-#empInitGroup .ntsRadioBox:not(:first-child), #initCardNoGroup .ntsRadioBox:not(:first-child){
-	width: 100%;
+#empInitGroup .radio-wrapper:not(:first-child), #initCardNoGroup .radio-wrapper:not(:first-child){
+	width: 90%;
 	margin-top: 5px;
 }
 
@@ -42,3 +42,4 @@ input.txtEmpCodeFirstChar {
 	padding-top: 10px;
 	margin-top: -5px;
 }
+

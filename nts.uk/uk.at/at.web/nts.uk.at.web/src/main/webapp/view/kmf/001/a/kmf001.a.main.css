@@ -49,6 +49,7 @@
 	width: 170px;
 	margin-bottom: 10px;
 	margin-top: 10px;
+	margin-right: 5px;
 }
 
 .caret-right:after {
@@ -59,16 +60,12 @@
 	margin-top: 40px;
 }
 
-#A2 {
-	height: 380px;
-}
-
-#A3 {
-	height: 380px;
+#A2, #A3 {
+	height: 435px;
 }
 
 #A4 {
-	height: 615px;
+	height: 675px;
 }
 
 #A6 {
@@ -92,11 +89,11 @@ div.caret-kmf001 {
 }
 
 #A6.panel-frame {
-	height: 170px;
+	height: 175px;
 	width: 195px;
 }
 
 #A5.panel-frame {
-	height: 170px;
+	height: 175px;
 	width: 195px;
 }

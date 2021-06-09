@@ -15,7 +15,7 @@ public class SettingDateTimeColorOfStampScreenTest {
 
 	@Test
 	public void getters() {
-		SettingDateTimeColorOfStampScreen settingDateTimeColorOfStampScreen = new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DUMMY"));
+		SettingDateTimeColorOfStampScreen settingDateTimeColorOfStampScreen = new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"));
 		
 		NtsAssert.invokeGetters(settingDateTimeColorOfStampScreen);
 	}

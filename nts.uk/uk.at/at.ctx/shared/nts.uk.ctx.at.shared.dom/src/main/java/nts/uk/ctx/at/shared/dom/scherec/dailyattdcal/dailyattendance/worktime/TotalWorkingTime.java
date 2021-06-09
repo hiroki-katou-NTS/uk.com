@@ -235,8 +235,7 @@ public class TotalWorkingTime {
 									WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(new AttendanceTime(0), 
 																								new AttendanceTime(0), 
 																								new AttendanceTime(0), 
-																								new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))), 
-																								new AttendanceTime(0)),
+																								new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)))),
 									new ExcessOfStatutoryTimeOfDaily(new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), new AttendanceTime(0)),
 																	 Optional.of(new OverTimeOfDaily(Collections.emptyList(), 
 																			 						 Collections.emptyList(), 
@@ -1027,17 +1026,29 @@ public class TotalWorkingTime {
 		//遅刻休暇加算時間の計算
 		int lateVacationAddTime = 0;
 		for(LateTimeOfDaily lateTimeOfDaily:lateTime) {
-			lateVacationAddTime = lateVacationAddTime + lateTimeOfDaily.calcVacationAddTime(recordClass.getHolidayAddtionSet());
+			lateVacationAddTime = lateVacationAddTime
+					+ lateTimeOfDaily.calcVacationAddTime(
+							recordClass.getHolidayCalcMethodSet(),
+							recordClass.getHolidayAddtionSet(),
+							recordClass.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeForm()).valueAsMinutes();
 		}
 		//早退休暇加算時間の計算
 		int leaveVacationAddTime = 0;
 		for(LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily:leaveEarlyTime) {
-			leaveVacationAddTime = leaveVacationAddTime + leaveEarlyTimeOfDaily.calcVacationAddTime(recordClass.getHolidayAddtionSet());
+			leaveVacationAddTime = leaveVacationAddTime
+					+ leaveEarlyTimeOfDaily.calcVacationAddTime(
+							recordClass.getHolidayCalcMethodSet(),
+							recordClass.getHolidayAddtionSet(),
+							recordClass.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeForm()).valueAsMinutes();
 		}
 		//外出休暇加算時間の計算
 		int outingVacationAddTime = 0;
 		for(OutingTimeOfDaily outingTimeOfDaily:outingList) {
-			outingVacationAddTime = outingVacationAddTime + outingTimeOfDaily.calcVacationAddTime(recordClass.getHolidayAddtionSet());
+			outingVacationAddTime = outingVacationAddTime
+					+ outingTimeOfDaily.calcVacationAddTime(
+							recordClass.getHolidayCalcMethodSet(),
+							recordClass.getHolidayAddtionSet(),
+							recordClass.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeForm()).valueAsMinutes();
 		}
 		return new AttendanceTime(dailyvacationAddTime + lateVacationAddTime + leaveVacationAddTime + outingVacationAddTime);
 	}

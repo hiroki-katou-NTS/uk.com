@@ -15,6 +15,7 @@ import nts.uk.file.at.app.export.arbitraryperiodsummarytable.ArbitraryPeriodSumm
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
+import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import org.apache.logging.log4j.util.Strings;
 
 import javax.ejb.Stateless;
@@ -37,8 +38,11 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
     private static final String EXCEL_EXT = ".xlsx";
     private static final String PRINT_AREA = "";
     private static final String FORMAT_DATE = "yyyy/MM/dd";
-    private static final int MAX_LINE_IN_PAGE = 24;
+    private static final int MAX_LINE_IN_PAGE = 22;
+    private static final int MAX_COL_IN_PAGE = 22;
+    private static final double PAGE_WIDTH = 11.69 -2;
     private static final Integer HIERARCHY_LENGTH = 3;
+
 
     @Override
     public void generate(FileGeneratorContext generatorContext, ArbitraryPeriodSummaryDto dataSource) {
@@ -76,14 +80,22 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
 
-        pageSetup.setHeader(0, "&7&\"ＭＳ フォントサイズ\"" + companyName);
-        pageSetup.setHeader(1, "&9&\"ＭＳ フォントサイズ\"" + title);
+        pageSetup.setHeader(0, "&9&\"ＭＳ フォントサイズ\"" + companyName);
+        pageSetup.setHeader(1, "&16&\"ＭＳ フォントサイズ,Bold\"" + title);
 
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
         pageSetup.setHeader(2,
                 "&9&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
+        pageSetup.setFitToPagesTall(0);
+        pageSetup.setFitToPagesWide(0);
+        pageSetup.setCenterHorizontally(true);
+        pageSetup.setBottomMarginInch(1.5);
+        pageSetup.setTopMarginInch(1.5);
+        pageSetup.setLeftMarginInch(1.0);
+        pageSetup.setRightMarginInch(1.0);
+        pageSetup.setHeaderMarginInch(0.8);
         pageSetup.setZoom(100);
     }
 
@@ -272,12 +284,15 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
         Cells cellsTemplate = worksheetTemplate.getCells();
         Cells cells = worksheet.getCells();
         cells.copyRows(cellsTemplate, 0, 0, 5);
+        double columnWith = 0.41;
+        cells.setColumnWidthInch(0,(columnWith) *2);
+        for (int i = 1; i <= 20 ; i++) {
+            cells.setColumnWidthInch(i,columnWith);
+        }
         cells.clearContents(0, 0, cells.getMaxRow(), cells.getMaxColumn());
-
         cells.get(0, 0).setValue(TextResource.localize("KWR007_301")
                 + datePeriod.start().toString(FORMAT_DATE) + TextResource.localize("KWR007_307")
                 + datePeriod.end().toString(FORMAT_DATE));
-
         cells.get(1, 0).setValue(TextResource.localize("KWR007_302"));
         for (int i = 0; i < contentsList.size(); i++)
             if (i < 20) {
@@ -469,15 +484,33 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                 val itemLine1 = contentList.get(k);
                 cells.get(count, 1 + k).setValue(formatValue(itemLine1.getValue()
                         , mapIdAnAttribute.getOrDefault(itemLine1.getAttendanceItemId(), null), query.isZeroDisplay()));
+                Cell cell = cells.get(count, 1 + k);
+                Style style =   cell.getStyle();
+                style.setHorizontalAlignment(checkNumber( mapIdAnAttribute.getOrDefault(itemLine1.getAttendanceItemId(), null))? ColumnTextAlign.RIGHT.value:ColumnTextAlign.LEFT.value);
+                cell.setStyle(style);
             } else if (k >= 20 && k < 40) {
                 val itemLine2 = contentList.get(k);
                 cells.get(count + 1, 1 + k - 20).setValue(formatValue(itemLine2.getValue()
                         , mapIdAnAttribute.getOrDefault(itemLine2.getAttendanceItemId(), null), query.isZeroDisplay()));
+
+                Cell cell = cells.get(count + 1, 1 + k - 20);
+                Style style =   cell.getStyle();
+                style.setHorizontalAlignment(checkNumber( mapIdAnAttribute.getOrDefault(itemLine2.getAttendanceItemId(), null))? ColumnTextAlign.RIGHT.value:ColumnTextAlign.LEFT.value);
+                cell.setStyle(style);
             }
     }
     private void pageBreak (HorizontalPageBreakCollection pageBreaks,int count,Cells cells) throws Exception {
         pageBreaks.add(count);
         cells.copyRows(cells, 0, count, 5);
+    }
+    public boolean checkNumber(CommonAttributesOfForms attributes){
+        return attributes == CommonAttributesOfForms.DAYS
+                ||attributes == CommonAttributesOfForms.TIME_OF_DAY
+                ||attributes == CommonAttributesOfForms.TIME
+                ||attributes == CommonAttributesOfForms.AMOUNT_OF_MONEY
+                ||attributes == CommonAttributesOfForms.NUMBER_OF_TIMES;
+
+
     }
 
 }

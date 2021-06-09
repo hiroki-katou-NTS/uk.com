@@ -13,7 +13,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
         SUNDAY_BACKGROUND_COLOR = "#FABF8F",
         SATURDAY_TEXT_COLOR = "#0031FF",
         SUNDAY_TEXT_COLOR = "#FF0000",
-        TEMPLATE_EMPLOYEE_NAME_HEADER = `<a class='limited-label' href='javascript:void(0)' style='width: 200px; text-decoration: underline; cursor: pointer;' data-bind="click: clickNameJumpToKdw003.bind($data, '\${employeeId}')">\${employeeName}</a>`,
+        TEMPLATE_EMPLOYEE_NAME_HEADER = `<a class='limited-label' href='javascript:void(0)' style='width: 190px; text-decoration: underline; cursor: pointer;' data-bind="click: clickNameJumpToKdw003.bind($data, '\${employeeId}')">\${employeeName}</a>`,
         getTemplateDisplayStt = (headerTxtId, startDate) => `{{if \${${headerTxtId}} == '${ApprovalStatus.Notthing}' }}
             <a class='notthing' href='javascript:void(0)' data-bind="click: clickStatusJumpToKdw003.bind($data, '\${employeeId}', '${startDate}')" >本</a>
             {{elseif \${${headerTxtId}} == '${ApprovalStatus.Approved}' }}
@@ -373,7 +373,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             $("#approvalSttGrid").igGrid({
                 primaryKey: "employeeCode",
                 dataSource: self.lstData,
-                width: 1247,
+                width: 1237,
                 height: window.innerHeight - 225,
                 autofitLastColumn: false,
                 autoGenerateColumns: false,
@@ -462,7 +462,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                 },
                 {
                     key: "employeeName",
-                    width: "200px",
+                    width: "190px",
                     headerText: text('KDW004_14'),
                     dataType: "string",
                     template: TEMPLATE_EMPLOYEE_NAME_HEADER

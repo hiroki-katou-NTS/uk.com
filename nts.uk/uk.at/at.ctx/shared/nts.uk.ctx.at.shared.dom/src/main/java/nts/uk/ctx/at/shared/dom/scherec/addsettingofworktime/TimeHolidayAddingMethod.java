@@ -60,4 +60,12 @@ public enum TimeHolidayAddingMethod {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 使用した時間全て加算
+	 * @return
+	 */
+	public boolean isAddAllTimeUsed() {
+		return this.equals(ADD_ALL_TIME_USED);
+	}
 }

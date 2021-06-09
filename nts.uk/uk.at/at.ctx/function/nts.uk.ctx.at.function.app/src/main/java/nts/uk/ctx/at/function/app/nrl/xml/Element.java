@@ -62,6 +62,6 @@ public class Element {
 		public static final String STATUS_REQ_NORMAL_RES = "01";
 		public static final String FLAG_OFF = "00";
 		public static final String FLAG_ON = "01";
-		public static final String ACCEPT_RES_LEN = "001E";
+		public static final String ACCEPT_RES_LEN = "002A";
 	}
 }

@@ -75,7 +75,11 @@ module cmm045.a.viewmodel {
                 dismissible: false
             });
 
-            $("a.hyperlink").click(() => {$(".popup-panel-cmm045").ntsPopup("toggle");});
+            $("a.hyperlink").click(() => {
+            	$(".popup-panel-cmm045").ntsPopup("toggle");
+					// $(".popup-panel-cmm045").css('top', '124px');
+            });
+
             $(window).on("mousedown.popup", function(e) {
                 let control = $(".popup-panel-cmm045");
                 if (!$(e.target).is(control)

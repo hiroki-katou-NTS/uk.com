@@ -62,6 +62,10 @@
 	width: 110px;
 }
 
+#panel1 > div > div > div.fixed-flex-layout-left {
+	width: 60px;
+}
+
 /* .tab-content-1 > div > .fixed-flex-layout-right {
 	padding-left: 178px;
 } */

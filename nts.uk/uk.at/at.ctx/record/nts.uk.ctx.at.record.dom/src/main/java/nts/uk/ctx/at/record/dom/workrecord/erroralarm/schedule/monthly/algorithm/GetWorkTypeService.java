@@ -64,7 +64,12 @@ public class GetWorkTypeService {
 			return null;
 		}
 		
-		return null;
+		// 　・就業時間帯コード　＝　探した日別実績．勤務情報．勤務情報．就業時間帯コード
+		String workTimeCode = daily.getWorkInformation().getRecordInfo().getWorkTimeCode() != null ? daily.getWorkInformation().getRecordInfo().getWorkTimeCode().v() : null;
+		return ScheMonWorkTypeWorkTime.builder()
+				.workTimeCode(Optional.ofNullable(workTimeCode))
+				.workTypeCode(daily.getWorkInformation().getRecordInfo().getWorkTypeCode().v())
+				.build();
 	}
 	
 	/**

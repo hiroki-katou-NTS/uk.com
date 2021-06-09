@@ -77,19 +77,11 @@
 }
 
 #C9_2 {
-  margin-left: 10px !important;
+  margin-left: 0 !important;
 }
 
 #C9_5 {
-  margin-left: 43px !important;
-}
-
-#C9_6 {
-  margin-left: 23px !important;
-}
-
-#C10_2 {
-  margin-left: 40px !important;
+  margin-right: 17px !important;
 }
 
 .checkbox {
@@ -130,4 +122,16 @@
 
 .time-dropdown > label {
   margin-right: 5px;
+}
+
+.swap-zone {
+  padding-bottom: 20px;
+}
+
+.text-al-r {
+  text-align: right;
+}
+
+#password-table tr td {
+  padding-bottom: 10px;
 }

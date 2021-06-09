@@ -116,7 +116,8 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 hasPadding: false,
                 maxRows: vm.rows(),
                 alreadySettingList: vm.alreadySettingWorkplaces,
-                selectedId: vm.selectedIds
+                selectedId: vm.selectedIds,
+                restrictionOfReferenceRange: false
             };
             vm.kcp011Options = {
                 currentIds: vm.selectedGroupIds,

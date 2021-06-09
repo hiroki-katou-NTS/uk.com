@@ -113,7 +113,7 @@ public class CreateOrderInfoFileQuery {
                 bentoReservationsDetail = getListBentoResevation(itemExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
         }
         if (CollectionUtil.isEmpty(bentoReservationsTotal) & CollectionUtil.isEmpty(bentoReservationsDetail))
-        	if (!totalTitle.isPresent()) {
+        	if (totalTitle.isPresent()) {
 				throw new BusinessException("Msg_6");
 			} else {
 				throw new BusinessException("Msg_1617");

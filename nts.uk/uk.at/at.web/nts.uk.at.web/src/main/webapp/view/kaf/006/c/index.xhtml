@@ -7,31 +7,33 @@
 <body>
     <ui:composition template="../../../../master/dialog.xhtml">
         <ui:define name="htmlHead">
-            <script>var dialogSize = { width: 520, height: 585 };</script>
+            <script>var dialogSize = { width: 650, height: 585 };</script>
             <com:scriptfile set="IGNITE" />
             <com:ValidatorScript>
                 nts.uk.ctx.at.request.dom.application.AppReason
             </com:ValidatorScript>
             <com:scriptfile path="/view/kaf/000/a/component6/kaf000.a.component6.js" />
             <com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
+            <com:scriptfile path="/view/kaf/006/shr/component3/kaf006.a.component3.js" />
             <com:scriptfile path="kaf006.c.service.js" />
             <com:scriptfile path="kaf006.c.vm.js" />
             <com:stylefile path="kaf006.c.css" />
             <com:stylefile path="/view/kaf/000/a/component6/kaf000.a.component6.css" />
+            <com:stylefile path="/view/kaf/006/shr/component3/kaf006.a.component3.css" />
         </ui:define>
         
         <ui:define name="content">
-            <div id="functions-area-bottom">
+            <!-- <div id="functions-area-bottom">
 				<button tabindex="2" class="x-large proceed" data-bind="click: register">#{i18n.getText('KAF006_1')}</button>
 				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KAF006_84')}</button>
-            </div>
+            </div> -->
             <div id="contents-area" style="margin: 0 10px">
                 <div id="kaf-006-c" class="control-group valign-center">
                     <!-- C1_1 -->
                     <div class="label">#{i18n.getText('KAF006_81')}</div>
                     <div class="table" style="margin: 5px 0">
                         <!-- C2_1 -->
-                        <div class="cell col-1" style="vertical-align: middle; width: 110px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF006_8')}</div>
+                        <div class="cell col-1" style="vertical-align: middle; width: 100px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF006_8')}</div>
                         <div class="cell valign-center">
                             <!-- C2_2 -->
                             <div class="inline" data-bind="ntsCheckBox: { 
@@ -56,7 +58,7 @@
                     </div>
                     <div class="table" style="margin: 5px 0" data-bind="visible: dispListReasons">
                         <!-- C3_1 -->
-                        <div class="cell col-1" style="vertical-align: middle; width: 110px;" data-bind="ntsFormLabel: { required: requireLabel1 }">#{i18n.getText('KAF006_24')}</div>
+                        <div class="cell col-1" style="vertical-align: middle; width: 103px;" data-bind="ntsFormLabel: { required: requireLabel1 }">#{i18n.getText('KAF006_24')}</div>
                         <!-- C3_2 -->
                         <div id="reasonLst" class="cell valign-center" data-bind="ntsComboBox: { 
                             required: requireLabel1, 
@@ -86,13 +88,17 @@
                                 option: { width: '350' } }" ></textarea>
                         </div>
                     </div>
-                    <div  style="margin: 5px 0" data-bind="component: { name: 'kaf000-a-component6', 
+                    <div  style="margin: 5px 0" data-bind="component: { name: 'kaf006-c-component3', 
                                                                         params: {
                                                                             appType: appType,
                                                                             application: application,
                                                                             appDispInfoStartupOutput: appDispInfoStartupOutput
                                                                         } }"></div>
                 </div>
+            </div>
+            <div id="functions-area-bottom">
+				<button tabindex="2" class="x-large proceed" data-bind="click: register">#{i18n.getText('KAF006_1')}</button>
+				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KAF006_84')}</button>
             </div>
         </ui:define>
     </ui:composition>

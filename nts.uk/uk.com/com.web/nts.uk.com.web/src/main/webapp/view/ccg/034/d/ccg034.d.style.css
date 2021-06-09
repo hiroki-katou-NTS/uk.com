@@ -1,7 +1,10 @@
 .contents-area {
   height: calc(100% - 20px);
-  display: flex;
   flex-direction: row;
+}
+
+#contents-area {
+  overflow: hidden !important;
 }
 
 #menu-item-container {

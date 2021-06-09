@@ -90,9 +90,7 @@ public class LeaveEarlyTimeSheet {
 		if(dedAtr.isAppropriate()) {
 			this.forRecordTimeSheet = forTimeSheet;
 		}
-		if(dedAtr.isDeduction()) {
-			this.forDeducationTimeSheet = forTimeSheet;
-		}
+		this.forDeducationTimeSheet = forTimeSheet;
 	}
 
 	/**
@@ -587,18 +585,16 @@ public class LeaveEarlyTimeSheet {
 	 * @param companyholidayPriorityOrder 時間休暇相殺優先順位
 	 * @param timeVacationUseTime 日別実績の時間休暇使用時間
 	 */
-	public void calcLeaveEarlyOffsetTime(
-		DeductionAtr deductionAtr,
-		CompanyHolidayPriorityOrder companyholidayPriorityOrder,
-		TimevacationUseTimeOfDaily timeVacationUseTime) {
+	public void setOffsetTime(
+			DeductionAtr deductionAtr,
+			CompanyHolidayPriorityOrder companyholidayPriorityOrder,
+			TimevacationUseTimeOfDaily timeVacationUseTime) {
 		if(!this.getDecitionTimeSheet(deductionAtr).isPresent()) {
 			return;
 		}
-		
-		this.getDecitionTimeSheet(deductionAtr).get().offsetProcessInPriorityOrder(
-				deductionAtr,
+		this.OffsetTime = Optional.of(this.getDecitionTimeSheet(deductionAtr).get().offsetProcess(
 				companyholidayPriorityOrder,
 				timeVacationUseTime,
-				this.OffsetTime.isPresent()?this.OffsetTime.get():DeductionOffSetTime.createAllZero());
+				NotUseAtr.NOT_USE));
 	}
 }

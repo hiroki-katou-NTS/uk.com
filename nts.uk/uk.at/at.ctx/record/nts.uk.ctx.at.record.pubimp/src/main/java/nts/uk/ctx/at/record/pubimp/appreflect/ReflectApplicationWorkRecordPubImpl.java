@@ -20,6 +20,10 @@ import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectStatu
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectedState;
 import nts.uk.ctx.at.record.dom.applicationcancel.ReflectApplicationWorkRecord;
 import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.createdailyresults.CreateDailyResults;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectleavingwork.CheckRangeReflectLeavingWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.CheckRangeReflectAttd;
@@ -37,10 +41,12 @@ import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHAppReflectionSetti
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHApplyTimeSchedulePriority;
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHClassifyScheAchieveAtr;
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHPriorityTimeReflectAtr;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
@@ -170,6 +176,9 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
     private ReflectWorkChangeAppRepository reflectWorkChangeAppRepository;
 	
 	@Inject
+	private CreateDailyResults createDailyResults;
+
+	@Inject
 	private TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
 	
 	@Inject
@@ -196,6 +205,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 	@Override
 	public Pair<RCReflectStatusResultExport, Optional<AtomTask>> process(Object application, GeneralDate date,
 			RCReflectStatusResultExport reflectStatus) {
+
 		RequireImpl impl = new RequireImpl(AppContexts.user().companyId(), AppContexts.user().contractCode(),
 				stampCardRepository, correctionAttendanceRule, workTypeRepo, workTimeSettingRepository,
 				workTimeSettingService, basicScheduleService, timeReflectFromWorkinfo, checkRangeReflectAttd,
@@ -203,7 +213,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				convertDailyRecordToAd, calculateDailyRecordServiceCenter, dailyRecordAdUpService,
 				requestSettingAdapter, flexWorkSettingRepository, predetemineTimeSettingRepository,
 				fixedWorkSettingRepository, flowWorkSettingRepository, goBackReflectRepository,
-				stampAppReflectRepository, lateEarlyCancelReflectRepository, reflectWorkChangeAppRepository,
+				stampAppReflectRepository, lateEarlyCancelReflectRepository, reflectWorkChangeAppRepository, createDailyResults,
 				timeLeaveAppReflectRepository, appReflectOtHdWorkRepository, vacationApplicationReflectRepository, timePriorityRepository,
 				compensLeaveComSetRepository, subLeaveAppReflectRepository, substituteWorkAppReflectRepository,
 				applicationReflectHistoryRepo);
@@ -285,6 +295,8 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
         
         private final ReflectWorkChangeAppRepository reflectWorkChangeAppRepository;
         
+        private CreateDailyResults createDailyResults;
+
         private final TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
         
         private final AppReflectOtHdWorkRepository appReflectOtHdWorkRepository;
@@ -446,6 +458,20 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		}
 
 		@Override
+		public OutputCreateDailyOneDay createDailyResult(String employeeId, GeneralDate ymd,
+				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
+				EmployeeGeneralInfoImport employeeGeneralInfoImport, PeriodInMasterList periodInMasterList,
+				IntegrationOfDaily integrationOfDaily) {
+			return this.createDailyResults.createDailyResult(AppContexts.user().companyId(), employeeId, ymd, executionType, flag, employeeGeneralInfoImport, periodInMasterList, integrationOfDaily);
+		}
+
+		@Override
+		public OutputTimeReflectForWorkinfo get(String employeeId, GeneralDate ymd,
+				WorkInfoOfDailyAttendance workInformation) {
+			return this.timeReflectFromWorkinfo.get(AppContexts.user().companyId(), employeeId, ymd, workInformation);
+		}
+
+		@Override
 		public Optional<TimeLeaveApplicationReflect> findReflectTimeLeav(String companyId) {
 			return timeLeaveAppReflectRepository.findByCompany(companyId);
 		}
@@ -485,11 +511,6 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
 				ExecutionType reCalcAtr) {
 			return calculateForSchedule(calcOption, integrationOfDaily, companySet, reCalcAtr);
-		}
-
-		@Override
-		public Optional<FlowWorkSetting> findFlowWorkSetting(String companyId, String workTimeCode) {
-			return flowWorkSettingRepository.find(companyId, workTimeCode);
 		}
 
 		@Override
