@@ -156,8 +156,7 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 							workTime,
 							withinPrescribedTimeOfDaily.getActualWorkTime(),
 							withinPrescribedPremiumTime,
-							withinPrescribedTimeOfDaily.getWithinStatutoryMidNightTime(),
-							withinPrescribedTimeOfDaily.getVacationAddTime()),
+							withinPrescribedTimeOfDaily.getWithinStatutoryMidNightTime()),
 					vacationAddTime,
 					workType
 					);
@@ -321,8 +320,7 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 							withinPrescribedTimeOfDaily.getWorkTime(),
 							withinPrescribedTimeOfDaily.getActualWorkTime(),
 							withinPrescribedTimeOfDaily.getWithinPrescribedPremiumTime(),
-							withinPrescribedTimeOfDaily.getWithinStatutoryMidNightTime(),
-							withinPrescribedTimeOfDaily.getVacationAddTime()),
+							withinPrescribedTimeOfDaily.getWithinStatutoryMidNightTime()),
 					new AttendanceTime(0),
 					workType);
 			this.timeSeriesWorks.putIfAbsent(ymd, workTimeOfTimeSeries);

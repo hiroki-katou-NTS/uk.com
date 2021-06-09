@@ -31,7 +31,7 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
     private static final String TEMPLATE_FILE_ADD = "report/KWR005.xlsx";
     private static final String EXCEL_EXT = ".xlsx";
     private static final String PRINT_AREA = "A1:O";
-    private static final int NUMBER_ROW_OF_PAGE = 30;
+    private static final int NUMBER_ROW_OF_PAGE = 29;
 
     @Override
     public void generate(FileGeneratorContext generatorContext, WorkLedgerExportDataSource dataSource) {
@@ -59,14 +59,13 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         String companyName = dataSource.getCompanyName();
-        pageSetup.setHeader(0, "&7&\"ＭＳ フォントサイズ\"" + companyName);
-        pageSetup.setHeader(1, "&9&\"ＭＳ フォントサイズ\""
+        pageSetup.setHeader(0, "&9&\"ＭＳ フォントサイズ\"" + companyName);
+        pageSetup.setHeader(1, "&16&\"ＭＳ フォントサイズ,Bold\""
                 + dataSource.getTitle());
 
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
-        pageSetup.setHeader(2,
-                "&9&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
+        pageSetup.setHeader(2, "&9&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
         pageSetup.setFitToPagesTall(0);
         pageSetup.setFitToPagesWide(0);
@@ -185,8 +184,11 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
 
     private void printDate(Worksheet worksheet, int rowCount, List<YearMonth> yearMonths) {
         Cells cells = worksheet.getCells();
+        for (int i = 0; i < 15 ; i++) {
+            cells.setColumnWidthInch(i, 0.62);
+        }
         for (int mi = 0; mi < yearMonths.size(); mi++) {
-            cells.setColumnWidth(mi + 2, 6.8);
+           
             val yearMonth = yearMonths.get(mi);
             String yearMonthString = ( mi >0 && yearMonth.month()==1) ? (String.valueOf(yearMonth.year())
             +TextResource.localize("KWR005_307")+

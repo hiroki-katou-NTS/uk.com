@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util;
+package nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.enu.DailyDomainGroup;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.enu.MonthlyDomainGroup;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -86,6 +86,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 
 		temp.put(28, join(DAILY_WORK_INFO_NAME, ACTUAL, WORK_TYPE));
 		temp.put(29, join(DAILY_WORK_INFO_NAME, ACTUAL, WORK_TIME));
+		temp.put(859, join(DAILY_WORK_INFO_NAME, STRAIGHT_GO));
+		temp.put(860, join(DAILY_WORK_INFO_NAME, STRAIGHT_BACK));
 		temp.put(3, join(DAILY_WORK_INFO_NAME, joinNS(PLAN, TIME_ZONE), joinNS(ATTENDANCE, NUMBER_1)));
 		temp.put(5, join(DAILY_WORK_INFO_NAME, joinNS(PLAN, TIME_ZONE), joinNS(ATTENDANCE, NUMBER_2)));
 		temp.put(4, join(DAILY_WORK_INFO_NAME, joinNS(PLAN, TIME_ZONE), joinNS(LEAVE, NUMBER_1)));
@@ -1931,6 +1933,17 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(1790, join(MONTHLY_RESERVE_LEAVING_REMAIN_NAME, RETENTION, REMAIN, AFTER, DAYS));
 		temp.put(1791, join(MONTHLY_RESERVE_LEAVING_REMAIN_NAME, REAL + RETENTION, REMAIN, AFTER, DAYS));
 		
+		temp.put(2069, join(WEEKLY_ATTENDANCE_TIME_EXESS, TIME, joinNS(TIME, NUMBER_1, NUMBER_1)));
+		temp.put(2070, join(WEEKLY_ATTENDANCE_TIME_EXESS, TIME, joinNS(TIME, NUMBER_1, NUMBER_2)));
+		temp.put(2071, join(WEEKLY_ATTENDANCE_TIME_EXESS, TIME, joinNS(TIME, NUMBER_1, NUMBER_3)));
+		temp.put(2072, join(WEEKLY_ATTENDANCE_TIME_EXESS, TIME, joinNS(TIME, NUMBER_1, NUMBER_4)));
+		temp.put(2073, join(WEEKLY_ATTENDANCE_TIME_EXESS, TIME, joinNS(TIME, NUMBER_1, NUMBER_5)));
+		temp.put(2074, join(WEEKLY_ATTENDANCE_TIME_EXESS, TIME, joinNS(TIME, NUMBER_1, NUMBER_6)));
+		temp.put(2075, join(WEEKLY_ATTENDANCE_TIME_EXESS, TIME, joinNS(TIME, NUMBER_1, NUMBER_7)));
+		temp.put(2076, join(WEEKLY_ATTENDANCE_TIME_EXESS, TIME, joinNS(TIME, NUMBER_1, NUMBER_8)));
+		temp.put(2077, join(WEEKLY_ATTENDANCE_TIME_EXESS, TIME, joinNS(TIME, NUMBER_1, NUMBER_9)));
+		temp.put(2078, join(WEEKLY_ATTENDANCE_TIME_EXESS, TIME, joinNS(TIME, NUMBER_1, NUMBER_1, NUMBER_0)));
+		
 	}
 
 	private static void getMonthlyKey2(Map<Integer, String> temp) {
@@ -2235,6 +2248,9 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(2063, join(MONTHLY_ATTENDANCE_TIME_NAME, VERTICAL_TOTAL, TIME, TOPPAGE, OVERTIME));
 		temp.put(2064, join(MONTHLY_ATTENDANCE_TIME_NAME, VERTICAL_TOTAL, TIME, TOPPAGE, HOLIDAY_WORK));
 		temp.put(2065, join(MONTHLY_ATTENDANCE_TIME_NAME, VERTICAL_TOTAL, TIME, TOPPAGE, FLEX));
+		
+		temp.put(2245, join(MONTHLY_ATTENDANCE_TIME_NAME, VERTICAL_TOTAL, TIME, PREMIUM, PREMIUM + TOTAL));
+		temp.put(2246, join(MONTHLY_ATTENDANCE_TIME_NAME, VERTICAL_TOTAL, AMOUNT, WORK_TIME));
 		
 		temp.put(2066, join(MONTHLY_ATTENDANCE_TIME_NAME, EXCESS, SUPER_60 + TRANSFER));
 		temp.put(2067, join(MONTHLY_ATTENDANCE_TIME_NAME, EXCESS, SUPER_60 + GRANT));
@@ -3389,7 +3405,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 	}
 	
 	public static Map<Integer, Integer> mapOptionalItemIdsToNos(AttendanceItemType type) {
-		if(type == AttendanceItemType.MONTHLY_ITEM){
+		if(type == AttendanceItemType.MONTHLY_ITEM || type == AttendanceItemType.WEEKLY_ITEM) {
 			return mapMonthlyOptionalItemIdsToNos();
 		}
 		return mapDailyOptionalItemIdsToNos();
@@ -3420,7 +3436,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 	}
 	
 	public static String getPath(int key, AttendanceItemType type) {
-		if (type == AttendanceItemType.MONTHLY_ITEM) {
+		if (type == AttendanceItemType.MONTHLY_ITEM || type == AttendanceItemType.WEEKLY_ITEM) {
 			return MONTHLY_ITEM_ID_CONTAINER.get(key);
 		} else if (type == AttendanceItemType.ANY_PERIOD_ITEM) {
 			return ANY_PERIOD_ITEM_ID_CONTAINER.get(key);
@@ -3445,7 +3461,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 			return getFullPair(type);
 		}
 		Map<Integer, String> source;
-		if (type == AttendanceItemType.MONTHLY_ITEM) {
+		if (type == AttendanceItemType.MONTHLY_ITEM || type == AttendanceItemType.WEEKLY_ITEM) {
 			source = MONTHLY_ITEM_ID_CONTAINER;
 		} else if (type == AttendanceItemType.DAILY_ITEM) {
 			source = DAY_ITEM_ID_CONTAINER;
@@ -3457,7 +3473,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 	}
 
 	public static Stream<ItemValue> getFullPair(AttendanceItemType type) {
-		if (type == AttendanceItemType.MONTHLY_ITEM) {
+		if (type == AttendanceItemType.MONTHLY_ITEM || type == AttendanceItemType.WEEKLY_ITEM) {
 			return MONTHLY_ITEM_ID_CONTAINER.entrySet().stream().map(c -> ItemValue.build(c.getValue(), c.getKey()));
 		} else if (type == AttendanceItemType.ANY_PERIOD_ITEM) {
 			return ANY_PERIOD_ITEM_ID_CONTAINER.entrySet().stream().map(c -> ItemValue.build(c.getValue(), c.getKey()));
@@ -3473,7 +3489,7 @@ public class AttendanceItemIdContainer implements ItemConst {
 		return DAY_ITEM_ID_CONTAINER.get(i.getItemId()).contains(OPTIONAL_ITEM_VALUE);
 	}
 
-	private static String join(String... arrays) {
+	public static String join(String... arrays) {
 		return StringUtils.join(arrays, DEFAULT_SEPERATOR);
 	}
 	

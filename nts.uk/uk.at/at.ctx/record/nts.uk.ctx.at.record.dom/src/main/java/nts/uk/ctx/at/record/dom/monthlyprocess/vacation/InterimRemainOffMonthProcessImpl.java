@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo;
+package nts.uk.ctx.at.record.dom.monthlyprocess.vacation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,13 +13,15 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.CreateDailyInterimRemainMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService.Require;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthlyGetter;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedRemainDataForMonthlyAgg;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -68,7 +70,7 @@ public class InterimRemainOffMonthProcessImpl implements InterimRemainOffMonthPr
 			String empId, DatePeriod period, List<DailyInterimRemainMngData> daily, IntegrationOfMonthly monthly) {
 
 		/** 年休の比較 */
-		compareAnnualHoliday(require, cacheCarrier, cid, empId, period, getDaily(daily, c -> c.getAnnualHolidayData().orElse(null)), monthly);
+		//compareAnnualHoliday(require, cacheCarrier, cid, empId, period, getDaily(daily, c -> c.getAnnualHolidayData().orElse(null)), monthly);
 
 		/** 積立年休の比較 */
 
@@ -112,7 +114,7 @@ public class InterimRemainOffMonthProcessImpl implements InterimRemainOffMonthPr
 
 		/** 暫定年休管理データと月別実績の日数を比較 */
 //	}
-	
+
 	/** 積立年休の比較 */
 
 	/** 特別休暇の比較 */

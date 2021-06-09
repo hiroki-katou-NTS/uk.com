@@ -46,6 +46,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget.g
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget.getvacationaddtime.GetVacationAddTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculationAndMinus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.AggregateMonthlyValue;
@@ -1687,14 +1688,19 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		// 「法定内集計設定．集計設定」を確認する
 		if (flexAggrSet.getLegalAggrSet().getAggregateSet() ==
 				AggregateSetting.INCLUDE_ALL_OUTSIDE_TIME_IN_FLEX_TIME) return;		// 時間外は全てフレ
+
+		/** 月別実績の時間項目を丸める */
+		int flexShortageMinutes = companySets.getRoundingSet().itemRound(AttendanceItemOfMonthly.FLEX_TIME.value, this.flexShortageTime).v();
 		
 		// フレックス不足時間を確認する
-		int flexShortageMinutes = this.flexShortageTime.v();
 		if (flexShortageMinutes <= 0) return;
 		
 		/** 次の集計期間で同じ労働制で集計するかを確認する */
-		if(WorkingSystemChangeCheckService.isSameWorkingSystemWithNextAggrPeriod(require, cacheCarrier, employeeId, period, WorkingSystem.FLEX_TIME_WORK) == WorkingSystemChangeState.CHANGED)
+		if(WorkingSystemChangeCheckService.isSameWorkingSystemWithNextAggrPeriod(require, cacheCarrier, employeeId, period, WorkingSystem.FLEX_TIME_WORK) == WorkingSystemChangeState.CHANGED) {
+			/** フレックス繰越不可時間　←　フレックス不足時間(丸め後) */
+			this.flexCarryforwardTime.setFlexNotCarryforwardTime(new AttendanceTimeMonth(flexShortageMinutes));
 			return;
+		}
 		
 		// 翌月の所定と法定の差を求める
 		int diffNextMonth = 0;

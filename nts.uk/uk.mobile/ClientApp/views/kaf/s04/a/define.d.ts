@@ -286,6 +286,7 @@ export interface IOpActualContentDisplayLst {
         stampRecordOutput: {
             outingTime: IOutingTime[];
         }
+        trackRecordAtr: number;
     }
 }
 

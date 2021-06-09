@@ -9,6 +9,7 @@ module nts.uk.com.view.kcp016.test.viewmodel {
         selectType: KnockoutObservable<number>;
         rows: KnockoutObservable<number>;
         selectTypes: KnockoutObservableArray<any>;
+        showNoSelectionItem: KnockoutObservable<boolean>;
         value: any;
 
         componentName: KnockoutObservable<string> = ko.observable("kcp016-component");
@@ -16,6 +17,7 @@ module nts.uk.com.view.kcp016.test.viewmodel {
         created(params: any) {
             const vm = this;
             vm.multiple = ko.observable(true);
+            vm.showNoSelectionItem = ko.observable(false);
             vm.onDialog = ko.observable(false);
             vm.selectType = ko.observable(1);
             vm.rows = ko.observable(10);
@@ -32,6 +34,14 @@ module nts.uk.com.view.kcp016.test.viewmodel {
             const vm = this;
             vm.multiple.subscribe(value => {
                 if (value) {
+                    vm.value = ko.observableArray(["02", "04", "06"]);
+                } else {
+                    vm.value = ko.observable("02");
+                }
+                vm.componentName.valueHasMutated();
+            });
+            vm.showNoSelectionItem.subscribe(value => {
+                if (!value) {
                     vm.value = ko.observableArray(["02", "04", "06"]);
                 } else {
                     vm.value = ko.observable("02");
