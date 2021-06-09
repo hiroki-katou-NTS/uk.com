@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.input.canonicalize.groups;
+package nts.uk.ctx.exio.infra.entity.input.importableitem.group;
 
 import static nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode.*;
 import static org.assertj.core.api.Assertions.*;
@@ -14,7 +14,6 @@ import lombok.val;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.importableitem.group.TransactionUnit;
-import nts.uk.ctx.exio.infra.entity.input.importableitem.group.XimctGroup;
 
 @RunWith(Enclosed.class)
 public class XimctGroupTest {
