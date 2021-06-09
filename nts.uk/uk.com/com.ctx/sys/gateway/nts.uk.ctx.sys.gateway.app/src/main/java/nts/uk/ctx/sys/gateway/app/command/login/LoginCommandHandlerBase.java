@@ -46,7 +46,7 @@ public abstract class LoginCommandHandlerBase<
 		Req require = getRequire(command);
 
 		if (UKServerSystemProperties.isCloud()) {
-			if (authenticateTanant(require, command)) {
+			if (!authenticateTanant(require, command)) {
 				// テナント認証失敗
 				return tenantAuthencationFailed();
 			}
