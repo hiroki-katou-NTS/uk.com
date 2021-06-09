@@ -2,6 +2,6 @@ package nts.uk.ctx.exio.dom.input.canonicalize;
 
 import java.util.List;
 
-public interface CanonicalizedDataMetaRepository {
+public interface ImportiongItemRepository {
 	List<String> get(String cid);
 }

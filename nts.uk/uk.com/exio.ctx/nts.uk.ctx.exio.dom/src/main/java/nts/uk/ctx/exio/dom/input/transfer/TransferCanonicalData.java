@@ -13,32 +13,42 @@ import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.RelationalOperator;
 import nts.uk.cnv.core.dom.conversionsql.WhereSentence;
 import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
+import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 正準化データを移送する
  * @author ai_muto
  */
 public class TransferCanonicalData {
+	private static final String EMPROYEE_ID_COLUMN_NAME = "SID";
+	
 	public static AtomTask transferAll(Require require, ExecutionContext context) {
 		return transfer(require, context, Collections.emptyList());
 	}
 	
-	public static AtomTask transferWithWhere(Require require, ExecutionContext context, String columnName, String value) {
+	public static AtomTask transferByEmployee(Require require, ExecutionContext context, String employeeId) {
 		WhereSentence whereSentence = new WhereSentence(
-				new ColumnName("", columnName),
+				new ColumnName(EMPROYEE_ID_COLUMN_NAME),
 				RelationalOperator.Equal,
-				Optional.of(new ColumnExpression("'" + value + "'"))
+				Optional.of(new ColumnExpression("'" + employeeId + "'"))
 			);
 		
 		return transfer(require, context, Arrays.asList(whereSentence));
 	}
 	
 	private static AtomTask transfer(Require require, ExecutionContext context, List<WhereSentence> wherelist) {
-		List<String> importiongItem = require.getImportiongItem();
+		List<String> importiongItem = require.getImportingItem();
 		ConversionCodeType cct = context.getMode().getType();
-		List<ConversionTable> conversionTables = require.getConversionTable(context.getGroupId(), cct);
+		
+		ImportingGroup importingGroup = require.getImportingGroup(context.getGroupId());
+		
+		ConversionSource source = require.getConversionSource(importingGroup.getName());
+		ConversionSource sourceWithSuffix = editSourceTableName(source);
+		List<ConversionTable> conversionTables = require.getConversionTable(sourceWithSuffix, importingGroup.getName(), cct);
 		
 		List<ConversionSQL> conversionSql = new ArrayList<>();
 		for(ConversionTable conversionTable : conversionTables) {
@@ -64,9 +74,28 @@ public class TransferCanonicalData {
 		});
 	}
 	
+	private static ConversionSource editSourceTableName(ConversionSource base) {
+		String cid = AppContexts.user().companyId();
+		// TODO: 正準化テーブルのサフィックスの付与ルールは適正なクラスに委譲予定
+		return new ConversionSource(
+				base.getSourceId(),
+				base.getCategory(),
+				base.getSourceTableName() + "_" + cid.replace("-", "_"),
+				base.getCondition(),
+				base.getMemo(),
+				base.getDateColumnName(),
+				base.getStartDateColumnName(),
+				base.getEndDateColumnName(),
+				base.getDateType(),
+				base.getPkColumns()
+			);
+	}
+
 	public interface Require{
-		List<String> getImportiongItem();
-		List<ConversionTable> getConversionTable(int groupId, ConversionCodeType cct);
+		List<String> getImportingItem();
+		ImportingGroup getImportingGroup(int groupId);
+		ConversionSource getConversionSource(String groupName);
+		List<ConversionTable> getConversionTable(ConversionSource source, String groupName, ConversionCodeType cct);
 		int execute(List<ConversionSQL> conversionSqls);
 	}
 	

@@ -22,7 +22,7 @@ public class ExecuteImporting {
 				.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
 		val context = ExecutionContext.create(setting);
 		
-		val transactionUnit = require.getGroupTransactionStrategy(context.getGroupId())
+		val transactionUnit = require.getImportingGroup(context.getGroupId())
 				.getTransactionUnit();
 		
 		switch (transactionUnit) {
@@ -67,9 +67,9 @@ public class ExecuteImporting {
 			
 			AtomTask atomTaskAdjust = AdjustExistingData.adjust(require, context, employeeId);
 			
-			// TODO: 移送
+			AtomTask atomTaskTransfer = TransferCanonicalData.transferByEmployee(require, context, employeeId);
 			
-			return atomTaskAdjust;
+			return atomTaskAdjust.then(atomTaskTransfer);
 		});
 	}
 	
@@ -79,8 +79,8 @@ public class ExecuteImporting {
 			TransferCanonicalData.Require {
 		
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
-		
-		ImportingGroup getGroupTransactionStrategy(int groupId);
+
+		ImportingGroup getImportingGroup(int groupId);
 		
 		List<String> getAllEmployeeIdsOfCanonicalizedData(ExecutionContext context);
 	}

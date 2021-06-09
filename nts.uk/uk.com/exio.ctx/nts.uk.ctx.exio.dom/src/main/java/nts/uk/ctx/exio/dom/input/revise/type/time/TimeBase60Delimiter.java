@@ -6,11 +6,11 @@ package nts.uk.ctx.exio.dom.input.revise.type.time;
 public enum TimeBase60Delimiter {
 	
 	//区切り文字なし
-	NO_DELIMITER(0, "Enum_Delimiter_NO_DELIMITER", ""), 
+	NO_DELIMITER(0, "Enum_TimeBase60Delimiter_NO_DELIMITER", ""), 
 	//小数点で区切る
-	SEPARATE_BY_DECIMAL(1, "Enum_Delimiter_SEPARATE_BY_DECIMAL", "."), 
+	SEPARATE_BY_DECIMAL(1, "Enum_TimeBase60Delimiter_SEPARATE_BY_DECIMAL", "."), 
 	//コロンで区切る
-	SEPARATE_BY_COLON(2, "Enum_Delimiter_SEPARATE_BY_COLON", ":");
+	SEPARATE_BY_COLON(2, "Enum_TimeBase60Delimiter_SEPARATE_BY_COLON", ":");
 
 	/** The value. */
 	public final int value;
