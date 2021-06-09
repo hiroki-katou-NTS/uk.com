@@ -97,7 +97,7 @@
                                                 optionsText: 'name',
                                                 value: usageAtr,
                                                 required: true,
-                                                enable: ko.computed(function() { $parent.hasSelected() &amp;&amp; $parents[1].langJP())
+                                                enable: ko.computed(function() { return $parent.hasSelected() &amp;&amp; $parents[1].langJP(); }, this )
                                              }"></div>
                                  </td>
                               </tr>
@@ -113,7 +113,8 @@
                                                 optionsValue: 'code',
                                                 optionsText: 'name',
                                                 value: selectedClac,
-                                                enable: ko.computed(function() { usageAtr() === 1 &amp;&amp; $parent.hasSelected() &amp;&amp; $parents[1].langJP())}"></div>
+                                                enable: ko.computed(function() { return usageAtr() === 1 &amp;&amp; $parent.hasSelected() &amp;&amp; $parents[1].langJP(); }, this )
+                                    }"></div>
                                  </td>
                               </tr>
                               <tr>
@@ -128,7 +129,8 @@
                                                 optionsValue: 'code',
                                                 optionsText: 'name',
                                                 value: performanceAtr,
-                                                enable: ko.computed(function() { usageAtr() === 1 &amp;&amp; $parents[1].langJP())}"></div>
+                                                enable: ko.computed(function() { return usageAtr() === 1 &amp;&amp; $parents[1].langJP(); }, this )
+                                    }"></div>
                                  </td>
                               </tr>
                               <tr>
