@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface WorkMasterAdapter {
 
-    List<Task> getTaskList(String cid, Integer taskFrameNo, List<String> codes);
+    List<TaskImport> getTaskList(String cid, Integer taskFrameNo, List<String> codes);
 }

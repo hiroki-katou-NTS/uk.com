@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.ac.workrecord;
 
+import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.TaskImport;
 import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.WorkMasterAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.*;
@@ -19,10 +20,14 @@ public class WorkMasterAdapterImpl implements WorkMasterAdapter {
     private WorkMasterPub workMasterPub;
 
     @Override
-    public List<Task> getTaskList(String cid, Integer taskFrameNo, List<String> codes) {
-        List<TaskPubExport> data = workMasterPub.getListTask(cid, taskFrameNo, codes);
+    public List<TaskImport> getTaskList(String cid, Integer taskFrameNo, List<String> codes) {
+        List<TaskPubExport> taskExportList = workMasterPub.getListTask(cid, taskFrameNo, codes);
 
-        return convertToTask(data);
+        return taskExportList.stream().map(t -> new TaskImport(
+                t.getCode(),
+                t.getTaskFrameNo(),
+                t.getDisplayInfo().getTaskName()
+        )).collect(Collectors.toList());
     }
 
     private List<Task> convertToTask(List<TaskPubExport> data) {

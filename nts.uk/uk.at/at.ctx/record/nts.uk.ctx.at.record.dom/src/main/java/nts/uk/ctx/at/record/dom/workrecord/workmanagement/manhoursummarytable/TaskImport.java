@@ -15,6 +15,6 @@ public class TaskImport {
     /** 作業名称 */
     private final String taskName;
 
-    /** 略名　*/
-    private final String taskAbName;
+//    /** 略名　*/
+//    private final String taskAbName;
 }
