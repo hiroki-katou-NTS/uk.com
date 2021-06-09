@@ -64,7 +64,7 @@ public class GetDailyPerformanceData {
 							.filter(x -> x.getWorkNo() == ouenSheet.getWorkNo()).findFirst();
 					
 					WorkDetailsParam workDetailsParam = new WorkDetailsParam(
-							new SupportFrameNo(ouenSheet.getTimeSheet().getWorkNo().v()),
+							new SupportFrameNo(ouenSheet.getWorkNo()),
 							new TimeZone(ouenSheet.getTimeSheet().getStart().get(),
 									ouenSheet.getTimeSheet().getEnd().get(),
 									Optional.ofNullable(

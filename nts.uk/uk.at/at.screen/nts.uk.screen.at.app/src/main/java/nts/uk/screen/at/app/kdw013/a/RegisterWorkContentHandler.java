@@ -86,9 +86,8 @@ public class RegisterWorkContentHandler {
 					return new WorkDetail(workDetail.getDate(),
 							
 							workDetail.getLstWorkDetailsParamCommand().stream()
-									.map(workDetailParam -> new WorkDetailsParam(new SupportFrameNo(
-											workDetailParam.getSupportFrameNo() == 0 ? count.getAndIncrement()
-													: workDetailParam.getSupportFrameNo()),
+									.map(workDetailParam -> new WorkDetailsParam(new SupportFrameNo(getSupNo(workDetail.getLstWorkDetailsParamCommand(),workDetailParam.getSupportFrameNo(),count)
+											),
 											new TimeZone(
 													new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.HAND_CORRECTION_PERSON, Optional.empty()),
 															new TimeWithDayAttr(workDetailParam.getTimeZone().getStart())),
@@ -136,5 +135,28 @@ public class RegisterWorkContentHandler {
 		registerWorkContentDto.setLstOvertimeLeaveTime(lstOvertimeLeaveTime);
 		
 		return registerWorkContentDto;
+	}
+
+	private Integer getSupNo(List<WorkDetailsParamCommand> lstWorks, int currentNo, AtomicInteger count) {
+
+		Integer result = 0;
+		if (currentNo != 0) {
+			return currentNo;
+		}
+
+		List<Integer> noLst = lstWorks.stream().filter(x -> x.getSupportFrameNo() != 0).map(x -> x.getSupportFrameNo())
+				.collect(Collectors.toList());
+
+		if (noLst.isEmpty()) {
+			return count.getAndIncrement();
+		} else {
+			for (int i = 0; i < noLst.size(); i++) {
+				Integer newNo = noLst.get(i) + 1;
+				if (noLst.indexOf(newNo) == -1) {
+					result = newNo;
+				}
+			}
+		}
+		return result;
 	}
 }
