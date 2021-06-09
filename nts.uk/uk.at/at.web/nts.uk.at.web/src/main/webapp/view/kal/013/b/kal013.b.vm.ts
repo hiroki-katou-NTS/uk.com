@@ -410,13 +410,21 @@ module nts.uk.at.view.kal013.b {
                 return true;
             }
 
-            if  (( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN],vm.pattern().operator()) != -1
-                    && vm.pattern().minValue() >= vm.pattern().maxValue() )
-                || ( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN],vm.pattern().operator()) == -1
-                    && vm.pattern().minValue() > vm.pattern().maxValue() ))
-            {
-                return false;
+            switch (vm.pattern().operator()) {
+                case RangeCompareType.BETWEEN_RANGE_OPEN:
+                case RangeCompareType.OUTSIDE_RANGE_OPEN:
+                    if (parseFloat(vm.pattern().minValue().toString()) >= parseFloat(vm.pattern().maxValue().toString()))
+                        return false;
+                    break;
+                case RangeCompareType.BETWEEN_RANGE_CLOSED:
+                case RangeCompareType.OUTSIDE_RANGE_CLOSED:
+                    if (parseFloat(vm.pattern().minValue().toString()) > parseFloat(vm.pattern().maxValue().toString()))
+                        return false;
+                    break;
+                default:
+                    break;
             }
+
             return true;
         }
 
