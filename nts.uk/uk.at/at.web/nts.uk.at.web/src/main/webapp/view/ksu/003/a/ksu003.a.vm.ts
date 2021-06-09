@@ -4416,8 +4416,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (empId === self.employeeIdLogin) color = "#94b7fe";
 			else color = "#cee6ff";
 
-			if (self.colorBreak45 == true) $(breakTime).css("background-color", color);
-			else $(breakTime).css("background-color", "#FFFFFF");
+			if (self.colorBreak45 == true) 
+				$(breakTime).css("background-color", color);
+				
+			if (self.colorBreak45 == false) {
+				if(breakTime != color)
+				$(breakTime).css("background-color", "#FFFFFF");
+			}
 
 			if (!checkColorTime.workTimeCode) $(cssWorkTime).css("background-color", color);
 
