@@ -51,7 +51,7 @@ public class MasterNameInformation {
                     dispInfo = createDisplayInfo(Optional.empty(), Optional.empty());
                 break;
             case WORKPLACE:
-                val wkplInfo = affWorkplaceInfoList.stream().filter(x -> x.getWorkplaceId().equals(code)).findFirst();
+                val wkplInfo = workPlaceInfoList.stream().filter(x -> x.getWorkplaceId().equals(code)).findFirst();
                 if (wkplInfo.isPresent())
                     dispInfo = createDisplayInfo(Optional.of(wkplInfo.get().getWorkplaceCode()), Optional.of(wkplInfo.get().getWorkplaceDisplayName()));
                 else
