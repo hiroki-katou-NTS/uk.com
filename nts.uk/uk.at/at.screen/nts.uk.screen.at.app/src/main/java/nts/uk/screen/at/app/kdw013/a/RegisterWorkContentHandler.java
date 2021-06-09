@@ -151,9 +151,12 @@ public class RegisterWorkContentHandler {
 			return count.getAndIncrement();
 		} else {
 			for (int i = 0; i < noLst.size(); i++) {
-				Integer newNo = noLst.get(i) + 1;
+				Integer newNo =  noLst.get(i) + 1;
 				if (noLst.indexOf(newNo) == -1) {
-					result = newNo;
+					if(count.get() == 1){
+						count.set(newNo);
+					}
+					result = count.getAndIncrement();
 				}
 			}
 		}
