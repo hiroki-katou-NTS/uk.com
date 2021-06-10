@@ -7,6 +7,7 @@ import { KDL002Component } from '../../../kdl/002';
 import { Kdl001Component } from '../../../kdl/001';
 import { KdlS35Component } from '../../../kdl/s35';
 import { KdlS36Component } from '../../../kdl/s36';
+import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 @component({
     name: 'kafs06a',
     route: '/kaf/s06/a',
@@ -64,7 +65,8 @@ import { KdlS36Component } from '../../../kdl/s36';
         'worktype': KDL002Component,
         'worktime': Kdl001Component,
         'kdls35': KdlS35Component,
-        'kdls36': KdlS36Component
+        'kdls36': KdlS36Component,
+        'cmms45c': CmmS45CComponent
     }
 })
 export class KafS06AComponent extends KafS00ShrComponent {
@@ -180,7 +182,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
 
     @Prop() 
-    public readonly params: InitParam;
+    public params: InitParam;
     // @Watch('c9') 
     // public updateValidate(data: boolean) {
     //     const self = this;
@@ -968,6 +970,43 @@ export class KafS06AComponent extends KafS00ShrComponent {
         const vm = this;
 
         return new Promise((resolve) => {
+            if (failData.messageId == 'Msg_197') {
+                vm.$modal.error({ messageId: 'Msg_197', messageParams: [] }).then(() => {
+                    let appID = vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.appID;
+                    vm.$modal('cmms45c', { 'listAppMeta': [appID], 'currentApp': appID }).then((newData: InitParam) => {
+                        vm.params = newData;
+                        vm.modeNew = false;
+                        vm.isFirstUpdate = true;
+                        vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
+                        vm.model = {
+                            appAbsenceStartInfoDto: vm.params.appDetail.appAbsenceStartInfoDto,
+                            applyForLeaveDto: vm.params.appDetail.applyForLeaveDto
+                        } as Model;
+                        vm.fetchData();
+                        if (!vm.isValidateWorkHours1) {
+                            vm.$updateValidator('workHours1', {
+                                validate: false
+                            });
+                        } else {
+                            vm.$updateValidator('workHours1', {
+                                validate: true
+                            });
+                        }
+                        if (vm.c20) {
+                            vm.$updateValidator('relationshipReason', {
+                                validate: true
+                            });
+                        } else {
+                            vm.$updateValidator('relationshipReason', {
+                                validate: false
+                            });
+                        }
+                    });
+                });
+    
+                return resolve(false);
+            }
+
             if (failData.messageId == 'Msg_26') {
                 vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
                 .then(() => {

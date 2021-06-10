@@ -72,6 +72,12 @@ export class KafS08AComponent extends Vue {
         }
     }
 
+    public initFromDetail(value) {
+        const vm= this;
+        vm.mode = false;
+        vm.data = value;
+    }
+
     //thực hiện emit từ component con A1
     public ProcessNextToStepTwo(listDate,
                                 application,

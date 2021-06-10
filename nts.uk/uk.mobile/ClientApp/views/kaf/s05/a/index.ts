@@ -10,6 +10,7 @@ import { Kdl001Component } from '../../../kdl/001';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
 import { OverTime } from '../step2/index';
 import { OverTimeWorkHoursDto } from '../../s00/sub/p2';
+import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 
 @component({
     name: 'kafs05a',
@@ -26,6 +27,7 @@ import { OverTimeWorkHoursDto } from '../../s00/sub/p2';
         'kafS05Step3Component': KafS05Step3Component,
         'worktype': KDL002Component,
         'worktime': Kdl001Component,
+        'cmms45c': CmmS45CComponent
     }
 
 })
@@ -51,7 +53,7 @@ export class KafS05Component extends KafS00ShrComponent {
     public isMsg_1556: boolean = false;
 
     @Prop()
-    public readonly params: InitParam;
+    public params: InitParam;
 
     public get getoverTimeClf(): number {
         const self = this;
@@ -897,6 +899,34 @@ export class KafS05Component extends KafS00ShrComponent {
         const vm = this;
 
         return new Promise((resolve) => {
+            if (failData.messageId == 'Msg_197') {
+                vm.$modal.error({ messageId: 'Msg_197', messageParams: [] }).then(() => {
+                    let appID = vm.appDispInfoStartupOutput.appDetailScreenInfo.application.appID;
+                    vm.$modal('cmms45c', { 'listAppMeta': [appID], 'currentApp': appID }).then((newData: InitParam) => {
+                        vm.params = newData;
+                        if (!_.isNil(vm.params)) {
+                            vm.modeNew = false;
+                            let model = {} as Model;
+                            model.appOverTime = vm.params.appDetail.appOverTime as AppOverTime;
+                            model.displayInfoOverTime = vm.params.appDetail.displayInfoOverTime as DisplayInfoOverTime;
+                            vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
+                            vm.model = model;
+                        }
+                        vm.overTimeClf = _.get(vm.model, 'appOverTime.overTimeClf') || 2;
+                        if (vm.overTimeClf == 0) {
+                            vm.pgName = 'kafs05step1';
+                        } else if (vm.overTimeClf == 1) {
+                            vm.pgName = 'kafs05step2';
+                        } else {
+                            vm.pgName = 'kafs05step3';
+                        }
+                        vm.fetchData();
+                    });
+                });
+    
+                return resolve(false);
+            }
+
             if (failData.messageId == 'Msg_26') {
                 vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
                     .then(() => {
