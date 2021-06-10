@@ -120,6 +120,10 @@ class KDP002BViewModel extends ko.ViewModel {
                 }
             }
         });
+
+        vm.showBtnNoti.subscribe(() => {
+            vm.settingSizeView();
+        })
     }
 
     mounted() {

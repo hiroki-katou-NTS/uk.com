@@ -8,6 +8,7 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceAmountMonth;
 
 /**
  * 月別実績の割増時間
@@ -22,12 +23,16 @@ public class PremiumTimeOfMonthly implements Serializable{
 	/** 割増時間 */
 	private Map<Integer, AggregatePremiumTime> premiumTime;
 	
+	/** 割増金額合計 */
+	private AttendanceAmountMonth premiumAmountTotal;
+	
 	/**
 	 * コンストラクタ
 	 */
 	public PremiumTimeOfMonthly(){
 		
 		this.premiumTime = new HashMap<>();
+		this.premiumAmountTotal = new AttendanceAmountMonth(0);
 	}
 	
 	/**
@@ -40,13 +45,14 @@ public class PremiumTimeOfMonthly implements Serializable{
 	 * @param illegalHolidayWorkTime 法定外休出時間
 	 * @return 月別実績の割増時間
 	 */
-	public static PremiumTimeOfMonthly of(List<AggregatePremiumTime> premiumTimes){
+	public static PremiumTimeOfMonthly of(List<AggregatePremiumTime> premiumTimes, AttendanceAmountMonth premiumAmountTotal) {
 		
 		val domain = new PremiumTimeOfMonthly();
 		for (val premiumTime : premiumTimes){
 			val premiumTimeItemNo = Integer.valueOf(premiumTime.getPremiumTimeItemNo());
 			domain.premiumTime.putIfAbsent(premiumTimeItemNo, premiumTime);
 		}
+		domain.premiumAmountTotal = premiumAmountTotal;
 		return domain;
 	}
 	
@@ -68,6 +74,10 @@ public class PremiumTimeOfMonthly implements Serializable{
 			targetPremiumTime.addMinutesToTime(premiumTime.getPremitumTime().v());
 			targetPremiumTime.addAmount(premiumTime.getPremiumAmount().v());
 		}
+		
+		/** 割増金額合計を求める */
+		val total = this.premiumTime.entrySet().stream().mapToInt(c -> c.getValue().getAmount().v()).sum();
+		this.premiumAmountTotal = new AttendanceAmountMonth(total);
 	}
 
 	/**
@@ -87,5 +97,6 @@ public class PremiumTimeOfMonthly implements Serializable{
 			val itemNo = targetPremiumValue.getPremiumTimeItemNo();
 			this.premiumTime.putIfAbsent(itemNo, targetPremiumValue);
 		}
+		this.premiumAmountTotal = this.premiumAmountTotal.addAmount(target.premiumAmountTotal.v());
 	}
 }

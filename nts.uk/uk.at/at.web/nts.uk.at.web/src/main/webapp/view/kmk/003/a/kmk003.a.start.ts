@@ -4,6 +4,9 @@ module nts.uk.at.view.kmk003.a {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             $('#search-daily-atr').focus();
+            setTimeout(function () {
+                $('.clear-icon').trigger("click");
+            }, 100)
         });
     });
 }

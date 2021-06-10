@@ -1096,7 +1096,7 @@ module nts.uk.at.view.kmk006.a {
                 self.isLoading(true);
                 nts.uk.ui.block.grayout();
                 self.loadComAutoCal().then(() => { nts.uk.ui.block.clear(); })
-                .always(() => self.isLoading(false));
+                self.isLoading(false);
 
                 dfd.resolve();
 
@@ -1119,8 +1119,8 @@ module nts.uk.at.view.kmk006.a {
                         self.loadJobAutoCal(code);
                         nts.uk.ui.block.clear();
                     });
-                }).always(() => self.isLoading(false));
-                
+                })
+                self.isLoading(false);
             }
 
 
@@ -1141,7 +1141,7 @@ module nts.uk.at.view.kmk006.a {
                         self.loadWkpAutoCal(self.multiSelectedWorkplaceId()).then(() => {nts.uk.ui.block.clear();});                       
                     });                  
                 })
-                .always(() => self.isLoading(false));
+                self.isLoading(false);
             }
 
             public onSelectWkpJob(): void {
@@ -1172,9 +1172,8 @@ module nts.uk.at.view.kmk006.a {
                             self.loadWkpJobAutoCal(self.totalSelectedWorkplaceId(), code).done(() => {nts.uk.ui.block.clear();});                          
                         });
                     })
-                    .always(() => self.isLoading(false));   
 
-                           
+                    self.isLoading(false);
             }
 
             /**

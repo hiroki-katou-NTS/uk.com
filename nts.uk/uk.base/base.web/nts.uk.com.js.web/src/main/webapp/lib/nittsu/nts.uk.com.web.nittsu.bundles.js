@@ -52606,6 +52606,11 @@ var nts;
                     return MasterUIHeaderBindingHandler;
                 }());
                 layout.MasterUIHeaderBindingHandler = MasterUIHeaderBindingHandler;
+                ko.bindingHandlers.stopBinding = {
+                    init: function () {
+                        return { controlsDescendantBindings: true };
+                    }
+                };
                 var MasterUIBindingHandler = /** @class */ (function () {
                     function MasterUIBindingHandler() {
                     }

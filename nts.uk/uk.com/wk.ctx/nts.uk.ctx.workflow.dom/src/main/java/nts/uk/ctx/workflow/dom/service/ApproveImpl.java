@@ -301,4 +301,17 @@ public class ApproveImpl implements ApproveService {
 		});
 		return destinationList;
 	}
+
+	@Override
+	public List<String> getApprovedApproverFromPhase(ApprovalPhaseState approvalPhaseState) {
+		List<String> listUnapproveApprover = new ArrayList<>();
+		approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
+			approvalFrame.getLstApproverInfo().forEach(approverInfor -> {
+				if(approverInfor.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+					listUnapproveApprover.add(approverInfor.getApproverID());
+				}
+			});
+		});
+		return listUnapproveApprover.stream().distinct().collect(Collectors.toList());
+	}
 }

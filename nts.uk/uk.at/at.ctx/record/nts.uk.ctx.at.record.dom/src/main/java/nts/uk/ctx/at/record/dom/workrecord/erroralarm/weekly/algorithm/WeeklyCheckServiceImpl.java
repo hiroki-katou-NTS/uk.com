@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
 import org.apache.logging.log4j.util.Strings;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -25,11 +24,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.C
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CountableTarget;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.CompareOperatorText;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConvertCompareTypeToText;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceIdAndPeriodImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
@@ -43,13 +39,11 @@ import nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm.CalCountForCon
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.converter.WeeklyRecordToAttendanceItemConverter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -233,14 +227,14 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		ContinuousOutput continuousOutput = new ContinuousOutput();
 		
 		// 週次のコンバーターを交換 ErAlAttendanceItemCondition
-		//List<ItemValue> convert = monthlyRecordToAttendanceItemConverter.convert(attendanceItemMap.keySet()); TODO QA#115685
-		List<ItemValue> convert = new ArrayList<>();
-		MonthlyRecordToAttendanceItemConverter weeklyConvert = attendanceItemConvertFactory.createMonthlyConverter();
-		//weeklyConvert.withAttendanceTime(attWeekly);
+		// QA#115685
+		WeeklyRecordToAttendanceItemConverter weeklyConvert = attendanceItemConvertFactory.createWeeklyConverter();
+		weeklyConvert.withAttendanceTime(attWeekly);
 		
 		@SuppressWarnings("rawtypes")
-		ErAlAttendanceItemCondition cond = convertToErAlAttendanceItem(cid, weeklyCond);
+		WeeklyAttendanceItemCondition cond = convertToErAlAttendanceItem(cid, weeklyCond);
 		
+		// Input．週別実績の任意抽出条件．チェック項目の種類をチェック
 		WeeklyCheckItemType checkItemType = weeklyCond.getCheckItemType();
 		switch (checkItemType) {
 		case TIME:
@@ -272,7 +266,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		// チェック項目の種類は連続じゃないの場合　－＞#KAL010_1314 
 		// {0}　＝　Input．週別実績の勤怠時間から計算した値 QA#115666
 		String weeklyActualAttendanceTime = String.valueOf(sizeWeeklyActualAttendanceTime);
-		String checkTargetValue = TextResource.localize("KAL010_1314");
+		String checkTargetValue = TextResource.localize("KAL010_1314", weeklyActualAttendanceTime);
 		
 		// 週別実績の任意抽出条件．チェック項目の種類！＝4,5,6　AND　該当区分　＝　True
 		// OR
@@ -281,7 +275,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			// 「抽出結果詳細」を作成
 			// アラーム項目日付　＝Input．週別実績の勤怠時間．期間．開始日
 			extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(
-					Optional.of(ym.firstGeneralDate()), Optional.empty());
+					Optional.of(attWeekly.getPeriod().start()), Optional.empty());
 			// コメント　＝　Input．週別実績の任意抽出条件．表示メッセージ
 			if (weeklyCond.getErrorAlarmMessage() != null && weeklyCond.getErrorAlarmMessage().isPresent()) {
 				comment = Optional.ofNullable(weeklyCond.getErrorAlarmMessage().get().v());
@@ -328,13 +322,8 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 	 * @return ErAlAttendanceItemCondition
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private ErAlAttendanceItemCondition convertToErAlAttendanceItem(String cid, ExtractionCondScheduleWeekly weeklyCond) {
-		ErAlAttendanceItemCondition cond = new ErAlAttendanceItemCondition<>(
-				cid, 
-				"",
-				weeklyCond.getSortOrder(), 
-				0, true, 
-				ErrorAlarmConditionType.ATTENDANCE_ITEM.value);
+	private WeeklyAttendanceItemCondition convertToErAlAttendanceItem(String cid, ExtractionCondScheduleWeekly weeklyCond) {
+		WeeklyAttendanceItemCondition cond = new WeeklyAttendanceItemCondition<>();
 		
 		if(weeklyCond.getCheckedTarget().isPresent()) {
 			CountableTarget countableTarget = (CountableTarget)weeklyCond.getCheckedTarget().get();
@@ -346,15 +335,10 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		if (weeklyCond.getCheckConditions() != null) {
 			if (weeklyCond.getCheckConditions() instanceof CompareRange) {
 				CompareRange compareRange = (CompareRange)weeklyCond.getCheckConditions();
-				cond.setCompareRange(
-						compareRange.getCompareOperator().value, 
-						compareRange.getStartValue(), 
-						compareRange.getStartValue());
+				cond.setCompareRange(compareRange);
 			} else {
-				CompareSingleValue<Double> compareRange = (CompareSingleValue)weeklyCond.getCheckConditions();
-				cond.setCompareSingleValue(
-						compareRange.getCompareOpertor().value, 
-						ConditionType.ATTENDANCE_ITEM.value, (Double)compareRange.getValue());
+				CompareSingleValue<Double> compareRangeSingle = (CompareSingleValue)weeklyCond.getCheckConditions();
+				cond.setCompareSingleValue(compareRangeSingle);
 			}
 		}
 		
@@ -362,7 +346,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 	}
 	
 	private ContinuousOutput checkPerformanceOfConsecutiveItem(AttendanceTimeOfWeekly attWeekly,
-			ExtractionCondScheduleWeekly weeklyCond, ErAlAttendanceItemCondition<?> erAlAtdItemCon, List<ItemValue> convert, int count) {
+			ExtractionCondScheduleWeekly weeklyCond, WeeklyAttendanceItemCondition<?> erAlAtdItemCon, List<ItemValue> convert, int count) {
 		ContinuousOutput ouput = new ContinuousOutput();
 		// 勤怠項目をチェックする
 		// Output: 該当区分
@@ -370,41 +354,43 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			if (item.isEmpty()) {
 				return new ArrayList<>();
 			}
-			return convert.stream().map(iv -> getValue(iv))
+			return convert.stream().filter(x -> item.contains(x.getItemId())).map(iv -> getValue(iv))
 					.collect(Collectors.toList());
 		});
-		// 
+		
+		//
 		int continuousPeriod = 0;
 		if (weeklyCond.getContinuousPeriod().isPresent()) {
 			continuousPeriod = weeklyCond.getContinuousPeriod().get().v();
 		}
 		
+		// 連続期間のカウントを計算
 		CalCountForConsecutivePeriodOutput calCountForConsecutivePeriodOutput = calCountForConsecutivePeriodChecking.getContinuousCount(
 				count, 
 				continuousPeriod, 
 				errorAtr, 
 				null);
-		ouput.check = errorAtr;
+				
+		ouput.check = calCountForConsecutivePeriodOutput.getOptContinuousCount().isPresent();
 		ouput.continuousCountOpt = calCountForConsecutivePeriodOutput.getOptContinuousCount();
 		ouput.count = calCountForConsecutivePeriodOutput.getCount();
 		
 		return ouput;
 	}
 
-	private Boolean checkAttendanceItem(ErAlAttendanceItemCondition<?> erAlAtdItemCon, Function<List<Integer>, List<Double>> getValueFromItemIds) {
+	private Boolean checkAttendanceItem(WeeklyAttendanceItemCondition<?> erAlAtdItemCon, Function<List<Integer>, List<Double>> getValueFromItemIds) {
 		return erAlAtdItemCon.checkTarget(getValueFromItemIds);
 	}
 	
 	private Double getValue(ItemValue value) {
-		if(value.getValueType()==ValueType.DATE){
+		if(value.value() == null){
 			return 0d;
 		}
-		if (value.value() == null) {
-			return 0d;
-		}
-		else if (value.getValueType().isDouble()||value.getValueType().isInteger()) {
+		
+		if (value.getValueType().isDouble() || value.getValueType().isInteger()) {
 			return value.getValueType().isDouble() ? ((Double) value.value()) : Double.valueOf((Integer) value.value());
 		}
+		
 		return 0d;
 	}
 	

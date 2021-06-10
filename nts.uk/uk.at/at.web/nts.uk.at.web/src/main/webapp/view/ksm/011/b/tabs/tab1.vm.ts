@@ -56,26 +56,27 @@ module nts.uk.at.view.ksm011.b.tabs.tab1 {
     //会社のシフト表のルールを登録する
     registerRulesCompanyShiftTable() {
       const vm = this;
+        vm.$validate('.nts-input').then(function (valid) {
+            if (valid) {
+                vm.$blockui('show');
+                let params = {
+                    usePublicAtr: vm.publicMethod(),//公開機能の利用区分
+                    useWorkAvailabilityAtr:  vm.workRequest(),//勤務希望の利用区分
+                    holidayMaxDays: vm.maxDesiredHolidays(),//希望休日の上限日数入力
+                    closureDate: vm.deadlineSelected(),//締め日
+                    availabilityDeadLine: vm.deadlineWorkSelected(),//締切日
+                    availabilityAssignMethod: vm.workRequestInputSelected()//入力方法の利用区分
+                };
 
-      vm.$blockui('show');
-
-      let params = {
-        usePublicAtr: vm.publicMethod(),//公開機能の利用区分
-        useWorkAvailabilityAtr:  vm.workRequest(),//勤務希望の利用区分
-        holidayMaxDays: vm.maxDesiredHolidays(),//希望休日の上限日数入力
-        closureDate: vm.deadlineSelected(),//締め日
-        availabilityDeadLine: vm.deadlineWorkSelected(),//締切日
-        availabilityAssignMethod: vm.workRequestInputSelected()//入力方法の利用区分
-      };
-
-      vm.$ajax( PATH.registerRulesCompanyShiftTable, params ).done((data) => {
-        vm.$dialog.info({ messageId: 'Msg_15'});
-      }).fail((error) => {
-        vm.$dialog.error({ messageId: error.messageId});
-      }).always(() => {
-        vm.$blockui('hide');
-      });
-      
+                vm.$ajax( PATH.registerRulesCompanyShiftTable, params ).done((data) => {
+                    vm.$dialog.info({ messageId: 'Msg_15'});
+                }).fail((error) => {
+                    vm.$dialog.error({ messageId: error.messageId});
+                }).always(() => {
+                    vm.$blockui('hide');
+                });
+            }
+        });
     }
 
     //Get the rules of the company shift table

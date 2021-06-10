@@ -107,27 +107,23 @@ public class HolidayWorkSubHolidayAssociationFinder {
      * 暫定休出データを取得する
      */
     private List<HolidayWorkData> getProvisionalDrawingData(String employeeId, ClosurePeriod closurePeriod, List<LeaveComDayOffManagement> managementData) {
-    	 List<GeneralDate> outBreakDays = new ArrayList<GeneralDate>();
-    	 
-        if (!managementData.isEmpty()) {
-           outBreakDays.addAll( managementData.stream().map(i -> i.getAssocialInfo().getOutbreakDay()).collect(Collectors.toList()));
-        }
-        
-        // ドメインモデル「暫定休出管理データ」を取得する
-        List<InterimBreakMng> recData = interimBreakDayOffMngRepo.getBySidPeriod(employeeId,
-                new DatePeriod(closurePeriod.getPeriod().start(), closurePeriod.getPeriod().start().addYears(1)))
-                .stream().filter(i -> i.getUnUsedDays().v() > 0 && i.getUnUsedTimes().v() <= 0).filter(i -> !outBreakDays.contains(i.getYmd())).collect(Collectors.toList());
+        List<GeneralDate> outBreakDays = managementData.stream().map(i -> i.getAssocialInfo().getOutbreakDay()).collect(Collectors.toList());
 
-        List<HolidayWorkData> result = new ArrayList<>();
-        for (InterimBreakMng recMng : recData) {
-        	 HolidayWorkData data = new HolidayWorkData();
-             data.setHolidayWorkDate(recMng.getYmd());
-             data.setRemainingNumber(recMng.getUnUsedDays().v());
-             data.setExpirationDate(recMng.getExpirationDate());
-             data.setDataType(recMng.getCreatorAtr() == CreateAtr.RECORD || recMng.getCreatorAtr() == CreateAtr.FLEXCOMPEN ? DataType.ACTUAL.value : DataType.APPLICATION_OR_SCHEDULE.value);
-             data.setExpiringThisMonth(recMng.getExpirationDate().beforeOrEquals(closurePeriod.getPeriod().end()));
-             result.add(data);
-        }
+        // ドメインモデル「暫定休出管理データ」を取得する
+        List<HolidayWorkData> result = interimBreakDayOffMngRepo.getBySidPeriod(
+                employeeId,
+                new DatePeriod(
+                        closurePeriod.getPeriod().start(),
+                        closurePeriod.getPeriod().start().addYears(1)
+                )).stream()
+                .filter(i -> !outBreakDays.contains(i.getYmd()) && i.getUnUsedDays().v() > 0 && i.getUnUsedTimes().v() <= 0)
+                .map(recMng -> new HolidayWorkData(
+                        recMng.getCreatorAtr() == CreateAtr.RECORD || recMng.getCreatorAtr() == CreateAtr.FLEXCOMPEN ? DataType.ACTUAL.value : DataType.APPLICATION_OR_SCHEDULE.value,
+                        recMng.getExpirationDate(),
+                        recMng.getExpirationDate().beforeOrEquals(closurePeriod.getPeriod().end()),
+                        recMng.getYmd(),
+                        recMng.getUnUsedDays().v()
+                )).collect(Collectors.toList());
 
         return result;
     }
@@ -136,26 +132,22 @@ public class HolidayWorkSubHolidayAssociationFinder {
      * 確定休出データを取得する
      */
     private List<HolidayWorkData> getFixedDrawingData(String employeeId, ClosurePeriod closurePeriod, List<LeaveComDayOffManagement> managementData) {
-        // ドメインモデル「休出管理データ」を取得する
-        List<LeaveManagementData> payoutData = holidayWorkMngRepo.getBySidAndStateAtr(AppContexts.user().companyId(), employeeId, DigestionAtr.UNUSED)
-                .stream().filter(i -> i.getUnUsedDays().v() > 0 && i.getUnUsedTimes().v() <= 0 && !i.getComDayOffDate().isUnknownDate())
-                .collect(Collectors.toList());
-        if (!managementData.isEmpty()) {
-            List<GeneralDate> outBreakDays = managementData.stream().map(i -> i.getAssocialInfo().getOutbreakDay()).collect(Collectors.toList());
-            payoutData = payoutData.stream().filter(i -> !i.getComDayOffDate().getDayoffDate().isPresent() || !outBreakDays.contains(i.getComDayOffDate().getDayoffDate().get())).collect(Collectors.toList());
-        }
-        if (payoutData.isEmpty()) return Collections.emptyList();
+        List<GeneralDate> outBreakDays = managementData.stream().map(i -> i.getAssocialInfo().getOutbreakDay()).collect(Collectors.toList());
 
-        List<HolidayWorkData> result = new ArrayList<>();
-        for (LeaveManagementData payout : payoutData) {
-            HolidayWorkData data = new HolidayWorkData();
-            data.setHolidayWorkDate(payout.getComDayOffDate().getDayoffDate().orElse(null));
-            data.setRemainingNumber(payout.getUnUsedDays().v());
-            data.setExpirationDate(payout.getExpiredDate());
-            data.setDataType(DataType.ACTUAL.value);
-            data.setExpiringThisMonth(payout.getExpiredDate().beforeOrEquals(closurePeriod.getPeriod().end()));
-            result.add(data);
-        }
+        // ドメインモデル「休出管理データ」を取得する
+        List<HolidayWorkData> result = holidayWorkMngRepo.getBySidAndStateAtr(AppContexts.user().companyId(), employeeId, DigestionAtr.UNUSED)
+                .stream()
+                .filter(i -> !i.getComDayOffDate().isUnknownDate()
+                        && (!i.getComDayOffDate().getDayoffDate().isPresent() || !outBreakDays.contains(i.getComDayOffDate().getDayoffDate().get()))
+                        && i.getUnUsedDays().v() > 0 && i.getUnUsedTimes().v() <= 0)
+                .map(payout -> new HolidayWorkData(
+                        DataType.ACTUAL.value,
+                        payout.getExpiredDate(),
+                        payout.getExpiredDate().beforeOrEquals(closurePeriod.getPeriod().end()),
+                        payout.getComDayOffDate().getDayoffDate().orElse(null),
+                        payout.getUnUsedDays().v()
+                )).collect(Collectors.toList());
+
         return result;
     }
 
@@ -163,47 +155,40 @@ public class HolidayWorkSubHolidayAssociationFinder {
      * 紐付け中の休出データを取得する
      */
     private List<HolidayWorkData> getDrawingDataDuringLinking(String employeeId, ClosurePeriod closurePeriod, List<LeaveComDayOffManagement> managementData) {
-        if (managementData.isEmpty()) return Collections.emptyList();
         List<HolidayWorkData> result = new ArrayList<>();
+
+        if (managementData.isEmpty()) return result;
+
         List<GeneralDate> outBreakDays = managementData.stream().map(i -> i.getAssocialInfo().getOutbreakDay()).collect(Collectors.toList());
-        
-        if(!outBreakDays.isEmpty()){
-        List<InterimBreakMng> recData = interimBreakDayOffMngRepo.getBySidPeriod(employeeId, new DatePeriod(outBreakDays.stream().min(GeneralDate::compareTo).get(),  outBreakDays.stream().max(GeneralDate::compareTo).get()));
 
-			for (InterimBreakMng recMng : recData) {
-				HolidayWorkData data = new HolidayWorkData();
-				data.setHolidayWorkDate(recMng.getYmd());
-//                managementData.stream().filter(i -> i.getAssocialInfo().getOutbreakDay().compareTo(remainMng.getYmd()) == 0).findFirst().ifPresent(i -> {
-//                    data.setRemainingNumber(i.getAssocialInfo().getDayNumberUsed().v());
-//                });
-				data.setRemainingNumber(recMng.getUnUsedDays().v());
-				data.setExpirationDate(recMng.getExpirationDate());
-				data.setDataType(
-						recMng.getCreatorAtr() == CreateAtr.RECORD || recMng.getCreatorAtr() == CreateAtr.FLEXCOMPEN
-								? DataType.ACTUAL.value : DataType.APPLICATION_OR_SCHEDULE.value);
-				data.setExpiringThisMonth(recMng.getExpirationDate().beforeOrEquals(closurePeriod.getPeriod().end()));
-				result.add(data);
-			}
-		}
+        List<HolidayWorkData> recData = interimBreakDayOffMngRepo.getBySidPeriod(
+                employeeId,
+                new DatePeriod(
+                        outBreakDays.stream().min(GeneralDate::compareTo).get(),
+                        outBreakDays.stream().max(GeneralDate::compareTo).get()
+                )).stream()
+                .filter(i -> outBreakDays.contains(i.getYmd()))
+                .map(recMng -> new HolidayWorkData(
+                        recMng.getCreatorAtr() == CreateAtr.RECORD || recMng.getCreatorAtr() == CreateAtr.FLEXCOMPEN ? DataType.ACTUAL.value : DataType.APPLICATION_OR_SCHEDULE.value,
+                        recMng.getExpirationDate(),
+                        recMng.getExpirationDate().beforeOrEquals(closurePeriod.getPeriod().end()),
+                        recMng.getYmd(),
+                        recMng.getUnUsedDays().v()
+                )).collect(Collectors.toList());
+        result.addAll(recData);
+
         // ドメインモデル「休出管理データ」を取得する
-        List<LeaveManagementData> payoutData = holidayWorkMngRepo.getBySidAndDatOff(employeeId, outBreakDays)
-                .stream().filter(i -> i.getSubHDAtr() != DigestionAtr.EXPIRED && !i.getComDayOffDate().isUnknownDate() && i.getUnUsedTimes().v() <= 0)
-                .collect(Collectors.toList());
-
-        if (!payoutData.isEmpty()) {
-            for (LeaveManagementData payout : payoutData) {
-                HolidayWorkData data = new HolidayWorkData();
-                data.setHolidayWorkDate(payout.getComDayOffDate().getDayoffDate().orElse(null));
-//                managementData.stream().filter(i -> payout.getComDayOffDate().getDayoffDate().isPresent() && i.getAssocialInfo().getOutbreakDay().compareTo(payout.getComDayOffDate().getDayoffDate().get()) == 0).findFirst().ifPresent(i -> {
-//                    data.setRemainingNumber(i.getAssocialInfo().getDayNumberUsed().v());
-//                });
-                data.setRemainingNumber(payout.getUnUsedDays().v());
-                data.setExpirationDate(payout.getExpiredDate());
-                data.setDataType(DataType.ACTUAL.value);
-                data.setExpiringThisMonth(payout.getExpiredDate().beforeOrEquals(closurePeriod.getPeriod().end()));
-                result.add(data);
-            }
-        }
+        List<HolidayWorkData> payoutData = holidayWorkMngRepo.getBySidAndDatOff(employeeId, outBreakDays)
+                .stream()
+                .filter(i -> i.getSubHDAtr() != DigestionAtr.EXPIRED && !i.getComDayOffDate().isUnknownDate() && i.getUnUsedTimes().v() <= 0)
+                .map(payout -> new HolidayWorkData(
+                        DataType.ACTUAL.value,
+                        payout.getExpiredDate(),
+                        payout.getExpiredDate().beforeOrEquals(closurePeriod.getPeriod().end()),
+                        payout.getComDayOffDate().getDayoffDate().orElse(null),
+                        payout.getUnUsedDays().v()
+                )).collect(Collectors.toList());
+        result.addAll(payoutData);
 
         return result;
     }
