@@ -1810,7 +1810,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         // 選択中の「勤務種類．１日の勤務．勤務区分」= 午前と午後　⇒　0.5を渡す
         const workTypeInfo = _.findLast(
             self.model.appAbsenceStartInfoDto.workTypeLst,
-            (item: any) => item.worTypeCode === self.workType.code) as WorkTypeDto;
+            (item: any) => item.workTypeCode === self.workType.code) as WorkTypeDto;
         let daysUnit = 1;
         if (workTypeInfo) {
             daysUnit = workTypeInfo.workAtr == WorkTypeUnit.OneDay ? 1 : 0.5;
@@ -1855,7 +1855,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         // 選択中の「勤務種類．１日の勤務．勤務区分」= 午前と午後　⇒　0.5を渡す
         const workTypeInfo = _.findLast(
             self.model.appAbsenceStartInfoDto.workTypeLst,
-            (item: any) => item.worTypeCode === self.workType.code) as WorkTypeDto;
+            (item: any) => item.workTypeCode === self.workType.code) as WorkTypeDto;
         let daysUnit = 1;
         if (workTypeInfo) {
             daysUnit = workTypeInfo.workAtr == WorkTypeUnit.OneDay ? 1 : 0.5;
