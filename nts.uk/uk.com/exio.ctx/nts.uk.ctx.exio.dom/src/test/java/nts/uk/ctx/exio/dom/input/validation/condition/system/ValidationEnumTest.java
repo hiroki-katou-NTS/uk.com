@@ -4,23 +4,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
+import nts.uk.ctx.exio.dom.input.importableitem.CheckMethod;
+import nts.uk.ctx.exio.dom.input.importableitem.DomainConstraint;
+import nts.uk.ctx.exio.dom.input.validation.condition.system.helper.TestEnum;
+
 public class ValidationEnumTest {
 
 	@Test
 	public void success() {
-		String fqn = "nts.uk.ctx.exio.dom.input.validation.classtype.helper.TestEnum";
+		String fqn = TestEnum.class.getName();
 		
 		int existValue = 1;
-		ValidationEnum.run(fqn, existValue);
+		
+		new DomainConstraint(CheckMethod.ENUM, fqn).validate(existValue);
 	}
 
 	@Test
 	public void error_notExistValue() {
-		String fqn = "nts.uk.ctx.exio.dom.input.validation.classtype.helper.TestEnum";
+		String fqn = TestEnum.class.getName();
 		
 		int notExistValue = 2;
 		try {
-			ValidationEnum.run(fqn, notExistValue);
+			new DomainConstraint(CheckMethod.ENUM, fqn).validate(notExistValue);
 			assertThat(true).isFalse();
 		}
 		catch(RuntimeException ex) {
