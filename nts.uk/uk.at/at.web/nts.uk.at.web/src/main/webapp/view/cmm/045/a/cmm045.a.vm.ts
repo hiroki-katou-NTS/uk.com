@@ -2547,7 +2547,7 @@ module cmm045.a.viewmodel {
 								}
 							});
 							return service.approverAfterConfirm(comfirmData).done((data)=>{
-								service.reflectListApp(Object.keys(data.successMap));
+								//service.reflectListApp(Object.keys(data.successMap));
 							});
 						}
 					}).then((data: any) => {
