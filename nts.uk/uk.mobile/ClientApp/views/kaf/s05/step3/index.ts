@@ -9,7 +9,6 @@ import { ScreenMode } from '../../s00/b';
     route: '/kaf/s05/step3',
     style: require('./style.scss'),
     template: require('./index.vue'),
-    resource: require('./resources.json'),
     validations: {},
     components : {
         'kafs00d' : KafS00DComponent
@@ -27,6 +26,13 @@ export class KafS05Step3Component extends Vue {
 
     public created() {
         const self = this;
+        if (self.$appContext.getoverTimeClf == 0) {
+            self.pgName = 'kafs05step1';
+        } else if (self.$appContext.getoverTimeClf == 1) {
+            self.pgName = 'kafs05step2';
+        } else {
+            self.pgName = 'kafs05step3';
+        }
         self.setParam();
     }
     get $appContext(): KafS05Component {

@@ -146,7 +146,7 @@ module nts.uk.at.kdp003.q {
 			if (_.isEmpty(vm.workPlaceTxtRefer()) && !_.isNil(this.notificationCreated().workplaceInfo)) {
 				const workplaceInfo = this.notificationCreated().workplaceInfo;
 				vm.workPlaceIdList([workplaceInfo.workplaceId]);
-				vm.workPlaceTxtRefer(`${workplaceInfo.workplaceCode} ${workplaceInfo.workplaceName}`);
+				vm.workPlaceTxtRefer(workplaceInfo.workplaceName);
 			}
 			
 			// ※　ロール.参照範囲＝全社員　OR　部門・職場(配下含む）の場合

@@ -107,6 +107,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
         if (self.params) {
             self.mode = false;
             self.data = self.params;
+            self.appWorkChangeDisp = self.data.appWorkChangeDispInfo;
         }
         
 
@@ -160,8 +161,12 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     appWorkChangeOutputCmd: self.data,
                     appWorkChangeDto: self.mode ? null : self.data.appWorkChange
                 };
+                if (self.mode) {
 
-                return self.$http.post('at', API.startS07, param);
+                    return self.$http.post('at', API.startS07, param);
+                } else {
+                    return true;
+                }
             }
             if (!_.isNil(_.get(self.appDispInfoStartupOutput, 'appDispInfoWithDateOutput.opErrorFlag'))) {
                 if (self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag != 0) {
@@ -191,9 +196,12 @@ export class KafS07AComponent extends KafS00ShrComponent {
             if (!res) {
                 return;
             }
-            self.data = res.data;
-            if (res.data.appWorkChangeDispInfo) {
-                self.appWorkChangeDisp = res.data.appWorkChangeDispInfo;
+            if (res !== true) {
+                self.data = res.data;
+
+                if (res.data.appWorkChangeDispInfo) {
+                    self.appWorkChangeDisp = res.data.appWorkChangeDispInfo;
+                }
             }
             self.createParamA();
             self.createParamB();
