@@ -971,7 +971,7 @@ module nts.uk.at.view.kwr004.b {
       this.selectedTime = selectedTime;
 
       this.independentCalcClassic.subscribe((oldValue) => {
-        if (!this.independentCalcClassicProgrammaticChange && _.isEmpty(this.selectionItem())) {
+        if (!this.independentCalcClassicProgrammaticChange && !_.isEmpty(this.selectionItem())) {
             const oldSelectedTimeList = this.selectedTimeList();
             const oldSelectionItem = this.selectionItem();
             const oldSelectedTime = this.selectedTime;
