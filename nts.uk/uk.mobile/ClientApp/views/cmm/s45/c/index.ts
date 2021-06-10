@@ -377,10 +377,10 @@ export class CmmS45CComponent extends Vue {
                 }
                 break;
             case 0: 
-                if (self.$router.currentRoute.name == 'kafs05') {
+                if (self.$router.currentRoute.name == 'kafs05a') {
                     self.$close(self.appTransferData);
                 } else {
-                    self.$goto('kafs05', self.appTransferData);
+                    self.$goto('kafs05a', self.appTransferData);
                 }
                 break;
             case 1: 
@@ -390,10 +390,10 @@ export class CmmS45CComponent extends Vue {
                 self.$goto('kafs11a', self.appTransferData); 
                 break;  
             case 6: 
-                if (self.$router.currentRoute.name == 'kafs10') {
+                if (self.$router.currentRoute.name == 'kafs10a') {
                     self.$close(self.appTransferData);
                 } else {
-                    self.$goto('kafs10', self.appTransferData);
+                    self.$goto('kafs10a', self.appTransferData);
                 }
                 break;
             default:

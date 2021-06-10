@@ -13,7 +13,7 @@ import { OverTimeWorkHoursDto } from '../../s00/sub/p2';
 import { ExcessTimeStatus } from '../../s00/sub/p1';
 
 @component({
-    name: 'kafs10',
+    name: 'kafs10a',
     route: '/kaf/s10/a',
     style: require('./style.scss'),
     template: require('./index.vue'),

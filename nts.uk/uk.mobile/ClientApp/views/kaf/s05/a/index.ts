@@ -366,19 +366,8 @@ export class KafS05Component extends KafS00ShrComponent {
     public created() {
         const vm = this;
 
-        vm.pgName = 'kafs05step1';
 
-        if (vm.modeNew) {
-            if (vm.$route.query.a == '0') {
-                vm.overTimeClf = 0;
-            } else if (vm.$route.query.a == '1') {
-                vm.overTimeClf = 1;
-            } else {
-                vm.overTimeClf = 2;
-            }
-        } else {
-            vm.overTimeClf = _.get(vm.model, 'displayInfoOverTime.overtimeAppAtr') || 3;
-        }
+        
 
         if (!_.isNil(vm.params)) {
             vm.modeNew = false;
@@ -387,6 +376,26 @@ export class KafS05Component extends KafS00ShrComponent {
             model.displayInfoOverTime = vm.params.appDetail.displayInfoOverTime as DisplayInfoOverTime;
             vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
             vm.model = model;
+        }
+
+        if (vm.modeNew) {
+            if (vm.$route.query.overworkatr == '0') {
+                vm.overTimeClf = 0;
+            } else if (vm.$route.query.overworkatr == '1') {
+                vm.overTimeClf = 1;
+            } else {
+                vm.overTimeClf = 2;
+            }
+        } else {
+            vm.overTimeClf = _.get(vm.model, 'appOverTime.overTimeClf') || 2;
+        }
+
+        if (vm.overTimeClf == 0) {
+            vm.pgName = 'kafs05step1';
+        } else if (vm.overTimeClf == 1) {
+            vm.pgName = 'kafs05step2';
+        } else {
+            vm.pgName = 'kafs05step3';
         }
     }
     public mounted() {
@@ -400,15 +409,15 @@ export class KafS05Component extends KafS00ShrComponent {
             vm.date = vm.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate;
         }
         if (vm.modeNew) {
-            if (vm.$route.query.a == '0') {
+            if (vm.$route.query.overworkatr == '0') {
                 vm.overTimeClf = 0;
-            } else if (vm.$route.query.a == '1') {
+            } else if (vm.$route.query.overworkatr == '1') {
                 vm.overTimeClf = 1;
             } else {
                 vm.overTimeClf = 2;
             }
         } else {
-            vm.overTimeClf = vm.model.displayInfoOverTime.overtimeAppAtr;
+            vm.overTimeClf = _.get(vm.model, 'appOverTime.overTimeClf') || 2;
         }
         if (vm.modeNew) {
             vm.application = vm.createApplicationInsert(AppType.OVER_TIME_APPLICATION);
@@ -1144,6 +1153,8 @@ export class KafS05Component extends KafS00ShrComponent {
 
     public backToStep1(res: InitParam) {
         const vm = this;
+
+        
         vm.toStep(1);
         vm.modeNew = false;
         let model = {} as Model;
@@ -1151,6 +1162,26 @@ export class KafS05Component extends KafS00ShrComponent {
         model.displayInfoOverTime = res.appDetail.displayInfoOverTime as DisplayInfoOverTime;
         vm.appDispInfoStartupOutput = res.appDispInfoStartupOutput;
         vm.model = model;
+
+        if (vm.modeNew) {
+            if (vm.$route.query.overworkatr == '0') {
+                vm.overTimeClf = 0;
+            } else if (vm.$route.query.overworkatr == '1') {
+                vm.overTimeClf = 1;
+            } else {
+                vm.overTimeClf = 2;
+            }
+        } else {
+            vm.overTimeClf = _.get(vm.model, 'appOverTime.overTimeClf') || 2;
+        }
+
+        if (vm.overTimeClf == 0) {
+            vm.pgName = 'kafs05step1';
+        } else if (vm.overTimeClf == 1) {
+            vm.pgName = 'kafs05step2';
+        } else {
+            vm.pgName = 'kafs05step3';
+        }
         vm.fetchData();
     }
 
