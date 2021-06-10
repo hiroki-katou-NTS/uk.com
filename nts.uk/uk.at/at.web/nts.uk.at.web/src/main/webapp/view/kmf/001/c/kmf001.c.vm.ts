@@ -75,7 +75,7 @@ module nts.uk.pr.view.kmf001.c {
                 self.maxGrantDay = ko.observable("");
                 self.maxRemainingDay = ko.observable("");
                 self.numberYearRetain = ko.observable("0");
-                self.yearlyOfNumberDays = ko.observable("0");
+                self.yearlyOfNumberDays = ko.observable("2");
                 self.roundProcessClassificationList = ko.observableArray([]);
                 self.selectedRoundProcessCla = ko.observable(0);
                 //C531
@@ -304,15 +304,16 @@ module nts.uk.pr.view.kmf001.c {
                 backup.addAttendanceDay = 1;
                 backup.maxManageSemiVacation = 1;
                 backup.maxNumberSemiVacation = 0;
-                backup.maxNumberCompany = '';
+                backup.maxNumberCompany = 0;
                 backup.maxGrantDay = '';
-                backup.maxRemainingDay = '';
-                backup.numberYearRetain = '';
+                //backup.maxRemainingDay = '';
+                backup.maxRemainingDay = 0;
+                backup.numberYearRetain = 2;
                 backup.permitType = 1;
                 backup.annualPriority = 0;
                 backup.remainingNumberDisplay = 1;
                 backup.nextGrantDayDisplay = 1;
-                backup.yearlyOfDays = '';
+                backup.yearlyOfDays = 0;
                 backup.roundProcessCla = 0;
                 
                 // Time Leave Setting

@@ -26,8 +26,8 @@ public class GetLoginSettingsStampInput {
 	 * 【input】
 	 * 【output】 ・打刻会社一覧
 	 */
-	public List<GetListCompanyHasStampedDto> getLoginSettingsForTimeStampInput(){
-		return finder.getListOfCompaniesHaveBeenStamped(Optional.empty());
+	public List<GetListCompanyHasStampedDto> getLoginSettingsForTimeStampInput(GetLoginSettingsStampParam input){
+		return finder.getListOfCompaniesHaveBeenStamped(Optional.empty(), input);
 		
 	}
 }

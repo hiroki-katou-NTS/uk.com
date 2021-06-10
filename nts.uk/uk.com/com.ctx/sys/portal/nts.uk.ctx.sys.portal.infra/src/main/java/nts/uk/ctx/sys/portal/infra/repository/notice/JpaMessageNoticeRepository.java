@@ -42,8 +42,8 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 			, "ON m.pk.sid = n.pk.sid AND m.pk.inputDate = n.pk.inputDate"
 			, "WHERE m.startDate <= :endDate"
 			, "AND m.endDate >= :startDate"
-			, "AND m.destination = 0"
-			, "OR (m.destination = 1 AND n.pk.tgtInfoId IN :tgtInfoId)"
+			, "AND (m.destination = 0"
+			, "OR (m.destination = 1 AND n.pk.tgtInfoId IN :tgtInfoId))"
 			, "ORDER BY m.destination ASC, m.startDate DESC, m.endDate DESC, m.pk.inputDate DESC");
 	
 	private static final String GET_MSG_REF_BY_PERIOD = String.join(" "

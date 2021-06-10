@@ -221,7 +221,7 @@ module nts.uk.at.view.kmk003.a {
                 // tabs data source
                     self.tabs = ko.observableArray([
                     new TabItem(TabID.TAB1, nts.uk.resource.getText("KMK003_17"), '.tab-a1', true, true),
-                    new TabItem(TabID.TAB2, `<span id="tab-2-title">${nts.uk.resource.getText("KMK003_18")}</span>` , '.tab-a2', true, true),
+                    new TabItem(TabID.TAB2, nts.uk.resource.getText("KMK003_18"), '.tab-a2', true, true),
                     new TabItem(TabID.TAB3, nts.uk.resource.getText("KMK003_89"), '.tab-a3', true, true),
                     new TabItem(TabID.TAB4, nts.uk.resource.getText("KMK003_19"), '.tab-a4', true, true),
                     new TabItem(TabID.TAB5, nts.uk.resource.getText("KMK003_20"), '.tab-a5', true, true),
@@ -1173,7 +1173,8 @@ module nts.uk.at.view.kmk003.a {
                     }
                     afternoonTimes.push(timeZonePMDto);
                 } else {
-                    if (shiftOneEnd >= morningEnd) {
+                    if (shiftOneEnd > morningEnd) {
+                        let count1 = 1;
                         //morning1
                         morningTimes.push({
                             employmentTimeFrameNo: 1,
@@ -1183,20 +1184,23 @@ module nts.uk.at.view.kmk003.a {
                                 rounding: {rounding: 0, roundingTime: 0}
                             }
                         });
-                        //afternoon1
-                        afternoonTimes.push({
-                            employmentTimeFrameNo: 1,
-                            timezone: {
-                                start: afterStart,
-                                end: shiftOneEnd,
-                                rounding: {rounding: 0, roundingTime: 0}
-                            }
-                        })
+                        if (shiftOneEnd > afterStart) {
+                            //afternoon1
+                            afternoonTimes.push({
+                                employmentTimeFrameNo: 1,
+                                timezone: {
+                                    start: afterStart,
+                                    end: shiftOneEnd,
+                                    rounding: {rounding: 0, roundingTime: 0}
+                                }
+                            })
+                            count1++;
+                        }
                         //afternoon2
                         afternoonTimes.push({
-                            employmentTimeFrameNo: 1,
+                            employmentTimeFrameNo: count1,
                             timezone: {
-                                start: shiftTwoStart,
+                                start: afterStart > shiftTwoStart ? afterStart : shiftTwoStart,
                                 end: shiftTwoEnd,
                                 rounding: {rounding: 0, roundingTime: 0}
                             }
@@ -1211,20 +1215,22 @@ module nts.uk.at.view.kmk003.a {
                                 rounding: {rounding: 0, roundingTime: 0}
                             }
                         });
-                        //morning2
-                        morningTimes.push({
-                            employmentTimeFrameNo: 1,
-                            timezone: {
-                                start: shiftTwoStart,
-                                end: morningEnd,
-                                rounding: {rounding: 0, roundingTime: 0}
-                            }
-                        });
+                        if (morningEnd > shiftTwoStart) {
+                            //morning2
+                            morningTimes.push({
+                                employmentTimeFrameNo: 2,
+                                timezone: {
+                                    start: shiftTwoStart,
+                                    end: morningEnd,
+                                    rounding: {rounding: 0, roundingTime: 0}
+                                }
+                            });
+                        }
                         //afternoon1
                         afternoonTimes.push({
                             employmentTimeFrameNo: 1,
                             timezone: {
-                                start: afterStart,
+                                start: afterStart > shiftTwoStart ? afterStart : shiftTwoStart,
                                 end: shiftTwoEnd,
                                 rounding: {rounding: 0, roundingTime: 0}
                             }

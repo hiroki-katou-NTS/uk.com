@@ -24,19 +24,22 @@ public class TimeStampSetShareTStampHelper {
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.RESERVATION, Optional.empty()),
 				NotUseAtr.USE,
-				AudioType.NONE));
+				AudioType.NONE,
+				Optional.of(SupportWplSet.SELECT_AT_THE_TIME_OF_STAMPING)));
 		
 		lstButtonSet.add(new ButtonSettings(new ButtonPositionNo(3),
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.RESERVATION, Optional.empty()),
 				NotUseAtr.USE,
-				AudioType.NONE));
+				AudioType.NONE,
+				Optional.of(SupportWplSet.SELECT_AT_THE_TIME_OF_STAMPING)));
 		
 		lstButtonSet.add(new ButtonSettings(new ButtonPositionNo(4),
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.RESERVATION, Optional.empty()),
 				NotUseAtr.USE,
-				AudioType.NONE));
+				AudioType.NONE,
+				Optional.of(SupportWplSet.SELECT_AT_THE_TIME_OF_STAMPING)));
 		
 		
 		lstStampPageLayout.add(new StampPageLayout(new PageNo(1),
@@ -46,7 +49,7 @@ public class TimeStampSetShareTStampHelper {
 				lstButtonSet));
 		
 		DisplaySettingsStampScreen displaySetStampScreen = new DisplaySettingsStampScreen(new CorrectionInterval(1),
-				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DuMMY")),
+				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 				new ResultDisplayTime(1));
 		
 		StampSetCommunal setShareTStamp = new StampSetCommunal(
@@ -66,7 +69,7 @@ public static StampSetCommunal get_list_empty() {
 		List<StampPageLayout> lstStampPageLayout = new ArrayList<>();
 		
 		DisplaySettingsStampScreen displaySetStampScreen = new DisplaySettingsStampScreen(new CorrectionInterval(1),
-				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DuMMY")),
+				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 				new ResultDisplayTime(1));
 		
 		StampSetCommunal setShareTStamp = new StampSetCommunal(

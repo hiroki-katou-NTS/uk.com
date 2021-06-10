@@ -223,12 +223,6 @@ table td .cell .limited-label {
 	height: 17px;
 	text-align: left;
 }
-.float-left {
-	float: left;
-}
-#functions-area {
-	display: flex;
-}
 .fixed-flex-layout-left {
 	width: 100%;
 }

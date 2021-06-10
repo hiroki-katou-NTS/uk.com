@@ -51,7 +51,7 @@ module nts.uk.at.view.kmp001.b {
 							<td class="label-column-left">
 								<div id="td-bottom">
 									<div id=" td-bottom" data-bind="ntsFormLabel: { text: $i18n('KMP001_9'), required: true }"></div>
-									<button id="td-bottom" data-bind="i18n: 'KMP001_26', click: openDialogCDL009a"></button>
+									<button data-bind="i18n: 'KMP001_26', click: openDialogCDL009a"></button>
 								</div>
 							</td>
 							<td class="data">

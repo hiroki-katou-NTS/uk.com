@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.AutoCreateStampCardNumberService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
@@ -52,7 +53,7 @@ public class CreateStampDataForEmployeesService {
 	
 	public static TimeStampInputResult create(Require require, ContractCode contractCode, String employeeId,
 			Optional<StampNumber> stampNumber, GeneralDateTime stampDateTime, Relieve relieve, ButtonType buttonType,
-			RefectActualResult refActualResults, Optional<StampLocationInfor> stampLocationInfor) {
+			RefectActualResult refActualResults, Optional<GeoCoordinate> stampLocationInfor) {
 		//	$打刻カード作成結果 = [prv-1] 打刻カード番号を取得する(require, 社員ID, 打刻カード番号, 打刻する方法.打刻手段)	
 		StampCardCreateResult stampResult=	getCardNumber(require, employeeId, stampNumber, relieve.getStampMeans());
 		//	$打刻作成するか = ボタン種類.打刻区分を取得する()
@@ -61,8 +62,7 @@ public class CreateStampDataForEmployeesService {
 		String stampTypeDisplay = buttonType.getStampTypeDisplay();
 		
 		//$打刻記録 = 打刻記録#打刻記録(契約コード, $打刻カード作成結果.打刻カード番号, 打刻日時, $表示する打刻区分, empty)
-		StampRecord stampRecord = new StampRecord(contractCode, new StampNumber(stampResult.getCardNumber()) , stampDateTime, new StampTypeDisplay(stampTypeDisplay),
-				null);
+		StampRecord stampRecord = new StampRecord(contractCode, new StampNumber(stampResult.getCardNumber()) , stampDateTime, new StampTypeDisplay(stampTypeDisplay));
 		//	if not $打刻作成するか
 		if(!stampAtr) {
 			//$予約処理結果 = 打刻データ反映処理#反映する(require, 社員ID, $打刻記録, empty)

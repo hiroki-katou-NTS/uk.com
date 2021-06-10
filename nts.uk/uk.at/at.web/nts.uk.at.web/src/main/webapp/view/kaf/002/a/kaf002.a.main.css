@@ -186,3 +186,12 @@ div.form-label.broken {
 .centerCheckBox .secondCheckBox {
 	display: inline-block; margin-left: 88px
 }
+#labelM {
+	float: left;
+	margin-top: 12px
+}
+#componentM {
+ 	margin-top: 12px;
+ 	margin-left: 120px;
+ 	width: auto !important
+}
