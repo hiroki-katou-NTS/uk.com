@@ -46,9 +46,9 @@ public class ConversionUpdateSQL implements ConversionSQL {
 	}
 
 	public String build(DatabaseSpec spec) {
-		String whereString = (from.getBaseTable().isPresent() && where.size() > 0) ? WhereSentence.join(where) : "";
+		String whereString = (from.getBaseTable().isPresent() && where.size() > 0) ? "\r\n" + WhereSentence.join(where) : "";
 		return this.update.sql() + "\r\n" +
-				from.sql(spec) + "\r\n" +
+				from.sql(spec) +
 				whereString;
 	}
 
