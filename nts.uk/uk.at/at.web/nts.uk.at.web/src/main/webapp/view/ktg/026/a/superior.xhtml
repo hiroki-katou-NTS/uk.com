@@ -7,14 +7,14 @@
     <ui:composition template="/master/dialog.xhtml">
         <ui:define name="htmlHead">
             <script type="text/javascript">
-                var dialogSize = { width: 450, height: 400 };
+                var dialogSize = { width: 460, height: 400 };
             </script>
             <com:stylefile path="./ktg026.a.style.css" />
             <com:scriptfile path="./ktg026.a.component.js" />
             <com:scriptfile path="./ktg026.a.vm.js" />
         </ui:define>
         <ui:define name="content">
-            <div class="ktg-026-dialog" data-bind="widget: { name: 'ktg-026-a', params: paramDialog }"></div>
+            <div class="ktg-026-dialog" style="padding-bottom: 20px;" data-bind="widget: { name: 'ktg-026-a', params: paramDialog }"></div>
         </ui:define>
     </ui:composition>
 </body>
