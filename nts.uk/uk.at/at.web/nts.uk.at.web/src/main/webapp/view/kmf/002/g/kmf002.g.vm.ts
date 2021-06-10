@@ -7,7 +7,7 @@ module nts.uk.at.view.kmf002.g {
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
-    
+
     public openDialogCDL028() {
       const vm = this;
       const param = {
@@ -15,12 +15,12 @@ module nts.uk.at.view.kmf002.g {
         mode: 5
       };
       nts.uk.ui.windows.setShared("CDL028_INPUT", param);
-    
-      nts.uk.ui.windows.sub.modal("com", "/view/cdl/028/a/index.xhtml").onClosed(function() {
+
+      nts.uk.ui.windows.sub.modal("com", "/view/cdl/028/a/index.xhtml").onClosed(function () {
         var data = nts.uk.ui.windows.getShared("CDL028_A_PARAMS");
         if (data.status) {
-          const startDate = moment.utc(data.startDateFiscalYear ,"YYYY/MM/DD").toISOString();
-          const endDate = moment.utc(data.endDateFiscalYear ,"YYYY/MM/DD").toISOString();
+          const startDate = moment.utc(data.startDateFiscalYear, "YYYY/MM/DD").toISOString();
+          const endDate = moment.utc(data.endDateFiscalYear, "YYYY/MM/DD").toISOString();
           vm.exportExcel(startDate, endDate);
         }
       });
@@ -33,7 +33,7 @@ module nts.uk.at.view.kmf002.g {
 
     public openDialogA() {
       const vm = this;
-      vm.$window.modal("/view/kmf/002/a/index.xhtml").then(() =>{
+      vm.$window.modal("/view/kmf/002/a/index.xhtml").then(() => {
 
       });
     }
@@ -62,17 +62,17 @@ module nts.uk.at.view.kmf002.g {
       const program = nts.uk.ui._viewModel.kiban.programName().split(" ");
       let domainType = "KMF002";
       if (program.length > 1) {
-          program.shift();
-          domainType = domainType + program.join(" ");
+        program.shift();
+        domainType = domainType + program.join(" ");
       }
       return nts.uk.request.exportFile('/masterlist/report/print',
         {
-            domainId: "HolidaySetting", 
-            domainType: domainType,
-            languageId: 'ja', reportType: 0,
-            startDate: moment.utc(startDate).format(),
-            endDate: moment.utc(endDate).format()
+          domainId: "HolidaySetting",
+          domainType: domainType,
+          languageId: 'ja', reportType: 0,
+          startDate: moment.utc(startDate).format(),
+          endDate: moment.utc(endDate).format()
         });
-  }
+    }
   }
 }
