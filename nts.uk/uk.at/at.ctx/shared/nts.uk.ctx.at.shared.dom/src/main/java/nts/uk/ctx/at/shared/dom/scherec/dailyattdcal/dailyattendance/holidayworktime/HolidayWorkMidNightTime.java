@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAt
  */
 @Getter
 @AllArgsConstructor
-public class HolidayWorkMidNightTime {
+public class HolidayWorkMidNightTime implements Cloneable{
 	//時間
 	private TimeDivergenceWithCalculation time;
 	//法定区分
@@ -50,4 +50,10 @@ public class HolidayWorkMidNightTime {
 	public static HolidayWorkMidNightTime createDefaultWithAtr(StaturoryAtrOfHolidayWork statutoryAtr) {
 		return new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.defaultValue(), statutoryAtr);
 	}
+
+	@Override
+	public HolidayWorkMidNightTime clone() {
+		return new HolidayWorkMidNightTime(time.clone(), statutoryAtr);
+	}
+	
 }

@@ -21,11 +21,18 @@ export class KafS02A1Component extends Vue {
 
     public kaf000_D_Params: any = {
         mode: 1,
-        appID: ''
+        appID: '',
+        modeS02: 0
     };
 
     public created() {
         const self = this;
         self.kaf000_D_Params = self.params;
+
+        if (self.kaf000_D_Params.modeS02 == 0) {
+            self.pgName = 'kafs02a';
+        } else {
+            self.pgName = 'kafs02c';
+        }
     }
 }

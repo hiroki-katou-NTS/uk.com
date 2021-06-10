@@ -100,7 +100,9 @@
                     <div id="right-content">
                         <div class="valign-center control-group">
                             <div style="margin-top: -10px; float: left; width: auto;">
-								<div id="emp-component"></div>
+								<div data-bind="stopBinding: true">
+                                    <div id="emp-component"></div>
+                                </div>
 								<div id = "date-extract" style="width: 480px; display: inline-flex;">
 											<div id="daterangepickererror"
 												data-bind="ntsDateRangePicker: { 

@@ -18,8 +18,11 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.gateway.app.command.loginkdp.TimeStampInputLoginDto;
 import nts.uk.ctx.sys.gateway.app.command.loginkdp.TimeStampLoginCommand;
 import nts.uk.screen.at.app.query.kdp.kdp003.f.AuthenStampEmployee;
+import nts.uk.screen.at.app.query.kdp.kdp003.f.EmployeeRoleStamping;
 import nts.uk.screen.at.app.query.kdp.kdp003.f.GetLoginSettingsStampInput;
+import nts.uk.screen.at.app.query.kdp.kdp003.f.GetLoginSettingsStampParam;
 import nts.uk.screen.at.app.query.kdp.kdp003.f.LoginAsEmbossingAdministrator;
+import nts.uk.screen.at.app.query.kdp.kdp003.f.RoleEmployeeStampingDto;
 import nts.uk.screen.at.app.query.kdp.kdp003.f.dto.GetListCompanyHasStampedDto;
 
 /**
@@ -38,10 +41,13 @@ public class LoginWs extends WebService {
 	@Inject
 	private LoginAsEmbossingAdministrator loginWithAdmin;
 	
+	@Inject
+	private EmployeeRoleStamping employeeRoleStamping;
+	
 	 @POST
 	 @Path("getLogginSetting")
-	 public List<GetListCompanyHasStampedDto> getAllCompany() {
-		return loginSetting.getLoginSettingsForTimeStampInput();
+	 public List<GetListCompanyHasStampedDto> getAllCompany(GetLoginSettingsStampParam input) {
+		return loginSetting.getLoginSettingsForTimeStampInput(input);
 	 }
 	 
 	@POST
@@ -55,5 +61,11 @@ public class LoginWs extends WebService {
 	@Path("employeemode")
 	public TimeStampInputLoginDto loginEmployeeMode(@Context HttpServletRequest request, TimeStampLoginCommand command) {
 		return loginWithEmployee.authenticateStampedEmployees(command.getCompanyId(), Optional.ofNullable(command.getEmployeeCode()), Optional.ofNullable(command.getEmployeeId()), Optional.ofNullable(command.getPassword()), command.isPasswordInvalid(), command.isAdminMode(), false, request);
+	}
+
+	@POST
+	@Path("employeeRoleStamping")
+	public RoleEmployeeStampingDto getRole() {
+		return employeeRoleStamping.getRoleEmployee();
 	}
 }

@@ -2,8 +2,13 @@
 	background-color: rgb(235, 255, 235);
 }
 
+#contents-area {
+	height: calc(100vh - 85px) !important;
+}
+
 #functions-area-bottom {
-	height: 75px;
+	height: 85px;
+	padding: 0 !important;
 }
 
 #functions-area-bottom-label {
@@ -11,6 +16,10 @@
 	text-align: left; 
 	line-height: 0.6em; 
 	height: 2em;
+}
+
+#login-btn {
+	margin-top: 3px;
 }
 
 .w230 {
