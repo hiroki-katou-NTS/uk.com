@@ -11,6 +11,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
  * 受入設定コード
  *
  */
+@SuppressWarnings("serial")
 @StringMaxLength(3)
 @StringCharType(CharType.ALPHA_NUMERIC)
 @ZeroPaddedCode
