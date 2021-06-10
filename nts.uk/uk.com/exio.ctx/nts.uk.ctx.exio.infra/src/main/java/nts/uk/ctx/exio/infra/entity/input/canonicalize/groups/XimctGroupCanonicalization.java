@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.EmploymentHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.TaskCanonicalization;
@@ -31,6 +32,8 @@ import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 @AllArgsConstructor
 @NoArgsConstructor
 public class XimctGroupCanonicalization extends JpaEntity {
+	
+	public static final JpaEntityMapper<XimctGroupCanonicalization> MAPPER = new JpaEntityMapper<>(XimctGroupCanonicalization.class);
 	
 	@Embeddable
 	public static class Key {
