@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveLapsedWork;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.ConfirmLeavePeriod;
@@ -54,9 +55,13 @@ public class SpecialLeaveManagementService {
 		// 特別休暇の集計結果情報
 		InPeriodOfSpecialLeaveResultInfor outputData = new InPeriodOfSpecialLeaveResultInfor();
 
+		// 社員情報を取得
+		EmployeeImport employee = require.employee(cacheCarrier,param.getSid());
+		if (employee == null) return outputData;
+
 		// 「休暇の集計期間から入社前、退職後を除く」を実行する
-		DatePeriod aggrPeriod = ConfirmLeavePeriod.sumPeriod(require, cacheCarrier, param.getComplileDate(), param.getSid());
-				if (aggrPeriod == null) return outputData;
+		Optional<DatePeriod> aggrPeriod = ConfirmLeavePeriod.sumPeriod(param.getComplileDate(), employee);
+		if (!aggrPeriod.isPresent()) return outputData;
 
 		// パラメータ月次モード・その他モード
 		InterimRemainMngMode interimRemainMngMode = InterimRemainMngMode.of(param.isMode());
@@ -102,7 +107,7 @@ public class SpecialLeaveManagementService {
 					param.getSid(),
 					param.getSpecialLeaveCode(),
 					nextSpecialLeaveGrantList,
-					aggrPeriod);
+					aggrPeriod.get());
 
 		// アルゴリズム「特別休暇暫定管理データを取得する」を実行する
 		SpecialHolidayInterimMngData specialHolidayInterimMngData
@@ -344,7 +349,7 @@ public class SpecialLeaveManagementService {
 
 			// 特別休暇コード
 			paramStart.setSpecialLeaveCode(specialLeaveCode);
-			
+
 			//上書き対象期間 ←パラメータ「上書き対象期間」
 			paramStart.setIsOverWritePeriod(isOverWritePeriod);
 
@@ -727,7 +732,7 @@ public class SpecialLeaveManagementService {
 			// 暫定Dを作っておくので、ここでは作らない
 		} else {
 			// ドメインモデル「特別休暇暫定データ」を取得する
-			
+
 			List<InterimSpecialHolidayMng> lstSpecialData
 			= require.interimSpecialHolidayMng(param.getSid(),
 					param.getComplileDate())
@@ -738,23 +743,23 @@ public class SpecialLeaveManagementService {
 			}
 		}
 
-		
+
 		//INPUT．上書きフラグをチェックする
 		if(param.isOverwriteFlg()) {
 			if(param.getIsOverWritePeriod().isPresent()){
-				
+
 				//上書き対象期間内の暫定特休管理データを削除
 				lstOutput.removeIf(x -> param.getIsOverWritePeriod().get().contains(x.getYmd()));
-				
+
 				// 上書き用データがある時、追加する
 				// パラメータの「暫定管理データ」をループ
 				for (InterimSpecialHolidayMng interimRemain : param.getInterimSpecialData()) {
 					lstOutput.add(interimRemain);
 				}
 			}
-		}	
+		}
 
-		
+
 		return new SpecialHolidayInterimMngData(lstOutput);
 	}
 
@@ -845,7 +850,7 @@ public class SpecialLeaveManagementService {
 	}
 
 	public static interface RequireM5 extends RequireM1, RequireM2, RequireM3, RequireM4,
-		LeaveRemainingNumber.RequireM3,nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee.RequireM1, ConfirmLeavePeriod.Require
+		LeaveRemainingNumber.RequireM3,nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee.RequireM1
 		{
 
 		/** 特別休暇基本情報 */
