@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 
 public interface OuenWorkTimeOfDailyRepo {
 
-	public List<OuenWorkTimeOfDaily> find(String empId, GeneralDate ymd);
+	public OuenWorkTimeOfDaily find(String empId, GeneralDate ymd);
 	
 	public void update(List<OuenWorkTimeOfDaily> domain);
 	

@@ -18,3 +18,7 @@ table tr:nth-child(2) td{
 .ntsRadioBox{
     min-width: 120px;
 }
+
+.w-cb-fixed label:first-child {
+  width: 78px;
+}

@@ -9,7 +9,7 @@ import { KafS05aStep4Component } from '../components/step4/index';
 import { StepwizardComponent } from '@app/components';
 
 @component({
-    name: 'kafS05b',
+    name: 'kafS05oldb',
     route: '/kaf/s05/b',
     style: require('../style.scss'),
     template: require('./index.html'),

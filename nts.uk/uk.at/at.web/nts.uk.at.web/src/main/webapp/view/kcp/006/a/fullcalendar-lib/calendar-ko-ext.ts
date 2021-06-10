@@ -447,7 +447,7 @@ module nts.uk.at.view.kcp006.a {
                     targetTd.className = "fc-event-container";
                     //Remove old data
                     $(targetTd).empty();
-                    $(targetTd).append("<a class='fc-day-grid-event fc-h-event fc-event fc-start fc-end' style='background-color:" + optionDates[i].backgroundColor + ";border-color:" + optionDates[i].backgroundColor + ";color:" + optionDates[i].textColor + "'><div class='fc-content'> <span class='fc-title'>" + displayText + "</span></div></a>");
+                    $(targetTd).append("<a class='fc-day-grid-event fc-h-event fc-event fc-start fc-end' style='background-color:" + optionDates[i].backgroundColor + ";border-color:" + optionDates[i].backgroundColor + "'><div class='fc-content'> <span class='fc-title' style='color:" + optionDates[i].textColor + "'>" + displayText + "</span></div></a>");
                 }  
                 result = true;              
             }
@@ -531,7 +531,7 @@ module nts.uk.at.view.kcp006.a {
                     lstTd = $elementWrap.getElementsByClassName("fc-content-skeleton")[0].getElementsByTagName("tbody")[0].getElementsByTagName("td");
                     let targetTd = lstTd[currentIndex];
                     targetTd.className = "fc-event-container";
-                    $(targetTd).append("<a class='fc-day-grid-event fc-h-event fc-event fc-start fc-end' style='background-color:" + optionDates[i].backgroundColor + ";border-color:" + optionDates[i].backgroundColor + ";color:" + optionDates[i].textColor + "'><div class='fc-content'> <span class='fc-title'>" + displayText + "</span></div></a>");
+                    $(targetTd).append("<a class='fc-day-grid-event fc-h-event fc-event fc-start fc-end' style='background-color:" + optionDates[i].backgroundColor + ";border-color:" + optionDates[i].backgroundColor + "'><div class='fc-content'> <span class='fc-title' style='color:" + optionDates[i].textColor + "'>" + displayText + "</span></div></a>");
                 }
             }
         }

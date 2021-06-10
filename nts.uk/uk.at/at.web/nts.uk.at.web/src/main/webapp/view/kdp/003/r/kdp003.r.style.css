@@ -1,0 +1,13 @@
+.notice-label {
+	border: 1px solid #B1B1B1;
+	border-radius: 5px;
+	padding-bottom: 15px;
+	padding-left: 10px;
+    margin: 5px;
+	max-width: 433px;
+	word-break: break-all
+}
+
+#master-wrapper div#contents-area{
+	padding: 0 !important;
+}

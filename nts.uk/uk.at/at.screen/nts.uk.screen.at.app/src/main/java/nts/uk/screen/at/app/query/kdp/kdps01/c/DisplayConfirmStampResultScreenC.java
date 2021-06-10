@@ -119,7 +119,9 @@ public class DisplayConfirmStampResultScreenC {
 				AppContexts.user().employeeId());
 
 		result.setStampings(stampings);
-
+		result.setWorkplaceCd(stampings.size() > 0 ? stampings.get(0).getWorkplaceCd() : "");
+		result.setWorkplaceName(stampings.size() > 0 ? stampings.get(0).getWorkplaceNm() : "");
+		
 		// 2 require, ログイン会社ID, ログイン社員ID, 年月日
 		// 日の実績の確認状況を取得する
 

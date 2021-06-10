@@ -1,82 +1,30 @@
 #contents-area {
-	width: 1200px !important;
-	margin-left: 15px;
-}
-
-.boder-style {
-	float: left;
-	clear: right;
-	margin-top: 10px;
-}
-
-.contents-area-left {
-	height: 400px;
-	width: 240px;
-	margin-left: 20px;
-}
-
-.contents-area-middle {
-	height: 201px;
-	width: 230px;
-	text-align: center;
-}
-
-.contents-area-right {
-	height: 250px;
-	width: 176px;
-	text-align: center;
-}
-
-.contents-area-caret-right {
-	height: 300px;
-	width: 65px;
-	float: left;
-	clear: right;
-	padding-top: 20px;
-}
-
-.lbl-before-ready {
-	padding: 20px;
-	color: gray;
-	background: #dcf4e7;
-}
-
-.panel-custom-font-size {
-	font-size: 2em;
-}
-
-.lbl-unit-setting-explanation, .lbl-general-labor-explanation {
-	margin-top: 7px;
-}
-
-.btn-area-middle, .btn-deformed-labor {
-	margin-top: 10px;
-	width: 175px;
-}
-
-.contents-area-right-caret {
-	margin-left: 10px;
-}
-
-.lbl-general-labor-explanation-margin-top {
-	margin-top: 30px;
-}
-
-.row-1 {
-	margin-top: 15px;
-	margin-left: 27px;
-}
-
-.name-switch {
-	display: inline-block;
-	width: 180px;
-	vertical-align: top;
+	width: 100%;
 }
 
 .goback {
 	margin-right: 35px;
 }
 
-.cf>button.nts-switch-button {
-	width: 90px;
+.nts-switch-button {
+	width: 70px;
+}
+
+.switchbox-wrappers {
+	display: inline-block;
+}
+
+.switchbox-wrappers .radio-wrapper span {
+	width: 70px;
+	text-align: center;
+}
+
+.control-group .child-lb {
+	margin-left: 40px;
+	margin-right: 20px;
+	width: 170px;
+}
+
+.form-label {
+	margin-left: 20px;
 }

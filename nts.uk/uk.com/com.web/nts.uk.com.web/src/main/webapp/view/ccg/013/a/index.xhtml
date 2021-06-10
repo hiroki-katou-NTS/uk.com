@@ -61,8 +61,8 @@
 							<div class="menubar-header">
 								<ul class="menubar-navigation" data-bind="foreach: menuBars">
 									<li class="context-menu-bar" data-bind="attr: {'id': menuBarId}">
-										<a class="tab-item" data-bind="attr: {href: targetContent}, style: {color: textColor, 'background-color': backgroundColor}">
-											<span class="tab-item-content limited-label" data-bind=" text: menuBarName" />
+										<a class="tab-item" data-bind="attr: {href: targetContent}, style: {'background-color': backgroundColor}">
+											<span class="tab-item-content limited-label" data-bind="style: {'color': textColor}, text: menuBarName" />
 											<img style="width: 20px; height: 20px;" src="../resource/CCG013_1.png" data-bind="click: function() { $vm.openIdialog(menuBarId()); }" />
 										</a>
 									</li>
@@ -78,8 +78,8 @@
 									<div class="title-menu">
 										<div class="title-menu-container" data-bind="foreach: titleMenu">
 											<div class="title-menu-column valign-top" data-bind="attr:{id: titleMenuId}">
-												<div class="title-menu-name" data-bind="style: {color: textColor, 'background-color': backgroundColor}">
-													<span class="title-menu-content limited-label" data-bind="text: titleMenuName"></span>
+												<div class="title-menu-name" data-bind="style: {'background-color': backgroundColor}">
+													<span class="title-menu-content limited-label" data-bind="style: {'color': textColor}, text: titleMenuName"></span>
 													<img style="width: 20px; height: 20px;" src="../resource/CCG013_1.png" data-bind="click: $parents[2].openCdialog.bind($parents[2], $data)" />
 												</div>
 												<span class="caret-bottom"></span>

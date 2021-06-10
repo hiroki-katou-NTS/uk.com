@@ -46,6 +46,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalComment;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
@@ -340,7 +341,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 							ApprovalBehaviorAtr.UNAPPROVED, 
 							"", 
 							null, 
-							"", 
+							new ApprovalComment(""), 
 							approverInfo.getApproverInListOrder())).collect(Collectors.toList());
 				return ApprovalFrame.convert(
 						levelApproverList.getOrder(), 
@@ -381,7 +382,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 								ApprovalBehaviorAtr.UNAPPROVED, 
 								"", 
 								null, 
-								"",
+								new ApprovalComment(""),
 								1);
 							return ApprovalFrame.convert(
 									levelApproverList.getOrder(), 
@@ -399,7 +400,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 							ApprovalBehaviorAtr.UNAPPROVED, 
 							"", 
 							null, 
-							"",
+							new ApprovalComment(""),
 							1);
 					resultApprovalFrame.add(ApprovalFrame.convert(
 								i + 1, 

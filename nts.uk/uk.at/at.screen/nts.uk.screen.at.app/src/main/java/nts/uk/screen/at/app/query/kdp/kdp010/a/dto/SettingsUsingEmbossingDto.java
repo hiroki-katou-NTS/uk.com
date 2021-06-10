@@ -22,6 +22,8 @@ public class SettingsUsingEmbossingDto {
 	
 	private Boolean smart_phone;
 	
+	private Boolean ricohStamp;
+	
 	public SettingsUsingEmbossingDto(SettingsUsingEmbossing domain) {
 		super();
 		this.companyId = domain.getCompanyId();
@@ -31,5 +33,6 @@ public class SettingsUsingEmbossingDto {
 		this.indivition = domain.isIndivition();
 		this.portal = domain.isPortal();
 		this.smart_phone = domain.isSmart_phone();
+		this.ricohStamp = domain.isRicohStamp();
 	}
 }
