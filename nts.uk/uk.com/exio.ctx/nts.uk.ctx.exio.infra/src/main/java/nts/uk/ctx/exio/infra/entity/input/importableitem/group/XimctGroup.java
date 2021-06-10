@@ -8,9 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.eclipse.persistence.jpa.JpaEntityManager;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.importableitem.group.TransactionUnit;
@@ -20,6 +23,8 @@ import nts.uk.ctx.exio.dom.input.importableitem.group.TransactionUnit;
 @AllArgsConstructor
 @NoArgsConstructor
 public class XimctGroup {
+	
+	public static final JpaEntityMapper<XimctGroup> MAPPER = new JpaEntityMapper<>(XimctGroup.class);
 
 	@Id
 	@Column(name = "GROUP_ID")
