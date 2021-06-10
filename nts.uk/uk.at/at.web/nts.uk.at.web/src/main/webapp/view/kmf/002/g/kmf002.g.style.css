@@ -1,7 +1,7 @@
 
 .panel.panel-frame {
-  width: 215px;
-  height: 370px;
+  width: 245px;
+  height: 400px;
   float: left;
   display: block;
 }
@@ -23,11 +23,11 @@
 }
 
 .btn-with-caret > button {
-  width: 205px;
+  width: 235px;
 }
 
 .btn-with-caret > button:not(.caret-right) {
-  width: 215px !important;
+  width: 245px !important;
 }
 
 .caret-bottom:after {
@@ -39,9 +39,4 @@
 #G2_1 {
   margin-left: 25px;
   margin-right: 40px;
-}
-
-#G2_6 > div:nth-child(2) {
-  width: 180px;
-  margin-left: 20px;
 }
