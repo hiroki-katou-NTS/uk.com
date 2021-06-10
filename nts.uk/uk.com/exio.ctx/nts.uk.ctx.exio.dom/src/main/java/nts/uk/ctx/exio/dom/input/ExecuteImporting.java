@@ -7,6 +7,7 @@ import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AdjustExistingData;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.transfer.TransferCanonicalData;
@@ -80,7 +81,7 @@ public class ExecuteImporting {
 		
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
 
-		ImportingGroup getImportingGroup(int groupId);
+		ImportingGroup getImportingGroup(ImportingGroupId groupId);
 		
 		List<String> getAllEmployeeIdsOfCanonicalizedData(ExecutionContext context);
 	}

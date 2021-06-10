@@ -16,6 +16,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.importableitem.group.TransactionUnit;
 
 @Entity
@@ -42,7 +43,7 @@ public class XimctGroup {
 	public ImportingGroup toDomain() {
 		
 		return new ImportingGroup(
-				groupId,
+				ImportingGroupId.valueOf(groupId),
 				name,
 				AvailableModes.restore(availableModes),
 				TransactionUnit.valueOf(transactionUnit));
@@ -50,7 +51,7 @@ public class XimctGroup {
 	
 	public static XimctGroup toEntity(ImportingGroup domain) {
 		return new XimctGroup(
-				domain.getGroupId(),
+				domain.getGroupId().value,
 				domain.getName(),
 				AvailableModes.toBits(domain.getAvailableModes()),
 				domain.getTransactionUnit().value);

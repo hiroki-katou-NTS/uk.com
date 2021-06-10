@@ -17,6 +17,7 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -93,7 +94,7 @@ public class TransferCanonicalData {
 
 	public interface Require{
 		List<String> getImportingItem();
-		ImportingGroup getImportingGroup(int groupId);
+		ImportingGroup getImportingGroup(ImportingGroupId groupId);
 		ConversionSource getConversionSource(String groupName);
 		List<ConversionTable> getConversionTable(ConversionSource source, String groupName, ConversionCodeType cct);
 		int execute(List<ConversionSQL> conversionSqls);

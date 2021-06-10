@@ -70,7 +70,7 @@ public class XimctGroupCanonicalization extends JpaEntity {
 						+ containedGroupIds.stream().map(id -> Integer.toString(id)).collect(Collectors.joining(",")));
 			}
 			
-			this.groupId = new ImportingGroupId(entities.get(0).key.groupId);
+			this.groupId = ImportingGroupId.valueOf(entities.get(0).key.groupId);
 			this.entities = entities;
 		}
 		

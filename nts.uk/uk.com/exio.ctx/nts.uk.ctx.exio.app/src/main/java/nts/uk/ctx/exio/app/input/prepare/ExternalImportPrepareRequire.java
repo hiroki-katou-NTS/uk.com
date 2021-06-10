@@ -19,6 +19,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
@@ -48,13 +49,13 @@ public class ExternalImportPrepareRequire {
 		}
 
 		@Override
-		public List<ImportableItem> getDefinition(String companyId, int groupId) {
+		public List<ImportableItem> getDefinition(String companyId, ImportingGroupId groupId) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public GroupCanonicalization getGroupCanonicalization(int groupId) {
+		public GroupCanonicalization getGroupCanonicalization(ImportingGroupId groupId) {
 			// TODO Auto-generated method stub
 			return null;
 		}

@@ -10,6 +10,7 @@ import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 
 public class Helper {
@@ -38,7 +39,7 @@ public class Helper {
 	public static class DUMMY{
 		public static String COMPANY_ID = "company";
 		public static String SETTING_CODE = "settingCode";
-		public static int GROUP_ID = 999;
+		public static ImportingGroupId GROUP_ID = ImportingGroupId.TASK;
 		public static int ROW_NO = 999; 
 		public static boolean REQUIRED = true; 
 		public static Object VALUE = 999;

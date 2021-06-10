@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.importableitem.group.TransactionUnit;
 
 @RunWith(Enclosed.class)
@@ -24,7 +25,7 @@ public class XimctGroupTest {
 		public void test() {
 			
 			val source = new ImportingGroup(
-					100,
+					ImportingGroupId.TASK,
 					"name",
 					new HashSet<>(Arrays.asList(UPDATE_ONLY, DELETE_RECORD_BEFOREHAND)),
 					TransactionUnit.ALL);

@@ -1,26 +1,26 @@
 package nts.uk.ctx.exio.dom.input.importableitem.group;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerRange;
+import lombok.RequiredArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 
 /**
  * 受入グループID
  */
-@IntegerRange(min = 1, max = 999)
-@SuppressWarnings("serial")
-public class ImportingGroupId extends IntegerPrimitiveValue<ImportingGroupId>{
+@RequiredArgsConstructor
+public enum ImportingGroupId{
 
-	public ImportingGroupId(Integer rawValue) {
-		super(rawValue);
-	}
-	
-	public static ImportingGroupId of(int groupId) {
-		return new ImportingGroupId(groupId);
-	}
-	
 	/** 雇用履歴 */
-	public static final ImportingGroupId EMPLOYMENT_HISTORY = of(100);
-
+	EMPLOYMENT_HISTORY(100),
+	
 	/** 作業 */
-	public static final ImportingGroupId TASK = of(200);
+	TASK(200),
+	
+	;
+	
+	public final int value;
+	
+	public static ImportingGroupId valueOf(int value) {
+		return EnumAdaptor.valueOf(value, ImportingGroupId.class);
+	}
+	
 }

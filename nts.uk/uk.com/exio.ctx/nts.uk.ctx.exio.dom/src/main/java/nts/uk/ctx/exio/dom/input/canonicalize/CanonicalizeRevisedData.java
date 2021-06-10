@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.dom.input.canonicalize;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 
 /**
  * 編集済みデータを正準化する
@@ -25,6 +26,6 @@ public class CanonicalizeRevisedData {
 	
 	public static interface Require extends GroupCanonicalization.RequireCanonicalize {
 		
-		GroupCanonicalization getGroupCanonicalization(int groupId);
+		GroupCanonicalization getGroupCanonicalization(ImportingGroupId groupId);
 	}
 }

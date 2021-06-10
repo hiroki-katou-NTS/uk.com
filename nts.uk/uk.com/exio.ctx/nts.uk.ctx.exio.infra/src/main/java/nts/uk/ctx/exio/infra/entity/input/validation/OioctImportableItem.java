@@ -12,6 +12,7 @@ import nts.uk.ctx.exio.dom.input.importableitem.CheckMethod;
 import nts.uk.ctx.exio.dom.input.importableitem.DomainConstraint;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import java.io.Serializable;
@@ -65,7 +66,7 @@ public class OioctImportableItem extends ContractUkJpaEntity 		implements Serial
 		}
 		
 		return new ImportableItem(
-				pk.getGroupdId(),
+				ImportingGroupId.valueOf(pk.getGroupdId()),
 				pk.getItemNo(),
 				EnumAdaptor.valueOf(itemType, ItemType.class),
 				required,
@@ -75,7 +76,7 @@ public class OioctImportableItem extends ContractUkJpaEntity 		implements Serial
 	public static OioctImportableItem fromDomain(String cid, ImportableItem target) {
 		val pk = new OioctImportableItemPK(
 					cid,
-					target.getGroupId(),
+					target.getGroupId().value,
 					target.getItemNo()
 				);
 		

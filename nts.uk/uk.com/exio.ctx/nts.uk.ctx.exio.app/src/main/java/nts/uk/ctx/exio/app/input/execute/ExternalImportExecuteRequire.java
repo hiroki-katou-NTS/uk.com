@@ -23,6 +23,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.transfer.ConversionTableRepository;
@@ -63,7 +64,7 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public ImportingGroup getImportingGroup(int groupId) {
+		public ImportingGroup getImportingGroup(ImportingGroupId groupId) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -87,7 +88,7 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public GroupCanonicalization getGroupCanonicalization(int groupId) {
+		public GroupCanonicalization getGroupCanonicalization(ImportingGroupId groupId) {
 			// TODO Auto-generated method stub
 			return null;
 		}

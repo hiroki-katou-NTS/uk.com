@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 
 /**
@@ -34,6 +35,6 @@ public class ValidateSystemRange {
 	}
 	
 	public static interface SystemRequire{
-		List<ImportableItem> getDefinition(String companyId, int groupId);
+		List<ImportableItem> getDefinition(String companyId, ImportingGroupId groupId);
 	}
 }

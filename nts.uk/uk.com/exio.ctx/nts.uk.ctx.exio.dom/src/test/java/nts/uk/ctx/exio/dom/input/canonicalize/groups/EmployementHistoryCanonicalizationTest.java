@@ -14,6 +14,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.EmployeeCodeCanonicalization;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 
 public class EmployementHistoryCanonicalizationTest {
 
@@ -40,7 +41,7 @@ public class EmployementHistoryCanonicalizationTest {
 
 	static class Helper {
 		public static ExecutionContext context(ImportingMode mode) {
-			return new ExecutionContext("companyId", "settingCode", 1, mode);
+			return new ExecutionContext("companyId", "settingCode", ImportingGroupId.TASK, mode);
 		}
 	}
 

@@ -9,6 +9,7 @@ import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.setting.assembly.AssemblyResult;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportItemMapping;
 
@@ -48,6 +49,6 @@ public class AssembleCsvRecord {
 	
 	public interface Require extends ReviseItem.Require{
 		Optional<ReviseItem> getRevise(ExecutionContext context, int importItemNumber);
-		ImportableItem getImportableItem(int groupId, int itemNo);
+		ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo);
 	}
 }
