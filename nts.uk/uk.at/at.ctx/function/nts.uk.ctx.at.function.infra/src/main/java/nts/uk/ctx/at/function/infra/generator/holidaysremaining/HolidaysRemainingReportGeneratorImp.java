@@ -1595,12 +1595,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             count = 6;
         }
         cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 20, firstRow, 2);
+        count+=2;
         // K1_1
         cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_79"));
         val hdRemainingInfor = dataSource.getMapEmployees().get(employee.getEmployeeId()).getHolidayRemainingInfor();
         if (hdRemainingInfor == null) {
             firstRow += 2;
-            count += 2;
             dtoCheck.setFirstRow(firstRow);
             dtoCheck.setCount(count);
             return dtoCheck;
@@ -1616,6 +1616,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             // K2_3
             cells.get(rowIndexUndigestedPause, 9).setValue(TextResource.localize("KDR001_11"));
             totalRows += 1;
+            count+=1;
         }
         if (isOvertimeRemaining) {
             rowIndexNumberRemainingPause = firstRow + totalRows;
@@ -1623,10 +1624,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             // K2_4
             cells.get(rowIndexNumberRemainingPause, 9).setValue(TextResource.localize("KDR001_18"));
             totalRows += 1;
+            count+=1;
         }
         if (!employee.getCurrentMonth().isPresent()) {
             firstRow += totalRows;
             dtoCheck.setFirstRow(firstRow);
+            dtoCheck.setCount(count);
             return dtoCheck;
         }
         YearMonth currentMonth = employee.getCurrentMonth().get();
@@ -1658,7 +1661,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             setBottomBorderStyle(cells.get(firstRow + totalRows - 1, 2 + index));
         }
         firstRow += totalRows;
-        count += totalRows;
         dtoCheck.setCount(count);
         dtoCheck.setFirstRow(firstRow);
         return dtoCheck;
@@ -2540,6 +2542,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
     private DtoCheck publicHolidays(Cells cells, int firstRow, HolidaysRemainingEmployee employee,
                                     HolidayRemainingDataSource dataSource, DtoCheck dtoCheck, HorizontalPageBreakCollection pageBreaks) throws Exception {
         // 代休
+        Integer count =  dtoCheck.getCount();
         val hdRemainingInfor = dataSource.getMapEmployees().get(employee.getEmployeeId()).getHolidayRemainingInfor();
         val listItemsOutput = dataSource.getHolidaysRemainingManagement().getListItemsOutput();
         //※1: 出力項目設定[公休]：休暇残数管理表の出力項目設定．出力する項目一覧．公休．公休の項目を出力する
@@ -2552,7 +2555,20 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         // outputHolidayForward
         // ※3 : 出力項目設定[公休月度残]：休暇残数管理表の出力項目設定．出力する項目一覧．公休．公休月度残を出力する
         // monthlyPublic
-
+        if (count >= MAX_ROW_IN_PAGE || MAX_ROW_IN_PAGE - count < 4) {
+            Integer countEmployeeBefore = dtoCheck.getCountEmployeeBefore();
+            printEmployeeInfore(cells, firstRow - (count - 6 - countEmployeeBefore), dataSource, employee);
+            dtoCheck.setCountEmployeeBefore(0);
+            for (int j = 0; j < NUMBER_COLUMN; j++) {
+                setBottomBorderStyle(cells.get(firstRow - 1, j));
+            }
+            pageBreaks.add(firstRow);
+            cells.copyRows(cells, 0, firstRow, 6);
+            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
+                    + "　" + employee.getWorkplaceName());
+            firstRow += 6;
+            count = 6;
+        }
         int totalRows = 4;
         int rowIndexRepresentSubstitute = 0;
         int rowIndexIsRemainingChargeSubstitute = 0;
@@ -2592,11 +2608,15 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 //        }
         if (hdRemainingInfor == null) {
             firstRow += 4;
+            count+=4;
+            dtoCheck.setCount(count);
             dtoCheck.setFirstRow(firstRow);
             return dtoCheck;
         }
         if (!employee.getCurrentMonth().isPresent()) {
             firstRow += totalRows;
+            count+=4;
+            dtoCheck.setCount(count);
             dtoCheck.setFirstRow(firstRow);
             return dtoCheck;
         }
@@ -2767,6 +2787,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             setBottomBorderStyle(cells.get(firstRow + totalRows - 1, 2 + index));
         }
         firstRow += totalRows;
+        count+=4;
+        dtoCheck.setCount(count);
         dtoCheck.setFirstRow(firstRow);
         return dtoCheck;
     }
