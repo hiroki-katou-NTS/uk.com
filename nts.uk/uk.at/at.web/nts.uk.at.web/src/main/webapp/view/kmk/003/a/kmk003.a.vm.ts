@@ -1173,7 +1173,8 @@ module nts.uk.at.view.kmk003.a {
                     }
                     afternoonTimes.push(timeZonePMDto);
                 } else {
-                    if (shiftOneEnd >= morningEnd) {
+                    if (shiftOneEnd > morningEnd) {
+                        let count1 = 1;
                         //morning1
                         morningTimes.push({
                             employmentTimeFrameNo: 1,
@@ -1183,20 +1184,23 @@ module nts.uk.at.view.kmk003.a {
                                 rounding: {rounding: 0, roundingTime: 0}
                             }
                         });
-                        //afternoon1
-                        afternoonTimes.push({
-                            employmentTimeFrameNo: 1,
-                            timezone: {
-                                start: afterStart,
-                                end: shiftOneEnd,
-                                rounding: {rounding: 0, roundingTime: 0}
-                            }
-                        })
+                        if (shiftOneEnd > afterStart) {
+                            //afternoon1
+                            afternoonTimes.push({
+                                employmentTimeFrameNo: 1,
+                                timezone: {
+                                    start: afterStart,
+                                    end: shiftOneEnd,
+                                    rounding: {rounding: 0, roundingTime: 0}
+                                }
+                            })
+                            count1++;
+                        }
                         //afternoon2
                         afternoonTimes.push({
-                            employmentTimeFrameNo: 1,
+                            employmentTimeFrameNo: count1,
                             timezone: {
-                                start: shiftTwoStart,
+                                start: afterStart > shiftTwoStart ? afterStart : shiftTwoStart,
                                 end: shiftTwoEnd,
                                 rounding: {rounding: 0, roundingTime: 0}
                             }
@@ -1211,20 +1215,22 @@ module nts.uk.at.view.kmk003.a {
                                 rounding: {rounding: 0, roundingTime: 0}
                             }
                         });
-                        //morning2
-                        morningTimes.push({
-                            employmentTimeFrameNo: 1,
-                            timezone: {
-                                start: shiftTwoStart,
-                                end: morningEnd,
-                                rounding: {rounding: 0, roundingTime: 0}
-                            }
-                        });
+                        if (morningEnd > shiftTwoStart) {
+                            //morning2
+                            morningTimes.push({
+                                employmentTimeFrameNo: 2,
+                                timezone: {
+                                    start: shiftTwoStart,
+                                    end: morningEnd,
+                                    rounding: {rounding: 0, roundingTime: 0}
+                                }
+                            });
+                        }
                         //afternoon1
                         afternoonTimes.push({
                             employmentTimeFrameNo: 1,
                             timezone: {
-                                start: afterStart,
+                                start: afterStart > shiftTwoStart ? afterStart : shiftTwoStart,
                                 end: shiftTwoEnd,
                                 rounding: {rounding: 0, roundingTime: 0}
                             }

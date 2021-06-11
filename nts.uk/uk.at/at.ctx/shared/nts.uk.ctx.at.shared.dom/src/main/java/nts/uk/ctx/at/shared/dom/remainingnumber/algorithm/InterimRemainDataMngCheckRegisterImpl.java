@@ -254,44 +254,26 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 
 			});
 			// 年休
-			y.getAnnualHolidayData().ifPresent(z -> {
-				annualHolidayData.add(z);
-				List<InterimRemain> lstTmp = y.getRecAbsData().stream()
-						.filter(w -> w.getRemainManaID().equals(z.getRemainManaID())).collect(Collectors.toList());
-				for (InterimRemain mngData : lstTmp) {
-					annualMng.add(mngData);
-				}
-			});
+			y.getAnnualHolidayData().forEach(c->annualMng.add(c));
 			// 特別休暇
-			y.getSpecialHolidayData().stream().forEach(a -> {
-				specialHolidayData.add(a);
-				List<InterimRemain> interimMngSpe = y.getRecAbsData().stream()
-						.filter(b -> b.getRemainManaID().equals(a.getRemainManaID())).collect(Collectors.toList());
-				if (!interimMngSpe.isEmpty()) {
-					interimSpecial.addAll(y.getRecAbsData());
-				}
-			});
-
-			// 休出代休
+			y.getSpecialHolidayData().forEach(c->interimSpecial.add(c));
+			// 休出
 			y.getBreakData().ifPresent(z -> {
 				breakMng.add(z);
 				List<InterimRemain> lstTmp = y.getRecAbsData().stream()
 						.filter(a -> z.getRemainManaID().equals(a.getRemainManaID())).collect(Collectors.toList());
 				interimMngBreakDayOff.addAll(lstTmp);
 			});
-			y.getDayOffData().ifPresent(a -> {
-				dayOffMng.add(a);
-				List<InterimRemain> lstTmp = y.getRecAbsData().stream()
-						.filter(b -> b.getRemainManaID().equals(a.getRemainManaID())).collect(Collectors.toList());
-				interimMngBreakDayOff.addAll(lstTmp);
-			});
-			// 振出振休
+			//代休
+			y.getDayOffData().forEach(c->interimMngBreakDayOff.add(c));
+			// 振出
 			y.getRecData().ifPresent(b -> {
 				useRecMng.add(b);
 				List<InterimRemain> lstTmp = y.getRecAbsData().stream()
 						.filter(a -> b.getRemainManaID().equals(a.getRemainManaID())).collect(Collectors.toList());
 				interimMngAbsRec.addAll(lstTmp);
 			});
+			//振休
 			y.getInterimAbsData().ifPresent(c -> {
 				useAbsMng.add(c);
 				List<InterimRemain> lstTmp = y.getRecAbsData().stream()

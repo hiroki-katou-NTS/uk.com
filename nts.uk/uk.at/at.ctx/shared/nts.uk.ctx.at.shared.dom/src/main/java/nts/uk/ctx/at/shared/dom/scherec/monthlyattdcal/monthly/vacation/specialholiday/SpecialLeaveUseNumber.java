@@ -121,9 +121,10 @@ public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, Se
 				: Optional.of(new SpecialLeaveUseDays(usedNumber.getUseDays().map(x -> x.v()).orElse(0.0)));
 
 		if ( usedNumber.getUseTimes().isPresent()){
-			if (this.useTimes.isPresent()){
-				this.useTimes.get().addUseTimes(usedNumber.getUseTimes().get());
+			if (!this.useTimes.isPresent()){
+				this.useTimes = Optional.of(new SpecialLeaveUseTimes(new SpecialLeavaRemainTime(0)));
 			}
+			this.useTimes.get().addUseTimes(usedNumber.getUseTimes().get());
 		}
 	}
 }

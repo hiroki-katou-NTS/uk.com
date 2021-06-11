@@ -19,6 +19,8 @@ public enum AttendanceItemOfMonthly {
 	FLEX_ILLEGAL_TIME(16),
 	/** フレックス超過時間 */
 	FLEX_EXCESS_TIME(17),
+	/** フレックス不足時間 */
+	FLEX_SHORTAGE_TIME(18),
 	
 	/** 就業時間 */
 	WORK_TIME(31),

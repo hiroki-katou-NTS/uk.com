@@ -62,10 +62,9 @@ public class WithinStatutoryTimeOfDaily {
 	//所定内深夜時間
 	@Setter
 	private WithinStatutoryMidNightTime withinStatutoryMidNightTime = new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)));
-	//休暇加算時間
-	private AttendanceTime vacationAddTime = new AttendanceTime(0);
 
-	/** 所定内労働時間金額 **/
+
+	/** 就業時間金額 **/
 	private AttendanceAmountDaily withinWorkTimeAmount = new AttendanceAmountDaily(0);
 
 
@@ -339,13 +338,11 @@ public class WithinStatutoryTimeOfDaily {
 	public static WithinStatutoryTimeOfDaily createWithinStatutoryTimeOfDaily(AttendanceTime workTime,
 																	   AttendanceTime actualWorkTime,
 																	   AttendanceTime withinPrescribedPremiumTime,
-																	   WithinStatutoryMidNightTime withinStatutoryMidNightTime,
-																	   AttendanceTime vacationAddTime) {
+																	   WithinStatutoryMidNightTime withinStatutoryMidNightTime) {
 		WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily = new WithinStatutoryTimeOfDaily(workTime,actualWorkTime,withinPrescribedPremiumTime,withinStatutoryMidNightTime);
 		withinStatutoryTimeOfDaily.actualWorkTime = actualWorkTime;
 		withinStatutoryTimeOfDaily.withinPrescribedPremiumTime = withinPrescribedPremiumTime;
 		withinStatutoryTimeOfDaily.withinStatutoryMidNightTime = withinStatutoryMidNightTime;
-		withinStatutoryTimeOfDaily.vacationAddTime = vacationAddTime;
 		return withinStatutoryTimeOfDaily;
 	}
 
