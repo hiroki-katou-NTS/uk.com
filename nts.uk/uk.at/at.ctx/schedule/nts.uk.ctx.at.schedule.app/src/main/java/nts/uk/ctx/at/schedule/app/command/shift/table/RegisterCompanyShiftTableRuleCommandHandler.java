@@ -46,7 +46,6 @@ public class RegisterCompanyShiftTableRuleCommandHandler extends CommandHandler<
                 ? Collections.singletonList(AssignmentMethod.HOLIDAY)
                 : Collections.singletonList(AssignmentMethod.SHIFT);
 
-
         ShiftTableRule shiftTableRule = ShiftTableRule.create(
                 NotUseAtr.valueOf(command.getUsePublicAtr()),
                 NotUseAtr.valueOf(command.getUseWorkAvailabilityAtr()),
@@ -54,7 +53,6 @@ public class RegisterCompanyShiftTableRuleCommandHandler extends CommandHandler<
                 availabilityAssignMethodList,
                 Optional.of(new FromNoticeDays(command.getUseWorkAvailabilityAtr()))
         );
-
 
         // get by CompanyID
         Optional<ShiftTableRuleForCompany> shiftTableRuleCompany = shiftTableRuleForCompanyRepo.get(companyId);

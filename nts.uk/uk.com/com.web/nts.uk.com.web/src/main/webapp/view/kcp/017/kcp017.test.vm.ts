@@ -71,6 +71,24 @@ module nts.uk.com.view.kcp017.test.viewmodel {
             });
         }
 
+        saveSetting() {
+            const vm = this;
+            if (vm.unit() == 0) {
+                vm.alreadySettingWorkplaces(vm.selectedWkpIds().map((i: string) => ({workplaceId: i, isAlreadySetting: true})));
+            } else {
+                vm.alreadySettingWorkplaceGroups(vm.selectedWkpGroupIds());
+            }
+        }
+
+        deleteSetting() {
+            const vm = this;
+            if (vm.unit() == 0) {
+                vm.alreadySettingWorkplaces(vm.alreadySettingWorkplaces().filter(i => vm.selectedWkpIds().indexOf(i.workplaceId) < 0));
+            } else {
+                vm.alreadySettingWorkplaceGroups(vm.alreadySettingWorkplaceGroups().filter(i => vm.selectedWkpGroupIds().indexOf(i) < 0));
+            }
+        }
+
     }
 
 }

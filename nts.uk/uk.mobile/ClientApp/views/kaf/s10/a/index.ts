@@ -1,6 +1,6 @@
 import { _, Vue } from '@app/provider';
 import { PrePostAtr, AppDateContradictionAtr, ParamChangeWorkMobile, OverTimeShiftNight, TrackRecordAtr, BreakTime, TimeZoneNew, TimeZoneWithWorkNo, AppOverTime, ParamCalculateMobile, ParamSelectWorkMobile, InfoWithDateApplication, ParamStartMobile, OvertimeAppAtr, Model, NotUseAtr, ApplicationTime, OvertimeApplicationSetting, AttendanceType, HolidayMidNightTime, StaturoryAtrOfHolidayWork, ParamBreakTime, WorkInformation, WorkHoursDto, AppHolidayWork, AppHdWorkDispInfo, HdWorkDispInfoWithDateOutput } from '../a/define.interface';
-import { component, Prop } from '@app/core/component';
+import { component, Prop, Watch } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
 import { KafS10Step1Component } from '../step1';
 import { HolidayTime, KafS10Step2Component } from '../step2';
@@ -47,6 +47,25 @@ export class KafS10Component extends KafS00ShrComponent {
     
     @Prop()
     public readonly params: InitParam;
+
+    public get getNumb(): number {
+        const self = this;
+
+        return self.numb;
+    }
+
+    @Watch('numb', {deep: true})
+    public changeNumb(data: any) {
+        const self = this;
+
+        if (self.numb == 1) {
+            self.pgName = 'kafs10step1';
+        } else if (self.numb == 2) {
+            self.pgName = 'kafs10step2';
+        } else {
+            self.pgName = 'kafs10step3';
+        }
+    }
 
     public get step() {
         return `step_${this.numb}`;
