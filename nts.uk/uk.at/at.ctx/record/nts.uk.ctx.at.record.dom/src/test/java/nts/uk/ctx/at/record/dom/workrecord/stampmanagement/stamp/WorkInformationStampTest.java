@@ -116,8 +116,8 @@ public class WorkInformationStampTest {
 				Optional.of(new EmpInfoTerminalCode("emCD")), 
 				Optional.of(new WorkLocationCD("workLocationCD")), 
 				Optional.empty());
-		WorkInformationTemporary workInformationTemporary = new WorkInformationTemporary(Optional.of("workplaceID"),
-				Optional.of(new WorkLocationCD("wkCD")));
+		WorkInformationTemporary workInformationTemporary = new WorkInformationTemporary(Optional.of("workPlaceId"),
+				Optional.of(new WorkLocationCD("workLocationCD")));
 
 		new MockUp<WorkInformationStamp>() {
 			@Mock
