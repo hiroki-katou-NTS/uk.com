@@ -256,12 +256,14 @@ public class KTG026QueryProcessor {
 						, loopYM.lastGeneralDate()
 						, ScheRecAtr.SCHEDULE);
 				
-				if (agreementTimeDetail != null) {
-					ymOvertimes.add(YearMonthOvertime.builder()
+				if (agreementTimeDetail == null) {
+					agreementTimeDetail = new AgreementTimeOfManagePeriod(employeeId, loopYM);
+				}
+				
+				ymOvertimes.add(YearMonthOvertime.builder()
 						.yearMonth(ym)
 						.agreeTime(AgreementTimeOfManagePeriodDto.from(agreementTimeDetail))
 						.build());
-				}
 				
 			} else { // [INPUT．当月の年月<=ループする年月]がfalse
 				// [NO.612]年月期間を指定して管理期間の36協定時間を取得する
@@ -275,6 +277,12 @@ public class KTG026QueryProcessor {
 													.agreeTime(AgreementTimeOfManagePeriodDto.from(x))
 													.build())
 											.collect(Collectors.toList()));
+				} else {
+					AgreementTimeOfManagePeriod agreementTimeDetail = new AgreementTimeOfManagePeriod(employeeId, loopYM);
+					ymOvertimes.add(YearMonthOvertime.builder()
+							.yearMonth(ym)
+							.agreeTime(AgreementTimeOfManagePeriodDto.from(agreementTimeDetail))
+							.build());
 				}
 			}
 			
