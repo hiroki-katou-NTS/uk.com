@@ -280,8 +280,6 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDis
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.DailyStatutoryLaborTime;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetEmp;
@@ -439,8 +437,6 @@ public class RecordDomRequireService {
 	private HolidayAddtionRepository holidayAddtionRepo;
 	@Inject
 	private MonthlyAggrSetOfFlexRepository monthlyAggrSetOfFlexRepo;
-	@Inject
-	private GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepo;
 	@Inject
 	private InsufficientFlexHolidayMntRepository insufficientFlexHolidayMntRepo;
 	@Inject
@@ -697,7 +693,7 @@ public class RecordDomRequireService {
 				remainCreateInforByRecordData, usageUnitSettingRepo, affWorkplaceAdapter, timeLeavingOfDailyPerformanceRepo,
 				temporaryTimeOfDailyPerformanceRepo, specificDateAttrOfDailyPerforRepo, employeeDailyPerErrorRepo, anyItemValueOfDailyRepo, pcLogOnInfoOfDailyRepo,
 				attendanceTimeRepo, payItemCountOfMonthlyRepo, optionalItemRepo, empConditionRepo, formulaRepo, formulaDispOrderRepo, actualLockRepo,
-				legalTransferOrderSetOfAggrMonthlyRepo, roleOvertimeWorkRepo, holidayAddtionRepo, monthlyAggrSetOfFlexRepo, getFlexPredWorkTimeRepo, insufficientFlexHolidayMntRepo,
+				legalTransferOrderSetOfAggrMonthlyRepo, roleOvertimeWorkRepo, holidayAddtionRepo, monthlyAggrSetOfFlexRepo, insufficientFlexHolidayMntRepo,
 				flexShortageLimitRepo, roundingSetOfMonthlyRepo, totalTimesRepo, agreementOperationSettingRepo, parallel, checkBeforeCalcFlexChangeService,
 				anyItemOfMonthlyRepo, empCalAndSumExeLogRepo, editStateOfMonthlyPerRepo, executorService, affiliationInforOfDailyPerforRepo,
 				converterFactory, predWorkingDaysAdaptor, updateAllDomainMonthService, agreementUnitSetRepo, agreementTimeWorkPlaceRepo, affClassficationAdapter, syEmploymentAdapter,
@@ -738,7 +734,7 @@ public class RecordDomRequireService {
 				EmployeeDailyPerErrorRepository employeeDailyPerErrorRepo, AnyItemValueOfDailyRepo anyItemValueOfDailyRepo, PCLogOnInfoOfDailyRepo pcLogOnInfoOfDailyRepo, AttendanceTimeRepository attendanceTimeRepo,
 				PayItemCountOfMonthlyRepository payItemCountOfMonthlyRepo, OptionalItemRepository optionalItemRepo, EmpConditionRepository empConditionRepo, FormulaRepository formulaRepo, FormulaDispOrderRepository formulaDispOrderRepo,
 				ActualLockRepository actualLockRepo, LegalTransferOrderSetOfAggrMonthlyRepository legalTransferOrderSetOfAggrMonthlyRepo, OvertimeWorkFrameRepository roleOvertimeWorkRepo, HolidayAddtionRepository holidayAddtionRepo,
-				MonthlyAggrSetOfFlexRepository monthlyAggrSetOfFlexRepo, GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepo, InsufficientFlexHolidayMntRepository insufficientFlexHolidayMntRepo, FlexShortageLimitRepository flexShortageLimitRepo,
+				MonthlyAggrSetOfFlexRepository monthlyAggrSetOfFlexRepo, InsufficientFlexHolidayMntRepository insufficientFlexHolidayMntRepo, FlexShortageLimitRepository flexShortageLimitRepo,
 				RoundingSetOfMonthlyRepository roundingSetOfMonthlyRepo, TotalTimesRepository totalTimesRepo, AgreementOperationSettingRepository agreementOperationSettingRepo,
 				ManagedParallelWithContext parallel, CheckBeforeCalcFlexChangeService checkBeforeCalcFlexChangeService, AnyItemOfMonthlyRepository anyItemOfMonthlyRepo,
 				EmpCalAndSumExeLogRepository empCalAndSumExeLogRepo, EditStateOfMonthlyPerRepository editStateOfMonthlyPerRepo, ManagedExecutorService executorService, AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepo,
@@ -802,7 +798,6 @@ public class RecordDomRequireService {
 			this.roleOvertimeWorkRepo = roleOvertimeWorkRepo;
 			this.holidayAddtionRepo = holidayAddtionRepo;
 			this.monthlyAggrSetOfFlexRepo = monthlyAggrSetOfFlexRepo;
-			this.getFlexPredWorkTimeRepo = getFlexPredWorkTimeRepo;
 			this.insufficientFlexHolidayMntRepo = insufficientFlexHolidayMntRepo;
 			this.flexShortageLimitRepo = flexShortageLimitRepo;
 			this.roundingSetOfMonthlyRepo = roundingSetOfMonthlyRepo;
@@ -967,8 +962,6 @@ public class RecordDomRequireService {
 		private HolidayAddtionRepository holidayAddtionRepo;
 
 		private MonthlyAggrSetOfFlexRepository monthlyAggrSetOfFlexRepo;
-
-		private GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepo;
 
 		private InsufficientFlexHolidayMntRepository insufficientFlexHolidayMntRepo;
 
@@ -1300,11 +1293,6 @@ public class RecordDomRequireService {
 		@Override
 		public Optional<MonthlyAggrSetOfFlex> monthFlexAggrSet(String companyId) {
 			return monthlyAggrSetOfFlexRepo.find(companyId);
-		}
-
-		@Override
-		public Optional<GetFlexPredWorkTime> flexPredWorkTime(String companyId) {
-			return getFlexPredWorkTimeRepo.find(companyId);
 		}
 
 		@Override
