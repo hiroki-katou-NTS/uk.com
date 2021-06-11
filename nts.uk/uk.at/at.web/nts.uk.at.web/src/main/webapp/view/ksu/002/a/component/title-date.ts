@@ -14,7 +14,8 @@ module nts.uk.ui.at.ksu002.a {
 				valueFormat: 'YYYYMM',
 				fiscalMonthsMode: false,
 				defaultClass: 'round-orange',
-				showJumpButtons: true
+				showJumpButtons: true,
+				required: true
 			}"></div>
 		<div class="title-label">
 			<span data-bind="i18n: 'KSU002_23'"></span>
@@ -250,6 +251,8 @@ module nts.uk.ui.at.ksu002.a {
 						cache.yearMonth = cmd.yearMonth;
 						// vm.$ajax('at', API.BASE_DATE, cmd).then(proccesPeriod);
 					} else if (cache.yearMonth !== cmd.yearMonth) {
+						if(nts.uk.ui.errors.hasError())
+							return;
 						if (hasChange) {
 							vm.$dialog
 								.confirm({ messageId: 'Msg_1732' })

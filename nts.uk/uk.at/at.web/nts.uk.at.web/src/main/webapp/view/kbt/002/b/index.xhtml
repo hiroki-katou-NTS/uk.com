@@ -94,7 +94,7 @@
                 </td>
                 <td>
                   <div>
-                    <div id="B4_2" tabindex="8" title="#{i18n.getText('KBT002_13')}" class="ntsControl">
+                    <!-- <div id="B4_2" tabindex="8" title="#{i18n.getText('KBT002_13')}" class="ntsControl">
                       <label class="ntsRadioBox">
                         <input id="B4_3" type="radio" name="execScopeRadio"
                           data-bind="checkedValue: 0, checked: execScopeCls" />
@@ -107,6 +107,14 @@
                         <span tabindex="8" class="box"></span>
                         <span class="ml-10 mr-10">#{i18n.getText('Com_Workplace')}</span>
                       </label>
+                    </div> -->
+                    <div id="B4_2" tabindex="8" class="cf switch-btn-fix-width" data-bind="ntsSwitchButton: {
+                        name: '#[KBT002_13]',
+                        value: execScopeCls,
+                        options: $parent.execRangeList,
+                        optionsValue: 'code',
+                        optionsText: 'name'
+                      }">
                     </div>
                     <div class="ntsControl">
                       <span id="B4_11" class="middle">#{i18n.getText('KBT002_119')}</span>
@@ -135,12 +143,12 @@
                       optionsValue: 'code',
                       optionsText: 'name',
                       required: true,
-                      enable: !$parent.isNewMode()
+                      enable: ko.computed(function() { return !$parent.isNewMode() &amp;&amp; $parent.hasExecTaskSetting(); })
                     }">
                   </div>
                   <button id="B5_5" tabindex="12" class="add ml-25"
                     data-bind="click: function() { $parent.openDialogC() }, disable: $parent.isNewMode()">#{i18n.getText('KBT002_51')}</button>
-                  <label id="B5_6" class="limited-label color-holiday"
+                  <label id="B5_6" class="limited-label"
                     data-bind="text: $parent.executionTaskWarning"></label>
                 </td>
               </tr>
@@ -233,7 +241,7 @@
                                     value: designatedYear,
                                     optionsText: 'localizedName',
                                     editable: false,
-                                    enable: perScheduleClsNormal() &amp;&amp; processExecType() === 0 &amp;&amp; !cloudCreFlag() &amp;&amp; !cloudCreFlag(),
+                                    enable: ko.computed(function() { return perScheduleClsNormal() &amp;&amp; processExecType() === 0 &amp;&amp; !cloudCreFlag(); }),
                                     columns: [
                                       { prop: 'localizedName', length: 9 }
                                     ]
@@ -243,7 +251,7 @@
                                 <div id="start-month-day" tabindex="21" class="top-0" data-bind="ntsMonthDays: {
                                     name: '#[KBT002_283]',
                                     value: startMonthDay, 
-                                    enable: enableMonthDay &amp;&amp; !cloudCreFlag(),
+                                    enable: ko.computed(function() { return perScheduleClsNormal() &amp;&amp; processExecType() === 0 &amp;&amp; !cloudCreFlag(); }),
                                     required: true
                                   }">
                                 </div>
@@ -253,7 +261,7 @@
                                 <div id="end-month-day" tabindex="22" class="top-0" data-bind="ntsMonthDays: { 
                                     name: '#[KBT002_284]',
                                     value: endMonthDay, 
-                                    enable: enableMonthDay &amp;&amp; !cloudCreFlag(),
+                                    enable: ko.computed(function() { return perScheduleClsNormal() &amp;&amp; processExecType() === 0 &amp;&amp; !cloudCreFlag(); }),
                                     required: true
                                   }">
                                 </div>
@@ -442,18 +450,18 @@
                             </div>
                           </td>
                           <td>
-                            <!-- B15_2 -->
-                            <div id="B15_2" tabindex="38" class="w100 mb-10 pt-7"
-                              data-bind="ntsCheckBox: { checked: recreateWorkType, enable: processExecType() === 1 &amp;&amp; !cloudCreFlag() }">
-                              #{i18n.getText('KBT002_178')}
-                            </div>
                             <com:ko-if bind="$parent.otsukaOption">
-                              <!-- B15_3 -->
-                              <div id="B15_3" tabindex="39" class="w100 mb-10"
-                                data-bind="ntsCheckBox: { checked: recreateTransfer, enable: processExecType() === 1 &amp;&amp; !cloudCreFlag(),  }">
-                                #{i18n.getText('KBT002_177')}
+                              <!-- B15_2 -->
+                              <div id="B15_2" tabindex="38" class="w100 mb-10 pt-7"
+                                data-bind="ntsCheckBox: { checked: recreateWorkType, enable: processExecType() === 1 &amp;&amp; !cloudCreFlag() }">
+                                #{i18n.getText('KBT002_178')}
                               </div>
                             </com:ko-if>
+                            <!-- B15_3 -->
+                            <div id="B15_3" tabindex="39" class="w100 mb-10"
+                              data-bind="ntsCheckBox: { checked: recreateTransfer, enable: processExecType() === 1 &amp;&amp; !cloudCreFlag(),  }">
+                              #{i18n.getText('KBT002_177')}
+                            </div>
                             <!-- B15_4 -->
                             <div id="B15_4" tabindex="40" class="w100 mb-10"
                               data-bind="ntsCheckBox: { checked: manualCorrection, enable: processExecType() === 1 &amp;&amp; !cloudCreFlag() }">
@@ -669,7 +677,7 @@
                       </div>
 
                       <!-- B23_1 -->
-                      <com:ko-if bind="$parent.isCompany0001">
+                      <com:ko-if bind="$parent.isCompany0001 &amp;&amp; $parent.isCloud">
                         <div id="B23_1" tabindex="55" data-bind="ntsCheckBox: { checked: indexReconCls, enable: true }">
                           #{i18n.getText('KBT002_298')}</div>
                         <hr />
