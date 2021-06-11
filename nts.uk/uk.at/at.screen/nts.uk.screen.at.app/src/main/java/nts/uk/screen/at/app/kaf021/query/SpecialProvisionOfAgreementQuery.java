@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettin
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.*;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneYear;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
@@ -346,7 +347,7 @@ public class SpecialProvisionOfAgreementQuery {
         YearMonth endYm = startYm.addMonths(11);
         YearMonthPeriod yearMonthPeriodBefore = new YearMonthPeriod(startYm, ym.addMonths(-1));
         YearMonthPeriod yearMonthPeriodAfter = new YearMonthPeriod(ym, endYm);
-        Map<String, Map<YearMonth, AgreementTimeOfManagePeriod>> agreementTimeAll = new HashMap<>();
+        Map<String, Map<YearMonth, AgreementTimeOfManagePeriod>> agreementTimeAll = Collections.synchronizedMap(new HashMap<>());
         for (String employeeId : employeeIds) {
             agreementTimeAll.put(employeeId, new HashMap<>());
         }
@@ -367,7 +368,7 @@ public class SpecialProvisionOfAgreementQuery {
 
         this.parallel.forEach(employeeIds, employeeId -> {
             Map<YearMonth, AgreementTimeOfManagePeriod> timeAll = agreementTimeAll.get(employeeId);
-            this.parallel.forEach(yearMonthPeriodAfter.yearMonthsBetween(), ymIndex -> {
+            yearMonthPeriodAfter.yearMonthsBetween().forEach(ymIndex -> {
                 // 【NO.333】36協定時間の取得
                 AgreementTimeOfManagePeriod time = GetAgreementTime.get(require, employeeId, ymIndex, new ArrayList<>(), baseDate, ScheRecAtr.RECORD);
                 if (time != null) {
@@ -541,7 +542,7 @@ public class SpecialProvisionOfAgreementQuery {
             if (agreementTimeYearAll.containsKey(result.getEmployeeId())) {
                 AgreementTimeYear agreementTimeYear = agreementTimeYearAll.get(result.getEmployeeId());
                 BasicAgreementSetting basicSetting = basicSettingAll.get(result.getEmployeeId());
-                result.setYear(new AgreementTimeYearDto(year, agreementTimeYear, basicSetting.getOneYear()));
+                result.setYear(new AgreementTimeYearDto(year, agreementTimeYear, basicSetting == null ? new AgreementOneYear() : basicSetting.getOneYear()));
             }
             // fill average range month
             if (agreMaxAverageTimeMultiAll.containsKey(result.getEmployeeId())) {
