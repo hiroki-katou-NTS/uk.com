@@ -5,6 +5,8 @@
 package nts.uk.file.at.app.export.outsideot;
 
 import lombok.val;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
@@ -62,6 +64,9 @@ public class OutsideOTSettingExportImpl implements MasterListData {
      */
     @Inject
     private DailyAttendanceItemRepository dailyAttendanceItemRepository;
+
+    @Inject
+    private MonthlyAttendanceItemRepository monthlyAttendanceItemRepository;
 
     /**
      * The outside OT setting repository.
@@ -459,8 +464,12 @@ public class OutsideOTSettingExportImpl implements MasterListData {
             language.setIsUse(false);
             breakdownNameLanguageData.add(language);
         }
-        Map<Integer, DailyAttendanceItem> mapAttendanceItem = this.dailyAttendanceItemRepository
-                .getList(companyId).stream().collect(Collectors.toMap((attendanceItem -> {
+//        Map<Integer, DailyAttendanceItem> mapAttendanceItem = this.dailyAttendanceItemRepository
+//                .getList(companyId).stream().collect(Collectors.toMap((attendanceItem -> {
+//                    return attendanceItem.getAttendanceItemId();
+//                }), Function.identity()));
+        Map<Integer, MonthlyAttendanceItem> mapAttendanceItem = this.monthlyAttendanceItemRepository
+                .findAll(companyId).stream().collect(Collectors.toMap((attendanceItem -> {
                     return attendanceItem.getAttendanceItemId();
                 }), Function.identity()));
 
