@@ -17,7 +17,9 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button data-bind="click: extraction, enable : $root.errors.isEmpty">#{i18n.getText('KAF018_311')}</button>
-				<button class="" data-bind="click: emailSetting, enable : $root.errors.isEmpty">#{i18n.getText('KAF018_312')}</button>
+				<div data-bind="if: displayUpdMailTmpBtn">
+					<button class="" data-bind="click: emailSetting, enable : $root.errors.isEmpty">#{i18n.getText('KAF018_312')}</button>
+				</div>
 			</div>
 			<div id="contents-area">
 				<div class="table kaf018a-div-table">
