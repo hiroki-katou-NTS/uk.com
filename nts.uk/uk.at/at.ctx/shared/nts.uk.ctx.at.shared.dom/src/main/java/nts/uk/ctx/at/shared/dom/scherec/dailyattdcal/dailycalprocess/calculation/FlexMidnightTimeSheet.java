@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSe
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
@@ -89,7 +90,8 @@ public class FlexMidnightTimeSheet {
 			WorkingConditionItem conditionItem,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
 			Optional<CoreTimeSetting> coreTimeSetting,
-			NotUseAtr lateEarlyMinusAtr) {
+			NotUseAtr lateEarlyMinusAtr,
+			Optional<TimeLeavingOfDailyAttd> attendanceLeavingWork) {
 
 		// クラスを作成する
 		FlexMidnightTimeSheet domain = new FlexMidnightTimeSheet();
@@ -113,7 +115,8 @@ public class FlexMidnightTimeSheet {
 				conditionItem,
 				predetermineTimeSetByPersonInfo,
 				coreTimeSetting,
-				lateEarlyMinusAtr);
+				lateEarlyMinusAtr,
+				attendanceLeavingWork);
 		if (!withoutStartTimeOpt.isPresent()) return domain;
 		TimeWithDayAttr withoutStartTime = withoutStartTimeOpt.get();
 		// 就業時間内時間枠を取得

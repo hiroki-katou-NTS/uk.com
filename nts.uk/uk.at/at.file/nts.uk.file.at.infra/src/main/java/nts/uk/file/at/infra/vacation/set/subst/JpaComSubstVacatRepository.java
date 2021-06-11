@@ -58,7 +58,7 @@ public class JpaComSubstVacatRepository extends JpaRepository implements ComSubs
                 checkIsManager ? getTextEnumExpirationTime(Integer.valueOf(rs.getString("EXPIRATION_DATE_SET"))) : null,
                 checkIsManager ? getTextEnumApplyPermission(Integer.valueOf(rs.getString("ALLOW_PREPAID_LEAVE"))) : null,
         		checkIsManager ? Integer.valueOf(rs.getString("EXP_DATE_MNG_METHOD")) == 1?I18NText.getText("Enum_TermManagement_MANAGE_BASED_ON_THE_DATE"):I18NText.getText("Enum_TermManagement_MANAGE_BY_TIGHTENING"):null,
-				checkIsManager ? Integer.valueOf(rs.getString("LINK_MNG_ATR")) == 1?I18NText.getText("Enum_ApplyPermission_ALLOW"):I18NText.getText("Enum_ApplyPermission_NOT_ALLOW"):null
+				I18NText.getText("KMF001_331")
                 ));
 
         return datas;

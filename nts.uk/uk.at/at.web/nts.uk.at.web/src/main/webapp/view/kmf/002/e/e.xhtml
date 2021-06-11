@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition >
+		<div class="sidebar-content-header">
+			<span>#{i18n.getText('Com_Company')}</span>
+        <!-- E5_1 -->
+        <a class="goback" data-bind="ntsLinkButton: { jump: '../g/index.xhtml' }">#{i18n.getText('KMF002_95')}</a>
+   			<!-- E1_1 -->
+   			<button class="proceed" tabindex="1" data-bind="click: save, enable: enableSave">#{i18n.getText('KMF002_2')}</button>
+   			<!-- E1_2 -->
+   			<button class="danger" tabindex="2" data-bind="click: deleteObj, enable: enableDelete">#{i18n.getText('KMF002_11')}</button>  			
+		</div>
+		
+		<div id="scrE" class="contents-area" data-bind="with: commonTableMonthDaySet">
+			<ui:include src="../base.xhtml"></ui:include>
+		</div>
+	</ui:composition>
+</body>
+</html>
