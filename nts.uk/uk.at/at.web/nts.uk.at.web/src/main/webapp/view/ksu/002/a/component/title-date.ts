@@ -14,7 +14,8 @@ module nts.uk.ui.at.ksu002.a {
 				valueFormat: 'YYYYMM',
 				fiscalMonthsMode: false,
 				defaultClass: 'round-orange',
-				showJumpButtons: true
+				showJumpButtons: true,
+				required: true
 			}"></div>
 		<div class="title-label">
 			<span data-bind="i18n: 'KSU002_23'"></span>
