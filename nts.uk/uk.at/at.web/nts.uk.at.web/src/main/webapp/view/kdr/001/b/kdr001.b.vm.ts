@@ -108,7 +108,9 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     $('#rowSpecialHoliday').addClass("hidden");
                 }
                 else {
+                    let listSpecialHoliday: Array<number> = [];
                     for (let i = 1; i < 21; i++) {
+
                         let item = _.find(vacationControl.listSpecialHoliday, x => {
                             return x.specialHolidayCode == i;
                         });
@@ -119,6 +121,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                                 enable: true
                             }));
                             self.listSpecialHolidayEnable.push(i);
+                            listSpecialHoliday.push(i);
                         }else {
                             self.allSpecialHolidays.push(new SpecialHoliday({
                                 specialHolidayCode: i,
@@ -127,6 +130,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             }));
                         }
                     }
+                    self.currentHoliday().listSpecialHoliday(listSpecialHoliday);
                 }
 
                 if (holidayRemainings && holidayRemainings.length) {

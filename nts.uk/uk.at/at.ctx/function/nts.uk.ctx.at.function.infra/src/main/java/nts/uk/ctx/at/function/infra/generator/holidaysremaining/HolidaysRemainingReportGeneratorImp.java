@@ -398,7 +398,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                         HolidayRemainingDataSource dataSource, DtoCheck dtoCheck,
                                         HorizontalPageBreakCollection pageBreaks) throws Exception {
         Integer count = dtoCheck.getCount();
-
+        YearMonth currentMonth = employee.getCurrentMonth().get();
         val pageBreak = dtoCheck.getPageBreak();
         NumberFormat df = new DecimalFormat("#0.0");
         // 年休
@@ -512,7 +512,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             // 年休_使用数_日数 =  月度使用日数+ 付与後月度使用日数;
             // 月度使用日数 = 年月毎年休の集計結果．年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．使用数．付与前;
 
-            val use_date = rs363New.stream()
+            Double use_date = rs363New.stream().filter(e->e.getYearMonth().compareTo(currentMonth)==0)
                     .map(e -> {
                         val i = e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                                 .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
@@ -524,7 +524,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         }
                     }).mapToDouble(e -> e).sum();
             // 付与後月度使用日数 = 年月毎年休の集計結果．年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．使用数．付与後
-            val use_after_grant = rs363New.stream()
+            Double use_after_grant = rs363New.stream().filter(e->e.getYearMonth().compareTo(currentMonth)==0)
                     .map(e -> e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                             .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
                             .getUsedNumberAfterGrantOpt()).mapToDouble(e ->
@@ -534,7 +534,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             }
                     ).sum();
 
-            Double valueE15 = use_date + use_after_grant; //
+            //Double valueE15 = use_date + use_after_grant; //
+            Double valueE15 =  use_after_grant; //
             Double used_Days = checkShowAreaAnnualBreak1(
                     dataSource.getHolidaysRemainingManagement()) && valueE15 != 0.0 ?
                     valueE15 : null;
@@ -542,7 +543,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             // E1_6 - value in 363 - 年休_残数_日数
             // 年休_残数_日数: So luong con la :月度残日数: 年月毎年休の集計結果．年休の集計結果．年休情報(期間終了日時点)
             // ．残数．年休(マイナスあり)．残数．付与前	合計残日数
-            val valueE16 = rs363New.stream()
+            Double valueE16 = rs363New.stream().filter(e->e.getYearMonth().compareTo(currentMonth)==0)
                     .map(e -> e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                             .getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo()
                             .getRemainingNumberBeforeGrant().getTotalRemainingDays()).mapToDouble(e -> e != null ? e.v() : 0).sum(); //
@@ -569,7 +570,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             // 年休_使用数_時間 = 月度使用時間+付与後月度使用時間
             // 月度使用時間 = 年月毎年休の集計結果．年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．使用数．付与前
             val use_time =
-                    rs363New.stream()
+                    rs363New.stream().filter(e->e.getYearMonth().compareTo(currentMonth)==0)
                             .map((AggrResultOfAnnualLeaveEachMonthKdr e) -> {
                                 val i = e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                                         .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
@@ -581,7 +582,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                 }
                             }).mapToDouble(e -> e).sum();
             // 付与後月度使用時間 =年月毎年休の集計結果．年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．使用数．付与後
-            val use_after_grant_time = rs363New.stream()
+            val use_after_grant_time = rs363New.stream().filter(e->e.getYearMonth().compareTo(currentMonth)==0)
                     .map(e -> {
                                 val i = e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                                         .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
@@ -592,7 +593,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             }
                     ).mapToDouble(e -> e).sum();
 
-            val valueE114 = use_time + use_after_grant_time;
+            //val valueE114 = use_time + use_after_grant_time;
+            val valueE114 =  use_after_grant_time;
             Double uses_Hours = checkShowAreaAnnualBreak2(dataSource.getHolidaysRemainingManagement()) && valueE114 != 0.0 ?
                     valueE114 : null;
             val e114 = uses_Hours != null ? convertToTime(uses_Hours.intValue()) : "";
@@ -600,7 +602,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             // E1_15
             // 年休_残数_時間 :月度残時間
             // 月度残時間 = 年月毎年休の集計結果．年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．残数．付与前
-            val valueE115 = rs363New.stream()
+            val valueE115 = rs363New.stream().filter(e->e.getYearMonth().compareTo(currentMonth)==0)
                     .map(e -> e.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                             .getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo()
                             .getRemainingNumberBeforeGrant().getTotalRemainingTime()).mapToDouble(e -> e.isPresent() && e != null ? e.get().v() : 0).sum();
@@ -619,7 +621,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             dtoCheck.setFirstRow(firstRow);
             return dtoCheck;
         }
-        YearMonth currentMonth = employee.getCurrentMonth().get();
+
         // Result RequestList255
         List<AnnualLeaveUsageImported> listAnnLeaveUsage =
                 hdRemainingInfor.getListAnnualLeaveUsage();
@@ -778,11 +780,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                                     .getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo()
                                     .getRemainingNumberBeforeGrant().getTotalRemainingTime().get().v() : null;
-                    Integer e34 = checkShowAreaAnnualBreak1(
+                    Integer e34 = checkShowAreaAnnualBreak2(
                             dataSource.getHolidaysRemainingManagement()) ?
                             value34 : null;
 
-                    cells.get(firstRow + 3, 10 + totalMonth).setValue(e33 != null
+                    cells.get(firstRow + 3, 10 + totalMonth).setValue(e34 != null
                             && e34 != 0
                             ? convertToTime((int) e34.doubleValue()) : null);
                     if (e34 != null && e34 < 0) {
@@ -1748,7 +1750,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         ).mapToDouble(e -> e).sum();
                 // 付与後月度使用回数: Mô tả của tài liệu là bỏ trống.
                 val uses_after_granting = 0;
-                valueF14 = number_of_use == 0 ? "" : (number_of_use + uses_after_granting + TextResource.localize("KDR001_75"));
+                //valueF14 = number_of_use == 0 ? "" : (number_of_use + uses_after_granting + TextResource.localize("KDR001_75"));
+                valueF14 = uses_after_granting == 0 ? "" : ( uses_after_granting + TextResource.localize("KDR001_75"));
                 // F1_5: 半日年休_残回数 : 月度残回数: 年月毎年休の集計結果．年休の集計結果．年休情報(期間終了日時点)．残数．半日年休(マイナスあり)
                 val number_of_date_remain = rs363New.stream()
                         .map(e ->
