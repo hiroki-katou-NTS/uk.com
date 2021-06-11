@@ -1,5 +1,5 @@
 .form-label {
-    width: 178.11px;
+    width: 100px;
 }
 
 #swap-up-down {
@@ -16,6 +16,10 @@
 
 .grid-col-text-right {
     text-align: right;
+}
+
+#swap-list-move-data {
+    min-width: 100px;
 }
 
 .ui-iggrid .ui-iggrid-tablebody td {
