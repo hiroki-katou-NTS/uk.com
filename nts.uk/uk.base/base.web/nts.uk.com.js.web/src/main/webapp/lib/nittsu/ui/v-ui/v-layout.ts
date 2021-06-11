@@ -78,6 +78,12 @@ module nts.uk.ui.layout {
         }
     }
 
+    ko.bindingHandlers.stopBinding = {
+        init: function() {
+            return { controlsDescendantBindings: true }
+        }
+    };
+
     @handler({
         bindingName: 'ui-master-content',
         validatable: true,

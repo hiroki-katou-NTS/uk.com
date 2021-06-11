@@ -139,6 +139,16 @@ class KDP002BViewModel extends ko.ViewModel {
                 });
             }
         }, 300);
+
+        vm.showBtnNoti.subscribe(() => {
+            vm.settingSizeView();
+        });
+
+        vm.modeNikoNiko.subscribe(() => {
+            vm.settingSizeView();
+        });
+
+        vm.showBtnNoti.valueHasMutated();
     }
 
     getWorkPlacwName(workPlaceId: string) {

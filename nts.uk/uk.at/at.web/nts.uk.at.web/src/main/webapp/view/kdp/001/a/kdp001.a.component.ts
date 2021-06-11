@@ -859,12 +859,13 @@ module nts.uk.ui.kdp001.a {
                                         return { date, stampArt, stampHow, textAlign, forceColor };
                                     })
                                     .value();
-                                result.push(mappeds)
                                 _.forEach(mappeds, (value1) => {
                                     result.push(value1);
                                 })
                             }
                         }
+                        console.log(result);
+                        
                         vm.stamps(result);
 
                     })

@@ -22359,7 +22359,7 @@ var nts;
                         var $input = $container.find("input.ntsSearchBox");
                         minusWidth += $button.outerWidth(true);
                         if (searchMode === "filter") {
-                            $container.append("<button class='clear-icon ntsSearchBox_Component'>");
+                            $container.append("<button class='clear-icon proceed ntsSearchBox_Component'>");
                             var $clearButton = $container.find("button.clear-icon");
                             minusWidth += $clearButton.outerWidth(true);
                             $clearButton.click(function (evt, ui) {
@@ -46454,8 +46454,8 @@ var nts;
                         var $input = $container.find("input.ntsSearchBox");
                         minusWidth += $button.outerWidth(true);
                         if (searchMode === "filter") {
-                            $container.append("<button class='clear-btn ntsSearchBox_Component'>" + nts.uk.ui.toBeResource.clear + "</button>");
-                            var $clearButton = $container.find("button.clear-btn");
+                            $container.append("<button class='clear-icon proceed ntsSearchBox_Component'>");
+                            var $clearButton = $container.find("button.clear-icon");
                             minusWidth += $clearButton.outerWidth(true);
                             $clearButton.click(function (evt, ui) {
                                 var component = $("#" + options.comId);
@@ -52606,6 +52606,11 @@ var nts;
                     return MasterUIHeaderBindingHandler;
                 }());
                 layout.MasterUIHeaderBindingHandler = MasterUIHeaderBindingHandler;
+                ko.bindingHandlers.stopBinding = {
+                    init: function () {
+                        return { controlsDescendantBindings: true };
+                    }
+                };
                 var MasterUIBindingHandler = /** @class */ (function () {
                     function MasterUIBindingHandler() {
                     }
