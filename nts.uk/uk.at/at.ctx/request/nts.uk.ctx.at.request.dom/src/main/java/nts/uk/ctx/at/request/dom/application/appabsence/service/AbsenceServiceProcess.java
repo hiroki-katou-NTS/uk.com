@@ -438,8 +438,6 @@ public interface AbsenceServiceProcess {
     public ProcessResult updateApplyForLeave(
             ApplyForLeave applyForLeave,
             List<String> holidayAppDates,
-            List<LeaveComDayOffManagement> oldLeaveComDayOffMana,
-            List<PayoutSubofHDManagement> oldPayoutSubofHDManagements,
             List<LeaveComDayOffManagement> leaveComDayOffMana,
             List<PayoutSubofHDManagement> payoutSubofHDManagements,
             AppDispInfoStartupOutput appDispInfoStartupOutput);

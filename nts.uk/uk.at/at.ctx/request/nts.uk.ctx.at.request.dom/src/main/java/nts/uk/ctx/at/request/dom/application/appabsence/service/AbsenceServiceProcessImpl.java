@@ -1750,13 +1750,24 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     @Override
     public void registerVacationLinkManage(List<LeaveComDayOffManagement> leaveComDayOffMana, List<PayoutSubofHDManagement> payoutSubofHDManagements) {
         if (!leaveComDayOffMana.isEmpty()) {
-            // ドメインモデル「休出代休紐付け管理」を登録する
+            // ドメインモデル「休出代休紐付け管理」を削除する
+            this.leaveComDayOffManaRepo.deleteByDigestTarget(
+                    leaveComDayOffMana.get(0).getSid(), 
+                    leaveComDayOffMana.get(0).getAssocialInfo().getDateOfUse(), 
+                    TargetSelectionAtr.REQUEST);
             for (LeaveComDayOffManagement leaveMana : leaveComDayOffMana) {
+                // ドメインモデル「休出代休紐付け管理」を登録する
                 this.leaveComDayOffManaRepo.add(leaveMana);
             }
         }
 
         if (!payoutSubofHDManagements.isEmpty()) {
+            // ドメインモデル「振出振休紐付け管理」を削除する
+            this.payoutHdManaRepo.deleteByDigestTarget(
+                    payoutSubofHDManagements.get(0).getSid(), 
+                    payoutSubofHDManagements.get(0).getAssocialInfo().getDateOfUse(), 
+                    TargetSelectionAtr.REQUEST);
+            
             // ドメインモデル「振出振休紐付け管理」を登録する
             for (PayoutSubofHDManagement payoutHdMana : payoutSubofHDManagements) {
                 this.payoutHdManaRepo.add(payoutHdMana);
@@ -1971,8 +1982,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 
     @Override
     public ProcessResult updateApplyForLeave(ApplyForLeave applyForLeave, List<String> holidayAppDates,
-            List<LeaveComDayOffManagement> oldLeaveComDayOffMana,
-            List<PayoutSubofHDManagement> oldPayoutSubofHDManagements,
             List<LeaveComDayOffManagement> leaveComDayOffMana,
             List<PayoutSubofHDManagement> payoutSubofHDManagements,
             AppDispInfoStartupOutput appDispInfoStartupOutput) {
@@ -1984,7 +1993,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         this.applyForLeaveRepository.update(applyForLeave, companyID, application.getAppID());
 
         // 休暇紐付け管理を更新する
-        this.updateVacationLinkManage(oldLeaveComDayOffMana, oldPayoutSubofHDManagements, leaveComDayOffMana, payoutSubofHDManagements);
+        this.registerVacationLinkManage(leaveComDayOffMana, payoutSubofHDManagements);
 
         // 年月日Listを作成する
         GeneralDate startDate = applyForLeave.getApplication().getOpAppStartDate().isPresent() ?
