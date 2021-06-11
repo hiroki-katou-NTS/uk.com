@@ -244,7 +244,9 @@ td#D2_1 {
 #tab-panel div.tabs-list {
   margin-left: 30px;
 }
-
+#tab-panel div.tabs-content {
+  margin-left: 254px;
+}
 /* tab4 end*/
 /*113842*/
 @media only screen and (max-width: 1280px) {
