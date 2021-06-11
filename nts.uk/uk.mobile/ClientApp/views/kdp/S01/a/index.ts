@@ -14,7 +14,8 @@ const servicePath = {
     registerStamp: basePath + 'register-stamp',
     getSuppress: basePath + 'get-suppress',
     getOmission: basePath + 'get-omission',
-    getSettingStampCommon: 'at/record/stamp/settings_stamp_common'
+    getSettingStampCommon: 'at/record/stamp/settings_stamp_common',
+    create_daily: 'at/record/stamp/craeteDaily'
 };
 
 @component({
@@ -280,6 +281,15 @@ export class KdpS01AComponent extends Vue {
                                     break;
                             }
                         }
+                    }).then(() => {
+                        vm.$auth.user.then((userInfo) => {
+                            const param = {
+                                sid: userInfo.employeeId,
+                                date: vm.$dt.now
+                            };
+                            vm.$http.post('at', servicePath.create_daily, param);
+                        });
+
                     }).catch((res: any) => {
                         vm.showError(res);
                     });
