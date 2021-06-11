@@ -273,7 +273,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				height = 400;
 			}
 			let dialogSize = {
-				width: 850,
+				width: 910,
 				height: height
 			}
 			vm.$window.modal('/view/kaf/018/i/index.xhtml', {}, dialogSize);
