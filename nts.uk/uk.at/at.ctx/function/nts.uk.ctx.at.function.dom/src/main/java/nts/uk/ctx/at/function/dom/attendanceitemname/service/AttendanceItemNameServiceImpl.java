@@ -59,6 +59,9 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.Outsi
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyAttendanceItemUsedRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskframe.TaskFrameUsageSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameSetting;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageSetting;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
@@ -143,6 +146,9 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 	
 	@Inject
 	private CompanyMonthlyItemService companyMonthlyItemService;
+	
+	@Inject
+	private TaskFrameUsageSettingRepository taskFrameUsageSettingRepo;
 
 	@Override
 	public List<AttItemName> getNameOfAttendanceItem(List<Integer> attendanceItemIds, TypeOfItem type) {
@@ -281,6 +287,14 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 		this.specialHolidayRepository.findSimpleByListCode(companyId, frameNos).forEach(x -> {
 			specialHoliday.put(x.getSpecialHolidayCode().v(), x);
 		});
+		
+		// supportTime
+		Map<Integer, TaskFrameSetting> taskFrameSetting = new HashMap<>();
+		TaskFrameUsageSetting taskFrameUsageSetting = taskFrameUsageSettingRepo.getWorkFrameUsageSetting(companyId);
+		if(taskFrameUsageSetting != null){
+			taskFrameSetting = taskFrameUsageSetting.getFrameSettingList().stream().collect(Collectors.toMap(b -> b.getTaskFrameNo().v(), b -> b));
+		}
+		
 
 		attendanceItems = mapAttendanceItems.values().stream().collect(Collectors.toList());
 		for (AttItemName item : attendanceItems) {
@@ -427,6 +441,15 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 					item.setAttendanceItemName(MessageFormat.format(attName, "弁当メニュー枠番" + frameNo));
 				}
 				break;
+			case SupportWork:
+				if (taskFrameSetting.containsKey(frameNo)) {
+					item.setAttendanceItemName(MessageFormat.format(attName,
+							taskFrameSetting.get(frameNo).getTaskFrameName().v()));
+				} else {
+					item.setAttendanceItemName(MessageFormat.format(attName, "supportItem" + frameNo));
+				}
+				break;
+				
 			default: break;
 			}
 		}
