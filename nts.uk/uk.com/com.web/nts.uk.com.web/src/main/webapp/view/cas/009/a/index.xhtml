@@ -58,6 +58,10 @@
 					<div id="right-content" class="fixed-flex-layout-right"
 						data-bind="with: $vm.selectedRole">
 						<table class="control-group">
+              <colgroup>
+                <col width="120px" />
+                <col width="*" />
+              </colgroup>
 							<tr>
 								<td><div
 										data-bind="ntsFormLabel: {
@@ -75,7 +79,7 @@
 			                                 constraint: 'RoleCode',
 			                                 value: roleCode,
 			                                 required: true,
-			                                 enable: !!_.isEmpty(ko.toJS(roleId)),
+			                                 enable: $parent.isNewMode,
 			                                 immediate: true
 		                                 },
 		                                 hasFocus: roleCodeFocus" />
@@ -107,7 +111,7 @@
 												optionsValue: 'code',
 												optionsText: 'name',
 												value: assignAtr,
-												enable: !!_.isEmpty(ko.toJS(roleId))
+												enable: $parent.isNewMode
 											}"></div>
 								</td>
 							</tr>
