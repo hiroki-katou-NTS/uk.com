@@ -22,6 +22,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.ImportiongItemRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalizationRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
@@ -50,6 +51,9 @@ public class ExternalImportExecuteRequire {
 	
 	@Inject
 	TransferCanonicalDataRepository transferCanonicalDataRepo;
+	
+	@Inject
+	GroupCanonicalizationRepository groupCanonicalizationRepo;
 	
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 	public class RequireImpl implements Require {
@@ -89,8 +93,7 @@ public class ExternalImportExecuteRequire {
 
 		@Override
 		public GroupCanonicalization getGroupCanonicalization(ImportingGroupId groupId) {
-			// TODO Auto-generated method stub
-			return null;
+			return groupCanonicalizationRepo.find(groupId);
 		}
 
 		@Override
