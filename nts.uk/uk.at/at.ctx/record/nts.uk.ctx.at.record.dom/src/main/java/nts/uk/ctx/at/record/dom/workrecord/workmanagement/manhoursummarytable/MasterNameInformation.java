@@ -47,56 +47,56 @@ public class MasterNameInformation {
             case AFFILIATION_WORKPLACE:
                 val affWkplInfo = affWorkplaceInfoList.stream().filter(x -> x.getWorkplaceId().equals(code)).findFirst();
                 if (affWkplInfo.isPresent())
-                    dispInfo = createDisplayInfo(Optional.of(affWkplInfo.get().getWorkplaceCode()), Optional.of(affWkplInfo.get().getWorkplaceDisplayName()));
+                    dispInfo = createDisplayInfo(Optional.ofNullable(affWkplInfo.get().getWorkplaceCode()), Optional.ofNullable(affWkplInfo.get().getWorkplaceDisplayName()));
                 else
                     dispInfo = createDisplayInfo(Optional.empty(), Optional.empty());
                 break;
             case WORKPLACE:
                 val wkplInfo = workPlaceInfoList.stream().filter(x -> x.getWorkplaceId().equals(code)).findFirst();
                 if (wkplInfo.isPresent())
-                    dispInfo = createDisplayInfo(Optional.of(wkplInfo.get().getWorkplaceCode()), Optional.of(wkplInfo.get().getWorkplaceDisplayName()));
+                    dispInfo = createDisplayInfo(Optional.ofNullable(wkplInfo.get().getWorkplaceCode()), Optional.ofNullable(wkplInfo.get().getWorkplaceDisplayName()));
                 else
                     dispInfo = createDisplayInfo(Optional.empty(), Optional.empty());
                 break;
             case EMPLOYEE:
                 val empInfo = employeeInfoList.stream().filter(x -> x.getSid().equals(code)).findFirst();
                 if (empInfo.isPresent())
-                    dispInfo = createDisplayInfo(Optional.of(empInfo.get().getEmployeeCode()), Optional.of(empInfo.get().getEmployeeName()));
+                    dispInfo = createDisplayInfo(Optional.ofNullable(empInfo.get().getEmployeeCode()), Optional.ofNullable(empInfo.get().getEmployeeName()));
                 else
                     dispInfo = createDisplayInfo(Optional.empty(), Optional.empty());
                 break;
-            case JOB1:
-                val targetWork1 = work1List.stream().filter(x -> x.getCode().equals(code)).findFirst();
+            case TASK1:
+                val targetWork1 = work1List.stream().filter(x -> x.getCode() != null && x.getCode().equals(code)).findFirst();
                 if (targetWork1.isPresent())
-                    dispInfo = createDisplayInfo(Optional.of(targetWork1.get().getCode()), Optional.of(targetWork1.get().getTaskName()));
+                    dispInfo = createDisplayInfo(Optional.ofNullable(targetWork1.get().getCode()), Optional.ofNullable(targetWork1.get().getTaskName()));
                 else
                     dispInfo = createDisplayInfo(Optional.empty(), Optional.empty());
                 break;
-            case JOB2:
-                val targetWork2 = work2List.stream().filter(x -> x.getCode().equals(code)).findFirst();
+            case TASK2:
+                val targetWork2 = work2List.stream().filter(x -> x.getCode() != null && x.getCode().equals(code)).findFirst();
                 if (targetWork2.isPresent())
-                    dispInfo = createDisplayInfo(Optional.of(targetWork2.get().getCode()), Optional.of(targetWork2.get().getTaskName()));
+                    dispInfo = createDisplayInfo(Optional.ofNullable(targetWork2.get().getCode()), Optional.ofNullable(targetWork2.get().getTaskName()));
                 else
                     dispInfo = createDisplayInfo(Optional.empty(), Optional.empty());
                 break;
-            case JOB3:
-                val targetWork3 = work3List.stream().filter(x -> x.getCode().equals(code)).findFirst();
+            case TASK3:
+                val targetWork3 = work3List.stream().filter(x -> x.getCode() != null && x.getCode().equals(code)).findFirst();
                 if (targetWork3.isPresent())
-                    dispInfo = createDisplayInfo(Optional.of(targetWork3.get().getCode()), Optional.of(targetWork3.get().getTaskName()));
+                    dispInfo = createDisplayInfo(Optional.ofNullable(targetWork3.get().getCode()), Optional.ofNullable(targetWork3.get().getTaskName()));
                 else
                     dispInfo = createDisplayInfo(Optional.empty(), Optional.empty());
                 break;
-            case JOB4:
-                val targetWork4 = work4List.stream().filter(x -> x.getCode().equals(code)).findFirst();
+            case TASK4:
+                val targetWork4 = work4List.stream().filter(x -> x.getCode() != null && x.getCode().equals(code)).findFirst();
                 if (targetWork4.isPresent())
-                    dispInfo = createDisplayInfo(Optional.of(targetWork4.get().getCode()), Optional.of(targetWork4.get().getTaskName()));
+                    dispInfo = createDisplayInfo(Optional.ofNullable(targetWork4.get().getCode()), Optional.ofNullable(targetWork4.get().getTaskName()));
                 else
                     dispInfo = createDisplayInfo(Optional.empty(), Optional.empty());
                 break;
-            case JOB5:
-                val targetWork5 = work5List.stream().filter(x -> x.getCode().equals(code)).findFirst();
+            case TASK5:
+                val targetWork5 = work5List.stream().filter(x -> x.getCode() != null && x.getCode().equals(code)).findFirst();
                 if (targetWork5.isPresent())
-                    dispInfo = createDisplayInfo(Optional.of(targetWork5.get().getCode()), Optional.of(targetWork5.get().getTaskName()));
+                    dispInfo = createDisplayInfo(Optional.ofNullable(targetWork5.get().getCode()), Optional.ofNullable(targetWork5.get().getTaskName()));
                 else
                     dispInfo = createDisplayInfo(Optional.empty(), Optional.empty());
                 break;
@@ -118,17 +118,17 @@ public class MasterNameInformation {
         val task1Codes = work1List.stream().map(TaskImport::getCode).collect(Collectors.toList());
         val task2Codes = work2List.stream().map(TaskImport::getCode).collect(Collectors.toList());
         val task3Codes = work3List.stream().map(TaskImport::getCode).collect(Collectors.toList());
-        val task4Codes = work4List.stream().map(x -> x.getCode()).collect(Collectors.toList());
-        val task5Codes = work5List.stream().map(x -> x.getCode()).collect(Collectors.toList());
+        val task4Codes = work4List.stream().map(TaskImport::getCode).collect(Collectors.toList());
+        val task5Codes = work5List.stream().map(TaskImport::getCode).collect(Collectors.toList());
 
         return workDetailList.stream().filter(x -> (!empIds.isEmpty() && empIds.contains(x.getEmployeeId()))
-                && (!affWkplIds.isEmpty() && affWkplIds.contains(x.getAffWorkplaceId()))
-                && (!wkplIds.isEmpty() && wkplIds.contains(x.getWorkplaceId()))
-                && (!task1Codes.isEmpty() && task1Codes.contains(x.getWorkCode1()))
-                && (!task2Codes.isEmpty() && task2Codes.contains(x.getWorkCode2()))
-                && (!task3Codes.isEmpty() && task3Codes.contains(x.getWorkCode3()))
-                && (!task4Codes.isEmpty() && task4Codes.contains(x.getWorkCode4()))
-                && (!task5Codes.isEmpty() && task5Codes.contains(x.getWorkCode5())))
+                || (!affWkplIds.isEmpty() && affWkplIds.contains(x.getAffWorkplaceId()))
+                || (!wkplIds.isEmpty() && wkplIds.contains(x.getWorkplaceId()))
+                || (!task1Codes.isEmpty() && task1Codes.contains(x.getWorkCode1()))
+                || (!task2Codes.isEmpty() && task2Codes.contains(x.getWorkCode2()))
+                || (!task3Codes.isEmpty() && task3Codes.contains(x.getWorkCode3()))
+                || (!task4Codes.isEmpty() && task4Codes.contains(x.getWorkCode4()))
+                || (!task5Codes.isEmpty() && task5Codes.contains(x.getWorkCode5())))
                 .collect(Collectors.toList());
     }
 

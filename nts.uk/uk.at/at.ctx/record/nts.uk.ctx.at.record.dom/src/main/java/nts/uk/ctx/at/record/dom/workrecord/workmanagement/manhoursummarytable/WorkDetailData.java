@@ -51,19 +51,19 @@ public class WorkDetailData {
             case EMPLOYEE:
                 workItem = employeeId;
                 break;
-            case JOB1:
+            case TASK1:
                 workItem = workCode1;
                 break;
-            case JOB2:
+            case TASK2:
                 workItem = workCode2;
                 break;
-            case JOB3:
+            case TASK3:
                 workItem = workCode3;
                 break;
-            case JOB4:
+            case TASK4:
                 workItem = workCode4;
                 break;
-            case JOB5:
+            case TASK5:
                 workItem = workCode5;
                 break;
             default:
