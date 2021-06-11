@@ -9,6 +9,7 @@ import {
     KafS00CComponent
 } from 'views/kaf/s00';
 import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
+import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 @component({
     name: 'kafs09a',
     route: '/kaf/s09/a',
@@ -23,6 +24,7 @@ import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
         'worktype': KDL002Component,
         'kafs00d': KafS00DComponent,
         'worktime': Kdl001Component,
+        'cmms45c': CmmS45CComponent
     },
 
 })
@@ -657,6 +659,19 @@ export class KafS09AComponent extends KafS00ShrComponent {
     public handleErrorMessage(res: any) {
         const self = this;
         self.$mask('hide');
+        if (res.messageId == 'Msg_197') {
+            self.$modal.error({ messageId: 'Msg_197', messageParams: [] }).then(() => {
+                let appID = self.appDispInfoStartupOutput.appDetailScreenInfo.application.appID;
+                self.$modal('cmms45c', { 'listAppMeta': [appID], 'currentApp': appID }).then((newData) => {
+                    self.mode = false;
+                    self.dataOutput = newData;
+                    self.appDispInfoStartupOutput = self.dataOutput.appDispInfoStartup;
+                    self.fetchStart();
+                });
+            });
+
+            return;
+        }
         if (res.messageId) {
             return self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         } else {

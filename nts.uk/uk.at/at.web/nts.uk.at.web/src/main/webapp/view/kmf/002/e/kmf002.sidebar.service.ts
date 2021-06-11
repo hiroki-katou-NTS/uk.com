@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmf002.a {
+module nts.uk.at.view.kmf002.e.sidebar {
     export module service {
         /**
          * define path to service

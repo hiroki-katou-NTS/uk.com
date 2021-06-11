@@ -29,12 +29,14 @@ module nts.uk.at.view.kdl001.a {
             selectAbleCodeListBk: KnockoutObservableArray<string> = ko.observableArray([]);
             selectedCodeListBk: KnockoutObservableArray<string> = ko.observableArray([]);
             selectedCodeBk: KnockoutObservable<string> = ko.observable(null);
+            showNoSelectionRow: boolean = false;
 
             constructor() {
                 var self = this;
                 self.columns = ko.observableArray([]);
                 self.multiSelectMode = nts.uk.ui.windows.getShared('kml001multiSelectMode');
                 self.isSelection = nts.uk.ui.windows.getShared('kml001isSelection');
+                self.showNoSelectionRow = nts.uk.ui.windows.getShared('kdl00showNoSelectionRow');
                 if (!self.multiSelectMode) {
                     self.gridHeight = 400;
                 } else {
@@ -174,7 +176,9 @@ module nts.uk.at.view.kdl001.a {
                 }
 
                 self.selectAbleItemList.removeAll();
-                selectAbleItemList.unshift(new WorkTimeSet());
+                if (self.showNoSelectionRow) {
+                    selectAbleItemList.unshift(new WorkTimeSet());
+                }
                 self.selectAbleItemList(_.orderBy(selectAbleItemList, 'code', 'asc'));
                 // Set initial work time list.
                 self.initialWorkTimeCodes = _.map(self.selectAbleItemList(), function (item) { return item.code })
