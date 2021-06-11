@@ -190,7 +190,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             HolidaysRemainingEmployee employee = dataSource.getMapEmployees().get(employeeIds);
             Integer counts = dtoCheck.getCount();
             counts+=5;
-            if((MAX_ROW_IN_PAGE - counts)>5){
+            val countStep = checkStepCount(employee,dataSource);
+            if((MAX_ROW_IN_PAGE - counts)>(countStep +1)){
                 cells.copyRows(cells, 5, firstRow, 1);
                 cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
                         + "　" + employee.getWorkplaceName());
@@ -3310,5 +3311,55 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             //                                grantDate.get().toString("yyyy/MM/dd"))+")");
             //totalRowD+=1;
         }
+    }
+
+    private int checkStepCount( HolidaysRemainingEmployee employee
+            ,HolidayRemainingDataSource dataSource){
+        Integer count = 0;
+        val countE = countE(dataSource, employee);
+        if(countE>0){
+            return 4;
+        }
+        val countF = countF(dataSource, employee);
+        if(countF >0){
+            return 2;
+        }
+        val countG = countG(dataSource, employee);
+        if(countG>0){
+            return 1;
+        }
+        val countH = countH(dataSource, employee);
+        if(countH>0){
+            return 2;
+        }
+        val countI = countI(dataSource, employee);
+        if(countI>0){
+            return 4;
+        }
+        val countJ= countJ(dataSource, employee);
+        if(countJ>0){
+            return 4;
+        }
+        val countK= countK(dataSource, employee);
+        if(countK>0){
+            return 4;
+        }
+        val countL= countL(dataSource, employee);
+        if(countL>0){
+            return 4;
+        }
+        val countM= countM(dataSource, employee);
+        if(countM>0){
+            return 4;
+        }
+        val countN= countM(dataSource, employee);
+        if(countN>0){
+            return 4;
+        }
+        val countO= countO(dataSource, employee);
+        if(countO>0){
+            return 4;
+        }
+        return count;
     }
 }
