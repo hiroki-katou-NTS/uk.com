@@ -1216,9 +1216,10 @@ var LIST_COMPONENT_HTML = `<style type="text/css">
             <div data-bind="ntsFormLabel: {}" style="margin-bottom: 10px;">`+ListComponentTextResource.KCP003_2+`</div>
             <div class="base-date-editor" style="margin-left: 20px;"
                 data-bind="attr: {tabindex: tabIndex.baseDateInput}, ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name: getItemNameForBaseDate(), required: true}"></div>
-            <button
-                data-bind="attr: {tabindex: tabIndex.decideButton}, click: reload"
-                style="width: 50px">`+ListComponentTextResource.KCP003_3+`</button>
+            <div style="display: inline-flex">
+                <button data-bind="attr: {tabindex: tabIndex.decideButton}, click: reload"
+                    style="width: 50px">`+ListComponentTextResource.KCP003_3+`</button>
+            </div>
         <!-- /ko -->
         <!-- Upgrade: Search By closureId-->
         <!-- ko if: isDisplayClosureSelection -->

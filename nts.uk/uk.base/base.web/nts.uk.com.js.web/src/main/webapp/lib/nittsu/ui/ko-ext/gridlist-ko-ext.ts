@@ -34,7 +34,16 @@ module nts.uk.ui.koExtentions {
                 var columnResize: boolean = ko.unwrap(data.columnResize);
                 var enable: boolean = ko.unwrap(data.enable);
                 var value = ko.unwrap(data.value);
-                let rowVirtualization = ko.unwrap(data.rowVirtualization) ? true : false;
+                let rowVirtualization = ko.unwrap(data.rowVirtualization);
+                if (_.isNil(rowVirtualization)) {
+                    rowVirtualization = true;
+                }
+                
+                let virtualizationMode = ko.unwrap(data.virtualizationMode);
+                if (_.isNil(virtualizationMode)) {
+                    virtualizationMode = "continuous";
+                }
+                
                 var virtualization = true;
 
                 let rows = ko.unwrap(data.rows);
@@ -150,7 +159,8 @@ module nts.uk.ui.koExtentions {
                         // ROW_HEIGHT = 30;
                     }
 
-                    height = rows * ROW_HEIGHT + HEADER_HEIGHT - DIFF_NUMBER;
+                    virtualizationMode = "fixed";
+                    height = (rows + 1) * ROW_HEIGHT; //+ HEADER_HEIGHT - DIFF_NUMBER;
 
                     let colSettings = [];
 
@@ -175,16 +185,17 @@ module nts.uk.ui.koExtentions {
 
                     $grid.addClass("row-limited");
                 }
+                
                 $grid.data("height", height);
-
                 let scrollHeightSet = true;
                 $grid.igGrid({
                     width: data.width,
-                    height: height,
+                    height: height + 'px',
                     primaryKey: optionsValue,
                     columns: iggridColumns,
                     virtualization: virtualization,
-                    virtualizationMode: 'continuous',
+                    virtualizationMode: virtualizationMode,
+                    avgRowHeight: ROW_HEIGHT + 'px',
                     rowVirtualization: rowVirtualization,
                     features: features,
                     tabIndex: -1,
@@ -507,7 +518,7 @@ module nts.uk.ui.koExtentions {
 
 
                 $grid.data("ui-changed", false);
-                $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height")).attr("tabindex", $grid.data("tabindex"));
+                $grid.closest('.ui-iggrid').addClass('nts-gridlist').height($grid.data("height") + 3).attr("tabindex", $grid.data("tabindex"));
             }
         }
 

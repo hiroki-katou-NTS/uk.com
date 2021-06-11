@@ -1,10 +1,9 @@
 @CHARSET "UTF-8";
 #left-content {
 	margin-left: 30px;
-	margin-top: 20px;
-	padding: 25px;
+	padding: 20px;
 	float: left;
-	max-height: 365px;
+	max-height: 400px;
 }
 
 #right-content {
@@ -44,5 +43,5 @@ td.valign-top {
 	margin-bottom: 10px;
 }
 .valign-top .ntsHelpButton {
-	margin-left: 25%;
+	margin-left: 21%;
 }
