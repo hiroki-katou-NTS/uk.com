@@ -356,6 +356,7 @@ module nts.uk.at.view.kbt002.b {
           // vm.$blockui('clear');
           if (result) {
             vm.taskSetting(result);
+            vm.selectedTaskEnableSetting(result.enabledSetting ? TaskEnableSettingClassificationCode.ENABLED : TaskEnableSettingClassificationCode.DISABLED);
             vm.executionTaskWarning(vm.buildExecutionTaskWarningStr(result));
             vm.hasExecTaskSetting(true);
           } else {

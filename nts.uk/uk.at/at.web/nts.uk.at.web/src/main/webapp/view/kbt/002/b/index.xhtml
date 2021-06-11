@@ -677,7 +677,7 @@
                       </div>
 
                       <!-- B23_1 -->
-                      <com:ko-if bind="$parent.isCompany0001 &amp;&amp; $parent.isCloud">
+                      <com:ko-if bind="ko.computed(function () { return $parent.isCompany0001() &amp;&amp; $parent.isCloud(); })">
                         <div id="B23_1" tabindex="55" data-bind="ntsCheckBox: { checked: indexReconCls, enable: true }">
                           #{i18n.getText('KBT002_298')}</div>
                         <hr />
