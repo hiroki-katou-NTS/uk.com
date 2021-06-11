@@ -1,11 +1,16 @@
 package nts.uk.file.at.app.export.vacation.set;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.uk.file.at.app.export.specialholiday.SpecialHolidayExportClass;
 import nts.uk.file.at.app.export.vacation.set.annualpaidleave.AcquisitionRuleExportRepository;
 import nts.uk.file.at.app.export.vacation.set.annualpaidleave.AnnPaidLeaveRepository;
 import nts.uk.file.at.app.export.vacation.set.compensatoryleave.TemHoliEmployeeRepository;
 import nts.uk.file.at.app.export.vacation.set.compensatoryleave.TempHoliComImplRepository;
-import nts.uk.file.at.app.export.vacation.set.holiday.HolidayRepository;
 import nts.uk.file.at.app.export.vacation.set.nursingleave.NursingLeaveSetRepository;
 import nts.uk.file.at.app.export.vacation.set.sixtyhours.Com60HourVacaRepository;
 import nts.uk.file.at.app.export.vacation.set.subst.ComSubstVacatRepository;
@@ -16,14 +21,13 @@ import nts.uk.file.at.app.export.vacation.set.yearholidaygrant.YearHolidayReposi
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
-import nts.uk.shr.infra.file.report.masterlist.data.*;
+import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
+import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 @Stateless
 @DomainID(value="EmployeeSystem")
@@ -108,9 +112,6 @@ public class EmployeeSystemImpl implements MasterListData {
     
     @Inject
     private YearHolidayRepositoryClass yearHolidayRepositoryClass;
-    
-    @Inject
-    private HolidayRepository holidayRepository;
     
 
     @Override
@@ -286,17 +287,7 @@ public class EmployeeSystemImpl implements MasterListData {
         return columns;
     }
     
-    public List<MasterHeaderColumn> getHeaderColumnsHoliday() {
-        List<MasterHeaderColumn> columns = new ArrayList<>();
-	            columns.add(new MasterHeaderColumn(KMF001_166, TextResource.localize("KMF001_166"),
-	                    ColumnTextAlign.LEFT, "", true));
-	            columns.add(new MasterHeaderColumn(KMF001_B01, "",
-	                    ColumnTextAlign.LEFT, "", true));
-	            columns.add(new MasterHeaderColumn(KMF001_167, TextResource.localize("KMF001_167"),
-	                    ColumnTextAlign.LEFT, "", true));
-	            
-	            return columns;
-    }
+    
 
     @Override
     public List<MasterData> getMasterDatas(MasterListExportQuery query) {
@@ -410,16 +401,7 @@ public class EmployeeSystemImpl implements MasterListData {
                 .sheetName(getSheetName(EmployeeSystem.NURSING_CARE))
                 .mode(MasterListMode.NONE)
                 .build();
-        sheetDatas.add(sheetData9);
-        //休日 - Tạo mới
-        SheetData sheetData10 = SheetData.builder()
-                .mainData(holidayRepository.getAllHoliday(companyId))
-                .mainDataColumns(this.getHeaderColumnsHoliday())
-                .sheetName(TextResource.localize("KMF001_335"))
-                .mode(MasterListMode.NONE)
-                .build();
-        sheetDatas.add(sheetData10);
-        
+        sheetDatas.add(sheetData9);     
         return sheetDatas;
     }
 

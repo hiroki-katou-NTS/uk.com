@@ -436,7 +436,8 @@
                                     optionsValue: 'code',
                                     optionsText: 'name',
                                     value: empConditionAtr,
-                                    enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()}"></div>
+                                    enable: ko.computed(function() { return usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP(); })
+                                 }"></div>
                                  <button tabindex="2"
                                     data-bind="click: openDialogB, enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; empConditionAtr() == 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_19')}</button>
                               </div>

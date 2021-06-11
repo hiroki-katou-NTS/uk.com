@@ -168,7 +168,7 @@ module nts.uk.com.view.ccg020.a {
         }
       });
 
-      $('#list-box').on('selectionChanging', (event: any) => {
+      $('#popup-result #list-box').on('selectionChanging', (event: any) => {
         window.location.href = event.detail.url;
       });
     }

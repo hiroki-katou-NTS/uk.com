@@ -11,25 +11,32 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 /** 作業内容 */
 public class WorkContent implements DomainObject {
 
-	/** 勤務先会社ID: 会社ID */
-	private String companyId;
-	
 	/** 勤務先: 応援別勤務の勤務先 */
 	private WorkplaceOfWorkEachOuen workplace;
 	
 	/** 作業: 作業グループ */
 	private Optional<WorkGroup> work;
+	
+	/** 備考: 作業入力備考 */
+	private Optional<WorkinputRemarks> workRemarks;
 
-	private WorkContent(String companyId, WorkplaceOfWorkEachOuen workplace, Optional<WorkGroup> work) {
+	private WorkContent(WorkplaceOfWorkEachOuen workplace, Optional<WorkGroup> work, Optional<WorkinputRemarks> workRemarks) {
 		super();
-		this.companyId = companyId;
 		this.workplace = workplace;
 		this.work = work;
+		this.workRemarks = workRemarks;
 	}
 	
-	public static WorkContent create(String companyId, 
-			WorkplaceOfWorkEachOuen workplace, Optional<WorkGroup> work) {
+	public static WorkContent create(WorkplaceOfWorkEachOuen workplace, Optional<WorkGroup> work, Optional<WorkinputRemarks> workRemarks) {
 		
-		return new WorkContent(companyId, workplace, work);
+		return new WorkContent(workplace, work, workRemarks);
+	}
+
+	public void setWork(Optional<WorkGroup> work) {
+		this.work = work;
+	}
+
+	public void setWorkplace(WorkplaceOfWorkEachOuen workplace) {
+		this.workplace = workplace;
 	}
 }

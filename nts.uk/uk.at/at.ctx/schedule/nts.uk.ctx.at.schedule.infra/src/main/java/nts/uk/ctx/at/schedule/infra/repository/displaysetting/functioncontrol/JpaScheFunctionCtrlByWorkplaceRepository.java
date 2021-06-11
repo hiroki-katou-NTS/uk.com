@@ -23,7 +23,7 @@ public class JpaScheFunctionCtrlByWorkplaceRepository extends JpaRepository impl
     @Override
     public Optional<ScheFunctionCtrlByWorkplace> get(String companyId) {
         // get child list
-        String subSql = "SELECT * FROM KSCMT_FUNC_CTR_BYWKP_ALCHKCD WHERE CID = @companyId";
+        String subSql = "SELECT * FROM KSCMT_FUNC_CTR_BYWKP_ALCHKCD WHERE CID = @companyId ORDER BY ALCHK_CD";
         List<String> lstAlarmCheckCode = new NtsStatement(subSql, this.jdbcProxy())
                 .paramString("companyId", companyId)
                 .getList(x -> KscmtFuncCtrBywkpAlchkcd.MAPPER.toEntity(x).getAlchkCd());

@@ -217,7 +217,7 @@ module nts.uk.at.view.kbt002.c {
       const vm = this;
       vm.$window.modal("/view/kbt/002/d/index.xhtml", { repeatMonthDateList: vm.curExecSetting().repeatMonthDateList() })
         .then(data => {
-          vm.curExecSetting().repeatMonthDateList(data.selectedDays);
+          vm.curExecSetting().repeatMonthDateList(_.map(data.selectedDays, (x: string) => parseInt(x)));
           vm.monthDays(vm.buildMonthDaysStr());
         });
     }
