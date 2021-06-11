@@ -223,7 +223,7 @@ module nts.uk.ui.koExtentions {
             var $input = $container.find("input.ntsSearchBox");
             minusWidth += $button.outerWidth(true);
             if(searchMode === "filter"){
-                $container.append("<button class='clear-icon ntsSearchBox_Component'>"); 
+                $container.append("<button class='clear-icon proceed ntsSearchBox_Component'>"); 
                 let $clearButton = $container.find("button.clear-icon");  
                 minusWidth +=  $clearButton.outerWidth(true);
                 $clearButton.click(function(evt: Event, ui: any) {
