@@ -36,9 +36,11 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 		treeGrid: any;
 		multiSelectedWorkplaceId: KnockoutObservableArray<string> = ko.observableArray([]);
 		baseDate: KnockoutObservable<Date> = ko.observable(new Date());
+		displayUpdMailTmpBtn: boolean = false;
 		
 		created(params: KAF018BParam) {
 			const vm = this;
+			vm.displayUpdMailTmpBtn = __viewContext.user.role.isInCharge.payroll;
 			vm.applicationApprovalFlg = new CheckBoxValue(false, true, vm.$i18n('KAF018_318'));
 			vm.confirmAndApprovalDailyFlg = new CheckBoxValue(false, true, '');
 			vm.confirmAndApprovalMonthFlg = new CheckBoxValue(false, true, '');

@@ -48,7 +48,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			vm.startDate = params.startDate;
 			vm.endDate = params.endDate;
 			vm.selectWorkplaceInfo = params.selectWorkplaceInfo;
-			vm.dataSource = _.map(vm.selectWorkplaceInfo, x => {
+			vm.dataSource = _.map(_.sortBy(vm.selectWorkplaceInfo, 'hierarchyCode'), x => {
 				return {
 					wkpID: x.id,
 					wkpCD: x.code,
