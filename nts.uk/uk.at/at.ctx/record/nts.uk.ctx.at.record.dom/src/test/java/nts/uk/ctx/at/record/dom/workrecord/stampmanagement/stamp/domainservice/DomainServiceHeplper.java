@@ -31,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkByIndividualWorkDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
@@ -130,7 +131,8 @@ public class DomainServiceHeplper {
 	public static WorkingConditionItem getWorkingCondWorktimeIsNull() {
 		SingleDaySchedule weekdayTime = new  SingleDaySchedule("workType", new ArrayList<>(), Optional.empty());
 		PersonalWorkCategory workCategory = new PersonalWorkCategory(weekdayTime);
-		WorkingConditionItem data = new WorkingConditionItem(null, null, null, workCategory, null,
+		WorkByIndividualWorkDay result = new WorkByIndividualWorkDay(workCategory, null);
+		WorkingConditionItem data = new WorkingConditionItem(null, null, result, null,
 				null, null, null, null, null, null,
 				null, null, null, null);
 		return data;
@@ -138,7 +140,8 @@ public class DomainServiceHeplper {
 	public static WorkingConditionItem getWorkingCondWorktimeNotNull() {
 		SingleDaySchedule weekdayTime = new  SingleDaySchedule("workType", new ArrayList<>(), Optional.of("workTime"));
 		PersonalWorkCategory workCategory = new PersonalWorkCategory(weekdayTime);
-		WorkingConditionItem data = new WorkingConditionItem(null, null, null, workCategory, null,
+		WorkByIndividualWorkDay result = new WorkByIndividualWorkDay(workCategory, null);
+		WorkingConditionItem data = new WorkingConditionItem(null, null, result, null,
 				null, null, null, null, null, null,
 				null, null, null, null);
 		return data;

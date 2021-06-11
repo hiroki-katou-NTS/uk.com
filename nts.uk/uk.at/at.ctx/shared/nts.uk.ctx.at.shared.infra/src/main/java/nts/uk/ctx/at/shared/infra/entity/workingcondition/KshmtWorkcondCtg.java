@@ -111,18 +111,17 @@ public class KshmtWorkcondCtg extends ContractUkJpaEntity implements Serializabl
 		return this.kshmtPerWorkCatPK;
 	}
 
-	public KshmtWorkcondCtg(KshmtPerWorkCatPK kshmtPerWorkCatPK, String sid, String workTypeCode, String workTimeCode,
+	public KshmtWorkcondCtg(KshmtPerWorkCatPK kshmtPerWorkCatPK, String sid, String workTimeCode,
 			List<KshmtWorkcondCtgTs> kshmtWorkCatTimeZones) {
 		super();
 		this.kshmtPerWorkCatPK = kshmtPerWorkCatPK;
 		this.sid = sid;
-		this.workTypeCode = workTypeCode;
 		this.workTimeCode = workTimeCode;
 		this.kshmtWorkCatTimeZones = kshmtWorkCatTimeZones;
 	}
 	
 	public SingleDaySchedule toDomain() {
-		return new SingleDaySchedule(this.workTypeCode,
+		return new SingleDaySchedule(
 				kshmtWorkCatTimeZones.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
 				Optional.ofNullable(this.workTimeCode));
 	}
@@ -131,7 +130,6 @@ public class KshmtWorkcondCtg extends ContractUkJpaEntity implements Serializabl
 		return new KshmtWorkcondCtg(
 				new KshmtPerWorkCatPK(historyId, workCategoryAtr),
 				sid, 
-				domain.getWorkTypeCode().isPresent()?domain.getWorkTypeCode().get().v():null, 
 				domain.getWorkTimeCode().isPresent()?domain.getWorkTimeCode().get().v():null,
 				domain.getWorkingHours().stream().map(c->KshmtWorkcondCtgTs.toEntity(c, historyId, workCategoryAtr)).collect(Collectors.toList())
 				);

@@ -35,6 +35,8 @@ import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeek;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkByIndividualWorkDay;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkTypeByIndividualWorkDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -287,8 +289,13 @@ public class KshmtWorkcondHistItem extends ContractUkJpaEntity implements Serial
 			}
 		}
 		//set 区分別勤務
-		PersonalWorkCategory workCategory = new PersonalWorkCategory(weekdayTime, holidayWork, holidayTime, inLawBreakTime, outsideLawBreakTime, holidayAttendanceTime, publicHolidayWork);
+		//PersonalWorkCategory workCategory = new PersonalWorkCategory(weekdayTime, holidayWork, holidayTime, inLawBreakTime, outsideLawBreakTime, holidayAttendanceTime, publicHolidayWork);
 		
+		PersonalWorkCategory workCategory = new PersonalWorkCategory(weekdayTime, holidayWork, workDayOfWeek);
+		//WorkTypeByIndividualWorkDay workTypeByIndividualWorkDay = new WorkTypeByIndividualWorkDay(goToWorkOnHolidays, onHolidays, whenCommuting, duringLegalHolidays, duringExorbitantHolidays, holidays)
+				
+				
+		//WorkByIndividualWorkDay workByIndividualWorkDay = new WorkByIndividualWorkDay(workTime, workType)
 		//
 		ScheduleMethod scheduleMethod = (this.kshmtScheduleMethod ==null?null:this.kshmtScheduleMethod.toDomain());
 		Integer hourlyPaymentAtr = this.hourlyPayAtr ==null?null:this.hourlyPayAtr;

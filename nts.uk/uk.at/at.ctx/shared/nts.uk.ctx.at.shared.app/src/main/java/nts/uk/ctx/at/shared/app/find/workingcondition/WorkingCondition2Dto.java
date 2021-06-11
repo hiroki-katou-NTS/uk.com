@@ -422,7 +422,7 @@ public class WorkingCondition2Dto extends PeregDomainDto {
 
 		// 休日出勤時
 
-		PersonalDayOfWeek workDayOfWeek = workingConditionItem.getWorkDayOfWeek();
+		PersonalDayOfWeek workDayOfWeek = workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek();
 
 		// 日曜日
 		workDayOfWeek.getSunday().ifPresent(sund -> setSunday(dto, sund));

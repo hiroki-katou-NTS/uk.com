@@ -48,9 +48,6 @@ public class KshmtWorkcondWeek extends ContractUkJpaEntity implements Serializab
 	@Column(name = "SID")
 	private String sid;
 
-	/** The work type code. */
-	@Column(name = "WORK_TYPE_CODE")
-	private String workTypeCode;
 
 	/** The work time code. */
 	@Column(name = "WORK_TIME_CODE")
@@ -112,17 +109,16 @@ public class KshmtWorkcondWeek extends ContractUkJpaEntity implements Serializab
 	}
 
 	public KshmtWorkcondWeek(KshmtPersonalDayOfWeekPK kshmtPersonalDayOfWeekPK, String sid,
-			String workTypeCode, String workTimeCode, List<KshmtWorkcondWeekTs> kshmtDayofweekTimeZones) {
+			 String workTimeCode, List<KshmtWorkcondWeekTs> kshmtDayofweekTimeZones) {
 		super();
 		this.kshmtPersonalDayOfWeekPK = kshmtPersonalDayOfWeekPK;
 		this.sid = sid;
-		this.workTypeCode = workTypeCode;
 		this.workTimeCode = workTimeCode;
 		this.kshmtDayofweekTimeZones = kshmtDayofweekTimeZones;
 	}
 	
 	public SingleDaySchedule toDomain() {
-		return new SingleDaySchedule(this.workTypeCode,
+		return new SingleDaySchedule(
 				kshmtDayofweekTimeZones.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
 				Optional.ofNullable(this.workTimeCode));
 	}
@@ -131,7 +127,6 @@ public class KshmtWorkcondWeek extends ContractUkJpaEntity implements Serializab
 		return new KshmtWorkcondWeek(
 				new KshmtPersonalDayOfWeekPK(historyId, perWorkDayOffAtr),
 				sid, 
-				domain.getWorkTypeCode().isPresent()?domain.getWorkTypeCode().get().v():null, 
 				domain.getWorkTimeCode().isPresent()?domain.getWorkTimeCode().get().v():null,
 				domain.getWorkingHours().stream().map(c->KshmtWorkcondWeekTs.toEntity(c, historyId, perWorkDayOffAtr)).collect(Collectors.toList())
 				);

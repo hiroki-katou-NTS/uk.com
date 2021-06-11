@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeek;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkByIndividualWorkDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
@@ -38,11 +39,8 @@ public class WorkCondItemDto {
 	/** 予定管理区分 */
 	private ManageAtr scheduleManagementAtr;
 
-	/** 曜日別勤務 */
-	private PersonalDayOfWeek workDayOfWeek;
-
 	/** 区分別勤務 */
-	private PersonalWorkCategory workCategory;
+	private WorkByIndividualWorkDay workCategory;
 
 	private NotUseAtr autoStampSetAtr;
 
@@ -70,7 +68,6 @@ public class WorkCondItemDto {
 		this.historyId = workingConditionItem.getHistoryId();
 		this.hourlyPaymentAtr = workingConditionItem.getHourlyPaymentAtr();
 		this.scheduleManagementAtr = workingConditionItem.getScheduleManagementAtr();
-		this.workDayOfWeek = workingConditionItem.getWorkDayOfWeek();
 		this.workCategory = workingConditionItem.getWorkCategory();
 		this.autoStampSetAtr = workingConditionItem.getAutoStampSetAtr();
 		this.autoIntervalSetAtr = workingConditionItem.getAutoIntervalSetAtr();

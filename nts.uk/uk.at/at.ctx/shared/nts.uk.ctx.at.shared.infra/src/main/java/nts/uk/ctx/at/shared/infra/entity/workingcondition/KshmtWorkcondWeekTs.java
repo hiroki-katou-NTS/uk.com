@@ -90,7 +90,6 @@ public class KshmtWorkcondWeekTs extends KshmtTimeZone implements Serializable {
 	
 	public static KshmtWorkcondWeekTs toEntity(TimeZone timeZone,String historyId,int perWorkDayOffAtr) {
 		KshmtWorkcondWeekTs data =  new KshmtWorkcondWeekTs(new KshmtDayofweekTimeZonePK(historyId, perWorkDayOffAtr, timeZone.getCnt()));
-		data.setUseAtr(timeZone.getUseAtr().value);
 		data.setStartTime(timeZone.getStart().valueAsMinutes());
 		data.setEndTime(timeZone.getEnd().valueAsMinutes());
 		return data;

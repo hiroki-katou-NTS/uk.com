@@ -18,49 +18,17 @@ public interface PersonalWorkCategoryGetMemento {
 	 */
 	public SingleDaySchedule getHolidayWork();
 	
-	
-	/**
-	 * Gets the holiday time.
-	 *
-	 * @return the holiday time
-	 */
-	public SingleDaySchedule getHolidayTime();
-	
 	/**
 	 * Gets the weekday time.
 	 *
 	 * @return the weekday time
 	 */
 	public SingleDaySchedule getWeekdayTime();
-	
 	/**
-	 * Gets the public holiday work.
-	 *
-	 * @return the public holiday work
+	 * Get day of week
+	 * @return
 	 */
-	public Optional<SingleDaySchedule> getPublicHolidayWork();
+	public PersonalDayOfWeek getDayOfWeek();
 	
-	
-	/**
-	 * Gets the in law break time.
-	 *
-	 * @return the in law break time
-	 */
-	public Optional<SingleDaySchedule> getInLawBreakTime();
-	
-	
-	/**
-	 * Gets the outside law break time.
-	 *
-	 * @return the outside law break time
-	 */
-	public Optional<SingleDaySchedule> getOutsideLawBreakTime();
-	
-	
-	/**
-	 * Gets the holiday attendance time.
-	 *
-	 * @return the holiday attendance time
-	 */
-	public Optional<SingleDaySchedule> getHolidayAttendanceTime();
+
 }

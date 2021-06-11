@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleGetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkByIndividualWorkDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -70,8 +71,9 @@ public class DateAndTimePeriodTest implements SingleDayScheduleGetMemento{
 		DateAndTimePeriod dateAndTimePeriod = DomainServiceHeplper.getDateAndTimePeriodDefault();
 		SingleDaySchedule single = new SingleDaySchedule("workTypeCode", null, Optional.of("workTimeCode"));
 		PersonalWorkCategory perWorkCat = new PersonalWorkCategory(single);
-		WorkingConditionItem item = new WorkingConditionItem("", null, null, 
-					perWorkCat, NotUseAtr.USE, NotUseAtr.USE, 
+		WorkByIndividualWorkDay data = new WorkByIndividualWorkDay(perWorkCat, null);
+		WorkingConditionItem item = new WorkingConditionItem("", null, 
+				data, NotUseAtr.USE, NotUseAtr.USE, 
 					"employeeId", NotUseAtr.USE, null, null, 
 					null, null, 1, null, null);
 		
@@ -92,10 +94,12 @@ public class DateAndTimePeriodTest implements SingleDayScheduleGetMemento{
 		DateAndTimePeriod dateAndTimePeriod = DomainServiceHeplper.getDateAndTimePeriodDefault();
 		SingleDaySchedule single = new SingleDaySchedule(this);
 		PersonalWorkCategory perWorkCat = new PersonalWorkCategory(single);
-		WorkingConditionItem item = new WorkingConditionItem("", null, null, 
-					perWorkCat, NotUseAtr.USE, NotUseAtr.USE, 
+		WorkByIndividualWorkDay data = new WorkByIndividualWorkDay(perWorkCat, null);
+		WorkingConditionItem item = new WorkingConditionItem("", null, 
+				data, NotUseAtr.USE, NotUseAtr.USE, 
 					"employeeId", NotUseAtr.USE, null, null, 
 					null, null, 1, null, null);
+		
 		
 		new Expectations() {
 			{
@@ -116,10 +120,12 @@ public class DateAndTimePeriodTest implements SingleDayScheduleGetMemento{
 		Optional<String> workTimeCode = Optional.of("workTimeCode");
 		SingleDaySchedule single = new SingleDaySchedule("workTypeCode", null, workTimeCode);
 		PersonalWorkCategory perWorkCat = new PersonalWorkCategory(single);
-		WorkingConditionItem item = new WorkingConditionItem("", null, null, 
-					perWorkCat, NotUseAtr.USE, NotUseAtr.USE, 
+		WorkByIndividualWorkDay data = new WorkByIndividualWorkDay(perWorkCat, null);
+		WorkingConditionItem item = new WorkingConditionItem("", null, 
+				data, NotUseAtr.USE, NotUseAtr.USE, 
 					"employeeId", NotUseAtr.USE, null, null, 
 					null, null, 1, null, null);
+		
 		
 		Optional<PredetemineTimeSetting> pre = Optional.of(new PredetemineTimeSetting());
 		pre.get().setStartDateClock(GeneralDateTime.now().clockHourMinute().v() + 1);
@@ -145,10 +151,12 @@ public class DateAndTimePeriodTest implements SingleDayScheduleGetMemento{
 		Optional<String> workTimeCode = Optional.of("workTimeCode");
 		SingleDaySchedule single = new SingleDaySchedule("workTypeCode", null, workTimeCode);
 		PersonalWorkCategory perWorkCat = new PersonalWorkCategory(single);
-		WorkingConditionItem item = new WorkingConditionItem("", null, null, 
-					perWorkCat, NotUseAtr.USE, NotUseAtr.USE, 
+		WorkByIndividualWorkDay data = new WorkByIndividualWorkDay(perWorkCat, null);
+		WorkingConditionItem item = new WorkingConditionItem("", null, 
+				data, NotUseAtr.USE, NotUseAtr.USE, 
 					"employeeId", NotUseAtr.USE, null, null, 
 					null, null, 1, null, null);
+		
 		
 		Optional<PredetemineTimeSetting> pre = Optional.of(new PredetemineTimeSetting());
 		pre.get().setStartDateClock(GeneralDateTime.now().clockHourMinute().v());

@@ -470,7 +470,6 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 								KshmtWorkcondWeek entity = new KshmtWorkcondWeek();
 								entity.setKshmtPersonalDayOfWeekPK(kshmtPersonalDayOfWeekPK);
-								entity.setWorkTypeCode(rec.getString("WORK_TYPE_CODE"));
 								entity.setWorkTimeCode(rec.getString("WORK_TIME_CODE"));
 
 								return entity;

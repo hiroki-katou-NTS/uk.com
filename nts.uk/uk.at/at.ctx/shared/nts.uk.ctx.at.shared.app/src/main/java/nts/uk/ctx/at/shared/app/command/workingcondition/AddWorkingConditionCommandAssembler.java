@@ -150,11 +150,13 @@ public class AddWorkingConditionCommandAssembler {
 				listTimeZone,
 				WorkingConditionCommandUtils.getOptionalWorkTime(command.getWorkInPublicHolidayWorkTimeCode()));
 	
-		PersonalWorkCategory workCategory = new PersonalWorkCategory(weekdaySchedule, wholidaySchedule, holiday,
+/*		PersonalWorkCategory workCategory = new PersonalWorkCategory(weekdaySchedule, wholidaySchedule, holiday,
 				WorkingConditionCommandUtils.getOptionalSingleDay(inLawBreakTime),
 				WorkingConditionCommandUtils.getOptionalSingleDay(outLawBreakTime),
 				WorkingConditionCommandUtils.getOptionalSingleDay(holidayAttendance),
-				WorkingConditionCommandUtils.getOptionalSingleDay(wiPublicHoliday));
+				WorkingConditionCommandUtils.getOptionalSingleDay(wiPublicHoliday));*/
+		PersonalWorkCategory workCategory = new PersonalWorkCategory(weekdaySchedule, wholidaySchedule, workDayOfWeek);
+		
 				// -------------------------------
 		
 		
@@ -383,11 +385,14 @@ public class AddWorkingConditionCommandAssembler {
 			exLst.addAll(timezone.getErrors());
 		}
 		
-		PersonalWorkCategory workCategory = new PersonalWorkCategory(weekdaySchedule, wholidaySchedule, holiday,
+	/*	PersonalWorkCategory workCategory = new PersonalWorkCategory(weekdaySchedule, wholidaySchedule, holiday,
 				WorkingConditionCommandUtils.getOptionalSingleDay(inLawBreakTime),
 				WorkingConditionCommandUtils.getOptionalSingleDay(outLawBreakTime),
 				WorkingConditionCommandUtils.getOptionalSingleDay(holidayAttendance),
-				WorkingConditionCommandUtils.getOptionalSingleDay(wiPublicHoliday));
+				WorkingConditionCommandUtils.getOptionalSingleDay(wiPublicHoliday));*/
+		PersonalWorkCategory workCategory = new PersonalWorkCategory(weekdaySchedule, wholidaySchedule, workDayOfWeek);
+		
+		
 		// -------------------------------
 		
 		

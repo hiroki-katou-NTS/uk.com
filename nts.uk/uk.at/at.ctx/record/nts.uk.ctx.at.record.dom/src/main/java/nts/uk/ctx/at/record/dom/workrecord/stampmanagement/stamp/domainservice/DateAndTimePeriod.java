@@ -53,8 +53,8 @@ public class DateAndTimePeriod implements DomainValue {
 			throw new BusinessException("Msg_430");
 		}
 
-		Optional<WorkTimeCode> workTimeCode = optWorkingConditionItem.get().getWorkCategory().getWeekdayTime()
-				.getWorkTimeCode();
+		Optional<WorkTimeCode> workTimeCode = optWorkingConditionItem.get().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode();
+				
 		if (!workTimeCode.isPresent()) {
 			throw new BusinessException("Msg_1142");
 		}

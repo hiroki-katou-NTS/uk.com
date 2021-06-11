@@ -91,7 +91,6 @@ public class KshmtWorkcondCtgTs extends KshmtTimeZone implements Serializable {
 	
 	public static KshmtWorkcondCtgTs toEntity(TimeZone timeZone,String historyId,int workCategoryAtr) {
 		KshmtWorkcondCtgTs data =  new KshmtWorkcondCtgTs(new KshmtWorkCatTimeZonePK(historyId, workCategoryAtr, timeZone.getCnt()));
-		data.setUseAtr(timeZone.getUseAtr().value);
 		data.setStartTime(timeZone.getStart().valueAsMinutes());
 		data.setEndTime(timeZone.getEnd().valueAsMinutes());
 		return data;
