@@ -282,7 +282,8 @@ public class LateTimeOfDaily {
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Optional.of(leaveLateSet),
-				NotUseAtr.NOT_USE);
+				NotUseAtr.NOT_USE,
+				Optional.of(recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork()));
 		
 		//控除用コアタイム無しの遅刻時間計算
 		TimeWithCalculation calcedLateDeductionTime = changedFlexTimeSheet.calcNoCoreCalcLateTime(
@@ -307,7 +308,8 @@ public class LateTimeOfDaily {
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Optional.of(leaveLateSet),
-				NotUseAtr.NOT_USE);
+				NotUseAtr.NOT_USE,
+				Optional.of(recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork()));
 		
 		List<LateTimeOfDaily> lateDailies = recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().isPresent()
 				? recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily()
