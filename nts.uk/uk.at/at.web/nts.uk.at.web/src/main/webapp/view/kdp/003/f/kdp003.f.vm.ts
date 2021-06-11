@@ -364,12 +364,11 @@ module nts.uk.at.kdp003.f {
 				return vm.$dialog.error(message);
 			}
 
-			// Không biết để làm gì ?
-			// if (passwordRequired === false) {
-			// 	_.omit(model, ['password']);
-			// 	// note: メニュー別OCD内の記述を移送表に追加する
-			// 	model.passwordInvalid = true;
-			// }
+			if (passwordRequired === false) {
+				_.omit(model, ['password']);
+			// note: メニュー別OCD内の記述を移送表に追加する
+				model.passwordInvalid = true;
+			}
 
 			vm.$validate()
 				.then((valid: boolean) => {
@@ -453,11 +452,11 @@ module nts.uk.at.kdp003.f {
 				}
 			}
 
-			// if (passwordRequired === false) {
-			// 	_.omit(model, ['password']);
-			// 	// note: メニュー別OCD内の記述を移送表に追加する
-			// 	model.passwordInvalid = true;
-			// }
+			if (passwordRequired === false) {
+				_.omit(model, ['password']);
+			// note: メニュー別OCD内の記述を移送表に追加する
+				model.passwordInvalid = true;
+			}
 
 			vm.$validate()
 				.then((valid: boolean) => {

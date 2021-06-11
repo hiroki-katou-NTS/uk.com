@@ -593,6 +593,14 @@ module nts.uk.at.view.kdp005.a {
 												}
 											};
 											service.addCheckCard(registerdata).done((res) => {
+
+												const param = {
+													sid: employeeId,
+													date: vm.$date.now()
+												}
+				
+												service.createDaily(param);
+												
 												//phat nhac
 												if (source) {
 													let audio = new Audio(source);
@@ -639,6 +647,14 @@ module nts.uk.at.view.kdp005.a {
 							};
 
 							service.addCheckCard(registerdata).done((res) => {
+
+								const param = {
+									sid: employeeId,
+									date: vm.$date.now()
+								}
+
+								service.createDaily(param);
+
 								//phat nhac
 								if (source) {
 									let audio = new Audio(source);
