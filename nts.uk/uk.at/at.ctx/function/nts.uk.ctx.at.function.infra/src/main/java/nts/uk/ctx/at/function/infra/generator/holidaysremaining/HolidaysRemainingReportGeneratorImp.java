@@ -324,19 +324,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         val checkDto = new DtoCheck(firstRow, 0, false, 0);
         val printHolidayRemainingEachPerson = printHolidayRemainingEachPerson(worksheet, firstRow, employee, dataSource, checkDto);
         firstRow = printHolidayRemainingEachPerson.getFirstRow();
-//
-//        if (firstRow % NUMBER_ROW_OF_PAGE != 0) {
-//            firstRow += (NUMBER_ROW_OF_PAGE - firstRow % NUMBER_ROW_OF_PAGE);
-//        }
         return firstRow;
     }
 
     private DtoCheck printHolidayRemainingEachPerson(Worksheet worksheet, int firstRow, HolidaysRemainingEmployee employee,
                                                      HolidayRemainingDataSource dataSource, DtoCheck checkDto) throws Exception {
-        int rowIndexD = firstRow;
-        int totalRowD = 0;
         int first = firstRow;
-
         Cells cells = worksheet.getCells();
         HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
         // E

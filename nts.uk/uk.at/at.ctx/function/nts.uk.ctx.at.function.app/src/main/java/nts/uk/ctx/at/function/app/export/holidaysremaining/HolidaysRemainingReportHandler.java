@@ -212,7 +212,11 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 hdManagement.getListItemsOutput().getSubstituteHoliday().setOutputItemSubstitute(false);
             }
 
-            if (varVacaCtr.isPauseItemHolidaySetting() == false) {
+//            if (varVacaCtr.isPauseItemHolidaySetting() == false) {
+//                hdManagement.getListItemsOutput().getPause().setPauseItem(false);
+//            }
+
+            if (varVacaCtr.isPauseItemHolidaySettingCompany() == false) {
                 hdManagement.getListItemsOutput().getPause().setPauseItem(false);
             }
             List<Integer> checkItem = hdManagement.getListItemsOutput().getSpecialHoliday();
