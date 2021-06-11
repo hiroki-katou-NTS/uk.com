@@ -130,6 +130,8 @@ module nts.uk.at.view.kdp002.c {
 				service.startScreen(data).done((res) => {
 					let itemIds = ["TIME", "AMOUNT", "TIME_WITH_DAY", "DAYS", "COUNT", "CLOCK"];
 
+					console.log(res);
+					
 					if (res) {
 
 						if (_.size(res.stampRecords) > 0) {
@@ -201,9 +203,16 @@ module nts.uk.at.view.kdp002.c {
 						}
 					}
 					if (res.confirmResult) {
+						if (res.confirmResult.permissionCheck == 1) 
 						self.permissionCheck(res.confirmResult.permissionCheck == 1);
 					} else {
 						self.displayButton(false);
+					}
+
+					if (ko.unwrap(self.permissionCheck)) {
+						if (res.setting == 2) {
+							self.permissionCheck(false);
+						}
 					}
 				});
 
