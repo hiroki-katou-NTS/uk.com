@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<head>
+	<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css" />
+</head>
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = {width: 435, height: 665};</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="main.css" />
+			<com:scriptfile path="../../share/kdp-tabbutton.js" />
+			<com:scriptfile path="../../share/stampTemplate.js" />
+			<com:scriptfile path="kdp010.j.vm.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageComment
+			</com:ValidatorScript>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button tabindex="1" id="btnSave" class="proceed" data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('KDP010_230')}</button>
+				<button tabindex="2" class="danger" data-bind="click: deleteSetting, enable: isDel">#{i18n.getText('KDP010_231')}</button>
+				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KDP010_232')}</button>
+			</div>
+			<div id="contents-area" class="contents-area">
+				<div class="row">
+					<div class="form-label" />
+					<button tabindex="3" class="popupButton" data-bind="">#{i18n.getText('KDP010_335')}</button>
+					<div class="popup-area">
+						<table>
+                            <colgroup>
+                                <col width="195" />
+                            </colgroup>
+                            <tbody data-bind="foreach: optionPopup">
+                                <tr>
+                                    <td>
+                                    	<div data-bind="click: $parent.popupSelected.bind($parent, $data), text: name"></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+					</div>
+				</div>
+				<div data-bind="with: stampPageLayout">
+					<div class="row">
+						<div data-bind="ntsFormLabel: { required: false, constraint: 'PageComment'  }">#{i18n.getText('KDP010_233')}</div>
+						<textarea id="pageComment" tabindex="4" data-bind="ntsMultilineEditor: { name: '#[KDP010_233]',value: stampPageComment.pageComment, constraint: 'PageComment', hasFocus: $parent.hasFocus}" />
+					</div>
+					<div class="row">				
+						<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP010_234')}</div>
+						<div tabindex="5" class="colorpicker" data-bind="ntsColorPicker: {value: stampPageComment.commentColor, enable: true, width: 50, name:'#[KDP010_234]' }" />
+					</div>
+					<div class="row">
+						<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP010_235')}</div>
+						<div class="buton-setting">
+							<table>
+								<tr>
+									<td>
+										<button id="btn1" tabindex="5" data-bind="
+											click: setting.bind($data,1), 
+											style:{'background-color': btn1.usrArt() == 1 ? btn1.buttonDisSet.backGroundColor: '#D9D9D9'}">
+											<com:ko-if bind="btn1.usrArt() == 1 ">
+												<img width="40px" height="40px" data-bind="attr:{src: btn1.icon}" />
+												<div data-bind="text: btn1.buttonDisSet.buttonNameSet.buttonName, 
+													css: btn1.buttonDisSet.buttonNameSet.buttonName().length > 6 ? 'twoRow': '', 
+													style:{'font-size': btn1.buttonDisSet.buttonNameSet.buttonName().length > 18 ? '10px' : btn1.buttonDisSet.buttonNameSet.buttonName().length > 6 ? '11px': '17px', color: btn1.buttonDisSet.buttonNameSet.textColor}"></div>
+											</com:ko-if>
+										</button>
+									</td>
+									<td>
+										<button tabindex="6" data-bind="
+											click: setting.bind($data,2),
+											style:{'background-color': btn2.usrArt() == 1 ? btn2.buttonDisSet.backGroundColor: '#D9D9D9'}">
+											<com:ko-if bind="btn2.usrArt() == 1 ">
+												<img width="40px" height="40px" data-bind="attr:{src: btn2.icon}" />
+												<div data-bind="text: btn2.buttonDisSet.buttonNameSet.buttonName, 
+													css: btn2.buttonDisSet.buttonNameSet.buttonName().length > 6 ? 'twoRow': '',
+													style:{'font-size': btn2.buttonDisSet.buttonNameSet.buttonName().length > 18 ? '10px' : btn2.buttonDisSet.buttonNameSet.buttonName().length > 6 ? '11px': '17px', color: btn2.buttonDisSet.buttonNameSet.textColor}"></div>
+											</com:ko-if>	
+										</button>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<button tabindex="7" data-bind="
+											click: setting.bind($data,3), 
+											style:{'background-color': btn3.usrArt() == 1 ? btn3.buttonDisSet.backGroundColor: '#D9D9D9'}">
+											<com:ko-if bind="btn3.usrArt() == 1 ">
+												<img width="40px" height="40px" data-bind="attr:{src: btn3.icon}" />
+												<div data-bind="text: btn3.buttonDisSet.buttonNameSet.buttonName, 
+													css: btn3.buttonDisSet.buttonNameSet.buttonName().length > 6 ? 'twoRow': '',
+													style:{'font-size': btn3.buttonDisSet.buttonNameSet.buttonName().length > 18 ? '10px' : btn3.buttonDisSet.buttonNameSet.buttonName().length > 6 ? '11px': '17px', color: btn3.buttonDisSet.buttonNameSet.textColor}"></div>
+											</com:ko-if>	
+										</button>
+									</td>
+									<td>
+										<button tabindex="8" data-bind="
+											click: setting.bind($data,4),
+											style:{'background-color': btn4.usrArt() == 1 ? btn4.buttonDisSet.backGroundColor: '#D9D9D9'}">
+											<com:ko-if bind="btn4.usrArt() == 1 ">
+												<img width="40px" height="40px" data-bind="attr:{src: btn4.icon}" />
+												<div data-bind="text: btn4.buttonDisSet.buttonNameSet.buttonName, 
+													css: btn4.buttonDisSet.buttonNameSet.buttonName().length > 6 ? 'twoRow': '',
+													style:{'font-size': btn4.buttonDisSet.buttonNameSet.buttonName().length > 18 ? '10px' : btn4.buttonDisSet.buttonNameSet.buttonName().length > 6 ? '11px': '17px', color: btn4.buttonDisSet.buttonNameSet.textColor}"></div>
+											</com:ko-if>	
+										</button>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<button tabindex="9" data-bind="
+											click: setting.bind($data,5), 
+											style:{'background-color': btn5.usrArt() == 1 ? btn5.buttonDisSet.backGroundColor: '#D9D9D9'}">
+											<com:ko-if bind="btn5.usrArt() == 1 ">
+												<img width="40px" height="40px" data-bind="attr:{src: btn5.icon}" />
+												<div data-bind="text: btn5.buttonDisSet.buttonNameSet.buttonName, 
+													css: btn5.buttonDisSet.buttonNameSet.buttonName().length > 6 ? 'twoRow': '',
+													style:{'font-size': btn5.buttonDisSet.buttonNameSet.buttonName().length > 18 ? '10px' : btn5.buttonDisSet.buttonNameSet.buttonName().length > 6 ? '11px': '17px', color: btn5.buttonDisSet.buttonNameSet.textColor}"></div>
+											</com:ko-if>	
+										</button>
+									</td>
+									<td>
+										<button tabindex="10" data-bind="
+											click: setting.bind($data,6),
+											style:{'background-color': btn6.usrArt() == 1 ? btn6.buttonDisSet.backGroundColor: '#D9D9D9'}">
+											<com:ko-if bind="btn6.usrArt() == 1 ">
+												<img width="40px" height="40px" data-bind="attr:{src: btn6.icon}" />
+												<div data-bind="text: btn6.buttonDisSet.buttonNameSet.buttonName, 
+													css: btn6.buttonDisSet.buttonNameSet.buttonName().length > 6 ? 'twoRow': '',
+													style:{'font-size': btn6.buttonDisSet.buttonNameSet.buttonName().length > 18 ? '10px' : btn6.buttonDisSet.buttonNameSet.buttonName().length > 6 ? '11px': '17px', color: btn6.buttonDisSet.buttonNameSet.textColor}"></div>
+											</com:ko-if>	
+										</button>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

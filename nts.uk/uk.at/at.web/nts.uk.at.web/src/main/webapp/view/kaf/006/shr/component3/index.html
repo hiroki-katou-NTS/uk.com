@@ -1,0 +1,37 @@
+<div id="kaf000-a-component6">
+	<div id="listApproverRootState" class="table" data-bind="if: approvalRootState().length != 0">
+		<div class="cell" id="label-1">
+			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF000_37')"></div>
+		</div>
+		<div class="cell" id="table-1">
+			<table id="table-phase">
+				<thead>
+					<tr class="bg-green">
+						<th style="width: 111px;"></th>
+						<th style="width: 111px;"></th>
+						<th style="width: 230px;" data-bind="text: $i18n('KAF000_3')"></th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: { data: approvalRootState, as: 'loopPhase' }">
+					<!-- ko foreach: {data: loopPhase.listApprovalFrame, as: 'loopFrame'} -->
+						<!-- ko foreach: {data: loopFrame.listApprover, as: 'loopApprover'} -->
+						<tr>
+							<!-- ko if: $component.isFirstIndexFrame(loopPhase, loopFrame, loopApprover) -->
+								<td data-bind="attr: {rowspan: ko.pureComputed(function() { return $component.frameCount(loopPhase.listApprovalFrame())}) }, 
+								text: $component.getPhaseLabel(loopPhase.phaseOrder())" style="width: 111px;" class="bg-green"></td>
+							<!-- /ko -->
+							<td data-bind="text: $component.getApproverLabel(loopPhase, loopFrame, loopApprover)" 
+								style="width: 111px; text-align: left; padding-left: 5px;" class="bg-green"></td>
+							<td>
+								<span class="limited-label" style="width: 230px; text-align: left; padding-left: 5px;"
+									data-bind="text: ko.pureComputed(function() { return $component.getApproverAtr(loopApprover)})">
+								</span>
+							</td>
+						</tr>
+						<!-- /ko -->
+					<!-- /ko -->
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

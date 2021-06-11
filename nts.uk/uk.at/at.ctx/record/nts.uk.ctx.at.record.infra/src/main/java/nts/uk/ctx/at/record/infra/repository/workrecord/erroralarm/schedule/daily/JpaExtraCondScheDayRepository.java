@@ -450,6 +450,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 		for (KscdtScheConDayWtime item: workTimes) {
 			if (!workTimeCodes.stream().anyMatch(x -> x.equals(item.pk.wrkTimeCd))) {
 				this.commandProxy().remove(item);
+				this.getEntityManager().flush();
 			}
 		}
 	}
@@ -474,6 +475,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 		for (KscdtScheConDayWt item: workTimes) {
 			if (!workTypeCodes.stream().anyMatch(x -> x.equals(item.pk.wrkTypeCd))) {
 				this.commandProxy().remove(item);
+				this.getEntityManager().flush();
 			}
 		}
 	}

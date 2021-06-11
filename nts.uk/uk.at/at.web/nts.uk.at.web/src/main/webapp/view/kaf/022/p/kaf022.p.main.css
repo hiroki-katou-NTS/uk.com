@@ -21,3 +21,7 @@
 .ui-iggrid .ui-iggrid-tablebody td {
     height: 22px;
 }
+
+#grid-setting-optional-item_scrollContainer {
+    height: 423px !important;
+}

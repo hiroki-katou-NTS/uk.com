@@ -8,7 +8,7 @@ import { StepwizardComponent } from '@app/components';
 import { Kafs05Model } from '../components/common/CommonClass';
 
 @component({
-    name: 'kafS05a',
+    name: 'kafS05olda',
     route: '/kaf/s05_old/a',
     style: require('../style.scss'),
     template: require('./index.html'),

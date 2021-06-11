@@ -29,19 +29,19 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ColorSetting;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.HistoryDisplayMethod;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageComment;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingDateTimeColorOfStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageComment;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageName;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampingScreenSet;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SupportWplSet;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -92,7 +92,9 @@ public class EnterStampFromPersonalStampServiceTest {
 		
 		StampSettingPerson stampSettingPerson = new StampSettingPerson("DUMMY", 
 				true, 
-				new StampingScreenSet(HistoryDisplayMethod.DISPLAY, new CorrectionInterval(1), new ColorSetting(new ColorCode("DUMMY"), new ColorCode("DUMMY")), new ResultDisplayTime(1)), 
+				new DisplaySettingsStampScreen(new CorrectionInterval(1),
+						new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
+						new ResultDisplayTime(1)), 
 				stampPageLayouts, 
 				null);
 		
@@ -125,19 +127,22 @@ public class EnterStampFromPersonalStampServiceTest {
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.NONE , Optional.empty()),
 				NotUseAtr.USE,
-				AudioType.NONE));
+				AudioType.NONE,
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		
 		lstButtonSet.add(new ButtonSettings(new ButtonPositionNo(1),
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.NONE , Optional.empty()),
 				NotUseAtr.USE,
-				AudioType.NONE));
+				AudioType.NONE,
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		
 		lstButtonSet.add(new ButtonSettings(new ButtonPositionNo(1),
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.NONE , Optional.empty()),
 				NotUseAtr.USE,
-				AudioType.NONE));
+				AudioType.NONE,
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		
 		stampPageLayouts.add(new StampPageLayout(new PageNo(1), new StampPageName("DUMMY"),
 				new StampPageComment(new PageComment("DUMMY"), new ColorCode("DUMMY")), ButtonLayoutType.SMALL_8,
@@ -145,7 +150,9 @@ public class EnterStampFromPersonalStampServiceTest {
 		
 		StampSettingPerson stampSettingPerson = new StampSettingPerson("DUMMY", 
 				true, 
-				new StampingScreenSet(HistoryDisplayMethod.DISPLAY, new CorrectionInterval(1), new ColorSetting(new ColorCode("DUMMY"), new ColorCode("DUMMY")), new ResultDisplayTime(1)), 
+				new DisplaySettingsStampScreen(new CorrectionInterval(1),
+						new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
+						new ResultDisplayTime(1)), 
 				stampPageLayouts, 
 				null);
 		

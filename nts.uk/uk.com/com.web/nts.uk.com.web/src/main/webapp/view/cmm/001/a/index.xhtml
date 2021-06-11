@@ -44,7 +44,7 @@
 				<!-- A1_4 -->
 				<button id="masterLog" tabindex="4" class="group-button-1"
 				    data-bind="visible: false">#{i18n.getText('CMM001_4')}</button>
-				<button tabindex="5" id="print-button" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button>  
+				<button tabindex="5" class="group-button-1" id="print-button" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button>  
 			</div>
 			<div id="contents-area" class="fixed-flex-layout" style="display: none" data-bind="visible: true">
 				<div class="fixed-flex-layout-left">
@@ -62,7 +62,7 @@
 								<label id="codeName">#{i18n.getText('CMM001_40')}</label>
 							</div>
 							<!-- A2_3 -->
-							<div tabindex="7"
+							<div style="width: 260px" tabindex="7"
 								data-bind="ntsSearchBox:
                     	       {targetKey: 'companyCode', comId: 'gridCompany',
                     	        items: sel001Data, 
@@ -74,7 +74,7 @@
 						<div class="div-table" tabindex="8">
 							<table id="gridCompany"
 								data-bind="ntsGridList: {								
-								height: 380,
+								rows: 10,
 								options: sel001Data,
 								optionsValue: 'companyCode',
 								columns: gridColumns,
@@ -89,10 +89,12 @@
 				<div class="fixed-flex-layout-right"
 					data-bind="with: currentCompany">
 					<div class="line-height flex">
-						<div>
+						<div style="width: 150px">
 							<!-- A3_1 -->
 							<div id="LBLCompanyCode"
-								data-bind="ntsFormLabel: { required: true, constraint: 'CompanyCode'}">#{i18n.getText('CMM001_7')}</div>
+								data-bind="ntsFormLabel: { required: true, constraint: 'CompanyCode'}">
+                <label>#{i18n.getText('CMM001_7')}</label>              
+              </div>
 						</div>
 						<div>
 							<!-- A3_2 -->
@@ -104,7 +106,7 @@
 							<!--  -->
 							<!-- A3_3 -->
 							<div id="checked2" data-name="Check box" tabindex="10"
-								class="cf minimalist ntsCheckBox-right"
+								class="cf minimalist ntsCheckBox-right valign-center"
 								data-bind="ntsCheckBox: { checked: isAbolition, enable: !$parent.checkInsert(), text: '#{i18n.getText('CMM001_10')}' }"></div>
 							<!-- A3_4 -->
 							<button id="checkbtn" tabindex="11"
@@ -377,7 +379,8 @@
 													<!-- C1_14 -->
 													<div class="form-label"
 														data-bind="ntsFormLabel:{required: false}">
-														#{i18n.getText('CMM001_28')}</div>
+                            <label>#{i18n.getText('CMM001_28')}</label>
+                          </div>
 												</th>
 
 												<th colspan="2" class="th-col2">
@@ -505,7 +508,7 @@
 															</div>
 															<!-- d1_9 -->
 															<button id="switchhelpbtn" tabindex="-1"
-																data-bind="ntsHelpButton: {image: '../images/CMM001_01.png', position: 'left top',enable: true}">?</button>
+																data-bind="ntsHelpButton: {image: '../images/CMM001_01.png', position: 'bottom center',enable: true}">?</button>
 														</div>
 													</th>
 												</tr>

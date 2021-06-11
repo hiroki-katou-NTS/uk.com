@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalComment;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
@@ -50,7 +51,7 @@ public class RemandImpl implements RemandService {
 					approverInfor.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 					approverInfor.setAgentID("");
 					approverInfor.setApprovalDate(null);
-					approverInfor.setApprovalReason("");
+					approverInfor.setApprovalReason(new ApprovalComment(""));
 				});
 			});
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);

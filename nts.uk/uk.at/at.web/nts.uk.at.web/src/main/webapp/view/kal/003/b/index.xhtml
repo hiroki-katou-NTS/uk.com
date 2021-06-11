@@ -71,7 +71,7 @@
                                 <tr class="row">
                                     <!-- B1-1: チェック項目 - Item check-->
                                     <td class="pad_left_10px">
-                                        <div>#{i18n.getText('KAL003_26')}</div>
+                                        <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_26')}</div>
                                     </td>
                                     <td class="pad_left_5px">
                                         <!-- B1-2, B1-3-->
@@ -108,7 +108,7 @@
                                     <tr class="row">
                                         <td class="pad_left_10px">
                                             <!-- BA1-1 -->
-                                            <div>#{i18n.getText('KAL003_56')}</div>
+                                            <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_56')}</div>
                                         </td>
                                         <td >
                                             <!-- BA1-2 -->
@@ -189,7 +189,7 @@
                                     <tr class="row">
                                         <td class="pad_left_10px">
                                             <!-- BA2-1 -->
-                                            <div>#{i18n.getText('KAL003_58')}</div>
+                                            <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_58')}</div>
                                         </td>
                                         <td class="pad_left_5px">
                                                 <!-- BA2-2 -->
@@ -329,7 +329,7 @@
                                     <tr class="row">
                                         <!-- BA5-1: チェック項目 - Item check-->
                                         <td class="pad_left_10px">
-                                            <div>#{i18n.getText('KAL003_63')}</div>
+                                            <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_63')}</div>
                                         </td>
                                         <!-- <td></td> -->
                                         <!-- BA1-5-->
@@ -372,7 +372,7 @@
                                     <tr class="row">
                                         <!-- BA3-1: 連続期間 - Continuous period-->
                                         <td class="pad_left_10px">
-                                            <div>#{i18n.getText('KAL003_61')}</div>
+                                            <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_61')}</div>
                                         </td>
                                         <!-- <td></td> -->
                                         <td class="pad_left_5px">
@@ -602,7 +602,7 @@
                                 <tr class="row" >
                                     <!-- B3-1: 表示するメッセージ - Message content -->
                                     <td class="pad_left_10px">
-                                        <div>#{i18n.getText('KAL003_25')}</div>
+                                        <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAL003_25')}</div>
                                     </td>
                                     <td class="pad_left_5px">
                                         <!-- B3-2-->
@@ -626,17 +626,18 @@
                         <div id="div_common_header">
                             <!-- row 1 -->
                             <table style="width: 100%">
+                                <colgroup>
+                                    <col width="150px" />
+                                    <col width="*" />
+                                </colgroup>
                                 <thead>
-                                    <colgroup>
-                                        <col width="150px" />
-                                        <col width="*" />
-                                    </colgroup>
+
                                 </thead>
                                 <tbody>
                                     <tr class="row">
                                         <!-- B1-1: チェック項目 - Item check-->
                                         <td class="pad_left_10px">
-                                            <div>#{i18n.getText('KAL003_26')}</div>
+                                            <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_26')}</div>
                                         </td>
                                         <td class="pad_left_5px">
                                             <!-- B1-2, B1-3-->
@@ -657,7 +658,7 @@
                                             <!-- B1-1: チェック項目 - Item check-->
                                             <td class="pad_left_10px">
                                                 <com:ko bind="typeCheckItem() !== 8" tag="if">
-                                                    <div style= "margin-bottom: -20px! important">#{i18n.getText('チェック条件')}</div>
+                                                    <div data-bind="ntsFormLabel: {required: true}" style= "margin-bottom: -20px! important">#{i18n.getText('チェック条件')}</div>
                                                 </com:ko>
                                             </td>
                                             <td class="pad_left_5px">
@@ -701,7 +702,7 @@
                                                 <com:ko bind="haveSelect() === true" tag="if">
                                                 	<br />
                                                     <!-- bind select -->
-                                                        <button  tabindex ="4" id="btnSettingBA2_2" style = " margin-bottom: -2px" data-bind="click : openSelect.bind($data, viewModel), enable: true">#{i18n.getText('KAL003_57')}</button>
+                                                        <button  tabindex ="4" id="btnSettingBA2_2" data-bind="click : openSelect.bind($data, viewModel), enable: true">#{i18n.getText('KAL003_57')}</button>
                                                         <input id="display-target-item" style = "margin-right : 70px"  
                                                         class="display-list-label nts-input "
                                                          data-bind="ntsTextEditor: {
@@ -1002,9 +1003,9 @@
                                     <tr style = "height: 20px" ></tr>
                                     <tr class="row">
                                         <td class="pad_left_10px">
-                                            <div>#{i18n.getText('KAL003_25')}</div>
+                                            <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAL003_25')}</div>
                                         </td>
-                                        <td class="pad_left_5px">
+                                        <td class="pad_left_5px" style="display: inline-block;">
                                             <textarea tabindex = "9" style="width: 400px;height: 100px;" 
                                             id="message"
                                              data-bind="ntsMultilineEditor: { value: displayMessage,
@@ -1032,7 +1033,7 @@
 								<tr class="row">
 									<!-- B1_51 start-->
 									<td class="pad_left_10px">
-										<div>#{i18n.getText('KAL003_37')}</div>
+										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_37')}</div>
 									</td>
 									<td class="pad_left_5px">
 										<!-- B1_52, B1_53-->
@@ -1077,7 +1078,7 @@
 									<tr class="row">
 										<td class="pad_left_10px">
 											<!-- B1_54 -->
-											<div>#{i18n.getText('KAL003_33')}</div>
+											<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_33')}</div>
 										</td>
 										<td class="pad_left_5px" >
 											<!-- B1_56 -->
@@ -1401,7 +1402,7 @@
 									<tr class="row">
 										<!-- BA3-1: 連続期間 - Continuous period-->
 										<td class="pad_left_10px">
-											<div>#{i18n.getText('KAL003_61')}</div>
+											<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_61')}</div>
 										</td>
 										<td class="pad_left_678px">
 											<div>
@@ -1492,8 +1493,8 @@
 								</colgroup>
 								<tr class="row">
 									<!-- B3-1: 表示するメッセージ -->
-									<td class="pad_left_10px">
-										<div>#{i18n.getText('KAL003_25')}</div>
+									<td class="pad_left_10px" style="vertical-align: initial">
+										<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAL003_25')}</div>
 									</td>
 									<td class="pad_left_5px">
 										<!-- B3-2-->
@@ -1526,7 +1527,7 @@
                             <tr class="row">
                                 <!-- B1-1: チェック項目 - Item check-->
                                 <td class="pad_left_10px">
-                                    <div>#{i18n.getText('KAL003_26')}</div>
+                                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_26')}</div>
                                 </td>
                                 <td class="pad_left_5px">
                                     <!-- B1-2, B1-3-->
@@ -1560,7 +1561,7 @@
 		                            <tr class="row">
 		                                <td class="pad_left_10px">
 		                                    <!-- BA2-1 -->
-		                                    <div>#{i18n.getText('KAL003_58')}</div>
+		                                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_58')}</div>
 		                                </td>
 		                                <td class="pad_left_5px">
 		                                	<!-- BA2-2 -->
@@ -1687,7 +1688,7 @@
 		                            <tr class="row">
 		                                <td class="pad_left_10px">
 		                                    <!-- BA2-1 -->
-		                                    <div>#{i18n.getText('KAL003_58')}</div>
+		                                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_58')}</div>
 		                                </td>
 		                                <td class="pad_left_5px">
 		                                	<!-- B12_1, B12_2 -->
@@ -1860,7 +1861,7 @@
 	                            <tr class="row">
 	                                <td class="pad_left_10px">
 	                                    <!-- BA1-1 -->
-	                                    <div>#{i18n.getText('KAL003_56')}</div>
+	                                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_56')}</div>
 	                                </td>
 	                                <td >
 	                                    <!-- BA1-2 -->
@@ -1902,7 +1903,7 @@
 		                            <tr class="row">
 		                                <td class="pad_left_10px">
 		                                    <!-- BA2-1 -->
-		                                    <div>#{i18n.getText('KAL003_58')}</div>
+		                                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_58')}</div>
 		                                </td>
 		                                <td class="pad_left_5px">
 		                                	<!-- B12_1, B12_2 -->
@@ -1999,7 +2000,7 @@
 		                            <tr class="row">
 		                                <td class="pad_left_10px">
 		                                    <!-- BA2-1 -->
-		                                    <div>#{i18n.getText('KAL003_58')}</div>
+		                                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_58')}</div>
 		                                </td>
 		                                <td class="pad_left_5px">
 		                                	<!-- BA2-2 -->
@@ -2109,7 +2110,7 @@
                                  <tr class="row">
                                      <!-- BA3-1: 連続期間 - Continuous period-->
                                      <td class="pad_left_10px">
-                                         <div>#{i18n.getText('KAL003_61')}</div>
+                                         <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_61')}</div>
                                      </td>
                                      <!-- <td></td> -->
                                      <td class="pad_left_5px">
@@ -2160,7 +2161,7 @@
 	                            <tr class="row">
 	                                <td class="pad_left_10px">
 	                                    <!-- BA1-1 -->
-	                                    <div>#{i18n.getText('KAL003_56')}</div>
+	                                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_56')}</div>
 	                                </td>
 	                                <td >
 	                                    <!-- BA1-2 -->
@@ -2202,7 +2203,7 @@
 		                            <tr class="row">
 		                                <td class="pad_left_10px">
 		                                    <!-- BA2-1 -->
-		                                    <div>#{i18n.getText('KAL003_58')}</div>
+		                                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_58')}</div>
 		                                </td>
 		                                <td class="pad_left_5px">
 		                                	<!-- B12_1, B12_2 -->
@@ -2274,7 +2275,7 @@
                                  <tr class="row">
                                      <!-- BA3-1: 連続期間 - Continuous period-->
                                      <td class="pad_left_10px">
-                                         <div>#{i18n.getText('KAL003_61')}</div>
+                                         <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_61')}</div>
                                      </td>
                                      <!-- <td></td> -->
                                      <td class="pad_left_5px">
@@ -2312,7 +2313,7 @@
 	                            <tr class="row">
 	                                <td class="pad_left_10px">
 	                                    <!-- BA1-1 -->
-	                                    <div>#{i18n.getText('KAL003_56')}</div>
+	                                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_56')}</div>
 	                                </td>
 	                                <td >
 	                                    <!-- BA1-2 -->
@@ -2351,7 +2352,7 @@
                                  <tr class="row">
                                      <!-- BA3-1: 連続期間 - Continuous period-->
                                      <td class="pad_left_10px">
-                                         <div>#{i18n.getText('KAL003_61')}</div>
+                                         <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_61')}</div>
                                      </td>
                                      <!-- <td></td> -->
                                      <td class="pad_left_5px">
@@ -2390,7 +2391,7 @@
 	                            <tr class="row">
 	                                <td class="pad_left_10px">
 	                                    <!-- BA1-1 -->
-	                                    <div>#{i18n.getText('KAL003_56')}</div>
+	                                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_56')}</div>
 	                                </td>
 	                                <td >
 	                                    <!-- BA1-2 -->
@@ -2430,7 +2431,7 @@
 								<tr class="row">
 									<!-- BA5-1: チェック項目 - Item check-->
 									<td class="pad_left_10px">
-										<div>#{i18n.getText('KAL003_63')}</div>
+										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_63')}</div>
 									</td>
 									<!-- BA5-2-->
 									<td style="padding-left: 73px">
@@ -2449,7 +2450,7 @@
 											<!-- BA5-4 -->
 											<input data-bind="ntsTextEditor: {
 												value: $parent.displayWorkingTimeSelections_BA5_3,
-												name : '#[KAL003_57]',
+												name : '#[KAL003_63]',
 												required: true,	                                       
 												readonly: true}" />
 										</div>
@@ -2468,7 +2469,7 @@
 								<tr class="row">
 									<!-- BA3-1: 連続期間 - Continuous period-->
 									<td class="pad_left_10px">
-										<div>#{i18n.getText('KAL003_61')}</div>
+										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_61')}</div>
 									</td>
 									<!-- <td></td> -->
 									<td class="pad_left_5px">
@@ -2510,7 +2511,7 @@
 	                            <tr class="row">
 	                                <td class="pad_left_10px">
 	                                    <!-- BA2-1 -->
-	                                    <div>#{i18n.getText('KAL003_58')}</div>
+	                                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAL003_58')}</div>
 	                                </td>
 	                                <td class="pad_left_5px">
 	                                	<div tabindex="2" style = "width : 280px " class="comBoxOperator combo-box" data-bind="ntsComboBox: {
@@ -2528,20 +2529,7 @@
 	                                          </div>
 	                                </td>
 	                                <td class="pad_left_5px">
-                                          <div tabindex ="3" style="margin-left: 15px;"  class="combo-box" data-bind="ntsComboBox: {
-                                                name:'#[KAL003_60]',
-                                                options: $parent.listSpecialholidayframe,
-                                                optionsValue: 'specialHolidayCode',
-                                                visibleItemsCount: 5,
-                                                value: errorAlarmCondition().monthlyCondition().specialHolidayCode,
-                                                optionsText: 'specialHolidayName',
-                                                editable: false,
-                                                required: errorAlarmCondition().monthlyCondition().scheCheckCondition() === 6,
-                                                enable: errorAlarmCondition().monthlyCondition().scheCheckCondition() === 6,
-                                                columns: [
-                                                	{ prop: 'specialHolidayCode', length: 3 },
-                                                    { prop: 'specialHolidayName', length: 16 }
-                                                ]}" />
+                                          
 	                                </td>
 	                                <td class="pad_left_5px">
 	                                          
@@ -2592,7 +2580,7 @@
 														textalign: 'right'}),
 													required: required,
 													enable: enable, 
-													constraint: 'CheckUpperLimit'}, attr: {class: $index() === 1 ? 'endValue value-input needcheck' : 'startValue value-input needcheck'}" />#{i18n.getText('KAL003_103')}
+													constraint: 'CheckUpperLimit'}, attr: {class: $index() === 1 ? 'endValue value-input needcheck nts-editor nts-input' : 'startValue value-input needcheck nts-editor nts-input'}" />#{i18n.getText('KAL003_103')}
 									  </com:ko>
 	                                </td>
 	                            </tr>
@@ -2610,7 +2598,7 @@
                              <tr class="row" >
                                  <!-- B3-1: 表示するメッセージ - Message content -->
                                  <td class="pad_left_10px">
-                                     <div>#{i18n.getText('KAL003_25')}</div>
+                                     <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAL003_25')}</div>
                                  </td>
                                  <td class="pad_left_5px">
                                      <!-- B3-2-->

@@ -8,8 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 400, height: 300 };</script>
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<script>var dialogSize = { width: 420, height: 300 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
 			</com:ValidatorScript>
@@ -17,8 +16,8 @@
 			<com:scriptfile path="ccg008.e.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div class="contents-area">
-        <div class="label-1">
+			<div id="contents-area" class="contents-area">
+        <div class="label-1" style="white-space: nowrap;">
           <span>#{i18n.getText('CCG008_20')}</span>
         </div>
         <div class="label-2">
