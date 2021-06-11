@@ -81,7 +81,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 				vm.mailSubject(data.approvalStatusMailTempDto.mailSubject);
 				vm.mailContent(data.approvalStatusMailTempDto.mailContent);
 				vm.editMode = data.approvalStatusMailTempDto.editMode;
-				vm.dataSource = data.wkpEmpMailLst;
+				vm.dataSource = _.sortBy(data.wkpEmpMailLst, 'hierarchyCode');
 				_.forEach(vm.dataSource, item => {
 					_.set(item, 'flag', false);	
 				});
