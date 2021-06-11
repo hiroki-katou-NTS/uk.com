@@ -173,6 +173,10 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 			let command = vm.getMailTemplateParam(),
 				wkpEmpMailLst = _.filter(vm.dataSource, 'flag'),
 				wsParam = { command, wkpEmpMailLst };
+			if(_.isEmpty(wkpEmpMailLst)) {
+				vm.$dialog.info({ messageId: "Msg_786" });
+				return;
+			}
 			vm.$blockui('show');
 			vm.$ajax('at', API.sendMailToDestination, wsParam).then((data) => {
 				if(data.ok) {
