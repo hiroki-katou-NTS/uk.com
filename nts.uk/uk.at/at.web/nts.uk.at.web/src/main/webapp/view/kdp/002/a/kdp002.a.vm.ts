@@ -143,6 +143,7 @@ module nts.uk.at.view.kdp002.a {
 
             public clickBtn1(btn: any, layout: any) {
                 const vm = this;
+                const view = new ko.ViewModel();
 
                 nts.uk.request
                     .syncAjax("com", "server/time/now/")
@@ -159,6 +160,12 @@ module nts.uk.at.view.kdp002.a {
                             changeCalArt: btn.changeCalArt
                         };
                         service.stampInput(data).done((res) => {
+                            let param = {
+                                sid: __viewContext.user.employeeId,
+                                date: view.$date.now()
+                            }
+
+                            service.createDaily(param);
                             if (vm.stampResultDisplay().notUseAttr == 1 && btn.changeClockArt == 1) {
                                 vm.openScreenC(btn, layout);
                             } else {

@@ -49,7 +49,8 @@ module nts.uk.ui.kdp001.a {
         getOmissionContents: '/at/record/stamp/employment_system/get_omission_contents',
         getStampToSuppress: '/at/record/stamp/employment_system/get_stamp_to_suppress',
         getLocation: 'at/record/stamp/employment_system/get_location_stamp_input',
-        WORKPLACE_INFO: "screen/at/kdp003/workplace-info"
+        WORKPLACE_INFO: "screen/at/kdp003/workplace-info",
+        CREATE_DAILY: 'at/record/stamp/craeteDaily'
     };
 
     //個人
@@ -704,6 +705,13 @@ module nts.uk.ui.kdp001.a {
                 .$blockui("invisibleView")
                 .then(() => vm.$ajax('at', REST_API.registerStampInput, command))
                 .then((stampDate: string) => {
+
+                    var param = {
+                        sid: vm.$user.employeeId,
+                        date: vm.$date.now()
+                    }
+
+                    vm.$ajax('at', REST_API.CREATE_DAILY, param);
 
                     switch (buttonPositionNo) {
                         case 1:
