@@ -4,7 +4,6 @@
 }
 
 #right-contents {
-	padding-left: 30px;
 	padding-top: 20px;
 	vertical-align: top;
 }
@@ -14,8 +13,8 @@
 }
 
 .width-label {
-    white-space: nowrap;
-    width: 200px;
+	white-space: nowrap;
+	width: 115px;
 }
 
 #row2 > div:nth-child(1), #row2 > div:nth-child(2) {
