@@ -2,6 +2,11 @@ body {
 	-ms-overflow-x: hidden;
 	-ms-overflow-y: hidden;
 }
+
+#contents-area {
+  padding-bottom: 0 !important;
+}
+
 .float-right {
 	float: right !important;
 	margin-right: 55px;
