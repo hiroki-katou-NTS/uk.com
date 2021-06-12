@@ -13,11 +13,9 @@
 	margin: 0px 0 10px 0;
 }
 
-#add-sub-list_displayContainer, #add-sub-list_headers_v{
-	margin-left: 22px !important;
-}
 .control-button-wrap{
-	margin-left: 22px !important;
+	margin-left: 22px;
+	margin-right: 22px;
 }
 #all-list td[role="gridcell"] {
 	white-space: nowrap;
