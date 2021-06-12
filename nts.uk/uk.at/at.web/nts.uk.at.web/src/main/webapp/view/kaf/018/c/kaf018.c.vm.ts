@@ -33,7 +33,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 			vm.displayUrlMonthEmbed = vm.mailType==ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_PRINCIPAL || 
 										vm.mailType==ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_CONFIRMER ||
 										vm.mailType==ApprovalStatusMailType.WORK_CONFIRMATION;
-			vm.displayUpdTmpBtn = __viewContext.user.role.isInCharge.payroll;
+			vm.displayUpdTmpBtn = __viewContext.user.role.isInCharge.attendance;
 			switch(vm.mailType) {
 				case ApprovalStatusMailType.APP_APPROVAL_UNAPPROVED:
 					vm.name = vm.$i18n('KAF018_491');

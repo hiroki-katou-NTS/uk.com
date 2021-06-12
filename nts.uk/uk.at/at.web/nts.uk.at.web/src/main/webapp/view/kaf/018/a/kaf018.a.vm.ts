@@ -40,7 +40,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 		
 		created(params: KAF018BParam) {
 			const vm = this;
-			vm.displayUpdMailTmpBtn = __viewContext.user.role.isInCharge.payroll;
+			vm.displayUpdMailTmpBtn = __viewContext.user.role.isInCharge.attendance;
 			vm.applicationApprovalFlg = new CheckBoxValue(false, true, vm.$i18n('KAF018_318'));
 			vm.confirmAndApprovalDailyFlg = new CheckBoxValue(false, true, '');
 			vm.confirmAndApprovalMonthFlg = new CheckBoxValue(false, true, '');
