@@ -38,7 +38,7 @@
 				<button style = "margin-right: 100px; float: right;" tabindex="4" data-bind="click: closeDialog">#{i18n.getText('KAF022_435')}</button>
 			</div>
 			<div id="contents-area">
-				<div class="control-group valign-center" style = "margin-left: 27px; margin-top: 5px">
+				<div class="control-group valign-center" style = "margin-left: 25px; margin-top: 5px">
 					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF022_440')}</div>
 					<!-- S2_2 -->
 					<div id="app-type" style="width: 200px"
@@ -80,7 +80,7 @@
 						</div>
 					</div>
 
-					<div id="right-content" class="fixed-flex-layout-right" data-bind="with: selectedReason">
+					<div id="right-content" style="padding-top: 5px; margin-left: -10px" class="fixed-flex-layout-right" data-bind="with: selectedReason">
 						<div class="control-group valign-center">
 							<div style="width: 105px" data-bind="ntsFormLabel: {required: true, constraint: 'AppStandardReasonCode'}">#{i18n.getText('KAF022_694')}</div>
 							<input id="reasonCode"

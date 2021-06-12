@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 570, height: 550 };</script>
+        <script>var dialogSize = { width: 650, height: 530 };</script>
         <com:scriptfile set="IGNITE" />
 
         <com:scriptfile path="kaf022.o.service.js" />
@@ -46,7 +46,7 @@
                 <div style="padding-top: 10px">
                     <table id="o3_2"
                            data-bind="ntsGridList: {
-                            height: 150,
+                            height: 96,
                             dataSource: overtimeAppOptions,
                             primaryKey: 'code',
                             columns: columns,
