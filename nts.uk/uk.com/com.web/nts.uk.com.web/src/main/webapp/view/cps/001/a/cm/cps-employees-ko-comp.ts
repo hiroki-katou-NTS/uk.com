@@ -188,7 +188,7 @@ module nts.custom.component {
                                 id: nts.uk.util.randomId().replace(/-/g, '')
                             }, 
                             ntsGridList: {                              
-                                rows: 7,
+                                rows: 10,
                                 multiple: false,
                                 columns: [
                                     { headerText: 'コード', key: 'employeeId', width: 100, hidden: true },
