@@ -51,7 +51,9 @@ module nts.uk.at.view.kdl055.b.viewmodel {
         }
 
         register() {
+            const vm = this;
 
+            
         }
 
         openKDL053() {

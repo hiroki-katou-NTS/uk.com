@@ -6,6 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
+import nts.arc.layer.ws.WebService;
 import nts.gul.excel.ExcelFileTypeException;
 import nts.uk.file.at.app.schedule.export.WorkPlaceScheDataSource;
 import nts.uk.file.at.app.schedule.export.WorkPlaceScheExportService;
@@ -16,7 +17,7 @@ import nts.uk.file.at.ws.schedule.export.dto.CaptureDataOutputDto;
 
 @Path("wpl/schedule/report")
 @Produces("application/json") 
-public class WorkPlaceScheWebService {
+public class WorkPlaceScheWebService extends WebService {
     
     @Inject
     private WorkPlaceScheExportService exportService;
