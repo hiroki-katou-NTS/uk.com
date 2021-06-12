@@ -39,11 +39,11 @@
 						<button data-bind="click: back, enable: enableBack"><i class="img-icon icon-prev"></i></button>
 						<button data-bind="click: next, enable: enableNext"><i class="img-icon icon-next"></i></button>
 					</div>
-					<div class="cell valign-center" style="width: calc(100vw - 475px)" data-bind="with: currentApprSttExeDto">
+					<div class="cell valign-center" style="width: calc(100vw - 475px); padding-top: 2px" data-bind="with: currentApprSttExeDto">
 						<span style="margin-left: 10px" data-bind="text: wkpCD"></span>
 						<span data-bind="text: '　　　　' + wkpName"></span>
 					</div>
-					<div class="cell valign-center" style="width: 170px; text-align: right;">
+					<div class="cell valign-center" style="width: 170px; text-align: right; padding-top: 2px">
 						<button style="margin-right: 100px;" data-bind="ntsLegendButton: legendWithTemplateOptions">#{i18n.getText('KAF018_402')}</button>
 					</div>
 				</div>
