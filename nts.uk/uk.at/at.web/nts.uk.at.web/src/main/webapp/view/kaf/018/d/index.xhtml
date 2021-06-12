@@ -20,14 +20,14 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div class="table" style="margin-left: 5px; margin-top: 10px;">
-					<div class="cell valign-center">
-						<div  style="margin-top: -5px" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_370')}</div>
+					<div class="cell valign-center" style="width: 75px">
+						<div style="position: relative; top: -3px" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_370')}</div>
 					</div>
 					<div class="cell valign-center">
-						<div class="limited-label label" style="width: 110px;"  data-bind="text: closureItem.closureName"></div>
+						<div class="limited-label label" data-bind="text: closureItem.closureName"></div>
 					</div>
 					<div class="cell valign-center">
-						<div class="limited-label label" style="width: 300px;">
+						<div class="limited-label label" style="width: 300px; margin-left: 15px;">
 							<span data-bind="text: startDate"></span>
 							<span>#{i18n.getText('KAF018_371')}</span>
 							<span data-bind="text: endDate"></span>
