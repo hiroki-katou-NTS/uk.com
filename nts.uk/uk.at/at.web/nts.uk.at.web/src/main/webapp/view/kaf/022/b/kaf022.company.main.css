@@ -72,8 +72,12 @@ td .form-label {
     min-width: 0;
 }
 
-#fixed-table-k2 .radio-wrapper:first-child {
-    min-width: 117px;
+#fixed-table-k2 .two-radio .radio-wrapper:first-child {
+    min-width: 115px;
+}
+
+#fixed-table-k2 .three-radio .radio-wrapper:first-child {
+    min-width: 119px;
 }
 
 .switchbox-wrappers .radio-wrapper {
