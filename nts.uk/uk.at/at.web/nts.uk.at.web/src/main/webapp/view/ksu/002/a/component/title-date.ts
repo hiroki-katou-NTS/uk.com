@@ -57,8 +57,8 @@ module nts.uk.ui.at.ksu002.a {
 				],
 				optionsText: 'name',
 				optionsValue: 'code',
-				enable: ko.unwrap($component.dateRanges).length > 0
-			}"></div>					
+				enable: ko.computed(function() {return $component.dateRanges().length > 0})
+			}"></div>				
 		<style type="text/css" rel="stylesheet">
             .title-date {
 				margin: 5px 0;

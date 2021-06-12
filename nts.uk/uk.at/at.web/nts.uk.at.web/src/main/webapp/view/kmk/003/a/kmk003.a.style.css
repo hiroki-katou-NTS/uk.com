@@ -129,9 +129,9 @@ html {
 }
 
 #tab-panel > .tabs-list {
-	width: 150px !important;
+	width: auto !important;
 }
 
 #tab-panel > .tabs-content {
-	margin-left: 150px !important;
+	margin-left: 124px !important;
 }

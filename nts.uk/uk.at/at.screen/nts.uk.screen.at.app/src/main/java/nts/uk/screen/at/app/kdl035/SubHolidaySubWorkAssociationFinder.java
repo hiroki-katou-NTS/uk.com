@@ -71,7 +71,7 @@ public class SubHolidaySubWorkAssociationFinder {
             dates.addAll(otherCommonAlgorithm.lstDateIsHoliday(
                     inputData.getEmployeeId(),
                     period,
-                    inputData.getActualContentDisplayList().stream().map(ActualContentDisplayDto::toDomain).collect(Collectors.toList())
+                    inputData.getActualContentDisplayList().stream().map(ActualContentDisplayDto::toDomainOther).collect(Collectors.toList())
             ));
         }
 
