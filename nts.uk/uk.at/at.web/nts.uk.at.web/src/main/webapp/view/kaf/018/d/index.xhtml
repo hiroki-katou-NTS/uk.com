@@ -21,7 +21,7 @@
 			<div id="contents-area">
 				<div class="table" style="margin-left: 5px; margin-top: 10px;">
 					<div class="cell valign-center" style="width: 75px">
-						<div style="position: relative; top: -3px" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_370')}</div>
+						<div style="position: relative; top: -5px" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_370')}</div>
 					</div>
 					<div class="cell valign-center">
 						<div class="limited-label label" data-bind="text: closureItem.closureName"></div>
@@ -39,11 +39,11 @@
 						<button data-bind="click: back, enable: enableBack"><i class="img-icon icon-prev"></i></button>
 						<button data-bind="click: next, enable: enableNext"><i class="img-icon icon-next"></i></button>
 					</div>
-					<div class="cell valign-center" style="width: calc(100vw - 470px); padding-top: 2px" data-bind="with: currentApprSttExeDto">
+					<div class="cell valign-center" style="width: calc(100vw - 470px); padding-top: 5px" data-bind="with: currentApprSttExeDto">
 						<span style="margin-left: 10px" data-bind="text: wkpCD"></span>
 						<span data-bind="text: '　　　　' + wkpName"></span>
 					</div>
-					<div class="cell valign-center" style="width: 336px; padding-top: 2px">#{i18n.getText('KAF018_372')}</div>
+					<div class="cell valign-center" style="width: 336px; padding-top: 5px">#{i18n.getText('KAF018_372')}</div>
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 10px;">
 					<div id="dGrid"></div>
