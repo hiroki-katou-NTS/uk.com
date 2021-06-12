@@ -47,6 +47,7 @@ public class GetSummaryCategory {
 		if (!CollectionUtil.isEmpty(workplaceCounterCategorys)) {
 			workplaceCounterOp = Optional.of(WorkplaceCounter.create(
 					workplaceCounterCategorys.stream()
+											 .filter(WorkplaceCounterCategoryDto::isUse)
 											 .map(x -> EnumAdaptor.valueOf(x.getValue(), WorkplaceCounterCategory.class))
 											 .collect(Collectors.toList())
 											 
@@ -66,6 +67,7 @@ public class GetSummaryCategory {
 			
 			personalCounterOp = Optional.of(PersonalCounter.create(
 					personalCounterCategory.stream()
+										   .filter(PersonalCounterCategoryDto::isUse)
 								   		   .map(x -> EnumAdaptor.valueOf(x.getValue(), PersonalCounterCategory.class))
 								   		   .collect(Collectors.toList())
 								   		   ));
