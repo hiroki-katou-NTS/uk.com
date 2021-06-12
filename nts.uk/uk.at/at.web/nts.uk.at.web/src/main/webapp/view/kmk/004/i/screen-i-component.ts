@@ -17,32 +17,33 @@ const i_template = `
 								height: calc(100vh - 163px);
     							overflow-y: scroll;">
 					
-						<div style="display:inline-block;padding:30px 20px 30px 30px;"> 
-							<div id="empt-list-setting"></div>
+    						<div style="display:inline-block;padding:30px 20px 30px 30px;"> 
+    							<div id="empt-list-setting">
+                            </div>
 						</div>
 						<div id="right-layout"> 
-						<div  style="display:inline-block">
-							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
-							<hr style="text-align: left;
-						    margin-left: 0;" />
-							<label id="selected-work-place" data-bind="i18n:screenData().selectedName"></label>
-							<div style="margin-top: 10px;" data-bind="component: {
-								name: 'basic-settings-company',
-								params: {
-											screenData:screenData,
-											screenMode:screenMode
-										}
-								}">
-						</div>
-						<div style=" margin-top:15px; display: inline-block;"  data-bind="component: {
-								name: 'monthly-working-hours',
-								params: {
-											screenData:screenData,
-											screenMode:screenMode,
-											startYM:startYM
-										}
-								}">
-						</div>
+    						<div  style="display:inline-block">
+    							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
+    							<hr style="text-align: left;
+    						    margin-left: 0;" />
+    							<div style='height: 18px;' ><label id="selected-work-place" data-bind="i18n:screenData().selectedName"></label></div>
+    							<div style="margin-top: 10px;" data-bind="component: {
+    								name: 'basic-settings-company',
+    								params: {
+    											screenData:screenData,
+    											screenMode:screenMode
+    										}
+    								}">
+    						</div>
+    						<div style=" margin-top:15px; display: inline-block;"  data-bind="component: {
+    								name: 'monthly-working-hours',
+    								params: {
+    											screenData:screenData,
+    											screenMode:screenMode,
+    											startYM:startYM
+    										}
+    								}">
+    						</div>
 						</div>
 					</div>
 	`;
@@ -208,7 +209,8 @@ class ScreenIComponent extends ko.ViewModel {
 			if (!empCd || !empCd.length) {
 				return;
 			}
-
+            vm.setSelectedName(empCd);
+            
 			vm.$blockui('invisible')
 				.then(() => vm.$ajax(API_I_URL.CHANGE_EMPCD + empCd))
 				.done((data) => {
@@ -226,8 +228,6 @@ class ScreenIComponent extends ko.ViewModel {
 					vm.screenData().setFocus('load');
 				})
 				.always(() => vm.$blockui('clear'));
-
-			vm.setSelectedName(empCd);
 
 
 		});
