@@ -483,7 +483,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 							if(_.isNull(item.bossConfirm) && _.isNull(item.personConfirm)) {
 								a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.NO_TARGET));	
 							} else {
-								if(item.bossConfirm) {
+								if(item.bossConfirm==DailyConfirmAtr.ALREADY_APPROVED) {
 									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.CONFIRMED));	
 								} else if(item.personConfirm) {
 									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.BOSS_UNCONFIRMED));	
@@ -507,7 +507,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 							if(_.isNull(item.bossConfirm)) {
 								a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.NO_TARGET));	
 							} else {
-								if(item.bossConfirm) {
+								if(item.bossConfirm==DailyConfirmAtr.ALREADY_APPROVED) {
 									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.CONFIRMED));	
 								} else {
 									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.BOSS_UNCONFIRMED));	
@@ -553,6 +553,15 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         //実績対象外
         NO_TARGET = 3
     }
+
+	enum DailyConfirmAtr {
+		// 未承認 
+		UNAPPROVED = 0,
+		// 承認中 
+		ON_APPROVED = 1,
+		// 承認済 
+		ALREADY_APPROVED = 2,
+	}
 
 	const API = {
 		getConfirmSttByEmp: "at/request/application/approvalstatus/getConfirmApprSttByEmp",
