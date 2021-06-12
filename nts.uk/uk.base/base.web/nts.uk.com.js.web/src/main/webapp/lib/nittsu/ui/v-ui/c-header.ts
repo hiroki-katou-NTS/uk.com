@@ -85,7 +85,7 @@ module nts.uk.ui.header {
                         css: {
                             hover: $component.companyNameClick
                         }">
-                    <span class="bar-item-title company" data-bind="text: $component.companyName"></span>
+                    <span class="bar-item-title company" data-bind="text: $component.companyName, click: $component.companiesClick"></span>
                     <div class="menu-dropdown menu-item">
                         <div class="menu-column">
                             <div class="menu-items" data-bind="foreach: { data: $component.companies, as: 'company' }">
@@ -97,14 +97,14 @@ module nts.uk.ui.header {
                             </div>
                         </div>
                     </div>
-                    <i data-bind="ntsIcon: { no: 135, width: 10, height: 10 }, click: $component.companiesClick"></i>
+                    <i data-bind="ntsIcon: { no: 135, width: 10, height: 10 }, click: $component.companiesClick" style="margin-right: 5px; cursor: pointer;"></i>
                 </div>
                 <span class="divider"></span>
                 <div class="item-group" data-bind="
                         css: {
                             hover: $component.userNameClick
                         }">
-                    <span class="bar-item-title user-name" data-bind="text: $component.userName"></span>
+                    <span class="bar-item-title user-name" data-bind="text: $component.userName, click: $component.userClick"></span>
                     <div class="menu-dropdown menu-item">
                         <div class="menu-column">
                             <div class="menu-items">
@@ -116,7 +116,7 @@ module nts.uk.ui.header {
                             </div>
                         </div>
                     </div>
-                    <i data-bind="ntsIcon: { no: 135, width: 10, height: 10 }, click: $component.userClick" style="margin-right: 5px;"></i>
+                    <i data-bind="ntsIcon: { no: 135, width: 10, height: 10 }, click: $component.userClick" style="margin-right: 5px; cursor: pointer;"></i>
                 </div>
             </div>
             <div id="notice-msg" class="avatar notification">

@@ -228,16 +228,12 @@ div#master-wrapper {
 					}
 				}
 
-				&.img-icon {
-					cursor: pointer;
-				}
-
 				&[data-column='1'] {
 					&>.menu-dropdown {
 						width: 200px;
 					}
 				}
-	
+
 				&[data-column='2'] {
 					&>.menu-dropdown {
 						width: 410px;

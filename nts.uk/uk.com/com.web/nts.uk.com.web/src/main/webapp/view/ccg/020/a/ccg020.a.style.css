@@ -46,6 +46,9 @@
 #popup-result, #popup-search {
   min-width: 200px;
   padding: 0;
+  max-height: calc(100vh - 125px);
+  min-height: 100px;
+  overflow-y: scroll;
 }
 ul#list-box-search {
   list-style-type: none;

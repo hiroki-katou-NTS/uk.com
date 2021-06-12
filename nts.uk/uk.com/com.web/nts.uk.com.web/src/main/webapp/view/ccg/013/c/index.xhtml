@@ -6,7 +6,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 930, height: 800 };</script>
+			<script>var dialogSize = { width: 930, height: 630 };</script>
 			<com:stylefile path="ccg013.c.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="ccg013.c.start.js" />
@@ -89,7 +89,7 @@
 							optionsValue: 'primaryKey',
 							columns: columns,
 							multiple: true,
-							rows: 7,
+							rows: 8,
 							value: currentCodeList}">
 					</table>
 				</div>
@@ -109,7 +109,7 @@
 							optionsValue: 'primaryKey',
 							columns: newColumns,
 							multiple: true,
-							rows: 7,
+							rows: 8,
 							value: newCurrentCodeList}">
 					</table>
 				</div>
