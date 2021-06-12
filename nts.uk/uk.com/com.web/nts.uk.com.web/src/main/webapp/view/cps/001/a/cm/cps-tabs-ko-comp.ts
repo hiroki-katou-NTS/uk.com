@@ -75,7 +75,7 @@ module nts.custom.component {
                                 multiple: false,
                                 columns: [
                                     { headerText: '', key: 'maintenanceLayoutID', width: 100, hidden: true },
-                                    { headerText: text('CPS001_26'), key: 'layoutName', width: 232, hidden: false }
+                                    { headerText: text('CPS001_26'), key: 'layoutName', width: 240, hidden: false }
                                 ],
                                 primaryKey: 'maintenanceLayoutID',
                                 value: gridlist.value,
@@ -145,12 +145,12 @@ module nts.custom.component {
                                                                 text: text('CPS001_31')" tabindex="12"></button>
                     </div>
                     <!-- /ko -->
-                    <!-- ko if: gridlist.row() == 8 -->
+                    <!-- ko if: gridlist.row() == 5 -->
                     <table data-bind="attr: {
                                 id: 'category-data'
                             }, 
                             ntsGridList: {
-                                rows: 8,
+                                rows: 5,
                                 multiple: false,
                                 columns: [
                                     { headerText: '', key: 'optionValue', width: 100, hidden: true },
@@ -161,12 +161,12 @@ module nts.custom.component {
                                 dataSource: gridlist.options
                             }"></table>
                     <!-- /ko -->
-                    <!-- ko if: gridlist.row() == 10 -->
+                    <!-- ko if: gridlist.row() == 7 -->
                     <table data-bind="attr: {
                                 id: 'category-data'
                             }, 
                             ntsGridList: {
-                                rows: 10,
+                                rows: 7,
                                 multiple: false,
                                 columns: [
                                     { headerText: '', key: 'optionValue', width: 100, hidden: true },
@@ -208,7 +208,7 @@ module nts.custom.component {
                 },
                 gridlist: {
                     oval: undefined,
-                    row: ko.observable(8),
+                    row: ko.observable(5),
                     value: ko.observable(''),
                     options: ko.observableArray([])
                 },
@@ -392,7 +392,7 @@ module nts.custom.component {
                         return;
                     }
 
-                    params.gridlist.row(10);
+                    params.gridlist.row(7);
                     params.combobox.value(undefined);
 
                     fetch.get_layout(sid).done((data: Array<any>) => {
@@ -477,7 +477,7 @@ module nts.custom.component {
 
                         switch (cat.categoryType) {
                             case IT_CAT_TYPE.SINGLE:
-                                params.gridlist.row(10);
+                                params.gridlist.row(7);
                                 params.gridlist.options([]);
                                 params.gridlist.value(undefined);
                                 $('#category-data_optionText').text('');
@@ -492,7 +492,7 @@ module nts.custom.component {
                                 });
                                 break;
                             case IT_CAT_TYPE.MULTI:
-                                params.gridlist.row(10);
+                                params.gridlist.row(7);
                                 let options: Array<any> = ko.toJS(params.gridlist.options),
                                     oids = _.map(options, o => o.optionValue);
 
@@ -546,9 +546,9 @@ module nts.custom.component {
                             case IT_CAT_TYPE.DUPLICATE:
                             case IT_CAT_TYPE.CONTINUWED:
                                 if (['CS00003', 'CS00070'].indexOf(cat.categoryCode) == -1) {
-                                    params.gridlist.row(8);
+                                    params.gridlist.row(5);
                                 } else {
-                                    params.gridlist.row(10);
+                                    params.gridlist.row(7);
                                 }
 
                                 fetch.get_hist_data(query).done((data: Array<any>) => {
