@@ -41,7 +41,7 @@
 						style="float: right; font-size: 15px;">
 						#{i18n.getText('KMF001_29')}</span> -->
 				</div>
-				<div class="contents-area">
+				<div id="contents-area">
 					<table style="width: 600px;" data-bind="with: settingModel">
 						<tr>
 							<td class="row_head"><div
@@ -151,16 +151,20 @@
 							<td id="right-content">
 								<table class="form-default" data-bind="with: empSettingModel"
 									style="margin-left: 87px;">
+                  <colgroup>
+                    <col width="100px" />
+                    <col width="*" />
+                  </colgroup>
 									<tr>
-										<td colspan="2" style="padding-bottom: 20px;">
-											<div>#{i18n.getText('KMF001_150')}</div>
+										<td style="padding-bottom: 20px;">
+											<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMF001_150')}</div>
 										</td>
-										<td colspan="2" style="padding-bottom: 20px;"><span
+										<td style="padding-bottom: 20px;"><span
 											data-bind="text: $parent.selectedItem"></span> <span
 											data-bind="text: $parent.selectedName"></span></td>
 									</tr>
 									<tr>
-										<td colspan="3">
+										<td>
 											<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF001_93')}</div>
 										</td>
 										<td>
