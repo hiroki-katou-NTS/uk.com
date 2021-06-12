@@ -850,8 +850,10 @@ public class SupportWorkReflection {
 					|| (changeMeansStart == TimeChangeMeans.HAND_CORRECTION_OTHERS)
 					|| (changeMeansStart == TimeChangeMeans.APPLICATION)) {
 				// 編集状態追加する
-				Optional<ItemValue> itemStart = mapItemValue.get(attendance.getWorkNo()).stream()
+				Optional<ItemValue> itemStart = mapItemValue.isEmpty() ? Optional.empty() : mapItemValue.get(attendance.getWorkNo()).stream()
 						.filter(x -> x.getPathLink().toString().contains(ItemConst.START)).findFirst();
+				
+				if(itemStart.isPresent())
 				this.addEditStatus(itemStart.get().getItemId(), integrationOfDaily, changeMeansStart);
 			}
 			TimeChangeMeans changeMeansEnd = attendance.getTimeSheet().getEnd().isPresent()
@@ -861,8 +863,10 @@ public class SupportWorkReflection {
 					|| (changeMeansEnd == TimeChangeMeans.HAND_CORRECTION_OTHERS)
 					|| (changeMeansEnd == TimeChangeMeans.APPLICATION)) {
 				// 編集状態追加する
-				Optional<ItemValue> itemEnd = mapItemValue.get(attendance.getWorkNo()).stream()
+				Optional<ItemValue> itemEnd = mapItemValue.isEmpty() ? Optional.empty() : mapItemValue.get(attendance.getWorkNo()).stream()
 						.filter(x -> x.getPathLink().toString().contains(ItemConst.END)).findFirst();
+				
+				if(itemEnd.isPresent())
 				this.addEditStatus(itemEnd.get().getItemId(), integrationOfDaily, changeMeansEnd);
 			}
 		}
