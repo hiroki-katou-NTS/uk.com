@@ -40,9 +40,6 @@
 				<button tabindex="4" id="delete" class="danger C1_4 btn-control" data-bind="click: removeData, enable: enableBtnDel">#{i18n.getText('KWR001_49')}</button>
 				<!-- C1_5 -->
 				<button tabindex="5" class="btn-control close-dialog" data-bind="click: closeScreenC" >#{i18n.getText('KWR001_50')}</button>
-				
-				<!-- C1_6 -->
-				<hr/>
 			</div>
 			<div id="contents-area">
 				<table>
@@ -90,7 +87,7 @@
 									<!-- C4_1 -->
 									<div class="label-name" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR001_57')}</div>
 									<!-- C4_2 -->
-									<div tabindex="9" class="cf" data-bind="ntsSwitchButton: {
+									<div tabindex="9" class="cf kwr001-c-inline-block" data-bind="ntsSwitchButton: {
 											name: '#[KWR001_57]',
 											options: roundingRules,
 											optionsValue: 'code',
@@ -102,7 +99,7 @@
 									<!-- C9_1 -->
 									<div class="label-name" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR001_141')}</div>
 									<!-- C9_2 -->
-									<div tabindex="10" class="cf" data-bind="ntsSwitchButton: {
+									<div tabindex="10" class="cf kwr001-c-inline-block" data-bind="ntsSwitchButton: {
 											name: '#[KWR001_141]',
 											options: dataSizeClassificationType,
 											optionsValue: 'code',
@@ -110,7 +107,7 @@
 											value: selectedSizeClassificationType }"></div>
 
 									<!-- C9_5 -->
-									<button tabindex="11" class="ml-15" data-bind="ntsHelpButton: {image: '/view/kwr/001/KWR001_1.png', position: 'right top'}">?</button>
+									<button tabindex="11" class="ml-15 kwr001-c-inline-block" data-bind="ntsHelpButton: {image: '/view/kwr/001/KWR001_1.png', position: 'right top'}">?</button>
 								</div>
 
 								<div class="row">
