@@ -193,7 +193,7 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
           vm.deadlineWorkSelected(0); //Ba4_11				締切日
           vm.workRequestInputSelected(1); //Ba4_13				入力方法の利用区分
         }
-        $(".switchButton-wrapper")[4].focus();
+        $("#Bb3_2").focus();
       }).fail((error) => {
         vm.$dialog.error(error);
       }).always(() => {
