@@ -22,6 +22,6 @@ public class CriterionAmountByNoDto {
 	
 	public static CriterionAmountByNoDto setData(CriterionAmountByNo data) {
 		
-		return new CriterionAmountByNoDto(data.getFrameNo().v(), data.getFrameNo().v());
+		return new CriterionAmountByNoDto(data.getFrameNo().v(), data.getAmount().v());
 	}
 }

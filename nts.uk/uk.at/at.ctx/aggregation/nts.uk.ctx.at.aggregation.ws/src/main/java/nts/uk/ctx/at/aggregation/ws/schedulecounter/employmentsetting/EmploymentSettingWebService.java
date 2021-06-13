@@ -8,13 +8,17 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.aggregation.app.command.schedulecounter.employmentsetting.CriterionAmountUsageSettingCommand;
 import nts.uk.ctx.at.aggregation.app.command.schedulecounter.employmentsetting.CriterionAmountUsageSettingCommandHandler;
+import nts.uk.ctx.at.aggregation.app.command.schedulecounter.initemploymentinfo.DeleteEstimatedEmploymentCommand;
+import nts.uk.ctx.at.aggregation.app.command.schedulecounter.initemploymentinfo.DeleteEstimatedEmploymentCommandHandler;
+import nts.uk.ctx.at.aggregation.app.command.schedulecounter.initemploymentinfo.RegisterEstimatedEmploymentCommand;
+import nts.uk.ctx.at.aggregation.app.command.schedulecounter.initemploymentinfo.RegisterEstimatedEmploymentCommandHandler;
 import nts.uk.ctx.at.aggregation.app.find.schedulecounter.employmentsetting.CriterionAmountUsageSettingDto;
 /**
  * KML002 L
  * @author hoangnd
  *
  */
-import nts.uk.ctx.at.aggregation.app.find.schedulecounter.employmentsetting.EmploymentSettingsFinder;
+import nts.uk.ctx.at.aggregation.app.find.schedulecounter.employmentsetting.EmploymentUsageSettingFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("ctx/at/schedule/budget/employmentsetting")
@@ -22,22 +26,40 @@ import nts.uk.shr.com.context.AppContexts;
 public class EmploymentSettingWebService extends WebService {
 	
 	@Inject
-	private EmploymentSettingsFinder employmentSettingFinder;
+	private EmploymentUsageSettingFinder employmentSettingFinder;
 	
 	@Inject
 	private CriterionAmountUsageSettingCommandHandler criterionAmountUsageSettingCommandHandler;
 	
-	@Path("init")
+	@Inject
+	private RegisterEstimatedEmploymentCommandHandler registerEstimatedEmploymentCommandHandler;
+	
+	@Inject
+	private DeleteEstimatedEmploymentCommandHandler deleteEstimatedEmploymentCommandHandler;
+	
+	@Path("getUsage")
 	@POST
 	public CriterionAmountUsageSettingDto init() {
 		
 		return employmentSettingFinder.getSetting(AppContexts.user().companyId());
 	}
 	
-	@Path("register")
+	@Path("registerUsage")
 	@POST
-	public void register(CriterionAmountUsageSettingCommand command) {
+	public void registerUseage(CriterionAmountUsageSettingCommand command) {
 		
 		criterionAmountUsageSettingCommandHandler.handle(command);
+	}
+	
+	@Path("register")
+	@POST
+	public void register(RegisterEstimatedEmploymentCommand command) {		
+		registerEstimatedEmploymentCommandHandler.handle(command);
+	}
+	
+	@Path("remove")
+	@POST
+	public void remove(DeleteEstimatedEmploymentCommand command) {		
+		deleteEstimatedEmploymentCommandHandler.handle(command);
 	}
 }

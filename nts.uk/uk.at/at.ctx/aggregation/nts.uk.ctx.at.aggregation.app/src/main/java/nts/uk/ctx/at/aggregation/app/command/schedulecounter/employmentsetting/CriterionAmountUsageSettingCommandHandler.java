@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountUsageSetting;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountUsageSettingRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
@@ -23,23 +24,24 @@ public class CriterionAmountUsageSettingCommandHandler extends CommandHandler<Cr
 	
 	@Override
 	protected void handle(CommandHandlerContext<CriterionAmountUsageSettingCommand> context) {
+		String cid = AppContexts.user().companyId();
 		
 		CriterionAmountUsageSettingCommand command = context.getCommand();
 		
 		CriterionAmountUsageSetting domain;
 		// 1: 
-		Optional<CriterionAmountUsageSetting> criOptional = criterionAmountUsageSettingRepository.get(command.getCid());
+		Optional<CriterionAmountUsageSetting> criOptional = criterionAmountUsageSettingRepository.get(cid);
 		
 		
 		if (criOptional.isPresent()) { // 2:
 			domain = criOptional.get();
 			domain.update(EnumAdaptor.valueOf(command.getEmploymentUse(), NotUseAtr.class));
 			
-			criterionAmountUsageSettingRepository.update(command.getCid(), domain);
+			criterionAmountUsageSettingRepository.update(cid, domain);
 		} else { // 3:
 			
-			domain = new CriterionAmountUsageSetting(command.getCid(), EnumAdaptor.valueOf(command.getEmploymentUse(), NotUseAtr.class));
-			criterionAmountUsageSettingRepository.insert(command.getCid(), domain);
+			domain = new CriterionAmountUsageSetting(cid, EnumAdaptor.valueOf(command.getEmploymentUse(), NotUseAtr.class));
+			criterionAmountUsageSettingRepository.insert(cid, domain);
 		}
 	}
 

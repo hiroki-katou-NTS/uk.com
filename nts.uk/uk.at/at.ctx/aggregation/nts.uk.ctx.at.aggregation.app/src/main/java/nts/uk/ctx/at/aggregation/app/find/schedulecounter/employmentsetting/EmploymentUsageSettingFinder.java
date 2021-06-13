@@ -5,9 +5,15 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountUsageSettingRepository;
 
-// 利用単位の設定を取得する
+/**
+ * 利用単位の設定を取得する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.スケジュール集計.目安金額.App.利用単位の設定を取得する
+ * @author hoangdd
+ *
+ */
+
 @Stateless
-public class EmploymentSettingsFinder {
+public class EmploymentUsageSettingFinder {
 
 	@Inject
 	private CriterionAmountUsageSettingRepository criterionAmountUsageSettingRepository;

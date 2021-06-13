@@ -14,8 +14,6 @@ import lombok.Data;
 @Data
 public class RegisterEstimatedEmploymentCommand {
 	
-	private String cid;
-	
 	private String employmentCode;
 	
 	private List<CriterionAmountByNoCommand> months = Collections.emptyList();

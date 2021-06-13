@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class CriterionAmountUsageSettingCommand {
-	/** 会社ID */
-	private String cid;
-
+public class CriterionAmountUsageSettingCommand {	
 	/** 雇用利用区分 */
 	private int employmentUse;
 	

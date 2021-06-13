@@ -1,12 +1,11 @@
 package nts.uk.ctx.at.aggregation.infra.entity.schedulecounter.criterion;
 
 import java.io.Serializable;
-import java.util.Optional;
 
-import javax.persistence.Table;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -24,8 +23,9 @@ public class KagmtCriterionMoneyUsage extends ContractCompanyUkJpaEntity impleme
 	
 	private static final long serialVersionUID = 1L;
 	
-	@EmbeddedId
-	public KagmtCriterionMoneyUsagePk pk;
+	@Id
+	@Column(name = "CID")
+	public String companyId;
 	
 	@Column(name = "EMPLOYEMENT_USE")
     public int employmentUse;
@@ -33,24 +33,16 @@ public class KagmtCriterionMoneyUsage extends ContractCompanyUkJpaEntity impleme
 	@Override
 	protected Object getKey() {
 		
-		return this.pk;
+		return this.companyId;
 	}
 	
 	public static CriterionAmountUsageSetting toDomain(KagmtCriterionMoneyUsage entity) {
-		if (!Optional.ofNullable(entity).isPresent()) {
-			
-			return null;
-		}
-		return new CriterionAmountUsageSetting(
-				entity.pk.companyId,
+		return new CriterionAmountUsageSetting(entity.companyId,
 				EnumAdaptor.valueOf(entity.employmentUse, NotUseAtr.class));
-		
 	}
-	
+
 	public static KagmtCriterionMoneyUsage toEntity(CriterionAmountUsageSetting domain) {
-		return new KagmtCriterionMoneyUsage(
-				new KagmtCriterionMoneyUsagePk(domain.getCid()),
-				domain.getEmploymentUse().value);
+		return new KagmtCriterionMoneyUsage(domain.getCid(), domain.getEmploymentUse().value);
 	}
 
 }

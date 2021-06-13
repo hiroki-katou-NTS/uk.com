@@ -18,7 +18,7 @@ import nts.uk.ctx.at.aggregation.app.command.schedulecounter.initcompanyinfo.Com
 
 @Path("ctx/at/schedule/budget/initCompanyInfo")
 @Produces("application/json")
-public class CompanyInfoWebService extends WebService {
+public class CompanySettingWebService extends WebService {
 	
 	
 	@Inject

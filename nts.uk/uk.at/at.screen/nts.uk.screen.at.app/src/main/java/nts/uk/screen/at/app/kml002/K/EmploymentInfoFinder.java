@@ -16,6 +16,7 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.HandlingOfCriteri
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentDto;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
+import nts.uk.screen.at.app.kml002.H.HandlingOfCriterionAmountByNoDto;
 import nts.uk.shr.com.context.AppContexts;
 
 
@@ -60,7 +61,7 @@ public class EmploymentInfoFinder {
 					.map(x -> x.getList())
 					.orElse(Collections.emptyList())
 					.stream()
-					.map(x -> x.getFrameNo().v())
+					.map(HandlingOfCriterionAmountByNoDto::setData)
 					.collect(Collectors.toList()));
 	}
 }

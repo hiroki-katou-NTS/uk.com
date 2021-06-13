@@ -37,7 +37,7 @@ public class JpaCriterionAmountForEmploymentRepository extends JpaRepository
         
         builderString = new StringBuilder();
         builderString.append(SELECT);
-        builderString.append(" WHERE a.pk.companyId = :companyId and a.pk.employmentCd = : employmentCd");
+        builderString.append(" WHERE a.pk.companyId = :companyId AND a.pk.employmentCd = :employmentCd");
         FIND_BY_CID_AND_EMPLOYMENT_CODE = builderString.toString();
         
         builderString = new StringBuilder();
@@ -57,6 +57,8 @@ public class JpaCriterionAmountForEmploymentRepository extends JpaRepository
 	public void update(String cid, CriterionAmountForEmployment criterion) {
 		List<KagmtCriterionMoneyEmp> entities = this.queryProxy()
 				.query(FIND_BY_CID_AND_EMPLOYMENT_CODE, KagmtCriterionMoneyEmp.class)
+				.setParameter("companyId", cid)
+				.setParameter("employmentCd", criterion.getEmploymentCode())
 				.getList();
 		this.commandProxy().removeAll(entities);
 		this.getEntityManager().flush();
@@ -72,6 +74,8 @@ public class JpaCriterionAmountForEmploymentRepository extends JpaRepository
 		
 		List<KagmtCriterionMoneyEmp> entities = this.queryProxy()
 				.query(FIND_BY_CID_AND_EMPLOYMENT_CODE, KagmtCriterionMoneyEmp.class)
+				.setParameter("companyId", cid)
+				.setParameter("employmentCd", employmentCd)
 				.getList();
 		this.commandProxy().removeAll(entities);
 		this.getEntityManager().flush();
@@ -83,6 +87,8 @@ public class JpaCriterionAmountForEmploymentRepository extends JpaRepository
 		
 		List<KagmtCriterionMoneyEmp> entities = this.queryProxy()
 				.query(FIND_BY_CID_AND_EMPLOYMENT_CODE, KagmtCriterionMoneyEmp.class)
+				.setParameter("companyId", cid)
+				.setParameter("employmentCd", employmentCd)
 				.getList();
 		return !CollectionUtil.isEmpty(entities);
 	}
@@ -92,6 +98,8 @@ public class JpaCriterionAmountForEmploymentRepository extends JpaRepository
 		
 		List<KagmtCriterionMoneyEmp> entities = this.queryProxy()
 				.query(FIND_BY_CID_AND_EMPLOYMENT_CODE, KagmtCriterionMoneyEmp.class)
+				.setParameter("companyId", cid)
+				.setParameter("employmentCd", employmentCd)
 				.getList();
 		
 		return Optional.ofNullable(KagmtCriterionMoneyEmp.toDomain(entities));
@@ -104,6 +112,7 @@ public class JpaCriterionAmountForEmploymentRepository extends JpaRepository
 		
 		List<KagmtCriterionMoneyEmp> entities = this.queryProxy()
 				.query(FIND_BY_CID, KagmtCriterionMoneyEmp.class)
+				.setParameter("companyId", cid)
 				.getList();
 		entities.stream()
 			.collect(Collectors.groupingBy(x -> x.pk.companyId, Collectors.groupingBy(x -> x.pk.employmentCd)))

@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.HandlingOfCriterionAmountByNo;
 
 /**
  * 
@@ -23,7 +24,6 @@ public class EsimatedInfoDto {
 	private List<CriterionAmountByNoDto> annuals;
 	
 	// 目安金額の扱い.枠別の扱いリスト
-	private List<Integer> frameNos;
-	
+	private List<HandlingOfCriterionAmountByNoDto> listHandlingByNo;
 	
 }

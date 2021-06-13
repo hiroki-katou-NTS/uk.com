@@ -8,6 +8,7 @@ package nts.uk.screen.at.app.kml002.K;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentDto;
+import nts.uk.screen.at.app.kml002.H.HandlingOfCriterionAmountByNoDto;
 
 import java.util.List;
 
@@ -23,5 +24,5 @@ public class InitEmploymentInfoDto {
 	// 雇用リスト
 	private List<EmploymentDto> employments;
 	// 目安金額の扱い.枠別の扱いリスト
-	private List<Integer> frameNos;
+	private List<HandlingOfCriterionAmountByNoDto> listHandlingByNo;
 }

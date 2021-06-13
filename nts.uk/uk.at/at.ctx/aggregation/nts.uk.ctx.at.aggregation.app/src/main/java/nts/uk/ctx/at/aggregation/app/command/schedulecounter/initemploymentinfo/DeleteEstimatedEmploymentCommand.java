@@ -8,8 +8,5 @@ import lombok.Data;
 @Data
 @NoArgsConstructor
 public class DeleteEstimatedEmploymentCommand {
-	
-	private String cid;
-	
 	private String employmentCode;
 }

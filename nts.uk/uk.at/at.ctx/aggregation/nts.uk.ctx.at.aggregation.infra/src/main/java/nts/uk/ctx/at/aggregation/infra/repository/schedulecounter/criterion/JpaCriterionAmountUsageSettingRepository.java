@@ -31,7 +31,7 @@ public class JpaCriterionAmountUsageSettingRepository extends JpaRepository
         
         builderString = new StringBuilder();
         builderString.append(SELECT);
-        builderString.append(" WHERE a.pk.companyId = :companyId");
+        builderString.append(" WHERE a.companyId = :companyId");
         FIND_BY_CID = builderString.toString();
         
 	}
@@ -62,12 +62,18 @@ public class JpaCriterionAmountUsageSettingRepository extends JpaRepository
 
 	@Override
 	public Optional<CriterionAmountUsageSetting> get(String cid) {
-		KagmtCriterionMoneyUsage entity = this.queryProxy()
-			.query(FIND_BY_CID, KagmtCriterionMoneyUsage.class)
-			.setParameter("companyId", cid)
-			.getSingle().orElse(null);
-				
-		return Optional.ofNullable(KagmtCriterionMoneyUsage.toDomain(entity));
+		Optional<KagmtCriterionMoneyUsage> entity = this.queryProxy().find(cid, KagmtCriterionMoneyUsage.class);
+		if(entity.isPresent()) {
+			return Optional.of(KagmtCriterionMoneyUsage.toDomain(entity.get()));
+		}  else {
+			return Optional.ofNullable(null);
+		}		
+//		KagmtCriterionMoneyUsage entity = this.queryProxy()
+//			.query(FIND_BY_CID, KagmtCriterionMoneyUsage.class)
+//			.setParameter("companyId", cid)
+//			.getSingle().orElse(null);
+//				
+//		return Optional.ofNullable(KagmtCriterionMoneyUsage.toDomain(entity));
 	}
 
 }

@@ -16,6 +16,7 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountFo
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountForEmploymentRepository;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountList;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.shr.com.context.AppContexts;
 
 // 雇用の目安金額を登録する
 @Stateless
@@ -28,24 +29,27 @@ public class RegisterEstimatedEmploymentCommandHandler extends CommandHandler<Re
 	@Override
 	protected void handle(CommandHandlerContext<RegisterEstimatedEmploymentCommand> context) {
 		
+		String cid = AppContexts.user().companyId();
+		
 		RegisterEstimatedEmploymentCommand command = context.getCommand();
 		
-		Optional<CriterionAmountForEmployment> criOptional = criterionAmountForEmploymentRepository.get(command.getCid(), new EmploymentCode(command.getEmploymentCode()));
+		Optional<CriterionAmountForEmployment> criOptional = criterionAmountForEmploymentRepository.get(cid, new EmploymentCode(command.getEmploymentCode()));
 	
 		
 		CriterionAmount criterionAmount = new CriterionAmount(
 				CriterionAmountList.create(
-						command.getYears().stream().map(CriterionAmountByNoCommand::toDomain).collect(Collectors.toList())),
+						command.getYears().stream().map(CriterionAmountByNoCommand::toCriterionAmountByNo).collect(Collectors.toList())),
 				CriterionAmountList.create(
-						command.getMonths().stream().map(CriterionAmountByNoCommand::toDomain).collect(Collectors.toList()))
+						command.getMonths().stream().map(CriterionAmountByNoCommand::toCriterionAmountByNo).collect(Collectors.toList()))
 				);
 		CriterionAmountForEmployment domain;
 		if (criOptional.isPresent()) {
 			domain = criOptional.get();
 			domain.update(criterionAmount);
-			criterionAmountForEmploymentRepository.update(command.getCid(), domain);
+			criterionAmountForEmploymentRepository.update(cid, domain);
 		} else {
 			domain = new CriterionAmountForEmployment(new EmploymentCode(command.getEmploymentCode()), criterionAmount);
+			criterionAmountForEmploymentRepository.insert(cid, domain);
 		}
 	}
 
