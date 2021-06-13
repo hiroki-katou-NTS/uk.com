@@ -20,9 +20,9 @@ public class ScheduleRegisterTargetCommand {
     
     String date;
     
-    String shiftmasterCode;
+    String importCode;
     
     public ScheduleRegisterTarget toDomain() {
-        return new ScheduleRegisterTarget(employeeId, GeneralDate.fromString(date, "yyyy/MM/dd"), new ShiftMasterImportCode(shiftmasterCode));
+        return new ScheduleRegisterTarget(employeeId, GeneralDate.fromString(date, "yyyy/MM/dd"), new ShiftMasterImportCode(importCode));
     }
 }

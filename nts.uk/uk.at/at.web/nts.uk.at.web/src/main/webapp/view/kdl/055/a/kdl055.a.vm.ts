@@ -90,8 +90,6 @@ module nts.uk.at.view.kdl055.a.viewmodel {
             }).done((res: any) => {
                 if (res) {
                     vm.paramB = res;
-                    // vm.$window.modeless('at', '/view/kdl/055/b/index.xhtml', res).then(() => {
-                    // });
                     vm.close();
                 }
             }).fail((err: any) => {

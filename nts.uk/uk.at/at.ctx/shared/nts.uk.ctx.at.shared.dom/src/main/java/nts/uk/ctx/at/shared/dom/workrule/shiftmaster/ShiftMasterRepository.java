@@ -34,6 +34,8 @@ public interface ShiftMasterRepository {
 	/** [7] *get(会社ID, List<シフトマスタコード>) **/
 	List<ShiftMaster> getByListShiftMaterCd2(String companyId, List<String> shiftMaterCodes);
 	
+	List<ShiftMaster> getByListImportCodes(String companyId, List<String> importCodes);
+	
 	/**
 	 * exists (会社ID, シフトマスタ取り込みコード)
 	 * @param companyId 会社ID

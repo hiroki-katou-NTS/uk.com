@@ -19,5 +19,5 @@ public class ScheduleRegisterTarget {
     
     GeneralDate date;
     
-    ShiftMasterImportCode shiftmasterCode;
+    ShiftMasterImportCode importCode;
 }

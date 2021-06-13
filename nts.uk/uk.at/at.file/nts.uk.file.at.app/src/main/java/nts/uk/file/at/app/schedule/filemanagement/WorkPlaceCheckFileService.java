@@ -68,6 +68,7 @@ import nts.uk.query.pub.employee.EmployeeSearchQueryDto;
 import nts.uk.query.pub.employee.RegulationInfoEmployeeExport;
 import nts.uk.query.pub.employee.RegulationInfoEmployeePub;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 
 /**
@@ -178,13 +179,13 @@ public class WorkPlaceCheckFileService {
         //            取り込み結果.取り込み不可日 : 
         //　　map 取り込みエラーDto (empty, empty, $, #Msg_2121)
         importResult.getUnimportableDates().forEach(x -> {
-            mappingErrorList.add(new MappingErrorDto(Optional.empty(), Optional.empty(), Optional.of(x), "Msg_2121"));
+            mappingErrorList.add(new MappingErrorDto(Optional.empty(), Optional.empty(), Optional.of(x), TextResource.localize("Msg_2121")));
         });
         // <<create>>
         //            取り込み結果.存在しない社員 :
         //　　map 取り込みエラーDto ($, empty, empty, #Msg_2175)
         importResult.getUnexistsEmployees().forEach(x -> {
-            mappingErrorList.add(new MappingErrorDto(Optional.of(x), Optional.empty(), Optional.empty(), "Msg_2175"));
+            mappingErrorList.add(new MappingErrorDto(Optional.of(x), Optional.empty(), Optional.empty(), TextResource.localize("Msg_2175")));
         });
         // <<create>>
         //            取り込み結果.1件分の取り込み結果 :
@@ -201,7 +202,7 @@ public class WorkPlaceCheckFileService {
                         Optional.of(personEmpOptional.get().getEmployeeId()), 
                         Optional.of(personEmpOptional.get().getBusinessName()), 
                         Optional.of(x.getYmd()), 
-                        x.getStatus().getMessageId().isPresent() ? x.getStatus().getMessageId().get().replace("#", "") : ""));
+                        x.getStatus().getMessageId().isPresent() ? TextResource.localize(x.getStatus().getMessageId().get().replace("#", "")) : ""));
             }
         });
         // <<create>>
@@ -220,7 +221,7 @@ public class WorkPlaceCheckFileService {
                         Optional.of(personEmpOptional.get().getEmployeeId()), 
                         Optional.of(personEmpOptional.get().getBusinessName()), 
                         Optional.of(x.getYmd()), 
-                        x.getStatus().getMessageId().isPresent() ? x.getStatus().getMessageId().get().replace("#", "") : ""));
+                        x.getStatus().getMessageId().isPresent() ? TextResource.localize(x.getStatus().getMessageId().get().replace("#", "")) : ""));
             }
         });
         
@@ -460,7 +461,7 @@ public class WorkPlaceCheckFileService {
 
         @Override
         public List<ShiftMaster> getShiftMasters(List<ShiftMasterImportCode> importCodes) {
-            return shiftMasterRepository.getByListShiftMaterCd2(AppContexts.user().companyId(), 
+            return shiftMasterRepository.getByListImportCodes(AppContexts.user().companyId(), 
                     importCodes.stream().map(x -> x.v()).collect(Collectors.toList()));
         }
 

@@ -47,6 +47,9 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 
 	private static final String SELECT_BY_LISTCD_AND_CID = SELECT_BY_CID
 			+ " AND c.kshmtShiftMaterPK.shiftMaterCode IN :shiftMaterCodes";
+	
+	private static final String SELECT_BY_LISTIMPORT_AND_CID = SELECT_BY_CID
+            + " AND c.importCode IN :importCodes";
 
 	private static final String SELECT_BY_WORKTYPE_AND_WORKTIME = SELECT_BY_CID + " AND c.workTypeCd = :workTypeCd"
 			+ " AND c.workTimeCd = :workTimeCd";
@@ -91,6 +94,15 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 				.getList(c -> c.toDomain());
 		return data;
 	}
+	
+	@Override
+    public List<ShiftMaster> getByListImportCodes(String companyId, List<String> importCodes) {
+        List<ShiftMaster> data = this.queryProxy().query(SELECT_BY_LISTIMPORT_AND_CID, KshmtShiftMater.class)
+                .setParameter("companyId", companyId)
+                .setParameter("importCodes", importCodes)
+                .getList(c -> c.toDomain());
+        return data;
+    }
 
 	@Override
 	public Optional<ShiftMaster> getByWorkTypeAndWorkTime(String companyId, String workTypeCd, String workTimeCd) {

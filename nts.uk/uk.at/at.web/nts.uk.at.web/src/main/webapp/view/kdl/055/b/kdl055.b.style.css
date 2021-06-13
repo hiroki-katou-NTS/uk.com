@@ -21,3 +21,7 @@
     vertical-align: middle !important;
     text-align: center !important;
 }
+
+#grid .limited-label {
+    display: table-cell;
+}
