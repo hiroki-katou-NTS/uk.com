@@ -89,7 +89,8 @@
 
 #radioArea {
 	margin-left: 5px;
-	margin-top: 2px;
+	margin-top: -10px;
+	width: 270px;
 }
 
 #helpButton {
