@@ -22,7 +22,7 @@
 
 #scrD > div:nth-child(2){
 	/* padding-top: 30px; */
-	padding-left: 80px;
+	padding-left: 30px;
 }
 
 #scrD.contents-area {
@@ -39,7 +39,7 @@
 }
 
 #scrD .caret-right.caret-background.bg-green{
-	width: 377px !important;
+	width: 290px !important;
 }
 #opencdl028Dialog {
 	margin-left: 60px;

@@ -33,6 +33,7 @@ module nts.uk.at.view.kmk003.a {
     export module viewmodel {
 
         import EmTimeZoneSetDto = nts.uk.at.view.kmk003.a.service.model.common.EmTimeZoneSetDto;
+        import WorkTimeDailyAtr = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeDailyAtr;
 
         export class ScreenModel {
             
@@ -254,21 +255,12 @@ module nts.uk.at.view.kmk003.a {
                     }
                 })
 
-                self.mainSettingModel.workTimeSetting.isFlex.subscribe(v => {
-                    //change text tab a2 to KMK003_317
-                    if (self.isDetailMode()){
-
-                    }else {
-
-                    }
-                })
-
                 self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe((val) => {
 
                     if (val == EnumWorkForm.FLEX ){
-                        $('#tab-2-title').html(nts.uk.resource.getText("KMK003_317"));
-                    }else{
-                        $('#tab-2-title').html(nts.uk.resource.getText("KMK003_18"));
+                        $('.tabs-list').find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_317'));
+                    } else{
+                        $('.tabs-list').find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_18'));
                     }
 
                     if (self.isNewMode()) {
@@ -609,6 +601,12 @@ module nts.uk.at.view.kmk003.a {
                 }
                 // set visible tab 17 by otsuka mode
                 _.find(_self.tabs(),['id', TabID.TAB17]).setVisible(_self.otsukaMode());
+
+                if (_self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr() === WorkTimeDailyAtr.FLEX_WORK ){
+                    $('.tabs-list').find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_317'));
+                } else{
+                    $('.tabs-list').find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_18'));
+                }
             }
 
             /**

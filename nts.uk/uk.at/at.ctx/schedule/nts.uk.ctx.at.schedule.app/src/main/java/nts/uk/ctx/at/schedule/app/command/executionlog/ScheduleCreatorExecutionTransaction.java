@@ -1075,7 +1075,7 @@ public class ScheduleCreatorExecutionTransaction {
 		// 勤務予定をコピーして作成する
 		// コピー元勤務予定一覧キャッシュを確認する
 
-		// データなし
+		// データなし - hiện tại đang lúc nào cũng rơi vào case này
 		if (workSchedules.isEmpty()) {
 
 			int daysToAdd = targetPeriod.datesBetween().size() - 1;
@@ -1638,6 +1638,8 @@ public class ScheduleCreatorExecutionTransaction {
 				if (!optionalCompanyBasicWork.isPresent()) {
 					this.scheCreExeErrorLogHandler.addError(geterCommand, creator.getEmployeeId(), "Msg_589");
 					return Optional.empty();
+				} else {
+					return optionalCompanyBasicWork.get().getBasicWorkSetting().stream().findFirst();
 				}
 			}
 			

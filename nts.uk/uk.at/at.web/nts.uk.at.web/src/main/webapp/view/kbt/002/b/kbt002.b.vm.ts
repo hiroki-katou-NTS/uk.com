@@ -354,7 +354,7 @@ module nts.uk.at.view.kbt002.b {
       vm.$window.modal('/view/kbt/002/c/index.xhtml', data)
         .then((result) => {
           // vm.$blockui('clear');
-          if (result) {
+          if (result && result.scheduleId) {
             vm.taskSetting(result);
             vm.executionTaskWarning(vm.buildExecutionTaskWarningStr(result));
             vm.hasExecTaskSetting(true);

@@ -7,6 +7,7 @@ import {
 } from 'views/kaf/s00';
 import { KafS00DComponent } from '../../../kaf/s00/d';
 import { ScreenMode } from '../shr';
+import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 
 @component({
     name: 'kafs02c',
@@ -33,6 +34,7 @@ import { ScreenMode } from '../shr';
         'kafs00-a': KafS00AComponent,
         'kafs00-c': KafS00CComponent,
         'kafs00d': KafS00DComponent,
+        'cmms45c': CmmS45CComponent
     },
 })
 export class KafS02CComponent extends KafS00ShrComponent {
@@ -334,6 +336,19 @@ export class KafS02CComponent extends KafS00ShrComponent {
 
     public handleErrorMessage(res: any) {
         const self = this;
+        if (res.messageId == 'Msg_197') {
+            self.$modal.error({ messageId: 'Msg_197', messageParams: [] }).then(() => {
+                let appID = self.data.appDispInfoStartupOutput.appDetailScreenInfo.application.appID;
+                self.$modal('cmms45c', { 'listAppMeta': [appID], 'currentApp': appID }).then((newData) => {
+                    self.mode = false;
+                    self.data = newData;
+                    self.application = self.data.appDispInfoStartupOutput.appDetailScreenInfo.application;
+                    self.fetchDataEdit();
+                });
+            });
+
+            return;
+        }
         if (res.messageId) {
             return self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         } else {
