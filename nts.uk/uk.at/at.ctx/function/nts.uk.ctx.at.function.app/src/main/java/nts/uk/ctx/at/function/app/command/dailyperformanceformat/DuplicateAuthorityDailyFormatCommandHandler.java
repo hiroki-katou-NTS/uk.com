@@ -43,6 +43,12 @@ public class DuplicateAuthorityDailyFormatCommandHandler extends CommandHandler<
 		String companyId = AppContexts.user().companyId();
 		
 		AuthorityDailyPerformanceFormat authorityDailyPerformanceFormat = AuthorityDailyPerformanceFormat.createFromJavaType(companyId, command.getDailyPerformanceFormatCode(), command.getDailyPerformanceFormatName());
+		
+		if (this.authorityDailyPerformanceFormatRepository.checkExistCode(companyId,
+				new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()))) {
+			throw new BusinessException("Msg_3");
+		}
+		
 		authorityDailyPerformanceFormatRepository.add(authorityDailyPerformanceFormat);
 		
 		List<AuthorityFormatSheet> listAuthorityFormatSheet = command.getListDailyFormSheetCommand().stream()
@@ -63,6 +69,10 @@ public class DuplicateAuthorityDailyFormatCommandHandler extends CommandHandler<
 							f.getColumnWidth());
 				}).collect(Collectors.toList());
 
+		if (this.authorityFormatMonthlyRepository.checkExistCode(companyId,
+				new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()))) {
+			throw new BusinessException("Msg_3");
+		}
 		this.authorityFormatMonthlyRepository.add(authorityFomatMonthlies);
 	}
 	
