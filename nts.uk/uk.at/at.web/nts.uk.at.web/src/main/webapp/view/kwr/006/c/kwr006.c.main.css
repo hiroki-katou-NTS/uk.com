@@ -20,7 +20,8 @@
 }
 
 .label-name {
-	width: 199px;
+	width: 140px;
+	float: left;
 }
 
 .row {
@@ -78,8 +79,9 @@
 	width: 800px;
 }
 
-.nts-switch-button {
+.switchbox-wrappers .radio-wrapper span {
 	width: 80px;
+	text-align: center;
 }
 
 .check-box-list li.style-normal {
