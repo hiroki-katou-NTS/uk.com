@@ -3023,6 +3023,44 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             (_.includes([WorkplaceCounterCategory.EXTERNAL_BUDGET], self.useCategoriesWorkplaceValue()) && self.funcNo15_WorkPlace));
             }
         }
+
+		clickA12_2() {
+			const self = this;
+			switch(self.useCategoriesWorkplaceValue()) {
+				case WorkplaceCounterCategory.LABOR_COSTS_AND_TIME: // 人件費・時間
+					setShared('targetR', {
+						unit: self.userInfor.unit,
+						id: self.userInfor.unit == 0 ? self.userInfor.workplaceId : self.userInfor.workplaceGroupId
+					});
+					setShared('periodR', {
+						startDate: self.dateTimeAfter(),
+						endDate: self.dateTimePrev() 	
+					});
+					setShared('name', self.targetOrganizationName());
+		            nts.uk.ui.windows.sub.modal("/view/ksu/001/r/index.xhtml");
+					break;
+		        case WorkplaceCounterCategory.EXTERNAL_BUDGET: // 外部予算実績
+					setShared('target', {
+						unit: self.userInfor.unit,
+						id: self.userInfor.unit == 0 ? self.userInfor.workplaceId : self.userInfor.workplaceGroupId
+					});
+					setShared('period', {
+						startDate: self.dateTimeAfter(),
+						endDate: self.dateTimePrev() 	
+					});
+					setShared('name', self.targetOrganizationName());
+					nts.uk.ui.windows.sub.modal("/view/ksu/001/q/index.xhtml");
+					break;
+//		        TIMES_COUNTING = 2, // 回数集計
+//		        WORKTIME_PEOPLE = 3, // 就業時間帯別の利用人数
+//		        TIMEZONE_PEOPLE = 4, // 時間帯人数
+//		        EMPLOYMENT_PEOPLE = 5, // 雇用人数
+//		        CLASSIFICATION_PEOPLE = 6, // 分類人数
+//		        POSITION_PEOPLE = 7, // 職位人数		
+				default:
+					break;
+			}	
+		}
         
         bindingEventClickFlower() {
             let self = this;
