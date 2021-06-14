@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AnyItemByPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.ExcessOutsideByPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.FlexTimeByPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceAmountMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
@@ -51,6 +52,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.Ver
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.reservation.OrderAmountMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.reservation.ReservationDetailOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.reservation.ReservationOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workamount.WorkAmountOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workclock.EndClockOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workclock.WorkClockOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workclock.pclogon.AggrPCLogonClock;
@@ -127,6 +129,14 @@ public class KrcdtWekAttendanceTime extends ContractUkJpaEntity implements Seria
 	/** 集計日数 */
 	@Column(name = "AGGREGATE_DAYS")
 	public double aggregateDays;
+	
+	/** 就業時間金額 */
+	@Column(name = "WORK_TIME_AMOUNT")
+	public int workTimeAmount;
+	
+	/** 割増金額合計 */
+	@Column(name = "PREMIUM_AMOUNT_TOTAL")
+	public int premiumAmountTotal;
 	
 	/** 週割増合計時間 */
 	@Column(name = "WEEK_TOTAL_PREM_TIME")
@@ -855,7 +865,8 @@ public class KrcdtWekAttendanceTime extends ContractUkJpaEntity implements Seria
 						this.krcdtWekAggrGoout.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
 						goOutForChildCares),
 				PremiumTimeOfMonthly.of(
-						this.krcdtWekAggrPremTime.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
+						this.krcdtWekAggrPremTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
+						new AttendanceAmountMonth(this.premiumAmountTotal)),
 				BreakTimeOfMonthly.of(
 						new AttendanceTimesMonth(this.vtBreakTimes), 
 						new AttendanceTimeMonth(this.vtBreakTime),
@@ -950,7 +961,8 @@ public class KrcdtWekAttendanceTime extends ContractUkJpaEntity implements Seria
 		val verticalTotal = VerticalTotalOfMonthly.of(
 				vtWorkDays,
 				vtWorkTime,
-				vtWorkClock);
+				vtWorkClock,
+				WorkAmountOfMonthly.of(new AttendanceAmountMonth(this.workTimeAmount)));
 		
 		return AttendanceTimeOfWeekly.of(
 				this.PK.employeeId,
@@ -996,9 +1008,12 @@ public class KrcdtWekAttendanceTime extends ContractUkJpaEntity implements Seria
 		this.endYmd = domain.getPeriod().end();
 		this.aggregateDays = domain.getAggregateDays().v();
 		
+		this.workTimeAmount = domain.getVerticalTotal().getWorkAmount().getWorkTimeAmount().v();
+		
 		val weeklyCalculation = domain.getWeeklyCalculation();
 		val regAndIrgTime = weeklyCalculation.getRegAndIrgTime();
 		this.weekTotalPremiumTime = regAndIrgTime.getWeeklyTotalPremiumTime().v();
+		this.premiumAmountTotal = domain.getVerticalTotal().getWorkTime().getPremiumTime().getPremiumAmountTotal().v();
 		
 		val flexTime = weeklyCalculation.getFlexTime();
 		this.flexTime = flexTime.getFlexTime().v();

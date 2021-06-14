@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainTy
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 暫定年休管理データを作成する
@@ -29,6 +30,9 @@ public class CreateInterimAnnualMngData {
 	 * @return 暫定年休管理データ
 	 */
 	public static Optional<TempAnnualLeaveMngs> ofCompensFlex(AttendanceTimeOfMonthly timeMonth) {
+
+		/** 大塚モードかを確認する */
+		if (!AppContexts.optionLicense().customize().ootsuka()) return Optional.empty();
 
 		// 「暫定年休管理データ」を作成
 		if (timeMonth == null) return Optional.empty();
@@ -67,16 +71,7 @@ public class CreateInterimAnnualMngData {
 		val tmpAnnualHolidayMngOpt = ofCompensFlex(timeMonth);
 		if (!tmpAnnualHolidayMngOpt.isPresent()) return Optional.empty();
 
-		return Optional.of(new DailyInterimRemainMngData(
-				targetYmd,
-				Optional.empty(),
-				new ArrayList<>(),
-				Optional.empty(),
-				Optional.empty(),
-				Optional.of(tmpAnnualHolidayMngOpt.get()),
-				Optional.empty(),
-				Optional.empty(),
-				new ArrayList<>()));
+		return Optional.of(DailyInterimRemainMngData.createEmpty(targetYmd));
 	}
 
 	/**
@@ -86,10 +81,9 @@ public class CreateInterimAnnualMngData {
 	 * @return 暫定年休管理データWORK
 	 */
 	public static Optional<TempAnnualLeaveMngs> ofCompensFlexToWork(AttendanceTimeOfMonthly timeMonth, GeneralDate targetYmd) {
-
 		val dailyInterimRemainMngDataOpt = ofCompensFlex(timeMonth, targetYmd);
 		if (!dailyInterimRemainMngDataOpt.isPresent()) return Optional.empty();
 		val mngData = dailyInterimRemainMngDataOpt.get();
-		return Optional.of(mngData.getAnnualHolidayData().get());
+		return mngData.getAnnualHolidayData().stream().findFirst();
 	}
 }

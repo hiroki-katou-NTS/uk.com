@@ -57,28 +57,28 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 
 		// 暫定年休管理データを年休使用詳細へ変換
 		lstRemainMngData.stream().forEach(x ->{
+			x.getData().getAnnualHolidayData().forEach(annData->{
+				Optional<WorkType> getWorkType = worktypeRepo.findByPK(cid, annData.getWorkTypeCode().v());
+				DailyWork dw =  getWorkType.isPresent() ? getWorkType.get().getDailyWork() : null;
+				Integer vacation = dw == null ? null : (dw.isOneDay() ? 0 : (dw.IsLeaveForMorning() ? 1 : 2));
+				// Fix bug in case of flex
+				if (vacation == null && annData.getCreatorAtr().equals(CreateAtr.FLEXCOMPEN)) {
+					vacation = annData.getUsedNumber().getDays().greaterThan(0.5) ? 0 : 1;
+				}
 
-			TempAnnualLeaveMngs annData = x.getData().getAnnualHolidayData().get();
-			Optional<WorkType> getWorkType = worktypeRepo.findByPK(cid, annData.getWorkTypeCode().v());
-			DailyWork dw =  getWorkType.isPresent() ? getWorkType.get().getDailyWork() : null;
-			Integer vacation = dw == null ? null : (dw.isOneDay() ? 0 : (dw.IsLeaveForMorning() ? 1 : 2));
-			// Fix bug in case of flex
-			if (vacation == null && annData.getCreatorAtr().equals(CreateAtr.FLEXCOMPEN)) {
-				vacation = annData.getUsedNumber().getDays().greaterThan(0.5) ? 0 : 1;
-			}
-
-			AnnualHolidayGrantDetail annDetail = new AnnualHolidayGrantDetail(sid, annData.getYmd(),
-					AnnualLeaveUsedNumber.of(
-							Optional.ofNullable(new AnnualLeaveUsedDayNumber(annData.getUsedNumber().getDays().v())),
-							Optional.ofNullable(new UsedMinutes(
-									annData.getUsedNumber().getMinutes().map(minute -> minute.v()).orElse(0)))),
-					x.isReferenceFlg() ? ReferenceAtr.RECORD
-							: ((annData.getCreatorAtr() == CreateAtr.RECORD
-									|| annData.getCreatorAtr() == CreateAtr.FLEXCOMPEN) ? ReferenceAtr.RECORD
-											: ReferenceAtr.APP_AND_SCHE),
-					AmPmAtr.valueOf(vacation),
-					annData.getCreatorAtr().equals(CreateAtr.FLEXCOMPEN));
-			lstOutputData.add(annDetail);
+				AnnualHolidayGrantDetail annDetail = new AnnualHolidayGrantDetail(sid, annData.getYmd(),
+						AnnualLeaveUsedNumber.of(
+								Optional.ofNullable(new AnnualLeaveUsedDayNumber(annData.getUsedNumber().getDays().v())),
+								Optional.ofNullable(new UsedMinutes(
+										annData.getUsedNumber().getMinutes().map(minute -> minute.v()).orElse(0)))),
+						x.isReferenceFlg() ? ReferenceAtr.RECORD
+								: ((annData.getCreatorAtr() == CreateAtr.RECORD
+										|| annData.getCreatorAtr() == CreateAtr.FLEXCOMPEN) ? ReferenceAtr.RECORD
+												: ReferenceAtr.APP_AND_SCHE),
+						AmPmAtr.valueOf(vacation),
+						annData.getCreatorAtr().equals(CreateAtr.FLEXCOMPEN));
+				lstOutputData.add(annDetail);
+			});
 		});
 		// 年休使用詳細(List)を返す
 		return lstOutputData.stream().sorted((a,b) -> a.getYmd().compareTo(b.getYmd()))

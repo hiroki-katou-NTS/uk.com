@@ -10,68 +10,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
 
     @component({
         name: 'kaf008-b',
-        template: `
-            <div>
-                <div data-bind="component: { name: 'kaf000-b-component1',
-                                            params: {
-                                                appType: appType,
-                                                appDispInfoStartupOutput: appDispInfoStartupOutput
-                                            } }"></div>
-                <div data-bind="component: { name: 'kaf000-b-component2',
-                                            params: {
-                                                appType: appType,
-                                                appDispInfoStartupOutput: appDispInfoStartupOutput
-                                            } }"></div>
-                <div data-bind="component: { name: 'kaf000-b-component3',
-                                            params: {
-                                                appType: appType,
-                                                approvalReason: approvalReason,
-                                                appDispInfoStartupOutput: appDispInfoStartupOutput
-                                            } }"></div>
-                <div class="table">
-                    <div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-b-component4',
-                                        params: {
-                                            appType: appType,
-                                            application: application,
-                                            appDispInfoStartupOutput: appDispInfoStartupOutput
-                                        } }"></div>
-                    <div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-b-component9',
-                                        params: {
-                                            appType: appType,
-                                            application: application,
-                                            appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
-                                        } }"></div>
-                </div>
-                <div data-bind="component: { name: 'kaf000-b-component5',
-                                            params: {
-                                                appType: appType,
-                                                application: application,
-                                                appDispInfoStartupOutput: appDispInfoStartupOutput
-                                            } }"></div>
-                <div data-bind="component: { name: 'kaf000-b-component6',
-                                            params: {
-                                                appType: appType,
-                                                application: application,
-                                                appDispInfoStartupOutput: appDispInfoStartupOutput
-                                            } }"></div>
-                <div data-bind="component: { name: 'kaf008-share', params: {
-                                                mode: mode,
-                                                appType: appType,
-                                                dataFetch: dataFetch
-                                           } }"></div>
-                <div data-bind="component: { name: 'kaf000-b-component7',
-                                            params: {
-                                                appType: appType,
-                                                application: application,
-                                                appDispInfoStartupOutput: appDispInfoStartupOutput
-                                            } }"></div>
-                <div data-bind="component: { name: 'kaf000-b-component8',
-                                            params: {
-                                                appType: appType,
-                                                appDispInfoStartupOutput: appDispInfoStartupOutput
-                                            } }"></div>
-            </div>
-        `
+        template: `/nts.uk.at.web/view/kaf/008/b/index.html`
     })
     class Kaf008BViewModel extends ko.ViewModel {
 

@@ -36,6 +36,7 @@
 
 #functions-area-bottom {
 	height: 57px !important;
+	bottom: 10px;
 }
 
  #grid_otherAuth > span > div > label > span.label{

@@ -9,6 +9,7 @@ import {
     KafS00CComponent
 } from 'views/kaf/s00';
 import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
+import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 // import { AppWorkChange } from '../../../cmm/s45/components/app2/index';
 @component({
     name: 'kafs07a',
@@ -34,6 +35,7 @@ import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
         'worktype': KDL002Component,
         'kafs00d': KafS00DComponent,
         'worktime': Kdl001Component,
+        'cmms45c': CmmS45CComponent
     },
 
 })
@@ -107,6 +109,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
         if (self.params) {
             self.mode = false;
             self.data = self.params;
+            self.appWorkChangeDisp = self.data.appWorkChangeDispInfo;
         }
         
 
@@ -160,8 +163,12 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     appWorkChangeOutputCmd: self.data,
                     appWorkChangeDto: self.mode ? null : self.data.appWorkChange
                 };
+                if (self.mode) {
 
-                return self.$http.post('at', API.startS07, param);
+                    return self.$http.post('at', API.startS07, param);
+                } else {
+                    return true;
+                }
             }
             if (!_.isNil(_.get(self.appDispInfoStartupOutput, 'appDispInfoWithDateOutput.opErrorFlag'))) {
                 if (self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag != 0) {
@@ -191,9 +198,12 @@ export class KafS07AComponent extends KafS00ShrComponent {
             if (!res) {
                 return;
             }
-            self.data = res.data;
-            if (res.data.appWorkChangeDispInfo) {
-                self.appWorkChangeDisp = res.data.appWorkChangeDispInfo;
+            if (res !== true) {
+                self.data = res.data;
+
+                if (res.data.appWorkChangeDispInfo) {
+                    self.appWorkChangeDisp = res.data.appWorkChangeDispInfo;
+                }
             }
             self.createParamA();
             self.createParamB();
@@ -839,6 +849,19 @@ export class KafS07AComponent extends KafS00ShrComponent {
     public handleErrorMessage(res: any) {
         const self = this;
         self.$mask('hide');
+        if (res.messageId == 'Msg_197') {
+            self.$modal.error({ messageId: 'Msg_197', messageParams: [] }).then(() => {
+                let appID = self.appDispInfoStartupOutput.appDetailScreenInfo.application.appID;
+                self.$modal('cmms45c', { 'listAppMeta': [appID], 'currentApp': appID }).then((newData) => {
+                    self.mode = false;
+                    self.data = newData;
+                    self.appWorkChangeDisp = self.data.appWorkChangeDispInfo;
+                    self.fetchStart();     
+                });
+            });
+
+            return;
+        }
         if (res.messageId) {
             return self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         } else {

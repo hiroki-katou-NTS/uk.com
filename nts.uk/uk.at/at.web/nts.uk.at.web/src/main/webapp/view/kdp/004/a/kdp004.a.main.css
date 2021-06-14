@@ -1,33 +1,31 @@
 html{
   overflow: hidden;
 }
-#content-area {
-  overflow-y: scroll;
+#contents-area {
+	overflow-y: auto;
+    height: calc(100vh - 20px);
 }
-#kdp002a {
-	width: 76vmin;
-	margin-left: auto;
-	margin-right: auto;
+#kdp004a {
+	width: 100%;
+    margin: 0 auto;
+    max-width: 480px;
+}
+
+.kdp004a {
+  padding: 10px;
+  background: linear-gradient(#EBFCF6, #F5F5F5);
 }
 
 #genText {
   margin-left: 20px;
 }
 
-#stamp-input {
+/* #stamp-input {
   min-width: 63vmin;
-}
+} */
 
 #stamp-info {
   min-width: 37vmin;
-}
-#stamp-desc{
-  height: 73px;
-  width: 73vmin;
-  font-size: 1.5vmin;
-  padding: 0 0 0 0.5vmin;
-  word-break: break-word;
-  word-wrap: break-word;
 }
 
 #stamp-date {
@@ -84,4 +82,8 @@ html{
 .not_used_label {
 	color: red;
 	font-size: 1.2rem !important;
+}
+.pageComent {
+	word-break: break-all !important;
+	white-space: pre-wrap !important;
 }

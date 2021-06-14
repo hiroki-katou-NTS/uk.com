@@ -10,7 +10,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
@@ -19,9 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * 就業時間外時間帯
- * 
  * @author keisuke_hoshina
- *
  */
 @Getter
 public class OutsideWorkTimeSheet {
@@ -107,7 +104,9 @@ public class OutsideWorkTimeSheet {
 				overTimeWorkFrameTimeSheet = overTimeDayEnd.getOverTimeList();
 				holidayWorkFrameTimeSheetForCalc = overTimeDayEnd.getHolList();
 			}
-		} else {
+		}
+		if(todayWorkType.isHolidayWork()) {
+			/* 休日出勤の処理 */
 			holidayWorkFrameTimeSheetForCalc = HolidayWorkFrameTimeSheetForCalc.createHolidayTimeWorkFrame(
 					timeLeavingWork,
 					integrationOfWorkTime.getHDWorkTimeSheetSettingList(),
@@ -139,31 +138,64 @@ public class OutsideWorkTimeSheet {
 	}
 	
 	/**
-	 * 残業時間の中にある控除時間を算出する
-	 * @param dedAtr
-	 * @param atr
+	 * 残業時間帯から控除時間を取得
+	 * @param conditionAtr 控除種別区分
+	 * @param dedAtr 控除区分
+	 * @param roundAtr 丸め区分
 	 * @return 控除時間
 	 */
-	public AttendanceTime caluclationAllOverTimeFrameTime(DeductionAtr dedAtr,ConditionAtr atr) {
-		if(this.overTimeWorkSheet.isPresent()) {
-			return this.overTimeWorkSheet.get().calculationAllFrameDeductionTime(dedAtr,atr);
+	public AttendanceTime getDeductionTimeFromOverTime(
+			ConditionAtr conditionAtr, DeductionAtr dedAtr, TimeSheetRoundingAtr roundAtr) {
+		
+		if (this.overTimeWorkSheet.isPresent()){
+			return this.overTimeWorkSheet.get().getDeductionTime(conditionAtr, dedAtr, roundAtr);
 		}
 		return new AttendanceTime(0);
 	}
 	
 	/**
-	 * 休出時間の中にある控除時間を算出する
-	 * @param dedAtr
-	 * @param atr
-	 * @return　控除時間
+	 * 休出時間帯から控除時間を取得
+	 * @param conditionAtr 控除種別区分
+	 * @param dedAtr 控除区分
+	 * @param roundAtr 丸め区分
+	 * @return 控除時間
 	 */
-	public AttendanceTime caluclationAllHolidayFrameTime(DeductionAtr dedAtr,ConditionAtr atr) {
+	public AttendanceTime getDeductionTimeFromHolidayWork(
+			ConditionAtr conditionAtr, DeductionAtr dedAtr, TimeSheetRoundingAtr roundAtr) {
+		
 		if(this.holidayWorkTimeSheet.isPresent()) {
-			return this.holidayWorkTimeSheet.get().calculationAllFrameDeductionTime(dedAtr,atr);
+			return this.holidayWorkTimeSheet.get().getDeductionTime(conditionAtr, dedAtr, roundAtr);
 		}
 		return new AttendanceTime(0);
 	}
 	
+	/**
+	 * 残業時間帯から控除回数を計算
+	 * @param conditionAtr 控除種別区分
+	 * @param dedAtr 控除区分
+	 * @return 控除回数
+	 */
+	public int calcDeductionCountFromOverTime(ConditionAtr conditionAtr, DeductionAtr dedAtr) {
+		
+		if (this.overTimeWorkSheet.isPresent()){
+			return this.overTimeWorkSheet.get().calcDeductionCount(conditionAtr, dedAtr);
+		}
+		return 0;
+	}
+	
+	/**
+	 * 休出時間帯から控除回数を計算
+	 * @param conditionAtr 控除種別区分
+	 * @param dedAtr 控除区分
+	 * @return 控除回数
+	 */
+	public int calcDeductionCountFromHolidayWork(ConditionAtr conditionAtr, DeductionAtr dedAtr) {
+		
+		if(this.holidayWorkTimeSheet.isPresent()) {
+			return this.holidayWorkTimeSheet.get().calcDeductionCount(conditionAtr, dedAtr);
+		}
+		return 0;
+	}
 	
 	/**
 	 * 流動勤務(平日・就外）
@@ -173,7 +205,7 @@ public class OutsideWorkTimeSheet {
 	 * @param integrationOfWorkTime 統合就業時間帯
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @param predetermineTimeSetForCalc 計算用所定時間設定
-	 * @param timeSheetOfDeductionItems 控除項目の時間帯(List)
+	 * @param deductTimeSheet 控除時間帯
 	 * @param createdWithinWorkTimeSheet 就業時間内時間帯
 	 * @param previousAndNextDaily 前日と翌日の勤務
 	 * @return 就業時間外時間帯
@@ -185,7 +217,7 @@ public class OutsideWorkTimeSheet {
 			IntegrationOfWorkTime integrationOfWorkTime,
 			IntegrationOfDaily integrationOfDaily,
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc,
-			List<TimeSheetOfDeductionItem> timeSheetOfDeductionItems,
+			DeductionTimeSheet deductTimeSheet,
 			WithinWorkTimeSheet createdWithinWorkTimeSheet,
 			PreviousAndNextDaily previousAndNextDaily) {
 		
@@ -196,7 +228,7 @@ public class OutsideWorkTimeSheet {
 				integrationOfWorkTime,
 				integrationOfDaily,
 				predetermineTimeSetForCalc,
-				timeSheetOfDeductionItems,
+				deductTimeSheet,
 				createdWithinWorkTimeSheet);
 		
 		if(!overTimeSheet.isPresent())
@@ -218,7 +250,6 @@ public class OutsideWorkTimeSheet {
 				Optional.of(new HolidayWorkTimeSheet(overDayEnd.getHolList())));
 	}
 	
-	
 	/**
 	 * 流動勤務(休日出勤)
 	 * @param companyCommonSetting 会社別設定管理
@@ -226,7 +257,7 @@ public class OutsideWorkTimeSheet {
 	 * @param todayWorkType 勤務種類
 	 * @param integrationOfWorkTime 統合就業時間帯
 	 * @param integrationOfDaily 日別実績(Work)
-	 * @param timeSheetOfDeductionItems 控除項目の時間帯(List)
+	 * @param deductTimeSheet 控除時間帯
 	 * @param holidayStartEnd 休出開始終了
 	 * @param oneDayOfRange 1日の計算範囲
 	 * @param previousAndNextDaily 前日と翌日の勤務
@@ -238,7 +269,7 @@ public class OutsideWorkTimeSheet {
 			WorkType todayWorkType,
 			IntegrationOfWorkTime integrationOfWorkTime,
 			IntegrationOfDaily integrationOfDaily,
-			List<TimeSheetOfDeductionItem> timeSheetOfDeductionItems,
+			DeductionTimeSheet deductTimeSheet,
 			TimeSpanForDailyCalc holidayStartEnd,
 			TimeSpanForDailyCalc oneDayOfRange,
 			PreviousAndNextDaily previousAndNextDaily) {
@@ -249,7 +280,7 @@ public class OutsideWorkTimeSheet {
 				todayWorkType,
 				integrationOfWorkTime,
 				integrationOfDaily,
-				timeSheetOfDeductionItems,
+				deductTimeSheet,
 				holidayStartEnd,
 				oneDayOfRange);
 		

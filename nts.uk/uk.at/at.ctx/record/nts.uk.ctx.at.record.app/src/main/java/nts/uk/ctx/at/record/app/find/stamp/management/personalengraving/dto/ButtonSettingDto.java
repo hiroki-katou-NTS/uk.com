@@ -31,6 +31,8 @@ public class ButtonSettingDto {
 	// 0 = reservation system, goingToWork = 1, departure = 2, goOut = 3, turnBack =
 	// 4
 	private Integer btnDisplayType;
+	
+	private Integer supportWplset;
 
 	public ButtonSettingDto(ButtonSettings btnSet) {
 		this.btnPositionNo = btnSet.getButtonPositionNo().v();
@@ -52,6 +54,7 @@ public class ButtonSettingDto {
 			this.changeCalArt = x.getChangeCalArt() == null ? null : x.getChangeCalArt().value;
 		});
 
+		this.supportWplset = btnSet.getSupportWplSet().map(m -> m.value).orElse(null);
 		this.usrArt = btnSet.getUsrArt().value;
 		this.audioType = btnSet.getAudioType().value;
 		this.btnDisplayType = changeHalfDay != null

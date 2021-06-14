@@ -30,9 +30,13 @@ module nts.uk.at.view.kaf012.a.viewmodel {
 
         applyTimeData: KnockoutObservableArray<DataModel>;
         specialLeaveFrame: KnockoutObservable<number>;
+        isFromOther: boolean = false;
 
         created(params: AppInitParam) {
             const vm = this;
+            if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
             vm.isSendMail = ko.observable(false);
@@ -93,6 +97,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 vm.$blockui("hide");
                 $(vm.$el).find('#kaf000-a-component4-singleDate').focus();
             });
+
         }
 
         mounted() {

@@ -180,8 +180,8 @@ module nts.uk.ui.jqueryExtentions {
             let $input = $container.find("input.ntsSearchBox");
             minusWidth += $button.outerWidth(true);
             if (searchMode === "filter") {
-                $container.append("<button class='clear-btn ntsSearchBox_Component'>"+ nts.uk.ui.toBeResource.clear +"</button>"); 
-                let $clearButton = $container.find("button.clear-btn");  
+                $container.append("<button class='clear-icon proceed ntsSearchBox_Component'>"); 
+                let $clearButton = $container.find("button.clear-icon");  
                 minusWidth +=  $clearButton.outerWidth(true);
                 $clearButton.click(function(evt: Event, ui: any) {
                     let component = $("#" + options.comId);    

@@ -265,7 +265,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     });
                     break;
                 case sharemodel.CATEGORY.SCHEDULE_DAILY:
-                    $.when(self.getAllEnums(), self.getEnumSchedule()).done(function() {
+                    $.when(self.getEnumScheduleDaily()).done(function() {
                         dfd.resolve();
                     }).fail(() => {
                         dfd.reject();
@@ -528,14 +528,39 @@ module nts.uk.at.view.kal003.b.viewmodel {
         /**
          * Get enum for all category schedule: daily
          */
-        private getEnumSchedule(): JQueryPromise<any> {
+        private getEnumScheduleDaily(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            $.when(service.getEnumDaiCheckItemType(), service.getCheckTimeType(), service.getTimeZoneTargetRange()).done((
-                        listDaiCheckItemType: Array<model.EnumModel>, listCheckTimeType: Array<model.EnumModel>, listTimeZoneTargetRange: Array<model.EnumModel>) => {
+            self.listTypeCheckWorkRecords([]);
+            $.when(service.getEnumDaiCheckItemType(), 
+                    service.getCheckTimeType(), 
+                    service.getTimeZoneTargetRange(),
+                    service.getEnumSingleValueCompareTypse(),
+                    service.getEnumRangeCompareType(),
+                    service.getEnumTargetSelectionRange(),
+                    service.getEnumTargetServiceType(),
+                    service.getEnumLogicalOperator())
+                .done((listDaiCheckItemType: Array<model.EnumModel>, 
+                        listCheckTimeType: Array<model.EnumModel>, 
+                        listTimeZoneTargetRange: Array<model.EnumModel>,
+                        listSingleValueCompareTypse: Array<model.EnumModel>,
+                        lstRangeCompareType: Array<model.EnumModel>,
+                        listTargetSelectionRange: Array<model.EnumModel>,
+                        listTargetServiceType: Array<model.EnumModel>,
+                        listLogicalOperator: Array<model.EnumModel>) => {
+                self.listSingleValueCompareTypes(self.getLocalizedNameForEnum(listSingleValueCompareTypse));
+                self.listRangeCompareTypes(self.getLocalizedNameForEnum(lstRangeCompareType));
+                
                 self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listDaiCheckItemType));
                 self.listCheckTimeType(self.getLocalizedNameForEnum(listCheckTimeType));
                 self.listTimeZoneTargetRange(self.getLocalizedNameForEnum(listTimeZoneTargetRange));
+                    
+                let listTargetRangeWithName = self.getLocalizedNameForEnum(listTargetSelectionRange);
+                self.itemListTargetSelectionRange_BA1_5(listTargetRangeWithName);
+                self.itemListTargetServiceType_BA1_2(self.getLocalizedNameForEnum(listTargetServiceType));
+                self.buildListCompareTypes();
+                let listANDOR = self.getLocalizedNameForEnum(listLogicalOperator)
+                    
                 dfd.resolve();
 
             }).always(() => {
@@ -1066,6 +1091,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             windows.setShared("kml001selectAbleCodeList", self.listAllWorkingTime);
             //selected items
             windows.setShared("kml001selectedCodeList", lstSelectedCode);
+            windows.setShared("kdl00showNoSelectionRow", true);
             windows.sub.modal("/view/kdl/001/a/index.xhtml",
                 { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function(): any {
                     $(".nts-input").ntsError("clear");
@@ -1942,6 +1968,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.scheduleDailyShowTimeEditor(itemCheck);
                 
                 self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual(0);
+                if (itemCheck == 2) {
+                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual(1);    
+                }
                 self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition().comparePlanAndActual(0);
                 self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().planLstWorkType([]);
                 self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition().planLstWorkTime([]);
@@ -2216,6 +2245,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
         }
         
         private validateStartEnd(el: string = '.endValue'): void {
+            $(el).ntsError("clear");
+            
             const vm = this;
             let maxValue = parseInt(vm.comparisonRange().maxValue());
             let minValue = parseInt(vm.comparisonRange().minValue());
@@ -2656,7 +2687,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
         /* 連続時間 */
         CONTINUOUS_DAY = 5,
         /* 連続回数 */
-        CONTINUOUS_TIMES = 5
+        CONTINUOUS_TIMES = 6
     }
 
 

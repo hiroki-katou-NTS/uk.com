@@ -127,3 +127,11 @@ html {
 .nts-fixed-body-wrapper {
 	height: auto !important;
 }
+
+#tab-panel > .tabs-list {
+	width: auto !important;
+}
+
+#tab-panel > .tabs-content {
+	margin-left: 124px !important;
+}

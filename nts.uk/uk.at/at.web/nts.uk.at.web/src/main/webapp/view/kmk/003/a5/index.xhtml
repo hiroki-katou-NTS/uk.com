@@ -10,7 +10,7 @@
             <div class="pull-left">
                 <!--	use halfDay-->
                 <com:ko tag="if" bind="isDetailMode">
-                    <div class="use-halfday" style="margin-bottom: 10px">
+                    <div class="use-halfday tab-rows" style="margin-bottom: 10px">
                         <com:ko tag="ifnot" bind="isFlow">
                             <td class="td-cell" width="100px">
                                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_319')}</div>
@@ -30,26 +30,28 @@
                     </div>
                 </com:ko>
                 <com:ko tag="if" bind="isFlex">
-                    <div style="width: 137px;" data-bind="ntsFormLabel: { required: false }">
-                        #{i18n.getText('KMK003_141')}
+                    <div class="tab-rows">
+                        <div style="width: 122px;" data-bind="ntsFormLabel: { required: false }">
+                            #{i18n.getText('KMK003_141')}
+                        </div>
+                        <com:ko tag="if" bind="isFlow() || isFlex()">
+                            <button style="margin-right: 30px"
+                                    data-bind="ntsHelpButton: {textId: 'KMK003_323', position: 'right center' }">?
+                            </button>
+                        </com:ko>
+                        <div tabindex="71" class="cf" data-bind="ntsSwitchButton: {
+                        name: '#[KMK003_141]',
+                        options: switchDs,
+                        optionsValue: 'code',
+                        optionsText: 'name',
+                        value: flexFixedRestTime,
+                        enable: true }"></div>
                     </div>
-                    <com:ko tag="if" bind="isFlow() || isFlex()">
-                        <button style="margin-right: 30px"
-                                data-bind="ntsHelpButton: {textId: 'KMK003_323', position: 'right center' }">?
-                        </button>
-                    </com:ko>
-                    <div tabindex="71" class="cf" data-bind="ntsSwitchButton: {
-					name: '#[KMK003_141]',
-					options: switchDs,
-					optionsValue: 'code',
-					optionsText: 'name',
-					value: flexFixedRestTime,
-					enable: true }"></div>
                 </com:ko>
             </div>
             <com:ko tag="if" bind="isFlow">
-                <div class="pull-left mb-20">
-                    <div style="width: 137px;" data-bind="ntsFormLabel: { required: false }">
+                <div class="pull-left mb-20 tab-rows">
+                    <div style="width: 122px;" data-bind="ntsFormLabel: { required: false }">
                         #{i18n.getText('KMK003_141')}
                     </div>
                     <com:ko tag="if" bind="isFlow() || isFlex()">

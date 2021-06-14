@@ -8,8 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.InOutMidNightTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheetForCalc;
@@ -31,16 +31,14 @@ public class MidNightTimeSheetForCalcList {
 	 * 深夜時間帯一覧を作成する
 	 * @param calcRange 計算範囲
 	 * @param midNightTimeSheet 深夜時間帯
-	 * @param dedTimeSheet 控除時間帯
-	 * @param recordTimeSheet 控除用控除時間帯
+	 * @param deductTimeSheet 控除時間帯
 	 * @param roundSetting 深夜時間丸め設定
 	 * @return 計算用深夜時間帯一覧
 	 */
 	public static MidNightTimeSheetForCalcList create(
 			TimeSpanForDailyCalc calcRange,
 			MidNightTimeSheet midNightTimeSheet,
-			List<TimeSheetOfDeductionItem> dedTimeSheet,
-			List<TimeSheetOfDeductionItem> recordTimeSheet,
+			DeductionTimeSheet deductTimeSheet,
 			TimeRoundingSetting roundSetting) {
 		
 		//最大の計算範囲に対する深夜時間帯を取得する
@@ -50,7 +48,7 @@ public class MidNightTimeSheetForCalcList {
 		
 		return new MidNightTimeSheetForCalcList(
 				allMidNight.stream()
-						.map(m -> MidNightTimeSheetForCalc.create(calcRange, m, dedTimeSheet, recordTimeSheet, roundSetting))
+						.map(m -> MidNightTimeSheetForCalc.create(calcRange, m, deductTimeSheet, roundSetting))
 						.filter(m -> m.isPresent())
 						.map(m -> m.get())
 						.collect(Collectors.toList()));

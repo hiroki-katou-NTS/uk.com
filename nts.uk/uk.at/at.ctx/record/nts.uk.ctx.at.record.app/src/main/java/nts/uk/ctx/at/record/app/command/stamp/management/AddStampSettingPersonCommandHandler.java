@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.stamp.management;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -33,6 +34,6 @@ public class AddStampSettingPersonCommandHandler extends CommandHandler<AddStamp
 			repo.update(command.toDomain(checkUpdate.get().getLstStampPageLayout()));
 		else
 			// add 個人利用の打刻設定
-			repo.insert(command.toDomain(checkUpdate.get().getLstStampPageLayout()));
+			repo.insert(command.toDomain(new ArrayList<>()));
 	}
 }

@@ -99,7 +99,7 @@ module nts.uk.at.view.kbt002.f {
         vm.$grid.ntsGrid({
           name: '#[KBT002_126]',
           width: "1200px",
-          height: "490px",
+          height: "450px",
           dataSource: vm.dataSourceModel(),
           primaryKey: 'execItemCd',
           columns: [

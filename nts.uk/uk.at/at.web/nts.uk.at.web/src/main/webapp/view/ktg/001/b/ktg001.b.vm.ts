@@ -71,7 +71,7 @@ module nts.uk.at.view.ktg001.b {
 				if (data.approvedDataExecutionResultDto) {
 					let approvedDataExecution = data.approvedDataExecutionResultDto;
 
-					vm.title(approvedDataExecution.topPagePartName);
+					vm.title(_.isNil(approvedDataExecution.topPagePartName) ? vm.$i18n('KTG001_12') : approvedDataExecution.topPagePartName);
 
 					if(approvedDataExecution.approvedAppStatusDetailedSettings) {
 							approvedDataExecution.approvedAppStatusDetailedSettings.forEach(s => {
@@ -90,7 +90,6 @@ module nts.uk.at.view.ktg001.b {
 						if (s.item == AGG) {
 							vm.aggrChecked(s.displayType == USE ? true : false);
 						}
-
 					})
 					} else {
 						vm.title(vm.$i18n('KTG001_12'));
@@ -99,6 +98,11 @@ module nts.uk.at.view.ktg001.b {
 						vm.monChecked(approvalProcessingUse.useMonthApproverConfirm);
 						vm.aggrChecked(false);
 					}
+				} else {
+					vm.appChecked(true);
+					vm.dayChecked(vm.dayRowVisible());
+					vm.monChecked(vm.monRowVisible());
+					vm.aggrChecked(vm.aggrRowVisible());
 				}
 			}).always(() => vm.$blockui("clear"));
 

@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.timeseries.HolidayWorkTimeOfTimeSeries;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculation;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 
 /**
@@ -37,6 +38,10 @@ public class AggregateHolidayWorkTime implements Cloneable, Serializable {
 	private AttendanceTimeMonth legalHolidayWorkTime;
 	/** 法定内振替休出時間 */
 	private AttendanceTimeMonth legalTransferHolidayWorkTime;
+	/** フレックス内休出時間 */
+	private AttendanceTimeMonth flexHolidayWorkTime;
+	/** フレックス内振替休出時間 */
+	private AttendanceTimeMonth flexTransferHolidayWorkTime;
 	
 	/** 時系列ワーク */
 	private Map<GeneralDate, HolidayWorkTimeOfTimeSeries> timeSeriesWorks;
@@ -54,6 +59,8 @@ public class AggregateHolidayWorkTime implements Cloneable, Serializable {
 		this.transferTime = TimeMonthWithCalculation.ofSameTime(0);
 		this.legalHolidayWorkTime = new AttendanceTimeMonth(0);
 		this.legalTransferHolidayWorkTime = new AttendanceTimeMonth(0);
+		this.flexHolidayWorkTime = new AttendanceTimeMonth(0);
+		this.flexTransferHolidayWorkTime = new AttendanceTimeMonth(0);
 		
 		this.timeSeriesWorks = new HashMap<>();
 	}
@@ -66,6 +73,8 @@ public class AggregateHolidayWorkTime implements Cloneable, Serializable {
 	 * @param transferTime 振替時間
 	 * @param legalHolidayWorkTime 法定内休出時間
 	 * @param legalTransferHolidayWorkTime 法定内振替休出時間
+	 * @param flexHolidayWorkTime フレックス内休出時間
+	 * @param flexTransferHolidayWorkTime フレックス内振替休出時間
 	 * @return 集計休出時間
 	 */
 	public static AggregateHolidayWorkTime of(
@@ -74,7 +83,9 @@ public class AggregateHolidayWorkTime implements Cloneable, Serializable {
 			AttendanceTimeMonth beforeHolidayWorkTime,
 			TimeMonthWithCalculation transferTime,
 			AttendanceTimeMonth legalHolidayWorkTime,
-			AttendanceTimeMonth legalTransferHolidayWorkTime){
+			AttendanceTimeMonth legalTransferHolidayWorkTime,
+			AttendanceTimeMonth flexHolidayWorkTime,
+			AttendanceTimeMonth flexTransferHolidayWorkTime){
 		
 		val domain = new AggregateHolidayWorkTime(holidayWorkFrameNo);
 		domain.holidayWorkTime = holidayWorkTime;
@@ -82,6 +93,8 @@ public class AggregateHolidayWorkTime implements Cloneable, Serializable {
 		domain.transferTime = transferTime;
 		domain.legalHolidayWorkTime = legalHolidayWorkTime;
 		domain.legalTransferHolidayWorkTime = legalTransferHolidayWorkTime;
+		domain.flexHolidayWorkTime = flexHolidayWorkTime;
+		domain.flexTransferHolidayWorkTime = flexTransferHolidayWorkTime;
 		return domain;
 	}
 	
@@ -98,6 +111,8 @@ public class AggregateHolidayWorkTime implements Cloneable, Serializable {
 					new AttendanceTimeMonth(this.transferTime.getCalcTime().v()));
 			cloned.legalHolidayWorkTime = new AttendanceTimeMonth(this.legalHolidayWorkTime.v());
 			cloned.legalTransferHolidayWorkTime = new AttendanceTimeMonth(this.legalTransferHolidayWorkTime.v());
+			cloned.flexHolidayWorkTime = new AttendanceTimeMonth(this.flexHolidayWorkTime.v());
+			cloned.flexTransferHolidayWorkTime = new AttendanceTimeMonth(this.flexTransferHolidayWorkTime.v());
 		}
 		catch (Exception e){
 			throw new RuntimeException("AggregateHolidayWorkTime clone error.");
@@ -159,13 +174,15 @@ public class AggregateHolidayWorkTime implements Cloneable, Serializable {
 	 * 集計する
 	 * @param datePeriod 期間
 	 */
-	public void aggregate(DatePeriod datePeriod){
+	public void aggregate(DatePeriod datePeriod, WorkingSystem workingSystem) {
 
 		this.holidayWorkTime = TimeMonthWithCalculation.ofSameTime(0);
 		this.beforeHolidayWorkTime = new AttendanceTimeMonth(0);
 		this.transferTime = TimeMonthWithCalculation.ofSameTime(0);
 		this.legalHolidayWorkTime = new AttendanceTimeMonth(0);
 		this.legalTransferHolidayWorkTime = new AttendanceTimeMonth(0);
+		this.flexHolidayWorkTime = new AttendanceTimeMonth(0);
+		this.flexTransferHolidayWorkTime = new AttendanceTimeMonth(0);
 		
 		for (val timeSeriesWork : this.timeSeriesWorks.values()){
 			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
@@ -177,6 +194,16 @@ public class AggregateHolidayWorkTime implements Cloneable, Serializable {
 			this.transferTime = this.transferTime.addMinutes(
 					timeSeriesWork.getHolidayWorkTime().getTransferTime().get().getTime().v(),
 					timeSeriesWork.getHolidayWorkTime().getTransferTime().get().getCalcTime().v());
+			
+			if(workingSystem == WorkingSystem.FLEX_TIME_WORK) {
+
+				this.flexHolidayWorkTime = this.flexHolidayWorkTime.addMinutes(
+						timeSeriesWork.getLegalHolidayWorkTime().getHolidayWorkTime().get().getTime().v());
+				this.flexTransferHolidayWorkTime = this.flexTransferHolidayWorkTime.addMinutes(
+						timeSeriesWork.getLegalHolidayWorkTime().getTransferTime().get().getTime().v());
+				continue;
+			}
+			
 			this.legalHolidayWorkTime = this.legalHolidayWorkTime.addMinutes(
 					timeSeriesWork.getLegalHolidayWorkTime().getHolidayWorkTime().get().getTime().v());
 			this.legalTransferHolidayWorkTime = this.legalTransferHolidayWorkTime.addMinutes(
@@ -197,5 +224,7 @@ public class AggregateHolidayWorkTime implements Cloneable, Serializable {
 				target.transferTime.getTime().v(), target.transferTime.getCalcTime().v());
 		this.legalHolidayWorkTime = this.legalHolidayWorkTime.addMinutes(target.legalHolidayWorkTime.v());
 		this.legalTransferHolidayWorkTime = this.legalTransferHolidayWorkTime.addMinutes(target.legalTransferHolidayWorkTime.v());
+		this.flexHolidayWorkTime = this.flexHolidayWorkTime.addMinutes(target.flexHolidayWorkTime.v());
+		this.flexTransferHolidayWorkTime = this.flexTransferHolidayWorkTime.addMinutes(target.flexTransferHolidayWorkTime.v());
 	}
 }

@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.ktgwidget.ktg001;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,7 +63,7 @@ public class GetDayDisplayAtr {
 			CheckTarget checkTarget = checkTargetFinder.getCheckTarget(closingPeriod, yearMonth);
 
 			// 承認すべき日の実績があるかチェックする
-			return checkTrackRecordApprovalDay.checkTrackRecordApprovalDayNew(companyId, employeeId, checkTarget);
+			return checkTrackRecordApprovalDay.checkTrackRecordApprovalDay(companyId, employeeId, Collections.singletonList(checkTarget));
 
 		}
 	}

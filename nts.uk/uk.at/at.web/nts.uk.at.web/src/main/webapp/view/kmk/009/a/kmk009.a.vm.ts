@@ -63,8 +63,8 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 { headerText: nts.uk.resource.getText('KMK009_14'), key: 'summaryAtrName', formatter: _.escape, width: 65 }
             ]);
             self.useSet = ko.observableArray([
-                { code: '1', name: nts.uk.resource.getText("KMK009_12") },
-                { code: '0', name: nts.uk.resource.getText("KMK009_13") },
+                { code: 1, name: nts.uk.resource.getText("KMK009_12") },
+                { code: 0, name: nts.uk.resource.getText("KMK009_13") },
             ]);
             self.selectUse = ko.observable(0);
             self.selectUppper = ko.observable(0);

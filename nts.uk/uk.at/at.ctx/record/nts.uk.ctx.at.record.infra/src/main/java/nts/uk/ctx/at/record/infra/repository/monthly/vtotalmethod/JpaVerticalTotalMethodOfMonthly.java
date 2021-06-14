@@ -10,11 +10,15 @@ import nts.arc.layer.infra.data.JpaRepository;
 //import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.WorkTypeClassification;
 import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcmtCalcMAgg;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.DefoAggregateMethodOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.FlexAggregateCompensatoryTimeSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.FlexAggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.SpecCountNotCalcSubject;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.SpecTotalCountMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.TADaysCountCondOfMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.TADaysCountOfMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.VerticalTotalMethodOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.FlexAggregateCompensatoryTimeSet.TimeCompensatoryUsageDeductMethod;
 
 /**
  * The Class JpaVerticalTotalMethodOfMonthly.
@@ -61,7 +65,12 @@ public class JpaVerticalTotalMethodOfMonthly extends JpaRepository implements Ve
 						entity.countContiousWorkDay, 
 						entity.countNoWorkDay, 
 						EnumAdaptor.valueOf(entity.calcTargetOutCountCondition, SpecCountNotCalcSubject.class)), 
-				entity.weekPremiumCalcWithPrevMonthLastWeek);
+				entity.weekPremiumCalcWithPrevMonthLastWeek,
+				DefoAggregateMethodOfMonthly.of(entity.methodEnterInMonthDeforLabor),
+				new FlexAggregateMethodOfMonthly(entity.methodEnterInMonthFlex,
+												new FlexAggregateCompensatoryTimeSet(
+														entity.compensatoryPenaltyMonthly, 
+														EnumAdaptor.valueOf(entity.compensatoryUsageTimeDeductMethod, TimeCompensatoryUsageDeductMethod.class))));
 	}
 	
 	/**
@@ -78,6 +87,10 @@ public class JpaVerticalTotalMethodOfMonthly extends JpaRepository implements Ve
 		entity.countContiousWorkDay = setting.getSpecTotalCountMonthly().isContinuousCount();
 		entity.countNoWorkDay = setting.getSpecTotalCountMonthly().isNotWorkCount();
 		entity.weekPremiumCalcWithPrevMonthLastWeek = setting.isCalcWithPreviousMonthLastWeek();
+		entity.methodEnterInMonthDeforLabor = setting.getDefoAggregateMethod().getPremiumTimeCalcMethod().value;
+		entity.methodEnterInMonthFlex = setting.getFlexAggregateMethod().isDivisionOnEntryRetire();
+		entity.compensatoryPenaltyMonthly = setting.getFlexAggregateMethod().getCompensatoryTimeSet().isCompensatoryPenalty();
+		entity.compensatoryUsageTimeDeductMethod = setting.getFlexAggregateMethod().getCompensatoryTimeSet().getTimeCompensatoryDeductMethod().value;
 		return entity;
 	}
 

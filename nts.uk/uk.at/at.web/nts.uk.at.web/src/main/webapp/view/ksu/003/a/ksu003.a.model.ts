@@ -158,6 +158,14 @@ module nts.uk.at.view.ksu003.a.model {
 	export function checkTimeOfChart(time: any, timeRangeLimit: any, dispStartHours: any) {
 		// check start time
 		let self = this;
+		//if (time > timeRangeLimit) time = timeRangeLimit;
+		if (time < ((dispStartHours * 60) / 5)) time = ((dispStartHours * 60) / 5);
+		return time;
+	}
+	
+	export function checkTimeChart(time: any, timeRangeLimit: any, dispStartHours: any) {
+		// check start time
+		let self = this;
 		if (time > timeRangeLimit) time = timeRangeLimit;
 		if (time < ((dispStartHours * 60) / 5)) time = ((dispStartHours * 60) / 5);
 		return time;
@@ -1261,13 +1269,22 @@ module nts.uk.at.view.ksu003.a.model {
 		FLOW = 2,
 		TIMEDIFFERENCE = 3
 	}
-
+	
 	export class ItemModel {
 		code: string;
 		name: string;
 		constructor(code: string, name: string) {
 			this.code = code;
 			this.name = name;
+		}
+	}
+	
+	export class RangeModel {
+		name : string;
+		code: number;
+		constructor(name : string,code: number) {
+			this.name = name;
+			this.code = code;
 		}
 	}
 

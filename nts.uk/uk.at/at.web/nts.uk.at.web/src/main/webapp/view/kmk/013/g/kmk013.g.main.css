@@ -1,3 +1,7 @@
+.goback {
+	margin-right: 35px;
+}
+
 .form-label {
 	margin-left: 20px;
 }
@@ -14,4 +18,20 @@
 
 .nts-switch-button {
 	width: 70px;
+}
+
+/*new UI*/
+.switchbox-wrappers {
+	display: inline-block;
+}
+
+.switchbox-wrappers .radio-wrapper span {
+	width: 70px;
+	text-align: center;
+}
+
+.control-group .child-lb {
+	margin-left: 40px;
+	margin-right: 20px;
+	width: 170px;
 }

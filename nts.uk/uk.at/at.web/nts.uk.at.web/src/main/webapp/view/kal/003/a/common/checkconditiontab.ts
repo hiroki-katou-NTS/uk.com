@@ -191,7 +191,7 @@ module nts.uk.at.view.kal003.a.tab {
                 let mulMonCheckCondSet = self.listMulMonCheckSet()[rowId() - 1];
                 if (mulMonCheckCondSet) {
                     if (_.isEmpty(mulMonCheckCondSet.erAlAtdItem())) {
-                        mulMonCheckCondSet.erAlAtdItem(shareutils.getDefaultCondition(0));
+                        mulMonCheckCondSet.erAlAtdItem(shareutils.getDefaultCondition(rowId()));
                     }
                     self.showDialogMulMonKal003B(mulMonCheckCondSet, rowId());
                 }

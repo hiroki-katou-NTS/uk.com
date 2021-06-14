@@ -52,7 +52,7 @@ public class CollectMailNotifierImpl implements CollectMailNotifierService {
 			if(CollectionUtil.isEmpty(listApprover)){
 				continue;
 			}
-			List<String> listUnapproveApprover = approveService.getUnapproveApproverFromPhase(approvalPhaseState);
+			List<String> listUnapproveApprover = approveService.getApprovedApproverFromPhase(approvalPhaseState);
 			if(CollectionUtil.isEmpty(listUnapproveApprover)){
 				continue;
 			}
