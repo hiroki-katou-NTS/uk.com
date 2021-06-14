@@ -37,6 +37,7 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
 
     active: KnockoutObservable<boolean> = ko.observable(false);
     enableDeleteButton: KnockoutComputed<boolean>;
+    enableWorkRequestInput: KnockoutComputed<boolean>;
 
     constructor(params: any) {
       super();
@@ -101,6 +102,9 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
               }
           }
           return false;
+      });
+      vm.enableWorkRequestInput = ko.computed(() => {
+          return vm.workRequest() == 1;
       });
     }
 
@@ -211,6 +215,9 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
                   isAlreadySetting: true
               })));
               vm.alreadySettingWorkplaceGroups(data.workPlaceGroupList || []);
+          } else {
+              vm.alreadySettingWorkplaces([]);
+              vm.alreadySettingWorkplaceGroups([]);
           }
       }).fail((error) => {
           vm.$dialog.error(error);

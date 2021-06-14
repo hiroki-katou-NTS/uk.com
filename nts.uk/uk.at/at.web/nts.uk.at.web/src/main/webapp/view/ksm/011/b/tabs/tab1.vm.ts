@@ -20,6 +20,8 @@ module nts.uk.at.view.ksm011.b.tabs.tab1 {
     deadlineSelected: KnockoutObservable<number> = ko.observable(0);
     deadlineWorkSelected: KnockoutObservable<number> = ko.observable(0);
 
+    enableWorkRequestInput: KnockoutComputed<boolean>;
+
     constructor(params: any) {
       super();
       const vm = this;
@@ -42,6 +44,9 @@ module nts.uk.at.view.ksm011.b.tabs.tab1 {
       vm.daysList(days);
 
       vm.initialLoadPage();
+      vm.enableWorkRequestInput = ko.computed(() => {
+          return vm.workRequest() == 1;
+      });
     }
 
     mounted() {
