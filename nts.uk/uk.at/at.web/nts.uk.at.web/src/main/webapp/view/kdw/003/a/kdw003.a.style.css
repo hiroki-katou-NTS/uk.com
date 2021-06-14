@@ -12,7 +12,7 @@
 }
 
 #dislayFormatLbl {
-	margin-left: 20px;
+	/* margin-left: 20px; */
 	top: -12px;
     position: relative;
 }
@@ -33,7 +33,7 @@
 
 #btn-signAll {
 	/* margin: 3px 0 0 200px; */
-	margin-left: 185px;
+	margin-left: 146px;
 }
 
 #btn-saveColumnWidth {
@@ -176,7 +176,7 @@
 	margin-left: 10px;
 	height: 80px;
 	position: absolute;
-	left: 872px;
+	left: 1000px;
 	top: 2px;
 /* 	float: left;
 	margin-top: -24px; */
@@ -192,7 +192,7 @@
 	margin-top: -18px;
 	margin-left: -10px;
 	margin-bottom: 10px;
-    width: 800px;
+/*     width: 800px; */
     height: 30px !important;
 }
 .ui-iggrid .ui-iggrid-headercaption, .ui-iggrid .ui-iggrid-header, .ui-iggrid .ui-iggrid-toolbar {
@@ -435,8 +435,14 @@ table#employ_view tr{
 }
 #cbDisplayFormat{
 	height: 27px;
-    bottom: -10px;
+    bottom: -14px;
     width: 110px;
+}
+#dislayFormatLblf{
+    bottom: -7px;
+}
+#btn-setting{
+	bottom: -7px;
 }
 /* #dislayFormatLbl{
 	height: 25px;

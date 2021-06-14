@@ -133,7 +133,7 @@ module nts.uk.at.view.kbt002.c {
       vm.$blockui("grayout");
       const params = new ExecutionSettingDto();
       params.repeatCls = vm.curExecSetting().repeatCls();
-      params.enabledSetting = vm.curExecSetting().enabledSetting();
+      params.enabledSetting = vm.isNewMode ? true : vm.curExecSetting().enabledSetting();
       params.execItemCd = vm.execItemCd();
       params.newMode = vm.isNewMode;
       params.repeatContent = vm.selectExec(); //実行タイプ
