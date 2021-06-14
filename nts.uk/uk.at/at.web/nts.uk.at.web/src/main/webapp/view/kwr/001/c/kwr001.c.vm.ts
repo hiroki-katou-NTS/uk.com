@@ -109,8 +109,8 @@ module nts.uk.at.view.kwr001.c {
                 self.C3_3_value = ko.observable("");
 
                 self.roundingRules = ko.observableArray([
-                    { code: '0', name: nts.uk.resource.getText("KWR001_58") },
-                    { code: '1', name: nts.uk.resource.getText("KWR001_59") }
+                    { code: 0, name: nts.uk.resource.getText("KWR001_58") },
+                    { code: 1, name: nts.uk.resource.getText("KWR001_59") }
                 ]);
                 self.selectedRuleCode = ko.observable(0);
                 self.currentCodeListSwap = ko.observableArray([]);

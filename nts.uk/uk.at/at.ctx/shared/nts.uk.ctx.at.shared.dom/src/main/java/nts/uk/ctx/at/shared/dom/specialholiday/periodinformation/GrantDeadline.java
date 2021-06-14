@@ -70,7 +70,7 @@ public class GrantDeadline extends DomainObject {
 		if(limitCarryoverDays != null)
 			carryOverDays = Optional.of(new LimitCarryoverDays(limitCarryoverDays));
 
-		if(timeSpecifyMethod==0 && limitCarryoverDays != null)
+		if(limitCarryoverDays != null)
 			accumulationDays = Optional.of(new LimitAccumulationDays(true, carryOverDays));
 
 		return new GrantDeadline(

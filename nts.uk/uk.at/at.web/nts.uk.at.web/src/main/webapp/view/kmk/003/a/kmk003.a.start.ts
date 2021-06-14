@@ -6,6 +6,7 @@ module nts.uk.at.view.kmk003.a {
             $('#search-daily-atr').focus();
             setTimeout(function () {
                 $('.clear-icon').trigger("click");
+                $('#tab-panel > .tabs-content').addClass('left-122');
             }, 100)
         });
     });
