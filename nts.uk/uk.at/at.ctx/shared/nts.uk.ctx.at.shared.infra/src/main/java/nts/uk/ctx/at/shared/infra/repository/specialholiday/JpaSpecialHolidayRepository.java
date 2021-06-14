@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -599,11 +600,16 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 						oldGrantPeriodic1.deadlineYears = d.getYears().v();
 					});
 					
+					AtomicBoolean isLimitCarryoverDaysPresent = new AtomicBoolean(false);
 					grantPeriodic.getLimitAccumulationDays().ifPresent(d -> {
 						d.getLimitCarryoverDays().ifPresent(c -> {
 							oldGrantPeriodic1.limitCarryoverDays = c.v();
+							isLimitCarryoverDaysPresent.set(true);
 						});
 					});
+					if(!isLimitCarryoverDaysPresent.get()) {
+						oldGrantPeriodic1.limitCarryoverDays = null;
+					}
 					
 					oldGrantPeriodic1.timeMethod = grantPeriodic.getTimeSpecifyMethod().value;
 					this.commandProxy().update(oldGrantPeriodic1);
@@ -630,11 +636,16 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 					} else if (timeLimitSpec == TimeLimitSpecification.AVAILABLE_UNTIL_NEXT_GRANT_DATE) {
 						
 					}
+					AtomicBoolean isLimitCarryoverDaysPresent = new AtomicBoolean(false);
 					specialHoliday.getGrantRegular().getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays().ifPresent(d -> {
 						d.getLimitCarryoverDays().ifPresent(c -> {
 							oldGrantPeriodic3.limitCarryoverDays = c.v();
+							isLimitCarryoverDaysPresent.set(true);
 						});
 					});
+					if(!isLimitCarryoverDaysPresent.get()) {
+						oldGrantPeriodic3.limitCarryoverDays = null;
+					}
 					if(null != timeLimitSpec) {
 						oldGrantPeriodic3.timeMethod = timeLimitSpec.value;
 					} else {
