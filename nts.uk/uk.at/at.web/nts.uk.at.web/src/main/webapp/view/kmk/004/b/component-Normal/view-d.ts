@@ -26,13 +26,8 @@ module nts.uk.at.view.kmk004.b {
 				<p class="title" data-bind="i18n: 'KMK004_228'"></p>
 				<hr></hr>
 				<div class="name" data-bind="i18n: emloyment.name"></div>
-<<<<<<< HEAD
 				<div >
 					<div data-bind="ntsFormLabel: {inline: true}, text: $i18n('KMK004_229')"></div>
-=======
-				<div>
-					<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
->>>>>>> parent of a23334c9181 (KMK004 Fix bug #117502)
 					<!-- ko if: checkSeting -->
 						<button tabindex="5" data-bind="i18n: 'KMK004_341', click: openDialogF"></button>
 					<!-- /ko -->
@@ -49,11 +44,7 @@ module nts.uk.at.view.kmk004.b {
 						checkSeting: checkSeting
 					}
 				}"></div>
-<<<<<<< HEAD
 				<div  class="label1" data-bind="ntsFormLabel: {inline: true}, text: $i18n('KMK004_232')"></div>
-=======
-				<div class="label1" data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
->>>>>>> parent of a23334c9181 (KMK004 Fix bug #117502)
 				<div class="content-data">
 					<div >
 						<button tabindex="6" data-bind="i18n: 'KMK004_233', click: openDialogQ"></button>
