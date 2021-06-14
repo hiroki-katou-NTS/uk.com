@@ -22,37 +22,4 @@ public class WorkInformationStampHelper {
 				Optional.of(new WorkLocationCD("wkCD")), 
 				Optional.of(new SupportCardNumber(9999)));
 	}
-	
-	public static WorkInformationStamp getStampDefault3() {
-		return new WorkInformationStamp(
-				Optional.empty(), 
-				Optional.of(new EmpInfoTerminalCode("emCD")), 
-				Optional.empty(), 
-				Optional.empty());
-	}
-	
-	public static WorkInformationStamp getStampDefault4() {
-		return new WorkInformationStamp(
-				Optional.empty(), 
-				Optional.of(new EmpInfoTerminalCode("emCD")), 
-				Optional.of(new WorkLocationCD("workLocationCD")), 
-				Optional.empty());
-	}
-	
-	public static WorkInformationStamp getStampDefault5() {
-		return new WorkInformationStamp(
-				Optional.of("workPlaceId"), 
-				Optional.of(new EmpInfoTerminalCode("emCD")), 
-				Optional.of(new WorkLocationCD("workLocationCD")), 
-				Optional.empty());
-	}
-	
-	public static WorkInformationStamp getStampDefault6() {
-		return new WorkInformationStamp(
-				Optional.empty(), 
-				Optional.empty(), 
-				Optional.empty(), 
-				Optional.empty());
-	}
-	
 }

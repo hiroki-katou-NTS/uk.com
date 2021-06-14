@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTimeInputMethodFi
 import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTimeSettingFinder;
 import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTypeDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTypeFinder;
+import nts.uk.ctx.at.record.app.find.divergence.time.OtsukaOptionFinder;
 import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceNameDivergenceDto;
 import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceTypeDivergenceAdapterDto;
 
@@ -51,6 +52,9 @@ public class DivergenceTimeWebService extends WebService {
 	/** The div type finder. */
 	@Inject
 	private DivergenceTypeFinder divTypeFinder;
+	
+	@Inject
+	private OtsukaOptionFinder optionFinder;
 
 	/**
 	 * get all divergence time.
@@ -145,4 +149,9 @@ public class DivergenceTimeWebService extends WebService {
 				.collect(Collectors.toList());
 	}
 
+	@POST
+	@Path("getOtsukaOption")
+	public boolean getOtsukaOption() {
+		return this.optionFinder.getOtsukaOption();
+	}
 }

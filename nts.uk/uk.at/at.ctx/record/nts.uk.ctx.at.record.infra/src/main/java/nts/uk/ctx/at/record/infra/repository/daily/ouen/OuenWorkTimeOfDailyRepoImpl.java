@@ -121,4 +121,13 @@ public class OuenWorkTimeOfDailyRepoImpl extends JpaRepository implements OuenWo
 		return premiumTimes;
 	}
 
+	@Override
+	public void remove(String sid, GeneralDate ymd) {
+		String delete = "delete from KrcdtDayOuenTime o " + " where o.pk.sid = :sid "
+				+ " and o.pk.ymd = :ymd ";
+		this.getEntityManager().createQuery(delete).setParameter("sid", sid)
+												   .setParameter("ymd", ymd)
+												   .executeUpdate();
+	}
+
 }
