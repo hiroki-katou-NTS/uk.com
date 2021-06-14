@@ -46,7 +46,7 @@ module nts.uk.at.view.kdw002.c {
 
                 this.bussinessColumn = ko.observableArray([
                     { headerText: 'ID', key: 'roleId', width: 100, hidden: true },
-                    { headerText: getText('KDW002_12'), key: 'roleCode', width: 40 },
+                    { headerText: getText('KDW002_12'), key: 'roleCode', width: 70 },
                     { headerText: getText('KDW002_4'), key: 'roleName', width: 230, formatter: _.escape },
                 ]);
 
