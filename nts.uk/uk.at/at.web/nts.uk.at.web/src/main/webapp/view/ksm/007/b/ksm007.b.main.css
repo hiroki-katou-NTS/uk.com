@@ -25,13 +25,26 @@
 }
 
 .control-group .form-label {
-  width: 125px;
+  width: 115px;
+  float: left;
 }
 
 .nightShiftHours {
   width: 70px;
 }
 
+
 .nts-switch-button {
   width: 54px;
+}
+.ksm007-left-content {
+  float: left;
+  width: 38%;
+  padding-left: 10px;
+}
+
+.ksm007-right-content {
+  padding-left: 30px;
+  float: left;
+  width: 55%;
 }

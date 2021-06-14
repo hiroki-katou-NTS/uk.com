@@ -1,6 +1,6 @@
 module nts.uk.com.view.ccg013.c.viewmodel {
     import randomId = nts.uk.util.randomId;
-    export class ScreenModel {
+    export class ScreenModel extends ko.ViewModel {
         //Text edittor
         nameTitleBar: KnockoutObservable<string>;
         titleBar: KnockoutObservable<any>;
@@ -40,6 +40,7 @@ module nts.uk.com.view.ccg013.c.viewmodel {
         getData: boolean;
 
         constructor() {
+            super();
             var self = this;
             self.nameTitleBar = ko.observable("");
             self.titleBar = ko.observable(null);
@@ -118,7 +119,7 @@ module nts.uk.com.view.ccg013.c.viewmodel {
 
         start(): JQueryPromise<any> {
             var self = this;
-            var dfd = $.Deferred();
+            var dfd = $.Deferred<void>();
 
             var titleBar = nts.uk.ui.windows.getShared("titleBar");
             if (titleBar) {
@@ -153,8 +154,8 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                     self.newItems(_.orderBy(newData, ['order'], ['asc']));
                 }
                 self.disableSwapButton();
+
                 dfd.resolve();
-                $("#C1_3").focus();
             }).fail(function () {
                 dfd.reject();
             });
@@ -331,35 +332,32 @@ module nts.uk.com.view.ccg013.c.viewmodel {
          * Close the popup
          */
         submit() {
-            var self = this;
+            const vm = this;
             let index = 1;
 
-            $(".nts-input").ntsError("validate");
-            setTimeout(function () {
-                if (!$(".nts-input").ntsError("hasError")) {
+            vm.$validate().then((valid: boolean) => {
+                if (!valid) {
                     return;
                 }
-            }, 300);
-            if (nts.uk.ui.errors.hasError()) {
-                return;
-            }
-            _.each(self.newItems(), (item) => {
-                item.order = index;
-                item.displayOrder = index;
-                index++;
-            });
 
-            if (self.titleMenuId()) {
-                nts.uk.ui.windows.setShared("CCG013C_TEXT_COLOR", self.letterColor());
-                nts.uk.ui.windows.setShared("CCG013C_BACKGROUND_COLOR", self.backgroundColor());
-                nts.uk.ui.windows.setShared("CCG013C_TITLE_MENU_NAME", self.nameTitleBar());
-            } else {
-                let titleBar = new TitleBar(self.nameTitleBar(), self.letterColor(),
-                    self.backgroundColor(), self.newItems());
-                nts.uk.ui.windows.setShared("CCG013C_TitleBar", titleBar);
-            }
-            nts.uk.ui.windows.setShared("CCG013C_MENUS", self.newItems());
-            nts.uk.ui.windows.close();
+                _.each(vm.newItems(), (item) => {
+                    item.order = index;
+                    item.displayOrder = index;
+                    index++;
+                });
+    
+                if (vm.titleMenuId()) {
+                    nts.uk.ui.windows.setShared("CCG013C_TEXT_COLOR", vm.letterColor());
+                    nts.uk.ui.windows.setShared("CCG013C_BACKGROUND_COLOR", vm.backgroundColor());
+                    nts.uk.ui.windows.setShared("CCG013C_TITLE_MENU_NAME", vm.nameTitleBar());
+                } else {
+                    let titleBar = new TitleBar(vm.nameTitleBar(), vm.letterColor(),
+                        vm.backgroundColor(), vm.newItems());
+                    nts.uk.ui.windows.setShared("CCG013C_TitleBar", titleBar);
+                }
+                nts.uk.ui.windows.setShared("CCG013C_MENUS", vm.newItems());
+                nts.uk.ui.windows.close();
+            });
         }
 
         /**

@@ -36,19 +36,19 @@ module nts.uk.at.view.kmw005.a {
                 self.actualLockColumn = ko.observableArray([
                     { headerText: getText(''), key: 'closureId', hide: true },
                     { headerText: getText('KMW005_3'), key: 'closureName', width: 105 },
-                    { headerText: getText('KMW005_4'), key: 'period', width: 200 },
+                    { headerText: getText('KMW005_4'), key: 'period', width: 220 },
                     { headerText: getText('KMW005_5'), key: 'dailyLockState', width: 70, formatter: lockIcon },
                     { headerText: getText('KMW005_6'), key: 'monthlyLockState', width: 70, formatter: lockIcon }
                 ]);
 
                 self.dailyActualLockOpt = ko.observableArray([
-                    { code: '1', name: getText("KMW005_11") },
-                    { code: '0', name: getText("KMW005_12") }
+                    { code: 1, name: getText("KMW005_11") },
+                    { code: 0, name: getText("KMW005_12") }
                 ]);
 
                 self.monthlyActualLockOpt = ko.observableArray([
-                    { code: '1', name: getText("KMW005_15") },
-                    { code: '0', name: getText("KMW005_16") }
+                    { code: 1, name: getText("KMW005_15") },
+                    { code: 0, name: getText("KMW005_16") }
                 ]);
                 self.closureName = ko.observable("");
                 self.selectedClosureText = ko.computed(function() {

@@ -107,7 +107,8 @@ public class RoleIndividualFinder {
 			return null;
 		
 		// Get List Enum RoleType
-		List<EnumConstant> enumRoleType = EnumAdaptor.convertToValueNameList(RoleType.class,  RoleType.SYSTEM_MANAGER, RoleType.COMPANY_MANAGER, RoleType.GROUP_COMAPNY_MANAGER);
+		// #117468 - no 6 remove 「グループ会社管理者」
+		List<EnumConstant> enumRoleType = EnumAdaptor.convertToValueNameList(RoleType.class,  RoleType.SYSTEM_MANAGER, RoleType.COMPANY_MANAGER);
 		
 		// Get list Company Information
 		List<CompanyImport> listCompanyImport = companyAdapter.findAllCompany();

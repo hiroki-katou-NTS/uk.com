@@ -75,7 +75,7 @@ module nts.custom.component {
                                 multiple: false,
                                 columns: [
                                     { headerText: '', key: 'maintenanceLayoutID', width: 100, hidden: true },
-                                    { headerText: text('CPS001_26'), key: 'layoutName', width: 232, hidden: false }
+                                    { headerText: text('CPS001_26'), key: 'layoutName', width: 240, hidden: false }
                                 ],
                                 primaryKey: 'maintenanceLayoutID',
                                 value: gridlist.value,
