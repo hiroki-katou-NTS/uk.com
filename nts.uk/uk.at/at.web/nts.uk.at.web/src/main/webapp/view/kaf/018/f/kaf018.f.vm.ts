@@ -427,7 +427,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 		empCD: string;
 		empName: string;
 		monthConfirm: boolean;
-		monthApproval: boolean;
+		monthApproval: number;
 		empID: string;
 	}
 	
@@ -469,9 +469,9 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 				this.empCD = apprSttConfirmEmp.empCD;
 				this.empName = apprSttConfirmEmp.empName;
 				this.sttUnConfirmDay = _.chain(apprSttConfirmEmp.listDailyConfirm).filter(o => !o.personConfirm).isEmpty().value() ? vm.$i18n('KAF018_530') : "";
-				this.sttUnApprDay = _.chain(apprSttConfirmEmp.listDailyConfirm).filter(o => o.bossConfirm!=2).isEmpty().value() ? vm.$i18n('KAF018_530') : "";
+				this.sttUnApprDay = _.chain(apprSttConfirmEmp.listDailyConfirm).filter(o => o.bossConfirm!=DailyConfirmAtr.ALREADY_APPROVED).isEmpty().value() ? vm.$i18n('KAF018_530') : "";
 				this.sttUnConfirmMonth = apprSttConfirmEmp.monthConfirm ? vm.$i18n('KAF018_530') : "";
-				this.sttUnApprMonth = apprSttConfirmEmp.monthApproval ? vm.$i18n('KAF018_530') : "";
+				this.sttUnApprMonth = apprSttConfirmEmp.monthApproval==DailyConfirmAtr.ALREADY_APPROVED ? vm.$i18n('KAF018_530') : "";
 				let a: Array<DateInfo> = [],
 					apprSttComfirmSet = vm.apprSttComfirmSet,
 					dateRangeNumber = moment(vm.endDate,'YYYY/MM/DD').diff(moment(vm.startDate,'YYYY/MM/DD'), 'days');
