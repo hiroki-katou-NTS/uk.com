@@ -3,13 +3,13 @@ module nts.uk.com.view.kcp017.a.viewmodel {
     const template = `
     <div id="kcp017-component" 
         class="panel" 
-        style="display: inline-block; width: 100%;" 
+        style="display: inline-block;" 
         data-bind="css: {
             ntsPanel: !onDialog(), 
             'caret-right': !onDialog(), 
             'caret-background': !onDialog()
         }">
-        <div id="switch-area" class="control-group valign-center">
+        <div class="control-group valign-center">
             <div data-bind="ntsFormLabel: {text: $i18n('KCP017_2')}"/>
             <div id="kcp017-switch" data-bind="ntsSwitchButton: {
                 name: $i18n('KCP017_2'),
@@ -22,6 +22,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 value: selectedUnit 
             }"/>
         </div>
+        <hr />
         <div data-bind="visible: selectedUnit() == 0">
             <div id="workplace-tree-grid"/>
         </div>
