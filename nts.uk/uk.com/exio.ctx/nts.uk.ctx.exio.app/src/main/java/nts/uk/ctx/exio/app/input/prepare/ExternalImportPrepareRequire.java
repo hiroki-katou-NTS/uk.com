@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.time.GeneralDate;
@@ -15,6 +16,7 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.PrepareImporting;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
+import nts.uk.ctx.exio.dom.input.canonicalize.PrepareImportingRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
@@ -28,6 +30,8 @@ import nts.uk.ctx.exio.dom.input.validation.condition.ImportingUserCondition;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ExternalImportPrepareRequire {
+	@Inject
+	PrepareImportingRepository prepareImportiongRepo;
 
 	public Require create() {
 		
@@ -68,8 +72,7 @@ public class ExternalImportPrepareRequire {
 
 		@Override
 		public void save(CanonicalizedDataRecord canonicalizedDataRecord) {
-			// TODO Auto-generated method stub
-			
+			prepareImportiongRepo.save(canonicalizedDataRecord);
 		}
 
 		@Override
@@ -80,8 +83,7 @@ public class ExternalImportPrepareRequire {
 
 		@Override
 		public void save(AnyRecordToChange recordToChange) {
-			// TODO Auto-generated method stub
-			
+			prepareImportiongRepo.save(recordToChange);
 		}
 
 		@Override
