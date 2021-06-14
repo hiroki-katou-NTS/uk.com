@@ -5480,7 +5480,8 @@ var nts;
                  *  Public API
                 **/
                 function errorsViewModel() {
-                    return _.get(nts.uk.ui._viewModel, 'kiban.errorDialogViewModel', new ErrorsViewModel());
+                    var errorDialogViewModel = _.get(nts.uk.ui._viewModel, 'kiban.errorDialogViewModel');
+                    return !_.isNil(errorDialogViewModel) ? errorDialogViewModel : new ErrorsViewModel();
                 }
                 errors_1.errorsViewModel = errorsViewModel;
                 function show() {
