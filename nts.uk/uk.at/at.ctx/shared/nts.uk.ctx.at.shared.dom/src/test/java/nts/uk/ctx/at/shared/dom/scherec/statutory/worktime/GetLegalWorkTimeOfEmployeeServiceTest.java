@@ -25,8 +25,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPa
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.GetLegalWorkTimeOfEmployeeService.Require;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonAndWeekStatutoryTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyFlexStatutoryLaborTime;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.ReferencePredTimeOfFlex;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
@@ -144,7 +142,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 				require.getHistoryItemBySidAndBaseDate((String) any, (GeneralDate) any);
 				result = Optional.of(itemHistory);
 				
-				require.getFlexStatutoryTime();
+//				require.getFlexStatutoryTime();
 			}
 		};
 		
@@ -173,7 +171,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		
 		val employeementHists = Helper.createEmployments();
 		val itemHistory = Helper.createItemHistory(WorkingSystem.FLEX_TIME_WORK);
-		val flexPredWorkTime = GetFlexPredWorkTime.of("cid", ReferencePredTimeOfFlex.FROM_MASTER);
+//		val flexPredWorkTime = GetFlexPredWorkTime.of("cid", ReferencePredTimeOfFlex.FROM_MASTER);
 		val flexMonAndWeek = new MonthlyFlexStatutoryLaborTime(new MonthlyEstimateTime(5000)
 				, new MonthlyEstimateTime(4500)
 				, new MonthlyEstimateTime(4000));
@@ -186,8 +184,8 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 				require.getHistoryItemBySidAndBaseDate((String) any, (GeneralDate) any);
 				result = Optional.of(itemHistory);
 				
-				require.getFlexStatutoryTime();
-				result = Optional.of(flexPredWorkTime);
+//				require.getFlexStatutoryTime();
+//				result = Optional.of(flexPredWorkTime);
 				
 				require.flexMonAndWeekStatutoryTime((YearMonth) any, (String) any, (String) any, (GeneralDate) any);
 				result = flexMonAndWeek;
@@ -223,7 +221,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		
 		val employeementHists = Helper.createEmployments();
 		val itemHistory = Helper.createItemHistory(WorkingSystem.FLEX_TIME_WORK);
-		val flexPredWorkTime = GetFlexPredWorkTime.of("cid", ReferencePredTimeOfFlex.FROM_RECORD);
+//		val flexPredWorkTime = GetFlexPredWorkTime.of("cid", ReferencePredTimeOfFlex.FROM_RECORD);
 		val flexMonAndWeek = new MonthlyFlexStatutoryLaborTime(new MonthlyEstimateTime(4800)
 				, new MonthlyEstimateTime(5000)
 				, new MonthlyEstimateTime(5100));
@@ -236,8 +234,8 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 				require.getHistoryItemBySidAndBaseDate((String) any, (GeneralDate) any);
 				result = Optional.of(itemHistory);
 				
-				require.getFlexStatutoryTime();
-				result = Optional.of(flexPredWorkTime);
+//				require.getFlexStatutoryTime();
+//				result = Optional.of(flexPredWorkTime);
 				
 				require.flexMonAndWeekStatutoryTime((YearMonth) any, (String) any, (String) any, (GeneralDate) any);
 				result = flexMonAndWeek;

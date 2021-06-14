@@ -12,10 +12,6 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.app.command.workrecord.monthcal.company.SaveComMonthCalSetCommandHandler;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.companyNew.SaveComStatWorkTimeSetCommandHandler;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.ReferencePredTimeOfFlex;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class Kmk004ComAddCommandHandler.
@@ -33,8 +29,8 @@ public class Kmk004ComSaveCommandHandler extends CommandHandler<Kmk004ComSaveCom
 	private SaveComMonthCalSetCommandHandler saveMonthCommand;
 	
 	/** The get flex pred work time repository. */
-	@Inject
-	private GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepository;
+//	@Inject
+//	private GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -49,9 +45,9 @@ public class Kmk004ComSaveCommandHandler extends CommandHandler<Kmk004ComSaveCom
 		this.saveStatCommand.handle(addCommand.getSaveStatCommand());
 		this.saveMonthCommand.handle(addCommand.getSaveMonthCommand());
 		
-		String companyId = AppContexts.user().companyId();
-		ReferencePredTimeOfFlex reference = ReferencePredTimeOfFlex.valueOf(addCommand.getReferenceFlexPred());
-		GetFlexPredWorkTime getFlexPredWorkTime = GetFlexPredWorkTime.of(companyId, reference);
-		getFlexPredWorkTimeRepository.persistAndUpdate(getFlexPredWorkTime);
+//		String companyId = AppContexts.user().companyId();
+//		ReferencePredTimeOfFlex reference = ReferencePredTimeOfFlex.valueOf(addCommand.getReferenceFlexPred());
+//		GetFlexPredWorkTime getFlexPredWorkTime = GetFlexPredWorkTime.of(companyId, reference);
+//		getFlexPredWorkTimeRepository.persistAndUpdate(getFlexPredWorkTime);
 	}
 }

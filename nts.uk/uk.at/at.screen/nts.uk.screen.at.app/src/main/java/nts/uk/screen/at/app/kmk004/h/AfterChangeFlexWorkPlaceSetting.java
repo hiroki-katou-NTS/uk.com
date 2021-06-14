@@ -36,7 +36,7 @@ public class AfterChangeFlexWorkPlaceSetting {
 		DisplayFlexBasicSettingByWorkPlaceDto displayFlexDto =  this.displayFlexBasicSettingByWorkPlace.displayFlexBasicSettingByWokPlace(wkpId);
 		
 		result.setFlexMonthActCalSet(displayFlexDto.getFlexMonthActCalSet());
-		result.setFlexPredWorkTime(displayFlexDto.getFlexPredWorkTime());
+//		result.setFlexPredWorkTime(displayFlexDto.getFlexPredWorkTime());
 		// 職場リストを表示する
 		result.setAlreadySettings(this.workplaceList.get(LaborWorkTypeAttr.FLEX).stream().map(x -> x.workplaceId)
 				.collect(Collectors.toList()));
