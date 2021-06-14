@@ -3,7 +3,6 @@ package nts.uk.ctx.exio.dom.input.importableitem;
 import java.math.BigDecimal;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.exio.dom.input.DataType;
 
 /**
  * 
@@ -46,23 +45,6 @@ public enum ItemType {
 	private ItemType(int value, String nameId) {
 		this.value = value;
 		this.nameId = nameId;
-	}
-	
-	public DataType getDataType() {
-		switch(this) {
-		case INT:
-		case TIME_DURATION:
-		case TIME_POINT:
-			return DataType.INT;
-		case STRING:
-			return DataType.STRING;
-		case REAL:
-			return DataType.REAL;
-		case DATE:
-			return DataType.DATE;
-		default:
-			throw new RuntimeException("システム上使用できない型が指定されました。");
-		}
 	}
 	
 	// 文字列を項目方に対応する型に変換する
