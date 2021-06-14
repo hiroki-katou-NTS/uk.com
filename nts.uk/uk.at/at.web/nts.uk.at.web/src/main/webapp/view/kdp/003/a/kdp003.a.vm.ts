@@ -1036,7 +1036,7 @@ module nts.uk.at.kdp003.a {
 							});
 						}
 					}
-
+					params.passwordRequired = vm.fingerStampSetting().stampSetting.passwordRequiredArt
 					return vm.$window.modal('at', DIALOG.F, params);
 				})
 				.then((data: f.TimeStampLoginData) => {

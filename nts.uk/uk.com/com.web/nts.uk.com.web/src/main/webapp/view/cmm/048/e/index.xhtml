@@ -6,7 +6,7 @@
 <body>
   <ui:composition template="/master/dialog.xhtml">
     <ui:define name="htmlHead">
-      <script> var dialogSize = { width: 630, height: 550, }; </script>
+      <script> var dialogSize = { width: 630, height: 590, }; </script>
       <com:scriptfile set="IGNITE" />
       <com:scriptfile path="cmm048.e.vm.js" />
       <com:stylefile path="cmm048.e.style.css" />
@@ -14,7 +14,7 @@
       <com:stylefile path="/lib/generic/cropper/cropper.css" of="/nts.uk.com.js.web" />
     </ui:define>
     <ui:define name="content">
-      <div id="content-area">
+      <div id="contents-area">
         <label id="E1">#{i18n.getText('CMM048_100')}</label>
         <div id="upload" data-bind="ntsImageEditor: {
           editable: true, 

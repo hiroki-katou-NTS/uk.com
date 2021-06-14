@@ -16,6 +16,7 @@
     <kafs08a2 
     @prevStepOne="ProcessPrevStepOne" 
     @nextToStepThree="ProcessNextToStepThree"
+    v-on:initFromDetail="initFromDetail"
     v-bind:derpartureTime="derpartureTime" 
     v-bind:returnTime="returnTime"  
     v-bind:comment="comment"

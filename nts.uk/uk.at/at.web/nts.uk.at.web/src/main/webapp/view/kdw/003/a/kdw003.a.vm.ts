@@ -4881,7 +4881,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         setShared('KDL002_AllItemObj', nts.uk.util.isNullOrEmpty(self.listCode()) ? [] : self.listCode(), true);
                         //selected items
                         setShared('KDL002_SelectedItemId', [self.selectedCode()], true);
-                        modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', width: 700 , height: 520}).onClosed(function(): any {
+                        modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目' }).onClosed(function(): any {
                             let lst = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
                             if (lst != undefined && lst.length > 0 && lst[0].code != "") {
                                 self.updateCodeName(self.rowId(), self.attendenceId, lst[0].name, lst[0].code, self.selectedCode());

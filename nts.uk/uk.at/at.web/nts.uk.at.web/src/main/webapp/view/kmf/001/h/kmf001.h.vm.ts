@@ -32,10 +32,6 @@ module nts.uk.pr.view.kmf001.h {
             // Temp
             employmentList: KnockoutObservableArray<ItemModel>;
             selectedContractTypeCode: KnockoutObservable<string>;
-            
-            
-            //h34
-            linkingManagementATR  : KnockoutObservable<string>;
 
             // Model
             settingModel: KnockoutObservable<SubstVacationSettingModel>;
@@ -52,7 +48,6 @@ module nts.uk.pr.view.kmf001.h {
             // Dirty checker
             dirtyChecker: nts.uk.ui.DirtyChecker;
             //item H32
-            itemListH32: KnockoutObservableArray<any>;
             selectedId: KnockoutObservable<any>;
             constructor() {
                 var self = this;
@@ -113,10 +108,6 @@ module nts.uk.pr.view.kmf001.h {
 
                 self.employmentVisible = ko.observable(self.settingModel().isManage() == 1);
                 self.selectedId = ko.observable(0);
-                self.itemListH32 = ko.observableArray([
-                    new BoxModel(0, nts.uk.resource.getText('KMF001_328')),
-                    new BoxModel(1, nts.uk.resource.getText('KMF001_329')),
-                ]);
             }
 
             /**
@@ -272,9 +263,6 @@ module nts.uk.pr.view.kmf001.h {
                         self.settingModel().expirationDate(res.expirationDate);
                         self.settingModel().allowPrepaidLeave(res.allowPrepaidLeave);
                         self.settingModel().manageDeadline(res.manageDeadline);
-                        self.settingModel().linkingManagementATR(res.linkingManagementATR);
-                        
-                        
                     } else {
                         self.settingModel().isManage(self.manageDistinctEnums()[0].value);
                         self.settingModel().expirationDate(self.vacationExpirationEnums()[0].value);
@@ -411,18 +399,16 @@ module nts.uk.pr.view.kmf001.h {
             expirationDate: KnockoutObservable<number>;
             allowPrepaidLeave: KnockoutObservable<number>;
             manageDeadline:  KnockoutObservable<number>;
-            linkingManagementATR : KnockoutObservable<number>; 
 
             constructor(dto: SubstVacationSettingDto) {
                 this.isManage = ko.observable(dto.isManage);
                 this.expirationDate = ko.observable(dto.expirationDate);
                 this.allowPrepaidLeave = ko.observable(dto.allowPrepaidLeave);
                 this.manageDeadline = ko.observable(dto.manageDeadline);
-                this.linkingManagementATR = ko.observable(dto.linkingManagementATR);
             }
 
             public toSubstVacationSettingDto(): SubstVacationSettingDto {
-                return new SubstVacationSettingDto(this.isManage(), this.expirationDate(), this.allowPrepaidLeave() , this.manageDeadline() , this.linkingManagementATR() );
+                return new SubstVacationSettingDto(this.isManage(), this.expirationDate(), this.allowPrepaidLeave() , this.manageDeadline() , 0);
             }
         }
 

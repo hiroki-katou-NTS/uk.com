@@ -3,13 +3,13 @@ module nts.uk.com.view.kcp017.a.viewmodel {
     const template = `
     <div id="kcp017-component" 
         class="panel" 
-        style="display: inline-block;" 
+        style="display: inline-block; width: 100%;" 
         data-bind="css: {
             ntsPanel: !onDialog(), 
             'caret-right': !onDialog(), 
             'caret-background': !onDialog()
         }">
-        <div class="control-group valign-center">
+        <div id="switch-area" class="control-group valign-center">
             <div data-bind="ntsFormLabel: {text: $i18n('KCP017_2')}"/>
             <div id="kcp017-switch" data-bind="ntsSwitchButton: {
                 name: $i18n('KCP017_2'),
@@ -22,7 +22,6 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 value: selectedUnit 
             }"/>
         </div>
-        <hr />
         <div data-bind="visible: selectedUnit() == 0">
             <div id="workplace-tree-grid"/>
         </div>
@@ -36,7 +35,21 @@ module nts.uk.com.view.kcp017.a.viewmodel {
         </div>
         <i class="icon icon-searchbox" data-bind="visible: !onDialog()"></i>
     </div>
-    `;
+    <style>
+      #kcp017-switch label span {
+        width: 120px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      
+      #switch-area {
+        display: flex;
+        width: 91%;
+        padding-bottom: 10px;
+        border-bottom: 1px solid gray;
+      }
+    </style>`;
 
     @component({
         name: 'kcp017-component',
@@ -49,7 +62,8 @@ module nts.uk.com.view.kcp017.a.viewmodel {
         selectMode: KnockoutObservable<number | SELECTED_MODE>; // kcp011
         onDialog: KnockoutObservable<boolean>;
         multiple: KnockoutObservable<boolean>;
-        rows: KnockoutObservable<number>;
+        workplaceRows: KnockoutObservable<number>;
+        workplaceGroupRows: KnockoutObservable<number>;
         showAlreadySetting: KnockoutObservable<boolean>;
         multipleUsage?: KnockoutObservable<boolean>; // KCP004, default: false
         isShowSelectButton?: KnockoutObservable<boolean>; // KCP004, default: true
@@ -76,7 +90,8 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 vm.onDialog = ko.observable(_.isNil(params.onDialog) ? false : params.onDialog);
                 vm.multiple = ko.observable(_.isNil(params.multiple) ? false : params.multiple);
                 vm.showAlreadySetting = ko.observable(_.isNil(params.showAlreadySetting) ? false : params.showAlreadySetting);
-                vm.rows = ko.observable(params.rows || 10);
+                vm.workplaceRows = ko.observable(params.workplaceRows || 10);
+                vm.workplaceGroupRows = ko.observable(params.workplaceGroupRows || 10);
                 vm.multipleUsage = ko.observable(_.isNil(params.multipleUsage) ? false : params.multipleUsage);
                 vm.isShowSelectButton = ko.observable(_.isNil(params.isShowSelectButton) ? true : params.isShowSelectButton);
                 vm.showEmptyItem = ko.observable(_.isNil(params.showEmptyItem) ? false : params.showEmptyItem);
@@ -91,7 +106,8 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 vm.onDialog = ko.observable(false);
                 vm.multiple = ko.observable(false);
                 vm.showAlreadySetting = ko.observable(false);
-                vm.rows = ko.observable(10);
+                vm.workplaceRows = ko.observable(10);
+                vm.workplaceGroupRows = ko.observable(10);
                 vm.multipleUsage = ko.observable(false);
                 vm.isShowSelectButton = ko.observable(true);
                 vm.showEmptyItem = ko.observable(false);
@@ -114,7 +130,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 isShowSelectButton: vm.isShowSelectButton(),
                 isDialog: true,
                 hasPadding: false,
-                maxRows: vm.rows(),
+                maxRows: vm.workplaceRows(),
                 alreadySettingList: vm.alreadySettingWorkplaces,
                 selectedId: vm.selectedIds,
                 restrictionOfReferenceRange: false
@@ -128,7 +144,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 showEmptyItem: vm.showEmptyItem(),
                 reloadData: ko.observable(''),
                 selectedMode: vm.selectMode(), // SELECT FIRST ITEM
-                rows: vm.rows()
+                rows: vm.workplaceGroupRows()
             };
             $('#workplace-tree-grid').ntsTreeComponent(vm.kcp004Options);
         }
@@ -136,9 +152,18 @@ module nts.uk.com.view.kcp017.a.viewmodel {
         mounted() {
             const vm = this;
             $($("#kcp017-switch button")[0]).width($($("#kcp017-switch button")[1]).width());
+            $("#workplace-group-pannel").ready(() => {
+              $("#workplace-group-pannel input.ntsSearchBox").css("width", "160px");
+            })
+            $("#nts-component-tree").ready(() => {
+              $("#nts-component-tree input.ntsSearchBox").css("width", "160px");
+            })
             vm.selectedUnit.subscribe(value => {
+                if (value === 0) {
+                  $("#nts-component-tree input.ntsSearchBox").css("width", "160px");
+                }
                 if (value == 1 && $("#workplace-group-pannel input.ntsSearchBox").width() == 0)
-                    $("#workplace-group-pannel input.ntsSearchBox").css("width", "auto");
+                  $("#workplace-group-pannel input.ntsSearchBox").css("width", "160px");
             });
         }
     }
@@ -148,7 +173,8 @@ module nts.uk.com.view.kcp017.a.viewmodel {
         onDialog?: boolean; // default: false
         multiple?: boolean; // default: false
         showAlreadySetting?: boolean; // default: false
-        rows?: number; // default: 10
+        workplaceRows?: number; // default: 10
+        workplaceGroupRows?: number; // default: 10
         selectType?: SelectType; // default: 3 (SELECT FIRST ITEM)
         baseDate?: string | Date; // default: today
         multipleUsage?: boolean; // KCP004, default: false

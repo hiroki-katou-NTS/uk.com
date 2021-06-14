@@ -34,14 +34,14 @@
 				<div>
 					<table>
 						<colgroup>
-							<col width="70px" />
+							<col width="150px" />
 							<col width="*" />
 						</colgroup>
 
 						<tr class="row">
 							<td>
 								<div class="form-label useSeal"
-									data-bind="ntsFormLabel: { required: false, constraint:['SealColumnName'] }">#{i18n.getText('KWR002_61')}</div>
+									data-bind="ntsFormLabel: {}">#{i18n.getText('KWR002_61')}</div>
 							</td>
 							<td>
 								<!-- C2_2 -->
@@ -367,11 +367,11 @@
 							</div>
 							<div class="tab-content-2" id="monthly-tab"
 								tabindex="10">
-								<div class="row-inline" data-bind="visible: useMonthApproverConfirm">
+								<div class="row-inline" style="margin-bottom: 10px;" data-bind="visible: useMonthApproverConfirm">
 									<!-- C18_1 -->
 									<div class="form-label"	data-bind="ntsFormLabel: {}">#{i18n.getText('KWR002_194')}</div>
 									<!-- C18_2 -->
-									<div class="switch" id ="switch-button" tabindex="40"
+									<div class="switch" id ="switch-button" style="display: inline-block;" tabindex="40"
 										data-bind="ntsSwitchButton: {
 										options: confirmedDisplay,
 										optionsValue: 'value',

@@ -27,13 +27,13 @@
 }
 .kwr-003 .panel .panel-row {
   display: flex;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 /* .kwr-003 .panel .panel-row:not(:first-child) {
   margin-bottom: 25px;
 } */
 .kwr-003 .panel .panel-row .row-left {
-  width: 140px;
+  width: 120px;
 }
 .kwr-003 .panel .panel-row .row-left .label {
   display: flex;
