@@ -14,8 +14,8 @@
 }
 
 .control-button-wrap{
-	margin-left: 22px;
-	margin-right: 22px;
+	margin-left: 22px !important;
+	margin-right: 22px !important;
 }
 #all-list td[role="gridcell"] {
 	white-space: nowrap;
