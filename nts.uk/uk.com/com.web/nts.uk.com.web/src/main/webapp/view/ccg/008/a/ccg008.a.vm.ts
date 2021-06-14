@@ -114,6 +114,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
                       const doc = frame.contentDocument || frame.contentWindow.document;
   
                       doc.body.innerHTML = res.htmlContent;
+											doc.body.setAttribute('style', 'overflow: auto; position: relative;');
                     });
                 } else {
                   element.innerHTML = `<iframe src="${ntsFile.liveViewUrl(fileId, 'index.htm')}"></iframe>`;

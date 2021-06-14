@@ -142,8 +142,7 @@ module nts.uk.at.view.kdp005.a {
 								});
 							}else {
 								self.openDialogF({
-									mode: 'admin',
-									companyId: __viewContext.user.companyId
+									mode: 'admin'
 								})
 								dfd.resolve();
 							}
@@ -215,8 +214,7 @@ module nts.uk.at.view.kdp005.a {
 			public setLoginInfo(): JQueryPromise<any> {
 				let dfd = $.Deferred<any>(), self = this, vm = new ko.ViewModel();
 				self.openDialogF({
-					mode: 'admin',
-					companyId: __viewContext.user.companyId
+					mode: 'admin'
 				}).done((loginResult) => {
 					if (!loginResult) {
 						self.errorMessage(getMessage("Msg_1647"));

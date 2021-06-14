@@ -1395,8 +1395,17 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 						.collect(Collectors.toList()))
 				.flatMap(List::stream)
 		        .collect(Collectors.toList());
+		List<MailTransmissionContentOutput> listMailInputHaveMail = listMailInput.stream()
+				.filter(x -> Strings.isNotBlank(x.getMailAddr())).collect(Collectors.toList());
+		List<String> empNotDuplicateLst = listMailInputHaveMail.stream().map(x -> x.getSId()).distinct().collect(Collectors.toList());
+		List<MailTransmissionContentOutput> listMailInputNotDuplicate = new ArrayList<>();
+		empNotDuplicateLst.forEach(emp -> {
+			listMailInputHaveMail.stream().filter(x -> x.getSId().equals(emp)).findAny().ifPresent(item -> {
+				listMailInputNotDuplicate.add(item);
+			});
+		});
 		// 送信対象があるか判別
-		if(CollectionUtil.isEmpty(listMailInput)) {
+		if(CollectionUtil.isEmpty(listMailInputNotDuplicate)) {
 			// メッセージ（Msg_787)を表示する
 			throw new BusinessException("Msg_787");
 		}
