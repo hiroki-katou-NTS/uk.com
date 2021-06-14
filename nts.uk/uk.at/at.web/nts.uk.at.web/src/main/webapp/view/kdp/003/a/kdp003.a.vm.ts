@@ -268,6 +268,7 @@ module nts.uk.at.kdp003.a {
 
 			vm.$ajax(API.confirmUseOfStampInput, { employeeId: null, stampMeans: 0 })
 				.then((data: any) => {
+
 					if (data.used == 2) {
 						checkUsed = false;
 					} else {
@@ -335,6 +336,15 @@ module nts.uk.at.kdp003.a {
 						}) as JQueryPromise<LoginData>;
 				})
 				.then((data: LoginData) => {
+					vm.$ajax(API.confirmUseOfStampInput, { employeeId: null, stampMeans: 0 })
+						.then((data: any) => {
+
+							if (data.used == 2) {
+								checkUsed = false;
+							} else {
+								checkUsed = true;
+							}
+						});
 
 					$.urlParam = function (name) {
 						var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
@@ -421,7 +431,6 @@ module nts.uk.at.kdp003.a {
 
 					if (data.loginData === undefined) {
 						vm.setMessage({ messageId: 'Msg_1647' });
-
 						return false;
 					}
 
@@ -433,13 +442,11 @@ module nts.uk.at.kdp003.a {
 
 					if (check1527) {
 						vm.setMessage({ messageId: 'Msg_1527' });
-
 						return false;
 					}
 
 					if (data.loginData.msgErrorId === "Msg_1527") {
 						vm.setMessage({ messageId: 'Msg_1527' });
-
 						return false;
 					}
 
@@ -452,7 +459,6 @@ module nts.uk.at.kdp003.a {
 					if (!ko.unwrap(vm.modeBasyo)) {
 						if (!exest) {
 							vm.setMessage({ messageId: 'Msg_1647' });
-
 							return false;
 						}
 					} else {
@@ -461,7 +467,6 @@ module nts.uk.at.kdp003.a {
 						}
 						if (exest) {
 							vm.setMessage({ messageId: 'Msg_1647' });
-
 							return false;
 						}
 					}
@@ -469,7 +474,6 @@ module nts.uk.at.kdp003.a {
 					// if not return full data (first login)
 					if (!data.storageData && (!data.loginData || !data.workplaceData && !ko.unwrap(vm.modeBasyo))) {
 						vm.setMessage({ messageId: 'Msg_1647' });
-
 						return false;
 					}
 
@@ -479,7 +483,6 @@ module nts.uk.at.kdp003.a {
 						if (!data.workplaceData.selectedId) {
 							if (data.workplaceData.notification == null) {
 								vm.setMessage({ messageId: 'Msg_1647' });
-
 								return false;
 							}
 						}
@@ -487,19 +490,16 @@ module nts.uk.at.kdp003.a {
 
 					if (loginData.msgErrorId) {
 						vm.setMessage({ messageId: loginData.msgErrorId });
-
 						return false;
 					}
 
 					if (loginData.errorMessage) {
 						vm.setMessage(loginData.errorMessage);
-
 						return false;
 					}
 
 					if (!checkUsed) {
 						vm.message({ messageId: 'Msg_1645', messageParams: [vm.$i18n('KDP002_2')] });
-
 						return false;
 					}
 
@@ -1093,7 +1093,7 @@ module nts.uk.at.kdp003.a {
 
 																	vm.playAudio(btn.audioType);
 																	const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
-																	
+
 																	const param = {
 																		sid: employeeId,
 																		date: vm.$date.now()
