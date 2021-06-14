@@ -904,10 +904,10 @@ module kcp.share.list {
                     codeColumnSize = 70;
                     break;
                 case ListType.Classification:
-                    codeColumnSize = 150;
+                    codeColumnSize = 120;
                     break;
                 case ListType.EMPLOYEE:
-                    codeColumnSize = 150;
+                    codeColumnSize = 120;
                     companyColumnSize = data.isShowWorkPlaceName ? 150 : 0;
                     break;
                 default:

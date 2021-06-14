@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 900,
+					width : 870,
 					height : 700
 				};
 			</script>
@@ -24,9 +24,9 @@
 		<ui:define name="content">
 			<div id="contents-area" style="display: none; margin-left: 20px;" data-bind="visible: true">
 				<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_24')}</div>
-				<label style="margin-right: 200px" data-bind="text: formulaAtr"></label>
+				<div data-bind="ntsFormLabel: {text: formulaAtr}" style="margin-right: 200px"></div>
 				<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_34')}</div>
-				<label data-bind="text: formulaName"></label>
+				<div data-bind="ntsFormLabel: {text: formulaName}"></div>
 				<hr/>
 					<table style="margin-top: 20px;">
 						<tr>
