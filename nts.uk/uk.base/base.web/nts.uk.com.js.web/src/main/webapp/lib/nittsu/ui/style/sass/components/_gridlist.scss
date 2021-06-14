@@ -17,7 +17,7 @@
 		outline: none;
 		border-radius: 2px;
 		border: 1px solid #EAE8F2 !important;
-		border-top: 3px solid #CFF1A5 !important;
+		//border-top: 3px solid #CFF1A5 !important;
 		// conflict with set option size of igGrid
 		// height: auto !important;
 
@@ -28,7 +28,13 @@
 
 		table {
 			&.ui-iggrid-headertable {
-				line-height: 1.6;
+				//line-height: 1.6;
+			}
+			
+			.ui-iggrid-tablebody {
+				td {
+					height: 21px;
+				}	
 			}
 		
 			th,

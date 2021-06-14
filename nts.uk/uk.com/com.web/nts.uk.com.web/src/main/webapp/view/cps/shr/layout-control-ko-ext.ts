@@ -116,7 +116,6 @@ module nts.custombinding {
                     }
 
                     .layout-control .control-group {
-                        margin-top: 10px;
                         padding-left: 10px;
                     }
 
@@ -136,7 +135,7 @@ module nts.custombinding {
                     }
 
                     .layout-control .ntsControl.search-control .nts-editor {
-                        width: 178px !important;
+                        width: 141px !important;
                     }
 
                     .layout-control .ui-iggrid-scrolldiv {
@@ -645,16 +644,16 @@ module nts.custombinding {
         private tmp = `<div class="left-area">
                     <div id="cps007_lbl_control"></div>
                     <div class="control-group">
-                        <div class="form-group">
+                        <div>
                             <div id="cps007_rdg_control" class="radio-control ntsControl"></div>
                         </div>
-                        <div class="form-group">
+                        <div>
                             <div id="cps007_cbx_control" class="combobox-control ntsControl"></div>
                         </div>
-                        <div class="form-group">
+                        <div>
                             <div id="cps007_sch_control" class="search-control ntsControl"></div>
                         </div>
-                        <div class="form-group">
+                        <div>
                             <div id="cps007_lst_header"></div>
                             <div id="cps007_lst_control" class="listbox-control ntsControl"></div>
                         </div>

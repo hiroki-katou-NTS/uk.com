@@ -40,16 +40,17 @@
         <div id="content-area">
           <div id="A3" data-bind="ntsTabPanel: {dataSource: tabs, active: selectedTab}">
             <div id="A4" class="tab-content-1">
-              <span data-bind="i18n: 'CMM049_29'"></span>
-              <div data-bind="ntsRadioBoxGroup: {
-                name: '#[CMM049_30]',
-                options: profileCheckList,
-                optionsValue: 'id',
-                optionsText: 'name',
-                value: profileSelectedId,
-                enable: true
-              }">
-            </div>
+              <div class="flex valign-center">
+                <span data-bind="i18n: 'CMM049_29'"></span>
+                <div data-bind="ntsRadioBoxGroup: {
+                  name: '#[CMM049_30]',
+                  options: profileCheckList,
+                  optionsValue: 'id',
+                  optionsText: 'name',
+                  value: profileSelectedId,
+                  enable: true
+                }"></div>
+              </div>
             <table id="A4_2">
               <tr>
                 <td class="bg-green w-85" rowspan="15" data-bind="i18n: 'CMM049_41'"></td>
@@ -216,40 +217,43 @@
             </table>
             </div>
             <div id="A5" class="tab-content-2">
-              <span data-bind="i18n: 'CMM049_59'"></span>
-              <div data-bind="ntsRadioBoxGroup: {
-                  name: '#[CMM049_30]',
-                  options: passwordCheckList,
-                  optionsValue: 'id',
-                  optionsText: 'name',
-                  value: passwordSelectedId,
-                  enable: true
-                }">
+              <div class="flex valign-center">
+                <span data-bind="i18n: 'CMM049_59'"></span>
+                <div data-bind="ntsRadioBoxGroup: {
+                    name: '#[CMM049_30]',
+                    options: passwordCheckList,
+                    optionsValue: 'id',
+                    optionsText: 'name',
+                    value: passwordSelectedId,
+                    enable: true
+                  }"></div>
               </div>
             </div>
             <div id="A6" class="tab-content-3">
-              <span data-bind="i18n: 'CMM049_60'"></span>
-              <div data-bind="ntsRadioBoxGroup: {
-                  name: '#[CMM049_30]',
-                  options: noticeCheckList,
-                  optionsValue: 'id',
-                  optionsText: 'name',
-                  value: noticeSelectedId,
-                  enable: true
-                }">
+              <div class="flex valign-center">
+                <span data-bind="i18n: 'CMM049_60'"></span>
+                <div data-bind="ntsRadioBoxGroup: {
+                    name: '#[CMM049_30]',
+                    options: noticeCheckList,
+                    optionsValue: 'id',
+                    optionsText: 'name',
+                    value: noticeSelectedId,
+                    enable: true
+                  }"></div>
               </div>
             </div>
             <div id="A7" class="tab-content-4">
-              <span data-bind="i18n: 'CMM049_63'"></span>
-              <div data-bind="ntsRadioBoxGroup: {
-                  name: '#[CMM049_30]',
-                  options: speechCheckList,
-                  optionsValue: 'id',
-                  optionsText: 'name',
-                  value: speechSelectedId,
-                  enable: true
-                }">
-              </div>
+              <div class="flex valign-center">
+                <span data-bind="i18n: 'CMM049_63'"></span>
+                <div data-bind="ntsRadioBoxGroup: {
+                    name: '#[CMM049_30]',
+                    options: speechCheckList,
+                    optionsValue: 'id',
+                    optionsText: 'name',
+                    value: speechSelectedId,
+                    enable: true
+                  }"></div>
+                </div>
             </div>
             <div id="A8" class="tab-content-5">
               <table>
@@ -258,9 +262,9 @@
                   <td><div id="A8_3" data-bind="ntsFormLabel: {}">#{i18n.getText('CMM049_65')}</div></td>
                 </tr>
                 <tr>
-                  <td>
+                  <td style="position: relative;">
                     <table id="A8_2" data-bind="ntsGridList: {
-                      height: 300,
+                      rows: 4,
                       dataSource: emailDataSource,
                       columns: emailColumns,
                       primaryKey: 'index',
@@ -268,7 +272,7 @@
                     }">
                     </table>
                   </td>
-                  <td>
+                  <td id="td_a8_4" style="position: relative;">
                     <table id="A8_4"></table>
                   </td>
                 </tr>

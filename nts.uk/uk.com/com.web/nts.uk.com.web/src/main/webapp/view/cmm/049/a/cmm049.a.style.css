@@ -10,18 +10,18 @@
   overflow: hidden !important;
 }
 
-#A8_2_displayContainer {
-  height: 96px !important;
-}
-
 #A8_2_container {
-  margin-top: 30px !important;
   margin-right: 50px !important;
 }
 
 #A4_2 {
   border: 1px solid black;
   margin-top: 20px !important;
+}
+
+#td_a8_4 div.nts-grid-wrapper {
+  position: absolute;
+  top: 0;
 }
 
 table#A4_2 tr td {
@@ -99,4 +99,10 @@ table#A4_2 tbody tr td:not(.style-normal):not(.contactName) {
 
 .w-145 {
   width: 145px;
+}
+.tab-content-1 > div > div.radio-wrappers label.radio-wrapper,
+.tab-content-2 > div > div.radio-wrappers label.radio-wrapper,
+.tab-content-3 > div > div.radio-wrappers label.radio-wrapper,
+.tab-content-4 > div > div.radio-wrappers label.radio-wrapper {
+  margin-left: 50px;
 }

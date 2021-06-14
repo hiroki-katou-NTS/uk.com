@@ -33,7 +33,7 @@ module nts.uk.at.view.kdl052.screenModel {
       { headerText: this.$i18n('KDL052_8'), prop: 'periodDate', width: 95 },
       { headerText: this.$i18n('KDL052_9'), prop: 'classification', width: 95 }
     ]);
-    
+
     created(params: any) {
       let vm = this;
       vm.getData(params);
@@ -76,8 +76,8 @@ module nts.uk.at.view.kdl052.screenModel {
     getData(params: any) {
       const vm = this
           , command = {
-            lstEmployees: params.employeeList,
-            baseDate: params.baseDate
+            lstEmployees: params.employeeIds,
+            baseDate: moment.utc(params.baseDate, 'YYYYMMDD').toISOString()
           }
       vm.$blockui('grayout');
       // Call api get data
@@ -100,7 +100,10 @@ module nts.uk.at.view.kdl052.screenModel {
                 });
             let listSort = _.orderBy(mappedList, ["code"], ["asc"]);
             vm.employeeList(listSort);
-            vm.selectedCode(listSort[0].code);
+
+            if (!_.isEmpty(listSort)) {
+              vm.selectedCode(listSort[0].code);
+            }
             vm.nextStartDate(result.nextStartDate)
             $('#component-items-list').ntsListComponent(vm.listComponentOption);
         

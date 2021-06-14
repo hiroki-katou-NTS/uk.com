@@ -1,3 +1,10 @@
+.div-func-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  padding-bottom: 10px;
+}
 /*hr {*/
 	/*margin-left: 30px;*/
 	/*margin-right: 30px;*/
