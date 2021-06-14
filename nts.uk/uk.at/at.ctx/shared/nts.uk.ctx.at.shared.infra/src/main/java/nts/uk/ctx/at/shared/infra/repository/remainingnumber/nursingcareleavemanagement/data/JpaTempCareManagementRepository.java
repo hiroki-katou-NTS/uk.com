@@ -76,6 +76,7 @@ public class JpaTempCareManagementRepository extends JpaRepository implements Te
 		
 		if (entityOpt.isPresent()) {
 			entityOpt.get().fromDomainForUpdate(domain);
+			this.commandProxy().update(entityOpt.get());
 			this.getEntityManager().flush();
 			return;
 		}
@@ -83,7 +84,7 @@ public class JpaTempCareManagementRepository extends JpaRepository implements Te
 		KshdtInterimCareData entity = new KshdtInterimCareData();
 		entity.pk = pk;
 		entity.fromDomainForPersist(domain);
-		this.getEntityManager().persist(entity);
+		this.commandProxy().insert(entity);
 		this.getEntityManager().flush();
 	}
 
