@@ -201,14 +201,9 @@ module nts.uk.at.view.kmk004.b {
 		mounted() {
 			const vm = this;
 
-			$(document).ready(function () {
+			// $(document).ready(function () {
 			// 	$('#list-box').focus();
-			// Fix bug render edge
-			setTimeout(() => {
-				$('.content-data').css('margin-top', '9px');
-				$('.content-data').css('margin-left', '9px');
-			}, 500);
-			});
+			// });
 		}
 
 		add() {
@@ -247,7 +242,7 @@ module nts.uk.at.view.kmk004.b {
 										_.forEach(yearMonthDelete, ((value) => {
 											if (value) {
 												const input = { empId: ko.unwrap(vm.model.id), laborAttr: 0, yearMonth: value };
-
+												
 												vm.$ajax(API.DELETE_BY_YM, input);
 											}
 										}));
