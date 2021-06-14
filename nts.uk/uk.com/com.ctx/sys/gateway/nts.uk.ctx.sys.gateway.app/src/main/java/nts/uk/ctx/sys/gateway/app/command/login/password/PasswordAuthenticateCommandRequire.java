@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.gateway.app.command.login.password;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -87,14 +88,14 @@ public class PasswordAuthenticateCommandRequire {
 
 		@Override
 		public AuthenticationFailuresLog getAuthenticationFailuresLog(String userId) {
-			// TODO Auto-generated method stub
-			return null;
+			// TODO #116705暫定対応 要レポジトリ実装
+			return new AuthenticationFailuresLog(userId, new ArrayList<>());
 		}
 
 		@Override
 		public Optional<AccountLockPolicy> getAccountLockPolicy(String contractCode) {
-			// TODO Auto-generated method stub
-			return null;
+			// TODO #116705暫定対応 要レポジトリ実装
+			return Optional.empty();
 		}
 
 		@Override
