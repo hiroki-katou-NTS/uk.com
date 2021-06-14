@@ -231,6 +231,11 @@ module nts.uk.ui.koExtentions {
                     .removeAttr('data-bind')
                     .find('[data-bind]')
                     .removeAttr('data-bind');
+
+                if (ko.isObservable(valueAccessor().value)) {
+                    valueAccessor().value
+                        .subscribe(() => $element.trigger('validate'));
+                }
             }
 
             /**
@@ -358,7 +363,7 @@ module nts.uk.ui.koExtentions {
                 container.closest('.ui-iggrid').addClass('nts-gridlist').height(data.height);
 
                 // add validate event
-                $(element).trigger('validate');
+                // $(element).trigger('validate');
             }
         }
     }

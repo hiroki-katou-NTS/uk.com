@@ -25,7 +25,7 @@ public interface WorkTimeSettingService {
 	 */
 	// 打刻反映時間帯を取得する
 	List<StampReflectTimezone> getStampReflectTimezone(String companyId, String workTimeCode, Integer start1,
-			Integer start2, Integer end1, Integer end2);
+			Integer end1, Integer start2, Integer end2);
 
 	/**
 	 * Gets the predetermined timezone.

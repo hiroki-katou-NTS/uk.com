@@ -1638,6 +1638,8 @@ public class ScheduleCreatorExecutionTransaction {
 				if (!optionalCompanyBasicWork.isPresent()) {
 					this.scheCreExeErrorLogHandler.addError(geterCommand, creator.getEmployeeId(), "Msg_589");
 					return Optional.empty();
+				} else {
+					return optionalCompanyBasicWork.get().getBasicWorkSetting().stream().findFirst();
 				}
 			}
 			

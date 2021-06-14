@@ -39,8 +39,6 @@ public class RecruitmentAppCmd {
 	
 	public List<LeaveComDayOffManaDto> leaveComDayOffMana;
 	
-	public List<LeaveComDayOffManaDto> leaveComDayOffManaOld;
-	
 	/** Use for save KAF011A */
 	public RecruitmentApp toDomainInsertRec() {
 		return new RecruitmentApp(
@@ -74,7 +72,6 @@ public class RecruitmentAppCmd {
 				null,
 				WorkInformationDto.fromDomain(domain.getWorkInformation()),
 				domain.getWorkingHours().stream().map(c->TimeZoneWithWorkNoDto.fromDomain(c)).collect(Collectors.toList()),
-				new ArrayList<>(),
 				new ArrayList<>());
 	}
 
