@@ -139,3 +139,15 @@ html {
 .left-122 {
 	margin-left: 122px !important;
 }
+
+.switchbox-wrappers {
+	display: flex;
+}
+
+.tab-rows .ui-igcombo-wrapper {
+	margin-top: 6px;
+}
+
+td > .ui-igcombo-wrapper {
+	margin-top: 6px;
+}
