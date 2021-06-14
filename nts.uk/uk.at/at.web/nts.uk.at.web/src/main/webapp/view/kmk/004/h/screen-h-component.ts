@@ -24,7 +24,10 @@ const h_template = `
 							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
 							<hr style="text-align: left;
 						    margin-left: 0;"  />
-							<label id="selected-work-place" data-bind="i18n: screenData().selectedName"></label>
+                        <div style='height: 18px;' >
+                            <label id="selected-work-place" data-bind="i18n: screenData().selectedName">
+                            </label>
+                        </div>
 							<div style="margin-top: 10px;" data-bind="component: {
 								name: 'basic-settings-company',
 								params: {
