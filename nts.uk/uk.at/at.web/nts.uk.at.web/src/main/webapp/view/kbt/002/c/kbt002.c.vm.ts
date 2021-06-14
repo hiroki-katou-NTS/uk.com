@@ -69,6 +69,11 @@ module nts.uk.at.view.kbt002.c {
         { code: 0, name: vm.$i18n('KBT002_71') },
         { code: 1, name: vm.$i18n('KBT002_72') }
       ]);
+
+      vm.selectExec.subscribe(() => vm.optionDialog());
+      vm.selectTimeRepeat.subscribe(() => vm.optionTimeRepeat());
+      vm.selectEndTime.subscribe(() => vm.optionEndTime());
+      vm.selectEndDate.subscribe(() => vm.optionEndDate());
       if (params) {
         vm.execItemCd(params.execItemCode);
         vm.execItemName(params.execItemName);
@@ -217,7 +222,7 @@ module nts.uk.at.view.kbt002.c {
       const vm = this;
       vm.$window.modal("/view/kbt/002/d/index.xhtml", { repeatMonthDateList: vm.curExecSetting().repeatMonthDateList() })
         .then(data => {
-          vm.curExecSetting().repeatMonthDateList(data.selectedDays);
+          vm.curExecSetting().repeatMonthDateList(_.map(data.selectedDays, (x: string) => parseInt(x)));
           vm.monthDays(vm.buildMonthDaysStr());
         });
     }

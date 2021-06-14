@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+      <com:scriptfile path="kmf002.g.vm.js" />
+      <com:stylefile path="kmf002.g.style.css" />
+		</ui:define>
+    
+    <ui:define name="content">
+      <div id="functions-area">
+        <button id="G1_1" data-bind="click: openDialogCDL028" tabindex="5">#{i18n.getText("KMF002_73")}</button>
+      </div>
+      <div id="contents-area">
+        <div id="G2_1" class="panel panel-frame">
+          <div id="G2_2" class="panel panel-gray-bg">
+            <label id="G2_3">#{i18n.getText("KMF002_83")}</label>
+          </div>
+          <div>
+            <label id="G2_4">#{i18n.getText("KMF002_84")}</label>
+          </div>
+          <div class="btn-with-caret">
+            <button id="G2_5" class="caret-right" data-bind="click: openScreenM" tabindex="1">#{i18n.getText("KMF002_85")}</button>
+          </div>
+        </div>
+
+        <div id="G2_6" class="panel panel-frame">
+          <div id="G2_7" class="panel panel-gray-bg">
+            <label id="G2_8">#{i18n.getText("KMF002_86")}</label>
+          </div>
+          <div>
+            <label id="G2_9">#{i18n.getText("KMF002_87")}</label>
+          </div>
+          <div class="btn-with-caret">
+            <button id="G2_10" data-bind="click: openDialogA" tabindex="2">#{i18n.getText("KMF002_88")}</button>
+            <div class="caret">
+              <span id="G2_11" class="caret-bottom caret-inline"></span>
+            </div>
+          </div>
+          <div>
+            <label id="G2_12">#{i18n.getText("KMF002_89")}</label>
+          </div>
+          <div class="btn-with-caret">
+            <button id="G2_13" data-bind="click: openDialogF" tabindex="3">#{i18n.getText("KMF002_90")}</button>
+            <div class="caret">
+              <span id="G2_14" class="caret-bottom caret-inline"></span>
+            </div>
+          </div>
+          <div>
+            <label id="G2_15">#{i18n.getText("KMF002_91")}</label>
+          </div>
+          <div class="btn-with-caret">
+            <button id="G2_16" class="caret-right" data-bind="click: openSidebarScreen" tabindex="4">#{i18n.getText("KMF002_92")}</button>
+          </div>
+        </div>
+      </div>
+    </ui:define>
+    </ui:composition>
+</body>
+</html>

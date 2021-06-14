@@ -1,67 +1,79 @@
 @import "compass-for-vs2013-master/compass";
 @import "compass-for-vs2013-master/compass/_reset.scss";
-@import "base/_base_def.scss";
-@import "base/_clearfix.scss";
-@import "base/_menu.scss";
 
+@import "base/base_def";
+@import "base/clearfix";
+
+@import "base/menu";
+@import "components/color";
+@import "components/commons";
+@import "components/icons";
+@import "components/ignitecommons";
+@import "components/accordion";
+@import "components/editor";
+@import "components/form-label";
+@import "components/block-ui";
+@import "components/button";
+@import "components/caret";
+@import "components/switchbutton";
+@import "components/checkbox";
+@import "components/panel";
+@import "components/radiobox";
+@import "components/listbox";
+@import "components/gridlist";
+@import "components/tabpanel";
+@import "components/treedrag";
+@import "components/treegridview";
+@import "components/combobox";
+@import "components/dialog";
+@import "components/wizard";
 @import "components/widget";
-
-@import "components/_color.scss";
-@import "components/_commons.scss";
-@import "components/_icons.scss";
-@import "components/_ignitecommons.scss";
-@import "components/_accordion.scss";
-@import "components/_editor.scss";
-@import "components/_button.scss";
-@import "components/_caret.scss";
-@import "components/_switchbutton.scss";
-@import "components/_checkbox.scss";
-@import "components/_panel.scss";
-@import "components/_radiobox.scss";
-@import "components/_listbox.scss";
-@import "components/_gridlist.scss";
-@import "components/_tabpanel.scss";
-@import "components/_treedrag.scss";
-@import "components/_treegridview.scss";
-@import "components/_combobox.scss";
-@import "components/_dialog.scss";
-@import "components/_wizard.scss";
-@import "components/_swaplist.scss";
-@import "components/_updown.scss";
-@import "components/_searchbox.scss";
-@import "components/_datepicker.scss";
-@import "components/_contextmenu.scss";
-@import "components/_userguide.scss";
-@import "components/_helpbutton.scss";
-@import "components/_images.scss";
-@import "components/_functionpanel.scss";
-@import "components/_ntsgrid.scss";
-@import "components/_extable.scss";
-@import "components/_limitedlabel.scss";
-@import "components/_legendbutton.scss";
-@import "components/_linkbutton.scss";
-@import "components/_fixedtable.scss";
-@import "components/_fileupload.scss";
-@import "components/_mgrid.scss";
-@import "frame/_header.scss";
-@import "frame/_functions.scss";
-@import "frame/_contents.scss";
-@import "frame/_sidebar.scss";
-@import "frame/_guide.scss";
-@import "components/_monthdays.scss";
-@import "components/_imagepreview.scss";
-@import "components/_buttontable.scss";
-@import "components/_datetime.scss";
-@import "components/_assy.scss";
-
+@import "components/swaplist";
+@import "components/updown";
+@import "components/searchbox";
+@import "components/datepicker";
+@import "components/contextmenu";
+@import "components/userguide";
+@import "components/helpbutton";
+@import "components/images";
+@import "components/functionpanel";
+@import "components/ntsgrid";
+@import "components/extable";
+@import "components/limitedlabel";
+@import "components/legendbutton";
+@import "components/linkbutton";
+@import "components/fixedtable";
+@import "components/fileupload";
+@import "components/mgrid";
+@import "components/monthdays";
+@import "frame/header";
+@import "frame/functions";
+@import "frame/contents";
+@import "frame/sidebar";
+@import "frame/guide";
+@import "components/imagepreview";
+@import "components/buttontable";
+@import "components/datetime";
+@import "components/assy";
 
 html {
-	font-size: $normal_font_size;
-}
+    overflow: hidden;
+    font-family: $font_family;
+    font-size: $normal_font_size;
+    font-weight: 500;
 
-body * {
-    font: {
-        size: 1rem;
-        family: $font_family;
+    body {
+        overflow: hidden;
+        font-size: 1rem;
+        font-family: $font_family;
+        height: 100vh;
+        width: 100vw;
+
+        * {
+            font-size: 1rem;
+            font-family: $font_family;
+            color: $font_color;
+            font-weight: 600;
+        }
     }
 }

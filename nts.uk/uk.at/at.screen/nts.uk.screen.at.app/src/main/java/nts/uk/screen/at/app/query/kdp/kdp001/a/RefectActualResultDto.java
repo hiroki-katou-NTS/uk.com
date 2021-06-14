@@ -30,8 +30,9 @@ public class RefectActualResultDto {
 
 	public static RefectActualResultDto fromDomain(RefectActualResult domain) {
 
-		return new RefectActualResultDto(domain.getCardNumberSupport().map(x -> x).orElse(null),
-				domain.getWorkLocationCD().map(x -> x != null ? x.v() : null).orElse(null),
+		return new RefectActualResultDto(
+				(domain.getWorkInforStamp().isPresent() && domain.getWorkInforStamp().get().getCardNumberSupport().isPresent()) ? domain.getWorkInforStamp().get().getCardNumberSupport().get().toString() : null,
+				(domain.getWorkInforStamp().isPresent() && domain.getWorkInforStamp().get().getWorkLocationCD().isPresent()) ? domain.getWorkInforStamp().get().getWorkLocationCD().get().toString() : null,
 				domain.getWorkTimeCode().map(x -> x != null ? x.v() : null).orElse(null));
 	}
 }

@@ -63,3 +63,10 @@ button.nts-switch-button {
 .fixed-flex-layout-left {
     width: 880px;
 }
+#functions-area .ntsDatePickerButton {
+	min-width: 65px !important;
+}
+.custom-label label.with-text > span {
+	min-width: 100px;
+	text-align: center;
+}

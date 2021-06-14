@@ -16,7 +16,7 @@ public class DisplaySettingsStampScreenTest {
 	@Test
 	public void test() {
 		DisplaySettingsStampScreen displaySettingsStampScreen = new DisplaySettingsStampScreen(new CorrectionInterval(1),
-				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DUMMY")),
+				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 				new ResultDisplayTime(1));
 		
 		NtsAssert.invokeGetters(displaySettingsStampScreen);

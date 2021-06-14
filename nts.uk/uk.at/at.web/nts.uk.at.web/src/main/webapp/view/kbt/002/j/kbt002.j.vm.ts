@@ -102,6 +102,7 @@ module nts.uk.at.view.kbt002.j {
       vm.aggrFrameCode('');
       vm.dateValue().startDate = null;
       vm.dateValue().endDate = null;
+      vm.dateValue.valueHasMutated();
       vm.selectedAggrFrameCd(null);
       vm.isNewMode(true);
     }

@@ -4,87 +4,104 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-
 <body>
-	<ui:composition template="../../../../master/sidebar.xhtml">
-		<ui:define name="sidebar-head">
-			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekNumberOfDay
-				nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.FourWeekDay
-				nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.MonthlyNumberOfDays
-			</com:ValidatorScript>
-			
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 500,
+					height : 350
+				};
+			</script>
 			<com:scriptfile set="IGNITE" />
-
-			
-			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
-			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-			
-			<com:scriptfile path="../commonTableMonthDaySet.js" />
-			
-			<com:stylefile path="../c/kmf002.c.main.css" />
-			<com:scriptfile path="../c/kmf002.c.service.js" />
-			<com:scriptfile path="../c/kmf002.c.vm.js" />
-			
-			<com:stylefile path="../b/kmf002.b.main.css" />
-			<com:scriptfile path="../b/kmf002.b.service.js" />
-			<com:scriptfile path="../b/kmf002.b.vm.js" />
-			
-			<com:stylefile path="../d/kmf002.d.main.css" />
-			<com:scriptfile path="../d/kmf002.d.service.js" />
-			<com:scriptfile path="../d/kmf002.d.vm.js" />
-			
-			<com:stylefile path="../e/kmf002.e.main.css" />
-			<com:scriptfile path="../e/kmf002.e.service.js" />
-			<com:scriptfile path="../e/kmf002.e.vm.js" />
-			
-			<com:stylefile path="../f/kmf002.f.main.css" />
-			<com:scriptfile path="../f/kmf002.f.service.js" />
-			<com:scriptfile path="../f/kmf002.f.vm.js" />
-			
-			
 			<com:stylefile path="kmf002.a.main.css" />
-			<com:scriptfile path="kmf002.a.service.js" />
 			<com:scriptfile path="kmf002.a.vm.js" />
-			<com:scriptfile path="kmf002.a.start.js" />
-			
+      <com:EnumScript>
+        nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayPeriod
+        nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayCarryOverDeadline
+        nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.ManagementDistinction
+      </com:EnumScript>
 		</ui:define>
-		<ui:define name="sidebar">
-			<ul tabindex="1" class="navigator">
-				<li data-bind="click: onSelectTabA"><a tabindex="-1"
-					href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('KMF002_30')}</a></li>
-				<li data-bind="click: onSelectTabE"><a tabindex="-1"
-					href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Company')}</a></li>
-				<li data-bind="click: onSelectTabB"><a tabindex="-1"
-					href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
-				<li data-bind="click: onSelectTabD"><a tabindex="-1"
-					href="#tabpanel-4" role="tab-navigator">#{i18n.getText('Com_Employment')}</a></li>
-				<li data-bind="click: onSelectTabC"><a tabindex="-1"
-					href="#tabpanel-5" role="tab-navigator">#{i18n.getText('Com_Person')}</a></li>
-				
-			</ul>
-		</ui:define>
-		<ui:define name="sidebar-content">
-			<div id="tabpanel-1" role="tabpanel" data-bind="">
-				<ui:include src="../a/a_index.xhtml" />
-			</div>
-			<div id="tabpanel-2" role="tabpanel" data-bind="with: screenE()">
-				<ui:include src="../e/index.xhtml" />
-			</div>
-			<div id="tabpanel-3" role="tabpanel" data-bind="with: screenB()">
-				<ui:include src="../b/index.xhtml" />
-			</div>
-			<div id="tabpanel-4" role="tabpanel" data-bind="with: screenD()">
-				<ui:include src="../d/index.xhtml" />
-			</div>
-			<div id="tabpanel-5" role="tabpanel" data-bind="with: screenC()">
-				<ui:include src="../c/index.xhtml" />
-			</div>
-			
-		</ui:define>
-	</ui:composition>
+		<ui:define name="content">
+      <div id="contents-area">
+        <div class="contents">
+          <div style="display: flex; margin-top: 10px">
+            <div class="content-row-A">
+              <!-- A3_1 -->
+              <div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_3')}</div>
+            </div>
+            <!-- A3_2 -->
+            <div id="managePubHDDiv" class="flex valign-center" tabindex="4" name="#[KMF002_3]">
+              <!-- A3_3, A3_4 -->
+              <div tabindex="-1" id="managePubHD" data-bind="ntsRadioBoxGroup: { options: companyManageClassification,
+                                optionsText: 'name',
+                                optionsValue: 'value',
+                                value: managePublicHoliday,
+                                checked: 1,
+                                enable: true }"></div>														
+            </div>
+          </div>
+          
+          <div style="display: flex; align-items: center; padding-top: 30px;">
+            <div class="content-row-A">
+              <!-- A3_6 -->
+              <div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_4')}</div>
+            </div>
+            <div>
+              <!-- A3_7 -->
+              <!-- A3_8 -->
+              <div tabindex="5" id="combo-box" style="width: 160px" 
+                      data-bind="ntsComboBox: { options: lstCarryOverDeadline,
+                                    optionsValue: 'value',
+                                    value: publicHdCarryOverDeadline,
+                                    optionsText: 'name',
+                                    editable: false,
+                                    enable: managePublicHoliday() === 1,
+                                    columns: [
+                                      { prop: 'name', length: 10 },
+                                    ],
+                                    name: '#[KMF002_4]'}"></div>
+            </div>
+          </div>
+  
+          <div style="display: flex">
+            <div class="content-row-A"></div>
+            <!-- A3_9 -->
+            <div tabindex="6" id="ckbcarryOverNumberOfPublicHdIsNegative" data-bind="ntsCheckBox: { 
+              checked: carryOverNumberOfPublicHdIsNegative, 
+              enable: managePublicHoliday() === 1,
+              name:'#[KMF002_7]'
+            }">#{i18n.getText('KMF002_7')}</div>
+          </div>
+          
+          
+          <div style="display: flex; padding-top: 30px" >
+            <div class="content-row-A">
+              <!-- A4_5 -->
+              <div tabindex="-1" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMF002_6')}</div>
+            </div>
+            
+            <!-- A4_6 -->
+            <div tabindex="8" id="combo-box7" style="width: 160px" data-bind="ntsComboBox: { options: lstManagementPeriod,
+                                    optionsValue: 'value',
+                                    value: publicHolidayPeriod,
+                                    optionsText: 'name',
+                                    editable: false,
+                                    enable: managePublicHoliday() === 1,
+                                    columns: [
+                                      { prop: 'name', length: 4 },
+                                    ],
+                                    name:'#[KMF002_6]'}"></div>
+          </div>	
+        </div>
+      </div>
+      <div id="functions-area-bottom">
+        <!-- A2_1 -->
+   			<button class="proceed x-large" tabindex="1" data-bind="click: save, attr : {'disabled' : false}, ">#{i18n.getText('KMF002_2')}</button>
+   			<!-- A2_2 -->
+   			<button tabindex="2" data-bind="click: closeDialog">#{i18n.getText('KMF002_33')}</button>
+      </div>
+    </ui:define>
+  </ui:composition>
 </body>
 </html>

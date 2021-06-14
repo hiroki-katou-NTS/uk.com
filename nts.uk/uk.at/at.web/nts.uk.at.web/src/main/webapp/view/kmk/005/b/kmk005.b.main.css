@@ -55,6 +55,11 @@ div.nts-column{
 	margin-right: 10px;
 }
 
+#contents-area > #tab-panel > .tabs-content {
+	height: 448px !important;
+}
+
+
 
 
 #premium-set-tbl-b {

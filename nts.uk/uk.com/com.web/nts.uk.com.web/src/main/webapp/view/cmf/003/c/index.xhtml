@@ -118,7 +118,7 @@
                   multiple: false,
                   value: selectedPatternCode,
                   primaryKey: 'displayCode',
-                  rows: 20
+                  rows: 17
                 }" tabindex="6" />
               </div>
             </div>
@@ -178,7 +178,7 @@
               <div id="C2" tabindex="11" data-bind="ntsSwapList: {
                 showSearchBox: { showLeft : true},
                 showSort: { showLeft: true, showRight: false },
-								height: 330,
+								height: 310,
 								dataSource: categoriesFiltered,
 								primaryKey: 'id',
                 leftColumns: leftColumns,
@@ -296,53 +296,68 @@
                 </div>
               </div>
             </div>
-            <div class="div-line flex">
-              <!-- C9_1 圧縮パスワード -->
-              <div id="C9_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_236')}</div>
-              <div>
-                <div class="div-line flex valign-center">
-                  <!-- C9_2 圧縮パスワード有無 -->
-                  <div id="C9_2" class="div-column-1 checkbox"
-                    data-bind="ntsCheckBox: { checked: usePasswordChecked, enable: true }" tabindex="14">
-                    #{i18n.getText('CMF003_237')}</div>
-                  <!-- C9_3 圧縮パスワード-->
-                  <input id="C9_3" class="password-input form-B div-column-2" data-bind="ntsTextEditor: { 
+
+
+
+
+            <table id="password-table">
+              <tr>
+                <td>
+                  <!-- C9_1 圧縮パスワード -->
+                  <div id="C9_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_236')}</div>
+                </td>
+                <td>
+                   <!-- C9_2 圧縮パスワード有無 -->
+                   <div id="C9_2" class="div-column-1 checkbox"
+                   data-bind="ntsCheckBox: { checked: usePasswordChecked, enable: true }" tabindex="14">
+                   #{i18n.getText('CMF003_237')}</div>
+                </td>
+                <td>
+                   <!-- C9_3 圧縮パスワード-->
+                   <input id="C9_3" class="password-input form-B div-column-2" data-bind="ntsTextEditor: { 
                     name: '#[CMF003_238]',
                     value: password, 
                     enable: usePasswordChecked,
                     required: usePasswordChecked,
                     constraint: 'FileCompressionPassword',
                     option: { textmode: 'password' } }" tabindex="15" />
-                </div>
-                <div class="div-line flex valign-center">
-                  <!-- C9_5 パスワード確認 -->
-                  <label class="time-label div-column-1" id="C9_5">#{i18n.getText('CMF003_285')}</label>
-                  <!-- C9_6 圧縮パスワード-->
-                  <input id="C9_6" class="password-input form-B div-column-2" data-bind="ntsTextEditor: { 
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td class="text-al-r">
+                    <!-- C9_5 パスワード確認 -->
+                    <label class="time-label div-column-1" id="C9_5">#{i18n.getText('CMF003_285')}</label>
+                </td>
+                <td>
+                   <!-- C9_6 圧縮パスワード-->
+                   <input id="C9_6" class="password-input form-B div-column-2" data-bind="ntsTextEditor: { 
                     name: '#[CMF003_286]',
                     value: confirmPassword, 
                     enable: usePasswordChecked,
                     required: usePasswordChecked,
                     constraint: 'FileCompressionPassword',
                     option: { textmode: 'password' } }" tabindex="16" />
-                </div>
-              </div>
-            </div>
-            <div class="div-line flex valign-center">
-              <!-- C10_1 補足説明 -->
-              <div id="C10_1" class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_226')}</div>
-              <!-- C10_2 補足説明入力 -->
-              <input id="C10_2" class="div-column-2" data-bind="ntsTextEditor: {
-                name: '#[CMF003_227]',
-                value: explanation,
-                enable: true,
-                required: false,
-                constraint: 'Explanation',
-                option: {
-                  width: '307px'
-                }
-              }" tabindex="10" />
-            </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <!-- C10_1 補足説明 -->
+                  <div id="C10_1" class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF003_226')}</div>
+                </td>
+                <td colspan="2">
+                  <!-- C10_2 補足説明入力 -->
+                  <input id="C10_2" class="div-column-2" data-bind="ntsTextEditor: {
+                    name: '#[CMF003_227]',
+                    value: explanation,
+                    enable: true,
+                    required: false,
+                    constraint: 'Explanation',
+                    option: { width: '340px' }
+                  }" tabindex="10" />
+                </td>
+              </tr>
+            </table>
           </div>
         </div>
       </div>

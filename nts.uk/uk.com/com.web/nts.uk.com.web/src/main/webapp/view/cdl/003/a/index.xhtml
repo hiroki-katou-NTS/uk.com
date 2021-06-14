@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 450, height: 500 };</script>
+			<script>var dialogSize = { width: 450, height: 630 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cdl003.a.main.css" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
@@ -15,11 +15,13 @@
 			<com:scriptfile path="cdl003.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div class="classificationContent" tabindex="-1">
-				<div class="lableCDL" tabindex="-1">
-					<label>#{i18n.getText('CDL003_1')}</label>
+			<div id="contents-area">
+				<div class="classificationContent" tabindex="-1">
+					<div class="lableCDL" tabindex="-1">
+						<label>#{i18n.getText('CDL003_1')}</label>
+					</div>
+					<div id="classification" tabindex="-1"></div>
 				</div>
-				<div id="classification" tabindex="-1"></div>
 			</div>
 			<div id="functions-area-bottom">
 				<button class="proceed x-large" tabindex="2"

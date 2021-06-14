@@ -16,7 +16,7 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                     <div class="cell valign-top">
                         <div class="table">
                             <div class="cell valign-top" data-bind="if: dispCheckBox">
-                                <div data-bind="i18n: 'KAF000_50', ntsCheckBox: { checked: checkBoxValue }"></div>
+                                <div style="margin-left: -3px" data-bind="i18n: 'KAF000_50', ntsCheckBox: { checked: checkBoxValue }"></div>
                             </div>
                             <div class="cell valign-top" data-bind="if: dispSingleDate">
                                 <div id="kaf000-a-component4-singleDate"
@@ -32,7 +32,8 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                                                             startName: $i18n('KAF000_49'),
                                                             endName: $i18n('KAF000_49'),
                                                             required: true,
-                                                            value: dateValue }">
+                                                            value: dateValue, 
+                                                            showNextPrevious: false }">
                                 </div>
                             </div>
                         </div>
