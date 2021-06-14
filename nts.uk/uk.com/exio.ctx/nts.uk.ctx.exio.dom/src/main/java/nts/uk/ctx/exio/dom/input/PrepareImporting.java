@@ -75,6 +75,8 @@ public class PrepareImporting {
 		RevisedDataRecord revisedData = null;
 		
 		ValidateData.validate(require, context, revisedData);
+		
+		require.save(context, revisedData);
 	}
 	
 	public static interface Require extends
@@ -82,5 +84,7 @@ public class PrepareImporting {
 			CanonicalizeRevisedData.Require {
 		
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
+		
+		void save(ExecutionContext context, RevisedDataRecord revisedDataRecord);
 	}
 }
