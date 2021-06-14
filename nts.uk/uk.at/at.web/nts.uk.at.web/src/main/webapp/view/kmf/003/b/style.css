@@ -61,7 +61,7 @@ table.contents-header td.input-units {
 }
 
 table.contents-header td.base-date {
-	width: 155px;
+	width: 144px;
 }
 
 table.contents-header td.allow-pay {
@@ -69,7 +69,7 @@ table.contents-header td.allow-pay {
 }
 
 .base-date-options {
-	width: 162px;
+	width: 150px;
 	min-width: 0 !important;
 }
 
@@ -97,10 +97,6 @@ table.contents-data td.numbers {
 
 table.contents-data td.input-units {
 	width: 69px;
-}
-
-table.contents-data td.base-date {
-	width: 156px;
 }
 
 table.contents-data td.allow-pay {
@@ -169,4 +165,8 @@ td.numbers {
 
 td.input-units {
 	text-align: center;
+}
+
+.nts-combo-item .nts-column {
+	margin-right: 30px !important;
 }
