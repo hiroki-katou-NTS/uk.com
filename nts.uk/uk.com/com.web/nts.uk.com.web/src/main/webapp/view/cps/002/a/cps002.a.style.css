@@ -325,7 +325,7 @@
 }
 
 #step1_content_top .form-group .form-label {
-	min-width: 170px;
+	min-width: 100px;
 }
 
 #step1_content_bottom #init_select {
@@ -363,10 +363,9 @@
 }
 
 #emp_reg_info_wizard #search_box {
-	height: 500px;
 	position: relative;
 	border-radius: 5px;
-	padding: 10px 20px 0 20px;
+	padding: 10px 20px 15px 20px;
 	margin-top: 25px;
 }
 
@@ -380,4 +379,8 @@
 body {
 	-ms-overflow-y: hidden;
 	-ms-overflow-x: hidden;
+}
+
+#value_item .form-label {
+	width: 100px;
 }

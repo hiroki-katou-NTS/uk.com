@@ -1,6 +1,6 @@
 .master-list-select {
 	width: 500px;
-	padding: 30px;
+	padding: 0px 30px 30px 30px;
 	padding-left: 70px;
 	/* height: 1000px; */
 	float: left;
@@ -57,7 +57,6 @@
 .right-content {
 	margin-left: 20px;
 	float: left;
-	padding-top: 50px;
 }
 
 .show-text-user-id table {

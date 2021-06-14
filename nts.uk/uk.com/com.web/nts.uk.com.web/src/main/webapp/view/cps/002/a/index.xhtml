@@ -215,8 +215,7 @@
 												fields: ['itemName'],
 												placeHolder:'#{i18n.getText('CPS002_42')}'
 											}" tabindex="1"></div>
-										<table id="init_list" data-bind="ntsGridList: {								
-												height: 350,
+										<table id="init_list" data-bind="ntsGridList: {
 												dataSource: initValueList ,
 												primaryKey: 'itemCode',
 												columns:[
@@ -224,7 +223,7 @@
 												        { headerText: '#{i18n.getText('CPS002_45')}', key: 'itemName', width: 190 }],
 												multiple: false,
 												value: initSettingSelectedCode,
-												rows:15
+												rows: 8
 											}" tabindex="2">
 										</table>
 									</div>								

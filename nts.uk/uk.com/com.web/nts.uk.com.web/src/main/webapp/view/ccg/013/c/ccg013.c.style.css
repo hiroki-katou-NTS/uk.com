@@ -30,7 +30,7 @@
 
 .chane-position-function {
 	float: left;
-	margin-top: 112px;
+	margin-top: 161px;
 	width: 30px;
 	margin-left: 20px;
 }
@@ -99,4 +99,8 @@ button#c1_26 {
 
 div#combo-box {
 	margin-top: -15px;
+}
+#swap-up-down,
+#swap-up-down .upDown-container {
+	height: 100px !important;
 }

@@ -92,7 +92,7 @@ module nts.uk.at.view.ksm011.b.tabs.tab1 {
           vm.deadlineWorkSelected(data.availabilityDeadLine); //Ba4_11				締切日
           vm.workRequestInputSelected(data.availabilityAssignMethod); //Ba4_13				入力方法の利用区分
         }
-        $(".switchButton-wrapper")[0].focus();
+        $(".switchbox-wrappers")[0].focus();
       }).fail((error) => {
         vm.$dialog.error(error);
       }).always(() => {
