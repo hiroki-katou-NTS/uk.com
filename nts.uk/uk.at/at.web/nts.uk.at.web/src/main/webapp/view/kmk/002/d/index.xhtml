@@ -27,9 +27,10 @@
 			<div id="contents-area" style="display: none" data-bind="visible: true">
 			<com:ko tag="with" bind="formulaSetting">
 				<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_24')}</div>
-				<label data-bind="text: formulaAtr" style="margin-right: 100px"></label>
+				<div data-bind="ntsFormLabel: {text: formulaAtr}" style="margin-right: 100px"></div>
 				<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_34')}</div>
-				<label data-bind="text: formulaName"></label>
+				<div data-bind="ntsFormLabel: {text: formulaName}"></div>
+
 				<hr/>
 				<table id="tbl-formulaSetting">
 					<tbody>
@@ -46,8 +47,8 @@
 						</tr>
 						<tr>
 							<td>
-								<div>
-									<label id="radio-left-selection" tabindex="1" class="ntsRadioBox">
+								<div style="display: flex">
+									<label id="radio-left-selection" tabindex="1" class="ntsRadioBox" style="margin-top: 6px; width: 85px">
 										<input type="radio" name="radio-left-item"
 											data-bind="name: '#[KMK002_63]',
 											checkedValue: 0,
@@ -88,7 +89,8 @@
 								</div>
 							</td>
 							<td>
-								<label id="radio-right-selection" tabindex="5" class="ntsRadioBox">
+								<div style="display: flex">
+								<label id="radio-right-selection" tabindex="5" class="ntsRadioBox" style="margin-top: 6px; width: 85px">
 									<input type="radio" name="radio-right-item"
 									data-bind="name: '#[KMK002_63]',
 									checkedValue: 0,
@@ -110,6 +112,7 @@
 										{ prop: 'symbolValue', length: 1 },
 										{ prop: 'formulaName', length: 6 },
 									]}">
+								</div>
 								</div>
 							</td>
 						</tr>
