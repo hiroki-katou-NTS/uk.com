@@ -158,6 +158,14 @@ module nts.uk.at.view.ksu003.a.model {
 	export function checkTimeOfChart(time: any, timeRangeLimit: any, dispStartHours: any) {
 		// check start time
 		let self = this;
+		//if (time > timeRangeLimit) time = timeRangeLimit;
+		if (time < ((dispStartHours * 60) / 5)) time = ((dispStartHours * 60) / 5);
+		return time;
+	}
+	
+	export function checkTimeChart(time: any, timeRangeLimit: any, dispStartHours: any) {
+		// check start time
+		let self = this;
 		if (time > timeRangeLimit) time = timeRangeLimit;
 		if (time < ((dispStartHours * 60) / 5)) time = ((dispStartHours * 60) / 5);
 		return time;

@@ -262,8 +262,11 @@ module nts.uk.at.view.kdp002.a {
 
 let reCalGridWidthHeight = () => {
     const resize = () => {
-        let h = $('#kdp002a').height() - $('#stamp-header').height() - 60 - ($('.tabs-panel').length > 0 ? 42 : 0) - ($('.pageComent').length > 0 ? $('.pageComent').height() + 10 : 0);
-        let stampBtnHeight = (h < $('#stampBtnContainer').height() - 43 ? $('#stampBtnContainer').height() - 43 : h) + 'px';
+		var bottomMasterWrapper = $('#master-wrapper')[0].getBoundingClientRect().bottom;
+		var topStampInfo = $('#stamp-info')[0].getBoundingClientRect().top;
+		var h = bottomMasterWrapper - topStampInfo - 88;
+		
+		let stampBtnHeight = (h < 72 ? 72 : h) + 'px';
         const $hgrid = $('#stamp-history-list');
         const $cgrid = $('#time-card-list');
 

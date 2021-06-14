@@ -80,3 +80,7 @@ div[id^="tab"] {
     float: right;
     margin-right: -45px;
 }
+
+.d-flex {
+	display: flex;
+}
