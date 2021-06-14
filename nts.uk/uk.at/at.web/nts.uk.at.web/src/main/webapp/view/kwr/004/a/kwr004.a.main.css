@@ -65,3 +65,6 @@
 .kwr-004 .panel .row-right .text-box-button {
   flex: 2;
 }
+.w-50 {
+  width: 50px;
+}
