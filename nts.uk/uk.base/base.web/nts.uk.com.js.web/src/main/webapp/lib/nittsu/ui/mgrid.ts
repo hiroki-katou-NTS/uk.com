@@ -4744,7 +4744,9 @@ module nts.uk.ui.mgrid {
                 }
                 if (pageDiv) {
                     pageDiv.style.width = btmw + "px";
-                    pageDiv.style.top = (parseFloat(pageDiv.style.top) + vari) + "px";
+                    if(height >= 0) {
+                        pageDiv.style.top = (parseFloat(pageDiv.style.top) + vari) + "px";
+                    }
                 }
                 if (sheetDiv) {
                     sheetDiv.style.width = btmw + "px";
