@@ -56,7 +56,7 @@ module nts.uk.at.view.kmk004.b {
                                         inputFormat: 'time',
                                         constraint: 'MonthlyTime',
                                         option: {
-                                            width: '65px',
+                                            width: '60px',
                                             textalign: 'center'}, 
                                         mode: 'time'}" />
                             <!-- /ko -->
@@ -69,7 +69,7 @@ module nts.uk.at.view.kmk004.b {
                                         inputFormat: 'time',
                                         constraint: 'MonthlyTime',
                                         option: {
-                                            width: '65px',
+                                            width: '60px',
                                             textalign: 'center'}, 
                                         mode: 'time'}"/>
                             <!-- /ko -->
