@@ -178,12 +178,8 @@
                               <tr>
                                  <td></td>
                                  <td></td>
-                                 <td class="text-center">
-                                    <div data-bind="ntsFormLabel: {text: 'KMK002_115'}"></div>
-                                 </td>
-                                 <td class="text-center">
-                                    <div data-bind="ntsFormLabel: {text: 'KMK002_116'}"></div>
-                                 </td>
+                                 <td class="text-center">#{i18n.getText('KMK002_115')}</td>
+                                 <td class="text-center">#{i18n.getText('KMK002_116')}</td>
                               </tr>
                               <tr>
                                  <!-- Calculation ResultRange -->
@@ -463,8 +459,7 @@
                            </td>
                         </tr>
                         <tr>
-                           <td colspan="5">
-                              <div data-bind="ntsFormLabel: {text: 'KMK002_31'}">レイアウトコード</div>
+                           <td colspan="5"><span>#{i18n.getText('KMK002_31')}</span>
                               <input style="width: 700px; margin-left: 18px;" id="inp-apply-formula" data-bind="ntsTextEditor: {
                                     value: applyFormula,
                                     enable: isUsed &amp;&amp; $parents[1].langJP(),
