@@ -74,21 +74,21 @@
 								name: '#[KWR002_34]',
 								rows: 15,
 								columns: [
-					                { headerText: '#{i18n.getText('KWR002_35')}', key: 'code', width: 70, formatter: _.escape },
-					                { headerText: '#{i18n.getText('KWR002_36')}', key: 'name', width: 150, formatter: _.escape }
-					            ],
-					            options: aRES,
+									{ headerText: '#{i18n.getText('KWR002_35')}', key: 'code', width: 70, formatter: _.escape },
+									{ headerText: '#{i18n.getText('KWR002_36')}', key: 'name', width: 150, formatter: _.escape }
+								],
+								options: aRES,
 								optionsValue: 'code',
 								multiple: false,
 								value: currentARESCode,
-								height: '390px',
-								width: '260px;'
+								rows: 10,
+								width: '303px'
 							}">
 							</table>
 						</div>
 					</div>
 				</div>
-				<div class="fixed-flex-layout-right" style="padding-top: 35px;"
+				<div class="fixed-flex-layout-right" style="padding-top: 35px;margin-left: 25px;"
 					data-bind="with: currentARES">
 
 					<div class="table fixed-height">
@@ -103,7 +103,7 @@
 										<div
 											data-bind="ntsFormLabel:{required: true , constraint: ['ExportSettingCode','ExportSettingName']} ">
 											<!-- B6_1 -->
-											<label>#{i18n.getText('KWR002_40')}</label>
+											#{i18n.getText('KWR002_40')}
 										</div>
 									</td>
 

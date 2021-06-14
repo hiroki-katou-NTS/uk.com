@@ -29,12 +29,11 @@
 							checked: workdayOffTimeUseDivision }">#{i18n.getText('KMK003_105')}</div>
 					<div tabindex="140">
 						<div class="padding-radio">
-							<label class="ntsRadioBox">
-								<input class="inputRadioHol" type="radio" data-bind="checkedValue: 0, 
-										checked: workdayOffTimeSubHolTransferSetAtr, 
-										enable: workdayOffTimeUseDivision" />
-								<span class="box"></span><span class="label">#{i18n.getText('KMK003_106')}</span>
-							</label>
+							<label data-bind="ntsRadioButton: {
+									checkedValue: 0,
+									checked: workdayOffTimeSubHolTransferSetAtr,
+									optionText: 'KMK003_106',
+									enable: workdayOffTimeUseDivision}"></label>
 							<div class="padding-time">
 								<div class="tab-inline-item" style="width: 60px; text-align: center;">
 									<label>#{i18n.getText('KMK003_42')}</label>
@@ -64,12 +63,11 @@
 						</div>
 						
 						<div class="padding-radio">
-							<label class="ntsRadioBox">
-								<input class="inputRadioHol" type="radio" data-bind="checkedValue: 1, 
-										checked: workdayOffTimeSubHolTransferSetAtr, 
-										enable: workdayOffTimeUseDivision" />
-								<span class="box"></span><span class="label">#{i18n.getText('KMK003_108')}</span>
-							</label>
+							<label data-bind="ntsRadioButton: {
+									checkedValue: 1,
+									checked: workdayOffTimeSubHolTransferSetAtr,
+									optionText: 'KMK003_108',
+									enable: workdayOffTimeUseDivision}"></label>
 							<div class="padding-time">
 								<div class="tab-inline-item" style="width: 60px; text-align: center;">
 								</div>
@@ -92,12 +90,17 @@
 							checked: fromOverTimeUseDivision }">#{i18n.getText('KMK003_109')}</div>
 					<div tabindex="145">
 						<div class="padding-radio">
-							<label class="ntsRadioBox">
-								<input class="inputRadioOT" type="radio" data-bind="checkedValue: 0, 
-										checked: fromOverTimeSubHolTransferSetAtr, 
-										enable: fromOverTimeUseDivision" />
-								<span class="box"></span><span class="label">#{i18n.getText('KMK003_106')}</span>
-							</label>
+<!--							<label class="ntsRadioBox">-->
+<!--								<input class="inputRadioOT" type="radio" data-bind="checkedValue: 0, -->
+<!--										checked: fromOverTimeSubHolTransferSetAtr, -->
+<!--										enable: fromOverTimeUseDivision" />-->
+<!--								<span class="box"></span><span class="label">#{i18n.getText('KMK003_106')}</span>-->
+<!--							</label>-->
+							<label data-bind="ntsRadioButton: {
+									checkedValue: 0,
+									checked: fromOverTimeSubHolTransferSetAtr,
+									optionText: 'KMK003_106',
+									enable: fromOverTimeUseDivision}"></label>
 							<div class="padding-time">
 								<div class="tab-inline-item" style="width: 60px; text-align: center;">
 									<label>#{i18n.getText('KMK003_42')}</label>
@@ -127,12 +130,17 @@
 						</div>
 						
 						<div class="padding-radio">
-							<label class="ntsRadioBox">
-								<input class="inputRadioOT" type="radio" data-bind="checkedValue: 1, 
-										checked: fromOverTimeSubHolTransferSetAtr, 
-										enable: fromOverTimeUseDivision" />
-								<span class="box"></span><span class="label">#{i18n.getText('KMK003_108')}</span>
-							</label>
+<!--							<label class="ntsRadioBox">-->
+<!--								<input class="inputRadioOT" type="radio" data-bind="checkedValue: 1, -->
+<!--										checked: fromOverTimeSubHolTransferSetAtr, -->
+<!--										enable: fromOverTimeUseDivision" />-->
+<!--								<span class="box"></span><span class="label">#{i18n.getText('KMK003_108')}</span>-->
+<!--							</label>-->
+							<label data-bind="ntsRadioButton: {
+									checkedValue: 1,
+									checked: fromOverTimeSubHolTransferSetAtr,
+									optionText: 'KMK003_106',
+									enable: fromOverTimeUseDivision}"></label>
 							<div class="padding-time">
 								<div class="tab-inline-item" style="width: 60px; text-align: center;">
 								</div>

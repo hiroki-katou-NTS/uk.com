@@ -70,7 +70,7 @@
                         optionsValue: 'code',
                         optionsText: 'name',
                         value: d31TimeReference,
-                        enable: d31totalUsage() === 1
+                        enable: ko.computed(function() { return d31totalUsage() === 1; })
                       }"
                     ></div>
                   </div>
@@ -90,7 +90,7 @@
                         optionsValue: 'code',
                         optionsText: 'name',
                         value: d31LaborCosts,
-                        enable: d31totalUsage() === 1
+                        enable: ko.computed(function() { return d31totalUsage() === 1; })
                       }"
                     ></div>
                   </div>
@@ -110,7 +110,7 @@
                       optionsValue: 'code',
                       optionsText: 'name',
                       value: d31Budget,
-                      enable: d31totalUsage() === 1
+                      enable: ko.computed(function() { return d31totalUsage() === 1; })
                     }"
                     ></div>
                   </div>
@@ -155,7 +155,7 @@
                         optionsValue: 'code',
                         optionsText: 'name',
                         value: d41TimeReference,
-                        enable: d41WorkingHours() === 1
+                        enable: ko.computed(function() { return d41WorkingHours() === 1; })
                       }"
                     ></div>
                   </div>
@@ -175,7 +175,7 @@
                         optionsValue: 'code',
                         optionsText: 'name',
                         value: d41LaborCosts,
-                        enable: d41WorkingHours() === 1
+                        enable: ko.computed(function() { return d41WorkingHours() === 1; })
                       }"
                     ></div>
                   </div>
@@ -220,7 +220,7 @@
                         optionsValue: 'code',
                         optionsText: 'name',
                         value: d51TimeReference,
-                        enable: d51Overtime() === 1
+                        enable: ko.computed(function() { return d51Overtime() === 1; })
                       }"
                     ></div>
                   </div>
@@ -240,7 +240,7 @@
                         optionsValue: 'code',
                         optionsText: 'name',
                         value: d51LaborCosts,
-                        enable: d51Overtime() === 1
+                        enable: ko.computed(function() { return d51Overtime() === 1; })
                       }"
                     ></div>
                   </div>

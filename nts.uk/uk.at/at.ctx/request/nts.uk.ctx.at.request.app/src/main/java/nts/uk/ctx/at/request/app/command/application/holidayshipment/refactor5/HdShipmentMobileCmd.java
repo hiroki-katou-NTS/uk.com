@@ -39,24 +39,9 @@ public class HdShipmentMobileCmd {
 	private DisplayInforWhenStarting displayInforWhenStarting;
 	
 	/**
-	 * 振出_古いの休出代休紐付け管理<List>
-	 */
-	private List<LeaveComDayOffManaDto> recOldHolidayMngLst;
-	
-	/**
 	 * 振出_休出代休紐付け管理<List>
 	 */
 	private List<LeaveComDayOffManaDto> recHolidayMngLst;
-	
-	/**
-	 * 振休_古いの休出代休紐付け管理<List>
-	 */
-	private List<LeaveComDayOffManaDto> absOldHolidayMngLst;
-	
-	/**
-	 * 振休_古いの振出振休紐付け管理<List>
-	 */
-	private List<PayoutSubofHDManagementDto> absOldWorkMngLst;
 	
 	/**
 	 * 振休_休出代休紐付け管理<List>

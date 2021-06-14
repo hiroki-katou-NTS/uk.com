@@ -1,402 +1,328 @@
+/// <reference path="../../reference.ts"/>
+
 module nts.uk.ui.koExtentions {
-    export module date.range {
-        const YM_FORMAT = 'YYYY/MM';
-        const DATE_FORMAT = 'YYYY/MM/DD';
-        const COMPONENT_NAME = 'nts-date-range-picker';
+    
+    /**
+     * Dialog binding handler
+     */
+    class NtsDateRangePickerBindingHandler implements KnockoutBindingHandler {
 
-        type DateRange = {
-            startDate: string;
-            endDate: string;
-        };
-
-        type JumpUnit = 'month' | 'year';
-        type DRType = 'date' | 'fullDate' | 'yearmonth';
-        type MaxRange = 'none' | 'oneMonth' | 'oneYear';
-
-        interface DateRangeOptions {
-            value: KnockoutObservable<DateRange | null>;
-            type: DRType | KnockoutObservable<DRType>;
-            enable: boolean | KnockoutObservable<boolean>;
-            maxRange: MaxRange | KnockoutObservable<MaxRange>;
-            jumpUnit: JumpUnit | KnockoutObservable<JumpUnit>;
-            name: string | KnockoutObservable<string>;
-            startName: string | KnockoutObservable<string>;
-            endName: string | KnockoutObservable<string>;
-            required: boolean | KnockoutObservable<boolean>;
-            pickOnly: boolean | KnockoutObservable<boolean>;
-            showNextPrevious: boolean | KnockoutObservable<boolean>;
-            tabindex?: string | number;
+        /**
+         * Init. sssss 
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            let data = valueAccessor(),
+                $container = $(element),
+                construct: DateRangeHelper = new DateRangeHelper($container),
+                value = ko.unwrap(data.value);
+            
+            construct.bindInit(data, allBindingsAccessor, viewModel, bindingContext);
+            
+            $container.data("construct", construct);
+            
+            return { 'controlsDescendantBindings': true };
         }
 
-        @handler({
-            bindingName: 'ntsDateRangePicker',
-            validatable: true,
-            virtual: false
-        })
-        export class NtsDateRangePickerBindingHandler implements KnockoutBindingHandler {
-            init(element: HTMLElement, valueAccessor: () => DateRangeOptions, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean } {
-                const accessor = valueAccessor();
-
-                const name = COMPONENT_NAME;
-                const tabindex = Math.max(0, element.tabIndex);
-                const params = { tabindex, ...accessor };
-
-                // show or hide next & preview buttons
-                ko.computed({
-                    read: () => {
-                        const hideBtn = ko.unwrap<boolean>(accessor.showNextPrevious) === false;
-
-                        if (!hideBtn) {
-                            element.classList.add('has-btn');
-                        } else {
-                            element.classList.remove('has-btn');
-                        }
-                    },
-                    disposeWhenNodeIsRemoved: element
-                });
-
-                ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
-
-                // add inline display as control
-                element
-                    .classList
-                    .add('nts-daterange-picker');
-
-                // disable container focusable
-                element.removeAttribute('tabindex');
-
-                // notify binding
-                return { controlsDescendantBindings: true };
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            let data = valueAccessor(),
+                $container = $(element),
+                enable = data.enable === undefined ? true : ko.unwrap(data.enable),
+                required = ko.unwrap(data.required),
+                construct: DateRangeHelper = $container.data("construct"),
+                value = ko.unwrap(data.value);
+            
+            if(!nts.uk.util.isNullOrUndefined(value)){
+                construct.startValue(nts.uk.util.isNullOrUndefined(value.startDate) ? "" : value.startDate);
+                construct.endValue(nts.uk.util.isNullOrUndefined(value.endDate) ? "" : value.endDate);    
             }
-        }
-
-        @component({
-            name: 'nts-date-range-picker',
-            template: `
-                <button data-bind="
-                    attr: {
-                        tabindex: $component.tabindex
-                    },
-                    i18n: '◀',
-                    enable: $component.enable,
-                    click: $component.reduce,
-                    timeClick: -1"></button>
-                <div class="start" data-bind="
-                    attr: { 
-                        tabindex: $component.tabindex
-                    },
-                    ntsDatePicker: {
-                        enable: $component.enable,
-                        name: $component.name.start,
-                        value: $component.model.start,
-                        dateType: $component.dateType,
-                        dateFormat: $component.dateType,
-                        required: $component.required.start
-                    }"></div>
-                <div data-bind="i18n: '～'"></div>
-                <div class="end" data-bind="
-                    attr: { 
-                        tabindex: $component.tabindex
-                    },
-                    ntsDatePicker: {
-                        enable: $component.enable,
-                        name: $component.name.end,
-                        value: $component.model.end,
-                        dateType: $component.dateType,
-                        dateFormat: $component.dateType,
-                        required: $component.required.end
-                    }"></div>
-                <button data-bind="
-                    attr: {
-                        tabindex: $component.tabindex
-                    },
-                    i18n: '▶',
-                    enable: $component.enable,
-                    click: $component.increase,
-                    timeClick: -1"></button>
-            `
-        })
-        export class NtsDateRangePickerViewModel extends ko.ViewModel {
-            enable!: KnockoutComputed<boolean>;
-            tabindex!: KnockoutComputed<number | string | null>;
-            dateType!: KnockoutComputed<'date' | 'yearmonth'>;
-
-            model: ModelValue = {
-                start: ko.observable(null).extend({ deferred: true }),
-                end: ko.observable(null).extend({ deferred: true })
-            };
-
-            name!: ModelName & { range: KnockoutComputed<string> };
-            required!: ModelRequired;
-
-            constructor(private params: DateRangeOptions) {
-                super();
-
-                this.dateType = ko.computed({
-                    read: () => {
-                        return ko.unwrap<DRType>(params.type) === 'yearmonth' ? 'yearmonth' : 'date';
-                    }
-                });
-
-                this.enable = ko.computed({
-                    read: () => {
-                        return ko.unwrap<boolean>(params.enable) !== false;
-                    }
-                });
-
-                this.name = {
-                    start: ko.computed({
-                        read: () => {
-                            const name = ko.unwrap<string>(params.name);
-                            const startName = ko.unwrap<string>(params.startName);
-
-                            return startName || `${name || '期間入力フォーム'}開始`;
-                        }
-                    }),
-                    end: ko.computed({
-                        read: () => {
-                            const name = ko.unwrap<string>(params.name);
-                            const endName = ko.unwrap<string>(params.endName);
-
-                            return endName || `${name || '期間入力フォーム'}終了`;
-                        }
-                    }),
-                    range: ko.computed({
-                        read: () => {
-                            const name = ko.unwrap<string>(params.name);
-
-                            return name || '期間入力フォーム';
-                        }
-                    })
-                };
-
-                this.required = {
-                    start: ko.computed({
-                        read: () => {
-                            return ko.unwrap<boolean>(params.required) === true;
-                        }
-                    }),
-                    end: ko.computed({
-                        read: () => {
-                            return ko.unwrap<boolean>(params.required) === true;
-                        }
-                    })
-                };
-
-                this.tabindex = ko.computed({
-                    read: () => {
-                        const enabled = ko.unwrap<boolean>(params.enable) !== false;
-                        const tabindex = ko.unwrap<number | string>(params.tabindex);
-
-                        return enabled ? tabindex : null;
-                    }
-                });
-
-                this.model.start
-                    .subscribe((start: string) => {
-                        const end = ko.unwrap<string>(this.model.end);
-                        const format = ko.unwrap(this.dateType) === 'yearmonth' ? YM_FORMAT : DATE_FORMAT;
-
-                        const value = {
-                            startDate: start ? moment(start, DATE_FORMAT).format(format) : '',
-                            endDate: end ? moment(end, DATE_FORMAT).format(format) : ''
-                        };
-
-                        if (!_.isEqual(value, ko.unwrap(params.value))) {
-                            params.value(value);
-                        }
-                    });
-
-                this.model.end
-                    .subscribe((end: string) => {
-                        const start = ko.unwrap<string>(this.model.start);
-                        const format = ko.unwrap(this.dateType) === 'yearmonth' ? YM_FORMAT : DATE_FORMAT;
-
-                        const value = {
-                            startDate: start ? moment(start, DATE_FORMAT).format(format) : '',
-                            endDate: end ? moment(end, DATE_FORMAT).format(format) : ''
-                        };
-
-                        if (!_.isEqual(value, ko.unwrap(params.value))) {
-                            params.value(value);
-                        }
-                    });
-            }
-
-            created() {
-
-            }
-
-            mounted() {
-                const vm = this;
-                const { model, params, dateType } = vm;
-                const modelUpdate = (v: DateRange | null) => {
-                    if (v) {
-                        const { startDate, endDate } = v;
-                        const format = ko.unwrap(dateType) === 'yearmonth' ? YM_FORMAT : DATE_FORMAT;
-
-                        if (!startDate) {
-                            model.start('');
-                        } else {
-                            const value = moment(startDate, DATE_FORMAT).format(format);
-
-                            if (value !== ko.unwrap(model.start)) {
-                                model.start(value);
-                            }
-                        }
-
-                        if (!endDate) {
-                            model.end('');
-                        } else {
-                            const value = moment(endDate, DATE_FORMAT).format(format);
-
-                            if (value !== ko.unwrap(model.end)) {
-                                model.end(value);
-                            }
-                        }
-                    }
-                };
-
-                if (ko.isObservable(params.value)) {
-                    params.value.subscribe(modelUpdate);
-                }
-
-                modelUpdate(ko.toJS(params.value));
-
-                $(vm.$el)
-                    .removeAttr('data-bind')
-                    .find('[data-bind]')
-                    .removeAttr('data-bind');
-
-                vm.$nextTick(() => vm.validate());
-            }
-
-            destroyed() {
-                const vm = this;
-
-                // for release memory purpose
-                // dispose all computed at here
-                vm.enable.dispose();
-
-                vm.tabindex.dispose();
-
-                vm.dateType.dispose();
-
-                vm.required.start.dispose();
-                vm.required.end.dispose();
-            }
-
-            reduce() {
-                const vm = this;
-                const { model, params } = vm;
-                const start = ko.unwrap<string | null>(model.start);
-                const end = ko.unwrap<string | null>(model.end);
-                const ju = ko.unwrap<JumpUnit>(params.jumpUnit) || 'month';
-
-                if (start) {
-                    const reduceStart = moment(start, DATE_FORMAT).subtract(1, ju).startOf('day').format(DATE_FORMAT);
-
-                    model.start(reduceStart);
-                }
-
-                if (end) {
-                    const reduceEnd = moment(end, DATE_FORMAT).subtract(1, ju).startOf('day').format(DATE_FORMAT);
-
-                    model.end(reduceEnd);
-                }
-            }
-
-            increase() {
-                const vm = this;
-                const { model, params } = vm;
-                const start = ko.unwrap<string | null>(model.start);
-                const end = ko.unwrap<string | null>(model.end);
-                const ju = ko.unwrap<JumpUnit>(params.jumpUnit) || 'month';
-
-                if (start) {
-                    const increaseStart = moment(start, DATE_FORMAT).add(1, ju).startOf('day').format(DATE_FORMAT);
-
-                    model.start(increaseStart);
-                }
-
-                if (end) {
-                    const increaseEnd = moment(end, DATE_FORMAT).add(1, ju).startOf('day').format(DATE_FORMAT);
-
-                    model.end(increaseEnd);
-                }
-            }
-
-
-            validate() {
-                const vm = this;
-                const { $el, name, model, params } = vm;
-                const { start, end } = model;
-                const { maxRange, type } = params;
-                const $start = $($el).find('input').first();
-                const $end = $($el).find('input').last();
-
-                const validate = (start: string, end: string) => {
-                    const ms = moment(start, DATE_FORMAT);
-                    const me = moment(end, DATE_FORMAT);
-
-                    $start
-                        .ntsError('clearByCode', 'MsgB_21')
-                        .ntsError('clearByCode', 'MsgB_22')
-                        .ntsError('clearByCode', 'MsgB_23');
-
-                    $end
-                        .ntsError('clearByCode', 'MsgB_21')
-                        .ntsError('clearByCode', 'MsgB_22')
-                        .ntsError('clearByCode', 'MsgB_23');
-
-                    if (!!start && !!end) {
-                        if (me.isBefore(ms, 'date')) {
-                            if (!$start.ntsError('hasError')) {
-                                $start.ntsError('set', vm.$i18n.message('MsgB_21', [ko.unwrap(name.range)]), 'MsgB_21');
-                            }
-
-                            if (!$end.ntsError('hasError')) {
-                                $end.ntsError('set', vm.$i18n.message('MsgB_21', [ko.unwrap(name.range)]), 'MsgB_21');
-                            }
-                        } else if (ko.unwrap(type) !== 'yearmonth' && ko.unwrap(maxRange) === 'oneMonth') {
-                            if (!ms.isSame(me, 'month')) {
-                                if (!$start.ntsError('hasError')) {
-                                    $start.ntsError('set', vm.$i18n.message('MsgB_22', [ko.unwrap(name.range)]), 'MsgB_22');
-                                }
-
-                                if (!$end.ntsError('hasError')) {
-                                    $end.ntsError('set', vm.$i18n.message('MsgB_22', [ko.unwrap(name.range)]), 'MsgB_22');
-                                }
-                            }
-                        } else if (ko.unwrap(maxRange) === 'oneYear') {
-                            if (!ms.isSame(me, 'year')) {
-                                if (!$start.ntsError('hasError')) {
-                                    $start.ntsError('set', vm.$i18n.message('MsgB_23', [ko.unwrap(name.range)]), 'MsgB_23');
-                                }
-
-                                if (!$end.ntsError('hasError')) {
-                                    $end.ntsError('set', vm.$i18n.message('MsgB_23', [ko.unwrap(name.range)]), 'MsgB_23');
-                                }
-                            }
-                        }
-                    }
-                };
-
-                start
-                    .subscribe((s: string) => validate(s, ko.unwrap(end)));
-
-                end
-                    .subscribe((e: string) => validate(ko.unwrap(start), e));
-            }
+            ko.bindingHandlers["ntsDatePicker"].update(construct.$start[0], function() {
+                return construct.createStartBinding(data);
+            }, allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers["ntsDatePicker"].update(construct.$end[0], function() {
+                return construct.createEndBinding(data);
+            }, allBindingsAccessor, viewModel, bindingContext);
+            
+            if(enable === false){
+                $container.find(".ntsDateRange_Component").removeAttr("tabindex");    
+            } else {
+                $container.find(".ntsDateRange_Component").attr("tabindex", $container.data("tabindex"));         
+            } 
+            $container.find(".ntsDateRangeButton").prop("disabled", !enable);
+            let $datePickerArea = $container.find(".ntsDateRange_Container"); 
+            $datePickerArea.data("required", required);
         }
     }
 
-    interface ModelValue<T = KnockoutObservable<string | null>> {
-        start: T;
-        end: T;
+    ko.bindingHandlers['ntsDateRangePicker'] = new NtsDateRangePickerBindingHandler();
+    
+    class DateRangeHelper {
+        $container: JQuery;
+        startValue: KnockoutObservable<string>;
+        endValue: KnockoutObservable<string>;
+        value: KnockoutObservable<any>;
+        getMessage: any;
+        $datePickerArea: JQuery;
+        dateFormat: string;
+        startName: string;
+        endName: string;
+        rangeName: string;
+        maxRange: string;
+        $ntsDateRange: JQuery;
+        $start: JQuery;
+        $end: JQuery;
+        
+        constructor($element: JQuery){
+            this.$container = $element;        
+        }
+        
+        public bindInit(parentBinding: any, allBindingsAccessor, viewModel, bindingContext){
+            let self = this;
+            self.value = parentBinding.value;
+            self.startValue = ko.observable(nts.uk.util.isNullOrUndefined(self.value().startDate) ? "" : self.value().startDate);
+            self.endValue = ko.observable(nts.uk.util.isNullOrUndefined(self.value().endDate) ? "" : self.value().endDate);
+            
+            self.startValue.subscribe((v) => {
+                let oldValue = self.value();
+                
+                oldValue.startDate = v;  
+                
+                self.validateProcess(v, oldValue);
+                self.value(oldValue);
+            });
+            
+            self.endValue.subscribe((v) => {
+                let oldValue = self.value();
+                
+                oldValue.endDate = v;  
+                
+                self.validateProcess(v, oldValue);
+                self.value(oldValue);
+            });
+            
+            self.bindControl(parentBinding, allBindingsAccessor, viewModel, bindingContext);
+        }
+        
+        private bindControl(data: any, allBindingsAccessor, viewModel, bindingContext){
+            let self = this, dateType = ko.unwrap(data.type), maxRange = ko.unwrap(data.maxRange), rangeName = ko.unwrap(data.name),
+                startName = ko.unwrap(data.startName), endName = ko.unwrap(data.endName), 
+                showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious),
+                jumpUnit = data.jumpUnit === undefined ? "month" : ko.unwrap(data.jumpUnit),
+                id = nts.uk.util.randomId(), required = ko.unwrap(data.required),
+                tabIndex = nts.uk.util.isNullOrEmpty(self.$container.attr("tabindex")) ? "0" : self.$container.attr("tabindex");
+            
+            self.maxRange = maxRange;
+            self.$container.data("tabindex", tabIndex);
+            self.$container.removeAttr("tabindex");
+            
+            self.$container.append("<div class='ntsDateRange_Container' id='"+ id +"' />");
+            
+            self.$datePickerArea = self.$container.find(".ntsDateRange_Container"); 
+            
+            self.$datePickerArea.append("<div class='ntsDateRangeComponent ntsControl ntsDateRange'>" + 
+                "<div class='ntsDateRangeComponent ntsStartDate ntsControl nts-datepicker-wrapper'/><div class='ntsDateRangeComponent ntsRangeLabel'><label>～</label></div>" +
+                "<div class='ntsDateRangeComponent ntsEndDate ntsControl nts-datepicker-wrapper' /></div>");
+            
+            self.$datePickerArea.data("required", required);
+            
+            if(dateType === 'year') {
+                self.dateFormat = 'YYYY'; 
+            } else if(dateType === 'yearmonth') {
+                self.dateFormat = 'YYYY/MM'; 
+            } else {
+                self.dateFormat = 'YYYY/MM/DD'; 
+            }
+            var ISOFormat = text.getISOFormat(self.dateFormat);
+            ISOFormat = ISOFormat.replace(/d/g,"").trim();
+            
+            if (showNextPrevious === true) {
+                self.bindJump(jumpUnit);
+            }
+              
+            let $startDateArea = self.$datePickerArea.find(".ntsStartDate");
+            let $endDateArea = self.$datePickerArea.find(".ntsEndDate");
+            
+            $startDateArea.append("<div id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker ntsDateRangeComponent ntsDateRange_Component' />");
+            $endDateArea.append("<div id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker ntsDateRangeComponent ntsDateRange_Component' />");
+            self.$start = $startDateArea.find(".ntsStartDatePicker");
+            self.$end = $endDateArea.find(".ntsEndDatePicker");
+            let $input = self.$container.find(".nts-input");
+            // Init Datepicker
+//            $input.datepicker({
+//                language: 'ja-JP',
+//                format: ISOFormat,
+//                autoHide: true,
+//                weekStart: 0
+//            });
+            
+            self.rangeName = nts.uk.util.isNullOrUndefined(rangeName) ? "期間入力フォーム" : nts.uk.resource.getControlName(rangeName);
+            self.startName = nts.uk.util.isNullOrUndefined(startName) ? self.rangeName + "開始" : nts.uk.resource.getControlName(startName);
+            self.endName = nts.uk.util.isNullOrUndefined(endName) ? self.rangeName + "終了" : nts.uk.resource.getControlName(endName);
+            self.getMessage = nts.uk.resource.getMessage;
+            
+            ko.bindingHandlers["ntsDatePicker"].init(self.$start[0], function() {
+                return self.createStartBinding(data);
+            }, allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers["ntsDatePicker"].init(self.$end[0], function() {
+                return self.createEndBinding(data);
+            }, allBindingsAccessor, viewModel, bindingContext);  
+            
+            self.$ntsDateRange = self.$container.find(".ntsRangeLabel");
+            
+            $input.on('validate', (function(e: Event) {
+                let $target = $(e.target);
+                var newText = $target.val(); 
+                let oldValue = self.value();
+                
+//                $target.ntsError('clear');
+//                self.$ntsDateRange.ntsError("clear");
+                if(!$target.ntsError('hasError')){
+                    self.$ntsDateRange.ntsError("clear"); 
+                    self.validateProcess(newText, oldValue);
+                }
+            }));
+            
+            self.$container.find(".ntsDateRange_Component").attr("tabindex", tabIndex);
+        }
+        
+        private bindJump(jumpUnit: string){
+            let self = this;
+            self.$datePickerArea.append("<div class= 'ntsDateRangeComponent ntsDateNextButton_Container ntsRangeButton_Container'>" + 
+                "<button class = 'ntsDateNextButton ntsButton ntsDateRangeButton ntsDateRange_Component auto-height'/></div>");        
+            self.$datePickerArea.prepend("<div class='ntsDateRangeComponent ntsDatePreviousButton_Container ntsRangeButton_Container'>" + 
+                "<button class = 'ntsDatePrevButton ntsButton ntsDateRangeButton ntsDateRange_Component auto-height'/></div>"); 
+            
+            let $nextButton = self.$container.find(".ntsDateNextButton").text("▶").css("margin-left", "3px");
+            let $prevButton = self.$container.find(".ntsDatePrevButton").text("◀").css("margin-right", "3px");
+            
+            $nextButton.click(function (evt, ui){
+                self.jump(true, jumpUnit);      
+            });
+            
+            $prevButton.click(function (evt, ui){
+                self.jump(false, jumpUnit);     
+            });
+        }
+        
+        private jump(isNext: boolean, jumpUnit: string){
+            let self = this, $startDate = self.$container.find(".ntsStartDatePicker"),
+                $endDate = self.$container.find(".ntsEndDatePicker"), oldValue = self.value(),
+                currentStart = $startDate.val(),
+                currentEnd = $endDate.val();   
+            
+            if (!nts.uk.util.isNullOrEmpty(currentStart)){
+                let startDate = moment(currentStart, self.dateFormat);   
+                if(startDate.isValid()) {
+                    if(jumpUnit === "year"){
+                        startDate.year(startDate.year() + (isNext ? 1 : -1));   
+                    } else {
+                        let isEndOfMonth = startDate.daysInMonth() === startDate.date();
+                        startDate.month(startDate.month() + (isNext ? 1 : -1));    
+                        if(isEndOfMonth){
+                            startDate.endOf("month");           
+                        }      
+                    } 
+                    oldValue.startDate = startDate.format(self.dateFormat);         
+                }     
+            }    
+            
+            if (!nts.uk.util.isNullOrEmpty(currentEnd)){
+                let endDate = moment(currentEnd, self.dateFormat);   
+                if(endDate.isValid()) {
+                    if(jumpUnit === "year"){
+                        endDate.year(endDate.year() + (isNext ? 1 : -1));   
+                    } else {
+                        let isEndOfMonth = endDate.daysInMonth() === endDate.date();
+                        endDate.month(endDate.month() + (isNext ? 1 : -1));    
+                        if(isEndOfMonth){
+                            endDate.endOf("month");           
+                        }   
+                    }
+                    oldValue.endDate = endDate.format(self.dateFormat);         
+                }     
+            } 
+            self.value(oldValue);      
+        }
+        
+        private validateProcess (newText: string, oldValue: any){
+            let self = this;
+            if(self.$start.find("input").ntsError("hasError") || self.$end.find("input").ntsError("hasError")) {
+                return;       
+            }
+            self.$ntsDateRange.ntsError("clear");
+            
+            let startDate = moment(oldValue.startDate, self.dateFormat);
+            let endDate = moment(oldValue.endDate, self.dateFormat);
+            if (endDate.isBefore(startDate)) {
+                self.$ntsDateRange.ntsError('set', self.getMessage("MsgB_21", [self.rangeName]), "MsgB_21");    
+            } else if(self.isFullDateFormat() && self.maxRange === "oneMonth"){
+                let maxDate = startDate.add(31, "days");
+                if(endDate.isSameOrAfter(maxDate)){
+                    self.$ntsDateRange.ntsError('set', self.getMessage("MsgB_22", [self.rangeName]), "MsgB_22");         
+                }
+            } else if (self.maxRange === "oneYear"){
+                let maxDate = _.cloneDeep(startDate);
+                if(self.isFullDateFormat()){
+                    let currentDate = startDate.date();
+                    let isEndMonth = currentDate === startDate.endOf("months").date();
+                    let isStartMonth = currentDate === 1;
+                    maxDate = maxDate.date(1).add(1, 'year');
+                    if(isStartMonth){
+                        maxDate = maxDate.month(maxDate.month() - 1).endOf("months");
+                    } else if(isEndMonth){
+                        maxDate = maxDate.endOf("months").add(-1, "days");        
+                    } else {
+                        maxDate = maxDate.date(currentDate - 1);    
+                    }    
+                } else if(self.isYearMonthFormat()){
+                    maxDate = maxDate.add(1, 'year').add(-1, "months");   
+                } else {
+                    maxDate = maxDate.add(1, 'year');
+                }
+                if (endDate.isAfter(maxDate)) {
+                    self.$ntsDateRange.ntsError('set', self.getMessage("MsgB_23", [self.rangeName]), "MsgB_23");        
+                }
+            }  
+        }
+        
+        private isFullDateFormat(): boolean {
+            
+            return this.dateFormat === 'YYYY/MM/DD';    
+        }
+        
+        private isYearMonthFormat(): boolean {
+            
+            return this.dateFormat === 'YYYY/MM';    
+        }
+        
+        public createStartBinding(parentBinding: any, name, format: string): any {
+            let self = this;
+            return { required: parentBinding.required, 
+                     name: self.startName, 
+                     value: self.startValue, 
+                     dateFormat: self.dateFormat, 
+                     valueFormat: self.dateFormat, 
+                     'type': parentBinding.type,
+                     enable: parentBinding.enable, 
+                     disabled: parentBinding.disabled,
+                     pickOnly: parentBinding.pickOnly 
+                   };
+        }
+        
+        public createEndBinding(parentBinding: any, name: string): any {
+            let self = this;
+            return { required: parentBinding.required, 
+                     name: self.endName, 
+                     value: self.endValue, 
+                     dateFormat: self.dateFormat, 
+                     valueFormat: self.dateFormat,  
+                     'type': parentBinding.type,
+                     enable: parentBinding.enable, 
+                     disabled: parentBinding.disabled,
+                     pickOnly: parentBinding.pickOnly
+                   };
+        }
     }
-
-    interface ModelName extends ModelValue<KnockoutComputed<string>> { }
-
-    interface ModelRequired extends ModelValue<KnockoutComputed<boolean>> { }
 }

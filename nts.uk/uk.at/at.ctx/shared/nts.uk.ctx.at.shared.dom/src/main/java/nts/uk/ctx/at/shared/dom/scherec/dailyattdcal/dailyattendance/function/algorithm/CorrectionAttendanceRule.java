@@ -11,6 +11,8 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.adapter.dailyprocess.createdailyoneday.SupportDataWorkImport;
+import nts.uk.ctx.at.shared.dom.adapter.dailyprocess.createdailyoneday.SupportWorkAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
@@ -96,6 +98,9 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 	private FlexWorkSettingRepository flexWorkSettingRepo;
 	
 	@Inject
+	private SupportWorkAdapter supportAdapter;
+
+	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepo;
 	
 	@Inject
@@ -136,6 +141,13 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 
 		}
 		
+		if(changeAtt.attendance) {
+			SupportDataWorkImport workImport = supportAdapter.correctionAfterChangeAttendance(domainDaily);
+			
+			if(workImport != null)
+				afterDomain = workImport.getIntegrationOfDaily();
+		}
+		
 		/** 休憩時間帯の補正 */
 		BreakTimeSheetCorrector.correct(createBreakRequire(optionalItems), afterDomain, changeAtt.fixBreakCorrect);
 
@@ -143,8 +155,10 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 		DailyRecordToAttendanceItemConverter afterConverter = attendanceItemConvertFactory.createDailyConverter().setData(afterDomain)
 				.completed();
 		if(!beforeItems.isEmpty()) afterConverter.merge(beforeItems);
-
-		return afterConverter.toDomain();
+		
+		IntegrationOfDaily integrationOfDaily = afterConverter.toDomain();
+		integrationOfDaily.setOuenTimeSheet(afterDomain.getOuenTimeSheet());
+		return integrationOfDaily;
 	}
 
 	private WorkingConditionService.RequireM1 createImp() {
