@@ -26,7 +26,7 @@ module nts.uk.at.view.kmk004.b {
 				<p class="title" data-bind="i18n: 'KMK004_228'"></p>
 				<hr></hr>
 				<div class="name" data-bind="i18n: emloyment.name"></div>
-				<div>
+				<div >
 					<div data-bind="ntsFormLabel: {inline: true}, text: $i18n('KMK004_229')"></div>
 					<!-- ko if: checkSeting -->
 						<button tabindex="5" data-bind="i18n: 'KMK004_341', click: openDialogF"></button>
@@ -44,9 +44,9 @@ module nts.uk.at.view.kmk004.b {
 						checkSeting: checkSeting
 					}
 				}"></div>
-				<div class="label1" data-bind="ntsFormLabel: {inline: true}, text: $i18n('KMK004_232')"></div>
+				<div  class="label1" data-bind="ntsFormLabel: {inline: true}, text: $i18n('KMK004_232')"></div>
 				<div class="content-data">
-					<div>
+					<div >
 						<button tabindex="6" data-bind="i18n: 'KMK004_233', click: openDialogQ"></button>
 					</div>
 					<div class="year">
@@ -144,6 +144,11 @@ module nts.uk.at.view.kmk004.b {
 				.subscribe(() => {
 					$(document).ready(function () {
 						$('#list-box').focus();
+						// Fix bug render edge
+						setTimeout(() => {
+							$('.content-data').css('margin-top', '9px');
+							$('.content-data').css('margin-left', '9px');
+						}, 500);
 					});
 				});
 		}

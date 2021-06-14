@@ -34,6 +34,7 @@
 
 .view-c-kmk004 .right-content p {
 	font-size: 20px;
+	height: 30px;
 }
 
 .view-c-kmk004 .right-content .name {
@@ -90,6 +91,7 @@
 
 .view-d-kmk004 .right-content p {
 	font-size: 20px;
+	height: 30px;
 }
 
 .view-d-kmk004 .right-content .content-data {
@@ -118,7 +120,6 @@
 .view-d-kmk004 .right-content .name {
 	margin-bottom: 10px;
 	height: 25px;
-	max-height: 25px;
 }
 
 /* View E */
@@ -152,6 +153,7 @@
 
 .view-e-kmk004 .right-content p {
 	font-size: 20px;
+	height: 30px;
 }
 
 .view-e-kmk004 .right-content .content-data {
@@ -412,4 +414,8 @@
     width: 100px;
     height: 24px;
     z-index: 999999;
+}
+
+#contents-area {
+	overflow: hidden;
 }

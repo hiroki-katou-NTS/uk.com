@@ -36,7 +36,7 @@ module nts.uk.at.view.kmk004.b {
 				<p class="title" data-bind="i18n: 'KMK004_228'"></p>
 				<hr></hr>
 				<div class="name" data-bind="i18n: model.nameSynthetic"></div>
-				<div>
+				<div style="height: 35px;">
 					<div data-bind="ntsFormLabel: {inline: true}, text: $i18n('KMK004_229')"></div>
 					<!-- ko if: checkSeting -->
 						<button tabindex="5" data-bind="i18n: 'KMK004_343', click: openDialogF, enable: existEmployee"></button>
@@ -54,9 +54,9 @@ module nts.uk.at.view.kmk004.b {
 						checkSeting: checkSeting
 					}
 				}"></div>
-				<div class="label1" data-bind="ntsFormLabel: {inline: true}, text: $i18n('KMK004_232')"></div>
+				<div style="height: 35px;" class="label1" data-bind="ntsFormLabel: {inline: true}, text: $i18n('KMK004_232')"></div>
 				<div class="content-data">
-					<div>
+					<div style="height: 35px;">
 						<button tabindex="6" data-bind="i18n: 'KMK004_233', click: openDialogQ, enable: existEmployee"></button>
 					</div>
 					<div class="year">
