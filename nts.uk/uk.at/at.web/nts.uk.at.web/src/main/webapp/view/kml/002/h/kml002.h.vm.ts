@@ -1,4 +1,5 @@
 module nts.uk.at.view.kml002.k {
+    import getText = nts.uk.resource.getText;
     import setShare = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     const Paths = {
@@ -14,20 +15,19 @@ module nts.uk.at.view.kml002.k {
     class Kml002hViewModel extends ko.ViewModel {
         name: KnockoutObservable<string> = ko.observable('');
 
-        itemHandling: KnockoutObservable<ItemHandling> = ko.observable();
-        itemMonthly: KnockoutObservable<ItemMonthly> = ko.observable();
-        itemAnnual: KnockoutObservable<ItemAnnual> = ko.observable();
+        itemHandling: KnockoutObservable<ItemHandling> = ko.observable(new ItemHandling());
+        itemMonthly: KnockoutObservable<ItemMonthly> = ko.observable(new ItemMonthly());
+        itemAnnual: KnockoutObservable<ItemAnnual> = ko.observable(new ItemAnnual());
 
 
         itemHandlingScreenK: KnockoutObservable<ItemHandling> = ko.observable();
-        itemMonthlyScreenK: KnockoutObservable<ItemMonthly> = ko.observable();
-        itemAnnualScreenK: KnockoutObservable<ItemAnnual> = ko.observable();
+        itemMonthlyScreenK: KnockoutObservable<ItemMonthly> = ko.observable(new ItemMonthly());
+        itemAnnualScreenK: KnockoutObservable<ItemAnnual> = ko.observable(new ItemAnnual());
         isReloadScreenK: KnockoutObservable<boolean> = ko.observable(false);
         isUseageEmployment: KnockoutObservable<boolean> = ko.observable(true);
 
         currentScreen: any = null;
         
-        // currencyeditorScreenk1: any;
 
         listComponentOption: any;
         selectedCode: KnockoutObservable<string> = ko.observable('1');
@@ -56,7 +56,6 @@ module nts.uk.at.view.kml002.k {
             });       
 
             self.loadData();
-            // self.loadDataScreenK();
            
             self.listComponentOption = {
                 isShowAlreadySet: self.isShowAlreadySet(),
@@ -72,7 +71,72 @@ module nts.uk.at.view.kml002.k {
 
             self.selectedCode.subscribe((code) => {
                 self.findDetail(code);
-            });           
+            }); 
+
+            self.itemHandling().backgroundColor1.subscribe((val) => {                
+                $('#colorpicker1').ntsError('clear');
+                if (!val || val =='') {
+                    $('#colorpicker1').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_132")]}); 
+                }
+            });     
+            self.itemHandling().backgroundColor2.subscribe((val) => {               
+                $('#colorpicker2').ntsError('clear');
+                if (!val || val =='') {
+                    $('#colorpicker2').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_134")]}); 
+                }
+            });  
+            self.itemHandling().backgroundColor3.subscribe((val) => {                
+                $('#colorpicker3').ntsError('clear');
+                if (!val || val =='') {
+                    $('#colorpicker3').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_135")]}); 
+                }
+            });  
+            self.itemHandling().backgroundColor4.subscribe((val) => {                
+                $('#colorpicker4').ntsError('clear');
+                if (!val || val =='') {
+                    $('#colorpicker4').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_136")]}); 
+                }
+            });  
+            self.itemHandling().backgroundColor5.subscribe((val) => {                
+                $('#colorpicker5').ntsError('clear');
+                if (!val || val =='') {
+                    $('#colorpicker5').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_137")]}); 
+                }
+            });  
+
+            self.itemMonthly().amount1.subscribe((val) => {
+                $('#month2').ntsError('clear');
+                if(self.itemMonthly().amount2() < val){
+                    $('#month2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]}); 
+                }
+            });
+            self.itemMonthly().amount2.subscribe((val) => {
+                $('#month2').ntsError('clear');
+                if(self.itemMonthly().amount1() > val){
+                    $('#month2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]}); 
+                }
+            });
+
+            self.itemMonthly().amount3.subscribe((val) => {
+                $('#month3').ntsError('clear');
+                if(self.itemMonthly().amount2() > val){
+                    $('#month3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")]}); 
+                }
+            });
+
+            self.itemMonthly().amount4.subscribe((val) => {
+                $('#month4').ntsError('clear');
+                if(self.itemMonthly().amount3() > val){
+                    $('#month4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")]}); 
+                }
+            });
+
+            self.itemMonthly().amount5.subscribe((val) => {
+                $('#month5').ntsError('clear');
+                if(self.itemMonthly().amount4() > val){
+                    $('#month5').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_143")]}); 
+                }
+            });
         }
 
         loadData(): void {
@@ -113,41 +177,68 @@ module nts.uk.at.view.kml002.k {
                 self.$blockui("hide");
             });
         }
-
+        
         registerMoneyCmp(): void {
-            const self = this;            
-            let command:any = {}, handlings: Array<ItemHandlingModel>= [], months: Array<ItemAmountModel> = [], 
-            years: Array<ItemAmountModel> = [];
+            const self = this;
+            let command: any = {}, handlings: Array<ItemHandlingModel> = [], months: Array<ItemAmountModel> = [],
+                years: Array<ItemAmountModel> = [];
 
-                handlings.push({ "frameNo": 1, "backgroundColor": self.itemHandling().backgroundColor1() });
-                handlings.push({ "frameNo": 2, "backgroundColor": self.itemHandling().backgroundColor2() });
-                handlings.push({ "frameNo": 3, "backgroundColor": self.itemHandling().backgroundColor3() });
-                handlings.push({ "frameNo": 4, "backgroundColor": self.itemHandling().backgroundColor4() });
-                handlings.push({ "frameNo": 5, "backgroundColor": self.itemHandling().backgroundColor5() });
-               
-                months.push({ "frameNo": 1, "amount": parseInt(self.itemMonthly().amount1() )});
+            if (self.validateAll()) {
+                return;
+            }
+                       
+            handlings.push({ "frameNo": 1, "backgroundColor": self.itemHandling().backgroundColor1() });
+            handlings.push({ "frameNo": 2, "backgroundColor": self.itemHandling().backgroundColor2() });
+            handlings.push({ "frameNo": 3, "backgroundColor": self.itemHandling().backgroundColor3() });
+            handlings.push({ "frameNo": 4, "backgroundColor": self.itemHandling().backgroundColor4() });
+            handlings.push({ "frameNo": 5, "backgroundColor": self.itemHandling().backgroundColor5() });
+
+            if(self.itemMonthly().amount1()){
+                months.push({ "frameNo": 1, "amount": parseInt(self.itemMonthly().amount1()) });
+            }
+            if(self.itemMonthly().amount2()){
                 months.push({ "frameNo": 2, "amount": parseInt(self.itemMonthly().amount2()) });
+            }
+            if(self.itemMonthly().amount3()){
                 months.push({ "frameNo": 3, "amount": parseInt(self.itemMonthly().amount3()) });
+            }
+            if(self.itemMonthly().amount4()){
                 months.push({ "frameNo": 4, "amount": parseInt(self.itemMonthly().amount4()) });
+            }
+            if(self.itemMonthly().amount5()){
                 months.push({ "frameNo": 5, "amount": parseInt(self.itemMonthly().amount5()) });
-               
+            }
+
+            if(self.itemAnnual().amount1()){
                 years.push({ "frameNo": 1, "amount": parseInt(self.itemAnnual().amount1()) });
+            }
+
+            if(self.itemAnnual().amount2()){
                 years.push({ "frameNo": 2, "amount": parseInt(self.itemAnnual().amount2()) });
+            }
+
+            if(self.itemAnnual().amount3()){
                 years.push({ "frameNo": 3, "amount": parseInt(self.itemAnnual().amount3()) });
+            }
+
+            if(self.itemAnnual().amount4()){
                 years.push({ "frameNo": 4, "amount": parseInt(self.itemAnnual().amount4()) });
+            }
+
+            if(self.itemAnnual().amount5()){
                 years.push({ "frameNo": 5, "amount": parseInt(self.itemAnnual().amount5()) });
+            }
 
             command.months = months;
             command.years = years;
             command.handlings = handlings;
             self.$blockui("invisible");
             self.$ajax(Paths.REGISTER_SETTING_CMP, command).done(() => {
-                self.$dialog.info({messageId: 'Msg_15'}).then(() => {
-                    // self.selectedCode(command.code);   
-                    self.loadData();     
+                self.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+                    self.loadData();
                 });
             }).fail((res) => {
-                self.$dialog.alert({messageId: res.messageId});
+                self.$dialog.alert({ messageId: res.messageId });
             }).always(() => {
                 self.$blockui("hide");
             });
@@ -236,18 +327,42 @@ module nts.uk.at.view.kml002.k {
             const self = this;            
             let command:any = {}, months: Array<ItemAmountModel> = [], 
             years: Array<ItemAmountModel> = [];
-               
-                months.push({ "frameNo": 1, "amount": self.itemMonthlyScreenK().amount1() ? parseInt(self.itemMonthlyScreenK().amount1()): -4});
-                months.push({ "frameNo": 2, "amount": self.itemMonthlyScreenK().amount2() ? parseInt(self.itemMonthlyScreenK().amount2()): -3});
-                months.push({ "frameNo": 3, "amount": self.itemMonthlyScreenK().amount3() ? parseInt(self.itemMonthlyScreenK().amount3()): -2});
-                months.push({ "frameNo": 4, "amount": self.itemMonthlyScreenK().amount4() ? parseInt(self.itemMonthlyScreenK().amount4()): -1});
-                months.push({ "frameNo": 5, "amount": self.itemMonthlyScreenK().amount5() ? parseInt(self.itemMonthlyScreenK().amount5()): 0});
-               
-                years.push({ "frameNo": 1, "amount": self.itemAnnualScreenK().amount1() ? parseInt(self.itemAnnualScreenK().amount1()): -4});
-                years.push({ "frameNo": 2, "amount": self.itemAnnualScreenK().amount2() ? parseInt(self.itemAnnualScreenK().amount2()): -3});
-                years.push({ "frameNo": 3, "amount": self.itemAnnualScreenK().amount3() ? parseInt(self.itemAnnualScreenK().amount3()): -2});
-                years.push({ "frameNo": 4, "amount": self.itemAnnualScreenK().amount4() ? parseInt(self.itemAnnualScreenK().amount4()): -1});
-                years.push({ "frameNo": 5, "amount": self.itemAnnualScreenK().amount5() ? parseInt(self.itemAnnualScreenK().amount5()): 0});
+
+            if(self.itemMonthlyScreenK().amount1()){
+                months.push({ "frameNo": 1, "amount": parseInt(self.itemMonthlyScreenK().amount1()) });
+            }
+            if(self.itemMonthlyScreenK().amount2()){
+                months.push({ "frameNo": 2, "amount": parseInt(self.itemMonthlyScreenK().amount2()) });
+            }
+            if(self.itemMonthlyScreenK().amount3()){
+                months.push({ "frameNo": 3, "amount": parseInt(self.itemMonthlyScreenK().amount3()) });
+            }
+            if(self.itemMonthlyScreenK().amount4()){
+                months.push({ "frameNo": 4, "amount": parseInt(self.itemMonthlyScreenK().amount4()) });
+            }
+            if(self.itemMonthlyScreenK().amount5()){
+                months.push({ "frameNo": 5, "amount": parseInt(self.itemMonthlyScreenK().amount5()) });
+            }
+
+            if(self.itemAnnualScreenK().amount1()){
+                years.push({ "frameNo": 1, "amount": parseInt(self.itemAnnualScreenK().amount1()) });
+            }
+
+            if(self.itemAnnualScreenK().amount2()){
+                years.push({ "frameNo": 2, "amount": parseInt(self.itemAnnualScreenK().amount2()) });
+            }
+
+            if(self.itemAnnualScreenK().amount3()){
+                years.push({ "frameNo": 3, "amount": parseInt(self.itemAnnualScreenK().amount3()) });
+            }
+
+            if(self.itemAnnualScreenK().amount4()){
+                years.push({ "frameNo": 4, "amount": parseInt(self.itemAnnualScreenK().amount4()) });
+            }
+
+            if(self.itemAnnualScreenK().amount5()){
+                years.push({ "frameNo": 5, "amount": parseInt(self.itemAnnualScreenK().amount5()) });
+            }
 
             command.employmentCode = self.selectedCode();
             command.months = months;
@@ -267,8 +382,7 @@ module nts.uk.at.view.kml002.k {
         }
 
         public remove(): void {
-            const self = this;
-            let listEmpSetting: Array<any> = [];
+            const self = this;           
             self.$dialog.confirm({messageId: "Msg_18"}).then((result: 'no' | 'yes') =>{
                 self.$blockui("invisible");
                 let command: any = {
@@ -305,13 +419,6 @@ module nts.uk.at.view.kml002.k {
             });            
         }
 
-
-
-        mounted() {
-            const self = this;
-                 
-        }
-
         openDialogScreenL(): void {
             const self = this;
             self.currentScreen = nts.uk.ui.windows.sub.modal('/view/kml/002/l/index.xhtml').onClosed(() => {
@@ -322,7 +429,28 @@ module nts.uk.at.view.kml002.k {
         closeDialog(): void {
             const self = this;           
             self.$window.close();
-        }        
+        }      
+        
+        private validateAll(): boolean {
+            const self = this;
+            $('#colorpicker1').ntsEditor('validate');
+            $('#colorpicker2').ntsEditor('validate');
+            $('#colorpicker3').ntsEditor('validate');
+            $('#colorpicker4').ntsEditor('validate');
+            $('#colorpicker5').ntsEditor('validate');
+            if (nts.uk.ui.errors.hasError()) {                    
+                return true;
+            }
+            return false;
+        }
+
+        private clearError(): void {
+            $('#colorpicker1').ntsError('clear');
+            $('#colorpicker2').ntsError('clear');
+            $('#colorpicker3').ntsError('clear');
+            $('#colorpicker4').ntsError('clear');
+            $('#colorpicker5').ntsError('clear');
+        }
     }
 
     interface IEsimatedInfo {
@@ -335,6 +463,7 @@ module nts.uk.at.view.kml002.k {
         frameNo: number;
         data: string;
     }
+
     class EsimatedInfo {
         months: KnockoutObservableArray<ItemModel> = ko.observableArray([]);   
         annuals: KnockoutObservableArray<ItemModel> = ko.observableArray([]); 
@@ -357,15 +486,22 @@ module nts.uk.at.view.kml002.k {
         backgroundColor4: KnockoutObservable<string> = ko.observable('');
         backgroundColor5: KnockoutObservable<string> = ko.observable('');
 
-        constructor(backgroundColors: Array<string>) {
+        constructor(backgroundColors?: Array<string>) {
             const self = this;
-            
-            self.backgroundColor1(backgroundColors[0]);
-            self.backgroundColor2(backgroundColors[1]);
-            self.backgroundColor3(backgroundColors[2]);
-            self.backgroundColor4(backgroundColors[3]);
-            self.backgroundColor5(backgroundColors[4]);
-        }
+            if(backgroundColors){
+                self.backgroundColor1(backgroundColors[0]);
+                self.backgroundColor2(backgroundColors[1]);
+                self.backgroundColor3(backgroundColors[2]);
+                self.backgroundColor4(backgroundColors[3]);
+                self.backgroundColor5(backgroundColors[4]);
+            } else {
+                self.backgroundColor1('');
+                self.backgroundColor2('');
+                self.backgroundColor3('');
+                self.backgroundColor4('');
+                self.backgroundColor5('');
+            }           
+        }        
     }
 
     class ItemMonthly {
@@ -375,14 +511,21 @@ module nts.uk.at.view.kml002.k {
         amount4: KnockoutObservable<string> = ko.observable('');
         amount5: KnockoutObservable<string> = ko.observable('');
 
-        constructor(amounts: Array<string>) {
+        constructor(amounts?: Array<string>) {
             const self = this;
-           
-            self.amount1(amounts[0]);
-            self.amount2(amounts[1]);
-            self.amount3(amounts[2]);
-            self.amount4(amounts[3]);
-            self.amount5(amounts[4]);
+            if(amounts){
+                self.amount1(amounts[0]);
+                self.amount2(amounts[1]);
+                self.amount3(amounts[2]);
+                self.amount4(amounts[3]);
+                self.amount5(amounts[4]);
+            } else {
+                self.amount1('');
+                self.amount2('');
+                self.amount3('');
+                self.amount4('');
+                self.amount5('');
+            }           
         }
     }
 
@@ -393,14 +536,21 @@ module nts.uk.at.view.kml002.k {
         amount4: KnockoutObservable<string> = ko.observable();
         amount5: KnockoutObservable<string> = ko.observable();
 
-        constructor(amounts: Array<string>) {
+        constructor(amounts?: Array<string>) {
             const self = this;
-           
-            self.amount1(amounts[0]);
-            self.amount2(amounts[1]);
-            self.amount3(amounts[2]);
-            self.amount4(amounts[3]);
-            self.amount5(amounts[4]);
+            if(amounts){
+                self.amount1(amounts[0]);
+                self.amount2(amounts[1]);
+                self.amount3(amounts[2]);
+                self.amount4(amounts[3]);
+                self.amount5(amounts[4]);
+            } else {
+                self.amount1('');
+                self.amount2('');
+                self.amount3('');
+                self.amount4('');
+                self.amount5('');
+            }           
         }
     }
 
