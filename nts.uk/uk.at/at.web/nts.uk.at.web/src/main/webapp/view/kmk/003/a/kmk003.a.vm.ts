@@ -259,8 +259,12 @@ module nts.uk.at.view.kmk003.a {
 
                     if (val == EnumWorkForm.FLEX ){
                         $('.tabs-list').find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_317'));
-                    } else{
+                        $('#tab-panel > .tabs-content').removeClass('left-122');
+                        $('#tab-panel > .tabs-content').addClass('left-178');
+                    } else {
                         $('.tabs-list').find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_18'));
+                        $('#tab-panel > .tabs-content').removeClass('left-178');
+                        $('#tab-panel > .tabs-content').addClass('left-122');
                     }
 
                     if (self.isNewMode()) {
@@ -604,8 +608,12 @@ module nts.uk.at.view.kmk003.a {
 
                 if (_self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr() === WorkTimeDailyAtr.FLEX_WORK ){
                     $('.tabs-list').find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_317'));
+                    $('#tab-panel > .tabs-content').removeClass('left-122');
+                    $('#tab-panel > .tabs-content').addClass('left-178');
                 } else{
                     $('.tabs-list').find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_18'));
+                    $('#tab-panel > .tabs-content').removeClass('left-178');
+                    $('#tab-panel > .tabs-content').addClass('left-122');
                 }
             }
 

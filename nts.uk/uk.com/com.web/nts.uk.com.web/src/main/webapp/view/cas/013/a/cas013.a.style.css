@@ -72,3 +72,7 @@ span.text {
 .pull-left .control-group.button .ntsControl.limited-label {
 	width: 198px;
 }
+
+.content-grid {
+  margin-top: -30px;
+}

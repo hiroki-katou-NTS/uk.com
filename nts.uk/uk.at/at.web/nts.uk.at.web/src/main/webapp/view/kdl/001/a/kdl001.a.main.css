@@ -7,6 +7,7 @@ body {
 .control-group { 
 	margin: 0 0 5px 15px;
 	overflow: hidden;
+  /* height: inherit; */
 }
 .label:FIRST-CHILD{
 	font-size: large;
@@ -31,9 +32,7 @@ input.ui-igcombo-field {
 div.nts-column{
 	padding-left: 10px;
 }
-.ui-iggrid .ui-iggrid-tablebody td {
-	height: 23px;
-}
+
 #day-list-div {
 	padding-left: 15px;
 	padding-right: 15px;
@@ -80,4 +79,8 @@ div.nts-column{
 }
 .search-by-code .cell.control-group .ntsCheckBox {
 	margin-right: 40px;
+}
+
+.table .cell {
+  height: 50px;
 }
