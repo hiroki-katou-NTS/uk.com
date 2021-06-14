@@ -11,14 +11,14 @@ var nts;
                     get: function () {
                         return !this.landscapse;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "landscapse", {
                     get: function () {
                         return window.innerWidth > window.innerHeight;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mobile", {
@@ -31,7 +31,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "tablet", {
@@ -44,7 +44,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mp", {
@@ -54,7 +54,7 @@ var nts;
                     get: function () {
                         return this.mobile && this.portrait;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ml", {
@@ -64,28 +64,28 @@ var nts;
                     get: function () {
                         return this.mobile && this.landscapse;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ios", {
                     get: function () {
                         return /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "width", {
                     get: function () {
                         return window.innerWidth;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "height", {
                     get: function () {
                         return window.innerHeight;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "version", {
@@ -108,7 +108,7 @@ var nts;
                         }
                         return M.join(' ');
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "private", {
@@ -177,7 +177,7 @@ var nts;
                         not();
                         return d.promise();
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 return browser;
@@ -1896,7 +1896,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -7341,7 +7341,8 @@ var nts;
                         self.$container.tabIndex = -1;
                         $.data(self.$container, NAMESPACE, self);
                         var pTable = $.data(self.$container, NAMESPACE);
-                        pTable.owner = { headers: [], bodies: [], find: function (name, where) {
+                        pTable.owner = { headers: [], bodies: [],
+                            find: function (name, where) {
                                 var o = this;
                                 var elm = o[where].filter(function (e, i) { return e.classList.contains(name); });
                                 if (!elm || elm.length === 0)
@@ -17470,13 +17471,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 var nts;
 (function (nts) {
     var uk;
@@ -17540,7 +17534,7 @@ var nts;
                                         else {
                                             var exist = _.find(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
                                             if (!exist) {
-                                                accessor.checked(__spreadArrays(checkeds, [value_1]));
+                                                accessor.checked(checkeds.concat([value_1]));
                                             }
                                             else {
                                                 _.remove(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
@@ -21363,7 +21357,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: false,
+                        enumerable: true,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (value) {
@@ -22838,7 +22832,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: false,
+                        enumerable: true,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (parts, value) {
@@ -23557,7 +23551,7 @@ var nts;
                                         read: function () {
                                             var ds = ko.toJS(accessor.dataSource);
                                             return ds.filter(function (d) { return d.visible !== false; })
-                                                .map(function (d) { return (__assign(__assign({}, d), { active: active,
+                                                .map(function (d) { return (__assign({}, d, { active: active,
                                                 tabindex: tabindex, dataBind: 'vertical-link' !== dir ? undefined : {
                                                     'btn-link': d.title,
                                                     icon: d.icon || 'CHECKBOX',
@@ -23911,7 +23905,8 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
+                                dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -33998,7 +33993,8 @@ var nts;
                                 var txt = td.querySelector(".mgrid-refer-text");
                                 if (!txt)
                                     return;
-                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]], relatedItemList: function (nama) {
+                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]],
+                                    relatedItemList: function (nama) {
                                         var ctrl = _mafollicle[SheetDef][_currentSheet].controlMap && _mafollicle[SheetDef][_currentSheet].controlMap[nama];
                                         if (ctrl && ctrl.pattern && ctrl.list) {
                                             return ctrl.pattern[ctrl.list[data.rowId]];
@@ -37500,7 +37496,7 @@ var nts;
                 Object.defineProperties($jump, {
                     self: {
                         value: function $to() {
-                            $jump.apply(null, __spreadArrays(Array.prototype.slice.apply(arguments, [])));
+                            $jump.apply(null, Array.prototype.slice.apply(arguments, []).slice());
                         }
                     },
                     blank: {
@@ -46846,7 +46842,8 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
+                                dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -47241,8 +47238,7 @@ var nts;
                                             if ($tree.data("igTreeGrid") !== null) {
                                                 $tree.data("igTreeGridUpdating").deleteRow(rowId);
                                             }
-                                        },
-                                        initValue: value,
+                                        }, initValue: value,
                                         rowObj: rowObj,
                                         showHeaderCheckbox: col.showHeaderCheckbox,
                                         enable: isRowEnable,
@@ -51469,14 +51465,18 @@ var nts;
                         _this.ctrl = ko.observable(false);
                         _this.click = ko.observable(false);
                         _this.menuSet = {
-                            hover: ko.observable(false),
+                            click: ko.observable(false),
                             items: ko.observableArray([])
                         };
                         _this.countMenuBar = ko.observable(0);
                         _this.userName = ko.observable('');
-                        _this.userNameHover = ko.observable(false);
+                        _this.userNameClick = ko.observable(false);
                         _this.companies = ko.observableArray([]);
+                        _this.currentCompanyId = ko.observable('');
+                        _this.companyNameClick = ko.observable(false);
                         _this.pgName = ko.observable('');
+                        _this.showManual = ko.observable(false);
+                        _this.showPersonSetting = ko.observable(false);
                         return _this;
                     }
                     HeaderViewModel.prototype.created = function () {
@@ -51497,10 +51497,11 @@ var nts;
                         });
                         vm.companyName = ko.computed({
                             read: function () {
-                                var first = ko.unwrap(vm.companies)[0];
-                                if (first) {
-                                    return first.companyName || '';
-                                }
+                                var selectedCid = ko.unwrap(vm.currentCompanyId);
+                                var companies = ko.unwrap(vm.companies);
+                                var comp = _.find(companies, function (c) { return c.companyId === selectedCid; });
+                                if (comp)
+                                    return comp.companyName;
                                 return '';
                             }
                         });
@@ -51531,11 +51532,20 @@ var nts;
                                             .then(function () { return vm.loadData(); });
                                     });
                                     vm
+                                        .$ajax('com', 'sys/env/userinformationusermethod/canOpenInfor')
+                                        .then(function (data) { return vm.showPersonSetting(__viewContext.user.isEmployee && data); });
+                                    vm
+                                        .$ajax('com', 'sys/portal/webmenu/showmanual')
+                                        .then(function (data) { return vm.showManual(data); });
+                                    vm
                                         .$ajax('com', '/sys/portal/webmenu/username')
                                         .then(function (data) { return vm.userName(data); });
                                     vm
                                         .$ajax('com', '/sys/portal/webmenu/companies')
                                         .then(function (data) { return vm.companies(data); });
+                                    vm
+                                        .$ajax('com', '/sys/portal/webmenu/currentCompany')
+                                        .then(function (data) { return vm.currentCompanyId(data); });
                                     vm
                                         .$ajax('com', '/sys/portal/webmenu/program')
                                         .then(function (response) {
@@ -51627,7 +51637,6 @@ var nts;
                             vm.countMenuBar(0);
                             vm.setDisplayMenu();
                         }
-                        vm.menuSet.hover(false);
                         _.each(sets, function (set) {
                             set.selected = false;
                         });
@@ -51660,7 +51669,9 @@ var nts;
                         var vm = this;
                         _.each(vm.menuBars(), function (bar, index) {
                             var getPositionLeftRight = $('.slide-item').eq(index).position().left + $('.slide-item').eq(index).outerWidth();
-                            if (getPositionLeftRight > $('.user-info').last().position().left) {
+                            var getPositionLeft = $('.slide-item').eq(index).position().left;
+                            var userInfoLeft = $('.user-info').last().position().left;
+                            if (getPositionLeftRight > userInfoLeft && getPositionLeft > userInfoLeft) {
                                 bar.hover(false);
                                 bar.canHover(false);
                             }
@@ -51700,6 +51711,30 @@ var nts;
                             }
                         }
                     };
+                    HeaderViewModel.prototype.selectCompany = function (item) {
+                        var vm = this;
+                        vm
+                            .$ajax('com', 'sys/portal/webmenu/changeCompany', item.companyId)
+                            .then(function (data) {
+                            vm.currentCompanyId(item.companyId);
+                            vm.userName(data.personName);
+                            if (!nts.uk.util.isNullOrEmpty(data.msgResult)) {
+                                nts.uk.ui.dialog
+                                    .info({ messageId: data.msgResult })
+                                    .then(function () { return uk.request.jumpToTopPage(); });
+                            }
+                            else {
+                                uk.request.jumpToTopPage();
+                            }
+                        })
+                            .fail(function (msg) {
+                            nts.uk.ui.dialog.alertError(msg.messageId);
+                            vm.companies([]);
+                            vm
+                                .$ajax('com', 'sys/portal/webmenu/companies')
+                                .then(function (data) { return vm.companies(data); });
+                        });
+                    };
                     HeaderViewModel.prototype.showPrevOrNextSlider = function () {
                         var vm = this;
                         if (vm.countMenuBar() > 0) {
@@ -51721,29 +51756,40 @@ var nts;
                         else {
                             $('.next-slider').css("visibility", "");
                             $('.next-slider').css("visibility", "hidden");
+                            console.log(lastItemPositionLeft + ' ' + userInfoLeft);
                         }
                     };
-                    HeaderViewModel.prototype.hambergerHover = function () {
+                    HeaderViewModel.prototype.hambergerClick = function () {
                         var vm = this;
-                        vm.menuSet.hover(true);
-                    };
-                    HeaderViewModel.prototype.hambergerMouseOut = function () {
-                        var vm = this;
-                        vm.menuSet.hover(false);
+                        var click = ko.unwrap(vm.menuSet.click());
+                        vm.setFalseAllClick();
+                        vm.menuSet.click(!click);
                     };
                     HeaderViewModel.prototype.itemBarHover = function (item) {
+                        var vm = this;
                         item.hover(true);
+                        vm.setFalseAllClick();
                     };
                     HeaderViewModel.prototype.itemBarMouseOut = function (item) {
                         item.hover(false);
                     };
-                    HeaderViewModel.prototype.userHover = function () {
+                    HeaderViewModel.prototype.companiesClick = function () {
                         var vm = this;
-                        vm.userNameHover(true);
+                        var companyNameClick = ko.unwrap(vm.companyNameClick());
+                        vm.setFalseAllClick();
+                        vm.companyNameClick(!companyNameClick);
                     };
-                    HeaderViewModel.prototype.userMouseOut = function () {
+                    HeaderViewModel.prototype.userClick = function () {
                         var vm = this;
-                        vm.userNameHover(false);
+                        var userNameClick = ko.unwrap(vm.userNameClick());
+                        vm.setFalseAllClick();
+                        vm.userNameClick(!userNameClick);
+                    };
+                    HeaderViewModel.prototype.setFalseAllClick = function () {
+                        var vm = this;
+                        vm.userNameClick(false);
+                        vm.companyNameClick(false);
+                        vm.menuSet.click(false);
                     };
                     HeaderViewModel.prototype.handleNextSlider = function () {
                         var vm = this;
@@ -51769,6 +51815,9 @@ var nts;
                         }
                         vm.setDisplayMenu();
                         vm.showPrevOrNextSlider();
+                    };
+                    HeaderViewModel.prototype.settingPerson = function () {
+                        nts.uk.request.jumpToSettingPersonalPage();
                     };
                     HeaderViewModel.prototype.manual = function () {
                         var pathToManual = __viewContext.env.pathToManual;
@@ -51797,7 +51846,7 @@ var nts;
                     HeaderViewModel = __decorate([
                         component({
                             name: 'ui-header',
-                            template: "\n        <div class=\"hamberger\" data-bind=\"\n                event: {\n                    mouseover: $component.hambergerHover,\n                    mouseout: $component.hambergerMouseOut\n                },\n                css: {\n                    'hover': $component.menuSet.hover\n                }\">\n            <svg viewBox=\"0 0 16 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                <rect width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"6\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"12\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n            </svg>\n            <div class=\"menu-dropdown menu-hamberger\" data-bind=\"css: { hidden: !$component.menuSet.hover() }\">\n                <div class=\"menu-column\">\n                    <div class=\"menu-header\" data-bind=\"i18n: nts.uk.ui.toBeResource.selectMenu\"></div>\n                    <div class=\"menu-item\" data-bind=\"foreach: $component.menuSet.items\">\n                        <div class=\"item\" data-bind=\"\n                            i18n: $data.webMenuName,\n                            click: function() { $component.selectSet($data, true) },\n                            css: { \n                                selected: $component.menuSet.items() && $data.selected\n                            }\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"logo-area\">\n            <i id=\"logo\" data-bind=\"ntsIcon: { no: 162 }\" class=\"img-icon\"></i>\n            <i class=\"control-slider pre-slider\" data-bind=\"\n                ntsIcon: { no: 129, width: 25, height: 25 },\n                click: $component.handlePrevSlider\"></i>\n        </div>\n        <div class=\"menu-groups\" data-bind=\"foreach: { data: $component.menuBars, as: 'bar', afterRender: $component.showPrevOrNextSlider.bind($component) }\">\n            <div class=\"item-group slide-item\" data-bind=\"\n                    event: {\n                        mouseover: function() { $component.itemBarHover(bar) },\n                        mouseout: function() { $component.itemBarMouseOut(bar) }\n                    },\n                    css: {\n                        'hover': bar.hover() && bar.canHover() && $component.click()\n                    },\n                    style: {\n                        'display': bar.display()\n                    },\n                    attr: {\n                        'data-column': (bar.titleMenu || []).length\n                    }\">\n                    <span class=\"bar-item-title\" data-bind=\"text: bar.menuBarName, click: function() { $component.selectBar(bar) }\"></span>\n                <div class=\"menu-dropdown menu-item\" data-bind=\"css: { hidden: !bar.hover() || !bar.titleMenu.length }, foreach: { data: bar.titleMenu, as: 'title' }\">\n                    <div class=\"menu-column\">\n                        <div class=\"menu-header\" data-bind=\"\n                            i18n: title.titleMenuName,\n                            style: {\n                                'color': title.textColor,\n                                'background-color': title.backgroundColor\n                            }\"></div>\n                        <div class=\"menu-items\" data-bind=\"foreach: title.treeMenu\">\n                            <div class=\"item\" data-bind=\"\n                                i18n: $component.getName($data),\n                                click: function() { $component.selectMenu($data, bar) },                        \n                                css: { \n                                    selected: false,\n                                    'divider': !$data.url || $data.url === '-'\n                                }\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"user-info\">\n            <div class=\"next-slider-area\">\n                <i class=\"control-slider next-slider\" data-bind=\"\n                    ntsIcon: { no: 128, width: 25, height: 25 },\n                    click: $component.handleNextSlider\"></i>\n            </div>\n            <div class=\"menu-groups\">\n                <div class=\"item-group\" style=\"margin-right: 10px;\">\n                    <ccg020-component></ccg020-component>\n                </div>\n                <div class=\"item-group\">\n                    <span class=\"bar-item-title company\" data-bind=\"text: $component.companyName\"></span>\n                    <i data-bind=\"ntsIcon: { no: 135, width: 10, height: 10 }\"></i>\n                </div>\n                <span class=\"divider\"></span>\n                <div class=\"item-group\" data-bind=\"\n                        event: {\n                            mouseover: $component.userHover,\n                            mouseout: $component.userMouseOut\n                        },\n                        css: {\n                            hover: $component.userNameHover\n                        }\">\n                    <span class=\"bar-item-title user-name\" data-bind=\"text: $component.userName\"></span>\n                    <div class=\"menu-dropdown menu-item\">\n                        <div class=\"menu-column\">\n                            <div class=\"menu-items\">\n                                <div class=\"item\" data-bind=\"i18n: nts.uk.ui.toBeResource.manual, click: $component.manual\"></div>\n                                <div class=\"item divider\"></div>\n                                <div class=\"item\" data-bind=\"i18n: nts.uk.ui.toBeResource.logout, click: $component.logout\"></div>\n                            </div>\n                        </div>\n                    </div>\n                    <i data-bind=\"ntsIcon: { no: 135, width: 10, height: 10 }\" style=\"margin-right: 5px;\"></i>\n                </div>\n            </div>\n            <div id=\"notice-msg\" class=\"avatar notification\">\n                <i id=\"new-mark-msg\" style=\"display: none\" data-bind=\"ntsIcon: { no: 165, width: 13, height: 13 }\"></i>\n            </div>\n        </div>\n        <div class=\"pg-area\">\n            <div class=\"pg-name\">\n                <span data-bind=\"text: pgName\"></span>\n            </div>\n        </div>\n        "
+                            template: "\n        <div class=\"hamberger\" data-bind=\"\n                click: $component.hambergerClick,\n                css: {\n                    'hover': $component.menuSet.click()\n                }\">\n            <svg viewBox=\"0 0 16 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                <rect width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"6\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"12\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n            </svg>\n            <div class=\"menu-dropdown menu-hamberger\" data-bind=\"css: { hidden: !$component.menuSet.click() }\">\n                <div class=\"menu-column\">\n                    <div class=\"menu-header\" data-bind=\"i18n: 'CCG020_1'\"></div>\n                    <div class=\"menu-item\" data-bind=\"foreach: $component.menuSet.items\">\n                        <div class=\"item\" data-bind=\"\n                            i18n: $data.webMenuName,\n                            click: function() { $component.selectSet($data, true) },\n                            css: { \n                                selected: $component.menuSet.items() && $data.selected\n                            }\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"logo-area\">\n            <i id=\"logo\" data-bind=\"ntsIcon: { no: 162 }\" class=\"img-icon\"></i>\n            <i class=\"control-slider pre-slider\" data-bind=\"\n                ntsIcon: { no: 129, width: 25, height: 25 },\n                click: $component.handlePrevSlider\"></i>\n        </div>\n        <div class=\"menu-groups\" data-bind=\"foreach: { data: $component.menuBars, as: 'bar', afterRender: $component.showPrevOrNextSlider.bind($component) }\">\n            <div class=\"item-group slide-item\" data-bind=\"\n                    event: {\n                        mouseover: function() { $component.itemBarHover(bar) },\n                        mouseout: function() { $component.itemBarMouseOut(bar) }\n                    },\n                    css: {\n                        'hover': bar.hover() && bar.canHover() && $component.click()\n                    },\n                    style: {\n                        'display': bar.display()\n                    },\n                    attr: {\n                        'data-column': (bar.titleMenu || []).length\n                    }\">\n                    <span class=\"bar-item-title\" data-bind=\"text: bar.menuBarName, click: function() { $component.selectBar(bar) }\"></span>\n                <div class=\"menu-dropdown menu-item\" data-bind=\"css: { hidden: !bar.hover() || !bar.titleMenu.length }, foreach: { data: bar.titleMenu, as: 'title' }\">\n                    <div class=\"menu-column\">\n                        <div class=\"menu-header\" data-bind=\"\n                            i18n: title.titleMenuName,\n                            style: {\n                                'color': title.textColor,\n                                'background-color': title.backgroundColor\n                            }\"></div>\n                        <div class=\"menu-items\" data-bind=\"foreach: title.treeMenu\">\n                            <div class=\"item\" data-bind=\"\n                                i18n: $component.getName($data),\n                                click: function() { $component.selectMenu($data, bar) },                        \n                                css: { \n                                    selected: false,\n                                    'divider': !$data.url || $data.url === '-'\n                                }\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"user-info\">\n            <div class=\"next-slider-area\">\n                <i class=\"control-slider next-slider\" data-bind=\"\n                    ntsIcon: { no: 128, width: 25, height: 25 },\n                    click: $component.handleNextSlider\"></i>\n            </div>\n            <div class=\"menu-groups\">\n                <div class=\"item-group\" style=\"margin-right: 10px;\">\n                    <ccg020-component></ccg020-component>\n                </div>\n                <div class=\"item-group\" data-bind=\"\n                        css: {\n                            hover: $component.companyNameClick\n                        }\">\n                    <span class=\"bar-item-title company\" data-bind=\"text: $component.companyName, click: $component.companiesClick\"></span>\n                    <div class=\"menu-dropdown menu-item\">\n                        <div class=\"menu-column\">\n                            <div class=\"menu-items\" data-bind=\"foreach: { data: $component.companies, as: 'company' }\">\n                                <div class=\"item\" data-bind=\"\n                                    i18n: company.companyName,\n                                    click: function() { $component.selectCompany($data) }\n                                \"></div>\n                                <div class=\"item divider divider-company\"></div>\n                            </div>\n                        </div>\n                    </div>\n                    <i data-bind=\"ntsIcon: { no: 135, width: 10, height: 10 }, click: $component.companiesClick\" style=\"margin-right: 5px; cursor: pointer;\"></i>\n                </div>\n                <span class=\"divider\"></span>\n                <div class=\"item-group\" data-bind=\"\n                        css: {\n                            hover: $component.userNameClick\n                        }\">\n                    <span class=\"bar-item-title user-name\" data-bind=\"text: $component.userName, click: $component.userClick\"></span>\n                    <div class=\"menu-dropdown menu-item\">\n                        <div class=\"menu-column\">\n                            <div class=\"menu-items\">\n                                <div class=\"item\" data-bind=\"i18n: 'CCG020_5', click: $component.settingPerson, if: $component.showPersonSetting\"></div>\n                                <div data-bind=\"if: $component.showPersonSetting\" class=\"item divider\"></div>\n                                <div class=\"item\" data-bind=\"i18n: 'CCG020_4', click: $component.manual, if: $component.showManual\"></div>\n                                <div data-bind=\"if: $component.showManual\" class=\"item divider\"></div>\n                                <div class=\"item\" data-bind=\"i18n: 'CCG020_3', click: $component.logout\"></div>\n                            </div>\n                        </div>\n                    </div>\n                    <i data-bind=\"ntsIcon: { no: 135, width: 10, height: 10 }, click: $component.userClick\" style=\"margin-right: 5px; cursor: pointer;\"></i>\n                </div>\n            </div>\n            <div id=\"notice-msg\" class=\"avatar notification\">\n                <i id=\"new-mark-msg\" style=\"display: none\" data-bind=\"ntsIcon: { no: 165, width: 13, height: 13 }\"></i>\n            </div>\n        </div>\n        <div class=\"pg-area\">\n            <div class=\"pg-name\">\n                <span data-bind=\"text: pgName\"></span>\n            </div>\n        </div>\n        "
                         })
                     ], HeaderViewModel);
                     return HeaderViewModel;
@@ -51814,17 +51863,17 @@ var nts;
         var ui;
         (function (ui) {
             var notification;
-            (function (notification) {
+            (function (notification_1) {
                 var SKEY = 'notification';
                 var NotificationViewModel = /** @class */ (function (_super) {
                     __extends(NotificationViewModel, _super);
                     function NotificationViewModel() {
-                        return _super !== null && _super.apply(this, arguments) || this;
+                        var _this = _super !== null && _super.apply(this, arguments) || this;
+                        _this.notification = ko.observable('');
+                        return _this;
                     }
                     NotificationViewModel.prototype.created = function () {
                         var vm = this;
-                        // get notification from viewContext
-                        vm.notification = nts.uk.ui._viewModel.kiban.notification;
                         $(window)
                             .on('wd.resize', function () {
                             var text = $(vm.$el).find('.text').get(0);
@@ -51843,6 +51892,13 @@ var nts;
                     NotificationViewModel.prototype.mounted = function () {
                         var vm = this;
                         vm.$el.classList.add('hidden');
+                        var notification = ko.unwrap(nts.uk.ui._viewModel.kiban.notification);
+                        if (!_.isEmpty(notification)) {
+                            // Get notification from api
+                            vm
+                                .$ajax('com', 'ctx/sys/gateway/system/is-display-warning')
+                                .then(function (data) { return vm.notification(data.message); });
+                        }
                         vm.notification
                             .subscribe(function (notif) {
                             if (!notif) {
@@ -51878,12 +51934,12 @@ var nts;
                     NotificationViewModel = __decorate([
                         component({
                             name: 'ui-notification',
-                            template: "<svg width=\"35\" height=\"30\" viewBox=\"0 0 35 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n        <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M17.9284 0.499076C17.5433 -0.16636 16.5826 -0.166358 16.1975 0.499078L0.136004 28.25C-0.249844 28.9166 0.231219 29.7509 1.00149 29.7509H33.1244C33.8947 29.7509 34.3757 28.9166 33.9899 28.25L17.9284 0.499076ZM15.5629 11.0352L15.9278 21.1757H18.1575L18.5629 11.0352H15.5629ZM15.7251 24.6568C15.7251 24.9091 15.867 25.0352 16.1507 25.0352H17.894C18.0156 25.0352 18.117 25.01 18.198 24.9595C18.2791 24.9091 18.3197 24.8082 18.3197 24.6568V22.7271C18.3197 22.4622 18.1778 22.3298 17.894 22.3298H16.1507C15.867 22.3298 15.7251 22.4622 15.7251 22.7271V24.6568Z\" fill=\"#F18855\"/>\n        </svg>\n        <div class=\"text\" data-bind=\"html: $component.notification\"></div>\n        <span class=\"close\" data-bind=\"click: $component.hide\">&times;</span>\n        "
+                            template: "<svg width=\"35\" height=\"30\" viewBox=\"0 0 35 30\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n        <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M17.9284 0.499076C17.5433 -0.16636 16.5826 -0.166358 16.1975 0.499078L0.136004 28.25C-0.249844 28.9166 0.231219 29.7509 1.00149 29.7509H33.1244C33.8947 29.7509 34.3757 28.9166 33.9899 28.25L17.9284 0.499076ZM15.5629 11.0352L15.9278 21.1757H18.1575L18.5629 11.0352H15.5629ZM15.7251 24.6568C15.7251 24.9091 15.867 25.0352 16.1507 25.0352H17.894C18.0156 25.0352 18.117 25.01 18.198 24.9595C18.2791 24.9091 18.3197 24.8082 18.3197 24.6568V22.7271C18.3197 22.4622 18.1778 22.3298 17.894 22.3298H16.1507C15.867 22.3298 15.7251 22.4622 15.7251 22.7271V24.6568Z\" fill=\"#F18855\"/>\n        </svg>\n        <div class=\"text flex valign-center\" data-bind=\"html: $component.notification\"></div>\n        <span class=\"close\" data-bind=\"click: $component.hide\">&times;</span>\n        "
                         })
                     ], NotificationViewModel);
                     return NotificationViewModel;
                 }(ko.ViewModel));
-                notification.NotificationViewModel = NotificationViewModel;
+                notification_1.NotificationViewModel = NotificationViewModel;
             })(notification = ui.notification || (ui.notification = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
