@@ -22,7 +22,7 @@ module nts.uk.at.view.kmk004.b {
 			</div>
 			<div class="right-content">
 				<div>
-					<p class="title" data-bind="i18n: 'KMK004_228'"></p>
+					<p style="height: 30px;" class="title" data-bind="i18n: 'KMK004_228'"></p>
 					<hr></hr>
 					<div class="name" data-bind="i18n: model.name"></div>
 					<div>
@@ -43,9 +43,9 @@ module nts.uk.at.view.kmk004.b {
 							checkSeting: checkSeting
 						}
 					}"></div>
-					<div class="label1" data-bind="ntsFormLabel: {inline: true}, text: $i18n('KMK004_232')"></div>
+					<div style="height: 30px;" class="label1" data-bind="ntsFormLabel: {inline: true}, text: $i18n('KMK004_232')"></div>
 					<div class="content-data">
-						<div>
+						<div style="height: 30px;">
 							<button tabindex="6" data-bind="i18n: 'KMK004_233', click: openDialogQ"></button>
 						</div>
 						<div class="year">
@@ -146,6 +146,11 @@ module nts.uk.at.view.kmk004.b {
 
 			$(document).ready(function () {
 				$('#list-box').focus();
+				// Fix bug render edge
+				setTimeout(() => {
+					$('.content-data').css('margin-top', '9px');
+					$('.content-data').css('margin-left', '9px');
+				}, 500);
 			});
 
 			vm.selectedId
@@ -154,7 +159,6 @@ module nts.uk.at.view.kmk004.b {
 						$('#list-box').focus();
 					});
 				});
-
 		}
 
 		add() {
