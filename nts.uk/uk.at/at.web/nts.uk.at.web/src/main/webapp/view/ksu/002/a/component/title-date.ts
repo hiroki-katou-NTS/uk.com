@@ -9,6 +9,7 @@ module nts.uk.ui.at.ksu002.a {
 				tabindex: $component.params.tabIndex
 			},
 			ntsDatePicker: { 
+				name: $component.$i18n('KSU002_21'),
 				value: yearMonth,
 				dateFormat: 'yearmonth' ,
 				valueFormat: 'YYYYMM',
