@@ -269,7 +269,7 @@ public class OutsideOTSettingExportImpl implements MasterListData {
                 dataA61.put(NUMBER_COLS_3, TextResource.localize(roudingUnit));
                 dataA61.put(NUMBER_COLS_4, TextResource.localize(toEnumRouding(unit)));
             }
-            
+
             MasterData masterData = new MasterData(dataA61, null, "");
             Map<String, MasterCellData> rowData = masterData.getRowData();
             rowData.get(NUMBER_COLS_1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
