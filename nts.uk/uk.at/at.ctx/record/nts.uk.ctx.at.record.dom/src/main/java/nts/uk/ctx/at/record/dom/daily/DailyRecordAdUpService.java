@@ -30,6 +30,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 
 public interface DailyRecordAdUpService {
 	// ドメインモデル「日別実績の勤務情報」を更新する
@@ -84,6 +85,9 @@ public interface DailyRecordAdUpService {
 
 	//ドメインモデル「スナップショット」を更新する
 	public void adUpSnapshot(String sid, GeneralDate ymd, SnapShot snapshot);
+	
+	// ドメインモデル「日別勤怠の応援作業時間帯」を更新する
+	public void adUpSupportTime(String sid, GeneralDate ymd, List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet);
 	
 	/**
 	 * ドメインモデル「社員の日別実績エラー一覧」を更新する
@@ -153,10 +157,11 @@ public interface DailyRecordAdUpService {
 		adUpRemark(domain.getRemarks().stream()
 				.map(x -> new RemarksOfDailyPerform(domain.getEmployeeId(), domain.getYmd(), x))
 				.collect(Collectors.toList()));
+		// ドメインモデル「日別勤怠の応援作業時間帯」を更新する
+		//adUpSupportTime(domain.getEmployeeId(), domain.getYmd(), domain.getOuenTimeSheet());
 
 		adUpEmpError(domain.getEmployeeError(), new ArrayList<>(), false);
 
 		adTimeAndAnyItemAdUp(Arrays.asList(domain));
-
 	}
 }

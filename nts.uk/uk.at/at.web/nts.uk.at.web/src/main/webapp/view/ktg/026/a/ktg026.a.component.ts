@@ -300,8 +300,8 @@ module nts.uk.at.view.ktg026.a {
                     <table>
                         <colgroup>
                             <col width="25%" />
-                            <col width="17%" />
-                            <col width="58%" />
+                            <col width="20%" />
+                            <col width="55%" />
                         </colgroup>
                         <head>
                             <tr>
@@ -325,8 +325,8 @@ module nts.uk.at.view.ktg026.a {
                 <div>
                     <table>
                         <colgroup>
-                            <col width="42%" />
-                            <col width="58%" />
+                            <col width="45%" />
+                            <col width="55%" />
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.dataTable, as: 'row' }">
                             <tr style="height: 35px;">
@@ -517,8 +517,8 @@ module nts.uk.at.view.ktg026.a {
                     { colorCode: '#00CC00', labelText: vm.$i18n('KTG026_3') },
                 ],
                 template :
-                '<div class="legend-item-label" style="color: #{colorCode};">'
-                + '<div data-bind="ntsFormLabel: { required: false }">#{labelText}</div>'
+                '<div class="legend-item-label">'
+                + '<div style="color: #{colorCode};" data-bind="ntsFormLabel: { required: false }">#{labelText}</div>'
                 + '</div>'
             };
 
@@ -539,7 +539,7 @@ module nts.uk.at.view.ktg026.a {
                                     targetYear = rs.target;
                                 }
                                 
-                                const year = !_.isNull(targetYear)
+                                const year = !_.isNil(targetYear) && !_.isEmpty(targetYear)
                                 ? targetYear
                                 : ((currentOrNextMonth === 1 ? yearIncludeThisMonth : yearIncludeNextMonth) || '');
     

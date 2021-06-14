@@ -38,6 +38,8 @@
 
 .view-c-kmk004 .right-content .name {
 	margin-bottom: 10px;
+	height: 25px;
+	max-height: 25px;
 }
 
 .view-c-kmk004 .right-content .content-data {
@@ -115,6 +117,8 @@
 
 .view-d-kmk004 .right-content .name {
 	margin-bottom: 10px;
+	height: 25px;
+	max-height: 25px;
 }
 
 /* View E */
@@ -175,6 +179,8 @@
 
 .view-e-kmk004 .name {
 	margin-bottom: 10px;
+	height: 25px;
+	max-height: 25px;
 }
 
 /* ListTimeWork */
@@ -316,6 +322,10 @@
 
 .listbox {
 	max-width: 150px;
+}
+
+#year-list_grid_container {
+	height: 113px !important;
 }
 
 .node {

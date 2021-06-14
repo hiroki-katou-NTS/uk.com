@@ -41,8 +41,8 @@ module nts.uk.com.view.cdl003.a {
                     isShowNoSelectRow:  self.isShowNoSelectRow,
                     selectedCode: null,
                     isDialog: true,
-                    maxRows: 10,
-                    tabindex: 1
+                    maxRows: 15,
+                    tabindex: 1,
                 }
                 if (self.isMultiple) {
                     self.classifications.selectedCode = self.selectedMulClassification;

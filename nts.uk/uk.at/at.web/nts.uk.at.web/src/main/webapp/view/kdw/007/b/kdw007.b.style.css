@@ -33,3 +33,7 @@
 [dropdown-for="compareOperator-cbb"] .nts-combo-column-0 {
   width: 240px !important;
 }
+
+.d-flex {
+	display: flex;
+}

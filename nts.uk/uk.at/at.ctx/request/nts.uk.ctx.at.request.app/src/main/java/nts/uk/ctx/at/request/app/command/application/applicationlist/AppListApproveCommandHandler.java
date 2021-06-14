@@ -4,10 +4,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -15,6 +20,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.task.AsyncTask;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -29,6 +35,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.WorkMotionData;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.AppReflectManagerFromRecord;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
@@ -59,6 +66,12 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 	
 	@Inject
 	private ApprovalListDispSetRepository approvalListDispSetRepository;
+	
+	@Inject
+	private AppReflectManagerFromRecord appReflectManager;
+	
+	@Resource
+	private ManagedExecutorService executerService;
 	
 	/**
 	 * refactor 4
@@ -164,6 +177,14 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 				result.getFailMap().put(listOfApplicationCmd.getAppID(), pair.getRight());
 			}
 		});
+		
+		// reflect app
+		AsyncTask task = AsyncTask.builder().keepsTrack(false).threadName(this.getClass().getName() + ".reflect-app: ")
+				.build(() -> {
+					appReflectManager
+							.reflectApplication(result.getSuccessMap().keySet().stream().collect(Collectors.toList()));
+				});
+		this.executerService.submit(task);
 		return result;
 	}
 

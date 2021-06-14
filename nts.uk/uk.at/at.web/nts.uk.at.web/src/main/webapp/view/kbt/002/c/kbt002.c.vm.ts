@@ -69,6 +69,11 @@ module nts.uk.at.view.kbt002.c {
         { code: 0, name: vm.$i18n('KBT002_71') },
         { code: 1, name: vm.$i18n('KBT002_72') }
       ]);
+
+      vm.selectExec.subscribe(() => vm.optionDialog());
+      vm.selectTimeRepeat.subscribe(() => vm.optionTimeRepeat());
+      vm.selectEndTime.subscribe(() => vm.optionEndTime());
+      vm.selectEndDate.subscribe(() => vm.optionEndDate());
       if (params) {
         vm.execItemCd(params.execItemCode);
         vm.execItemName(params.execItemName);

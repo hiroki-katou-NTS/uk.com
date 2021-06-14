@@ -109,6 +109,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.month.LeaveDayErrorD
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IGetDataClosureStart;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
+import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCalcTimeService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -183,6 +184,9 @@ public class DailyModifyRCommandFacade {
 
 	@Inject
 	private DailyCorrectEventServiceCenter dailyCorrectEventServiceCenter;
+	
+	@Inject
+	private DailyCorrectCalcTimeService dCCalcTimeService;
 
 	public DataResultAfterIU insertItemDomain(DPItemParent dataParent) {
 		// Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
@@ -235,6 +239,8 @@ public class DailyModifyRCommandFacade {
 						dataParent.getMonthValue().getVersion());
 			}
 		}
+		
+		dCCalcTimeService.getWplPosId(dataParent.getItemValues()); 
 
 		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate = dataParent.getItemValues().stream()
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
@@ -242,7 +248,7 @@ public class DailyModifyRCommandFacade {
 		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateNotChange = dataParent.getItemValues().stream()
 				//.filter(x -> !DPText.ITEM_CHANGE.contains(x.getItemId()))
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
-
+		
 		List<DailyModifyQuery> querys = createQuerys(mapSidDate);
 		List<DailyModifyQuery> queryNotChanges = createQuerys(mapSidDateNotChange);
 		// map to list result -> check error;
