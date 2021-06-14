@@ -6,13 +6,14 @@ import org.junit.Test;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.DataItemList;
+import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 
 public class IntermediateResultTest {
 
 	@Test
 	public void create() {
 		
-		val source = newList().add(0, "a").add(1, "b").add(2, "c");
+		val source = new RevisedDataRecord(0, newList().add(0, "a").add(1, "b").add(2, "c"));
 		val canonicalizedItems = newList().add(10, "AAA").add(12, "CCC");
 		
 		val actual = IntermediateResult.create(
@@ -33,7 +34,7 @@ public class IntermediateResultTest {
 	@Test
 	public void addCanonicalized() {
 		
-		val source = newList().add(0, "a").add(1, "b").add(2, "c");
+		val source = new RevisedDataRecord(0, newList().add(0, "a").add(1, "b").add(2, "c"));
 		val canonicalizedItems = newList().add(10, "AAA");
 		val target = IntermediateResult.create(
 				source, canonicalizedItems, 0);
@@ -52,7 +53,7 @@ public class IntermediateResultTest {
 	
 	@Test
 	public void getItemByNo() {
-		val source = newList().add(0, "a").add(1, "b").add(2, "c");
+		val source = new RevisedDataRecord(0, newList().add(0, "a").add(1, "b").add(2, "c"));
 		
 		// 項目0は正準化したときに同じ項目を変更する形とする
 		val canonicalizedItems = newList().add(0, "AAA").add(12, "CCC");

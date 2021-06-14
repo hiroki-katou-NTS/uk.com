@@ -2,7 +2,6 @@ package nts.uk.ctx.exio.dom.input.canonicalize;
 
 import lombok.Value;
 import nts.uk.ctx.exio.dom.input.DataItemList;
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 
 /**
@@ -11,7 +10,8 @@ import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 @Value
 public class CanonicalizedDataRecord {
 
-	ExecutionContext executionContext;
+	/** 受入行番号 */
+	int rowNo;
 
 	/** 正準化したデータ */
 	DataItemList itemsAfterCanonicalize;
@@ -22,10 +22,10 @@ public class CanonicalizedDataRecord {
 	/** 正準化対象ではないデータ */
 	DataItemList itemsNotCanonicalize;
 	
-	public static CanonicalizedDataRecord noChange(ExecutionContext executionContext, RevisedDataRecord revisedData) {
+	public static CanonicalizedDataRecord noChange(RevisedDataRecord revisedData) {
 		
 		return new CanonicalizedDataRecord(
-				executionContext,
+				revisedData.getRowNo(),
 				new DataItemList(),
 				new DataItemList(),
 				new DataItemList(revisedData.getItems()));

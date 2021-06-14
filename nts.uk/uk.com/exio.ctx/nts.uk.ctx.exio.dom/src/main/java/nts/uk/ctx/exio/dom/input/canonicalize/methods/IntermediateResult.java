@@ -7,8 +7,8 @@ import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.DataItemList;
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
+import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 
 /**
  * 正準化の中間結果
@@ -16,6 +16,8 @@ import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
  */
 @Value
 public class IntermediateResult {
+	
+	int rowNo;
 	
 	/** 正準化したデータ */
 	DataItemList itemsAfterCanonicalize;
@@ -34,7 +36,7 @@ public class IntermediateResult {
 	 * @return
 	 */
 	public static IntermediateResult create(
-			DataItemList source,
+			RevisedDataRecord source,
 			DataItem canonicalizedItem,
 			Integer... targetItemNos) {
 		
@@ -52,15 +54,15 @@ public class IntermediateResult {
 	 * @return
 	 */
 	public static IntermediateResult create(
-			DataItemList source,
+			RevisedDataRecord source,
 			DataItemList canonicalizedItems,
 			Integer... targetItemNos) {
 		
 		val before = new DataItemList();
 		val not = new DataItemList();
-		source.separate(before, not, targetItemNos);
+		source.getItems().separate(before, not, targetItemNos);
 		
-		return new IntermediateResult(canonicalizedItems, before, not);
+		return new IntermediateResult(source.getRowNo(), canonicalizedItems, before, not);
 	}
 	
 	/**
@@ -82,7 +84,7 @@ public class IntermediateResult {
 		val not = new DataItemList();
 		itemsNotCanonicalize.separate(before, not, targetItemNos);
 		
-		return new IntermediateResult(after, before, not);
+		return new IntermediateResult(this.rowNo, after, before, not);
 	}
 	
 	/**
@@ -100,9 +102,9 @@ public class IntermediateResult {
 				.orElseGet(() -> itemsNotCanonicalize.getItemByNo(itemNo));
 	}
 	
-	public CanonicalizedDataRecord complete(ExecutionContext context) {
+	public CanonicalizedDataRecord complete() {
 		return new CanonicalizedDataRecord(
-				context,
+				this.rowNo,
 				itemsAfterCanonicalize,
 				itemsBeforeCanonicalize,
 				itemsNotCanonicalize);

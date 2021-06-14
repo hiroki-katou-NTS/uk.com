@@ -3,8 +3,6 @@ package nts.uk.ctx.exio.dom.input.canonicalize.groups;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
-
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
@@ -28,7 +26,7 @@ public class EmployementHistoryCanonicalizationTest {
 		val target = new EmploymentHistoryCanonicalization(2, 3, 4, empCodeCano);
 		val context = Helper.context(ImportingMode.DELETE_RECORD_BEFOREHAND);
 		List<IntermediateResult> employeeCanonicalized = Arrays.asList(
-				new IntermediateResult(null, null, null)
+				new IntermediateResult(0, null, null, null)
 				);
 		
 		new Expectations() {{

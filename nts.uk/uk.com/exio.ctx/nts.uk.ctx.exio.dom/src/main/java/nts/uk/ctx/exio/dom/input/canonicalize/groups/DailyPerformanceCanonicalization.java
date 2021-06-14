@@ -85,7 +85,7 @@ public class DailyPerformanceCanonicalization implements GroupCanonicalization {
 			require.save(key.toDelete(context));
 		}
 		
-		require.save(intermResult.complete(context));
+		require.save(intermResult.complete());
 	}
 	
 	public static interface RequireCanonicalize {
