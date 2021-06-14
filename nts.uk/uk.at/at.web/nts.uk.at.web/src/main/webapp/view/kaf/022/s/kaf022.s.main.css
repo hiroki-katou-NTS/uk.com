@@ -2,7 +2,7 @@
 	margin-top: 0px;
     height: 300px;
     margin-left: 10px;
-	width: 450px;
+	width: 440px;
 }
 
 #app-type{
@@ -20,8 +20,6 @@
 
 #right-content{
     float: left;
-    margin-left: 35px;
-    margin-top: 15px;
 }
 
 #reason-temp{
