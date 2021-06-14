@@ -17,6 +17,7 @@ module nts.uk.ui.koExtentions {
             style: string | KnockoutObservable<string>;
             hasFocus: boolean | KnockoutObservable<boolean>;
             tabindex: string | number | KnockoutObservable<string | number>;
+            test: string | KnockoutObservable<string>;
         }
 
         @handler({
@@ -29,10 +30,11 @@ module nts.uk.ui.koExtentions {
                 const $element = $(element);
                 const accessor = valueAccessor();
                 const innerText = $element.text();
+                const style: string = "style-" + (accessor.style || "normal");
 
                 $element
                     .text('')
-                    .addClass('checkbox-wrapper nts-input');
+                    .addClass('checkbox-wrapper nts-input ' + style);
 
                 const hasFocus = accessor.hasFocus || allBindingsAccessor.get('hasFocus');
 
