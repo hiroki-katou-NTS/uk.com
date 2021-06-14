@@ -1338,14 +1338,14 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             return dtoCheck;
         }
         val holiday = dataSource.getHolidaysRemainingManagement().getListItemsOutput().getPause();
-        boolean isPauseItem = holiday.isPauseItem();
-        boolean isUndigestedPause = holiday.isUndigestedPause();
-        boolean isNumberRemainingPause = holiday.isNumberRemainingPause();
+//        boolean isPauseItem = holiday.isPauseItem();
+//        boolean isUndigestedPause = holiday.isUndigestedPause();
+//        boolean isNumberRemainingPause = holiday.isNumberRemainingPause();
 
-        if (!isPauseItem) {
-            dtoCheck.setFirstRow(firstRow);
-            return dtoCheck;
-        }
+//        if (!isPauseItem) {
+//            dtoCheck.setFirstRow(firstRow);
+//            return dtoCheck;
+//        }
         int totalRows = 2;
         int rowIndexUndigestedPause = 0;
         int rowIndexNumberRemainingPause = 0;
@@ -1381,20 +1381,20 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             dtoCheck.setCount(count);
             return dtoCheck;
         }
-        if (isUndigestedPause) {
+        //if (isUndigestedPause) {
             rowIndexUndigestedPause = firstRow + totalRows;
             cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 18, rowIndexUndigestedPause, 1);
             // J2_3
             cells.get(rowIndexUndigestedPause, 9).setValue(TextResource.localize("KDR001_11"));
             totalRows += 1;
-        }
-        if (isNumberRemainingPause) {
+        //}
+        //if (isNumberRemainingPause) {
             rowIndexNumberRemainingPause = firstRow + totalRows;
             cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 19, rowIndexNumberRemainingPause, 1);
             // J2_4
             cells.get(rowIndexNumberRemainingPause, 9).setValue(TextResource.localize("KDR001_18"));
             totalRows += 1;
-        }
+        //}
 
         if (!employee.getCurrentMonth().isPresent()) {
 
@@ -1427,22 +1427,22 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 // J2_6 振休_使用, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
                 cells.get(firstRow + 1, 10 + totalMonth).setValue(statusOfHDItem.getUsedDays() == null ||
                         statusOfHDItem.getUsedDays() == 0.0 ? null : df.format(statusOfHDItem.getUsedDays().doubleValue()));
-                if (isUndigestedPause) {
+                //if (isUndigestedPause) {
                     // J2_7 振休_未消化, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
                     cells.get(rowIndexUndigestedPause, 10 + totalMonth).setValue(statusOfHDItem.getUnUsedDays() == null
                             || statusOfHDItem.getUnUsedDays() == 0.0 ? null : df.format(statusOfHDItem.getUnUsedDays().doubleValue()));
                     if (statusOfHDItem.getUnUsedDays() != null && statusOfHDItem.getUnUsedDays() > 0) {
                         setForegroundRed(cells.get(rowIndexUndigestedPause, 10 + totalMonth));
                     }
-                }
-                if (isNumberRemainingPause) {
+                //}
+                //if (isNumberRemainingPause) {
                     // J2_8 振休_残数
                     cells.get(rowIndexNumberRemainingPause, 10 + totalMonth)
                             .setValue(df.format(statusOfHDItem.getRemainingDays().doubleValue()));
                     if (statusOfHDItem.getRemainingDays() < 0) {
                         setForegroundRed(cells.get(rowIndexNumberRemainingPause, 10 + totalMonth));
                     }
-                }
+                //}
             }
         }
 
@@ -1460,7 +1460,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                 && holidayRemainItem.getMonthUse() == 0.0 ? null :
                                 df.format(holidayRemainItem.getMonthUse().doubleValue()));
                         if (currentMonth.compareTo(holidayRemainItem.getYm()) == 0) {
-                            if (isUndigestedPause) {
+                            //if (isUndigestedPause) {
                                 // J2_7 振休_未消化, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
                                 cells.get(rowIndexUndigestedPause, 10 + totalMonth).setValue(
                                         holidayRemainItem.getMonthExtinction() != null
@@ -1470,15 +1470,15 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                         && holidayRemainItem.getMonthExtinction() > 0) {
                                     setForegroundRed(cells.get(rowIndexUndigestedPause, 10 + totalMonth));
                                 }
-                            }
-                            if (isNumberRemainingPause) {
+                            //}
+                            //if (isNumberRemainingPause) {
                                 // J2_8 振休_残数
                                 cells.get(rowIndexNumberRemainingPause, 10 + totalMonth)
                                         .setValue(df.format(holidayRemainItem.getMonthEndRemain().doubleValue()));
                                 if (holidayRemainItem.getMonthEndRemain() < 0) {
                                     setForegroundRed(cells.get(rowIndexNumberRemainingPause, 10 + totalMonth));
                                 }
-                            }
+                            //}
                         }
                     }
                 }
@@ -1508,33 +1508,33 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         // J1_3 振休_使用数
         cells.get(firstRow, 6).setValue(currentHolidayRemainLeft.getMonthUse() == 0 ? "" :
                 df.format(currentHolidayRemainLeft.getMonthUse().doubleValue()));
-        if (isPauseItem) {
+        //if (isPauseItem) {
             // J1_4 振休_残数
             cells.get(firstRow, 7).setValue(currentHolidayRemainLeft.getMonthEndRemain() == 0 ? "" :
                     df.format(currentHolidayRemainLeft.getMonthEndRemain().doubleValue()));
             if (currentHolidayRemainLeft.getMonthEndRemain() < 0) {
                 setForegroundRed(cells.get(firstRow, 7));
-            }
+           // }
         }
-        if (isUndigestedPause) {
+        //if (isUndigestedPause) {
             // J1_5 振休_未消化
             cells.get(firstRow, 8).setValue(currentHolidayRemainLeft.getMonthExtinction() == 0 ? "" :
                     df.format(currentHolidayRemainLeft.getMonthExtinction().doubleValue()));
             if (currentHolidayRemainLeft.getMonthExtinction() != null
                     && currentHolidayRemainLeft.getMonthExtinction() > 0) {
                 setForegroundRed(cells.get(firstRow, 8));
-            }
+          //  }
         }
         // Set background
         for (int i = 0; i <= totalMonths(dataSource.getStartMonth().yearMonth(),
                 dataSource.getEndMonth().yearMonth()); i++) {
             if (dataSource.getStartMonth().addMonths(i).yearMonth().compareTo(currentMonth) > 0) {
-                if (isUndigestedPause) {
+                //if (isUndigestedPause) {
                     setBackgroundGray(cells.get(rowIndexUndigestedPause, 10 + i));
-                }
-                if (isNumberRemainingPause) {
+                //}
+                //if (isNumberRemainingPause) {
                     setBackgroundGray(cells.get(rowIndexNumberRemainingPause, 10 + i));
-                }
+                //}
             }
         }
         for (int index = 0; index < NUMBER_COLUMN - 2; index++) {
