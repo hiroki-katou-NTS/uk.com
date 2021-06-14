@@ -9,13 +9,12 @@
 	<ui:composition>
 		<div class="sidebar-content-header">
 			<span>#{i18n.getText('Com_Workplace')}</span>
-			<!-- B1_1 -->
+        <!-- B5_1 -->
+        <a class="goback" data-bind="ntsLinkButton: { jump: '../g/index.xhtml' }">#{i18n.getText('KMF002_95')}</a>
+        <!-- B1_1 -->
    			<button class="proceed" tabindex="1" data-bind="click: saveWorkpalce, enable: enableSave">#{i18n.getText('KMF002_2')}</button>
    			<!-- B1_2 -->
    			<button class="danger" tabindex="2" data-bind="click: removeWorkplace, enable: enableDelete">#{i18n.getText('KMF002_11')}</button>
-   			
-   			<button tabindex="3" id = "opencdl028Dialog"  data-bind="click: opencdl028Dialog2">#{i18n.getText('KSM004_100')}</button>
-   			
 		</div>
 		
 		<div id="scrB" class="contents-area fixed-flex-layout">

@@ -5,7 +5,7 @@ import { FixTableComponent } from '@app/components/fix-table';
 import { KafS08DComponent } from '../../../kaf/s08/d';
 import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
 import * as _ from 'lodash';
-
+import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 
 
 // import abc from './mock_data.json';
@@ -20,6 +20,7 @@ import * as _ from 'lodash';
     components: {
         'step-wizard': StepwizardComponent,
         'fix-table': FixTableComponent,
+        'cmms45c': CmmS45CComponent
     },
     directives: {
         'date': {
@@ -151,8 +152,39 @@ export class KafS08A2Component extends KafS00ShrComponent {
         return vm.$http.post('at', API.updateBusinessTrip, params).then((res: any) => {
             vm.$mask('hide');
             vm.$emit('nextToStepThree', res.data.appIDLst[0]);
-        }).catch(() => {
+        }).catch((res) => {
             vm.$mask('hide');
+            if (res.messageId == 'Msg_197') {
+                vm.$modal.error({ messageId: 'Msg_197', messageParams: [] }).then(() => {
+                    let appID = vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.appID;
+                    vm.$modal('cmms45c', { 'listAppMeta': [appID], 'currentApp': appID }).then((newData: any) => {
+                        vm.$emit('initFromDetail', newData);
+                        vm.businessTripActualContent = newData.businessTripDto.tripInfos.map((item: any) => {
+                            const workTime = newData.businessTripInfoOutputDto.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst.find((i: any) => i.worktimeCode == item.wkTimeCd);
+                            const workType = newData.businessTripInfoOutputDto.infoBeforeChange.find((i: any) => i.date == item.date).workTypeDto;
+                            
+                            return {
+                                date: item.date,
+                                opAchievementDetail: {
+                                    workTypeCD: item.wkTypeCd,
+                                    workTimeCD: item.wkTimeCd,
+                                    opWorkTypeName: workType.name,
+                                    opWorkTimeName: workTime ? workTime.workTimeDisplayName.workTimeName : null,
+                                    opWorkTime: item.startWorkTime,
+                                    opLeaveTime: item.endWorkTime
+                                }
+                            };
+                        });
+                        vm.$emit('prevStepOne', 
+                            newData.businessTripDto.departureTime,
+                            newData.businessTripDto.returnTime,
+                            newData.businessTripInfoOutputDto.appDispInfoStartup.appDetailScreenInfo.application.opAppReason, 
+                            vm.businessTripActualContent);
+                    });
+                });
+    
+                return;
+            }
             vm.$modal.error({ messageId: 'Msg_1912' });
         });
     }
