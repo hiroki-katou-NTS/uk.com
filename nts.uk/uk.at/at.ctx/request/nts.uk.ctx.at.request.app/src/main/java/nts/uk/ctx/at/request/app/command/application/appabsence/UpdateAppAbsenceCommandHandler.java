@@ -34,8 +34,6 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 	            command.getHolidayAppDates(), 
 	            command.getOldLeaveComDayOffMana().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 	            command.getOldPayoutSubofHDManagements().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
-	            command.getLeaveComDayOffMana().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
-	            command.getPayoutSubofHDManagements().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 	            command.getAppDispInfoStartupOutput().toDomain());
 	}
 

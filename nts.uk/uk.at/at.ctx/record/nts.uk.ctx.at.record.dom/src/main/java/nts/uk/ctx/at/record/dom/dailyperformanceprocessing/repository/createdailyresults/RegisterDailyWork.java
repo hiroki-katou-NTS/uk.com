@@ -182,6 +182,11 @@ public class RegisterDailyWork {
 						.build());
 			}
 		});
+		
+		// ドメインモデル「日別勤怠の応援作業時間帯」を更新する
+		if(!integrationOfDaily.getOuenTimeSheet().isEmpty()){
+			dailyRecordAdUpService.adUpSupportTime(employeeId, ymd, integrationOfDaily.getOuenTimeSheet());
+		}
 	}
 	private List<TimeLeavingWork> checkExist(List<TimeLeavingWork> listTimeLeavingWork){
 		List<TimeLeavingWork> datas = new ArrayList<>();

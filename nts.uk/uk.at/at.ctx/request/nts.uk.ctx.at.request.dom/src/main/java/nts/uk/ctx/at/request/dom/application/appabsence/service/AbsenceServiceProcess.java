@@ -395,17 +395,6 @@ public interface AbsenceServiceProcess {
             List<PayoutSubofHDManagement> payoutSubofHDManagements);
 
     /**
-         * 休暇紐付け管理を更新する
-     * @param oldLeaveComDayOffMana
-     * @param oldPayoutSubofHDManagements
-     * @param newLeaveComDayOffMana
-     * @param newPayoutSubofHDManagements
-     */
-    public void updateVacationLinkManage(List<LeaveComDayOffManagement> oldLeaveComDayOffMana,
-            List<PayoutSubofHDManagement> oldPayoutSubofHDManagements, List<LeaveComDayOffManagement> newLeaveComDayOffMana,
-            List<PayoutSubofHDManagement> newPayoutSubofHDManagements);
-
-    /**
          * 指定する勤務種類に必要な休暇時間を算出する
      * @param employeeID
      * @param date
@@ -436,8 +425,6 @@ public interface AbsenceServiceProcess {
     public ProcessResult updateApplyForLeave(
             ApplyForLeave applyForLeave,
             List<String> holidayAppDates,
-            List<LeaveComDayOffManagement> oldLeaveComDayOffMana,
-            List<PayoutSubofHDManagement> oldPayoutSubofHDManagements,
             List<LeaveComDayOffManagement> leaveComDayOffMana,
             List<PayoutSubofHDManagement> payoutSubofHDManagements,
             AppDispInfoStartupOutput appDispInfoStartupOutput);

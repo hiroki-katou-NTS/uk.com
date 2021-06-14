@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+    <ui:composition template="/master/base.xhtml">
+        <ui:define name="htmlHead">
+
+            <com:scriptfile set="IGNITE" />
+
+            <script>var dialogSize = { width: 594, height: 700 };</script>
+            <com:stylefile path="./kdp002.u.style.css" />
+            <com:scriptfile path="./kdp002.u.vm.js" />
+
+        </ui:define>
+        <ui:define name="content">
+            <div id="contents-area">
+                <div class="view-u">
+                    <div data-bind="if: $vm.modeNew" class="colum-1">
+                        <i data-bind="ntsIcon: { no: 175, width: 30, height: 30 }"></i>
+                    </div>
+                    <div class="colum-2" data-bind="foreach: $vm.modelShowView">
+                        <div class="box-content">
+                            <span class="content" data-bind="i18n: $data.notificationMessage"></span>
+                            <div class="content">
+                                <span data-bind="i18n: 'CCG003_8', params: [$data.creator]"></span>
+                            </div>
+                            <div class="content">
+                                <span data-bind="i18n: 'CCG003_9', params: [$data.startDate]"></span>
+                                <!-- <span data-bind="date: $data.startDate, format: 'MM/DD'"></span> -->
+                                <span data-bind="i18n: 'CCG003_15'"></span>
+                                <span data-bind="date: $data.endDate, format: 'MM/DD'"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="functions-area-bottom">
+				<div style="padding-bottom: 12px;
+					text-align: left;
+					margin-left: 25px;" 
+				class="noti-close-dialog" data-bind="i18n: 'KDP002_104'"></div>
+				<button class="x-large" data-bind="i18n: 'KDP002_105', click: closeDialog"></button>
+            </div>
+        </ui:define>
+    </ui:composition>
+</body>
+
+</html>

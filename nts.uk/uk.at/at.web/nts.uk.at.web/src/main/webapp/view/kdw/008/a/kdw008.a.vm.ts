@@ -105,18 +105,18 @@ module nts.uk.at.view.kdw008.a {
                 self.columns1 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100, formatter: _.escape }
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 200, formatter: _.escape }
                 ]);
                 self.columns2 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100, formatter: _.escape }
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 200, formatter: _.escape }
                 ]);
 
                 self.columns3 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100, formatter: _.escape }
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 200, formatter: _.escape }
                 ]);
 
                 //swap list 2

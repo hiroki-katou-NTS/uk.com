@@ -5,7 +5,6 @@ import java.util.List;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.CreateDailyInterimRemainMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
@@ -32,7 +31,7 @@ public interface MonthlyAggregationRemainingNumber {
 	 */
 	AggregateMonthlyRecordValue aggregation(CacheCarrier cacheCarrier, DatePeriod period,
 			String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,   ClosureDate closureDate,
-			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets, 
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
 			MonthlyCalculatingDailys monthlyCalculatingDailys,
 			InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate);
 
@@ -42,6 +41,5 @@ public interface MonthlyAggregationRemainingNumber {
 														DatePeriod period,
 														MonAggrCompanySettings comSetting,
 														MonthlyCalculatingDailys dailys);
-	
-	public static interface Require extends CreateDailyInterimRemainMngs.Require {}
+
 }

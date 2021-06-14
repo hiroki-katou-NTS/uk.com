@@ -1,7 +1,8 @@
 package nts.uk.ctx.at.record.infra.entity.daily.ouen;
 
 import java.io.Serializable;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -9,35 +10,19 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
-import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
-import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @Table(name = "KRCDT_DAY_TS_SUP")
-public class KrcdtDayOuenTimeSheet extends ContractUkJpaEntity implements Serializable {
+public class KrcdtDayOuenTimeSheet extends ContractCompanyUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
 	@EmbeddedId
 	public KrcdtDayOuenTimePK pk;
-
-	/** 勤務先会社ID */
-	@Column(name = "SUP_CID")
-	public String cid;
 
 	/** 職場ID */
 	@Column(name = "WORKPLACE_ID")
@@ -94,70 +79,73 @@ public class KrcdtDayOuenTimeSheet extends ContractUkJpaEntity implements Serial
 	/** 作業CD5 */
 	@Column(name = "WORK_CD5")
 	public String workCd5;
+	
+	/** 作業CD5 */
+	@Column(name = "WORK_REMARKS")
+	public String workRemarks;
 
 	@Override
 	protected Object getKey() {
 		return pk;
 	}
 	
-	public OuenWorkTimeSheetOfDaily domain() {
-		return OuenWorkTimeSheetOfDaily.create(
-				pk.sid, pk.ymd, 
-				OuenWorkTimeSheetOfDailyAttendance.create(
-						pk.ouenNo, 
-						WorkContent.create(
-								cid, 
-								WorkplaceOfWorkEachOuen.create(workplaceId, new WorkLocationCD(workLocationCode)), 
-								Optional.ofNullable(workCd1 == null ? null : 
-									WorkGroup.create(workCd1, workCd2, workCd3, workCd4, workCd5))), 
-						TimeSheetOfAttendanceEachOuenSheet.create(
-								new WorkNo(workNo), 
-								Optional.ofNullable(startTime == null ? null : 
-									new WorkTimeInformation(
-											new ReasonTimeChange(
-													EnumAdaptor.valueOf(startTimeChangeWay, TimeChangeMeans.class), 
-													startStampMethod == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(startStampMethod, EngravingMethod.class))), 
-											startTime == null ? null : new TimeWithDayAttr(startTime))), 
-								Optional.ofNullable(endTime == null ? null : 
-									new WorkTimeInformation(
-											new ReasonTimeChange(
-													EnumAdaptor.valueOf(endTimeChangeWay, TimeChangeMeans.class), 
-													endStampMethod == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(endStampMethod, EngravingMethod.class))), 
-											endTime == null ? null : new TimeWithDayAttr(endTime))))));
-	}
-	
-	public static KrcdtDayOuenTimeSheet convert(OuenWorkTimeSheetOfDaily domain) {
-		KrcdtDayOuenTimeSheet entity = new KrcdtDayOuenTimeSheet();
+	public static List<KrcdtDayOuenTimeSheet> convert(OuenWorkTimeSheetOfDaily domain) {
 		
-		entity.pk = new KrcdtDayOuenTimePK(domain.getEmpId(), 
-				domain.getYmd(), domain.getOuenTimeSheet().getWorkNo());
+		List<KrcdtDayOuenTimeSheet> rs = new ArrayList<KrcdtDayOuenTimeSheet>();
 		
-		entity.cid = domain.getOuenTimeSheet().getWorkContent().getCompanyId();
-		entity.workplaceId = domain.getOuenTimeSheet().getWorkContent().getWorkplace().getWorkplaceId();		
-		entity.workLocationCode = domain.getOuenTimeSheet().getWorkContent().getWorkplace().getWorkLocationCD().v();
+		for (OuenWorkTimeSheetOfDailyAttendance oTimeSheetAtt : domain.getOuenTimeSheet()) {
+			KrcdtDayOuenTimeSheet entity = new KrcdtDayOuenTimeSheet();
+			
+			entity.pk = new KrcdtDayOuenTimePK(domain.getEmpId(), 
+					domain.getYmd(), oTimeSheetAtt.getWorkNo());
+			
+			entity.workplaceId = oTimeSheetAtt.getWorkContent().getWorkplace().getWorkplaceId() == null ? null : oTimeSheetAtt.getWorkContent().getWorkplace().getWorkplaceId().v();		
+			entity.workLocationCode = !oTimeSheetAtt.getWorkContent().getWorkplace().getWorkLocationCD().isPresent() ? null 
+					: oTimeSheetAtt.getWorkContent().getWorkplace().getWorkLocationCD().get().v();
+			
+			oTimeSheetAtt.getWorkContent().getWork().ifPresent(work -> {
+				entity.workCd1 = work.getWorkCD1().v() == "" ? null : work.getWorkCD1().v();
+				entity.workCd2 = work.getWorkCD2().map(w -> w.v()).orElse(null);
+				entity.workCd3 = work.getWorkCD3().map(w -> w.v()).orElse(null); 
+				entity.workCd4 = work.getWorkCD4().map(w -> w.v()).orElse(null);
+				entity.workCd5 = work.getWorkCD5().map(w -> w.v()).orElse(null);
+			});
+			
+			oTimeSheetAtt.getWorkContent().getWorkRemarks().ifPresent(remarks -> {
+				entity.workRemarks = remarks.v();
+			});
+			
+			entity.workNo = oTimeSheetAtt.getTimeSheet().getWorkNo().v();
+			
+			oTimeSheetAtt.getTimeSheet().getStart().ifPresent(start -> {
+				entity.startTimeChangeWay = null;
+				entity.startStampMethod = null;
+				if(start.getReasonTimeChange() != null) {
+					if(start.getReasonTimeChange().getTimeChangeMeans() != null) {
+						entity.startTimeChangeWay = start.getReasonTimeChange().getTimeChangeMeans().value;
+					}
+					entity.startStampMethod = start.getReasonTimeChange().getEngravingMethod().map(c -> c.value).orElse(null);
+				} 
+				
+				entity.startTime = start.getTimeWithDay().map(c -> c.v()).orElse(null); 
+			});
+			
+			oTimeSheetAtt.getTimeSheet().getEnd().ifPresent(end -> {
+				entity.endTimeChangeWay = null;
+				entity.endStampMethod = null;
+				if(end.getReasonTimeChange() != null) {
+					if(end.getReasonTimeChange().getTimeChangeMeans() != null) {
+						entity.endTimeChangeWay = end.getReasonTimeChange().getTimeChangeMeans().value;
+					}
+					entity.endStampMethod = end.getReasonTimeChange().getEngravingMethod().map(c -> c.value).orElse(null);
+				}
+				
+				entity.endTime = end.getTimeWithDay().map(c -> c.v()).orElse(null); 
+			});
+			
+			rs.add(entity);
+		}
 		
-		domain.getOuenTimeSheet().getWorkContent().getWork().ifPresent(work -> {
-			entity.workCd1 = work.getWorkCD1().v();
-			entity.workCd2 = work.getWorkCD2().map(w -> w.v()).orElse(null);
-			entity.workCd3 = work.getWorkCD3().map(w -> w.v()).orElse(null); 
-			entity.workCd4 = work.getWorkCD4().map(w -> w.v()).orElse(null);
-			entity.workCd5 = work.getWorkCD5().map(w -> w.v()).orElse(null);
-		});
-		
-		entity.workNo = domain.getOuenTimeSheet().getTimeSheet().getWorkNo().v();
-		
-		domain.getOuenTimeSheet().getTimeSheet().getStart().ifPresent(start -> {
-			entity.startTimeChangeWay = start.getReasonTimeChange().getTimeChangeMeans().value;
-			entity.startStampMethod = start.getReasonTimeChange().getEngravingMethod().map(c -> c.value).orElse(null);
-			entity.startTime = start.getTimeWithDay().map(c -> c.v()).orElse(null); 
-		});
-		
-		domain.getOuenTimeSheet().getTimeSheet().getEnd().ifPresent(end -> {
-			entity.endTimeChangeWay = end.getReasonTimeChange().getTimeChangeMeans().value;
-			entity.endStampMethod = end.getReasonTimeChange().getEngravingMethod().map(c -> c.value).orElse(null);
-			entity.endTime = end.getTimeWithDay().map(c -> c.v()).orElse(null); 
-		});
-		
-		return entity;
+		return rs;
 	}
 }

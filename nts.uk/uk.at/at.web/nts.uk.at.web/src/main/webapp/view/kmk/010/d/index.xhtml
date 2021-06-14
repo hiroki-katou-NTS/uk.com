@@ -161,8 +161,10 @@
                     <div class="cell">
                       <input
                         tabindex="4"
-                        data-bind="ntsTimeEditor: { value: unitForVacation, 
+                        data-bind="ntsTimeEditor: { value: unitForVacation,
                           inputFormat: 'time', mode: 'time',
+                          required: true,
+                          name: '#[KMK010_79]',
                           enable: true, constraint: 'SuperHDOccUnit'}"
                       />
                     </div>

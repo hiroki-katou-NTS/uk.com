@@ -604,7 +604,7 @@ public class OutsideOTSettingExportImpl implements MasterListData {
                 "", true));
         columns.add(new MasterHeaderColumn(NUMBER_COLS_4, TextResource.localize(NAME_VALUE_A7_2), ColumnTextAlign.LEFT,
                 "", true));
-        columns.add(new MasterHeaderColumn(NUMBER_COLS_5, TextResource.localize("KMK010_86"), ColumnTextAlign.LEFT,
+        columns.add(new MasterHeaderColumn(NUMBER_COLS_5, TextResource.localize("KMK010_20"), ColumnTextAlign.LEFT,
                 "", true));
         if (!this.isLanugeJapan(query.getLanguageId())) {
             columns.add(new MasterHeaderColumn(NUMBER_COLS_END, TextResource.localize(NAME_VALUE_A7_5),

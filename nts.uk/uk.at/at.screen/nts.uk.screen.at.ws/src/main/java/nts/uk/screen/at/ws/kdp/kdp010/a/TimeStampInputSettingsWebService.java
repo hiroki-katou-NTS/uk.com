@@ -8,10 +8,13 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.find.stamp.management.StampPageLayoutDto;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.PortalStampSettingsDto;
+import nts.uk.screen.at.app.query.kdp.kdp002.a.SettingsStampCommon;
+import nts.uk.screen.at.app.query.kdp.kdp002.a.SettingsStampCommonDto;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.TimeStampInputSettingFinder;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.SettingsSmartphoneStampDto;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.SettingsUsingEmbossingDto;
 import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.StampSetCommunalDto;
+import nts.uk.screen.at.app.query.kdp.kdp010.a.dto.StampSettingOfRICOHCopierDto;
 
 @Path("at/record/stamp/timestampinputsetting")
 @Produces("application/json")
@@ -19,6 +22,9 @@ public class TimeStampInputSettingsWebService extends WebService {
 
 	@Inject
 	private TimeStampInputSettingFinder timeStampInputSettingFinder;
+	
+	@Inject
+	private SettingsStampCommon settingsStampCommon;
 	
 	/**打刻の前準備(ポータル)を表示する  */
 	@POST
@@ -51,6 +57,17 @@ public class TimeStampInputSettingsWebService extends WebService {
 		return timeStampInputSettingFinder.getLayoutSettingsSmartphone(param.pageNo);
 	}
 	
+	@POST
+	@Path("stampsettingofRICOHcopier/get")
+	public StampSettingOfRICOHCopierDto getStampSettingOfRICOHCopier() {
+		return timeStampInputSettingFinder.getStampSettingOfRICOHCopier();
+	}
+	
+	@POST
+	@Path("getSettingCommonStamp")
+	public SettingsStampCommonDto getSettingCommonStamp() {
+		return settingsStampCommon.getSettingCommonStamp();
+	}
 }
 
 class paramPageNo{

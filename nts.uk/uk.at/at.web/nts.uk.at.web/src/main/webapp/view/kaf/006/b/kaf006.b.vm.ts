@@ -131,12 +131,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
             // luôn là component
             params.eventUpdate(vm.update.bind(vm));
 			params.eventReload(vm.reload.bind(vm));
-        };
-		
-        mounted() {
-			const vm = this;
 
-            vm.maxNumberOfDay = ko.computed(() => {
+			vm.maxNumberOfDay = ko.computed(() => {
 				let data = vm.$i18n("KAF006_44").concat("\n");
 				if (vm.specAbsenceDispInfo()) {
 					if (vm.isDispMourn() && vm.isCheckMourn()) {
@@ -164,8 +160,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 				return vm.$i18n("KAF006_21");
             });
-            
-            vm.selectedDateSpec.subscribe(() => {
+
+			vm.selectedDateSpec.subscribe(() => {
 				if (vm.selectedType() !== 3 || vm.dateSpecHdRelationLst().length === 0) {
 					return;
 				}
@@ -506,6 +502,11 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 				return false;
 			});
+        };
+		
+        mounted() {
+			const vm = this;
+
         };
 
         reload() {
@@ -1529,6 +1530,84 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 			vm.condition32(false);
 		}
+
+		openKDL020() {
+            let vm = this;
+            var employeeIds = [];
+            employeeIds.push(__viewContext.user.employeeId);
+            nts.uk.ui.windows.setShared('KDL020A_PARAM', {
+                baseDate: new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate), 
+                employeeIds: employeeIds});
+            if (employeeIds.length > 1) {
+                nts.uk.ui.windows.sub.modal("/view/kdl/020/a/multi.xhtml");
+            } else {
+                nts.uk.ui.windows.sub.modal("/view/kdl/020/a/single.xhtml");
+            }
+        }
+
+        openKDL029() {
+            let vm = this;
+            let param = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: moment(new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate)).format("YYYY/MM/DD")
+            }
+            nts.uk.ui.windows.setShared('KDL029_PARAM', param);
+            nts.uk.ui.windows.sub.modal('/view/kdl/029/a/index.xhtml');
+        }
+
+        openKDL005() {
+            let vm = this;
+            let data = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: moment(new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate)).format("YYYYMMDD")
+            }
+            nts.uk.ui.windows.setShared('KDL005_DATA', data);
+            if (data.employeeIds.length > 1) {
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/multi.xhtml");
+            } else {
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/single.xhtml");
+            }
+        }
+
+        public openKDL051() {
+            let vm = this;
+            let param = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate)
+            };
+
+            Kaf006ShrViewModel.openKDL051(param);
+        }
+
+        public openKDL052() {
+            let vm = this;
+            let param = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: moment(new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate)).format("YYYYMMDD")
+            };
+
+            Kaf006ShrViewModel.openKDL052(param);
+        }
+
+        public openKDL017() {
+            let vm = this;
+            let param = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: moment(new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate)).format("YYYYMMDD")
+            };
+            
+            Kaf006ShrViewModel.openKDL017(param);
+        }
+
+        public openKDL009() {
+            let vm = this;
+            let param = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: moment(new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate)).format("YYYYMMDD")
+            };
+
+            Kaf006ShrViewModel.openKDL009(param); 
+        }
     };
 
     const API = {
