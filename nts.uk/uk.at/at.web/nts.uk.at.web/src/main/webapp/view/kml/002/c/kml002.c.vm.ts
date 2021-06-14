@@ -69,6 +69,12 @@ module nts.uk.at.view.kml002.c {
       });
     }
 
+    openDialogScreenH() {
+      const vm = this;     
+      // vm.$window.modeless('/view/kml/002/h/index.xhtml');     
+      nts.uk.ui.windows.sub.modeless('/view/kml/002/h/index.xhtml');
+    }
+
     //スケジュール職場計情報を登録する時
     registerSchedulePersonalInfor() {
       const vm = this;
@@ -185,7 +191,7 @@ module nts.uk.at.view.kml002.c {
       let links = [
         { icon: "images/go-out.png", link: '/view/kml/001/a/index.xhtml', text: vm.$i18n('KML002_11') },
         { icon: "images/go-out.png", link: '/view/kmf/002/a/index.xhtml', text: vm.$i18n('KML002_45') },
-        { icon: "images/go-out.png", link: '/view/ksm/001/a/index.xhtml', text: vm.$i18n('KML002_46') },
+        // { icon: "images/go-out.png", link: '/view/ksm/001/a/index.xhtml', text: vm.$i18n('KML002_46') },
         //{ icon: "images/go-out.png", link: '#', text: vm.$i18n('KML002_118') },
       ];
       _.forEach(links, (item) => {

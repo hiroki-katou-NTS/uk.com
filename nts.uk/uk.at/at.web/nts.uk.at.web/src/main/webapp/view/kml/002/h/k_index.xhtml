@@ -1,0 +1,309 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>		
+	<ui:composition>
+        <div class="sidebar-content-header">
+            <span class="title">#{i18n.getText('Com_Employment')}</span>
+            <!--K1-1-->
+            <button class="proceed" data-bind="click: registerMoneyEmp">#{i18n.getText('KML002_126')}</button>
+            <!--K1-2-->
+            <button class="danger" data-bind="click: remove">#{i18n.getText('KML002_127')}</button>
+            <!--K1-3-->
+            <button class="normal" data-bind="click: closeDialog">#{i18n.getText('KML002_129')}</button>
+        </div>
+        <div class="contents-area">
+            <div id="left-content">                
+                <!--K2-->
+                <div id="empt-list-setting"></div>
+            </div>
+            <div id="right-content" >          
+                <!--K3-1-->
+                <div style="margin: 20px 10px;">
+                    <div data-bind="text: name"></div>
+                    <hr class="line" />
+                </div>
+                                   
+                <div class="container-custom-screenk">                    
+                    <!--H3-1-->
+                    <div data-bind="ntsFormLabel:{required:true }">#{i18n.getText('KML002_130')}</div>
+                    <div class="helpButton">
+                        <!--H3-2-->        
+                        <button data-bind="ntsHelpButton: { textId: 'KML002_131', textParams:['{#KML002_131}'],position: 'right center', enable: true }">?</button>
+                    </div>
+                    
+                </div>
+                <div style="margin: 10px 0px 0px 25px;">   
+                    <!--H4-->                                 
+                   <table class="border-all">
+                       <colgroup>
+                            <col width="80px" />
+                            <col width="100px" />
+                            <col width="25px" />
+                            <col width="100px" />
+                            <col width="25px" />
+                            <col width="100px" />
+                            <col width="25px" />
+                            <col width="100px" />
+                            <col width="25px" />
+                            <col width="100px" />                          
+                       </colgroup>
+                       <thead>
+                        <tr data-bind="with: itemHandlingScreenK">
+                            <th class="ui-widget-header"></th>
+                            <th class="ui-widget-header">
+                                <!--H4-1-1-->
+                                <div class="container-cell">
+                                    <span style="margin: 0px 10px;">#{i18n.getText('KML002_132')}</span>
+                                    <!--H4-1-2-->
+                                    <div style="border: 1px solid #AAB7B8; width: 25px; height: 20px; "
+                                        data-bind="style :{background: backgroundColor1}"></div>
+                                </div>
+                            </th>
+                            <!--H4-2-->
+                            <th class="ui-widget-header">#{i18n.getText('KML002_133')}</th>
+                        
+                            <th class="ui-widget-header">
+                                <div class="container-cell">
+                                    <!--H4-3-1-->
+                                    <span style="margin: 0px 10px;">#{i18n.getText('KML002_134')}</span>
+                                    <!--H4-3-2-->
+                                    <div style="border: 1px solid #AAB7B8; width: 25px; height: 20px;"
+                                        data-bind="style :{background: backgroundColor2}"></div>
+                                </div>
+                            </th>
+                            <!--H4-4-->
+                            <th class="ui-widget-header">#{i18n.getText('KML002_133')}</th>
+                        
+                            <th class="ui-widget-header">
+                                <div class="container-cell">
+                                    <!--H4-5-1-->
+                                    <span style="margin: 0px 10px;">#{i18n.getText('KML002_135')}</span>
+                                    <!--H4-5-2-->
+                                    <div style="border: 1px solid #AAB7B8; width: 25px; height: 20px;"
+                                        data-bind="style :{background: backgroundColor3}"></div>
+                                </div>
+                            </th>
+                            <!--H4-6-->
+                            <th class="ui-widget-header">#{i18n.getText('KML002_133')}</th>
+                        
+                            <th class="ui-widget-header">
+                                <div class="container-cell">
+                                    <!--H4-7-1-->
+                                    <span style="margin: 0px 10px;">#{i18n.getText('KML002_136')}</span>
+                                    <!--H4-7-2-->
+                                    <div style="border: 1px solid #AAB7B8; width: 25px; height: 20px;"
+                                        data-bind="style :{background: backgroundColor4}"></div>
+                                </div>
+                            </th>
+                            <!--H4-8-->
+                            <th class="ui-widget-header">#{i18n.getText('KML002_133')}</th>
+                        
+                            <th class="ui-widget-header">
+                                <div class="container-cell">
+                                    <!--H4-9-1-->
+                                    <span style="margin: 0px 10px;">#{i18n.getText('KML002_137')}</span>
+                                    <!--H4-9-2-->
+                                    <div style="border: 1px solid #AAB7B8; width: 25px; height: 20px;"
+                                        data-bind="style :{background: backgroundColor5}"></div>
+                                </div>
+                            </th>
+                        </tr>
+                       </thead>
+                       <tbody >
+                            <tr>
+                               <!--H4-10--> 
+                               <td role="rowheader" style="background:#EDFAC2;"> 
+                                    <span style="margin-left: 10px;">#{i18n.getText('KML002_138')}</span></td>        
+                                <!--H4-10-1-->    
+                               <td>
+                                    <input tabindex="11" data-bind="ntsNumberEditor: {
+                                        name: '#[KML002_139]',
+                                        value: itemMonthlyScreenK().amount1,
+                                        constraint: 'EstimatePrice',
+                                        option: new nts.uk.ui.option.CurrencyEditorOption({
+                                            numberGroup: true,
+                                            currencyposition:'right',
+                                            currencyformat: 'JPY'
+                                        }),
+                                        required: false,
+                                        enable: true,
+                                        readonly: false,
+                                        immediate: false}" />                                
+                               </td>                         
+                               <td role="rowheader" style="background: #DBDBDB;"> </td>     
+                               
+                               <!--H4-10-2-->  
+                               <td>
+                                    <input tabindex="12" data-bind="ntsNumberEditor: {
+                                        name: '#[KML002_140]',
+                                        value: itemMonthlyScreenK().amount2,
+                                        constraint: 'EstimatePrice',
+                                        option: new nts.uk.ui.option.CurrencyEditorOption({
+                                            numberGroup: true,
+                                            currencyposition:'right',
+                                            currencyformat: 'JPY'
+                                        }),
+                                        required: false,
+                                        enable: true,
+                                        readonly: false,
+                                        immediate: false}" />                                
+                                </td>             
+                               <td role="rowheader" style="background: #DBDBDB;"></td> 
+        
+                               <!--H4-10-3-->  
+                               <td>
+                                <input tabindex="13" data-bind="ntsNumberEditor: {
+                                    name: '#[KML002_141]',
+                                    value: itemMonthlyScreenK().amount3,
+                                    constraint: 'EstimatePrice',
+                                    option: new nts.uk.ui.option.CurrencyEditorOption({
+                                        numberGroup: true,
+                                        currencyposition:'right',
+                                        currencyformat: 'JPY'
+                                    }),
+                                    required: false,
+                                    enable: true,
+                                    readonly: false,
+                                    immediate: false}" />                                
+                                </td>      
+                               <td role="rowheader" style="background: #DBDBDB;"></td>  
+        
+                               <!--H4-10-4-->  
+                               <td>
+                                <input tabindex="14" data-bind="ntsNumberEditor: {
+                                    name: '#[KML002_142]',
+                                    value: itemMonthlyScreenK().amount4,
+                                    constraint: 'EstimatePrice',
+                                    option: new nts.uk.ui.option.CurrencyEditorOption({
+                                        numberGroup: true,
+                                        currencyposition:'right',
+                                        currencyformat: 'JPY'
+                                    }),
+                                    required: false,
+                                    enable: true,
+                                    readonly: false,
+                                    immediate: false}" />                                
+                                </td>               
+                               <td role="rowheader" style="background: #DBDBDB;"></td>  
+        
+                               <!--H4-10-5-->  
+                               <td>
+                                <input tabindex="15" data-bind="ntsNumberEditor: {
+                                    name: '#[KML002_143]',
+                                    value: itemMonthlyScreenK().amount5,
+                                    constraint: 'EstimatePrice',
+                                    option: new nts.uk.ui.option.CurrencyEditorOption({
+                                        numberGroup: true,
+                                        currencyposition:'right',
+                                        currencyformat: 'JPY'
+                                    }),
+                                    required: false,
+                                    enable: true,
+                                    readonly: false,
+                                    immediate: false}" />                                
+                                </td> 
+                           </tr>
+                           
+                            <tr>
+                            <!--H4-11--> 
+                            <td role="rowheader" style="background:#EDFAC2;"> 
+                                <span style="margin-left: 10px;">#{i18n.getText('KML002_144')}</span></td>   
+                            <!--H4-11-1-->         
+                            <td>
+                                 <input tabindex="16" data-bind="ntsNumberEditor: {
+                                     name: '#[KML002_145]',
+                                     value: itemAnnualScreenK().amount1,
+                                     constraint: 'EstimatePrice',
+                                     option: new nts.uk.ui.option.CurrencyEditorOption({
+                                        numberGroup: true,
+                                        currencyposition:'right',
+                                        currencyformat: 'JPY'
+                                    }),
+                                     required: false,
+                                     enable: true,
+                                     readonly: false,
+                                     immediate: false}" />                                
+                            </td>                         
+                            <td role="rowheader" style="background: #DBDBDB;"> </td> 
+                            <!--H4-11-2-->         
+                            <td>
+                                 <input tabindex="17" data-bind="ntsNumberEditor: {
+                                     name: '#[KML002_146]',
+                                     value: itemAnnualScreenK().amount2,
+                                     constraint: 'EstimatePrice',
+                                     option: new nts.uk.ui.option.CurrencyEditorOption({
+                                        numberGroup: true,
+                                        currencyposition:'right',
+                                        currencyformat: 'JPY'
+                                    }),
+                                     required: false,
+                                     enable: true,
+                                     readonly: false,
+                                     immediate: false}" />                                
+                             </td>             
+                            <td role="rowheader" style="background: #DBDBDB;"></td> 
+        
+                            <!--H4-11-3-->    
+                            <td>
+                             <input tabindex="18" data-bind="ntsNumberEditor: {
+                                 name: '#[KML002_147]',
+                                 value: itemAnnualScreenK().amount3,
+                                 constraint: 'EstimatePrice',
+                                 option: new nts.uk.ui.option.CurrencyEditorOption({
+                                    numberGroup: true,
+                                    currencyposition:'right',
+                                    currencyformat: 'JPY'
+                                }),
+                                 required: false,
+                                 enable: true,
+                                 readonly: false,
+                                 immediate: false}" />                                
+                             </td>      
+                            <td role="rowheader" style="background: #DBDBDB;"></td>  
+                            <!--H4-11-4-->    
+                            <td>
+                             <input tabindex="19" data-bind="ntsNumberEditor: {
+                                 name: '#[KML002_148]',
+                                 value: itemAnnualScreenK().amount4,
+                                 constraint: 'EstimatePrice',
+                                 option: new nts.uk.ui.option.CurrencyEditorOption({
+                                    numberGroup: true,
+                                    currencyposition:'right',
+                                    currencyformat: 'JPY'
+                                }),
+                                 required: false,
+                                 enable: true,
+                                 readonly: false,
+                                 immediate: false}" />                                
+                             </td>               
+                            <td role="rowheader" style="background: #DBDBDB;"></td>  
+                            <!--H4-11-5-->    
+                            <td>
+                             <input tabindex="20" data-bind="ntsNumberEditor: {
+                                 name: '#[KML002_149]',
+                                 value: itemAnnualScreenK().amount5,
+                                 constraint: 'EstimatePrice',
+                                 option: new nts.uk.ui.option.CurrencyEditorOption({
+                                    numberGroup: true,
+                                    currencyposition:'right',
+                                    currencyformat: 'JPY'
+                                }),
+                                 required: false,
+                                 enable: true,
+                                 readonly: false,
+                                 immediate: false}" />                                
+                             </td> 
+                        </tr>
+                       </tbody>
+                    </table>
+                    </div>
+            </div>            
+        </div>
+	</ui:composition>
+</body>
+</html>
