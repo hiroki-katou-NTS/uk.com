@@ -1,6 +1,6 @@
-package nts.uk.ctx.exio.dom.input.workspace;
+package nts.uk.ctx.exio.dom.input.workspace.datatype;
 
-import static nts.uk.ctx.exio.dom.input.workspace.DataType.*;
+import static nts.uk.ctx.exio.dom.input.workspace.datatype.DataType.*;
 
 import java.lang.annotation.Annotation;
 import java.math.BigDecimal;
