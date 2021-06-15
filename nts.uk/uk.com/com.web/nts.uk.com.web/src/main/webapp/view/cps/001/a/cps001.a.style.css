@@ -16,6 +16,12 @@
     display: inline-block;
 }
 
+@media ( min-width : 1280px) {
+	#functions-area, #contents-area {
+		overflow-x: hidden;
+	}
+}
+
 #contents-area>.left-area, 
 #contents-area>.right-area,
 #contents-area>*>.left-area, 
@@ -109,7 +115,7 @@
 }
 
 .form-group.search-box .ui-igcombo-wrapper {
-	width: 97% !important;
+	width: 100%;
 }
 
 .caret-background.caret-right:after {
@@ -126,8 +132,4 @@
 
 #contents-area>.right-area>.ntsControl.layout-control {
 	margin-top: 10px;
-}
-
-#lefttabs .tabs-list:empty {
-	padding: 0px !important;
 }
