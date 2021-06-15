@@ -573,8 +573,6 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				applyForLeave: this.createDataVacationApp(),
 				appDispInfoStartupOutput: ko.toJS(vm.appDispInfoStartupOutput),
 				holidayAppDates: appDates,
-				oldLeaveComDayOffMana: vm.data.leaveComDayOffManas ? vm.data.leaveComDayOffManas : [],
-				oldPayoutSubofHDManagements: vm.data.payoutSubofHDManas ? vm.data.payoutSubofHDManas : [],
 				leaveComDayOffMana: _.map(vm.leaveComDayOffManas(), (x: any) => {
 					x.dateOfUse = new Date(x.dateOfUse).toISOString();
 					x.outbreakDay = new Date(x.outbreakDay).toISOString();
