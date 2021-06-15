@@ -269,13 +269,17 @@ table#grid_matomeF_headers_fixed thead tr th{
 .switch-mode {
 	width: fit-content;
 	position: relative;
-	bottom: 67px;
+	bottom: 13px;
 	float: right;
 }
 
 .switch-mode-e {
 	width: fit-content;
 	position: relative;
-	bottom: 78px;
+	bottom: 13px;
 	float: right;
+}
+
+.hyperlink > span {
+	color: #06c;
 }

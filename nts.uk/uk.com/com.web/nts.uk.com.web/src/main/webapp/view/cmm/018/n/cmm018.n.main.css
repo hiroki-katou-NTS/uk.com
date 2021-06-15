@@ -21,7 +21,7 @@
 }
 .rightButton {
 	margin-bottom: 20px; 
-	margin-left: 375px; 
+	margin-left: 403px;
 	display: inline-block
 }
 .rightButtonKCP005 {
@@ -38,4 +38,8 @@
 	position: absolute; 
 	top: 43px; 
 	left: 130px
+}
+
+#multi-list_container {
+	height: 385px;
 }

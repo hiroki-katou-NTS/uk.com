@@ -147,7 +147,6 @@ module nts.custombinding {
                         line-height: 23px;
                         background-color: #CFF1A5;
                         box-sizing: border-box;
-                        border: 1px solid gray;
                         border-bottom: none;
                         width: calc(100% - 1px);
                         padding-left: 3px;
@@ -638,6 +637,9 @@ module nts.custombinding {
                         top: 3px;
                         height: 27px;
                         vertical-align: middle;
+                    }
+                    #cps007_lbl_control {
+                        padding-left: 10px;
                     }
                 </style>`;
 
@@ -1316,7 +1318,7 @@ module nts.custombinding {
                     listbox: {
                         enable: ko.observable(true),
                         multiple: ko.observable(true),
-                        rows: 15,
+                        rows: 10,
                         options: ko.observableArray([]),
                         value: ko.observableArray([]),
                         optionsValue: 'id',

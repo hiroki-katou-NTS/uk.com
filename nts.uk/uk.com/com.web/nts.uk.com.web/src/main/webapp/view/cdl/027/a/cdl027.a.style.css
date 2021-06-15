@@ -7,3 +7,7 @@
 span.label{
 	padding-left: 10px;
 }
+
+.ui-iggrid .ui-iggrid-filtercell {
+    background: #CFF1A5;
+}

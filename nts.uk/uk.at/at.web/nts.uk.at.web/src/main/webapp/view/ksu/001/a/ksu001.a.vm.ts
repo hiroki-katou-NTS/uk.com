@@ -276,7 +276,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     return;
                 
                 nts.uk.ui.errors.clearAll();
-                self.removeClass();
                 nts.uk.ui.block.grayout();
                 // close screen O1 when change mode
                 if (viewMode == 'shift') { // mode シフト表示   
@@ -517,8 +516,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let dataBindGrid = self.convertDataToGrid(data, viewMode);
                 self.initExTable(dataBindGrid, viewMode, updateMode);
                 
-                $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-                $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
                 self.setUpdateMode();
                 self.setDataWorkType(data.listWorkTypeInfo);
                 self.checkEnableCombWTime();
@@ -3331,6 +3328,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         editMode() {
             let self = this;
+            if(self.mode()=='edit') return;
             let arrCellUpdated = $("#extable").exTable("updatedCells");
             let arrTmp = _.clone(arrCellUpdated);
             let lockCells = $("#extable").exTable("lockCells");
@@ -3339,10 +3337,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
                     let item = uk.localStorage.getItem(self.KEY);
                     let userInfor: IUserInfor = JSON.parse(item.get());
-                    let updateMode = userInfor.updateMode;
-                    self.convertDataToGrid(self.dataSource, self.selectedModeDisplayInBody());
-                    self.updateExTableWhenChangeMode(self.selectedModeDisplayInBody(), updateMode);
                     self.editModeAct();
+                    self.convertDataToGrid(self.dataSource, self.selectedModeDisplayInBody());
+                    self.updateExTableWhenChangeMode(self.selectedModeDisplayInBody(), userInfor.updateMode);
                     self.setUpdateMode();
                     self.diseableCellsTime();
                     nts.uk.ui.block.clear();
@@ -3356,17 +3353,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         editModeAct() {
             let self = this;
-            nts.uk.ui.block.grayout();
             self.mode('edit');
-            // set color button
-            $(".editMode").addClass("A6_hover").removeClass("A6_not_hover");
-            $(".confirmMode").addClass("A6_not_hover").removeClass("A6_hover");
-
             $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
             $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-
-            self.removeClass();
-
+            nts.uk.ui.block.grayout();
             // set enable btn A7_1, A7_2, A7_3, A7_4, A7_5
             self.enableBtnPaste(true);
             self.enableBtnCoppy(true);
@@ -3404,16 +3394,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         confirmMode() {
             let self = this;
+            
+            if(self.mode()=='confirm') return;
 
             let arrCellUpdated = $("#extable").exTable("updatedCells");
 
             if (arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
+                    self.confirmModeAct();
                     self.enableBtnReg(false);
                     self.listCellError = [];
                     self.convertDataToGrid(self.dataSource, self.selectedModeDisplayInBody());
                     self.updateExTableWhenChangeMode(self.selectedModeDisplayInBody() , "determine");
-                    self.confirmModeAct();
                     self.listCellRetained = [];
                     nts.uk.ui.block.clear();
                 }).ifNo(() => {});
@@ -3425,23 +3417,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         confirmModeAct() {
             let self = this;
-            nts.uk.ui.block.grayout();
             self.mode('confirm');
-            // set color button
-            
-            $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
-            $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
-
             $(".confirmMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
             $(".editMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-
-            self.removeClass();
-
+            nts.uk.ui.block.grayout();
             // set enable btn A7_1, A7_2,, A7_3, A7_4, A7_5
             self.enableBtnPaste(false);
             self.enableBtnCoppy(false);
             self.enableHelpBtn(false);
-
             self.enableBtnRedo(false);
             self.enableBtnUndo(false);
 
@@ -3466,7 +3449,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.selectedModeDisplayInBody() == 'time'){
                 self.enableCellsTime();    
             }
-            
             nts.uk.ui.block.clear();
         }
         
@@ -3498,13 +3480,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else {
                 $('#tableButton2 button').removeClass('disabledShiftControl');
             }
-        }
-        
-        removeClass() {
-            let self = this;
-            $("#paste").addClass("A6_not_hover").removeClass("A6_hover btnControlUnSelected btnControlSelected");
-            $("#coppy").addClass("A6_not_hover").removeClass("A6_hover btnControlUnSelected btnControlSelected");
-            $("#input").addClass("A6_not_hover").removeClass("A6_not_hover btnControlUnSelected btnControlSelected");
         }
         
         // dis những cell mà không có worktime.
