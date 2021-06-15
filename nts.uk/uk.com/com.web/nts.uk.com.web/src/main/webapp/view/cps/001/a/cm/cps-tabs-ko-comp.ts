@@ -461,7 +461,7 @@ module nts.custom.component {
 
                         obj.categoryId(cat.id);
                         obj.categoryCode(cat.categoryCode);
-                        obj.categoryType = ko.observable(cat.categoryType);   // Fix bug #116469
+                        obj.categoryType(cat.categoryType);
                         obj.categoryName(cat.categoryName);
 
                         let personId = ko.toJS(params.personId),
