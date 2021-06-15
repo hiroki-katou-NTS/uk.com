@@ -10,7 +10,7 @@
     <ui:composition template="../../../../master/dialog.xhtml">
       <ui:define name="htmlHead">
         <script>
-          var dialogSize = { width: 1200, height: 600 };
+          var dialogSize = { width: 1130, height: 590 };
         </script>
         <com:scriptfile set="IGNITE" />
         <com:stylefile path="kwr005.b.main.css" />
@@ -62,12 +62,13 @@
             />
           </div>
           <!-- A1_2-->
-          <div id="content-area">
-            <div class="pull-left">
+          <div id="contents-area">
+            <div class="content-left">
               <div
                 data-bind="ntsPanel:{direction: 'right', showIcon: true, visible: true}"
               >
                 <div
+                  style="width: 310px;"
                   tabindex="6"
                   data-bind="ntsSearchBox: {
                   searchMode: 'highlight',
@@ -96,7 +97,7 @@
                 ></table>
               </div>
             </div>
-            <div class="pull-left">
+            <div class="content-right">
               <div class="row d-flex">
                 <div
                   class="form-label required broken"
