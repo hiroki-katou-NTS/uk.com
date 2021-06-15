@@ -1,18 +1,15 @@
 package nts.uk.ctx.at.shared.app.command.scherec.addset;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.RefDesForAdditionalTakeLeave;
-import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
-import nts.uk.shr.com.context.AppContexts;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.Optional;
 
 @Stateless
 public class AddHolidayAddtionSetCommandHandler extends CommandHandler<AddHolidayAddtionSetCommand> {
@@ -24,7 +21,7 @@ public class AddHolidayAddtionSetCommandHandler extends CommandHandler<AddHolida
     protected void handle(CommandHandlerContext<AddHolidayAddtionSetCommand> context) {
 
         AddHolidayAddtionSetCommand command = context.getCommand();
-        BreakdownTimeDay breakdownTimeDay = new BreakdownTimeDay(
+        BreakDownTimeDay breakdownTimeDay = new BreakDownTimeDay(
                 new AttendanceTime(command.getOneDay()),
                 new AttendanceTime(command.getMorning()),
                 new AttendanceTime(command.getAfternoon())

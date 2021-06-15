@@ -7,8 +7,9 @@ package nts.uk.ctx.at.shared.infra.repository.personallaborcondition;
 import java.util.ArrayList;
 import java.util.List;
 
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.BreakdownTimeDay;
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalDayOfWeek;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionSetMemento;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalWorkCategory;
@@ -17,7 +18,6 @@ import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerDayOfWee
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCond;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerLaborCondPK;
 import nts.uk.ctx.at.shared.infra.entity.personallaborcondition.KshmtPerWorkCategory;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaPersonalLaborConditionSetMemento.
@@ -83,7 +83,7 @@ public class JpaPersonalLaborConditionSetMemento implements PersonalLaborConditi
 	 * shared.dom.personallaborcondition.BreakdownTimeDay)
 	 */
 	@Override
-	public void setHolidayAddTimeSet(BreakdownTimeDay holidayAddTimeSet) {
+	public void setHolidayAddTimeSet(BreakDownTimeDay holidayAddTimeSet) {
 		this.entityCondiotion.setOneDay(holidayAddTimeSet.getOneDay().valueAsMinutes());
 		this.entityCondiotion.setMorning(holidayAddTimeSet.getMorning().valueAsMinutes());
 		this.entityCondiotion.setAfternoon(holidayAddTimeSet.getAfternoon().valueAsMinutes());

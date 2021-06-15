@@ -104,18 +104,6 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
-//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
-//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
-//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
-//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
-//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
-//import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
-//import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-//import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
-//import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
-//import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
-//import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
-
 /**
  * 
  * @author nampt
@@ -1231,6 +1219,24 @@ public class TotalWorkingTime {
 		}
 	}
 
+	/** 時間特別休暇の合計時間 */
+	public AttendanceTime getTotalTimeSpecialVacation(int spcNo) {
+		
+		/** @遅刻時間 */
+		val late = this.lateTimeOfDaily.stream().filter(c -> c.getTimePaidUseTime().getSpecialHolidayFrameNo().map(n -> n.v()).orElse(0) == spcNo)
+				.mapToInt(c -> c.getTimePaidUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes()).sum();
+		
+		/** @早退時間 */
+		val leaveEarly = this.leaveEarlyTimeOfDaily.stream().filter(c -> c.getTimePaidUseTime().getSpecialHolidayFrameNo().map(n -> n.v()).orElse(0) == spcNo)
+				.mapToInt(c -> c.getTimePaidUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes()).sum();
+		
+		/** @外出時間 */
+		val outing = this.outingTimeOfDailyPerformance.stream().filter(c -> c.getTimeVacationUseOfDaily().getSpecialHolidayFrameNo().map(n -> n.v()).orElse(0) == spcNo)
+				.mapToInt(c -> c.getTimeVacationUseOfDaily().getTimeSpecialHolidayUseTime().valueAsMinutes()).sum();
+		
+		/** return $合計時間 */
+		return new AttendanceTime(late + leaveEarly + outing);
+	}
 
 	public TotalWorkingTime(AttendanceTime totalTime, AttendanceTime totalCalcTime, AttendanceTime actualTime,
 			WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily,

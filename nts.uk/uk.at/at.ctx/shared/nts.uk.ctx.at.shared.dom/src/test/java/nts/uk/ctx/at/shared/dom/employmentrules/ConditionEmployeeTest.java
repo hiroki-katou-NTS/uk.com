@@ -21,6 +21,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.AffiliationPeriodAndWorkplace;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.LeaveHolidayPeriod;
@@ -28,7 +29,6 @@ import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.LeavePeri
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.WorkPlaceHist;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
-import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
@@ -374,8 +374,8 @@ public class ConditionEmployeeTest {
 		}
 
 		@Override
-		public Optional<BreakdownTimeDay> getHolidayAddTimeSet() {
-			return Optional.of( new BreakdownTimeDay(
+		public Optional<BreakDownTimeDay> getHolidayAddTimeSet() {
+			return Optional.of( new BreakDownTimeDay(
 					new AttendanceTime(280),
 					new AttendanceTime(240),
 					new AttendanceTime(240)

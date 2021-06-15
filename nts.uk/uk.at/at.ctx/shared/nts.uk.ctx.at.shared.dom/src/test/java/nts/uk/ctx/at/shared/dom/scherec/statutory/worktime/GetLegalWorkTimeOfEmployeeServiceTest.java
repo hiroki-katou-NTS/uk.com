@@ -21,11 +21,11 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.GetLegalWorkTimeOfEmployeeService.Require;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonAndWeekStatutoryTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyFlexStatutoryLaborTime;
-import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
@@ -396,7 +396,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 			val perDay = new PersonalDayOfWeek(Optional.empty(), Optional.empty(), Optional.empty()
 					, Optional.empty(), Optional.empty(), Optional.empty()
 					, Optional.empty());
-			val holidayAddTimeSet = new BreakdownTimeDay(new AttendanceTime(120), new AttendanceTime(30), new AttendanceTime(30));
+			val holidayAddTimeSet = new BreakDownTimeDay(new AttendanceTime(120), new AttendanceTime(30), new AttendanceTime(30));
 			val workScheduleBusCal = new WorkScheduleBusCal(WorkScheduleMasterReferenceAtr.WORK_PLACE
 					, WorkScheduleMasterReferenceAtr.WORK_PLACE
 					, TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK);

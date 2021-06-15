@@ -5,14 +5,27 @@
 package nts.uk.ctx.at.shared.app.command.calculation.holiday;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.*;
-import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetManageWorkHour;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HourlyPaymentAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.LeaveSetAdded;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.RefDesForAdditionalTakeLeave;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.TimeHolidayAddingMethod;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.TimeHolidayAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkClassOfTimeHolidaySet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -114,7 +127,7 @@ public class AddHolidayAddtimeCommand {
 	 * @return the map
 	 */
 	public Map<String, AggregateRoot> toDomain(String companyId) {
-		BreakdownTimeDay breakdownTimeDay = new BreakdownTimeDay(new AttendanceTime(this.oneDay.intValue()),
+		BreakDownTimeDay breakdownTimeDay = new BreakDownTimeDay(new AttendanceTime(this.oneDay.intValue()),
 				new AttendanceTime(this.morning.intValue()),
 				new AttendanceTime(this.afternoon.intValue()));
 		

@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.personallaborcondition;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 
 /**
  * The Class PersonalLaborCondition.
@@ -21,7 +22,7 @@ public class PersonalLaborCondition extends AggregateRoot{
 	
 	/** The holiday add time set. */
 	// 休暇加算時間設定
-	private BreakdownTimeDay holidayAddTimeSet;
+	private BreakDownTimeDay holidayAddTimeSet;
 	
 	/** The work category. */
 	// 区分別勤務

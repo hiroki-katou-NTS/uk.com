@@ -2,7 +2,7 @@
  * Copyright (c) 2018 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.worktime.predset;
+package nts.uk.ctx.at.shared.dom.common.time;
 
 import java.util.Optional;
 import java.io.Serializable;
@@ -10,9 +10,8 @@ import java.io.Serializable;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-//import nts.arc.error.BusinessException;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 
 /**
  * The Class BreakDownTimeDay.
@@ -148,5 +147,19 @@ public class BreakDownTimeDay extends WorkTimeDomainObject implements Cloneable,
 		this.oneDay = newOneDay.orElse(this.getOneDay());
 		this.morning = newMorning.orElse(this.getMorning());
 		this.afternoon = newAfternoon.orElse(this.getAfternoon());
+	}
+	
+	/** 取得 */
+	public AttendanceTime get(WorkAtr workAtr ) {
+		switch (workAtr) {
+		case Afternoon:
+			return this.afternoon;
+		case Monring:
+			return this.morning;
+		case OneDay:
+			return this.oneDay;
+		default:
+			throw new RuntimeException("認識しない値");
+		}
 	}
 }
