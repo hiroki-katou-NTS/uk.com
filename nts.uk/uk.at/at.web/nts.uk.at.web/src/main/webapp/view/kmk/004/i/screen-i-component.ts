@@ -197,7 +197,7 @@ class ScreenIComponent extends ko.ViewModel {
                 vm.selectedClosureId.subscribe(() => {
                     $('#empt-list-setting').ntsListComponent(listComponentOption);
                 });
-            }, 500);
+            }, 1000);
 			
 		});
 

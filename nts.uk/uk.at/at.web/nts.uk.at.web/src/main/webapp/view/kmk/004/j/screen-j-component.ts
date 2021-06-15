@@ -293,7 +293,7 @@ class ScreenJComponent extends ko.ViewModel {
 	            m.$blockui("hide");
 
             vm.screenData().selected.valueHasMutated();
-        }, 500);
+        }, 1000);
 		
 	}
 

@@ -190,7 +190,7 @@ class ScreenHComponent extends ko.ViewModel {
                 vm.screenData().selected.valueHasMutated();
 
                 dfd.resolve(vm.screenData().selected());
-            });
+            }, 1000);
 		});
 		return dfd.promise();
 	}
