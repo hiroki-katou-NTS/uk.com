@@ -12,6 +12,8 @@
 			<com:stylefile path="../../share/kdp.main.css" />
 			<com:scriptfile path="../../share/kdpbutton.vm.js" />
 			<com:scriptfile path="../../share/kdpclock.vm.js" />
+			<com:scriptfile path="../../share/kdp-message-error.js" />
+			<com:scriptfile path="../../share/kdp-tabbutton.js" />
 			<com:stylefile path="kdp005.a.main.css" />
 			<com:scriptfile path="kdp005.a.model.js" />
 			<com:scriptfile path="kdp005.a.vm.js" />
@@ -20,18 +22,17 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area" class="cf">
+			<div id="contents-area" class="cf kdp005a">
 				<div id="kdp002a" class="cf">
 					<div class="pull-left" id="stamp-input">
 
 						<!-- clock -->
-						<div data-bind="component: {
+						<div class="time-container" data-bind="component: {
 							name: 'stamp-clock',
 							params: {
 								setting: {
 									show:true,
-									textColor: stampSetting().textColor || '#ffffff',
-									backGroundColor:  stampSetting().backGroundColor || '#0033cc'
+									textColor: stampSetting().textColor || '#7F7F7F'
 								},
 								events: {
 									setting:{
@@ -48,15 +49,49 @@
 						</div>
 
 						<!-- stamp -->						
-					<div data-bind="if:isUsed" class="panel" style="padding: 0 10px 0px 10px">
+					<!-- <div data-bind="if:isUsed" class="panel" style="padding: 0 10px 0px 10px">
 						<div class="explanatoryText" data-bind="style: {'color': stampTab().stampPageCommentColor }">
 							<span data-bind="text: stampTab().stampPageComment"></span>
 						</div>
 						<ui:include src="stamp-tab.xhtml" />
-					</div>
-					<div style="padding: 0 10px 10px 80px; min-width: 66vmin;" data-bind="ifnot:isUsed">
-						<span class=" not_used_label label " data-bind="text:errorMessage"></span>
-					</div>
+					</div> -->
+					<com:ko-if bind="ko.toJS($vm.errorMessage) === '' &amp;&amp;  pageComment() != ''">
+		          		<div class="pageComent" data-bind="html: pageComment, style: {color: commentColor}"></div>
+		          </com:ko-if>
+					<com:ko-if bind="ko.toJS($vm.errorMessage) === ''">
+						<div data-bind="kdp-tab-button-panel: { 
+							tabs: $vm.stampTab().tabs,
+							stampToSuppress: null,
+							pageComment: pageComment,
+            				commentColor: commentColor,	
+							click: function(btn, layout) { $vm.clickBtn1.apply($vm, [btn, layout]); },
+							marginBottom: 0
+							}"></div>
+						</com:ko-if>
+					<com:ko-if bind="isUsed">
+						<com:ko-if bind="ko.toJS($vm.fingerStampSetting).noticeSetDto">
+							<com:ko-if bind="ko.toJS($vm.fingerStampSetting).noticeSetDto.displayAtr == 1">
+							<div class= "kdp-message-error" data-bind="component: {
+									name: 'kdp-message-error',
+									params:{
+										events: {
+											registerNoti: {
+												click: function() { $vm.settingNoti.apply($vm, []); }
+											},
+											shoNoti: {
+												click: function() { $vm.shoNoti.apply($vm, []); }
+											}
+										},
+										notiSet: fingerStampSetting,
+										messageNoti: messageNoti
+									}
+								}"></div>
+							</com:ko-if>
+						</com:ko-if>
+					</com:ko-if>
+					<com:ko-if bind="!isUsed()">
+						<div class="not_used_label" data-bind="text:errorMessage"></div>
+					</com:ko-if>
 					</div>
 
 				</div>

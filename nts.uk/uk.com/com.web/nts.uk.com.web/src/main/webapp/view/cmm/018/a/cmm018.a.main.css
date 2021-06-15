@@ -265,3 +265,21 @@ table #grid_matomeF tbody tr td:LAST-CHILD {
 table#grid_matomeF_headers_fixed thead tr th{
 	text-align: center;
 }
+
+.switch-mode {
+	width: fit-content;
+	position: relative;
+	bottom: 13px;
+	float: right;
+}
+
+.switch-mode-e {
+	width: fit-content;
+	position: relative;
+	bottom: 13px;
+	float: right;
+}
+
+.hyperlink > span {
+	color: #06c;
+}

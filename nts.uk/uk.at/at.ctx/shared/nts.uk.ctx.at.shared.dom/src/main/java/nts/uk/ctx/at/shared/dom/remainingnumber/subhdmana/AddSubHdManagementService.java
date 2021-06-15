@@ -167,8 +167,8 @@ public class AddSubHdManagementService {
 					// ドメインモデル「休出代休紐付け管理」を追加 Bổ sung domain model "Quản lý liên kết đi làm ngày nghỉ/ nghĩ bù)
 					LeaveComDayOffManagement domainLeaveComDayOffManagementSub = new LeaveComDayOffManagement(
 							subHdManagementData.getEmployeeId(), 								// ・社員ID　＝　Input．社員ID
-							leaveManagementData.getComDayOffDate().getDayoffDate().get(),	 	// ・紐付け．発生日　＝　ループ中の休出管理データ．休出日
-							compensatoryDayOffManaData.getDayOffDate().getDayoffDate().get(), 	// ・紐付け．使用日　＝　ループ中の代休管理データ．代休日
+							leaveManagementData.getComDayOffDate().getDayoffDate().orElse(null),	 	// ・紐付け．発生日　＝　ループ中の休出管理データ．休出日
+							compensatoryDayOffManaData.getDayOffDate().getDayoffDate().orElse(null), 	// ・紐付け．使用日　＝　ループ中の代休管理データ．代休日
 							oldUnUseDay >= requireDays 											// ・紐付け．使用日数　＝
 								? requireDays									 				// 計算した「未使用日数」　＞＝０　－＞　ループ中の代休管理データ．必要日数
 								: oldUnUseDay, 													// Else　－＞　ループ中の休出管理データ．未使用日数

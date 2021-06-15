@@ -5,10 +5,7 @@ public enum ContactUsageSetting {
     DO_NOT_USE(0),
 
     // 利用する
-    USE(1),
-
-    // 個人選択可
-    INDIVIDUAL_SELECT(2);
+    USE(1);
 
     public final int value;
 

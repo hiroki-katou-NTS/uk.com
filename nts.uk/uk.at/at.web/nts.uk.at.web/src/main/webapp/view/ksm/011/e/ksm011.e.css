@@ -1,0 +1,31 @@
+div#contents-area {
+  padding: 25px;
+}
+
+.divi .form-label {
+  margin: 0 15px;
+}
+
+.divi .comboBox {
+  width: 70px;
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.divi {
+  margin-top: 20px;
+}
+
+.nts-panel {
+  margin: 15px !important;
+  width: 330px !important;
+  height: 360px !important;
+}
+
+.ui-tabs-panel {
+  width: 700px;
+}
+
+.divi .control-group .label:first-child {
+  margin-left: 140px;
+}

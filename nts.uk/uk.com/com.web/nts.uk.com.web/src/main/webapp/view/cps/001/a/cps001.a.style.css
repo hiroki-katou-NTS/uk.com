@@ -35,11 +35,6 @@
 	margin-left: 85px;
 }
 
-#contents-area>.left-area .bg-green,
-#contents-area>*>.left-area .bg-green {
-	padding: 12px;
-}
-
 #contents-area>.right-area,
 #contents-area>*>.right-area {
 	padding-left: 15px;

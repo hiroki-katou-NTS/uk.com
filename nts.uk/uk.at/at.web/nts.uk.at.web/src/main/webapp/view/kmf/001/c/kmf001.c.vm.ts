@@ -70,12 +70,12 @@ module nts.uk.pr.view.kmf001.c {
                 self.selectedMaxManageSemiVacation = ko.observable(1);
                 self.maxDayReferenceList = ko.observableArray([]);
                 self.selectedMaxNumberSemiVacation = ko.observable(0);
-                self.maxNumberCompany = ko.observable("");
+                self.maxNumberCompany = ko.observable("5");
                 
                 self.maxGrantDay = ko.observable("");
                 self.maxRemainingDay = ko.observable("");
-                self.numberYearRetain = ko.observable("");
-                self.yearlyOfNumberDays = ko.observable("");
+                self.numberYearRetain = ko.observable("0");
+                self.yearlyOfNumberDays = ko.observable("2");
                 self.roundProcessClassificationList = ko.observableArray([]);
                 self.selectedRoundProcessCla = ko.observable(0);
                 //C531
@@ -107,7 +107,7 @@ module nts.uk.pr.view.kmf001.c {
                 self.selectedVacationTimeUnit = ko.observable(0);
                 self.selectedMaxDayVacation = ko.observable(0);
                 self.selectedManageUpperLimitDayVacation = ko.observable(1);
-                self.timeMaxNumberCompany = ko.observable("");
+                self.timeMaxNumberCompany = ko.observable("5");
                 
                 self.roundProcessClassificList = ko.observableArray([]);
                 self.selectedroundProcessClassific = ko.observable(0);
@@ -255,7 +255,7 @@ module nts.uk.pr.view.kmf001.c {
                 command.roundProcessClassific = self.enableTimeMaxNumberCompany() ? self.selectedroundProcessClassific() : dataBackup.roundProcessClassific;
                 //http://localhost:8080/nts.uk.at.web/view/ksm/007/a/index.xhtml
                 command.timeOfDayReference =  self.selectC531();
-                command.uniformTime =  self.uniformTime() ;
+                command.uniformTime =  !isNaN(self.uniformTime()) ? self.uniformTime() : parseInt(self.uniformTime().split(':')[0])*60 + parseInt(self.uniformTime().split(':')[1]);
                 command.contractTimeRound =  self.selectC535() ;
                 
                 return command;
@@ -289,7 +289,7 @@ module nts.uk.pr.view.kmf001.c {
                 self.selectedVacationTimeUnit(res.timeUnit);
                 self.selectedManageUpperLimitDayVacation(res.manageMaxDayVacation);
                 self.selectedMaxDayVacation(res.reference);
-                self.timeMaxNumberCompany(res.maxTimeDay);
+                self.timeMaxNumberCompany(res.maxTimeDay == null ? 5 : res.maxTimeDay);
                 self.selectedroundProcessClassific(res.roundProcessClassific);
                 self.selectC531(res.timeOfDayReference);
                 self.uniformTime(res.unifromTime ==  null ? '0:00' :  res.unifromTime);
@@ -304,15 +304,16 @@ module nts.uk.pr.view.kmf001.c {
                 backup.addAttendanceDay = 1;
                 backup.maxManageSemiVacation = 1;
                 backup.maxNumberSemiVacation = 0;
-                backup.maxNumberCompany = '';
+                backup.maxNumberCompany = 0;
                 backup.maxGrantDay = '';
-                backup.maxRemainingDay = '';
-                backup.numberYearRetain = '';
+                //backup.maxRemainingDay = '';
+                backup.maxRemainingDay = 0;
+                backup.numberYearRetain = 2;
                 backup.permitType = 1;
                 backup.annualPriority = 0;
                 backup.remainingNumberDisplay = 1;
                 backup.nextGrantDayDisplay = 1;
-                backup.yearlyOfDays = '';
+                backup.yearlyOfDays = 0;
                 backup.roundProcessCla = 0;
                 
                 // Time Leave Setting

@@ -62,4 +62,10 @@ public interface ApproveService {
 	 */
 	public List<String> judgmentDestination(List<ApprovalRepresenterInforOutput> listApprovalRepresenterInforOutput);
 	
+	/**
+	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".ワークフロー.Export.削除時のメール通知者を取得する(CollectMailNotifierService).指定する承認フェーズに承認済の承認者一覧を取得する.指定する承認フェーズに承認済の承認者一覧を取得する
+	 * @param approvalPhaseState
+	 * @return
+	 */
+	public List<String> getApprovedApproverFromPhase(ApprovalPhaseState approvalPhaseState); 
 }

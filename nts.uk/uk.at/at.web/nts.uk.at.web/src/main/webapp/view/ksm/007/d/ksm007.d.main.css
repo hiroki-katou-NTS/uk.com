@@ -1,28 +1,8 @@
-.ksm-007d .table:first-child {
+#editMode {
+  margin-top: 7px;
+}
+
+#editMode .ntsRadioBox:first-child {
+  display: block;
   margin-bottom: 10px;
-}
-
-.ksm-007d .table .cell-3 {
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-.ksm-007d .table.d-flex {
-  display: flex;
-}
-.ksm-007d .table.d-flex .cell:first-child {
-  padding-right: 20px;
-}
-
-.ksm-007d .table .select-mode {
-  margin-bottom: 15px;
-  width: 200px;
-}
-
-.ksm-007d .table .select-mode .ntsRadioBox {
-  margin-bottom: 5px;
-}
-
-.ksm-007d .table .change-date {
-  padding-left: 15px;
 }

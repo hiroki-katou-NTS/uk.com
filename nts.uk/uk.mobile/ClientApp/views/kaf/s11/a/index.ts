@@ -12,6 +12,7 @@ import { Kdl001Component } from 'views/kdl/001';
 import { KDL002Component } from 'views/kdl/002';
 import { KdlS35Component } from 'views/kdl/s35';
 import { KdlS36Component } from 'views/kdl/s36';
+import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 
 @component({
     name: 'kafs11a',
@@ -21,7 +22,23 @@ import { KdlS36Component } from 'views/kdl/s36';
     resource: require('./resources.json'),
     validations: {
         prePostAtr: {
-            required: true
+            selectCheck: {
+                test(value: number) {
+                    const vm = this;
+                    if (value == null || value < 0 || value > 1) {
+                        document.getElementById('prePostSelect').className += ' invalid';
+
+                        return false;
+                    }
+                    let prePostSelectElement = document.getElementById('prePostSelect');
+                    if (!_.isNull(prePostSelectElement)) {
+                        prePostSelectElement.classList.remove('invalid');
+                    }
+
+                    return true;
+                },
+                messageId: 'MsgB_30'
+            }
         },
         complementLeaveAtr: {
             required: true
@@ -58,7 +75,8 @@ import { KdlS36Component } from 'views/kdl/s36';
         'kdls01': Kdl001Component,
         'kdls02': KDL002Component,
         'kdls35': KdlS35Component,
-        'kdls36': KdlS36Component
+        'kdls36': KdlS36Component,
+        'cmms45c': CmmS45CComponent
     }
 })
 export class KafS11AComponent extends KafS00ShrComponent {
@@ -114,6 +132,11 @@ export class KafS11AComponent extends KafS00ShrComponent {
     }
 
     public mounted() {
+        const vm = this;
+        vm.initFromParam();
+    }
+
+    public initFromParam() {
         const vm = this;
         vm.$mask('show');
         if (vm.mode == ScreenMode.NEW) {
@@ -233,6 +256,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
         const vm = this;
         vm.prePostAtr = vm.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr;
         if (vm.mode == ScreenMode.DETAIL) {
+            vm.prePostAtr = vm.displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr;
             if (vm.displayInforWhenStarting.rec) {
                 vm.complementDate = new Date(moment(vm.displayInforWhenStarting.rec.application.appDate).format('YYYY/MM/DD'));
             }
@@ -469,9 +493,9 @@ export class KafS11AComponent extends KafS00ShrComponent {
         if (workTime) {
             return workTime.workTimeDisplayName.workTimeName;
         }
-        if (vm.mode == ScreenMode.DETAIL) {
-            return vm.getCDFormat(workTimeCD) + ' ' + vm.$i18n('KAFS11_32');
-        }
+        // if (vm.mode == ScreenMode.DETAIL) {
+        //     return vm.getCDFormat(workTimeCD) + ' ' + vm.$i18n('KAFS11_32');
+        // }
 
         return '';
     }
@@ -483,17 +507,17 @@ export class KafS11AComponent extends KafS00ShrComponent {
             return '';        
         }
         let result = '';
-        if (workTimeFull.workTime2) {
-            let startTime2 = '', endTime2= '';
-            if (isComplement) {
-                startTime2 = vm.complementWorkInfo.timeRange2.start == null ? '' : vm.$dt.timewd(vm.complementWorkInfo.timeRange2.start),
-                endTime2 = vm.complementWorkInfo.timeRange2.end == null ? '' : vm.$dt.timewd(vm.complementWorkInfo.timeRange2.end);
-            } else {
-                startTime2 = vm.leaveWorkInfo.timeRange2.start == null ? '' : vm.$dt.timewd(vm.leaveWorkInfo.timeRange2.start),
-                endTime2 = vm.leaveWorkInfo.timeRange2.end == null ? '' : vm.$dt.timewd(vm.leaveWorkInfo.timeRange2.end);
-            }
-            result = '<div>' + startTime2 + '～' + endTime2 + '</div>';
-        }
+        // if (workTimeFull.workTime2) {
+        //     let startTime2 = '', endTime2= '';
+        //     if (isComplement) {
+        //         startTime2 = vm.complementWorkInfo.timeRange2.start == null ? '' : vm.$dt.timewd(vm.complementWorkInfo.timeRange2.start),
+        //         endTime2 = vm.complementWorkInfo.timeRange2.end == null ? '' : vm.$dt.timewd(vm.complementWorkInfo.timeRange2.end);
+        //     } else {
+        //         startTime2 = vm.leaveWorkInfo.timeRange2.start == null ? '' : vm.$dt.timewd(vm.leaveWorkInfo.timeRange2.start),
+        //         endTime2 = vm.leaveWorkInfo.timeRange2.end == null ? '' : vm.$dt.timewd(vm.leaveWorkInfo.timeRange2.end);
+        //     }
+        //     result = '<div>' + startTime2 + '～' + endTime2 + '</div>';
+        // }
         if (workTimeFull.workTime1) {
             let startTime1 = '', endTime1= '';
             if (isComplement) {
@@ -608,12 +632,13 @@ export class KafS11AComponent extends KafS00ShrComponent {
 
     get enableComplementTimeRange() {
         const vm = this;
-        if (vm.mode == ScreenMode.DETAIL) {
+        // if (vm.mode == ScreenMode.DETAIL) {
+        //
+        //     return vm.cdtSubstituteWorkAppReflect();
+        // }
 
-            return vm.cdtSubstituteWorkAppReflect();
-        }
-
-        return vm.cdtSubMngComplementDailyType();
+        return vm.cdtSubstituteWorkAppReflect();
+        // return vm.cdtSubMngComplementDailyType();
     }
 
     // ※6-1, ※6-2
@@ -777,8 +802,8 @@ export class KafS11AComponent extends KafS00ShrComponent {
         if (workType.workAtr == 0) {
             return false;
         }
-        if ((workType.morningCls == 6 && vm.displayInforWhenStarting.holidayManage == 1) ||
-            (workType.afternoonCls == 6 && vm.displayInforWhenStarting.holidayManage == 1)) {
+        if ((workType.morningCls == 8 && vm.displayInforWhenStarting.holidayManage == 1) ||
+            (workType.afternoonCls == 8 && vm.displayInforWhenStarting.holidayManage == 1)) {
             return true;
         }
 
@@ -1191,8 +1216,35 @@ export class KafS11AComponent extends KafS00ShrComponent {
         vm.isValidateAll = vm.customValidate(vm);
         vm.$validate();
         if (!vm.$valid || !vm.isValidateAll) {
-
+            window.scrollTo(500, 0);
+            
             return;
+        }
+        if (vm.mode == ScreenMode.NEW) {
+            if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT_LEAVE) {
+                if (_.isEmpty(vm.complementWorkInfo.workTypeCD) || _.isEmpty(vm.complementWorkInfo.workTimeCD)) {
+                    vm.$modal.error({ messageId: 'Msg_218', messageParams: [vm.$i18n('KAFS11_9')] });
+        
+                    return;
+                }
+                if (_.isEmpty(vm.leaveWorkInfo.workTypeCD)) {
+                    vm.$modal.error({ messageId: 'Msg_218', messageParams: [vm.$i18n('KAFS11_16')] });
+                    
+                    return;
+                }
+            } else if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT) {
+                if (_.isEmpty(vm.complementWorkInfo.workTypeCD) || _.isEmpty(vm.complementWorkInfo.workTimeCD)) {
+                    vm.$modal.error({ messageId: 'Msg_218', messageParams: [vm.$i18n('KAFS11_9')] });
+        
+                    return;
+                }
+            } else {
+                if (_.isEmpty(vm.leaveWorkInfo.workTypeCD)) {
+                    vm.$modal.error({ messageId: 'Msg_218', messageParams: [vm.$i18n('KAFS11_16')] });
+                    
+                    return;
+                }
+            }
         }
         vm.$mask('show');
         let command = vm.getCommandSubmit();
@@ -1206,19 +1258,19 @@ export class KafS11AComponent extends KafS00ShrComponent {
             if (result) {
                 // đăng kí 
                 return vm.$http.post('at', API.submit, command).then((data: any) => {
-                    return data.data;
+                    vm.$http.post('at', API.reflectApp, data.data.reflectAppIdLst);
+
+                    return data;
                 });
             }
         }).then((result: any) => {
             if (result) {
-                // gửi mail sau khi đăng kí
-                // return vm.$ajax('at', API.sendMailAfterRegisterSample);
                 return result;
             }
         }).then((result: any) => {
             if (result) {
                 // vm.$goto('kafs11a1', { mode: vm.mode, appID: result.data.appID });
-                vm.$goto('kafs11a1', { mode: vm.mode, appID: result.appIDLst[0] });
+                vm.$goto('kafs11a1', { mode: vm.mode, appID: result.data.appIDLst[0] });
             }
         }).catch((failData) => {
             // xử lý lỗi nghiệp vụ riêng
@@ -1237,6 +1289,17 @@ export class KafS11AComponent extends KafS00ShrComponent {
         const vm = this;
 
         return new Promise((resolve) => {
+            if (failData.messageId == 'Msg_197') {
+                vm.$modal.error({ messageId: 'Msg_197', messageParams: [] }).then(() => {
+                    let appID = vm.mode == ScreenMode.NEW ? '' : vm.displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo.application.appID;
+                    vm.$modal('cmms45c', { 'listAppMeta': [appID], 'currentApp': appID }).then((newData: KAFS11Params) => {
+                        vm.params = newData;
+                        vm.initFromParam();
+                    });
+                });
+    
+                return;
+            }
             if (failData.messageId == 'Msg_323') {
                 vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
                 .then(() => {
@@ -1417,7 +1480,8 @@ const API = {
     getWorkTimeByCDLst: 'at/shared/worktimesetting/get_worktime_by_codes',
     checkBeforeSubmit: 'at/request/application/holidayshipment/mobile/checkBeforeSubmit',
     submit: 'at/request/application/holidayshipment/mobile/submit',
-    getTimeZoneValue: 'at/request/application/holidayshipment/mobile/getTimeZoneValue'
+    getTimeZoneValue: 'at/request/application/holidayshipment/mobile/getTimeZoneValue',
+    reflectApp: 'at/request/application/reflect-app'
 };
 
 export interface KAFS11Params {

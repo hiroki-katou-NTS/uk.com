@@ -3,41 +3,46 @@ module nts.uk.at.view.kdp010.d {
     import block = nts.uk.ui.block;
     import info = nts.uk.ui.dialog.info;
     import error = nts.uk.ui.dialog.error;
+	import ajax = nts.uk.request.ajax;
+	
     export module viewmodel {
+		const paths: any = {
+	        getData: "at/record/stamp/timestampinputsetting/settingssmartphonestamp/get",
+        	save: "at/record/stamp/timestampinputsetting/settingssmartphonestamp/save"
+	    }
         export class ScreenModel {
-            suppressStampBtnOption: KnockoutObservableArray<any> = ko.observableArray([
-                { id: 1, name: getText("KDP010_202") },
-                { id: 0, name: getText("KDP010_203") }
+            settingsSmartphoneStamp = new SettingsSmartphoneStamp();
+            buttonEmphasisArtOption: KnockoutObservableArray<any> = ko.observableArray([
+                { id: 1, name: getText("KDP010_241") },
+                { id: 0, name: getText("KDP010_242") }
             ]);
-            useTopMenuLinkOption: KnockoutObservableArray<any> = ko.observableArray([
-                { id: 1, name: getText("KDP010_271") },
-                { id: 0, name: getText("KDP010_272") }
+			locationInfoUseOption: KnockoutObservableArray<any> = ko.observableArray([
+                { id: 1, name: getText("KDP010_245") },
+                { id: 0, name: getText("KDP010_246") }
             ]);
-            goOutArtOption: KnockoutObservableArray<any> = ko.observableArray([
-                { id: 0, name: getText("KDP010_112") },
-                { id: 1, name: getText("KDP010_113") },
-                { id: 2, name: getText("KDP010_114") },
-                { id: 3, name: getText("KDP010_115") }
+			areaLimitAtrOption: KnockoutObservableArray<any> = ko.observableArray([
+                { id: 1, name: getText("KDP010_249") },
+                { id: 0, name: getText("KDP010_248") }
             ]);
-            portalStampSettings = new PortalStampSettings();
-            constructor(){
-                let self = this;
-            }
+            googleMapOption: KnockoutObservableArray<any> = ko.observableArray([
+                { id: 1, name: getText("KDP010_187") },
+                { id: 0, name: getText("KDP010_188") }
+            ]);
+            constructor(){}
             
             start(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
                 block.grayout();
-                service.getData().done(function(data) {
+                ajax(paths.getData).done(function(data: any) {
                     if (data) {
-//                        console.log(data);
-                        self.portalStampSettings.update(data);
+                        self.settingsSmartphoneStamp.update(data);
                     }
                     dfd.resolve();
                     $(document).ready(function() {
-                        $('#d-serverCorrectionInterval').focus();
+                        $('#c-serverCorrectionInterval').focus();
                     });
-                }).fail(function (res) {
+                }).fail(function (res: any) {
                     error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
@@ -45,112 +50,46 @@ module nts.uk.at.view.kdp010.d {
                 return dfd.promise();
             }
             
-            save(){
+            checkSetStampPageLayout(){
                 let self = this;
                 block.grayout();
-                service.save(ko.toJS(self.portalStampSettings)).done(function(data) {
-                    info({ messageId: "Msg_15"});
-                }).fail(function (res) {
+                ajax(paths.getData).done(function(data: any) {
+                    if (data) {
+                        self.settingsSmartphoneStamp.pageLayoutSettings(data.pageLayoutSettings || []);
+                    }
+                }).fail(function (res: any) {
                     error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
                 });
             }
-        }
-        
-        class ButtonNameSet{
-            buttonName: KnockoutObservable<string>;
-            textColor: KnockoutObservable<string> = ko.observable("#000000");
-            constructor(buttonPositionNo: number){
+            
+            save(){
                 let self = this;
-                if(buttonPositionNo == 1){
-                    self.buttonName = ko.observable(getText("KDP010_212"));    
-                }else if(buttonPositionNo == 2){
-                    self.buttonName = ko.observable(getText("KDP010_213"));    
-                }else if(buttonPositionNo == 3){
-                    self.buttonName = ko.observable(getText("KDP010_214"));    
-                }else if(buttonPositionNo == 4){
-                    self.buttonName = ko.observable(getText("KDP010_215"));    
-                }
+                block.grayout();
+                ajax(paths.save, ko.toJS(self.settingsSmartphoneStamp)).done(function() {
+                    info({ messageId: "Msg_15"});
+                }).fail(function (res: any) {
+                    error({ messageId: res.messageId });
+                }).always(function () {
+                    block.clear();
+                });
             }
-            update(param: any){
+            
+            openIDialog() {
                 let self = this;
-                self.buttonName(param.buttonName);
-                self.textColor(param.textColor);
+                nts.uk.ui.windows.sub.modal("/view/kdp/010/j/index.xhtml").onClosed(() => {
+                    self.checkSetStampPageLayout();
+                });
             }
         }
-        
-        class ButtonDisSet{
-            backGroundColor: KnockoutObservable<string> = ko.observable("#ffffff");
-            buttonNameSet: any;
-            constructor(buttonPositionNo: number){
-                let self = this;
-                self.buttonNameSet = new ButtonNameSet(buttonPositionNo)
-            }
-            update(param: any){
-                let self = this;
-                self.backGroundColor(param.backGroundColor);
-                self.buttonNameSet.update(param.buttonNameSet);
-            }
-        }
-        
-        class ButtonSettings {
-            buttonPositionNo: number;
-            buttonDisSet: any;
-            buttonType: any;
-            usrArt: number = 1;
-            audioType: number = 0;
-            goOutArt: KnockoutObservable<number> = ko.observable(null);
-            constructor(buttonPositionNo: number){
-                let self = this;
-                self.buttonPositionNo = buttonPositionNo;
-                self.buttonDisSet = new ButtonDisSet(self.buttonPositionNo);
-                if(self.buttonPositionNo == 1){
-                    self.buttonType = {
-                        stampType: { changeClockArt: 0, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: false, goOutArt: null },
-                        reservationArt: 0
-                    }
-                }else if(self.buttonPositionNo == 2){
-                    self.buttonType = {
-                        stampType: { changeClockArt: 1, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: false, goOutArt: null },
-                        reservationArt: 0
-                    }
-                }else if(self.buttonPositionNo == 3){
-                    self.buttonType = {
-                        stampType: { changeClockArt: 4, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: false, goOutArt: 0},
-                        reservationArt: 0
-                    }
-                    self.goOutArt(0);
-                    self.goOutArt.subscribe((newValue) => {
-                        self.buttonType.stampType.goOutArt = newValue;
-                    });
-                }else if(self.buttonPositionNo == 4){
-                    self.buttonType = {
-                        stampType: { changeClockArt: 5, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: false, goOutArt: null },
-                        reservationArt: 0
-                    }
-                }
-            }
-            update(param: any){
-                let self = this;
-                if(param){
-                    self.buttonDisSet.update(param.buttonDisSet);
-                    if(param.buttonPositionNo == 3 && param.buttonType.stampType){
-                        self.goOutArt(param.buttonType.stampType.goOutArt);
-                    }
-                }
-            }
-        }
-        
         class SettingDateTimeClorOfStampScreen {
-            textColor: KnockoutObservable<string> = ko.observable("#ffffff");
-            backgroundColor: KnockoutObservable<string> = ko.observable("#0033cc");
+            textColor: KnockoutObservable<string> = ko.observable("#7F7F7F");
             constructor(){}
             update(data?: any){
                 let self = this;
                 if(data){
                     self.textColor(data.textColor);
-                    self.backgroundColor(data.backgroundColor);
                 }
             }
         }
@@ -170,33 +109,45 @@ module nts.uk.at.view.kdp010.d {
             }
         }
         
-        class PortalStampSettings {
+        class SettingsSmartphoneStamp {
             displaySettingsStampScreen = new DisplaySettingsStampScreen();
-            suppressStampBtn: KnockoutObservable<number> = ko.observable(0);
-            useTopMenuLink: KnockoutObservable<number> = ko.observable(0);
-            buttonSettings: any;
+            pageLayoutSettings: KnockoutObservableArray<any> = ko.observableArray([]);
+            buttonEmphasisArt: KnockoutObservable<number> = ko.observable(0);
+            googleMap: KnockoutObservable<number> = ko.observable(0);
+			locationInfoUse: KnockoutObservable<number> = ko.observable(0);
+			areaLimitAtr: KnockoutObservable<number> = ko.observable(0);
+			mapAddres: string;
+			areaLimitAtrEnable: KnockoutObservable<boolean> = ko.computed(():boolean => {
+				return this.locationInfoUse() == 1;
+			});
             constructor(){
-                let self = this;
-                let buttonSettingsArray = [];
-                for(let i = 1; i <= 4; i++){
-                    buttonSettingsArray.push(new ButtonSettings(i));
-                }
-                self.buttonSettings = buttonSettingsArray;
-            }
+				let self = this;
+				self.locationInfoUse.subscribe((value: number) => {
+					if(value == 0){
+						self.areaLimitAtr(0); 	
+					}
+				});	
+			}
             update(data?:any){
                 let self = this;
                 if(data){
                     self.displaySettingsStampScreen.update(data.displaySettingsStampScreen);
-                    self.suppressStampBtn(data.suppressStampBtn);
-                    self.useTopMenuLink(data.useTopMenuLink);
-                    _.forEach(self.buttonSettings, function(buttonSetting) {
-                        let setting = _.find(data.buttonSettings, function(item) { return item.buttonPositionNo == buttonSetting.buttonPositionNo; });
-                        if(setting){
-                            buttonSetting.update(setting);
-                        }
-                    });
+                    self.pageLayoutSettings(data.pageLayoutSettings || []);
+                    self.buttonEmphasisArt(data.buttonEmphasisArt || 0);    
+                    self.locationInfoUse(data.locationInfoUse || 0);
+					self.areaLimitAtr(data.areaLimitAtr || 0);
+                    if(data.googleMap != undefined && data.googleMap != null){
+                        self.googleMap(data.googleMap);
+                    }
+					self.mapAddres = data.mapAddres || "https://www.google.co.jp/maps/place/";
                 }
             }
-        }  
+        }   
     }
+	__viewContext.ready(function() {
+        var screenModel = new viewmodel.ScreenModel();
+        screenModel.start().done(function() {
+            __viewContext.bind(screenModel);
+        });
+    });
 }

@@ -41,7 +41,7 @@ public interface NursingLeaveSettingSetMemento {
      *
      * @param startMonthDay the new start month day
      */
-    void setStartMonthDay(Integer startMonthDay);
+    void setStartMonthDay(MonthDay startMonthDay);
 
     /**
      * Sets the max person setting.
@@ -63,13 +63,12 @@ public interface NursingLeaveSettingSetMemento {
      * @param workAbsence the new work absence
      */
     void setAbsenceFrameNo(Optional<Integer> absenceFrameNo);
-    
-    
+
+
+
     void setTimeCareNursingSet(TimeCareNursingSet timeCareNursingSet);
 
     void setNumPer1(Integer numPer1);
-    
+
     void setNumPer2(Integer numPer2);
-
-
 }

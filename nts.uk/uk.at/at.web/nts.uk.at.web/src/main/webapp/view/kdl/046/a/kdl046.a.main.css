@@ -1,41 +1,48 @@
-hr {
-	margin-left: 30px;
-	margin-right: 30px;
+.div-func-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  padding-bottom: 10px;
 }
+/*hr {*/
+	/*margin-left: 30px;*/
+	/*margin-right: 30px;*/
+/*}*/
 
-#top {
-	margin-left: 30px;
-	margin-top: 10px;
-	margin-right: 60px;
-}
-button.nts-switch-button {
-	min-width: 100px;
-}
-#workplace-group-pannel{
-	margin-top: 10px;
-}
-.nts-searchbbox-wrapper input.ntsSearchBox{
-	width: 198px !important;
-}
-#single-tree-grid-tree-grid_scrollContainer{
-	height: 289px !important;
-}
-#single-tree-grid-tree-grid_displayContainer{
-	height: 289px !important;
-}
+/*#top {*/
+	/*margin-left: 30px;*/
+	/*margin-top: 10px;*/
+	/*margin-right: 60px;*/
+/*}*/
+/*button.nts-switch-button {*/
+	/*min-width: 100px;*/
+/*}*/
+/*#workplace-group-pannel{*/
+	/*margin-top: 10px;*/
+/*}*/
+/*.nts-searchbbox-wrapper input.ntsSearchBox{*/
+	/*width: 198px !important;*/
+/*}*/
+/*#single-tree-grid-tree-grid_scrollContainer{*/
+	/*height: 289px !important;*/
+/*}*/
+/*#single-tree-grid-tree-grid_displayContainer{*/
+	/*height: 289px !important;*/
+/*}*/
 
-@media all and (-ms-high-contrast: none), (-ms-high-contrast: active),
-@supports (-ms-accelerator:true) or (-ms-ime-align:auto) {
-   #single-tree-grid-tree-grid_scrollContainer{
-	height: 294px !important;
-}
-}
+/*@media all and (-ms-high-contrast: none), (-ms-high-contrast: active),*/
+/*@supports (-ms-accelerator:true) or (-ms-ime-align:auto) {*/
+   /*#single-tree-grid-tree-grid_scrollContainer{*/
+	/*height: 294px !important;*/
+/*}*/
+/*}*/
 
-@media all and (-ms-high-contrast: none), (-ms-high-contrast: active),
-@supports (-ms-accelerator:true) or (-ms-ime-align:auto) {
-   #single-tree-grid-tree-grid_displayContainer{
-	height: 294px !important;
-}
+/*@media all and (-ms-high-contrast: none), (-ms-high-contrast: active),*/
+/*@supports (-ms-accelerator:true) or (-ms-ime-align:auto) {*/
+   /*#single-tree-grid-tree-grid_displayContainer{*/
+	/*height: 294px !important;*/
+/*}*/
 
-}
+/*}*/
 

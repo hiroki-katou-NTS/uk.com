@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget.
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 休暇加算時間を取得する
@@ -37,7 +38,7 @@ public class GetVacationAddTime {
 		}
 		
 		// 大塚モードの確認
-		if (false) {
+		if (!AppContexts.optionLicense().customize().ootsuka()) {
 			
 			if (addSet.isSpecialHoliday()){
 				
@@ -74,7 +75,7 @@ public class GetVacationAddTime {
 		}
 		
 		// 大塚モードの確認
-		if (false) {
+		if (!AppContexts.optionLicense().customize().ootsuka()) {
 			
 			if (addSet.isSpecialHoliday()){
 				

@@ -11,6 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
@@ -18,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationDateShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectionStatusShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppRecordImageShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.DestinationTimeAppShare;
@@ -205,8 +205,8 @@ public class ReflectApplicationHelper {
 		// 日別勤怠の応援作業時間帯
 		List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = new ArrayList<>();
 		ouenTimeSheet.add(OuenWorkTimeSheetOfDailyAttendance.create(no,
-				WorkContent.create("1", WorkplaceOfWorkEachOuen.create("11111", new WorkLocationCD("AAAA")),
-						Optional.empty()),
+				WorkContent.create(WorkplaceOfWorkEachOuen.create(new WorkplaceId("11111"), new WorkLocationCD("AAAA")),
+						Optional.empty(), Optional.empty()),
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(no),
 						Optional.of(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
 								new TimeWithDayAttr(480))),
@@ -262,13 +262,13 @@ public class ReflectApplicationHelper {
 	public static ApplicationShare createAppShare(ApplicationTypeShare appType, PrePostAtrShare pre) {
 
 		return new ApplicationShare(1, "1", pre, "1", appType, new ApplicationDateShare(GeneralDate.today()), "1",
-				GeneralDateTime.now(), new ReflectionStatusShare(new ArrayList<>()));
+				GeneralDateTime.now());
 	}
 
 	public static ApplicationShare createAppShare(ApplicationTypeShare appType, PrePostAtrShare pre, GeneralDate date) {
 
 		return new ApplicationShare(1, "1", pre, "1", appType, new ApplicationDateShare(date), "1",
-				GeneralDateTime.now(), new ReflectionStatusShare(new ArrayList<>()));
+				GeneralDateTime.now());
 	}
 
 	public static ApplicationShare createAppShare(PrePostAtrShare pre) {
@@ -281,7 +281,7 @@ public class ReflectApplicationHelper {
 		List<TimeStampAppShare> lstResult = new ArrayList<>();
 		TimeStampAppShare timeStamp = new TimeStampAppShare(
 				new DestinationTimeAppShare(timeStampApp, no, startOrEnd, Optional.of(no)), new TimeWithDayAttr(time),
-				Optional.of(new WorkLocationCD(location)), Optional.empty());
+				Optional.of(new WorkLocationCD(location)), Optional.empty(), Optional.empty());
 
 		lstResult.add(timeStamp);
 

@@ -39,12 +39,14 @@ module nts.uk.at.view.kmk005.b {
                         for (i = 0; i < 10; i++) {
                             self.timeItemSpecList.push(
                                 new TimeItem(
-                                    "", 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 1, ""
+                                    "", 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 1, "" 
                                 ));
                         }
                     } else {
+                        let name = '#[KMK005_';
+                        let i = 150;
                         item.forEach(function(item) {
-                            self.timeItemSpecList.push(new TimeItem(item.timeItemName, item.useAtr, item.timeItemNo, item.timeItemTypeAtr, item.timeItemId));
+                            self.timeItemSpecList.push(new TimeItem(item.timeItemName, item.useAtr, item.timeItemNo, item.timeItemTypeAtr, item.timeItemId ,  name + i++ + ']'));
                         });
                     }
                 });
@@ -58,8 +60,10 @@ module nts.uk.at.view.kmk005.b {
                         }
                         $($(".itemName[disabled!='disabled']")[0]).focus();
                     } else {
+                         let name = '#[KMK005_';
+                        let i = 140;
                         item.forEach(function(item) {
-                            self.timeItemList.push(new TimeItem(item.timeItemName, item.useAtr, item.timeItemNo, item.timeItemTypeAtr, item.timeItemId));
+                            self.timeItemList.push(new TimeItem(item.timeItemName, item.useAtr, item.timeItemNo, item.timeItemTypeAtr, item.timeItemId ,name + i++ + ']' ));
                         })
                         $($(".itemName[disabled!='disabled']")[0]).focus();
                     }
@@ -124,13 +128,15 @@ module nts.uk.at.view.kmk005.b {
             timeItemNo: KnockoutObservable<number>;
             timeItemTypeAtr: KnockoutObservable<number>;
             timeItemId: KnockoutObservable<string>;
-            constructor(timeItemName: string, useAtr: number, timeItemNo: number, timeItemTypeAtr: number, timeItemId: string) {
+            nameValidate: KnockoutObservable<string>;
+            constructor(timeItemName: string, useAtr: number, timeItemNo: number, timeItemTypeAtr: number, timeItemId: string , nameValidate: string) {
                 var self = this;
                 self.timeItemName = ko.observable(timeItemName);
                 self.useAtr = ko.observable(useAtr);
                 self.timeItemNo = ko.observable(timeItemNo);
                 self.timeItemTypeAtr = ko.observable(timeItemTypeAtr);
                 self.timeItemId = ko.observable(timeItemId);
+                self.nameValidate = ko.observable(nameValidate);
             }
         }
 

@@ -23,7 +23,7 @@
 }
 
 .lableData {
-	width: 135px;
+	width: 112px;
 	min-height: 37px;
 }
 
@@ -71,9 +71,11 @@
 .popup-b72 .halfDayWork{
 	color: #FF7F27;
 }
-.popup-b72 {
-	top: 125px !important;
-}
+
 .popup-b72 .nts-fixed-body-wrapper {
 	height: 134px !important;
+	display: table;
+}
+.label-pr-8 {
+  padding-right: 8px;
 }

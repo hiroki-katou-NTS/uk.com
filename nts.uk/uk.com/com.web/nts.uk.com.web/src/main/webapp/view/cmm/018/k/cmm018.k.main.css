@@ -50,12 +50,16 @@ table.ntsSwapGrid tbody tr td {
 	width: 250px !important;
 }
 .upDown-container {
+	padding-left: 10px;
 	vertical-align: top;
-	padding-top: 85px !important;
+	padding-top: 82px !important;
 	height: 180px !important;
 }
+/*fix tam*/
 #swap-list-move-data{
 	padding-top: 40px !important;
+	padding-left: 10px;
+	padding-right: 10px;
 }
 .nts-column {
 	width: 150px !important;

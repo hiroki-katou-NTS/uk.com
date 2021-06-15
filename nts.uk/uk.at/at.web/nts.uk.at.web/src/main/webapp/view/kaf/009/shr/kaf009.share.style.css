@@ -1,8 +1,10 @@
 .control-group.valign-center>* {
 	vertical-align: middle;
 }
-#workSelect{
-	margin-left: 20px;
+#workSelectKAF009{
+	height: 60px;
+    margin-left: 27px;
+    width: 45px !important;
 }
 
 .valign-center.control-group {
@@ -18,7 +20,7 @@
 	margin: 30px 0px 50px 30px;
 }
 
-.header {
+.headerKAF009 {
 	border-bottom: 2px solid #808080;
 	padding-bottom: 10px;
 }
@@ -108,10 +110,13 @@ div.form-label.broken {
 	height:1000	px;
 }
 
-.lstApprover {
-}
 /*workType, Sift */
-.lblSiftCd, .lblWorkTypeCd {
+.lblWorkTypeCd {
+	line-height: 40px;
+	margin-left: 20px;
+	
+}
+.lblSiftCd {
 	line-height: 40px;
 	margin-left: 20px;
 }
@@ -119,8 +124,9 @@ div.form-label.broken {
 .kaf009-lblComment {
 	width: 260px;
 }
-.clsWorkType{
-	margin-left: 50px !important;
+.clsWorkTypeKAF009{
+	margin-left: 25px !important;
+	margin-top: -5px;	
 }
 
 .overlay-reason {
@@ -140,19 +146,25 @@ div.form-label.broken {
 	width: 1200px;
 }
 .hrStyle {
-	width:50%;
+	width: 590px;
 	text-align:left;
-	margin-left:0
+	margin-left:0;
+	margin-top: 5px;
 }
 .centerCheckBox {
 	display: block;
+	margin-top: 12px;
 }
-.centerCheckBox .title {
+.centerCheckBox .titleKAF009 {
 	display: inline-block;
+	width: 120px;
+	padding: 0px !important;
 }
-.centerCheckBox .firstCheckBox {
-	display: inline-block; margin-left: 4px
+.centerCheckBox .firstCheckBoxKAF009 {
+	display: inline-block;
+	margin-left: -7px !important;
 }
-.centerCheckBox .secondCheckBox {
-	display: inline-block; margin-left: 27px
+.centerCheckBox .secondCheckBoxKAF009 {
+	display: inline-block; 
+	margin-left: 27px;
 }

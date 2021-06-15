@@ -8,8 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 import java.util.*;
@@ -55,6 +57,10 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	public FixedWorkTimezoneSet(FixedWorkTimezoneSetGetMemento memento) {
 		this.lstWorkingTimezone = memento.getLstWorkingTimezone();
 		this.lstOTTimezone = memento.getLstOTTimezone();
+		
+		if (this.lstWorkingTimezone.size() == 0) {
+		    throw new BusinessException("Msg_2182");
+		}
 	}
 
 	/**
@@ -66,10 +72,14 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	public FixedWorkTimezoneSet(List<EmTimeZoneSet> lstWorkingTimezone, List<OverTimeOfTimeZoneSet> lstOTTimezone, boolean useShiftTwo){
 		this.lstWorkingTimezone = lstWorkingTimezone;
 		this.lstOTTimezone = lstOTTimezone;
+//		if (this.lstWorkingTimezone.size() == 0) {
+//            throw new BusinessException("Msg_2182");
+//        }
 		if (!checkWorkingTimezoneContinue(useShiftTwo))
 			this.bundledBusinessExceptions.addMessage("Msg_1919");
 		if (!checkOTTimeZoneContinue(useShiftTwo))
 			this.bundledBusinessExceptions.addMessage("Msg_1920");
+		
 	}
 
 	/**
@@ -181,7 +191,7 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 					int nextIndex = this.lstOTTimezone.indexOf(ot) + 1;
 					if (nextIndex < this.lstOTTimezone.size()){
 						val nextOt = this.lstOTTimezone.get(nextIndex);
-						return !ot.getTimezone().getEnd().equals(nextOt.getTimezone().getStart());
+						return !ot.getTimezone().getEnd().equals(nextOt.getTimezone().getStart()) && !ot.isEarlyOTUse();
 					}
 					else return false;
 				})
@@ -266,7 +276,7 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	 * Restore default data.
 	 */
 	public void restoreDefaultData() {
-		this.lstWorkingTimezone = new ArrayList<>();
+//		this.lstWorkingTimezone = new ArrayList<>();
 		this.lstOTTimezone = new ArrayList<>();
 	}
 
@@ -328,5 +338,31 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	 */
 	public Optional<TimeSpanForCalc> getFirstAndLastTimeOfOvertimeWorkingTimezone() {
 		return TimeSpanForCalc.join( this.getOvertimeWorkingTimezonesForCalc() );
+	}
+	
+	/**
+	 * 所定時間内に含まれる就業時間帯を取得する
+	 * @param predTimeZone 所定時間設定
+	 * @return 就業時間の時間帯設定List
+	 */
+	public List<EmTimeZoneSet> getWorkTimeSpanWithinPred(TimezoneUse predTimeZone){
+		List<EmTimeZoneSet> result = new ArrayList<>();
+		// 使用するしない判断
+		if (predTimeZone.isUsed()){
+			// 取得した所定時間内の就業時間帯を取得
+			for (EmTimeZoneSet workTimeZone : this.lstWorkingTimezone){
+				Optional<TimeSpanForCalc> dupSpanOpt =
+						workTimeZone.getTimezone().getDuplicatedWith(predTimeZone.timeSpan());
+				if (!dupSpanOpt.isPresent()) continue;
+				TimeSpanForCalc dupSpan = dupSpanOpt.get();
+				result.add(new EmTimeZoneSet(
+						workTimeZone.getEmploymentTimeFrameNo(),
+						new TimeZoneRounding(
+								dupSpan.getStart(),
+								dupSpan.getEnd(),
+								workTimeZone.getTimezone().getRounding())));
+			}
+		}
+		return result;
 	}
 }

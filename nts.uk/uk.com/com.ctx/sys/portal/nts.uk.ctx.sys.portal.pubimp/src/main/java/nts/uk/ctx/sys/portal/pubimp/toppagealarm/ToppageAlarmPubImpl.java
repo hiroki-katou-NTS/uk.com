@@ -49,6 +49,7 @@ public class ToppageAlarmPubImpl implements ToppageAlarmPub {
 						.occurrenceDateTime(mapper.getOccurrenceDateTime())
 						.displaySId(mapper.getDisplaySId())
 						.displayEmpClassfication(EnumAdaptor.valueOf(mapper.getDisplayEmpClassfication().value, DisplayAtr.class))
+						.subSids(mapper.getSubSids()) //#116503
 						.patternCode(Optional.ofNullable(mapper.getPatternCode().map(i -> new AlarmListPatternCode(i)).orElse(null)))
 						.linkUrl(Optional.ofNullable(mapper.getLinkUrl().map(i -> new LinkURL(i)).orElse(null)))
 						.displayMessage(Optional.ofNullable(mapper.getDisplayMessage().map(i -> new DisplayMessage(i)).orElse(null)))

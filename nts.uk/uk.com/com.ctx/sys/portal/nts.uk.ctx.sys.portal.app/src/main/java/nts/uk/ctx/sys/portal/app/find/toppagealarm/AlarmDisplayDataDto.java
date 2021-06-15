@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.portal.app.find.toppagealarm;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,6 +44,9 @@ public class AlarmDisplayDataDto {
 	 * 表示社員区分
 	 */
 	private Integer displayAtr;
+	
+	//部下の社員ID
+	private List<String> subSids; //#116503
 	
 	//パターンコード
 	private String patternCode;

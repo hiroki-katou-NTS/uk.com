@@ -79,9 +79,9 @@
                       :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell || !isCurrentMonth ? 'uk-bg-silver w-51': 'w-51'"
                     >
                       <div v-if="item.disable == true" >
-                        <div class="uk-bg-white-smoke" style="height: 14vh;font-size: 10.5px; float: left; width: 100%;" ></div>
+                        <div class="uk-bg-white-smoke" style="height: 14vh;font-size: 10.5px; float: left; width: 110%;" ></div>
                       </div>
-                      <div v-else style="height: 14vh;font-size: 10.5px; float: left; width: 100%;"  class="table-block-day">
+                      <div v-else style="height: 14vh;font-size: 10.5px; float: left; width: 110%;margin-left: -0.5vw;"  class="table-block-day">
                           <div id="header">
                             <span v-html="item.dateDisplay"></span> 
                             <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
@@ -93,13 +93,13 @@
                                   class="form-control select-el"
                                   style="
                                     border-radius: 0.25rem;
-                                    font-size: 3.5vw;
-                                    padding: 0.0vw;
+                                    font-size: 3vw;
+                                    padding: 0.7vw;
                                     font-weight: bold;
-                                    border: 1px solid #ced4da;
+                                    border: 0px solid #ced4da;
                                     text-align: center;
                                     margin-top: 2px;
-                                    height: 3vh;
+                                    height: 3.5vh;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               </div>
@@ -109,13 +109,13 @@
                                   class="form-control select-el"
                                   style="
                                     border-radius: 0.25rem;
-                                    font-size: 3.5vw;
-                                    padding: 0.0vw;
+                                    font-size: 3vw;
+                                    padding: 0.7vw;
                                     font-weight: bold;
-                                    border: 1px solid #ced4da;
+                                    border: 0px solid #ced4da;
                                     text-align: center;
                                     margin-top: 2px;
-                                    height: 3vh;
+                                    height: 3.5vh;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               <span class="font-size-8px">{{'KSUS02_24' | i18n}}</span>
@@ -131,7 +131,7 @@
                     >
                       <div v-if="item.disable == true" class="uk-bg-white-smoke" style="height: 14vh;font-size: 10.5px; float: left;" ></div>
                     
-                      <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;">
+                      <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;width: 110%;margin-left: -0.5vw;">
                         <div id="header">
                           <span v-html="item.dateDisplay"></span>
                           <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
@@ -143,13 +143,13 @@
                                 class="form-control select-el"
                                 style="
                                   border-radius: 0.25rem;
-                                  font-size: 3.5vw;
-                                  padding: 0.0vw;
+                                  font-size: 3vw;
+                                  padding: 0.7vw;
                                   font-weight: bold;
-                                  border: 1px solid #ced4da;
+                                  border: 0px solid #ced4da;
                                   text-align: center;
                                   margin-top: 2px;
-                                  height: 3vh;
+                                  height: 3.5vh;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             </div>
@@ -159,13 +159,13 @@
                                 class="form-control select-el"
                                 style="
                                   border-radius: 0.25rem;
-                                  font-size: 3.5vw;
-                                  padding: 0.0vw;
+                                  font-size: 3vw;
+                                  padding: 0.7vw;
                                   font-weight: bold;
-                                  border: 1px solid #ced4da;
+                                  border: 0px solid #ced4da;
                                   text-align: center;
                                   margin-top: 2px;
-                                  height: 3vh;
+                                  height: 3.5vh;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             <span class="font-size-8px">{{'KSUS02_24' | i18n}}</span>
@@ -181,7 +181,7 @@
                     >
                         <div v-if="item.disable == true" class="uk-bg-white-smoke" style="height: 14vh;font-size: 10.5px; float: left;" ></div>
                      
-                        <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;">
+                        <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;width: 110%;margin-left: -0.5vw;">
                           <div id="header">
                             <span v-html="item.dateDisplay"></span>
                             <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
@@ -193,13 +193,13 @@
                                   class="form-control select-el"
                                   style="
                                     border-radius: 0.25rem;
-                                    font-size: 3.5vw;
-                                    padding: 0.0vw;
+                                    font-size: 3vw;
+                                    padding: 0.7vw;
                                     font-weight: bold;
-                                    border: 1px solid #ced4da;
+                                    border: 0px solid #ced4da;
                                     text-align: center;
                                     margin-top: 2px;
-                                    height: 3vh;
+                                    height: 3.5vh;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               </div>
@@ -209,13 +209,13 @@
                                   class="form-control select-el"
                                   style="
                                     border-radius: 0.25rem;
-                                    font-size: 3.5vw;
-                                    padding: 0.0vw;
+                                    font-size: 3vw;
+                                    padding: 0.7vw;
                                     font-weight: bold;
-                                    border: 1px solid #ced4da;
+                                    border: 0px solid #ced4da;
                                     text-align: center;
                                     margin-top: 2px;
-                                    height: 3vh;
+                                    height: 3.5vh;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               <span class="font-size-8px">{{'KSUS02_24' | i18n}}</span>
@@ -231,7 +231,7 @@
                     >
                       <div v-if="item.disable == true" class="uk-bg-white-smoke " style="height: 14vh;font-size: 10.5px; float: left;" ></div>
 
-                      <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;">
+                      <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;width: 110%;margin-left: -0.5vw;">
                         <div id="header">
                           <span v-html="item.dateDisplay"></span>
                           <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
@@ -243,13 +243,13 @@
                                 class="form-control select-el"
                                 style="
                                   border-radius: 0.25rem;
-                                  font-size: 3.5vw;
-                                  padding: 0.0vw;
+                                  font-size: 3vw;
+                                  padding: 0.7vw;
                                   font-weight: bold;
-                                  border: 1px solid #ced4da;
+                                  border: 0px solid #ced4da;
                                   text-align: center;
                                   margin-top: 2px;
-                                  height: 3vh;
+                                  height: 3.5vh;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             </div>
@@ -259,13 +259,13 @@
                                 class="form-control select-el"
                                 style="
                                   border-radius: 0.25rem;
-                                  font-size: 3.5vw;
-                                  padding: 0.0vw;
+                                  font-size: 3vw;
+                                  padding: 0.7vw;
                                   font-weight: bold;
-                                  border: 1px solid #ced4da;
+                                  border: 0px solid #ced4da;
                                   text-align: center;
                                   margin-top: 2px;
-                                  height: 3vh;
+                                  height: 3.5vh;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             <span class="font-size-8px">{{'KSUS02_24' | i18n}}</span>
@@ -282,7 +282,7 @@
                       <div v-if="item.disable == true" >
                         <div class="uk-bg-white-smoke" style="height: 14vh;font-size: 10.5px; float: left;" ></div>
                       </div>
-                      <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;">
+                      <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;width: 110%;margin-left: -0.5vw;">
                         <div id="header">
                           <span v-html="item.dateDisplay"></span>
                           <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
@@ -294,13 +294,13 @@
                                 class="form-control select-el"
                                 style="
                                   border-radius: 0.25rem;
-                                  font-size: 3.5vw;
-                                  padding: 0.0vw;
+                                  font-size: 3vw;
+                                  padding: 0.7vw;
                                   font-weight: bold;
-                                  border: 1px solid #ced4da;
+                                  border: 0px solid #ced4da;
                                   text-align: center;
                                   margin-top: 2px;
-                                  height: 3vh;
+                                  height: 3.5vh;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             </div>
@@ -310,13 +310,13 @@
                                 class="form-control select-el"
                                 style="
                                   border-radius: 0.25rem;
-                                  font-size: 3.5vw;
-                                  padding: 0.0vw;
+                                  font-size: 3vw;
+                                  padding: 0.7vw;
                                   font-weight: bold;
-                                  border: 1px solid #ced4da;
+                                  border: 0px solid #ced4da;
                                   text-align: center;
                                   margin-top: 2px;
-                                  height: 3vh;
+                                  height: 3.5vh;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             <span class="font-size-8px">{{'KSUS02_24' | i18n}}</span>
@@ -333,7 +333,7 @@
                       <div v-if="item.disable == true" >
                         <div class="uk-bg-white-smoke" style="height: 14vh;font-size: 10.5px; float: left;" ></div>
                       </div>
-                        <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;">
+                        <div v-else class="table-block-day" style="height: 14vh;font-size: 10.5px; float: left;width: 110%;margin-left: -0.5vw;">
                           <div id="header">
                             <span v-html="item.dateDisplay"></span>
                             <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
@@ -345,13 +345,13 @@
                                   class="form-control select-el"
                                   style="
                                     border-radius: 0.25rem;
-                                    font-size: 3.5vw;
-                                    padding: 0.0vw;
+                                    font-size: 3vw;
+                                    padding: 0.7vw;
                                     font-weight: bold;
-                                    border: 1px solid #ced4da;
+                                    border: 0px solid #ced4da;
                                     text-align: center;
                                     margin-top: 2px;
-                                    height: 3vh;
+                                    height: 3.5vh;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               </div>
@@ -361,13 +361,13 @@
                                   class="form-control select-el"
                                   style="
                                     border-radius: 0.25rem;
-                                    font-size: 3.5vw;
-                                    padding: 0.0vw;
+                                    font-size: 3vw;
+                                    padding: 0.7vw;
                                     font-weight: bold;
-                                    border: 1px solid #ced4da;
+                                    border: 0px solid #ced4da;
                                     text-align: center;
                                     margin-top: 2px;
-                                    height: 3vh;
+                                    height: 3.5vh;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               <span class="font-size-8px">{{'KSUS02_24' | i18n}}</span>
@@ -421,7 +421,7 @@
             <h6
               v-click="closePopup"
               class="card-header uk-bg-choice-row"
-              style="margin-top: 1px; padding: 0px; z-index: 1 ; display: flex;align-items: center; justify-content: space-between;"
+              style="margin-top: 1px; padding: 0px; z-index: 1 ; display: flex;align-items: center; justify-content: space-between;height: 5.3vh;"
             >
               <div style="    width: 52vw;display: flex;justify-content: space-between;">
                 <span
@@ -448,7 +448,7 @@
               </div>
             </h6>
             <div class="card-body" style="background-color: #f4fbfd">
-              <div class="accordion">
+              <div class="accordion" id="scroll_area">
                 <!-- 既に開きたいならshowを追加してください。 -->
                 <div class="card1 card" > 
                   <div class="card-header uk-bg-accordion">
@@ -473,46 +473,46 @@
                             v-bind:value="option.shiftMaster.shiftMasterCode" v-bind:key="k" 
                             v-click="setDataDisplay"
                             >
-                              <div  v-click="setDataDisplay" style="float: right;display: flex;align-items: baseline;" > <span
+                              <div  v-click="setDataDisplay" style="float: right;display: flex;" > <span
                               v-bind:style="{  backgroundColor: option.shiftMaster.colorSmartphone, color: option.shiftMaster.colorText }"
                                 class="form-control select-el"
                                 style="
-                                  margin-top: 4px;
-                                  font-size: 2vh;
+                                  margin-top: 0.9vh;
+                                  font-size: 3vh;
                                   width: 42px;
-                                  height: 3.5vh;
-                                  padding: 0;
+                                  height: 4.5vh;
+                                  padding: 0.4vw;
                                   float: left;
                                   margin-left: 10px;
                                   font-weight: bold;
-                                  border: 1px solid #ced4da;
+                                  border: 0px solid #ced4da;
                                   text-align: center;
                                 "
-                                >{{option.shiftMaster.shiftMasterName}}</span> &nbsp;&nbsp;  <span style="font-weight: bold;font-size: 3.5vw;">{{option.shiftMaster.workTime1}} &nbsp;&nbsp; {{option.shiftMaster.workTime2}}</span></div>
+                                >{{option.shiftMaster.shiftMasterName}}</span> &nbsp;&nbsp;  <span style="font-weight: bold;font-size: 3vw;">{{option.shiftMaster.workTime1}} &nbsp;&nbsp; {{option.shiftMaster.workTime2}}</span></div>
                           </nts-checkbox>
                         </div>
                         <div v-else>
                             <div v-for="(option, k) in nameListInforCurrent" 
                               v-bind:key="k" 
-                              style="float: left;font-size: 12px;display: flex;align-items: baseline;" class="form-check-2"
+                              style="float: left;font-size: 12px;display: flex;" class="form-check-2"
                               >
                                 <span
                                 v-bind:style="{  backgroundColor: option.shiftMaster.colorSmartphone, color: option.shiftMaster.colorText }"
                                   class="form-control select-el"
                                   style="
-                                    margin-top: 4px;
-                                    font-size: 2vh;
+                                    margin-top: 0.9vh;
+                                    font-size: 3vh;
                                     width: 42px;
-                                    height: 3.5vh;
-                                    padding: 0;
+                                    height: 4.5vh;
+                                    padding: 0.4vw;
                                     float: left;
                                     margin-left: 10px;
                                     font-weight: bold;
-                                    border: 1px solid #ced4da;
+                                    border: 0px solid #ced4da;
                                     text-align: center;
                                   "
                                   >{{option.shiftMaster.shiftMasterName}}</span>
-                                  <span style="float: left;margin-top: 6px;font-weight: bold;font-size: 3.5vw;"> &nbsp;&nbsp;  {{option.shiftMaster.workTime1}} &nbsp;&nbsp; {{option.shiftMaster.workTime2}}</span>
+                                  <span style="float: left;margin-top: 2.1vh;font-weight: bold;font-size: 3vw;"> &nbsp;&nbsp;  {{option.shiftMaster.workTime1}} &nbsp;&nbsp; {{option.shiftMaster.workTime2}}</span>
                                   
                             </div>
                           </div>

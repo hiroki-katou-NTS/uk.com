@@ -1,7 +1,3 @@
-.image-preview-container,
-.image-editor-component {
-  margin-left: 10px;
-}
 .crop-icon {
   width: 6px !important;
   border-radius: 50% !important;
@@ -33,14 +29,6 @@
 
 #upload-webcam {
   margin-left: 15px;
-}
-
-#E1 {
-  padding-left: 10px;
-}
-
-#content-area {
-  padding-top: 10px;
 }
 
 #upload {

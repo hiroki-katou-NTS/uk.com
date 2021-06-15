@@ -22,6 +22,9 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.algorithm.WeeklyChe
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.AlarmListPersonExtractServicePub;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.AlarmEmployeeList;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.AlarmExtractionCondition;
+
 @Stateless
 public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtractServicePub{
 	
@@ -56,10 +59,12 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp,
 			List<ResultOfEachCondition> lstResultCondition, 
 			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop) {
+			Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode) {
 		masterCheck.extractMasterCheck(cid, lstSid, dPeriod, 
 				errorMasterCheckId, getWplByListSidAndPeriod,
-				lstStatusEmp, lstResultCondition, lstCheckType, counter, shouldStop);
+				lstStatusEmp, lstResultCondition, lstCheckType, counter, shouldStop,
+				alarmEmployeeList, alarmExtractConditions, alarmCheckConditionCode);
 		
 	}
 
@@ -70,11 +75,14 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition,
 			List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop) {
+			Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+			List<AlarmExtractionCondition> alarmExtractConditions,
+			String alarmCheckConditionCode) {
 		
 		dailyCheck.extractDailyCheck(cid, lstSid, dPeriod, errorDailyCheckId, extractConditionWorkRecord, 
 				errorDailyCheckCd, getWplByListSidAndPeriod, lstStatusEmp,
-				lstResultCondition, lstCheckType, counter, shouldStop);
+				lstResultCondition, lstCheckType, counter, shouldStop, alarmEmployeeList,
+				alarmExtractConditions, alarmCheckConditionCode);
 		
 	}
 
@@ -82,7 +90,8 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 	public void extractMonthlyCheckResult(String cid, List<String> lstSid, YearMonthPeriod mPeriod, String fixConId,
 			List<String> lstAnyConID, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
-			Supplier<Boolean> shouldStop) {
+			Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode) {
 		monthCheck.extractMonthlyAlarm(cid,
 				lstSid,
 				mPeriod,
@@ -92,7 +101,10 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 				lstResultCondition,
 				lstCheckType,
 				counter,
-				shouldStop);
+				shouldStop,
+				alarmEmployeeList,
+				alarmExtractConditions,
+				alarmCheckConditionCode);
 		
 	}
 
@@ -100,14 +112,19 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 	@Override
 	public void extractMultiMonthlyResult(String cid, List<String> lstSid, YearMonthPeriod mPeriod,
 			List<String> lstAnyConID, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
-			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType) {
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
+			List<AlarmEmployeeList> alarmEmployeeList, List<AlarmExtractionCondition> alarmExtractConditions,
+			String alarmCheckConditionCode) {
 		multiMonthCheck.extractMultiMonthlyAlarm(cid,
 				lstSid,
 				mPeriod,
 				lstAnyConID,
 				getWplByListSidAndPeriod,
 				lstResultCondition,
-				lstCheckType);
+				lstCheckType,
+				alarmEmployeeList,
+				alarmExtractConditions,
+				alarmCheckConditionCode);
 		
 	}
 
@@ -118,11 +135,13 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 											String errorDailyCheckId, String listOptionalItem, String listFixedItem,
 											List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, List<StatusOfEmployeeAdapterAl> lstStatusEmp,
 											List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
-											Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+											Consumer<Integer> counter, Supplier<Boolean> shouldStop, List<AlarmEmployeeList> alarmEmployeeList,
+											List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode) {
 		scheDailyCheckService.extractScheDailyCheck(
 				cid, lstSid, dPeriod, errorDailyCheckId, listOptionalItem,
 				listFixedItem, getWplByListSidAndPeriod, lstStatusEmp,
-				lstResultCondition, lstCheckType, counter, shouldStop);
+				lstResultCondition, lstCheckType, counter, shouldStop, alarmEmployeeList,
+                alarmExtractConditions, alarmCheckConditionCode);
 	}
 
 
@@ -130,11 +149,13 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 	public void extractScheYearCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod, String errorCheckId,
 										   String listOptionalItem, List<WorkPlaceHistImportAl> lstWkpIdAndPeriod,
 										   List<StatusOfEmployeeAdapterAl> lstStaEmp, List<ResultOfEachCondition> lstResultCondition,
-										   List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+										   List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop,
+										   List<AlarmEmployeeList> alarmEmployeeList, List<AlarmExtractionCondition> alarmExtractConditions,
+										   String alarmCheckConditionCode) {
 		scheYearCheckService.extractScheYearCheck(
 				cid, lstSid, dPeriod, errorCheckId, listOptionalItem,
 				lstWkpIdAndPeriod, lstStaEmp, lstResultCondition,
-				lstCheckType, counter, shouldStop);
+				lstCheckType, counter, shouldStop, alarmEmployeeList, alarmExtractConditions, alarmCheckConditionCode);
 	}
 
 
@@ -142,22 +163,26 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 	public void extractScheMonCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod, String errorCheckId,
 										  String listFixedItemId, String listOptionalItemId, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 										  List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition,
-										  List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+										  List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter, Supplier<Boolean> shouldStop,
+										  List<AlarmEmployeeList> alarmEmployeeList, List<AlarmExtractionCondition> alarmExtractConditions,
+										  String alarmCheckConditionCode) {
 		scheMonCheckService.extractScheMonCheck(
 				cid, lstSid,
 				dPeriod, errorCheckId, listFixedItemId, listOptionalItemId,
 				getWplByListSidAndPeriod, lstStatusEmp, lstResultCondition,
-				lstCheckType, counter, shouldStop);
+				lstCheckType, counter, shouldStop, alarmEmployeeList, alarmExtractConditions, alarmCheckConditionCode);
 	}
 
 	@Override
 	public void extractWeeklyCheckResult(String cid, List<String> lstSid, DatePeriod period,
 										 List<WorkPlaceHistImportAl> wplByListSidAndPeriods, String listOptionalItem,
 										 List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType,
-										 Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+										 Consumer<Integer> counter, Supplier<Boolean> shouldStop,
+										 List<AlarmEmployeeList> alarmEmployeeList, List<AlarmExtractionCondition> alarmExtractConditions,
+										 String alarmCheckConditionCode) {
 		weeklyCheckService.extractWeeklyCheck(
 				cid, lstSid, period, wplByListSidAndPeriods, listOptionalItem,
-				lstResultCondition, lstCheckType, counter, shouldStop);
+				lstResultCondition, lstCheckType, counter, shouldStop, alarmEmployeeList, alarmExtractConditions, alarmCheckConditionCode);
 	}
 
 }

@@ -293,14 +293,8 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 
 				// update list fixedExtraMonFun
 				for (FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
-					if (fixedExtraMonFun.getMonAlarmCheckID() == null
-							|| fixedExtraMonFun.getMonAlarmCheckID().equals("")) {
-						fixedExtraMonFun.setMonAlarmCheckID(monAlarmCheckCon.getMonAlarmCheckConID());
-						this.fixedExtraMonFunAdapter.addFixedExtraMon(fixedExtraMonFun);
-					} else {
-						this.fixedExtraMonFunAdapter.updateFixedExtraMon(fixedExtraMonFun);
-
-					}
+					fixedExtraMonFun.setMonAlarmCheckID(monAlarmCheckCon.getMonAlarmCheckConID());
+					this.fixedExtraMonFunAdapter.persistFixedExtraMon(fixedExtraMonFun);
 				}
 				break;
 
@@ -622,7 +616,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				// add list fixedExtraMonFun
 				for (FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
 					fixedExtraMonFun.setMonAlarmCheckID(monAlarmCheckConID);
-					this.fixedExtraMonFunAdapter.addFixedExtraMon(fixedExtraMonFun);
+					this.fixedExtraMonFunAdapter.persistFixedExtraMon(fixedExtraMonFun);
 				}
 
 				break;
@@ -818,6 +812,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 		
 		int alarmNo = 0;
 		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
+			alarmNo++;
 			item.setSortOrderBy(alarmNo);
 			DaiCheckItemType dailyCheckItemType = EnumAdaptor.valueOf(item.getCheckItem(), DaiCheckItemType.class);
 			RangeToCheck rangeToCheck = RangeToCheck.ALL;
@@ -903,7 +898,6 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			} else {
 				extraCondScheDayRepository.update(contractCode, companyId, domain);
 			}
-			alarmNo++;
 		}
 		
 		// sync again item when user remove in list
@@ -946,6 +940,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 		
 		int alarmNo = 0;
 		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
+			alarmNo++;
 			item.setSortOrderBy(alarmNo);
 			MonCheckItemType checkItemType = EnumAdaptor.valueOf(item.getCheckItem(), MonCheckItemType.class);
 			ErrorAlarmConAdapterDto errorAlarmCondition = item.getErrorAlarmCondition();
@@ -1003,7 +998,6 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			} else {
 				extraCondScheMonRepository.update(contractCode, companyId, domain);
 			}
-			alarmNo++;
 		}
 		
 		// sync again item when user remove in list
@@ -1027,6 +1021,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 		
 		int alarmNo = 0;
 		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
+			alarmNo++;
 			item.setSortOrderBy(alarmNo);
 			YearCheckItemType checkItemType = EnumAdaptor.valueOf(item.getCheckItem(), YearCheckItemType.class);
 			ErrorAlarmConAdapterDto errorAlarmCondition = item.getErrorAlarmCondition();
@@ -1069,7 +1064,6 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			} else {
 				extraCondScheYearRepository.update(contractCode, companyId, domain);
 			}
-			alarmNo++;
 		}
 		
 		// sync again item when user remove in list
@@ -1094,6 +1088,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 		
 		int alarmNo = 0;
 		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
+			alarmNo++;
 			item.setSortOrderBy(alarmNo);
 			WeeklyCheckItemType checkItemType = WeeklyCheckItemType.TIME;
 			if (item.getCheckItem() > 0) {
@@ -1134,7 +1129,6 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 			} else {
 				extraCondScheWeeklyRepository.update(contractCode, companyId, domain);
 			}
-			alarmNo++;
 		}
 		
 		// sync again item when user remove in list

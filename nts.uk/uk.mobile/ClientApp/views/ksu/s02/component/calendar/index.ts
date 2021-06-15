@@ -23,10 +23,10 @@ export class CalendarComponent extends Vue {
             datas: null
         })
     })
-    public params!: { datas: any };
+    public params!: { datas: any, checkRegister: boolean };
     public clnLst = [];
     public mode = null;
-    public dataFromParent = { data: this.params.datas };
+    public dataFromParent = { data: this.params.datas,checkRegister:this.params.checkRegister };
 
 
     @Watch('params.datas')
@@ -35,7 +35,7 @@ export class CalendarComponent extends Vue {
         if (datas.data != null && vm.mode == null) {
             vm.mode = datas.data.specifyWorkPre;
         }
-        this.dataFromParent = { data: datas.data };
+        this.dataFromParent = { data: datas.data,checkRegister:datas.checkRegister };
 
     }
 

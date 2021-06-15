@@ -36,7 +36,7 @@ module nts.uk.at.view.kwr003.b {
     isEnableDeleteButton: KnockoutObservable<boolean> = ko.observable(false);
     isEnableDuplicateButton: KnockoutObservable<boolean> = ko.observable(false);
     isNewMode: KnockoutObservable<boolean> = ko.observable(false);
-
+    someObservable: KnockoutObservable<any> = ko.observable(null);
     //KDL 047, 048
     shareParam = new SharedParams();
 
@@ -54,7 +54,7 @@ module nts.uk.at.view.kwr003.b {
     workStatusTableOutputItem: KnockoutObservable<any> = ko.observable(null);
     diligenceProjects: KnockoutObservableArray<DiligenceProject> = ko.observableArray([]);
     diligenceProjectsDKL48: KnockoutObservableArray<DiligenceProject> = ko.observableArray([]);
-
+    listDetail: KnockoutObservableArray<SettingForPrint> = ko.observableArray([]);
     constructor(params: any) {
       super();
 
@@ -110,6 +110,9 @@ module nts.uk.at.view.kwr003.b {
         vm.shareParam.attendanceItems = vm.diligenceProjects();
         vm.shareParam.diligenceProjectList = vm.diligenceProjectsDKL48();
       });
+        // vm.settingRules.subscribe((value)=>{
+        //     console.log("ABABABA" + value)
+        // })
     }
 
     created(params: any) {
@@ -121,6 +124,7 @@ module nts.uk.at.view.kwr003.b {
       } */
     }
 
+
     mounted() {
       const vm = this;
       if (!!navigator.userAgent.match(/Trident.*rv\:11\./)) {
@@ -128,6 +132,7 @@ module nts.uk.at.view.kwr003.b {
         $('.kwr-003b').addClass('ie');
       } else
         $("#multiGridList").ntsFixedTable({ height: 370 });
+
     }
 
     addRowItem(newRow?: SettingForPrint) {
@@ -243,7 +248,7 @@ module nts.uk.at.view.kwr003.b {
           let outputItemDetails: Array<Attribute> = [];
           _.forEach(item.selectedTimeList(), (o) => {
             outputItemDetails.push({
-              operator: (o.operator) ? (o.operator == '+' ? 1 : 2) : null,
+              operator: (o.operator) ? (o.operator == '+' || o.operator ==1 ? 1 : 2) : null,
               attendanceItemId: o.itemId
             });
           });
@@ -539,6 +544,7 @@ module nts.uk.at.view.kwr003.b {
           //re-order the list
           listItemsDetails = vm.orderListItemsByField(listItemsDetails);
           vm.createListItemAfterSorted(listItemsDetails);
+          vm.listDetail(listItemsDetails);
         }
 
         vm.$blockui('hide');
@@ -889,7 +895,8 @@ module nts.uk.at.view.kwr003.b {
     selectedTime: number = -1;
     selectionItem: KnockoutObservable<string> = ko.observable(null);
     selectedTimeList: KnockoutObservableArray<selectedItemList> = ko.observableArray([]);
-
+    temp: number = null;
+    check:boolean = false;
     constructor(
       id?: number,
       name?: string,
@@ -901,12 +908,24 @@ module nts.uk.at.view.kwr003.b {
       selectedTime: number = -1) {
       this.name(name || '');
       this.setting(setting);
+      this.temp = setting;
       this.isChecked(checked || false);
       this.selectionItem(selectionItem || ''); //display
       this.id = id;
       this.selectedTimeList(selectedTimeList || []);
       this.selected = selected;
       this.selectedTime = selectedTime;
+      this.check = false;
+        var subscription = this.setting.subscribe((value)=>{
+              nts.uk.ui.dialog.confirm({ messageId: "Msg_2087" }).ifYes(()=>{
+                  // if yes
+                  this.temp = value;
+              }).ifNo(()=>{
+                  // if no
+                      this.setting(this.temp);
+              });
+      });
+
     }
   }
 

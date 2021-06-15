@@ -121,7 +121,6 @@ button.nts-switch-button {
 }
 
 .radioboxRebuildAtr {
-  margin-top: 5px;
   margin-left: 10px;
 }
 
@@ -291,7 +290,7 @@ button.nts-switch-button {
 }
 .switchButtonGroup .SwitchButton {
   position: absolute;
-  top: -40px;
+  top: -43px;
   left: 100px;
 }
 

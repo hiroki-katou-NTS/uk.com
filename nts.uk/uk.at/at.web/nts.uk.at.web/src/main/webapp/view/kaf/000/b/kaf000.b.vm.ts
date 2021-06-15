@@ -150,9 +150,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 						return condition;
 					});
 				if(appNameInfo) {
-					document.getElementById("pg-name").innerHTML = appNameInfo.opProgramID + opString + " " + appNameInfo.appName;
+					$('.pg-name > span').text(appNameInfo.opProgramID + opString + " " + appNameInfo.appName);
 				} else {
-					document.getElementById("pg-name").innerHTML = "";
+					$('.pg-name > span').text("");
 				}
                 vm.setControlButton(
                     successData.appDetailScreenInfo.user,
@@ -270,26 +270,31 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }).always(() => vm.$blockui("hide"));
         }
 
-        btnDeny() {
+		btnApproveComment() {
 			const vm = this;
-            vm.$blockui("show");
-            let memo = vm.approvalReason(),
-            	appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
-            	command = { memo, appDispInfoStartupOutput };
-
-            vm.$ajax(API.deny, command)
-            .done((successData: any) => {
-                if(successData.processDone) {
-                    vm.$dialog.info({ messageId: "Msg_222" }).then(() => {
-						CommonProcess.handleMailResult(successData, vm).then(() => {
-		                    vm.loadData();
-						});
-                    });
-                }
-            }).fail((res: any) => {
-                vm.handlerExecuteErrorMsg(res);
-            }).always(() => vm.$blockui("hide"));
+			let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
+				dParam = { appDispInfoStartupOutput };
+			vm.$window.modal('/view/kaf/000/e/index.xhtml', dParam).then((result) => {
+				if(result) {
+					if(result.reload) {
+						vm.loadData();	
+					}
+				}
+			});
         }
+
+        btnDenyComment() {
+			const vm = this;
+			let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
+				dParam = { appDispInfoStartupOutput };
+			vm.$window.modal('/view/kaf/000/f/index.xhtml', dParam).then((result) => {
+				if(result) {
+					if(result.reload) {
+						vm.loadData();	
+					}	
+				}
+			});
+		}
 
         btnRelease() {
 			const vm = this;
@@ -469,15 +474,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 		            });
                 });
                 break;
-            case "Msg_1691":
-                vm.$dialog.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
-					vm.$blockui("hide");
-				});
-                break;
             case "Msg_1692":
-            case "Msg_1693": {
+            case "Msg_1693":
                 break;
-            }
+			case "Msg_1691":
 			case 'Msg_235':
 			case 'Msg_391':
 			case 'Msg_1518':
@@ -506,6 +506,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             case 'Msg_1686':
             case 'Msg_1706':
             case 'Msg_1983':
+			case "Msg_1654":
 				vm.$dialog.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
 					vm.$blockui("hide");
 				});
@@ -564,9 +565,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 			const vm = this;
 			let appNameInfo = _.find(vm.appNameList, (o: any) => vm.appType() == 0 && o.opApplicationTypeDisplay==overtimeAtr);
 			if(appNameInfo) {
-				document.getElementById("pg-name").innerHTML = appNameInfo.opProgramID + "B " + appNameInfo.appName;
+				$('.pg-name > span').text(appNameInfo.opProgramID + "B " + appNameInfo.appName);
 			} else {
-				document.getElementById("pg-name").innerHTML = "";
+				$('.pg-name > span').text("");
 			}
 		}
     }

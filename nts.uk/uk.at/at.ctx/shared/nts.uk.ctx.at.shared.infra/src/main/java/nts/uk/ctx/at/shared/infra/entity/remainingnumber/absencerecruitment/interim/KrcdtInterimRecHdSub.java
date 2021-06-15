@@ -42,7 +42,6 @@ public class KrcdtInterimRecHdSub extends ContractUkJpaEntity implements Seriali
 
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
 		return recAbsPk;
 	}
 

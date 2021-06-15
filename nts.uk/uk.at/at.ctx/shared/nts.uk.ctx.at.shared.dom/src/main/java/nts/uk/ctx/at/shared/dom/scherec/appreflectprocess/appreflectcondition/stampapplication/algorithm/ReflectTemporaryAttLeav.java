@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.StartEndClassificationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
@@ -14,7 +15,9 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 /**
@@ -90,33 +93,41 @@ public class ReflectTemporaryAttLeav {
 		List<Integer> lstItemId = new ArrayList<>();
 		boolean start = (data.getDestinationTimeApp().getStartEndClassification() == StartEndClassificationShare.START);
 		if (start) {
-			timeLeav.getAttendanceStamp().ifPresent(x -> {
-				x.getStamp().ifPresent(y -> {
-					if (data.getWorkLocationCd().isPresent()) {
-						lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(50,
-								data.getDestinationTimeApp().getEngraveFrameNo().intValue(), 8)));
-						y.setLocationCode(data.getWorkLocationCd());
-					}
-					y.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
-					y.getTimeDay().setTimeWithDay(Optional.ofNullable(data.getTimeOfDay()));
-					lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(51,
-							data.getDestinationTimeApp().getEngraveFrameNo().intValue(), 8)));
-				});
-			});
+			if (!timeLeav.getAttendanceStamp().isPresent()) {
+				timeLeav.setAttendanceStamp(
+						Optional.of(TimeActualStamp.createDefaultWithReason(TimeChangeMeans.APPLICATION)));
+			}
+			if (!timeLeav.getAttendanceStamp().get().getStamp().isPresent()) {
+				timeLeav.getAttendanceStamp().get().setStamp(Optional.of(WorkStamp.createDefault()));
+			}
+			val y = timeLeav.getAttendanceStamp().get().getStamp().get();
+			if (data.getWorkLocationCd().isPresent()) {
+				lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(50,
+						data.getDestinationTimeApp().getEngraveFrameNo().intValue(), 8)));
+				y.setLocationCode(data.getWorkLocationCd());
+			}
+			y.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
+			y.getTimeDay().setTimeWithDay(Optional.ofNullable(data.getTimeOfDay()));
+			lstItemId.addAll(Arrays.asList(
+					CancelAppStamp.createItemId(51, data.getDestinationTimeApp().getEngraveFrameNo().intValue(), 8)));
 		} else {
-			timeLeav.getLeaveStamp().ifPresent(x -> {
-				x.getStamp().ifPresent(y -> {
-					if (data.getWorkLocationCd().isPresent()) {
-						lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(52,
-								data.getDestinationTimeApp().getEngraveFrameNo().intValue(), 8)));
-						y.setLocationCode(data.getWorkLocationCd());
-					}
-					y.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
-					y.getTimeDay().setTimeWithDay(Optional.ofNullable(data.getTimeOfDay()));
-					lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(53,
-							data.getDestinationTimeApp().getEngraveFrameNo().intValue(), 8)));
-				});
-			});
+			if (!timeLeav.getLeaveStamp().isPresent()) {
+				timeLeav.setLeaveStamp(
+						Optional.of(TimeActualStamp.createDefaultWithReason(TimeChangeMeans.APPLICATION)));
+			}
+			if(!timeLeav.getLeaveStamp().get().getStamp().isPresent()) {
+				timeLeav.getLeaveStamp().get().setStamp(Optional.of(WorkStamp.createDefault()));
+			}
+			val y = timeLeav.getLeaveStamp().get().getStamp().get();
+			if (data.getWorkLocationCd().isPresent()) {
+				lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(52,
+						data.getDestinationTimeApp().getEngraveFrameNo().intValue(), 8)));
+				y.setLocationCode(data.getWorkLocationCd());
+			}
+			y.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
+			y.getTimeDay().setTimeWithDay(Optional.ofNullable(data.getTimeOfDay()));
+			lstItemId.addAll(Arrays.asList(
+					CancelAppStamp.createItemId(53, data.getDestinationTimeApp().getEngraveFrameNo().intValue(), 8)));
 		}
 		return lstItemId;
 	}

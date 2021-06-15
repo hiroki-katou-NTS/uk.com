@@ -20,7 +20,7 @@
         border-width: 0px;
 
         tr {
-            height: 41px;
+            height: 30px;
             border-width: 0px;
 
             td {
@@ -54,15 +54,13 @@
         overflow: hidden;
         box-sizing: border-box;
         border-radius: 2px;
-        border-left: 5px solid #0096f2;
 
         th {
-            font-size: 1.5rem;
             font-weight: bold;
 
             button.icon {
                 width: 41px;
-                height: 41px;
+                height: 30px;
                 margin: auto;
                 display: block;
             }

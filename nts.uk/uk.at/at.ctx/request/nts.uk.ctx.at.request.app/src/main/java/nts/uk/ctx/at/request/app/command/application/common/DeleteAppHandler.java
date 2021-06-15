@@ -11,14 +11,12 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterProcessDelete;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
@@ -30,9 +28,6 @@ public class DeleteAppHandler extends CommandHandlerWithResult<AppDetailBehavior
 	
 	@Inject
 	private DetailBeforeUpdate beforeRegisterRepo;
-	
-	@Inject 
-	private HolidayService holidayService;
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
@@ -69,11 +64,6 @@ public class DeleteAppHandler extends CommandHandlerWithResult<AppDetailBehavior
 				processResult.setAutoFailMail(mailResult.getFailList());
 				processResult.setAutoFailServer(mailResult.getFailServerList());
 			}
-		}
-		
-		// アルゴリズム「11.休出申請（振休変更）削除」を実行する
-		if(application.getAppType()==ApplicationType.HOLIDAY_WORK_APPLICATION){
-			holidayService.deleteHdChange(appID);
 		}
 		processResult.setAppIDLst(Arrays.asList(appID));
 		return processResult;

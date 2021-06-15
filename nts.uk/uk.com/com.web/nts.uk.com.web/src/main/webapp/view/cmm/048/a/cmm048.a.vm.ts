@@ -35,17 +35,8 @@ module nts.uk.com.view.cmm048.a {
     empContactMobileMailAddr: KnockoutObservable<string> = ko.observable('');
     psContactMailAddr: KnockoutObservable<string> = ko.observable('');
     psContactMobileMailAddr: KnockoutObservable<string> = ko.observable('');
+
     ////A9
-    empContactPhoneDisp: KnockoutObservable<boolean> = ko.observable(true);
-    psContactPhoneDisp: KnockoutObservable<boolean> = ko.observable(true);
-    psContactEmergencyContact1Disp: KnockoutObservable<boolean> = ko.observable(true);
-    psContactEmergencyContact2Disp: KnockoutObservable<boolean> = ko.observable(true);
-    empContactSeatDialInDisp: KnockoutObservable<boolean> = ko.observable(true);
-    empContactSeatExtensionNumDisp: KnockoutObservable<boolean> = ko.observable(true);
-    empContactMailAddrDisp: KnockoutObservable<boolean> = ko.observable(true);
-    empContactMobileMailAddrDisp: KnockoutObservable<boolean> = ko.observable(true);
-    psContactMailAddrDisp: KnockoutObservable<boolean> = ko.observable(true);
-    psContactMobileEmailAddrDisp: KnockoutObservable<boolean> = ko.observable(true);
     ListOtherContact: KnockoutObservableArray<OtherContactViewModel> = ko.observableArray([]);
 
     //B
@@ -105,18 +96,6 @@ module nts.uk.com.view.cmm048.a {
     cMobileEmailAddrUpdateable: KnockoutObservable<boolean> = ko.observable(false);
     psMobileEmailAddrUseable: KnockoutObservable<boolean> = ko.observable(false);
     psMobileEmailAddrUpdateable: KnockoutObservable<boolean> = ko.observable(false);
-    cPhoneCheckable: KnockoutObservable<boolean> = ko.observable(false);
-    psPhoneCheckable: KnockoutObservable<boolean> = ko.observable(false);
-    emergencyNum1Checkable: KnockoutObservable<boolean> = ko.observable(false);
-    emergencyNum2Checkable: KnockoutObservable<boolean> = ko.observable(false);
-    dialInNumCheckable: KnockoutObservable<boolean> = ko.observable(false);
-    extensionNumCheckable: KnockoutObservable<boolean> = ko.observable(false);
-    cEmailAddrCheckable: KnockoutObservable<boolean> = ko.observable(false);
-    psEmailAddrCheckable: KnockoutObservable<boolean> = ko.observable(false);
-    cMobileEmailAddrCheckable: KnockoutObservable<boolean> = ko.observable(false);
-    psMobileEmailAddrCheckable: KnockoutObservable<boolean> = ko.observable(false);
-
-
 
     //general
     tabs: KnockoutObservableArray<any> = ko.observableArray([{
@@ -124,7 +103,7 @@ module nts.uk.com.view.cmm048.a {
       title: this.generateTitleTab(this.$i18n('CMM048_92'), 'setting'),
       content: '.tab-content-1',
       enable: ko.observable(true),
-      visible: ko.observable(true),
+      visible: ko.observable(true)
     },
     {
       id: 'tab-2',
@@ -214,17 +193,6 @@ module nts.uk.com.view.cmm048.a {
 
       //set list other contact
       vm.setListOtherContact(data);
-
-      vm.empContactPhoneDisp(data.employeeContact.isCellPhoneNumberDisplay == null ? true : data.employeeContact.isCellPhoneNumberDisplay);
-      vm.psContactPhoneDisp(data.personalContact.isPhoneNumberDisplay == null ? true : data.personalContact.isPhoneNumberDisplay);
-      vm.psContactEmergencyContact1Disp(data.personalContact.isEmergencyContact1Display == null ? true : data.personalContact.isEmergencyContact1Display);
-      vm.psContactEmergencyContact2Disp(data.personalContact.isEmergencyContact2Display == null ? true : data.personalContact.isEmergencyContact2Display);
-      vm.empContactSeatDialInDisp(data.employeeContact.isSeatDialInDisplay == null ? true : data.employeeContact.isSeatDialInDisplay);
-      vm.empContactSeatExtensionNumDisp(data.employeeContact.isSeatExtensionNumberDisplay == null ? true : data.employeeContact.isSeatExtensionNumberDisplay);
-      vm.empContactMailAddrDisp(data.employeeContact.isMailAddressDisplay == null ? true : data.employeeContact.isMailAddressDisplay);
-      vm.empContactMobileMailAddrDisp(data.employeeContact.isMobileMailAddressDisplay == null ? true : data.employeeContact.isMobileMailAddressDisplay);
-      vm.psContactMailAddrDisp(data.personalContact.isMailAddressDisplay == null ? true : data.personalContact.isMailAddressDisplay);
-      vm.psContactMobileEmailAddrDisp(data.personalContact.isMobileEmailAddressDisplay == null ? true : data.personalContact.isMobileEmailAddressDisplay);
     }
 
     private setListOtherContact(data: UserInformationDto) {
@@ -234,29 +202,14 @@ module nts.uk.com.view.cmm048.a {
       for (let i = 1; i < 6; i++) {
         const otherContactSetting: OtherContactDto = _.find(listOtherContactSetting, (contact: OtherContactDto) => contact.no === i);
         const otherContactPs: OtherContactDtoPs = _.find(listOtherContactPs, (contact: OtherContactDtoPs) => contact.otherContactNo === i);
-        if (otherContactPs) {
-          vm.ListOtherContact.push(
-            new OtherContactViewModel(
-              i,
-              vm.$i18n("CMM048_86", [otherContactSetting.contactName]),
-              otherContactPs.address,
-              otherContactSetting.contactUsageSetting === 2,
-              otherContactSetting.contactUsageSetting !== 0,
-              otherContactPs.isDisplay == null ? true : otherContactPs.isDisplay
-            )
-          );
-        } else {
-          vm.ListOtherContact.push(
-            new OtherContactViewModel(
-              i,
-              vm.$i18n("CMM048_86", [otherContactSetting.contactName]),
-              '',
-              otherContactSetting.contactUsageSetting === 2,
-              otherContactSetting.contactUsageSetting !== 0,
-              true
-            )
-          );
-        }
+        vm.ListOtherContact.push(
+          new OtherContactViewModel(
+            i,
+            vm.$i18n("CMM048_86", [otherContactSetting.contactName]),
+            otherContactPs ? otherContactPs.address : '',
+            otherContactSetting.contactUsageSetting === 1,
+          )
+        );
       }
     }
 
@@ -358,17 +311,7 @@ module nts.uk.com.view.cmm048.a {
       vm.cMobileEmailAddrUpdateable(displaySetting.companyMobileEmailAddress.updatable === IS_USE.USE);
       vm.psMobileEmailAddrUseable(displaySetting.personalMobileEmailAddress.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
       vm.psMobileEmailAddrUpdateable(displaySetting.personalMobileEmailAddress.updatable === IS_USE.USE);
-      vm.cPhoneCheckable(displaySetting.companyMobilePhone.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-      vm.psPhoneCheckable(displaySetting.personalMobilePhone.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-      vm.emergencyNum1Checkable(displaySetting.emergencyNumber1.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-      vm.emergencyNum2Checkable(displaySetting.emergencyNumber2.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-      vm.dialInNumCheckable(displaySetting.dialInNumber.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-      vm.extensionNumCheckable(displaySetting.extensionNumber.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-      vm.cEmailAddrCheckable(displaySetting.companyEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-      vm.psEmailAddrCheckable(displaySetting.personalEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-      vm.cMobileEmailAddrCheckable(displaySetting.companyMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-      vm.psMobileEmailAddrCheckable(displaySetting.personalMobileEmailAddress.contactUsageSetting === CONTACT_USAGE.INDIVIDUAL_SELECT);
-
+     
       //Make tab visible
       _.map(vm.tabs(), (tab: any) => {
         switch (tab.id) {
@@ -540,26 +483,20 @@ module nts.uk.com.view.cmm048.a {
       _.map(vm.ListOtherContact(), (contact: OtherContactViewModel) => {
         list.push(new OtherContactCommand({
           otherContactNo: contact.contactNo,
-          isDisplay: contact.contactUsage === false ? undefined : contact.isContactDisplayOnOther(),
           address: contact.contactAdress()
         }));
       });
       return new PersonalContactCommand({
         personalId: vm.personId(),
         mailAddress: vm.psContactMailAddr(),
-        isMailAddressDisplay: vm.psEmailAddrCheckable() === false ? undefined : vm.psContactMailAddrDisp(),
         mobileEmailAddress: vm.psContactMobileMailAddr(),
-        isMobileEmailAddressDisplay: vm.psMobileEmailAddrCheckable() === false ? undefined : vm.psContactMobileEmailAddrDisp(),
         phoneNumber: vm.psContactPhone(),
-        isPhoneNumberDisplay: vm.psPhoneCheckable() === false ? undefined : vm.psContactPhoneDisp(),
         emergencyContact1: new EmergencyContactCommand({
           phoneNumber: vm.psContactEmergencyContact1Phone()
         }),
-        isEmergencyContact1Display: vm.emergencyNum1Checkable() === false ? undefined : vm.psContactEmergencyContact1Disp(),
         emergencyContact2: new EmergencyContactCommand({
           phoneNumber: vm.psContactEmergencyContact2Phone()
         }),
-        isEmergencyContact2Display: vm.emergencyNum2Checkable() === false ? undefined : vm.psContactEmergencyContact2Disp(),
         otherContacts: list,
       });
     }
@@ -569,15 +506,10 @@ module nts.uk.com.view.cmm048.a {
       return new EmployeeContactCommand({
         employeeId: vm.employeeId(),
         mailAddress: vm.empContactMailAddr(),
-        isMailAddressDisplay: vm.cEmailAddrCheckable() === false ? undefined : vm.empContactMailAddrDisp(),
         seatDialIn: vm.empContactSeatDialIn(),
-        isSeatDialInDisplay: vm.dialInNumCheckable() === false ? undefined : vm.empContactSeatDialInDisp(),
         seatExtensionNumber: vm.empContactSeatExtensionNum(),
-        isSeatExtensionNumberDisplay: vm.extensionNumCheckable() === false ? undefined : vm.empContactSeatExtensionNumDisp(),
         mobileMailAddress: vm.empContactMobileMailAddr(),
-        isMobileMailAddressDisplay: vm.cMobileEmailAddrCheckable() === false ? undefined : vm.empContactMobileMailAddrDisp(),
         cellPhoneNumber: vm.empContactPhone(),
-        isCellPhoneNumberDisplay: vm.cPhoneCheckable() === false ? undefined : vm.empContactPhoneDisp()
       });
     }
 
@@ -734,9 +666,6 @@ module nts.uk.com.view.cmm048.a {
 
     // 利用する
     USE = 1,
-
-    // 個人選択可
-    INDIVIDUAL_SELECT = 2
   }
 
   enum IS_USE {
@@ -862,22 +791,16 @@ module nts.uk.com.view.cmm048.a {
     contactName!: string;
     contactAdress!: KnockoutObservable<string>;
     contactUsage!: boolean;
-    isContactDisplay!: boolean;
-    isContactDisplayOnOther!: KnockoutObservable<boolean>;
     constructor(
       contactNo: number,
       contactName: string,
       contactAdress: string,
       contactUsage: boolean,
-      isContactDisplay: boolean,
-      isContactDisplayOnOther: boolean
     ) {
       this.contactNo = contactNo;
       this.contactName = contactName;
       this.contactAdress = ko.observable(contactAdress);
       this.contactUsage = contactUsage;
-      this.isContactDisplay = isContactDisplay;
-      this.isContactDisplayOnOther = ko.observable(isContactDisplayOnOther);
     }
   }
 
@@ -1409,8 +1332,6 @@ module nts.uk.com.view.cmm048.a {
     functionIds: number[];
   }
 
-
-
   /**
  * Dto 連絡先情報の設定
  */
@@ -1685,19 +1606,9 @@ module nts.uk.com.view.cmm048.a {
     mailAddress: string;
 
     /**
-     * メールアドレスが在席照会に表示するか
-     */
-    isMailAddressDisplay: boolean;
-
-    /**
      * 携帯メールアドレス
      */
     mobileEmailAddress: string;
-
-    /**
-     * 携帯メールアドレスが在席照会に表示するか
-     */
-    isMobileEmailAddressDisplay: boolean;
 
     /**
      * 携帯電話番号
@@ -1705,29 +1616,14 @@ module nts.uk.com.view.cmm048.a {
     phoneNumber: string;
 
     /**
-     * 携帯電話番号が在席照会に表示するか
-     */
-    isPhoneNumberDisplay: boolean;
-
-    /**
      * 緊急連絡先１
      */
     emergencyContact1: EmergencyContactDto;
 
     /**
-     * 緊急連絡先１が在席照会に表示するか
-     */
-    isEmergencyContact1Display: boolean;
-
-    /**
      * 緊急連絡先２
      */
     emergencyContact2: EmergencyContactDto;
-
-    /**
-     * 緊急連絡先２が在席照会に表示するか
-     */
-    isEmergencyContact2Display: boolean;
 
     /**
      * 他の連絡先
@@ -1763,11 +1659,6 @@ module nts.uk.com.view.cmm048.a {
     * NO
     */
     otherContactNo: number;
-
-    /**
-     * 在席照会に表示するか
-     */
-    isDisplay: boolean;
 
     /**
      * 連絡先のアドレス
@@ -1835,19 +1726,9 @@ module nts.uk.com.view.cmm048.a {
     mailAddress: string;
 
     /**
-     * メールアドレスが在席照会に表示するか
-     */
-    isMailAddressDisplay: boolean;
-
-    /**
      * 座席ダイヤルイン
      */
     seatDialIn: string;
-
-    /**
-     * 座席ダイヤルインが在席照会に表示するか
-     */
-    isSeatDialInDisplay: boolean;
 
     /**
      * 座席内線番号
@@ -1855,29 +1736,14 @@ module nts.uk.com.view.cmm048.a {
     seatExtensionNumber: string;
 
     /**
-     * 座席内線番号が在席照会に表示するか
-     */
-    isSeatExtensionNumberDisplay: boolean;
-
-    /**
      * 携帯メールアドレス
      */
     mobileMailAddress: string;
 
     /**
-     * 携帯メールアドレスが在席照会に表示するか
-     */
-    isMobileMailAddressDisplay: boolean;
-
-    /**
      * 携帯電話番号
      */
     cellPhoneNumber: string;
-
-    /**
-     * 携帯電話番号が在席照会に表示するか
-     */
-    isCellPhoneNumberDisplay: boolean;
   }
 
   /**

@@ -9,44 +9,50 @@ module nts.uk.ui.ktg005.a {
 		name: 'ktg-005-a',
 		template: `
 		<div class="widget-title">
-			<table>
+			<table class="ktg005-fontsize-larger" style="width: 100%">
 				<colgroup>
 					<col width="auto" />
-					<col width="41px" />
-					<col width="auto" />
-					<col width="41px" />
+					<col width="90px" />
+					<col width="30px" />
 				</colgroup>
 				<thead>
 					<tr data-bind="with: $component.executionAppResult">
-						<th data-bind="i18n: topPagePartName"></th>
+						<!-- A1_1 -->
 						<th>
-							<button class="icon" data-bind="click: function() { $component.jumpToCmm045() }">
-								<i data-bind="ntsIcon: { no: 85 }"></i>
-							</button>
+							<div data-bind="ntsFormLabel: { required: false, text: topPagePartName }"></div>
 						</th>
-						<th data-bind="i18n: 'KTG005_1'"></th>
+						<!-- A1_2 -->
+						<th class="ktg005-linklabel">
+							<div data-bind="
+								click: function() { $component.jumpToCmm045() },
+								ntsFormLabel: { required: false, text: $component.$i18n('KTG005_1') }">
+							</div>
+						</th>
 						<th>
-							<button class="icon" data-bind="
+							<!-- A1_4 -->
+							<button class="icon ktg001-no-border" data-bind="
 									click: function() { $component.openScreenB() },
 									visible: employeeCharge
 								">
-								<i data-bind="ntsIcon: { no: 5 }"></i>
+								<i data-bind="ntsIcon: { no: 5, width: 25, height: 25 }"></i>
 							</button>
 						</th>
 					</tr>
 				</thead>
 			</table>
 		</div>
-		<div class="ktg-005-a" data-bind="widget-content: 100">
-			<div data-bind="with: $component.executionAppResult">
-				<table>
+		<div class="ktg-005-a ktg005-fontsize ktg005-border" data-bind="widget-content: 100">
+			<div data-bind="with: $component.executionAppResult" style="padding: 0px 40px 0px 30px;">
+				<table style="width: 100%">
 					<colgroup>
 						<col width="auto" />
 						<col width="180px" />
 					</colgroup>
 					<tbody data-bind="foreach: { data: appSettings, as: 'row' }">
 						<tr>
-							<td data-bind="i18n: $component.getLabel(item)"></td>
+							<td>
+								<div data-bind="ntsFormLabel: { required: false, text: $component.getLabel(item) }"></div>
+							</td>
 							<td class="text-right" data-bind="i18n: $component.getText(item)"></td>
 						</tr>
 					</tbody>
@@ -54,8 +60,33 @@ module nts.uk.ui.ktg005.a {
 			</div>
 		</div>
 		<style rel="stylesheet">
+			.ktg-005-a table tr {
+				height: 30px !important;
+			}
 			.ktg-005-a .text-right {
 				text-align: right;
+			}
+			.ktg005-fontsize div.form-label>span.text {
+				font-size: 1rem !important;
+				padding-left: 5px;
+			}
+			.ktg005-fontsize-larger div.form-label>span.text {
+				font-size: 1.2rem !important;
+			}
+			.ktg005-linklabel div.form-label>span.text {
+				color: #0D86D1;
+				text-decoration: underline;
+				width: 80px;
+				cursor: pointer;
+				font-size: 1rem !important;
+			}
+			.ktg005-border table tr td,
+			.ktg005-border table tr th {
+				border-width: 0px;
+				border-bottom: 1px solid #BFBFBF;
+			}
+			.ktg-005-a tr:last-child td {
+				border: none !important;
 			}
 		</style>
 		`
@@ -75,16 +106,8 @@ module nts.uk.ui.ktg005.a {
 			employeeCharge: false
 		});
 
-		constructor(private params: { currentOrNextMonth: 1 | 2; }) {
+		constructor(private params: { currentOrNextMonth: 1 | 2, closureId: number }) {
 			super();
-
-			if (this.params === undefined) {
-				this.params = { currentOrNextMonth: 1 };
-			}
-
-			if (this.params.currentOrNextMonth === undefined) {
-				this.params.currentOrNextMonth = 1;
-			}
 		}
 
 		created() {
@@ -94,15 +117,7 @@ module nts.uk.ui.ktg005.a {
 			const topPagePartCode = $(location).attr('search').split('=')[1];
 
 			vm.$blockui('invisibleView')
-				.then(() => vm.$ajax('at', REST_API.getOptionalWidgetDisplay, topPagePartCode))
-				.then((widDisplay: IOptionalWidgetDisplay) => {
-					const { datePeriodDto } = widDisplay;
-					const { currentOrNextMonth } = params || { currentOrNextMonth: 11 };
-					const startDate = currentOrNextMonth === 1 ? datePeriodDto.strCurrentMonth : datePeriodDto.strNextMonth;
-					const endDate = currentOrNextMonth === 1 ? datePeriodDto.endCurrentMonth : datePeriodDto.endNextMonth;
-
-					return vm.$ajax('at', REST_API.startScreenA, { companyId, employeeId, startDate, endDate });
-				})
+				.then(() => vm.$ajax('at', REST_API.startScreenA, vm.params))
 				.then((setting: IExecutionAppResult) => {
 					setting.appSettings = _
 						.chain(setting.appSettings)

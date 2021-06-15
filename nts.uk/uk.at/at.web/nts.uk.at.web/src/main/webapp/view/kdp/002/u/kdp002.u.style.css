@@ -1,0 +1,27 @@
+.view-u table {
+    width: 100%;
+    height: 100%;
+}
+
+.view-u .colum-1 {
+    width: 50px;
+    margin-top: 5px;
+    height: 476px;
+    float: left;
+}
+
+.view-u .box-content {
+    border: 1px solid #7F7F7F;
+    padding: 5px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 8px;
+    margin-left: 50px;
+    width: 496px;
+}
+
+.view-u .colum-2 .box-content .content {
+    margin-bottom: 5px;
+    font-size: 16px;
+    word-break: break-word;
+}
