@@ -6,7 +6,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 930, height: 630 };</script>
+			<script>var dialogSize = { width: 930, height: 580 };</script>
 			<com:stylefile path="ccg013.c.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="ccg013.c.start.js" />
@@ -53,7 +53,7 @@
 							</td>
 						</tr>
 						<tr class="systemGroup">
-							<td>
+							<td class="flex valign-center">
 								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CCG013_47')}</div>
 							</td>
 							<td>
@@ -89,7 +89,7 @@
 							optionsValue: 'primaryKey',
 							columns: columns,
 							multiple: true,
-							rows: 8,
+							rows: 11,
 							value: currentCodeList}">
 					</table>
 				</div>
@@ -109,7 +109,7 @@
 							optionsValue: 'primaryKey',
 							columns: newColumns,
 							multiple: true,
-							rows: 8,
+							rows: 11,
 							value: newCurrentCodeList}">
 					</table>
 				</div>
