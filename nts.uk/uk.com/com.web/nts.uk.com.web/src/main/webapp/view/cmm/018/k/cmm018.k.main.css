@@ -51,7 +51,7 @@ table.ntsSwapGrid tbody tr td {
 }
 .upDown-container {
 	padding-left: 10px;
-	width: 250px !important;
+	height: 260px !important;
 }
 /*fix tam*/
 #swap-list-move-data{
