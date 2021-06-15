@@ -213,11 +213,6 @@ module nts.uk.at.view.kmk004.b {
 
 			$(document).ready(function () {
 			// 	$('#list-box').focus();
-			// Fix bug render edge
-			setTimeout(() => {
-				$('.content-data').css('margin-top', '9px');
-				$('.content-data').css('margin-left', '9px');
-			}, 500);
 			});
 		}
 
