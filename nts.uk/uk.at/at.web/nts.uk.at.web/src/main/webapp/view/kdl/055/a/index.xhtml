@@ -44,9 +44,10 @@
                             <!-- A3_2 -->
                             <div style="width: 195px;" tabindex="5" data-bind="ntsCheckBox: { 
                                 checked: scheduleImport.captureCheckSheet, 
-                                text: $i18n('KDL055_11') }"></div>
+                                text: $i18n('KDL055_11'), 
+                                enable: isEnable() }"></div>
                                 <!-- A3_3 -->
-                            <input style="width: 217px;" tabindex="6" data-bind="ntsTextEditor: {value: scheduleImport.captureSheet, enable: scheduleImport.captureCheckSheet}" />
+                            <input style="width: 217px;" tabindex="6" data-bind="ntsTextEditor: {value: scheduleImport.captureSheet, enable: isEnable() &amp;&amp; scheduleImport.captureCheckSheet}" />
                         </div>
                     </div>
                     <div class="table">
@@ -63,9 +64,10 @@
                             <!-- A4_2 -->
                             <div style="width: 195px;" tabindex="7" data-bind="ntsCheckBox: { 
                                 checked: scheduleImport.captureCheckCell, 
-                                text: $i18n('KDL055_15') }"></div>
+                                text: $i18n('KDL055_15'), 
+                                enable: isEnable() }"></div>
                                 <!-- A4_3 -->
-                            <input style="width: 40px;" tabindex="8" data-bind="ntsTextEditor: {value: scheduleImport.captureCell, enable: scheduleImport.captureCheckCell}" />
+                            <input style="width: 40px;" tabindex="8" data-bind="ntsTextEditor: {value: scheduleImport.captureCell, enable: isEnable() &amp;&amp; scheduleImport.captureCheckCell}" />
                         </div>
                     </div>
                     <div class="table">
@@ -78,12 +80,13 @@
                     <!-- A5_1 -->
                     <div class="cell col-1 valign-center" data-bind="ntsFormLabel:{}, text: $i18n('KDL055_18')"></div>
                     <!-- A5_2 -->
-                    <div tabindex="9" class="cell valign-center" data-bind="ntsSwitchButton: {
+                    <div tabindex="9" id="overwrite" class="cell valign-center" data-bind="ntsSwitchButton: {
                         name: $i18n('KDL055_18'),
                         options: overwriteOptions,
                         optionsValue: 'overwrite',
                         optionsText: 'name',
-                        value: scheduleImport.overwrite}"></div>
+                        value: scheduleImport.overwrite, 
+                        enable: isEnable()}"></div>
                 </div>
             </div>           
         </ui:define>

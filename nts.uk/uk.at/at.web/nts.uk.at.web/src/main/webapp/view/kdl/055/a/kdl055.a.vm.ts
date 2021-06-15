@@ -12,6 +12,7 @@ module nts.uk.at.view.kdl055.a.viewmodel {
         scheduleImport: ScheduleImport = new ScheduleImport({mappingFile: null, captureCheckSheet: false, captureSheet: null, captureCheckCell: false, captureCell: null, overwrite: false});
         filename: KnockoutObservable<string> = ko.observable(null);
         fileID: KnockoutObservable<string> = ko.observable(null);
+        isEnable: KnockoutObservable<boolean> = ko.observable(false);
         paramB: any = null;
         overwriteOptions: any = ko.observableArray([
             { overwrite: true, name: this.$i18n("KDL055_20") },
@@ -44,20 +45,10 @@ module nts.uk.at.view.kdl055.a.viewmodel {
 
             $('#file-upload button').focus();
 
-            // $('.fileinput').change(() => {
-            //     let filePath = $('.fileinput').val();
-            //     vm.filename(filePath);
-            // });
-
             vm.filename.subscribe(value => {
                 if (value) {
                     vm.scheduleImport.mappingFile(value);
-                }
-            });
-
-            vm.scheduleImport.mappingFile.subscribe(value => {
-                if (value) {
-                    vm.filename(value)
+                    vm.isEnable(true);
                 }
             });
 

@@ -5,3 +5,7 @@
 .mv-17 {
     margin: 17px 20px;
 }
+
+#overwrite > .nts-switch-button {
+    width: 60px;
+}

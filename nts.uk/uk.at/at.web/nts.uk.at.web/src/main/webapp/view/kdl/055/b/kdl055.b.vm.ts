@@ -12,6 +12,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
         gridOptions = { dataSource: [], columns: [], features: [], ntsControls: [] };
         data: CaptureDataOutput = null;
         isOpenKDL053: boolean = false;
+        isEnableRegister: KnockoutObservable<boolean> = ko.observable(true);
 
         created(params: any) {
             const vm = this;
@@ -39,6 +40,15 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                     }
                 }).always(() => vm.$blockui('hide'));
             }
+
+            setInterval(() => {
+                let errors = $('#grid').mGrid('errors');
+                if (errors.length > 0) {
+                    this.isEnableRegister(false);
+                } else {
+                    this.isEnableRegister(true);
+                }
+            }, 100);
         }
         
         mounted() {
@@ -114,7 +124,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                             vm.isOpenKDL053 = true;
                         }
                     } else {
-                        vm.$blockui("hide");
+                        vm.$dialog.info({ messageId: "Msg_15"}).then(() => vm.$blockui("hide"));                        
                         vm.close();
                     }
                 }
@@ -130,21 +140,26 @@ module nts.uk.at.view.kdl055.b.viewmodel {
         openKDL053() {
             const vm = this;
 
-            let mappingErrorList = vm.data.mappingErrorList;
+            let errorList = $('#grid').mGrid('errors');
+            let empList = vm.data.listPersonEmp;
+            let empIds: any[] = [];
             let request: any = {};
             request.errorRegistrationList = [];
-            for (let i = 0; i < mappingErrorList.length; i++) {
-                let empList = vm.data.listPersonEmp;
-                let empFilter = _.filter(empList, {'employeeId': vm.data.mappingErrorList[i].employeeId});
-                let empCode = empFilter.length > 0 ? empFilter[0].employeeCode : '';
 
-                let item = {id: i, sid: mappingErrorList[i].employeeId, scd: empCode, empName: mappingErrorList[i].employeeName, 
-                    date: mappingErrorList[i].date, attendanceItemId: null, errorMessage: mappingErrorList[i].errorMessage};
+            _.forEach(errorList, (error: any) => {
+                let empId = error.rowId;
+                empIds.push(empId);
+                let empFilter = _.filter(empList, {'employeeId': empId});
+                let empCode = empFilter.length > 0 ? empFilter[0].employeeCode : '';
+                let empname = empFilter.length > 0 ? empFilter[0].businessName : '';
+                let item = {id: error.index, sid: empId, scd: empCode, empName: empname, 
+                            date: error.columnKey, attendanceItemId: null, errorMessage: error.message};
                 request.errorRegistrationList.push(item);
-            }
+            });
             request.isRegistered = 0;
             request.dispItemCol = false;
-            request.employeeIds = _.map(vm.data.listPersonEmp, (item) => item.employeeId);
+            request.employeeIds = empIds;
+
             if (!vm.isOpenKDL053) {
                 vm.$window.modeless('at', '/view/kdl/053/a/index.xhtml', request).then(() => {
                     vm.isOpenKDL053 = false;
@@ -154,7 +169,6 @@ module nts.uk.at.view.kdl055.b.viewmodel {
         }
 
         close() {
-            // setShared('openA', openA);
             this.$window.close();
         }
 
@@ -187,7 +201,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             let errors = [];
             
             _.forEach(mappingErrorList, (error: MappingErrorOutput) => {
-                let err = { columnKey: 'nameHeader', id: null, index: null, message: vm.$i18n.message(error.errorMessage) };
+                let err = { columnKey: 'nameHeader', id: null, index: null, message: error.errorMessage };
                 
                 if (error.employeeId) {
                     err.id = error.employeeId;
@@ -220,7 +234,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                     request.errorRegistrationList.push(item);
                 }
                 request.isRegistered = 0;
-                request.dispItemCol = false;
+                request.dispItemCol = true;
                 request.employeeIds = _.map(param.listPersonEmp, (item) => item.employeeId);
                 vm.$window.modeless('at', '/view/kdl/053/a/index.xhtml', request).then(() => {
                     vm.isOpenKDL053 = false;
@@ -463,183 +477,5 @@ module nts.uk.at.view.kdl055.b.viewmodel {
         date: string,
 
         importCode: string
-    }
-
-    const listPerson: PersonEmpBasicInfoImport[] = [
-        {personId: "000000001", employeeId: '000000001', businessName: 'emp1', gender: 1, birthday: null, employeeCode: '000000000000000001', jobEntryDate: null, retirementDate: null},
-        {personId: "000000002", employeeId: '000000002', businessName: 'emp2', gender: 1, birthday: null, employeeCode: '000000000000000002', jobEntryDate: null, retirementDate: null},
-        {personId: "000000003", employeeId: '000000003', businessName: 'emp3', gender: 1, birthday: null, employeeCode: '000000000000000003', jobEntryDate: null, retirementDate: null},
-        {personId: "000000004", employeeId: '000000004', businessName: 'emp4', gender: 1, birthday: null, employeeCode: '000000000000000004', jobEntryDate: null, retirementDate: null},
-        {personId: "000000005", employeeId: '000000005', businessName: 'emp5', gender: 1, birthday: null, employeeCode: '000000000000000005', jobEntryDate: null, retirementDate: null},
-        {personId: "000000006", employeeId: '000000006', businessName: 'emp6', gender: 1, birthday: null, employeeCode: '000000000000000006', jobEntryDate: null, retirementDate: null},
-        {personId: "000000007", employeeId: '000000007', businessName: 'emp7', gender: 1, birthday: null, employeeCode: '000000000000000007', jobEntryDate: null, retirementDate: null},
-        {personId: "000000008", employeeId: '000000008', businessName: 'emp8', gender: 1, birthday: null, employeeCode: '000000000000000008', jobEntryDate: null, retirementDate: null},
-        {personId: "000000009", employeeId: '000000009', businessName: 'emp9', gender: 1, birthday: null, employeeCode: '000000000000000009', jobEntryDate: null, retirementDate: null},
-        {personId: "000000010", employeeId: '000000010', businessName: 'emp10', gender: 1, birthday: null, employeeCode: '000000000000000010', jobEntryDate: null, retirementDate: null},
-        {personId: "000000011", employeeId: '000000011', businessName: 'emp11', gender: 1, birthday: null, employeeCode: '000000000000000011', jobEntryDate: null, retirementDate: null},
-        {personId: "000000012", employeeId: '000000012', businessName: 'emp12', gender: 1, birthday: null, employeeCode: '000000000000000012', jobEntryDate: null, retirementDate: null},
-        {personId: "000000013", employeeId: '000000013', businessName: 'emp13', gender: 1, birthday: null, employeeCode: '000000000000000013', jobEntryDate: null, retirementDate: null},
-        {personId: "000000014", employeeId: '000000014', businessName: 'emp14', gender: 1, birthday: null, employeeCode: '000000000000000014', jobEntryDate: null, retirementDate: null},
-        {personId: "000000015", employeeId: '000000015', businessName: 'emp15', gender: 1, birthday: null, employeeCode: '000000000000000015', jobEntryDate: null, retirementDate: null},
-        {personId: "000000016", employeeId: '000000016', businessName: 'emp16', gender: 1, birthday: null, employeeCode: '000000000000000016', jobEntryDate: null, retirementDate: null},
-        {personId: "000000017", employeeId: '000000017', businessName: 'emp17', gender: 1, birthday: null, employeeCode: '000000000000000017', jobEntryDate: null, retirementDate: null},
-        {personId: "000000018", employeeId: '000000018', businessName: 'emp18', gender: 1, birthday: null, employeeCode: '000000000000000018', jobEntryDate: null, retirementDate: null},
-        {personId: "000000019", employeeId: '000000019', businessName: 'emp19', gender: 1, birthday: null, employeeCode: '000000000000000019', jobEntryDate: null, retirementDate: null},
-        {personId: "000000020", employeeId: '000000020', businessName: 'emp20', gender: 1, birthday: null, employeeCode: '000000000000000020', jobEntryDate: null, retirementDate: null}
-    ]
-
-    const dates: string[] = [
-        '2021/04/01', '2021/04/02', '2021/04/03', '2021/04/04', '2021/04/05', '2021/04/06', '2021/04/07', 
-        '2021/04/08', '2021/04/09', '2021/04/10', '2021/04/11', '2021/04/12', '2021/04/13', '2021/04/14', 
-        '2021/04/15', '2021/04/16', '2021/04/17', '2021/04/18', '2021/04/19', '2021/04/20', '2021/04/21', 
-        '2021/04/22', '2021/04/23', '2021/04/24', '2021/04/25', '2021/04/26', '2021/04/27', '2021/04/28', '2021/04/29', '2021/04/30'
-    ]
-
-    const holidays: PublicHoliday[] = [
-        {companyId: null, date: '2021/04/02', holidayName: null},
-        {companyId: null, date: '2021/04/06', holidayName: null},
-        {companyId: null, date: '2021/04/07', holidayName: null},
-        {companyId: null, date: '2021/04/14', holidayName: null},
-        {companyId: null, date: '2021/04/15', holidayName: null},
-        {companyId: null, date: '2021/04/30', holidayName: null},
-    ]
-
-    const result: ImportResultDetail[] = [
-        {employeeId: '000000001', ymd: '2021/04/01', importCode: '午前のみ出', status: 1},
-        {employeeId: '000000001', ymd: '2021/04/02', importCode: '午前のみ出', status: 2},
-        {employeeId: '000000001', ymd: '2021/04/03', importCode: '午前のみ出', status: 3},
-        {employeeId: '000000001', ymd: '2021/04/04', importCode: '午前のみ出', status: 4},
-        {employeeId: '000000001', ymd: '2021/04/05', importCode: '午前のみ出', status: 5},
-        {employeeId: '000000001', ymd: '2021/04/06', importCode: '午前のみ出', status: 8},
-        {employeeId: '000000001', ymd: '2021/04/07', importCode: '午前のみ出', status: 9},
-        {employeeId: '000000001', ymd: '2021/04/08', importCode: '午前のみ出', status: 1},
-        {employeeId: '000000001', ymd: '2021/04/10', importCode: '午前のみ出', status: 1},
-        {employeeId: '000000001', ymd: '2021/04/11', importCode: '午前のみ出', status: 1},
-        {employeeId: '000000001', ymd: '2021/04/12', importCode: '午前のみ出', status: 1},
-        {employeeId: '000000001', ymd: '2021/04/15', importCode: '午前のみ出', status: 1},
-        {employeeId: '000000001', ymd: '2021/04/16', importCode: '午前のみ出', status: 1},
-        {employeeId: '000000001', ymd: '2021/04/17', importCode: '午前のみ出', status: 1},
-        {employeeId: '000000001', ymd: '2021/04/18', importCode: '午前のみ出', status: 1},
-        {employeeId: '000000001', ymd: '2021/04/19', importCode: '午前のみ出', status: 1},
-        {employeeId: '000000001', ymd: '2021/04/20', importCode: '午前のみ出', status: 1},
-        {employeeId: '000000001', ymd: '2021/04/21', importCode: '午前のみ出', status: 1},
-        {employeeId: '000000001', ymd: '2021/04/22', importCode: '午前のみ出', status: 1},
-        {employeeId: '000000001', ymd: '2021/04/29', importCode: '午前のみ出', status: 1},
-        {employeeId: '000000001', ymd: '2021/04/30', importCode: '午前のみ出', status: 1},
-
-        {employeeId: '000000002', ymd: '2021/04/01', importCode: '出勤A', status: 1},
-        {employeeId: '000000002', ymd: '2021/04/02', importCode: '出勤A', status: 2},
-        {employeeId: '000000002', ymd: '2021/04/03', importCode: '出勤A', status: 3},
-        {employeeId: '000000002', ymd: '2021/04/04', importCode: '出勤A', status: 4},
-        {employeeId: '000000002', ymd: '2021/04/05', importCode: '出勤A', status: 5},
-        {employeeId: '000000002', ymd: '2021/04/06', importCode: '出勤Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', status: 8},
-        {employeeId: '000000002', ymd: '2021/04/07', importCode: '出勤A', status: 9},
-        {employeeId: '000000002', ymd: '2021/04/09', importCode: '出勤A', status: 1},
-        {employeeId: '000000002', ymd: '2021/04/10', importCode: '出勤A', status: 1},
-        {employeeId: '000000002', ymd: '2021/04/11', importCode: '出勤A', status: 1},
-        {employeeId: '000000002', ymd: '2021/04/13', importCode: '出勤A', status: 1},
-        {employeeId: '000000002', ymd: '2021/04/14', importCode: '出勤A', status: 1},
-        {employeeId: '000000002', ymd: '2021/04/15', importCode: '出勤A', status: 1},
-        {employeeId: '000000002', ymd: '2021/04/23', importCode: '出勤A', status: 1},
-        {employeeId: '000000002', ymd: '2021/04/24', importCode: '出勤A', status: 1},
-        {employeeId: '000000002', ymd: '2021/04/25', importCode: '出勤A', status: 1},
-        {employeeId: '000000002', ymd: '2021/04/26', importCode: '出勤A', status: 1},
-        {employeeId: '000000002', ymd: '2021/04/27', importCode: '出勤A', status: 1},
-        {employeeId: '000000002', ymd: '2021/04/28', importCode: '出勤A', status: 1},
-        {employeeId: '000000002', ymd: '2021/04/29', importCode: '出勤A', status: 1},
-        {employeeId: '000000002', ymd: '2021/04/30', importCode: '出勤A', status: 1}, 
-        
-        {employeeId: '000000003', ymd: '2021/04/01', importCode: '出勤', status: 1},
-        {employeeId: '000000003', ymd: '2021/04/02', importCode: '出勤', status: 2},
-        {employeeId: '000000003', ymd: '2021/04/03', importCode: '出勤', status: 3},
-        {employeeId: '000000003', ymd: '2021/04/04', importCode: '出勤', status: 4},
-        {employeeId: '000000003', ymd: '2021/04/05', importCode: '出勤', status: 5},
-        {employeeId: '000000003', ymd: '2021/04/06', importCode: '出勤', status: 8},
-        {employeeId: '000000003', ymd: '2021/04/07', importCode: '出勤', status: 9},
-        {employeeId: '000000003', ymd: '2021/04/09', importCode: '出勤', status: 1},
-        {employeeId: '000000003', ymd: '2021/04/10', importCode: '出勤', status: 1},
-        {employeeId: '000000003', ymd: '2021/04/11', importCode: '出勤', status: 1},
-        {employeeId: '000000003', ymd: '2021/04/13', importCode: '出勤', status: 1},
-        {employeeId: '000000003', ymd: '2021/04/14', importCode: '出勤', status: 1},
-        {employeeId: '000000003', ymd: '2021/04/15', importCode: '出勤', status: 1},
-        {employeeId: '000000003', ymd: '2021/04/23', importCode: '出勤', status: 1},
-        {employeeId: '000000003', ymd: '2021/04/24', importCode: '出勤', status: 1},
-        {employeeId: '000000003', ymd: '2021/04/25', importCode: '出勤', status: 1},
-        {employeeId: '000000003', ymd: '2021/04/26', importCode: '出勤', status: 1},
-        {employeeId: '000000003', ymd: '2021/04/27', importCode: '出勤', status: 1},
-        {employeeId: '000000003', ymd: '2021/04/28', importCode: '出勤', status: 1},
-        {employeeId: '000000003', ymd: '2021/04/29', importCode: '出勤', status: 1},
-        {employeeId: '000000003', ymd: '2021/04/30', importCode: '出勤', status: 1}, 
-
-        {employeeId: '000000004', ymd: '2021/04/01', importCode: '出勤', status: 1},
-        {employeeId: '000000004', ymd: '2021/04/02', importCode: '出勤', status: 2},
-        {employeeId: '000000004', ymd: '2021/04/03', importCode: '出勤', status: 3},
-        {employeeId: '000000004', ymd: '2021/04/04', importCode: '出勤', status: 4},
-        {employeeId: '000000004', ymd: '2021/04/05', importCode: '出勤', status: 5},
-        {employeeId: '000000004', ymd: '2021/04/06', importCode: '出勤', status: 8},
-        {employeeId: '000000004', ymd: '2021/04/07', importCode: '出勤', status: 9},
-        {employeeId: '000000004', ymd: '2021/04/09', importCode: '出勤', status: 1},
-        {employeeId: '000000004', ymd: '2021/04/10', importCode: '出勤', status: 1},
-        {employeeId: '000000004', ymd: '2021/04/11', importCode: '出勤', status: 1},
-        {employeeId: '000000004', ymd: '2021/04/13', importCode: '出勤', status: 1},
-        {employeeId: '000000004', ymd: '2021/04/14', importCode: '出勤', status: 1},
-        {employeeId: '000000004', ymd: '2021/04/15', importCode: '出勤', status: 1},
-        {employeeId: '000000004', ymd: '2021/04/23', importCode: '出勤', status: 1},
-        {employeeId: '000000004', ymd: '2021/04/24', importCode: '出勤', status: 1},
-        {employeeId: '000000004', ymd: '2021/04/25', importCode: '出勤', status: 1},
-        {employeeId: '000000004', ymd: '2021/04/26', importCode: '出勤', status: 1},
-        {employeeId: '000000004', ymd: '2021/04/27', importCode: '出勤', status: 1},
-        {employeeId: '000000004', ymd: '2021/04/28', importCode: '出勤', status: 1},
-        {employeeId: '000000004', ymd: '2021/04/29', importCode: '出勤', status: 1},
-        {employeeId: '000000004', ymd: '2021/04/30', importCode: '出勤', status: 1}, 
-
-        {employeeId: '000000005', ymd: '2021/04/01', importCode: '出勤', status: 1},
-        {employeeId: '000000005', ymd: '2021/04/02', importCode: '出勤', status: 2},
-        {employeeId: '000000005', ymd: '2021/04/03', importCode: '出勤', status: 3},
-        {employeeId: '000000005', ymd: '2021/04/04', importCode: '出勤', status: 4},
-        {employeeId: '000000005', ymd: '2021/04/05', importCode: '出勤', status: 5},
-        {employeeId: '000000005', ymd: '2021/04/06', importCode: '出勤', status: 8},
-        {employeeId: '000000005', ymd: '2021/04/07', importCode: '出勤', status: 9},
-        {employeeId: '000000005', ymd: '2021/04/09', importCode: '出勤', status: 1},
-        {employeeId: '000000005', ymd: '2021/04/10', importCode: '出勤', status: 1},
-        {employeeId: '000000005', ymd: '2021/04/11', importCode: '出勤', status: 1},
-        {employeeId: '000000005', ymd: '2021/04/13', importCode: '出勤', status: 1},
-        {employeeId: '000000005', ymd: '2021/04/14', importCode: '出勤', status: 1},
-        {employeeId: '000000005', ymd: '2021/04/15', importCode: '出勤', status: 1},
-        {employeeId: '000000005', ymd: '2021/04/23', importCode: '出勤', status: 1},
-        {employeeId: '000000005', ymd: '2021/04/24', importCode: '出勤', status: 1},
-        {employeeId: '000000005', ymd: '2021/04/25', importCode: '出勤', status: 1},
-        {employeeId: '000000005', ymd: '2021/04/26', importCode: '出勤', status: 1},
-        {employeeId: '000000005', ymd: '2021/04/27', importCode: '出勤', status: 1},
-        {employeeId: '000000005', ymd: '2021/04/28', importCode: '出勤', status: 1},
-        {employeeId: '000000005', ymd: '2021/04/29', importCode: '出勤', status: 1},
-        {employeeId: '000000005', ymd: '2021/04/30', importCode: '出勤', status: 1}, 
-    ]
-
-    const importResult: ImportResult = {
-        results: result,
-        unimportableDates: [],
-        unexistsEmployees: [],
-        orderOfEmployees: []
-    }
-
-    const mappingErrorList = [
-        {employeeCode: '000000001', employeeName: 'emp1', date: '2021/04/01', errorMessage: 'Msg_2121'},
-        {employeeCode: '000000002', employeeName: 'emp2', date: '2021/04/01', errorMessage: 'Msg_2175'},
-        {employeeCode: '000000003', employeeName: 'emp3', date: '2021/04/01', errorMessage: 'Msg_2121'},
-        {employeeCode: '000000004', employeeName: 'emp4', date: '2021/04/01', errorMessage: 'Msg_2175'},
-    ]
-
-    const dataFake: CaptureDataOutput = {
-        // 社員リスト　：OrderedList<社員ID, 社員コード, ビジネスネーム>
-        listPersonEmp: listPerson,
-        // 年月日リスト：OrderedList<年月日, 曜日>
-        importableDates: dates,
-        // 祝日リスト　：List<祝日>
-        holidays: holidays,
-        // 取り込み結果
-        importResult: importResult,
-        // エラーリスト：List<取り込みエラーDto>
-        mappingErrorList: mappingErrorList,
     }
 }
