@@ -190,23 +190,27 @@
                         />
                       </td>
                       <td class="text-center">
-                        <div
-                          class="cf"                            
-                          tabindex="10"
-                          style="display: inline-block;"
-                          data-bind="ntsSwitchButton: {
-                            options: $vm.settingRules,
-                            optionsValue: 'code',
-                            optionsText: 'name',
-                            value: setting
-                          }"
-                        ></div>
-                        <button tabindex="10"
-                          class="btn-setting"
-                          data-bind="attr: { id: 'btnRow-' + id }, 
-                          text: $vm.$i18n('KWR003_216'), 
-                          click: function(data) { $vm.openDialogKDL(data) }"
-                        />
+                        <div class="flex valign-center">
+                          <div
+                            class="cf"                            
+                            tabindex="10"
+                            style="display: inline-block; position: relative; left: 10px;"
+                            data-bind="ntsSwitchButton: {
+                              options: $vm.settingRules,
+                              optionsValue: 'code',
+                              optionsText: 'name',
+                              value: setting
+                            }"
+                          ></div>
+                          <button tabindex="10"
+                            class="btn-setting"
+                            style="position: relative; left: 15px;"
+                            data-bind="attr: { id: 'btnRow-' + id }, 
+                            text: $vm.$i18n('KWR003_216'), 
+                            click: function(data) { $vm.openDialogKDL(data) }"
+                          />
+                        </div>
+                        
                       </td>
                       <td data-bind="{css: 'choose-text-' + id}"><span class="limited-label"  data-bind="text: selectionItem"></span></td>
                     </tr>
