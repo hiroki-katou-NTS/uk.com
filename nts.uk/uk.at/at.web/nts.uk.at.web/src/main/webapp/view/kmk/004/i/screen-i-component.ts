@@ -185,18 +185,20 @@ class ScreenIComponent extends ko.ViewModel {
 		let dfd = $.Deferred();
 		vm.$blockui('grayout');
 		$('#empt-list-setting').ntsListComponent(listComponentOption).done(() => {
+            setTimeout(() => {
+                vm.regSelectedEvent();
 
-			vm.regSelectedEvent();
+                vm.$blockui("hide");
 
-			vm.$blockui("hide");
+                vm.screenData().selected.valueHasMutated();
 
-			vm.screenData().selected.valueHasMutated();
+                dfd.resolve(vm.screenData().selected());
 
-			dfd.resolve(vm.screenData().selected());
-
-			vm.selectedClosureId.subscribe(() => {
-				$('#empt-list-setting').ntsListComponent(listComponentOption);
-			});
+                vm.selectedClosureId.subscribe(() => {
+                    $('#empt-list-setting').ntsListComponent(listComponentOption);
+                });
+            }, 500);
+			
 		});
 
 		return dfd.promise();
