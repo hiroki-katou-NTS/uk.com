@@ -3024,15 +3024,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 userInfor.gridHeightSelection = self.selectedTypeHeightExTable();
                 if (self.selectedTypeHeightExTable() == TypeHeightExTable.DEFAULT) {
                     userInfor.heightGridSetting = '';
-                    self.updateGridHeightMode("dynamic", null);
+                    setTimeout(() => {
+                        self.updateGridHeightMode("dynamic", null);
+                    }, 1);
+                    $('#A16').ntsPopup('hide');
                 } else if (self.selectedTypeHeightExTable() == TypeHeightExTable.SETTING) {
                     userInfor.heightGridSetting = self.heightGridSetting();
-                    self.updateGridHeightMode("fixed", self.heightGridSetting());
+                    setTimeout(() => {
+                        self.updateGridHeightMode("fixed", self.heightGridSetting());
+                    }, 1);
+                    $('#A16').ntsPopup('hide');
                 }
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
             });
-
-            $('#A16').ntsPopup('hide');
         }
         
         updateGridHeightMode(mode, height) {
@@ -4417,7 +4421,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $('#A1_12_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/s/a/index.xhtml").onClosed(() => {
                 let dataShare = getShared("ksu001s-result");
-                if (dataShare !== 'Cancel') {
+                if (dataShare != 'Cancel'&& !_.isNil(dataShare)) {
                     nts.uk.ui.block.grayout();
                     self.getListEmpIdSorted().done(() => {
                         nts.uk.ui.block.clear();
@@ -4434,7 +4438,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $('#A1_12_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/la/index.xhtml").onClosed(() => {
                 let dataShare = getShared("ksu001la-result");
-                if (dataShare !== 'Cancel') {
+                if (dataShare != 'Cancel'&& !_.isNil(dataShare)) {
                     nts.uk.ui.block.grayout();
                     self.getListEmpIdSorted().done(() => {
                         nts.uk.ui.block.clear();
@@ -4450,7 +4454,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $('#A1_12_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/m/index.xhtml").onClosed(() => {
                 let dataShare = getShared("ksu001m-result");
-                if (dataShare !== 'Cancel') {
+                if (dataShare != 'Cancel' && !_.isNil(dataShare)) {
                     nts.uk.ui.block.grayout();
                     self.getListEmpIdSorted().done(() => {
                         nts.uk.ui.block.clear();
@@ -4481,10 +4485,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         displayControlPersonalCond: self.displayControlPersonalCond,
                         listDateInfo: self.listDateInfo
                     }
-
+                    // enable những cell đã disable trước đó đi rồi sau khi update grid mới disable đi được
+                    if (userInfor.disPlayFormat === 'time') {
+                        self.enableCellsTime();
+                    }
+                    
                     let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
 
                     self.updateExTableAfterSortEmp(dataBindGrid, self.selectedModeDisplayInBody(), userInfor.updateMode, true, true, true);
+                    
+                    if (userInfor.disPlayFormat === 'time') {
+                        self.diseableCellsTime();
+                    }
 
                     nts.uk.ui.block.clear();
                 }
