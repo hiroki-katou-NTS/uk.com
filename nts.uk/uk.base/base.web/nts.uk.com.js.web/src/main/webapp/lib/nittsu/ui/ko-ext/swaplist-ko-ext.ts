@@ -92,12 +92,11 @@ module nts.uk.ui.koExtentions {
                 var initSearchArea = function ($SearchArea, searchMode, searchText){
                     $SearchArea.append("<div class='ntsSearchTextContainer'/>")
                         .append("<div class='ntsSearchButtonContainer'/>");
-                    // if(searchMode === "filter"){
-                    //     $SearchArea.append("<div class='ntsClearButtonContainer'/>");
-                    //     $SearchArea.find(".ntsClearButtonContainer")
-                    //         .append("<button id = " + searchAreaId + "-clear-btn" + " class='ntsSearchButton clear-btn ntsSwap_Component'/>");  
-                    //     $SearchArea.find(".clear-btn").text(toBeResource.clear);        
-                    // }
+                    if(searchMode === "filter"){
+                        $SearchArea.append("<div class='ntsClearButtonContainer'/>");
+                        $SearchArea.find(".ntsClearButtonContainer")
+                            .append("<button id = " + searchAreaId + "-clear-icon" + " class='ntsSearchButton clear-icon proceed ntsSwap_Component'/>");     
+                    }
                     $SearchArea.find(".ntsSearchTextContainer")
                         .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSwap_Component ntsSearchBox nts-editor ntsSearchBox_Component'/>");
                     $SearchArea.find(".ntsSearchTextContainer")
@@ -160,7 +159,7 @@ module nts.uk.ui.koExtentions {
             var swapParts: Array<SwapPart> = new Array<SwapPart>();
             swapParts.push(new GridSwapPart().listControl($grid1)
                                 .searchControl($swap.find(".ntsSwapSearchLeft").find(".search-btn")) 
-                                .clearControl($swap.find(".ntsSwapSearchLeft").find(".clear-btn"))
+                                .clearControl($swap.find(".ntsSwapSearchLeft").find(".clear-icon"))
                                 .searchBox($swap.find(".ntsSwapSearchLeft").find(".ntsSearchBox"))
                                 .withDataSource(originalSource)
                                 .setSearchCriterion(data.leftSearchCriterion || data.searchCriterion || leftCriterion)
@@ -174,7 +173,7 @@ module nts.uk.ui.koExtentions {
             
             swapParts.push(new GridSwapPart().listControl($grid2)
                                 .searchControl($swap.find(".ntsSwapSearchRight").find(".search-btn")) 
-                                .clearControl($swap.find(".ntsSwapSearchRight").find(".clear-btn"))
+                                .clearControl($swap.find(".ntsSwapSearchRight").find(".clear-icon"))
                                 .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
                                 .withDataSource(data.value())
                                 .setSearchCriterion(data.rightSearchCriterion || data.searchCriterion || rightCriterion) 

@@ -44,7 +44,7 @@ module nts.uk.at.view.kmk005.b {
                         }
                     } else {
                         let name = '#[KMK005_';
-                        let i = 140;
+                        let i = 150;
                         item.forEach(function(item) {
                             self.timeItemSpecList.push(new TimeItem(item.timeItemName, item.useAtr, item.timeItemNo, item.timeItemTypeAtr, item.timeItemId ,  name + i++ + ']'));
                         });
@@ -61,7 +61,7 @@ module nts.uk.at.view.kmk005.b {
                         $($(".itemName[disabled!='disabled']")[0]).focus();
                     } else {
                          let name = '#[KMK005_';
-                        let i = 150;
+                        let i = 140;
                         item.forEach(function(item) {
                             self.timeItemList.push(new TimeItem(item.timeItemName, item.useAtr, item.timeItemNo, item.timeItemTypeAtr, item.timeItemId ,name + i++ + ']' ));
                         })

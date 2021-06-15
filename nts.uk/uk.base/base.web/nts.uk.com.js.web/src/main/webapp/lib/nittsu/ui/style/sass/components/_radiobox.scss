@@ -41,6 +41,11 @@
 	display: inline-flex;
 	padding: 5px 10px 5px 30px;
 
+	&.style-warnpanel {
+		background-color: #FED3C6;
+		border-radius: 2px;
+	}
+
 	input[type="radio"],
 	input[type="checkbox"] {
 		margin: 0;

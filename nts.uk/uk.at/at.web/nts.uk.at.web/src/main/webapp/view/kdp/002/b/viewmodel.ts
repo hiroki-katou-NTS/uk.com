@@ -178,9 +178,9 @@ class KDP002BViewModel extends ko.ViewModel {
         if (!ko.unwrap(vm.showBtnNoti)) {
             if (!ko.unwrap(vm.modeNikoNiko)) {
 				if(vm.workPlace() != ""){
-					vm.$window.size(558, 470);	
+					vm.$window.size(555, 470);	
 				}else{
-					vm.$window.size(536, 470);
+					vm.$window.size(530, 470);
 				}
             } else {
 				if(vm.workPlace() != ""){	

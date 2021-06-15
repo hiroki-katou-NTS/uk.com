@@ -135,8 +135,14 @@ module nts.uk.at.view.kdw008.a {
                     { id: 'tab-3', title: getText('KDW008_13'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(!self.isDaily()) }
                 ]);
                 
-                self.selectedTab = ko.observable('tab-1');
-                self.selectedMobileTab = ko.observable('tab-1');
+                if (self.isDaily()) {
+                    self.selectedTab = ko.observable('tab-1');
+                    self.selectedMobileTab = ko.observable('tab-1');
+                } else {
+                    self.selectedTab = ko.observable('tab-3');
+                    self.selectedMobileTab = ko.observable('tab-3');
+                }
+                
 
                 //combobox select sheetNo tab2
                 self.sheetNoList = ko.observableArray([
@@ -273,6 +279,7 @@ module nts.uk.at.view.kdw008.a {
                                     let formatCodeItem: FormatCode = self.formatCodeItems()[this.getIndex(oldIndex)];
                                     self.initSelectedCodeHasMutated(formatCodeItem.formatCode);
                                 } else {
+                                    self.formatCodeItems([]);
                                     self.setNewMode();
                                 }
                             }).always(() => {
