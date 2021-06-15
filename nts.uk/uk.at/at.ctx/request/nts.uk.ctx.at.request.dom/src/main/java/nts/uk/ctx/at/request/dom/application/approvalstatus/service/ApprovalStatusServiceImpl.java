@@ -1458,7 +1458,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			break;
 		}
 		// アルゴリズム「承認状況メール送信実行」を実行する
-		return this.exeApprovalStatusMailTransmission(listMailInput, approvalStatusMailTemp, transmissionAtr, screenUrlApprovalEmbed, screenUrlDayEmbed, screenUrlMonthEmbed);
+		return this.exeApprovalStatusMailTransmission(listMailInputNotDuplicate, approvalStatusMailTemp, transmissionAtr, screenUrlApprovalEmbed, screenUrlDayEmbed, screenUrlMonthEmbed);
 	}
 
 	@Override
