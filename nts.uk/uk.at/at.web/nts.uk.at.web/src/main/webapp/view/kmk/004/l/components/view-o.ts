@@ -154,6 +154,7 @@ module nts.uk.at.view.kmk004.l {
 
 		created() {
 			const vm = this;
+			const date = moment(new Date()).toDate();
 
 			vm.ccg001ComponentOption = {
 				/** Common properties */
@@ -168,9 +169,9 @@ module nts.uk.at.view.kmk004.l {
 				periodFormatYM: false,
 
 				/** Required parameter */
-				baseDate: ko.observable(moment().format(DATE_FORMAT)),
-				periodStartDate: ko.observable(new Date()),
-				periodEndDate: ko.observable(new Date()),
+				baseDate: date,
+				periodStartDate: date,
+				periodEndDate: date,
 				leaveOfAbsence: true,
 				closed: true,
 				retirement: true,
