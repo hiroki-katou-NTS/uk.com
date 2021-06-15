@@ -288,9 +288,9 @@ class ScreenJComponent extends ko.ViewModel {
 			maxRows: 12
 		});
         setTimeout(() => {
-	            m.regSelectedEvent();
+	            vm.regSelectedEvent();
 
-	            m.$blockui("hide");
+	            vm.$blockui("hide");
 
             vm.screenData().selected.valueHasMutated();
         }, 1000);
