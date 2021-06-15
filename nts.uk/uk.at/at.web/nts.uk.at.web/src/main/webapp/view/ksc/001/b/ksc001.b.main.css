@@ -32,7 +32,6 @@ contents-area .create-creation {
 
 .contentB {
   margin-left: 50px;
-  margin-top: 10px;
 }
 
 .contentC {
@@ -58,7 +57,7 @@ contents-area .create-creation {
   align-items: center;
   border-bottom: solid 1px #b1b1b1;
   padding-bottom: 5px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 .periodCovered .info-period-date {
   padding-left: 15px;
@@ -125,7 +124,7 @@ button.nts-switch-button {
 }
 
 .checkboxSetting {
-  margin-top: 10px;
+  margin-top: 5px;
   margin-left: 30px;
 }
 .checkboxSetting .checkBoxGroup {
@@ -180,7 +179,7 @@ button.nts-switch-button {
 }
 
 .labelSelection {
-  width: 100px;
+  width: 80px;
 }
 
 .labelContents {
@@ -253,19 +252,17 @@ button.nts-switch-button {
 }
 .selectionCase {
   padding-left: 15px;
-  padding-top: 5px;
 }
 
 .radioButtonGroup {
   padding-left: 30px;
-  padding-top: 10px;
   padding-bottom: 0;
   overflow: hidden;
 }
 
 .radioButtonGroup .b43RadioGroup label {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .radioButtonGroup .b43RadioGroup {
@@ -324,7 +321,7 @@ button.nts-switch-button {
   padding-bottom: 0;
 }
 
-#contents-area.fix-1360 .nts-wizard.vertical .panel-content {
+#contents-area .nts-wizard .panel-content {
   max-width: 770px;
 }
 #contents-area.fix-1360 .nts-wizard.vertical .contentD {
