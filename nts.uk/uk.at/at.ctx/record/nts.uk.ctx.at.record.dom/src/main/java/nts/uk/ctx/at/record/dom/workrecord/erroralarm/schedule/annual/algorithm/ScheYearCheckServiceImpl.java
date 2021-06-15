@@ -373,7 +373,8 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 				Optional<String> comment = condScheYear.getErrorAlarmMessage().isPresent()
 						? Optional.of(condScheYear.getErrorAlarmMessage().get().v())
 						: Optional.empty();
-				ExtractionAlarmPeriodDate extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(Optional.of(dPeriod.start()), Optional.empty());
+				// QA#116824
+				ExtractionAlarmPeriodDate extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(Optional.of(dPeriod.start()), Optional.of(dPeriod.end()));
 				
 				ExtractResultDetail detail = new ExtractResultDetail(
 						extractionAlarmPeriodDate, 
