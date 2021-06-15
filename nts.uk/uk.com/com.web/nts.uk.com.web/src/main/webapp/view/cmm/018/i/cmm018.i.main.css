@@ -16,6 +16,10 @@ body {
 	width: 240px;
 }
 
+.radio-wrapper {
+	display: block;
+}
+
 .ntsRadioBox:LAST-CHILD {
 	margin-top: 10px;
 }
