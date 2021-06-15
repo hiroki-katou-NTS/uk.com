@@ -17495,9 +17495,10 @@ var nts;
                             var $element = $(element);
                             var accessor = valueAccessor();
                             var innerText = $element.text();
+                            var style = "style-" + (accessor.style || "normal");
                             $element
                                 .text('')
-                                .addClass('checkbox-wrapper nts-input');
+                                .addClass('checkbox-wrapper nts-input ' + style);
                             var hasFocus = accessor.hasFocus || allBindingsAccessor.get('hasFocus');
                             var $label = element.tagName === 'LABEL' ? element : $('<label>').prependTo(element).get(0);
                             var text = ko.computed({
@@ -52794,6 +52795,10 @@ var nts;
                             ko.applyBindingsToNode($('<button>').prependTo(element).get(0), { 'c-error': '' }, bindingContext);
                         }
                         element.removeAttribute('data-bind');
+                        var ntsFunctionPanel = $(element).find(".ntsFunctionPanel");
+                        if (ntsFunctionPanel.length > 0) {
+                            $("#master-content").addClass("overflow-visible");
+                        }
                         return { controlsDescendantBindings: false };
                     };
                     MasterUIFunctionalBindingHandler = __decorate([

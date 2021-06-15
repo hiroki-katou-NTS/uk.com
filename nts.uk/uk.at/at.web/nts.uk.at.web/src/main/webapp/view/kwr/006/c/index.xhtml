@@ -39,9 +39,6 @@
 					data-bind="click: removeData, enable: enableBtnDel">#{i18n.getText('KWR006_37')}</button>
 				<!-- C1_5 -->
 				<button tabindex="5" class="btn-control" data-bind="click: closeScreenC">#{i18n.getText('KWR006_38')}</button>
-
-				<!-- C1_6 -->
-				<hr />
 			</div>
 
 			<div id="contents-area" class="kwr006-contents" style="display: none" data-bind="visible: true">
@@ -93,7 +90,7 @@
 									<!-- C9_1 -->
 									<div class="label-name" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_91')}</div>
 									<!-- C9_2 -->
-									<div tabindex="9" id="" class="" data-bind="ntsSwitchButton: {
+									<div tabindex="9" id="" style="float: left;" data-bind="ntsSwitchButton: {
 										name: '#[KWR006_91]',
 										options: dataOutputType,
 										optionsValue: 'code',
@@ -103,6 +100,7 @@
 										enable: true }"></div>
 									<!-- C_9_5 -->
 									<button tabindex="10"
+										style="margin-left: 10px;"
 										data-bind="ntsHelpButton: {image: 'KWR006_1.png', position: 'right top', enable: true }">?</button>
 								</div>
 								<div class="row">
@@ -111,10 +109,10 @@
 										<div class="label-name" style="width: 51%;" data-bind="ntsFormLabel: {}">
 											#{i18n.getText('KWR006_48')}</div>
 										<!-- C5_3 -->
-										<div class="label-name" style="width: 12%; display: inherit;" data-bind="ntsLabel: {}">
+										<div class="label-name" style="width: 12%; padding-top: 5px;" data-bind="ntsLabel: {}">
 											#{i18n.getText('KWR006_103')}</div>
 										<!-- C5_4 -->
-										<div style="display: inherit; top: 10px;" tabindex="11" data-bind="ntsComboBox: {
+										<div style="display: inherit;" tabindex="11" data-bind="ntsComboBox: {
 													width: '30%',
 													name: '#[KWR006_48]',
 													options: itemListAttribute,
@@ -127,7 +125,7 @@
 									</div>
 									<div class="C6">
 										<!-- C6_1 -->
-										<div class="label-name" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_49')}</div>
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_49')}</div>
 										<!-- C6_2 -->
 										<hr />
 									</div>
