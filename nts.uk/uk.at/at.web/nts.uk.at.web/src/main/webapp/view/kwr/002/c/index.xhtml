@@ -23,7 +23,7 @@
 			<div id="functions-area">
 				<div class="form-label">
 					<span style="margin-right: 15px"
-						data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KWR002_60')}</span>
+						data-bind="ntsFormLabel: {}">#{i18n.getText('KWR002_60')}</span>
 					<span class="label layout-info"
 						data-bind="text:attendanceCode"></span> <span class="label"
 						data-bind="text:attendanceName"></span>
@@ -41,7 +41,7 @@
 						<tr class="row">
 							<td>
 								<div class="form-label useSeal"
-									data-bind="ntsFormLabel: {}">#{i18n.getText('KWR002_61')}</div>
+									data-bind="ntsFormLabel: { required: false, constraint:['SealColumnName'] }">#{i18n.getText('KWR002_61')}</div>
 							</td>
 							<td>
 								<!-- C2_2 -->
