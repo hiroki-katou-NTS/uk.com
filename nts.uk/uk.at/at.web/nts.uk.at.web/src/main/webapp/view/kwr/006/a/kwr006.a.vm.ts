@@ -132,8 +132,8 @@ module nts.uk.at.view.kwr006.a {
                     { code: 2, name: nts.uk.resource.getText("KWR006_101")}
                 ]);
                 self.dataOutputType = ko.observableArray([
-                    { code: '0', name: nts.uk.resource.getText("KWR006_10") },
-                    { code: '1', name: nts.uk.resource.getText("KWR006_11") }
+                    { code: 0, name: nts.uk.resource.getText("KWR006_10") },
+                    { code: 1, name: nts.uk.resource.getText("KWR006_11") }
                 ]);
                 // A12_1
                 self.dataDisplayClassification = ko.observableArray([

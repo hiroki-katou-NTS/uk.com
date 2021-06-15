@@ -1,5 +1,5 @@
 .kwr006-contents .panel {
-	margin: 20px;
+	margin: 0px 20px;
 	width: 50%;
 }
 
@@ -9,10 +9,6 @@
 
 .td-right, .td-left {
 	vertical-align: top;
-}
-
-.right {
-	margin-top: 20px;
 }
 
 .C3_2 {
@@ -140,4 +136,7 @@
 }
 .ntsSwapSearchRight #swap-list-search-area-input {
 	width: 220px !important;
+}
+.td-left .ntsSearchBox {
+	width: 162px !important;
 }
