@@ -2,76 +2,68 @@ package nts.uk.ctx.at.aggregation.infra.repository.schedulecounter.criterion;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.HandlingOfCriterionAmount;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.HandlingOfCriterionAmountRepository;
 import nts.uk.ctx.at.aggregation.infra.entity.schedulecounter.criterion.KagmtCriterionMoneyFrame;
 
+/**
+ * 
+ * @author TU-TK
+ *
+ */
 @Stateless
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class JpaHandlingOfCriterionAmountRepository extends JpaRepository
-		implements HandlingOfCriterionAmountRepository {
+public class JpaHandlingOfCriterionAmountRepository extends JpaRepository implements HandlingOfCriterionAmountRepository {
 
-	
-	public  static final String SELECT;
-	
-	public static final String FIND_BY_CID;
-	
-	static {
-		
-		StringBuilder builderString = new StringBuilder();
-		builderString.append("SELECT a ");
-		builderString.append(" FROM KagmtCriterionMoneyFrame a ");
-        SELECT = builderString.toString();
+	private static final String GET_BY_CID = "SELECT a FROM KagmtCriterionMoneyFrame a WHERE a.pk.companyId = :companyId ";
 
-        
-        builderString = new StringBuilder();
-        builderString.append(SELECT);
-        builderString.append(" WHERE a.pk.companyId = :companyId");
-        FIND_BY_CID = builderString.toString();
-        
-	}
 	@Override
 	public void insert(String cid, HandlingOfCriterionAmount handling) {
-		this.commandProxy().insert(KagmtCriterionMoneyFrame.toEntity(handling));
-
+		this.commandProxy().insertAll(KagmtCriterionMoneyFrame.toEntity(cid, handling));
 	}
 
 	@Override
 	public void update(String cid, HandlingOfCriterionAmount handling) {
-		List<KagmtCriterionMoneyFrame> entities = this.queryProxy()
-				.query(FIND_BY_CID, KagmtCriterionMoneyFrame.class)
-				.setParameter("companyId", cid)
-				.getList();
-		this.commandProxy().removeAll(entities);
-		this.getEntityManager().flush();
-		
-		KagmtCriterionMoneyFrame.toEntity(handling).forEach(entity -> {
-			this.commandProxy().insert(entity);
-			this.getEntityManager().flush();
-		});
-		
+		List<KagmtCriterionMoneyFrame> dataOld = this.queryProxy()
+				.query(GET_BY_CID, KagmtCriterionMoneyFrame.class).setParameter("companyId", cid).getList();
+		List<KagmtCriterionMoneyFrame> dataNew = KagmtCriterionMoneyFrame.toEntity(cid, handling);
+		for (KagmtCriterionMoneyFrame temp : dataOld) {
+			dataNew.stream().forEach(c -> {
+				if (c.pk.companyId == temp.pk.companyId && c.pk.frameNo == temp.pk.frameNo) {
+					temp.color = c.color;
+				}
+			});
+		}
+
+		if (dataNew.size() > dataOld.size()) {
+			val oldNos = dataOld.stream().map(c -> c.pk.frameNo).collect(Collectors.toList());
+			val newEnt = dataNew.stream().filter(c -> !oldNos.contains(c.pk.frameNo)).collect(Collectors.toList());
+			dataOld.addAll(newEnt);
+		} else if (dataNew.size() < dataOld.size()) {
+			val newNos = dataNew.stream().map(c -> c.pk.frameNo).collect(Collectors.toList());
+			dataOld.removeIf(x -> !newNos.contains(x.pk.frameNo));
+		}
 	}
 
 	@Override
 	public boolean exist(String cid) {
-		
 		return this.get(cid).isPresent();
 	}
 
 	@Override
 	public Optional<HandlingOfCriterionAmount> get(String cid) {
-		
-		List<KagmtCriterionMoneyFrame> entities = this.queryProxy()
-			.query(FIND_BY_CID, KagmtCriterionMoneyFrame.class)
-			.setParameter("companyId", cid)
-			.getList();
-		return Optional.ofNullable(KagmtCriterionMoneyFrame.toDomain(entities));
+		List<KagmtCriterionMoneyFrame> result = this.queryProxy()
+				.query(GET_BY_CID, KagmtCriterionMoneyFrame.class)
+				.setParameter("companyId", cid).getList();
+		if (result.isEmpty()) {
+			return Optional.empty();
+		}
+		return Optional.of(KagmtCriterionMoneyFrame.toDomain(result));
 	}
 
 }
