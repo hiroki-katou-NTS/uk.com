@@ -109,7 +109,7 @@
 }
 
 .form-group.search-box .ui-igcombo-wrapper {
-	width: 100%;
+	width: 97% !important;
 }
 
 .caret-background.caret-right:after {
