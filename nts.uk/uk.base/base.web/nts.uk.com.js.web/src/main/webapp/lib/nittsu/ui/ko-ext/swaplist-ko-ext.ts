@@ -92,12 +92,12 @@ module nts.uk.ui.koExtentions {
                 var initSearchArea = function ($SearchArea, searchMode, searchText){
                     $SearchArea.append("<div class='ntsSearchTextContainer'/>")
                         .append("<div class='ntsSearchButtonContainer'/>");
-                    // if(searchMode === "filter"){
-                    //     $SearchArea.append("<div class='ntsClearButtonContainer'/>");
-                    //     $SearchArea.find(".ntsClearButtonContainer")
-                    //         .append("<button id = " + searchAreaId + "-clear-btn" + " class='ntsSearchButton clear-btn ntsSwap_Component'/>");  
-                    //     $SearchArea.find(".clear-btn").text(toBeResource.clear);        
-                    // }
+                    if(searchMode === "filter"){
+                        $SearchArea.append("<div class='ntsClearButtonContainer'/>");
+                        $SearchArea.find(".ntsClearButtonContainer")
+                            .append("<button id = " + searchAreaId + "-clear-btn" + " class='ntsSearchButton clear-btn ntsSwap_Component'/>");  
+                        $SearchArea.find(".clear-btn").text(toBeResource.clear);        
+                    }
                     $SearchArea.find(".ntsSearchTextContainer")
                         .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSwap_Component ntsSearchBox nts-editor ntsSearchBox_Component'/>");
                     $SearchArea.find(".ntsSearchTextContainer")

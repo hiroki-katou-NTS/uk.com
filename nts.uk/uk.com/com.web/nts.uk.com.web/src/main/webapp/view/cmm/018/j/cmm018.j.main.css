@@ -15,9 +15,8 @@ body {
 	vertical-align: middle;
 }
 
-.ntsRadioBox {
+.radio-wrapper {
 	display: block;
-	margin-bottom: 8px;
 }
 
 .dateTime-input {
@@ -38,7 +37,7 @@ body {
 }
 
 #dateTime-input {
-	margin-left: 20px;
+	margin-left: 5px;
 	margin-top: 5px;
 }
 

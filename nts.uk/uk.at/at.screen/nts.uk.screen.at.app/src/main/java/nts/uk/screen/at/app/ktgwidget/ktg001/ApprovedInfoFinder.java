@@ -32,13 +32,10 @@ public class ApprovedInfoFinder {
 
 	// .承認すべきデータのウィジェットを起動する
 	public ApprovedDataExecutionResultDto get(ApprovedDataExecutionResultDto approvedDataExecutionResultDto,
-			StandardWidget standardWidget, List<ClosureIdPresentClosingPeriod> closingPeriods, String employeeId,
+			List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettingList, List<ClosureIdPresentClosingPeriod> closingPeriods, String employeeId,
 			String companyId, Integer yearMonth, Integer closureId) {
 
 		// 3.1.承認すべき申請データの取得
-		List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettingList = standardWidget
-				.getApprovedAppStatusDetailedSettingList();
-
 		// 承認すべき申請データ有無表示_（3次用）
 		approvedDataExecutionResultDto.setAppDisplayAtr(
 				appDisplayAtr.get(approvedAppStatusDetailedSettingList, closingPeriods, employeeId, companyId));

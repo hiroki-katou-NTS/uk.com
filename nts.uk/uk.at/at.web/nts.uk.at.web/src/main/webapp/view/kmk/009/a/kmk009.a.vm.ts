@@ -697,11 +697,16 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                                 self.isAllowShowAttendance(dailyAttendanceItem[0].attendanceItemId < 193 || dailyAttendanceItem[0].attendanceItemId > 202);
                             }
                             self.enableUse(parseInt(self.selectUse()) && !_.isNull(self.attendanceModel.attendanceItemName()));
+                            self.enableSelectUpper(self.checkSelectUse() && !_.isNil(self.attendanceModel.attendanceItemName()));
                             nts.uk.ui.block.clear();
                         }).fail(() => {
                             nts.uk.ui.block.clear();
                         });
-                    } 
+                    }
+                    if ( !atdSelected.length) {
+                        self.attendanceModel.update(null, null);
+                        self.isAllowShowAttendance(false);
+                    }
                 });
             });
         }
