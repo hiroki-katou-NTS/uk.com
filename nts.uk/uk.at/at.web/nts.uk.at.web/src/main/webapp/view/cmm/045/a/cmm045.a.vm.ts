@@ -1937,7 +1937,7 @@ module cmm045.a.viewmodel {
 					linkAppDateHtml = '<div class="saturdayCell" style="margin-top: 5px;">' + '<div>' + linkAppDate + priod + '</div></div>';
 				}
 				if (linkAppDateDay == '日') {
-					linkAppDateHtml = '<div class="sundayCell" style="margin-top: 5px;">' + '<divdiv>' + linkAppDate + priod + '</div></div>';
+					linkAppDateHtml = '<div class="sundayCell" style="margin-top: 5px;">' + '<div>' + linkAppDate + priod + '</div></div>';
 				}
 				appDate += linkAppDateHtml;
             }
