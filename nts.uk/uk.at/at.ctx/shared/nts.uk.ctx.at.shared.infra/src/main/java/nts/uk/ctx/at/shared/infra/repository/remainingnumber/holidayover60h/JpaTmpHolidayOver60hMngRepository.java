@@ -74,15 +74,20 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 				dataMng.getYmd(),
 				dataMng.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0),
 				dataMng.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value + 1).orElse(0));
+		
+		
 
-		this.queryProxy().find(pk, KrcmtInterimHd60h.class).ifPresent(entity-> {
+		Optional<KrcmtInterimHd60h> entityOpt = this.queryProxy().find(pk, KrcmtInterimHd60h.class);
+
+		if (entityOpt.isPresent()) {
+			KrcmtInterimHd60h entity = entityOpt.get();
 			entity.remainMngId = dataMng.getRemainManaID();
 			entity.createAtr = dataMng.getCreatorAtr().value;
 			entity.usedTime = dataMng.getUseTime().map(x -> x.v()).orElse(null);
 			this.commandProxy().update(entity);
 			this.getEntityManager().flush();
 			return;
-		});
+		}
 
 		KrcmtInterimHd60h entity = new KrcmtInterimHd60h();
 		entity.pk = pk;

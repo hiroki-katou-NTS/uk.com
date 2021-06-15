@@ -13,7 +13,7 @@ module nts.uk.at.view.kmk011.a {
 
             constructor() {
                 var self = this; 
-                nts.uk.request.ajax("at", path.getOtsukaOption).then((result: boolean) => self.otsukaOption(true));
+                nts.uk.request.ajax("at", path.getOtsukaOption).then((result: boolean) => self.otsukaOption(result));
             }
 
             /**

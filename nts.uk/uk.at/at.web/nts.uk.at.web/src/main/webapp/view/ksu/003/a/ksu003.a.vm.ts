@@ -2468,7 +2468,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							indexLeft = indexLeft++;
 						}
 
-						if ( changeable[1].startTime != null && changeable[1].endTime != null && changeable[1].startTime != 0 && changeable[1].endTime != 0) {
+						if ( changeable.length > 1 && changeable[1].startTime != null && changeable[1].endTime != null && changeable[1].startTime != 0 && changeable[1].endTime != 0) {
 							//timeChart2 = self.convertTimeToChart(changeable[1].startTime, changeable[1].endTime);
 							timeMinus2.push({
 								startTime: changeable[1].startTime,
@@ -3462,27 +3462,27 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (self.indexBtnToDown() % 2 == 0) {
 				$("#extable-ksu003").exTable("setHeight", exTableHeight);
 				$(".toDown").css('margin-top', exTableHeight - 8 + 'px');
-				$("#master-wrapper").css({ 'overflow-y': 'auto' });
-				$("#master-wrapper").css({ 'overflow-x': 'hidden' });
 				$("#contents-area").css({ 'overflow-x': 'hidden' });
+				$("#contents-area").css({ 'overflow-y': 'auto' });
+				$("#note-color").css("margin-right", "6px")
 				if (window.innerWidth >= 1320) {
 					$("#A1_4").css("margin-right", "0px")
-					$("#note-color").css("margin-right", "18px")
-					$("#hr-row2").css("width", "1264px")
+					$("#note-color").css("margin-right", "6px")
 				}
 			} else {
 				exTableHeight = 10 * 30 + 18;
 				$("#extable-ksu003").exTable("setHeight", exTableHeight);
 				$(".toDown").css('margin-top', exTableHeight - 8 + 'px');
 				$("#contents-area").css({ 'overflow-x': 'hidden' });
-
+				$("#contents-area").css({ 'overflow-y': 'hidden' });
+				$("#note-color").css("margin-right", "23px")
 				if (navigator.userAgent.indexOf("Chrome") == -1) {
 					$("#master-wrapper").css({ 'overflow-y': 'hidden' });
 				}
 
 				if (window.innerWidth >= 1320) {
-					$("#A1_4").css("margin-right", "20px")
-					$("#note-color").css("margin-right", "35px")
+					/*$("#A1_4").css("margin-right", "20px")
+					$("#note-color").css("margin-right", "23px")*/
 				}
 			}
 			self.indexBtnToDown(self.indexBtnToDown() + 1);

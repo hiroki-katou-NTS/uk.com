@@ -92,19 +92,19 @@ module nts.uk.at.view.kdw008.b {
                 self.columns1 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: getText('KDW008_7'), key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150, formatter: _.escape }
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 200, formatter: _.escape }
                 ]);
 
                 self.columns2 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: getText('KDW008_7'), key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150, formatter: _.escape }
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 200, formatter: _.escape }
                 ]);
 
                 self.columns3 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: getText('KDW008_7'), key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 150, formatter: _.escape }
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 200, formatter: _.escape }
                 ]);
 
                 self.tabs = ko.observableArray([
@@ -112,14 +112,20 @@ module nts.uk.at.view.kdw008.b {
                     { id: 'tab-2', title: getText('KDW008_13'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(self.isDaily) },
                     { id: 'tab-3', title: getText('KDW008_13'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(!self.isDaily) },
                 ]);
-                self.selectedTab = ko.observable('tab-1');
-
+                
                 self.mobileTabs = ko.observableArray([
                     { id: 'tab-1', title: getText('KDW008_14'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(self.isDaily) },
                     { id: 'tab-2', title: getText('KDW008_13'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(self.isDaily) },
                     { id: 'tab-3', title: getText('KDW008_13'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(!self.isDaily) },
                 ]);
-                self.selectedMobileTab = ko.observable('tab-1');
+
+                if(self.isDaily) {
+                    self.selectedTab = ko.observable('tab-1');
+                    self.selectedMobileTab = ko.observable('tab-1');
+                } else {
+                    self.selectedTab = ko.observable('tab-3');
+                    self.selectedMobileTab = ko.observable('tab-3');
+                }
                
                 //combobox select sheetNo tab2
                 self.sheetNoList = ko.observableArray([

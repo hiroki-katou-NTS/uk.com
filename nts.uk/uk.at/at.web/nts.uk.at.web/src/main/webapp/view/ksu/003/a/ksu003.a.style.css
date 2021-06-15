@@ -1,15 +1,21 @@
 /* A1_4 */
-#contents-area {
+#extable-area {
 	height: auto !important;
-	margin-top: -12px;
+	margin-top: -5px;
 }
+
+#functions-area {
+	margin-top: -3px;
+}
+
 
 #extable-ksu003 {
 	width: auto !important;
+	margin-top: 3px;
 }
 
 #A1_1 {
-	margin-left: 20px !important;
+	margin-left: 0px !important;
 }
 
 /* A2_1 */
@@ -18,7 +24,7 @@
 	border: 1px solid #cccccc !important;
 	width: 310px;
 	height: 25px;
-	margin-left: 25px;
+	margin-left: 10px;
 }
 
 .ui-igcombo-list{
@@ -55,10 +61,26 @@
 
 #label-display {
 	margin-left: 85px;
+	/* new UI */
+	margin-top: 23px;
 }
+
+
+#hai-cham {
+	/* new UI */
+	margin-top: 23px;
+}
+
+/* new UI */
+#functon-area-row2-right{
+    display: inline-flex;
+}
+
+
 .nts-switch-button{
 	width: 90px !important;
 }
+
 /* Note color A12 */
 .square {
 	width: 20px;
@@ -79,13 +101,11 @@
 	margin-bottom: 10px
 }
 
-#note {
-	margin-top: 20px;
-}
-
+/* new UI */
 #note-color {
-	margin-right: 35px ;
-	float: right;
+	margin-top: 21px;
+    float: right;
+    margin-right: 23px;
 }
 
 #combo-box {
@@ -99,7 +119,7 @@
 }
 
 #functon-area-row3-left {
-	margin-left: 37px;
+	margin-left: 20px;
 }
 
 #check-time{
@@ -107,7 +127,7 @@
 }
 
  #check-name {
-	margin-left: -5px;
+	margin-left: -3px;
 }
 
 #hr-row2 {
@@ -124,7 +144,7 @@
 
 #left-button, #left-button2 {
 	margin-left: -6px;
-	margin-top: -5px;
+	margin-top: -3px;
 }
 
 .xcell {
@@ -137,7 +157,7 @@
 	height: 20px;
 	width: 20px;
 	left: 2px !important;
-	margin-top: -3px !important
+	margin-top: 4px !important
 }
 
 .tooltip-styling:before {
@@ -203,15 +223,21 @@
 }
 
  .x-link {
-	margin-top : 2px;
+	margin-top : 7px;
 	white-space: nowrap;
 } 
+
 #note-sort {
 	margin-top: 5px !important;
 }
 
 html {
 	overflow: hidden;
+} 
+
+#contents-area{
+	overflow: hidden;
+	margin-left: -3px;
 }
 
 #down-button, #down-button2 {
@@ -222,6 +248,7 @@ html {
 	width: 15px;
 	height: 27px;
 	float: left;
+	margin-left: -3px;
 }
 
 #A5_1 {
