@@ -295,7 +295,7 @@ public class ScheduleRegisterCommandHandler {
 
         @Override
         public Optional<ShiftMaster> getShiftMaster(ShiftMasterImportCode importCode) {
-            return shiftMasterRepository.getByShiftMaterCd(AppContexts.user().companyId(), importCode.v());
+            return shiftMasterRepository.getShiftMaster(AppContexts.user().companyId(), importCode);
         }
 
         @Override

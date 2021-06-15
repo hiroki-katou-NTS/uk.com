@@ -30,6 +30,9 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                     if (res) {
                         console.log(res);
                         vm.data = res;
+                    }
+                }).then(() => {
+                    if (vm.data) {
                         vm.convertToGrid(vm.data);
                         vm.loadGrid();
                         vm.loadError(vm.data);
@@ -42,11 +45,17 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             }
 
             setInterval(() => {
-                let errors = $('#grid').mGrid('errors');
-                if (errors.length > 0) {
-                    this.isEnableRegister(false);
-                } else {
-                    this.isEnableRegister(true);
+                if ($('#grid')) {
+                    try {
+                        let errors = $('#grid').mGrid('errors');
+                        if (errors.length > 0) {
+                            this.isEnableRegister(false);
+                        } else {
+                            this.isEnableRegister(true);
+                        }
+                    } catch (error) {
+                        // empty                        
+                    }
                 }
             }, 100);
         }
@@ -62,7 +71,6 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             let targets: ScheduleRegisterTarget[] = [];
 
             let dataSource: any[] = $("#grid").mGrid("dataSource");
-            console.log(dataSource);
 
             _.forEach(dataSource, item => {
                 _.forEach(vm.data.importableDates, date => {
@@ -104,6 +112,30 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                             vm.$blockui("hide");
 
                         });
+
+                        // set error list
+                        let errors: any[] = [];
+            
+                        _.forEach(res, (errorItem) => {
+                            let err = { columnKey: 'nameHeader', id: null, index: null, message: errorItem.errorMessage };
+                            
+                            if (errorItem.employeeCode) {
+                                for (let i = 0; i < vm.data.listPersonEmp.length; i++) {
+                                    if (vm.data.listPersonEmp[i].employeeCode === errorItem.employeeCode) {
+                                        err.id = vm.data.listPersonEmp[i].employeeId;
+                                        err.index = i;
+                                    }
+                                }
+                            }
+                            if (errorItem.date) {
+                                err.columnKey = errorItem.date;
+                            }
+                            
+                            errors.push(err);
+                        });
+
+                        $("#grid").mGrid("setErrors", errors);
+
                         // open KDL053
                         let empList = vm.data.listPersonEmp;
                         for (let i = 0; i < vm.data.mappingErrorList.length; i++) {
@@ -146,16 +178,16 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             let request: any = {};
             request.errorRegistrationList = [];
 
-            _.forEach(errorList, (error: any) => {
-                let empId = error.rowId;
+            for (let i = errorList.length - 1; i >= 0; i--) {
+                let empId = errorList[i].rowId;
                 empIds.push(empId);
                 let empFilter = _.filter(empList, {'employeeId': empId});
                 let empCode = empFilter.length > 0 ? empFilter[0].employeeCode : '';
                 let empname = empFilter.length > 0 ? empFilter[0].businessName : '';
-                let item = {id: error.index, sid: empId, scd: empCode, empName: empname, 
-                            date: error.columnKey, attendanceItemId: null, errorMessage: error.message};
+                let item = {id: errorList[i].index, sid: empId, scd: empCode, empName: empname, 
+                            date: errorList[i].columnKey, attendanceItemId: null, errorMessage: errorList[i].message};
                 request.errorRegistrationList.push(item);
-            });
+            }
             request.isRegistered = 0;
             request.dispItemCol = false;
             request.employeeIds = empIds;

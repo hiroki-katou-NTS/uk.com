@@ -160,38 +160,61 @@ public class WorkPlaceCheckFileService {
     
     public CaptureDataOutput getCaptureData(CapturedRawDataDto data, boolean overwrite) {
         // 1: 取り込む(Require, 取り込み内容)
+        long startImport = System.currentTimeMillis();
+        System.out.println("Start import");
         ImportResult importResult = WorkScheduleImportService.importFrom(
                 new RequireImp(scheAuthModifyDeadlineRepository, workplaceGroupAdapter, regulInfoEmpAdap, regulInfoEmpPub, workingConditionRepo, workTypeRepo, workTimeSettingRepository, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository, shiftMasterRepository, workScheduleRepository, empEmployeeAdapter, comHisAdapter, empHisAdapter, leaHisAdapter, scheAdapter), 
                 data.toDomain());
+        long endImport = System.currentTimeMillis();
+        System.out.println("Time Import File: " + (endImport - startImport));
         
         // 2: 取り込み可能な社員IDリストを取得する()
+        long startGetImportaleEmp = System.currentTimeMillis();
         List<EmployeeId> employeeIds = importResult.getImportableEmployees();
+        long endGetImportaleEmp = System.currentTimeMillis();
+        System.out.println("Time Get Importable Emp: " + (endGetImportaleEmp - startGetImportaleEmp));
         
         // 3: 取り込み可能な年月日リストを取得する()
+        long startGetImportableDates = System.currentTimeMillis();
         List<GeneralDate> importableDates = importResult.getImportableDates();
+        long endGetImportableDates = System.currentTimeMillis();
+        System.out.println("Time Get Importable Date: " + (endGetImportableDates - startGetImportableDates));
         
         // 4: 処理2の結果
+        long startGetListEmp = System.currentTimeMillis();
         List<PersonEmpBasicInfoImport> listPersonEmp = this.empEmployeeAdapter.getPerEmpBasicInfo(employeeIds.stream().map(x -> x.v()).collect(Collectors.toList()));
+        long endGetListEmp = System.currentTimeMillis();
+        System.out.println("Time Get List Emp: " + (endGetListEmp - startGetListEmp));
         
         // 5: create 取り込みエラーDto
+        long startMappingError = System.currentTimeMillis();
         List<MappingErrorDto> mappingErrorList = new ArrayList<MappingErrorDto>();
+        long endMappingError = System.currentTimeMillis();
+        System.out.println("Time Mapping Error: " + (endMappingError - startMappingError));
         // <<create>>
         //            取り込み結果.取り込み不可日 : 
         //　　map 取り込みエラーDto (empty, empty, $, #Msg_2121)
+        long startMap2121 = System.currentTimeMillis();
         importResult.getUnimportableDates().forEach(x -> {
             mappingErrorList.add(new MappingErrorDto(Optional.empty(), Optional.empty(), Optional.of(x), TextResource.localize("Msg_2121")));
         });
+        long endMap2121 = System.currentTimeMillis();
+        System.out.println("Time Mapping 2121: " + (endMap2121 - startMap2121));
         // <<create>>
         //            取り込み結果.存在しない社員 :
         //　　map 取り込みエラーDto ($, empty, empty, #Msg_2175)
+        long startMap2175 = System.currentTimeMillis();
         importResult.getUnexistsEmployees().forEach(x -> {
             mappingErrorList.add(new MappingErrorDto(Optional.of(x), Optional.empty(), Optional.empty(), TextResource.localize("Msg_2175")));
         });
+        long endMap2175 = System.currentTimeMillis();
+        System.out.println("Time Mapping 2175: " + (endMap2175 - startMap2175));
         // <<create>>
         //            取り込み結果.1件分の取り込み結果 :
         //　　find $.状態.取り込み不可か()
         //　　map { $対象社員 = $社員 in 処理4の結果 : find $社員.社員ID == $.社員ID;
         //　　　　　return 取り込みエラーDto ($対象社員.社員コード, $対象社員.ビジネスネーム, $.年月日, $.状態.エラーメッセージ) }
+        long startMapDetailErr = System.currentTimeMillis();
         List<ImportResultDetail> resultDetails1 = importResult.getResults().stream().filter(x -> x.getStatus().isUnimportable()).collect(Collectors.toList());
         
         resultDetails1.forEach(x -> {
@@ -205,11 +228,14 @@ public class WorkPlaceCheckFileService {
                         x.getStatus().getMessageId().isPresent() ? TextResource.localize(x.getStatus().getMessageId().get().replace("#", "")) : ""));
             }
         });
+        long endMapDetailErr = System.currentTimeMillis();
+        System.out.println("Time Mapping Detail Error: " + (endMapDetailErr - startMapDetailErr));
         // <<create>>
         //            取り込み結果.1件分の取り込み結果 :
         //　　find $.状態 == すでに勤務予定が存在する && Input.上書きするか == false
         //　　map { $対象社員 = $社員 in 処理4の結果 : find $社員.社員ID == $.社員ID;
         //　　　　　return 取り込みエラーDto ($対象社員.社員コード, $対象社員.ビジネスネーム, $.年月日, $.状態.エラーメッセージ) }
+        long startMapDetailErr2 = System.currentTimeMillis();
         List<ImportResultDetail> resultDetails2 = importResult.getResults().stream().filter(x -> {
             return x.getStatus().equals(ImportStatus.SCHEDULE_IS_EXISTS) && overwrite;
         }).collect(Collectors.toList());
@@ -224,12 +250,17 @@ public class WorkPlaceCheckFileService {
                         x.getStatus().getMessageId().isPresent() ? TextResource.localize(x.getStatus().getMessageId().get().replace("#", "")) : ""));
             }
         });
+        long endMapDetailErr2 = System.currentTimeMillis();
+        System.out.println("Time Mapping Detail Error 2: " + (endMapDetailErr2 - startMapDetailErr2));
         
         // 6: 曜日()
         // TODO: Use List<GeneralDate> importableDates step 3
         
         //7: 取得する(期間)
+        long startGetHolidays = System.currentTimeMillis();
         List<PublicHoliday> holidays = getHolidaysByPeriod.get(new DatePeriod(importableDates.get(0), importableDates.get(importableDates.size() - 1)));
+        long endGetHolidays = System.currentTimeMillis();
+        System.out.println("Time Get Holidays: " + (endGetHolidays - startGetHolidays));
         
         return new CaptureDataOutput(listPersonEmp, importableDates, holidays, importResult, mappingErrorList);
     }

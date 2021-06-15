@@ -14,6 +14,7 @@ import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ColorCodeChar6;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
@@ -97,11 +98,15 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 	
 	@Override
     public List<ShiftMaster> getByListImportCodes(String companyId, List<String> importCodes) {
-        List<ShiftMaster> data = this.queryProxy().query(SELECT_BY_LISTIMPORT_AND_CID, KshmtShiftMater.class)
-                .setParameter("companyId", companyId)
-                .setParameter("importCodes", importCodes)
-                .getList(c -> c.toDomain());
-        return data;
+        List<ShiftMaster> datas = new ArrayList<ShiftMaster>();
+        CollectionUtil.split(importCodes, 1000, subIdList -> {
+            datas.addAll(this.queryProxy().query(SELECT_BY_LISTIMPORT_AND_CID, KshmtShiftMater.class)
+            .setParameter("companyId", companyId)
+            .setParameter("importCodes", importCodes)
+            .getList(c -> c.toDomain()));
+        });
+                
+        return datas;
     }
 
 	@Override
