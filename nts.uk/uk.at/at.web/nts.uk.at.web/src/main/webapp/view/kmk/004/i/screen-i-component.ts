@@ -185,7 +185,7 @@ class ScreenIComponent extends ko.ViewModel {
 		let dfd = $.Deferred();
 		vm.$blockui('grayout');
 		$('#empt-list-setting').ntsListComponent(listComponentOption).done(() => {
-
+            setTimeout(() => {
                 vm.regSelectedEvent();
 
                 vm.$blockui("hide");
@@ -197,6 +197,7 @@ class ScreenIComponent extends ko.ViewModel {
                 vm.selectedClosureId.subscribe(() => {
                     $('#empt-list-setting').ntsListComponent(listComponentOption);
                 });
+            }, 1000);
 			
 		});
 

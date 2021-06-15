@@ -30,9 +30,62 @@ const template = `
 		</div>
 			<div id="monthly-list">
 			
-				<table id="expand-list" data-bind="html:bind_table()">
+				<table id="expand-list">
 				
+								<thead>
+										<tr style="background-color:#92D050">
+											<th data-bind="visible: screenMode == 'Com_Person'"></th>
+											<th style="text-align:center;" data-bind="i18n: 'KMK004_263'"></th>
+											<th data-bind="visible:showScheduled(),i18n: 'KMK004_264'" style="text-align:center;"></th>
+											<th style="text-align:center;" data-bind="i18n: 'KMK004_265'"></th>
+											<th style="text-align:center;" data-bind="i18n: 'KMK004_266'"></th>
+											
+										</tr>
+								</thead>
 								
+								<tbody data-bind="foreach:screenData().monthlyWorkTimeSetComs">
+											<tr>
+												<td  data-bind="visible: $parent.screenMode == 'Com_Person' "><div data-bind="ntsCheckBox: { checked:$data.laborTime().checkbox }"></div></td>
+												<td class="bg-green" style="text-align:center;" ><span data-bind="text: $data.yearMonthText + '月度'"></span></td>
+												<td data-bind="visible:$parent.showScheduled()"><input  data-bind="
+												ntsTimeEditor: {
+														name:'#[KMK004_264]',
+														value: $data.laborTime().withinLaborTime,
+														constraint:'MonthlyEstimateTime',
+														enable: $data.laborTime().checkbox,
+														inputFormat: 'time', 
+														mode: 'time',
+														option: {textalign: 'center',width: '80px'}
+														}"
+												/></td>
+												<td ><input  data-bind="
+												ntsTimeEditor: {name:'#[KMK004_265]',
+														value: $data.laborTime().legalLaborTime,
+														constraint:'MonthlyEstimateTime',
+														enable: $data.laborTime().checkbox,
+														inputFormat: 'time', 
+														mode: 'time',
+														option: {textalign: 'center',width: '80px'}
+														}"
+												/></td>
+												<td ><input  data-bind="
+												ntsTimeEditor: {name:'#[KMK004_266]',
+														value: $data.laborTime().weekAvgTime,
+														constraint:'MonthlyEstimateTime',
+														enable: $data.laborTime().checkbox,
+														inputFormat: 'time', 
+														mode: 'time',
+														option: {textalign: 'center',width: '80px'}
+														}"
+												/></td>
+											</tr>
+								</tbody>
+								<tr data-bind="visible: screenMode != 'Com_Person' " >
+									<td style="padding: 5px;text-align:center" class="bg-green" style="text-align:center;" data-bind="i18n: 'KMK004_267'" ></td>
+									<td data-bind="visible:showScheduled(),text:calTotalTime('withinLaborTime')" style="text-align:center;"></td>
+									<td style="text-align:center;" data-bind="text:calTotalTime('legalLaborTime')" ></td>
+									<td style="text-align:center;" data-bind="text:calTotalTime('weekAvgTime')" ></td>
+								</tr>
 									
 				</table>		
 			</div>
@@ -143,84 +196,6 @@ class MonthlyWorkingHours extends ko.ViewModel {
 
 		return nts.uk.time.format.byId("Clock_Short_HM", total > 0 ? total : 0);
 	}
-    
-    bind_table(){
-        const vm =this;
-        
-        return `<thead>
-                                        <tr style="background-color:#92D050">`+
-                                        vm.screenMode=='Com_Person' ? `<th></th>`:''+
-                                        
-                                            `<th style="text-align:center;" data-bind="i18n: 'KMK004_263'"></th>`+
-            vm.showScheduled()?`<th data-bind="i18n: 'KMK004_264'" style="text-align:center;"></th>`:``
-                                            
-                                            +`
-                                            <th style="text-align:center;" data-bind="i18n: 'KMK004_265'"></th>
-                                            <th style="text-align:center;" data-bind="i18n: 'KMK004_266'"></th>
-                                            
-                                        </tr>
-                                </thead> <tbody>`+vm.bind_row()+
-                                
-                              
-                                
-                                `</tbody> <tr data-bind="visible: screenMode != 'Com_Person' " >
-                                    <td style="padding: 5px;text-align:center" class="bg-green" style="text-align:center;" data-bind="i18n: 'KMK004_267'" ></td>`+
-                vm.showScheduled()?`<td data-bind="text:calTotalTime('withinLaborTime')" style="text-align:center;"></td>`:``
-                                    
-                        +`<td style="text-align:center;" data-bind="text:calTotalTime('legalLaborTime')" ></td>
-                                    <td style="text-align:center;" data-bind="text:calTotalTime('weekAvgTime')" ></td>
-                                </tr>`;
-    }
-    
-    bind_row(){
-        const vm =this;
-        
-        let result = '';
-        
-        _.forEach(vm.screenData().monthlyWorkTimeSetComs(), () => {
-
-            result = result + `
-                    <tr>`+
-                        vm.screenMode=='Com_Person' ? `<td><div data-bind="ntsCheckBox: { checked:$data.laborTime().checkbox }"></div></td>`:''+
-                        +
-                    ` <td class="bg-green" style="text-align:center;" ><span data-bind="text: $data.yearMonthText + '月度'"></span></td>
-                                                <td data-bind="visible:$parent.showScheduled()"><input  data-bind="
-                                                ntsTimeEditor: {
-                                                        name:'#[KMK004_264]',
-                                                        value: $data.laborTime().withinLaborTime,
-                                                        constraint:'MonthlyEstimateTime',
-                                                        enable: $data.laborTime().checkbox,
-                                                        inputFormat: 'time', 
-                                                        mode: 'time',
-                                                        option: {textalign: 'center',width: '80px'}
-                                                        }"
-                                                /></td>
-                                                <td ><input  data-bind="
-                                                ntsTimeEditor: {name:'#[KMK004_265]',
-                                                        value: $data.laborTime().legalLaborTime,
-                                                        constraint:'MonthlyEstimateTime',
-                                                        enable: $data.laborTime().checkbox,
-                                                        inputFormat: 'time', 
-                                                        mode: 'time',
-                                                        option: {textalign: 'center',width: '80px'}
-                                                        }"
-                                                /></td>
-                                                <td ><input  data-bind="
-                                                ntsTimeEditor: {name:'#[KMK004_266]',
-                                                        value: $data.laborTime().weekAvgTime,
-                                                        constraint:'MonthlyEstimateTime',
-                                                        enable: $data.laborTime().checkbox,
-                                                        inputFormat: 'time', 
-                                                        mode: 'time',
-                                                        option: {textalign: 'center',width: '80px'}
-                                                        }"
-                                                /></td></tr> `
-                    ;
-        });
-        
-        
-        return result ;
-    }
 
 }
 
