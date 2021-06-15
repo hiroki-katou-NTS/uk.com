@@ -9,7 +9,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 950, height: 700 };</script>
+			<script>var dialogSize = { width: 950, height: 750 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName
 			</com:ValidatorScript>
@@ -371,7 +371,7 @@
 									<!-- C18_1 -->
 									<div class="form-label"	data-bind="ntsFormLabel: {}">#{i18n.getText('KWR002_194')}</div>
 									<!-- C18_2 -->
-									<div class="switch" id ="switch-button" style="display: inline-block;" tabindex="40"
+									<div class="switch" id ="switch-button" style="vertical-align: middle; display: inline-block;" tabindex="40"
 										data-bind="ntsSwitchButton: {
 										options: confirmedDisplay,
 										optionsValue: 'value',

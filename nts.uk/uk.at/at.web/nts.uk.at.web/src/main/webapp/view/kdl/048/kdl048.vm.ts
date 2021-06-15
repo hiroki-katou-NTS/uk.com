@@ -85,7 +85,7 @@ module nts.uk.at.view.kdl048.screenModel {
       vm.columns = ko.observableArray([
         { headerText: 'ID', prop: "id", hidden: true },
         { headerText: vm.$i18n("KDL048_6"), prop: "indicatesNumber", width: 70 },
-        { headerText: vm.$i18n("KDL048_7"), prop: "name", width: 200 },
+        { headerText: vm.$i18n("KDL048_7"), prop: "name", width: 235 },
       ]);
 
       // event when change itemCombo

@@ -245,6 +245,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                 vm.endTime1(null);
                 vm.endTime2(null);
 
+                vm.data.selectedWorkTypeCD = null;
+                vm.data.selectedWorkTimeCD = null;
+
                 // vm.$errors("clear");
                 nts.uk.ui.errors.clearAll()
 
@@ -289,6 +292,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     if (data) {
                         $("#work-type-combobox").focus()
                         vm.fetchData(data);
+                        vm.selectedWorkTimeCD(null);
+                        vm.selectedWorkTimeName(null);
+                        vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", 0));
                         vm.appDispInfoStartupOutput(data.appDispInfoStartupOutput);
                         return data;
                     }

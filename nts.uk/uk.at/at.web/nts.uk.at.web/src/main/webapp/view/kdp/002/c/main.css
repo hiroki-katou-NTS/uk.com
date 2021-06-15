@@ -1,9 +1,10 @@
 .kdp002-c {
-	padding: 11px;
+	padding: 0 11px;
 }
 
 #contents-area{
 	overflow: hidden !important;
+	padding-top: 2px !important;
 }
 .item-screen, #single-list_container {
 	margin-top: 10px !important;

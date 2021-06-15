@@ -173,7 +173,7 @@
 					</div>
 					
 				<!-- TH GROUP -->
-				<div data-bind="if: selectTypeSet() == 1" style="margin-top: 15px; display: flex">
+				<div data-bind="if: selectTypeSet() == 1" style="display: flex">
 					<!-- List ten group -->
 					<div>
 						<!--K2_1-->
@@ -185,10 +185,11 @@
 												columns: columns2,
 												multiple: false,
 												value: selectG,
-												rows: 14}">
+												rows: 12
+												}">
 						</table>
 					</div>
-					<div id="prev-next-button" style="width: 75px; margin-top: 125px; margin-left: 20px; position: absolute">
+					<div id="prev-next-button" style="width: 75px; margin-top: 125px; margin-left: 25px; position: absolute">
 						<div>
 							<button class="auto-height" style="width:75px;" data-bind="click: nextItem"><i class="img-icon icon-next label"></i></button>
 						</div>
@@ -202,8 +203,7 @@
 						<!--選択された承認者 -->
 						<!--K2_14-->
 						<div data-bind="ntsFormLabel: {required: false }" style="display: block;">#{i18n.getText('CMM018_111')}</div>
-						<div data-bind="ntsFormLabel: {required: false }" 
-								style="margin-top: 10px;">#{i18n.getText('CMM018_102')}</div>
+						<div data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_102')}</div>
 							<div style="margin-top: 15px">
 								<table id="lst-group-R1" data-bind="ntsGridList: {								
 									dataSource: lstGroup1,
