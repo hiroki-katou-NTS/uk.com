@@ -3024,15 +3024,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 userInfor.gridHeightSelection = self.selectedTypeHeightExTable();
                 if (self.selectedTypeHeightExTable() == TypeHeightExTable.DEFAULT) {
                     userInfor.heightGridSetting = '';
-                    self.updateGridHeightMode("dynamic", null);
+                    setTimeout(() => {
+                        self.updateGridHeightMode("dynamic", null);
+                    }, 1);
+                    $('#A16').ntsPopup('hide');
                 } else if (self.selectedTypeHeightExTable() == TypeHeightExTable.SETTING) {
                     userInfor.heightGridSetting = self.heightGridSetting();
-                    self.updateGridHeightMode("fixed", self.heightGridSetting());
+                    setTimeout(() => {
+                        self.updateGridHeightMode("fixed", self.heightGridSetting());
+                    }, 1);
+                    $('#A16').ntsPopup('hide');
                 }
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
             });
-
-            $('#A16').ntsPopup('hide');
         }
         
         updateGridHeightMode(mode, height) {
