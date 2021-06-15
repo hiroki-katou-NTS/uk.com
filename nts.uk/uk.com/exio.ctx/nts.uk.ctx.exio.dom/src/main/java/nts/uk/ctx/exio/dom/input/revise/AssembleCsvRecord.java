@@ -34,7 +34,7 @@ public class AssembleCsvRecord {
 			val revisionist = require.getRevise(context, itemNo);
 			if(revisionist.isPresent()) {
 				// 編集あり
-				val revisedResult =revisionist.get().revise(require, context, itemNo, csvValue);
+				val revisedResult =revisionist.get().revise(require, context, csvValue);
 				revisedResults.add(revisedResult);
 				assemblyItems.addObject(itemNo, revisedResult.getObjectValue());
 			}
