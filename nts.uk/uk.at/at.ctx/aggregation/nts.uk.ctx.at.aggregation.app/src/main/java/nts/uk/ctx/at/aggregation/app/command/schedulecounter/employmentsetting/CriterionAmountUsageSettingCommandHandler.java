@@ -37,11 +37,11 @@ public class CriterionAmountUsageSettingCommandHandler extends CommandHandler<Cr
 			domain = criOptional.get();
 			domain.update(EnumAdaptor.valueOf(command.getEmploymentUse(), NotUseAtr.class));
 			
-			criterionAmountUsageSettingRepository.update(cid, domain);
+			criterionAmountUsageSettingRepository.update(domain);
 		} else { // 3:
 			
 			domain = new CriterionAmountUsageSetting(cid, EnumAdaptor.valueOf(command.getEmploymentUse(), NotUseAtr.class));
-			criterionAmountUsageSettingRepository.insert(cid, domain);
+			criterionAmountUsageSettingRepository.insert(domain);
 		}
 	}
 
