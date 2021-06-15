@@ -139,9 +139,10 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 						// 絞り込みしたList＜週別実績の勤怠時間＞をループする
 						for (AttendanceTimeOfWeekly attWeekly : attendanceTimeOfWeeklyYms) {
 							// 任意抽出条件のアラーム値を作成する
-							ExtractResultDetail extractDetail = createAlarmExtraction(
+							ExtractResultDetailAndCount extractDetail = createAlarmExtraction(
 									attWeekly, weeklyCond, count, attendanceItemMap, cid, sid, wpkId, ym, attendanceTimeOfWeeklyYms.size());
-							if (extractDetail == null) {
+							count = extractDetail.count;
+							if (extractDetail.detail == null) {
 								continue;
 							}
 
@@ -155,13 +156,13 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 											&& i.getAlarmListCheckType() == AlarmListCheckType.FreeCheck
 											&& i.getAlarmCheckConditionNo().equals(alarmCode)) {
 										List<ExtractResultDetail> tmp = new ArrayList<>(i.getExtractionResultDetails());
-										tmp.add(extractDetail);
+										tmp.add(extractDetail.detail);
 										i.setExtractionResultDetails(tmp);
 										break;
 									}
 								}
 							} else {
-								List<ExtractResultDetail> listDetail = new ArrayList<>(Arrays.asList(extractDetail));
+								List<ExtractResultDetail> listDetail = new ArrayList<>(Arrays.asList(extractDetail.detail));
 								lstExtractInfoResult.add(new AlarmExtractInfoResult(
 										alarmCode,
 										new AlarmCheckConditionCode(alarmCheckConditionCode),
@@ -212,7 +213,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 	/*
 	 * Create alarm extraction condition
 	 */
-	private ExtractResultDetail createAlarmExtraction(
+	private ExtractResultDetailAndCount createAlarmExtraction(
 			AttendanceTimeOfWeekly attWeekly,
 			ExtractionCondScheduleWeekly weeklyCond,
 			int count,
@@ -257,6 +258,8 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		default:
 			break;
 		}
+		
+		count = continuousOutput.count;
 		
 		// 
 		ExtractionAlarmPeriodDate extractionAlarmPeriodDate = null;
@@ -309,10 +312,10 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 					Optional.ofNullable(wpkId),
 					comment,
 					Optional.ofNullable(checkTargetValue));
-			return detail;
+			return new ExtractResultDetailAndCount(detail, count);
 		}
 		
-		return null;
+		return new ExtractResultDetailAndCount(null, count);
 	}
 	
 	/**
@@ -424,6 +427,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 				CheckedTimeDuration endTime = new CheckedTimeDuration(endValue.intValue());
 				endValueStr = endTime.getTimeWithFormat();
 			}
+			break;
 		case TIMES:
 		case CONTINUOUS_TIMES:		
 			startValueStr = String.valueOf(startValue.intValue());
@@ -437,6 +441,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			if (endValue != null) {
 				endValueStr = endValue.toString();
 			}
+			break;
 		default:
 			break;
 		}
@@ -468,5 +473,18 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		
 		/** Optional<連続カウント＞ */
 		public Optional<ContinuousCount> continuousCountOpt = Optional.empty();
+	}
+	
+	private class ExtractResultDetailAndCount {
+		@SuppressWarnings("unused")
+		public ExtractResultDetail detail;
+		
+		@SuppressWarnings("unused")
+		public int count = 0;
+		
+		public ExtractResultDetailAndCount(ExtractResultDetail detail, int count) {
+			this.detail = detail;
+			this.count = count;
+		}
 	}
 }
