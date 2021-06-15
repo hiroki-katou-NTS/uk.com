@@ -272,28 +272,26 @@ class ScreenJComponent extends ko.ViewModel {
 			};
 		vm.$blockui('grayout');
 
-		$('#employee-list').ntsListComponent({
-			isShowAlreadySet: true,
-			isMultiSelect: false,
-			listType: ListType.EMPLOYEE,
-			employeeInputList: vm.employeeList,
-			selectType: SelectType.SELECT_BY_SELECTED_CODE,
-			selectedCode: vm.screenData().selected,
-			isDialog: false,
-			isShowNoSelectRow: false,
-			alreadySettingList: vm.screenData().alreadySettingList,
-			isShowWorkPlaceName: true,
-			isShowSelectAllButton: false,
-			disableSelection: false,
-			maxRows: 12
-		});
-        setTimeout(() => {
-	            vm.regSelectedEvent();
+        $('#employee-list').ntsListComponent({
+            isShowAlreadySet: true,
+            isMultiSelect: false,
+            listType: ListType.EMPLOYEE,
+            employeeInputList: vm.employeeList,
+            selectType: SelectType.SELECT_BY_SELECTED_CODE,
+            selectedCode: vm.screenData().selected,
+            isDialog: false,
+            isShowNoSelectRow: false,
+            alreadySettingList: vm.screenData().alreadySettingList,
+            isShowWorkPlaceName: true,
+            isShowSelectAllButton: false,
+            disableSelection: false,
+            maxRows: 12
+        });
+        vm.regSelectedEvent();
 
-	            vm.$blockui("hide");
+        vm.$blockui("hide");
 
-            vm.screenData().selected.valueHasMutated();
-        }, 1000);
+        vm.screenData().selected.valueHasMutated();
 		
 	}
 

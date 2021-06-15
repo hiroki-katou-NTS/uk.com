@@ -182,7 +182,7 @@ class ScreenHComponent extends ko.ViewModel {
 
 		vm.$blockui('invisible');
 		$('#work-place-list').ntsTreeComponent(workPlaceGrid).done(() => {
-            setTimeout(() => {
+
                 vm.regSelectedEvent();
 
                 vm.$blockui("hide");
@@ -190,7 +190,6 @@ class ScreenHComponent extends ko.ViewModel {
                 vm.screenData().selected.valueHasMutated();
 
                 dfd.resolve(vm.screenData().selected());
-            }, 1000);
 		});
 		return dfd.promise();
 	}
