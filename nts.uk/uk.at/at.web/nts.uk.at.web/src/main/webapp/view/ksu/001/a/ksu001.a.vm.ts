@@ -3024,13 +3024,28 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 userInfor.gridHeightSelection = self.selectedTypeHeightExTable();
                 if (self.selectedTypeHeightExTable() == TypeHeightExTable.DEFAULT) {
                     userInfor.heightGridSetting = '';
+                    self.updateGridHeightMode("dynamic", null);
                 } else if (self.selectedTypeHeightExTable() == TypeHeightExTable.SETTING) {
                     userInfor.heightGridSetting = self.heightGridSetting();
+                    self.updateGridHeightMode("fixed", self.heightGridSetting());
                 }
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
             });
 
             $('#A16').ntsPopup('hide');
+        }
+        
+        updateGridHeightMode(mode, height) {
+            let self = this;
+            if (mode == "dynamic") {
+                let h = window.innerHeight - document.getElementById('extable').offsetTop - 60 -40; // 60 : height header, 40, khaong cách grid đên bottom page.;
+                $("#extable").exTable("setHeight", h);
+                $("#extable").exTable("gridHeightMode", "dynamic");
+            } else {
+                $("#extable").exTable("setHeight", height);
+                $("#extable").exTable("gridHeightMode", "fixed");
+            }
+            self.setPositionButonDownAndHeightGrid();
         }
 
         // xử lý cho button A13
