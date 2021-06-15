@@ -22616,12 +22616,11 @@ var nts;
                             var initSearchArea = function ($SearchArea, searchMode, searchText) {
                                 $SearchArea.append("<div class='ntsSearchTextContainer'/>")
                                     .append("<div class='ntsSearchButtonContainer'/>");
-                                // if(searchMode === "filter"){
-                                //     $SearchArea.append("<div class='ntsClearButtonContainer'/>");
-                                //     $SearchArea.find(".ntsClearButtonContainer")
-                                //         .append("<button id = " + searchAreaId + "-clear-btn" + " class='ntsSearchButton clear-btn ntsSwap_Component'/>");  
-                                //     $SearchArea.find(".clear-btn").text(toBeResource.clear);        
-                                // }
+                                if (searchMode === "filter") {
+                                    $SearchArea.append("<div class='ntsClearButtonContainer'/>");
+                                    $SearchArea.find(".ntsClearButtonContainer")
+                                        .append("<button id = " + searchAreaId + "-clear-icon" + " class='ntsSearchButton clear-icon proceed ntsSwap_Component'/>");
+                                }
                                 $SearchArea.find(".ntsSearchTextContainer")
                                     .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSwap_Component ntsSearchBox nts-editor ntsSearchBox_Component'/>");
                                 $SearchArea.find(".ntsSearchTextContainer")
@@ -22672,7 +22671,7 @@ var nts;
                         var swapParts = new Array();
                         swapParts.push(new GridSwapPart().listControl($grid1)
                             .searchControl($swap.find(".ntsSwapSearchLeft").find(".search-btn"))
-                            .clearControl($swap.find(".ntsSwapSearchLeft").find(".clear-btn"))
+                            .clearControl($swap.find(".ntsSwapSearchLeft").find(".clear-icon"))
                             .searchBox($swap.find(".ntsSwapSearchLeft").find(".ntsSearchBox"))
                             .withDataSource(originalSource)
                             .setSearchCriterion(data.leftSearchCriterion || data.searchCriterion || leftCriterion)
@@ -22685,7 +22684,7 @@ var nts;
                             .build());
                         swapParts.push(new GridSwapPart().listControl($grid2)
                             .searchControl($swap.find(".ntsSwapSearchRight").find(".search-btn"))
-                            .clearControl($swap.find(".ntsSwapSearchRight").find(".clear-btn"))
+                            .clearControl($swap.find(".ntsSwapSearchRight").find(".clear-icon"))
                             .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
                             .withDataSource(data.value())
                             .setSearchCriterion(data.rightSearchCriterion || data.searchCriterion || rightCriterion)
@@ -46430,7 +46429,7 @@ var nts;
                         }
                         var tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
                         $container.addClass("nts-searchbbox-wrapper").removeAttr("tabindex");
-                        $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span></div>");
+                        $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span><i id='search-icon' class='img-icon'></i></div>");
                         $container.append("<div class='input-wrapper'><button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button></div>");
                         if (!nts.uk.util.isNullOrEmpty(label)) {
                             var $formLabel = $("<div>", { text: label });
