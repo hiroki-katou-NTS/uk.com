@@ -109,7 +109,7 @@
 }
 
 .form-group.search-box .ui-igcombo-wrapper {
-	width: 100%;
+	width: 97% !important;
 }
 
 .caret-background.caret-right:after {
@@ -126,4 +126,8 @@
 
 #contents-area>.right-area>.ntsControl.layout-control {
 	margin-top: 10px;
+}
+
+#lefttabs .tabs-list:empty {
+	padding: 0px !important;
 }
