@@ -20,7 +20,7 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCatego
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.screen.at.app.ksu001.aggrerateschedule.AggregateScheduleDto;
-import nts.uk.screen.at.app.ksu001.aggrerateschedule.ScreenQueryAggrerateSchedule;
+import nts.uk.screen.at.app.ksu001.aggrerateschedule.ScreenQueryAggregateSchedule;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
 import nts.uk.screen.at.app.ksu001.getworkactualshift.GetActualOfShift;
@@ -53,7 +53,7 @@ public class GetScheduleActualOfShift {
 	private ScreenQueryWorkScheduleShift screenQueryWorkScheduleShift;
 	
 	@Inject
-	private ScreenQueryAggrerateSchedule screenQueryAggrerateSchedule;
+	private ScreenQueryAggregateSchedule screenQueryAggrerateSchedule;
 	
 	public SchedulesbyShiftDataResult getData(SchedulesbyShiftParam param) {
 		

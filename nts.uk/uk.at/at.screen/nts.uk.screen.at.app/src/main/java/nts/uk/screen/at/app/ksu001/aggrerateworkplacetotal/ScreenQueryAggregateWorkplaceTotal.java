@@ -21,16 +21,16 @@ import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.TotalTimesDto;
  *
  */
 @Stateless
-public class ScreenQueryAggrerateWorkplaceTotal {
+public class ScreenQueryAggregateWorkplaceTotal {
 	
 	@Inject
 	private ScreenQueryLaborCostAndTime screenQueryLaborCostAndTime;
 	
 	@Inject
-	private ScreenQueryAggrerateNumberTimeWp screenQueryAggrerateNumberTime;
+	private ScreenQueryAggregateNumberTimeWp screenQueryAggrerateNumberTime;
 	
 	@Inject
-	private ScreenQueryAggrerateNumberPeople screenQueryAggrerateNumberPeople;
+	private ScreenQueryAggregateNumberPeople screenQueryAggrerateNumberPeople;
 	
 	@Inject
 	private ScreenQueryExternalBudgetPerformance screenQueryExternalBudgetPerformance;

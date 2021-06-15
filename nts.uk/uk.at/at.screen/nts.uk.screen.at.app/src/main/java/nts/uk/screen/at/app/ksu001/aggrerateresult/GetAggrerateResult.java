@@ -13,7 +13,7 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCateg
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksu001.aggreratedinformation.AggregatedInformationDto;
-import nts.uk.screen.at.app.ksu001.aggreratedinformation.ScreenQueryAggreratedInformation;
+import nts.uk.screen.at.app.ksu001.aggreratedinformation.ScreenQueryAggregatedInformation;
 
 /**
  *  集計結果を再表示する
@@ -25,7 +25,7 @@ import nts.uk.screen.at.app.ksu001.aggreratedinformation.ScreenQueryAggreratedIn
 public class GetAggrerateResult {
 
 	@Inject
-	private ScreenQueryAggreratedInformation screenQueryAggreratedInformation;
+	private ScreenQueryAggregatedInformation screenQueryAggreratedInformation;
 	
 	public AggregatedInformationDto get(AggregateResultParam param) {
 		TargetOrgIdenInfor targetOrgIdenInfor;

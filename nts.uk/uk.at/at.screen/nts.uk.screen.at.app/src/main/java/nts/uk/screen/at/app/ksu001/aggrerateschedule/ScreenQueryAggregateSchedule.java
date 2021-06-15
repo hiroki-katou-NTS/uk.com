@@ -21,10 +21,10 @@ import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.AggregatePersonalDto;
-import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.ScreenQueryAggreratePersonal;
+import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.ScreenQueryAggregatePersonal;
 import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.AggregateWorkplaceDto;
 import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.ScreenQueryAggregatePeopleMethod;
-import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.ScreenQueryAggrerateWorkplaceTotal;
+import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.ScreenQueryAggregateWorkplaceTotal;
 /**
  * スケジュール集計をする
  * @author hoangnd
@@ -32,13 +32,13 @@ import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.ScreenQueryAggrerateW
  */
 
 @Stateless
-public class ScreenQueryAggrerateSchedule {
+public class ScreenQueryAggregateSchedule {
 
 	@Inject 
-	private ScreenQueryAggreratePersonal screenQueryAggreratePersonal;
+	private ScreenQueryAggregatePersonal screenQueryAggreratePersonal;
 	
 	@Inject
-	private ScreenQueryAggrerateWorkplaceTotal screenQueryAggrerateWorkplaceTotal;
+	private ScreenQueryAggregateWorkplaceTotal screenQueryAggrerateWorkplaceTotal;
 	
 	@Inject
 	private ScreenQueryAggregatePeopleMethod screenQueryAggreratePeopleMethod;

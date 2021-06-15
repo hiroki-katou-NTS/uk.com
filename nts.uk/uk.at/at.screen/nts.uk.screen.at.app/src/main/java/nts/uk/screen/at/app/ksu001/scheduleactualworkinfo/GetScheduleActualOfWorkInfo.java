@@ -17,7 +17,7 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCatego
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.screen.at.app.ksu001.aggrerateschedule.AggregateScheduleDto;
-import nts.uk.screen.at.app.ksu001.aggrerateschedule.ScreenQueryAggrerateSchedule;
+import nts.uk.screen.at.app.ksu001.aggrerateschedule.ScreenQueryAggregateSchedule;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoParam;
 import nts.uk.screen.at.app.ksu001.processcommon.ScreenQueryCreateWorkSchedule;
 import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
@@ -41,7 +41,7 @@ public class GetScheduleActualOfWorkInfo {
 	private ScreenQueryPlanAndActual screenQueryPlanAndActual;
 	
 	@Inject
-	private ScreenQueryAggrerateSchedule screenQueryAggrerateSchedule;
+	private ScreenQueryAggregateSchedule screenQueryAggrerateSchedule;
 	
 	@Inject
 	private ScreenQueryCreateWorkSchedule screenQueryCreateWorkSchedule;

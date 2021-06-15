@@ -22,7 +22,7 @@ import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksu001.aggreratedinformation.AggregatedInformationDto;
-import nts.uk.screen.at.app.ksu001.aggreratedinformation.ScreenQueryAggreratedInformation;
+import nts.uk.screen.at.app.ksu001.aggreratedinformation.ScreenQueryAggregatedInformation;
 import nts.uk.screen.at.app.ksu001.start.AggregatePersonalMapDto;
 import nts.uk.screen.at.app.ksu001.start.AggregateWorkplaceMapDto;
 import nts.uk.screen.at.app.ksu001.start.ExternalBudgetMapDto;
@@ -36,7 +36,7 @@ import nts.uk.screen.at.app.ksu001.start.ExternalBudgetMapDtoList;
 public class GetAggregatedInfoFinder {
 
 	@Inject
-	private ScreenQueryAggreratedInformation screenQAggreratedInfo;
+	private ScreenQueryAggregatedInformation screenQAggreratedInfo;
 	
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 

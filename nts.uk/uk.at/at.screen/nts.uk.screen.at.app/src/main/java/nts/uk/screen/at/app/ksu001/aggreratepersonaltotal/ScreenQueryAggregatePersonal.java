@@ -65,10 +65,10 @@ import nts.uk.shr.com.context.AppContexts;
  */
 
 @Stateless
-public class ScreenQueryAggreratePersonal {
+public class ScreenQueryAggregatePersonal {
 
 	@Inject 
-	private ScreenQueryAggrerateNumberTimePs screenQueryAggrerateNumberTime;
+	private ScreenQueryAggregateNumberTimePs screenQueryAggrerateNumberTime;
 	
 	@Inject
 	private EmpComHisAdapter empComHisAdapter;

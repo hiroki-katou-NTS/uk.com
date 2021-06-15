@@ -46,7 +46,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class ScreenQueryAggrerateNumberPeople {
+public class ScreenQueryAggregateNumberPeople {
 	
 	@Inject 
 	private EmploymentRepository employmentRepository;

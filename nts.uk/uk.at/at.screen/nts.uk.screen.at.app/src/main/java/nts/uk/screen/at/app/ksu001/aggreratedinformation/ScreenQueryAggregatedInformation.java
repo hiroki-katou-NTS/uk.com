@@ -15,7 +15,7 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCateg
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.screen.at.app.ksu001.aggrerateschedule.AggregateScheduleDto;
-import nts.uk.screen.at.app.ksu001.aggrerateschedule.ScreenQueryAggrerateSchedule;
+import nts.uk.screen.at.app.ksu001.aggrerateschedule.ScreenQueryAggregateSchedule;
 import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.ScreenQueryExternalBudgetPerformance;
 import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.PlanAndActual;
 import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.ScreenQueryPlanAndActual;
@@ -28,7 +28,7 @@ import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.ScreenQueryP
 
 
 @Stateless
-public class ScreenQueryAggreratedInformation {
+public class ScreenQueryAggregatedInformation {
 
 	@Inject
 	private ScreenQueryExternalBudgetPerformance screenQueryExternalBudgetPerformance;
@@ -37,7 +37,7 @@ public class ScreenQueryAggreratedInformation {
 	private ScreenQueryPlanAndActual screenQueryPlanAndActual;
 	
 	@Inject
-	private ScreenQueryAggrerateSchedule screenQueryAggrerateSchedule;
+	private ScreenQueryAggregateSchedule screenQueryAggrerateSchedule;
 	
 	/**
 	 * 

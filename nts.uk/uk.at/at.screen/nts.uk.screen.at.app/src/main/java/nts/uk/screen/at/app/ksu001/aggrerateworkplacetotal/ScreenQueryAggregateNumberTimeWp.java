@@ -39,7 +39,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class ScreenQueryAggrerateNumberTimeWp {
+public class ScreenQueryAggregateNumberTimeWp {
 	
 	@Inject
 	private CountInfoProcessor countInfoProcessor;
