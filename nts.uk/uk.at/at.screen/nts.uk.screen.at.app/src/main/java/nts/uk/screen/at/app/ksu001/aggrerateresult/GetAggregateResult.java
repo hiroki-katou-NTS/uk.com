@@ -22,7 +22,7 @@ import nts.uk.screen.at.app.ksu001.aggreratedinformation.ScreenQueryAggregatedIn
  *
  */
 @Stateless
-public class GetAggrerateResult {
+public class GetAggregateResult {
 
 	@Inject
 	private ScreenQueryAggregatedInformation screenQueryAggreratedInformation;
