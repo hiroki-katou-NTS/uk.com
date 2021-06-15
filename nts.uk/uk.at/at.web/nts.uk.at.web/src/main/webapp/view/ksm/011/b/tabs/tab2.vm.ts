@@ -37,6 +37,7 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
 
     active: KnockoutObservable<boolean> = ko.observable(false);
     enableDeleteButton: KnockoutComputed<boolean>;
+    enableWorkRequestInput: KnockoutComputed<boolean>;
 
     constructor(params: any) {
       super();
@@ -101,6 +102,9 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
               }
           }
           return false;
+      });
+      vm.enableWorkRequestInput = ko.computed(() => {
+          return vm.workRequest() == 1;
       });
     }
 
@@ -193,7 +197,7 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
           vm.deadlineWorkSelected(0); //Ba4_11				締切日
           vm.workRequestInputSelected(1); //Ba4_13				入力方法の利用区分
         }
-        $(".switchButton-wrapper")[4].focus();
+        $("#Bb3_2").focus();
       }).fail((error) => {
         vm.$dialog.error(error);
       }).always(() => {
@@ -211,6 +215,9 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
                   isAlreadySetting: true
               })));
               vm.alreadySettingWorkplaceGroups(data.workPlaceGroupList || []);
+          } else {
+              vm.alreadySettingWorkplaces([]);
+              vm.alreadySettingWorkplaceGroups([]);
           }
       }).fail((error) => {
           vm.$dialog.error(error);

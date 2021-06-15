@@ -99,8 +99,8 @@ module nts.uk.ui.ktg001.a {
                                             click: $component.applicationList">
                                     </button>
                                     <!-- A2_3 -->
-                                    <i style="position: absolute; bottom: 5px; left: 15px;"
-                                        data-bind="visible: $component.appIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }"></i>
+                                    <i style="position: absolute; bottom: 5px; left: 15px; cursor: pointer;"
+                                        data-bind="visible: $component.appIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }, click: $component.applicationList""></i>
                                 </td>
                                 <td style="padding-left: 5px;">
                                     <!-- A2_1 -->
@@ -116,8 +116,8 @@ module nts.uk.ui.ktg001.a {
                                         enable: $component.dayIconVisible">
                                     </button>
                                     <!-- A3_3 -->
-                                    <i style="position: absolute; bottom: 5px; left: 15px;"
-                                        data-bind="visible: $component.dayIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }"></i>
+                                    <i style="position: absolute; bottom: 5px; left: 15px; cursor: pointer;"
+                                        data-bind="visible: $component.dayIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }, click: $component.dayPerformanceConfirm"></i>
                                 </td>
                                 <td style="padding-left: 5px;">
                                     <!-- A3_1 -->
@@ -133,8 +133,8 @@ module nts.uk.ui.ktg001.a {
                                         enable: monIconVisible">
                                     </button>
                                     <!-- A4_3 -->
-                                    <i style="position: absolute; bottom: 5px; left: 15px;"
-                                        data-bind="visible: monIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }"></i>
+                                    <i style="position: absolute; bottom: 5px; left: 15px; cursor: pointer;"
+                                        data-bind="visible: monIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }, click: $component.monPerformanceConfirm"></i>
                                 </td>
                                 <td style="padding-left: 5px;">
                                     <!-- A4_1 -->
@@ -150,8 +150,8 @@ module nts.uk.ui.ktg001.a {
                                         enable: $component.aggrIconVisible">
                                     </button>
                                     <!-- A5_3 -->
-                                    <i style="position: absolute; bottom: 5px; left: 15px;"
-                                        data-bind="visible: $component.aggrIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }"></i>
+                                    <i style="position: absolute; bottom: 5px; left: 15px; cursor: pointer;"
+                                        data-bind="visible: $component.aggrIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }, click: $component.aggrementApproval"></i>
                                 </td>
                                 <td style="padding-left: 5px;">
                                     <!-- A5_1 -->
@@ -292,13 +292,7 @@ module nts.uk.ui.ktg001.a {
                                 }
 
                             })
-                        } else {
-							vm.title(vm.$i18n('KTG001_12'));
-							vm.appRowVisible(true);
-							vm.aggrRowVisible(false);
-							vm.dayRowVisible(approvalProcessingUse.useDayApproverConfirm);
-							vm.monRowVisible(approvalProcessingUse.useMonthApproverConfirm);
-						}
+                        }
                     }
                 })
                 .then(() => {

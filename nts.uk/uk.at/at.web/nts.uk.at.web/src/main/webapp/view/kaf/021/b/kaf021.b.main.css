@@ -6,7 +6,7 @@
 
 #B1_2{
     margin-top: 5px;
-    width: 500px;
+    display: table;
 }
 
 #B1_2 .label{

@@ -11,7 +11,7 @@ module nts.uk.at.view.kdl052.test.screenModel {
 
   export class ViewModel extends ko.ViewModel {
 
-    selectedCodeList = ko.observable("c7cb93ce-d23b-4283-875e-a0bbb21b9d36," +
+    selectedCodeList = ko.observable("xxxxxx000000000004-0004-000000000001," +
       "fe3b1f44-dbc8-44c0-ab32-f617f01f00a5," +
       "96c1e494-5cde-402c-8629-81b0dec7ac92," +
       "da1886cf-b80f-425c-af09-44a94a7643f2," +
@@ -25,11 +25,11 @@ module nts.uk.at.view.kdl052.test.screenModel {
     openKDL020Dialog() {
       const vm = this,
         data = {
-          employeeList: _.split(this.selectedCodeList(), ','),
+          employeeIds: _.split(this.selectedCodeList(), ','),
           baseDate: this.baseDate()
         }
       // Input．社員IDリストをチェックする。
-      if (data.employeeList.length > 1) {
+      if (data.employeeIds.length > 1) {
         vm.$window.modal('/view/kdl/052/multi.xhtml', data);
       } else {
         vm.$window.modal('/view/kdl/052/single.xhtml', data);

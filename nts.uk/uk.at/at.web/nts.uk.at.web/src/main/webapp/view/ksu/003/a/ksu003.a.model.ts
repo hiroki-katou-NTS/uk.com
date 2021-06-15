@@ -327,6 +327,7 @@ module nts.uk.at.view.ksu003.a.model {
 
 	// setting show hide for middle
 	export function showHide(showA9: any, indexBtnToLeft: any, targetInfor: any) {
+		$("#contents-area").css({ 'overflow-y': 'hidden' });
 		if (indexBtnToLeft() % 2 == 0) {
 			if (!showA9) {
 				$("#extable-ksu003").exTable("showMiddle");

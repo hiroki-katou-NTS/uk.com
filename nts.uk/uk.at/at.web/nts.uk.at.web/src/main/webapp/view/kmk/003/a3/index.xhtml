@@ -17,7 +17,7 @@
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_319')}</div>
 				</td>
 				<td class="td-cell">
-					<div class="cf" tabindex="55"
+					<div tabindex="55"
 						 data-bind="ntsSwitchButton: {
 											name: '#[KMK003_320]',
 											options: mainSettingModel.useHalfDayOptions,
@@ -37,7 +37,7 @@
 				<com:ko tag="if" bind="isDetailMode">
 					<div class="tab-rows">
 						<div tabindex="-1" style="width: 120px;" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_185')}</div>
-						<div tabindex="56" class="cf" data-bind="ntsSwitchButton: {
+						<div tabindex="56" data-bind="ntsSwitchButton: {
 								options: autoCalUseAttrs,
 								optionsValue: 'code',
 								optionsText: 'name',
@@ -114,7 +114,7 @@
 				<com:ko tag="if" bind="isDetailMode">
 					<div class="tab-rows">
 						<div tabindex="-1" style="width: 120px;" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_185')}</div>
-						<div tabindex="56" class="cf" data-bind="ntsSwitchButton: {
+						<div tabindex="56" data-bind="ntsSwitchButton: {
 							options: autoCalUseAttrs,
 							optionsValue: 'code',
 							optionsText: 'name',

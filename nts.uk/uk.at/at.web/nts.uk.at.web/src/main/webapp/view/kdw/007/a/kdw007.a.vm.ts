@@ -30,9 +30,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         ]);
         listRemarkColumnNo: KnockoutObservableArray<any> = ko.observableArray([]);
         listTypeAtr: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '0', name: getText("Enum_ErrorAlarmClassification_Error") },
-            { code: '1', name: getText("Enum_ErrorAlarmClassification_Alarm") },
-            { code: '2', name: getText("Enum_ErrorAlarmClassification_Other") }
+            { code: 0, name: getText("Enum_ErrorAlarmClassification_Error") },
+            { code: 1, name: getText("Enum_ErrorAlarmClassification_Alarm") },
+            { code: 2, name: getText("Enum_ErrorAlarmClassification_Other") }
         ]);
         gridListColumns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: getText("KDW007_6"), key: 'code', width: 45 },
@@ -115,7 +115,11 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                                 self.selectedErrorAlarmCode(self.codeToSelect());
                         }
                         self.isNewMode(false);
-                        self.selectedTab('tab-1');
+                        if (val == 1) {
+                            self.selectedTab('tab-5');
+                        } else {
+                            self.selectedTab('tab-1');
+                        }
                     } else {
                         if(val == 0){
                         self.setNewMode();
@@ -160,7 +164,6 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                             self.newTab();
                         }
                     }
-                    console.log(self.selectedErrorAlarm(), 'aloo');
                 setTimeout(() => {
                     nts.uk.ui.block.clear();
                 }, 500);
