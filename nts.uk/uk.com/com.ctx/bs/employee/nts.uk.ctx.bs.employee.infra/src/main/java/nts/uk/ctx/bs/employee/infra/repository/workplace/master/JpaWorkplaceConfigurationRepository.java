@@ -114,8 +114,8 @@ public class JpaWorkplaceConfigurationRepository extends JpaRepository implement
 		String query = "SELECT c FROM BsymtWorkplaceConfig c WHERE c.pk.companyId = :companyId and c.startDate <= :endPeriod and c.endDate >= :startPeriod";
 		List<BsymtWorkplaceConfig> listEntities = this.queryProxy().query(query, BsymtWorkplaceConfig.class)
 				.setParameter("companyId", companyId)
-				.setParameter("endPeriod", period.start())
-				.setParameter("startPeriod", period.end()).getList();
+				.setParameter("endPeriod", period.end())
+				.setParameter("startPeriod", period.start()).getList();
 		List<WorkplaceConfiguration> resultList = new ArrayList<WorkplaceConfiguration>();
 		WorkplaceConfiguration domain = BsymtWorkplaceConfig.toDomain(listEntities);
 		if (domain != null) resultList.add(domain);
