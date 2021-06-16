@@ -62,6 +62,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             block.invisible();
             let settingId = params.settingId;
             let layOutId = params.layOutId;
+            let listSpecialHoliday: Array<number> = [];
             $.when(service.getVariousVacationControl(),
                 service.findBySettingId(settingId)
             ).done((vacationControl: IVariousVacationControl,
@@ -108,7 +109,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     $('#rowSpecialHoliday').addClass("hidden");
                 }
                 else {
-                    let listSpecialHoliday: Array<number> = [];
                     for (let i = 1; i < 21; i++) {
 
                         let item = _.find(vacationControl.listSpecialHoliday, x => {
@@ -139,7 +139,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     let _rsList: Array<HolidayRemaining> = _.map(holidayRemainings, result => {
                         return new HolidayRemaining(result);
                     });
-
                     self.lstHolidays(_rsList);
                     if (!nts.uk.util.isNullOrEmpty(layOutId)) {
                         let item = _.find(_rsList, function (o) {
@@ -147,6 +146,16 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                         });
                         if (!nts.uk.util.isNullOrUndefined(item)) {
                             self.currentHoliday(item);
+                            let listSpecial: Array<number> = [];
+                        let listCheck =  self.currentHoliday().listSpecialHoliday();
+                          for (let i = 0;i<listSpecialHoliday.length;i++){
+                              let item = listSpecialHoliday[i];
+                              let sub =_.first(_.filter(listCheck,x=>x==item));
+                              if(!nts.uk.util.isNullOrEmpty(sub)){
+                                  listSpecial.push(sub);
+                              }
+                          }
+                            self.currentHoliday().listSpecialHoliday(listSpecial);
                         }
                         // self.currentCode(_rsList[0].cd());
                     }
@@ -156,7 +165,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 }else if(holidayRemainings.length ==0){
                     self.isNewMode(true)
                 }
-
                 dfd.resolve(self);
             }).fail(function (res) {
                 alertError({messageId: res.messageId});
