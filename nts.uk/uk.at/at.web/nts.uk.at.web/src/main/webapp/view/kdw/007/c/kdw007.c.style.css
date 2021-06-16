@@ -49,3 +49,7 @@
 #add-sub-list_scrollContainer {
 	min-height: 212.6px !important;
 }
+
+.ntsSearchBox {
+	width: 142px !important;
+}
