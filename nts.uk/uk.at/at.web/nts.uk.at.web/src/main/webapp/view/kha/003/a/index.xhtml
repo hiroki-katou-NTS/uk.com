@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = {width: 300, height: 200};</script>
+        <com:ValidatorScript>
+            nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.ManHourSummaryTableCode
+            nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.ManHourSummaryTableName
+        </com:ValidatorScript>
+        <com:stylefile path="kha003.a.style.css"/>
+        <com:scriptfile path="kha003.a.vm.js"/>
+        <com:scriptfile set="IGNITE"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area">
+            <!--A1_1-->
+            <button data-bind="click:clickNewButton">#{i18n.getText('KHA003_10')}</button>
+            <!--A1_2-->
+            <button tabindex="5" class="proceed" data-bind="click:clickRegistrationButton">#{i18n.getText('KHA003_11')}</button>
+            <!--A1_3-->
+            <button data-bind="click:clickDuplicateButton">#{i18n.getText('KHA003_12')}</button>
+            <!--A1_4-->
+            <button class="danger" data-bind="click:clickDeleteButton">#{i18n.getText('KHA003_13')}</button>
+            <!--A1_5-->
+            <button data-bind="click:clickOutputAllButton">#{i18n.getText('KHA003_14')}</button>
+        </div>
+        <div id="contents-area">
+            <div class="table" style="margin-top: 8px;">
+                <div class="cell valign-top">
+                    <!--A2_1-->
+                    <div data-bind="ntsPanel:{width: '350px', height: '400px', direction: 'right', showIcon: true, visible: true}">
+                        <!--A2_2-->
+                        <div style="width: 300px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'single-list',
+	                     items: items, selected: currentCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}"/>
+                        <!--A3-->
+                        <table tabindex="1" id="single-list" data-bind="ntsGridList: {
+                        height: 320,
+                        options: items,
+                        optionsValue: 'code',
+                        columns: [
+                                { headerText: '#{i18n.getText('KHA003_18')}', prop: 'code', width: 100 },
+                                { headerText: '#{i18n.getText('KHA003_19')}', prop: 'name', width: 200 }
+                            ],
+                        multiple: false,
+                        value: currentCode
+	                    }">
+                        </table>
+                    </div>
+                </div>
+                <div class="cell valign-top" style="padding-left: 20px">
+                    <div class="table">
+                        <!-- A4_1 -->
+                        <div class="cell valign-center">
+                            <div data-bind="ntsFormLabel: { constraint: ['ManHourSummaryTableCode','ManHourSummaryTableName'], enable: true, required:true }">#{i18n.getText('KHA003_20')}</div>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- A4_2 -->
+                            <input tabindex="2" class="width-common" id="A4_2"
+                                   data-bind="ntsTextEditor: {constraint: 'ManHourSummaryTableCode', value: manHour.code,enable: true,required: true, name: '#[KHA003_21]'}, style: {marginRight: '5px'}"/>
+                        </div>
+                        <div class="cell valign-center">
+                            <!-- A4_3 -->
+                            <input tabindex="3" id="A4_3"
+                                   data-bind="ntsTextEditor: {constraint: 'ManHourSummaryTableName', value: manHour.name, required: true, name: '#[KHA003_22]'},  style: {width: '300px'}"/>
+                        </div>
+                    </div>
+                    <div class="table">
+                        <!-- A5_1 -->
+                        <div class="cell valign-center">
+                            <div style="padding: 10px 10px 10px 0px; font-size: 16px;font-weight: bold">#{i18n.getText('KHA003_23')}</div>
+                        </div>
+                    </div>
+                        <!-- A5_2 -->
+                        <div style="margin-left: 80px" class="panel panel-frame">
+                            <div class="table">
+                                <!-- A5_3 -->
+                                <div class="cell valign-center pannel_padding">
+                                    <div class="panel panel-gray-bg panel_common">#{i18n.getText('KHA003_24')}</div>
+                                </div>
+                                <!-- A5_4 -->
+                                <div class="cell valign-center pannel_padding">
+                                    <div class="panel panel-gray-bg panel_common">#{i18n.getText('KHA003_25')}</div>
+                                </div>
+                                <!-- A5_5 -->
+                                <div class="cell valign-center pannel_padding">
+                                    <div class="panel panel-gray-bg panel_common">#{i18n.getText('KHA003_26')}</div>
+                                </div>
+                                <!-- A5_6 -->
+                                <div class="cell valign-center pannel_padding">
+                                    <div class="panel panel-gray-bg panel_common">項目移送</div>
+                                </div>
+                                <!-- A5_7 -->
+                                <div class="cell valign-center pannel_padding">
+                                    <div class="panel panel-gray-bg panel_common">項目移送</div>
+                                </div>
+                                <!-- A5_8 -->
+                                <div class="cell valign-center pannel_padding">
+                                    <div class="panel panel-gray-bg panel_common">項目移送</div>
+                                </div>
+                                <!-- A5_9 -->
+                                <div class="cell valign-center pannel_padding">
+                                    <div class="panel panel-gray-bg panel_common">項目移送</div>
+                                </div>
+                                <!-- A5_10 -->
+                                <div class="cell valign-center pannel_padding">
+                                    <div class="panel panel-gray-bg panel_common">項目移送</div>
+                                </div>
+                            </div>
+                        </div>
+                    <div class="table" style="width: 100%">
+                        <!-- A5_3 -->
+                        <div class="cell valign-center" style="width: 15%">
+                            <div class="panel panel-frame item_a_6_1" style="border-radius: 3px;">
+
+                            </div>
+                        </div>
+                        <!-- A5_4 -->
+                        <div class="cell valign-center">
+                            <div class="panel panel-frame item_a_6_1" style="border-radius: 3px;">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
