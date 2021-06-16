@@ -12,14 +12,15 @@
 
 .upDown-container {
     height: 268px !important;
+    padding-left: 10px;
 }
 
 .grid-col-text-right {
     text-align: right;
 }
 
-#swap-list-move-data {
-    min-width: 100px;
+.move-button {
+    margin: 10px 10px !important;
 }
 
 .ui-iggrid .ui-iggrid-tablebody td {
