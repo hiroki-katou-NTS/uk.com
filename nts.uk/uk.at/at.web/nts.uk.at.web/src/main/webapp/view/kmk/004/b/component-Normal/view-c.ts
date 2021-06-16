@@ -10,71 +10,80 @@ module nts.uk.at.view.kmk004.b {
 			<button tabindex="4" class="danger" data-bind="i18n: 'KMK004_227', enable: checkDelete, click: remote"></button>
 		</div>
 		<div class="view-c-kmk004">
-			<div class="left-content">
-				<div data-bind="component: {
-					name: 'kcp004',
-					params:{
-						selectedId: selectedId,
-						model: model,
-						isChange: change
-					}
-				}"></div>
-			</div>
-			<div class="right-content">
-				<div>
-					<p class="title" data-bind="i18n: 'KMK004_228'"></p>
-					<hr></hr>
-					<div class="name" data-bind="i18n: model.name"></div>
-					<div>
-						<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
-						<!-- ko if: checkSeting -->
-							<button tabindex="5" data-bind="i18n: 'KMK004_339', click: openDialogF"></button>
-						<!-- /ko -->
-						<!-- ko ifnot: checkSeting -->
-							<button tabindex="5" data-bind="i18n: 'KMK004_338', click: openDialogF"></button>
-						<!-- /ko -->
-					</div>
-					<div class ="setting" data-bind="component: {
-						name: 'basic-setting',
-						params:{
-							type: type,
-							selectId: selectedId,
-							change: change,
-							checkSeting: checkSeting
-						}
-					}"></div>
-					<div class="label1" data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
-					<div class="content-data">
-						<div>
-							<button tabindex="6" data-bind="i18n: 'KMK004_233', click: openDialogQ"></button>
-						</div>
-						<div class="year">
-							<div class= "box-year" data-bind="component: {
-								name: 'box-year',
-								params:{
-									selectedYear: selectedYear,
-									type: type,
-									years: years,
-									selectId: selectedId
-								}
-							}"></div>
-						</div>
-						<div tabindex="7" class= "time-work" data-bind="component: {
-							name: 'time-work',
-							params:{
-								selectedYear: selectedYear,
-								checkEmployee: ko.observable(false),
-								type: type,
-								years: years,
-								selectId: selectedId,
-								workTimes: workTimes,
-								yearDelete: yearDelete,
-								startDate: startDate
-							}
-						}"></div>
-					</div>
-				</div>
-			</div>
+			<table>
+				<tbody>
+					<tr>
+						<td style="vertical-align: baseline; border: solid 1px white;">
+							<div class="left-content">
+								<div data-bind="component: {
+									name: 'kcp004',
+									params:{
+										selectedId: selectedId,
+										model: model,
+										isChange: change
+									}
+								}"></div>
+						</td>
+						<td style="border: hidden;">
+							<div class="right-content">
+								<div>
+									<p class="title" data-bind="i18n: 'KMK004_228'"></p>
+									<hr></hr>
+									<div class="name" data-bind="i18n: model.name"></div>
+									<div>
+										<div data-bind="ntsFormLabel: {inline: true}, text: $i18n('KMK004_229')"></div>
+										<!-- ko if: checkSeting -->
+											<button tabindex="5" data-bind="i18n: 'KMK004_339', click: openDialogF"></button>
+										<!-- /ko -->
+										<!-- ko ifnot: checkSeting -->
+											<button tabindex="5" data-bind="i18n: 'KMK004_338', click: openDialogF"></button>
+										<!-- /ko -->
+									</div>
+									<div class ="setting" data-bind="component: {
+										name: 'basic-setting',
+										params:{
+											type: type,
+											selectId: selectedId,
+											change: change,
+											checkSeting: checkSeting
+										}
+									}"></div>
+									<div class="label1" data-bind="ntsFormLabel: {inline: true}, text: $i18n('KMK004_232')"></div>
+									<div class="content-data">
+										<div style="height: 30px;">
+											<button tabindex="6" data-bind="i18n: 'KMK004_233', click: openDialogQ"></button>
+										</div>
+										<div class="year">
+											<div class= "box-year" data-bind="component: {
+												name: 'box-year',
+												params:{
+													selectedYear: selectedYear,
+													type: type,
+													years: years,
+													selectId: selectedId
+												}
+											}"></div>
+										</div>
+										<div tabindex="7" class= "time-work" data-bind="component: {
+											name: 'time-work',
+											params:{
+												selectedYear: selectedYear,
+												checkEmployee: ko.observable(false),
+												type: type,
+												years: years,
+												selectId: selectedId,
+												workTimes: workTimes,
+												yearDelete: yearDelete,
+												startDate: startDate
+											}
+										}"></div>
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 			<div class = "cf"></div>
 		<div>
 	`;
@@ -146,6 +155,7 @@ module nts.uk.at.view.kmk004.b {
 
 			$(document).ready(function () {
 				$('#list-box').focus();
+				// Fix bug render edge
 			});
 
 			vm.selectedId
@@ -154,7 +164,6 @@ module nts.uk.at.view.kmk004.b {
 						$('#list-box').focus();
 					});
 				});
-
 		}
 
 		add() {

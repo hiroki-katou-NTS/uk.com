@@ -98,7 +98,7 @@ public class ReflectApplicationWorkRecordTest {
 		};
 
 		val actualResult = ReflectApplicationWorkRecord.process(require, appImg,
-				GeneralDate.ymd(2020, 01, 01), reflectStatus);
+				GeneralDate.ymd(2020, 01, 01), reflectStatus, GeneralDateTime.FAKED_NOW);
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(RCReflectedState.REFLECTED);
 
@@ -144,7 +144,7 @@ public class ReflectApplicationWorkRecordTest {
 		};
 
 		val actualResult = ReflectApplicationWorkRecord.process(require, appImg,
-				GeneralDate.ymd(2020, 01, 01), reflectStatus);
+				GeneralDate.ymd(2020, 01, 01), reflectStatus, GeneralDateTime.FAKED_NOW);
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(RCReflectedState.REFLECTED);
 

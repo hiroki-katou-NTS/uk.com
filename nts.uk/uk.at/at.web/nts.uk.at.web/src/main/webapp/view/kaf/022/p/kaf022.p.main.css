@@ -29,3 +29,8 @@
 #grid-setting-optional-item_scrollContainer {
     height: 423px !important;
 }
+
+.radio-wrapper span {
+    min-width: 85px;
+    text-align: center;
+}
