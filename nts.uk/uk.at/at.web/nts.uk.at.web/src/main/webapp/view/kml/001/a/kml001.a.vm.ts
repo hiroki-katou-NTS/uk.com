@@ -57,7 +57,7 @@ module nts.uk.at.view.kml001.a {
           { code: 1, name: self.$i18n('KML001_23') },
           { code: 2, name: self.$i18n('KML001_24') },
           { code: 3, name: self.$i18n('KML001_26') },
-          { code: 4, name: self.$i18n('KML001_25') }
+          { code: 4, name: self.$i18n('KML001_25') },
         ]);
 
         self.currentPersonCost().unitPrice.subscribe((newValue) => {
