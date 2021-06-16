@@ -211,9 +211,9 @@ module nts.uk.at.view.kmk004.b {
 		mounted() {
 			const vm = this;
 
-			// $(document).ready(function () {
+			$(document).ready(function () {
 			// 	$('#list-box').focus();
-			// });
+			});
 		}
 
 		add() {
@@ -252,7 +252,7 @@ module nts.uk.at.view.kmk004.b {
 										_.forEach(yearMonthDelete, ((value) => {
 											if (value) {
 												const input = { empId: ko.unwrap(vm.model.id), laborAttr: 0, yearMonth: value };
-												
+
 												vm.$ajax(API.DELETE_BY_YM, input);
 											}
 										}));
