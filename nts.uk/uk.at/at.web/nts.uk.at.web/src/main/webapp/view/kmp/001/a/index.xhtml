@@ -1,9 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
 	<ui:composition template="/master/base.xhtml">
@@ -18,8 +16,7 @@
 
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js"
-				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 
 			<com:stylefile path="./kmp001.main.css" />
@@ -36,8 +33,11 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div data-bind="component: { name: 'view-a', params: {} }"></div>
-			<!-- <div data-bind="let: { selected: ko.observable('KMP001_H') }">
+			<div id="contents-area">
+				<div>
+					<div data-bind="component: { name: 'view-a', params: {} }"></div>
+				</div>
+				<!-- <div data-bind="let: { selected: ko.observable('KMP001_H') }">
 
 				<div data-bind="if: selected() === 'KMP001_A'">
 					<div data-bind="component: { name: 'view-a', params: {} }"></div>
@@ -57,8 +57,10 @@
 				</div>
 				<div class="cf"></div>
 			</div> -->
+			</div>
 		</ui:define>
 
 	</ui:composition>
 </body>
+
 </html>

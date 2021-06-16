@@ -473,13 +473,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 				}
 			}
 		}
-		if(!opIntegrationOfDaily.isPresent() && reasonDissociation.isPresent()) {
-			// エラーメッセージ（Msg_1298）を表示する
-			throw new BusinessException("Msg_1298");
-		}
+		String errorMessage = "";
 		if(opIntegrationOfDaily.isPresent()) {
 			// エラーメッセージを表示する
-			String errorMessage = "";
 			if(opIntegrationOfDaily.isPresent()) {
 				List<EmployeeDailyPerError> employeeDailyPerErrorLst = new ArrayList<>();
 				if(appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
@@ -524,6 +520,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 			if(Strings.isNotBlank(errorMessage)) {
 				throw new BusinessException(errorMessage);
 			}
+		}
+		if(Strings.isBlank(errorMessage) && reasonDissociation.isPresent()) {
+			// エラーメッセージ（Msg_1298）を表示する
+			throw new BusinessException("Msg_1298");
 		}
 	}
 	
