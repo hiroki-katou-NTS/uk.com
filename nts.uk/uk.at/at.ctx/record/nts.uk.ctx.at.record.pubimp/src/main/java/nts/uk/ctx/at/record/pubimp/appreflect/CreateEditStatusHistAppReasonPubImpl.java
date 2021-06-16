@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.applicationcancel.CreateEditStatusHistAppReason;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
@@ -28,9 +29,9 @@ public class CreateEditStatusHistAppReasonPubImpl implements CreateEditStatusHis
 
 	@Override
 	public void process(String employeeId, GeneralDate date, String appId, ScheduleRecordClassifi classification,
-			Map<Integer, String> mapValue) {
+			Map<Integer, String> mapValue, GeneralDateTime reflectTime) {
 		RequireImpl impl = new RequireImpl(editStateOfDailyRepo);
-		CreateEditStatusHistAppReason.process(impl, employeeId, date, appId, classification, mapValue);
+		CreateEditStatusHistAppReason.process(impl, employeeId, date, appId, classification, mapValue, reflectTime);
 
 	}
 

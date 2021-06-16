@@ -1611,7 +1611,7 @@ module nts.uk.at.view.kmk003.a {
             public setEnums(enums: WorkTimeSettingEnumDto): void {
                 let self = this;
                 self.workTimeAtrEnums = _.cloneDeep(enums.workTimeDailyAtr);
-                self.workTimeMethodEnums = _.cloneDeep(enums.workTimeMethodSet);
+                self.workTimeMethodEnums = _.cloneDeep(_.filter(enums.workTimeMethodSet, (item) => {return item.value != 1}));
                 let all = <EnumConstantDto>{};
                 all.value = 3;
                 all.localizedName = "全て";

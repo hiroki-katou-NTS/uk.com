@@ -101,11 +101,17 @@ html {
 }
 
 #swap-list2-gridArea1,
-#swap-list2-gridArea2 {
+#swap-list2-gridArea2,
+#swap-list-gridArea1,
+#swap-list-gridArea2,
+#swap-list3-gridArea1,
+#swap-list3-gridArea2 {
 	width: 318px !important;
 }
 
-#swap-list2-search-area-input {
+#swap-list2-search-area-input,
+#swap-list-search-area-input,
+#swap-list3-search-area-input {
 	width: 210px !important;
 }
 

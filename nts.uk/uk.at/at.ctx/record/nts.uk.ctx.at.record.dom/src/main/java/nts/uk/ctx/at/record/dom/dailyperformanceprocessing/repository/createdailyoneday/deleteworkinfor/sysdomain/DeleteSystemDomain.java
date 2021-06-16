@@ -7,7 +7,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.record.dom.workinformation.service.updateworkinfo.DeleteWorkInfoOfDailyPerforService;
 
 /**
  * 「情報」系のドメイン削除する
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationReposi
 @Stateless
 public class DeleteSystemDomain {
 	@Inject
-	private WorkInformationRepository workInformationRepository;
+	private DeleteWorkInfoOfDailyPerforService deleteWorkInfoOfDailyPerforService;
 	
 	@Inject
 	private AffiliationInforOfDailyPerforRepository affInforOfDailyPerforRepo;
@@ -29,8 +29,8 @@ public class DeleteSystemDomain {
 	private CalAttrOfDailyPerformanceRepository calAttrOfDaily;
 	
 	public void delete(String companyId,String employeeId,GeneralDate ymd) {
-		//「日別実績の勤務情報」を削除する
-		workInformationRepository.delete(employeeId, ymd);
+		//日別実績の勤務情報を削除する
+		deleteWorkInfoOfDailyPerforService.deleteWorkInfoOfDailyPerforService(employeeId, ymd);
 		//「日別実績の所属情報」を削除する
 		affInforOfDailyPerforRepo.delete(employeeId, ymd);
 		//「日別実績の特定日」を削除する

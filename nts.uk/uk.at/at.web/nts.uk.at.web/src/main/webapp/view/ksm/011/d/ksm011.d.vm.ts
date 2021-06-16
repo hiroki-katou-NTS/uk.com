@@ -34,6 +34,9 @@ module nts.uk.at.view.ksm011.d {
     completionExecutionMethod: KnockoutObservable<number> = ko.observable(0);
     personalInforDisplay: KnockoutObservableArray<string> = ko.observableArray([]);
 
+    enableCompletionExecutionMethod: KnockoutComputed<boolean>;
+    enableD6_7_1: KnockoutComputed<boolean>;
+
     constructor(params: any) {
       super();
       const vm = this;
@@ -76,6 +79,13 @@ module nts.uk.at.view.ksm011.d {
             if (value != 1) {
                 $('#KSM011_D6_14').ntsError('clear');
             }
+        });
+
+        vm.enableCompletionExecutionMethod = ko.computed(() => {
+            return vm.completionFunction() == 1;
+        });
+        vm.enablePreMethod = ko.computed(() => {
+            return vm.completionFunction() == 1 && vm.completionExecutionMethod() == 1;
         });
     }
 

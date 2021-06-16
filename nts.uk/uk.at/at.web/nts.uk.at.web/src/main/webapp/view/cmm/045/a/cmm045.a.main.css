@@ -89,10 +89,16 @@
 #grid2 tbody tr td:NTH-CHILD(1){
 	text-align: center;
 }
-.saturdayCell{
+
+.saturdayCell > div {
 	color: #0000ff;
 }
-.sundayCell{
+
+.saturdayCell > div {
+	color: #0000ff;
+}
+
+.sundayCell > div {
 	color: #ff0000;
 }
 .rec{
@@ -157,9 +163,4 @@ td.appType {
 }
 td.appContent {
 	min-width: 75px;
-}
-
-.popup-panel-cmm045 #multi-list_displayContainer {
-	overflow: unset !important;
-	height: 525px !important;
 }

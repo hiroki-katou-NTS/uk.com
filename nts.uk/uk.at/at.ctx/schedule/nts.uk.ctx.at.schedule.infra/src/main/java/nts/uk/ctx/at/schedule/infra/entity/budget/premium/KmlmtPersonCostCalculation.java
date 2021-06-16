@@ -64,7 +64,7 @@ public class KmlmtPersonCostCalculation extends ContractUkJpaEntity implements S
                 domain.getRoundingSetting().getAmountRoundingSetting().getUnit().asAmountEnum(),
                 domain.getRoundingSetting().getAmountRoundingSetting().getRounding().value,
                 domain.getHowToSetUnitPrice().value,
-                domain.getWorkingHoursUnitPrice().v()
+                domain.getWorkingHoursUnitPrice().value
         );
     }
 }

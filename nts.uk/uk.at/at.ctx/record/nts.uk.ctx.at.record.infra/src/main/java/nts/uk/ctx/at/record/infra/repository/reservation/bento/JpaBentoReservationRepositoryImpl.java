@@ -73,7 +73,8 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 
         builderString = new StringBuilder();
         builderString.append(SELECT);
-        builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate' AND a.ORDERED IN (ordered)");
+        builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate' AND a.ORDERED IN (ordered)"
+        		+ "AND a.CID = 'companyID' ");
         FIND_BY_ORDER_PERIOD_EMP = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -233,7 +234,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
     }
 
     @Override
-    public List<BentoReservation> findByOrderedPeriodEmpLst(List<ReservationRegisterInfo> inforLst, DatePeriod period, boolean ordered) {
+    public List<BentoReservation> findByOrderedPeriodEmpLst(List<ReservationRegisterInfo> inforLst, DatePeriod period, boolean ordered, String companyID) {
         String query = FIND_BY_ORDER_PERIOD_EMP;
         List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
         String cardLstStr = "";
@@ -253,6 +254,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
         query = query.replaceFirst("startDate", period.start().toString());
         query = query.replaceFirst("endDate", period.end().toString());
         query = query.replaceFirst("ordered", orderedParam);
+        query = query.replace("companyID", companyID);
         return getBentoReservations(query);
     }
 

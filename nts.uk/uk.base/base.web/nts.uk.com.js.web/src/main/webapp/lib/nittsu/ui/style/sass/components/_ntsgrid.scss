@@ -12,8 +12,8 @@
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-state-hover,
 .nts-grid tr td.ui-state-hover,
 .nts-grid tr.ui-ig-altrecord td.ui-state-hover {
-  background-color: #C5F1F7;
-  border-color: #AAB7B8;
+	color: #30CC40;
+	background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;		
 }
 
 .nts-grid-wrapper table tr td.ntsgrid-disable,
@@ -234,7 +234,7 @@
 .nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ntsgrid-disable,
 .nts-grid tr td.ui-iggrid-selectedcell.ui-state-hover,
 .nts-grid tr.ui-ig-altrecord td.ui-iggrid-selectedcell.ui-state-hover {
-	background-color: #007fff;
+	background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;
 }
 
 .nts-image-container, .nts-fleximage-container {
