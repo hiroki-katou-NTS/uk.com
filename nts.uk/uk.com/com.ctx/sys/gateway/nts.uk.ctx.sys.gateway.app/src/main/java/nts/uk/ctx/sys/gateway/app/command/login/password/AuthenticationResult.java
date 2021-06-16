@@ -43,7 +43,7 @@ public class AuthenticationResult implements LoginCommandHandlerBase.Authenticat
 		return new AuthenticationResult(
 				false, 
 				Optional.of(idenResult.getEmployeeInfo()), 
-				Optional.of(authResult.getPasswordValidation()), 
+				Optional.empty(), 
 				false, null, null);
 	}
 	
