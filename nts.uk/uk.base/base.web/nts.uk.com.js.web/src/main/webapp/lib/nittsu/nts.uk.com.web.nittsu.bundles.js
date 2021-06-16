@@ -4470,13 +4470,15 @@ var nts;
                     }
                 });
                 var startP = function () {
-                    if (!cantCall()) {
-                        _start.apply(__viewContext, [__viewContext]);
-                    }
-                    else {
-                        loadEmployeeCodeConstraints()
-                            .always(function () { return _start.apply(__viewContext, [__viewContext]); });
-                    }
+                    setTimeout(function () {
+                        if (!cantCall()) {
+                            _start.apply(__viewContext, [__viewContext]);
+                        }
+                        else {
+                            loadEmployeeCodeConstraints()
+                                .always(function () { return _start.apply(__viewContext, [__viewContext]); });
+                        }
+                    }, 1);
                 };
                 var noSessionWebScreens = [
                     "/view/sample/",
@@ -21549,9 +21551,9 @@ var nts;
                 var listbox;
                 (function (listbox) {
                     var randomId = nts.uk.util.randomId;
-                    var ROW_HEIGHT = 35;
-                    var GRID_HEADER_HEIGHT = 46;
-                    var SCROLL_WIDTH = 20;
+                    var ROW_HEIGHT = 23;
+                    var GRID_HEADER_HEIGHT = 24;
+                    var SCROLL_WIDTH = 17;
                     var ListBoxBindingHandler = /** @class */ (function () {
                         function ListBoxBindingHandler() {
                         }
@@ -22552,10 +22554,12 @@ var nts;
                      */
                     NtsSwapListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var HEADER_HEIGHT = 27;
-                        var CHECKBOX_WIDTH = 40;
+                        var CHECKBOX_WIDTH = 25;
                         var SEARCH_AREA_HEIGHT = 45;
-                        var BUTTON_SEARCH_WIDTH = 70;
-                        var INPUT_SEARCH_PADDING = 36;
+                        var BUTTON_SEARCH_WIDTH = 85; //width 80 + margin 5
+                        var INPUT_SEARCH_PADDING = 22;
+                        var SCROLL_WIDTH = 17;
+                        var BUTTON_CLEAR_WIDTH = 36; //width 31 + margin 5
                         var $swap = $(element);
                         var elementId = $swap.attr('id');
                         if (nts.uk.util.isNullOrUndefined(elementId)) {
@@ -22636,19 +22640,19 @@ var nts;
                             $searchArea.append("<div class='ntsSwapSearchLeft'/>")
                                 .append("<div class='ntsSwapSearchRight'/>");
                             $searchArea.css({ position: "relative" });
-                            var searchAreaWidth = leftGridWidth + CHECKBOX_WIDTH;
+                            var searchAreaWidth = leftGridWidth + CHECKBOX_WIDTH + SCROLL_WIDTH;
                             if (showSearchBox.showLeft) {
                                 var $searchLeftContainer = $swap.find(".ntsSwapSearchLeft");
                                 $searchLeftContainer.width(searchAreaWidth).css({ position: "absolute", left: 0 });
                                 initSearchArea($searchLeftContainer, data.searchMode, data.leftSearchBoxText || defaultSearchText);
-                                // $searchLeftContainer.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
-                                $searchLeftContainer.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING);
+                                $searchLeftContainer.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_CLEAR_WIDTH : 0));
+                                // $searchLeftContainer.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING);
                             }
                             if (showSearchBox.showRight) {
                                 var $searchRightContainer = $swap.find(".ntsSwapSearchRight");
-                                $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH).css({ position: "absolute", right: 0 });
+                                $searchRightContainer.width(rightGridWidth + CHECKBOX_WIDTH + SCROLL_WIDTH).css({ position: "absolute", right: 0 });
                                 initSearchArea($searchRightContainer, "highlight", data.rightSearchBoxText || defaultSearchText);
-                                $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING);
+                                $searchRightContainer.find(".ntsSearchBox").width(rightGridWidth + CHECKBOX_WIDTH + SCROLL_WIDTH - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING);
                             }
                             $searchArea.height(SEARCH_AREA_HEIGHT);
                             gridHeight -= SEARCH_AREA_HEIGHT;
@@ -37398,14 +37402,14 @@ var nts;
                     });
                 };
                 // get date time now
-                setInterval(function () {
-                    var now = Date.now();
-                    var diff = now - $date.clock;
-                    $date.clock = now;
-                    if (Math.abs(diff) > 5000) {
-                        getTime();
-                    }
-                }, 500);
+                // setInterval(() => {
+                // 	const now = Date.now();
+                // 	const diff = now - $date.clock;
+                // 	$date.clock = now;
+                // 	if (Math.abs(diff) > 5000) {
+                // 		getTime();
+                // 	}
+                // }, 500);
                 BaseViewModel.prototype.$date = Object.defineProperties($date, {
                     now: {
                         value: function $now() {
@@ -51554,11 +51558,35 @@ var nts;
                                     vm
                                         .$ajax('com', '/sys/portal/webmenu/program')
                                         .then(function (response) {
-                                        var first = response[0];
-                                        if (first) {
-                                            var name_2 = first.name;
-                                            if (name_2) {
-                                                vm.pgName(name_2);
+                                        if (!_.isEmpty($(".pg-name span").html())) {
+                                            return;
+                                        }
+                                        var queryString = nts.uk.request.location.current.queryString;
+                                        if (!_.isEmpty(queryString.items)) {
+                                            var queryStringArray_1 = Object.keys(queryString.items).map(function (key) {
+                                                return key + "=" + queryString.get(key);
+                                            });
+                                            var findResult = response.filter(function (el) {
+                                                var findResult = _.find(queryStringArray_1, function (query) {
+                                                    return query == el.param;
+                                                });
+                                                return !_.isNil(findResult);
+                                            });
+                                            var pgName = findResult.length > 0 ? findResult[0] : response[0];
+                                            if (pgName) {
+                                                var name_2 = pgName.name;
+                                                if (name_2) {
+                                                    vm.pgName(name_2);
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            var first = response[0];
+                                            if (first) {
+                                                var name_3 = first.name;
+                                                if (name_3) {
+                                                    vm.pgName(name_3);
+                                                }
                                             }
                                         }
                                     });
@@ -52710,9 +52738,9 @@ var nts;
                             .then(function (response) {
                             var first = response[0];
                             if (first) {
-                                var name_3 = first.name;
-                                if (name_3) {
-                                    title(name_3);
+                                var name_4 = first.name;
+                                if (name_4) {
+                                    title(name_4);
                                 }
                             }
                         });
