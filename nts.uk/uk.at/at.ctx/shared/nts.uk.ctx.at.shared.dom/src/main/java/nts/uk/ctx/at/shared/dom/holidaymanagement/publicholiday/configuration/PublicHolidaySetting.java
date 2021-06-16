@@ -197,7 +197,7 @@ public class PublicHolidaySetting extends AggregateRoot {
 	
 	/**
 	 * 繰越期限を計算する
-	 * @param compInfor 期首月
+	 * @param int 期首月
 	 * @param endDay 当月の最終日
 	 * @return GeneralDate 期限日
 	 */

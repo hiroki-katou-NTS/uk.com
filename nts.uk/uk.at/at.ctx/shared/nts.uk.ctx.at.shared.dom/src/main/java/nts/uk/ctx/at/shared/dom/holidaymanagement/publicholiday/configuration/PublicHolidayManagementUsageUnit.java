@@ -141,7 +141,7 @@ public class PublicHolidayManagementUsageUnit extends AggregateRoot{
 		EmploymentMonthDaySetting employmentMonthDaySetting = require.employmentMonthDaySetting(
 				new CompanyId(companyID),employmentHistList.get(0).getAffPeriodEmpCodeExports().get(0).getEmploymentCode());
 		
-		//期間と雇用コードから雇用月間日数設定を取得する
+		//期間から雇用月間日数設定を取得する
 		return employmentMonthDaySetting.getPublicHolidayMonthSetting(periodList);
 	}
 	
@@ -158,7 +158,7 @@ public class PublicHolidayManagementUsageUnit extends AggregateRoot{
 		
 		WorkplaceMonthDaySetting workplaceMonthDaySetting =
 				require.workplaceMonthDaySetting(new CompanyId(companyID), affWorkplaceHistoryItem.get().getWorkplaceId());
-		//期間と職場IDから職場月間日数設定を取得する
+		//期間から職場月間日数設定を取得する
 		return  workplaceMonthDaySetting.getPublicHolidayMonthSetting(periodList);
 	}
 	
