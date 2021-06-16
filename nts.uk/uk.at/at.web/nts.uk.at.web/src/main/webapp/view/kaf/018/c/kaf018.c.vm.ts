@@ -172,7 +172,10 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 			const vm = this;
 			let command = vm.getMailTemplateParam(),
 				wkpEmpMailLst = _.filter(vm.dataSource, 'flag'),
-				wsParam = { command, wkpEmpMailLst };
+				screenUrlApprovalEmbed = vm.urlApprovalEmbed(),
+				screenUrlDayEmbed = vm.urlDayEmbed(),
+				screenUrlMonthEmbed = vm.urlMonthEmbed(),
+				wsParam = { command, wkpEmpMailLst, screenUrlApprovalEmbed, screenUrlDayEmbed, screenUrlMonthEmbed };
 			if(_.isEmpty(wkpEmpMailLst)) {
 				vm.$dialog.info({ messageId: "Msg_786" });
 				return;
