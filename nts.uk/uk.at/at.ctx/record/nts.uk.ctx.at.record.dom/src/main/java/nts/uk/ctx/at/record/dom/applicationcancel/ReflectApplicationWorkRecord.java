@@ -10,6 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectStatusResult;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectedState;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
@@ -37,8 +38,8 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
  */
 public class ReflectApplicationWorkRecord {
 
-	public static Pair<RCReflectStatusResult, Optional<AtomTask>> process(Require require,
-			ApplicationShare application, GeneralDate date, RCReflectStatusResult reflectStatus) {
+	public static Pair<RCReflectStatusResult, Optional<AtomTask>> process(Require require, ApplicationShare application,
+			GeneralDate date, RCReflectStatusResult reflectStatus, GeneralDateTime reflectTime) {
 
 		// [input.申請.打刻申請モード]をチェック
 		GeneralDate dateTarget = date;
@@ -107,7 +108,7 @@ public class ReflectApplicationWorkRecord {
 
 			// 申請反映履歴を作成する
 			CreateApplicationReflectionHist.create(require, application.getAppID(), ScheduleRecordClassifi.RECORD,
-					dailyRecordApp, domainBeforeReflect);
+					dailyRecordApp, domainBeforeReflect, reflectTime);
 
 		});
 		// [input.勤務実績の反映状態]を「反映済み」に更新する
