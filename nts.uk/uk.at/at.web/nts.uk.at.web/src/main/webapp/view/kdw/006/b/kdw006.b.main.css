@@ -39,3 +39,9 @@
 #switchBtn1 {
     margin-left: 13px;
 }
+
+#switchBtn1 span {
+    display: flex;
+    justify-content: center;
+    width: 75px;
+}

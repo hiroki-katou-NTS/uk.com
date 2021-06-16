@@ -128,7 +128,7 @@
 								</td>
 								<td>
 									<!-- A4_1 -->
-									<div style="position: absolute; top: 145px; left: 330px" tabindex="4" data-bind="ntsMultiCheckBox: {
+									<div style="position: absolute; top: 162px; left: 330px" tabindex="4" data-bind="ntsMultiCheckBox: {
 									options: itemList,
 									optionsValue: 'id',
 									optionsText: 'name',
@@ -137,9 +137,9 @@
 								</td>
 							</tr>
 							<tr>
-								<td class="grid-text-label" style="width: 325px">
-									<span>#{i18n.getText('CMM045_29')}</span>
-									<div style="margin-left: 20px" id="daterangepicker"
+								<td class="grid-text-label" style="width: 325px; display: flex">
+									<span class="grid-text-label">#{i18n.getText('CMM045_29')}</span>
+									<div style="margin-left: 25px" id="daterangepicker"
 										 tabindex="5" data-bind="ntsDateRangePicker:
 									{required: false,
 									enable: true,
@@ -236,7 +236,6 @@
 							</td>
 							<td>
 								<table id="multi-list" data-bind="ntsGridList: {
-									height: 350,
 									columns: ko.observableArray([
 						                { headerText: 'appType', key: 'appType', width: 50, hidden: true},
 						                { headerText: '#{i18n.getText('CMM045_94')}', key: 'appName', width: 190 },

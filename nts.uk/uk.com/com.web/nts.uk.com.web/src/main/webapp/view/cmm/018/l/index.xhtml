@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 480, height: 425 };</script>
+			<script>var dialogSize = { width: 450, height: 260 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cmm018.l.main.css" />
 			<com:scriptfile path="cmm018.l.start.js" />
@@ -23,11 +23,11 @@
 			</div>
 			<div id="contents-area">
 				<div id="lblTitle" class="label">#{i18n.getText('CMM018_73')}</div>
-				<span id="spBaseDate" class="label with-image"> <i
+				<div id="spBaseDate" class="label with-image"> <i
 					class="image image-calendar" /> <span>#{i18n.getText('CMM018_74')}</span>
 					<div id="baseDate"
 						data-bind="ntsDatePicker: {name: '#[CMM018_74]',value: date, dateFormat: 'YYYY/MM/DD'}"></div>
-				</span>
+				</div>
 			</div>
 		</ui:define>
 

@@ -72,13 +72,12 @@
 					                					text: $vm.getPhaseLabel(loopPhase.phaseOrder())" style="width: 70px;"
 													class="bg-green"></td>
 											</com:ko-if>
-											<com:ko-if bind="$vm.isFirstIndexApprover(loopFrame, loopApprover)">
-												<td style="width: 78px; text-align: left;" class="bg-green"
-													data-bind="attr: {rowspan: ko.pureComputed(function() { return $vm.approverCount(loopFrame.listApprover())}) }">
-									            	<span style="padding-left: 5px;"
-														  data-bind="text: $vm.getApproverLabel(loopPhase, loopFrame, loopApprover)">
+											<com:ko-if bind="$index() !==  undefined">
+												<td style="width: 78px; text-align: left;" class="bg-green">
+									            	<span data-bind="text: $vm.getApproverLabelNew(loopPhase.listApprovalFrame, loopApprover, $parentContext.$index(), $index())">
 									            	</span>
 												</td>
+											
 											</com:ko-if>
 											<td style="width: 250px;">
 								                <span class="limited-label" style="width: 250px;"
