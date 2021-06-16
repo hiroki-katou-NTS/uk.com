@@ -2993,8 +2993,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (self.checkDisByDate == false || self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed == 1)
 				return;
 				
-			if(_.isEmpty($("#extable-ksu003").data("errors")))
-			self.enableSave(true);
+			if(_.isEmpty($("#extable-ksu003").data("errors"))){
+				self.enableSave(true);
+			} else {
+				$("#label-display").trigger("click");
+			}
 			
 			let startMinute = duration.create(param[0] * 5 + self.dispStart * 5).text,
 			endMinute = duration.create(param[1] * 5 + self.dispStart * 5).text,
