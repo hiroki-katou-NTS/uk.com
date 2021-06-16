@@ -142,8 +142,7 @@ module nts.uk.at.view.kdp005.a {
 								});
 							}else {
 								self.openDialogF({
-									mode: 'admin',
-									companyId: __viewContext.user.companyId
+									mode: 'admin'
 								})
 								dfd.resolve();
 							}
@@ -215,8 +214,7 @@ module nts.uk.at.view.kdp005.a {
 			public setLoginInfo(): JQueryPromise<any> {
 				let dfd = $.Deferred<any>(), self = this, vm = new ko.ViewModel();
 				self.openDialogF({
-					mode: 'admin',
-					companyId: __viewContext.user.companyId
+					mode: 'admin'
 				}).done((loginResult) => {
 					if (!loginResult) {
 						self.errorMessage(getMessage("Msg_1647"));
@@ -568,7 +566,7 @@ module nts.uk.at.view.kdp005.a {
 					.then((dataStorage: any) => {
 
 						let btnType = checkType(button.changeClockArt, button.changeCalArt, button.setPreClockArt, button.changeHalfDay, button.btnReservationArt);
-						if (dataStorage.selectedWP.length > 1 && self.supportUse() === true && _.includes([14, 15, 16, 17, 18], btnType)) {
+						if (dataStorage.selectedWP.length > 1 && button.supportWplset == 1 && self.supportUse() === true && _.includes([14, 15, 16, 17, 18], btnType)) {
 							vm.$window.modal('at', DIALOG.M, { screen: 'KDP005', employeeId: employeeId })
 								.then((result: string) => {
 

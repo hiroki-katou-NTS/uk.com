@@ -9,7 +9,7 @@
 	<ui:composition template="../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-      <script>var dialogSize = { width: 885 , height: 740};</script>
+      <script>var dialogSize = { width: 885 , height: 640};</script>
       <com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
       </com:ValidatorScript>
@@ -31,7 +31,7 @@
               <!-- A1_3 -->
               <label data-bind="text: titleLine().layoutName"></label>
               <!-- A1_4 -->
-              <label style="margin-left: 100px" data-bind="text: titleLine().directText"></label>
+              <label style="margin-left: 20px" data-bind="text: titleLine().directText"></label>
             </div>
          </com:ko-if>
         </div>

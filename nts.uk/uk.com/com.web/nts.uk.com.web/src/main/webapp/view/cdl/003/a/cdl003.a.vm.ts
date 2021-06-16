@@ -41,7 +41,7 @@ module nts.uk.com.view.cdl003.a {
                     isShowNoSelectRow:  self.isShowNoSelectRow,
                     selectedCode: null,
                     isDialog: true,
-                    maxRows: 15,
+                    maxRows: 10,
                     tabindex: 1,
                 }
                 if (self.isMultiple) {

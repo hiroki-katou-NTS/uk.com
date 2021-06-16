@@ -438,11 +438,13 @@ export class KafS04AComponent extends KafS00ShrComponent {
         }
     }
 
-    private checkValidAll() {
+    private checkValidAll(component?: string) {
         const vm = this;
         let validAllChild: boolean = true;
         for (let child of vm.$children) {
-            child.$validate();
+            if (!component || child.$vnode.componentOptions.tag == component) {
+                child.$validate();
+            }
             if (!child.$valid) {
                 validAllChild = false;
             }
@@ -534,7 +536,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 vm.application.appDate = appDatesLst[0];
                 vm.application.opAppStartDate = appDatesLst[0];
                 vm.application.opAppEndDate = appDatesLst[0];
-                vm.checkValidAll();
+                vm.checkValidAll('kaf-s00-b');
             }
             let params = {
                 appDates: appDatesLst,
@@ -604,20 +606,21 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public handleChangeAppReason(appReason) {
         const vm = this;
         vm.application.opAppReason = appReason;
-        vm.checkValidAll();
+        vm.checkValidAll('kaf-s00-c');
     }
 
     public handleChangeReasonCD(reasonCD) {
         const vm = this;
         vm.application.opAppStandardReasonCD = reasonCD;
         if (!vm.init) {
-            vm.checkValidAll();
+            vm.checkValidAll('kaf-s00-c');
         }
     }
 
     public handleChangePrePost(prePost) {
         const vm = this;
         vm.application.prePostAtr = prePost;
+        vm.checkValidAll('kaf-s00-b');
     }
 }
 

@@ -62,25 +62,31 @@ public class JpaTempCareManagementRepository extends JpaRepository implements Te
 
 	/** 登録および更新 */
 	@Override
-    public void persistAndUpdate(TempCareManagement domain) {
+	public void persistAndUpdate(TempCareManagement domain) {
 
-        KshdtInterimCareDataPK pk = new KshdtInterimCareDataPK(AppContexts.user().companyId(), domain.getSID(),
-                domain.getYmd(), domain.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0),
-                domain.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value + 1).orElse(0));
+		KshdtInterimCareDataPK pk = new KshdtInterimCareDataPK(
+				AppContexts.user().companyId(),
+				domain.getSID(),
+				domain.getYmd(),
+				domain.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0),
+				domain.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value + 1).orElse(0));
 
-        // 登録・更新
-        Optional<KshdtInterimCareData> entityOpt = this.queryProxy().find(pk, KshdtInterimCareData.class);
-        if (entityOpt.isPresent()) {
-            entityOpt.get().fromDomainForUpdate(domain);
-            this.getEntityManager().flush();
-            return;
-        }
-        KshdtInterimCareData entity = new KshdtInterimCareData();
-        entity.pk = pk;
-        entity.fromDomainForPersist(domain);
-        this.getEntityManager().persist(entity);
-        this.getEntityManager().flush();
-    }
+		// 登録・更新
+		Optional<KshdtInterimCareData> entityOpt = this.queryProxy().find(pk, KshdtInterimCareData.class);
+
+		if (entityOpt.isPresent()) {
+			entityOpt.get().fromDomainForUpdate(domain);
+			this.commandProxy().update(entityOpt.get());
+			this.getEntityManager().flush();
+			return;
+		}
+
+		KshdtInterimCareData entity = new KshdtInterimCareData();
+		entity.pk = pk;
+		entity.fromDomainForPersist(domain);
+		this.commandProxy().insert(entity);
+		this.getEntityManager().flush();
+	}
 
 
 	/** 削除 */

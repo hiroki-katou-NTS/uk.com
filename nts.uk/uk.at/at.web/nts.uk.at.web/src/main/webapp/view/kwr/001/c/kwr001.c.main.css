@@ -4,7 +4,7 @@
 }
 
 .bottom {
-	float: left;'
+	float: left;
 }
 
 .td-right, .td-left {
@@ -20,11 +20,13 @@
 }
 
 .label-name {
-	width: 199px;
+	width: 150px;
 }
 
 .row {
 	margin: 10px;
+	display: flex;
+	align-items: center;
 }
 
 .C5, .C6 {
@@ -43,8 +45,6 @@
 .move-button {
 	margin: 10px !important;
 }
-
-#up-down {}
 
 .C1_4 {
 	margin-left: 10px;
@@ -73,8 +73,9 @@
 	width: 800px;
 }
 
-.nts-switch-button {
+.switchbox-wrappers .radio-wrapper span {
 	width: 80px;
+	text-align: center;
 }
 
 .check-box-list li.style-normal {
@@ -151,7 +152,7 @@ button.ntsUpButton, button.ntsDownButton {
 }
 
 #combo-box-remarkInput {
-	margin-left: 42px;
+	margin-left: 38px;
 	width: 152px;
 }
 
@@ -183,4 +184,8 @@ button.ntsUpButton, button.ntsDownButton {
 
 .C5_1 {
 	width: 160px !important;
+}
+
+.kwr001-c-inline-block {
+	display: inline-block;
 }

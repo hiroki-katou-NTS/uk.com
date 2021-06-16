@@ -279,5 +279,7 @@ let reCalGridWidthHeight = () => {
             $cgrid.data("height", stampBtnHeight);
         }
     };
-    setTimeout(resize);
+	if($('#stamp-info')[0]){
+		setTimeout(resize);	
+	}
 }

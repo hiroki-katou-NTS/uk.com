@@ -51,15 +51,16 @@ public class UpdateHistPersonCostCalculationCommandHandler extends CommandHandle
                     e.getAttendanceItems()
             )).collect(Collectors.toList()));
         }
+        val workingHoursUnitPrice = unitPrice != null ? unitPrice : command.getWorkingHoursUnitPrice();
+
         PersonCostCalculation domain = new PersonCostCalculation(
                 roundingSetting,
                 cid,
                 new Remarks(command.getMemo()),
-                premiumSettings
-                ,
+                premiumSettings,
                 optUnitPrice,
                 EnumAdaptor.valueOf(command.getHowToSetUnitPrice(), HowToSetUnitPrice.class),
-                new WorkingHoursUnitPrice(command.getWorkingHoursUnitPrice()),
+                EnumAdaptor.valueOf(workingHoursUnitPrice, UnitPrice.class),
                 command.getHistoryID()
         );
         service.updateHistPersonCalculation(domain, command.getHistoryID(), command.getStartDate());
