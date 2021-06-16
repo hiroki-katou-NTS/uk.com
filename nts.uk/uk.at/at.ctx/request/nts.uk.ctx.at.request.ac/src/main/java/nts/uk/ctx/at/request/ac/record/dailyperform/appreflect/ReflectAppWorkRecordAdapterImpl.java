@@ -11,6 +11,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.pub.appreflect.ReflectApplicationWorkRecordPub;
 import nts.uk.ctx.at.record.pub.appreflect.export.RCReasonNotReflectDailyExport;
 import nts.uk.ctx.at.record.pub.appreflect.export.RCReasonNotReflectExport;
@@ -30,8 +31,8 @@ public class ReflectAppWorkRecordAdapterImpl implements ReflectApplicationWorkRe
 
 	@Override
 	public Pair<ReflectStatusResult, Optional<AtomTask>> process(Object application, GeneralDate date,
-			ReflectStatusResult reflectStatus) {
-		val result =  pub.process(application, date, convertTo(reflectStatus));
+			ReflectStatusResult reflectStatus, GeneralDateTime reflectTime) {
+		val result =  pub.process(application, date, convertTo(reflectStatus), reflectTime);
 		return Pair.of(convertToDom(result.getLeft()), result.getRight());
 	}
 

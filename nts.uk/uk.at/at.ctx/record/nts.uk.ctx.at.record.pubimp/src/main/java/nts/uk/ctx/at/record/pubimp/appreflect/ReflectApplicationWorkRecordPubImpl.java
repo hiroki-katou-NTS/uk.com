@@ -13,6 +13,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.adapter.application.reflect.RCRequestSettingAdapter;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReasonNotReflect;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReasonNotReflectDaily;
@@ -204,7 +205,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 
 	@Override
 	public Pair<RCReflectStatusResultExport, Optional<AtomTask>> process(Object application, GeneralDate date,
-			RCReflectStatusResultExport reflectStatus) {
+			RCReflectStatusResultExport reflectStatus, GeneralDateTime reflectTime) {
 
 		RequireImpl impl = new RequireImpl(AppContexts.user().companyId(), AppContexts.user().contractCode(),
 				stampCardRepository, correctionAttendanceRule, workTypeRepo, workTimeSettingRepository,
@@ -217,7 +218,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				timeLeaveAppReflectRepository, appReflectOtHdWorkRepository, vacationApplicationReflectRepository, timePriorityRepository,
 				compensLeaveComSetRepository, subLeaveAppReflectRepository, substituteWorkAppReflectRepository,
 				applicationReflectHistoryRepo);
-		val result = ReflectApplicationWorkRecord.process(impl ,(ApplicationShare) application, date, convertToDom(reflectStatus));
+		val result = ReflectApplicationWorkRecord.process(impl ,(ApplicationShare) application, date, convertToDom(reflectStatus), reflectTime);
 		return Pair.of(convertToExport(result.getLeft()), result.getRight());
 	}
 
