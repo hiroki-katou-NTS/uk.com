@@ -7,61 +7,115 @@ module nts.uk.at.view.kdl055.test.viewmodel {
 
     @bean()
     export class KDL055TestViewModel extends ko.ViewModel {
-        sIDs: string[] = [];
-        KEY: string = 'nts.uk.characteristics.ksu001Data';
         listSid: KnockoutObservableArray<string> = ko.observableArray([]);
-        startDate: string;
-        endDate: string;
-        targetInfo: any;
+        listEmp: KnockoutObservableArray<any> = ko.observableArray([]);
+        baseDate: KnockoutObservable<string> = ko.observable(null);
+        startDate: KnockoutObservable<string> = ko.observable(null);
+        endDate: KnockoutObservable<string> = ko.observable(null);
+        listComponentOption: any;
 
         created() {
             const vm = this;
-            let item = uk.localStorage.getItem(vm.KEY);
-            let userInfor: IUserInfor = {};
-            if (item.isPresent()) {
-                userInfor = JSON.parse(item.get());
-            }
-            let viewMode = item.isPresent() ? userInfor.disPlayFormat : 'time';
+            vm.baseDate(moment().format());
+            vm.startDate(moment().clone().startOf('month').format('YYYY-MM-DD hh:mm'));
+            vm.endDate(moment().clone().endOf('month').format('YYYY-MM-DD hh:mm'));
+
             
-            let param = {
-                viewMode: viewMode,
-                startDate: null,
-                endDate  : null,
-                shiftPalletUnit: item.isPresent() ? userInfor.shiftPalletUnit : 1, // 1: company , 2 : workPlace 
-                pageNumberCom: item.isPresent() ? userInfor.shiftPalettePageNumberCom : 1,
-                pageNumberOrg: item.isPresent() ? userInfor.shiftPalettePageNumberOrg : 1,
-                getActualData: false,
-                listShiftMasterNotNeedGetNew: item.isPresent() ? userInfor.shiftMasterWithWorkStyleLst : [], // List of shifts không cần lấy mới
-                listSid: vm.listSid(),
-                unit: item.isPresent() ? userInfor.unit : 0,
-                workplaceId     : null,
-                workplaceGroupId: null,
+            vm.listComponentOption = {
+                isShowAlreadySet: false,
+                isMultiSelect: ko.observable(true),
+                listType: 4,
+                employeeInputList: vm.listEmp,
+                selectedCode: ko.observableArray([]),
+                selectType: 1,
+                isDialog: ko.observable(true),
+                isShowNoSelectRow: ko.observable(false),
+                isShowWorkPlaceName: false,
+                isShowSelectAllButton: ko.observable(true),
+                disableSelection : ko.observable(false),
+                maxRows: 25
+            };
+
+            // bind CCG001 component
+            // Set component option
+            const ccg001ComponentOption = {
+                /** Common properties */
+                systemType: 1,
+                showEmployeeSelection: true,
+                showQuickSearchTab: true,
+                showAdvancedSearchTab: true,
+                showBaseDate: true,
+                showClosure: true,
+                showAllClosure: true,
+                showPeriod: true,
+                periodFormatYM: false,
+                
+                /** Required parameter */
+                baseDate: vm.baseDate,
+                periodStartDate: vm.startDate,
+                periodEndDate: vm.endDate,
+                inService: true,
+                leaveOfAbsence: true,
+                closed: true,
+                retirement: true,
+                
+                /** Quick search tab options */
+                showAllReferableEmployee: true,
+                showOnlyMe: true,
+                showSameDepartment: true,
+                showSameDepartmentAndChild: true,
+                showSameWorkplace: true,
+                showSameWorkplaceAndChild: true,
+                
+                /** Advanced search properties */
+                showEmployment: true,
+                showDepartment: true,
+                showWorkplace: true,
+                showClassification: true,
+                showJobTitle: true,
+                showWorktype: true,
+                isMutipleCheck: true,
+                
+                /**
+                * Self-defined function: Return data from CCG001
+                * @param: data: the data return from CCG001
+                */
+                returnDataFromCcg001: function(data: any) {
+                    vm.listEmp(_.map(data.listEmployee, (item: any) => {
+                        return {id: item.employeeId, code: item.employeeCode, name: item.employeeName, workplaceName: item.affiliationName};
+                    }));
+                    if (_.isEmpty(vm.listEmp())) {
+                        vm.listComponentOption.selectedCode(vm.listEmp()[0].code);
+                        $('#com-kcp005').ntsListComponent(vm.listComponentOption);
+                    }
+                    vm.baseDate(data.baseDate);
+                    vm.startDate(data.periodStart);
+                    vm.endDate(data.periodEnd);
+                }
             }
 
-            vm.$blockui('show');
-            vm.$ajax(paths.getDataStartScreen, param).done((res) => {
-                if (res) {
-                    vm.listSid(_.map(res.listEmpInfo, 'employeeId'));
-                    vm.startDate = res.dataBasicDto.startDate;
-                    vm.endDate = res.dataBasicDto.endDate;
-                    vm.targetInfo = {unit: res.dataBasicDto.unit, workplaceId: res.dataBasicDto.workplaceId, workplaceGroupId: res.dataBasicDto.workplaceGroupId};
-                }
-            }).fail((err) => {
-                if (err) {
-                    console.log(err);
-                    vm.$dialog.error(err.messageId)
-                }
-            }).always(() => vm.$blockui('hide') );
-        }
+            $('#com-ccg001').ntsGroupComponent(ccg001ComponentOption);
 
+            // bind KCP005 component
+            $('#com-kcp005').ntsListComponent(vm.listComponentOption);
+        }
+        
         mounted() {
 
         }
 
         openDialog() {
             const vm = this;
-            let param: any = {unit: vm.targetInfo.unit, workplaceId: vm.targetInfo.workplaceId, workplaceGroupId: vm.targetInfo.workplaceGroupId, 
-                sIDs: vm.listSid(), startDate: vm.startDate, endDate: vm.endDate};
+            let emps = $('#com-kcp005').ntsListComponentApi("getSelectedRecords");
+            if (emps.length > 0) {
+                _.map(emps, (emp: any) => {
+                    vm.listSid().push(emp.id);
+                })
+            } else {
+                vm.$dialog.error('No employee selected');
+                return;
+            }
+            let param: any = {sIDs: vm.listSid(), startDate: moment(vm.startDate()).format('YYYY/MM/DD'), endDate: moment(vm.endDate()).format('YYYY/MM/DD')};
 
             vm.$window.modal('at', '/view/kdl/055/a/index.xhtml', param)
             .then(() => {

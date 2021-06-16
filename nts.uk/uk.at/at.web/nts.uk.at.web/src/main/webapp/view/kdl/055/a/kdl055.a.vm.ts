@@ -18,7 +18,7 @@ module nts.uk.at.view.kdl055.a.viewmodel {
             { overwrite: true, name: this.$i18n("KDL055_20") },
             { overwrite: false, name: this.$i18n("KDL055_21") }
         ]);
-        targetInfo: TargetOrgIdenInfor;
+        // targetInfo: TargetOrgIdenInfor;
         sIDs: string[];
         startDate: string;
         endDate: string;
@@ -33,7 +33,7 @@ module nts.uk.at.view.kdl055.a.viewmodel {
             });
 
             if (params) {
-                vm.targetInfo = params.targetInfo;
+                // vm.targetInfo = params.targetInfo;
                 vm.sIDs = params.sIDs;
                 vm.startDate = params.startDate;
                 vm.endDate = params.endDate;
@@ -125,13 +125,20 @@ module nts.uk.at.view.kdl055.a.viewmodel {
     }
 
     export class KDL055Param {
-        targetInfo: TargetOrgIdenInfor;
+        // targetInfo: TargetOrgIdenInfor;
         sIDs: string[];
         startDate: string;
         endDate: string;
         
-        constructor(unit: number, workplaceId: string, workplaceGroupId: string, sIDs: string[], startDate: string, endDate: string) {
-            this.targetInfo = { unit: unit, workplaceId: workplaceId, workplaceGroupId: workplaceGroupId };
+        // constructor(unit: number, workplaceId: string, workplaceGroupId: string, sIDs: string[], startDate: string, endDate: string) {
+        //     this.targetInfo = { unit: unit, workplaceId: workplaceId, workplaceGroupId: workplaceGroupId };
+        //     this.sIDs = _.isEmpty(sIDs) ? [] : sIDs;
+        //     this.startDate = startDate;
+        //     this.endDate = endDate;
+        // }
+
+        constructor(sIDs: string[], startDate: string, endDate: string) {
+            // this.targetInfo = { unit: unit, workplaceId: workplaceId, workplaceGroupId: workplaceGroupId };
             this.sIDs = _.isEmpty(sIDs) ? [] : sIDs;
             this.startDate = startDate;
             this.endDate = endDate;

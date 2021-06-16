@@ -5,32 +5,28 @@
 
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
+			<ui:define name="htmlHead">
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 
 			<com:stylefile path="kdl055.test.style.css" />
 			<com:scriptfile path="kdl055.test.vm.js" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
 				<button data-bind="click: openDialog">Open KDL055</button>
 			</div>
-			<div id="content-area">		
-				<table style="margin: 20px;">
-					<thead>
-						<tr>
-							<th style="border: solid 1px">No.</th>
-							<th style="border: solid 1px">sID</th>
-						</tr>
-					</thead>
-					<tbody data-bind="foreach: listSid">
-						<tr>
-							<td style="border: solid 1px" data-bind="text: $index"></td>
-							<td style="border: solid 1px" data-bind="text: $data"></td>
-						</tr>
-					</tbody>
-				</table>
+			<div id="contents-area">	
+				<div id="com-ccg001"></div>	
+				<div class="table" style="margin-left: 100px;">
+					<div class="cell" id="com-kcp005" style="width: 600px;"></div>
+					<div class="cell" id="tree-grid" style="width: 450px; padding-top: 30px;"></div>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
