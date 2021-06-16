@@ -1341,9 +1341,11 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 						: Strings.EMPTY;
 		// アラーム内容
 		String param = getCompareOperatorText(scheCondMon.getCheckConditions(), timeCheckCond.getTypeOfTime().nameId, scheCondMon.getCheckItemType());
-		String alarmContent = TextResource.localize("KAL010_1118", param, String.valueOf(totalTime));
+		
+		CheckedTimeDuration totalTimeDuration = new CheckedTimeDuration(totalTime);
+		String alarmContent = TextResource.localize("KAL010_1118", param, totalTimeDuration.getTimeWithFormat());
 		// チェック対象値
-		String checkValue = TextResource.localize("KAL010_1121", String.valueOf(totalTime));
+		String checkValue = TextResource.localize("KAL010_1121", totalTimeDuration.getTimeWithFormat());
 		
 		ExtractionAlarmPeriodDate extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(Optional.of(ym.firstGeneralDate()), Optional.empty());
 		return new ExtractResultDetail(
