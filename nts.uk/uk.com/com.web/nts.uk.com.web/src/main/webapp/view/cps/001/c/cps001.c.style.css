@@ -29,11 +29,7 @@
 }
 
 .nts-searchbbox-wrapper div.input-wrapper {
-	max-width: 175px;
-}
-
-#contents-area .ntsSearchBox.nts-editor {
-	width: 86% !important;
+	max-width: 198px;
 }
 
 #contents-area .form-group {

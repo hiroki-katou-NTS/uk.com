@@ -380,6 +380,15 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
             const vm = this;
             vm.leaveType.subscribe(value => {
                 vm.$errors("clear");
+                //change width
+                if (value < 6 ) { // small table
+                    $('.left-panel').css('width', '872px');
+                    $('.two-panel').css('width', '1260px');
+                } else {
+                    let hiddenCols = $('#kaf012-calc-table').find('th:hidden').length * 85;
+                    $('.left-panel').css('width', 1305 - hiddenCols + 'px');
+                    $('.two-panel').css('width', 1693 - hiddenCols + 'px');
+                }
             });
             vm.timeLeaveManagement.subscribe(value => {
                 if (value) {

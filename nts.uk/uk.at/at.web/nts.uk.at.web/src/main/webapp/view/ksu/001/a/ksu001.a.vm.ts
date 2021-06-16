@@ -3050,6 +3050,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").exTable("gridHeightMode", "fixed");
             }
             self.setPositionButonDownAndHeightGrid();
+            self.setHeightScreen();
         }
 
         // xử lý cho button A13
@@ -3124,11 +3125,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let userInfor = JSON.parse(itemLocal.get());
             if (userInfor.gridHeightSelection == 1) {
                 $("#content-main").css('height', 'auto');
+                $("#main-area").css('overflow-y', 'hidden');
             } else {
                 let heightGrid: number = parseInt(userInfor.heightGridSetting);
-                $("#main-area").css('height', window.innerHeight - 92 + 'px');
+                let heightHerder = _.isNil(document.getElementById('header')) ? 0 : document.getElementById('header').offsetHeight;
+                $("#main-area").css('height', window.innerHeight -  document.getElementById('main-area').offsetTop - (heightHerder == 0 ? 95 : 0)+ 'px');
                 $("#main-area").css('overflow-y', 'scroll');
-                if(window.innerHeight - 92 > heightGrid + 295){
+                if(window.innerHeight > $("#extable").height() + document.getElementById('extable').offsetTop){
                     $("#main-area").css('overflow-y', 'hidden');
                 }
             }

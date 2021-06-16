@@ -140,7 +140,7 @@ public class GetFixedWorkInformation {
 				inforDto = new FixedWorkInforDto(
 						x.getWorkTimeCodeNotNull().isPresent() ? timeSettings.get().getWorkTimeDisplayName().getWorkTimeAbName().v() : null,
 						null, null, new ArrayList<>(), null, null,
-						type.get().getAbbreviationName().v(), null, null, null, null, false, SetupType.OPTIONAL.name());
+						type.isPresent() ? type.get().getAbbreviationName().v() : null, null, null, null, null, false, SetupType.OPTIONAL.name());
 				inforDtos.add(inforDto);
 				fixedWorkInforDto = new FixedWorkInformationDto(inforDtos,
 						breakTime != null ? breakTime.getTimeZoneList() : new ArrayList<>());

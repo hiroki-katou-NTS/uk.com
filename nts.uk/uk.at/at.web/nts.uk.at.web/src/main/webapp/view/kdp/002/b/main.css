@@ -96,7 +96,6 @@
 	border: none;
 	background-color: transparent;
 	box-shadow: 0 0px rgb(0 0 0 / 40%);
-	border-radius: 50px;
 }
 
 .btn-happy {
@@ -104,7 +103,6 @@
 	border: none;
 	background-color: transparent;
 	box-shadow: 0 0px rgb(0 0 0 / 40%);
-	border-radius: 50px;
 }
 
 .nts-gridlist.ui-iggrid {
