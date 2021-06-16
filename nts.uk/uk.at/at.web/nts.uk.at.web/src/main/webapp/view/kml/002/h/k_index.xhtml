@@ -115,15 +115,15 @@
                         </tr>
                        </thead>
                        <tbody >
-                            <tr>
+                            <tr data-bind="with: itemMonthlyScreenK">
                                <!--H4-10--> 
                                <td role="rowheader" style="background:#EDFAC2;"> 
                                     <span style="margin-left: 10px;">#{i18n.getText('KML002_138')}</span></td>        
                                 <!--H4-10-1-->    
                                <td>
-                                    <input tabindex="11" data-bind="ntsNumberEditor: {
+                                    <input tabindex="11" id="month1screenk" data-bind="ntsNumberEditor: {
                                         name: '#[KML002_139]',
-                                        value: itemMonthlyScreenK().amount1,
+                                        value: amount1,
                                         constraint: 'EstimatePrice',
                                         option: new nts.uk.ui.option.CurrencyEditorOption({
                                             numberGroup: true,
@@ -139,9 +139,9 @@
                                
                                <!--H4-10-2-->  
                                <td>
-                                    <input tabindex="12" data-bind="ntsNumberEditor: {
+                                    <input tabindex="12" id="month2screenk" data-bind="ntsNumberEditor: {
                                         name: '#[KML002_140]',
-                                        value: itemMonthlyScreenK().amount2,
+                                        value: amount2,
                                         constraint: 'EstimatePrice',
                                         option: new nts.uk.ui.option.CurrencyEditorOption({
                                             numberGroup: true,
@@ -157,9 +157,9 @@
         
                                <!--H4-10-3-->  
                                <td>
-                                <input tabindex="13" data-bind="ntsNumberEditor: {
+                                <input tabindex="13" id="month3screenk" data-bind="ntsNumberEditor: {
                                     name: '#[KML002_141]',
-                                    value: itemMonthlyScreenK().amount3,
+                                    value: amount3,
                                     constraint: 'EstimatePrice',
                                     option: new nts.uk.ui.option.CurrencyEditorOption({
                                         numberGroup: true,
@@ -175,9 +175,9 @@
         
                                <!--H4-10-4-->  
                                <td>
-                                <input tabindex="14" data-bind="ntsNumberEditor: {
+                                <input tabindex="14" id="month4screenk" data-bind="ntsNumberEditor: {
                                     name: '#[KML002_142]',
-                                    value: itemMonthlyScreenK().amount4,
+                                    value: amount4,
                                     constraint: 'EstimatePrice',
                                     option: new nts.uk.ui.option.CurrencyEditorOption({
                                         numberGroup: true,
@@ -193,9 +193,9 @@
         
                                <!--H4-10-5-->  
                                <td>
-                                <input tabindex="15" data-bind="ntsNumberEditor: {
+                                <input tabindex="15" id="month5screenk" data-bind="ntsNumberEditor: {
                                     name: '#[KML002_143]',
-                                    value: itemMonthlyScreenK().amount5,
+                                    value: amount5,
                                     constraint: 'EstimatePrice',
                                     option: new nts.uk.ui.option.CurrencyEditorOption({
                                         numberGroup: true,
@@ -209,15 +209,15 @@
                                 </td> 
                            </tr>
                            
-                            <tr>
+                            <tr data-bind="with: itemAnnualScreenK">
                             <!--H4-11--> 
                             <td role="rowheader" style="background:#EDFAC2;"> 
                                 <span style="margin-left: 10px;">#{i18n.getText('KML002_144')}</span></td>   
                             <!--H4-11-1-->         
                             <td>
-                                 <input tabindex="16" data-bind="ntsNumberEditor: {
+                                 <input tabindex="16" id="year1screenk" data-bind="ntsNumberEditor: {
                                      name: '#[KML002_145]',
-                                     value: itemAnnualScreenK().amount1,
+                                     value: amount1,
                                      constraint: 'EstimatePrice',
                                      option: new nts.uk.ui.option.CurrencyEditorOption({
                                         numberGroup: true,
@@ -232,9 +232,9 @@
                             <td role="rowheader" style="background: #DBDBDB;"> </td> 
                             <!--H4-11-2-->         
                             <td>
-                                 <input tabindex="17" data-bind="ntsNumberEditor: {
+                                 <input tabindex="17" id="year2screenk" data-bind="ntsNumberEditor: {
                                      name: '#[KML002_146]',
-                                     value: itemAnnualScreenK().amount2,
+                                     value: amount2,
                                      constraint: 'EstimatePrice',
                                      option: new nts.uk.ui.option.CurrencyEditorOption({
                                         numberGroup: true,
@@ -250,9 +250,9 @@
         
                             <!--H4-11-3-->    
                             <td>
-                             <input tabindex="18" data-bind="ntsNumberEditor: {
+                             <input tabindex="18" id="year3screenk" data-bind="ntsNumberEditor: {
                                  name: '#[KML002_147]',
-                                 value: itemAnnualScreenK().amount3,
+                                 value: amount3,
                                  constraint: 'EstimatePrice',
                                  option: new nts.uk.ui.option.CurrencyEditorOption({
                                     numberGroup: true,
@@ -267,9 +267,9 @@
                             <td role="rowheader" style="background: #DBDBDB;"></td>  
                             <!--H4-11-4-->    
                             <td>
-                             <input tabindex="19" data-bind="ntsNumberEditor: {
+                             <input tabindex="19" id="year4screenk" data-bind="ntsNumberEditor: {
                                  name: '#[KML002_148]',
-                                 value: itemAnnualScreenK().amount4,
+                                 value: amount4,
                                  constraint: 'EstimatePrice',
                                  option: new nts.uk.ui.option.CurrencyEditorOption({
                                     numberGroup: true,
@@ -284,9 +284,9 @@
                             <td role="rowheader" style="background: #DBDBDB;"></td>  
                             <!--H4-11-5-->    
                             <td>
-                             <input tabindex="20" data-bind="ntsNumberEditor: {
+                             <input tabindex="20" id="year5screenk" data-bind="ntsNumberEditor: {
                                  name: '#[KML002_149]',
-                                 value: itemAnnualScreenK().amount5,
+                                 value: amount5,
                                  constraint: 'EstimatePrice',
                                  option: new nts.uk.ui.option.CurrencyEditorOption({
                                     numberGroup: true,
