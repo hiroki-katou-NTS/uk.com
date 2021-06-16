@@ -9,7 +9,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 950, height: 700 };</script>
+			<script>var dialogSize = { width: 950, height: 750 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName
 			</com:ValidatorScript>
@@ -23,7 +23,7 @@
 			<div id="functions-area">
 				<div class="form-label">
 					<span style="margin-right: 15px"
-						data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KWR002_60')}</span>
+						data-bind="ntsFormLabel: {}">#{i18n.getText('KWR002_60')}</span>
 					<span class="label layout-info"
 						data-bind="text:attendanceCode"></span> <span class="label"
 						data-bind="text:attendanceName"></span>
@@ -41,7 +41,7 @@
 						<tr class="row">
 							<td>
 								<div class="form-label useSeal"
-									data-bind="ntsFormLabel: {}">#{i18n.getText('KWR002_61')}</div>
+									data-bind="ntsFormLabel: { required: false, constraint:['SealColumnName'] }">#{i18n.getText('KWR002_61')}</div>
 							</td>
 							<td>
 								<!-- C2_2 -->
@@ -371,7 +371,7 @@
 									<!-- C18_1 -->
 									<div class="form-label"	data-bind="ntsFormLabel: {}">#{i18n.getText('KWR002_194')}</div>
 									<!-- C18_2 -->
-									<div class="switch" id ="switch-button" style="display: inline-block;" tabindex="40"
+									<div class="switch" id ="switch-button" style="vertical-align: middle; display: inline-block;" tabindex="40"
 										data-bind="ntsSwitchButton: {
 										options: confirmedDisplay,
 										optionsValue: 'value',

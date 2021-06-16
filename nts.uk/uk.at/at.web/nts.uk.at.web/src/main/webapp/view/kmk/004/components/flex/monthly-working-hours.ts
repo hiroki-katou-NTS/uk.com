@@ -5,7 +5,7 @@ import YearItem = nts.uk.at.kmk004.components.flex.YearItem;
 const template = `
 	
 	
-	<div data-bind="ntsFormLabel: {inline:true} , i18n: 'KMK004_232'"></div>
+	<div data-bind="ntsFormLabel: {inline:true , text: $i18n('KMK004_232') }"></div>
 	
 	<div style="padding-left:10px;"> 
 		<div class="div_line">

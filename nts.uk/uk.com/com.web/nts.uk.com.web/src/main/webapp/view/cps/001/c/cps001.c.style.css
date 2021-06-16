@@ -16,6 +16,7 @@
 
 #contents-area>.right-area {
 	padding-left: 45px;
+	padding-top: 15px;
 }
 
 #contents-area>.left-area>div {
@@ -32,7 +33,7 @@
 }
 
 #contents-area .ntsSearchBox.nts-editor {
-	width: 100% !important;
+	width: 86% !important;
 }
 
 #contents-area .form-group {
@@ -40,7 +41,7 @@
 }
 
 #contents-area .form-group .form-label {
-	min-width: 160px;
+	min-width: 100px;
 }
 
 .ui-iggrid .ui-iggrid-tablebody .ui-state-hover, .ui-iggrid .ui-iggrid-tablebody .ui-state-active,
@@ -58,7 +59,7 @@
 
 
 .ntsControl .nts-input {
-	width: 110px !important;
+	width: 115px !important;
 }
 
 .reasonLable{

@@ -170,6 +170,7 @@ module nts.uk.pr.view.kmf001.c {
                     }
                 });
 
+                self.selectedAnnualManage.subscribe(() => self.clearError());
             }
             
             public startPage(): JQueryPromise<any> {

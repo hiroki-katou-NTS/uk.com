@@ -37,6 +37,7 @@ public class JpaEmpCopySettingRepository extends JpaRepository implements EmpCop
 			+ " INNER JOIN PpemtItemCommon ic ON i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd AND c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
 			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId AND i.abolitionAtr = 0"
 			+ " AND ((ic.dataType != 9 AND ic.dataType != 10) or ic.dataType is null)"
+			+ " AND ic.ppemtPerInfoItemCmPK.contractCd = :contractCd "
 			+ " AND i.itemCd != 'IS00020' AND ic.itemParentCd IS NULL ORDER BY io.displayOrder ASC";
 	
 	@Override
@@ -79,9 +80,12 @@ public class JpaEmpCopySettingRepository extends JpaRepository implements EmpCop
 	
 	@Override
 	public List<CopySettingItemObject> getPerInfoItemByCtgId(String companyId, String perInfoCategoryId) {
-
+		
+		String contractCd = AppContexts.user().contractCode();
+		
 		List<Object[]> perDefItemList = this.queryProxy().query(SELECT_PERINFOITEM_BYCTGID, Object[].class)
 				.setParameter("companyId", companyId)
+				.setParameter("contractCd", contractCd)
 				.setParameter("perInfoCtgId", perInfoCategoryId).getList();
 
 		List<String> copyItemIdList = this.queryProxy()
