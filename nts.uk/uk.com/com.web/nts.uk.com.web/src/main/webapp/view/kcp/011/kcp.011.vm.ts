@@ -135,7 +135,7 @@ module nts.uk.com.view.kcp011.share {
             let self = this;
             let setting = self.setting();
             let codeWidth = setting.multiple ? 95 : 115;
-            let nameWidth = setting.isAlreadySetting ? 165 : 290; 
+            let nameWidth = setting.isAlreadySetting ? 165 : 245; 
             let alreadySettingWidth = setting.isAlreadySetting ? 70 : 10;
             return { codeWidth: codeWidth, nameWidth: nameWidth, alreadySettingWidth: alreadySettingWidth };
         }

@@ -33,15 +33,3 @@ td .radio-wrapper {
 #nts-component-tree {
     width: 413px;
 }
-
-#tabpanel-com .nts-fixed-body-wrapper {
-    width: 825px !important;
-}
-
-#tabpanel-wkp .nts-fixed-body-wrapper {
-    width: 695px !important;
-}
-
-.scroll-header {
-    display: none !important;
-}

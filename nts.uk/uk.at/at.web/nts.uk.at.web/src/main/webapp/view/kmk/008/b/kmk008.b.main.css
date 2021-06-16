@@ -34,7 +34,8 @@
 }
 
 .tabpanel-1-contents-area-right {
-	width: 835px;
+	width: 870px;
+  height: 450px;
 	margin-top: 25px;
 	display: inline-block;
 	clean: right;

@@ -822,7 +822,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 const headerHeight = $('#header').outerHeight();
                 const sidebarHeaderHeight = $('.sidebar-content-header').outerHeight(); // for screen with sidebar
                 const functionAreaHeight = $('#functions-area').length > 0 ? $('#functions-area').outerHeight() : 0;
-                const buffer = 15;
+                const buffer = 25;
                 let componentHeight = 0;
 
                 // calculate component height

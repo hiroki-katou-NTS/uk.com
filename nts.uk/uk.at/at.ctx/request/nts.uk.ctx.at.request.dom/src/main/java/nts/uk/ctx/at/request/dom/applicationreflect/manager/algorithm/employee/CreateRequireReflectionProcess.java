@@ -12,6 +12,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.AllArgsConstructor;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -154,8 +155,8 @@ public class CreateRequireReflectionProcess {
 
 		@Override
 		public Pair<ReflectStatusResult, Optional<AtomTask>> processWork(ApplicationShare application,
-				GeneralDate date, ReflectStatusResult reflectStatus) {
-			return reflectApplicationWorkRecordAdapter.process(application, date, reflectStatus);
+				GeneralDate date, ReflectStatusResult reflectStatus, GeneralDateTime reflectTime) {
+			return reflectApplicationWorkRecordAdapter.process(application, date, reflectStatus, reflectTime);
 		}
 
 		@Override
@@ -172,8 +173,8 @@ public class CreateRequireReflectionProcess {
 
 		@Override
 		public void processCreateHist(String employeeId, GeneralDate date, String appId,
-				ScheduleRecordClassifi classification, Map<Integer, String> mapValue) {
-			createEditStatusHistAppReasonAdapter.process(employeeId, date, appId, classification, mapValue);
+				ScheduleRecordClassifi classification, Map<Integer, String> mapValue, GeneralDateTime reflectTime) {
+			createEditStatusHistAppReasonAdapter.process(employeeId, date, appId, classification, mapValue, reflectTime);
 		}
 
 		@Override
