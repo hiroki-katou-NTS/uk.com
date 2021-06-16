@@ -20,17 +20,19 @@
 		<ui:define name="extended-222">
 			<div class="fixed-flex-layout">
 			<div class="pull-right fixed-flex-layout-left"
-				style="margin-left: 20px">
+				style="margin-left: 20px; margin-right: 0px;">
 				
-				<div id="input-date" class="lableContentPersonal"
-					data-bind="ntsFormLabel: { required: true }">
-					<label>#{i18n.getText('KMK006_33')}</label>
-				</div>
-				<div id="kmk0006-basedate" tabindex="2" data-bind="ntsDatePicker: {value: inputDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
+				<div class="flex valign-center">
+          <div id="input-date" class="lableContentPersonal"
+            data-bind="ntsFormLabel: { required: true }">
+            <label>#{i18n.getText('KMK006_33')}</label>
+          </div>
+          <div id="kmk0006-basedate" tabindex="2" data-bind="ntsDatePicker: {value: inputDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
 				<button tabindex="2" style="margin-left: 10px" data-bind="click: applyBaseDate">#{i18n.getText('KMK006_34')}</button>
 				
+        </div>
 				<div tabindex="2" style="margin-top: 17px" id="tree-grid"></div>
-				<div tabindex="2" style="margin-top: 30px" id="jobtitles"></div>
+				<div tabindex="2" id="jobtitles"></div>
 			</div>
 
 			<div class="pull-left fixed-flex-layout-right">

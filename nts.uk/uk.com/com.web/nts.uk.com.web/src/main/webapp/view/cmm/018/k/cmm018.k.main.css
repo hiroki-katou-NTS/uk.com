@@ -81,3 +81,13 @@ html{
 	align-items: center;
 	justify-content: center;
 }
+
+#prev-next-button {
+	width: 75px;
+	margin-top: 150px;
+	margin-left: 22px !important;
+}
+
+#selected-approver {
+	margin-left: 23px !important;
+}

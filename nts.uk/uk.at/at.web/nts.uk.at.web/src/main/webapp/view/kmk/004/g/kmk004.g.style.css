@@ -115,3 +115,8 @@
 #work-place-list {
 	width: 490px;
 }
+
+#monthly-list {
+	border-right: solid grey 1px;
+	border-bottom: solid grey 1px;
+}
