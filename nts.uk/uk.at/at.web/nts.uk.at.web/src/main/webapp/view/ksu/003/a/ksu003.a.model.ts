@@ -327,6 +327,7 @@ module nts.uk.at.view.ksu003.a.model {
 
 	// setting show hide for middle
 	export function showHide(showA9: any, indexBtnToLeft: any, targetInfor: any) {
+		$("#contents-area").css({ 'overflow-y': 'hidden' });
 		if (indexBtnToLeft() % 2 == 0) {
 			if (!showA9) {
 				$("#extable-ksu003").exTable("showMiddle");
@@ -338,9 +339,9 @@ module nts.uk.at.view.ksu003.a.model {
 				}
 			}
 			if (window.outerWidth < 1920) {
-				$(".toLeft").css("margin-left", 592 + 'px');
+				$(".toLeft").css("margin-left", 588 + 'px');
 				if (targetInfor == 0) {
-					$(".toLeft").css("margin-left", 509 + 'px');
+					$(".toLeft").css("margin-left", 505 + 'px');
 				}
 			}
 		} else {
@@ -348,7 +349,7 @@ module nts.uk.at.view.ksu003.a.model {
 				$("#extable-ksu003").exTable("hideMiddle");
 			}
 			if (window.outerWidth < 1920) {
-				$(".toLeft").css("margin-left", 193 + 'px');
+				$(".toLeft").css("margin-left", 189 + 'px');
 			}
 			if (window.outerWidth >= 1920) {
 				$(".toLeft").css('margin-left', 188 + 'px');
@@ -357,15 +358,13 @@ module nts.uk.at.view.ksu003.a.model {
 
 		if (window.innerHeight < 700) {
 			if (window.outerWidth <= 1366) {
-				$("#label-display").css("margin-left", 55 + 'px');
-				$(".toDown").css('margin-left', 0 + 'px');
+				//$("#label-display").css("margin-left", 55 + 'px');
+				//$(".toDown").css('margin-left', 0 + 'px');
 				if (navigator.userAgent.indexOf("Chrome") == -1) {
-					$(".toDown").css('margin-left', 0 + 'px');
+					//$(".toDown").css('margin-left', 0 + 'px');
 				}
 			}
-		} else {
-			$(".toDown").css('margin-left', -5 + 'px');
-		}
+		} 
 	}
 
 	export function buidDataReg(cellsGroup: any, targetInfor: any, employeeInfo: any, employeeIdLogin: any, colorBreak45: any, index045: any) {

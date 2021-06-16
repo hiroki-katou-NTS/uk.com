@@ -13,8 +13,8 @@ table.info-table td.fix-width {width: 150px; background:#CFF1A5; padding:2px;}
 
 .log-selection {min-height: 35px;}
 
-.place-holder {width: 89% !important; height: 208px; background-color: #F3F3F3; margin-top: 5px}
+.place-holder {width: 89% !important; height: 35% !important; background-color: #F3F3F3; margin-top: 5px}
 #functions-area-bottom{height: 52px !important;}
 #single-list_scrollContainer {height: 184px !important;}
 #single-list_displayContainer {height: 184px !important;}
-#single-list_container {height: 208px !important;}
+#single-list_container {height: 100% !important;}

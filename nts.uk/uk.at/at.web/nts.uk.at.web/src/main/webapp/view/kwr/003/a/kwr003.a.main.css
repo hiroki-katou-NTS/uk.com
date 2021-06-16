@@ -62,6 +62,7 @@
   margin-right: 10px;
   width: calc(100% - 30px);
 }
-.kwr-003 .panel .switchButton-wrapper button {
+.kwr-003 .panel .switchbox-wrappers .radio-wrapper span {
   width: 65px;
+  text-align: center;
 }

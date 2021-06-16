@@ -3,15 +3,16 @@ module nts.uk.com.view.kcp017.a.viewmodel {
     const template = `
     <div id="kcp017-component" 
         class="panel" 
-        style="display: inline-block; width: 100%;" 
+        style="display: inline-block;" 
         data-bind="css: {
             ntsPanel: !onDialog(), 
             'caret-right': !onDialog(), 
             'caret-background': !onDialog()
         }">
-        <div id="switch-area" class="control-group valign-center">
+        <div class="control-group valign-center">
             <div data-bind="ntsFormLabel: {text: $i18n('KCP017_2')}"/>
-            <div id="kcp017-switch" data-bind="ntsSwitchButton: {
+            <div id="kcp017-switch" style="display: inline-block;"
+            data-bind="ntsSwitchButton: {
                 name: $i18n('KCP017_2'),
                 options: [
                     {code: 0, name: $i18n('Com_Workplace')},
@@ -22,6 +23,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 value: selectedUnit 
             }"/>
         </div>
+        <hr />
         <div data-bind="visible: selectedUnit() == 0">
             <div id="workplace-tree-grid"/>
         </div>
@@ -36,20 +38,13 @@ module nts.uk.com.view.kcp017.a.viewmodel {
         <i class="icon icon-searchbox" data-bind="visible: !onDialog()"></i>
     </div>
     <style>
-      #kcp017-switch label span {
-        width: 120px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      
-      #switch-area {
-        display: flex;
-        width: 91%;
-        padding-bottom: 10px;
-        border-bottom: 1px solid gray;
-      }
-    </style>`;
+        #kcp017-switch .radio-wrapper {
+            width: 100px;
+            flex-direction: column;
+            text-align: center;
+        }
+    </style>
+    `;
 
     @component({
         name: 'kcp017-component',
@@ -62,8 +57,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
         selectMode: KnockoutObservable<number | SELECTED_MODE>; // kcp011
         onDialog: KnockoutObservable<boolean>;
         multiple: KnockoutObservable<boolean>;
-        workplaceRows: KnockoutObservable<number>;
-        workplaceGroupRows: KnockoutObservable<number>;
+        rows: KnockoutObservable<number>;
         showAlreadySetting: KnockoutObservable<boolean>;
         multipleUsage?: KnockoutObservable<boolean>; // KCP004, default: false
         isShowSelectButton?: KnockoutObservable<boolean>; // KCP004, default: true
@@ -90,8 +84,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 vm.onDialog = ko.observable(_.isNil(params.onDialog) ? false : params.onDialog);
                 vm.multiple = ko.observable(_.isNil(params.multiple) ? false : params.multiple);
                 vm.showAlreadySetting = ko.observable(_.isNil(params.showAlreadySetting) ? false : params.showAlreadySetting);
-                vm.workplaceRows = ko.observable(params.workplaceRows || 10);
-                vm.workplaceGroupRows = ko.observable(params.workplaceGroupRows || 10);
+                vm.rows = ko.observable(params.rows || 10);
                 vm.multipleUsage = ko.observable(_.isNil(params.multipleUsage) ? false : params.multipleUsage);
                 vm.isShowSelectButton = ko.observable(_.isNil(params.isShowSelectButton) ? true : params.isShowSelectButton);
                 vm.showEmptyItem = ko.observable(_.isNil(params.showEmptyItem) ? false : params.showEmptyItem);
@@ -106,8 +99,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 vm.onDialog = ko.observable(false);
                 vm.multiple = ko.observable(false);
                 vm.showAlreadySetting = ko.observable(false);
-                vm.workplaceRows = ko.observable(10);
-                vm.workplaceGroupRows = ko.observable(10);
+                vm.rows = ko.observable(10);
                 vm.multipleUsage = ko.observable(false);
                 vm.isShowSelectButton = ko.observable(true);
                 vm.showEmptyItem = ko.observable(false);
@@ -130,7 +122,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 isShowSelectButton: vm.isShowSelectButton(),
                 isDialog: true,
                 hasPadding: false,
-                maxRows: vm.workplaceRows(),
+                maxRows: vm.rows(),
                 alreadySettingList: vm.alreadySettingWorkplaces,
                 selectedId: vm.selectedIds,
                 restrictionOfReferenceRange: false
@@ -144,26 +136,18 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 showEmptyItem: vm.showEmptyItem(),
                 reloadData: ko.observable(''),
                 selectedMode: vm.selectMode(), // SELECT FIRST ITEM
-                rows: vm.workplaceGroupRows()
+                rows: vm.rows()
             };
             $('#workplace-tree-grid').ntsTreeComponent(vm.kcp004Options);
         }
 
         mounted() {
             const vm = this;
-            $($("#kcp017-switch button")[0]).width($($("#kcp017-switch button")[1]).width());
-            $("#workplace-group-pannel").ready(() => {
-              $("#workplace-group-pannel input.ntsSearchBox").css("width", "160px");
-            })
-            $("#nts-component-tree").ready(() => {
-              $("#nts-component-tree input.ntsSearchBox").css("width", "160px");
-            })
             vm.selectedUnit.subscribe(value => {
-                if (value === 0) {
-                  $("#nts-component-tree input.ntsSearchBox").css("width", "160px");
-                }
                 if (value == 1 && $("#workplace-group-pannel input.ntsSearchBox").width() == 0)
-                  $("#workplace-group-pannel input.ntsSearchBox").css("width", "160px");
+                    $("#workplace-group-pannel input.ntsSearchBox").css("width", "auto");
+                if (value == 0 && vm.multipleUsage() && $("#workplace-tree-grid input.ntsSearchBox").width() != 161)
+                    $("#workplace-tree-grid input.ntsSearchBox").css("width", "161px");
             });
         }
     }
@@ -173,8 +157,7 @@ module nts.uk.com.view.kcp017.a.viewmodel {
         onDialog?: boolean; // default: false
         multiple?: boolean; // default: false
         showAlreadySetting?: boolean; // default: false
-        workplaceRows?: number; // default: 10
-        workplaceGroupRows?: number; // default: 10
+        rows?: number; // default: 10
         selectType?: SelectType; // default: 3 (SELECT FIRST ITEM)
         baseDate?: string | Date; // default: today
         multipleUsage?: boolean; // KCP004, default: false

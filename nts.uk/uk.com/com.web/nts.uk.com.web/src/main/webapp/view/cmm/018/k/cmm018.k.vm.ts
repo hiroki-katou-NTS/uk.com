@@ -22,7 +22,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         columns: KnockoutObservableArray<any> = ko.observableArray([
                     { headerText: 'id', prop: 'id', width: '0px', hidden: true },
                     { headerText: resource.getText('CMM018_69'), prop: 'code', width: '120px' },
-                    { headerText: resource.getText('CMM018_70'), prop: 'name', width: '160px' }
+                    { headerText: resource.getText('CMM018_70'), prop: 'name', width: '150px' }
                 ]);
         selectFormSet: KnockoutObservable<number> = ko.observable(1);
         //GROUP

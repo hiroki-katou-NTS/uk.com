@@ -27,7 +27,7 @@
 				<button tabindex="2" id="btnExportPdf" class="proceed" data-bind="click: exportPdf, enable: $root.errors.isEmpty">#{i18n.getText('KWR006_6')}</button>
 			</div>
 			
-			<div id="contents-area" style="display: none" data-bind="visible: true">
+			<div id="contents-area" style="display: none" data-bind="visible: true" class="kwr006-content">
 				<div id="ccgcomponent"></div>
 				<div id="list-employee" class="pull-left fixed-flex-layout-left" style="margin-top: 30px; margin-left: 30px;"></div>
 			
@@ -60,7 +60,7 @@
 						</td>
 						
 						<td class="td-right">
-							<div class="right" style="width:600px;">
+							<div class="right" style="width:610px;">
 								<!-- A4_1 -->
 								<div class="panel panel-frame" id="output-setting-content">
 									<div class="row">
@@ -93,7 +93,7 @@
 												</td>
 												<td style="vertical-align: middle;">
 													<span class="ntsControl">
-														<label class="ntsRadioBox" tabindex="8">
+														<label class="with-text radio-wrapper nts-input" tabindex="8">
 															<!-- A7_8 -->
 															<input type="radio" name="radioGroupA7_7"
 																data-bind="checkedValue: 0, checked: monthlyWorkScheduleConditionModel.itemSettingType" />
@@ -128,7 +128,7 @@
 												<td></td>
 												<td style="vertical-align: middle;">
 													<span class="ntsControl">
-														<label class="ntsRadioBox" tabindex="8">
+														<label class="with-text radio-wrapper nts-input" tabindex="8">
 															<!-- A7_9 -->
 															<input
 																type="radio"
