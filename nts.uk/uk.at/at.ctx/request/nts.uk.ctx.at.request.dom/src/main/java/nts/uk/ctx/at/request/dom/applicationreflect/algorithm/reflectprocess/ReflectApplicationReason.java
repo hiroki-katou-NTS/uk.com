@@ -16,6 +16,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.reasonappdaily.ApplicationReasonInfo;
 import nts.uk.ctx.at.request.dom.reasonappdaily.ApplicationTypeReason;
@@ -140,9 +141,12 @@ public class ReflectApplicationReason {
 	}
 
 	public static ReasonApplicationDailyResult createReason(Application application, GeneralDate date) {
-		// TODO: chua co don xin lam them Optional.empty
-		return new ReasonApplicationDailyResult(application.getEmployeeID(), date,
-				new ApplicationTypeReason(application.getAppType(), Optional.empty()), application.getPrePostAtr(),
+		return new ReasonApplicationDailyResult(application.getEmployeeID(), date, new ApplicationTypeReason(
+				application.getAppType(),
+				application.getAppType() == ApplicationType.OVER_TIME_APPLICATION ? Optional.of(
+						EnumAdaptor.valueOf(((AppOverTime) application).getOverTimeClf().value, OvertimeAppAtr.class))
+						: Optional.empty()),
+				application.getPrePostAtr(),
 				new ApplicationReasonInfo(application.getOpAppStandardReasonCD().orElse(null),
 						application.getOpAppReason().orElse(null)));
 	}
