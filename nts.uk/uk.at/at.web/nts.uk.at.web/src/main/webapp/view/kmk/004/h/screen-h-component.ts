@@ -24,7 +24,10 @@ const h_template = `
 							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
 							<hr style="text-align: left;
 						    margin-left: 0;"  />
-							<label id="selected-work-place" data-bind="i18n: screenData().selectedName"></label>
+                        <div style='height: 18px;' >
+                            <label id="selected-work-place" data-bind="i18n: screenData().selectedName">
+                            </label>
+                        </div>
 							<div style="margin-top: 10px;" data-bind="component: {
 								name: 'basic-settings-company',
 								params: {
@@ -179,14 +182,15 @@ class ScreenHComponent extends ko.ViewModel {
 
 		vm.$blockui('invisible');
 		$('#work-place-list').ntsTreeComponent(workPlaceGrid).done(() => {
+            setTimeout(() => {
+                vm.regSelectedEvent();
 
-			vm.regSelectedEvent();
+                vm.$blockui("hide");
 
-			vm.$blockui("hide");
+                vm.screenData().selected.valueHasMutated();
 
-			vm.screenData().selected.valueHasMutated();
-
-			dfd.resolve(vm.screenData().selected());
+                dfd.resolve(vm.screenData().selected());
+            }, 1000);
 		});
 		return dfd.promise();
 	}

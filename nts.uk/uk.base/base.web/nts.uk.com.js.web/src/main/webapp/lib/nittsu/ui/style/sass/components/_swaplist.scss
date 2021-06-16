@@ -26,6 +26,9 @@
 .ntsMoveDataArea .move-button {
 	width: 75px;
 	margin: 10px 0px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .ntsSearchArea div{
