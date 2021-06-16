@@ -168,9 +168,7 @@ class ScreenJComponent extends ko.ViewModel {
 	mounted() {
 		const vm = this;
 		vm.initEmployeeList();
-         setTimeout(() => {
-            $('#monthly-list').css('border','none');
-        },500);    
+               
 		$("#com-ccg001").focus();
 	}
 
