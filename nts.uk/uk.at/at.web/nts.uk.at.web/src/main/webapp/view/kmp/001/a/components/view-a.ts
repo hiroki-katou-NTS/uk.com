@@ -12,18 +12,20 @@ module nts.uk.at.view.kmp001.a {
 			<button id="add" class="proceed" data-bind="text: $i18n('KMP001_5'), click: addStampCard"></button>
 			<button class="danger" data-bind="text: $i18n('KMP001_6'), click: deleteStampCard, enable: mode() == 'update'"></button>
 		</div>
-		<div class="view-kmp">
-			<div class="list-component float-left viewa">
-				<div id="list-employee"></div>
-			</div>
-			<div class="float-left model-component" 
-				data-bind="component: { 
-					name: 'editor-area', 
-					params: { model: model, 
-						stampCardEdit: stampCardEdit, 
-						textInput: textInput, 
-						methodEdit: methodEdit}}">
-			</div>
+		<div>
+			<div class="view-kmp">
+				<div class="list-component float-left viewa">
+					<div id="list-employee"></div>
+				</div>
+				<div class="float-left model-component" 
+					data-bind="component: { 
+						name: 'editor-area', 
+						params: { model: model, 
+							stampCardEdit: stampCardEdit, 
+							textInput: textInput, 
+							methodEdit: methodEdit}}">
+				</div>
+		</div>
 		<div>
 `;
 
