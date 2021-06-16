@@ -4,7 +4,7 @@
 
 .overtimeListQ5_1 tr > td:nth-child(3) > div > label{
 	border-left: 1px solid black;
-	padding: 3px 0;
+	/*padding: 3px 0;*/
 }
 
 .overtimeListQ5_1 tr > td:nth-child(1){
@@ -38,12 +38,12 @@
 }
 
 #tab-panel {
-	width: 800px;
+	width: 850px;
 }
 
 .constText1 {
 	height: 180px;
-	padding-left: 125px;
+	padding-left: 190px;
 }
 
 .tableQ8_1 tr {
@@ -222,12 +222,12 @@
 }
 
 #Q4_3, #Q4_4 {
-	width: 140px;
+	width: 180px;
 	text-align: center;
 }
 
 #Q4_5 {
-	width: 125px;
+	width: 167px;
 }
 
 #Q4_5_label {
@@ -239,13 +239,17 @@
 }
 
 #Q6_2 {
-	padding-left: 175px;
+	padding-left: 240px;
 }
 
 #Q6_3 {
-	padding-left: 30px;
+	padding-left: 95px;
 }
 
 .ntsRadioBox span.box {
 	margin-left: 3px;
+}
+
+.tabs-panel.has-content {
+	overflow: visible;
 }

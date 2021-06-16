@@ -4,6 +4,7 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 
 public interface LeaveComDayOffManaRepository {
 	
@@ -24,6 +25,8 @@ public interface LeaveComDayOffManaRepository {
 	void deleteByLeaveId(String sid, GeneralDate occDate);
 	
 	void deleteByComDayOffID(String sid,  GeneralDate digestDate);
+	
+	void deleteByDigestTarget(String sid, GeneralDate digestDate, TargetSelectionAtr target);
 
 	List<LeaveComDayOffManagement> getByListComLeaveID(String sid, DatePeriod period);
 	List<LeaveComDayOffManagement> getByListComId(String sid,  DatePeriod period);

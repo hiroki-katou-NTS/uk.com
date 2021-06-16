@@ -127,3 +127,27 @@ html {
 .nts-fixed-body-wrapper {
 	height: auto !important;
 }
+
+#tab-panel > .tabs-list {
+	width: auto !important;
+}
+
+.left-178 {
+	margin-left: 178px !important;
+}
+
+.left-122 {
+	margin-left: 122px !important;
+}
+
+.switchbox-wrappers {
+	display: flex;
+}
+
+.tab-rows .ui-igcombo-wrapper {
+	margin-top: 6px;
+}
+
+td > .ui-igcombo-wrapper {
+	margin-top: 6px;
+}

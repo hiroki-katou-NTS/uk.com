@@ -8,7 +8,8 @@ module nts.uk.at.view.kdp002.a {
 			getStampData: 'at/record/stamp/management/personal/stamp/getStampData',
 			getTimeCard: 'at/record/stamp/management/personal/stamp/getTimeCard',
 			stampInput: 'at/record/stamp/management/personal/stamp/input',
-			getError: 'at/record/stamp/management/personal/getDailyError'
+			getError: 'at/record/stamp/management/personal/getDailyError',
+			workManagementMultiple: 'at/record/stamp/work_management_multiple'
 		}
 
 		export function startPage(): JQueryPromise<any> {
@@ -30,6 +31,10 @@ module nts.uk.at.view.kdp002.a {
 
 		export function getError(data): JQueryPromise<any> {
 			return ajax("at", url.getError + "/" + data.pageNo + "/" + data.buttonDisNo + "/" + 3);
+		}
+
+		export function getWorkManagementMultiple(): JQueryPromise<any> {
+			return ajax("at", url.workManagementMultiple);
 		}
 	}
 

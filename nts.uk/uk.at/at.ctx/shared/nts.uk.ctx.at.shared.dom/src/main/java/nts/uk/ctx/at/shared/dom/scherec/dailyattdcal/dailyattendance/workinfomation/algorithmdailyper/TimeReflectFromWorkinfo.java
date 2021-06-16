@@ -34,6 +34,9 @@ import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -72,6 +75,9 @@ public class TimeReflectFromWorkinfo {
 	
 	@Inject
 	private WorkScheWorkInforSharedAdapter workScheWorkInforSharedAdapter;
+	
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeRepo;
 
 	public OutputTimeReflectForWorkinfo get(String companyId, String employeeId, GeneralDate ymd,
 			WorkInfoOfDailyAttendance workInformation) {
@@ -135,9 +141,6 @@ public class TimeReflectFromWorkinfo {
 				}
 			}
 			workTimeCode = optWorkInfo.get().getWorkTimeCode();
-		}
-		if(workTimeCode == null) {
-			
 		}
 		// ドメインモデル「就業時間帯の設定」を取得する
 		Optional<WorkTimeSetting> workTimeOpt = this.workTimeSettingRepository.findByCodeAndAbolishCondition(companyId,
@@ -325,24 +328,50 @@ public class TimeReflectFromWorkinfo {
 		Optional<WorkTimeSetting> workTimeSetting = workTimeSettingRepository.findByCode(companyID, workTimeCode.v());
 		
 		if (workTimeSetting.isPresent()) {
-
-			List<ScheduleTimeSheet> scheduleTimeSheets = workInfoOfDaily.getScheduleTimeSheets();
-
+			
+			List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
+			Integer start1 = null;
+			Integer start2= null;
+			Integer end1= null;
+			Integer end2= null;
+			if(workInfoOfDaily !=null) {
+				scheduleTimeSheets = workInfoOfDaily.getScheduleTimeSheets();
+				start1 = (!scheduleTimeSheets.isEmpty() && scheduleTimeSheets.get(0) != null)
+						? scheduleTimeSheets.get(0).getAttendance().valueAsMinutes()
+						: null;
+				end1 = (!scheduleTimeSheets.isEmpty() && scheduleTimeSheets.get(0) != null)
+						? scheduleTimeSheets.get(0).getLeaveWork().valueAsMinutes()
+						: null;
+				start2 = (scheduleTimeSheets.size() > 1 && scheduleTimeSheets.get(1) != null)
+						? scheduleTimeSheets.get(1).getAttendance().valueAsMinutes()
+						: null;
+				end2 = (scheduleTimeSheets.size() > 1 && scheduleTimeSheets.get(1) != null)
+						? scheduleTimeSheets.get(1).getLeaveWork().valueAsMinutes()
+						: null;
+						
+			}else {
+				//所定時間設定を取得
+				PredetemineTimeSetting predTime = this.predetemineTimeRepo.findByWorkTimeCode(companyID, workTimeCode.v()).get();
+				//所定時間帯をパラメータへセット
+				for(TimezoneUse timezoneUse : predTime.getPrescribedTimezoneSetting().getLstTimezone()) {
+					if(timezoneUse.getWorkNo() == 1) {
+						start1 = timezoneUse.getStart().v();
+						end1 = timezoneUse.getEnd().v();
+					}else if(timezoneUse.getWorkNo() == 2) {
+						start2 = timezoneUse.getStart().v();
+						end2 = timezoneUse.getEnd().v();
+					}
+					
+				}
+			}
+			
 			// 打刻反映時間帯を取得する
 			List<StampReflectTimezone> stampReflectTimezones = this.workTimeSettingService.getStampReflectTimezone(
 					companyID, workTimeCode.v(),
-					(!scheduleTimeSheets.isEmpty() && scheduleTimeSheets.get(0) != null)
-							? scheduleTimeSheets.get(0).getAttendance().valueAsMinutes()
-							: null,
-					(!scheduleTimeSheets.isEmpty() && scheduleTimeSheets.get(0) != null)
-							? scheduleTimeSheets.get(0).getLeaveWork().valueAsMinutes()
-							: null,
-					(scheduleTimeSheets.size() > 1 && scheduleTimeSheets.get(1) != null)
-							? scheduleTimeSheets.get(1).getAttendance().valueAsMinutes()
-							: null,
-					(scheduleTimeSheets.size() > 1 && scheduleTimeSheets.get(1) != null)
-							? scheduleTimeSheets.get(1).getLeaveWork().valueAsMinutes()
-							: null);
+					start1,
+					end1,
+					start2,
+					end2);
 
 			if (!stampReflectTimezones.isEmpty()) {
 				List<StampReflectTimezoneOutput> stampReflectRangeOutputs = new ArrayList<>();
@@ -375,7 +404,7 @@ public class TimeReflectFromWorkinfo {
 		// 1日半日出勤・1日休日系の判定
 		// 打刻反映時の出勤休日扱いチェック
 		WorkStyle workStyle = basicScheduleService
-				.checkWorkDay(scheduleWorkInfor.get().getWorkTyle());
+				.checkWorkDay(scheduleWorkInfor.get().getWorkType());
 		StampReflectRangeOutput stampReflectRangeOutput = null;
 
 		if (workStyle != WorkStyle.ONE_DAY_REST) {
@@ -383,10 +412,10 @@ public class TimeReflectFromWorkinfo {
 					.getWorkInfoOfDailyAttendance(employeeId, processingDate);
 			// get workTimeCode of processingDate
 			String worktimeCode = this.stampRangeCheckWorkRecord(processingDate, employeeId);
-			if (workInfoOfDailyNew.isPresent() && worktimeCode != null) {
+			if (worktimeCode != null) {
 				// 1日分の打刻反映範囲を取得
 				stampReflectRangeOutput = this.attendanSytemStampRange(new WorkTimeCode(worktimeCode), companyID,
-						workInfoOfDailyNew.get());
+						workInfoOfDailyNew.isPresent()?workInfoOfDailyNew.get():null);
 
 				if (stampReflectRangeOutput != null
 						&& !stampReflectRangeOutput.getLstStampReflectTimezone().isEmpty()) {
@@ -457,7 +486,7 @@ public class TimeReflectFromWorkinfo {
 		// Imported(就業.勤務実績)「勤務予定基本情報」を取得する
 		Optional<WorkScheduleWorkSharedImport> scheduleWorkInfor = workScheWorkInforSharedAdapter.get(employeeId, processingDate);
 		if (scheduleWorkInfor.isPresent()) {
-			return scheduleWorkInfor.get().getWorkTyle();
+			return scheduleWorkInfor.get().getWorkType();
 		} 
 		return null;
 	}

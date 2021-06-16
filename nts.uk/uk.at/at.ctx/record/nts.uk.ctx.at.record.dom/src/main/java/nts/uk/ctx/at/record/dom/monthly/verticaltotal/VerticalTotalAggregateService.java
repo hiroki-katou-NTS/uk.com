@@ -17,7 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class VerticalTotalAggregateService {
 
 	/** ○予約注文 */
-	public static ReservationOfMonthly aggregate(RequireM1 require, String sid, GeneralDate date) {
+	public static ReservationOfMonthly aggregate(RequireM1 require, String sid, GeneralDate date, String companyID) {
 		
 		ReservationOfMonthly result = ReservationOfMonthly.empty();
 		
@@ -39,9 +39,9 @@ public class VerticalTotalAggregateService {
 		
 		List<BentoReservation> bentous;
 		if (monthlyAggrMethod) {
-			bentous = require.bentoReservation(inforLst, date, true);
+			bentous = require.bentoReservation(inforLst, date, true, companyID);
 		} else {
-			bentous = require.bentoReservation(inforLst, date, false);
+			bentous = require.bentoReservation(inforLst, date, false, companyID);
 		}
 		
 		if (bentous.isEmpty()) {
@@ -81,7 +81,7 @@ public class VerticalTotalAggregateService {
 		
 		List<StampCard> stampCard(String empId);
 		
-		List<BentoReservation> bentoReservation(List<ReservationRegisterInfo> inforLst, GeneralDate date, boolean ordered);
+		List<BentoReservation> bentoReservation(List<ReservationRegisterInfo> inforLst, GeneralDate date, boolean ordered, String companyID);
 		
 		Bento bento(String companyID, GeneralDate date, int frameNo);
 	}

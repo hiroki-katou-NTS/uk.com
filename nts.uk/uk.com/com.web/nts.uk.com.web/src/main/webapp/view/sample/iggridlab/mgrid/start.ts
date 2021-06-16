@@ -360,12 +360,12 @@ module nts.uk.ui.gridlist {
                                             name: 'WidthSaving',
                                             reset: false
                                         },
-//                                        {
-//                                            name: 'Paging',
-//                                            pageSize: 100,
-//                                            currentPageIndex: 0,
-//                                            loaded: function() {}
-//                                        },
+                                        {
+                                            name: 'Paging',
+                                            pageSize: 100,
+                                            currentPageIndex: 0,
+                                            loaded: function() {}
+                                        },
                                         {
                                             name: "Sorting",
                                             columnSettings: [
@@ -398,13 +398,13 @@ module nts.uk.ui.gridlist {
                                                 { key: 'time', colors: ['#E9AEF1'] }
                                             ]
                                         },
-//                                        { name: "Sheet", 
-//                                          initialDisplay: "sheet1",
-//                                          sheets: [ 
-//                                                    { name: "sheet1", text: "Sheet 1", columns: ["select", "time", "addressCode1", "address1", "fullDate", "yearMonth", "year", "comboCode1", "combo", "addressCode2", "address2", "header0", "comboCode2", "header01", "workplace", "header02"] }, 
-//                                                    { name: "sheet2", text: "Sheet 2", columns: ["addressCode1", "address1", "time", "header1", "header2", "header3", "header4", "header5", "header6", "alert"] }
-//                                                  ]
-//                                        },
+                                        { name: "Sheet", 
+                                          initialDisplay: "sheet1",
+                                          sheets: [ 
+                                                    { name: "sheet1", text: "Sheet 1", columns: ["select", "time", "addressCode1", "address1", "fullDate", "yearMonth", "year", "comboCode1", "combo", "addressCode2", "address2", "header0", "comboCode2", "header01", "workplace", "header02"] }, 
+                                                    { name: "sheet2", text: "Sheet 2", columns: ["addressCode1", "address1", "time", "header1", "header2", "header3", "header4", "header5", "header6", "alert"] }
+                                                  ]
+                                        },
                                         { name: 'ColumnFixing', fixingDirection: 'left',
 //                                            syncRowHeights: true,
                                             showFixButtons: false,
@@ -419,15 +419,15 @@ module nts.uk.ui.gridlist {
                                         { name: 'Tooltip', 
                                             error: true
                                         },
-//                                        { name: 'Summaries',
-//                                          columnSettings: [
-//                                            { columnKey: 'flexImage', summaryCalculator: "合計" },
-//                                            { columnKey: 'time', summaryCalculator: "Time" },
-//                                            { columnKey: 'ruleCode', summaryCalculator: "Number" },
-//                                            { columnKey: 'header3', summaryCalculator: "Number" },
-//                                            { columnKey: 'addressCode1', summaryCalculator: "Number", formatter: "Currency" }
-//                                          ]
-//                                        }
+                                        { name: 'Summaries',
+                                          columnSettings: [
+                                            { columnKey: 'flexImage', summaryCalculator: "合計" },
+                                            { columnKey: 'time', summaryCalculator: "Time" },
+                                            { columnKey: 'ruleCode', summaryCalculator: "Number" },
+                                            { columnKey: 'header3', summaryCalculator: "Number" },
+                                            { columnKey: 'addressCode1', summaryCalculator: "Number", formatter: "Currency" }
+                                          ]
+                                        }
                                       ],
                             ntsFeatures: [
                                             { name: 'CellEdit' },

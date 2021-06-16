@@ -176,10 +176,6 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             }).always(() => {
                 vm.$blockui("hide");
             });
-        }
-
-        mounted() {
-            const vm = this;
 
             vm.maxNumberOfDay = ko.computed(() => {
                 let data = vm.$i18n("KAF006_44").concat("\n");
@@ -249,6 +245,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                 vm.endTime1(null);
                 vm.endTime2(null);
 
+                vm.data.selectedWorkTypeCD = null;
+                vm.data.selectedWorkTimeCD = null;
+
                 // vm.$errors("clear");
                 nts.uk.ui.errors.clearAll()
 
@@ -293,6 +292,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     if (data) {
                         $("#work-type-combobox").focus()
                         vm.fetchData(data);
+                        vm.selectedWorkTimeCD(null);
+                        vm.selectedWorkTimeName(null);
+                        vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", 0));
                         vm.appDispInfoStartupOutput(data.appDispInfoStartupOutput);
                         return data;
                     }
@@ -555,6 +557,11 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     }
                 }
             });
+        }
+
+        mounted() {
+            const vm = this;
+
         }
 
         fetchData(data: any) {
@@ -991,41 +998,6 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                 });
         }
 
-        openKDL020() {
-            let vm = this;
-            var employeeIds = [];
-            employeeIds.push(__viewContext.user.employeeId);
-            nts.uk.ui.windows.setShared('KDL020A_PARAM', {baseDate: new Date(), employeeIds: employeeIds});
-            if (employeeIds.length > 1) {
-                nts.uk.ui.windows.sub.modal("/view/kdl/020/a/multi.xhtml");
-            } else {
-                nts.uk.ui.windows.sub.modal("/view/kdl/020/a/single.xhtml");
-            }
-        }
-
-        openKDL029() {
-            let vm = this;
-            let param = {
-                employeeIds: vm.application().employeeIDLst(),
-                baseDate: moment(new Date()).format("YYYY/MM/DD")
-            }
-            nts.uk.ui.windows.setShared('KDL029_PARAM', param);
-            nts.uk.ui.windows.sub.modal('/view/kdl/029/a/index.xhtml');
-        }
-
-        openKDL005() {
-            let vm = this;
-            let data = {
-                employeeIds: vm.application().employeeIDLst(),
-                baseDate: moment(new Date()).format("YYYYMMDD")
-            }
-            nts.uk.ui.windows.setShared('KDL005_DATA', data);
-            if (data.employeeIds.length > 1) {
-                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/multi.xhtml");
-            } else {
-                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/single.xhtml");
-            }
-        }
 
         validateAppDate(start: string, end: string) {
             let startDate = moment(start);
@@ -1326,7 +1298,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             if (vm.data && vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet && vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst) {
                 let targetWorkType = _.filter(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst, {'appType': 1});
                 if (targetWorkType.length > 0) {
-                    if (_.filter(targetWorkType, {'opHolidayAppType': 0}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 0})[0].opHolidayTypeUse) {
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 0}).length > 0 && !_.filter(targetWorkType, {'opHolidayAppType': 0})[0].opHolidayTypeUse) {
                         vm.condition1_0(true);
                     } else {
                         vm.condition1_0(false);
@@ -1335,7 +1307,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                         }));
                     }
 
-                    if (_.filter(targetWorkType, {'opHolidayAppType': 1}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 1})[0].opHolidayTypeUse) {
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 1}).length > 0 && !_.filter(targetWorkType, {'opHolidayAppType': 1})[0].opHolidayTypeUse) {
                         vm.condition1_1(true);
                     } else {
                         vm.condition1_1(false);
@@ -1344,7 +1316,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                         }));
                     }
 
-                    if (_.filter(targetWorkType, {'opHolidayAppType': 2}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 2})[0].opHolidayTypeUse) {
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 2}).length > 0 && !_.filter(targetWorkType, {'opHolidayAppType': 2})[0].opHolidayTypeUse) {
                         vm.condition1_2(true);
                     } else {
                         vm.condition1_2(false);
@@ -1353,7 +1325,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                         }));
                     }
 
-                    if (_.filter(targetWorkType, {'opHolidayAppType': 3}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 3})[0].opHolidayTypeUse) {
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 3}).length > 0 && !_.filter(targetWorkType, {'opHolidayAppType': 3})[0].opHolidayTypeUse) {
                         vm.condition1_3(true);
                     } else {
                         vm.condition1_3(false);
@@ -1362,7 +1334,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                         }));
                     }
 
-                    if (_.filter(targetWorkType, {'opHolidayAppType': 4}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 4})[0].opHolidayTypeUse) {
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 4}).length > 0 && !_.filter(targetWorkType, {'opHolidayAppType': 4})[0].opHolidayTypeUse) {
                         vm.condition1_4(true);
                     } else {
                         vm.condition1_4(false);
@@ -1371,7 +1343,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                         }));
                     }
 
-                    if (_.filter(targetWorkType, {'opHolidayAppType': 5}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 5})[0].opHolidayTypeUse) {
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 5}).length > 0 && !_.filter(targetWorkType, {'opHolidayAppType': 5})[0].opHolidayTypeUse) {
                         vm.condition1_5(true);
                     } else {
                         vm.condition1_5(false);
@@ -1380,7 +1352,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                         }));
                     }
 
-                    if (_.filter(targetWorkType, {'opHolidayAppType': 6}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 6})[0].opHolidayTypeUse) {
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 6}).length > 0 && !_.filter(targetWorkType, {'opHolidayAppType': 6})[0].opHolidayTypeUse) {
                         vm.condition1_6(true);
                     } else {
                         vm.condition1_6(false);
@@ -1516,13 +1488,86 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     vm.selectedWorkTypeCD(childData.selectedWorkTypeCode);
                     vm.selectedWorkTimeCD(childData.selectedWorkTimeCode);
                     vm.selectedWorkTimeName(childData.selectedWorkTimeName);
-
-                    // vm.startTime1(childData.first.start);
-                    // vm.endTime1(childData.first.end);
-                    // vm.startTime2(childData.second.start);
-                    // vm.endTime2(childData.second.end);
                 }
             });
+        }
+
+        openKDL020() {
+            let vm = this;
+            var employeeIds = [];
+            employeeIds.push(__viewContext.user.employeeId);
+            nts.uk.ui.windows.setShared('KDL020A_PARAM', {
+                baseDate: new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate), 
+                employeeIds: employeeIds});
+            if (employeeIds.length > 1) {
+                nts.uk.ui.windows.sub.modal("/view/kdl/020/a/multi.xhtml");
+            } else {
+                nts.uk.ui.windows.sub.modal("/view/kdl/020/a/single.xhtml");
+            }
+        }
+
+        openKDL029() {
+            let vm = this;
+            let param = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: moment(new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate)).format("YYYY/MM/DD")
+            }
+            nts.uk.ui.windows.setShared('KDL029_PARAM', param);
+            nts.uk.ui.windows.sub.modal('/view/kdl/029/a/index.xhtml');
+        }
+
+        openKDL005() {
+            let vm = this;
+            let data = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: moment(new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate)).format("YYYYMMDD")
+            }
+            nts.uk.ui.windows.setShared('KDL005_DATA', data);
+            if (data.employeeIds.length > 1) {
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/multi.xhtml");
+            } else {
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/single.xhtml");
+            }
+        }
+
+        public openKDL051() {
+            let vm = this;
+            let param = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate)
+            };
+
+            Kaf006ShrViewModel.openKDL051(param);
+        }
+
+        public openKDL052() {
+            let vm = this;
+            let param = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: moment(new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate)).format("YYYYMMDD")
+            };
+
+            Kaf006ShrViewModel.openKDL052(param);
+        }
+
+        public openKDL017() {
+            let vm = this;
+            let param = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: moment(new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate)).format("YYYYMMDD")
+            };
+            
+            Kaf006ShrViewModel.openKDL017(param);
+        }
+
+        public openKDL009() {
+            let vm = this;
+            let param = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: moment(new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate)).format("YYYYMMDD")
+            };
+
+            Kaf006ShrViewModel.openKDL009(param); 
         }
     }
 

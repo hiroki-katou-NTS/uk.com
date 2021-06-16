@@ -29,9 +29,6 @@
 	padding-right: 20px;
 }
 
-#G4_1, #G4_2 {
-	padding-bottom: 20px;
-}
 #labelSwapList {
 	display: inline-flex;
 }
@@ -60,6 +57,10 @@
 }
 .upDown-container {
 	height: inherit;
+}
+#G4_1 {
+  width: auto;
+  white-space: nowrap;
 }
 
 

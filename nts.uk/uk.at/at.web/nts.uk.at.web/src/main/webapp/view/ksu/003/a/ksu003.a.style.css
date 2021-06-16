@@ -1,15 +1,25 @@
 /* A1_4 */
-#contents-area {
+#extable-area {
 	height: auto !important;
-	margin-top: -12px;
+	margin-top: -5px;
+}
+
+#ui-area{
+	margin-top : -14px;
+}
+
+#functions-area {
+	min-height: 40px !important;
 }
 
 #extable-ksu003 {
 	width: auto !important;
+	margin-top: 3px;
 }
 
+
 #A1_1 {
-	margin-left: 20px !important;
+	margin-left: 0px !important;
 }
 
 /* A2_1 */
@@ -18,7 +28,7 @@
 	border: 1px solid #cccccc !important;
 	width: 310px;
 	height: 25px;
-	margin-left: 25px;
+	margin-left: 10px;
 }
 
 .ui-igcombo-list{
@@ -55,10 +65,26 @@
 
 #label-display {
 	margin-left: 85px;
+	/* new UI */
+	margin-top: 23px;
 }
+
+
+#hai-cham {
+	/* new UI */
+	margin-top: 23px;
+}
+
+/* new UI */
+#functon-area-row2-right{
+    display: inline-flex;
+}
+
+
 .nts-switch-button{
 	width: 90px !important;
 }
+
 /* Note color A12 */
 .square {
 	width: 20px;
@@ -79,13 +105,11 @@
 	margin-bottom: 10px
 }
 
-#note {
-	margin-top: 20px;
-}
-
+/* new UI */
 #note-color {
-	margin-right: 35px ;
-	float: right;
+	margin-top: 21px;
+    float: right;
+    margin-right: 23px;
 }
 
 #combo-box {
@@ -99,7 +123,7 @@
 }
 
 #functon-area-row3-left {
-	margin-left: 37px;
+	margin-left: 20px;
 }
 
 #check-time{
@@ -107,7 +131,7 @@
 }
 
  #check-name {
-	margin-left: -5px;
+	margin-left: -3px;
 }
 
 #hr-row2 {
@@ -122,9 +146,14 @@
 	margin-top: -10px;
 }
 
-#left-button, #left-button2 {
-	margin-left: -6px;
-	margin-top: -5px;
+#left-button2 {
+	margin-left: -4px;
+	margin-top: -3px;
+}
+
+#left-button {
+	margin-left: -5px;
+	margin-top: -3px;
 }
 
 .xcell {
@@ -137,7 +166,7 @@
 	height: 20px;
 	width: 20px;
 	left: 2px !important;
-	margin-top: -3px !important
+	margin-top: 4px !important
 }
 
 .tooltip-styling:before {
@@ -203,25 +232,33 @@
 }
 
  .x-link {
-	margin-top : 2px;
+	margin-top : 7px;
 	white-space: nowrap;
 } 
+
 #note-sort {
 	margin-top: 5px !important;
 }
 
 html {
 	overflow: hidden;
+} 
+
+#contents-area{
+	overflow: hidden;
+	margin-left: -3px;
 }
 
 #down-button, #down-button2 {
 	margin-left: -6px;
+	margin-top: 2px;
 }
 
 .toDown {
 	width: 15px;
 	height: 27px;
 	float: left;
+	margin-left: -5px;
 }
 
 #A5_1 {
@@ -238,6 +275,7 @@ html {
 #sort-label-note {
 	float: left;
 	margin-top: 20px;
+	width: 257px !important;
 }
 
 .x-button {
@@ -245,13 +283,9 @@ html {
 	height: 22px !important;
 }
 
-#sort-label-note{
-	width: 215px !important;
-}
-
 #A3_4 {
 	height: 65px;
-	width: 200px !important;
+	width: 240px !important;
 	border: solid 6px #fff !important;
 	border-radius: 3.5px !important;
 	box-shadow: 1px 1px 5px 2px #888 !important;

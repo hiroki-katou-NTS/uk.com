@@ -230,7 +230,9 @@ declare module nts.uk.ui.vm {
 			(webapp: WEB_APP, url: string, data: any): JQueryDeferred<any>;
 		};
 		readonly $window: {
-			readonly mode: 'view' | 'modal';
+			readonly mode: KnockoutObservable<'view' | 'modal'>;
+			readonly title: KnockoutObservable<string>;
+			readonly header: KnockoutObservable<boolean>;
 			readonly size: {
 				(height: string | number, width: string | number): void;
 				readonly width: (width: number | string) => void;

@@ -1528,7 +1528,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			if (integrationOfDaily.isPresent()) {
 				workTypeCode = integrationOfDaily.get().getWorkInformation().getRecordInfo().getWorkTypeCode().v();
 			} else {
-				workTypeCode = workScheOpt.get().getWorkTyle();
+				workTypeCode = workScheOpt.get().getWorkType();
 			}
 			
 			// Input．List＜勤務種類＞から勤務種類コードを探す

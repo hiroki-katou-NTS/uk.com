@@ -142,7 +142,7 @@ input, textarea {
 	vertical-align: top;
 }
 .two-columns .cell-column-1 {
-	width: 70%;
+	width: 67%;
 }
 .two-columns .table {
 	margin-left: 0;
@@ -164,7 +164,7 @@ input, textarea {
 	width: 22%;
 }
 .three-columns .column3 {
-	width: 37%;
+	width: 30%;
 	text-align: left;
 }
 .three-columns .column3 .cell:first-child {
@@ -208,4 +208,7 @@ td.valign-right {
 
 td input.premiumInput {
 	margin-left: 5px;
+}
+#dateRange-list_headers > thead {
+  display: none !important;
 }

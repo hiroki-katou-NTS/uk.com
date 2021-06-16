@@ -56,11 +56,11 @@ module nts.uk.at.view.kal004.a.model {
             self.checkSource = [];
 
             self.checkHeader = ko.observableArray([
-                { headerText: getText('KAL004_21'), key: 'GUID', width: 10, hidden: true },
-                { headerText: 'cssClass', key: 'cssClass', width: 10, hidden: true },
-                { headerText: getText('KAL004_21'), key: 'categoryName', width: 120, template: "<span class='${cssClass}'>${categoryName}</span>" },
+                { headerText: getText('KAL004_21'), key: 'GUID', hidden: true },
+                { headerText: 'cssClass', key: 'cssClass', hidden: true },
+                { headerText: getText('KAL004_21'), key: 'categoryName', width: 130, template: "<span class='${cssClass}'>${categoryName}</span>" },
                 { headerText: getText('KAL004_17'), key: 'checkConditonCode', width: 50, template: "<span class='${cssClass}'>${checkConditonCode}</span>" },
-                { headerText: getText('KAL004_18'), key: 'checkConditionName', width: 150, template: "<span class='${cssClass}'>${checkConditionName}</span>" }
+                { headerText: getText('KAL004_18'), key: 'checkConditionName', width: 140, template: "<span class='${cssClass}'>${checkConditionName}</span>" }
             ]);
             
             self.currentCodeListSwap = ko.observableArray([]);

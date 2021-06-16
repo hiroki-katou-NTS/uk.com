@@ -1,13 +1,7 @@
 /// <reference path="./viewcontext.d.ts" />
 
-type KibanViewModel = {
-	errorDialogViewModel: {
-		errors: KnockoutObservableArray<string>;
-	}
-};
-
 /** Create new ViewModel and automatic binding to __viewContext */
-function bean(dialogOption?: nts.uk.ui.vm.DialogOption): any {
+function bean(dialogOption?: JQueryUI.DialogOptions): any {
 	return function (ctor: any): any {
 		__viewContext.ready(() => {
 			const { localShared } = nts.uk.ui.windows.container;
@@ -25,61 +19,95 @@ function bean(dialogOption?: nts.uk.ui.vm.DialogOption): any {
 						$created.apply($viewModel, [$params || (_.isEmpty(localShared) ? undefined : localShared)]);
 					}
 
-					// hook to mounted function
-					$viewModel.$nextTick(() => {
-						const $mounted = $viewModel['mounted'];
-						const kvm: KibanViewModel = nts.uk.ui._viewModel.kiban;
-
-						_.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
-
-						if (kvm) {
-							ko.computed({
-								read: () => {
-									$viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
-								},
-								owner: $viewModel,
-								disposeWhenNodeIsRemoved: $viewModel.$el
-							});
-						}
-
-						if ($mounted && _.isFunction($mounted)) {
-							$mounted.apply($viewModel, []);
-						}
-					});
-
 					__viewContext.bind($viewModel, dialogOption);
+
+					const { $window } = $viewModel;
+					const kvm = nts.uk.ui._viewModel.kiban;
+
+					kvm.title
+						.subscribe((title: string) => {
+							const old = ko.unwrap($window.title)
+
+							if (title !== old) {
+								$window.title(title);
+							} else {
+								$window.title.valueHasMutated();
+							}
+						});
+
+					kvm.systemName.valueHasMutated();
+
+					$window.title
+						.subscribe((title: string) => kvm.title(title));
+
+					kvm.mode
+						.subscribe((mode: string) => {
+							const old = ko.unwrap($window.mode)
+
+							if (mode !== old) {
+								$window.mode(mode);
+							} else {
+								$window.mode.valueHasMutated();
+							}
+						});
+
+					kvm.mode.valueHasMutated();
+
+					$window.mode
+						.subscribe((mode: 'view' | 'modal') => kvm.mode.valueHasMutated());
+
+					kvm.header
+						.subscribe((header: boolean) => {
+							const old = ko.unwrap($window.header)
+
+							if (header !== old) {
+								$window.header(header);
+							} else {
+								$window.header.valueHasMutated();
+							}
+						});
+
+					kvm.header.valueHasMutated();
+
+					$window.header
+						.subscribe((header: boolean) => kvm.header(header));
+
+					$(() => {
+						// hook to mounted function
+						$viewModel.$nextTick(() => {
+							const $mounted = $viewModel['mounted'];
+
+							_.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+
+							if (kvm) {
+								ko.computed({
+									read: () => {
+										$viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+									},
+									owner: $viewModel,
+									disposeWhenNodeIsRemoved: $viewModel.$el
+								});
+							}
+
+							if ($mounted && _.isFunction($mounted)) {
+								$mounted.apply($viewModel, []);
+							}
+						});
+					});
 				});
 		});
 	};
 }
 
-function component(options: nts.uk.ui.vm.ViewModelOption): any {
+function component(options: { name: string; template: string; }): any {
 	return function (ctor: any): any {
-		const { name, template, alternalBinding } = options;
-
-		if (alternalBinding) {
-			ko.bindingHandlers[name] = {
-				init(element: HTMLElement, __: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, ___: any, bindingContext: KnockoutBindingContext) {
-					const allBinding = { ...allBindingsAccessor() };
-					const params = _.mapKeys(allBinding, (_v: any, key: string) => _.camelCase(key));
-
-					ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
-
-					element.removeAttribute('data-bind');
-
-					return { controlsDescendantBindings: true };
-				}
-			};
-		}
-
-		return $.Deferred()
-			.resolve(template.match(/\.html$/))
+		return $.Deferred().resolve(options.template.match(/\.html$/))
 			.then((url: boolean) => {
-				return url ? $.get(template) : template;
+				return url ? $.get(options.template) : options.template;
 			})
 			.then((template: string) => {
-				if (!ko.components.isRegistered(name)) {
-					ko.components.register(name, {
+				if (!ko.components.isRegistered(options.name)) {
+					ko.components.register(options.name, {
 						template,
 						viewModel: {
 							createViewModel($params: any, $el: any) {
@@ -93,10 +121,61 @@ function component(options: nts.uk.ui.vm.ViewModelOption): any {
 									$created.apply($viewModel, [$params]);
 								}
 
+								const { $window } = $viewModel;
+								const kvm = nts.uk.ui._viewModel.kiban;
+
+								kvm.title
+									.subscribe((title: string) => {
+										const old = ko.unwrap($window.title)
+
+										if (title !== old) {
+											$window.title(title);
+										} else {
+											$window.title.valueHasMutated();
+										}
+									});
+
+								kvm.systemName.valueHasMutated();
+
+								$window.title
+									.subscribe((title: string) => kvm.title(title));
+
+								kvm.mode
+									.subscribe((mode: string) => {
+										const old = ko.unwrap($window.mode)
+
+										if (mode !== old) {
+											$window.mode(mode);
+										} else {
+											$window.mode.valueHasMutated();
+										}
+									});
+
+								kvm.mode.valueHasMutated();
+
+								$window.mode
+									.subscribe((mode: 'view' | 'modal') => kvm.mode.valueHasMutated());
+
+								kvm.header
+									.subscribe((header: boolean) => {
+										const old = ko.unwrap($window.header)
+
+										if (header !== old) {
+											$window.header(header);
+										} else {
+											$window.header.valueHasMutated();
+										}
+									});
+
+								kvm.header.valueHasMutated();
+
+								$window.header
+									.subscribe((header: boolean) => kvm.header(header));
+
 								// hook to mounted function
 								$viewModel.$nextTick(() => {
 									const $mounted = $viewModel['mounted'];
-									const kvm: KibanViewModel = nts.uk.ui._viewModel.kiban;
+									const kvm = nts.uk.ui._viewModel.kiban;
 
 									_.extend($viewModel, { $el: $el.element });
 
@@ -270,16 +349,16 @@ module nts.uk.ui.viewmodel {
 	};
 
 	// get date time now
-	setInterval(() => {
-		const now = Date.now();
-		const diff = now - $date.clock;
+	// setInterval(() => {
+	// 	const now = Date.now();
+	// 	const diff = now - $date.clock;
 
-		$date.clock = now;
+	// 	$date.clock = now;
 
-		if (Math.abs(diff) > 5000) {
-			getTime();
-		}
-	}, 500);
+	// 	if (Math.abs(diff) > 5000) {
+	// 		getTime();
+	// 	}
+	// }, 500);
 
 	BaseViewModel.prototype.$date = Object.defineProperties($date, {
 		now: {
@@ -447,9 +526,13 @@ module nts.uk.ui.viewmodel {
 
 	BaseViewModel.prototype.$window = Object.defineProperties({}, {
 		mode: {
-			get() {
-				return window === window.top ? 'view' : 'modal';
-			}
+			value: ko.observable('view') // nts.uk.ui._viewModel.kiban.mode
+		},
+		title: {
+			value: ko.observable('') //nts.uk.ui._viewModel.kiban.title
+		},
+		header: {
+			value: ko.observable(null).extend({ rateLimit: 100 }) //nts.uk.ui._viewModel.kiban.header
 		},
 		size: {
 			value: $size
@@ -631,7 +714,7 @@ module nts.uk.ui.viewmodel {
 	};
 
 	BaseViewModel.prototype.$errors = function $errors() {
-		const kvm: KibanViewModel = nts.uk.ui._viewModel.kiban;
+		const kvm = nts.uk.ui._viewModel.kiban;
 		const args: any[] = Array.prototype.slice.apply(arguments);
 
 		if (args.length == 1) {
@@ -767,16 +850,6 @@ module nts.uk.ui.viewmodel {
 	});
 
 	BaseViewModel.prototype.$validate = $validate;
-
-	BaseViewModel.prototype.$query = ((): { [key: string]: string; } => {
-		const query = location.search.substring(1);
-
-		if (!query || !query.match(/=/)) {
-			return {};
-		}
-
-		return JSON.parse('{"' + decodeURI(query).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
-	})();
 
 	Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
 }

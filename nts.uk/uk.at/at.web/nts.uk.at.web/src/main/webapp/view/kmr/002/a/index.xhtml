@@ -15,58 +15,60 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area" style="height: 75px;">
-				<div style="float: left">
-					<!--A1_1 受取日-->
-					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMR002_1')}</div>
-					<!--A1_2 受取日-->
-					<div 
-						data-bind="ntsDatePicker: { name: '#[KMR002_1]', value: date, dateFormat: 'YYYY/MM/DD', required: true, fiscalMonthsMode: true, showJumpButtons: true }"></div>
-					<br />
-					<!-- A1_3注文エラー -->
-					<span class="label warning" style="float: left;"
-						data-bind="visible: isError, text: textError()"></span>
+			<div id="functions-area">
+				<div class="flex">
+					<div>
+						<!--A1_1 受取日-->
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMR002_1')}</div>
+						<!--A1_2 受取日-->
+						<div 
+							data-bind="ntsDatePicker: { name: '#[KMR002_1]', value: date, dateFormat: 'YYYY/MM/DD', required: true, fiscalMonthsMode: true, showJumpButtons: true }"></div>
+						<br />
+						<!-- A1_3注文エラー -->
+						<span class="label warning" style="float: left;"
+							data-bind="visible: isError, text: textError()"></span>
+					</div>
+					<!--A1_4合計表-->
+					<div>
+						<table>
+							<colgroup>
+								<col width="85px" />
+								<col width="70px" />
+							</colgroup>
+							<tbody>
+								<tr style="height: 20px;">
+									<td class="table-food-td" data-bind="text: lunch()"></td>
+									<td class="table-food-td" style="text-align: right; padding-right: 1px;" data-bind="text: txtPriceLunch()"></td>
+								</tr>
+								<tr style="height: 20px;">
+									<td class="table-food-td" data-bind="text: dinner()"></td>
+									<td class="table-food-td" style="text-align: right; padding-right: 1px;" data-bind="text: txtPriceDinner()"></td>
+								</tr>
+								<tr style="height: 20px;">
+									<td class="table-food-td" style="" data-bind="text: sum()"></td>
+									<td class="table-food-td" style="text-align: right; padding-right: 1px;"
+										data-bind="text: txtPriceSum()"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+	
+					<!--A1_5予約する-->
+					<div data-bind="if: !isUpdate()">
+						<button class="proceed" style="float: left; margin-left: 10px;"
+							data-bind="click: registerFood,  enable: isEnable()">#{i18n.getText('KMR002_2')}</button>
+					</div>
+					<div data-bind="if: isUpdate()">
+						<button class="proceed" style="float: left; margin-left: 10px;"
+							data-bind="click: registerFood, enable: isEnable()">#{i18n.getText('KMR002_8')}</button>
+					</div>
+					<button style="position: absolute; right: 25px;"
+						data-bind="click: outputData">#{i18n.getText('KMR002_4')}</button>
 				</div>
-				<!--A1_4合計表-->
-				<div style="float: left;">
-					<table>
-						<colgroup>
-							<col width="85px" />
-							<col width="70px" />
-						</colgroup>
-						<tbody>
-							<tr style="height: 20px;">
-								<td class="table-food-td" data-bind="text: lunch()"></td>
-								<td class="table-food-td" style="text-align: right; padding-right: 1px;" data-bind="text: txtPriceLunch()"></td>
-							</tr>
-							<tr style="height: 20px;">
-								<td class="table-food-td" data-bind="text: dinner()"></td>
-								<td class="table-food-td" style="text-align: right; padding-right: 1px;" data-bind="text: txtPriceDinner()"></td>
-							</tr>
-							<tr style="height: 20px;">
-								<td class="table-food-td" style="" data-bind="text: sum()"></td>
-								<td class="table-food-td" style="text-align: right; padding-right: 1px;"
-									data-bind="text: txtPriceSum()"></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-
-				<!--A1_5予約する-->
-				<div data-bind="if: !isUpdate()">
-					<button class="proceed" style="float: left"
-						data-bind="click: registerFood,  enable: isEnable()">#{i18n.getText('KMR002_2')}</button>
-				</div>
-				<div data-bind="if: isUpdate()">
-					<button class="proceed" style="float: left"
-						data-bind="click: registerFood, enable: isEnable()">#{i18n.getText('KMR002_8')}</button>
-				</div>
-				<button style="float: right; margin-right: 15px"
-					data-bind="click: outputData">#{i18n.getText('KMR002_4')}</button>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left">
-					<div style="margin-bottom: 15px;"
+					<div style="margin-bottom: 15px;" class="custom-label"
 						data-bind="ntsSwitchButton: {name: '#{i18n.getText('KMR002_5')}',
 									options: optionMenu,
 									optionsValue: 'code',

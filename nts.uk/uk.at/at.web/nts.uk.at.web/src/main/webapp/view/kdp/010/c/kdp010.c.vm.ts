@@ -1,125 +1,130 @@
 module nts.uk.at.view.kdp010.c {
     import getText = nts.uk.resource.getText;
+	import error = nts.uk.ui.dialog.error;
     import block = nts.uk.ui.block;
-    import info = nts.uk.ui.dialog.info;
-    import error = nts.uk.ui.dialog.error;
-    export module viewmodel {
-        export class ScreenModel {
-            settingsSmartphoneStamp = new SettingsSmartphoneStamp();
-            buttonEmphasisArtOption: KnockoutObservableArray<any> = ko.observableArray([
-                { id: 1, name: getText("KDP010_241") },
-                { id: 0, name: getText("KDP010_242") }
-            ]);
-            googleMapOption: KnockoutObservableArray<any> = ko.observableArray([
-                { id: 1, name: getText("KDP010_187") },
-                { id: 0, name: getText("KDP010_188") }
-            ]);
-            constructor(){
-                let self = this;
-            }
-            
-            start(): JQueryPromise<any> {
-                let self = this;
-                let dfd = $.Deferred();
-                block.grayout();
-                service.getData().done(function(data) {
-                    if (data) {
-                        self.settingsSmartphoneStamp.update(data);
-                    }
-                    dfd.resolve();
-                    $(document).ready(function() {
-                        $('#c-serverCorrectionInterval').focus();
-                    });
-                }).fail(function (res) {
-                    error({ messageId: res.messageId });
-                }).always(function () {
-                    block.clear();
-                });
-                return dfd.promise();
-            }
-            
-            checkSetStampPageLayout(){
-                let self = this;
-                block.grayout();
-                service.getData().done(function(data) {
-                    if (data) {
-                        self.settingsSmartphoneStamp.pageLayoutSettings(data.pageLayoutSettings || []);
-                    }
-                }).fail(function (res) {
-                    error({ messageId: res.messageId });
-                }).always(function () {
-                    block.clear();
-                });
-            }
-            
-            save(){
-                let self = this;
-                block.grayout();
-                service.save(ko.toJS(self.settingsSmartphoneStamp)).done(function(data) {
-                    info({ messageId: "Msg_15"});
-                }).fail(function (res) {
-                    error({ messageId: res.messageId });
-                }).always(function () {
-                    block.clear();
-                });
-            }
-            
-            openIDialog() {
-                let self = this;
-                nts.uk.ui.windows.sub.modal("/view/kdp/010/i/index.xhtml").onClosed(() => {
-                    self.checkSetStampPageLayout();
-                });
-            }
-        }
-        class SettingDateTimeClorOfStampScreen {
-            textColor: KnockoutObservable<string> = ko.observable("#ffffff");
-            backgroundColor: KnockoutObservable<string> = ko.observable("#0033cc");
-            constructor(){}
-            update(data?: any){
-                let self = this;
-                if(data){
-                    self.textColor(data.textColor);
-                    self.backgroundColor(data.backgroundColor);
-                }
-            }
-        }
-        
-        class DisplaySettingsStampScreen {
-            serverCorrectionInterval: KnockoutObservable<number> = ko.observable(10);
-            resultDisplayTime: KnockoutObservable<number> = ko.observable(3);
-            settingDateTimeColor = new SettingDateTimeClorOfStampScreen();
-            constructor(){}
-            update(data?:any){
-                let self = this;
-                if(data){
-                    self.serverCorrectionInterval(data.serverCorrectionInterval);
-                    self.resultDisplayTime(data.resultDisplayTime);
-                    self.settingDateTimeColor.update(data.settingDateTimeColor);
-                }
-            }
-        }
-        
-        class SettingsSmartphoneStamp {
-            displaySettingsStampScreen = new DisplaySettingsStampScreen();
-            pageLayoutSettings: KnockoutObservableArray<any> = ko.observableArray([]);
-            buttonEmphasisArt: KnockoutObservable<number> = ko.observable(0);
-            googleMap: KnockoutObservable<number> = ko.observable(0);
-            constructor(){
-                let self = this;
-            }
-            update(data?:any){
-                let self = this;
-                if(data){
-                    self.displaySettingsStampScreen.update(data.displaySettingsStampScreen);
-                    self.pageLayoutSettings(data.pageLayoutSettings || []);
-                    if(data.buttonEmphasisArt){
-                        self.buttonEmphasisArt(data.buttonEmphasisArt);    
-                    }
-                    if(data.googleMap != undefined && data.googleMap != null){
-                        self.googleMap(data.googleMap);
-                    }
-                }
-            }
-        }   
-    }
+	import ajax = nts.uk.request.ajax;
+
+	module viewmodel {
+		const paths: any = {
+	        saveStampSetting: "at/record/stamp/management/saveStampSetting",
+	        getStampSetting: "at/record/stamp/management/getStampSetting",
+	        getStampPage: "at/record/stamp/management/getStampPageByCid"
+	    }
+	    export class ScreenModel {
+	        // B4_2 - 打刻画面のサーバー時刻補正間隔 
+	        correcValue: KnockoutObservable<number> = ko.observable(10);
+	        // B5_2 - 打刻履歴表示方法
+	        optionStamping: KnockoutObservableArray<any> = ko.observableArray([
+	            { id: 0, name: getText("KDP010_19") },
+	            { id: 1, name: getText("KDP010_20") },
+	            { id: 2, name: getText("KDP010_21") }
+	        ]);
+	        selectedStamping: KnockoutObservable<number> = ko.observable(0);
+	        // B6_3
+	        letterColors: KnockoutObservable<string> = ko.observable("#7F7F7F");
+	        // B10_2
+	        optionHighlight: KnockoutObservableArray<any> = ko.observableArray([
+	            { id: 1, name: getText("KDP010_39") },
+	            { id: 0, name: getText("KDP010_40") }
+	        ]);
+	        selectedHighlight: KnockoutObservable<number> = ko.observable(0);
+	        // B7_2
+	        stampValue: KnockoutObservable<number> = ko.observable(3);
+	        // List StampPageLayout (ページレイアウト設定)
+	        lstStampPage: KnockoutObservable<any> = ko.observable({});
+	        checkInUp: KnockoutObservable<boolean> = ko.observable(false);
+	
+	        start(): JQueryPromise<any> {
+	            let self = this,dfd = $.Deferred();
+	            block.grayout();
+	            $.when(self.getStamp(), self.getData()).done(function() {
+	                dfd.resolve();
+	                block.clear();
+					$(document).ready(function() {
+	                    $('#correc-input').focus();
+	                });
+	            });
+	            return dfd.promise();
+	        }
+	
+	        getData(): JQueryPromise<any> {
+	            let self = this,dfd = $.Deferred();
+	            ajax("at", paths.getStampSetting).done(function(totalTimeArr: any) {
+	                if (totalTimeArr) {
+	                    self.selectedHighlight(totalTimeArr.buttonEmphasisArt ? 1 : 0);
+	                    self.selectedStamping(totalTimeArr.historyDisplayMethod);
+	                    self.correcValue(totalTimeArr.correctionInterval);
+	                    self.letterColors(totalTimeArr.textColor);
+	                    self.stampValue(totalTimeArr.resultDisplayTime);
+	                }
+	                
+	            }).fail(function(err: any) {
+	                error({ messageId: err.messageId });
+	            }).always(function () {
+	                dfd.resolve();
+	            });
+	            return dfd.promise();
+	        }
+	
+	        getStamp(): JQueryPromise<any> {
+	            let self = this,dfd = $.Deferred();
+	            ajax("at", paths.getStampPage).done(function(stampPage: any) {
+	                if (stampPage && stampPage.length > 0)
+	                    self.checkInUp(true);
+	                else
+	                    self.checkInUp(false);
+	            }).fail(function(err: any) {
+	                error({ messageId: err.messageId });
+	            }).always(function () {
+	                dfd.resolve();
+	            });
+	            return dfd.promise();
+	        }
+	
+	        save() {
+	            let self = this;
+	            if (nts.uk.ui.errors.hasError()) {
+	                return;
+	            }
+	            block.invisible();
+	            // Data from Screen 
+	            let data = {
+	                buttonEmphasisArt: self.selectedHighlight(),
+	                historyDisplayMethod: self.selectedStamping(),
+					stampingScreenSet: {
+						serverCorrectionInterval: self.correcValue(),
+						settingDateTimeColor: {
+							textColor: self.letterColors()
+						},
+						resultDisplayTime: self.stampValue()
+					}
+	            };
+	            ajax(paths.saveStampSetting, data).done(function() {
+	                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+	            }).fail(function(res: any) {
+	                error({ messageId: res.messageId });
+	            }).always(() => {
+	                block.clear();
+	            });
+	        }
+	
+	        /**
+	         * Open G dialog to set condition list.
+	         */
+	        openHDialog() {
+	            let self = this;
+	            nts.uk.ui.windows.setShared('STAMP_MEANS', 1);
+	            nts.uk.ui.windows.sub.modal("/view/kdp/010/h/index.xhtml").onClosed(() => {
+	                self.getStamp();   
+	            });
+	        }
+	    }
+	    
+	}
+	__viewContext.ready(function() {
+        var screenModel = new viewmodel.ScreenModel();
+        screenModel.start().done(function() {
+            __viewContext.bind(screenModel);
+        });
+    });
 }

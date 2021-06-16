@@ -42,7 +42,6 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriod
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.converter.WeeklyRecordToAttendanceItemConverter;
 import nts.uk.shr.com.context.AppContexts;
@@ -235,6 +234,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		@SuppressWarnings("rawtypes")
 		WeeklyAttendanceItemCondition cond = convertToErAlAttendanceItem(cid, weeklyCond);
 		
+		// Input．週別実績の任意抽出条件．チェック項目の種類をチェック
 		WeeklyCheckItemType checkItemType = weeklyCond.getCheckItemType();
 		switch (checkItemType) {
 		case TIME:
@@ -275,7 +275,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			// 「抽出結果詳細」を作成
 			// アラーム項目日付　＝Input．週別実績の勤怠時間．期間．開始日
 			extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(
-					Optional.of(ym.firstGeneralDate()), Optional.empty());
+					Optional.of(attWeekly.getPeriod().start()), Optional.empty());
 			// コメント　＝　Input．週別実績の任意抽出条件．表示メッセージ
 			if (weeklyCond.getErrorAlarmMessage() != null && weeklyCond.getErrorAlarmMessage().isPresent()) {
 				comment = Optional.ofNullable(weeklyCond.getErrorAlarmMessage().get().v());
@@ -357,18 +357,21 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			return convert.stream().filter(x -> item.contains(x.getItemId())).map(iv -> getValue(iv))
 					.collect(Collectors.toList());
 		});
-		// 
+		
+		//
 		int continuousPeriod = 0;
 		if (weeklyCond.getContinuousPeriod().isPresent()) {
 			continuousPeriod = weeklyCond.getContinuousPeriod().get().v();
 		}
 		
+		// 連続期間のカウントを計算
 		CalCountForConsecutivePeriodOutput calCountForConsecutivePeriodOutput = calCountForConsecutivePeriodChecking.getContinuousCount(
 				count, 
 				continuousPeriod, 
 				errorAtr, 
 				null);
-		ouput.check = errorAtr;
+				
+		ouput.check = calCountForConsecutivePeriodOutput.getOptContinuousCount().isPresent();
 		ouput.continuousCountOpt = calCountForConsecutivePeriodOutput.getOptContinuousCount();
 		ouput.count = calCountForConsecutivePeriodOutput.getCount();
 		
