@@ -276,7 +276,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				// 勤務種類の条件
 				RangeToCheck targetWorkType = scheCondItem.getTargetWrkType();
 				// 勤務種類コード
-				WorkTypeCode workTypeCode = new WorkTypeCode(workSched.getWorkTyle());
+				WorkTypeCode workTypeCode = new WorkTypeCode(workSched.getWorkType());
 				
 				// ループ中のスケジュール日次の任意抽出条件．時間のチェック条件をチェック
 				if (DaiCheckItemType.TIME == scheCondItem.getCheckItemType()) {
@@ -793,7 +793,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					
 					// NO2 = ：勤務種類未登録
 					// Input．日別勤怠の勤務情報が存在するかチェックする					
-					String wkType = workSchedule.getWorkTyle();
+					String wkType = workSchedule.getWorkType();
 					Optional<WorkType> listWk = listWorkType.stream()
 							.filter(x -> x.getWorkTypeCode().v().equals(wkType)).findFirst();
 					if(!listWk.isPresent()) {
@@ -831,7 +831,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					
 					// NO5 = ：複数回勤務
 					alarmMsgOutput = getNo5(
-							workScheWorkMultiTime.getWorkTyle(), 
+							workScheWorkMultiTime.getWorkType(), 
 							workScheWorkMultiTime.getWorkTime(), 
 							workScheWorkMultiTime.getTimeLeaving(),
 							workScheWorkMultiTime.getOptAttendanceTime(),
@@ -844,7 +844,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					WorkScheduleWorkInforImport workScheWorkOn = workScheduleWorks.get();
 					
 					// NO6 = ：特定日出勤
-					String wtCode = workScheWorkOn.getWorkTyle();
+					String wtCode = workScheWorkOn.getWorkType();
 					WorkType workType = listWorkType.stream().filter(x -> x.getWorkTypeCode().v().equals(wtCode)).findFirst().get();
 					alarmMsgOutput = getNo6(companyId, wplId, exDate, workType);
 					break;
