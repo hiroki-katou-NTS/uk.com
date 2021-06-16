@@ -66,3 +66,6 @@
 	float: right;
     padding-right: 210px;
 }
+.control-group.valign-center{
+	width: 450px;
+}
