@@ -7,10 +7,10 @@ import javax.inject.Inject;
 import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangePeriodInShift;
-import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangePeriodInShiftParam_New;
-import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangePeriodInShiftResult_New;
-import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangePeriodInWorkInfoParam_New;
-import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangePeriodInWorkInfoResult_New;
+import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangePeriodInShiftParam;
+import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangePeriodInShiftResult;
+import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangePeriodInWorkInfoParam;
+import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangePeriodInWorkInfoResult;
 import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangePeriodInWorkInfomation;
 import nts.uk.screen.at.app.ksu001.getsendingperiod.GetSendingPeriodScreenQuery;
 
@@ -57,8 +57,8 @@ public class GetExtractPeriodFeed {
 		// Aa:シフト表示の場合
 		if (param.getMode() == ExtractPeriodFeedParam.SHIFT_MODE) {
 			
-			ChangePeriodInShiftResult_New changePeriodInShiftResult_New = 
-					changePeriodInShift.getData_New(new ChangePeriodInShiftParam_New(
+			ChangePeriodInShiftResult changePeriodInShiftResult_New = 
+					changePeriodInShift.getData(new ChangePeriodInShiftParam(
 							datePeriod.start(),
 							datePeriod.end(),
 							param.getUnit(),
@@ -75,8 +75,8 @@ public class GetExtractPeriodFeed {
 			
 		} else if (param.getMode() == ExtractPeriodFeedParam.WORK_MODE 
 				|| param.getMode() == ExtractPeriodFeedParam.ABBREVIATION_MODE) { // Ab:勤務表示、Ac:略名表示の場合
-			ChangePeriodInWorkInfoResult_New changePeriodInWorkInfoResult_New = 
-					changePeriodInWorkInfomation.getDataNew(new ChangePeriodInWorkInfoParam_New(
+			ChangePeriodInWorkInfoResult changePeriodInWorkInfoResult_New = 
+					changePeriodInWorkInfomation.getData(new ChangePeriodInWorkInfoParam(
 							datePeriod.start(),
 							datePeriod.end(),
 							param.getUnit(),

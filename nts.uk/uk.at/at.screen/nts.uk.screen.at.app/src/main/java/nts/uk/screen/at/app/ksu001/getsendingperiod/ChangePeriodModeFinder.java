@@ -48,20 +48,20 @@ public class ChangePeriodModeFinder {
 		ChangeMonthDto result = new ChangeMonthDto();
 		if (param.viewMode.equals(TIME) || param.viewMode.equals(SHORTNAME)) {
 			// call <<ScreenQuery>> 表示期間を変更する（勤務情報）
-			ChangePeriodInWorkInfoParam_New param1 = new ChangePeriodInWorkInfoParam_New(startDate, endDate,
+			ChangePeriodInWorkInfoParam param1 = new ChangePeriodInWorkInfoParam(startDate, endDate,
 					param.unit, param.workplaceId, param.workplaceGroupId, param.sids, param.getActualData,
 					StringUtil.isNullOrEmpty(param.personTotalSelected, true) ? null : Integer.valueOf(param.personTotalSelected),
 					StringUtil.isNullOrEmpty(param.workplaceSelected, true) ? null : Integer.valueOf(param.workplaceSelected), new DateInMonth(param.day, param.isLastDay));
-			ChangePeriodInWorkInfoResult_New resultOtherMode = changePeriodInWorkInfo.getDataNew(param1);
+			ChangePeriodInWorkInfoResult resultOtherMode = changePeriodInWorkInfo.getData(param1);
 			result = convertDataTimeShortNameMode(startDate,endDate, resultOtherMode);
 
 		} else if (param.viewMode.equals(SHIFT)) {
 			// call <<ScreenQuery>> 表示期間を変更する（シフト）
-			ChangePeriodInShiftParam_New param2 = new ChangePeriodInShiftParam_New(startDate, endDate, param.unit,
+			ChangePeriodInShiftParam param2 = new ChangePeriodInShiftParam(startDate, endDate, param.unit,
 					param.workplaceId, param.workplaceGroupId, param.sids, param.listShiftMasterNotNeedGetNew,param.getActualData,
 					StringUtil.isNullOrEmpty(param.personTotalSelected, true) ? null : Integer.valueOf(param.personTotalSelected),
 					StringUtil.isNullOrEmpty(param.workplaceSelected, true) ? null : Integer.valueOf(param.workplaceSelected), new DateInMonth(param.day, param.isLastDay));
-			ChangePeriodInShiftResult_New resultShiftMode = changePeriodInShift.getData_New(param2);;
+			ChangePeriodInShiftResult resultShiftMode = changePeriodInShift.getData(param2);;
 			result = convertDataShiftMode(startDate,endDate, resultShiftMode);
 		}
 		result.dataBasicDto.startDate = startDate;
@@ -69,7 +69,7 @@ public class ChangePeriodModeFinder {
 		return result;
 	}
 	
-	private ChangeMonthDto convertDataShiftMode(GeneralDate startDate, GeneralDate endDate,ChangePeriodInShiftResult_New resultShiftMode ) {
+	private ChangeMonthDto convertDataShiftMode(GeneralDate startDate, GeneralDate endDate,ChangePeriodInShiftResult resultShiftMode ) {
 		ChangeMonthDto result = new ChangeMonthDto();
 
 		DataBasicDto dataBasicDto = new DataBasicDto();
@@ -111,7 +111,7 @@ public class ChangePeriodModeFinder {
 		return result;
 	}
 	
-	private ChangeMonthDto convertDataTimeShortNameMode(GeneralDate startDate, GeneralDate endDate,ChangePeriodInWorkInfoResult_New resultOtherMode ) {
+	private ChangeMonthDto convertDataTimeShortNameMode(GeneralDate startDate, GeneralDate endDate,ChangePeriodInWorkInfoResult resultOtherMode ) {
 		ChangeMonthDto result = new ChangeMonthDto();
 
 		DataBasicDto dataBasicDto = new DataBasicDto();

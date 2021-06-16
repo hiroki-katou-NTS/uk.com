@@ -45,37 +45,8 @@ public class GetListWorkTypeAvailable {
 	private ScheFuncControlCorrectionFinder scheFuncControlCorrectionFinder;
 	
 	
-	public List<WorkTypeInfomation> getData() {
-
-		String cid = AppContexts.user().companyId();
-		List<WorkTypeInfomation> listWorkTypeInfo = new ArrayList<>();
-
-		// <<Public>> 廃止されていない勤務種類をすべて取得する
-		List<WorkType> listWorkType = basicScheduleService.getAllWorkTypeNotAbolished(cid);
-		List<WorkTypeDto> listWorkTypeDto = listWorkType.stream().map(mapper -> {
-			return new WorkTypeDto(mapper);
-		}).collect(Collectors.toList());
-
-		for (int i = 0; i < listWorkTypeDto.size(); i++) {
-
-			// <<Public>> 廃止されていない勤務種類をすべて取得する
-			WorkTypeDto workTypeDto = listWorkTypeDto.get(i);
-			// 就業時間帯の必須チェック
-			SetupType workTimeSetting = basicScheduleService.checkNeededOfWorkTimeSetting(listWorkTypeDto.get(i).getWorkTypeCode());
-
-			// 1日半日出勤・1日休日系の判定 - (Thực hiện thuật toán [Kiểm tra hệ thống đi làm
-			// nửa ngày・ nghỉ cả ngày ])
-			AttendanceHolidayAttr attHdAtr = judgeHdSystemOneDayService.judgeHdOnDayWorkPer(listWorkTypeDto.get(i).getWorkTypeCode());
-
-			WorkTypeInfomation workTypeInfomation = new WorkTypeInfomation(workTypeDto, workTimeSetting.value, attHdAtr.value);
-			listWorkTypeInfo.add(workTypeInfomation);
-		}
-
-		return listWorkTypeInfo;
-	}
 	
-	
-	public List<WorkTypeInfomation> getData_New() { // ・List<勤務種類, 必須任意不要区分, 出勤休日区分>
+	public List<WorkTypeInfomation> getData() { // ・List<勤務種類, 必須任意不要区分, 出勤休日区分>
 
 		String cid = AppContexts.user().companyId();
 		List<WorkTypeDto> workTypeDtos;

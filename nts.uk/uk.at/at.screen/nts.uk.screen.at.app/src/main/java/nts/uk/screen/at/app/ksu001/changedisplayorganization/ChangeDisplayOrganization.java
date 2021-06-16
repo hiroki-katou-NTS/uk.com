@@ -11,8 +11,8 @@ import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformation
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShift;
-import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftParam_New;
-import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftResult_New;
+import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftParam;
+import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftResult;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DataSpecDateAndHolidayDto;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.EventInfoAndPerCondPeriodParam;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.EventInfoAndPersonalConditionsPeriod;
@@ -82,8 +82,8 @@ public class ChangeDisplayOrganization {
 		// Ab:勤務表示、Ac:略名表示の場合
 		if (param.mode == ChangeDisplayOrganizationParam.WORK_MODE 
 				|| param.mode == ChangeDisplayOrganizationParam.ABBREVIATION_MODE) {
-			DisplayInShiftResult_New displayInShiftResult_New = 
-				displayInShift.getData_New(new DisplayInShiftParam_New(
+			DisplayInShiftResult displayInShiftResult_New = 
+				displayInShift.getData(new DisplayInShiftParam(
 							param.getSids(),
 							param.getStartDate(),
 							param.getEndDate(),

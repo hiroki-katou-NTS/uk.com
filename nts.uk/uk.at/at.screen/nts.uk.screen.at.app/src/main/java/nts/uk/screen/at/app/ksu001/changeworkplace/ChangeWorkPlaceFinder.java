@@ -19,11 +19,11 @@ import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformation
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShift;
-import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftParam_New;
-import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftResult_New;
+import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftParam;
+import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftResult;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoParam_New;
-import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoResult_New;
+import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoResult;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInformation;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DataSpecDateAndHolidayDto;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DateInformationDto;
@@ -89,10 +89,10 @@ public class ChangeWorkPlaceFinder {
 		
 		
 		// data tra ve cua mode workInfo or abName
-		DisplayInWorkInfoResult_New  resultStep4 = new DisplayInWorkInfoResult_New();
+		DisplayInWorkInfoResult  resultStep4 = new DisplayInWorkInfoResult();
 
 		// data tra ve cua mode shift
-		DisplayInShiftResult_New resultStep51 = new DisplayInShiftResult_New();
+		DisplayInShiftResult resultStep51 = new DisplayInShiftResult();
 		
 		if (param.viewMode.equals("time") || param.viewMode.equals("shortName")) {
 			// <<ScreenQuery>> 勤務情報で表示する
@@ -102,11 +102,11 @@ public class ChangeWorkPlaceFinder {
 					param.getActualData, closeDate, targetOrgIdenInforDto,
 					StringUtil.isNullOrEmpty(param.personTotalSelected, true) ? null : Integer.valueOf(param.personTotalSelected),
 					StringUtil.isNullOrEmpty(param.workplaceSelected, true) ? null : Integer.valueOf(param.workplaceSelected));
-			resultStep4 = displayInWorkInfo.getDataWorkInfo_New(param4);
+			resultStep4 = displayInWorkInfo.getDataWorkInfo(param4);
 			
 		} else if (param.viewMode.equals("shift")) {
 			// <<ScreenQuery>> シフトで表示する
-			DisplayInShiftParam_New param51 = new DisplayInShiftParam_New();
+			DisplayInShiftParam param51 = new DisplayInShiftParam();
 			param51.setListSid(listSid);
 			param51.setStartDate(startDate);
 			param51.setEndDate(endDate);
@@ -121,7 +121,7 @@ public class ChangeWorkPlaceFinder {
 			param51.setWorkplaceCounterOp(StringUtil.isNullOrEmpty(param.workplaceSelected, true) ? null : Integer.valueOf(param.workplaceSelected));
 			param51.setDay(new DateInMonth(param.day, param.isLastDay));
 
-			resultStep51 = displayInShift.getData_New(param51);
+			resultStep51 = displayInShift.getData(param51);
 		}
 		
 		StartKSU001Dto result = convertData(param.viewMode, resultStep2, resultStep3, resultStep4, resultStep51);
@@ -131,8 +131,8 @@ public class ChangeWorkPlaceFinder {
 	private StartKSU001Dto convertData(String viewMode,
 			List<EmployeeInformationImport> resultStep2, 
 			DataSpecDateAndHolidayDto resultStep3, 
-			DisplayInWorkInfoResult_New  resultStep4,
-			DisplayInShiftResult_New resultStep51) {
+			DisplayInWorkInfoResult  resultStep4,
+			DisplayInShiftResult resultStep51) {
 		StartKSU001Dto result = new StartKSU001Dto();
 		
 		//  data tra ve cua step2

@@ -17,9 +17,6 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCateg
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
-import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoParam;
-import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoResult;
-import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInformation;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DataSpecDateAndHolidayDto;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.EventInfoAndPerCondPeriodParam;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.EventInfoAndPersonalConditionsPeriod;
@@ -37,13 +34,14 @@ public class ChangePeriodInWorkInfomation {
 	
 	@Inject
 	private EventInfoAndPersonalConditionsPeriod eventInfoAndPersonalCondPeriod;
+	
 	@Inject
 	private ScreenQueryExtractTargetEmployees extractTargetEmployees;
-	@Inject
-	private DisplayInWorkInformation displayInWorkInfo;
 	
 	@Inject
 	private GetScheduleActualOfWorkInfo getScheduleActualOfWorkInfo;
+	
+	
 	
 	
 	public ChangePeriodInWorkInfoResult getData(ChangePeriodInWorkInfoParam param) {
@@ -69,39 +67,9 @@ public class ChangePeriodInWorkInfomation {
 				param.startDate, param.endDate, sids, targetOrgIdenInfor);
 		DataSpecDateAndHolidayDto resultStep1 = eventInfoAndPersonalCondPeriod.getData(param1);
 		
-		DisplayInWorkInfoParam param4 = new DisplayInWorkInfoParam(sids, param.startDate, param.endDate, param.getActualData);
-		DisplayInWorkInfoResult  resultStep4 = new DisplayInWorkInfoResult();
-		resultStep4 = displayInWorkInfo.getDataWorkInfo(param4);
-		
-		return new ChangePeriodInWorkInfoResult(resultStep2, resultStep1, resultStep4.listWorkScheduleWorkInfor);
-	}
-	
-public ChangePeriodInWorkInfoResult_New getDataNew(ChangePeriodInWorkInfoParam_New param) {
-		
-		// step 1 va step 2 
-		TargetOrgIdenInfor targetOrgIdenInfor = null;
-		if (param.unit == TargetOrganizationUnit.WORKPLACE.value) {
-			targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,
-					Optional.of(param.workplaceId),
-					Optional.empty());
-		}else{
-			targetOrgIdenInfor = new TargetOrgIdenInfor(
-					TargetOrganizationUnit.WORKPLACE_GROUP,
-					Optional.empty(),
-					Optional.of(param.workplaceGroupId));
-		}
-
-		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(param.endDate, targetOrgIdenInfor);
-		List<EmployeeInformationImport> resultStep2 = extractTargetEmployees.getListEmp(param2);
-		
-		List<String> sids = resultStep2.stream().map(i -> i.getEmployeeId()).collect(Collectors.toList());
-		EventInfoAndPerCondPeriodParam param1 = new EventInfoAndPerCondPeriodParam(
-				param.startDate, param.endDate, sids, targetOrgIdenInfor);
-		DataSpecDateAndHolidayDto resultStep1 = eventInfoAndPersonalCondPeriod.getData(param1);
-		
 		// step 4
 		ScheduleActualOfWorkOutput scheduleActualOfWorkOutput = 
-				getScheduleActualOfWorkInfo.getDataScheduleAndAactualOfWorkInfoNew(
+				getScheduleActualOfWorkInfo.getDataScheduleAndAactualOfWorkInfo(
 						param.getSids(),
 						new DatePeriod(param.getStartDate(), param.getEndDate()),
 						param.getCloseDate(),
@@ -112,7 +80,7 @@ public ChangePeriodInWorkInfoResult_New getDataNew(ChangePeriodInWorkInfoParam_N
 						
 						);
 		
-		return new ChangePeriodInWorkInfoResult_New(
+		return new ChangePeriodInWorkInfoResult(
 				resultStep2,
 				resultStep1,
 				scheduleActualOfWorkOutput.getWorkScheduleWorkInforDtos(),

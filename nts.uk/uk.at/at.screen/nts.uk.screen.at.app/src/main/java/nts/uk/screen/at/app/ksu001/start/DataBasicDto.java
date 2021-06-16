@@ -13,7 +13,7 @@ import nts.arc.time.calendar.DateInMonth;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto;
-import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto_New;
+import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.FuncCtrlDisplayFormatDto;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScheFunctionControlDto;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScheFunctionCtrlByWorkplaceDto;
@@ -63,7 +63,7 @@ public class DataBasicDto {
 	
 	public String viewModeSelected;
 	
-	public DataBasicDto(DataScreenQueryGetInforDto_New resultStep1) {
+	public DataBasicDto(DataScreenQueryGetInforDto resultStep1) {
 		this.startDate = resultStep1.startDate;
 		this.endDate = resultStep1.endDate;
 		this.unit = resultStep1.targetOrgIdenInfor.unit;
@@ -86,20 +86,6 @@ public class DataBasicDto {
 		this.closeDate = resultStep1.closeDate;
 		this.useCategoriesPersonal = resultStep1.useCategoriesPersonal;
 		this.useCategoriesWorkplace = resultStep1.useCategoriesWorkplace;
-	}
-	
-	public DataBasicDto(DataScreenQueryGetInforDto resultStep1) {
-		this.startDate = resultStep1.startDate;
-		this.endDate = resultStep1.endDate;
-		this.unit = resultStep1.targetOrgIdenInfor.unit;
-		this.workplaceId = resultStep1.targetOrgIdenInfor.workplaceId;
-		this.workplaceGroupId = resultStep1.targetOrgIdenInfor.workplaceGroupId;
-		this.designation = resultStep1.displayInforOrganization.getDesignation();
-		this.targetOrganizationName = resultStep1.displayInforOrganization.getDisplayName();
-		this.code = resultStep1.displayInforOrganization.getCode();
-		this.scheduleModifyStartDate = resultStep1.scheduleModifyStartDate;
-		this.usePublicAtr = resultStep1.usePublicAtr;
-		this.useWorkAvailabilityAtr = resultStep1.useWorkAvailabilityAtr;
 	}
 	
 	public void setViewMode(Integer vMode) {

@@ -3,14 +3,12 @@
  */
 package nts.uk.screen.at.app.ksu001.scheduleactualworkinfo;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
@@ -18,7 +16,6 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCateg
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.screen.at.app.ksu001.aggrerateschedule.AggregateScheduleDto;
 import nts.uk.screen.at.app.ksu001.aggrerateschedule.ScreenQueryAggregateSchedule;
-import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoParam;
 import nts.uk.screen.at.app.ksu001.processcommon.ScreenQueryCreateWorkSchedule;
 import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.PlanAndActual;
@@ -31,11 +28,6 @@ import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.ScreenQueryP
 @Stateless
 public class GetScheduleActualOfWorkInfo {
 	
-	@Inject
-	private GetScheduleOfWorkInfo getScheduleOfWorkInfo;
-	@Inject
-	private GetWorkActualOfWorkInfo getWorkActualOfWorkInfo;
-	
 	
 	@Inject
 	private ScreenQueryPlanAndActual screenQueryPlanAndActual;
@@ -45,36 +37,6 @@ public class GetScheduleActualOfWorkInfo {
 	
 	@Inject
 	private ScreenQueryCreateWorkSchedule screenQueryCreateWorkSchedule;
-	
-	public List<WorkScheduleWorkInforDto> getDataScheduleAndAactualOfWorkInfo(DisplayInWorkInfoParam param) {
-		
-		// lay data Schedule
-		List<WorkScheduleWorkInforDto> listDataSchedule = getScheduleOfWorkInfo.getDataScheduleOfWorkInfo(param);
-		
-		if (param.getActualData) {
-			// lay data Daily
-			List<WorkScheduleWorkInforDto> listDataDaily = getWorkActualOfWorkInfo.getDataActualOfWorkInfo(param);
-			// merge
-			List<WorkScheduleWorkInforDto> listToRemove = new ArrayList<WorkScheduleWorkInforDto>();
-			List<WorkScheduleWorkInforDto> listToAdd = new ArrayList<WorkScheduleWorkInforDto>();
-			for (WorkScheduleWorkInforDto dataSchedule : listDataSchedule) {
-				String sid = dataSchedule.employeeId;
-				GeneralDate date = dataSchedule.date;
-				Optional<WorkScheduleWorkInforDto> dataDaily = listDataDaily.stream().filter(data -> {
-					if (data.employeeId.equals(sid) && data.date.equals(date))
-						return true;
-					return false;
-				}).findFirst();
-				if (dataDaily.isPresent()) {
-					listToRemove.add(dataSchedule);
-					listToAdd.add(dataDaily.get());
-				}
-			}
-			listDataSchedule.removeAll(listToRemove);
-			listDataSchedule.addAll(listToAdd);
-		}
-		return listDataSchedule;
-	}
 	
 	/**
 	 * 予定・実績を勤務情報で取得する（未発注）
@@ -88,7 +50,7 @@ public class GetScheduleActualOfWorkInfo {
 	 * @param workplaceCounterOp // 職場計カテゴリ
 	 * @return
 	 */
-	public ScheduleActualOfWorkOutput getDataScheduleAndAactualOfWorkInfoNew(
+	public ScheduleActualOfWorkOutput getDataScheduleAndAactualOfWorkInfo(
 			List<String> sids,
 			DatePeriod datePeriod,
 			DateInMonth closeDate,

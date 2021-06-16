@@ -93,56 +93,13 @@ public class ScreenQueryGetInforOfInitStartup {
 	@Inject
 	private GetSummaryCategory getSummaryCategory;
 	
+	
 	public DataScreenQueryGetInforDto getData() {
 		// Step 1,2
 		String companyID = AppContexts.user().companyId();
 		Optional<DisplaySettingByWorkplace> workScheDisplaySettingOpt = workScheDisplaySettingRepo.get(companyID);
 		if (!workScheDisplaySettingOpt.isPresent()) {
-			return new DataScreenQueryGetInforDto(null, null, null, null, null, null, null);
-		}
-
-		DatePeriod datePeriod = workScheDisplaySettingOpt.get().calcuInitDisplayPeriod();
-
-		// step 3
-		// goi domain service 社員の対象組織識別情報を取得する
-		String sidLogin = AppContexts.user().employeeId();
-		RequireImpl require = new RequireImpl(empOrganizationPub);
-		TargetOrgIdenInfor targetOrgIdenInfor = GetTargetIdentifiInforService.get(require, datePeriod.end(), sidLogin);
-		
-		// step 4
-		RequireWorkPlaceImpl requireWorkPlace = new RequireWorkPlaceImpl(workplaceGroupAdapter,workplaceExportService,affWorkplaceGroupRepo);
-		DisplayInfoOrganization displayInfoOrganization =  targetOrgIdenInfor.getDisplayInfor(requireWorkPlace, datePeriod.end());
-		
-		TargetOrgIdenInforDto targetOrgIdenInforDto = new TargetOrgIdenInforDto( targetOrgIdenInfor );
-		
-		// step 5
-		RequireScheModifyStartDate requireScheModifyStartDate = new RequireScheModifyStartDate(scheAuthModifyDeadlineRepo);
-		String roleId = AppContexts.user().roles().forAttendance();
-		GeneralDate scheduleModifyStartDate = ScheModifyStartDateService.getModifyStartDate(requireScheModifyStartDate, roleId);
-		
-		// step 6
-		RequireGetShiftTableRuleImpl requireGetShiftTableRuleImpl    = new RequireGetShiftTableRuleImpl(shiftTableRuleForOrgRepo, shiftTableRuleForCompanyRepo);
-		Optional<ShiftTableRule> shiftTableRule = GetShiftTableRuleForOrganizationService.get(requireGetShiftTableRuleImpl, targetOrgIdenInfor);
-		Boolean usePublicAtr = false; // 公開を利用するか
-		Boolean useWorkAvailabilityAtr = false; // 勤務希望を利用するか
-		if(shiftTableRule.isPresent()){
-			usePublicAtr =  shiftTableRule.get().getUsePublicAtr().value == 1 ? true : false;
-			useWorkAvailabilityAtr = shiftTableRule.get().getUseWorkAvailabilityAtr().value == 1 ? true : false;
-		}
-		
-		
-		
-		
-		
-		return new DataScreenQueryGetInforDto(datePeriod.start(), datePeriod.end(), targetOrgIdenInforDto, displayInfoOrganization, scheduleModifyStartDate, usePublicAtr, useWorkAvailabilityAtr);
-	}
-	
-	public DataScreenQueryGetInforDto_New getDataNew() {
-		// Step 1,2
-		String companyID = AppContexts.user().companyId();
-		Optional<DisplaySettingByWorkplace> workScheDisplaySettingOpt = workScheDisplaySettingRepo.get(companyID);
-		if (!workScheDisplaySettingOpt.isPresent()) {
-			return new DataScreenQueryGetInforDto_New();
+			return new DataScreenQueryGetInforDto();
 		}
 
 		DatePeriod datePeriod = workScheDisplaySettingOpt.get().calcuInitDisplayPeriod();
@@ -195,7 +152,7 @@ public class ScreenQueryGetInforOfInitStartup {
 		// step 12 get()
 		OptionLicense optionaLicense = AppContexts.optionLicense();
 		
-		return new DataScreenQueryGetInforDto_New(
+		return new DataScreenQueryGetInforDto(
 				datePeriod.start(),
 				datePeriod.end(),
 				targetOrgIdenInforDto,

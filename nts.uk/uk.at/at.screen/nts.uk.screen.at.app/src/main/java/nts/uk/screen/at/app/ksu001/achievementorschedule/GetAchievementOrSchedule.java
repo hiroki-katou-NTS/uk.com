@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.FuncCtrlDisplayFormatDto;
 import nts.uk.screen.at.app.ksu001.getschedulesbyshift.GetScheduleActualOfShift;
-import nts.uk.screen.at.app.ksu001.getschedulesbyshift.SchedulesbyShiftDataResult_New;
+import nts.uk.screen.at.app.ksu001.getschedulesbyshift.SchedulesbyShiftDataResult;
 import nts.uk.screen.at.app.ksu001.scheduleactualworkinfo.GetScheduleActualOfWorkInfo;
 import nts.uk.screen.at.app.ksu001.scheduleactualworkinfo.ScheduleActualOfWorkOutput;
 
@@ -48,8 +48,8 @@ public class GetAchievementOrSchedule {
 		}
 		// Aa:シフト表示の場合
 		if (param.getMode() == FuncCtrlDisplayFormatDto.Shift.value) {
-			SchedulesbyShiftDataResult_New schedulesbyShiftDataResult_New =
-					getScheduleActualOfShift.getDataNew(
+			SchedulesbyShiftDataResult schedulesbyShiftDataResult_New =
+					getScheduleActualOfShift.getData(
 							param.getListShiftMasterNotNeedGetNew(),
 							param.getSids(),
 							new DatePeriod(param.getStartDate(), param.getEndDate()),
@@ -71,7 +71,7 @@ public class GetAchievementOrSchedule {
 				|| param.getMode() == FuncCtrlDisplayFormatDto.AbbreviatedName.value) {
 			
 			ScheduleActualOfWorkOutput scheduleActualOfWorkOutput =
-					getScheduleActualOfWorkInfo.getDataScheduleAndAactualOfWorkInfoNew(
+					getScheduleActualOfWorkInfo.getDataScheduleAndAactualOfWorkInfo(
 							param.getSids(),
 							new DatePeriod(param.getStartDate(), param.getEndDate()),
 							DateInMonth.of(param.getDay()),

@@ -19,11 +19,11 @@ import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformation
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShift;
-import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftParam_New;
-import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftResult_New;
+import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftParam;
+import nts.uk.screen.at.app.ksu001.displayinshift.DisplayInShiftResult;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoParam_New;
-import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoResult_New;
+import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoResult;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInformation;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DataSpecDateAndHolidayDto;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DateInformationDto;
@@ -34,7 +34,7 @@ import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.PersonalCondition
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.EmployeeInformationDto;
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ExtractTargetEmployeesParam;
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ScreenQueryExtractTargetEmployees;
-import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto_New;
+import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.DataScreenQueryGetInforDto;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.FuncCtrlDisplayFormatDto;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScreenQueryGetInforOfInitStartup;
 import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.TargetOrgIdenInforDto;
@@ -63,7 +63,7 @@ public class StartKSU001Ver5 {
 	public StartKSU001Dto getData(StartKSU001Param param) {
 		
 		// step 1
-		DataScreenQueryGetInforDto_New resultStep1 = getInforOfInitStartup.getDataNew();
+		DataScreenQueryGetInforDto resultStep1 = getInforOfInitStartup.getData();
 		
 		// step 2 start
 		GeneralDate startDate = StringUtil.isNullOrEmpty(param.startDate, true) ? resultStep1.startDate : GeneralDate.fromString(param.startDate, DATE_FORMAT);
@@ -89,10 +89,10 @@ public class StartKSU001Ver5 {
 		// step 3 end
 		
 		// data tra ve cua step4 || step 5.2
-		DisplayInWorkInfoResult_New  resultStep4 = new DisplayInWorkInfoResult_New();
+		DisplayInWorkInfoResult  resultStep4 = new DisplayInWorkInfoResult();
 
 		// data tra ve cua step 5.1
-		DisplayInShiftResult_New resultStep51 = new DisplayInShiftResult_New();
+		DisplayInShiftResult resultStep51 = new DisplayInShiftResult();
 		
 		// tính toán để xem gọi viewMode nào
 		Integer viewModeSelected = calculateViewModeSelected(param.viewMode, resultStep1.scheFunctionCtrlByWorkplace.useDisplayFormat);
@@ -105,11 +105,11 @@ public class StartKSU001Ver5 {
 					param.getActualData, resultStep1.closeDate, targetOrgIdenInforDto,
 					StringUtil.isNullOrEmpty(param.personTotalSelected, true) ? (resultStep1.useCategoriesPersonal.isEmpty() ? null : resultStep1.useCategoriesPersonal.get(0).getValue()) : Integer.valueOf(param.personTotalSelected),
 					StringUtil.isNullOrEmpty(param.workplaceSelected, true) ? (resultStep1.useCategoriesWorkplace.isEmpty() ? null : resultStep1.useCategoriesWorkplace.get(0).getValue()) : Integer.valueOf(param.workplaceSelected));
-			resultStep4 = displayInWorkInfo.getDataWorkInfo_New(param4);
+			resultStep4 = displayInWorkInfo.getDataWorkInfo(param4);
 			
 		} else if (viewModeSelected == FuncCtrlDisplayFormatDto.Shift.value) {
 			// step 5.1 start
-			DisplayInShiftParam_New param51 = new DisplayInShiftParam_New();
+			DisplayInShiftParam param51 = new DisplayInShiftParam();
 			param51.setListSid(listSid);
 			param51.setStartDate(startDate);
 			param51.setEndDate(endDate);
@@ -124,7 +124,7 @@ public class StartKSU001Ver5 {
 			param51.setWorkplaceCounterOp(StringUtil.isNullOrEmpty(param.workplaceSelected, true) ? (resultStep1.useCategoriesWorkplace.isEmpty() ? null : resultStep1.useCategoriesWorkplace.get(0).getValue()) : Integer.valueOf(param.workplaceSelected));
 			param51.setDay(resultStep1.closeDate);
 
-			resultStep51 = displayInShift.getData_New(param51);
+			resultStep51 = displayInShift.getData(param51);
 		}
 		
 		StartKSU001Dto result = convertData(resultStep1, resultStep2, resultStep3, resultStep4, resultStep51, viewModeSelected);
@@ -153,11 +153,11 @@ public class StartKSU001Ver5 {
 		return FuncCtrlDisplayFormatDto.WorkInfo.value;
 	}
 	
-	private StartKSU001Dto convertData(DataScreenQueryGetInforDto_New resultStep1,
+	private StartKSU001Dto convertData(DataScreenQueryGetInforDto resultStep1,
 			List<EmployeeInformationImport> resultStep2, 
 			DataSpecDateAndHolidayDto resultStep3, 
-			DisplayInWorkInfoResult_New  resultStep4,
-			DisplayInShiftResult_New resultStep51, Integer viewModeSelected) {
+			DisplayInWorkInfoResult  resultStep4,
+			DisplayInShiftResult resultStep51, Integer viewModeSelected) {
 		StartKSU001Dto result = new StartKSU001Dto();
 		
 		//	data tra ve cua step1	

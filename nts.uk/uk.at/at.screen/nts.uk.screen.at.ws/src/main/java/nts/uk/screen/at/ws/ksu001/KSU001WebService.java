@@ -43,7 +43,6 @@ import nts.uk.screen.at.app.ksu001.processcommon.CorrectWorkTimeHalfDayRs;
 import nts.uk.screen.at.app.ksu001.start.ChangeMonthParam;
 import nts.uk.screen.at.app.ksu001.start.ChangePeriodModeParam;
 import nts.uk.screen.at.app.ksu001.start.OrderEmployeeParam;
-import nts.uk.screen.at.app.ksu001.start.StartKSU001;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001Dto;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001Param;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001Ver5;
@@ -62,8 +61,6 @@ import nts.uk.screen.at.app.ksu001.validwhenpaste.ValidDataWhenPasteParam;
 @Produces("application/json")
 public class KSU001WebService extends WebService{
 
-	@Inject
-	private StartKSU001 startKSU001;
 	@Inject
 	private StartKSU001Ver5 startKSU001Ver5;
 	@Inject

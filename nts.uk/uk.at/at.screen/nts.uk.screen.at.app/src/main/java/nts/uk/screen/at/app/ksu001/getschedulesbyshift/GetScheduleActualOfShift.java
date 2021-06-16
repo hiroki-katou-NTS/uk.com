@@ -3,17 +3,13 @@
  */
 package nts.uk.screen.at.app.ksu001.getschedulesbyshift;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
@@ -23,11 +19,6 @@ import nts.uk.screen.at.app.ksu001.aggrerateschedule.AggregateScheduleDto;
 import nts.uk.screen.at.app.ksu001.aggrerateschedule.ScreenQueryAggregateSchedule;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
-import nts.uk.screen.at.app.ksu001.getworkactualshift.GetActualOfShift;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.GetScheduleOfShift;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftParam;
-import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftResult;
 import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleShiftBaseResult;
 import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.PlanAndActual;
 import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.ScreenQueryPlanAndActual;
@@ -42,11 +33,6 @@ import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.ScreenQueryW
 public class GetScheduleActualOfShift {
 	
 	@Inject
-	private GetScheduleOfShift getWorkScheduleShift;
-	@Inject
-	private GetActualOfShift getActualOfShift;
-	
-	@Inject
 	private ScreenQueryPlanAndActual screenQueryPlanAndActual;
 	
 	@Inject
@@ -55,44 +41,7 @@ public class GetScheduleActualOfShift {
 	@Inject
 	private ScreenQueryAggregateSchedule screenQueryAggrerateSchedule;
 	
-	public SchedulesbyShiftDataResult getData(SchedulesbyShiftParam param) {
-		
-		// step 1 call ScreenQuery 勤務予定（シフト）を取得する
-		ScheduleOfShiftParam param1 = new ScheduleOfShiftParam(param.listShiftMasterNotNeedGetNew, param.listSid, param.startDate, param.endDate);
-		ScheduleOfShiftResult resultStep51 = getWorkScheduleShift.getWorkScheduleShift(param1);
-		List<ScheduleOfShiftDto> listWorkScheduleShift = resultStep51.listWorkScheduleShift;
-		
-		if (param.getActualData) {
-			// lấy data thực tế
-			// call ScreenQuery 勤務実績（シフト）を取得する
-			ScheduleOfShiftParam param2 = new ScheduleOfShiftParam(resultStep51.shiftMasterWithWorkStyleLst, param.listSid, param.startDate, param.endDate);
-			ScheduleOfShiftResult resultStep52 =  getActualOfShift.getActualOfShift(param2);
-			List<ScheduleOfShiftDto> listDataDailyShift = resultStep52.listWorkScheduleShift;
-			// merge
-			List<ScheduleOfShiftDto> listToRemove = new ArrayList<ScheduleOfShiftDto>();
-			List<ScheduleOfShiftDto> listToAdd = new ArrayList<ScheduleOfShiftDto>();
-			for (ScheduleOfShiftDto dataSchedule : listWorkScheduleShift) {
-				String sid = dataSchedule.employeeId;
-				GeneralDate date = dataSchedule.date;
-				Optional<ScheduleOfShiftDto> dataDaily = listDataDailyShift.stream().filter(data -> {
-					if (data.employeeId.equals(sid) && data.date.equals(date))
-						return true;
-					return false;
-				}).findFirst();
-				if (dataDaily.isPresent()) {
-					listToRemove.add(dataSchedule);
-					listToAdd.add(dataDaily.get());
-				}
-			}
-			listWorkScheduleShift.removeAll(listToRemove);
-			listWorkScheduleShift.addAll(listToAdd);
-			
-			return new SchedulesbyShiftDataResult(listWorkScheduleShift , resultStep52.shiftMasterWithWorkStyleLst);
-		}
-		return new SchedulesbyShiftDataResult(listWorkScheduleShift , resultStep51.shiftMasterWithWorkStyleLst);
-	}
-	
-	
+
 	/**
 	 * 予定・実績をシフトで取得する（未発注）
 	 *  UKDesign.UniversalK.就業.KSU_スケジュール.KSU001_個人スケジュール修正(職場別).A：個人スケジュール修正(職場別).メニュー別OCD.Aa：シフト表示
@@ -105,7 +54,7 @@ public class GetScheduleActualOfShift {
 	 * @param personalCounterOp ・個人計カテゴリ　：Optional<個人計カテゴリ>
 	 * @param workplaceCounterOp ・職場計カテゴリ　：Optional<職場計カテゴリ>
 	 */
-	public SchedulesbyShiftDataResult_New getDataNew(
+	public SchedulesbyShiftDataResult getData(
 			List<ShiftMasterMapWithWorkStyle> listShiftMasterNotNeedGet,
 			List<String> sids,
 			DatePeriod datePeriod,
@@ -140,7 +89,7 @@ public class GetScheduleActualOfShift {
 						personalCounterOp,
 						workplaceCounterOp,
 						true); // シフト表示か = true
-		return new SchedulesbyShiftDataResult_New(
+		return new SchedulesbyShiftDataResult(
 				workScheduleShiftBaseResult.getListWorkScheduleShift(),
 				workScheduleShiftBaseResult.getMapShiftMasterWithWorkStyle()
 				   .entrySet()

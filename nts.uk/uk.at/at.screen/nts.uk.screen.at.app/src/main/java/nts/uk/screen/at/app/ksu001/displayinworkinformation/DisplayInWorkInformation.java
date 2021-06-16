@@ -31,32 +31,14 @@ public class DisplayInWorkInformation {
 	@Inject
 	private GetListWorkTypeAvailable getListWorkTypeAvailable;
 	
-	public DisplayInWorkInfoResult getDataWorkInfo(DisplayInWorkInfoParam param) {
-
-		DisplayInWorkInfoResult result = new DisplayInWorkInfoResult();
-
-		List<WorkTypeInfomation> listWorkTypeInfo = new ArrayList<>();
-
-		listWorkTypeInfo = getListWorkTypeAvailable.getData();
-		
-		result.setListWorkTypeInfo(listWorkTypeInfo);
-		
-		// Lấy data Schedule
-		// Get schedule/actual results with work information
-		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = getScheduleActualOfWorkInfo.getDataScheduleAndAactualOfWorkInfo(param);
-
-		result.setListWorkScheduleWorkInfor(listWorkScheduleWorkInfor);
-		return result;
-	}
-	
-	public DisplayInWorkInfoResult_New getDataWorkInfo_New(DisplayInWorkInfoParam_New param) {
+	public DisplayInWorkInfoResult getDataWorkInfo(DisplayInWorkInfoParam_New param) {
 		// 1: <call>
-		List<WorkTypeInfomation> listWorkTypeInfo = getListWorkTypeAvailable.getData_New();
+		List<WorkTypeInfomation> listWorkTypeInfo = getListWorkTypeAvailable.getData();
 		
 		// 2: <call>
 		ScheduleActualOfWorkOutput scheduleActualOfWorkOutput = 
 				
-			getScheduleActualOfWorkInfo.getDataScheduleAndAactualOfWorkInfoNew(
+			getScheduleActualOfWorkInfo.getDataScheduleAndAactualOfWorkInfo(
 					param.getListSid(),
 					new DatePeriod(param.getStartDate(), param.getEndDate()),
 					param.getDay(),
@@ -66,7 +48,7 @@ public class DisplayInWorkInformation {
 					Optional.ofNullable(param.getWorkplaceCounterOp()).flatMap(x -> Optional.of(EnumAdaptor.valueOf(x, WorkplaceCounterCategory.class)))
 					);
 		
-		return new DisplayInWorkInfoResult_New(
+		return new DisplayInWorkInfoResult(
 				listWorkTypeInfo,
 				scheduleActualOfWorkOutput.getWorkScheduleWorkInforDtos(),
 				scheduleActualOfWorkOutput.getAggreratePersonal(),
