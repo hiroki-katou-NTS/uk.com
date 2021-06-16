@@ -20,7 +20,7 @@ public class PasswordAuthenticationFailureLog implements DomainAggregate {
 	
 	public PasswordAuthenticationFailureLog(GeneralDateTime dateTime, String userId, String password) {
 		this.failureDateTime = dateTime;
-		this.triedUserId = password;
+		this.triedUserId = userId;
 		// ユーザー入力の値は適当な長さでカットして保持する
 		this.triedPassword = StringUtil.cutOffAsLengthHalf(password, 100);
 	}
