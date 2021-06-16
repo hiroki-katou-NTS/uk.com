@@ -124,6 +124,9 @@ class KDP002BViewModel extends ko.ViewModel {
         vm.showBtnNoti.subscribe(() => {
             vm.settingSizeView();
         })
+		vm.workPlace.subscribe(()=>{
+			vm.settingSizeView();
+		});
     }
 
     mounted() {
@@ -174,15 +177,31 @@ class KDP002BViewModel extends ko.ViewModel {
         
         if (!ko.unwrap(vm.showBtnNoti)) {
             if (!ko.unwrap(vm.modeNikoNiko)) {
-                vm.$window.size(588, 470);
+				if(vm.workPlace() != ""){
+					vm.$window.size(555, 470);	
+				}else{
+					vm.$window.size(530, 470);
+				}
             } else {
-                vm.$window.size(605, 470);
+				if(vm.workPlace() != ""){	
+                	vm.$window.size(565, 470);
+				}else{
+					vm.$window.size(543, 470);
+				}
             }
         } else {
             if (!ko.unwrap(vm.modeNikoNiko)) {
-                vm.$window.size(620, 470);
+                if(vm.workPlace() != ""){
+					vm.$window.size(590, 470);
+				}else{
+					vm.$window.size(568, 470);
+				}
             } else {
-                vm.$window.size(640, 470);
+				if(vm.workPlace() != ""){
+                	vm.$window.size(610, 470);
+				}else{
+					vm.$window.size(588, 470);
+				}
             }
         }
     }

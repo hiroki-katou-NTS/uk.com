@@ -3,28 +3,30 @@ module nts.uk.at.view.kaf000.a.component6.viewmodel {
     @component({
         name: 'kaf000-a-component6',
         template: `
-            <div id="kaf000-a-component6" data-bind="click: openApproverDetail">
-				<div style="display: inline-block;" data-bind="if: approvalRootStateShort().length != 0 && approvalRootDisp">
-					<div data-bind="foreach: approvalRootStateShort" style="padding-top: 5px;">
-						<div class="approver-block" style="width: 112px;">
-							<div style="height: 24px;">
-								<div class="limited-label" style="vertical-align: middle;" data-bind="ntsFormLabel:{}, text: $component.getApproverLabel($index())"></div>
-							</div>
-							<div style="min-width: 112px;">
-								<div class="limited-label" style="vertical-align: middle;" data-bind="text: $data.approverName"></div>
-							</div>
-							<div data-bind="if: $data.representerName()" style="min-width: 112px;">
-								<div class="limited-label" style="vertical-align: middle;" data-bind="text: '(' + $data.representerName() + ')'"></div>
+			<com:ko-if bind="if: approvalRootStateShort().length != 0 && approvalRootDisp">
+	            <div id="kaf000-a-component6" data-bind="click: openApproverDetail">
+					<div style="display: inline-block;" data-bind="if: approvalRootStateShort().length != 0 && approvalRootDisp">
+						<div data-bind="foreach: approvalRootStateShort" style="padding-top: 5px;">
+							<div class="approver-block" style="width: 112px;">
+								<div style="height: 24px;">
+									<div class="limited-label" style="vertical-align: middle;" data-bind="ntsFormLabel:{}, text: $component.getApproverLabel($index())"></div>
+								</div>
+								<div style="min-width: 112px;">
+									<div class="limited-label" style="vertical-align: middle;" data-bind="text: $data.approverName"></div>
+								</div>
+								<div data-bind="if: $data.representerName()" style="min-width: 112px;">
+									<div class="limited-label" style="vertical-align: middle;" data-bind="text: '(' + $data.representerName() + ')'"></div>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div style="display: inline-block; width: 8px;">
-					<div data-bind="if: numberApprover() > 5">
-						<div data-bind="text: $i18n('KAF000_62')"></div>
+					<div style="display: inline-block; width: 8px;" data-bind="if: data-bind="if: approvalRootStateShort().length != 0 && approvalRootDisp">
+						<div data-bind="if: numberApprover() > 5">
+							<div data-bind="text: $i18n('KAF000_62')"></div>
+						</div>
 					</div>
 				</div>
-			</div>
+			</com:ko-if>
         `
     })
     class Kaf000AComponent6ViewModel extends ko.ViewModel {
@@ -60,6 +62,9 @@ module nts.uk.at.view.kaf000.a.component6.viewmodel {
 
 		openApproverDetail() {
 			const vm = this;
+			if (!vm.approvalRootDisp()) {
+				return;
+			}
 			let appDispInfoStartupOutput = vm.appDispInfoStartupOutput(),
 				isAgentMode = vm.isAgentMode(),
 				approvalRootState = vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opListApprovalPhaseState,

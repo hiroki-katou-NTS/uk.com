@@ -209,5 +209,6 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 	        .setParameter("digestDate", digestDate)
 	        .setParameter("target", target.value)
 	        .executeUpdate();
+	    this.getEntityManager().flush();
     }
 }

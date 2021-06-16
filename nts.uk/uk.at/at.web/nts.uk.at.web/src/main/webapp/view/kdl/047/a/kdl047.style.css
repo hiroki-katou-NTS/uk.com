@@ -2,10 +2,6 @@
 	width: 180px;
 }
 
-.contents-area {
-	padding: 15px 25px 15px 20px;
-}
-
 .div-line {
 	display: inline;
 }
@@ -23,8 +19,8 @@
 	margin-left: 5px;
 }
 
-.w-100 {
-	width: 100px;
+.w-85 {
+	width: 85px;
 }
 
 .w-85 {
@@ -32,7 +28,7 @@
 }
 
 .margin-panel {
-	margin: 30px 15px 30px 15px;
+	margin: 20px 15px 20px 15px;
 }
 
 .flex {
@@ -53,4 +49,7 @@
 
 .mt-5 {
 	margin-top: 5px;
+}
+.display-none {
+	display: none;
 }
