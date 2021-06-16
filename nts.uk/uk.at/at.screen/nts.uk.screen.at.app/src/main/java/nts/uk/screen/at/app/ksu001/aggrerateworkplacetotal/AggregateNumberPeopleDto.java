@@ -13,7 +13,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.EmploymentDto;
 import nts.uk.screen.at.app.ksu001.start.NumberPeopleMapDto;
 import nts.uk.screen.at.app.ksu001.start.NumberPeopleMapDtoList;
 /**
- * 
+ * Map<年月日, Map<(雇用マスタ or 分類マスタ or 職位情報), BigDecimal>>
  * @author hoangnd
  *
  */

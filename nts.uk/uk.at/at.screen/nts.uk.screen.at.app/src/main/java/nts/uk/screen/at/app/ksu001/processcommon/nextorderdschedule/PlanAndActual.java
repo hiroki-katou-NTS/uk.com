@@ -15,8 +15,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 @AllArgsConstructor
 @Data
 public class PlanAndActual {
-
+	// ・管理状態と勤務予定Map
 	private Map<ScheManaStatuTempo, Optional<WorkSchedule>> schedule = new HashMap<ScheManaStatuTempo, Optional<WorkSchedule>>();
 	
+	//・管理状態と勤務実績Map
 	private Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> dailySchedule = new HashMap<ScheManaStatuTempo, Optional<IntegrationOfDaily>>();
 }

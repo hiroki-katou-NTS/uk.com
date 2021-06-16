@@ -18,6 +18,11 @@ import nts.uk.screen.at.app.ksu001.start.WorkMapDtoList;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+/**
+ * 個人計集計結果　←集計内容によって情報が異なる
+ * @author hoangnd
+ *
+ */
 public class AggregatePersonalDto {
 	
 	// Map<社員ID, 想定給与額>

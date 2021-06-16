@@ -8,6 +8,11 @@ import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+/**
+ * 外部予算実績項目
+ * @author hoangnd
+ *
+ */
 public class ExternalBudgetDto {
 	private String externalBudgetCode;
 
