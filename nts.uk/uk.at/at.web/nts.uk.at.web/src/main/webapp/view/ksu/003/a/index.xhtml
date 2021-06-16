@@ -92,8 +92,7 @@
 						<!-- A2_2 -->
 						<label id="org-name" data-bind="text:organizationName"></label>
 					</div>
-					<!-- new UI display: inline-flex -->
-					<div id="functon-area-row2-right" style = "display: inline-flex">
+					<div id="functon-area-row2-right">
 						<!-- A2_5 -->
 						<label id="label-display">#{i18n.getText('KSU003_7')}</label> <label
 							id="hai-cham">#{i18n.getText('KSU003_8')}</label>
@@ -162,12 +161,12 @@
 								data-bind="click : toLeft">
 								<com:ko-if bind="indexBtnToLeft() % 2 == 0">
 									<div id="left-button">
-										<i data-bind="ntsIcon: { no: 152, width: 22, height: 13 }"></i>
+										<i data-bind="ntsIcon: { no: 152, width: 21, height: 11 }"></i>
 									</div>
 								</com:ko-if>
 								<com:ko-if bind="indexBtnToLeft() % 2 != 0">
 									<div id="left-button2">
-										<i data-bind="ntsIcon: { no: 153, width: 22, height: 13 }"></i>
+										<i data-bind="ntsIcon: { no: 153, width: 21, height: 11 }"></i>
 									</div>
 								</com:ko-if>
 							</button>
@@ -179,12 +178,12 @@
 								data-bind="click : toDown">
 								<com:ko-if bind="indexBtnToDown() % 2 == 0">
 									<div id="down-button">
-										<i data-bind="ntsIcon: { no: 150, width:13, height: 22 }"></i>
+										<i data-bind="ntsIcon: { no: 150, width:11, height: 22 }"></i>
 									</div>
 								</com:ko-if>
 								<com:ko-if bind="indexBtnToDown() % 2 != 0">
 									<div id="down-button2">
-										<i data-bind="ntsIcon: { no: 151, width:13, height: 22 }"></i>
+										<i data-bind="ntsIcon: { no: 151, width:11, height: 22 }"></i>
 									</div>
 								</com:ko-if>
 							</button>

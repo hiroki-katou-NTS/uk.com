@@ -345,8 +345,8 @@ module nts.uk.at.view.knr002.c {
                 $('#grid').igGridSelection('selectRow', vm.selectedRowIndex());
                 $("#grid").igGrid("dataSourceObject", vm.settingData).igGrid("dataBind");
                 if (checkLength = 17) {
-                    $("#grid").igGrid("option", "width", "534px");
-                    $("#grid").igGrid("option", "width", "535px");
+                    $("#grid").igGrid("option", "width", "599px");
+                    $("#grid").igGrid("option", "width", "600px");
                 }
             }
 
@@ -366,8 +366,8 @@ module nts.uk.at.view.knr002.c {
                 }
                 $('#grid').igGridSelection('selectRow', vm.selectedRowIndex());
                 if (checkLength = 18) {
-                    $("#grid").igGrid("option", "width", "534px");
-                    $("#grid").igGrid("option", "width", "535px");
+                    $("#grid").igGrid("option", "width", "599px");
+                    $("#grid").igGrid("option", "width", "600px");
                 }
             }
 
@@ -375,7 +375,7 @@ module nts.uk.at.view.knr002.c {
                 let vm = this;
 
                 $("#grid").ntsGrid({
-                    width: '535px', 
+                    width: '600px', 
                     height: '415px',
                     dataSource: vm.settingData,
                     primaryKey: 'id',
@@ -384,10 +384,10 @@ module nts.uk.at.view.knr002.c {
                     autoFitWindow: true,
                     columns: [
                         { headerText: getText("KNR002_95"), key: 'id', dataType: 'num', width: '0'},
-                        { headerText: getText("KNR002_95"), key: 'majorName', dataType: 'num', width: '115px'},
-                        { headerText: getText("KNR002_96"), key: 'smallName', dataType: 'string', width: '130px'},
+                        { headerText: getText("KNR002_95"), key: 'majorName', dataType: 'num', width: '120px'},
+                        { headerText: getText("KNR002_96"), key: 'smallName', dataType: 'string', width: '150px'},
                         { headerText: getText("KNR002_97"), key: 'updateValue', dataType: 'string', width: '80px'},
-                        { headerText: getText("KNR002_98"), key: 'inputRange', dataType: 'string', width: '210px'}
+                        { headerText: getText("KNR002_98"), key: 'inputRange', dataType: 'string', width: '240px'}
                     ],
                     features: [
                         {
