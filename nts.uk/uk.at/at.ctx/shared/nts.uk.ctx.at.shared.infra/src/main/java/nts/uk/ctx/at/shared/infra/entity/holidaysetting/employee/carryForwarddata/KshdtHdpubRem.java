@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.infra.entity.holidaysetting.employee.carryForwarddata;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -21,18 +22,10 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Table(name = "KSHDT_HDPUB_REM")
 public class KshdtHdpubRem extends ContractUkJpaEntity {
 	
-	@Id
-	@Column(name = "ID")
-	public String ID;
 	
-	@Column(name = "CID")
-	public String cId;
-	
-	@Column(name = "SID")
-	public String employeeId;
-
-	@Column(name = "TAGETMONTH")
-	public int tagetmonth;
+	/* 主キー */
+	@EmbeddedId
+	public KshdtHdpubRemPK pk;
 	
 	@Column(name = "DEADLINE")
 	public GeneralDate deadline;
@@ -45,6 +38,6 @@ public class KshdtHdpubRem extends ContractUkJpaEntity {
 	
 	@Override
 	protected Object getKey() {
-		return this.ID;
+		return pk;
 	}
 }

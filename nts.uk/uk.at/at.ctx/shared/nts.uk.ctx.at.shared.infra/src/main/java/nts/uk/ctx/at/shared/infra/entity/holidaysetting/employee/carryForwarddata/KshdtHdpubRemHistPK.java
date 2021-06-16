@@ -11,19 +11,19 @@ public class KshdtHdpubRemHistPK implements Serializable{
 	
     /** 会社ID  */
     @Column(name = "CID")
-    private String cid;
+    public String cid;
    
     /** 社員ID */
     @Column(name = "SID")
-    private String sid;
+    public String sid;
     
 	/** 年月 */
 	@Column(name = "YM")
 	@Basic(optional = false)
-	public Integer yearMonth;
+	public int yearMonth;
 	
 	/** 対象月 */
 	@Column(name = "TAGETMONTH")
 	@Basic(optional = false)
-	public Integer tagetmonth;
+	public int tagetmonth;
 }

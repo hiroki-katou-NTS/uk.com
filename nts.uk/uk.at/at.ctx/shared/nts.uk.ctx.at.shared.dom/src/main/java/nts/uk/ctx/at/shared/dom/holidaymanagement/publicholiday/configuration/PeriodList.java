@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration;
 
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -13,7 +12,6 @@ import nts.arc.time.calendar.period.DatePeriod;
  *
  */
 @Getter
-@Setter
 public class PeriodList {
 
 	/*

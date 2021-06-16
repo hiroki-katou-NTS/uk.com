@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.DayOfVacationUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
@@ -18,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainTy
 
 @Getter
 @Setter
-public class TempPublicHplidayManagement extends InterimRemain {
+public class TempPublicHplidayManagement extends InterimRemain implements DomainAggregate{
 	
 	/**
 	 * 公休使用日数

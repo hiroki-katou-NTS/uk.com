@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.PublicHol
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardData;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayCarryForwardInformation;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayCarryForwardInformationOutput;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayDigestionInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayErrors;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHplidayManagement;
@@ -230,13 +231,17 @@ public class AggregatePublicHolidayWork {
 	 * @param publicHolidaySetting 公休
 	 * @return 公休繰越情報
 	 */
-	public Pair<PublicHolidayCarryForwardInformation,List<PublicHolidayCarryForwardData>> calculateCarriedForwardInformation(
+	public PublicHolidayCarryForwardInformationOutput calculateCarriedForwardInformation(
 			String employeeId,
 			List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData, 
 			PublicHolidaySetting publicHolidaySetting){
 		
 		//集計期間の繰越データ作成
-		publicHolidayCarryForwardData.add(createPublicHolidayCarryForwardData(employeeId, publicHolidaySetting));
+		Optional<PublicHolidayCarryForwardData> CarryForwardData = 
+				(createPublicHolidayCarryForwardData(employeeId, publicHolidaySetting));
+		if(CarryForwardData.isPresent()){
+			publicHolidayCarryForwardData.add(CarryForwardData.get());
+		}
 		
 		//集計期間終了時点での未消化を算出
 		LeaveRemainingDayNumber unused = calculateUnused(publicHolidayCarryForwardData);
@@ -248,7 +253,8 @@ public class AggregatePublicHolidayWork {
 		LeaveRemainingDayNumber unusedNumber = new LeaveRemainingDayNumber(
 				deleteForwardData.stream().mapToDouble(x -> x.numberCarriedForward.v()).sum());
 		
-		return Pair.of(new PublicHolidayCarryForwardInformation(unusedNumber,unused),deleteForwardData) ;
+		return new PublicHolidayCarryForwardInformationOutput(
+				new PublicHolidayCarryForwardInformation(unusedNumber,unused),deleteForwardData) ;
 	}
 	
 	/**
@@ -257,23 +263,23 @@ public class AggregatePublicHolidayWork {
 	 * @param publicHolidaySetting　公休設定
 	 * @return　PublicHolidayCarryForwardData　公休繰越データ
 	 */
-	private PublicHolidayCarryForwardData createPublicHolidayCarryForwardData(
+	private Optional<PublicHolidayCarryForwardData> createPublicHolidayCarryForwardData(
 			String employeeId, PublicHolidaySetting publicHolidaySetting){
 		//公休設定．公休がマイナス時に繰越する = true　and 翌月繰越数 < 0
-		if(publicHolidaySetting.getCarryOverNumberOfPublicHolidayIsNegative() == 1 && this.numberCarriedForward.v() < 0.0){
-			return null; 
+		if(publicHolidaySetting.iscarryOverNumberOfPublicHoliday() && this.numberCarriedForward.v() < 0.0){
+			return Optional.empty(); 
 		}
 		//翌月繰越数 != 0
 		if(!(this.numberCarriedForward.v() != 0.0)){
-			return null;
+			return Optional.empty();
 		}
 		//処理期間の繰越データを作成
-		return new PublicHolidayCarryForwardData(
+		return Optional.of(new PublicHolidayCarryForwardData(
 				employeeId,
 				this.yearMonth,
 				this.ymd,
 				this.numberCarriedForward,
-				GrantRemainRegisterType.MONTH_CLOSE);
+				GrantRemainRegisterType.MONTH_CLOSE));
 	}
 	
 	/**

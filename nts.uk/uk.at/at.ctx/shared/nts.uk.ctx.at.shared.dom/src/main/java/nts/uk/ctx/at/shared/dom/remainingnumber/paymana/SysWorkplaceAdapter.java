@@ -14,6 +14,4 @@ public interface SysWorkplaceAdapter {
 	 */
 	// RequestList30
 	Optional<SWkpHistImport> findBySid (String employeeId, GeneralDate baseDate);
-	
-	public AffWorkplaceHistoryItemImport getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date);
 }

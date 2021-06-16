@@ -10,7 +10,7 @@ import nts.arc.primitive.constraint.HalfIntegerRange;
  */
 
 
-@HalfIntegerRange(min = 0, max = 999.5)
+@HalfIntegerRange(min = 0, max = 1.0)
 public class DayOfVacationUse extends HalfIntegerPrimitiveValue<DayOfVacationUse> {
 
 	/**

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryF
 
 
 
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
@@ -13,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
  *
  *	公休繰越データ
  */
-public class PublicHolidayCarryForwardData {
+public class PublicHolidayCarryForwardData implements DomainAggregate{
 
 	/*
 	 * 社員ID

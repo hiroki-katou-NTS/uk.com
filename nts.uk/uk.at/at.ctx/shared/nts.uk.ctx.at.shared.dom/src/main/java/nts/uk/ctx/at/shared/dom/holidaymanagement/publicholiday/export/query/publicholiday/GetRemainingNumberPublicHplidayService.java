@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Pu
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardData;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.AggrResultOfPublicHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayCarryForwardInformation;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayCarryForwardInformationOutput;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayDigestionInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayErrors;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayInformation;
@@ -60,11 +61,7 @@ public class GetRemainingNumberPublicHplidayService {
 			Optional<CreateAtr> createAtr,
 			Optional<DatePeriod> periodOverWrite,
 			CacheCarrier cacheCarrier,
-			RequireM1 require,
-			RequireM5 require5,
-			RequireM6 require6,
-			RequireM7 require7,
-			RequireM8 require8
+			RequireM1 require
 			){
 		
 		//公休設定を取得する
@@ -76,9 +73,9 @@ public class GetRemainingNumberPublicHplidayService {
 		}
 		//集計期間WORKを作成
 		List<AggregatePublicHolidayWork> aggregatePublicHolidayWork = publicHolidaySetting.createAggregatePeriodWork(
-				employeeId, yearMonth,criteriaDate, cacheCarrier, require7, require8);
+				employeeId, yearMonth,criteriaDate, cacheCarrier, require);
 		//繰越データを取得する
-		List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData = getPublicHolidayCarryForwardData(employeeId, require5);
+		List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData = getPublicHolidayCarryForwardData(employeeId, require);
 		
 		//暫定公休管理データを取得する
 		List<TempPublicHplidayManagement> tempPublicHplidayManagement = getTempPublicHplidayManagement(
@@ -90,7 +87,7 @@ public class GetRemainingNumberPublicHplidayService {
 				performReferenceAtr,
 				createAtr,
 				periodOverWrite,
-				require6);
+				require);
 		
 		List<PublicHolidayInformation> publicHolidayInformation = new ArrayList<>();
 		
@@ -104,16 +101,16 @@ public class GetRemainingNumberPublicHplidayService {
 				
 				
 			//繰越データを作成
-			Pair<PublicHolidayCarryForwardInformation,List<PublicHolidayCarryForwardData>> CarryForwardInformation=
+			PublicHolidayCarryForwardInformationOutput CarryForwardInformation=
 					publicHolidayWork.calculateCarriedForwardInformation(
 							employeeId,publicHolidayCarryForwardData,publicHolidaySetting);
 			
 			publicHolidayInformation.add(new PublicHolidayInformation(publicHolidayWork.getYearMonth(),
 																		afterDigestion.getLeft(),
-																		CarryForwardInformation.getLeft(),
+																		CarryForwardInformation.publicHolidayCarryForwardInformation,
 																		afterDigestion.getRight()));
 			
-			publicHolidayCarryForwardData = CarryForwardInformation.getRight();
+			publicHolidayCarryForwardData = CarryForwardInformation.publicHolidayCarryForwardData;
 		}
 		return new AggrResultOfPublicHoliday(publicHolidayInformation, publicHolidayCarryForwardData);
 		
@@ -179,7 +176,7 @@ public class GetRemainingNumberPublicHplidayService {
 	}
 	
 	
-	public static interface RequireM1{
+	public static interface RequireM1 extends RequireM5, RequireM6,RequireM7, RequireM8{
 		//公休設定を取得する（会社ID）
 		PublicHolidaySetting publicHolidaySetting(String companyId);
 	}
@@ -209,7 +206,7 @@ public class GetRemainingNumberPublicHplidayService {
 		List<TempPublicHplidayManagement> tempPublicHplidayManagement(String employeeId, DatePeriod ymd, RemainType remainType);
 	}
 	
-	public static interface RequireM7 extends PublicHolidaySetting.RequireM1{
+	public static interface RequireM7 extends PublicHolidaySetting.RequireM1, RequireM8{
 	}
 	public static interface RequireM8 extends PublicHolidaySetting.RequireM2{
 	}

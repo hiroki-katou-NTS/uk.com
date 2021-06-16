@@ -6,10 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.AffWorkplaceHistoryItemImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SWkpHistImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysWorkplaceAdapter;
-import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
@@ -35,22 +33,4 @@ public class SysWorkplaceAdapterImpl implements SysWorkplaceAdapter{
 		return Optional.empty();
 	}
 	
-	/**
-	 * [No.650]社員が所属している職場を取得する
-	 * 社員と基準日から所属職場履歴項目を取得する
-	 * @param employeeID
-	 * @param date
-	 * @return
-	 */
-	@Override
-	public AffWorkplaceHistoryItemImport getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date){
-		AffWorkplaceHistoryItemExport affWorkplaceHistoryItem  = workplacePub.getAffWkpHistItemByEmpDate(employeeID, date);
-		
-		return new AffWorkplaceHistoryItemImport(
-				affWorkplaceHistoryItem.getHistoryId(),
-				affWorkplaceHistoryItem.getWorkplaceId(),
-				affWorkplaceHistoryItem.getNormalWorkplaceId()
-				);
-	}
-
 }

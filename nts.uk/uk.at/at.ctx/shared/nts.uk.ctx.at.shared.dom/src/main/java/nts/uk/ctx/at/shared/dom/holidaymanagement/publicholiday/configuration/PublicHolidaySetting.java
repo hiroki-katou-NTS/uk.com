@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,8 +25,8 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.pub
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery.RequireM7;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureStartEndOutput;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.shr.com.time.calendar.Day;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
@@ -64,12 +63,11 @@ public class PublicHolidaySetting extends AggregateRoot {
 	 * @param criteriaDate
 	 * @param cacheCarrier
 	 * @param require
-	 * @param require2
 	 * @return
 	 */
 	public List<AggregatePublicHolidayWork> createAggregatePeriodWork(
 			String employeeId,List<YearMonth> yearMonth,GeneralDate criteriaDate, 
-			CacheCarrier cacheCarrier, RequireM1 require,RequireM2 require2){
+			CacheCarrier cacheCarrier, RequireM1 require){
 		
 		//集計期間を作成する
 		List<PeriodList> periodList = createPeriod(employeeId, yearMonth, criteriaDate, cacheCarrier, require);
@@ -77,7 +75,7 @@ public class PublicHolidaySetting extends AggregateRoot {
 		//集計期間List毎の日数設定を取得
 		List<AggregatePublicHolidayWork> aggregatePublicHolidayWork = 
 				AggregationPeriodDailyNumberSetting(employeeId, periodList, 
-						criteriaDate, cacheCarrier,require2);
+						criteriaDate, cacheCarrier,require);
 		
 		return aggregatePublicHolidayWork;
 	}
@@ -100,19 +98,24 @@ public class PublicHolidaySetting extends AggregateRoot {
 		
 		List<PeriodList> periodList = new ArrayList<>();
 		//INPUT．Require締め日を取得
-		Closure losure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, this.companyID, criteriaDate);
+		Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, this.companyID, criteriaDate);
 		//公休管理期間設定を確認
 		if(this.publicHolidayPeriod == PublicHolidayPeriod.CLOSURE_PERIOD){
 			//管理期間 = 締め期間
 			//締め開始日と締め日を取得する
-			Pair<Day, Day> startDayAndClosureDay = losure.getClosureStartDayAndClosureDay();
+			Optional<ClosureStartEndOutput> startDayAndClosureDay = closure.getClosureStartDayAndClosureDay();
+			
+			if(!startDayAndClosureDay.isPresent()){
+				return periodList;
+			}
+			
 			//年月の件数ループ
 			for(val yearMonth : yearMonths){
 				
 				//年月＋締め開始日、年月＋締め日の期間を作成
 				DatePeriod period = new DatePeriod(
-						GeneralDate.ymd(yearMonth,startDayAndClosureDay.getLeft().v().intValue()),
-						GeneralDate.ymd(yearMonth,startDayAndClosureDay.getRight().v().intValue()));
+						GeneralDate.ymd(yearMonth,startDayAndClosureDay.get().start.v().intValue()),
+						GeneralDate.ymd(yearMonth,startDayAndClosureDay.get().closure.v().intValue()));
 				
 				//期間（List）に追加
 				periodList.add(new PeriodList(yearMonth, period));
@@ -120,7 +123,7 @@ public class PublicHolidaySetting extends AggregateRoot {
 			}
 		}else{
 			//管理期間 = 1日から末日
-			Optional<ClosureDate> closureDate = losure.getClosureDateOfCurrentMonth();
+			Optional<ClosureDate> closureDate = closure.getClosureDateOfCurrentMonth();
 			if(closureDate.isPresent()){
 			//締め日が末日か
 				if(closureDate.get().getLastDayOfMonth() == true){
@@ -163,16 +166,17 @@ public class PublicHolidaySetting extends AggregateRoot {
 		CompanyDto compInfor = require.firstMonth(cacheCarrier, this.companyID);
 		
 		//公休日数取得
-		PublicHolidayManagementUsageUnit publicHolidayManagementUsageUnit =require.publicHolidayManagementUsageUnit();
+		PublicHolidayManagementUsageUnit publicHolidayManagementUsageUnit =
+				require.publicHolidayManagementUsageUnit(this.companyID);
 		
 		List<PublicHolidayMonthSetting> publicHolidayMonthSettings =
-				publicHolidayManagementUsageUnit.GetNumberofPublicHoliday(require, employeeId, employeeId,periodList , criteriaDate);
+				publicHolidayManagementUsageUnit.GetNumberofPublicHoliday(require, this.companyID, employeeId,periodList , criteriaDate);
 		
 		
 		List<AggregatePublicHolidayWork> aggregatePublicHolidayWork =  new ArrayList<>();
 		//期限日作成
 		for(PeriodList period : periodList){
-			GeneralDate ymd =createDeadline(compInfor,period.getPeriod().end());
+			GeneralDate ymd =createDeadline(compInfor.getStartMonth(),period.getPeriod().end());
 			
 			aggregatePublicHolidayWork.add(new AggregatePublicHolidayWork(
 					period.getYearMonth(),
@@ -197,7 +201,7 @@ public class PublicHolidaySetting extends AggregateRoot {
 	 * @param endDay 当月の最終日
 	 * @return GeneralDate 期限日
 	 */
-	public GeneralDate createDeadline(CompanyDto compInfor, GeneralDate endDay){
+	public GeneralDate createDeadline(int compInfor, GeneralDate endDay){
 		GeneralDate deadline = endDay;
 		
 		//繰越期限を確認
@@ -213,9 +217,9 @@ public class PublicHolidaySetting extends AggregateRoot {
 			//年度末
 			case YEAR_END:
 				
-				int year = (endDay.month() < compInfor.getStartMonth()) ?
-							(compInfor.getStartMonth() == 1 ? endDay.year()-1 :endDay.year())
-							:compInfor.getStartMonth() == 1 ? endDay.year() :endDay.year()+1;
+				int year = (endDay.month() < compInfor) ?
+							(compInfor == 1 ? endDay.year()-1 :endDay.year())
+							:compInfor == 1 ? endDay.year() :endDay.year()+1;
 				YearMonth yearMonth =  endDay.yearMonth();
 				
 				int day = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1).addDays(-1).day();
@@ -230,8 +234,13 @@ public class PublicHolidaySetting extends AggregateRoot {
 		return deadline;
 	}
 	
+	
+	public boolean iscarryOverNumberOfPublicHoliday(){
+		return this.carryOverNumberOfPublicHolidayIsNegative == 1;
+	}
+	
 	//締め
-	public static interface RequireM1 extends ClosureService.RequireM3{
+	public static interface RequireM1 extends ClosureService.RequireM3, RequireM2{
 	}
 
 	public static interface RequireM2 extends ClosureService.RequireM3, RequireM7, PublicHolidayManagementUsageUnit.RequireM1 {
@@ -239,6 +248,6 @@ public class PublicHolidaySetting extends AggregateRoot {
 		CompanyDto firstMonth(CacheCarrier cacheCarrier,String companyId);
 		
 		//公休利用単位設定
-		PublicHolidayManagementUsageUnit publicHolidayManagementUsageUnit();
+		PublicHolidayManagementUsageUnit publicHolidayManagementUsageUnit(String companyId);
 	}
 }

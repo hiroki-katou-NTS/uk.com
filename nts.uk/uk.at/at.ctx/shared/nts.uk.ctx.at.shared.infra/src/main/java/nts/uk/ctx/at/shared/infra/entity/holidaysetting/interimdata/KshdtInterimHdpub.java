@@ -2,11 +2,9 @@ package nts.uk.ctx.at.shared.infra.entity.holidaysetting.interimdata;
 
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
-
-import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
@@ -20,16 +18,9 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Table(name ="KSHDT_INTERIM_HDPUB")
 public class KshdtInterimHdpub extends ContractUkJpaEntity {
 
-	@Id
-	@Column(name = "ID")
-	public String ID;
-	
-	/** 社員ID */
-	@Column(name ="SID")
-	public String sid;
-	/** 対象日 */
-	@Column(name ="YMD")
-	public GeneralDate ymd;
+	/* 主キー */
+	@EmbeddedId
+    public KshdtInterimHdpubPK pk;
 	/** 作成元区分	 */
 	@Column(name ="CREATOR_ATR")
 	public int createAtr;
@@ -39,6 +30,6 @@ public class KshdtInterimHdpub extends ContractUkJpaEntity {
 	
 	@Override
 	protected Object getKey() {
-		return this.ID;
+		return pk;
 	}
 }

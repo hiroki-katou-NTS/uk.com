@@ -4,18 +4,23 @@ package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
+import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.PublicHolidayMonthSetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.company.CompanyMonthDaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.EmployeeMonthDaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employment.EmploymentMonthDaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySetting;
-import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.AffWorkplaceHistoryItemImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 
 /**
@@ -63,12 +68,12 @@ public class PublicHolidayManagementUsageUnit extends AggregateRoot{
 		
 		//公休管理使用単位を確認する
 		//雇用の公休管理するか
-		if(this.isManageEmpPublicHd == 1){
+		if(isEmpPublicHd()){
 			//雇用月間日数設定を取得する
 			empPublicHolidayMonthSetting = getEmploymentMonthDaySetting(require, companyID,employeeId, periodList,criteriaDate);
 		}
 		//職場の公休管理するか
-		if(this.isManageWkpPublicHd == 1){
+		if(isWkpPublicHd()){
 			//職場月間日数設定を取得する
 			wkpPublicHolidayMonthSetting = getWkpPublicHolidayMonthSetting(require, companyID,employeeId, periodList,criteriaDate);
 		}
@@ -81,16 +86,16 @@ public class PublicHolidayManagementUsageUnit extends AggregateRoot{
 				companyMonthDaySetting.getPublicHolidayMonthSetting(periodList);
 	
 		//会社月間日数設定を雇用月間日数設定で上書きする
-		if(this.isManageEmpPublicHd == 1){
+		if(isEmpPublicHd()){
 				updatesetting(publicHolidayMonthSetting, empPublicHolidayMonthSetting);
 		}
 		//会社月間日数設定を職場月間日数設定で上書きする
-		if(this.isManageWkpPublicHd == 1){
+		if(isWkpPublicHd()){
 			updatesetting(publicHolidayMonthSetting, wkpPublicHolidayMonthSetting);
 		}
 		
 		//社員の公休管理する ＝ true
-		if(this.isManageEmployeePublicHd == 1){
+		if(isEmployeePublicHd()){
 			//社員月間日数設定を取得する
 			EmployeeMonthDaySetting employeeMonthDaySetting = require.employeeMonthDaySetting(companyID, employeeId) ;
 			
@@ -105,16 +110,36 @@ public class PublicHolidayManagementUsageUnit extends AggregateRoot{
 	}
 	
 	
+	//雇用の公休管理をするがtureか
+	private boolean isEmpPublicHd(){
+		return this.isManageEmpPublicHd == 1;
+	}
+	//職場の公休管理をするがtureか
+	private boolean isWkpPublicHd(){
+		return this.isManageWkpPublicHd == 1;
+	}
+	// 社員の公休管理をするがtureか
+	private boolean isEmployeePublicHd(){
+		return this.isManageEmployeePublicHd == 1;
+	}
+	
+	
 	//雇用月間日数設定を取得する
 	private List<PublicHolidayMonthSetting> getEmploymentMonthDaySetting(
 			RequireM1 require, String companyID, String employeeId,	List<PeriodList> periodList, GeneralDate criteriaDate){
 		
 		//社員と基準日から雇用履歴項目を取得する
-		AffiliationInforOfDailyAttd affiliationInforOfDailyAttd =
-				AffiliationInforOfDailyAttd.create(require, employeeId, criteriaDate);
+		List<String> employeeIds = new ArrayList<>();
+		employeeIds.add(employeeId);
+		List<SharedSidPeriodDateEmploymentImport> employmentHistList =
+				require.getEmpHistBySidAndPeriod(employeeIds,  new DatePeriod(criteriaDate, criteriaDate));
+		
+		if(employmentHistList.isEmpty()){
+			return new ArrayList<>();
+		}
 		
 		EmploymentMonthDaySetting employmentMonthDaySetting = require.employmentMonthDaySetting(
-				new CompanyId(companyID), affiliationInforOfDailyAttd.getEmploymentCode().toString());
+				new CompanyId(companyID),employmentHistList.get(0).getAffPeriodEmpCodeExports().get(0).getEmploymentCode());
 		
 		//期間と雇用コードから雇用月間日数設定を取得する
 		return employmentMonthDaySetting.getPublicHolidayMonthSetting(periodList);
@@ -125,10 +150,14 @@ public class PublicHolidayManagementUsageUnit extends AggregateRoot{
 			RequireM1 require, String companyID, String employeeId,	List<PeriodList> periodList, GeneralDate criteriaDate){
 		
 		//社員と基準日から所属職場履歴項目を取得する
-		AffWorkplaceHistoryItemImport affWorkplaceHistoryItem = require.getAffWkpHistItemByEmpDate(employeeId, criteriaDate);
+		Optional<SharedAffWorkPlaceHisImport> affWorkplaceHistoryItem = require.getAffWorkPlaceHis(employeeId, criteriaDate);
+		
+		if(!affWorkplaceHistoryItem.isPresent()){
+			return new ArrayList<>();
+		}
 		
 		WorkplaceMonthDaySetting workplaceMonthDaySetting =
-				require.workplaceMonthDaySetting(new CompanyId(companyID), affWorkplaceHistoryItem.getWorkplaceId());
+				require.workplaceMonthDaySetting(new CompanyId(companyID), affWorkplaceHistoryItem.get().getWorkplaceId());
 		//期間と職場IDから職場月間日数設定を取得する
 		return  workplaceMonthDaySetting.getPublicHolidayMonthSetting(periodList);
 	}
@@ -162,7 +191,11 @@ public class PublicHolidayManagementUsageUnit extends AggregateRoot{
 		EmployeeMonthDaySetting employeeMonthDaySetting(String companyId, String employeeId);
 
 		//社員と基準日から所属職場履歴項目を取得する
-		AffWorkplaceHistoryItemImport getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date);
+		
+		Optional<SharedAffWorkPlaceHisImport> getAffWorkPlaceHis(String employeeId, GeneralDate processingDate);
+		
+		//社員（List）と期間から雇用履歴を取得する
+		List<SharedSidPeriodDateEmploymentImport> getEmpHistBySidAndPeriod(List<String> employeeID, DatePeriod Period);
 	}
 	
 }
