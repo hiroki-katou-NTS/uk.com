@@ -4470,13 +4470,15 @@ var nts;
                     }
                 });
                 var startP = function () {
-                    if (!cantCall()) {
-                        _start.apply(__viewContext, [__viewContext]);
-                    }
-                    else {
-                        loadEmployeeCodeConstraints()
-                            .always(function () { return _start.apply(__viewContext, [__viewContext]); });
-                    }
+                    setTimeout(function () {
+                        if (!cantCall()) {
+                            _start.apply(__viewContext, [__viewContext]);
+                        }
+                        else {
+                            loadEmployeeCodeConstraints()
+                                .always(function () { return _start.apply(__viewContext, [__viewContext]); });
+                        }
+                    }, 1);
                 };
                 var noSessionWebScreens = [
                     "/view/sample/",
