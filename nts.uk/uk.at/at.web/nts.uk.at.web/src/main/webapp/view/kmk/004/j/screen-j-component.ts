@@ -168,7 +168,9 @@ class ScreenJComponent extends ko.ViewModel {
 	mounted() {
 		const vm = this;
 		vm.initEmployeeList();
-            
+         setTimeout(() => {
+            $('#monthly-list').css('border','none');
+        },500);    
 		$("#com-ccg001").focus();
 	}
 
@@ -287,13 +289,12 @@ class ScreenJComponent extends ko.ViewModel {
 			disableSelection: false,
 			maxRows: 12
 		});
-        setTimeout(() => {
+
 	            vm.regSelectedEvent();
 
 	            vm.$blockui("hide");
 
             vm.screenData().selected.valueHasMutated();
-        }, 1000);
 		
 	}
 

@@ -125,6 +125,9 @@ class ScreenGComponent extends ko.ViewModel {
 	}
 
 	mounted() {
+         setTimeout(() => {
+            $('#monthly-list').css('border','none');
+        },500);
 	}
 
 }
