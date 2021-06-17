@@ -111,6 +111,7 @@ module knr002.d {
             private copy(): any {
                 let self = this;
                 // Process
+                blockUI.invisible();
                 self.selectableCodeList = [];
                 _.forEach(self.destinationCopyList(), e => {
                     if(e.availability)
@@ -164,6 +165,11 @@ module knr002.d {
             private call_C_Api(command: any): any{
                 delete command.displayName;
                 service.registerAndSubmitChanges(command).done(() => { 
+                    let updateRemoteInput = {
+                        listEmpTerminalCode: command.empInfoTerCode
+                    }
+                    service.updateRemoteSettings(updateRemoteInput).done(() => {})
+
                     nts.uk.ui.windows.close();
                 }).fail(err => {
                     dialog.error({messageId: err.messageId});

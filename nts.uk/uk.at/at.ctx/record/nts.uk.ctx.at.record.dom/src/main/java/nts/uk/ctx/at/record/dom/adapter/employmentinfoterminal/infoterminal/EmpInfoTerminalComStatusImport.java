@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.adapter.imploymentinfoterminal.infoterminal;
+package nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal;
 
 import lombok.Value;
 import nts.arc.time.GeneralDateTime;

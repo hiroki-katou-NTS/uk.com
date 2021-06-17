@@ -17,6 +17,14 @@ module nts.uk.at.view.kaf020.a {
 
         created(params: AppInitParam) {
             const vm = this;
+			if(nts.uk.request.location.current.isFromMenu) {
+				sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');	
+			} else {
+				if(!_.isNil(__viewContext.transferred.value)) {
+					vm.isFromOther = true;
+					params = __viewContext.transferred.value;
+				}
+			}
 
             if (!_.isEmpty(params)) {
                 if (!_.isEmpty(params.employeeIds)) {
