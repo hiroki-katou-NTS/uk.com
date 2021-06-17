@@ -132,8 +132,8 @@ module knr002.h {
                             let employee = new ExportEmployeeSearchDto(item.employeeId, item.employeeCode, item.businessName, workplaceName);
                             employeesListTemp.push(employee);
                         }
-                        //  self.employeesListVal(_.sortBy(employeesListTemp, e => e.employeeCode));
-                        self.employeesListVal(employeesListTemp);
+                        self.employeesListVal(_.sortBy(employeesListTemp, e => e.employeeCode));
+                        //  self.employeesListVal(employeesListTemp);
                     }
                     dfd.resolve();
                 });
@@ -156,8 +156,21 @@ module knr002.h {
                         // do something
                         blockUI.clear();
                     });
-                }else {
-                    setShared('KNR002H_selectedList', self.employeesListVal().map(e => e.employeeId));
+                } else {
+                	   let registDto: any = {};
+		               registDto.terminalCode = self.empInfoTerCode;
+		               registDto.selectedEmpIds = self.employeesListVal().map(e => e.employeeId);
+		               setShared('KNR002H_selectedList', self.employeesListVal().map(e => e.employeeId));
+		               blockUI.invisible();
+			           service.registSpecifiedEmps(registDto).done(() => {
+                           dialog.info({ messageId: "Msg_15" }).then(() => {
+                        	// do something
+                           });
+                       }).fail(error => {
+                                dialog.error({messageId: error.messageId, messageParams: error.parameterIds});
+                       }).always(() => {
+                           blockUI.clear();
+                       }); 
                     nts.uk.ui.windows.close();
                 } 
             }

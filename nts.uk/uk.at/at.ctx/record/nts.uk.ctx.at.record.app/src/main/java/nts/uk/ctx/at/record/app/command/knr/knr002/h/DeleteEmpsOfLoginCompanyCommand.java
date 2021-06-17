@@ -12,11 +12,9 @@ import nts.uk.ctx.at.shared.dom.common.EmployeeId;
  *
  */
 @Value
-public class MakeSelectedEmployeesCommand {
+public class DeleteEmpsOfLoginCompanyCommand {
 	//	就業情報端末コード
 	private EmpInfoTerminalCode terminalCode;
 	//	ログイン会社の社員ID(List)
-	private List<EmployeeId> loginCompanyEmployeesID;
-	//	選択した社員ID<List>
-	private List<EmployeeId> selectedEmployeesID;
+	List<EmployeeId> loginCompanyEmpIds;
 }
