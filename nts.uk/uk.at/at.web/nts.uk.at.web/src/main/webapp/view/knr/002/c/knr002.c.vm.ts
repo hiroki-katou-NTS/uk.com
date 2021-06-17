@@ -105,9 +105,9 @@ module nts.uk.at.view.knr002.c {
                 let inputValue = $('#C6_5').val();
                 console.log(inputValue.length, 'input lenght'); 
                 if (event.keyCode  !== 8) {
-                    if (vm.inputModeValue == 0 || vm.inputModeValue == 1) {
-                        let reg = new RegExp('[a-zA-Z]');
-                        if (parseInt(inputValue) < parseInt(vm.fromLetter()) || parseInt(inputValue) > parseInt(vm.toLetter()) || inputValue.length > vm.numOfDigits() || reg.test(inputValue)) {
+                    if (vm.inputModeValue == 0 || vm.inputModeValue == 1 || vm.inputModeValue == 2) {
+                        let reg = new RegExp('^[0-9]*$');
+                        if (parseInt(inputValue) < parseInt(vm.fromLetter()) || parseInt(inputValue) > parseInt(vm.toLetter()) || inputValue.length > vm.numOfDigits() || !reg.test(inputValue)) {
                             nts.uk.ui.dialog.error({messageId: "Msg_2184"});
                         }
                     }
@@ -124,7 +124,7 @@ module nts.uk.at.view.knr002.c {
                 const vm = this;
                 let inputValue = $('#C7_7').val();
                 if (event.keyCode !== 8) {
-                    if (inputValue.length > vm.numOfDigits()) {
+                    if (inputValue.length > 4) {
                         nts.uk.ui.dialog.error({messageId: "Msg_2184"});
                     } else {
                         if (vm.rowData().inputRange == '9900') {
@@ -140,7 +140,14 @@ module nts.uk.at.view.knr002.c {
 
             private timeModeCheckInput(numOfDigit: number, input: string) {
                 const vm = this;
-                if (numOfDigit >= 3) {
+                let reg = new RegExp('^[0-9]*$');
+                if (!reg.test(input)) {
+                    nts.uk.ui.dialog.error({messageId: "Msg_2184"});
+                    vm.inputTimeError = true;
+                    return;
+                }
+
+                if (numOfDigit >= 4) {
                     if (parseInt(input.substr(0, 2)) > 23 || parseInt(input.substr(0, 2)) < 0 || parseInt(input.substr(2)) > 59 || parseInt(input.substr(2)) < 0) {
                         nts.uk.ui.dialog.error({messageId: "Msg_2184"});
                         vm.inputTimeError = true;
@@ -379,10 +386,10 @@ module nts.uk.at.view.knr002.c {
                     case INPUT_TYPE.LETTER:
                     case INPUT_TYPE.TIME:  
 
-                        let reg = new RegExp('[a-zA-Z]');
+                        let reg = new RegExp('^[0-9]*$');
                         
-                        if (vm.inputModeValue == 0 || vm.inputModeValue == 1) {
-                            if (parseInt(inputValue) < parseInt(vm.fromLetter()) || parseInt(inputValue) > parseInt(vm.toLetter()) || inputValue.length > vm.numOfDigits() || reg.test(inputValue)) {
+                        if (vm.inputModeValue == 0 || vm.inputModeValue == 1 || vm.inputModeValue == 2) {
+                            if (parseInt(inputValue) < parseInt(vm.fromLetter()) || parseInt(inputValue) > parseInt(vm.toLetter()) || inputValue.length > vm.numOfDigits() || !reg.test(inputValue)) {
                                 nts.uk.ui.dialog.error({messageId: "Msg_2184"});
                                 break;
                             }
@@ -390,7 +397,7 @@ module nts.uk.at.view.knr002.c {
 
                         let inputValue2 = $('#C7_7').val();
                         if (vm.inputModeValue == 4) {
-                            if (inputValue2.length > vm.numOfDigits()) {
+                            if (inputValue2.length != 4) {
                                 nts.uk.ui.dialog.error({messageId: "Msg_2184"});
                                 break;
                             } else {
@@ -405,6 +412,7 @@ module nts.uk.at.view.knr002.c {
                         }
 
                         if (!(vm.updateValue().length > 0) || vm.inputTimeError) {
+                            vm.inputTimeError = false;
                             break;
                         }
                         vm.checkExistBeforeAdd(vm.rowData().smallClassification, vm.rowData().majorClassification);
@@ -540,8 +548,8 @@ module nts.uk.at.view.knr002.c {
             }
 
             public closeDialog() {
-                $('#single-list_container').focus();
-
+                // $('#single-list_container').focus();
+                nts.uk.ui.errors.clearAll();
                 setTimeout(() => {
                     nts.uk.ui.errors.clearAll();
                     $(window.parent.document).find(".ui-dialog-buttonset button").trigger("click");
