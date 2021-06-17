@@ -47,10 +47,14 @@ public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetM
      */
     @Override
     public void setHalfDayManage(HalfDayManage halfDayManage) {
-        this.entity.setHalfManageAtr(halfDayManage.manageType.value);
-        this.entity.setHalfMaxReference(halfDayManage.reference.value);
-        this.entity.setHalfMaxUniformComp(halfDayManage.maxNumberUniformCompany.v());
-        this.entity.setHalfRoundProc(halfDayManage.roundProcesCla.value);
+		this.entity.setHalfManageAtr(halfDayManage.manageType.value);
+		this.entity.setHalfMaxReference(halfDayManage.reference.value);
+		if (halfDayManage.maxNumberUniformCompany.v() == null) {
+			this.entity.setHalfMaxUniformComp(5);
+		} else {
+			this.entity.setHalfMaxUniformComp(halfDayManage.maxNumberUniformCompany.v());
+		}
+		this.entity.setHalfRoundProc(halfDayManage.roundProcesCla.value);
     }
 
     /*

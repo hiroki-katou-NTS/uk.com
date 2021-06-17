@@ -97,6 +97,9 @@ public class DailyCorrectEventServiceCenter {
 		WorkType workType = getFirstOrDefault(workTypeRepo.getPossibleWorkType(companyId, 
 				Arrays.asList(baseDto.getWorkInfo().getActualWorkInfo().getWorkTypeCode())), null);
 		WorkingConditionItem workCondition = getWorkCondition(eventBus, updated.getEmployeeId(), updated.getDate());
+		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
+				.findAll(AppContexts.user().companyId()).stream()
+				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
 		
 		IntegrationOfDaily domain = baseDto.toDomain(updated.getEmployeeId(), updated.getDate());
 		WorkInfoOfDailyPerformance wi = new WorkInfoOfDailyPerformance(updated.getEmployeeId(), updated.getDate(), domain.getWorkInformation());
@@ -133,11 +136,11 @@ public class DailyCorrectEventServiceCenter {
 				});
 		//updated.getItems().addAll(Arrays.asList(a));
 		DailyRecordDto correctted = AttendanceItemUtil.fromItemValues(
-				DailyRecordDto.from(overtimeCorrectService.correct(domain, Optional.of(workType), false)), 
+				DailyRecordDto.from(overtimeCorrectService.correct(domain, Optional.of(workType), false), optionalMaster), 
 				updated.getItems());
 		correctedType.add(DailyDomainGroup.ATTENDANCE_TIME);
 		
-		EventCorrectResult result = new EventCorrectResult(setOptionalItemAtr(baseDto), setOptionalItemAtr(correctted), updated, correctedType);
+		EventCorrectResult result = new EventCorrectResult(setOptionalItemAtr(baseDto, optionalMaster), correctted, updated, correctedType);
 		
 		result.removeEditStatesForCorrectedItem();
 		
@@ -145,11 +148,8 @@ public class DailyCorrectEventServiceCenter {
 	}
 	
 	
-	private DailyRecordDto setOptionalItemAtr(DailyRecordDto dto){
+	private DailyRecordDto setOptionalItemAtr(DailyRecordDto dto, Map<Integer, OptionalItem> optionalMaster){
 		dto.getOptionalItem().ifPresent(optional -> {
-			Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
-					.findAll(AppContexts.user().companyId()).stream()
-					.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
 			
 			optional.correctItems(optionalMaster);
 		});
