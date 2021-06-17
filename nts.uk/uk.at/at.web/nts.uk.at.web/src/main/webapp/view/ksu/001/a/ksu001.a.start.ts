@@ -14,7 +14,7 @@ module nts.uk.at.view.ksu001.a {
             
             __viewContext.bind(__viewContext.viewModel);
 
-            __viewContext.viewModel.viewA.setIconEventHeader();
+            //__viewContext.viewModel.viewA.setIconEventHeader();
 
             if (__viewContext.viewModel.viewAC.listPageComIsEmpty == true) {
                 $('.ntsButtonTableButton').addClass('nowithContent');
