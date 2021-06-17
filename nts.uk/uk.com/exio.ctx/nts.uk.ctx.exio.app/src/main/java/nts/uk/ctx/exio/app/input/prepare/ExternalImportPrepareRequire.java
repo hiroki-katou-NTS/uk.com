@@ -21,10 +21,12 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
+import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
+import nts.uk.ctx.exio.dom.input.validation.ImportingUserConditionRepository;
 import nts.uk.ctx.exio.dom.input.validation.condition.ImportingUserCondition;
 
 @Stateless
@@ -43,19 +45,23 @@ public class ExternalImportPrepareRequire {
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
 	}
 	
+	@Inject
+	private ImportingUserConditionRepository importingUserConditionRepo;
+	
+	@Inject
+	private ImportableItemsRepository importableItemsRepository;
+	
 	public class RequireImpl implements Require {
 
 		@Override
 		public List<ImportingUserCondition> getImportingUserCondition(String companyId, String settingCode,
 				List<Integer> itemNo) {
-			// TODO Auto-generated method stub
-			return null;
+			return importingUserConditionRepo.get(companyId, settingCode, itemNo);
 		}
 
 		@Override
 		public List<ImportableItem> getDefinition(String companyId, ImportingGroupId groupId) {
-			// TODO Auto-generated method stub
-			return null;
+			return importableItemsRepository.get(companyId, groupId);
 		}
 
 		@Override
