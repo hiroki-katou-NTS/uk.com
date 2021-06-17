@@ -57,6 +57,10 @@ module nts.uk.at.view.kdl055.a.viewmodel {
         intakeInput() {
             const vm = this;
             // vm.upload();
+            if(_.isEmpty(vm.filename())){
+                vm.$dialog.error({ messageId: "Msg_722" });  
+                return; 
+            }
             vm.$blockui('show');
             // call api upload file
             $('#file-upload').ntsFileUpload({ stereoType: "excelFile" }).done((res: any) => {
