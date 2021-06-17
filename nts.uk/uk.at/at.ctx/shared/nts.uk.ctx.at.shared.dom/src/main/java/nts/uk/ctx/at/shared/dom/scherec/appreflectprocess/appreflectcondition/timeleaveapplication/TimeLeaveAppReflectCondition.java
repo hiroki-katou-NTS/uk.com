@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -272,12 +273,13 @@ public class TimeLeaveAppReflectCondition extends DomainObject {
 		} else {
 			dailyApp.getAttendanceTimeOfDailyPerformance().ifPresent(x -> {
 				// [input.時間消化申請(work）を日別勤怠(work）の外出時間]へセット
-				if (x.getOutingTimeOfDaily().isEmpty()) {
-					x.getOutingTimeOfDaily().add(OutingTimeOfDaily.createDefaultWithReason(
-							appTimeType == AppTimeType.PRIVATE ? GoingOutReason.PRIVATE : GoingOutReason.UNION));
+				val goutReason = appTimeType == AppTimeType.PRIVATE ? GoingOutReason.PRIVATE : GoingOutReason.UNION;
+				val outingEdit = x.getOutingTimeOfDaily().stream().filter(y -> y.getReason() == goutReason).collect(Collectors.toList());
+				if (outingEdit.isEmpty()) {
+					outingEdit.add(OutingTimeOfDaily.createDefaultWithReason(goutReason));
+					x.getOutingTimeOfDaily().addAll(outingEdit);
 				}
-
-				for (OutingTimeOfDaily data : x.getOutingTimeOfDaily()) {
+				for (OutingTimeOfDaily data : outingEdit) {
 					if (appTimeType == AppTimeType.PRIVATE) {
 						data.setReason(GoingOutReason.PRIVATE);
 						updateVacationTime(data.getTimeVacationUseOfDaily(), timeDigest);
