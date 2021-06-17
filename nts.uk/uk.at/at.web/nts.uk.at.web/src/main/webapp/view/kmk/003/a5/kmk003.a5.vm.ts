@@ -215,6 +215,14 @@ module a5 {
             self.flexFixedRestTime = flex.fixRestTime;
             self.flowFixedRestTime = flow.halfDayWorkTimezone.restTimezone.fixRestTime;
 
+            self.flexFixedRestTime.subscribe((v) => {
+                self.clearTabError();
+            })
+
+            self.flowFixedRestTime.subscribe(v => {
+                self.clearTabError();
+            })
+
             //=================== TIMEZONE ===================
             // set flex timezones
             self.oneDayFlexTimezones = flexOneday.restTimezone.fixedRestTimezone.convertedList;
@@ -229,9 +237,7 @@ module a5 {
             // difftime timezone option
             self.oneDayDiffTimezones = diffOneday.restTimezone.convertedList;
             self.morningDiffTimezones = diffMorning.restTimezone.convertedList;
-            ;
             self.afternoonDiffTimezones = diffAfternoon.restTimezone.convertedList;
-            ;
 
             // flow timezone option
             self.flowTimezones = flow.halfDayWorkTimezone.restTimezone.fixedRestTimezone.convertedList;
@@ -274,6 +280,27 @@ module a5 {
             self.isFlexRestTime = ko.computed(() => {
                 return self.isFlex() && !self.flexFixedRestTime();
             });
+        }
+
+        private clearTabError() {
+            $('#flexOneDay').find('.time-range-editor').ntsError('clear');
+            $('#flexOneDay2').find('.time-range-editor').ntsError('clear');
+            $('#flexMorning').find('.time-range-editor').ntsError('clear');
+            $('#flexAfternoon').find('.time-range-editor').ntsError('clear');
+
+            $('#flexRestOneDay').find('.nts-editor').ntsError('clear');
+            $('#flexRestOneDay2').find('.nts-editor').ntsError('clear');
+            $('#flexRestMorning').find('.nts-editor').ntsError('clear');
+            $('#flexRestAfternoon').find('.nts-editor').ntsError('clear');
+
+            $('#flowTz').find('.time-range-editor').ntsError('clear');
+            $('#flowRt').find('.nts-editor').ntsError('clear');
+
+            $('#fixedOneDay').find('.time-range-editor').ntsError('clear');
+            $('#fixedOneDay2').find('.time-range-editor').ntsError('clear');
+            $('#fixedMorning').find('.time-range-editor').ntsError('clear');
+            $('#fixedAfternoon').find('.time-range-editor').ntsError('clear');
+
         }
 
         public setTabIndexTable() {
