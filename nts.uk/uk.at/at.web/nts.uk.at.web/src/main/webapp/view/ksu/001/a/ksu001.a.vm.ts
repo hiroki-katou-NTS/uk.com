@@ -3354,7 +3354,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         editMode() {
             let self = this;
-            if(self.mode()=='edit') return;
             let arrCellUpdated = $("#extable").exTable("updatedCells");
             let arrTmp = _.clone(arrCellUpdated);
             let lockCells = $("#extable").exTable("lockCells");
@@ -3419,9 +3418,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         confirmMode() {
             let self = this;
-            
-            if(self.mode()=='confirm') return;
-
             let arrCellUpdated = $("#extable").exTable("updatedCells");
 
             if (arrCellUpdated.length > 0) {
