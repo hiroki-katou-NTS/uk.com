@@ -2312,8 +2312,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                             convertToTime((int) item.getBeforeUseTimes()));
 
                                     //M2_8
-                                    cells.get(firstRow + 3, 10 + totalMonth).setValue(item.getBeforeRemainTimes() == 0 ? null :
-                                            convertToTime((int) item.getBeforeRemainTimes()));
+                                    cells.get(firstRow + 3, 10 + totalMonth).setValue(convertToTime((int) item.getBeforeRemainTimes()));
                                     if (item.getBeforeRemainTimes() < 0) {
                                         setForegroundRed(cells.get(firstRow + 3, 10 + totalMonth));
                                     }
@@ -2323,8 +2322,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
                                 }
                                 // M2_7 特別休暇１_残数日数
-                                cells.get(firstRow + 2, 10 + totalMonth).setValue(item.getBeforeRemainDays() == 0 ? null :
-                                        df.format(item.getBeforeRemainDays()));
+                                cells.get(firstRow + 2, 10 + totalMonth).setValue(df.format(item.getBeforeRemainDays()));
                                 if (item.getBeforeUseDays() < 0) {
                                     setForegroundRed(cells.get(firstRow, 10 + totalMonth));
                                 }
