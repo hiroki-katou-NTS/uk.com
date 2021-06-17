@@ -1097,7 +1097,7 @@ module nts.uk.at.view.kmk006.a {
                 nts.uk.ui.block.grayout();
                 self.loadComAutoCal().then(() => { nts.uk.ui.block.clear(); })
                 self.isLoading(false);
-
+                $(window).resize();
                 dfd.resolve();
 
                 return dfd.promise();
@@ -1121,6 +1121,7 @@ module nts.uk.at.view.kmk006.a {
                     });
                 })
                 self.isLoading(false);
+                $(window).resize();
             }
 
 
@@ -1142,6 +1143,7 @@ module nts.uk.at.view.kmk006.a {
                     });                  
                 })
                 self.isLoading(false);
+                $(window).resize();
             }
 
             public onSelectWkpJob(): void {
@@ -1174,6 +1176,7 @@ module nts.uk.at.view.kmk006.a {
                     })
 
                     self.isLoading(false);
+                $(window).resize();
             }
 
             /**

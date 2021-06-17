@@ -8,6 +8,7 @@ span.label{
 	padding-left: 10px;
 }
 
-.ui-iggrid .ui-iggrid-filtercell {
-    background: #CFF1A5;
+.ui-iggrid table tr {
+    background-color: #FFFFFF !important;
 }
+

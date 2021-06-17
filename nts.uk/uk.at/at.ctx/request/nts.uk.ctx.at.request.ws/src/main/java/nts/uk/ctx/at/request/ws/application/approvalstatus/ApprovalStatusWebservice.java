@@ -20,6 +20,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprSttMailTestParam;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttActivationParam;
@@ -153,9 +154,9 @@ public class ApprovalStatusWebservice extends WebService {
 	}
 	
 	@POST
-	@Path("sendTestMail/{mailType}")
-	public SendMailResultOutput sendTestMail(@PathParam("mailType") int mailType) {
-		return approvalMailFinder.sendTestMail(mailType);
+	@Path("sendTestMail")
+	public SendMailResultOutput sendTestMail(ApprSttMailTestParam param) {
+		return approvalMailFinder.sendTestMail(param);
 	}
 	
 	@POST

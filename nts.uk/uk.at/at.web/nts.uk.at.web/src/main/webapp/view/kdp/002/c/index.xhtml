@@ -88,14 +88,14 @@
 									value: currentCode
 								}"></table> -->
 						<div>
-							<div data-bind="if: $vm.showBtnNoti">
+							<div data-bind="if: $vm.showBtnNoti" style="position: relative;">
 								<button data-bind="click: openDialogU" class="large" style="width: 130px;">
 									<i style="float: left;" data-bind="ntsIcon: { no: 164, width: 28, height: 28 }">
 									</i>
 									<div style="margin-top: 5px;">#{i18n.getText('KDP002_103')}</div>
 								</button>
 								<div data-bind="if: $vm.modeShowPointNoti" style="box-sizing: border-box;">
-									<i style="left: 50px; top: 490px; position: absolute;"
+									<i style="left: 29px; top: 20px; position: absolute;"
 										data-bind="ntsIcon: { no: 165, width: 8, height: 8 }"></i>
 								</div>
 							</div>

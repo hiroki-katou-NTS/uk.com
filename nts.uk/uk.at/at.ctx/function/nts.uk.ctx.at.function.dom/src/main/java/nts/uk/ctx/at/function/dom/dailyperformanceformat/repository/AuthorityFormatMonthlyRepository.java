@@ -13,7 +13,7 @@ public interface AuthorityFormatMonthlyRepository {
 	
 	List<AuthorityFomatMonthly> getListAuthorityFormatDaily(String companyId, List<String> listDailyPerformanceFormatCode);
 	
-	List<AuthorityFomatMonthly> getListAuthorityFormatDaily(String companyId, Collection<String> listDailyPerformanceFormatCode);
+	List<AuthorityFomatMonthly> getListAuthorityFormatDailyByCollection(String companyId, Collection<String> listDailyPerformanceFormatCode);
 	
 	void update(AuthorityFomatMonthly authorityFomatMonthly);
 	
