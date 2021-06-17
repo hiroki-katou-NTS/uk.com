@@ -5,7 +5,7 @@ module cps008.b {
         __viewContext.bind(__viewContext['viewModel']);
         setTimeout(() => {
         	__viewContext['viewModel'].start();
-        }, 1);
+        }, 100);
         
         // Re-calculate size
         var currentDialog = nts.uk.ui.windows.getSelf();
