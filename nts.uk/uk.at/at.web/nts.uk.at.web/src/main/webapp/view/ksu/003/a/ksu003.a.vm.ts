@@ -2990,6 +2990,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			} else {
 				if (self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime1 == param[0] * 5 + self.dispStartHours * 60) return;
 			}
+			
 			if (self.checkDisByDate == false || self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed == 1)
 				return;
 				
