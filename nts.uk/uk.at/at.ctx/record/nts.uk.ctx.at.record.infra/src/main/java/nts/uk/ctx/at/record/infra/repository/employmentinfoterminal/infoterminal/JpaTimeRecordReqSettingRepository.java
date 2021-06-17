@@ -414,7 +414,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 		KrcmtTrRequest entity = new KrcmtTrRequest(
 				new KrcmtTrRequestPK(contractCode.v(), terCode.v()),
 				companyId, companyCode,
-				null, null, null, null, null, null, null, null, null, null, 1, null);
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
 		this.commandProxy().insert(entity);
 	}
 
