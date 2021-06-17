@@ -2522,7 +2522,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let companyEventName = rs.companyEventName;
                         let wkpEventName     = rs.wkpEventName;
                         // update lai header grid
-                        self.updateHeader();
+                        self.updateHeader().done(() => {
+                            if (userInfor.disPlayFormat == 'time') {
+                                // enable những cell đã disable trước đó đi rồi sau khi update grid mới disable đi được
+                                self.enableCellsTime();
+                                self.diseableCellsTime();
+                            }
+                        });
                     }
                     console.log('closed');
                 });
@@ -2617,7 +2623,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 self.updateHeaderExTable(detailHeaderDeco, objDetailHeaderDs, htmlToolTip);
                 self.setIconEventHeader();
-                self.mode() === 'edit' ? self.editMode() : self.confirmMode();
+                dfd.resolve();
                 nts.uk.ui.block.clear();
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
