@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.alarmList;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
 
 /**
@@ -80,6 +81,10 @@ public enum AlarmCategory {
 	private AlarmCategory(int value, String nameId) {
 		this.value = value;
 		this.nameId = nameId;
+	}
+
+	public static AlarmCategory of(int value) {
+		return EnumAdaptor.valueOf(value, AlarmCategory.class);
 	}
 
 }

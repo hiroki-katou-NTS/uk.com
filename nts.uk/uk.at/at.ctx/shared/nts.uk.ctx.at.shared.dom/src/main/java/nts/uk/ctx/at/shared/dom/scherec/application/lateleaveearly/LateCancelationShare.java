@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-//遅刻早退取消先
+//遅刻早退取消先(反映用)
 public class LateCancelationShare {
 
 	// 勤務NO

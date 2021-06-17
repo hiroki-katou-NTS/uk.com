@@ -61,5 +61,9 @@ public class CompletionMethodControl implements DomainValue {
 		
 		return new CompletionMethodControl(completionExecutionMethod, completionMethodControl, alarmCheckCodeList);
 	}
+
+	public boolean isCompletionMethodControl (FuncCtrlCompletionMethod opt) {
+		return this.completionMethodControl.contains(opt);
+	}
 	
 }

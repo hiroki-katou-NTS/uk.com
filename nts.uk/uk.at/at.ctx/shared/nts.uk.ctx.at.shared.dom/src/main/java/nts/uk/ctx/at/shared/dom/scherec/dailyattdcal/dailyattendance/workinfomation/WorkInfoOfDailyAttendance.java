@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -53,8 +51,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	@Setter
 	@Getter
 	private long ver;
-	
-	
+
 	public WorkInfoOfDailyAttendance(WorkInformation workInfo,
 			CalculationState calculationState, NotUseAttribute goStraightAtr, NotUseAttribute backStraightAtr,
 			DayOfWeek dayOfWeek, List<ScheduleTimeSheet> scheduleTimeSheets, Optional<NumberOfDaySuspension> numberDaySuspension) {
@@ -86,26 +83,26 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 			NotUseAttribute goStraightAtr,
 			DayOfWeek dayOfWeek
 			) {
-		
+
 		List<TimeZone> timeZoneList = workInfo.getWorkInfoAndTimeZone(require).get().getTimeZones();
 		List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
 		for ( int index = 0; index < timeZoneList.size(); index++) {
 			scheduleTimeSheets.add(
-					new ScheduleTimeSheet( 
-							index + 1, 
-							timeZoneList.get(index).getStart().v(), 
+					new ScheduleTimeSheet(
+							index + 1,
+							timeZoneList.get(index).getStart().v(),
 							timeZoneList.get(index).getEnd().v()));
 		}
-		
+
 		return new WorkInfoOfDailyAttendance(
-				workInfo, 
-				calculationState, 
-				goStraightAtr, 
-				backStraightAtr, 
-				dayOfWeek, 
+				workInfo,
+				calculationState,
+				goStraightAtr,
+				backStraightAtr,
+				dayOfWeek,
 				scheduleTimeSheets, Optional.empty());
 	}
-	
+
 	/**
 	 * 計算ステータスの変更
 	 * @param state 計算ステータス
@@ -174,19 +171,19 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 		// 始業終業に取得した所定時間帯をセットする
 		this.scheduleTimeSheets.clear();
 		timeZoneOpt.ifPresent(workInfoTimeZone -> {
-			
+
 			val timeZone = workInfoTimeZone.getTimeZones().stream()
 										.sorted((c1, c2) -> c1.getStart().compareTo(c2.getStart()))
 										.collect(Collectors.toList());
-			
+
 			for(int i = 0; i < timeZone.size(); i++) {
-				this.scheduleTimeSheets.add(new ScheduleTimeSheet(i + 1, 
-																	timeZone.get(i).getStart().valueAsMinutes(), 
+				this.scheduleTimeSheets.add(new ScheduleTimeSheet(i + 1,
+																	timeZone.get(i).getStart().valueAsMinutes(),
 																	timeZone.get(i).getEnd().valueAsMinutes()));
 			}
 		});
 	}
-	
+
 	/**
 	 * 出勤系か
 	 * @param require
@@ -195,7 +192,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	public boolean isAttendanceRate(Require require) {
 		return this.recordInfo.isAttendanceRate(require);
 	}
-	
+
 	public static interface Require extends WorkInformation.Require {
 
 	}

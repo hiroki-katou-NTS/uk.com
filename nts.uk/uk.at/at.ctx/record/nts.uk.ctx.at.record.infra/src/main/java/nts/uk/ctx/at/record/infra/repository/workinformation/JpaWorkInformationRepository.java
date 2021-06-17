@@ -45,7 +45,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 
 /**
- * 
+ *
  * @author lamdt
  *
  */
@@ -66,7 +66,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	@Override
 	@SneakyThrows
 	public Optional<WorkInfoOfDailyPerformance> find(String employeeId, GeneralDate ymd) {
-		
+
 		List<KrcdtDayTsAtdSche> scheduleTimes;
 		try (PreparedStatement sqlSchedule = this.connection().prepareStatement(
 				"select * from KRCDT_DAY_TS_ATD_SCHE"
@@ -84,14 +84,14 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				return entity;
 			});
 		};
-		
+
 		Optional<KrcdtDayInfoPerWork> workInfo;
 		try (PreparedStatement sqlWorkInfo = this.connection().prepareStatement(
 				"select * from KRCDT_DAY_INFO_PER_WORK"
 				+ " where SID = ? and YMD = ?")) {
 			sqlWorkInfo.setString(1, employeeId);
 			sqlWorkInfo.setDate(2, Date.valueOf(ymd.localDate()));
-			
+
 			 workInfo = new NtsResultSet(sqlWorkInfo.executeQuery()).getSingle(rec -> {
 				KrcdtDayInfoPerWork entity = new KrcdtDayInfoPerWork();
 				entity.krcdtDaiPerWorkInfoPK = new KrcdtDaiPerWorkInfoPK(
@@ -226,7 +226,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				return entity;
 			});
 		}
-		
+
 		try (PreparedStatement sqlWorkInfo = this.connection().prepareStatement(
 					"select * from KRCDT_DAY_INFO_PER_WORK where SID = ? and YMD >= ? and YMD <= ? order by YMD desc ")) {
 			sqlWorkInfo.setString(1, employeeId);
@@ -274,11 +274,11 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	private void internalUpdate(WorkInfoOfDailyPerformance domain, KrcdtDayInfoPerWork data) {
 		if (domain.getWorkInformation().getRecordInfo() != null) {
 			WorkInformation record = domain.getWorkInformation().getRecordInfo();
-			
+
 			data.recordWorkWorktypeCode = record.getWorkTypeCode().v();
 			data.recordWorkWorktimeCode = record.getWorkTimeCodeNotNull().map(m -> m.v()).orElse(null);
 		}
-		
+
 		data.calculationState = domain.getWorkInformation().getCalculationState().value;
 		data.backStraightAttribute = domain.getWorkInformation().getBackStraightAtr().value;
 		data.goStraightAttribute = domain.getWorkInformation().getGoStraightAtr().value;
@@ -288,7 +288,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		data.version = domain.getVersion();
 
 		if(domain.getWorkInformation().getScheduleTimeSheets().isEmpty()) {
-			
+
 			data.scheduleTimes = new ArrayList<>();
 		} else {
 			if (data.scheduleTimes == null || data.scheduleTimes.isEmpty()) {
@@ -308,11 +308,11 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				if(newSche.size() >  data.scheduleTimes.size()) {
 					val oldNos = data.scheduleTimes.stream().map(c -> c.krcdtWorkScheduleTimePK.workNo)
 															.collect(Collectors.toList());
-					
+
 					val newEnt = newSche.stream().filter(c -> !oldNos.contains(c.getWorkNo().v()))
 										.map(c -> KrcdtDayTsAtdSche.toEntity(domain.getEmployeeId(), domain.getYmd(), c))
 										.collect(Collectors.toList());
-					
+
 					data.scheduleTimes.addAll(newEnt);
 				} else if (newSche.size() <  data.scheduleTimes.size()) {
 					val newNos = newSche.stream().map(c -> c.getWorkNo().v())
@@ -320,7 +320,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 					data.scheduleTimes.removeIf(x -> !newNos.contains(x.krcdtWorkScheduleTimePK.workNo));
 				}
 
-			}   
+			}
 		}
 		this.commandProxy().update(data);
 //		this.commandProxy().update(data.scheduleTimes);
@@ -329,7 +329,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 
 	@SneakyThrows
 	private Optional<KrcdtDayInfoPerWork> findKrcdtDaiPerWorkInfoWithJdbc(String employeeId, GeneralDate ymd) {
-		
+
 		try (PreparedStatement stmtFindById = this.connection().prepareStatement(
 				"select * from KRCDT_DAY_INFO_PER_WORK"
 				+ " where SID = ? and YMD = ?")) {
@@ -347,7 +347,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		KrcdtDaiPerWorkInfoPK pk = new KrcdtDaiPerWorkInfoPK();
 		pk.employeeId = rec.getString("SID");
 		pk.ymd = rec.getGeneralDate("YMD");
-		
+
 		KrcdtDayInfoPerWork entity = new KrcdtDayInfoPerWork();
 		entity.krcdtDaiPerWorkInfoPK = pk;
 		entity.recordWorkWorktypeCode = rec.getString("RECORD_WORK_WORKTYPE_CODE");
@@ -369,16 +369,16 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				pks.employeeId = rs.getString("SID");
 				pks.ymd = rs.getGeneralDate("YMD");
 				pks.workNo = rs.getInt("WORK_NO");
-						
+
 				KrcdtDayTsAtdSche es = new KrcdtDayTsAtdSche();
 				es.krcdtWorkScheduleTimePK = pks;
 				es.attendance = rs.getInt("ATTENDANCE");
 				es.leaveWork = rs.getInt("LEAVE_WORK");
-				
+
 				return es;
 			});
 		}
-		
+
 		return entity;
 	}
 
@@ -444,7 +444,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	private List<WorkInfoOfDailyPerformance> internalQuery(DatePeriod datePeriod, List<String> subList) {
 		String subIn = NtsStatement.In.createParamsString(subList);
 
-		Map<String, Map<GeneralDate, List<ScheduleTimeSheet>>> scheTimes = new HashMap<>(); 
+		Map<String, Map<GeneralDate, List<ScheduleTimeSheet>>> scheTimes = new HashMap<>();
 		try (val stmt = this.connection().prepareStatement("SELECT * FROM KRCDT_DAY_TS_ATD_SCHE WHERE SID IN (" + subIn + ") AND YMD >= ? AND YMD <= ?")){
 			for (int i = 0; i < subList.size(); i++) {
 				stmt.setString(i + 1, subList.get(i));
@@ -460,7 +460,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				if(!scheTimes.get(sid).containsKey(ymd)) {
 					scheTimes.get(sid).put(ymd, new ArrayList<>());
 				}
-				getScheduleTime(scheTimes, sid, ymd).add(new ScheduleTimeSheet(c.getInt("WORK_NO"), 
+				getScheduleTime(scheTimes, sid, ymd).add(new ScheduleTimeSheet(c.getInt("WORK_NO"),
 						c.getInt("ATTENDANCE"), c.getInt("LEAVE_WORK")));
 				return null;
 			});
@@ -472,18 +472,18 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			stmt.setDate(1 + subList.size(), Date.valueOf(datePeriod.start().localDate()));
 			stmt.setDate(2 + subList.size(), Date.valueOf(datePeriod.end().localDate()));
 			return new NtsResultSet(stmt.executeQuery()).getList(c -> {
-				Integer calcState = c.getInt("CALCULATION_STATE"), goStraight = c.getInt("GO_STRAIGHT_ATR"), 
+				Integer calcState = c.getInt("CALCULATION_STATE"), goStraight = c.getInt("GO_STRAIGHT_ATR"),
 						backStraight = c.getInt("BACK_STRAIGHT_ATR"), dayOfWeek = c.getInt("DAY_OF_WEEK");
 				String sid = c.getString("SID");
 				GeneralDate ymd = c.getGeneralDate("YMD");
 				Integer treatAsSubstituteAtr = c.getInt("TREAT_AS_SUBSTITUTE_ATR");
 				Double treatAsSubstituteDays = c.getDouble("TREAT_AS_SUBSTITUTE_DAYS");
-				WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(sid, 
-						new WorkInformation(c.getString("RECORD_WORK_WORKTYPE_CODE"), c.getString("RECORD_WORK_WORKTIME_CODE")), 
-						calcState == null ? null : EnumAdaptor.valueOf(calcState, CalculationState.class), 
-						goStraight == null ? null : EnumAdaptor.valueOf(goStraight, NotUseAttribute.class), 
-						backStraight == null ? null : EnumAdaptor.valueOf(backStraight, NotUseAttribute.class), 
-						ymd, dayOfWeek == null ? null : EnumAdaptor.valueOf(dayOfWeek, DayOfWeek.class), 
+				WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(sid,
+						new WorkInformation(c.getString("RECORD_WORK_WORKTYPE_CODE"), c.getString("RECORD_WORK_WORKTIME_CODE")),
+						calcState == null ? null : EnumAdaptor.valueOf(calcState, CalculationState.class),
+						goStraight == null ? null : EnumAdaptor.valueOf(goStraight, NotUseAttribute.class),
+						backStraight == null ? null : EnumAdaptor.valueOf(backStraight, NotUseAttribute.class),
+						ymd, dayOfWeek == null ? null : EnumAdaptor.valueOf(dayOfWeek, DayOfWeek.class),
 						getScheduleTime(scheTimes, sid, ymd),
 						(treatAsSubstituteAtr != null && treatAsSubstituteDays != null)
 						? Optional.of(new NumberOfDaySuspension(new UsedDays(treatAsSubstituteDays),
@@ -525,11 +525,11 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 	public List<WorkInfoOfDailyPerformance> findByListDate(String employeeId, List<GeneralDate> dates) {
 		if(dates.isEmpty())
 			return Collections.emptyList();
-		
+
 		List<WorkInfoOfDailyPerformance> lstOutput = new ArrayList<>();
 		CollectionUtil.split(dates, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			String subIn = NtsStatement.In.createParamsString(subList);
-			Map<String, Map<GeneralDate, List<ScheduleTimeSheet>>> scheTimes = new HashMap<>(); 
+			Map<String, Map<GeneralDate, List<ScheduleTimeSheet>>> scheTimes = new HashMap<>();
 			try(val stmt = this.connection().prepareStatement("SELECT * FROM KRCDT_DAY_TS_ATD_SCHE "
 					+ "WHERE YMD IN (" + subIn + ") "
 					+ "AND SID = ?")){
@@ -537,7 +537,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 					stmt.setDate(i + 1, Date.valueOf(subList.get(i).localDate()));
 				}
 				stmt.setString(1  + subList.size(), employeeId);
-				
+
 				new NtsResultSet(stmt.executeQuery()).getList(c -> {
 					String sid = c.getString("SID");
 					GeneralDate ymd = c.getGeneralDate("YMD");
@@ -547,7 +547,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 					if(!scheTimes.get(sid).containsKey(ymd)) {
 						scheTimes.get(sid).put(ymd, new ArrayList<>());
 					}
-					getScheduleTime(scheTimes, sid, ymd).add(new ScheduleTimeSheet(c.getInt("WORK_NO"), 
+					getScheduleTime(scheTimes, sid, ymd).add(new ScheduleTimeSheet(c.getInt("WORK_NO"),
 							c.getInt("ATTENDANCE"), c.getInt("LEAVE_WORK")));
 					return null;
 				});
@@ -561,18 +561,18 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				}
 				stmt.setString(1 + subList.size(), employeeId);
 				List<WorkInfoOfDailyPerformance> lstOuputTmp =  new NtsResultSet(stmt.executeQuery()).getList(c -> {
-					Integer calcState = c.getInt("CALCULATION_STATE"), goStraight = c.getInt("GO_STRAIGHT_ATR"), 
+					Integer calcState = c.getInt("CALCULATION_STATE"), goStraight = c.getInt("GO_STRAIGHT_ATR"),
 							backStraight = c.getInt("BACK_STRAIGHT_ATR"), dayOfWeek = c.getInt("DAY_OF_WEEK");
 					String sid = c.getString("SID");
 					GeneralDate ymd = c.getGeneralDate("YMD");
 					Integer treatAsSubstituteAtr = c.getInt("TREAT_AS_SUBSTITUTE_ATR");
 					Double treatAsSubstituteDays = c.getDouble("TREAT_AS_SUBSTITUTE_DAYS");
-					WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(sid, 
-							new WorkInformation(c.getString("RECORD_WORK_WORKTYPE_CODE"), c.getString("RECORD_WORK_WORKTIME_CODE")), 
-							calcState == null ? null : EnumAdaptor.valueOf(calcState, CalculationState.class), 
-							goStraight == null ? null : EnumAdaptor.valueOf(goStraight, NotUseAttribute.class), 
-							backStraight == null ? null : EnumAdaptor.valueOf(backStraight, NotUseAttribute.class), 
-							ymd, dayOfWeek == null ? null : EnumAdaptor.valueOf(dayOfWeek, DayOfWeek.class), 
+					WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(sid,
+							new WorkInformation(c.getString("RECORD_WORK_WORKTYPE_CODE"), c.getString("RECORD_WORK_WORKTIME_CODE")),
+							calcState == null ? null : EnumAdaptor.valueOf(calcState, CalculationState.class),
+							goStraight == null ? null : EnumAdaptor.valueOf(goStraight, NotUseAttribute.class),
+							backStraight == null ? null : EnumAdaptor.valueOf(backStraight, NotUseAttribute.class),
+							ymd, dayOfWeek == null ? null : EnumAdaptor.valueOf(dayOfWeek, DayOfWeek.class),
 							getScheduleTime(scheTimes, sid, ymd),
 							(treatAsSubstituteAtr != null && treatAsSubstituteDays != null)
 							? Optional.of(new NumberOfDaySuspension(new UsedDays(treatAsSubstituteDays),
@@ -588,7 +588,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		});
 		return lstOutput;
 	}
-	
+
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	@SneakyThrows
@@ -624,12 +624,12 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 
 	@Override
 	public void dirtying(List<String> employeeId, List<GeneralDate> date) {
-		finds(employeeId, date).forEach(entity -> { 
+		finds(employeeId, date).forEach(entity -> {
 			entity.dirtying();
 			this.commandProxy().update(entity);
 		});
 	}
-	
+
 	private List<KrcdtDayInfoPerWork> finds(List<String> employeeIds, List<GeneralDate> ymds) {
 		List<KrcdtDayInfoPerWork> result = new ArrayList<>();
 		StringBuilder builderString = new StringBuilder();
@@ -643,7 +643,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 										.setParameter("processingYmds", sublistYMDs).getResultList());
 			});
 		});
-		
+
 		return result;
 	}
 

@@ -1,11 +1,6 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.appapproval;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -15,6 +10,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -46,10 +42,11 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFi
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedExtractConditionRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedExtractItem;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedExtractItemRepository;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -221,7 +218,9 @@ public class AppApprovalAggregationProcessService {
 			DatePeriod period,
 			List<String> lstSid, List<WorkPlaceHistImport> lstWplHist,
 			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckInfor,
-			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+			Consumer<Integer> counter, Supplier<Boolean> shouldStop,
+			List<AlarmEmployeeList> alarmEmployeeList, List<AlarmExtractionCondition> alarmExtractConditions,
+			String alarmCheckConditionCode) {
 		DataCheck data = new DataCheck(companyID, lstSid, period, erAlCheckIds);
 		if(data.lstExtractCond.isEmpty()) return;
 		parallel.forEach(CollectionUtil.partitionBySize(lstSid, 100), empList -> {
@@ -230,8 +229,20 @@ public class AppApprovalAggregationProcessService {
 			}
 			
 			data.lstExtractCond.stream().forEach(fixedCond -> {
+				//「アラーム抽出条件」を作成してInput．List＜アラーム抽出条件＞を追加
+				val extractionConditions = alarmExtractConditions.stream()
+						.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FixCheck
+								&& x.getAlarmCheckConditionNo().equals(String.valueOf(fixedCond.getNo().value)))
+						.findAny();
+				if (!extractionConditions.isPresent()) {
+					alarmExtractConditions.add(new AlarmExtractionCondition(
+							String.valueOf(fixedCond.getNo().value),
+							new AlarmCheckConditionCode(alarmCheckConditionCode),
+							AlarmCategory.APPLICATION_APPROVAL,
+							AlarmListCheckType.FixCheck
+					));
+				}
 				lstCheckInfor.add(new AlarmListCheckInfor(String.valueOf(fixedCond.getNo().value), AlarmListCheckType.FixCheck));
-				
 				switch (fixedCond.getNo()) {
 					case NOT_APPROVED_1:
 					case NOT_APPROVED_2:
@@ -244,7 +255,9 @@ public class AppApprovalAggregationProcessService {
 								lstWplHist,
 								lstResultCondition,
 								data,
-								companyID);
+								companyID,
+								alarmEmployeeList,
+								alarmCheckConditionCode);
 						break;
 					case NOT_APPROVED_COND_NOT_SATISFY:						
 					case DISAPPROVE:						
@@ -254,7 +267,9 @@ public class AppApprovalAggregationProcessService {
 								fixedCond, 
 								lstWplHist,
 								lstResultCondition,
-								data);
+								data,
+								alarmEmployeeList,
+								alarmCheckConditionCode);
 						break;
 					case REPRESENT_APPROVE:
 						checkAgentApprove(empList,
@@ -262,7 +277,9 @@ public class AppApprovalAggregationProcessService {
 								fixedCond, 
 								lstWplHist,
 								lstResultCondition,
-								data,companyID);
+								data,companyID,
+								alarmEmployeeList,
+								alarmCheckConditionCode);
 						break;
 					case APPROVE:
 						checkShouldApprove(empList,
@@ -270,7 +287,9 @@ public class AppApprovalAggregationProcessService {
 								fixedCond, 
 								lstWplHist,
 								lstResultCondition,
-								data);
+								data,
+								alarmEmployeeList,
+								alarmCheckConditionCode);
 						break;
 					case APPROVER_NOT_SPECIFIED:
 						approverNotSpecified(empList,
@@ -278,7 +297,9 @@ public class AppApprovalAggregationProcessService {
 								fixedCond, 
 								lstWplHist,
 								lstResultCondition,
-								data);
+								data,
+								alarmEmployeeList,
+								alarmCheckConditionCode);
 						break;
 					case MISS_OT_APP:
 						checkMissJigo(empList,
@@ -287,7 +308,9 @@ public class AppApprovalAggregationProcessService {
 								lstWplHist,
 								lstResultCondition,
 								data,
-								0);
+								0,
+								alarmEmployeeList,
+								alarmCheckConditionCode);
 						break;
 					case MISS_WORK_IN_HOLIDAY_APP:
 						checkMissJigo(empList,
@@ -296,7 +319,9 @@ public class AppApprovalAggregationProcessService {
 								lstWplHist,
 								lstResultCondition,
 								data,
-								6);
+								6,
+								alarmEmployeeList,
+								alarmCheckConditionCode);
 						break;
 				}
 			});
@@ -317,7 +342,8 @@ public class AppApprovalAggregationProcessService {
 	 */
 	private void checkMissJigo(List<String> empIds, DatePeriod period, AppApprovalFixedExtractCondition fixedExtractCond,
 			 List<WorkPlaceHistImport> lstWplHist,
-			List<ResultOfEachCondition> lstResultCondition, DataCheck data, int appType) {
+			List<ResultOfEachCondition> lstResultCondition, DataCheck data, int appType,
+			List<AlarmEmployeeList> alarmEmployeeList, String alarmCheckConditionCode) {
 		if(data.lstApp == null || data.lstApp.isEmpty()) return;
 		
 		List<ApplicationStateImport> lstAppJizen = new ArrayList<>();
@@ -356,20 +382,27 @@ public class AppApprovalAggregationProcessService {
 				setAlarmResult(fixedExtractCond,lstWplHist, lstResultCondition,
 						item, sid, period, pDate,
 						appType == 0 ? TextResource.localize("KAL010_519") : TextResource.localize("KAL010_521"),
-						TextResource.localize("KAL010_530", x.toString()));
+						TextResource.localize("KAL010_530", x.toString()),
+						alarmEmployeeList,
+						alarmCheckConditionCode);
 			});
 		}); 
 	}
-	
+
 	/**
 	 * 未承認
-	 * @param empId
+	 * @param empIds
 	 * @param period
-	 * @param approvalPhaseNo
+	 * @param fixedExtractCond
+	 * @param lstWplHist
+	 * @param lstResultCondition
+	 * @param data
+	 * @param cid
 	 */
 	private void checkUnapprove(List<String> empIds, DatePeriod period, AppApprovalFixedExtractCondition fixedExtractCond,
 			 List<WorkPlaceHistImport> lstWplHist,
-			List<ResultOfEachCondition> lstResultCondition, DataCheck data, String cid) {
+			List<ResultOfEachCondition> lstResultCondition, DataCheck data, String cid,
+			List<AlarmEmployeeList> alarmEmployeeList, String alarmCheckConditionCode) {
 		if(data.lstAppRootStates == null || data.lstAppRootStates.isEmpty()) return;
 		// 対象者と期間から承認ルートインスタンスを取得する
 		List<String> lstAppId = data.lstAppRootStates.stream().map(x -> x.getRootStateID()).collect(Collectors.toList());
@@ -383,19 +416,20 @@ public class AppApprovalAggregationProcessService {
 					// 承認フェーズインスタンス[INPUT.承認フェーズ番号].承認区分＝【未承認】の件数をチェックする
 					&& p.getApprovalAtr() == ApprovalBehaviorAtr.UNAPPROVED.value).count();
 			if (unapproveCount > 0) {
-				ApplicationImport app = lstApp.stream().filter(x -> x.getAppID().equals(r.getRootStateID())).collect(Collectors.toList()).get(0);
+				Optional<ApplicationImport> app = lstApp.stream().filter(x -> x.getAppID().equals(r.getRootStateID())).findFirst();
 				ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(r.getApprovalRecordDate()), Optional.empty());
 				
 				setAlarmResult(fixedExtractCond,lstWplHist, lstResultCondition,
 						item, r.getEmployeeID(), period, pDate,
 						TextResource.localize("KAL010_522", String.valueOf(fixedExtractCond.getNo().value)),
-						TextResource.localize("KAL010_529",app.getAppTypeName()));
+						TextResource.localize("KAL010_529", app.isPresent() ? app.get().getAppTypeName() : "申請データが存在してない。"),alarmEmployeeList, alarmCheckConditionCode);
 			}
 		});
 	}
 	private void setAlarmResult(AppApprovalFixedExtractCondition fixedExtractCond, List<WorkPlaceHistImport> lstWplHist,
 			List<ResultOfEachCondition> lstResultCondition, AppApprovalFixedExtractItem item, String sid,
-			DatePeriod period,ExtractionAlarmPeriodDate pDate, String alarmContent, String alarmTaget) {
+			DatePeriod period,ExtractionAlarmPeriodDate pDate, String alarmContent, String alarmTaget,
+			List<AlarmEmployeeList> alarmEmployeeList, String alarmCheckConditionCode) {
 		String wpId = "";
 		Optional<WorkPlaceHistImport> optWorkPlaceHistImport = lstWplHist.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
 		if(optWorkPlaceHistImport.isPresent()) {
@@ -407,7 +441,7 @@ public class AppApprovalAggregationProcessService {
 				wpId = optWorkPlaceIdAndPeriodImport.get().getWorkplaceId();
 			}
 		}
-		ExtractionResultDetail detail = new ExtractionResultDetail(sid,
+		ExtractResultDetail detail = new ExtractResultDetail(
 				pDate,
 				item.getName(),
 				alarmContent,
@@ -415,21 +449,74 @@ public class AppApprovalAggregationProcessService {
 				Optional.ofNullable(wpId),
 				fixedExtractCond.getMessage().isPresent() ? Optional.ofNullable(fixedExtractCond.getMessage().get().v()) : Optional.empty(),
 				Optional.ofNullable(alarmTaget));
-		List<ResultOfEachCondition> result = lstResultCondition.stream()
-				.filter(x -> x.getCheckType() == AlarmListCheckType.FixCheck && x.getNo().equals(String.valueOf(fixedExtractCond.getNo().value)))
-				.collect(Collectors.toList());
-		if(result.isEmpty()) {
-			ResultOfEachCondition resultCon = new ResultOfEachCondition(AlarmListCheckType.FixCheck,
-					String.valueOf(fixedExtractCond.getNo().value),
-					new ArrayList<>());
-			resultCon.getLstResultDetail().add(detail);
-			lstResultCondition.add(resultCon);
+
+		if (alarmEmployeeList.stream().anyMatch(i -> i.getEmployeeID().equals(sid))) {
+			for (AlarmEmployeeList i : alarmEmployeeList) {
+				if (i.getEmployeeID().equals(sid)) {
+					if (i.getAlarmExtractInfoResults().stream()
+							.anyMatch(y -> y.getAlarmCategory().value == AlarmCategory.APPLICATION_APPROVAL.value
+									&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+									&& y.getAlarmListCheckType().value == AlarmListCheckType.FixCheck.value
+									&& y.getAlarmCheckConditionNo().equals(String.valueOf(fixedExtractCond.getNo().value)))) {
+						for (AlarmExtractInfoResult y : i.getAlarmExtractInfoResults()) {
+							if (y.getAlarmCategory().value == AlarmCategory.APPLICATION_APPROVAL.value
+									&& y.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode)
+									&& y.getAlarmListCheckType().value == AlarmListCheckType.FixCheck.value
+									&& y.getAlarmCheckConditionNo().equals(String.valueOf(fixedExtractCond.getNo().value))) {
+								if (y.getExtractionResultDetails().stream().noneMatch(z -> z.getPeriodDate().getStartDate().get().compareTo(pDate.getStartDate().get()) == 0)) {
+									List<ExtractResultDetail> details = new ArrayList<>(y.getExtractionResultDetails());
+									details.add(detail);
+									y.setExtractionResultDetails(details);
+								}
+								break;
+							}
+						}
+					} else {
+						List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(detail));
+						List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(i.getAlarmExtractInfoResults());
+						alarmExtractInfoResults.add(
+								new AlarmExtractInfoResult(
+										String.valueOf(fixedExtractCond.getNo().value),
+										new AlarmCheckConditionCode(alarmCheckConditionCode),
+										AlarmCategory.APPLICATION_APPROVAL,
+										AlarmListCheckType.FixCheck,
+										details
+								)
+						);
+						i.setAlarmExtractInfoResults(alarmExtractInfoResults);
+					}
+					break;
+				}
+			}
 		} else {
-			ResultOfEachCondition ex = result.get(0);
-			lstResultCondition.remove(ex);
-			ex.getLstResultDetail().add(detail);
-			lstResultCondition.add(ex);
+			List<ExtractResultDetail> details = new ArrayList<>(Arrays.asList(detail));
+			List<AlarmExtractInfoResult> alarmExtractInfoResults = new ArrayList<>(Arrays.asList(
+					new AlarmExtractInfoResult(
+							String.valueOf(fixedExtractCond.getNo().value),
+							new AlarmCheckConditionCode(alarmCheckConditionCode),
+							AlarmCategory.APPLICATION_APPROVAL,
+							AlarmListCheckType.FixCheck,
+							details
+					)
+			));
+			alarmEmployeeList.add(new AlarmEmployeeList(alarmExtractInfoResults, sid));
 		}
+
+//		List<ResultOfEachCondition> result = lstResultCondition.stream()
+//				.filter(x -> x.getCheckType() == AlarmListCheckType.FixCheck && x.getNo().equals(String.valueOf(fixedExtractCond.getNo().value)))
+//				.collect(Collectors.toList());
+//		if(result.isEmpty()) {
+//			ResultOfEachCondition resultCon = new ResultOfEachCondition(AlarmListCheckType.FixCheck,
+//					String.valueOf(fixedExtractCond.getNo().value),
+//					new ArrayList<>());
+//			resultCon.getLstResultDetail().add(detail);
+//			lstResultCondition.add(resultCon);
+//		} else {
+//			ResultOfEachCondition ex = result.get(0);
+//			lstResultCondition.remove(ex);
+//			ex.getLstResultDetail().add(detail);
+//			lstResultCondition.add(ex);
+//		}
 	}
 	/**
 	 * 申請の状況チェック
@@ -442,7 +529,8 @@ public class AppApprovalAggregationProcessService {
 	 */
 	private void checkApplicationState(List<String> empIds, DatePeriod period, AppApprovalFixedExtractCondition fixedExtractCond,
 			List<WorkPlaceHistImport> lstWplHist,
-			List<ResultOfEachCondition> lstResultCondition, DataCheck data) {
+			List<ResultOfEachCondition> lstResultCondition, DataCheck data,
+			List<AlarmEmployeeList> alarmEmployeeList, String alarmCheckConditionCode) {
 		if(data.lstApp == null || data.lstApp.isEmpty()) return;
 		
 		ReflectStateImport refState = ReflectStateImport.NOTREFLECTED;
@@ -458,7 +546,9 @@ public class AppApprovalAggregationProcessService {
 			setAlarmResult(fixedExtractCond,lstWplHist, lstResultCondition,
 					item, a.getEmployeeID(), period, pDate,
 					TextResource.localize("KAL010_523", a.getAppTypeName(), refState.name),
-					TextResource.localize("KAL010_529", a.getAppTypeName()));
+					TextResource.localize("KAL010_529", a.getAppTypeName()),
+					alarmEmployeeList,
+					alarmCheckConditionCode);
 		}
 	}
 	/**
@@ -473,7 +563,8 @@ public class AppApprovalAggregationProcessService {
 	 */
 	private void checkAgentApprove(List<String> empIds, DatePeriod period, AppApprovalFixedExtractCondition fixedExtractCond,
 			List<WorkPlaceHistImport> lstWplHist,
-			List<ResultOfEachCondition> lstResultCondition, DataCheck data, String cid) {
+			List<ResultOfEachCondition> lstResultCondition, DataCheck data, String cid,
+			List<AlarmEmployeeList> alarmEmployeeList, String alarmCheckConditionCode) {
 		if(data.lstAgent == null || data.lstAgent.isEmpty()) return;
 		List<String> lstApproverID = data.lstAgent.stream().map(x -> x.getApproverID()).distinct().collect(Collectors.toList());
 		if(lstApproverID.isEmpty()) return;
@@ -496,7 +587,9 @@ public class AppApprovalAggregationProcessService {
 					setAlarmResult(fixedExtractCond,lstWplHist, lstResultCondition,
 							item, x, period, pDate,
 							TextResource.localize("KAL010_524", String.valueOf(lstApp.size())),
-							TextResource.localize("KAL010_529", lstApp.stream().map(a -> a.getAppTypeName()).distinct().collect(Collectors.toList()).toString()));
+							TextResource.localize("KAL010_529", lstApp.stream().map(a -> a.getAppTypeName()).distinct().collect(Collectors.toList()).toString()),
+							alarmEmployeeList,
+							alarmCheckConditionCode);
 				}
 			}
 		});
@@ -512,7 +605,8 @@ public class AppApprovalAggregationProcessService {
 	 */
 	private void checkShouldApprove(List<String> empIds, DatePeriod period, AppApprovalFixedExtractCondition fixedExtractCond,
 			List<WorkPlaceHistImport> lstWplHist,
-			List<ResultOfEachCondition> lstResultCondition, DataCheck data) {
+			List<ResultOfEachCondition> lstResultCondition, DataCheck data,
+			List<AlarmEmployeeList> alarmEmployeeList, String alarmCheckConditionCode) {
 		if(data.lstApproval == null || data.lstApproval.isEmpty()) return;
 		
 		List<String> lstApproverId = data.lstApproval.stream()
@@ -526,7 +620,9 @@ public class AppApprovalAggregationProcessService {
 			setAlarmResult(fixedExtractCond,lstWplHist, lstResultCondition,
 					item, approver, period, pDate,
 					TextResource.localize("KAL010_526", String.valueOf(count)),
-					TextResource.localize("KAL010_527", String.valueOf(count)));
+					TextResource.localize("KAL010_527", String.valueOf(count)),
+					alarmEmployeeList,
+					alarmCheckConditionCode);
 		});		
 	}
 	/**
@@ -539,7 +635,8 @@ public class AppApprovalAggregationProcessService {
 	 */
 	private void approverNotSpecified(List<String> empIds, DatePeriod period, AppApprovalFixedExtractCondition fixedExtractCond,
 			List<WorkPlaceHistImport> lstWplHist,
-			List<ResultOfEachCondition> lstResultCondition, DataCheck data) {
+			List<ResultOfEachCondition> lstResultCondition, DataCheck data,
+			List<AlarmEmployeeList> alarmEmployeeList, String alarmCheckConditionCode) {
 		if(data.mapAppRootUnregister == null || data.mapAppRootUnregister.isEmpty()) return;
 		AppApprovalFixedExtractItem item = data.lstExtractItem.stream().filter(a -> a.getNo().equals(fixedExtractCond.getNo()))
 				.collect(Collectors.toList()).get(0);
@@ -548,7 +645,9 @@ public class AppApprovalAggregationProcessService {
 			setAlarmResult(fixedExtractCond,lstWplHist, lstResultCondition,
 					item, a, period, pDate,
 					TextResource.localize("KAL010_528", period.start().toString("yyyy/MM/dd") + "～" + period.end().toString("yyyy/MM/dd")),
-					TextResource.localize("KAL010_529", b.toString()));
+					TextResource.localize("KAL010_529", b.toString()),
+					alarmEmployeeList,
+					alarmCheckConditionCode);
 		});
 	}
 	

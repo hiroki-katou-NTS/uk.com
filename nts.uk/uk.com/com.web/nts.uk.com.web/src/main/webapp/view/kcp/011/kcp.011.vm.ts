@@ -109,7 +109,6 @@ module nts.uk.com.view.kcp011.share {
 
             nts.uk.ui.block.grayout();
             nts.uk.request.ajax("com", GET_WORKPLACE_URL).done((res) => {
-                console.log(res);
                 let workplaces = _.orderBy(res.workplaces, ['code'], ['asc']);
                 if (self.setting().showEmptyItem) {
                     workplaces.unshift({ id: Math.random(), code: NASHI_CODE, name: nts.uk.resource.getText("KCP011_5"), configured: null });
