@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -158,22 +157,11 @@ public class KrcmtDailyAttendanceItem extends ContractUkJpaEntity implements Ser
 			456, // 乖離時間5
 			458, // 乖離理由コード5
 			459, // 乖離理由5
-			502, // 私用外出年休時間
-			504, // 私用外出特別休暇時間
-			505, // 私用外出代休時間
-			514, // 組合外出年休時間
-			516, // 組合外出特別休暇時間
-			517, // 組合外出代休時間
 			530, // 計画所定労働時間
 			531, // 実績所定労働時間
 			532, // 就業時間
 			533, // 実働就業時間
 			535, // 休憩時間
-			539, // 年休使用時間
-			541, // 代休使用時間
-			543, // 特別休暇使用時間
-			547, // 積立年休使用時間
-			548, // 欠勤使用時間
 			555, // 事前フレックス時間
 			556, // フレックス時間
 			557, // 計算フレックス時間
@@ -204,13 +192,9 @@ public class KrcmtDailyAttendanceItem extends ContractUkJpaEntity implements Ser
 			592, // 遅刻時間1
 			593, // 計算遅刻時間1
 			594, // 遅刻控除時間1
-			595, // 出勤前1年休時間
-			597, // 出勤前1代休時間
 			604, // 早退時間1
 			605, // 計算早退時間1
 			606, // 早退控除時間1
-			607, // 退勤後1年休時間
-			609, // 退勤後1代休時間
 			623, // 職場コード
 			624, // 分類コード
 			625, // 職位コード
@@ -402,21 +386,6 @@ public class KrcmtDailyAttendanceItem extends ContractUkJpaEntity implements Ser
 			855, // 振替休出乖離時間8
 			856, // 振替休出乖離時間9
 			857, // 振替休出乖離時間10
-			1123, // 出勤前1特別休暇時間
-			1124, // 出勤前1特別休暇枠NO
-			1125, // 出勤前1子の看護休暇時間
-			1126, // 出勤前1介護休暇時間
-			1131, // 退勤後1特別休暇時間
-			1132, // 退勤後1特別休暇枠NO
-			1133, // 退勤後1子の看護休暇時間
-			1134, // 退勤後1介護休暇時間
-			1140, // 私用外出子の看護休暇時間
-			1141, // 私用外出介護休暇時間
-			1142, // 組合外出子の看護休暇時間
-			1143, // 組合外出介護休暇時間
-			1144, // 振休使用時間
-			1145, // 私用外出特別休暇枠NO
-			1146, // 組合外出特別休暇枠NO
 			86, // 外出区分1
 			88, // 外出時刻1
 			91, // 戻り時刻1
@@ -427,6 +396,7 @@ public class KrcmtDailyAttendanceItem extends ContractUkJpaEntity implements Ser
 			102, // 外出時刻3
 			105, // 戻り時刻3
 			107, // 外出区分4
+			109, // 外出時刻4
 			112, // 戻り時刻4
 			114, // 外出区分5
 			116, // 外出時刻5
