@@ -86,7 +86,7 @@ public interface OtherCommonAlgorithm {
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application);
+	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application, String content);
 	
 	/**
 	 * refactor 4
@@ -113,7 +113,7 @@ public interface OtherCommonAlgorithm {
 	 * @param appName 申請表示名
 	 * @return
 	 */
-	public MailResult sendMailApprover(List<String> listDestination, Application application, String text);
+	public MailResult sendMailApprover(List<String> listDestination, Application application, String text, String content);
 	
 	/**
 	 * refactor 4
