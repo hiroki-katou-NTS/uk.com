@@ -12,7 +12,7 @@
             <!--K1-1-->
             <button class="proceed" data-bind="click: registerMoneyEmp">#{i18n.getText('KML002_126')}</button>
             <!--K1-2-->
-            <button class="danger" data-bind="click: remove">#{i18n.getText('KML002_127')}</button>
+            <button class="danger" data-bind="click: remove, visible: enableDeleteBtn">#{i18n.getText('KML002_127')}</button>
             <!--K1-3-->
             <button class="normal" data-bind="click: closeDialog">#{i18n.getText('KML002_129')}</button>
         </div>

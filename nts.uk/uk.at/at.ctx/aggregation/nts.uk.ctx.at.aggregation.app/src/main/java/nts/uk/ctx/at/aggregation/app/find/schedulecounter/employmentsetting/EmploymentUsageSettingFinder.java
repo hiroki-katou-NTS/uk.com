@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.aggregation.app.find.schedulecounter.employmentsetting;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountUsageSetting;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountUsageSettingRepository;
 
 /**
@@ -19,8 +22,13 @@ public class EmploymentUsageSettingFinder {
 	private CriterionAmountUsageSettingRepository criterionAmountUsageSettingRepository;
 	
 	public CriterionAmountUsageSettingDto getSetting(String cid) {
+		CriterionAmountUsageSettingDto usageSettingDto = new CriterionAmountUsageSettingDto();
+		Optional<CriterionAmountUsageSetting> optional = criterionAmountUsageSettingRepository.get(cid);
 		
-		return CriterionAmountUsageSettingDto.fromDomain(criterionAmountUsageSettingRepository.get(cid).orElse(null));
+		if(optional.isPresent()) {
+			usageSettingDto = CriterionAmountUsageSettingDto.fromDomain(optional.get());
+		}		
+		return usageSettingDto;
 	}
 	
 }

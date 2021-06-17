@@ -34,7 +34,7 @@ public class EstimatedCompanyInfoFinder {
 		
 		// 目安金額の扱いを取得する
 		Optional<HandlingOfCriterionAmount> hanOptional = handlingOfCriterionAmountRepository.get(cid);
-		if(criOptional.isPresent() && hanOptional.isPresent()) {
+		if(criOptional.isPresent()) {
 			esimatedInfoDto.setMonths(criOptional.get()
 						.getCriterionAmount()
 						.getMonthly()
@@ -49,12 +49,14 @@ public class EstimatedCompanyInfoFinder {
 						.stream()
 						.map(CriterionAmountByNoDto::setData)
 						.collect(Collectors.toList()));
+		} 	
+		if(hanOptional.isPresent()) {			
 			esimatedInfoDto.setListHandlingByNo(hanOptional.get()
 						.getList()
 						.stream()
 						.map(HandlingOfCriterionAmountByNoDto::setData)
 						.collect(Collectors.toList()));			
-		} 		
+		} 
 		return esimatedInfoDto;
 	}
 }

@@ -20,9 +20,10 @@ module nts.uk.at.view.kml002.l {
             const self = this;            
             self.$blockui("invisible");
             self.$ajax(Paths.GET_EMPLOYMENT_USEAGE_SETTING).done((data: any) => {
-                if(data ){
+                if(data){
                     data.employmentUse == 1 ? self.isUseageEmployment(true) : self.isUseageEmployment(false);      
-                }                 
+                }    
+                $('#employment').focus();
             }).always(() => {
                 self.$blockui("hide");
             });
@@ -41,8 +42,6 @@ module nts.uk.at.view.kml002.l {
                 });
             }).fail((res) => {
                 if (res.messageId == 'Msg_3' || res.messageId == 'Msg_1971') {
-                    // self.selectedCode('');
-                    // $('#outputSettingCode').ntsError('set',{messageId: res.messageId});
                 }
             }).always(() => {
                 self.$blockui("hide");
