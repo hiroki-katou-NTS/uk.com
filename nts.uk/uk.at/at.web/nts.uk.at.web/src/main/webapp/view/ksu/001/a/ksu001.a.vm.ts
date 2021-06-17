@@ -425,10 +425,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.updateExTableWhenChangeModeBg($.merge(detailContentDeco, self.listCellNotEditBg));
 
                 self.setIconEventHeader();
-                
-                if(self.mode() === 'edit') {
-                    self.bindingEventClickFlower();    
-                }
 
                 let item = uk.localStorage.getItem(self.KEY);
                 let userInfor: IUserInfor = JSON.parse(item.get());
@@ -521,8 +517,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.checkEnableCombWTime();
                 self.setHeightScreen();
                 self.setPositionButonToRightToLeft();
+                self.bindingEventClickFlower();
                 self.setTextResourceA173();
-                //self.bindingEventClickFlower();
                 if (viewMode == 'time') {
                     self.diseableCellsTime();
                     console.log(self.listTimeDisable.length);
@@ -1777,7 +1773,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
             
             self.setIconEventHeader();
-            
+
             result = {
                 leftmostDs: leftmostDs,
                 middleDs: middleDs,
@@ -2502,7 +2498,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $('.extable-header-detail img').css('margin-top', '2px');
             let itemLocal = uk.localStorage.getItem(self.KEY);
             let userInfor = JSON.parse(itemLocal.get());
+            $(".header-image-no-event, .header-image-event").unbind('click');
             $(".header-image-no-event, .header-image-event").on("click", function(event) {
+                if(self.mode() == 'confirm') return;
                 let index = $(event.target).parent().index();
                 let columnKey = self.detailColumns[index].key;
                 let param = {
@@ -2530,7 +2528,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             }
                         });
                     }
-                    console.log('closed');
                 });
             });
         }
