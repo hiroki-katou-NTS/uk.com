@@ -2,18 +2,16 @@ package nts.uk.ctx.exio.infra.repository.input.validation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
-import nts.uk.ctx.exio.infra.entity.input.validation.OioctImportableItem;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 
 public class JpaImportableItemsRepository extends JpaRepository implements ImportableItemsRepository{
 
 	@Override
-	public List<ImportableItem> get(String companyId, int groupId) {
+	public List<ImportableItem> get(String companyId, ImportingGroupId groupId) {
 		
 		//実テーブル作るまで保留。↓は書き終わった
 //		String sql = "select * "
