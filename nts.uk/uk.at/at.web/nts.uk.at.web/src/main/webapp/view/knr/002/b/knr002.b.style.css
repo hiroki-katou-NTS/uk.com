@@ -62,3 +62,12 @@
 .testcss {
 	color: green;
 }
+
+.ui-iggrid table td, .ui-iggrid table th {
+	overflow: visible;
+}
+
+.nts-gridlist.ui-iggrid table th.ui-widget-header:not(:last-child)::after {
+	border: 0;
+}
+
