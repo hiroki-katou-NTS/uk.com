@@ -7,6 +7,7 @@ module nts.uk.at.view.kdl055.test.viewmodel {
 
     @bean()
     export class KDL055TestViewModel extends ko.ViewModel {
+        dateValue: KnockoutObservable<any>;
         listSid: KnockoutObservableArray<string> = ko.observableArray([]);
         listEmp: KnockoutObservableArray<any> = ko.observableArray([]);
         baseDate: KnockoutObservable<string> = ko.observable(null);
@@ -19,6 +20,18 @@ module nts.uk.at.view.kdl055.test.viewmodel {
             vm.baseDate(moment().format());
             vm.startDate(moment().clone().startOf('month').format('YYYY-MM-DD hh:mm'));
             vm.endDate(moment().clone().endOf('month').format('YYYY-MM-DD hh:mm'));
+
+            vm.dateValue = ko.observable({});
+            
+            vm.startDate.subscribe(function(value){
+                vm.dateValue().startDate = value;
+                vm.dateValue.valueHasMutated();        
+            });
+            
+            vm.endDate.subscribe(function(value){
+                vm.dateValue().endDate = value;   
+                vm.dateValue.valueHasMutated();      
+            });
 
             
             vm.listComponentOption = {
@@ -38,16 +51,16 @@ module nts.uk.at.view.kdl055.test.viewmodel {
 
             // bind CCG001 component
             // Set component option
-            const ccg001ComponentOption = {
+            let ccg001ComponentOption = {
                 /** Common properties */
                 systemType: 1,
                 showEmployeeSelection: true,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
-                showBaseDate: true,
+                showBaseDate: false,
                 showClosure: true,
                 showAllClosure: true,
-                showPeriod: true,
+                showPeriod: false,
                 periodFormatYM: false,
                 
                 /** Required parameter */
@@ -98,6 +111,17 @@ module nts.uk.at.view.kdl055.test.viewmodel {
 
             // bind KCP005 component
             $('#com-kcp005').ntsListComponent(vm.listComponentOption);
+
+            
+            vm.dateValue.subscribe(function(value){
+                vm.startDate(value.startDate);
+                vm.endDate(value.endDate);
+                vm.baseDate(vm.startDate());
+                ccg001ComponentOption.baseDate = vm.baseDate;
+                ccg001ComponentOption.periodStartDate = vm.startDate;
+                ccg001ComponentOption.periodEndDate = vm.endDate;
+                $('#com-ccg001').ntsGroupComponent(ccg001ComponentOption);
+            })
         }
         
         mounted() {
