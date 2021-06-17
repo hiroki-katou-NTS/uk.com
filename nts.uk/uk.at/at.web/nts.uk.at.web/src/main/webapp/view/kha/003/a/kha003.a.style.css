@@ -46,3 +46,18 @@
 .item_a_6_1{
     height: 50px;
 }
+.item_a_6_2{
+    height: 80px;
+    padding-top: 79px;
+}
+
+.item_a_6_4_to_67{
+    height: 150px;
+    width: 100px;
+    margin-right: 1px;
+}
+.button_top_right_corner{
+    position:absolute;
+    top:0;
+    right:0;
+}

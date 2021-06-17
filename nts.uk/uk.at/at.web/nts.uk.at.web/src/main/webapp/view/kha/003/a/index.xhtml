@@ -113,18 +113,91 @@
                                 </div>
                             </div>
                         </div>
-                    <div class="table" style="width: 100%">
-                        <!-- A5_3 -->
-                        <div class="cell valign-center" style="width: 15%">
+                    <div class="table" style="width: 100%;margin-top: 10px">
+                        <!-- A6 -->
+                        <div class="cell valign-center" style="width: 487px">
                             <div class="panel panel-frame item_a_6_1" style="border-radius: 3px;">
 
                             </div>
                         </div>
-                        <!-- A5_4 -->
+                        <!-- A6_1 -->
                         <div class="cell valign-center">
-                            <div class="panel panel-frame item_a_6_1" style="border-radius: 3px;">
-
+                            <div class="panel panel-frame item_a_6_1" style="border-radius: 3px;background: #fbff0038;text-align: center">
+                                <div data-bind="ntsRadioBoxGroup: {
+                                    options: itemList,
+                                    optionsValue: 'id',
+                                    optionsText: 'name',
+                                    value: selectedId,
+                                    enable: enable}">
+                                </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="table" style="width: 100%">
+                        <!-- A6 -->
+                        <div class="cell valign-center" style="width: 44%">
+                            <div class="panel panel-frame " style="border-radius: 3px;">
+                                <div class="table" style="margin: -10px">
+                                    <!-- A6_4 -->
+                                    <div class="cell valign-center">
+                                        <div class="panel panel-gray-bg item_a_6_4_to_67">
+                                            <button class="button_top_right_corner"><i class="icon icon-close"></i></button>
+                                            <span class="label" style="display: table;margin: 71px auto;">項目移送</span>
+                                        </div>
+                                    </div>
+                                    <div class="cell valign-center">
+                                        <div class="panel panel-gray-bg item_a_6_4_to_67">
+                                            <button class="button_top_right_corner"><i class="icon icon-close"></i></button>
+                                            <span class="label" style="display: table;margin: 71px auto;">項目移送</span>
+                                        </div>
+                                    </div>
+                                    <div class="cell valign-center">
+                                        <div class="panel panel-gray-bg item_a_6_4_to_67">
+                                            <button class="button_top_right_corner"><i class="icon icon-close"></i></button>
+                                            <span class="label" style="display: table;margin: 71px auto;">項目移送</span>
+                                        </div>
+                                    </div>
+                                    <div class="cell valign-center">
+                                        <div class="panel panel-gray-bg item_a_6_4_to_67">
+                                            <button class="button_top_right_corner"><i class="icon icon-close"></i></button>
+                                            <span class="label" style="display: table;margin: 71px auto;">項目移送</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- A6_1 -->
+                        <div class="cell valign-center">
+                            <div class="panel panel-frame item_a_6_2" style="border-radius: 3px;background: #e06a5730;padding-left: 7%;">
+                                <div class="table">
+                                    <div class="cell valign-center">
+                                        <span class="label" style="margin-bottom: 15px;margin-left: 179px;">#{i18n.getText('KHA003_30')}</span>
+                                    </div>
+                                </div>
+                                <div class="table">
+                                    <div class="cell valign-center">
+                                        <div data-bind="ntsRadioBoxGroup: {
+                                            options: itemListA622,
+                                            optionsValue: 'id',
+                                            optionsText: 'name',
+                                            value: selectedIdA622,
+                                            enable: enableA622}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table">
+                        <div class="cell valign-center">
+                            <!--A7_1-->
+                            <div data-bind="ntsCheckBox: { checked: isA71Checked, enable: isA71Enable, text: '#{i18n.getText('KHA003_39')}' }"></div>
+                        </div>
+                    </div>
+                    <div class="table" style="width: 100%;text-align: center">
+                        <div class="cell valign-center">
+                            <!--A7_2-->
+                            <button  data-bind="click:clickRunButton, style: {width: '60%', height:'44px'}, attr:{ class:isA72Enable ? 'proceed':''}">#{i18n.getText('KHA003_40')}</button>
                         </div>
                     </div>
                 </div>
