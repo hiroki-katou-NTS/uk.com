@@ -409,9 +409,9 @@
 	height: 25px !important;
 } */
 /* button next/pre datetime */
-button.auto-height {
+/* button.auto-height {
     height: 23px !important;
-}
+} */
 button {
     height: 25px !important;
     min-width: 10px !important;
@@ -479,7 +479,7 @@ table#employ_view tr{
  /*    padding-top: 10px; */
 }
 #date-extract{
-	padding-top: 0px;
+	padding-top: 2px !important;
     height: 42px;
 }
 body {
@@ -491,4 +491,12 @@ body {
 }
 .nts-column {
 	font-size: 0.8rem !important;
+}
+
+.ntsDateNextButton  {
+	margin-bottom: 4px !important;
+}
+
+ .ntsDatePrevButton  {
+	margin-bottom: 4px !important;
 }
