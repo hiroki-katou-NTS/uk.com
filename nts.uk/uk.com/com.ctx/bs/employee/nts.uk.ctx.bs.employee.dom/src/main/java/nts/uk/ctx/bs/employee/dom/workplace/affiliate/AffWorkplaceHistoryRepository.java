@@ -144,7 +144,7 @@ public interface AffWorkplaceHistoryRepository {
 	 * @param period 基準日
 	 * @return 社員リスト
 	 */
-	List<String> empHasChangedWkpWithPeriod(List<String> sids, GeneralDate period);
+	List<String> empHasChangedWkpWithPeriod(List<String> sids, GeneralDate generalDate);
 	
 	/**
 	 * [5] 期間内に履歴変更している社員を取得する
