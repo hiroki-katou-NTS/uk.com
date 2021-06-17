@@ -897,6 +897,7 @@ module nts.uk.at.view.kwr003.b {
     selectedTimeList: KnockoutObservableArray<selectedItemList> = ko.observableArray([]);
     temp: number = null;
     check:boolean = false;
+      independentCalcClassicProgrammaticChange: boolean = false;
     constructor(
       id?: number,
       name?: string,
@@ -908,23 +909,32 @@ module nts.uk.at.view.kwr003.b {
       selectedTime: number = -1) {
       this.name(name || '');
       this.setting(setting);
-      this.temp = setting;
       this.isChecked(checked || false);
       this.selectionItem(selectionItem || ''); //display
       this.id = id;
       this.selectedTimeList(selectedTimeList || []);
       this.selected = selected;
       this.selectedTime = selectedTime;
-      this.check = false;
-        var subscription = this.setting.subscribe((value)=>{
-              nts.uk.ui.dialog.confirm({ messageId: "Msg_2087" }).ifYes(()=>{
-                  // if yes
-                  this.temp = value;
-              }).ifNo(()=>{
-                  // if no
-                      this.setting(this.temp);
-              });
-      });
+      this.setting.subscribe((oldValue) => {
+            if (!this.independentCalcClassicProgrammaticChange && !_.isEmpty(this.selectionItem())) {
+                const oldSelectedTimeList = this.selectedTimeList();
+                const oldSelectionItem = this.selectionItem();
+                const oldSelectedTime = this.selectedTime;
+
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_2087" }).ifYes(()=>{
+                    // if yes do nothing
+                }).ifNo(()=>{
+                    // if no reset value
+                    this.independentCalcClassicProgrammaticChange = true;
+                    this.setting(oldValue);
+                    this.selectedTimeList(oldSelectedTimeList);
+                    this.selectionItem(oldSelectionItem);
+                    this.selectedTime = oldSelectedTime;
+                });
+            } else {
+                this.independentCalcClassicProgrammaticChange = false;
+            }
+        }, null, "beforeChange");
 
     }
   }

@@ -95,7 +95,7 @@
 										<div style="display: inline-block;">
 										<button data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button></div>
 									</div> -->
-									<div style="margin-top: -20px;margin-left: 20px;display: table">
+									<div class="matome-table">
 										<div class="switch-mode">
 											<div data-bind="ntsSwitchButton: {
 											options: listMode,
@@ -168,7 +168,6 @@
 											data-bind="ntsTreeGridView:{
 												width: 240,
 												options: dataDisplay,
-												columns: [{headerText: 'hi', width: '240px', key: 'nameAppType'}]
 												value: singleSelectedCode,
 												optionsValue: 'approvalId',
 												optionsChild: 'lstbyApp',
@@ -189,7 +188,7 @@
 									<!-- B3_2: 選択する期間 -->
 									<div style = "display: inline-block;" data-bind = "text: $parent.viewmodelSubB.historyStr"></div>
 								</div>
-								<div style="margin-top: -20px; margin-left: 20px;display: table">
+								<div class="matome-table-e">
 									<div class="switch-mode" data-bind="if: systemAtr() == 0">
 										<div data-bind="ntsSwitchButton: {
 											options: listMode,
@@ -229,7 +228,7 @@
 								<div style = "margin-left: 20px;" data-bind="text: c1_3"></div>
 							</div>
 							<div class="cell" >
-								<div data-bind = "text: wpCode"></div>
+								<div style="margin-left: 15px" data-bind = "text: wpCode"></div>
 							</div>
 							<div class="cell"  style = "width: 100px;">
 								<div style = "margin-left: 20px;" data-bind="text: c1_4"></div>
@@ -270,14 +269,14 @@
 								</div>
 							</div>
 							<!-- C3: List -->
-							<div id = "right-contents" style="margin-top: 20px; margin-bottom: 20px; margin-left: 305px;">
+							<div id = "right-contents" style="margin-top: 10px; margin-bottom: 20px; margin-left: 305px;">
 								<div>
 									<!-- C3_1: Label 有効期間 -->
 									<div style = "width: 60px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
 									<!-- C3_2: 選択する期間 -->
 									<div style = "display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
-								<div style="margin-top: -20px;margin-left: 20px;display: table">
+								<div class="matome-table">
 									<div class="switch-mode">
 										<div data-bind="ntsSwitchButton: {
 											options: listMode,
@@ -369,7 +368,7 @@
 								<!-- D3_2: 選択する期間 -->
 								<div style = "display: inline-block;" data-bind = "text: $parent.viewmodelSubB.historyStr"></div>
 							</div>
-							<div style="margin-top: -20px; margin-left: 20px;display: table">
+							<div class="matome-table-e">
 								<div class="switch-mode" data-bind="if: systemAtr() == 0">
 									<div data-bind="ntsSwitchButton: {
 											options: listMode,
@@ -451,7 +450,7 @@
 									<!-- E3_2: 選択する期間 -->
 									<div style = "display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
-								<div style="margin-top: -20px;margin-left: 20px;display: table">
+								<div class="matome-table-e">
 									<div class="switch-mode-e">
 										<div data-bind="ntsSwitchButton: {
 											options: listMode,
@@ -547,7 +546,7 @@
 									<!-- F3_2: 選択する期間 -->
 									<div style = "display: inline-block;" data-bind = "text: historyStr"></div>
 								</div>
-								<div style="margin-left: 20px; margin-top: -20px;display: table">
+								<div class="matome-table-e">
 									<div class="switch-mode-e" data-bind="if: systemAtr() == 0">
 										<div data-bind="ntsSwitchButton: {
 											options: listMode,

@@ -253,7 +253,7 @@ module nts.uk.at.view.ktg026.a {
                                 <div class="ktg026-title" data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG026_5') }"></div>
                             </th>
                             <th style="padding-right: 5px;font-size: medium;font-weight: normal;">
-                                <div style="float: right;" data-bind="ntsDatePicker: {
+                                <div id="ktg026-datepick" style="float: right;" data-bind="ntsDatePicker: {
                                     name: $component.$i18n('KTG026_1'),
                                     value: $component.targetYear,
                                     dateFormat: 'YYYY',
@@ -568,22 +568,27 @@ module nts.uk.at.view.ktg026.a {
 
             vm.targetYear
                 .subscribe((targetYear) => {
-                    vm.$window.storage('KTG026_TARGET', {
-                        isRefresh: false,
-                        target: targetYear
+                    vm.$validate('#ktg026-datepick').then(valid => {
+                        if (!valid || _.isEmpty(targetYear)) return;
+
+                        vm.$window.storage('KTG026_TARGET', {
+                            isRefresh: false,
+                            target: targetYear
+                        });
+                        const { employeesOvertime } = vm;
+                        const { closureID, closingPeriod } = employeesOvertime;
+                        const { processingYm } = closingPeriod || { processingYm: moment().format('YYYYMM') };
+    
+                        const requestBody = {
+                            employeeId,
+                            targetYear,
+                            processingYm,
+                            closingId: closureID
+                        };
+    
+                        vm.extractOvertime(requestBody);
                     });
-                    const { employeesOvertime } = vm;
-                    const { closureID, closingPeriod } = employeesOvertime;
-                    const { processingYm } = closingPeriod || { processingYm: moment().format('YYYYMM') };
-
-                    const requestBody = {
-                        employeeId,
-                        targetYear,
-                        processingYm,
-                        closingId: closureID
-                    };
-
-                    vm.extractOvertime(requestBody);
+                    
                 });
 
             $('.ktg-026-a.ui-resizable').trigger('wg.resize');

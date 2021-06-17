@@ -38,7 +38,7 @@
                     </div>
                     <div class="cf">
                         <div style="margin-top: 0px;"
-                            data-bind="ntsFormLabel: { inline: true, required: true}, i18n: 'KMK004_239'"></div>
+                            data-bind="ntsFormLabel: { inline: true, required: true}, text: $i18n('KMK004_239')"></div>
                         <div class="content-change">
                             <label data-bind="i18n: 'KMK004_240'"></label>
                             <input tabindex="1" class="lable-input input-forcus" data-bind="ntsTimeEditor: {value: model.daily, 
@@ -61,7 +61,7 @@
                                     textalign: 'center'},
                                 constraint: 'WeeklyTime'}" />
                         </div>
-                        <div data-bind="ntsFormLabel: { inline: true }, i18n: 'KMK004_242'"></div>
+                        <div data-bind="ntsFormLabel: { inline: true }, text: $i18n('KMK004_242')"></div>
                         <div tabindex="3" class="content-change" data-bind="ntsSwitchButton: {
                             options: $vm.swInsurrance,
                             optionsValue: 'code',
@@ -79,7 +79,7 @@
                                     #{i18n.getText('KMK004_247')}
                                 </div>
                         </div>
-                        <div data-bind="ntsFormLabel: { inline: true}, i18n: 'KMK004_248'"></div>
+                        <div data-bind="ntsFormLabel: { inline: true}, text: $i18n('KMK004_248')"></div>
                         <div tabindex="6" class="content-change" data-bind="ntsSwitchButton: {
                             options: swInsurrance,
                             optionsValue: 'code',

@@ -64,10 +64,10 @@ public class ReservationOfMonthly implements Serializable{
 	}
 	
 	/** ○予約注文 */
-	public void aggregate(RequireM1 require, String sid, GeneralDate date) {
+	public void aggregate(RequireM1 require, String sid, GeneralDate date, String companyID) {
 		
 		/** VerticalTotalAggregateService参照 */
-		val reservation = require.reservation(sid, date);
+		val reservation = require.reservation(sid, date, companyID);
 		
 		this.sum(reservation);
 	}
@@ -82,6 +82,6 @@ public class ReservationOfMonthly implements Serializable{
 	
 	public static interface RequireM1 {
 		
-		ReservationOfMonthly reservation(String sid, GeneralDate date);
+		ReservationOfMonthly reservation(String sid, GeneralDate date, String companyID);
 	}
 }
