@@ -1843,8 +1843,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                     }
                                 }
                         ).mapToDouble(e -> e).sum();
-                valueF15 = (number_of_date_remain + TextResource.localize("KDR001_75"));
-                // F1_4:
+                valueF15 = ((number_of_date_remain == 0.0? "0":number_of_date_remain) + TextResource.localize("KDR001_75"));
                 if (number_of_date_remain < 0) {
                     setForegroundRed(cells.get(firstRow, 7));
                 }
