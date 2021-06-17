@@ -42,7 +42,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 			, "ON m.pk.sid = n.pk.sid AND m.pk.inputDate = n.pk.inputDate"
 			, "WHERE m.startDate <= :endDate"
 			, "AND m.endDate >= :startDate"
-			, "AND (m.destination = 0"
+			, "AND ((m.destination = 0 AND m.companyId = :companyId)"
 			, "OR (m.destination = 1 AND n.pk.tgtInfoId IN :tgtInfoId))"
 			, "ORDER BY m.destination ASC, m.startDate DESC, m.endDate DESC, m.pk.inputDate DESC");
 	
@@ -160,11 +160,12 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 	}
 
 	@Override
-	public List<MessageNotice> getMsgFromWpIdList(DatePeriod period, List<String> wpIds) {
+	public List<MessageNotice> getMsgFromWpIdList(DatePeriod period, List<String> wpIds, String cid) {
 		return this.queryProxy()
 				.query(GET_FROM_LIST_WORKPLACE_ID, SptdtInfoMessage.class)
 				.setParameter("endDate", period.end())
 				.setParameter("startDate", period.start())
+				.setParameter("companyId", cid)
 				.setParameter("tgtInfoId", wpIds)
 				.getList(MessageNotice::createFromMemento);
 	}
