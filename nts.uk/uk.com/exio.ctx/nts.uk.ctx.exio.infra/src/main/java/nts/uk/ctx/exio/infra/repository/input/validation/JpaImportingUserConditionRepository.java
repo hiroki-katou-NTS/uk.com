@@ -14,19 +14,18 @@ public class JpaImportingUserConditionRepository extends JpaRepository implement
 	
 	@Override
 	public List<ImportingUserCondition> get(String companyId, String settingCode, List<Integer> itemNoList){
-//		String sql = "select * "
-//						+ "from OIOMT_USER_CONDITION "
-//						+ "where CID = @cid "
-//						+ "SETTING_CODE = @settingCode"
-//						+ "ITEM_NO in @itemNos";
-//		List<ImportingUserCondition> result = new ArrayList<ImportingUserCondition>();
-//		CollectionUtil.split(itemNoList, 1000, subNoList -> {
-//			result.addAll(new NtsStatement(sql, this.jdbcProxy())
-//				.paramString("cid", companyId)
-//				.paramString("settingCode", settingCode)
-//				.getList(rec -> OiomtUserCondition.MAPPER.toEntity(rec).toDomain()));
-//		});
-//		return result;
-		return new ArrayList<ImportingUserCondition>();
+		String sql = "select * "
+						+ "from OIOMT_USER_CONDITION "
+						+ "where CID = @cid "
+						+ "SETTING_CODE = @settingCode"
+						+ "ITEM_NO in @itemNos";
+		List<ImportingUserCondition> result = new ArrayList<ImportingUserCondition>();
+		CollectionUtil.split(itemNoList, 1000, subNoList -> {
+			result.addAll(new NtsStatement(sql, this.jdbcProxy())
+				.paramString("cid", companyId)
+				.paramString("settingCode", settingCode)
+				.getList(rec -> OiomtUserCondition.MAPPER.toEntity(rec).toDomain()));
+		});
+		return result;
 	}
 }
