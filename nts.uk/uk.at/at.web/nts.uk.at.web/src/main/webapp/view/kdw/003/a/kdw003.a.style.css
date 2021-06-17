@@ -31,14 +31,14 @@
 	margin-top: -6px;
 }
 
-#btn-signAll {
+.btn-signAll {
 	/* margin: 3px 0 0 200px; */
 	margin-left: 146px;
 }
 
-#btn-signAll2 {
+.btn-signAll2 {
 	/* margin: 3px 0 0 200px; */
-	margin-left: 16px;
+	margin-left: 10px;
 }
 
 #btn-saveColumnWidth {
@@ -499,4 +499,12 @@ body {
 
  .ntsDatePrevButton  {
 	margin-bottom: 4px !important;
+}
+
+#wkp_title_text-emp-component {
+	width: 180px !important;
+}
+
+#wkp_text-emp-component {
+	width: 150px !important;
 }
