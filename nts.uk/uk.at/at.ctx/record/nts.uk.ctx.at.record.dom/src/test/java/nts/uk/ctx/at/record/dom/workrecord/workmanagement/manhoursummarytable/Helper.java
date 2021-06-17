@@ -52,7 +52,7 @@ public class Helper {
         for (int i = 1; i <= maxSize; i++) {
             lstResult.add(new WorkDetailData(
                     "00" + i,
-                    GeneralDate.today(),
+                    GeneralDate.fromString("2021/05/31", "yyyy/MM/dd").addDays(i),
                     i,
                     "00" + i,
                     "00" + i,
@@ -61,26 +61,6 @@ public class Helper {
                     "00" + i,
                     "00" + i,
                     "00" + i,
-                    i * 2
-            ));
-        }
-        return lstResult;
-    }
-
-    public static List<WorkDetailData> workDetailListV2(int maxSize) {
-        List<WorkDetailData> lstResult = new ArrayList<>();
-        for (int i = 1; i <= maxSize; i++) {
-            lstResult.add(new WorkDetailData(
-                    "SID_00" + i,
-                    GeneralDate.today(),
-                    i,
-                    "AFF_WKP_00" + i,
-                    "WKP_00" + i,
-                    "TASK1_00" + i,
-                    "TASK2_00" + i,
-                    "TASK3_00" + i,
-                    "TASK4_00" + i,
-                    "TASK5_00" + i,
                     i * 2
             ));
         }
@@ -99,10 +79,6 @@ public class Helper {
             "TASK4_001",
             "TASK5_001",
             2);
-
-    public static class ManHourSummaryTableOutputContent {
-
-    }
 
     public static List<GeneralDate> dateList = Arrays.asList(
             GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"),
@@ -143,5 +119,31 @@ public class Helper {
         }
     }
 
+    public static class DetailFormatSetting {
+        public static List<SummaryItem> summaryItemList = Arrays.asList(
+                new SummaryItem(3, SummaryItemType.EMPLOYEE),
+                new SummaryItem(1, SummaryItemType.AFFILIATION_WORKPLACE),
+                new SummaryItem(2, SummaryItemType.WORKPLACE),
+                new SummaryItem(8, SummaryItemType.TASK5),
+                new SummaryItem(4, SummaryItemType.TASK1),
+                new SummaryItem(6, SummaryItemType.TASK3),
+                new SummaryItem(5, SummaryItemType.TASK2),
+                new SummaryItem(7, SummaryItemType.TASK4)
+        );
+    }
 
+    public static List<WorkplaceInfor> createWorkplaceInfos = Arrays.asList(
+            new WorkplaceInfor("001", "hierarchy01", "wkpCode01", "wkpName1", "wkpName1", "", "workplaceExternalCode1"),
+            new WorkplaceInfor("002", "hierarchy02", "wkpCode02", "wkpName2", "wkpName2", "", "workplaceExternalCode2")
+    );
+
+    public static List<EmployeeInfoImport> createEmpInfos = Arrays.asList(
+            new EmployeeInfoImport("001", "CD_01", "Name_1"),
+            new EmployeeInfoImport("002", "CD_02", "Name_2")
+    );
+
+    public static List<TaskImport> createTasks = Arrays.asList(
+            new TaskImport("001", 1, "Name_1"),
+            new TaskImport("002", 2, "Name_2")
+    );
 }

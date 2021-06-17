@@ -10,6 +10,7 @@ import java.io.Serializable;
 
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
 @Embeddable
 public class KrcmtRptDaiTaskItemPk implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -27,16 +28,8 @@ public class KrcmtRptDaiTaskItemPk implements Serializable {
     public String code;
 
     /**
-     * 集計項目種類
-     0:所属職場
-     1:勤務職場
-     2:社員
-     3:作業1
-     4:作業2
-     5:作業3
-     6:作業4
-     7:作業5"
+     * 階層順番
      */
-    @Column(name = "SUMMARY_TYPE")
-    public int summaryType;
+    @Column(name = "DISPORDER")
+    public int displayOrder;
 }

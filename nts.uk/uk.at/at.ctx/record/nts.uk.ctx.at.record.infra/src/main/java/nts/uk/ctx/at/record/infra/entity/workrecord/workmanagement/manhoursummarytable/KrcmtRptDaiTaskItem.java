@@ -18,10 +18,18 @@ public class KrcmtRptDaiTaskItem extends ContractUkJpaEntity implements Serializ
     public KrcmtRptDaiTaskItemPk pk;
 
     /**
-     * 階層順番
+     * 集計項目種類
+     0:所属職場
+     1:勤務職場
+     2:社員
+     3:作業1
+     4:作業2
+     5:作業3
+     6:作業4
+     7:作業5"
      */
-    @Column(name = "DISPORDER")
-    public int displayOrder;
+    @Column(name = "SUMMARY_TYPE")
+    public int summaryType;
 
     @ManyToOne
     @JoinColumns(
@@ -29,10 +37,10 @@ public class KrcmtRptDaiTaskItem extends ContractUkJpaEntity implements Serializ
                     @JoinColumn(name = "CODE", referencedColumnName = "CODE", insertable = false, updatable = false)})
     public KrcmtRptDaiTask rptDaiTask;
 
-    public KrcmtRptDaiTaskItem(KrcmtRptDaiTaskItemPk pk, int displayOrder) {
+    public KrcmtRptDaiTaskItem(KrcmtRptDaiTaskItemPk pk, int summaryType) {
         super();
         this.pk = pk;
-        this.displayOrder = displayOrder;
+        this.summaryType = summaryType;
     }
 
     @Override
@@ -42,13 +50,13 @@ public class KrcmtRptDaiTaskItem extends ContractUkJpaEntity implements Serializ
 
     public SummaryItem toDomain(KrcmtRptDaiTaskItem entity) {
         return new SummaryItem(
-                entity.displayOrder,
-                SummaryItemType.of(entity.pk.summaryType)
+                entity.pk.displayOrder,
+                SummaryItemType.of(entity.summaryType)
         );
     }
 
     public void fromEntity(KrcmtRptDaiTaskItem entity) {
-        this.pk.summaryType = entity.pk.summaryType;
-        this.displayOrder = entity.displayOrder;
+        this.summaryType = entity.summaryType;
+        this.pk.displayOrder = entity.pk.displayOrder;
     }
 }

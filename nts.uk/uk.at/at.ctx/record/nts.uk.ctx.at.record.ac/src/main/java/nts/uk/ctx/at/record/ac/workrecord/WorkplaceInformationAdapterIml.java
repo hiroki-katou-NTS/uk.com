@@ -6,10 +6,12 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInforExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Stateless
 public class WorkplaceInformationAdapterIml implements WorkplaceInformationAdapter {
     @Inject
     private WorkplacePub workplacePub;

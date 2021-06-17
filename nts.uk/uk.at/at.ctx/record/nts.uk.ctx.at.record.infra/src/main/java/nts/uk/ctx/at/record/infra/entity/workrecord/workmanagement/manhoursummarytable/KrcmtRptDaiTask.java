@@ -58,7 +58,7 @@ public class KrcmtRptDaiTask extends ContractUkJpaEntity implements Serializable
     @Column(name = "SUMVERTCL_HORI_DIS")
     public boolean sumVerticalHorizontalDisplay;
 
-    @OneToMany(mappedBy = "rptDaiTask", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "rptDaiTask", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinTable(name = "KRCMT_RPT_DAI_TASK_ITEM")
     public List<KrcmtRptDaiTaskItem> rptDaiTaskItems;
 
