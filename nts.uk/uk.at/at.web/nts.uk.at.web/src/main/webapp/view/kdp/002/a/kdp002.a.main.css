@@ -133,3 +133,6 @@ html{
 	word-break: break-all !important;
 	white-space: pre-wrap !important;
 }
+#stamp-history-tbl #daterangepicker{
+	display: inline-block;
+}

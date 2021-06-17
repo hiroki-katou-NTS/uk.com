@@ -86,9 +86,8 @@
               <div class="lableDetail">
                 <div
                   class="lableData"
-                  data-bind="ntsFormLabel: {required: true}"
+                  data-bind="ntsFormLabel: {required: true, text: '#{i18n.getText('KMK010_8')}'}"
                 >
-                  <label>#{i18n.getText('KMK010_8')}</label>
                 </div>
                 <div
                   tabindex="6"
@@ -106,9 +105,8 @@
               <div class="lableDetail">
                 <div
                   class="lableData"
-                  data-bind="ntsFormLabel: {required: false, constraint: 'OvertimeNote' }"
+                  data-bind="ntsFormLabel: {required: false, constraint: 'OvertimeNote', text: '#{i18n.getText('KMK010_9')}' }"
                 >
-                  <label>#{i18n.getText('KMK010_9')}</label>
                 </div>
                 <textarea
                   tabindex="7"
@@ -157,8 +155,7 @@
                   </table>
                 </div>
                 <!-- A4_11 -->
-                <div data-bind="ntsFormLabel: {required: false }">
-                  <label>#{i18n.getText('KMK010_86')}</label>
+                <div data-bind="ntsFormLabel: {required: false, text: '#{i18n.getText('KMK010_86')}' }">
                 </div>
                 <div class="sixtySetting" id="A4_1" tabindex="-1">
                   <table tabindex="-1" class="overtime-border tbl-monthly">
@@ -209,8 +206,7 @@
               <div class="rounding-setting-overtime-hours">
                 <div class="row-1">
                   <!-- A7_1-->
-                  <div data-bind="ntsFormLabel: {required: false }">
-                    <label>#{i18n.getText('KMK010_83')}</label>
+                  <div data-bind="ntsFormLabel: {required: false, text: '#{i18n.getText('KMK010_83')}' }">
                   </div>
                   <!-- A7_2-->
                   <button
