@@ -5309,7 +5309,7 @@ var nts;
                     ErrorsViewModel.prototype.hide = function () {
                         var vme = this;
                         var show = ko.unwrap(vme.option).show;
-                        show(hide);
+                        show(false);
                     };
                     ErrorsViewModel.prototype.addError = function (error) {
                         var _this = this;
