@@ -111,6 +111,7 @@ module knr002.d {
             private copy(): any {
                 let self = this;
                 // Process
+                blockUI.invisible();
                 self.selectableCodeList = [];
                 _.forEach(self.destinationCopyList(), e => {
                     if(e.availability)

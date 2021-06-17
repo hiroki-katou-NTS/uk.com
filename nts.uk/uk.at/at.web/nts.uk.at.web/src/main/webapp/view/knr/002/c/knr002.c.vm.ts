@@ -548,15 +548,11 @@ module nts.uk.at.view.knr002.c {
             }
 
             public closeDialog() {
-                // $('#single-list_container').focus();
+                $('#single-list_container').focus();
+                // nts.uk.ui.errors.clearAll();
                 nts.uk.ui.errors.clearAll();
-                setTimeout(() => {
-                    nts.uk.ui.errors.clearAll();
-                    $(window.parent.document).find(".ui-dialog-buttonset button").trigger("click");
-                    nts.uk.ui.windows.close();
-                }, 1)
-                
-                
+                $(window.parent.document).find(".ui-dialog-buttonset button").trigger("click");
+                nts.uk.ui.windows.close();
             }
 
             private loadData(data: any) {
