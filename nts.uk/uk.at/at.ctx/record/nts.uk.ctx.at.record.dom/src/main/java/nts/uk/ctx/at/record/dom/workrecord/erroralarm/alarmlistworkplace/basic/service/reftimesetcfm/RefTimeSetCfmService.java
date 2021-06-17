@@ -47,19 +47,19 @@ public class RefTimeSetCfmService {
         monthlySets.addAll(mnthlyWorkTimeSetRepo.findCompanyByPeriod(cid, MonthlyWorkTimeSet.LaborWorkTypeAttr.REGULAR_LABOR, ymPeriod));
         monthlySets.addAll(mnthlyWorkTimeSetRepo.findCompanyByPeriod(cid, MonthlyWorkTimeSet.LaborWorkTypeAttr.DEFOR_LABOR, ymPeriod));
         monthlySets.addAll(mnthlyWorkTimeSetRepo.findCompanyByPeriod(cid, MonthlyWorkTimeSet.LaborWorkTypeAttr.FLEX, ymPeriod));
-        YearMonth loopYm = YearMonth.of(ymPeriod.start().year(), ymPeriod.start().month());
-        while (loopYm.lessThanOrEqualTo(ymPeriod.end())) {
+        int loopYear = ymPeriod.start().year();
+        while (loopYear <= ymPeriod.end().year()) {
             // ドメインモデル「会社別月単位労働時間」を取得する。
-            final YearMonth finalLoopYm = loopYm;
-            List<MonthlyWorkTimeSetCom> filteredSets = monthlySets.stream().filter(i -> i.getYm().equals(finalLoopYm)).collect(Collectors.toList());
+            final int finalLoopYear = loopYear;
+            List<MonthlyWorkTimeSetCom> filteredSets = monthlySets.stream().filter(i -> i.getYm().year() == finalLoopYear).collect(Collectors.toList());
 
             if (CollectionUtil.isEmpty(filteredSets)) {
                 // 「アラーム値メッセージ」を作成します。
-                String message = TextResource.localize("KAL020_6", String.valueOf(loopYm.year()),
+                String message = TextResource.localize("KAL020_6", String.valueOf(loopYear),
                         AppContexts.user().companyCode());
                 // ドメインオブジェクト「抽出結果」を作成します。
                 ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                        new AlarmValueDate(loopYm.toString(), Optional.empty()),
+                        new AlarmValueDate(String.valueOf(loopYear), Optional.empty()),
                         name.v(),
                         Optional.ofNullable(TextResource.localize("KAL020_15")),
                         Optional.of(new MessageDisplay(displayMessage.v())),
@@ -70,7 +70,7 @@ public class RefTimeSetCfmService {
                 results.add(result);
             }
 
-            loopYm = loopYm.addMonths(1);
+            loopYear += 1;
         }
 
         // リスト「抽出結果」を返す。
