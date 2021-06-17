@@ -448,6 +448,8 @@ module nts.uk.at.view.knr002.c {
                         vm.updateValueList().forEach((item) => {
                             if (item.checked()) {
                                 updateValueCheckMode += item.id;
+                            } else {
+                                updateValueCheckMode += '0';
                             }
                         });
                         let rowCheckMode = new SettingValue(Math.random(), vm.rowData().majorNo, vm.rowData().majorClassification, vm.rowData().smallNo, vm.rowData().smallClassification, updateValueCheckMode, vm.rowData().inputRange, vm.rowData().variableName);
