@@ -258,13 +258,12 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			// 連続の項目の実績をチェック
 			continuousOutput = checkPerformanceOfConsecutiveItem(
 					attWeekly, weeklyCond, cond, itemValues, count);
-			break;
-			
+			count = continuousOutput.count;
+			check = continuousOutput.check;
+			break;			
 		default:
 			break;
 		}
-		
-		count = continuousOutput.count;
 		
 		Double weeklyActualAttendanceTimeValue = calAttendanceItem(cond, item -> {
 			if (item.isEmpty()) {
@@ -290,13 +289,8 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 
 		String checkTargetValue = TextResource.localize("KAL010_1314", weeklyActualAttendanceTime);
 		
-		// 週別実績の任意抽出条件．チェック項目の種類！＝4,5,6　AND　該当区分　＝　True
-		// OR
-		// Input．週別実績の任意抽出条件．チェック項目の種類＝＝4 or 5or 6　AND　取得したカウント　>=　ドメインモデル「週別実績の任意抽出条件」．連続期間 (QA#117728)
-		boolean checkContinuos = continuousOutput.continuousCountOpt.isPresent()
-				&& weeklyCond.getContinuousPeriod().isPresent()
-				&& continuousOutput.continuousCountOpt.get().getConsecutiveYears() >= weeklyCond.getContinuousPeriod().get().v();
-		if ((!weeklyCond.isContinuos() && check) || (weeklyCond.isContinuos() && checkContinuos)) {
+		// 取得した該当区分　＝＝　True (QA#117728)
+		if (check) {
 			// 「抽出結果詳細」を作成
 			// アラーム項目日付　＝Input．週別実績の勤怠時間．期間．開始日
 			extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(
