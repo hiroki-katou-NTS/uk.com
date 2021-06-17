@@ -3657,6 +3657,7 @@ var nts;
                 csrf.getToken = getToken;
             })(csrf || (csrf = {}));
             request.STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
+            request.IS_FROM_MENU = "nts.uk.ui.FROM_MENU";
             request.WEB_APP_NAME = {
                 comjs: 'nts.uk.com.js.web',
                 com: 'nts.uk.com.web',
@@ -3731,6 +3732,10 @@ var nts;
                 function Locator(url) {
                     this.rawUrl = url.split('?')[0];
                     this.queryString = QueryString.parseUrl(url);
+                    if (!this.isFromMenu && uk.localStorage.nativeStorage.hasOwnProperty(request.IS_FROM_MENU)) {
+                        this.isFromMenu = uk.localStorage.getItem(request.IS_FROM_MENU).get() == "true";
+                    }
+                    uk.localStorage.setItem(request.IS_FROM_MENU, "false");
                 }
                 Locator.prototype.serialize = function () {
                     if (this.queryString.hasItems()) {
@@ -51736,6 +51741,7 @@ var nts;
                     HeaderViewModel.prototype.selectMenu = function (item, bar) {
                         if (item.url && item.url !== '-') {
                             bar.hover(false);
+                            uk.localStorage.setItem(nts.uk.request.IS_FROM_MENU, "true");
                             if (!item.queryString) {
                                 window.location.href = item.url;
                             }
