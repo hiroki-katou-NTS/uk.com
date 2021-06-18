@@ -510,13 +510,16 @@ public class GetDataToOutputService extends ExportService<Object> {
 		if (checkEmptyTaskLogList) {
 			CsvReportWriter csv = this.generator.generate(generatorContext, FILE_NAME_CSV3 + CSV_EXTENSION, headerCSV3,
 					"SHIFT-JIS");
+			Map<String, List<Map<String, Object>>> dataMap = new HashMap<>();
 			for (ExecutionLogDetailDto logDetail : updateProAutoRuns.getLstExecLogDetail()) {
 				Optional<UpdateProcessAutoExecutionDto> procExec = updateProAutoRuns.getLstProcessExecution().stream()
 						.filter(item -> item.getExecItemCode()
 								.equals(logDetail.getProcessExecLogHistory().getExecItemCd()))
 						.findFirst();
 				ProcessExecutionLogHistoryDto proHis = logDetail.getProcessExecLogHistory();
+				dataMap.put(proHis.execId, new ArrayList<>());
 				for (ExecutionTaskLog taskLog : proHis.getTaskLogList()) {
+					List<Map<String, Object>> datas = new ArrayList<>();
 					switch (taskLog.getProcExecTask()) {
 					case SCH_CREATION:
 						for (ScheduleErrorLogDto log : logDetail.getScheduleErrorLog()) {
@@ -524,8 +527,9 @@ public class GetDataToOutputService extends ExportService<Object> {
 									taskLog, headerCSV3, log.getEmployeeId());
 							rowCSV3.put(headerCSV3.get(headerCSV3.size() - 2), log.getDate().toString("yyyy-MM-dd"));
 							rowCSV3.put(headerCSV3.get(headerCSV3.size() - 1), log.getErrorContent());
-							csv.writeALine(rowCSV3);
+							datas.add(rowCSV3);
 						}
+						dataMap.get(proHis.execId).addAll(datas);
 						break;
 					case DAILY_CREATION:
 					case DAILY_CALCULATION:
@@ -538,8 +542,9 @@ public class GetDataToOutputService extends ExportService<Object> {
 								rowCSV3.put(headerCSV3.get(headerCSV3.size() - 2), log.getDisposalDay().toString("yyyy-MM-dd"));
 								rowCSV3.put(headerCSV3.get(headerCSV3.size() - 1), log.getMessageError());
 							}
-							csv.writeALine(rowCSV3);
+							datas.add(rowCSV3);
 						}
+						dataMap.get(proHis.execId).addAll(datas);
 						break;
 					case AGGREGATION_OF_ARBITRARY_PERIOD:
 						for (AggrPeriodInforDto log : logDetail.getAggrPeriodInfor()) {
@@ -548,8 +553,9 @@ public class GetDataToOutputService extends ExportService<Object> {
 							rowCSV3.put(headerCSV3.get(headerCSV3.size() - 2),
 									log.getProcessDay().toString("yyyy-MM-dd"));
 							rowCSV3.put(headerCSV3.get(headerCSV3.size() - 1), log.getErrorMess());
-							csv.writeALine(rowCSV3);
+							datas.add(rowCSV3);
 						}
+						dataMap.get(proHis.execId).addAll(datas);
 						break;
 					case APP_ROUTE_U_DAI:
 						for (AppDataInfoDailyDto log : logDetail.getAppDataInfoDailies()) {
@@ -557,8 +563,9 @@ public class GetDataToOutputService extends ExportService<Object> {
 									taskLog, headerCSV3, log.getEmployeeId());
 							rowCSV3.put(headerCSV3.get(headerCSV3.size() - 2), null);
 							rowCSV3.put(headerCSV3.get(headerCSV3.size() - 1), log.getErrorMessage());
-							csv.writeALine(rowCSV3);
+							datas.add(rowCSV3);
 						}
+						dataMap.get(proHis.execId).addAll(datas);
 						break;
 					case APP_ROUTE_U_MON:
 						for (AppDataInfoMonthlyDto log : logDetail.getAppDataInfoMonthlies()) {
@@ -566,14 +573,16 @@ public class GetDataToOutputService extends ExportService<Object> {
 									taskLog, headerCSV3, log.getEmployeeId());
 							rowCSV3.put(headerCSV3.get(headerCSV3.size() - 2), null);
 							rowCSV3.put(headerCSV3.get(headerCSV3.size() - 1), log.getErrorMessage());
-							csv.writeALine(rowCSV3);
+							datas.add(rowCSV3);
 						}
+						dataMap.get(proHis.execId).addAll(datas);
 						break;
 					default:
 						break;
 					}
 				}
 			}
+			dataMap.values().forEach(list -> list.forEach(csv::writeALine));
 			csv.destroy();
 		}
 	}
