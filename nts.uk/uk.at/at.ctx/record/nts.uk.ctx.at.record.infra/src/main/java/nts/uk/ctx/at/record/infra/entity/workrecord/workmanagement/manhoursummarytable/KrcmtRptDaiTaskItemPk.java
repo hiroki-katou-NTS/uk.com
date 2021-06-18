@@ -11,6 +11,7 @@ import java.io.Serializable;
 @EqualsAndHashCode
 @AllArgsConstructor
 @Embeddable
+@NoArgsConstructor
 public class KrcmtRptDaiTaskItemPk implements Serializable {
     private static final long serialVersionUID = 1L;
 

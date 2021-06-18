@@ -9,11 +9,12 @@ import nts.uk.ctx.at.shared.pub.workmanagement.workmaster.TaskDisplayInfoPubExpo
 import nts.uk.ctx.at.shared.pub.workmanagement.workmaster.TaskPubExport;
 import nts.uk.ctx.at.shared.pub.workmanagement.workmaster.WorkMasterPub;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Stateless
 public class WorkMasterPubImpl implements WorkMasterPub {
     @Inject
     private TaskingRepository taskRepo;
