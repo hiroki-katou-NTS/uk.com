@@ -193,6 +193,7 @@ module nts.uk.at.view.kdp002.a {
                     } else {
                         self.getTimeCardData();
                     }
+                    self.reloadHighLight();
                     self.stampToSuppress.valueHasMutated();
                     self.openKDP002T(button, layout);
                 });
@@ -223,6 +224,7 @@ module nts.uk.at.view.kdp002.a {
                         } else {
                             self.getTimeCardData();
                         }
+                        self.reloadHighLight();
                         self.stampToSuppress.valueHasMutated();
                         self.openKDP002T(button, layout);
                     });
@@ -251,6 +253,16 @@ module nts.uk.at.view.kdp002.a {
                         });
                     }
                 });
+            }
+
+            public reloadHighLight() {
+                let self = this;
+                    if (self.stampToSuppress().isUse) {
+                        service.getHighlightSetting().done((res) => {
+                            res.isUse = self.stampToSuppress().isUse;
+                            self.stampToSuppress(res);
+                        });
+                    }
             }
         }
     }
