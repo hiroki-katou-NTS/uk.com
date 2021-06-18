@@ -8,5 +8,11 @@
 }
 .text{
 	margin-left: 20px;
-	margin-top: 20px;
+}
+.ui-iggrid-scrolldiv.ui-widget-content.ui-iggrid-virtualscrolldiv.igscroll-touchscrollable{
+	height: 362px;	
+}
+
+.ui-widget.ui-helper-clearfix.ui-corner-all.ui-iggrid.nts-gridlist table tr:last-child {
+	
 }
