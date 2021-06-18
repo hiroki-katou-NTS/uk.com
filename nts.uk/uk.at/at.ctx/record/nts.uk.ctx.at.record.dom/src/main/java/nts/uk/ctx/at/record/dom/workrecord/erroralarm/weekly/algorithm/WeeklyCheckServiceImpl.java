@@ -387,8 +387,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		CalCountForConsecutivePeriodOutput calCountForConsecutivePeriodOutput = calCountForConsecutivePeriodChecking.getContinuousCount(
 				count, 
 				continuousPeriod, 
-				errorAtr, 
-				null);
+				errorAtr);
 		// QA#117728
 		ouput.check = calCountForConsecutivePeriodOutput.getOptContinuousCount().isPresent() 
 				|| (!calCountForConsecutivePeriodOutput.getOptContinuousCount().isPresent() && calCountForConsecutivePeriodOutput.getCount() > continuousPeriod);
