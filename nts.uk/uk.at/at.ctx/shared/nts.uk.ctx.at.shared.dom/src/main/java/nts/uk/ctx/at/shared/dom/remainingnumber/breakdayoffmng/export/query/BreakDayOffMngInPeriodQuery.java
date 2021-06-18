@@ -874,7 +874,7 @@ public class BreakDayOffMngInPeriodQuery {
 		Map<GeneralDate, DailyInterimRemainMngData> monthInterimRemainData(String cid, String sid, DatePeriod dateData);
 	}
 
-	public interface RequireM11 extends GetNumberOfVacaLeavObtainBaseDate.Require{
+	public static interface RequireM11 extends GetNumberOfVacaLeavObtainBaseDate.Require{
 	    
 	}
 }

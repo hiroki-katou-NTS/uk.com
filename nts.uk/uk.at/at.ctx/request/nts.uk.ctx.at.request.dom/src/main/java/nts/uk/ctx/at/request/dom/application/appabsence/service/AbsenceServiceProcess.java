@@ -204,7 +204,7 @@ public interface AbsenceServiceProcess {
 	 * @param appAbsenceStartInfoOutput 休暇申請起動時の表示情報
 	 */
 	public List<ConfirmMsgOutput> holidayCommonCheck(String companyID, GeneralDate closureStartDate, ApplyForLeave appAbsence,
-			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, List<GeneralDate> lstHolidayDate);
+			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, List<GeneralDate> lstHolidayDate, Optional<TimeDigestApplication> timeDigestApplication);
 
 	/**
 	 * 年休のチェック処理
@@ -472,5 +472,5 @@ public interface AbsenceServiceProcess {
      * @param datePeriod
      * @param vacationType
      */
-    public void checkRemainVacation(String companyID, ApplyForLeave application, GeneralDate date, HolidayAppType vacationType);
+    public void checkRemainVacation(String companyID, ApplyForLeave application, GeneralDate date, HolidayAppType vacationType, Optional<TimeDigestApplication> timeDigestApplication);
 }
