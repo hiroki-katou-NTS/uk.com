@@ -656,6 +656,7 @@ module nts.uk.ui.kdp001.a {
             const overtimeDeclaration: any = null;
             const { employeeId, employeeCode } = vm.$user;
             const { notUseAttr, displayItemId } = ko.unwrap(stampDisplay) || {};
+            var stampDate1: any;
 
             const openDialogB = () => {
                 return $
@@ -672,7 +673,7 @@ module nts.uk.ui.kdp001.a {
                     )
                     .then(() => vm.$window.modal('at', '/view/kdp/002/b/index.xhtml'));
             };
-            const openDialogC = (stampDate: string) => {
+            const openDialogC = (stampDate: string, error: any) => {
                 return $
                     .when(
                         vm.$window.shared('KDP010_2C', displayItemId),
@@ -682,8 +683,8 @@ module nts.uk.ui.kdp001.a {
                             mode: MODE_PERSON,
                             stampDate,
                             workLocationName: ko.unwrap(vm.workLocationName),
-                            workPlaceId: ko.unwrap(vm.workplaceId)
-
+                            workPlaceId: ko.unwrap(vm.workplaceId),
+                            error: error
                         }),
                         vm.$window.shared('screenC', { screen: "KDP001" }),
                     )
@@ -705,7 +706,14 @@ module nts.uk.ui.kdp001.a {
                 .$blockui("invisibleView")
                 .then(() => vm.$ajax('at', REST_API.registerStampInput, command))
                 .then((stampDate: string) => {
-
+                    stampDate1 = stampDate;
+                })
+                .then(() => vm.$ajax('at', REST_API.getOmissionContents, {
+                    pageNo: DEFAULT_PAGE_NO,
+                    buttonDisNo: buttonPositionNo,
+                    stampMeans: STAMP_MEANS_PORTAL
+                }))
+                .then((res: any) => {
                     var param = {
                         sid: vm.$user.employeeId,
                         date: vm.$date.now()
@@ -723,7 +731,7 @@ module nts.uk.ui.kdp001.a {
                                 return openDialogB();
                             }
 
-                            return openDialogC(stampDate);
+                            return openDialogC(stampDate1, res);
                     }
                 })
                 .then(() => vm.$ajax('at', REST_API.getOmissionContents, {
@@ -738,18 +746,18 @@ module nts.uk.ui.kdp001.a {
 
                         if (dailyAttdErrorInfos && dailyAttdErrorInfos.length) {
                             vm.$window
-                            .shared('KDP010_2T', response)
-                            .then(() => vm.$window.modal('at', '/view/kdp/002/t/index.xhtml'))
-                            .then(() => vm.$window.shared('KDP010_T'))
-                            .then(({ isClose, errorDate, btn }) => {
-                                if (!isClose && errorDate) {
-                                    const { transfer, screen } = btn;
+                                .shared('KDP010_2T', response)
+                                .then(() => vm.$window.modal('at', '/view/kdp/002/t/index.xhtml'))
+                                .then(() => vm.$window.shared('KDP010_T'))
+                                .then(({ isClose, errorDate, btn }) => {
+                                    if (!isClose && errorDate) {
+                                        const { transfer, screen } = btn;
 
-                                    vm.$jump('at', screen, transfer);
-                                } else {
-                                    vm.stampData();
-                                }
-                            });
+                                        vm.$jump('at', screen, transfer);
+                                    } else {
+                                        vm.stampData();
+                                    }
+                                });
                         } else {
                             vm.stampData();
                         }
@@ -861,7 +869,7 @@ module nts.uk.ui.kdp001.a {
                             }
                         }
                         console.log(result);
-                        
+
                         vm.stamps(result);
 
                     })

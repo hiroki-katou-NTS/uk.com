@@ -50,9 +50,9 @@ module nts.uk.at.view.kdp002.a {
                 nts.uk.ui.block.grayout();
 
                 service.getWorkManagementMultiple().done((result: boolean) => {
-					self.workManagementMultiple(!result);	
-                    
-                	service.startPage().done((res: IStartPage) => {
+                    self.workManagementMultiple(!result);
+
+                    service.startPage().done((res: IStartPage) => {
                         self.stampSetting(res.stampSetting);
 
                         self.stampTab().bindData(res.stampSetting.pageLayouts);
@@ -76,7 +76,7 @@ module nts.uk.at.view.kdp002.a {
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
-				});
+                });
                 return dfd.promise();
             }
 
@@ -201,23 +201,31 @@ module nts.uk.at.view.kdp002.a {
             public openScreenC(button, layout) {
                 let self = this;
 
-                nts.uk.ui.windows.setShared('KDP010_2C', self.stampResultDisplay().displayItemId, true);
-                nts.uk.ui.windows.setShared("infoEmpToScreenC", {
-                    employeeId: __viewContext.user.employeeId,
-                    employeeCode: __viewContext.user.employeeCode,
-                    mode: Mode.Personal,
-                });
-                nts.uk.ui.windows.setShared("screenC", {
-                    screen: "KDP002"
-                });
-                nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml').onClosed(function (): any {
-                    if (self.stampGrid().displayMethod() === 1) {
-                        self.getStampData();
-                    } else {
-                        self.getTimeCardData();
-                    }
-                    self.stampToSuppress.valueHasMutated();
-                    self.openKDP002T(button, layout);
+                let data = {
+                    pageNo: layout.pageNo,
+                    buttonDisNo: button.btnPositionNo
+                }
+
+                service.getError(data).done((res) => {
+                    nts.uk.ui.windows.setShared('KDP010_2C', self.stampResultDisplay().displayItemId, true);
+                    nts.uk.ui.windows.setShared("infoEmpToScreenC", {
+                        employeeId: __viewContext.user.employeeId,
+                        employeeCode: __viewContext.user.employeeCode,
+                        mode: Mode.Personal,
+                        error: res
+                    });
+                    nts.uk.ui.windows.setShared("screenC", {
+                        screen: "KDP002"
+                    });
+                    nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml').onClosed(function (): any {
+                        if (self.stampGrid().displayMethod() === 1) {
+                            self.getStampData();
+                        } else {
+                            self.getTimeCardData();
+                        }
+                        self.stampToSuppress.valueHasMutated();
+                        self.openKDP002T(button, layout);
+                    });
                 });
             }
 
@@ -232,15 +240,15 @@ module nts.uk.at.view.kdp002.a {
 
                     if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
                         nts.uk.ui.windows.setShared('KDP010_2T', res, true);
-                            nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function (): any {
-                                let returnData = nts.uk.ui.windows.getShared('KDP010_T');
-                                if (!returnData.isClose && returnData.errorDate) {
-                                    // T1	打刻結果の取得対象項目の追加
-                                    // 残業申請（早出）
-                                    let transfer = returnData.btn.transfer;
-                                    nts.uk.request.jump(returnData.btn.screen, transfer);
-                                }
-                            });
+                        nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function (): any {
+                            let returnData = nts.uk.ui.windows.getShared('KDP010_T');
+                            if (!returnData.isClose && returnData.errorDate) {
+                                // T1	打刻結果の取得対象項目の追加
+                                // 残業申請（早出）
+                                let transfer = returnData.btn.transfer;
+                                nts.uk.request.jump(returnData.btn.screen, transfer);
+                            }
+                        });
                     }
                 });
             }
@@ -255,11 +263,11 @@ module nts.uk.at.view.kdp002.a {
 
 let reCalGridWidthHeight = () => {
     const resize = () => {
-		var bottomMasterWrapper = $('#master-wrapper')[0].getBoundingClientRect().bottom;
-		var topStampInfo = $('#stamp-info')[0].getBoundingClientRect().top;
-		var h = bottomMasterWrapper - topStampInfo - 88;
-		
-		let stampBtnHeight = (h < 72 ? 72 : h) + 'px';
+        var bottomMasterWrapper = $('#master-wrapper')[0].getBoundingClientRect().bottom;
+        var topStampInfo = $('#stamp-info')[0].getBoundingClientRect().top;
+        var h = bottomMasterWrapper - topStampInfo - 88;
+
+        let stampBtnHeight = (h < 72 ? 72 : h) + 'px';
         const $hgrid = $('#stamp-history-list');
         const $cgrid = $('#time-card-list');
 
@@ -272,7 +280,7 @@ let reCalGridWidthHeight = () => {
             $cgrid.data("height", stampBtnHeight);
         }
     };
-	if($('#stamp-info')[0]){
-		setTimeout(resize);	
-	}
+    if ($('#stamp-info')[0]) {
+        setTimeout(resize);
+    }
 }
