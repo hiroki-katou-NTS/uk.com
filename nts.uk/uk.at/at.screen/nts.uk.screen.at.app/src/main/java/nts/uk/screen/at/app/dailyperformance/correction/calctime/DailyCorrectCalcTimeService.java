@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,6 +33,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
@@ -68,6 +71,9 @@ public class DailyCorrectCalcTimeService {
 	
 	@Inject
 	private ICorrectionAttendanceRule iRule;
+	
+	@Inject
+	private OptionalItemRepository optionalMasterRepo;
 
 	public DCCalcTime calcTime(List<DailyRecordDto> dailyEdits, List<DPItemValue> itemEdits, Boolean changeSpr31,
 			Boolean changeSpr34,  boolean notChangeCell) {
@@ -136,10 +142,14 @@ public class DailyCorrectCalcTimeService {
 
 		// AttendanceItemUtil.fromItemValues(dtoEdit, Arrays.asList(itemBase));
 		//AttendanceItemUtil.fromItemValues(dtoEdit, itemValues);
+
+		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
+				.findAll(AppContexts.user().companyId()).stream()
+				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
 		
 		dailyModifyResFacade.createStampSourceInfo(dtoEdit, Arrays.asList(new DailyModifyQuery(dtoEdit.getEmployeeId(), dtoEdit.getDate(), itemValues)));
 
-		DailyRecordDto dailyBeforeEdit =  DailyRecordDto.from(dtoEdit.toDomain(dtoEdit.getEmployeeId(), dtoEdit.getDate()));
+		DailyRecordDto dailyBeforeEdit =  DailyRecordDto.from(dtoEdit.toDomain(dtoEdit.getEmployeeId(), dtoEdit.getDate()), optionalMaster);
 		
 		val changeSetting = new ChangeDailyAttendance(false, false, false, true, ScheduleRecordClassifi.RECORD, false);
 		if(itemEdits.stream().filter(x -> DPText.ITEM_WORKINFO_CHANGE.contains(x.getItemId())).findFirst().isPresent()) {
@@ -150,7 +160,7 @@ public class DailyCorrectCalcTimeService {
 		}
 		
 		IntegrationOfDaily domainEdit = iRule.process(dtoEdit.toDomain(dtoEdit.getEmployeeId(), dtoEdit.getDate()), changeSetting);
-		dtoEdit = DailyRecordDto.from(domainEdit);
+		dtoEdit = DailyRecordDto.from(domainEdit, optionalMaster);
 		List<ItemValue> items = new ArrayList<ItemValue>();
 		DailyRecordDto resultBaseDtoTemp = dtoEdit;
 		if (AppContexts.optionLicense().customize().ootsuka()) {

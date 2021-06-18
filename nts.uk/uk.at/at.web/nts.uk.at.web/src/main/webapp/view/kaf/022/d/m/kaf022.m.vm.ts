@@ -28,9 +28,9 @@ module nts.uk.at.view.kaf022.m.viewmodel {
         workplaceName: KnockoutObservable<string>;
         workplaceCode: KnockoutObservable<string>;
         colAtrs: Array<any> = [
-            { width: 130 },
+            { width: 120 },
             { width: 140 },
-            { width: 426 }
+            { width: 375 }
         ];
         tableId: string = "fixed-table-wkp";
         alreadySettingData: Array<any>;

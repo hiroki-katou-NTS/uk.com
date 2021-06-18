@@ -62,6 +62,15 @@ table td.text-center {
   height: 32px !important;
 }
 
+#fixedTableCCDT .nts-input:not(.radio-wrapper, .radio-wrappers, .checkbox-wrapper) {
+  width: 168px !important;
+}
+
+#fixedTableCCDT .radio-wrapper {
+  width: 60px !important;
+  flex-direction: column;
+}
+
 .tab-content-2 .nts-fixed-table .nts-fixed-body-wrapper {
   overflow-x: hidden;
 }
