@@ -22,7 +22,8 @@ module nts.uk.at.kha003.a {
         isA71Checked: KnockoutObservable<boolean>;
         isA71Enable: KnockoutObservable<boolean>;
         //A7_2
-        isA72Enable:KnockoutObservable<boolean>;
+        isA72Enable: KnockoutObservable<boolean>;
+
         constructor() {
             super();
             const vm = this;
@@ -41,20 +42,65 @@ module nts.uk.at.kha003.a {
             vm.selectedId = ko.observable(1);
             vm.enable = ko.observable(true);
             vm.itemListA622 = ko.observableArray([
-                new BoxModel(1, this.$i18n('KHA003_32')+this.$i18n('KHA003_35')),
-                new BoxModel(2, this.$i18n('KHA003_33')+this.$i18n('KHA003_36')),
-                new BoxModel(3, this.$i18n('KHA003_34')+this.$i18n('KHA003_37')),
+                new BoxModel(1, this.$i18n('KHA003_32') + this.$i18n('KHA003_35')),
+                new BoxModel(2, this.$i18n('KHA003_33') + this.$i18n('KHA003_36')),
+                new BoxModel(3, this.$i18n('KHA003_34') + this.$i18n('KHA003_37')),
             ]);
             vm.selectedIdA622 = ko.observable(1);
             vm.enableA622 = ko.observable(true);
-            vm.isA71Checked =ko.observable(true);
-            vm.isA71Enable =ko.observable(true);
-            vm.isA72Enable =ko.observable(true);
+            vm.isA71Checked = ko.observable(true);
+            vm.isA71Enable = ko.observable(true);
+            vm.isA72Enable = ko.observable(true);
+
         }
 
         created() {
             const vm = this;
             _.extend(window, {vm});
+
+            $("#appen-area-one .pannel_padding").draggable({
+                helper: function (e) {
+                    return e.target;
+                },
+                stop: function (e, ui) {
+                    var html = ui.helper.html();
+                    ui.helper.remove();
+                    $('#append_area').append('<div class="cell valign-center">\n' +
+                        '                                        <div class="panel panel-gray-bg item_a_6_4_to_67">\n' +
+                        '                                            <button  class="button_top_right_corner"><i class="icon icon-close"></i></button>\n' +
+                        '                                            <span class="label" style="display: table;margin: 71px auto;">' + html + '</span>\n' +
+                        '                                        </div>\n' +
+                        '                                    </div>');
+                }
+            });
+
+            $(document).ready(function () {
+                $('#append_area').on('click', ".button_top_right_corner", function (e) {
+                    console.log($(this).next('.label').html());
+                    /*$('#appen-area-one').append('<div class="cell valign-center pannel_padding">\n' +
+                        '                                    <div class="panel panel-gray-bg panel_common">'+$(this).next('.label').html()+'</div>\n' +
+                        '                                </div>');*/
+                    var html = '<div class="cell valign-center pannel_padding">\n' +
+                        '                                    <div class="panel panel-gray-bg panel_common">' + $(this).next('.label').html() + '</div>\n' +
+                        '</div>';
+                    $(html).draggable({
+                        helper: function (e) {
+                            return e.target;
+                        },
+                        stop: function (e, ui) {
+                            var html = ui.helper.html();
+                            ui.helper.remove();
+                            $('#append_area').append('<div class="cell valign-center">\n' +
+                                '                                        <div class="panel panel-gray-bg item_a_6_4_to_67">\n' +
+                                '                                            <button  class="button_top_right_corner"><i class="icon icon-close"></i></button>\n' +
+                                '                                            <span class="label" style="display: table;margin: 71px auto;">' + html + '</span>\n' +
+                                '                                        </div>\n' +
+                                '                                    </div>');
+                        }
+                    }).appendTo($('#appen-area-one'));
+                    $(this).parent().parent().remove();
+                });
+            });
         }
 
         mounted() {
@@ -118,19 +164,24 @@ module nts.uk.at.kha003.a {
          * */
         clickRunButton() {
             const vm = this;
-            alert("run button is clicked")
-        }
+            vm.$window.storage( 'inputData', [] );
+            vm.$window.modal( "/view/kha/003/b/index.xhtml" ).then( () => {
 
+            });
+        }
     }
+
     class BoxModel {
         id: number;
         name: string;
-        constructor(id:any, name:any){
+
+        constructor(id: any, name: any) {
             var self = this;
             self.id = id;
             self.name = name;
         }
     }
+
     class CodeName {
         /** コード */
         code: KnockoutObservable<string>;
@@ -153,4 +204,5 @@ module nts.uk.at.kha003.a {
         }
     }
 }
+
 
