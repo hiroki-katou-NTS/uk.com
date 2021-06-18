@@ -30,7 +30,6 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 //import nts.arc.primitive.TimeAsMinutesPrimitiveValue;
 import nts.arc.task.schedule.cron.CronSchedule;
 import nts.arc.task.schedule.job.jobdata.ScheduledJobUserData;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionTaskSettingDto;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionService;

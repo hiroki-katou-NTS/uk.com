@@ -17,6 +17,7 @@ import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
+import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionScopeItemRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskSettingRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.LastExecDateTimeRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
@@ -45,6 +46,9 @@ public class SaveUpdateProcessAutoExecutionCommandHandler
 
 	@Inject
 	private ExecutionTaskSettingRepository executionTaskSettingRepository;
+	
+	@Inject
+	private ExecutionScopeItemRepository executionScopeItemRepository;
 
 	@Inject
 	private ChangeExecutionTaskSettingCommandHandler changeExecutionTaskSettingCommandHandler;
@@ -111,6 +115,7 @@ public class SaveUpdateProcessAutoExecutionCommandHandler
 				this.processExecutionLogManageRepository.update(logManage);
 			});
 			// ドメインモデル「更新処理自動実行」に更新登録する
+			this.executionScopeItemRepository.removeAllByCidAndExecCd(procExec.getCompanyId(), procExec.getExecItemCode().v());
 			this.processExecutionRepository.update(procExec);
 		});
 	}

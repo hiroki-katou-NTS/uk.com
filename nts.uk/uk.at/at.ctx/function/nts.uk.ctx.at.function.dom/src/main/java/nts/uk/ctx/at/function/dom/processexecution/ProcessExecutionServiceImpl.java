@@ -16,8 +16,12 @@ import nts.arc.task.schedule.job.jobdata.ScheduledJobUserData;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
+import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskSettingRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogHistRepository;
+import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSetting;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.TaskEndDate;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.TaskEndTime;
@@ -41,6 +45,12 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 
 	@Inject
 	private ProcessExecutionLogHistRepository processExecLogHistoryRepo;
+	
+	@Inject
+	private ProcessExecutionLogManageRepository processExecutionLogManageRepository;
+	
+	@Inject
+	private ExecutionTaskSettingRepository executionTaskSettingRepository;
 
 	@Inject
 	private UkJobScheduler scheduler;
@@ -69,8 +79,8 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 		// 「次回実行日時（1日の繰り返しスケジュールID）」または「次回実行日時（終了処理スケジュールID）」が取得できたか確認する
 		GeneralDateTime nextExecScheduleDateTime = oNextExecScheduleDateTime.get();
 		GeneralDateTime now = GeneralDateTime.now();
-		long epochSeconds = now.localDateTime().atZone(ZoneId.systemDefault()).toEpochSecond();
-		now = GeneralDateTime.ofEpochSecond(epochSeconds, ZoneOffset.ofHours(9));
+//		long epochSeconds = now.localDateTime().atZone(ZoneId.systemDefault()).toEpochSecond();
+//		now = GeneralDateTime.ofEpochSecond(epochSeconds, ZoneOffset.ofHours(9));
 		// 取得できなかった場合
 		if (!oNextExecRepScheduleDateTime.isPresent()) {
 			// 次回実行日時（スケジュールID）を次回実行日時とする
@@ -80,27 +90,21 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 		else {
 			// 「次回実行日時（スケジュールID）」が現在のシステム日時を過ぎているか判定する
 			// 次回実行日時（スケジュールID） ＞ システム日時
-			if (nextExecScheduleDateTime.after(now) && ((oNextExecRepScheduleDateTime.isPresent()
-					// Check if scheduleId has passed the limit datetime and move on to the next ID
-					&& oNextExecRepScheduleDateTime.get().after(nextExecScheduleDateTime))
-					|| (oNextExecEndScheduleDateTime.isPresent()
-							&& oNextExecEndScheduleDateTime.get().after(nextExecScheduleDateTime)))) {
+			if (this.isAfterAndWithinDay(oNextExecScheduleDateTime, now)) {
 				// 次回実行日時（スケジュールID）を次回実行日時とする
 				nextExecDateTime = nextExecScheduleDateTime;
 			}
 			// 次回実行日時（スケジュールID）<= システム日時 < 次回実行日時（1日の繰り返しスケジュールID）
-			else if (oNextExecRepScheduleDateTime.isPresent() && oNextExecRepScheduleDateTime.get().after(now)
-					// Check if repeatScheduleId has passed the limit datetime and move on to endScheduleId
-					&& oNextExecEndScheduleDateTime.isPresent()
-					&& oNextExecEndScheduleDateTime.get().after(oNextExecRepScheduleDateTime.get())) {
+			else if (this.isAfterAndWithinDay(oNextExecRepScheduleDateTime, now)) {
 				// 次回実行日時（1日の繰り返しスケジュールID）を次回実行日時とする
 				nextExecDateTime = oNextExecRepScheduleDateTime.get();
 			}
 			// 次回実行日時（1日の繰り返しスケジュールID）<= システム日時
-			else if (oNextExecEndScheduleDateTime.isPresent() && oNextExecEndScheduleDateTime.get().after(now)) {
+			else if (this.isAfterAndWithinDay(oNextExecEndScheduleDateTime, now)) {
 				// 次回実行日時（終了処理スケジュールID）を次回実行日時とする
 				nextExecDateTime = oNextExecEndScheduleDateTime.get();
 			}
+			
 		}
 
 		// 「次回実行日時（暫定）」が「終了日＋終了時刻」を過ぎているか判定する
@@ -132,19 +136,43 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 		}
 		return nextExecDateTime;
 	}
+	
+	private boolean isAfterAndWithinDay(Optional<GeneralDateTime> nextExecDateTime, GeneralDateTime now) {
+		if (!nextExecDateTime.isPresent()) {
+			return false;
+		}
+		if (nextExecDateTime.get().toLocalDate().isEqual(now.toLocalDate())) {
+			return nextExecDateTime.get().after(now);
+		} else {
+			return false;
+		}
+	}
 
 	@Override
 	public boolean isPassAverageExecTimeExceeded(String companyId, ExecutionCode execItemCode, //#115526
 			GeneralDateTime execStartDateTime) {
-		// 過去の実行平均時間を取得する
-		BigDecimal averageRunTime = this.getAverageRunTime(companyId, execItemCode);
-
-		// 現在の経過時間と取得した「実行平均時間」を比較する
-		BigDecimal currentRunTime = BigDecimal.valueOf(GeneralDateTime.now().seconds() - execStartDateTime.seconds());
-
-		// 【比較方法】 システム日時 - INPUT．「実行開始日時」> 取得した「実行平均時間」*120%
-		// 【OUTPUT】 boolean（true：超過している/false：超過してない）
-		return currentRunTime.compareTo(averageRunTime.multiply(BIG_DECIMAL_120).divide(BIG_DECIMAL_100)) > 0;
+		// ドメインモデル「更新処理自動実行管理」を取得する
+		Optional<ProcessExecutionLogManage> optProcessExecutionLogManage = this.processExecutionLogManageRepository
+				.getLogByCIdAndExecCd(companyId, execItemCode.v());
+		// 「更新処理自動実行管理」をチェックする
+		// 取得できた　AND　現在の実行状態 == 実行中
+		if (optProcessExecutionLogManage.isPresent() &&
+				optProcessExecutionLogManage.get().getCurrentStatus().isPresent() &&
+				optProcessExecutionLogManage.get().getCurrentStatus().get().equals(CurrentExecutionStatus.RUNNING)) {
+			// 過去の実行平均時間を取得する
+			BigDecimal averageRunTime = this.getAverageRunTime(companyId, execItemCode);
+			
+			// 「実行平均時間」をチェックする
+			// 実行平均時間 > 0
+			if (averageRunTime.compareTo(BigDecimal.ZERO) > 0) {
+				// 現在の経過時間と取得した「実行平均時間」を比較する
+				BigDecimal currentRunTime = BigDecimal.valueOf(GeneralDateTime.now().seconds() - execStartDateTime.seconds());
+				// 【比較方法】 システム日時 - INPUT．「実行開始日時」> 取得した「実行平均時間」*120%
+				// 【OUTPUT】 boolean（true：超過している/false：超過してない）
+				return currentRunTime.compareTo(averageRunTime.multiply(BIG_DECIMAL_120).divide(BIG_DECIMAL_100)) > 0;
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -223,6 +251,36 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 		endDate.ifPresent(builder::endDate);
 		endTime.ifPresent(builder::endClock);
 		return builder.build();
+	}
+
+	@Override
+	public NextExecutionDateTimeDto isPassNextExecutionDateTime(String cid, String execItemCd) {
+		// ドメインモデル「更新処理自動実行管理」を取得する
+		Optional<ProcessExecutionLogManage> optProcessExecutionLogManage = this.processExecutionLogManageRepository
+				.getLogByCIdAndExecCd(cid, execItemCd);
+		// ドメインモデル「更新処理自動実行管理」をチェックする
+		// 取得できた　AND　現在の実行状態 == 待機中
+		if (optProcessExecutionLogManage.isPresent() && 
+				optProcessExecutionLogManage.get().getCurrentStatus().isPresent() &&
+				optProcessExecutionLogManage.get().getCurrentStatus().get().equals(CurrentExecutionStatus.WAITING)) {
+			// ドメインモデル「実行タスク設定」を取得する
+			Optional<ExecutionTaskSetting> optExecTaskSetting = this.executionTaskSettingRepository
+					.getByCidAndExecCd(cid, execItemCd);
+			// ドメインモデル「実行タスク設定」をチェックする
+			// 取得できた
+			if (optExecTaskSetting.isPresent()) {
+				// 次回実行日時作成処理
+				Optional<GeneralDateTime> nextExecDateTime = Optional.ofNullable(
+						this.processNextExecDateTimeCreation(optExecTaskSetting.get()));
+				// 取得した「次回実行日時」 >= システム日時
+				if (nextExecDateTime.isPresent()) {
+					boolean isPassNextExecDateTime = nextExecDateTime.get().before(GeneralDateTime.now());
+					return new NextExecutionDateTimeDto(nextExecDateTime, isPassNextExecDateTime);
+				}
+			}
+		}
+		// 取得した「次回実行日時」と「判定結果 = false」を返す
+		return new NextExecutionDateTimeDto();
 	}
 
 }

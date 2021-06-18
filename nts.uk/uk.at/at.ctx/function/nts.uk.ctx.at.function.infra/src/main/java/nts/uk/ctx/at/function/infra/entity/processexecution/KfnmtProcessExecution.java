@@ -85,6 +85,7 @@ public class KfnmtProcessExecution extends ContractUkJpaEntity
 	 */
 	public KfnmtProcessExecution(@NonNull String contractCode, @NonNull UpdateProcessAutoExecution domain) {
 		domain.setMemento(this);
+		this.contractCd = contractCode;
 	}
 
 	/**

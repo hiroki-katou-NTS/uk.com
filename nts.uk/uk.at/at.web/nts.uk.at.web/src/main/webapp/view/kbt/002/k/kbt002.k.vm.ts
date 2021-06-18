@@ -41,6 +41,10 @@ module nts.uk.at.view.kbt002.k {
       });
     }
 
+    mounted() {
+      $("#K1_2 .ntsStartDatePicker").focus();
+    }
+
     getDataExportCsv() {
       const vm = this;
       vm.$validate().then((valid: boolean) => {

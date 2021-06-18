@@ -29,7 +29,7 @@
           data-bind="click: saveProcExec">#{i18n.getText('KBT002_3')}</button>
         <!-- B1_5 削除 -->
         <button id="B1_5" tabindex="4" class="danger"
-          data-bind="click: delProcExec">#{i18n.getText('KBT002_4')}</button>
+          data-bind="click: delProcExec, enable: !isNewMode()">#{i18n.getText('KBT002_4')}</button>
         <!-- <button id="B1_5" tabindex="4" class="danger" data-bind="click: openDialogC">openDialogC</button>
         <button id="B1_5" tabindex="4" class="danger" data-bind="click: openDialogK">OpenDialogK</button>
         <button id="B1_5" tabindex="4" class="danger" data-bind="click: openDialogL">OpenDialogL</button> -->

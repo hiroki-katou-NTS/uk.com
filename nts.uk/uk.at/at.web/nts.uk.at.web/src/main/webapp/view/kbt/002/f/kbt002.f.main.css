@@ -2,10 +2,6 @@
 	margin-left: 10px;
 }
 
-.action-container {
-	margin-bottom: 10px;
-}
-
 .btn-center {
 	display: flex;
 	justify-content: center;
@@ -18,15 +14,15 @@
 	justify-content: center;
 }
 
-.icon-warning {
+/* .icon-warning {
 	margin-right: 3px;
 	background-image: url(images/icon_warning.png);
 	background-size: 20px;
   width: 20px;
 	height: 20px;
-}
+} */
 
-.icon-start {
+/* .icon-start {
 	margin-right: 3px;
 	background-image: url(images/icon_start.png);
 	background-size: 20px;
@@ -40,4 +36,4 @@
 	background-size: 20px;
 	width: 20px;
 	height: 20px;
-}
+} */
