@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.pub
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayDigestionInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayErrors;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayInformation;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHplidayManagement;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHolidayManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
@@ -34,7 +34,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
  *	期間内の公休残数を集計する
  *
  */
-public class GetRemainingNumberPublicHplidayService {
+public class GetRemainingNumberPublicHolidayService {
 
 	/**
 	 * 期間内の公休残数を集計する
@@ -44,20 +44,20 @@ public class GetRemainingNumberPublicHplidayService {
 	 * @param criteriaDate 基準日
 	 * @param performReferenceAtr 実績のみ参照区分(月次モード orその他)
 	 * @param isOverWrite 上書きフラグ(Optional)
-	 * @param TempPublicHplidayManagement List<上書き用暫定管理データ>(Optional)
+	 * @param TempPublicHolidayManagement List<上書き用暫定管理データ>(Optional)
 	 * @param createAtr 作成元区分(Optional)
 	 * @param periodOverWrite 上書き対象期間(Optional)
 	 * @param Require
 	 */
 	
-	public AggrResultOfPublicHoliday getPublicHplidayRemNumWithinPeriod(
+	public AggrResultOfPublicHoliday getPublicHolidayRemNumWithinPeriod(
 			String companyId,
 			String employeeId,
 			List<YearMonth> yearMonth,
 			GeneralDate criteriaDate,
 			InterimRemainMngMode performReferenceAtr,
 			Optional<Boolean> isOverWrite,
-			List<TempPublicHplidayManagement> tempPublicHplidayforOverWriteList,
+			List<TempPublicHolidayManagement> tempPublicHolidayforOverWriteList,
 			Optional<CreateAtr> createAtr,
 			Optional<DatePeriod> periodOverWrite,
 			CacheCarrier cacheCarrier,
@@ -78,12 +78,12 @@ public class GetRemainingNumberPublicHplidayService {
 		List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData = getPublicHolidayCarryForwardData(employeeId, require);
 		
 		//暫定公休管理データを取得する
-		List<TempPublicHplidayManagement> tempPublicHplidayManagement = getTempPublicHplidayManagement(
+		List<TempPublicHolidayManagement> tempPublicHolidayManagement = getTempPublicHolidayManagement(
 				employeeId, 
 				new DatePeriod(aggregatePublicHolidayWork.get(0).getPeriod().start(),
 						aggregatePublicHolidayWork.get(aggregatePublicHolidayWork.size()-1).getPeriod().end()),
 				isOverWrite,
-				tempPublicHplidayforOverWriteList,
+				tempPublicHolidayforOverWriteList,
 				performReferenceAtr,
 				createAtr,
 				periodOverWrite,
@@ -97,7 +97,7 @@ public class GetRemainingNumberPublicHplidayService {
 			//消化処理
 			Pair<PublicHolidayDigestionInformation, Optional<PublicHolidayErrors>> afterDigestion = 
 					publicHolidayWork.createDigestionInformation(
-							publicHolidayCarryForwardData, tempPublicHplidayManagement);
+							publicHolidayCarryForwardData, tempPublicHolidayManagement);
 				
 				
 			//繰越データを作成
@@ -107,10 +107,10 @@ public class GetRemainingNumberPublicHplidayService {
 			
 			publicHolidayInformation.add(new PublicHolidayInformation(publicHolidayWork.getYearMonth(),
 																		afterDigestion.getLeft(),
-																		CarryForwardInformation.publicHolidayCarryForwardInformation,
+																		CarryForwardInformation.getPublicHolidayCarryForwardInformation(),
 																		afterDigestion.getRight()));
 			
-			publicHolidayCarryForwardData = CarryForwardInformation.publicHolidayCarryForwardData;
+			publicHolidayCarryForwardData = CarryForwardInformation.getPublicHolidayCarryForwardData();
 		}
 		return new AggrResultOfPublicHoliday(publicHolidayInformation, publicHolidayCarryForwardData);
 		
@@ -135,26 +135,26 @@ public class GetRemainingNumberPublicHplidayService {
 	 * @param employeeId
 	 * @param period
 	 * @param isOverWrite
-	 * @param tempPublicHplidayforOverWriteList
+	 * @param tempPublicHolidayforOverWriteList
 	 * @param performReferenceAtr
 	 * @param createAtr
 	 * @param periodOverWrite
 	 * @param require
-	 * @return TempPublicHplidayManagement
+	 * @return TempPublicHolidayManagement
 	 */
-	public List<TempPublicHplidayManagement> getTempPublicHplidayManagement(String employeeId,DatePeriod period,
+	public List<TempPublicHolidayManagement> getTempPublicHolidayManagement(String employeeId,DatePeriod period,
 			Optional<Boolean> isOverWrite,
-			List<TempPublicHplidayManagement> tempPublicHplidayforOverWriteList,
+			List<TempPublicHolidayManagement> tempPublicHolidayforOverWriteList,
 			InterimRemainMngMode performReferenceAtr,
 			Optional<CreateAtr> createAtr,
 			Optional<DatePeriod> periodOverWrite,
 			RequireM6 require){
-		List<TempPublicHplidayManagement> interimDate = new ArrayList<>();
+		List<TempPublicHolidayManagement> interimDate = new ArrayList<>();
 		
 		// 実績のみ参照区分を確認
 		if (performReferenceAtr == InterimRemainMngMode.OTHER) {
 			// 暫定公休管理データを取得
-			interimDate = require.tempPublicHplidayManagement(employeeId , period , RemainType.CHILDCARE);
+			interimDate = require.tempPublicHolidayManagement(employeeId , period , RemainType.CHILDCARE);
 		}
 		
 		// 上書きフラグを確認
@@ -163,12 +163,12 @@ public class GetRemainingNumberPublicHplidayService {
 			// 上書き用暫定残数データで置き換える
 			//	ドメインモデル「暫定公休管理データ」．作成元区分 = パラメータ「作成元区分」
 			//	パラメータ「上書き対象期間．開始日」 <= ドメインモデル「暫定公休管理データ」．年月日 <= パラメータ「上書き対象期間．終了日」
-			List<TempPublicHplidayManagement> noOverwriteRemains =
+			List<TempPublicHolidayManagement> noOverwriteRemains =
 					interimDate
 					.stream()
 					.filter(c -> !periodOverWrite.get().contains(c.getYmd()))
 					.collect(Collectors.toList()); //上書き用の暫定管理データから上書対象でない暫定データを退避
-			noOverwriteRemains.addAll(tempPublicHplidayforOverWriteList);
+			noOverwriteRemains.addAll(tempPublicHolidayforOverWriteList);
 			return noOverwriteRemains;
 		}
 		
@@ -203,7 +203,7 @@ public class GetRemainingNumberPublicHplidayService {
 	
 	public static interface RequireM6{
 		//暫定公休管理データ（社員ID、期間、残数種類）
-		List<TempPublicHplidayManagement> tempPublicHplidayManagement(String employeeId, DatePeriod ymd, RemainType remainType);
+		List<TempPublicHolidayManagement> tempPublicHolidayManagement(String employeeId, DatePeriod ymd, RemainType remainType);
 	}
 	
 	public static interface RequireM7 extends PublicHolidaySetting.RequireM1, RequireM8{

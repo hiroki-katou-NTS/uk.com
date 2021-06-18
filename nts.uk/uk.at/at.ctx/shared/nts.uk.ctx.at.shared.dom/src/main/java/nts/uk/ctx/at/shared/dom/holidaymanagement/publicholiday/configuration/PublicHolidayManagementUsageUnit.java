@@ -56,9 +56,16 @@ public class PublicHolidayManagementUsageUnit extends AggregateRoot{
 		this.isManageEmpPublicHd = isManageEmpPublicHd;
 	}
 	
-	
-	//公休日数取得
-	
+
+	/**
+	 * 公休日数取得
+	 * @param require
+	 * @param companyID 会社ID
+	 * @param employeeId　社員ID
+	 * @param periodList　年月(List)
+	 * @param criteriaDate　基準日
+	 * @return List<PublicHolidayMonthSetting>
+	 */
 	public List<PublicHolidayMonthSetting> GetNumberofPublicHoliday(
 			RequireM1 require, String companyID, String employeeId, List<PeriodList> periodList, GeneralDate criteriaDate){
 		
@@ -135,6 +142,9 @@ public class PublicHolidayManagementUsageUnit extends AggregateRoot{
 				require.getEmpHistBySidAndPeriod(employeeIds,  new DatePeriod(criteriaDate, criteriaDate));
 		
 		if(employmentHistList.isEmpty()){
+			return new ArrayList<>();
+		}
+		if(employmentHistList.get(0).getAffPeriodEmpCodeExports().isEmpty()){
 			return new ArrayList<>();
 		}
 		

@@ -58,6 +58,7 @@ public class PublicHolidaySetting extends AggregateRoot {
 	
 	/**
 	 * 集計期間WORKを作成
+	 * 
 	 * @param employeeId
 	 * @param yearMonth
 	 * @param criteriaDate
@@ -106,7 +107,7 @@ public class PublicHolidaySetting extends AggregateRoot {
 			Optional<ClosureStartEndOutput> startDayAndClosureDay = closure.getClosureStartDayAndClosureDay();
 			
 			if(!startDayAndClosureDay.isPresent()){
-				return periodList;
+				return new ArrayList<>();
 			}
 			
 			//年月の件数ループ
@@ -114,8 +115,8 @@ public class PublicHolidaySetting extends AggregateRoot {
 				
 				//年月＋締め開始日、年月＋締め日の期間を作成
 				DatePeriod period = new DatePeriod(
-						GeneralDate.ymd(yearMonth,startDayAndClosureDay.get().start.v().intValue()),
-						GeneralDate.ymd(yearMonth,startDayAndClosureDay.get().closure.v().intValue()));
+						GeneralDate.ymd(yearMonth,startDayAndClosureDay.get().getStart().v().intValue()),
+						GeneralDate.ymd(yearMonth,startDayAndClosureDay.get().getClosure().v().intValue()));
 				
 				//期間（List）に追加
 				periodList.add(new PeriodList(yearMonth, period));
@@ -157,7 +158,7 @@ public class PublicHolidaySetting extends AggregateRoot {
 	 * @param criteriaDate
 	 * @param cacheCarrier
 	 * @param require
-	 * @return
+	 * @return 公休集計期間WORK
 	 */
 	public List<AggregatePublicHolidayWork> AggregationPeriodDailyNumberSetting(String employeeId, 
 			List<PeriodList> periodList, GeneralDate criteriaDate, CacheCarrier cacheCarrier,RequireM2 require){

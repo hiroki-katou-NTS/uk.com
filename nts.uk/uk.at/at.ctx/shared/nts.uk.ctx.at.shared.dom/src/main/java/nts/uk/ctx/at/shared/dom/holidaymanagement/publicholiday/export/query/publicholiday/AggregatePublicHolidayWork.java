@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.pub
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayCarryForwardInformationOutput;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayDigestionInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayErrors;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHplidayManagement;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHolidayManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
@@ -74,24 +74,24 @@ public class AggregatePublicHolidayWork {
 	/**
 	 * 公休消化情報を作成する
 	 * @param publicHolidayCarryForwardData
-	 * @param tempPublicHplidayManagement
+	 * @param tempPublicHolidayManagement
 	 * @return
 	 */
 	public Pair<PublicHolidayDigestionInformation, Optional<PublicHolidayErrors>> createDigestionInformation (
 			List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData,
-			List<TempPublicHplidayManagement> tempPublicHplidayManagement
+			List<TempPublicHolidayManagement> tempPublicHolidayManagement
 			){
 		
 		//集計開始時点の公休情報を作成する
 		PublicHolidayDigestionInformation Information = createStartDigestionInformation(publicHolidayCarryForwardData);
 		
 		//期間中の暫定データに絞り込む
-		List<TempPublicHplidayManagement> narrowDownList = tempPublicHplidayManagement.stream()
+		List<TempPublicHolidayManagement> narrowDownList = tempPublicHolidayManagement.stream()
 																.filter(c -> this.period.contains(c.getYmd()))
 																.collect(Collectors.toList()); 
 		
 		//公休取得数を求める
-		Information.setNumberOfAcquisitions(totalTempPublicHpliday(narrowDownList));
+		Information.setNumberOfAcquisitions(totalTempPublicHoliday(narrowDownList));
 																
 		//繰越数を求める
 		this.numberCarriedForward = calculateCarriedForward(publicHolidayCarryForwardData,Information.getNumberOfAcquisitions());
@@ -118,12 +118,12 @@ public class AggregatePublicHolidayWork {
 	
 	/**
 	 * 公休取得数を求める
-	 * @param tempPublicHplidayManagement　暫定公休管理データ
+	 * @param tempPublicHolidayManagement　暫定公休管理データ
 	 * @return LeaveUsedDayNumber　休暇使用日数
 	 */
-	private LeaveUsedDayNumber totalTempPublicHpliday(List<TempPublicHplidayManagement> tempPublicHplidayManagement){
-		return new LeaveUsedDayNumber(tempPublicHplidayManagement
-				.stream().mapToDouble(c -> c.getPublicHplidayUseNumber().v()).sum());
+	private LeaveUsedDayNumber totalTempPublicHoliday(List<TempPublicHolidayManagement> tempPublicHolidayManagement){
+		return new LeaveUsedDayNumber(tempPublicHolidayManagement
+				.stream().mapToDouble(c -> c.getPublicHolidayUseNumber().v()).sum());
 	}
 	
 	/**
@@ -229,7 +229,7 @@ public class AggregatePublicHolidayWork {
 	 * @param employeeId
 	 * @param publicHolidayCarryForwardData
 	 * @param publicHolidaySetting 公休
-	 * @return 公休繰越情報
+	 * @return 公休繰越情報OUTPUT
 	 */
 	public PublicHolidayCarryForwardInformationOutput calculateCarriedForwardInformation(
 			String employeeId,
@@ -238,7 +238,7 @@ public class AggregatePublicHolidayWork {
 		
 		//集計期間の繰越データ作成
 		Optional<PublicHolidayCarryForwardData> CarryForwardData = 
-				(createPublicHolidayCarryForwardData(employeeId, publicHolidaySetting));
+				createPublicHolidayCarryForwardData(employeeId, publicHolidaySetting);
 		if(CarryForwardData.isPresent()){
 			publicHolidayCarryForwardData.add(CarryForwardData.get());
 		}

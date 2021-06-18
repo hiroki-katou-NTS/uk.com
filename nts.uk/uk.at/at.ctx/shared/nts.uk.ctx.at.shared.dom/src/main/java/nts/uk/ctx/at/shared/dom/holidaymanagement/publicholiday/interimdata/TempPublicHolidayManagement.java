@@ -19,27 +19,27 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainTy
 
 @Getter
 @Setter
-public class TempPublicHplidayManagement extends InterimRemain implements DomainAggregate{
+public class TempPublicHolidayManagement extends InterimRemain implements DomainAggregate{
 	
 	/**
 	 * 公休使用日数
 	 */
-	private DayOfVacationUse publicHplidayUseNumber;
+	private DayOfVacationUse publicHolidayUseNumber;
 	
 	
 	/**
 	 * コンストラクタ
 	 */
-	public TempPublicHplidayManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, 
+	public TempPublicHolidayManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, 
 			RemainType remainType){
 		super(remainManaID, sID, ymd, creatorAtr, remainType);
-		this.publicHplidayUseNumber = new DayOfVacationUse(0.0);
+		this.publicHolidayUseNumber = new DayOfVacationUse(0.0);
 	}
 	
-	public TempPublicHplidayManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, 
-			RemainType remainType,DayOfVacationUse publicHplidayUseNumber){
+	public TempPublicHolidayManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, 
+			RemainType remainType,DayOfVacationUse publicHolidayUseNumber){
 		super(remainManaID, sID, ymd, creatorAtr, remainType);
-		this.publicHplidayUseNumber = publicHplidayUseNumber;
+		this.publicHolidayUseNumber = publicHolidayUseNumber;
 	}
 
 }

@@ -8,12 +8,8 @@ import javax.persistence.Column;
 public class KshdtHdpubRemHistPK implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	
-    /** 会社ID  */
-    @Column(name = "CID")
-    public String cid;
-   
-    /** 社員ID */
+
+	/** 社員ID */
     @Column(name = "SID")
     public String sid;
     
@@ -21,6 +17,21 @@ public class KshdtHdpubRemHistPK implements Serializable{
 	@Column(name = "YM")
 	@Basic(optional = false)
 	public int yearMonth;
+	
+	/** 締めID */
+	@Column(name = "CLOSURE_ID")
+	@Basic(optional = false)
+	public int closureId;
+
+	/** 締め日.日 */
+	@Column(name = "CLOSURE_DAY")
+	@Basic(optional = false)
+	public int closeDay;
+
+	/** 締め日.末日とする */
+	@Column(name = "IS_LAST_DAY")
+	@Basic(optional = false)
+	public int isLastDay;
 	
 	/** 対象月 */
 	@Column(name = "TAGETMONTH")

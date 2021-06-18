@@ -28,21 +28,6 @@ public class KshdtHdpubRemHist extends ContractUkJpaEntity implements Serializab
 	@Column(name = "ID")
 	public int remainmngid;
 	
-	/** 締めID */
-	@Column(name = "CLOSURE_ID")
-	@Basic(optional = false)
-	public int closureId;
-
-	/** 締め日.日 */
-	@Column(name = "CLOSURE_DAY")
-	@Basic(optional = false)
-	public int closeDay;
-
-	/** 締め日.末日とする */
-	@Column(name = "IS_LAST_DAY")
-	@Basic(optional = false)
-	public int isLastDay;
-	
 	/** 期限日 */
 	@Column(name = "DEADLINE")
 	public GeneralDate deadline;

@@ -2,6 +2,8 @@ package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.pu
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardData;
 
 /**
@@ -9,20 +11,15 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryFo
  * @author hayata_maekawa
  *
  */
+@AllArgsConstructor
+@Getter
 public class PublicHolidayCarryForwardInformationOutput {
 
 	//公休繰越情報
-	public PublicHolidayCarryForwardInformation publicHolidayCarryForwardInformation;
+	private PublicHolidayCarryForwardInformation publicHolidayCarryForwardInformation;
 	
 	//公休繰越データ
-	public List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData;
+	private List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData;
 	
-	//コンストラクタ
-	public PublicHolidayCarryForwardInformationOutput(
-			PublicHolidayCarryForwardInformation carryForwardInformation, 
-			List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData) {
-		this.publicHolidayCarryForwardInformation = carryForwardInformation;
-		this.publicHolidayCarryForwardData = publicHolidayCarryForwardData;
-	
-	}
+
 }

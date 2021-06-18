@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.workrule.closure;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.uk.shr.com.time.calendar.Day;
 
 /**
@@ -7,16 +9,14 @@ import nts.uk.shr.com.time.calendar.Day;
  * @author hayata_maekawa
  *
  */
+
+@AllArgsConstructor
+@Getter
 public class ClosureStartEndOutput {
 
 	//締め開始日
-	public Day start;
+	private Day start;
 	//締め日
-	public Day closure;
+	private Day closure;
 	
-	
-	public ClosureStartEndOutput(Day start, Day Closure){
-		this.start = start;
-		this.closure = Closure;
-	}
 }

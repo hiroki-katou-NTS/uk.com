@@ -403,6 +403,7 @@ public class Closure extends AggregateRoot {
 	 * @return
 	 */
 	public Optional<ClosureStartEndOutput>  getClosureStartDayAndClosureDay(){
+		//当月の締め日を取得する
 		Optional<ClosureDate> closureDate = getClosureDateOfCurrentMonth();
 		if(!closureDate.isPresent()){
 			return Optional.empty();
