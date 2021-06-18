@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.ac.imploymentinfoterminal.infoterminal;
+package nts.uk.ctx.at.record.ac.employmentinfoterminal.infoterminal;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,10 +9,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.function.pub.imploymentinfoterminal.infoterminal.EmpInfoTerminalComStatusExport;
-import nts.uk.ctx.at.function.pub.imploymentinfoterminal.infoterminal.EmpInfoTerminalComStatusPub;
-import nts.uk.ctx.at.record.dom.adapter.imploymentinfoterminal.infoterminal.EmpInfoTerminalComStatusAdapter;
-import nts.uk.ctx.at.record.dom.adapter.imploymentinfoterminal.infoterminal.EmpInfoTerminalComStatusImport;
+import nts.uk.ctx.at.function.pub.employmentinfoterminal.infoterminal.EmpInfoTerminalComStatusExport;
+import nts.uk.ctx.at.function.pub.employmentinfoterminal.infoterminal.EmpInfoTerminalComStatusPub;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpInfoTerminalComStatusAdapter;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpInfoTerminalComStatusImport;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 /**
