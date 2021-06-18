@@ -229,4 +229,22 @@ public class Application implements DomainAggregate {
 	public Application getApplication() {
 		return this;
 	}
+	
+	public void setApplication(Application application) {
+		this.setVersion(application.getVersion());
+		this.setAppID(application.getAppID());
+		this.setPrePostAtr(application.getPrePostAtr());
+		this.setEmployeeID(application.getEmployeeID());
+		this.setAppType(application.getAppType());
+		this.setAppDate(application.getAppDate());
+		this.setEnteredPersonID(application.getEnteredPersonID());
+		this.setInputDate(application.getInputDate());
+		this.setReflectionStatus(application.getReflectionStatus());
+		this.setOpStampRequestMode(application.getOpStampRequestMode());
+		this.setOpReversionReason(application.getOpReversionReason());
+		this.setOpAppStartDate(application.getOpAppStartDate());
+		this.setOpAppEndDate(application.getOpAppEndDate());
+		this.setOpAppReason(application.getOpAppReason());
+		this.setOpAppStandardReasonCD(application.getOpAppStandardReasonCD());
+	}
 }
