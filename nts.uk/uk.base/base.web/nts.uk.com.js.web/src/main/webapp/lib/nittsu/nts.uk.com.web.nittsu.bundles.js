@@ -3657,6 +3657,7 @@ var nts;
                 csrf.getToken = getToken;
             })(csrf || (csrf = {}));
             request.STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
+            request.IS_FROM_MENU = "nts.uk.ui.FROM_MENU";
             request.WEB_APP_NAME = {
                 comjs: 'nts.uk.com.js.web',
                 com: 'nts.uk.com.web',
@@ -3731,6 +3732,10 @@ var nts;
                 function Locator(url) {
                     this.rawUrl = url.split('?')[0];
                     this.queryString = QueryString.parseUrl(url);
+                    if (!this.isFromMenu && uk.localStorage.nativeStorage.hasOwnProperty(request.IS_FROM_MENU)) {
+                        this.isFromMenu = uk.localStorage.getItem(request.IS_FROM_MENU).get() == "true";
+                    }
+                    uk.localStorage.setItem(request.IS_FROM_MENU, "false");
                 }
                 Locator.prototype.serialize = function () {
                     if (this.queryString.hasItems()) {
@@ -37402,14 +37407,14 @@ var nts;
                     });
                 };
                 // get date time now
-                setInterval(function () {
-                    var now = Date.now();
-                    var diff = now - $date.clock;
-                    $date.clock = now;
-                    if (Math.abs(diff) > 5000) {
-                        getTime();
-                    }
-                }, 500);
+                // setInterval(() => {
+                // 	const now = Date.now();
+                // 	const diff = now - $date.clock;
+                // 	$date.clock = now;
+                // 	if (Math.abs(diff) > 5000) {
+                // 		getTime();
+                // 	}
+                // }, 500);
                 BaseViewModel.prototype.$date = Object.defineProperties($date, {
                     now: {
                         value: function $now() {
@@ -51558,11 +51563,35 @@ var nts;
                                     vm
                                         .$ajax('com', '/sys/portal/webmenu/program')
                                         .then(function (response) {
-                                        var first = response[0];
-                                        if (first) {
-                                            var name_2 = first.name;
-                                            if (name_2) {
-                                                vm.pgName(name_2);
+                                        if (!_.isEmpty($(".pg-name span").html())) {
+                                            return;
+                                        }
+                                        var queryString = nts.uk.request.location.current.queryString;
+                                        if (!_.isEmpty(queryString.items)) {
+                                            var queryStringArray_1 = Object.keys(queryString.items).map(function (key) {
+                                                return key + "=" + queryString.get(key);
+                                            });
+                                            var findResult = response.filter(function (el) {
+                                                var findResult = _.find(queryStringArray_1, function (query) {
+                                                    return query == el.param;
+                                                });
+                                                return !_.isNil(findResult);
+                                            });
+                                            var pgName = findResult.length > 0 ? findResult[0] : response[0];
+                                            if (pgName) {
+                                                var name_2 = pgName.name;
+                                                if (name_2) {
+                                                    vm.pgName(name_2);
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            var first = response[0];
+                                            if (first) {
+                                                var name_3 = first.name;
+                                                if (name_3) {
+                                                    vm.pgName(name_3);
+                                                }
                                             }
                                         }
                                     });
@@ -51712,6 +51741,7 @@ var nts;
                     HeaderViewModel.prototype.selectMenu = function (item, bar) {
                         if (item.url && item.url !== '-') {
                             bar.hover(false);
+                            uk.localStorage.setItem(nts.uk.request.IS_FROM_MENU, "true");
                             if (!item.queryString) {
                                 window.location.href = item.url;
                             }
@@ -52714,9 +52744,9 @@ var nts;
                             .then(function (response) {
                             var first = response[0];
                             if (first) {
-                                var name_3 = first.name;
-                                if (name_3) {
-                                    title(name_3);
+                                var name_4 = first.name;
+                                if (name_4) {
+                                    title(name_4);
                                 }
                             }
                         });
