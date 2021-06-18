@@ -152,7 +152,8 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
             return kfnmtAssignDayStart.toDomain();
         } else if (kfnmtAssignDatelineStart != null) {
             return kfnmtAssignDatelineStart.toDomain();
-        } else return null;
+        }
+        return null;
     }
 
     private EndDate toEndDate() {
@@ -162,7 +163,8 @@ public class KfnmtWkpCheckCondition extends UkJpaEntity implements Serializable 
             return kfnmtAssignDayEnd.toDomain();
         } else if (kfnmtAssignDatelineEnd != null) {
             return kfnmtAssignDatelineEnd.toDomain();
-        } else return null;
+        }
+        return null;
     }
 
     public static KfnmtWkpCheckCondition toEntity(CheckCondition domain, String patternCD) {
