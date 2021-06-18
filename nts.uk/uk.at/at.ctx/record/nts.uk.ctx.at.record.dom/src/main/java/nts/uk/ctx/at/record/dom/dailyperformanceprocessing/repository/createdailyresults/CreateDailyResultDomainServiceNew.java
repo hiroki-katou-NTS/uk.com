@@ -41,17 +41,16 @@ import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInf
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExJobTitleHistItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExJobTitleHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkPlaceHistoryImport;
-import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkTypeHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.specificdatesetting.RecSpecificDateSettingImport;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.MasterList;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BaseAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
@@ -145,13 +144,14 @@ public class CreateDailyResultDomainServiceNew {
 	private CreateDailyResultEmployeeDomainServiceNew createDailyResultEmployeeDomainServiceNew;
 	
 	@Inject
-	private BusinessTypeOfEmpHisAdaptor businessTypeOfEmpHisAdaptor;
+	private BusinessTypeOfEmployeeService businessTypeOfEmpHisService;
 	
 	@Inject
 	private RecordDomRequireService requireService;
 	
 	/**
 	 * ③日別実績の作成処理
+	 *  (search : 日別作成Mgrクラス .アルゴリズム)
 	 * 
 	 * @param companyId
 	 *            会社ID
@@ -199,9 +199,8 @@ public class CreateDailyResultDomainServiceNew {
 		// reqList401
 		EmployeeGeneralInfoImport employeeGeneralInfoImport = this.employeeGeneralInfoService
 				.getEmployeeGeneralInfo(emloyeeIds, periodTime);
-		List<ExWorkTypeHistoryImport> exWorkTypeHistoryImports = this.businessTypeOfEmpHisAdaptor
-				.findByCidSidBaseDate(companyId, emloyeeIds, periodTime).stream()
-				.map(c -> convertToBusinessTypeOfEmpDto(c)).collect(Collectors.toList());
+		List<BusinessTypeOfEmployeeHis> exWorkTypeHistoryImports = this.businessTypeOfEmpHisService.find(emloyeeIds, periodTime);
+		
 		employeeGeneralInfoImport.setExWorkTypeHistoryImports(exWorkTypeHistoryImports);
 		// Imported(勤務実績)「期間分の勤務予定」を取得する
 		// RequestList444 - TODO
@@ -343,13 +342,6 @@ public class CreateDailyResultDomainServiceNew {
 //			status = ProcessState.INTERRUPTION;
 //		}
 		return status;
-	}
-	
-	private ExWorkTypeHistoryImport convertToBusinessTypeOfEmpDto(BusinessTypeOfEmpDto businessTypeOfEmpDto) {
-		return new ExWorkTypeHistoryImport(businessTypeOfEmpDto.getCompanyId(), businessTypeOfEmpDto.getEmployeeId(),
-				businessTypeOfEmpDto.getHistoryId(),
-				new DatePeriod(businessTypeOfEmpDto.getStartDate(), businessTypeOfEmpDto.getEndDate()),
-				businessTypeOfEmpDto.getBusinessTypeCd());
 	}
 
 	private DatePeriod checkPeriod(String companyId, String employeeId, DatePeriod periodTime) {
@@ -556,7 +548,7 @@ public class CreateDailyResultDomainServiceNew {
 		// 暫定データの登録
 		this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId,
 				periodTime.datesBetween());
-		if(empCalAndSumExeLog.isPresent()) {
+		if(empCalAndSumExeLog.isPresent() && cStatus.getProcessState() == ProcessState.SUCCESS ) {
 			// ログ情報（実行内容の完了状態）を更新する
 			updateExecutionStatusOfDailyCreation(employeeId, executionAttr.value, empCalAndSumExeLog.get().getEmpCalAndSumExecLogID());
 		}
@@ -598,9 +590,8 @@ public class CreateDailyResultDomainServiceNew {
 
 		EmployeeGeneralInfoImport employeeGeneralInfoImport = this.employeeGeneralInfoService
 				.getEmployeeGeneralInfo(Arrays.asList(employeeId), periodTime);
-		List<ExWorkTypeHistoryImport> exWorkTypeHistoryImports = this.businessTypeOfEmpHisAdaptor
-				.findByCidSidBaseDate(companyId, Arrays.asList(employeeId), periodTime).stream()
-				.map(c -> convertToBusinessTypeOfEmpDto(c)).collect(Collectors.toList());
+		List<BusinessTypeOfEmployeeHis> exWorkTypeHistoryImports = this.businessTypeOfEmpHisService.find(Arrays.asList(employeeId), periodTime);
+		
 		employeeGeneralInfoImport.setExWorkTypeHistoryImports(exWorkTypeHistoryImports);
 		// 社員ID（List）と期間から労働条件を取得する
 		List<WorkingConditionItem> workingConditionItems = this.workingConditionItemRepository
@@ -698,9 +689,8 @@ public class CreateDailyResultDomainServiceNew {
 
 		EmployeeGeneralInfoImport employeeGeneralInfoImport = this.employeeGeneralInfoService
 				.getEmployeeGeneralInfo(Arrays.asList(employeeId), periodTime);
-		List<ExWorkTypeHistoryImport> exWorkTypeHistoryImports = this.businessTypeOfEmpHisAdaptor
-				.findByCidSidBaseDate(companyId, Arrays.asList(employeeId), periodTime).stream()
-				.map(c -> convertToBusinessTypeOfEmpDto(c)).collect(Collectors.toList());
+		List<BusinessTypeOfEmployeeHis> exWorkTypeHistoryImports = this.businessTypeOfEmpHisService.find(Arrays.asList(employeeId), periodTime);
+		
 		employeeGeneralInfoImport.setExWorkTypeHistoryImports(exWorkTypeHistoryImports);
 		
 		// 社員ID（List）と期間から労働条件を取得する
@@ -820,8 +810,9 @@ public class CreateDailyResultDomainServiceNew {
 					// List<String> workPlaceIdList = this.affWorkplaceAdapter
 					// .findParentWpkIdsByWkpId(companyId, workPlaceId, strDate);
 					// [No.569]職場の上位職場を取得する
-					List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyId, workPlaceId,
-							strDate);
+                    // List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyId, workPlaceId,strDate);
+					//[No.571]職場の上位職場を基準職場を含めて取得する
+					List<String> workPlaceIdList = this.affWorkplaceAdapter.getWorkplaceIdAndUpper(companyId,strDate, workPlaceId);
 
 					// 特定日設定を取得する
 					// Reqlist 490

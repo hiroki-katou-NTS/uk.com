@@ -161,6 +161,7 @@ declare module nts.uk.ui.vm {
 	export interface ViewModelOption {
 		readonly name: string;
 		readonly template: string;
+		readonly alternalBinding?: boolean;
 	}
 
 	interface ModalMethods {
@@ -229,7 +230,9 @@ declare module nts.uk.ui.vm {
 			(webapp: WEB_APP, url: string, data: any): JQueryDeferred<any>;
 		};
 		readonly $window: {
-			readonly mode: 'view' | 'modal';
+			readonly mode: KnockoutObservable<'view' | 'modal'>;
+			readonly title: KnockoutObservable<string>;
+			readonly header: KnockoutObservable<boolean>;
 			readonly size: {
 				(height: string | number, width: string | number): void;
 				readonly width: (width: number | string) => void;
@@ -257,11 +260,21 @@ declare module nts.uk.ui.vm {
 			readonly error: DialogMethod;
 			readonly confirm: {
 				(message: string): JQueryDeferred<void>;
-				(options: { messageId: string; }): JQueryDeferred<'no' | 'yes' | 'cancel'>;
-				(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<'no' | 'yes' | 'cancel'>;
+				(options: { messageId: string; }): JQueryDeferred<'no' | 'yes'>;
+				(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<'no' | 'yes'>;
+				yesNo: {
+					(message: string): JQueryDeferred<void>;
+					(options: { messageId: string; }): JQueryDeferred<'no' | 'yes'>;
+					(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<'no' | 'yes'>;
+				};
+				yesCancel: {
+					(message: string): JQueryDeferred<void>;
+					(options: { messageId: string; }): JQueryDeferred<'cancel' | 'yes'>;
+					(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<'cancel' | 'yes'>;					
+				};
 			};
 		}
-		readonly $blockui: (act: 'show' | 'hide' | 'clear' | 'invisible' | 'grayout') => JQueryDeferred<void>;
+		readonly $blockui: (act: 'show' | 'hide' | 'clear' | 'invisible' | 'grayout' | 'grayoutView' | 'invisibleView' | 'clearView') => JQueryDeferred<void>;
 		readonly $validate: {
 			(): JQueryDeferred<boolean>;
 			(selector: string): JQueryDeferred<boolean>;
@@ -295,5 +308,9 @@ declare module nts.uk.ui.vm {
 		readonly $nextTick: {
 			(cb: () => void): number;
 		};
+		/**
+		 * Query Object binding search query in URL.
+		 */
+		readonly $query: { readonly [key: string]: string };
 	}
 }

@@ -1,0 +1,245 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width: 1250,
+					height: 600
+				};
+			</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.SettingValue
+				nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.PartialIpAddress
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="knr002.c.service.js" />
+			<com:scriptfile path="knr002.c.vm.js" />
+			<com:scriptfile path="knr002.c.start.js" />
+			<com:stylefile path="knr002.c.style.css" />
+
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<div>
+					<div class="top-container">
+						<button class="large proceed" data-bind="click: registerAndSubmit, enable: bigItemData().length > 0">#{i18n.getText('KNR002_75')}</button>
+						<button class="large" data-bind="click: closeDialog">#{i18n.getText('KNR002_76')}</button>
+					</div>
+					<div class="body-container d-flex">
+						<div class="left">
+							<div class="first-line d-flex">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KNR002_77')}</div>
+								<div class="ct-text">#{i18n.getText('KNR002_78')}</div>
+								<div class="ct-text" data-bind="text: empInfoTerCode"></div>
+								<div class="ct-text" data-bind="text: empInfoTerName"></div>
+							</div>
+							<div class="second-line">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KNR002_79')}</div>
+							</div>
+							<div class="third-line d-flex">
+								<div id="column-1"
+									data-bind="ntsPanel:{width: '250px', height: '378px', direction: 'right', showIcon: false, visible: true}">
+									<div style="float:left; margin-bottom: 10px;">
+										<div style="width: 188px"
+											data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'majorClassification', comId: 'single-list', 
+											items: bigItemData,  selectedKey: 'majorClassification', fields: ['majorClassification'], mode: 'igGrid'}" />
+										<table id="single-list" data-bind="ntsGridList: {
+											height: 140,
+											options: bigItemData,
+											optionsValue: 'majorClassification',
+											columns: columns1,
+											multiple: false,
+											value: currentCode1
+										}"></table>
+									</div>
+									<div style="float:left">
+										<div style="width: 188px"
+											data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'smallClassification', comId: 'single-list1', 
+											items: smallItemData,  selectedKey: 'smallClassification', fields: ['smallClassification'], mode: 'igGrid'}" />
+										<table id="single-list1" data-bind="ntsGridList: {
+											height: 140,
+											options: smallItemData,
+											optionsValue: 'smallClassification',
+											columns: columns2,
+											multiple: false,
+											value: currentCode2
+										}"></table>
+									</div>
+								</div>
+								<div class="detail">
+									<div class="pnl-top">#{i18n.getText('KNR002_82')}</div>
+									<div class="pnl-body">
+										<div class="pnl-container">
+											<div class="d-flex">
+												<div>
+													<span class="label w-60">#{i18n.getText('KNR002_83')}</span>
+												</div>
+												<div class="small_name">
+													<span class="label" data-bind="text: smallClassificationName"></span>
+												</div>
+											</div>
+											<!-- Letter mode -->
+											<div class="letter-mode" data-bind="visible: inputMode() == 0 || inputMode() == 5">
+												<div class="d-flex">
+													<div>
+														<span class="label w-60">#{i18n.getText('KNR002_201')}</span>
+													</div>
+													<div class="current-value">
+														<span class="label " data-bind="text: currentValue"></span>
+													</div>
+												</div>
+												<div class="change-value d-flex">
+													<div style="width: 50px;" data-bind="ntsFormLabel: {required: true}">
+														#{i18n.getText('KNR002_202')}</div>
+													<input id="C6_5" data-bind="ntsTextEditor: {value: updateValue, name: '#[KNR002_203]', required: true, constraint: 'SettingValue', option: {width: '163px'}}" />
+												</div>
+												<div class="letter-pnl">
+													<div>
+														<span class="label">#{i18n.getText('KNR002_204')}</span>
+														<span class="label before" data-bind="text: numOfDigits"></span>
+													</div>
+													<div data-bind="visible: inputMode() == 0">
+														<span class="label">#{i18n.getText('KNR002_205')}</span>
+														<span class="label before" data-bind="text: fromLetter"></span>
+														<span class="label">#{i18n.getText('KNR002_206')}</span>
+														<span class="label" data-bind="text: toLetter"></span>
+													</div>
+												</div>
+											</div>
+
+											<!-- Time mode -->
+											<div class="time-mode" data-bind="visible: inputMode() == 1">
+												<div class="d-flex">
+													<div>
+														<span class="label w-60">#{i18n.getText('KNR002_201')}</span>
+													</div>
+													<div class="current-value">
+														<span class="label" data-bind="text: currentValue"></span>
+													</div>
+												</div>
+												<div class="change-value d-flex">
+													<div style="width: 50px;" data-bind="ntsFormLabel: {required: true}">
+														#{i18n.getText('KNR002_202')}</div>
+													<input id="C7_7" data-bind="ntsTextEditor: {value: updateValue, name: '#[KNR002_209]', required: true, constraint: 'SettingValue', option: {width: '35px'}}" />
+												</div>
+												<div class="letter-pnl">
+													<div>
+														<span class="label">#{i18n.getText('KNR002_204')}</span>
+														<span class="label before" data-bind="text: numOfDigits"></span>
+													</div>
+													<div>
+														<span class="label">#{i18n.getText('KNR002_205')}</span>
+														<span class="label before" data-bind="text: timeInputRange"></span>
+													</div>
+													<div style="margin-top: 10px;">
+														<span>#{i18n.getText('KNR002_213')}</span>
+													</div>
+												</div>
+											</div>
+
+											<!-- Ip mode -->
+											<div class="ip-mode" data-bind="visible: inputMode() == 2">
+												<div class="d-flex">
+													<div>
+														<span class="label w-60">#{i18n.getText('KNR002_201')}</span>
+													</div>
+													<div class="current-value">
+														<span class="label" data-bind="text: currentValue"></span>
+													</div>
+												</div>
+												<div class="change-value d-flex">
+													<div data-bind="ntsFormLabel: {required: true}">
+														#{i18n.getText('KNR002_202')}</div>
+													<input id="C8_5" style="margin-right: 2px; margin-left: 18px;"
+														data-bind="ntsNumberEditor: {value: ipAddress1, name: '#[KNR002_217]', constraint: 'PartialIpAddress', required: true, option: {width: '25px'}}" />
+													<div class="dot"><span>#{i18n.getText('KNR002_221')}</span></div>
+													<input id="C8_6" style="margin-right: 2px;"
+														data-bind="ntsNumberEditor: {value: ipAddress2, name: '#[KNR002_218]', constraint: 'PartialIpAddress', required: true, option: {width: '25px'}}" />
+													<div class="dot"><span>#{i18n.getText('KNR002_221')}</span></div>
+													<input id="C8_7" style="margin-right: 2px;"
+														data-bind="ntsNumberEditor: {value: ipAddress3, name: '#[KNR002_219]', constraint: 'PartialIpAddress', required: true, option: {width: '25px'}}" />
+													<div class="dot"><span>#{i18n.getText('KNR002_221')}</span></div>
+													<input id="C8_8"
+														data-bind="ntsNumberEditor: {value: ipAddress4, name: '#[KNR002_220]', constraint: 'PartialIpAddress', required: true, option: {width: '25px'}}" />
+												</div>
+											</div>
+
+											<!-- Selection mode -->
+											<div class="selection-mode" data-bind="visible: inputMode() == 3">
+												<div class="selection-container d-flex">
+													<div class="selection-left">
+														<p>#{i18n.getText('KNR002_222')}</p>
+														<div class="radio-left d-flex" data-bind="ntsRadioBoxGroup: {
+															options: currentValueList,
+															optionsValue: 'id',
+															value: selectedCurrentValue,
+															enable: false}"></div>
+													</div>
+													<div class="selection-right">
+														<p>#{i18n.getText('KNR002_223')}</p>
+														<div class="radio-right d-flex" data-bind="ntsRadioBoxGroup: {
+															options: updateValueList,
+															optionsValue: 'id',
+															optionsText: 'name',
+															value: selectedUpdateValue,
+															enable: true}"></div>
+													</div>
+												</div>
+											</div>
+
+											<!-- Check mode -->
+											<div class="check-mode" data-bind="visible: inputMode() == 4">
+												<div class="check-container d-flex">
+													<div class="check-left">
+														<p>#{i18n.getText('KNR002_222')}</p>
+														<div class="current-check d-flex" data-bind="foreach: currentValueList">
+															<div data-bind="ntsCheckBox: { checked: checked, enable: false }"></div>
+														</div>
+													</div>
+													<div class="check-right">
+														<p>#{i18n.getText('KNR002_223')}</p>
+														<div class="update-check d-flex" data-bind="foreach: updateValueList">
+															<div data-bind="ntsCheckBox: { checked: checked, text: name }"></div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="arrow-container d-flex">
+									<p style="margin-bottom: 10px;">#{i18n.getText('KNR002_90')}</p>
+									<div style="margin-bottom: 10px;">
+										<!-- Chua co text rs -->
+										<button data-bind="click: addToSetting">▶</button>	
+									</div>
+									<div>
+										<button data-bind="click: removeFromSetting">◀</button>
+									</div>
+									<p style="margin-top: 10px;">#{i18n.getText('KNR002_93')}</p>
+								</div>
+							</div>
+						</div>
+						<div class="right">
+							<div class="first-line d-flex">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KNR002_99')}</div>
+								<div class="ct-text" data-bind="text: displayFlag"></div>
+							</div>
+							<div class="second-line">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KNR002_94')}</div>
+							</div>
+							<table id="grid"></table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+
+</html>

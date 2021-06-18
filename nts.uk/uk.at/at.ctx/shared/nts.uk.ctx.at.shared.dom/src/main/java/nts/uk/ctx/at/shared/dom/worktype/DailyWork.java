@@ -14,6 +14,8 @@ import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class DailyWork.
+ * 1日の勤務
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.勤務種類.1日の勤務
  */
 @NoArgsConstructor
 @AllArgsConstructor
@@ -453,10 +455,23 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 			return this.oneDay;
 		}
 
-		if (this.workTypeUnit == WorkTypeUnit.MonringAndAfternoon && this.morning != null) {
+		if (this.workTypeUnit == WorkTypeUnit.MonringAndAfternoon && !this.morning.isHolidayType()) {
 			return this.morning;
 		}
 
 		return this.afternoon;
+	}
+	
+	/**
+	 * 半日ごとの勤務種類の分類を取得する
+	 * @return
+	 */
+	public HalfDayWorkTypeClassification getHalfDayWorkTypeClassification() {
+		
+		if ( this.workTypeUnit.isOneDay() ) {
+			return HalfDayWorkTypeClassification.createByWholeDay( this.oneDay );
+		}
+		
+		return HalfDayWorkTypeClassification.createByAmAndPm(this.morning, this.afternoon);
 	}
 }

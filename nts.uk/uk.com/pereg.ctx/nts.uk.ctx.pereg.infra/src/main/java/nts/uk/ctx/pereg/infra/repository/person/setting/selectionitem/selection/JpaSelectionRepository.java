@@ -14,7 +14,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionItem;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionPK;
+import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelectionItemPK;
 
 /**
  * 
@@ -42,23 +42,23 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 			+ " WHERE si.selectionId = :selectionId";
 	
 	// selection for company
-	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE_BY_CID = " SELECT se , item.selectionName FROM PpemtSelectionItem item"
-			+ " INNER JOIN PpemtSelectionHist his ON item.selectionId.selectionId = his.selectionItemId" 
-			+ " INNER JOIN PpemtSelectionItem se ON his.histidPK.histId = se.histId" 
+	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE_BY_CID = " SELECT item , def.selectionItemName FROM PpemtSelectionDef def"
+			+ " INNER JOIN PpemtSelectionHist his ON def.selectionItemPk.selectionItemId = his.selectionItemId" 
+			+ " INNER JOIN PpemtSelectionItem item ON his.histidPK.histId = item.selectionId.selectionId" 
 			+ " INNER JOIN PpemtSelectionItemSort order ON his.histidPK.histId = order.histId"
-			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId " 
+			+ " AND item.selectionId.selectionId = order.selectionIdPK.selectionId " 
 			+ " WHERE his.startDate <= :baseDate AND his.endDate >= :baseDate " 
-			+ " AND item.selectionId.selectionId =:selectionItemId"
+			+ " AND def.selectionItemPk.selectionItemId =:selectionItemId"
 			+ " AND his.companyId =:companyId"
 			+ " ORDER BY order.dispOrder";
 	
-	private static final String SEL_ALL_BY_SEL_ID = " SELECT se FROM PpemtSelectionItem item"
+	private static final String SEL_ALL_BY_SEL_ID = " SELECT item FROM PpemtSelectionDef def"
 			+ " INNER JOIN PpemtSelectionHist his "
-			+ " ON item.selectionId.selectionId = his.selectionItemId" + " INNER JOIN PpemtSelectionItem se"
-			+ " ON his.histidPK.histId = se.histId" + " INNER JOIN PpemtSelectionItemSort order"
+			+ " ON def.selectionItemPk.selectionItemId = his.selectionItemId" + " INNER JOIN PpemtSelectionItem item"
+			+ " ON his.histidPK.histId = item.selectionId.selectionId" + " INNER JOIN PpemtSelectionItemSort order"
 			+ " ON his.histidPK.histId = order.histId "
-			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId " + " WHERE his.startDate <= :baseDate"
-			+ " AND his.endDate >= :baseDate " + " AND item.selectionItemPk.selectionItemId =:selectionItemId"
+			+ " AND item.selectionId.selectionId = order.selectionIdPK.selectionId " + " WHERE his.startDate <= :baseDate"
+			+ " AND his.endDate >= :baseDate " + " AND def.selectionItemPk.selectionItemId =:selectionItemId"
 			+ " ORDER BY order.dispOrder";
 	// Lanlt
 
@@ -89,7 +89,7 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 
 	@Override
 	public void remove(String selectionId) {
-		PpemtSelectionPK pk = new PpemtSelectionPK(selectionId);
+		PpemtSelectionItemPK pk = new PpemtSelectionItemPK(selectionId);
 		this.commandProxy().remove(PpemtSelectionItem.class, pk);
 	}
 	
@@ -98,7 +98,7 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 		if (selectionIds.isEmpty()) {
 			return;
 		}
-		List<PpemtSelectionPK> keys = selectionIds.stream().map(x -> new PpemtSelectionPK(x))
+		List<PpemtSelectionItemPK> keys = selectionIds.stream().map(x -> new PpemtSelectionItemPK(x))
 				.collect(Collectors.toList());
 		this.commandProxy().removeAll(PpemtSelectionItem.class, keys);
 	}
@@ -148,7 +148,7 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 
 	// to Entity:
 	private static PpemtSelectionItem toEntity(Selection domain) {
-		PpemtSelectionPK key = new PpemtSelectionPK(domain.getSelectionID());
+		PpemtSelectionItemPK key = new PpemtSelectionItemPK(domain.getSelectionID());
 		return new PpemtSelectionItem(key, domain.getHistId(), domain.getSelectionCD().v(), domain.getSelectionName().v(),
 				domain.getExternalCD().v(), domain.getMemoSelection().v());
 

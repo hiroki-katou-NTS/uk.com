@@ -40,3 +40,7 @@ button {
 hr {
 	margin-top: 150px;
 }
+
+.mt-25 {
+	margin-top: 25px !important;
+}

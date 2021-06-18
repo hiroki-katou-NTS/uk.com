@@ -1,12 +1,16 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.bonuspaytime.AggregateBonusPayTime;
 
@@ -14,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の加給時間 + 集計加給時間 */
-public class BonusPayTimeOfMonthlyDto implements ItemConst {
+public class BonusPayTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 加給枠NO: 加給時間項目NO */
 	private int no;
@@ -85,4 +89,70 @@ public class BonusPayTimeOfMonthlyDto implements ItemConst {
 	private AttendanceTimeMonth toAttendanceTimeMonth(Integer time){
 		return new AttendanceTimeMonth(time);
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case TIME:
+			return Optional.of(ItemValue.builder().value(bonus).valueType(ValueType.TIME));
+		case HOLIDAY_WORK:
+			return Optional.of(ItemValue.builder().value(holWorkBonus).valueType(ValueType.TIME));
+		case (HOLIDAY_WORK + SPECIFIC):
+			return Optional.of(ItemValue.builder().value(holWorkSpecBonus).valueType(ValueType.TIME));
+		case SPECIFIC:
+			return Optional.of(ItemValue.builder().value(specBonus).valueType(ValueType.TIME));
+		case WITHIN_STATUTORY:
+			return Optional.of(ItemValue.builder().value(within).valueType(ValueType.TIME));
+		case (WITHIN_STATUTORY + SPECIFIC):
+			return Optional.of(ItemValue.builder().value(withinSpecific).valueType(ValueType.TIME));
+		case EXCESS_STATUTORY:
+			return Optional.of(ItemValue.builder().value(excess).valueType(ValueType.TIME));
+		case (EXCESS_STATUTORY + SPECIFIC):
+			return Optional.of(ItemValue.builder().value(excessSpecific).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case TIME:
+		case HOLIDAY_WORK:
+		case (HOLIDAY_WORK + SPECIFIC):
+		case SPECIFIC:
+		case WITHIN_STATUTORY:
+		case (WITHIN_STATUTORY + SPECIFIC):
+		case EXCESS_STATUTORY:
+		case (EXCESS_STATUTORY + SPECIFIC):
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case TIME:
+			bonus = value.valueOrDefault(0); break;
+		case HOLIDAY_WORK:
+			holWorkBonus = value.valueOrDefault(0); break;
+		case (HOLIDAY_WORK + SPECIFIC):
+			holWorkSpecBonus = value.valueOrDefault(0); break;
+		case SPECIFIC:
+			specBonus = value.valueOrDefault(0); break;
+		case WITHIN_STATUTORY:
+			within = value.valueOrDefault(0); break;
+		case (WITHIN_STATUTORY + SPECIFIC):
+			withinSpecific = value.valueOrDefault(0); break;
+		case EXCESS_STATUTORY:
+			excess = value.valueOrDefault(0); break;
+		case (EXCESS_STATUTORY + SPECIFIC):
+			excessSpecific = value.valueOrDefault(0); break;
+		default:
+		}
+	}
+
+	
 }

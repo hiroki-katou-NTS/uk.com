@@ -42,7 +42,8 @@ public class MonthlyStatutoryWorkingHours {
 		//取得処理
 		return flexMonthlyUnit(require, cacheCarrier, cid, employmentCd, employeeId, baseDate, ym)
 				.map(flexMonthUnit -> new MonthlyFlexStatutoryLaborTime(flexMonthUnit.getLaborTime().getLegalLaborTime(), 
-																		flexMonthUnit.getLaborTime().getWithinLaborTime().get(), 
+																		flexMonthUnit.getLaborTime().getWithinLaborTime()
+																			.orElseGet(() -> new MonthlyEstimateTime(0)), 
 																		flexMonthUnit.getLaborTime().getWeekAvgTime().get()))
 				.orElseGet(() -> MonthlyFlexStatutoryLaborTime.zeroMonthlyFlexStatutoryLaborTime());
 	}
@@ -88,7 +89,7 @@ public class MonthlyStatutoryWorkingHours {
 		Optional<MonthlyWorkTimeSet> result;
 		if(usageUnitSetting.get().isEmployee()) {//社員の労働時間を管理する場合
 			result = LaborTimeSettingService.laborTimeSettingByEmployee(require, workingSystem, cid, ym, empId);
-			if(!result.isPresent()) {
+			if(result.isPresent()) {
 				return result;
 			}
 		}
@@ -96,14 +97,14 @@ public class MonthlyStatutoryWorkingHours {
 			//職場の設定を取得
 			result = LaborTimeSettingService.laborTimeSettingByWorkplace(require, cacheCarrier, cid, 
 																			workingSystem, empId, baseDate, ym);
-			if(!result.isPresent()) {
+			if(result.isPresent()) {
 				return result;
 			}
 		}
 		if(usageUnitSetting.get().isEmployment()) {//雇用の労働時間を管理する場合
 			//雇用別設定の取得
 			result = LaborTimeSettingService.laborTimeSettingByEmployment(require, workingSystem, cid, ym, employmentCd);
-			if(!result.isPresent()) {
+			if(result.isPresent()) {
 				return result;
 			}
 		}

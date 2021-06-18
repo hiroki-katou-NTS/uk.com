@@ -22,7 +22,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlstPtnDeftm;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
- * アラームリストパターン設定
+ * Entity アラームリストパターン設定
  *
  */
 @AllArgsConstructor
@@ -91,6 +91,6 @@ public class KfnmtAlstPtn extends ContractUkJpaEntity implements Serializable {
 	}
 	
 	public List<CheckCondition> toCheckCondition() {
-		return this.checkConList.stream().map(c ->c.toDomain()).collect(Collectors.toList());
+		return this.checkConList.stream().map(KfnmtAlstPtnDeftm::toDomain).collect(Collectors.toList());
 	}
 }

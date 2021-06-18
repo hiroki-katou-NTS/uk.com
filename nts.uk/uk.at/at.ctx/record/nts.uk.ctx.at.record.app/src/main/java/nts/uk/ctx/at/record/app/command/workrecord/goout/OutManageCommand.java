@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.app.command.workrecord.goout;
 
 import nts.uk.ctx.at.record.dom.workrecord.goout.MaxGoOut;
 import nts.uk.ctx.at.record.dom.workrecord.goout.OutManageGetMemento;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

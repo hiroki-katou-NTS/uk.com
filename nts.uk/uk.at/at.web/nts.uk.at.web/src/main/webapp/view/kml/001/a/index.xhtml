@@ -1,153 +1,430 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<body>
-		<ui:composition template="../../../../master/base.xhtml">
-			<ui:define name="htmlHead">
-				<com:ValidatorScript>
-					nts.uk.ctx.at.schedule.dom.budget.premium.PremiumRate
-					nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostMemo
-   				</com:ValidatorScript>
-				<com:scriptfile set="IGNITE" />
-				<com:scriptfile path="../shr/kml001.shr.servicebase.js" />
-				<com:scriptfile path="../shr/kml001.shr.vmbase.js" />
-				<com:scriptfile path="kml001.a.vm.js" />
-				<com:scriptfile path="kml001.a.start.js" />
-				<com:stylefile path="kml001.a.main.css" />
-			</ui:define>
-			
-			<ui:define name="content">
-				<div id="functions-area">
-					<div class="valign-center control-group">
-						<button class="proceed short-button" data-bind="click: saveData,  enable: $root.errors.isEmpty">#{i18n.getText('KML001_2')}</button>
-						<button data-bind="click: premiumDialog">#{i18n.getText('KML001_3')}</button>						
-						<button id="print-button" data-bind="click: opencdl028Dialog">#{i18n.getText('KMK007_4')}</button>
-					</div>
-				</div>
-				<div id="contents-area" class="fixed-flex-layout">
-						<div class="fixed-flex-layout-left">
-							<div class="caret-right caret-background bg-green">
-								<div>
-									<button class="dateControlBtn" data-bind="click: createDialog">#{i18n.getText('KML001_41')}</button>
-									<button class="dateControlBtn" data-bind="click: editDialog, enable: !isInsert() &amp;&amp; isLastItem()">#{i18n.getText('KML001_42')}</button>
-								</div>
-								<div id="dateRange-list-content">
-									<table id="dateRange-list" data-bind="ntsGridList: {
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/base.xhtml">
+      <ui:define name="htmlHead">
+        <com:ValidatorScript>
+          nts.uk.ctx.at.schedule.dom.budget.premium.PremiumRate
+          nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostMemo
+        </com:ValidatorScript>
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="../shr/kml001.shr.servicebase.js" />
+        <com:scriptfile path="../shr/kml001.shr.vmbase.js" />
+        <com:scriptfile path="kml001.a.vm.js" />
+        <com:scriptfile path="kml001.a.start.js" />
+        <com:stylefile path="kml001.a.main.css" />
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="functions-area">
+          <div class="valign-center control-group">
+            <button
+              class="proceed short-button"
+              tabindex="1"
+              data-bind="click: registerUpdateData,  enable: $root.errors.isEmpty"
+            >
+              #{i18n.getText('KML001_2')}
+            </button>
+            <button data-bind="click: premiumDialog" tabindex="2">
+              #{i18n.getText('KML001_3')}
+            </button>
+            <button
+              id="print-button"
+              data-bind="click: opencdl028Dialog"
+              tabindex="3"
+            >
+              #{i18n.getText('KMK007_4')}
+            </button>
+          </div>
+        </div>
+        <div id="contents-area" class="fixed-flex-layout">
+          <div class="fixed-flex-layout-left">
+            <div class="caret-right caret-background bg-green">
+              <div>
+                <button
+                  class="dateControlBtn"
+                  data-bind="click: createDialog"
+                  tabindex="4"
+                >
+                  #{i18n.getText('KML001_41')}
+                </button>
+                <button
+                  class="dateControlBtn"
+                  tabindex="5"
+                  data-bind="click: editDialog, enable: !isInsert() &amp;&amp; isLastItem()"
+                >
+                  #{i18n.getText('KML001_42')}
+                </button>
+              </div>
+              <div id="dateRange-list-content">
+                <table
+                  id="dateRange-list"
+                  tabindex="7"
+                  data-bind="ntsGridList: {
 										name: '#[KML001_6]', 
-										height: 290,
+										height: 300,
 										options: gridPersonCostList,
 										optionsValue: 'dateRange',
 										columns: ko.observableArray([
-							                { headerText: '', prop: 'dateRange' }]),
-										value: currentGridPersonCost }">
-									</table>
-								</div>
-								
-							</div>
-						</div>
-						<div class="fixed-flex-layout-right">
-							<div class="table">
-								<div class="cell column1">
-									<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML001_9')}</div>
-								</div>
-								<div class="cell valign-center">
-									<div>
-										<div id="startDateInput" data-bind="ntsDatePicker: {
-											name: '#[KML001_9]',
-											value: newStartDate,
-											dateFormat: 'YYYY/MM/DD',
-											valueFormat: 'YYYY/MM/DD',
-											required: true,
-											enable: isInsert }" />
-									</div>
-								</div>
-							</div>
-							<div class="table" style="height:43px">
-								<div class="cell column1">
-									<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML001_10')}</div>
-								</div>
-								<div class="cell valign-center" data-bind="with: currentPersonCost">
-									<div id="combo-box"  data-bind="ntsComboBox: {
-															name: '#[KML001_27]',
+							        { headerText: '', prop: 'dateRange' }]),
+										value: currentGridPersonCost }"
+                ></table>
+              </div>
+            </div>
+          </div>
+          <div class="fixed-flex-layout-right">
+            <div class="table">
+              <div class="cell">
+                <!--A3_8-->
+                <div data-bind="text: '#{i18n.getText('KML001_6')}'"></div>
+              </div>
+              <div class="cell cell-help-button">
+                <!--A3_7-->
+                <button
+                  tabindex="-1"
+                  data-bind="ntsHelpButton: {	
+										image: 'IMG_KML001_2.png',
+										position: 'bottom left',
+										enable: true }"
+                >
+                  ?
+                </button>
+              </div>
+            </div>
+            <div
+              class="table two-columns"
+              data-bind="with: currentPersonCost, as: 'person'"
+            >
+              <div class="cell cell-column-1">
+                <div class="table three-columns">
+                  <div class="cell column1">
+                    <!--A4_9-->
+                    <div data-bind="ntsFormLabel: { required: true }">
+                      #{i18n.getText('KML001_71')}
+                    </div>
+                  </div>
+                  <div class="cell column2">
+                    <!--A4_10-->
+                    <div id="A4_10"
+                      tabindex="9"
+                      class="field-required"
+                      data-bind="ntsRadioBoxGroup: {
+											name: '#[KML001_72]',
+											options: [
+												{id: 0,name:'#{i18n.getText('KML001_73')}'},
+												{id: 1,name:'#{i18n.getText('KML001_74')}'},
+											],
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: calculationSetting,
+											required: true
+										}"
+                    ></div>
+                    <!--A4_11--><!--A4_12-->
+                  </div>
+                  <div class="cell column3">
+                    <!--A4_13-->
+                    <div
+                      class="cell valign-center"
+                      data-bind="text: '#{i18n.getText('KML001_75')}'"
+                    ></div>
+                    <div class="cell valign-center">
+                      <!--A4_14-->
+                      <div
+                        id="combo-box"
+                        tabindex="10"
+                        class="field-required"
+                        data-bind="ntsComboBox: {
+													name: '#[KML001_75]',
+													options: $parent.unitPriceOpt(),
+													optionsValue: 'code',
+													value: unitPrice,
+													optionsText: 'name',
+													dropDownAttachedToBody:true,
+													selectFirstIfNull: true,
+                          visibleItemsCount: 5,
+                          required: true,
+													enable: calculationSetting() === 0
+												 }"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="table">
+                  <!--A4_15-->
+                  <div class="cell valign-top">
+                    <div data-bind="ntsFormLabel: { required: true }">
+                      #{i18n.getText('KML001_76')}
+                    </div>
+                  </div>
+                  <div class="cell valign-top">
+                    <div class="control-group">
+                      <div class="row">
+                        <div class="d-flex">
+                          <!--A4_16-->
+                          <div
+                            data-bind="text: '#{i18n.getText('KML001_77')}'"
+                          ></div>
+                          <!--A4_17-->
+                          <div
+                            id="comboBoxA4_17"
+                            class="combo-box field-required"
+                            tabindex="11"
+                            data-bind="ntsComboBox: {
+															name: '#[KML001_77]',
 															options: [
-												                { code: 0, name: '#{i18n.getText('KML001_22')}' },
-												                { code: 1, name: '#{i18n.getText('KML001_23')}' },
-												                { code: 2, name: '#{i18n.getText('KML001_24')}' },
-												                { code: 3, name: '#{i18n.getText('KML001_25')}' },
-												                { code: 4, name: '#{i18n.getText('KML001_26')}' }],
+																{ code: 0, name: '#{i18n.getText('Enum_UnitPriceRounding_roundUp')}' },
+																{ code: 1, name: '#{i18n.getText('Enum_UnitPriceRounding_truncation')}' },
+																{ code: 2, name: '#{i18n.getText('Enum_UnitPriceRounding_down4Up5')}' },
+															],
 															optionsValue: 'code',
-															value: unitPrice,
+															value: roundingUnitPrice,
 															optionsText: 'name',
 															dropDownAttachedToBody:true,
-															enable: true }">
-									</div>
-								</div>
-								<div class="cell" style="padding-left:20px">
-									<button data-bind="ntsHelpButton: {	image: 'IMG_KML001_1.png',
-																	position: 'bottom center',
-																	enable: true }">?</button>
-								</div>
-							</div>
-							<div class="table">
-								<div class="item-valign-top" data-bind="ntsFormLabel: { constraint: 'PersonCostMemo' }">#{i18n.getText('KML001_11')}</div>
-								<a data-bind="with: currentPersonCost">
-									<textarea id="memo"  data-bind="ntsMultilineEditor: {
-										name: '#[KML001_11]',
-										value: memo,
-										constraint: 'PersonCostMemo'}" />
-								</a>
-							</div>
-							<div class="table" id="premium-set-div">
-								<table id="premium-set-tbl"> 
-									<thead>
-										<tr>
-											<th>#{i18n.getText('KML001_12')}</th>
-											<th>#{i18n.getText('KML001_13')}</th>
-											<th>#{i18n.getText('KML001_14')}</th>
-										</tr>
-									</thead>
-									<tbody data-bind="foreach: currentPersonCost().premiumSets">
-										<tr data-bind="css: { notUse: useAtr() == 0 }">
-											<td style="word-wrap: break-word;" data-bind="text: (name()=='')?'ITEM'+($index()+1):name()"></td>
-											<td>
-												<span>
-													<input class="premiumInput premiumPercent" data-bind="ntsNumberEditor: {
+															selectFirstIfNull: true,
+															visibleItemsCount: 3,
+															enable: calculationSetting() === 0,
+															required: true }"
+                          ></div>
+                        </div>
+                      </div>
+                      <div class="d-flex control-group">
+                        <div class="d-flex">
+                          <!--A4_18-->
+                          <div
+                            data-bind="text: '#{i18n.getText('KML001_78')}'"
+                          ></div>
+                          <!--A4_19-->
+                          <div
+                            id="comboBoxA4_19"
+                            tabindex="12"
+                            class="combo-box field-required"
+                            data-bind="ntsComboBox: {
+															name: '#[KML001_79]',
+															options: [															
+																{ code: 1, name: '#{i18n.getText('Enum_AmountUnit_oneYen')}' },
+																{ code: 10, name: '#{i18n.getText('Enum_AmountUnit_tenYen')}' },
+																{ code: 100, name: '#{i18n.getText('Enum_AmountUnit_oneHundredYen')}' },
+																{ code: 1000, name: '#{i18n.getText('Enum_AmountUnit_oneThousandYen')}' }
+															],
+															optionsValue: 'code',
+															value: unit,
+															optionsText: 'name',
+															dropDownAttachedToBody:true,
+															selectFirstIfNull: true,
+															enable: true,
+															visibleItemsCount: 4,
+															required: true }"
+                          ></div>
+                        </div>
+                        <div class="d-flex">
+                          <!--A4_20-->
+                          <div
+                            data-bind="text: '#{i18n.getText('KML001_80')}'"
+                          ></div>
+                          <!--A4_21-->
+                          <div
+                            id="comboBoxA4_21"
+                            class="combo-box1 field-required"
+                            tabindex="13"
+                            data-bind="ntsComboBox: {
+															name: '#[KML001_81]',
+															options: [
+																{ code: 0, name: '#{i18n.getText('ENUM_ROUNDING_TRUNCATION')}' },
+																{ code: 1, name: '#{i18n.getText('ENUM_ROUNDING_ROUND_UP')}' },
+                                { code: 2, name: '#{i18n.getText('ENUM_ROUNDING_DOWN_1_UP_2')}' },
+                                { code: 3, name: '#{i18n.getText('ENUM_ROUNDING_DOWN_2_UP_3')}' },
+																{ code: 4, name: '#{i18n.getText('ENUM_ROUNDING_DOWN_3_UP_4')}' },
+                                { code: 5, name: '#{i18n.getText('ENUM_ROUNDING_DOWN_4_UP_5')}' },
+                                { code: 6, name: '#{i18n.getText('ENUM_ROUNDING_DOWN_5_UP_6')}' },
+																{ code: 7, name: '#{i18n.getText('ENUM_ROUNDING_DOWN_6_UP_7')}' },
+                                { code: 8, name: '#{i18n.getText('ENUM_ROUNDING_DOWN_7_UP_8')}' },
+                                { code: 9, name: '#{i18n.getText('ENUM_ROUNDING_DOWN_8_UP_9')}' }
+															],
+															optionsValue: 'code',
+															value: inUnits,
+															optionsText: 'name',
+															dropDownAttachedToBody:true,
+															selectFirstIfNull: true,
+															enable: true,
+															visibleItemsCount: 10,
+															required: true }"
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="cell cell-column-2">
+                <!--A4_6, A4_7-->
+                <div class="table">
+                  <div
+                    class="item-valign-top"
+                    data-bind="ntsFormLabel: { constraint: 'PersonCostMemo' }"
+                  >
+                    #{i18n.getText('KML001_11')}
+                  </div>
+                  <div class="memo">
+                    <textarea
+                      id="memo"
+                      tabindex="14"
+                      data-bind="ntsMultilineEditor: {
+												name: '#[KML001_11]',
+												value: memo,
+												constraint: 'PersonCostMemo'}"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- table list -->
+            <div
+              class="nts-fixed-header-container ui-iggrid nts-fixed-header"
+              id="premium-set-div"
+            >
+              <table id="premium-set-tbl" class="fixed-table">
+                <colgroup>
+                  <col width="270px" />
+                  <col width="90px" />
+                  <col width="100px" />
+                  <col width="450px" />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th class="ui-widget-header">
+                      #{i18n.getText('KML001_12')}
+                    </th>
+                    <th class="ui-widget-header">
+                      #{i18n.getText('KML001_13')}
+                    </th>
+                    <th class="ui-widget-header">
+                      #{i18n.getText('KML001_82')}
+                    </th>
+                    <th class="ui-widget-header">
+                      #{i18n.getText('KML001_14')}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody data-bind="foreach: currentPersonCost().premiumSets">
+                  <com:ko-if
+                    bind="$index() === 0 &amp;&amp; $vm.currentPersonCost().calculationSetting() === 1"
+                  >
+                    <tr>
+                      <td data-bind="text: '#{i18n.getText('KML001_83')}'"></td>
+                      <td class="valign-right percent-100">
+                        <span
+                          data-bind="text: '#{i18n.getText('KML001_84')}'"
+                        ></span>
+                      </td>
+                      <td>
+                        <div
+                          id="comboBoxA5_13"
+                          class="combo-box-a5-10 field-required"
+                          tabindex="15"
+                          data-bind="ntsComboBox: {
+														name: '#[KML001_85]',
+														options: $parent.unitPriceOpt(),
+														optionsValue: 'code',
+														value: $vm.currentPersonCost().workingHour,
+														optionsText: 'name',
+														dropDownAttachedToBody:true,
+														selectFirstIfNull: true,
+														visibleItemsCount: 5,
+														enable: $vm.currentPersonCost().calculationSetting() === 1,
+														required: true }"
+                        ></div>
+                      </td>
+                      <td></td>
+                    </tr>
+                  </com:ko-if>
+                  <tr data-bind="css: { notUse: useAtr() == 0 }">
+                    <td
+                      style="word-wrap: break-word"
+                      data-bind="text: (name()=='')?'ITEM'+($index()+1):name()"
+                    ></td>
+                    <td class="valign-center">
+                      <span>
+                        <input
+                          tabindex="16"
+                          class="premiumInput premiumPercent field-required"
+                          data-bind="ntsNumberEditor: {
 															name: '#[KML001_13]',
 															value: rate,
 															constraint: 'PremiumRate',
 															option: { 
 																width: '80px',
 																decimallength: 0, 
-																unitID: 'PERCENT' 
+                                unitID: 'PERCENT'
 															},
 															required: true, 
-															enable: true }" />
-												</span>
-											</td>
-											<td class="control-group valign-center">
-												<div class="cell">
-													<button class="small" data-bind="click: function(){ $parent.selectDialog($data, $index())}">#{i18n.getText('KML001_15')}</button>
-												</div>
-												<div class="cell">
-													<input class="premiumInput premiumItems" data-bind="ntsTextEditor: {
-													name: '#[KML001_14]',
-													value: $parent.viewAttendanceItems()[$index()],
-													constraint: 'Memo',
-													option: { width: '400px' },
-													enable: true,
-													readonly: true }" />	
-												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-				</div>
-			</ui:define>
-		</ui:composition>
-   	</body>
+															enable: $vm.currentPersonCost().calculationSetting() === 0
+													 }"
+                        />
+                      </span>
+                    </td>
+                    <td class="valign-center">
+                      <div
+                        id="comboBoxA5_10"
+                        class="combo-box-a5-10 field-required"
+                        tabindex="16"
+                        data-bind="ntsComboBox: {
+															name: '#[KML001_82]',
+															options: [
+																{ code: 0, name: '#{i18n.getText('KML001_22')}' },
+																{ code: 1, name: '#{i18n.getText('KML001_23')}' },
+																{ code: 2, name: '#{i18n.getText('KML001_24')}' },
+																{ code: 3, name: '#{i18n.getText('KML001_26')}' },
+																{ code: 4, name: '#{i18n.getText('KML001_25')}' }
+															],
+															optionsValue: 'code',
+															value: unitPrice,
+															optionsText: 'name',
+															dropDownAttachedToBody:true,
+															selectFirstIfNull: true,
+															visibleItemsCount: 5,
+															enable: $vm.currentPersonCost().calculationSetting() === 1,
+															required: true }"
+                      ></div>
+                    </td>
+                    <td class="control-group valign-center">
+                      <div class="table">
+                        <div class="cell valign-center">
+                          <button
+                            class="small"
+                            tabindex="16"
+                            data-bind="click: function(){ $vm.selectDialog($data, $index())}"
+                          >
+                            #{i18n.getText('KML001_15')}
+                          </button>
+                        </div>
+                        <div class="cell valign-center">
+                          <input
+                            class="premiumInput premiumItems field-required"
+                            data-bind="ntsTextEditor: {
+                              name: '#[KML001_14]',
+                              value: $parent.viewAttendanceItems()[$index()],
+                              constraint: 'Memo',
+                              option: { width: '365px' },
+                              enable: true,
+                              readonly: true }"
+                          />
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
 </html>

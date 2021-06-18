@@ -10,11 +10,12 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     import alertError = nts.uk.ui.dialog.alertError;
     import GoOutTypeDispControl = nts.uk.at.view.kaf002_ref.m.viewmodel.GoOutTypeDispControl;
 	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
     @bean()
     class Kaf002AViewModel extends Kaf000AViewModel {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray(null);
-        isSendMail: KnockoutObservable<Boolean> = ko.observable(false);
+        isSendMail: KnockoutObservable<boolean> = ko.observable(false);
 		appType: KnockoutObservable<number> = ko.observable(AppType.STAMP_APPLICATION);
 		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
         dataSourceOb: KnockoutObservableArray<any> = null;
@@ -66,6 +67,8 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     
         isCondition9: boolean = true;
         data : any;
+		isFromOther: boolean = false;
+
     bindComment(data: any) {
         const self = this;
         _.forEach(self.data.appStampSetting.settingForEachTypeLst, i => {
@@ -79,6 +82,15 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     }    
     created(params: AppInitParam) {
         const self = this;
+		if(nts.uk.request.location.current.isFromMenu) {
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');	
+		} else {
+			if(!_.isNil(__viewContext.transferred.value)) {
+				self.isFromOther = true;
+				params = __viewContext.transferred.value;
+			}	
+		}
+		
 		let empLst: Array<string> = [],
 			dateLst: Array<string> = [];
         self.application = ko.observable(new Application(self.appType()));
@@ -121,10 +133,12 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             }
             self.application().prePostAtr.subscribe(value => {
                 if (!_.isNull(value)) {
+					self.$errors('clear');
                     self.isPreAtr(value == 0);
                 }
             });
             if(loadDataFlag) {
+				self.application().employeeIDLst(empLst);
                 let companyId = self.$user.companyId;
                 let command = { 
                         appDispInfoStartupDto: ko.toJS(self.appDispInfoStartupOutput),
@@ -248,7 +262,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         let companyId = self.$user.companyId;
         let agentAtr = false;
         self.application().enteredPerson = self.$user.employeeId;
-        self.application().employeeID = self.$user.employeeId;
+        self.application().employeeID = self.application().employeeIDLst()[0];
 //        self.application().prePostAtr(0);
         let command = {
                 companyId,
@@ -282,14 +296,18 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 return self.handleConfirmMessage(listConfirm, command);
             }
 
-        }).done(result => {
+        }).then(result => {
             if (result != undefined) {
-                self.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                    location.reload();
+                return self.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+					nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
+                	return result;
                 });                
             }
-        })
-        .fail(res => {
+        }).then((result) => {
+			if(result) {
+				CommonProcess.handleAfterRegister(result, self.isSendMail(), self, false, self.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
+			}
+		}).fail(res => {
             self.showError(res);
         })
         .always(err => {
@@ -787,8 +805,8 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     const API = {
             start: "at/request/application/stamp/startStampApp",
             checkRegister: "at/request/application/stamp/checkBeforeRegister",
-            register: "at/request/application/stamp/register"
-            
+            register: "at/request/application/stamp/register",
+            reflectApp: "at/request/application/reflect-app"
         }
     const RECORD_FLAG_STAMP = false;
     

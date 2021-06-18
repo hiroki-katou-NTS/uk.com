@@ -69,14 +69,14 @@ public class TimeRecordSettingInfoDtoTest {
 	@Test
 	public void create() {
 
-		TimeRecordSetUpdateList setUpdate = new TimeRecordSetUpdateList(new EmpInfoTerminalCode(1234),
+		TimeRecordSetUpdateList setUpdate = new TimeRecordSetUpdateList(new EmpInfoTerminalCode("1234"),
 				new EmpInfoTerminalName("AT"), new NRRomVersion("111"), ModelEmpInfoTer.NRL_1,
 				Arrays.asList(new TimeRecordSetUpdate(new VariableName("sp_vol"), new SettingValue("68")),
 						new TimeRecordSetUpdate(new VariableName("iditi1"), new SettingValue("10"))
 
 				));
 
-		TimeRecordSetFormatList setFormat = new TimeRecordSetFormatList(new EmpInfoTerminalCode(1234),
+		TimeRecordSetFormatList setFormat = new TimeRecordSetFormatList(new EmpInfoTerminalCode("1234"),
 				new EmpInfoTerminalName("AT"), new NRRomVersion("111"), ModelEmpInfoTer.NRL_1,
 				Arrays.asList(
 						new TimeRecordSetFormatBuilder(new MajorNameClassification("基本設定"),

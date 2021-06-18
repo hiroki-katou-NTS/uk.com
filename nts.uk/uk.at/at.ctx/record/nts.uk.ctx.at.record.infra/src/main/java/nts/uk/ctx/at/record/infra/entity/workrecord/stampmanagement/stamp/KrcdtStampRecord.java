@@ -46,13 +46,6 @@ public class KrcdtStampRecord extends UkJpaEntity implements Serializable {
 	@Column(name = "DISPLAY_STAMP_ART")
 	public String stampTypeDisplay;
 
-	/**
-	 * 就業情報端末コード
-	 */
-	@Basic(optional = true)
-	@Column(name = "WORK_TERMINAL_INFO_CD")
-	public String empInfoTerCode;
-
 	@Override
 	protected Object getKey() {
 		return this.pk;
@@ -60,7 +53,6 @@ public class KrcdtStampRecord extends UkJpaEntity implements Serializable {
 
 	public KrcdtStampRecord toUpdateEntity(StampRecord domain) {
 		this.stampTypeDisplay = domain.getStampTypeDisplay().v();
-		this.empInfoTerCode = String.valueOf(domain.getEmpInfoTerCode().get().v());
 		return this;
 	}
 

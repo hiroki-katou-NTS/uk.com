@@ -1,62 +1,120 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<body>
-		<ui:composition template="../../../../master/dialog.xhtml">
-			<ui:define name="htmlHead">
-				<com:ValidatorScript>
-					nts.uk.shr.com.time.TimeWithDayAttr
-				</com:ValidatorScript>
-				<script>var dialogSize = { width: 950, height: 520 };</script>
-				<com:scriptfile set="IGNITE" />
-				<com:scriptfile path="kdl001.a.start.js" />
-				<com:scriptfile path="kdl001.a.vm.js" />
-				<com:scriptfile path="kdl001.a.service.js" />
-				<com:stylefile path="kdl001.a.main.css" />
-			</ui:define>
-			
-			<ui:define name="content">
-				<div id="contents-area">
-					<div class="label">#{i18n.getText('KDL001_2')}</div>
-					<div class="control-group">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL001_3')}</div>
-						<span data-bind="ntsSwitchButton: {
-								options: ko.observableArray([
-					                { code: 0, name: '#{i18n.getText('KDL001_4')}' },
-					                { code: 1, name: '#{i18n.getText('KDL001_5')}' }
-					            ]),
-								optionsValue: 'code',
-								optionsText: 'name',
-								value: searchOption,
-								enable: isEnableSwitchButton }"></span>
-					</div>	
-					<div id="search-div" class="control-group valign-center">					
-						<input class= "inputTime" id="inputStartTime" data-bind="ntsTimeWithDayEditor: {name: '#[KDL001_21]', value: startTime, constraint:'TimeWithDayAttr',enable: true, readonly: false, required: false}" />
-						<span class="label">～</span>
-						<input class ="inputTime" data-bind="ntsTimeWithDayEditor: {name: '#[KDL001_22]', value: endTime, constraint:'TimeWithDayAttr',enable: true, readonly: false, required: false}" />
-						<button class="caret-bottom" data-bind="click: search">#{i18n.getText('KDL001_10')}</button>
-						<button data-bind="click: returnData">#{i18n.getText('KDL001_11')}</button>	
-					</div>		
-					<div id="day-list-div">
-						<table id="day-list-tbl" data-bind="ntsGridList: {
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+      <ui:define name="htmlHead">
+        <com:ValidatorScript>
+          nts.uk.shr.com.time.TimeWithDayAttr
+          nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeName
+        </com:ValidatorScript>
+        <script>
+          var dialogSize = { width: 950, height: 640 };
+        </script>
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="kdl001.a.start.js" />
+        <com:scriptfile path="kdl001.a.vm.js" />
+        <com:scriptfile path="kdl001.a.service.js" />
+        <com:stylefile path="kdl001.a.main.css" />
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="contents-area">
+          <div class="label">#{i18n.getText('KDL001_2')}</div>
+          <div class="control-group valign-center">
+            <div class="table">
+              <div class="cell">
+                <div id="search-div">
+                  <label>#{i18n.getText('KDL001_3')}</label>
+                  <input
+                    class="inputTime"
+                    id="inputStartTime"
+                    data-bind="ntsTimeWithDayEditor: {name: '#[KDL001_21]', 
+                    value: startTime, constraint:'TimeWithDayAttr',
+                    option: { timeWithDay: true },
+                    enable: true, readonly: false, required: false}"
+                  />
+                  <span class="label">～</span>
+                  <input
+                    class="inputTime"
+                    data-bind="ntsTimeWithDayEditor: {name: '#[KDL001_22]', 
+                    value: endTime, constraint:'TimeWithDayAttr',
+                    option: { timeWithDay: true },
+                    enable: true, readonly: false, required: false}"
+                  />
+                  <button class="caret-bottom" data-bind="click: searchByTime">
+                    #{i18n.getText('KDL001_10')}
+                  </button>
+                </div>
+              </div>
+              <div class="cell cell-right">
+                <div class="table search-by-code">
+                  <div class="cell">
+                    <input
+                      id="A2_6"
+                      data-bind="ntsTextEditor: { 
+                        value: searchCode, 
+                        name: '#[KMK002_2]',								
+                        constraint: 'WorkTimeName',
+									      option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+										    placeholder: '#{i18n.getText('KMK002_4')}',	
+                        textmode: 'text'
+                      }))}"
+                    />
+                    <button
+                      class="caret-bottom"
+                      data-bind="click: searchByCodeName"
+                    >
+                      #{i18n.getText('KDL001_10')}
+                    </button>
+                  </div>
+                  <div class="cell">
+                    <div class="control-group" style="height: inherit;">
+                      <div
+                        data-bind="ntsCheckBox: { checked: isAllCheckShow, enable: isEnableCheckStatus, text: '#{i18n.getText('KDL001_24')}' }"
+                      ></div>
+                      <button data-bind="click: clearSearch">
+                        #{i18n.getText('KDL001_11')}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="day-list-div">
+            <table
+              id="day-list-tbl"
+              tabindex="-1"
+              data-bind="ntsGridList: {
 									width: 900,
 									height: gridHeight,
 									options: selectAbleItemList,
 									optionsValue: 'code',
 									columns: columns,
 									multiple: multiSelectMode,
-									value: multiSelectMode?selectedCodeList:selectedCode
-								}"></table>
-					</div>
-				</div>
-				<div id="functions-area-bottom">
-					<button class="x-large proceed" data-bind="click: submitAndCloseDialog">#{i18n.getText('KDL001_18')}</button>
-					<button data-bind="click: closeDialog">#{i18n.getText('KDL001_19')}</button>	
-				</div>
-			</ui:define>
-		</ui:composition>
-   	</body>
+									value: multiSelectMode ? selectedCodeList : selectedCode
+								}"
+            ></table>
+          </div>
+        </div>
+        <div id="functions-area-bottom">
+          <button
+            class="x-large proceed"
+            data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty"
+          >
+            #{i18n.getText('KDL001_18')}
+          </button>
+          <button data-bind="click: closeDialog">
+            #{i18n.getText('KDL001_19')}
+          </button>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
 </html>

@@ -4,15 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
  * The Interface NursingVacationSettingSetMemento.
  */
 public interface NursingLeaveSettingSetMemento {
-    
+
     /**
      * Sets the company id.
      *
@@ -39,26 +41,34 @@ public interface NursingLeaveSettingSetMemento {
      *
      * @param startMonthDay the new start month day
      */
-    void setStartMonthDay(Integer startMonthDay);
+    void setStartMonthDay(MonthDay startMonthDay);
 
     /**
      * Sets the max person setting.
      *
      * @param maxPersonSetting the new max person setting
      */
-    void setMaxPersonSetting(MaxPersonSetting maxPersonSetting);
-    
+    void setMaxPersonSetting(List<MaxPersonSetting> maxPersonSetting);
+
     /**
      * Sets the special holiday frame.
      *
      * @param specialHolidayFrame the new special holiday frame
      */
-    void setSpecialHolidayFrame(Optional<Integer> specialHolidayFrame);
-    
+	void setHdspFrameNo(Optional<Integer> hdspFrameNo);
+
     /**
      * Sets the work absence.
      *
      * @param workAbsence the new work absence
      */
-    void setWorkAbsence(Optional<Integer> workAbsence);
+    void setAbsenceFrameNo(Optional<Integer> absenceFrameNo);
+
+
+
+    void setTimeCareNursingSet(TimeCareNursingSet timeCareNursingSet);
+
+    void setNumPer1(Integer numPer1);
+
+    void setNumPer2(Integer numPer2);
 }

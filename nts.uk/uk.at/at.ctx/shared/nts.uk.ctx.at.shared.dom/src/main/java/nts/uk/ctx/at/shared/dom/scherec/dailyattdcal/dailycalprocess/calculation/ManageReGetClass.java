@@ -1,10 +1,5 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
@@ -12,24 +7,23 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.*;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.OutingCalcWithinCoreTime;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス
@@ -128,7 +122,7 @@ public class ManageReGetClass {
 	 * 固定勤務の休憩時間帯を取得する
 	 * @return 固定勤務の休憩時間帯
 	 */
-	public Optional<FixRestTimezoneSet> getFixRestTimeSetting() {
+	public Optional<TimezoneOfFixedRestTimeSet> getFixRestTimeSetting() {
 		if(!this.integrationOfWorkTime.isPresent() || !this.integrationOfWorkTime.get().getFixedWorkSetting().isPresent())
 			return Optional.empty();
 		
@@ -184,14 +178,19 @@ public class ManageReGetClass {
 	 */
 	public int getBreakCount() {
 		//常に実績から取得する
-		Optional<BreakTimeOfDailyAttd> record = integrationOfDaily.getBreakTime().stream()
-				.filter(dailyPerformance -> dailyPerformance.getBreakType().equals(BreakType.REFER_WORK_TIME))
-				.findFirst();
-		if(!record.isPresent()) return 0;
 		
-		return record.get().getBreakTimeSheets().stream()
-				.filter(timeSheet -> (timeSheet.getStartTime() != null && timeSheet.getEndTime() != null && timeSheet.getEndTime().greaterThan(timeSheet.getStartTime())))
-				.collect(Collectors.toList()).size();
+		return integrationOfDaily.getBreakTime().getBreakTimeSheets().stream()
+					.filter(timeSheet -> (timeSheet.getStartTime() != null && timeSheet.getEndTime() != null 
+							&& timeSheet.getEndTime().greaterThan(timeSheet.getStartTime())))
+					.collect(Collectors.toList()).size();
+//		Optional<BreakTimeOfDailyAttd> record = integrationOfDaily.getBreakTime().stream()
+//				.filter(dailyPerformance -> dailyPerformance.getBreakType().equals(BreakType.REFER_WORK_TIME))
+//				.findFirst();
+//		if(!record.isPresent()) return 0;
+//		
+//		return record.get().getBreakTimeSheets().stream()
+//				.filter(timeSheet -> (timeSheet.getStartTime() != null && timeSheet.getEndTime() != null && timeSheet.getEndTime().greaterThan(timeSheet.getStartTime())))
+//				.collect(Collectors.toList()).size();
 	}
 	
 	/**
@@ -247,11 +246,11 @@ public class ManageReGetClass {
 	 * フレックス計算設定を取得する
 	 * @return フレックス計算設定
 	 */
-	public Optional<FlexCalcSetting> getFlexCalcSetting() {
+	public Optional<OutingCalcWithinCoreTime> getGoOutCalc() {
 		if(!this.integrationOfWorkTime.isPresent() || !this.integrationOfWorkTime.get().getFlexWorkSetting().isPresent())
 			return Optional.empty();
 		
-		return Optional.of(this.integrationOfWorkTime.get().getFlexWorkSetting().get().getCalculateSetting());
+		return Optional.of(this.integrationOfWorkTime.get().getFlexWorkSetting().get().getCoreTimeSetting().getGoOutCalc());
 	}
 	
 	/**

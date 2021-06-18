@@ -25,7 +25,6 @@ module nts.uk.ui.at.kcp015.shared {
             const name = COMPONENT_NAME;
 
             const selected = valueAccessor();
-            const hasPrams = allBindingsAccessor.get('hasPrams');
             const visibleA31 = allBindingsAccessor.get('visibleA31');
             const visibleA32 = allBindingsAccessor.get('visibleA32');
             const visibleA33 = allBindingsAccessor.get('visibleA33');
@@ -35,7 +34,7 @@ module nts.uk.ui.at.kcp015.shared {
             const sids = allBindingsAccessor.get('sids');
             const baseDate = allBindingsAccessor.get('baseDate');
 
-            const params = { hasPrams, visibleA31, visibleA32, visibleA33, visibleA34, visibleA35, visibleA36, sids, baseDate };
+            const params = { visibleA31, visibleA32, visibleA33, visibleA34, visibleA35, visibleA36, sids, baseDate };
             const component = { name, params };
 
             ko.applyBindingsToNode(element, { component }, bindingContext);
@@ -47,22 +46,23 @@ module nts.uk.ui.at.kcp015.shared {
     @component({
         name: COMPONENT_NAME,
         template: `<!-- ko let: {text: nts.uk.resource.getText } -->
-             <button id="showPopup" data-bind="text: text('KCP015_1'), visible: visibleA1 "></button>
+             <button tabindex="12" id="showPopup" data-bind="text: text('KCP015_1'), visible: visibleA1 "></button>
              <div id="A1" class="popup-area popup-panel btn10">
                 <div id="button-top">
-                    <button class="small compensation" data-bind="text: text('Com_CompensationHoliday'), click: openKDL005, visible: visibleA31Com "></button>
-                    <button class="small paid"         data-bind="text: text('Com_PaidHoliday'),         click: openKDL020, visible: visibleA33Com "></button>
-                    <button class="small exsess"       data-bind="text: text('Com_ExsessHoliday'),       click: openKDL017, visible: visibleA35Com "></button>
+                    <button tabindex="1" class="small compensation" data-bind="text: text('Com_CompensationHoliday'), click: openKDL005, visible: visibleA31Com "></button>
+                    <button tabindex="3" class="small paid"         data-bind="text: text('Com_PaidHoliday'),         click: openKDL020, visible: visibleA33Com "></button>
+                    <button tabindex="5" class="small exsess"       data-bind="text: text('Com_ExsessHoliday'),       click: openKDL017, visible: visibleA35Com "></button>
                 </div>
                 <div id="button-bot">
-                    <button class="small substitute" data-bind="text: text('Com_SubstituteHoliday'), click: openKDL009, visible: visibleA32Com "></button>
-                    <button class="small fundedPaid" data-bind="text: text('Com_FundedPaidHoliday'), click: openKDL029, visible: visibleA34Com "></button>
-                    <button class="small supportsetting" data-bind="text: text('KCP015_2'),          click: openKDL039, visible: visibleA36Com "></button>
+                    <button tabindex="2" class="small substitute"     data-bind="text: text('Com_SubstituteHoliday'), click: openKDL009, visible: visibleA32Com "></button>
+                    <button tabindex="4" class="small fundedPaid"     data-bind="text: text('Com_FundedPaidHoliday'), click: openKDL029, visible: visibleA34Com "></button>
+                    <button tabindex="6" class="small supportsetting" data-bind="text: text('KCP015_2'),          click: openKDL039, visible: visibleA36Com "></button>
                 </div>
              </div><!-- /ko -->`
     })
     export class ViewModel extends ko.ViewModel {
         
+        // các model này có cần không khi đã có model data khai báo trong constructor???
         visibleA1: KnockoutObservable<boolean> = ko.observable(true);
         visibleA31Com: KnockoutObservable<boolean> = ko.observable(true);
         visibleA32Com: KnockoutObservable<boolean> = ko.observable(true);
@@ -71,11 +71,13 @@ module nts.uk.ui.at.kcp015.shared {
         visibleA35Com: KnockoutObservable<boolean> = ko.observable(true);
         visibleA36Com: KnockoutObservable<boolean> = ko.observable(true);
 
+        // Nếu đã khai báo model data ở đây thì các model từ dòng 65 đến dòng 71 để làm gì???
         constructor(private data: Parameters) {
             super();
 
             let vm = this;
 
+            // component đã mount đâu mà binding???
             $('#A1').ntsPopup({
                 position: {
                     my: 'left top',
@@ -84,37 +86,18 @@ module nts.uk.ui.at.kcp015.shared {
                 }
             });
 
+            // câu lệnh này có chắc chạy được???
             $('#showPopup').click(function() {
                 $('#A1').ntsPopup("toggle");
             });
             
-            if (vm.data.hasParams() && !vm.data.visibleA31() && !vm.data.visibleA32() && !vm.data.visibleA33() &&
-                !vm.data.visibleA34() && !vm.data.visibleA35() && !vm.data.visibleA36()) {
-                vm.visibleA1(false);
-            }
+            // Không thấy sử dụng gì với các biến này???
+            const { visibleA31, visibleA32, visibleA33, visibleA34, visibleA35, visibleA36, sids, baseDate } = vm.data;
             
-            if (vm.data.hasParams() && !vm.data.visibleA31() && !vm.data.visibleA33() && !vm.data.visibleA35()) {
-               $('#button-bot').css("margin-top", "0px");
-            }
-            
-            if (vm.data.hasParams() && !vm.data.visibleA32() && !vm.data.visibleA34() && !vm.data.visibleA36()) {
-               $('#button-bot').css("margin-top", "0px");
-            }
-
-            const { hasPrams, visibleA31, visibleA32, visibleA33, visibleA34, visibleA35, visibleA36, sids, baseDate } = vm.data;
-
-            if (vm.data.hasParams()) {
-                vm.visibleA31Com(visibleA31());
-                vm.visibleA32Com(visibleA32());
-                vm.visibleA33Com(visibleA33());
-                vm.visibleA34Com(visibleA34());
-                vm.visibleA35Com(visibleA35());
-                vm.visibleA36Com(visibleA36());
-            } else {
-                vm.getSetting();
-            }
+            vm.getSetting();
         }
 
+        // ????? hook này không dùng để làm gì cả???
         created() {
             const vm = this;
             const { data } = vm;
@@ -122,19 +105,76 @@ module nts.uk.ui.at.kcp015.shared {
 
         public getSetting(): JQueryPromise<void> {
             let vm = this;
+            // Sao lại phải dùng Promise ở đây?
             let dfd = $.Deferred<void>();
+
+
+            // thử thay bằng vm.$blockui('grayout');
             nts.uk.ui.block.grayout();
+
+            // thử thay bằng vm.$ajax('at', 'screen/at/kcp015/get').then(() => {});
             nts.uk.request.ajax("at", "screen/at/kcp015/get").done((data: IData) => {
 
-                vm.visibleA31Com(data.subLeaveUseDivision);
+                if (vm.data.visibleA31() == false) {
+                    vm.visibleA31Com(false);
+                } else if (data.subLeaveUseDivision == false) {
+                    vm.visibleA31Com(false);
+                } else {
+                    vm.visibleA31Com(true);
+                }
 
-                vm.visibleA32Com(data.dvisionOfZhenxiuUse);
+                if (vm.data.visibleA32() == false) {
+                    vm.visibleA32Com(false);
+                } else if (data.dvisionOfZhenxiuUse == false) {
+                    vm.visibleA32Com(false);
+                } else {
+                    vm.visibleA32Com(true);
+                }
 
-                vm.visibleA33Com(data.clsOfAnnualHoliday);
+                if (vm.data.visibleA33() == false) {
+                    vm.visibleA33Com(false);
+                } else if (data.clsOfAnnualHoliday == false) {
+                    vm.visibleA33Com(false);
+                } else {
+                    vm.visibleA33Com(true);
+                }
 
-                vm.visibleA34Com(data.divisionOfAnnualHoliday);
+                if (vm.data.visibleA34() == false) {
+                    vm.visibleA34Com(false);
+                } else if (data.divisionOfAnnualHoliday == false) {
+                    vm.visibleA34Com(false);
+                } else {
+                    vm.visibleA34Com(true);
+                }
 
-                vm.visibleA35Com(data.overtimeUseCls60H);
+                if (vm.data.visibleA35() == false) {
+                    vm.visibleA35Com(false);
+                } else if (data.overtimeUseCls60H == false) {
+                    vm.visibleA35Com(false);
+                } else {
+                    vm.visibleA35Com(true);
+                }
+
+                if (vm.data.visibleA36() == false) {
+                    vm.visibleA36Com(false);
+                } else {
+                    vm.visibleA36Com(true);
+                }
+                
+                // Đoạn này thử chuyển sang computed xem có hợp lý hơn không???
+                if (!vm.visibleA31Com() && !vm.visibleA33Com() && !vm.visibleA35Com() && !vm.visibleA32Com() && !vm.visibleA34Com() && !vm.visibleA36Com()) {
+                    vm.visibleA1(false);
+                }
+
+                // Thay vì xử lý ui ở viewmodel thế này, hãy đưa nó vào 1 custom binding xem?
+                if (!vm.visibleA31Com() && !vm.visibleA33Com() && !vm.visibleA35Com()) {
+                    $('#button-bot').css("margin-top", "0px");
+                }
+
+                // Thay vì xử lý ui ở viewmodel thế này, hãy đưa nó vào 1 custom binding xem?
+                if (!vm.visibleA32Com() && !vm.visibleA34Com() && !vm.visibleA36Com()) {
+                    $('#button-bot').css("margin-top", "0px");
+                }
                 
                 dfd.resolve();
             }).fail(function() {
@@ -176,6 +216,22 @@ module nts.uk.ui.at.kcp015.shared {
                 baseDate: baseDate
             };
 
+            /**
+             * thử thay bằng đoạn code sau
+             * vm.$window
+             *    .shared('KDL009_DATA', param)
+             *    .then(() => $('#A1_10_1').ntsPopup('hide'))
+             *    .then(() => {
+             *        const { employeeIds } = param;
+             * 
+             *        if(employeeIds.length > 1){
+             *            vm.$window.modal('/view/kdl/009/a/multi.xhtml');
+             *        } else {
+             *            vm.$window.modal('/view/kdl/009/a/single.xhtml');
+             *        }
+             *    });
+             * Những đoạn code dùng cấu trúc cũ thay tương tự.
+             */
             nts.uk.ui.windows.setShared('KDL009_DATA', param);
             $('#A1_10_1').ntsPopup('hide');
             if (param.employeeIds.length > 1) {

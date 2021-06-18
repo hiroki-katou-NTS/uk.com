@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.remainingnumber.subhdmana;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepositor
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 
 @Stateless
-public class DeleteLeaveManagementDataCommandHandler extends CommandHandler<LeaveManagementDataCommand> {
+public class DeleteLeaveManagementDataCommandHandler extends CommandHandler<DeleteLeaveManagementDataCommand> {
 
 	@Inject
 	private LeaveManaDataRepository leaveManaDataRepository;
@@ -26,35 +27,32 @@ public class DeleteLeaveManagementDataCommandHandler extends CommandHandler<Leav
 	private LeaveComDayOffManaRepository leaveComDayOffManaRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<LeaveManagementDataCommand> context) {
-		LeaveManagementDataCommand command = context.getCommand();
-	
+	protected void handle(CommandHandlerContext<DeleteLeaveManagementDataCommand> context) {
+		DeleteLeaveManagementDataCommand command = context.getCommand();
+
 		// ドメインモデル「休出管理データ」を取得
-		Optional<LeaveManagementData> leaveMana = leaveManaDataRepository.getByLeaveId(command.getLeaveId());
-		
+		List<LeaveManagementData> leaveMana = this.leaveManaDataRepository.getListByLeaveId(command.getLeaveId());
+
 		// ドメインモデル「休出管理データ」を削除
-		if (leaveMana.isPresent()) {
-			leaveManaDataRepository.deleteByLeaveId(command.getLeaveId());
+		if (!leaveMana.isEmpty()) {
+			this.leaveManaDataRepository.deleteById(command.getLeaveId());
 		}
-		
+
 		// ドメインモデル「代休管理データ」を取得
-		Optional<CompensatoryDayOffManaData> comDayOff = comDayOffManaDataRepository.getBycomdayOffId(command.getComDayOffID());
-		
+		List<CompensatoryDayOffManaData> comDayOff = this.comDayOffManaDataRepository.getListComdayOffId(command.getComDayOffID());
+
 		// ドメインモデル「代休管理データ」を削除
-		if (comDayOff.isPresent()) {
-			comDayOffManaDataRepository.deleteByComDayOffId(command.getComDayOffID());
+		if (!comDayOff.isEmpty()) {
+			this.comDayOffManaDataRepository.deleteById(command.getComDayOffID());
 		}
-		
+
 		// ドメインモデル「休出代休紐付け管理」を削除
-		if (leaveMana.isPresent() && comDayOff.isPresent()) {
-			leaveComDayOffManaRepository.delete(leaveMana.get().getID(),
-					leaveMana.get().getComDayOffDate().getDayoffDate().orElse(null),
-					comDayOff.get().getDayOffDate().getDayoffDate().orElse(null));
-			
-			leaveComDayOffManaRepository.delete(comDayOff.get().getComDayOffID(),
-					leaveMana.get().getComDayOffDate().getDayoffDate().get(),
-					comDayOff.get().getDayOffDate().getDayoffDate().get());
+		if (!leaveMana.isEmpty() && !comDayOff.isEmpty()) {
+			this.leaveComDayOffManaRepository.delete(leaveMana.size() > 0 ? leaveMana.get(0).getSID() : null,
+					comDayOff.size() > 0 ? comDayOff.get(0).getSID() : null,
+					leaveMana.stream().map(x -> x.getComDayOffDate().getDayoffDate().orElse(null)).collect(Collectors.toList()),
+					comDayOff.stream().map(x-> x.getDayOffDate().getDayoffDate().orElse(null)).collect(Collectors.toList()));
 		}
-		
 	}
+
 }

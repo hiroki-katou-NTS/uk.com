@@ -2,13 +2,12 @@ package nts.uk.ctx.at.schedule.dom.adapter.generalinfo;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.classification.ExClassificationHistoryImported;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.employment.ExEmploymentHistoryImported;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.jobtitle.ExJobTitleHistoryImported;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkPlaceHistoryImported;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
 
 @Getter
 public class EmployeeGeneralInfoImported {
@@ -21,7 +20,7 @@ public class EmployeeGeneralInfoImported {
 
 	private List<ExWorkPlaceHistoryImported> workplaceDto;
 	
-	private List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis;
+	private List<BusinessTypeOfEmployeeHis> listBusTypeOfEmpHis;
 
 	public EmployeeGeneralInfoImported(List<ExEmploymentHistoryImported> employmentDto,
 			List<ExClassificationHistoryImported> classificationDto, List<ExJobTitleHistoryImported> jobTitleDto,
@@ -35,7 +34,7 @@ public class EmployeeGeneralInfoImported {
 
 	public EmployeeGeneralInfoImported(List<ExEmploymentHistoryImported> employmentDto,
 			List<ExClassificationHistoryImported> classificationDto, List<ExJobTitleHistoryImported> jobTitleDto,
-			List<ExWorkPlaceHistoryImported> workplaceDto, List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
+			List<ExWorkPlaceHistoryImported> workplaceDto, List<BusinessTypeOfEmployeeHis> listBusTypeOfEmpHis) {
 		super();
 		this.employmentDto = employmentDto;
 		this.classificationDto = classificationDto;
@@ -44,7 +43,7 @@ public class EmployeeGeneralInfoImported {
 		this.listBusTypeOfEmpHis = listBusTypeOfEmpHis;
 	}
 
-	public void setListBusTypeOfEmpHis(List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis) {
+	public void setListBusTypeOfEmpHis(List<BusinessTypeOfEmployeeHis> listBusTypeOfEmpHis) {
 		this.listBusTypeOfEmpHis = listBusTypeOfEmpHis;
 	}
 	

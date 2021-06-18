@@ -8,14 +8,20 @@ import { CmmS45FComponent } from 'views/cmm/s45/f';
 import { AppType, AppTypeName } from 'views/kaf/s00/shr';
 
 import {
-    CmmS45ComponentsApp1Component,
     CmmS45ComponentsApp2Component,
     CmmS45ComponentsApp3Component,
     CmmS45ComponentsApp4Component,
     CmmS45ComponentsApp5Component,
-    CmmS45ShrComponentsApp7Component
+    CmmS45ShrComponentsApp7Component,
+    CmmS45ShrComponentsApp0Component,
+    CmmS45ShrComponentsApp15Component,
+    CmmS45ShrComponentsApp10Component,
+    CmmS45ShrComponentsApp6Component,
+    CmmS45ShrComponentsApp8Component,
+    CmmS45ComponentsApp9Component,
+    Reason,
 } from 'views/cmm/s45/shr/components';
-
+import { CmmS45ShrComponentsApp1Component } from 'views/cmm/s45/shr/components/app1/index';
 @component({
     name: 'cmms45d',
     style: require('./style.scss'),
@@ -30,12 +36,18 @@ import {
     components: {
         // khai báo virtual tag name
         'approved': ApprovedComponent,
-        'app1': CmmS45ComponentsApp1Component,
         'app2': CmmS45ComponentsApp2Component,
         'app3': CmmS45ComponentsApp3Component,
         'app4': CmmS45ComponentsApp4Component,
         'app5': CmmS45ComponentsApp5Component,
         'app7': CmmS45ShrComponentsApp7Component,
+        'app8': CmmS45ShrComponentsApp8Component,
+        'app9': CmmS45ComponentsApp9Component,
+        'app0': CmmS45ShrComponentsApp0Component,
+        'app15': CmmS45ShrComponentsApp15Component,
+        'app1': CmmS45ShrComponentsApp1Component,
+        'app10': CmmS45ShrComponentsApp10Component,
+        'app6': CmmS45ShrComponentsApp6Component,
         'cmms45e': CmmS45EComponent,
         'cmms45f': CmmS45FComponent
     }
@@ -72,6 +84,7 @@ export class CmmS45DComponent extends Vue {
     public commentDis: boolean = false;
     public commentColor: string = '';
     public isLoadingComplete = false;
+    public reasons: Array<Reason> = null;
 
     public created() {
         let self = this;
@@ -127,8 +140,9 @@ export class CmmS45DComponent extends Vue {
         self.$mask('show');
         self.initData();
     }
-    public loadingComplete() {
+    public loadingComplete(reason?: any) {
         const self = this;
+        self.reasons = reason;
         self.$nextTick(() => {
             self.$mask('hide');
             self.isLoadingComplete = true;
@@ -243,6 +257,7 @@ export class CmmS45DComponent extends Vue {
         self.showApproval = false;
         self.appCount++;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.reasons = null;
         self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
@@ -255,6 +270,7 @@ export class CmmS45DComponent extends Vue {
         self.showApproval = false;
         self.appCount--;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.reasons = null;
         self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
@@ -342,7 +358,7 @@ export class CmmS45DComponent extends Vue {
                     }).then((resApprove: any) => {
                         self.$mask('hide');
                         if (resApprove.data.processDone) {
-                            // self.reflectApp(resApprove.data.reflectAppId);
+                            self.reflectApp(resApprove.data.reflectAppIdLst);
                             self.$modal('cmms45f', { 'action': 1, 'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp })
                             .then((resAfterApprove: any) => {
                                 self.controlDialog(resAfterApprove);        
@@ -447,10 +463,10 @@ export class CmmS45DComponent extends Vue {
     }
 
     // phản ánh đơn xin sau khi chấp nhận, từ chối
-    public reflectApp(appID: string): void {
+    public reflectApp(reflectAppIdLst: Array<string>): void {
         let self = this;
-        if (!_.isEmpty(appID)) {
-            self.$http.post('at', API.reflectApp, [appID]);
+        if (!_.isEmpty(reflectAppIdLst)) {
+            self.$http.post('at', API.reflectApp, reflectAppIdLst);
         }
     }
 
@@ -646,7 +662,7 @@ export class CmmS45DComponent extends Vue {
         }
         let appDate = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.inputDate;
 
-        return vm.$dt(new Date(appDate), 'YYYY/MM/DD hh:mm'); 
+        return vm.$dt(new Date(appDate), 'YYYY/MM/DD HH:mm'); 
     }
 
     get comboReasonDisp() {
@@ -679,8 +695,8 @@ export class CmmS45DComponent extends Vue {
         if (opComboReason) {
             return opComboReason.reasonForFixedForm;
         }
-        if (_.isNull(vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD)) {
-            return '' + ' ' + vm.$i18n('CMMS45_87');
+        if (_.isEmpty(vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD)) {
+            return '';
         }
 
         return vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD + ' ' + vm.$i18n('CMMS45_87');
@@ -715,9 +731,9 @@ export enum ApprovalBehaviorAtr {
 
 const API = {
     getDetailMob: 'at/request/app/smartphone/getDetailMob',
-    approve: 'at/request/application/approveapp',
-    deny: 'at/request/application/denyapp',
-    release: 'at/request/application/releaseapp',
+    approve: 'at/request/app/smartphone/approveapp',
+    deny: 'at/request/app/smartphone/denyapp',
+    release: 'at/request/app/smartphone/releaseapp',
     reflectApp: 'at/request/application/reflect-app',
     checkVersion: 'at/request/application/checkVersion'
 };

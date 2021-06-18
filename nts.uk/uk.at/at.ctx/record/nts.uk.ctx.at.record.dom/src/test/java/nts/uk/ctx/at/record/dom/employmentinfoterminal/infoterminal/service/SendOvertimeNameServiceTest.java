@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameGetMemento;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameName;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWorkEnum;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameGetMemento;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameName;
@@ -54,7 +55,7 @@ public class SendOvertimeNameServiceTest {
 	@Test
 	public void testSendEmpty() {
 
-		Optional<SendOvertimeName> actual = SendOvertimeNameService.send(require, new EmpInfoTerminalCode(1),
+		Optional<SendOvertimeName> actual = SendOvertimeNameService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual).isEqualTo(Optional.empty());
 	}
@@ -63,7 +64,7 @@ public class SendOvertimeNameServiceTest {
 	public void testSend() {
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
+				.of(new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"), new CompanyId("1"), "1",
 						null, null, null).overTimeHoliday(true).build());
 
 		new Expectations() {
@@ -81,7 +82,7 @@ public class SendOvertimeNameServiceTest {
 			}
 		};
 
-		Optional<SendOvertimeName> actual = SendOvertimeNameService.send(require, new EmpInfoTerminalCode(1),
+		Optional<SendOvertimeName> actual = SendOvertimeNameService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 
 		assertThat(actual.get().getOvertimes()).extracting(d -> d.getSendOvertimeNo(), d -> d.getSendOvertimeName())
@@ -94,6 +95,16 @@ public class SendOvertimeNameServiceTest {
 	private OvertimeWorkFrameGetMemento createOvertime(int no) {
 		return new OvertimeWorkFrameGetMemento() {
 
+			@Override
+			public NotUseAtr getTransferAtr() {
+				return NotUseAtr.USE;
+			}
+			
+			@Override
+			public RoleOvertimeWorkEnum getRole() {
+				return RoleOvertimeWorkEnum.OUT_OT_STATUTORY;
+			}
+			
 			@Override
 			public NotUseAtr getUseClassification() {
 				return NotUseAtr.USE;

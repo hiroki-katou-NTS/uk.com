@@ -1,108 +1,11 @@
-#scrA .content-row-A {
-	width: 300px;
+.content-row-A {
+  width: 120px;
 }
 
-#scrA.contents-area {
-	padding-left: 30px;
-	padding-top: 30px;
-	margin-bottom: 60px;
+#managePubHD > label {
+  margin-right: 20px;
 }
 
-#scrA .weekHDCheck_A > div > span:NTH-CHILD(1) {
-	width: 90px;
-}
-
-#scrA .weekHDCheck_A > div > span:NTH-CHILD(3) {
-	padding-left: 30px;
-}
-
-#scrA .managePeriod_A, .dayOfPubHD_A {
-	padding-left: 35px
-}
-
-#scrA .managePeriod_A > div, .dayOfPubHD_A > div > div:NTH-CHILD(1) {
-	width: 265px;
-}
-
-#scrA #absent_4_day_4_week table tr {
-	height: 40px;
-}
-
-#scrA #absent_4_day_4_week table tr th {
-	padding-left:40px
-}
-
-#scrA .one_week_scrA, #scrA .four_week_scrA {
-	padding-left: 70px;
-}  
-
-.one_week_scrA >div:nth-child(1), .four_week_scrA >div:nth-child(1) {
-	padding-top: 10px;
-	padding-bottom: 10px;
-}
-
-#scrA #ckbTransferWhenPublicHdIsMinus {
-	margin-left: 50px;
-}
-
-.sidebar-content-header {
-	/* display: flex; */
-	/* align-items: center; */
-}
-
-.sidebar-content-header > span:nth-child(1) {
-	margin-left: 55px;
-	margin-top: 8px;
-	display: inline-block;
-	font-size: 2rem;
-}
-
-.sidebar-content-header > button:nth-child(2) {
-	margin-left: 60px;
-	margin-top: 8px;
-}
-
-.sidebar-content-header > button:nth-child(3) {
-	margin-left: 60px;
-	margin-top: 8px;
-} 
-
-.hidden-element {
-    display: none !important;
-}
-
-.ntsMonthDays_Container{
-	top: 0px !important;
-}
-
-#scrA #managePubHD > label:nth-child(1) {
-	padding-right:40px
-}
-
-#scrA #publicHdManagementClassification > label:nth-child(1) {
-	padding-right:40px
-}
-
-#scrA #determineStartDate > label:nth-child(1) {
-	padding-right:40px
-}
-
-#scrA .weekHDCheck_A > div > div:nth-child(1){
-	width:100px !important	
-}
-
-.bg-dark-green {
-	background-color: #C7F391;
-}
-
-#sidebar-area {
-	min-width: 100px;
-}
-
-.sidebar-content {
-	white-space: nowrap;
-}
-#opencdl028Dialog {
-	margin-left: 60px;
-	margin-top: 8px;
+.contents {
+  margin-left: 45px;
 }

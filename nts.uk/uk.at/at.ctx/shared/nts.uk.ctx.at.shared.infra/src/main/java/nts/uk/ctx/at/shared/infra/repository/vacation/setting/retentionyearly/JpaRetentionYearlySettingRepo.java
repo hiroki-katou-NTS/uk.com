@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KshmtHdstkSetCom;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionYearly;
 
 /**
  * The Class JpaRetentionYearlySettingRepo.
@@ -27,26 +27,27 @@ public class JpaRetentionYearlySettingRepo extends JpaRepository implements Rete
 	 */
 	@Override
 	public void insert(RetentionYearlySetting setting) {
-		KshmtHdstkSetCom entity = new KshmtHdstkSetCom();
+		KmfmtRetentionYearly entity = new KmfmtRetentionYearly();
 		setting.saveToMemento(new JpaRetentionYearlySetMemento(entity));
 		this.commandProxy().insert(entity);
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
 	 * RetentionYearlySettingRepository#update(nts.uk.ctx.at.shared.dom.vacation
 	 * .setting.retentionyearly.RetentionYearlySetting)
 	 */
 	@Override
 	public void update(RetentionYearlySetting setting) {
-		Optional<KshmtHdstkSetCom> optional = this.queryProxy().find(setting.getCompanyId(), KshmtHdstkSetCom.class);
-		KshmtHdstkSetCom entity = null;
+		Optional<KmfmtRetentionYearly> optional = this.queryProxy().find(setting.getCompanyId(), KmfmtRetentionYearly.class);
+		KmfmtRetentionYearly entity = null;
 		if(optional.isPresent()) {
 			entity = optional.get();
 		}
 		else{
-			entity = new KshmtHdstkSetCom();
+			entity = new KmfmtRetentionYearly();
 		}
 		setting.saveToMemento(new JpaRetentionYearlySetMemento(entity));
 		this.commandProxy().update(entity);
@@ -60,7 +61,7 @@ public class JpaRetentionYearlySettingRepo extends JpaRepository implements Rete
 	@Override
 	public Optional<RetentionYearlySetting> findByCompanyId(String companyId) {
 		return this.queryProxy()
-				.find(companyId , KshmtHdstkSetCom.class)
+				.find(companyId , KmfmtRetentionYearly.class)
 				.map(c -> this.toDomain(c));
 	}
 	
@@ -71,7 +72,7 @@ public class JpaRetentionYearlySettingRepo extends JpaRepository implements Rete
 	 * @param entity the entity
 	 * @return the retention yearly setting
 	 */
-	private RetentionYearlySetting toDomain(KshmtHdstkSetCom entity) {
+	private RetentionYearlySetting toDomain(KmfmtRetentionYearly entity) {
 		return new RetentionYearlySetting(new JpaRetentionYearlyGetMemento(entity));
 		
 	}

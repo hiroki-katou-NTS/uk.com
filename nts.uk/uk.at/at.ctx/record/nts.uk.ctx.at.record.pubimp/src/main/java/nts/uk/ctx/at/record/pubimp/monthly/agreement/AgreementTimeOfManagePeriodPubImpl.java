@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.pubimp.monthly.agreement;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,6 +14,7 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTimeOfMngPeriod;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfManagePeriodPub;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeOfManagePeriodExport;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
@@ -30,20 +32,27 @@ public class AgreementTimeOfManagePeriodPubImpl implements AgreementTimeOfManage
 	private AgreementOperationSettingRepository agreementOperationSettingRepo;
 	
 	@Override
-	public List<AgreementTimeOfManagePeriod> get(String sid, Year year) {
+	public List<AgreementTimeOfManagePeriodExport> get(String sid, Year year) {
 		
-		return GetAgreementTimeOfMngPeriod.get(createRequire(), sid, year);
+		return GetAgreementTimeOfMngPeriod.get(createRequire(), sid, year).stream()
+				.map(c -> AgreementTimeOfManagePeriodExport.copy(c)).collect(Collectors.toList());
 	}
 	@Override
-	public Map<String, List<AgreementTimeOfManagePeriod>> get(
+	public Map<String, List<AgreementTimeOfManagePeriodExport>> get(
 			List<String> sids, Year year) {
 		
-		return GetAgreementTimeOfMngPeriod.get(createRequire(), sids, year);
+		return GetAgreementTimeOfMngPeriod.get(createRequire(), sids, year)
+				.entrySet().stream()
+				.collect(Collectors.toMap(c -> c.getKey(), 
+										c -> c.getValue().stream()
+													.map(x -> AgreementTimeOfManagePeriodExport.copy(x))
+													.collect(Collectors.toList())));
 	}
 	@Override
-	public List<AgreementTimeOfManagePeriod> get(List<String> sids, YearMonthPeriod ymPeriod) {
+	public List<AgreementTimeOfManagePeriodExport> get(List<String> sids, YearMonthPeriod ymPeriod) {
 		
-		return  GetAgreementTimeOfMngPeriod.get(createRequire(), sids, ymPeriod);
+		return  GetAgreementTimeOfMngPeriod.get(createRequire(), sids, ymPeriod).stream()
+				.map(c -> AgreementTimeOfManagePeriodExport.copy(c)).collect(Collectors.toList());
 	}
 	
 	private GetAgreementTimeOfMngPeriod.RequireM1 createRequire() {

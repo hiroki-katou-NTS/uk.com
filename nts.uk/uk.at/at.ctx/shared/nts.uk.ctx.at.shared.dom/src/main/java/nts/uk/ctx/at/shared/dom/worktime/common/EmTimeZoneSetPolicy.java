@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import nts.arc.error.BundledBusinessException;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 
 /**
  * The Interface EmTimeZoneSetPolicy.
@@ -23,7 +24,7 @@ public interface EmTimeZoneSetPolicy {
 	 * @param dayAtr the day atr
 	 * @param useHalfDayShift the use half day shift
 	 */
-	void validateFixedAndDiff(BundledBusinessException be, PredetemineTimeSetting predTime, EmTimeZoneSet etzSet, DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift);
+	void validateFixedAndDiff(BundledBusinessException be, PredetemineTimeSetting predTime, EmTimeZoneSet etzSet, DisplayMode displayMode, AmPmAtr dayAtr);
 
 	/**
 	 * Validate flex.
@@ -35,5 +36,5 @@ public interface EmTimeZoneSetPolicy {
 	 * @param dayAtr the day atr
 	 * @param useHalfDayShift the use half day shift
 	 */
-	void validateFlex(BundledBusinessException be, PredetemineTimeSetting predTime, EmTimeZoneSet etzSet, DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift);
+	void validateFlex(BundledBusinessException be, PredetemineTimeSetting predTime, EmTimeZoneSet etzSet, DisplayMode displayMode, AmPmAtr dayAtr);
 }

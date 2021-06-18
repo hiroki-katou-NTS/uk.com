@@ -20,19 +20,19 @@ import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.arc.time.YearMonth;
 import nts.gul.reflection.FieldReflection;
 import nts.gul.reflection.ReflectionUtil;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceAmountMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.MonthMergeKey;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.reservation.OrderAmountMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.reservation.ReservationDetailOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.reservation.ReservationOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workamount.WorkAmountOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workclock.EndClockOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workclock.WorkClockOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workclock.pclogon.AggrPCLogonClock;
@@ -87,6 +87,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.toppage.TopPageDisplayOfMonthly;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -114,6 +115,9 @@ public class KrcdtMonVerticalTotal extends ContractUkJpaEntity implements Serial
 	@Column(name = "EXCLUS_VER")
 	public long version;
 
+	/** 就業時間金額 */
+	@Column(name = "WORK_TIME_AMOUNT")
+	public int workTimeAmount;
 	/** 終業回数 */
 	@Column(name = "ENDWORK_TIMES")
 	public int endWorkTimes;
@@ -865,6 +869,9 @@ public class KrcdtMonVerticalTotal extends ContractUkJpaEntity implements Serial
 	/** 割増金額10 */
 	@Column(name = "PREMIUM_AMOUNT_10")
 	public int premiumAmount10;
+	/** 割増金額合計 */
+	@Column(name = "PREMIUM_AMOUNT_TOTAL")
+	public int premiumAmountTotal;
 
 	/** 休憩時間 */
 	@Column(name = "BREAK_TIME")
@@ -1517,7 +1524,8 @@ public class KrcdtMonVerticalTotal extends ContractUkJpaEntity implements Serial
 	
 	public VerticalTotalOfMonthly domain() {
 		
-		return VerticalTotalOfMonthly.of(workDays(), workTime(), workClock());
+		return VerticalTotalOfMonthly.of(workDays(), workTime(), workClock(),
+				WorkAmountOfMonthly.of(new AttendanceAmountMonth(workTimeAmount)));
 	}
 	
 	public void entity(VerticalTotalOfMonthly domain) {
@@ -1528,10 +1536,31 @@ public class KrcdtMonVerticalTotal extends ContractUkJpaEntity implements Serial
 		workTime(domain.getWorkTime());
 		
 		/** 勤務時刻 */
-		pcLogon(domain.getWorkClock());
+		workCLock(domain.getWorkClock());
+
+		/** 勤務金額*/
+		workAmount(domain.getWorkAmount());
 	}
 	
+	public void reset() {
+
+		/** 勤務日数 */
+		workDays(new WorkDaysOfMonthly());
+		
+		/** 勤務時間 */
+		workTime(new WorkTimeOfMonthlyVT());
+		
+		/** 勤務時刻 */
+		workCLock(new WorkClockOfMonthly());
+
+		/** 勤務金額*/
+		workAmount(new WorkAmountOfMonthly());
+	}
 	
+	private void workAmount(WorkAmountOfMonthly workTime) {
+
+		this.workTimeAmount = workTime.getWorkTimeAmount().v();
+	}
 	
 	private void workTime(WorkTimeOfMonthlyVT workTime) {
 		/** 遅刻早退 */
@@ -1579,6 +1608,7 @@ public class KrcdtMonVerticalTotal extends ContractUkJpaEntity implements Serial
 		
 		/** 割増時間 */
 		premium(workTime.getPremiumTime().getPremiumTime());
+		this.premiumAmountTotal = workTime.getPremiumTime().getPremiumAmountTotal().v();
 		
 		/** 予実差異時間 */
 		this.budgetVarienceTime = workTime.getBudgetTimeVarience().getTime().valueAsMinutes();
@@ -1828,7 +1858,7 @@ public class KrcdtMonVerticalTotal extends ContractUkJpaEntity implements Serial
 	}
 
 	/** 勤務時刻 */
-	private void pcLogon(WorkClockOfMonthly workClock) {
+	private void workCLock(WorkClockOfMonthly workClock) {
 		/** 終業時刻 */
 		val endClock = workClock.getEndClock();
 		this.endWorkTimes = endClock.getTimes().v();
@@ -2150,7 +2180,7 @@ public class KrcdtMonVerticalTotal extends ContractUkJpaEntity implements Serial
 				TopPageDisplayOfMonthly.of(
 						new AttendanceTimeMonth(this.topPageOtTime), 
 						new AttendanceTimeMonth(this.topPageHolWorkTime), 
-						new AttendanceTimeMonth(this.topPageFlexTime)), 
+						new AttendanceTimeMonthWithMinus(this.topPageFlexTime)), 
 				IntervalTimeOfMonthly.of(
 						new AttendanceTimeMonth(this.intervalTime),
 						new AttendanceTimeMonth(this.intervalDeductTime)),
@@ -2390,7 +2420,7 @@ public class KrcdtMonVerticalTotal extends ContractUkJpaEntity implements Serial
 					new AttendanceAmountMonth(ReflectionUtil.getFieldValue(amount, this))));
 		}
 		
-		return PremiumTimeOfMonthly.of(premiumTimes);
+		return PremiumTimeOfMonthly.of(premiumTimes, new AttendanceAmountMonth(this.premiumAmountTotal));
 	}
 
 }

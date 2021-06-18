@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -18,15 +17,7 @@ public interface PublicHolidaySettingRepository {
 	 * @param companyId the company id
 	 * @return the optional
 	 */
-	Optional<PublicHolidaySetting> findByCID(String companyId);
-	
-	/**
-	 * Find by CID to list.
-	 *
-	 * @param companyId the company id
-	 * @return the list
-	 */
-	List<PublicHolidaySetting> findByCIDToList(String companyId);
+	Optional<PublicHolidaySetting> get(String companyId);
 	
 	/**
 	 * Update.
@@ -40,5 +31,5 @@ public interface PublicHolidaySettingRepository {
 	 *
 	 * @param domain the domain
 	 */
-	void add(PublicHolidaySetting domain);
+	void insert(PublicHolidaySetting domain);
 }

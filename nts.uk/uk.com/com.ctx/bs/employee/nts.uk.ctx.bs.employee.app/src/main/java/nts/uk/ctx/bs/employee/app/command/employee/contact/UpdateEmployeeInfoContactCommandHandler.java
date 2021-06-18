@@ -1,14 +1,13 @@
 package nts.uk.ctx.bs.employee.app.command.employee.contact;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContact;
-import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContactRepository;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.bs.employee.app.command.employee.data.management.EmployeeContactDto;
+import nts.uk.ctx.bs.employee.dom.employee.data.management.contact.EmployeeContact;
+import nts.uk.ctx.bs.employee.dom.employee.data.management.contact.EmployeeContactRepository;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
 @Stateless
@@ -16,7 +15,7 @@ public class UpdateEmployeeInfoContactCommandHandler extends CommandHandler<Upda
 	implements PeregUpdateCommandHandler<UpdateEmployeeInfoContactCommand>{
 
 	@Inject
-	private EmployeeInfoContactRepository employeeInfoContactRepository;
+	private EmployeeContactRepository employeeInfoContactRepository;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -32,10 +31,15 @@ public class UpdateEmployeeInfoContactCommandHandler extends CommandHandler<Upda
 	protected void handle(CommandHandlerContext<UpdateEmployeeInfoContactCommand> context) {
 		
 		val command = context.getCommand();
-		String cid = AppContexts.user().companyId();
-		EmployeeInfoContact domain = new EmployeeInfoContact(cid, command.getSid(), command.getMailAddress(),
-				command.getSeatDialIn(), command.getSeatExtensionNo(), command.getPhoneMailAddress(),
-				command.getCellPhoneNo());
+		EmployeeContactDto dto = EmployeeContactDto.builder()
+				.employeeId(command.getSid())
+				.mailAddress(command.getMailAddress())
+				.seatDialIn(command.getSeatDialIn())
+				.seatExtensionNumber(command.getSeatExtensionNo())
+				.mobileMailAddress(command.getPhoneMailAddress())
+				.cellPhoneNumber(command.getCellPhoneNo())
+				.build();
+		EmployeeContact domain = EmployeeContact.createFromMemento(dto);
 		employeeInfoContactRepository.update(domain);
 		
 	}

@@ -1,41 +1,46 @@
 package nts.uk.ctx.at.schedule.infra.entity.budget.premium;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
-import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumSetting;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
- * 
  * @author Doan Duy Hung
- *
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Entity
-@Table(name="KSCMT_PER_COST_PREMIUM")
-public class KscmtPerCostPremium extends ContractUkJpaEntity{
-	@EmbeddedId
-	public KmldpPremiumAttendancePK kmldpPremiumAttendancePK;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@PrimaryKeyJoinColumns({
-		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"), 
-		@PrimaryKeyJoinColumn(name="HIS_ID",referencedColumnName="HIS_ID"),
-		@PrimaryKeyJoinColumn(name="PREMIUM_NO",referencedColumnName="PREMIUM_NO")
-	})
-	public KscmtPerCostPremiRate kmlstPremiumSet;
-	
-	@Override
-	protected Object getKey() {
-		return kmldpPremiumAttendancePK;
-	}
+@Table(name = "KSCMT_PER_COST_PREMIUM")
+public class KscmtPerCostPremium extends ContractUkJpaEntity {
+    @EmbeddedId
+    public KmldpPremiumAttendancePK kmldpPremiumAttendancePK;
+    @Override
+    protected Object getKey() {
+        return kmldpPremiumAttendancePK;
+    }
+
+    public static List<KscmtPerCostPremium> toEntity(List<PremiumSetting> premiumSettings, String histId) {
+        List<KscmtPerCostPremium> rs = new ArrayList<>();
+        premiumSettings.forEach(
+                e -> {
+                    rs.addAll(e.getAttendanceItems().stream().map(i -> new KscmtPerCostPremium(
+                            new KmldpPremiumAttendancePK(
+                                    e.getCompanyID(),
+                                    histId,
+                                    e.getID().value,
+                                    i
+                            )
+                    )).collect(Collectors.toList()));
+                }
+        );
+        return rs;
+    }
 }

@@ -4,12 +4,12 @@ module nts.uk.at.view.kaf000.a.viewmodel {
     import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 
-    export class Kaf000AViewModel extends ko.ViewModel {
+    export abstract class Kaf000AViewModel extends ko.ViewModel {
     	appDispInfoStartupOutput: KnockoutObservable<any> = ko.observable(CommonProcess.initCommonSetting());
     	
-        loadData(empLst: Array<string>, dateLst: Array<string>, appType: AppType) {
+        loadData(empLst: Array<string>, dateLst: Array<string>, appType: AppType, opHolidayAppType?: number, opOvertimeAppAtr?: number) {
             const vm = this;
-            let command = { empLst, dateLst, appType };
+            let command = { empLst, dateLst, appType, opHolidayAppType, opOvertimeAppAtr };
             return vm.$ajax(API.startNew, command)
             .then((data: any) => {
                 vm.appDispInfoStartupOutput(data);
@@ -52,6 +52,37 @@ module nts.uk.at.view.kaf000.a.viewmodel {
 				}
 			});	
 		}
+		
+		handleErrorCommon(failData: any) {
+			const vm = this;
+			switch(failData.messageId) {
+				case 'Msg_197':
+				case 'Msg_198':
+				case 'Msg_235':
+				case 'Msg_391':
+				case 'Msg_1518':
+				case 'Msg_236':
+				case 'Msg_324':
+				case 'Msg_237':
+				case 'Msg_238':
+				case 'Msg_327':
+				case 'Msg_328':
+				case 'Msg_1530':
+				case 'Msg_426':
+				case 'Msg_448':
+				case 'Msg_449':
+				case 'Msg_450':
+				case 'Msg_451':
+				case 'Msg_768':
+				case 'Msg_1715':
+				case 'Msg_1521':
+				case 'Msg_1648':
+				default:
+					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });	
+			}
+		}
+		
+		abstract register(): any;
     }
 
     const API = {

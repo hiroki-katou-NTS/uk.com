@@ -20,15 +20,19 @@ import nts.uk.ctx.at.shared.infra.entity.worktype.absenceframe.KshmtAbsenceFrame
 @Stateless
 public class JpaAbsenceFrameRepository extends JpaRepository implements AbsenceFrameRepository {
     
-	private static final String SEL_1 = "SELECT a FROM KshmtAbsenceFrame a  WHERE a.kshmtAbsenceFramePK.companyId = :companyId AND a.abolishAtr = :abolishAtr ";
+	private static final String SEL_1 = "SELECT a FROM KshmtAbsenceFrame a  WHERE a.kshmtAbsenceFramePK.companyId = :companyId AND a.useAtr = :useAtr ";
 	private static final String GET_ALL = "SELECT a FROM KshmtAbsenceFrame a  WHERE a.kshmtAbsenceFramePK.companyId = :companyId ";
 	private static final String GET_ALL_BY_LIST_FRAME_NO = GET_ALL 
 			+"AND a.kshmtAbsenceFramePK.absenceFrameNo IN :frameNos ";
+
+	private static final String FIND_BY_CID_USE_CLS = GET_ALL 
+			+ " AND a.useAtr = :useAtr ";
+
 	private static AbsenceFrame toDomain(KshmtAbsenceFrame entity) {
 		AbsenceFrame domain = AbsenceFrame.createSimpleFromJavaType(entity.kshmtAbsenceFramePK.companyId,
 				entity.kshmtAbsenceFramePK.absenceFrameNo,
 				entity.name, 
-				entity.abolishAtr);
+				entity.useAtr);
 		return domain;
 	}
 	
@@ -36,7 +40,7 @@ public class JpaAbsenceFrameRepository extends JpaRepository implements AbsenceF
 	public List<AbsenceFrame> findAbsenceFrame(String companyId) {			
 		return this.queryProxy().query(SEL_1, KshmtAbsenceFrame.class)
 				.setParameter("companyId", companyId)
-				.setParameter("abolishAtr", 0)
+				.setParameter("useAtr", 0)
 				.getList(a -> toDomain(a));
 	}
 
@@ -68,7 +72,7 @@ public class JpaAbsenceFrameRepository extends JpaRepository implements AbsenceF
 		return AbsenceFrame.createFromJavaType(x.kshmtAbsenceFramePK.companyId, 
 				x.kshmtAbsenceFramePK.absenceFrameNo,
 				x.name,
-				x.abolishAtr);
+				x.useAtr);
 	}
 	
 	/**
@@ -97,5 +101,13 @@ public class JpaAbsenceFrameRepository extends JpaRepository implements AbsenceF
 								.getList(a -> toDomain(a)));
 		});
 		return resultList;
+	}
+
+	@Override
+	public List<AbsenceFrame> findByCompanyIdAndDeprecateClassification(String cid, int useCls) {
+		return this.queryProxy().query(FIND_BY_CID_USE_CLS, KshmtAbsenceFrame.class)
+				.setParameter("companyId", cid)
+				.setParameter("useAtr", useCls)
+				.getList(a -> toDomain(a));
 	}
 }

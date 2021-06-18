@@ -12,7 +12,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 
 /**
@@ -32,13 +31,6 @@ public class BreakTimeOfDailyPerformance extends AggregateRoot {
 	
 	//時間帯
 	private BreakTimeOfDailyAttd timeZone;
-	/**
-	 * 休憩種類の取得
-	 * @return
-	 */
-	public BreakType getcategory() {
-		return this.timeZone.getBreakType();
-	}
 
 	/**
 	 * 指定した時間帯に含まれる休憩時間の合計値を返す
@@ -59,12 +51,11 @@ public class BreakTimeOfDailyPerformance extends AggregateRoot {
 		return this.timeZone.getBreakTimeSheets().stream().map(tc -> tc.toTimeSheetOfDeductionItem()).collect(Collectors.toList());
 	}
 
-	public BreakTimeOfDailyPerformance(String employeeId, BreakType breakType, List<BreakTimeSheet> breakTimeSheets,
-			GeneralDate ymd) {
+	public BreakTimeOfDailyPerformance(String employeeId, GeneralDate ymd, List<BreakTimeSheet> breakTimeSheets) {
 		super();
 		this.employeeId = employeeId;
 		this.ymd = ymd;
-		this.timeZone = new BreakTimeOfDailyAttd(breakType, breakTimeSheets == null ? new ArrayList<>() : breakTimeSheets);
+		this.timeZone = new BreakTimeOfDailyAttd(breakTimeSheets == null ? new ArrayList<>() : breakTimeSheets);
 	}
 
 	public BreakTimeOfDailyPerformance(String employeeId, GeneralDate ymd, BreakTimeOfDailyAttd timeZone) {

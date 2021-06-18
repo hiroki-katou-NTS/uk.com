@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,18 +11,27 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.common.Day;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdMinutes;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemain;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.care.CareRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseRemainingNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseUsedInfo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildcareNurseRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /** 介護休暇月別残数データ */
 @Data
@@ -32,7 +43,7 @@ public class MonthlyCareHdRemainDto extends MonthlyItemCommon {
 
 	/***/
 	private static final long serialVersionUID = 1L;
-	
+
 	/** 社員ID: 社員ID */
 	private String employeeId;
 
@@ -47,23 +58,23 @@ public class MonthlyCareHdRemainDto extends MonthlyItemCommon {
 	/** 締め日: 日付 */
 	// @AttendanceItemLayout(jpPropertyName = "締め日", layout = "B")
 	private ClosureDateDto closureDate;
-	
+
 	private ClosureStatus closureStatus = ClosureStatus.UNTREATED;
 
 	/** 締め期間: 期間 */
 	@AttendanceItemLayout(jpPropertyName = PERIOD, layout = LAYOUT_A)
 	private DatePeriodDto datePeriod;
-	
+
 	/** 使用日数 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + DAYS, layout = LAYOUT_B)
 	@AttendanceItemValue(type = ValueType.COUNT_WITH_DECIMAL)
 	private Double usedDays;
-	
+
 	/** 使用日数付与前 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + DAYS + BEFORE, layout = LAYOUT_C)
 	@AttendanceItemValue(type = ValueType.COUNT_WITH_DECIMAL)
 	private Double usedDaysBefore;
-	
+
 	/** 使用日数付与後 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + DAYS + AFTER, layout = LAYOUT_D)
 	@AttendanceItemValue(type = ValueType.COUNT_WITH_DECIMAL)
@@ -71,64 +82,226 @@ public class MonthlyCareHdRemainDto extends MonthlyItemCommon {
 
 	/** 使用時間 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + TIME, layout = LAYOUT_E)
-	@AttendanceItemValue(type = ValueType.COUNT_WITH_DECIMAL)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer usedMinutes;
-	
+
 	/** 使用時間付与前 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + TIME + BEFORE, layout = LAYOUT_F)
-	@AttendanceItemValue(type = ValueType.COUNT_WITH_DECIMAL)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer usedMinutesBefore;
-	
+
 	/** 使用時間付与後 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + TIME + AFTER, layout = LAYOUT_G)
-	@AttendanceItemValue(type = ValueType.COUNT_WITH_DECIMAL)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer usedMinutesAfter;
-	
+
 	@Override
 	public String employeeId() {
 		return employeeId;
 	}
+	/**
+	 * ドメインへ変換
+	 */
 	@Override
-	public MonCareHdRemain toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
-		
-		return new MonCareHdRemain(employeeId, ym, ConvertHelper.getEnum(closureID, ClosureId.class), 
-				new Day(closureDate == null ? 1 : closureDate.getClosureDay()), 
-				closureDate == null ? 0 : closureDate.getLastDayOfMonth() ? 1 : 0, 
-				closureStatus, datePeriod == null ? null : datePeriod.getStart(), datePeriod == null ? null : datePeriod.getEnd(),
-				toNumber(usedDays), toNumber(usedDaysBefore), toNumber(usedDaysAfter), 
-				toMinutes(usedMinutes), toMinutes(usedMinutesBefore), toMinutes(usedMinutesAfter));
+	public CareRemNumEachMonth toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
+
+		/** 本年使用数 */
+		ChildCareNurseUsedInfo thisYearUsedInfo
+			= ChildCareNurseUsedInfo.of(
+					/** 使用数 */
+					ChildCareNurseUsedNumber.of(
+							/** 日数 */
+							toDayNumberOfUse(usedDaysBefore),
+							/** 時間 */
+							toUsedMinutes(usedMinutesBefore)),
+					/** 時間休暇使用回数 */
+					new UsedTimes(0), // 未実装
+					/** 時間休暇使用日数 */
+					new UsedTimes(0) ); // 未実装
+
+		/** 合計使用数 */
+		ChildCareNurseUsedInfo usedInfo
+			= ChildCareNurseUsedInfo.of(
+					/** 使用数 */
+					ChildCareNurseUsedNumber.of(
+							/** 日数 */
+							toDayNumberOfUse(usedDaysAfter),
+							/** 時間 */
+							toUsedMinutes(usedMinutesAfter)),
+					/** 時間休暇使用回数 */
+					new UsedTimes(0), // 未実装
+					/** 時間休暇使用日数 */
+					new UsedTimes(0) ); // 未実装
+
+		/** 本年残数 */
+		ChildCareNurseRemainingNumber thisYearRemainNumber
+			/** 残数 */
+			= ChildCareNurseRemainingNumber.of(
+					/** 日数 */
+					toDayNumberOfRemain(0.0), // 未実装
+					/** 時間 */
+					toTimeOfRemain(0)); // 未実装
+
+		/** 翌年使用数 */
+		Optional<ChildCareNurseUsedInfo> nextYearUsedInfo
+			= Optional.of(ChildCareNurseUsedInfo.of(
+					/** 使用数 */
+					ChildCareNurseUsedNumber.of(
+							/** 日数 */
+							toDayNumberOfUse(usedDaysAfter),
+							/** 時間 */
+							toUsedMinutes(usedMinutesAfter)),
+					/** 時間休暇使用回数 */
+					new UsedTimes(0), // 未実装
+					/** 時間休暇使用日数 */
+					new UsedTimes(0) )); // 未実装
+
+		/** 翌年残数 */
+		Optional<ChildCareNurseRemainingNumber> nextYearRemainNumber
+			/** 残数 */
+			= Optional.of(ChildCareNurseRemainingNumber.of(
+					/** 日数 */
+					toDayNumberOfRemain(0.0), // 未実装
+					/** 時間 */
+					toTimeOfRemain(0))); // 未実装
+
+		return new CareRemNumEachMonth(
+				employeeId, /** 社員ID */
+				ym, /** 年月 */
+				ConvertHelper.getEnum(closureID, ClosureId.class), /** 締めID */
+				new ClosureDate(closureDate.getClosureDay(), closureDate.getLastDayOfMonth()), /** 締め日付 */
+				ClosureStatus.UNTREATED, // 締め処理状態←未締め
+				/** 子の看護休暇月別残数データ */
+				ChildcareNurseRemNumEachMonth.of(
+						thisYearUsedInfo, /** 本年使用数 */
+						usedInfo, /** 合計使用数 */
+						thisYearRemainNumber, /** 本年残数 */
+						nextYearUsedInfo, /** 翌年使用数 */
+						nextYearRemainNumber) /** 翌年残数 */
+				);
 	}
-	
-	private MonCareHdNumber toNumber(Double number){
-		return new MonCareHdNumber(number == null ? 0.0 : number);
+
+	private DayNumberOfUse toDayNumberOfUse(Double number){
+		return new DayNumberOfUse(number == null ? 0.0 : number);
 	}
-	
-	private MonCareHdMinutes toMinutes(Integer minutes){
-		return new MonCareHdMinutes(minutes == null ? 0 : minutes);
+
+	private Optional<TimeOfUse> toUsedMinutes(Integer minutes){
+		return minutes == null ? Optional.empty() : Optional.of(new TimeOfUse(minutes));
 	}
-	
+
+	private DayNumberOfRemain toDayNumberOfRemain(Double number){
+		return new DayNumberOfRemain(number == null ? 0.0 : number);
+	}
+
+	private Optional<TimeOfRemain> toTimeOfRemain(Integer minutes){
+		return minutes == null ? Optional.empty() : Optional.of(new TimeOfRemain(minutes));
+	}
+
 	@Override
 	public YearMonth yearMonth() {
 		return ym;
 	}
-	
-	public static MonthlyCareHdRemainDto from(MonCareHdRemain domain){
+
+	public static MonthlyCareHdRemainDto from(CareRemNumEachMonth domain){
 		MonthlyCareHdRemainDto dto = new MonthlyCareHdRemainDto();
 		if (domain != null) {
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYm(domain.getYearMonth());
 			dto.setClosureID(domain.getClosureId().value);
 			dto.setClosureStatus(domain.getClosureStatus());
-			dto.setClosureDate(new ClosureDateDto(domain.getClosureDay().v(), domain.getIsLastDay() == 1 ? true : false));
-			dto.setDatePeriod(new DatePeriodDto(domain.getStartDate(), domain.getEndDate()));
-			dto.setUsedDays(domain.getUsedDays().v());
-			dto.setUsedDaysAfter(domain.getUsedDaysAfter().v());
-			dto.setUsedDaysBefore(domain.getUsedDaysBefore().v());
-			dto.setUsedMinutes(domain.getUsedMinutes().v());
-			dto.setUsedMinutesAfter(domain.getUsedMinutesAfter().v());
-			dto.setUsedMinutesBefore(domain.getUsedMinutesBefore().v());
+			dto.setClosureDate(new ClosureDateDto(domain.getClosureDate().getClosureDay().v(), domain.getClosureDate().getLastDayOfMonth()));
+			dto.setUsedDays(domain.getRemNumEachMonth().getUsedInfo().getUsedNumber().getUsedDay().v());
+			dto.setUsedDaysAfter(domain.getRemNumEachMonth().getNextYearUsedInfo().map(mapper->mapper.getUsedNumber().getUsedDay().v()).orElse(0.0));
+			dto.setUsedDaysBefore(domain.getRemNumEachMonth().getThisYearUsedInfo().getUsedNumber().getUsedDay().v());
+			dto.setUsedMinutes(domain.getRemNumEachMonth().getUsedInfo().getUsedNumber().getUsedTimes().map(mapper->mapper.v()).orElse(0));
+			dto.setUsedMinutesAfter(domain.getRemNumEachMonth().getNextYearUsedInfo().map(mapper->mapper.getUsedNumber().getUsedTimes().map(mapper2->mapper2.v()).orElse(0)).orElse(0));
+			dto.setUsedMinutesBefore(domain.getRemNumEachMonth().getThisYearUsedInfo().getUsedNumber().getUsedTimes().map(mapper->mapper.v()).orElse(0));
 			dto.exsistData();
 		}
 		return dto;
 	}
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case (USAGE + DAYS):
+			return Optional.of(ItemValue.builder().value(usedDays).valueType(ValueType.COUNT_WITH_DECIMAL));
+		case (USAGE + DAYS + BEFORE):
+			return Optional.of(ItemValue.builder().value(usedDaysBefore).valueType(ValueType.COUNT_WITH_DECIMAL));
+		case (USAGE + DAYS + AFTER):
+			return Optional.of(ItemValue.builder().value(usedDaysAfter).valueType(ValueType.COUNT_WITH_DECIMAL));
+		case (USAGE + TIME):
+			return Optional.of(ItemValue.builder().value(usedMinutes).valueType(ValueType.TIME));
+		case (USAGE + TIME + BEFORE):
+			return Optional.of(ItemValue.builder().value(usedMinutesBefore).valueType(ValueType.TIME));
+		case (USAGE + TIME + AFTER):
+			return Optional.of(ItemValue.builder().value(usedMinutesAfter).valueType(ValueType.TIME));
+		default:
+			break;
+		}
+		return super.valueOf(path);
+	}
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (PERIOD.equals(path)) {
+			return new DatePeriodDto();
+		}
+		return super.newInstanceOf(path);
+	}
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		if (PERIOD.equals(path)) {
+			return Optional.ofNullable(datePeriod);
+		}
+		return super.get(path);
+	}
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case (USAGE + DAYS):
+		case (USAGE + DAYS + BEFORE):
+		case (USAGE + DAYS + AFTER):
+		case (USAGE + TIME):
+		case (USAGE + TIME + BEFORE):
+		case (USAGE + TIME + AFTER):
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return super.typeOf(path);
+	}
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case (USAGE + DAYS):
+			usedDays = value.valueOrDefault(null); break;
+		case (USAGE + DAYS + BEFORE):
+			usedDaysBefore = value.valueOrDefault(null); break;
+		case (USAGE + DAYS + AFTER):
+			usedDaysAfter = value.valueOrDefault(null); break;
+		case (USAGE + TIME):
+			usedMinutes = value.valueOrDefault(null); break;
+		case (USAGE + TIME + BEFORE):
+			usedMinutesBefore = value.valueOrDefault(null); break;
+		case (USAGE + TIME + AFTER):
+			usedMinutesAfter = value.valueOrDefault(null); break;
+		default:
+			break;
+		}
+	}
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		if (PERIOD.equals(path)) {
+			datePeriod = (DatePeriodDto) value;
+		}
+	}
+	@Override
+	public boolean isRoot() {
+		return true;
+	}
+	@Override
+	public String rootName() {
+		return MONTHLY_CARE_HD_REMAIN_NAME;
+	}
+
+
 }

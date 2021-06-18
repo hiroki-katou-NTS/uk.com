@@ -76,3 +76,11 @@
 .width-112 {
 	width: 112px;
 }
+
+.grid {
+	display: grid;
+}
+
+#D16_1 {
+  width: 80px !important;
+}

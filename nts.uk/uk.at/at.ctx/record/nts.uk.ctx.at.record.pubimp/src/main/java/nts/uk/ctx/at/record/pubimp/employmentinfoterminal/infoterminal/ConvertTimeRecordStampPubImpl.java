@@ -9,15 +9,19 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.AllArgsConstructor;
-import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.employeemanage.EmployeeManageRCAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainService;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.createdailyresults.CreateDailyResults;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
+import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.TemporarilyReflectStampDailyAttd;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
@@ -37,10 +41,20 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepo
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.ConvertTimeRecordStampPub;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.StampDataReflectResultExport;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.StampReceptionDataExport;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeReflectFromWorkinfo;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author ThanhNX
@@ -59,7 +73,7 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 	private StampDakokuRepository stampDakokuRepository;
 
 	@Inject
-	private CreateDailyResultDomainService createDailyResultDomainSv;
+	private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
 
 	@Inject
 	private StampRecordRepository stampRecordRepository;
@@ -72,14 +86,23 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 
 	@Inject
 	private TopPgAlTrRepository executionLog;
+	
+	@Inject
+	private CreateDailyResults createDailyResults;
+	
+	@Inject
+	private TimeReflectFromWorkinfo timeReflectFromWorkinfo;
+	
+	@Inject
+	private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
 
 	@Override
-	public Pair<Optional<AtomTask>, Optional<StampDataReflectResultExport>> convertData(Integer empInfoTerCode,
+	public Pair<Optional<AtomTask>, Optional<StampDataReflectResultExport>> convertData(String empInfoTerCode,
 			String contractCode, StampReceptionDataExport stampReceptData) {
 
 		RequireImpl require = new RequireImpl(empInfoTerminalRepository, timeRecordReqSettingRepository,
-				stampDakokuRepository, createDailyResultDomainSv, stampRecordRepository, stampCardRepository,
-				employeeManageRCAdapter, executionLog);
+				stampDakokuRepository, createDailyResultDomainServiceNew, stampRecordRepository, stampCardRepository,
+				employeeManageRCAdapter, executionLog, createDailyResults, timeReflectFromWorkinfo, temporarilyReflectStampDailyAttd);
 
 		Pair<Optional<AtomTask>, Optional<StampDataReflectResult>> convertData = ConvertTimeRecordStampService
 				.convertData(require, new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode),
@@ -106,7 +129,7 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 
 		private final StampDakokuRepository stampDakokuRepository;
 
-		private final CreateDailyResultDomainService createDailyResultDomainSv;
+		private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
 
 		private final StampRecordRepository stampRecordRepository;
 
@@ -115,6 +138,12 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		private final EmployeeManageRCAdapter employeeManageRCAdapter;
 
 		private final TopPgAlTrRepository executionLog;
+		
+		private CreateDailyResults createDailyResults;
+
+		private TimeReflectFromWorkinfo timeReflectFromWorkinfo;
+
+		private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
 
 		@Override
 		public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode,
@@ -153,11 +182,11 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		}
 
 		@Override
-		public ProcessState createDailyResult(@SuppressWarnings("rawtypes") AsyncCommandHandlerContext asyncContext,
-				List<String> emloyeeIds, DatePeriod periodTime, ExecutionAttr executionAttr, String companyId,
-				String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog) {
-			return createDailyResultDomainSv.createDailyResult(asyncContext, emloyeeIds, periodTime, executionAttr,
-					companyId, empCalAndSumExecLogID, executionLog);
+		public OutputCreateDailyResult createDataNewNotAsync(String employeeId, DatePeriod periodTime,
+				ExecutionAttr executionAttr, String companyId, ExecutionTypeDaily executionType,
+				Optional<EmpCalAndSumExeLog> empCalAndSumExeLog, Optional<Boolean> checkLock) {
+			return createDailyResultDomainServiceNew.createDataNewNotAsync(employeeId, periodTime, executionAttr,
+					companyId, executionType, empCalAndSumExeLog, checkLock);
 		}
 
 		@Override
@@ -169,6 +198,26 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		public void insertLogAll(TopPageAlarmEmpInfoTer alEmpInfo) {
 			executionLog.insertLogAll(alEmpInfo);
 
+		}
+
+		@Override
+		public OutputCreateDailyOneDay createDailyResult(String employeeId, GeneralDate ymd,
+				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
+				EmployeeGeneralInfoImport employeeGeneralInfoImport, PeriodInMasterList periodInMasterList,
+				IntegrationOfDaily integrationOfDaily) {
+			return this.createDailyResults.createDailyResult(AppContexts.user().companyId(), employeeId, ymd, executionType, flag, employeeGeneralInfoImport, periodInMasterList, integrationOfDaily);
+		}
+
+		@Override
+		public OutputTimeReflectForWorkinfo get(String employeeId, GeneralDate ymd,
+				WorkInfoOfDailyAttendance workInformation) {
+			return this.timeReflectFromWorkinfo.get(AppContexts.user().companyId(), employeeId, ymd, workInformation);
+		}
+
+		@Override
+		public List<ErrorMessageInfo> reflectStamp(Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
+				IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt) {
+			return this.temporarilyReflectStampDailyAttd.reflectStamp(stamp, stampReflectRangeOutput, integrationOfDaily, changeDailyAtt);
 		}
 
 	}

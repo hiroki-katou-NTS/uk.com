@@ -227,6 +227,9 @@ public interface WorkTypeRepository {
 	
 	List<String> findWorkTypeCodeOneDay(String companyId, int abolishAtr, int worktypeAtr, int oneDay);
 	
+
+	List<WorkType> findHolidayWorkType(String companyId, int abolishAtr, int worktypeAtr, int workTypeClf, int holiday);
+
 	List<WorkType> findWorkByDeprecate(String companyId, int deprecateAtr);
 	
 	/**
@@ -255,7 +258,7 @@ public interface WorkTypeRepository {
 	
 	/**
 	 * Find by deprecated.
-	 *
+	 * <<Public>> 指定した勤務種類をすべて取得する
 	 * @param companyId the company id
 	 * @param workTypeCd the work type cd
 	 * @return the optional

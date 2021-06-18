@@ -5,16 +5,10 @@
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUse;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtAcquisitionEmp;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtAcquisitionEmpPK;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmp;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmpPK;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KctmtDigestTimeEmp;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KctmtDigestTimeEmpPK;
 
 /**
  * The Class JpaCompensLeaveEmSettingSetMemento.
@@ -73,56 +67,6 @@ public class JpaCompensLeaveEmSettingSetMemento implements CompensatoryLeaveEmSe
         this.entity.setManageAtr(isManaged.value);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * CompensatoryLeaveEmSettingSetMemento#setCompensatoryAcquisitionUse(nts.uk
-     * .ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * CompensatoryAcquisitionUse)
-     */
-    @Override
-    public void setCompensatoryAcquisitionUse(CompensatoryAcquisitionUse compensatoryAcquisitionUse) {
-        KclmtAcquisitionEmp entityAcquisition = this.entity.getKclmtAcquisitionEmp();
-        if (entityAcquisition == null) {
-            entityAcquisition = new KclmtAcquisitionEmp();
-        }
-        JpaCompensAcquisitionUseSetMemento memento = new JpaCompensAcquisitionUseSetMemento(entityAcquisition);
-        compensatoryAcquisitionUse.saveToMemento(memento);
-        
-        KclmtAcquisitionEmpPK pk = new KclmtAcquisitionEmpPK();
-        pk.setCid(this.entity.getKclmtCompensLeaveEmpPK().getCid());
-        pk.setEmpcd(this.entity.getKclmtCompensLeaveEmpPK().getEmpcd());
-        entity.setDeadlCheckMonth(0);
-        entityAcquisition.setKclmtAcquisitionEmpPK(pk);
-        
-        this.entity.setKclmtAcquisitionEmp(entityAcquisition);
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * CompensatoryLeaveEmSettingSetMemento#setCompensatoryDigestiveTimeUnit(nts
-     * .uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * CompensatoryDigestiveTimeUnit)
-     */
-    @Override
-    public void setCompensatoryDigestiveTimeUnit(CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit) {
-        KctmtDigestTimeEmp entityDigestTime = this.entity.getKctmtDigestTimeEmp();
-        if (entityDigestTime == null) {
-            entityDigestTime = new KctmtDigestTimeEmp();
-        }
-        JpaCompensDigestiveTimeUnitSetMemento memento = new JpaCompensDigestiveTimeUnitSetMemento(entityDigestTime);
-        compensatoryDigestiveTimeUnit.saveToMemento(memento);
-        
-        KctmtDigestTimeEmpPK pk = new KctmtDigestTimeEmpPK();
-        pk.setCid(this.entity.getKclmtCompensLeaveEmpPK().getCid());
-        pk.setEmpcd(this.entity.getKclmtCompensLeaveEmpPK().getEmpcd());
-        
-        entityDigestTime.setKctmtDigestTimeEmpPK(pk);
-        
-        this.entity.setKctmtDigestTimeEmp(entityDigestTime);
-    }
 
 }

@@ -1,12 +1,17 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
@@ -15,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedul
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WorkScheduleTimeDailyPerformDto implements ItemConst {
+public class WorkScheduleTimeDailyPerformDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 勤務予定時間: 勤務予定時間 */
 	// TODO: confirm item ID and type for 勤務予定時間
@@ -33,6 +38,66 @@ public class WorkScheduleTimeDailyPerformDto implements ItemConst {
 	private int schedulePrescribedLaborTime;
 
 	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case (ACTUAL + FIXED_WORK):
+			return Optional.of(ItemValue.builder().value(recordPrescribedLaborTime).valueType(ValueType.TIME));
+		case (SCHEDULE + FIXED_WORK):
+			return Optional.of(ItemValue.builder().value(schedulePrescribedLaborTime).valueType(ValueType.TIME));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case (ACTUAL + FIXED_WORK):
+		case (SCHEDULE + FIXED_WORK):
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (PLAN.equals(path)) {
+			return new WorkScheduleTimeDto();
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		if (PLAN.equals(path)) {
+			return Optional.ofNullable(workSchedule);
+		}
+		return AttendanceItemDataGate.super.get(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case (ACTUAL + FIXED_WORK):
+			recordPrescribedLaborTime = value.valueOrDefault(0);
+		case (SCHEDULE + FIXED_WORK):
+			schedulePrescribedLaborTime = value.valueOrDefault(0);
+		default:
+			break;
+		}
+		AttendanceItemDataGate.super.set(path, value);
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		if (path.equals(PLAN)) {
+			workSchedule = (WorkScheduleTimeDto) value;
+		}
+	}
+	
+	@Override
 	public WorkScheduleTimeDailyPerformDto clone() {
 		return new WorkScheduleTimeDailyPerformDto(workSchedule == null ? null : workSchedule.clone(),
 																				recordPrescribedLaborTime,
@@ -43,7 +108,7 @@ public class WorkScheduleTimeDailyPerformDto implements ItemConst {
 		return domain == null ? null : new WorkScheduleTimeDailyPerformDto(
 						getWorkSchedule(domain.getWorkScheduleTime()),
 						getAttendanceTime(domain.getRecordPrescribedLaborTime()),
-						getAttendanceTime(domain.getSchedulePrescribedLaborTime()));
+						0);
 	}
 
 	private static WorkScheduleTimeDto getWorkSchedule(WorkScheduleTime domain) {
@@ -62,7 +127,7 @@ public class WorkScheduleTimeDailyPerformDto implements ItemConst {
 																		new AttendanceTime(workSchedule.getTotal()),
 																		new AttendanceTime(workSchedule.getExcessOfStatutoryTime()),
 																		new AttendanceTime(workSchedule.getWithinStatutoryTime())),
-																		new AttendanceTime(schedulePrescribedLaborTime), 
+//																		new AttendanceTime(schedulePrescribedLaborTime), 
 																		new AttendanceTime(recordPrescribedLaborTime));
 	}
 }

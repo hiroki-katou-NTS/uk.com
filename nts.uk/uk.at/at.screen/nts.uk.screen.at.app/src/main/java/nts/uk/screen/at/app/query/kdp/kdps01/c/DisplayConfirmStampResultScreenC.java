@@ -15,6 +15,7 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.DisplayScreenStampingResultDto;
@@ -30,7 +31,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ch
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.ConfirmStatusOfDayService;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
@@ -119,7 +119,9 @@ public class DisplayConfirmStampResultScreenC {
 				AppContexts.user().employeeId());
 
 		result.setStampings(stampings);
-
+		result.setWorkplaceCd(stampings.size() > 0 ? stampings.get(0).getWorkplaceCd() : "");
+		result.setWorkplaceName(stampings.size() > 0 ? stampings.get(0).getWorkplaceNm() : "");
+		
 		// 2 require, ログイン会社ID, ログイン社員ID, 年月日
 		// 日の実績の確認状況を取得する
 

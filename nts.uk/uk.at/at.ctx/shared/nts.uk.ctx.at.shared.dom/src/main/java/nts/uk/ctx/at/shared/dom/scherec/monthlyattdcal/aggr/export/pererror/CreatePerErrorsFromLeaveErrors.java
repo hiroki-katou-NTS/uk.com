@@ -7,6 +7,7 @@ import lombok.val;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.PauseError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffError;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.children.service.ChildCareNurseErrors;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveError;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.AnnualLeaveError;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
@@ -35,7 +36,7 @@ public class CreatePerErrorsFromLeaveErrors {
 
 		List<EmployeeMonthlyPerError> results = new ArrayList<>();
 		if (annualLeaveErrors == null) return results;
-		
+
 		// 年休エラー処理
 		for (val annualLeaveError : annualLeaveErrors){
 			results.add(new EmployeeMonthlyPerError(
@@ -48,7 +49,7 @@ public class CreatePerErrorsFromLeaveErrors {
 					annualLeaveError,
 					null));
 		}
-		
+
 		return results;
 	}
 	/**
@@ -78,7 +79,7 @@ public class CreatePerErrorsFromLeaveErrors {
 					null,
 					reserveLeaveError));
 		}
-		
+
 		return results;
 	}
 	/**
@@ -95,7 +96,7 @@ public class CreatePerErrorsFromLeaveErrors {
 
 		List<EmployeeMonthlyPerError> results = new ArrayList<>();
 		if (pauseErrors == null) return results;
-		
+
 		// 振休エラー処理
 		if (pauseErrors.size() > 0){
 			results.add(new EmployeeMonthlyPerError(
@@ -108,7 +109,7 @@ public class CreatePerErrorsFromLeaveErrors {
 					null,
 					null));
 		}
-		
+
 		return results;
 	}
 	/**
@@ -125,7 +126,7 @@ public class CreatePerErrorsFromLeaveErrors {
 
 		List<EmployeeMonthlyPerError> results = new ArrayList<>();
 		if (dayOffErrors == null) return results;
-		
+
 		// 代休エラー処理
 		if (dayOffErrors.size() > 0){
 			results.add(new EmployeeMonthlyPerError(
@@ -138,7 +139,7 @@ public class CreatePerErrorsFromLeaveErrors {
 					null,
 					null));
 		}
-		
+
 		return results;
 	}
 	/**
@@ -150,14 +151,14 @@ public class CreatePerErrorsFromLeaveErrors {
 	 * @param specialLeaveErrors 特別休暇エラー情報
 	 * @return 社員の月別残数エラー一覧
 	 */
-	
+
 	/** 特別休暇エラーから月別残数エラー一覧を作成する */
 	public static List<EmployeeMonthlyPerError> fromSpecialLeave(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate, int specialLeaveNo, List<SpecialLeaveError> specialLeaveErrors) {
 
 		List<EmployeeMonthlyPerError> results = new ArrayList<>();
 		if (specialLeaveErrors == null) return results;
-		
+
 		// 特別休暇エラー処理
 		if (specialLeaveErrors.size() > 0){
 			results.add(new EmployeeMonthlyPerError(
@@ -171,7 +172,75 @@ public class CreatePerErrorsFromLeaveErrors {
 					null,
 					null));
 		}
-		
+
+		return results;
+	}
+
+	/**
+	 * 子の看護休暇エラーから月別残数エラー一覧を作成する
+	 * @param employeeId 社員ID
+	 * @param yearMonth 年月
+	 * @param closureId 締めID
+	 * @param closureDate 締め日
+	 * @param specialLeaveErrors 特別休暇エラー情報
+	 * @return 社員の月別残数エラー一覧
+	 */
+
+	/** 子の看護休暇エラーから月別残数エラー一覧を作成する */
+	public static List<EmployeeMonthlyPerError> fromChildCareLeave(
+			String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate, List<ChildCareNurseErrors> childCareNurseErrors) {
+
+		List<EmployeeMonthlyPerError> results = new ArrayList<>();
+		if (childCareNurseErrors == null) return results;
+
+		// 特別休暇エラー処理
+		if (childCareNurseErrors.size() > 0){
+			results.add(new EmployeeMonthlyPerError(
+					ErrorType.CHILDCARE_HOLIDAY,
+					yearMonth,
+					employeeId,
+					closureId,
+					closureDate,
+					null,
+					null,
+					null));
+		}
+
+		return results;
+	}
+
+	/**
+	 * 子の看護休暇エラーから月別残数エラー一覧を作成する
+	 * @param employeeId 社員ID
+	 * @param yearMonth 年月
+	 * @param closureId 締めID
+	 * @param closureDate 締め日
+	 * @param specialLeaveErrors 特別休暇エラー情報
+	 * @return 社員の月別残数エラー一覧
+	 */
+
+	/** 介護休暇エラーから月別残数エラー一覧を作成する */
+	public static List<EmployeeMonthlyPerError> fromCareLeave(
+			String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate, List<ChildCareNurseErrors> childCareNurseErrors) {
+
+		List<EmployeeMonthlyPerError> results = new ArrayList<>();
+		if (childCareNurseErrors == null) return results;
+
+		// 特別休暇エラー処理
+		if (childCareNurseErrors.size() > 0){
+			results.add(new EmployeeMonthlyPerError(
+					ErrorType.CARE_HOLIDAY,
+					yearMonth,
+					employeeId,
+					closureId,
+					closureDate,
+					null,
+					null,
+					null));
+		}
+
 		return results;
 	}
 

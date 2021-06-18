@@ -13,11 +13,10 @@ module nts.uk.at.view.kmk002.a {
         };
 
         export function saveAsExcel(languageId: string): JQueryPromise<any> {
-            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let program = __viewContext.program.programName;
             let domainType = "KMK002";
-            if (program.length > 1){
-                program.shift();
-                domainType = domainType + program.join(" ");
+            if (program.length > 1) {
+                domainType = domainType + program;
             }
             return exportFile('/masterlist/report/print', { domainId: "CalFormulasItem", domainType: domainType, languageId: languageId, reportType: 0 });
         }
@@ -39,7 +38,7 @@ module nts.uk.at.view.kmk002.a {
         /**
          * Call service to get optional item detail
          */
-        export function findOptionalItemDetail(itemNo: number, langId: string): JQueryPromise<model.OptionalItemDto> {
+        export function findOptionalItemDetail(itemNo: number, langId: string) {
             return nts.uk.request.ajax(servicePath.findOptionalItemDetail + '/' + itemNo+"/" + langId);
         }
 
@@ -80,6 +79,9 @@ module nts.uk.at.view.kmk002.a {
                 calcResultRange: CalcResultRangeDto;
                 unit: string;
                 formulas: Array<FormulaDto>;
+                calAtr: number;
+                note: string;
+                description: string;
             }
             /**
              * CalcResultRangeDto
@@ -87,12 +89,20 @@ module nts.uk.at.view.kmk002.a {
             export interface CalcResultRangeDto {
                 upperCheck: boolean;
                 lowerCheck: boolean;
-                numberUpper: number;
-                numberLower: number;
-                amountUpper: number;
-                amountLower: number;
-                timeUpper: number;
-                timeLower: number;
+
+                numberUpperDay: number;
+                numberLowerDay: number;
+                amountUpperDay: number;
+                amountLowerDay: number;
+                timeUpperDay: number;
+                timeLowerDay: number;
+
+                numberUpperMonth: number;
+                numberLowerMonth: number;
+                amountUpperMonth: number;
+                amountLowerMonth: number;
+                timeUpperMonth: number;
+                timeLowerMonth: number;
             }
             /**
              * CalcFormulaDto

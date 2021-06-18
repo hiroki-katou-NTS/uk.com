@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 
@@ -13,13 +14,14 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWork
  *
  */
 @Getter
-public class HolidayWorkFrameTime {
+public class HolidayWorkFrameTime implements Cloneable{
 	//休出枠時間No
 	private HolidayWorkFrameNo holidayFrameNo;
 	//休出時間
 	@Setter
 	private Finally<TimeDivergenceWithCalculation> holidayWorkTime;
 	//振替時間
+	@Setter
 	private Finally<TimeDivergenceWithCalculation> transferTime;
 	//事前申請時間
 	@Setter	
@@ -96,17 +98,17 @@ public class HolidayWorkFrameTime {
 	 * @return
 	 */
 	public int calcOverLimitDivergenceTime() {
-		AttendanceTime holTime = new AttendanceTime(0);
+		int holTime = 0;
 		if(this.getHolidayWorkTime() != null
 			&& this.getHolidayWorkTime().isPresent()
 			&& this.getHolidayWorkTime().get().getDivergenceTime() != null)
-			holTime = this.getHolidayWorkTime().get().getDivergenceTime();
+			holTime += this.getHolidayWorkTime().get().getDivergenceTime().valueAsMinutes();
 		
-		AttendanceTime transTime = new AttendanceTime(0);
+		int transTime = 0;
 		if(this.getTransferTime() != null
 		   && this.getTransferTime().isPresent())
-			transTime = this.getTransferTime().get().getDivergenceTime();
-		return holTime.addMinutes(transTime.valueAsMinutes()).valueAsMinutes();  
+			transTime = this.getTransferTime().get().getDivergenceTime().valueAsMinutes();
+		return holTime + transTime;  
 	}
 
 	/**
@@ -164,4 +166,41 @@ public class HolidayWorkFrameTime {
 		return new HolidayWorkFrameTime(this.holidayFrameNo,Finally.of(holidayWorkTime),Finally.of(transferTime),this.beforeApplicationTime);
 	}
 	
+	public static HolidayWorkFrameTime createDefaultWithNo(int no) {
+		return new HolidayWorkFrameTime(new HolidayWorkFrameNo(no),
+				Finally.of(TimeDivergenceWithCalculation.defaultValue()),
+				Finally.of(TimeDivergenceWithCalculation.defaultValue()), Finally.of(new AttendanceTime(0)));
+	}
+	
+	@Override
+	public HolidayWorkFrameTime clone() {
+		return new HolidayWorkFrameTime(new HolidayWorkFrameNo(this.getHolidayFrameNo().v()),
+				this.holidayWorkTime.isPresent()
+						? Finally.of(new TimeDivergenceWithCalculation(
+								new AttendanceTime(this.holidayWorkTime.get().getTime().v()),
+								new AttendanceTime(this.holidayWorkTime.get().getCalcTime().v()),
+								new AttendanceTimeOfExistMinus(this.holidayWorkTime.get().getDivergenceTime().v())))
+						: Finally.empty(),
+
+				this.holidayWorkTime.isPresent()
+						? Finally.of(new TimeDivergenceWithCalculation(
+								new AttendanceTime((this.transferTime.get().getTime().v())),
+								new AttendanceTime(this.transferTime.get().getCalcTime().v()),
+								new AttendanceTimeOfExistMinus((this.transferTime.get().getDivergenceTime().v()))))
+						: Finally.empty(),
+
+				this.beforeApplicationTime.isPresent()
+						? Finally.of(new AttendanceTime(this.beforeApplicationTime.get().v()))
+						: Finally.empty());
+	}
+	
+	public void cleanTimeAndTransfer() {
+		if(holidayWorkTime.isPresent()) {
+			holidayWorkTime.get().resetDefaultValue();
+		}
+		
+		if(transferTime.isPresent()) {
+			transferTime.get().resetDefaultValue();
+		}
+	}
 }

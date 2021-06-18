@@ -17,7 +17,6 @@ module nts.uk.at.view.kmk008.a {
 
 		created() {
 			const vm = this;
-			_.extend(window, {vm});
 
 			vm.$blockui("grayout");
 
@@ -122,9 +121,14 @@ module nts.uk.at.view.kmk008.a {
 			vm.$jump("com", "/view/cmm/024/a/index.xhtml");
 		}
 
-		openScreenKMP021():void {
+        openScreenKAF021():void {
 			const vm = this;
-			vm.$jump("/view/kmp/021/a/index.xhtml");
+			vm.$jump("/view/kaf/021/d/index.xhtml");
+		}
+
+		openScreenKMK010(): void {
+			const vm = this;
+			vm.$jump("/view/kmk/010/a/index.xhtml");
 		}
 	}
 }

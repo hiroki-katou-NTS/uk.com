@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.daily;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,9 +16,10 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.DailySnapshotWorkAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.DailySnapshotWorkImport;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
@@ -32,6 +34,8 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavi
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
@@ -51,9 +55,10 @@ import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -67,9 +72,6 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 
 	@Inject
 	private CalAttrOfDailyPerformanceRepository calAttrRepo;
-
-	@Inject
-	private WorkTypeOfDailyPerforRepository workTypeRepo;
 
 	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingRepo;
@@ -124,6 +126,12 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 	
 	@Inject
 	private IdentityProcessUseSetRepository identityProcessUseRepository;
+	
+	@Inject
+	private DailySnapshotWorkAdapter snapshotAdapter;
+	
+	@Inject
+	private OuenWorkTimeSheetOfDailyRepo ouenWorkTimeSheetOfDailyRepo;
 
 	@Override
 	public void adUpWorkInfo(WorkInfoOfDailyPerformance workInfo) {
@@ -145,17 +153,6 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 	}
 
 	@Override
-	public void adUpWorkType(Optional<WorkTypeOfDailyPerformance> businessType) {
-		if (!businessType.isPresent())
-			return;
-		if(workTypeRepo.findByKey(businessType.get().getEmployeeId(), businessType.get().getDate()).isPresent()) {
-			workTypeRepo.update(businessType.get());
-		}else {
-			workTypeRepo.add(businessType.get());
-		}
-	}
-
-	@Override
 	public void adUpTimeLeaving(Optional<TimeLeavingOfDailyPerformance> attendanceLeave) {
 		if (!attendanceLeave.isPresent())
 			return;
@@ -168,10 +165,10 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 	}
 
 	@Override
-	public void adUpBreakTime(List<BreakTimeOfDailyPerformance> breakTime) {
-		//breakTime.stream().forEach(domain -> {
+	public void adUpBreakTime(BreakTimeOfDailyPerformance breakTime) {
+//		breakTime.ifPresent(domain -> {
 			breakTimeRepo.update(breakTime);
-		//});
+//		});
 
 	}
 
@@ -309,4 +306,16 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 		});
 	}
 
+	@Override
+	public void adUpSnapshot(String sid, GeneralDate ymd, SnapShot snapshot) {
+		snapshotAdapter.update(DailySnapshotWorkImport.from(sid, ymd, snapshot));
+	}
+
+	@Override
+	public void adUpSupportTime(String sid, GeneralDate ymd, List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheets) {
+		OuenWorkTimeSheetOfDaily domain = new OuenWorkTimeSheetOfDaily(sid, ymd, ouenTimeSheets);
+		List<OuenWorkTimeSheetOfDaily> update = new ArrayList<>();
+		update.add(domain);
+		ouenWorkTimeSheetOfDailyRepo.insert(update);
+	}
 }

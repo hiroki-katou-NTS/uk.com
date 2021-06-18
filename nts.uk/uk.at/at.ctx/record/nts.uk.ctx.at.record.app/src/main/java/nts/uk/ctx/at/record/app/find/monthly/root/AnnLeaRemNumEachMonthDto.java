@@ -15,13 +15,16 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.TimeUsedNumberDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AnnualLeaveAttdRateDaysDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AnnualLeaveDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AnnualLeaveGrantDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.dto.AnnualLeaveUndigestedNumberDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.HalfDayAnnualLeaveDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
@@ -29,8 +32,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualle
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveAttdRateDays;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveGrant;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUndigestedNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.HalfDayAnnualLeave;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.RealAnnualLeave;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 @Data
@@ -43,7 +46,7 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 
 	/***/
 	private static final long serialVersionUID = 1L;
-	
+
 	/** 会社ID */
 	private String companyId;
 
@@ -108,6 +111,10 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	@AttendanceItemValue(type = ValueType.FLAG)
 	private boolean grantAtr;
 
+	/** 未消化 */
+	@AttendanceItemLayout(jpPropertyName = NOT_DIGESTION, layout = LAYOUT_L)
+	private AnnualLeaveUndigestedNumberDto undigestedNumber;
+
 	@Override
 	public String employeeId() {
 		return this.employeeId;
@@ -131,6 +138,7 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 			dto.setRealMaxRemainingTime(TimeUsedNumberDto.from(domain.getRealMaxRemainingTime().orElse(null)));
 			dto.setAttendanceRateDays(AnnualLeaveAttdRateDaysDto.from(domain.getAttendanceRateDays()));
 			dto.setGrantAtr(domain.isGrantAtr());
+			dto.setUndigestedNumber(AnnualLeaveUndigestedNumberDto.from(domain.getUndigestedNumber()));
 			dto.exsistData();
 		}
 		return dto;
@@ -148,7 +156,7 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 			ym = this.ym;
 		}else {
 			if(datePeriod == null){
-				datePeriod = new DatePeriodDto(GeneralDate.ymd(ym.year(), ym.month(), 1), 
+				datePeriod = new DatePeriodDto(GeneralDate.ymd(ym.year(), ym.month(), 1),
 						GeneralDate.ymd(ym.year(), ym.month(), ym.lastDateInMonth()));
 			}
 		}
@@ -158,18 +166,151 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 		return AnnLeaRemNumEachMonth.of(employeeId, ym, ConvertHelper.getEnum(closureID, ClosureId.class),
 				closureDate == null ? null : closureDate.toDomain(), datePeriod == null ? null : datePeriod.toDomain(),
 				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
-				annualLeave == null ? new AnnualLeave() : annualLeave.toDomain(), 
-				realAnnualLeave == null ? new RealAnnualLeave() : realAnnualLeave.toRealDomain(),
-				Optional.of(halfDayAnnualLeave == null ? new HalfDayAnnualLeave() : halfDayAnnualLeave.toDomain()), 
-				Optional.of(realHalfDayAnnualLeave == null ? new HalfDayAnnualLeave() : realHalfDayAnnualLeave.toDomain()), 
+				annualLeave == null ? new AnnualLeave() : annualLeave.toDomain(),
+				realAnnualLeave == null ? new AnnualLeave() : annualLeave.toDomain(),
+				Optional.of(halfDayAnnualLeave == null ? new HalfDayAnnualLeave() : halfDayAnnualLeave.toDomain()),
+				Optional.of(realHalfDayAnnualLeave == null ? new HalfDayAnnualLeave() : realHalfDayAnnualLeave.toDomain()),
 				Optional.of(annualLeaveGrant == null ? new AnnualLeaveGrant() : annualLeaveGrant.toDomain()),
-				Optional.of(maxRemainingTime == null ? new AnnualLeaveMaxRemainingTime()  : maxRemainingTime.toMaxRemainingTimeDomain()), 
+				Optional.of(maxRemainingTime == null ? new AnnualLeaveMaxRemainingTime()  : maxRemainingTime.toMaxRemainingTimeDomain()),
 				Optional.of(realMaxRemainingTime == null ? new AnnualLeaveMaxRemainingTime() : realMaxRemainingTime.toMaxRemainingTimeDomain()),
-				attendanceRateDays == null ? new AnnualLeaveAttdRateDays() : attendanceRateDays.toAttdRateDaysDomain(), grantAtr);
+				attendanceRateDays == null ? new AnnualLeaveAttdRateDays() : attendanceRateDays.toAttdRateDaysDomain(), grantAtr,
+				undigestedNumber == null ? new AnnualLeaveUndigestedNumber() : undigestedNumber.toDomain());
 	}
 
 	@Override
 	public YearMonth yearMonth() {
 		return this.ym;
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case (GRANT + ATTRIBUTE):
+			return Optional.of(ItemValue.builder().value(grantAtr).valueType(ValueType.FLAG));
+		case (CLOSURE_STATE):
+			return Optional.of(ItemValue.builder().value(closureStatus).valueType(ValueType.ATTR));
+		default:
+			break;
+		}
+		return super.valueOf(path);
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case PERIOD:
+			return new DatePeriodDto();
+		case ANNUNAL_LEAVE:
+		case (REAL + ANNUNAL_LEAVE):
+			return new AnnualLeaveDto();
+		case (HALF_DAY + ANNUNAL_LEAVE):
+		case (REAL + HALF_DAY + ANNUNAL_LEAVE):
+			return new HalfDayAnnualLeaveDto();
+		case (ANNUNAL_LEAVE + GRANT):
+			return new AnnualLeaveGrantDto();
+		case (UPPER_LIMIT + REMAIN):
+		case (REAL + UPPER_LIMIT + REMAIN):
+			return new TimeUsedNumberDto();
+		case (ATTENDANCE + RATE):
+			return new AnnualLeaveAttdRateDaysDto();
+		case NOT_DIGESTION:
+			return new AnnualLeaveUndigestedNumberDto();
+		default:
+			break;
+		}
+		return super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case PERIOD:
+			return Optional.ofNullable(datePeriod);
+		case ANNUNAL_LEAVE:
+			return Optional.ofNullable(annualLeave);
+		case (REAL + ANNUNAL_LEAVE):
+			return Optional.ofNullable(realAnnualLeave);
+		case (HALF_DAY + ANNUNAL_LEAVE):
+			return Optional.ofNullable(halfDayAnnualLeave);
+		case (REAL + HALF_DAY + ANNUNAL_LEAVE):
+			return Optional.ofNullable(realHalfDayAnnualLeave);
+		case (ANNUNAL_LEAVE + GRANT):
+			return Optional.ofNullable(annualLeaveGrant);
+		case (UPPER_LIMIT + REMAIN):
+			return Optional.ofNullable(maxRemainingTime);
+		case (REAL + UPPER_LIMIT + REMAIN):
+			return Optional.ofNullable(realMaxRemainingTime);
+		case (ATTENDANCE + RATE):
+			return Optional.ofNullable(attendanceRateDays);
+		case NOT_DIGESTION:
+			return Optional.ofNullable(undigestedNumber);
+		default:
+			break;
+		}
+		return super.get(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case (GRANT + ATTRIBUTE):
+		case (CLOSURE_STATE):
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case (GRANT + ATTRIBUTE):
+			grantAtr = value.valueOrDefault(false); break;
+		case (CLOSURE_STATE):
+			closureStatus = value.valueOrDefault(0); break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case PERIOD:
+			datePeriod = (DatePeriodDto) value; break;
+		case ANNUNAL_LEAVE:
+			(annualLeave) = (AnnualLeaveDto) value; break;
+		case (REAL + ANNUNAL_LEAVE):
+			(realAnnualLeave)= (AnnualLeaveDto) value; break;
+		case (HALF_DAY + ANNUNAL_LEAVE):
+			(halfDayAnnualLeave) = (HalfDayAnnualLeaveDto) value; break;
+		case (REAL + HALF_DAY + ANNUNAL_LEAVE):
+			(realHalfDayAnnualLeave) = (HalfDayAnnualLeaveDto) value; break;
+		case (ANNUNAL_LEAVE + GRANT):
+			(annualLeaveGrant) = (AnnualLeaveGrantDto) value; break;
+		case (UPPER_LIMIT + REMAIN):
+			(maxRemainingTime) = (TimeUsedNumberDto) value; break;
+		case (REAL + UPPER_LIMIT + REMAIN):
+			(realMaxRemainingTime) = (TimeUsedNumberDto) value; break;
+		case (ATTENDANCE + RATE):
+			(attendanceRateDays) = (AnnualLeaveAttdRateDaysDto) value; break;
+		case NOT_DIGESTION:
+			(undigestedNumber) = (AnnualLeaveUndigestedNumberDto) value; break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public boolean isRoot() {
+		return true;
+	}
+
+	@Override
+	public String rootName() {
+		return MONTHLY_ANNUAL_LEAVING_REMAIN_NAME;
+	}
+
+	
 }

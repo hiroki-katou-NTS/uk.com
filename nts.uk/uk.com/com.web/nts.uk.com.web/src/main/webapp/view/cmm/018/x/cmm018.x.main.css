@@ -5,7 +5,7 @@
     box-shadow: 0 0px rgb(192, 192, 192);
     display: inline-table;
     background-color: white;
-    margin-top:20px;
+    margin-top:5px;
     margin-left:20px;
     width:320px !important;
     height:400px !important;
@@ -14,7 +14,7 @@
 }
 .btnInPanel {
 	width: 200px; 
-	margin: 20px
+	margin: 12px
 }
 .panelFirstJinji{
 	 border-style: solid;
@@ -23,7 +23,7 @@
     box-shadow: 0 0px rgb(192, 192, 192);
     display: inline-table;
     background-color: white;
-    margin-top:20px;
+    margin-top:5px;
     margin-left:20px;
     width:320px !important;
     height:250px !important;
@@ -52,16 +52,16 @@ button.caret-right:after {
     margin-left: 3px;
 }
 .textTitlePanel {
-	font-weight: 550;
+	font-weight: 600;
     font-size: 25px;
-    text-align: start;
+    text-align: left;
 }
 .textFormatSystem1{
 	text-align: left;
     line-height: 25px;
     padding-right: 10px;
     padding-left: 10px;
-    white-space: break-spaces
+    white-space: pre-line;
 }
 .textFormat {
 	text-align: left;
@@ -69,16 +69,16 @@ button.caret-right:after {
     line-height: 25px;
     padding-right: 10px;
     padding-left: 10px;
-    white-space: break-spaces
+    white-space: pre-line
 }
 
 .textFormat2 {
 	text-align: left;
     padding-top: 20px;
     line-height: 25px;
-    margin-right: 10px;
+    margin-right: 10px;	
     margin-left: 10px;
-    white-space: break-spaces
+    white-space: pre-line
 }
 button:focus.caret-right:after {
 	color: #97D155;	

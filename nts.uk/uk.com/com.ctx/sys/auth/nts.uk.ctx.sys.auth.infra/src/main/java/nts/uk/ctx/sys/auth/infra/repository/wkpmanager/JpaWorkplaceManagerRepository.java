@@ -15,6 +15,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.export.wkpmanager.WorkPlaceSelectionExportData;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
@@ -35,9 +36,16 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 			+ " WHERE wm.workplaceId = :workplaceId ORDER BY wm.employeeId, wm.startDate";
 	private static final String SELECT_ALL_BY_SID_BASE_DATE = "SELECT wm FROM SacmtWkpManager wm"
 			+ " WHERE wm.employeeId = :employeeId AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate";
+	
+	private static final String SELECT_ALL_BY_WIDS_BASE_DATE = "SELECT wm FROM SacmtWkpManager wm"
+			+ " WHERE wm.workplaceId IN :wkpIds AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate";
+	
 	private static final String FIND_BY_WKP_DATE_MANAGER = "SELECT wm FROM SacmtWkpManager wm"
 			+ " WHERE wm.workplaceId = :workplaceId" + " AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate"
 			+ " AND wm.kacmtWorkplaceManagerPK.workplaceManagerId IN :wkpManagerLst";
+
+	private static final String FIND_BY_PERIOD_AND_WKPS = "SELECT wm FROM SacmtWkpManager wm "
+			+ " WHERE wm.workplaceId IN :lstWkpId " + " AND wm.startDate <= :endDate AND wm.endDate >= :startDate ";
 
 	private static final String WORKPLACE_SELECT_ALL = "SELECT wm.workplaceCode , wm.workplaceName , edm.employeeCode , ps.businessName , wi.startDate, wi.endDate ,wi.kacmtWorkplaceManagerPK.workplaceManagerId "
 			+ "FROM BsymtWorkplaceInfor wm "
@@ -56,6 +64,9 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 			+ "INNER JOIN SACCT_WKP_FUNCTION wkf on wkf.FUNCTION_NO = kwa.FUNCTION_NO "
 			+ "WHERE wm.CID  =:companyId" + ") " + "AS sourceTable PIVOT ( " + "MAX(AVAILABILITY) "
 			+ "FOR [FUNCTION_NO] IN ([1],[2],[3]) " + ") AS pvt ORDER BY WKPCD, SCD, START_DATE ASC";
+
+	private static final String FIND_BY_WKP_AND_BASEDATE = "SELECT wm FROM SacmtWkpManager wm "
+		+ " WHERE wm.workplaceId = :workplaceId " + " AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate ";
 
 	private static final String WORKPLACE_SELECT_ALL_CID;
 	static {
@@ -136,6 +147,12 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 		return this.queryProxy().query(SELECT_ALL_BY_SID_BASE_DATE, SacmtWkpManager.class)
 				.setParameter("employeeId", employeeId).setParameter("baseDate", baseDate).getList(c -> c.toDomain());
 	}
+	
+	@Override
+	public List<WorkplaceManager> findListWkpManagerByWkpIdsAndBaseDate(List<String> wkpIDLst, GeneralDate baseDate) {
+		return this.queryProxy().query(SELECT_ALL_BY_WIDS_BASE_DATE, SacmtWkpManager.class)
+				.setParameter("wkpIds", wkpIDLst).setParameter("baseDate", baseDate).getList(c -> c.toDomain());
+	}
 
 	@Override
 	public List<WorkplaceManager> findByWkpDateAndManager(String wkpID, GeneralDate baseDate,
@@ -195,6 +212,27 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 		}
 	}
 
+	@Override
+	public List<WorkplaceManager> findByPeriodAndWkpIds(List<String> wkpIds, DatePeriod datePeriod) {
+		List<WorkplaceManager> resultList = new ArrayList<>();
+		CollectionUtil.split(wkpIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_PERIOD_AND_WKPS, SacmtWkpManager.class)
+				.setParameter("startDate", datePeriod.start())
+				.setParameter("endDate", datePeriod.end())
+				.setParameter("lstWkpId", subList).getList(c -> c.toDomain()));
+		});
+		return resultList;
+	}
+
+	@Override
+	public List<WorkplaceManager> findByPeriodAndBaseDate(String wkpId, GeneralDate baseDate) {
+
+			return this.queryProxy().query(FIND_BY_WKP_AND_BASEDATE, SacmtWkpManager.class)
+				.setParameter("workplaceId", wkpId)
+				.setParameter("baseDate", baseDate)
+				.getList(c -> c.toDomain());
+	}
+
 	private WorkPlaceSelectionExportData toReportDataTable(NtsResultRecord rec,
 			List<WorkPlaceFunction> workPlaceFunction) {
 		Map<String, String> values =new HashMap<String, String>();
@@ -212,4 +250,5 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 				values);
 		return item;
 	}
+
 }

@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.ws.application.workchange;
 
-/*import nts.arc.layer.app.command.JavaTypeResult;*/
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -13,18 +12,8 @@ import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChange
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandHandlerPC;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandPC;
 import nts.uk.ctx.at.request.app.command.application.workchange.UpdateAppWorkChangeCommandHandler;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeAppdateDto;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommonSetFinder;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeDetailParam;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeFinder;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeOutputDto;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParamPC;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeRecordWorkInfoFinder;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto_Old;
-import nts.uk.ctx.at.request.app.find.application.workchange.RecordWorkInfoDto;
-import nts.uk.ctx.at.request.app.find.application.workchange.WorkChangeDetailFinder;
+import nts.uk.ctx.at.request.app.find.application.workchange.*;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
-import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
@@ -32,8 +21,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 @Produces("application/json")
 public class WorkchangeService extends WebService {
 
-	@Inject
-	AppWorkChangeCommonSetFinder commonFinder;
+	
 
 	@Inject
 	private AddAppWorkChangeCommandHandler addHandler;
@@ -43,9 +31,6 @@ public class WorkchangeService extends WebService {
 
 	@Inject
 	private UpdateAppWorkChangeCommandHandler updateHandler;
-
-	@Inject
-	WorkChangeDetailFinder detailFinder;
 
 	@Inject
 	AppWorkChangeRecordWorkInfoFinder workInfoFinder;
@@ -73,7 +58,7 @@ public class WorkchangeService extends WebService {
 
 	/**
 	 * 
-	 * @param appId
+	 * @param appWorkChangeDetailParam
 	 * @return
 	 */
 	@POST
@@ -91,16 +76,12 @@ public class WorkchangeService extends WebService {
 		return updateHandler.handle(command);
 	}
 
-	@POST
-	@Path("getRecordWorkInfoByDate")
-	public RecordWorkInfoDto getRecordWorkInfoByDate(WorkchangeEmpParam workchangeEmpParam) {
-		return workInfoFinder.getRecordWorkInfor(workchangeEmpParam.getAppDate(), workchangeEmpParam.getEmployeeID());
-	}
+	
 
 	@POST
 	@Path("workChangeSet")
-	public AppWorkChangeSetDto_Old getWorkChangeSet() {
-		return appWorkFinder.findByCom();
+	public AppWorkChangeSetDto getWorkChangeSet() {
+		return appWorkFinder.findByCompany();
 	}
 
 	@POST
@@ -123,7 +104,7 @@ public class WorkchangeService extends WebService {
 
 	@POST
 	@Path("changeWorkSelection")
-	public AppWorkChangeDispInfoDto_Old changeWorkSelection(AppWorkChangeParamPC param) {
+	public AppWorkChangeDispInfoDto changeWorkSelection(AppWorkChangeParamPC param) {
 		return appWorkFinder.changeWorkSelection(param);
 	}
 
@@ -142,9 +123,7 @@ public class WorkchangeService extends WebService {
 	@POST
 	@Path("checkBeforeUpdate")
 	public WorkChangeCheckRegisterDto checkBeforeUpdate(AddAppWorkChangeCommandPC command) {
-		// appWorkFinder.checkBeforeUpdate(command);
-		// return new WorkChangeCheckRegisterDto(Collections.emptyList(),
-		// Collections.emptyList());
+		
 		return null;
 	}
 

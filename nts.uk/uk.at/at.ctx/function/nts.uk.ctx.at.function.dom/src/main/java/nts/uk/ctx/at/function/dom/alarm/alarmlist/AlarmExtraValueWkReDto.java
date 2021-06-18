@@ -3,12 +3,16 @@ package nts.uk.ctx.at.function.dom.alarm.alarmlist;
 import java.util.Arrays;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.gul.text.IdentifierUtil;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor		
 public class AlarmExtraValueWkReDto {
 	
 	private String guid;
@@ -32,7 +36,7 @@ public class AlarmExtraValueWkReDto {
 	private String alarmValueDate;
 
 	/**カテゴリ*/
-	private int category;
+	private Integer category;
 	
 	private String categoryName;
 	
@@ -47,7 +51,9 @@ public class AlarmExtraValueWkReDto {
 	
 	/**チェック対象値*/
 	private String checkedValue;
-
+	/**アラーム値日付　終了日*/
+	private String endDate;
+	
 	public AlarmExtraValueWkReDto(String workplaceID, String hierarchyCd, String workplaceName, String employeeID,
 			String employeeCode, String employeeName, String alarmValueDate, int category, String categoryName,
 			String alarmItem, String alarmValueMessage, String comment, String checkedValue) {

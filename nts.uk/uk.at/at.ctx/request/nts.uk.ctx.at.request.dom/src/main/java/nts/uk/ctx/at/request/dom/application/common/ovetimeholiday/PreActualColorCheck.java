@@ -4,60 +4,19 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 public interface PreActualColorCheck {
 	
-	/**
-	 * 07_事前申請・実績超過チェック
-	 * @param preExcessDisplaySetting 事前超過表示設定
-	 * @param performanceExcessAtr 実績超過表示設定
-	 * @param appType 申請種類
-	 * @param prePostAtr 事前事後区分
-	 * @param calcTimeList 入力値リスト
-	 * @param overTimeLst 計算値リスト
-	 * @param opAppBefore 事前申請
-	 * @param beforeAppStatus 事前申請状態
-	 * @param actualLst 実績
-	 * @param actualStatus 実績状態
-	 * @return 
-	 */
-	public PreActualColorResult preActualColorCheck(UseAtr preExcessDisplaySetting, AppDateContradictionAtr performanceExcessAtr,
-			ApplicationType appType, PrePostAtr prePostAtr, List<OvertimeInputCaculation> calcTimeList, List<OvertimeColorCheck> overTimeLst, 
-			Optional<Application> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus);
 	
-	/**
-	 * 07-01_事前申請状態チェック
-	 * @param companyID 会社ID
-	 * @param employeeID 申請者
-	 * @param appDate 申請日
-	 * @param appType 申請種類
-	 * @return
-	 */
-	public PreAppCheckResult preAppStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType);
-	
-	/**
-	 * 07-02_実績取得・状態チェック
-	 * @param companyID 会社ID
-	 * @param employeeID 申請者
-	 * @param appDate 申請日
-	 * @param appType 申請種類
-	 * @param workType 勤務種類コード
-	 * @param workTime 就業時間帯コード
-	 * @param overrideSet 退勤時刻優先設定
-	 * @param calStampMiss 退勤打刻漏れ補正設定
-	 * @return
-	 */
-	public ActualStatusCheckResult actualStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType, 
-			String workType, String workTime, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss, List<DeductionTime> deductionTimeLst);
 	
 	/**
 	 * 07-02-2-1_当日判定
@@ -131,18 +90,36 @@ public interface PreActualColorCheck {
 	 */
 	public boolean judgmentCalculation(ActualStatus actualStatus, boolean workTypeChange, boolean stampLeaveChange, boolean workTimeChange);
 	
-	/**
-	 * 07-01-3_枠別事前申請超過チェック
-	 * @param appType 勤怠種類
-	 * @param overtimeColorCheck 対象枠, 入力値
-	 * @param opAppBefore 事前申請
-	 */
-	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application> opAppBefore, UseAtr preAppSetCheck);
+	
 	
 	/**
-	 * 07-02-3_枠別実績超過チェック
-	 * @param overtimeColorCheck 対象枠, 入力値
-	 * @param actualLst 実績
+	 * Refactor5 07-02_実績取得・状態チェック
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム(残業・休出).07-02_実績取得・状態チェック
+	 * @param companyId
+	 * @param employeeId
+	 * @param date
+	 * @param appType
+	 * @param workTypeCode
+	 * @param workTimeCode
+	 * @param overrideSet
+	 * @param calOptional
+	 * @param breakTimes
+	 * @param acuActualContentDisplay
+	 * @return
 	 */
-	public void actualErrorCheck(OvertimeColorCheck overtimeColorCheck, List<OvertimeColorCheck> actualLst, AppDateContradictionAtr actualSetCheck);
+	public ApplicationTime checkStatus(
+			String companyId,
+			String employeeId,
+			GeneralDate date,
+			ApplicationType appType,
+			WorkTypeCode workTypeCode,
+			WorkTimeCode workTimeCode,
+			OverrideSet overrideSet,
+			Optional<CalcStampMiss> calOptional,
+			List<DeductionTime> breakTimes,
+			Optional<ActualContentDisplay> acuActualContentDisplay
+			
+			);
+	
+	
 }

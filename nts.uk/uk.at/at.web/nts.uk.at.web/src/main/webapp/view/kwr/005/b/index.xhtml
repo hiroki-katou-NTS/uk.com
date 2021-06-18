@@ -1,0 +1,210 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+      <ui:define name="htmlHead">
+        <script>
+          var dialogSize = { width: 1130, height: 590 };
+        </script>
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="kwr005.b.main.css" />
+        <com:scriptfile path="kwr005.b.vm.js" />
+
+        <com:ValidatorScript>
+          nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
+          nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
+        </com:ValidatorScript>
+      </ui:define>
+
+      <ui:define name="content">
+        <div class="kwr-005b">
+          <div id="functions-area">
+            <!-- B1_1 -->
+            <button
+              tabindex="1"
+              id="btnB11"
+              class="normal"
+              data-bind="text: $i18n('KWR005_102'), click: newSetting"
+            />
+            <!-- B1_2 -->
+            <button
+              tabindex="2"
+              id="btnB12"
+              class="proceed"
+              data-bind="text: $i18n('KWR005_103'), click: registerSetting, enable: $root.errors.isEmpty"
+            />
+            <!-- B1_2 -->
+            <button
+              tabindex="3"
+              id="btnB13"
+              class="normal"
+              data-bind="text: $i18n('KWR005_104'), click: showDialogC, enable: isEnableDuplicateButton"
+            />
+            <!-- B1_2 -->
+            <button
+              tabindex="4"
+              id="btnB14"
+              class="danger"
+              data-bind="text: $i18n('KWR005_105'), click: deleteSetting, enable: isEnableDeleteButton"
+            />
+            <!-- B1_2 -->
+            <button
+              tabindex="5"
+              id="btnB15"
+              class="normal"
+              data-bind="text: $i18n('KWR005_106'), click: closeDialog"
+            />
+          </div>
+          <!-- A1_2-->
+          <div id="contents-area">
+            <div class="content-left">
+              <div
+                data-bind="ntsPanel:{direction: 'right', showIcon: true, visible: true}"
+              >
+                <div
+                  style="width: 310px;"
+                  tabindex="6"
+                  data-bind="ntsSearchBox: {
+                  searchMode: 'highlight',
+                  targetKey: 'code',
+                  comId: 'multiList', 
+                  items: settingListItems,
+                  selected: currentCodeList,
+                  selectedKey: 'code',                 
+                  fields: ['name', 'code'],
+                  mode: 'igGrid'}"
+                />
+                <table
+                  id="multiList"
+                  tabindex="-1"
+                  data-bind="ntsGridList: {
+                    height: 312,
+                    options: settingListItems,
+                    optionsValue: 'code',
+                    columns: [
+                      { headerText: $i18n('KWR005_107'), prop: 'code', width: 90, formatter: _.escape },
+                      { headerText: $i18n('KWR005_108'), prop: 'name', width: 200, formatter: _.escape }
+                    ],
+                    multiple: false,
+                    value: currentCodeList
+                  }"
+                ></table>
+              </div>
+            </div>
+            <div class="content-right">
+              <div class="row d-flex">
+                <div
+                  class="form-label required broken"
+                  data-bind="ntsFormLabel: { 
+                    required: true, 
+                    text: $i18n('KWR005_109'), 
+                    constraint: ['OutputItemSettingCode', 'OutputItemSettingName']}"
+                ></div>
+                <div class="textEditor" data-bind="with: mode">
+                  <input
+                    class="code output-item"
+                    tabindex="7"
+                    id="KWR005_B52"
+                    data-bind="ntsTextEditor: {
+                      value: code, 
+                      required: true,
+                      constraint: 'OutputItemSettingCode',
+                      name: '#[KWR005_110]',
+                      enable: $vm.isEnableAttendanceCode
+                    }"
+                  />
+                  <input
+                    class="name output-item"
+                    id="KWR005_B53"
+                    tabindex="8"
+                    data-bind="ntsTextEditor: {
+                      value: name,
+                      required: true,
+                      constraint: 'OutputItemSettingName',
+                      name: '#[KWR005_111]'
+                    }"
+                  />
+                </div>
+              </div>
+              <div class="row d-flex">
+                <div class="B6_1 swap-list-colum">
+                  <div class="d-flex">
+                    <div
+                      data-bind="ntsFormLabel: { required: false, text: $i18n('KWR005_112') }"
+                    ></div>
+                    <div data-bind="text: $i18n('KWR005_113')"></div>
+                    <div
+                      id="B6_3"
+                      tabindex="9"
+                      data-bind="ntsComboBox: {
+                        name: 'KWR005_113',
+                        options: printProperties,
+                        optionsValue: 'code',
+                        visibleItemsCount: 5,
+                        value: printPropertyCode,
+                        optionsText: 'name',
+                        editable: false
+                      }"
+                    ></div>
+                  </div>
+                  <hr />
+                </div>
+                <div class="B9_1 swap-list-colum">
+                  <div
+                    data-bind="ntsFormLabel: { required: false, text: $i18n('KWR005_124') }"
+                  ></div>
+                  <hr />
+                </div>
+              </div>
+              <div class="row">
+                <div
+                  id="swapList"
+                  tabindex="10"
+                  data-bind="ntsSwapList: {
+                  showSearchBox: { showLeft : true, showRight: true},
+                  height: swapListHeight,
+                  dataSource: listItemsSwap,
+                  disableMoveButton: false,
+                  primaryKey: 'attendanceItemId',
+                  columns: columns,
+                  value: currentCodeListSwap,
+                  searchMode: 'filter',
+                  searchCriterion: ['attendanceItemId', 'attendanceItemName'],
+                  draggable: false,
+                  itemsLimit: { right: 100 },   
+                  enableRowNumbering: false,              
+                  multipleDrag: { left: true, right: false },
+                  innerDrag: { left: false, right: true },
+                  outerDrag: { left: true, right: true } 
+                }"
+                ></div>
+                <!--  afterMoveLeft: afterMoveFromRightToLeft, -->
+                <!-- Updown Button -->
+                <div
+                  id="up-down"
+                  data-bind="ntsUpDown: {
+                      targetSource: currentCodeListSwap,
+                      primaryKey: 'code',
+                      comId: '#swapList',
+                      type: 'swap',
+                      swapTarget: 'right'
+                    }"
+                ></div>
+                <div
+                  class="limit-items"
+                  data-bind="text: $i18n('KWR005_125')"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

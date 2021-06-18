@@ -3,50 +3,26 @@
 module nts.uk.at.view.kmk008.bsub {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
-
-	const INIT_DEFAULT = {
-		overMaxTimes: 6, // 6回
-		limitOneMonth: 2700, // 45:00
-		limitTwoMonths: 6000, // 100:00
-		limitOneYear: 43200, // 720:00
-		errorMonthAverage: 4800 // 80:00
-	};
+	import master = nts.uk.at.view.kmk008.b;
 
     export module viewmodel {
         export class ScreenModel  extends ko.ViewModel{
-            timeOfCompany: KnockoutObservable<TimeOfCompanyModel>;
+            timeOfCompany: KnockoutObservable<CpnTimeSetting>;
             laborSystemAtr: number = 0;
             textOvertimeName: KnockoutObservable<string>;
-            limitOptions: any;
-			selectedLimit: KnockoutObservable<number> = ko.observable(4); // Default 4 times
-            
+
             constructor(laborSystemAtr: number) {
                 super();
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
-                self.timeOfCompany = ko.observable(new TimeOfCompanyModel(null));
+                self.timeOfCompany = ko.observable(new CpnTimeSetting(null));
                 self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Company']));
-				self.limitOptions = [
-					{code: 0 ,name : getText('KMK008_190')},
-					{code: 1 ,name : getText('KMK008_191')},
-					{code: 2 ,name : getText('KMK008_192')},
-					{code: 3 ,name : getText('KMK008_193')},
-					{code: 4 ,name : getText('KMK008_194')},
-					{code: 5 ,name : getText('KMK008_195')},
-					{code: 6, name : getText('KMK008_196')},
-					{code: 7, name : getText('KMK008_197')},
-					{code: 8, name : getText('KMK008_198')},
-					{code: 9, name : getText('KMK008_199')},
-					{code: 10, name : getText('KMK008_200')},
-					{code: 11, name : getText('KMK008_201')},
-					{code: 12, name : getText('KMK008_202')}
-				];
             }
 
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                
+
                 nts.uk.ui.errors.clearAll();
                 if (self.laborSystemAtr == 0) {
                     self.textOvertimeName(getText("KMK008_12", ['{#KMK008_8}', '{#Com_Company}']));
@@ -55,11 +31,10 @@ module nts.uk.at.view.kmk008.bsub {
                 }
 
                 new service.Service().getAgreementTimeOfCompany(self.laborSystemAtr).done(data => {
-                    self.timeOfCompany(new TimeOfCompanyModel(data));
-                    $("#B3_14 input").focus();
+                    self.timeOfCompany(new CpnTimeSetting(data));
+                    self.initFocus();
                     dfd.resolve();
                 }).fail(error => {
-					error.parameterIds.unshift("Q&A 34201");
 					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
 					nts.uk.ui.block.clear();
 					dfd.reject();
@@ -68,35 +43,37 @@ module nts.uk.at.view.kmk008.bsub {
                 return dfd.promise();
             }
 
-            addUpdateData() {
+			initFocus() {
+				_.defer(()=> {
+					$('#B3_14 input').focus();
+				});
+			}
+
+            persisData() {
                 let self = this;
-                let timeOfCompanyNew = new UpdateInsertTimeOfCompanyModel(self.timeOfCompany(), self.laborSystemAtr);
+                let cpnTimeSettingForPersis = new CpnTimeSettingForPersis(self.timeOfCompany(), self.laborSystemAtr);
+                let validateErr = master.validateTimeSetting(cpnTimeSettingForPersis);
+                if (validateErr) {
+					alertError(validateErr).then(()=>{
+						$("#B3_" + validateErr.errorPosition + " input").focus();
+					});
+                	return;
+				}
+
                 nts.uk.ui.block.invisible();
-                new service.Service().addAgreementTimeOfCompany(timeOfCompanyNew).done((listError) => {
+                new service.Service().addAgreementTimeOfCompany(cpnTimeSettingForPersis).done((listError) => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         self.startPage();
                     });
                     nts.uk.ui.block.clear();
                 }).fail((error)=>{
-					error.parameterIds.unshift("Q&A 34201");
 					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
 					nts.uk.ui.block.clear();
 				});
             }
-
-			showDialogError(listError: any) {
-				let errorCode = _.split(listError[0], ',');
-				if (errorCode[0] === 'Msg_59') {
-					let periodName = getText(errorCode[1]);
-					let param1 = "期間: " + getText(errorCode[1]) + "<br>" + getText(errorCode[2]);
-					alertError({ messageId: errorCode[0], messageParams: [param1, getText(errorCode[3])] });
-				} else {
-					alertError({ messageId: errorCode[0], messageParams: [getText(errorCode[1]), getText(errorCode[2]), getText(errorCode[3])] });
-				}
-			}
         }
 
-		export class TimeOfCompanyModel {
+		export class CpnTimeSetting {
 			overMaxTimes: KnockoutObservable<string> = ko.observable(null);
 
 			limitOneMonth: KnockoutObservable<string> = ko.observable(null);
@@ -115,12 +92,16 @@ module nts.uk.at.view.kmk008.bsub {
 			alarmTwoYear: KnockoutObservable<string> = ko.observable(null);
 
 			errorMonthAverage: KnockoutObservable<string> = ko.observable(null);
+			errorMonthAverage2: KnockoutObservable<string> = ko.observable(null);
+			isSubscribe: boolean = false;
+			isSubscribe2: boolean = false;
+
 			alarmMonthAverage: KnockoutObservable<string> = ko.observable(null);
 
             constructor(data: any) {
                 let self = this;
 				if (!data) {
-					data = INIT_DEFAULT;
+					data = master.INIT_DEFAULT;
 				}
 				self.overMaxTimes(data.overMaxTimes);
 
@@ -140,11 +121,44 @@ module nts.uk.at.view.kmk008.bsub {
 				self.alarmTwoYear(data.alarmTwoYear);
 
 				self.errorMonthAverage(data.errorMonthAverage);
+				self.errorMonthAverage2(data.errorMonthAverage);
+
+				self.errorMonthAverage.subscribe(newValue => {
+					if (self.isSubscribe) {
+						self.isSubscribe = false;
+						return;
+					}
+					self.isSubscribe2 = true;
+
+					if ($("#B3_33").ntsError("hasError")) {
+						self.errorMonthAverage2(null);
+						return;
+					}
+
+					$('#B3_34').ntsError('clear');
+					self.errorMonthAverage2(newValue);
+				});
+				self.errorMonthAverage2.subscribe(newValue => {
+					if (self.isSubscribe2) {
+						self.isSubscribe2 = false;
+						return;
+					}
+					self.isSubscribe = true;
+
+					if ($("#B3_34").ntsError("hasError")) {
+						self.errorMonthAverage(null);
+						return;
+					}
+
+					$('#B3_33').ntsError('clear');
+					self.errorMonthAverage(newValue);
+				});
+
 				self.alarmMonthAverage(data.alarmMonthAverage);
             }
         }
 
-        export class UpdateInsertTimeOfCompanyModel {
+        export class CpnTimeSettingForPersis {
             laborSystemAtr: number = 0;
 			overMaxTimes: number = 0;
 
@@ -166,7 +180,7 @@ module nts.uk.at.view.kmk008.bsub {
 			upperMonthAverageError: number = 0;
 			upperMonthAverageAlarm: number = 0;
 
-            constructor(data: TimeOfCompanyModel, laborSystemAtr: number) {
+            constructor(data: CpnTimeSetting, laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 if (!data) return;

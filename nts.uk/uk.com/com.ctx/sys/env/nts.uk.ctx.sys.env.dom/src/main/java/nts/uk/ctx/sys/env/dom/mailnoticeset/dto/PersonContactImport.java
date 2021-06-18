@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.env.dom.mailnoticeset.dto;
 
+import java.util.List;
 import lombok.Getter;
 
 /**
@@ -28,6 +29,17 @@ public class PersonContactImport {
 	// 携帯電話番号
 	/** The cell phone no. */
 	private String cellPhoneNo;
+	
+	// 緊急連絡先１
+	/** The emergency number 1. */
+	private String emergencyNumber1;
+	
+	// 緊急連絡先２
+	/** The emergency number 2. */
+	private String emergencyNumber2;
+	
+	// 他の連絡先
+	private List<OtherContactDTO> otherContacts;
 
 	/**
 	 * Instantiates a new person contact import.
@@ -41,11 +53,20 @@ public class PersonContactImport {
 	 * @param cellPhoneNo
 	 *            the cell phone no
 	 */
-	public PersonContactImport(String personId, String mailAddress, String mobileMailAddress, String cellPhoneNo) {
+	public PersonContactImport(String personId,
+			String mailAddress,
+			String mobileMailAddress,
+			String cellPhoneNo,
+			String emergencyNumber1,
+			String emergencyNumber2,
+			List<OtherContactDTO> otherContacts) {
 		this.personId = personId;
 		this.mailAddress = mailAddress;
 		this.mobileMailAddress = mobileMailAddress;
 		this.cellPhoneNo = cellPhoneNo;
+		this.emergencyNumber1 = emergencyNumber1;
+		this.emergencyNumber2 = emergencyNumber2;
+		this.otherContacts = otherContacts;
 	}
 
 	/**

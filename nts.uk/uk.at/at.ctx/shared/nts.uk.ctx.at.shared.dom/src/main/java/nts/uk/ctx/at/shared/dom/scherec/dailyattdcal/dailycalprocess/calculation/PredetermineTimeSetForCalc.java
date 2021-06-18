@@ -9,11 +9,14 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -63,7 +66,7 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 			PredetermineTime addtionSet,
             AttendanceTime oneDayRange,
 			TimeWithDayAttr startOneDayTime) {
-		this.timeSheets = timeSheets;
+		this.timeSheets = timeSheets.stream().sorted((c1, c2) -> Integer.compare(c1.getWorkNo(), c2.getWorkNo())).collect(Collectors.toList());
 		this.AMEndTime = AMEndTime;
 		this.PMStartTime = PMStartTime;
 		this.additionSet = addtionSet;
@@ -74,8 +77,27 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 	/**
 	 * Aggregateの所定時間から計算用所定時間クラスへの変換
 	 */
-	public static PredetermineTimeSetForCalc convertFromAggregatePremiumTime(PredetemineTimeSetting predetermineTimeSet){
-		return new PredetermineTimeSetForCalc(predetermineTimeSet.getPrescribedTimezoneSetting().getLstTimezone()
+	public static PredetermineTimeSetForCalc convertFromAggregatePremiumTime(PredetemineTimeSetting predetermineTimeSet, WorkType workType) {
+		
+		List<TimezoneUse> timeZones;
+		switch (workType.getDailyWork().decisionNeedPredTime()) {
+		case FULL_TIME:
+			timeZones = predetermineTimeSet.getTimezoneByAmPmAtr(AmPmAtr.ONE_DAY);
+			break;
+		case MORNING:
+			timeZones = predetermineTimeSet.getTimezoneByAmPmAtr(AmPmAtr.AM);
+			break;
+		case AFTERNOON:
+			timeZones = predetermineTimeSet.getTimezoneByAmPmAtr(AmPmAtr.PM);
+			break;
+		default:
+			timeZones = new ArrayList<>();
+			break;
+		}
+		
+		
+		/** TODO: 三浦さんの処理待ち*/
+		return new PredetermineTimeSetForCalc(timeZones
 											  ,predetermineTimeSet.getPrescribedTimezoneSetting().getMorningEndTime()
 											  ,predetermineTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime()
 											  ,predetermineTimeSet.getPredTime()
@@ -213,6 +235,20 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 	}
 	
 	/**
+	 * 勤務NOに一致する所定時間帯を取得する
+	 * （出勤休日区分は参照しない為、午前休午後休の時間帯補正をしません）
+	 * @param workNo 勤務NO
+	 * @return 所定時間帯
+	 */
+	public Optional<TimezoneUse> getTimeSheet(WorkNo workNo) {
+		return this.timeSheets.stream().filter(t -> t.getWorkNo() == workNo.v()).findFirst();
+	}
+	
+	public Optional<TimezoneUse> getTimeSheet(int workNo) {
+		return this.timeSheets.stream().filter(t -> t.getWorkNo() == workNo).findFirst();
+	}
+	
+	/**
 	 * 1日の範囲時間帯を作成する
 	 * @return　1日の範囲時間帯
 	 */
@@ -229,12 +265,12 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 		PredetermineTimeSetForCalc cloned;
 		try {
 			cloned = new PredetermineTimeSetForCalc(
-				this.timeSheets,
-				this.AMEndTime,
-				this.PMStartTime,
-				this.additionSet,
-				this.oneDayRange,
-				this.startOneDayTime);
+				this.timeSheets.stream().map(t -> t.clone()).collect(Collectors.toList()),
+				new TimeWithDayAttr(this.AMEndTime.getDayTime()),
+				new TimeWithDayAttr(this.PMStartTime.getDayTime()),
+				this.additionSet.clone(),
+				new AttendanceTime(this.oneDayRange.valueAsMinutes()),
+				new TimeWithDayAttr(this.startOneDayTime.getDayTime()));
 		}	
 		catch (Exception e){
 			throw new RuntimeException("PredetermineTimeSetForCalc clone error.");
@@ -248,11 +284,11 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 	*/
 	public void fluctuationPredeterminedTimeSheetToSchedule(List<TimeLeavingWork> timeLeavingWorks) {
 		for(int i=0; i<timeLeavingWorks.size(); i++) {
-			if(timeLeavingWorks.get(i).getAttendanceStampTimeWithDay().isPresent()) {
-				this.timeSheets.get(i).updateStartTime(timeLeavingWorks.get(i).getAttendanceStampTimeWithDay().get());
+			if(timeLeavingWorks.get(i).getAttendanceTime().isPresent()) {
+				this.timeSheets.get(i).updateStartTime(timeLeavingWorks.get(i).getAttendanceTime().get());
 			}
-			if(timeLeavingWorks.get(i).getleaveStampTimeWithDay().isPresent()) {
-				this.timeSheets.get(i).updateStartTime(timeLeavingWorks.get(i).getleaveStampTimeWithDay().get());
+			if(timeLeavingWorks.get(i).getLeaveTime().isPresent()) {
+				this.timeSheets.get(i).updateStartTime(timeLeavingWorks.get(i).getLeaveTime().get());
 			}
 		}
 	}

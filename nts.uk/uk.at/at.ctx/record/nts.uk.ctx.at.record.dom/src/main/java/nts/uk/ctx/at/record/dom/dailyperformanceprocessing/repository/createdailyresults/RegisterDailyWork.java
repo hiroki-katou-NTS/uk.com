@@ -12,7 +12,11 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.DailySnapshotWorkAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.DailySnapshotWorkImport;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.SnapshotImport;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
@@ -54,6 +58,9 @@ public class RegisterDailyWork {
 	@Inject
 	private StampDakokuRepository stampDakokuRepository;
 	
+	@Inject
+	private DailySnapshotWorkAdapter snapshotAdapter;
+	
 	public void register(IntegrationOfDaily integrationOfDaily,List<Stamp> listStamp) {
 		String companyId = AppContexts.user().companyId();
 		String employeeId = integrationOfDaily.getEmployeeId();
@@ -75,8 +82,7 @@ public class RegisterDailyWork {
 		}
 		
 		//日別実績の休憩時間帯を登録する
-		List<BreakTimeOfDailyPerformance> breakTimes = integrationOfDaily.getBreakTime().stream()
-				.map(c -> new BreakTimeOfDailyPerformance(employeeId, ymd, c)).collect(Collectors.toList());
+		BreakTimeOfDailyPerformance breakTimes = new BreakTimeOfDailyPerformance(employeeId, ymd, integrationOfDaily.getBreakTime());
 		dailyRecordAdUpService.adUpBreakTime(breakTimes);
 		
 		//日別実績の勤務種別を登録する (đã xóa nên k insert)
@@ -160,6 +166,26 @@ public class RegisterDailyWork {
 			dailyRecordAdUpService.adUpEmpError(integrationOfDaily.getEmployeeError(),
 					errors.stream().map(x -> Pair.of(x.getEmployeeID(), x.getDate())).collect(Collectors.toList()),
 					true);
+		}
+		
+		integrationOfDaily.getSnapshot().ifPresent(ss -> {
+			val oldSnapshot = snapshotAdapter.find(integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd());
+			if (!oldSnapshot.isPresent()) {
+				snapshotAdapter.save(DailySnapshotWorkImport.builder()
+						.sid(integrationOfDaily.getEmployeeId())
+						.ymd(integrationOfDaily.getYmd())
+						.snapshot(SnapshotImport.builder()
+											.workTime(ss.getWorkInfo().getWorkTimeCodeNotNull().map(c -> c.v()))
+											.workType(ss.getWorkInfo().getWorkTypeCode().v())
+											.predetermineTime(ss.getPredetermineTime().v())
+											.build())
+						.build());
+			}
+		});
+		
+		// ドメインモデル「日別勤怠の応援作業時間帯」を更新する
+		if(!integrationOfDaily.getOuenTimeSheet().isEmpty()){
+			dailyRecordAdUpService.adUpSupportTime(employeeId, ymd, integrationOfDaily.getOuenTimeSheet());
 		}
 	}
 	private List<TimeLeavingWork> checkExist(List<TimeLeavingWork> listTimeLeavingWork){

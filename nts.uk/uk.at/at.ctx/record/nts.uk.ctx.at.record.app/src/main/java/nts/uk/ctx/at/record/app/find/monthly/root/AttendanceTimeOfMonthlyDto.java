@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,12 +18,14 @@ import nts.uk.ctx.at.record.app.find.monthly.root.dto.OuenTimeOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.TotalCountByPeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.VerticalTotalOfMonthlyDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
@@ -42,53 +46,53 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 	/***/
 	private static final long serialVersionUID = 1L;
 	
-	private long version;
+	protected long version;
 	
 	/** 会社ID */
-	private String companyId;
+	protected String companyId;
 
 	/** 社員ID: 社員ID */
-	private String employeeId;
+	protected String employeeId;
 
 	/** 年月: 年月 */
-	private YearMonth ym;
+	protected YearMonth ym;
 
 	/** 締めID: 締めID */
 	// @AttendanceItemValue
 	// @AttendanceItemLayout(jpPropertyName = "締めID", layout = "A")
-	private int closureID = 1;
+	protected int closureID = 1;
 
 	/** 締め日: 日付 */
 	// @AttendanceItemLayout(jpPropertyName = "締め日", layout = "B")
-	private ClosureDateDto closureDate;
+	protected ClosureDateDto closureDate;
 
 	/** 期間: 期間 */
 	@AttendanceItemLayout(jpPropertyName = PERIOD, layout = LAYOUT_C)
-	private DatePeriodDto datePeriod;
+	protected DatePeriodDto datePeriod;
 
 	/** 月の計算: 月別実績の月の計算 */
 	@AttendanceItemLayout(jpPropertyName = CALC, layout = LAYOUT_D)
-	private MonthlyCalculationDto monthlyCalculation;
+	protected MonthlyCalculationDto monthlyCalculation;
 
 	/** 時間外超過: 月別実績の時間外超過 */
 	@AttendanceItemLayout(jpPropertyName = EXCESS, layout = LAYOUT_E)
-	private ExcessOutsideWorkOfMonthlyDto excessOutsideWork;
+	protected ExcessOutsideWorkOfMonthlyDto excessOutsideWork;
 
 	/** 集計日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = AGGREGATE + DAYS, layout = LAYOUT_F)
-	private double aggregateDays;
+	protected double aggregateDays;
 
 	/** 縦計: 期間別の縦計 */
 	@AttendanceItemLayout(jpPropertyName = VERTICAL_TOTAL, layout = LAYOUT_G)
-	private VerticalTotalOfMonthlyDto verticalTotal;
+	protected VerticalTotalOfMonthlyDto verticalTotal;
 
 	/** 回数集計: 期間別の回数集計 */
 	@AttendanceItemLayout(jpPropertyName = COUNT + AGGREGATE, layout = LAYOUT_H)
-	private TotalCountByPeriodDto totalCount;
+	protected TotalCountByPeriodDto totalCount;
 	
 	@AttendanceItemLayout(jpPropertyName = OUEN, layout = LAYOUT_I)
-	private OuenTimeOfMonthlyDto ouen;
+	protected OuenTimeOfMonthlyDto ouen;
 
 	@Override
 	public String employeeId() {
@@ -153,5 +157,100 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 	@Override
 	public YearMonth yearMonth() {
 		return this.ym;
+	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		if ((AGGREGATE + DAYS).equals(path)) {
+			return Optional.of(ItemValue.builder().value(aggregateDays).valueType(ValueType.DAYS));
+		}
+		return super.valueOf(path);
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case PERIOD:
+			return new DatePeriodDto();
+		case CALC:
+			return new MonthlyCalculationDto();
+		case EXCESS:
+			return new ExcessOutsideWorkOfMonthlyDto();
+		case VERTICAL_TOTAL:
+			return new VerticalTotalOfMonthlyDto();
+		case (COUNT + AGGREGATE):
+			return new TotalCountByPeriodDto();
+		case OUEN:
+			return new OuenTimeOfMonthlyDto();
+		default:
+			break;
+		}
+		return super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case PERIOD:
+			return Optional.ofNullable(datePeriod);
+		case CALC:
+			return Optional.ofNullable(monthlyCalculation);
+		case EXCESS:
+			return Optional.ofNullable(excessOutsideWork);
+		case VERTICAL_TOTAL:
+			return Optional.ofNullable(verticalTotal);
+		case (COUNT + AGGREGATE):
+			return Optional.ofNullable(totalCount);
+		case OUEN:
+			return Optional.ofNullable(ouen);
+		default:
+			break;
+		}
+		return super.get(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if ((AGGREGATE + DAYS).equals(path)) {
+			return PropType.VALUE;
+		}
+		return super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		if ((AGGREGATE + DAYS).equals(path)) {
+			aggregateDays = value.valueOrDefault(0d);
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case PERIOD:
+			datePeriod = (DatePeriodDto) value; break;
+		case CALC:
+			monthlyCalculation = (MonthlyCalculationDto) value; break;
+		case EXCESS:
+			excessOutsideWork = (ExcessOutsideWorkOfMonthlyDto) value; break;
+		case VERTICAL_TOTAL:
+			verticalTotal = (VerticalTotalOfMonthlyDto) value; break;
+		case (COUNT + AGGREGATE):
+			totalCount = (TotalCountByPeriodDto) value; break;
+		case OUEN:
+			ouen = (OuenTimeOfMonthlyDto) value; break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public boolean isRoot() {
+		return true;
+	}
+
+	@Override
+	public String rootName() {
+		return MONTHLY_ATTENDANCE_TIME_NAME;
 	}
 }

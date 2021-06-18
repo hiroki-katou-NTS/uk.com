@@ -9,19 +9,21 @@ public enum ApplicationCombination {
 	/**
 	 * 振出＋振休
 	 */
-	RecAndAbs(0),
+	RecAndAbs(0, "振出＋振休"),
 	/**
 	 * 振出
 	 */
-	Rec(1),
+	Rec(1, "振出のみ"),
 	/**
 	 * 振休
 	 */
-	Abs(2);
+	Abs(2, "振休のみ");
 
 	public final int value;
+	public final String nameId;
 
-	private ApplicationCombination(int value) {
+	private ApplicationCombination(int value, String nameId) {
 		this.value = value;
+		this.nameId = nameId;
 	}
 }

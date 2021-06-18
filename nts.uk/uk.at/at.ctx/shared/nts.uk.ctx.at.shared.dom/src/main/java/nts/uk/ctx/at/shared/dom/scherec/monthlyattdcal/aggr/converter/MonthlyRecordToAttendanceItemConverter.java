@@ -5,16 +5,18 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemain;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdRemain;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remarks.RemarksMonthlyRecord;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.care.CareRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
@@ -25,7 +27,7 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
  * 月別実績と勤怠項目の相互変換
  * @author shuichu_ishida
  */
-public interface MonthlyRecordToAttendanceItemConverter {
+public interface MonthlyRecordToAttendanceItemConverter extends AttendanceItemConverter {
 
 	Optional<ItemValue> convert(int attendanceItemId);
 
@@ -58,11 +60,13 @@ public interface MonthlyRecordToAttendanceItemConverter {
 
 	MonthlyRecordToAttendanceItemConverter withAbsenceLeave(AbsenceLeaveRemainData domain);
 
-	MonthlyRecordToAttendanceItemConverter withMonChildHd(MonChildHdRemain monChildHdRemain);
+	MonthlyRecordToAttendanceItemConverter withMonChildHd(ChildcareRemNumEachMonth monChildHdRemain);
 
-	MonthlyRecordToAttendanceItemConverter withMonCareHd(MonCareHdRemain monCareHdRemain);
+	MonthlyRecordToAttendanceItemConverter withMonCareHd(CareRemNumEachMonth monCareHdRemain);
 
 	MonthlyRecordToAttendanceItemConverter withRemarks(List<RemarksMonthlyRecord> domain);
+	
+	MonthlyRecordToAttendanceItemConverter withAgreementTime(AgreementTimeOfManagePeriod domain);
 
 	MonthlyRecordToAttendanceItemConverter completed();
 	
@@ -70,13 +74,15 @@ public interface MonthlyRecordToAttendanceItemConverter {
 	
 	Optional<AttendanceTimeOfMonthly> toAttendanceTime();
 	
+	Optional<AgreementTimeOfManagePeriod> toAgreementTime();
+	
 	List<AnyItemOfMonthly> toAnyItems();
 	
 	Optional<AnnLeaRemNumEachMonth> toAnnLeave();
 	
-	Optional<MonCareHdRemain> toMonCareHd();
+	Optional<CareRemNumEachMonth> toMonCareHd();
 	
-	Optional<MonChildHdRemain> toMonChildHd();
+	Optional<ChildcareRemNumEachMonth> toMonChildHd();
 	
 	Optional<RsvLeaRemNumEachMonth> toRsvLeave();
 	

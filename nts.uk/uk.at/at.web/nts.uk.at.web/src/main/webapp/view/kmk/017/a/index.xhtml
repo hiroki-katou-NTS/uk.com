@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/base.xhtml">
+      <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+        <com:ValidatorScript>
+          nts.uk.shr.com.primitive.PersonId
+        </com:ValidatorScript>
+        <com:stylefile path="kmk017.a.css" />
+        <com:scriptfile path="kmk017.a.vm.js" />
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="functions-area">
+          <button
+            id="A12"
+            tabindex="1"
+            class="proceed"
+            data-bind="click: registerWorkingTime, text: $vm.$i18n('KMK017_2'), enable: isEnableRegister"
+          />
+          <button
+            id="A13"
+            tabindex="2"
+            class="danger"
+            data-bind="click: deleteWorkingTime, text: $vm.$i18n('KMK017_3'), enable: !isNewMode()"
+          />
+        </div>
+        <div id="contents-area" class="cf">
+          <div class="container">
+            <div class="pull-left pullLeft">
+              <div id="kcp004"></div>
+            </div>
+            <div class="pull-right pullRight">
+              <div class="label">
+                <!-- A3_1 -->
+                <div data-bind="text: workplaceName"></div>
+                <hr />
+              </div>
+              <div class="panel-a4-a5">
+                <div class="a41">
+                  <div
+                    data-bind="ntsFormLabel:{}, text: $i18n('KMK017_4')"
+                  ></div>
+                </div>
+                <div class="button-grid">
+                  <div class="button-a423">
+                    <button
+                      id="A42"
+                      tabindex="3"
+                      data-bind="click: openDialogKDL001, text: $i18n('KMK017_5')"
+                    />
+                    <button
+                      id="A43"
+                      tabindex="4"
+                      data-bind="click: deleteWorkingTimeRow, text: $i18n('KMK017_6'), enable: workplaceWorkingTimeList().length &gt; 0"
+                    />
+                  </div>
+                  <div class="grid-list" data-bind="if: !!ko.unwrap(gridListHeader).length">
+                    <!-- A5_1-->
+                    <table tabindex="6"
+                      id="grid-list"                      
+                      data-bind="ntsGridList: {
+                        height: gridListHeight,
+                        options: workplaceWorkingTimeList,
+                        optionsValue: 'code',
+                        columns: gridListHeader,
+                        multiple: true,
+                        value: workplaceSelectedCode
+                      }"
+                    ></table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

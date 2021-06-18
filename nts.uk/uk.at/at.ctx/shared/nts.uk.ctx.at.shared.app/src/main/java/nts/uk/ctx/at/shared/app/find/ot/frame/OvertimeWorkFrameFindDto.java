@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameName;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWorkEnum;
 
 /**
  * The Class OvertimeWorkFrameFindDto.
@@ -27,6 +28,12 @@ public class OvertimeWorkFrameFindDto implements OvertimeWorkFrameSetMemento {
 	
 	/** The use atr. */
 	private int useAtr;
+	
+	/** The role. */
+	private int role;
+	
+	/** The transfer atr. */
+	private int transferAtr;
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
@@ -68,4 +75,13 @@ public class OvertimeWorkFrameFindDto implements OvertimeWorkFrameSetMemento {
 		this.overtimeWorkFrName = overtimeWorkFrName.v();
 	}
 
+	@Override
+	public void setRole(RoleOvertimeWorkEnum role) {
+		this.role = role.value;
+	}
+	
+	@Override
+	public void setTransferAtr(NotUseAtr transferAtr) {
+		this.transferAtr = transferAtr.value;
+	}
 }

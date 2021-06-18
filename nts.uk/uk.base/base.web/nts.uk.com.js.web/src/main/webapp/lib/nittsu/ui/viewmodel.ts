@@ -1,50 +1,100 @@
 /// <reference path="./viewcontext.d.ts" />
 
-type KibanViewModel = {
-	errorDialogViewModel: {
-		errors: KnockoutObservableArray<string>;
-	}
-};
-
 /** Create new ViewModel and automatic binding to __viewContext */
-function bean(dialogOption?: DialogOption): any {
+function bean(dialogOption?: JQueryUI.DialogOptions): any {
 	return function (ctor: any): any {
 		__viewContext.ready(() => {
-			nts.uk.ui.viewmodel.$storage().then(($params: any) => {
-				const $viewModel = new ctor($params)
-					, $created = $viewModel['created'];
+			const { localShared } = nts.uk.ui.windows.container;
 
-				_.extend($viewModel, { $el: undefined });
+			nts.uk.ui.viewmodel
+				.$storage()
+				.then(($params: any) => {
+					const $viewModel = new ctor($params || (_.isEmpty(localShared) ? undefined : localShared))
+						, $created = $viewModel['created'];
 
-				// hook to created function
-				if ($created && _.isFunction($created)) {
-					$created.apply($viewModel, [$params]);
-				}
+					_.extend($viewModel, { $el: undefined });
 
-				// hook to mounted function
-				$viewModel.$nextTick(() => {
-					const $mounted = $viewModel['mounted'];
-					const kvm: KibanViewModel = nts.uk.ui._viewModel.kiban;
+					// hook to created function
+					if ($created && _.isFunction($created)) {
+						$created.apply($viewModel, [$params || (_.isEmpty(localShared) ? undefined : localShared)]);
+					}
 
-					_.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+					__viewContext.bind($viewModel, dialogOption);
 
-					if (kvm) {
-						ko.computed({
-							read: () => {
-								$viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
-							},
-							owner: $viewModel,
-							disposeWhenNodeIsRemoved: $viewModel.$el
+					const { $window } = $viewModel;
+					const kvm = nts.uk.ui._viewModel.kiban;
+
+					kvm.title
+						.subscribe((title: string) => {
+							const old = ko.unwrap($window.title)
+
+							if (title !== old) {
+								$window.title(title);
+							} else {
+								$window.title.valueHasMutated();
+							}
 						});
-					}
 
-					if ($mounted && _.isFunction($mounted)) {
-						$mounted.apply($viewModel, []);
-					}
+					kvm.systemName.valueHasMutated();
+
+					$window.title
+						.subscribe((title: string) => kvm.title(title));
+
+					kvm.mode
+						.subscribe((mode: string) => {
+							const old = ko.unwrap($window.mode)
+
+							if (mode !== old) {
+								$window.mode(mode);
+							} else {
+								$window.mode.valueHasMutated();
+							}
+						});
+
+					kvm.mode.valueHasMutated();
+
+					$window.mode
+						.subscribe((mode: 'view' | 'modal') => kvm.mode.valueHasMutated());
+
+					kvm.header
+						.subscribe((header: boolean) => {
+							const old = ko.unwrap($window.header)
+
+							if (header !== old) {
+								$window.header(header);
+							} else {
+								$window.header.valueHasMutated();
+							}
+						});
+
+					kvm.header.valueHasMutated();
+
+					$window.header
+						.subscribe((header: boolean) => kvm.header(header));
+
+					$(() => {
+						// hook to mounted function
+						$viewModel.$nextTick(() => {
+							const $mounted = $viewModel['mounted'];
+
+							_.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+
+							if (kvm) {
+								ko.computed({
+									read: () => {
+										$viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+									},
+									owner: $viewModel,
+									disposeWhenNodeIsRemoved: $viewModel.$el
+								});
+							}
+
+							if ($mounted && _.isFunction($mounted)) {
+								$mounted.apply($viewModel, []);
+							}
+						});
+					});
 				});
-
-				__viewContext.bind($viewModel, dialogOption);
-			});
 		});
 	};
 }
@@ -71,10 +121,61 @@ function component(options: { name: string; template: string; }): any {
 									$created.apply($viewModel, [$params]);
 								}
 
+								const { $window } = $viewModel;
+								const kvm = nts.uk.ui._viewModel.kiban;
+
+								kvm.title
+									.subscribe((title: string) => {
+										const old = ko.unwrap($window.title)
+
+										if (title !== old) {
+											$window.title(title);
+										} else {
+											$window.title.valueHasMutated();
+										}
+									});
+
+								kvm.systemName.valueHasMutated();
+
+								$window.title
+									.subscribe((title: string) => kvm.title(title));
+
+								kvm.mode
+									.subscribe((mode: string) => {
+										const old = ko.unwrap($window.mode)
+
+										if (mode !== old) {
+											$window.mode(mode);
+										} else {
+											$window.mode.valueHasMutated();
+										}
+									});
+
+								kvm.mode.valueHasMutated();
+
+								$window.mode
+									.subscribe((mode: 'view' | 'modal') => kvm.mode.valueHasMutated());
+
+								kvm.header
+									.subscribe((header: boolean) => {
+										const old = ko.unwrap($window.header)
+
+										if (header !== old) {
+											$window.header(header);
+										} else {
+											$window.header.valueHasMutated();
+										}
+									});
+
+								kvm.header.valueHasMutated();
+
+								$window.header
+									.subscribe((header: boolean) => kvm.header(header));
+
 								// hook to mounted function
 								$viewModel.$nextTick(() => {
 									const $mounted = $viewModel['mounted'];
-									const kvm: KibanViewModel = nts.uk.ui._viewModel.kiban;
+									const kvm = nts.uk.ui._viewModel.kiban;
 
 									_.extend($viewModel, { $el: $el.element });
 
@@ -151,48 +252,21 @@ declare module nts {
 }
 
 module nts.uk.ui.viewmodel {
-	const prefix = 'nts.uk.storage'
-		, OPENWD = 'OPEN_WINDOWS_DATA'
+	const OPENWD = 'OPEN_WINDOWS_DATA'
 		, { ui, request, resource } = nts.uk
 		, { windows, block, dialog } = ui
 		, $storeSession = function (name: string, params?: any): JQueryPromise<any> {
 			if (arguments.length === 2) {
-				// setter method
-				if (params === undefined) {
-					return $.Deferred()
-						.resolve(true)
-						.then(() => {
-							nts.uk.localStorage.removeItem(`${prefix}.${name}`);
-						})
-						.then(() => $storeSession(name));
-				}
-
-				const $value = JSON.stringify({ $value: params })
-					, $saveValue = btoa(_.map($value, (s: string) => s.charCodeAt(0)).join('-'));
-
-				return $.Deferred()
-					.resolve(true)
-					.then(() => {
-						nts.uk.localStorage.setItem(`${prefix}.${name}`, $saveValue);
-					})
+				return nts.uk.characteristics
+					.save(name, params)
 					.then(() => $storeSession(name));
 			} else if (arguments.length === 1) {
 				// getter method
-				return $.Deferred()
-					.resolve(true)
-					.then(() => {
-						const $result = nts.uk.localStorage.getItem(`${prefix}.${name}`);
-
-						if ($result.isPresent()) {
-							const $string = atob($result.value)
-								.split('-').map((s: string) => String.fromCharCode(Number(s)))
-								.join('');
-
-							const shared = JSON.parse($string).$value;
-
-							if (shared !== undefined) {
-								return shared;
-							}
+				return nts.uk.characteristics
+					.restore(name)
+					.then((data) => {
+						if (data !== undefined) {
+							return data;
 						}
 
 						return windows.getShared(name);
@@ -204,13 +278,12 @@ module nts.uk.ui.viewmodel {
 		if (arguments.length === 1) {
 			return $storeSession(OPENWD, $data);
 		} else if (arguments.length === 0) {
-			return $.Deferred()
-				.resolve(true)
-				.then(() => $storeSession(OPENWD))
+			return $storeSession(OPENWD)
 				.then((value: any) => {
-					nts.uk.localStorage.removeItem(`${prefix}.${OPENWD}`);
-
-					return value;
+					// return value;
+					return nts.uk.characteristics
+						.remove(OPENWD)
+						.then(() => value);
 				});
 		}
 	};
@@ -258,6 +331,7 @@ module nts.uk.ui.viewmodel {
 	const $date = {
 		diff: 0,
 		tick: -1,
+		clock: -1,
 		now() {
 			return Date.now()
 		},
@@ -275,7 +349,16 @@ module nts.uk.ui.viewmodel {
 	};
 
 	// get date time now
-	getTime();
+	// setInterval(() => {
+	// 	const now = Date.now();
+	// 	const diff = now - $date.clock;
+
+	// 	$date.clock = now;
+
+	// 	if (Math.abs(diff) > 5000) {
+	// 		getTime();
+	// 	}
+	// }, 500);
 
 	BaseViewModel.prototype.$date = Object.defineProperties($date, {
 		now: {
@@ -299,7 +382,7 @@ module nts.uk.ui.viewmodel {
 		}
 	});
 
-	BaseViewModel.prototype.$dialog = Object.defineProperties({}, {
+	const $dialog = Object.defineProperties({}, {
 		info: {
 			value: function $info() {
 				const dfd = $.Deferred<void>();
@@ -332,7 +415,7 @@ module nts.uk.ui.viewmodel {
 		},
 		confirm: {
 			value: function $confirm() {
-				const dfd = $.Deferred<'no' | 'yes' | 'cancel'>();
+				const dfd = $.Deferred<'no' | 'yes'>();
 				const args: any[] = Array.prototype.slice.apply(arguments);
 
 				const $cf = dialog.confirm.apply(null, args);
@@ -345,6 +428,41 @@ module nts.uk.ui.viewmodel {
 					dfd.resolve('no');
 				});
 
+				return dfd.promise();
+			}
+		}
+	});
+
+	Object.defineProperties($dialog.confirm, {
+		yesNo: {
+			value: function () {
+				const dfd = $.Deferred<'no' | 'yes'>();
+				const args: any[] = Array.prototype.slice.apply(arguments);
+
+				const $cf = dialog.confirm.apply(null, args);
+
+				$cf.ifYes(() => {
+					dfd.resolve('yes');
+				});
+
+				$cf.ifNo(() => {
+					dfd.resolve('no');
+				});
+
+				return dfd.promise();
+			}
+		},
+		yesCancel: {
+			value: function () {
+				const dfd = $.Deferred<'yes' | 'cancel'>();
+				const args: any[] = Array.prototype.slice.apply(arguments);
+
+				const $cf = dialog.confirm.apply(null, args);
+
+				$cf.ifYes(() => {
+					dfd.resolve('yes');
+				});
+
 				$cf.ifCancel(() => {
 					dfd.resolve('cancel');
 				});
@@ -353,6 +471,8 @@ module nts.uk.ui.viewmodel {
 			}
 		}
 	});
+
+	BaseViewModel.prototype.$dialog = $dialog;
 
 	BaseViewModel.prototype.$jump = $jump;
 
@@ -406,9 +526,13 @@ module nts.uk.ui.viewmodel {
 
 	BaseViewModel.prototype.$window = Object.defineProperties({}, {
 		mode: {
-			get() {
-				return window === window.top ? 'view' : 'modal';
-			}
+			value: ko.observable('view') // nts.uk.ui._viewModel.kiban.mode
+		},
+		title: {
+			value: ko.observable('') //nts.uk.ui._viewModel.kiban.title
+		},
+		header: {
+			value: ko.observable(null).extend({ rateLimit: 100 }) //nts.uk.ui._viewModel.kiban.header
 		},
 		size: {
 			value: $size
@@ -557,8 +681,11 @@ module nts.uk.ui.viewmodel {
 	});
 
 	// Hàm blockui được wrapper lại để gọi cho thống nhất
-	BaseViewModel.prototype.$blockui = function $blockui(act: 'show' | 'hide' | 'clear' | 'invisible' | 'grayout') {
-		return $.Deferred().resolve()
+	BaseViewModel.prototype.$blockui = function $blockui(act: 'show' | 'hide' | 'clear' | 'invisible' | 'grayout' | 'grayoutView' | 'invisibleView' | 'clearView') {
+		const vm = this;
+
+		return $.Deferred()
+			.resolve(true)
 			.then(() => {
 				switch (act) {
 					default:
@@ -573,12 +700,21 @@ module nts.uk.ui.viewmodel {
 					case 'grayout':
 						block.grayout();
 						break;
+					case 'clearView':
+						block.clear(vm.$el);
+						break;
+					case 'grayoutView':
+						block.grayout(vm.$el);
+						break;
+					case 'invisibleView':
+						block.invisible(vm.$el);
+						break;
 				}
 			});
 	};
 
 	BaseViewModel.prototype.$errors = function $errors() {
-		const kvm: KibanViewModel = nts.uk.ui._viewModel.kiban;
+		const kvm = nts.uk.ui._viewModel.kiban;
 		const args: any[] = Array.prototype.slice.apply(arguments);
 
 		if (args.length == 1) {
@@ -716,70 +852,4 @@ module nts.uk.ui.viewmodel {
 	BaseViewModel.prototype.$validate = $validate;
 
 	Object.defineProperty(ko, 'ViewModel', { value: BaseViewModel });
-}
-
-module nts.uk.ui.bindings.i18n {
-	@handler({
-		bindingName: 'i18n',
-		validatable: true,
-		virtual: false
-	})
-	export class I18nBindingHandler implements KnockoutBindingHandler {
-		update(element: HTMLElement, valueAccessor: () => string, allBindingsAccessor?: KnockoutAllBindingsAccessor): void {
-			const msg = ko.unwrap(valueAccessor());
-			const params = ko.unwrap(allBindingsAccessor.get('params'));
-
-			$(element).text(nts.uk.resource.getText(msg, params));
-		}
-	}
-}
-
-module nts.uk.ui.bindings.icon {
-	const icons: Array<number | string> = [];
-
-	@handler({
-		bindingName: 'icon',
-		validatable: true,
-		virtual: false
-	})
-	export class IconBindingHandler implements KnockoutBindingHandler {
-		update(el: HTMLElement, value: () => KnockoutObservable<number> | number, allBindingsAccessor: KnockoutAllBindingsAccessor) {
-			const numb: number = ko.unwrap(value());
-			const size: string = allBindingsAccessor.get('size') || 'contain';
-			const url = `/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/${numb}.png`;
-
-			$.Deferred()
-				.resolve(true)
-				.then(() => icons.indexOf(numb) > -1)
-				.then((exist: boolean) => !!exist || $.get(url))
-				.then(() => {
-					if (icons.indexOf(numb) === -1) {
-						icons.push(numb);
-					}
-
-					$(el).css({
-						'background-image': `url('${url}')`,
-						'background-repeat': 'no-repeat',
-						'background-position': 'center',
-						'background-size': size
-					});
-				});
-		}
-	}
-}
-
-module nts.uk.ui.bindings.date {
-	@handler({
-		bindingName: 'date',
-		validatable: true,
-		virtual: false
-	})
-	export class DateBindingHandler implements KnockoutBindingHandler {
-		update(element: HTMLElement, valueAccessor: () => KnockoutObservable<Date> | Date, allBindingsAccessor?: KnockoutAllBindingsAccessor) {
-			const date = ko.unwrap(valueAccessor());
-			const format = ko.unwrap(allBindingsAccessor.get('format')) || 'YYYY/MM/DD';
-
-			$(element).text(moment(date).format(format));
-		}
-	}
 }

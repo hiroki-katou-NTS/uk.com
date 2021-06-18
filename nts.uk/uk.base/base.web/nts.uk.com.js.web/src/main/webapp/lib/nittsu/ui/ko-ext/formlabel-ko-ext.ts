@@ -1,98 +1,101 @@
 /// <reference path="../../reference.ts"/>
 
 module nts.uk.ui.koExtentions {
-    /**
-     * FormLabel
-     */
-    @handler({
-        bindingName: 'ntsFormLabel'
-    })
-    export class NtsFormLabelBindingHandler implements KnockoutBindingHandler {
-        /**
-         * Update
-         */
-        update = (element: HTMLElement, valueAccessor: () => any, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, _bindingContext: KnockoutBindingContext): void => {
-            let accessor: any = valueAccessor(),
-                label = element.querySelector('label'),
-                constraint = element.querySelector('i'),
-                isInline = ko.unwrap(accessor.inline) === true,
-                isEnable = ko.unwrap(accessor.enable) !== false,
-                isRequired = ko.unwrap(accessor.required) === true,
-                text: string = !_.isNil(accessor.text) ? ko.unwrap(accessor.text) : (!!label ? label.innerHTML : element.innerHTML),
-                cssClass: string = !_.isNil(accessor.cssClass) ? ko.unwrap(accessor.cssClass) : '',
-                primitive: string = !_.isNil(accessor.constraint) ? ko.unwrap(accessor.constraint) : '';
+    export module formlabel {
+        interface Accessor {
+            text?: KnockoutObservable<string> | string;
+            inline?: KnockoutObservable<boolean> | boolean;
+            enable?: KnockoutObservable<boolean> | boolean;
+            required?: KnockoutObservable<boolean> | boolean;
+            cssClass?: KnockoutObservable<string> | string;
+            constraint?: KnockoutObservable<string | string[]> | string | string[];
+        }
 
-            // clear old html
-            element.innerHTML = '';
+        @handler({
+            bindingName: 'ntsFormLabel'
+        })
+        export class NtsFormLabelBindingHandler implements KnockoutBindingHandler {
+            init(element: HTMLElement, valueAccessor: () => Accessor, allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean } {
+                const params = valueAccessor();
+                const $text = allBindingsAccessor.get('text');
+                const $html = element.innerHTML;
 
-            // show enable or disabled style
-            if (!isEnable) {
-                element.classList.add('disabled');
-            } else {
-                element.classList.remove('disabled');
+                element.classList.add('form-label');
+
+                ko.computed({
+                    read: () => {
+                        const enable = ko.unwrap(params.enable);
+                        const required = ko.unwrap(params.required);
+
+                        if (!enable) {
+                            element.classList.add('disabled');
+                        } else {
+                            element.classList.remove('disabled');
+                        }
+
+                        if (required) {
+                            element.classList.add('required');
+                        } else {
+                            element.classList.remove('required');
+                        }
+                    },
+                    disposeWhenNodeIsRemoved: element
+                });
+
+                const html = ko.computed({
+                    read: () => {
+                        const text = ko.unwrap(params.text) || ko.unwrap($text);
+
+                        if (text) {
+                            return _.escape(text);
+                        }
+
+                        return $html;
+                    },
+                    disposeWhenNodeIsRemoved: element
+                });
+
+                const constraint = ko.computed({
+                    read: () => {
+                        const primitive = ko.unwrap(params.constraint);
+
+                        if (!primitive) {
+                            element.classList.remove('has-contraint');
+
+                            return '';
+                        }
+
+                        element.classList.add('has-constraint');
+
+                        const { primitiveValueConstraints } = __viewContext;
+
+                        if (_.isArray(primitive)) {
+                            let miss = _.map(primitive, (p: string) => primitiveValueConstraints[p]);
+
+                            if (miss.indexOf(undefined) > -1) {
+                                return 'UNKNOW_PRIMITIVE';
+                            } else {
+                                return util.getConstraintMes(primitive);
+                            }
+                        } else {
+                            if (!primitiveValueConstraints[primitive]) {
+                                return 'UNKNOW_PRIMITIVE';
+                            } else {
+                                return util.getConstraintMes(primitive);
+                            }
+                        }
+                    },
+                    disposeWhenNodeIsRemoved: element
+                });
+
+                ko.applyBindingsToNode(element, { component: { name: 'nts-form-label', params: { html, constraint } } }, bindingContext);
+
+                element.removeAttribute('data-bind');
+
+                return { controlsDescendantBindings: false };
             }
-
-            // show inline mode or broken mode
-            if (!!isRequired) {
-                element.classList.add('required');
-            } else {
-                element.classList.remove('required');
-            }
-
-            if (!!isInline) {
-                element.classList.add('inline');
-                element.classList.remove('broken');
-                // fix height (inline mode)
-                element.style.height = '37px';
-                element.style.lineHeight = '37px';
-            } else {
-                element.classList.remove('inline');
-            }
-
-            // init new label element
-            if (!label) {
-                label = document.createElement('label');
-            }
-
-            // init new constraint element
-            if (!constraint) {
-                constraint = document.createElement('i');
-            }
-
-            // append label tag to control
-            element
-                .appendChild(label);
-            label.innerHTML = text;
-
-            // add css class to label
-            if (!!cssClass) {
-                label.classList.add(cssClass);
-            }
-
-
-            // show primitive constraint if exist
-            if (!!primitive) {
-                if (!isInline) {
-                    element.classList.add('broken');
-                }
-
-                // append constraint
-                element.appendChild(constraint);
-                if (_.isArray(primitive)) {
-                    let miss = _.map(primitive, (p: string) => __viewContext.primitiveValueConstraints[p]);
-
-                    if (miss.indexOf(undefined) > -1) {
-                        constraint.innerHTML = 'UNKNOW_PRIMITIVE';
-                    } else {
-                        constraint.innerHTML = util.getConstraintMes(primitive);
-                    }
-                } else {
-                    if (!__viewContext.primitiveValueConstraints[primitive]) {
-                        constraint.innerHTML = 'UNKNOW_PRIMITIVE';
-                    } else {
-                        constraint.innerHTML = util.getConstraintMes(primitive);
-                    }
-                }
+            update() {
+                
             }
         }
     }

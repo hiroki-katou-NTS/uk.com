@@ -37,12 +37,4 @@ public interface SuperHD60HConMedSetMemento {
 	 */
 	public void setSuperHolidayOccurrenceUnit(SuperHDOccUnit superHolidayOccurrenceUnit);
 	
-	
-	/**
-	 * Sets the premium extra 60 H rates.
-	 *
-	 * @param premiumExtra60HRates the new premium extra 60 H rates
-	 */
-	public void setPremiumExtra60HRates(List<PremiumExtra60HRate> premiumExtra60HRates);
-
 }

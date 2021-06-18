@@ -39,7 +39,7 @@ public interface ScBasicSchedulePub {
 	 * @param baseDate
 	 * @return
 	 */
-	public ScWorkScheduleExport_New findByIdNewV2(String employeeId, GeneralDate baseDate);
+	public Optional<ScWorkScheduleExport_New> findByIdNewV2(String employeeId, GeneralDate baseDate);
 	
 	public List<ScBasicScheduleExport> findById(List<String> employeeID, DatePeriod date);
 
@@ -54,13 +54,13 @@ public interface ScBasicSchedulePub {
 	 */
 	public List<ScWorkBreakTimeExport> findWorkBreakTime(String employeeId, GeneralDate baseDate);
 
+	
 	/**
-	 * 最も未来の勤務予定の年月日を取得する
 	 * 
-	 * RequestList439
-	 * 
-	 * @param sIds
-	 * @return GeneralDate
+	 * 勤務予定の確定状態を取得する
+	 * @param employeeID
+	 * @param date
+	 * @return
 	 */
-	public GeneralDate acquireMaxDateBasicSchedule(List<String> sIds);
+	public List<BasicScheduleConfirmExport> findConfirmById(List<String> employeeID, DatePeriod date);
 }

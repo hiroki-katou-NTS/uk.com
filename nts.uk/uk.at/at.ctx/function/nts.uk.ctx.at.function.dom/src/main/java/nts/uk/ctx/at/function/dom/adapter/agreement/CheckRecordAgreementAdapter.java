@@ -33,8 +33,7 @@ public interface CheckRecordAgreementAdapter {
 			DatePeriod period, 
 			AgreeConditionError agreeConditionError,
 			Optional<AgreementOperationSettingImport> agreementSetObj, 
-			List<Closure> closureList, 
-			Map<String,Integer> mapEmpIdClosureID,
+			Map<String, Closure> mapEmpClosures,
 			Object objCheckAgreement );
 	
 	Object getCommonSetting(String companyId,List<String> employeeIds,DatePeriod period);

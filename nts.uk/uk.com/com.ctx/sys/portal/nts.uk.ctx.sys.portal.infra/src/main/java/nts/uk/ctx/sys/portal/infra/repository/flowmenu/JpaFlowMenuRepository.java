@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.portal.infra.repository.flowmenu;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.DbConsts;
@@ -25,8 +26,11 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 									+ "ON m.ccgmtFlowMenuPK.topPagePartID = t.ccgmtTopPagePartPK.topPagePartID "
 									+ "AND m.ccgmtFlowMenuPK.companyID = t.ccgmtTopPagePartPK.companyID ";
 	private static final String SELECT_SINGLE = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.topPagePartID = :topPagePartID";
+	private static final String SELECT_SINGLE_AND_TYPE = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.topPagePartID = :topPagePartID AND t.topPagePartType = :topPagePartType";
 	private static final String SELECT_BY_COMPANY = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.companyID = :companyID";
+	private static final String SELECT_BY_TYPE = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.companyID = :companyID AND t.topPagePartType = :topPagePartType";
 	private static final String SELECT_IN = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.topPagePartID IN :topPagePartID";
+	private static final String SELECT_BY_CODE = SELECT_BY_TYPE + " AND t.code = :code";
 
 	@Override
 	public List<FlowMenu> findAll(String companyID) {
@@ -41,7 +45,24 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 				.setParameter("topPagePartID", topPagePartID)
 				.getSingle(c -> joinObjectToDomain(c));
 	}
+	
+	@Override
+	public Optional<FlowMenu> findByCodeAndType(String companyID, String topPagePartID, Integer topPagePartType) {
+		return this.queryProxy().query(SELECT_SINGLE_AND_TYPE, Object[].class)
+				.setParameter("topPagePartID", topPagePartID)
+				.setParameter("topPagePartType", topPagePartType)
+				.getSingle(c -> joinObjectToDomain(c));
+	}
 
+	
+	@Override
+	public Optional<FlowMenu> findByToppagePartCodeAndType(String companyID, String code, Integer topPagePartType) {
+		return this.queryProxy().query(SELECT_BY_CODE, Object[].class)
+				.setParameter("companyID", companyID)
+				.setParameter("code", code)
+				.setParameter("topPagePartType", topPagePartType)
+				.getSingle(c -> joinObjectToDomain(c));
+	}
 	@Override
 	public void add(FlowMenu flow) {
 		this.commandProxy().insert(toEntity(flow));
@@ -99,5 +120,13 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 				.getList(c -> joinObjectToDomain(c)));
 		});
 		return resultList;
+	}
+	
+	@Override
+	public List<FlowMenu> findByType(String companyID, Integer topPagePartType) {
+		return this.queryProxy().query(SELECT_BY_TYPE, Object[].class)
+				.setParameter("companyID", companyID)
+				.setParameter("topPagePartType", topPagePartType)
+				.getList(c -> joinObjectToDomain(c));
 	}
 }

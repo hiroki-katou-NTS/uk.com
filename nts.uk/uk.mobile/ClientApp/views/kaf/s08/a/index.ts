@@ -1,5 +1,5 @@
 import { Vue } from '@app/provider';
-import { component, Prop } from '@app/core/component';
+import { component, Prop, Watch } from '@app/core/component';
 import { KAFS08A1Component } from '../../s08/a1';
 import { KafS08A2Component } from '../../s08/a2';
 import { KafS08CComponent } from '../../s08/c';
@@ -35,7 +35,7 @@ export class KafS08AComponent extends Vue {
     @Prop({default : () => {}}) public readonly params!: any;
 
     //public paramsFromA1: any | null = null;
-    public achievementDetails: [] = [];
+    public actualContent: [] = [];
     public comment: Object = {};
     public derpartureTime: number;
     public returnTime: number;
@@ -49,6 +49,19 @@ export class KafS08AComponent extends Vue {
     public mode: boolean = true;
     public data?: any = null;
 
+    @Watch('step', {deep: true})
+    public watchStep(data: any) {
+        const vm = this;
+
+        if (data === 'KAFS08_10') {
+            vm.pgName = 'kafs08a1';
+        } else if (data == 'KAFS08_11') {
+            vm.pgName = 'kafs08a2';
+        } else if (data == 'KAFS08_12') {
+            vm.pgName = 'kafs08c';
+        }
+        
+    }
 
     public created() {
         const vm= this;
@@ -57,6 +70,12 @@ export class KafS08AComponent extends Vue {
             vm.mode = false;
             vm.data = vm.params;
         }
+    }
+
+    public initFromDetail(value) {
+        const vm= this;
+        vm.mode = false;
+        vm.data = value;
     }
 
     //thực hiện emit từ component con A1
@@ -74,7 +93,7 @@ export class KafS08AComponent extends Vue {
         vm.derpartureTime = departureTime;
         vm.returnTime = returnTime;
         //table có được ở màn hình A1 chuyển lên.
-        vm.achievementDetails = achievementDetails;
+        // vm.achievementDetails = achievementDetails;
         //lấy giá trị comment set ở A1
         vm.comment = comment;
         //nhan businessTripInfoOutput tu man hinh start
@@ -99,8 +118,9 @@ export class KafS08AComponent extends Vue {
     }
 
     //thực hiện emit từ component con A2 quay trở lại A1
-    public ProcessPrevStepOne(departureTime, returnTime, appReason) {
+    public ProcessPrevStepOne(departureTime, returnTime, appReason, businessTripActualContent) {
         const vm = this;
+        vm.actualContent = businessTripActualContent;
         vm.derpartureTime = departureTime;
         vm.returnTime = returnTime;
         vm.appReason = appReason;

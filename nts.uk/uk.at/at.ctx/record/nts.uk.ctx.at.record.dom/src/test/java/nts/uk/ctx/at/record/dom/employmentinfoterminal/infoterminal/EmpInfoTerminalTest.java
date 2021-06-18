@@ -28,6 +28,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampTypeDisplay;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.net.Ipv4Address;
 
 /**
  * @author ThanhNX
@@ -55,11 +56,11 @@ public class EmpInfoTerminalTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		empInfoTerminal = new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"), new MacAddress("AABBCCDD"),
-				new EmpInfoTerminalCode(1), new EmpInfoTerSerialNo("1"), new EmpInfoTerminalName(""),
+		empInfoTerminal = new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")), new MacAddress("AABBCCDD"),
+				new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
 				new ContractCode("1"))
 						.createStampInfo(new CreateStampInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.empty()),
-								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty()))
+								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty(), Optional.empty()))
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
 	}
 
@@ -67,8 +68,7 @@ public class EmpInfoTerminalTest {
 	public void testCreateReservRecord() {
 
 		StampRecord recordExpect = new StampRecord(new ContractCode(""), new StampNumber("1"),
-				GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 01), new StampTypeDisplay(""),
-				Optional.of(new EmpInfoTerminalCode(1)));
+				GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 01), new StampTypeDisplay(""));
 
 		ReservationReceptionData receptionData = new ReservationReceptionData("1", "A", "200303", "010101", "2");
 
@@ -201,8 +201,8 @@ public class EmpInfoTerminalTest {
 	@Test
 	public void getters() {
 
-		EmpInfoTerminal target = new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"), new MacAddress("AABBCCDD"),
-				new EmpInfoTerminalCode(1), new EmpInfoTerSerialNo("1"), new EmpInfoTerminalName(""),
+		EmpInfoTerminal target = new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")), new MacAddress("AABBCCDD"),
+				new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
 				new ContractCode("1")).createStampInfo(null).modelEmpInfoTer(ModelEmpInfoTer.NRL_1)
 						.intervalTime((new MonitorIntervalTime(1))).build();
 		NtsAssert.invokeGetters(target);
@@ -234,8 +234,8 @@ public class EmpInfoTerminalTest {
 		assertThat(resultActual.getRelieve().getAuthcMethod()).isEqualTo(recordExpect.getRelieve().getAuthcMethod());
 		assertThat(resultActual.getRelieve().getStampMeans()).isEqualTo(recordExpect.getRelieve().getStampMeans());
 
-		assertThat(resultActual.getRefActualResults().getCardNumberSupport())
-				.isEqualTo(recordExpect.getRefActualResults().getCardNumberSupport());
+		assertThat(resultActual.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport())
+				.isEqualTo(recordExpect.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport());
 		if (!resultActual.getRefActualResults().getOvertimeDeclaration().isPresent()) {
 			assertThat(resultActual.getRefActualResults().getOvertimeDeclaration())
 					.isEqualTo(recordExpect.getRefActualResults().getOvertimeDeclaration());
@@ -245,8 +245,8 @@ public class EmpInfoTerminalTest {
 							recordExpect.getRefActualResults().getOvertimeDeclaration().get().getOverLateNightTime());
 		}
 
-		assertThat(resultActual.getRefActualResults().getWorkLocationCD().orElse(null))
-				.isEqualTo(recordExpect.getRefActualResults().getWorkLocationCD().orElse(null));
+		assertThat(resultActual.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().orElse(null))
+				.isEqualTo(recordExpect.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().orElse(null));
 		assertThat(resultActual.getRefActualResults().getWorkTimeCode())
 				.isEqualTo(recordExpect.getRefActualResults().getWorkTimeCode());
 

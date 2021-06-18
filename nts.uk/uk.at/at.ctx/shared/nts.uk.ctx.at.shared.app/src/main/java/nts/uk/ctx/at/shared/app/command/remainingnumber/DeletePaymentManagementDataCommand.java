@@ -1,14 +1,16 @@
 package nts.uk.ctx.at.shared.app.command.remainingnumber;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
 public class DeletePaymentManagementDataCommand {
 
 	/* field 振出データID */
-	private String payoutId;
+	private List<String> payoutId;
 	
 	/* field 振休データID */
-	private String subOfHDID;
+	private List<String> subOfHDID;
 	
 }

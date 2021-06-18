@@ -34,7 +34,7 @@ public class PublicHolidayManagementUsageUnitSaveCommandHandler extends CommandH
 		PublicHolidayManagementUsageUnitFindDto command = context.getCommand();
 		
 		//find unit setting
-		Optional<PublicHolidayManagementUsageUnit> opt = this.repository.findByCID(companyId);
+		Optional<PublicHolidayManagementUsageUnit> opt = this.repository.get(companyId);
 		
 		// check setting is existed and update.
 		if(opt.isPresent()){
@@ -49,7 +49,7 @@ public class PublicHolidayManagementUsageUnitSaveCommandHandler extends CommandH
 																	command.getIsManageEmployeePublicHd(), 
 																	command.getIsManageWkpPublicHd(), 
 																	command.getIsManageEmpPublicHd());
-			this.repository.add(domain); 
+			this.repository.insert(domain); 
 		}
 	}
 }

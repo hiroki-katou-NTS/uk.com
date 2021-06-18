@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflectframe.ReflectFrameEntranceAndExit;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflectondomain.ReflectionInformation;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectattdclock.ReflectAttendanceClock;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
@@ -24,6 +25,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceand
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -38,8 +41,12 @@ public class ReflectPcLogonInfo {
 	@Inject
 	private ReflectFrameEntranceAndExit reflectFrameEntranceAndExit;
 	
+	@Inject
+	private ReflectAttendanceClock reflectAttendanceClock;
+	
 	public void reflect(Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
 			IntegrationOfDaily integrationOfDaily) {
+		String cid = AppContexts.user().companyId();
 		// 日別実績のPCログオン情報のログオン情報を・反映情報（Temporary）に変換する
 		// 日別実績の入退門の入退門を・反映情報（Temporary）に変換する
 		List<ReflectionInformation> listReflectionInformation = new ArrayList<>();
@@ -53,8 +60,12 @@ public class ReflectPcLogonInfo {
 							))
 					.collect(Collectors.toList());
 		}
+		//打刻設定を取得する
+		WorkTimezoneStampSet workTimezoneStampSet = reflectAttendanceClock.getStampSetting(cid,
+				integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
+				integrationOfDaily.getWorkInformation());
 		// 枠反映する
-		listReflectionInformation = reflectFrameEntranceAndExit.reflect(listReflectionInformation, stamp, stampReflectRangeOutput, integrationOfDaily);
+		listReflectionInformation = reflectFrameEntranceAndExit.reflect(listReflectionInformation, stamp, stampReflectRangeOutput, integrationOfDaily,workTimezoneStampSet);
 		
 		// 反映済みの反映情報（Temporary）を日別実績のPCログオン情報にコピーする
 		List<LogOnInfo> logOnInfo = new ArrayList<>();
@@ -71,8 +82,8 @@ public class ReflectPcLogonInfo {
 			return Optional.empty();
 		}
 		WorkTimeInformation timeDay = new WorkTimeInformation(
-				new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, EngravingMethod.TIME_RECORD_ID_INPUT), opt.get());
-		WorkStamp data = new WorkStamp(opt.get(), timeDay, Optional.empty());
+				new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT)), opt.get());
+		WorkStamp data = new WorkStamp(timeDay, Optional.empty());
 		return Optional.of(data);
 	}
 

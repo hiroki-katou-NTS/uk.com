@@ -22,7 +22,7 @@ module nts.uk.com.view.cdl008.a {
             selectedSystemType: KnockoutObservable<number>;
             restrictionOfReferenceRange: boolean;
             isDisplayUnselect: KnockoutObservable<boolean>;
-            listDataDisplay: Array<any>;
+            listDataDisplay: KnockoutObservableArray<any>;
             listResult: Array<any>;
 
             // 部門対応 #106784
@@ -38,21 +38,12 @@ module nts.uk.com.view.cdl008.a {
                 self.selectedSystemType = ko.observable(5);
                 self.restrictionOfReferenceRange = true;
                 self.listResult = [];
-                self.listDataDisplay = [];
+                self.listDataDisplay = ko.observableArray([]);
 
                 var inputCDL008 = nts.uk.ui.windows.getShared('inputCDL008');
                 if (inputCDL008) {
                     self.baseDate(inputCDL008.baseDate);
                     self.isMultipleSelect = inputCDL008.isMultiple;
-
-                    ko.tasks.schedule(() => {
-                        let currentDialog = nts.uk.ui.windows.getSelf();
-                        if (self.isMultipleSelect) {
-                            currentDialog.setHeight(570);
-                        } else {
-                            currentDialog.setWidth(500);
-                        }
-                    });
 
                     if (_.isNil(inputCDL008.isShowBaseDate)) {
                         self.isMultipleUse = false;
@@ -88,10 +79,11 @@ module nts.uk.com.view.cdl008.a {
                     selectedId: null,
                     maxRows: 12,
                     tabindex: 1,
+                    width: 450,
                     systemType: self.selectedSystemType,
                     restrictionOfReferenceRange: self.restrictionOfReferenceRange,
                     isShowNoSelectRow: self.isDisplayUnselect(),
-                    listDataDisplay: [],
+                    listDataDisplay: self.listDataDisplay(),
                 };
                 if (self.isMultipleSelect) {
                     self.workplaces.selectedId = self.selectedMulWorkplace;
@@ -131,7 +123,7 @@ module nts.uk.com.view.cdl008.a {
                     }
                 }
 
-                let listWpinfor = self.getListWpinfo(self.listDataDisplay, self);
+                let listWpinfor = self.getListWpinfo(self.listDataDisplay(), self);
                 
                 // multiple
                 var selectedCode: any = self.selectedMulWorkplace();

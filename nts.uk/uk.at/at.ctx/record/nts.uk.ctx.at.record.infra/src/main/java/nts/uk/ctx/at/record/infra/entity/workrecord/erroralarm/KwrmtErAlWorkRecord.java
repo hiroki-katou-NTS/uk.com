@@ -389,7 +389,7 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 			int wtActualFilterAtr = 0;
 			List<KrcmtEralWktpPlan> lstWtPlan = new ArrayList<>();
 			List<KrcmtEralWktpActual> lstWtActual = new ArrayList<>();
-			if (wtCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
+			if (wtCompareAtr != FilterByCompare.SELECTED.value) {
 				PlanActualWorkType wtypeCondition = (PlanActualWorkType) conditionDomain.getWorkTypeCondition();
 				wtPlanActualOperator = wtypeCondition.getOperatorBetweenPlanActual().value;
 				wtPlanFilterAtr = wtypeCondition.getWorkTypePlan().isUse() ? 1 : 0;
@@ -415,7 +415,7 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 			int whActualFilterAtr = 0;
 			List<KrcmtEralWktmPlan> lstWhPlan = new ArrayList<>();
 			List<KrcmtEralWktmActual> lstWhActual = new ArrayList<>();
-			if (whCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
+			if (whCompareAtr != FilterByCompare.SELECTED.value) {
 				PlanActualWorkTime wtimeCondition = (PlanActualWorkTime) conditionDomain.getWorkTimeCondition();
 				whPlanActualOperator = wtimeCondition.getOperatorBetweenPlanActual().value;
 				whPlanFilterAtr = wtimeCondition.getWorkTimePlan().isUse() ? 1 : 0;
@@ -537,7 +537,7 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 			// Set WorkTypeCondition
 			condition.createWorkTypeCondition(alCon.workTypeUseAtr == 1,
 					alCon.wtCompareAtr);
-			if (alCon.wtCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
+			if (alCon.wtCompareAtr != FilterByCompare.SELECTED.value) {
 				condition.setWorkTypePlan(alCon.wtPlanFilterAtr == 1,
 						Optional.ofNullable(alCons.get(0).wtPlan != null ? alCons : null).orElse(Collections.emptyList()).stream()
 								.filter(wtype -> wtype.wtPlan.krcstErAlWtPlanPK.workTypeCode != null)
@@ -559,7 +559,7 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 			// Set WorkTimeCondtion
 			condition.createWorkTimeCondition(alCon.workingHoursUseAtr == 1,
 					alCon.whCompareAtr);
-			if (alCon.whCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
+			if (alCon.whCompareAtr != FilterByCompare.SELECTED.value) {
 				condition.setWorkTimePlan(alCon.whPlanFilterAtr == 1,
 						Optional.ofNullable(alCons.get(0).whPlan != null ? alCons : null).orElse(Collections.emptyList()).stream()
 								.filter(wtime -> wtime.whPlan.krcstErAlWhPlanActualPK.workTimeCode != null)
@@ -714,6 +714,8 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 	
 	public static ErrorAlarmCondition toConditionDomain(KwrmtErAlWorkRecord entity, KrcmtErAlCondition alCon) {
 		ErrorAlarmCondition condition = ErrorAlarmCondition.init();
+		if(alCon == null)
+			return new ErrorAlarmCondition(entity.eralCheckId, "");
 		condition.setDisplayMessage(alCon.messageDisplay);
 		condition.setContinuousPeriod(alCon.continuousPeriod);
 		if (!entity.fixedAtr) {
@@ -733,7 +735,7 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 			// Set WorkTypeCondition
 			condition.createWorkTypeCondition(alCon.workTypeUseAtr == 1,
 					alCon.wtCompareAtr);
-			if (alCon.wtCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
+			if (alCon.wtCompareAtr != FilterByCompare.SELECTED.value) {
 				condition.setWorkTypePlan(alCon.wtPlanFilterAtr == 1,
 						Optional.ofNullable(alCon.lstWtPlan).orElse(Collections.emptyList())
 								.stream().map(wtype -> wtype.krcstErAlWtPlanPK.workTypeCode)
@@ -752,7 +754,7 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 			// Set WorkTimeCondtion
 			condition.createWorkTimeCondition(alCon.workingHoursUseAtr == 1,
 					alCon.whCompareAtr);
-			if (alCon.whCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
+			if (alCon.whCompareAtr != FilterByCompare.SELECTED.value) {
 				condition.setWorkTimePlan(alCon.whPlanFilterAtr == 1,
 						Optional.ofNullable(alCon.lstWhPlan).orElse(Collections.emptyList())
 								.stream().map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode)

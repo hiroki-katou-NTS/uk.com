@@ -20,7 +20,7 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KshmtHdstkSetEmp;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtr;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtrPK;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtrPK_;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtr_;
@@ -40,7 +40,7 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 	 */
 	@Override
 	public void insert(EmptYearlyRetentionSetting emptYearlyRetentionSetting) {
-		KshmtHdstkSetEmp entity = new KshmtHdstkSetEmp();
+		KmfmtRetentionEmpCtr entity = new KmfmtRetentionEmpCtr();
 		emptYearlyRetentionSetting.saveToMemento(new JpaEmploymentSettingSetMemento(entity));
 		this.commandProxy().insert(entity);
 	}
@@ -53,15 +53,15 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 	 */
 	@Override
 	public void update(EmptYearlyRetentionSetting emptYearlyRetentionSetting) {
-		Optional<KshmtHdstkSetEmp> optional = this.queryProxy()
+		Optional<KmfmtRetentionEmpCtr> optional = this.queryProxy()
 				.find(new KmfmtRetentionEmpCtrPK(emptYearlyRetentionSetting.getCompanyId(),
-						emptYearlyRetentionSetting.getEmploymentCode()), KshmtHdstkSetEmp.class);
-		KshmtHdstkSetEmp entity = null;
+						emptYearlyRetentionSetting.getEmploymentCode()), KmfmtRetentionEmpCtr.class);
+		KmfmtRetentionEmpCtr entity = null;
 		if(optional.isPresent()) {
 			entity = optional.get();
 		}
 		else {
-			entity = new KshmtHdstkSetEmp();
+			entity = new KmfmtRetentionEmpCtr();
 		}
 		emptYearlyRetentionSetting.saveToMemento(new JpaEmploymentSettingSetMemento(entity));
 		this.commandProxy().update(entity);
@@ -75,7 +75,7 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 	@Override
 	public void remove(String companyId, String employmentCode) {
 		this.commandProxy()
-		.remove(KshmtHdstkSetEmp.class, new KmfmtRetentionEmpCtrPK(companyId, employmentCode));
+		.remove(KmfmtRetentionEmpCtr.class, new KmfmtRetentionEmpCtrPK(companyId, employmentCode));
 	}
 
 	/*
@@ -86,7 +86,7 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 	@Override
 	public Optional<EmptYearlyRetentionSetting> find(String companyId, String employmentCode) {
 		return this.queryProxy()
-				.find(new KmfmtRetentionEmpCtrPK(companyId, employmentCode), KshmtHdstkSetEmp.class)
+				.find(new KmfmtRetentionEmpCtrPK(companyId, employmentCode), KmfmtRetentionEmpCtr.class)
 				.map(c -> this.toDomain(c));
 	}
 	
@@ -96,7 +96,7 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 	 * @param entity the entity
 	 * @return the employment setting
 	 */
-	private EmptYearlyRetentionSetting toDomain(KshmtHdstkSetEmp entity) {
+	private EmptYearlyRetentionSetting toDomain(KmfmtRetentionEmpCtr entity) {
 		return new EmptYearlyRetentionSetting(new JpaEmploymentSettingGetMemento(entity));
 		
 	}
@@ -111,10 +111,10 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
-		CriteriaQuery<KshmtHdstkSetEmp> cq = bd.createQuery(KshmtHdstkSetEmp.class);
+		CriteriaQuery<KmfmtRetentionEmpCtr> cq = bd.createQuery(KmfmtRetentionEmpCtr.class);
 
 		// Root
-		Root<KshmtHdstkSetEmp> root = cq.from(KshmtHdstkSetEmp.class);
+		Root<KmfmtRetentionEmpCtr> root = cq.from(KmfmtRetentionEmpCtr.class);
 		cq.select(root);
 
 		// Predicate where clause
@@ -126,7 +126,7 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// Create Query
-		TypedQuery<KshmtHdstkSetEmp> query = em.createQuery(cq);
+		TypedQuery<KmfmtRetentionEmpCtr> query = em.createQuery(cq);
 
 		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}

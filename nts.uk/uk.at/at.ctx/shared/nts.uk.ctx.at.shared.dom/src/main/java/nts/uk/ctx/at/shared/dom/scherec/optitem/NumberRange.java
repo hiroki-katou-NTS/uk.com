@@ -4,9 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.scherec.optitem;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
 
 /**
@@ -16,46 +19,29 @@ import nts.arc.layer.dom.DomainObject;
 // 事前条件 : 上限値≧下限値
 
 @Getter
-public class NumberRange extends DomainObject {
+@AllArgsConstructor
+@NoArgsConstructor
+public class NumberRange extends DomainObject implements RangeGetter {
 
-	/** The upper limit. */
-	// 上限値
-	private Optional<NumberRangeValue> upperLimit;
+    // 日別実績の回数範囲
+	private Optional<DailyTimesRange> dailyTimesRange;
+	
+	// 月別実績の回数範囲
+	private Optional<MonthlyTimesRange> monthlyTimesRange;
 
-	/** The lower limit. */
-	// 下限値
-	private Optional<NumberRangeValue> lowerLimit;
-
-	/**
-	 * Instantiates a new number range.
-	 *
-	 * @param upperLimit the upper limit
-	 * @param lowerLimit the lower limit
-	 */
-	public NumberRange(Double upperLimit, Double lowerLimit) {
-		super();
-		if (upperLimit == null) {
-			this.upperLimit = Optional.empty();
-		} else {
-			this.upperLimit = Optional.of(new NumberRangeValue(upperLimit));
+	public Optional<BigDecimal> getUpper(PerformanceAtr performanceAtr) {
+		if (performanceAtr == PerformanceAtr.DAILY_PERFORMANCE) {
+			return dailyTimesRange.flatMap(c -> c.getUpperLimit()).map(c -> c.v());
 		}
-		if (lowerLimit == null) {
-			this.lowerLimit = Optional.empty();
-		} else {
-			this.lowerLimit = Optional.of(new NumberRangeValue(lowerLimit));
-		}
+		
+		return monthlyTimesRange.flatMap(c -> c.getUpperLimit()).map(c -> c.v());
 	}
-
-	/**
-	 * Checks if is invalid range.
-	 *
-	 * @return true, if is invalid range
-	 */
-	public boolean isInvalidRange() {
-		if (this.lowerLimit.get().greaterThan(this.upperLimit.get())) {
-			return true;
+	
+	public Optional<BigDecimal> getLower(PerformanceAtr performanceAtr) {
+		if (performanceAtr == PerformanceAtr.DAILY_PERFORMANCE) {
+			return dailyTimesRange.flatMap(c -> c.getLowerLimit()).map(c -> c.v());
 		}
-		return false;
+		
+		return monthlyTimesRange.flatMap(c -> c.getLowerLimit()).map(c -> c.v());
 	}
-
 }

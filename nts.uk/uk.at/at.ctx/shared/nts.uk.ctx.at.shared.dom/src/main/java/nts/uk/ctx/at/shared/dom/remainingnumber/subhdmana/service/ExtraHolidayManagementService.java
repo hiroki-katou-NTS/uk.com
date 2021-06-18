@@ -33,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepo
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementDataDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
@@ -75,13 +76,13 @@ public class ExtraHolidayManagementService {
 
 	@Inject
 	private EmpEmployeeAdapter empEmployeeAdapter;
-	
+
 	@Inject
 	private ShareEmploymentAdapter shareEmploymentAdapter;
-	
+
 	@Inject
 	private ClosureRepository closureRepo;
-	
+
 	public ExtraHolidayManagementOutput dataExtractionProcessing(int searchMode, String employeeId) {
 		String cid = AppContexts.user().companyId();
 		List<LeaveManagementData> listLeaveData = null;
@@ -92,7 +93,6 @@ public class ExtraHolidayManagementService {
 		CompensatoryLeaveEmSetting compenLeaveEmpSetting = null;
 		CompensatoryLeaveComSetting compensatoryLeaveComSetting = null;
 		GeneralDate baseDate = GeneralDate.today();
-		System.out.println(searchMode);
 		
 		// 全ての状況
 		if (searchMode == 0) {
@@ -156,41 +156,33 @@ public class ExtraHolidayManagementService {
 		List<CompensatoryDayOffManaData> listCompensatoryData = null;
 		List<LeaveComDayOffManagement> listLeaveComDayOffManagement = new ArrayList<>();
 		SEmpHistoryImport empHistoryImport = null;
-		
+
 		if (employeeId == null || employeeId.isEmpty()) {
 			employeeId = AppContexts.user().employeeId();
 		}
 		// 代休管理データを管理するかチェック Check xem có quản lý dữ liệu quản lý nghỉ bù không
 		EmploymentManageDistinctDto manageDistinct = this.checkManageSubstituteHolidayManagementData(employeeId);
-		
+
 		// 取得した管理区分をチェック Check phân loại quản lý đã nhận
 		if (manageDistinct.getIsManage().equals(ManageDistinct.NO)) { // 「管理しない」の場合 Trường hợp không quản lý
 			// エラーメッセージ「Msg_1731」を表示 hiển thị error msg
 			throw new BusinessException("Msg_1731", "Com_CompensationHoliday");
 		}
-		
+
 		// Input．設定期間区分をチェック Check Input.Phân loại thời gian setting
 		if (searchMode == 0) { // 「現在の残数状況」の場合
 			// ドメイン「休出管理データ」を取得する (lấy data chỉ định dựa vào domain 「休出管理データ」) 'data quản lý đi làm ngày nghỉ')
 			listLeaveData = leaveManaDataRepository.getBySidAndStateAtr(cid, employeeId, DigestionAtr.UNUSED);
-			
+
 			// ドメイン「代休管理データ」を取得する (lấy data chị định dựa vào domain 「代休管理データ」'data quản lý ngày nghỉ thay thế')
 			listCompensatoryData = comDayOffManaDataRepository.getByReDay(cid, employeeId);
 		}
-		
+
 		if (searchMode == 1) { // 「全ての状況」の場合
 			listLeaveData = leaveManaDataRepository.getBySid(cid, employeeId);
 			listCompensatoryData = comDayOffManaDataRepository.getBySid(cid, employeeId);
 		}
-		
-		// 取得したデータをチェック
-		if (listLeaveData.isEmpty() && listCompensatoryData.isEmpty()) { // 取得した「振出管理データ」がEmpty AND 取得した「振休管理データ」がEmpty
-			// Input．メッセージ表示区分をチェック
-			if (messageDisplay == 1) { // 表示する場合
-				throw new BusinessException("Msg_726");
-			}
-		}
-		
+
 		// ドメイン「休出代休紐付け管理」を取得する (Lấy data chỉ định theo domain 「休出代休紐付け管理」 'quản lý liên quan đến đi làm ngày nghỉ và ngày nghỉ thay thế')
 		List<GeneralDate> lstOccDate = new ArrayList<GeneralDate>();
 		List<GeneralDate> lstDigestDate = new ArrayList<GeneralDate>();
@@ -211,15 +203,23 @@ public class ExtraHolidayManagementService {
 		if (sEmpHistoryImport.isPresent()) {
 			empHistoryImport = sEmpHistoryImport.get();
 		}
-		
+
 		listLeaveComDayOffManagement.addAll(leaveComDayOffManaRepository.getByListOccDigestDate(employeeId, lstOccDate, lstDigestDate));
-		
+		// 締めIDを取得する Nhân shime ID (ID chốt)
+		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(cid, manageDistinct.getEmploymentCode());
+		Integer closureId = closureEmployment.map(ClosureEmployment::getClosureId).orElse(null);
+				
+		// 処理年月と締め期間を取得する Nhận khoảng thời gian chốt và tháng năm xử lý
+		Optional<PresentClosingPeriodExport> closing = this.find(cid, closureId);
+		if(!closing.isPresent()) return null;
+		PresentClosingPeriodExport close =  closing.get();
 		// 代休残数データ情報を作成する Tạo thông tin dữ liệu số ngày nghỉ bù còn lại
-		List<RemainInfoData> lstRemainData = this.getRemainInfoData(employeeId, listLeaveData, listCompensatoryData, listLeaveComDayOffManagement);
-		
-		// 月初の代休残数を取得 Nhận số nghỉ bù còn lại lúc đầu tháng
-		Double carryforwardDays = this.getDayOffRemainOfBeginMonth(cid, employeeId);
-		
+		List<RemainInfoData> lstRemainData = this.getRemainInfoData(employeeId,
+				listLeaveData,
+				listCompensatoryData,
+				listLeaveComDayOffManagement,
+				close.getClosureStartDate());
+
 		// 管理区分設定を取得 Nhận Setting phân loại quản lý
 		// ドメインモデル「雇用代休管理設定」を取得する Get domain model 「雇用代休管理設定」
 		CompensatoryLeaveEmSetting empSetting = compensLeaveEmSetRepository.find(cid, manageDistinct.getEmploymentCode());
@@ -228,16 +228,18 @@ public class ExtraHolidayManagementService {
 			// ドメインモデル「代休管理設定」を取得する Get modain model 「代休管理設定」
 			compLeavCom = compensLeaveComSetRepository.find(cid);
 		}
+
 		
-		// 締めIDを取得する Nhân shime ID (ID chốt)
-		Optional<ClosureEmployment> closureEmployment = closureEmploymentRepository.findByEmploymentCD(cid, manageDistinct.getEmploymentCode());
-		Integer closureId = closureEmployment.map(ClosureEmployment::getClosureId).orElse(null);
 		
 		GeneralDate baseDate = GeneralDate.today();
 		Optional<SWkpHistImport> sWkpHistImport = syWorkplaceAdapter.findBySid(employeeId, baseDate);
-		
-		// 処理年月と締め期間を取得する Nhận khoảng thời gian chốt và tháng năm xử lý
-		Optional<PresentClosingPeriodExport> closing = this.find(cid, closureId);
+		List<String> employeeIds = new ArrayList<>();
+		employeeIds.add(employeeId);
+		List<PersonEmpBasicInfoImport> employeeBasicInfo = empEmployeeAdapter.getPerEmpBasicInfo(employeeIds);
+		PersonEmpBasicInfoImport personEmpBasicInfoImport = null;
+		if (!employeeBasicInfo.isEmpty()) {
+			personEmpBasicInfoImport = employeeBasicInfo.get(0);
+		}
 		
 		List<RemainInfoDto> lstDataRemainDto =  lstRemainData.stream()
 				.map(item -> RemainInfoDto.builder()
@@ -260,18 +262,21 @@ public class ExtraHolidayManagementService {
 		// 「表示残数データ情報」を作成 Tạo "Thông tin dữ liệu còn lại hiển thị"
 		DisplayRemainingNumberDataInformation result = DisplayRemainingNumberDataInformation.builder()
 				.employeeId(employeeId)
-				.totalRemainingNumber(carryforwardDays)
+				.totalRemainingNumber(0d)
 				.dispExpiredDate(compLeavCom != null
 					? compLeavCom.getCompensatoryAcquisitionUse().getExpirationTime().description
-					: empSetting.getCompensatoryAcquisitionUse().getExpirationTime().description)
+					: null)
+					//	empSetting.getCompensatoryAcquisitionUse().getExpirationTime().description)
 				.remainingData(lstDataRemainDto)
 				.startDate(closing.get().getClosureStartDate())
 				.endDate(closing.get().getClosureEndDate())
 				.closureEmploy(closureEmployment.orElse(null))
 				.wkHistory(sWkpHistImport.orElse(null))
 				.sempHistoryImport(empHistoryImport)
+				.employeeCode(personEmpBasicInfoImport == null ? "" : personEmpBasicInfoImport.getEmployeeCode())
+				.employeeName(personEmpBasicInfoImport == null ? "" : personEmpBasicInfoImport.getBusinessName())
 				.build();
-		
+
 		// 作成した「表示残数データ情報」を返す Trả về "Thông tin dữ liệu còn lại hiển thị" đã tạo
 		return result;
 	}
@@ -340,7 +345,8 @@ public class ExtraHolidayManagementService {
 	public List<RemainInfoData> getRemainInfoData(String sid
 												, List<LeaveManagementData> listLeaveData
 												, List<CompensatoryDayOffManaData> listCompensatoryData
-												, List<LeaveComDayOffManagement> listLeaveComDayOffManagement) {
+												, List<LeaveComDayOffManagement> listLeaveComDayOffManagement
+												, GeneralDate startDate) {
 		List<RemainInfoData> lstRemainInfoData = new ArrayList<RemainInfoData>();
 		String cid = AppContexts.user().companyId();
 		Integer mergeCell = 0;
@@ -364,10 +370,10 @@ public class ExtraHolidayManagementService {
 						.digestionTimes(Optional.empty())
 						.occurrenceId(Optional.of(leaveData.getID()))
 						.digestionId(Optional.empty())
-						.dayLetf(leaveData.getExpiredDate().afterOrEquals(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0d)
-						.remainingHours(Optional.of(leaveData.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? leaveData.getUnUsedTimes().v() : 0))
-						.usedDay(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0d)
-						.usedTime(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedTimes().v() : 0)
+						.dayLetf(leaveData.getExpiredDate().afterOrEquals(startDate) ? leaveData.getUnUsedDays().v() : 0d)
+						.remainingHours(Optional.of(leaveData.getExpiredDate().beforeOrEquals(startDate) ? leaveData.getUnUsedTimes().v() : 0))
+						.usedDay(leaveData.getExpiredDate().before(startDate) ? leaveData.getUnUsedDays().v() : 0d)
+						.usedTime(leaveData.getExpiredDate().before(startDate) ? leaveData.getUnUsedTimes().v() : 0)
 						.mergeCell(mergeCell)
 						.build();
 				mergeCell++;
@@ -403,10 +409,10 @@ public class ExtraHolidayManagementService {
 						.digestionTimes(Optional.of(item.getRemainTimes().v()))
 						.occurrenceId(Optional.of(leaveData.getID()))
 						.digestionId(Optional.of(item.getComDayOffID()))
-						.dayLetf(leaveData.getExpiredDate().afterOrEquals(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0d)
-						.remainingHours(Optional.of(leaveData.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? leaveData.getUnUsedTimes().v() : 0))
-						.usedDay(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedDays().v() : 0d)
-						.usedTime(leaveData.getExpiredDate().before(GeneralDate.today()) ? leaveData.getUnUsedTimes().v() : 0)
+						.dayLetf(leaveData.getExpiredDate().afterOrEquals(startDate) ? leaveData.getUnUsedDays().v() : 0d)
+						.remainingHours(Optional.of(leaveData.getExpiredDate().beforeOrEquals(startDate) ? leaveData.getUnUsedTimes().v() : 0))
+						.usedDay(leaveData.getExpiredDate().before(startDate) ? leaveData.getUnUsedDays().v() : 0d)
+						.usedTime(leaveData.getExpiredDate().before(startDate) ? leaveData.getUnUsedTimes().v() : 0)
 						.mergeCell(mergeCell)
 						.build();
 				
@@ -426,7 +432,9 @@ public class ExtraHolidayManagementService {
 		for (CompensatoryDayOffManaData cdomdData : listCompensatoryData) {
 			// List＜休出代休紐付け管理＞を絞り込みする  Filter List＜代休管理データ＞
 			List<LeaveComDayOffManagement> lcdomList = listLeaveComDayOffManagement.stream()
-					.filter(item -> item.getAssocialInfo().getDateOfUse().compareTo(cdomdData.getDayOffDate().getDayoffDate().get()) == 0)
+					.filter(item -> cdomdData.getDayOffDate().getDayoffDate().isPresent()
+								? cdomdData.getDayOffDate().getDayoffDate().get().equals(item.getAssocialInfo().getDateOfUse())
+								: false)
 					.collect(Collectors.toList());
 			
 			// 絞り込みした「休出代休紐付け管理」をチェック Check "Quản lý liên kết đi làm ngày nghỉ/nghỉ bù" đã filter
@@ -454,7 +462,7 @@ public class ExtraHolidayManagementService {
 				continue;
 			}
 			List<GeneralDate> dayOffs = lcdomList.stream()
-					.map(x -> x.getAssocialInfo().getDateOfUse())
+					.map(x -> x.getAssocialInfo().getOutbreakDay())
 					.collect(Collectors.toList());
 			// ドメインモデル「休出管理データ」を取得する Get domain model 「休出管理データ」
 			List<LeaveManagementData> manaDataList = leaveManaDataRepository.getBySidAndDatOff(sid, dayOffs);
@@ -470,10 +478,10 @@ public class ExtraHolidayManagementService {
 						.digestionTimes(Optional.of(cdomdData.getRequiredTimes().v()))
 						.occurrenceId(Optional.of(item.getID()))
 						.digestionId(Optional.of(cdomdData.getComDayOffID()))
-						.dayLetf(item.getExpiredDate().afterOrEquals(GeneralDate.today()) ? item.getUnUsedDays().v() : 0d)
-						.remainingHours(Optional.of(item.getExpiredDate().beforeOrEquals(GeneralDate.today()) ? item.getUnUsedTimes().v() : 0))
-						.usedDay(item.getExpiredDate().before(GeneralDate.today()) ? item.getUnUsedDays().v() : 0d)
-						.usedTime(item.getExpiredDate().before(GeneralDate.today()) ? item.getUnUsedTimes().v() : 0)
+						.dayLetf(item.getExpiredDate().afterOrEquals(startDate) ? item.getUnUsedDays().v() : 0d)
+						.remainingHours(Optional.of(item.getExpiredDate().beforeOrEquals(startDate) ? item.getUnUsedTimes().v() : 0))
+						.usedDay(item.getExpiredDate().before(startDate) ? item.getUnUsedDays().v() : 0d)
+						.usedTime(item.getExpiredDate().before(startDate) ? item.getUnUsedTimes().v() : 0)
 						.mergeCell(mergeCell)
 						.build();
 				
@@ -536,5 +544,21 @@ public class ExtraHolidayManagementService {
 		}
 		//代休発生数合計－代休使用数合計を返す
 		return unUseDays - unOffSet;
+	}
+	
+	/**
+	 * Get LeaveManaData By Id And UnUseDay
+	 * @param sid
+	 * @return List<LeavesManaData>
+	 */
+	public List<LeaveManagementDataDto> getLeaveManaDataByIdAndUnUse(String cid, String sid, GeneralDate expiredDate, double unUse) {
+		List<LeaveManagementData> listData = leaveManaDataRepository.getListByIdAndUnUse(cid, sid, expiredDate, unUse);
+		return listData.stream().map(
+				domain -> LeaveManagementDataDto.builder()
+					.id(domain.getID())
+					.dayoffDate(domain.getComDayOffDate().getDayoffDate().orElse(null))
+					.unUsedDays(domain.getUnUsedDays().v())
+					.build())
+				.collect(Collectors.toList());
 	}
 }

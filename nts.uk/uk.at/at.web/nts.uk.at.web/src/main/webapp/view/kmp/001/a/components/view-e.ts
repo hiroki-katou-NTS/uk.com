@@ -114,18 +114,29 @@ module nts.uk.at.view.kmp001.e {
 
 			const param = { loginEmployee: vm.$user.employeeId, makeEmbossedCard: paddingType, targetPerson: targetPerson }
 
-			vm.$ajax(KMP001E_API.GENERATE_STAMP_CARD, param)
-				.fail((err: any) => {
-					vm.$dialog.error({ messageId: err.messageId });
-					// nts.uk.ui.dialog.error({ messageId: err.messageId });
-				})
-				.then((data: IGenerateCard[]) => {
-					vm.cardGeneration(data);
-				})
-				.then(() => {
-					const param = { sid: targetPerson.map(m => m.sid), cardGeneration: ko.unwrap(vm.cardGeneration) };
-					vm.$ajax(KMP001E_API.ADD_STAMP_CARD, param);
-				});
+			if (ko.unwrap(vm.selectedCode).length <= 0) {
+				vm.$dialog.info({ messageId: 'Msg_184' });
+			} else {
+				nts.uk.ui.dialog
+					.confirm({ messageId: "Msg_2033" })
+					.ifYes(() => {
+						vm.$ajax(KMP001E_API.GENERATE_STAMP_CARD, param)
+							.fail((err: any) => {
+								vm.$dialog.error({ messageId: err.messageId });
+								// nts.uk.ui.dialog.error({ messageId: err.messageId });
+							})
+							.then((data: IGenerateCard[]) => {
+								vm.cardGeneration(data);
+							})
+							.then(() => {
+								const param = { sid: targetPerson.map(m => m.sid), cardGeneration: ko.unwrap(vm.cardGeneration) };
+								vm.$ajax(KMP001E_API.ADD_STAMP_CARD, param);
+							})
+							.then(() => {
+								vm.$dialog.info({ messageId: 'Msg_2034' });
+							});
+					})
+			}
 
 		}
 	}

@@ -7,10 +7,6 @@
 	position: absolute;
 }
 
-#oViewModel{
-	top: 29px;
-}
-
 #set-work-time {
 	top: 32px;
 }
@@ -53,4 +49,8 @@
 
 #oViewModel label {
 	line-height: 27px;
+}
+
+.workstyleclassfication {
+	width: 100px !important;
 }

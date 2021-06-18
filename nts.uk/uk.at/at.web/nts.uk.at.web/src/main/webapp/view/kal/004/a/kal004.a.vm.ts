@@ -56,11 +56,11 @@ module nts.uk.at.view.kal004.a.model {
             self.checkSource = [];
 
             self.checkHeader = ko.observableArray([
-                { headerText: getText('KAL004_21'), key: 'GUID', width: 10, hidden: true },
-                { headerText: 'cssClass', key: 'cssClass', width: 10, hidden: true },
-                { headerText: getText('KAL004_21'), key: 'categoryName', width: 120, template: "<span class='${cssClass}'>${categoryName}</span>" },
+                { headerText: getText('KAL004_21'), key: 'GUID', hidden: true },
+                { headerText: 'cssClass', key: 'cssClass', hidden: true },
+                { headerText: getText('KAL004_21'), key: 'categoryName', width: 130, template: "<span class='${cssClass}'>${categoryName}</span>" },
                 { headerText: getText('KAL004_17'), key: 'checkConditonCode', width: 50, template: "<span class='${cssClass}'>${checkConditonCode}</span>" },
-                { headerText: getText('KAL004_18'), key: 'checkConditionName', width: 150, template: "<span class='${cssClass}'>${checkConditionName}</span>" }
+                { headerText: getText('KAL004_18'), key: 'checkConditionName', width: 140, template: "<span class='${cssClass}'>${checkConditionName}</span>" }
             ]);
             
             self.currentCodeListSwap = ko.observableArray([]);
@@ -162,16 +162,17 @@ module nts.uk.at.view.kal004.a.model {
                         let daily = categoryInputed.extractionDaily == null ? null : new share.ExtractionPeriodDailyCommand(categoryInputed.extractionDaily);
                         let unit = categoryInputed.extractionUnit == null ? null : new share.PeriodUnitCommand(categoryInputed.extractionUnit);
                         let listMonthly = [];
-                        if(categoryInputed.alarmCategory == 11){
+                        if(categoryInputed.alarmCategory == 11 || categoryInputed.alarmCategory == 14){
                             listMonthly== null;
                         }else{
                             listMonthly = categoryInputed.listExtractionMonthly == [] ? [] : _.map(categoryInputed.listExtractionMonthly, (item)=>{ return new share.ExtractionPeriodMonthlyCommand(item)});
                         }
-                        let yearly = categoryInputed.extractionYear ==null ? null : new share.ExtractionRangeYearCommand(categoryInputed.extractionYear);
-                        let averMonth = categoryInputed.extractionAverMonth ==null ? null : new share.ExtractionAverageMonthCommand(categoryInputed.extractionAverMonth);
-                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, daily, unit, listMonthly, yearly, averMonth));
+                        let yearly = categoryInputed.extractionYear == null ? null : new share.ExtractionRangeYearCommand(categoryInputed.extractionYear);
+                        let averMonth = categoryInputed.extractionAverMonth == null ? null : new share.ExtractionAverageMonthCommand(categoryInputed.extractionAverMonth);
+                        let scheYear = categoryInputed.extractionScheYear == null ? null : new share.ExtractionPeriodECommand(categoryInputed.extractionScheYear);
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, daily, unit, listMonthly, yearly, averMonth, scheYear));
                     } else {
-                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null, null, [], null));
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null, null, [], null, null, null));
                     }
 
                 });

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,10 +66,35 @@ public class KrcdtEmpErAlCommon extends ContractUkJpaEntity {
 	}
 
 	public EmployeeDailyPerError toDomain() {
+		if(erAttendanceItem == null){
+			return new EmployeeDailyPerError(this.companyID, this.employeeId,
+					this.processingDate, this.errorCode, null,
+					0, this.errorAlarmMessage);
+		}
 		return new EmployeeDailyPerError(this.companyID, this.employeeId,
 				this.processingDate, this.errorCode, erAttendanceItem.stream()
 						.map(c -> c.krcdtErAttendanceItemPK.attendanceItemId).collect(Collectors.toList()),
 				0, this.errorAlarmMessage);
+	}
+	
+	
+	//handle this.erAttendanceItem null
+	public EmployeeDailyPerError toDomainForCcg005() {
+		return new EmployeeDailyPerError(
+				this.companyID, 
+				this.employeeId,
+				this.processingDate,
+				this.errorCode, 
+				this.getListAttendanceItemId(),
+				0,
+				this.errorAlarmMessage
+				);
+	}
+	
+	public List<Integer> getListAttendanceItemId() {
+		return this.erAttendanceItem == null ? Collections.emptyList() : this.erAttendanceItem.stream()
+			.map(c -> c.krcdtErAttendanceItemPK.attendanceItemId)
+			.collect(Collectors.toList());
 	}
 	
 	public List<KrcdtDaySyaErrorAtd> getErAttendanceItem() {

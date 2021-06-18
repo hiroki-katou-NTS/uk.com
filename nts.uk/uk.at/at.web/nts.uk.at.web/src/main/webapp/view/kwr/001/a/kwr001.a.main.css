@@ -1,4 +1,4 @@
-.panel {
+.kwr001-contents .panel {
 	/* display: inline-block; */
 	/* width: 91%; */
 	padding: 5px;
@@ -7,19 +7,10 @@
 
 .A1_5, .A1_6 {
 	display: inline-block;
-	margin-left: 53px;
-}
-
-.A1_6 {
-	/* width: 70%; */
 }
 
 .A5_1 {
 	margin-bottom: 10px;
-}
-
-.td-left {
-	/* padding-top: 4px; */
 }
 
 .td-right{
@@ -52,13 +43,23 @@
 .td-right .row {
 	display: flex;
 	align-items: center;
-	margin-top:  5px;
+	margin-top:  12px;
 	margin-bottom:  5px;
 	margin-left: 15px;
 }
 
+.switchbox-wrappers .radio-wrapper span {
+	width: 80px;
+	text-align: center;
+}
+
 #combo-box{
-	margin-left: 55px;
+	margin-left: 10px;
+	margin-right: 5px;
+}
+
+#combo-box-free-setting {
+	margin-left: 10px;
 	margin-right: 5px;
 }
 
@@ -72,10 +73,6 @@ td {
 
 .left, .right {
 	margin-top: 10px;
-}
-
-label {
-	width: 85px;
 }
 
 .A10-left{
@@ -100,11 +97,6 @@ hr {
 	width: 545px;
 }
 
-.type-page-brake {
-	max-width: 100px;
-	margin-left: 22px;
-}
-
 .td-right .right .panel.panel-frame {
 	padding: 10px;
 }
@@ -115,15 +107,11 @@ hr {
 }
 
 #output-setting-content {
-	height: 445px;
+	height: 574px;
 }
 
 #btnSetErrorAlarmCd {
 	margin-left: 20px;
-}
-
-#output-format {
-	margin-left: 55px;
 }
 
 #nts-component-list {
@@ -143,6 +131,18 @@ hr {
 	padding: 10px !important;
 }
 .work-place-accum {
-	width:330px;
-	margin-left:35px;
+	width: 298px;
+	margin-left: 30px;
+}
+
+.ntsRadioBox span.label {
+	padding-left: 3px;
+}
+
+.pt-7 {
+	padding-top: 7px !important;
+}
+
+.row .form-label {
+	width: 110px;
 }

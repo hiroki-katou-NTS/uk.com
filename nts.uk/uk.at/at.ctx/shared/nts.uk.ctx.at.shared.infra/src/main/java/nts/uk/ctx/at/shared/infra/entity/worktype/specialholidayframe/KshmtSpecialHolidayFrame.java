@@ -24,8 +24,12 @@ public class KshmtSpecialHolidayFrame extends ContractUkJpaEntity implements Ser
 	@Column(name = "NAME")
 	public String name;
 	/*特別休暇枠の廃止区分*/
-	@Column(name = "ABOLISH_ATR")
-	public int abolishAtr;
+	@Column(name = "USE_ATR")
+	public int useAtr;
+	/** **/
+	@Column(name = "TIME_MNG_ATR")
+	public int timeMngAtr;
+	
 	@Override
 	protected Object getKey() {		
 		return kshmtSpecialHolidayFramePK;

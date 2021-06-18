@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting;
 
 import java.util.ArrayList;
-//import java.util.Collections;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -9,15 +8,16 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.WorkingBreakTimeAtr;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -36,33 +36,21 @@ public class OutingTimeSheet extends DomainObject {
 	 */
 	private OutingFrameNo outingFrameNo;
 	
-	// 外出: 勤怠打刻(実打刻付き) - primitive value
-	private Optional<TimeActualStamp> goOut;
-	
-	/*
-	 * 計算時間
-	 */
-	private AttendanceTime outingTimeCalculation;
-	
-	/*
-	 * 外出時間
-	 */
-	private AttendanceTime outingTime;
+	// 外出: 勤怠打刻
+	private Optional<WorkStamp> goOut;
 	
 	/*
 	 * 外出理由
 	 */
 	private GoingOutReason reasonForGoOut;
 	
-	// 戻り: 勤怠打刻(実打刻付き) - primitive value
-	private Optional<TimeActualStamp> comeBack;
+	// 戻り: 勤怠打刻
+	private Optional<WorkStamp> comeBack;
 
-	public void setProperty(OutingFrameNo outingFrameNo, Optional<TimeActualStamp> goOut, AttendanceTime outingTimeCalculation,
-			AttendanceTime outingTime,  GoingOutReason reasonForGoOut, Optional<TimeActualStamp> comeBack) {
+	public void setProperty(OutingFrameNo outingFrameNo, Optional<WorkStamp> goOut,
+			GoingOutReason reasonForGoOut, Optional<WorkStamp> comeBack) {
 		this.outingFrameNo = outingFrameNo;
 		this.goOut = goOut;
-		this.outingTimeCalculation = outingTimeCalculation;
-		this.outingTime = outingTime;
 		this.reasonForGoOut = reasonForGoOut;
 		this.comeBack = comeBack;
 		
@@ -73,9 +61,10 @@ public class OutingTimeSheet extends DomainObject {
 	 * @return 控除項目の時間帯
 	 */
 	public TimeSheetOfDeductionItem toTimeSheetOfDeductionItem() {
-		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeSpanForDailyCalc(this.goOut.get().getStamp().get().getTimeDay()
-																											.getTimeWithDay().orElse(TimeWithDayAttr.THE_PRESENT_DAY_0000), 
-																										this.comeBack.get().getStamp().get().getTimeDay()
+		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(new TimeSpanForDailyCalc(this.goOut.map(x-> x.getTimeDay()
+																									.getTimeWithDay().orElse(TimeWithDayAttr.THE_PRESENT_DAY_0000))
+																									.orElse(TimeWithDayAttr.THE_PRESENT_DAY_0000), 
+																										this.comeBack.get().getTimeDay()
 																											.getTimeWithDay().orElse(TimeWithDayAttr.THE_PRESENT_DAY_0000)),
 																			  new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 																			  new ArrayList<>(),
@@ -90,7 +79,7 @@ public class OutingTimeSheet extends DomainObject {
 	}
 	
 	/**
-	 * 自信が計算できる状態か判定うる
+	 * 計算可能な状態か判断する	
 	 * @return 計算可能である
 	 */
 	public boolean isCalcState() {
@@ -104,7 +93,7 @@ public class OutingTimeSheet extends DomainObject {
 	 */
 	private boolean isCalcGoOut() {
 		if(this.getGoOut() != null && this.getGoOut().isPresent()) {
-			return this.getGoOut().get().isCalcStampState();
+			return true;
 		}
 		return false;
 	}
@@ -116,8 +105,37 @@ public class OutingTimeSheet extends DomainObject {
 	 */
 	private boolean isCalcComeBack() {
 		if(this.getComeBack() != null && this.getComeBack().isPresent()) {
-			return this.getGoOut().get().isCalcStampState();
+			return true;
 		}
 		return false;		
+	}
+	
+	/**
+	 * 	[2] 時間帯を返す
+	 * @return
+	 */
+	public Optional<TimeSpanForCalc> getTimeZone(){
+		
+		if( this.isCalcState() ) {
+			
+			if(goOut.get().lessThan(comeBack.get())) {
+				
+				return Optional.of( new TimeSpanForCalc( 
+								goOut.get().getTimeDay().getTimeWithDay().get() , 
+								comeBack.get().getTimeDay().getTimeWithDay().get()));
+			}  
+		}
+		
+		return Optional.empty();
+	}
+	
+	// NOとデフォルトを作成する
+	public static OutingTimeSheet createDefaultWithNo(int no, GoingOutReason reason) {
+		return new OutingTimeSheet(new OutingFrameNo(no), 
+				Optional.of(WorkStamp.createDefault()), 
+//				new AttendanceTime(0), 
+//				new AttendanceTime(0), 
+				reason,
+				Optional.of(WorkStamp.createDefault()));
 	}
 }

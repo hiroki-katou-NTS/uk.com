@@ -35,9 +35,10 @@
          * @param text 解析対象の文字列
          */
         export function countHalf(text: string) {
-            var count = 0;
-            for (var i = 0; i < text.length; i++) {
-                var c = text.charCodeAt(i);
+            let count = 0;
+
+            for (let i = 0; i < (text || "").length; i++) {
+                let c = text.charCodeAt(i);
 
                 // 0x20 ～ 0x80: 半角記号と半角英数字
                 // 0xff61 ～ 0xff9f: 半角カタカナ
@@ -47,11 +48,13 @@
                     count += 2;
                 }
             }
+
             return count;
         }
         
         export function limitText(str: string, maxlength: number, index?: number) : string {
-            let idx = nts.uk.util.isNullOrUndefined(index) ? 0 : index;
+            const idx = _.isNil(index) ? 0 : index;
+
             return str.substring(idx, findIdxFullHafl(str, maxlength, idx));
         }
         
@@ -357,7 +360,7 @@
         * @param length 文字数
         */
         export function padLeft(text: string, paddingChar: string, length: number) {
-            return charPadding(text, paddingChar, true, length);
+            return _.padStart(text, length, paddingChar);
         }
 
         /**
@@ -367,7 +370,7 @@
         * @param length 文字数
         */
         export function padRight(text: string, paddingChar: string, length: number) {
-            return charPadding(text, paddingChar, false, length);
+            return _.padEnd(text, length, paddingChar);
         }
 
         /**
@@ -378,25 +381,7 @@
         * @param length 文字数
         */
         export function charPadding(text: string, paddingChar: string, isPadLeft: boolean, length: number) {
-            var result: string;
-
-            if (countHalf(paddingChar) !== 1) {
-                throw new Error('paddingChar "' + paddingChar + '" is not single character');
-            }
-
-            var lengthOfSource = countHalf(text);
-            var shortage = length - lengthOfSource;
-            if (shortage <= 0) {
-                return text;
-            }
-
-            var pad = new Array(shortage + 1).join(paddingChar);
-
-            if (isPadLeft) {
-                return pad + text;
-            } else {
-                return text + pad;
-            }
+            return isPadLeft ? _.padStart(text, length, paddingChar) : _.padEnd(text, length, paddingChar);
         }
 
         export function replaceAll(originalString: string, find: string, replace: string) {

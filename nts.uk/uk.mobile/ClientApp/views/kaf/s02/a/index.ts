@@ -14,6 +14,8 @@ import {
     KafS00SubP3Component
 } from 'views/kaf/s00/sub/p3';
 import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
+import { xor } from 'lodash';
+import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 
 @component({
     name: 'kafs02a',
@@ -36,6 +38,7 @@ import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
         'worktime': Kdl001Component,
         'to-top': TotopComponent,
         'kafs00subp3': KafS00SubP3Component,
+        'cmms45c': CmmS45CComponent
     },
 })
 export class KafS02AComponent extends KafS00ShrComponent {
@@ -1045,6 +1048,19 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
     public handleErrorMessage(res: any) {
         const self = this;
+        if (res.messageId == 'Msg_197') {
+            self.$modal.error({ messageId: 'Msg_197', messageParams: [] }).then(() => {
+                let appID = self.data.appDispInfoStartupOutput.appDetailScreenInfo.application.appID;
+                self.$modal('cmms45c', { 'listAppMeta': [appID], 'currentApp': appID }).then((newData) => {
+                    self.mode = false;
+                    self.data = newData;
+                    self.application = self.data.appDispInfoStartupOutput.appDetailScreenInfo.application;
+                    self.fetchDataEdit();
+                });
+            });
+
+            return;
+        }	
         if (res.messageId) {
             return self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         } else {
@@ -1085,13 +1101,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
         let start: any = null;
         let end: any = null;
 
-        // self.actualOutingTime.forEach((item) => {
-        //     if (item.frameNo === (currentFrame + 1)) {
-        //         start = item.opStartTime;
-        //         end = item.opEndTime;
-        //     }
-        // });
-
         for (let i = 0; i < self.actualOutingTime.length; i++) {
             if (self.actualOutingTime[i].frameNo === (currentFrame + 1)) {
                 start = self.actualOutingTime[i].opStartTime;
@@ -1100,8 +1109,20 @@ export class KafS02AComponent extends KafS00ShrComponent {
             }
         }
 
+        let errors = _.filter(self.errorList, {'type': 'gooutHour', 'frame': (currentFrame + 1)});
+        let errorMsg = null;
+
+        if (errors.length > 0) {
+            if (!errors[0].start && errors[0].end) {
+                errorMsg = this.$i18n('KAFS02_22', 'Com_In');
+            }
+            if (errors[0].start && !errors[0].end) {
+                errorMsg = this.$i18n('KAFS02_22', 'Com_Out');
+            }
+        }
+
         if (currentFrame < 10) {
-            let goOutHour = new GoBackHour({ startTime: null, endTime: null, frame: (currentFrame + 1), swtModel: self.dataSource[0].id, title: 'KAFS02_9', dispCheckbox: true, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: start, actualEnd: end });
+            let goOutHour = new GoBackHour({ startTime: null, endTime: null, frame: (currentFrame + 1), swtModel: self.dataSource[0].id, title: 'KAFS02_9', dispCheckbox: true, disableCheckbox: false, isCheck: false, errorMsg: (errorMsg), actualStart: start, actualEnd: end });
 
             self.goOutLst.push(goOutHour);
         }
@@ -1114,13 +1135,6 @@ export class KafS02AComponent extends KafS00ShrComponent {
         let actualStart: any = null;
         let actualEnd: any = null;
 
-        // self.actualBreakTime.forEach((item) => {
-        //     if (item.frameNo === (currentFrame + 1)) {
-        //         actualStart = item.opStartTime;
-        //         actualEnd = item.opEndTime;
-        //     }
-        // });
-
         for (let i = 0; i < self.actualBreakTime.length; i++) {
             if (self.actualBreakTime[i].frameNo === (currentFrame + 1)) {
                 actualStart = self.actualBreakTime[i].opStartTime;
@@ -1129,11 +1143,35 @@ export class KafS02AComponent extends KafS00ShrComponent {
             }
         }
 
+        let errors = _.filter(self.errorList, {'type': 'breakHour', 'frame': (currentFrame + 1)});
+        let errorMsg = null;
+
+        if (errors.length > 0) {
+            if (!errors[0].start && errors[0].end) {
+                errorMsg = this.$i18n('KAFS02_22', 'KAFS02_24');
+            }
+            if (errors[0].start && !errors[0].end) {
+                errorMsg = this.$i18n('KAFS02_22', 'KAFS02_23');
+            }
+        }
+
         if (currentFrame < 10) {
-            let actualBreakTime = new WorkHour({ startTime: null, endTime: null, frame: (currentFrame + 1), title: 'KAFS02_12', dispCheckbox: true, disableCheckbox: false, isCheck: false, errorMsg: null, actualStart: (actualStart), actualEnd: (actualEnd) });
+            let actualBreakTime = new WorkHour({ startTime: null, endTime: null, frame: (currentFrame + 1), title: 'KAFS02_12', dispCheckbox: true, disableCheckbox: false, isCheck: false, errorMsg: (errorMsg), actualStart: (actualStart), actualEnd: (actualEnd) });
 
             self.breakLst.push(actualBreakTime);
         }
+    }
+
+    public getValidAllValue() {
+        const vm = this;
+        let validAll: boolean = true;
+        for (let child of vm.$children) {
+            if (!child.$valid) {
+                validAll = false;
+            }
+        }
+        
+        return validAll;
     }
 
     public register() {
@@ -1177,8 +1215,9 @@ export class KafS02AComponent extends KafS00ShrComponent {
             .then((result) => {
                 if (result) {
                     console.log(result);
+                    self.$http.post('at', API.reflectApp, result.data.reflectAppIdLst);
                     self.$mask('hide');
-                    self.$goto('kafs02a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: result.data.appID });
+                    self.$goto('kafs02a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: result.data.appIDLst[0], modeS02: 0 });
                 }
             }).catch((err) => {
                 if (err) {
@@ -1706,6 +1745,16 @@ export class KafS02AComponent extends KafS00ShrComponent {
         const self = this;
         self.application.opAppReason = opAppReason;
     }
+
+    public kafs00BValid(kafs00BValid) {
+        const self = this;
+        self.isValidateAll = self.getValidAllValue();
+    }
+
+    public kafs00CValid(kafs00CValid) {
+        const self = this;
+        self.isValidateAll = self.getValidAllValue();
+    }
 }
 
 const API = {
@@ -1714,5 +1763,6 @@ const API = {
     checkBeforeRegister: 'at/request/application/stamp/checkBeforeRegister',
     checkBeforeUpdate: 'at/request/application/stamp/checkBeforeUpdate',
     register: 'at/request/application/stamp/register',
-    update: 'at/request/application/stamp/updateNew'
+    update: 'at/request/application/stamp/updateNew',
+    reflectApp: 'at/request/application/reflect-app'
 };

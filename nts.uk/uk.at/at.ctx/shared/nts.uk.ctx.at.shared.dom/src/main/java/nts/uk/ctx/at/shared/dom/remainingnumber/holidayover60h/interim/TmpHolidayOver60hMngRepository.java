@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -44,4 +45,5 @@ public interface TmpHolidayOver60hMngRepository {
 	 * @return the by employee id and date and remain type
 	 */
 	public List<TmpHolidayOver60hMng> getByEmployeeIdAndDatePeriodAndRemainType(String employee, DatePeriod period, int remainType);
+	public void deleteBySidAndYmd(String sid, GeneralDate ymd);
 }

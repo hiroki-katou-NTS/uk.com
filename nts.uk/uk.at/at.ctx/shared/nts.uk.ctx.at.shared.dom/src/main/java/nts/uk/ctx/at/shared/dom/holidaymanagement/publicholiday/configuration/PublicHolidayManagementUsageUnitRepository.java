@@ -17,7 +17,7 @@ public interface PublicHolidayManagementUsageUnitRepository {
 	 * @param companyId the company id
 	 * @return the optional
 	 */
-	Optional<PublicHolidayManagementUsageUnit> findByCID(String companyId);
+	Optional<PublicHolidayManagementUsageUnit> get(String companyId);
 	
 	/**
 	 * Update.
@@ -31,5 +31,5 @@ public interface PublicHolidayManagementUsageUnitRepository {
 	 *
 	 * @param domain the domain
 	 */
-	void add(PublicHolidayManagementUsageUnit domain);
+	void insert(PublicHolidayManagementUsageUnit domain);
 }

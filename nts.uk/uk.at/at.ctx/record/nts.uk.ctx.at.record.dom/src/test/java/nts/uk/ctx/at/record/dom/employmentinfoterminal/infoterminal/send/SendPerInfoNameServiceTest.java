@@ -51,7 +51,7 @@ public class SendPerInfoNameServiceTest {
 	@Test
 	public void testSendEmpty() {
 
-		List<SendPerInfoName> actual = SendPerInfoNameService.send(require, new EmpInfoTerminalCode(1),
+		List<SendPerInfoName> actual = SendPerInfoNameService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual).isEqualTo(Collections.emptyList());
 	}
@@ -60,7 +60,7 @@ public class SendPerInfoNameServiceTest {
 	public void testSendEmptySid() {
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
+				.of(new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"), new CompanyId("1"), "1",
 						Collections.emptyList(), null, null).overTimeHoliday(true).build());
 		new Expectations() {
 			{
@@ -69,7 +69,7 @@ public class SendPerInfoNameServiceTest {
 				result = timeRecordReqSetting;
 			}
 		};
-		List<SendPerInfoName> actual = SendPerInfoNameService.send(require, new EmpInfoTerminalCode(1),
+		List<SendPerInfoName> actual = SendPerInfoNameService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual).isEqualTo(Collections.emptyList());
 	}
@@ -79,7 +79,7 @@ public class SendPerInfoNameServiceTest {
 	public void test() {
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
+				.of(new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"), new CompanyId("1"), "1",
 						Arrays.asList(new EmployeeId("1"), new EmployeeId("2")), null, null).overTimeHoliday(true)
 								.build());
 
@@ -105,7 +105,7 @@ public class SendPerInfoNameServiceTest {
 
 			}
 		};
-		List<SendPerInfoName> actual = SendPerInfoNameService.send(require, new EmpInfoTerminalCode(1),
+		List<SendPerInfoName> actual = SendPerInfoNameService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual)
 				.extracting(d -> d.getIdNumber(), d -> d.getPerName(), d -> d.getDepartmentCode(),
@@ -120,7 +120,7 @@ public class SendPerInfoNameServiceTest {
 	public void testEmpNull() {
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"), new CompanyId("1"), "1",
+				.of(new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"), new CompanyId("1"), "1",
 						Arrays.asList(new EmployeeId("1"), new EmployeeId("2")), null, null).overTimeHoliday(true)
 								.build());
 
@@ -146,7 +146,7 @@ public class SendPerInfoNameServiceTest {
 
 			}
 		};
-		List<SendPerInfoName> actual = SendPerInfoNameService.send(require, new EmpInfoTerminalCode(1),
+		List<SendPerInfoName> actual = SendPerInfoNameService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual)
 				.extracting(d -> d.getIdNumber(), d -> d.getPerName(), d -> d.getDepartmentCode(),

@@ -7,7 +7,7 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 550, height: 595 };</script>
+				<script>var dialogSize = { width: 550, height: 635 };</script>
 				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="kmk010.c.main.css" />
 				<com:scriptfile path="kmk010.c.start.js" />
@@ -20,49 +20,68 @@
 				</com:ValidatorScript>
 			</ui:define>
 			<ui:define name="content">
-				<div id="functions-area">
+			<!-- 	<div id="functions-area">
 					<button tabindex="4" class="proceed" data-bind="click: saveOutsideOTBRDItem" >#{i18n.getText('KMK010_47')}</button>
 					<button tabindex="5" class="buttonOther" data-bind="click: closeSaveOutsideOTBRDItem" >#{i18n.getText('KMK010_48')}</button>
-				</div>
-				
-				<div class="contentDialog">
-					<label>#{i18n.getText('KMK010_42')}</label>
-					<div tabindex="-1" class="tbOvertime">
-						<table tabindex="-1" class="overtime-border" >
-							<tr tabindex="-1" class="bg-dark-green">
-								<td class="tdcenter" tabindex="-1">#{i18n.getText('KMK010_43')}</td>
-								<td class="tdcenter" tabindex="-1">#{i18n.getText('KMK010_44')}</td>
-								<td class="tdcenter" tabindex="-1" data-bind="text: textOvertimeName"></td>
-								<td class="tdcenter" tabindex="-1">#{i18n.getText('KMK010_65')}</td>
-							</tr>
-							<com:ko tag="foreach" bind="lstOutsideOTBRDItemModel">
-								<tr tabindex="-1">
-									<td class="tdcenter">
-										<div tabindex="1" data-bind="ntsCheckBox: { checked: useClassification , enable: $parent.enableCheckbox }"></div>
-									</td>
-									<td>
-										<div class="tdcenter" tabindex="-1" data-bind="text: breakdownItemNo"></div>
-									</td>
-									<td>
-										<input tabindex="2"  data-bind="attr: {'id': 'breakdownItemNo_'+breakdownItemNo()}, ntsTextEditor: {value: name, constraint: 'BreakdownItemName', required: requiredText, name: $parent.switchNameResource()}"/>
-									</td>
-									<td>
-										<div tabindex="3" class="selectProductNumber" data-bind="ntsComboBox: {
-											options: $parent.lstProductNumber,
-											optionsValue: 'value',
-											visibleItemsCount: 10,
-											value: productNumber,
-											optionsText: 'localizedName',
-											editable: false,
-											enable: $parent.enableCheckbox ,
-											columns: [
-												{ prop: 'value', length: 2 },
-											]}"></div>
-									</td>
+				</div> -->
+				<div id="contents-area" class="body">
+					<div class="contentDialog">
+						<!-- <label>#{i18n.getText('KMK010_42')}</label> -->
+						<div tabindex="-1" class="tbOvertime">
+							<table tabindex="-1" class="overtime-border" >
+								<tr tabindex="-1" class="bg-dark-green">								
+									<td class="tdcenter" tabindex="-1">#{i18n.getText('KMK010_44')}</td>
+									<td class="tdcenter" tabindex="-1" data-bind="text: textOvertimeName"></td>
+									<td class="tdcenter" tabindex="-1">#{i18n.getText('KMK010_43')}</td>
+									<td class="tdcenter" tabindex="-1">#{i18n.getText('KMK010_65')}</td>
 								</tr>
-							</com:ko>
-						</table>
+								<com:ko tag="foreach" bind="lstOutsideOTBRDItemModel">
+									<tr tabindex="-1">									
+										<td>
+											<div class="tdcenter" tabindex="-1" data-bind="text: breakdownItemNo"></div>
+										</td>									
+										<td>
+											<input tabindex="1"  data-bind="attr: {'id': 'breakdownItemNo_'+breakdownItemNo()}, ntsTextEditor: {value: name, constraint: 'BreakdownItemName', required: requiredText, name: $parent.switchNameResource()}"/>
+										</td>
+										<td class="tdcenter">
+											<div tabindex="1" data-bind="ntsCheckBox: { checked: useClassification , enable: $parent.enableCheckbox }"></div>
+										</td>
+										<td>
+											<div tabindex="1" class="selectProductNumber" data-bind="ntsComboBox: {
+												options: $parent.lstProductNumber,
+												optionsValue: 'value',
+												visibleItemsCount: 10,
+												value: productNumber,
+												optionsText: 'localizedName',
+												editable: false,
+												enable: $parent.enableCheckbox ,
+												columns: [
+													{ prop: 'value', length: 2 },
+												]}"></div>
+										</td>
+									</tr>
+								</com:ko>
+							</table>
+						</div>
 					</div>
+				</div>
+				<div id="functions-area-bottom" class="">
+					<button
+							tabindex="4"
+							id="btnSaveOutsideOTBRDItem"
+							class="x-large proceed"
+							data-bind="click: saveOutsideOTBRDItem"
+					>
+						#{i18n.getText('KMK010_47')}
+					</button>
+					<button
+							tabindex="5"
+							id="btnCloseSaveOutsideOTBRDItem"
+							class="large"
+							data-bind="click: closeSaveOutsideOTBRDItem"
+					>
+						#{i18n.getText('KMK010_48')}
+					</button>
 				</div>
 			</ui:define>
 		</ui:composition>

@@ -7,10 +7,9 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
 /**
  * 月別実績の外出
@@ -93,8 +92,7 @@ public class GoOutOfMonthly implements Serializable{
 		
 		// 日別実績の「短時間・回数」を集計する
 		if (shortTime != null){
-			ChildCareAtr childCareAtr = ChildCareAtr.CARE;
-			if (shortTime.getChildCareAttribute() == ChildCareAttribute.CHILD_CARE) childCareAtr = ChildCareAtr.CHILD_CARE;
+			ChildCareAtr childCareAtr = shortTime.getChildCareAttribute();
 			
 			this.goOutForChildCares.putIfAbsent(childCareAtr, new GoOutForChildCare(childCareAtr));
 			val targetChildCare = this.goOutForChildCares.get(childCareAtr);

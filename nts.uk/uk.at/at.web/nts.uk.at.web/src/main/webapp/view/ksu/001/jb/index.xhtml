@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1030, height:360 };</script>
+			<script>var dialogSize = { width: 1000, height:380 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteName
 				nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftRemarks
@@ -27,7 +27,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button class="proceed" tabindex="1"
-				id = "buttonsave" data-bind=" click: saveData">#{i18n.getText('KSU001_105')}</button>
+				id = "buttonsave" data-bind=" click: saveData, enable: $root.errors.isEmpty">#{i18n.getText('KSU001_105')}</button>
 				<button class="danger" tabindex="2"
 					data-bind="click: deletePatternItem, enable: isDeleteEnable">#{i18n.getText('KSU001_106')}</button>
 				<button tabindex="3" data-bind="click: openJD, enable: isCopy">#{i18n.getText('KSU001_107')}</button>
@@ -46,8 +46,8 @@
 						data-bind="click: $parent.clickLinkButton.bind($parent, $element, $index), text: name()"></a>
 				</div>
 				<div class="mt-10">
-					<div id="name" data-bind="ntsFormLabel: {required: true, constraint: 'ShiftPaletteName'}">#{i18n.getText('KSU001_904')}</div>
-					<input id="textName" data-bind="ntsTextEditor: {value: groupName, required: true, constraint: 'ShiftPalletName', name: '#[KSU001_904]'}" />
+					<div id="name" data-bind="ntsFormLabel: {required: true, constraint: ['ShiftPaletteName']}">#{i18n.getText('KSU001_904')}</div>
+					<input id="textName" data-bind="ntsTextEditor: {value: groupName, required: true, constraint: ['ShiftPaletteName'], name: '#[KSU001_904]'}" />
 					<div id="classification" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_109')}</div>
 					<div class="cf"
 						data-bind="ntsSwitchButton: {
@@ -72,7 +72,7 @@
 						<span>#{i18n.getText('KSU001_1701')}</span>
 						<div>
 							<input
-								data-bind="ntsTextEditor: {value: textName, constraint: 'WorkPairPatternName', enable: true, required: true, name: '#[KSU001_1702]'}" />
+								data-bind="ntsTextEditor: {value: textName, constraint: 'ShiftRemarks', enable: true, required: true, name: '#[KSU001_1702]'}" />
 							<button class="proceed"
 								data-bind="enable: $root.errors.isEmpty, click: decision">#{i18n.getText('KSU001_1703')}</button>
 							<button data-bind="click: closePopup">#{i18n.getText('KSU001_1704')}</button>

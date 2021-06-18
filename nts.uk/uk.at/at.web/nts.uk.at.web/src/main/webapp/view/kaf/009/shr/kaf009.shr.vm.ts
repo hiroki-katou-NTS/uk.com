@@ -2,61 +2,71 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
     import ModelDto = nts.uk.at.view.kaf009_ref.a.viewmodel.ModelDto;
     
     const template = `
-    <div data-bind="if: dataFetch()">
-    <!--A7-->
 
-    <div class="centerCheckBox">
-        <div class="title"
-                    data-bind="ntsFormLabel: {required:true , text: $i18n('KAF009_45')}"></div>
-        <div class="firstCheckBox" data-bind="ntsCheckBox: { checked: model.checkbox1, text: $i18n('KAF009_16'), enable: mode == 'edit'}"></div>
-        <div class="secondCheckBox"
-                        data-bind="ntsCheckBox: { checked: model.checkbox2, text: $i18n('KAF009_18'), enable: mode == 'edit'}"></div>
-    </div>
-    
-    <!--Work Change-->
-    <div data-bind="if: dataFetch().goBackReflect()"
-        class="valign-center control-group">
-        <div
-            data-bind="if: dataFetch().goBackReflect().reflectApplication == 3 
+<div data-bind="if: dataFetch()">
+	<!--A7-->
+
+	<div class="centerCheckBox">
+		<div class="titleKAF009"
+			data-bind="ntsFormLabel: {required:true , text: $i18n('KAF009_45')}"></div>
+		<div class="firstCheckBoxKAF009"
+			data-bind="ntsCheckBox: { checked: model.checkbox1, text: $i18n('KAF009_16'), enable: ko.toJS(mode) == 'edit'}"></div>
+		<div class="secondCheckBoxKAF009"
+			data-bind="ntsCheckBox: { checked: model.checkbox2, text: $i18n('KAF009_18'), enable: ko.toJS(mode) == 'edit'}"></div>
+	</div>
+
+	<!--Work Change-->
+	<div style="margin-top: 0px"
+		data-bind="if: dataFetch().goBackReflect()"
+		class="valign-center control-group">
+		<div
+			data-bind="if: dataFetch().goBackReflect().reflectApplication == 3 
             || dataFetch().goBackReflect().reflectApplication == 2">
-            <div data-bind="if : model.checkbox3 != null">
-                <div data-bind="ntsCheckBox: { checked: model.checkbox3 , text: $i18n('KAF009_21'), enable: mode == 'edit'}">
-                </div>
-            </div>
-        </div>
-        <div
-            data-bind="if: dataFetch().goBackReflect().reflectApplication == 1
+			<div data-bind="if : model.checkbox3 != null">
+				<div
+					data-bind="ntsCheckBox: { checked: model.checkbox3 , text: $i18n('KAF009_21'), enable: ko.toJS(mode) == 'edit'}">
+				</div>
+			</div>
+		</div>
+		<div
+			data-bind="if: dataFetch().goBackReflect().reflectApplication == 1
             || dataFetch().goBackReflect().reflectApplication == 0">
-            <br />
-        </div>
-        <div
-            data-bind="if: dataFetch().goBackReflect().reflectApplication != 0">
-            <HR class="hrStyle" />
-        </div>
+			<br />
+		</div>
+		<div
+			data-bind="if: dataFetch().goBackReflect().reflectApplication != 0">
+			<HR class="hrStyle" />
+		</div>
 
-        <div class="table clsWorkType"
-            data-bind="if: dataFetch().goBackReflect().reflectApplication == 3 
+		<div class="table clsWorkTypeKAF009"
+			data-bind="if: dataFetch().goBackReflect().reflectApplication == 3 
             || dataFetch().goBackReflect().reflectApplication == 2 
             || dataFetch().goBackReflect().reflectApplication == 1">
-            <div class="cell valign-center ">
-                <div class="valign-center control-group"
-                    data-bind="ntsFormLabel:{ required: true, text: $i18n('KAF009_22') }"></div>
-                <BR />
-                <div class="valign-center control-group"
-                    data-bind="ntsFormLabel:{ required: true, text: $i18n('KAF009_23')}"></div>
-            </div>
-            <div class="cell valign-center">
-                <button id="workSelect"
-                    data-bind=" click: openDialogKdl003, text: $i18n('KAF009_24'), enable: (mode == 'edit' && model.checkbox3() || dataFetch().goBackReflect().reflectApplication == 1) "></button>
-            </div>
-            <div class="cell valign-center">
-                <label class="lblWorkTypeCd required" data-bind="text: model.workTypeCode"></label>
-                <label data-bind="text: model.workTypeName"></label> <br /> <label
-                    class="lblSiftCd" data-bind="text: model.workTimeCode, required: true"></label> <label
-                    data-bind="text: model.workTimeName "></label>
-            </div>
-        </div>
-    </div>
+			<div class="cell valign-center" style="padding-left: 5px">
+				<div class="valign-center control-group"
+					data-bind="ntsFormLabel:{ required: true, text: $i18n('KAF009_22') }"></div>
+				<BR />
+				<div class="valign-center control-group" style="padding-top: 5px"
+					data-bind="ntsFormLabel:{ required: true, text: $i18n('KAF009_23')}"></div>
+			</div>
+			<div class="cell valign-center">
+				<button id="workSelectKAF009"
+					data-bind=" click: openDialogKdl003, text: $i18n('KAF009_24'), enable: (ko.toJS(mode) == 'edit' && model.checkbox3() || dataFetch().goBackReflect().reflectApplication == 1) "></button>
+			</div>
+			<div class="cell valign-center">
+				<label class="lblWorkTypeCd required"
+					data-bind="text: model.workTypeCode"></label> <label
+					data-bind="text: model.workTypeName"></label>
+					<div>
+						<label
+						class="lblSiftCd"
+						data-bind="text: model.workTimeCode, required: true"></label> <label
+						 data-bind="text: model.workTimeName "></label>
+					
+					</div>
+			</div>
+		</div>
+	</div>
 
 </div>
     `
@@ -65,7 +75,7 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
         template: template
     })
     class Kaf009ShareViewModel extends ko.ViewModel {
-        mode: string = 'edit';
+        mode: KnockoutObservable<String>;
         subscribers: Array<any>;
         model : Model;
 
@@ -75,13 +85,14 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
               vm.model = params.model;
               vm.dataFetch = params.dataFetch;
               vm.mode = params.mode;
+			  
 
             vm.dataFetch.subscribe(value => {
                 console.log('Change dataFetch');
                 if (ko.toJS(value)) {
                     if (ko.toJS(value)) {
                         vm.bindData(true);                                            
-                    }else {
+                    } else {
                         vm.bindData(false);
                     }
                 }
@@ -103,21 +114,35 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                 
                 if (!_.isEmpty(goBackApp.dataWork)) {
                     let codeWorkType = goBackApp.dataWork.workType;
-                    let wtype = _.find(ko.toJS(vm.dataFetch().lstWorkType), item => item.workTypeCode == codeWorkType);
-                    let nameWorkType = !_.isUndefined(wtype) ? wtype.name : vm.$i18n('KAF009_63');
+					let nameWorkType;
+					if (_.isNil(codeWorkType)) {
+						nameWorkType = '';
+					} else {
+	                    let wtype = _.find(ko.toJS(vm.dataFetch().lstWorkType), item => item.workTypeCode == codeWorkType) as any;
+	                    nameWorkType = !_.isNil(wtype) ? wtype.name : vm.$i18n('KAF009_63');						
+					}
                     vm.model.workTypeCode(codeWorkType);
                     vm.model.workTypeName(nameWorkType);
                     if (!_.isEmpty(ko.toJS(vm.dataFetch().workTime))) {
                         let codeWorkTime = goBackApp.dataWork.workTime;
+						let nameWorkTime;
+						if (_.isNil(codeWorkTime)) {
+							nameWorkTime = '';
+						} else {
+	                        let wtime = _.find(ko.toJS(vm.dataFetch().appDispInfoStartup).appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == codeWorkTime) as any;
+	                        nameWorkTime = !_.isNil(wtime) ? wtime.workTimeDisplayName.workTimeName : vm.$i18n('KAF009_63');
+							
+						}
                         vm.model.workTimeCode(codeWorkTime);
-                        let wtime = _.find(ko.toJS(vm.dataFetch().appDispInfoStartup).appDispInfoWithDateOutput.opWorkTimeLst, item => item.worktimeCode == codeWorkTime)
-                        let nameWorkTime = !_.isUndefined(wtime) ? wtime.workTimeDisplayName.workTimeName : vm.$i18n('KAF009_63');
                         vm.model.workTimeName(nameWorkTime);
                         
                     }
                 } else {
-                    vm.model.workTypeName(vm.$i18n('KAF009_63'));
-                    vm.model.workTimeName(vm.$i18n('KAF009_63'));
+					// #112404
+					vm.model.workTypeCode(null);
+					vm.model.workTimeCode(null);
+                    vm.model.workTypeName('');
+                    vm.model.workTimeName('');
                 }
                 
                 

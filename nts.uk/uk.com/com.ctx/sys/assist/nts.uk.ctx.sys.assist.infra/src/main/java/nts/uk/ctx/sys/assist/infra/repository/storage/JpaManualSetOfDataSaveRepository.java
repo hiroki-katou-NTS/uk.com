@@ -6,11 +6,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSave;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveRepository;
 import nts.uk.ctx.sys.assist.infra.entity.storage.SspdtSaveManual;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
@@ -30,23 +30,25 @@ public class JpaManualSetOfDataSaveRepository extends JpaRepository implements M
 
 	private ManualSetOfDataSave toDomain(SspdtSaveManual entity) {
 		return new ManualSetOfDataSave(entity.cid, entity.storeProcessingId, entity.passwordAvailability,
-				entity.saveSetName, entity.referenceDate, entity.compressedPassword, entity.executionDateAndTime,
-				entity.daySaveEndDate, entity.daySaveStartDate,
-				entity.monthSaveEndDate, entity.monthSaveStartDate, entity.suppleExplanation, entity.endYear,
-				entity.startYear, entity.presenceOfEmployee, entity.practitioner, 1);
+				entity.saveSetName, entity.referenceDate,
+				entity.compressedPassword != null ? CommonKeyCrypt.decrypt(entity.compressedPassword) : null,
+				entity.executionDateAndTime, entity.daySaveEndDate, entity.daySaveStartDate, entity.monthSaveEndDate,
+				entity.monthSaveStartDate, entity.suppleExplanation, entity.endYear, entity.startYear,
+				entity.presenceOfEmployee, entity.practitioner, entity.executionAtr);
 	}
 
 	private SspdtSaveManual toEntity(ManualSetOfDataSave dom) {
-		return new SspdtSaveManual(dom.getCid(), dom.getStoreProcessingId(),
+		String contractCd = AppContexts.user().contractCode();
+		return new SspdtSaveManual(contractCd, dom.getCid(), dom.getStoreProcessingId(),
 				dom.getPasswordAvailability().value, dom.getSaveSetName().v(), dom.getReferenceDate(),
 				(dom.getCompressedPassword() != null && dom.getPasswordAvailability() == NotUseAtr.USE)
 						? CommonKeyCrypt.encrypt(dom.getCompressedPassword().v())
 						: null,
 				dom.getExecutionDateAndTime(), dom.getDaySaveEndDate(), dom.getDaySaveStartDate(),
-				dom.getMonthSaveEndDate(), dom.getMonthSaveStartDate(),
-				dom.getSuppleExplanation(), dom.getEndYear().isPresent() ? dom.getEndYear().get().v() : null,
+				dom.getMonthSaveEndDate(), dom.getMonthSaveStartDate(), dom.getSuppleExplanation(),
+				dom.getEndYear().isPresent() ? dom.getEndYear().get().v() : null,
 				dom.getStartYear().isPresent() ? dom.getStartYear().get().v() : null, dom.getPresenceOfEmployee().value,
-				dom.getPractitioner());
+				dom.getPractitioner(), dom.getSaveType().value);
 	}
 
 	@Override
@@ -65,6 +67,11 @@ public class JpaManualSetOfDataSaveRepository extends JpaRepository implements M
 	public Optional<ManualSetOfDataSave> getManualSetOfDataSaveById(String storeProcessingId) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING_STORE, SspdtSaveManual.class)
 				.setParameter("storeProcessingId", storeProcessingId).getSingle(c -> toDomain(c));
+	}
+
+	@Override
+	public void update(ManualSetOfDataSave domain) {
+		this.commandProxy().update(toEntity(domain));
 	}
 
 }

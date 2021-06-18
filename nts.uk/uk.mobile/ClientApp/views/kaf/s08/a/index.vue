@@ -16,11 +16,12 @@
     <kafs08a2 
     @prevStepOne="ProcessPrevStepOne" 
     @nextToStepThree="ProcessNextToStepThree"
+    v-on:initFromDetail="initFromDetail"
     v-bind:derpartureTime="derpartureTime" 
     v-bind:returnTime="returnTime"  
     v-bind:comment="comment"
     v-bind:appReason="appReason"
-    v-bind:table="achievementDetails"
+    v-bind:actualContent="actualContent"
     v-bind:businessTripInfoOutput="businessTripInfoOutput"
     v-bind:application="application"
     v-bind:listDate="listDate"

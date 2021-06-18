@@ -32,9 +32,9 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyfResultRange;
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRangePK;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtCalcResultRangePK;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyv;
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemPK;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyvPK;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemPK_;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItem_;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
@@ -63,7 +63,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 		// Find entity
 		KrcmtAnyv entity = this.queryProxy()
-				.find(new KrcstOptionalItemPK(dom.getCompanyId().v(), dom.getOptionalItemNo().v()),
+				.find(new KrcmtAnyvPK(dom.getCompanyId().v(), dom.getOptionalItemNo().v()),
 						KrcmtAnyv.class)
 				.get();
 
@@ -83,7 +83,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	@Override
 	public OptionalItem find(String companyId, Integer optionalItemNo) {
 		KrcmtAnyv entity = this.queryProxy()
-				.find(new KrcstOptionalItemPK(companyId, optionalItemNo), KrcmtAnyv.class).get();
+				.find(new KrcmtAnyvPK(companyId, optionalItemNo), KrcmtAnyv.class).get();
 
 		// Return
 		return new OptionalItem(new JpaOptionalItemGetMemento(entity));
@@ -108,27 +108,52 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 				KrcmtAnyv item = new KrcmtAnyv();
-				item.setKrcstOptionalItemPK(new KrcstOptionalItemPK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
+				item.setKrcmtAnyvPK(new KrcmtAnyvPK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
 				item.setOptionalItemName(rec.getString("OPTIONAL_ITEM_NAME"));
 				item.setOptionalItemAtr(rec.getInt("OPTIONAL_ITEM_ATR"));
 				item.setUsageAtr(rec.getInt("USAGE_ATR"));
+				item.setCalcAtr(rec.getInt("CALC_ATR"));
 				item.setPerformanceAtr(rec.getInt("PERFORMANCE_ATR"));
 				item.setEmpConditionAtr(rec.getInt("EMP_CONDITION_ATR"));
 				item.setUnitOfOptionalItem(rec.getString("UNIT_OF_OPTIONAL_ITEM"));
+				item.setCalcAtr(rec.getInt("CALC_ATR"));
+				item.setNote(rec.getString("ITEM_NOTE"));
+				item.setDescription(rec.getString("ITEM_DESCRIP"));
 
 				KrcmtAnyfResultRange range = new KrcmtAnyfResultRange();
-				range.setKrcstCalcResultRangePK(new KrcstCalcResultRangePK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
-				range.setUpperLimitAtr(rec.getInt("UPPER_LIMIT_ATR"));
-				range.setLowerLimitAtr(rec.getInt("LOWER_LIMIT_ATR"));
-				range.setUpperTimeRange(rec.getInt("UPPER_TIME_RANGE"));
-				range.setLowerTimeRange(rec.getInt("LOWER_TIME_RANGE"));
-				range.setUpperNumberRange(rec.getDouble("UPPER_NUMBER_RANGE"));
-				range.setLowerNumberRange(rec.getDouble("LOWER_NUMBER_RANGE"));
-				range.setUpperAmountRange(rec.getInt("UPPER_AMOUNT_RANGE"));
-				range.setLowerAmountRange(rec.getInt("LOWER_AMOUNT_RANGE"));
+				range.setKrcstCalcResultRangePK(new KrcmtCalcResultRangePK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
+				
+				if (rec.getInt("UPPER_LIMIT_ATR") != null) {
+				    range.setUpperLimitAtr(rec.getInt("UPPER_LIMIT_ATR"));
+				    
+				    range.setUpperDayTimeRange(rec.getInt("UPPER_DAY_TIME_RANGE"));
+				    range.setUpperDayNumberRange(rec.getBigDecimal("UPPER_DAY_NUMBER_RANGE"));
+				    range.setUpperdayAmountRange(rec.getInt("UPPER_DAY_AMOUNT_RANGE"));
+				    range.setUpperMonTimeRange(rec.getInt("UPPER_MON_TIME_RANGE"));
+				    range.setUpperMonNumberRange(rec.getBigDecimal("UPPER_MON_NUMBER_RANGE"));
+				    range.setUpperMonAmountRange(rec.getInt("UPPER_MON_AMOUNT_RANGE"));
+				} else {
+				    range.setUpperLimitAtr(0);
+				}
+				
+				if (rec.getInt("LOWER_LIMIT_ATR") != null) {
+				    range.setLowerLimitAtr(rec.getInt("LOWER_LIMIT_ATR"));
+				    
+				    range.setLowerDayTimeRange(rec.getInt("LOWER_DAY_TIME_RANGE"));
+				    range.setLowerDayNumberRange(rec.getBigDecimal("LOWER_DAY_NUMBER_RANGE"));
+				    range.setLowerDayAmountRange(rec.getInt("LOWER_DAY_AMOUNT_RANGE"));
+				    range.setLowerMonTimeRange(rec.getInt("LOWER_MON_TIME_RANGE"));
+				    range.setLowerMonNumberRange(rec.getBigDecimal("LOWER_MON_NUMBER_RANGE"));
+				    range.setLowerMonAmountRange(rec.getInt("LOWER_MON_AMOUNT_RANGE"));
+				} else {
+				    range.setLowerLimitAtr(0);
+				}
 
 				return new OptionalItem(new JpaOptionalItemGetMemento(item, range));
 			});
+		}catch (Exception e){
+			System.out.println("Check error mes KWR :-----------------" + e.getMessage());
+			return Collections.emptyList();
 		}
 	}
 
@@ -152,7 +177,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
-		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcmtAnyvPK).get(KrcstOptionalItemPK_.cid),
 				companyId));
 		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.optionalItemAtr), atr));
 		cq.multiselect(root, joinRoot);
@@ -203,27 +228,51 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 				KrcmtAnyv item = new KrcmtAnyv();
-				item.setKrcstOptionalItemPK(new KrcstOptionalItemPK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
+				item.setKrcmtAnyvPK(new KrcmtAnyvPK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
 				item.setOptionalItemName(rec.getString("OPTIONAL_ITEM_NAME"));
 				item.setOptionalItemAtr(rec.getInt("OPTIONAL_ITEM_ATR"));
 				item.setUsageAtr(rec.getInt("USAGE_ATR"));
+				item.setCalcAtr(rec.getInt("CALC_ATR"));
 				item.setPerformanceAtr(rec.getInt("PERFORMANCE_ATR"));
 				item.setEmpConditionAtr(rec.getInt("EMP_CONDITION_ATR"));
 				item.setUnitOfOptionalItem(rec.getString("UNIT_OF_OPTIONAL_ITEM"));
+                item.setCalcAtr(rec.getInt("CALC_ATR"));
+                item.setNote(rec.getString("ITEM_NOTE"));
+                item.setDescription(rec.getString("ITEM_DESCRIP"));
 
 				KrcmtAnyfResultRange range = new KrcmtAnyfResultRange();
-				range.setKrcstCalcResultRangePK(new KrcstCalcResultRangePK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
-				range.setUpperLimitAtr(rec.getInt("UPPER_LIMIT_ATR"));
-				range.setLowerLimitAtr(rec.getInt("LOWER_LIMIT_ATR"));
-				range.setUpperTimeRange(rec.getInt("UPPER_TIME_RANGE"));
-				range.setLowerTimeRange(rec.getInt("LOWER_TIME_RANGE"));
-				range.setUpperNumberRange(rec.getDouble("UPPER_NUMBER_RANGE"));
-				range.setLowerNumberRange(rec.getDouble("LOWER_NUMBER_RANGE"));
-				range.setUpperAmountRange(rec.getInt("UPPER_AMOUNT_RANGE"));
-				range.setLowerAmountRange(rec.getInt("LOWER_AMOUNT_RANGE"));
+				range.setKrcstCalcResultRangePK(new KrcmtCalcResultRangePK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
+				if (rec.getInt("UPPER_LIMIT_ATR") != null) {
+                    range.setUpperLimitAtr(rec.getInt("UPPER_LIMIT_ATR"));
+                    
+                    range.setUpperDayTimeRange(rec.getInt("UPPER_DAY_TIME_RANGE"));
+                    range.setUpperDayNumberRange(rec.getBigDecimal("UPPER_DAY_NUMBER_RANGE"));
+                    range.setUpperdayAmountRange(rec.getInt("UPPER_DAY_AMOUNT_RANGE"));
+                    range.setUpperMonTimeRange(rec.getInt("UPPER_MON_TIME_RANGE"));
+                    range.setUpperMonNumberRange(rec.getBigDecimal("UPPER_MON_NUMBER_RANGE"));
+                    range.setUpperMonAmountRange(rec.getInt("UPPER_MON_AMOUNT_RANGE"));
+                } else {
+                    range.setUpperLimitAtr(0);
+                }
+                
+                if (rec.getInt("LOWER_LIMIT_ATR") != null) {
+                    range.setLowerLimitAtr(rec.getInt("LOWER_LIMIT_ATR"));
+                    
+                    range.setLowerDayTimeRange(rec.getInt("LOWER_DAY_TIME_RANGE"));
+                    range.setLowerDayNumberRange(rec.getBigDecimal("LOWER_DAY_NUMBER_RANGE"));
+                    range.setLowerDayAmountRange(rec.getInt("LOWER_DAY_AMOUNT_RANGE"));
+                    range.setLowerMonTimeRange(rec.getInt("LOWER_MON_TIME_RANGE"));
+                    range.setLowerMonNumberRange(rec.getBigDecimal("LOWER_MON_NUMBER_RANGE"));
+                    range.setLowerMonAmountRange(rec.getInt("LOWER_MON_AMOUNT_RANGE"));
+                } else {
+                    range.setLowerLimitAtr(0);
+                }
 
 				return new OptionalItem(new JpaOptionalItemGetMemento(item, range));
 			});
+		} catch (Exception e){
+			System.out.println("Check error mes KWR:-----------------------" + e.getMessage());
+			return Collections.emptyList();
 		}
 	}
 
@@ -254,7 +303,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
-		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcmtAnyvPK).get(KrcstOptionalItemPK_.cid),
 				companyId));
 		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.optionalItemAtr), atr.value));
 		cq.multiselect(root, joinRoot);
@@ -303,7 +352,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
-		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcmtAnyvPK).get(KrcstOptionalItemPK_.cid),
 				companyId));
 		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.performanceAtr), atr.value));
 		cq.multiselect(root, joinRoot);
@@ -352,7 +401,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
-		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcmtAnyvPK).get(KrcstOptionalItemPK_.cid),
 				companyId));
 		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.performanceAtr), atr.value));
 		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.usageAtr), OptionalItemUsageAtr.USE.value));
@@ -386,13 +435,13 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
-		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcmtAnyvPK).get(KrcstOptionalItemPK_.cid),
 				companyId));
 		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.performanceAtr), atr.value));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// Get NO and optional attr only
-		cq.multiselect(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.optionalItemNo),
+		cq.multiselect(root.get(KrcstOptionalItem_.krcmtAnyvPK).get(KrcstOptionalItemPK_.optionalItemNo),
 				root.get(KrcstOptionalItem_.optionalItemAtr));
 
 		// Get results

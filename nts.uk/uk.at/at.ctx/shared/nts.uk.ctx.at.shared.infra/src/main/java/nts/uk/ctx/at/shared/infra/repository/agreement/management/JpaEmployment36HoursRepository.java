@@ -93,6 +93,7 @@ public class JpaEmployment36HoursRepository extends JpaRepository implements Emp
         if(entity.isPresent()){
             this.commandProxy().remove(Ksrmt36AgrMgtEmp.class,new Ksrmt36AgrMgtEmpPk(domain.getCompanyId(),domain.getEmploymentCategoryCode().v()
                     ,domain.getLaborSystemAtr().value));
+			this.getEntityManager().flush();
         }
     }
 

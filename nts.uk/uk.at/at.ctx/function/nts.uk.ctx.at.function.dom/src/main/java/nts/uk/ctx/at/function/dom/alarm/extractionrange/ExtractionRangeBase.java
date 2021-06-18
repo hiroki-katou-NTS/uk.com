@@ -9,17 +9,18 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 @Setter
 @NoArgsConstructor
-public abstract class ExtractionRangeBase extends DomainObject{
+//抽出する範囲
+public abstract class ExtractionRangeBase extends DomainObject {
 
-	/**Id*/
+	/** Id */
 	private String extractionId;
-	
-	/**抽出する範囲*/
+
+	/** 抽出する範囲 */
 	private ExtractionRange extractionRange;
 
 	public ExtractionRangeBase(String extractionId, int extractionRangeValue) {
 		super();
 		this.extractionId = extractionId;
-		this.extractionRange =  EnumAdaptor.valueOf(extractionRangeValue, ExtractionRange.class);
+		this.extractionRange = EnumAdaptor.valueOf(extractionRangeValue, ExtractionRange.class);
 	}
 }

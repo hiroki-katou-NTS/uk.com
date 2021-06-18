@@ -12,12 +12,13 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.FlexTimeByPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.SettingRequiredByDefo;
@@ -115,17 +116,19 @@ public class AggregateTotalWorkingTime implements Cloneable, Serializable{
 	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
+	 * @param snapshots 日別実績のスナップショット
 	 */
 	public void aggregateSharedItem(
 			RequireM3 require, DatePeriod datePeriod,
 			Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyMap,
-			Map<GeneralDate, WorkInfoOfDailyAttendance> workInfoOfDailyMap){
+			Map<GeneralDate, WorkInfoOfDailyAttendance> workInfoOfDailyMap,
+			Map<GeneralDate, SnapShot> snapshots){
 	
 		// 休暇使用時間を集計する
 		this.vacationUseTime.confirm(require, datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap);
 		
 		// 所定労働時間を集計する
-		this.prescribedWorkingTime.confirm(datePeriod, attendanceTimeOfDailyMap);
+		this.prescribedWorkingTime.confirm(datePeriod, attendanceTimeOfDailyMap, snapshots);
 
 		// 就業時間を集計する
 		this.workTime.confirm(require, datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap);
@@ -169,9 +172,9 @@ public class AggregateTotalWorkingTime implements Cloneable, Serializable{
 
 		// 労働制を元に、該当する設定を取得する
 		LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet = new LegalTransferOrderSetOfAggrMonthly(companyId);
-		Map<Integer, RoleOvertimeWork> roleOverTimeFrameMap = new HashMap<>();
+		Map<Integer, OvertimeWorkFrame> roleOverTimeFrameMap = new HashMap<>();
 		Map<Integer, WorkdayoffFrameRole> roleHolidayWorkFrameMap = new HashMap<>();
-		List<RoleOvertimeWork> autoExceptOverTimeFrames = new ArrayList<>();
+		List<OvertimeWorkFrame> autoExceptOverTimeFrames = new ArrayList<>();
 		List<Integer> autoExceptHolidayWorkFrames = new ArrayList<>();
 		ExcessOutsideTimeSetReg excessOutsideTimeSet = new ExcessOutsideTimeSetReg(false, false, false, false);
 		if (workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK) {
@@ -267,10 +270,10 @@ public class AggregateTotalWorkingTime implements Cloneable, Serializable{
 			FlexTimeOfMonthly flexTime){
 		
 		// 残業合計時間を集計する
-		this.overTime.aggregateTotal(datePeriod);
+		this.overTime.aggregateTotal(datePeriod, workingSystem);
 		
 		// 休出合計時間を集計する
-		this.holidayWorkTime.aggregateTotal(datePeriod);
+		this.holidayWorkTime.aggregateTotal(datePeriod, workingSystem);
 		
 		// 休暇使用時間を集計する
 		this.vacationUseTime.aggregate(datePeriod);
@@ -296,10 +299,10 @@ public class AggregateTotalWorkingTime implements Cloneable, Serializable{
 			FlexTimeByPeriod flexTime){
 		
 		// 残業合計時間を集計する
-		this.overTime.aggregateTotal(datePeriod);
+		this.overTime.aggregateTotal(datePeriod, workingSystem);
 		
 		// 休出合計時間を集計する
-		this.holidayWorkTime.aggregateTotal(datePeriod);
+		this.holidayWorkTime.aggregateTotal(datePeriod, workingSystem);
 		
 		// 休暇使用時間を集計する
 		this.vacationUseTime.aggregate(datePeriod);

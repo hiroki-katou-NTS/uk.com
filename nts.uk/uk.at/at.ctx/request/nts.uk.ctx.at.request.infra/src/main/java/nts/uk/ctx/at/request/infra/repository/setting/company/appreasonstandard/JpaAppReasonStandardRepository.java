@@ -60,11 +60,23 @@ public class JpaAppReasonStandardRepository extends JpaRepository implements App
 				.getList();
 		return Optional.ofNullable(KrcmtAppReason.toDomain(entities));
 	}
+	
+	@Override
+	public Optional<AppReasonStandard> findByHolAndAppType(String companyID, ApplicationType appType, HolidayAppType holidayAppType) {
+	    List<KrcmtAppReason> entities = this.queryProxy()
+                .query("select a from KrcmtAppReason a where a.pk.applicationType = :appType AND a.pk.companyId = :companyId", KrcmtAppReason.class)
+                .setParameter("companyId", companyID)
+                .setParameter("appType", appType.value)
+                .getList();
+	    if (holidayAppType != null) {
+	        entities = entities.stream().filter(x -> x.getPk().holidayAppType == holidayAppType.value).collect(Collectors.toList());
+	    }
+        return Optional.ofNullable(KrcmtAppReason.toDomain(entities));
+	}
 
 	@Override
-	public Optional<AppReasonStandard> findByCD(ApplicationType appType, AppStandardReasonCode appStandardReasonCode) {
-		String companyID = AppContexts.user().companyId();
-		Optional<AppReasonStandard> opAppReasonStandard = this.findByAppType(companyID, appType);
+	public Optional<AppReasonStandard> findByCD(String CID, ApplicationType appType, Optional<HolidayAppType> holidayAppType, AppStandardReasonCode appStandardReasonCode) {
+		Optional<AppReasonStandard> opAppReasonStandard = this.findByHolAndAppType(CID, appType, holidayAppType.isPresent() ? holidayAppType.get() : null);
 		if(!opAppReasonStandard.isPresent()) {
 			return Optional.empty();
 		}
@@ -72,7 +84,7 @@ public class JpaAppReasonStandardRepository extends JpaRepository implements App
 		Optional<ReasonTypeItem> opReasonTypeItem = reasonTypeItemLst.stream().filter(x -> x.getAppStandardReasonCD().equals(appStandardReasonCode)).findAny();
 		if(opReasonTypeItem.isPresent()) {
 			return Optional.of(new AppReasonStandard(
-								companyID, 
+								CID, 
 								opAppReasonStandard.get().getApplicationType(), 
 								Arrays.asList(opReasonTypeItem.get()), 
 								opAppReasonStandard.get().getOpHolidayAppType()));
@@ -122,7 +134,28 @@ public class JpaAppReasonStandardRepository extends JpaRepository implements App
 
 	@Override
 	public void deleteReasonTypeItem(String companyId, int appType, Integer holidayAppType, int reasonCode) {
-		this.commandProxy().remove(KrcmtAppReason.class, new KrcmtAppReasonPk(companyId, appType, appType == 1 ? holidayAppType : 0, reasonCode));
+		this.commandProxy().remove(KrcmtAppReason.class, new KrcmtAppReasonPk(companyId, appType, reasonCode, appType == 1 ? holidayAppType : 0));
+	}
+
+	@Override
+	public List<AppReasonStandard> findByListAppType(String companyID, List<Integer> appTypes) {
+		List<AppReasonStandard> result = new ArrayList<>();
+		List<KrcmtAppReason> entities = this.queryProxy().query("select a from KrcmtAppReason a where a.pk.companyId = :companyId and a.pk.applicationType IN :appTypes", KrcmtAppReason.class)
+				.setParameter("companyId", companyID)
+				.setParameter("appTypes", appTypes)
+				.getList();
+		Map<Integer, List<KrcmtAppReason>> mapEntities = entities.stream().collect(Collectors.groupingBy(KrcmtAppReason::getAppType));
+		mapEntities.forEach((appType, items) -> {
+			if (appType == 1) {
+				Map<Integer, List<KrcmtAppReason>> mapHdAppType = items.stream().collect(Collectors.groupingBy(KrcmtAppReason::getHolidayAppType));
+				mapHdAppType.forEach((hdAppType, hdItems) -> {
+					result.add(KrcmtAppReason.toDomain(hdItems));
+				});
+			} else {
+				result.add(KrcmtAppReason.toDomain(items));
+			}
+		});
+		return result;
 	}
 
 }

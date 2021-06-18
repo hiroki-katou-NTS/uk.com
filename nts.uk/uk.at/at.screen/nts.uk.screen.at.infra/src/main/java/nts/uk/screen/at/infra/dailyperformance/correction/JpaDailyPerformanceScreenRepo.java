@@ -78,7 +78,7 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KrcmtDailyAttendanceItem;
-import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstControlOfAttendanceItems;
+import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshmtDayAtdCtr;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstDailyServiceTypeControl;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondHist;
 import nts.uk.ctx.at.shared.infra.entity.workplace.KshmtWorkTimeWorkplace;
@@ -181,7 +181,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private final static String SEL_ATTENDANCE_ITEM;
 
-	private final static String SEL_ATTENDANCE_ITEM_CONTROL = "SELECT c FROM KshstControlOfAttendanceItems c WHERE c.kshstControlOfAttendanceItemsPK.companyID = :companyId AND c.kshstControlOfAttendanceItemsPK.itemDailyID IN :lstItem";
+	private final static String SEL_ATTENDANCE_ITEM_CONTROL = "SELECT c FROM KshmtDayAtdCtr c WHERE c.kshmtDayAtdCtrPK.companyID = :companyId AND c.kshmtDayAtdCtrPK.itemDailyID IN :lstItem";
 
 	
 //	private final static String SEL_ERROR_SETTING;
@@ -249,7 +249,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private final static String SELECT_WORKTYPE_JDBC = " SELECT CD, NAME FROM KSHMT_WKTP WHERE CID = ?";
 
-	private final static String SEL_FIND_WORKPLACE_LOCATION_JDBC = "SELECT WORK_LOCATION_CD, WORK_LOCATION_NAME FROM KRCMT_WORK_LOCATION WHERE CID = ?";
+	private final static String SEL_FIND_WORKPLACE_LOCATION_JDBC = "SELECT WK_LOCATION_CD, WK_LOCATION_NAME FROM KRCMT_WORK_LOCATION WHERE CONTRACT_CD = ?";
 
 	private final static String SEL_EMPLOYMENT_BY_CLOSURE_JDBC = "SELECT CODE, NAME FROM BSYMT_EMPLOYMENT WHERE CID = ?";
 
@@ -288,7 +288,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 //			+ " h.strDate <= :endDate AND h.endDate >= :startDate AND h.companyId = :companyId AND h.sid IN :sIds";
 
 	private static final String FIND_BY_PERIOD_INTO_END = "SELECT a FROM KrcdtMonTimeAtd a "
-			+ "WHERE a.krcdtMonMergePk.employeeId IN :employeeIds " + "AND a.endYmd >= :startDate "
+			+ "WHERE a.id.employeeId IN :employeeIds " + "AND a.endYmd >= :startDate "
 			+ "AND a.endYmd <= :endDate " + "ORDER BY a.startYmd ";
 
 	private final static String GET_MONTH_ERROR;
@@ -793,7 +793,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 					.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", subList).getList(e -> {
 						return new WorkInfoOfDailyPerformanceDto(e.krcdtDaiPerWorkInfoPK.employeeId, e.calculationState,
 								e.krcdtDaiPerWorkInfoPK.ymd, e.recordWorkWorktypeCode, e.recordWorkWorktimeCode,
-								e.scheduleWorkWorktypeCode, e.scheduleWorkWorktimeCode,
+//								e.scheduleWorkWorktypeCode, e.scheduleWorkWorktimeCode,
 								e.scheduleTimes == null ? false : true,
 								e.version);
 					}));
@@ -942,10 +942,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			List<Integer> lstAttendanceItem) {
 		if (lstAttendanceItem.isEmpty())
 			return Collections.emptyList();
-		return this.queryProxy().query(SEL_ATTENDANCE_ITEM_CONTROL, KshstControlOfAttendanceItems.class)
+		return this.queryProxy().query(SEL_ATTENDANCE_ITEM_CONTROL, KshmtDayAtdCtr.class)
 				.setParameter("companyId", companyId).setParameter("lstItem", lstAttendanceItem).getList().stream()
 				.map(c -> {
-					return new DPAttendanceItemControl(c.kshstControlOfAttendanceItemsPK.itemDailyID,
+					return new DPAttendanceItemControl(c.kshmtDayAtdCtrPK.itemDailyID,
 							c.inputUnitOfTimeItem, c.headerBgColorOfDailyPer != null ? c.headerBgColorOfDailyPer : "",
 							null);
 				}).collect(Collectors.toList());
@@ -1263,11 +1263,12 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<CodeName> findWorkplaceLocation(String companyId) {
+		String contractCode = AppContexts.user().contractCode();
 		String sql = SEL_FIND_WORKPLACE_LOCATION_JDBC;
 		try (PreparedStatement statement = this.connection().prepareStatement(sql)) {
-			statement.setString(1, companyId);
+			statement.setString(1, contractCode);
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> {
-				return new CodeName(rs.getString("WORK_LOCATION_CD"), rs.getString("WORK_LOCATION_NAME"), "");
+				return new CodeName(rs.getString("WK_LOCATION_CD"), rs.getString("WK_LOCATION_NAME"), "");
 			});
 
 		} catch (SQLException e) {
@@ -1322,7 +1323,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 					.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", subList)
 					.getList(c -> new WorkInfoOfDailyPerformanceDetailDto(c.krcdtDaiPerWorkInfoPK.employeeId,
 							new WorkInformationDto(c.recordWorkWorktimeCode, c.recordWorkWorktypeCode),
-							new WorkInformationDto(c.scheduleWorkWorktimeCode, c.recordWorkWorktypeCode),
+//							new WorkInformationDto(c.scheduleWorkWorktimeCode, c.recordWorkWorktypeCode),
 							EnumAdaptor.valueOf(c.calculationState, CalculationStateDto.class),
 							EnumAdaptor.valueOf(c.goStraightAttribute, NotUseAttributeDto.class),
 							EnumAdaptor.valueOf(c.backStraightAttribute, NotUseAttributeDto.class),
@@ -1991,10 +1992,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public List<AttendenceTimeMonthDto> findAttendenceTimeMonth(List<String> sids, DateRange dateRange) {
 		return this.queryProxy().query(FIND_BY_PERIOD_INTO_END, KrcdtMonTimeAtd.class).setParameter("employeeIds", sids)
 				.setParameter("startDate", dateRange.getStartDate()).setParameter("endDate", dateRange.getEndDate())
-				.getList(c -> new AttendenceTimeMonthDto(c.krcdtMonMergePk.getEmployeeId(),
-						new YearMonth(c.krcdtMonMergePk.getYearMonth()),
-						ClosureId.valueOf(c.krcdtMonMergePk.getClosureId()),
-						new ClosureDate(c.krcdtMonMergePk.getClosureDay(), c.krcdtMonMergePk.getIsLastDay() == 1)));
+				.getList(c -> new AttendenceTimeMonthDto(c.id.getEmployeeId(),
+						new YearMonth(c.id.getYearMonth()),
+						ClosureId.valueOf(c.id.getClosureId()),
+						new ClosureDate(c.id.getClosureDay(), c.id.getIsLastDay() == 1)));
 	}
 
 	@Override

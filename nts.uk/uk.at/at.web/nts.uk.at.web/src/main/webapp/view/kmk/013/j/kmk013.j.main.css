@@ -6,11 +6,11 @@
 	margin: 0px 0px 2px 35px;
 }
 
-hr {
-	margin-left: 35px;
-	margin-top: 1px;
-	opacity: 0.4;
-}
+/*hr {*/
+	/*margin-left: 35px;*/
+	/*margin-top: 1px;*/
+	/*opacity: 0.4;*/
+/*}*/
 
 .selection {
 	padding: 0px 0px 10px 60px;
@@ -31,4 +31,59 @@ hr {
 
 .left-content {
 	margin-left: 30px;
+}
+
+.ntsRadioBox {
+	padding: 2px 0;
+}
+
+.group-radio {
+	padding-left: 35px;
+}
+
+#J3_2 {
+	width: 250px;
+}
+
+#J4_2 label.radio-wrapper {
+	display: block;
+}
+
+#J6_1 {
+	padding-top: 10px;
+}
+
+#J7_2, #J8_2 {
+	display: inline;
+}
+
+/*#J7_3 {*/
+	/*width: 450px;*/
+/*}*/
+
+#J7_3 .ntsRadioBox {
+	margin: 0 2px;
+}
+
+#J8_3 .ntsRadioBox {
+	margin: 0 2px;
+}
+
+table td {
+	padding-top: 10px;
+}
+
+#J8_7, #J8_11 {
+	width: 300px;
+	padding-left: 65px;
+}
+
+.switchbox-wrappers {
+	display: inline-block;
+}
+
+.switchbox-wrappers .radio-wrapper span {
+	width: 70px;
+	text-align: center;
+	margin: 0 -3px;
 }

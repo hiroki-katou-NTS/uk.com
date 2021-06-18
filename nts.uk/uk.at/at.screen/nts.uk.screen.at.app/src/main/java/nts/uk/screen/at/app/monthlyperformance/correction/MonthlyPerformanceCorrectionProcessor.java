@@ -54,6 +54,7 @@ import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.ConfirmStatusMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.ConfirmStatusResult;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.MonthlyModifyResultDto;
+import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.MonthlyPerformaceLockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.ReleasedAtr;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.StatusConfirmMonthDto;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformance;
@@ -62,9 +63,8 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFun;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFunRepository;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyFinder;
-import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemIdContainer;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
@@ -75,6 +75,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
@@ -102,7 +103,6 @@ import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyAttendanceI
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
-import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformaceLockStatus;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformanceParam;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.PAttendanceItem;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQueryProcessor;
@@ -263,6 +263,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 				param.setYearMonth(yearMonth);
 				// 処理年月
 				screenDto.setProcessDate(yearMonth);
+			}else {
+				throw new BusinessException("Msg_1143");
 			}
 		} else {
 			yearMonth = param.getYearMonth();
@@ -1009,7 +1011,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 							// neu item loai thoi gian thi format lai dinh dang
 							int minute = 0;
 							if (item.getValue() != null) {
-								minute = Integer.parseInt(item.getValue());
+								Double data= Double.parseDouble(item.getValue());
+								minute = data.intValue();
 							}
 							int hours = Math.abs(minute) / 60;
 							int minutes = Math.abs(minute) % 60;

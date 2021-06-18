@@ -16,94 +16,94 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /*
- * 打刻漏れ
+ * 打刻漏れ - (出退勤打刻漏れ)
  */
 @Stateless
 public class LackOfStampingAlgorithm {
 
 	@Inject
 	private BasicScheduleService basicScheduleService;
+	
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
 
-	public EmployeeDailyPerError lackOfStamping(String companyID, String employeeID, GeneralDate processingDate,
+	public Optional<EmployeeDailyPerError> lackOfStamping(String companyID, String employeeID, GeneralDate processingDate,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
 
 		EmployeeDailyPerError employeeDailyPerError = null;
-
-		// WorkInfoOfDailyPerformance workInfoOfDailyPerformance =
-		// workInformationRepository
-		// .find(employeeID, processingDate).get();
 
 		WorkStyle workStyle = basicScheduleService
 				.checkWorkDay(workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 
 		if (workStyle != WorkStyle.ONE_DAY_REST) {
 
-			// TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance =
-			// timeLeavingOfDailyPerformanceRepository.findByKey(employeeID,
-			// processingDate).get();
-
 			if (timeLeavingOfDailyPerformance != null && timeLeavingOfDailyPerformance.getAttendance()!=null
 					&& !timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
 				List<TimeLeavingWork> timeLeavingWorkList = timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks();
 				List<Integer> attendanceItemIDList = new ArrayList<>();
-				for (TimeLeavingWork timeLeavingWork : timeLeavingWorkList) {
-//					if (timeLeavingWork.getLeaveStamp() != null 
-//							&& timeLeavingWork.getLeaveStamp().isPresent()
-//							&& timeLeavingWork.getAttendanceStamp() != null
-//							&& timeLeavingWork.getAttendanceStamp().isPresent()) {
-						Optional<WorkStamp> leavingStamp = timeLeavingWork.getLeaveStamp().isPresent() ? timeLeavingWork.getLeaveStamp().get().getStamp() : Optional.empty();
-						Optional<WorkStamp> attendanceStamp = timeLeavingWork.getAttendanceStamp().isPresent() ? timeLeavingWork.getAttendanceStamp().get().getStamp() : Optional.empty();
-						if (leavingStamp.isPresent() && !attendanceStamp.isPresent()) {
-							if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
+				
+				//所定時間設定を取得
+				Optional<PredetemineTimeSetting> predetemineTimeSet = Optional.empty();
+				if(workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().isPresent()) {
+					predetemineTimeSet = predetemineTimeSettingRepository.findByWorkTimeCode(
+							companyID,
+							workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().get().v());
+				}
+				
+				//所定労働時間帯の件数を取得
+				int predTimeSpanCount = predetemineTimeSet.isPresent()
+						? predetemineTimeSet.get().getTimezoneByAmPmAtrForCalc(workStyle.toAmPmAtr().orElse(AmPmAtr.ONE_DAY)).size()
+						: 0;
+				//１から所定労働時間帯の件数までループする
+				for(int number = 1;number<=predTimeSpanCount;number++) { //start for 1
+					boolean checkExist = false;
+					WorkNo workNo = new WorkNo(number);
+					Optional<TimeLeavingWork> timeLeavingWork = timeLeavingWorkList.stream().filter(t -> t.getWorkNo().equals(workNo)).findFirst();
+					if(timeLeavingWork.isPresent()) {
+						Optional<TimeWithDayAttr> attendanceTimeWithDay = timeLeavingWork.get().getAttendanceTime();
+						Optional<TimeWithDayAttr> leavingTimeWithDay = timeLeavingWork.get().getLeaveTime();
+						if (leavingTimeWithDay.isPresent() && !attendanceTimeWithDay.isPresent()) {
+							if (timeLeavingWork.get().getWorkNo().v().intValue() == 1) {
 								attendanceItemIDList.add(31);
-							} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
+							} else if (timeLeavingWork.get().getWorkNo().v().intValue() == 2) {
 								attendanceItemIDList.add(41);
 							}
-						} else if (!leavingStamp.isPresent() && attendanceStamp.isPresent()) {
-							if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
+						} else if (!leavingTimeWithDay.isPresent() && attendanceTimeWithDay.isPresent()) {
+							if (timeLeavingWork.get().getWorkNo().v().intValue() == 1) {
 								attendanceItemIDList.add(34);
-							} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
+							} else if (timeLeavingWork.get().getWorkNo().v().intValue() == 2) {
 								attendanceItemIDList.add(44);
 							}
-						} else if (!leavingStamp.isPresent() && !attendanceStamp.isPresent()) {
-							if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
+						} else if (!leavingTimeWithDay.isPresent() && !attendanceTimeWithDay.isPresent()) {
+							if (timeLeavingWork.get().getWorkNo().v().intValue() == 1) {
 								attendanceItemIDList.add(31);
 								attendanceItemIDList.add(34);
-							} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
+							} else if (timeLeavingWork.get().getWorkNo().v().intValue() == 2) {
 								attendanceItemIDList.add(41);
 								attendanceItemIDList.add(44);
-							}
-						} else if (leavingStamp.isPresent() && attendanceStamp.isPresent()){
-							TimeWithDayAttr leavingTimeWithDay = leavingStamp.get().getTimeDay().getTimeWithDay().get();
-							TimeWithDayAttr attendanceTimeWithDay = attendanceStamp.get().getTimeDay().getTimeWithDay().get();
-							if (leavingTimeWithDay != null && attendanceTimeWithDay == null) {
-								if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
-									attendanceItemIDList.add(31);
-								} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
-									attendanceItemIDList.add(41);
-								}
-							} else if (leavingTimeWithDay == null && attendanceTimeWithDay != null) {
-								if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
-									attendanceItemIDList.add(34);
-								} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
-									attendanceItemIDList.add(44);
-								}
-							} else if (leavingTimeWithDay == null && attendanceTimeWithDay == null) {
-								if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
-									attendanceItemIDList.add(31);
-									attendanceItemIDList.add(34);
-								} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
-									attendanceItemIDList.add(41);
-									attendanceItemIDList.add(44);
-								}
 							}
 						}
-//					}
-				}
+						checkExist =true;
+					}
+					if(!checkExist) { //両方存在しない(không có cả 2)
+						if (number == 1) {
+							attendanceItemIDList.add(31);
+							attendanceItemIDList.add(34);
+						} else if (number == 2) {
+							attendanceItemIDList.add(41);
+							attendanceItemIDList.add(44);
+						}
+					}
+				}//end for 1
+				
 				if (!attendanceItemIDList.isEmpty()) {
 					employeeDailyPerError = new EmployeeDailyPerError(companyID, employeeID, processingDate,
 							new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
@@ -117,7 +117,7 @@ public class LackOfStampingAlgorithm {
 			}
 		}
 
-		return employeeDailyPerError;
+		return Optional.ofNullable(employeeDailyPerError);
 	}
 
 }

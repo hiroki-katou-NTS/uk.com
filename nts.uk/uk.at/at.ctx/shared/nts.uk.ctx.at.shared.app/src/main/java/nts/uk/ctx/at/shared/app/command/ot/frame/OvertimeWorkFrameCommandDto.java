@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameGetMemento;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameName;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWorkEnum;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -31,6 +32,12 @@ public class OvertimeWorkFrameCommandDto implements OvertimeWorkFrameGetMemento 
 	
 	/** The use atr. */
 	private int useAtr;
+	
+	/** The role. */
+	private int role;
+	
+	/** The transfer atr. */
+	private int transferAtr;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.PlanYearHolidayFrameGetMemento#getCompanyId()
@@ -70,5 +77,15 @@ public class OvertimeWorkFrameCommandDto implements OvertimeWorkFrameGetMemento 
 	@Override
 	public OvertimeWorkFrameName getOvertimeWorkFrameName() {
 		return new OvertimeWorkFrameName(this.overtimeWorkFrName);
+	}
+	
+	@Override
+	public RoleOvertimeWorkEnum getRole() {
+		return RoleOvertimeWorkEnum.valueOf(this.role);
+	}
+	
+	@Override
+	public NotUseAtr getTransferAtr() {
+		return NotUseAtr.valueOf(this.transferAtr);
 	}
 }

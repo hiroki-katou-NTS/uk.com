@@ -1,10 +1,11 @@
 .kaf021a-content{
     margin-left: 80px;
     margin-top: 5px;
+    margin-right: 20px;
 }
 
 #A1_2{
-    width: 300px;
+    display: table;
 }
 
 #A1_2 .label{
@@ -13,7 +14,9 @@
 
 #tbl-control{
     margin-top: 5px;
-    width: 1180px;
+    width: 100%;
+    max-width: 1660px;
+    min-width: 1000px;
 }
 
 #tbl-control .cell:nth-child(1){
@@ -47,35 +50,42 @@
     padding: 0px 5px;;
 }
 
-#grid .padding-12{
-    padding: 0px 12px;;
+#grid .padding-10{
+    padding: 0px 10px;;
+}
+
+#grid .break-jp-cell {
+  line-break: strict;
 }
 
 .center-align {
     text-align: center;
 }
 
-.red-text {
-    color: red;
+.cl-error {
+    color: #ffffff!important;
 }
 
-.black-text {
-    color: black;
+.cl-special {
+    color: black!important;
+}
+
+.cl-alarm {
+    color: #ff0000!important;
 }
 
 .bg-alarm{
-    background-color: #f6f636;
+    background-color: #f6f636!important;
 }
 
 .bg-error{
-    background-color: #fd4d4d;
+    background-color: #fd4d4d!important;
 }
 
 .bg-special{
-    background-color: #eb9152;
+    background-color: #eb9152!important;
 }
 
-.current-month{
-    /* TODO #34213 */
-    /* background-color: #f6e92d; */
+.ml-5 {
+  margin-left: 5px;
 }

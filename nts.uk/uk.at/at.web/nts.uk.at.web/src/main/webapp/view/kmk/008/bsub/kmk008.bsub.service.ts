@@ -14,8 +14,8 @@ module nts.uk.at.view.kmk008.bsub {
 				return nts.uk.request.ajax("at", this.paths.getAgreementTimeOfCompany, {laborSystemAtr: laborSystemAtr});
             };
             
-            addAgreementTimeOfCompany(UpdateInsertTimeOfCompanyModel: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("at", this.paths.addAgreementTimeOfCompany, UpdateInsertTimeOfCompanyModel);
+            addAgreementTimeOfCompany(timeOfCompanyModel: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.addAgreementTimeOfCompany, timeOfCompanyModel);
             };
         }
     }

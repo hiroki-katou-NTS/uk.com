@@ -10,8 +10,10 @@ import javax.enterprise.context.RequestScoped;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
@@ -182,6 +184,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		private static final String FIND_NOTICE;
 		private static final String FIND_BUS_EVENT;
 		static {
+			
 			StringBuilder builder = new StringBuilder();
 			builder.append("SELECT CID, APPROVAL_ID, SID, HIST_ID, START_DATE, END_DATE, APP_TYPE, ");
 			builder.append("CONFIRMATION_ROOT_TYPE, EMPLOYMENT_ROOT_ATR, SYSTEM_ATR, NOTICE_ID, BUS_EVENT_ID ");
@@ -500,7 +503,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 				entity.wwfmtPsApprovalRootPK.approvalId,
 				entity.wwfmtPsApprovalRootPK.employeeId,
 				entity.wwfmtPsApprovalRootPK.historyId,
-				entity.applicationType,
+				entity.employmentRootAtr != 2 ? entity.applicationType : entity.confirmationRootType,
 				entity.startDate,
 				entity.endDate,
 				entity.confirmationRootType,
@@ -738,4 +741,21 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		}
 		return lstResult;
 	}
+	@Override
+	public List<PersonApprovalRoot> getAppRootByDatePeriod(String cid, DatePeriod period, SystemAtr sysAtr,
+			List<Integer> lstRootAtr) {
+		String sql = "SELECT * "
+				+ "FROM WWFMT_APPROVAL_ROUTE_PS WHERE CID = @companyID "
+				+ "AND SYSTEM_ATR = @sysAtr AND START_DATE <= @eDate AND END_DATE >= @sDate "
+				+ "AND EMPLOYMENT_ROOT_ATR IN @rootAtr";
+		List<PersonApprovalRoot> lstResult = new NtsStatement(sql, this.jdbcProxy())
+				.paramString("companyID", cid)
+				.paramInt("sysAtr", sysAtr.value)
+				.paramDate("sDate", period.start())
+				.paramDate("eDate", period.end())
+				.paramInt("rootAtr", lstRootAtr)
+			.getList(x -> convertNtsResult(x));
+		return lstResult;
+	}
+	
 }

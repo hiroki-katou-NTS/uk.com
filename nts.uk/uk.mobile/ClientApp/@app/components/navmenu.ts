@@ -2,6 +2,8 @@ import { Vue } from '@app/provider';
 import { dom, browser, $ } from '@app/utils';
 import { LanguageBar } from '@app/plugins/i18n';
 import { component, Watch } from '@app/core/component';
+import { Ccgs03AComponent } from 'views/ccg/s03/a';
+import EventBus from './sidemenu';
 
 // tslint:disable-next-line: variable-name
 const _NavMenu = Vue.observable({
@@ -30,7 +32,13 @@ const _NavMenu = Vue.observable({
 @component({
     template: `<nav class="navbar navbar-expand-lg fixed-top" v-if="visible">
         <a v-on:click="" class="navbar-brand mr-n2">{{pgName |i18n}}</a>
-        <button class="navbar-toggler dropdown-toggle" v-on:click="show = !show"></button>
+        <div class="d-flex justify-content-end align-items-center">
+            <div class="div-ccgs08">
+                <img :class="isNewNotice ? 'left-style' : ''" src="/nts.uk.mobile.web/dist/resources/164.png" class="img-notice" @click="showCcg003()">
+                <img v-if="isNewNotice" src="/nts.uk.mobile.web/dist/resources/165.png" class="img-red-circle">
+            </div>
+            <button class="navbar-toggler dropdown-toggle" v-on:click="show = !show"></button>
+        </div>
         <transition name="collapse-long" v-on:before-enter="beforeEnter" v-on:after-leave="afterLeave">
             <div ref="nav" class="collapse navbar-collapse" v-show="show">
                 <ul class="navbar-nav mr-auto">
@@ -73,6 +81,7 @@ const _NavMenu = Vue.observable({
 })
 export class NavMenuBar extends Vue {
     public active: any = {};
+    public isNewNotice: boolean = false;
 
     @Watch('show', { immediate: true })
     public toggleMaskLayer(show: boolean) {
@@ -109,7 +118,32 @@ export class NavMenuBar extends Vue {
     }
 
     public created() {
+        const vm = this;
         dom.registerEventHandler(window, 'resize', resize);
+        vm.$mask('show', { message: true });
+        EventBus.$on('hideSideBar', vm.checkIsNewMsg);
+    }
+
+    public mounted() {
+        const vm = this;
+        vm.checkIsNewMsg();
+    }
+
+    private checkIsNewMsg() {
+        const vm = this;
+
+        vm.$auth
+            .token
+            .then((tk: string | null) => {
+                if (!tk) {
+                    return { data: false };
+                }
+
+                return vm.$http.post('com', servicePath.isNewNotice);
+            })
+            .then((res: any) => vm.isNewNotice = res.data)
+            .then(() => vm.$mask('hide'))
+            .catch(() => vm.$mask('hide'));
     }
 
     public destroyed() {
@@ -127,6 +161,21 @@ export class NavMenuBar extends Vue {
 
         dom.removeClass(nav, 'show');
     }
+
+    public showCcg003() {
+        const vm = this;
+
+        vm.$modal(Ccgs03AComponent)
+            .then((result: any) => {
+                if (result === 'back') {
+                    vm.checkIsNewMsg();
+                }
+            });
+    }
 }
 
 export { NavMenu };
+
+const servicePath = {
+    isNewNotice: 'sys/portal/notice/is-new-notice'
+};

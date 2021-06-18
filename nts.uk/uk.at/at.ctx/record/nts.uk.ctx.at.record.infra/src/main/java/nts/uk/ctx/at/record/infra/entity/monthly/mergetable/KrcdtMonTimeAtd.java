@@ -22,14 +22,12 @@ import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculationAndMinus;
@@ -61,11 +59,14 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworking
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutSideWorkEachBreakdown;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWork;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.SuperHD60HConTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.OuenTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.MonthMergeKey;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.totalcount.TotalCountByPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalCount;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
@@ -89,7 +90,7 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 	public static final JpaEntityMapper<KrcdtMonTimeAtd> MAPPER = new JpaEntityMapper<>(KrcdtMonTimeAtd.class);
 
 	@EmbeddedId
-	public KrcdtMonMergePk krcdtMonMergePk;
+	public KrcdtMonMergePk id;
 	
 	@Version
 	@Column(name = "EXCLUS_VER")
@@ -397,6 +398,68 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 	@Column(name = "LEGAL_TRNOVR_TIME_10")
 	public int legalTransferOverTime10;
 
+	/** フレックス内残業時間 -FLEX_OVER_TIME_1 */
+	@Column(name = "FLEX_OVER_TIME_1")
+	public int flexOverTime1;
+
+	@Column(name = "FLEX_OVER_TIME_2")
+	public int flexOverTime2;
+
+	@Column(name = "FLEX_OVER_TIME_3")
+	public int flexOverTime3;
+
+	@Column(name = "FLEX_OVER_TIME_4")
+	public int flexOverTime4;
+
+	@Column(name = "FLEX_OVER_TIME_5")
+	public int flexOverTime5;
+
+	@Column(name = "FLEX_OVER_TIME_6")
+	public int flexOverTime6;
+
+	@Column(name = "FLEX_OVER_TIME_7")
+	public int flexOverTime7;
+
+	@Column(name = "FLEX_OVER_TIME_8")
+	public int flexOverTime8;
+
+	@Column(name = "FLEX_OVER_TIME_9")
+	public int flexOverTime9;
+
+	@Column(name = "FLEX_OVER_TIME_10")
+	public int flexOverTime10;
+
+	/** フレックス内振替残業時間 - FLEX_TRNOVR_TIME_1 */
+	@Column(name = "FLEX_TRNOVR_TIME_1")
+	public int flexTransferOverTime1;
+
+	@Column(name = "FLEX_TRNOVR_TIME_2")
+	public int flexTransferOverTime2;
+
+	@Column(name = "FLEX_TRNOVR_TIME_3")
+	public int flexTransferOverTime3;
+
+	@Column(name = "FLEX_TRNOVR_TIME_4")
+	public int flexTransferOverTime4;
+
+	@Column(name = "FLEX_TRNOVR_TIME_5")
+	public int flexTransferOverTime5;
+
+	@Column(name = "FLEX_TRNOVR_TIME_6")
+	public int flexTransferOverTime6;
+
+	@Column(name = "FLEX_TRNOVR_TIME_7")
+	public int flexTransferOverTime7;
+
+	@Column(name = "FLEX_TRNOVR_TIME_8")
+	public int flexTransferOverTime8;
+
+	@Column(name = "FLEX_TRNOVR_TIME_9")
+	public int flexTransferOverTime9;
+
+	@Column(name = "FLEX_TRNOVR_TIME_10")
+	public int flexTransferOverTime10;
+
 	/* KRCDT_MON_AGGR_HDWK_TIME 10 */
 	/** 休出時間 - HDWK_TIME_1 */
 	@Column(name = "HDWK_TIME_1")
@@ -614,6 +677,68 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 
 	@Column(name = "LEGAL_TRN_HDWK_TIME_10")
 	public int legalTransferHolidayWorkTime10;
+
+	/** フレックス内休出時間 - FLEX_HDWK_TIME_1 */
+	@Column(name = "FLEX_HDWK_TIME_1")
+	public int flexHolidayWorkTime1;
+
+	@Column(name = "FLEX_HDWK_TIME_2")
+	public int flexHolidayWorkTime2;
+
+	@Column(name = "FLEX_HDWK_TIME_3")
+	public int flexHolidayWorkTime3;
+
+	@Column(name = "FLEX_HDWK_TIME_4")
+	public int flexHolidayWorkTime4;
+
+	@Column(name = "FLEX_HDWK_TIME_5")
+	public int flexHolidayWorkTime5;
+
+	@Column(name = "FLEX_HDWK_TIME_6")
+	public int flexHolidayWorkTime6;
+
+	@Column(name = "FLEX_HDWK_TIME_7")
+	public int flexHolidayWorkTime7;
+
+	@Column(name = "FLEX_HDWK_TIME_8")
+	public int flexHolidayWorkTime8;
+
+	@Column(name = "FLEX_HDWK_TIME_9")
+	public int flexHolidayWorkTime9;
+
+	@Column(name = "FLEX_HDWK_TIME_10")
+	public int flexHolidayWorkTime10;
+
+	/** フレックス内振替休出時間 - FLEX_TRN_HDWK_TIME_1 */
+	@Column(name = "FLEX_TRN_HDWK_TIME_1")
+	public int flexTransferHolidayWorkTime1;
+
+	@Column(name = "FLEX_TRN_HDWK_TIME_2")
+	public int flexTransferHolidayWorkTime2;
+
+	@Column(name = "FLEX_TRN_HDWK_TIME_3")
+	public int flexTransferHolidayWorkTime3;
+
+	@Column(name = "FLEX_TRN_HDWK_TIME_4")
+	public int flexTransferHolidayWorkTime4;
+
+	@Column(name = "FLEX_TRN_HDWK_TIME_5")
+	public int flexTransferHolidayWorkTime5;
+
+	@Column(name = "FLEX_TRN_HDWK_TIME_6")
+	public int flexTransferHolidayWorkTime6;
+
+	@Column(name = "FLEX_TRN_HDWK_TIME_7")
+	public int flexTransferHolidayWorkTime7;
+
+	@Column(name = "FLEX_TRN_HDWK_TIME_8")
+	public int flexTransferHolidayWorkTime8;
+
+	@Column(name = "FLEX_TRN_HDWK_TIME_9")
+	public int flexTransferHolidayWorkTime9;
+
+	@Column(name = "FLEX_TRN_HDWK_TIME_10")
+	public int flexTransferHolidayWorkTime10;
 	
 	/* KRCDT_MON_HDWK_TIME */
 	/** 休出合計時間 */
@@ -785,7 +910,7 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 	@Column(name = "MON_TOTAL_PREM_TIME")
 	public int monthlyTotalPremiumTime;
 
-	/**月別実績の勤怠時間．時間外超過 - 変形繰越時間 - 時間外超過用変形繰越時間*/
+	/**月別実績の勤怠時間．時間外超過 - 複数月変形途中時間 - 時間外超過用変形繰越時間*/
 	@Column(name = "MULTI_MON_IRGMDL_TIME")
 	public int multiMonthIrregularMiddleTime;
 
@@ -825,13 +950,23 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 
 	/* KRCDT_MON_EXCESS_OUTSIDE  */
 	@Column(name = "EXCESS_WEEK_TOTAL_PREM_TIME")
-	public int totalWeeklyPremiumTime1;
+	public int totalWeeklyPremiumTime;
 
 	@Column(name = "EXCESS_MON_TOTAL_PREM_TIME")
-	public int totalMonthlyPremiumTime1;
+	public int totalMonthlyPremiumTime;
 
 	@Column(name = "EXCESS_MULTI_MON_IRGMDL_TIME")
 	public int multiMonIrgmdlTime;
+
+	/** 時間外超過 */
+	@Column(name = "V60_GRANT_TIME")
+	public int superHD60GrantTime;
+
+	@Column(name = "V60_PAYOFF_TIME")
+	public int superHD60PayoffTime;
+
+	@Column(name = "V60_CONVERSION_TIME")
+	public int superHD60ConversionTime;
 
 	/* KRCDT_MON_EXCOUT_TIME 50*/
 	/** 月別実績の勤怠時間．時間外超過．時間 - 超過時間 - 超過時間 - EXCESS_TIME_1_1*/
@@ -1196,16 +1331,16 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 	
 	@Override
 	protected Object getKey() {
-		return this.krcdtMonMergePk;
+		return this.id;
 	}
 	
 	public 	MonthMergeKey toDomainKey() {
 		MonthMergeKey key = new MonthMergeKey();
-		key.setEmployeeId(this.krcdtMonMergePk.getEmployeeId());
-		key.setYearMonth(new YearMonth(this.krcdtMonMergePk.getYearMonth()));
-		key.setClosureId(EnumAdaptor.valueOf(this.krcdtMonMergePk.getClosureId(), ClosureId.class));
-		key.setClosureDate(new ClosureDate(this.krcdtMonMergePk.getClosureDay(),
-			(this.krcdtMonMergePk.getIsLastDay() == 1)));
+		key.setEmployeeId(this.id.getEmployeeId());
+		key.setYearMonth(new YearMonth(this.id.getYearMonth()));
+		key.setClosureId(EnumAdaptor.valueOf(this.id.getClosureId(), ClosureId.class));
+		key.setClosureDate(new ClosureDate(this.id.getClosureDay(),
+			(this.id.getIsLastDay() == 1)));
 		return key;
 	}
 
@@ -1339,6 +1474,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getLegalHolidayWorkTime().v();
 		this.legalTransferHolidayWorkTime1 = domain.getLegalTransferHolidayWorkTime() == null ? 0
 				: domain.getLegalTransferHolidayWorkTime().v();
+		this.flexHolidayWorkTime1 = domain.getFlexHolidayWorkTime().valueAsMinutes();
+		this.flexTransferHolidayWorkTime1 = domain.getFlexTransferHolidayWorkTime().valueAsMinutes();
 	}
 
 	private void toEntityHolidayWorkTime2(AggregateHolidayWorkTime domain) {
@@ -1352,6 +1489,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getLegalHolidayWorkTime().v();
 		this.legalTransferHolidayWorkTime2 = domain.getLegalTransferHolidayWorkTime() == null ? 0
 				: domain.getLegalTransferHolidayWorkTime().v();
+		this.flexHolidayWorkTime2 = domain.getFlexHolidayWorkTime().valueAsMinutes();
+		this.flexTransferHolidayWorkTime2 = domain.getFlexTransferHolidayWorkTime().valueAsMinutes();
 	}
 
 	private void toEntityHolidayWorkTime3(AggregateHolidayWorkTime domain) {
@@ -1365,6 +1504,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getLegalHolidayWorkTime().v();
 		this.legalTransferHolidayWorkTime3 = domain.getLegalTransferHolidayWorkTime() == null ? 0
 				: domain.getLegalTransferHolidayWorkTime().v();
+		this.flexHolidayWorkTime3 = domain.getFlexHolidayWorkTime().valueAsMinutes();
+		this.flexTransferHolidayWorkTime3 = domain.getFlexTransferHolidayWorkTime().valueAsMinutes();
 	}
 
 	private void toEntityHolidayWorkTime4(AggregateHolidayWorkTime domain) {
@@ -1378,6 +1519,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getLegalHolidayWorkTime().v();
 		this.legalTransferHolidayWorkTime4 = domain.getLegalTransferHolidayWorkTime() == null ? 0
 				: domain.getLegalTransferHolidayWorkTime().v();
+		this.flexHolidayWorkTime4 = domain.getFlexHolidayWorkTime().valueAsMinutes();
+		this.flexTransferHolidayWorkTime4 = domain.getFlexTransferHolidayWorkTime().valueAsMinutes();
 	}
 
 	private void toEntityHolidayWorkTime5(AggregateHolidayWorkTime domain) {
@@ -1391,6 +1534,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getLegalHolidayWorkTime().v();
 		this.legalTransferHolidayWorkTime5 = domain.getLegalTransferHolidayWorkTime() == null ? 0
 				: domain.getLegalTransferHolidayWorkTime().v();
+		this.flexHolidayWorkTime5 = domain.getFlexHolidayWorkTime().valueAsMinutes();
+		this.flexTransferHolidayWorkTime5 = domain.getFlexTransferHolidayWorkTime().valueAsMinutes();
 	}
 
 	private void toEntityHolidayWorkTime6(AggregateHolidayWorkTime domain) {
@@ -1404,6 +1549,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getLegalHolidayWorkTime().v();
 		this.legalTransferHolidayWorkTime6 = domain.getLegalTransferHolidayWorkTime() == null ? 0
 				: domain.getLegalTransferHolidayWorkTime().v();
+		this.flexHolidayWorkTime6 = domain.getFlexHolidayWorkTime().valueAsMinutes();
+		this.flexTransferHolidayWorkTime6 = domain.getFlexTransferHolidayWorkTime().valueAsMinutes();
 	}
 
 	private void toEntityHolidayWorkTime7(AggregateHolidayWorkTime domain) {
@@ -1417,6 +1564,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getLegalHolidayWorkTime().v();
 		this.legalTransferHolidayWorkTime7 = domain.getLegalTransferHolidayWorkTime() == null ? 0
 				: domain.getLegalTransferHolidayWorkTime().v();
+		this.flexHolidayWorkTime7 = domain.getFlexHolidayWorkTime().valueAsMinutes();
+		this.flexTransferHolidayWorkTime7 = domain.getFlexTransferHolidayWorkTime().valueAsMinutes();
 	}
 
 	private void toEntityHolidayWorkTime8(AggregateHolidayWorkTime domain) {
@@ -1430,6 +1579,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getLegalHolidayWorkTime().v();
 		this.legalTransferHolidayWorkTime8 = domain.getLegalTransferHolidayWorkTime() == null ? 0
 				: domain.getLegalTransferHolidayWorkTime().v();
+		this.flexHolidayWorkTime8 = domain.getFlexHolidayWorkTime().valueAsMinutes();
+		this.flexTransferHolidayWorkTime8 = domain.getFlexTransferHolidayWorkTime().valueAsMinutes();
 	}
 
 	private void toEntityHolidayWorkTime9(AggregateHolidayWorkTime domain) {
@@ -1443,6 +1594,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getLegalHolidayWorkTime().v();
 		this.legalTransferHolidayWorkTime9 = domain.getLegalTransferHolidayWorkTime() == null ? 0
 				: domain.getLegalTransferHolidayWorkTime().v();
+		this.flexHolidayWorkTime9 = domain.getFlexHolidayWorkTime().valueAsMinutes();
+		this.flexTransferHolidayWorkTime9 = domain.getFlexTransferHolidayWorkTime().valueAsMinutes();
 	}
 
 	private void toEntityHolidayWorkTime10(AggregateHolidayWorkTime domain) {
@@ -1456,6 +1609,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getLegalHolidayWorkTime().v();
 		this.legalTransferHolidayWorkTime10 = domain.getLegalTransferHolidayWorkTime() == null ? 0
 				: domain.getLegalTransferHolidayWorkTime().v();
+		this.flexHolidayWorkTime10 = domain.getFlexHolidayWorkTime().valueAsMinutes();
+		this.flexTransferHolidayWorkTime10 = domain.getFlexTransferHolidayWorkTime().valueAsMinutes();
 	}
 
 	/* KRCDT_MON_AGGR_OVER_TIME 10 */
@@ -1468,6 +1623,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getTransferOverTime().getCalcTime().v();
 		this.legalOverTime1 = domain.getLegalOverTime().v();
 		this.legalTransferOverTime1 = domain.getLegalTransferOverTime().v();
+		this.flexOverTime1 = domain.getFlexOverTime().valueAsMinutes();
+		this.flexTransferOverTime1 = domain.getFlexTransferOverTime().valueAsMinutes();
 	}
 
 	private void toEntityOverTime2(AggregateOverTime domain) {
@@ -1479,6 +1636,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getTransferOverTime().getCalcTime().v();
 		this.legalOverTime2 = domain.getLegalOverTime().v();
 		this.legalTransferOverTime2 = domain.getLegalTransferOverTime().v();
+		this.flexOverTime2 = domain.getFlexOverTime().valueAsMinutes();
+		this.flexTransferOverTime2 = domain.getFlexTransferOverTime().valueAsMinutes();
 	}
 
 	private void toEntityOverTime3(AggregateOverTime domain) {
@@ -1490,6 +1649,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getTransferOverTime().getCalcTime().v();
 		this.legalOverTime3 = domain.getLegalOverTime().v();
 		this.legalTransferOverTime3 = domain.getLegalTransferOverTime().v();
+		this.flexOverTime3 = domain.getFlexOverTime().valueAsMinutes();
+		this.flexTransferOverTime3 = domain.getFlexTransferOverTime().valueAsMinutes();
 	}
 
 	private void toEntityOverTime4(AggregateOverTime domain) {
@@ -1501,6 +1662,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getTransferOverTime().getCalcTime().v();
 		this.legalOverTime4 = domain.getLegalOverTime().v();
 		this.legalTransferOverTime4 = domain.getLegalTransferOverTime().v();
+		this.flexOverTime4 = domain.getFlexOverTime().valueAsMinutes();
+		this.flexTransferOverTime4 = domain.getFlexTransferOverTime().valueAsMinutes();
 	}
 
 	private void toEntityOverTime5(AggregateOverTime domain) {
@@ -1512,6 +1675,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getTransferOverTime().getCalcTime().v();
 		this.legalOverTime5 = domain.getLegalOverTime().v();
 		this.legalTransferOverTime5 = domain.getLegalTransferOverTime().v();
+		this.flexOverTime5 = domain.getFlexOverTime().valueAsMinutes();
+		this.flexTransferOverTime5 = domain.getFlexTransferOverTime().valueAsMinutes();
 	}
 
 	private void toEntityOverTime6(AggregateOverTime domain) {
@@ -1523,6 +1688,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getTransferOverTime().getCalcTime().v();
 		this.legalOverTime6 = domain.getLegalOverTime().v();
 		this.legalTransferOverTime6 = domain.getLegalTransferOverTime().v();
+		this.flexOverTime6 = domain.getFlexOverTime().valueAsMinutes();
+		this.flexTransferOverTime6 = domain.getFlexTransferOverTime().valueAsMinutes();
 	}
 
 	private void toEntityOverTime7(AggregateOverTime domain) {
@@ -1534,6 +1701,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getTransferOverTime().getCalcTime().v();
 		this.legalOverTime7 = domain.getLegalOverTime().v();
 		this.legalTransferOverTime7 = domain.getLegalTransferOverTime().v();
+		this.flexOverTime7 = domain.getFlexOverTime().valueAsMinutes();
+		this.flexTransferOverTime7 = domain.getFlexTransferOverTime().valueAsMinutes();
 	}
 
 	private void toEntityOverTime8(AggregateOverTime domain) {
@@ -1545,6 +1714,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getTransferOverTime().getCalcTime().v();
 		this.legalOverTime8 = domain.getLegalOverTime().v();
 		this.legalTransferOverTime8 = domain.getLegalTransferOverTime().v();
+		this.flexOverTime8 = domain.getFlexOverTime().valueAsMinutes();
+		this.flexTransferOverTime8 = domain.getFlexTransferOverTime().valueAsMinutes();
 	}
 
 	private void toEntityOverTime9(AggregateOverTime domain) {
@@ -1556,6 +1727,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getTransferOverTime().getCalcTime().v();
 		this.legalOverTime9 = domain.getLegalOverTime().v();
 		this.legalTransferOverTime9 = domain.getLegalTransferOverTime().v();
+		this.flexOverTime9 = domain.getFlexOverTime().valueAsMinutes();
+		this.flexTransferOverTime9 = domain.getFlexTransferOverTime().valueAsMinutes();
 	}
 
 	private void toEntityOverTime10(AggregateOverTime domain) {
@@ -1567,6 +1740,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				: domain.getTransferOverTime().getCalcTime().v();
 		this.legalOverTime10 = domain.getLegalOverTime().v();
 		this.legalTransferOverTime10 = domain.getLegalTransferOverTime().v();
+		this.flexOverTime10 = domain.getFlexOverTime().valueAsMinutes();
+		this.flexTransferOverTime10 = domain.getFlexTransferOverTime().valueAsMinutes();
 	}
 
 
@@ -1993,9 +2168,13 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 
 	/* KRCDT_MON_EXCESS_OUTSIDE*/
 	private void toEntityExcessOutsideWorkOfMonthly(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime1 = domain == null ? 0 : domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime1 = domain == null ? 0 : domain.getMonthlyTotalPremiumTime().v();
+		this.totalWeeklyPremiumTime = domain == null ? 0 : domain.getWeeklyTotalPremiumTime().v();
+		this.totalMonthlyPremiumTime = domain == null ? 0 : domain.getMonthlyTotalPremiumTime().v();
 		this.multiMonIrgmdlTime = domain == null ? 0 : domain.getDeformationCarryforwardTime().v();
+		
+		this.superHD60PayoffTime = domain == null ? 0 : domain.getSuperHD60Time().getPayoffTime().valueAsMinutes();
+		this.superHD60GrantTime = domain == null ? 0 : domain.getSuperHD60Time().getGrantTime().valueAsMinutes();
+		this.superHD60ConversionTime = domain == null ? 0 : domain.getSuperHD60Time().getConversionTime().valueAsMinutes();
 	}	
 	
 	/* KRCDT_MON_EXCOUT_TIME 50 */
@@ -2262,7 +2441,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 		new AttendanceTimeMonth(this.transferTime1),
 		new AttendanceTimeMonth(this.calcTransferTime1)),
 		new AttendanceTimeMonth(this.legalHolidayWorkTime1),
-		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime1));
+		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime1),
+		new AttendanceTimeMonth(this.flexHolidayWorkTime1),
+		new AttendanceTimeMonth(this.flexTransferHolidayWorkTime1));
 	}
 
 	private AggregateHolidayWorkTime toDomainHolidayWorkTime2() {
@@ -2276,7 +2457,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 			new AttendanceTimeMonth(this.transferTime2),
 			new AttendanceTimeMonth(this.calcTransferTime2)),
 		new AttendanceTimeMonth(this.legalHolidayWorkTime2),
-		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime2));
+		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime2),
+		new AttendanceTimeMonth(this.flexHolidayWorkTime2),
+		new AttendanceTimeMonth(this.flexTransferHolidayWorkTime2));
 	}
 
 	private AggregateHolidayWorkTime toDomainHolidayWorkTime3() {
@@ -2290,7 +2473,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 			new AttendanceTimeMonth(this.transferTime3),
 			new AttendanceTimeMonth(this.calcTransferTime3)),
 		new AttendanceTimeMonth(this.legalHolidayWorkTime3),
-		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime3));
+		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime3),
+		new AttendanceTimeMonth(this.flexHolidayWorkTime3),
+		new AttendanceTimeMonth(this.flexTransferHolidayWorkTime3));
 		}
 
 	private AggregateHolidayWorkTime toDomainHolidayWorkTime4() {
@@ -2304,7 +2489,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 			new AttendanceTimeMonth(this.transferTime4),
 			new AttendanceTimeMonth(this.calcTransferTime4)),
 		new AttendanceTimeMonth(this.legalHolidayWorkTime4),
-		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime4));
+		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime4),
+		new AttendanceTimeMonth(this.flexHolidayWorkTime4),
+		new AttendanceTimeMonth(this.flexTransferHolidayWorkTime4));
 		}
 
 	private AggregateHolidayWorkTime toDomainHolidayWorkTime5() {
@@ -2318,7 +2505,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 			new AttendanceTimeMonth(this.transferTime5),
 			new AttendanceTimeMonth(this.calcTransferTime5)),
 		new AttendanceTimeMonth(this.legalHolidayWorkTime5),
-		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime5));
+		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime5),
+		new AttendanceTimeMonth(this.flexHolidayWorkTime5),
+		new AttendanceTimeMonth(this.flexTransferHolidayWorkTime5));
 		}
 
 	private AggregateHolidayWorkTime toDomainHolidayWorkTime6() {
@@ -2332,7 +2521,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 			new AttendanceTimeMonth(this.transferTime6),
 			new AttendanceTimeMonth(this.calcTransferTime6)),
 		new AttendanceTimeMonth(this.legalHolidayWorkTime6),
-		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime6));
+		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime6),
+		new AttendanceTimeMonth(this.flexHolidayWorkTime6),
+		new AttendanceTimeMonth(this.flexTransferHolidayWorkTime6));
 		}
 
 	private AggregateHolidayWorkTime toDomainHolidayWorkTime7() {
@@ -2346,7 +2537,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 			new AttendanceTimeMonth(this.transferTime7),
 			new AttendanceTimeMonth(this.calcTransferTime7)),
 		new AttendanceTimeMonth(this.legalHolidayWorkTime7),
-		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime7));
+		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime7),
+		new AttendanceTimeMonth(this.flexHolidayWorkTime7),
+		new AttendanceTimeMonth(this.flexTransferHolidayWorkTime7));
 		}
 
 	private AggregateHolidayWorkTime toDomainHolidayWorkTime8() {
@@ -2360,7 +2553,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 			new AttendanceTimeMonth(this.transferTime8),
 			new AttendanceTimeMonth(this.calcTransferTime8)),
 		new AttendanceTimeMonth(this.legalHolidayWorkTime8),
-		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime8));
+		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime8),
+		new AttendanceTimeMonth(this.flexHolidayWorkTime8),
+		new AttendanceTimeMonth(this.flexTransferHolidayWorkTime8));
 		}
 
 	private AggregateHolidayWorkTime toDomainHolidayWorkTime9() {
@@ -2374,7 +2569,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 			new AttendanceTimeMonth(this.transferTime9),
 			new AttendanceTimeMonth(this.calcTransferTime9)),
 		new AttendanceTimeMonth(this.legalHolidayWorkTime9),
-		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime9));
+		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime9),
+		new AttendanceTimeMonth(this.flexHolidayWorkTime9),
+		new AttendanceTimeMonth(this.flexTransferHolidayWorkTime9));
 	}
 
 	private AggregateHolidayWorkTime toDomainHolidayWorkTime10() {
@@ -2388,7 +2585,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 			new AttendanceTimeMonth(this.transferTime10),
 			new AttendanceTimeMonth(this.calcTransferTime10)),
 		new AttendanceTimeMonth(this.legalHolidayWorkTime10),
-		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime10));
+		new AttendanceTimeMonth(this.legalTransferHolidayWorkTime10),
+		new AttendanceTimeMonth(this.flexHolidayWorkTime10),
+		new AttendanceTimeMonth(this.flexTransferHolidayWorkTime10));
 	}
 	
 	/** KRCDT_MON_AGGR_OVER_TIME 10 **/
@@ -2406,7 +2605,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 						new AttendanceTimeMonth(this.transferOverTime1),
 						new AttendanceTimeMonth(this.calcTransferOverTime1)),
 				new AttendanceTimeMonth(this.legalOverTime1), 
-				new AttendanceTimeMonth(this.legalTransferOverTime1));
+				new AttendanceTimeMonth(this.legalTransferOverTime1),
+				new AttendanceTimeMonth(this.flexOverTime1), 
+				new AttendanceTimeMonth(this.flexTransferOverTime1));
 	}
 
 	private AggregateOverTime toDomainOverTime2() {
@@ -2419,7 +2620,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 						new AttendanceTimeMonth(this.transferOverTime2),
 						new AttendanceTimeMonth(this.calcTransferOverTime2)),
 				new AttendanceTimeMonth(this.legalOverTime2), 
-				new AttendanceTimeMonth(this.legalTransferOverTime2));
+				new AttendanceTimeMonth(this.legalTransferOverTime2),
+				new AttendanceTimeMonth(this.flexOverTime2), 
+				new AttendanceTimeMonth(this.flexTransferOverTime2));
 	}
 
 	private AggregateOverTime toDomainOverTime3() {
@@ -2432,7 +2635,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 						new AttendanceTimeMonth(this.transferOverTime3),
 						new AttendanceTimeMonth(this.calcTransferOverTime3)),
 				new AttendanceTimeMonth(this.legalOverTime3), 
-				new AttendanceTimeMonth(this.legalTransferOverTime3));
+				new AttendanceTimeMonth(this.legalTransferOverTime3),
+				new AttendanceTimeMonth(this.flexOverTime3), 
+				new AttendanceTimeMonth(this.flexTransferOverTime3));
 	}
 
 	private AggregateOverTime toDomainOverTime4() {
@@ -2445,7 +2650,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 						new AttendanceTimeMonth(this.transferOverTime4),
 						new AttendanceTimeMonth(this.calcTransferOverTime4)),
 				new AttendanceTimeMonth(this.legalOverTime4), 
-				new AttendanceTimeMonth(this.legalTransferOverTime4));
+				new AttendanceTimeMonth(this.legalTransferOverTime4),
+				new AttendanceTimeMonth(this.flexOverTime4), 
+				new AttendanceTimeMonth(this.flexTransferOverTime4));
 	}
 
 	private AggregateOverTime toDomainOverTime5() {
@@ -2457,7 +2664,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 				new TimeMonthWithCalculation(new AttendanceTimeMonth(this.transferOverTime5),
 						new AttendanceTimeMonth(this.calcTransferOverTime5)),
 				new AttendanceTimeMonth(this.legalOverTime5),
-				new AttendanceTimeMonth(this.legalTransferOverTime5));
+				new AttendanceTimeMonth(this.legalTransferOverTime5),
+				new AttendanceTimeMonth(this.flexOverTime5), 
+				new AttendanceTimeMonth(this.flexTransferOverTime5));
 	}
 
 	private AggregateOverTime toDomainOverTime6() {
@@ -2470,7 +2679,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 						new AttendanceTimeMonth(this.transferOverTime6),
 						new AttendanceTimeMonth(this.calcTransferOverTime6)),
 				new AttendanceTimeMonth(this.legalOverTime6), 
-				new AttendanceTimeMonth(this.legalTransferOverTime6));
+				new AttendanceTimeMonth(this.legalTransferOverTime6),
+				new AttendanceTimeMonth(this.flexOverTime6), 
+				new AttendanceTimeMonth(this.flexTransferOverTime6));
 	}
 
 	private AggregateOverTime toDomainOverTime7() {
@@ -2483,7 +2694,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 						new AttendanceTimeMonth(this.transferOverTime7),
 						new AttendanceTimeMonth(this.calcTransferOverTime7)),
 				new AttendanceTimeMonth(this.legalOverTime7), 
-				new AttendanceTimeMonth(this.legalTransferOverTime7));
+				new AttendanceTimeMonth(this.legalTransferOverTime7),
+				new AttendanceTimeMonth(this.flexOverTime7), 
+				new AttendanceTimeMonth(this.flexTransferOverTime7));
 	}
 
 	private AggregateOverTime toDomainOverTime8() {
@@ -2496,7 +2709,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 						new AttendanceTimeMonth(this.transferOverTime8),
 						new AttendanceTimeMonth(this.calcTransferOverTime8)),
 				new AttendanceTimeMonth(this.legalOverTime8), 
-				new AttendanceTimeMonth(this.legalTransferOverTime8));
+				new AttendanceTimeMonth(this.legalTransferOverTime8),
+				new AttendanceTimeMonth(this.flexOverTime8), 
+				new AttendanceTimeMonth(this.flexTransferOverTime8));
 	}
 
 	private AggregateOverTime toDomainOverTime9() {
@@ -2509,7 +2724,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 						new AttendanceTimeMonth(this.transferOverTime9),
 						new AttendanceTimeMonth(this.calcTransferOverTime9)),
 				new AttendanceTimeMonth(this.legalOverTime9), 
-				new AttendanceTimeMonth(this.legalTransferOverTime9));
+				new AttendanceTimeMonth(this.legalTransferOverTime9),
+				new AttendanceTimeMonth(this.flexOverTime9), 
+				new AttendanceTimeMonth(this.flexTransferOverTime9));
 	}
 
 	private AggregateOverTime toDomainOverTime10() {
@@ -2522,7 +2739,9 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 						new AttendanceTimeMonth(this.transferOverTime10),
 						new AttendanceTimeMonth(this.calcTransferOverTime10)),
 				new AttendanceTimeMonth(this.legalOverTime10),
-				new AttendanceTimeMonth(this.legalTransferOverTime10));
+				new AttendanceTimeMonth(this.legalTransferOverTime10),
+				new AttendanceTimeMonth(this.flexOverTime10), 
+				new AttendanceTimeMonth(this.flexTransferOverTime10));
 	}
 	
 	/** KRCDT_MON_AGGR_TOTAL_SPT **/
@@ -2660,16 +2879,14 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 		// 月別実績の時間外超過
 		ExcessOutsideWorkOfMonthly excessOutsideWork = toDomainExcessOutsideWorkOfMonthly();
 		
-		// TODO:LamVT-HERE ----------------------------()()()()()()()()()()-----------
-		
 		// 期間別の回数集計
 		TotalCountByPeriod totalCount = toDomainTotalCountByPeriod(this.getTotalCounts());
 		
 		AttendanceTimeOfMonthly domain = AttendanceTimeOfMonthly.of(
-				this.krcdtMonMergePk.getEmployeeId(),
-				new YearMonth(this.krcdtMonMergePk.getYearMonth()),
-				ClosureId.valueOf(this.krcdtMonMergePk.getClosureId()),
-				new ClosureDate(this.krcdtMonMergePk.getClosureDay(), (this.krcdtMonMergePk.getIsLastDay() != 0)),
+				this.id.getEmployeeId(),
+				new YearMonth(this.id.getYearMonth()),
+				ClosureId.valueOf(this.id.getClosureId()),
+				new ClosureDate(this.id.getClosureDay(), (this.id.getIsLastDay() != 0)),
 				new DatePeriod(this.startYmd, this.endYmd),
 				monthlyCalculation,
 				excessOutsideWork,
@@ -2911,10 +3128,13 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 	private ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly(){
 		List<ExcessOutsideWork> excessOutsideWork = this.getExcessOutsideWorkLst();		
 		return ExcessOutsideWorkOfMonthly.of(
-				new AttendanceTimeMonth(this.totalWeeklyPremiumTime1),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime1),
+				new AttendanceTimeMonth(this.totalWeeklyPremiumTime),
+				new AttendanceTimeMonth(this.totalMonthlyPremiumTime),
 				new AttendanceTimeMonthWithMinus(this.multiMonIrgmdlTime),
-				excessOutsideWork);
+				excessOutsideWork,
+				SuperHD60HConTime.of(new AttendanceTimeMonth(this.superHD60GrantTime),
+									new AttendanceTimeMonth(this.superHD60PayoffTime), 
+									new AttendanceTimeMonth(this.superHD60ConversionTime)));
 	}
 
 	/** KRCDT_MON_EXCOUT_TIME **/
@@ -2926,36 +3146,6 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 		return ExcessOutsideWork.of(breakdownNo, excessNo, new AttendanceTimeMonth(excessTime));
 	}
 	
-	/** KRCDT_MON_AGREEMENT_TIME **/
-	/**
-	 * ドメインに変換
-	 * @return 月別実績の36協定時間
-	 */
-//	private AgreementTimeOfMonthly toDomainAgreementTimeOfMonthly(){
-//		
-//		return AgreementTimeOfMonthly.of(
-//				new AttendanceTimeMonth(this.agreementTime),
-//				new LimitOneMonth(this.limitErrorTime),
-//				new LimitOneMonth(this.limitAlarmTime),
-//		(this.exceptionLimitErrorTime == null ?
-//						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitErrorTime))),
-//		(this.exceptionLimitAlarmTime == null ?
-//						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitAlarmTime))),
-//				EnumAdaptor.valueOf(this.status, AgreementTimeStatusOfMonthly.class));
-//	}
-	
-	/**
-	 * ドメインに変換
-	 * @return 月別実績の36協定上限時間
-	 */
-//	private AgreMaxTimeOfMonthly toDomainAgreMaxTimeOfMonthly() {
-//		
-//		return AgreMaxTimeOfMonthly.of(
-//				new AttendanceTimeMonth(this.agreementRegTime),
-//				new LimitOneMonth(0),
-//				AgreMaxTimeStatusOfMonthly.NORMAL);
-//	}
-	
 	/** KRCDT_MON_AFFILIATION **/
 	/**
 	 * ドメインに変換
@@ -2964,10 +3154,10 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 	public AffiliationInfoOfMonthly toDomainAffiliationInfoOfMonthly(){
 		
 		AffiliationInfoOfMonthly domain = AffiliationInfoOfMonthly.of(
-				this.krcdtMonMergePk.getEmployeeId(),
-				new YearMonth(this.krcdtMonMergePk.getYearMonth()),
-				EnumAdaptor.valueOf(this.krcdtMonMergePk.getClosureId(), ClosureId.class),
-				new ClosureDate(this.krcdtMonMergePk.getClosureDay(), (this.krcdtMonMergePk.getIsLastDay() == 1)),
+				this.id.getEmployeeId(),
+				new YearMonth(this.id.getYearMonth()),
+				EnumAdaptor.valueOf(this.id.getClosureId(), ClosureId.class),
+				new ClosureDate(this.id.getClosureDay(), (this.id.getIsLastDay() == 1)),
 				AggregateAffiliationInfo.of(
 						new EmploymentCode(this.firstEmploymentCd),
 						new WorkplaceId(this.firstWorkplaceId),

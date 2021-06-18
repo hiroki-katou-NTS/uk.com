@@ -9,3 +9,7 @@
 .top-panel>div:first-child+div {
 	float: right;
 }
+
+#single-list_container {
+	max-height: 271px;
+}

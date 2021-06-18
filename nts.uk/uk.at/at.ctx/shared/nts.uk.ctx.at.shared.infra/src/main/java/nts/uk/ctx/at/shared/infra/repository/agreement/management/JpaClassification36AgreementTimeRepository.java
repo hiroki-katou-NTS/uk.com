@@ -78,6 +78,7 @@ public class JpaClassification36AgreementTimeRepository extends JpaRepository im
         if(entity.isPresent()){
             this.commandProxy().remove(Ksrmt36AgrMgtCls.class,new Ksrmt36AgrMgtClsPk(domain.getCompanyId(),domain.getClassificationCode().v()
                     ,domain.getLaborSystemAtr().value));
+			this.getEntityManager().flush();
         }
     }
 

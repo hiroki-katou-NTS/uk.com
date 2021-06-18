@@ -19,6 +19,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.query.model.department.DepartmentAdapter;
 import nts.uk.query.model.department.DepartmentInfoImport;
@@ -41,7 +45,6 @@ import nts.uk.query.model.workplace.QueryWorkplaceAdapter;
 import nts.uk.query.model.workplace.WorkplaceInfoImport;
 import nts.uk.query.model.workrule.closure.QueryClosureEmpAdapter;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class RegulationInfoEmployeeFinder.
@@ -92,6 +95,9 @@ public class RegulationInfoEmployeeFinder {
 
 	@Inject
 	private QueryOperationRuleAdapter operationRuleAdapter;
+	
+	@Inject
+	private WorkingConditionItemService workingConditionItemService;
 
 
 	/**
@@ -135,7 +141,8 @@ public class RegulationInfoEmployeeFinder {
 											result.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList()), 3,
 											GeneralDate.fromString(queryDto.getBaseDate() + RegulationInfoEmpQueryDto.TIME_DAY_START, RegulationInfoEmpQueryDto.DATE_TIME_FORMAT));
 			
-			result.removeIf(c -> !narrowedSids.contains(c.getEmployeeId()));
+			List<String> narrowedSids2 = this.removeEmp(narrowedSids, GeneralDate.fromString(queryDto.getBaseDate() + RegulationInfoEmpQueryDto.TIME_DAY_START, RegulationInfoEmpQueryDto.DATE_TIME_FORMAT), queryDto.isEmployeesDoNotManageSchedules());
+			result.removeIf(c -> !narrowedSids2.contains(c.getEmployeeId()));
 		}
 		
 		return result;
@@ -189,7 +196,6 @@ public class RegulationInfoEmployeeFinder {
         } else {
             // Set list department
             queryParam.setDepartmentCodes(depList);
-            queryParam.setFilterByDepartment(true);
         }
     }
 
@@ -204,8 +210,8 @@ public class RegulationInfoEmployeeFinder {
 
 		// filter by closure id
 		sIds = this.filterByClosure(query, sIds);
-
-		return getEmployeeInfo(sIds, query.getReferenceDate());
+		List<String> sIdsAfterFilter = query.getSystemType() == CCG001SystemType.EMPLOYMENT.value ? this.removeEmp(sIds, query.getReferenceDate(), query.isEmployeesDoNotManageSchedules()) : sIds ;
+		return getEmployeeInfo(sIdsAfterFilter, query.getReferenceDate());
 	}
 
 	/**
@@ -219,8 +225,8 @@ public class RegulationInfoEmployeeFinder {
 
 		// filter by closure id
 		sIds = this.filterByClosure(query, sIds);
-
-		return getEmployeeInfo(sIds, query.getReferenceDate());
+		List<String> sIdsAfterFilter = query.getSystemType() == CCG001SystemType.EMPLOYMENT.value ? this.removeEmp(sIds, query.getReferenceDate(), query.isEmployeesDoNotManageSchedules()) : sIds ;
+		return getEmployeeInfo(sIdsAfterFilter, query.getReferenceDate());
 	}
 
 	/**
@@ -234,8 +240,8 @@ public class RegulationInfoEmployeeFinder {
 
 		// filter by closure id
 		sIds = this.filterByClosure(query, sIds);
-
-		return getEmployeeInfo(sIds, query.getReferenceDate());
+		List<String> sIdsAfterFilter = query.getSystemType() == CCG001SystemType.EMPLOYMENT.value ? this.removeEmp(sIds, query.getReferenceDate(), query.isEmployeesDoNotManageSchedules()) : sIds ;
+		return getEmployeeInfo(sIdsAfterFilter, query.getReferenceDate());
 	}
 
 	/**
@@ -249,8 +255,8 @@ public class RegulationInfoEmployeeFinder {
 
 		// filter by closure id
 		sIds = this.filterByClosure(query, sIds);
-
-		return getEmployeeInfo(sIds, query.getReferenceDate());
+		List<String> sIdsAfterFilter = query.getSystemType() == CCG001SystemType.EMPLOYMENT.value ? this.removeEmp(sIds, query.getReferenceDate(), query.isEmployeesDoNotManageSchedules()) : sIds ;
+		return getEmployeeInfo(sIdsAfterFilter, query.getReferenceDate());
 	}
 
 	// A：社員情報取得処理
@@ -598,4 +604,25 @@ public class RegulationInfoEmployeeFinder {
 			throw new RuntimeException();
 		}
 	}
+	
+	/**
+	 * @name 就業の条件によって社員を絞り込む
+	 * @param narrowedSids ・社員一覧：List＜社員ID＞
+	 * @param baseDate ・基準日：年月日
+	 * @param removeEmployeesDoNotManageSchedules - 
+	 * プロパティはCCG001内のどの処理からも参照できるものとして設計しているので、パラメータに記載していません。
+	 * 実装上パラメータに必要であれば、設計をそのように修正することもできますが、
+	 * その場合、他の設計箇所との違いができてしまうので、そこだけ修正するのは迷っています。。。 - katou
+	 */
+	public List<String> removeEmp(List<String> narrowedSids, GeneralDate baseDate, boolean removeEmployeesDoNotManageSchedules) {
+		if(removeEmployeesDoNotManageSchedules) {
+			List<WorkingConditionItem> workingConditionItem = workingConditionItemService.getEmployeesIdListByPeriod(narrowedSids, new DatePeriod(baseDate, baseDate));
+			narrowedSids = narrowedSids.stream().filter(c->{
+				return !workingConditionItem.stream().filter(d -> d.getEmployeeId().equals(c) && d.getScheduleManagementAtr() == ManageAtr.NOTUSE).findAny().isPresent();
+			}).collect(Collectors.toList());
+		}
+		return narrowedSids;
+		
+	}
+	
 }

@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -15,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 // 代休振替設定
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class SubHolTransferSet extends WorkTimeDomainObject implements Cloneable{
 
 	/** The certain time. */
@@ -90,13 +93,13 @@ public class SubHolTransferSet extends WorkTimeDomainObject implements Cloneable
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Only designatedTime not get restore
 			this.certainTime = oldDomain.getCertainTime();
-			this.designatedTime = oldDomain.getDesignatedTime();
+			//this.designatedTime = oldDomain.getDesignatedTime();
 			if (originAtr.equals(CompensatoryOccurrenceDivision.FromOverTime)) {
 				this.useDivision = false;
 			} else {
 				this.useDivision = true;
 			}
-			this.subHolTransferSetAtr = SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL;
+			//this.subHolTransferSetAtr = SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL;
 			return;
 		}
 
@@ -182,5 +185,20 @@ public class SubHolTransferSet extends WorkTimeDomainObject implements Cloneable
 			throw new RuntimeException("SubHolTransferSet clone error.");
 		}
 		return cloned;
+	}
+	
+	//代休振替可能時間を取得
+	public AttendanceTime getTransferTime(AttendanceTime transferTime) {
+		if (this.subHolTransferSetAtr == SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL) {
+			if(this.designatedTime.getOneDayTime().v() != 0 && transferTime.v() >= this.designatedTime.getOneDayTime().v()) {
+				return new AttendanceTime(this.designatedTime.getOneDayTime().v());
+			}else if(this.designatedTime.getHalfDayTime().v() != 0 && transferTime.v() >= this.designatedTime.getHalfDayTime().v()) {
+				return new AttendanceTime(this.designatedTime.getHalfDayTime().v());
+			}else {
+				return new AttendanceTime(0);
+			}
+		} else {
+			return new AttendanceTime(transferTime.v() - certainTime.v());
+		}
 	}
 }

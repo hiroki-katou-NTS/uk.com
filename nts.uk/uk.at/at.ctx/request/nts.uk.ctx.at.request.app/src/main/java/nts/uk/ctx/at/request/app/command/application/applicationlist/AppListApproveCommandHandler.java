@@ -4,11 +4,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -16,8 +20,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.task.AsyncTask;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.application.common.ApproveAppHandler;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -29,6 +35,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.WorkMotionData;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.AppReflectManagerFromRecord;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
@@ -60,6 +67,12 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 	@Inject
 	private ApprovalListDispSetRepository approvalListDispSetRepository;
 	
+	@Inject
+	private AppReflectManagerFromRecord appReflectManager;
+	
+	@Resource
+	private ManagedExecutorService executerService;
+	
 	/**
 	 * refactor 4
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請一覧承認登録ver4.申請一覧承認登録ver4
@@ -70,6 +83,9 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 		AppListApproveResult result = new AppListApproveResult(new HashMap<String, String>(), new HashMap<String, String>());
 		AppListApproveCommand command = context.getCommand();
 		List<ListOfApplicationCmd> listOfApplicationCmds = command.getListOfApplicationCmds();
+		if(CollectionUtil.isEmpty(listOfApplicationCmds)) {
+			return result;
+		}
 //		List<ListOfAppTypes> listOfAppTypes =  command.getListOfAppTypes().stream().map(x -> x.toDomain()).collect(Collectors.toList());
 		// ドメインモデル「承認一覧表示設定」を取得する (Lấy domain Approval List display Setting)
 		ApprovalListDisplaySetting approvalListDisplaySetting = approvalListDispSetRepository.findByCID(companyID).get();
@@ -136,7 +152,7 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 					Optional.empty());
 			// アルゴリズム「承認する」を実行する
 			ApproveProcessResult approveProcessResult = approveAppHandler.approve(companyID, application.getAppID(), application, appDispInfoStartupOutput, 
-					"", listOfAppTypes);
+					"", listOfAppTypes, true);
 			if(approveProcessResult.isProcessDone()) {
 				return Pair.of(true, "");
 			} else {
@@ -150,6 +166,9 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 	public AppListApproveResult approverAfterConfirm(List<ListOfApplicationCmd> listOfApplicationCmds, List<ListOfAppTypes> listOfAppTypes) {
 		String companyID = AppContexts.user().companyId();
 		AppListApproveResult result = new AppListApproveResult(new HashMap<String, String>(), new HashMap<String, String>());
+		if(CollectionUtil.isEmpty(listOfApplicationCmds)) {
+			return result;
+		}
 		this.parallel.forEach(listOfApplicationCmds, listOfApplicationCmd -> {
 			Pair<Boolean, String> pair = this.approveSingleApp(companyID, listOfApplicationCmd, listOfAppTypes);
 			if(pair.getLeft()) {
@@ -158,6 +177,14 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 				result.getFailMap().put(listOfApplicationCmd.getAppID(), pair.getRight());
 			}
 		});
+		
+		// reflect app
+		AsyncTask task = AsyncTask.builder().keepsTrack(false).threadName(this.getClass().getName() + ".reflect-app: ")
+				.build(() -> {
+					appReflectManager
+							.reflectApplication(result.getSuccessMap().keySet().stream().collect(Collectors.toList()));
+				});
+		this.executerService.submit(task);
 		return result;
 	}
 

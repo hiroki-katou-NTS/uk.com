@@ -1,0 +1,76 @@
+
+table.fixed-table tbody tr td:first-child {
+  width: 230px;
+}
+table.fixed-table thead th {
+  height: 30px;
+  vertical-align: middle;
+}
+table.fixed-table thead tr:first-child th:first-child {
+  vertical-align: bottom;
+  padding-bottom: 17px;
+}
+/*table.fixed-table tbody tr:last-child td {*/
+  /*width: 70px;*/
+/*}*/
+
+table.fixed-table tbody td {
+  height: 28px;
+  vertical-align: middle;
+}
+table.fixed-table tbody td.text-center {
+  text-align: center;
+}
+table.fixed-table tbody td input {
+  margin: 3px 0;
+}
+table.fixed-table {
+  width: 100%;
+}
+table.fixed-table th {
+  text-align: center;
+}
+/*table.fixed-table tr:first-child th:first-child {*/
+  /*text-align: left;*/
+/*}*/
+#contents-area .content-body {
+  padding: 5px 15px;
+}
+#contents-area .content-body .row-item {
+  margin-bottom: 15px;
+}
+.control-group .row-group input  {
+  width: 50px;
+}
+
+.nts-combo-box {
+	width: 100px;
+}
+.row-table {
+  margin-left: 15px;
+}
+.control-group {
+  padding-left: 40px;
+}
+.control-group .row-group {
+  margin: 10px 0;
+}
+.control-group .row-group .table {
+  display: flex;
+  align-items: center;
+}
+.control-group .row-group .cell {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+.control-group .row-group .cell label {
+  margin-right: 10px;
+} 
+.ntsControl.symbol:after {
+  top: 9px;
+}
+#KMK010_84 {
+  min-width: 100px;
+  width: 110px;
+}

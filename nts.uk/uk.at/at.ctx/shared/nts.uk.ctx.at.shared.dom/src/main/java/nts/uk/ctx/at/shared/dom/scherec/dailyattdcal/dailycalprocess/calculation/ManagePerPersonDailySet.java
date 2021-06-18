@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
@@ -30,6 +30,9 @@ public class ManagePerPersonDailySet {
 	/** 加給設定 */
 	private Optional<BonusPaySetting> bonusPaySetting;
 	
+	/** 残業時間帯Require */
+	private OverTimeSheet.TransProcRequire overTimeSheetReq;
+	
 	/** 平日時の所定時間設定
 	 *年休、欠勤の場合に実績に就業時間帯が埋まっていない時に使用する。
 	 * 例1： 欠勤の場合は、フレックスを-8：00のような計算をする。　平日時の所定時間を使って計算する。
@@ -41,18 +44,22 @@ public class ManagePerPersonDailySet {
 	 * Constructor
 	 * @param personInfo 労働条件
 	 * @param dailyUnit　法定労働時間
+	 * @param overTimeSheetReq 残業時間帯Require
 	 */
 	public ManagePerPersonDailySet(
 			WorkingConditionItem personInfo,
 			DailyUnit dailyUnit,
 			AddSetting addSetting,
 			Optional<BonusPaySetting> bonusPaySetting,
-			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay) {
+			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay,
+			OverTimeSheet.TransProcRequire overTimeSheetReq) {
+		
 		super();
 		this.personInfo = personInfo;
 		this.dailyUnit = dailyUnit;
 		this.addSetting = addSetting;
 		this.bonusPaySetting = bonusPaySetting;
 		this.predetermineTimeSetByPersonWeekDay = predetermineTimeSetByPersonWeekDay;
+		this.overTimeSheetReq = overTimeSheetReq;
 	}
 }

@@ -9,76 +9,51 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-
-@Getter
-@Setter
+/**
+ * Refactor5
+ * @author hoangnd
+ *
+ */
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Table(name = "KRQDT_APP_OVERTIME_INPUT")
-public class KrqdtAppOvertimeInput extends ContractUkJpaEntity implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class KrqdtAppOvertimeInput extends ContractUkJpaEntity implements Serializable{
+	
+	public static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-    protected KrqdtOvertimeInputPK krqdtOvertimeInputPK;
+    public KrqdtOvertimeInputPK krqdtOvertimeInputPK;
 	
-	@Version
-	@Column(name="EXCLUS_VER")
-	public Long version;
 	
-	@Column(name = "START_TIME")
-    private Integer startTime;
+	@Column(name = "APPLICATION_TIME")
+	public Integer applicationTime;
 	
-    @Column(name = "END_TIME")
-    private Integer endTime;
-    
-    @Column(name = "APPLICATION_TIME")
-    private Integer applicationTime;
-
-    @ManyToOne
+	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name="CID", referencedColumnName="CID"),
     	@PrimaryKeyJoinColumn(name="APP_ID", referencedColumnName="APP_ID")
     })
-	public KrqdtAppOvertime appOvertime;
-    
-    public KrqdtAppOvertimeInput(KrqdtOvertimeInputPK pk , Integer startTime, Integer endTime, Integer appTime){
-    	this.krqdtOvertimeInputPK = pk;
-    	this.startTime = startTime;
-    	this.endTime = endTime;
-    	this.applicationTime = appTime;
-    }
+	public KrqdtAppOverTime appOvertime;
+	
 	@Override
 	protected Object getKey() {
 		return krqdtOvertimeInputPK;
 	}
 	
-	public KrqdtAppOvertimeInput fromDomainValue(OverTimeInput overTimeInput){
-		this.startTime = overTimeInput.getStartTime() == null ? null : overTimeInput.getStartTime().v();
-		this.endTime = overTimeInput.getEndTime() == null ? null : overTimeInput.getEndTime().v();
-		this.applicationTime = overTimeInput.getApplicationTime() == null ? null : overTimeInput.getApplicationTime().v();
-		return this;
+	public OvertimeApplicationSetting toDomain() {
+		if (getKey() == null) return null;
+		return new OvertimeApplicationSetting(
+				krqdtOvertimeInputPK.getFrameNo(),
+				EnumAdaptor.valueOf(krqdtOvertimeInputPK.getAttendanceType(), AttendanceType_Update.class),
+				applicationTime);
 	}
-	
-	public OverTimeInput toDomain(){
-		return OverTimeInput.createSimpleFromJavaType(
-				this.krqdtOvertimeInputPK.getCid(), 
-				this.krqdtOvertimeInputPK.getAppId(), 
-				this.krqdtOvertimeInputPK.getAttendanceId(), 
-				this.krqdtOvertimeInputPK.getFrameNo(), 
-				this.startTime, 
-				this.endTime, 
-				this.applicationTime, 
-				this.krqdtOvertimeInputPK.getTimeItemTypeAtr());
-	} 
 
 }

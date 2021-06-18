@@ -85,7 +85,7 @@ public enum ValueType {
 	 * @return
 	 */
 	public boolean isIntegerCountable() {
-		return COUNT.equals(this) || TIME.equals(this);
+		return COUNT.equals(this) || TIME.equals(this) || AMOUNT_NUM.equals(this);
 	}
 	
 	/**

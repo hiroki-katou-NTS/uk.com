@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
  * The Interface NursingVacationSettingGetMemento.
@@ -39,26 +41,30 @@ public interface NursingLeaveSettingGetMemento {
      *
      * @return the start month day
      */
-    Integer getStartMonthDay();
+    MonthDay getStartMonthDay();
 
 	/**
      * Gets the max person setting.
      *
      * @return the max person setting
      */
-    MaxPersonSetting getMaxPersonSetting();
+    List<MaxPersonSetting> getMaxPersonSetting();
 
 	/**
      * Gets the special holiday frame.
      *
      * @return the special holiday frame
      */
-    Optional<Integer> getSpecialHolidayFrame();
+    Optional<Integer> getHdspFrameNo();
 
 	/**
      * Gets the work absence.
      *
      * @return the work absence
      */
-    Optional<Integer> getWorkAbsence();
+	Optional<Integer> getAbsenceFrameNo();
+
+	TimeCareNursingSet getTimeCareNursingSet();
+
+
 }

@@ -12,6 +12,7 @@ import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
 //import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 //import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
@@ -36,7 +37,9 @@ public class ExecuteProcessExecCommandHandler extends AsyncCommandHandler<Execut
 		//取得したドメインモデル「更新処理自動実行管理」の現在の実行状態を確認する
 		ProcessExecutionLogManage processExecutionLogManage = logManageOpt.get();
 		//「実行中」 or 「無効」の場合
-		if(processExecutionLogManage.getCurrentStatus().value==0||processExecutionLogManage.getCurrentStatus().value==2){
+		if(processExecutionLogManage.getCurrentStatus().isPresent()
+				&& (processExecutionLogManage.getCurrentStatus().get().equals(CurrentExecutionStatus.RUNNING)
+						|| processExecutionLogManage.getCurrentStatus().get().equals(CurrentExecutionStatus.INVALID))){
 			//throw new BusinessException("Msg_1101");
 			dataSetter.setData("message101", "Msg_1101");
 		}

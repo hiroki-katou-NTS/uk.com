@@ -7,17 +7,22 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationErrorInfo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.DefoAggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget.getvacationaddtime.GetVacationAddTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -57,11 +62,11 @@ public class IrregularPeriodCarryforwardsTimeOfCurrent implements Serializable{
 	 * @param aggregateTotalWorkingTime 集計総労働時間
 	 * @param statutoryWorkingTimeMonth 月間法定労働時間
 	 */
-	public void aggregate(String companyId, String employeeId, DatePeriod datePeriod,
-			AttendanceTimeMonth weeklyTotalPremiumTime,
-			Map<String, AggregateRoot> holidayAdditionMap,
-			AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			AttendanceTimeMonth statutoryWorkingTimeMonth){
+	public void aggregate(Require require, CacheCarrier cacheCarrier,
+			String companyId, String employeeId, DatePeriod datePeriod,
+			YearMonth targetYm, GeneralDate baseDate, String employmentCode, ClosureId closureId,
+			AttendanceTimeMonth weeklyTotalPremiumTime, Map<String, AggregateRoot> holidayAdditionMap,
+			AggregateTotalWorkingTime aggregateTotalWorkingTime,  DefoAggregateMethodOfMonthly defoAggregateMethod){
 
 		val targetPremiumTimeMonth = new TargetPremiumTimeMonth();
 		
@@ -76,8 +81,9 @@ public class IrregularPeriodCarryforwardsTimeOfCurrent implements Serializable{
 		
 		case ADD_FOR_SHORTAGE:
 			// 月割増対象時間（休暇加算前）を求める
-			targetPremiumTimeMonth.askTime(companyId, employeeId, datePeriod, weeklyTotalPremiumTime,
-					addSet, aggregateTotalWorkingTime, statutoryWorkingTimeMonth, false);
+			targetPremiumTimeMonth.askTime(require, cacheCarrier, companyId, employeeId, datePeriod,
+					targetYm, baseDate, employmentCode, closureId, weeklyTotalPremiumTime,
+					addSet, aggregateTotalWorkingTime, false, defoAggregateMethod);
 			val beforeAddVacation = targetPremiumTimeMonth.getTime();
 			
 			// 月割増対象時間（休暇加算前）を〃（休暇加算後）に入れる
@@ -117,21 +123,25 @@ public class IrregularPeriodCarryforwardsTimeOfCurrent implements Serializable{
 			
 		case NOT_ADD:
 			// 月割増対象時間（休暇加算後）を求める　（休暇加算しない）
-			targetPremiumTimeMonth.askTime(companyId, employeeId, datePeriod, weeklyTotalPremiumTime,
-					addSet, aggregateTotalWorkingTime, statutoryWorkingTimeMonth, false);
+			targetPremiumTimeMonth.askTime(require, cacheCarrier, companyId, employeeId, datePeriod,
+					targetYm, baseDate, employmentCode, closureId,weeklyTotalPremiumTime,
+					addSet, aggregateTotalWorkingTime, false, defoAggregateMethod);
 			this.time = targetPremiumTimeMonth.getTime();
 			this.addedVacationUseTime = new AttendanceTimeMonth(0);
 			break;
 			
 		case ADD:
 			// 月割増対象時間（休暇加算後）を求める　（休暇加算する）
-			targetPremiumTimeMonth.askTime(companyId, employeeId, datePeriod, weeklyTotalPremiumTime,
-					addSet, aggregateTotalWorkingTime, statutoryWorkingTimeMonth, true);
+			targetPremiumTimeMonth.askTime(require, cacheCarrier, companyId, employeeId, datePeriod,
+					targetYm, baseDate, employmentCode, closureId, weeklyTotalPremiumTime,
+					addSet, aggregateTotalWorkingTime, true, defoAggregateMethod);
 			this.time = targetPremiumTimeMonth.getTime();
 			this.addedVacationUseTime = targetPremiumTimeMonth.getAddedVacationUseTime();
 			break;
 		}
 	}
+	
+	public static interface Require extends TargetPremiumTimeMonth.Require {}
 
 	/**
 	 * 加算方法

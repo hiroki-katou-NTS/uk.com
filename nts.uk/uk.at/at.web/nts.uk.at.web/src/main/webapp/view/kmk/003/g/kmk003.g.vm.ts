@@ -2,72 +2,73 @@ module nts.uk.at.view.kmk003.g {
     export module viewmodel {
         import SettingMethod = a5.SettingMethod;
         import EnumWorkForm = a5.EnumWorkForm;
-        import WorkTimeSettingModel = nts.uk.at.view.kmk003.a.viewmodel.worktimeset.WorkTimeSettingModel;
+
         export class ScreenModel {
 
-            // Screen data 
-            switchOptions: KnockoutObservableArray<any>;
+            // Screen data
             unitComboBoxOptions: KnockoutObservableArray<any>;
             roundingComboBoxOptions: KnockoutObservableArray<any>;
-            switchValue: KnockoutObservable<number>;
             unitValue: KnockoutObservable<number>;
             roundingValue: KnockoutObservable<number>;
 
-            lstRest: KnockoutObservableArray<any>;
-            specialLstRest: KnockoutObservableArray<any>;
-            actualList: KnockoutObservableArray<any>;
+            calcMethodLst: KnockoutObservableArray<any>;
+            fixedCalcMethodLst: KnockoutObservableArray<any>;
+            useRest: KnockoutObservable<boolean>;
 
-            selectedRest: KnockoutObservable<number>;
-            selectedActual: KnockoutObservable<number>;
+            usePrivateGoOutRest: KnockoutObservable<boolean>;
+            useAssoGoOutRest: KnockoutObservable<boolean>;
+
+            selectedCalcMethod: KnockoutObservable<number>;
+            selectedFixedCalc: KnockoutObservable<number>;
             dataObject: KnockoutObservable<any>;
-            updateRounding : KnockoutObservable<boolean>;
+            updateRounding: KnockoutObservable<boolean>;
             isFlow: KnockoutObservable<boolean>;
+            isFlex: KnockoutObservable<boolean>;
+
             constructor() {
                 let self = this;
-
-                self.switchOptions = ko.observableArray([
-                    new Item(1, nts.uk.resource.getText("KMK003_113")),
-                    new Item(0, nts.uk.resource.getText("KMK003_114"))
-                ]);
 
                 self.unitComboBoxOptions = ko.observableArray([]);
                 self.roundingComboBoxOptions = ko.observableArray([]);
 
-                self.switchValue = ko.observable(1);
                 self.unitValue = ko.observable(1);
                 self.roundingValue = ko.observable(0);
 
-                self.lstRest = ko.observableArray([
-                    new RadioBoxModel(0, nts.uk.resource.getText('KMK003_235')),
-                    new RadioBoxModel(1, nts.uk.resource.getText('KMK003_236')),
-                    new RadioBoxModel(2, nts.uk.resource.getText('KMK003_237'))
-                ]);
-                self.specialLstRest = ko.observableArray([
-                    new RadioBoxModel(0, nts.uk.resource.getText('KMK003_235')),
-                    new RadioBoxModel(1, nts.uk.resource.getText('KMK003_236'))
-                ]);
-                self.actualList = ko.observableArray([
-                    new RadioBoxModel(0, nts.uk.resource.getText('KMK003_239')),
-                    new RadioBoxModel(1, nts.uk.resource.getText('KMK003_240'))
+                self.calcMethodLst = ko.observableArray([
+                    new RadioBoxModel(1, nts.uk.resource.getText('KMK003_235')),
+                    new RadioBoxModel(2, nts.uk.resource.getText('KMK003_236')),
+                    new RadioBoxModel(0, nts.uk.resource.getText('KMK003_237'))
                 ]);
 
-                self.selectedRest = ko.observable(0);
-                self.selectedActual = ko.observable(0);
+                self.fixedCalcMethodLst = ko.observableArray([
+                    new RadioBoxModel(0, nts.uk.resource.getText('KMK003_241')),
+                    new RadioBoxModel(1, nts.uk.resource.getText('KMK003_243'))
+                ]);
+
+                self.useRest = ko.observable(false);
+
+                self.usePrivateGoOutRest = ko.observable(false);
+                self.useAssoGoOutRest = ko.observable(false);
+
+                self.selectedCalcMethod = ko.observable(0);
+                self.selectedFixedCalc = ko.observable(0);
                 self.dataObject = ko.observable(null);
-                
+
                 self.updateRounding = ko.observable(true);
                 //change rounding type when change unit
                 self.unitValue.subscribe((v) => {
                     if (v == 4 || v == 6)//case 15 or 30 minute
                     {
                         self.roundingComboBoxOptions(self.getRounding(self.dataObject()));
-                    }
-                    else {
+                    } else {
                         self.roundingComboBoxOptions(self.getSpecialRounding(self.dataObject()));
                     }
                     self.updateRounding.notifySubscribers(self.updateRounding());
                 });
                 self.isFlow = ko.observable(false);
+                self.isFlex = ko.observable(false);
+
+                _.defer(() => $('#calculate-method').focus());
             }
 
             /**
@@ -89,52 +90,52 @@ module nts.uk.at.view.kmk003.g {
              * Binding data
              */
             private bindingData(dataObject: any) {
-                let _self = this;
 
+                //get list enum
+                let arrayUnits: any = [];
+                let _self = this;
                 if (nts.uk.util.isNullOrUndefined(dataObject)) {
                     return;
                 }
-
+                _self.selectedCalcMethod(dataObject.calcMethod);
                 //check mode
-                if ((dataObject.workForm == EnumWorkForm.FLEX) || ((dataObject.workForm == EnumWorkForm.REGULAR) && (dataObject.settingMethod == SettingMethod.FLOW)))//case flex
+                if (dataObject.workForm == EnumWorkForm.FLEX || dataObject.isFlow)// flex or flow
                 {
-                    //check is Flex
-                    if (dataObject.workForm != EnumWorkForm.FLEX) {
+                    //check if Flow
+                    if (dataObject.isFlow) {
                         _self.isFlow(true);
                     }
-                    //get list enum
-                    let arrayUnit: any = [];
-                    dataObject.lstEnum.roundingTimeUnit.forEach(function(item: any, index: number) {
-                        arrayUnit.push(new Item(index, item.localizedName));
+                    //check if flex
+                    else {
+                        _self.isFlex(true);
+                    }
+                    dataObject.lstEnum.roundingTimeUnit.forEach(function (item: any, index: number) {
+                        arrayUnits.push(new Item(index, item.localizedName));
                     });
-                    _self.unitComboBoxOptions(arrayUnit);
-                    _self.roundingComboBoxOptions(_self.getSpecialRounding(_self.dataObject()));
 
-                    _self.switchValue(dataObject.useRest);
+                    _self.unitComboBoxOptions(arrayUnits);
+                    _self.roundingComboBoxOptions(_self.getSpecialRounding(_self.dataObject()));
                     _self.unitValue(dataObject.roundUnit);
                     _self.roundingValue(dataObject.roundType);
-                    _self.selectedRest(dataObject.calcMethod);
-                }
-                else {
-                    _self.selectedActual(dataObject.actualRest);
-                    _self.selectedRest(dataObject.restTimeCalcMethod);
+                    _self.selectedCalcMethod(dataObject.calcMethod);
+                    _self.selectedFixedCalc(dataObject.fixedCalcMethod);
+                    _self.useRest(dataObject.useRest);
+                    _self.usePrivateGoOutRest(dataObject.usePrivateGoOutRest);
+                    _self.useAssoGoOutRest(dataObject.useAssoGoOutRest);
                 }
             }
-            
-            private getRounding(dataObject:any):any
-            {
+
+            private getRounding(dataObject: any): any {
                 let arrayRounding: any = [];
-                dataObject.lstEnum.rounding.forEach(function(item: any, index: number) {
-                        arrayRounding.push(new Item(index, item.localizedName));
+                dataObject.lstEnum.rounding.forEach(function (item: any, index: number) {
+                    arrayRounding.push(new Item(index, item.localizedName));
                 });
                 return arrayRounding;
             }
 
-            
-            private getSpecialRounding(dataObject:any):any
-            {
+            private getSpecialRounding(dataObject: any): any {
                 let arrayRounding: any = [];
-                dataObject.lstEnum.rounding.forEach(function(item: any, index: number) {
+                dataObject.lstEnum.rounding.forEach(function (item: any, index: number) {
                     if (index != 2) {
                         arrayRounding.push(new Item(index, item.localizedName));
                     }
@@ -148,31 +149,32 @@ module nts.uk.at.view.kmk003.g {
             public save(): void {
                 let _self = this;
                 let data: any = _self.dataObject();
-                let returnData: any = null;
-                if ((data.workForm == EnumWorkForm.FLEX) || ((data.workForm == EnumWorkForm.REGULAR) && (data.settingMethod == SettingMethod.FLOW)))//case flex
-                {
-                    if (data.workForm == EnumWorkForm.FLEX) {
-                        returnData = {
-                            //default values
-                            useRest: 0,
-                            roundUnit: 0,
-                            roundType: 0,
-                            calcMethod: _self.selectedRest()
-                        };    
-                    }
-                    else {
-                        returnData = {
-                            useRest: _self.switchValue(),
-                            roundUnit: _self.unitValue(),
-                            roundType: _self.roundingValue(),
-                            calcMethod: _self.selectedRest()
-                        };
-                    }
-                }
-                else {
+                let returnData: any;
+
+                if (_self.isFlex()) { // flex
                     returnData = {
-                        actualRest: _self.selectedActual(),
-                        restTimeCalcMethod: _self.selectedRest()
+                        //default values
+                        useRest: _self.useRest(),
+                        roundUnit: 0,
+                        roundType: 0,
+                        calcMethod: _self.selectedCalcMethod(),
+                        fixedCalcMethod: _self.selectedFixedCalc(),
+                        usePrivateGoOutRest: _self.usePrivateGoOutRest(),
+                        useAssoGoOutRest: _self.useAssoGoOutRest()
+                    };
+                } else if (_self.isFlow()) { // flow
+                    returnData = {
+                        useRest: _self.useRest(),
+                        roundUnit: _self.unitValue(),
+                        roundType: _self.roundingValue(),
+                        calcMethod: _self.selectedCalcMethod(),
+                        fixedCalcMethod: _self.selectedFixedCalc(),
+                        usePrivateGoOutRest: _self.usePrivateGoOutRest(),
+                        useAssoGoOutRest: _self.useAssoGoOutRest()
+                    };
+                } else { //other
+                    returnData = {
+                        calcMethod: _self.selectedCalcMethod()
                     };
                 }
                 nts.uk.ui.windows.setShared("KMK003_DIALOG_G_OUTPUT_DATA", returnData);
@@ -182,13 +184,14 @@ module nts.uk.at.view.kmk003.g {
             /**
              * Close
              */
-            public close(): void {
+            public close() : void {
                 let self = this;
                 nts.uk.ui.windows.setShared("KMK003_DIALOG_G_OUTPUT_DATA", self.dataObject());
                 nts.uk.ui.windows.close();
             }
 
         }
+
         export class Item {
             code: number;
             name: string;
@@ -198,6 +201,7 @@ module nts.uk.at.view.kmk003.g {
                 this.name = name;
             }
         }
+
         export class RadioBoxModel {
             id: number;
             name: string;

@@ -47,11 +47,7 @@ public class OvertimeFinder {
 		// call repository find data
 		List<Overtime> overtimes = this.repository.findAllOvertime(companyId);
 
-		return overtimes.stream().map(domain -> {
-			OvertimeDto dto = new OvertimeDto();
-			domain.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
+		return overtimes.stream().map(domain ->  OvertimeDto.of(domain)).collect(Collectors.toList());
 
 	}
 	

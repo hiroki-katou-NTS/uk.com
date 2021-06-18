@@ -27,16 +27,16 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.EmpClassifiImport;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.EmployeePosition;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSetting;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSettingRepository;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpMedicalWorkFormHisItem;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.NurseClassification;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRank;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRankRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankPriority;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeamRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetEmpCanReferBySpecOrganizationService;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.RegulationInfoEmpQuery;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
@@ -100,14 +100,13 @@ public class ScreenQueryExtractTargetEmployees {
 		EmployeeInformationQueryDtoImport input = new EmployeeInformationQueryDtoImport(sids, param.baseDate, false, false, false, false, false, false);
 
 		List<EmployeeInformationImport> listEmp = empInfoAdapter.getEmployeeInfo(input);
-		listEmp.sort( Comparator.comparing(EmployeeInformationImport :: getEmployeeCode));
-		List<String> sids2 = listEmp.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
-		
 		//2020/9/7　発注済み step 4
 		//※スケ①-5_スケ修正(職場別)
 		if(listEmp.isEmpty()){
 			throw new BusinessException("Msg_1779"); 
 		}
+		listEmp.sort( Comparator.comparing(EmployeeInformationImport :: getEmployeeCode));
+		List<String> sids2 = listEmp.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
 		
 		// step 5 call AR_並び替え設定.
 		RequireSortEmpImpl requireSortEmpImpl = new RequireSortEmpImpl(belongScheduleTeamRepo,

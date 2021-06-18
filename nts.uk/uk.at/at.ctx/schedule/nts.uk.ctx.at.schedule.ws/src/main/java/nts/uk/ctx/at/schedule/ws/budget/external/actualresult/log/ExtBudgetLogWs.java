@@ -21,7 +21,7 @@ import nts.uk.ctx.at.schedule.app.export.budget.external.actualresult.ExtBudgetE
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.log.ExtBudgetLogFinder;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.log.dto.ExternalBudgetLogDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.log.dto.ExternalBudgetQuery;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.CompletionState;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.log.CompletionState;
 
 /**
  * The Class ExtBudgetLogWs.

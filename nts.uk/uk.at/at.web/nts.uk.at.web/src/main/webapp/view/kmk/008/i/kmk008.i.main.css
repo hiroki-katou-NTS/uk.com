@@ -2,8 +2,8 @@
     margin-bottom: 20px;
 }
 
-.ntsCheckBox {
-    margin-bottom: 16px;
+.chk_I13 {
+    margin-left: 143px;
 }
 
 .wrapper {
@@ -15,16 +15,12 @@
 }
 
 .company {
-    margin-left: 30px;
+    margin-left: 170px;
     margin-bottom: 20px;
 }
 
 #I1_1 {
     white-space: pre-wrap;
-}
-
-#contents-area {
-    text-align: center;
 }
 
 .head-title {

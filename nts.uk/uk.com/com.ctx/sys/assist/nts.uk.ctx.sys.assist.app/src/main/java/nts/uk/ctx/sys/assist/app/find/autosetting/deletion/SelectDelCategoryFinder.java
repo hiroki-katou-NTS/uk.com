@@ -1,6 +1,5 @@
 package nts.uk.ctx.sys.assist.app.find.autosetting.deletion;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -21,7 +20,6 @@ import nts.uk.ctx.sys.assist.dom.categoryfordelete.CategoryForDeleteRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionPatternSettingRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionSelectionCategory;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionSelectionCategoryRepository;
-import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -43,7 +41,7 @@ public class SelectDelCategoryFinder {
 	@Inject
 	private DataDeletionPatternSettingRepository dataDeletionPatternSettingRepository;
 
-	public DataDeletionPatternSettingDto findSelectCategoryInfo(SelectDelCategoryCommand command) {
+	public DataDeletionPatternSettingDto<DelSelectionCategoryNameDto> findSelectCategoryInfo(SelectDelCategoryCommand command) {
 
 		List<DelSelectionCategoryNameDto> categoryNames = findSelectionCategoryName(command);
 
@@ -51,8 +49,8 @@ public class SelectDelCategoryFinder {
 		return dataDeletionPatternSettingRepository
 				.findByPk(AppContexts.user().contractCode(), command.getPatternCode(), command.getPatternClassification())
 				.map(p -> {
-					DataDeletionPatternSettingDto dto = new DataDeletionPatternSettingDto();
-					p.setMemento(dto);
+					DataDeletionPatternSettingDto<DelSelectionCategoryNameDto> dto = DataDeletionPatternSettingDto
+							.createFromDomain(p);
 					dto.setSelectCategories(categoryNames);
 					return dto;
 				}).orElse(null);
@@ -63,7 +61,7 @@ public class SelectDelCategoryFinder {
 		// 選択削除カテゴリを取得する
 		List<DataDeletionSelectionCategory> selectCategories = dataDeletionSelectionCategoryRepository
 				.findByPatternCdAndPatternAtrAndSystemTypes(command.getPatternCode(),
-						command.getPatternClassification(), command.getSystemType());
+						command.getPatternClassification(), command.getSystemType(), AppContexts.user().contractCode());
 
 		// ドメインモデル「データ削除カテゴリ」を取得する
 		List<CategoryForDelete> categories = categoryRepository.getCategoryByListId(

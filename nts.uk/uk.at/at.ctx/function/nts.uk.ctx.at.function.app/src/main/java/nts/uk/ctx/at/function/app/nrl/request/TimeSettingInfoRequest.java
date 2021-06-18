@@ -17,6 +17,7 @@ import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.Se
 /**
  * @author ThanhNX
  *
+ *時刻合わせリクエスト
  */
 @RequestScoped
 @Named(Command.TIMESET_INFO)
@@ -26,7 +27,7 @@ public class TimeSettingInfoRequest extends NRLRequest<Frame> {
 	private SendNRDataAdapter sendNRDataAdapter;
 
 	@Override
-	public void sketch(ResourceContext<Frame> context) {
+	public void sketch(String empInfoTerCode, ResourceContext<Frame> context) {
 
 		List<MapItem> items = new ArrayList<>();
 		items.add(FrameItemArranger.SOH());
@@ -37,6 +38,8 @@ public class TimeSettingInfoRequest extends NRLRequest<Frame> {
 		items.add(FrameItemArranger.NoFragment());
 		items.add(new MapItem(Element.NRL_NO, context.getTerminal().getNrlNo()));
 		items.add(new MapItem(Element.MAC_ADDR, context.getTerminal().getMacAddress()));
+		String contractCode =  context.getEntity().pickItem(Element.CONTRACT_CODE);
+		items.add(new MapItem(Element.CONTRACT_CODE, contractCode));
 		items.add(FrameItemArranger.ZeroPadding());
 		// Get flag from DB to set to request
 		SendTimeInfomationImport setting = sendNRDataAdapter.sendSystemTime();
@@ -54,8 +57,7 @@ public class TimeSettingInfoRequest extends NRLRequest<Frame> {
 
 	@Override
 	public String responseLength() {
-		// TODO Auto-generated method stub
-		return null;
+		return "0032";
 	}
 
 }

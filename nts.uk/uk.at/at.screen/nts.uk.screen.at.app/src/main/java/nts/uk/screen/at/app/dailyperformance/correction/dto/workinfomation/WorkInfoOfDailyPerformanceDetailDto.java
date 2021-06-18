@@ -13,7 +13,7 @@ public class WorkInfoOfDailyPerformanceDetailDto {
 
 	private WorkInformationDto recordWorkInformation;
 
-	private WorkInformationDto scheduleWorkInformation;
+//	private WorkInformationDto scheduleWorkInformation;
 
 	private CalculationStateDto calculationState;
 
@@ -30,11 +30,11 @@ public class WorkInfoOfDailyPerformanceDetailDto {
 	private long version;
 
 	public WorkInfoOfDailyPerformanceDetailDto(String employeeId, WorkInformationDto recordWorkInformation,
-			WorkInformationDto scheduleWorkInformation, CalculationStateDto calculationState, NotUseAttributeDto goStraightAtr,
+			CalculationStateDto calculationState, NotUseAttributeDto goStraightAtr,
 			NotUseAttributeDto backStraightAtr, GeneralDate ymd, List<ScheduleTimeSheetDto> scheduleTimeSheets, long version) {
 		this.employeeId = employeeId;
 		this.recordWorkInformation = recordWorkInformation;
-		this.scheduleWorkInformation = scheduleWorkInformation;
+//		this.scheduleWorkInformation = scheduleWorkInformation;
 		this.calculationState = calculationState;
 		this.goStraightAtr = goStraightAtr;
 		this.backStraightAtr = backStraightAtr;

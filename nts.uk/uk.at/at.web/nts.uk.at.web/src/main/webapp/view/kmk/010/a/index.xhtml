@@ -1,236 +1,279 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<body>
-		<ui:composition template="../../../../master/base.xhtml">
-			<ui:define name="htmlHead">
-				<com:stylefile path="kmk010.a.main.css" />
-				<com:stylefile path="/view/language/select/languagemasterselect.css" of="/nts.uk.com.web" />
-				<com:scriptfile set="IGNITE" />
-				<com:scriptfile path="kmk010.a.start.js" />
-				<com:scriptfile path="kmk010.a.service.js" />
-				<com:scriptfile path="kmk010.a.vm.js" />
-				<com:scriptfile path="/view/language/select/languagemasterselect-jquery-ext.js" of="/nts.uk.com.web" />
-				<com:ValidatorScript>
-					nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNote
-					nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumRate
-					nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHDOccUnit
-					nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeValue
-				</com:ValidatorScript>
-			</ui:define>
-	
-			<ui:define name="content">
-				<div id="functions-area" >
-					<button tabindex="1" class="proceed float-left" data-bind="click: saveOutsideOTSetting">#{i18n.getText('KMK010_4')}</button>
-					<button tabindex="2" class="buttonOther float-left" data-bind="click: exportFileExcelOutsideOTSetting">#{i18n.getText('KMK010_5')}</button>
-					<button tabindex="3" class="buttonOther float-left" data-bind="click: openDialogOutsideOTSetting" >#{i18n.getText('KMK010_6')}</button>
-					<button tabindex="4" class="buttonOther float-left" data-bind="click: openDialogOutsideOTBRDItem">#{i18n.getText('KMK010_7')}</button>
-					<!-- <div tabindex="5" id="switch-language"></div> -->
-				</div>
-				
-				<div id="contents-area" data-bind="with: outsideOTSettingModel, visible: true" style="display: none" class="fixed-flex-layout">
-					<div class="fixed-flex-layout-left">
-						<div style="width: 102%">
-						<div class="lableDetail" style="width:500px">
-							<div class="lableData" data-bind="ntsFormLabel: {required: true}">
-								<label>#{i18n.getText('KMK010_8')}</label>
-							</div>
-							<div tabindex="6" id="selectMethodOutsideOT" class="methodSelect"
-								data-bind="ntsRadioBoxGroup: {
-								options: $parent.calculationMethods,
-								optionsValue: 'value',
-								optionsText: 'localizedName',
-								value: calculationMethod,
-								enable: true }">
-							</div>
-						</div>
-	
-						<div class="lableDetail" style="width:500px">
-							<div class="lableData"
-								data-bind="ntsFormLabel: {required: false, constraint: 'OvertimeNote' }">
-								<label>#{i18n.getText('KMK010_9')}</label>
-							</div>
-							<textarea tabindex="7" class="overtimeNote"
-								data-bind="ntsMultilineEditor: { value: note, constraint: 'OvertimeNote', name: '#[KMK010_9]' }" />
-						</div>
-						<div class="overtimeSettingDetail" style="width:800px">
-							<div class="overtimeDetail">
-								<table tabindex="-1" class="overtime-border tbl-monthly">
-									<tr class="bg-dark-green">
-										<td>#{i18n.getText('KMK010_10')}</td>
-										<td>#{i18n.getText('KMK010_11')}</td>
-										<td>#{i18n.getText('KMK010_12')}</td>
-									</tr>
-									<com:ko tag="foreach" bind="overtimes">
-										<tr>
-											<td tabindex="-1" class="tdno">
-												<div tabindex="-1" data-bind="text: overtimeNo"></div>
-											</td>
-											<td tabindex="-1"><label tabindex="-1"
-												class="tdname tooltip-label" data-bind="text: languageName"></label>
-											</td>
-											<td>
-												<div>
-													<input tabindex="8" class="overtime"
-														data-bind="ntsTimeEditor: {name: '#[KMK010_13]',
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/base.xhtml">
+      <ui:define name="htmlHead">
+        <com:stylefile path="kmk010.a.main.css" />
+        <com:stylefile
+          path="/view/language/select/languagemasterselect.css"
+          of="/nts.uk.com.web"
+        />
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="kmk010.a.start.js" />
+        <com:scriptfile path="kmk010.a.service.js" />
+        <com:scriptfile path="kmk010.a.vm.js" />
+        <com:scriptfile
+          path="/view/language/select/languagemasterselect-jquery-ext.js"
+          of="/nts.uk.com.web"
+        />
+        <com:ValidatorScript>
+          nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNote
+          nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumRate
+          nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHDOccUnit
+          nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeValue
+        </com:ValidatorScript>
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="functions-area">
+          <button
+            id="A1_1"
+            tabindex="1"
+            class="proceed"
+            data-bind="click: saveOutsideOTSetting"
+          >
+            #{i18n.getText('KMK010_4')}
+          </button>
+          <button
+            id="A1_3"
+            tabindex="2"
+            class="buttonOther-1"
+            data-bind="click: openDialogOutsideOTSetting"
+          >
+            #{i18n.getText('KMK010_6')}
+          </button>
+          <button
+            id="A1_4"
+            tabindex="3"
+            class="buttonOther-1"
+            data-bind="click: openDialogOutsideOTBRDItem"
+          >
+            #{i18n.getText('KMK010_7')}
+          </button>
+          <button
+            id="A1_6"
+            tabindex="4"
+            class="buttonOther-1"
+            data-bind="click: openDialogVCSettings, enable: isEnableSettingOverTime"
+          >
+            #{i18n.getText('KMK010_82')}
+          </button>
+          <button
+            id="A1_2"
+            tabindex="5"
+            class="buttonOther-1"
+            data-bind="click: exportFileExcelOutsideOTSetting"
+          >
+            #{i18n.getText('KMK010_5')}
+          </button>
+          <!-- <div tabindex="5" id="switch-language"></div> -->
+        </div>
+
+        <div
+          id="contents-area"
+          data-bind="with: outsideOTSettingModel, visible: true"
+          style="display: none"
+          class="fixed-flex-layout"
+        >
+          <div class="fixed-flex-layout-left">
+            <div class="wrapper">
+              <div class="lableDetail">
+                <div
+                  class="lableData"
+                  data-bind="ntsFormLabel: {required: true, text: '#{i18n.getText('KMK010_8')}'}"
+                >
+                </div>
+                <div
+                  tabindex="6"
+                  id="selectMethodOutsideOT"
+                  class="methodSelect"
+                  data-bind="ntsRadioBoxGroup: {
+                    options: $parent.calculationMethods,
+                    optionsValue: 'value',
+                    optionsText: 'localizedName',
+                    value: calculationMethod,
+                    enable: true }"
+                ></div>
+              </div>
+
+              <div class="lableDetail">
+                <div
+                  class="lableData"
+                  data-bind="ntsFormLabel: {required: false, constraint: 'OvertimeNote', text: '#{i18n.getText('KMK010_9')}' }"
+                >
+                </div>
+                <textarea
+                  tabindex="7"
+                  class="overtimeNote"
+                  data-bind="ntsMultilineEditor: { value: note, constraint: 'OvertimeNote', name: '#[KMK010_9]' }"
+                />
+              </div>
+              <div class="overtimeSettingDetail">
+                <div class="overtimeDetail" style="display: none">
+                  <table tabindex="-1" class="overtime-border tbl-monthly">
+                    <tr class="bg-dark-green">
+                      <td>#{i18n.getText('KMK010_10')}</td>
+                      <td>#{i18n.getText('KMK010_11')}</td>
+                      <td>#{i18n.getText('KMK010_12')}</td>
+                    </tr>
+                    <com:ko tag="foreach" bind="overtimes">
+                      <tr>
+                        <td tabindex="-1" class="tdno">
+                          <div tabindex="-1" data-bind="text: overtimeNo"></div>
+                        </td>
+                        <td tabindex="-1">
+                          <label
+                            tabindex="-1"
+                            class="tdname tooltip-label"
+                            data-bind="text: languageName"
+                          ></label>
+                        </td>
+                        <td>
+                          <div>
+                            <input
+                              tabindex="8"
+                              class="overtime"
+                              data-bind="ntsTimeEditor: {name: '#[KMK010_13]',
 														value: overtime,
 														mode: 'time',
 														option: { inputFormat: 'time', defaultValue: '00:00'},
 														required: true,
 														enable: $parents[1].isEditable,
-														constraint: 'OvertimeValue'}" />
-													<label>#{i18n.getText('KMK010_14')}</label>
-												</div>
-											</td>
-										</tr>
-									</com:ko>
-								</table>
-							</div>
-							<div class="sixtySetting" >
-								<table tabindex="-1" class="overtime-border tbl-monthly">
-									<tr tabindex="-1" class="bg-dark-green">
-										<td rowspan="2">#{i18n.getText('KMK010_15')}</td>
-										<td rowspan="2">#{i18n.getText('KMK010_16')}</td>
-										<td rowspan="2" colspan="2">#{i18n.getText('KMK010_17')}</td>
-										<td rowspan="2">#{i18n.getText('KMK010_18')}</td>
-										<com:ko tag="if" bind="$parent.isManage()">
-											<com:ko tag="foreach" bind="overtimes">
-												<td tabindex="-1"><label tabindex="-1"
-													class="overtimeName tooltip-label"
-													data-bind="text: languageName"></label></td>
-											</com:ko>
-										</com:ko>
-									</tr>
-									<tr class="bg-dark-green">
-										<com:ko tag="if" bind="$parent.isManage()">
-											<com:ko tag="foreach" bind="overtimes">
-												<td class="selectionVaction">
-													<div tabindex="10"
-														data-bind="ntsCheckBox: { checked: superHoliday60HOccurs,name: '#[KMK010_20]' }">
-														<label>#{i18n.getText('KMK010_20')}</label>
-													</div>
-												</td>
-											</com:ko>
-										</com:ko>
-									</tr>
-	
-									<com:ko tag="foreach" bind="breakdownItems">
-										<tr>
-											<td class="tdno">
-												<div data-bind="text: breakdownItemNo"></div>
-											</td>
-											<td class="tdname"><label class="tooltip-label"
-												data-bind="text: languageName"></label></td>
-											<td class="tdbutton">
-												<button tabindex="9"
-													data-bind="click: openDialogDailyAttendanceItems">#{i18n.getText('KMK010_19')}</button>
-											</td>
-											<td class="tdname"><label class="tooltip-label"
-												data-bind="text: attendanceItemName" /></td>
-											<td class="tdname">
-												<div data-bind="text: productNumber"></div>
-											</td>
-											<com:ko tag="if" bind="$parents[1].isManage()">
-												<com:ko tag="foreach" bind="rateBRDItems">
-													<td class="tdbreakdown">
-														<div>
-															<input class="rate" data-bind="attr: {  'data-tab': tabIndex }, 
-																ntsNumberEditor: {name: '#[KMK010_21]',
-																value: premiumRate,
-																constraint: 'PremiumRate',
-																option: { defaultValue: 0},
-																enable: enableInput,
-																required: true
-																}" />
-															<label>#{i18n.getText('KMK010_22')}</label>
-														</div>
-													</td>
-												</com:ko>
-											</com:ko>
-										</tr>
-									</com:ko>
-								</table>
-							</div>
-						</div>
-						<com:ko tag="if" bind="$parent.isManage">
-							<div class="rateBotton60H" tabindex="-1"></div>
-							<div class="overtimeRate60H" tabindex="-1">
-								<div class="oneOvertimeRate" tabindex="-1">
-									<div class="labelOneRate" tabindex="-1">
-										<label>#{i18n.getText('KMK010_23')}</label>
-									</div>
-									<div class="labelTwoRate" tabindex="-1">
-										<label>#{i18n.getText('KMK010_24')}</label>
-									</div>
-									<div class="labelThreeRate">
-										<label>#{i18n.getText('KMK010_25')}</label> <label>#{i18n.getText('KMK010_26')}</label>
-										<label>#{i18n.getText('KMK010_27')}</label> <label
-											class="labelTwoRate">#{i18n.getText('KMK010_28')}</label>
-									</div>
-									<div class="lableFourRate">
-										<div  class="selectUnit"
-											data-bind="ntsComboBox: {
-											options: $parent.lstUnit,
-											optionsValue: 'value',
-											visibleItemsCount: 10,
-											value: $parent.superHD60HConMedModel.roundingTime,
-											optionsText: 'localizedName',
-											editable: false,
-											enable: true,
-											dropDownAttachedToBody: true, 
-											columns: [
-												{ prop: 'localizedName', length: 2 },
-											]}"></div>
-	
-										<div  class="selectRounding"
-											data-bind="ntsComboBox: {
-											options: $parent.lstRoundingSet,
-											optionsValue: 'value',
-											visibleItemsCount: 10,
-											value: $parent.superHD60HConMedModel.rounding,
-											optionsText: 'localizedName',
-											editable: false,
-											enable: true,
-											dropDownAttachedToBody: true,
-											columns: [
-												{ prop: 'localizedName', length: 10 },
-											]}"></div>
-									</div>
-								</div>
-								<div class="overtimeRate60H2">
-									<div class="labelOneRate">
-										<label>#{i18n.getText('KMK010_29')}</label>
-									</div>
-								</div>
-								<div class="overtimeRate60H3">
-									<div class="labelOneRate">
-										<label>#{i18n.getText('KMK010_30')}</label> <input
-											class="overtimeSelect"
-											data-bind="ntsTimeEditor: {name: '#[KMK010_31]',
-											value: $parent.superHD60HConMedModel.superHolidayOccurrenceUnit,
-											constraint: 'SuperHDOccUnit',
-											mode: 'time',
-											option: { inputFormat: 'time', defaultValue: '01:00'},
-											required: true
-											}" />
-									</div>
-									<div class="labelTwoRate">
-										<label>#{i18n.getText('KMK010_32')}</label> <label>#{i18n.getText('KMK010_33')}</label>
-									</div>
-									<div class="labelFiveRate">
-										<label>#{i18n.getText('KMK010_34')}</label>
-									</div>
-								</div>
-							</div>
-						</com:ko>
-					</div>
-					</div>
-					<div class="fixed-flex-layout-right"></div>
-				</div>
-			</ui:define>
-		</ui:composition>
-	</body>
+														constraint: 'OvertimeValue'}"
+                            />
+                            <label>#{i18n.getText('KMK010_14')}</label>
+                          </div>
+                        </td>
+                      </tr>
+                    </com:ko>
+                  </table>
+                </div>
+                <!-- A4_11 -->
+                <div data-bind="ntsFormLabel: {required: false, text: '#{i18n.getText('KMK010_86')}' }">
+                </div>
+                <div class="sixtySetting" id="A4_1" tabindex="-1">
+                  <table tabindex="-1" class="overtime-border tbl-monthly">
+                    <thead>
+                      <tr tabindex="-1" class="bg-dark-green">                     
+                        <td>#{i18n.getText('KMK010_16')}</td>
+                        <td>#{i18n.getText('KMK010_17')}</td>
+                        <td>#{i18n.getText('KMK010_18')}</td>                       
+                      </tr>
+                    </thead>                   
+                    <tbody>
+                      <com:ko tag="foreach" bind="breakdownItems">
+                        <tr>
+                          <td class="tdname">
+                            <label
+                              class="tooltip-label"
+                              data-bind="text: languageName"
+                            ></label>
+                          </td>
+                          <td class="tdbutton valign-center">
+                            <div class="table">
+                              <div class="cell">
+                                <button
+                                  tabindex="8"
+                                  data-bind="click: openDialogDailyAttendanceItems"
+                                >
+                                  #{i18n.getText('KMK010_19')}
+                                </button>
+                              </div>
+                              <div class="cell">
+                                <label
+                                  class="limited-label"
+                                  data-bind="text: attendanceItemName"
+                                />
+                              </div>
+                            </div>
+                          </td>
+                          <td class="tdname">
+                            <div data-bind="text: productNumber"></div>
+                          </td>                        
+                        </tr>
+                      </com:ko>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="rounding-setting-overtime-hours">
+                <div class="row-1">
+                  <!-- A7_1-->
+                  <div data-bind="ntsFormLabel: {required: false, text: '#{i18n.getText('KMK010_83')}' }">
+                  </div>
+                  <!-- A7_2-->
+                  <button
+                    tabindex="-1"
+                    data-bind="ntsHelpButton: {image: 'img/IMG_KMK010_1.png', position: 'right bottom', enable: true }"
+                  >
+                    ?
+                  </button>
+                </div>
+                <!-- <com:ko tag="if" bind="$parent.isManage"></com:ko> -->
+                <div class="row-2">
+                  <div class="lableFourRate table">
+                    <div class="cell valign-center">
+                      <label>#{i18n.getText('KMK010_84')}</label
+                      ><!-- A7_3-->
+                    </div>
+                    <div class="cell">
+                      <!-- A7_4-->
+                      <div
+                        class="selectUnit"
+                        tabindex="9"
+                        data-bind="ntsComboBox: {
+															name: '#[KMK010_84]',
+															options: $parent.lstUnit,
+															optionsValue: 'value',
+															visibleItemsCount: 8,
+															value: roundingUnit,
+															optionsText: 'localizedName',
+															editable: false,
+															enable: calculationMethod() === 0,
+															dropDownAttachedToBody: true, 
+															columns: [
+																{ prop: 'localizedName', length: 2 },
+															]}"
+                      ></div>
+                    </div>
+                    <div class="cell valign-center">
+                      <label>#{i18n.getText('KMK010_85')}</label
+                      ><!-- A7_5-->
+                    </div>
+                    <div class="cell">
+                      <!-- A7_6-->
+                      <div
+                        class="selectRounding"
+                        tabindex="10"
+                        data-bind="ntsComboBox: {
+															name: '#[KMK010_85]',
+															options: $parent.lstRoundingSet,
+															optionsValue: 'value',
+															visibleItemsCount: 3,
+															value: roundingProcess,
+															optionsText: 'localizedName',
+															editable: false,
+															enable: calculationMethod() === 0,
+															dropDownAttachedToBody: true,
+															columns: [
+																{ prop: 'localizedName', length: 10 },
+															]}"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
 </html>

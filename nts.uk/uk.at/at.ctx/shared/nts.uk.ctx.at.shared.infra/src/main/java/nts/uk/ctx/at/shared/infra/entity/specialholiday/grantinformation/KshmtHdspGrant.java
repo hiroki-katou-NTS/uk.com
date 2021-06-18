@@ -9,70 +9,65 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.FixGrantDate;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
+
 /**
- * 付与日定期
- * 
- * @author tanlv
- *
+ * 指定日付与
+ * @author masaaki_jinno
+ * ver4 テーブル名変更　KSHST_GRANT_REGULAR　→　KSHST_HDSP_GRANT
  */
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHMT_HDSP_GRANT")
 public class KshmtHdspGrant extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
+
 	/* 主キー */
 	@EmbeddedId
-	public KshstGrantRegularPK pk;
+	public KshmtHdspGrantPK pk;
 
-	/* 付与するタイミングの種類 */
-	@Column(name = "TYPE_TIME")
-	public int typeTime;
-	
-	/* 付与基準日 */
-	@Column(name = "GRANT_DATE")
-	public int grantDate;
-	
-	/* 取得できなかった端数は消滅する */
-	@Column(name = "ALLOW_DISAPPEAR")
-	public int allowDisappear;
-	
-	/* 周期 */
-	@Column(name = "INTERVAL")
-	public Integer interval;
-	
-	/* 固定付与日数 */
+	/* 付与月日 */
+	@Column(name = "GRANT_MD")
+	public Integer grantMd;
+
+	/* 付与日数 */
 	@Column(name = "GRANTED_DAYS")
-	public Integer grantedDays;
-	
+	public int grantedDays;
+
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
 		return pk;
 	}
 
-	public KshmtHdspGrant(KshstGrantRegularPK pk, int typeTime, int grantDate, int allowDisappear, Integer interval, Integer grantedDays) {
+	public KshmtHdspGrant(
+			KshmtHdspGrantPK pk, Integer grantMd, int grantedDays) {
 		this.pk = pk;
-		this.typeTime = typeTime;
-		this.grantDate = grantDate;
-		this.allowDisappear = allowDisappear;
-		this.interval = interval;
+		this.grantMd = grantMd;
 		this.grantedDays = grantedDays;
 	}
-	
+
 	/**
 	 * To Entity
-	 * 
+	 *
 	 * @param domain
 	 * @return
 	 */
-	public static KshmtHdspGrant toEntity(GrantRegular domain){
-		FixGrantDate fixGrantDate = domain.getGrantTime() != null ? domain.getGrantTime().getFixGrantDate() : null;
-		
-		return new KshmtHdspGrant(new KshstGrantRegularPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()), domain.getTypeTime().value, 
-				domain.getGrantDate().value, domain.isAllowDisappear() ? 1 : 0, fixGrantDate != null ? fixGrantDate.getInterval().v() : 0, 
-						fixGrantDate != null ? fixGrantDate.getGrantDays().v() : 0);
+	public static KshmtHdspGrant toEntity(
+			String companyId,
+			int specialHolidayCode,
+			FixGrantDate domain){
+
+		// 付与月日
+		Integer grantMd = null;
+		if ( domain.getGrantMonthDay().isPresent() ) {
+			grantMd = domain.getGrantMonthDay().get().getMonth()*100
+					+ domain.getGrantMonthDay().get().getDay();
+		}
+
+		return new KshmtHdspGrant(
+				new KshmtHdspGrantPK(companyId, specialHolidayCode),
+				grantMd,
+				domain.getGrantDays().getGrantDays().v());
 	}
 }

@@ -17,11 +17,15 @@ public interface AppReasonStandardRepository {
 	
 	Optional<AppReasonStandard> findByHolidayAppType(String companyID, HolidayAppType holidayAppType);
 	
-	Optional<AppReasonStandard> findByCD(ApplicationType appType, AppStandardReasonCode appStandardReasonCode);
+	Optional<AppReasonStandard> findByHolAndAppType(String companyID, ApplicationType appType, HolidayAppType holidayAppType);
+	
+	Optional<AppReasonStandard> findByCD(String CID, ApplicationType appType, Optional<HolidayAppType> holidayAppType, AppStandardReasonCode appStandardReasonCode);
 
 	List<AppReasonStandard> findByCompanyId(String companyID);
 
 	void saveReasonTypeItem(String companyId, int appType, Integer holidayAppType, ReasonTypeItem reasonItem);
 
 	void deleteReasonTypeItem(String companyId, int appType, Integer holidayAppType, int reasonCode);
+	
+	List<AppReasonStandard> findByListAppType(String companyID, List<Integer> appType);
 }

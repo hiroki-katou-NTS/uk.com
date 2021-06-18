@@ -13,12 +13,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
  */
 public interface SubstVacationSettingSetMemento {
 
-	/**
-	 * Gets the checks if is manage.
-	 *
-	 * @return the checks if is manage
-	 */
-	void setIsManage(ManageDistinct isManage);
+
+	
+	void setManageDeadline (ManageDeadline manageDeadline);
 
 	/**
 	 * Gets the expiration date.
@@ -33,4 +30,8 @@ public interface SubstVacationSettingSetMemento {
 	 * @return the allow prepaid leave
 	 */
 	void setAllowPrepaidLeave(ApplyPermission allowPrepaidLeave);
+	
+	void setManageDistinct(ManageDistinct manageDistinct);
+	
+	void setLinkingManagementATR(ManageDistinct linkingManagementATR);
 }

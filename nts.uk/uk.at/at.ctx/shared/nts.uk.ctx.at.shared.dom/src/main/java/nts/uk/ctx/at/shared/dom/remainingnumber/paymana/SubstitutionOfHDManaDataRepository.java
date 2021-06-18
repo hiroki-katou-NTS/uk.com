@@ -35,7 +35,7 @@ public interface SubstitutionOfHDManaDataRepository {
 	
 	List<SubstitutionOfHDManagementData> getBySidsAndCid(String cid, List<String> sids);
 	
-	void deletePayoutSubOfHDMana(String subOfHDID);
+//	void deletePayoutSubOfHDMana(String subOfHDID);
 	
 	void delete(String subOfHDID);
 	
@@ -84,4 +84,11 @@ public interface SubstitutionOfHDManaDataRepository {
 	List<SubstitutionOfHDManagementData> getByYmdUnOffset(String cid, String sid, GeneralDate ymd, double unOffseDays);
 	
 	List<SubstitutionOfHDManagementData> getAllBySid(String sid);
+	
+	void delete(List<SubstitutionOfHDManagementData> listItem);
+	
+	List<SubstitutionOfHDManagementData> getByListId(List<String> subOfHDIDs);
+
+	/** 当月以降の管理データを削除 */
+	void deleteAfter(String sid, boolean unknownDateFlag, GeneralDate target);
 }

@@ -18,6 +18,7 @@ import nts.arc.layer.infra.data.database.DatabaseProduct;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekAggrHdwkTime;
 import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekAggrOverTime;
@@ -34,12 +35,12 @@ import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekT
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekTimeGoout;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrPremTime;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekMedicalTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
@@ -86,6 +87,11 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtWekAttendanceTime a "
 			+ WHERE_SIDS_AND_YM
 			+ "ORDER BY a.PK.employeeId, a.PK.yearMonth, a.startYmd ";
+	
+	private static final String FIND_BY_SIDS_AND_PERIOD = "SELECT a FROM KrcdtWekAttendanceTime a "
+			+ "WHERE a.PK.employeeId IN :employeeIds "
+			+ "AND a.startYmd >= :startDate "
+			+ "AND a.endYmd <= :endDate ";
 	
 	private static final String FIND_BY_PERIOD = "SELECT a FROM KrcdtWekAttendanceTime a "
 			+ "WHERE a.PK.employeeId = :employeeId "
@@ -181,6 +187,24 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 						.setParameter("yearMonths", lstYearMonth)
 						.getList(c -> c.toDomain()));
 			});
+		});
+		return results;
+	}
+	
+	/** 検索　（社員IDリストと基準日ト） */
+	@Override
+	public List<AttendanceTimeOfWeekly> findBySidsAndDatePeriod(List<String> employeeIds, DatePeriod datePeriod) {
+		
+		GeneralDate startDate = datePeriod.start();
+		GeneralDate endDate = datePeriod.end();
+		
+		List<AttendanceTimeOfWeekly> results = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_PERIOD, KrcdtWekAttendanceTime.class)
+					.setParameter("employeeIds", splitData)
+					.setParameter("startDate", startDate)
+					.setParameter("endDate", endDate)
+					.getList(c -> c.toDomain()));
 		});
 		return results;
 	}

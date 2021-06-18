@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -34,11 +35,15 @@ public class ReflectOnDomain {
 		TimeWithDayAttr timeWithDayAttr = TimeWithDayAttr.convertToTimeWithDayAttr(ymd,
 				stamp.getStampDateTime().toDate(), stamp.getStampDateTime().clockHourMinute().v());
 		//打刻方法を打刻元情報に変換する
-		ReasonTimeChange reasonTimeChange =  new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, EngravingMethod.TIME_RECORD_ID_INPUT);
+		ReasonTimeChange reasonTimeChange =  new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT));
 		workStamp.getTimeDay().setTimeWithDay(Optional.ofNullable(timeWithDayAttr));
 		workStamp.getTimeDay().setReasonTimeChange(reasonTimeChange);
-		workStamp.setAfterRoundingTime(timeWithDayAttr);
-		workStamp.setLocationCode(stamp.getRefActualResults().getWorkLocationCD());
+		
+		Optional<WorkLocationCD> workLocationCD = Optional.empty();
+		if(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent()){
+			workLocationCD = stamp.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD();
+		}
+		workStamp.setLocationCode(workLocationCD);
 		//「打刻．反映済み区分」をtrueにする
 		stamp.setReflectedCategory(true);
 		return workStamp;

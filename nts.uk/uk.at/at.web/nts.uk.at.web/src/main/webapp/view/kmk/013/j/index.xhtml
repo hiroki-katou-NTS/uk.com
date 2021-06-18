@@ -26,74 +26,105 @@
 					<TBODY>
 						<tr>
 							<td>
-								<div id="form-lb" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_309')}</div>
-							</td>
-						</tr>
-						<tr>
-							<td class="td-content">
-								<div class="child-lb">#{i18n.getText('KMK013_310')}</div>
+								<div id="J2_1">#{i18n.getText('KMK013_510')}</div>
 								<hr />
+								<div id="form-lb" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_351')}</div>
+								<div>
+									<div tabindex="3" class="group-radio" id="J3_2"
+										 data-bind="ntsRadioBoxGroup: {
+										name:'#{i18n.getText('KMK013_352')}',
+										options: controlSetItems,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: selectedControlSetItem}, hasFocus: true"></div>
+								</div>
 							</td>
 						</tr>
 						<tr>
 							<td>
-    								<div tabindex="3" class="selection" id="trans-attend"
-									data-bind="ntsRadioBoxGroup: {
+								<div id="form-lb" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_356')}</div>
+								<div>
+									<div tabindex="4" class="group-radio" id="J4_2"
+										 data-bind="ntsRadioBoxGroup: {
+										name:'#{i18n.getText('KMK013_357')}',
+										options: calculationMethod,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: selectedCalculationMethod}, hasFocus: true"></div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="form-lb" data-id="J5_1" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK013_361')}</div>
+								<button tabindex="5" id="J5_2" data-bind="click: openScreenO">#{i18n.getText('KMK013_362')}</button>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="J6_1">#{i18n.getText('KMK013_511')}</div>
+								<hr id="J6_2"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div data-id="J7_1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_309')}</div>
+								<div id="J7_2">#{i18n.getText('KMK013_310')}</div>
+								<div>
+									<div tabindex="6" id="J7_3" class="group-radio"
+										 data-bind="ntsRadioBoxGroup: {
 										name:'#{i18n.getText('KMK013_310')}',
 										options: transAttendMethod,
 										optionsValue: 'id',
 										optionsText: 'name',
-										value:selectedItem}, hasFocus: true"></div>
+										value: selectedTransAttendMethod}, hasFocus: true"></div>
+								</div>
 							</td>
 						</tr>
-						
 						<tr>
 							<td>
-								<div id="form-lb" class="workSelection" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK013_335')}</div>
+								<div data-id="J8_1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_313')}</div>
+								<div id="J8_2">#{i18n.getText('KMK013_314')}</div>
+								<div>
+									<div tabindex="7" id="J8_3" class="group-radio"
+										 data-bind="ntsRadioBoxGroup: {
+										name:'#{i18n.getText('KMK013_315')}',
+										options: nonCalculationMethod,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value:selectedNonCalculationMethod}, hasFocus: true"></div>
+								</div>
 							</td>
 						</tr>
-						<tr>
-							<td class="td-content">
-								<div class="child-lb">#{i18n.getText('KMK013_336')}</div>
-								<hr />
-							</td>
-						</tr>
-						<tr>
-							<td class="td-content">
-								<button class="child-lb" tabindex="4" data-bind="click: openKDL002_givenDays">#{i18n.getText('KMK013_337')}</button>
-								<span tabindex="5">
-									<input 
-									class="limited-label" id="itemname_absenceDay"
-									data-bind="ntsTextEditor:{
-	                                         value: workTypeNames,
-	                                         required: false,
-	                                         enable: true,
-	                                         readonly:true}" />
-								</span>
-<!-- 								<span class="tooltiptext" data-bind="text: workTypeNames"></span></div> -->
-							</td>
-						</tr>
-						
-						<tr>
-							<td class="td-content">
-								<div class="child-lb" style="margin-top:25px;">#{i18n.getText('KMK013_338')}</div>
-								<hr />
-							</td>
-						</tr>
-						<tr>
-							<td class="td-content">
-								<button class="child-lb" tabindex="6" data-bind="click: openKDL002_attendanceDays">#{i18n.getText('KMK013_337')}</button>
-								<span tabindex="7">
-									<input
-									class="limited-label" id="itemname_attendanceDay"
-									data-bind="ntsTextEditor:{
-	                                         value: workTypeNamesAttendance,
-	                                         required: false,
-	                                         enable: true,
-	                                         readonly:true}" />
-								</span>
-							</td>
-						</tr>
+                        <tr>
+                            <td>
+                                <div class="control-group valign-center">
+                                    <span id="J8_7" class="label">#{i18n.getText('KMK013_319')}</span>
+                                    <div tabindex="8" data-bind="ntsSwitchButton: {
+                                        name: 'Sample Switch',
+                                        options: useAtrItems,
+                                        optionsValue: 'code',
+                                        optionsText: 'name',
+                                        value: selectedWorkDayItem,
+                                        required: true,
+                                        enable: true }">
+
+                                    </div>
+                                </div>
+                                <div class="control-group valign-center">
+                                    <span id="J8_11" class="label">#{i18n.getText('KMK013_321')}</span>
+                                    <div tabindex="9" data-bind="ntsSwitchButton: {
+                                        name: 'Sample Switch',
+                                        options: useAtrItems,
+                                        optionsValue: 'code',
+                                        optionsText: 'name',
+                                        value: selectedNonWorkDayItem,
+                                        required: true,
+                                        enable: true }">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
 					</TBODY>
 				</table>
 			</div>

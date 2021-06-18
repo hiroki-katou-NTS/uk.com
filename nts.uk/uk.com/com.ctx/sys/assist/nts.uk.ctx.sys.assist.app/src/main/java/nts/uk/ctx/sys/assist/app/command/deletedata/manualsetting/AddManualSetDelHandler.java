@@ -3,7 +3,6 @@
  */
 package nts.uk.ctx.sys.assist.app.command.deletedata.manualsetting;
 
-import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +13,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.sys.assist.dom.deletedata.CategoryDeletionRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeesDeletionRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
@@ -33,8 +31,6 @@ public class AddManualSetDelHandler extends CommandHandlerWithResult<ManualSetDe
 	private ManualSetDeletionRepository repo;
 	@Inject
 	private EmployeesDeletionRepository repoEmp;
-	@Inject
-	private CategoryDeletionRepository repoCate;
 	@Inject
 	private ManualSetDeletionService manualSetDeletionService;
 	@Inject
@@ -75,7 +71,6 @@ public class AddManualSetDelHandler extends CommandHandlerWithResult<ManualSetDe
 			repoEmp.addAll(lstEmpDelAll);
 		}
 		
-//		repoCate.addAll(manualSetCmd.getCategories(delId));
 		domain.setCategories(manualSetCmd.getCategories(domain.getDelId()));
 		repo.addManualSetting(domain);
 		

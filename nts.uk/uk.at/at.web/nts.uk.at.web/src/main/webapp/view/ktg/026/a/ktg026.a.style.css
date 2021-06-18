@@ -1,0 +1,56 @@
+html,
+body {
+  overflow: hidden;
+}
+
+#master-wrapper .ktg-026-dialog {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+#master-wrapper .ktg-026-dialog .ktg026-hidden {
+  display: block !important;
+}
+#master-wrapper .ktg-026-dialog .ktg026-border-top {
+  padding: 0 !important;
+}
+
+#master-wrapper .ktg-026-dialog .ktg026-title {
+  padding-left: 5px;
+}
+
+#master-wrapper .ktg-026-dialog .ktg026-employee-name {
+  padding-left: 20px;
+  line-height: 35px;
+}
+
+#master-wrapper .ktg-026-dialog .nts-datepicker-wrapper {
+  display: none !important;
+}
+
+#master-wrapper .ktg-026-dialog .widget-title + .widget-content {
+  padding: 0px 10px;
+}
+
+#master-wrapper .ktg-026-dialog .widget-title button.hidden {
+  display: block !important;
+  margin-right: 10px;
+}
+
+#master-wrapper .ktg-026-dialog .widget-content .nts-datepicker-wrapper {
+  display: none;
+}
+
+#master-wrapper .ktg-026-dialog .widget-content.ui-resizable {
+  padding-bottom: 0;
+}
+
+#master-wrapper .ktg-026-dialog .ktg-026-a.widget-content.ui-resizable:not(.widget-fixed) {
+  height: 195px !important;
+  min-height: 195px !important;
+}
+
+#master-wrapper .ktg-026-dialog .widget-content.ui-resizable .ui-resizable-handle {
+  display: none !important;
+}

@@ -1,0 +1,77 @@
+@import url("base.css");
+
+.ktg-005 {
+	border-left: 1px solid #B1B1B1;
+    border-right: 1px solid #B1B1B1;
+    border-bottom: 1px solid #B1B1B1;
+    width: 305px;
+	margin: 0 auto;
+	background: white;
+}
+
+.ktg-005 .col_line_1,.ktg-005  .col_line_2 {
+	display: inline-block;
+}
+
+.ktg-005 .col_line_1 {
+	width: 150px;
+}
+
+.ktg-005 #functions-area {
+	padding-top: 0px;
+}
+
+.ktg-005 .button-group {
+	height: 29px;
+	width: 29px;
+	border: 0;
+	margin: 0;
+	box-shadow: none;
+	background-size: auto;
+	background-color: transparent;
+}
+
+.ktg-005 #functions-area {
+	padding-left: 0px;
+}
+
+.ktg-005 .col_line_2 {
+	float: right;
+	display: flex;
+}
+
+.ktg-005 #master-wrapper div#contents-area {
+	padding: 0px;
+}
+
+.ktg-005 #top_title {
+	border-bottom: 1px solid #B1B1B1;
+	border-left: 5px solid #0096F2;
+	height: 45px;
+	display: flex;
+	margin-left: 2px;
+}
+
+.ktg-005 .div_line {
+	margin-top: 0px;
+	height: 40px;
+	vertical-align: middle;
+	line-height: 40px;
+}
+
+.ktg-005 .border {
+	border-bottom: solid thin #B1B1B1;
+}
+
+.ktg-005 #content {
+	overflow-y: auto;
+}
+
+.ktg-005 #contents-area {
+	width: 305px;
+	margin: 0 auto;
+	border: 1px solid #B1B1B1;
+	border-top: 0;
+	height: auto !important;
+	min-height: 258px;
+}

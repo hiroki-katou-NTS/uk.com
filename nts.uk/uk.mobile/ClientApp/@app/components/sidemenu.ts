@@ -64,7 +64,7 @@ const _SideMenu = Vue.observable({
         <ul class="list-unstyled list-group components" ref="scrollEl" v-on:click="updateScroll">
             <li v-if="document"><nts-search-box v-model="filter" class="mt-2 mr-2 ml-2" class-input="text-white" class-container="text-white" placeholder="filter_menu" /></li>
             <li v-else>
-                <router-link to="/ccg/008/a">
+                <router-link v-bind:to="{ path: '/ccg/008/a', query: { t } }">
                     <span v-on:click="hideSideBar"><i class="fas fa-home mr-2"></i>{{ 'CCGS20_4' | i18n }}</span>
                 </router-link>
             </li>
@@ -76,7 +76,7 @@ const _SideMenu = Vue.observable({
                     <transition name="collapse">
                         <ul class="list-unstyled" v-show="active == m || (!!filter && m.hasc)">
                             <li v-for="(t, j) in m.childs" v-bind:key="j">
-                                <router-link :to="t.url">
+                                <router-link v-bind:to="{ path: t.url, query: { t } }">
                                     <span v-on:click="hideSideBar"><i class="fas fa-angle-right mr-2"></i>{{t.title | i18n }}</span>
                                 </router-link>
                             </li>
@@ -84,7 +84,7 @@ const _SideMenu = Vue.observable({
                     </transition>
                 </template>
                 <template v-else>
-                    <router-link :to="m.url">
+                    <router-link v-bind:to="{ path: m.url, query: { t } }">
                         <span v-on:click="hideSideBar"><i class="fas fa-angle-right mr-2"></i>{{m.title | i18n }}</span>
                     </router-link>
                 </template>
@@ -148,6 +148,14 @@ export class SideMenuBar extends Vue {
     public empName: string = '';
     public warning: boolean = false;
 
+    get t() {
+        const vm = this;
+        const { $dt } = vm;
+        const { now, date } = $dt;
+
+        return date(now, 'sSSS');
+    }
+
     constructor() {
         super();
 
@@ -192,6 +200,7 @@ export class SideMenuBar extends Vue {
     }
 
     public hideSideBar() {
+        EventBus.$emit('hideSideBar', true);
         if (browser.width < 992) {
             SideMenu.show = false;
         }
@@ -242,6 +251,18 @@ export class SideMenuBar extends Vue {
     public created() {
         dom.registerEventHandler(window, 'resize', resize);
     }
+    
+    public mounted() {
+        const vm = this;
+
+        vm.$auth
+            .token
+            .then((c: string | null) => {
+                if (c) {
+                    SideMenu.reload();
+                }
+            });
+    }
 
     public destroyed() {
         dom.removeEventHandler(window, 'resize', resize);
@@ -261,3 +282,6 @@ export class SideMenuBar extends Vue {
 }
 
 export { SideMenu };
+
+const EventBus = new Vue();
+export default EventBus;

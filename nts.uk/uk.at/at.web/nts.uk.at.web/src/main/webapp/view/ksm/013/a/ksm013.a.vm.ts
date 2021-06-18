@@ -40,9 +40,9 @@ module nts.uk.at.view.ksm013.a {
                 });
 
                 self.lstLicense = ko.observableArray([
-                    { licenseCode: '0', licenseName: nts.uk.resource.getText('Enum_LicenseClassification_NURSE') },
-                    { licenseCode: '1', licenseName: nts.uk.resource.getText('Enum_LicenseClassification_NURSE_ASSOCIATE') },
-                    { licenseCode: '2', licenseName: nts.uk.resource.getText('Enum_LicenseClassification_NURSE_ASSIST') }
+                    { licenseCode: 0, licenseName: nts.uk.resource.getText('Enum_LicenseClassification_NURSE') },
+                    { licenseCode: 1, licenseName: nts.uk.resource.getText('Enum_LicenseClassification_NURSE_ASSOCIATE') },
+                    { licenseCode: 2, licenseName: nts.uk.resource.getText('Enum_LicenseClassification_NURSE_ASSIST') }
                 ]);
                 //self.selectedLicense = ko.observable(0);
             }
@@ -94,13 +94,10 @@ module nts.uk.at.view.ksm013.a {
                             $('#nurseClassificationName').focus();
                         })
                     }).fail((res) => {
-                       // nts.uk.ui.dialog.alertError(res).then(function() {
                             nts.uk.ui.block.clear();
                             if (res.messageId == "Msg_3") {
-                                self.selectedCode("");
                                 $('#nurseClassificationCode').ntsError('set', { messageId: "Msg_3" });
                             }
-                      //  });
                     });
                 } else {
                     // update

@@ -1,6 +1,8 @@
 package nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -72,11 +74,19 @@ public class WorkplaceGroupFinder {
 		return wkpExportService.getWorkplaceInforFromWkpIds(AppContexts.user().companyId(), workplaceIds, baseDate);
 	}	
 	
-	public WorkplaceGroupDto getWorkplaceGroupKDL046( String workplaceId){
+	public Map<String, WorkplaceGroupInforDto> getWorkplaceGroupKDL046(List<String> workplaceIds){
 		String cid = AppContexts.user().companyId();
-		Optional<WorkplaceGroup> optional = affWpGroupRepo.getWorkplaceGroup(cid, workplaceId);
-		if(!optional.isPresent())
-			return null;
-		return new WorkplaceGroupDto(optional.get());
+		Map<String, WorkplaceGroupInforDto> result = new HashMap<>();
+		workplaceIds.forEach(wkpId -> {
+			affWpGroupRepo.getWorkplaceGroup(cid, wkpId).ifPresent(wkpGroup -> {
+				result.put(wkpId, new WorkplaceGroupInforDto(
+						wkpGroup.getId()	,
+						wkpGroup.getCode().v(),
+						wkpGroup.getName().v(),
+						true
+				));
+			});
+		});
+		return result;
 	}
 }

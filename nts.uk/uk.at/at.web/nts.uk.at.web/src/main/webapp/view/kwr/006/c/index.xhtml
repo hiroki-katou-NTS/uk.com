@@ -1,22 +1,21 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 1200,
-					height : 650
+					width: 1200,
+					height: 670
 				};
 			</script>
 
 			<com:ValidatorScript>
-				nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
-				nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
+				nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingCode
+				nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingName
 			</com:ValidatorScript>
 
 			<com:scriptfile set="IGNITE" />
@@ -39,14 +38,10 @@
 				<button tabindex="4" id="delete" class="danger C1_4 btn-control"
 					data-bind="click: removeData, enable: enableBtnDel">#{i18n.getText('KWR006_37')}</button>
 				<!-- C1_5 -->
-				<button tabindex="5" class="btn-control"
-					data-bind="click: closeScreenC">#{i18n.getText('KWR006_38')}</button>
-				
-				<!-- C1_6 -->
-				<hr/>
+				<button tabindex="5" class="btn-control" data-bind="click: closeScreenC">#{i18n.getText('KWR006_38')}</button>
 			</div>
 
-			<div id="contents-area" style="display: none" data-bind="visible: true">
+			<div id="contents-area" class="kwr006-contents" style="display: none" data-bind="visible: true">
 				<table>
 					<tr>
 						<td class="td-left">
@@ -55,17 +50,18 @@
 								data-bind="ntsPanel:{width: '260px', height: '360px', direction: 'right', showIcon: true, visible: true}">
 								<!-- C2_2 -->
 								<div style="width: 250px"
-									data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list', 
+									data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list',
 											items: outputItemList, selected: selectedCodeC2_3, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
 								<!-- C2_3 -->
-								<table tabindex="6" id="multi-list"
-									data-bind="ntsGridList: {
+								<table tabindex="6" id="multi-list" data-bind="ntsGridList: {
 										height: 300,
 										options: outputItemList,
-										optionsValue: 'code', 
+										optionsValue: 'code',
 										columns: columns,
 										multiple: false,
-										value: selectedCodeC2_3
+										columnResize: true,
+										value: selectedCodeC2_3,
+										rows: 10
 									}"></table>
 							</div>
 						</td>
@@ -73,106 +69,124 @@
 							<div class="right">
 								<div class="row">
 									<!-- C3_1 -->
-									<div class="label-name"
-										data-bind="ntsFormLabel: { constraint: ['OutputItemSettingCode', 'OutputItemSettingName'], 
+									<div class="label-name" data-bind="ntsFormLabel: { constraint: ['MonthlyOutputItemSettingCode', 'MonthlyOutputItemSettingName'],
 																					   required: true,
 																					   name: '#[KWR006_42]'}">#{i18n.getText('KWR006_42')}</div>
 									<!-- C3_2 -->
-									<input id="C3_2" tabindex="7" class="C3_2 save-error"
-										data-bind="ntsTextEditor:{
+									<input id="C3_2" tabindex="7" class="C3_2 save-error" data-bind="ntsTextEditor:{
 											name: '#[KWR006_43]',
 											required: true,
 											value: C3_2_value,
-											constraint: 'OutputItemSettingCode',
+											constraint: 'MonthlyOutputItemSettingCode',
 											enable: enableCodeC3_2}" />
 									<!-- C3_3 -->
-									<input id="C3_3" class="C3_3 save-error" tabindex="8"
-										data-bind="ntsTextEditor:{
+									<input id="C3_3" class="C3_3 save-error" tabindex="8" data-bind="ntsTextEditor:{
 											name: '#[KWR006_44]',
 											required: true,
 											value: C3_3_value,
-											constraint: 'OutputItemSettingName'}" />
+											constraint: 'MonthlyOutputItemSettingName'}" />
 								</div>
 								<div class="row">
-									<div>
-										<div class="C5">
-											<!-- C5_1 -->
-											<div class="label-name" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_48')}</div>
-											<!-- C5_2 -->
-											<hr />
-										</div>
-										<div class="C6">
-											<!-- C6_1 -->
-											<div class="label-name" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_49')}</div>
-											<!-- C6_2 -->
-											<hr />
-										</div>
+									<!-- C9_1 -->
+									<div class="label-name" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_91')}</div>
+									<!-- C9_2 -->
+									<div tabindex="9" id="" style="float: left;" data-bind="ntsSwitchButton: {
+										name: '#[KWR006_91]',
+										options: dataOutputType,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: C9_2_value,
+										required: true,
+										enable: true }"></div>
+									<!-- C_9_5 -->
+									<button tabindex="10"
+										style="margin-left: 10px;"
+										data-bind="ntsHelpButton: {image: 'KWR006_1.png', position: 'right top', enable: true }">?</button>
+								</div>
+								<div class="row">
+									<div class="C5">
+										<!-- C5_1 -->
+										<div class="label-name" style="width: 51%;" data-bind="ntsFormLabel: {}">
+											#{i18n.getText('KWR006_48')}</div>
+										<!-- C5_3 -->
+										<div class="label-name" style="width: 12%; padding-top: 5px;" data-bind="ntsLabel: {}">
+											#{i18n.getText('KWR006_103')}</div>
+										<!-- C5_4 -->
+										<div style="display: inherit;" tabindex="11" data-bind="ntsComboBox: {
+													width: '30%',
+													name: '#[KWR006_48]',
+													options: itemListAttribute,
+													optionsValue: 'code',
+													value: C5_4_value,
+													optionsText: 'name',
+													required: true}"></div>
+										<!-- C5_2 -->
+										<hr />
 									</div>
+									<div class="C6">
+										<!-- C6_1 -->
+										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_49')}</div>
+										<!-- C6_2 -->
+										<hr />
+									</div>
+								</div>
 
-									<div>
-										<!-- C7_1 -->
-										<div tabindex="10" id="swap-list"
-											data-bind="ntsSwapList: {
-											showSearchBox: { showLeft : true, showRight: true},
-											height: 300,
-											dataSource: items,
-											disableMoveButton: false,
-											primaryKey: 'code',
-											columns: columns,
-											value: currentCodeListSwap,
-											searchMode: 'filter',
-											searchCriterion: ['code', 'name'],
-											draggable: true,
-											enableRowNumbering: false,
-											multipleDrag: { left: true, right: false },
-											innerDrag: { left: false, right: true },
-											outerDrag: { left: true, right: true },
-											afterMoveLeft: sortItems,
-											itemsLimit: { right: 48 }
-										}"></div>
+								<div class="row-C7-1">
+									<!-- C7_1 -->
+									<com:ko-if bind="loadSwapLst">
+										<div tabindex="10" id="swap-list" data-bind="ntsSwapList: {
+												showSearchBox: { showLeft : true, showRight: true},
+												height: 330,
+												dataSource: items,
+												disableMoveButton: false,
+												primaryKey: 'code',
+												columns: columns,
+												value: currentCodeListSwap,
+												searchMode: 'filter',
+												searchCriterion: ['code', 'name'],
+												draggable: true,
+												enableRowNumbering: false,
+												multipleDrag: { left: true, right: false },
+												innerDrag: { left: false, right: true },
+												outerDrag: { left: true, right: true },
+												afterMoveLeft: sortItems,
+												itemsLimit: limitAttendanceItem
+											}"></div>
 										<!--Updown Button-->
-										<div id="up-down"
-											data-bind="ntsUpDown: {
-													targetSource: currentCodeListSwap,
-													primaryKey: 'code',
-													comId: '#swap-list',
-													type: 'swap',
-													swapTarget: 'right'
-												}"></div>
-									</div>
+										<div id="up-down" data-bind="ntsUpDown: {
+														targetSource: currentCodeListSwap,
+														primaryKey: 'code',
+														comId: '#swap-list',
+														type: 'swap',
+														swapTarget: 'right'
+													}"></div>
+									</com:ko-if>
 								</div>
 
 								<!-- C7_13 -->
-								<div class="label C7_13">#{i18n.getText('KWR006_53')}</div>
+								<div class="label C7_13" data-bind="text: sizeClassificationLabel"></div>
 
-								<div class="C8">
+								<div class="row">
 									<!-- C8_1 -->
 									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_54')}</div>
-									<!-- C8_2 -->
-									<div class="c8_2" tabindex="11"
-										data-bind="ntsRadioBoxGroup: {
-														name: '#[KWR006_55]',
-														options: itemListConditionSet,
-														optionsValue: 'code',
-														optionsText: 'name',
-														enable: true,
-														value: selectedCodeA8_2}">
-
-									</div>
-									<div tabindex="13" id="combo-box-remarkInput"
-										style="margin-top: 30px; margin-left: 35px"
-										data-bind="ntsComboBox: {
-														name: '#[#KWR006_78]',
-														options: remarkInputContents,
-														optionsValue: 'value',
-														optionsText: 'localizedName',
-														visibleItemsCount: 5,
-														value: currentRemarkInputContent,
-														required: true,
-														enable: isEnableRemarkInputContents,
-														columns: [
-															{ prop: 'localizedName'}
-														]}">
+									<hr />
+									<div class="row" style="display: flex;">
+										<!-- C8_7 -->
+										<div tabindex="18" data-bind="ntsCheckBox: { checked: isEnableRemarkInputContents }">
+											#{i18n.getText('KWR006_109')}</div>
+										<!-- C8_5 -->
+										<div tabindex="19" style="margin-left: 35px" data-bind="ntsComboBox: {
+												name: '#[#KWR006_78]',
+												options: remarkInputContents,
+												optionsValue: 'code',
+												optionsText: 'name',
+												visibleItemsCount: 5,
+												value: currentRemarkInputContent,
+												required: true,
+												enable: isEnableRemarkInputContents,
+												columns: [{ prop: 'name'}]},
+												rows: 10">
+										</div>
 									</div>
 								</div>
 							</div>
@@ -183,4 +197,5 @@
 		</ui:define>
 	</ui:composition>
 </body>
+
 </html>

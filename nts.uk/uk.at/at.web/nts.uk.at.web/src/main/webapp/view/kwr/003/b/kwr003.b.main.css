@@ -1,0 +1,49 @@
+
+#master-wrapper {
+  height: auto;
+  overflow: hidden;
+}
+
+.kwr003-contents .nts-searchbbox-wrapper input.ntsSearchBox {
+  width: 232px !important;
+}
+
+.kwr003-contents .d-flex {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.kwr003-contents .d-flex:first-child {
+  margin-bottom: 15px;
+}
+.kwr003-contents .d-flex .form-label {
+  margin-right: 32px;
+}
+.kwr003-contents .d-flex .code {
+  width: 50px;
+}
+
+.kwr003-contents .pull-left .panel.ntsPanel {
+  height: 390px;
+}
+
+.kwr003-contents .nts-editor-wrapped .nts-editor {
+  width: auto !important;
+}
+.kwr003-contents .nts-editor-wrapped .nts-editor.code {
+  max-width: 30px;
+  margin-right: 15px;
+}
+.kwr003-contents th.text-center,
+.kwr003-contents td.text-center {
+  text-align: center;
+}
+.btn-setting {
+  height: 32px;
+}
+.kwr003-contents .nts-fixed-body-wrapper {
+  height: 331px !important;
+}
+.kwr003-contents .pull-left {
+  padding-left: 15px;
+}

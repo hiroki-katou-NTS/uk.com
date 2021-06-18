@@ -16,7 +16,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.pub.spr.ApplicationSprPub;
 import nts.uk.ctx.at.request.pub.spr.export.AppOverTimeSprExport;
 import nts.uk.ctx.at.request.pub.spr.export.ApplicationSpr;
@@ -30,10 +30,10 @@ import nts.uk.shr.com.context.AppContexts;
 public class ApplicationSprPubImpl implements ApplicationSprPub {
 	
 	@Inject
-	private OvertimeRepository overtimeRepository;
+	private ApplicationRepository applicationRepository_New;
 	
 	@Inject
-	private ApplicationRepository applicationRepository_New;
+	private AppOverTimeRepository appOverTimeRepository;
 
 	@Override
 	public Optional<AppOverTimeSprExport> getAppOvertimeByDate(GeneralDate appDate, String employeeID, Integer overTimeAtr) {
@@ -43,12 +43,12 @@ public class ApplicationSprPubImpl implements ApplicationSprPub {
 				.collect(Collectors.toList());
 		List<AppOverTimeSprExport> resultList = listPreApp.stream()
 			.filter(x -> {
-				Optional<AppOverTime> opAppOverTime = overtimeRepository.getAppOvertime(AppContexts.user().companyId(), x.getAppID());
+				Optional<AppOverTime> opAppOverTime = appOverTimeRepository.find(AppContexts.user().companyId(), x.getAppID());
 				if(!opAppOverTime.isPresent()){
 					return false;
 				}
 				AppOverTime appOverTime = opAppOverTime.get();
-				if(appOverTime.getOverTimeAtr().value==overTimeAtr){
+				if(appOverTime.getOverTimeClf().value==overTimeAtr){
 					return true;
 				}
 				return false;

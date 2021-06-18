@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,8 +13,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.BusinessTypeOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.CalcAttrOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
@@ -28,11 +29,15 @@ import nts.uk.ctx.at.record.app.find.dailyperform.pclogoninfor.dto.PCLogOnInforO
 import nts.uk.ctx.at.record.app.find.dailyperform.remark.dto.RemarksOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.BreakTimeDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto.ShortTimeOfDailyDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.snapshot.SnapshotDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.dto.SpecificDateAttrOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.temporarytime.dto.TemporaryTimeOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInformationOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.AttendanceTimeByWorkOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.TimeLeavingOfDailyPerformanceDto;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
@@ -65,12 +70,6 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	@AttendanceItemLayout(layout = DAILY_AFFILIATION_INFO_CODE, jpPropertyName = DAILY_AFFILIATION_INFO_NAME)
 	private AffiliationInforOfDailyPerforDto affiliationInfo;
 
-	/** 日別実績の勤務種別 */
-	@AttendanceItemLayout(layout = DAILY_BUSINESS_TYPE_CODE, jpPropertyName = DAILY_BUSINESS_TYPE_NAME, isOptional = true)
-	@JsonDeserialize(using = CustomOptionalDeserializer.class)
-	@JsonSerialize(using = CustomOptionalSerializer.class)
-	private Optional<BusinessTypeOfDailyPerforDto> businessType = Optional.empty();
-
 	/** エラー一覧： 社員の日別実績エラー一覧 */
 	// TODO: list?
 	// @AttendanceItemLayout(layout = "D", jpPropertyName = "社員の日別実績エラー一覧")
@@ -81,9 +80,10 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	private Optional<OutingTimeOfDailyPerformanceDto> outingTime = Optional.empty();
 
 	/** 休憩時間帯: 日別実績の休憩時間帯 */
-	@AttendanceItemLayout(layout = DAILY_BREAK_TIME_CODE, jpPropertyName = DAILY_BREAK_TIME_NAME, 
-			listMaxLength = 2, enumField = DEFAULT_ENUM_FIELD_NAME, listNoIndex = true)
-	private List<BreakTimeDailyDto> breakTime = new ArrayList<>();
+	@AttendanceItemLayout(layout = DAILY_BREAK_TIME_CODE, jpPropertyName = DAILY_BREAK_TIME_NAME, isOptional = true)
+	@JsonDeserialize(using = CustomOptionalDeserializer.class)
+	@JsonSerialize(using = CustomOptionalSerializer.class)
+	private Optional<BreakTimeDailyDto> breakTime = Optional.empty();
 
 	/** 勤怠時間: 日別実績の勤怠時間 */
 	@AttendanceItemLayout(layout = DAILY_ATTENDANCE_TIME_CODE, jpPropertyName = DAILY_ATTENDANCE_TIME_NAME, isOptional = true)
@@ -137,6 +137,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	@JsonDeserialize(using = CustomOptionalDeserializer.class)
 	@JsonSerialize(using = CustomOptionalSerializer.class)
 	private Optional<TemporaryTimeOfDailyPerformanceDto> temporaryTime = Optional.empty();
+	
 	/** PCログオン情報: 日別実績のPCログオン情報 */
 	@AttendanceItemLayout(layout = DAILY_PC_LOG_INFO_CODE, jpPropertyName = DAILY_PC_LOG_INFO_NAME, isOptional = true)
 	@JsonDeserialize(using = CustomOptionalDeserializer.class)
@@ -144,40 +145,22 @@ public class DailyRecordDto extends AttendanceItemCommon {
 	private Optional<PCLogOnInforOfDailyPerformDto> pcLogInfo = Optional.empty();
 	
 	/** 備考: 日別実績の備考 */
-	@AttendanceItemLayout(layout = DAILY_REMARKS_CODE, jpPropertyName = DAILY_REMARKS_NAME,
-			listMaxLength = 5, indexField = DEFAULT_INDEX_FIELD_NAME)
-	private List<RemarksOfDailyDto> remarks = new ArrayList<>();
+	@AttendanceItemLayout(layout = DAILY_REMARKS_CODE, jpPropertyName = DAILY_REMARKS_NAME)
+	private RemarksOfDailyDto remarks;
 
+	/** 臨時出退勤: 日別実績の臨時出退勤 */
+	@AttendanceItemLayout(layout = DAILY_SNAPSHOT_CODE, jpPropertyName = DAILY_SNAPSHOT_NAME, isOptional = true)
+	@JsonDeserialize(using = CustomOptionalDeserializer.class)
+	@JsonSerialize(using = CustomOptionalSerializer.class)
+	private Optional<SnapshotDto> snapshot = Optional.empty();
+	
+	/**応援時刻: 日別勤怠の応援作業時間帯 */
+	@AttendanceItemLayout( layout = DAILY_SUPPORT_TIMESHEET_CODE, jpPropertyName = DAILY_SUPPORT_TIMESHEET_NAME)
+	private OuenWorkTimeSheetOfDailyDto ouenTimeSheet;
+
+	
 	public static DailyRecordDto from(IntegrationOfDaily domain){
-		DailyRecordDto dto = new DailyRecordDto();
-		if(domain != null){
-			String employeeId = domain.getEmployeeId();
-			GeneralDate ymd = domain.getYmd();
-			dto.setEmployeeId(employeeId);
-			dto.setDate(ymd);
-			dto.setWorkInfo(WorkInformationOfDailyDto.getDto(employeeId,ymd,domain.getWorkInformation()));
-			dto.setCalcAttr(CalcAttrOfDailyPerformanceDto.getDto(employeeId,ymd,domain.getCalAttr()));
-			dto.setAffiliationInfo(AffiliationInforOfDailyPerforDto.getDto(employeeId,ymd,domain.getAffiliationInfor()));
-//			dto.setBusinessType(domain.getBusinessType().map(b -> BusinessTypeOfDailyPerforDto.getDto(b)));
-			if(domain.getEmployeeError() != null && !domain.getEmployeeError().isEmpty()) {
-				dto.setErrors(domain.getEmployeeError().stream().map(x -> EmployeeDailyPerErrorDto.getDto(x)).collect(Collectors.toList()));
-			}
-			dto.setOutingTime(domain.getOutingTime().map(o -> OutingTimeOfDailyPerformanceDto.getDto(employeeId,ymd,o)));
-			dto.setBreakTime(domain.getBreakTime().stream().map(b -> BreakTimeDailyDto.getDto(employeeId,ymd,b)).collect(Collectors.toList()));
-			dto.setAttendanceTime(domain.getAttendanceTimeOfDailyPerformance().map(a -> AttendanceTimeDailyPerformDto.getDto(employeeId,ymd,a)));
-//			dto.setAttendanceTimeByWork(domain.getAttendancetimeByWork().map(a -> AttendanceTimeByWorkOfDailyDto.getDto(a)));
-			dto.setTimeLeaving(domain.getAttendanceLeave().map(a -> TimeLeavingOfDailyPerformanceDto.getDto(employeeId,ymd,a)));
-			dto.setShortWorkTime(domain.getShortTime().map(s -> ShortTimeOfDailyDto.getDto(employeeId,ymd,s)));
-			dto.setSpecificDateAttr(domain.getSpecDateAttr().map(s -> SpecificDateAttrOfDailyPerforDto.getDto(employeeId,ymd,s)));
-			dto.setAttendanceLeavingGate(domain.getAttendanceLeavingGate().map(a -> AttendanceLeavingGateOfDailyDto.getDto(employeeId,ymd,a)));
-			dto.setOptionalItem(domain.getAnyItemValue().map(a -> OptionalItemOfDailyPerformDto.getDto(employeeId,ymd,a)));
-			dto.setEditStates(domain.getEditState().stream().map(c -> EditStateOfDailyPerformanceDto.getDto(employeeId,ymd,c)).collect(Collectors.toList()));
-			dto.setTemporaryTime(domain.getTempTime().map(t -> TemporaryTimeOfDailyPerformanceDto.getDto(employeeId,ymd,t)));
-			dto.setPcLogInfo(domain.getPcLogOnInfo().map(pc -> PCLogOnInforOfDailyPerformDto.from(employeeId,ymd,pc)));
-			dto.setRemarks(domain.getRemarks().stream().map(c -> RemarksOfDailyDto.getDto(employeeId,ymd,c)).collect(Collectors.toList()));
-			dto.exsistData();
-		}
-		return dto;
+		return from(domain, new HashMap<>());
 	}
 	
 	public static DailyRecordDto from(IntegrationOfDaily domain, Map<Integer, OptionalItem> master){
@@ -195,7 +178,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				dto.setErrors(domain.getEmployeeError().stream().map(x -> EmployeeDailyPerErrorDto.getDto(x)).collect(Collectors.toList()));
 			}
 			dto.setOutingTime(domain.getOutingTime().map(o -> OutingTimeOfDailyPerformanceDto.getDto(employeeId,ymd,o)));
-			dto.setBreakTime(domain.getBreakTime().stream().map(b -> BreakTimeDailyDto.getDto(employeeId,ymd,b)).collect(Collectors.toList()));
+			dto.setBreakTime(Optional.of(BreakTimeDailyDto.getDto(employeeId,ymd, domain.getBreakTime())));
 			dto.setAttendanceTime(domain.getAttendanceTimeOfDailyPerformance().map(a -> AttendanceTimeDailyPerformDto.getDto(employeeId,ymd,a)));
 //			dto.setAttendanceTimeByWork(domain.getAttendancetimeByWork().map(a -> AttendanceTimeByWorkOfDailyDto.getDto(a)));
 			dto.setTimeLeaving(domain.getAttendanceLeave().map(a -> TimeLeavingOfDailyPerformanceDto.getDto(employeeId,ymd,a)));
@@ -206,7 +189,10 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			dto.setEditStates(domain.getEditState().stream().map(c -> EditStateOfDailyPerformanceDto.getDto(employeeId,ymd,c)).collect(Collectors.toList()));
 			dto.setTemporaryTime(domain.getTempTime().map(t -> TemporaryTimeOfDailyPerformanceDto.getDto(employeeId,ymd,t)));
 			dto.setPcLogInfo(domain.getPcLogOnInfo().map(pc -> PCLogOnInforOfDailyPerformDto.from(employeeId,ymd,pc)));
-			dto.setRemarks(domain.getRemarks().stream().map(c -> RemarksOfDailyDto.getDto(employeeId,ymd,c)).collect(Collectors.toList()));
+			dto.setRemarks(RemarksOfDailyDto.getDto(employeeId,ymd,domain.getRemarks()));
+			dto.setSnapshot(domain.getSnapshot().map(c -> SnapshotDto.from(employeeId, ymd, c)));
+			OuenWorkTimeSheetOfDaily ouenSheetOfDaily = OuenWorkTimeSheetOfDaily.create(employeeId, ymd, domain.getOuenTimeSheet()); 
+			dto.setOuenTimeSheet(OuenWorkTimeSheetOfDailyDto.getDto(employeeId, ymd, ouenSheetOfDaily));
 			dto.exsistData();
 		}
 		return dto;
@@ -221,18 +207,13 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		return this;
 	}
 
-	public DailyRecordDto withCalcAttr(CalcAttrOfDailyPerformanceDto calcAttr) {
-		this.calcAttr = calcAttr;
-		return this;
-	}
-
-	public DailyRecordDto withBusinessType(BusinessTypeOfDailyPerforDto businessType) {
-		this.businessType = Optional.ofNullable(businessType);
+	public DailyRecordDto withSnapshot(SnapshotDto snapshot) {
+		this.snapshot = Optional.ofNullable(snapshot);
 		return this;
 	}
 	
-	public DailyRecordDto withBusinessTypeO(Optional<BusinessTypeOfDailyPerforDto> businessType) {
-		this.businessType = businessType;
+	public DailyRecordDto withCalcAttr(CalcAttrOfDailyPerformanceDto calcAttr) {
+		this.calcAttr = calcAttr;
 		return this;
 	}
 
@@ -246,6 +227,11 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		return this;
 	}
 	
+	public DailyRecordDto withOuenSheet(OuenWorkTimeSheetOfDailyDto ouenSheet) {
+		this.ouenTimeSheet = ouenSheet;
+		return this;
+	}
+	
 	public DailyRecordDto outingTime(OutingTimeOfDailyPerformanceDto outingTime) {
 		this.outingTime = Optional.ofNullable(outingTime);
 		return this;
@@ -256,21 +242,13 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		return this;
 	}
 
-	public DailyRecordDto addBreakTime(BreakTimeDailyDto breakTime) {
-		this.breakTime.add(breakTime);
+	public DailyRecordDto breakTime(BreakTimeDailyDto breakTime) {
+		this.breakTime = Optional.ofNullable(breakTime);
 		return this;
 	}
 
-	public DailyRecordDto addBreakTime(List<BreakTimeDailyDto> breakTime) {
-		if (breakTime == null) {
-			return this;
-		}
-		this.breakTime.addAll(breakTime);
-		return this;
-	}
-
-	public DailyRecordDto breakTime(List<BreakTimeDailyDto> breakTime) {
-		this.breakTime = breakTime == null ? new ArrayList<>() : breakTime;
+	public DailyRecordDto breakTimeO(Optional<BreakTimeDailyDto> breakTime) {
+		this.breakTime = breakTime;
 		return this;
 	}
 
@@ -385,25 +363,17 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		this.pcLogInfo = pcLogInfo;
 		return this;
 	}
+
+	public DailyRecordDto remarks(RemarksOfDailyDto remarks) {
+		this.remarks = remarks;
+		return this;
+	}
 	
-	public DailyRecordDto addRemarks(RemarksOfDailyDto remarks) {
-		this.remarks.add(remarks);
+	public DailyRecordDto ouenTimeSheet(OuenWorkTimeSheetOfDailyDto ouenTimeSheet) {
+		this.ouenTimeSheet = ouenTimeSheet;
 		return this;
 	}
-
-	public DailyRecordDto addRemarks(List<RemarksOfDailyDto> remarks) {
-		if (breakTime == null) {
-			return this;
-		}
-		this.remarks.addAll(remarks);
-		return this;
-	}
-
-	public DailyRecordDto remarks(List<RemarksOfDailyDto> remarks) {
-		this.remarks = remarks == null ? new ArrayList<>() : remarks;
-		return this;
-	}
-
+	
 	public DailyRecordDto workingDate(GeneralDate workingDate) {
 		this.date = workingDate;
 		return this;
@@ -425,32 +395,36 @@ public class DailyRecordDto extends AttendanceItemCommon {
 
 	@Override
 	public GeneralDate workingDate() {
-		return this.date;
+		return this.date;  
 	}
 
 	@Override
 	public IntegrationOfDaily toDomain(String employeeId, GeneralDate date) {
-		return new IntegrationOfDaily(
+		IntegrationOfDaily integrationOfDaily = new IntegrationOfDaily(
 				employeeId,
 				date,
-				this.workInfo == null ? null : this.workInfo.toDomain(employeeId, date), 
-				this.calcAttr == null ? null : this.calcAttr.toDomain(employeeId, date), 
+				this.workInfo == null ? null : this.workInfo.toDomain(employeeId, date),
+				this.calcAttr == null ? null : this.calcAttr.toDomain(employeeId, date),
 				this.affiliationInfo == null ? null : this.affiliationInfo.toDomain(employeeId, date),
 				this.pcLogInfo.map(pc -> pc.toDomain(employeeId, date)),
 				this.errors == null ? new ArrayList<>() : this.errors.stream().map(x -> x.toDomain(employeeId, date)).collect(Collectors.toList()),
 				this.outingTime.map(ot -> ot.toDomain(employeeId, date)),
-				this.breakTime.stream().map(bt -> bt.toDomain(employeeId, date)).collect(Collectors.toList()),
+				this.breakTime.map(bt -> bt.toDomain(employeeId, date)).orElse(new BreakTimeOfDailyAttd()),
 				this.attendanceTime.map(at -> at.toDomain(employeeId, date)),
-//				this.attendanceTimeByWork.map(atb -> atb.toDomain(employeeId, date)),
-				this.timeLeaving.map(tl -> tl.toDomain(employeeId, date)), 
+				this.timeLeaving.map(tl -> tl.toDomain(employeeId, date)),
 				this.shortWorkTime.map(swt -> swt.toDomain(employeeId, date)),
 				this.specificDateAttr.map(sda -> sda.toDomain(employeeId, date)),
 				this.attendanceLeavingGate.map(alg -> alg.toDomain(employeeId, date)),
 				this.optionalItem.map(oi -> oi.toDomain(employeeId, date)),
 				this.editStates.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList()),
 				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date)),
-				this.remarks.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList())
+				this.remarks == null ? new ArrayList<>() : this.remarks.toDomain(employeeId, date),
+				this.snapshot.map(c -> c.toDomain(employeeId, date))
 				);
+		// set support time
+		integrationOfDaily.setOuenTimeSheet(this.ouenTimeSheet == null ? new ArrayList<>() : this.ouenTimeSheet.toDomain(employeeId, date));
+		
+		return integrationOfDaily;
 	}
 
 //	@Override
@@ -467,10 +441,9 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		dto.setWorkInfo(workInfo == null ? null : workInfo.clone());
 		dto.setCalcAttr(calcAttr == null ? null : calcAttr.clone());
 		dto.setAffiliationInfo(affiliationInfo == null ? null : affiliationInfo.clone());
-		dto.setBusinessType(businessType.map(b -> b.clone()));
 		dto.setErrors(errors == null ? null : errors.stream().map(x -> x.clone()).collect(Collectors.toList()));
 		dto.setOutingTime(outingTime.map(o -> o.clone()));
-		dto.setBreakTime(breakTime.stream().map(b -> b.clone()).collect(Collectors.toList()));
+		dto.setBreakTime(breakTime.map(b -> b.clone()));
 		dto.setAttendanceTime(attendanceTime.map(a -> a.clone()));
 		dto.setAttendanceTimeByWork(attendanceTimeByWork.map(a -> a.clone()));
 		dto.setTimeLeaving(timeLeaving.map(a -> a.clone()));
@@ -481,11 +454,179 @@ public class DailyRecordDto extends AttendanceItemCommon {
 		dto.setEditStates(editStates.stream().map(c -> c.clone()).collect(Collectors.toList()));
 		dto.setTemporaryTime(temporaryTime.map(t -> t.clone()));
 		dto.setPcLogInfo(pcLogInfo.map(pc -> pc.clone()));
-		dto.setRemarks(remarks.stream().map(r -> r.clone()).collect(Collectors.toList()));
+		dto.setRemarks(remarks == null ? null : remarks.clone());
+		dto.setSnapshot(snapshot.map(ss -> ss.clone()));
+		dto.setOuenTimeSheet(ouenTimeSheet == null ? null : ouenTimeSheet.clone());
 		if(isHaveData()){
 			dto.exsistData();
 		}
 		return dto;
 	}
+	
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case DAILY_WORK_INFO_NAME:
+			return Optional.ofNullable(this.workInfo);
+		case DAILY_CALCULATION_ATTR_NAME:
+			return Optional.ofNullable(this.calcAttr);
+		case DAILY_AFFILIATION_INFO_NAME:
+			return Optional.ofNullable(this.affiliationInfo);
+		case DAILY_OUTING_TIME_NAME:
+			return Optional.ofNullable(this.outingTime.orElse(null));
+		case DAILY_BREAK_TIME_NAME:
+			return Optional.ofNullable(this.breakTime.orElse(null));
+		case DAILY_ATTENDANCE_TIME_NAME:
+			return Optional.ofNullable(this.attendanceTime.orElse(null));
+		case DAILY_ATTENDANCE_TIME_BY_WORK_NAME:
+			return Optional.ofNullable(this.attendanceTimeByWork.orElse(null));
+		case DAILY_ATTENDACE_LEAVE_NAME:
+			return Optional.ofNullable(this.timeLeaving.orElse(null));
+		case DAILY_SHORT_TIME_NAME:
+			return Optional.ofNullable(this.shortWorkTime.orElse(null));
+		case DAILY_SPECIFIC_DATE_ATTR_NAME:
+			return Optional.ofNullable(this.specificDateAttr.orElse(null));
+		case DAILY_ATTENDANCE_LEAVE_GATE_NAME:
+			return Optional.ofNullable(this.attendanceLeavingGate.orElse(null));
+		case DAILY_OPTIONAL_ITEM_NAME:
+			return Optional.ofNullable(this.optionalItem.orElse(null));
+		case DAILY_TEMPORARY_TIME_NAME:
+			return Optional.ofNullable(this.temporaryTime.orElse(null));
+		case DAILY_PC_LOG_INFO_NAME:
+			return Optional.ofNullable(this.pcLogInfo.orElse(null));
+		case DAILY_REMARKS_NAME:
+			return Optional.ofNullable(this.remarks);
+		case DAILY_SNAPSHOT_NAME:
+			return Optional.ofNullable(this.snapshot.orElse(null));
+		case DAILY_SUPPORT_TIMESHEET_NAME:
+			return Optional.ofNullable(this.ouenTimeSheet);
+		default:
+			return Optional.empty();
+		}
+	}
+	
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case DAILY_WORK_INFO_NAME:
+			this.workInfo = (WorkInformationOfDailyDto) value;
+			break;
+		case DAILY_CALCULATION_ATTR_NAME:
+			this.calcAttr = (CalcAttrOfDailyPerformanceDto) value;
+			break;
+		case DAILY_AFFILIATION_INFO_NAME:
+			this.affiliationInfo = (AffiliationInforOfDailyPerforDto) value;
+			break;
+		case DAILY_OUTING_TIME_NAME:
+			this.outingTime = Optional.ofNullable((OutingTimeOfDailyPerformanceDto) value);
+			break;
+		case DAILY_BREAK_TIME_NAME:
+			this.breakTime = Optional.ofNullable((BreakTimeDailyDto) value);
+			break;
+		case DAILY_ATTENDANCE_TIME_BY_WORK_NAME:/** まだ対応しない */
+			this.attendanceTimeByWork = Optional.ofNullable((AttendanceTimeByWorkOfDailyDto) value);
+			break;
+		case DAILY_ATTENDACE_LEAVE_NAME:
+			this.timeLeaving = Optional.ofNullable((TimeLeavingOfDailyPerformanceDto) value);
+			break;
+		case DAILY_SHORT_TIME_NAME:
+			this.shortWorkTime = Optional.ofNullable((ShortTimeOfDailyDto) value);
+			break;
+		case DAILY_SPECIFIC_DATE_ATTR_NAME:
+			this.specificDateAttr = Optional.ofNullable((SpecificDateAttrOfDailyPerforDto) value);
+			break;
+		case DAILY_ATTENDANCE_LEAVE_GATE_NAME:
+			this.attendanceLeavingGate = Optional.ofNullable((AttendanceLeavingGateOfDailyDto) value);
+			break;
+		case DAILY_OPTIONAL_ITEM_NAME:
+			this.optionalItem = Optional.ofNullable((OptionalItemOfDailyPerformDto) value);
+			break;
+		case DAILY_TEMPORARY_TIME_NAME:
+			this.temporaryTime = Optional.ofNullable((TemporaryTimeOfDailyPerformanceDto) value);
+			break;
+		case DAILY_PC_LOG_INFO_NAME:
+			this.pcLogInfo = Optional.ofNullable((PCLogOnInforOfDailyPerformDto) value);
+			break;
+		case DAILY_REMARKS_NAME:
+			this.remarks = (RemarksOfDailyDto) value;
+			break;
+		case DAILY_ATTENDANCE_TIME_NAME:
+			this.attendanceTime = Optional.ofNullable((AttendanceTimeDailyPerformDto) value);
+			break;
+		case DAILY_SNAPSHOT_NAME:
+			this.snapshot = Optional.ofNullable((SnapshotDto) value);
+			break;
+		case DAILY_SUPPORT_TIMESHEET_NAME:
+			this.ouenTimeSheet = (OuenWorkTimeSheetOfDailyDto) value;
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case DAILY_WORK_INFO_NAME:
+			return new WorkInformationOfDailyDto();
+		case DAILY_CALCULATION_ATTR_NAME:
+			return new CalcAttrOfDailyPerformanceDto();
+		case DAILY_AFFILIATION_INFO_NAME:
+			return new AffiliationInforOfDailyPerforDto();
+		case DAILY_OUTING_TIME_NAME:
+			return new OutingTimeOfDailyPerformanceDto();
+		case DAILY_BREAK_TIME_NAME:
+			return new BreakTimeDailyDto();
+		case DAILY_ATTENDANCE_TIME_NAME:
+			return new AttendanceTimeDailyPerformDto();
+		case DAILY_ATTENDANCE_TIME_BY_WORK_NAME:
+			return new AttendanceTimeByWorkOfDailyDto();
+		case DAILY_ATTENDACE_LEAVE_NAME:
+			return new TimeLeavingOfDailyPerformanceDto();
+		case DAILY_SHORT_TIME_NAME:
+			return new ShortTimeOfDailyDto();
+		case DAILY_SPECIFIC_DATE_ATTR_NAME:
+			return new SpecificDateAttrOfDailyPerforDto();
+		case DAILY_ATTENDANCE_LEAVE_GATE_NAME:
+			return new AttendanceLeavingGateOfDailyDto();
+		case DAILY_OPTIONAL_ITEM_NAME:
+			return new OptionalItemOfDailyPerformDto();
+		case DAILY_TEMPORARY_TIME_NAME:
+			return new TemporaryTimeOfDailyPerformanceDto();
+		case DAILY_PC_LOG_INFO_NAME:
+			return new PCLogOnInforOfDailyPerformDto();
+		case DAILY_REMARKS_NAME:
+			return new RemarksOfDailyDto();
+		case DAILY_SNAPSHOT_NAME:
+			return new SnapshotDto();
+		case DAILY_SUPPORT_TIMESHEET_NAME:
+			return new OuenWorkTimeSheetOfDailyDto();
+		default:
+			return null;
+		}
+	}
+	
+	@Override
+	public boolean isRoot() { return true; }
+	
+	@Override
+	public boolean isContainer() { return true; }
+	
+//	@Override
+//	@SuppressWarnings("unchecked")
+//	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+//		if (DAILY_SUPPORT_TIMESHEET_NAME.equals(path)) {
+//			this.ouenTimeSheet = (OuenWorkTimeSheetOfDailyDto) value;
+//		}
+//	}	
+	
+//	@Override
+//	@SuppressWarnings("unchecked")
+//	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+//		if (DAILY_SUPPORT_TIMESHEET_NAME.equals(path)) {
+//			return (List<T>) this.ouenTimeSheet;
+//		}
+//		return new ArrayList<>();
+//	}
 }
 

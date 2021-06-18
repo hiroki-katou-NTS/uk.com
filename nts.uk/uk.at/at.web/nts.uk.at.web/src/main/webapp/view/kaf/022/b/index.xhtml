@@ -33,7 +33,7 @@
 
         <com:ValidatorScript>
             nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.ObstacleName
-            nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting.Comment
+            nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.Comment
             nts.uk.shr.com.time.AttendanceClock
             nts.uk.ctx.at.request.dom.setting.company.emailset.EmailText
             nts.uk.ctx.at.request.dom.setting.company.emailset.EmailSubject
@@ -42,16 +42,12 @@
         <com:EnumScript>
             nts.uk.ctx.at.request.dom.application.ApplicationType
             nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType
-            nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.HolidayAppType
-            nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.PrePostInitialAtr
-            nts.uk.ctx.at.request.dom.application.BreakReflect
-            nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.UnitAssignmentOvertime
         </com:EnumScript>
     </ui:define>
 
     <ui:define name="content">
         <div id="functions-area">
-            <a data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KAF022_706')}</a>
+            <a style="height: 25px" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KAF022_706')}</a>
             <button
                 style="vertical-align: super"
                 class="proceed"

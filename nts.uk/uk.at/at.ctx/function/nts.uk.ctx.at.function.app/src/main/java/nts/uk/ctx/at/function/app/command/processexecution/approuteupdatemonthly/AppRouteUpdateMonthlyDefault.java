@@ -13,13 +13,14 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatedaily.CheckCreateperApprovalClosure;
 import nts.uk.ctx.at.function.dom.adapter.closure.FunClosureAdapter;
 import nts.uk.ctx.at.function.dom.adapter.closure.PresentClosingPeriodFunImport;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovalmonthly.CreateperApprovalMonthlyAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovalmonthly.OutputCreatePerAppMonImport;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
@@ -29,15 +30,14 @@ import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLo
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyperformance.ErrorMessageRC;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.monthlyperformance.AppDataInfoMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.monthlyperformance.AppDataInfoMonthlyRepository;
-import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
@@ -69,7 +69,7 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 	public static int MAX_DELAY_PARALLEL = 0;
 
 	@Override
-	public OutputAppRouteMonthly checkAppRouteUpdateMonthly(String execId, ProcessExecution procExec, ProcessExecutionLog procExecLog) {
+	public OutputAppRouteMonthly checkAppRouteUpdateMonthly(String execId, UpdateProcessAutoExecution procExec, ProcessExecutionLog procExecLog) {
 		String companyId = AppContexts.user().companyId();
 		boolean checkError1552 = false;
 		/** ドメインモデル「更新処理自動実行ログ」を更新する */
@@ -87,10 +87,10 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 
 		/** 承認ルート更新（月次）の判定 */
 		// FALSEの場合
-		if (procExec.getExecSetting().getAppRouteUpdateMonthly() == NotUseAtr.NOT_USE) {
+		if (procExec.getExecSetting().getAppRouteUpdateMonthly().getAppRouteUpdateAtr() == NotUseAtr.NOT_USE) {
 			for (ExecutionTaskLog executionTaskLog : procExecLog.getTaskLogList()) {
 				if (executionTaskLog.getProcExecTask() == ProcessExecutionTask.APP_ROUTE_U_MON) {
-					executionTaskLog.setStatus(Optional.of(EndStatus.NOT_IMPLEMENT));
+					executionTaskLog.setStatus(EndStatus.NOT_IMPLEMENT);
 					executionTaskLog.setLastExecDateTime(null);
 					break;
 				}
@@ -98,7 +98,7 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 			processExecutionLogRepo.update(procExecLog);
 			return new OutputAppRouteMonthly(false,checkError1552);
 		}
-		log.info("更新処理自動実行_承認ルート更新（月次）_START_"+procExec.getExecItemCd()+"_"+GeneralDateTime.now());
+		log.info("更新処理自動実行_承認ルート更新（月次）_START_"+procExec.getExecItemCode()+"_"+GeneralDateTime.now());
 		List<CheckCreateperApprovalClosure> listCheckCreateApp = new ArrayList<>();
 		/** ドメインモデル「就業締め日」を取得する(lấy thông tin domain ル「就業締め日」) */
 		List<Closure> listClosure = closureRepository.findAllActive(procExec.getCompanyId(),
@@ -120,11 +120,11 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 			List<String> listClosureEmploymentCode = listClosureEmployment.stream().map(c -> c.getEmploymentCD())
 					.collect(Collectors.toList());
 			/** 対象社員を取得する */
-			List<ProcessExecutionScopeItem> workplaceIdList = procExec.getExecScope().getWorkplaceIdList();
-			List<String> workplaceIds = new ArrayList<String>();
-			workplaceIdList.forEach(x -> {
-				workplaceIds.add(x.getWkpId());
-			});
+			List<String> workplaceIds = procExec.getExecScope().getWorkplaceIdList();
+//			List<String> workplaceIds = new ArrayList<String>();
+//			workplaceIdList.forEach(x -> {
+//				workplaceIds.add(x.getWkpId());
+//			});
 
 			List<String> listEmp = new ArrayList<>();
 			try {
@@ -141,7 +141,7 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 			OutputCreatePerAppMonImport check = createperApprovalMonthlyAdapter.createperApprovalMonthly(procExec.getCompanyId(),
 			 procExecLog.getExecId(),
 			 listEmp, 
-			 procExec.getProcessExecType().value, 
+			 procExec.getExecutionType().value,
 			 closureData.getClosureEndDate());
 			
 			if(check.isCheckStop()) {
@@ -151,7 +151,7 @@ public class AppRouteUpdateMonthlyDefault implements AppRouteUpdateMonthlyServic
 		};
 		
 		log.info("承認ルート更新(月別) END PARALLEL: " + ((System.currentTimeMillis() - startTime) / 1000) + "秒");
-		log.info("更新処理自動実行_承認ルート更新（月次）_END_"+procExec.getExecItemCd()+"_"+GeneralDateTime.now());
+		log.info("更新処理自動実行_承認ルート更新（月次）_END_"+procExec.getExecItemCode()+"_"+GeneralDateTime.now());
 //		boolean checkError = false;
 //		/*終了状態で「エラーあり」が返ってきたか確認する*/
 //		for(CheckCreateperApprovalClosure checkCreateperApprovalClosure :listCheckCreateApp) {

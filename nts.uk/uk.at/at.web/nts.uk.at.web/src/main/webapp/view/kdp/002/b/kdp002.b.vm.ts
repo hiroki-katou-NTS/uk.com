@@ -15,6 +15,9 @@ module nts.uk.at.view.kdp002.b {
 			// G6_2
 			laceName: KnockoutObservable<string> = ko.observable("基本給");
 
+			// B50_
+			emotionConfirmation: KnockoutObservable<boolean> = ko.observable(true);
+
 			items: KnockoutObservableArray<model.ItemModels> = ko.observableArray([]);
 			columns2: KnockoutObservableArray<any>;
 			currentCode: KnockoutObservable<any> = ko.observable();
@@ -31,7 +34,6 @@ module nts.uk.at.view.kdp002.b {
 				let self = this;
 				self.resultDisplayTime(nts.uk.ui.windows.getShared("resultDisplayTime"));
 				self.infoEmpFromScreenA = nts.uk.ui.windows.getShared("infoEmpToScreenB");
-
 				self.disableResultDisplayTime(self.resultDisplayTime() > 0 ? true : false);
 
 				self.columns2 = ko.observableArray([
@@ -42,22 +44,24 @@ module nts.uk.at.view.kdp002.b {
 				]);
 			}
 
-            /**
-             * start page  
-             */
+			/**
+			 * start page  
+			 */
 			public startPage(): JQueryPromise<any> {
 				let self = this,
 					dfd = $.Deferred();
 				let dfdGetAllStampingResult = self.getAllStampingResult();
 				let dfdGetEmpInfo = self.getEmpInfo();
-				$.when(dfdGetAllStampingResult, dfdGetEmpInfo).done(function(dfdGetAllStampingResultData, dfdGetEmpInfoData) {
+				$.when(dfdGetAllStampingResult, dfdGetEmpInfo).done(function (dfdGetAllStampingResultData, dfdGetEmpInfoData) {
 					if (self.resultDisplayTime() > 0) {
-						setInterval(self.closeDialog, self.resultDisplayTime() * 1000);
+						if (!ko.unwrap(self.emotionConfirmation)) {
+							setInterval(self.closeDialog, self.resultDisplayTime() * 1000);
+						}
 						setInterval(() => {
 							self.resultDisplayTime(self.resultDisplayTime() - 1);
 						}, 1000);
+						dfd.resolve();
 					}
-					dfd.resolve();
 				});
 				return dfd.promise();
 			}
@@ -79,7 +83,7 @@ module nts.uk.at.view.kdp002.b {
 				let self = this;
 				let dfd = $.Deferred();
 				let sid = self.infoEmpFromScreenA.employeeId;
-				service.getAllStampingResult(sid).done(function(data) {
+				service.getAllStampingResult(sid).done(function (data) {
 					_.forEach(data, (a) => {
 						let items = _.orderBy(a.stampDataOfEmployeesDto.stampRecords, ['stampTimeWithSec'], ['desc']);
 						_.forEach(items, (sr) => {
@@ -144,16 +148,16 @@ module nts.uk.at.view.kdp002.b {
 				let self = this;
 				let dfd = $.Deferred();
 				let employeeId = self.infoEmpFromScreenA.employeeId;
-				service.getEmpInfo(employeeId).done(function(data) {
+				service.getEmpInfo(employeeId).done(function (data) {
 					self.employeeCodeName(data.employeeCode + " " + data.personalName);
 					dfd.resolve();
 				});
 				return dfd.promise();
 			}
 
-            /**
-             * Close dialog
-             */
+			/**
+			 * Close dialog
+			 */
 			public closeDialog(): void {
 				nts.uk.ui.windows.close();
 			}

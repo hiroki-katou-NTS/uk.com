@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
-import nts.uk.ctx.at.request.dom.application.applist.service.param.ComplementLeaveAppConnect;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 
 /**
@@ -106,7 +105,7 @@ public class ListOfApplicationDto {
 	/**
 	 * 振休振出申請
 	 */
-	private ComplementLeaveAppConnect opComplementLeaveApp;
+	private ComplementLeaveAppLinkDto opComplementLeaveApp;
 	
 	/**
 	 * 申請開始日
@@ -136,7 +135,7 @@ public class ListOfApplicationDto {
 	/**
 	 * 背景色
 	 */
-	private Integer opBackgroundColor;
+	private String opBackgroundColor;
 	
 	/**
 	 * 表示行数超
@@ -146,6 +145,7 @@ public class ListOfApplicationDto {
 	private int version;
 	
 	public static ListOfApplicationDto fromDomain(ListOfApplication listOfApplication) {
+		ComplementLeaveAppLinkDto opComplementLeaveApp = listOfApplication.getOpComplementLeaveApp().map(x -> ComplementLeaveAppLinkDto.fromDomain(x)).orElse(null);
 		return new ListOfApplicationDto(
 				listOfApplication.getPrePostAtr(), 
 				listOfApplication.getWorkplaceName(),
@@ -164,7 +164,7 @@ public class ListOfApplicationDto {
 				listOfApplication.getOpApprovalPhaseLst().map(x -> x.stream().map(y -> ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(y)).collect(Collectors.toList())).orElse(null), 
 				listOfApplication.getOpApprovalStatusInquiry().orElse(null), 
 				listOfApplication.getOpApprovalFrameStatus().orElse(null), 
-				listOfApplication.getOpComplementLeaveApp().orElse(null), 
+				listOfApplication.getOpComplementLeaveApp().map(x -> ComplementLeaveAppLinkDto.fromDomain(x)).orElse(null), 
 				listOfApplication.getOpAppStartDate().map(x -> x.toString()).orElse(null), 
 				listOfApplication.getOpAppTypeDisplay().map(x -> x.value).orElse(null), 
 				listOfApplication.getOpAppEndDate().map(x -> x.toString()).orElse(null), 

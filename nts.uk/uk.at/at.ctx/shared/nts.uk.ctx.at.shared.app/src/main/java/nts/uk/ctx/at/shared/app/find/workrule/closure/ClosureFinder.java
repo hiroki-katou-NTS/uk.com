@@ -127,6 +127,14 @@ public class ClosureFinder {
 		return this.repository.findAll(companyId).stream().map(closure -> {
 			ClosureFindDto dto = new ClosureFindDto();
 			closure.saveToMemento(dto);
+			Optional<ClosureHistory> closureHisory = this.repository.findBySelectedYearMonth(companyId, closure.getClosureId().value,
+					closure.getClosureMonth().getProcessingYm().v());
+
+			if (closureHisory.isPresent()) {
+				ClosureHistoryMasterDto closureSelected = new ClosureHistoryMasterDto();
+				closureHisory.get().saveToMemento(closureSelected);
+				dto.setClosureSelected(closureSelected);
+			}
 			return dto;
 		}).collect(Collectors.toList());
 	}

@@ -11,10 +11,10 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.subs
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteHolidayAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteHdWorkAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteSimultaneousAppSet;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOption;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.ReflectWorkHourCondition;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOption;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.ReflectWorkHourCondition;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
 import nts.uk.shr.com.color.ColorCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -79,6 +79,7 @@ public class KrqmtAppHdsubRec extends ContractUkJpaEntity {
 
     public SubstituteLeaveAppReflect toSubstituteLeaveAppReflect() {
         return new SubstituteLeaveAppReflect(
+        		companyId,
                 new VacationAppReflectOption(
                         EnumAdaptor.valueOf(subWorkTimeDeleteAtr, NotUseAtr.class),
                         EnumAdaptor.valueOf(subWorkTimeReflectAtr, NotUseAtr.class),
@@ -88,7 +89,7 @@ public class KrqmtAppHdsubRec extends ContractUkJpaEntity {
     }
 
     public SubstituteWorkAppReflect toSubstituteWorkAppReflect() {
-        return new SubstituteWorkAppReflect(EnumAdaptor.valueOf(recWorkTimeReflectAtr, NotUseAtr.class));
+        return new SubstituteWorkAppReflect(companyId, EnumAdaptor.valueOf(recWorkTimeReflectAtr, NotUseAtr.class));
     }
 
     public SubstituteHdWorkAppSet toSetting() {

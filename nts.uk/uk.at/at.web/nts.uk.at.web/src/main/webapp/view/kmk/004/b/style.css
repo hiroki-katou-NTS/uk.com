@@ -1,99 +1,418 @@
-@CHARSET "UTF-8";
-
-#func-notifier-errors {
-	top: 135px;
-    left: 125px;
+.kmk-004a #sidebar-area {
+	float: left;
+	height: calc(100vh - 142px);
 }
 
-.border-all td {
-	border: solid grey 1px;
-	text-align: center;
-	padding-top: 3px;
-	padding-bottom: 3px;
-	padding-right: 10px;
-	padding-left: 10px;
-	min-width: 60px;
-	max-width: 100px;
+.kmk-004a .content-area {
+	margin-left: 120px;
 }
 
-.border-all input {
-	width: 80px;
-	text-align: center !important;
+/*ViewC*/
+.view-c-kmk004 {
+	padding: 10px 20px;
+	height: calc(100vh - 163px);
+	overflow-y: scroll;
+	display: flex;
 }
 
-.contents-area {
-	margin-left: 50px;
+.view-c-kmk004 .left-content {
+	padding: 10px;
+	float: left;
+	margin-left: 10px;
+	margin-top: 20px;
+	width: 490px;
 }
-.bg-dark-green {
-	background-color: #C7F391;
+
+.view-c-kmk004 .right-content {
+	width: 510px;
+	float: left;
+	margin-left: 40px;
 }
-.right-content {
-	margin-top: 30px;
+
+.view-c-kmk004 .left-content #nts-component-tree{
+	padding: 20px !important;
 }
-#list-workplace {
-	width: 480px;
+
+.view-c-kmk004 .right-content p {
+	font-size: 20px;
+	height: 30px;
 }
-.action-bar {
+
+.view-c-kmk004 .right-content .name {
+	margin-bottom: 10px;
+	height: 25px;
+	max-height: 25px;
+}
+
+.view-c-kmk004 .right-content .content-data {
+	margin-top: 10px;
+	margin-left: 10px;
+}
+
+.view-c-kmk004 .right-content .label1 {
+	margin-top: 15px;
+}
+
+.view-c-kmk004 .right-content .year {
+	float: left;
+}
+
+.view-c-kmk004 .right-content .year .box-year {
+	margin-top: 10px;
+}
+
+.view-c-kmk004 .right-content .time-work {
+	margin-left: 177px;
+	width: 190px;
+	margin-top: 10px;
+	max-width: 203px;
+}
+
+/* View D */
+.view-d-kmk004 {
+	padding: 10px 20px;
+	height: calc(100vh - 163px);
+	overflow-y: scroll;
+	display: flex;
+}
+
+.view-d-kmk004 .left-content {
+	width: 330px;
+    padding: 12px 22px 12px 12px;
+    float: left;
+    margin-left: 8px;
+    margin-top: 18px;
+}
+
+.view-d-kmk004 .right-content {
+	width: 510px;
+	float: left;
 	margin-left: 30px;
 }
 
-#lblEmploymentCode {
-	margin-left: 50px;
+.view-d-kmk004 .right-content p {
+	font-size: 20px;
+	height: 30px;
 }
 
-#lblEmploymentName {
-	margin-left: 40px;
-}
-#lblWorkplaceCode {
-	margin-left: 50px;
-}
-#lblWorkplaceName {
-	margin-left: 40px;
-}
-.cbb-weekstart {
-	display: inline-flex;
-	margin-left: 20px;
-}
-.tbl-daily {
-	display: inline;
-	margin-left: 75px;
-}
-.tbl-monthly {
+.view-d-kmk004 .right-content .content-data {
 	margin-top: 10px;
+	margin-left: 10px;
 }
-.float-left {
+
+.view-d-kmk004 .right-content .label1 {
+	margin-top: 15px;
+}
+
+.view-d-kmk004 .right-content .year {
 	float: left;
 }
-.setting-panel {
-	width: 200px;
-	height: 200px;
-	margin-bottom: 10px;
-}
-#aggr-setting-content {
-	width: 250px;
-	margin-top: 40px;
-	margin-left: 20px;
-}
-	#aggr-setting-content .setting-panel:nth-child(2) {
-		height: 170px;
-	}
-	
-.open-Detail {
-	float: right;
-	margin-bottom: 20px;
+
+.view-d-kmk004 .right-content .year .box-year {
 	margin-top: 10px;
 }
-.worktime-tabs #tab-1 {
-	height: 620px;
-}
-#radio-box-content .ntsRadioBox {
-	height: 40px;
+
+.view-d-kmk004 .right-content .time-work {
+	margin-left: 177px;
+	margin-top: 10px;
+	max-width: 203px;
 }
 
-.worktime-tabs .ui-widget-content:not(.disappear) {
-	min-height: 630px;
+.view-d-kmk004 .right-content .name {
+	margin-bottom: 10px;
+	height: 25px;
 }
-span#lblEmployeeCode {
+
+/* View E */
+.view-e-kmk004 {
+	padding: 10px 20px;
+	height: calc(100vh - 163px);
+	overflow-y: scroll;
+	display: flex;
+}
+
+.view-e-kmk004 .left-content {
+	width: 633px;
+	padding: 10px 12px 12px 12px;
+	float: left;
+	margin-top: 20px;
+}
+
+.view-e-kmk004 .left-content .cpn-ccg001 {
+	margin-left: -10px;
+}
+
+.view-e-kmk004 .left-content .cpn-kcp005 {
+	margin-left: 43px;
+}
+
+.view-e-kmk004 .right-content {
+	width: 510px;
+	float: left;
+	margin-left: 30px;
+}
+
+.view-e-kmk004 .right-content p {
+	font-size: 20px;
+	height: 30px;
+}
+
+.view-e-kmk004 .right-content .content-data {
+	margin-top: 10px;
+	margin-left: 10px;
+}
+
+.view-e-kmk004 .right-content .label1 {
+	margin-top: 15px;
+}
+
+.view-e-kmk004 .right-content .year {
+	float: left;
+}
+
+.view-e-kmk004 .right-content .year .box-year {
+	margin-top: 10px;
+}
+
+.view-e-kmk004 .right-content .time-work {
+	margin-left: 177px;
+	margin-top: 10px;
+	max-width: 203px;
+}
+
+.view-e-kmk004 .name {
+	margin-bottom: 10px;
+	height: 25px;
+	max-height: 25px;
+}
+
+/* ListTimeWork */
+.list-time .label-column1 {
+	border-left: solid 1px gray;
+	border-right: solid 1px gray;
+	border-bottom: solid 1px gray;
+	padding-top: 3px;
+    padding-bottom: 3px;
+    padding-right: 10px;
+    padding-left: 10px;
+    min-width: 60px;
+    max-width: 100px;
+	text-align: center;
+	background: #E0F59E;
+
+}
+
+.list-time .label-row1 {
+	border: solid 1px gray;
+	padding-top: 3px;
+    padding-bottom: 3px;
+    padding-right: 10px;
+    padding-left: 10px;
+    min-width: 60px;
+	max-width: 100px;
+	text-align: center;
+	background: #97D155;
+}
+.list-time .label-column2 {
+	border-right: solid 1px gray;
+	border-bottom: solid 1px gray;
+	text-align: center;
+	padding-top: 3px;
+    padding-bottom: 3px;
+    padding-right: 10px;
+    padding-left: 10px;
+    min-width: 60px;
+    max-width: 100px;
+}
+.list-time .label-row2 {
+	border-top: solid 1px gray;
+	border-right: solid 1px gray;
+	border-bottom: solid 1px gray;
+	padding-top: 3px;
+    padding-bottom: 3px;
+    padding-right: 10px;
+    padding-left: 10px;
+    min-width: 60px;
+	max-width: 100px;
+	text-align: center;
+	background: #97D155;
+}
+.list-time .lable-input {
+	width: 60px;
+	text-align: center;
+    border: 1px solid #999999;
+    padding: 5px 20px;
+    font-family: "DroidSansMono", "Meiryo";
+    border-radius: 3px;
+    overflow: visible;
+}
+
+.list-time .check-row1 {
+	border-top: solid 1px gray;
+	border-left: solid 1px gray;
+	border-bottom: solid 1px gray;
+	background: #97D155;
+}
+
+.list-time .check-column1 {
+	padding: 3px;
+	border-left: solid 1px gray;
+	border-bottom: solid 1px gray;
+	text-align: center;
+}
+
+/* View B */
+
+.view-b {
+	padding: 10px 20px;
+	height: calc(100vh - 163px);
+	overflow-y: scroll;
+}
+
+/* .view-b .child {
+	width: calc(100vw - 158px);
+} */
+
+.view-b .header-b {
+	width: 510px;
+}
+
+.view-b .header-b .title {
+	font-size: 20px;
+}
+
+.view-b .header-b ~ div {
+	font-size: 10px;
+	margin-left: 10px;
+}
+
+.view-b .header-b .header_title {
+	margin-top: 10px;
+}
+
+.view-b .header-b .header_content {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.view-b .content {
+	text-align: left;
+	margin-top: 10px;
+}
+
+.view-b .content ~ div {
+	margin-top: 15px;
+	float: left;
+}
+
+.view-b .content .data {
+	margin-top: 10px;
+	float: left;
+	display: flex;
+}
+
+.view-b .content .data .box-year {
 	display: inline-block;
-	width: 120px;
+	height: 100px;
+}
+
+.view-b .content .data .time-work {
+	display: inline-block;
+	margin-left: 27px;
+}
+
+/*Box Year*/
+
+.listbox {
+	max-width: 150px;
+}
+
+#year-list_grid_container {
+	height: 113px !important;
+}
+
+.node {
+	color: #0000ff;
+}
+
+
+#year-list_grid col:first-child {
+	width: 20px !important;
+	text-align: center;
+}
+
+#year-list_grid_displayContainer {
+	max-width: 103px !important;
+}
+
+#year-list_grid_container table {
+	max-width: 120px !important;
+}
+
+#year-list_grid_container {
+	width: 120px !important;
+}
+
+#year-list_grid_container col:nth-child(2) {
+	width: 83px !important;
+	text-align: center;
+}
+
+#year-list_grid_container col:first-child {
+	width: 19px !important;
+	text-align: center;
+}
+
+#year-list_grid_displayContainer {
+	height: 113px !important;
+}
+
+#year-list_grid_scrollContainer {
+	height: 115px !important;
+}
+
+/* #year-list_grid col:first-child {
+	width: 20px !important;
+	text-align: center;
+} */
+
+/* #year-list_grid_displayContainer {
+	max-width: 103px !important;
+} */
+
+#year-list_grid_container table {
+	max-width: 120px !important;
+}
+
+#year-list_grid_container {
+	width: 120px !important;
+}
+
+#year-list_grid_container col:nth-child(2) {
+	width: 83px !important;
+	text-align: center;
+}
+
+#year-list_grid_container col:first-child {
+	width: 19px !important;
+	text-align: center;
+}
+
+#year-list_grid_displayContainer {
+	height: 113px !important;
+}
+
+#year-list_grid_scrollContainer {
+	height: 115px !important;
+}
+
+/*Common*/
+#func-notifier-errors {
+	top: 128px;
+    left: 121px;
+    position: fixed;
+    text-align: center;
+    width: 100px;
+    height: 24px;
+    z-index: 999999;
 }

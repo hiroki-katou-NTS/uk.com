@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -62,9 +63,9 @@ public class KshmtOutsideSet extends ContractUkJpaEntity implements Serializable
      * @param cid the cid
      * @param calculationMethod the calculation method
      */
-    public KshmtOutsideSet(String cid, int calculationMethod) {
-        this.cid = cid;
-        this.calculationMethod = calculationMethod;
+    public void update(OutsideOTSetting domain) {
+        this.calculationMethod = domain.getCalculationMethod().value;
+        this.note = domain.getNote().v();
     }
 
     

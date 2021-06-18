@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
         prePostAtr: KnockoutObservable<number>;
         employeeIDLst: KnockoutObservableArray<string>;
         appType: number;
+        inputDate: string;
         appDate: KnockoutObservable<string>;
         opAppReason: KnockoutObservable<string>;
         opAppStandardReasonCD: KnockoutObservable<number>;
@@ -23,6 +24,14 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
             this.opAppStartDate = ko.observable("");
             this.opAppEndDate = ko.observable("");
             this.opStampRequestMode = ko.observable(null);
+			this.appDate.subscribe(value => {
+				if(_.isEmpty(this.opAppStartDate())) {
+					this.opAppStartDate(value);
+				}
+				if(_.isEmpty(this.opAppEndDate())) {
+					this.opAppEndDate(value);
+				}
+			});
         }        
     }
     
@@ -89,7 +98,13 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		/**
 		 * 休暇申請の印刷内容
 		 */
-		
+        opPrintContentApplyForLeave: any;
+        
+         /**
+         * 休日出勤の印刷内容
+         */
+        opPrintContentOfHolidayWork: any;
+    
 		/**
 		 * 勤務変更申請の印刷内容
 		 */
@@ -98,6 +113,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		/**
 		 * 時間休暇申請の印刷内容
 		 */
+		opPrintContentOfTimeLeave: any;
 		
 		/**
 		 * 打刻申請の印刷内容
@@ -115,6 +131,18 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		opInforGoBackCommonDirectOutput: any;
 		
 		opBusinessTripInfoOutput: any;
+		
+		/*
+			残業申請
+		 */
+		opDetailOutput: any;
+
+        opOptionalItemOutput: any;
+
+        /**
+         * 振休振出申請の印刷内容
+         */
+        optHolidayShipment: any;
 	}
 	
 	export interface AppInitParam {
@@ -131,7 +159,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
             APPLICANT_APPROVER = 0, // 申請本人&承認者
             APPROVER = 1, // 承認者
             APPLICANT = 2, // 申請本人
-            OTHER = 3, // その他        
+            OTHER = 99, // その他        
         }; 
         
         // trạng thái của phase chứa user
@@ -158,7 +186,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
             WORK_CHANGE_APPLICATION = 2, // 勤務変更申請
             BUSINESS_TRIP_APPLICATION = 3, // 出張申請
             GO_RETURN_DIRECTLY_APPLICATION = 4, // 直行直帰申請
-            LEAVE_TIME_APPLICATION = 6, // 休出時間申請
+            HOLIDAY_WORK_APPLICATION = 6, // 休出時間申請
             STAMP_APPLICATION = 7, // 打刻申請
             ANNUAL_HOLIDAY_APPLICATION = 8, // 時間休暇申請
             EARLY_LEAVE_CANCEL_APPLICATION = 9, // 遅刻早退取消申請
@@ -202,7 +230,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
         }    
         
         public static initDeadlineMsg(value: any, vm: any) {
-            vm.message(value.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].memo);
+            vm.message(_.escape(value.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].memo).replace(/\n/g, '<br/>'));
             if(_.isEmpty(vm.message())) {
                 vm.displayMsg(false);         
             } else {
@@ -229,7 +257,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
                 } 
                 // ・申請表示情報(基準日関係なし)．事前受付時分がNullじゃない
                 else {
-                    prePart = vm.$i18n('KAF000_41', [value.appDispInfoNoDateOutput.opAdvanceReceptionHours]);  
+                    prePart = vm.$i18n('KAF000_41', [nts.uk.time.format.byId("Time_Short_HM", value.appDispInfoNoDateOutput.opAdvanceReceptionHours)]);  
                 }             
             }
             // {2}事後受付日
@@ -242,7 +270,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 			if(appDeadlineUseCategory) {
 				deadlinePart = vm.$i18n('KAF000_40', [value.appDispInfoWithDateOutput.opAppDeadline]);	
 			}
-            vm.deadline(prePart + postPart + deadlinePart);    
+            vm.deadline(_.chain([prePart, postPart, deadlinePart]).filter(o => o).join('<br/>').value());
         }
         
         public static checkUsage(
@@ -258,15 +286,13 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
                 opErrorFlag = appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
                 msgID = "";
             if(mode && useDivision == 0) {
-                vm.$errors(element, "Msg_323");
-                vm.$dialog.error({ messageId: "Msg_323" }).then(() => {
-                    if(recordDate == 0) {
-                        vm.$jump("com", "/view/ccg/008/a/index.xhtml");    
-                    }
-                });   
 				if(recordDate == 0) {
+					vm.$dialog.error({ messageId: "Msg_323" }).then(() => {
+                    	vm.$jump("com", "/view/ccg/008/a/index.xhtml");   
+	                });
 					return false;
 				}
+				vm.$errors(element, "Msg_323");
                 return true;
             }
             
@@ -289,15 +315,13 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
             if(_.isEmpty(msgID)) { 
                 return true;
             }
-            vm.$errors(element, msgID);
-            vm.$dialog.error({ messageId: msgID }).then(() => {
-                if(recordDate == 0) {
-                    vm.$jump("com", "/view/ccg/008/a/index.xhtml");    
-                }    
-            });
 			if(recordDate == 0) {
+				vm.$dialog.error({ messageId: msgID }).then(() => {
+                	vm.$jump("com", "/view/ccg/008/a/index.xhtml");
+	            });
 				return false;
 			}
+			vm.$errors(element, msgID);
 			return true;
         }
 
@@ -340,6 +364,56 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 					alert('no');
 				}		
 			});
+		}
+		
+		public static handleAfterRegister(result: any, isSendMail: boolean, vm: any, isMultiEmp: boolean, employeeInfoLst?: any) {
+			if(result.autoSendMail) {
+				CommonProcess.handleMailResult(result, vm).then(() => {
+					location.reload();		
+				});
+			} else if(isSendMail) {
+				let command = {
+					appIDLst: result.appIDLst,
+					isMultiEmp: isMultiEmp,
+					employeeInfoLst: employeeInfoLst
+				};
+                nts.uk.ui.windows.setShared("KDL030_PARAM", command);
+                nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
+                    location.reload();
+                });
+			} else {
+				location.reload();
+			}
+		}
+		
+		public static handleMailResult(result: any, vm: any): any {
+			let dfd = $.Deferred();
+			if(_.isEmpty(result.autoFailServer)) {
+				if(_.isEmpty(result.autoSuccessMail)) {
+					if(_.isEmpty(result.autoFailMail)) {
+						dfd.resolve(true);
+					} else {
+						vm.$dialog.error({ messageId: 'Msg_768', messageParams: [_.join(result.autoFailMail, ',')] }).then(() => {
+				        	dfd.resolve(true);
+				        });	
+					}
+				} else {
+					vm.$dialog.info({ messageId: 'Msg_392', messageParams: [_.join(result.autoSuccessMail, ',')] }).then(() => {
+						if(_.isEmpty(result.autoFailMail)) {
+							dfd.resolve(true);	
+						} else {
+							vm.$dialog.error({ messageId: 'Msg_768', messageParams: [_.join(result.autoFailMail, ',')] }).then(() => {
+					        	dfd.resolve(true);
+					        });	
+						}
+			        });	
+				}	
+			} else {
+				vm.$dialog.error({ messageId: 'Msg_1057' }).then(() => {
+		        	dfd.resolve(true);
+		        });
+			}
+			return dfd.promise();
 		}
     }
 }

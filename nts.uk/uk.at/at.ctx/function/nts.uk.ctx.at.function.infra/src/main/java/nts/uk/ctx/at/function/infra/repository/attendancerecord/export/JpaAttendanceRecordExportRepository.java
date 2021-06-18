@@ -1,24 +1,22 @@
 package nts.uk.ctx.at.function.infra.repository.attendancerecord.export;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+
+import org.apache.commons.lang3.tuple.MutablePair;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportGetMemento;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportRepository;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRecPK_;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec_;
-import org.apache.commons.lang3.tuple.MutablePair;
-
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.*;
-import java.util.stream.Collectors;
-
+import nts.uk.ctx.at.function.dom.attendancerecord.export.ExportAtr;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
 /**
  * The Class JpaAttendanceRecordExportRepository.
  * 
@@ -29,6 +27,12 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 
 	static final long UPPER_POSITION = 1;
 	static final long LOWER_POSITION = 2;
+	
+	static final String SELECT_ATTENDANCE_RECORD_BY_LAYOUT_ID = "SELECT frame FROM KfnmtRptWkAtdOutframe frame"
+			+ " WHERE frame.id.layoutId = :layoutId";
+	
+	static final String SELECT_ATTENDANCE_RECORD_BY_LAYOUT_ID_AND_OUTPUT_ATR = SELECT_ATTENDANCE_RECORD_BY_LAYOUT_ID
+			+ " AND frame.id.outputAtr = :outputAtr";
 
 	/*
 	 * (non-Javadoc)
@@ -38,31 +42,16 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 	 * lang.String, long)
 	 */
 	@Override
-	public List<AttendanceRecordExport> getAllAttendanceRecordExportDaily(String companyId, long exportSettingCode) {
-
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KfnstAttndRec> cq = criteriaBuilder.createQuery(KfnstAttndRec.class);
-		Root<KfnstAttndRec> root = cq.from(KfnstAttndRec.class);
-
-		// build query
-		cq.select(root);
-
-		// create where conditions
-		List<Predicate> predicates = new ArrayList<>();
-
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.cid), companyId));
-		predicates.add(
-				criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.exportCd), exportSettingCode));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.outputAtr), 1));
-
-		// add where to query
-		cq.where(predicates.toArray(new Predicate[] {}));
+	public List<AttendanceRecordExport> getAllAttendanceRecordExportDaily(String layoutId) {
 
 		// query data
-		List<KfnstAttndRec> entityList = em.createQuery(cq).getResultList();
+		List<KfnmtRptWkAtdOutframe> entityList = this.queryProxy()
+				.query(SELECT_ATTENDANCE_RECORD_BY_LAYOUT_ID_AND_OUTPUT_ATR, KfnmtRptWkAtdOutframe.class)
+				.setParameter("layoutId", layoutId)
+				.setParameter("outputAtr", ExportAtr.DAILY.value)
+				.getList();
 
-		List<AttendanceRecordExport> domainList = domainsFrom(entityList);
+		 List<AttendanceRecordExport> domainList = domainsFrom(entityList);
 
 		return domainList.stream().filter(Objects::nonNull).collect(Collectors.toList());
 	}
@@ -72,15 +61,15 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 	 * @param entityList
 	 * @return
 	 */
-	private List<AttendanceRecordExport> domainsFrom(List<KfnstAttndRec> entityList) {
+	private List<AttendanceRecordExport> domainsFrom(List<KfnmtRptWkAtdOutframe> entityList) {
 		List<AttendanceRecordExport> domainList = new ArrayList<>();
 
-		Map<Long, MutablePair<KfnstAttndRec,KfnstAttndRec>> map = new HashMap<>();
+		Map<Long, MutablePair<KfnmtRptWkAtdOutframe,KfnmtRptWkAtdOutframe>> map = new HashMap<>();
 
-		for (KfnstAttndRec item : entityList) {
+		for (KfnmtRptWkAtdOutframe item : entityList) {
 			boolean isNew = false;
 			long key = item.getId().getColumnIndex();
-			MutablePair<KfnstAttndRec, KfnstAttndRec> exist = map.get(key);
+			MutablePair<KfnmtRptWkAtdOutframe, KfnmtRptWkAtdOutframe> exist = map.get(key);
 			if (exist == null) {
 				exist = new MutablePair<>();
 				isNew = true;
@@ -113,30 +102,13 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 	 * .lang.String, long)
 	 */
 	@Override
-	public List<AttendanceRecordExport> getAllAttendanceRecordExportMonthly(String companyId, long exportSettingCode) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KfnstAttndRec> cq = criteriaBuilder.createQuery(KfnstAttndRec.class);
-		Root<KfnstAttndRec> root = cq.from(KfnstAttndRec.class);
-
-		// build query
-		cq.select(root);
-
-		// create where conditions
-		List<Predicate> predicates = new ArrayList<>();
-
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.cid), companyId));
-		predicates.add(
-				criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.exportCd), exportSettingCode));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.outputAtr), 2));
-
-		// add where to query
-		cq.where(predicates.toArray(new Predicate[] {}));
-
+	public List<AttendanceRecordExport> getAllAttendanceRecordExportMonthly(String layoutId) {
 		// query data
-		List<KfnstAttndRec> entityList = em.createQuery(cq).getResultList();
-
-//		Map<Long, MutablePair<KfnstAttndRec,KfnstAttndRec>> map = new HashMap<>();
+		List<KfnmtRptWkAtdOutframe> entityList = this.queryProxy()
+				.query(SELECT_ATTENDANCE_RECORD_BY_LAYOUT_ID_AND_OUTPUT_ATR, KfnmtRptWkAtdOutframe.class)
+				.setParameter("layoutId", layoutId)
+				.setParameter("outputAtr", ExportAtr.MONTHLY.value)
+				.getList();
 
 		List<AttendanceRecordExport> domainList = domainsFrom(entityList);
 
@@ -178,8 +150,8 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 	 * ExportSettingCode)
 	 */
 	@Override
-	public void deleteAttendanceRecord(String companyId, ExportSettingCode exportSettingCode) {
-		List<KfnstAttndRec> items = this.findAllAttendanceRecord(companyId, exportSettingCode);
+	public void deleteAttendanceRecord(String layoutId) {
+		List<KfnmtRptWkAtdOutframe> items = this.findAllAttendanceRecord(layoutId);
 		if (items != null && !items.isEmpty()) {
 			this.removeAllAttndRec(items);
 			this.getEntityManager().flush();
@@ -195,7 +167,7 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 	 *            the lower entity
 	 * @return the attendance record export
 	 */
-	public AttendanceRecordExport toDomain(KfnstAttndRec upperEntity, KfnstAttndRec lowerEntity) {
+	public AttendanceRecordExport toDomain(KfnmtRptWkAtdOutframe upperEntity, KfnmtRptWkAtdOutframe lowerEntity) {
 
 		AttendanceRecordExportGetMemento memento = new JpaAttendanceRecordExportGetMemento(upperEntity, lowerEntity);
 
@@ -212,25 +184,13 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 	 *            the export setting code
 	 * @return the list
 	 */
-	private List<KfnstAttndRec> findAllAttendanceRecord(String companyId, ExportSettingCode exportSettingCode) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KfnstAttndRec> criteriaQuery = criteriaBuilder.createQuery(KfnstAttndRec.class);
-		Root<KfnstAttndRec> root = criteriaQuery.from(KfnstAttndRec.class);
-
-		// Build query
-		criteriaQuery.select(root);
-
-		// create condition
-		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.cid), companyId));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.exportCd),
-				exportSettingCode.v()));
-
-		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
+	private List<KfnmtRptWkAtdOutframe> findAllAttendanceRecord(String layoutId) {
 
 		// query data
-		List<KfnstAttndRec> kfnstAttndRecs = em.createQuery(criteriaQuery).getResultList();
+		List<KfnmtRptWkAtdOutframe> kfnstAttndRecs = this.queryProxy()
+				.query(SELECT_ATTENDANCE_RECORD_BY_LAYOUT_ID, KfnmtRptWkAtdOutframe.class)
+				.setParameter("layoutId", layoutId)
+				.getList();;
 		return kfnstAttndRecs.isEmpty() ? new ArrayList<>() : kfnstAttndRecs;
 	}
 
@@ -240,7 +200,7 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 	 * @param items
 	 *            the items
 	 */
-	public void removeAllAttndRec(List<KfnstAttndRec> items) {
+	public void removeAllAttndRec(List<KfnmtRptWkAtdOutframe> items) {
 		if (!items.isEmpty()) {
 			this.commandProxy().removeAll(items);
 			this.getEntityManager().flush();

@@ -257,7 +257,7 @@ export interface IAppDispInfoStartupOutput {
             opAppStartDate: string;
             opAppEndDate: string;
             opAppReason: string;
-            opAppStandardReasonCD: 1;
+            opAppStandardReasonCD?: number | string;
         };
         approvalLst: any[];
         authorComment: string;
@@ -283,7 +283,19 @@ export interface IOpActualContentDisplayLst {
         opWorkTime2: number | null;
         opLeaveTime: number | null;
         opDepartureTime2: number | null;
+        stampRecordOutput: {
+            outingTime: IOutingTime[];
+        }
+        trackRecordAtr: number;
     }
+}
+
+export interface IOutingTime {
+    frameNo: number;
+    opEndTime: number | null;
+    opGoOutReasonAtr: number;
+    opStartTime: number | null;
+    opWorkLocationCD: null
 }
 
 export interface IData {
@@ -314,8 +326,8 @@ export interface IApplication {
     enteredPerson: string;
     inputDate: string;
     opAppEndDate: string;
-    opAppReason: string;
-    opAppStandardReasonCD: number | string | null;
+    opAppReason: string | null;
+    opAppStandardReasonCD?: number | string;
     opAppStartDate: string;
     opReversionReason: null;
     opStampRequestMode: null;
@@ -363,8 +375,8 @@ export interface IRes {
         autoSuccessMail: [];
         autoFailMail: [];
         autoFailServer: [];
-        appID: "";
-        reflectAppId: "";
+        appIDLst: Array<string>;
+        reflectAppIdLst: Array<string>;
         processDone: boolean;
         autoSendMail: boolean;
     }
@@ -388,19 +400,15 @@ export interface IParams {
 export interface ICheck {
     cbCancelLate: {
         value: string;
-        isDisable: boolean;
     }
     cbCancelEarlyLeave: {
         value: string;
-        isDisable: boolean;
     }
     cbCancelLate2: {
         value: string;
-        isDisable: boolean;
     }
     cbCancelEarlyLeave2: {
         value: string;
-        isDisable: boolean;
     }
 }
 

@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
@@ -32,16 +31,27 @@ public interface WorkScheduleRepository {
 	 */
 	void insert(WorkSchedule workSchedule); 
 	
+	
+	
 	/**
-	 * [3] Update(勤務予定)
+	 * [5] InsertAll(会社ID, 勤務予定リスト)
+	 * @param cid
 	 * @param workSchedule
+	 */
+	void insertAll(String cID, List<WorkSchedule> workSchedule);
+	
+	/**
+	 * [6] Update(社員ID, 期間)
+	 * @param sid
+	 * @param datePeriod
 	 */
 	
 	void update(WorkSchedule workSchedule);
+	
+	void delete(String sid, DatePeriod datePeriod);
+	
 	/** Delete (勤務予定) **/
 	void delete(String sid , GeneralDate ymd);
-
-	void delete(String sid, DatePeriod datePeriod);
 
 	boolean checkExits(String employeeID, GeneralDate ymd);
 
@@ -58,6 +68,17 @@ public interface WorkScheduleRepository {
 	void insertAtdLvwTimes(TimeLeavingWork leavingWork, String sID, GeneralDate yMD, String cID);
 
 	void deleteSchAtdLvwTime(String sid, GeneralDate ymd, int workNo);
+
+	void deleteListDate(String sid, List<GeneralDate> ymds);
 	
+	List<WorkSchedule> getListBySid(String sid, DatePeriod period);
+	/**
+	 * 	[7] 最も未来の勤務予定の年月日を取得する
+	 * @param listEmp
+	 * @return
+	 */
+	Optional<GeneralDate> getMaxDateWorkSche(List<String> listEmp);
+
+	//Optional<GeneralDate> getMaxDate(List<String> employeeIDs, GeneralDate ymd);
 }
 

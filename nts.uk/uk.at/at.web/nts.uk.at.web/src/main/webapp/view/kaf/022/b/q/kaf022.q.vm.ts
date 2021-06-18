@@ -18,6 +18,7 @@ module nts.uk.at.view.kaf022.q.viewmodel {
             {code: 4, name: "4"},
             {code: 5, name: "5"},
             {code: 6, name: "6"},
+            {code: 7, name: "7"},
         ]);
 
         // 申請理由
@@ -36,7 +37,7 @@ module nts.uk.at.view.kaf022.q.viewmodel {
             self.appReasonDispAtr = ko.observable(1);
             self.preExcessAtr = ko.observable(1);
             self.atdExcessAtr = ko.observable(1);
-            self.warningDays = ko.observable(1);
+            self.warningDays = ko.observable(0);
             self.dispWorkplaceNameAtr = ko.observable(1);
 
             $("#fixed-table-q1").ntsFixedTable({});

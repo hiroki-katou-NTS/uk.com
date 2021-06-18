@@ -1,56 +1,110 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<body>
-		<ui:composition template="../../../../master/dialog.xhtml">
-			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 350, height: 400 };</script>
-				<com:stylefile path="kmk010.b.main.css" />
-				<com:scriptfile set="IGNITE" />
-				<com:scriptfile path="kmk010.b.start.js" />
-				<com:scriptfile path="../a/kmk010.a.service.js" />
-				<com:scriptfile path="../a/kmk010.a.vm.js" />
-				<com:scriptfile path="kmk010.b.service.js" />
-				<com:scriptfile path="kmk010.b.vm.js" />
-				<com:ValidatorScript>
-					nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeName
-				</com:ValidatorScript>
-			</ui:define>
-			<ui:define name="content">
-				<div id="functions-area">
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+      <ui:define name="htmlHead">
+        <script>
+          var dialogSize = { width: 485, height: 385 };
+        </script>
+        <com:stylefile path="kmk010.b.main.css" />
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="kmk010.b.start.js" />
+        <com:scriptfile path="../a/kmk010.a.service.js" />
+        <com:scriptfile path="../a/kmk010.a.vm.js" />
+        <com:scriptfile path="kmk010.b.service.js" />
+        <com:scriptfile path="kmk010.b.vm.js" />
+        <com:ValidatorScript>
+          nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeName
+          nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeValue
+        </com:ValidatorScript>
+      </ui:define>
+      <ui:define name="content">
+        <!-- 	<div id="functions-area">
 					<button tabindex="3" class="proceed" data-bind="click: saveOvertime" >#{i18n.getText('KMK010_40')}</button>
 					<button tabindex="4" class="buttonOther" data-bind="click: closeSaveOvertime">#{i18n.getText('KMK010_41')}</button>
-				</div>
-				
-				<div class="contentDialog">
-					<label>#{i18n.getText('KMK010_35')}</label>
-					<div class="tbOvertime">
-						<table class="overtime-border" >
-							<tr class="bg-dark-green">
-								<td>#{i18n.getText('KMK010_36')}</td>
-								<td>#{i18n.getText('KMK010_37')}</td>
-								<td data-bind="text: textOvertimeName"></td>
-							</tr>
-							<com:ko tag="foreach" bind="lstOvertimeModel">
-								<tr>
-									<td>
-										<div tabindex="1" data-bind="ntsCheckBox: { checked: useClassification, enable: $parent.enableCheckbox }"></div>
-									</td>
-									<td>
-										<div data-bind="text: overtimeNo"></div>
-									</td>
-									<td>
-										<input tabindex="2" data-bind="attr: {'id': 'overtimeNo_'+overtimeNo()}, ntsTextEditor: {value: name, constraint: 'OvertimeName',  required: requiredText, name: $parent.switchNameResource()}"/>
-									</td>
-								</tr>
-							</com:ko>
-						</table>
-					</div>
-				</div>
-			</ui:define>
-		</ui:composition>
-	</body>
+				</div> -->
+        <div id="contents-area" class="body">
+          <div class="contentDialog">
+            <!-- <label>#{i18n.getText('KMK010_35')}</label> -->
+            <div class="tbOvertime">
+              <table class="overtime-border">
+                <tr class="bg-dark-green">
+                  <td> #{i18n.getText('KMK010_37')}</td>
+                  <!-- B1_5 -->
+                  <td>#{i18n.getText('KMK010_38')}</td>
+                  <!-- B1_11 -->
+                  <td>#{i18n.getText('KMK010_13')}</td>
+                  <!-- B1_4 -->
+                  <td>#{i18n.getText('KMK010_43')}</td>
+                  <!-- B1_12 -->
+                  <td>#{i18n.getText('KMK010_20')}</td>                  
+                </tr>
+                <com:ko tag="foreach" bind="lstOvertimeModel">
+                  <tr>
+                    <td>
+                      <div data-bind="text: overtimeNo"></div>
+                    </td>
+                    <td>
+                      <input
+                        tabindex="1" class="overtimeNo"
+												data-bind="attr: {'id': 'overtimeNo_' + overtimeNo()}, 
+												ntsTextEditor: {value: name, constraint: 'OvertimeName',  required: requiredText, name: $parent.switchNameResource()}"
+                      />
+                    </td>
+                    <td>
+                      <input
+                      tabindex="1" class="overtimeNum"
+                      data-bind="attr: {'id': 'overtimeNum_' + overtimeNo()}, 
+                        ntsTimeEditor: { value: overtime, 
+                        inputFormat: 'time', mode: 'time',
+                        enable: true,
+                        required: requiredOverTime, constraint: 'OvertimeValue',
+                        name: '#[KMK010_13]'}"
+                      /><label>#{i18n.getText('KMK010_14')}</label>
+                    </td>
+                    <td>
+                      <div
+                        tabindex="1"
+                        data-bind="ntsCheckBox: { checked: useClassification, enable: $parent.enableCheckbox }"
+                      ></div>
+                    </td>
+                    <td>
+                      <div
+                        tabindex="1"
+                        data-bind="ntsCheckBox: { checked: superHoliday60HOccurs, enable: useClassification }"
+                      ></div>
+                    </td>
+                  </tr>
+                </com:ko>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div id="functions-area-bottom" class="">
+          <button
+                  tabindex="2"
+                  id="btnSaveOvertime"
+                  class="x-large proceed"
+                  data-bind="click: saveOvertime, enable: $root.errors.isEmpty"
+          >
+            #{i18n.getText('KMK010_40')}
+          </button>
+          <button
+                  tabindex="3"
+                  id="btnCloseSaveOvertime"
+                  class="large"
+                  data-bind="click: closeSaveOvertime"
+          >
+            #{i18n.getText('KMK010_41')}
+          </button>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
 </html>

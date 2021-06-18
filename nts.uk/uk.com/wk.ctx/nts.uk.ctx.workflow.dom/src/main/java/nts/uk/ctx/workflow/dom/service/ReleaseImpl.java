@@ -15,6 +15,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalComment;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
@@ -63,7 +64,7 @@ public class ReleaseImpl implements ReleaseService {
 						approverInfor.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 						approverInfor.setAgentID("");
 						approverInfor.setApprovalDate(null);
-						approverInfor.setApprovalReason("");
+						approverInfor.setApprovalReason(new ApprovalComment(""));
 					}
 				});
 			});
@@ -76,32 +77,50 @@ public class ReleaseImpl implements ReleaseService {
 
 	@Override
 	public Boolean canReleaseCheck(ApprovalPhaseState approvalPhaseState, String employeeID) {
+		// 「承認フェーズインスタンス」．承認形態をチェックする(kiểm tra 「承認フェーズインスタンス」．承認形態)
 		if(approvalPhaseState.getApprovalForm().equals(ApprovalForm.EVERYONE_APPROVED)){
 			for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()) {
 				for(ApproverInfor approverInfor : approvalFrame.getLstApproverInfo()) {
 					if(approverInfor.getApproverID().equals(employeeID) ||
 							(Strings.isNotBlank(approverInfor.getAgentID()) && approverInfor.getAgentID().equals(employeeID))){
+						// 解除できるフラグ = true
 						return true;
 					}
 				}
 			}
 			return false;
 		}
+		// 確定者を設定したかチェックする(kiểm tra có cài đặt 確定者 hay không)
 		Optional<ApprovalFrame> opConfirmFrame = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr().equals(ConfirmPerson.CONFIRM)).findAny();
 		if(opConfirmFrame.isPresent()){
-			ApprovalFrame approvalFrame = opConfirmFrame.get();
-			for(ApproverInfor approverInfor : approvalFrame.getLstApproverInfo()) {
-				if(approverInfor.getApproverID().equals(employeeID) ||
-						(Strings.isNotBlank(approverInfor.getAgentID()) && approverInfor.getAgentID().equals(employeeID))){
-					return true;
+			boolean condition1 = false;
+			for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()) {
+				for(ApproverInfor approverInfor : approvalFrame.getLstApproverInfo()) {
+					if((approverInfor.getApproverID().equals(employeeID) || (Strings.isNotBlank(approverInfor.getAgentID()) && approverInfor.getAgentID().equals(employeeID))) 
+							&& (approverInfor.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED || approverInfor.getApprovalAtr()==ApprovalBehaviorAtr.DENIAL)){
+						condition1 = true;
+					}
 				}
+			}
+			boolean condition2 = false;
+			ApprovalFrame confirmApprovalFrame = opConfirmFrame.get();
+			for(ApproverInfor approverInfor : confirmApprovalFrame.getLstApproverInfo()) {
+				if(approverInfor.getApproverID().equals(employeeID) || approverInfor.getApprovalAtr()==ApprovalBehaviorAtr.UNAPPROVED){
+					condition2 = true;
+				}
+			}
+			// ノートのif文をチェックする
+			if(condition1 && condition2) {
+				return true;
 			}
 			return false;
 		}
+		// 指定する社員が承認を行った承認者かチェックする
 		for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()) {
 			for(ApproverInfor approverInfor : approvalFrame.getLstApproverInfo()) {
 				if(approverInfor.getApproverID().equals(employeeID) ||
 						(Strings.isNotBlank(approverInfor.getAgentID()) && approverInfor.getAgentID().equals(employeeID))){
+					// 解除できるフラグ = true
 					return true;
 				}
 			}

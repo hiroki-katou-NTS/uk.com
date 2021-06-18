@@ -1,186 +1,251 @@
 package nts.uk.ctx.at.function.infra.entity.processexecution;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
+import nts.uk.ctx.at.function.dom.processexecution.ReExecutionCondition;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
-import nts.uk.ctx.at.function.dom.processexecution.AlarmExtraction;
-import nts.uk.ctx.at.function.dom.processexecution.AppRouteUpdateDaily;
-import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
-import nts.uk.ctx.at.function.dom.processexecution.ExecutionName;
-import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecType;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
-import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceCreation;
-import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceItem;
-import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.TargetGroupClassification;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreateScheduleYear;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreationPeriod;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreation;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreationPeriod;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreationTarget;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetClassification;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetDate;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetMonth;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetSetting;
-import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
-import nts.uk.shr.com.time.calendar.MonthDay;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-
+/**
+ * Entity 更新処理自動実行
+ */
+@Data
 @Entity
 @Table(name = "KFNMT_AUTOEXEC")
-@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class KfnmtProcessExecution extends ContractUkJpaEntity implements Serializable {
-	private static final long serialVersionUID = 1L;
-	/* 主キー */
+public class KfnmtProcessExecution extends ContractUkJpaEntity
+		implements UpdateProcessAutoExecution.MementoGetter, UpdateProcessAutoExecution.MementoSetter, Serializable {
+
+	public static final long serialVersionUID = 1L;
+
+	/**
+	 * Column 排他バージョン
+	 */
+	@Version
+	@Column(name = "EXCLUS_VER")
+	private long version;
+
+	/**
+	 * The primary key
+	 */
 	@EmbeddedId
-	public KfnmtProcessExecutionPK kfnmtProcExecPK;
+	private KfnmtProcessExecutionPK kfnmtProcExecPK;
 
-	/* 名称 */
+	/**
+	 * 名称
+	 */
 	@Column(name = "EXEC_ITEM_NAME")
-	public String execItemName;
+	private String execItemName;
 
-	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KFNMT_AUTOEXEC_SCOPE")
-	public KfnmtAutoexecScope execScope;
+	private KfnmtAutoexecScope execScope;
 
-	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KFNMT_AUTOEXEC_SETTEING")
-	public KfnmtProcessExecutionSetting execSetting;
+	private KfnmtProcessExecutionSetting execSetting;
 
-	/* 実行種別 */
+	/**
+	 * 実行種別
+	 */
 	@Column(name = "PROCESS_EXEC_TYPE")
-	public int processExecType;
-	
+	private int executionType;
+
+	/**
+	 * クラウド作成フラグ
+	 */
+	@Column(name = "CLOUD_CRE_FLAG")
+	private int cloudCreFlag;
+
+	/**
+	 * Gets primary key.
+	 *
+	 * @return the primary key
+	 */
 	@Override
 	protected Object getKey() {
 		return this.kfnmtProcExecPK;
 	}
 
 	/**
-	 * Convert entity to domain
-	 * 
-	 * @return WorkplaceManager object
+	 * Creates new entity from domain and use memento.
+	 *
+	 * @param contractCode the contract code require <code>not null</code>
+	 * @param domain       the domain require <code>not null</code>
 	 */
-	public ProcessExecution toDomain() {
-		List<ProcessExecutionScopeItem> workplaceIdList = this.execScope.workplaceIdList.stream()
-				.map(x -> ProcessExecutionScopeItem.createSimpleFromJavaType(x.kfnmtExecScopeItemPK.companyId,
-						x.kfnmtExecScopeItemPK.execItemCd, x.kfnmtExecScopeItemPK.wkpId))
-				.collect(Collectors.toList());
-
-		ProcessExecutionScope execScope = new ProcessExecutionScope(
-				EnumAdaptor.valueOf(this.execScope.execScopeCls, ExecutionScopeClassification.class),
-				this.execScope.refDate, workplaceIdList);
-
-		AlarmExtraction alarmExtraction =new AlarmExtraction(
-				this.execSetting.alarmAtr ==1?true:false,
-				this.execSetting.alarmCode == null?null:(new AlarmPatternCode(this.execSetting.alarmCode)),
-				this.execSetting.mailPrincipal == null?null:(this.execSetting.mailPrincipal ==1 ?true:false),
-				this.execSetting.mailAdministrator == null?null:(this.execSetting.mailAdministrator ==1 ?true:false)
-				);
-		
-		PersonalScheduleCreationPeriod period = new PersonalScheduleCreationPeriod(
-				new CreationPeriod(this.execSetting.creationPeriod), new TargetDate(this.execSetting.targetDate),
-				EnumAdaptor.valueOf(this.execSetting.targetMonth, TargetMonth.class),
-				this.execSetting.designatedYear == null?null:EnumAdaptor.valueOf(this.execSetting.designatedYear, CreateScheduleYear.class),
-				this.execSetting.startMonthDay == null?null:new MonthDay(this.execSetting.startMonthDay/100,this.execSetting.startMonthDay%100),
-				this.execSetting.endMonthDay == null?null:new MonthDay(this.execSetting.endMonthDay/100,this.execSetting.endMonthDay%100)
-				);
-
-		PersonalScheduleCreationTarget target = new PersonalScheduleCreationTarget(
-				EnumAdaptor.valueOf(this.execSetting.creationTarget, TargetClassification.class),
-				new TargetSetting(this.execSetting.recreateWorkType == 1 ? true : false,
-						this.execSetting.manualCorrection == 1 ? true : false,
-						this.execSetting.createEmployee == 1 ? true : false,
-						this.execSetting.recreateTransfer == 1 ? true : false)); 
-		PersonalScheduleCreation perSchCreation = new PersonalScheduleCreation(period,
-				this.execSetting.perScheduleCls == 1 ? true : false, target);
-		DailyPerformanceCreation dailyPerfCreation = new DailyPerformanceCreation(
-				this.execSetting.dailyPerfCls == 1 ? true : false,
-				EnumAdaptor.valueOf(this.execSetting.dailyPerfItem, DailyPerformanceItem.class), new TargetGroupClassification(this.execSetting.recreateTypeChangePerson == 1 ? true : false,
-						this.execSetting.midJoinEmployee == 1 ? true : false, this.execSetting.recreateTransfers == 1 ? true : false));
-
-		ProcessExecutionSetting execSetting = new ProcessExecutionSetting(alarmExtraction, perSchCreation,
-				dailyPerfCreation, this.execSetting.reflectResultCls == 1 ? true : false,
-				this.execSetting.monthlyAggCls == 1 ? true : false,
-				new AppRouteUpdateDaily(
-						EnumAdaptor.valueOf(this.execSetting.appRouteUpdateAtr, NotUseAtr.class) ,
-						this.execSetting.createNewEmp==null?null:EnumAdaptor.valueOf(this.execSetting.createNewEmp, NotUseAtr.class)),
-				EnumAdaptor.valueOf(this.execSetting.appRouteUpdateAtrMon, NotUseAtr.class)
-				);
-
-		return new ProcessExecution(this.kfnmtProcExecPK.companyId, new ExecutionCode(this.kfnmtProcExecPK.execItemCd),
-				new ExecutionName(this.execItemName), execScope, execSetting,
-				EnumAdaptor.valueOf(this.processExecType, ProcessExecType.class)
-				);
+	public KfnmtProcessExecution(@NonNull String contractCode, @NonNull UpdateProcessAutoExecution domain) {
+		domain.setMemento(this);
 	}
 
-	public static KfnmtProcessExecution toEntity(ProcessExecution domain) {
-		KfnmtProcessExecutionPK kfnmtProcExecPK = new KfnmtProcessExecutionPK(domain.getCompanyId(),
-				domain.getExecItemCd().v());
-		List<KfnmtExecutionScopeItem> wkpList = domain.getExecScope().getWorkplaceIdList().stream()
-				.map(x -> KfnmtExecutionScopeItem.toEntity(x.getCompanyId(), x.getExecItemCd(), x.getWkpId()))
-				.collect(Collectors.toList());
-		KfnmtAutoexecScope execScope = new KfnmtAutoexecScope(
-				new KfnmtExecutionScopePK(domain.getCompanyId(), domain.getExecItemCd().v()),
-				domain.getExecScope().getExecScopeCls().value, domain.getExecScope().getRefDate(), wkpList);
-		KfnmtProcessExecutionSetting execSetting = new KfnmtProcessExecutionSetting(
-				new KfnmtProcessExecutionSettingPK(domain.getCompanyId(), domain.getExecItemCd().v()),
-				domain.getExecSetting().getPerSchedule().isPerSchedule() ? 1 : 0,
-				domain.getExecSetting().getPerSchedule().getPeriod().getTargetMonth().value,
-				/*
-				 * domain.getExecSetting().getPerSchedule().getPeriod().
-				 * getTargetDate() == null ? null :
-				 */domain.getExecSetting().getPerSchedule().getPeriod().getTargetDate().v(),
-				/*
-				 * domain.getExecSetting().getPerSchedule().getPeriod().
-				 * getCreationPeriod() == null ? null :
-				 */domain.getExecSetting().getPerSchedule().getPeriod().getCreationPeriod().v(),
-				domain.getExecSetting().getPerSchedule().getTarget().getCreationTarget().value,
-				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateWorkType() ? 1 : 0,
-				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isManualCorrection() ? 1 : 0,
-				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isCreateEmployee() ? 1 : 0,
-				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateTransfer() ? 1 : 0,
-				domain.getExecSetting().getDailyPerf().isDailyPerfCls() ? 1 : 0,
-				domain.getExecSetting().getDailyPerf().getDailyPerfItem().value,
-				domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isMidJoinEmployee() ? 1 : 0,
-				domain.getExecSetting().isReflectResultCls() ? 1 : 0, domain.getExecSetting().isMonthlyAggCls() ? 1 : 0,
-				domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()?1:0,domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer()?1:0,
-				domain.getExecSetting().getAppRouteUpdateDaily().getAppRouteUpdateAtr().value,
-				domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get()==null?null:domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get().value,
-				domain.getExecSetting().getAppRouteUpdateMonthly().value,
-				domain.getExecSetting().getAlarmExtraction().isAlarmAtr()?1:0,
-				domain.getExecSetting().getAlarmExtraction().getAlarmCode().isPresent()?
-						domain.getExecSetting().getAlarmExtraction().getAlarmCode().get().v():null,
-				!domain.getExecSetting().getAlarmExtraction().getMailPrincipal().isPresent()?null:
-						domain.getExecSetting().getAlarmExtraction().getMailPrincipal().get()?1:0,
-				!domain.getExecSetting().getAlarmExtraction().getMailAdministrator().isPresent()?null:
-						domain.getExecSetting().getAlarmExtraction().getMailAdministrator().get()?1:0,
-				!domain.getExecSetting().getPerSchedule().getPeriod().getDesignatedYear().isPresent()?null:
-						domain.getExecSetting().getPerSchedule().getPeriod().getDesignatedYear().get().value,
-				!domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().isPresent()?null:
-						(domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().get().getMonth()*100
-						+ domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().get().getDay()),
-				!domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().isPresent()?null:
-						(domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().get().getMonth()*100
-						+ domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().get().getDay())
-				);
-		return new KfnmtProcessExecution(kfnmtProcExecPK, domain.getExecItemName().v(), execScope, execSetting,domain.getProcessExecType().value);
+	/**
+	 * Sets company id.
+	 *
+	 * @param companyId the company id
+	 */
+	@Override
+	public void setCompanyId(String companyId) {
+		if (this.kfnmtProcExecPK == null) {
+			this.kfnmtProcExecPK = new KfnmtProcessExecutionPK();
+		}
+		this.kfnmtProcExecPK.companyId = companyId;
 	}
+
+	/**
+	 * Sets execution item code.
+	 *
+	 * @param execItemCode the execution item code
+	 */
+	@Override
+	public void setExecItemCode(String execItemCode) {
+		if (this.kfnmtProcExecPK == null) {
+			this.kfnmtProcExecPK = new KfnmtProcessExecutionPK();
+		}
+		this.kfnmtProcExecPK.execItemCd = execItemCode;
+	}
+
+	/**
+	 * Sets execution scope.
+	 *
+	 * @param execScope the domain execution scope
+	 */
+	@Override
+	public void setExecScope(ProcessExecutionScope execScope) {
+		this.execScope = KfnmtAutoexecScope.createFromDomain(this.getCompanyId(), this.getExecItemCode(), execScope);
+	}
+
+	/**
+	 * Sets execution setting.
+	 *
+	 * @param execSetting the domain execution setting
+	 */
+	@Override
+	public void setExecSetting(ProcessExecutionSetting execSetting) {
+		this.execSetting = KfnmtProcessExecutionSetting.createFromDomain(this.getCompanyId(),
+																		 this.getExecItemCode(),
+																		 this.contractCd,
+																		 execSetting);
+	}
+
+	/**
+	 * Sets execution type.
+	 *
+	 * @param executionType the execution type
+	 */
+	@Override
+	public void setExecutionType(int executionType) {
+		this.executionType = executionType;
+	}
+
+	/**
+	 * Sets re-execution condition.
+	 *
+	 * @param reExecCondition the domain re-execution condition
+	 */
+	@Override
+	public void setReExecCondition(ReExecutionCondition reExecCondition) {
+		this.execSetting.setRecreateChangeBus(reExecCondition.getRecreatePersonChangeWkt().value);
+		this.execSetting.setRecreateTransfer(reExecCondition.getRecreateTransfer().value);
+		this.execSetting.setRecreateLeaveSya(reExecCondition.getRecreateLeave().value);
+	}
+
+	/**
+	 * Sets cloud creation flag.
+	 *
+	 * @param cloudCreFlag the cloud creation flag
+	 */
+	@Override
+	public void setCloudCreFlag(boolean cloudCreFlag) {
+		this.cloudCreFlag = cloudCreFlag ? 1 : 0;
+	}
+
+	/**
+	 * Gets company id.
+	 *
+	 * @return the company id
+	 */
+	@Override
+	public String getCompanyId() {
+		return this.kfnmtProcExecPK.companyId;
+	}
+
+	/**
+	 * Gets execution item code.
+	 *
+	 * @return the execution item code
+	 */
+	@Override
+	public String getExecItemCode() {
+		return this.kfnmtProcExecPK.execItemCd;
+	}
+
+	/**
+	 * Gets execution scope.
+	 *
+	 * @return the domain execution scope
+	 */
+	@Override
+	public ProcessExecutionScope getExecScope() {
+		List<String> workplaceIdList = this.execScope.workplaceIdList
+													 .stream()
+													 .map(KfnmtExecutionScopeItem::getWorkplaceId)
+													 .collect(Collectors.toList());
+		return new ProcessExecutionScope(this.execScope.execScopeCls, this.execScope.refDate, workplaceIdList);
+	}
+
+	/**
+	 * Gets execution setting.
+	 *
+	 * @return the domain execution setting
+	 */
+	public ProcessExecutionSetting getExecSetting() {
+		return this.execSetting.toDomain();
+	}
+
+	/**
+	 * Gets re-execution condition.
+	 *
+	 * @return the domain re-execution condition
+	 */
+	@Override
+	public ReExecutionCondition getReExecCondition() {
+		return new ReExecutionCondition(this.execSetting.getRecreateChangeBus(),
+										this.execSetting.getRecreateTransfer(),
+										this.execSetting.getRecreateLeaveSya());
+	}
+
+	/**
+	 * Gets cloud creation flag.
+	 *
+	 * @return {@code false} if {@link #cloudCreFlag} equals 0, {@code true} if {@link #cloudCreFlag} equals 1
+	 */
+	@Override
+	public boolean getCloudCreFlag() {
+		return this.cloudCreFlag == 1;
+	}
+
+	/**
+	 * Clone from other entity.
+	 *
+	 * @param newEntity the new <code>KfnmtProcessExecution</code> entity require <code>not null</code>
+	 */
+	public void cloneFromOtherEntity(KfnmtProcessExecution newEntity) {
+		if (newEntity != null) {
+			this.execItemName = newEntity.execItemName;
+			this.execScope = newEntity.execScope;
+			this.execSetting = newEntity.execSetting;
+			this.executionType = newEntity.executionType;
+			this.cloudCreFlag = newEntity.cloudCreFlag;
+		}
+	}
+
 }

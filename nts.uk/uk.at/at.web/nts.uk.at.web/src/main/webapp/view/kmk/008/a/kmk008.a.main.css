@@ -1,12 +1,21 @@
 #contents-area {
-	width: 850px !important;
-	height: 600px !important;
+	overflow-y: auto;
+	overflow-x: auto;
+}
+
+#contents-inner {
+	width: 890px;
 }
 
 .panel-row {
 	float: left;
 	padding: 0px 10px 0px 10px;
 }
+
+#lbl-operation-setting-explanation {
+	padding-top: 12px;
+}
+
 #caret-top-container {
 	width: 755px;
 	padding-top: 0px;
@@ -17,7 +26,8 @@
 	border: 2px solid #B1B1B1;
 	border-radius: 7px;
 	margin-left: 10px;
-	width: 729px;
+	margin-bottom: 5px;
+	width: 735px;
 }
 
 .border-style {
@@ -26,8 +36,8 @@
 }
 
 .panel-frame {
-	height: 250px;
-	width: 195px;
+	height: 282px;
+	width: 196px;
 }
 
 .no-border {
@@ -94,7 +104,7 @@
 }
 
 .lbl-general-labor-explanation-margin-top2 {
-	margin-top: 54px;
+	margin-top: 52px;
 }
 
 .lbl-general-labor-explanation-no-margin-top {
@@ -103,7 +113,7 @@
 
 .caret-kmk008 {
 	text-align: center;
-	margin: 3px;
+	margin: 3px 3px 3px -5px;
 }
 
 .master_setting_caret.caret-right:after {
@@ -134,19 +144,16 @@
 }
 
 #A4_13 {
-	margin-top: 40px;
+	margin-top: 35px;
 	height: 30px;
 	padding: 3px 7px;
 	margin-bottom: 3px;
 	border: 1px solid #999999;
 	border-radius: 3px;
 	text-align: center;
+	width: calc(100% - 15px);
 }
 
 #A4_16 {
 	margin-top: 0px;
-}
-
-#A6_1 {
-	margin-left: 15px;
 }

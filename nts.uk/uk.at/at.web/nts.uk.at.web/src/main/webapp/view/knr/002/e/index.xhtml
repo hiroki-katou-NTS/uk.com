@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+        <ui:define name="htmlHead">
+            <script>
+                var dialogSize = {
+                    width: 1250,
+					height: 600
+                };
+            </script>
+            <com:scriptfile set="IGNITE" />
+            <com:scriptfile path="knr002.e.service.js" />
+            <com:scriptfile path="knr002.e.vm.js" />
+            <com:scriptfile path="knr002.e.start.js" />
+            <com:stylefile path="knr002.e.style.css" />
+
+        </ui:define>
+        <ui:define name="content">
+            <div id="contents-area">
+                <div class="content d-flex">
+                    <div class="left">
+                        <div class="top">
+                            <button data-bind="click: closeDialog">#{i18n.getText('KNR002_115')}</button>
+                            <div data-bind="ntsSwitchButton: {
+                                name: 'Sample Switch',
+                                options: mode,
+                                optionsValue: 'code',
+                                optionsText: 'name',
+                                value: selectedMode,
+                                required: false,
+                                enable: true }"></div>
+                        </div>
+                        <div>
+                            <div class="left-bottom">
+                                <div data-bind="ntsPanel:{width: '570px', height: '190px', direction: 'right', showIcon: false, visible: true}">
+                                    <div class="d-flex icon-container">
+                                        <i data-bind="ntsIcon: { no: 182, width: 100, height: 100 }"></i>
+                                    </div>
+                                    <div class="grid-container">	
+                                        <div style="margin-bottom: 5px;" data-bind="ntsFormLabel: {}, visible: selectedMode() == 1">#{i18n.getText('KNR002_120')}</div>
+                                        <div style="margin-bottom: 5px;" data-bind="ntsFormLabel: {}, visible: selectedMode() == 2">#{i18n.getText('KNR002_121')}</div>
+                                        <table id="bak-grid1"></table>
+                                    </div>
+                                </div>
+                                <div class="d-flex btn-arrow">
+                                        <button data-bind="visible: selectedMode() == 1, click: backupHandle" class="x-large btn-bak split-text">#{i18n.getText('KNR002_127')}</button>
+                                        <button data-bind="visible: selectedMode() == 2, click: restoreHandle" class="x-large btn-restore split-text">#{i18n.getText('KNR002_128')}</button>
+                                </div>
+                                <div data-bind="ntsPanel:{width: '570px', height: '190px', direction: 'right', showIcon: false, visible: true}">
+                                    <div class="d-flex icon-container">
+                                        <i data-bind="ntsIcon: { no: 179, width: 100, height: 100 }"></i>
+                                    </div>
+                                    <div class="grid-container">
+                                        <div style="margin-bottom: 5px;" data-bind="ntsFormLabel: {}, visible: selectedMode() == 1">#{i18n.getText('KNR002_129')}</div>
+                                        <div style="margin-bottom: 5px;" data-bind="ntsFormLabel: {}, visible: selectedMode() == 2">#{i18n.getText('KNR002_130')}</div>
+                                        <table id="bak-grid2"></table>
+                                    </div>
+                                </div>
+                                <i class="arrow-top" data-bind="ntsIcon: { no: 180, width: 50, height: 50 }, visible: selectedMode() == 1"></i>
+                                <i class="arrow-bottom" data-bind="ntsIcon: { no: 180, width: 50, height: 50 }, visible: selectedMode() == 2"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right">
+                    	<div class="d-flex">
+                    		<div class="top d-flex" data-bind="ntsFormLabel: {}">#{i18n.getText('KNR002_135')}</div>
+                    		<div class="top d-flex" data-bind="text: selectedCode()"></div>
+                    		<div class="top d-flex" data-bind="text: selectedName()"></div>
+                    		<div class="top d-flex" data-bind="text: instructions()"></div>
+                    	</div>
+                        
+                        <table id="detail-grid"></table>
+                    </div>
+                </div>
+            </div>
+        </ui:define>
+    </ui:composition>
+</body>
+
+</html>

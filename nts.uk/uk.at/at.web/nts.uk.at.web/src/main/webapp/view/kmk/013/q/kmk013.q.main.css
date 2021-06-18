@@ -4,16 +4,21 @@
 
 .overtimeListQ5_1 tr > td:nth-child(3) > div > label{
 	border-left: 1px solid black;
+	/*padding: 3px 0;*/
 }
 
 .overtimeListQ5_1 tr > td:nth-child(1){
 	background-color: #CFF1A5;
-	width: 70px;
+	width: 120px;
+}
+
+.bg-header {
+	background-color: #CFF1A5;
 }
 
 .overtimeListQ5_1 tr > td:nth-child(2){
 	background-color: #CFF1A5;
-	width: 115px;
+	width: 60px;
 }
 
 .overtimeListQ5_1 tr > td:nth-child(3){
@@ -29,29 +34,16 @@
 }
 
 .overtimeListQ5_1 tr > td:nth-child(3) > div > label:nth-child(3){
-	width: 230px;
+	width: 150px;
 }
 
 #tab-panel {
-	width: 800px;
+	width: 850px;
 }
 
 .constText1 {
-	width: 100%;
-	height: 104px;
-	/* padding-left: 220px; */
-	/* margin-bottom: 10px; */
-	position: relative;
-}
-
-.constText1 > div:nth-child(1) > span {
-	margin-left: 108px;
-	color: #CFF1A5;
-}
-
-.constText1 > div:nth-child(1) {
-	margin-top: 5px;
-	margin-bottom: 5px;
+	height: 180px;
+	padding-left: 190px;
 }
 
 .tableQ8_1 tr {
@@ -219,4 +211,45 @@
 	margin-bottom: 5px;
 	padding-top: 5px;
 	padding-left: 30%
+}
+
+.table-col-border {
+	border-left: 1px solid black;
+}
+
+#Q4_2 {
+
+}
+
+#Q4_3, #Q4_4 {
+	width: 180px;
+	text-align: center;
+}
+
+#Q4_5 {
+	width: 167px;
+}
+
+#Q4_5_label {
+	padding-left: 50%;
+}
+
+#Q6_1 {
+
+}
+
+#Q6_2 {
+	padding-left: 240px;
+}
+
+#Q6_3 {
+	padding-left: 95px;
+}
+
+.ntsRadioBox span.box {
+	margin-left: 3px;
+}
+
+.tabs-panel.has-content {
+	overflow: visible;
 }

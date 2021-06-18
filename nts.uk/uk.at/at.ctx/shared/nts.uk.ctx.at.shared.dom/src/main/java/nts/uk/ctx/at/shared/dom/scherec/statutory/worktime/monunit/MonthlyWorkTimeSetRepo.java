@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 
 public interface MonthlyWorkTimeSetRepo {
@@ -17,6 +18,14 @@ public interface MonthlyWorkTimeSetRepo {
 	public Optional<MonthlyWorkTimeSetWkp> findWorkplace(String cid, String workplaceId, LaborWorkTypeAttr laborAttr, YearMonth ym);
 	
 	public List<MonthlyWorkTimeSetCom> findCompany(String cid, LaborWorkTypeAttr laborAttr, int year);
+	
+	/**
+	 * Find work time set
+	 * @param cid
+	 * @param year
+	 * @return
+	 */
+	List<MonthlyWorkTimeSetCom> findCompany(String cid, int year);
 
 	public List<MonthlyWorkTimeSetEmp> findEmployment(String cid, String empCode, LaborWorkTypeAttr laborAttr, int year);
 
@@ -24,15 +33,65 @@ public interface MonthlyWorkTimeSetRepo {
 
 	public List<MonthlyWorkTimeSetWkp> findWorkplace(String cid, String workplaceId, LaborWorkTypeAttr laborAttr, int year);
 	
+	public List<MonthlyWorkTimeSetWkp> findWorkplaceByPeriod(String cid, String workplaceId, LaborWorkTypeAttr laborAttr, YearMonthPeriod yearMonthPeriod);
+	
+	public List<MonthlyWorkTimeSetEmp> findEmploymentByPeriod(String cid, String empCode, LaborWorkTypeAttr laborAttr, YearMonthPeriod yearMonthPeriod);
+	
+	public List<MonthlyWorkTimeSetSha> findEmployeeByPeriod(String cid, String sid, LaborWorkTypeAttr laborAttr, YearMonthPeriod yearMonthPeriod);
+	
+	public List<MonthlyWorkTimeSetEmp> findEmploymentbyCid(String cid, LaborWorkTypeAttr laborAttr);
+	
+	public List<MonthlyWorkTimeSetCom> findCompanyByPeriod(String cid, LaborWorkTypeAttr laborAttr, YearMonthPeriod yearMonthPeriod);
+	
+	public List<MonthlyWorkTimeSetCom> findMonthlyWorkTimeSetComByCid(String cid, LaborWorkTypeAttr laborAttr);
+	/**
+	 * @author chungnt
+	 * Find by Cid
+	 * @param cid
+	 * @return
+	 */
+	List<MonthlyWorkTimeSetSha> findEmployeeByCid(String cid, LaborWorkTypeAttr laborAttr);
+	
+	/**
+	 * @author chungnt
+	 * @param cid
+	 * @param laborAttr
+	 * @return
+	 */
+	List<MonthlyWorkTimeSetWkp> findWorkplace(String cid, LaborWorkTypeAttr laborAttr);
+	
+	/**
+	 * Find monthly work time workplace
+	 * @param cid company id
+	 * @return monthly work time workplace
+	 */
+	List<MonthlyWorkTimeSetWkp> findWorkplace(String cid);
+			
 	public List<String> findEmploymentCD(String cid, int year);
 	
 	public List<String> findWorkplaceID(String cid, int year);
 	
 	public List<MonthlyWorkTimeSetSha> findEmployee(String cid, String sid, LaborWorkTypeAttr laborAttr);
 	
+	/**
+	 * Find Monthly working time by employee
+	 * @param cid
+	 * @return
+	 */
+	public List<MonthlyWorkTimeSetSha> findMonWorkTimeShaEmployee(String cid, List<String> listSid);
+	
+	/**
+	 * Find work time set employee
+	 * @param cid
+	 * @return
+	 */
+	List<MonthlyWorkTimeSetEmp> findEmployment(String cid);
+	
 	public List<MonthlyWorkTimeSetEmp> findEmployment(String cid, String empCD, LaborWorkTypeAttr laborAttr);
 	
 	public List<MonthlyWorkTimeSetWkp> findWorkplace(String cid, String wkpId, LaborWorkTypeAttr laborAttr);
+
+	public List<MonthlyWorkTimeSetWkp> findWorkplace(String cid, List<String> workplaceIds);
 	
 	public void add(MonthlyWorkTimeSetCom domain);
 	
@@ -54,7 +113,17 @@ public interface MonthlyWorkTimeSetRepo {
 	
 	public void removeEmployee(String cid, String sid, int year);
 	
+	public void removeEmployeeByYearMonth(String cid, String sid, int laborAttr, int yearMonth);
+	
 	public void removeEmployment(String cid, String empCD, int year);
 	
 	public void removeWorkplace(String cid, String wkpId, int year);
+
+	public void removeEmployment(String cid, String empCD, int laborAttr, YearMonthPeriod yearMonthPeriod);
+
+	public void removeCompany(String companyId, int laborAttr, YearMonthPeriod yearMonthPeriod);
+	
+	public void removeEmployee(String cid, String sid, int laborAttr, YearMonthPeriod yearMonthPeriod);
+	
+	public void removeWorkplace(String cid, String wkpId, int laborAttr, YearMonthPeriod yearMonthPeriod);
 }

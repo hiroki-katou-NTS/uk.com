@@ -24,6 +24,7 @@ public class ReflectionStatusOfDay {
 	/**
 	 * 予定反映状態
 	 */
+	@Setter
 	private ReflectedState scheReflectStatus;
 	
 	/**
@@ -39,6 +40,7 @@ public class ReflectionStatusOfDay {
 	/**
 	 * 申請取消の更新状態
 	 */
+	@Setter
 	private Optional<DailyAttendanceUpdateStatus> opUpdateStatusAppCancel;
 	
 	public ReflectionStatusOfDay(ReflectedState actualReflectStatus, ReflectedState scheReflectStatus, GeneralDate targetDate,

@@ -5,13 +5,17 @@
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
@@ -48,7 +52,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 
 	/** The night shift. */
 	// 夜勤区分
-	private boolean nightShift;
+//	private boolean nightShift;
 
 	/** The prescribed timezone setting. */
 	// 所定時間帯
@@ -72,7 +76,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 		this.rangeTimeDay = memento.getRangeTimeDay();
 		this.workTimeCode = memento.getWorkTimeCode();
 		this.predTime = memento.getPredTime();
-		this.nightShift = memento.isNightShift();
+//		this.nightShift = memento.isNightShift();
 		this.prescribedTimezoneSetting = memento.getPrescribedTimezoneSetting();
 		this.startDateClock = memento.getStartDateClock();
 		this.predetermine = memento.isPredetermine();
@@ -88,7 +92,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 		memento.setRangeTimeDay(this.rangeTimeDay);
 		memento.setWorkTimeCode(this.workTimeCode);
 		memento.setPredTime(this.predTime);
-		memento.setNightShift(this.nightShift);
+//		memento.setNightShift(this.nightShift);
 		memento.setPrescribedTimezoneSetting(this.prescribedTimezoneSetting);
 		memento.setStartDateClock(this.startDateClock);
 		memento.setPredetermine(this.predetermine);
@@ -98,14 +102,14 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 	 * Constructor
 	 */
 	public PredetemineTimeSetting(String companyId, AttendanceTime rangeTimeDay, WorkTimeCode workTimeCode,
-			PredetermineTime predTime, boolean nightShift, PrescribedTimezoneSetting prescribedTimezoneSetting,
+			PredetermineTime predTime, PrescribedTimezoneSetting prescribedTimezoneSetting,
 			TimeWithDayAttr startDateClock, boolean predetermine) {
 		super();
 		this.companyId = companyId;
 		this.rangeTimeDay = rangeTimeDay;
 		this.workTimeCode = workTimeCode;
 		this.predTime = predTime;
-		this.nightShift = nightShift;
+//		this.nightShift = nightShift;
 		this.prescribedTimezoneSetting = prescribedTimezoneSetting;
 		this.startDateClock = startDateClock;
 		this.predetermine = predetermine;
@@ -248,13 +252,51 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 
 
 	/**
+	 * 勤務時間範囲を取得する
+	 * @param atr 午前午後区分
+	 * @return 勤務可能な時間帯
+	 */
+	public TimeSpanForCalc getWorkableTimeSpan(AmPmAtr atr) {
+
+		switch( atr ) {
+			case ONE_DAY:
+				return new TimeSpanForCalc( this.startDateClock, this.getEndDateClock() );
+			case AM:
+				return new TimeSpanForCalc( this.startDateClock, this.prescribedTimezoneSetting.getMorningEndTime() );
+			case PM:
+				return new TimeSpanForCalc( this.prescribedTimezoneSetting.getAfternoonStartTime(), this.getEndDateClock() );
+		}
+
+		throw new RuntimeException("Out of range. " + atr);
+	}
+
+	/**
 	 * 1日の勤務時間範囲
 	 * Gets the one day span.
 	 * @return the one day span
 	 */
 	public TimeSpanForCalc getOneDaySpan() {
-		return new TimeSpanForCalc( this.startDateClock, this.getEndDateClock() );
+		return this.getWorkableTimeSpan(AmPmAtr.ONE_DAY);
 	}
+
+	/**
+	 * 午前の勤務時間範囲
+	 * Get the half day of AM span.
+	 * @return
+	 */
+	public TimeSpanForCalc getHalfDayOfAmSpan() {
+		return this.getWorkableTimeSpan(AmPmAtr.AM);
+	}
+
+	/**
+	 * 午後の勤務時間範囲
+	 * Get the half day of PM span.
+	 * @return
+	 */
+	public TimeSpanForCalc getHalfDayOfPmSpan() {
+		return this.getWorkableTimeSpan(AmPmAtr.PM);
+	}
+
 
 	/**
 	 * Gets the predetermine end time.
@@ -265,6 +307,16 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 		return this.startDateClock.minute() + (int) this.rangeTimeDay.minute();
 	}
 
+
+	/**
+	 * 2回勤務を使用するか
+	 * @return
+	 */
+	public boolean isUseShiftTwo() {
+		return this.prescribedTimezoneSetting.isUseShiftTwo();
+	}
+
+
 	/**
 	 * 勤務NOに対応した時間帯を取得する
 	 * Gets the time sheet of.
@@ -274,6 +326,43 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 	public Optional<TimezoneUse> getTimeSheetOf(int workNo) {
 		return this.prescribedTimezoneSetting.getMatchWorkNoTimeSheet(workNo);
 	}
+
+
+	/**
+	 * 午前午後区分に応じた所定時間帯
+	 * @param atr 午前午後区分
+	 * @return 所定時間帯リスト
+	 */
+	public List<TimezoneUse> getTimezoneByAmPmAtr(AmPmAtr atr) {
+
+		List<TimezoneUse> timezones = Collections.emptyList();
+		switch( atr ) {
+			case ONE_DAY:	// 1日
+				timezones = this.prescribedTimezoneSetting.getUseableTimeZone();
+				break;
+			case AM:		// 午前
+				timezones = this.prescribedTimezoneSetting.getUseableTimeZoneInAm();
+				break;
+			case PM:		// 午後
+				timezones = this.prescribedTimezoneSetting.getUseableTimeZoneInPm();
+				break;
+		}
+
+		return timezones;
+
+	}
+
+	/**
+	 * 午前午後区分に応じた所定時間帯(計算時間帯)
+	 * @param atr 午前午後区分
+	 * @return 所定時間帯リスト(計算時間帯)
+	 */
+	public List<TimeSpanForCalc> getTimezoneByAmPmAtrForCalc(AmPmAtr atr) {
+
+		return this.getTimezoneByAmPmAtr(atr).stream().map( e -> e.timeSpan() ).collect(Collectors.toList());
+
+	}
+
 
 	/**
 	 * Restore data.
@@ -289,7 +378,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Simple mode
 			this.rangeTimeDay = oldDomain.getRangeTimeDay();
-			this.nightShift = oldDomain.isNightShift();
+//			this.nightShift = oldDomain.isNightShift();
 			this.predetermine = oldDomain.isPredetermine();
 		}
 	}
@@ -306,7 +395,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Simple mode
 			this.rangeTimeDay = new AttendanceTime(TimeWithDayAttr.MINUTES_OF_DAY);
-			this.nightShift = false;
+//			this.nightShift = false;
 			this.predetermine = false;
 		}
 	}
@@ -323,7 +412,7 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 			cloned.rangeTimeDay = new AttendanceTime(this.rangeTimeDay.v());
 			cloned.workTimeCode = new WorkTimeCode(this.workTimeCode.v());
 			cloned.predTime = this.predTime.clone();
-			cloned.nightShift = this.nightShift ? true : false ;
+//			cloned.nightShift = this.nightShift ? true : false ;
 			cloned.prescribedTimezoneSetting = this.prescribedTimezoneSetting.clone();
 			cloned.startDateClock = new TimeWithDayAttr(this.startDateClock.valueAsMinutes());
 			cloned.predetermine = this.predetermine ? true : false ;
@@ -336,5 +425,17 @@ public class PredetemineTimeSetting extends WorkTimeAggregateRoot implements Clo
 
 	public void setStartDateClock(int value) {
 		this.startDateClock = new TimeWithDayAttr(value);
+	}
+	
+	/**
+	 * 2回勤務かどうかの判断処理
+	 * @return true=2回勤務する,false=2回勤務しない
+	 */
+	public boolean checkTwoTimesWork(){
+		Optional<TimezoneUse> timezoneUse = this.getTimeSheetOf(2);
+		if (timezoneUse.isPresent()){
+			if (timezoneUse.get().getUseAtr() == UseSetting.USE) return true;
+		}
+		return false;
 	}
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -19,7 +20,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Getter
-public class TimeSpanForDailyCalc {
+@NoArgsConstructor
+public class TimeSpanForDailyCalc implements Cloneable {
 	
 	/** 計算時間帯 */
 	private TimeSpanForCalc timeSpan;
@@ -68,15 +70,15 @@ public class TimeSpanForDailyCalc {
 	 * @param TimeZoneRounding
 	 * @return TimeSpanForDailyCalc
 	 */
-	public static TimeSpanForDailyCalc toTimeSpanForDailyCalc(TimeZoneRounding timeZoneRounding) {
+	public static TimeSpanForDailyCalc of(TimeZoneRounding timeZoneRounding) {
 		return new TimeSpanForDailyCalc(timeZoneRounding.getStart(), timeZoneRounding.getEnd());
 	}
 	
 	/**
-	 * @param TimeSpanForDailyCalc
+	 * @param TimeSpanForCalc
 	 * @return TimeSpanForDailyCalc
 	 */
-	public static TimeSpanForDailyCalc toTimeSpanForDailyCalc(TimeSpanForDailyCalc forCalc) {
+	public static TimeSpanForDailyCalc of(TimeSpanForCalc forCalc) {
 		return new TimeSpanForDailyCalc(forCalc.getStart(), forCalc.getEnd());
 	}
 	
@@ -88,7 +90,7 @@ public class TimeSpanForDailyCalc {
 	 * @return 含まれていればtrue
 	 */
 	public boolean contains(TimeWithDayAttr time) {
-		this.timeSpan.contains(this.timeSpan);
+//		this.timeSpan.contains(this.timeSpan);
 		return this.timeSpan.contains(time);
 	}
 	
@@ -137,7 +139,7 @@ public class TimeSpanForDailyCalc {
 	 */
 	public boolean isContinus(TimeSpanForDailyCalc other) {
 		val result = this.timeSpan.compare(other.getTimeSpan());
-		return result.isContinuousAfterBase() || result.isContinuousBeforeBase();
+		return result.isContinuous();
 	}
 	
 	/**
@@ -206,5 +208,26 @@ public class TimeSpanForDailyCalc {
 		return this.getTimeSpan().getEnd().forwardByMinutes(overlapptingTimes.stream()
 				.mapToInt(time -> time.getTimeSpan().lengthAsMinutes())
 				.sum());
+	}
+	
+	/**
+	 * 開始と終了が逆転している
+	 * start > end
+	 */
+	public boolean isReverse() {
+		return this.timeSpan.isReverse();
+	}
+	
+	public TimeSpanForDailyCalc clone() {
+		TimeSpanForDailyCalc clone =  new TimeSpanForDailyCalc();
+		try {
+			clone.timeSpan = new TimeSpanForCalc(
+					new TimeWithDayAttr(this.timeSpan.getStart().v()),
+					new TimeWithDayAttr(this.timeSpan.getEnd().v()));
+		}
+		catch (Exception e) {
+			throw new RuntimeException("TimeSpanForDailyCalc clone error.");
+		}
+		return clone;
 	}
 }

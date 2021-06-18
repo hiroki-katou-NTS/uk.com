@@ -72,6 +72,19 @@
 							<td><div data-bind="ntsCheckBox:{checked: showNone}"></div>
 							</td>
 						</tr>
+						<tr>
+							<td>WorkplaceID:</td>
+							<td><input
+								data-bind="ntsTextEditor: {
+							value: workPlaceId,							
+							enable: true}" />
+							</td>
+						</tr>
+						<tr>
+							<td>Base Date:</td>
+							<td><div data-bind="ntsDatePicker: { value: baseDate }"></div>
+							</td>
+						</tr>
 					</table>
 					<br />
 
@@ -115,6 +128,14 @@
 						<tr>
 							<td>Second End Time Zone:</td>
 							<td><span data-bind="text: secondEndTime"></span></td>
+						</tr>
+						<tr>
+							<td>Remark:</td>
+							<td><span data-bind="text: remark"></span></td>
+						</tr>
+						<tr>
+							<td>Work Time Setting:</td>
+							<td><span data-bind="text: workTimeSetting"></span></td>
 						</tr>
 					</table>
 				</div>

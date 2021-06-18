@@ -5,6 +5,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
  *
  */
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,12 +13,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 @AllArgsConstructor
@@ -25,6 +29,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.Interi
 @Setter
 @Getter
 public class DailyInterimRemainMngData {
+
+	private GeneralDate ymd;
+
 	/**暫定振休管理データ */
 	private Optional<InterimAbsMng> interimAbsData;
 	/**	暫定残数管理データ */
@@ -36,11 +43,11 @@ public class DailyInterimRemainMngData {
 	/**
 	 * 暫定代休管理データ
 	 */
-	private Optional<InterimDayOffMng> dayOffData;
+	private List<InterimDayOffMng> dayOffData;
 	/**
 	 * 暫定年休管理データ
 	 */
-	private Optional<TmpAnnualHolidayMng> annualHolidayData;
+	private List<TempAnnualLeaveMngs> annualHolidayData;
 	/**
 	 * 暫定積立年休管理データ
 	 */
@@ -53,5 +60,30 @@ public class DailyInterimRemainMngData {
 	 * 暫定特別休暇データ
 	 */
 	private List<InterimSpecialHolidayMng> specialHolidayData;
-	
+	/**
+	 * 暫定子の看護休暇データ
+	 */
+	private List<TempChildCareManagement> childCareData;
+	/**
+	 * 暫定介護休暇データ
+	 */
+	private List<TempCareManagement> careData;
+
+
+	public static DailyInterimRemainMngData createEmpty(GeneralDate ymd) {
+		DailyInterimRemainMngData dom = new DailyInterimRemainMngData();
+		dom.ymd = ymd;
+		dom.interimAbsData=Optional.empty();
+		dom.recAbsData = new ArrayList<>();
+		dom.recData = Optional.empty();
+		dom.dayOffData = new ArrayList<>();
+		dom.annualHolidayData = new ArrayList<>();
+		dom.resereData = Optional.empty();
+		dom.breakData = Optional.empty();
+		dom.specialHolidayData = new ArrayList<>();
+		dom.childCareData = new ArrayList<>();
+		dom.careData = new ArrayList<>();
+
+		return dom;
+	}
 }

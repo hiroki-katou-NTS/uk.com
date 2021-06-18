@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
 public interface InterimBreakDayOffMngRepository {
@@ -52,6 +53,13 @@ public interface InterimBreakDayOffMngRepository {
 	 * @return
 	 */
 	List<InterimBreakMng> getByPeriod(String sid, DatePeriod ymd, double unUseDays, DatePeriod dateData);
+
+	/**
+	 * KDL036 ドメインモデル「暫定休出管理データ」を取得する
+	 * @param mngIds
+	 * @return
+	 */
+	List<InterimBreakMng> getBreakByIds(List<String> mngIds);
 	
 	/**
 	 * 暫定休出管理データ 　を追加および更新
@@ -134,4 +142,7 @@ public interface InterimBreakDayOffMngRepository {
 	 * @return
 	 */
 	List<InterimBreakDayOffMng> getBreakByIdAndDataAtr(DataManagementAtr breakAtr, DataManagementAtr dayOffAtr, String breakId);
+	
+	void deleteInterimDayOffMngBySidAndYmd(String sid, GeneralDate ymd);
+	void deleteInterimBreakMngBySidAndYmd(String sid, GeneralDate ymd);
 }

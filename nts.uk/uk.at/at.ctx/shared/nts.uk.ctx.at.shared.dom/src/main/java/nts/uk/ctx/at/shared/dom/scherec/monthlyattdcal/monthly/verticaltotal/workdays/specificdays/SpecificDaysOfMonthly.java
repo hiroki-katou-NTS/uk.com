@@ -11,12 +11,10 @@ import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.SpecCountNotCalcSubject;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.VerticalTotalMethodOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.WorkTypeDaysCountTable;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -62,18 +60,14 @@ public class SpecificDaysOfMonthly implements Serializable{
 	 * @param specificDateAttrOfDaily 日別実績の特定日区分
 	 * @param isAttendanceDay 出勤しているかどうか
 	 */
-	public void aggregate(
-			RequireM1 require,
-			WorkingSystem workingSystem,
-			WorkType workType,
-			SpecificDateAttrOfDailyAttd specificDateAttrOfDaily,
-			WorkTypeDaysCountTable workTypeDaysCountTable,
+	public void aggregate(RequireM1 require, WorkingSystem workingSystem, WorkType workType,
+			SpecificDateAttrOfDailyAttd specificDateAttrOfDaily, WorkTypeDaysCountTable workTypeDaysCountTable,
 			boolean isAttendanceDay){
 
 		if (workType == null) return;
 		if (specificDateAttrOfDaily == null) return;
 		
-		val verticalTotalMethod = require.verticalTotalMethodOfMonthly(AppContexts.user().companyId());
+		val verticalTotalMethod = require.aggregateMethodOfMonthly(AppContexts.user().companyId());
 
 		/** 勤務種類の判断 */
 		boolean isCount = verticalTotalMethod
@@ -82,15 +76,10 @@ public class SpecificDaysOfMonthly implements Serializable{
 		
 		if (!isCount) return;
 
-		if (workingSystem != WorkingSystem.EXCLUDED_WORKING_CALCULATE
-				|| (workingSystem == WorkingSystem.EXCLUDED_WORKING_CALCULATE 
-				&& verticalTotalMethod.get().getSpecTotalCountMonthly().getSpecCount() == SpecCountNotCalcSubject.workDayOnly)) {
-			
-			/** ○出勤状態を判断する */
-			if (!isAttendanceDay) {
-				return;
-			}
-		}
+		/** 条件を満たしているか判断 */
+		if (!verticalTotalMethod.map(c -> c.getSpecTotalCountMonthly()
+				.isFitCondition(workType, workingSystem, isAttendanceDay, workTypeDaysCountTable)).orElse(false))
+			return;
 
 		specificDateAttrOfDaily.getSpecificDateAttrSheets().stream().forEach(spe -> {
 			val dailySpecNo = specificDays.values().stream()
@@ -107,11 +96,12 @@ public class SpecificDaysOfMonthly implements Serializable{
 			}
 			
 			/** ○休出かどうかの判断 */
-			if (workType.getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay 
-					&& workType.getDailyWork().getOneDay().isHolidayWork()) {
+			if (workType.isHolidayWork()) {
+				/** ○休出特定日数に特定日日数を加算 */
 				aggrSpecDays.addDaysToHolidayWorkSpecificDays(specDays);
 
 			} else {
+				/** ○特定日数に特定日日数を加算 */
 				aggrSpecDays.addDaysToSpecificDays(specDays);
 			}
 		});
@@ -138,6 +128,6 @@ public class SpecificDaysOfMonthly implements Serializable{
 	
 	public static interface RequireM1 {
 
-		Optional<VerticalTotalMethodOfMonthly> verticalTotalMethodOfMonthly(String cid);
+		Optional<AggregateMethodOfMonthly> aggregateMethodOfMonthly(String cid);
 	}
 }

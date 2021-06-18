@@ -20,8 +20,14 @@ public class SyEmployeeContactImpl implements EmployeeContactAdapter {
 	@Override
 	public List<EmployeeContactObjectImport> getList(List<String> sIds) {
 		return employeeContactPub.getList(sIds).stream()
-				.map(x -> new EmployeeContactObjectImport(x.getSid(), x.getMailAddress(), x.getSeatDialIn(),
-						x.getSeatExtensionNo(), x.getPhoneMailAddress(), x.getCellPhoneNo()))
+				.map(x -> new EmployeeContactObjectImport(
+						x.getSid(), 
+						x.getMailAddress(),
+						x.getSeatDialIn(),
+						x.getSeatExtensionNo(),
+						x.getPhoneMailAddress(), 
+						x.getCellPhoneNo()
+						))
 				.collect(Collectors.toList());
 	}
 
@@ -38,8 +44,9 @@ public class SyEmployeeContactImpl implements EmployeeContactAdapter {
 						x.getContactName1(), 
 						x.getPhoneNumber1(), 
 						x.getMemo2(), 
-						x.getContactName2(), 
-						x.getPhoneNumber2()))
+						x.getContactName2(),
+						x.getPhoneNumber2()
+						))
 				.collect(Collectors.toList());
 	}
 

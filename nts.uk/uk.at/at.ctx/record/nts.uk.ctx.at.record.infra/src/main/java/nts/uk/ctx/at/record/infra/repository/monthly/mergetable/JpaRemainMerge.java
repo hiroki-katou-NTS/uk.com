@@ -21,16 +21,16 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonRemain;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemain;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.MonthMergeKey;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMerge;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMergeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.care.CareRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
@@ -46,14 +46,14 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 
 	@Inject
 	private TimeOfMonthlyRepository timeRepo;
-	
+
 	private static final String DELETE_BY_PK = String.join(" ", "DELETE FROM KrcdtMonRemain a ",
 			"WHERE  a.krcdtMonRemainPk.employeeId = :employeeId ",
 			"AND    a.krcdtMonRemainPk.yearMonth = :yearMonth ",
 			"AND    a.krcdtMonRemainPk.closureId = :closureId",
 			"AND    a.krcdtMonRemainPk.closureDay = :closureDay",
 			"AND    a.krcdtMonRemainPk.isLastDay = :isLastDay");
-	
+
 	private static final String FIND_BY_SIDS_AND_MONTHS = "SELECT a FROM KrcdtMonRemain a "
 			+ "WHERE a.krcdtMonRemainPk.employeeId IN :employeeIds "
 			+ "AND a.krcdtMonRemainPk.yearMonth IN :yearMonths "
@@ -67,13 +67,13 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 			+ "WHERE a.krcdtMonRemainPk.employeeId = :employeeId "
 			+ "AND a.krcdtMonRemainPk.yearMonth IN :lstyrMon "
 			+ "ORDER BY a.startDate ";
-	
+
 	private static final String FIND_BY_YM_AND_CLOSURE_ID = "SELECT a FROM KrcdtMonRemain a "
 			+ "WHERE a.krcdtMonRemainPk.employeeId = :employeeId "
 			+ "AND a.krcdtMonRemainPk.yearMonth = :yearMonth "
 			+ "AND a.krcdtMonRemainPk.closureId = :closureId "
 			+ "ORDER BY a.startDate ";
-	
+
 	private static final String FIND_BY_SIDS = "SELECT a FROM KrcdtMonRemain a "
 			+ "WHERE a.krcdtMonRemainPk.employeeId IN :employeeIds "
 			+ "AND a.krcdtMonRemainPk.yearMonth = :yearMonth "
@@ -94,12 +94,12 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 			+ "AND a.endDate <= :endDate "
 			+ "AND a.closureStatus = 1 "
 			+ "ORDER BY a.startDate ";
-	
+
 	/** 検索 */
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<RemainMerge> find(MonthMergeKey key) {
-		
+
 		return this.queryProxy()
 				.find(new KrcdtMonMergePk(
 						key.getEmployeeId(),
@@ -116,28 +116,28 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 	public Optional<RemainMerge> find(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
 		return find(new MonthMergeKey(employeeId, yearMonth, closureId, closureDate));
 	}
-	
+
 	/** 検索　（社員IDリストと年月リスト） */
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<RemainMerge> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths) {
-		
+
 		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
-		
+
 		String sql = "select * from KRCDT_MON_REMAIN"
 				+ " where SID in @emps"
 				+ " and YM in @yms";
-		
+
 		List<RemainMerge> results = NtsStatement.In.split(employeeIds, emps -> {
 			return new NtsStatement(sql, this.jdbcProxy())
 					.paramString("emps", emps)
 					.paramInt("yms", yearMonthValues)
 					.getList(rec -> KrcdtMonRemain.MAPPER.toEntity(rec).toDomain());
 		});
-		
+
 		return results;
 	}
-	
+
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<RemainMerge> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth){
@@ -162,7 +162,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 		return this.queryProxy().query(SQL_BY_YM_STATUS, KrcdtMonRemain.class)
 								.setParameter("sid", sid)
 								.setParameter("ym", ym.v())
-								.setParameter("status", status.value)				
+								.setParameter("status", status.value)
 								.getList(e -> e.toDomain());
 	}
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -173,7 +173,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 				.setParameter("endDate", closurePeriod.end())
 				.getList(c -> c.toDomain());
 	}
-	
+
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<RemainMerge> findByEmployees(List<String> employeeIds, YearMonth yearMonth, ClosureId closureId,
@@ -188,10 +188,10 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
 					.getList(c -> c.toDomain()));
 		});
-		
+
 		return results;
 	}
-	
+
 
 	/**
 	 * @author hoatt
@@ -223,7 +223,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 				.setParameter("yearMonth", yearMonth.v())
 				.getList();
 		List<SpecialHolidayRemainData> results = new ArrayList<>();
-		for (val entity : entitys) results.addAll(entity.toDomainSpecialHolidayRemainList());
+		for (val entity : entitys) results.addAll(entity.toDomainSpecialHolidayRemainData());
 		return results;
 	}
 	/**
@@ -322,11 +322,11 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 		}
 		return mapResult;
 	}
-	
+
 	/** 登録および更新 */
 	@Override
 	public void persistAndUpdate(MonthMergeKey key, RemainMerge domains) {
-		
+
 		// キー
 		val entityKey = new KrcdtMonMergePk(
 				key.getEmployeeId(),
@@ -334,121 +334,121 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 				key.getClosureId().value,
 				key.getClosureDate().getClosureDay().v(),
 				(key.getClosureDate().getLastDayOfMonth() ? 1 : 0));
-		
+
 		internalPersistAndUpdate(entityKey, entity -> entity.toEntityRemainMerge(domains));
 	}
-	
+
 	/** 登録および更新 */
 	@Override
 	public void persistAndUpdate(RemainMerge domains) {
-		
+
 		persistAndUpdate(domains.getMonthMergeKey(), domains);
 	}
-	
+
 	/** 登録および更新 */
 	@Override
-	public void persistAndUpdate(MonCareHdRemain domain) {
-		
+	public void persistAndUpdate(CareRemNumEachMonth domain) {
+
 		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getEmployeeId(),
 														domain.getYearMonth().v(),
 														domain.getClosureId().value,
-														domain.getClosureDay().v(),
-														domain.getIsLastDay()), 
+														domain.getClosureDate().getClosureDay().v(),
+														domain.getClosureDate().getLastDayOfMonth()? 1 : 0),
 								entity -> entity.toEntityCareRemainData(domain));
 	}
-	
+
 	/** 登録および更新 */
 	@Override
 	public void persistAndUpdate(SpecialHolidayRemainData domain) {
-		
+
 		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getSid(),
 														domain.getYm().v(),
 														domain.getClosureId(),
 														domain.getClosureDate().getClosureDay().v(),
-														(domain.getClosureDate().getLastDayOfMonth() ? 1 : 0)), 
+														(domain.getClosureDate().getLastDayOfMonth() ? 1 : 0)),
 								entity -> entity.toEntitySpeRemain(domain));
 	}
 	/** 登録および更新 */
 	@Override
 	public void persistAndUpdate(AnnLeaRemNumEachMonth domain) {
-		
+
 		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getEmployeeId(),
 														domain.getYearMonth().v(),
 														domain.getClosureId().value,
 														domain.getClosureDate().getClosureDay().v(),
-														(domain.getClosureDate().getLastDayOfMonth() ? 1 : 0)), 
+														(domain.getClosureDate().getLastDayOfMonth() ? 1 : 0)),
 								entity -> entity.toEntityMonAnnleaRemain(domain));
 	}
 
 	/** 登録および更新 */
 	@Override
 	public void persistAndUpdate(AbsenceLeaveRemainData domain) {
-		
+
 		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getSId(),
 														domain.getYm().v(),
 														domain.getClosureId(),
 														domain.getClosureDay(),
-														(domain.isLastDayIs() ? 1 : 0)), 
+														(domain.isLastDayIs() ? 1 : 0)),
 								entity -> entity.toEntityAbsenceLeaveRemainData(domain));
 	}
-	
+
 	/** 登録および更新 */
 	@Override
 	public void persistAndUpdate(MonthlyDayoffRemainData domain) {
-		
+
 		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getSId(),
 														domain.getYm().v(),
 														domain.getClosureId(),
 														domain.getClosureDay(),
-														(domain.isLastDayis() ? 1 : 0)), 
+														(domain.isLastDayis() ? 1 : 0)),
 								entity -> entity.toEntityDayOffRemainDayAndTimes(domain));
 	}
-	
+
 	/** 登録および更新 */
 	@Override
 	public void persistAndUpdate(List<SpecialHolidayRemainData> domains) {
-		
+
 		if (domains.isEmpty()) return;
-		
+
 		SpecialHolidayRemainData domain = domains.get(0);
-		
+
 		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getSid(),
 														domain.getYm().v(),
 														domain.getClosureId(),
 														domain.getClosureDate().getClosureDay().v(),
-														(domain.getClosureDate().getLastDayOfMonth() ? 1 : 0)), 
+														(domain.getClosureDate().getLastDayOfMonth() ? 1 : 0)),
 								entity -> entity.toEntitySpeRemains(domains));
 	}
-	
+
 	/** 登録および更新 */
 	@Override
-	public void persistAndUpdate(MonChildHdRemain domain) {
-		
-		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getEmployeeId(),
-														domain.getYearMonth().v(),
-														domain.getClosureId().value,
-														domain.getClosureDay().v(),
-														domain.getIsLastDay()), 
-								entity -> entity.toEntityChildRemainData(domain));
-	}
-	
-	/** 登録および更新 */
-	@Override
-	public void persistAndUpdate(RsvLeaRemNumEachMonth domain) {
-		
+	public void persistAndUpdate(ChildcareRemNumEachMonth domain) {
+
 		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getEmployeeId(),
 														domain.getYearMonth().v(),
 														domain.getClosureId().value,
 														domain.getClosureDate().getClosureDay().v(),
-														(domain.getClosureDate().getLastDayOfMonth() ? 1 : 0)), 
+														(domain.getClosureDate().getLastDayOfMonth() ? 1 : 0)),
+								entity -> entity.toEntityChildRemainData(domain));
+	}
+
+	/** 登録および更新 */
+	@Override
+	public void persistAndUpdate(RsvLeaRemNumEachMonth domain) {
+
+		internalPersistAndUpdate(new KrcdtMonMergePk(	domain.getEmployeeId(),
+														domain.getYearMonth().v(),
+														domain.getClosureId().value,
+														domain.getClosureDate().getClosureDay().v(),
+														(domain.getClosureDate().getLastDayOfMonth() ? 1 : 0)),
 								entity -> entity.toEntityRsvLeaRemNumEachMonth(domain));
 	}
 
-	
+
 	/** 削除 */
 	@Override
 	public void remove(MonthMergeKey key) {
-		
+
 		this.getEntityManager().createQuery(DELETE_BY_PK)
 				.setParameter("employeeId", key.getEmployeeId())
 				.setParameter("yearMonth", key.getYearMonth().v())
@@ -492,12 +492,12 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 	public void removeAnnLea(String employeeId, YearMonth yearMonth){
 		internalRemove(employeeId, yearMonth, entity -> entity.deleteMonAnnleaRemain());
 	}
-	
+
 	@Override
 	public void removeMonChildHd(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
 		internalRemove(employeeId, yearMonth, closureId, closureDate, entity -> entity.deleteChildRemainData());
 	}
-	
+
 	@Override
 	public void removeAbsenceLeave(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
 		internalRemove(employeeId, yearMonth, closureId, closureDate, entity -> entity.deleteAbsenceLeaveRemainData());
@@ -522,16 +522,16 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 	public void removeSpecHoliday(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, int no) {
 		internalRemove(employeeId, yearMonth, closureId, closureDate, entity -> entity.deleteSpeRemain(no));
 	}
-	
+
 	private void internalRemove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, Consumer<KrcdtMonRemain> remove) {
-		
+
 		// キー
 		val key = new KrcdtMonMergePk(	employeeId,
 										yearMonth.v(),
 										closureId.value,
 										closureDate.getClosureDay().v(),
 										(closureDate.getLastDayOfMonth() ? 1 : 0));
-		
+
 		// 削除
 		KrcdtMonRemain entity = this.getEntityManager().find(KrcdtMonRemain.class, key);
 		if (entity != null) {
@@ -539,14 +539,14 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 			this.markMonTimeDirty(entity.krcdtMonRemainPk);
 		}
 	}
-	
+
 	private void internalRemove(String employeeId, YearMonth yearMonth, Consumer<KrcdtMonRemain> remove) {
-		
+
 		val entitys = this.queryProxy().query(FIND_BY_YEAR_MONTH, KrcdtMonRemain.class)
 										.setParameter("employeeId", employeeId)
 										.setParameter("yearMonth", yearMonth.v())
 										.getList();
-												
+
 		for (val entity : entitys) {
 			remove.accept(entity);
 			this.markMonTimeDirty(entity.krcdtMonRemainPk);
@@ -554,7 +554,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 	}
 
 	private void internalPersistAndUpdate(KrcdtMonMergePk entityKey, Consumer<KrcdtMonRemain> update) {
-		
+
 		// 登録・更新
 		KrcdtMonRemain entity = this.getEntityManager().find(KrcdtMonRemain.class, entityKey);
 		if (entity == null){
@@ -569,7 +569,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 			this.markMonTimeDirty(entityKey);
 		}
 	}
-	
+
 	private void markMonTimeDirty(KrcdtMonMergePk entityKey){
 		this.timeRepo.dirtying(() -> entityKey);
 	}

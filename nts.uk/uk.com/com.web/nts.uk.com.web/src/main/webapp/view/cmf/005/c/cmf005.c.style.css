@@ -76,7 +76,7 @@
 }
 
 #C12_6 {
-  margin-left: 23px !important;
+  margin-left: 35px !important;
 }
 
 #C13_2 {
@@ -104,12 +104,11 @@
 }
 
 .fixed-flex-layout-left {
-	width: 350px;
+	float: left;
 }
 
 .fixed-flex-layout-right{
-  float: right;
-  margin-left: 150px;
+  margin-left: 25px;
 }
 
 .functional-button {
@@ -122,4 +121,12 @@
 
 .time-dropdown > label {
   margin-right: 5px;
+}
+
+#C8_2 {
+  width: 340px;
+}
+
+.swap-zone {
+  height: 500px;
 }

@@ -33,7 +33,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 public class KscdtSchBonusPay extends ContractUkJpaEntity{
 	
 	@EmbeddedId
-	public KscdtSchBonusPayPK pK;
+	public KscdtSchBonusPayPK pk;
 	
 	/** 会社ID **/
 	@Column(name = "CID")
@@ -59,7 +59,7 @@ public class KscdtSchBonusPay extends ContractUkJpaEntity{
 	
 	@Override
 	protected Object getKey() {
-		return this.pK;
+		return this.pk;
 	}
 	//
 	public static KscdtSchBonusPay toEntity(String sid , GeneralDate ymd ,BonusPayTime bonusPayTime){
@@ -79,7 +79,7 @@ public class KscdtSchBonusPay extends ContractUkJpaEntity{
 		if(!bonusPays.isEmpty()) {
 		bonusPays.stream().forEach( x -> {
 			BonusPayTime payTime = new BonusPayTime(
-					x.getPK().getFrameNo(),
+					x.getPk().getFrameNo(),
 					new AttendanceTime(x.getPremiumTime()), 
 					TimeWithCalculation.sameTime(new AttendanceTime(x.getPremiumTimeWithIn())),
 					TimeWithCalculation.sameTime(new AttendanceTime(x.getPremiumTimeWithOut())));
@@ -93,7 +93,7 @@ public class KscdtSchBonusPay extends ContractUkJpaEntity{
 	public KscdtSchBonusPay(KscdtSchBonusPayPK pK, String cid, int premiumTime, int premiumTimeWithIn,
 			int premiumTimeWithOut) {
 		super();
-		this.pK = pK;
+		this.pk = pK;
 		this.cid = cid;
 		this.premiumTime = premiumTime;
 		this.premiumTimeWithIn = premiumTimeWithIn;

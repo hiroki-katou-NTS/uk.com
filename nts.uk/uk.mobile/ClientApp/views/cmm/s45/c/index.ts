@@ -6,14 +6,22 @@ import { Phase } from 'views/cmm/s45/shr/index';
 import { AppType, AppTypeName } from 'views/kaf/s00/shr';
 
 import {
-    CmmS45ComponentsApp1Component,
     CmmS45ComponentsApp2Component,
     CmmS45ComponentsApp3Component,
     CmmS45ComponentsApp4Component,
     CmmS45ComponentsApp5Component,
     CmmS45ComponentsApp9Component,
     CmmS45ShrComponentsApp7Component,
+    CmmS45ShrComponentsApp15Component,
+    CmmS45ShrComponentsAppsampleComponent,
+    CmmS45ShrComponentsApp0Component,
+    CmmS45ShrComponentsApp8Component,
+    CmmS45ShrComponentsApp10Component,
+    CmmS45ShrComponentsApp6Component,
+    Reason
 } from 'views/cmm/s45/shr/components';
+
+import { CmmS45ShrComponentsApp1Component } from 'views/cmm/s45/shr/components/app1/index';
 
 @component({
     name: 'cmms45c',
@@ -25,13 +33,19 @@ import {
     components: {
         // khai báo virtual tag name
         'approved': ApprovedComponent,
-        'app1': CmmS45ComponentsApp1Component,
+        'appsample': CmmS45ShrComponentsAppsampleComponent,
         'app2': CmmS45ComponentsApp2Component,
         'app3': CmmS45ComponentsApp3Component,
         'app4': CmmS45ComponentsApp4Component,
         'app5': CmmS45ComponentsApp5Component,
         'app9': CmmS45ComponentsApp9Component,
         'app7': CmmS45ShrComponentsApp7Component,
+        'app15': CmmS45ShrComponentsApp15Component,
+        'app0': CmmS45ShrComponentsApp0Component,
+        'app8': CmmS45ShrComponentsApp8Component,
+        'app1': CmmS45ShrComponentsApp1Component,
+        'app10': CmmS45ShrComponentsApp10Component,
+        'app6': CmmS45ShrComponentsApp6Component,
         'render': {
             template: `<div class="">{{params.id}} {{params.name}}</div>`,
             props: ['params']
@@ -58,6 +72,7 @@ export class CmmS45CComponent extends Vue {
     // 差し戻し理由
     public reversionReason: string = '';
     public isLoadingComplete = false;
+    public reasons: Array<Reason> = null;
     public created() {
         let self = this;
         self.listAppMeta = self.params.listAppMeta;
@@ -199,6 +214,7 @@ export class CmmS45CComponent extends Vue {
         self.showApproval = false;
         self.appCount++;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.reasons = null;
         self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
@@ -211,6 +227,7 @@ export class CmmS45CComponent extends Vue {
         self.showApproval = false;
         self.appCount--;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.reasons = null;
         self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
@@ -250,13 +267,14 @@ export class CmmS45CComponent extends Vue {
             self.$goto('cmms45a', { 'CMMS45_FromMenu': true });
         }
     }
-    public loadingComplete() {
+    public loadingComplete(reasons?: any) {
         const self = this;
+        self.reasons = reasons;
         self.$nextTick(() => {
             self.$mask('hide');
             self.isLoadingComplete = true;
         });
-        
+
     }
 
     // kích hoạt nút xóa đơn
@@ -267,7 +285,7 @@ export class CmmS45CComponent extends Vue {
                 if (v == 'yes') {
                     self.$mask('show');
                     self.$http.post('at', API.delete, {
-                        appDispInfoStartupOutput: self.appTransferData.appDispInfoStartupOutput    
+                        appDispInfoStartupOutput: self.appTransferData.appDispInfoStartupOutput
                     }).then((resDelete: any) => {
                         self.$mask('hide');
                         self.$modal.info('Msg_16').then(() => {
@@ -310,12 +328,11 @@ export class CmmS45CComponent extends Vue {
         const self = this;
         switch (self.appType) {
             case 2:
-                self.$goto('kafs07a', self.appTransferData.appDetail);
-                // if (self.$router.currentRoute.name == 'kafs07a') {
-                //     self.$close(self.appTransferData.appDetail);
-                // } else {
-                //     self.$goto('kafs07a', self.appTransferData.appDetail);
-                // }
+                if (self.$router.currentRoute.name == 'kafs07a') {
+                    self.$close(self.appTransferData.appDetail);
+                } else {
+                    self.$goto('kafs07a', self.appTransferData.appDetail);
+                }
                 break;
             case 3:
                 if (self.$router.currentRoute.name == 'kafs08a') {
@@ -325,22 +342,76 @@ export class CmmS45CComponent extends Vue {
                 }
                 break;
             case 4:
-                self.$goto('kafs09a', self.appTransferData.appDetail);
-                // if (self.$router.currentRoute.name == 'kafs09a') {
-                //     self.$close(self.appTransferData.appDetail);
-                // } else {
-                //     self.$goto('kafs09a', self.appTransferData.appDetail);
-                // }
-                break;
-            case 9:
-                self.$goto('kafs04a',self.appTransferData.appDetail);
+                if (self.$router.currentRoute.name == 'kafs09a') {
+                    self.$close(self.appTransferData.appDetail);
+                } else {
+                    self.$goto('kafs09a', self.appTransferData.appDetail);
+                }
                 break;
             case 7:
                 if (self.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opStampRequestMode == 0) {
-                    self.$goto('kafs02a', self.appTransferData.appDetail);
+                    if (self.$router.currentRoute.name == 'kafs02a') {
+                        self.$close(self.appTransferData.appDetail);
+                    } else {
+                        self.$goto('kafs02a', self.appTransferData.appDetail);
+                    }
                 }
                 if (self.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opStampRequestMode == 1) {
+                    if (self.$router.currentRoute.name == 'kafs02c') {
+                        self.$close(self.appTransferData.appDetail);
+                    } else {
+                        self.$goto('kafs02c', self.appTransferData.appDetail);
+                    }
                     self.$goto('kafs02c', self.appTransferData.appDetail);
+                }
+                break;
+            case 8:
+                if (self.$router.currentRoute.name == 'kafs12a') {
+                    self.$close(self.appTransferData);
+                } else {
+                    self.$goto('kafs12a', self.appTransferData);
+                }
+                break;
+            case 9:
+                if (self.$router.currentRoute.name == 'kafs04a') {
+                    self.$close(self.appTransferData.appDetail);
+                } else {
+                    self.$goto('kafs04a', self.appTransferData.appDetail);
+                }
+                break;
+            case 15:
+                if (self.$router.currentRoute.name == 'kafs20a') {
+                    self.$close(self.appTransferData);
+                } else {
+                    self.$goto('kafs20a', self.appTransferData);
+                }
+                break;
+            case 0: 
+                if (self.$router.currentRoute.name == 'kafs05a') {
+                    self.$close(self.appTransferData);
+                } else {
+                    self.$goto('kafs05a', self.appTransferData);
+                }
+                break;
+            case 1: 
+                if (self.$router.currentRoute.name == 'kafs06a') {
+                    self.$close(self.appTransferData);
+                } else {
+                    self.$goto('kafs06a', self.appTransferData);
+                }
+                break;  
+            case 10: 
+                if (self.$router.currentRoute.name == 'kafs11a') {
+                    self.$close(self.appTransferData);
+                } else {
+                    self.$goto('kafs11a', self.appTransferData);
+                }
+                break;  
+            case 6: 
+                if (self.$router.currentRoute.name == 'kafs10a') {
+                    self.$close(self.appTransferData);
+                } else {
+                    self.$goto('kafs10a', self.appTransferData);
                 }
                 break;
             default:
@@ -473,7 +544,7 @@ export class CmmS45CComponent extends Vue {
         }
         let appDate = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.inputDate;
 
-        return vm.$dt(new Date(appDate), 'YYYY/MM/DD hh:mm');
+        return vm.$dt(new Date(appDate), 'YYYY/MM/DD HH:mm');
     }
 
     get comboReasonDisp() {
@@ -506,8 +577,8 @@ export class CmmS45CComponent extends Vue {
         if (opComboReason) {
             return opComboReason.reasonForFixedForm;
         }
-        if (_.isNull(vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD)) {
-            return '' + ' ' + vm.$i18n('CMMS45_87');
+        if (_.isEmpty(vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD)) {
+            return '';
         }
 
         return vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD + ' ' + vm.$i18n('CMMS45_87');

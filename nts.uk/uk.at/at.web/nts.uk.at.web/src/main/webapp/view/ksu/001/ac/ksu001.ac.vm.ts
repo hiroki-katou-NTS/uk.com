@@ -25,6 +25,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
         textName: KnockoutObservable<string> = ko.observable(null);
         tooltip: KnockoutObservable<string> = ko.observable(null);
         selectedLinkButtonCom: KnockoutObservable<number> = ko.observable(0);
+        KEY = 'nts.uk.characteristics.ksu001Data';
         selectedLinkButtonWkp: KnockoutObservable<number> = ko.observable(0);
         flag: boolean = true;
         dataToStick: any = null;
@@ -42,8 +43,6 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
         listPageComIsEmpty: boolean = false;
         listPageWkpIsEmpty: boolean = false;
         
-        KEY : string = 'USER_INFOR';
-
         constructor() {
             let self = this;
             
@@ -101,6 +100,11 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
 
                 if (value.column == -1 || value.row == -1) {
                     $("#extable").exTable("stickData", arrDataToStick);
+                    let shiftPalletPositionNumberCom = {};
+                    shiftPalletPositionNumberCom.row = userInfor.shiftPalletPositionNumberCom.row;
+                    shiftPalletPositionNumberCom.column = userInfor.shiftPalletPositionNumberCom.column;
+                    shiftPalletPositionNumberCom.data = userInfor.shiftPalletPositionNumberCom.data;
+                    self.selectedButtonTableCompany(shiftPalletPositionNumberCom);
                 } else {
                     let isMasterNotReg = false;
                     let mami = nts.uk.resource.getText('KSU001_94');
@@ -182,7 +186,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 if (value.column !== -1 && value.row !== -1) {
                     uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                         let userInfor: any = JSON.parse(data);
-                        userInfor.shiftPalletPositionNumberCom = { column: self.selectedButtonTableCompany().column, row: self.selectedButtonTableCompany().row };
+                        userInfor.shiftPalletPositionNumberCom = { column: self.selectedButtonTableCompany().column, row: self.selectedButtonTableCompany().row, data : value.data  };
                         uk.localStorage.setItemAsJson(self.KEY, userInfor);
                     });
                 }
@@ -201,6 +205,11 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
 
                 if (value.column == -1 || value.row == -1) {
                     $("#extable").exTable("stickData", arrDataToStickWkp);
+                    let shiftPalletPositionNumberOrg = {};
+                    shiftPalletPositionNumberOrg.row = userInfor.shiftPalletPositionNumberOrg.row;
+                    shiftPalletPositionNumberOrg.column = userInfor.shiftPalletPositionNumberOrg.column;
+                    shiftPalletPositionNumberOrg.data = userInfor.shiftPalletPositionNumberOrg.data;
+                    self.selectedButtonTableWorkplace(shiftPalletPositionNumberOrg);
                 } else {
                     let isMasterNotReg = false;
                     for (let i = 0; i < value.data.data.length; i++) {
@@ -280,7 +289,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 if (value.column !== -1 && value.row !== -1) {
                     uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                         let userInfor: IUserInfor = JSON.parse(data);
-                        userInfor.shiftPalletPositionNumberOrg = { column: self.selectedButtonTableWorkplace().column, row: self.selectedButtonTableWorkplace().row };
+                        userInfor.shiftPalletPositionNumberOrg = { column: self.selectedButtonTableWorkplace().column, row: self.selectedButtonTableWorkplace().row, data : value.data };
                         uk.localStorage.setItemAsJson(self.KEY, userInfor);
                     });
                 }
@@ -295,7 +304,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 self.textName(data.text);
                 self.tooltip(data.tooltip);
             });
-            
+
         }
         
         /**
@@ -542,13 +551,8 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
 
             service.getShiftPalletWhenChangePage(param).done((data) => {
                 if (self.selectedpalletUnit() === 1) {
-                    // link button has color gray when clicked
-                    _.each($('#group-link-button-ja a.hyperlink'), (a) => {
-                        $(a).removeClass('color-gray');
-                        $(a).removeClass('background-linkbtn');
-                    });
-                    $($('#group-link-button-ja a.hyperlink')[indexBtn]).addClass('color-gray');
-                    $($('#group-link-button-ja a.hyperlink')[indexBtn]).addClass('background-linkbtn');
+                    
+                    self.setLinkSelected(indexBtn);
 
                     let shiftPalletPositionNumberCom = {};
                     uk.localStorage.getItem(self.KEY).ifPresent((dataLocal) => {
@@ -608,13 +612,8 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     nts.uk.ui.block.clear();
 
                 } else if (self.selectedpalletUnit() === 2) {
-                    // link button has color gray when clicked
-                    _.each($('#group-link-button-ja a.hyperlink'), (a) => {
-                        $(a).removeClass('color-gray');
-                        $(a).removeClass('background-linkbtn');
-                    });
-                    $($('#group-link-button-ja a.hyperlink')[indexBtn]).addClass('color-gray');
-                    $($('#group-link-button-ja a.hyperlink')[indexBtn]).addClass('background-linkbtn');
+                    
+                    self.setLinkSelected(indexBtn);
 
                     let shiftPalletPositionNumberOrg = {};
                     uk.localStorage.getItem(self.KEY).ifPresent((dataLocal) => {
@@ -673,18 +672,42 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 }
 
                 // set css table button
-                _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
-                    if ($('.ntsButtonTableButton')[index].innerHTML == "+") {
-                        $($('.ntsButtonTableButton')[index]).addClass('nowithContent');
+                self.setStyleBtn();
+
+                if (__viewContext.viewModel.viewA.mode() === 'confirm') {
+                    if (self.selectedpalletUnit() == 1) { // 1 : mode company , 2: mode workPlace
+                        $('#tableButton1 button').addClass('disabledShiftControl');
                     } else {
-                        $($('.ntsButtonTableButton')[index]).addClass('withContent');
+                        $('#tableButton2 button').addClass('disabledShiftControl');
                     }
-                });
+                }
                 nts.uk.ui.block.clear();
             }).fail(function() {
                 nts.uk.ui.block.clear();
             });
         }
+        
+        setLinkSelected(index) {
+            let self = this;
+            // link button has color gray when clicked
+            _.each($('#group-link-button-ja a.hyperlink'), (a) => {
+                $(a).removeClass('link-selected');
+            });
+            $($('#group-link-button-ja a.hyperlink')[index]).addClass('link-selected');
+        }
+        
+        setStyleBtn() {
+            // set css table button
+            _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
+                if ($('.ntsButtonTableButton')[index].innerHTML == "+") {
+                    $($('.ntsButtonTableButton')[index]).addClass('nowithContent');
+                } else {
+                    $($('.ntsButtonTableButton')[index]).addClass('withContent');
+                }
+            });
+        }
+        
+        
         
         getRowColumnIndex(indexBtnSelected: number) {
             if (indexBtnSelected < 10) {
@@ -766,9 +789,8 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 
                 // truowng hop khong co page nao duoc dang ky
                 if (data.listPageInfo.length == 0) {
-                    $('#tableButton1 button').addClass('disabledShiftControl');
-                } else {
-                    $('#tableButton1 button').removeClass('disabledShiftControl');
+                    // set css table button
+                    self.setStyleBtn();
                 }
                 
                 nts.uk.ui.block.clear();
@@ -805,10 +827,9 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     pageNumber);
                 
                 // truowng hop khong co page nao duoc dang ky
-                if(data.listPageInfo.length == 0){
-                    $('#tableButton2 button').addClass('disabledShiftControl');
-                }else{
-                    $('#tableButton2 button').removeClass('disabledShiftControl');
+                if (data.listPageInfo.length == 0) {
+                    // set css table button
+                    self.setStyleBtn();
                 }
                 
                 nts.uk.ui.block.clear();

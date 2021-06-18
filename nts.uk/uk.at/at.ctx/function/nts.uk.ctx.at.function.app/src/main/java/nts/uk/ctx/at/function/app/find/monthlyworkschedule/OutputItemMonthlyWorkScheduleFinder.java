@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.app.find.monthlyworkschedule;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,10 +21,11 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleCopyCommand;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodDto;
-import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
-import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
+import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
+import nts.uk.ctx.at.function.dom.dailyattendanceitem.FormCanUsedForTime;
 import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.DisplayTimeItem;
@@ -32,14 +34,18 @@ import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonPfmCor
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkType;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkTypeRepository;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.SheetCorrectedMonthly;
+import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisplay;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyFormatPerformanceAdapter;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyFormatPerformanceImport;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSchedule;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleRepository;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
+import nts.uk.ctx.at.function.dom.monthlyworkschedule.TextSizeCommonEnum;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformAuthorRepo;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceFunctionNo;
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.BusinessType;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.repository.BusinessTypesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.shr.com.context.AppContexts;
@@ -53,10 +59,6 @@ public class OutputItemMonthlyWorkScheduleFinder {
 	/** The output item monthly work schedule repository. */
 	@Inject
 	private OutputItemMonthlyWorkScheduleRepository outputItemMonthlyWorkScheduleRepository;
-
-	/** The attendance type repository. */
-	@Inject
-	private AttendanceTypeRepository attendanceTypeRepository;
 
 	/** The format performance adapter. */
 	@Inject
@@ -83,6 +85,13 @@ public class OutputItemMonthlyWorkScheduleFinder {
 
 	@Inject
 	private ClosureEmploymentService closureEmploymentService;
+
+	/** The attendance item name service */
+	@Inject
+	private AttendanceItemNameService attendanceItemNameService;
+	
+	@Inject
+	private DailyPerformAuthorRepo dailyPerformAuthorRepo;
 	
 	/** The Constant AUTHORITY. */
 	// SettingUnitType.AUTHORITY.value
@@ -95,15 +104,14 @@ public class OutputItemMonthlyWorkScheduleFinder {
 	/** The Constant FUNCTION_NO. */
 	private static final int FUNCTION_NO = 6;
 
-	/** The Constant MONTHLY_WORK_SCHEDULE. */
-	private static final int MONTHLY_WORK_SCHEDULE = 20;
+	/** The Constant LIMIT_DISPLAY_ITEMS_BIG_SIZE. */
+	private static final int LIMIT_DISPLAY_ITEMS_BIG_SIZE = 48;
 
-	/** The Constant SHEET_NO_1. */
-	private static final int SHEET_NO_1 = 1;
-
-	/** The Constant LIMIT_DISPLAY_ITEMS. */
-	private static final int LIMIT_DISPLAY_ITEMS = 48;
-
+	/** The Constant LIMIT_DISPLAY_ITEMS_SMALL_SIZE. */
+	private static final int LIMIT_DISPLAY_ITEMS_SMALL_SIZE = 60;
+	
+	/** The Constant */
+	
 	/**
 	 * Find employment authority.
 	 *
@@ -119,47 +127,65 @@ public class OutputItemMonthlyWorkScheduleFinder {
 		}
 		return false;
 	}
+	
+	public Boolean checkAuthority() {
+		String roleId = AppContexts.user().roles().forAttendance();
+		// ログイン社員の就業帳票の権限を取得する
+		// ・ロールID：ログイン社員の就業ロールID
+		// ・機能NO：51(自由設定区分)
+		// ・利用できる：TRUE
+		return this.dailyPerformAuthorRepo.getAuthorityOfEmployee(roleId,
+				new DailyPerformanceFunctionNo(BigDecimal.valueOf(51l)), true);
+	}
 
-	public List<OutputItemMonthlyWorkScheduleDto> findAll() {
-		return this.outputItemMonthlyWorkScheduleRepository.findByCid(AppContexts.user().companyId()).stream()
+	/**
+	 * UKDesign.UniversalK.就業.KWR_帳表.KWR006_月別勤務表 (monthly work schedule).
+	 * A：月別勤務表 (Monthly work schedule).アルゴリズム (Thuat toan).起動処理 (Xu ly khoi dong).起動処理 (Xu ly khoi dong)
+	 */
+	public List<OutputItemMonthlyWorkScheduleDto> findAll(int itemType) {
+		String employeeId = AppContexts.user().employeeId();
+		List<OutputItemMonthlyWorkSchedule> result = this.outputItemMonthlyWorkScheduleRepository
+				.findBySelectionAndCidAndSid(ItemSelectionEnum.valueOf(itemType)
+											, AppContexts.user().companyId()
+											, employeeId);
+		return result.isEmpty() ? null : result.stream()
 				.map(item -> {
 					OutputItemMonthlyWorkScheduleDto dto = new OutputItemMonthlyWorkScheduleDto();
 					dto.setItemCode(item.getItemCode().v());
 					dto.setItemName(item.getItemName().v());
+					dto.setLayoutID(item.getLayoutID());
 					return dto;
 				}).collect(Collectors.toList());
-	}
+		}
 
 	/**
-	 * Find by cid.
-	 *
+	 * UKDesign.UniversalK.就業.KWR_帳表.KWR006_月別勤務表 (monthly work schedule).C：出力項目設定 (Setting hạng mục output).アルゴリズム(Thuật toán).
+     * 初期データ取得処理 (Xử lý lấy data ban đầu).初期データ取得処理
+	 * Find by SelectionType, Cid and Sid.
 	 * @return the map
 	 */
-	public Map<String, Object> findByCid() {
+	public Map<String, Object> findBySelectionAndCidAndSid(int itemType) {
 		String companyID = AppContexts.user().companyId();
 		Map<String, Object> mapDtoReturn = new HashMap<>();
+		// ドメインモデル「画面で使用可能な月次勤怠項目」を取得する
+		List<Integer> attdIds = this.attendanceItemNameService.getMonthlyAttendanceItemsAvaiable(companyID
+																	 , FormCanUsedForTime.MONTHLY_WORK_SCHEDULE
+																	 , TypeOfItem.Monthly);
 
-		// Start algorithm 画面で利用できる任意項目を含めた勤怠項目一覧を取得する
-		// 対応するドメインモデル「画面で利用できる勤怠項目一覧」を取得する (get domain model đối ứng
-		// 「画面で利用できる勤怠項目一覧」 )
-		List<AttendanceType> lstAttendanceType = attendanceTypeRepository.getItemByScreenUseAtr(companyID,
-				MONTHLY_WORK_SCHEDULE);
-
-		List<Integer> lstAttendanceID = lstAttendanceType.stream().map(domain -> domain.getAttendanceItemId())
-				.collect(Collectors.toList());
-
-		List<MonthlyAttendanceItemDto> lstDailyAtdItemDto = companyMonthlyItemService
-				.getMonthlyItems(companyID, Optional.empty(), lstAttendanceID, new ArrayList<>()).stream().map(dto -> {
+		//アルゴリズム「会社の月次を取得する」を実行する (Execute the algorithm "Get company's monthly")
+		List<MonthlyAttendanceItemDto> lstDailyAtdItemDto = this.companyMonthlyItemService
+				.getMonthlyItems(companyID, Optional.empty(), attdIds, new ArrayList<>()).stream().map(dto -> {
 					MonthlyAttendanceItemDto dtoClientReturn = new MonthlyAttendanceItemDto();
 					dtoClientReturn.setCode(dto.getAttendanceItemDisplayNumber());
 					dtoClientReturn.setId(dto.getAttendanceItemId());
 					dtoClientReturn.setName(dto.getAttendanceItemName());
+					dtoClientReturn.setAttendanceItemAtt(dto.getTypeOfAttendanceItem());
 					return dtoClientReturn;
 				}).collect(Collectors.toList());
 
 		// ドメインモデル「月次の勤怠項目」をすべて取得する(Acquire all domain model "monthly attendance
 		// items")
-		if (!lstAttendanceID.isEmpty()) {
+		if (!attdIds.isEmpty()) {
 			mapDtoReturn.put("monthlyAttendanceItem", lstDailyAtdItemDto);
 		} else {
 			mapDtoReturn.put("monthlyAttendanceItem", Collections.emptyList());
@@ -172,7 +198,9 @@ public class OutputItemMonthlyWorkScheduleFinder {
 		// ドメインモデル「月別勤務表の出力項目」をすべて取得する
 		// get all domain OutputItemMonthlyWorkSchedule
 		List<OutputItemMonthlyWorkSchedule> lstOutputItemMonthlyWorkSchedule = this.outputItemMonthlyWorkScheduleRepository
-				.findByCid(companyID);
+				.findBySelectionAndCidAndSid(ItemSelectionEnum.valueOf(itemType),
+														AppContexts.user().companyId(), 
+														AppContexts.user().employeeId());
 
 		if (!lstOutputItemMonthlyWorkSchedule.isEmpty()) {
 			mapDtoReturn.put("outputItemMonthlyWorkSchedule", lstOutputItemMonthlyWorkSchedule.stream().map(domain -> {
@@ -181,8 +209,10 @@ public class OutputItemMonthlyWorkScheduleFinder {
 				dto.setItemName(domain.getItemName().v());
 				dto.setLstDisplayedAttendance(
 						toDtoTimeItemTobeDisplay(domain.getLstDisplayedAttendance(), mapCodeNameAttendance));
-				dto.setPrintSettingRemarksColumn(domain.getPrintSettingRemarksColumn().value);
 				dto.setRemarkInputContent(domain.getRemarkInputNo().value);
+				dto.setLayoutID(domain.getLayoutID());
+				dto.setTextSize(domain.getTextSize().value);
+				dto.setRemarkPrinted(domain.isRemarkPrinted());
 				return dto;
 			}).sorted(Comparator.comparing(OutputItemMonthlyWorkScheduleDto::getItemCode))
 					.collect(Collectors.toList()));
@@ -243,21 +273,29 @@ public class OutputItemMonthlyWorkScheduleFinder {
 	}
 
 	// algorithm for screen D: copy
-	public MonthlyReturnItemDto executeCopy(String codeCopy, String codeSourceSerivce) {
+	public MonthlyReturnItemDto executeCopy(OutputItemMonthlyWorkScheduleCopyCommand copyCommand) {
 		String companyId = AppContexts.user().companyId();
 		MonthlyReturnItemDto returnDto = new MonthlyReturnItemDto();
-
+		// Get employee by command
+		String employeeId = AppContexts.user().employeeId();
+		
 		// get domain 月別勤務表の出力項目
 		Optional<OutputItemMonthlyWorkSchedule> optOutputItemMonthlyWorkSchedule = outputItemMonthlyWorkScheduleRepository
-				.findByCidAndCode(companyId, new OutputItemSettingCode(codeCopy).v());
+				.findBySelectionAndCidAndSidAndCode(
+						  ItemSelectionEnum.valueOf(copyCommand.getItemType())
+						, companyId
+						, copyCommand.getCodeCopy()
+						, employeeId);
 
 		if (optOutputItemMonthlyWorkSchedule.isPresent()) {
 			throw new BusinessException("Msg_3");
 		} else {
-			List<DisplayTimeItemDto> dtos = getDomConvertMonthlyWork(companyId, codeSourceSerivce);
+			List<DisplayTimeItemDto> dtos = getDomConvertMonthlyWork(companyId
+					, copyCommand.getCodeSourceSerivce()
+					, TextSizeCommonEnum.valueOf(copyCommand.getFontSize()));
 			returnDto.setLstDisplayTimeItem(dtos);
 
-			Map<String, Object> kwr006Lst = this.findByCid();
+			Map<String, Object> kwr006Lst = this.findBySelectionAndCidAndSid(copyCommand.getItemType());
 			@SuppressWarnings("unchecked")
 			Map<Integer, String> mapCodeNameAttendance = convertListToMapAttendanceItem(
 					(List<MonthlyAttendanceItemDto>)kwr006Lst.get("monthlyAttendanceItem"));
@@ -277,14 +315,12 @@ public class OutputItemMonthlyWorkScheduleFinder {
 
 	// アルゴリズム「月別勤務表用フォーマットをコンバートする」を実行する(Execute algorithm "Convert monthly work
 	// table format")
-	private List<DisplayTimeItemDto> getDomConvertMonthlyWork(String companyId, String code) {
+	private List<DisplayTimeItemDto> getDomConvertMonthlyWork(String companyId, String code, TextSizeCommonEnum fontSize) {
 
 		// Get domain 実績修正画面で利用するフォーマット from request list 402
 		Optional<MonthlyFormatPerformanceImport> optFormatPerformanceImport = monthlyFormatPerformanceAdapter
 				.getFormatPerformance(companyId);
-
-		SheetCorrectedMonthly sheetNo1 = new SheetCorrectedMonthly();
-
+		List<DisplayTimeItemDto> lstDataReturn = new ArrayList<>();
 		if (optFormatPerformanceImport.isPresent()) {
 			switch (optFormatPerformanceImport.get().getSettingUnitType()) {
 			case AUTHORITY: // In case of authority
@@ -294,38 +330,48 @@ public class OutputItemMonthlyWorkScheduleFinder {
 				// "display items for correction of daily performance")
 				MonPfmCorrectionFormat monPfmCorrectionFormat = monPfmCorrectionFormatRepository
 						.getMonPfmCorrectionFormat(companyId, code).get();
-				sheetNo1 = monPfmCorrectionFormat.getDisplayItem().getListSheetCorrectedMonthly().stream()
-						.filter(sheet -> sheet.getSheetNo() == SHEET_NO_1).findFirst().get();
+				
+				lstDataReturn = monPfmCorrectionFormat.getDisplayItem()
+						.getListSheetCorrectedMonthly().stream()
+						.sorted(Comparator.comparing(SheetCorrectedMonthly::getSheetNo))
+						.flatMap(t -> t.getListDisplayTimeItem().stream())
+						.map(item -> new DisplayTimeItemDto(item.getItemDaily()
+			    				  , null
+			    				  , item.getColumnWidthTable()))
+						.collect(Collectors.toList());
 				break;
 			case BUSINESS_TYPE:
 				// ドメインモデル「勤務種別日別実績の修正のフォーマット」を取得する (Acquire the domain model
 				// "Format of working type daily performance correction)
 				// 「日別実績の修正の表示項目」から表示項目を取得する (Acquire display items from
 				// "display items for correction of daily performance")
-
 				MonthlyRecordWorkType monthlyRecordWorkType = this.monthlyRecordWorkTypeRepository
 						.getMonthlyRecordWorkTypeByCode(companyId, code).get();
-				sheetNo1 = monthlyRecordWorkType.getDisplayItem().getListSheetCorrectedMonthly().stream()
-						.filter(sheet -> sheet.getSheetNo() == SHEET_NO_1).findFirst().get();
+
+				lstDataReturn = monthlyRecordWorkType.getDisplayItem()
+						.getListSheetCorrectedMonthly().stream()
+						.sorted(Comparator.comparing(SheetCorrectedMonthly::getSheetNo))
+						.flatMap(t -> t.getListDisplayTimeItem().stream())
+						.map(item -> new DisplayTimeItemDto(item.getItemDaily()
+			    				  , null
+			    				  , item.getColumnWidthTable()))
+						.collect(Collectors.toList());
 				break;
 			default:
 				break;
 			}
 		}
 
-		// sort list display item by display order
-		sheetNo1.setListDisplayTimeItem(sheetNo1.getListDisplayTimeItem().stream()
-				.sorted(Comparator.comparing(DisplayTimeItem::getDisplayOrder)).collect(Collectors.toList()));
-		
-		if (sheetNo1.getListDisplayTimeItem().size() <= LIMIT_DISPLAY_ITEMS) {
-			return sheetNo1.getListDisplayTimeItem().stream().map(item -> new DisplayTimeItemDto(item.getItemDaily(),
-					item.getDisplayOrder(), item.getColumnWidthTable())).collect(Collectors.toList());
-		} else {
-			return sheetNo1
-					.getListDisplayTimeItem().stream().map(item -> new DisplayTimeItemDto(item.getItemDaily(),
-							item.getDisplayOrder(), item.getColumnWidthTable()))
-					.limit(LIMIT_DISPLAY_ITEMS).collect(Collectors.toList());
-		}
+		// 文字の大きさにより最大表示件数を求める
+		// 大の場合：48件までとする
+		// 小の場合：60件までとする
+		int numberDisplayItem = fontSize == TextSizeCommonEnum.SMALL
+								? LIMIT_DISPLAY_ITEMS_SMALL_SIZE
+								: LIMIT_DISPLAY_ITEMS_BIG_SIZE;
+
+		return lstDataReturn.stream()
+				.limit(numberDisplayItem)
+				.collect(Collectors.toList());
 	}
 
 	private List<TimeItemTobeDisplayDto> toDtoTimeItemTobeDisplay(List<MonthlyAttendanceItemsDisplay> lstDomainObject,

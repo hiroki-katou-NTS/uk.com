@@ -9,6 +9,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.M
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeOrganization;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.consecutivework.limitworktime.MaxDayOfWorkTimeOrganizationRepo;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -31,7 +32,7 @@ public class Ksm008LUpdateWorkTimeOrgCommandHandler extends CommandHandler<Ksm00
     @Override
     protected void handle(CommandHandlerContext<Ksm008LUpdateWorkTimeOrgCommand> context) {
         Ksm008LUpdateWorkTimeOrgCommand appCommand = context.getCommand();
-        TargetOrgIdenInfor targetOrgIdenInfor = appCommand.getWorkPlaceUnit() == 0
+        TargetOrgIdenInfor targetOrgIdenInfor = appCommand.getWorkPlaceUnit() == TargetOrganizationUnit.WORKPLACE.value
                 ? TargetOrgIdenInfor.creatIdentifiWorkplace(appCommand.getWorkPlaceId())
                 : TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(appCommand.getWorkPlaceGroup());
         maxDayOfWorkTimeOrganizationRepo.update(AppContexts.user().companyId(), new MaxDayOfWorkTimeOrganization(

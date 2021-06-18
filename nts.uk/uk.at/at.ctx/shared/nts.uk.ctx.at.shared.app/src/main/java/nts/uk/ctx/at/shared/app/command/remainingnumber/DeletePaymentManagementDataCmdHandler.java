@@ -1,13 +1,13 @@
 package nts.uk.ctx.at.shared.app.command.remainingnumber;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
@@ -34,24 +34,24 @@ public class DeletePaymentManagementDataCmdHandler extends CommandHandler<Delete
 	protected void handle(CommandHandlerContext<DeletePaymentManagementDataCommand> context) {
 		DeletePaymentManagementDataCommand command = context.getCommand();
 		//	ドメインモデル「振出管理データ」を取得
-		Optional<PayoutManagementData> dataPayout = payoutManagementDataRepo.findByID(command.getPayoutId());
-		if (command.getPayoutId() != null) {
-			//	ドメインモデル「振出管理データ」を削除 (Delete domain model「振出管理データ」)
-			payoutManagementDataRepo.delete(command.getPayoutId());
+		List<PayoutManagementData> dataPayout = payoutManagementDataRepo.getByListId(command.getPayoutId());
+		//	ドメインモデル「振出管理データ」を削除 (Delete domain model「振出管理データ」)
+		if (!dataPayout.isEmpty()) {
+			payoutManagementDataRepo.delete(dataPayout);
 		}
 		//	ドメインモデル「振休管理データ」を取得
-		Optional<SubstitutionOfHDManagementData> dataSub = substitutionOfHDManaDataRepo
-				.findByID(command.getSubOfHDID());
-		if (command.getSubOfHDID() != null) {
-			// ドメインモデル「振休管理データ」を削除 (Delete domain model 「振休管理データ」)
-			substitutionOfHDManaDataRepo.delete(command.getSubOfHDID());
+		List<SubstitutionOfHDManagementData> dataSub = substitutionOfHDManaDataRepo
+				.getByListId(command.getSubOfHDID());
+		// ドメインモデル「振休管理データ」を削除 (Delete domain model 「振休管理データ」)
+		if (!dataSub.isEmpty()) {
+			substitutionOfHDManaDataRepo.delete(dataSub);
 		}
 		//	ドメインモデル「振出振休紐付け管理」を削除 (Delete domain model 「振出振休紐付け管理」)
-		if (command.getPayoutId() != null && command.getSubOfHDID() != null) {
-			this.payoutSubofHDManaRepository.delete(dataPayout.map(PayoutManagementData::getSID).orElse(null),
-					dataSub.map(SubstitutionOfHDManagementData::getSID).orElse(null),
-					dataPayout.map(PayoutManagementData::getPayoutDate).orElse(new CompensatoryDayoffDate()).getDayoffDate().orElse(null),
-					dataSub.map(SubstitutionOfHDManagementData::getHolidayDate).orElse(new CompensatoryDayoffDate()).getDayoffDate().orElse(null));
+		if (!dataPayout.isEmpty() && !dataSub.isEmpty()) {
+			this.payoutSubofHDManaRepository.delete(dataPayout.size() > 0 ? dataPayout.get(0).getSID() : null,
+				dataSub.size() > 0 ? dataSub.get(0).getSID() : null,
+				dataPayout.stream().map(x -> x.getPayoutDate().getDayoffDate().orElse(null)).collect(Collectors.toList()),
+				dataSub.stream().map(x -> x.getHolidayDate().getDayoffDate().orElse(null)).collect(Collectors.toList()));
 		}
 	}
 

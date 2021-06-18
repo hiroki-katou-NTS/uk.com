@@ -1,22 +1,21 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 600,
-					height : 440
+					width: 600,
+					height: 440
 				};
 			</script>
 
 			<com:ValidatorScript>
-				nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
-				nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
+				nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingCode
+				nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingName
 			</com:ValidatorScript>
 
 			<com:scriptfile set="IGNITE" />
@@ -27,13 +26,12 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area" style="display: none" data-bind="visible: true">
+			<div id="contents-area" style="display: none;" data-bind="visible: true">
 				<div class="row">
 					<!-- D1_1 -->
 					<div class="D1_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR006_58')}</div>
 					<!-- D1_2 -->
-					<div tabindex="1" id="combo-box-scrD"
-						data-bind="ntsComboBox: {
+					<div tabindex="1" id="combo-box-scrD" data-bind="ntsComboBox: {
 						name: '#[KWR006_58]',
 						options: itemList,
 						optionsValue: 'code',
@@ -46,24 +44,24 @@
 							{ prop: 'name', length: 8 },
 						]}"></div>
 				</div>
-				<div class="row">
+				<div style="margin-left: 20px;">#{i18n.getText('KWR006_94')}</div>
+				<div class="row mt-25">
 					<!-- D1_5 -->
 					<div class="name"
-						data-bind="ntsFormLabel: {constraint: ['OutputItemSettingCode', 'OutputItemSettingName'], required: true}">#{i18n.getText('KWR006_59')}</div>
+						data-bind="ntsFormLabel: {constraint: ['MonthlyOutputItemSettingCode', 'MonthlyOutputItemSettingName'], required: true}">
+						#{i18n.getText('KWR006_59')}</div>
 					<!-- D1_6 -->
-					<input tabindex="2" class="D1_6 save-error"
-						data-bind="ntsTextEditor:{
+					<input tabindex="2" class="D1_6 save-error" data-bind="ntsTextEditor:{
 																	name: '#[KWR006_60]',
 																	value: D1_6_value,
 																	required: true,
-																	constraint: 'OutputItemSettingCode'}" />
+																	constraint: 'MonthlyOutputItemSettingCode'}" />
 					<!-- D1_7 -->
-					<input tabindex="3" class="D1_7 save-error"
-						data-bind="ntsTextEditor:{
+					<input tabindex="3" class="D1_7 save-error" data-bind="ntsTextEditor:{
 																	name: '#[KWR006_61]',
 																	value: D1_7_value,
 																	required: true,
-																	constraint: 'OutputItemSettingName'}" />
+																	constraint: 'MonthlyOutputItemSettingName'}" />
 				</div>
 			</div>
 			<div id="functions-area-bottom">
@@ -75,4 +73,5 @@
 		</ui:define>
 	</ui:composition>
 </body>
+
 </html>

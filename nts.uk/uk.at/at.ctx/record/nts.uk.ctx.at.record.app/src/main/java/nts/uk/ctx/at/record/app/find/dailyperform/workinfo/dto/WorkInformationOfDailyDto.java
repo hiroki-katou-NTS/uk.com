@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -11,11 +13,14 @@ import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSe
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
@@ -27,16 +32,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 @AttendanceItemRoot(rootName = ItemConst.DAILY_WORK_INFO_NAME)
 public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 
+	@Override
+	public String rootName() { return DAILY_WORK_INFO_NAME; }
 	/***/
 	private static final long serialVersionUID = 1L;
 	
 	/** 勤務実績の勤務情報: 勤務情報 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ACTUAL)
 	private WorkInfoDto actualWorkInfo;
-
-	/** 勤務予定の勤務情報: 勤務情報 */
-	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = PLAN)
-	private WorkInfoDto planWorkInfo;
 
 	/** 勤務予定時間帯: 予定時間帯 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = PLAN + TIME_ZONE, 
@@ -59,6 +62,8 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 	private int dayOfWeek;
 	
 	private long version;
+	
+	private Optional<NumberOfDaySuspensionDto> numberDaySuspension;
 
 	public static WorkInformationOfDailyDto getDto(WorkInfoOfDailyPerformance workInfo) {
 		WorkInformationOfDailyDto result = new WorkInformationOfDailyDto();
@@ -69,10 +74,11 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			result.setBackStraightAtr(workInfo.getWorkInformation().getBackStraightAtr().value);
 			result.setCalculationState(workInfo.getWorkInformation().getCalculationState().value);
 			result.setGoStraightAtr(workInfo.getWorkInformation().getGoStraightAtr().value);
-			result.setPlanWorkInfo(createWorkInfo(workInfo.getWorkInformation().getScheduleInfo()));
 			
 			result.setScheduleTimeZone(getScheduleTimeZone(workInfo.getWorkInformation().getScheduleTimeSheets()));
 			result.setDayOfWeek(workInfo.getWorkInformation().getDayOfWeek().value);
+			result.setNumberDaySuspension(
+					workInfo.getWorkInformation().getNumberDaySuspension().map(x -> NumberOfDaySuspensionDto.from(x)));
 			result.setVersion(workInfo.getVersion());
 			result.exsistData();
 		}
@@ -89,10 +95,10 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 			result.setBackStraightAtr(workInfo.getBackStraightAtr().value);
 			result.setCalculationState(workInfo.getCalculationState().value);
 			result.setGoStraightAtr(workInfo.getGoStraightAtr().value);
-			result.setPlanWorkInfo(createWorkInfo(workInfo.getScheduleInfo()));
 			
 			result.setScheduleTimeZone(getScheduleTimeZone(workInfo.getScheduleTimeSheets()));
 			result.setDayOfWeek(workInfo.getDayOfWeek().value);
+			result.setNumberDaySuspension(workInfo.getNumberDaySuspension().map(x -> NumberOfDaySuspensionDto.from(x)));
 			result.setVersion(workInfo.getVer());
 			result.exsistData();
 		}
@@ -132,21 +138,22 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(employeeId, getWorkInfo(actualWorkInfo), getWorkInfo(planWorkInfo),
+		WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(
+				employeeId, getWorkInfo(actualWorkInfo),
 				calculationState == CalculationState.No_Calculated.value ? CalculationState.No_Calculated : CalculationState.Calculated, 
 				goStraightAtr == NotUseAttribute.Not_use.value ? NotUseAttribute.Not_use : NotUseAttribute.Use,
 				backStraightAtr == NotUseAttribute.Not_use.value ? NotUseAttribute.Not_use : NotUseAttribute.Use, date, 
 				ConvertHelper.getEnum(dayOfWeek, DayOfWeek.class),
 				ConvertHelper.mapTo(this.getScheduleTimeZone(), 
 						(c) -> new ScheduleTimeSheet(c.getNo(), c.getWorking(), c.getLeave()),
-						(c) -> c.getLeave() != null && c.getWorking() != null));
+						(c) -> c.getLeave() != null && c.getWorking() != null),
+				this.numberDaySuspension.map(x -> x.toDomain())
+				);
 		domain.setVersion(this.version);
 		domain.getWorkInformation().setVer(this.version);
 		return domain.getWorkInformation();
 	}
 	
-	
-
 	private WorkInformation getWorkInfo(WorkInfoDto dto) {
 		return dto == null ? null : new WorkInformation(dto.getWorkTypeCode(), dto.getWorkTimeCode());
 	}
@@ -160,14 +167,114 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 		result.setBackStraightAtr(backStraightAtr);
 		result.setCalculationState(calculationState);
 		result.setGoStraightAtr(goStraightAtr);
-		result.setPlanWorkInfo(planWorkInfo == null ? null : planWorkInfo.clone());
 		
 		result.setScheduleTimeZone(ConvertHelper.mapTo(scheduleTimeZone, c -> c.clone()));
 		result.setDayOfWeek(dayOfWeek);
+		result.setNumberDaySuspension(numberDaySuspension.map(x -> x.clone()));
 		result.version = this.version;
 		if(this.isHaveData()){
 			result.exsistData();
 		}
 		return result;
 	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case ACTUAL:
+			return Optional.ofNullable(this.actualWorkInfo);
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (path.equals(PLAN + TIME_ZONE)) {
+			return (List<T>) this.scheduleTimeZone;
+		}
+		return new ArrayList<>();
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (path.equals(PLAN + TIME_ZONE)) {
+			this.scheduleTimeZone = (List<ScheduleTimeZoneDto>) value;
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case ACTUAL:
+			this.actualWorkInfo = (WorkInfoDto) value;
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public boolean isRoot() { return true; }
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case ACTUAL:
+			return new WorkInfoDto();
+		case (PLAN + TIME_ZONE):
+			return new ScheduleTimeZoneDto();
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public int size(String path) {
+		if (path.equals(PLAN + TIME_ZONE)) {
+			return 2;
+		}
+		return 0;
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case PLAN + TIME_ZONE:
+			return PropType.IDX_LIST;
+		case STRAIGHT_GO:
+		case STRAIGHT_BACK:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case STRAIGHT_GO:
+			return Optional.of(ItemValue.builder().value(this.goStraightAtr).valueType(ValueType.ATTR));
+		case STRAIGHT_BACK:
+			return Optional.of(ItemValue.builder().value(this.backStraightAtr).valueType(ValueType.ATTR));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case STRAIGHT_GO:
+			this.goStraightAtr = value.valueOrDefault(0); break;
+		case STRAIGHT_BACK:
+			this.backStraightAtr = value.valueOrDefault(0); break;
+		default:
+			break;
+		}
+	}
+	
 }

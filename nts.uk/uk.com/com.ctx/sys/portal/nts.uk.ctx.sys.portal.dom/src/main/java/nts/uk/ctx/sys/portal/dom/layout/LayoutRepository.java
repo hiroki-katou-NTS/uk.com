@@ -1,58 +1,63 @@
 package nts.uk.ctx.sys.portal.dom.layout;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * @author LamDT
- */
 public interface LayoutRepository {
 
 	/**
-	 * Find a Layout
-	 *
-	 * @param layoutID
-	 * @return Optional Layout
+	 * 
+	 * @param domain
 	 */
-	Optional<Layout> find(String layoutID);
-
+	void insert(Layout domain);
+	
 	/**
-	 * Find all Layout
-	 *
-	 * @param companyID
-	 * @return List Layout
+	 * 
+	 * @param domain
 	 */
-	List<Layout> findAll(String companyID);
-
+	void update(Layout domain);
+	
 	/**
-	 * Find Layout by PGType
-	 *
-	 * @param companyID
-	 * @param pgType
-	 * @return List Layout
+	 * 
+	 * @param CompanyId
+	 * @param topPageCode
 	 */
-	List<Layout> findByType(String companyID, int pgType);
-
+	void delete(String companyId, String topPageCd, BigDecimal layoutNo);
+	
 	/**
-	 * Remove a Layout
-	 *
-	 * @param companyID
-	 * @param layoutID
+	 * 
+	 * @param companyId
+	 * @param topPageCode
 	 */
-	void remove(String companyID, String layoutID);
-
+	void delete(String companyId, String topPageCode, List<BigDecimal> lstLayoutNo);
+	
 	/**
-	 * Add a Layout
-	 *
-	 * @param layout
+	 * 
+	 * @param companyId
+	 * @return
 	 */
-	void add(Layout layout);
-
+	List<Layout> getByCid(String companyId);
+	
 	/**
-	 * update a Layout
-	 *
-	 * @param layout
+	 * 
+	 * @param companyId
+	 * @param topPageCode
+	 * @return
 	 */
-	void update(Layout layout);
-
+	Optional<Layout> getByCidAndCode(String companyId, String topPageCd, BigDecimal layoutNo);
+	
+	Optional<WidgetSetting> getByCidAndCodeAndWidgetType(String companyId, String topPageCd, BigDecimal layoutNo, Integer widgetType);
+	
+	List<Layout> getByCidAndCode(String companyId, String topPageCd);
+	
+	List<BigDecimal> getLstLayoutNo(String topPageCd);
+	
+	void insertListWidget(Layout layout, List<WidgetSetting> listWidget);
+	
+	void updateListWidget(Layout layout, List<WidgetSetting> listWidget);
+	
+	void deleteListWidget(Layout layout, List<WidgetSetting> listWidget);
+	
+	void insertAndFlush(Layout domain);
 }

@@ -8,14 +8,13 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport
  * The Interface AttendanceRecordOutputSettingSetMemento.
  */
 public interface AttendanceRecordExportSettingSetMemento {
-
+	
 	/**
-	 * Gets the company id.
+	 * Sets the layout id.
 	 *
-	 * @param companyId the company id
-	 * @return the company id
+	 * @param layoutId the new layout id
 	 */
-	void setCompanyId(String companyId);
+	void setLayoutId(String layoutId);
 
 	/**
 	 * Sets the daily ouput item.
@@ -65,4 +64,20 @@ public interface AttendanceRecordExportSettingSetMemento {
 	 * @param nameUseAtr the new name use atr
 	 */
 	void setNameUseAtr(Integer nameUseAtr);
+	
+	/**
+	 * Font size - Screen B 
+	 * Sets the export font size.
+	 *
+	 * @param exportFontSize the new export font size
+	 */
+	void setExportFontSize(ExportFontSize exportFontSize);
+	
+	/**
+	 * A18_2 - Screen F
+	 * Sets the monthly confirmed display.
+	 *
+	 * @param monthlyConfirmedDisplay the new monthly confirmed display
+	 */
+	void setMonthlyConfirmedDisplay(MonthlyConfirmedDisplay monthlyConfirmedDisplay);
 }

@@ -27,7 +27,7 @@ public class PpemtSelectionItem extends ContractUkJpaEntity implements Serializa
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public PpemtSelectionPK selectionId;
+	public PpemtSelectionItemPK selectionId;
 
 	@Basic(optional = true)
 	@Column(name = "HIST_ID")

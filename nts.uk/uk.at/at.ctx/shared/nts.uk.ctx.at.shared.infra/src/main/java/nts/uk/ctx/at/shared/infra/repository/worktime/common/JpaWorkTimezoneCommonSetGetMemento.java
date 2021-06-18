@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
-import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneExtraordTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
@@ -65,10 +64,10 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetGetMemento#
 	 * getIntervalSet()
 	 */
-	@Override
-	public IntervalTimeSetting getIntervalSet() {
-		return new IntervalTimeSetting(new JpaIntervalTimeSettingGetMemento(entity));
-	}
+//	@Override
+//	public IntervalTimeSetting getIntervalSet() {
+//		return new IntervalTimeSetting(new JpaIntervalTimeSettingGetMemento(entity));
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -126,10 +125,11 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public WorkTimezoneStampSet getStampSet() {
-		return new WorkTimezoneStampSet(new JpaWorkTimezoneStampSetGetMemento(this.entity.getKshmtRoundingSets(),
-				this.entity.getKshmtPioritySets()));
+		return new WorkTimezoneStampSet(new JpaWorkTimezoneStampSetGetMemento(this.entity.getKshmtWtComStmp()));
 	}
 
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 

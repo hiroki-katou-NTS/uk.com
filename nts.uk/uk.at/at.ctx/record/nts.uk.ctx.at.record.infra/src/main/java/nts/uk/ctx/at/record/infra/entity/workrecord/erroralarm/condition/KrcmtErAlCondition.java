@@ -292,7 +292,7 @@ public class KrcmtErAlCondition extends ContractUkJpaEntity implements Serializa
 		int wtActualFilterAtr = 0;
 		List<KrcmtEralWktpPlan> lstWtPlan = new ArrayList<>();
 		List<KrcmtEralWktpActual> lstWtActual = new ArrayList<>();
-		if (wtCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
+		if (wtCompareAtr != FilterByCompare.SELECTED.value) {
 			PlanActualWorkType wtypeCondition = (PlanActualWorkType) conditionDomain.getWorkTypeCondition();
 			wtPlanActualOperator = wtypeCondition.getOperatorBetweenPlanActual().value;
 			wtPlanFilterAtr = wtypeCondition.getWorkTypePlan().isUse() ? 1 : 0;
@@ -318,7 +318,7 @@ public class KrcmtErAlCondition extends ContractUkJpaEntity implements Serializa
 		int whActualFilterAtr = 0;
 		List<KrcmtEralWktmPlan> lstWhPlan = new ArrayList<>();
 		List<KrcmtEralWktmActual> lstWhActual = new ArrayList<>();
-		if (whCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
+		if (whCompareAtr != FilterByCompare.SELECTED.value) {
 			PlanActualWorkTime wtimeCondition = (PlanActualWorkTime) conditionDomain.getWorkTimeCondition();
 			whPlanActualOperator = wtimeCondition.getOperatorBetweenPlanActual().value;
 			whPlanFilterAtr = wtimeCondition.getWorkTimePlan().isUse() ? 1 : 0;
@@ -476,7 +476,7 @@ public class KrcmtErAlCondition extends ContractUkJpaEntity implements Serializa
 		// Set WorkTypeCondition
 
 		condition.createWorkTypeCondition(entity.workTypeUseAtr == 1, entity.wtCompareAtr == null ? 0 : entity.wtCompareAtr);
-		if (entity.wtCompareAtr != null && entity.wtCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
+		if (entity.wtCompareAtr != null && entity.wtCompareAtr != FilterByCompare.SELECTED.value) {
 			condition.setWorkTypePlan((entity.wtPlanFilterAtr != null && entity.wtPlanFilterAtr == 1),
 					Optional.ofNullable(entity.lstWtPlan).orElse(Collections.emptyList()).stream()
 							.map(wtype -> wtype.krcstErAlWtPlanPK.workTypeCode).collect(Collectors.toList()));
@@ -485,14 +485,14 @@ public class KrcmtErAlCondition extends ContractUkJpaEntity implements Serializa
 							.map(wtype -> wtype.krcstErAlWtPlanActualPK.workTypeCode).collect(Collectors.toList()));
 			condition.chooseWorkTypeOperator(entity.wtPlanActualOperator);
 		} else {
-			condition.setWorkTypeSingle((entity.wtPlanFilterAtr != null && entity.wtPlanFilterAtr == 1),
-					Optional.ofNullable(entity.lstWtPlan).orElse(Collections.emptyList()).stream()
-							.map(wtype -> wtype.krcstErAlWtPlanPK.workTypeCode).collect(Collectors.toList()));
+				condition.setWorkTypeSingle((entity.wtPlanFilterAtr != null && entity.wtPlanFilterAtr == 1),
+						entity.lstWtPlan.isEmpty() ? Collections.emptyList() : Optional.ofNullable(entity.lstWtPlan).orElse(Collections.emptyList()).stream()
+								.map(wtype -> wtype.krcstErAlWtPlanPK.workTypeCode).collect(Collectors.toList()));	
 		}
 		// Set WorkTimeCondtion
 		condition.createWorkTimeCondition(entity.workingHoursUseAtr == 1,
 				entity.whCompareAtr == null ? 0 : entity.whCompareAtr);
-		if (entity.whCompareAtr != null && entity.whCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
+		if (entity.whCompareAtr != null && entity.whCompareAtr != FilterByCompare.SELECTED.value) {
 			condition.setWorkTimePlan((entity.whPlanFilterAtr != null && entity.whPlanFilterAtr == 1),
 					Optional.ofNullable(entity.lstWhPlan).orElse(Collections.emptyList()).stream()
 							.map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode).collect(Collectors.toList()));
@@ -501,9 +501,9 @@ public class KrcmtErAlCondition extends ContractUkJpaEntity implements Serializa
 							.map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode).collect(Collectors.toList()));
 			condition.chooseWorkTimeOperator(entity.whPlanActualOperator);
 		} else {
-			condition.setWorkTimeSingle((entity.whPlanFilterAtr != null && entity.whPlanFilterAtr == 1),
-					Optional.ofNullable(entity.lstWhPlan).orElse(Collections.emptyList()).stream()
-							.map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode).collect(Collectors.toList()));
+				condition.setWorkTimeSingle((entity.whPlanFilterAtr != null && entity.whPlanFilterAtr == 1),
+						Optional.ofNullable(entity.lstWhPlan).orElse(Collections.emptyList()).stream()
+								.map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode).collect(Collectors.toList()));	
 		}
 		// Set AttendanceItemCondition
 		List<ErAlAttendanceItemCondition<?>> conditionsGroup1 = Optional.ofNullable(entity.krcstErAlConGroup1)

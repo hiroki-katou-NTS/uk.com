@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalComment;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
@@ -50,7 +51,7 @@ public class RemandImpl implements RemandService {
 					approverInfor.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 					approverInfor.setAgentID("");
 					approverInfor.setApprovalDate(null);
-					approverInfor.setApprovalReason("");
+					approverInfor.setApprovalReason(new ApprovalComment(""));
 				});
 			});
 			approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
@@ -71,7 +72,7 @@ public class RemandImpl implements RemandService {
 		releaseAllAtOnceService.doReleaseAllAtOnce(companyID, rootStateID, rootType);
 		// ドメインモデル「承認ルートインスタンス」．承認フェーズ１．承認区分をupdateする
 		approvalRootStateRepository.findByID(rootStateID, rootType).ifPresent(appRoot -> {
-			appRoot.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder));
+			appRoot.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
 			appRoot.getListApprovalPhaseState().get(0).setApprovalAtr(ApprovalBehaviorAtr.ORIGINAL_REMAND);
 			approvalRootStateRepository.update(appRoot, rootType);
 		});

@@ -4,24 +4,30 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
+import java.util.List;
+
 //import java.util.List;
 import java.util.Optional;
 //import java.util.stream.Collectors;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
+import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
  * The Class JpaNursingVacationSettingGetMemento.
  */
 public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetMemento {
-    
+
     /** The entity nursing. */
     private KshmtHdnursingLeave entityNursing;
-    
+
     /**
      * Instantiates a new jpa nursing vacation setting get memento.
      *
@@ -31,10 +37,10 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
     public JpaNursingLeaveSettingGetMemento(KshmtHdnursingLeave entityNursing) {
         this.entityNursing = entityNursing;
     }
-    
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingGetMemento#getCompanyId()
      */
@@ -45,7 +51,7 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingGetMemento#getManageType()
      */
@@ -56,7 +62,7 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingGetMemento#getNursingCategory()
      */
@@ -67,39 +73,51 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingGetMemento#getStartMonthDay()
      */
     @Override
-    public Integer getStartMonthDay() {
-        return this.entityNursing.getStartMonthDay();
+    public MonthDay getStartMonthDay() {
+    	int month = this.entityNursing.getStartMonthDay() / 100;
+    	int day = this.entityNursing.getStartMonthDay() % 100;
+    	return new MonthDay(month, day);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingGetMemento#getMaxPersonSetting()
      */
     @Override
-    public MaxPersonSetting getMaxPersonSetting() {
-        return new MaxPersonSetting(new JpaMaxPersonSettingGetMemento(this.entityNursing));
+    public List<MaxPersonSetting> getMaxPersonSetting() {
+        return MaxPersonSetting.getList(new JpaMaxPersonSettingGetMemento(this.entityNursing));
     }
 
 	@Override
-	public Optional<Integer> getSpecialHolidayFrame() {
-		return Optional.of(this.entityNursing.getSpecialHolidayFrame());
+	public Optional<Integer> getHdspFrameNo() {
+		return Optional.ofNullable(this.entityNursing.getHdspFrameNo());
 	}
 
 	@Override
-	public Optional<Integer> getWorkAbsence() {
-		return Optional.of(this.entityNursing.getWorkAbsence());
+	public Optional<Integer> getAbsenceFrameNo() {
+		return Optional.ofNullable(this.entityNursing.getAbsenceFrameNo());
 	}
+
+	@Override
+	public TimeCareNursingSet getTimeCareNursingSet() {
+		return new TimeCareNursingSet(
+				EnumAdaptor.valueOf(this.entityNursing.getDigestiveUnit() != null ? this.entityNursing.getDigestiveUnit() : 0, TimeDigestiveUnit.class),
+				EnumAdaptor.valueOf(this.entityNursing.getTimeManageAtr() != null ? this.entityNursing.getTimeManageAtr(): 0, ManageDistinct.class ));
+
+
+	}
+
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * NursingVacationSettingGetMemento#getWorkTypeCodes()
      */

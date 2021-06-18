@@ -1,0 +1,42 @@
+.pullLeft {
+  width: 452px;
+  padding: 20px;
+  padding-bottom: 0;
+}
+
+.pullRight {
+  width: calc(100% - 510px);
+  padding-top: 20px;
+}
+
+
+.a41 .form-label {
+  display: flex;
+  align-items: center;
+}
+.panel-a4-a5,
+.button-grid {
+  padding-left: 12px;
+}
+
+.button-a423 {
+  margin: 10px 0;
+}
+
+.ui-iggrid .ui-iggrid-tablebody td.limited-label {
+  height: 23px;
+}
+.grid-list.fix-ie .ui-iggrid .ui-iggrid-tablebody td.limited-label {
+  height: 22px;
+  padding-top: 1px;
+}
+
+#grid-list_displayContainer, #grid-list_scrollContainer {
+  max-height: calc(100vh - 357px);
+  min-height: 300px;
+}
+
+#grid-list_container {
+  max-height: calc(100vh - 357px);
+  min-height: 324px;
+}

@@ -33,3 +33,18 @@
 	border-top-right-radius: 0px !important;
 	border-top-left-radius: 0px !important;
 }
+
+tr[data-role='filterrow'] .ui-igedit.ui-igedit-container.ui-widget.ui-corner-all.ui-state-default {
+	max-height: 24px !important;	
+}
+	
+.ui-igcombo-wrapper {	
+	height: 20px !important;	
+}
+	
+.ui-iggrid td.ui-iggrid-filtercell {
+	height: 20px !important;
+}
+.ui-iggrid .ui-iggrid-tablebody td {
+    white-space: nowrap;
+}

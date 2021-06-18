@@ -5,11 +5,13 @@
 }
 
 .screen-k .information {
+	padding-left:25px;
 	vertical-align: top;
 	display: inline-block;
 }
 
 .screen-k .form-group {
+	display:none;
 	margin-bottom: 10px;
 }
 

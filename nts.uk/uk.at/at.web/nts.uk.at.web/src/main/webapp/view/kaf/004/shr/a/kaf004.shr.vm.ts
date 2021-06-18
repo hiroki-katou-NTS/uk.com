@@ -1,153 +1,149 @@
 module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
 
     const template = `
-                    <div class="fixed-flex-layout-left">
+                <div class="cell" style="width: 120px; vertical-align: top;">
                     <!-- A6_1 -->
                     <div data-bind="ntsFormLabel: {
                             required: true,
                             text: $i18n('KAF004_13')
                         }"></div>
                 </div>
-                <div class="fixed-flex-layout-right">
+                <div class="cell">
                     <table class="table_content">
                         <tr>
-                            <td class="padding-5">
+                            <td class="time-padding" style="width: 125px">
                                 <!-- A6_2 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_21')"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_69')"></span>
 
                                 <!-- A6_3 -->
                                 <span class="label" id="label-A6_3" data-bind="text: $vm.workManagement.scheAttendanceTime"></span>
                             </td>
-                            <td class="padding-5">
+                            <td class="time-padding">
                                 <!-- A6_4 -->
                                 <span>
                                     <input data-bind="ntsTimeWithDayEditor: {
-                                    name: $i18n('KAF004_42'),
+                                    name: $i18n('KAF004_64'),
                                     value: $vm.workManagement.workTime,
                                     option: {timeWithDay: true, width: '90'},
                                     constraint: 'TimeWithDayAttr',
-                                    enable: !$vm.isEnable1()
+                                    enable: $vm.application().prePostAtr() && !$vm.delete1()
                                 }" />
                                 </span>
 
                                 <!-- A6_5 -->
                                 <span class="label" data-bind="text: $i18n('KAF004_54')"></span>
                             </td>
-                            <td class="padding-5">
+                            <td class="time-padding">
                                 <!-- A6_6 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition8_10(1)"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition8()"></span>
 
                                 <!-- A6_7 -->
                                 <span data-bind="ntsCheckBox: {
-                                    checked: $vm.lateOrEarlyInfo1().isCheck,
+                                    checked: $vm.delete1,
                                     text: $i18n('KAF004_57'),
-                                    enable: $vm.condition10Activation(1)
-                                }, visible: $vm.condition8_10(1)"></span>
+                                }, visible: $vm.condition8()"></span>
                             </td>
                         </tr>
                         <tr>
-                            <td class="padding-5">
+                            <td class="time-padding" style="width: 125px">
                                 <!-- A6_8 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_21')"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_70')"></span>
 
                                 <!-- A6_9 -->
                                 <span class="label" id="label-A6_9" data-bind="text: $vm.workManagement.scheWorkTime"></span>
                             </td>
-                            <td class="padding-5">
+                            <td class="time-padding">
                                 <!-- A6_10 -->
                                 <span>
                                     <input data-bind="ntsTimeWithDayEditor: {
-                                    name: $i18n('KAF004_42'),
+                                    name: $i18n('KAF004_65'),
                                     value: $vm.workManagement.leaveTime,
                                     option: {timeWithDay: true, width: '90'},
                                     constraint: 'TimeWithDayAttr',
-                                    enable: !$vm.isEnable2()
+                                    enable: $vm.application().prePostAtr() && !$vm.delete2()
                                 }" />
                                 </span>
 
                                 <!-- A6_11 -->
                                 <span class="label" data-bind="text: $i18n('KAF004_55')"></span>
                             </td>
-                            <td class="padding-5">
+                            <td class="time-padding">
                                 <!-- A6_12 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition8_10(2)"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition8()"></span>
 
                                 <!-- A6_13 -->
                                 <span data-bind="ntsCheckBox: {
-                                    checked: $vm.lateOrEarlyInfo2().isCheck,
+                                    checked: $vm.delete2,
                                     text: $i18n('KAF004_58'),
-                                    enable: $vm.condition10Activation(2)
-                                    }, visible: $vm.condition8_10(2)"></span>
+                                    }, visible: $vm.condition8()"></span>
                             </td>
                         </tr>
                         <tr data-bind="visible: $vm.condition2()">
-                            <td class="padding-5">
+                            <td class="time-padding" style="width: 125px">
                                 <!-- A6_14 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_21')"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_71')"></span>
 
                                 <!-- A6_15 -->
                                 <span class="label" id="label-A6_15" data-bind="text: $vm.workManagement.scheAttendanceTime2"></span>
                             </td>
-                            <td class="padding-5">
+                            <td class="time-padding">
                                 <!-- A6_16 -->
                                 <span>
                                     <input data-bind="ntsTimeWithDayEditor: {
-                                    name: $i18n('KAF004_42'),
+                                    name: $i18n('KAF004_66'),
                                     value: $vm.workManagement.workTime2,
                                     option: {timeWithDay: true, width: '90'},
                                     constraint: 'TimeWithDayAttr',
-                                    enable: !$vm.isEnable3()
+                                    enable: $vm.application().prePostAtr() && !$vm.delete3()
                                 }" />
                                 </span>
 
                                 <!-- A6_17 -->
                                 <span class="label" data-bind="text: $i18n('KAF004_54')"></span>
                             </td>
-                            <td class="padding-5">
+                            <td class="time-padding">
                                 <!-- A6_18 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition2_8_10(3)"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition2() && $vm.condition8()"></span>
 
                                 <!-- A6_19 -->
                                 <span data-bind="ntsCheckBox: {
-                                    checked: $vm.lateOrEarlyInfo3().isCheck,
+                                    checked: $vm.delete3,
                                     text: $i18n('KAF004_60'),
-                                    enable: $vm.condition10Activation(3)
-                                    }, visible: $vm.condition2_8_10(3)"></span>
+                                    }, visible: $vm.condition2() && $vm.condition8()"></span>
                             </td>
                         </tr>
                         <tr data-bind="visible: $vm.condition2()">
-                            <td class="padding-5">
+                            <td class="time-padding" style="width: 125px">
                                 <!-- A6_20 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_21')"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_72')"></span>
 
                                 <!-- A6_21 -->
                                 <span class="label" id="label-A6_21" data-bind="text: $vm.workManagement.scheWorkTime2"></span>
                             </td>
-                            <td class="padding-5">
+                            <td class="time-padding">
                                 <!-- A6_22 -->
                                 <span>
                                     <input data-bind="ntsTimeWithDayEditor: {
-                                    name: $i18n('KAF004_42'),
+                                    name: $i18n('KAF004_67'),
                                     value: $vm.workManagement.leaveTime2,
                                     option: {timeWithDay: true, width: '90'},
                                     constraint: 'TimeWithDayAttr',
-                                    enable: !$vm.isEnable4()
+                                    enable: $vm.application().prePostAtr() && !$vm.delete4()
                                 }" />
                                 </span>
 
                                 <!-- A6_23 -->
                                 <span class="label" data-bind="text: $i18n('KAF004_55')"></span>
                             </td>
-                            <td class="padding-5">
+                            <td class="time-padding">
                                 <!-- A6_24 -->
-                            <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition2_8_10(4)"></span>
+                            <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition2() && $vm.condition8()"></span>
 
                             <!-- A6_25 -->
                             <span data-bind="ntsCheckBox: {
-                                    checked: $vm.lateOrEarlyInfo4().isCheck,
+                                    checked: $vm.delete4,
                                     text: $i18n('KAF004_61'),
-                                    enable: $vm.condition10Activation(4)
-                                    }, visible: $vm.condition2_8_10(4)"></span>
+                                    }, visible: $vm.condition2() && $vm.condition8()"></span>
                             </td>
                         </tr>
                     </table>

@@ -1,15 +1,20 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.common.timerounding.Unit.Direction;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceItemOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 
 /**
  * 月別実績の丸め設定
@@ -20,8 +25,6 @@ public class RoundingSetOfMonthly extends AggregateRoot {
 
 	/** 会社ID */
 	private String companyId;
-	/** 時間外超過の時間丸め */
-	private Optional<TimeRoundingOfExcessOutsideTime> timeRoundingOfExcessOutsideTime;
 	/** 項目丸め設定 */
 	private Map<Integer, ItemRoundingSetOfMonthly> itemRoundingSet;
 	
@@ -33,59 +36,77 @@ public class RoundingSetOfMonthly extends AggregateRoot {
 		
 		super();
 		this.companyId = companyId;
-		this.timeRoundingOfExcessOutsideTime = Optional.empty();
 		this.itemRoundingSet = new HashMap<>();
 	}
-	
+
 	/**
 	 * ファクトリー
 	 * @param companyId 会社ID
-	 * @param timeRoundingOfExcessOutsideTime 時間外超過の時間丸め
 	 * @param itemRoundingSets 項目丸め設定
 	 * @return 月別実績の丸め設定
 	 */
 	public static RoundingSetOfMonthly of(
 			String companyId,
-			Optional<TimeRoundingOfExcessOutsideTime> timeRoundingOfExcessOutsideTime,
 			List<ItemRoundingSetOfMonthly> itemRoundingSets){
 
 		RoundingSetOfMonthly domain = new RoundingSetOfMonthly(companyId);
-		domain.timeRoundingOfExcessOutsideTime = timeRoundingOfExcessOutsideTime;
 		for (val itemRoundingSet : itemRoundingSets){
 			val attendanceItemId = itemRoundingSet.getAttendanceItemId();
 			domain.itemRoundingSet.putIfAbsent(attendanceItemId, itemRoundingSet);
 		}
 		return domain;
 	}
+	
+	/** 月別実績の時間項目を丸める */
+	public AttendanceTimeOfMonthly round(Require require, AttendanceTimeOfMonthly monthlyAttendanceTime) {
+			
+		val converter = require.createMonthlyConverter();
+		converter.withAttendanceTime(monthlyAttendanceTime);
 
-	/**
-	 * 時間外超過丸め
-	 * @param attendanceItemId 勤怠項目ID
-	 * @param attendanceTimeMonth 勤怠月間時間　（丸め前）
-	 * @return 勤怠月間時間　（丸め後）
-	 */
-	public AttendanceTimeMonth excessOutsideRound(int attendanceItemId, AttendanceTimeMonth attendanceTimeMonth){
+		/** 丸め設定を取得する */
+		this.itemRoundingSet.entrySet().forEach(v -> {
+			/** 月別実績の項目の値を取得 */
+			List<ItemValue> values = getMonthlyItemValue(converter, v);
 
-		int minutes = attendanceTimeMonth.v();
+			/** 丸め処理を行う */
+			values = round(v.getValue(), values);
+			
+			converter.merge(values);
+		});
 		
-		// 時間外超過の時間丸めが設定されていない時、項目丸め設定を参照する
-		if (!this.timeRoundingOfExcessOutsideTime.isPresent()){
-			return this.itemRound(attendanceItemId, attendanceTimeMonth);
-		}
-
-		val excessOutsideRoundSet = this.timeRoundingOfExcessOutsideTime.get();
-		switch (excessOutsideRoundSet.getRoundingProcess()) {
-		case ROUNDING_DOWN:
-			minutes = excessOutsideRoundSet.getRoundingUnit().round(minutes, Direction.TO_BACK);
-			break;
-		case ROUNDING_UP:
-			minutes = excessOutsideRoundSet.getRoundingUnit().round(minutes, Direction.TO_FORWARD);
-			break;
-		case FOLLOW_ELEMENTS:
-			return this.itemRound(attendanceItemId, attendanceTimeMonth);
-		}
-		return new AttendanceTimeMonth(minutes);
+		/** 月別実績の勤怠時間を返す */
+		return converter.toAttendanceTime().get();
 	}
+
+	private List<ItemValue> round(ItemRoundingSetOfMonthly roundSet, List<ItemValue> values) {
+		
+		return values.stream().map(c -> {
+			if (c.value() != null) {
+				/** 丸め処理を行う */
+				c.value(roundSet.getRoundingSet().round(c.value()));
+			}
+			
+			return c;
+		}).collect(Collectors.toList());
+	}
+
+	/** 月別実績の項目の値を取得 */
+	private List<ItemValue> getMonthlyItemValue(MonthlyRecordToAttendanceItemConverter converter,
+			Entry<Integer, ItemRoundingSetOfMonthly> v) {
+		
+		if (v.getKey() == AttendanceItemOfMonthly.FLEX_TIME.value) 
+			
+			return converter.convert(Arrays.asList(v.getKey(), AttendanceItemOfMonthly.FLEX_SHORTAGE_TIME.value, 
+														AttendanceItemOfMonthly.FLEX_EXCESS_TIME.value));
+
+		return converter.convert(Arrays.asList(v.getKey()));
+	}
+	
+	public static interface Require {
+		
+		public MonthlyRecordToAttendanceItemConverter createMonthlyConverter();
+	}
+
 
 	/**
 	 * 項目丸め
@@ -94,7 +115,7 @@ public class RoundingSetOfMonthly extends AggregateRoot {
 	 * @return 勤怠月間時間　（丸め後）
 	 */
 	public AttendanceTimeMonth itemRound(int attendanceItemId, AttendanceTimeMonth attendanceTimeMonth){
-		
+
 		int minutes = attendanceTimeMonth.v();
 		if (!this.itemRoundingSet.containsKey(attendanceItemId)) return attendanceTimeMonth;
 		val targetRoundingSet = this.itemRoundingSet.get(attendanceItemId);

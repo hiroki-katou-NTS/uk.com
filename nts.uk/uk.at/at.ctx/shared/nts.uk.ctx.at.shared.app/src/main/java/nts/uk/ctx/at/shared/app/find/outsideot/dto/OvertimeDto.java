@@ -4,12 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.outsideot.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.UseClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeName;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeSetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeValue;
 
 /**
@@ -17,7 +20,9 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overti
  */
 @Getter
 @Setter
-public class OvertimeDto implements OvertimeSetMemento{
+@NoArgsConstructor
+@AllArgsConstructor
+public class OvertimeDto {
 	
 	/** The name. */
 	private String name;
@@ -34,52 +39,19 @@ public class OvertimeDto implements OvertimeSetMemento{
 	/** The super holiday 60 H occurs. */
 	private Boolean superHoliday60HOccurs;
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.overtime.OvertimeSetMemento#setSuperHoliday60HOccurs(boolean)
-	 */
-	@Override
-	public void setSuperHoliday60HOccurs(boolean superHoliday60HOccurs) {
-		this.superHoliday60HOccurs = superHoliday60HOccurs;
+	public static OvertimeDto of(Overtime domain) {
+		
+		return new OvertimeDto(domain.getName().v(), domain.getOvertime().v(), 
+								domain.getOvertimeNo().value, domain.isUseClass(),
+								domain.isSuperHoliday60HOccurs());
 	}
-
-	/**
-	 * Sets the use classification.
-	 *
-	 * @param useClassification the new use classification
-	 */
-	@Override
-	public void setUseClassification(UseClassification useClassification) {
-		this.useClassification = (useClassification.value == UseClassification.UseClass_Use.value);
-	}
-
-	/**
-	 * Sets the name.
-	 *
-	 * @param name the new name
-	 */
-	@Override
-	public void setName(OvertimeName name) {
-		this.name = name.v();
-	}
-
-	/**
-	 * Sets the overtime.
-	 *
-	 * @param overtime the new overtime
-	 */
-	@Override
-	public void setOvertime(OvertimeValue overtime) {
-		this.overtime = overtime.v();
-	}
-
-	/**
-	 * Sets the overtime no.
-	 *
-	 * @param overtimeNo the new overtime no
-	 */
-	@Override
-	public void setOvertimeNo(OvertimeNo overtimeNo) {
-		this.overtimeNo = overtimeNo.value;
+	
+	public Overtime domain() {
+		
+		return new Overtime(superHoliday60HOccurs,
+				useClassification ? UseClassification.UseClass_Use : UseClassification.UseClass_NotUse,
+				new OvertimeName(name), new OvertimeValue(overtime), 
+				EnumAdaptor.valueOf(overtimeNo, OvertimeNo.class));
 	}
 	
 }

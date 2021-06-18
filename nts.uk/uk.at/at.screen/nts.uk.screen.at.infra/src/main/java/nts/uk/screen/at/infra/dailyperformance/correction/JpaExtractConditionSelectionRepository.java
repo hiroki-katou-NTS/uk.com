@@ -19,7 +19,7 @@ public class JpaExtractConditionSelectionRepository extends JpaRepository implem
 	@Override
 	public List<ErrorAlarmWorkRecordDto> getErrorAlarmWorkRecordList(String companyId) {
 		List<KwrmtErAlWorkRecord> lstData = this.queryProxy().query(FIND_ERROR_ALARM_BY_COMPANY, KwrmtErAlWorkRecord.class)
-				.setParameter("companyId", companyId).setParameter("useAtr", 1).getList();
+				.setParameter("companyId", companyId).setParameter("useAtr", true).getList();
 		return lstData.stream().map(entity -> toDto(entity)).collect(Collectors.toList());
 	}
 

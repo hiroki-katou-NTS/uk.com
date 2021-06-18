@@ -1,9 +1,21 @@
 package nts.uk.ctx.at.request.app.command.application.businesstrip;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -13,6 +25,7 @@ import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.businesstrip.service.BusinessTripService;
+import nts.uk.ctx.at.request.dom.application.businesstrip.service.ResultCheckInputCode;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
@@ -23,17 +36,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
-import org.apache.logging.log4j.util.Strings;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -103,9 +105,9 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
 
         //アルゴリズム「出張申請暫定残数を更新する」を実行する
         //アルゴリズム「暫定データの登録」を実行する
-//        this.interimRemainDataMngRegisterDateChange.registerDateChange(cid,
-//                application.getEmployeeID(),
-//                businessTrip.getInfos().stream().map(i -> i.getDate()).collect(Collectors.toList()));
+        this.interimRemainDataMngRegisterDateChange.registerDateChange(cid,
+                application.getEmployeeID(),
+                businessTrip.getInfos().stream().map(i -> i.getDate()).collect(Collectors.toList()));
 
         // アルゴリズム「4-2.詳細画面登録後の処理」を実行する
         return detailAfterUpdate.processAfterDetailScreenRegistration(cid, application.getAppID(), infoOutput.getAppDispInfoStartup());
@@ -115,12 +117,13 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
 
         String inputSid = appDispInfoStartupOutput.getAppDetailScreenInfo().get().getApplication().getEnteredPersonID();
         String cid = AppContexts.user().companyId();
+        List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(inputSid));
 
         if (businessTrip.getInfos().isEmpty()) {
             throw new BusinessException("Msg_1703");
         }
         // loop 年月日　in　期間
-        businessTrip.getInfos().stream().forEach(i -> {
+        businessTrip.getInfos().forEach(i -> {
 
             String wkTypeCd = i.getWorkInformation().getWorkTypeCode().v();
             String wkTimeCd = i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v();
@@ -133,20 +136,26 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
             }
 
             // アルゴリズム「出張申請就業時間帯チェック」を実行する
-            businessTripService.checkInputWorkCode(wkTypeCd, wkTimeCd, i.getDate(), workTimeStart, workTimeEnd);
+            ResultCheckInputCode checkRequiredCode = businessTripService.checkRequireWorkTimeCode(wkTypeCd, wkTimeCd, workTimeStart, workTimeEnd, false);
+            if (!checkRequiredCode.isResult()) {
+                // エラーを「年月日＋メッセージ」とする
+                throw new BusinessException(checkRequiredCode.getMsg(), i.getDate().toString());
+            }
+
+            // アルゴリズム「申請の矛盾チェック」を実行する
+            this.commonAlgorithm.appConflictCheck(
+                    cid,
+                    employeeInfoImports.get(0),
+                    Arrays.asList(i.getDate()),
+                    Arrays.asList(i.getWorkInformation().getWorkTypeCode().v()),
+                    appDispInfoStartupOutput
+                            .getAppDispInfoWithDateOutput()
+                            .getOpActualContentDisplayLst().isPresent() ?
+                            appDispInfoStartupOutput
+                                    .getAppDispInfoWithDateOutput()
+                                    .getOpActualContentDisplayLst().get() : Collections.emptyList()
+            );
         });
 
-        List<GeneralDate> dates = businessTrip.getInfos().stream().map(i -> i.getDate()).collect(Collectors.toList());
-        List<String> workTypeCodes = businessTrip.getInfos().stream().map(i -> i.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList());
-
-        List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(inputSid));
-        // 申請の矛盾チェック
-        this.commonAlgorithm.appConflictCheck(
-                cid,
-                employeeInfoImports.get(0),
-                dates,
-                workTypeCodes,
-                appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get()
-        );
     }
 }

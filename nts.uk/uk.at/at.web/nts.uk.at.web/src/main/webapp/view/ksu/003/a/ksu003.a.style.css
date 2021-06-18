@@ -1,0 +1,346 @@
+/* A1_4 */
+#extable-area {
+	height: auto !important;
+	margin-top: -5px;
+}
+
+#ui-area{
+	margin-top : -14px;
+}
+
+#functions-area {
+	min-height: 40px !important;
+}
+
+#extable-ksu003 {
+	width: auto !important;
+	margin-top: 3px;
+}
+
+
+#A1_1 {
+	margin-left: 0px !important;
+}
+
+/* A2_1 */
+#period-setting {
+	background-color: #edfac2 !important;
+	border: 1px solid #cccccc !important;
+	width: 310px;
+	height: 25px;
+	margin-left: 10px;
+}
+
+.ui-igcombo-list{
+	max-height: 130px !important;
+}
+
+#targetDate, #prev-button, #next-button, #functon-area-row2-left,
+	#operation-unit {
+	float: left;
+}
+
+.event-button{
+	width: 320px;
+}
+
+#functon-area-row2-center {
+	width: 450px !important;;
+	margin-top: 25px;
+	float: left;
+}
+
+#functon-area-row2 {
+	min-width: 1185px;
+}
+
+#org-name {
+	margin-left: 50px !important;
+	text-align: center;
+}
+
+#display-format {
+	margin-top: 19px;
+}
+
+#label-display {
+	margin-left: 85px;
+	/* new UI */
+	margin-top: 23px;
+}
+
+
+#hai-cham {
+	/* new UI */
+	margin-top: 23px;
+}
+
+/* new UI */
+#functon-area-row2-right{
+    display: inline-flex;
+}
+
+
+.nts-switch-button{
+	width: 90px !important;
+}
+
+/* Note color A12 */
+.square {
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	vertical-align: text-top;
+}
+
+#settingTimeGrid{
+	height: 22px !important;
+    width: 18px !important;
+    box-shadow: none !important;
+}
+
+.popup-div {
+	width: 152px;
+	display: inline-block;
+	margin-bottom: 10px
+}
+
+/* new UI */
+#note-color {
+	margin-top: 21px;
+    float: right;
+    margin-right: 23px;
+}
+
+#combo-box {
+	margin-left: 10px;
+	width: 75px;
+}
+
+#operation-unit {
+	margin-top: 5px;
+	margin-left: -1px;
+}
+
+#functon-area-row3-left {
+	margin-left: 20px;
+}
+
+#check-time{
+	margin-left: 30px;
+}
+
+ #check-name {
+	margin-left: -3px;
+}
+
+#hr-row2 {
+	margin-top: 18px;
+}
+
+.toLeft {
+	width: 27px;
+	height: 15px;
+	margin-left: 585px;
+	float: left;
+	margin-top: -10px;
+}
+
+#left-button2 {
+	margin-left: -4px;
+	margin-top: -3px;
+}
+
+#left-button {
+	margin-left: -5px;
+	margin-top: -3px;
+}
+
+.xcell {
+	text-align: center;
+}
+
+.icon-leftmost {
+	background-image:
+		url(/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/7.png);
+	height: 20px;
+	width: 20px;
+	left: 2px !important;
+	margin-top: 4px !important
+}
+
+.tooltip-styling:before {
+	width: 0 !important;
+	height: 0 !important;
+	position: absolute !important;
+	content: " " !important;
+	border-top: solid transparent 15px !important;
+	border-bottom: solid transparent 25px !important;
+	border-right-style: solid !important;
+	border-right-width: 25px !important;
+	border-right-color: #edfac2 !important;
+	top: 20px !important;
+	left: -25px !important;
+}
+
+.tooltip-styling {
+	background-color: #edfac2 !important;
+	box-shadow: 2px 2px 2px #95A5A6;
+	top: 47px !important; 
+	border-radius : 20px !important;
+	border: solid 1px #cccccc !important;
+	display: inline-block !important;
+	padding-left: 4px !important;
+	padding-top: 4px !important;
+	left: 375.984px  !important;
+	border-radius: 20px !important;
+}
+
+#extable-ksu003 td, #extable-ksu003 td>* {
+	font-size: 10.5px;
+}
+
+.ex-editor > input {
+	font-size: 10.5px !important;
+	text-align: center;
+}
+#extable-ksu003 > div.ex-body-leftmost > table > tbody > tr > td.xseal > button{
+	pointer-events:none;
+	cursor: not-allowed;
+    background-color: #DDDDD2 !important;
+}
+
+#extable-ksu003 > div.ex-body-leftmost > table > tbody > tr > td.xcell > a.x-link:hover {
+	text-decoration: none !important;
+	color:black !important;
+}
+
+#extable-ksu003 > div.ex-body-leftmost > table > tbody > tr > td.xcell > a.x-link {
+	text-align: left;
+}
+.xheader *, .ex-body-detail *, .ex-body-vert-sum *, .ex-body-horz-sum *
+	{
+	text-align: center;
+}
+
+.x-link:hover {
+	cursor: pointer !important;
+}
+
+.panel-frame:focus {
+    background-color: Red;
+}
+
+ .x-link {
+	margin-top : 7px;
+	white-space: nowrap;
+} 
+
+#note-sort {
+	margin-top: 5px !important;
+}
+
+html {
+	overflow: hidden;
+} 
+
+#contents-area{
+	overflow: hidden;
+	margin-left: -3px;
+}
+
+#down-button, #down-button2 {
+	margin-left: -6px;
+	margin-top: 2px;
+}
+
+.toDown {
+	width: 15px;
+	height: 27px;
+	float: left;
+	margin-left: -5px;
+}
+
+#A5_1 {
+	width: 470px;
+	border: solid 6px #fff !important;
+	border-radius: 3.5px !important;
+	box-shadow: 1px 1px 5px 2px #888 !important;
+	padding: 12px;
+	background-color: #F8EFD4 !important;
+	display: none;
+	z-index: 2000 !important;
+}
+
+#sort-label-note {
+	float: left;
+	margin-top: 20px;
+	width: 257px !important;
+}
+
+.x-button {
+	width: 36px !important;
+	height: 22px !important;
+}
+
+#A3_4 {
+	height: 65px;
+	width: 240px !important;
+	border: solid 6px #fff !important;
+	border-radius: 3.5px !important;
+	box-shadow: 1px 1px 5px 2px #888 !important;
+	padding: 12px;
+	background-color: #F8EFD4 !important;
+	display: none;
+	z-index: 1999 !important;
+}
+
+/** A3_4 */
+#combo-box-sort {
+	float: left;
+	margin-top: -26px;
+	margin-left: 58px;
+	width: 117px;
+}
+
+#A14 {
+	height: 158px !important;
+    width: 308px !important;
+	border: solid 6px #fff !important;
+	border-radius: 3.5px !important;
+	box-shadow: 1px 1px 5px 2px #888 !important;
+	padding: 12px;
+	background-color: #F8EFD4 !important;
+	display: none;
+	z-index: 2000 !important;
+}
+
+#combo-box-start, #combo-box-start-2{
+	width: 60px !important;
+}
+
+#org-name {
+	animation: blinkingText 4.2s infinite;
+}
+
+#contain-view-right-ksu003 {
+	display: inline-block;
+    margin-top: -96px !important;
+    margin-left: 290px;
+    border: 1px solid #cccccc;
+    background: rgb(219, 238, 244);
+    padding: 5px;
+    width: 1000px;
+    height: 87px;
+    border-radius: 5px;
+    font-size: 11.5px !important;
+    margin-bottom: 12px !important;
+}
+
+#display-range, #combo-box-start{
+	margin-left: 39px;
+}
+
+#A14_11 {
+    margin-left: 150px;
+}

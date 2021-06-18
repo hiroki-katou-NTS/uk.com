@@ -49,18 +49,18 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
     /** The annual repo. */
     @Inject
     private AnnualPaidLeaveSettingRepository annualRepo;
-    
+
     /** The finder. */
 	@Inject
 	private RetentionYearlyFinder finder;
-	
+
 	/** The save. */
 	@Inject
 	private RetentionYearlySaveCommandHandler save;
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
      * .CommandHandlerContext)
@@ -71,7 +71,7 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
 
         String companyId = AppContexts.user().companyId();
         AnnualPaidLeaveSetting domain = this.annualRepo.findByCompanyId(companyId);
-        
+
         // Check field enable/disable
         this.validateField(command, domain);
 
@@ -81,22 +81,22 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         } else {
             this.annualRepo.add(setting);
         }
-        
+
         //get ManagementCategory from DB
         int yearManageTypeDB = domain != null ? domain.getYearManageType().value : -1;
        //check managementCategory change
         boolean annualManage = command.getAnnualManage() != yearManageTypeDB;
         boolean manage = command.getAnnualManage() == ManageDistinct.YES.value;
-        
+
         if (annualManage) {
             val annualPaidLeaveSettingEvent = new AnnualPaidLeaveSettingDomainEvent(manage);
             annualPaidLeaveSettingEvent.toBePublished();
-            
+
             if(manage){
             	 boolean addAttendanceDay = command.getAddAttendanceDay() == ManageDistinct.YES.value;
             	 val retentionYearlySettingEvent = new RetentionYearlySettingDomainEvent(addAttendanceDay);
                  retentionYearlySettingEvent.toBePublished();
-                 
+
                  //get timeManageType from DB
                  int timeManageTypeDB = domain != null ? domain.getTimeSetting().getTimeManageType().value : -1;
                  //check timeManageType change
@@ -106,15 +106,15 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
                 	 val timeAnnualSettingEvent = new TimeAnnualSettingDomainEvent(flatManage);
                      timeAnnualSettingEvent.toBePublished();
                  }
-                 
+
                  //get timeManageType from DB
-                 int maxManageSemiVacationDB = domain != null ? domain.getManageAnnualSetting().getHalfDayManage().getManageType().value : -1;
+                /* int maxManageSemiVacationDB = domain != null ? domain.getManageAnnualSetting().getHalfDayManage().getManageType().value : -1;
                  //check timeManageType change
-                 boolean maxManageSemiVacation = command.getMaxManageSemiVacation() != maxManageSemiVacationDB;
-                 if(maxManageSemiVacation){
+                 boolean maxManageSemiVacation = command.getMaxManageSemiVacation() != maxManageSemiVacationDB;*/
+                 if(command.getMaxManageSemiVacation().intValue() == 1){
                 	 boolean flatManage = command.getMaxManageSemiVacation() == ManageDistinct.YES.value;
                 	 val manageAnnualSettingEvent = new ManageAnnualSettingDomainEvent(flatManage);
-                     manageAnnualSettingEvent.toBePublished(); 
+                     manageAnnualSettingEvent.toBePublished();
                  }
             }
             else {
@@ -138,7 +138,7 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
             	save.handle(saveCommand);
             }
         }
-        if(manage){ 
+        if(manage){
         	 //get timeManageType from DB
             int timeManageTypeDB = domain != null ? domain.getTimeSetting().getTimeManageType().value : -1;
             //check timeManageType change
@@ -148,15 +148,15 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
            	 val timeAnnualSettingEvent = new TimeAnnualSettingDomainEvent(flatManage);
                 timeAnnualSettingEvent.toBePublished();
             }
-            
+
             //get timeManageType from DB
-            int maxManageSemiVacationDB = domain != null ? domain.getManageAnnualSetting().getHalfDayManage().getManageType().value : -1;
+           // maxManageSemiVacationDB = domain != null ? domain.getManageAnnualSetting().getHalfDayManage().getManageType().value : -1;
             //check timeManageType change
-            boolean maxManageSemiVacation = command.getMaxManageSemiVacation() != maxManageSemiVacationDB;
-            if(maxManageSemiVacation){
+          //  boolean maxManageSemiVacation = command.getMaxManageSemiVacation() != maxManageSemiVacationDB;
+            if(command.getMaxManageSemiVacation().intValue() == 1){
            	 boolean flatManage = command.getMaxManageSemiVacation() == ManageDistinct.YES.value;
            	 val manageAnnualSettingEvent = new ManageAnnualSettingDomainEvent(flatManage);
-                manageAnnualSettingEvent.toBePublished(); 
+                manageAnnualSettingEvent.toBePublished();
             }
         }
     }
@@ -180,22 +180,48 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
             // Manage Annual Setting
             command.setAddAttendanceDay(
                     setttingDB.getManageAnnualSetting().isWorkDayCalculate() == TRUE ? BIT_TRUE : BIT_FALSE);
-            command.setMaxManageSemiVacation(setttingDB.getManageAnnualSetting().getHalfDayManage().manageType.value);
+			if (setttingDB.getManageAnnualSetting().getHalfDayManage().manageType == null) {
+				command.setMaxManageSemiVacation(0);
+			} else {
+				command.setMaxManageSemiVacation(
+						setttingDB.getManageAnnualSetting().getHalfDayManage().manageType.value);
+			}
+			if(setttingDB.getManageAnnualSetting().getHalfDayManage().reference == null) {
+				command.setMaxNumberSemiVacation(0);	
+			}else{
             command.setMaxNumberSemiVacation(setttingDB.getManageAnnualSetting().getHalfDayManage().reference.value);
-            command.setMaxNumberCompany(setttingDB.getManageAnnualSetting().getHalfDayManage()
-                    .maxNumberUniformCompany.v());
-            command.setMaxGrantDay(setttingDB.getManageAnnualSetting().getMaxGrantDay().v());
-            command.setMaxRemainingDay(setttingDB.getManageAnnualSetting().getRemainingNumberSetting()
-                    .remainingDayMaxNumber.v());
+            }
+            if(setttingDB.getManageAnnualSetting().getHalfDayManage()
+                    .maxNumberUniformCompany.v() == null){
+            	command.setMaxNumberCompany(5);	
+            }else{
+            	command.setMaxNumberCompany(setttingDB.getManageAnnualSetting().getHalfDayManage()
+                        .maxNumberUniformCompany.v());	
+            }
+            
+ //           command.setMaxGrantDay(setttingDB.getManageAnnualSetting().getMaxGrantDay().v());
+//            command.setMaxRemainingDay(setttingDB.getManageAnnualSetting().getRemainingNumberSetting()
+//                    .remainingDayMaxNumber.v());
             command.setNumberYearRetain(setttingDB.getManageAnnualSetting().getRemainingNumberSetting()
                     .retentionYear.v());
             command.setAnnualPriority(setttingDB.getAcquisitionSetting().annualPriority.value);
-            command.setRemainingNumberDisplay(setttingDB.getManageAnnualSetting().getDisplaySetting()
-                    .remainingNumberDisplay.value);
-            command.setNextGrantDayDisplay(setttingDB.getManageAnnualSetting().getDisplaySetting()
-                    .nextGrantDayDisplay.value);            
+//            command.setRemainingNumberDisplay(setttingDB.getManageAnnualSetting().getDisplaySetting()
+//                    .remainingNumberDisplay.value);
+//            command.setNextGrantDayDisplay(setttingDB.getManageAnnualSetting().getDisplaySetting()
+//                    .nextGrantDayDisplay.value);
+            if(setttingDB.getManageAnnualSetting().getRemainingNumberSetting()
+                    .retentionYear.v() == null){
+            	command.setNumberYearRetain(2);
+            }else{
+            command.setNumberYearRetain(setttingDB.getManageAnnualSetting().getRemainingNumberSetting()
+                    .retentionYear.v());}
+            command.setAnnualPriority(setttingDB.getAcquisitionSetting().annualPriority.value);
             command.setYearlyOfDays(setttingDB.getManageAnnualSetting().getYearlyOfNumberDays().v());
-            command.setRoundProcessCla(setttingDB.getManageAnnualSetting().getHalfDayManage().roundProcesCla.value);
+			if (setttingDB.getManageAnnualSetting().getHalfDayManage().roundProcesCla == null) {
+				command.setRoundProcessCla(0);
+			} else {
+				command.setRoundProcessCla(setttingDB.getManageAnnualSetting().getHalfDayManage().roundProcesCla.value);
+			}
 
             // Time Leave Setting
             command.setTimeManageType(setttingDB.getTimeSetting().getTimeManageType().value);
@@ -204,10 +230,10 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
             command.setReference(setttingDB.getTimeSetting().getMaxYearDayLeave().reference.value);
             command.setMaxTimeDay(setttingDB.getTimeSetting().getMaxYearDayLeave().maxNumberUniformCompany.v());
             command.setRoundProcessClassific(setttingDB.getTimeSetting().getRoundProcessClassific().value);
-            
+
             return;
         }
-        
+
         // ========= MANAGE =========
         // Manage Annual Setting
         if (command.getMaxNumberSemiVacation() == MaxDayReference.ReferAnnualGrantTable.value) {
@@ -224,7 +250,7 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
             command.setMaxTimeDay(setttingDB.getTimeSetting().getMaxYearDayLeave().maxNumberUniformCompany.v());
         }
     }
-    
+
     /**
      * Inits the value.
      *
@@ -232,15 +258,14 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
      */
     private void initValue(AnnualPaidLeaveSaveCommand command) {
         command.setAddAttendanceDay(ManageDistinct.YES.value);
-        
+
         // Manage Annual Setting
         command.setMaxManageSemiVacation(ManageDistinct.YES.value);
         command.setMaxNumberSemiVacation(MaxDayReference.CompanyUniform.value);
         command.setMaxNumberCompany(null);
         // TODO: Check value default
-        command.setMaxGrantDay(null);
         command.setMaxRemainingDay(null);
-        command.setNumberYearRetain(null);
+        command.setNumberYearRetain(2);
         command.setYearlyOfDays(null);
         command.setRoundProcessCla(RoundProcessingClassification.TruncateOnDay0.value);
         // =======
@@ -255,5 +280,8 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         command.setReference(MaxDayReference.CompanyUniform.value);
         command.setMaxTimeDay(null);
         command.setRoundProcessClassific(TimeAnnualRoundProcesCla.TruncateOnDay0.value);
+        //
+        command.setUniformTime(0);
+        command.setContractTimeRound(0);
     }
 }

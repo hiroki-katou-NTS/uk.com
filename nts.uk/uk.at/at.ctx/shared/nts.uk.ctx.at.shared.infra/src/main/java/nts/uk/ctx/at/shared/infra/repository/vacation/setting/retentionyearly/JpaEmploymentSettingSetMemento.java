@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.retentionyearly;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KshmtHdstkSetEmp;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtr;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtrPK;
 
 /**
@@ -16,14 +16,14 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtrPK
 public class JpaEmploymentSettingSetMemento implements EmptYearlyRetentionSetMemento {
 
 	/** The type value. */
-	private KshmtHdstkSetEmp typeValue;
+	private KmfmtRetentionEmpCtr typeValue;
 
 	/**
 	 * Instantiates a new jpa employment setting set memento.
 	 *
 	 * @param typeValue the type value
 	 */
-	public JpaEmploymentSettingSetMemento(KshmtHdstkSetEmp typeValue) {
+	public JpaEmploymentSettingSetMemento(KmfmtRetentionEmpCtr typeValue) {
 		this.typeValue = typeValue;
 		if(this.typeValue.getKmfmtRetentionEmpCtrPK() == null) {
 			this.typeValue.setKmfmtRetentionEmpCtrPK(new KmfmtRetentionEmpCtrPK());
@@ -49,18 +49,6 @@ public class JpaEmploymentSettingSetMemento implements EmptYearlyRetentionSetMem
 	@Override
 	public void setEmploymentCode(String employmentCode) {
 		this.typeValue.getKmfmtRetentionEmpCtrPK().setEmpCtrCd(employmentCode);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-	 * EmptYearlyRetentionSetMemento#setUpperLimitSetting(nts.uk.ctx.at.shared.dom
-	 * .vacation.setting.retentionyearly.UpperLimitSetting)
-	 */
-	@Override
-	public void setUpperLimitSetting(UpperLimitSetting upperLimitSetting) {
-		this.typeValue.setMaxDaysRetention(upperLimitSetting.getMaxDaysCumulation().v().shortValue());
-		this.typeValue.setYearAmount(upperLimitSetting.getRetentionYearsAmount().v().shortValue());
 	}
 
 	/*

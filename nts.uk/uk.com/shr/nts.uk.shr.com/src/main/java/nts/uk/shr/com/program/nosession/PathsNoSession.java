@@ -33,7 +33,9 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			"/sys/portal/webmenu/logout",
 			"/ctx/sys/gateway/kdp/login/.*",
 			"/at/record/stamp/.*",
-			"/ctx/cld/.*"
+			"/ctx/cld/.*",
+			"/view-context/user",
+			"/nr/process/.*"
 			);
 
 	public static PathsNoSession WEB_SCREENS = PathsNoSession.define(

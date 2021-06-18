@@ -94,12 +94,13 @@ public class SacmtUser extends ContractUkJpaEntity implements Serializable {
 				this.loginID, 
 				this.contractCd, 
 				this.expirationDate, 
-				specialUser, 
-				multiCompanyConcurrent, 
+				this.specialUser, 
+				this.multiCompanyConcurrent, 
 				this.mailAdd, 
 				this.userName, 
 				this.associatedPersonID,
-				passStatus);
+				this.passStatus
+				);
 	}
 
 	public static SacmtUser toEntity(User user) {
@@ -110,7 +111,8 @@ public class SacmtUser extends ContractUkJpaEntity implements Serializable {
 				user.getMailAddress().isPresent() ? user.getMailAddress().get().v():null,
 				user.getUserName().isPresent() ? user.getUserName().get().v() : null,
 				user.getAssociatedPersonID().isPresent() ? user.getAssociatedPersonID().get() : null,
-				user.getPassStatus().value	);
+				user.getPassStatus().value
+				);
 	}
 	
 }

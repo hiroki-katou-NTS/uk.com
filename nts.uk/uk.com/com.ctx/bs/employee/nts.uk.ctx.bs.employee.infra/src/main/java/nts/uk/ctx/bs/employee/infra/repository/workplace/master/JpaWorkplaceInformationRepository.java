@@ -50,7 +50,7 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 	private static final String FIND_ALL_ACTIVE_WKP_BY_COMPANY_AND_HIST = "SELECT i FROM BsymtWorkplaceInfor i"
 			+ " WHERE i.pk.companyId = :companyId " + "AND i.pk.workplaceHistoryId = :wkpHistId AND i.deleteFlag = 0";
 	private static final String FIND_WKP_DETAIL_HIERARCHY_ORDER = "SELECT A FROM BsymtWorkplaceInfor AS A "
-			+ "LEFT JOIN BsymtWorkplaceConfig AS B ON A.pk.workplaceHistoryId = B.pk.workplaceHistoryId "
+			+ "JOIN BsymtWorkplaceConfig AS B ON A.pk.workplaceHistoryId = B.pk.workplaceHistoryId "
 			+ "WHERE A.pk.companyId = :cid " + "AND B.startDate <= :baseDate AND B.endDate >= :baseDate "
 			+ "ORDER BY A.hierarchyCode ASC";
 
@@ -224,7 +224,7 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 			List<Map<String, String>> currentHisWp = mappedHis.get(c.identifier());
 			if(currentHisWp != null){
 				return wkpId.stream().map(wId -> {
-					Map<String, String> currentWpc = currentHisWp.stream().filter(wpc -> wpc.get("WKP_ID").equals(wId)).findFirst().orElse(null);
+					Map<String, String> currentWpc = currentHisWp.stream().filter(wpc -> wpc.get("WKPID").equals(wId)).findFirst().orElse(null);
 					if(currentWpc != null) {
 						String hierarchyCD = currentWpc.get("HIERARCHY_CD");
 						List<String> parentHierarchy = getCanBeParentCodes(hierarchyCD);
@@ -355,16 +355,16 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 		return resultList.stream().map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
 				.collect(Collectors.toList());
 	}
-	
 	@Override
 	public List<WorkplaceInfo> findByWkpId(String wkpId) {
 
 		List<BsymtWorkplaceInfor> resultList = new ArrayList<>();
 
 			String sql = "SELECT CID, WKP_ID, WKP_HIST_ID, WKP_CD, WKP_NAME, WKP_GENERIC, WKP_DISP_NAME, WKP_EXTERNAL_CD "
-					+ "FROM BSYMT_WKP_INFO " + "WHERE WKP_ID = " + wkpId;
+					+ "FROM BSYMT_WKP_INFO " + "WHERE WKP_ID = ?";
 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, wkpId);
 
 				resultList.addAll(new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 					BsymtWorkplaceInfor info = new BsymtWorkplaceInfor();

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,11 +11,13 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DayAndTimeDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
@@ -114,4 +118,89 @@ public class MonthlyDayoffRemainDataDto extends MonthlyItemCommon {
 		}
 		return dto;
 	}
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		if (CLOSURE_STATE.equals(path)) {
+			return Optional.of(ItemValue.builder().value(closureStatus).valueType(ValueType.ATTR));
+		}
+		return super.valueOf(path);
+	}
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case PERIOD:
+			return new DatePeriodDto();
+		case OCCURRENCE:
+		case USAGE:
+		case REMAIN:
+		case CARRY_FORWARD:
+		case NOT_DIGESTION:
+			return new DayAndTimeDto();
+		default:
+			break;
+		}
+		return super.newInstanceOf(path);
+	}
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case PERIOD:
+			return Optional.ofNullable(datePeriod);
+		case OCCURRENCE:
+			return Optional.ofNullable(occurrenceDayTimes);
+		case USAGE:
+			return Optional.ofNullable(useDayTimes);
+		case REMAIN:
+			return Optional.ofNullable(remainingDayTimes);
+		case CARRY_FORWARD:
+			return Optional.ofNullable(carryForWardDayTimes);
+		case NOT_DIGESTION:
+			return Optional.ofNullable(unUsedDayTimes);
+		default:
+			break;
+		}
+		return super.get(path);
+	}
+	@Override
+	public PropType typeOf(String path) {
+		if (CLOSURE_STATE.equals(path)) {
+			return PropType.VALUE;
+		}
+		return super.typeOf(path);
+	}
+	@Override
+	public void set(String path, ItemValue value) {
+		if (CLOSURE_STATE.equals(path)) {
+			closureStatus = value.valueOrDefault(0);
+		}
+	}
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case PERIOD:
+			datePeriod = (DatePeriodDto) value; break;
+		case OCCURRENCE:
+			occurrenceDayTimes = (DayAndTimeDto) value; break;
+		case USAGE:
+			useDayTimes = (DayAndTimeDto) value; break;
+		case REMAIN:
+			remainingDayTimes = (DayAndTimeDto) value; break;
+		case CARRY_FORWARD:
+			carryForWardDayTimes = (DayAndTimeDto) value; break;
+		case NOT_DIGESTION:
+			unUsedDayTimes = (DayAndTimeDto) value; break;
+		default:
+			break;
+		}
+	}
+	@Override
+	public boolean isRoot() {
+		return true;
+	}
+	@Override
+	public String rootName() {
+		return MONTHLY_OFF_REMAIN_NAME;
+	}
+
+
 }

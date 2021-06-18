@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.workingcondition.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
@@ -294,7 +294,7 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	 */
 	@Override
 	public Optional<BonusPaySettingCode> getTimeApply() {
-		return Optional.of(new BonusPaySettingCode(this.entity.getTimeApply()));
+		return this.entity.getTimeApply() == null? Optional.empty() : Optional.of(new BonusPaySettingCode(this.entity.getTimeApply()));
 	}
 
 	/* (non-Javadoc)

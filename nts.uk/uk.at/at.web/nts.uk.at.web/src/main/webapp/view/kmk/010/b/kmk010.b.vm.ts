@@ -26,7 +26,7 @@ module nts.uk.at.view.kmk010.b {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                nts.uk.at.view.kmk010.a.service.findAllOvertime().done(function(data) {
+                nts.uk.at.view.kmk010.a.service.findAllOvertime().done(function (data) {
                     self.lstOvertimeModel = [];
                     for (var dto of data) {
                         var model: OvertimeModel = new OvertimeModel();
@@ -42,7 +42,7 @@ module nts.uk.at.view.kmk010.b {
                     } else {
                         self.textOvertimeName(nts.uk.resource.getText('KMK010_63'));
                         self.enableCheckbox(false);
-                        nts.uk.at.view.kmk010.a.service.findAllOvertimeNameLanguage(self.languageId).done(function(dataLanguageName) {
+                        nts.uk.at.view.kmk010.a.service.findAllOvertimeNameLanguage(self.languageId).done(function (dataLanguageName) {
                             if (dataLanguageName && dataLanguageName.length > 0) {
                                 for (var dataLang of dataLanguageName) {
                                     for (var model of self.lstOvertimeModel) {
@@ -71,6 +71,27 @@ module nts.uk.at.view.kmk010.b {
                 if (self.validateDomainSave()) {
                     return;
                 }
+
+                //check duplicate overtime
+                let duplicateOverTime = [];
+                let isDuplicateOverTime = false;
+
+                _.forEach(self.lstOvertimeModel, (item, index) => {
+                    //check null overtime
+                    if (_.isNull(item.overtime()) && !item.useClassification()) self.lstOvertimeModel[index].overtime(0);
+
+                    if( item.useClassification()) {
+                        if(!_.includes(duplicateOverTime, item.overtime())) {
+                            duplicateOverTime.push(item.overtime());
+                        } else isDuplicateOverTime = true;
+                    }
+                });
+
+                if (isDuplicateOverTime) {
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_486" }).then(() => { });
+                    return;
+                }
+
                 // block ui.
                 nts.uk.ui.block.invisible();
                 if (self.languageId === ScreenModel.LANGUAGE_ID_JAPAN) {
@@ -81,13 +102,13 @@ module nts.uk.at.view.kmk010.b {
                     }
 
                     // call service save all overtime
-                    service.saveAllOvertime(overtimes).done(function() {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    service.saveAllOvertime(overtimes).done(function () {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function () {
                             nts.uk.ui.windows.setShared("isSave", 1);
                             nts.uk.ui.block.clear();
-//                            nts.uk.ui.windows.close();
+                            nts.uk.ui.windows.close();
                         });
-                    }).fail(function(error) {
+                    }).fail(function (error) {
                         nts.uk.ui.dialog.alertError(error);
                     });
                 } else {
@@ -101,13 +122,13 @@ module nts.uk.at.view.kmk010.b {
                         overtimeLangNames.push(dto);
                     }
                     // call service save all overtime language name
-                    service.saveAllOvertimeLanguageName(overtimeLangNames).done(function() {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    service.saveAllOvertimeLanguageName(overtimeLangNames).done(function () {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function () {
                             nts.uk.ui.windows.setShared("isSave", 1);
                             nts.uk.ui.block.clear();
-//                            nts.uk.ui.windows.close();
+                            nts.uk.ui.windows.close();
                         });
-                    }).fail(function(error) {
+                    }).fail(function (error) {
                         nts.uk.ui.dialog.alertError(error);
                     });
                 }
@@ -120,34 +141,42 @@ module nts.uk.at.view.kmk010.b {
                 var self = this;
                 for (var model of self.lstOvertimeModel) {
                     $('#overtimeNo_' + model.overtimeNo()).ntsError("clear");
+                    $('#overtimeNum_' + model.overtimeNo()).ntsError("clear");
                 }
                 for (var model of self.lstOvertimeModel) {
-                    if (model.requiredText()) {
+                    //if (model.requiredText()) {
                         $('#overtimeNo_' + model.overtimeNo()).ntsEditor("validate");
-                    }
+                    //}
+
+                    //if (model.requiredOverTime()) {
+                        $('#overtimeNum_' + model.overtimeNo()).ntsEditor("validate");
+                   // }
                 }
                 for (var model of self.lstOvertimeModel) {
-                    if (model.requiredText() && $('#overtimeNo_' + model.overtimeNo()).ntsError('hasError')) {
+                    if ($('#overtimeNo_' + model.overtimeNo()).ntsError('hasError')) {
                         return true;
                     }
                 }
+
+                if (nts.uk.ui.errors.hasError()) return true;
+
                 return false;
 
             }
-            
+
             /**
              * swtich name for element when change language
              */
             private switchNameResource(): string {
                 let self = this;
-                
-                if (self.languageId === ScreenModel.LANGUAGE_ID_JAPAN) { 
+
+                if (self.languageId === ScreenModel.LANGUAGE_ID_JAPAN) {
                     return '#[KMK010_39]';
                 } else {
-                    return '#[KMK010_63]'; 
+                    return '#[KMK010_63]';
                 }
             }
-            
+
             /**
              * function by click button close dialog
              */

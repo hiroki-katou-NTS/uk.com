@@ -5,16 +5,14 @@ import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 
 public interface ApplicationRepository {
 	
-	// public Optional<Application_New> findByID(String companyID, String appID);
-	
 	public List<Application> findByListID(String companyID, List<String> listAppID);
-	
-	public List<Application_New> getApplicationIdByDate(String companyId, GeneralDate startDate, GeneralDate endDate);
 	
 	/**
 	 * getApplicationBySIDs
@@ -24,36 +22,7 @@ public interface ApplicationRepository {
 	 * @return
 	 */
 	public List<Application> getApplicationBySIDs(List<String> employeeID,GeneralDate startDate, GeneralDate endDate);
-
-	public List<Application_New> getApp(String applicantSID, GeneralDate appDate, int prePostAtr, int appType);
 	
-	/**
-	 * 事前申請を取得したい
-	 * @param companyId: 社員ID
-	 * @param appDate: 申請日
-	 * @param inputDate: 入力日
-	 * @param appType: 申請種類
-	 * @param prePostAtr: 事前事後区分
-	 * @return
-	 */
-	public List<Application_New>  getBeforeApplication(String companyId, String employeeID, GeneralDate appDate, int appType, int prePostAtr);
-	
-	public void insert(Application_New application);
-	
-	public void update(Application_New application);
-	
-	public void updateWithVersion(Application_New application);
-	
-	public void delete(String companyID, String appID);
-	/**
-	 * get list application by sID
-	 * @param companyId
-	 * @param sID
-	 * @param startDate
-	 * @param endDate
-	 * @return
-	 */
-	public List<Application_New> getListAppBySID(String companyId, String sID, GeneralDate startDate, GeneralDate endDate);
 	/**
 	 * refactor 4
 	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.アルゴリズム.承認一覧の申請を取得.承認一覧の申請を取得
@@ -66,28 +35,9 @@ public interface ApplicationRepository {
 	 * @return
 	 */
 	public List<Application> getListAppModeApprCMM045(String companyID, DatePeriod period, List<String> lstAppId,
-			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, 
-			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus, List<Integer> lstType,
-			List<PrePostAtr> prePostAtrLst, List<String> employeeIDLst, List<StampRequestMode> stampRequestModeLst);
-
-	/**
-	 * get List Application Pre
-	 * @param companyId
-	 * @param sID
-	 * @param appDate
-	 * @param prePostAtr
-	 * @return
-	 */
-	public List<Application_New> getListAppPre(String companyId, String sID, GeneralDate appDate, int prePostAtr);
-	
-	/**
-	 * Request list No.236
-	 * @param sID
-	 * @param startDate
-	 * @param endDate
-	 * @return
-	 */
-	public List<Application_New> getListApp(String sID, GeneralDate startDate, GeneralDate endDate);
+			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, boolean agentApprovalStatus, 
+			boolean remandStatus, boolean cancelStatus, List<Integer> lstType, List<PrePostAtr> prePostAtrLst, 
+			List<String> employeeIDLst, List<StampRequestMode> stampRequestModeLst, List<OvertimeAppAtr> overtimeAppAtrLst);
 	
 	public List<Application> getByListRefStatus(String companyID, String employeeID ,GeneralDate startDate, GeneralDate endDate , List<Integer> listReflecInfor  );
 	
@@ -101,28 +51,7 @@ public interface ApplicationRepository {
 	 * @return
 	 */
 	public List<Application> getByPeriodReflectType(String sid, DatePeriod dateData, List<Integer> reflect, List<Integer> appType);
-	/**
-	 * @author hoatt
-	 * 申請者ID＝社員ID（リスト）　　または　入力者ID＝社員ID（リスト）
-	 * get By List SID
-	 * @param companyId
-	 * @param lstSID
-	 * @param sDate
-	 * @param eDate
-	 * @return
-	 */
-	public List<Application_New> getByListSID(String companyId, List<String> lstSID, GeneralDate sDate, GeneralDate eDate);
-	/**
-	 * @author hoatt
-	 * 申請者ID＝社員ID（リスト）
-	 * get By List Applicant
-	 * @param companyId
-	 * @param lstSID
-	 * @param sDate
-	 * @param eDate
-	 * @return
-	 */
-	public List<Application_New> getByListApplicant(String companyId, List<String> lstSID, GeneralDate sDate, GeneralDate eDate, List<Integer> lstType);
+	
 	/**
 	 * getListAppByType
 	 * sort：申請日（ASC）、入力日（DESC）
@@ -159,6 +88,15 @@ public interface ApplicationRepository {
 	public List<Application> getByListDateReflectType(String sid, List<GeneralDate> dateData, List<Integer> reflect, List<Integer> appType);
 	/**
 	 * 
+	 * @param sid
+	 * @param period
+	 * @param reflect
+	 * @param appType
+	 * @return
+	 */
+	public List<Application> getByListDateReflectType(String sid, DatePeriod period, List<Integer> reflect, List<Integer> appType);
+	/**
+	 * 
 	 * @param companyId
 	 * @param configName
 	 * @param subName
@@ -183,10 +121,41 @@ public interface ApplicationRepository {
 	 */
 	public Optional<Application> findByID(String appID);
 	
-	public List<Application> getByAppTypeList(List<String> employeeLst, GeneralDate startDate, GeneralDate endDate, 
-			List<ApplicationType> appTypeLst, List<PrePostAtr> prePostAtrLst, List<StampRequestMode> stampRequestModeLst);
+	public List<Application> getByAppTypeList(List<String> employeeLst, GeneralDate startDate, GeneralDate endDate, List<ApplicationType> appTypeLst, 
+			List<PrePostAtr> prePostAtrLst, List<StampRequestMode> stampRequestModeLst, List<OvertimeAppAtr> overtimeAppAtrLst);
 
 	public List<Application> getAppForKAF008(String sID, GeneralDate startDate, GeneralDate endDate);
+
+	/**
+	* 申請を取得	(反映状態="反映済み",対象日=ループ中の申請日)
+	 * @param sid
+	 * @param appDate
+	 * @return
+	 */
+	public List<Application> getAppReflected(String sid, GeneralDate appDate);
+	
+	//申請を取得する
+	// 期間に一致する申請を取得する
+	public List<Application> getApplication(PrePostAtr prePostAtr, GeneralDateTime inputDate, GeneralDate appDate,
+			ApplicationType appType, String employeeID);
 	
 	public List<Application> getApprSttByEmpPeriod(String employeeID, DatePeriod period);
+	
+	public Optional<String> getNewestPreAppIDByEmpDate(String employeeID, GeneralDate date, ApplicationType appType);
+	
+	public List<Application> findByIDLst(List<String> appIDLst);
+
+	// 期間に一致する申請を取得する
+	public List<Application> getAllApplication(List<String> sID, DatePeriod period);
+
+	/**
+	 * 申請情報を取得する(社員IDリスト, 期間, 反映状態リスト)
+	 * 
+	 * @param sids            社員IDリスト
+	 * @param datePeriod      期間
+	 * @param listReflecInfor 反映状態リスト
+	 * @return Map<String, List<Application_New>> Map<社員ID、List<申請>>
+	 */
+	public Map<String, List<Application>> getMapListApplicationNew(List<String> sids, DatePeriod datePeriod,
+			List<Integer> listReflecInfor);
 }

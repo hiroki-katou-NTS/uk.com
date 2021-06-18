@@ -15,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriodRepository;
@@ -26,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworking
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWork;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.SuperHD60HConTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.leave.AggregateLeaveDays;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.leave.AnyLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
@@ -37,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.medicaltime.MedicalTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.premiumtime.AggregatePremiumTime;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
@@ -90,6 +91,8 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 				new AttendanceTimeMonth(0),
 				TimeMonthWithCalculation.ofSameTime(0),
 				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0));
 		val aggrOvertime2 =	AggregateOverTime.of(
 				new OverTimeFrameNo(2),
@@ -98,6 +101,8 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 						new AttendanceTimeMonth(240 + randomVal)),
 				new AttendanceTimeMonth(0),
 				TimeMonthWithCalculation.ofSameTime(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0));
 		aggregateTime.getOverTime().getAggregateOverTimeMap().put(
@@ -116,6 +121,8 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 				new AttendanceTimeMonth(0),
 				TimeMonthWithCalculation.ofSameTime(0),
 				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0));
 		val aggrHdwktime2 = AggregateHolidayWorkTime.of(
 				new HolidayWorkFrameNo(2),
@@ -124,6 +131,8 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 						new AttendanceTimeMonth(300 + randomVal)),
 				new AttendanceTimeMonth(0),
 				TimeMonthWithCalculation.ofSameTime(0),
+				new AttendanceTimeMonth(0),
+				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonth(0));
 		aggregateTime.getHolidayWorkTime().getAggregateHolidayWorkTimeMap().put(
@@ -148,7 +157,8 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 				new AttendanceTimeMonth(1200 + randomVal),
 				new AttendanceTimeMonth(0),
 				new AttendanceTimeMonthWithMinus(0),
-				excoutList);
+				excoutList,
+				new SuperHD60HConTime());
 		attendanceTime.setExcessOutsideWork(excessOutsideWork);
 		
 		// 縦計分追加　2018.2.8

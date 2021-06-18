@@ -10,7 +10,7 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
  */
 @Getter
 @Setter
-public class Month {
+public class Month{
 
 	/**Specify number of days*/	
 	/**日数指定*/
@@ -30,5 +30,4 @@ public class Month {
 		this.month = month;
 		this.curentMonth = curentMonth;
 	}
-	
 }

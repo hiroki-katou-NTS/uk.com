@@ -18,9 +18,10 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSe
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal.EmpInfoTerminalBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.IPAddress;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.FullIpAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.PartialIpAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.MajorNameClassification;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.NRRomVersion;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.NrlRemoteInputRange;
@@ -34,6 +35,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetUp
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.VariableName;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.dto.TimeRecordSettingInfoDto;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.shr.com.net.Ipv4Address;
 
 @RunWith(JMockit.class)
 public class SendTimeRecordSetInfoServiceTest {
@@ -66,8 +68,8 @@ public class SendTimeRecordSetInfoServiceTest {
 			{
 				require.getEmpInfoTerWithMac(new MacAddress("00-14-22-01-23-45"), (ContractCode) any);
 				result = Optional.of(
-						new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"), new MacAddress("00-14-22-01-23-45"),
-								new EmpInfoTerminalCode(1234), new EmpInfoTerSerialNo("1111"),
+						new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")), new MacAddress("00-14-22-01-23-45"),
+								new EmpInfoTerminalCode("1234"), Optional.of(new EmpInfoTerSerialNo("1111")),
 								new EmpInfoTerminalName("AT"), new ContractCode("0000000000000"))
 										.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).build());
 			}
@@ -87,13 +89,13 @@ public class SendTimeRecordSetInfoServiceTest {
 			{
 				require.getEmpInfoTerWithMac(new MacAddress("00-14-22-01-23-45"), (ContractCode) any);
 				result = Optional.of(
-						new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"), new MacAddress("00-14-22-01-23-45"),
-								new EmpInfoTerminalCode(1234), new EmpInfoTerSerialNo("1111"),
+						new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")), new MacAddress("00-14-22-01-23-45"),
+								new EmpInfoTerminalCode("1234"), Optional.of(new EmpInfoTerSerialNo("1111")),
 								new EmpInfoTerminalName("AT"), new ContractCode("0000000000000"))
 										.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).build());
 
 				require.findSettingUpdate((EmpInfoTerminalCode) any, (ContractCode) any);
-				result = Optional.of(new TimeRecordSetUpdateList(new EmpInfoTerminalCode(1234),
+				result = Optional.of(new TimeRecordSetUpdateList(new EmpInfoTerminalCode("1234"),
 						new EmpInfoTerminalName("AT"), new NRRomVersion("111"), ModelEmpInfoTer.NRL_1,
 						Arrays.asList(new TimeRecordSetUpdate(new VariableName("sp_vol"), new SettingValue("68")))));
 			}
@@ -113,13 +115,13 @@ public class SendTimeRecordSetInfoServiceTest {
 			{
 				require.getEmpInfoTerWithMac(new MacAddress("00-14-22-01-23-45"), (ContractCode) any);
 				result = Optional.of(
-						new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"), new MacAddress("00-14-22-01-23-45"),
-								new EmpInfoTerminalCode(1234), new EmpInfoTerSerialNo("1111"),
+						new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")), new MacAddress("00-14-22-01-23-45"),
+								new EmpInfoTerminalCode("1234"), Optional.of(new EmpInfoTerSerialNo("1111")),
 								new EmpInfoTerminalName("AT"), new ContractCode("0000000000000"))
 										.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).build());
 
 				require.findSettingUpdate((EmpInfoTerminalCode) any, (ContractCode) any);
-				result = Optional.of(new TimeRecordSetUpdateList(new EmpInfoTerminalCode(1234),
+				result = Optional.of(new TimeRecordSetUpdateList(new EmpInfoTerminalCode("1234"),
 						new EmpInfoTerminalName("AT"), new NRRomVersion("111"), ModelEmpInfoTer.NRL_1,
 						Arrays.asList(new TimeRecordSetUpdate(new VariableName("sp_vol"), new SettingValue("68")),
 								new TimeRecordSetUpdate(new VariableName("iditi1"), new SettingValue("10"))
@@ -127,7 +129,7 @@ public class SendTimeRecordSetInfoServiceTest {
 						)));
 
 				require.findSetFormat((EmpInfoTerminalCode) any, (ContractCode) any);
-				result = Optional.of(new TimeRecordSetFormatList(new EmpInfoTerminalCode(1234),
+				result = Optional.of(new TimeRecordSetFormatList(new EmpInfoTerminalCode("1234"),
 						new EmpInfoTerminalName("AT"), new NRRomVersion("111"), ModelEmpInfoTer.NRL_1,
 						Arrays.asList(
 								new TimeRecordSetFormatBuilder(new MajorNameClassification("基本設定"),

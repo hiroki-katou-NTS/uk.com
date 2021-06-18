@@ -1,5 +1,18 @@
 package nts.uk.screen.at.app.shift.workcycle;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.error.BusinessException;
@@ -15,11 +28,14 @@ import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.CreateWorkCycleA
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.RefImageEachDay;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCreateMethod;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCycleRefSetting;
-import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeFinder;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
@@ -32,11 +48,7 @@ import nts.uk.screen.at.app.ksm003.find.GetWorkCycle;
 import nts.uk.screen.at.app.ksm003.find.WorkCycleDto;
 import nts.uk.screen.at.app.ksm003.find.WorkCycleQueryRepository;
 import nts.uk.shr.com.context.AppContexts;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.*;
-import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 勤務サイクル反映ダイアログ
@@ -73,21 +85,23 @@ public class WorkCycleReflectionDialog {
 			List<WorkCreateMethod> refOrder,
 			int numOfSlideDays){
 		val dto = new WorkCycleReflectionDto();
-		List<WorkCycleDto> workCycleDtoList = new ArrayList<>();
+
 		// 1. 勤務サイクル一覧を取得する [Get a list of work cycles]
-		if (bootMode == BootMode.EXEC_MODE){
-			workCycleDtoList = getWorkCycle.getDataStartScreen();
-			if(CollectionUtil.isEmpty(workCycleDtoList))
-				throw new BusinessException("Msg_37");
+		List<WorkCycleDto> workCycleDtoList = getWorkCycle.getDataStartScreen();
+		if (CollectionUtil.isEmpty(workCycleDtoList))
+			throw new BusinessException("Msg_37");
+		if (StringUtils.isEmpty(workCycleCode)){
 			workCycleCode = workCycleDtoList.get(0).getCode();
 		}
 		dto.setWorkCycleList(workCycleDtoList);
+
 		// 2. 休日系の勤務種類を取得する [Get holiday type of work]
 		List<WorkType> workTypes = holidayWorkTypeService.acquiredHolidayWorkType();
         Map<Optional<HolidayAtr>, List<WorkType>> map = workTypes.stream().collect(
                 Collectors.groupingBy(WorkType::getHolidayAtr)
         );
-		// 3. 作成する(Require, 期間, 勤務サイクルの反映設定)
+
+		// 3. 勤務サイクルの適用イメージを取得する
 		dto.setPubHoliday(convertToDomain(map.get(Optional.of(HolidayAtr.PUBLIC_HOLIDAY))));
 		dto.setSatHoliday(convertToDomain(map.get(Optional.of(HolidayAtr.STATUTORY_HOLIDAYS))));
 		dto.setNonSatHoliday(convertToDomain(map.get(Optional.of(HolidayAtr.NON_STATUTORY_HOLIDAYS))));
@@ -104,20 +118,7 @@ public class WorkCycleReflectionDialog {
 				nonSatHoliday,
 				pubHoliday
 		);
-		val cRequire = new CreateWorkCycleAppImageRequire(
-				weeklyWorkDayRepository,
-				publicHolidayRepository,
-				workCycleRepository);
-		List<RefImageEachDay> refImageEachDayList = CreateWorkCycleAppImage.create(cRequire, creationPeriod, config);
-		List<WorkCycleReflectionDto.RefImageEachDayDto> refImageEachDayDtos = new ArrayList<>();
-		val wRequire = new WorkInformationRequire(basicScheduleService);
-
-		Map<String, String> workTypeCodeNameMap = getWorkTypeCodeNameMap(refImageEachDayList);
-        refImageEachDayList.forEach(ref -> refImageEachDayDtos.add(
-        		WorkCycleReflectionDto.RefImageEachDayDto
-						.fromDomain(ref, wRequire, workTimeSettingRepository, workTypeCodeNameMap
-				)
-		));
+		List<WorkCycleReflectionDto.RefImageEachDayDto> refImageEachDayDtos = getWorkCycleAppImage(creationPeriod, config);
 		dto.setReflectionImage(refImageEachDayDtos); // 反映イメージ
 		return dto;
 	}
@@ -147,7 +148,7 @@ public class WorkCycleReflectionDialog {
 				weeklyWorkDayRepository,
 				publicHolidayRepository,
 				workCycleRepository);
-		val wRequire = new WorkInformationRequire(basicScheduleService);
+		val wRequire = new WorkInformationRequire(workTypeRepository);
 		List<RefImageEachDay> refImageEachDayList = CreateWorkCycleAppImage.create(cRequire, creationPeriod, workCycleRefSetting);
 		List<WorkCycleReflectionDto.RefImageEachDayDto> reflectionImage = new ArrayList<>();
 		Map<String, String> workTypeCodeNameMap = getWorkTypeCodeNameMap(refImageEachDayList);
@@ -195,15 +196,18 @@ public class WorkCycleReflectionDialog {
 
 	@AllArgsConstructor
 	private static class WorkInformationRequire implements WorkInformation.Require {
-		private BasicScheduleService basicScheduleService;
+
+		private final String companyId = AppContexts.user().companyId();
+
+		private WorkTypeRepository workTypeRepository;
 
 		@Override
-		public Optional<WorkType> findByPK(String workTypeCd) {
-			return Optional.empty();
+		public Optional<WorkType> getWorkType(String workTypeCd) {
+            return workTypeRepository.findByPK(companyId, workTypeCd);
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
 			return Optional.empty();
 		}
 
@@ -212,14 +216,34 @@ public class WorkCycleReflectionDialog {
 			return null;
 		}
 
+		// fix bug 113211
+//		@Override
+//		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
+//			return null;
+//		}
+
 		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd, Integer workNo) {
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}
 
 		@Override
-		public WorkStyle checkWorkDay(String workTypeCode) {
-			return basicScheduleService.checkWorkDay(workTypeCode);
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
 		}
 	}
 }

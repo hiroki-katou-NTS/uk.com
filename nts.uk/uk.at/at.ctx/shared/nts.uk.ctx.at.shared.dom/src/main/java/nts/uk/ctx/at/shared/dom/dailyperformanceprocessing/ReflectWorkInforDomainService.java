@@ -6,7 +6,6 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.ClosureOfDailyPerOutPut;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
@@ -28,18 +27,6 @@ import nts.uk.shr.com.history.DateHistoryItem;
  *
  */
 public interface ReflectWorkInforDomainService {
-	//KIF use
-	void reflectWorkInformation(String companyID, String employeeID, GeneralDate processingDate,
-			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType, boolean reCreateWorkPlace,
-			EmployeeGeneralInfoImport employeeGeneralInfoImport,
-			Optional<StampReflectionManagement> stampReflectionManagement,
-			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
-    		Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList,
-    		RecreateFlag recreateFlag,Optional<WorkInfoOfDailyAttendance> optDaily);
-	//KBT use
-	void reflectWorkInformationWithNoInfoImport(String companyID, String employeeID, GeneralDate processingDate,
-			String empCalAndSumExecLogID, ExecutionType reCreateAttr , boolean reCreateWorkType , boolean reCreateWorkPlace, 
-			Optional<StampReflectionManagement> stampReflectionManagement,RecreateFlag recreateFlag,Optional<WorkInfoOfDailyAttendance> optDaily);
 
 	AffiliationInforState createAffiliationInforOfDailyPerfor(String companyId, String employeeId, GeneralDate day,
 			String empCalAndSumExecLogID);
@@ -65,16 +52,6 @@ public interface ReflectWorkInforDomainService {
 	 */
 	ClosureOfDailyPerOutPut reflectHolidayOfDailyPerfor(String companyId, String employeeId, GeneralDate day,
 			String empCalAndSumExecLogID, WorkInfoOfDailyAttendance workInfoOfDailyPerformance);
-
-	/**
-	 * 勤務種別を反映する
-	 * 
-	 * @param employeeId
-	 * @param day
-	 * @return
-	 */
-	// Lần refactor code này đang không thấy dùng domain này
-	WorkTypeOfDailyPerformance reflectWorkType(String companyId, String employeeId, GeneralDate day, String empCalAndSumExecLogID);
 
 	/**
 	 * 計算区分を日別実績に反映する
@@ -126,19 +103,6 @@ public interface ReflectWorkInforDomainService {
 	public AffiliationInforState createAffiliationInforState(String companyId, String employeeId,
 			GeneralDate day, EmployeeGeneralInfoImport generalInfoImport);
 	
-	/**
-	 * 勤務情報を反映する
-	 * @return
-	 */
-	WorkInfoOfDailyAttendance reflect(String companyId, String employeeId, GeneralDate day, String empCalAndSumExecLogID,
-			ExecutionType reCreateAttr, boolean reCreateWorkType, EmployeeGeneralInfoImport employeeGeneralInfoImport,
-			Optional<StampReflectionManagement> stampReflectionManagement,
-			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
-			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList , TimeLeavingOfDailyAttd timeLeavingOptional,
-			RecreateFlag recreateFlag,Optional<WorkInfoOfDailyAttendance> optDaily);
-	WorkInfoOfDailyAttendance reflectWithNoInfoImport(String companyId, String employeeId, GeneralDate day,
-			String empCalAndSumExecLogID, ExecutionType reCreateAttr, boolean reCreateWorkType,
-			Optional<StampReflectionManagement> stampReflectionManagement, TimeLeavingOfDailyAttd timeLeavingOptional,RecreateFlag recreateFlag,Optional<WorkInfoOfDailyAttendance> optDaily);
     
     public ExitStatus reCreateWorkType(String employeeId, GeneralDate day, String empCalAndSumExecLogID,
             boolean reCreateWorkType, boolean reCreateWorkPlace);

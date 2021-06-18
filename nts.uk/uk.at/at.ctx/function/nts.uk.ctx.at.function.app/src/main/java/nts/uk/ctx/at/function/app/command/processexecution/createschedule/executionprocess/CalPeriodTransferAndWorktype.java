@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -12,15 +13,15 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.app.command.processexecution.ApprovalPeriodByEmp;
+import nts.uk.ctx.at.function.dom.adapter.alarm.BasicScheduleAdapter;
 import nts.uk.ctx.at.function.dom.statement.EmployeeGeneralInfoAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkplaceHistItemImported;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.requestperiodchange.RequestPeriodChangeService;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
-import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeService;
 
 /**
  * 異動者・勤務種別変更者の作成対象期間の計算（個人別）
@@ -36,10 +37,10 @@ public class CalPeriodTransferAndWorktype {
 	private EmployeeGeneralInfoAdapter employeeGeneralInfoAdapter;
 
 	@Inject
-	private BusinessTypeOfEmpHisAdaptor businessTypeOfEmpHisAdaptor;
+	private BusinessTypeOfEmployeeService businessTypeOfEmpHisService;
 
-	@Inject
-	private BasicScheduleRepository basicScheRepo;
+	 @Inject
+    private BasicScheduleAdapter basicScheduleAdapter;
 
 	@Inject
 	private RequestPeriodChangeService requestPeriodChangeService;
@@ -61,7 +62,7 @@ public class CalPeriodTransferAndWorktype {
 			DatePeriod period, boolean isTransfer, boolean isWorkType) {
 
 		List<ApprovalPeriodByEmp> listApprovalPeriodByEmp = new ArrayList<>();
-		List<BusinessTypeOfEmpDto> listBusinessTypeOfEmpDto = new ArrayList<>();
+		List<BusinessTypeOfEmployeeHis> listBusinessTypeOfEmpDto = new ArrayList<>();
 		
 		List<nts.uk.ctx.at.function.dom.statement.dtoimport.ExWorkPlaceHistoryImport> listExWorkPlaceHistoryImport = new ArrayList<>();
 
@@ -81,20 +82,20 @@ public class CalPeriodTransferAndWorktype {
 		// INPUT．「勤務種別変更時に再作成」をチェックする
 		if (isWorkType) {
 			// <<Public>> 社員ID(List)、期間で期間分の勤務種別情報を取得する
-			listBusinessTypeOfEmpDto = businessTypeOfEmpHisAdaptor.findByCidSidBaseDate(companyId, listEmp, period);
+			listBusinessTypeOfEmpDto = businessTypeOfEmpHisService.find(listEmp, period);
 		}
 		// INPUT．「社員ID(List)」をループする
 		for (String empId : listEmp) {
 
 			// ドメインモデル「勤務予定基本情報」を取得する - 年月日が最も大きいレコードを取得する
-			GeneralDate basicScheduleDateHighest = basicScheRepo.findMaxDateByListSid(Arrays.asList(empId));
+			Optional<GeneralDate> basicScheduleDateHighest = basicScheduleAdapter.acquireMaxDateBasicSchedule(Arrays.asList(empId));
 
 			// 「勤務予定基本情報」を取得できない場合次の社員へ
-			if (basicScheduleDateHighest == null)
+			if (!basicScheduleDateHighest.isPresent())
 				continue;
 
 			// INPUT「開始日」と取得したデータの年月日から「対象期間」を求める
-			DatePeriod newPeriod = new DatePeriod(period.start(), basicScheduleDateHighest);
+			DatePeriod newPeriod = new DatePeriod(period.start(), basicScheduleDateHighest.get());
 
 			// INPUT．「異動時に再作成」をチェックする
 			List<DatePeriod> dataWorkplace = new ArrayList<>();
@@ -117,7 +118,8 @@ public class CalPeriodTransferAndWorktype {
 			if (isWorkType) {
 				// 職場・勤務種別変更期間を求める
 				dataWorkType = requestPeriodChangeService.getPeriodChange(empId, newPeriod, Collections.emptyList(),
-						listBusinessTypeOfEmpDto.stream().filter(c->c.getEmployeeId().equals(empId)).collect(Collectors.toList()), false, isWorkType);
+						listBusinessTypeOfEmpDto.stream().filter(c->c.getEmployee().getSId().equals(empId)).collect(Collectors.toList()), 
+						false, isWorkType);
 			}
 			// 計算するする「期間」がない場合次の社員へ
 			if (dataWorkplace.isEmpty() && dataWorkType.isEmpty())

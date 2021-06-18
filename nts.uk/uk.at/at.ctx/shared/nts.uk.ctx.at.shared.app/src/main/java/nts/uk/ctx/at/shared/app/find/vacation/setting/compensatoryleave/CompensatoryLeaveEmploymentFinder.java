@@ -36,9 +36,8 @@ public class CompensatoryLeaveEmploymentFinder {
 		if (findItem == null) {
 			return null;
 		}
-		CompensatoryLeaveEmSettingDto compensatoryLeaveEmSettingDto = new CompensatoryLeaveEmSettingDto();
-		findItem.saveToMemento(compensatoryLeaveEmSettingDto);
-		return compensatoryLeaveEmSettingDto;
+		CompensatoryLeaveEmSettingDto dto = CompensatoryLeaveEmSettingDto.toDto(findItem);
+		return dto;
 	}
 	
 	/**

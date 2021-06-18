@@ -12,8 +12,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispNameRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
 import nts.uk.ctx.at.request.pub.screen.nts.uk.ctx.workflow.pub.employmentfunction.algorithm.dailyaggregation.DailyAggregationProcessExport;
 import nts.uk.ctx.at.request.pub.screen.nts.uk.ctx.workflow.pub.employmentfunction.algorithm.dailyaggregation.DailyProcessReflectionPub;
 
@@ -28,11 +27,11 @@ public class DailyProcessReflectionImpl implements DailyProcessReflectionPub {
 	@Inject
 	private ApplicationRepository respo;
 
-	@Inject
-	private AppDispNameRepository appDispNameRepository;
+//	@Inject
+//	private AppDispNameRepository appDispNameRepository;
 
 	@Inject
-	private HdAppDispNameRepository hdAppDispNameRepository;
+	private HolidayApplicationSettingRepository hdAppDispNameRepository;
 
 	@Override
 	public List<DailyAggregationProcessExport> findByIDReflec(List<String> employeeID, GeneralDate startDate,
@@ -72,8 +71,9 @@ public class DailyProcessReflectionImpl implements DailyProcessReflectionPub {
 				processExport.setEmployeeID(app.getEmployeeID());
 				processExport.setAppDate(app.getAppDate().getApplicationDate());
 				processExport.setAppType(app.getAppType().value);
-				processExport.setAppTypeName(appDispNameRepository.getDisplay(app.getAppType().value).isPresent()
-						? appDispNameRepository.getDisplay(app.getAppType().value).get().getDispName().toString() : "");
+//				processExport.setAppTypeName(appDispNameRepository.getDisplay(app.getAppType().value).isPresent()
+//						? appDispNameRepository.getDisplay(app.getAppType().value).get().getDispName().toString() : "");
+				processExport.setAppTypeName("");
 				dailyAggregationProcessExports.add(processExport);
 			}
 
@@ -85,11 +85,12 @@ public class DailyProcessReflectionImpl implements DailyProcessReflectionPub {
 				applicationExport.setEmployeeID(application_New.getEmployeeID());
 				applicationExport.setAppDate(application_New.getAppDate().getApplicationDate());
 				applicationExport.setAppType(application_New.getAppType().value);
-				applicationExport
-						.setAppTypeName(hdAppDispNameRepository.getHdApp(application_New.getAppType().value).isPresent()
-								? hdAppDispNameRepository.getHdApp(application_New.getAppType().value).get()
-										.getDispName().toString()
-								: "");
+//				applicationExport
+//						.setAppTypeName(hdAppDispNameRepository.getHdApp(application_New.getAppType().value).isPresent()
+//								? hdAppDispNameRepository.getHdApp(application_New.getAppType().value).get()
+//										.getDispName().toString()
+//								: "");
+				applicationExport.setAppTypeName("");
 				dailyAggregationProcessExports.add(applicationExport);
 			}
 		}

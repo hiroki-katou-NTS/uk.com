@@ -1,16 +1,22 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 
 /**
  * @author ThanhNX
@@ -97,6 +103,90 @@ public class AccumulationAbsenceDetail {
 			return true;
 		}
 		return false;
+	}
+
+	// 基準日以降の紐づけされてる振出日数を取得
+	public LeaveRemainingDayNumber offsetOssociSwingAftRefDate(Require require, GeneralDate baseDate) {
+		// Require．基準日以降の紐づけを取得
+		List<PayoutSubofHDManagement> lstPayoutSubs = require.getPayoutSubWithDateUse(employeeId,
+				dateOccur.getDayoffDate().get(), baseDate);
+		return lstPayoutSubs.stream()
+				.collect(Collectors.collectingAndThen(
+						Collectors.summingDouble(x -> x.getAssocialInfo().getDayNumberUsed().v()),
+						x -> new LeaveRemainingDayNumber(x)));
+	}
+
+	// 基準日以降の紐づけされてる振休日数を取得
+	public LeaveRemainingDayNumber offsetDigestSwingAftRefDate(Require require, GeneralDate baseDate) {
+		// Require．基準日以降の紐づけを取得
+		List<PayoutSubofHDManagement> lstPayoutSubs = require.getPayoutSubWithOutbreakDay(employeeId,
+				dateOccur.getDayoffDate().get(), baseDate);
+		return lstPayoutSubs.stream()
+				.collect(Collectors.collectingAndThen(
+						Collectors.summingDouble(x -> x.getAssocialInfo().getDayNumberUsed().v()),
+						x -> new LeaveRemainingDayNumber(x)));
+	}
+
+	// 基準日以降の紐づけされてる休出日数を取得
+	public LeaveRemainingDayNumber offsetHolAftRefDate(Require require, GeneralDate baseDate) {
+		// Require．基準日以降の紐づけを取得
+		List<LeaveComDayOffManagement> lstLeavCom = require.getLeaveComWithDateUse(employeeId,
+				dateOccur.getDayoffDate().get(), baseDate);
+		return lstLeavCom.stream()
+				.collect(Collectors.collectingAndThen(
+						Collectors.summingDouble(x -> x.getAssocialInfo().getDayNumberUsed().v()),
+						x -> new LeaveRemainingDayNumber(x)));
+	}
+
+	// 基準日以降の紐づけされてる代休日数を取得
+	public LeaveRemainingDayNumber offsetSubsHolAftRefDate(Require require, GeneralDate baseDate) {
+		// Require．基準日以降の紐づけを取得
+		List<LeaveComDayOffManagement> lstLeavCom = require.getLeaveComWithOutbreakDay(employeeId,
+				dateOccur.getDayoffDate().get(), baseDate);
+		return lstLeavCom.stream()
+				.collect(Collectors.collectingAndThen(
+						Collectors.summingDouble(x -> x.getAssocialInfo().getDayNumberUsed().v()),
+						x -> new LeaveRemainingDayNumber(x)));
+	}
+
+	public static interface Require {
+
+		/**
+		 * ＜条件＞ ・社員ID＝逐次発生の休暇明細.社員ID 
+		 * ・使用日＝逐次発生の休暇明細．年月日．年月日 
+		 * ・発生日 >= INPUT．基準日
+		 */
+		// PayoutSubofHDManaRepository.getPayoutSubWithDateUse
+		List<PayoutSubofHDManagement> getPayoutSubWithDateUse(String sid, GeneralDate dateOfUse, GeneralDate baseDate);
+
+		/**
+		 * ＜条件＞ 逐次発生の休暇明細．年月日．日付不明 = false 
+		 * ・社員ID＝逐次発生の休暇明細.社員ID 
+		 * ・発生日＝逐次発生の休暇明細．年月日．年月日
+		 * ・使用日 >= INPUT．基準日
+		 */
+		// PayoutSubofHDManaRepository.getPayoutSubWithOutbreakDay
+		List<PayoutSubofHDManagement> getPayoutSubWithOutbreakDay(String sid, GeneralDate outbreakDay,
+				GeneralDate baseDate);
+
+		/**
+		 * ＜条件＞ ・社員ID＝逐次発生の休暇明細.社員ID 
+		 * ・使用日＝逐次発生の休暇明細．年月日．年月日 
+		 * ・発生日 >= INPUT．基準日
+		 */
+		// LeaveComDayOffManaRepository.getLeaveComWithDateUse
+		List<LeaveComDayOffManagement> getLeaveComWithDateUse(String sid, GeneralDate dateOfUse, GeneralDate baseDate);
+
+		/**
+		 * ＜条件＞ 逐次発生の休暇明細．年月日．日付不明 = false 
+		 * ・社員ID＝逐次発生の休暇明細.社員ID 
+		 * ・発生日＝逐次発生の休暇明細．年月日．年月日
+		 * ・使用日 >= INPUT．基準日
+		 */
+		// LeaveComDayOffManaRepository.getLeaveComWithOutbreakDay
+		List<LeaveComDayOffManagement> getLeaveComWithOutbreakDay(String sid, GeneralDate outbreakDay,
+				GeneralDate baseDate);
+
 	}
 
 	@Getter

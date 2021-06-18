@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.infra.repository.processexecution;
 
-import java.sql.PreparedStatement;
 //import java.sql.Connection;
 //import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogManage;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogManagePK;
-import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 @Stateless
 public class JpaProcessExecutionLogManageRepository extends JpaRepository
 implements ProcessExecutionLogManageRepository{
@@ -31,6 +29,10 @@ implements ProcessExecutionLogManageRepository{
 	private static final String SELECT_ALL = "SELECT pel FROM KfnmtProcessExecutionLogManage pel ";
 	private static final String SELECT_All_BY_CID = SELECT_ALL
 			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId ORDER BY pel.kfnmtProcExecLogPK.execItemCd ASC ";
+	private static final String SELECT_All_BY_CID_AND_EXEC = SELECT_ALL
+			+ " WHERE pel.kfnmtProcExecLogPK.companyId = :companyId"
+			+ " AND pel.kfnmtProcExecLogPK.execItemCd IN :execItemCds"
+			+ " ORDER BY pel.kfnmtProcExecLogPK.execItemCd ASC";
 	
 	private static final String SELECT_BY_PK = SELECT_ALL
 			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "
@@ -40,6 +42,16 @@ implements ProcessExecutionLogManageRepository{
 			+ "AND pel.lastExecDateTime = :lastExecDateTime ";
 	private static final String SELECT_All_BY_CID_NATIVE = " SELECT * FROM KFNDT_AUTOEXEC_MNG as pel WITH (READUNCOMMITTED)"
 			+ "WHERE pel.CID = ? ORDER BY pel.EXEC_ITEM_CD ASC ";
+	
+	private static final String SELECT_AUTORUN_WITH_ERRORS = "SELECT pel FROM KfnmtProcessExecutionLogManage pel"
+			+ " WHERE pel.kfnmtProcExecLogPK.companyId = :cid"
+			+ " AND ( pel.errorSystem = 1"//全体のシステムエラー状態＝true
+			+ " 	OR pel.errorBusiness = 1)" //全体の業務エラー状態＝true
+			+ " AND pel.currentStatus <> 2"; //現在の実行状態　＜＞　無効
+	
+	private static final String SELECT_UPDATE_EXEC_ERRORS = "SELECT pel FROM KfnmtProcessExecutionLogManage pel"
+			+ " WHERE pel.kfnmtProcExecLogPK.companyId = :cid"
+			+ " AND pel.currentStatus <> 2"; //現在の実行状態　＜＞　無効
 	
 	/*
 	private static final String SELECT_All_BY_CID1 = SELECT_ALL
@@ -53,6 +65,16 @@ implements ProcessExecutionLogManageRepository{
 				.setParameter("companyId", companyId).getList(c -> c.toDomain());
 		return lstProcessExecutionLogManage;
 	}
+	
+	@Override
+	public List<ProcessExecutionLogManage> getProcessExecutionLogByCompanyIdAndExecItemCd(String companyId,
+			List<String> execItemCds) {
+		return this.queryProxy().query(SELECT_All_BY_CID_AND_EXEC, KfnmtProcessExecutionLogManage.class)
+				.setParameter("companyId", companyId)
+				.setParameter("execItemCds", execItemCds)
+				.getList(c -> c.toDomain());
+	}
+	
 	@Override
 	public List<ProcessExecutionLogManage> getProcessExecutionReadUncommit(String companyId) {
 		EntityManager entityManager = this.getEntityManager();
@@ -96,14 +118,14 @@ implements ProcessExecutionLogManageRepository{
 
 	@Override
 	public void insert(ProcessExecutionLogManage domain) {
-		//this.commandProxy().insert(KfnmtProcessExecutionLogManage.toEntity(domain));
-			this.getEntityManager().persist(KfnmtProcessExecutionLogManage.toEntity(domain));
+		this.commandProxy().insert(KfnmtProcessExecutionLogManage.toEntity(domain));
+//			this.getEntityManager().persist(KfnmtProcessExecutionLogManage.toEntity(domain));
 		//this.getEntityManager().lock(this.getEntityManager(), LockModeType.NONE);
 			//KfnmtProcessExecutionLogManagePK kfnmtProcExecPK = new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v());
 			//KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class, kfnmtProcExecPK);
 		//	LockModeType lockMode = this.getEntityManager().getLockMode(find);
 	//	this.getEntityManager().lock(find, LockModeType.PESSIMISTIC_WRITE);
-			this.getEntityManager().flush();
+//			this.getEntityManager().flush();
 	}
 
 	@Override
@@ -179,6 +201,20 @@ implements ProcessExecutionLogManageRepository{
 		//	this.getEntityManager().lock(find, LockModeType.PESSIMISTIC_WRITE);
 			this.getEntityManager().flush();
 		}
+	}
+
+	@Override
+	public List<ProcessExecutionLogManage> getAutorunItemsWithErrors(String cid) {
+		return this.queryProxy().query(SELECT_AUTORUN_WITH_ERRORS, KfnmtProcessExecutionLogManage.class)
+				.setParameter("cid", cid)
+				.getList(c -> c.toDomain());
+	}
+
+	@Override
+	public List<ProcessExecutionLogManage> getUpdateExecItemsWithErrors(String cid) {
+		return this.queryProxy().query(SELECT_UPDATE_EXEC_ERRORS, KfnmtProcessExecutionLogManage.class)
+				.setParameter("cid", cid)
+				.getList(c -> c.toDomain());
 	}
 
 }

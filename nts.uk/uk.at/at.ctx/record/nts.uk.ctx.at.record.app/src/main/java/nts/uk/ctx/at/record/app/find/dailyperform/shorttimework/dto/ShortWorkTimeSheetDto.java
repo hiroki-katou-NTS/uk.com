@@ -1,23 +1,28 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 
 /** 短時間勤務時間帯 */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShortWorkTimeSheetDto implements ItemConst {
+public class ShortWorkTimeSheetDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 短時間勤務枠NO: 短時間勤務枠NO */
 	// @AttendanceItemLayout(layout = "A", jpPropertyName = "")
 	// @AttendanceItemValue(type = ValueType.INTEGER)
-	private Integer no;
+	private int no;
 
 	/** 育児介護区分: 育児介護区分 */
 	/** @see nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute */
@@ -38,18 +43,19 @@ public class ShortWorkTimeSheetDto implements ItemConst {
 	/** 控除時間: 勤怠時間 */
 	// @AttendanceItemLayout(layout = "E", jpPropertyName = "")
 	// @AttendanceItemValue(type = ValueType.INTEGER)
-	private Integer deductionTime;
+//	private Integer deductionTime;
 
 	/** 時間: 勤怠時間 */
 	// @AttendanceItemLayout(layout = "F", jpPropertyName = "")
 	// @AttendanceItemValue(type = ValueType.INTEGER)
-	private Integer shortTime;
+//	private Integer shortTime;
 
 	@Override
 	public ShortWorkTimeSheetDto clone(){
-		return new ShortWorkTimeSheetDto(no, attr, startTime, endTime, deductionTime, shortTime);
+		return new ShortWorkTimeSheetDto(no, attr, startTime, endTime);
 	}
 	
+	@Override
 	public String enumText() {
 		switch (attr) {
 		case 0:
@@ -60,4 +66,61 @@ public class ShortWorkTimeSheetDto implements ItemConst {
 			return EMPTY_STRING;
 		}
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case START:
+			return Optional.of(ItemValue.builder().value(startTime).valueType(ValueType.TIME_WITH_DAY));
+		case END:
+			return Optional.of(ItemValue.builder().value(endTime).valueType(ValueType.TIME_WITH_DAY));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case START:
+			this.startTime = value.valueOrDefault(null);
+			break;
+		case END:
+			this.endTime = value.valueOrDefault(null);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case START:
+		case END:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+	@Override
+	public void setEnum(String enumText) {
+		switch (enumText) {
+		case E_CHILD_CARE:
+			this.attr = 0;
+			break;
+		case E_CARE:
+			this.attr = 1;
+			break;
+		default:
+		}
+	}
+
+//	@Override
+//	public boolean enumNeedSet() {
+//		return true;
+//	}
+	
+	
 }

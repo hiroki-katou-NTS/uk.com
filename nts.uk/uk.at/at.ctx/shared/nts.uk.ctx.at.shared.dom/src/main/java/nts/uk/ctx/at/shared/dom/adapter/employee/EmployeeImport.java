@@ -4,9 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.adapter.employee;
 
+import java.io.Serializable;
+
 import lombok.Builder;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 
 
 /**
@@ -16,8 +19,13 @@ import nts.arc.time.GeneralDate;
 // Imported Class for RequestList #1-2
 @Getter
 @Builder
-public class EmployeeImport {
+public class EmployeeImport implements Serializable{
 	
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/** The entry date. */
 	// 入社年月日
 	private GeneralDate entryDate;
@@ -61,6 +69,12 @@ public class EmployeeImport {
 		this.employeeMailAddress = employeeMailAddress;
 		this.employeeName = employeeName;
 		this.retiredDate = retiredDate;
+	}
+	
+	/** 期間中に退職しているかどうかの判断 */
+	public boolean isRetired(DatePeriod period) {
+		
+		return period.contains(retiredDate);
 	}
 	
 }

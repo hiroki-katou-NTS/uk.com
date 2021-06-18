@@ -38,6 +38,7 @@ public interface SyEmploymentPub {
      */
     //giống RQ 31 nhưng là truyền vào SID
     List<SEmpHistExport> findSEmpHistBySid(String companyId, String employeeId);
+
 	/**
 	 * Find all.
 	 *

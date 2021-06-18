@@ -84,7 +84,19 @@ public class JpaComEstablishmentRepository extends JpaRepository
 		}
 		
 		return Optional.ofNullable(
-				this.toDomain(estimateTimeCompanys, estimatePriceCompanys, estimateDaysCompanys));
+				this.toDomain(companyId, targetYear, estimateTimeCompanys, estimatePriceCompanys, estimateDaysCompanys));
+	}
+
+	@Override
+	public Optional<CompanyEstablishment> findById2(String companyId, int targetYear) {
+		List<KscmtEstTimeCom> estimateTimeCompanys = this.getEstimateTimeCompany(companyId,
+				targetYear);
+		List<KscmtEstPriceCom> estimatePriceCompanys = this.getEstimatePriceCompany(companyId,
+				targetYear);
+		List<KscmtEstDaysCom> estimateDaysCompanys = this.getEstimateDaysCompany(companyId,
+				targetYear);
+		return Optional.ofNullable(
+				this.toDomain(companyId, targetYear, estimateTimeCompanys, estimatePriceCompanys, estimateDaysCompanys));
 	}
 
 	/**
@@ -279,10 +291,13 @@ public class JpaComEstablishmentRepository extends JpaRepository
 	 * @param estimatePriceCompanys the estimate price companys
 	 * @return the company establishment
 	 */
-	private CompanyEstablishment toDomain(List<KscmtEstTimeCom> estimateTimeCompanys,
+	private CompanyEstablishment toDomain(String companyId, int targetYear, List<KscmtEstTimeCom> estimateTimeCompanys,
 			List<KscmtEstPriceCom> estimatePriceCompanys,
 			List<KscmtEstDaysCom> estimateDaysCompanys) {
-		return new CompanyEstablishment(new JpaComEstablishmentGetMemento(estimateTimeCompanys,
+			if (CollectionUtil.isEmpty(estimateTimeCompanys)
+					&& CollectionUtil.isEmpty(estimatePriceCompanys)
+					&& CollectionUtil.isEmpty(estimateDaysCompanys)) return null;
+			return new CompanyEstablishment(new JpaComEstablishmentGetMemento(companyId, targetYear, estimateTimeCompanys,
 				estimatePriceCompanys, estimateDaysCompanys));
 	}
 	

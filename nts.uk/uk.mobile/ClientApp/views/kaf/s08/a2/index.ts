@@ -5,7 +5,7 @@ import { FixTableComponent } from '@app/components/fix-table';
 import { KafS08DComponent } from '../../../kaf/s08/d';
 import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
 import * as _ from 'lodash';
-
+import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 
 
 // import abc from './mock_data.json';
@@ -20,6 +20,7 @@ import * as _ from 'lodash';
     components: {
         'step-wizard': StepwizardComponent,
         'fix-table': FixTableComponent,
+        'cmms45c': CmmS45CComponent
     },
     directives: {
         'date': {
@@ -37,7 +38,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
     @Prop({ default: () => ({}) })
 
     //A2 nhận về là props là array table
-    @Prop({ default: () => [] }) public readonly table!: [];
+    @Prop({ default: () => [] }) public readonly actualContent!: Array<any>;
 
     //A2 nhận về props params là một Object ITimes
     @Prop({ default: () => null }) public derpartureTime!: number;
@@ -120,6 +121,13 @@ export class KafS08A2Component extends KafS00ShrComponent {
                 }).then((res: any) => {
                     vm.data = res.data;
                     vm.businessTripActualContent = vm.data.businessTripInfoOutput.businessTripActualContent;
+                    vm.businessTripActualContent.forEach(((e1) => {
+                        vm.actualContent.forEach((e2) => {
+                            if (e1.date == e2.date) {
+                                e1.opAchievementDetail = e2.opAchievementDetail;
+                            }
+                        });
+                    }));
                     vm.$mask('hide');
                 });
             }
@@ -143,9 +151,40 @@ export class KafS08A2Component extends KafS00ShrComponent {
 
         return vm.$http.post('at', API.updateBusinessTrip, params).then((res: any) => {
             vm.$mask('hide');
-            vm.$emit('nextToStepThree', res.data.appID);
-        }).catch(() => {
+            vm.$emit('nextToStepThree', res.data.appIDLst[0]);
+        }).catch((res) => {
             vm.$mask('hide');
+            if (res.messageId == 'Msg_197') {
+                vm.$modal.error({ messageId: 'Msg_197', messageParams: [] }).then(() => {
+                    let appID = vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.appID;
+                    vm.$modal('cmms45c', { 'listAppMeta': [appID], 'currentApp': appID }).then((newData: any) => {
+                        vm.$emit('initFromDetail', newData);
+                        vm.businessTripActualContent = newData.businessTripDto.tripInfos.map((item: any) => {
+                            const workTime = newData.businessTripInfoOutputDto.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst.find((i: any) => i.worktimeCode == item.wkTimeCd);
+                            const workType = newData.businessTripInfoOutputDto.infoBeforeChange.find((i: any) => i.date == item.date).workTypeDto;
+                            
+                            return {
+                                date: item.date,
+                                opAchievementDetail: {
+                                    workTypeCD: item.wkTypeCd,
+                                    workTimeCD: item.wkTimeCd,
+                                    opWorkTypeName: workType.name,
+                                    opWorkTimeName: workTime ? workTime.workTimeDisplayName.workTimeName : null,
+                                    opWorkTime: item.startWorkTime,
+                                    opLeaveTime: item.endWorkTime
+                                }
+                            };
+                        });
+                        vm.$emit('prevStepOne', 
+                            newData.businessTripDto.departureTime,
+                            newData.businessTripDto.returnTime,
+                            newData.businessTripInfoOutputDto.appDispInfoStartup.appDetailScreenInfo.application.opAppReason, 
+                            vm.businessTripActualContent);
+                    });
+                });
+    
+                return;
+            }
             vm.$modal.error({ messageId: 'Msg_1912' });
         });
     }
@@ -211,7 +250,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
     //quay trở lại step one
     public prevStepOne() {
         const vm = this;
-        vm.$emit('prevStepOne', vm.derpartureTime, vm.returnTime, vm.appReason);
+        vm.$emit('prevStepOne', vm.derpartureTime, vm.returnTime, vm.appReason, vm.businessTripActualContent);
     }
 
     //hàm check trước khi register
@@ -226,6 +265,13 @@ export class KafS08A2Component extends KafS00ShrComponent {
                 endWorkTime: item.opAchievementDetail.opLeaveTime
             };
         });
+        let screenDetails: Array<any> = _.map(vm.businessTripActualContent, function (item: any) {
+            return {
+                date: item.date,
+                workTypeName: item.opAchievementDetail.opWorkTypeName,
+                workTimeName: item.opAchievementDetail.opWorkTimeName
+            };
+        });
         let paramsBusinessTrip = {
             departureTime: vm.derpartureTime,
             returnTime: vm.returnTime,
@@ -235,14 +281,15 @@ export class KafS08A2Component extends KafS00ShrComponent {
         // check before registering application
         vm.$http.post('at', API.checkBeforeApply, {
             businessTripInfoOutputDto: vm.data.businessTripInfoOutput,
-            businessTripDto: paramsBusinessTrip
+            businessTripDto: paramsBusinessTrip,
+            screenDetails
         }).then((res: any) => {
             vm.mode ? vm.registerData() : vm.updateBusinessTrip();
         }).catch((err: any) => {
             vm.$mask('hide');  
             let param;
 
-            if (err.messageId == 'Msg_23' || err.messageId == 'Msg_24' || err.messageId == 'Msg_1912' || err.messageId == 'Msg_1913' ) {
+            if (err.messageId == 'Msg_23' || err.messageId == 'Msg_24' || err.messageId == 'Msg_1912' || err.messageId == 'Msg_1913'  || err.messageId == 'Msg_1685') {
                 err.message = err.parameterIds[0] + err.message;
                 param = err;
 
@@ -296,7 +343,8 @@ export class KafS08A2Component extends KafS00ShrComponent {
             }).then((res: any) => {
                 //vm.appID = res.data.appID;
                 if (res) {
-                    vm.$emit('nextToStepThree', res.data.appID);
+                    vm.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
+                    vm.$emit('nextToStepThree', res.data.appIDLst[0]);
                 } else {
                     vm.$modal.error({ messageId: 'Msg_1912' });
                 }
@@ -331,5 +379,6 @@ const API = {
     checkBeforeApply: 'at/request/application/businesstrip/mobile/checkBeforeRegister',
     register: 'at/request/application/businesstrip/mobile/register',
     updateBusinessTrip: 'at/request/application/businesstrip/mobile/updateBusinessTrip',
+    reflectApp: 'at/request/application/reflect-app'
 };
 

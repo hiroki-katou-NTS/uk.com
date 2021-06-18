@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 
 /**
  * 計算乖離付き時間
@@ -10,23 +11,27 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  *
  */
 @Getter
-public class TimeDivergenceWithCalculation {
+public class TimeDivergenceWithCalculation implements Cloneable{
 	//時間
 	@Setter
 	private AttendanceTime time;
 	//計算時間
 	private AttendanceTime calcTime;
 	//乖離時間
-	private AttendanceTime divergenceTime;
+	private AttendanceTimeOfExistMinus divergenceTime;
 	
 	
 	private TimeDivergenceWithCalculation(AttendanceTime time,AttendanceTime calcTime) {
 		this.time = time==null?new AttendanceTime(0):time;
 		this.calcTime = calcTime==null?new AttendanceTime(0):calcTime;
-		this.divergenceTime = this.time.minusMinutes(this.calcTime.valueAsMinutes());
-		if(this.divergenceTime.valueAsMinutes()<0) {
-			this.divergenceTime = new AttendanceTime(0);
-		}
+		this.calcDiv();
+	}
+	
+	/**
+	 * 乖離計算
+	 */
+	private void calcDiv(){
+		this.divergenceTime = new AttendanceTimeOfExistMinus(this.calcTime.valueAsMinutes() - this.time.valueAsMinutes());
 	}
 	
 	/**
@@ -51,6 +56,11 @@ public class TimeDivergenceWithCalculation {
 		
 	}
 	
+	public void resetDefaultValue() {
+		this.time = AttendanceTime.ZERO;
+		this.calcTime = AttendanceTime.ZERO;
+	}
+	
 	/**
 	 * 時間のみを入れ替える(乖離計算無し)
 	 * @param time
@@ -70,18 +80,26 @@ public class TimeDivergenceWithCalculation {
 	}
 	
 	/**
+	 * 時間のみを入れ替える(乖離計算あり)
+	 * @param time 入れ替える時間
+	 */
+	public void replaceTimeWithCalc(AttendanceTime time) {
+		this.time = time;
+		this.calcDiv();
+	}
+	
+	/**
 	 * 計算時間のみを入れ替える(乖離計算有)
 	 * @param calcTime
 	 * @return
 	 */
 	public void replaceTimeAndCalcDiv(AttendanceTime calcTime) {
 		this.calcTime = calcTime;
-		this.divergenceTime = this.time.minusMinutes(calcTime.valueAsMinutes());
+		this.calcDiv();
 	}
 	
 	public static TimeDivergenceWithCalculation emptyTime() {
 		return TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0));
-		
 	}
 	
 	/**
@@ -92,7 +110,11 @@ public class TimeDivergenceWithCalculation {
 	public void addMinutesNotReturn(AttendanceTime time,AttendanceTime calcTime) {
 		this.time = this.time.addMinutes(time.valueAsMinutes());
 		this.calcTime = this.calcTime.addMinutes(calcTime.valueAsMinutes());
-		this.divergenceTime = calcTime.minusMinutes(time.valueAsMinutes());
+		this.calcDiv();
+	}
+	
+	public void addMinutesNotReturn(TimeDivergenceWithCalculation timeCalc) {
+		addMinutesNotReturn(timeCalc.getTime(), timeCalc.getCalcTime());
 	}
 	
 	/**
@@ -105,6 +127,16 @@ public class TimeDivergenceWithCalculation {
 		return new TimeDivergenceWithCalculation(this.time.addMinutes(time.valueAsMinutes()),this.calcTime.addMinutes(calcTime.valueAsMinutes()));
 	}
 	
+	/**
+	 * 加算する
+	 * @param time 加算する時間
+	 * @return 加算後の計算乖離付き時間
+	 */
+	public TimeDivergenceWithCalculation addMinutes(TimeDivergenceWithCalculation time) {
+		return new TimeDivergenceWithCalculation(
+				this.time.addMinutes(time.getTime().valueAsMinutes()),
+				this.calcTime.addMinutes(time.getCalcTime().valueAsMinutes()));
+	}
 	
 	/**
 	 * 自身の乖離時間を計算する
@@ -114,11 +146,25 @@ public class TimeDivergenceWithCalculation {
 		return new TimeDivergenceWithCalculation(this.time,this.calcTime);
 	}
 
-	public TimeDivergenceWithCalculation(AttendanceTime time, AttendanceTime calcTime, AttendanceTime divergenceTime) {
+	public TimeDivergenceWithCalculation(AttendanceTime time, AttendanceTime calcTime, AttendanceTimeOfExistMinus divergenceTime) {
 		super();
 		this.time = time;
 		this.calcTime = calcTime;
 		this.divergenceTime = divergenceTime;
 	}
 	
+	/**
+	 * マイナスの乖離時間を0にする
+	 */
+	public void divergenceMinusValueToZero(){
+		if (this.divergenceTime.valueAsMinutes() < 0){
+			this.divergenceTime = new AttendanceTimeOfExistMinus(0);
+		}
+	}
+	
+	@Override
+	public TimeDivergenceWithCalculation clone() {
+		return new TimeDivergenceWithCalculation(new AttendanceTime(time.v()), new AttendanceTime(calcTime.v()),
+				new AttendanceTimeOfExistMinus(divergenceTime.v()));
+	}
 }

@@ -12,8 +12,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryA
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.SubstituteHolidaySetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveCom;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KocmtOccurrenceSet;
 
 /**
  * The Class JpaCompensLeaveComGetMemento.
@@ -62,9 +62,7 @@ public class JpaCompensLeaveComGetMemento implements CompensatoryLeaveComGetMeme
      */
     @Override
     public CompensatoryAcquisitionUse getCompensatoryAcquisitionUse() {
-    	JpaCompensAcquisitionUseGetMemento memento = new JpaCompensAcquisitionUseGetMemento(this.entity.getKclmtAcquisitionCom());
-    	CompensatoryAcquisitionUse data = new CompensatoryAcquisitionUse(memento);
-        return data;
+        return null;        
     }
 
     /*
@@ -75,8 +73,7 @@ public class JpaCompensLeaveComGetMemento implements CompensatoryLeaveComGetMeme
      */
     @Override
     public CompensatoryDigestiveTimeUnit getCompensatoryDigestiveTimeUnit() {
-        return new CompensatoryDigestiveTimeUnit(
-                new JpaCompensDigestiveTimeUnitGetMemento(this.entity.getKctmtDigestTimeCom()));
+    	return null;
     }
 
     /*
@@ -88,10 +85,22 @@ public class JpaCompensLeaveComGetMemento implements CompensatoryLeaveComGetMeme
     @Override
     public List<CompensatoryOccurrenceSetting> getCompensatoryOccurrenceSetting() {
         List<CompensatoryOccurrenceSetting> listSetting = new ArrayList<>();
-        for (KocmtOccurrenceSet entity : this.entity.getListOccurrence()) {
-            listSetting.add(new CompensatoryOccurrenceSetting(new JpaCompensOccurrenceSettingGetMemento(entity)));
-        }
+//        for (KocmtOccurrenceSet entity : this.entity.getListOccurrence()) {
+//            listSetting.add(new CompensatoryOccurrenceSetting(new JpaCompensOccurrenceSettingGetMemento(entity)));
+//        }
         return listSetting;
     }
+
+	@Override
+	public SubstituteHolidaySetting getSubstituteHolidaySetting() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ManageDistinct getLinkingManagementATR() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

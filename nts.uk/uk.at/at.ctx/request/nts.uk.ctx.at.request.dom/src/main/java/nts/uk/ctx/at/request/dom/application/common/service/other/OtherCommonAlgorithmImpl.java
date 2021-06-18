@@ -22,13 +22,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
-import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
@@ -37,7 +33,9 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.ba
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
@@ -45,23 +43,16 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailRes
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRec;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRecRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.BeforeAddCheckMethod;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.OTAppBeforeAccepRestric;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.Division;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReason;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -84,69 +75,63 @@ import nts.uk.shr.com.url.RegisterEmbededURL;
 
 @Stateless
 public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
-	
+
 	@Inject
 	private EmployeeRequestAdapter employeeAdaptor;
-	
+
 	@Inject
 	private WorkTimeWorkplaceRepository workTimeWorkplaceRepo;
-	
+
 	@Inject
 	private ClosureRepository closureRepository;
-	
+
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
-	
+
 	@Inject
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject
-	private CompltLeaveSimMngRepository compLeaveRepo;
-	
+	private AppHdsubRecRepository compLeaveRepo;
+
 	@Inject
 	private MailSender mailsender;
-	
-	@Inject
-	private AppDispNameRepository appDispNameRepository;
-	
+
 	@Inject
 	private EnvAdapter envAdapter;
-	
+
 	@Inject
 	private RegisterEmbededURL registerEmbededURL;
-	
+
 	@Inject
 	private IApplicationContentService applicationContentService;
-	
+
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
-	
+
 	@Inject
 	private RecordWorkInfoAdapter recordWorkInfoAdapter;
-	
+
 	@Inject
 	private ScBasicScheduleAdapter scBasicScheduleAdapter;
-	
+
 	@Inject
 	private WorkTypeRepository workTypeRepository;
-//	@Inject
-//	private AppTypeDiscreteSettingRepository appTypeSetRepo;
-	@Inject
-	private AppAbsenceRepository repoAbsence;
-	@Inject
-	private DisplayReasonRepository displayRep;
-	
-//	@Inject
-//	private ApplicationReasonRepository applicationReasonRepository;
-	
+
 	@Inject
 	private WorkTimeSettingRepository workTimeRepository;
-	
+
 	@Inject
 	private AppEmailSetRepository appEmailSetRepository;
-	
+
 	@Inject
 	private CollectAchievement collectAchievement;
-	
+
+	@Inject
+	private ApprovalRootStateAdapter approvalRootStateAdapter;
+
+	@Inject
+	private ApplicationRepository applicationRepository;
+
 	public PeriodCurrentMonth employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date){
 		/*
 		アルゴリズム「社員所属雇用履歴を取得」を実行する(thực hiện xử lý 「社員所属雇用履歴を取得」)
@@ -190,7 +175,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			// アルゴリズム「職場IDから職場別就業時間帯を取得」を実行する
 			List<WorkTimeSetting> listWorkTime = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID, wkpID);
 			if(listWorkTime.size()>0) {
-				Collections.sort(listWorkTime, Comparator.comparing(x -> x.getWorktimeCode().v()));
+				Collections.sort(listWorkTime, (x1, x2) -> x1.getWorktimeCode().compareTo(x2.getWorktimeCode()));
 				return listWorkTime;
 			}
 		}
@@ -279,9 +264,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	 */
 	@Override
 	public AppCompltLeaveSyncOutput getAppComplementLeaveSync(String companyId, String appId) {
-		// TODO Auto-generated method stub
+
 		Optional<AbsenceLeaveApp> abs = absRepo.findByAppId(appId);
-		Optional<CompltLeaveSimMng> sync = null;
+		Optional<AppHdsubRec> sync = null;
 		String absId = "";
 		String recId = "";
 		boolean synced = false;
@@ -305,39 +290,39 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		}
 		return new AppCompltLeaveSyncOutput(absId, recId, synced, type);
 	}
-	
+
 	@Override
-	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application application, String appName) {
+	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application application) {
 		// ドメインモデル「申請メール設定」を取得する(get domain model 「」)
 		AppEmailSet appEmailSet = appEmailSetRepository.findByDivision(Division.APPLICATION_APPROVAL);
 		// アルゴリズム「承認者へ送る」を実行する(thực hiện thuật toán 「Gửi tới người phê duyệt」)
-		MailResult mailResult = sendMailApprover(employeeIDList, application, appEmailSet.getEmailContentLst().get(0).getOpEmailText().map(x -> x.v()).orElse(""), appName);
+		MailResult mailResult = sendMailApprover(employeeIDList, application, appEmailSet.getEmailContentLst().get(0).getOpEmailText().map(x -> x.v()).orElse(""), "");
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application, String appName) {
+	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application, String content) {
 		String inputText = I18NText.getText("Msg_1262",Collections.emptyList());
 		// アルゴリズム「承認者へ送る」を実行する (Thực hiện thuật toán "Gửi tới người phê duyệt")
-		MailResult mailResult = sendMailApprover(employeeIDList, application, inputText, appName);
+		MailResult mailResult = sendMailApprover(employeeIDList, application, inputText, content);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApplicantApprove(Application application, String appName) {
+	public MailResult sendMailApplicantApprove(Application application) {
 		String inputText = I18NText.getText("Msg_1263",Collections.emptyList());
-		MailResult mailResult = sendMailApplicant(application, inputText, appName);
+		MailResult mailResult = sendMailApplicant(application, inputText);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApplicantDeny(Application application, String appName) {
+	public MailResult sendMailApplicantDeny(Application application) {
 		String inputText = I18NText.getText("Msg_1264",Collections.emptyList());
-		MailResult mailResult = sendMailApplicant(application, inputText, appName);
+		MailResult mailResult = sendMailApplicant(application, inputText);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApprover(List<String> listDestination, Application application, String text, String appName) {
+	public MailResult sendMailApprover(List<String> listDestination, Application application, String text, String content) {
 		List<String> successList = new ArrayList<>();
 		List<String> failList = new ArrayList<>();
-		List<String> failServerList = new ArrayList<>(); 
+		List<String> failServerList = new ArrayList<>();
 		String sIDlogin = AppContexts.user().employeeId();
 		String companyID = AppContexts.user().companyId();
 		List<String> paramIDList = new ArrayList<>();
@@ -346,12 +331,12 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		// ログイン者のメールアドレスを取得する
 		List<MailDestinationImport> mailResultList = envAdapter.getEmpEmailAddress(companyID, paramIDList, 6);
 		String loginMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(sIDlogin)).findAny()
-				.map(x -> { 
+				.map(x -> {
 					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){
-						return ""; 
-					} else { 
-						return x.getOutGoingMails().get(0).getEmailAddress(); 
-					} 
+						return "";
+					} else {
+						return x.getOutGoingMails().get(0).getEmailAddress();
+					}
 				}).orElse("");
 		// ログイン者の社員名を取得する
 		String loginName = employeeAdaptor.getEmployeeName(sIDlogin);
@@ -361,12 +346,12 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			String employeeName = employeeAdaptor.getEmployeeName(employeeID);
 			// 対象者のメールアドレスを取得する
 			String approverMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny()
-					.map(x -> { 
+					.map(x -> {
 						if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){
-							return ""; 
-						} else { 
-							return x.getOutGoingMails().get(0).getEmailAddress(); 
-						} 
+							return "";
+						} else {
+							return x.getOutGoingMails().get(0).getEmailAddress();
+						}
 					}).orElse("");
 			if(Strings.isBlank(approverMail)){
 				// エラーメッセージ Msg_768　対象者氏名　エラーリストにセットする
@@ -379,27 +364,31 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			if(appEmailSet.getUrlReason() == NotUseAtr.USE){
 				// 埋込URL情報登録申請(application đăng ký info URL nén)
 				URL = registerEmbededURL.registerEmbeddedForApp(
-						application.getAppID(), 
-						application.getAppType().value, 
-						application.getPrePostAtr().value, 
-						"", 
+						application.getAppID(),
+						application.getAppType().value,
+						application.getPrePostAtr().value,
+						"",
 						employeeID);
 			};
 			// メール送信時申請内容の作成
-			String appContent = applicationContentService.getApplicationContent(application);
+			String appContent = content; 
+			if(Strings.isBlank(appContent)) {
+				applicationContentService.getApplicationContent(application);
+			} 
 			// 申請を差し戻すメール本文の編集
 			String newText = Strings.isNotBlank(URL) ? text + "\n" + URL : text;
+			String appName = application.getAppType().name;
 			String mailContentToSend = I18NText.getText("Msg_703",
-					loginName, 
+					loginName,
 					newText,
-					application.getAppDate().getApplicationDate().toLocalDate().toString(), 
+					application.getAppDate().getApplicationDate().toString(),
 					appName,
-					applicantName, 
-					application.getAppDate().getApplicationDate().toLocalDate().toString(),
-					appContent, 
-					loginName, 
+					applicantName,
+					application.getAppDate().getApplicationDate().toString(),
+					appContent,
+					loginName,
 					loginMail);
-			String mailTitle = application.getAppDate().getApplicationDate().toLocalDate().toString()+" "+appName;
+			String mailTitle = application.getAppDate().getApplicationDate().toString()+"　"+appName;
 			String mailBody = mailContentToSend;
 			try {
 				// メールを送信する(gửi mail)
@@ -412,7 +401,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		return new MailResult(successList, failList, failServerList);
 	}
 	@Override
-	public MailResult sendMailApplicant(Application application, String text, String appName) {
+	public MailResult sendMailApplicant(Application application, String text) {
 		List<String> successList = new ArrayList<>();
 		List<String> failList = new ArrayList<>();
 		List<String> failServerList = new ArrayList<>();
@@ -424,24 +413,24 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		// ログイン者のメールアドレスを取得する
 		List<MailDestinationImport> mailResultList = envAdapter.getEmpEmailAddress(companyID, listDestination, 6);
 		String loginMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(sIDlogin)).findAny()
-				.map(x -> { 
-					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){ 
-						return ""; 
+				.map(x -> {
+					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){
+						return "";
 					} else {
-						return x.getOutGoingMails().get(0).getEmailAddress(); 
-					} 
+						return x.getOutGoingMails().get(0).getEmailAddress();
+					}
 				}).orElse("");
 		// ログイン者の社員名を取得する
 		String loginName = employeeAdaptor.getEmployeeName(sIDlogin);
 		// 社員名を取得する
 		String applicantName = employeeAdaptor.getEmployeeName(application.getEmployeeID());
 		String applicantMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny()
-				.map(x -> { 
-					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){ 
-						return ""; 
-					} else { 
-						return x.getOutGoingMails().get(0).getEmailAddress(); 
-					} 
+				.map(x -> {
+					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){
+						return "";
+					} else {
+						return x.getOutGoingMails().get(0).getEmailAddress();
+					}
 				}).orElse("");
 		if(Strings.isBlank(applicantMail)){
 			// エラーメッセージ Msg_768　対象者氏名　エラーリストにセットする
@@ -453,27 +442,28 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		AppEmailSet appEmailSet = appEmailSetRepository.findByCID(companyID);
 		if(appEmailSet.getUrlReason() == NotUseAtr.USE){
 			URL = registerEmbededURL.registerEmbeddedForApp(
-					application.getAppID(), 
-					application.getAppType().value, 
-					application.getPrePostAtr().value, 
-					"", 
+					application.getAppID(),
+					application.getAppType().value,
+					application.getPrePostAtr().value,
+					"",
 					employeeID);
 		};
 		// メール送信時申請内容の作成
 		String appContent = applicationContentService.getApplicationContent(application);
 		// 申請を差し戻すメール本文の編集
 		String newText = Strings.isNotBlank(URL) ? text + "\n" + URL : text;
+		String appName = application.getAppType().name;
 		String mailContentToSend = I18NText.getText("Msg_703",
-				loginName, 
+				loginName,
 				newText,
-				application.getAppDate().getApplicationDate().toLocalDate().toString(), 
-				appName,
-				applicantName, 
 				application.getAppDate().getApplicationDate().toLocalDate().toString(),
-				appContent, 
-				loginName, 
+				appName,
+				applicantName,
+				application.getAppDate().getApplicationDate().toLocalDate().toString(),
+				appContent,
+				loginName,
 				loginMail);
-		String mailTitle = application.getAppDate().getApplicationDate().toLocalDate().toString()+" "+appName;
+		String mailTitle = application.getAppDate().getApplicationDate().toString()+"　"+appName;
 		String mailBody = mailContentToSend;
 		try {
 			// メールを送信する
@@ -544,62 +534,10 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		}
 		return null;
 	}
-	/**
-	 * 申請理由出力_共通
-	 * @author hoatt
-	 * @param 申請 application
-	 * @param 休暇種類(Optional) holidayType
-	 * @return 結果(使用/未使用)
-	 */
-	@Override
-	public boolean appReasonOutFlg(Application application, Optional<Integer> holidayType) {
-		String companyId = AppContexts.user().companyId();
-		if(application.isAbsenceApp()){
-			if(!holidayType.isPresent()){
-				//ドメインモデル「休暇申請」を取得する
-				Optional<AppAbsence> absence = repoAbsence.getAbsenceById(companyId, application.getAppID());
-				if(absence.isPresent()){
-					holidayType = Optional.of(absence.get().getHolidayAppType().value);
-				}
-			}
-			if(holidayType.isPresent()){
-				//ドメインモデル「申請理由表示」を取得する
-				Optional<DisplayReason> disReason = displayRep.findByHdType(companyId, application.getAppType().value);
-				if(disReason.isPresent() && disReason.get().getDisplayFixedReason().equals(DisplayAtr.NOT_DISPLAY)
-						 && disReason.get().getDisplayAppReason().equals(DisplayAtr.NOT_DISPLAY)){
-					//定型理由の表示＝しない　AND 申請理由の表示＝しない
-					return false;//output：・結果＝未使用
-				}
-				return true;//output：・結果＝使用
-			}
-			return true;
-		}else{
-			//ドメインモデル「申請種類別設定」を取得する
-//			Optional<AppTypeDiscreteSetting> appTypeSet = appTypeSetRepo.getAppTypeDiscreteSettingByAppType(companyId, application.getAppType().value);
-//			if(appTypeSet.isPresent() && appTypeSet.get().getTypicalReasonDisplayFlg().equals(AppDisplayAtr.NOTDISPLAY) &&
-//					appTypeSet.get().getDisplayReasonFlg().equals(AppDisplayAtr.NOTDISPLAY)){
-//				//定型理由の表示＝しない　AND 申請理由の表示＝しない
-//				return false;//output：・結果＝未使用
-//			}
-			return true;//output：・結果＝使用
-		}
-	}
-	
-//	@Override
-//	public List<ApplicationReason> getApplicationReasonType(String companyID, DisplayAtr typicalReasonDisplayFlg, ApplicationType appType) {
-//		// Input．申請種類をチェックする
-//		if(appType != ApplicationType.ABSENCE_APPLICATION) {
-//			// Input．定型理由の表示区分をチェック
-//			if (typicalReasonDisplayFlg == DisplayAtr.NOT_DISPLAY) {
-//				return Collections.emptyList();
-//			}
-//		}
-//		// ドメインモデル「申請定型理由」を取得
-//		List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID, appType.value);
-//		return applicationReasons;
-//		
-//	}
-	
+
+
+
+
 	@Override
 	public boolean displayAppReasonContentFlg(AppDisplayAtr displayReasonFlg) {
 		// Input．申請理由の表示区分をチェック
@@ -608,43 +546,8 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		}
 		return false;
 	}
-	
-	@Override
-	public AppOverTime getPreApplication(String employeeID, PrePostAtr prePostAtr, UseAtr preDisplayAtr, GeneralDate appDate, ApplicationType appType) {
-//		String companyID =  AppContexts.user().companyId();
-//		AppOverTime result = new AppOverTime();
-//		if (prePostAtr == PrePostAtr.POSTERIOR) {
-//			if(preDisplayAtr == UseAtr.USE){
-//				List<Application_New> applicationLst = applicationRepository.getApp(employeeID, appDate, PrePostAtr.PREDICT.value, appType.value);
-//				if(!CollectionUtil.isEmpty(applicationLst)){
-//					Application_New applicationOvertime = Application_New.firstCreate(companyID, prePostAtr, appDate, appType, employeeID, new AppReason(Strings.EMPTY));
-//					applicationOvertime.setAppDate(applicationLst.get(0).getAppDate());
-//					Optional<AppOverTime> appOvertime = this.overtimeRepository
-//							.getAppOvertime(applicationLst.get(0).getCompanyID(), applicationLst.get(0).getAppID());
-//					if (appOvertime.isPresent()) {
-//						result.setWorkTypeCode(appOvertime.get().getWorkTypeCode());
-//						result.setSiftCode(appOvertime.get().getSiftCode());
-//						result.setWorkClockFrom1(appOvertime.get().getWorkClockFrom1());
-//						result.setWorkClockTo1(appOvertime.get().getWorkClockTo1());
-//						result.setWorkClockFrom2(appOvertime.get().getWorkClockFrom2());
-//						result.setWorkClockTo2(appOvertime.get().getWorkClockTo2());
-//
-//						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(
-//								appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),
-//								AttendanceType.NORMALOVERTIME.value);
-//						result.setOverTimeInput(overtimeInputs);
-//						result.setOverTimeShiftNight(appOvertime.get().getOverTimeShiftNight());
-//						result.setFlexExessTime(appOvertime.get().getFlexExessTime());
-//						result.setApplication(applicationOvertime);
-//						result.setAppID(appOvertime.get().getAppID());
-//						return result;
-//					}
-//				}
-//			}
-//		}
-		return null;
-	}
-	
+
+
 	/**
 	 * 12.マスタ勤務種類、就業時間帯データをチェック
 	 * @param companyID
@@ -655,8 +558,8 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	@Override
 	public CheckWorkingInfoResult checkWorkingInfo(String companyID, String wkTypeCode, String wkTimeCode) {
 		CheckWorkingInfoResult result = new CheckWorkingInfoResult();
-		
-		
+
+
 		// 「勤務種類CD ＝＝ Null」 をチェック
 		boolean isWkTypeCDNotEmpty = !StringUtil.isNullOrEmpty(wkTypeCode, true);
 		if (isWkTypeCDNotEmpty) {
@@ -687,18 +590,44 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 				result.setWkTimeError(true);
 			}
 		}
-			
-		
+
+
 		return result;
 	}
-	
+
 	private WorkTypeIsClosedService.RequireM1 createM1() {
 		return new WorkTypeIsClosedService.RequireM1() {
-			
+
 			@Override
 			public Optional<WorkType> workType(String companyId, String workTypeCd) {
 				return workTypeRepository.findByPK(companyId, workTypeCd);
 			}
 		};
+	}
+	@Override
+	public User userJudgment(String companyID, String appID, String employeeID) {
+		// ドメインモデル「申請」を取得する (Lấy domain「申請」 )
+		Application application = applicationRepository.findByID(appID).get();
+		// アルゴリズム「指定した社員が承認者であるかの判断」を実行する
+		Boolean isApprover = approvalRootStateAdapter.judgmentTargetPersonIsApprover(companyID, application.getAppID(), employeeID);
+		if(isApprover){
+			// ログイン者が申請本人かチェックする(Check xem login có phải là applicant không)
+			if(application.getEmployeeID().equals(employeeID) || application.getEnteredPersonID().equals(employeeID)){
+				// 利用者 = 申請本人&承認者
+				return User.APPLICANT_APPROVER;
+			} else {
+				// 利用者 = 承認者
+				return User.APPROVER;
+			}
+		} else {
+			// ログイン者が申請本人かチェックする(Check xem login có phải là applicant không)
+			if(application.getEmployeeID().equals(employeeID) || application.getEnteredPersonID().equals(employeeID)){
+				// 利用者 = 申請本人
+				return User.APPLICANT;
+			} else {
+				// 利用者 = その他
+				return User.OTHER;
+			}
+		}
 	}
 }

@@ -6,7 +6,7 @@ module nts.uk.at.view.kmp001.a {
 		<tbody>
 			<tr>
 				<td class="label-column-a-left">
-					<div id="td-bottom" data-bind="text: $i18n('KMP001_16')"></div>
+					<div id="td-bottom" data-bind="ntsFormLabel: {}, text: $i18n('KMP001_16')"></div>
 				</td>
 				<td class="label-column-a-right">
 					<div id="td-bottom" data-bind="text: model.workplaceName"></div>
@@ -14,7 +14,7 @@ module nts.uk.at.view.kmp001.a {
 			</tr>
 			<tr>
 				<td class="label-column-a-left">
-					<div id="td-bottom" data-bind="text: $component.$i18n('KMP001_9')"></div>
+					<div id="td-bottom" data-bind="ntsFormLabel: {}, text: $component.$i18n('KMP001_9')"></div>
 				</td>
 				<td class="label-column-a-right">
 					<div data-bind="text: model.code"></div>
@@ -23,7 +23,7 @@ module nts.uk.at.view.kmp001.a {
 			</tr>
 			<tr>
 				<td class="label-column-a-left">
-					<div id="td-bottom" data-bind="text: $component.$i18n('KMP001_20')"></div>
+					<div id="td-bottom" data-bind="ntsFormLabel: {}, text: $component.$i18n('KMP001_20')"></div>
 				</td>
 				<td class="label-column-a-right">
 					<div id="td-bottom" data-bind="text: model.entryDate"></div>
@@ -31,7 +31,7 @@ module nts.uk.at.view.kmp001.a {
 			</tr>
 			<tr>
 				<td class="label-column-a-left">
-					<div id="td-bottom" data-bind="text: $component.$i18n('KMP001_21')"></div>
+					<div id="td-bottom" data-bind="ntsFormLabel: {}, text: $component.$i18n('KMP001_21')"></div>
 				</td>
 				<td class="label-column-a-right">
 					<div id="td-bottom" data-bind="text: model.retiredDate"></div>
@@ -43,7 +43,10 @@ module nts.uk.at.view.kmp001.a {
 <div>
 	<div>
 		<div class="list-card" 
-			data-bind="component: { name: 'card-list-component', params: { model: model, stampCardEdit: stampCardEdit, textInput: textInput}}"></div>
+			data-bind="component: { name: 'card-list-component', params: { model: model, 
+				stampCardEdit: stampCardEdit, 
+				textInput: textInput, 
+				methodEdit: methodEdit}}"></div>
 	</div>
 </div>
 `
@@ -56,12 +59,14 @@ module nts.uk.at.view.kmp001.a {
 		model!: Model;
 		stampCardEdit!: StampCardEdit;
 		textInput: KnockoutObservable<string>;
+		methodEdit: KnockoutObservable<boolean>;
 		created(params: any) {
 			const vm = this;
 
 			vm.model = params.model;
 			vm.stampCardEdit = params.stampCardEdit;
 			vm.textInput = params.textInput;
+			vm.methodEdit = params.methodEdit;
 		}
 
 		mounted() {

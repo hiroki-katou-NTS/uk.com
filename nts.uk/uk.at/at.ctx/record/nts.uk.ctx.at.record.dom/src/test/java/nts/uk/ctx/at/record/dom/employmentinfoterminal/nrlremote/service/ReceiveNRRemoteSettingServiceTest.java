@@ -19,15 +19,17 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSe
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal.EmpInfoTerminalBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.IPAddress;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.FullIpAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.PartialIpAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetFormatList;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.dto.TimeRecordSetReceptFormatDto;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.dto.TimeRecordSetReceptFormatDto.TimeRecordSetFormatDtoBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.dto.TimeRecordSetUpdateReceptDto;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.dto.TimeRecordSettingInfoDto;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.shr.com.net.Ipv4Address;
 
 @RunWith(JMockit.class)
 public class ReceiveNRRemoteSettingServiceTest {
@@ -91,9 +93,9 @@ public class ReceiveNRRemoteSettingServiceTest {
 		new Expectations() {
 			{
 				require.getEmpInfoTerWithMac(new MacAddress("00-14-22-01-23-45"), (ContractCode) any);
-				result = Optional.of(new EmpInfoTerminalBuilder(new IPAddress("192.168.1.1"),
-						new MacAddress("00-14-22-01-23-45"), new EmpInfoTerminalCode(1234),
-						new EmpInfoTerSerialNo("1111"), new EmpInfoTerminalName("AT"), new ContractCode("000000000000"))
+				result = Optional.of(new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")),
+						new MacAddress("00-14-22-01-23-45"), new EmpInfoTerminalCode("1234"),
+						Optional.of(new EmpInfoTerSerialNo("1111")), new EmpInfoTerminalName("AT"), new ContractCode("000000000000"))
 								.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).build());
 
 			}

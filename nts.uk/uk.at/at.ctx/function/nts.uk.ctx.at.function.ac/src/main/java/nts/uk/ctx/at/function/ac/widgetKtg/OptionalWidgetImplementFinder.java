@@ -44,12 +44,6 @@ import nts.uk.ctx.at.record.pub.workrecord.erroralarm.EmployeeDailyPerErrorPub;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.AnnualHolidayManagementPub;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.NextAnnualLeaveGrantExport;
 import nts.uk.ctx.at.request.pub.application.lateorleaveearly.LateOrLeaveEarlyPub;
-import nts.uk.ctx.at.request.pub.application.recognition.AppHdTimeNotReflectedPub;
-import nts.uk.ctx.at.request.pub.application.recognition.AppNotReflectedPub;
-import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimePub;
-import nts.uk.ctx.at.request.pub.application.recognition.ApplicationTimeUnreflectedPub;
-import nts.uk.ctx.at.request.pub.application.recognition.HolidayInstructPub;
-import nts.uk.ctx.at.request.pub.application.recognition.OverTimeInstructPub;
 import nts.uk.ctx.at.shared.pub.remainingnumber.annualleave.empinfo.basicinfo.GetGrantHdTblSetPub;
 import nts.uk.ctx.at.shared.pub.remainingnumber.annualleave.empinfo.basicinfo.GrantHdTblSetExport;
 import nts.uk.ctx.at.shared.pub.yearholidaygrant.CalculationMethod;
@@ -60,60 +54,37 @@ import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 
-	@Inject
-	OverTimeInstructPub overTimeInstructPub;
 	
-	@Inject 
-	HolidayInstructPub holidayInstructPub;
-	
+
 	@Inject
 	private OptionalWidgetPub optionalWidgetPub;
-	
+
 	@Inject
 	private EmployeeDailyPerErrorPub employeeDailyPerErrorPub;
-	
-	@Inject
-	private ApplicationOvertimePub applicationOvertimePub;
-	
+
 	@Inject
 	private DailyExcessTotalTimePub dailyExcessTotalTimePub;
-	
-	@Inject
-	private ApplicationTimeUnreflectedPub applicationTimeUnreflectedPub;
-	
-	@Inject
-	private AppHdTimeNotReflectedPub appHdTimeNotReflectedPub; 
-	
-	@Inject 
-	private AppNotReflectedPub appNotReflectedPub;
-	
+
+
 	@Inject
 	private AnnualHolidayManagementPub annualHolidayManagementPub;
-	
+
 	@Inject
 	private AnnLeaveRemainNumberPub annLeaveRemainNumberPub;
-	
+
 	@Inject
 	private LateOrLeaveEarlyPub lateOrLeaveEarlyPub;
-	
+
 	@Inject
 	private DailyLateAndLeaveEarlyTimePub dailyLateAndLeaveEarlyTimePub;
-	
+
 	@Inject
 	private GetRsvLeaNumCriteriaDate getRsvLeaNumCriteriaDate;
-	
+
 	@Inject
 	private GetGrantHdTblSetPub getGrantHdTblSetPub;
-	
-	@Override
-	public int getNumberOT(String employeeId, GeneralDate startDate, GeneralDate endDate) {
-		return overTimeInstructPub.acquireOverTimeWorkInstruction(employeeId, startDate, endDate).size();
-	}
 
-	@Override
-	public int getNumberBreakIndication(String employeeId, GeneralDate startDate, GeneralDate endDate) {
-		return holidayInstructPub.acquireBreakIndication(employeeId, startDate, endDate).size();
-	}
+	
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -142,15 +113,6 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 				.map(c -> new EmployeeErrorImport(c.getDate(), c.getHasError())).collect(Collectors.toList());
 	}
 
-	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<ApplicationTimeImport> acquireTotalApplicationOverTimeHours(String sId, GeneralDate startDate,
-			GeneralDate endDate) {
-		// TODO Auto-generated method stub
-		return applicationOvertimePub.acquireTotalApplicationOverTimeHours(sId, startDate, endDate)
-				.stream().map(c -> new ApplicationTimeImport(c.getDate(), c.getTotalOtHours()))
-				.collect(Collectors.toList());
-	}
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -159,7 +121,7 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		Map<GeneralDate,DailyExcessTotalTimeExpParam> map =  dailyExcessTotalTimePub.getExcessTotalTime(new DailyExcessTotalTimePubImport(employeeId, datePeriod)).getMap();
 		List<DailyExcessTotalTimeImport> result = new ArrayList<>();
 		map.entrySet().forEach(c -> {
-			result.add(new DailyExcessTotalTimeImport(c.getKey(), 
+			result.add(new DailyExcessTotalTimeImport(c.getKey(),
 					new AttendanceTimeImport(c.getValue().getOverTime().hour(),c.getValue().getOverTime().minute()),
 					new AttendanceTimeImport(c.getValue().getHolidayWorkTime().hour(),c.getValue().getHolidayWorkTime().minute()),
 					new AttendanceTimeImport(c.getValue().getFlexOverTime().hour(),c.getValue().getFlexOverTime().minute()),
@@ -170,54 +132,28 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<ApplicationTimeImport> acquireTotalApplicationTimeUnreflected(String sId, GeneralDate startDate,
-			GeneralDate endDate) {
-		// TODO Auto-generated method stub
-		return applicationTimeUnreflectedPub.acquireTotalApplicationTimeUnreflected(sId, startDate, endDate)
-				.stream().map(c -> new ApplicationTimeImport(c.getDate(), c.getTotalOtHours())).collect(Collectors.toList());
-	}
-
-	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<ApplicationTimeImport> acquireTotalAppHdTimeNotReflected(String sId, GeneralDate startDate,
-			GeneralDate endDate) {
-		// TODO Auto-generated method stub
-		return appHdTimeNotReflectedPub.acquireTotalAppHdTimeNotReflected(sId, startDate, endDate)
-				.stream().map(c -> new ApplicationTimeImport(c.getDate(), c.getBreakTime())).collect(Collectors.toList());
-	}
-
-	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<ApplicationTimeImport> acquireAppNotReflected(String sId, GeneralDate startDate, GeneralDate endDate) {
-		// TODO Auto-generated method stub
-		return appNotReflectedPub.acquireAppNotReflected(sId, startDate, endDate)
-				.stream().map(c -> new ApplicationTimeImport(c.getDate(), c.getTotalOtHours())).collect(Collectors.toList());
-	}
-
-	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<NextAnnualLeaveGrantImport> acquireNextHolidayGrantDate(String cId, String employeeId, GeneralDate endDate) {
 		// TODO Auto-generated method stub
 		List<NextAnnualLeaveGrantExport> ListNext = annualHolidayManagementPub.acquireNextHolidayGrantDate(cId, employeeId, Optional.of(endDate));
 		if(ListNext.isEmpty()) {
 			return new ArrayList<>();
 		}
-		
-		return ListNext.stream().map(c -> new NextAnnualLeaveGrantImport(c.getGrantDate(), 
+
+		return ListNext.stream().map(c -> new NextAnnualLeaveGrantImport(c.getGrantDate(),
 																		c.getGrantDays().v(),
-																		c.getTimes().v(), 
-																		c.getTimeAnnualLeaveMaxDays().isPresent() ? c.getTimeAnnualLeaveMaxDays().get().v().intValue(): 0, 
-																		c.getTimeAnnualLeaveMaxTime().isPresent()? c.getTimeAnnualLeaveMaxTime().get().v().intValue(): 0, 
+																		c.getTimes().v(),
+																		c.getTimeAnnualLeaveMaxDays().isPresent() ? c.getTimeAnnualLeaveMaxDays().get().v().intValue(): 0,
+																		c.getTimeAnnualLeaveMaxTime().isPresent()? c.getTimeAnnualLeaveMaxTime().get().v().intValue(): 0,
 																		c.getHalfDayAnnualLeaveMaxTimes().isPresent()?c.getHalfDayAnnualLeaveMaxTimes().get().v().intValue(): 0))
 																		.collect(Collectors.toList());
-		
-		
+
+
 		/*return new NextAnnualLeaveGrantImport(
-				c.grantDate, 
-				c.grantDays.v(), 
-				c.times.v().intValue(), 
-				c.timeAnnualLeaveMaxDays.isPresent() ? c.timeAnnualLeaveMaxDays.get().v().intValue(): 0, 
-				c.timeAnnualLeaveMaxTime.isPresent()? c.timeAnnualLeaveMaxTime.get().v().intValue(): 0, 
+				c.grantDate,
+				c.grantDays.v(),
+				c.times.v().intValue(),
+				c.timeAnnualLeaveMaxDays.isPresent() ? c.timeAnnualLeaveMaxDays.get().v().intValue(): 0,
+				c.timeAnnualLeaveMaxTime.isPresent()? c.timeAnnualLeaveMaxTime.get().v().intValue(): 0,
 				c.halfDayAnnualLeaveMaxTimes.isPresent()?c.halfDayAnnualLeaveMaxTimes.get().v().intValue(): 0);*/
 	}
 
@@ -246,7 +182,7 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		}
 		List<AnnualLeaveGrantImport> annualLeaveGrantImport = AnnualLeaveGrant.stream().map(c->new AnnualLeaveGrantImport(c.getGrantDate(), c.getGrantNumber(), c.getDaysUsedNo(), c.getUsedMinutes(), c.getRemainDays(), c.getRemainMinutes(), c.getDeadline())).collect(Collectors.toList());
 		List<AnnualLeaveManageInforImport> annualLeaveManageInforImport = annualLeaveManageInforExports.stream().map(c->new AnnualLeaveManageInforImport(c.getYmd(), c.getDaysUsedNo(), c.getUsedMinutes(), c.getScheduleRecordAtr())).collect(Collectors.toList());
-		
+
 		return new NumAnnLeaReferenceDateImport(annualLeaveRemainNumberImport, annualLeaveGrantImport, annualLeaveManageInforImport);
 	}
 
@@ -254,12 +190,12 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<DailyLateAndLeaveEarlyTimeImport> engravingCancelLateorLeaveearly(String employeeID, GeneralDate startDate,
 			GeneralDate endDate) {
-		
+
 		return lateOrLeaveEarlyPub.engravingCancelLateorLeaveearly(employeeID, startDate, endDate).stream()
-				.map(c -> new DailyLateAndLeaveEarlyTimeImport(c.getAppDate(), 
-																c.getLate1()==1?true:false, 
-																c.getEarly1()==1?true:false, 
-																c.getLate2()==1?true:false, 
+				.map(c -> new DailyLateAndLeaveEarlyTimeImport(c.getAppDate(),
+																c.getLate1()==1?true:false,
+																c.getEarly1()==1?true:false,
+																c.getLate2()==1?true:false,
 																c.getEarly2()==1?true:false)).collect(Collectors.toList());
 	}
 
@@ -274,20 +210,20 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public KTGRsvLeaveInfoImport getNumberOfReservedYearsRemain(String employeeId, GeneralDate date) {
 		Optional<RsvLeaNumByCriteriaDate> rsvLeaNumByCriteriaDate = getRsvLeaNumCriteriaDate.algorithm(employeeId, date);
-		 
+
 		if(rsvLeaNumByCriteriaDate.isPresent()) {
 			RsvLeaNumByCriteriaDate rsvDate = rsvLeaNumByCriteriaDate.get();
 			////付与日
 			GeneralDate grantDay = rsvDate.getGrantDate().orElse(null);
 			////付与前残数
 			Double befRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus()
-									.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
+									.getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
 			////積立年休残数
 			Double remainingDays = rsvDate.getRemainingDays().v();
 			//付与後残数
 			Double aftRemainDay = 0.0;
-			if(rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberAfterGrant().isPresent()){
-				aftRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberAfterGrant().get().getTotalRemainingDays().v();
+			if(rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().isPresent()){
+				aftRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get().getTotalRemainingDays().v();
 			}
 			return new KTGRsvLeaveInfoImport(befRemainDay, aftRemainDay, remainingDays, grantDay);
 		}else {
@@ -304,7 +240,7 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		return 3;
 	}
 
-	
+
 
 
 }

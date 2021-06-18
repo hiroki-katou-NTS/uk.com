@@ -61,7 +61,7 @@ public abstract class KrcstFlexMCalSet extends ContractUkJpaEntity {
 	@Column(name = "START_MONTH")
 	private int startMonth;
 	
-	/** 不足設定.期間 */
+	/** 不足設定.清算期間 */
 	@Column(name = "SETTLE_PERIOD_MON")
 	private int settlePeriodMon;
 	

@@ -16,7 +16,8 @@ public class JpaCategoryDeletionRepository extends JpaRepository implements Cate
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspdtCategoryDeletion f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.sspdtCategoryDeletionPK.delId =:delId AND  f.sspdtCategoryDeletionPK.categoryId =:categoryId ";
+			+ " WHERE  f.sspdtCategoryDeletionPK.delId =:delId AND  f.sspdtCategoryDeletionPK.categoryId =:categoryId "
+			+ "AND f.sspdtCategoryDeletionPK.systemType = :systemType";
 	private static final String SELECT_BY_KEY_STRING_LIST = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.sspdtCategoryDeletionPK.delId =:delId";
 
@@ -27,9 +28,10 @@ public class JpaCategoryDeletionRepository extends JpaRepository implements Cate
 	}
 
 	@Override
-	public Optional<CategoryDeletion> getCategoryDeletionById(String delId, String categoryId) {
+	public Optional<CategoryDeletion> getCategoryDeletionById(String delId, String categoryId, int systemType) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, SspdtCategoryDeletion.class)
 				.setParameter("delId", delId).setParameter("categoryId", categoryId)
+				.setParameter("systemType", systemType)
 				.getSingle(c -> c.toDomain());
 	}
 
@@ -44,9 +46,9 @@ public class JpaCategoryDeletionRepository extends JpaRepository implements Cate
 	}
 
 	@Override
-	public void remove(String delId, String categoryId) {
+	public void remove(String delId, String categoryId, int systemType) {
 		this.commandProxy().remove(SspdtCategoryDeletion.class,
-				new SspdtCategoryDeletionPK(delId, categoryId));
+				new SspdtCategoryDeletionPK(delId, categoryId, systemType));
 	}
 
 	@Override

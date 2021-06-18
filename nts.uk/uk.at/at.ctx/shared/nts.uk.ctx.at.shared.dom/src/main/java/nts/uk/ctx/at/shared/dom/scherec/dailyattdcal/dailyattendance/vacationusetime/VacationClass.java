@@ -7,10 +7,7 @@ import java.util.stream.Collectors;
 import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.CalcurationByActualTimeAtr;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.LeaveSetAdded;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.*;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
@@ -158,9 +155,15 @@ public class VacationClass {
 		annualUseTime = annualUseTime.addMinutes(sumAnnTime);
 
 		val annualOfDaily = new AnnualOfDaily(annualUseTime, new AttendanceTime(0));
+		
+		//振休使用時間の計算
+		AttendanceTime transferHolidayUseTime = vacationTimeOfcalcDaily(workType, VacationCategory.Pause, predSetting,
+				predetermineTimeSetByPersonInfo, siftCode, conditionItem, recordReGet.getHolidayAddtionSet());
+
+		val transferHolidayOfDaily =new TransferHolidayOfDaily(transferHolidayUseTime);		
 
 		return new HolidayOfDaily(absenceOfDaily, timeDigestOfDaily, yearlyReservedOfDaily, substituteOfDaily,
-				overSalaryOfDaily, specHolidayOfDaily, annualOfDaily, new TransferHolidayOfDaily(new AttendanceTime(0)));
+				overSalaryOfDaily, specHolidayOfDaily, annualOfDaily, transferHolidayOfDaily);
 	}
 
 	/**
@@ -209,31 +212,52 @@ public class VacationClass {
 	private static BreakDownTimeDay getVacationAddSet(Optional<PredetermineTimeSetForCalc> predetermineTimeSet,
 			Optional<WorkTimeCode> siftCode, HolidayAddtionSet holidayAddtionSet, WorkingConditionItem conditionItem,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
-		// 参照する
-		if (holidayAddtionSet.getReferActualWorkHours().equals(NotUseAtr.USE)) {
-			if (siftCode.isPresent()) {
-				return predetermineTimeSet.isPresent() ? predetermineTimeSet.get().getAdditionSet().getAddTime()
-						: new BreakDownTimeDay(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
-			} else {
-				// 会社一律の休暇加算
-				if (holidayAddtionSet.getWorkRecord().isPresent()) {
-					val test = holidayAddtionSet.getWorkRecord().get().getAdditionTimeCompany();
-					return (test.isPresent())
-							? new BreakDownTimeDay(test.get().getOneDay(), test.get().getMorning(),
-									test.get().getAfternoon())
-							: new BreakDownTimeDay(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
-				}
-				// 社員一律
-				else {
-					return getAddVacationTimeFromEmpInfo(holidayAddtionSet, conditionItem,
-							predetermineTimeSetByPersonInfo);
-				}
+
+		// Refactor code QA #40197
+		BreakDownTimeDay result = null;
+        VacationAdditionTimeRef vacationAdditionTimeRef = holidayAddtionSet.getReference().getReferenceSet();
+        if (vacationAdditionTimeRef == VacationAdditionTimeRef.REFER_PERSONAL_SET) {
+			result = getAddVacationTimeFromEmpInfo(holidayAddtionSet, conditionItem, predetermineTimeSetByPersonInfo);
+            if (result == null) {
+            	// 会社一律の設定を取得
+				result = new BreakDownTimeDay(
+						holidayAddtionSet.getReference().getComUniformAdditionTime().getOneDay().v(),
+						holidayAddtionSet.getReference().getComUniformAdditionTime().getMorning().v(),
+						holidayAddtionSet.getReference().getComUniformAdditionTime().getAfternoon().v()
+				);
 			}
-		}
-		// 社員設定から取得
-		else {
-			return getAddVacationTimeFromEmpInfo(holidayAddtionSet, conditionItem, predetermineTimeSetByPersonInfo);
-		}
+        } else {
+            if (siftCode.isPresent()) {
+                return predetermineTimeSet.isPresent() ? predetermineTimeSet.get().getAdditionSet().getAddTime()
+						: new BreakDownTimeDay(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
+            } else {
+				switch (vacationAdditionTimeRef) {
+					case REFER_ACTUAL_WORK_OR_COM_SET: {
+						// 会社一律の設定を取得
+						result = new BreakDownTimeDay(
+								holidayAddtionSet.getReference().getComUniformAdditionTime().getOneDay().v(),
+								holidayAddtionSet.getReference().getComUniformAdditionTime().getMorning().v(),
+								holidayAddtionSet.getReference().getComUniformAdditionTime().getAfternoon().v()
+						);
+						break;
+					}
+					case REFER_ACTUAL_WORK_OR_INDIVIDUAL_SET: {
+						result = getAddVacationTimeFromEmpInfo(holidayAddtionSet, conditionItem, predetermineTimeSetByPersonInfo);
+						if (result == null) {
+							// 会社一律の設定を取得
+							result = new BreakDownTimeDay(
+									holidayAddtionSet.getReference().getComUniformAdditionTime().getOneDay().v(),
+									holidayAddtionSet.getReference().getComUniformAdditionTime().getMorning().v(),
+									holidayAddtionSet.getReference().getComUniformAdditionTime().getAfternoon().v()
+							);
+						}
+						break;
+					}
+				}
+            }
+        }
+        return result;
+
 	}
 
 	/**
@@ -363,26 +387,41 @@ public class VacationClass {
 			WorkingConditionItem workConditionItem, Optional<PredetermineTimeSetForCalc> predTimeForCalc) {
 		BreakDownTimeDay addTime = new BreakDownTimeDay(new AttendanceTime(0), new AttendanceTime(0),
 				new AttendanceTime(0));
+		// Refactor code QA #40197
+        VacationSpecifiedTimeRefer vacationSpecifiedTimeRefer = holidayAdditionSet.getReference().getReferIndividualSet().get();
+        switch (vacationSpecifiedTimeRefer) {
+            case WORK_HOUR_DUR_WEEKDAY: {
+                // 休暇加算時間利用区分を確認
+                if (workConditionItem.getVacationAddedTimeAtr().value == 0) {
+                    return null;
+                }
+                // 休暇加算時間設定を取得する
+                if (workConditionItem.getHolidayAddTimeSet().isPresent()) {
+                    // 1日の時間内訳を返す
+                    return new BreakDownTimeDay(
+                            workConditionItem.getHolidayAddTimeSet().get().getOneDay().v(),
+                            workConditionItem.getHolidayAddTimeSet().get().getMorning().v(),
+                            workConditionItem.getHolidayAddTimeSet().get().getAfternoon().v()
+                    );
+                } else {
+                    // 1日の時間内訳を０で返す
+                    return new BreakDownTimeDay(0,0,0);
+                }
+            }
+            case WORK_HOUR_DUR_hd: {
+                // 平日時の就業時間帯コードを取得する
+                Optional<WorkTimeCode> workTimeCode = workConditionItem.getWorkCategory().getWeekdayTime().getWorkTimeCode();
+                if (workTimeCode.isPresent()) {
+                    // 所定時間を取得する
+                    return predTimeForCalc.get().getAdditionSet().getPredTime();
+                } else {
+                    // 1日の時間内訳を０で返す
+                    return new BreakDownTimeDay(0,0,0);
+                }
+            }
+        }
 
-		if (holidayAdditionSet == null || !holidayAdditionSet.getEmployeeInformation().isPresent())
-			return addTime;
-
-		// 労働条件項目側から時間を取得
-		if (holidayAdditionSet.getEmployeeInformation().get().getTimeReferenceDestination().isWorkHourDurWeekDay()) {
-			addTime = workConditionItem.getHolidayAddTimeSet().isPresent()
-					? new BreakDownTimeDay(workConditionItem.getHolidayAddTimeSet().get().getOneDay(),
-							workConditionItem.getHolidayAddTimeSet().get().getMorning(),
-							workConditionItem.getHolidayAddTimeSet().get().getAfternoon())
-					: addTime;
-		}
-		// 個人情報(平日)側にある就業時間帯の設定から取得
-		else {
-			if (predTimeForCalc != null) {
-				addTime = predTimeForCalc.isPresent() ? predTimeForCalc.get().getAdditionSet().getAddTime()
-						: new BreakDownTimeDay(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
-			}
-		}
-		return addTime;
+		return null;
 	}
 
 //	/**
@@ -394,7 +433,7 @@ public class VacationClass {
 //	private CalculationByActualTimeAtr getCalculationByActualTimeAtr(WorkingSystem workingSystem,
 //																	 StatutoryDivision statutoryDivision,
 //																	 AddSettingOfRegularWork addSettingOfRegularWork,
-//																	 AddSettingOfIrregularWork addSettingOfIrregularWork, 
+//																	 AddSettingOfIrregularWork addSettingOfIrregularWork,
 //																	 AddSettingOfFlexWork addSettingOfFlexWork) {
 //		switch (workingSystem) {
 //		case REGULAR_WORK:

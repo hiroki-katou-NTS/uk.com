@@ -28,5 +28,4 @@ public class EmployeeContactObject {
 	
 	//携帯電話番号
 	private String cellPhoneNo;
-	
 }

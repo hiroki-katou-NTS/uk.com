@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.scherec.monthlyattendanceitem;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,14 +24,14 @@ public class ControlOfMonthlyCmd {
 	private String headerBgColorOfMonthlyPer;
 
 	/**時間項目の入力単位*/
-	private Integer inputUnitOfTimeItem;
+	private BigDecimal inputUnitOfTimeItem;
 	
 	public static ControlOfMonthlyItems toDomain(ControlOfMonthlyCmd command) {
 		return new ControlOfMonthlyItems(
 				command.getCompanyID(),
 				command.getItemMonthlyID(),
 				command.getHeaderBgColorOfMonthlyPer()==null?null: new HeaderBackgroundColor(command.getHeaderBgColorOfMonthlyPer()),
-				command.getInputUnitOfTimeItem()==null?null:EnumAdaptor.valueOf(command.getInputUnitOfTimeItem(), TimeInputUnit.class) 
+				command.getInputUnitOfTimeItem()==null? null : command.getInputUnitOfTimeItem() 
 				);
 	}
 	

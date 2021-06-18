@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.ac.workrecord.erroralarm.condition.monthlycheckcondition;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -8,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunImport;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.FixedExtraMon;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.FixedExtraMonPub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.FixedExtraMonPubEx;
 
@@ -25,10 +27,9 @@ public class FixedExtraMonAcFinder implements FixedExtraMonFunAdapter {
 	}
 
 	@Override
-	public void addFixedExtraMon(FixedExtraMonFunImport fixedExtraMon) {
+	public void persistFixedExtraMon(FixedExtraMonFunImport fixedExtraMon) {
 		FixedExtraMonPubEx export = convertToImport(fixedExtraMon);
-		repo.addFixedExtraMon(export);
-		
+		repo.persistFixedExtraMon(export);
 	}
 
 	@Override

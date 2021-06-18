@@ -1,13 +1,17 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workclock.pclogon.AggrPCLogonDivergence;
 
@@ -15,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 @NoArgsConstructor
 @AllArgsConstructor
 /** 集計PCログオン乖離 */
-public class TotalPcLogonTime implements ItemConst {
+public class TotalPcLogonTime implements ItemConst, AttendanceItemDataGate {
 
 	/** 合計時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.TIME)
@@ -46,5 +50,44 @@ public class TotalPcLogonTime implements ItemConst {
 		return AggrPCLogonDivergence.of(new AttendanceDaysMonth(totalDays), 
 									new AttendanceTimeMonth(totalTime), 
 									new AttendanceTimeMonth(averageTime));
+	}
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case TOTAL:
+			return Optional.of(ItemValue.builder().value(totalTime).valueType(ValueType.TIME));
+		case DAYS:
+			return Optional.of(ItemValue.builder().value(totalDays).valueType(ValueType.DAYS));
+		case AVERAGE:
+			return Optional.of(ItemValue.builder().value(averageTime).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case TOTAL:
+		case DAYS:
+		case AVERAGE:
+			return PropType.VALUE;
+		default:
+			return  PropType.OBJECT;
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case TOTAL:
+			totalTime = value.valueOrDefault(0); break;
+		case DAYS:
+			totalDays = value.valueOrDefault(0d); break;
+		case AVERAGE:
+			averageTime = value.valueOrDefault(0); break;
+		default:
+		}
 	}
 }

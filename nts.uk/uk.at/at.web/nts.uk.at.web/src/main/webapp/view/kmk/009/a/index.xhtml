@@ -7,13 +7,13 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
 			<com:ValidatorScript>
 				nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesName
 				nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesABName
 				nts.uk.ctx.at.shared.dom.scherec.totaltimes.ConditionThresholdLimit
 				nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode
 			</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmk009.a.main.css" />
 			<com:scriptfile path="kmk009.a.start.js" />
 			<com:scriptfile path="kmk009.a.vm.js" />
@@ -23,7 +23,7 @@
 				of="nts.uk.com.web" />
 			<com:stylefile path="/view/language/select/languagemasterselect.css"
 				of="nts.uk.com.web" />
-			<com:scriptfile set="IGNITE" />
+				
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
@@ -44,11 +44,11 @@
 					class="bg-green caret-right caret-background fixed-flex-layout-left">
 					<div class="cf">
 						<div style="float: left">
-							<table tabindex="3" id="single-list-dataSource"
+						 	<table tabindex="3" id="single-list-dataSource"
 								data-bind="ntsGridList:{
 									name: '#[KMK009_3]',
 									width: 330,
-									height: 368,
+									rows: 10,
 									options: itemTotalTimes,								
 									optionsValue: 'totalCountNo',
 									primaryKey: 'totalCountNo',
@@ -62,7 +62,7 @@
 				<div id="right-content" class="fixed-flex-layout-right">
 					<table>
 						<colgroup>
-							<col width="135px" />
+							<col width="100px" />
 							<col width="*" />
 						</colgroup>
 						<tr class="row">
@@ -93,11 +93,11 @@
 								<!-- A3_6: Total Time Name --> <input tabindex="5"
 								class="nts-input" id="itemname" style="width: 100px"
 								data-bind="ntsTextEditor:{
-										 name: '#[KMK009_6]',
-                                         value: itemTotalTimesDetail.totalTimesName,
-                                         required: true,
-                                         constraint: 'TotalTimesName',
-                                         enable: enableName}" />
+										name: '#[KMK009_6]',
+										value: itemTotalTimesDetail.totalTimesName,
+										required: true,
+										constraint: 'TotalTimesName',
+										enable: enableName}" />
 							</td>
 						</tr>
 
@@ -149,7 +149,7 @@
 								<!-- A3_11 Open dialog KDL002-->
 								<button tabindex="8"
 									data-bind="click: openKDL002Dialog,enable: enableWorkType">#{i18n.getText('KMK009_15')}</button>
-								<!-- A3_12: Time item name --> <input class="nts-input"
+								<!-- A3_12: Time item name --><input class="nts-input"
 								id="inpName" style="width: 550px"
 								data-bind="ntsTextEditor:{
 										name: '#[KMK011_31]',
@@ -173,85 +173,101 @@
 								data-bind="ntsTextEditor:{
 										name: '#[KMK011_31]',
 										value: itemTotalTimesDetail.workingInfo,
-										required: true,
+										required: false,
 										readonly: true,
 										enable: enableWorkTime}" />
 							</td>
 						</tr>
 						<tr class="row">
-							<td>
+							<td class="valign-top">
 								<!-- A3_16: Label -->
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_10')}</div>
+								<button data-bind="ntsHelpButton: {image: 'img/IMG_KMK009_1.png', position: 'right top', enable: true }">?</button>
 							</td>
-							<td>
-								<div>
-									<!--A3:17 : Check error(select) -->
-									<div tabindex="10"
-										data-bind="ntsCheckBox:{
-									checked: selectUnder,
-									enable: enableUse
-									}">
+							<td class="valign-top">
+								<div class="group">
+									<div class="row-item">
+										<div class="table target-items">
+											<div class="cell">
+												<span id="targetItemLb">#{i18n.getText('KMK009_23')}</span><!-- A3_27 -->
+												<!-- <div 
+													data-bind="ntsFormLabel: {required: false }">#{i18n.getText('KMK009_23')}</div> -->
+											</div>
+											<div class="cell">
+												<!-- A3_28 Open dialog KDL002-->
+												<button tabindex="14"
+													data-bind="click: openKDL002Dialog_A3_28, enable: enableAtdBtn ">#{i18n.getText('KMK009_15')}</button>		<!-- enableAtdBtn -->									
+											</div>
+											<div class="cell">
+												<div>
+													<!-- <span class="nts-input" style="width: 350px" data-bind="text: attendanceModel.attendanceItemName"></span> -->
+													<span class="label" style="width: 350px"
+													data-bind="text: attendanceModel.attendanceItemName"></span>
+												</div>
+												<div data-bind="if: isAllowShowAttendance">
+													<span class="color-danger">#{i18n.getText('KMK009_30')}</span>
+												</div>
+											</div>
+										</div>
 									</div>
-
-									<!-- A3_18: Alarm time -->
-									<input class="nts-validate" id="inpAlarmTime" tabindex="11"
-										style="width: 50px"
-										data-bind="ntsTimeEditor: {
-									name: '#[KMK009_16]',
-									value: itemTotalTimesDetail.totalCondition.thresoldLowerLimit,
-									inputFormat: 'time', 
-									mode: 'time', 
-									required: true,
-									constraint: 'ConditionThresholdLimit',
-									enable: enableUnder}" />
-									<!-- A3_19 -->
-									#{i18n.getText('KMK009_17')}
-								</div>
-							</td>
-						</tr>
-						<tr class="row">
-							<td></td>
-							<td>
-								<div>
-									<!-- :A3_20 Check error(select) -->
-									<div tabindex="12"
-										data-bind="ntsCheckBox:{
-									checked: selectUppper,
-									enable: enableUse
-									}">
+									<div class="row-item">
+										<div class="table coverage">
+											<div class="cell">
+												<span>#{i18n.getText('KMK009_29')}</span>
+											</div>
+											<div class="cell">
+												<div>
+													<!--A3:17 : Check error(select) -->
+													<div tabindex="10"
+														data-bind="ntsCheckBox:{
+													checked: selectUnder,
+													enable: enableSelectUpper
+													}">
+													</div>
+				
+													<!-- A3_18: Alarm time -->
+													<input class="nts-validate" id="inpAlarmTime" tabindex="11"
+														style="width: 50px"
+														data-bind="ntsTimeEditor: {
+													name: '#[KMK009_16]',
+													value: itemTotalTimesDetail.totalCondition.thresoldLowerLimit,
+													inputFormat: 'time', 
+													mode: 'time', 
+													required: true,
+													constraint: 'ConditionThresholdLimit',
+													enable: enableUnder}" />
+													<!-- A3_19 -->
+													#{i18n.getText('KMK009_17')}
+												</div>
+											</div>
+											<div class="cell">
+												<div>
+													<!-- :A3_20 Check error(select) -->
+													<div tabindex="12"
+														data-bind="ntsCheckBox:{
+													checked: selectUppper,
+													enable: enableSelectUpper
+													}">
+													</div>
+													<!-- A3_21: Error time -->
+													<input style="width: 50px" tabindex="13"
+														data-bind="ntsTimeEditor: {
+													name: '#[KMK009_19]',
+													value: itemTotalTimesDetail.totalCondition.thresoldUpperLimit,
+													inputFormat: 'time', 
+													mode: 'time', 
+													required: true,
+													constraint: 'ConditionThresholdLimit',
+													enable: enableUpper}" />
+													<!-- A3_22 -->
+													#{i18n.getText('KMK009_20')}
+												</div>
+											</div>
+										</div>
 									</div>
-									<!-- A3_21: Error time -->
-									<input style="width: 50px" tabindex="13"
-										data-bind="ntsTimeEditor: {
-									name: '#[KMK009_19]',
-									value: itemTotalTimesDetail.totalCondition.thresoldUpperLimit,
-									inputFormat: 'time', 
-									mode: 'time', 
-									required: true,
-									constraint: 'ConditionThresholdLimit',
-									enable: enableUpper}" />
-									<!-- A3_22 -->
-									#{i18n.getText('KMK009_20')}
-								</div>
+								</div>								
 							</td>
 						</tr>
-
-						<tr class="row">
-							<td>
-								<!-- A3_27 -->
-								<div id="targetItemLb"
-									data-bind="ntsFormLabel: {required: false }">#{i18n.getText('KMK009_23')}</div>
-							</td>
-							<td>
-								<!-- A3_28 Open dialog KDL002-->
-								<button tabindex="14"
-									data-bind="click: openKDL002Dialog_A3_28, enable: enableAtdBtn">#{i18n.getText('KMK009_15')}</button>
-								<!-- <span class="nts-input" style="width: 350px" data-bind="text: attendanceModel.attendanceItemName"></span> -->
-								<span class="label" style="width: 350px"
-								data-bind="text: attendanceModel.attendanceItemName"></span>
-							</td>
-						</tr>
-
 						<tr class="row">
 							<td>
 								<!-- A3_23 -->

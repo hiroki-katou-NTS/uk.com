@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.ws.alarm;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -24,9 +25,7 @@ import nts.uk.ctx.at.function.app.export.alarm.AlarmExportService;
 import nts.uk.ctx.at.function.app.find.alarm.AlarmPatternSettingFinder;
 import nts.uk.ctx.at.function.app.find.alarm.CheckConditionTimeFinder;
 import nts.uk.ctx.at.function.app.find.alarm.CodeNameAlarmDto;
-import nts.uk.ctx.at.function.app.find.alarm.alarmlist.EmployeeSendEmail;
-import nts.uk.ctx.at.function.app.find.alarm.alarmlist.ErAlExtractResultFinder;
-import nts.uk.ctx.at.function.app.find.alarm.alarmlist.ErAlExtractViewResult;
+import nts.uk.ctx.at.function.app.find.alarm.alarmlist.*;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.extractresult.AlarmListExtractResult;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.CheckConditionTimeDto;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
@@ -71,6 +70,9 @@ public class KAL001WebService {
 	
 	@Inject
 	private ErAlExtractResultFinder extractResultFinder;
+
+	@Inject
+	private ExtractAlarmListFinder extractAlarmListFinder;
 	
 	@POST
 	@Path("pattern/setting")
@@ -96,7 +98,8 @@ public class KAL001WebService {
 	@POST
 	@Path("extract/result/{processId}")
 	public ErAlExtractViewResult getResult(@PathParam("processId") String processId) {
-		return extractResultFinder.getResultLimitedBy(processId, KAL001_LIMIT_LIVE_VIEW);
+		ErAlExtractViewResult rerult =  extractResultFinder.getResultLimitedBy(processId, KAL001_LIMIT_LIVE_VIEW);
+		return rerult;
 	}
 	
 	@POST
@@ -140,4 +143,10 @@ public class KAL001WebService {
 
 		return this.alarmExportService.start(new AlarmExportQuery(extractResultFinder.getResultDto(processId), currentAlarmCode));
 	}
+
+	@POST
+	@Path("alarmlist/webmenu")
+	public List<ValueExtractAlarmDto> getAlarmListWebMenu(List<String> employeeIds) {
+	    return extractAlarmListFinder.getWebMenu(employeeIds);
+    }
 }

@@ -149,14 +149,12 @@ module nts.uk.pr.view.kmf001.d {
                 var self = this;
                 self.clearEmptErrors();
                 if (data == undefined) {
-                    self.yearsAmountByEmp(0);
-                    self.maxDaysCumulationByEmp(0);
+                  
                     self.selectedManagement(1);
                 }
                 else {
                     // Set EmploymentSetting Data
-                    self.yearsAmountByEmp(data.upperLimitSetting.retentionYearsAmount);
-                    self.maxDaysCumulationByEmp(data.upperLimitSetting.maxDaysCumulation);
+                  
                     self.selectedManagement(data.managementCategory);
                 }
                 self.checkDeleteAvailability();
@@ -165,10 +163,10 @@ module nts.uk.pr.view.kmf001.d {
             // Initialize wholeCompany Data
             initializeWholeCompanyData(data: RetentionYearlyFindDto): void {
                 var self = this;
+                self.selectedComManagement(data.managementCategory);
                 self.retentionYearsAmount(data.upperLimitSetting.retentionYearsAmount);
                 self.maxDaysCumulation(data.upperLimitSetting.maxDaysCumulation);
                 self.leaveAsWorkDays(data.leaveAsWorkDays);
-                self.selectedComManagement(data.managementCategory);
             }
             
             // Collect wholeCompany Data
@@ -228,18 +226,30 @@ module nts.uk.pr.view.kmf001.d {
                     
                     // Get Data List
                     if (($('#left-content').getDataList() == undefined) || ($('#left-content').getDataList().length <= 0)) {
-                        self.deleteEnable(false);
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_146" }).then(function() {
                             $('a[role="tab-navigator"][href="#whole-company-tab"]').click();
                         });
+                              _.delay(() => {
+                       self.deleteEnable(false);     
+                    }, 300); 
                     }
                     else {
                         // Get Employment List after Load Component
-                        self.employmentList($('#left-content').getDataList());
+                         _.defer(() => {
+                           self.employmentList($('#left-content').getDataList());
                         // Set Selected Item
                         self.selectedItem(self.employmentList()[0].code);
                         
                         self.checkDeleteAvailability();
+                        });
+                        _.delay(() => {
+                       self.deleteEnable(true);     
+                    }, 300);    
+//                        self.employmentList($('#left-content').getDataList());
+//                        // Set Selected Item
+//                        self.selectedItem(self.employmentList()[0].code);
+//                        
+//                        self.checkDeleteAvailability();
                     }
                 });
             }

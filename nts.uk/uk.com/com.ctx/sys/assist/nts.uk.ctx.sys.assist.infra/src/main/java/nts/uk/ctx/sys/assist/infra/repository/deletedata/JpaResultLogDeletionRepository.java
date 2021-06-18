@@ -46,6 +46,5 @@ public class JpaResultLogDeletionRepository extends JpaRepository implements Res
 	@Override
 	public void add(ResultLogDeletion data) {
 		this.commandProxy().insert(SspdtDeletionResultLog.toEntity(data));
-//		this.getEntityManager().flush();
 	}
 }

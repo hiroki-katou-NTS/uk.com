@@ -42,6 +42,9 @@ public class RecSpecificDatSetAdapterImpl implements RecCalendarCompanyAdapter {
 	@Override
 	public BasicWorkSettingImport getBasicWorkSetting (String companyID, String workplaceID, String classCD, Integer workingDayAtr) {
 		BasicWorkSettingExport export = calendarInformationPub.getBasicWorkSetting(companyID, workplaceID, classCD, workingDayAtr);
+		if(export == null ) {
+			return null;
+		}
 		return new BasicWorkSettingImport(export.getWorktypeCode(), export.getWorkingCode(), export.getWorkdayDivision());
 	}
 }

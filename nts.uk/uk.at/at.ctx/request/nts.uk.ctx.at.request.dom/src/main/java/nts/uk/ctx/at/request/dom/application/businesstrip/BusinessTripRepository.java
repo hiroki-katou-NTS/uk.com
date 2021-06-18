@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.businesstrip;
 
-import nts.arc.time.GeneralDate;
-
 import java.util.Optional;
+
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.Application;
 
 public interface BusinessTripRepository {
 
@@ -16,4 +17,5 @@ public interface BusinessTripRepository {
 
     void remove(BusinessTrip domain);
 
+    Optional<BusinessTrip> findByAppId(String companyId, String appId, Application app);
 }

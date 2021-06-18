@@ -1,93 +1,104 @@
-.ntsControl.radio-wrapper.reset-element {
-	padding-top: 20px !important;
+.left-contents {
+	position: absolute;
+	top: 110px;
+	left: 40px;
 }
 
-#listTitle {
-	background-color: #E0F59E;
-	height: 330px;
-	width: 365px;
-	padding-left: 20px;
-	padding-bottom: 15px;
+.right-contents {
+	position: absolute;
+	left: 420px;
+	top: 163px;
 }
 
-.ui-igcombo-wrapper {
-	vertical-align: middle;
+.top-left-contents {
+	padding: 0 15px;
 }
 
-.ntsControl.radio-wrapper.reset-element {
-	padding-top: 20px;
+.move-function {
+	position: absolute;
+	left: 335px;
+	top: 260px;
+	width: 60px;
 }
 
-.ntsRadioBox {
-	margin-bottom: 10px;
-	display: block;
+.move-function button {
+	margin-bottom: 50px;
 }
 
-table.control {
-	margin-left: 5px;
+.chane-position-function {
+	width: 30px;
+	position: absolute;
+	left: 860px;
+	top: 245px;
 }
 
-.sp-preview {
-	width: 20px;
+.chane-position-function button {
+	margin-bottom: 50px;
 }
 
-#contents-area {
-	margin-left: 10px;
+.first-caret .caret-bottom {
+	float: left;
+	padding-left: 125px;
+	margin-bottom: -18px;
+	position: fixed;
 }
 
-img {
-	width: 292px ! important;
-	height: 120px;
-	padding-top: 0.5em;
-    border-radius: 24px;
+
+#multi-list1_tooltips,
+#multi-list2_tooltips {
+	border: none;
+	background: none;
+	box-shadow: none;
 }
 
-#liveview{
-	height: 200px;
+#multi-list1_tooltips .ui-tooltip-content,
+#multi-list2_tooltips .ui-tooltip-content {
+	white-space: nowrap;
+	background: #ffc;
+	border: solid 1px #b85;
+	padding: 5px;
 }
 
-#imageName {
-	cursor: pointer;
-	width: 200px;
-	overflow: hidden;
-	display: inline-block;
+table#table-top-content {
+	margin-left: 20px;
+	margin-top: -10px;
 }
 
-#description {
-	height: 20px;
-	padding-bottom: 5px;
+#table-top-content>tbody>tr>td>span.nts-editor-wrapped.ntsControl {
+	margin-right: 30px;
 }
 
-#titleMenu {
-	margin: 5px 0px 5px 0px;
+#table-top-content>tbody>tr>td {
+	padding: 10px;
 }
 
-.col2 {
-	width: 180px;
+#table-top-content>tbody>tr>td>div.cellColor {
+	margin: 0 10px 0 10px;
 }
 
-#delBtn {
-	position: relative;
-	width: 80px;
+.systemGroup {
+	margin: 10px 0 0 30px;
 }
 
-.pull-right {
-	text-align: right;
+.nts-searchbbox-wrapper {
+	margin-bottom: 0;
 }
 
-#nameTitleBar {
-	width: 220px !important;
+button#c1_28 {
+	margin-left: -140px !important;
+	margin-right: 90px !important;
+	float: right;
 }
 
-#file_upload {
-	width: 200px;
-	overflow: hidden;
+button#c1_26 {
+	width: 160px;
 }
 
-.labelRight {
-	margin-left: 10px;
+#swap-up-down,
+#swap-up-down .upDown-container {
+	height: 100px !important;
 }
-
-.nts-fileupload-container .nts-input {
-	display: none !important;
+.functions-area-content {
+	position: absolute;
+	top: 10px;
 }

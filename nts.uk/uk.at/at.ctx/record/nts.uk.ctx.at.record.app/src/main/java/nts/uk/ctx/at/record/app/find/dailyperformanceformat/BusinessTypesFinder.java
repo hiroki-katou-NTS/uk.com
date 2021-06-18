@@ -9,8 +9,8 @@ import javax.inject.Inject;
 
 //import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeDto;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.BusinessType;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.repository.BusinessTypesRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

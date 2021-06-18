@@ -9,10 +9,10 @@ import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessType;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypePK;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.BusinessType;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.repository.BusinessTypesRepository;
 
 @Stateless
 public class JpaBusinessTypesRepository extends JpaRepository implements BusinessTypesRepository {
@@ -76,8 +76,8 @@ public class JpaBusinessTypesRepository extends JpaRepository implements Busines
 	 * find business type by companyId and work type code
 	 */
 	@Override
-	public Optional<BusinessType> findByCode(String companyId, String businessTypeCode) {
-		return this.queryProxy().find(new KrcmtBusinessTypePK(companyId, businessTypeCode), KrcmtBusinessType.class).map(c-> toDomain(c));
+	public Optional<BusinessType> findByCode(String contractCode, String businessTypeCode) {
+		return this.queryProxy().find(new KrcmtBusinessTypePK(contractCode, businessTypeCode), KrcmtBusinessType.class).map(c-> toDomain(c));
 	}
 	/**
 	 * author: HoangYen

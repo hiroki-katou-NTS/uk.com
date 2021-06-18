@@ -1,12 +1,16 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.ExcessFlexAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTimeCurrentMonth;
@@ -16,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTim
 @NoArgsConstructor
 @AllArgsConstructor
 /** 時間外超過のフレックス時間 */
-public class FlexTimeOfExcessOutsideTimeDto implements ItemConst {
+public class FlexTimeOfExcessOutsideTimeDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 原則時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.TIME)
@@ -50,5 +54,47 @@ public class FlexTimeOfExcessOutsideTimeDto implements ItemConst {
 			dto.setPrincipleTime(domain.getPrincipleTime() == null ? 0 : domain.getPrincipleTime().valueAsMinutes());
 		}
 		return dto;
+	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case PRINCIPLE:
+			return Optional.of(ItemValue.builder().value(principleTime).valueType(ValueType.TIME));
+		case (EXCESS + ATTRIBUTE):
+			return Optional.of(ItemValue.builder().value(excessFlexAtr).valueType(ValueType.ATTR));
+		case CONVENIENCE:
+			return Optional.of(ItemValue.builder().value(forConvenienceTime).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case PRINCIPLE:
+		case (EXCESS + ATTRIBUTE):
+		case CONVENIENCE:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case PRINCIPLE:
+			principleTime = value.valueOrDefault(0);
+			break;
+		case (EXCESS + ATTRIBUTE):
+			excessFlexAtr = value.valueOrDefault(0);
+			break;
+		case CONVENIENCE:
+			forConvenienceTime = value.valueOrDefault(0);
+			break;
+		default:
+		}
 	}
 }

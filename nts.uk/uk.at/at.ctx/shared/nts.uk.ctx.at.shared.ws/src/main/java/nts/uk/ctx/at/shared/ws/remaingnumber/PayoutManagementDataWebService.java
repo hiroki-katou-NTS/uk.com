@@ -78,4 +78,9 @@ public class PayoutManagementDataWebService extends WebService{
 		subOfHDPayoutManaDataCommandHandler.handle(command);
 	}
 	
+	@POST
+	@Path("getByIdAndUnUse/{empId}/{closureId}")
+	public List<PayoutManagementDataDto> findPayoutManaDataBySid(@PathParam("empId")String sid, @PathParam("closureId")int closureId) {
+		return this.finder.findPayoutManaDataBySid(sid, closureId);
+	}
 }

@@ -2,8 +2,6 @@ package nts.uk.ctx.at.schedule.app.command.schedule.alarm.banholidaytogether;
 
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
 public class DeleteBanHolidayTogetherDto {
     /**

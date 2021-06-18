@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
@@ -47,7 +48,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.Ap
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.DeadlineLimitCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentService;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
-import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
@@ -63,6 +63,8 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -73,6 +75,7 @@ import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -145,6 +148,9 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
+	
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
 
 	@Override
 	public AppDispInfoNoDateOutput getAppDispInfo(String companyID, List<String> applicantLst, ApplicationType appType, 
@@ -214,7 +220,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// 基準申請日の決定
 			GeneralDate recDate = dateLst.size() >= 1 ? dateLst.get(0) : null;
 			GeneralDate absDate = dateLst.size() >= 2 ? dateLst.get(1) : null;
-			targetDate = Optional.of(holidayShipmentService.detRefDate(recDate, absDate));
+			targetDate = holidayShipmentService.detRefDate(Optional.ofNullable(recDate), Optional.ofNullable(absDate));
 		}
 		// 基準日として扱う日の取得
 		GeneralDate baseDate = appDispInfoNoDateOutput.getApplicationSetting().getBaseDate(targetDate);
@@ -410,9 +416,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	public Optional<EmployeeInfoImport> getEnterPersonInfor(String employeeID, String enterPersonID) {
 		List<EmployeeInfoImport> employeeInfoLst = new ArrayList<>();
 		// INPUT．申請者とINPUT．入力者をチェックする (Check INPUT. Applicant and INPUT.người input/nhập)
-		if(employeeID.equals(enterPersonID)) {
-			employeeInfoLst = this.getEmployeeInfoLst(Arrays.asList(employeeID));
-		} else {
+		if(!employeeID.equals(enterPersonID)) {
 			// 社員ID（List）から社員コードと表示名を取得 (Lấy tên hiển thị và employee code từ Employee ID (List))
 			employeeInfoLst = this.getEmployeeInfoLst(Arrays.asList(enterPersonID));
 		}
@@ -427,6 +431,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	public void appConflictCheck(String companyID, EmployeeInfoImport employeeInfo, List<GeneralDate> dateLst,
 			List<String> workTypeLst, List<ActualContentDisplay> actualContentDisplayLst) {
 		// INPUT．対象日リストをループする
+		int count = 0;
 		for(GeneralDate loopDate : dateLst) {
 			// INPUT．表示する実績内容からルールする日の実績詳細を取得する
 			Optional<AchievementDetail> opAchievementDetail = Optional.empty();
@@ -443,7 +448,12 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				return;
 			}
 			// 勤務種類を取得する
-			Optional<WorkType> opWorkTypeFirst = workTypeRepository.findByPK(companyID, workTypeLst.stream().findFirst().orElse(null));
+			Optional<WorkType> opWorkTypeFirst = null;
+			if(workTypeLst.size()  > 1)
+				opWorkTypeFirst = workTypeRepository.findByPK(companyID, workTypeLst.get(count));
+			else
+				opWorkTypeFirst = workTypeRepository.findByPK(companyID, workTypeLst.stream().findFirst().orElse(null));
+			count++;
 			// 勤務種類を取得する
 			String actualWorkTypeCD = opActualContentDisplay.get().getOpAchievementDetail().map(x -> x.getWorkTypeCD()).orElse(null);
 			Optional<WorkType> opWorkTypeActual = workTypeRepository.findByPK(companyID, actualWorkTypeCD);
@@ -487,33 +497,29 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	}
 
 	@Override
-	public InitWkTypeWkTimeOutput initWorkTypeWorkTime(String employeeID, GeneralDate date, List<WorkType> workTypeLst,
-			List<WorkTimeSetting> workTimeLst, AchievementDetail achievementDetail) {
+	public InitWkTypeWkTimeOutput initWorkTypeWorkTime(
+			String employeeID,
+			GeneralDate date,
+			GeneralDate inputDate,
+			List<WorkType> workTypeLst,
+			List<WorkTimeSetting> workTimeLst,
+			AchievementDetail achievementDetail) {
 		String companyID = AppContexts.user().companyId();
 		// 申請日付チェック
-		if(date != null && achievementDetail != null) {
+		if(inputDate != null && achievementDetail != null) {
 			// INPUT．「実績詳細」をチェックする
 			if(Strings.isNotBlank(achievementDetail.getWorkTypeCD()) 
-					&& Strings.isNotBlank(achievementDetail.getWorkTimeCD())) {
-				// 取得した勤務種類と就業時間帯を初期選択値とする
-				String resultWorkType = achievementDetail.getWorkTypeCD();
-				String resultWorkTime = achievementDetail.getWorkTimeCD();
-				// 12.マスタ勤務種類、就業時間帯データをチェック
-				CheckWorkingInfoResult checkWorkingInfoResult = otherCommonAlgorithm.checkWorkingInfo(
-						companyID, 
-						achievementDetail.getWorkTypeCD(), 
-						achievementDetail.getWorkTimeCD());
-				// 勤務種類エラーFlgをチェック
-				if(checkWorkingInfoResult.isWkTypeError()) {
-					// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
-					resultWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
+					&& Strings.isNotBlank(achievementDetail.getWorkTimeCD())
+					) {
+				// #112367
+				if (workTypeLst.stream().anyMatch(x -> x.getWorkTypeCode().v().equals(achievementDetail.getWorkTypeCD()))
+						&& workTimeLst.stream().anyMatch(x -> x.getWorktimeCode().v().equals(achievementDetail.getWorkTimeCD()))) {
+					// 取得した勤務種類と就業時間帯を初期選択値とする
+					String resultWorkType = achievementDetail.getWorkTypeCD();
+					String resultWorkTime = achievementDetail.getWorkTimeCD();
+
+					return new InitWkTypeWkTimeOutput(resultWorkType, resultWorkTime);		
 				}
-				// 就業時間帯エラーFlgをチェック
-				if(checkWorkingInfoResult.isWkTimeError()) {
-					// 先頭の就業時間帯を選択する(chọn mui giờ làm đầu tiên)
-					resultWorkTime = workTimeLst.stream().findFirst().map(x -> x.getWorktimeCode().v()).orElse(null);
-				}
-				return new InitWkTypeWkTimeOutput(resultWorkType, resultWorkTime);
 			}
 		}
 		// 社員の労働条件を取得する(get điiều kiện lao đọng của employee)
@@ -532,8 +538,24 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
 				processWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
 			}
-			// ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードを選択する(chon cai mui gio lam trong domain trên)
+			// ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードがINPUT「就業時間帯リスト」Listに含まれているかをチェックする
 			processWorkTime = opWorkingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().map(x -> x.v()).orElse(null);
+			
+			final String workTime = processWorkTime;
+			
+			if (workTimeLst.stream().map(x -> x.getWorktimeCode().v()).filter(x -> x.equals(workTime)).findFirst().isPresent()) { // Listに存在する
+				// ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードを選択する
+				processWorkTime = workTime;
+				
+			} else { // Listに存在しない
+				// INPUT「就業時間帯リスト」Listの先頭の就業時間帯を選択する
+				if (CollectionUtil.isEmpty(workTimeLst)) {
+					processWorkTime = null;
+				} else {
+					processWorkTime = workTimeLst.get(0).getWorktimeCode().v();	
+				}
+			}
+			
 		} else {
 			// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
 			processWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
@@ -543,21 +565,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				processWorkTime = workTimeLst.stream().findFirst().map(x -> x.getWorktimeCode().v()).orElse(null);
 			}
 		}
-		// 12.マスタ勤務種類、就業時間帯データをチェック
-		CheckWorkingInfoResult checkWorkingInfoResult = otherCommonAlgorithm.checkWorkingInfo(
-				companyID, 
-				processWorkType, 
-				processWorkTime);
-		// 勤務種類エラーFlgをチェック
-		if(checkWorkingInfoResult.isWkTypeError()) {
-			// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
-			processWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
-		}
-		// 就業時間帯エラーFlgをチェック
-		if(checkWorkingInfoResult.isWkTimeError()) {
-			// 先頭の就業時間帯を選択する(chọn mui giờ làm đầu tiên)
-			processWorkTime = workTimeLst.stream().findFirst().map(x -> x.getWorktimeCode().v()).orElse(null);
-		}
+		
 		return new InitWkTypeWkTimeOutput(processWorkType, processWorkTime);
 	}
 
@@ -569,8 +577,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// 勤務種類の分類の矛盾ルール
 			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getOneDay(), workTypeActual.getDailyWork().getOneDay());
 			if(conflictCheck) {
-				// エラーメッセージ(Msg_1519)を表示
-				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+				// エラーメッセージ(Msg_1521)を表示
+				throw new BusinessException("Msg_1521", date.toString(), workTypeActual.getName().v());
 			}
 		}
 		
@@ -578,8 +586,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// 勤務種類の分類の矛盾ルール
 			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getOneDay(), workTypeActual.getDailyWork().getMorning());
 			if(conflictCheck) {
-				// エラーメッセージ(Msg_1519)を表示
-				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+				// エラーメッセージ(Msg_1521)を表示
+				throw new BusinessException("Msg_1521", date.toString(), workTypeActual.getName().v());
 			}
 		}
 		
@@ -587,8 +595,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// 勤務種類の分類の矛盾ルール
 			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getMorning(), workTypeActual.getDailyWork().getOneDay());
 			if(conflictCheck) {
-				// エラーメッセージ(Msg_1519)を表示
-				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+				// エラーメッセージ(Msg_1521)を表示
+				throw new BusinessException("Msg_1521", date.toString(), workTypeActual.getName().v());
 			}
 		}
 		
@@ -596,8 +604,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// 勤務種類の分類の矛盾ルール
 			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getMorning(), workTypeActual.getDailyWork().getMorning());
 			if(conflictCheck) {
-				// エラーメッセージ(Msg_1519)を表示
-				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+				// エラーメッセージ(Msg_1521)を表示
+				throw new BusinessException("Msg_1521", date.toString(), workTypeActual.getName().v());
 			}
 		}
 		
@@ -605,8 +613,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// 勤務種類の分類の矛盾ルール
 			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getOneDay(), workTypeActual.getDailyWork().getAfternoon());
 			if(conflictCheck) {
-				// エラーメッセージ(Msg_1519)を表示
-				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+				// エラーメッセージ(Msg_1521)を表示
+				throw new BusinessException("Msg_1521", date.toString(), workTypeActual.getName().v());
 			}
 		}
 		
@@ -614,8 +622,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// 勤務種類の分類の矛盾ルール
 			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getAfternoon(), workTypeActual.getDailyWork().getOneDay());
 			if(conflictCheck) {
-				// エラーメッセージ(Msg_1519)を表示
-				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+				// エラーメッセージ(Msg_1521)を表示
+				throw new BusinessException("Msg_1521", date.toString(), workTypeActual.getName().v());
 			}
 		}
 		
@@ -623,8 +631,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// 勤務種類の分類の矛盾ルール
 			boolean conflictCheck = this.conflictRuleOfWorkTypeAtr(workTypeApp.getDailyWork().getAfternoon(), workTypeActual.getDailyWork().getAfternoon());
 			if(conflictCheck) {
-				// エラーメッセージ(Msg_1519)を表示
-				throw new BusinessException("Msg_1519", date.toString(), workTypeActual.getName().v());
+				// エラーメッセージ(Msg_1521)を表示
+				throw new BusinessException("Msg_1521", date.toString(), workTypeActual.getName().v());
 			}
 		}
 	}
@@ -636,8 +644,16 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		if(workTypeAppAtr == WorkTypeClassification.Attendance) {
 			// INPUT．変更元の勤務種類の分類をチェックする
 			if(workTypeActualAtr == WorkTypeClassification.Attendance || 
-					workTypeActualAtr.isShooting() || 
-					workTypeActualAtr.isContinuousWork()) {
+					workTypeActualAtr.isAnnualLeave() ||
+					workTypeActualAtr.isYearlyReserved() ||
+					workTypeActualAtr.isSpecialHoliday() ||
+					workTypeActualAtr == WorkTypeClassification.Absence ||
+					workTypeActualAtr.isSubstituteHoliday() ||
+					workTypeActualAtr.isPause() ||
+					workTypeActualAtr == WorkTypeClassification.TimeDigestVacation ||
+					workTypeActualAtr.isContinuousWork() ||
+					workTypeActualAtr == WorkTypeClassification.LeaveOfAbsence ||
+					workTypeActualAtr == WorkTypeClassification.Closure) {
 				return false;
 			}
 			// OUTPUT．チェック結果＝矛盾
@@ -652,7 +668,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				workTypeAppAtr.isPause() ||
 				workTypeAppAtr == WorkTypeClassification.TimeDigestVacation) {
 			// INPUT．変更元の勤務種類の分類をチェックする
-			if(workTypeActualAtr == WorkTypeClassification.Attendance ||
+			if(workTypeActualAtr == WorkTypeClassification.Attendance || 
 					workTypeActualAtr.isAnnualLeave() ||
 					workTypeActualAtr.isYearlyReserved() ||
 					workTypeActualAtr.isSpecialHoliday() ||
@@ -660,7 +676,9 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 					workTypeActualAtr.isSubstituteHoliday() ||
 					workTypeActualAtr.isShooting() ||
 					workTypeActualAtr.isPause() ||
-					workTypeActualAtr == WorkTypeClassification.TimeDigestVacation) {
+					workTypeActualAtr == WorkTypeClassification.TimeDigestVacation ||
+					workTypeActualAtr == WorkTypeClassification.LeaveOfAbsence ||
+					workTypeActualAtr == WorkTypeClassification.Closure) {
 				return false;
 			}
 			// OUTPUT．チェック結果＝矛盾
@@ -687,6 +705,17 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			return true;
 		}
 		
+		if(workTypeAppAtr.isHoliday()) {
+			if(workTypeActualAtr.isHoliday() ||
+					workTypeActualAtr.isHolidayWork() ||
+					workTypeActualAtr.isShooting() ||
+					workTypeActualAtr.isContinuousWork()) {
+				return false;
+			}
+			// OUTPUT．チェック結果＝矛盾
+			return true;
+		}
+		
 		return false;
 	}
 
@@ -699,8 +728,28 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			return;
 		}
 		// 法定区分をチェックする
-		WorkTypeSet appWorkTypeSet = workTypeApp.getWorkTypeSet();
-		WorkTypeSet actualWorkTypeSet = workTypeActual.getWorkTypeSet();
+		WorkTypeSet appWorkTypeSet = workTypeApp.getWorkTypeSetList().stream().filter(x -> {
+			// 1日
+			if (workTypeApp.isOneDay()) {
+				return workTypeApp.getDailyWork().getOneDay()==WorkTypeClassification.HolidayWork;
+			}
+			// 午前と午後
+			else {
+				return workTypeApp.getDailyWork().getMorning()==WorkTypeClassification.HolidayWork || 
+						workTypeApp.getDailyWork().getAfternoon()==WorkTypeClassification.HolidayWork;
+			}
+		}).findFirst().orElse(null);
+		WorkTypeSet actualWorkTypeSet = workTypeActual.getWorkTypeSetList().stream().filter(x -> {
+			// 1日
+			if (workTypeActual.isOneDay()) {
+				return workTypeActual.getDailyWork().getOneDay()==WorkTypeClassification.Holiday;
+			}
+			// 午前と午後
+			else {
+				return workTypeActual.getDailyWork().getMorning()==WorkTypeClassification.Holiday || 
+						workTypeActual.getDailyWork().getAfternoon()==WorkTypeClassification.Holiday;
+			}
+		}).findFirst().orElse(null);
 		if(appWorkTypeSet == null || actualWorkTypeSet == null) {
 			return;
 		}
@@ -725,6 +774,200 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		throw new BusinessException("Msg_1648", date.toString(), msgParam);
 	}
 	
+	@Override
+	public void vacationDigestionUnitCheck(TimeDigestApplication timeDigestApplication
+			, Optional<TimeDigestiveUnit> superHolidayUnit, Optional<TimeDigestiveUnit> substituteHoliday
+			, Optional<TimeDigestiveUnit> annualLeaveUnit, Optional<TimeDigestiveUnit> childNursingUnit
+			, Optional<TimeDigestiveUnit> nursingUnit, Optional<TimeDigestiveUnit> pendingUnit) {
+		
+		if (!Optional.ofNullable(timeDigestApplication).isPresent()) {
+			
+			throw new BusinessException("Msg_511");
+		}
+		if (!this.isValidAttendanceTime(timeDigestApplication.getChildTime()) && 
+		        !this.isValidAttendanceTime(timeDigestApplication.getNursingTime()) && 
+		        !this.isValidAttendanceTime(timeDigestApplication.getOvertime60H()) && 
+		        !this.isValidAttendanceTime(timeDigestApplication.getTimeAnnualLeave()) &&
+		        !this.isValidAttendanceTime(timeDigestApplication.getTimeOff()) &&
+		        !this.isValidAttendanceTime(timeDigestApplication.getTimeSpecialVacation())) {
+            throw new BusinessException("Msg_511");
+        }
+		
+		if (timeDigestApplication.getOvertime60H() != null && timeDigestApplication.getOvertime60H().v() > 0) {
+		    int remain60H = 0;
+		    if (superHolidayUnit.isPresent()) {
+		        switch (superHolidayUnit.get()) {
+                case OneMinute:
+                    remain60H = timeDigestApplication.getOvertime60H().v() % 1;
+                    break;
+                case FifteenMinute:
+                    remain60H = timeDigestApplication.getOvertime60H().v() % 15;
+                    break;
+                case ThirtyMinute:
+                    remain60H = timeDigestApplication.getOvertime60H().v() % 30;
+                    break;
+                case OneHour:
+                    remain60H = timeDigestApplication.getOvertime60H().v() % 60;
+                    break;
+                case TwoHour:
+                    remain60H = timeDigestApplication.getOvertime60H().v() % 120;
+                    break;
+                default:
+                    break;
+                }
+		        
+		        if (remain60H != 0) {
+		            throw new BusinessException("Msg_478", superHolidayUnit.get().description);
+		        }
+		    }
+		}
+		
+		if (timeDigestApplication.getTimeOff() != null && timeDigestApplication.getTimeOff().v() > 0) {
+		    int remainTimeOff = 0;
+		    if (substituteHoliday.isPresent()) {
+		        switch (substituteHoliday.get()) {
+		        case OneMinute:
+		            remainTimeOff = timeDigestApplication.getTimeOff().v() % 1;
+                    break;
+                case FifteenMinute:
+                    remainTimeOff = timeDigestApplication.getTimeOff().v() % 15;
+                    break;
+                case ThirtyMinute:
+                    remainTimeOff = timeDigestApplication.getTimeOff().v() % 30;
+                    break;
+                case OneHour:
+                    remainTimeOff = timeDigestApplication.getTimeOff().v() % 60;
+                    break;
+                case TwoHour:
+                    remainTimeOff = timeDigestApplication.getTimeOff().v() % 120;
+                    break;
+                default:
+                    break;
+                }
+		        
+		        if (remainTimeOff != 0) {
+		            throw new BusinessException("Msg_477", substituteHoliday.get().description);
+                }
+		    }
+		}
+		
+		if (timeDigestApplication.getTimeAnnualLeave() != null && timeDigestApplication.getTimeAnnualLeave().v() > 0) {
+		    int remainAnnual = 0;
+		    if (annualLeaveUnit.isPresent()) {
+		        switch (annualLeaveUnit.get()) {
+                case OneMinute:
+                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 1;
+                    break;
+                case FifteenMinute:
+                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 15;
+                    break;
+                case ThirtyMinute:
+                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 30;
+                    break;
+                case OneHour:
+                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 60;
+                    break;
+                case TwoHour:
+                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 120;
+                    break;
+                default:
+                    break;
+                }
+                
+                if (remainAnnual != 0) {
+                    throw new BusinessException("Msg_476", annualLeaveUnit.get().description);
+                }
+		    }
+		}
+		
+		if (timeDigestApplication.getChildTime() != null && timeDigestApplication.getChildTime().v() > 0) {
+		    int childTimeRemain = 0;
+		    if (childNursingUnit.isPresent()) {
+		        switch (childNursingUnit.get()) {
+                case OneMinute:
+                    childTimeRemain = timeDigestApplication.getChildTime().v() % 1;
+                    break;
+                case FifteenMinute:
+                    childTimeRemain = timeDigestApplication.getChildTime().v() % 15;
+                    break;
+                case ThirtyMinute:
+                    childTimeRemain = timeDigestApplication.getChildTime().v() % 30;
+                    break;
+                case OneHour:
+                    childTimeRemain = timeDigestApplication.getChildTime().v() % 60;
+                    break;
+                case TwoHour:
+                    childTimeRemain = timeDigestApplication.getChildTime().v() % 120;
+                    break;
+                default:
+                    break;
+                }
+                
+                if (childTimeRemain != 0) {
+                    throw new BusinessException("Msg_1686", "Com_ChildNurseHoliday", childNursingUnit.get().description);
+                }
+		    }
+		}
+		
+		if (timeDigestApplication.getNursingTime() != null && timeDigestApplication.getNursingTime().v() > 0) {
+		    int nursingRemain = 0;
+		    if (nursingUnit.isPresent()) {
+		        switch (nursingUnit.get()) {
+                case OneMinute:
+                    nursingRemain = timeDigestApplication.getNursingTime().v() % 1;
+                    break;
+                case FifteenMinute:
+                    nursingRemain = timeDigestApplication.getNursingTime().v() % 15;
+                    break;
+                case ThirtyMinute:
+                    nursingRemain = timeDigestApplication.getNursingTime().v() % 30;
+                    break;
+                case OneHour:
+                    nursingRemain = timeDigestApplication.getNursingTime().v() % 60;
+                    break;
+                case TwoHour:
+                    nursingRemain = timeDigestApplication.getNursingTime().v() % 120;
+                    break;
+                default:
+                    break;
+                }
+                
+                if (nursingRemain != 0) {
+                    throw new BusinessException("Msg_1686", "Com_CareHoliday", nursingUnit.get().description);
+                }
+		    }
+		}
+		
+		if (timeDigestApplication.getTimeSpecialVacation() != null && timeDigestApplication.getTimeSpecialVacation().v() > 0) {
+		    int timeSpecialRemain = 0;
+		    if (pendingUnit.isPresent()) {
+		        switch (pendingUnit.get()) {
+		        case OneMinute:
+		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() % 1;
+		            break;
+		        case FifteenMinute:
+		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() % 15;
+		            break;
+		        case ThirtyMinute:
+		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() % 30;
+		            break;
+		        case OneHour:
+		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() % 60;
+		            break;
+		        case TwoHour:
+		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() % 120;
+		            break;
+		        default:
+		            break;
+		        }
+		        
+		        if (timeSpecialRemain != 0) {
+		            throw new BusinessException("Msg_1686", "KAFS12_46", pendingUnit.get().description);
+		        }
+		    }
+		}
+	}
+	
 	private WorkingConditionService.RequireM1 createRequireM1() {
 		return new WorkingConditionService.RequireM1() {
 			
@@ -738,5 +981,50 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				return workingConditionRepository.getBySidAndStandardDate(companyId, employeeId, baseDate);
 			}
 		};
+	}
+	
+	private boolean isValidAttendanceTime(AttendanceTime time) {
+	    if (time != null && time.v() != 0) {
+	        return true;
+	    }
+	    
+	    return false;
+	}
+
+	@Override
+	public WorkInfoListOutput getWorkInfoList(
+			String companyId,
+			String workTypeCode,
+			Optional<String> workTimeCode,
+			List<WorkType> workTypes,
+			List<WorkTimeSetting> workTimes) {
+		List<WorkType> workTypesOutput = workTypes;
+		List<WorkTimeSetting> workTimesOutput = workTimes;
+		// INPUT「申請中の勤務種類」がINPUT「勤務種類リスト」に含まれているかチェックする
+		if (!workTypes.stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList()).contains(workTypeCode)) { 
+			// ドメインモデル「勤務種類」を取得する
+			Optional<WorkType> workTypeOp = wkTypeRepo.findByPK(companyId, workTypeCode);
+			if (workTypeOp.isPresent()) {
+				workTypesOutput.add(workTypeOp.get());
+			}
+		}
+		workTypes.sort(new Comparator<WorkType>() {
+		    public int compare(WorkType o1, WorkType o2) {
+		        return o1.getWorkTypeCode().v().compareTo(o2.getWorkTypeCode().v());
+		    };
+        });
+		// INPUT「申請中の就業時間帯」を確認する
+		if (workTimeCode.isPresent()) {
+			// INPUT「申請中の就業時間帯」がINPUT「就業時間帯リスト」に含まれているかチェックする
+			if (!workTimes.stream().filter(x -> x.getWorktimeCode().v().equals(workTimeCode.get())).findFirst().isPresent()) {
+				// ドメインモデル「就業時間帯の設定」を取得する
+				Optional<WorkTimeSetting> workTimeOp = workTimeSettingRepository.findByCode(companyId, workTimeCode.get());
+				if (workTimeOp.isPresent()) {
+					workTimesOutput.add(workTimeOp.get());
+				}
+			}
+		}
+		// 取得した「勤務種類」と「就業時間帯の設定」をそれぞれINPUT「勤務種類リスト」とINPUT「就業時間帯リスト」に追加して返す
+		return new WorkInfoListOutput(workTypesOutput, workTimesOutput);
 	}
 }

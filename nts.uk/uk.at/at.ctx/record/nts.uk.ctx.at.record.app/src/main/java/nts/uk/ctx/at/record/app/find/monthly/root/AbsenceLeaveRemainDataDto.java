@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -9,11 +11,13 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AbsenceLeaveRemainData;
@@ -122,4 +126,88 @@ public class AbsenceLeaveRemainDataDto extends MonthlyItemCommon {
 		}
 		return dto;
 	}
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case CLOSURE_STATE:
+			return Optional.of(ItemValue.builder().value(closureStatus).valueType(ValueType.ATTR));
+		case OCCURRENCE:
+			return Optional.of(ItemValue.builder().value(occurredDay).valueType(ValueType.DAYS));
+		case USAGE:
+			return Optional.of(ItemValue.builder().value(usedDays).valueType(ValueType.DAYS));
+		case REMAIN:
+			return Optional.of(ItemValue.builder().value(remainingDays).valueType(ValueType.DAYS));
+		case CARRY_FORWARD:
+			return Optional.of(ItemValue.builder().value(carryforwardDays).valueType(ValueType.DAYS));
+		case NOT_DIGESTION:
+			return Optional.of(ItemValue.builder().value(unUsedDays).valueType(ValueType.DAYS));
+		default:
+			break;
+		}
+		return super.valueOf(path);
+	}
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (PERIOD.equals(path)) {
+			return new DatePeriodDto();
+		}
+		return super.newInstanceOf(path);
+	}
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		if (PERIOD.equals(path)) {
+			return Optional.ofNullable(datePeriod);
+		}
+		return super.get(path);
+	}
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case CLOSURE_STATE:
+		case OCCURRENCE:
+		case USAGE:
+		case REMAIN:
+		case CARRY_FORWARD:
+		case NOT_DIGESTION:
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return super.typeOf(path);
+	}
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case CLOSURE_STATE:
+			closureStatus = value.valueOrDefault(0); break;
+		case OCCURRENCE:
+			occurredDay = value.valueOrDefault(null); break;
+		case USAGE:
+			usedDays = value.valueOrDefault(null); break;
+		case REMAIN:
+			remainingDays = value.valueOrDefault(null); break;
+		case CARRY_FORWARD:
+			carryforwardDays = value.valueOrDefault(null); break;
+		case NOT_DIGESTION:
+			unUsedDays = value.valueOrDefault(null); break;
+		default:
+			break;
+		}
+	}
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		if (PERIOD.equals(path)) {
+			datePeriod = (DatePeriodDto) value;
+		}
+	}
+	@Override
+	public boolean isRoot() {
+		return true;
+	}
+	@Override
+	public String rootName() {
+		return MONTHLY_ABSENCE_LEAVE_REMAIN_NAME;
+	}
+	
+	
 }

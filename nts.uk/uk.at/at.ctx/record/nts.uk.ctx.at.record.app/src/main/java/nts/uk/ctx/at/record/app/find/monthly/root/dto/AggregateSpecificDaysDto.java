@@ -1,12 +1,16 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
@@ -15,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の特定日数 + 集計特定日数 */
-public class AggregateSpecificDaysDto implements ItemConst {
+public class AggregateSpecificDaysDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 特定日項目No */
 	private int no;
@@ -45,4 +49,43 @@ public class AggregateSpecificDaysDto implements ItemConst {
 		}
 		return dto;
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case DAYS:
+			return Optional.of(ItemValue.builder().value(specificDays).valueType(ValueType.DAYS));
+		case HOLIDAY_WORK:
+			return Optional.of(ItemValue.builder().value(holidayWorkSpecificDays).valueType(ValueType.DAYS));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case DAYS:
+		case HOLIDAY_WORK:
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case DAYS:
+			specificDays = value.valueOrDefault(0d); break;
+		case HOLIDAY_WORK:
+			holidayWorkSpecificDays = value.valueOrDefault(0d); break;
+		default:
+			break;
+		}
+	}
+
+	
 }

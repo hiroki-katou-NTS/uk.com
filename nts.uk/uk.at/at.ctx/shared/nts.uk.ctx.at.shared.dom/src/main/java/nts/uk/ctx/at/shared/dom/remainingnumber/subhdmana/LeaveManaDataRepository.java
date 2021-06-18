@@ -132,4 +132,24 @@ public interface LeaveManaDataRepository {
 	 * @return List<LeaveManagementData> List<休出管理データ＞
 	 */
 	List<LeaveManagementData> getBySidAndDatOff(String sid, List<GeneralDate> dayOffs);
+	
+	
+	/**
+	 * @param leaveManaId
+	 * @return
+	 */
+	List<LeaveManagementData> getListByLeaveId(List<String> leaveIDs);
+	
+	/**
+	 * Get data by Id and unUseday
+	 * @param cid The company Id
+	 * @param sid The employee Id
+	 * @param expiredDate the expired date
+	 * @param unUse the unUse day
+	 * @return List<LeaveManagementData>
+	 */
+	List<LeaveManagementData> getListByIdAndUnUse(String cid, String sid, GeneralDate expiredDate, double unUse);
+	
+	/** 当月以降の管理データを削除 */
+	void deleteAfter(String sid, boolean unknownDateFlag, GeneralDate target);
 }

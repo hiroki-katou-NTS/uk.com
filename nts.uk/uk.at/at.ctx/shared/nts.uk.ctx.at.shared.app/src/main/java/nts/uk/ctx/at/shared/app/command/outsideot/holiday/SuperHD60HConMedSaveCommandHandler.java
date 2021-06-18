@@ -11,8 +11,6 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMed;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMedRepository;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class SuperHD60HConMedSaveCommandHandler.
@@ -33,17 +31,12 @@ public class SuperHD60HConMedSaveCommandHandler extends CommandHandler<SuperHD60
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<SuperHD60HConMedSaveCommand> context) {
-		// get login user
-		LoginUserContext loginUserContext = AppContexts.user();
-		
-		// get company id
-		String companyId = loginUserContext.companyId();
 		
 		// get command
 		SuperHD60HConMedSaveCommand command = context.getCommand();
 		
 		// to domain
-		SuperHD60HConMed domain = command.toDomain(companyId);
+		SuperHD60HConMed domain = command.domain();
 		
 		// save domain
 		this.repository.save(domain);

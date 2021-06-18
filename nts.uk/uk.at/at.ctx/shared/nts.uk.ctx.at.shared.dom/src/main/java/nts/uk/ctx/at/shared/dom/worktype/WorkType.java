@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 // 勤務種類
 @Getter
 @NoArgsConstructor
-public class WorkType extends AggregateRoot implements Cloneable, Serializable{
+public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 
 	/** Serializable */
 	private static final long serialVersionUID = 1L;
@@ -141,6 +141,7 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 		this.dailyWork = dailyWork;
 		this.deprecate = deprecate;
 		this.calculateMethod = calculateMethod;
+		this.workTypeSetList = new ArrayList<>();
 	}
 	
 	public WorkType(WorkTypeCode workTypeCode, WorkTypeSymbolicName symbolicName, WorkTypeName name,
@@ -152,6 +153,7 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 		this.abbreviationName = abbreviationName;
 		this.memo = memo;
 		this.dailyWork = dailyWork;
+		this.workTypeSetList = new ArrayList<>();
 	}
 
 	/**
@@ -301,11 +303,7 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 	 * @return the work type set by atr
 	 */
 	public Optional<WorkTypeSet> getWorkTypeSetByAtr(WorkAtr atr) {
-		if (!atr.equals("the atr")) {
-			return this.getWorkTypeSetList().stream().filter(item -> item.getWorkAtr() == atr).findFirst();
-		} else {
-			return Optional.empty();
-		}
+		return this.getWorkTypeSetList().stream().filter(item -> item.getWorkAtr() == atr).findFirst();
 	}
 	
 	public WorkTypeSet getWorkTypeSetAvailable() {
@@ -538,5 +536,28 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 
 	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
 		this.workTypeCode = workTypeCode;
+	}
+
+	public void setDailyWork(DailyWork dailyWork) {
+		this.dailyWork = dailyWork;
+	}
+	
+	/**
+	 * 休出かどうかの判断
+	 * @return true=休出,false=休出ではない
+	 */
+	public boolean isHolidayWork(){
+		if (this.isOneDay()){
+			if (this.dailyWork.getOneDay() == WorkTypeClassification.HolidayWork) return true;
+		}
+		return false;
+	}
+	
+	/** 連続勤務か */
+	public boolean isContinuousWork() {
+		if (this.isOneDay() && this.dailyWork.getOneDay() == WorkTypeClassification.ContinuousWork) 
+			return true;
+			
+		return false;
 	}
 }

@@ -1,13 +1,18 @@
 package nts.uk.ctx.at.shared.dom.worktime;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
@@ -16,10 +21,9 @@ import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
@@ -27,11 +31,9 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetail;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
-import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 統合就業時間帯
@@ -142,6 +144,16 @@ public class IntegrationOfWorkTime {
 		}
 	}
 	
+	public boolean isFixBreak(WorkType workType) {
+		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
+			case FIXED:				return true;
+			case FLEX:				return this.flexWorkSetting.get().getFlowWorkRestTimezone(workType).isFixRestTime();
+			case FLOW:				return this.flowWorkSetting.get().getFlowWorkRestTimezone(workType).isFixRestTime();
+			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
+			default:				throw new RuntimeException("Non-conformity No Work");
+		}
+	}
+	
 	/**
 	 * 残業時間の時間帯設定を取得する
 	 * @param workType 勤務種類
@@ -188,13 +200,13 @@ public class IntegrationOfWorkTime {
 	
 	/**
 	 * 法定内残業として扱うか判定する
-	 * @return true：法定内残業として扱う false法定内残業として扱わない
+	 * @return true：法定内残業として扱う false：法定内残業として扱わない
 	 */
 	public boolean isLegalInternalTime() {
 		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
 			case FIXED:				return this.fixedWorkSetting.get().getLegalOTSetting().isLegal();
 			case FLEX:				return false;
-			case FLOW:				return false;
+			case FLOW:				return this.flowWorkSetting.get().getLegalOTSetting().isLegal();
 			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
 			default:				throw new RuntimeException("Non-conformity No Work");
 		}
@@ -268,7 +280,7 @@ public class IntegrationOfWorkTime {
 	 */
 	public Optional<FixedRestCalculateMethod> getFixedRestCalculateMethod() {
 		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
-			case FIXED:				return Optional.of(this.fixedWorkSetting.get().getFixedWorkRestSetting().getCalculateMethod());
+			case FIXED:				return Optional.empty();
 			case FLEX:				return Optional.empty();
 			case FLOW:				return Optional.empty();
 			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
@@ -282,7 +294,7 @@ public class IntegrationOfWorkTime {
 	 */
 	public CommonRestSetting getCommonRestSetting() {
 		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
-			case FIXED:				return this.fixedWorkSetting.get().getFixedWorkRestSetting().getCommonRestSet();
+			case FIXED:				return this.fixedWorkSetting.get().getCommonRestSet();
 			case FLEX:				return this.flexWorkSetting.get().getRestSetting().getCommonRestSetting();
 			case FLOW:				return this.flowWorkSetting.get().getRestSetting().getCommonRestSetting();
 			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
@@ -348,5 +360,57 @@ public class IntegrationOfWorkTime {
 			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
 			default:				throw new RuntimeException("Non-conformity No Work");
 		}
+	}
+	
+	/** 就業時間帯から休憩時間帯を取得する */
+	public List<TimeSpanForCalc> getBreakTimeZone(WorkType workType) {
+		WorkSetting workSet;
+		switch(this.workTimeSetting.getWorkTimeDivision().getWorkTimeForm()) {
+			case FIXED:				workSet = this.fixedWorkSetting.get(); break;
+			case FLEX:				workSet = this.flexWorkSetting.get(); break;
+			case FLOW:				workSet = this.flowWorkSetting.get(); break;
+			case TIMEDIFFERENCE:	throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
+			default:				throw new RuntimeException("Non-conformity No Work");
+		}
+		
+		switch (workType.getDailyWork().chechAttendanceDay()) {
+		case FULL_TIME:
+			return workSet.getBreakTimeZone(false, AmPmAtr.ONE_DAY).getBreakTimes();
+		case HALF_TIME_AM:
+			return workSet.getBreakTimeZone(false, AmPmAtr.AM).getBreakTimes();
+		case HALF_TIME_PM:
+			return workSet.getBreakTimeZone(false, AmPmAtr.PM).getBreakTimes();
+		case HOLIDAY_WORK:
+			return workSet.getBreakTimeZone(true, AmPmAtr.ONE_DAY).getBreakTimes();
+		default:
+			return new ArrayList<>();
+		}
+	}
+	
+	/** 時間帯の中で一番早い時刻を取得 */
+	public TimeWithDayAttr getFirstStartTimeOfFlex(WorkType workType) {
+		List<TimeZone> timeZones = new ArrayList<>();
+
+		/** ○時間帯を全てリストへ格納 */
+		val emTimeZone = this.flexWorkSetting.get().getEmTimeZoneSet(workType);
+		timeZones.addAll(emTimeZone.stream().map(c -> c.getTimezone()).collect(Collectors.toList()));
+		
+		/** ○勤務種類から平日か休日かを判断 */
+		switch (workType.getDailyWork().chechAttendanceDay()) {
+			case HOLIDAY_WORK:
+				break;
+			default:
+				/** ○就業時間帯と残業時間帯の時間帯を１つのリストへ格納 */
+				val otTimeZone = this.flexWorkSetting.get().getOverTimeOfTimeZoneSet(workType);
+				timeZones.addAll(otTimeZone.stream().map(c -> c.getTimezone()).collect(Collectors.toList()));
+				break;
+		}
+		
+		/** ○時間帯．開始時刻でソート */
+		timeZones.sort((c1, c2) -> c1.getStart().compareTo(c2.getStart()));
+		
+		/** ○一番最初の時間帯を取得 */
+		/** ○取得した時間帯の開始時刻を返す */
+		return timeZones.get(0).getStart();
 	}
 }

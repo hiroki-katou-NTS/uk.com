@@ -14,11 +14,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.Query;
 
-import com.google.common.base.Strings;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
 import nts.uk.ctx.sys.assist.dom.saveprotetion.SaveProtetion;
@@ -42,7 +41,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 			+ "	AND t.tableListPk.dataStorageProcessingId =:dataStorageProcessingId	";
 	private static final String SELECT_BY_SYSTEM_TYPE_AND_RECOVER_ID = "SELECT t FROM SspdtSaveTableList t "
 			+ "	WHERE t.tableListPk.systemType =:systemType "
-			+ "	AND t.dataRecoveryProcessId =:dataRecoveryProcessId	";
+			+ "	AND t.tableListPk.dataStorageProcessingId =:dataStorageProcessingId	";
 	private static final String COMPANY_CD = "0";
 	private static final String EMPLOYEE_CD = "5";
 	private static final String YEAR = "6";
@@ -127,7 +126,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 	private String getFieldAcq(List<String> allColumns, Optional<String> fieldName, String fieldAcqName) {
 		String fieldAcq = fieldName.orElse("");
-		if (!Strings.isNullOrEmpty(fieldAcq)) {
+		if (!StringUtil.isNullOrEmpty(fieldAcq, true)) {
 			if (allColumns.contains(fieldAcq)) {
 				return " t." + fieldAcq + " AS " + fieldAcqName + ", ";
 			} else {
@@ -225,7 +224,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 			boolean isFirstOnStatement = true;
 			for (int i = 0; i < parentFields.length; i++) {
-				if (!Strings.isNullOrEmpty(parentFields[i]) && !Strings.isNullOrEmpty(childFields[i])) {
+				if (!StringUtil.isNullOrEmpty(parentFields[i], true) && !StringUtil.isNullOrEmpty(childFields[i], true)) {
 					if (!isFirstOnStatement) {
 						query.append(" AND ");
 					}
@@ -678,9 +677,9 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	}
 
 	@Override
-	public List<TableList> getBySystemTypeAndRecoverId(int systemType, String recoverId) {
+	public List<TableList> getBySystemTypeAndRecoverId(int systemType, String id) {
 		return this.queryProxy().query(SELECT_BY_SYSTEM_TYPE_AND_RECOVER_ID, SspdtSaveTableList.class)
-				.setParameter("systemType", systemType).setParameter("dataRecoveryProcessId", recoverId)
+				.setParameter("systemType", systemType).setParameter("dataStorageProcessingId", id)
 				.getList(c -> c.toDomain());
 	}
 

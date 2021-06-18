@@ -48,14 +48,14 @@ public class AggregateAnyItem implements Cloneable {
 	 */
 	public static AggregateAnyItem of(
 			int anyItemNo,
-			AnyTimeMonth time,
-			AnyTimesMonth times,
-			AnyAmountMonth amount){
+			Optional<AnyTimeMonth> time,
+			Optional<AnyTimesMonth> times,
+			Optional<AnyAmountMonth> amount){
 		
 		AggregateAnyItem domain = new AggregateAnyItem(anyItemNo);
-		domain.time = Optional.ofNullable(time);
-		domain.times = Optional.ofNullable(times);
-		domain.amount = Optional.ofNullable(amount);
+		domain.time = time;
+		domain.times = times;
+		domain.amount = amount;
 		return domain;
 	}
 	

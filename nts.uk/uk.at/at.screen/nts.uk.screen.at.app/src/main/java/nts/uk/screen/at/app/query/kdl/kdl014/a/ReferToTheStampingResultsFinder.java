@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.query.kdl.kdl014.a;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,8 +17,8 @@ import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputReposi
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
@@ -123,11 +122,13 @@ public class ReferToTheStampingResultsFinder {
 		
 		List<Stamp> listStamp = listStampInfoDisp.stream().flatMap(m -> m.getStamp().stream()).collect(Collectors.toList());
 		
-		List<WorkLocationCD> listWorkLocation = listStamp.stream().filter(m->m.getRefActualResults().getWorkLocationCD().isPresent()).map(m->m.getRefActualResults().getWorkLocationCD().get()).collect(Collectors.toList());
+		List<Stamp> listStampFilter = listStamp.stream().filter(m -> m.getRefActualResults().getWorkInforStamp().isPresent()).collect(Collectors.toList());
+		
+		List<WorkLocationCD> listWorkLocation = listStampFilter.stream().filter(m->m.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().isPresent()).map(m->m.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().get()).collect(Collectors.toList());
 
 		List<String> listWorkLocationCode = listWorkLocation.stream().map(m->m.v()).distinct().collect(Collectors.toList());
 		
-		List<WorkLocation> workLocationList = workLocationRepo.findByCodes(AppContexts.user().companyId(), listWorkLocationCode);
+		List<WorkLocation> workLocationList = workLocationRepo.findByCodes(AppContexts.user().contractCode(), listWorkLocationCode);
 		
 		return workLocationList;
 	}
@@ -160,10 +161,10 @@ public class ReferToTheStampingResultsFinder {
 						
 						Optional<WorkLocation> wl = Optional.empty();
 						
-						if (st.getRefActualResults().getWorkLocationCD().isPresent()) {
+						if (st.getRefActualResults().getWorkInforStamp().isPresent() && st.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().isPresent()) {
 							wl = workLocationList.stream()
 									.filter(c -> c.getWorkLocationCD().v()
-											.equals(st.getRefActualResults().getWorkLocationCD().get().v()))
+											.equals(st.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().get().v()))
 									.findFirst();
 						}
 						
@@ -191,7 +192,7 @@ public class ReferToTheStampingResultsFinder {
 				st.getRelieve().getStampMeans().value,
 				stamp.getStampAtr(),
 				wl.isPresent() ? wl.get().getWorkLocationName().v() : null,
-				st.getLocationInfor().isPresent() ? st.getLocationInfor().get().getPositionInfor() : null);
+				st.getLocationInfor().isPresent() ? st.getLocationInfor().get() : null);
 	}
 
 	@AllArgsConstructor

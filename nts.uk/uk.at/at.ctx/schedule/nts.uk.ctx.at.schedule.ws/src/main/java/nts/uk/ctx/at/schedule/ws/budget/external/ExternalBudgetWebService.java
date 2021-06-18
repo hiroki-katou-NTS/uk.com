@@ -31,7 +31,7 @@ import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetFinder;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ParamExternalBudget;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExtBudgetDataPreviewDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExtBudgetExtractCondition;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetCharset;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetCharset;
 
 /**
  * The Class ExternalBudgetWebService.
@@ -72,7 +72,7 @@ public class ExternalBudgetWebService extends WebService {
 	}
 	
 	/**
-	 * get External Budget by atr 
+	 * get External Budget by atr
 	 * @param param
 	 * @return
 	 * author: Hoang Yen

@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -16,20 +17,26 @@ import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.CheckBeforeRegisMultiEmpOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.AppLimitSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.ActualLockingCheck;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.DayActualConfirmDoneCheck;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.MonthActualConfirmDoneCheck;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.service.WorkConfirmDoneCheck;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.ReceptionRestrictionSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
@@ -54,6 +61,9 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 
 	@Inject
 	private ActualLockingCheck actualLockingCheck;
+	
+	@Inject
+	private CommonAlgorithm commonAlgorithm;
 	
 	// moi nguoi chi co the o mot cty vao mot thoi diem
 	// check xem nguoi xin con trong cty k
@@ -191,7 +201,13 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 				companyID, application.getEmployeeID(), application.getAppDate().getApplicationDate());
 		
 		Optional<GeneralDate> opStartDate = application.getOpAppStartDate().map(x -> x.getApplicationDate());
+		if(!opStartDate.isPresent()) {
+			opStartDate = Optional.of(application.getAppDate().getApplicationDate());
+		}
 		Optional<GeneralDate> opEndDate = application.getOpAppEndDate().map(x -> x.getApplicationDate());
+		if(!opEndDate.isPresent()) {
+			opEndDate = Optional.of(application.getAppDate().getApplicationDate());
+		}
 		if (opStartDate.isPresent() && opEndDate.isPresent()) {
 			// 登録する期間のチェック
 			//((TimeSpan)(申請する終了日 - 申請する開始日)).Days > 31がtrue
@@ -248,6 +264,151 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 				confirmationCheck(companyID, application.getEmployeeID(), loopDate, appDispInfoStartupOutput);
 			}
 		}
+		return result;
+	}
+	
+	@Override
+	public CheckBeforeRegisMultiEmpOutput processBeforeRegisterMultiEmp(String companyID, List<String> employeeIDLst,
+			Application application, OvertimeAppAtr overtimeAppAtr, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+		CheckBeforeRegisMultiEmpOutput result = new CheckBeforeRegisMultiEmpOutput();
+		try {
+			result = this.checkBeforeRegisterMultiEmp(companyID, employeeIDLst, application, overtimeAppAtr, appDispInfoStartupOutput);
+		} catch (BusinessException e) {
+			String newMsg = "";
+			switch (e.getMessageId()) {
+			case "Msg_235": newMsg = "Msg_1995"; break;
+			case "Msg_391": newMsg = "Msg_1996"; break;
+			case "Msg_323": newMsg = "Msg_1997"; break;
+			case "Msg_1134": newMsg = "Msg_1998"; break;
+			case "Msg_1518": newMsg = "Msg_1999"; break;
+			case "Msg_236": newMsg = "Msg_2000"; break;
+			case "Msg_327": newMsg = "Msg_2001"; break;
+			case "Msg_448": newMsg = "Msg_2002"; break;
+			case "Msg_449": newMsg = "Msg_2003"; break;
+			case "Msg_450": newMsg = "Msg_2004"; break;
+			case "Msg_451": newMsg = "Msg_2005"; break;
+			case "Msg_324": newMsg = "Msg_2008"; break;
+			case "Msg_237": newMsg = "Msg_2009"; break;
+			case "Msg_238": newMsg = "Msg_2010"; break;
+			case "Msg_1409": newMsg = "Msg_2011"; break;
+			case "Msg_1535": newMsg = "Msg_2012"; break;
+			case "Msg_1536": newMsg = "Msg_2013"; break;
+			case "Msg_1537": newMsg = "Msg_2014"; break;
+			case "Msg_1538": newMsg = "Msg_2015"; break;
+			case "Msg_1508": newMsg = "Msg_2019"; break;
+			case "Msg_2056": newMsg = "Msg_2057"; break;
+			default:
+				newMsg = e.getMessageId();
+				break;
+			}
+			I18NText.Builder builder = I18NText.main(newMsg);
+			for(String param : e.getParameters()) {
+				builder.addId(param);
+			}
+			throw new BusinessException(builder.build());
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		return result;
+	}
+
+	private CheckBeforeRegisMultiEmpOutput checkBeforeRegisterMultiEmp(String companyID, List<String> employeeIDLst,
+			Application application, OvertimeAppAtr overtimeAppAtr, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+		CheckBeforeRegisMultiEmpOutput result = new CheckBeforeRegisMultiEmpOutput();
+		// 5.申請の受付制限をチェック
+		this.appAcceptanceRestrictionsCheck(
+				application.getPrePostAtr(), 
+				application.getOpAppStartDate().map(x -> x.getApplicationDate()).orElse(null), 
+				application.getOpAppEndDate().map(x -> x.getApplicationDate()).orElse(null), 
+				application.getAppType(), 
+				overtimeAppAtr, 
+				appDispInfoStartupOutput.getAppDispInfoNoDateOutput());
+		// INPUT．申請者リストをループする
+		for(String employeeID : employeeIDLst) {
+			String empErrorName = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().stream()
+					.filter(x -> x.getSid().equals(employeeID)).findAny().map(x -> x.getBussinessName()).orElse("");
+			try {
+				result.setEmpErrorName(empErrorName);
+				// 1.入社前退職チェック
+				this.retirementCheckBeforeJoinCompany(companyID, employeeID, application.getAppDate().getApplicationDate());
+				// 社員IDから申請承認設定情報の取得
+				ApprovalFunctionSet approvalFunctionSet = commonAlgorithm.getApprovalFunctionSet(
+						companyID, 
+						employeeID, 
+						appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(), 
+						application.getAppType());
+				// 取得したドメインモデル「申請承認機能設定．申請利用設定」．利用区分をチェックする
+				Optional<ApplicationUseSetting> opApplicationUseSetting = approvalFunctionSet.getAppUseSetLst().stream()
+						.filter(x -> x.getAppType()==application.getAppType()).findAny();
+				if(opApplicationUseSetting.isPresent()) {
+					if(opApplicationUseSetting.get().getUseDivision()==UseDivision.NOT_USE) {
+						// エラーメッセージ(Msg_323)を表示する
+						throw new BusinessException("Msg_323", empErrorName);
+					}
+				}
+				// 4.社員の当月の期間を算出する
+				PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(
+						companyID, 
+						employeeID, 
+						appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate());
+				// 登録可能期間のチェック(１年以内)
+				if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(application.getAppDate().getApplicationDate())) {
+					// エラーメッセージ（Msg_1518）を表示する
+					throw new BusinessException("Msg_1518", empErrorName);
+				}
+				// 過去日のチェック
+				if(application.getOpAppStartDate().isPresent()) {
+					if(application.getOpAppStartDate().get().getApplicationDate().before(periodCurrentMonth.getStartDate())) {
+						// エラーメッセージ(Msg_236)
+						throw new BusinessException("Msg_236", empErrorName);
+					}
+				}
+				// 2.申請の締め切り期限のチェック
+				this.deadlineAppCheck(
+						application.getOpAppStartDate().map(x -> x.getApplicationDate()).orElse(null), 
+						application.getOpAppEndDate().map(x -> x.getApplicationDate()).orElse(null), 
+						periodCurrentMonth.getStartDate(), 
+						periodCurrentMonth.getEndDate(), 
+						appDispInfoStartupOutput.getAppDispInfoWithDateOutput());
+				// 申請対象、申請日、事前事後区分をチェックする
+				if(application.getAppDate().getApplicationDate().equals(GeneralDate.today()) &&
+						application.getAppType()==ApplicationType.OVER_TIME_APPLICATION && application.getPrePostAtr()==PrePostAtr.PREDICT) {
+					// 6.確定チェック（事前残業申請用）
+					confirmCheckOvertime(companyID, employeeID, application.getAppDate().getApplicationDate(), appDispInfoStartupOutput);
+				} else {
+					// 3.確定チェック
+					confirmationCheck(companyID, employeeID, application.getAppDate().getApplicationDate(), appDispInfoStartupOutput);
+				}
+				// 12_承認ルートを取得
+				ApprovalRootContentImport_New approvalRootContentImport = commonAlgorithm.getApprovalRoot(
+						companyID, 
+						employeeID, 
+						EmploymentRootAtr.APPLICATION, 
+						application.getAppType(), 
+						appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate());
+				//承認ルートの内容をOUTPUT．List＜社員ID, 承認ルートの内容＞に追加する
+				result.getMapEmpContentAppr().put(employeeID, approvalRootContentImport);
+				switch (approvalRootContentImport.getErrorFlag()) {
+				case NO_APPROVER:
+					// エラーメッセージ(Msg_324)を表示する
+					throw new BusinessException("Msg_324", empErrorName);
+				case APPROVER_UP_10:
+					// エラーメッセージ(Msg_237)を表示する
+					throw new BusinessException("Msg_237", empErrorName);
+				case NO_CONFIRM_PERSON:
+					// エラーメッセージ(Msg_238)を表示する
+					throw new BusinessException("Msg_238", empErrorName);
+				default:
+					break;
+				}
+			} catch (BusinessException e) {
+				throw new BusinessException(e.getMessageId(), empErrorName);
+			} catch (Exception e) {
+				throw new RuntimeException(e.getMessage());
+			}
+		}
+		result.setEmpErrorName("");
+		
 		return result;
 	}
 }

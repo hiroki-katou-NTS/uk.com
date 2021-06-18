@@ -44,14 +44,42 @@ export class CmmS45EComponent extends Vue {
                 phaseOrder: null
             });
             //push 承認者・代行者
-            self.appInfo.lstApprover.forEach(function(approver: any) {
-                lstAppr.push({
-                    sId: approver.approverID,
-                    atr: approver.agentFlag ? 2 : 1,
-                    name: approver.approverName,
-                    phaseOrder: approver.phaseOrder
-                });
+            let groupByPhase = _.groupBy(self.appInfo.lstApprover, 'phaseOrder');
+            let arrayPhase = [];
+            for (let key in groupByPhase) {
+                arrayPhase.push(groupByPhase[key]);
+            }
+            arrayPhase.forEach(function(approverLst) {
+                let name: string = '';
+                for (let i = 0; i < approverLst.length; i++) {
+                    if (result.data.phaseLogin == 0 || approverLst[i].phaseOrder > result.data.phaseLogin) {
+                        if (approverLst[i].agentFlag) {
+                            name = name.concat(self.$i18n('CMMS45_73', [approverLst[i].approverName]));
+                        } else {
+                            name = name.concat(approverLst[i].approverName);
+                        }
+                        if (i != approverLst.length - 1) {
+                            name = name.concat('、');
+                        }
+                    }
+                }
+                if (approverLst.length > 0 && name != '') {
+                    lstAppr.push({ 
+                        sId: approverLst[0].approverID,
+                        atr: 1,
+                        name,
+                        phaseOrder: approverLst[0].phaseOrder
+                        });
+                }
             });
+            // self.appInfo.lstApprover.forEach(function(approver: any) {
+            //     lstAppr.push({
+            //         sId: approver.approverID,
+            //         atr: approver.agentFlag ? 2 : 1,
+            //         name: approver.approverName,
+            //         phaseOrder: approver.phaseOrder
+            //     });
+            // });
             self.apprList = self.creatContent(lstAppr);
             //起動する時、先頭に選択する
             self.selectedValue = self.appInfo.applicantId;
@@ -111,9 +139,6 @@ export class CmmS45EComponent extends Vue {
             if (appr.atr == 1) {//承認者
                 contentApp = this.$i18n('CMMS45_72', appr.phaseOrder.toString()) + appr.name;
             }
-            if (appr.atr == 2) {//代行者
-                contentApp = this.$i18n('CMMS45_72', appr.phaseOrder.toString()) + appr.name + this.$i18n('CMMS45_73');
-            }
             lstResult.push({ id: appr.sId, content: contentApp});
         });
 
@@ -123,7 +148,7 @@ export class CmmS45EComponent extends Vue {
 
 const servicePath = {
     getAppInfoByAppID: 'at/request/application/getAppInfoForRemandByAppId',
-    remand: 'at/request/application/remandapp'
+    remand: 'at/request/app/smartphone/remandapp'
 };
 
 interface IApproverInfo {

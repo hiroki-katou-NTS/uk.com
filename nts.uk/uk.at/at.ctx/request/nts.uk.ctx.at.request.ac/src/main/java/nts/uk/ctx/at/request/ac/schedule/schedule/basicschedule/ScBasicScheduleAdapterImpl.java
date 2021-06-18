@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.ac.schedule.schedule.basicschedule;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -11,14 +10,13 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.BasicScheduleConfirmImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.BasicScheduleConfirmImport.ConfirmedAtrImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ShortWorkingTimeSheetImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.WorkScheduleTimeZoneImport;
-import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicScheduleExport;
-import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicSchedulePub;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkScheduleExport_New;
+import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkSchedulePub;
 /**
  * 
  * @author Doan Duy Hung
@@ -29,41 +27,30 @@ import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkScheduleExport_Ne
 public class ScBasicScheduleAdapterImpl implements ScBasicScheduleAdapter {
 	
 	@Inject
-	private ScBasicSchedulePub scBasicSchedulePub;
-	
-	@Override
-	public Optional<ScBasicScheduleImport_Old> findByID(String employeeID, GeneralDate date) {
-		return scBasicSchedulePub.findById(employeeID, date)
-				.map(x -> convertTo(x));
-	}
+	private WorkSchedulePub workSchedulePub;
 
-	private ScBasicScheduleImport_Old convertTo(ScBasicScheduleExport x) {
-		return new ScBasicScheduleImport_Old(
-				x.getEmployeeId(), 
-				x.getDate(), 
-				x.getWorkTypeCode(), 
-				x.getWorkTimeCode(), 
-				x.getWorkScheduleTimeZones().stream().map(y -> new WorkScheduleTimeZoneImport(
-						y.getScheduleCnt(), 
-						y.getScheduleStartClock(), 
-						y.getScheduleEndClock(), 
-						y.getBounceAtr()))
-				.collect(Collectors.toList()));
-	}
-
-	@Override
-	public List<ScBasicScheduleImport_Old> findByID(List<String> employeeID, DatePeriod date) {
-		
-		return scBasicSchedulePub.findById(employeeID, date).stream().map(x -> convertTo(x)).collect(Collectors.toList());
-	}
+//	private ScBasicScheduleImport_Old convertTo(ScBasicScheduleExport x) {
+//		return new ScBasicScheduleImport_Old(
+//				x.getEmployeeId(), 
+//				x.getDate(), 
+//				x.getWorkTypeCode(), 
+//				x.getWorkTimeCode(), 
+//				x.getWorkScheduleTimeZones().stream().map(y -> new WorkScheduleTimeZoneImport(
+//						y.getScheduleCnt(), 
+//						y.getScheduleStartClock(), 
+//						y.getScheduleEndClock(), 
+//						y.getBounceAtr()))
+//				.collect(Collectors.toList()));
+//	}
 
 	@Override
 	public ScBasicScheduleImport findByIDRefactor(String employeeID, GeneralDate date) {
-		ScWorkScheduleExport_New scWorkScheduleExport = scBasicSchedulePub.findByIdNewV2(employeeID, date);
+		ScWorkScheduleExport_New scWorkScheduleExport = workSchedulePub.findByIdNewV2(employeeID, date).orElse(null);
 		return fromExport(scWorkScheduleExport);
 	}
 	
 	private ScBasicScheduleImport fromExport(ScWorkScheduleExport_New scWorkScheduleExport) {
+		if (scWorkScheduleExport == null) return null;
 		return new ScBasicScheduleImport(
 				scWorkScheduleExport.getEmployeeId(), 
 				scWorkScheduleExport.getDate(), 
@@ -78,9 +65,15 @@ public class ScBasicScheduleAdapterImpl implements ScBasicScheduleAdapter {
 						x.getShortWorkTimeFrameNo(), 
 						x.getChildCareAttr(), 
 						x.getStartTime(), 
-						x.getEndTime(), 
-						x.getDeductionTime(), 
-						x.getShortTime())).collect(Collectors.toList()));
+						x.getEndTime())).collect(Collectors.toList()));
+	}
+
+	@Override
+	public List<BasicScheduleConfirmImport> findConfirmById(List<String> employeeID, DatePeriod date) {
+		return workSchedulePub
+				.findConfirmById(employeeID, date).stream().map(x -> new BasicScheduleConfirmImport(x.getEmployeeId(),
+						x.getDate(), ConfirmedAtrImport.valueOf(x.getConfirmedAtr().value)))
+				.collect(Collectors.toList());
 	}
 
 }

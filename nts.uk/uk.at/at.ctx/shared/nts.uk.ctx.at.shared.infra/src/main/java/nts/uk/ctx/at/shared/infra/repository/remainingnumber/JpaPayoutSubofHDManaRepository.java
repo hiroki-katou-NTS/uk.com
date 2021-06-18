@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcmtPayoutSubOfHDMana;
@@ -38,12 +40,24 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 	private static final String DELETE_BY_PAYOUTID = "DELETE FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.sid =:sid and ps.krcmtPayoutSubOfHDManaPK.occDate =:occDate";
 
 	private static final String DELETE_BY_SUBID = "DELETE FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.sid =:sid and ps.krcmtPayoutSubOfHDManaPK.digestDate =:digestDate";
+	
+	private static final String DELETE_BY_SUBID_TARGET= "DELETE FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.sid =:sid and ps.krcmtPayoutSubOfHDManaPK.digestDate =:digestDate and ps.targetSelectionAtr = :target";
 
-	private static final String DELETE_BY_SID = "DELETE FROM KrcmtPayoutSubOfHDMana ps WHERE ( ps.krcmtPayoutSubOfHDManaPK.sid = :sid1 OR  ps.krcmtPayoutSubOfHDManaPK.sid = :sid2 ) and ps.krcmtPayoutSubOfHDManaPK.digestDate =:digestDate and ps.krcmtPayoutSubOfHDManaPK.occDate =:occDate";
+	private static final String DELETE_BY_SID = "DELETE FROM KrcmtPayoutSubOfHDMana ps"
+			+ " WHERE (ps.krcmtPayoutSubOfHDManaPK.sid = :sid1 OR ps.krcmtPayoutSubOfHDManaPK.sid = :sid2)"
+			+ " AND (ps.krcmtPayoutSubOfHDManaPK.digestDate IN :digestDates"
+			+ " OR ps.krcmtPayoutSubOfHDManaPK.occDate IN :occDates)";
+	
+	private static final String QUERY_BY_DIGEST_OCC = String.join(" ", QUERY,
+			" WHERE ps.krcmtPayoutSubOfHDManaPK.sid = :sid and ps.krcmtPayoutSubOfHDManaPK.digestDate = :digestDate and ps.krcmtPayoutSubOfHDManaPK.occDate >= :baseDate");
+	
+	private static final String QUERY_BY_OCC_DIGEST = String.join(" ", QUERY,
+			" WHERE ps.krcmtPayoutSubOfHDManaPK.sid = :sid and ps.krcmtPayoutSubOfHDManaPK.occDate = :occDate and ps.krcmtPayoutSubOfHDManaPK.digestDate >= :baseDate");
 	
 	@Override
 	public void add(PayoutSubofHDManagement domain) {
 		this.commandProxy().insert(toEntity(domain));
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -62,18 +76,19 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 		Optional<KrcmtPayoutSubOfHDMana> existed = this.queryProxy().find(key, KrcmtPayoutSubOfHDMana.class);
 		if (existed.isPresent()) {
 			this.commandProxy().remove(KrcmtPayoutSubOfHDMana.class, key);
+			this.getEntityManager().flush();
 		}
 
 	}
 	
 	@Override
-	public void delete(String sid1, String sid2, GeneralDate occDate, GeneralDate digestDate) {
+	public void delete(String sid1, String sid2, List<GeneralDate> occDates, List<GeneralDate> digestDates) {
 		this.getEntityManager().createQuery(DELETE_BY_SID)
-		.setParameter("sid1", sid1)
-		.setParameter("sid2", sid2)
-		.setParameter("occDate", occDate)
-		.setParameter("digestDate", digestDate)
-		.executeUpdate();
+			.setParameter("sid1", sid1)
+			.setParameter("sid2", sid2)
+			.setParameter("occDates", occDates)
+			.setParameter("digestDates", digestDates)
+			.executeUpdate();
 
 	}
 
@@ -139,24 +154,26 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 	
 	@Override
 	public List<PayoutSubofHDManagement> getByListDate(String sid, List<GeneralDate> lstDate) {
-		return this.queryProxy().query(GET_BY_LISTDATE, KrcmtPayoutSubOfHDMana.class)
-				.setParameter("sid", sid)
-				.setParameter("lstDate", lstDate)
-				.getList()
-				.stream()
-				.map(item -> toDomain(item)).collect(Collectors.toList());
-
+		List<PayoutSubofHDManagement> result = new ArrayList<PayoutSubofHDManagement>();
+		if (!lstDate.isEmpty()) {
+			result = this.queryProxy().query(GET_BY_LISTDATE, KrcmtPayoutSubOfHDMana.class)
+						.setParameter("sid", sid)
+						.setParameter("lstDate", lstDate)
+						.getList(item -> toDomain(item));
+		}
+		return result;
 	}
 	
 	@Override
 	public List<PayoutSubofHDManagement> getByListOccDate(String sid, List<GeneralDate> lstDate) {
-		return this.queryProxy().query(GET_BY_LIST_OCC_DATE, KrcmtPayoutSubOfHDMana.class)
-				.setParameter("sid", sid)
-				.setParameter("lstDate", lstDate)
-				.getList()
-				.stream()
-				.map(item -> toDomain(item)).collect(Collectors.toList());
-
+		List<PayoutSubofHDManagement> result = new ArrayList<PayoutSubofHDManagement>();
+		if (!lstDate.isEmpty()) {
+			result = this.queryProxy().query(GET_BY_LIST_OCC_DATE, KrcmtPayoutSubOfHDMana.class)
+						.setParameter("sid", sid)
+						.setParameter("lstDate", lstDate)
+						.getList(item -> toDomain(item));
+		}
+		return result;
 	}
 
 	@Override
@@ -166,4 +183,32 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 				.map(item -> toDomain(item)).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<PayoutSubofHDManagement> getWithDateUse(String sid, GeneralDate dateOfUse, GeneralDate baseDate) {
+		return this.queryProxy().query(QUERY_BY_DIGEST_OCC, KrcmtPayoutSubOfHDMana.class)
+		.setParameter("sid", sid)
+		.setParameter("digestDate", dateOfUse)
+		.setParameter("baseDate", baseDate).getList().stream()
+		.map(item -> toDomain(item)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<PayoutSubofHDManagement> getWithOutbreakDay(String sid, GeneralDate outbreakDay,
+			GeneralDate baseDate) {
+		return this.queryProxy().query(QUERY_BY_OCC_DIGEST, KrcmtPayoutSubOfHDMana.class)
+				.setParameter("sid", sid)
+				.setParameter("occDate", outbreakDay)
+				.setParameter("baseDate", baseDate).getList().stream()
+				.map(item -> toDomain(item)).collect(Collectors.toList());
+	}
+
+	@Override
+    public void deleteByDigestTarget(String sid, GeneralDate digestDate, TargetSelectionAtr target) {
+	    this.getEntityManager().createQuery(DELETE_BY_SUBID_TARGET)
+	        .setParameter("sid", sid)
+	        .setParameter("digestDate", digestDate)
+	        .setParameter("target", target.value)
+	        .executeUpdate();
+	    this.getEntityManager().flush();
+    }
 }

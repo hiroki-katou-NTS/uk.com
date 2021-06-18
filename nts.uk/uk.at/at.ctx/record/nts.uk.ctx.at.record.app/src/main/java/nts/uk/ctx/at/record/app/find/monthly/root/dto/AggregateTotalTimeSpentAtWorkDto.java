@@ -1,12 +1,16 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.AggregateTotalTimeSpentAtWork;
 
@@ -14,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.AggregateTot
 @NoArgsConstructor
 @AllArgsConstructor
 /** 期間別の総拘束時間 */
-public class AggregateTotalTimeSpentAtWorkDto implements ItemConst {
+public class AggregateTotalTimeSpentAtWorkDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 拘束残業時間 */
 	@AttendanceItemValue(type = ValueType.TIME)
@@ -60,4 +64,63 @@ public class AggregateTotalTimeSpentAtWorkDto implements ItemConst {
 		}
 		return dto;
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case OVERTIME:
+			return Optional.of(ItemValue.builder().value(overTime).valueType(ValueType.TIME));
+		case LATE_NIGHT:
+			return Optional.of(ItemValue.builder().value(midnightTime).valueType(ValueType.TIME));
+		case HOLIDAY_WORK:
+			return Optional.of(ItemValue.builder().value(holidayTime).valueType(ValueType.TIME));
+		case DIFF:
+			return Optional.of(ItemValue.builder().value(varienceTime).valueType(ValueType.TIME));
+		case TOTAL:
+			return Optional.of(ItemValue.builder().value(totalTime).valueType(ValueType.TIME));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case OVERTIME:
+		case LATE_NIGHT:
+		case HOLIDAY_WORK:
+		case DIFF:
+		case TOTAL:
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case OVERTIME:
+			overTime = value.valueOrDefault(0);
+			break;
+		case LATE_NIGHT:
+			midnightTime = value.valueOrDefault(0);
+			break;
+		case HOLIDAY_WORK:
+			holidayTime = value.valueOrDefault(0);
+			break;
+		case DIFF:
+			varienceTime = value.valueOrDefault(0);
+			break;
+		case TOTAL:
+			totalTime = value.valueOrDefault(0);
+			break;
+		default:
+			break;
+		}
+	}
+
+	
 }

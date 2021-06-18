@@ -44,8 +44,7 @@
 }
 
 .ntsRadioBox {
-	display: block;
-	/* margin-left: 8px; */
+	 margin-left: 8px;
 }
 
 .group-label-switch {
@@ -77,8 +76,12 @@
 	margin-left: -8px;
 }
 .full {
-	width: 720px !important;
+	width: 680px !important;
 }
 .ui-tabs-panel {
 	width: 725px !important;
+}
+
+.switchbox-wrappers {
+	display: inline-block;
 }

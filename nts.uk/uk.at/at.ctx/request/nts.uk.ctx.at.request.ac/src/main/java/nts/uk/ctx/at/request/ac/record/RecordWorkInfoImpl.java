@@ -1,14 +1,24 @@
 package nts.uk.ctx.at.request.ac.record;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.pub.actualsituation.confirmstatusmonthly.ConfirmStatusMonthlyPub;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPub;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPubExport_New;
+import nts.uk.ctx.at.record.pub.workrecord.identificationstatus.IndentificationPub;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport_Old;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.actualsituation.confirmstatusmonthly.ConfirmStatusResultImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.actualsituation.confirmstatusmonthly.StatusConfirmMonthImport;
 /**
  * 
  * @author Doan Duy Hung
@@ -19,6 +29,12 @@ public class RecordWorkInfoImpl implements RecordWorkInfoAdapter {
 	
 	@Inject
 	private RecordWorkInfoPub recordWorkInfoPub;
+	
+	@Inject
+	private ConfirmStatusMonthlyPub confirmStatusMonthlyPub;
+	
+	@Inject
+	private IndentificationPub indentificationPub;
 	
 	@Override
 	public RecordWorkInfoImport_Old getRecordWorkInfo(String employeeId, GeneralDate ymd) {
@@ -86,6 +102,26 @@ public class RecordWorkInfoImpl implements RecordWorkInfoAdapter {
 				recordWorkInfoPubExport.getMidnightPublicHoliday(),
 				recordWorkInfoPubExport.getChildCareShortWorkingTimeList(),
 				recordWorkInfoPubExport.getCareShortWorkingTimeList());
+	}
+
+	@Override
+	public Optional<StatusConfirmMonthImport> getConfirmStatusMonthly(String companyId, List<String> listEmployeeId,
+			YearMonth yearmonthInput, Integer clsId) {
+		return confirmStatusMonthlyPub.getConfirmStatusMonthly(companyId, listEmployeeId, yearmonthInput, clsId, Optional.empty())
+				.map(x -> new StatusConfirmMonthImport(x.getListConfirmStatus().stream()
+						.map(y -> new ConfirmStatusResultImport(
+								y.getEmployeeId(), 
+								y.getYearMonth(), 
+								y.getClosureId(), 
+								y.isConfirmStatus(), 
+								y.getImplementaPropriety(), 
+								y.getWhetherToRelease()))
+						.collect(Collectors.toList())));
+	}
+
+	@Override
+	public List<GeneralDate> getResovleDateIdentify(String employeeId, DatePeriod datePeriod) {
+		return indentificationPub.getResovleDateIdentify(employeeId, datePeriod);
 	}
 	
 }

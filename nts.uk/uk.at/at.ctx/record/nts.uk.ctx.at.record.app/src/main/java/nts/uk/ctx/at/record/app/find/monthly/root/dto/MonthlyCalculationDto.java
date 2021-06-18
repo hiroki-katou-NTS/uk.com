@@ -1,24 +1,31 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.FlexTimeByPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.RegAndIrgTimeOfWeekly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.WeeklyCalculation;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の月の計算 */
-public class MonthlyCalculationDto implements ItemConst {
+public class MonthlyCalculationDto implements ItemConst, AttendanceItemDataGate {
 
 //	/** 36協定時間: 月別実績の36協定時間 */
 //	@AttendanceItemLayout(jpPropertyName = AGREEMENT, layout = LAYOUT_A)
@@ -71,11 +78,135 @@ public class MonthlyCalculationDto implements ItemConst {
 			dto.setActualWorkingTime(RegularAndIrregularTimeOfMonthlyDto.from(domain.getActualWorkingTime()));
 			dto.setAggregateTime(AggregateTotalWorkingTimeDto.from(domain.getAggregateTime()));
 			dto.setTotalTimeSpentAtWork(AggregateTotalTimeSpentAtWorkDto.from(domain.getTotalTimeSpentAtWork()));
-			dto.setTotalWorkingTime(domain.getTotalWorkingTime() == null ? null : domain.getTotalWorkingTime().valueAsMinutes());
-			dto.setStatutoryWorkingTime(domain.getStatutoryWorkingTime() == null ? null : domain.getStatutoryWorkingTime().valueAsMinutes());
+			dto.setTotalWorkingTime(domain.getTotalWorkingTime() == null ? 0 : domain.getTotalWorkingTime().valueAsMinutes());
+			dto.setStatutoryWorkingTime(domain.getStatutoryWorkingTime() == null ? 0 : domain.getStatutoryWorkingTime().valueAsMinutes());
 //			dto.setAgreMaxTime(AgreMaxTimeOfMonthlyDto.from(domain.getAgreMaxTime()));
 		}
 		return dto;
 	}
+	
+	public static MonthlyCalculationDto from(WeeklyCalculation domain) {
+		MonthlyCalculationDto dto = new MonthlyCalculationDto();
+		if(domain != null) {
+			dto.setFlexTime(FlexTimeOfMonthlyDto.from(domain.getFlexTime()));
+			dto.setActualWorkingTime(RegularAndIrregularTimeOfMonthlyDto.from(domain.getRegAndIrgTime()));
+			dto.setAggregateTime(AggregateTotalWorkingTimeDto.from(domain.getTotalWorkingTime()));
+			dto.setTotalTimeSpentAtWork(AggregateTotalTimeSpentAtWorkDto.from(domain.getTotalSpentTime()));
+			dto.setTotalWorkingTime(0);
+		}
+		return dto;
+	}
+	
+	public WeeklyCalculation toDomainWeekly() {
+		return WeeklyCalculation.of(this.actualWorkingTime == null ? new RegAndIrgTimeOfWeekly() : this.actualWorkingTime.toDomainWeekly(),
+				this.flexTime == null ? new FlexTimeByPeriod() : this.flexTime.toDomainPeriod(), 
+				this.aggregateTime == null ? new AggregateTotalWorkingTime() : this.aggregateTime.toDomain(), 
+				this.totalTimeSpentAtWork == null ? new AggregateTotalTimeSpentAtWork() : this.totalTimeSpentAtWork.toDomain());
+	}
 
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case TOTAL_LABOR:
+			return Optional.of(ItemValue.builder().value(totalWorkingTime).valueType(ValueType.TIME));
+		case WITHIN_STATUTORY:
+			return Optional.of(ItemValue.builder().value(statutoryWorkingTime).valueType(ValueType.TIME));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+//		case AGREEMENT:
+//			return new AgreementTimeOfMonthlyDto();
+//		case (AGREEMENT + UPPER_LIMIT):
+//			return new AgreMaxTimeOfMonthlyDto();
+		case FLEX:
+			return new FlexTimeOfMonthlyDto();
+		case ACTUAL:
+			return new RegularAndIrregularTimeOfMonthlyDto();
+		case AGGREGATE:
+			return new AggregateTotalWorkingTimeDto();
+		case RESTRAINT:
+			return new AggregateTotalTimeSpentAtWorkDto();
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+//		case AGREEMENT:
+//			return Optional.ofNullable(agreementTime);
+//		case (AGREEMENT + UPPER_LIMIT):
+//			return Optional.ofNullable(agreMaxTime);
+		case FLEX:
+			return Optional.ofNullable(flexTime);
+		case ACTUAL:
+			return Optional.ofNullable(actualWorkingTime);
+		case AGGREGATE:
+			return Optional.ofNullable(aggregateTime);
+		case RESTRAINT:
+			return Optional.ofNullable(totalTimeSpentAtWork);
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case TOTAL_LABOR:
+		case WITHIN_STATUTORY:
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case TOTAL_LABOR:
+			totalWorkingTime = value.valueOrDefault(0);
+			break;
+		case WITHIN_STATUTORY:
+			statutoryWorkingTime = value.valueOrDefault(0);
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+//		case AGREEMENT:
+//			agreementTime = (AgreementTimeOfMonthlyDto) value;
+//			break;
+//		case (AGREEMENT + UPPER_LIMIT):
+//			agreMaxTime = ( AgreMaxTimeOfMonthlyDto) value;
+//			break;
+		case FLEX:
+			flexTime = ( FlexTimeOfMonthlyDto) value;
+			break;
+		case ACTUAL:
+			actualWorkingTime = ( RegularAndIrregularTimeOfMonthlyDto) value;
+			break;
+		case AGGREGATE:
+			aggregateTime= ( AggregateTotalWorkingTimeDto) value;
+			break;
+		case RESTRAINT:
+			totalTimeSpentAtWork = ( AggregateTotalTimeSpentAtWorkDto) value;
+			break;
+		default:
+		}
+	}
+
+	
 }

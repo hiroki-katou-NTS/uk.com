@@ -64,7 +64,7 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 	private TopPgAlTrRepository executionLog;
 
 	@Override
-	public Optional<AtomTask> convertData(Integer empInfoTerCode, String contractCode,
+	public Optional<AtomTask> convertData(String empInfoTerCode, String contractCode,
 			ReservReceptDataExport reservReceptData) {
 
 		RequireImpl requireImpl = new RequireImpl("", empInfoTerminalRepository, timeRecordReqSettingRepository,

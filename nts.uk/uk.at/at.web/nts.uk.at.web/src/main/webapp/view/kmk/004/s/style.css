@@ -1,0 +1,38 @@
+.view-s .view-button {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.view-s .view-dialog {
+    padding: 20px 20px 0px 20px;
+}
+
+.title {
+    margin-left: 35px;
+    margin-top: 10px;
+}
+
+.ntsRadioBox {
+    margin-left: 30px;
+}
+
+.title-1 {
+    margin-bottom: 10px;
+}
+
+.check-box {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.label title {
+    box-sizing: border-box;
+}
+
+.content {
+    padding-left: 30px;
+}
+
+/* .view-dialog {
+    width: 285px;
+} */

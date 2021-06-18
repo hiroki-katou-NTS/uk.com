@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.ot.frame;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWorkEnum;
 
 @Getter
 @Setter
@@ -36,6 +37,14 @@ public class OvertimeWorkFrame extends AggregateRoot{
 	//残業枠名称
 	private OvertimeWorkFrameName overtimeWorkFrName;
 	
+	/** The role. */
+	// 役割
+	private RoleOvertimeWorkEnum role;
+	
+	/** The transfer atr. */
+	// 代休振替対象
+	private NotUseAtr transferAtr;
+	
 	/**
 	 * Instantiates a new overtime work frame.
 	 *
@@ -47,6 +56,8 @@ public class OvertimeWorkFrame extends AggregateRoot{
 		this.useClassification = memento.getUseClassification();
 		this.transferFrName = memento.getTransferFrameName();
 		this.overtimeWorkFrName = memento.getOvertimeWorkFrameName();
+		this.role = memento.getRole();
+		this.transferAtr = memento.getTransferAtr();
 	}
 
 	/**
@@ -60,6 +71,8 @@ public class OvertimeWorkFrame extends AggregateRoot{
 		memento.setUseClassification(this.useClassification);
 		memento.setTransferFrameName(this.transferFrName);
 		memento.setOvertimeWorkFrameName(this.overtimeWorkFrName);
+		memento.setRole(this.role);
+		memento.setTransferAtr(this.transferAtr);
 	}
 	
 	/*

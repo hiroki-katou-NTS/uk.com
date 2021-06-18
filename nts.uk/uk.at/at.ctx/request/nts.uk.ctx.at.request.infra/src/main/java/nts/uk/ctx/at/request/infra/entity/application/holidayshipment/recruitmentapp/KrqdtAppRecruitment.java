@@ -1,125 +1,100 @@
 package nts.uk.ctx.at.request.infra.entity.application.holidayshipment.recruitmentapp;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.TypeApplicationHolidays;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
+import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.KrqdtAppRecAbsPK;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * 振出申請
- * 
- * @author sonnlb
+ * @domain 振出申請
+ * @author ThanhPV
  */
 @Entity
 @Table(name = "KRQDT_APP_RECRUITMENT")
-@Getter
-@Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class KrqdtAppRecruitment extends ContractUkJpaEntity implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * 申請ID
-	 */
-	@Id
-	@Basic(optional = false)
-	@Column(name = "APP_ID")
-	private String appID;
-
-	/**
-	 * 勤務種類
-	 */
-
-	@Basic(optional = false)
+	
+	@EmbeddedId
+	public KrqdtAppRecAbsPK pK;
+	
 	@Column(name = "WORK_TYPE_CD")
-	private String workTypeCD;
-
-	/**
-	 * 就業時間帯
-	 */
-
-	@Basic(optional = false)
+	public String workTypeCd;
+	
 	@Column(name = "WORK_TIME_CD")
-	private String workTimeCD;
-
-	/**
-	 * 時刻
-	 */
-
-	@Basic(optional = false)
-	@Column(name = "START_WORK_TIME1")
-	private int startWorkTime1;
-
-	/**
-	 * 時刻
-	 */
-
-	@Basic(optional = false)
-	@Column(name = "END_WORK_TIME1")
-	private int endWorkTime1;
-
-	/**
-	 * 直行
-	 */
-
-	@Basic(optional = false)
-	@Column(name = "START_USE_ATR1")
-	private int startUseAtr1;
-
-	/**
-	 * 直帰
-	 */
-
-	@Basic(optional = false)
-	@Column(name = "END_USE_ATR1")
-	private int endUseAtr1;
-
-	/**
-	 * 時刻
-	 */
-
-	@Basic(optional = true)
-	@Column(name = "START_WORK_TIME2")
-	private Integer startWorkTime2;
-
-	/**
-	 * 時刻
-	 */
-	@Basic(optional = true)
-	@Column(name = "END_WORK_TIME2")
-	private Integer endWorkTime2;
-
-	/**
-	 * 直行
-	 */
-	@Basic(optional = true)
-	@Column(name = "START_USE_ATR2")
-	private int startUseAtr2;
-
-	/**
-	 * 直帰
-	 */
-	@Basic(optional = true)
-	@Column(name = "END_USE_ATR2")
-	private int endUseAtr2;
+	public String workTimeCd;
+	
+	@Column(name = "WORK_TIME_START1")
+	public Integer workTimeStart1;
+	
+	@Column(name = "WORK_TIME_END1")
+	public Integer workTimeEnd1;
+	
+	@Column(name = "WORK_TIME_START2")
+	public Integer workTimeStart2;
+	
+	@Column(name = "WORK_TIME_END2")
+	public Integer workTimeEnd2;
 
 	@Override
 	protected Object getKey() {
-		return appID;
+		return pK;
+	}
+	
+	@PrePersist
+    private void setInsertingContractInfo() {
+		this.contractCd = AppContexts.user().contractCode();
+	}
+	
+	@PreUpdate
+    private void setUpdateContractInfo() {
+		this.contractCd = AppContexts.user().contractCode();
+	}
+
+	public KrqdtAppRecruitment(RecruitmentApp domain) {
+		super();
+		this.pK = new KrqdtAppRecAbsPK(AppContexts.user().companyId(), domain.getAppID()); 
+		this.workTypeCd = domain.getWorkInformation().getWorkTypeCode().v();
+		this.workTimeCd = domain.getWorkInformation().getWorkTimeCode().v();
+		this.workTimeStart1 = domain.getWorkTime(new WorkNo(1)).get().getTimeZone().getStartTime().v();
+		this.workTimeEnd1 = domain.getWorkTime(new WorkNo(1)).get().getTimeZone().getEndTime().v();
+		this.workTimeStart2 = domain.getWorkTime(new WorkNo(2)).isPresent() ? domain.getWorkTime(new WorkNo(2)).get().getTimeZone().getStartTime().v():null;
+		this.workTimeEnd2 = domain.getWorkTime(new WorkNo(2)).isPresent() ? domain.getWorkTime(new WorkNo(2)).get().getTimeZone().getEndTime().v():null;
+	}
+	
+	public RecruitmentApp toDomain(Application application) {
+		return new RecruitmentApp(
+				new WorkInformation(this.workTypeCd, this.workTimeCd), 
+				this.getWorkingHours(),
+				TypeApplicationHolidays.Rec,
+				application);
+	}
+	
+	private List<TimeZoneWithWorkNo> getWorkingHours() {
+		List<TimeZoneWithWorkNo> result = new ArrayList<>(); 
+		result.add(new TimeZoneWithWorkNo(1, this.workTimeStart1, this.workTimeEnd1));
+		if(this.workTimeStart2 != null && this.workTimeEnd2 != null) {
+			result.add(new TimeZoneWithWorkNo(2, this.workTimeStart2, this.workTimeEnd2));
+		}
+		return result;
 	}
 
 }

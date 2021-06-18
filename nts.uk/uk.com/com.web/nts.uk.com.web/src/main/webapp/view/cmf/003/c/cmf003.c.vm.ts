@@ -190,7 +190,7 @@ module nts.uk.com.view.cmf003.c {
     });
 
     //Category list
-    categoriesDefault: KnockoutObservableArray<Category> = ko.observableArray([]);
+    readonly categoriesDefault: KnockoutObservableArray<Category> = ko.observableArray([]);
     categoriesFiltered: KnockoutObservableArray<Category> = ko.observableArray([]);
     leftColumns: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([
       { headerText: '', key: 'id', hidden: true },
@@ -256,13 +256,12 @@ module nts.uk.com.view.cmf003.c {
       });
 
       vm.selectedSystemType.subscribe(value => {
+        let chain = _.chain(vm.categoriesDefault())
+                    .filter(item => !_.find(vm.currentCateSelected(), { categoryId: item.categoryId, systemType: item.systemType })); // Filter out selected categories
         if (Number(value) !== 0) {
-          vm.categoriesFiltered(_.filter(vm.categoriesDefault(), category => category.systemType === Number(value) - 1));
-          vm.categoriesFiltered(_.orderBy(vm.categoriesFiltered(), ["categoryId"], ["asc"]));
-        } else {
-          vm.categoriesFiltered([]);
-          _.forEach(vm.categoriesDefault(), item => vm.categoriesFiltered().push(item));
-        };
+          chain = chain.filter({ systemType: Number(value) - 1 });  // Filter only selected systemType (if needed)
+        }
+        vm.categoriesFiltered(chain.sortBy("categoryId").value())   // Sort categories by categoryId asc
         vm.categoriesFiltered.valueHasMutated();
       });
 
@@ -296,31 +295,39 @@ module nts.uk.com.view.cmf003.c {
       const vm = this;
       vm.screenMode(ScreenMode.NEW);
       vm.$blockui("grayout");
-      service.initDisplay().then((res) => {
-        vm.checkInCharge(res.pic);
-        let patternArr: Pattern[] = [];
-        _.map(res.patterns, (x: any) => {
-          let p = new Pattern();
-          p.code = x.patternCode;
-          p.patternName = x.patternName;
-          p.patternClassification = x.patternClassification;
-          p.displayCode = x.patternClassification + x.patternCode;
-          patternArr.push(p);
-        });
-        vm.patternList(patternArr);
-        vm.patternList(_.orderBy(vm.patternList(), ['patternClassification', 'code'], ['desc', 'asc']));
+      service.initDisplay()
+        .then((res) => {
+          vm.checkInCharge(res.pic);
+          let patternArr: Pattern[] = [];
+          _.map(res.patterns, (x: any) => {
+            let p = new Pattern();
+            p.code = x.patternCode;
+            p.patternName = x.patternName;
+            p.patternClassification = x.patternClassification;
+            p.displayCode = x.patternClassification + x.patternCode;
+            patternArr.push(p);
+          });
+            
+          let arr: Category[] = [];
+          _.map(res.categories, (x: any) => {
+            let c = vm.convertToCategory(x);
+            arr.push(c);
+          });
+          vm.categoriesDefault(arr);
 
-        let arr: Category[] = [];
-        _.map(res.categories, (x: any) => {
-          let c = vm.convertToCategory(x);
-          arr.push(c);
-        });
-        vm.categoriesDefault(arr);
-        _.forEach(vm.categoriesDefault(), item => vm.categoriesFiltered().push(item));
-        vm.categoriesFiltered.valueHasMutated();
-      }).always(() => {
-        vm.$blockui("clear");
-      });
+          if(patternArr.length > 0){
+              vm.patternList(patternArr);
+              vm.patternList(_.orderBy(vm.patternList(), ['patternClassification', 'code'], ['desc', 'asc']));
+              vm.selectedPatternCode(vm.patternList()[0].displayCode);
+          }    
+            
+          _.forEach(vm.categoriesDefault(), item => vm.categoriesFiltered().push(item));
+          vm.categoriesFiltered.valueHasMutated();
+
+        }).always(() => {
+          vm.$blockui("clear");
+        })
+        .fail(err => vm.$dialog.error({ messageId: err.messageId }));
     }
 
     public refreshNew() {
@@ -376,6 +383,7 @@ module nts.uk.com.view.cmf003.c {
             pattern.patternName = param.patternName;
             pattern.displayCode = pattern.patternClassification + pattern.code;
             vm.patternList.push(pattern);
+            vm.patternList(_.orderBy(vm.patternList(), ['patternClassification', 'code'], ['desc', 'asc']));
             vm.selectPattern(pattern.code, pattern.patternClassification);
 
             if (vm.selectedPatternCode() === '') {
@@ -397,6 +405,7 @@ module nts.uk.com.view.cmf003.c {
     public duplicate() {
       const vm = this;
       vm.screenMode(ScreenMode.NEW);
+      vm.saveFormatEnabled(true);
       vm.codeValue('');
       vm.nameValue('');
     }
@@ -461,8 +470,8 @@ module nts.uk.com.view.cmf003.c {
       service.selectPattern(param).then((res) => {
         vm.screenMode(ScreenMode.UPDATE);
         vm.screenMode.valueHasMutated();
-        if (res.selectedCategories && res.selectedCategories.length > 0) {
-          const pattern: any = res.selectedCategories[0].pattern;
+        if (res.pattern) {
+          const pattern: any = res.pattern;
           vm.codeValue(pattern.patternCode);
           vm.nameValue(pattern.patternName);
           vm.categoriesFiltered([]);
@@ -474,7 +483,7 @@ module nts.uk.com.view.cmf003.c {
           vm.categoriesFiltered(arr);
           arr = [];
           vm.currentCateSelected([]);
-          _.forEach(res.selectedCategories, c => {
+          _.forEach(res.pattern.selectCategories, c => {
             let category = vm.convertToCategory(c);
             arr.push(category);
           });
@@ -491,6 +500,7 @@ module nts.uk.com.view.cmf003.c {
           vm.password(pattern.patternCompressionPwd);
           vm.confirmPassword(pattern.patternCompressionPwd);
           vm.explanation(pattern.patternSuppleExplanation);
+          vm.selectedSystemType(0);
         }
 
         //revalidate

@@ -27,7 +27,7 @@ public class PublicHolidayManagementUsageUnitFinder {
 		
 		String companyId = AppContexts.user().companyId();
 		
-		Optional<PublicHolidayManagementUsageUnit> opt = this.repository.findByCID(companyId);
+		Optional<PublicHolidayManagementUsageUnit> opt = this.repository.get(companyId);
 		
 		PublicHolidayManagementUsageUnitFindDto dto = new PublicHolidayManagementUsageUnitFindDto();
 		

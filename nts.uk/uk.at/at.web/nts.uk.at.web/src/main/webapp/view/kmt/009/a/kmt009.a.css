@@ -1,0 +1,36 @@
+.wrapper {
+  padding: 16px;
+}
+.wrapper .combo-box {
+  min-width: 100px;
+  width: auto;
+}
+.mb-10 {
+  margin-bottom: 10px;
+}
+
+.table .cell.w-35 {
+  width: 100px;
+}
+
+.wrapper .plr-5 {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.nts-gridlist td.limited-label {
+  display: table-cell;
+}
+.nts-gridlist .text-center {
+  text-align: center;
+}
+
+.nts-gridlist td i.icon {
+  height: 23px;
+  width: 23px;
+  background-size: cover !important;
+}
+
+#op-type {
+  width: 140px;
+}

@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.dom.processexecution.updateprocessreexeccondition.refinementprocess;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -13,10 +12,11 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.AffWorkplaceHistoryImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
-import nts.uk.ctx.at.function.dom.adapter.dailyperformanceformat.businesstype.BusinessTypeEmpOfHistAdapter;
-import nts.uk.ctx.at.function.dom.adapter.dailyperformanceformat.businesstype.BusinessTypeOfEmpHistImport;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHistory;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
@@ -32,10 +32,10 @@ public class RefinementProcess {
 	private WorkplaceWorkRecordAdapter workplaceWorkRecordAdapter;
 	
 	@Inject
-	private BusinessTypeEmpOfHistAdapter businessTypeEmpOfHistAdapter;
+	private BusinessTypeEmpOfHistoryRepository businessTypeEmpOfHistAdapter;
 	
-	public void refinementProcess(String companyId, List<String> empIds,Set<String> setEmpIds,List<String> newEmpIdList, GeneralDate startDate, ProcessExecution procExec) {
-		if (procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer()) {
+	public void refinementProcess(String companyId, List<String> empIds,Set<String> setEmpIds,List<String> newEmpIdList, GeneralDate startDate, UpdateProcessAutoExecution procExec) {
+		if (procExec.getReExecCondition().getRecreateTransfer().equals(NotUseAtr.USE)) {
 			// 異動者の絞り込み todo request list 189
 			List<AffWorkplaceHistoryImport> list = workplaceWorkRecordAdapter.getWorkplaceBySidsAndBaseDate(empIds,
 					startDate);
@@ -48,7 +48,7 @@ public class RefinementProcess {
 				});
 			});
 		}
-		if (procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()) {
+		if (procExec.getReExecCondition().getRecreatePersonChangeWkt().equals(NotUseAtr.USE)) {
 			// 勤務種別の絞り込み
 			this.refineWorkType(companyId, empIds, startDate, newEmpIdList);
 		}
@@ -58,10 +58,10 @@ public class RefinementProcess {
 	private void refineWorkType(String companyId, List<String> empIdList, GeneralDate startDate, List<String> newEmpIdList) {
 		for (String empId : empIdList) {
 			// ドメインモデル「社員の勤務種別の履歴」を取得する
-			Optional<BusinessTypeOfEmpHistImport> businessTypeOpt = this.businessTypeEmpOfHistAdapter
-					.findByEmployeeDesc(AppContexts.user().companyId(), empId);
+			Optional<BusinessTypeOfEmployeeHistory> businessTypeOpt = this.businessTypeEmpOfHistAdapter
+					.findByEmployee(AppContexts.user().companyId(), empId);
 			if (businessTypeOpt.isPresent()) {
-				BusinessTypeOfEmpHistImport businessTypeOfEmpHistImport = businessTypeOpt.get();
+				BusinessTypeOfEmployeeHistory businessTypeOfEmpHistImport = businessTypeOpt.get();
 				List<DateHistoryItem> lstDate = businessTypeOfEmpHistImport.getHistory();
 				int size = lstDate.size();
 				for (int i = 0; i < size; i++) {

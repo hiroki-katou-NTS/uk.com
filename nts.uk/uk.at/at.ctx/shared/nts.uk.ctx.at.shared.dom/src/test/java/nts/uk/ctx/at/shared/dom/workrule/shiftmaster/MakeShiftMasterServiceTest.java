@@ -29,10 +29,10 @@ public class MakeShiftMasterServiceTest {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
 		Optional<String> workTimeCode = Optional.empty();
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
+		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
 		new Expectations() {
 			{
-				requireWorkinfo.findByPK(workTypeCode);
+				requireWorkinfo.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
 				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -61,10 +61,10 @@ public class MakeShiftMasterServiceTest {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
 		Optional<String> workTimeCode = Optional.of("workTypeCode");
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
+		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
 		new Expectations() {
 			{
-				requireWorkinfo.findByPK(anyString);
+				requireWorkinfo.getWorkType(anyString);
 			}
 		};
 		NtsAssert.businessException("Msg_1608", () -> {
@@ -84,16 +84,16 @@ public class MakeShiftMasterServiceTest {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
 		Optional<String> workTimeCode = Optional.of("workTypeCode");
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
+		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
 		new Expectations() {
 			{
-				requireWorkinfo.findByPK(workTypeCode);
+				requireWorkinfo.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
 				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.REQUIRED;
 				
-				requireWorkinfo.findByCode(workTimeCode.get());
+				requireWorkinfo.getWorkTime(workTimeCode.get());
 			}
 		};
 		NtsAssert.businessException("Msg_1609", () -> {
@@ -113,10 +113,10 @@ public class MakeShiftMasterServiceTest {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
 		Optional<String> workTimeCode = Optional.empty();
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
+		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
 		new Expectations() {
 			{
-				requireWorkinfo.findByPK(workTypeCode);
+				requireWorkinfo.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
 				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -141,11 +141,11 @@ public class MakeShiftMasterServiceTest {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";	
 		Optional<String> workTimeCode = Optional.of("workTypeCode");
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
+		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
 
 		new Expectations() {
 			{
-				requireWorkinfo.findByPK(workTypeCode);
+				requireWorkinfo.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
 				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -171,7 +171,7 @@ public class MakeShiftMasterServiceTest {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";	
 		String workTimeCode = "workTypeCode";
-		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
+		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
 
 		new Expectations() {
 			{
@@ -196,11 +196,11 @@ public class MakeShiftMasterServiceTest {
 	public void testMakeShiftMater() {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
-		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
+		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
 		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode, null);
 		new Expectations() {
 			{
-				requireWorkinfo.findByPK(shiftMater.getWorkTypeCode().v());
+				requireWorkinfo.getWorkType(shiftMater.getWorkTypeCode().v());
 				result = Optional.of(new WorkType());
 				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());

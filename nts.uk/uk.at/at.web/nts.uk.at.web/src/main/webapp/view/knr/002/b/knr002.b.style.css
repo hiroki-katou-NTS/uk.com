@@ -1,0 +1,73 @@
+.div_line {
+	margin-top: 1px;
+	float: left;
+	clear: both;
+	width: 100%;
+}
+.ilb {
+	display: inline-block;
+}
+
+#contents-area {
+	padding: 20px 0px 0px 20px;
+}
+
+.column-1 {
+	padding: 2px;
+}
+
+.column-1 .itemLabel{
+	width: 85px;
+}
+.column-2 {
+	margin-left: 45px;
+}
+
+.column-2>div.div_line {
+	margin-top: 7px;
+	width: 650px;
+}
+.column-2 #logList {
+	width: 430px;
+	height: 353px;
+}
+.column-2 #multi-list>tbody {
+	pointer-events: none;
+}
+.column-2 td[role=gridcell] {
+	border: none;
+    border-bottom: 1px dotted black;
+}
+
+.ui-iggrid table tr th.ui-iggrid-header, .ui-iggrid table tr th.ui-state-hover, .ui-iggrid table tr th.ui-state-active, .ui-iggrid table tr th.ui-state-focus, .ui-iggrid table tr th.ui-state-active.ui-state-focus {
+    padding: 0 0px;
+}
+
+#B4_2 > div > div.seperator.datetimepairrange-component > span{
+	margin-left: 5px;
+    margin-right: 5px;
+}
+#functions-area-bottom > button {
+	margin-top: 11px;
+}
+/* popup show unstable position --> override css */
+
+#func-notifier-errors {
+    top: 3px !important;
+    left: 23px !important;
+}
+.terminalInfo table, tr, td{
+	vertical-align: top;
+}
+.testcss {
+	color: green;
+}
+
+.ui-iggrid table td, .ui-iggrid table th {
+	overflow: visible;
+}
+
+.nts-gridlist.ui-iggrid table th.ui-widget-header:not(:last-child)::after {
+	border: 0;
+}
+

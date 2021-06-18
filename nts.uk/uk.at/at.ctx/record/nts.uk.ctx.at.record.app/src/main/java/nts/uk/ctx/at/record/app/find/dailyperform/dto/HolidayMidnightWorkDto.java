@@ -2,12 +2,14 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayMidnightWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkMidNightTime;
@@ -17,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAt
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class HolidayMidnightWorkDto implements ItemConst {
+public class HolidayMidnightWorkDto implements ItemConst, AttendanceItemDataGate {
 
 	 /** 休出深夜時間: 休出深夜時間 */
 //	 @AttendanceItemLayout(layout="A", jpPropertyName="休出深夜時間")
@@ -34,6 +36,49 @@ public class HolidayMidnightWorkDto implements ItemConst {
 	/** 祝日: 計算付き時間 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = PUBLIC_HOLIDAY)
 	private CalcAttachTimeDto publicHolidayWork;
+	
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case LEGAL:
+			return Optional.ofNullable(withinPrescribedHolidayWork);
+		case ILLEGAL:
+			return Optional.ofNullable(excessOfStatutoryHolidayWork);
+		case PUBLIC_HOLIDAY:
+			return Optional.ofNullable(publicHolidayWork);
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case LEGAL:
+			withinPrescribedHolidayWork = (CalcAttachTimeDto) value;
+			break;
+		case ILLEGAL:
+			excessOfStatutoryHolidayWork = (CalcAttachTimeDto) value;
+			break;
+		case PUBLIC_HOLIDAY:
+			publicHolidayWork =  (CalcAttachTimeDto) value;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case LEGAL:
+		case ILLEGAL:
+		case PUBLIC_HOLIDAY:
+			return new CalcAttachTimeDto();
+		default:
+			return null;
+		}
+	}
 	
 	public static HolidayMidnightWorkDto fromHolidayMidnightWork(HolidayMidnightWork domain){
 		return domain == null ? null : new HolidayMidnightWorkDto(getWorkTime(

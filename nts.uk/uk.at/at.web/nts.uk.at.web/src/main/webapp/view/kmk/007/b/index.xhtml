@@ -12,8 +12,8 @@
 			</com:ValidatorScript>
 			<script>
 				var dialogSize = {
-					width : 620,
-					height : 470
+					width : 670,
+					height : 410
 				};
 			</script>
 			<com:stylefile path="kmk007.b.style.css" />
@@ -62,6 +62,20 @@
 									optionsValue: 'code',
 									optionsText: 'frameValue',
 									value: frameEliminationSelectedCode,
+									enable: true }"></div>
+							</td>
+						</tr>
+						<tr data-bind = "visible: enableB41">
+						<td style="padding-top: 20px;">
+              <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK007_113')} </div>
+            </td>
+						<td class="frame-elimination" style="padding-top: 20px;">
+								<div class="cf"
+									data-bind="ntsSwitchButton: {
+									options: itemListB41,
+									optionsValue: 'code',
+									optionsText: 'frameValue',
+									value: timeMngAtr,
 									enable: true }"></div>
 							</td>
 						</tr>

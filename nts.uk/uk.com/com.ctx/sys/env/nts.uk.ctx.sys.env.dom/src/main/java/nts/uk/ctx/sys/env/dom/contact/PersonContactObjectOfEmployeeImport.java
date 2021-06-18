@@ -7,7 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class PersonContactObjectOfEmployeeImport {
 
-	// 社員ID
+	//社員ID
 	private String employeeId;
 
 	// 個人ID

@@ -11,24 +11,25 @@ public class DeleteSetDto {
 	 * 削除セットコード
 	 */
 	private String patternCode;
-	
+
 	/**
 	 * 削除名称
 	 */
 	private String delName;
-	
+
 	public static DeleteSetDto fromDomain(ResultDeletion domain) {
 		return new DeleteSetDto(domain.getDelCode().v(), domain.getDelName().v());
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof DeleteSetDto) {
-			return ((DeleteSetDto) obj).getPatternCode().equals(patternCode);
+			return ((DeleteSetDto) obj).getPatternCode().equals(patternCode)
+					&& ((DeleteSetDto) obj).getDelName().contentEquals(delName);
 		}
 		return false;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return patternCode.hashCode();

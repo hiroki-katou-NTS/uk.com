@@ -36,9 +36,9 @@ public class DeleteCategoryInitDisplayFinder {
 	@Inject
 	private CategoryForDelService categoryForDelService;
 
-	public StartupParameterDto<DeleteCategoryDto, DataDeletionPatternSettingDto> initDisplay() {
+	public StartupParameterDto<DeleteCategoryDto, DataDeletionPatternSettingDto<?>> initDisplay() {
 		LoginUserContext user = AppContexts.user();
-		StartupParameterDto<DeleteCategoryDto, DataDeletionPatternSettingDto> dto = new StartupParameterDto<>();
+		StartupParameterDto<DeleteCategoryDto, DataDeletionPatternSettingDto<?>> dto = new StartupParameterDto<>();
 
 		// １．ドメインモデル「削除パターン設定」を取得する。
 		List<DataDeletionPatternSetting> patterns = dataDeletionPatternSettingRepository
@@ -57,11 +57,7 @@ public class DeleteCategoryInitDisplayFinder {
 		if (!categories.isEmpty()) {
 			dto.setCategories(categories);
 			if (!patterns.isEmpty()) {
-				dto.setPatterns(patterns.stream().map(domain -> {
-					DataDeletionPatternSettingDto patternDto = new DataDeletionPatternSettingDto();
-					domain.setMemento(patternDto);
-					return patternDto;
-				}).collect(Collectors.toList()));
+				dto.setPatterns(patterns.stream().map(DataDeletionPatternSettingDto::createFromDomain).collect(Collectors.toList()));
 			}
 		} else
 			throw new BusinessException("Msg_1740");
@@ -69,7 +65,7 @@ public class DeleteCategoryInitDisplayFinder {
 	}
 
 	private List<DeleteCategoryDto> getCategoryList(LoginPersonInCharge pic) {
-		List<SystemType> systemTypes = picService.getSystemTypes(pic);
+		List<SystemType> systemTypes = picService.getSystemTypes(pic);			
 		return systemTypes.stream()
 				.map(type -> categoryForDelService.categoriesBySystemType(type.value).stream()
 						.map(domain -> DeleteCategoryDto.fromDomain(domain, type.value)).collect(Collectors.toList()))

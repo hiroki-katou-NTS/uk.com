@@ -8,20 +8,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Instantiates a new data infor return.
- * @author HoangDD
+ * @author LienPTK
  */
 @Data
 @NoArgsConstructor
 public class DataInforReturnDto {
 	
-	/** The code. */
+	/** コード */
 	private String code;
 	
-	/** The name. */
+	/** 名称 */
 	private String name;
-	
-	/** The id. */
+
 	private int id;
 
 	/**
@@ -29,7 +27,7 @@ public class DataInforReturnDto {
 	 *
 	 * @param code the code
 	 * @param name the name
-	 * @param id the id
+	 * @param layoutId the layout id
 	 */
 	public DataInforReturnDto(String code, String name, int id) {
 		super();
@@ -37,6 +35,5 @@ public class DataInforReturnDto {
 		this.name = name;
 		this.id = id;
 	}
-	
-	
+
 }

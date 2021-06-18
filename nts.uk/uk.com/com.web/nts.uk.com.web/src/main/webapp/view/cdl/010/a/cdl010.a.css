@@ -1,0 +1,21 @@
+.bolder {
+  font-weight: bolder;
+  font-size: larger;
+}
+.w-175 {
+  width: 175px;
+}
+#functions-area-bottom {
+  height: 40px !important;
+}
+table tbody td {
+  padding-top: 10px;
+}
+table tbody td a,
+table tbody td a > span {
+  color: blue !important;
+}
+table td span {
+  width: 280px !important;
+  text-decoration: underline !important;
+}

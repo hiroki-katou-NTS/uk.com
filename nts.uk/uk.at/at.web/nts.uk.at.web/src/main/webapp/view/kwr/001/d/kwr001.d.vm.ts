@@ -11,6 +11,9 @@ module nts.uk.at.view.kwr001.d {
             isEditable: KnockoutObservable<boolean>;
             D1_6_value: KnockoutObservable<string>;
             D1_7_value: KnockoutObservable<string>;
+
+            selectionType: number;
+            fontSize: number;
         
             /**
              * Constructor.
@@ -29,7 +32,13 @@ module nts.uk.at.view.kwr001.d {
             public startPage(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                
+                let dataTransferScreenC = nts.uk.ui.windows.getShared('KWR001_D');
+
+                if (dataTransferScreenC) {
+                    self.fontSize = dataTransferScreenC.fontSize;
+                    self.selectionType = dataTransferScreenC.selecttionType;
+                }
+
                 service.getDataStartPage().done(function(data: any) {
                     let arr: ItemModel[] = [];
                     _.forEach(data, function(value, index) {
@@ -60,13 +69,10 @@ module nts.uk.at.view.kwr001.d {
                     return;    
                 }
                 blockUI.grayout();
-                service.executeCopy(self.D1_6_value(), self.selectedCode()).done(function(data: any) {
+                service.executeCopy(self.D1_6_value(), self.selectedCode(), self.selectionType, self.fontSize).done(function(data: any) {
                     dataReturnScrC.lstAtdChoose = data;
                     dataReturnScrC.codeCopy = self.D1_6_value();
                     dataReturnScrC.nameCopy = self.D1_7_value();
-//                    if(_.size(dataReturnScrC.lstAtdChoose.msgErr)){
-//                         nts.uk.ui.dialog.error({ messageId: "Msg_1476" });
-//                    }
                     nts.uk.ui.windows.setShared('KWR001_D', dataReturnScrC);
                     nts.uk.ui.windows.close();
                     

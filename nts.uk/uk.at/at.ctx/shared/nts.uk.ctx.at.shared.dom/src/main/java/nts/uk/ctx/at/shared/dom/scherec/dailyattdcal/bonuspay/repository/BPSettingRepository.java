@@ -28,4 +28,6 @@ public interface BPSettingRepository {
 	void removeBonusPaySetting(String companyId, BonusPaySettingCode bonusPaySettingCode);
 
 	boolean isExisted(String companyId, BonusPaySettingCode code);
+	
+	List<BonusPaySetting> findByCompanyAndCode(String company, List<String> bonusPaySettingCodeLst);
 }

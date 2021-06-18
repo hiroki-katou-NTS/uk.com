@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.daily.attendanceleavinggate;
 
 import java.util.ArrayList;
 import java.util.List;
+
 //import java.util.Optional;
 //
 //import org.junit.Assert;
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGate;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 //import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 //import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 //import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
@@ -24,9 +26,9 @@ public class AttendanceLeavingGateOfDailyTest {
 	public void test_calcBeforeAttendanceTime() {
 		
 		List<AttendanceLeavingGate> attendanceLeavingGates = new ArrayList<>();
-		attendanceLeavingGates.add(new AttendanceLeavingGate(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1),
-										   new WorkStamp(new TimeWithDayAttr(420),new TimeWithDayAttr(420),new WorkLocationCD(null),TimeChangeMeans.REAL_STAMP, null),
-										   new WorkStamp(new TimeWithDayAttr(1200),new TimeWithDayAttr(1200),new WorkLocationCD(null),TimeChangeMeans.REAL_STAMP, null)));
+		attendanceLeavingGates.add(new AttendanceLeavingGate(new WorkNo(1),
+										   new WorkStamp(new TimeWithDayAttr(420),new WorkLocationCD(null),TimeChangeMeans.REAL_STAMP, null),
+										   new WorkStamp(new TimeWithDayAttr(1200),new WorkLocationCD(null),TimeChangeMeans.REAL_STAMP, null)));
 //		attendanceLeavingGates.add(new AttendanceLeavingGate(new nts.uk.ctx.at.shared.dom.worktime.common.WorkNo(2),
 //										   new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER),
 //										   new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(1050),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER)));

@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.person.dom.person.contact.PersonContactRepository;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContactRepository;
 import nts.uk.shr.pereg.app.command.PeregDeleteCommandHandler;
 
 @Stateless
@@ -14,7 +14,7 @@ public class DeletePerContactCommandHandler extends CommandHandler<DeletePerCont
  	implements PeregDeleteCommandHandler<DeletePerContactCommand>{
 
 	@Inject
-	private PersonContactRepository personContactRepository;
+	private PersonalContactRepository personalContactRepository;
 	
 	@Override
 	public String targetCategoryCd() {
@@ -28,10 +28,8 @@ public class DeletePerContactCommandHandler extends CommandHandler<DeletePerCont
 
 	@Override
 	protected void handle(CommandHandlerContext<DeletePerContactCommand> context) {
-		
 		val command = context.getCommand();
-		
-		personContactRepository.delete(command.getPersonId());
+		personalContactRepository.delete(command.getPersonId());
 	}
 
 }

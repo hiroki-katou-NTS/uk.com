@@ -4,18 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberDayNursing;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberOfCaregivers;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
 
 /**
  * The Class JpaMaxPersonSettingSetMemento.
  */
 public class JpaMaxPersonSettingSetMemento implements MaxPersonSettingSetMemento {
-    
+
     /** The entity. */
     private KshmtHdnursingLeave entity;
-    
+
     /**
      * Instantiates a new jpa max person setting set memento.
      *
@@ -24,15 +25,15 @@ public class JpaMaxPersonSettingSetMemento implements MaxPersonSettingSetMemento
     public JpaMaxPersonSettingSetMemento(KshmtHdnursingLeave entity) {
         this.entity = entity;
     }
-    
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * MaxPersonSettingSetMemento#setNursingNumberLeaveDay(java.lang.Integer)
      */
     @Override
-    public void setNursingNumberLeaveDay(NumberDayNursing nursingNumberLeaveDay) {
+    public void setNursingNumberLeaveDay(ChildCareNurseUpperLimit nursingNumberLeaveDay) {
         if (nursingNumberLeaveDay != null) {
             this.entity.setNursingNumLeaveDay(nursingNumberLeaveDay.v());
         }
@@ -40,15 +41,15 @@ public class JpaMaxPersonSettingSetMemento implements MaxPersonSettingSetMemento
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
      * MaxPersonSettingSetMemento#setNursingNumberPerson(java.lang.Integer)
      */
-    @Override
-    public void setNursingNumberPerson(NumberDayNursing nursingNumberPerson) {
+	@Override
+	public void setNursingNumberPerson(NumberOfCaregivers nursingNumberPerson) {
         if(nursingNumberPerson != null) {
             this.entity.setNursingNumPerson(nursingNumberPerson.v());
         }
-    }
 
+	}
 }

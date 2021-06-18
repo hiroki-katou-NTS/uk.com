@@ -12,10 +12,9 @@
     <div>
       <kafs00-b v-if="kaf000_B_Params != null" v-bind:params="kaf000_B_Params" 
       v-on:kaf000BChangeDate="kaf000BChangeDate"
-      v-on:kaf000BChangePrePost="kaf000BChangePrePost"/>
+      v-on:kaf000BChangePrePost="kaf000BChangePrePost"
+      v-on:kafs00BValid="kafs00BValid"/>
     </div>
-
-
     <div v-if="C1" class="card card-label">
       <div class="card-header uk-bg-accordion">
         <span>{{'KAFS09_22' | i18n}}</span>
@@ -26,7 +25,7 @@
         <nts-switchbox v-model="model.changeWork" v-bind:value="2">{{'KAFS09_24' | i18n}}</nts-switchbox>
       </div>
     </div>
-    <div v-if="C2 && model.changeWork == 1" class="card card-label">
+    <div v-if="C2 && c3" class="card card-label">
       <!-- A4 -->
       <div class="card-header uk-bg-accordion">
         <span>{{'KAFS09_3' | i18n}}</span>
@@ -78,7 +77,8 @@
     <div>
       <kafs00-c v-if="kaf000_C_Params != null" v-bind:params="kaf000_C_Params" 
       v-on:kaf000CChangeReasonCD="kaf000CChangeReasonCD"
-      v-on:kaf000CChangeAppReason="kaf000CChangeAppReason"/>
+      v-on:kaf000CChangeAppReason="kaf000CChangeAppReason"
+      v-on:kafs00CValid="kafs00CValid"/>
     </div>
     <!-- display text by  ※1-->
     <!-- 画面モード = 新規モード -->

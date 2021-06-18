@@ -26,7 +26,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ch
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.StatusActualDay;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.ConfirmStatusOfDayService;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
@@ -40,6 +40,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcessRepository;
 
 /**
  * @author anhdt
@@ -76,6 +77,8 @@ public class StampResultConfirmationQuery {
 	private ClosureEmploymentRepository closureEmploymentRepo;
 	@Inject
 	private ShareEmploymentAdapter shareEmploymentAdapter;
+	@Inject
+	private IdentityProcessRepository identityProcessRepository;
 	
 	@Inject
 	private GetRoleIDQuery getRoleIDQuery;
@@ -146,7 +149,9 @@ public class StampResultConfirmationQuery {
 		// 8
 		dailyItems.sort((a , b) -> Integer.valueOf(a.getAttendanceItemDisplayNumber()).compareTo(Integer.valueOf(b.getAttendanceItemDisplayNumber())));
 		
-		return new StampResultConfirmDto(screenDisplays, dailyItems, itemValues, workTypes, workTimes, confirmStatusAcResults, attendance, leave);
+		int setting = identityProcessRepository.getIdentityProcessById(cid).map(m -> m.getYourselfConfirmError().value).orElse(0);
+		
+		return new StampResultConfirmDto(screenDisplays, dailyItems, itemValues, workTypes, workTimes, confirmStatusAcResults, attendance, leave, setting);
 	}
 	
 	private class ConfirmStatusOfDayRequiredImpl implements ConfirmStatusOfDayService.Require {

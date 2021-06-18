@@ -52,10 +52,9 @@ public class LogBasicInforExportService extends ExportService<LogScreenIParam> {
 		return lstHeader;
 	}
 
-	private List<Map<String, Object>> getLogRecordData(LogParams params) {
+	private List<Map<String, Object>> getLogRecordData(List<LogBasicInfoDto> params) {
 		List<Map<String, Object>> dataSource = new ArrayList<>();
-		List<LogBasicInfoDto> data = params.getLstLogBasicInfoDto();
-		for (LogBasicInfoDto d : data) {
+		for (LogBasicInfoDto d : params) {
 			Map<String, Object> row = new HashMap<>();
 			row.put(listHeader.get(0), d.getEmployeeCodeLogin());
 			row.put(listHeader.get(1), d.getUserNameLogin());
@@ -67,10 +66,9 @@ public class LogBasicInforExportService extends ExportService<LogScreenIParam> {
 		}
 		return dataSource;
 	}
-	private List<Map<String, Object>> getStartUpData(LogParams params) {
+	private List<Map<String, Object>> getStartUpData(List<LogBasicInfoDto> params) {
 		List<Map<String, Object>> dataSource = new ArrayList<>();
-		List<LogBasicInfoDto> data = params.getLstLogBasicInfoDto();
-		for (LogBasicInfoDto d : data) {
+		for (LogBasicInfoDto d : params) {
 			Map<String, Object> row = new HashMap<>();
 			row.put(listHeader.get(0), d.getEmployeeCodeLogin());
 			row.put(listHeader.get(1), d.getUserNameLogin());
@@ -82,11 +80,10 @@ public class LogBasicInforExportService extends ExportService<LogScreenIParam> {
 		return dataSource;
 	}
 	
-	private List<Map<String, Object>> getDataCorrectLog(LogParams params) {
+	private List<Map<String, Object>> getDataCorrectLog(List<LogBasicInfoDto> params) {
 		List<Map<String, Object>> dataSource = new ArrayList<>();
-		List<LogBasicInfoDto> data = params.getLstLogBasicInfoDto();
 		int count = 0;
-		for (LogBasicInfoDto d : data) {
+		for (LogBasicInfoDto d : params) {
 			// check list child and generate row child
 			List<LogDataCorrectRecordRefeDto> lstDataCorrect = d.getLstLogDataCorrectRecordRefeDto();
 			if (!CollectionUtil.isEmpty(lstDataCorrect)) {
@@ -116,11 +113,10 @@ public class LogBasicInforExportService extends ExportService<LogScreenIParam> {
 		return dataSource;
 	}
 	
-	private List<Map<String, Object>> getPersionCorrectLog(LogParams params) {
+	private List<Map<String, Object>> getPersionCorrectLog(List<LogBasicInfoDto> params) {
 		List<Map<String, Object>> dataSource = new ArrayList<>();
-		List<LogBasicInfoDto> data = params.getLstLogBasicInfoDto();
 		int count = 0;
-		for (LogBasicInfoDto d : data) {
+		for (LogBasicInfoDto d : params) {
 			
 			// check list child and generate row child
 			List<LogPerCateCorrectRecordDto> lstPersionCorrect = d.getLstLogPerCateCorrectRecordDto();
@@ -168,21 +164,21 @@ public class LogBasicInforExportService extends ExportService<LogScreenIParam> {
 		this.getTextHeader(params);
 		RecordTypeEnum recordTypeEnum = RecordTypeEnum.valueOf(params.getLogParams().getRecordType());
 		//CLI003: fix bug #108873, #108865
-		LogParams logParams = this.logBasicFinder.prepareDataScreenI(params);
+		List<LogBasicInfoDto> logs = this.logBasicFinder.findByOperatorsAndDate(params.getLogParams());
 		List<Map<String, Object>> dataSource = new ArrayList<>();
 		switch (recordTypeEnum) {
 		//CLI003: fix bug #108873, #108865
 		case LOGIN:
-			dataSource = getLogRecordData(logParams);
+			dataSource = getLogRecordData(logs);
 			break;
 		case START_UP:
-			dataSource = getStartUpData(logParams);
+			dataSource = getStartUpData(logs);
 			break;
 		case UPDATE_PERSION_INFO:
-			dataSource = getPersionCorrectLog(logParams);
+			dataSource = getPersionCorrectLog(logs);
 			break;
 		case DATA_CORRECT:
-			dataSource = getDataCorrectLog(logParams);
+			dataSource = getDataCorrectLog(logs);
 			break;
 
 		default:

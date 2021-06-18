@@ -4,8 +4,9 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
 /**
  * 時間帯枠（Temporary）
@@ -46,6 +47,21 @@ public class TimeFrame {
 		this.goOutReason = Optional.ofNullable(goOutReason);
 	}
 
+	public static TimeFrame of(int numberOfReflections, int frameNo, Optional<WorkStamp> start,
+			Optional<WorkStamp> end, GoingOutReason goOutReason) {
+		
+		TimeFrame domain = new TimeFrame();
+		
+		domain.numberOfReflections = numberOfReflections;
+		domain.frameNo = frameNo;
+		domain.start = Optional.of(new TimeActualStamp(start, start, 1, Optional.empty(), Optional.empty()));
+		domain.end =  Optional.of(new TimeActualStamp(end, end, 1, Optional.empty(), Optional.empty()));
+		domain.goOutReason = Optional.ofNullable(goOutReason);
+		
+		return domain;
+	}
+	
+	
 	public void setFrameNo(int frameNo) {
 		this.frameNo = frameNo;
 	}
@@ -65,4 +81,6 @@ public class TimeFrame {
 	public void setStart(Optional<TimeActualStamp> start) {
 		this.start = start;
 	}
+	
+	
 }

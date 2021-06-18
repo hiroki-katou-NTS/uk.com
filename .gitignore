@@ -47,3 +47,5 @@ nts.uk/uk.repo/*
 **/wwwroot/*
 **/.DS_Store
 
+*.log
+**/.sass-cache/*

@@ -61,7 +61,7 @@ module nts.uk.at.kdp003.a {
 		virtual: false
 	})
 	export class EmployeeComponentBindingHandler implements KnockoutBindingHandler {
-		init(element: HTMLElement, valueAccessor: () => any, __ab: KnockoutAllBindingsAccessor, ___vm: ComponentViewModel, bindingContext: KnockoutBindingContext) {
+		init(element: HTMLElement, valueAccessor: () => any, __ab: KnockoutAllBindingsAccessor, ___vm: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext) {
 			const name = COMPONENT_NAME;
 			const params = valueAccessor();
 
@@ -92,7 +92,7 @@ module nts.uk.at.kdp003.a {
 					employees: ko.observableArray([]),
 					selectedId: ko.observable(undefined),
 					nameSelectArt: ko.observable(true),
-					baseDate: ko.observable(new Date())
+					baseDate: ko.observable(null)
 				};
 			} else {
 				if (!_.has(vm.options, 'employees')) {
@@ -104,7 +104,7 @@ module nts.uk.at.kdp003.a {
 				}
 
 				if (!_.has(vm.options, 'baseDate')) {
-					vm.options.baseDate = ko.observable(new Date());
+					vm.options.baseDate = ko.observable(null);
 				}
 			}
 		}
@@ -193,6 +193,8 @@ module nts.uk.at.kdp003.a {
 
 			$(vm.$el).attr('id', 'stamp-employee-selection');
 
+			$(vm.$el).find('.nts-datepicker-wrapper input').attr('readonly', 'readonly');
+
 			$grid
 				.igGrid({
 					showHeader: false,
@@ -216,7 +218,7 @@ module nts.uk.at.kdp003.a {
 						{
 							name: "Selection",
 							mode: "row",
-							rowSelectionChanged: function(__: any, ui: any) {
+							rowSelectionChanged: function (__: any, ui: any) {
 								const { index } = ui.row;
 								const dataSources: Employee[] = $grid.igGrid('option', 'dataSource');
 
@@ -240,18 +242,40 @@ module nts.uk.at.kdp003.a {
 			/**
 			 * trigger resize and show row on grid by window height
 			 */
-			$(window)
-				.on('resize', () => {
-					const grid = $grid.get(0);
+			// $(window)
+			// 	.on('resize', () => {
+			// 		const grid = $grid.get(0);
 
-					if (grid && $grid.data('igGrid')) {
-						const top = grid.getBoundingClientRect().top;
-						const maxHeight = window.innerHeight - top - 25;
+			// 		if (grid && $grid.data('igGrid')) {
+			// 			const top = grid.getBoundingClientRect().top;
+			// 			const maxHeight = window.innerHeight - top - 25;
 
-						$grid.igGrid('option', 'height', `${Math.max(MIN_HEIGHT, maxHeight)}px`);
+			// 			$grid.igGrid('option', 'height', `${Math.max(MIN_HEIGHT, maxHeight)}px`);
+			// 		}
+			// 	})
+			// 	.trigger('resize');
+
+			setInterval(function () {
+
+				var paramSize = 0;
+
+				const grid = $grid.get(0);
+
+				if (grid && $grid.data('igGrid')) {
+					// const top = grid.getBoundingClientRect().top;
+					// const maxHeight = size.y + size.height;
+					let param: number = $('#contents-area').height() - 178;
+					if(param <  ($('#stamp-input').height() - 178)){
+						param = ($('#stamp-input').height() - 178);
 					}
-				})
-				.trigger('resize');
+
+					if (paramSize !== param) {
+						paramSize = param;
+						$grid.igGrid('option', 'height', param + 'px');
+					}
+				}
+			}, 100);
+
 		}
 
 		loginEmployeeNotInList() {
@@ -295,6 +319,6 @@ module nts.uk.at.kdp003.a {
 		employees: KnockoutObservableArray<Employee>;
 		selectedId: KnockoutObservable<string | null | undefined>;
 		nameSelectArt: KnockoutObservable<boolean>;
-		baseDate: KnockoutObservable<Date>;
+		baseDate: KnockoutObservable<Date | null>;
 	}
 }

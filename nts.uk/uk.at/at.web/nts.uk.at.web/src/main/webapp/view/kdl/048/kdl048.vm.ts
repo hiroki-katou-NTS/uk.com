@@ -2,7 +2,7 @@
 module nts.uk.at.view.kdl048.screenModel {
   import getShared = nts.uk.ui.windows.getShared;
   import setShared = nts.uk.ui.windows.setShared;
-  
+
   @bean()
   export class ViewModel extends ko.ViewModel {
     initParam: any;
@@ -14,6 +14,32 @@ module nts.uk.at.view.kdl048.screenModel {
     attendanceRecordName: KnockoutObservable<string> = ko.observable("");
     attributeObject: KnockoutObservable<AttributeObject> = ko.observable();
     valueCb: KnockoutObservable<number> = ko.observable(0);
+
+    exportAtr: number = 1;
+    filterCode: KnockoutComputed<number> = ko.computed(() => {
+      if (this.exportAtr === 1) {
+        return this.valueCb() === 4
+          ? 5
+          : this.valueCb() === 5
+            ? 2
+            : this.valueCb() === 7
+              ? 3
+              : null;
+      }
+
+      if (this.exportAtr === 2) {
+        return this.valueCb() === 4
+          ? 1
+          : this.valueCb() === 5
+            ? 2
+            : this.valueCb() === 6
+              ? 3
+              : this.valueCb() === 7
+                ? 4
+                : null;
+      }
+      return null;
+    });
     // A5_3
     currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
     headers: any = ko.observableArray([this.$i18n("KDL048_6"), this.$i18n("KDL048_7")]);
@@ -45,15 +71,13 @@ module nts.uk.at.view.kdl048.screenModel {
       vm.initParam = getShared("attendanceItem");
       vm.objectDisplay = vm.initParam;
       //Setting data
-      vm.diligenceData(
-        _.orderBy(vm.initParam.diligenceProjectList, ["id"], ["asc"])
-      );
+      vm.diligenceData(vm.initParam.diligenceProjectList);
       vm.titleLine(vm.initParam.titleLine);
       vm.attributeObject(vm.initParam.attribute);
       vm.itemNameLine(vm.initParam.itemNameLine);
       vm.paramSelectedTimeList(vm.initParam.selectedTimeList);
       vm.attendanceRecordName(vm.initParam.itemNameLine.name);
-
+      vm.exportAtr = vm.initParam.exportAtr;
       //data for table
       vm.tableDataA6 = vm.initParam.diligenceProjectList;
 
@@ -61,13 +85,15 @@ module nts.uk.at.view.kdl048.screenModel {
       vm.columns = ko.observableArray([
         { headerText: 'ID', prop: "id", hidden: true },
         { headerText: vm.$i18n("KDL048_6"), prop: "indicatesNumber", width: 70 },
-        { headerText: vm.$i18n("KDL048_7"), prop: "name", width: 200 },
+        { headerText: vm.$i18n("KDL048_7"), prop: "name", width: 235 },
       ]);
 
       // event when change itemCombo
       vm.valueCb.subscribe(function (codeChange) {
         vm.onChangeItemCombo(codeChange);
       });
+      $(vm.$el).find('#A5_2').focus();
+
     }
 
     mounted() {
@@ -100,6 +126,7 @@ module nts.uk.at.view.kdl048.screenModel {
           }
         });
       });
+
     }
 
     // event when change item combo box
@@ -110,22 +137,22 @@ module nts.uk.at.view.kdl048.screenModel {
       }
       vm.currentCodeList2([]);
       vm.dataSelectedItemList([]);
-      let name;
+      let name: any;
       _.each(vm.attributeObject().attributeList, (itemcb: any) => {
         if (itemcb.attendanceTypeCode === codeChange) {
           name = itemcb.attendanceTypeName;
         }
       });
       const tableDatas = _.orderBy(
-        vm.tableDataA6.filter((data) => data.name.indexOf(name) != -1),
-        ["code"],
-        ["asc"]
+        vm.tableDataA6.filter((data) => data.attendanceAtr === vm.filterCode()),
+        ['indicatesNumber'],
+        ['asc']
       );
       if (tableDatas.length === 0) {
         vm.diligenceData([]);
       } else {
         vm.diligenceData(tableDatas);
-        vm.diligenceData(_.orderBy(vm.diligenceData(), ["id"], ["asc"]));
+        vm.diligenceData(_.orderBy(vm.diligenceData(), ["indicatesNumber"], ["asc"]));
         vm.currentCodeList.push(vm.diligenceData()[0].id);
       }
     }
@@ -204,18 +231,31 @@ module nts.uk.at.view.kdl048.screenModel {
           // 項目名行の表示フラグ == True：表示すると表示入力区分 == ２：入力可能
           if (vm.itemNameLine().displayFlag && vm.itemNameLine().displayInputCategory === 2) {
             // shared with value of A3_2, A5_2, A9_2_1, A9_2_2
-            vm.objectDisplay.itemNameLine.name = vm.attendanceRecordName();
-            vm.objectDisplay.attribute.selected = vm.valueCb();
-            vm.objectDisplay.selectedTimeList = vm.dataSelectedItemList();
-            setShared("attendanceRecordExport", vm.objectDisplay);
+            nts.uk.ui.windows.setShared('attendanceRecordExport', {
+              attendanceItemName: vm.attendanceRecordName(),
+              layoutCode: vm.objectDisplay.titleLine.layoutCode,
+              layoutName:  vm.objectDisplay.titleLine.layoutName,
+              columnIndex: vm.objectDisplay.columnIndex,
+              position:  vm.objectDisplay.position,
+              exportAtr:  vm.objectDisplay.exportAtr,
+              attendanceId: vm.dataSelectedItemList(),
+              attribute: vm.valueCb()
+            });
           }
           // 項目名行の表示フラグ == False：表示しない
           // 項目名行の表示フラグ == True：表示すると表示入力区分 == １：表示のみ
           if (!vm.itemNameLine().displayFlag || vm.itemNameLine().displayInputCategory === 1) {
             // shared with value of A5_2, A9_2_1, A9_2_2
-            vm.objectDisplay.attribute.selected = vm.valueCb();
-            vm.objectDisplay.selectedTimeList = vm.dataSelectedItemList();
-            setShared("attendanceRecordExport", vm.objectDisplay);
+            nts.uk.ui.windows.setShared('attendanceRecordExport', {
+              attendanceItemName: vm.objectDisplay.itemNameLine.name,
+              layoutCode: vm.objectDisplay.titleLine.layoutCode,
+              layoutName:  vm.objectDisplay.titleLine.layoutName,
+              columnIndex: vm.objectDisplay.columnIndex,
+              position:  vm.objectDisplay.position,
+              exportAtr:  vm.objectDisplay.exportAtr,
+              attendanceId: vm.dataSelectedItemList(),
+              attribute: vm.valueCb()
+            });
           }
           vm.$window.close();
         }
@@ -237,17 +277,24 @@ module nts.uk.at.view.kdl048.screenModel {
 
   // Display object mock
   export class Display {
-    // タイトル行
-    titleLine: TitleLineObject = new TitleLineObject();
-    // 項目名行
-    itemNameLine: ItemNameLineObject = new ItemNameLineObject();
-    // 属性
-    attribute: AttributeObject = new AttributeObject();
-    // List<勤怠項目>
-    diligenceProjectList: DiligenceProject[] = [];
-    // List<選択済み勤怠項目>
-    selectedTimeList: SelectedTimeList[] = [];
-
+     // タイトル行
+     titleLine: TitleLineObject = new TitleLineObject();
+     // 項目名行
+     itemNameLine: ItemNameLineObject = new ItemNameLineObject();
+     // 属性
+     attribute: Attribute = new Attribute();
+     // List<勤怠項目>
+     attendanceItems: Array<AttributeOfAttendanceItem> = [];
+     // 選択済み勤怠項目ID
+     selectedTime: number;
+     // 加減算する項目
+     attendanceIds: Array<SelectedItem>;
+     // columnIndex
+     columnIndex: number;
+     // position
+     position: number;
+     // exportAtr
+     exportAtr: number;
     constructor(init?: Partial<Display>) {
       $.extend(this, init);
     }
@@ -337,12 +384,37 @@ module nts.uk.at.view.kdl048.screenModel {
     // 名称
     name: any;
     // 属性
-    attributes: any;
+    attendanceAtr: any;
     // 表示番号
     indicatesNumber: any;
 
     constructor(init?: Partial<DiligenceProject>) {
       $.extend(this, init);
     }
+  }
+
+  export class AttributeOfAttendanceItem {
+    /** 勤怠項目ID */
+    attendanceItemId: number;
+    /** 勤怠項目名称 */
+    attendanceItemName: string;
+    /** 勤怠項目の属性 */
+    attendanceAtr: number;
+    /** マスタの種類 */
+    masterType: number | null;
+    /** 表示番号 */
+    displayNumbers: number;
+
+    constructor(init?: Partial<AttributeOfAttendanceItem>) {
+      $.extend(this, init);
+    }
+  }
+export class SelectedItem {
+    action: string;
+    code: string;
+      constructor(action: string, code: string) {
+          this.action = action;
+          this.code = code;
+      }
   }
 }

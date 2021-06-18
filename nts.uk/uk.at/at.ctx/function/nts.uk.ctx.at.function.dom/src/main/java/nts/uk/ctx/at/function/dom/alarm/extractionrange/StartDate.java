@@ -38,5 +38,4 @@ public class StartDate {
 	public void setStartMonth(PreviousClassification monthPrevious, int month, boolean currentMonth) {
 		this.strMonth = Optional.of(new Month(monthPrevious, month, currentMonth));
 	}
-	
 }

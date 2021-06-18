@@ -6,6 +6,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
     import BusinessTripOutput = nts.uk.at.view.kaf008_ref.shr.viewmodel.BusinessTripOutput;
     import BusinessTripContent = nts.uk.at.view.kaf008_ref.shr.viewmodel.BusinessTripContent;
 	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
     @bean()
     class Kaf008AViewModel extends Kaf000AViewModel {
@@ -27,9 +28,18 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
         });
 
         appDate: KnockoutObservable<any> = ko.observable(null);
+		isFromOther: boolean = false;
 
         created(params: AppInitParam) {
             const vm = this;
+			if(nts.uk.request.location.current.isFromMenu) {
+				sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');	
+			} else {
+				if(!_.isNil(__viewContext.transferred.value)) {
+					vm.isFromOther = true;
+					params = __viewContext.transferred.value;
+				}
+			}
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
             vm.isSendMail = ko.observable(false);
@@ -53,6 +63,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             vm.loadData(empLst, dateLst, vm.appType())
                 .then((loadDataFlag: boolean) => {
                     if (loadDataFlag) {
+						vm.application().employeeIDLst(empLst);
                         const applicantList = empLst;
                         const appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput);
                         const command = {applicantList, dateLst, appDispInfoStartupOutput};
@@ -124,7 +135,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 businessTripInfoOutputDto, applicationDto
             };
 
-            vm.$errors("clear");
+            // vm.$errors("clear");
 
             vm.$validate([
                 '#kaf000-a-component4 .nts-input'
@@ -153,14 +164,21 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             const tripOutput = dataFetch.businessTripOutput;
             const tripContent = dataFetch.businessTripContent;
 
-            let lstContent: Array<BusinessTripInfoDetail> = _.map(tripOutput.businessTripActualContent, function (i) {
-                return {
+            let mapScreenContent: Array<ScreenContent> = [];
+            let lstContent: Array<BusinessTripInfoDetail> = [];
+            _.forEach(tripOutput.businessTripActualContent, function (i: any) {
+                mapScreenContent.push({
                     date: i.date,
-                    wkTypeCd: i.opAchievementDetail.workTypeCD,
-                    wkTimeCd: i.opAchievementDetail.workTimeCD,
-                    startWorkTime: i.opAchievementDetail.opWorkTime,
-                    endWorkTime: i.opAchievementDetail.opLeaveTime
-                }
+                    workTypeName: i.opAchievementDetail.opWorkTypeName,
+                    workTimeName: i.opAchievementDetail.opWorkTimeName,
+                });
+                lstContent.push({
+                        date: i.date,
+                        wkTypeCd: i.opAchievementDetail.workTypeCD,
+                        wkTimeCd: i.opAchievementDetail.workTimeCD,
+                        startWorkTime: i.opAchievementDetail.opWorkTime,
+                        endWorkTime: i.opAchievementDetail.opLeaveTime
+                });
             });
             let businessTripDto: any = {
                 departureTime: tripContent.departureTime,
@@ -169,10 +187,12 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             };
 
             let applicationDto = ko.toJS(vm.application);
+			applicationDto.employeeID = vm.application().employeeIDLst()[0];
             let command = {
                 businessTrip: businessTripDto,
                 businessTripInfoOutput: tripOutput,
-                application: applicationDto
+                application: applicationDto,
+                screenDetails: mapScreenContent
             };
 
             vm.$blockui( "show" );
@@ -188,14 +208,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                             vm.handleConfirmMessage(res, command);
                         }
                     }).fail(err => {
-                        let param;
-                        if (err.messageId == "Msg_23" || err.messageId == "Msg_24" || err.messageId == "Msg_1912" || err.messageId == "Msg_1913" ) {
-                            err.message = err.parameterIds[0] + err.message;
-                            param = err;
-                            vm.$dialog.error(param);
-                        } else {
-                            vm.handleError(err);
-                        }
+                        vm.handleError(err);
                     });
                 }
             }).always(() => vm.$blockui("hide"));
@@ -203,16 +216,18 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 
         registerData(command: any) {
             const vm = this;
-            vm.$blockui("show").then(() => vm.$ajax(API.register, command).done( data => {
+            vm.$blockui("show");
+            return vm.$ajax(API.register, command).done( data => {
                 if (data) {
                     vm.$dialog.info({messageId: "Msg_15"})
                         .then(() => {
-                            location.reload();
+							nts.uk.request.ajax("at", API.reflectApp, data.reflectAppIdLst);
+   							CommonProcess.handleAfterRegister(data, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
                         });
                 }
             }).fail(res => {
                 vm.handleError(res);
-            })).always(() => vm.$blockui("hide"));;
+            }).always(() => vm.$blockui("hide"));
         }
 
         focusDate() {
@@ -244,22 +259,53 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 
         handleError(err: any) {
             const vm = this;
-            let param;
-            if (err.message && err.messageId) {
-                param = {messageId: err.messageId, messageParams: err.parameterIds};
-            } else {
 
-                if (err.message) {
-                    param = {message: err.message, messageParams: err.parameterIds};
-                } else {
-                    param = {messageId: err.messageId, messageParams: err.parameterIds};
+            if (err && err.messageId) {
+                // 年月日＋#Msg_ID
+                if ( _.includes(["Msg_23","Msg_24","Msg_1912","Msg_1913","Msg_457","Msg_1685"], err.messageId)) {
+                    err.message = err.parameterIds[0] + err.message;
                 }
+
+                switch (err.messageId) {
+                    case "Msg_23":
+                    case "Msg_24":
+                    case "Msg_457": {
+                        let id = '#' + err.parameterIds[0].replace(/\//g, "") + '-wkCode';
+                        vm.$errors({
+                            [id]: err
+                        });
+                        break;
+                    }
+                    case "Msg_1715": {
+                        let id = '#' + err.parameterIds[1].replace(/\//g, "") + '-wkCode';
+                        vm.$errors({
+                            [id]: err
+                        });
+                        break;
+                    }
+                    case "Msg_1685":
+                    case "Msg_1912":
+                    case "Msg_1913": {
+                        let id = '#' + err.parameterIds[0].replace(/\//g, "") + '-tmCode';
+                        vm.$errors({
+                            [id]: err
+                        });
+                        break;
+                    }
+                    default: {
+						if (err.messageId == 'Msg_277') {
+                        	vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst = [];
+							vm.appDispInfoStartupOutput.valueHasMutated();
+                        }
+                        vm.$dialog.error(err).then(() => {
+                            if (err.messageId == 'Msg_197') {
+                                location.reload();
+                            }
+                        });
+                    }
+                }
+
             }
-            vm.$dialog.error(param).then(() => {
-                if (err.messageId == 'Msg_197') {
-                    location.reload();
-                }
-            });
         }
     }
 
@@ -295,11 +341,18 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
         paramLst: Array<string>
     }
 
+    interface ScreenContent {
+        date: string;
+        workTypeName: string;
+        workTimeName: string;
+    }
+
     const API = {
         startNew: "at/request/application/businesstrip/start",
         checkBeforeRegister: "at/request/application/businesstrip/checkBeforeRegister",
         register: "at/request/application/businesstrip/register",
-        changeAppDate: "at/request/application/businesstrip/changeAppDate"
-    }
+        changeAppDate: "at/request/application/businesstrip/changeAppDate",
+		reflectApp: "at/request/application/reflect-app"
+    };
 
 }

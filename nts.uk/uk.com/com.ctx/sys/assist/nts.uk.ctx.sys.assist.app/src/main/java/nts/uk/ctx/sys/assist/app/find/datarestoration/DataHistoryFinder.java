@@ -49,13 +49,13 @@ public class DataHistoryFinder {
 		List<FindDataHistoryDto> list = command.getObjects();
 		List<String> saveSetCodes = list.stream().map(FindDataHistoryDto::getPatternCode).filter(Objects::nonNull)
 				.collect(Collectors.toList());
-		List<DataHistoryDto> res = new ArrayList<DataHistoryDto>();
+		List<DataHistoryDto> res = new ArrayList<>();
 		if (!saveSetCodes.isEmpty()) {
 			res.addAll(findBySaveSetCodes(saveSetCodes, command.getFrom(), command.getTo()));
 		}
 
 		if (!res.isEmpty()) {
-			Map<String, TargetEmployees> pool = new HashMap<String, TargetEmployees>();
+			Map<String, TargetEmployees> pool = new HashMap<>();
 			res.forEach(data -> {
 				String sid = data.getPractitioner();
 				TargetEmployees em = pool.get(sid);

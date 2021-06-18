@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.attendancerecord.export.setting;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -7,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class AttendanceRecordOutputSetting.
@@ -18,10 +18,10 @@ import nts.uk.shr.com.context.AppContexts;
 @Setter
 @AllArgsConstructor
 public class AttendanceRecordExportSetting extends AggregateRoot {
-
-	/** The company id. */
-	// 会社ID
-	private String companyId;
+	
+	/** The layout id. */
+	// 出力レイアウトID
+	private String layoutId;
 
 	/** The daily ouput item. */
 	// 日次の出力項目
@@ -51,6 +51,12 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 	//名称使用区分
 	private NameUseAtr nameUseAtr;
 
+	//	文字の大きさ
+	private ExportFontSize exportFontSize;
+	
+	//	月次確認済表示区分
+	private MonthlyConfirmedDisplay monthlyConfirmedDisplay;
+	
 	/**
 	 * Instantiates a new attendance record export setting.
 	 */
@@ -61,18 +67,19 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 	/**
 	 * Instantiates a new attendance record export setting.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public AttendanceRecordExportSetting(AttendanceRecordExportSettingGetMemento memento) {
-		this.companyId = AppContexts.user().companyId();
-		this.dailyExportItem = memento.getDailyExportItem();
-		this.monthlyExportItem = memento.getMonthlyExportItem();
+		this.layoutId = memento.getLayoutId();
+		this.dailyExportItem = memento.getDailyExportItem() != null ? memento.getDailyExportItem() : new ArrayList<>();
+		this.monthlyExportItem = memento.getMonthlyExportItem() != null ? memento.getMonthlyExportItem() : new ArrayList<>();
 		this.sealUseAtr = memento.getSealUseAtr();
 		this.code = memento.getCode();
 		this.name = memento.getName();
 		this.sealStamp = memento.getSealStamp();
 		this.nameUseAtr =  NameUseAtr.valueOf(memento.getNameUseAtr());
+		this.exportFontSize = memento.getExportFontSize();
+		this.monthlyConfirmedDisplay = memento.getMonthlyConfirmedDisplay();
 
 	}
 
@@ -83,15 +90,18 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 	 *            the memento
 	 */
 	public void saveToMemento(AttendanceRecordExportSettingSetMemento memento) {
-		memento.setCompanyId(this.companyId);
+		memento.setLayoutId(this.layoutId);
 		memento.setCode(this.code);
-//		memento.setDailyExportItem(this.dailyExportItem);
-//		memento.setMonthlyExportItem(this.monthlyExportItem);
+		memento.setDailyExportItem(this.dailyExportItem);
+		memento.setMonthlyExportItem(this.monthlyExportItem);
 		memento.setName(this.name);
-//		memento.setSealStamp(this.sealStamp);
+		memento.setSealStamp(this.sealStamp);
 		memento.setSealUseAtr(this.sealUseAtr);
-		if (this.nameUseAtr != null)
+		if (this.nameUseAtr != null) {
 			memento.setNameUseAtr(this.nameUseAtr.value);
+		}
+		memento.setExportFontSize(this.exportFontSize);
+		memento.setMonthlyConfirmedDisplay(this.monthlyConfirmedDisplay);
 	}
 
 	/**
@@ -109,7 +119,6 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((code == null) ? 0 : code.hashCode());
-		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
 		result = prime * result + ((dailyExportItem == null) ? 0 : dailyExportItem.hashCode());
 		result = prime * result + ((monthlyExportItem == null) ? 0 : monthlyExportItem.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -143,11 +152,6 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 			if (other.code != null)
 				return false;
 		} else if (!code.equals(other.code))
-			return false;
-		if (companyId == null) {
-			if (other.companyId != null)
-				return false;
-		} else if (!companyId.equals(other.companyId))
 			return false;
 		if (dailyExportItem == null) {
 			if (other.dailyExportItem != null)

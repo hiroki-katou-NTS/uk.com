@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile path="./kaf020.a.vm.js"/>
+
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area" style="display: none">
+
+        </div>
+        <div id="contents-area">
+            <div style="width: fit-content; display: inline-block; position: absolute;" data-bind="visible: isAgentMode">
+                <!--A4_1-->
+                <a class="goback link-button" data-bind="click: goBack,  text: $vm.$i18n('KAF020_15')"/>
+            </div>
+            <div style="height: 400px; margin-left: 90px;">
+                <div class="control-group valign-center">
+                    <!--A1_1-->
+                    <div class="label" style="display: inline">#{i18n.getText('KAF020_10')}</div>
+                </div>
+                <!--A2-->
+                <table id="fixed-table">
+                    <colgroup>
+                        <col width="50px"/>
+                        <col width="300px"/>
+                        <col width="750px"/>
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <!--A2_1-->
+                        <th class="ui-widget-header" style="text-align: center">#{i18n.getText('KAF020_11')}</th>
+                        <!--A2_2-->
+                        <th class="ui-widget-header">#{i18n.getText('KAF020_12')}</th>
+                        <!--A2_3-->
+                        <th class="ui-widget-header">#{i18n.getText('KAF020_13')}</th>
+                    </tr>
+                    </thead>
+                    <tbody data-bind="foreach: { data: optionalItemAppSet, as: 'optionalItem'}">
+                    <tr>
+                        <!--A3_1-->
+                        <td data-bind="text: optionalItem.code" style="text-align: center;"></td>
+                        <!--A3_2-->
+                        <td>
+                            <a class="hyperlink" href="" data-bind="text: optionalItem.name, click: $parent.detail.bind($parent, optionalItem)"></a>
+                        </td>
+                        <!--A3_3-->
+                        <td style="white-space: pre-wrap;" data-bind="text: optionalItem.note"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

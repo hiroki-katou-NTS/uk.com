@@ -954,7 +954,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 			 Optional<WorkingConditionItem> optWorkingConditionItem = lstWorkConditionItem.stream()
 					 											.filter(predicate -> predicate.getHistoryId().equals(item.identifier())).findFirst();
 			// 	filter $.isPresent()							
-			 WorkingConditionItemWithPeriod workingConditionItemWithPeriod = new WorkingConditionItemWithPeriod(datePeriod,
+			 WorkingConditionItemWithPeriod workingConditionItemWithPeriod = new WorkingConditionItemWithPeriod(new DatePeriod(item.start(), item.end()),
 					 optWorkingConditionItem.isPresent() ? optWorkingConditionItem.get() : null);
 			         result.add(workingConditionItemWithPeriod);	
 		 }

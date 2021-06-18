@@ -35,8 +35,8 @@ public class CategoryInitDisplayFinder {
 	@Inject
 	private CategoryService categoryService;
 	
-	public StartupParameterDto<CategoryDto, DataStoragePatternSettingDto> initDisplay() {
-		StartupParameterDto<CategoryDto, DataStoragePatternSettingDto> dto = new StartupParameterDto<>();
+	public StartupParameterDto<CategoryDto, DataStoragePatternSettingDto<?>> initDisplay() {
+		StartupParameterDto<CategoryDto, DataStoragePatternSettingDto<?>> dto = new StartupParameterDto<>();
 		
 		//１．ドメイン「パターン設定」を取得する
 		LoginUserContext user = AppContexts.user();
@@ -55,11 +55,7 @@ public class CategoryInitDisplayFinder {
 		if (!master.isEmpty()) {
 			dto.setCategories(master);
 			if (!patterns.isEmpty()) {
-				dto.setPatterns(patterns.stream().map(p -> {
-					DataStoragePatternSettingDto d = new DataStoragePatternSettingDto();
-					p.setMemento(d);
-					return d;
-				}).collect(Collectors.toList()));
+				dto.setPatterns(patterns.stream().map(DataStoragePatternSettingDto::createFromDomain).collect(Collectors.toList()));
 			}
 			return dto;
 		} else {
@@ -69,13 +65,12 @@ public class CategoryInitDisplayFinder {
 	
 	private List<CategoryDto> getCategoryList(LoginPersonInCharge pic) {
 		List<SystemType> systemTypes = picService.getSystemTypes(pic);
-		List<CategoryDto> list = systemTypes.stream()
+		return systemTypes.stream()
 						.map(type -> categoryService.categoriesBySystemType(type.value)
 													.stream()
 													.map(domain -> CategoryDto.fromDomain(domain, type.value))
 													.collect(Collectors.toList()))
 						.flatMap(List::stream)
 						.collect(Collectors.toList());
-		return list;
 	}
 }
