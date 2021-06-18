@@ -2447,8 +2447,8 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 																					   new StayingTimeOfDaily(new AttendanceTimeOfExistMinus(entity.aftPcLogoffTime),
 																								new AttendanceTimeOfExistMinus(entity.bfrPcLogonTime), new AttendanceTimeOfExistMinus(entity.bfrWorkTime),
 																								new AttendanceTime(entity.stayingTime), new AttendanceTimeOfExistMinus(entity.aftLeaveTime)),
-																					   new AttendanceTimeOfExistMinus(entity.budgetTimeVariance),
-																					   new AttendanceTimeOfExistMinus(entity.unemployedTime)
+																					   new AttendanceTimeOfExistMinus(entity.unemployedTime),
+																					   new AttendanceTimeOfExistMinus(entity.budgetTimeVariance)
 																					   );
 		
 		return domain;

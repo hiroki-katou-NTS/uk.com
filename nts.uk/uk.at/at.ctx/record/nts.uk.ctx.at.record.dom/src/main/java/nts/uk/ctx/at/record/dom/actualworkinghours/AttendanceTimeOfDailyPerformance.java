@@ -81,7 +81,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	
 	public AttendanceTimeOfDailyPerformance(String employeeId, GeneralDate ymd,
 			WorkScheduleTimeOfDaily workScheduleTimeOfDaily, ActualWorkingTimeOfDaily actualWorkingTimeOfDaily,
-			StayingTimeOfDaily stayingTime, AttendanceTimeOfExistMinus budgetTimeVariance, AttendanceTimeOfExistMinus unEmployedTime) {
+			StayingTimeOfDaily stayingTime, AttendanceTimeOfExistMinus unEmployedTime, AttendanceTimeOfExistMinus budgetTimeVariance) {
 		super();
 		this.employeeId = employeeId;
 		this.ymd = ymd;
