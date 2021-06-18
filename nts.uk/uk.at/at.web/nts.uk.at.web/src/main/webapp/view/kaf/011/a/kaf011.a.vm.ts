@@ -60,6 +60,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				if(!_.isNil(__viewContext.transferred.value)) {
 					vm.isFromOther = true;
 					params = __viewContext.transferred.value;
+					vm.params = params;
 				}
 			}
 			let paramDate;
