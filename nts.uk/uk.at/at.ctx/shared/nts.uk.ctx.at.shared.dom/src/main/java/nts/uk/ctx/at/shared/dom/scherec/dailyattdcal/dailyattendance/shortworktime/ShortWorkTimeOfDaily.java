@@ -223,7 +223,7 @@ public class ShortWorkTimeOfDaily {
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @return 育児介護区分
 	 */
-	private static ChildCareAtr getChildCareAttributeToDaily(IntegrationOfDaily integrationOfDaily) {
+	public static ChildCareAtr getChildCareAttributeToDaily(IntegrationOfDaily integrationOfDaily) {
 		if(integrationOfDaily.getShortTime().isPresent()) {
 			val firstTimeSheet = integrationOfDaily.getShortTime().get().getShortWorkingTimeSheets().stream().findFirst();
 			if(firstTimeSheet.isPresent()) {

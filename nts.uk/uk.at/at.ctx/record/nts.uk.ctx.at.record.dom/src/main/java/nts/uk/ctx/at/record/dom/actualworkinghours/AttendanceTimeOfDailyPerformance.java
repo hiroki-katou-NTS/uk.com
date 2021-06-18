@@ -81,7 +81,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	
 	public AttendanceTimeOfDailyPerformance(String employeeId, GeneralDate ymd,
 			WorkScheduleTimeOfDaily workScheduleTimeOfDaily, ActualWorkingTimeOfDaily actualWorkingTimeOfDaily,
-			StayingTimeOfDaily stayingTime, AttendanceTimeOfExistMinus unEmployedTime, AttendanceTimeOfExistMinus budgetTimeVariance) {
+			StayingTimeOfDaily stayingTime, AttendanceTimeOfExistMinus budgetTimeVariance, AttendanceTimeOfExistMinus unEmployedTime) {
 		super();
 		this.employeeId = employeeId;
 		this.ymd = ymd;
@@ -365,8 +365,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 								.getStayingTime()
 								.minusMinutes(calcResultIntegrationOfDaily
 										.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
-										.getTotalWorkingTime().calcTotalDedTime(calculationRangeOfOneDay, premiumAtr,
-												holidayCalcMethodSet, commonSetting)
+										.getTotalWorkingTime().calcTotalDedTime(recordReGetClass, premiumAtr)
 										.valueAsMinutes())
 								.valueAsMinutes());
 				alreadlyDedBindTime = alreadlyDedBindTime.minusMinutes(calcResultIntegrationOfDaily
@@ -544,7 +543,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 						: new AttendanceTimeOfExistMinus(0));
 
 		/*不就労時間*/
-		val deductedBindTime = stayingTime.getStayingTime().minusMinutes(actualWorkingTimeOfDaily.getTotalWorkingTime().calcTotalDedTime(recordReGetClass.getCalculationRangeOfOneDay(),PremiumAtr.RegularWork,recordReGetClass.getHolidayCalcMethodSet(),recordReGetClass.getWorkTimezoneCommonSet()).valueAsMinutes());
+		val deductedBindTime = stayingTime.getStayingTime().minusMinutes(actualWorkingTimeOfDaily.getTotalWorkingTime().calcTotalDedTime(recordReGetClass, PremiumAtr.RegularWork).valueAsMinutes());
 		val unEmployedTime = deductedBindTime.minusMinutes(actualWorkingTimeOfDaily.getTotalWorkingTime().getActualTime().valueAsMinutes());
 		/*予定差異時間の計算*/
 		val budgetTimeVariance = new AttendanceTimeOfExistMinus(actualWorkingTimeOfDaily.getTotalWorkingTime().getTotalTime().minusMinutes(workScheduleTime.getWorkScheduleTime().getTotal().valueAsMinutes()).valueAsMinutes());
