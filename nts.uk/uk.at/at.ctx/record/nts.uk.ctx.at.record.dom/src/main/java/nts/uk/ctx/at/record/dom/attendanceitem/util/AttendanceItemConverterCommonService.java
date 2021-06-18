@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtilRes;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemIdContainer;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -46,6 +46,8 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 	}
 	
 	protected abstract boolean isMonthly();
+
+	protected abstract boolean isAnyPeriod();
 
 	protected abstract Object correctOptionalItem(Object dto);
 	
@@ -128,7 +130,7 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 
 	private void loadMergeGroup() {
 		if (clearMergeGroups || this.mergeGroups.isEmpty()) {
-			this.mergeGroups = AttendanceItemIdContainer.groupItemByDomain(this.needMergeItems, ItemValue::itemId, isMonthly());
+			this.mergeGroups = AttendanceItemIdContainer.groupItemByDomain(this.needMergeItems, ItemValue::itemId, isMonthly(), isAnyPeriod());
 		}
 	}
 
@@ -198,7 +200,7 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 
 	private List<ItemValue> internalConvert(Collection<Integer> attendanceItemIds) {
 		Map<String, List<Integer>> groups = AttendanceItemIdContainer.groupItemByDomain(
-													attendanceItemIds, id -> id, isMonthly());
+													attendanceItemIds, id -> id, isMonthly(), isAnyPeriod());
 		
 //		List<ItemValue> converted = Collections.synchronizedList(new ArrayList<>());
 		List<ItemValue> converted = new ArrayList<>();
@@ -245,9 +247,13 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 		if (dto == null) {
 			return new ArrayList<>();
 		} else {
-			
-			return AttendanceItemUtilRes.collect((AttendanceItemDataGate) dto, itemIds,
-					isMonthly() ? AttendanceItemType.MONTHLY_ITEM : AttendanceItemType.DAILY_ITEM);
+			if (isMonthly()) {
+				return AttendanceItemUtilRes.collect((AttendanceItemDataGate) dto, itemIds, AttendanceItemType.MONTHLY_ITEM);
+			} else if (isAnyPeriod()) {
+				return AttendanceItemUtilRes.collect((AttendanceItemDataGate) dto, itemIds, AttendanceItemType.ANY_PERIOD_ITEM);
+			} else {
+				return AttendanceItemUtilRes.collect((AttendanceItemDataGate) dto, itemIds, AttendanceItemType.DAILY_ITEM);
+			}
 		}
 	}
 }

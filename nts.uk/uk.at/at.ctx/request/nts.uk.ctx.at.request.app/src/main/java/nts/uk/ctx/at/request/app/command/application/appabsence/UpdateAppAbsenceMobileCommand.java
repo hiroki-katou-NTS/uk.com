@@ -30,10 +30,4 @@ public class UpdateAppAbsenceMobileCommand {
 	
 	// 古いの振出振休紐付け管理<List>
 	private List<PayoutSubofHDManagementDto> payoutSubofHDManagementDto;
-	
-	// 休出代休紐付け管理<List>
-	private List<LeaveComDayOffManaDto> leaveComDayOffMana;
-	
-	// 振出振休紐付け管理<List>
-	private List<PayoutSubofHDManagementDto> payoutSubofHDManagements;
 }

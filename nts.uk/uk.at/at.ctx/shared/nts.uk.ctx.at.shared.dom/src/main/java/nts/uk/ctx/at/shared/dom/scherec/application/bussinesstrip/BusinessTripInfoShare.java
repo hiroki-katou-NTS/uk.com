@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 
 import java.util.List;
 import java.util.Optional;
-// 出張勤務情報
+// 出張勤務情報(反映用)
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

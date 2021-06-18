@@ -31,7 +31,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * 
+ *
  * @author nampt 日別実績の勤務情報
  *
  */
@@ -42,7 +42,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 public class KrcdtDayInfoPerWork extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@EmbeddedId
 	public KrcdtDaiPerWorkInfoPK krcdtDaiPerWorkInfoPK;
 
@@ -62,20 +62,20 @@ public class KrcdtDayInfoPerWork extends ContractUkJpaEntity implements Serializ
 
 	@Column(name = "BACK_STRAIGHT_ATR")
 	public Integer backStraightAttribute;
-	
+
 	@Column(name = "DAY_OF_WEEK")
 	public Integer dayOfWeek;
-	
+
 	@Column(name = "TREAT_AS_SUBSTITUTE_ATR")
 	public Integer treatAsSubstituteAtr;
-	
+
 	@Column(name = "TREAT_AS_SUBSTITUTE_DAYS")
 	public Double treatAsSubstituteDays;
 
 	@OneToMany(mappedBy = "daiPerWorkInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumn(nullable = true)
 	public List<KrcdtDayTsAtdSche> scheduleTimes;
-	
+
 	@Version
 	@Column(name = "EXCLUS_VER")
 	public long version;
@@ -85,7 +85,7 @@ public class KrcdtDayInfoPerWork extends ContractUkJpaEntity implements Serializ
 		this.krcdtDaiPerWorkInfoPK = krcdtDaiPerWorkInfoPK;
 		this.scheduleTimes = new ArrayList<>();
 	}
-	
+
 	@Override
 	protected Object getKey() {
 		return this.krcdtDaiPerWorkInfoPK;
@@ -94,7 +94,7 @@ public class KrcdtDayInfoPerWork extends ContractUkJpaEntity implements Serializ
 	public WorkInfoOfDailyPerformance toDomain() {
 		return toDomain(this, scheduleTimes);
 	}
-	
+
 	public static WorkInfoOfDailyPerformance toDomain(KrcdtDayInfoPerWork entity, List<KrcdtDayTsAtdSche> scheduleTimes) {
 //		if(treatAsSubstituteAtr != null && treatAsSubstituteDays != null) {
 //			workInfo.setNumberDaySuspension(Optional.of(
@@ -110,19 +110,19 @@ public class KrcdtDayInfoPerWork extends ContractUkJpaEntity implements Serializ
 												EnumAdaptor.valueOf(entity.backStraightAttribute, NotUseAttribute.class), 
 												entity.krcdtDaiPerWorkInfoPK.ymd,
 												EnumAdaptor.valueOf(entity.dayOfWeek, DayOfWeek.class),
+
 												KrcdtDayTsAtdSche.toDomain(scheduleTimes),
 												(entity.treatAsSubstituteAtr != null && entity.treatAsSubstituteDays != null)
 														? Optional.of(new NumberOfDaySuspension(new UsedDays(entity.treatAsSubstituteDays),
 																EnumAdaptor.valueOf(entity.treatAsSubstituteAtr, FuriClassifi.class)))
 														: Optional.empty());
-
 		domain.setVersion(entity.version);
 		return domain;
 	}
 
 	public static KrcdtDayInfoPerWork toEntity(WorkInfoOfDailyPerformance workInfoOfDailyPerformance) {
 		WorkInfoOfDailyAttendance wki = workInfoOfDailyPerformance.getWorkInformation();
-		
+
 		return new KrcdtDayInfoPerWork(
 				new KrcdtDaiPerWorkInfoPK(workInfoOfDailyPerformance.getEmployeeId(),
 						workInfoOfDailyPerformance.getYmd()),

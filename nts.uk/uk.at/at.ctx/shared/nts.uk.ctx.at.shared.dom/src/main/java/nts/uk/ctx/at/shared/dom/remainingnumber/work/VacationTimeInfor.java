@@ -1,11 +1,17 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.work;
 
+import java.util.List;
+import java.util.stream.IntStream;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+
 /**
- * 時間休暇使用情報
+ * 時間休暇使用時間
+ * 
  * @author do_dt
  *
  */
@@ -14,12 +20,18 @@ import lombok.Setter;
 @Setter
 @Getter
 public class VacationTimeInfor {
-	/**	60H超休使用時間 */
-	private Integer hChoukyuTime;
-	/**	時間休種類 */
+
+	/** 使用対象 */
 	private AppTimeType timeType;
-	/**	時間代休使用時間 */
-	private Integer kyukaTime;
-	/**	時間年休使用時間 */
-	private Integer nenkyuTime;
+	/** 作成元区分 */
+	private CreateAtr createData;
+	/** 勤務種類コード */
+	private String workTypeCode;
+	/** 時間 */
+	private List<VacationUsageTimeDetail> vacationUsageTimeDetails;
+	
+	//dùng method này lấy tổng times, lỡ sau thay đổi gì thì tiện hơn
+	public int getTotalTimes() {
+		return this.getVacationUsageTimeDetails().stream().flatMapToInt(x -> IntStream.of(x.getTimes())).sum();
+	}
 }

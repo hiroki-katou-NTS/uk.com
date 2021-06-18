@@ -29,14 +29,14 @@
 					<button tabindex="3" class="proceed" data-bind="click: saveOvertime" >#{i18n.getText('KMK010_40')}</button>
 					<button tabindex="4" class="buttonOther" data-bind="click: closeSaveOvertime">#{i18n.getText('KMK010_41')}</button>
 				</div> -->
-        <div id="content-area" class="body">
+        <div id="contents-area" class="body">
           <div class="contentDialog">
             <!-- <label>#{i18n.getText('KMK010_35')}</label> -->
             <div class="tbOvertime">
               <table class="overtime-border">
                 <tr class="bg-dark-green">
-									<td><!-- #{i18n.getText('KMK010_37')} --></td>
-									<!-- B1_5 -->
+                  <td> #{i18n.getText('KMK010_37')}</td>
+                  <!-- B1_5 -->
                   <td>#{i18n.getText('KMK010_38')}</td>
                   <!-- B1_11 -->
                   <td>#{i18n.getText('KMK010_13')}</td>
@@ -85,24 +85,24 @@
               </table>
             </div>
           </div>
-          <div id="functions-area-bottom" class="">
-            <button
-              tabindex="2"
-              id="btnSaveOvertime"
-              class="x-large proceed"
-              data-bind="click: saveOvertime, enable: $root.errors.isEmpty"
-            >
-              #{i18n.getText('KMK010_40')}
-            </button>
-            <button
-              tabindex="3"
-              id="btnCloseSaveOvertime"
-              class="large"
-              data-bind="click: closeSaveOvertime"
-            >
-              #{i18n.getText('KMK010_41')}
-            </button>
-          </div>
+        </div>
+        <div id="functions-area-bottom" class="">
+          <button
+                  tabindex="2"
+                  id="btnSaveOvertime"
+                  class="x-large proceed"
+                  data-bind="click: saveOvertime, enable: $root.errors.isEmpty"
+          >
+            #{i18n.getText('KMK010_40')}
+          </button>
+          <button
+                  tabindex="3"
+                  id="btnCloseSaveOvertime"
+                  class="large"
+                  data-bind="click: closeSaveOvertime"
+          >
+            #{i18n.getText('KMK010_41')}
+          </button>
         </div>
       </ui:define>
     </ui:composition>

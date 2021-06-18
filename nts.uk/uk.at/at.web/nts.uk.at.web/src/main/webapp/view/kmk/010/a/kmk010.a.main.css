@@ -1,7 +1,6 @@
 @CHARSET "UTF-8";
 
 .wrapper {
-	padding-top: 20px;
 	padding-left: 20px;
 }
 
@@ -89,6 +88,7 @@
 .sixtySetting thead td {
 	padding-top: 7px;
 	padding-bottom: 7px;
+	text-align: center;
 }
 .sixtySetting table td:nth-child(1){
 	width: 30%;
@@ -222,12 +222,6 @@ table td .cell .limited-label {
 	height: 17px;
 	text-align: left;
 }
-.float-left {
-	float: left;
-}
-#functions-area {
-	display: flex;
-}
 .fixed-flex-layout-left {
 	width: 100%;
 }
@@ -240,7 +234,7 @@ html {
 }
 
 .rounding-setting-overtime-hours {
-	margin-top: 30px;
+	margin-top: 10px;
 }
 
 .methodSelect .ntsRadioBox {

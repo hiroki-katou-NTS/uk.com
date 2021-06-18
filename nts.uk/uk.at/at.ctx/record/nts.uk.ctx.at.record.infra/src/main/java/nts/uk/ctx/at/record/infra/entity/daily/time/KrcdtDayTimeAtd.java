@@ -2797,8 +2797,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 				   																  new AttendanceTime(entity.pefomWorkTime),
 				   																  new AttendanceTime(entity.prsIncldPrmimTime),
 				   																  new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.prsIncldMidnTime),
-				   																		  																				  new AttendanceTime(entity.calcPrsIncldMidnTime))),
-				   																  new AttendanceTime(entity.vactnAddTime));
+				   																		  																				  new AttendanceTime(entity.calcPrsIncldMidnTime))));
 	}
 
 	private static WorkScheduleTimeOfDaily createScheduleWorkTime(KrcdtDayTimeAtd entity) {

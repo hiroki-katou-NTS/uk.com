@@ -41,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.At
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 月の計算中の日別実績データ
@@ -398,8 +399,14 @@ public class MonthlyCalculatingDailys {
 	public static AttendanceTimeOfDailyAttendance examDayTimeCorrect(AttendanceTimeOfDailyAttendance atTime,
 			WorkInfoOfDailyAttendance workInfo) {
 
+		/** 大塚モードかを確認する */
+		if (!AppContexts.optionLicense().customize().ootsuka())
+			return atTime;
+		
+		/** 就業時間帯が試験日かどうか判断 */
 		if (workInfo.getRecordInfo().isExamWorkTime()) {
 
+			/** フレックス計算に影響する項目を0：00にする */
 			WorkScheduleTimeOfDaily correctedSche = new WorkScheduleTimeOfDaily(atTime.getWorkScheduleTimeOfDaily().getWorkScheduleTime(),
 																				atTime.getWorkScheduleTimeOfDaily().getRecordPrescribedLaborTime());
 
@@ -415,8 +422,7 @@ public class MonthlyCalculatingDailys {
 														new AttendanceTime(0),
 														new AttendanceTime(0),
 														beforeActualWork.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getWithinPrescribedPremiumTime(),
-														beforeActualWork.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getWithinStatutoryMidNightTime(),
-														beforeActualWork.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getVacationAddTime()),
+														beforeActualWork.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getWithinStatutoryMidNightTime()),
 												beforeActualWork.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily(),
 												beforeActualWork.getTotalWorkingTime().getLateTimeOfDaily(),
 												beforeActualWork.getTotalWorkingTime().getLeaveEarlyTimeOfDaily(),

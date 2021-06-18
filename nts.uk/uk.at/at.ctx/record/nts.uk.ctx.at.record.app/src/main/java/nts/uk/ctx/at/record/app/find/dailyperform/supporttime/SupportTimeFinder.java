@@ -17,6 +17,8 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyAttendanceDto;
+import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyDto;
+import nts.uk.ctx.at.record.app.find.dailyperform.remark.dto.RemarksOfDailyDto;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
@@ -35,32 +37,38 @@ public class SupportTimeFinder extends FinderFacade{
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends ConvertibleAttendanceItem> List<T> finds(String employeeId, GeneralDate baseDate) {
+	public OuenWorkTimeSheetOfDailyDto find(String employeeId, GeneralDate baseDate) {
 		
 		OuenWorkTimeSheetOfDaily ouenWorkTimeSheetOfDaily = repo.find(employeeId, baseDate);
 		if(ouenWorkTimeSheetOfDaily == null || ouenWorkTimeSheetOfDaily.getOuenTimeSheet().isEmpty())
 			return null;
+		OuenWorkTimeSheetOfDaily dailyDto = new OuenWorkTimeSheetOfDaily(employeeId, baseDate, ouenWorkTimeSheetOfDaily.getOuenTimeSheet());
+		OuenWorkTimeSheetOfDailyDto rs = OuenWorkTimeSheetOfDailyDto.getDto(employeeId, baseDate, dailyDto);
 		
-		return (List<T>)  ouenWorkTimeSheetOfDaily.getOuenTimeSheet()
-				.stream()
-				.map(c -> OuenWorkTimeSheetOfDailyAttendanceDto.from(employeeId, baseDate, c))
-				.collect(Collectors.toList());
+		return rs;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends ConvertibleAttendanceItem> List<T> finds(String employeeId, GeneralDate baseDate) {
+		
+		OuenWorkTimeSheetOfDaily domainDaily = repo.find(employeeId, baseDate);
+		if(domainDaily == null || domainDaily.getOuenTimeSheet().isEmpty())
+			return null;
+		
+		OuenWorkTimeSheetOfDailyDto rs = OuenWorkTimeSheetOfDailyDto.getDto(domainDaily);
+		return (List<T>) rs;
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends ConvertibleAttendanceItem> List<T> find(List<String> employeeIds, DatePeriod period) {
-		List<OuenWorkTimeSheetOfDaily> ouenWorkTimeSheetOfDailys = employeeIds.stream().map(c -> this.repo.find(c, period))
+		List<OuenWorkTimeSheetOfDaily> domainDailys = employeeIds.stream().map(c -> this.repo.find(c, period))
 				.flatMap(List::stream)
 				.collect(Collectors.toList());
 		
-		List<OuenWorkTimeSheetOfDailyAttendanceDto> rs =  ouenWorkTimeSheetOfDailys
-				.stream()
-				.map(d -> d.getOuenTimeSheet().stream().map(e -> OuenWorkTimeSheetOfDailyAttendanceDto.from(d.getEmpId(), d.getYmd(), e)).collect(Collectors.toList()))
-				.flatMap(List::stream)
-				.collect(Collectors.toList());
-		
-		return (List<T>) rs;
+		List<OuenWorkTimeSheetOfDailyDto> dtos = group(domainDailys);
+		return (List<T>) dtos;
 	}
 	
 	@Override
@@ -68,28 +76,26 @@ public class SupportTimeFinder extends FinderFacade{
 	public <T extends ConvertibleAttendanceItem> List<T> find(Map<String, List<GeneralDate>> param) {
 		
 		List<OuenWorkTimeSheetOfDaily> domains = this.repo.find(param);
-		List<OuenWorkTimeSheetOfDailyAttendanceDto> dtos = group(domains);
+		List<OuenWorkTimeSheetOfDailyDto> dtos = group(domains);
 		return (List<T>) dtos;
 	}
 	
-	private List<OuenWorkTimeSheetOfDailyAttendanceDto> group(List<OuenWorkTimeSheetOfDaily> domains) {
+	private List<OuenWorkTimeSheetOfDailyDto> group(List<OuenWorkTimeSheetOfDaily> domains) {
 		Map<String, Map<GeneralDate, List<OuenWorkTimeSheetOfDaily>>> supports = domains.stream()
 				.collect(Collectors.groupingBy(OuenWorkTimeSheetOfDaily::getEmpId,
 						Collectors.collectingAndThen(Collectors.toList(), list -> list.stream()
 								.collect(Collectors.groupingBy(OuenWorkTimeSheetOfDaily::getYmd, Collectors.toList())))));
 
-		List<OuenWorkTimeSheetOfDailyAttendanceDto> dto = new ArrayList<>();
+		List<OuenWorkTimeSheetOfDailyDto> dto = new ArrayList<>();
 
 		supports.entrySet().forEach(es -> {
 			es.getValue().entrySet().forEach(ves -> {
 				ves.getValue().forEach( tves -> {
-					tves.getOuenTimeSheet().forEach( s -> {
-						dto.add(OuenWorkTimeSheetOfDailyAttendanceDto.from(es.getKey(), ves.getKey(), s));
-					});
+						dto.add(OuenWorkTimeSheetOfDailyDto.getDto(tves));
 				});
 			});
 		});
-
+		
 		return dto;
 	}
 
@@ -98,16 +104,4 @@ public class SupportTimeFinder extends FinderFacade{
 		val domain = this.repo.find(employeeId, baseDate);
 		return domain;
 	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public OuenWorkTimeSheetOfDailyAttendanceDto find(String employeeId, GeneralDate baseDate) {
-		
-		OuenWorkTimeSheetOfDaily ouenWorkTimeSheetOfDaily = repo.find(employeeId, baseDate);
-		if(ouenWorkTimeSheetOfDaily == null || ouenWorkTimeSheetOfDaily.getOuenTimeSheet().isEmpty())
-			return null;
-		OuenWorkTimeSheetOfDailyAttendanceDto rs = OuenWorkTimeSheetOfDailyAttendanceDto.from(employeeId, baseDate, ouenWorkTimeSheetOfDaily.getOuenTimeSheet().get(0));
-		return rs;
-	}
-	
 }

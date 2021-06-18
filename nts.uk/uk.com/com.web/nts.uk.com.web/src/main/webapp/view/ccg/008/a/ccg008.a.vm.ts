@@ -114,6 +114,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
                       const doc = frame.contentDocument || frame.contentWindow.document;
   
                       doc.body.innerHTML = res.htmlContent;
+											doc.body.setAttribute('style', 'overflow: auto; position: relative;');
                     });
                 } else {
                   element.innerHTML = `<iframe src="${ntsFile.liveViewUrl(fileId, 'index.htm')}"></iframe>`;
@@ -525,6 +526,26 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
 		getMinutes(value: number) {
 			return [0, 1, 5, 10, 20, 30, 40, 50, 60][value] || 0;
+		}
+
+		refreshLayout() {
+			const vm = this;
+			const restoreKtg026 = vm.$window.storage('KTG026_TARGET').then((rs: {isRefresh: boolean, target: any}) => {
+				if (rs) {
+					rs.isRefresh = true;
+					vm.$window.storage('KTG026_TARGET', rs);
+				}
+			});
+			const restoreKtg027 = vm.$window.storage('KTG027_TARGET').then((rs: {isRefresh: boolean, target: any}) => {
+				if (rs) {
+					rs.isRefresh = true;
+					vm.$window.storage('KTG027_TARGET', rs);
+				}
+			});
+
+			$.when(restoreKtg026, restoreKtg027).then(() => {
+				vm.callApiTopPage();
+			})
 		}
 	}
 

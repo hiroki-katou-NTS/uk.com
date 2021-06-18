@@ -57,3 +57,7 @@ hr {
 .pl-15{
 	padding-left: 15px;
 }
+
+.nts-fixed-table .nts-fixed-body-container {
+	max-width: 270px !important;
+}

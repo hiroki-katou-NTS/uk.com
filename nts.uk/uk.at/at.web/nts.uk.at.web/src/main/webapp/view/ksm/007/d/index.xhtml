@@ -11,7 +11,7 @@
       <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE" />
         <script>
-          var dialogSize = { width: 450, height: 280 };
+          var dialogSize = { width: 450, height: 450 };
         </script>
         <com:stylefile path="ksm007.d.main.css" />
         <com:scriptfile path="ksm007.d.vm.js" />
@@ -19,56 +19,34 @@
 
       <ui:define name="content">
         <div id="contents-area" class="ksm-007d">
-          <div class="table">
-            <div
-              class="cell valign-center"
-              data-bind="text: $i18n('KSM007_43')"
-            ></div>
+          <div class="control-group valign-center">
+            <div class="label" data-bind="text: $i18n('KSM007_43')"/>
           </div>
-          <div class="table d-flex">
-            <div
-              class="cell valign-center"
-              data-bind="ntsFormLabel: {required: true}, text: $i18n('KSM007_44')"
-            ></div>
-            <div class="cell valign-center">
-              <div class="select-mode">
-                <div  tabindex="1" id="editMode"
+          <div class="control-group valign-top">
+            <div data-bind="ntsFormLabel: {required: true, text: $i18n('KSM007_44')}"/>
+            <div  tabindex="1"
+                  id="editMode"
                   data-bind="ntsRadioBoxGroup: {
 									options: itemList,
 									optionsValue: 'id',
 									optionsText: 'name',
 									value: selectedId,
 									name: '#[KSM007_44]',
-									enable: isEnable}"
-                ></div>
-              </div>
-              <div class="change-date">
-                <div class="table">
-                  <div
-                    class="cell valign-center"
-                    data-bind="ntsFormLabel: {required: false},text: $i18n('KSM007_37')"
-                  ></div>
-                  <div class="cell valign-center">
-                    <div
-                      id="startDate" tabindex="2"
-                      data-bind="ntsDatePicker: { 
-												name: '#[KSM007_38]', 
-												value: startFromDate,
-												required: true, 
-												enable: selectedId() === 1 }"
-                    ></div>
-                  </div>
-                  <div
-                    class="cell valign-center cell-3"
-                    data-bind="text: $i18n('KSM007_39')"
-                  ></div>
-                  <div
-                    class="cell valign-center"
-                    data-bind="text: $i18n('KSM007_40')"
-                  ></div>
-                </div>
-              </div>
-            </div>
+									enable: isEnable
+                            }"/>
+          </div>
+          <div class="control-group valign-center">
+            <div data-bind="ntsFormLabel: {required: false, text: $i18n('KSM007_37')}" style="margin-left: 125px;"/>
+            <div id="startDate"
+                 tabindex="2"
+                 data-bind="ntsDatePicker: {
+                                  name: '#[KSM007_38]',
+                                  value: startFromDate,
+                                  required: true,
+                                  enable: selectedId() === 1
+                            }"/>
+            <span data-bind="text: $i18n('KSM007_39')"/>
+            <span data-bind="text: $i18n('KSM007_40')"/>
           </div>
         </div>
         <div id="functions-area-bottom">

@@ -12,6 +12,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.AllArgsConstructor;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -30,10 +31,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.ba
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExeConditionRepository;
 import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition;
+import nts.uk.ctx.at.request.dom.applicationreflect.object.ReflectStatusResult;
 import nts.uk.ctx.at.request.dom.reasonappdaily.ReasonApplicationDailyResult;
 import nts.uk.ctx.at.request.dom.reasonappdaily.ReasonApplicationDailyResultRepo;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.reflect.ReflectStatusResultShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -116,8 +117,8 @@ public class CreateRequireReflectionProcess {
 		private final ReasonApplicationDailyResultRepo reasonApplicationDailyResultRepo;
 
 		@Override
-		public Pair<Object, AtomTask> process(ApplicationShare application,
-				GeneralDate date, ReflectStatusResultShare reflectStatus, int preAppWorkScheReflectAttr) {
+		public Pair<ReflectStatusResult, AtomTask> process(ApplicationShare application,
+				GeneralDate date, ReflectStatusResult reflectStatus, int preAppWorkScheReflectAttr) {
 			return eflectApplicationWorkScheduleAdapter.process(application, date, reflectStatus,
 					preAppWorkScheReflectAttr);
 		}
@@ -153,9 +154,9 @@ public class CreateRequireReflectionProcess {
 		}
 
 		@Override
-		public Pair<ReflectStatusResultShare, Optional<AtomTask>> processWork(ApplicationShare application,
-				GeneralDate date, ReflectStatusResultShare reflectStatus) {
-			return reflectApplicationWorkRecordAdapter.process(application, date, reflectStatus);
+		public Pair<ReflectStatusResult, Optional<AtomTask>> processWork(ApplicationShare application,
+				GeneralDate date, ReflectStatusResult reflectStatus, GeneralDateTime reflectTime) {
+			return reflectApplicationWorkRecordAdapter.process(application, date, reflectStatus, reflectTime);
 		}
 
 		@Override
@@ -172,8 +173,8 @@ public class CreateRequireReflectionProcess {
 
 		@Override
 		public void processCreateHist(String employeeId, GeneralDate date, String appId,
-				ScheduleRecordClassifi classification, Map<Integer, String> mapValue) {
-			createEditStatusHistAppReasonAdapter.process(employeeId, date, appId, classification, mapValue);
+				ScheduleRecordClassifi classification, Map<Integer, String> mapValue, GeneralDateTime reflectTime) {
+			createEditStatusHistAppReasonAdapter.process(employeeId, date, appId, classification, mapValue, reflectTime);
 		}
 
 		@Override

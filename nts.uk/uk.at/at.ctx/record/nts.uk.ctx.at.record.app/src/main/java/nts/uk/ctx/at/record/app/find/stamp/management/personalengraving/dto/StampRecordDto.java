@@ -36,7 +36,7 @@ public class StampRecordDto {
 	private String stampArt;
 	private String stampArtName;
 	private Integer revervationAtr;
-	private String empInfoTerCode;
+//	private String empInfoTerCode;
 	private String timeStampType;
 
 	// stamp
@@ -79,8 +79,8 @@ public class StampRecordDto {
 		this.stampArt = "";
 
 		// this.revervationAtr = stampRecord.getRevervationAtr().value;
-		this.empInfoTerCode = stampRecord.getEmpInfoTerCode().isPresent() ? stampRecord.getEmpInfoTerCode().get().v()
-				: null;
+//		this.empInfoTerCode = stampRecord.getEmpInfoTerCode().isPresent() ? stampRecord.getEmpInfoTerCode().get().v()
+//				: null;
 
 		// stamp
 		if (stamp != null) {

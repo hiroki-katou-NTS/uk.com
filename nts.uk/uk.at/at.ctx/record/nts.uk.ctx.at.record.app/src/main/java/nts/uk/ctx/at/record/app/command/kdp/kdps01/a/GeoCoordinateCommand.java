@@ -24,7 +24,9 @@ public class GeoCoordinateCommand {
 	private BigDecimal longitude;
 
 	public GeoCoordinate toDomainValue() {
-
+		if (this.latitude == null && this.longitude == null) {
+			return null;
+		}
 		return new GeoCoordinate(this.latitude.doubleValue(), this.longitude.doubleValue());
 	}
 }

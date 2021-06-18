@@ -69,7 +69,7 @@ public class WithinStatutoryMidNightTime {
 						recordReGet.getHolidayCalcMethodSet(),
 						recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getCalAtr(),
 						workType,
-						flexCalcMethod.get(),
+						flexCalcMethod.map(x-> x).orElse(null),
 						recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 						vacationClass,
 						withinWorkTimeSheet.getTimeVacationAdditionRemainingTime().get(),
@@ -77,14 +77,15 @@ public class WithinStatutoryMidNightTime {
 						workTimeCode,
 						recordReGet.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
 						recordReGet.getAddSetting(),
-						recordReGet.getHolidayAddtionSet().get(),
+						recordReGet.getHolidayAddtionSet().map(x-> x).orElse(null),
 						recordReGet.getDailyUnit(),
 						recordReGet.getWorkTimezoneCommonSet(),
 						recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getUpLimitORtSet(),
 						conditionItem,
 						predetermineTimeSetByPersonInfo,
 						recordReGet.getCoreTimeSetting(),
-						NotUseAtr.NOT_USE);
+						NotUseAtr.NOT_USE,
+						Optional.of(recordReGet.getCalculationRangeOfOneDay().getAttendanceLeavingWork()));
 			}
 			else{
 				calcTime = withinWorkTimeSheet.calcMidNightTime();

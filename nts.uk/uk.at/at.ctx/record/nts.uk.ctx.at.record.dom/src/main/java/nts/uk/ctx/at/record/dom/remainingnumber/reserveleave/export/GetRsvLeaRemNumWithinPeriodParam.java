@@ -7,11 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 
 /**
  * パラメータ：期間中の積立年休残数を取得する
@@ -39,11 +39,13 @@ public class GetRsvLeaRemNumWithinPeriodParam {
 	/** 上書きフラグ */
 	private Optional<Boolean> isOverWrite;
 	/** 上書き用の暫定管理データ */
-	private Optional<List<TmpReserveLeaveMngWork>> forOverWriteList;
+	private Optional<List<TmpResereLeaveMng>> forOverWriteList;
 //	/** 不足分付与残数データ出力区分 */
 //	private Optional<Boolean> isOutputForShortage;
 //	/** 集計開始日を締め開始日として扱う　（締め開始日を確認しない） */
 //	private Optional<Boolean> isNoCheckStartDate;
 	/** 前回の積立年休の集計結果 */
 	private Optional<AggrResultOfReserveLeave> prevReserveLeave;
+	/**上書き対象期間　*/
+	private Optional<DatePeriod> isOverWritePeriod;
 }

@@ -16,6 +16,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -793,7 +794,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	public AppInfoMasterOutput getListAppMasterInfo(Application application, DatePeriod period, NotUseAtr displayWorkPlaceName, 
 			Map<String, SyEmployeeImport> mapEmpInfo, Map<Pair<String, DatePeriod>, WkpInfo> mapWkpInfo, int device) {
 		SyEmployeeImport applicant = null;
-		Optional<SyEmployeeImport> opEnteredPerson = Optional.empty();
 		// 社員のキャッシュがあるかチェックする ( Check xem  cash của employee có hay không?
 		if(mapEmpInfo.containsKey(application.getEmployeeID())) {
 			// 申請一覧リスト.申請一覧リスト.社員名をキャッシュからセットする(applicationList. Set employee name from cache)
@@ -801,15 +801,16 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		} else {
 			// アルゴリズム「社員IDから個人社員基本情報を取得」を実行する ( Thực hiện thuật toán 「社員IDから個人社員基本情報を取得」)
 			applicant = syEmpAdapter.getPersonInfor(application.getEmployeeID());
-			if(!application.getEmployeeID().equals(application.getEnteredPersonID())) {
-				// アルゴリズム「社員IDから個人社員基本情報を取得」を実行する ( Thực hiện thuật toán 「社員IDから個人社員基本情報を取得」
-				SyEmployeeImport enteredPerson = syEmpAdapter.getPersonInfor(application.getEnteredPersonID());
-				opEnteredPerson = Optional.of(enteredPerson);
-			}
 			// 取得したデータをキャッシュに追加 ( Thêm data đã lấy vào cache)
 			mapEmpInfo.put(application.getEmployeeID(), applicant);
-			if(opEnteredPerson.isPresent()) {
-				mapEmpInfo.put(application.getEnteredPersonID(), opEnteredPerson.get());
+		}
+		// 申請者ID　！＝　入力者IDの場合、入力者IDのキャッシュがあるかどうかをチェック
+		if(!application.getEmployeeID().equals(application.getEnteredPersonID())) {
+			if(!mapEmpInfo.containsKey(application.getEnteredPersonID())) {
+				// アルゴリズム「社員IDから個人社員基本情報を取得」を実行する ( Thực hiện thuật toán 「社員IDから個人社員基本情報を取得」
+				SyEmployeeImport enteredPerson = syEmpAdapter.getPersonInfor(application.getEnteredPersonID());
+				// 取得したデータをキャッシュに追加 ( Thêm data đã lấy vào cache)
+				mapEmpInfo.put(application.getEnteredPersonID(), enteredPerson);
 			}
 		}
 		String workplaceName = null;
@@ -859,7 +860,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		result.setApplicantCD(applicant.getEmployeeCode());
 		// result.setAppReason
 		result.setInputDate(application.getInputDate());
-		result.setOpEntererName(opEnteredPerson.map(x -> x.getBusinessName()));
+		result.setOpEntererName(Optional.of(I18NText.getText("CMM045_230", mapEmpInfo.get(application.getEnteredPersonID()).getBusinessName())));
 		result.setOpAppStartDate(application.getOpAppStartDate().map(x -> x.getApplicationDate()));
 		result.setOpAppEndDate(application.getOpAppEndDate().map(x -> x.getApplicationDate()));
 		result.setAppDate(application.getAppDate().getApplicationDate());

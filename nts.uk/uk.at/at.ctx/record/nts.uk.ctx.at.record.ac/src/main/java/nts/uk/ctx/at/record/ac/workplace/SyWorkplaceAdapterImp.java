@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.WorkplaceInformationImport;
 import nts.uk.ctx.bs.employee.pub.employee.workplace.export.WorkplaceExportPub;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport3;
+import nts.uk.ctx.at.record.dom.adapter.workplace.WorkplaceInforImport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceListPub;
 
@@ -63,6 +64,14 @@ public class SyWorkplaceAdapterImp implements SyWorkplaceAdapter {
 				.collect(Collectors.toList());
 	}
 
+	@Override
+	public List<WorkplaceInforImport> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
+			GeneralDate baseDate) {
+		return workplacePub.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate).stream()
+				.map(x -> new WorkplaceInforImport(x.getWorkplaceId(), x.getHierarchyCode(), x.getWorkplaceCode(), 
+						x.getWorkplaceName(), x.getWorkplaceDisplayName(), x.getWorkplaceGenericName(), x.getWorkplaceExternalCode()))
+				.collect(Collectors.toList());
+	}
 	@Override
 	public List<EmployeeInfoImported> getLstEmpByWorkplaceIdsAndPeriod(List<String> workplaceIds, DatePeriod period) {
 		return workplacePub.getLstEmpByWorkplaceIdsAndPeriod(workplaceIds, period).stream()

@@ -228,6 +228,9 @@ public class HolidayShipmentScreenBFinder {
 	 */
 	public LinkingManagementInforDto getLinkingManagementInfor(String companyId, String employeeID, Optional<RecruitmentApp> rec, Optional<AbsenceLeaveApp> abs, boolean substituteManagement, boolean holidayManage) {
 		LinkingManagementInforDto result = new LinkingManagementInforDto();
+		result.recLeaveComDayOffMana = new ArrayList<>();
+		result.absLeaveComDayOffMana = new ArrayList<>();
+		result.absPayoutSubofHDManagements = new ArrayList<>();
 		//INPUT．振出申請をチェックする
 		if(rec.isPresent()) {
 			//<<Public>> 指定した勤務種類をすべて取得する

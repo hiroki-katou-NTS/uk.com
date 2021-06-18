@@ -44,6 +44,7 @@ import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatemonthly
 import nts.uk.ctx.at.function.app.command.processexecution.createlogfileexecution.CreateLogFileExecution;
 import nts.uk.ctx.at.function.app.command.processexecution.createschedule.executionprocess.CalPeriodTransferAndWorktype;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
+import nts.uk.ctx.at.function.dom.adapter.alarm.BasicScheduleAdapter;
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.AppReflectManagerAdapter;
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.ProcessStateReflectImport;
 import nts.uk.ctx.at.function.dom.adapter.dailymonthlyprocessing.DailyMonthlyprocessAdapterFn;
@@ -150,7 +151,6 @@ import nts.uk.ctx.at.schedule.dom.executionlog.RecreateCondition;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.SpecifyCreation;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeService;
@@ -281,7 +281,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
     @Inject
     private GetProcessingDate getProcessingDate;
     @Inject
-    private BasicScheduleRepository basicScheduleRepository;
+    private BasicScheduleAdapter basicScheduleAdapter;
+//    private BasicScheduleRepository basicScheduleRepository;
+    
     @Inject
     private CreateExtraProcessService createExtraProcessService;
 
@@ -449,8 +451,11 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         // アルゴリズム「自動実行登録処理」を実行する
         this.updateDomains(execItemCd, execType, companyId, execId, execSetting, procExecLog, lastExecDateTime,
                 processExecutionLogManage, dateTimeOutput);
-        //アルゴリズム「実行状態ログファイル作成処理」を実行する
-        createLogFileExecution.createLogFile(companyId, execItemCd);
+        // 実行時情報「アプリケーションコンテキスト．オプションライセンス．カスタマイズ．大塚」をチェックする
+     	if (AppContexts.optionLicense().customize().ootsuka()) {
+     		//アルゴリズム「実行状態ログファイル作成処理」を実行する
+            createLogFileExecution.createLogFile(companyId, execItemCd);
+     	}
         
         //更新処理自動実行エラーからトップページアラームを作成する
         DefaultRequireImpl rq = new DefaultRequireImpl(processExecutionLogManageRepository, employeeManageAdapter, topPageAlarmAdapter);
@@ -1033,15 +1038,15 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				// 社員ID（異動者、勤務種別変更者）（List）のみ
 				if (!CollectionUtil.isEmpty(reEmployeeList) && !checkStopExec) {
 					// 異動者、勤務種別変更者、休職者・休業者の期間の計算
-					GeneralDate endDate = basicScheduleRepository.findMaxDateByListSid(reEmployeeList);
+					Optional<GeneralDate> endDate = basicScheduleAdapter.acquireMaxDateBasicSchedule(reEmployeeList);
 
-					if (endDate != null) {
+					if (endDate.isPresent()) {
 						DatePeriod periodDate = this.getMinPeriodFromStartDate(companyId);
 						ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp = this
 								.getScheduleCreatorExecutionOneEmp(execId, procExec,
 										calculateSchedulePeriod, reEmployeeList, companyId, execItemCd);
 						scheduleCreatorExecutionOneEmp.getScheduleExecutionLog()
-								.setPeriod(new DatePeriod(periodDate.start(), endDate));
+								.setPeriod(new DatePeriod(periodDate.start(), endDate.get()));
 
 						boolean isTransfer = procExec.getReExecCondition().getRecreateTransfer().equals(NotUseAtr.USE);
 						boolean isWorkType = procExec.getReExecCondition().getRecreatePersonChangeWkt()
@@ -2633,6 +2638,16 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                 if (processExecution.getExecSetting().getAlarmExtraction().getMailAdministrator().get().booleanValue())
                     sendMailAdmin = true;
             }
+            boolean isDisplayAdmin = false;
+            if (processExecution.getExecSetting().getAlarmExtraction().getDisplayOnTopPageAdministrator().isPresent()) {
+                if (processExecution.getExecSetting().getAlarmExtraction().getDisplayOnTopPageAdministrator().get().booleanValue())
+                    isDisplayAdmin = true;
+            }
+            boolean isDisplayPerson = false;
+            if (processExecution.getExecSetting().getAlarmExtraction().getDisplayOnTopPagePrincipal().isPresent()) {
+                if (processExecution.getExecSetting().getAlarmExtraction().getDisplayOnTopPagePrincipal().get().booleanValue())
+                    isDisplayPerson = true;
+            }
             try {
                 // アラームリスト自動実行処理を実行する
                 outputExecAlarmListPro = this.execAlarmListProcessingService
@@ -2640,7 +2655,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                                 GeneralDateTime.now(), sendMailPerson, sendMailAdmin,
                                 !processExecution.getExecSetting().getAlarmExtraction().getAlarmCode().isPresent() ? ""
                                         : processExecution.getExecSetting().getAlarmExtraction().getAlarmCode().get().v(),
-                                execId);
+                                execId, execItemCd, isDisplayAdmin, isDisplayPerson);
 				log.info("更新処理自動実行_アラーム抽出_END_" + processExecution.getExecItemCode() + "_" + GeneralDateTime.now());
                 if (outputExecAlarmListPro.isCheckStop()) {
                     checkStopExec = true;

@@ -21,7 +21,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class MonthlyCareRemainFinder extends MonthlyFinderFacade {
-	
+
 	@Inject
 	private MonCareHdRemainRepository repo;
 
@@ -31,18 +31,17 @@ public class MonthlyCareRemainFinder extends MonthlyFinderFacade {
 			ClosureDate closureDate) {
 		return MonthlyCareHdRemainDto.from(this.repo.find(employeeId, yearMonth, closureId, closureDate).orElse(null));
 	}
-	
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<MonthlyCareHdRemainDto> finds(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
-		int lastDay = closureDate.getLastDayOfMonth() ? 1 : 0;
 		return repo.findByYearMonthOrderByStartYmd(employeeId, yearMonth).stream()
-				.filter(c -> c.getClosureId() == closureId && c.getIsLastDay() == lastDay
-							&& c.getClosureDay().v() == closureDate.getClosureDay().v())
+				.filter(c -> c.getClosureId() == closureId && c.getClosureDate().getLastDayOfMonth()
+							&& c.getClosureDate().getClosureDay().v() == closureDate.getClosureDay().v())
 				.map(c -> MonthlyCareHdRemainDto.from(c)).collect(Collectors.toList());
 	}
-	
+
 	@Override
 	public <T extends ConvertibleAttendanceItem> List<T> find(Collection<String> employeeId, DatePeriod range) {
 		return find(employeeId, ConvertHelper.yearMonthsBetween(range));

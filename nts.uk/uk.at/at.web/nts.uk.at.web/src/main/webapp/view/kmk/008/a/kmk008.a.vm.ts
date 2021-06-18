@@ -125,5 +125,10 @@ module nts.uk.at.view.kmk008.a {
 			const vm = this;
 			vm.$jump("/view/kaf/021/d/index.xhtml");
 		}
+
+		openScreenKMK010(): void {
+			const vm = this;
+			vm.$jump("/view/kmk/010/a/index.xhtml");
+		}
 	}
 }

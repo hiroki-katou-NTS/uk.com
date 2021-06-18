@@ -7,7 +7,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-//遅刻早退時刻報告
+//遅刻早退時刻報告(反映用)
 public class TimeReportShare {
 //	勤務NO
 	private int workNo;

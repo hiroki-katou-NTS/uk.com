@@ -12,14 +12,14 @@
 			data-bind="click: registerRoleSetPerson, enable: $root.errors.isEmpty">#{i18n.getText('CAS014_11')}</button>
 		<button tabindex="4" class="danger"
 			data-bind="click: deleteRoleSetPerson, enable: screenMode() == 1">#{i18n.getText('CAS014_12')}</button>
-		<button tabindex="4" id="print-button" data-bind="click: saveAsExcel" style="width: 120px;">#{i18n.getText('CAS014_53')}</button>
+		<button tabindex="4" id="print-button" data-bind="click: saveAsExcel" style="width: 130px;">#{i18n.getText('CAS014_53')}</button>
 	</div>
 
 	<div class="contents-area-b">
 		<div class="container-b">
 			<div class="block">
 				<div class="top-row flex valign-center">
-					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_30')}</div>
+					<label>#{i18n.getText('CAS014_30')}</label>
 				</div>
 				<div class="bottom-row">
 					<div style="float: left">
@@ -30,7 +30,7 @@
 									options: roleSetList,
 									primaryKey: 'code',
 									columns: [
-						                { headerText: '#{i18n.getText('CAS014_31')}', key: 'code', width: 110, formatter: _.escape },
+						                { headerText: '#{i18n.getText('CAS014_31')}', key: 'code', width: 130, formatter: _.escape },
 						                { headerText: '#{i18n.getText('CAS014_32')}', key: 'name', width: 150, formatter: _.escape }
 						            ],
 						            rows: 8,
@@ -56,7 +56,7 @@
 								primaryKey: 'employeeId',
 								columns: [
 									{ headerText: 'id', key: 'employeeId', width: 10, hidden: true },
-					                { headerText: '#{i18n.getText('CAS014_35')}', key: 'employeeCd', width: 70, formatter: _.escape },
+					                { headerText: '#{i18n.getText('CAS014_35')}', key: 'employeeCd', width: 90, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CAS014_36')}', key: 'employeeName', width: 120, formatter: _.escape },
 					                { headerText: '#{i18n.getText('CAS014_37')}', key: 'displayDateRange', width: 220, formatter: _.escape }
 					            ],
@@ -66,7 +66,7 @@
 					</table>
 				</div>
 			</div>
-			<div class="block">
+			<div class="block" style="padding-left: 10px;">
 				<div class="top-row"></div>
 				<div class="bottom-row">
 					<div class="valign-center control-group">
@@ -80,7 +80,7 @@
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_40')}</div>
 						<div id="B5_2_1" tabindex="8"
-							style="display: inline-block; padding-left: 28px"
+							style="display: inline-block;"
 							data-bind="ntsDateRangePicker: { 
 											required: true, 
 											enable: true, 

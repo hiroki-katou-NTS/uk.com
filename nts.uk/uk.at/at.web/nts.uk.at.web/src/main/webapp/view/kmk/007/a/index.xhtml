@@ -75,10 +75,6 @@
 								data-bind="ntsFormLabel: {constraint: 'WorkTypeAbbreviationName',required: true}">#{i18n.getText('KMK007_15')}</div>
 							<input id="abbreviation-name-input"
 								data-bind="ntsTextEditor: {value: dispAbName,name: '#[KMK007_15]', constraint: 'WorkTypeAbbreviationName', required: true}" />
-							<div style="margin-top: 10px; margin-left: 25px;"
-								data-bind="ntsFormLabel: {constraint: 'WorkTypeSymbolicName',required: true}">#{i18n.getText('KMK007_16')}</div>
-							<input id="symbolic-name-input"
-								data-bind="ntsTextEditor: {value: symbolicName,name: '#[KMK007_16]', constraint: 'WorkTypeSymbolicName', required: true, enable: $parent.isEnable}" />
 						</div>
 						<div>
 							<div style="margin-top: 10px;"
@@ -119,7 +115,7 @@
 							<!-- 出勤 -->
 							<div id="oneday-set-1" data-bind="if: currentWorkType().oneDayCls() == '0'">
 								<div data-bind="with: currentWorkType().oneDay">
-									<div>
+									<div data-bind="if: $parent.medicalOption">
 										<div style="margin-left: 20px;"
 											data-bind="ntsCheckBox: { checked: dayNightTimeAsk , enable: $parent.isEnable }">#{i18n.getText('KMK007_23')}</div>
 									</div>
@@ -184,6 +180,11 @@
 							<!-- 休日出勤       休出 -->
 							<div id="oneday-set-4" data-bind="if: currentWorkType().oneDayCls() == '11'">
 								<div data-bind="with: currentWorkType().oneDay">
+									<!-- A6_5 -->
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
+									</div>
 									<div>
 										<div style="margin-left: 20px;"
 											data-bind="ntsCheckBox: { checked: genSubHodiday, enable: $parent.isEnable }">#{i18n.getText('KMK007_26')}</div>
@@ -219,7 +220,7 @@
 								<div data-bind="with: currentWorkType().oneDay">
 									<div style="margin-left: 20px;"
 										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
-									<div>
+									<div data-bind="if: $parent.medicalOption">
 										<div style="margin-left: 20px;"
 											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable }">#{i18n.getText('KMK007_23')}</div>
 									</div>
@@ -328,7 +329,7 @@
 							<!-- 出勤 -->
 							<div id="morning-set-1" data-bind="if: currentWorkType().morningCls() == '0'">
 								<div data-bind="with: currentWorkType().morning">
-									<div>
+									<div data-bind="if: $parent.medicalOption">
 										<div style="margin-left: 20px;"
 											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable }">#{i18n.getText('KMK007_23')}</div>
 									</div>
@@ -400,7 +401,7 @@
 								<div data-bind="with: currentWorkType().morning">
 									<div style="margin-left: 20px;"
 										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
-									<div>
+									<div data-bind="if: $parent.medicalOption">
 										<div style="margin-left: 20px;"
 											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable }">#{i18n.getText('KMK007_23')}</div>
 									</div>
@@ -470,17 +471,17 @@
 							<!-- 出勤 -->
 							<div id="afternoon-set-1" data-bind="if: currentWorkType().afternoonCls() == '0'">
 								<div data-bind="with: currentWorkType().afternoon">
-									<div>
+									<div data-bind="if: $parent.medicalOption">
 										<div style="margin-left: 20px;"
-											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable }">#{i18n.getText('KMK007_23')}</div>
+											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable &amp;&amp; $parent.currentWorkType().morningCls() != '7'}">#{i18n.getText('KMK007_23')}</div>
 									</div>
 									<div>
 										<div style="margin-left: 20px;"
-											data-bind="ntsCheckBox: { checked: attendanceTime, enable: $parent.isEnable }">#{i18n.getText('KMK007_24')}</div>
+											data-bind="ntsCheckBox: { checked: attendanceTime, enable: $parent.isEnable &amp;&amp; $parent.currentWorkType().morningCls() != '7'}">#{i18n.getText('KMK007_24')}</div>
 									</div>
 									<div>
 										<div style="margin-left: 20px;"
-											data-bind="ntsCheckBox: { checked: timeLeaveWork, enable: $parent.isEnable }">#{i18n.getText('KMK007_25')}</div>
+											data-bind="ntsCheckBox: { checked: timeLeaveWork, enable: $parent.isEnable &amp;&amp; $parent.currentWorkType().morningCls() != '7'}">#{i18n.getText('KMK007_25')}</div>
 									</div>
 								</div>
 							</div>
@@ -542,17 +543,17 @@
 								<div data-bind="with: currentWorkType().afternoon">
 									<div style="margin-left: 20px;"
 										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
-									<div>
+									<div data-bind="if: $parent.medicalOption">
 										<div style="margin-left: 20px;"
-											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable }">#{i18n.getText('KMK007_23')}</div>
+											data-bind="ntsCheckBox: { checked: dayNightTimeAsk, enable: $parent.isEnable &amp;&amp; $parent.currentWorkType().morningCls() != '0'}">#{i18n.getText('KMK007_23')}</div>
 									</div>
 									<div>
 										<div style="margin-left: 20px;"
-											data-bind="ntsCheckBox: { checked: attendanceTime, enable: $parent.isEnable }">#{i18n.getText('KMK007_24')}</div>
+											data-bind="ntsCheckBox: { checked: attendanceTime, enable: $parent.isEnable &amp;&amp; $parent.currentWorkType().morningCls() != '0'}">#{i18n.getText('KMK007_24')}</div>
 									</div>
 									<div>
 										<div style="margin-left: 20px;"
-											data-bind="ntsCheckBox: { checked: timeLeaveWork, enable: $parent.isEnable }">#{i18n.getText('KMK007_25')}</div>
+											data-bind="ntsCheckBox: { checked: timeLeaveWork, enable: $parent.isEnable &amp;&amp; $parent.currentWorkType().morningCls() != '0'}">#{i18n.getText('KMK007_25')}</div>
 									</div>
 								</div>
 							</div>

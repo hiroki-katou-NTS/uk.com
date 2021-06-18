@@ -45,26 +45,24 @@ public class StampBeforeJoinCheckService {
             List<Stamp> stamps = stampsByEmpMap.get(personInfo.getEmployeeId());
 
             // 入社日と打刻日を比較
-            if (period.start().beforeOrEquals(jobEntryDate) && period.end().afterOrEquals(jobEntryDate)) {
-                List<Stamp> stampErrors = stamps.stream().filter(x -> x.getStampDateTime().toDate().before(jobEntryDate))
+            List<Stamp> stampErrors = stamps.stream().filter(x -> x.getStampDateTime().toDate().before(jobEntryDate))
+                    .collect(Collectors.toList());
+            if (!CollectionUtil.isEmpty(stampErrors)) {
+                List<String> datetimeErrors = stampErrors.stream().map(x -> x.getStampDateTime().toString("yyyy/MM/dd HH:mm:ss"))
                         .collect(Collectors.toList());
-                if (!CollectionUtil.isEmpty(stampErrors)) {
-                    List<String> datetimeErrors = stampErrors.stream().map(x -> x.getStampDateTime().toString("yyyy/MM/dd HH:mm:ss"))
-                            .collect(Collectors.toList());
-                    String datetimeError = String.join("、", datetimeErrors);
-                    // 抽出結果を作成
-                    String message = TextResource.localize("KAL020_110", personInfo.getEmployeeCode() + "　" + personInfo.getBusinessName());
-                    ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
-                            new AlarmValueDate(period.start().toString("yyyyMMdd"), Optional.empty()),
-                            null,
-                            Optional.ofNullable(TextResource.localize("KAL020_116", jobEntryDate.toString("yyyy/MM/dd"), datetimeError)),
-                            Optional.empty(),
-                            null
-                    );
+                String datetimeError = String.join("、", datetimeErrors);
+                // 抽出結果を作成
+                String message = TextResource.localize("KAL020_110", personInfo.getEmployeeCode() + "　" + personInfo.getBusinessName());
+                ExtractResultDto result = new ExtractResultDto(new AlarmValueMessage(message),
+                        new AlarmValueDate(period.start().toString("yyyyMMdd"), Optional.empty()),
+                        null,
+                        Optional.ofNullable(TextResource.localize("KAL020_116", jobEntryDate.toString("yyyy/MM/dd"), datetimeError)),
+                        Optional.empty(),
+                        null
+                );
 
-                    // List＜抽出結果＞に作成した抽出結果を追加
-                    results.add(result);
-                }
+                // List＜抽出結果＞に作成した抽出結果を追加
+                results.add(result);
             }
         }
 

@@ -9,7 +9,7 @@ module nts.uk.at.view.kal013.b {
     const PATH_API = {
        GET_ENUM_OPERATOR: "at/record/alarmwrkp/screen/getEnumCompareType",
         GET_ATTENDANCEITEM: "at/record/businesstype/attendanceItem/getListMonthlyByAttendanceAtr/",
-        GET_ATTENDANCEITEMNAME_BYCODE: "at/record/divergencetime/setting/AttendanceDivergenceName",
+        GET_ATTENDANCEITEMNAME_BYCODE: "at/record/divergencetime/setting/getMonthlyAttendanceDivergenceName",
         GET_BONUS_PAY_SET: "at/share/bonusPaySetting/getAllBonusPaySetting"
 
     };
@@ -273,10 +273,6 @@ module nts.uk.at.view.kal013.b {
             let dfd = $.Deferred<any>();
             if (typeCheck == CheckMonthlyItemsType.AVERAGE_NUMBER_TIME) {
                 //With type 回数 - Times , Number  = 2
-                if (!_.isEmpty(vm.lstItemNum)){
-                    dfd.resolve(vm.lstItemNum);
-                    return dfd.promise();
-                }
                 vm.$ajax(PATH_API.GET_ATTENDANCEITEM + MONTHLYATTENDANCEITEMATR.NUMBER).done((lstAtdItem) => {
                     vm.lstItemNum = lstAtdItem;
                     dfd.resolve(lstAtdItem);
@@ -285,21 +281,14 @@ module nts.uk.at.view.kal013.b {
                 });
             } else if (typeCheck == CheckMonthlyItemsType.AVERAGE_TIME) {
                 //With type 時間 - Time
-                if (!_.isEmpty(vm.lstItemTime)){
-                    dfd.resolve(vm.lstItemTime);
-                    return dfd.promise();
-                }
                 vm.$ajax(PATH_API.GET_ATTENDANCEITEM + MONTHLYATTENDANCEITEMATR.TIME).done((lstAtdItem) => {
                     vm.lstItemTime = lstAtdItem;
                     dfd.resolve(lstAtdItem);
                 }).fail((error)=>{
                     dfd.reject(error);
                 });
-            } else if (typeCheck == CheckMonthlyItemsType.AVERAGE_NUMBER_DAY) { // 日数
-                if (!_.isEmpty(vm.lstItemDay)){
-                    dfd.resolve(vm.lstItemDay);
-                    return dfd.promise();
-                }
+            } else if (typeCheck == CheckMonthlyItemsType.AVERAGE_NUMBER_DAY) {
+                // 日数
                 vm.$ajax(PATH_API.GET_ATTENDANCEITEM + MONTHLYATTENDANCEITEMATR.DAYS).done((lstAtdItem) => {
                     vm.lstItemDay = lstAtdItem;
                     dfd.resolve(lstAtdItem);
@@ -345,7 +334,7 @@ module nts.uk.at.view.kal013.b {
                         return item.attendanceItemId;
                     });
                     let params = {
-                        //                                attr: 1,
+                        attr: 1,
                         lstAllItems: lstItemCode,
                         lstAddItems: vm.pattern().countableAddAtdItems(),
                         lstSubItems: vm.pattern().countableSubAtdItems()
@@ -403,7 +392,7 @@ module nts.uk.at.view.kal013.b {
             if (vm.switchPatternA() && ((vm.category() == WorkplaceCategory.SCHEDULE_DAILY &&  _.isEmpty(vm.pattern().checkCond()))
                                     || (vm.category() == WorkplaceCategory.MONTHLY &&  _.isEmpty(vm.pattern().countableSubAtdItems())
                                             &&  _.isEmpty(vm.pattern().countableAddAtdItems())))){
-                vm.$errors("#check-condition",{ messageId: 'MsgB_1', messageParams: [vm.$i18n("KAL003_25")] });
+                vm.$errors("#check-condition",{ messageId: 'MsgB_1', messageParams: [vm.$i18n("KAL003_59")] });
                 result = false;
             }
 
@@ -421,13 +410,21 @@ module nts.uk.at.view.kal013.b {
                 return true;
             }
 
-            if  (( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN],vm.pattern().operator()) != -1
-                    && vm.pattern().minValue() >= vm.pattern().maxValue() )
-                || ( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN],vm.pattern().operator()) == -1
-                    && vm.pattern().minValue() > vm.pattern().maxValue() ))
-            {
-                return false;
+            switch (vm.pattern().operator()) {
+                case RangeCompareType.BETWEEN_RANGE_OPEN:
+                case RangeCompareType.OUTSIDE_RANGE_OPEN:
+                    if (parseFloat(vm.pattern().minValue().toString()) >= parseFloat(vm.pattern().maxValue().toString()))
+                        return false;
+                    break;
+                case RangeCompareType.BETWEEN_RANGE_CLOSED:
+                case RangeCompareType.OUTSIDE_RANGE_CLOSED:
+                    if (parseFloat(vm.pattern().minValue().toString()) > parseFloat(vm.pattern().maxValue().toString()))
+                        return false;
+                    break;
+                default:
+                    break;
             }
+
             return true;
         }
 

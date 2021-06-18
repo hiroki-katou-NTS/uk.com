@@ -9,9 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 
@@ -27,12 +26,10 @@ public class WorkplaceOfWorkEachOuenDto implements ItemConst, AttendanceItemData
 	
 	/** 職場: 職場ID */
 	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = WORKPLACEID)
-	@AttendanceItemValue(type = ValueType.ATTR)
 	private String workplaceId;
 	
 	/** 場所: 勤務場所コード */
 	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = WORKLOCATIONCD)
-	@AttendanceItemValue(type = ValueType.ATTR)
 	private String workLocationCD;
 	
 	@Override

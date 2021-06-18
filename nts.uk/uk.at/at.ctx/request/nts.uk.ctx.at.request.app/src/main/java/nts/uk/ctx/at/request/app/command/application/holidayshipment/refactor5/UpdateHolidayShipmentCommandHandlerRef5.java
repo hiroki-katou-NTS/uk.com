@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5;
 
 import java.util.ArrayList;
-//import java.util.Arrays;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,7 +21,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
-//import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -51,8 +51,8 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 	@Inject
 	private AbsenceLeaveAppRepository absenceLeaveAppRepository;
 	
-//	@Inject
-//	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
@@ -91,10 +91,7 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 				companyId, 
 				rec, 
 				abs, 
-				rec.isPresent()? command.rec.leaveComDayOffManaOld.stream().map(c->c.toDomain()).collect(Collectors.toList()): new ArrayList<>(), 
 				rec.isPresent()? command.rec.leaveComDayOffMana.stream().map(c->c.toDomain()).collect(Collectors.toList()): new ArrayList<>(), 
-				abs.isPresent()? command.abs.leaveComDayOffManaOld.stream().map(c->c.toDomain()).collect(Collectors.toList()): new ArrayList<>(), 
-				abs.isPresent()? command.abs.payoutSubofHDManagementsOld.stream().map(c->c.toDomain()).collect(Collectors.toList()): new ArrayList<>(),
 				abs.isPresent()? command.abs.leaveComDayOffMana.stream().map(c->c.toDomain()).collect(Collectors.toList()): new ArrayList<>(), 
 				abs.isPresent()? command.abs.payoutSubofHDManagements.stream().map(c->c.toDomain()).collect(Collectors.toList()): new ArrayList<>(),
 				command.displayInforWhenStarting.appDispInfoStartup.toDomain());
@@ -105,17 +102,13 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 	 * @param companyId 申請者会社ID
 	 * @param rec 振出申請
 	 * @param abs 振休申請
-	 * @param leaveComDayOffMana_Rec_Old 振出_古いの休出代休紐付け管理
 	 * @param leaveComDayOffMana_Rec 振出_休出代休紐付け管理
-	 * @param leaveComDayOffMana_Abs_Old 振休_古いの休出代休紐付け管理
-	 * @param payoutSubofHDManagement_Abs_Old 振休_古いの振出振休紐付け管理
 	 * @param leaveComDayOffMana_Abs 振休_休出代休紐付け管理
 	 * @param payoutSubofHDManagement_Abs 振休_振出振休紐付け管理
 	 * @param appDispInfoStartup 申請表示情報  -> http://192.168.50.4:3000/issues/113502 -> done
 	 */
 	public ProcessResult updateApplicationProcess(String companyId, Optional<RecruitmentApp> rec, Optional<AbsenceLeaveApp> abs, 
-			List<LeaveComDayOffManagement> leaveComDayOffMana_Rec_Old, List<LeaveComDayOffManagement> leaveComDayOffMana_Rec,
-			List<LeaveComDayOffManagement> leaveComDayOffMana_Abs_Old, List<PayoutSubofHDManagement> payoutSubofHDManagement_Abs_Old,
+			List<LeaveComDayOffManagement> leaveComDayOffMana_Rec,
 			List<LeaveComDayOffManagement> leaveComDayOffMana_Abs, List<PayoutSubofHDManagement> payoutSubofHDManagement_Abs,
 			AppDispInfoStartupOutput appDispInfoStartup) {
 		ProcessResult processResult = new ProcessResult();
@@ -124,10 +117,12 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 			appRepository.update(rec.get());
 			recruitmentAppRepository.update(rec.get());
 			//休暇紐付け管理を更新する 
-			absenceServiceProcess.updateVacationLinkManage(leaveComDayOffMana_Rec_Old, new ArrayList<>(), leaveComDayOffMana_Rec, new ArrayList<>());
+			absenceServiceProcess.registerVacationLinkManage(leaveComDayOffMana_Rec, new ArrayList<>());
 			//暫定データの登録(đăng ký data tạm thời)
-			//anh phượng bảo comment lại. chờ đội team B đối ứng xong 
-			//interimRemainDataMngRegisterDateChange.registerDateChange(companyId, rec.get().getEmployeeID(), Arrays.asList(rec.get().getAppDate().getApplicationDate()));
+			interimRemainDataMngRegisterDateChange.registerDateChange(
+					companyId, 
+					rec.get().getEmployeeID(), 
+					Arrays.asList(rec.get().getAppDate().getApplicationDate()));
 			//アルゴリズム「詳細画面登録後の処理」を実行する
 			ProcessResult processResult1 = detailAfterUpdate.processAfterDetailScreenRegistration(companyId, rec.get().getAppID(), appDispInfoStartup);
 			processResult.getAutoSuccessMail().addAll(processResult1.getAutoSuccessMail());
@@ -140,16 +135,18 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 			absenceLeaveAppRepository.update(abs.get());
 			if(!rec.isPresent()) {
 				//休暇紐付け管理を更新する
-				absenceServiceProcess.updateVacationLinkManage(leaveComDayOffMana_Abs_Old, payoutSubofHDManagement_Abs_Old, leaveComDayOffMana_Abs, payoutSubofHDManagement_Abs);
+				absenceServiceProcess.registerVacationLinkManage(leaveComDayOffMana_Abs, payoutSubofHDManagement_Abs);
 			}else {
 				//振休振出同時登録時紐付け管理を更新する
 				List<PayoutSubofHDManagement> payoutSubofHDManagement_Abs_New = this.registerTheLinkManagement(companyId, abs.get(), payoutSubofHDManagement_Abs);
 				//休暇紐付け管理を更新する
-				absenceServiceProcess.updateVacationLinkManage(leaveComDayOffMana_Abs_Old, payoutSubofHDManagement_Abs_Old, leaveComDayOffMana_Abs, payoutSubofHDManagement_Abs_New);
+				absenceServiceProcess.registerVacationLinkManage(leaveComDayOffMana_Abs, payoutSubofHDManagement_Abs_New);
 			}
 			//暫定データの登録(đăng ký data tạm thời)
-			//anh phượng bảo comment lại. chờ đội team B đối ứng xong 
-			//interimRemainDataMngRegisterDateChange.registerDateChange(companyId, abs.get().getEmployeeID(), Arrays.asList(abs.get().getAppDate().getApplicationDate()));
+			interimRemainDataMngRegisterDateChange.registerDateChange(
+					companyId, 
+					abs.get().getEmployeeID(), 
+					Arrays.asList(abs.get().getAppDate().getApplicationDate()));
 			//アルゴリズム「詳細画面登録後の処理」を実行する
 			ProcessResult processResult2 = detailAfterUpdate.processAfterDetailScreenRegistration(companyId, abs.get().getAppID(), appDispInfoStartup);
 			processResult.getAutoSuccessMail().addAll(processResult2.getAutoSuccessMail());

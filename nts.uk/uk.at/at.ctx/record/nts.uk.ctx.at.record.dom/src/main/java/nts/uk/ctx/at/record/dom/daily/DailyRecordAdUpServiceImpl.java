@@ -313,18 +313,9 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 
 	@Override
 	public void adUpSupportTime(String sid, GeneralDate ymd, List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheets) {
-		ouenTimeSheets.stream().forEach(ouenTimeSheet -> {
-			if(ouenWorkTimeSheetOfDailyRepo.find(sid, ymd) != null){
-				OuenWorkTimeSheetOfDaily domain = new OuenWorkTimeSheetOfDaily(sid, ymd, ouenTimeSheets);
-				List<OuenWorkTimeSheetOfDaily> update = new ArrayList<>();
-				update.add(domain);
-				ouenWorkTimeSheetOfDailyRepo.update(update);
-			} else {
-				OuenWorkTimeSheetOfDaily domain = new OuenWorkTimeSheetOfDaily(sid, ymd, ouenTimeSheets);
-				List<OuenWorkTimeSheetOfDaily> insert = new ArrayList<>();
-				insert.add(domain);
-				ouenWorkTimeSheetOfDailyRepo.insert(insert);
-			}
-		});
+		OuenWorkTimeSheetOfDaily domain = new OuenWorkTimeSheetOfDaily(sid, ymd, ouenTimeSheets);
+		List<OuenWorkTimeSheetOfDaily> update = new ArrayList<>();
+		update.add(domain);
+		ouenWorkTimeSheetOfDailyRepo.insert(update);
 	}
 }

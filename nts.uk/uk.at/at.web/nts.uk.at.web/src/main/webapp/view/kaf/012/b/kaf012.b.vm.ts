@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
 	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
     import DataModel = nts.uk.at.view.kaf012.shr.viewmodel2.DataModel;
     import AppTimeType = nts.uk.at.view.kaf012.shr.viewmodel2.AppTimeType;
+    import GoingOutReason = nts.uk.at.view.kaf012.shr.viewmodel2.GoingOutReason;
     import LeaveType = nts.uk.at.view.kaf012.shr.viewmodel1.LeaveType;
 	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
@@ -13,89 +14,9 @@ module nts.uk.at.view.kaf012.b.viewmodel {
         getDetail: "at/request/application/timeLeave/init"
     };
 
-    const template = `
-        <div>
-            <div data-bind="component: { name: 'kaf000-b-component1', 
-                                        params: {
-                                            appType: appType,
-                                            appDispInfoStartupOutput: appDispInfoStartupOutput	
-                                        } }"></div>
-            <div data-bind="component: { name: 'kaf000-b-component2', 
-                                        params: {
-                                            appType: appType,
-                                            appDispInfoStartupOutput: appDispInfoStartupOutput
-                                        } }"></div>
-            <div data-bind="component: { name: 'kaf000-b-component3', 
-                                        params: {
-                                            appType: appType,
-                                            approvalReason: approvalReason,
-                                            appDispInfoStartupOutput: appDispInfoStartupOutput
-                                        } }"></div>
-            <div data-bind="component: { name: 'kaf012-share-component1',
-                                                    params: {
-                                                        reflectSetting: reflectSetting,
-                                                        timeLeaveManagement: timeLeaveManagement,
-                                                        timeLeaveRemaining: timeLeaveRemaining,
-                                                        leaveType: leaveType,
-                                                        application: application,
-                                                        specialLeaveFrame: specialLeaveFrame
-                                                    }}"/>
-            <div class="table">
-                <div class="cell" style="min-width: 825px; padding-right: 10px;">
-                    <div data-bind="component: { name: 'kaf000-b-component4',
-							params: {
-								appType: appType,
-								application: application,
-								appDispInfoStartupOutput: appDispInfoStartupOutput
-							} }"></div>
-                    <div data-bind="component: { name: 'kaf000-b-component5', 
-                                                params: {
-                                                    appType: appType,
-                                                    application: application,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }"></div>
-                    <div data-bind="component: { name: 'kaf000-b-component6', 
-                                                params: {
-                                                    appType: appType,
-                                                    application: application,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }"></div>
-                    <div data-bind="component: { name: 'kaf012-share-component2',
-                                        params: {
-                                            reflectSetting: reflectSetting,
-                                            timeLeaveManagement: timeLeaveManagement,
-                                            timeLeaveRemaining: timeLeaveRemaining,
-                                            leaveType: leaveType,
-                                            appDispInfoStartupOutput: appDispInfoStartupOutput,
-                                            application: application,
-                                            applyTimeData: applyTimeData,
-                                            specialLeaveFrame: specialLeaveFrame,
-                                            eventCalc: eventCalc
-                                        }}"/>
-                    <div data-bind="component: { name: 'kaf000-b-component7', 
-                                                params: {
-                                                    appType: appType,
-                                                    application: application,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }"></div>
-                    <div data-bind="component: { name: 'kaf000-b-component8', 
-                                                params: {
-                                                    appType: appType,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }"></div>
-                </div>
-                <div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-b-component9',
-							params: {
-								appType: appType,
-								application: application,
-								appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
-							} }"></div>
-            </div>
-        </div>
-    `
     @component({
         name: 'kaf012-b',
-        template: template
+        template: '/nts.uk.at.web/view/kaf/012/b/index.html'
     })
     class Kaf012BViewModel extends ko.ViewModel {
 
@@ -108,6 +29,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
         timeLeaveManagement: KnockoutObservable<any> = ko.observable(null);
         timeLeaveRemaining: KnockoutObservable<any> = ko.observable(null);
         leaveType: KnockoutObservable<number> = ko.observable(null);
+        isReload: boolean = true;
 
         applyTimeData: KnockoutObservableArray<DataModel> = ko.observableArray([]);
         specialLeaveFrame: KnockoutObservable<number> = ko.observable(null);
@@ -149,17 +71,19 @@ module nts.uk.at.view.kaf012.b.viewmodel {
         mounted() {
             const vm = this;
             vm.leaveType.subscribe(value => {
-                vm.applyTimeData().forEach((row : DataModel) => {
-                    row.applyTime.forEach(apply => {
-                        apply.substituteAppTime(0);
-                        apply.annualAppTime(0);
-                        apply.careAppTime(0);
-                        apply.childCareAppTime(0);
-                        apply.super60AppTime(0);
-                        apply.specialAppTime(0);
-                        apply.calculatedTime(0);
+                if (!vm.isReload) {
+                    vm.applyTimeData().forEach((row : DataModel) => {
+                        row.applyTime.forEach(apply => {
+                            apply.substituteAppTime(0);
+                            apply.annualAppTime(0);
+                            apply.careAppTime(0);
+                            apply.childCareAppTime(0);
+                            apply.super60AppTime(0);
+                            apply.specialAppTime(0);
+                            apply.calculatedTime(0);
+                        });
                     });
-                });
+                }
             });
         }
 
@@ -181,6 +105,11 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                         i.specialAppTime(0);
                     })
                 });
+                vm.applyTimeData()[4].timeZones.forEach(i => {
+                    i.display(i.workNo < 4);
+                });
+                vm.applyTimeData()[4].displayShowMore(true);
+                vm.isReload = true;
 				vm.getAppData();
 			}
 		}
@@ -193,7 +122,9 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                 appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
             }).done(res => {
                 if (res) {
-                    let totalAppTime: Array<number> = [0, 0, 0, 0, 0, 0], specialFrame: number = null;
+                    vm.reflectSetting(res.reflectSetting);
+                    vm.timeLeaveRemaining(res.timeLeaveRemaining);
+                    let totalAppTime: Array<number> = [0, 0, 0, 0, 0, 0], specialFrame: number = null, maxWorkNoHasData = 3;
                     res.details.forEach((detail: TimeLeaveAppDetail) => {
                         detail.timeZones.forEach(z => {
                             const index = detail.appTimeType < 4 ? 0 : z.workNo - 1;
@@ -202,12 +133,10 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                                             || detail.appTimeType == AppTimeType.OFFWORK2 ? z.startTime : z.endTime;
                             const endTime = detail.appTimeType < 4 ? null : z.endTime;
                             if (detail.appTimeType >= 4) {
-                                if (vm.applyTimeData()[4].timeZones[index].displayCombobox())
-                                    vm.applyTimeData()[4].timeZones[index].appTimeType(detail.appTimeType);
-                                if (vm.applyTimeData()[4].timeZones[index].appTimeType() == detail.appTimeType) {
-                                    vm.applyTimeData()[4].timeZones[index].startTime(startTime);
-                                    vm.applyTimeData()[4].timeZones[index].endTime(endTime);
-                                }
+                                maxWorkNoHasData = Math.max(maxWorkNoHasData, index + 1);
+                                vm.applyTimeData()[4].timeZones[index].appTimeType(detail.appTimeType == AppTimeType.PRIVATE ? GoingOutReason.PRIVATE : GoingOutReason.UNION);
+                                vm.applyTimeData()[4].timeZones[index].startTime(startTime);
+                                vm.applyTimeData()[4].timeZones[index].endTime(endTime);
                             } else {
                                 vm.applyTimeData()[detail.appTimeType].timeZones[index].startTime(startTime);
                                 vm.applyTimeData()[detail.appTimeType].timeZones[index].endTime(endTime);
@@ -242,14 +171,35 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                     } else {
                         vm.leaveType(_.findIndex(totalAppTime, i => i > 0));
                     }
-                    vm.reflectSetting(res.reflectSetting);
-                    vm.timeLeaveRemaining(res.timeLeaveRemaining);
                     vm.timeLeaveManagement(res.timeLeaveManagement);
                     if (specialFrame != null) vm.specialLeaveFrame(specialFrame);
                     vm.printContentOfEachAppDto().opPrintContentOfTimeLeave = res.details;
 
                     if(vm.leaveType() == LeaveType.COMBINATION && _.isFunction(vm.childCalcEvent)) {
                         vm.childCalcEvent();
+                    }
+
+                    if (vm.application().prePostAtr() == 1
+                        && vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst
+                        && vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail) {
+                        const outingTimes = vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
+                        outingTimes.forEach((time: any) => {
+                            if (!vm.applyTimeData()[4].timeZones[time.frameNo - 1].startTime() && !vm.applyTimeData()[4].timeZones[time.frameNo - 1].endTime()) {
+                                maxWorkNoHasData = Math.max(maxWorkNoHasData, time.frameNo);
+                                vm.applyTimeData()[4].timeZones[time.frameNo - 1].startTime(time.opStartTime);
+                                vm.applyTimeData()[4].timeZones[time.frameNo - 1].endTime(time.opEndTime);
+                                vm.applyTimeData()[4].timeZones[time.frameNo - 1].appTimeType(time.opGoOutReasonAtr);
+                            }
+                        });
+                    }
+
+                    for (let no = 1; no <= maxWorkNoHasData; no++) {
+                        if (!vm.applyTimeData()[4].timeZones[no - 1].display()) {
+                            vm.applyTimeData()[4].timeZones[no - 1].display(true);
+                        }
+                    }
+                    if (maxWorkNoHasData >= 10) {
+                        vm.applyTimeData()[4].displayShowMore(false);
                     }
 
                     vm.$nextTick(() => {
@@ -262,11 +212,10 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                         nts.uk.request.jumpToTopPage();
                     }
                 });
-            }).always(() => vm.$blockui('hide'));
-        }
-
-        mounted() {
-            const vm = this;
+            }).always(() => {
+                vm.isReload = false;
+                vm.$blockui('hide')
+            });
         }
 
         // event update cần gọi lại ở button của view cha
@@ -305,7 +254,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                             });
                         }
                     } else {
-                        const privateTimeZones = row.timeZones.filter(z => z.appTimeType() == AppTimeType.PRIVATE && (!!z.startTime() || !!z.endTime()));
+                        const privateTimeZones = row.timeZones.filter(z => z.appTimeType() == GoingOutReason.PRIVATE && z.enableInput() && (!!z.startTime() || !!z.endTime()));
                         const privateApplyTime = {
                             substituteAppTime: vm.leaveType() == LeaveType.SUBSTITUTE || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].substituteAppTime() : 0,
                             annualAppTime: vm.leaveType() == LeaveType.ANNUAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].annualAppTime() : 0,
@@ -327,7 +276,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                                 applyTime: privateApplyTime
                             });
                         }
-                        const unionTimeZones = row.timeZones.filter(z => z.appTimeType() == AppTimeType.UNION && (!!z.startTime() || !!z.endTime()));
+                        const unionTimeZones = row.timeZones.filter(z => z.appTimeType() == GoingOutReason.UNION && z.enableInput() && (!!z.startTime() || !!z.endTime()));
                         const unionApplyTime = {
                             substituteAppTime: vm.leaveType() == LeaveType.SUBSTITUTE || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].substituteAppTime() : 0,
                             annualAppTime: vm.leaveType() == LeaveType.ANNUAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].annualAppTime() : 0,

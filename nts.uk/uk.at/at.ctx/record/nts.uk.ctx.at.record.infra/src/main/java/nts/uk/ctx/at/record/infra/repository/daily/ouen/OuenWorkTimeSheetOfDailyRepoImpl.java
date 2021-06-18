@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
@@ -33,7 +35,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements OuenWorkTimeSheetOfDailyRepo {
 
@@ -105,15 +107,11 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 
 	@Override
 	public void update(List<OuenWorkTimeSheetOfDaily> domain) {
-		this.insert(domain);
-	}
-
-	@Override
-	public void insert(List<OuenWorkTimeSheetOfDaily> domain) {
 		List<KrcdtDayOuenTimeSheet> lstEntity = new ArrayList<>();
 		domain.stream().map(c -> KrcdtDayOuenTimeSheet.convert(c)).forEach(e -> {
 			lstEntity.addAll(e);
 		});
+		
 		lstEntity.forEach(i -> {
 			Optional<KrcdtDayOuenTimeSheet> entityOld = getEntity(i.pk.sid, i.pk.ymd, i.pk.ouenNo);
 			if(!entityOld.isPresent()){
@@ -125,6 +123,30 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		});
 	}
 
+	@Override
+	public void insert(List<OuenWorkTimeSheetOfDaily> domain) {
+		if(domain.isEmpty()) return;
+		List<KrcdtDayOuenTimeSheet> lstEntity = new ArrayList<>();
+		domain.stream().map(c -> KrcdtDayOuenTimeSheet.convert(c)).forEach(e -> {
+			lstEntity.addAll(e);
+		});
+		lstEntity.forEach(i -> {
+		OuenWorkTimeSheetOfDaily lstDomainOld = this.find(domain.get(0).getEmpId(), domain.get(0).getYmd());
+		if(lstDomainOld != null) {
+			List<OuenWorkTimeSheetOfDailyAttendance> dataOld = lstDomainOld.getOuenTimeSheet().stream().filter(x -> {
+				return x.getWorkNo() != i.pk.ouenNo;
+			}).collect(Collectors.toList());
+			
+			if(!dataOld.isEmpty()) {
+				for (OuenWorkTimeSheetOfDailyAttendance atd : dataOld) {
+					this.removePK(i.pk.sid, i.pk.ymd, atd.getWorkNo());
+				}
+			}
+		}
+		});
+		this.update(domain);
+	}
+
 	private void updateData(KrcdtDayOuenTimeSheet entityOld, KrcdtDayOuenTimeSheet dataUpdate) {
 		entityOld.startTime = dataUpdate.startTime;
 		entityOld.endTime = dataUpdate.endTime;
@@ -133,6 +155,8 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		entityOld.workCd3 = dataUpdate.workCd3;
 		entityOld.workCd4 = dataUpdate.workCd4;
 		entityOld.workCd5 = dataUpdate.workCd5;
+		entityOld.workLocationCode = dataUpdate.workLocationCode;
+		entityOld.workplaceId      = dataUpdate.workplaceId;
 	}
 
 	@Override
@@ -171,6 +195,17 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 				+ " and o.pk.ymd = :ymd ";
 		this.getEntityManager().createQuery(delete).setParameter("sid", sid)
 												   .setParameter("ymd", ymd)
+												   .executeUpdate();
+	}
+	
+	@Override
+	public void removePK(String sid, GeneralDate ymd, int ouenNo) {
+		String delete = "delete from KrcdtDayOuenTimeSheet o " + " where o.pk.sid = :sid "
+				+ " and o.pk.ymd = :ymd "
+				+ " and o.pk.ouenNo = :ouenNo ";
+		this.getEntityManager().createQuery(delete).setParameter("sid", sid)
+												   .setParameter("ymd", ymd)
+												   .setParameter("ouenNo", ouenNo)
 												   .executeUpdate();
 	}
 

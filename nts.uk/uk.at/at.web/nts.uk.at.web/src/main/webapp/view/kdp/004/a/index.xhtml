@@ -1,9 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
 	<ui:composition template="/master/freelayout.xhtml">
@@ -12,6 +10,8 @@
 			<com:stylefile path="../../share/kdp.main.css" />
 			<com:scriptfile path="../../share/kdpbutton.vm.js" />
 			<com:scriptfile path="../../share/kdpclock.vm.js" />
+			<com:scriptfile path="../../share/kdp-message-error.js" />
+			<com:scriptfile path="../../share/kdp-tabbutton.js" />
 			<com:stylefile path="kdp004.a.main.css" />
 			<com:scriptfile path="kdp004.a.model.js" />
 			<com:scriptfile path="kdp004.a.vm.js" />
@@ -43,57 +43,51 @@
 									]}"></div> -->
 			</div>
 
-			<div id="contents-area" class="cf">
+			<div id="contents-area" class="cf kdp004a">
 				<!-- A1 -->
-				<div id="kdp002a" class="cf">
+				<div id="kdp004a" class="cf">
 					<div class="pull-left" id="stamp-input">
 						<com:ko-if bind="showButton() == 1">
-							<div
-								data-bind="component: {
+							<div class="time-container" data-bind="component: {
 						name: 'stamp-clock',
 						params: {
 							setting: {
-								textColor: '#ffffff',
-								backGroundColor:  '#0033cc'
+								textColor: '#7F7F7F'
 							}
 						}
 					}"></div>
 						</com:ko-if>
 
 						<com:ko-if bind="showButton() == 2">
-							<div
-								data-bind="component: {
-						name: 'stamp-clock',
-						params: {
-							setting: {show:true,
-								textColor: '#ffffff',
-								backGroundColor:  '#0033cc'
-							},
-							events: {
-								setting:
-								{
-										show: true,
-										click:  function(data, event) { settingUser($vm)} 
-								
-								}
-								,
-								company:{
-									show: false,
-									click:  function(data, event) { checkHis($vm) }
-								}
-							}
-						}
-					}"></div>
+							<div class="time-container" data-bind="component: {
+										name: 'stamp-clock',
+										params: {
+											setting: {show:true,
+												textColor: '#7F7F7F'
+											},
+											events: {
+												setting:
+												{
+														show: true,
+														click:  function(data, event) { settingUser($vm)}
+												}
+												,
+												company:{
+													show: false,
+													click:  function(data, event) { checkHis($vm) }
+												}
+											}
+										}
+								}">
+							</div>
 						</com:ko-if>
 
 						<com:ko-if bind="showButton() == 3">
-							<div
-								data-bind="component: {
+							<div class="time-container" data-bind="component: {
 						name: 'stamp-clock',
 						params: {
 							setting: {show:true,
-								textColor: stampSetting().textColor,
-								backGroundColor:  stampSetting().backGroundColor
+								textColor: stampSetting().textColor
 							},
 							events: {
 								setting:{
@@ -109,18 +103,51 @@
 					}"></div>
 						</com:ko-if>
 
-						<div data-bind="if:isUsed" class="panel"
+						<!-- <div data-bind="if:isUsed" class="panel"
 							style="padding: 0 10px 10px 10px">
 							<div id="stamp-desc"
 								data-bind="style: {'color': stampTab().stampPageCommentColor }">
 								<span data-bind="text: stampTab().stampPageComment"></span>
 							</div>
 							<ui:include src="/view/kdp/002/a/stamp-tab.xhtml" />
-						</div>
-						<div style="padding: 0 10px 10px 80px" data-bind="ifnot:isUsed">
-							<span class=" not_used_label label "
-								data-bind="text:errorMessage"></span>
-						</div>
+						</div> -->
+						<com:ko-if bind="ko.toJS($vm.errorMessage) === '' &amp;&amp;  pageComment() != ''">
+							<div class="pageComent" data-bind="html: pageComment, style: {color: commentColor}"></div>
+						</com:ko-if>
+						<com:ko-if bind="ko.toJS($vm.errorMessage) === ''">
+							<div data-bind="kdp-tab-button-panel: { 
+								tabs: stampTab().tabs,
+								stampToSuppress: null,
+								pageComment: pageComment,
+            					commentColor: commentColor,
+								click: function(btn, layout) { $vm.clickBtn1.apply($vm, [btn, layout]); },
+								marginBottom: 0
+							}"></div>
+						</com:ko-if>
+						<com:ko-if bind="isUsed">
+							<com:ko-if bind="ko.toJS($vm.fingerStampSetting).noticeSetDto">
+								<com:ko-if bind="ko.toJS($vm.fingerStampSetting).noticeSetDto.displayAtr == 1">
+									<div class="kdp-message-error" data-bind="component: {
+										name: 'kdp-message-error',
+										params:{
+											events: {
+												registerNoti: {
+													click: function() { $vm.settingNoti.apply($vm, []); }
+												},
+												shoNoti: {
+													click: function() { $vm.shoNoti.apply($vm, []); }
+												}
+											},
+											notiSet: fingerStampSetting,
+											messageNoti: messageNoti
+										}
+									}"></div>
+								</com:ko-if>
+							</com:ko-if>
+						</com:ko-if>
+						<com:ko-if bind="!isUsed()">
+							<div class="not_used_label" data-bind="text:errorMessage"></div>
+						</com:ko-if>
 					</div>
 
 				</div>

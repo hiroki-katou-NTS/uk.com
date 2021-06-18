@@ -75,63 +75,63 @@ import nts.uk.shr.com.url.RegisterEmbededURL;
 
 @Stateless
 public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
-	
+
 	@Inject
 	private EmployeeRequestAdapter employeeAdaptor;
-	
+
 	@Inject
 	private WorkTimeWorkplaceRepository workTimeWorkplaceRepo;
-	
+
 	@Inject
 	private ClosureRepository closureRepository;
-	
+
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
-	
+
 	@Inject
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject
 	private AppHdsubRecRepository compLeaveRepo;
-	
+
 	@Inject
 	private MailSender mailsender;
-	
+
 	@Inject
 	private EnvAdapter envAdapter;
-	
+
 	@Inject
 	private RegisterEmbededURL registerEmbededURL;
-	
+
 	@Inject
 	private IApplicationContentService applicationContentService;
-	
+
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
-	
+
 	@Inject
 	private RecordWorkInfoAdapter recordWorkInfoAdapter;
-	
+
 	@Inject
 	private ScBasicScheduleAdapter scBasicScheduleAdapter;
-	
+
 	@Inject
 	private WorkTypeRepository workTypeRepository;
-	
+
 	@Inject
 	private WorkTimeSettingRepository workTimeRepository;
-	
+
 	@Inject
 	private AppEmailSetRepository appEmailSetRepository;
-	
+
 	@Inject
 	private CollectAchievement collectAchievement;
-	
+
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
-	
+
 	@Inject
 	private ApplicationRepository applicationRepository;
-	
+
 	public PeriodCurrentMonth employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date){
 		/*
 		アルゴリズム「社員所属雇用履歴を取得」を実行する(thực hiện xử lý 「社員所属雇用履歴を取得」)
@@ -264,7 +264,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	 */
 	@Override
 	public AppCompltLeaveSyncOutput getAppComplementLeaveSync(String companyId, String appId) {
-		
+
 		Optional<AbsenceLeaveApp> abs = absRepo.findByAppId(appId);
 		Optional<AppHdsubRec> sync = null;
 		String absId = "";
@@ -290,20 +290,20 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		}
 		return new AppCompltLeaveSyncOutput(absId, recId, synced, type);
 	}
-	
+
 	@Override
 	public MailResult sendMailApproverApprove(List<String> employeeIDList, Application application) {
 		// ドメインモデル「申請メール設定」を取得する(get domain model 「」)
 		AppEmailSet appEmailSet = appEmailSetRepository.findByDivision(Division.APPLICATION_APPROVAL);
 		// アルゴリズム「承認者へ送る」を実行する(thực hiện thuật toán 「Gửi tới người phê duyệt」)
-		MailResult mailResult = sendMailApprover(employeeIDList, application, appEmailSet.getEmailContentLst().get(0).getOpEmailText().map(x -> x.v()).orElse(""));
+		MailResult mailResult = sendMailApprover(employeeIDList, application, appEmailSet.getEmailContentLst().get(0).getOpEmailText().map(x -> x.v()).orElse(""), "");
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application) {
+	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application, String content) {
 		String inputText = I18NText.getText("Msg_1262",Collections.emptyList());
 		// アルゴリズム「承認者へ送る」を実行する (Thực hiện thuật toán "Gửi tới người phê duyệt")
-		MailResult mailResult = sendMailApprover(employeeIDList, application, inputText);
+		MailResult mailResult = sendMailApprover(employeeIDList, application, inputText, content);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
@@ -319,10 +319,10 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApprover(List<String> listDestination, Application application, String text) {
+	public MailResult sendMailApprover(List<String> listDestination, Application application, String text, String content) {
 		List<String> successList = new ArrayList<>();
 		List<String> failList = new ArrayList<>();
-		List<String> failServerList = new ArrayList<>(); 
+		List<String> failServerList = new ArrayList<>();
 		String sIDlogin = AppContexts.user().employeeId();
 		String companyID = AppContexts.user().companyId();
 		List<String> paramIDList = new ArrayList<>();
@@ -331,12 +331,12 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		// ログイン者のメールアドレスを取得する
 		List<MailDestinationImport> mailResultList = envAdapter.getEmpEmailAddress(companyID, paramIDList, 6);
 		String loginMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(sIDlogin)).findAny()
-				.map(x -> { 
+				.map(x -> {
 					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){
-						return ""; 
-					} else { 
-						return x.getOutGoingMails().get(0).getEmailAddress(); 
-					} 
+						return "";
+					} else {
+						return x.getOutGoingMails().get(0).getEmailAddress();
+					}
 				}).orElse("");
 		// ログイン者の社員名を取得する
 		String loginName = employeeAdaptor.getEmployeeName(sIDlogin);
@@ -346,12 +346,12 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			String employeeName = employeeAdaptor.getEmployeeName(employeeID);
 			// 対象者のメールアドレスを取得する
 			String approverMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny()
-					.map(x -> { 
+					.map(x -> {
 						if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){
-							return ""; 
-						} else { 
-							return x.getOutGoingMails().get(0).getEmailAddress(); 
-						} 
+							return "";
+						} else {
+							return x.getOutGoingMails().get(0).getEmailAddress();
+						}
 					}).orElse("");
 			if(Strings.isBlank(approverMail)){
 				// エラーメッセージ Msg_768　対象者氏名　エラーリストにセットする
@@ -364,26 +364,29 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			if(appEmailSet.getUrlReason() == NotUseAtr.USE){
 				// 埋込URL情報登録申請(application đăng ký info URL nén)
 				URL = registerEmbededURL.registerEmbeddedForApp(
-						application.getAppID(), 
-						application.getAppType().value, 
-						application.getPrePostAtr().value, 
-						"", 
+						application.getAppID(),
+						application.getAppType().value,
+						application.getPrePostAtr().value,
+						"",
 						employeeID);
 			};
 			// メール送信時申請内容の作成
-			String appContent = applicationContentService.getApplicationContent(application);
+			String appContent = content; 
+			if(Strings.isBlank(appContent)) {
+				applicationContentService.getApplicationContent(application);
+			} 
 			// 申請を差し戻すメール本文の編集
 			String newText = Strings.isNotBlank(URL) ? text + "\n" + URL : text;
 			String appName = application.getAppType().name;
 			String mailContentToSend = I18NText.getText("Msg_703",
-					loginName, 
+					loginName,
 					newText,
-					application.getAppDate().getApplicationDate().toString(), 
-					appName,
-					applicantName, 
 					application.getAppDate().getApplicationDate().toString(),
-					appContent, 
-					loginName, 
+					appName,
+					applicantName,
+					application.getAppDate().getApplicationDate().toString(),
+					appContent,
+					loginName,
 					loginMail);
 			String mailTitle = application.getAppDate().getApplicationDate().toString()+"　"+appName;
 			String mailBody = mailContentToSend;
@@ -410,24 +413,24 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		// ログイン者のメールアドレスを取得する
 		List<MailDestinationImport> mailResultList = envAdapter.getEmpEmailAddress(companyID, listDestination, 6);
 		String loginMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(sIDlogin)).findAny()
-				.map(x -> { 
-					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){ 
-						return ""; 
+				.map(x -> {
+					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){
+						return "";
 					} else {
-						return x.getOutGoingMails().get(0).getEmailAddress(); 
-					} 
+						return x.getOutGoingMails().get(0).getEmailAddress();
+					}
 				}).orElse("");
 		// ログイン者の社員名を取得する
 		String loginName = employeeAdaptor.getEmployeeName(sIDlogin);
 		// 社員名を取得する
 		String applicantName = employeeAdaptor.getEmployeeName(application.getEmployeeID());
 		String applicantMail = mailResultList.stream().filter(x -> x.getEmployeeID().equals(employeeID)).findAny()
-				.map(x -> { 
-					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){ 
-						return ""; 
-					} else { 
-						return x.getOutGoingMails().get(0).getEmailAddress(); 
-					} 
+				.map(x -> {
+					if(CollectionUtil.isEmpty(x.getOutGoingMails()) || x.getOutGoingMails().get(0)==null){
+						return "";
+					} else {
+						return x.getOutGoingMails().get(0).getEmailAddress();
+					}
 				}).orElse("");
 		if(Strings.isBlank(applicantMail)){
 			// エラーメッセージ Msg_768　対象者氏名　エラーリストにセットする
@@ -439,10 +442,10 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		AppEmailSet appEmailSet = appEmailSetRepository.findByCID(companyID);
 		if(appEmailSet.getUrlReason() == NotUseAtr.USE){
 			URL = registerEmbededURL.registerEmbeddedForApp(
-					application.getAppID(), 
-					application.getAppType().value, 
-					application.getPrePostAtr().value, 
-					"", 
+					application.getAppID(),
+					application.getAppType().value,
+					application.getPrePostAtr().value,
+					"",
 					employeeID);
 		};
 		// メール送信時申請内容の作成
@@ -451,14 +454,14 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		String newText = Strings.isNotBlank(URL) ? text + "\n" + URL : text;
 		String appName = application.getAppType().name;
 		String mailContentToSend = I18NText.getText("Msg_703",
-				loginName, 
+				loginName,
 				newText,
-				application.getAppDate().getApplicationDate().toLocalDate().toString(), 
-				appName,
-				applicantName, 
 				application.getAppDate().getApplicationDate().toLocalDate().toString(),
-				appContent, 
-				loginName, 
+				appName,
+				applicantName,
+				application.getAppDate().getApplicationDate().toLocalDate().toString(),
+				appContent,
+				loginName,
 				loginMail);
 		String mailTitle = application.getAppDate().getApplicationDate().toString()+"　"+appName;
 		String mailBody = mailContentToSend;
@@ -531,10 +534,10 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		}
 		return null;
 	}
-	
-	
 
-	
+
+
+
 	@Override
 	public boolean displayAppReasonContentFlg(AppDisplayAtr displayReasonFlg) {
 		// Input．申請理由の表示区分をチェック
@@ -543,8 +546,8 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		}
 		return false;
 	}
-	
-	
+
+
 	/**
 	 * 12.マスタ勤務種類、就業時間帯データをチェック
 	 * @param companyID
@@ -555,8 +558,8 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	@Override
 	public CheckWorkingInfoResult checkWorkingInfo(String companyID, String wkTypeCode, String wkTimeCode) {
 		CheckWorkingInfoResult result = new CheckWorkingInfoResult();
-		
-		
+
+
 		// 「勤務種類CD ＝＝ Null」 をチェック
 		boolean isWkTypeCDNotEmpty = !StringUtil.isNullOrEmpty(wkTypeCode, true);
 		if (isWkTypeCDNotEmpty) {
@@ -587,14 +590,14 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 				result.setWkTimeError(true);
 			}
 		}
-			
-		
+
+
 		return result;
 	}
-	
+
 	private WorkTypeIsClosedService.RequireM1 createM1() {
 		return new WorkTypeIsClosedService.RequireM1() {
-			
+
 			@Override
 			public Optional<WorkType> workType(String companyId, String workTypeCd) {
 				return workTypeRepository.findByPK(companyId, workTypeCd);

@@ -104,7 +104,7 @@ public class KrcdtDayOuenTimeSheet extends ContractCompanyUkJpaEntity implements
 					: oTimeSheetAtt.getWorkContent().getWorkplace().getWorkLocationCD().get().v();
 			
 			oTimeSheetAtt.getWorkContent().getWork().ifPresent(work -> {
-				entity.workCd1 = work.getWorkCD1().v();
+				entity.workCd1 = work.getWorkCD1().v() == "" ? null : work.getWorkCD1().v();
 				entity.workCd2 = work.getWorkCD2().map(w -> w.v()).orElse(null);
 				entity.workCd3 = work.getWorkCD3().map(w -> w.v()).orElse(null); 
 				entity.workCd4 = work.getWorkCD4().map(w -> w.v()).orElse(null);
@@ -118,14 +118,28 @@ public class KrcdtDayOuenTimeSheet extends ContractCompanyUkJpaEntity implements
 			entity.workNo = oTimeSheetAtt.getTimeSheet().getWorkNo().v();
 			
 			oTimeSheetAtt.getTimeSheet().getStart().ifPresent(start -> {
-				entity.startTimeChangeWay = start.getReasonTimeChange().getTimeChangeMeans().value;
-				entity.startStampMethod = start.getReasonTimeChange().getEngravingMethod().map(c -> c.value).orElse(null);
+				entity.startTimeChangeWay = null;
+				entity.startStampMethod = null;
+				if(start.getReasonTimeChange() != null) {
+					if(start.getReasonTimeChange().getTimeChangeMeans() != null) {
+						entity.startTimeChangeWay = start.getReasonTimeChange().getTimeChangeMeans().value;
+					}
+					entity.startStampMethod = start.getReasonTimeChange().getEngravingMethod().map(c -> c.value).orElse(null);
+				} 
+				
 				entity.startTime = start.getTimeWithDay().map(c -> c.v()).orElse(null); 
 			});
 			
 			oTimeSheetAtt.getTimeSheet().getEnd().ifPresent(end -> {
-				entity.endTimeChangeWay = end.getReasonTimeChange().getTimeChangeMeans().value;
-				entity.endStampMethod = end.getReasonTimeChange().getEngravingMethod().map(c -> c.value).orElse(null);
+				entity.endTimeChangeWay = null;
+				entity.endStampMethod = null;
+				if(end.getReasonTimeChange() != null) {
+					if(end.getReasonTimeChange().getTimeChangeMeans() != null) {
+						entity.endTimeChangeWay = end.getReasonTimeChange().getTimeChangeMeans().value;
+					}
+					entity.endStampMethod = end.getReasonTimeChange().getEngravingMethod().map(c -> c.value).orElse(null);
+				}
+				
 				entity.endTime = end.getTimeWithDay().map(c -> c.v()).orElse(null); 
 			});
 			

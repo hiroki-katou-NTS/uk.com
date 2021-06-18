@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdw006.b.main.css" />
+			<com:scriptfile path="kdw006.b.start.js" />
+			<com:scriptfile path="kdw006.b.vm.js" />
+			<com:scriptfile path="kdw006.b.service.js" />
+			
+			  <com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.workrecord.operationsetting.Comment
+			</com:ValidatorScript>
+			
+			<com:EnumScript>
+				nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType
+			</com:EnumScript>
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- B2_1 -->
+				<a class="goback" tabindex="1" data-bind="ntsLinkButton: { action: jumpTo.bind($data, sideBar)}">#{i18n.getText('KDW006_25')}</a>
+				<!-- B2_2 -->
+				<button id="register-button" class="proceed" tabindex="2" data-bind="click: saveData">#{i18n.getText('KDW006_26')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="screen-b">
+					<div id="setting-unit" class="d-flex">
+						<!-- B3_1 -->
+						<div class="item-name">#{i18n.getText('KDW006_27')}</div>
+						<!-- B3_2 -->
+						<div id="switchBtn1" class="cf" tabindex="3"
+							data-bind="ntsSwitchButton: {
+ 		                    options: roundingRules, 
+ 		                    optionsValue: 'code', 
+		                    optionsText: 'name', 
+ 		                    value: settingUnit, 
+ 		                    enable: true }"> 
+						</div>
+					</div>
+					<!-- B4_1 -->
+                    <div id="comment-title"><div class="item-name">#{i18n.getText('KDW006_28')}</div></div>
+					<div id="comment">
+						<!-- B4_2 -->
+						<div class="item-name" data-bind="ntsFormLabel: { constraint: 'Comment' }">#{i18n.getText('KDW006_62')}</div>
+						<!-- B4_3 -->
+						<textarea id="comment-text" tabindex="4"
+							data-bind="ntsMultilineEditor: { name: '#[KDW006_62]',constraint: 'Comment',value: commentDaily }" />
+					</div>
+					
+					<div id="comment">
+						<!-- B4_4 -->
+						<div class="item-name" data-bind="ntsFormLabel: { constraint: 'Comment' }">#{i18n.getText('KDW006_63')}</div>
+                        <!-- B4_5 -->
+                        <textarea id="comment-text" tabindex="5"
+                            data-bind="ntsMultilineEditor: { name: '#[KDW006_63]',constraint: 'Comment',value: commentMonthly }" />
+                    </div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

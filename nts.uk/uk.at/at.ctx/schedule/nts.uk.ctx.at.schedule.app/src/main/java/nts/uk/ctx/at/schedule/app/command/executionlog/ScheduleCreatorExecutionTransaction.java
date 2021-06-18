@@ -20,8 +20,6 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.task.parallel.ManagedParallelWithContext;
-import nts.arc.task.parallel.ManagedParallelWithContext.ControlOption;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -169,9 +167,6 @@ public class ScheduleCreatorExecutionTransaction {
 
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
-
-	@Inject
-	private ManagedParallelWithContext managedParallelWithContext;
 
 	public static int MAX_DELAY_PARALLEL = 0;
 
@@ -493,7 +488,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 	/**
 	 * 個人情報をもとにスケジュールを作成する-Creates the schedule based person. 勤務予定を作成する
-	 * 
+	 * 勤務予定作成共通処理
 	 * @param command
 	 * @param creator
 	 * @param domain
@@ -540,7 +535,7 @@ public class ScheduleCreatorExecutionTransaction {
 			// ・勤務サイクルコード・スタート勤務サイクル ・勤務サイクルスタート位置 ・休日優先方法 ・個人スケジュール休日パターン設定
 			// 「Output」 ・勤務予定 ・エラー ・処理状態/
 
-			// Output。処理状態を確認する (call to method 処理状態を確認する)
+			// Output。処理状態を確認する (call to method 勤務予定反映する)
 			OutputCreateScheduleOneDate createScheduleOneDate = this.reflectWorkSchedule(command, creator, domain,
 					context, targetPeriod, dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche, carrier);
 			switch (createScheduleOneDate.getProcessingStatus()) {
@@ -1221,7 +1216,10 @@ public class ScheduleCreatorExecutionTransaction {
 			if(getMonthlySetting.isPresent()) {
 				return new PrepareWorkOutput(getMonthlySetting.get().getWorkInformation(), null, null, Optional.empty());
 			}
-			return new PrepareWorkOutput(null, null, null, Optional.empty());
+			String errorContent = this.internationalization.localize("Msg_604", "#Msg_604").get();
+			ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
+					creator.getEmployeeId());
+			return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheduleErrorLog));
 		} else {
 			// 「労働条件項目．月間パターン」をチェックする
 			// Nullでない 場合
@@ -1640,6 +1638,8 @@ public class ScheduleCreatorExecutionTransaction {
 				if (!optionalCompanyBasicWork.isPresent()) {
 					this.scheCreExeErrorLogHandler.addError(geterCommand, creator.getEmployeeId(), "Msg_589");
 					return Optional.empty();
+				} else {
+					return optionalCompanyBasicWork.get().getBasicWorkSetting().stream().findFirst();
 				}
 			}
 			
