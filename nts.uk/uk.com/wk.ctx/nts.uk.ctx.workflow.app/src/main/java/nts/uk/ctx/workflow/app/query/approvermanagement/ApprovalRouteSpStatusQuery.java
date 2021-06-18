@@ -1,4 +1,4 @@
-package nts.uk.query.app.workflow.approvermanagement;
+package nts.uk.ctx.workflow.app.query.approvermanagement;
 
 import java.util.List;
 

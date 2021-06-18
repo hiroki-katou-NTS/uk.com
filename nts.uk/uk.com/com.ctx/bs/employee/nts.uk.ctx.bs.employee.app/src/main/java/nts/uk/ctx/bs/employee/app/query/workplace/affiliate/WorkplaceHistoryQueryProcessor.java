@@ -1,4 +1,4 @@
-package nts.uk.query.app.workplace.affiliate;
+package nts.uk.ctx.bs.employee.app.query.workplace.affiliate;
 
 import java.util.List;
 
