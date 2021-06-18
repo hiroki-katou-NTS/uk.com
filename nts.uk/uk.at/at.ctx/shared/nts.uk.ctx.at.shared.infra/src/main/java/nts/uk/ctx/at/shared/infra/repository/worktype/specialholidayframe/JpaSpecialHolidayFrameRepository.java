@@ -44,7 +44,7 @@ public class JpaSpecialHolidayFrameRepository extends JpaRepository implements S
 	public List<SpecialHolidayFrame> findSpecialHolidayFrame(String companyId) {
 		return this.queryProxy().query(SEL_1, KshmtSpecialHolidayFrame.class)
 				.setParameter("companyId", companyId)
-				.setParameter("useAtr", DeprecateClassification.Deprecated.value)
+				.setParameter("useAtr", DeprecateClassification.Deprecated.value) //#117919
 				.getList(a -> toDomain(a));
 	}
 
