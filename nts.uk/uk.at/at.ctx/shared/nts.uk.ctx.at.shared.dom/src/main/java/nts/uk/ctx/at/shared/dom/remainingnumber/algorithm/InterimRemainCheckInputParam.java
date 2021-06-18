@@ -48,5 +48,8 @@ public class InterimRemainCheckInputParam {
 	private boolean chkPublicHoliday;
 	/**	・超休チェック区分 */
 	private boolean chkSuperBreak;
-	
+	/** 子の看護チェック区分 */
+	private boolean chkChildNursing;
+	/** 介護チェック区分 */
+	private boolean chkLongTermCare;
 }

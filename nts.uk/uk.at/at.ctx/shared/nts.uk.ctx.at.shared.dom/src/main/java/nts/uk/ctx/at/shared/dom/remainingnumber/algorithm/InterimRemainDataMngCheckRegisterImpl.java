@@ -65,9 +65,9 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 
 	@Override
 	public EarchInterimRemainCheck checkRegister(InterimRemainCheckInputParam inputParam) {
-		// 代休不足区分、振休不足区分、年休不足区分、積休不足区分、特休不足区分、公休不足区分、超休不足区分をfalseにする(初期化)
+		// 代休不足区分、振休不足区分、年休不足区分、積休不足区分、特休不足区分、公休不足区分、超休不足区分、子の看護不足区分、介護不足区分をfalseにする(初期化) 
 		EarchInterimRemainCheck outputData = new EarchInterimRemainCheck(false, false, false, false, false, false,
-				false);
+				false, false, false);
 		Optional<ComSubstVacation> comSetting = subRepos.findById(inputParam.getCid());
 		CompensatoryLeaveComSetting leaveComSetting = leaveSetRepos.find(inputParam.getCid());
 		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(inputParam.getCid(), comSetting,
@@ -207,6 +207,15 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 					break;
 				}
 			}
+		}
+		// 子の看護チェック区分をチェックする
+		if (inputParam.isChkChildNursing()) {
+		    // TODO: Call RQ 206: [NO.206]期間中の子の看護休暇残数を取得
+		    
+		}
+		// 介護チェック区分をチェックする
+		if (inputParam.isChkLongTermCare()) {
+		    // TODO: Call RQ 207: [NO.207]期間中の介護休暇残数を取得
 		}
 
 		return outputData;
