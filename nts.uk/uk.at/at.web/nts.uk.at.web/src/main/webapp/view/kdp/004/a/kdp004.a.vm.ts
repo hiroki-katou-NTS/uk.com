@@ -504,9 +504,10 @@ module nts.uk.at.view.kdp004.a {
 												location.reload();
 											});
 										} else {
-											if (self.saveSuccess) {
-												location.reload();
-											}
+											location.reload();
+											// if (self.saveSuccess) {
+											// 	location.reload();
+											// }
 										}
 									})
 								} else {
@@ -520,7 +521,6 @@ module nts.uk.at.view.kdp004.a {
 								self.modeBasyo(false);
 							});
 					} else {
-						console.log(loginResult.msgErrorId);
 
 						if (loginResult.msgErrorId == "Msg_1527") {
 							self.isUsed(false);

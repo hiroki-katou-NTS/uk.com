@@ -728,15 +728,14 @@ module nts.uk.at.kdp003.a {
 							})
 							.then(() => loginData);
 					}
-
 					return loginData;
 				})
 				.then((loginData: undefined | f.TimeStampLoginData) => {
-
 					var exist = false;
 					var exist1 = false;
 					if (loginData === undefined) {
 						exist = true;
+						return loginData;
 					}
 
 					if (loginData.result) {
@@ -751,22 +750,28 @@ module nts.uk.at.kdp003.a {
 					if (!exist && !ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
 						return vm.$window.modal('at', DIALOG.K, params)
 							.then((workplaceData: undefined | k.Return) => {
+								if(workplaceData === undefined) {
+									location.reload();
+								}
+								
 								openViewK = true;
 								return {
 									loginData,
 									workplaceData
 								};
 							}) as JQueryPromise<LoginData>;
-					} else {
-
-						return loginData;
 					}
+					return loginData;
 				})
 				.then((data: LoginData) => {
 					var exist = true;
 					var exist1 = false;
 					var checkExistBasyo = false;
 					var check1527 = false;
+
+					if (data === undefined) {
+						return false;
+					}
 
 					if (data.msgErrorId) {
 						if (data.msgErrorId === "Msg_1527") {
@@ -776,10 +781,6 @@ module nts.uk.at.kdp003.a {
 
 					if (check1527) {
 						vm.setMessage({ messageId: 'Msg_1527' });
-						return false;
-					}
-
-					if (data === undefined) {
 						return false;
 					}
 
@@ -803,7 +804,6 @@ module nts.uk.at.kdp003.a {
 					}
 
 					if (data.notification == null && !exist1 && !ko.unwrap(vm.modeBasyo)) {
-
 						exist = false;
 					}
 
@@ -936,12 +936,12 @@ module nts.uk.at.kdp003.a {
 				.always(() => {
 					if (ko.unwrap(vm.modeBasyo)) {
 						if (saveSuccess) {
-							window.location.reload(false);
+							location.reload();
 							saveSuccess = false;
 						}
 					} else {
 						if (openViewK && saveSuccess) {
-							window.location.reload(false);
+							location.reload();
 							openViewK = false;
 							saveSuccess = false;
 						}
