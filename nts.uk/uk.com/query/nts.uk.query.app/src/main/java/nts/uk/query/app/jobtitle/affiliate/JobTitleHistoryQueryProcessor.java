@@ -1,4 +1,4 @@
-package nts.uk.query.app.jobtitle.position.jobposition;
+package nts.uk.query.app.jobtitle.affiliate;
 
 import java.util.List;
 

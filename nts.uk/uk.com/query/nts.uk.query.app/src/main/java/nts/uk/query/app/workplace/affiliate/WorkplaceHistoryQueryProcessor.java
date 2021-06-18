@@ -2,6 +2,9 @@ package nts.uk.query.app.workplace.affiliate;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -12,6 +15,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryReposit
  * @author NWS-DungDV
  *
  */
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class WorkplaceHistoryQueryProcessor {
 	
 	@Inject
