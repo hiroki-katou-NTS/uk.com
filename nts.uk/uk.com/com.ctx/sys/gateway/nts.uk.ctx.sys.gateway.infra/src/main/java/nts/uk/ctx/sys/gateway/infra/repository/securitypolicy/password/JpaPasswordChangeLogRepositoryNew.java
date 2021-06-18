@@ -10,7 +10,7 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChan
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.password.SgwdtPasswordChangeLog;
 
 @Stateless
-public class JpaPasswordChangeLogRepository extends JpaRepository implements PasswordChangeLogRepository{
+public class JpaPasswordChangeLogRepositoryNew extends JpaRepository implements PasswordChangeLogRepository{
 	
 	private final String BASIC_SELECT = "select * from SGWDT_PASSWORD_CHANGE_LOG ";
 

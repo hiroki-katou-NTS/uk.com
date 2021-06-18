@@ -28,7 +28,7 @@ import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
 /**
  * The Class JpaPasswordChangeLogRepository.
  */
-//@Stateless
+@Stateless
 public class JpaPasswordChangeLogRepository extends JpaRepository implements PasswordChangeLogRepository {
 
 	private static final String FIND_BY_USERID = "SELECT c FROM SacdtPasswordChangeLog c"
