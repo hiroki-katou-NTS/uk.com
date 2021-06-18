@@ -524,22 +524,22 @@ module nts.uk.at.view.kml002.k {
                 if(result === 'yes'){
                     self.$ajax(Paths.DELETE_SETTING_EMP, command).done(() =>{
                         self.$dialog.info({messageId: "Msg_16"}).then(() =>{
-                            if(self.alreadySettingList().length == 1) {
-                                self.alreadySettingList([]);                                
-                                self.selectedCode(self.listEmp()[0].code);
-                            } else {
-                                let indexSelected: number;
+                            // if(self.alreadySettingList().length == 1) {
+                            //     self.alreadySettingList([]);                                
+                                // self.selectedCode(self.listEmp()[0].code);
+                            // } else {
+                                // let indexSelected: number;
                                 for(let index = 0; index < self.alreadySettingList().length; index++){
                                     if(self.alreadySettingList()[index].code == self.selectedCode()) {
-                                        indexSelected = (index == self.alreadySettingList().length - 1) ? index -1: index;
+                                        // indexSelected = (index == self.alreadySettingList().length - 1) ? index -1: index;
                                         self.alreadySettingList.splice(index, 1);
                                         break;
                                     }
                                 }
-                                self.selectedCode(self.alreadySettingList()[indexSelected].code);
-                            }
+                                // self.selectedCode(self.alreadySettingList()[indexSelected].code);
+                            // }
+                            self.isReloadScreenK(true);
                             self.loadDataScreenK();
-                            self.selectedCode.valueHasMutated();
                         });
                     }).always(() =>{
                         self.$blockui("hide");
