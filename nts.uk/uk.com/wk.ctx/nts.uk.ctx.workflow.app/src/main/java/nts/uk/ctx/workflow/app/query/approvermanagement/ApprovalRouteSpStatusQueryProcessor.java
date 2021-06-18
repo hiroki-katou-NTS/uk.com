@@ -56,11 +56,12 @@ public class ApprovalRouteSpStatusQueryProcessor {
 		List<String> approverList = this.personApprovalRootRepository.getListAppover(sid, referDate);
 		
 		// Return 承認ルート状況
-		return new ApprovalRouteSpStatusQuery(
+		return new ApprovalRouteSpStatusQuery
+			(
 				sid, 				// 指定者：社員ID　←　INPUT「社員ID」
 				workplaceList, 		// 承認職場リスト：List<職場ID>　←　取得した「職場リスト」
 				appoveEmpList, 		// 承認対象社員リスト：List<社員ID>　←　取得した「承認対象社員リスト」
 				approverList 		// 指定者の承認者リスト：List<社員ID>　←　取得した「承認者リスト」
-		);
+			);
 	}
 }

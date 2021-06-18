@@ -20,7 +20,7 @@ public class ApprovalRouteSpStatusQuery {
 	List<String> workplaceList;
 	
 	// 承認対象社員リスト
-	List<String> appoveEmpList;
+	List<String> approveEmpList;
 	
 	// 指定者の承認者リスト
 	List<String> approverList;
