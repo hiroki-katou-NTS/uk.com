@@ -95,7 +95,7 @@ public class SummaryItemDetail extends ValueObject {
         for (GeneralDate date : dateList) {
             val childVerticalList = childHierarchyList.stream().flatMap(x -> x.getVerticalTotalList().stream()).collect(Collectors.toList());
             val workingTime = childVerticalList.stream().filter(x -> x.getDate().equals(date)).mapToInt(VerticalValueDaily::getWorkingHours).sum();
-            lstVertical.add(new VerticalValueDaily(workingTime, null, date)); //TODO 日々縦計値#日々縦計値($対象年月日,Optional.empty,$作業時間)
+            lstVertical.add(new VerticalValueDaily(workingTime, null, date));
         }
         if (!lstVertical.isEmpty())
             verticalTotalList = lstVertical;
@@ -110,7 +110,7 @@ public class SummaryItemDetail extends ValueObject {
         for (val ym : yearMonthList) {
             val childVerticalList = childHierarchyList.stream().flatMap(x -> x.getVerticalTotalList().stream()).collect(Collectors.toList());
             val workingTime = childVerticalList.stream().filter(x -> x.getYearMonth().year() == ym.year()).mapToInt(VerticalValueDaily::getWorkingHours).sum();
-            lstVertical.add(new VerticalValueDaily(workingTime, ym, null));  //TODO 日々縦計値#日々縦計値(Optional.empty,$対象年月,$作業時間)
+            lstVertical.add(new VerticalValueDaily(workingTime, ym, null));
         }
         if (!lstVertical.isEmpty())
             verticalTotalList = lstVertical;
@@ -126,7 +126,7 @@ public class SummaryItemDetail extends ValueObject {
         List<VerticalValueDaily> lstVertical = new ArrayList<>();
         for (val date : dateList) {
             val workingTime = workDetailList.stream().filter(x -> x.getDate().equals(date)).mapToInt(WorkDetailData::getTotalWorkingHours).sum();
-            lstVertical.add(new VerticalValueDaily(workingTime, null, date));  //TODO 日々縦計値#日々縦計値($対象年月日,Optional.empty,$作業時間)
+            lstVertical.add(new VerticalValueDaily(workingTime, null, date));
         }
 
         return lstVertical;
@@ -141,8 +141,8 @@ public class SummaryItemDetail extends ValueObject {
     private static List<VerticalValueDaily> createWorkTimeDetailByYearMonth(List<YearMonth> yearMonthList, List<WorkDetailData> workDetailList) {
         List<VerticalValueDaily> lstVertical = new ArrayList<>();
         for (val ym : yearMonthList) {
-            val workingTime = workDetailList.stream().filter(x -> x.getDate().yearMonth().equals(ym)).mapToInt(WorkDetailData::getTotalWorkingHours).sum();
-            lstVertical.add(new VerticalValueDaily(workingTime, ym, null));  //TODO 日々縦計値#日々縦計値(Optional.empty,$対象年月,$作業時間)
+            val workingTime = workDetailList.stream().filter(x -> x.getDate().month() == ym.month()).mapToInt(WorkDetailData::getTotalWorkingHours).sum();
+            lstVertical.add(new VerticalValueDaily(workingTime, ym, null));
         }
 
         return lstVertical;

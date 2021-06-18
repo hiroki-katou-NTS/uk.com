@@ -49,8 +49,8 @@ public class DetailFormatSetting extends ValueObject {
                                                                                    List<WorkDetailData> workDetailList,
                                                                                    MasterNameInformation masterNameInfo) {
         val firstItem = summaryItemList.stream().findFirst().orElse(null);
-        val itemDetail = createSummaryItemDetail(dateList, yearMonthList, firstItem, workDetailList, masterNameInfo); //TODO: return List or Object ???
-        val outputContent = new ManHourSummaryTableOutputContent(Collections.singletonList(itemDetail));
+        val itemDetail = createSummaryItemDetail(dateList, yearMonthList, firstItem, workDetailList, masterNameInfo);
+        val outputContent = new ManHourSummaryTableOutputContent(itemDetail);
 
         if (displayVerticalHorizontalTotal == NotUseAtr.USE)
             outputContent.calculateTotal(totalUnit, dateList, yearMonthList);
@@ -67,27 +67,32 @@ public class DetailFormatSetting extends ValueObject {
      * @param masterNameInfo マスタ名称情報
      * @return 集計項目詳細
      */
-    private SummaryItemDetail createSummaryItemDetail(List<GeneralDate> dateList, List<YearMonth> yearMonthList,
+    private List<SummaryItemDetail> createSummaryItemDetail(List<GeneralDate> dateList, List<YearMonth> yearMonthList,
                                                       SummaryItem summaryItem, List<WorkDetailData> workDetailList,
                                                       MasterNameInformation masterNameInfo) {
+        List<SummaryItemDetail> summaryItemDetails = new ArrayList<>();
+        if (Objects.isNull(summaryItem)) return summaryItemDetails;
+
         int hierarchyNo = summaryItemList.indexOf(summaryItem);
         boolean lastFlag = hierarchyNo >= summaryItemList.size() - 1;
         //$作業データグループ = 作業詳細リスト：map groupingBy $.集計項目をマッピングする(対象項目)
         Map<String, List<WorkDetailData>> workDataGroup = workDetailList.stream().collect(Collectors.groupingBy(x -> x.mapSummaryItem(summaryItem.getSummaryItemType())));
 
-        SummaryItemDetail summaryItemDetail = null;
         for (val entry : workDataGroup.entrySet()) {
             val key = entry.getKey();
-            if (lastFlag)
-                summaryItemDetail = createItemDetailForBottomLayer(dateList, yearMonthList, key, summaryItem.getSummaryItemType(), workDetailList, masterNameInfo);
-            else {
+            if (lastFlag) {
+                SummaryItemDetail itemDetail = createItemDetailForBottomLayer(dateList, yearMonthList, key, summaryItem.getSummaryItemType(), workDetailList, masterNameInfo);
+                summaryItemDetails.add(itemDetail);
+            } else {
                 SummaryItem nextTargetItem = summaryItemList.stream().filter(x -> x.getHierarchicalOrder() == summaryItem.getHierarchicalOrder() + 1).findFirst().orElse(null);
-                if (nextTargetItem != null)
-                    summaryItemDetail = createItemDetailOtherThanBottomLayer(dateList, yearMonthList, key, nextTargetItem, workDetailList, masterNameInfo);
+                if (nextTargetItem != null) {
+                    val itemDetail = createItemDetailOtherThanBottomLayer(dateList, yearMonthList, key, nextTargetItem, workDetailList, masterNameInfo);
+                    summaryItemDetails.add(itemDetail);
+                }
             }
         }
 
-        return summaryItemDetail;
+        return summaryItemDetails;
     }
 
     /**
@@ -105,7 +110,7 @@ public class DetailFormatSetting extends ValueObject {
                                                                    MasterNameInformation masterNameInfo) {
         val displayInfo = masterNameInfo.getDisplayInfo(code, summaryItem.getSummaryItemType());
         val nextLevelList = createSummaryItemDetail(dateList, yearMonthList, summaryItem, workDetailList, masterNameInfo);
-        val summaryItemDetail = SummaryItemDetail.createNew(code, displayInfo, Collections.singletonList(nextLevelList));  //TODO: param is: List or Object ???
+        val summaryItemDetail = SummaryItemDetail.createNew(code, displayInfo, nextLevelList);
 
         if (displayVerticalHorizontalTotal == NotUseAtr.USE)
             summaryItemDetail.calculateTotal(totalUnit, dateList, yearMonthList);
@@ -146,7 +151,7 @@ public class DetailFormatSetting extends ValueObject {
         List<VerticalValueDaily> verticalTotalList = new ArrayList<>();
         for (val date : dateList) {
             val workingTime = workDetailList.stream().filter(x -> x.getDate().equals(date)).mapToInt(WorkDetailData::getTotalWorkingHours).sum();
-            verticalTotalList.add(new VerticalValueDaily(workingTime, null, date)); //TODO
+            verticalTotalList.add(new VerticalValueDaily(workingTime, null, date));
         }
         return verticalTotalList;
     }
@@ -160,8 +165,8 @@ public class DetailFormatSetting extends ValueObject {
     public List<VerticalValueDaily> createWorkTimeDetailByYearMonth(List<YearMonth> yearMonthList, List<WorkDetailData> workDetailList) {
         List<VerticalValueDaily> verticalValueList = new ArrayList<>();
         for (val ym : yearMonthList) {
-            val workingTime = workDetailList.stream().filter(x -> x.getDate().yearMonth() == ym).mapToInt(WorkDetailData::getTotalWorkingHours).sum();
-            verticalValueList.add(new VerticalValueDaily(workingTime, ym, null)); //TODO
+            val workingTime = workDetailList.stream().filter(x -> x.getDate().month() == ym.month()).mapToInt(WorkDetailData::getTotalWorkingHours).sum();
+            verticalValueList.add(new VerticalValueDaily(workingTime, ym, null));
         }
         return verticalValueList;
     }

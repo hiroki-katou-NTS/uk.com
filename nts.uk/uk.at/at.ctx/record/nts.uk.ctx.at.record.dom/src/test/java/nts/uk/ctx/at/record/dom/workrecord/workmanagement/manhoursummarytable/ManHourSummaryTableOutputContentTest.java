@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.tuple;
 @RunWith(JMockit.class)
 public class ManHourSummaryTableOutputContentTest {
     private final List<YearMonth> yearMonthList = Collections.singletonList(YearMonth.of(6));
+    private final List<GeneralDate> dateList = Helper.dateList;
 
     /**
      * Getter
@@ -26,7 +27,6 @@ public class ManHourSummaryTableOutputContentTest {
     @Test
     public void getters() {
         val itemDetails = Helper.summaryItemDetail.getList(3);
-//        val verticalTotalValues = Helper.verticalValueDaily.getList(1);
         val instance = new ManHourSummaryTableOutputContent(itemDetails);
         NtsAssert.invokeGetters(instance);
     }
@@ -35,8 +35,7 @@ public class ManHourSummaryTableOutputContentTest {
      * TotalUnit = Date
      */
     @Test
-    public void calculateTotal_UnitDate() {
-        List<GeneralDate> dateList = Helper.dateList;
+    public void calculateTotal_totalUnit_Date() {
         val itemDetails = Helper.summaryItemDetail.getList(2);
         val instance = new ManHourSummaryTableOutputContent(itemDetails);
 
@@ -45,18 +44,6 @@ public class ManHourSummaryTableOutputContentTest {
 
         // Assertion
         assertThat(instance.getTotalPeriod().get()).isEqualTo(18);
-        val targetDispInfo1 = new DisplayInformation("01", "NAME1");
-        val targetDispInfo2 = new DisplayInformation("01", "NAME1");
-//        assertThat(instance.getItemDetails())
-//                .extracting(
-//                        SummaryItemDetail::getCode,
-//                        SummaryItemDetail::getDisplayInfo,
-//                        SummaryItemDetail::getChildHierarchyList,
-//                        SummaryItemDetail::getVerticalTotalList,
-//                        SummaryItemDetail::getTotalPeriod)
-//                .containsExactly(
-//                        tuple("01, targetDispInfo1
-//                ); TODO TODO
         assertThat(instance.getVerticalTotalValues())
                 .extracting(
                         VerticalValueDaily::getWorkingHours,
@@ -67,5 +54,647 @@ public class ManHourSummaryTableOutputContentTest {
                         tuple(6, null, GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
                         tuple(9, null, GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                 );
+
+        // List SummaryItemDetail
+        assertThat(instance.getItemDetails()).hasSize(2);
+        //1
+        {
+            assertThat(instance.getItemDetails().get(0)).extracting(
+                    x -> x.getCode(),
+                    x -> x.getDisplayInfo().getCode(),
+                    x -> x.getDisplayInfo().getName(),
+                    x -> x.getTotalPeriod().get()
+            ).containsExactly("01", "01", "NAME1", 2);
+            assertThat(instance.getItemDetails().get(0).getVerticalTotalList())
+                    .extracting(
+                            VerticalValueDaily::getWorkingHours,
+                            VerticalValueDaily::getYearMonth,
+                            VerticalValueDaily::getDate)
+                    .containsExactly(
+                            tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                            tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                            tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                    );
+            assertThat(instance.getItemDetails().get(0).getChildHierarchyList()).hasSize(2);
+            //1.1
+            {
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0)).extracting(
+                        x -> x.getCode(),
+                        x -> x.getDisplayInfo().getCode(),
+                        x -> x.getDisplayInfo().getName(),
+                        x -> x.getTotalPeriod().get()
+                ).containsExactly("011", "011", "NAME11", 2);
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0).getVerticalTotalList())
+                        .extracting(
+                                VerticalValueDaily::getWorkingHours,
+                                VerticalValueDaily::getYearMonth,
+                                VerticalValueDaily::getDate)
+                        .containsExactly(
+                                tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                        );
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
+            }
+            //1.2
+            {
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1)).extracting(
+                        x -> x.getCode(),
+                        x -> x.getDisplayInfo().getCode(),
+                        x -> x.getDisplayInfo().getName(),
+                        x -> x.getTotalPeriod().get()
+                ).containsExactly("021", "021", "NAME21", 4);
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1).getVerticalTotalList())
+                        .extracting(
+                                VerticalValueDaily::getWorkingHours,
+                                VerticalValueDaily::getYearMonth,
+                                VerticalValueDaily::getDate)
+                        .containsExactly(
+                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                        );
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
+            }
+        }
+
+        //2
+        {
+            assertThat(instance.getItemDetails().get(1)).extracting(
+                    x -> x.getCode(),
+                    x -> x.getDisplayInfo().getCode(),
+                    x -> x.getDisplayInfo().getName(),
+                    x -> x.getTotalPeriod().get()
+            ).containsExactly("02", "02", "NAME2", 4);
+            assertThat(instance.getItemDetails().get(1).getVerticalTotalList())
+                    .extracting(
+                            VerticalValueDaily::getWorkingHours,
+                            VerticalValueDaily::getYearMonth,
+                            VerticalValueDaily::getDate)
+                    .containsExactly(
+                            tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                            tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                            tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                    );
+            assertThat(instance.getItemDetails().get(1).getChildHierarchyList()).hasSize(2);
+            //2.1
+            {
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0)).extracting(
+                        x -> x.getCode(),
+                        x -> x.getDisplayInfo().getCode(),
+                        x -> x.getDisplayInfo().getName(),
+                        x -> x.getTotalPeriod().get()
+                ).containsExactly("011", "011", "NAME11", 2);
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0).getVerticalTotalList())
+                        .extracting(
+                                VerticalValueDaily::getWorkingHours,
+                                VerticalValueDaily::getYearMonth,
+                                VerticalValueDaily::getDate)
+                        .containsExactly(
+                                tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                        );
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
+            }
+            //2.2
+            {
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1)).extracting(
+                        x -> x.getCode(),
+                        x -> x.getDisplayInfo().getCode(),
+                        x -> x.getDisplayInfo().getName(),
+                        x -> x.getTotalPeriod().get()
+                ).containsExactly("021", "021", "NAME21", 4);
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1).getVerticalTotalList())
+                        .extracting(
+                                VerticalValueDaily::getWorkingHours,
+                                VerticalValueDaily::getYearMonth,
+                                VerticalValueDaily::getDate)
+                        .containsExactly(
+                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                        );
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
+            }
+        }
+    }
+
+    /**
+     * TotalUnit = Date
+     * dateList empty
+     */
+    @Test
+    public void calculateTotal_totalUnit_Date_dateList_Empty() {
+        val itemDetails = Helper.summaryItemDetail.getList(2);
+        val instance = new ManHourSummaryTableOutputContent(itemDetails);
+
+        // Execute
+        instance.calculateTotal(TotalUnit.DATE, Collections.emptyList(), yearMonthList);
+
+        // Assertion
+        assertThat(instance.getTotalPeriod().get()).isEqualTo(0);
+        assertThat(instance.getVerticalTotalValues()).isEmpty();
+
+        // List SummaryItemDetail
+        assertThat(instance.getItemDetails()).hasSize(2);
+        //1
+        {
+            assertThat(instance.getItemDetails().get(0)).extracting(
+                    x -> x.getCode(),
+                    x -> x.getDisplayInfo().getCode(),
+                    x -> x.getDisplayInfo().getName(),
+                    x -> x.getTotalPeriod().get()
+            ).containsExactly("01", "01", "NAME1", 2);
+            assertThat(instance.getItemDetails().get(0).getVerticalTotalList())
+                    .extracting(
+                            VerticalValueDaily::getWorkingHours,
+                            VerticalValueDaily::getYearMonth,
+                            VerticalValueDaily::getDate)
+                    .containsExactly(
+                            tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                            tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                            tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                    );
+            assertThat(instance.getItemDetails().get(0).getChildHierarchyList()).hasSize(2);
+            //1.1
+            {
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0)).extracting(
+                        x -> x.getCode(),
+                        x -> x.getDisplayInfo().getCode(),
+                        x -> x.getDisplayInfo().getName(),
+                        x -> x.getTotalPeriod().get()
+                ).containsExactly("011", "011", "NAME11", 2);
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0).getVerticalTotalList())
+                        .extracting(
+                                VerticalValueDaily::getWorkingHours,
+                                VerticalValueDaily::getYearMonth,
+                                VerticalValueDaily::getDate)
+                        .containsExactly(
+                                tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                        );
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
+            }
+            //1.2
+            {
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1)).extracting(
+                        x -> x.getCode(),
+                        x -> x.getDisplayInfo().getCode(),
+                        x -> x.getDisplayInfo().getName(),
+                        x -> x.getTotalPeriod().get()
+                ).containsExactly("021", "021", "NAME21", 4);
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1).getVerticalTotalList())
+                        .extracting(
+                                VerticalValueDaily::getWorkingHours,
+                                VerticalValueDaily::getYearMonth,
+                                VerticalValueDaily::getDate)
+                        .containsExactly(
+                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                        );
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
+            }
+        }
+
+        //2
+        {
+            assertThat(instance.getItemDetails().get(1)).extracting(
+                    x -> x.getCode(),
+                    x -> x.getDisplayInfo().getCode(),
+                    x -> x.getDisplayInfo().getName(),
+                    x -> x.getTotalPeriod().get()
+            ).containsExactly("02", "02", "NAME2", 4);
+            assertThat(instance.getItemDetails().get(1).getVerticalTotalList())
+                    .extracting(
+                            VerticalValueDaily::getWorkingHours,
+                            VerticalValueDaily::getYearMonth,
+                            VerticalValueDaily::getDate)
+                    .containsExactly(
+                            tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                            tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                            tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                    );
+            assertThat(instance.getItemDetails().get(1).getChildHierarchyList()).hasSize(2);
+            //2.1
+            {
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0)).extracting(
+                        x -> x.getCode(),
+                        x -> x.getDisplayInfo().getCode(),
+                        x -> x.getDisplayInfo().getName(),
+                        x -> x.getTotalPeriod().get()
+                ).containsExactly("011", "011", "NAME11", 2);
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0).getVerticalTotalList())
+                        .extracting(
+                                VerticalValueDaily::getWorkingHours,
+                                VerticalValueDaily::getYearMonth,
+                                VerticalValueDaily::getDate)
+                        .containsExactly(
+                                tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                        );
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
+            }
+            //2.2
+            {
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1)).extracting(
+                        x -> x.getCode(),
+                        x -> x.getDisplayInfo().getCode(),
+                        x -> x.getDisplayInfo().getName(),
+                        x -> x.getTotalPeriod().get()
+                ).containsExactly("021", "021", "NAME21", 4);
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1).getVerticalTotalList())
+                        .extracting(
+                                VerticalValueDaily::getWorkingHours,
+                                VerticalValueDaily::getYearMonth,
+                                VerticalValueDaily::getDate)
+                        .containsExactly(
+                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                        );
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
+            }
+        }
+    }
+
+    /**
+     * TotalUnit = Date
+     * itemDetails empty
+     */
+    @Test
+    public void calculateTotal_totalUnit_Date_itemDetails_empty() {
+        List<SummaryItemDetail> itemDetails = Collections.emptyList();
+        val instance = new ManHourSummaryTableOutputContent(itemDetails);
+
+        // Execute
+        instance.calculateTotal(TotalUnit.DATE, dateList, yearMonthList);
+
+        // Assertion
+        assertThat(instance.getTotalPeriod().get()).isEqualTo(0);
+        assertThat(instance.getItemDetails()).isEmpty();
+        assertThat(instance.getVerticalTotalValues())
+                .extracting(
+                        VerticalValueDaily::getWorkingHours,
+                        VerticalValueDaily::getYearMonth,
+                        VerticalValueDaily::getDate)
+                .containsExactly(
+                        tuple(0, null, GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                        tuple(0, null, GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                        tuple(0, null, GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                );
+    }
+
+    /**
+     * TotalUnit = Date
+     * dateList empty
+     * itemDetails empty
+     */
+    @Test
+    public void calculateTotal_totalUnit_Date_dateList_Empty_itemDetails_empty() {
+        List<SummaryItemDetail> itemDetails = Collections.emptyList();
+        val instance = new ManHourSummaryTableOutputContent(itemDetails);
+
+        // Execute
+        instance.calculateTotal(TotalUnit.DATE, Collections.emptyList(), yearMonthList);
+
+        // Assertion
+        assertThat(instance.getTotalPeriod().get()).isEqualTo(0);
+        assertThat(instance.getItemDetails()).isEmpty();
+        assertThat(instance.getVerticalTotalValues()).isEmpty();
+    }
+
+
+    /**
+     * TotalUnit = YearMonth
+     */
+    @Test
+    public void calculateTotal_totalUnit_YearMonth() {
+        val itemDetails = Helper.summaryItemDetail.getList(2);
+        val instance = new ManHourSummaryTableOutputContent(itemDetails);
+
+        // Execute
+        instance.calculateTotal(TotalUnit.YEAR_MONTH, dateList, yearMonthList);
+
+        // Assertion
+        assertThat(instance.getTotalPeriod().get()).isEqualTo(18);
+        assertThat(instance.getVerticalTotalValues())
+                .extracting(
+                        VerticalValueDaily::getWorkingHours,
+                        VerticalValueDaily::getYearMonth,
+                        VerticalValueDaily::getDate)
+                .containsExactly(
+                        tuple(18, YearMonth.of(6), null)
+                );
+
+        // List SummaryItemDetail
+        assertThat(instance.getItemDetails()).hasSize(2);
+        //1
+        {
+            assertThat(instance.getItemDetails().get(0)).extracting(
+                    x -> x.getCode(),
+                    x -> x.getDisplayInfo().getCode(),
+                    x -> x.getDisplayInfo().getName(),
+                    x -> x.getTotalPeriod().get()
+            ).containsExactly("01", "01", "NAME1", 2);
+            assertThat(instance.getItemDetails().get(0).getVerticalTotalList())
+                    .extracting(
+                            VerticalValueDaily::getWorkingHours,
+                            VerticalValueDaily::getYearMonth,
+                            VerticalValueDaily::getDate)
+                    .containsExactly(
+                            tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                            tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                            tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                    );
+            assertThat(instance.getItemDetails().get(0).getChildHierarchyList()).hasSize(2);
+            //1.1
+            {
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0)).extracting(
+                        x -> x.getCode(),
+                        x -> x.getDisplayInfo().getCode(),
+                        x -> x.getDisplayInfo().getName(),
+                        x -> x.getTotalPeriod().get()
+                ).containsExactly("011", "011", "NAME11", 2);
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0).getVerticalTotalList())
+                        .extracting(
+                                VerticalValueDaily::getWorkingHours,
+                                VerticalValueDaily::getYearMonth,
+                                VerticalValueDaily::getDate)
+                        .containsExactly(
+                                tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                        );
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
+            }
+            //1.2
+            {
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1)).extracting(
+                        x -> x.getCode(),
+                        x -> x.getDisplayInfo().getCode(),
+                        x -> x.getDisplayInfo().getName(),
+                        x -> x.getTotalPeriod().get()
+                ).containsExactly("021", "021", "NAME21", 4);
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1).getVerticalTotalList())
+                        .extracting(
+                                VerticalValueDaily::getWorkingHours,
+                                VerticalValueDaily::getYearMonth,
+                                VerticalValueDaily::getDate)
+                        .containsExactly(
+                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                        );
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
+            }
+        }
+
+        //2
+        {
+            assertThat(instance.getItemDetails().get(1)).extracting(
+                    x -> x.getCode(),
+                    x -> x.getDisplayInfo().getCode(),
+                    x -> x.getDisplayInfo().getName(),
+                    x -> x.getTotalPeriod().get()
+            ).containsExactly("02", "02", "NAME2", 4);
+            assertThat(instance.getItemDetails().get(1).getVerticalTotalList())
+                    .extracting(
+                            VerticalValueDaily::getWorkingHours,
+                            VerticalValueDaily::getYearMonth,
+                            VerticalValueDaily::getDate)
+                    .containsExactly(
+                            tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                            tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                            tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                    );
+            assertThat(instance.getItemDetails().get(1).getChildHierarchyList()).hasSize(2);
+            //2.1
+            {
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0)).extracting(
+                        x -> x.getCode(),
+                        x -> x.getDisplayInfo().getCode(),
+                        x -> x.getDisplayInfo().getName(),
+                        x -> x.getTotalPeriod().get()
+                ).containsExactly("011", "011", "NAME11", 2);
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0).getVerticalTotalList())
+                        .extracting(
+                                VerticalValueDaily::getWorkingHours,
+                                VerticalValueDaily::getYearMonth,
+                                VerticalValueDaily::getDate)
+                        .containsExactly(
+                                tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                        );
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
+            }
+            //2.2
+            {
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1)).extracting(
+                        x -> x.getCode(),
+                        x -> x.getDisplayInfo().getCode(),
+                        x -> x.getDisplayInfo().getName(),
+                        x -> x.getTotalPeriod().get()
+                ).containsExactly("021", "021", "NAME21", 4);
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1).getVerticalTotalList())
+                        .extracting(
+                                VerticalValueDaily::getWorkingHours,
+                                VerticalValueDaily::getYearMonth,
+                                VerticalValueDaily::getDate)
+                        .containsExactly(
+                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                        );
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
+            }
+        }
+    }
+
+    /**
+     * TotalUnit = YearMonth
+     * yearMonthList EMPTY
+     */
+    @Test
+    public void calculateTotal_totalUnit_YearMonth_yearMonthList_empty() {
+        val itemDetails = Helper.summaryItemDetail.getList(2);
+        val instance = new ManHourSummaryTableOutputContent(itemDetails);
+
+        // Execute
+        instance.calculateTotal(TotalUnit.YEAR_MONTH, dateList, Collections.emptyList());
+
+        // Assertion
+        assertThat(instance.getTotalPeriod().get()).isEqualTo(0);
+        assertThat(instance.getVerticalTotalValues()).isEmpty();
+
+        // List SummaryItemDetail
+        assertThat(instance.getItemDetails()).hasSize(2);
+        //1
+        {
+            assertThat(instance.getItemDetails().get(0)).extracting(
+                    x -> x.getCode(),
+                    x -> x.getDisplayInfo().getCode(),
+                    x -> x.getDisplayInfo().getName(),
+                    x -> x.getTotalPeriod().get()
+            ).containsExactly("01", "01", "NAME1", 2);
+            assertThat(instance.getItemDetails().get(0).getVerticalTotalList())
+                    .extracting(
+                            VerticalValueDaily::getWorkingHours,
+                            VerticalValueDaily::getYearMonth,
+                            VerticalValueDaily::getDate)
+                    .containsExactly(
+                            tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                            tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                            tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                    );
+            assertThat(instance.getItemDetails().get(0).getChildHierarchyList()).hasSize(2);
+            //1.1
+            {
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0)).extracting(
+                        x -> x.getCode(),
+                        x -> x.getDisplayInfo().getCode(),
+                        x -> x.getDisplayInfo().getName(),
+                        x -> x.getTotalPeriod().get()
+                ).containsExactly("011", "011", "NAME11", 2);
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0).getVerticalTotalList())
+                        .extracting(
+                                VerticalValueDaily::getWorkingHours,
+                                VerticalValueDaily::getYearMonth,
+                                VerticalValueDaily::getDate)
+                        .containsExactly(
+                                tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                        );
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
+            }
+            //1.2
+            {
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1)).extracting(
+                        x -> x.getCode(),
+                        x -> x.getDisplayInfo().getCode(),
+                        x -> x.getDisplayInfo().getName(),
+                        x -> x.getTotalPeriod().get()
+                ).containsExactly("021", "021", "NAME21", 4);
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1).getVerticalTotalList())
+                        .extracting(
+                                VerticalValueDaily::getWorkingHours,
+                                VerticalValueDaily::getYearMonth,
+                                VerticalValueDaily::getDate)
+                        .containsExactly(
+                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                        );
+                assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
+            }
+        }
+
+        //2
+        {
+            assertThat(instance.getItemDetails().get(1)).extracting(
+                    x -> x.getCode(),
+                    x -> x.getDisplayInfo().getCode(),
+                    x -> x.getDisplayInfo().getName(),
+                    x -> x.getTotalPeriod().get()
+            ).containsExactly("02", "02", "NAME2", 4);
+            assertThat(instance.getItemDetails().get(1).getVerticalTotalList())
+                    .extracting(
+                            VerticalValueDaily::getWorkingHours,
+                            VerticalValueDaily::getYearMonth,
+                            VerticalValueDaily::getDate)
+                    .containsExactly(
+                            tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                            tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                            tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                    );
+            assertThat(instance.getItemDetails().get(1).getChildHierarchyList()).hasSize(2);
+            //2.1
+            {
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0)).extracting(
+                        x -> x.getCode(),
+                        x -> x.getDisplayInfo().getCode(),
+                        x -> x.getDisplayInfo().getName(),
+                        x -> x.getTotalPeriod().get()
+                ).containsExactly("011", "011", "NAME11", 2);
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0).getVerticalTotalList())
+                        .extracting(
+                                VerticalValueDaily::getWorkingHours,
+                                VerticalValueDaily::getYearMonth,
+                                VerticalValueDaily::getDate)
+                        .containsExactly(
+                                tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                        );
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
+            }
+            //2.2
+            {
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1)).extracting(
+                        x -> x.getCode(),
+                        x -> x.getDisplayInfo().getCode(),
+                        x -> x.getDisplayInfo().getName(),
+                        x -> x.getTotalPeriod().get()
+                ).containsExactly("021", "021", "NAME21", 4);
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1).getVerticalTotalList())
+                        .extracting(
+                                VerticalValueDaily::getWorkingHours,
+                                VerticalValueDaily::getYearMonth,
+                                VerticalValueDaily::getDate)
+                        .containsExactly(
+                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                        );
+                assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
+            }
+        }
+    }
+
+    /**
+     * TotalUnit = YearMonth
+     * itemDetails EMPTY
+     */
+    @Test
+    public void calculateTotal_totalUnit_YearMonth_itemDetails_empty() {
+        List<SummaryItemDetail> itemDetails = Collections.emptyList();
+        val instance = new ManHourSummaryTableOutputContent(itemDetails);
+
+        // Execute
+        instance.calculateTotal(TotalUnit.YEAR_MONTH, dateList, yearMonthList);
+
+        // Assertion
+        assertThat(instance.getTotalPeriod().get()).isEqualTo(0);
+        assertThat(instance.getVerticalTotalValues())
+                .extracting(
+                        VerticalValueDaily::getWorkingHours,
+                        VerticalValueDaily::getYearMonth,
+                        VerticalValueDaily::getDate)
+                .containsExactly(tuple(0, YearMonth.of(6), null));
+        assertThat(instance.getItemDetails()).isEmpty();
+    }
+
+    /**
+     * TotalUnit = YearMonth
+     * yearMonthList EMPTY
+     * itemDetails EMPTY
+     */
+    @Test
+    public void calculateTotal_totalUnit_YearMonth_yearMonthList_empty_itemDetails_empty() {
+        List<SummaryItemDetail> itemDetails = Collections.emptyList();
+        val instance = new ManHourSummaryTableOutputContent(itemDetails);
+
+        // Execute
+        instance.calculateTotal(TotalUnit.YEAR_MONTH, dateList, Collections.emptyList());
+
+        // Assertion
+        assertThat(instance.getTotalPeriod().get()).isEqualTo(0);
+        assertThat(instance.getVerticalTotalValues()).isEmpty();
+        assertThat(instance.getItemDetails()).isEmpty();
     }
 }

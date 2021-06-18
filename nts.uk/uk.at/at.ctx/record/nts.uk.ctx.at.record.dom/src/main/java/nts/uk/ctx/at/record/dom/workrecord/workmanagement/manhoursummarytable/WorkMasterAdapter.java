@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable;
 
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
-
 import java.util.List;
 
 /**

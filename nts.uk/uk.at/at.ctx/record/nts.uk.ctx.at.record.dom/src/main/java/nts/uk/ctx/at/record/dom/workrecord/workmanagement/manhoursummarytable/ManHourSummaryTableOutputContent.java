@@ -57,7 +57,7 @@ public class ManHourSummaryTableOutputContent {
         for (GeneralDate date : dateList) {
             val childVerticalList = itemDetails.stream().flatMap(x -> x.getVerticalTotalList().stream()).collect(Collectors.toList());
             val workingTime = childVerticalList.stream().filter(x -> x.getDate().equals(date)).mapToInt(VerticalValueDaily::getWorkingHours).sum();
-            lstVertical.add(new VerticalValueDaily(workingTime, null, date)); //TODO 日々縦計値#日々縦計値($対象年月日,Optional.empty,$作業時間)
+            lstVertical.add(new VerticalValueDaily(workingTime, null, date));
         }
         if (!lstVertical.isEmpty())
             verticalTotalValues = lstVertical;
@@ -72,7 +72,7 @@ public class ManHourSummaryTableOutputContent {
         for (val ym : yearMonthList) {
             val childVerticalList = itemDetails.stream().flatMap(x -> x.getVerticalTotalList().stream()).collect(Collectors.toList());
             val workingTime = childVerticalList.stream().filter(x -> x.getYearMonth().year() == ym.year()).mapToInt(VerticalValueDaily::getWorkingHours).sum();
-            lstVertical.add(new VerticalValueDaily(workingTime, ym, null));  //TODO 日々縦計値#日々縦計値(Optional.empty,$対象年月,$作業時間)
+            lstVertical.add(new VerticalValueDaily(workingTime, ym, null));
         }
         if (!lstVertical.isEmpty())
             verticalTotalValues = lstVertical;
