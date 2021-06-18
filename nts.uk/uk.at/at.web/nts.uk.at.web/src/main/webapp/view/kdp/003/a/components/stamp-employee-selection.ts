@@ -114,7 +114,8 @@ module nts.uk.at.kdp003.a {
 		 * order list employee by name and code
 		 */
 		private orderedData(data: Employee[]) {
-			return _.orderBy(data, ['employeeName', 'employeeCode'], ['asc', 'asc'])
+			// return _.orderBy(data, ['employeeName', 'employeeCode'], ['asc', 'asc'])
+			return _.orderBy(data, 'employeeNameKana', 'asc');
 		}
 
 		created() {
