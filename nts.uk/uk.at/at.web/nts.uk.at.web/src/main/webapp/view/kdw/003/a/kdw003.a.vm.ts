@@ -3197,7 +3197,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         processLockButton(showLock: boolean) {
             let self = this;
-            if (!self.hasEmployee || self.hasErrorBuss) return;
+            if (!self.hasEmployee || self.hasErrorBuss || self.dailyPerfomanceData().length == 0) return;
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             let lstData = _.map(self.dailyPerfomanceData(), (map) => {
