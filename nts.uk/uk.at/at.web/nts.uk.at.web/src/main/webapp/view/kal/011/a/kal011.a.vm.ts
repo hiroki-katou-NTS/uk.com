@@ -122,8 +122,8 @@ module nts.uk.at.kal011.a {
             let param: any = {
                 alarmPatternCode: vm.alarmPatternCode(),
                 processingYm: vm.processingYm,
-                closureStartDate: moment.utc(vm.closureStartDate).toISOString(),
-                closureEndDate: moment.utc(vm.closureEndDate).toISOString()
+                closureStartDate: moment(vm.closureStartDate, 'YYYY/MM/DD').toISOString(),
+                closureEndDate: moment(vm.closureEndDate, 'YYYY/MM/DD').toISOString()
             };
             vm.$ajax(API.GET_CHECK_CONDITION, param).done((conditions: Array<ICheckCondition>) => {
                 let conds: Array<CheckCondition> = [];
