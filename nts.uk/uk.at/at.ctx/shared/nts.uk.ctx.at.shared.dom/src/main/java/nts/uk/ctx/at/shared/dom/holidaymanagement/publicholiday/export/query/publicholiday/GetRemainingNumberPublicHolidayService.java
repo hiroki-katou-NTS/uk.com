@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.pub
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayCarryForwardInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayCarryForwardInformationOutput;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayDigestionInformation;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayDigestionInformationOutput;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayErrors;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHolidayManagement;
@@ -95,7 +96,7 @@ public class GetRemainingNumberPublicHolidayService {
 		for(AggregatePublicHolidayWork publicHolidayWork : aggregatePublicHolidayWork){
 		
 			//消化処理
-			Pair<PublicHolidayDigestionInformation, Optional<PublicHolidayErrors>> afterDigestion = 
+			PublicHolidayDigestionInformationOutput afterDigestion = 
 					publicHolidayWork.createDigestionInformation(
 							publicHolidayCarryForwardData, tempPublicHolidayManagement);
 				
@@ -104,11 +105,12 @@ public class GetRemainingNumberPublicHolidayService {
 			PublicHolidayCarryForwardInformationOutput CarryForwardInformation=
 					publicHolidayWork.calculateCarriedForwardInformation(
 							employeeId,publicHolidayCarryForwardData,publicHolidaySetting);
+
 			
 			publicHolidayInformation.add(new PublicHolidayInformation(publicHolidayWork.getYearMonth(),
-																		afterDigestion.getLeft(),
+																		afterDigestion.getPublicHolidayDigestionInformation(),
 																		CarryForwardInformation.getPublicHolidayCarryForwardInformation(),
-																		afterDigestion.getRight()));
+																		afterDigestion.getErrors()));
 			
 			publicHolidayCarryForwardData = CarryForwardInformation.getPublicHolidayCarryForwardData();
 		}

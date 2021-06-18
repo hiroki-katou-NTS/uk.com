@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryFo
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayCarryForwardInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayCarryForwardInformationOutput;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayDigestionInformation;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayDigestionInformationOutput;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayErrors;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHolidayManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
@@ -77,7 +78,7 @@ public class AggregatePublicHolidayWork {
 	 * @param tempPublicHolidayManagement
 	 * @return
 	 */
-	public Pair<PublicHolidayDigestionInformation, Optional<PublicHolidayErrors>> createDigestionInformation (
+	public PublicHolidayDigestionInformationOutput createDigestionInformation (
 			List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData,
 			List<TempPublicHolidayManagement> tempPublicHolidayManagement
 			){
@@ -99,7 +100,7 @@ public class AggregatePublicHolidayWork {
 		//エラーチェック
 		Optional<PublicHolidayErrors> Errors =errorCheck();
 		
-		return Pair.of(Information, Errors);
+		return new PublicHolidayDigestionInformationOutput(Information, Errors);
 	}
 	
 	/**

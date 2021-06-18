@@ -12,27 +12,7 @@ public class KshdtHdpubRemHistPK implements Serializable{
 	/** 社員ID */
     @Column(name = "SID")
     public String sid;
-    
-	/** 年月 */
-	@Column(name = "YM")
-	@Basic(optional = false)
-	public int yearMonth;
-	
-	/** 締めID */
-	@Column(name = "CLOSURE_ID")
-	@Basic(optional = false)
-	public int closureId;
-
-	/** 締め日.日 */
-	@Column(name = "CLOSURE_DAY")
-	@Basic(optional = false)
-	public int closeDay;
-
-	/** 締め日.末日とする */
-	@Column(name = "IS_LAST_DAY")
-	@Basic(optional = false)
-	public int isLastDay;
-	
+		
 	/** 対象月 */
 	@Column(name = "TAGETMONTH")
 	@Basic(optional = false)
