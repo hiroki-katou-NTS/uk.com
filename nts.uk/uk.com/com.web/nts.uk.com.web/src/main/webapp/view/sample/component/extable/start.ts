@@ -153,7 +153,7 @@ __viewContext.ready(function () {
     let detailContentDs = [];
     let leftmostDs = [];
     let middleDs = [], updateMiddleDs = [];
-    let horzSumContentDs = [], leftHorzContentDs = [], vertSumContentDs = [], newVertSumContentDs = [];
+    let horzSumContentDs = [], leftHorzContentDs = [], rightHorzContentDs = [], vertSumContentDs = [], newVertSumContentDs = [];
     for (let i = 0; i < 300; i++) {
         detailContentDs.push(new ExItem(i.toString()));
         let eName = nts.uk.text.padRight("社員名" + i, " ", 10) + "AAAAAAAAAAAAAAAAAA";
@@ -189,6 +189,7 @@ __viewContext.ready(function () {
          _11: "0.5", _12: "1.0", _13: "0.5", _14: "1.0", _15: "1.0", _16: "0.5", _17: "1.0", _18: "1.0", _19: "1.0", _20: "1.0", _21: "1.0", _22: "1.0", _23: "1.0",
           _24: "0.5", _25: "0.5", _26: "1.0", _27: "1.0", _28: "1.0", _29: "0.5", _30: "1.0", _31: "1.0" });
         leftHorzContentDs.push({ itemId: i.toString(), itemName: "8:00 ~ 9:00", sum: "23.5" });
+        rightHorzContentDs.push({ itemId: i.toString(), sum: "99" });
     }
     
      let validateSrv = { 
@@ -322,7 +323,7 @@ __viewContext.ready(function () {
         { 
             headerText: "回数集計１",
             group: [
-                { headerText: "上１", key: "over1", width: "100px" },
+                { headerText: "上１", key: "over1", width: "100px", handlerType: "input", dataType: "text" },
                 { headerText: "上２", key: "over2", width: "100px" }
             ]
         }
@@ -478,6 +479,18 @@ __viewContext.ready(function () {
         primaryKey: "itemId"
     }; 
     
+    let rightHorzSumColumns = [{ headerText: "合計", key: "sum", width: "35px" }];
+    let rightHorzSumHeader = {
+        columns: rightHorzSumColumns,
+        rowHeight: "75px"
+    };
+    
+    let rightHorzSumContent = {
+        columns: rightHorzSumColumns,
+        dataSource: rightHorzContentDs,
+        primaryKey: "itemId"
+    };
+    
     let horizontalSumHeader = {
         columns: detailColumns,
         dataSource: detailHeaderDs,
@@ -519,7 +532,13 @@ __viewContext.ready(function () {
     let vertSumContent = {
         columns: vertSumColumns,
         dataSource: vertSumContentDs,
-        primaryKey: "empId"
+        primaryKey: "empId",
+        features: [
+            {
+                name: "BodyCellStyle",
+                decorator: [new CellColor("noCan", "1", "#00F")]
+            }
+        ]
     };
     
     function customValidate(idx, key, innerIdx, value, obj) {
@@ -556,7 +575,7 @@ __viewContext.ready(function () {
             windowYOccupation: 300,
             manipulatorId: "6",
             manipulatorKey: "empId",
-            updateMode: "copyPaste",
+            updateMode: "stick",
             pasteOverWrite: true,
             stickOverWrite: true,
             viewMode: "time",
@@ -580,6 +599,7 @@ __viewContext.ready(function () {
         .VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent)
         .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
         .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent)
+        .RightHorzSumHeader(rightHorzSumHeader).RightHorzSumContent(rightHorzSumContent)
         .create();
     
     $("#extable").exTable("scrollBack", 0, { h: 1050 });
@@ -650,6 +670,7 @@ __viewContext.ready(function () {
         $("#extable").on("extablecellupdated", function() {
         });
         $("#extable").on("extablerowupdated", function() {
+            console.log(arguments);
         });
     
         let updateMiddleH = [
