@@ -25,6 +25,10 @@ public class AnnLeaGrantNumberImported {
 	 * 残時間
 	 */
 	private Double remainTime;
+	/**
+	 * 付与時間
+	 */
+	private Integer grantTime;
 
 	public AnnLeaGrantNumberImported(GeneralDate grantDate,Double grantDays){
 		this.grantDate = grantDate;

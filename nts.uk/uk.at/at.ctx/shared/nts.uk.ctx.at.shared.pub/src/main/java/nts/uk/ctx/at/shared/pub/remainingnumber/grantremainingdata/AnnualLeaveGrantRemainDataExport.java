@@ -29,5 +29,11 @@ public class AnnualLeaveGrantRemainDataExport {
 	 */
 	private Double remainTime;
 
+	/**
+	 * 付与時間
+	 */
+
+	private Integer grantTime;
+
 
 }

@@ -152,7 +152,8 @@ public class AnnLeaveRemainingFinder implements AnnLeaveRemainingAdapter {
 					item.getGrantDate(),
 					item.getGrantNumberDays(),
 					item.getRemainDay(),
-					item.getRemainTime()
+					item.getRemainTime(),
+					item.getGrantTime()
 			);
 		}).collect(Collectors.toList());
 	}

@@ -28,8 +28,10 @@ public class AnnLeaGrantRemDataImpl implements AnnLeaGrantRemDataPub{
 			Double grantDay = null;
 			Double remainDay = null;
 			Double remainTime= null;
+			Integer grantTime = null;
 			if(annualGrant.getDetails() != null && annualGrant.getDetails().getGrantNumber() != null && annualGrant.getDetails().getGrantNumber().getDays() != null){
 				grantDay  = annualGrant.getDetails().getGrantNumber().getDays().v();
+				grantTime  = annualGrant.getDetails().getGrantNumber().getMinutesOrZero().v();
 				remainDay = annualGrant.getDetails().getRemainingNumber().getDays().v();
 				remainTime = annualGrant.getDetails().getRemainingNumber().getMinutes().isPresent()?
 						annualGrant.getDetails().getRemainingNumber().getMinutes().get().v().doubleValue(): null;
@@ -39,7 +41,8 @@ public class AnnLeaGrantRemDataImpl implements AnnLeaGrantRemDataPub{
 					annualGrant.getGrantDate(),
 					grantDay,
 					remainDay,
-					remainTime);
+					remainTime,
+					grantTime);
 			result.add(annualLeaveGrantRemainDataExport);
 		}
 		return result;
