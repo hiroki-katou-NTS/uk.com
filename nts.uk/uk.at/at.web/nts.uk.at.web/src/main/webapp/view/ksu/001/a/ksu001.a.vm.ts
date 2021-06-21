@@ -914,7 +914,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let userInfor: IUserInfor = JSON.parse(itemLocal.get());
                 if (userInfor.disPlayFormat == 'time' && userInfor.updateMode == 'edit') {
                     self.validTimeInEditMode(dataCell, userInfor, false);
+                } else if (userInfor.disPlayFormat == 'time' && userInfor.updateMode == 'stick') {
+                    // check xem cell vừa được stick data có nằm trong list cell lỗi do edit time hay không, nếu nằm trong list đấy thì rmove cell đó khỏi list lỗi đi.
+                    self.validTimeStickMode(dataCell, userInfor);
+                }  else if (userInfor.disPlayFormat == 'time' && userInfor.updateMode == 'copyPaste') {
+                    // check xem cell vừa được stick data có nằm trong list cell lỗi do edit time hay không, nếu nằm trong list đấy thì rmove cell đó khỏi list lỗi đi.
+                    self.validTimeCopyPaste(dataCell, userInfor);
                 } else {
+                    
                     self.checkExitCellUpdated();
                 }
             });
@@ -1007,6 +1014,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.checkExitCellUpdated();
                 return;
             }
+            
+                self.removeCellNotValidInTimeInputMode(rowIndex+'', columnKey);
+            } 
 
             nts.uk.ui.block.grayout();
             let param = {
@@ -1058,17 +1068,39 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     nts.uk.ui.block.clear();
                     self.enableBtnReg(false);
                     let errorsInfo = _.uniqBy(errors, x => { return x.message });
+                    self.addCellNotValidInTimeInputMode(rowIndex+'', columnKey);
+                    self.checkExitCellUpdated();
                     bundledErrors({ errors: errorsInfo }).then(() => {});
                 } else {
+                    self.removeCellNotValidInTimeInputMode(rowIndex+'', columnKey);
+                    self.checkExitCellUpdated();
                     nts.uk.ui.block.clear();
                 }
-                self.removeCellNotValidInTimeInputMode(rowIndex+'', columnKey);
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
                 nts.uk.ui.dialog.alertError(error);
                 dfd.reject();
             });
-            self.checkExitCellUpdated(isRetaine);
+        }
+        
+        validTimeStickMode(dataCellUpdated: any, userInfor: any) {
+            let self = this;
+            let rowIndex = dataCellUpdated.originalEvent.detail.rowIndex;
+            let columnKey = dataCellUpdated.originalEvent.detail.columnKey;
+             // vi data stick là data khong sai được, nên là nếu stick vào những cell nằm trong list cell sửa tay bị lỗi. thì xóa cell đó khoi list error đi.
+            _.remove(self.listCellError, function(cell) {
+                return cell.rowId == rowIndex && cell.columnId == columnKey;
+            });
+            self.checkExitCellUpdated();
+        }
+
+        validTimeCopyPaste(dataCellUpdated: any, userInfor: any) {
+            let self = this;
+            let rowIndex = dataCellUpdated.originalEvent.detail.rowIndex;
+            let columnKey = dataCellUpdated.originalEvent.detail.columnKey;
+            // copy paste hiện tại đang không lấy được cell nguồn
+            // nên là đang khong biết có coppy từ cell bị lỗi hay không.
+            
         }
         
         saveDataGrid(data: any) {
@@ -2480,7 +2512,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.setPositionButonDownAndHeightGrid();
             $('#btnControlLeftRight').width($("#extable").width() + 10);
             $("#sub-content-main").width($('#extable').width() + 30);
-            console.log(performance.now() - start);
+            console.log('time buid grid: '+ (performance.now() - start));
         }
         
         bindingEventClickFlower() {
@@ -4124,17 +4156,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.checkExitCellUpdated();
         }
         
-        checkExitCellUpdated(isRetaine? : boolean) {
+        checkExitCellUpdated() {
             let self = this;
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor = JSON.parse(item.get());
+            console.log('listCellError: ');
+            console.log(self.listCellError);
+            
             setTimeout(() => {
-                
+               
                 let updatedCells = $("#extable").exTable("updatedCells");
-                if (_.size(updatedCells) > 0 || isRetaine == true) {
+                if (_.size(updatedCells) > 0 ) {
                     self.enableBtnReg(true);
-                    if (userInfor.updateMode == 'edit' && self.listCellError.length > 0)
+                    if (self.listCellError.length > 0) {
                         self.enableBtnReg(false);
+                    }
                 } else {
                     self.enableBtnReg(false);
                 }
