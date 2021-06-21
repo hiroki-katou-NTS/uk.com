@@ -690,7 +690,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 	        ManageDistinct longTermCareManagement) {
 	    val require = requireService.createRequire();
 	    val cache = new CacheCarrier();
-	    RequireM11Imp requireM11Imp = new RequireM11Imp(comDayOffManaDataRepo, leaveComDayOffManaRepo, leaveManaDataRepo, shareEmploymentAdapter, compensLeaveEmSetRepo, compensLeaveComSetRepo, interimBreakDayOffMngRepo, closureEmploymentRepo, closureRepo, empEmployeeAdapter, substitutionOfHDManaDataRepo, payoutSubofHDManaRepo, payoutManagementDataRepo, empSubstVacationRepo, comSubstVacationRepo, interimRecAbasMngRepo);
+	    RequireM11Imp requireM11Imp = new RequireM11Imp(comDayOffManaDataRepo, leaveComDayOffManaRepo, leaveManaDataRepo, shareEmploymentAdapter, compensLeaveEmSetRepo, compensLeaveComSetRepo, interimBreakDayOffMngRepo, closureEmploymentRepo, closureRepo, empEmployeeAdapter, substitutionOfHDManaDataRepo, payoutSubofHDManaRepo, payoutManagementDataRepo, empSubstVacationRepo, comSubstVacationRepo, interimRecAbasMngRepo, payoutHdManaRepo);
 
 		//アルゴリズム「社員に対応する締め開始日を取得する」を実行する
 		Optional<GeneralDate> closure = GetClosureStartForEmployee.algorithm(require, cache, employeeID);
@@ -2491,6 +2491,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         private ComSubstVacationRepository comSubstVacationRepo;
         
         private InterimRecAbasMngRepository interimRecAbasMngRepo;
+        
+        private PayoutSubofHDManaRepository payoutHdManaRepo;
 
         @Override
         public List<CompensatoryDayOffManaData> getBySidYmd(String companyId, String employeeId,
