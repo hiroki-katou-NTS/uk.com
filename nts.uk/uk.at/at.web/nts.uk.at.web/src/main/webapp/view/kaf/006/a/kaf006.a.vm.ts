@@ -238,26 +238,19 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
             // check selected item
             vm.selectedType.subscribe(() => {
-                vm.selectedWorkTimeCD(null);
-                vm.selectedWorkTimeName(null);
-                vm.startTime1(null);
-                vm.startTime2(null);
-                vm.endTime1(null);
-                vm.endTime2(null);
+                // vm.selectedWorkTimeCD(null);
+                // vm.selectedWorkTimeName(null);
+                // vm.startTime1(null);
+                // vm.startTime2(null);
+                // vm.endTime1(null);
+                // vm.endTime2(null);
 
-                vm.data.selectedWorkTypeCD = null;
-                vm.data.selectedWorkTimeCD = null;
+                // vm.data.selectedWorkTypeCD = null;
+                // vm.data.selectedWorkTimeCD = null;
 
-                // vm.$errors("clear");
                 nts.uk.ui.errors.clearAll()
 
                 let appDates = [];
-                // if (!_.isNil(vm.application().opAppStartDate())) {
-                // 	appDates.push(vm.application().opAppStartDate());
-                // }
-                // if (!_.isNil(vm.application().opAppEndDate()) && vm.application().opAppStartDate() !== vm.application().opAppEndDate()) {
-                // 	appDates.push(vm.application().opAppEndDate());
-                // }
 
                 if (vm.checkTimeValid(vm.application().opAppStartDate)) {
                     appDates.push(vm.application().opAppStartDate());
@@ -292,9 +285,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     if (data) {
                         $("#work-type-combobox").focus()
                         vm.fetchData(data);
-                        vm.selectedWorkTimeCD(null);
-                        vm.selectedWorkTimeName(null);
-                        vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", 0));
+                        // vm.selectedWorkTimeCD(null);
+                        // vm.selectedWorkTimeName(null);
                         vm.appDispInfoStartupOutput(data.appDispInfoStartupOutput);
                         return data;
                     }
