@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.appabsence.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.time.GeneralDate;
 
 @Getter
 @AllArgsConstructor
@@ -38,4 +39,10 @@ public class NumberOfRemainOutput {
 	
 	// 介護残時間
 	private int nursingHourRemain;
+	
+	// 付与年月日
+	private GeneralDate grantDate;
+	
+	// 付与日数
+	private int grantDays;
 }

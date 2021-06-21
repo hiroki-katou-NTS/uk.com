@@ -695,7 +695,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		//アルゴリズム「社員に対応する締め開始日を取得する」を実行する
 		Optional<GeneralDate> closure = GetClosureStartForEmployee.algorithm(require, cache, employeeID);
 		if(!closure.isPresent()){
-			return new NumberOfRemainOutput(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+			return new NumberOfRemainOutput(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, 0);
 		}
 		
 		//年休残数
@@ -755,6 +755,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		}
 
 		//INPUT．「年休管理区分」がTRUE
+		List<NextAnnualLeaveGrantImport> nextYearHolidays = new ArrayList<NextAnnualLeaveGrantImport>();
 		if(annualLeaveManageDistinct.equals(ManageDistinct.YES)){//output．年休管理区分が管理する
 			//基準日時点の年休残数を取得する - RQ198
 			ReNumAnnLeaReferenceDateImport year = annLeaRemNumberAdapter.getReferDateAnnualLeaveRemainNumber(employeeID, baseDate);
@@ -765,7 +766,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 			    yearHourRemain += year.getAnnualLeaveGrantExports().get(i).getRemainMinutes();
 			}
 			//次回年休付与日を取得する
-			List<NextAnnualLeaveGrantImport> nextYearHolidays = annualHolidayManagementAdapter.acquireNextHolidayGrantDate(companyID, employeeID, GeneralDate.today());
+			nextYearHolidays = annualHolidayManagementAdapter.acquireNextHolidayGrantDate(companyID, employeeID, GeneralDate.today());
 		}
 		
 		// 「60H超休管理区分」を確認する
@@ -784,6 +785,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		    over60HHourRemain = over60hImport.getAsOfPeriodEnd().getRemainingNumber().getRemainingTimeWithMinus().v();
 		}
 
+		// 「子看護管理区分」を確認する
 		if (childNursingManagement.equals(ManageDistinct.YES)) {
 		    // [NO.206]期間中の子の看護休暇残数を取得
 		    ChildCareNursePeriodImport childNursePeriod = getRemainingNumberChildCareNurseAdapter.getChildCareNurseRemNumWithinPeriod(
@@ -803,6 +805,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		    }
 		}
 
+		// 「介護管理区分」を確認する
 		if (longTermCareManagement.equals(ManageDistinct.YES)) {
 		    // [NO.207]期間中の介護休暇残数を取得
 		    ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
@@ -834,7 +837,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		        childNursingDayRemain.intValue(), 
 		        childNursingHourRemain, 
 		        nursingRemain.intValue(), 
-		        nursingHourRemain);
+		        nursingHourRemain,
+		        nextYearHolidays.size() > 0 ? nextYearHolidays.get(0).grantDate : null, 
+		        nextYearHolidays.size() > 0 ? nextYearHolidays.get(0).getGrantDays().intValue() : 0);
 	}
 
 	@Override
@@ -885,7 +890,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
                 Optional.ofNullable(numberOfRemainOutput.getChildNursingDayRemain()), 
                 Optional.ofNullable(numberOfRemainOutput.getChildNursingHourRemain()), 
                 Optional.ofNullable(numberOfRemainOutput.getNursingRemain()), 
-                Optional.ofNullable(numberOfRemainOutput.getNursingHourRemain()));
+                Optional.ofNullable(numberOfRemainOutput.getNursingHourRemain()), 
+                Optional.ofNullable(numberOfRemainOutput.getGrantDate()), 
+                Optional.ofNullable(numberOfRemainOutput.getGrantDays()));
 	}
 
 	@Override

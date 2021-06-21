@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 
 /**
  * 休暇残数情報
@@ -66,4 +67,10 @@ public class RemainVacationInfo {
     
     // 介護残時間
     private Optional<Integer> nirsingHourRemain;
+    
+    // 付与年月日
+    private Optional<GeneralDate> grantDate;
+    
+    // 付与日数
+    private Optional<Integer> grantDays;
 }
