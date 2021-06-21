@@ -119,7 +119,7 @@ module nts.uk.at.view.kml002.k {
                     }
                 });
                 val.amount2.subscribe((amount) => {
-                    self.clearErrorAmount();
+                    self.clearErrorMonth();
                     if(amount !='' && val.amount1() >= amount){                        
                         $('#month2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]});                                             
                     }
@@ -128,62 +128,69 @@ module nts.uk.at.view.kml002.k {
                     } 
                 });
                 val.amount3.subscribe((amount) => {
-                    self.clearErrorAmount();
-                    if(val.amount2() == '' || val.amount1() >= val.amount2()){
-                        $('#month2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]}); 
-                    } 
-
+                    self.clearErrorMonth();
                     if(amount !=''){    
                         if(val.amount2() >= amount){                        
                             $('#month3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")]});                                              
-                        }                         
-                        if(amount >= val.amount4() && val.amount4() != ''){
-                            $('#month4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")]});
-                        }                                     
+                        }   
+                        if(val.amount1() != '') {
+                            if(val.amount2() == '' || (val.amount2() != '' && val.amount1() >= val.amount2())){
+                                $('#month2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]}); 
+                            }                    
+                            if(amount >= val.amount4() && val.amount4() != ''){
+                                $('#month4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")]});
+                            }     
+                        }                                                        
                     }                    
                 });
                 val.amount4.subscribe((amount) => {
-                    self.clearErrorAmount();
-                    if(val.amount3() == '' || val.amount2() >= val.amount3()){
-                        $('#month3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")]}); 
-                    }
-
+                    self.clearErrorMonth();
                     if(amount !=''){    
                         if(val.amount3() >= amount){                        
                             $('#month4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")]});                                              
                         }
-                        if(val.amount1() >= val.amount2()){
-                            $('#month2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]});
-                        }
-                        if(amount >= val.amount5() && val.amount5() != ''){
-                            $('#month5').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_143")]});
-                        }                                     
+                        if(val.amount1() != '') {
+                            if(val.amount2() == '' || (val.amount2() != '' && val.amount1() >= val.amount2())){
+                                $('#month2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]}); 
+                            }                    
+                            if(val.amount3() == '' || (val.amount3() != '' && val.amount2() >= val.amount3())){
+                                $('#month3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")]}); 
+                            }
+                            if(amount >= val.amount5() && val.amount5() != ''){
+                                $('#month5').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_143")]});
+                            }       
+                        }                               
                     }                      
                 });
                 val.amount5.subscribe((amount) => {
-                    self.clearErrorAmount();
-                    if(val.amount4() == '' || val.amount3() >= val.amount4()) {
-                        $('#month4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")]}); 
-                    } 
+                    self.clearErrorMonth();
                     if(amount !='') { 
                         if(val.amount4() >= amount) {
                             $('#month5').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_143")]}); 
                         }
-                        if(val.amount2() >= val.amount3()){
-                            $('#month3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")]});
-                        }
-                        if(val.amount1() >= val.amount2()){
-                            $('#month2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]});
-                        }
+                        if(val.amount1() != '') {
+                            if(val.amount2() == '' || (val.amount2() != '' && val.amount1() >= val.amount2())){
+                                $('#month2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]}); 
+                            }                    
+                            if(val.amount3() == '' || (val.amount3() != '' && val.amount2() >= val.amount3())){
+                                $('#month3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")]}); 
+                            }
+                            if(val.amount4() == '' || (val.amount4() != '' && val.amount3() >= val.amount4())) {
+                                $('#month4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")]}); 
+                            }     
+                        }                            
                     }
                 });
             });
 
             self.itemAnnual.subscribe((val) => {
+                self.clearErrorAnnual();
                 val.amount1.subscribe((amount) => {
                     $('#year2').ntsError('clear');
-                    if(amount !='' && val.amount2() != '' && val.amount2() <= amount){
-                        $('#year2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]}); 
+                    if(amount !=''){
+                        if(val.amount2() != '' && val.amount2() <= amount){
+                            $('#year2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]}); 
+                        }
                     }
                 });
 
@@ -198,15 +205,18 @@ module nts.uk.at.view.kml002.k {
                 });
 
                 val.amount3.subscribe((amount) => {
-                    self.clearErrorAmount();
-                    if(val.amount2() == '' || val.amount1() >= val.amount2()){
-                        $('#year2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]}); 
-                    } 
-
+                    self.clearErrorAnnual();                     
                     if(amount !=''){
                         if(val.amount2() >= amount) {                        
                             $('#year3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")]});
                         }
+
+                        if((val.amount1() != '') {
+                            if(val.amount2() == '' || (val.amount2() != '' && val.amount1() >= val.amount2())){
+                                $('#year2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]}); 
+                            }
+                        }
+
                         if(amount >= val.amount4() && val.amount4() != ''){
                             $('#year4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")]});
                         }
@@ -214,18 +224,22 @@ module nts.uk.at.view.kml002.k {
                 });
     
                 val.amount4.subscribe((amount) => {
-                    self.clearErrorAmount();
-                    if(val.amount3() == '' || val.amount2() >= val.amount3()){
-                        $('#year3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")]}); 
-                    }
-
+                    self.clearErrorAnnual();  
                     if(amount !=''){
                         if(val.amount3() >= amount){                        
                             $('#year4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")]}); 
                         }
-                        if(val.amount1() >= val.amount2()){                        
-                            $('#year2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]}); 
-                        }
+
+                        if((val.amount1() != ''){
+                            if(val.amount2() == '' || (val.amount2() != '' && val.amount1() >= val.amount2())){
+                                $('#year2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]}); 
+                            }
+
+                            if(val.amount3() == '' || (val.amount3() != '' && val.amount2() >= val.amount3())){
+                                $('#year3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")]}); 
+                            }
+                        }    
+
                         if(amount >= val.amount5() && val.amount5() != ''){
                             $('#year5').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_149")]}); 
                         }
@@ -233,21 +247,23 @@ module nts.uk.at.view.kml002.k {
                 });
     
                 val.amount5.subscribe((amount) => {
-                    self.clearErrorAmount();
-                    if(val.amount4() == '' || val.amount3()  >= val.amount4()){
-                        $('#year4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")]}); 
-                    } 
-
+                    self.clearErrorAnnual(); 
                     if(amount !=''){
                         if(val.amount4() >= amount){                        
                             $('#year5').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_149")]});  
                         }
-                        if(val.amount1() >= val.amount2()){                        
-                            $('#year2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]}); 
-                        }
-                        if(val.amount2() >= val.amount3()){                        
-                            $('#year3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")]}); 
-                        }                        
+                        if((val.amount1() != ''){
+                            if(val.amount2() == '' || (val.amount2() != '' && val.amount1() >= val.amount2())){
+                                $('#year2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]}); 
+                            }
+
+                            if(val.amount3() == '' || (val.amount3() != '' && val.amount2() >= val.amount3())){
+                                $('#year3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")]}); 
+                            }
+                            if( val.amount4() == '' || (val.amount4() != '' && val.amount3() >= val.amount4())) {
+                                $('#year4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")]}); 
+                            } 
+                        }                                            
                     } 
                 });
             });
@@ -270,50 +286,56 @@ module nts.uk.at.view.kml002.k {
                     }
                 });
                 val.amount3.subscribe((amount) => {
-                    self.clearErrorAmount();
-                    if(val.amount2() == '' || val.amount1() >= val.amount2()){
-                        $('#month2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]}); 
-                    } 
+                    self.clearErrorMonth();                   
                     if(amount !=''){
                         if(val.amount2() >= amount){
                             $('#month3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")]});
                         }
-                        if(amount >= val.amount4()  && val.amount4() != ''){
-                            $('#month4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")]});
-                        }
+                        if(val.amount1() != '') {
+                            if(val.amount2() == '' || (val.amount2() != '' && val.amount1() >= val.amount2())){
+                                $('#month2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]}); 
+                            } 
+                            if(amount >= val.amount4()  && val.amount4() != ''){
+                                $('#month4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")]});
+                            }
+                        }                        
                     }                    
                 });
                 val.amount4.subscribe((amount) => {
-                    self.clearErrorAmount();
-                    if(val.amount3() == '' || val.amount2() >= val.amount3()){
-                        $('#month3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")]}); 
-                    }
+                    self.clearErrorMonth();                 
                     if(amount !=''){
                         if(val.amount3() >= amount){
                             $('#month4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")]});
                         }
-                        if(val.amount1() >= val.amount2()){
-                            $('#month2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]}); 
-                        } 
-                        if(amount >= val.amount5() && val.amount5() != ''){
-                            $('#month5screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_143")]}); 
-                        } 
+                        if(val.amount1() != '') {
+                            if(val.amount2() == '' || (val.amount2() != '' && val.amount1() >= val.amount2())){
+                                $('#month2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]}); 
+                            } 
+                            if(val.amount3() == '' || (val.amount3() != '' && val.amount2() >= val.amount3())){
+                                $('#month3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")]}); 
+                            }
+                            if(amount >= val.amount5() && val.amount5() != ''){
+                                $('#month5screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_143")]}); 
+                            } 
+                        }  
                     }
                 });
                 val.amount5.subscribe((amount) => {
-                    self.clearErrorAmount();
-                    if(val.amount4() == '' || val.amount3() >= val.amount4()){
-                        $('#month4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")]}); 
-                    } 
+                    self.clearErrorMonth();                     
                     if(amount !=''){
                         if(val.amount4() >= amount){
                             $('#month5screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_143")]}); 
                         }
-                        if(val.amount1() >= val.amount2()){
-                            $('#month2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]}); 
-                        } 
-                        if(val.amount2() >= val.amount3()){
-                            $('#month3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")]}); 
+                        if(val.amount1() != '') {
+                            if(val.amount2() == '' || (val.amount2() != '' && val.amount1() >= val.amount2())){
+                                $('#month2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]}); 
+                            } 
+                            if(val.amount3() == '' || (val.amount3() != '' && val.amount2() >= val.amount3())){
+                                $('#month3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")]}); 
+                            }
+                            if(val.amount4() == '' || (val.amount4() != '' && val.amount3() >= val.amount4())){
+                                $('#month4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")]}); 
+                            }
                         } 
                     }                    
                 });
@@ -338,52 +360,60 @@ module nts.uk.at.view.kml002.k {
                 });
 
                 val.amount3.subscribe((amount) => {
-                    self.clearErrorAmount();
-                    if(val.amount2() == '' || val.amount1() >= val.amount2()){
-                        $('#year2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]}); 
-                    }
+                    self.clearErrorAnnual();                    
                     if(amount !=''){
                         if(val.amount2() >= amount){
                             $('#year3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")]}); 
                         }
-                        if(amount >= val.amount4() && val.amount4() != ''){
-                            $('#year4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")]}); 
-                        } 
+
+                        if(val.amount1() != '') {
+                            if(val.amount2() == '' || (val.amount2() != '' && val.amount1() >= val.amount2())){
+                                $('#year2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]}); 
+                            }
+                            if(amount >= val.amount4() && val.amount4() != ''){
+                                $('#year4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")]}); 
+                            } 
+                        }
                     }
                 });
     
                 val.amount4.subscribe((amount) => {
-                    self.clearErrorAmount();
-                    if(val.amount3() == '' || val.amount2() >= val.amount3()){
-                        $('#year3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")]}); 
-                    }
+                    self.clearErrorAnnual(); 
                     if(amount !=''){
                         if(val.amount3() >= amount){
                             $('#year4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")]}); 
                         }
-                        if(val.amount1() >= val.amount2()){
-                            $('#year2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]}); 
-                        }
-                        if(amount >= val.amount5() && val.amount5() != ''){
-                            $('#year5screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_149")]});
+
+                        if(val.amount1() != '') {
+                            if(val.amount2() == '' || (val.amount2() != '' && val.amount1() >= val.amount2())){
+                                $('#year2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]}); 
+                            }
+                            if(val.amount3() == '' || (val.amount3() != '' && val.amount2() >= val.amount3())){
+                                $('#year3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")]}); 
+                            }
+                            if(amount >= val.amount5() && val.amount5() != ''){
+                                $('#year5screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_149")]});
+                            }
                         }
                     }                    
                 });
     
                 val.amount5.subscribe((amount) => {
-                    self.clearErrorAmount();
-                    if(val.amount4() == '' || val.amount3() >= val.amount4()){
-                        $('#year4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")]}); 
-                    } 
+                    self.clearErrorAnnual(); 
                     if(amount !=''){
                         if(val.amount4() >= amount){
                             $('#year5screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_149")]}); 
                         }
-                        if(val.amount1() >= val.amount2()){
-                            $('#year2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]}); 
-                        }
-                        if(val.amount2() >= val.amount3()){
-                            $('#year3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")]}); 
+                        if(val.amount1() != '') {
+                            if(val.amount2() == '' || (val.amount2() != '' && val.amount1() >= val.amount2())){
+                                $('#year2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]}); 
+                            }
+                            if(val.amount3() == '' || (val.amount3() != '' && val.amount2() >= val.amount3())){
+                                $('#year3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")]}); 
+                            }
+                            if(val.amount4() == '' || (val.amount4() != '' && val.amount3() >= val.amount4())){
+                                $('#year4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")]}); 
+                            } 
                         }
                     }  
                 });
@@ -734,23 +764,25 @@ module nts.uk.at.view.kml002.k {
             $('#colorpicker5').ntsError('clear');
         }
 
-        private clearErrorAmount(): void {
+        private clearErrorMonth(): void {
             $('#month1').ntsError('clear');
             $('#month2').ntsError('clear');
             $('#month3').ntsError('clear');
             $('#month4').ntsError('clear');
-            $('#month5').ntsError('clear');
-            $('#year1').ntsError('clear');
-            $('#year2').ntsError('clear');
-            $('#year3').ntsError('clear');
-            $('#year4').ntsError('clear');
-            $('#year5').ntsError('clear');
+            $('#month5').ntsError('clear');           
             $('#month1screenk').ntsError('clear');
             $('#month2screenk').ntsError('clear');
             $('#month3screenk').ntsError('clear');
             $('#month4screenk').ntsError('clear');
-            $('#month5screenk').ntsError('clear');
-            $('#year1screenk').ntsError('clear');
+            $('#month5screenk').ntsError('clear');            
+        }
+
+        private clearErrorAnnual(): void {           
+            $('#year1').ntsError('clear');
+            $('#year2').ntsError('clear');
+            $('#year3').ntsError('clear');
+            $('#year4').ntsError('clear');
+            $('#year5').ntsError('clear');            
             $('#year2screenk').ntsError('clear');
             $('#year3screenk').ntsError('clear');
             $('#year4screenk').ntsError('clear');
