@@ -661,7 +661,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 listAnnLeaveUsageStatusOfThisMonth, reserveHoliday, listReservedYearHoliday, listRsvLeaUsedCurrentMon,
                 listCurrentHoliday, listStatusHoliday, listCurrentHolidayRemain, listStatusOfHoliday, mapSpecVaca,
                 lstMapSPVaCurrMon, mapSpeHd, childNursingLeave, nursingLeave, currentHolidayLeft,
-                currentHolidayRemainLeft, substituteHolidayAggrResult, subVaca, aggrResultOfHolidayOver60h,getRs363,getSpeHdOfConfMonVer2,substituteHolidayAggrResultsRight);
+                currentHolidayRemainLeft, substituteHolidayAggrResult, subVaca, aggrResultOfHolidayOver60h,getRs363,
+                getSpeHdOfConfMonVer2,substituteHolidayAggrResultsRight,closureInforOpt);
     }
     private Optional<ClosureInfo> getClosureInfor(int closureId) {
         val listClosureInfo = ClosureService.getAllClosureInfo(ClosureService.createRequireM2(closureRepository));

@@ -19,6 +19,7 @@ import nts.uk.ctx.at.function.dom.adapter.vacation.CurrentHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.vacation.StatusHolidayImported;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 
 @Setter
 @Getter
@@ -71,6 +72,7 @@ public class HolidayRemainingInfor {
     List<AggrResultOfAnnualLeaveEachMonthKdr> rs363New;
     List<SpecialHolidayRemainDataOutputKdr> getSpeHdOfConfMonVer2;
     Map<YearMonth,SubstituteHolidayAggrResult> substituteHolidayAggrResultsRight;
+    Optional<ClosureInfo> closureInforOpt;
 
     public HolidayRemainingInfor(Optional<GeneralDate> grantDate, List<AnnLeaGrantNumberImported> listAnnLeaGrantNumber,
                                  AnnLeaveOfThisMonthImported annLeaveOfThisMonth, List<AnnualLeaveUsageImported> listAnnualLeaveUsage,
@@ -91,7 +93,8 @@ public class HolidayRemainingInfor {
                                  AggrResultOfHolidayOver60hImport aggrResultOfHolidayOver60h,
                                  List<AggrResultOfAnnualLeaveEachMonthKdr> rs363New,
                                  List<SpecialHolidayRemainDataOutputKdr> getSpeHdOfConfMonVer2,
-                                 Map<YearMonth,SubstituteHolidayAggrResult> substituteHolidayAggrResultsRight) {
+                                 Map<YearMonth,SubstituteHolidayAggrResult> substituteHolidayAggrResultsRight,
+                                 Optional<ClosureInfo> closureInforOpt) {
         super();
         this.grantDate = grantDate;
         this.listAnnLeaGrantNumber = listAnnLeaGrantNumber;
@@ -118,6 +121,7 @@ public class HolidayRemainingInfor {
         this.rs363New = rs363New;
         this.getSpeHdOfConfMonVer2 = getSpeHdOfConfMonVer2;
         this.substituteHolidayAggrResultsRight = substituteHolidayAggrResultsRight;
+        this.closureInforOpt = closureInforOpt;
     }
 
 
