@@ -11,6 +11,7 @@ import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeVac
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 時間休暇残数
@@ -51,6 +52,12 @@ public class TimeLeaveRemaining {
     private GeneralDate remainingStart;
     private GeneralDate remainingEnd;
 
+    // 付与年月日
+    private GeneralDate grantDate;
+
+    // 付与日数
+    private Integer grantedDays;
+
     public static TimeVacationRemainingOutput setDataOutput(TimeLeaveRemaining dto) {
         return new TimeVacationRemainingOutput(
             dto.super60HRemainingTime,
@@ -62,7 +69,8 @@ public class TimeLeaveRemaining {
             dto.annualTimeLeaveRemainingDays,
             dto.annualTimeLeaveRemainingTime,
             dto.specialTimeFrames,
-            new DatePeriod(dto.remainingStart, dto.remainingEnd)
+            new DatePeriod(dto.remainingStart, dto.remainingEnd),
+            Optional.ofNullable(dto.grantDate), Optional.ofNullable(dto.grantedDays)
         );
     }
 
@@ -78,7 +86,9 @@ public class TimeLeaveRemaining {
                 domain.getAnnualTimeLeaveRemainingTime(),
                 domain.getSpecialTimeFrames(),
                 domain.getRemainingPeriod().start(),
-                domain.getRemainingPeriod().end()
+                domain.getRemainingPeriod().end(),
+                domain.getGrantDate().orElse(null),
+                domain.getGrantedDays().orElse(null)
         );
     }
 }
