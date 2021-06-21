@@ -88,9 +88,9 @@ public class Helper {
     public static class verticalValueDaily {
         public static List<VerticalValueDaily> getList(int num) {
             return Arrays.asList(
-                    new VerticalValueDaily(num, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                    new VerticalValueDaily(num * 2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                    new VerticalValueDaily(num * 3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd")));
+                    new VerticalValueDaily(num, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                    new VerticalValueDaily(num * 2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                    new VerticalValueDaily(num * 3, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd")));
         }
     }
 
