@@ -18,10 +18,10 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
     const template = `
 	<div id="kaf002-c">
             <div id="contents-area"
-                style="background-color: inherit; height: calc(100vh - 137px);">
-                <div class="two-panel" style="height: 100%; width: 1297px">
+                style="background-color: inherit; height: calc(100vh - 138px);">
+                <div class="two-panel" style="height: 100%; width: 1270px">
                     <div class="left-panel"
-                        style="width: calc(1297px - 388px); height: inherit;">
+                        style="width: calc(1270px - 388px); height: inherit;">
                         <div style="height: inherit; overflow-y: auto; background-color: #fff; padding: 0 10px;overflow-x: hidden;">
                             <div class="table"
                                 style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
