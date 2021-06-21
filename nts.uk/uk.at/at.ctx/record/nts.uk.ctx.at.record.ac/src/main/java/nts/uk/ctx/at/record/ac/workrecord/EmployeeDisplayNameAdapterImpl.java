@@ -4,10 +4,12 @@ import nts.uk.ctx.at.record.dom.adapter.function.alarmworkplace.EmployeeInfoImpo
 import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.EmployeeDisplayNameAdapter;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Stateless
 public class EmployeeDisplayNameAdapterImpl implements EmployeeDisplayNameAdapter {
     @Inject
     private SyEmployeePub syEmployeePub;
