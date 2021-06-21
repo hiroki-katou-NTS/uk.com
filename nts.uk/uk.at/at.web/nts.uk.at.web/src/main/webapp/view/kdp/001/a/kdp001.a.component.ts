@@ -753,7 +753,7 @@ module nts.uk.ui.kdp001.a {
                                     if (!isClose && errorDate) {
                                         const { transfer, screen } = btn;
 
-                                        vm.$jump('at', screen, transfer);
+                                        vm.$jump.blank('at', screen, { baseDate: transfer.appDate });
                                     } else {
                                         vm.stampData();
                                     }
