@@ -23,7 +23,7 @@ public class JpaManHourSummaryTableFormatRepository extends JpaRepository implem
 
         builderString = new StringBuilder();
         builderString.append(SELECT);
-        builderString.append("WHERE a.pk.cid = :cid ORDER BY a.code ASC ");
+        builderString.append("WHERE a.pk.cid = :cid ORDER BY a.pk.code ASC ");
         SELECT_ALL_BY_CID = builderString.toString();
 
         builderString = new StringBuilder();
@@ -46,12 +46,6 @@ public class JpaManHourSummaryTableFormatRepository extends JpaRepository implem
         KrcmtRptDaiTask newEntity = KrcmtRptDaiTask.toEntity(domain);
         KrcmtRptDaiTask updateEntity = this.queryProxy().find(newEntity.pk, KrcmtRptDaiTask.class).orElse(null);
         if (updateEntity != null) {
-//            updateEntity.name = newEntity.name;
-//            updateEntity.displayFormat = newEntity.displayFormat;
-//            updateEntity.sumVerticalHorizontalDisplay = newEntity.sumVerticalHorizontalDisplay;
-//            updateEntity.totalUnit = newEntity.totalUnit;
-//            updateEntity.rptDaiTaskItems = newEntity.rptDaiTaskItems;
-
             updateEntity.fromEntity(newEntity);
             this.commandProxy().update(updateEntity);
         }

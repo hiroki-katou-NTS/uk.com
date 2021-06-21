@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(JMockit.class)
 public class WorkDetailDataTest {
 
-   private final WorkDetailData workDetail = Helper.workDetailData;
+    private final WorkDetailData workDetail = Helper.workDetailData;
 
     /**
      * Getter

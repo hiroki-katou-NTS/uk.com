@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.tuple;
 
 @RunWith(JMockit.class)
 public class ManHourSummaryTableOutputContentTest {
-    private final List<YearMonth> yearMonthList = Collections.singletonList(YearMonth.of(6));
+    private final List<YearMonth> yearMonthList = Collections.singletonList(YearMonth.of(2021, 6));
     private final List<GeneralDate> dateList = Helper.dateList;
 
     /**
@@ -71,9 +71,9 @@ public class ManHourSummaryTableOutputContentTest {
                             VerticalValueDaily::getYearMonth,
                             VerticalValueDaily::getDate)
                     .containsExactly(
-                            tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                            tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                            tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                            tuple(1, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                            tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                            tuple(3, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                     );
             assertThat(instance.getItemDetails().get(0).getChildHierarchyList()).hasSize(2);
             //1.1
@@ -90,9 +90,9 @@ public class ManHourSummaryTableOutputContentTest {
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
                         .containsExactly(
-                                tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                                tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                                tuple(1, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(3, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                         );
                 assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
             }
@@ -110,9 +110,9 @@ public class ManHourSummaryTableOutputContentTest {
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
                         .containsExactly(
-                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                                tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                                tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                                tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(4, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(6, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                         );
                 assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
             }
@@ -132,9 +132,9 @@ public class ManHourSummaryTableOutputContentTest {
                             VerticalValueDaily::getYearMonth,
                             VerticalValueDaily::getDate)
                     .containsExactly(
-                            tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                            tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                            tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                            tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                            tuple(4, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                            tuple(6, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                     );
             assertThat(instance.getItemDetails().get(1).getChildHierarchyList()).hasSize(2);
             //2.1
@@ -151,9 +151,9 @@ public class ManHourSummaryTableOutputContentTest {
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
                         .containsExactly(
-                                tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                                tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                                tuple(1, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(3, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                         );
                 assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
             }
@@ -171,9 +171,9 @@ public class ManHourSummaryTableOutputContentTest {
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
                         .containsExactly(
-                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                                tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                                tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                                tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(4, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(6, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                         );
                 assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
             }
@@ -212,9 +212,9 @@ public class ManHourSummaryTableOutputContentTest {
                             VerticalValueDaily::getYearMonth,
                             VerticalValueDaily::getDate)
                     .containsExactly(
-                            tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                            tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                            tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                            tuple(1, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                            tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                            tuple(3, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                     );
             assertThat(instance.getItemDetails().get(0).getChildHierarchyList()).hasSize(2);
             //1.1
@@ -231,9 +231,9 @@ public class ManHourSummaryTableOutputContentTest {
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
                         .containsExactly(
-                                tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                                tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                                tuple(1, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(3, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                         );
                 assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
             }
@@ -251,9 +251,9 @@ public class ManHourSummaryTableOutputContentTest {
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
                         .containsExactly(
-                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                                tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                                tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                                tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(4, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(6, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                         );
                 assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
             }
@@ -273,9 +273,9 @@ public class ManHourSummaryTableOutputContentTest {
                             VerticalValueDaily::getYearMonth,
                             VerticalValueDaily::getDate)
                     .containsExactly(
-                            tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                            tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                            tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                            tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                            tuple(4, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                            tuple(6, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                     );
             assertThat(instance.getItemDetails().get(1).getChildHierarchyList()).hasSize(2);
             //2.1
@@ -292,9 +292,9 @@ public class ManHourSummaryTableOutputContentTest {
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
                         .containsExactly(
-                                tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                                tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                                tuple(1, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(3, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                         );
                 assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
             }
@@ -312,9 +312,9 @@ public class ManHourSummaryTableOutputContentTest {
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
                         .containsExactly(
-                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                                tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                                tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                                tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(4, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(6, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                         );
                 assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
             }
@@ -387,7 +387,7 @@ public class ManHourSummaryTableOutputContentTest {
                         VerticalValueDaily::getYearMonth,
                         VerticalValueDaily::getDate)
                 .containsExactly(
-                        tuple(18, YearMonth.of(6), null)
+                        tuple(18, YearMonth.of(2021, 6), null)
                 );
 
         // List SummaryItemDetail
@@ -406,9 +406,9 @@ public class ManHourSummaryTableOutputContentTest {
                             VerticalValueDaily::getYearMonth,
                             VerticalValueDaily::getDate)
                     .containsExactly(
-                            tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                            tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                            tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                            tuple(1, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                            tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                            tuple(3, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                     );
             assertThat(instance.getItemDetails().get(0).getChildHierarchyList()).hasSize(2);
             //1.1
@@ -425,9 +425,9 @@ public class ManHourSummaryTableOutputContentTest {
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
                         .containsExactly(
-                                tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                                tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                                tuple(1, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(3, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                         );
                 assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
             }
@@ -445,9 +445,9 @@ public class ManHourSummaryTableOutputContentTest {
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
                         .containsExactly(
-                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                                tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                                tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                                tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(4, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(6, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                         );
                 assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
             }
@@ -467,9 +467,9 @@ public class ManHourSummaryTableOutputContentTest {
                             VerticalValueDaily::getYearMonth,
                             VerticalValueDaily::getDate)
                     .containsExactly(
-                            tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                            tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                            tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                            tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                            tuple(4, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                            tuple(6, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                     );
             assertThat(instance.getItemDetails().get(1).getChildHierarchyList()).hasSize(2);
             //2.1
@@ -486,9 +486,9 @@ public class ManHourSummaryTableOutputContentTest {
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
                         .containsExactly(
-                                tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                                tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                                tuple(1, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(3, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                         );
                 assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
             }
@@ -506,9 +506,9 @@ public class ManHourSummaryTableOutputContentTest {
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
                         .containsExactly(
-                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                                tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                                tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                                tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(4, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(6, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                         );
                 assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
             }
@@ -547,9 +547,9 @@ public class ManHourSummaryTableOutputContentTest {
                             VerticalValueDaily::getYearMonth,
                             VerticalValueDaily::getDate)
                     .containsExactly(
-                            tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                            tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                            tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                            tuple(1, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                            tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                            tuple(3, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                     );
             assertThat(instance.getItemDetails().get(0).getChildHierarchyList()).hasSize(2);
             //1.1
@@ -566,9 +566,9 @@ public class ManHourSummaryTableOutputContentTest {
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
                         .containsExactly(
-                                tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                                tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                                tuple(1, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(3, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                         );
                 assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
             }
@@ -586,9 +586,9 @@ public class ManHourSummaryTableOutputContentTest {
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
                         .containsExactly(
-                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                                tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                                tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                                tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(4, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(6, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                         );
                 assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
             }
@@ -608,9 +608,9 @@ public class ManHourSummaryTableOutputContentTest {
                             VerticalValueDaily::getYearMonth,
                             VerticalValueDaily::getDate)
                     .containsExactly(
-                            tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                            tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                            tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                            tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                            tuple(4, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                            tuple(6, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                     );
             assertThat(instance.getItemDetails().get(1).getChildHierarchyList()).hasSize(2);
             //2.1
@@ -627,9 +627,9 @@ public class ManHourSummaryTableOutputContentTest {
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
                         .containsExactly(
-                                tuple(1, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                                tuple(3, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                                tuple(1, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(3, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                         );
                 assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
             }
@@ -647,9 +647,9 @@ public class ManHourSummaryTableOutputContentTest {
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
                         .containsExactly(
-                                tuple(2, YearMonth.of(6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                                tuple(4, YearMonth.of(6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
-                                tuple(6, YearMonth.of(6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
+                                tuple(2, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
+                                tuple(4, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")),
+                                tuple(6, YearMonth.of(2021, 6), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"))
                         );
                 assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
             }
@@ -675,7 +675,7 @@ public class ManHourSummaryTableOutputContentTest {
                         VerticalValueDaily::getWorkingHours,
                         VerticalValueDaily::getYearMonth,
                         VerticalValueDaily::getDate)
-                .containsExactly(tuple(0, YearMonth.of(6), null));
+                .containsExactly(tuple(0, YearMonth.of(2021, 6), null));
         assertThat(instance.getItemDetails()).isEmpty();
     }
 

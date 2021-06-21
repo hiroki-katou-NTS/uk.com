@@ -27,7 +27,7 @@ public class ManHourSummaryTableFormatTest {
             new SummaryItem(1, SummaryItemType.TASK5),
             new SummaryItem(2, SummaryItemType.TASK1)
     );
-    private final List<YearMonth> yearMonthList = Collections.singletonList(YearMonth.of(6));
+    private final List<YearMonth> yearMonthList = Collections.singletonList(YearMonth.of(2021, 6));
     private final List<GeneralDate> dateList = Arrays.asList(
             GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"),
             GeneralDate.fromString("2021/06/02", "yyyy/MM/dd"));
@@ -378,7 +378,7 @@ public class ManHourSummaryTableFormatTest {
                         VerticalValueDaily::getWorkingHours,
                         VerticalValueDaily::getYearMonth,
                         VerticalValueDaily::getDate)
-                .containsExactly(tuple(24, YearMonth.of(6), null));
+                .containsExactly(tuple(24, YearMonth.of(2021, 6), null));
 
         // List SummaryItemDetail
         assertThat(result.getItemDetails()).hasSize(2);
@@ -395,7 +395,7 @@ public class ManHourSummaryTableFormatTest {
                             VerticalValueDaily::getWorkingHours,
                             VerticalValueDaily::getYearMonth,
                             VerticalValueDaily::getDate)
-                    .containsExactly(tuple(12, YearMonth.of(6), null));
+                    .containsExactly(tuple(12, YearMonth.of(2021, 6), null));
             assertThat(result.getItemDetails().get(0).getChildHierarchyList()).hasSize(2);
             //1.1
             {
@@ -410,7 +410,7 @@ public class ManHourSummaryTableFormatTest {
                                 VerticalValueDaily::getWorkingHours,
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
-                        .containsExactly(tuple(6, YearMonth.of(6), null));
+                        .containsExactly(tuple(6, YearMonth.of(2021, 6), null));
                 assertThat(result.getItemDetails().get(0).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
             }
             //1.2
@@ -426,7 +426,7 @@ public class ManHourSummaryTableFormatTest {
                                 VerticalValueDaily::getWorkingHours,
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
-                        .containsExactly(tuple(6, YearMonth.of(6), null));
+                        .containsExactly(tuple(6, YearMonth.of(2021, 6), null));
                 assertThat(result.getItemDetails().get(0).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
             }
         }
@@ -444,7 +444,7 @@ public class ManHourSummaryTableFormatTest {
                             VerticalValueDaily::getWorkingHours,
                             VerticalValueDaily::getYearMonth,
                             VerticalValueDaily::getDate)
-                    .containsExactly(tuple(12, YearMonth.of(6), null));
+                    .containsExactly(tuple(12, YearMonth.of(2021, 6), null));
             assertThat(result.getItemDetails().get(1).getChildHierarchyList()).hasSize(2);
             //2.1
             {
@@ -459,7 +459,7 @@ public class ManHourSummaryTableFormatTest {
                                 VerticalValueDaily::getWorkingHours,
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
-                        .containsExactly(tuple(6, YearMonth.of(6), null));
+                        .containsExactly(tuple(6, YearMonth.of(2021, 6), null));
                 assertThat(result.getItemDetails().get(1).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
             }
             //2.2
@@ -475,7 +475,7 @@ public class ManHourSummaryTableFormatTest {
                                 VerticalValueDaily::getWorkingHours,
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
-                        .containsExactly(tuple(6, YearMonth.of(6), null));
+                        .containsExactly(tuple(6, YearMonth.of(2021, 6), null));
                 assertThat(result.getItemDetails().get(1).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
             }
         }
@@ -521,7 +521,7 @@ public class ManHourSummaryTableFormatTest {
                                 VerticalValueDaily::getWorkingHours,
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
-                        .containsExactly(tuple(6, YearMonth.of(6), null));
+                        .containsExactly(tuple(6, YearMonth.of(2021, 6), null));
                 assertThat(result.getItemDetails().get(0).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
             }
             //1.2
@@ -537,7 +537,7 @@ public class ManHourSummaryTableFormatTest {
                                 VerticalValueDaily::getWorkingHours,
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
-                        .containsExactly(tuple(6, YearMonth.of(6), null));
+                        .containsExactly(tuple(6, YearMonth.of(2021, 6), null));
                 assertThat(result.getItemDetails().get(0).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
             }
         }
@@ -565,7 +565,7 @@ public class ManHourSummaryTableFormatTest {
                                 VerticalValueDaily::getWorkingHours,
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
-                        .containsExactly(tuple(6, YearMonth.of(6), null));
+                        .containsExactly(tuple(6, YearMonth.of(2021, 6), null));
                 assertThat(result.getItemDetails().get(1).getChildHierarchyList().get(0).getChildHierarchyList()).isEmpty();
             }
             //2.2
@@ -581,7 +581,7 @@ public class ManHourSummaryTableFormatTest {
                                 VerticalValueDaily::getWorkingHours,
                                 VerticalValueDaily::getYearMonth,
                                 VerticalValueDaily::getDate)
-                        .containsExactly(tuple(6, YearMonth.of(6), null));
+                        .containsExactly(tuple(6, YearMonth.of(2021, 6), null));
                 assertThat(result.getItemDetails().get(1).getChildHierarchyList().get(1).getChildHierarchyList()).isEmpty();
             }
         }
@@ -627,6 +627,6 @@ public class ManHourSummaryTableFormatTest {
                         VerticalValueDaily::getWorkingHours,
                         VerticalValueDaily::getYearMonth,
                         VerticalValueDaily::getDate)
-                .containsExactly(tuple(0, YearMonth.of(6), null));
+                .containsExactly(tuple(0, YearMonth.of(2021, 6), null));
     }
 }
