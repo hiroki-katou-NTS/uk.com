@@ -146,3 +146,8 @@ div[class^="tab-content-"] .nts-fixed-table {
 .tabs-list > .radio-wrapper {
     height: 25px;
 }
+
+#v-table > .nts-fixed-table {
+    padding-left: 10px;
+    padding-top: 6px;
+}
