@@ -26,6 +26,10 @@ public class AccessRestrictionsTest {
 		private static AllowedIPAddress ip3 = new AllowedIPAddress(ipInputType, new IPAddressSetting(0, 0, 1, 0), Optional.empty(), null);
 		private static AllowedIPAddress ip4 = new AllowedIPAddress(ipInputType, new IPAddressSetting(0, 0, 0, 1), Optional.empty(), null);
 		private static AllowedIPAddress ip5 = new AllowedIPAddress(ipInputType, new IPAddressSetting(0, 0, 0, 0), Optional.empty(), null);
+		private static AllowedIPAddress ip6 = new AllowedIPAddress(IPAddressRegistrationFormat.IP_ADDRESS_RANGE, new IPAddressSetting(0, 0, 0, 1), Optional.of(new IPAddressSetting(0, 0, 1, 0)), null);
+		private static AllowedIPAddress ip7 = new AllowedIPAddress(IPAddressRegistrationFormat.IP_ADDRESS_RANGE, new IPAddressSetting(1, 1, 1, 0), Optional.of(new IPAddressSetting(1, 1, 1, 9)), null);
+		private static AllowedIPAddress ipToCheck = new AllowedIPAddress(ipInputType, new IPAddressSetting(1, 1, 1, 1), Optional.empty(), "local IP");
+		
 		private static Ipv4Address address = Ipv4Address.parse("255.255.255.255");
 		private static AllowedIPAddress allowedAddress = new AllowedIPAddress(ipInputType, new IPAddressSetting(255, 255, 255, 255), Optional.empty(), null);
 		private static List<AllowedIPAddress> whiteList = new ArrayList<AllowedIPAddress>();
@@ -41,62 +45,94 @@ public class AccessRestrictionsTest {
 	@Test
 	public void addIPAddress() {
 		AccessRestrictions e = new AccessRestrictions(Dummy.tenantCode, NotUseAtr.NOT_USE, new ArrayList<AllowedIPAddress>());
-		e.addIPAddress(Dummy.ip1);
-		e.addIPAddress(Dummy.ip2);
-		e.addIPAddress(Dummy.ip3);
-		e.addIPAddress(Dummy.ip4);
-		e.addIPAddress(Dummy.ip5);
+		e.addIPAddress(Dummy.ip1, NotUseAtr.NOT_USE, Dummy.ipToCheck);
+		e.addIPAddress(Dummy.ip2, NotUseAtr.NOT_USE, Dummy.ipToCheck);
+		e.addIPAddress(Dummy.ip3, NotUseAtr.NOT_USE, Dummy.ipToCheck);
+		e.addIPAddress(Dummy.ip4, NotUseAtr.NOT_USE, Dummy.ipToCheck);
+		e.addIPAddress(Dummy.ip5, NotUseAtr.NOT_USE, Dummy.ipToCheck);
+		e.addIPAddress(Dummy.ipToCheck, NotUseAtr.NOT_USE, Dummy.ipToCheck);
 	}
 	
 	@Test
 	public void addIPAddressEx1835() {
 		AccessRestrictions e = new AccessRestrictions(Dummy.tenantCode, NotUseAtr.USE, new ArrayList<AllowedIPAddress>());
-		e.addIPAddress(Dummy.ip1);
-		e.addIPAddress(Dummy.ip5);
+		e.addIPAddress(Dummy.ip1, NotUseAtr.NOT_USE, Dummy.ipToCheck);
+		e.addIPAddress(Dummy.ip5, NotUseAtr.NOT_USE, Dummy.ipToCheck);
 		NtsAssert.businessException("Msg_1835",
-				() -> e.addIPAddress(Dummy.ip5));
+				() -> e.addIPAddress(Dummy.ip5, NotUseAtr.NOT_USE, Dummy.ipToCheck));
+	}
+	
+	@Test
+	public void addIPAddressEx2187() {
+		AccessRestrictions e = new AccessRestrictions(Dummy.tenantCode, NotUseAtr.USE, new ArrayList<AllowedIPAddress>());
+		NtsAssert.businessException("Msg_2187", () -> e.addIPAddress(Dummy.ip1, NotUseAtr.USE, Dummy.ipToCheck));
+		e.addIPAddress(Dummy.ipToCheck, NotUseAtr.USE, Dummy.ipToCheck);
+	}
+	
+	@Test
+	public void addIPAddressEx2187WithRange() {
+		AccessRestrictions e = new AccessRestrictions(Dummy.tenantCode, NotUseAtr.USE, new ArrayList<AllowedIPAddress>());
+		NtsAssert.businessException("Msg_2187", () -> e.addIPAddress(Dummy.ip6, NotUseAtr.USE, Dummy.ipToCheck));
+		e.addIPAddress(Dummy.ip7, NotUseAtr.USE, Dummy.ipToCheck);
 	}
 	
 	@Test
 	public void updateIPAddress() {
 		AccessRestrictions e = new AccessRestrictions(Dummy.tenantCode, NotUseAtr.USE, new ArrayList<AllowedIPAddress>());
-		e.addIPAddress(Dummy.ip1);
-		e.addIPAddress(Dummy.ip2);
-		e.updateIPAddress(Dummy.ip1,Dummy.ip3);
+		e.addIPAddress(Dummy.ip1, NotUseAtr.NOT_USE, Dummy.ipToCheck);
+		e.addIPAddress(Dummy.ip2, NotUseAtr.NOT_USE, Dummy.ipToCheck);
+		e.updateIPAddress(Dummy.ip1,Dummy.ip3, NotUseAtr.NOT_USE, Dummy.ipToCheck);
 	}
 	
 	@Test
 	public void updateIPAddressEx1835() {
 		AccessRestrictions e = new AccessRestrictions(Dummy.tenantCode, NotUseAtr.USE, new ArrayList<AllowedIPAddress>());
-		e.addIPAddress(Dummy.ip1);
-		e.addIPAddress(Dummy.ip2);
+		e.addIPAddress(Dummy.ip1, NotUseAtr.NOT_USE, Dummy.ipToCheck);
+		e.addIPAddress(Dummy.ip2, NotUseAtr.NOT_USE, Dummy.ipToCheck);
 		NtsAssert.businessException("Msg_1835", 
-				() -> e.updateIPAddress(Dummy.ip2,Dummy.ip1));
+				() -> e.updateIPAddress(Dummy.ip2,Dummy.ip1, NotUseAtr.NOT_USE, Dummy.ipToCheck));
+	}
+	
+	@Test
+	public void updateIPAddressEx2187() {
+		AccessRestrictions e = new AccessRestrictions(Dummy.tenantCode, NotUseAtr.USE, new ArrayList<AllowedIPAddress>());
+		e.addIPAddress(Dummy.ip1, NotUseAtr.NOT_USE, Dummy.ipToCheck);
+		e.addIPAddress(Dummy.ip2, NotUseAtr.NOT_USE, Dummy.ipToCheck);
+		NtsAssert.businessException("Msg_2187", () -> e.updateIPAddress(Dummy.ip1, Dummy.ip3, NotUseAtr.USE, Dummy.ipToCheck));
+		e.updateIPAddress(Dummy.ip2, Dummy.ipToCheck, NotUseAtr.USE, Dummy.ipToCheck);
+	}
+	
+	@Test
+	public void updateIPAddressEx2187WithRange() {
+		AccessRestrictions e = new AccessRestrictions(Dummy.tenantCode, NotUseAtr.USE, new ArrayList<AllowedIPAddress>());
+		e.addIPAddress(Dummy.ip1, NotUseAtr.NOT_USE, Dummy.ipToCheck);
+		e.addIPAddress(Dummy.ip2, NotUseAtr.NOT_USE, Dummy.ipToCheck);
+		NtsAssert.businessException("Msg_2187", () -> e.updateIPAddress(Dummy.ip1, Dummy.ip6, NotUseAtr.USE, Dummy.ipToCheck));
+		e.updateIPAddress(Dummy.ip2, Dummy.ip7, NotUseAtr.USE, Dummy.ipToCheck);
 	}
 	
 	@Test
 	public void delIPAddress() {
 		AccessRestrictions e = new AccessRestrictions(Dummy.tenantCode, NotUseAtr.USE, new ArrayList<AllowedIPAddress>());
-		e.addIPAddress(Dummy.ip1);
-		e.addIPAddress(Dummy.ip2);
-		e.deleteIPAddress(Dummy.ip1.getStartAddress());
+		e.addIPAddress(Dummy.ip1, NotUseAtr.NOT_USE, Dummy.ipToCheck);
+		e.addIPAddress(Dummy.ip2, NotUseAtr.NOT_USE, Dummy.ipToCheck);
+		e.deleteIPAddress(Dummy.ip1.getStartAddress(), NotUseAtr.NOT_USE, Dummy.ipToCheck);
 	}
 	
 	@Test
 	public void delIPAddressNotUseAtr() {
 		AccessRestrictions e = new AccessRestrictions(Dummy.tenantCode, NotUseAtr.USE, new ArrayList<AllowedIPAddress>());
-		e.addIPAddress(Dummy.ip1);
-		e.deleteIPAddress(Dummy.ip1.getStartAddress());
+		e.addIPAddress(Dummy.ip1, NotUseAtr.NOT_USE, Dummy.ipToCheck);
+		e.deleteIPAddress(Dummy.ip1.getStartAddress(), NotUseAtr.NOT_USE, Dummy.ipToCheck);
 	}
 	
 	@Test
 	public void AccessRestrictions() {
-		AccessRestrictions e = new AccessRestrictions(Dummy.tenantCode, NotUseAtr.USE, new ArrayList<AllowedIPAddress>());
-		e.createAccessRestrictions();
+		AccessRestrictions e = new AccessRestrictions(Dummy.tenantCode);
 		assertThat(e.getWhiteList()).isEmpty();
 		assertThat(e.getAccessLimitUseAtr().equals(NotUseAtr.NOT_USE)).isTrue();
 	}
-	
+
 	@Test
 	public void testIsAccessable_NotUse() {
 		AccessRestrictions restrictions = new AccessRestrictions(
@@ -115,7 +151,7 @@ public class AccessRestrictionsTest {
 				NotUseAtr.USE, 
 				Dummy.whiteList);
 
-		restrictions_OK.addIPAddress(Dummy.allowedAddress);
+		restrictions_OK.addIPAddress(Dummy.allowedAddress, NotUseAtr.NOT_USE, Dummy.ipToCheck);
 		
 		new Expectations() {{
 			allowedIPAddress.isAccessable(Dummy.address);

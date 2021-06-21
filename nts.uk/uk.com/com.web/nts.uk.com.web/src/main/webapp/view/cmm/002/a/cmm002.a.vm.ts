@@ -1,6 +1,7 @@
 module nts.uk.com.view.cmm002.a {
 	import block = nts.uk.ui.block;
 	import getText = nts.uk.resource.getText;
+  import getMessage = nts.uk.resource.getMessage;
     import dialog = nts.uk.ui.dialog;
 	import errors = nts.uk.ui.errors;
 
@@ -14,6 +15,9 @@ module nts.uk.com.view.cmm002.a {
 		columns = ko.observableArray([
                 { headerText: getText('CMM002_5'), key: 'id', width: 150 }
 		]);
+    currentIpText: KnockoutObservable<string> = ko.observable();
+    currentIpAddress: AllowedIPAddress = null;;
+
         constructor() {
             let self = this;
 			self.selectedAllowedIPAddress.subscribe(value =>{
@@ -53,6 +57,14 @@ module nts.uk.com.view.cmm002.a {
 					tg.push(new AllowedIPAddressDto(item));
 				});
 				self.allowedIPAddressList(_.orderBy(tg, ['startAddress.net1','startAddress.net2','startAddress.host1','startAddress.host2','endAddress.net1','endAddress.net2','endAddress.host1','endAddress.host2'], ['asc','asc','asc','asc','asc','asc','asc','asc']));
+        self.currentIpText(nts.uk.text.format(getText("CMM002_13"), data.userIpAddress));
+        const ipParts = data.userIpAddress.split('.');
+        self.currentIpAddress = new AllowedIPAddress({
+          ipInputType: 0,
+          startAddress: new IPAddressSetting(ipParts),
+          endAddress: undefined,
+          comment: undefined
+        });
                 dfd.resolve();
             }).fail(function(error: any) {
                 dfd.reject();
@@ -78,7 +90,8 @@ module nts.uk.com.view.cmm002.a {
 					block.invisible();
 					let param = {
 						accessLimitUseAtr: self.accessLimitUseAtr(),
-						allowedIPAddressNew: ko.toJS(self.allowedIPAddress)
+						allowedIPAddress: ko.toJS(self.allowedIPAddress),
+            ipAddressToCheck: ko.toJS(self.currentIpAddress)
 					};
 		            service.add(param).done(() => {
 		            	self.getData().done(()=>{
@@ -94,7 +107,8 @@ module nts.uk.com.view.cmm002.a {
 					let param = {
 						accessLimitUseAtr: self.accessLimitUseAtr(),
 						allowedIPAddressNew: ko.toJS(self.allowedIPAddress),
-						allowedIPAddressOld: _.find(self.allowedIPAddressList(), ['id', self.selectedAllowedIPAddress()]) 
+						allowedIPAddressOld: _.find(self.allowedIPAddressList(), ['id', self.selectedAllowedIPAddress()]),
+            ipAddressToCheck: ko.toJS(self.currentIpAddress)
 					};
 		            service.update(param).done(() => {
 		            	self.getData().done(()=>{
@@ -114,8 +128,13 @@ module nts.uk.com.view.cmm002.a {
 			if(self.selectedAllowedIPAddress() != ''){
 				dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     block.invisible();
+                    const param = {
+                      accessLimitUseAtr: self.accessLimitUseAtr(),
+                      ipAddress: _.find(self.allowedIPAddressList(), ['id', self.selectedAllowedIPAddress()]),
+                      ipAddressToCheck: ko.toJS(self.currentIpAddress)
+                    };
 					let index = _.findIndex(self.allowedIPAddressList(), ['id', self.selectedAllowedIPAddress()]);
-		            service.del(_.find(self.allowedIPAddressList(), ['id', self.selectedAllowedIPAddress()])).done(() => {
+		            service.del(param).done(() => {
 						self.getData().done(()=>{
 							if(self.allowedIPAddressList().length == 0){
 								self.selectedAllowedIPAddress('');
@@ -143,6 +162,8 @@ module nts.uk.com.view.cmm002.a {
 		accessLimitUseAtr: number;
 		/** 許可IPアドレス  */
 		whiteList: Array<AllowedIPAddressDto>;
+    /** 利用PCのIPアドレス */
+    userIpAddress: string;
 	}
 
 	class AllowedIPAddressDto {
@@ -184,8 +205,14 @@ module nts.uk.com.view.cmm002.a {
 		endAddress = new IPAddressSetting();
 		/** 備考 */
 		comment = ko.observable('');
-        constructor() {
+        constructor(param?: any) {
 			let self = this;
+      if (param) {
+        self.ipInputType = ko.observable(param.ipInputType);
+        self.startAddress = param.startAddress;
+        self.endAddress = param.endAddress;
+        self.comment = param.comment;
+      }
 			self.ipInputType.subscribe(item =>{
 				if(item == 0){
                     $('.endIP input').ntsError('clear'); 
@@ -213,7 +240,15 @@ module nts.uk.com.view.cmm002.a {
 		/** IPアドレス4 */
 		host2 = ko.observable('');
 		
-    	constructor() {}
+    	constructor(param?: string[]) {
+        const self = this;
+        if (!!param) {
+          self.net1 = ko.observable(param[0]);
+          self.net2 = ko.observable(param[1]);
+          self.host1 = ko.observable(param[2]);
+          self.host2 = ko.observable(param[3]);
+        }
+      }
 		update(data? : any) :void {
 			let self = this;
 			self.net1(data?data.net1:'');
