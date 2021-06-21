@@ -57,48 +57,45 @@ module nts.uk.at.kha003.a {
         created() {
             const vm = this;
             _.extend(window, {vm});
-
+            var itemId = '';
             $("#appen-area-one .pannel_padding").draggable({
                 helper: function (e) {
-                    return e.target;
+                    var html = e.target
+                    itemId = html.id;
+                    return '<div class="panel panel-gray-bg item_a_6_4_to_67">\n' +
+                        '                                            <button class="button_top_right_corner"><i class="icon icon-close"></i></button>\n' +
+                        '                                            <span class="label" style="display: table;margin: 71px auto;">' + html.innerText + '</span>\n' +
+                        '                                        </div>';
                 },
                 stop: function (e, ui) {
-                    var html = ui.helper.html();
-                    ui.helper.remove();
+                    var html = ui.helper;
+                    $(this).css({'pointer-events': 'none'});
+                    $(this).children().removeClass('bacg-active').addClass('bacg-inactive');
                     $('#append_area').append('<div class="cell valign-center">\n' +
-                        '                                        <div class="panel panel-gray-bg item_a_6_4_to_67">\n' +
-                        '                                            <button  class="button_top_right_corner"><i class="icon icon-close"></i></button>\n' +
-                        '                                            <span class="label" style="display: table;margin: 71px auto;">' + html + '</span>\n' +
+                        '                                        <div style="background-color: #e7d3193b" class="panel  item_a_6_4_to_67">\n' +
+                        '                                            <button id="' + itemId + '" class="button_top_right_corner"><i class="icon icon-close"></i></button>\n' +
+                        '                                            <span class="label" style="display: table;margin: 71px auto;">' + $(this).children().html() + '</span>\n' +
                         '                                        </div>\n' +
                         '                                    </div>');
+                    matchWidth();
+                    $('#append_note').hide();
                 }
             });
 
+            function matchWidth() {
+                $('#free_area').css("width", $('#appen_parent').width());
+            }
+
             $(document).ready(function () {
                 $('#append_area').on('click', ".button_top_right_corner", function (e) {
-                    console.log($(this).next('.label').html());
-                    /*$('#appen-area-one').append('<div class="cell valign-center pannel_padding">\n' +
-                        '                                    <div class="panel panel-gray-bg panel_common">'+$(this).next('.label').html()+'</div>\n' +
-                        '                                </div>');*/
-                    var html = '<div class="cell valign-center pannel_padding">\n' +
-                        '                                    <div class="panel panel-gray-bg panel_common">' + $(this).next('.label').html() + '</div>\n' +
-                        '</div>';
-                    $(html).draggable({
-                        helper: function (e) {
-                            return e.target;
-                        },
-                        stop: function (e, ui) {
-                            var html = ui.helper.html();
-                            ui.helper.remove();
-                            $('#append_area').append('<div class="cell valign-center">\n' +
-                                '                                        <div class="panel panel-gray-bg item_a_6_4_to_67">\n' +
-                                '                                            <button  class="button_top_right_corner"><i class="icon icon-close"></i></button>\n' +
-                                '                                            <span class="label" style="display: table;margin: 71px auto;">' + html + '</span>\n' +
-                                '                                        </div>\n' +
-                                '                                    </div>');
-                        }
-                    }).appendTo($('#appen-area-one'));
+                    var id = $(this).attr('id');
+                    $('#' + id).removeClass('bacg-inactive').addClass('bacg-active');
+                    $('#' + id).parent().css({'pointer-events': 'auto'});
                     $(this).parent().parent().remove();
+                    matchWidth();
+                    if ($('#append_area .cell').length < 1) {
+                        $('#append_note').show();
+                    }
                 });
             });
         }
@@ -164,8 +161,8 @@ module nts.uk.at.kha003.a {
          * */
         clickRunButton() {
             const vm = this;
-            vm.$window.storage( 'inputData', [] );
-            vm.$window.modal( "/view/kha/003/b/index.xhtml" ).then( () => {
+            vm.$window.storage('inputData', []);
+            vm.$window.modal("/view/kha/003/b/index.xhtml").then(() => {
 
             });
         }

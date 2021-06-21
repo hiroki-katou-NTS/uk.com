@@ -1,63 +1,52 @@
 
-.custom-class {
-    padding: 5px 15px 15px 15px;
-}
-
-.class-padding-btm-5{
-    padding-bottom: 5px;
-}
-.width-180{
-    width: 180px;
-}
-.custom-header{
-    padding-bottom: 15px;
-}
-.panel.ntsPanel {
-    padding: 15px;
-}
-.label.warning.color-black {
-    background-color: #f7efd4;
-    border: 1px solid #B1B1B1;
-    padding-top: 5px;
-    padding-right: 10px;
-    padding-bottom: 0.5rem;
-    padding-left: 10px;
-    margin-bottom: 5px;
-    color: black;
-}
-.width-common{
+.width-common {
     width: 27px;
 }
 
-#A4_3{
+#A4_3 {
     width: 300px;
 }
 
-.pannel_padding{
+.pannel_padding {
     padding-left: 4px;
     padding-right: 4px;
 }
-.panel_common{
+
+.panel_common {
     height: 60px;
     vertical-align: middle;
     padding-top: 47px;
 }
 
-.item_a_6_1{
+.bacg-active {
+    background-color: #e7d3193b;
+}
+
+.init-width {
+    width: 100px;
+}
+
+.bacg-inactive {
+    background-color: #e0d6d6;
+}
+
+.item_a_6_1 {
     height: 50px;
 }
-.item_a_6_2{
+
+.item_a_6_2 {
     height: 80px;
     padding-top: 79px;
 }
 
-.item_a_6_4_to_67{
+.item_a_6_4_to_67 {
     height: 150px;
     width: 100px;
     margin-right: 1px;
 }
-.button_top_right_corner{
-    position:absolute;
-    top:0;
-    right:0;
+
+.button_top_right_corner {
+    position: absolute;
+    top: 0;
+    right: 0;
 }
