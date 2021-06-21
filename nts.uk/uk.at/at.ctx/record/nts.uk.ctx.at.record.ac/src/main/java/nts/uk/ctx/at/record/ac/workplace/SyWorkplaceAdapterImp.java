@@ -83,8 +83,9 @@ public class SyWorkplaceAdapterImp implements SyWorkplaceAdapter {
 						x.getWorkplaceGeneric(),
 						x.getWorkplaceDisplayName(),
 						x.getHierarchyCode(),
-						x.getWorkplaceExternalCode()))
-				.collect(Collectors.toList());
+						x.getWorkplaceExternalCode(),
+						x.getPeriod()
+				)).collect(Collectors.toList());
 	}
 
 }

@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.bs.employee.pub.workplace.*;
 import nts.uk.ctx.bs.employee.pub.workplace.config.WorkPlaceConfigExport;
 import nts.uk.ctx.bs.employee.pub.workplace.config.WorkPlaceConfigPub;
+import nts.uk.ctx.bs.employee.pub.workplace.config.WorkplaceConfigHistoryExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInformationExport;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
@@ -874,11 +875,13 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 
 		//[No.647]期間に対応する職場構成を取得する
 		List<WorkPlaceConfigExport> workPlaceConfigLst = workPlaceConfigPub.findByCompanyIdAndPeriod(companyId, datePeriod);
-		List<String> wkpIds = new ArrayList<>();
+		List<String> wkpHistIds = new ArrayList<>();
+		List<WorkplaceConfigHistoryExport> wkpConfigs = new ArrayList<>();
 		workPlaceConfigLst.forEach(x -> {
-			x.getWkpConfigHistory().forEach(i -> wkpIds.add(i.getHistoryId()));
+			x.getWkpConfigHistory().forEach(i -> wkpHistIds.add(i.getHistoryId()));
+			wkpConfigs.addAll(x.getWkpConfigHistory());
 		});
-		List<WorkplaceInformation> workplaceInforLst = workplaceInformationRepository.findByHistoryIds(AppContexts.user().companyId(), wkpIds);
+		List<WorkplaceInformation> workplaceInforLst = workplaceInformationRepository.findByHistoryIds(AppContexts.user().companyId(), wkpHistIds);
 
 		return workplaceInforLst.stream()
 			.map(i -> new WorkplaceInformationExport(
@@ -891,7 +894,8 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 					i.getWorkplaceGeneric().v(),
 					i.getWorkplaceDisplayName().v(),
 					i.getHierarchyCode().v(),
-					i.getWorkplaceExternalCode().isPresent() ? Optional.of(i.getWorkplaceExternalCode().get().v()) : Optional.empty()
+					i.getWorkplaceExternalCode().isPresent() ? Optional.of(i.getWorkplaceExternalCode().get().v()) : Optional.empty(),
+					wkpConfigs.stream().filter(c -> c.getHistoryId().equals(i.getWorkplaceHistoryId())).findFirst().map(c -> c.getPeriod()).orElse(null)
 				)
 			).collect(Collectors.toList());
 	}

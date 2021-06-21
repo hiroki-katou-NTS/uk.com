@@ -27,6 +27,7 @@ public class JpaAlarmListExtractInfoWorkplaceRepository extends JpaRepository im
         builderString = new StringBuilder();
         builderString.append(SELECT);
         builderString.append(" WHERE a.processId = :processId ");
+        builderString.append(" ORDER BY a.workplaceCode, a.category, a.alarmValueMessage ");
         FIND_BY_ID = builderString.toString();
     }
 
@@ -40,7 +41,6 @@ public class JpaAlarmListExtractInfoWorkplaceRepository extends JpaRepository im
         List<KfndtAlarmExtractWpl> result = this.queryProxy().query(FIND_BY_ID, KfndtAlarmExtractWpl.class)
                 .setParameter("processId", processId)
                 .getList();
-        result.sort(Comparator.comparing(i -> i.workplaceCode));
         return KfndtAlarmExtractWpl.toDomain(result);
     }
 }
