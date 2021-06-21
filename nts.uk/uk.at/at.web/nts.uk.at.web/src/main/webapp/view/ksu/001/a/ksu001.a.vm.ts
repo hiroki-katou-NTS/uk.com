@@ -160,6 +160,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         widthA8 : number = 200;
         widthBtnToLeftToRight : number = 32;
         distanceLeftToGrid : number = 30;
+        timeColor = '#595959';
         
         constructor() {
             let self = this;
@@ -2914,9 +2915,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                         if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
                             if (modeBackGround == 1) {
-                                return { textColor: "#000000", background: "#ffffff" } // デフォルト（黒）  Default (black)
+                                return { textColor: self.timeColor, background: "#ffffff" } // デフォルト（黒）  Default (black)
                             } else {
-                                return { textColor: "#000000" }
+                                return { textColor: self.timeColor }
                             }
                         }
                     }
@@ -2931,24 +2932,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                         if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
                             if (innerIdx === 0 || innerIdx === 1) return { textColor: "#0000ff" }; // color-attendance
-                            else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
+                            else if (innerIdx === 2 || innerIdx === 3) return { textColor: self.timeColor };
                         }
                         if (workStyle == AttendanceHolidayAttr.MORNING) {
                             if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
-                            else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
+                            else if (innerIdx === 2 || innerIdx === 3) return { textColor: self.timeColor };
                         }
                         if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
                             if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
-                            else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
+                            else if (innerIdx === 2 || innerIdx === 3) return { textColor: self.timeColor };
                         }
                         if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
                             if (innerIdx === 0 || innerIdx === 1) return { textColor: "#ff0000" }; // color-holiday
-                            else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
+                            else if (innerIdx === 2 || innerIdx === 3) return { textColor: self.timeColor };
                         }
                         if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
                             // デフォルト（黒）  Default (black)
-                            if (innerIdx === 0 || innerIdx === 1) return { textColor: "#000000" }; // デフォルト（黒）  Default (black)
-                            else if (innerIdx === 2 || innerIdx === 3) return { textColor: "#000000" };
+                            if (innerIdx === 0 || innerIdx === 1) return { textColor: self.timeColor }; // デフォルト（黒）  Default (black)
+                            else if (innerIdx === 2 || innerIdx === 3) return { textColor: self.timeColor };
                         }
                     }
                 } else if (userInfor.disPlayFormat == 'shortName') {
@@ -2967,7 +2968,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             if (innerIdx === 0 || innerIdx === 1) return { textColor: "#ff0000" }; // color-holiday
                         }
                         if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
-                            if (innerIdx === 0 || innerIdx === 1) return { textColor: "#000000" }; // デフォルト（黒）  Default (black)
+                            if (innerIdx === 0 || innerIdx === 1) return { textColor: self.timeColor }; // デフォルト（黒）  Default (black)
                         }
                     }
                 }
