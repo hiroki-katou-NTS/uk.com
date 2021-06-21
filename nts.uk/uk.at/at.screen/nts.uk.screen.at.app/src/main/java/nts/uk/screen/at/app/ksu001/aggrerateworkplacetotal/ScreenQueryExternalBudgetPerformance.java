@@ -14,6 +14,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.query.GetExternalBudgetPerformanceItems;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksu.ksu001q.query.DailyExternalBudget;
 import nts.uk.screen.at.app.ksu.ksu001q.query.DailyExternalBudgetDto;
 import nts.uk.screen.at.app.ksu.ksu001q.query.DailyExternalBudgetQuery;
@@ -51,9 +52,10 @@ public class ScreenQueryExternalBudgetPerformance {
 		// not List<外部予算実績項目>.isEmpty
 		if (!CollectionUtil.isEmpty(externalBudgets)) {
 			// 取得する(対象組織識別情報, 外部予算実績項目コード, 外部予算実績受入値年月日)
-			externalBudgets.stream()
-						   .map(x -> {
+			externalBudgets.forEach(x -> {
 							   DailyExternalBudget param = new DailyExternalBudget();
+							   param.setUnit(String.valueOf(targetOrg.getUnit().value));
+							   param.setId(targetOrg.getUnit()==TargetOrganizationUnit.WORKPLACE ? targetOrg.getWorkplaceId().orElse("") : targetOrg.getWorkplaceGroupId().orElse(""));
 							   param.setStartDate(datePeriod.start().toString());
 							   param.setEndDate(datePeriod.end().toString());
 							   param.setItemCode(x.getExternalBudgetCode());
@@ -70,7 +72,7 @@ public class ScreenQueryExternalBudgetPerformance {
 									   map.put(date, value);
 								   }
 							   }
-							   return dailyExternalBudgets;
+							   // return dailyExternalBudgets;
 							   
 						   });
 			return map.entrySet()
