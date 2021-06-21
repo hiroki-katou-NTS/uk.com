@@ -2655,7 +2655,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     leftHorzContentDs.push({ id: 'id2', title: '', subtitle: getText("KSU001_60") });
                     leftHorzContentDs.push({ id: 'id3', title: getText("KSU001_51"), subtitle: getText("KSU001_59") });
                     leftHorzContentDs.push({ id: 'id4', title: '', subtitle: getText("KSU001_60") });
-                    leftHorzContentDs.push({ id: 'id5', title: getText("KSU001_50"), subtitle: getText("KSU001_59") });
+                    leftHorzContentDs.push({ id: 'id5', title: getText("KSU001_58"), subtitle: getText("KSU001_59") });
                     leftHorzContentDs.push({ id: 'id6', title: '', subtitle: getText("KSU001_60") });
                     leftHorzContentDs.push({ id: 'id7', title: '', subtitle: getText("KSU001_61") });
                     for(let i=1; i<=7; i++) {
