@@ -74,7 +74,15 @@ module nts.uk.at.view.knr002.c {
                 });
 
                 vm.ipUpdateValue = ko.computed(function() {
-                    return `${vm.ipAddress1()}.${vm.ipAddress2()}.${vm.ipAddress3()}.${vm.ipAddress4()}`;
+                    if (!_.isNil(vm.ipAddress1()) && !_.isNil(vm.ipAddress2()) && !_.isNil(vm.ipAddress3()) && !_.isNil(vm.ipAddress4())) {
+                        let ip1 = vm.ipAddress1() < 10 ? '00' + vm.ipAddress1() : (vm.ipAddress1() >= 10 && vm.ipAddress1() < 100 ? '0' + vm.ipAddress1() : vm.ipAddress1().toString());
+                        let ip2 = vm.ipAddress2() < 10 ? '00' + vm.ipAddress2() : (vm.ipAddress2() >= 10 && vm.ipAddress2() < 100 ? '0' + vm.ipAddress2() : vm.ipAddress2().toString());
+                        let ip3 = vm.ipAddress3() < 10 ? '00' + vm.ipAddress3() : (vm.ipAddress3() >= 10 && vm.ipAddress3() < 100 ? '0' + vm.ipAddress3() : vm.ipAddress3().toString());
+                        let ip4 = vm.ipAddress4() < 10 ? '00' + vm.ipAddress4() : (vm.ipAddress4() >= 10 && vm.ipAddress4() < 100 ? '0' + vm.ipAddress4() : vm.ipAddress4().toString());
+                        return ip1 + ip2 + ip3 + ip4;
+                    }
+                    return '';
+                    
                 });
 
                 vm.currentCode2.subscribe((value) => {
@@ -195,26 +203,25 @@ module nts.uk.at.view.knr002.c {
                     case INPUT_TYPE.IP:
                         $('#C8_5').focus();
 
-                        let currentIpArr = vm.currentValue().split('.');
-                        let newCurrentValue = currentIpArr.map(e => parseInt(e)).join('.');
+                        let newCurrentValue = vm.currentValue().match(/.{1,3}/g).map(e => parseInt(e)).join('.');
                         vm.currentValue(newCurrentValue);
                         
                         if (rowData.updateValue.length == 0) {
-                            if (rowData.currentValue.length == 0) {
+                            if (vm.currentValue().length == 0) {
                                 vm.ipAddress1(null);
                                 vm.ipAddress2(null);
                                 vm.ipAddress3(null);
                                 vm.ipAddress4(null);
                                 break;
                             }
-                            let ipArr = rowData.currentValue.split('.');
+                            let ipArr = vm.currentValue().split('.');
                             vm.ipAddress1(parseInt(ipArr[0]));
                             vm.ipAddress2(parseInt(ipArr[1]));
                             vm.ipAddress3(parseInt(ipArr[2]));
                             vm.ipAddress4(parseInt(ipArr[3]));
                             break;
                         }
-                        let ipArr = rowData.updateValue.split('.');
+                        let ipArr = rowData.updateValue.match(/.{1,3}/g);
                         vm.ipAddress1(parseInt(ipArr[0]));
                         vm.ipAddress2(parseInt(ipArr[1]));
                         vm.ipAddress3(parseInt(ipArr[2]));
