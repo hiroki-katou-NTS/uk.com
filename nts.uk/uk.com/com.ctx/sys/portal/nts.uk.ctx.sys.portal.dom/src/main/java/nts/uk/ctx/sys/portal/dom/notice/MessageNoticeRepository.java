@@ -95,4 +95,7 @@ public interface MessageNoticeRepository {
 	 * @return お知らせメッセージList
 	 */
 	List<MessageNotice> getByCreatorIdAndInputDate(String creatorId, GeneralDateTime inputDate);
+	
+	List<MessageNotice> getMsgInDestinationCategoryAndCid(DatePeriod period, DestinationClassification destination,
+			String cid);
 }

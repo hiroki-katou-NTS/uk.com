@@ -81,6 +81,13 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 			, "AND s.pk.sid = :sid"
 			, "ORDER BY m.startDate DESC, m.endDate DESC, m.pk.inputDate DESC");
 	
+	private static final String GET_BY_DEST_CATEGORY_AND_CID = String.join(" "
+			, "SELECT m FROM SptdtInfoMessage m WHERE m.companyId = :companyId"
+			, "AND m.startDate <= :endDate"
+			, "AND m.endDate >= :startDate"
+			, "AND m.destination = :destination"
+			, "ORDER BY m.startDate DESC, m.endDate DESC, m.pk.inputDate DESC");
+	
 	/**
 	 * Convert entity to domain
 	 * @param entity
@@ -260,6 +267,18 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 		return this.queryProxy().query(query, SptdtInfoMessage.class)
 				.setParameter("sid", creatorId)
 				.setParameter("inputDate", inputDate)
+				.getList(MessageNotice::createFromMemento);
+	}
+
+	@Override
+	public List<MessageNotice> getMsgInDestinationCategoryAndCid(DatePeriod period,
+			DestinationClassification destination, String cid) {
+		return this.queryProxy()
+				.query(GET_BY_DEST_CATEGORY_AND_CID, SptdtInfoMessage.class)
+				.setParameter("companyId", cid)
+				.setParameter("endDate", period.end())
+				.setParameter("startDate", period.start())
+				.setParameter("destination", destination.value)
 				.getList(MessageNotice::createFromMemento);
 	}
 

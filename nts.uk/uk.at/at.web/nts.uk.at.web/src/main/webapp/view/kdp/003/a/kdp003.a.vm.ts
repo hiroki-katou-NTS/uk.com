@@ -126,10 +126,6 @@ module nts.uk.at.kdp003.a {
 						}
 					});
 			});
-
-			setInterval(() => {
-				vm.loadNotice();
-			}, 5000);
 		}
 
 		// get WorkPlace from basyo -> save locastorage.
