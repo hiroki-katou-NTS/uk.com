@@ -1015,6 +1015,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 return;
             }
             
+            if(isRetaine == true){
                 self.removeCellNotValidInTimeInputMode(rowIndex+'', columnKey);
             } 
 
