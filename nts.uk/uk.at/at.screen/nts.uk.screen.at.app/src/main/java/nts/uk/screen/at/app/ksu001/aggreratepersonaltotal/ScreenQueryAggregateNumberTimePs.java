@@ -98,7 +98,10 @@ public class ScreenQueryAggregateNumberTimePs {
 				.forEach(e -> {
 					Map<TotalTimes, BigDecimal> value = e.getValue().entrySet().stream().collect(Collectors.toMap(
 							x -> totalTimes.stream().filter(a -> a.getTotalCountNo() == (Integer) x.getKey()).findFirst().orElse(null),
-							x -> (BigDecimal)x.getValue()));
+							x -> (BigDecimal)x.getValue()))
+							.entrySet().stream()
+							.filter(y -> y.getKey()!=null)
+							.collect(Collectors.toMap(z -> z.getKey(), z -> z.getValue()));
 					output.put(((EmployeeId)e.getKey()), value);
 				});
 			
