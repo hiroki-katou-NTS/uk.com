@@ -111,10 +111,7 @@ module nts.uk.at.view.kaf000.d.viewmodel {
             if(_.size(loopFrame.listApprover()) > 1) {
                 index++;
             }
-            if(index <= 10){
-                return vm.$i18n("KAF000_9",[index+'']);
-            }
-            return "";
+           	return vm.$i18n("KAF000_9",[index+'']);
         }
 
 		getApprovalDateFormat(loopApprover) {
