@@ -18,9 +18,8 @@ public interface OuenWorkTimeSheetOfDailyRepo {
 	
 	public void delete(List<OuenWorkTimeSheetOfDaily> domain);
 
-	List<WorkDetailData> GetWorkDetailData(List<String> empIdList, List<String> wkplIdList, DatePeriod period);
+	List<WorkDetailData> getWorkDetailData(List<String> empIdList, List<String> wkplIdList, DatePeriod period);
 
-	
 	public void remove(String sid, GeneralDate ymd);
 
 	boolean findPK(String empId, GeneralDate ymd, int ouenNo);

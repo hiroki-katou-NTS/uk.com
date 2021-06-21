@@ -81,14 +81,12 @@ public class KrcmtRptDaiTask extends ContractUkJpaEntity implements Serializable
 
     public static KrcmtRptDaiTask toEntity(ManHourSummaryTableFormat domain) {
         String cid = AppContexts.user().companyId();
-        List<KrcmtRptDaiTaskItem> detailList = new ArrayList<>();
-        domain.getDetailFormatSetting().getSummaryItemList().forEach(x -> detailList.add(new KrcmtRptDaiTaskItem(
+        val detailList = domain.getDetailFormatSetting().getSummaryItemList().stream().map(x -> new KrcmtRptDaiTaskItem(
                 new KrcmtRptDaiTaskItemPk(
                         cid,
                         domain.getCode().v(),
-                        x.getSummaryItemType().value),
-                x.getHierarchicalOrder())
-        ));
+                        x.getHierarchicalOrder()),
+                x.getSummaryItemType().value)).collect(Collectors.toList());
 
         return new KrcmtRptDaiTask(
                 new KrcmtRptDaiTaskPk(

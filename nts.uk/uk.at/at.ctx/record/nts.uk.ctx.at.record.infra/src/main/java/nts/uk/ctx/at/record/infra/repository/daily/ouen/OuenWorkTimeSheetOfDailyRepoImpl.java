@@ -241,7 +241,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 	}
 
 	@Override
-	public List<WorkDetailData> GetWorkDetailData(List<String> empIdList, List<String> wkplIdList, DatePeriod period) {
+	public List<WorkDetailData> getWorkDetailData(List<String> empIdList, List<String> wkplIdList, DatePeriod period) {
 		String sql =
 				" SELECT " +
 						" t.SID, t.YMD, t.SUP_NO, i.WKP_ID, t.WORKPLACE_ID, t.WORK_CD1, " +
@@ -261,7 +261,6 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		if (!CollectionUtil.isEmpty(wkplIdList)) {
 			sql += " AND i.WKP_ID in @wkplIdList ";
 		}
-
 
 		if (!empIdList.isEmpty() && wkplIdList.isEmpty()) {
 			return new NtsStatement(sql, this.jdbcProxy())
