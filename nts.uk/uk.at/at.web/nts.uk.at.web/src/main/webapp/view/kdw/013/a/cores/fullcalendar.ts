@@ -2413,12 +2413,12 @@ module nts.uk.ui.at.kdw013.calendar {
                     dataEvent.mouse(false);
                     dataEvent.target(null);
                 })
-                .registerEvent('mousewheel', ({ target }) => {
-                    if (!$(target).closest('.fc-popup-editor.show').length) {
-                        popupPosition.event(null);
-                        popupPosition.setting(null);
-                    }
-                })
+//                .registerEvent('mousewheel', ({ target }) => {
+//                    if (!$(target).closest('.fc-popup-editor.show').length) {
+//                        popupPosition.event(null);
+//                        popupPosition.setting(null);
+//                    }
+//                })
                 .registerEvent('mousedown', (evt) => {
                     const $tg = $(evt.target);
 
@@ -2439,8 +2439,8 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     // close popup if target isn't owner & poper.
                     if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr) {
-                        popupPosition.event(null);
-                        popupPosition.setting(null);
+//                        popupPosition.event(null);
+//                        popupPosition.setting(null);
                     }
                 })
                 .registerEvent('mousemove', () => {
@@ -2803,7 +2803,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
                                 $el.style.left = `${left - width - 23}px`;
 
-                                $el.style.width = `${width + 20}px`;
+                                $el.style.width = `${width + 30}px`;
                                 $el.style.height = `${height + 20}px`;
                             } else {
                                 $el.style.left = `${left}px`;
@@ -3037,7 +3037,7 @@ module nts.uk.ui.at.kdw013.calendar {
         @component({
             name: 'fc-setting-panel',
             template: `
-                <div>
+                <div id='fc'>
                     <table>
                         <tbody>
                             <tr>
@@ -3046,7 +3046,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 </td>
                             </tr>
                             <tr>
-                                <td data-bind="i18n: 'KDW013_13'"></td>
+                                <td style='width:' data-bind="i18n: 'KDW013_13'"></td>
                                 <td>
                                     <select class="nts-input" data-bind="
                                             value: $component.params.firstDay,
@@ -3089,7 +3089,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     }
                     .fc-popup-setting tr input,
                     .fc-popup-setting tr select {
-                        width: 80px;
+                        width: 85px;
                         height: 34px;
                         margin-left: 15px;
                         box-sizing: border-box;
@@ -3121,7 +3121,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     .map(m => startDate.clone().add(m, 'day'))
                     .map(d => ({
                         id: d.get('day'),
-                        title: d.format('dd')
+                        title: d.format('dddd')
                     }));
 
                 vm.firstDays(listDates);

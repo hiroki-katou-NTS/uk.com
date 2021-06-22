@@ -259,11 +259,11 @@ module nts.uk.ui.at.kdw013.a {
                             return true;
                         }
 
-                        const { frameSettingList } = taskFrameUsageSetting;
+//                        const { frameSettingList } = taskFrameUsageSetting;
 
-                        if (frameSettingList && frameSettingList.length) {
-                            return !!_.find(frameSettingList, ({ useAtr, frameNo }) => frameNo === 2 && useAtr === 1);
-                        }
+//                        if (frameSettingList && frameSettingList.length) {
+//                            return !!_.find(frameSettingList, ({ useAtr, frameNo }) => frameNo === 2 && useAtr === 1);
+//                        }
 
                         return true;
                     }
@@ -437,6 +437,8 @@ module nts.uk.ui.at.kdw013.a {
                     }
 
                     const { frameSettingList } = taskFrameUsageSetting;
+                    
+                    frameSettingList  = _.filter(frameSettingList, ['useAtr', 1]);
 
                     if (!frameSettingList || frameSettingList.length === 0) {
                         return vm.$dialog.error({ messageId: 'Msg_1960' });
