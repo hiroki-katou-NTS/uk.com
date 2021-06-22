@@ -15,6 +15,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
         appEmailSet: any = null;
 		isMultiEmp: boolean = false;
 		isExpandMode: boolean = false;
+		appproverCount = 1;
 
         created() {
             const vm = this;
@@ -58,7 +59,11 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                         _.forEach(appSendMailByEmp.approvalRoot.listApprovalPhaseStateDto, phase => {
                             _.forEach(phase.listApprovalFrame, frame => {
                                 _.forEach(frame.listApprover, approver => {
-                                    approver.handleSendMail = false;
+                                    if (_.isNil(approver.approverMail)) {
+                                        approver.handleSendMail = 0;
+                                    } else {
+                                        approver.handleSendMail = approver.approverID != __viewContext.user.employeeId ? 1 : 0;
+                                    }
                                 });
                             });
                         });
@@ -239,8 +244,6 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 						indexForApprover += Number(length);
 					}
 				})
-				
-				
 			}
 			const orderNumber = indexForApprover + indexApprover + 1;
 			
@@ -248,17 +251,9 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 		
 		}
 
-        getApproverLabel(loopPhase, loopFrame, loopApprover) {
-            const vm = this;
-            let index = vm.getFrameIndex(loopPhase, loopFrame, loopApprover);
-            // case group approver
-//            if(_.size(loopFrame.listApprover()) > 1) {
-//                index++;
-//            }
-            if (index <= 10) {
-                return vm.$i18n("KAF000_9", [index + '']);
-            }
-            return "";
+        getApproverLabel() {
+            let vm = this;
+            return vm.$i18n("KAF000_9", [(vm.appproverCount++) + '']);
         }
 
         getApprovalDateFormat(loopApprover) {
@@ -286,7 +281,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 _.forEach(appSendMailByEmp.approvalRoot.listApprovalPhaseStateDto(), phase => {
                     _.forEach(phase.listApprovalFrame(), frame => {
                         _.forEach(frame.listApprover(), approver => {
-                            if (approver.handleSendMail()) {
+                            if (approver.handleSendMail() == 1) {
                                 let approverID = approver.approverID(),
                                     approverMail = approver.approverMail(),
                                     approverName = approver.approverName();
