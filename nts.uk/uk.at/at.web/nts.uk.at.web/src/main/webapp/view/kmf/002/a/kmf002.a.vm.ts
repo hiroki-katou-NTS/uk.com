@@ -10,7 +10,7 @@ module nts.uk.com.view.cmf003.i {
   @bean()
   export class ScreenModel extends ko.ViewModel {
     
-    managePublicHoliday: KnockoutObservable<number> = ko.observable(null);
+    managePublicHoliday: KnockoutObservable<number> = ko.observable(0);
     publicHdCarryOverDeadline: KnockoutObservable<number> = ko.observable(null);
     carryOverNumberOfPublicHdIsNegative: KnockoutObservable<number> = ko.observable(0);
     publicHolidayPeriod: KnockoutObservable<number> = ko.observable(null);
