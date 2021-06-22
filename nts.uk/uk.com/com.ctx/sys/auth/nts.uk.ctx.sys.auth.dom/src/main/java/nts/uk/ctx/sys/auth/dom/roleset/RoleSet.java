@@ -86,6 +86,15 @@ public class RoleSet extends AggregateRoot {
         this.salaryRoleId         = Optional.of(salaryRoleId);
     }
     
+    /**
+     * 作る
+     * @param cid 会社ID
+     * @param roleSetCd コード
+     * @param roleSetName 名称
+     * @param attendanceRoleId 就業ロール
+     * @param personInfoRoleId 個人情報ロール	
+     * @return
+     */
     public static RoleSet create(String cid
     		,	String roleSetCd
     		,	String roleSetName
@@ -94,8 +103,9 @@ public class RoleSet extends AggregateRoot {
     	return new RoleSet(cid
     			,	new RoleSetCode(roleSetCd)
     			,	new RoleSetName(roleSetName)
-    			,	ApprovalAuthority.HasRight
-    			,	Optional.of(attendanceRoleId),	Optional.of(personInfoRoleId)
+    			,	ApprovalAuthority.HasRight //今、承認権限の値 = あり、今後　承認権限を削除するつもりです。
+    			,	Optional.of(attendanceRoleId)
+    			,	Optional.of(personInfoRoleId)
     			,	Optional.empty(),	Optional.empty()
     			,	Optional.empty(),	Optional.empty() );
     }
