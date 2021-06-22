@@ -40,15 +40,17 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             }
 
             if (!_.isEmpty(vm.appIDLst)) {
-                vm.$ajax(API.applicationForSendByAppID, { appIDLst: vm.appIDLst, isMultiMode: vm.isMultiEmp }).done((result) => {
+                vm.$ajax(API.applicationForSendByAppID, { appIDLst: vm.appIDLst, isMultiEmp: vm.isMultiEmp }).done((result) => {
                     vm.mailContent(result.mailTemplate);
                     vm.appEmailSet = result.appEmailSet;
                     let appSendMails = [];
                     if (!_.isNil(param.employeeInfoLst) && param.employeeInfoLst.length > 1) {
                         _.forEach(param.employeeInfoLst, emp => {
-                            let x = result.appSendMailByEmpLst.filter(app => app.applicantName.localeCompare(emp.bussinessName) == 0);
-                            appSendMails.push(x[0]);
-                        })
+                            let x = result.appSendMailByEmpLst.find((app: any) => app.application.employeeID == emp.sid);
+							if(x) {
+								appSendMails.push(x);
+							}
+                        });
                     } else {
                         appSendMails = result.appSendMailByEmpLst;
                     }
