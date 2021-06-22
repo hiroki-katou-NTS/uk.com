@@ -72,11 +72,11 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 			, "ORDER BY DESTINATION_ATR ASC, START_DATE DESC");
 	
 	private static final String NATIVE_GET_REF_BY_SID_FOR_PERIOD = String.join(" "
-			, "SELECT m.*, s.READ_SID,"
+			, "SELECT m.*, s.READ_SID"
 			, "FROM SPTDT_INFO_MESSAGE m"
 			, "INNER JOIN SPTDT_INFO_MESSAGE_TGT n ON m.SID = n.SID AND m.INPUT_DATE = n.INPUT_DATE"
-			, "AND m.startDate <= ?endDate"
-			, "AND m.endDate >= ?startDate"
+			, "AND m.START_DATE <= ?endDate"
+			, "AND m.END_DATE >= ?startDate"
 			, "AND m.DESTINATION_ATR = 2"
 			, "AND n.TGT_INFO_ID = ?sid"
 			, "LEFT JOIN SPTDT_INFO_MESSAGE_READ s"
@@ -242,8 +242,8 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 		@SuppressWarnings("unchecked")
 		List<Object[]> resultList = this.getEntityManager()
 			.createNativeQuery(NATIVE_GET_REF_BY_SID_FOR_PERIOD)
-			.setParameter("endDate", period.end())
-			.setParameter("startDate", period.start())
+			.setParameter("endDate", period.end().toString())
+			.setParameter("startDate", period.start().toString())
 			.setParameter("sid", sid)
 			.getResultList();
 		
