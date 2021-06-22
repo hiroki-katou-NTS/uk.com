@@ -2546,7 +2546,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             vertSumContentDs.push({ 
                                 empID: item.employeeId, 
                                 colum1: _.isEmpty(colum1Object) ? '' : colum1Object.value, 
-                                colum2: _.isEmpty(colum2Object) ? '' : colum1Object.value
+                                colum2: _.isEmpty(colum2Object) ? '' : colum2Object.value
                             });
                         } else {
                             vertSumContentDs.push({ empID: item.employeeId, colum1: null, colum2: null });
