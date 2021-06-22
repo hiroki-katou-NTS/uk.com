@@ -198,80 +198,23 @@ module nts.uk.ui.at.kdw013.b {
                         model.push({ key: 'KDW013_25', value: number2String(endTime - startTime) });
 
                         if (first && first.useAtr === 1) {
-
-                            if (shared) {
-                                const { taskListDto1 } = shared;
-                                const exist = _.find(taskListDto1, ({ code }) => code === workCD1);
-
-                                if (exist) {
-                                    model.push({ key: first.frameName, value: `${exist.code} ${exist.displayInfo.taskName}` });
-                                } else {
-                                    model.push({ key: first.frameName, value: workCD1 });
-                                }
-                            } else {
-                                model.push({ key: first.frameName, value: workCD1 });
-                            }
+                            vm.setTaskData(model, _.get(shared, 'taskListDto1'), workCD1, first);
                         }
 
                         if (second && second.useAtr === 1) {
-
-                            if (shared) {
-                                const { taskListDto2 } = shared;
-                                const exist = _.find(taskListDto2, ({ code }) => code === workCD2);
-
-                                if (exist) {
-                                    model.push({ key: second.frameName, value: `${exist.code} ${exist.displayInfo.taskName}` });
-                                } else {
-                                    model.push({ key: second.frameName, value: workCD2 });
-                                }
-                            } else {
-                                model.push({ key: second.frameName, value: workCD2 });
-                            }
+                            vm.setTaskData(model, _.get(shared, 'taskListDto2'), workCD2, second);
                         }
 
                         if (thirt && thirt.useAtr === 1) {
-                            if (shared) {
-                                const { taskListDto3 } = shared;
-                                const exist = _.find(taskListDto3, ({ code }) => code === workCD3);
-
-                                if (exist) {
-                                    model.push({ key: thirt.frameName, value: `${exist.code} ${exist.displayInfo.taskName}` });
-                                } else {
-                                    model.push({ key: thirt.frameName, value: workCD3 });
-                                }
-                            } else {
-                                model.push({ key: thirt.frameName, value: workCD3 });
-                            }
+                            vm.setTaskData(model, _.get(shared, 'taskListDto3'), workCD3, thirt);
                         }
 
                         if (four && four.useAtr === 1) {
-                            if (shared) {
-                                const { taskListDto4 } = shared;
-                                const exist = _.find(taskListDto4, ({ code }) => code === workCD4);
-
-                                if (exist) {
-                                    model.push({ key: four.frameName, value: `${exist.code} ${exist.displayInfo.taskName}` });
-                                } else {
-                                    model.push({ key: four.frameName, value: workCD4 });
-                                }
-                            } else {
-                                model.push({ key: four.frameName, value: workCD4 });
-                            }
+                            vm.setTaskData(model, _.get(shared, 'taskListDto4'), workCD4, four);
                         }
 
                         if (five && five.useAtr === 1) {
-                            if (shared) {
-                                const { taskListDto5 } = shared;
-                                const exist = _.find(taskListDto5, ({ code }) => code === workCD5);
-
-                                if (exist) {
-                                    model.push({ key: five.frameName, value: `${exist.code} ${exist.displayInfo.taskName}` });
-                                } else {
-                                    model.push({ key: five.frameName, value: workCD5 });
-                                }
-                            } else {
-                                model.push({ key: five.frameName, value: workCD5 });
-                            }
+                            vm.setTaskData(model, _.get(shared, 'taskListDto5'), workCD5, five);
                         }
 
                         const work = _.find(works, ({ workLocationCD: wlc }) => wlc === workLocationCD);
@@ -323,6 +266,25 @@ module nts.uk.ui.at.kdw013.b {
                 .find('[data-bind]')
                 .removeAttr('data-bind');
             //$('#edit').focus();
+        }
+    
+        setTaskData(model, taskListDto, workCD, setting){
+            const vm = this;
+            const { params, workLocations, taskFrameSettings } = vm;
+            const { data, $share } = params;
+            const shared = ko.unwrap($share);
+
+            if (shared) {
+                const exist = _.find(taskListDto, ({ code }) => code === workCD);
+                let name = vm.$i18n.text('KDW013_40');
+                
+                if (exist) {
+                    name = exist.displayInfo.taskName;
+                }
+                model.push({ key: setting.frameName, value: workCD ? `${workCD} ${name}` : null });
+            } else {
+                model.push({ key: setting.frameName, value: workCD });
+            }
         }
 
         remove() {
