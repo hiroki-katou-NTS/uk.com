@@ -13,6 +13,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
     @bean()
     export class Kaf006AViewModel extends Kaf000AViewModel {
+		// HienND Test
         appType: KnockoutObservable<number> = ko.observable(AppType.ABSENCE_APPLICATION);
         isAgentMode: KnockoutObservable<boolean> = ko.observable(false);
         isSendMail: KnockoutObservable<boolean> = ko.observable(false);
