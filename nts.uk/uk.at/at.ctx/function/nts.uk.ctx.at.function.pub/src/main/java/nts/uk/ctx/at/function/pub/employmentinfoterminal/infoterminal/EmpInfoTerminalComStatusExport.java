@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.pub.imploymentinfoterminal.infoterminal;
+package nts.uk.ctx.at.function.pub.employmentinfoterminal.infoterminal;
 
 import lombok.Value;
 import nts.arc.time.GeneralDateTime;
