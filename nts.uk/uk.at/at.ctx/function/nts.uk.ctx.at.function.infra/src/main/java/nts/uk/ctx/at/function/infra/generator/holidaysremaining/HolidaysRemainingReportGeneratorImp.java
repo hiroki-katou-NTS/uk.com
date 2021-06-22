@@ -1172,9 +1172,13 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         if (statusHolidayImported != null) {
             for (StatusHolidayImported statusHolidayItem : statusHolidayImported) {
                 int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), statusHolidayItem.getYm());
+                val isDate = statusHolidayItem.getUseDays()!=null && statusHolidayItem.getUnUsedTimes() ==null;
+                val isTimes = (statusHolidayItem.getUseDays()==null||(statusHolidayItem.getUseDays() !=null && statusHolidayItem.getUseDays() == 0))
+                        && statusHolidayItem.getUseTimes()!=null;
                 if (maxRange < totalMonth || totalMonth < 0) {
                     continue;
                 }
+
                 // BEFORE
                 else if (statusHolidayItem.getYm().compareTo(currentMonth) < 0) {
                     // I2_3
@@ -1187,7 +1191,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     // I5_3 代休_残数_日数
                     String remain = "";
 
-                    if (!isTime) {
+                    if (isDate) {
                         occurrence = statusHolidayItem.getOccurrenceDays() == null || statusHolidayItem.getOccurrenceDays() == 0 ? "" :
                                 df.format(statusHolidayItem.getOccurrenceDays().doubleValue());
                         use = statusHolidayItem.getUseDays() == null || statusHolidayItem.getUseDays() == 0 ? "" :
@@ -1196,7 +1200,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                 df.format(statusHolidayItem.getUnUsedDays().doubleValue());
                         remain = statusHolidayItem.getRemainDays() == null ? "0" : df.format(statusHolidayItem.getRemainDays().doubleValue());
 
-                    } else {
+                    }
+                    if (isTimes){
                         occurrence = (statusHolidayItem.getOccurrenceTimes() == null || statusHolidayItem.getOccurrenceTimes() == 0 ? "" :
                                 convertToTime(statusHolidayItem.getOccurrenceTimes()));
                         use = (statusHolidayItem.getUseTimes() == null || statusHolidayItem.getUseTimes() == 0 ? "" :
@@ -1212,17 +1217,17 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     if (checkTakeABreak_02(dataSource.getHolidaysRemainingManagement())) {
                         cells.get(firstRow + 2, 10 + totalMonth)
                                 .setValue(unUsed);
-                        if (isTime && statusHolidayItem.getUnUsedTimes() != null && statusHolidayItem.getUnUsedTimes() > 0) {
+                        if (isTimes && statusHolidayItem.getUnUsedTimes() != null && statusHolidayItem.getUnUsedTimes() > 0) {
                             setForegroundRed(cells.get(rowIndexRepresentSubstitute, 10 + totalMonth));
                         }
-                        if (!isTime && statusHolidayItem.getUseDays() != null && statusHolidayItem.getUseDays() > 0) {
+                        if (isDate && statusHolidayItem.getUseDays() != null && statusHolidayItem.getUseDays() > 0) {
                             setForegroundRed(cells.get(rowIndexRepresentSubstitute, 10 + totalMonth));
                         }
                     }
                     if (checkTakeABreak_03(dataSource.getHolidaysRemainingManagement())) {
                         cells.get(firstRow + 3, 10 + totalMonth)
                                 .setValue(remain);
-                        if (!isTime && statusHolidayItem.getRemainDays() != null && statusHolidayItem.getRemainDays() < 0) {
+                        if (isDate && statusHolidayItem.getRemainDays() != null && statusHolidayItem.getRemainDays() < 0) {
                             setForegroundRed(cells.get(firstRow + 3, 10 + totalMonth));
                         }
 
