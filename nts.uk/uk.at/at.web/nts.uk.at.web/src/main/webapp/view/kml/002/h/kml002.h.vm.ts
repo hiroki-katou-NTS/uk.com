@@ -272,16 +272,16 @@ module nts.uk.at.view.kml002.k {
             self.itemMonthlyScreenK.subscribe((val) => {
                 val.amount1.subscribe((amount) => {                    
                     $('#month2screenk').ntsError('clear');                  
-                    if(amount !='' && val.amount2() != '' && val.amount2() <= amount){
+                    if(amount !='' && val.amount2() != '' && parseInt(val.amount2()) <= parseInt(amount)){
                         $('#month2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]}); 
                     }
                 });
                 val.amount2.subscribe((amount) => {
-                    $('#month2screenk').ntsError('clear');
-                    if(amount !='' && val.amount1() >= amount){                      
+                    self.clearErrorMonth();
+                    if(amount !='' && parseInt(val.amount1()) >= parseInt(amount)){                      
                         $('#month2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]});
                     }
-                    if(amount !='' && amount >= val.amount3()) {
+                    if(amount !='' && parseInt(amount) >= parseInt(val.amount3())) {
                         $('#month3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")]}); 
                     }
                 });
@@ -468,6 +468,9 @@ module nts.uk.at.view.kml002.k {
                 self.itemMonthly(new ItemMonthly(dataMonthly));
                 self.itemAnnual(new ItemAnnual(dataAnnual));
                 $('#month1').focus();
+                self.clearErrorAnnual();
+                self.clearErrorMonth();
+                self.clearError();
             }).always(() => {
                 self.$blockui("hide");
             });
@@ -604,12 +607,12 @@ module nts.uk.at.view.kml002.k {
             self.$ajax(Paths.GET_ESTIMATE_INFO_BY_CID_AND_CODE + "/" + code).done((data: any) => {
                 if (data) {
                     for (let i = 1; i < 6; i++) {
-                        if(i <= data.months.length && data.months[i-1].frameNo == i && data.months[i-1].amount > 0){
+                        if(i <= data.months.length && data.months[i-1].frameNo == i){
                             amountMonthly = data.months[i-1].amount;
                         } else {
                             amountMonthly = '';
                         }
-                        if(i <= data.years.length && data.years[i-1].frameNo == i && data.years[i-1].amount > 0){
+                        if(i <= data.years.length && data.years[i-1].frameNo == i){
                              amountAnnual = data.years[i-1].amount;
                         } else {
                             amountAnnual ='';
@@ -617,7 +620,7 @@ module nts.uk.at.view.kml002.k {
                         dataMonthly.push(amountMonthly);
                         dataAnnual.push(amountAnnual);
                     }
-                   
+                    self.enableDeleteBtn(true);                   
                 } else {
                     for (let i = 1; i < 6; i++) {
                         amountMonthly = '';
@@ -625,6 +628,7 @@ module nts.uk.at.view.kml002.k {
                         dataMonthly.push(amountMonthly);
                         dataAnnual.push(amountAnnual);
                     }
+                    self.enableDeleteBtn(false);
                 }
                 self.itemMonthlyScreenK(new ItemMonthly(dataMonthly));
                 self.itemAnnualScreenK(new ItemAnnual(dataAnnual));
@@ -727,6 +731,9 @@ module nts.uk.at.view.kml002.k {
         openDialogScreenL(): void {
             const self = this;
             self.currentScreen = nts.uk.ui.windows.sub.modal('/view/kml/002/l/index.xhtml').onClosed(() => {
+                self.clearErrorAnnual();
+                self.clearErrorMonth();
+                self.clearError();
                 self.loadData();
             });          
         }
