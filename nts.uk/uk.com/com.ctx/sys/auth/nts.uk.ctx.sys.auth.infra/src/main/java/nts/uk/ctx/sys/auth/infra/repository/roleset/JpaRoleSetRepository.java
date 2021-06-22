@@ -72,16 +72,18 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
      */
     private SacmtRoleSet toEntity(RoleSet domain) {
         SacmtRoleSetPK key = new SacmtRoleSetPK(domain.getRoleSetCd().v(), domain.getCompanyId());
-        return new SacmtRoleSet(key
+// TODO 就業ロール, 個人情報ロール, 給与ロール, 人事ロール, マイナンバーロール, オフィスヘルパーロール StringからOptional<String>を変更したので、修正お願いいたします。
+/*        return new SacmtRoleSet(key
                 , domain.getRoleSetName().v()
                 , domain.getApprovalAuthority().value
-                , domain.getOfficeHelperRoleId()
-                , domain.getMyNumberRoleId()
-                , domain.getHRRoleId()
-                , domain.getPersonInfRoleId()
-                , domain.getEmploymentRoleId()
-                , domain.getSalaryRoleId()
-                );
+                , domain.getOfficeHelperRoleId().isPresent()? domain.getOfficeHelperRoleId().get(): null
+                , domain.getMyNumberRoleId().isPresent()? domain.getMyNumberRoleId().get(): null
+                , domain.getHRRoleId().isPresent()? domain.getHRRoleId().get(): null
+                , domain.getPersonInfRoleId().isPresent()? domain.getPersonInfRoleId().get(): null
+                , domain.getEmploymentRoleId().isPresent()? domain.getEmploymentRoleId().get(): null
+                , domain.getSalaryRoleId().isPresent()? domain.getSalaryRoleId().get(): null
+                );*/
+        return new SacmtRoleSet();
 
     }
 
@@ -92,15 +94,16 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
      * @return
      */
     private SacmtRoleSet toEntiryForUpdate(RoleSet domain, SacmtRoleSet upEntity) {
-        upEntity.buildEntity(upEntity.roleSetPK
+// TODO 就業ロール, 個人情報ロール, 給与ロール, 人事ロール, マイナンバーロール, オフィスヘルパーロール StringからOptional<String>を変更したので、修正お願いいたします。
+/*        upEntity.buildEntity(upEntity.roleSetPK
                 , domain.getRoleSetName().v()
                 , domain.getApprovalAuthority().value
-                , domain.getOfficeHelperRoleId()
-                , domain.getMyNumberRoleId()
-                , domain.getHRRoleId()
-                , domain.getPersonInfRoleId()
-                , domain.getEmploymentRoleId()
-                , domain.getSalaryRoleId());
+                , domain.getOfficeHelperRoleId().isPresent()? domain.getOfficeHelperRoleId().get(): null
+                , domain.getMyNumberRoleId().isPresent()? domain.getMyNumberRoleId().get(): null
+                , domain.getHRRoleId().isPresent()? domain.getHRRoleId().get(): null
+                , domain.getPersonInfRoleId().isPresent()? domain.getPersonInfRoleId().get(): null
+                , domain.getEmploymentRoleId().isPresent()? domain.getEmploymentRoleId().get(): null
+                , domain.getSalaryRoleId().isPresent()? domain.getSalaryRoleId().get(): null);*/
         return upEntity;
     }
 

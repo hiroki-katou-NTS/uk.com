@@ -14,7 +14,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.auth.app.find.person.role.GetWhetherLoginerCharge;
 import nts.uk.ctx.sys.auth.app.find.person.role.RoleWhetherLoginDto;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.RoleWorkplaceIDFinder;
@@ -292,57 +291,69 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 		if (roleSetOpt.isPresent()) {
 			switch (roleType) {
 			case 3: // EMPLOYMENT
-				String employmentRoleId = roleSetOpt.get().getEmploymentRoleId();
+				// TODO 就業ロール StringからOptional<String>を変更したので、修正お願いいたします。
+				/*	
+			 	String employmentRoleId = roleSetOpt.get().getEmploymentRoleId();
 				if (StringUtil.isNullOrEmpty(employmentRoleId, true)) {
 					return null;
 				}
 				
-				result = new RollInformationExport(false, employmentRoleId);
+				result = new RollInformationExport(false, employmentRoleId);*/
 				return result;
 
 			case 4: // SALARY
-				String salaryRoleId = roleSetOpt.get().getSalaryRoleId();
+				//TODO 給与ロールStringからOptional<String>を変更したので、修正お願いいたします。
+				/*				
+  				String salaryRoleId = roleSetOpt.get().getSalaryRoleId();
 				if (StringUtil.isNullOrEmpty(salaryRoleId, true)) {
 					return null;
 				}
 				
-				result = new RollInformationExport(false, salaryRoleId);
+				result = new RollInformationExport(false, salaryRoleId);*/
 				return result;
 				
 			case 5: // HUMAN_RESOURCE
+				//TODO オフィスヘルパーロールStringからOptional<String>を変更したので、修正お願いいたします。
+				/*				
 				String hRRoleId = roleSetOpt.get().getHRRoleId();
 				if (StringUtil.isNullOrEmpty(hRRoleId, true)) {
 					return null;
 				}
 				
-				result = new RollInformationExport(false, hRRoleId);
+				result = new RollInformationExport(false, hRRoleId);*/
 				return result;
 				
 			case 6: // OFFICE_HELPER
+				//TODO 人事ロールStringからOptional<String>を変更したので、修正お願いいたします。
+				/*	
 				String officeHelperRoleId = roleSetOpt.get().getOfficeHelperRoleId();
 				if (StringUtil.isNullOrEmpty(officeHelperRoleId, true)) {
 					return null;
 				}
 				
-				result = new RollInformationExport(false, officeHelperRoleId);
+				result = new RollInformationExport(false, officeHelperRoleId);*/
 				return result;
 				
 			case 7: // MY_NUMBER
+				//TODO マイナンバーロールStringからOptional<String>を変更したので、修正お願いいたします。
+				/*
 				String myNumberRoleId = roleSetOpt.get().getMyNumberRoleId();
 				if (StringUtil.isNullOrEmpty(myNumberRoleId, true)) {
 					return null;
 				}
 				
-				result = new RollInformationExport(false, myNumberRoleId);
+				result = new RollInformationExport(false, myNumberRoleId);*/
 				return result;
 				
 			case 8: // PERSONAL_INFO
+				//TODO 個人情報ロールStringからOptional<String>を変更したので、修正お願いいたします。
+				/*				
 				String personInfRoleId = roleSetOpt.get().getPersonInfRoleId();
 				if (StringUtil.isNullOrEmpty(personInfRoleId, true)) {
 					return null;
 				}
 				
-				result = new RollInformationExport(false, personInfRoleId);
+				result = new RollInformationExport(false, personInfRoleId);*/
 				return result;
 
 			default:
@@ -363,7 +374,9 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 	@Override
 	public Optional<RoleSetExport> getRoleSetFromUserId(String userId, GeneralDate baseDate) {
 		Optional<RoleSet> roleSetOpt =  roleSetService.getRoleSetFromUserId( userId,  baseDate);
-		return roleSetOpt.map(dto -> new RoleSetExport(
+		// TODO 就業ロール, 個人情報ロール, 給与ロール, 人事ロール, マイナンバーロール, オフィスヘルパーロール StringからOptional<String>を変更したので、修正お願いいたします。		
+		/*
+ 		return roleSetOpt.map(dto -> new RoleSetExport(
 					dto.getRoleSetCd().v(),
 					dto.getCompanyId(),
 					dto.getRoleSetName().v(),
@@ -374,7 +387,8 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 					dto.getPersonInfRoleId(),
 					dto.getEmploymentRoleId(),
 					dto.getSalaryRoleId()
-					));
+					));*/
+		return Optional.empty();
 	}
 
 }

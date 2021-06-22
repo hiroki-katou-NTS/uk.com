@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.roleset;
 
+import java.util.Optional;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
@@ -13,38 +16,39 @@ import nts.uk.ctx.sys.auth.dom.role.RoleType;
  * @author HieuNV
  */
 @Getter
+@AllArgsConstructor
 public class RoleSet extends AggregateRoot {
-
-    /** ロールセットコード. */
-    private RoleSetCode roleSetCd;
 
     /** 会社ID */
     private String companyId;
 
-    /** ロールセット名称*/
+    /** コード */
+    private RoleSetCode roleSetCd;
+
+    /** 名称*/
     private RoleSetName roleSetName;
 
     /** 承認権限*/
     private ApprovalAuthority approvalAuthority;
+    
+    /** 就業ロール */
+    private Optional<String> employmentRoleId;
 
-    /** ロールID: オフィスヘルパーロール */
-    private String officeHelperRoleId;
+    /** 個人情報ロール */
+    private Optional<String> personInfRoleId;
 
-    /** ロールID: マイナンバーロール */
-    private String myNumberRoleId;
+    /** 給与ロール */
+    private Optional<String> salaryRoleId;
+    
+    /** 人事ロール */
+    private Optional<String> hRRoleId;
+    
+    /** マイナンバーロール */
+    private Optional<String> myNumberRoleId;
 
-    /** ロールID: 人事ロール */
-    private String hRRoleId;
-
-    /** ロールID: 個人情報ロール */
-    private String personInfRoleId;
-
-    /** ロールID: 就業ロール */
-    private String employmentRoleId;
-
-    /** ロールID: 給与ロール */
-    private String salaryRoleId;
-
+    /**  オフィスヘルパーロール */
+    private Optional<String> officeHelperRoleId;
+    
     /**
      * Instantiates a new role set.
      *
@@ -74,12 +78,26 @@ public class RoleSet extends AggregateRoot {
         this.companyId             = companyId;
         this.roleSetName         = new RoleSetName(roleSetName);
         this.approvalAuthority     = approvalAuthority;
-        this.officeHelperRoleId = officeHelperRoleId;
-        this.myNumberRoleId     = myNumberRoleId;
-        this.hRRoleId             = hRRoleId;
-        this.personInfRoleId     = personInfRoleId;
-        this.employmentRoleId     = employmentRoleId;
-        this.salaryRoleId         = salaryRoleId;
+        this.officeHelperRoleId = Optional.of(officeHelperRoleId);
+        this.myNumberRoleId     = Optional.of(myNumberRoleId);
+        this.hRRoleId             = Optional.of(hRRoleId);
+        this.personInfRoleId     = Optional.of(personInfRoleId);
+        this.employmentRoleId     = Optional.of(employmentRoleId);
+        this.salaryRoleId         = Optional.of(salaryRoleId);
+    }
+    
+    public static RoleSet create(String cid
+    		,	String roleSetCd
+    		,	String roleSetName
+    		,	String attendanceRoleId
+    		,	String personInfoRoleId) {
+    	return new RoleSet(cid
+    			,	new RoleSetCode(roleSetCd)
+    			,	new RoleSetName(roleSetName)
+    			,	ApprovalAuthority.HasRight
+    			,	Optional.of(attendanceRoleId),	Optional.of(personInfoRoleId)
+    			,	Optional.empty(),	Optional.empty()
+    			,	Optional.empty(),	Optional.empty() );
     }
 
     /**
@@ -118,31 +136,31 @@ public class RoleSet extends AggregateRoot {
      * remove value of PersonInfRole field
      */
     public void removePersonInfRole() {
-        this.personInfRoleId = null;
+        this.personInfRoleId = Optional.empty();
     }
     
     /**
      * remove value of PersonInfRole field
      */
     public void setEmploymentRoleId() {
-        this.employmentRoleId = null;
+        this.employmentRoleId = Optional.empty();
     }
     
     /** Get RoleID by RoleType */
     public String getRoleIDByRoleType(RoleType roleType) {
     	switch(roleType) {
 	    	case EMPLOYMENT:
-	    		return this.employmentRoleId;
+	    		return this.employmentRoleId.get();
 	    	case SALARY:
-	    		return this.salaryRoleId;
+	    		return this.salaryRoleId.get();
 	    	case HUMAN_RESOURCE:
-	    		return this.hRRoleId;
+	    		return this.hRRoleId.get();
 	    	case OFFICE_HELPER:
-	    		return this.officeHelperRoleId;
+	    		return this.officeHelperRoleId.get();
 	    	case MY_NUMBER:
-	    		return this.myNumberRoleId;
+	    		return this.myNumberRoleId.get();
 	    	case PERSONAL_INFO:
-	    		return this.personInfRoleId;
+	    		return this.personInfRoleId.get();
     		default:
     			return "";
     	}

@@ -29,9 +29,14 @@ public class RoleSetPublisherImpl implements RoleSetPublisher {
 	@Override
 	public Optional<RoleSetDto> getRoleSet(String companyId, String roleSetCd) {
 		return roleSetRepo.findByRoleSetCdAndCompanyId(roleSetCd, companyId)
-				.map(s -> new RoleSetDto(s.getRoleSetCd().v(), s.getCompanyId(), s.getRoleSetName().v(), 
-						s.getApprovalAuthority().value, s.getOfficeHelperRoleId(), s.getMyNumberRoleId(), 
-						s.getHRRoleId(), s.getPersonInfRoleId(), s.getEmploymentRoleId(), s.getSalaryRoleId()));
+				.map(s -> new RoleSetDto(s.getRoleSetCd().v(), s.getCompanyId(), s.getRoleSetName().v() 
+						,	s.getApprovalAuthority().value
+						,	s.getOfficeHelperRoleId().isPresent()? s.getOfficeHelperRoleId().get(): null
+						,	s.getMyNumberRoleId().isPresent()? s.getMyNumberRoleId().get(): null
+						,	s.getHRRoleId().isPresent()? s.getHRRoleId().get(): null
+						,	s.getPersonInfRoleId().isPresent()? s.getPersonInfRoleId().get(): null
+						,	s.getEmploymentRoleId().isPresent()? s.getEmploymentRoleId().get(): null
+						,	s.getSalaryRoleId().isPresent()? s.getSalaryRoleId().get(): null));
 	}
 
 }
