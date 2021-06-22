@@ -57,7 +57,7 @@
 			<div class="contentR">
 				<div id="fixed-flex-layout-right">
 					<div class="line-height flex">
-						<div class="flex halign-center">
+						<div class="flex valign-center">
 							<!--B11_1-->
 							<div class="float_left display_block" data-bind="ntsFormLabel: {required : true ,constraint:['PatternName'] }">#{i18n.getText('CMF005_224')}</div>
 							<label id="B11_2" data-bind="text: savedName"></label>
@@ -162,7 +162,7 @@
 						<div data-bind="ntsFormLabel: { constraint:['SupplementExplanation'] }">#{i18n.getText('CMF005_39')}</div>
 						<input id="B9_2" tabindex="13" data-bind="ntsTextEditor: {name: '#[CMF005_39]', value: supplementExplanation, constraint:'SupplementExplanation'}" />
           </div>
-          <div class="valign-center control-group">
+          <div class="flex valign-center control-group">
             <!-- B12_1 対象社員選択(ラベル) -->
             <div id="B12_1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF005_50')}</div>
             <!-- B12_2 対象社員選択 -->

@@ -26,15 +26,15 @@ module nts.uk.com.view.cmf005.i {
     ];
     columnHeadersRes: any[] = [
       { headerText: '', key: 'rowNumber', width: '30px' },
-      { headerText: getText('CMF005_127'), key: 'deleteFile', width: '75px', dataType: 'string', ntsControl: "Button" },
-      { headerText: getText('CMF005_128'), key: 'downloadFile', width: '75px', dataType: 'string', ntsControl: "FlexImage" },
+      { headerText: getText('CMF005_127'), key: 'deleteFile', width: '90px', dataType: 'string', ntsControl: "Button" },
+      { headerText: getText('CMF005_128'), key: 'downloadFile', width: '90px', dataType: 'string', ntsControl: "FlexImage" },
       { headerText: getText('CMF005_129'), key: 'delete', width: '75px', dataType: 'string', ntsControl: "Label" },
       { headerText: getText('CMF005_130'), key: 'startDateTimeDel', width: '150px', dataType: 'string', ntsControl: "Label" },
       { headerText: getText('CMF005_131'), key: 'practitioner', width: '150px', dataType: 'string', ntsControl: "Label" },
       { headerText: getText('CMF005_132'), key: 'delName', width: '150px', dataType: 'string', ntsControl: "Label" },
       { headerText: getText('CMF005_133'), key: 'delType', width: '75px', dataType: 'string', ntsControl: "Label" },
       { headerText: getText('CMF005_134'), key: 'numberEmployees', width: '75px', dataType: 'string', ntsControl: "Label" },
-      { headerText: getText('CMF005_135'), key: 'fileName', width: '250px', dataType: 'string', ntsControl: "Label" },
+      { headerText: getText('CMF005_135'), key: 'fileName', width: '240px', dataType: 'string', ntsControl: "Label" },
       { headerText: getText('CMF005_136'), key: 'fileSize', width: '100px', dataType: 'string', ntsControl: "Label" },
     ];
     states: State[] = [];
