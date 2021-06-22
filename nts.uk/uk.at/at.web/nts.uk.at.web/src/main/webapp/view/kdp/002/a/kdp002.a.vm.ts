@@ -277,7 +277,7 @@ let reCalGridWidthHeight = () => {
     const resize = () => {
         var bottomMasterWrapper = $('#master-wrapper')[0].getBoundingClientRect().bottom;
         var topStampInfo = $('#stamp-info')[0].getBoundingClientRect().top;
-        var h = bottomMasterWrapper - topStampInfo - 88;
+        var h = bottomMasterWrapper - topStampInfo - 98;
 
         let stampBtnHeight = (h < 72 ? 72 : h) + 'px';
         const $hgrid = $('#stamp-history-list');
