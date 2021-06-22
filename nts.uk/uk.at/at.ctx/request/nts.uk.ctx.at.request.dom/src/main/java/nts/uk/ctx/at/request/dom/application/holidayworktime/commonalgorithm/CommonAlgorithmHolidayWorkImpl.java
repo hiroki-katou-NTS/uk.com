@@ -344,34 +344,67 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
         appDatas.add(appData);
         
 		// 登録時の残数チェック  
-        InterimRemainCheckInputParam checkRegisterParam = new InterimRemainCheckInputParam(
-        		companyId,
-        		appHolidayWork.getApplication().getEmployeeID(), 
-        		new DatePeriod(
+        InterimRemainCheckInputParam checkRegisterParam =
+        		InterimRemainCheckInputParam.builder()
+        			.cid(companyId)
+        			.sid(appHolidayWork.getApplication().getEmployeeID())
+        			.datePeriod(new DatePeriod(
         				closingPeriod.start(),
         				closingPeriod.end().addYears(1).addDays(-1)
-				),
-        		false,
-        		appHolidayWork.getApplication().getAppDate().getApplicationDate(), 
-        		new DatePeriod(
+					))
+        			.mode(false)
+        			.baseDate(appHolidayWork.getApplication().getAppDate().getApplicationDate())
+        			.registerDate(new DatePeriod(
         				appHolidayWork.getApplication()
         							  .getAppDate()
         							  .getApplicationDate(),
         				appHolidayWork.getApplication()
         							  .getAppDate()
         							  .getApplicationDate()
-				), 
-        		true,
-        		Collections.emptyList(),
-        		Collections.emptyList(),
-        		appDatas,
-        		true,
-        		false,
-        		false,
-        		false,
-        		false,
-        		false,
-        		false);
+					 ))
+        			.chkRegister(true)
+        			.recordData(Collections.emptyList())
+        			.scheData(Collections.emptyList())
+        			.appData(appDatas)
+        			.chkSubHoliday(true)
+        			.chkPause(false)
+        			.chkAnnual(false)
+        			.chkFundingAnnual(false)
+        			.chkSpecial(false)
+        			.chkPublicHoliday(false)
+        			.chkSuperBreak(false)
+        			.chkChildNursing(false)
+        			.chkLongTermCare(false)
+        			.build();
+//        		new InterimRemainCheckInputParam(
+//        		companyId,
+//        		appHolidayWork.getApplication().getEmployeeID(), 
+//        		new DatePeriod(
+//        				closingPeriod.start(),
+//        				closingPeriod.end().addYears(1).addDays(-1)
+//				),
+//        		false,
+//        		appHolidayWork.getApplication().getAppDate().getApplicationDate(), 
+//        		new DatePeriod(
+//        				appHolidayWork.getApplication()
+//        							  .getAppDate()
+//        							  .getApplicationDate(),
+//        				appHolidayWork.getApplication()
+//        							  .getAppDate()
+//        							  .getApplicationDate()
+//				), 
+//        		true,
+//        		Collections.emptyList(),
+//        		Collections.emptyList(),
+//        		appDatas,
+//        		true,
+//        		false,
+//        		false,
+//        		false,
+//        		false,
+//        		false,
+//        		false);
+        
         EarchInterimRemainCheck earchInterimRemainCheck = checkRegister.checkRegister(checkRegisterParam);
         if(earchInterimRemainCheck.isChkSubHoliday()) {
         	confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1409", Arrays.asList("代休不足区分"))); //missing param
@@ -548,34 +581,66 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	        appDatas.add(appData);
 	        
 	        //	登録時の残数チェック   
-	        InterimRemainCheckInputParam checkRegisterParam = new InterimRemainCheckInputParam(
-	        		companyId,
-	        		empAppHolidayWork.getApplication().getEmployeeID(), 
-	        		new DatePeriod(
+	        InterimRemainCheckInputParam checkRegisterParam =
+	        		InterimRemainCheckInputParam.builder()
+	        			.cid(companyId)
+	        			.sid(appHolidayWork.getApplication().getEmployeeID())
+	        			.datePeriod(new DatePeriod(
 	        				closingPeriod.start(),
 	        				closingPeriod.end().addYears(1).addDays(-1)
-					),
-	        		false,
-	        		empAppHolidayWork.getApplication().getAppDate().getApplicationDate(), 
-	        		new DatePeriod(
-	        				empAppHolidayWork.getApplication()
+						))
+	        			.mode(false)
+	        			.baseDate(appHolidayWork.getApplication().getAppDate().getApplicationDate())
+	        			.registerDate(new DatePeriod(
+	        				appHolidayWork.getApplication()
 	        							  .getAppDate()
 	        							  .getApplicationDate(),
-						    empAppHolidayWork.getApplication()
+	        				appHolidayWork.getApplication()
 	        							  .getAppDate()
 	        							  .getApplicationDate()
-					), 
-	        		true,
-	        		Collections.emptyList(),
-	        		Collections.emptyList(),
-	        		appDatas,
-	        		true,
-	        		false,
-	        		false,
-	        		false,
-	        		false,
-	        		false,
-	        		false);
+						 ))
+	        			.chkRegister(true)
+	        			.recordData(Collections.emptyList())
+	        			.scheData(Collections.emptyList())
+	        			.appData(appDatas)
+	        			.chkSubHoliday(true)
+	        			.chkPause(false)
+	        			.chkAnnual(false)
+	        			.chkFundingAnnual(false)
+	        			.chkSpecial(false)
+	        			.chkPublicHoliday(false)
+	        			.chkSuperBreak(false)
+	        			.chkChildNursing(false)
+	        			.chkLongTermCare(false)
+	        			.build();
+//	        InterimRemainCheckInputParam checkRegisterParam = new InterimRemainCheckInputParam(
+//	        		companyId,
+//	        		empAppHolidayWork.getApplication().getEmployeeID(), 
+//	        		new DatePeriod(
+//	        				closingPeriod.start(),
+//	        				closingPeriod.end().addYears(1).addDays(-1)
+//					),
+//	        		false,
+//	        		empAppHolidayWork.getApplication().getAppDate().getApplicationDate(), 
+//	        		new DatePeriod(
+//	        				empAppHolidayWork.getApplication()
+//	        							  .getAppDate()
+//	        							  .getApplicationDate(),
+//						    empAppHolidayWork.getApplication()
+//	        							  .getAppDate()
+//	        							  .getApplicationDate()
+//					), 
+//	        		true,
+//	        		Collections.emptyList(),
+//	        		Collections.emptyList(),
+//	        		appDatas,
+//	        		true,
+//	        		false,
+//	        		false,
+//	        		false,
+//	        		false,
+//	        		false,
+//	        		false);
 	        EarchInterimRemainCheck earchInterimRemainCheck = checkRegister.checkRegister(checkRegisterParam);
 	        if(earchInterimRemainCheck.isChkSubHoliday()) {
 				confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1409", Arrays.asList("代休不足区分"))); //missing param
@@ -1108,35 +1173,39 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
         appDatas.add(appData);
         
         //	登録時の残数チェック   
-        InterimRemainCheckInputParam checkRegisterParam = new InterimRemainCheckInputParam(
-        		companyId,
-        		appHolidayWork.getApplication().getEmployeeID(), 
-        		new DatePeriod(
+        InterimRemainCheckInputParam checkRegisterParam =
+        		InterimRemainCheckInputParam.builder()
+        			.cid(companyId)
+        			.sid(appHolidayWork.getApplication().getEmployeeID())
+        			.datePeriod(new DatePeriod(
         				closingPeriod.start(),
         				closingPeriod.end().addYears(1).addDays(-1)
-				),
-        		false,
-        		appHolidayWork.getApplication().getAppDate().getApplicationDate(), 
-        		new DatePeriod(
+					))
+        			.mode(false)
+        			.baseDate(appHolidayWork.getApplication().getAppDate().getApplicationDate())
+        			.registerDate(new DatePeriod(
         				appHolidayWork.getApplication()
         							  .getAppDate()
         							  .getApplicationDate(),
         				appHolidayWork.getApplication()
         							  .getAppDate()
         							  .getApplicationDate()
-				), 
-        		true,
-        		Collections.emptyList(),
-        		Collections.emptyList(),
-        		appDatas,
-        		true,
-        		false,
-        		false,
-        		false,
-        		false,
-        		false,
-        		false);
-        List<ConfirmMsgOutput> confirmMsgOutputs = new ArrayList();
+					 ))
+        			.chkRegister(true)
+        			.recordData(Collections.emptyList())
+        			.scheData(Collections.emptyList())
+        			.appData(appDatas)
+        			.chkSubHoliday(true)
+        			.chkPause(false)
+        			.chkAnnual(false)
+        			.chkFundingAnnual(false)
+        			.chkSpecial(false)
+        			.chkPublicHoliday(false)
+        			.chkSuperBreak(false)
+        			.chkChildNursing(false)
+        			.chkLongTermCare(false)
+        			.build();
+        List<ConfirmMsgOutput> confirmMsgOutputs = new ArrayList<ConfirmMsgOutput>();
         EarchInterimRemainCheck earchInterimRemainCheck = checkRegister.checkRegister(checkRegisterParam);
         if(earchInterimRemainCheck.isChkSubHoliday()) {
         	confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1409", Arrays.asList("代休不足区分"))); //missing param
@@ -1220,34 +1289,38 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	        appDatas.add(appData);
 	        
 	        //	登録時の残数チェック   
-	        InterimRemainCheckInputParam checkRegisterParam = new InterimRemainCheckInputParam(
-	        		companyId,
-	        		appHolidayWork.getApplication().getEmployeeID(), 
-	        		new DatePeriod(
+	        InterimRemainCheckInputParam checkRegisterParam =
+	        		InterimRemainCheckInputParam.builder()
+	        			.cid(companyId)
+	        			.sid(appHolidayWork.getApplication().getEmployeeID())
+	        			.datePeriod(new DatePeriod(
 	        				closingPeriod.start(),
 	        				closingPeriod.end().addYears(1).addDays(-1)
-					),
-	        		false,
-	        		appHolidayWork.getApplication().getAppDate().getApplicationDate(), 
-	        		new DatePeriod(
+						))
+	        			.mode(false)
+	        			.baseDate(appHolidayWork.getApplication().getAppDate().getApplicationDate())
+	        			.registerDate(new DatePeriod(
 	        				appHolidayWork.getApplication()
 	        							  .getAppDate()
 	        							  .getApplicationDate(),
 	        				appHolidayWork.getApplication()
 	        							  .getAppDate()
 	        							  .getApplicationDate()
-					), 
-	        		true,
-	        		Collections.emptyList(),
-	        		Collections.emptyList(),
-	        		appDatas,
-	        		true,
-	        		false,
-	        		false,
-	        		false,
-	        		false,
-	        		false,
-	        		false);
+						 ))
+	        			.chkRegister(true)
+	        			.recordData(Collections.emptyList())
+	        			.scheData(Collections.emptyList())
+	        			.appData(appDatas)
+	        			.chkSubHoliday(true)
+	        			.chkPause(false)
+	        			.chkAnnual(false)
+	        			.chkFundingAnnual(false)
+	        			.chkSpecial(false)
+	        			.chkPublicHoliday(false)
+	        			.chkSuperBreak(false)
+	        			.chkChildNursing(false)
+	        			.chkLongTermCare(false)
+	        			.build();
 	        EarchInterimRemainCheck earchInterimRemainCheck = checkRegister.checkRegister(checkRegisterParam);
 	        if(earchInterimRemainCheck.isChkSubHoliday()) {
 	        	confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1409", Arrays.asList("代休不足区分"))); //missing param
