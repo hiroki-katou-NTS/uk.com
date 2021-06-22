@@ -466,6 +466,7 @@ module nts.uk.ui.header {
             if (item.url && item.url !== '-') {
                 bar.hover(false);
 
+                localStorage.setItem(nts.uk.request.IS_FROM_MENU, "true");
                 if (!item.queryString) {
                     window.location.href = item.url;
                 } else {

@@ -1,11 +1,11 @@
 .labelFirst {
 	padding-left: 20px;
-	margin-top: 20px;
+	margin-top: 10px;
 }
 .labelSecond {
 	padding-left: 20px;
 	margin-top: 10px;
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 }
 .checkBox {
 	display: inline-block; 

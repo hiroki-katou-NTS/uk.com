@@ -31,14 +31,14 @@
 	margin-top: -6px;
 }
 
-#btn-signAll {
+.btn-signAll {
 	/* margin: 3px 0 0 200px; */
 	margin-left: 146px;
 }
 
-#btn-signAll2 {
+.btn-signAll2 {
 	/* margin: 3px 0 0 200px; */
-	margin-left: 16px;
+	margin-left: 10px;
 }
 
 #btn-saveColumnWidth {
@@ -409,9 +409,9 @@
 	height: 25px !important;
 } */
 /* button next/pre datetime */
-button.auto-height {
+/* button.auto-height {
     height: 23px !important;
-}
+} */
 button {
     height: 25px !important;
     min-width: 10px !important;
@@ -479,7 +479,7 @@ table#employ_view tr{
  /*    padding-top: 10px; */
 }
 #date-extract{
-	padding-top: 0px;
+	padding-top: 2px !important;
     height: 42px;
 }
 body {
@@ -491,4 +491,20 @@ body {
 }
 .nts-column {
 	font-size: 0.8rem !important;
+}
+
+.ntsDateNextButton  {
+	margin-bottom: 4px !important;
+}
+
+ .ntsDatePrevButton  {
+	margin-bottom: 4px !important;
+}
+
+#wkp_title_text-emp-component {
+	width: 180px !important;
+}
+
+#wkp_text-emp-component {
+	width: 150px !important;
 }

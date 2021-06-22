@@ -35,14 +35,14 @@ module nts.uk.at.view.kmk005.b {
                 var dfd = $.Deferred();
                 service.getListBonusPTimeItem().done(function(item: Array<any>) {
                     if (item === undefined || item.length == 0) {
-                        //                        let name = '#[KMK005_';
-                        //                        let j = 140;
-                        //                        for (i = 0; i < 10; i++) {
-                        //                            self.timeItemList.push(
-                        //                                new TimeItem(
-                        //                                    "", 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 0, "" , name + (i++ + j + ']')
-                        //                                ));
-                        //                        }
+//                                             let name = '#[KMK005_';
+//                                                let j = 140;
+//                                                for (i = 0; i < 10; i++) {
+//                                                   self.timeItemList.push(
+//                                                        new TimeItem(
+//                                                            "", 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 0, "" , name + (i++ + j + ']')
+//                                                        ));
+//                                                }
                         self.timeItemList.push(
                             new TimeItem(
                                 "", 1, nts.uk.resource.getText("KMK005_" + 22), 0, "", '#[KMK005_140]'
@@ -97,12 +97,12 @@ module nts.uk.at.view.kmk005.b {
 
                 service.getListSpecialBonusPayTimeItem().done(function(item: Array<any>) {
                     if (item === undefined || item.length == 0) {
-                        //                        for (i = 0; i < 10; i++) {
-                        //                            self.timeItemSpecList.push(
-                        //                                new TimeItem(
-                        //                                    "", 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 1, "" 
-                        //                                ));
-                        //                        }
+//                                                for (i = 0; i < 10; i++) {
+//                                                    self.timeItemSpecList.push(
+//                                                       new TimeItem(
+//                                                            "", 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 1, "" 
+//                                                      ));
+//                                               }
                         self.timeItemSpecList.push(
                             new TimeItem(
                                 "", 1, nts.uk.resource.getText("KMK005_" + 22), 0, "", '#[KMK005_150]'
