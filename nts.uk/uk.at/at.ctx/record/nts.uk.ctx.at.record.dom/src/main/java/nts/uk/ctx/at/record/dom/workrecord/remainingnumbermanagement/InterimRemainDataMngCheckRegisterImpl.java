@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
+package nts.uk.ctx.at.record.dom.workrecord.remainingnumbermanagement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,12 +15,23 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggrResultOfChildCareNurse;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseRequireImplFactory;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.GetRemainingNumberChildCareService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainCheck;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimEachData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCreateDataInputPara;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriodCreateData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
@@ -31,6 +42,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAt
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
@@ -62,6 +74,12 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 
 	@Inject
 	private NumberRemainVacationLeaveRangeProcess numberRemainVacationLeaveRangeProcess;
+	
+	@Inject
+    private GetRemainingNumberChildCareService getRemainingNumberChildCareService;
+	
+	@Inject
+    private ChildCareNurseRequireImplFactory childCareNurseRequireImplFactory;
 
 	@Override
 	public EarchInterimRemainCheck checkRegister(InterimRemainCheckInputParam inputParam) {
@@ -210,8 +228,21 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		}
 		// 子の看護チェック区分をチェックする
 		if (inputParam.isChkChildNursing()) {
-		    // TODO: Call RQ 206: [NO.206]期間中の子の看護休暇残数を取得
-		    
+		    // [NO.206]期間中の子の看護休暇残数を取得
+		    AggrResultOfChildCareNurse result =
+	                getRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
+	                        inputParam.getCid(), 
+	                        inputParam.getSid(), 
+	                        inputParam.getDatePeriod(), 
+	                        InterimRemainMngMode.of(inputParam.isMode()), 
+	                        inputParam.getBaseDate(),
+	                        Optional.of(true), 
+	                        new ArrayList<TempChildCareManagement>(), // ????
+	                        Optional.empty(), 
+	                        Optional.empty(),  // confirm???
+	                        Optional.of(inputParam.getRegisterDate()),
+	                        cacheCarrier, 
+	                        childCareNurseRequireImplFactory.createRequireImpl());
 		}
 		// 介護チェック区分をチェックする
 		if (inputParam.isChkLongTermCare()) {

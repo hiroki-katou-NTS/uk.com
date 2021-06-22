@@ -26,6 +26,7 @@ import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeDigestAppT
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.*;
+import nts.uk.ctx.at.request.dom.workrecord.remainmanagement.InterimRemainDataMngCheckRegisterRequest;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -125,7 +126,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
     private OtherCommonAlgorithm otherCommonAlgorithm;
 
     @Inject
-    private InterimRemainDataMngCheckRegister interimRemainDataMngCheckRegister;
+    private InterimRemainDataMngCheckRegisterRequest interimRemainDataMngCheckRegister;
 
     @Inject
     private SpecialHolidayRepository specialHolidayRepository;
