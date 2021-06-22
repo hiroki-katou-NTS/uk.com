@@ -58,27 +58,35 @@ module nts.uk.at.kha003.a {
             const vm = this;
             _.extend(window, {vm});
             var itemId = '';
+            var itemCount = 0;
             $("#appen-area-one .pannel_padding").draggable({
                 helper: function (e) {
                     var html = e.target
                     itemId = html.id;
-                    return '<div class="panel panel-gray-bg item_a_6_4_to_67">\n' +
-                        '                                            <button class="button_top_right_corner"><i class="icon icon-close"></i></button>\n' +
-                        '                                            <span class="label" style="display: table;margin: 71px auto;">' + html.innerText + '</span>\n' +
-                        '                                        </div>';
+                    itemCount = $('#append_area .cell').length;
+                    if (itemCount <= 3) {
+                        return '<div class="panel panel-gray-bg item_a_6_4_to_67">\n' +
+                            '                                            <button class="button_top_right_corner"><i class="icon icon-close"></i></button>\n' +
+                            '                                            <span class="label" style="display: table;margin: 71px auto;">' + html.innerText + '</span>\n' +
+                            '                                        </div>';
+                    }
                 },
                 stop: function (e, ui) {
                     var html = ui.helper;
-                    $(this).css({'pointer-events': 'none'});
-                    $(this).children().removeClass('bacg-active').addClass('bacg-inactive');
-                    $('#append_area').append('<div class="cell valign-center">\n' +
-                        '                                        <div style="background-color: #e7d3193b" class="panel  item_a_6_4_to_67">\n' +
-                        '                                            <button id="' + itemId + '" class="button_top_right_corner"><i class="icon icon-close"></i></button>\n' +
-                        '                                            <span class="label" style="display: table;margin: 71px auto;">' + $(this).children().html() + '</span>\n' +
-                        '                                        </div>\n' +
-                        '                                    </div>');
+                    if (itemCount <= 3) {
+                        $(this).css({'pointer-events': 'none'});
+                        $(this).children().removeClass('bacg-active').addClass('bacg-inactive');
+                        $('#append_area').append('<div class="cell valign-center">\n' +
+                            '                                        <div style="background-color: #e7d3193b" class="panel  item_a_6_4_to_67">\n' +
+                            '                                            <button id="' + itemId + '" class="button_top_right_corner"><i class="icon icon-close"></i></button>\n' +
+                            '                                            <span class="label" style="display: table;margin: 71px auto;">' + $(this).children().html() + '</span>\n' +
+                            '                                        </div>\n' +
+                            '                                    </div>');
+                    }
+                    if (itemCount >= 3) {
+                        $('#append_note').hide();
+                    }
                     matchWidth();
-                    $('#append_note').hide();
                 }
             });
 
@@ -92,10 +100,10 @@ module nts.uk.at.kha003.a {
                     $('#' + id).removeClass('bacg-inactive').addClass('bacg-active');
                     $('#' + id).parent().css({'pointer-events': 'auto'});
                     $(this).parent().parent().remove();
-                    matchWidth();
-                    if ($('#append_area .cell').length < 1) {
+                    if ($('#append_area .cell').length <= 3) {
                         $('#append_note').show();
                     }
+                    matchWidth();
                 });
             });
         }

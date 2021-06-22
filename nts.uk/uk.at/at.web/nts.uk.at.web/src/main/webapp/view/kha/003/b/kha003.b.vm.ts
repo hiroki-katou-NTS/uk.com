@@ -53,8 +53,11 @@ module nts.uk.at.kha003.b {
          * Event on click decide button.
          */
         public decide(): void {
-            alert('TODO write business logic');
+            const vm = this;
             nts.uk.ui.windows.close();
+            vm.$window.modal("/view/kha/003/c/index.xhtml").then(() => {
+
+            });
         }
     }
 }
