@@ -49,10 +49,15 @@ module nts.uk.at.view.kml002.k {
             super();
             const self = this;      
             $('#screen-h').click(function(){
+                self.clearErrorAnnual();
+                self.clearErrorMonth();
+                self.clearError();
                 self.loadData();
                 // self.$window.size(660, 1050);
              }); 
             $('#screen-k').click(function(){
+                self.clearErrorAnnual();
+                self.clearErrorMonth();               
                 self.loadDataScreenK();
             });       
 
@@ -468,9 +473,6 @@ module nts.uk.at.view.kml002.k {
                 self.itemMonthly(new ItemMonthly(dataMonthly));
                 self.itemAnnual(new ItemAnnual(dataAnnual));
                 $('#month1').focus();
-                self.clearErrorAnnual();
-                self.clearErrorMonth();
-                self.clearError();
             }).always(() => {
                 self.$blockui("hide");
             });
