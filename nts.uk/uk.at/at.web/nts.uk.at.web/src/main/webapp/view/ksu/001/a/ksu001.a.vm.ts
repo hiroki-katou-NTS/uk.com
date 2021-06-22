@@ -2424,7 +2424,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 } else if (innerIdx === 3 && value == '') {
                     return { isValid: false };
                 }
-
+                
                 if (innerIdx === 2) {
                     return { isValid: true, innerErrorClear: [3] };
                 } else if (innerIdx === 3) {
@@ -4175,7 +4175,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 } else {
                     self.enableBtnReg(false);
                 }
-                
+
+                if (_.size($("#extable").data("errors")) > 0)
+                    self.enableBtnReg(false);
+
                 if (userInfor.updateMode == 'stick') {
                     // check undo
                     let $grid1   = $("#extable").find("." + "ex-body-detail");
