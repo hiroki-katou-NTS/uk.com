@@ -2483,20 +2483,27 @@ module nts.uk.ui.at.kdw013.calendar {
 
                             if (selecteds.length) {
                                 dataEvent.delete(true);
+                                const starts = selecteds.map(({ start }) => formatDate(start));
 
-                                vm.$dialog
-                                    .confirm({ messageId: 'DELETE_CONFIRM' })
-                                    .then((v: 'yes' | 'no') => {
-                                        if (v === 'yes') {
-                                            const starts = selecteds.map(({ start }) => formatDate(start));
-
-                                            if (ko.isObservable(vm.params.events)) {
-                                                vm.params.events.remove((e: EventRaw) => starts.indexOf(formatDate(e.start)) !== -1);
-                                            }
-                                        }
-
-                                        dataEvent.delete(false);
-                                    });
+                                if (ko.isObservable(vm.params.events)) {
+                                    vm.params.events.remove((e: EventRaw) => starts.indexOf(formatDate(e.start)) !== -1);
+                                }
+                                dataEvent.delete(false);
+                                popupPosition.event(null);
+                                popupPosition.setting(null);
+//                                vm.$dialog
+//                                    .confirm({ messageId: 'DELETE_CONFIRM' })
+//                                    .then((v: 'yes' | 'no') => {
+//                                        if (v === 'yes') {
+//                                            const starts = selecteds.map(({ start }) => formatDate(start));
+//
+//                                            if (ko.isObservable(vm.params.events)) {
+//                                                vm.params.events.remove((e: EventRaw) => starts.indexOf(formatDate(e.start)) !== -1);
+//                                            }
+//                                        }
+//
+//                                        dataEvent.delete(false);
+//                                    });
                             }
                         }
                     }
