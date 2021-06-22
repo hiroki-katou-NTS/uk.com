@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.record.app.find.workrecord.workmanagement.manhoursummarytable;
 
+import lombok.AllArgsConstructor;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.adapter.function.alarmworkplace.EmployeeInfoImport;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
+import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSetting;
+import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.*;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 import nts.uk.shr.com.context.AppContexts;
@@ -31,34 +35,43 @@ public class ManHourSummaryDataFinder {
     @Inject
     private WorkMasterAdapter taskAdapter;
 
+    @Inject
+    private ManHourRecordReferenceSettingRepository recordRefSettingRepo;
+
     public ManHourSummaryData getManHourSummary(DatePeriod datePeriod, YearMonthPeriod yearMonthPeriod) {
         val cid = AppContexts.user().companyId();
+        val userId = AppContexts.user().userId();
+        val employeeId = AppContexts.user().employeeId();
 
         // 1. get ManHourRecordReferenceSetting (cid) [工数実績参照設定]
+        val optManHourRecordRef = this.recordRefSettingRepo.get(cid).orElse(null);
+        if (optManHourRecordRef == null) return null;
+
         //INPUT「年月日期間」.isPresent　⇒　対象期間 = INPUT「年月日期間」
         //INPUT「年月日期間」.isEmpty　⇒　対象期間 = 期間#期間(INPUT「年月期間」.開始年月.初日(), INPUT「年月期間」.終了年月.末日())
+        DatePeriod targetPeriod = datePeriod != null ? datePeriod : new DatePeriod(yearMonthPeriod.start().firstGeneralDate(), yearMonthPeriod.end().lastGeneralDate());
         //基準日 = 求めた「対象期間」．終了日
-        // val manHourRecordRefer = ;  //TODO: QA #49892
+        GeneralDate baseDate = targetPeriod.end();
 
-        // 2.参照可能範囲を取得する(@Require, 会社ID, ユーザID, 社員ID, 年月日)
-        // return Map<社員ID,職場ID>
-        Map<String, String> rangeMap = new HashMap<>();  //TODO: QA #49892
+        // 2.参照可能範囲を取得する(@Require, 会社ID, ユーザID, 社員ID, 年月日): Map<社員ID,職場ID>
+        RequireImpl require = new RequireImpl();
+        Map<String, String> rangeMap = optManHourRecordRef.getWorkCorrectionStartDate(require, cid, userId, employeeId, baseDate); //TODO: QA: not implement Require
 
         // 3.作業詳細データを取得する(社員リスト,職場リスト,期間)
         //社員リスト = 取得した「参照可能範囲」：map $.key distinct
         //職場リスト = 取得した「参照可能範囲」：map $.value distinct
         List<String> empIds = rangeMap.keySet().stream().distinct().collect(Collectors.toList());
         List<String> wkpIds = rangeMap.entrySet().stream().map(Map.Entry::getValue).distinct().collect(Collectors.toList());
-        List<WorkDetailData> workDetailList = this.ouenRepo.getWorkDetailData(empIds, wkpIds, datePeriod);
+        List<WorkDetailData> workDetailList = this.ouenRepo.getWorkDetailData(empIds, wkpIds, targetPeriod);
 
         // 4.取得する(会社ID, 職場ID, 年月日)
         //4.1回目: FirstTime
         val affWkpList = workDetailList.stream().map(WorkDetailData::getAffWorkplaceId).distinct().collect(Collectors.toList());
-        List<WorkplaceInfor> affWorkplaceInfors = this.workplaceAdapter.getWorkplaceInfor(cid, affWkpList, datePeriod.end());
+        List<WorkplaceInfor> affWorkplaceInfors = this.workplaceAdapter.getWorkplaceInfor(cid, affWkpList, targetPeriod.end());
 
         //4.2回目: SecondTime
         val wkpList = workDetailList.stream().map(WorkDetailData::getWorkplaceId).distinct().collect(Collectors.toList());
-        List<WorkplaceInfor> workplaceInfors = this.workplaceAdapter.getWorkplaceInfor(cid, wkpList, datePeriod.end());
+        List<WorkplaceInfor> workplaceInfors = this.workplaceAdapter.getWorkplaceInfor(cid, wkpList, targetPeriod.end());
 
         // 5.取得する(社員ID)
         val sIds = workDetailList.stream().map(WorkDetailData::getEmployeeId).distinct().collect(Collectors.toList());
@@ -99,5 +112,29 @@ public class ManHourSummaryDataFinder {
         val lstTask = this.taskAdapter.getTaskList(AppContexts.user().companyId(), frameNo, workCodes);
 
         return !lstTask.isEmpty() ? lstTask : Collections.emptyList();
+    }
+
+    @AllArgsConstructor
+    private class RequireImpl implements ManHourRecordReferenceSetting.Require {
+
+        @Override
+        public ManHourRecordReferenceSetting get() {
+            return null;
+        }
+
+        @Override
+        public DatePeriod getPeriod(String employeeId, GeneralDate date) {
+            return null;
+        }
+
+        @Override
+        public Map<String, String> getWorkPlace(String userID, String employeeID, GeneralDate date) {
+            return null;
+        }
+
+        @Override
+        public Map<String, String> getByCID(String companyId, GeneralDate baseDate) {
+            return null;
+        }
     }
 }
