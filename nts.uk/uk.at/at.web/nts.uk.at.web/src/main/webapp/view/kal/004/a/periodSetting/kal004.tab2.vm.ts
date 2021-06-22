@@ -339,7 +339,7 @@ module nts.uk.at.view.kal004.tab2.viewModel {
         categoryId: number;
         categoryName: string;
         extractionPeriod: string;
-        ListSpecifiedMonth: Array<any> = __viewContext.enums.SpecifiedMonth;
+        ListSpecifiedMonth: Array<any> = __viewContext.enums.DailyClosingDateSpecifiedMonth;
         ListScheSpecifiedMonth: Array<any> = __viewContext.enums.ScheSpecifiedMonth;
         PreviousClassification: Array<any> = __viewContext.enums.PreviousClassification
         ListAlarmCategory: Array<any> = __viewContext.enums.AlarmCategory;

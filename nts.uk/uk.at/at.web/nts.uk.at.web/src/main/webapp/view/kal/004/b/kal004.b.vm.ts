@@ -43,8 +43,8 @@ module nts.uk.com.view.kal004.b.viewmodel {
             self.txtEndMonth = ko.observable(getText("KAL004_43"));
             self.strComboDay = ko.observableArray(__viewContext.enums.PreviousClassification);
             self.endComboDay = ko.observableArray(__viewContext.enums.PreviousClassification);
-            self.strComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
-            self.endComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
+            self.strComboMonth = ko.observableArray(__viewContext.enums.DailyClosingDateSpecifiedMonth);
+            self.endComboMonth = ko.observableArray(__viewContext.enums.DailyClosingDateSpecifiedMonth);
             // QA#115367
             if (categoryId == model.AlarmCategory.SCHEDULE_DAILY || categoryId == model.AlarmCategory.APPLICATION_APPROVAL) {
                 self.strComboMonth = ko.observableArray(__viewContext.enums.ScheSpecifiedMonth);
