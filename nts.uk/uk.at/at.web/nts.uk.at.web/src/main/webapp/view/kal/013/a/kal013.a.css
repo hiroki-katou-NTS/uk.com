@@ -46,7 +46,7 @@ table td.text-center {
   margin-right: 15px;
 }
 
-#fixedTable .nts-input {
+#fixedTable .nts-input:not(.checkbox-wrapper) {
   width: 222px !important;
 }
 
@@ -69,4 +69,13 @@ table td.text-center {
 
 .ui-tabs-panel {
   width: fit-content;
+}
+
+.checkbox-wrapper {
+  display: block!important;
+  margin: 0 auto;
+}
+
+.tabs-content thead th {
+  height: 32px;
 }
