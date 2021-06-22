@@ -482,7 +482,6 @@ module nts.uk.at.view.kdp010.f {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.start().done(function() {
             __viewContext.bind(screenModel);
-			setTimeout(() => $('.nts-input').trigger("validate"), 100);
         });
     });
 }
