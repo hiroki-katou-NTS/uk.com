@@ -17,9 +17,10 @@ public class PeriodParam {
     private YearMonth yearMonthEnd;
 
     public DatePeriod getDatePeriod() {
+        if (StringUtils.isEmpty(this.startDate) || StringUtils.isEmpty(this.endDate)) return null;
         return new DatePeriod(
-                !StringUtils.isEmpty(this.startDate) ? GeneralDate.fromString(this.startDate, "yyyy/MM/dd") : GeneralDate.min(),
-                !StringUtils.isEmpty(this.endDate) ? GeneralDate.fromString(this.endDate, "yyyy/MM/dd") : GeneralDate.min());
+                GeneralDate.fromString(this.startDate, "yyyy/MM/dd"),
+                GeneralDate.fromString(this.endDate, "yyyy/MM/dd"));
     }
 
     public YearMonthPeriod getYmPeriod() {
