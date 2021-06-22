@@ -12,7 +12,8 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 
 /**
- * ロールセット - Class RoleSet.
+ * ロールセット
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.権限管理.ロールセット.ロールセット
  * @author HieuNV
  */
 @Getter
