@@ -23,14 +23,15 @@ module nts.uk.at.view.ktg004.b.viewmodel {
             var dfd = $.Deferred();
             block.invisible();
             ajax("at", KTG004_API.GET_APPROVED_DATA_EXCECUTION).done(function(data: any){
-				self.name(data.name);
+				self.name(data.name || getText('KTG004_25'));
+				const defaultSetting: boolean = _.isNil(data.name);
 				let tg:any[] = []; 
 				let tg1:any[] = []; 
 				_.forEach(data.itemsSetting, function(x) {
 					if(x.item <= 20 ){
 						tg.push(new ItemsSetting(x));
 					}else{
-						tg1.push(new ItemsSetting(x));	
+						tg1.push(new ItemsSetting(x, defaultSetting));	
 					}
 				});
 				let total = _.orderBy(tg1, ['item'], ['asc']);
@@ -81,30 +82,42 @@ module nts.uk.at.view.ktg004.b.viewmodel {
         name: string;
 		// 表示区分
 		displayType : KnockoutObservable<boolean>;
-        constructor(dto: any){
+        constructor(dto: any, defaultSetting?: boolean){
             this.item = dto.item;
             this.displayType = ko.observable(dto.displayType);
 			switch(dto.item) { 
 			   	case 21: { 
-			      	this.name = getText('KTG004_1'); break; 
+			      	this.name = getText('KTG004_1');
+							this.displayType(defaultSetting || dto.displayType);
+							break; 
 			   	} 
 			   	case 22: { 
-			      	this.name = getText('KTG004_2'); break; 
+			      	this.name = getText('KTG004_2');
+							this.displayType(defaultSetting || dto.displayType);
+							break; 
 			   	}
 				case 23: { 
-			      	this.name = getText('KTG004_3'); break; 
+			      	this.name = getText('KTG004_3');
+							this.displayType(defaultSetting || dto.displayType);
+							break; 
 			   	} 
 			   	case 24: { 
 			      	this.name = getText('KTG004_5'); break; 
 			   	}
 				case 25: { 
-			      	this.name = getText('KTG004_6'); break; 
+			      	this.name = getText('KTG004_6');
+							this.displayType(defaultSetting || dto.displayType);
+							break; 
 			   	} 
 			   	case 26: { 
-			      	this.name = getText('KTG004_7'); break; 
+			      	this.name = getText('KTG004_7');
+							this.displayType(defaultSetting || dto.displayType);
+							break; 
 			   	}
 				case 27: { 
-			      	this.name = getText('KTG004_9'); break; 
+			      	this.name = getText('KTG004_9');
+							this.displayType(defaultSetting || dto.displayType);
+							break; 
 			   	} 
 			   	case 28: { 
 			      	this.name = getText('KTG004_10'); break; 

@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		selectWorkplaceInfo: Array<DisplayWorkplace> = [];
 		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = {
 			// ページング行数
-			numberOfPage: 0,
+			numberOfPage: 100,
 			// ユーザーID
 			userID: '',
 			// 会社ID
@@ -42,12 +42,13 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			const vm = this;
 			vm.params = params;
 			vm.$blockui('show');
+			vm.initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus;
 			vm.appNameLst = params.appNameLst;
 			vm.closureItem = params.closureItem;
 			vm.startDate = params.startDate;
 			vm.endDate = params.endDate;
 			vm.selectWorkplaceInfo = params.selectWorkplaceInfo;
-			vm.dataSource = _.map(vm.selectWorkplaceInfo, x => {
+			vm.dataSource = _.map(_.sortBy(vm.selectWorkplaceInfo, 'hierarchyCode'), x => {
 				return {
 					wkpID: x.id,
 					wkpCD: x.code,
@@ -139,6 +140,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 							character.restore('InitDisplayOfApprovalStatus').then((obj: InitDisplayOfApprovalStatus) => {
 								if(obj) {
 									vm.initDisplayOfApprovalStatus = obj;
+									$("#bGrid").igGridPaging("option", "pageSize", vm.initDisplayOfApprovalStatus.numberOfPage);
 									if(!vm.initDisplayOfApprovalStatus.applicationApprovalFlg) {
 										$("#bGrid").igGrid("hideColumn", "countUnApprApp");
 									}
@@ -205,7 +207,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 						headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_333') + '</p>' + vm.createButtonHtml(0), 
 						key: 'countUnApprApp', 
 						dataType: 'number', 
-						width: '75px', 
+						width: '80px',
 						headerCssClass: 'kaf018-b-header-countUnApprApp',
 						columnCssClass: 'kaf018-b-column-count',
 						formatter: (key: number) => {
@@ -222,7 +224,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_337') + '</p>' + vm.createButtonHtml(1), 
 								key: 'countUnConfirmDay', 
 								dataType: 'number', 
-								width: '75px', 
+								width: '78px', 
 								columnCssClass: 'kaf018-b-column-count',
 								formatter: (key: number) => {
 									if(!key) {
@@ -235,7 +237,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_338') + '</p>' + vm.createButtonHtml(2), 
 								key: 'countUnApprDay', 
 								dataType: 'number', 
-								width: '75px', 
+								width: '78px', 
 								columnCssClass: 'kaf018-b-column-count',
 								formatter: (key: number) => {
 									if(!key) {
@@ -253,7 +255,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_339') + '</p>' + vm.createButtonHtml(5), 
 								key: 'countUnConfirmMonth', 
 								dataType: 'number', 
-								width: '75px', 
+								width: '78px', 
 								columnCssClass: 'kaf018-b-column-count',
 								formatter: (key: number) => {
 									if(!key) {
@@ -266,7 +268,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_340') + '</p>' + vm.createButtonHtml(3), 
 								key: 'countUnApprMonth', 
 								dataType: 'number', 
-								width: '75px', 
+								width: '78px', 
 								columnCssClass: 'kaf018-b-column-count',
 								formatter: (key: number) => {
 									if(!key) {
@@ -284,7 +286,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_341') + '</p>' + vm.createButtonHtml(4), 
 								key: 'displayConfirm', 
 								dataType: 'boolean', 
-								width: '75px', 
+								width: '78px', 
 								columnCssClass: 'kaf018-b-column-count',
 								formatter: (key: boolean, object: any) => {
 									if(!object.countEmp) {
@@ -348,12 +350,15 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 						pageIndexChanged: () => {
 							$(".ui-iggrid").focus();
 							vm.getPageData();
-							vm.loadData(false);
+							vm.loadData(false);	
 						},
 						pageSizeChanged: () => {
-							$(".ui-iggrid").focus();
-							vm.getPageData();
-							vm.loadData(false);
+							vm.initDisplayOfApprovalStatus.numberOfPage = $("#bGrid").igGridPaging("option", "pageSize");
+							character.save('InitDisplayOfApprovalStatus', vm.initDisplayOfApprovalStatus).then(() => {
+								$(".ui-iggrid").focus();
+								vm.getPageData();
+								vm.loadData(false);	
+							});
 						}
 					},
 				],
@@ -501,6 +506,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		
 		goBackA() {
 			const vm = this;
+			vm.params.initDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus;
 			vm.$jump('/view/kaf/018/a/index.xhtml', vm.params);
 		}
 	}

@@ -44,7 +44,3 @@ hr {
 .mt-25 {
 	margin-top: 25px !important;
 }
-
-#contents-area {
-	height: calc(100vh - 30px) !important;
-}

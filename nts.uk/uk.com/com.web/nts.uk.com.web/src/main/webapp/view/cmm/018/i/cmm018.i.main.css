@@ -16,6 +16,10 @@ body {
 	width: 240px;
 }
 
+.radio-wrapper {
+	display: block;
+}
+
 .ntsRadioBox:LAST-CHILD {
 	margin-top: 10px;
 }
@@ -41,4 +45,9 @@ body {
 .table:NTH-CHILD(2)>.cell:NTH-CHILD(2)>label:NTH-CHILD(2) {
 	margin-left: 5px;
 	margin-right: 5px;
+}
+
+.datepicker-container {
+	top: 40px !important;
+	left: 260px !important;
 }

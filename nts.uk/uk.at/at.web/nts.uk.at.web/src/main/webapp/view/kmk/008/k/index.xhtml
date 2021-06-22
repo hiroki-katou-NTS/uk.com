@@ -11,7 +11,7 @@
         <script>
             var dialogSize = {
                 width: 570,
-                height: 550
+                height: 500
             };
         </script>
 
@@ -28,7 +28,7 @@
     <ui:define name="content">
 
         <div id="functions-area">
-            <div id="functions-area-content">
+            <div class="functions-area-content">
                 <button class="" tabindex="1"
                         data-bind="click : setNewMode, enable : updateEnable">#{i18n.getText('KMK008_40')}</button>
                 <button class="proceed" tabindex="2"
@@ -40,7 +40,7 @@
         </div>
 
         <div id="contents-area">
-            <div id="contents-area-label">
+            <div class="contents-area-label">
                 <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_17', ['#Com_Person'])}</div>
                 <span class="label" data-bind="text: employeeCode"></span>
                 <span class="label" data-bind="text: employeeName"></span>

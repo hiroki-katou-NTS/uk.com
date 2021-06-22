@@ -21,8 +21,8 @@ module nts.uk.at.view.kal013.a.tab {
             const vm = this;
 
             vm.swithchButton([
-                { code: '1', name: vm.$i18n('KAL003_189') },
-                { code: '0', name: vm.$i18n('KAL003_190') }
+                { code: 1, name: vm.$i18n('KAL003_189') },
+                { code: 0, name: vm.$i18n('KAL003_190') }
             ]);
 
             vm.checkConditions(checkConditions);

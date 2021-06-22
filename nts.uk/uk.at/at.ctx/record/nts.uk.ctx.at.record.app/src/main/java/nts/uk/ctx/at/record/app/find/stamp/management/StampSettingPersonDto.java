@@ -25,9 +25,6 @@ public class StampSettingPersonDto {
 	/** 文字色 */
 	private String textColor;
 	
-	/** 背景色 */
-	private String backGroundColor;
-	
 	/** 打刻結果自動閉じる時間 */
 	private int resultDisplayTime;
 	
@@ -35,10 +32,9 @@ public class StampSettingPersonDto {
 	public static StampSettingPersonDto fromDomain(StampSettingPerson settingPerson){
 		return new StampSettingPersonDto(settingPerson.getCompanyId(),
 				settingPerson.isButtonEmphasisArt(),
-				settingPerson.getStampingScreenSet().getHistoryDisplayMethod().value,
+				settingPerson.getHistoryDisplayMethod().value,
 				settingPerson.getStampingScreenSet().getCorrectionInterval().v(),
-				settingPerson.getStampingScreenSet().getColorSetting().getTextColor().v(),
-				settingPerson.getStampingScreenSet().getColorSetting().getBackGroundColor().v(),
+				settingPerson.getStampingScreenSet().getSettingDateTimeColor().getTextColor().v(),
 				settingPerson.getStampingScreenSet().getResultDisplayTime().v());
 	}
 }

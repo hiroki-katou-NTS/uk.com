@@ -13,7 +13,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.HolidaySettingConfigFinder;
 import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.PublicHolidayManagementUsageUnitFindDto;
 import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.PublicHolidayManagementUsageUnitFinder;
 import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.PublicHolidaySettingDto;
@@ -38,6 +37,7 @@ import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WorkplaceHierarchyDt
 import nts.uk.ctx.bs.employee.app.find.workplace.config.info.WorkplaceConfigInfoFinder;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
+import nts.uk.file.at.app.export.vacation.set.holiday.HolidayRepository;
 import nts.uk.query.app.employee.RegulationInfoEmpQueryDto;
 import nts.uk.query.app.employee.RegulationInfoEmployeeDto;
 import nts.uk.query.app.employee.RegulationInfoEmployeeFinder;
@@ -90,6 +90,8 @@ public class HolidaySettingExportImpl implements MasterListData{
 	@Inject
 	private EmployeeMonthDaySettingRepository employeeMonthDaySettingRepository;
 	
+	@Inject
+    private HolidayRepository holidayRepository;
 	
 	//設定 
 	public static String value1= "項目";
@@ -119,6 +121,11 @@ public class HolidaySettingExportImpl implements MasterListData{
 	public static String valueFive3= "名称";
 	public static String valueFive4= "月度";
 	public static String valueFive5= "公休日数";
+	
+	public static final String KMF001_166 = "項目";
+    public static final String KMF001_B01 = "Level_1";
+    public static final String KMF001_B02 = "Level_2";
+    public static final String KMF001_167 = "値";
 
 
 	/** The Constant TIME_DAY_START. */
@@ -131,50 +138,13 @@ public class HolidaySettingExportImpl implements MasterListData{
 	
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
-		List<MasterData> datas = new ArrayList<>();
-		
-		PublicHolidaySettingDto optPubHdSetting = pubHdSettingFinder.findPubHdSetting();	
-		
-		if(optPubHdSetting != null && optPubHdSetting.getManagePublicHoliday() == 1) {
-			int carryOverDeadline = optPubHdSetting.getPublicHdCarryOverDeadline();
-			int pubHdPeriodSetting = optPubHdSetting.getPublicHolidayPeriod();
-			//1
-			putDataCustom(datas,TextResource.localize("KMF002_61"),"","管理する",0);
-			
-			//2
-			putDataCustom(datas,TextResource.localize("KMF002_4"),"",getCarryOverDeadline(carryOverDeadline),1);
-			//3
-			if(optPubHdSetting.getCarryOverNumberOfPublicHdIsNegative() ==1){
-				putDataCustom(datas,"",TextResource.localize("KMF002_7"),"○",0);
-			}else{
-				putDataCustom(datas,"",TextResource.localize("KMF002_7"),"-",0);
-			}
-			putDataCustom(datas,TextResource.localize("KMF002_72"),"",getPubHdPeriod(pubHdPeriodSetting), 1);
-			
-		}else if(optPubHdSetting !=null){
-			putDataCustom(datas,TextResource.localize("KMF002_61"),"","管理しない",0);
-			putDataCustom(datas,TextResource.localize("KMF002_4"),"","",1);
-			putDataCustom(datas,"",TextResource.localize("KMF002_7"),"",0);
-			putDataCustom(datas,TextResource.localize("KMF002_72"),"","", 1);
-		}else{
-			putDataCustom(datas,TextResource.localize("KMF002_61"),"","",0);
-			putDataCustom(datas,TextResource.localize("KMF002_4"),"","",1);
-			putDataCustom(datas,"",TextResource.localize("KMF002_7"),"",0);
-			putDataCustom(datas,TextResource.localize("KMF002_72"),"","", 1);
-		}
-		return datas;
+		//休日
+		String companyId = AppContexts.user().companyId();
+		return holidayRepository.getAllHoliday(companyId);
 	}
 	@Override
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
-		
-		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn(value1, TextResource.localize("KMF002_59"),
-				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(value2, "",
-				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(value5, TextResource.localize("KMF002_58"),
-				ColumnTextAlign.LEFT, "", true));
-		return columns;
+		return this.getHeaderColumnsHoliday();
 	}
 	
 	private void putEmptyDataOne (Map<String, Object> data){
@@ -187,7 +157,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 	
 	@Override
 	public String mainSheetName() {
-		return TextResource.localize("KMF002_1");
+		return TextResource.localize("KMF001_335");
 	}
 
 	@Override
@@ -658,6 +628,29 @@ public class HolidaySettingExportImpl implements MasterListData{
 		return columns;
 	}
 
+	public List<MasterHeaderColumn> getHeaderColumnsHoliday() {
+        List<MasterHeaderColumn> columns = new ArrayList<>();
+        columns.add(new MasterHeaderColumn(KMF001_166, TextResource.localize("KMF001_166"),
+                ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(KMF001_B01, "",
+                ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(KMF001_167, TextResource.localize("KMF001_167"),
+                ColumnTextAlign.LEFT, "", true));
+        
+        return columns;
+    }
+	
+	public List<MasterHeaderColumn> getHeaderManageSetting() {
+		List<MasterHeaderColumn> columns = new ArrayList<>();
+		columns.add(new MasterHeaderColumn(value1, TextResource.localize("KMF002_59"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(value2, "",
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(value5, TextResource.localize("KMF002_58"),
+				ColumnTextAlign.LEFT, "", true));
+		return columns;
+	}
+	
 	private void putEmptyDataTwo(Map<String, Object> data){
 		data.put(valueTwo1, "");
 		data.put(valueTwo2, "");
@@ -700,8 +693,45 @@ public class HolidaySettingExportImpl implements MasterListData{
 		
 		PublicHolidayManagementUsageUnitFindDto findData = finderPublicHolidayManagement.findData();
 
-		if(optPubHdSetting !=null){//1ヵ月
+		List<MasterData> datas = new ArrayList<>();
+		
+		// 公休管理設定
+		if(optPubHdSetting != null && optPubHdSetting.getManagePublicHoliday() == 1) {
+			int carryOverDeadline = optPubHdSetting.getPublicHdCarryOverDeadline();
+			int pubHdPeriodSetting = optPubHdSetting.getPublicHolidayPeriod();
+			//1
+			putDataCustom(datas,TextResource.localize("KMF002_61"),"","管理する",0);
 			
+			//2
+			putDataCustom(datas,TextResource.localize("KMF002_4"),"",getCarryOverDeadline(carryOverDeadline),1);
+			//3
+			if(optPubHdSetting.getCarryOverNumberOfPublicHdIsNegative() ==1){
+				putDataCustom(datas,"",TextResource.localize("KMF002_7"),"○",0);
+			}else{
+				putDataCustom(datas,"",TextResource.localize("KMF002_7"),"-",0);
+			}
+			putDataCustom(datas,TextResource.localize("KMF002_72"),"",getPubHdPeriod(pubHdPeriodSetting), 1);
+			
+		}else if(optPubHdSetting !=null){
+			putDataCustom(datas,TextResource.localize("KMF002_61"),"","管理しない",0);
+			putDataCustom(datas,TextResource.localize("KMF002_4"),"","",1);
+			putDataCustom(datas,"",TextResource.localize("KMF002_7"),"",0);
+			putDataCustom(datas,TextResource.localize("KMF002_72"),"","", 1);
+		}else{
+			putDataCustom(datas,TextResource.localize("KMF002_61"),"","",0);
+			putDataCustom(datas,TextResource.localize("KMF002_4"),"","",1);
+			putDataCustom(datas,"",TextResource.localize("KMF002_7"),"",0);
+			putDataCustom(datas,TextResource.localize("KMF002_72"),"","", 1);
+		}
+		SheetData sheet = SheetData.builder()
+				.mainData(datas)
+				.mainDataColumns(this.getHeaderManageSetting())
+				.mode(MasterListMode.NONE)
+				.sheetName(TextResource.localize("KMF002_1"))
+				.build();
+		listSheetData.add(sheet);
+		
+		if(optPubHdSetting !=null){//1ヵ月	
 			if(findData.getIsManageEmpPublicHd()==1 && findData.getIsManageEmployeePublicHd()==0 && findData.getIsManageWkpPublicHd()==0){
 				SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("KMF002_75"), MasterListMode.YEAR_RANGE);
 				SheetData sheetDataFour = new SheetData(getMasterDataFour(query), getHeaderColumnFour(query), null, null, TextResource.localize("KMF002_77"), MasterListMode.YEAR_RANGE);

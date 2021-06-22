@@ -97,7 +97,7 @@ public class DisplayAttendanceDataScreenQuery {
 		listMenuName.add(this.createMenu(ProgramId.KAF009, ScreenId.A, null));
 		listMenuName.add(this.createMenu(ProgramId.KAF010, ScreenId.A, null));
 		listMenuName.add(this.createMenu(ProgramId.KAF012, ScreenId.A, null));
-		listMenuName.add(this.createMenu(ProgramId.KAF014, ScreenId.A, null));
+		listMenuName.add(this.createMenu(ProgramId.KAF004, ScreenId.A, null));
 		listMenuName.add(this.createMenu(ProgramId.KAF002, ScreenId.A, null));
 		listMenuName.add(this.createMenu(ProgramId.KAF002, ScreenId.B, null));
 		listMenuName.add(this.createMenu(ProgramId.KAF011, ScreenId.A, null));

@@ -9,8 +9,8 @@
 	display: inline-block;
 	padding: 0px 12px;
 	line-height: 30px;
-	background-color: $green_background_color;
-	color: #0D86D1;
+	// background-color: $green_background_color;
+	color: #30CC40;
 	text-decoration: underline;
 	cursor: pointer;
 	user-select: none;
@@ -39,7 +39,7 @@
 	    padding-left: 25px;
 	    margin-left: 15px;
 		text-decoration: none;
-		color: #333;
+		color: #30CC40;
 	    
 		&:before {
 			content: '';
@@ -47,7 +47,7 @@
 			left: -15px;
 			top: 0px;
 			display: block;
-			background-image: url('images/icons/go-back.png');
+			background-image: url('images/icons/go-back-light-blue.png');
 			background-size: auto 100%;
 			background-repeat: no-repeat;
 			height: 30px;

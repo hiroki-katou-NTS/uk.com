@@ -104,7 +104,7 @@
 							</table>
 						</div>
 					</div>
-					<div style="width: 750px; padding: 10px; border:1px solid #AAAAAA; display: inline-block;"
+					<div style="width: 670px; padding: 10px; border:1px solid #AAAAAA; display: inline-block;"
 						data-bind="css: {'app-left': mode()==0}">
 						<!-- A2: Switch button -->
 						<!-- delete - ver35 -->
@@ -122,13 +122,13 @@
 								<col width="100px" />
 								<col width="*" />
 							</colgroup>
-							<tr data-bind="visible: mode()==1">
+							<tr data-bind="visible: mode()==1" style="height: 30px">
 								<td>
 									<div>#{i18n.getText('CMM045_19')}</div>
 								</td>
 								<td>
 									<!-- A4_1 -->
-									<div tabindex="4" data-bind="ntsMultiCheckBox: {
+									<div style="position: absolute; top: 162px; left: 330px" tabindex="4" data-bind="ntsMultiCheckBox: {
 									options: itemList,
 									optionsValue: 'id',
 									optionsText: 'name',
@@ -137,20 +137,20 @@
 								</td>
 							</tr>
 							<tr>
-								<td class="grid-text-label">
-									<div>#{i18n.getText('CMM045_29')}</div>
-								</td>
-								<td>
-									<div style="display: inline-block; margin-right: 30px;" id="daterangepicker"
-										tabindex="5" data-bind="ntsDateRangePicker:
+								<td class="grid-text-label" style="width: 325px; display: flex">
+									<span class="grid-text-label">#{i18n.getText('CMM045_29')}</span>
+									<div style="margin-left: 25px" id="daterangepicker"
+										 tabindex="5" data-bind="ntsDateRangePicker:
 									{required: false,
 									enable: true,
 									name: '#{i18n.getText('CMM045_29')}',
 									showNextPrevious: false,
 									value: dateValue}"></div>
+								</td >
+								<td class="grid-text-label" style="width: 275px">
 									<label class="grid-text-label"
 										style="display: inline-block;">#{i18n.getText('CMM045_81')}</label>
-									<div id="combo-box" style="display: inline-block; margin-left: 50px;" tabindex="7"
+									<div id="combo-box" style="display: inline-block; margin-left: 20px;" tabindex="7"
 										data-bind="ntsComboBox: {
 										name:'#{i18n.getText('CMM045_81')}',
 										width: 150,
@@ -164,7 +164,7 @@
 										optionsText: 'orderName',
 										enable: true }"></div>
 									<!-- A4_3_4: button 検索 -->
-									<div style="float: right; margin-right: 10px;"><a
+									<div style=" margin-left: 115px;"><a
 											style="background-color: #ffff; margin-right: 50px"
 											class="hyperlink">#{i18n.getText("CMM045_87")}</a></div>
 								</td>
@@ -190,11 +190,6 @@
 							<!-- <div id = "A4_4_2">#{i18n.getText('CMM045_35')}</div>
 							</td>
 						</tr> -->
-
-							<tr>
-								<td></td>
-
-							</tr>
 						</table>
 					</div>
 				</div>
@@ -241,7 +236,6 @@
 							</td>
 							<td>
 								<table id="multi-list" data-bind="ntsGridList: {
-									height: 350,
 									columns: ko.observableArray([
 						                { headerText: 'appType', key: 'appType', width: 50, hidden: true},
 						                { headerText: '#{i18n.getText('CMM045_94')}', key: 'appName', width: 190 },

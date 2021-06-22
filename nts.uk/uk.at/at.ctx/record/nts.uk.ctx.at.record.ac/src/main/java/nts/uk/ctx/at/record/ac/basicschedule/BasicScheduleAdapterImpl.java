@@ -30,7 +30,7 @@ public class BasicScheduleAdapterImpl implements BasicScheduleAdapter {
 		List<WorkScheduleSidImport> workScheduleSidImports = new ArrayList<>();
 		BasicScheduleSidDto basicScheduleSidDto = new BasicScheduleSidDto(basicScheduleExport.get().getEmployeeId(),
 				basicScheduleExport.get().getYmd(),
-				basicScheduleExport.get().getWorkTyle(),
+				basicScheduleExport.get().getWorkType(),
 				basicScheduleExport.get().getWorkTime(),
 				workScheduleSidImports);
 		return Optional.of(basicScheduleSidDto);

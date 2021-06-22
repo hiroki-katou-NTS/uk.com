@@ -31,6 +31,8 @@ public class SelectionItemsDto {
 	
 	private int numberOfDigits;
 	
+	private String settingValue;
+	
 	private String inputRange;
 	
 	private String currentValue;
@@ -48,7 +50,7 @@ public class SelectionItemsDto {
 													.map(e -> new SelectionItemsDto(e.getMajorNo().v(),
 															e.getMajorClassification().v(), e.getSmallNo().v(), e.getSmallClassification().v(),
 															e.getVariableName().v(), e.getType().value, e.getNumberOfDigits().v() == null ? 0 : e.getNumberOfDigits().v(),
-															e.getInputRange().v(), e.getCurrentValue().v(),
+															e.getSettingValue().v(), e.getInputRange().v(), e.getCurrentValue().v(),
 															getUpdateValueByName(e.getVariableName().v(), timeRecordSetUpdateList),
 															timeRecordSetFormatList.getEmpInfoTerName().v(),
 															timeRecordSetFormatList.getRomVersion().v(),

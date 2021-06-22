@@ -21,6 +21,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 		displayUrlApprovalEmbed: boolean = false;
 		displayUrlDayEmbed: boolean = false;
 		displayUrlMonthEmbed: boolean = false;
+		displayUpdTmpBtn: boolean = false;
 		
 		created(params: KAF018CParam) {
 			const vm = this;
@@ -32,6 +33,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 			vm.displayUrlMonthEmbed = vm.mailType==ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_PRINCIPAL || 
 										vm.mailType==ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_CONFIRMER ||
 										vm.mailType==ApprovalStatusMailType.WORK_CONFIRMATION;
+			vm.displayUpdTmpBtn = __viewContext.user.role.isInCharge.attendance;
 			switch(vm.mailType) {
 				case ApprovalStatusMailType.APP_APPROVAL_UNAPPROVED:
 					vm.name = vm.$i18n('KAF018_491');
@@ -60,20 +62,48 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 				default:
 					break;
 			}
-			$("#cGrid").css('visibility','hidden');
-			$("#cGrid").igGrid({
+			
+			let mailType = vm.mailType,
+				closureId = params.closureItem.closureId,
+				processingYm = params.closureItem.processingYm,
+				closureDay = params.closureItem.closureDay,
+				lastDayOfMonth = params.closureItem.lastDayOfMonth,
+				startDate = params.startDate,
+				endDate = params.endDate,
+				wkpInfoLst = params.selectWorkplaceInfo,
+				employmentCDLst = params.employmentCDLst,
+				wsParam = { mailType, closureId, processingYm, closureDay, lastDayOfMonth, startDate, endDate, wkpInfoLst, employmentCDLst };
+			vm.$blockui('show');	
+			vm.$ajax('at', API.getEmpSendMailInfo, wsParam).then((data: any) => {
+				vm.urlApprovalEmbed(data.approvalStatusMailTempDto.urlApprovalEmbed == 1 ? true: false);
+				vm.urlDayEmbed(data.approvalStatusMailTempDto.urlDayEmbed == 1 ? true: false);
+				vm.urlMonthEmbed(data.approvalStatusMailTempDto.urlMonthEmbed == 1 ? true: false);
+				vm.mailSubject(data.approvalStatusMailTempDto.mailSubject);
+				vm.mailContent(data.approvalStatusMailTempDto.mailContent);
+				vm.editMode = data.approvalStatusMailTempDto.editMode;
+				vm.dataSource = _.sortBy(data.wkpEmpMailLst, 'hierarchyCode');
+				_.forEach(vm.dataSource, item => {
+					_.set(item, 'flag', false);	
+				});
+				vm.createGrid();
+			}).then(() => {
+				$('.kaf018-c-column-checkBox').find("span").click();
+			}).fail((error) => {
+				vm.$dialog.error({ messageId: error.messageId, messageParams: error.parameterIds })
+				.then(() => vm.$window.close());
+			});
+		}
+		
+		createGrid() {
+			const vm = this;
+			$("#cGrid").ntsGrid({
 				width: 860,
 				height: 255,
 				dataSource: vm.dataSource,
 				primaryKey: 'wkpID',
-				primaryKeyDataType: 'string',
 				rowVirtualization: true,
 				virtualization: true,
 				virtualizationMode: 'continuous',
-				enter: 'right',
-				autoFitWindow: false,
-				hidePrimaryKey: true,
-				avgRowHeight: 25,
 				dataRendered: () => {
 					vm.$nextTick(() => {
 						vm.$blockui('hide');
@@ -81,29 +111,20 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 					});
 				},
 				rendered: () => {
-					if($("#cGrid").css('visibility')=='hidden'){
-						vm.$nextTick(() => {
-							vm.$blockui('show');
-						});
-					} else {
-						vm.$nextTick(() => {
-							vm.$blockui('hide');
-						});
-					}
+					vm.$nextTick(() => {
+						vm.$blockui('hide');
+					});
 			    },
 				columns: [
+					{ headerText: '', key: 'wkpID', dataType: 'string', width: '60px', hidden: true },
 					{ 
-						headerText: `<span class="ui-state-default ui-corner-all ui-igcheckbox-normal kaf018-c-header-checkbox">` +
-										`<span class="ui-icon ui-icon-check ui-igcheckbox-normal-on"></span>` +
-									`</span>`, 
-						key: 'wkpID', 
-						width: '24px', 
-						dataType: 'string',
-						formatter: () => {
-							return 	`<span class="ui-state-default ui-corner-all ui-igcheckbox-normal kaf018-c-column-checkbox">` +
-										`<span class="ui-icon ui-icon-check ui-igcheckbox-normal-on"></span>` +
-									`</span>`;
-						},
+						headerText: '', 
+						key: 'flag', 
+						dataType: 'boolean', 
+						width: '60px', 
+						showHeaderCheckbox: true, 
+						ntsControl: 'Checkbox',
+						columnCssClass: 'kaf018-c-column-checkBox' 
 					},
 					{ 
 						headerText: vm.$i18n('KAF018_350'), 
@@ -132,33 +153,10 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 						name: 'MultiColumnHeaders'
 					}
 				],
-			});
-			
-			let mailType = vm.mailType,
-				closureId = params.closureItem.closureId,
-				processingYm = params.closureItem.processingYm,
-				closureDay = params.closureItem.closureDay,
-				lastDayOfMonth = params.closureItem.lastDayOfMonth,
-				startDate = params.startDate,
-				endDate = params.endDate,
-				wkpInfoLst = params.selectWorkplaceInfo,
-				employmentCDLst = params.employmentCDLst,
-				wsParam = { mailType, closureId, processingYm, closureDay, lastDayOfMonth, startDate, endDate, wkpInfoLst, employmentCDLst };
-			vm.$blockui('show');	
-			vm.$ajax('at', API.getEmpSendMailInfo, wsParam).then((data: any) => {
-				vm.urlApprovalEmbed(data.approvalStatusMailTempDto.urlApprovalEmbed == 1 ? true: false);
-				vm.urlDayEmbed(data.approvalStatusMailTempDto.urlDayEmbed == 1 ? true: false);
-				vm.urlMonthEmbed(data.approvalStatusMailTempDto.urlMonthEmbed == 1 ? true: false);
-				vm.mailSubject(data.approvalStatusMailTempDto.mailSubject);
-				vm.mailContent(data.approvalStatusMailTempDto.mailContent);
-				vm.editMode = data.approvalStatusMailTempDto.editMode;
-				vm.dataSource = data.wkpEmpMailLst;
-				$("#cGrid").igGrid("option", "dataSource", vm.dataSource);
-				$("#cGrid").css('visibility','visible');
-			}).fail((error) => {
-				vm.$dialog.error({ messageId: error.messageId, messageParams: error.parameterIds })
-				.then(() => vm.$window.close());
-			});
+				ntsControls: [
+					{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }
+				]
+			});	
 		}
 		
 		displayEmpMail(value: string) {
@@ -173,8 +171,15 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 		sendMail() {
 			const vm = this;
 			let command = vm.getMailTemplateParam(),
-				wkpEmpMailLst = vm.dataSource,
-				wsParam = { command, wkpEmpMailLst };
+				wkpEmpMailLst = _.filter(vm.dataSource, 'flag'),
+				screenUrlApprovalEmbed = vm.urlApprovalEmbed(),
+				screenUrlDayEmbed = vm.urlDayEmbed(),
+				screenUrlMonthEmbed = vm.urlMonthEmbed(),
+				wsParam = { command, wkpEmpMailLst, screenUrlApprovalEmbed, screenUrlDayEmbed, screenUrlMonthEmbed };
+			if(_.isEmpty(wkpEmpMailLst)) {
+				vm.$dialog.info({ messageId: "Msg_786" });
+				return;
+			}
 			vm.$blockui('show');
 			vm.$ajax('at', API.sendMailToDestination, wsParam).then((data) => {
 				if(data.ok) {
@@ -231,6 +236,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 		hierarchyCode: string;
 		countEmp: number;
 		empMailLst: Array<ApprSttEmpMailOutput>;
+		flag: boolean;
 	}
 	
 	interface ApprSttEmpMailOutput {

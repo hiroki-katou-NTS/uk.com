@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -30,11 +31,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareFrameSet;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -45,7 +44,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Getter
 @Setter
-public class HolidayWorkTimeOfDaily {
+public class HolidayWorkTimeOfDaily implements Cloneable{
 	//休出枠時間帯
 	private List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheet;
 	//休出枠時間
@@ -87,22 +86,28 @@ public class HolidayWorkTimeOfDaily {
 			HolidayWorkTimeSheet holidayWorkTimeSheet,
 			AutoCalSetting holidayAutoCalcSetting,
 			WorkType workType,
-			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+			Optional<String> workTimeCode,
 			IntegrationOfDaily integrationOfDaily,
 			AttendanceTime beforeApplicationTime,
 			AutoCalSetting holidayLateNightAutoCalSetting,
 			DeclareTimezoneResult declareResult) {
 		
 		//休出枠時間帯の作成
-		val holidayWorkFrameTimeSheet = holidayWorkTimeSheet.changeHolidayWorkTimeFrameTimeSheet();
+		val holidayWorkFrameTimeSheet = holidayWorkTimeSheet.changeHolidayWorkTimeFrameTimeSheet(
+				recordReGet.getPersonDailySetting().getOverTimeSheetReq(),
+				workType.getCompanyId(),
+				holidayAutoCalcSetting,
+				workType,
+				workTimeCode,
+				integrationOfDaily,
+				true);
 		//休出時間の計算
 		val holidayWorkFrameTime = holidayWorkTimeSheet.collectHolidayWorkTime(
 				recordReGet.getPersonDailySetting().getOverTimeSheetReq(),
+				workType.getCompanyId(),
 				holidayAutoCalcSetting,
 				workType,
-				eachWorkTimeSet,
-				eachCompanyTimeSet,
+				workTimeCode,
 				integrationOfDaily,
 				declareResult,
 				true);
@@ -428,4 +433,43 @@ public class HolidayWorkTimeOfDaily {
 		}
 		return map;
 	}
+	
+	//事前申請時間の前にデフォルトを作成
+	public static HolidayWorkTimeOfDaily createDefaultBeforeApp(List<Integer> lstNo) {
+		List<HolidayWorkFrameTime> workFrameTime = lstNo.stream().map(x -> {
+			return new HolidayWorkFrameTime(new HolidayWorkFrameNo(x), Finally.of(TimeDivergenceWithCalculation.emptyTime()), Finally.of(TimeDivergenceWithCalculation.emptyTime()),
+					Finally.of(new AttendanceTime(0)));
+		}).collect(Collectors.toList());
+		return new HolidayWorkTimeOfDaily(new ArrayList<>(), 
+				workFrameTime, 
+				Finally.of(new HolidayMidnightWork(new ArrayList<>())), 
+				new AttendanceTime(0));
+	}
+
+	@Override
+	public HolidayWorkTimeOfDaily clone() {
+
+		// 休出枠時間帯
+		List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheetClone = this.holidayWorkFrameTimeSheet.stream().map(x -> {
+			return x.clone();
+		}).collect(Collectors.toList());
+
+		// 休出枠時間
+		List<HolidayWorkFrameTime> holidayWorkFrameTimeClone = this.holidayWorkFrameTime.stream().map(x -> {
+			return x.clone();
+		}).collect(Collectors.toList());
+
+		// 休出深夜
+		Finally<HolidayMidnightWork> holidayMidNightWorkClone = holidayMidNightWork.isPresent()
+				? Finally.of(holidayMidNightWork.get().clone())
+				: Finally.empty();
+
+		// 休出拘束時間
+		AttendanceTime holidayTimeSpentAtWorkClone = new AttendanceTime(this.holidayTimeSpentAtWork.v());
+
+		return new HolidayWorkTimeOfDaily(holidayWorkFrameTimeSheetClone, holidayWorkFrameTimeClone,
+				holidayMidNightWorkClone, holidayTimeSpentAtWorkClone);
+	}
+	
+	
 }

@@ -134,7 +134,11 @@ public class ExecutionTaskSettingDto {
 				.orElse(Collections.emptyList());
 		StringJoiner trueMonthlyDayString = new StringJoiner(", ");
 		repeatMonthDateList.forEach(date -> {
-			trueMonthlyDayString.add(date + "日");
+			if (date <= 31) {
+				trueMonthlyDayString.add(date + "日");
+			} else {
+				trueMonthlyDayString.add("最終日");
+			}
 		});
 		return new ExecutionTaskSettingDto(domain.getCompanyId(), domain.getExecItemCd().v(), domain.isEnabledSetting(),
 				domain.getOneDayRepInr().getDetail().map(o -> o.value).orElse(null),

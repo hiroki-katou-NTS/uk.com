@@ -1,8 +1,8 @@
 #left-content{
-	margin-top: 15px;
+	margin-top: 0px;
     height: 300px;
     margin-left: 10px;
-	width: 450px;
+	width: 440px;
 }
 
 #app-type{
@@ -10,7 +10,7 @@
 }
 
 #disp-order{
-	margin-top: 20px;
+	margin-top: 5px;
 	margin-left: 15px;
 }
 
@@ -20,8 +20,6 @@
 
 #right-content{
     float: left;
-    margin-left: 30px;
-    margin-top: 50px;
 }
 
 #reason-temp{
@@ -34,5 +32,9 @@
 
 #grid-test-single > tbody > tr> td:nth-child(3){
 	text-align: center !important;
+}
+
+#grid-test-single_scrollContainer {
+	height: 361px !important;
 }
 

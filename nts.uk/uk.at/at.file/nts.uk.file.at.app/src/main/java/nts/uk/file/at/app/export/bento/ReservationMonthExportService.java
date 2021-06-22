@@ -85,7 +85,7 @@ public class ReservationMonthExportService extends ExportService<ReservationMont
 		List<BentoReservation> bentoReservationLst = bentoReservationRepository.findByOrderedPeriodEmpLst(
 				stampCardLst.stream().map(x -> new ReservationRegisterInfo(x.getStampNumber().v())).collect(Collectors.toList()),
 				period,
-				ordered);
+				ordered, companyID);
 
 		if(CollectionUtil.isEmpty(bentoReservationLst)) {
 			throw new BusinessException("Msg_741");

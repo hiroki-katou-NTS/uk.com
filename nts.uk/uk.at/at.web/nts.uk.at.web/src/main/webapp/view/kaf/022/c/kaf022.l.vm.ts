@@ -21,8 +21,8 @@ module nts.uk.at.view.kaf022.l.viewmodel {
         allowRegister: KnockoutObservable<boolean> = ko.observable(true);
 
         itemListD13: KnockoutObservableArray<any> = ko.observableArray([
-            {code: 1, name: getText("KAF022_100")},
-            {code: 0, name: getText("KAF022_101")}
+            {code: 0, name: getText("KAF022_100")},
+            {code: 1, name: getText("KAF022_101")}
         ]);
 
         constructor() {

@@ -142,8 +142,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             ]);
 
             self.roundingRules = ko.observableArray([
-                { code: '0', name: nts.uk.resource.getText('KMK007_19') },
-                { code: '1', name: nts.uk.resource.getText('KMK007_20') }
+                { code: 0, name: nts.uk.resource.getText('KMK007_19') },
+                { code: 1, name: nts.uk.resource.getText('KMK007_20') }
             ]);
 
 
@@ -703,7 +703,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     let specialHlFrames = [];
 
                     _.forEach(data, function(item) {
-                        if (item.deprecateSpecialHd == 0) {
+                        if (item.deprecateSpecialHd == 1) {
                             let specialHlFrame = new ItemModel(item.specialHdFrameNo,
                                 item.specialHdFrameName,
                                 item.deprecateSpecialHd);
@@ -734,7 +734,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 if (data.length != 0) {
                     let listAbsenceFrames = [];
                     _.forEach(data, function(item) {
-                        if (item.deprecateAbsence == 0) {
+                        if (item.deprecateAbsence == 1) {
                             let absenceFrame = new ItemModel(item.absenceFrameNo,
                                 item.absenceFrameName,
                                 item.deprecateAbsence);

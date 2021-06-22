@@ -146,15 +146,12 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		}).collect(Collectors.toList());
 		List<TempAnnualLeaveMngs> lstTmpAnnual = new ArrayList<>();
 		for (DailyInterimRemainMngData remainMng : lstRemainData) {
-			remainMng.getAnnualHolidayData().ifPresent(x -> {
-				TempAnnualLeaveMngs tmpAnnual = x;
-				lstTmpAnnual.add(tmpAnnual);
-			});
+			remainMng.getAnnualHolidayData().forEach(c->lstTmpAnnual.add(c));
 			/*InterimRemain remainData = remainMng.getRecAbsData()
 					.stream()
 					.filter(x -> x.getRemainManaID().equals(annData.getRemainManaID()))
 					.collect(Collectors.toList()).get(0);*/
-			
+
 		}
 
 		//過去月集計モードを判断する
@@ -312,7 +309,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			for (TempAnnualLeaveMngs x : lstTmpAnnual) {
 				DailyInterimRemainMngData remainMng = new DailyInterimRemainMngData();
 				remainMng.setRecAbsData(Arrays.asList(x));
-				remainMng.setAnnualHolidayData(Optional.of(x));
+				remainMng.getAnnualHolidayData().add(x);
 				DailyInterimRemainMngDataAndFlg outData = new DailyInterimRemainMngDataAndFlg(remainMng, false);
 				lstOutputData.add(outData);
 			}
@@ -321,7 +318,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		// 年休フレックス補填分の暫定年休管理データを作成
 		lstOutputData = getAnnualHolidayInterimFlexTime(sid, datePeriod, lstOutputData);
 
-		lstOutputData = lstOutputData.stream().filter(x -> x.getData().getAnnualHolidayData().isPresent()).collect(Collectors.toList());
+		lstOutputData = lstOutputData.stream().filter(x -> !x.getData().getAnnualHolidayData().isEmpty()).collect(Collectors.toList());
 		return lstOutputData;
 	}
 	/**
@@ -346,13 +343,20 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			}
 		}
 		for (DailyInterimRemainMngData x : lstFlex) {
-			double usedDays = x.getAnnualHolidayData().map(annal-> annal.getAppTimeType().map(appTime-> appTime.getAppTimeType().map(time-> Double.valueOf(time.value)).orElse(0d)).orElse(0d)).orElse(0d);
+			if (x.getAnnualHolidayData().isEmpty()) continue;
+			double usedDays = x.getAnnualHolidayData().stream()
+					.filter(c->c.getUsedNumber().isUseDay())
+					.map(c->c.getUsedNumber().getDays().v())
+					.findFirst().orElse(0.0);
 			if(usedDays <= 0) {
 				continue;
 			}
-			if (x.getAnnualHolidayData().isPresent()) {
-			
-			TempAnnualLeaveMngs annualInterim = x.getAnnualHolidayData().get();
+
+
+			TempAnnualLeaveMngs annualInterim = x.getAnnualHolidayData().stream().filter(c->c.getUsedNumber().isUseDay()).findFirst().orElse(null);
+			if(annualInterim==null) {
+				continue;
+			}
 			if(usedDays <= 1.0) {
 				lstOutputData.add(new DailyInterimRemainMngDataAndFlg(x, true));
 				continue;
@@ -376,10 +380,9 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				val usedNumber = LeaveUsedNumber.of(new LeaveUsedDayNumber(usedDays - i >= 1 ? 1.0 : 0.5),
 						Optional.empty(), Optional.empty(), Optional.empty());
 				annualInterimTmp.setUsedNumber(usedNumber);
-				flexTmp.setAnnualHolidayData(Optional.of(annualInterimTmp));
+				flexTmp.getAnnualHolidayData().add(annualInterimTmp);
 
 				lstOutputData.add(new DailyInterimRemainMngDataAndFlg(flexTmp, true));
-				}
 			}
 		}
 		return lstOutputData;
@@ -396,7 +399,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				.mapInterimRemainData(require, cacheCarrier, cid, sid, datePeriod);
 		if(mapRemainData != null) {
 			for (DailyInterimRemainMngData y : mapRemainData) {
-				if(y.getAnnualHolidayData().isPresent()) {
+				if(!y.getAnnualHolidayData().isEmpty()) {
 					DailyInterimRemainMngDataAndFlg outData = new DailyInterimRemainMngDataAndFlg(y, true);
 					lstOutputData.add(outData);
 				}

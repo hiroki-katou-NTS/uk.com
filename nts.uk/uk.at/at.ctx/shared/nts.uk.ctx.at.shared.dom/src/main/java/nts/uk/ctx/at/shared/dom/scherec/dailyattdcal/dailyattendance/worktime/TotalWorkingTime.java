@@ -235,8 +235,7 @@ public class TotalWorkingTime {
 									WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(new AttendanceTime(0), 
 																								new AttendanceTime(0), 
 																								new AttendanceTime(0), 
-																								new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))), 
-																								new AttendanceTime(0)),
+																								new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)))),
 									new ExcessOfStatutoryTimeOfDaily(new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), new AttendanceTime(0)),
 																	 Optional.of(new OverTimeOfDaily(Collections.emptyList(), 
 																			 						 Collections.emptyList(), 
@@ -999,7 +998,8 @@ public class TotalWorkingTime {
 					conditionItem,
 					predetermineTimeSetByPersonInfo,
 					recordClass.getCoreTimeSetting(),
-					NotUseAtr.NOT_USE);
+					NotUseAtr.NOT_USE,
+					Optional.of(recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork()));
 			dailyvacationAddTime = flexTime.getVacationAddTime().valueAsMinutes();
 		}else {
 			//フレックス以外の場合
@@ -1020,7 +1020,8 @@ public class TotalWorkingTime {
 					predetermineTimeSetByPersonInfo,
 					recordClass.getCoreTimeSetting(),
 					HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(recordClass.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()),
-					NotUseAtr.NOT_USE);
+					NotUseAtr.NOT_USE,
+					Optional.of(recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork()));
 			dailyvacationAddTime = workHour.getVacationAddTime().valueAsMinutes();
 		}
 			

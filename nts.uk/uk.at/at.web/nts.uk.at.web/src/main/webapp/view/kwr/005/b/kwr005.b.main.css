@@ -79,3 +79,13 @@
   text-align: right;
   padding-right: 43px;
 }
+.content-left {
+  position: absolute;
+  top: 15px;
+  left: 20px;
+}
+.content-right {
+  position: absolute;
+  top: 15px;
+  left: 360px;
+}

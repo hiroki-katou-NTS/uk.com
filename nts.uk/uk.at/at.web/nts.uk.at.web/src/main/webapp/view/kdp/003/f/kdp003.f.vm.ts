@@ -31,17 +31,25 @@ module nts.uk.at.kdp003.f {
 		employee?: CodeNameData;
 	}
 
-	export type MODE = null | 'admin' | 'employee' | 'fingerVein';
+	export interface NotiModeParam {
+		mode: 'notification';
+		companyId: string;
+		companyDesignation?: boolean;
+	}
+
+	export type MODE = null | 'admin' | 'employee' | 'fingerVein' | 'notification';
 	export type SCREEN_NAME = 'KDP001' | 'KDP002' | 'KDP003' | 'KDP004' | 'KDP005';
 
 	export const LOGINDATA = 'KDP003F_LOGINDATA';
+	const CONTRACTDATA = 'contractInfo';
 
 	export const API = {
 		LOGIN_ADMIN: '/ctx/sys/gateway/kdp/login/adminmode',
 		LOGIN_EMPLOYEE: '/ctx/sys/gateway/kdp/login/employeemode',
 		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting',
 		FINGER_STAMP_SETTING: 'at/record/stamp/finger/get-finger-stamp-setting',
-		CONFIRM_STAMP_INPUT: '/at/record/stamp/employment/system/confirm-use-of-stamp-input'
+		CONFIRM_STAMP_INPUT: '/at/record/stamp/employment/system/confirm-use-of-stamp-input',
+		ROLE: '/ctx/sys/gateway/kdp/login/employeeRoleStamping'
 	};
 
 	@bean()
@@ -55,7 +63,9 @@ module nts.uk.at.kdp003.f {
 
 		parentName: KnockoutObservable<SCREEN_NAME> = ko.observable('KDP003');
 
-		constructor(private params?: AdminModeParam | EmployeeModeParam | FingerVeinModeParam) {
+		contractCd: string = null;
+
+		constructor(private params?: AdminModeParam | EmployeeModeParam | FingerVeinModeParam | NotiModeParam) {
 			super();
 		}
 
@@ -66,6 +76,8 @@ module nts.uk.at.kdp003.f {
 			if (!params) {
 				vm.params = {} as any;
 			} else if (params) {
+				console.log(params);
+				
 				const { companyId, employee } = params as EmployeeModeParam;
 
 				if (companyId) {
@@ -199,75 +211,83 @@ module nts.uk.at.kdp003.f {
 			}
 
 			vm.$blockui('show')
-				.then(() => vm.$ajax(API.COMPANIES))
-				.then((data: CompanyItem[]) => {
-					const valueHasMutated = () => {
-						const companyId = ko.toJS(params.companyId);
-						const exist: CompanyItem = _.find(data, (c) => c.companyId === companyId);
-
-						vm.listCompany(data);
-
-						if (exist) {
-							if (ko.unwrap(model.companyId) !== exist.companyId) {
-								model.companyId(exist.companyId);
-							} else {
-								model.companyId.valueHasMutated();
-							}
-						} else if (data.length === 1) {
-							model.companyId(data[0].companyId);
-						}
-					};
-
-					if (params.mode === 'admin') {
-						let showMsg1527 = false;
-						const parentName = ko.unwrap(vm.parentName);
-
-						switch (parentName) {
-							case 'KDP001':
-								break;
-							case 'KDP002':
-								break;
-							default:
-							case 'KDP003':
-								showMsg1527 = _.every(data, d => d.selectUseOfName === false) || !data.length;
-								break;
-							case 'KDP004':
-								showMsg1527 = _.every(data, d => d.fingerAuthStamp === false) || !data.length;
-								break;
-							case 'KDP005':
-								showMsg1527 = _.every(data, d => d.icCardStamp === false) || !data.length;
-								break;
-						}
-
-						if (showMsg1527 === true) {
-							vm.$dialog
-								.error({ messageId: 'Msg_1527' })
-								.then(() => vm.$window.close({ msgErrorId: 'Msg_1527' }));
-						} else {
-							valueHasMutated();
-						}
-					} else {
-						valueHasMutated();
-					}
-				})
-				.then(() => vm.$ajax('at', API.FINGER_STAMP_SETTING, params))
-				.then((data: a.FingerStampSetting) => {
-					const { stampSetting } = data;
-
-					_.extend(vm.params, {
-						passwordRequired: stampSetting ? stampSetting.passwordRequiredArt : true
-					});
-				})
 				.then(() => {
-					if (vm.params.mode === 'admin') {
-						vm.$window.size.height(270);
-					} else if (vm.params.mode === 'employee') {
-						if (!vm.params.passwordRequired) {
-							vm.$window.size.height(225);
-						} else {
-							vm.$window.size.height(270);
-						}
-					}
+					vm.$window.storage(CONTRACTDATA)
+						.then((data: any) => {
+							if (data) {
+								vm.contractCd = data.contractCode;
+							}
+						})
+						.then(() => vm.$ajax(API.COMPANIES, {contractCode: vm.contractCd}))
+						.then((data: CompanyItem[]) => {
+							const valueHasMutated = () => {
+								const companyId = ko.toJS(params.companyId);
+								const exist: CompanyItem = _.find(data, (c) => c.companyId === companyId);
+
+								vm.listCompany(data);
+
+								if (exist) {
+									if (ko.unwrap(model.companyId) !== exist.companyId) {
+										model.companyId(exist.companyId);
+									} else {
+										model.companyId.valueHasMutated();
+									}
+								} else if (data.length === 1) {
+									model.companyId(data[0].companyId);
+								}
+							};
+
+							if (params.mode === 'admin') {
+								let showMsg1527 = false;
+								const parentName = ko.unwrap(vm.parentName);
+
+								switch (parentName) {
+									case 'KDP001':
+										break;
+									case 'KDP002':
+										break;
+									default:
+									case 'KDP003':
+										showMsg1527 = _.every(data, d => d.selectUseOfName === false) || !data.length;
+										break;
+									case 'KDP004':
+										showMsg1527 = _.every(data, d => d.fingerAuthStamp === false) || !data.length;
+										break;
+									case 'KDP005':
+										showMsg1527 = _.every(data, d => d.icCardStamp === false) || !data.length;
+										break;
+								}
+
+								if (showMsg1527 === true) {
+									vm.$dialog
+										.error({ messageId: 'Msg_1527' })
+										.then(() => vm.$window.close({ msgErrorId: 'Msg_1527' }));
+								} else {
+									valueHasMutated();
+								}
+							} else {
+								valueHasMutated();
+							}
+						})
+						.then(() => vm.$ajax('at', API.FINGER_STAMP_SETTING, params))
+						.then((data: a.FingerStampSetting) => {
+							const { stampSetting } = data;
+
+							_.extend(vm.params, {
+								passwordRequired: stampSetting ? stampSetting.passwordRequiredArt : true
+							});
+						})
+						.then(() => {
+							if (vm.params.mode === 'admin') {
+								vm.$window.size.height(270);
+							} else if (vm.params.mode === 'employee') {
+								if (!vm.params.passwordRequired) {
+									vm.$window.size.height(225);
+								} else {
+									vm.$window.size.height(270);
+								}
+							}
+						})
 				})
 				// get mode from params or set default
 				.always(() => {
@@ -277,18 +297,17 @@ module nts.uk.at.kdp003.f {
 							const cbi = '.ui-igcombo-field';
 							const cbw = '.ui-igcombo-wrapper';
 
-							$(vm.$el).find(`[tabindex]:not(${cbw}):not(${cbi})`).first().focus();
+							//$(vm.$el).find(`[tabindex]:not(${cbw}):not(${cbi})`).first().focus();
+							$("#master-content").find("[tabindex]:not(" + cbw + "):not(" + cbi + ")").first().focus()
 						});
 				});
 
 			$(vm.$el)
-				.on('keyup', '#password-input, #employee-code-inp-2', evt => {					
+				.on('keyup', '#password-input, #employee-code-inp-2', evt => {
 					if (evt.keyCode === 13) {
 						// hook blur for update value from input to model
 						$(evt.target).trigger('blur');
 						const { employeeCode, password } = vm.model;
-
-						console.log(ko.unwrap(employeeCode), ko.unwrap(password));
 
 						if (!!ko.unwrap(employeeCode) && !!ko.unwrap(password)) {
 							vm.submitLogin();
@@ -320,6 +339,13 @@ module nts.uk.at.kdp003.f {
 
 					vm.loginAdmin(LOGIN_EMPLOYEE);
 					break;
+				case 'notification':
+					vm.model.passwordInvalid = false;
+					vm.model.isAdminMode = true;
+					vm.model.runtimeEnvironmentCreate = true;
+
+					vm.loginNoti(LOGIN_ADMIN);
+					break;
 			}
 		}
 
@@ -332,13 +358,17 @@ module nts.uk.at.kdp003.f {
 
 			const message = ko.unwrap(vm.message);
 
+			var dataResultLogin: TimeStampLoginData;
+
+			var roleEmployee: RoleEmployee;
+
 			if (message) {
 				return vm.$dialog.error(message);
 			}
 
 			if (passwordRequired === false) {
 				_.omit(model, ['password']);
-				// note: メニュー別OCD内の記述を移送表に追加する
+			// note: メニュー別OCD内の記述を移送表に追加する
 				model.passwordInvalid = true;
 			}
 
@@ -347,32 +377,8 @@ module nts.uk.at.kdp003.f {
 					if (!valid) {
 						return;
 					}
-
 					vm.$blockui('show')
 						.then(() => vm.$ajax(api, model))
-						.then((response: TimeStampLoginData) => {
-							const { successMsg } = response;
-
-							if (!!successMsg) {
-								return vm.$dialog
-									.info({ messageId: successMsg })
-									.then(() => response);
-							}
-
-							return response;
-						})
-						.then((response: TimeStampLoginData) => {
-							_.extend(response, {
-								companies
-							});
-
-							_.extend(response.em, {
-								password,
-								companyCode
-							});
-
-							vm.$window.close(response);
-						})
 						.fail((response: any) => {
 							const { message, messageId } = response;
 
@@ -381,6 +387,139 @@ module nts.uk.at.kdp003.f {
 							} else {
 								vm.$dialog.error({ messageId });
 							}
+						})
+						.then((response: TimeStampLoginData) => {
+							dataResultLogin = response;
+						})
+						.then(() => {
+							vm.$ajax(API.ROLE)
+								.done((data: RoleEmployee) => {
+									if (data) {
+										roleEmployee = data;
+										if (roleEmployee.employeeReferenceRange == 3) {
+											vm.$dialog.error({ messageId: 'Msg_1887' });
+										}
+									}
+								})
+						})
+						.then(() => {
+							const { successMsg } = dataResultLogin;
+							if (!!successMsg) {
+								return vm.$dialog
+									.info({ messageId: successMsg })
+									.then(() => dataResultLogin);
+							}
+
+							return dataResultLogin;
+						})
+						.then(() => {
+
+							_.extend(dataResultLogin, {
+								companies
+							});
+
+							_.extend(dataResultLogin.em, {
+								password,
+								companyCode
+							});
+							setTimeout(() => {
+								if (roleEmployee) {
+									if (roleEmployee.employeeReferenceRange != 3) {
+										vm.$window.close(dataResultLogin);
+									}
+								}
+							}, 100);
+						})
+						.always(() => vm.$blockui('clear'));
+
+				});
+		}
+
+		loginNoti(api: string) {
+			const vm = this;
+			const { passwordRequired } = vm.params as EmployeeModeParam;
+			const model: ModelData = ko.toJS(vm.model);
+			const { password, companyCode } = model;
+			const companies: CompanyItem[] = ko.unwrap(vm.listCompany);
+
+			const message = ko.unwrap(vm.message);
+
+			var dataResultLogin: TimeStampLoginData;
+
+			var roleEmployee: RoleEmployee;
+
+			if (message) {
+				if (message.messageId !== 'Msg_1645') {
+					return vm.$dialog.error(message);
+				}
+			}
+
+			if (passwordRequired === false) {
+				_.omit(model, ['password']);
+			// note: メニュー別OCD内の記述を移送表に追加する
+				model.passwordInvalid = true;
+			}
+
+			vm.$validate()
+				.then((valid: boolean) => {
+					if (!valid) {
+						return;
+					}
+					if (companyCode === '') {
+						return vm.$dialog.error({ messageId: 'Msg_301' });
+					}
+					vm.$blockui('show')
+						.then(() => vm.$ajax(api, model))
+						.fail((response: any) => {
+
+							const { message, messageId } = response;
+
+							if (!messageId) {
+								vm.$dialog.error(message);
+							} else {
+								vm.$dialog.error({ messageId });
+							}
+						})
+						.then((response: TimeStampLoginData) => {
+							dataResultLogin = response;
+						})
+						.then(() => {
+							vm.$ajax(API.ROLE)
+								.done((data: RoleEmployee) => {
+									if (data) {
+										roleEmployee = data;
+										if (roleEmployee.employeeReferenceRange == 3) {
+											vm.$dialog.error({ messageId: 'Msg_1887' });
+										}
+									}
+								})
+						})
+						.then(() => {
+							const { successMsg } = dataResultLogin;
+							if (!!successMsg) {
+								return vm.$dialog
+									.info({ messageId: successMsg })
+									.then(() => dataResultLogin);
+							}
+
+							return dataResultLogin;
+						})
+						.then(() => {
+							_.extend(dataResultLogin, {
+								companies
+							});
+
+							_.extend(dataResultLogin.em, {
+								password,
+								companyCode
+							});
+							setTimeout(() => {
+								if (roleEmployee) {
+									if (roleEmployee.employeeReferenceRange != 3) {
+										vm.$window.close('loginSuccess');
+									}
+								}
+							}, 100);
 						})
 						.always(() => vm.$blockui('clear'));
 
@@ -478,9 +617,20 @@ module nts.uk.at.kdp003.f {
 		runtimeEnvironmentCreate: boolean;
 	}
 
+	export interface RoleEmployee {
+		roleId: string;
+		roleCode: string;
+		roleType: number;
+		employeeReferenceRange: number;
+		name: string;
+		rolcontractCodeeId: string;
+		assignAtr: number;
+		companyId: string
+	}
+
 	export class Model {
 		// default data;
-		contractCode: string = '000000000000';
+		contractCode: string = '000000000004';
 		passwordInvalid: boolean = false;
 		isAdminMode: boolean = false;
 		runtimeEnvironmentCreate: boolean = true;

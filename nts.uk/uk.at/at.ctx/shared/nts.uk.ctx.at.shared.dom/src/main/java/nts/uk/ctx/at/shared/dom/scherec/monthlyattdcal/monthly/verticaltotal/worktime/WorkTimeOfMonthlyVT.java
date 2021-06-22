@@ -159,7 +159,7 @@ public class WorkTimeOfMonthlyVT implements Serializable{
 	 * @param attendanceTime 日別実績の勤怠時間
 	 */
 	public void aggregate(RequireM1 require, String sid, GeneralDate ymd, 
-			WorkType workType, AttendanceTimeOfDailyAttendance attendanceTime){
+			WorkType workType, AttendanceTimeOfDailyAttendance attendanceTime, String companyID){
 		
 		if (attendanceTime == null) {
 			return;
@@ -181,7 +181,7 @@ public class WorkTimeOfMonthlyVT implements Serializable{
 		this.attendanceLeaveGateTime.aggregate(attendanceTime);
 
 		// ○予約注文の項目集計
-		this.reservation.aggregate(require, sid, ymd);
+		this.reservation.aggregate(require, sid, ymd, companyID);
 
 		// 割増時間の集計
 		this.premiumTime.aggregate(attendanceTime);

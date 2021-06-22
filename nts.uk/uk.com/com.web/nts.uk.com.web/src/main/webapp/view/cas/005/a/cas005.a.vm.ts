@@ -122,8 +122,8 @@ module nts.uk.com.view.cas005.a {
 
                 //switch
                 self.categoryAssign = ko.observableArray([
-                    { code: '0', name: getText('CAS005_35') },
-                    { code: '1', name: getText('CAS005_36') }
+                    { code: 0, name: getText('CAS005_35') },
+                    { code: 1, name: getText('CAS005_36') }
                 ]);
                 self.referenceAuthority = ko.observableArray([
                     { code: '0', name: getText('CAS005_41') },
@@ -325,10 +325,9 @@ module nts.uk.com.view.cas005.a {
                         else {
                             self.createButton();
                         }
-                        dfd.resolve();
                     });
                 });
-
+                dfd.resolve();
                 return dfd.promise();
             }//end start page
 

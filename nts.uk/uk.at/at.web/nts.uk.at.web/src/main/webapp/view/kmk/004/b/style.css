@@ -20,6 +20,7 @@
 	float: left;
 	margin-left: 10px;
 	margin-top: 20px;
+	width: 490px;
 }
 
 .view-c-kmk004 .right-content {
@@ -34,10 +35,13 @@
 
 .view-c-kmk004 .right-content p {
 	font-size: 20px;
+	height: 30px;
 }
 
 .view-c-kmk004 .right-content .name {
 	margin-bottom: 10px;
+	height: 25px;
+	max-height: 25px;
 }
 
 .view-c-kmk004 .right-content .content-data {
@@ -88,6 +92,7 @@
 
 .view-d-kmk004 .right-content p {
 	font-size: 20px;
+	height: 30px;
 }
 
 .view-d-kmk004 .right-content .content-data {
@@ -115,6 +120,7 @@
 
 .view-d-kmk004 .right-content .name {
 	margin-bottom: 10px;
+	height: 25px;
 }
 
 /* View E */
@@ -148,6 +154,7 @@
 
 .view-e-kmk004 .right-content p {
 	font-size: 20px;
+	height: 30px;
 }
 
 .view-e-kmk004 .right-content .content-data {
@@ -175,6 +182,8 @@
 
 .view-e-kmk004 .name {
 	margin-bottom: 10px;
+	height: 25px;
+	max-height: 25px;
 }
 
 /* ListTimeWork */
@@ -318,78 +327,82 @@
 	max-width: 150px;
 }
 
+#year-list_grid_container {
+	height: 113px !important;
+}
+
 .node {
 	color: #0000ff;
 }
 
 
-#list-box_grid col:first-child {
+#year-list_grid col:first-child {
 	width: 20px !important;
 	text-align: center;
 }
 
-#list-box_grid_displayContainer {
+#year-list_grid_displayContainer {
 	max-width: 103px !important;
 }
 
-#list-box_grid_container table {
+#year-list_grid_container table {
 	max-width: 120px !important;
 }
 
-#list-box_grid_container {
+#year-list_grid_container {
 	width: 120px !important;
 }
 
-#list-box_grid_container col:nth-child(2) {
+#year-list_grid_container col:nth-child(2) {
 	width: 83px !important;
 	text-align: center;
 }
 
-#list-box_grid_container col:first-child {
+#year-list_grid_container col:first-child {
 	width: 19px !important;
 	text-align: center;
 }
 
-#list-box_grid_displayContainer {
+#year-list_grid_displayContainer {
 	height: 113px !important;
 }
 
-#list-box_grid_scrollContainer {
+#year-list_grid_scrollContainer {
 	height: 115px !important;
 }
 
-/* #list-box_grid col:first-child {
+/* #year-list_grid col:first-child {
 	width: 20px !important;
 	text-align: center;
 } */
 
-/* #list-box_grid_displayContainer {
+/* #year-list_grid_displayContainer {
 	max-width: 103px !important;
 } */
 
-#list-box_grid_container table {
+#year-list_grid_container table {
 	max-width: 120px !important;
 }
 
-#list-box_grid_container {
+#year-list_grid_container {
 	width: 120px !important;
 }
 
-#list-box_grid_container col:nth-child(2) {
+#year-list_grid_container col:nth-child(2) {
 	width: 83px !important;
 	text-align: center;
 }
 
-#list-box_grid_container col:first-child {
+#year-list_grid_container col:first-child {
 	width: 19px !important;
 	text-align: center;
 }
 
-#list-box_grid_displayContainer {
+#year-list_grid_displayContainer {
 	height: 113px !important;
 }
 
-#list-box_grid_scrollContainer {
+#year-list_grid_scrollContainer {
 	height: 115px !important;
 }
 

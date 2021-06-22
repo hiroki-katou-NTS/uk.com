@@ -23,7 +23,10 @@ module nts.uk.ui.jqueryExtentions {
             $button.attr("tabindex", tabIndex).click(function(evt){       
                 $languageSelect.append("<div class='language_body'><div class='language_select_contents'/><div id='functions-area-bottom'/></div>");
                 let $functionArea = $languageSelect.find("#functions-area-bottom");
+                $functionArea.css({'display': 'flex', 'justify-content': 'center'});
+
                 let $language = $languageSelect.find(".language_select_contents");
+                $language.css({'margin': '0 20px'});
                 
                 $functionArea.append("<button class='ntsButton ntsSelect large proceed'/><button class='ntsButton ntsClose large'/>");
                 $language.append("<table><tbody><tr><td><div class='form-label'><label><span>言語</span></label></div></td>"

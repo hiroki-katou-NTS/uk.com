@@ -1,8 +1,8 @@
 #ruredLine{
     height: 1px;
     background-color: #7f7f7f;
-    width: 20%;
     margin-bottom: 12px;
+    width: 792px;
 }
 
 .m1 {
@@ -19,6 +19,14 @@
     height: auto !important;
 }
 
+#kaf020-component #kaf020-fixed-table .nts-input {
+    width: 87px;
+}
+
 #kaf020-component .nts-fixed-table .nts-fixed-body-container {
-    border-bottom-width:0px;
+    border-bottom-width:0;
+}
+
+#kaf020-component .table-name {
+    max-width: 120px;
 }

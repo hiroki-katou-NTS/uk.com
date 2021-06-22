@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
  *
  */
 @Getter
-public class TimeDivergenceWithCalculation {
+public class TimeDivergenceWithCalculation implements Cloneable{
 	//時間
 	@Setter
 	private AttendanceTime time;
@@ -54,6 +54,11 @@ public class TimeDivergenceWithCalculation {
 	public static TimeDivergenceWithCalculation defaultValue() {
 		return new TimeDivergenceWithCalculation(AttendanceTime.ZERO, AttendanceTime.ZERO);
 		
+	}
+	
+	public void resetDefaultValue() {
+		this.time = AttendanceTime.ZERO;
+		this.calcTime = AttendanceTime.ZERO;
 	}
 	
 	/**
@@ -108,6 +113,10 @@ public class TimeDivergenceWithCalculation {
 		this.calcDiv();
 	}
 	
+	public void addMinutesNotReturn(TimeDivergenceWithCalculation timeCalc) {
+		addMinutesNotReturn(timeCalc.getTime(), timeCalc.getCalcTime());
+	}
+	
 	/**
 	 * 受け取った時間を今持っている時間に加算する
 	 * @param time 時間
@@ -151,5 +160,11 @@ public class TimeDivergenceWithCalculation {
 		if (this.divergenceTime.valueAsMinutes() < 0){
 			this.divergenceTime = new AttendanceTimeOfExistMinus(0);
 		}
+	}
+	
+	@Override
+	public TimeDivergenceWithCalculation clone() {
+		return new TimeDivergenceWithCalculation(new AttendanceTime(time.v()), new AttendanceTime(calcTime.v()),
+				new AttendanceTimeOfExistMinus(divergenceTime.v()));
 	}
 }

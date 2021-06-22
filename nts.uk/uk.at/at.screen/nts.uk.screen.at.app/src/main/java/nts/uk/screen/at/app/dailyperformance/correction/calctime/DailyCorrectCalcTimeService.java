@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,15 +22,19 @@ import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DailyModifyRCResu
 import nts.uk.ctx.at.record.app.command.dailyperform.correctevent.EventCorrectResult;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceDto;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtilRes;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
@@ -66,6 +71,9 @@ public class DailyCorrectCalcTimeService {
 	
 	@Inject
 	private ICorrectionAttendanceRule iRule;
+	
+	@Inject
+	private OptionalItemRepository optionalMasterRepo;
 
 	public DCCalcTime calcTime(List<DailyRecordDto> dailyEdits, List<DPItemValue> itemEdits, Boolean changeSpr31,
 			Boolean changeSpr34,  boolean notChangeCell) {
@@ -134,12 +142,16 @@ public class DailyCorrectCalcTimeService {
 
 		// AttendanceItemUtil.fromItemValues(dtoEdit, Arrays.asList(itemBase));
 		//AttendanceItemUtil.fromItemValues(dtoEdit, itemValues);
+
+		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
+				.findAll(AppContexts.user().companyId()).stream()
+				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
 		
 		dailyModifyResFacade.createStampSourceInfo(dtoEdit, Arrays.asList(new DailyModifyQuery(dtoEdit.getEmployeeId(), dtoEdit.getDate(), itemValues)));
 
-		DailyRecordDto dailyBeforeEdit =  DailyRecordDto.from(dtoEdit.toDomain(dtoEdit.getEmployeeId(), dtoEdit.getDate()));
+		DailyRecordDto dailyBeforeEdit =  DailyRecordDto.from(dtoEdit.toDomain(dtoEdit.getEmployeeId(), dtoEdit.getDate()), optionalMaster);
 		
-		val changeSetting = new ChangeDailyAttendance(false, false, false, true, ScheduleRecordClassifi.RECORD);
+		val changeSetting = new ChangeDailyAttendance(false, false, false, true, ScheduleRecordClassifi.RECORD, false);
 		if(itemEdits.stream().filter(x -> DPText.ITEM_WORKINFO_CHANGE.contains(x.getItemId())).findFirst().isPresent()) {
 			changeSetting.setWorkInfo(true);
 		}
@@ -148,7 +160,7 @@ public class DailyCorrectCalcTimeService {
 		}
 		
 		IntegrationOfDaily domainEdit = iRule.process(dtoEdit.toDomain(dtoEdit.getEmployeeId(), dtoEdit.getDate()), changeSetting);
-		dtoEdit = DailyRecordDto.from(domainEdit);
+		dtoEdit = DailyRecordDto.from(domainEdit, optionalMaster);
 		List<ItemValue> items = new ArrayList<ItemValue>();
 		DailyRecordDto resultBaseDtoTemp = dtoEdit;
 		if (AppContexts.optionLicense().customize().ootsuka()) {
@@ -191,8 +203,8 @@ public class DailyCorrectCalcTimeService {
 	}
 
 	private List<ItemValue> getItemCorrect(DailyRecordDto dailyBeforeEdit, DailyRecordDto dailyAfterEdit ) {
-		List<ItemValue> canBeCorrected = AttendanceItemUtil.toItemValues(dailyAfterEdit);
-		List<ItemValue> beforeCorrect = AttendanceItemUtil.toItemValues(dailyBeforeEdit);
+		List<ItemValue> canBeCorrected = AttendanceItemUtilRes.collect(dailyAfterEdit, AttendanceItemType.DAILY_ITEM);
+		List<ItemValue> beforeCorrect = AttendanceItemUtilRes.collect(dailyBeforeEdit, AttendanceItemType.DAILY_ITEM);
 		canBeCorrected.removeAll(beforeCorrect);
 		return canBeCorrected;
 	}
@@ -270,7 +282,8 @@ public class DailyCorrectCalcTimeService {
 
 	private void checkInput28And1(DailyRecordDto dailyEdit, List<DPItemValue> itemEditCalc) {
 		DailyModifyResult updated = DailyModifyResult.builder().employeeId(dailyEdit.getEmployeeId())
-				.workingDate(dailyEdit.getDate()).items(AttendanceItemUtil.toItemValues(dailyEdit)).completed();
+				.workingDate(dailyEdit.getDate()).items(AttendanceItemUtilRes.collect(dailyEdit, AttendanceItemType.DAILY_ITEM))
+				.completed();
 		List<DPItemValue> resultError = validatorDataDaily.checkInput28And1(itemEditCalc, Arrays.asList(updated));
 		if (!resultError.isEmpty())
 			throw new BusinessException(resultError.get(0).getMessage());
