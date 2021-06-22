@@ -34,12 +34,13 @@ module nts.uk.com.view.cmf003.i {
       const vm = this;
       vm.$blockui("grayout");
       vm.getAllData().always(() => vm.$blockui("clear"));
-
+     
       //Init enum
       const enums = (__viewContext as any).enums;
       vm.companyManageClassification(_.reverse(enums.ManagementDistinction));
       vm.lstCarryOverDeadline(enums.PublicHolidayCarryOverDeadline);
       vm.lstManagementPeriod(enums.PublicHolidayPeriod);
+       $("#managePubHDDiv").focus();
     }
 
     private getAllData(): JQueryPromise<any> {
