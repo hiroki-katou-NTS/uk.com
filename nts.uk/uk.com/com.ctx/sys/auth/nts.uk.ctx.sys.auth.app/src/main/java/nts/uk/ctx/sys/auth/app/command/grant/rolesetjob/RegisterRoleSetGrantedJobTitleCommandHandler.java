@@ -40,14 +40,17 @@ public class RegisterRoleSetGrantedJobTitleCommandHandler extends CommandHandler
 	}
 
 	private void add(RoleSetGrantedJobTitleCommand command, String companyId) {
-		RoleSetGrantedJobTitle domain = new RoleSetGrantedJobTitle(companyId, command.isApplyToConcurrentPerson(),
-				command.getDetails().stream().map(item -> new RoleSetGrantedJobTitleDetail(item.getRoleSetCd(), item.getJobTitleId(), companyId))
+		RoleSetGrantedJobTitle domain = new RoleSetGrantedJobTitle(companyId
+				//TODO 「兼務者にも適用する」を消す ので、この辺↓（command.isApplyToConcurrentPerson()）は削除お願いいたします。
+				//, command.isApplyToConcurrentPerson()
+				, command.getDetails().stream().map(item -> new RoleSetGrantedJobTitleDetail(item.getRoleSetCd(), item.getJobTitleId(), companyId))
 						.collect(Collectors.toList()));
 		roleSetJobRepo.insert(domain);
 	}
 
 	private void update(RoleSetGrantedJobTitle domain, RoleSetGrantedJobTitleCommand command) {
-		domain.setApplyToConcurrentPerson(command.isApplyToConcurrentPerson());
+		//TODO 「兼務者にも適用する」を消す ので、この辺↓（command.isApplyToConcurrentPerson()）は削除お願いいたします。
+		//domain.setApplyToConcurrentPerson(command.isApplyToConcurrentPerson());
 		domain.setDetails(
 				command.getDetails().stream().map(item -> new RoleSetGrantedJobTitleDetail(item.getRoleSetCd(),
 						item.getJobTitleId(), domain.getCompanyId())).collect(Collectors.toList()));

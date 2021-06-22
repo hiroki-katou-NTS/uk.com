@@ -38,7 +38,7 @@ public class RoleSetGrantedPublisherImpl implements RoleSetGrantedPublisher {
 				.map(d -> new RoleSetGrantedJobTitleDetailDto(d.getRoleSetCd().v(), 
 						d.getJobTitleId(), d.getCompanyId()))
 				.collect(Collectors.toList());
-			return new RoleSetGrantedJobTitleDto(j.getCompanyId(), j.isApplyToConcurrentPerson(), details);
+			return new RoleSetGrantedJobTitleDto(j.getCompanyId(), details);
 		});
 	}
 

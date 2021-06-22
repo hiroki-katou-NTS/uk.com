@@ -291,70 +291,52 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 		if (roleSetOpt.isPresent()) {
 			switch (roleType) {
 			case 3: // EMPLOYMENT
-				// TODO 就業ロール StringからOptional<String>を変更したので、修正お願いいたします。
-				/*	
-			 	String employmentRoleId = roleSetOpt.get().getEmploymentRoleId();
-				if (StringUtil.isNullOrEmpty(employmentRoleId, true)) {
+				Optional<String> employmentRoleId = roleSetOpt.get().getEmploymentRoleId();
+				if (!employmentRoleId.isPresent()) {
 					return null;
 				}
 				
-				result = new RollInformationExport(false, employmentRoleId);*/
+				result = new RollInformationExport(false, employmentRoleId.get());
 				return result;
 
 			case 4: // SALARY
-				//TODO 給与ロールStringからOptional<String>を変更したので、修正お願いいたします。
-				/*				
-  				String salaryRoleId = roleSetOpt.get().getSalaryRoleId();
-				if (StringUtil.isNullOrEmpty(salaryRoleId, true)) {
-					return null;
+				Optional<String> salaryRoleId = roleSetOpt.get().getSalaryRoleId();
+				if (salaryRoleId.isPresent()) {
+					return new RollInformationExport(false, salaryRoleId.get());
 				}
-				
-				result = new RollInformationExport(false, salaryRoleId);*/
-				return result;
+				return null;
 				
 			case 5: // HUMAN_RESOURCE
-				//TODO オフィスヘルパーロールStringからOptional<String>を変更したので、修正お願いいたします。
-				/*				
-				String hRRoleId = roleSetOpt.get().getHRRoleId();
-				if (StringUtil.isNullOrEmpty(hRRoleId, true)) {
-					return null;
+				Optional<String> hRRoleId = roleSetOpt.get().getHRRoleId();
+				if (hRRoleId.isPresent()) {
+					return new RollInformationExport(false, hRRoleId.get());
 				}
 				
-				result = new RollInformationExport(false, hRRoleId);*/
-				return result;
+				return null;
 				
 			case 6: // OFFICE_HELPER
-				//TODO 人事ロールStringからOptional<String>を変更したので、修正お願いいたします。
-				/*	
-				String officeHelperRoleId = roleSetOpt.get().getOfficeHelperRoleId();
-				if (StringUtil.isNullOrEmpty(officeHelperRoleId, true)) {
-					return null;
+				Optional<String> officeHelperRoleId = roleSetOpt.get().getOfficeHelperRoleId();
+				if (officeHelperRoleId.isPresent()) {
+					return new RollInformationExport(false, officeHelperRoleId.get());
 				}
 				
-				result = new RollInformationExport(false, officeHelperRoleId);*/
-				return result;
+				return null;
 				
 			case 7: // MY_NUMBER
-				//TODO マイナンバーロールStringからOptional<String>を変更したので、修正お願いいたします。
-				/*
-				String myNumberRoleId = roleSetOpt.get().getMyNumberRoleId();
-				if (StringUtil.isNullOrEmpty(myNumberRoleId, true)) {
-					return null;
+				Optional<String> myNumberRoleId = roleSetOpt.get().getMyNumberRoleId();
+				if (myNumberRoleId.isPresent()) {
+					return new RollInformationExport(false, myNumberRoleId.get());
 				}
 				
-				result = new RollInformationExport(false, myNumberRoleId);*/
-				return result;
+				return null;
 				
 			case 8: // PERSONAL_INFO
-				//TODO 個人情報ロールStringからOptional<String>を変更したので、修正お願いいたします。
-				/*				
-				String personInfRoleId = roleSetOpt.get().getPersonInfRoleId();
-				if (StringUtil.isNullOrEmpty(personInfRoleId, true)) {
-					return null;
+				Optional<String> personInfRoleId = roleSetOpt.get().getPersonInfRoleId();
+				if (personInfRoleId.isPresent()) {
+					return new RollInformationExport(false, personInfRoleId.get());
 				}
 				
-				result = new RollInformationExport(false, personInfRoleId);*/
-				return result;
+				return null;
 
 			default:
 				return null;
@@ -374,21 +356,40 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 	@Override
 	public Optional<RoleSetExport> getRoleSetFromUserId(String userId, GeneralDate baseDate) {
 		Optional<RoleSet> roleSetOpt =  roleSetService.getRoleSetFromUserId( userId,  baseDate);
-		// TODO 就業ロール, 個人情報ロール, 給与ロール, 人事ロール, マイナンバーロール, オフィスヘルパーロール StringからOptional<String>を変更したので、修正お願いいたします。		
-		/*
- 		return roleSetOpt.map(dto -> new RoleSetExport(
-					dto.getRoleSetCd().v(),
-					dto.getCompanyId(),
-					dto.getRoleSetName().v(),
-					dto.getApprovalAuthority().value,
-					dto.getOfficeHelperRoleId(),
-					dto.getMyNumberRoleId(),
-					dto.getHRRoleId(),
-					dto.getPersonInfRoleId(),
-					dto.getEmploymentRoleId(),
-					dto.getSalaryRoleId()
-					));*/
-		return Optional.empty();
+ 		return roleSetOpt.map(domain -> convertToDto(domain));
 	}
+	
+	private RoleSetExport convertToDto(RoleSet domain) {
+		RoleSetExport roleSetExport = new RoleSetExport();
+		roleSetExport.setCompanyId(domain.getCompanyId());
+		roleSetExport.setRoleSetCd(domain.getRoleSetCd().v());
+		roleSetExport.setRoleSetName(domain.getRoleSetName().v());
+		roleSetExport.setApprovalAuthority(domain.getApprovalAuthority().value);
+		
+		if(domain.getEmploymentRoleId().isPresent()) {
+			roleSetExport.setEmploymentRoleId(domain.getEmploymentRoleId().get());
+		}
+		
+		if(domain.getPersonInfRoleId().isPresent()) {
+			roleSetExport.setPersonInfRoleId(domain.getPersonInfRoleId().get());
+		}
+		
+		if(domain.getHRRoleId().isPresent()) {
+			roleSetExport.setHRRoleId(domain.getHRRoleId().get());
+		}
+		
+		if(domain.getSalaryRoleId().isPresent()) {
+			roleSetExport.setSalaryRoleId(domain.getSalaryRoleId().get());
+		}
+		
+		if(domain.getMyNumberRoleId().isPresent()) {
+			roleSetExport.setMyNumberRoleId(domain.getMyNumberRoleId().get());
+		}
+		
+		if(domain.getOfficeHelperRoleId().isPresent()) {
+			roleSetExport.setOfficeHelperRoleId(domain.getOfficeHelperRoleId().get());
+		}
+    	return roleSetExport;
+    }
 
 }

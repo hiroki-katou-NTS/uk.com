@@ -54,15 +54,21 @@ public class SacmtRoleSetGrantedJobTitle extends ContractUkJpaEntity implements 
 	}
 	
 	public static RoleSetGrantedJobTitle toDomain(SacmtRoleSetGrantedJobTitle entity) {
-		return new RoleSetGrantedJobTitle(entity.companyId, entity.applyToConcurrentPerson, entity.details.stream()
+		
+		return new RoleSetGrantedJobTitle(entity.companyId
+				//TODO 「兼務者にも適用する」を消す ので、この辺↓（entity.applyToConcurrentPerson）は削除お願いいたします。
+				//, entity.applyToConcurrentPerson
+				, entity.details.stream()
 				.map(item -> new RoleSetGrantedJobTitleDetail(item.roleSetCd,
 						item.roleSetGrantedJobTitleDetailPK.jobTitleId, item.roleSetGrantedJobTitleDetailPK.companyId))
 				.collect(Collectors.toList()));
 	}
 
 	public static SacmtRoleSetGrantedJobTitle toEntity(RoleSetGrantedJobTitle domain) {
-		return new SacmtRoleSetGrantedJobTitle(domain.getCompanyId(), domain.isApplyToConcurrentPerson(),
-				domain.getDetails().stream().map(item -> new SacmtRoleSetGrantedJobTitleDetail(item.getRoleSetCd().v(),
+		return new SacmtRoleSetGrantedJobTitle(domain.getCompanyId()
+				//TODO 「兼務者にも適用する」を消す ので, 一旦trueを渡す, entityを変更するとき、値[true]は削除お願いいたします。
+				, true
+				, domain.getDetails().stream().map(item -> new SacmtRoleSetGrantedJobTitleDetail(item.getRoleSetCd().v(),
 						item.getJobTitleId(), item.getCompanyId())).collect(Collectors.toList()));
 	}
 

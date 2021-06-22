@@ -17,6 +17,7 @@ public class RoleSetGrantedJobTitleDto {
 
 	// private String companyId;
 
+	//TODO 「兼務者にも適用する」を消す ので, 「applyToConcurrentPerson」は削除お願いいたします。
 	private boolean applyToConcurrentPerson;
 
 	private List<RoleSetGrantedJobTitleDetailDto> details;
@@ -29,8 +30,12 @@ public class RoleSetGrantedJobTitleDto {
 	}
 
 	public static RoleSetGrantedJobTitleDto fromDomain(RoleSetGrantedJobTitle domain) {
-		return new RoleSetGrantedJobTitleDto(domain.isApplyToConcurrentPerson(), domain.getDetails().stream()
-				.map(detail -> RoleSetGrantedJobTitleDetailDto.fromDomain(detail)).collect(Collectors.toList()));
+		return new RoleSetGrantedJobTitleDto(
+				//TODO 「兼務者にも適用する」を消す ので, 一旦trueを渡す, このクラスは属性「applyToConcurrentPerson」を削除するとき、値[true]は削除お願いいたします。
+				//domain.isApplyToConcurrentPerson()
+				true
+				, domain.getDetails().stream()
+										.map(detail -> RoleSetGrantedJobTitleDetailDto.fromDomain(detail)).collect(Collectors.toList()));
 	}
 
 }

@@ -13,7 +13,5 @@ public class RoleSetGrantedJobTitleDto {
 
 	private String companyId;
 
-	private boolean applyToConcurrentPerson;
-
 	private List<RoleSetGrantedJobTitleDetailDto> details;
 }

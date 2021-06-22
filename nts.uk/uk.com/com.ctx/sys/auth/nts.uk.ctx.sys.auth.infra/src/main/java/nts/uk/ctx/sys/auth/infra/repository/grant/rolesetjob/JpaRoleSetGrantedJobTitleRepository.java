@@ -63,7 +63,8 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 	public void update(RoleSetGrantedJobTitle domain) {
 		SacmtRoleSetGrantedJobTitle entity = this.queryProxy()
 				.find(domain.getCompanyId(), SacmtRoleSetGrantedJobTitle.class).get();
-		entity.applyToConcurrentPerson = domain.isApplyToConcurrentPerson();
+		//TODO 「兼務者にも適用する」を消す ので, 「entity.applyToConcurrentPerson」は削除お願いいたします。
+		//entity.applyToConcurrentPerson = domain.isApplyToConcurrentPerson();
 		List<SacmtRoleSetGrantedJobTitleDetail> oldDetails = entity.details;
 		List<SacmtRoleSetGrantedJobTitleDetail> newDetails = domain.getDetails().stream()
 				.map(item -> new SacmtRoleSetGrantedJobTitleDetail(item.getRoleSetCd().v(), item.getJobTitleId(),
