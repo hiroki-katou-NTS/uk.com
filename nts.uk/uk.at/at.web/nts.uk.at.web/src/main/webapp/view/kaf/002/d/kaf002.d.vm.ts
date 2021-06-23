@@ -8,9 +8,9 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 <div id="kaf002-d">
 	<div id="contents-area"
 		style="background-color: inherit; height: calc(100vh - 137px);">
-		<div class="two-panel" style="height: 100%; width: 1260px">
+		<div class="two-panel" style="height: 100%; width: 1230px">
 			<div class="left-panel"
-				style="padding-bottom: 5px; width: calc(1260px - 388px); height: inherit;">
+				style="padding-bottom: 5px; width: calc(1230px - 350px); height: inherit;">
 				<div
 					style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding: 10px;">
 					<div class="table"
@@ -118,9 +118,9 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 				</div>
 			</div>
 			<div class="right-panel"
-				style="width: 388px; padding-bottom: 5px; height: inherit; overflow-y: auto; padding-right: 0px">
+				style="width: 350px; padding-bottom: 5px; height: inherit; overflow-y: auto; padding-right: 0px">
 				<div
-					style="height: inherit; background-color: #fff; padding: 0px 10px;">
+					style="border: 1px solid #CCC; height: inherit; background-color: #fff; padding: 0px 10px;">
 					<div style="padding-top: 10px"
 						data-bind="component: { name: 'kaf000-b-component1', 
                             params: {
