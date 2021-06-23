@@ -2990,11 +2990,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			} else {
 				if (self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime1 == param[0] * 5 + self.dispStartHours * 60) return;
 			}
+			
 			if (self.checkDisByDate == false || self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed == 1)
 				return;
 				
-			if(_.isEmpty($("#extable-ksu003").data("errors")))
-			self.enableSave(true);
+			if(_.isEmpty($("#extable-ksu003").data("errors"))){
+				self.enableSave(true);
+			} else {
+				$("#label-display").trigger("click");
+			}
 			
 			let startMinute = duration.create(param[0] * 5 + self.dispStart * 5).text,
 			endMinute = duration.create(param[1] * 5 + self.dispStart * 5).text,
@@ -3382,7 +3386,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		setPositionButonDownAndHeightGrid() {
 			let self = this;
 			$("#extable-ksu003").exTable("setHeight", 10 * 30 + 18);
-			$(".toDown").css({ "margin-top": 10 * 30 + 8 + 'px' });
+			$(".toDown").css({ "margin-top": 10 * 30 + 10 + 'px' });
 			if (self.initDispStart != 0)
 				$("#extable-ksu003").exTable("scrollBack", 0, { h: (self.initDispStart * 42 - self.dispStartHours * 42) + 5 });
 			else
@@ -3398,7 +3402,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		leftHide() {
 			let self = this;
 			if (self.showA9) $("#extable-ksu003").exTable("hideMiddle");
-			if (window.outerWidth < 1920) $(".toLeft").css("margin-left", 193 + 'px');
+			if (window.outerWidth < 1920) $(".toLeft").css("margin-left", 188 + 'px');
 			if (window.outerWidth >= 1920) $(".toLeft").css('margin-left', 188 + 'px');
 			if (window.innerHeight < 700) {
 				$(".ex-header-detail").css({ "width": 1008 + 'px' });
@@ -3413,7 +3417,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (window.outerWidth < 1920) {
 				$(".toLeft").css("margin-left", 592 + 'px');
 				if (self.dataScreen003A().targetInfor == 0) {
-					$(".toLeft").css("margin-left", 509 + 'px');
+					$(".toLeft").css("margin-left", 505 + 'px');
 				}
 			}
 			if (self.showA9) {
@@ -3461,29 +3465,29 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			$("#master-wrapper").css({ 'overflow-x': 'hidden' });
 			if (self.indexBtnToDown() % 2 == 0) {
 				$("#extable-ksu003").exTable("setHeight", exTableHeight);
-				$(".toDown").css('margin-top', exTableHeight - 8 + 'px');
+				$(".toDown").css('margin-top', exTableHeight - 6 + 'px');
 				$("#contents-area").css({ 'overflow-x': 'hidden' });
 				$("#contents-area").css({ 'overflow-y': 'auto' });
 				$("#note-color").css("margin-right", "6px")
-				if (window.innerWidth >= 1320) {
+				if (window.innerWidth >= 1340) {
 					$("#A1_4").css("margin-right", "0px")
 					$("#note-color").css("margin-right", "6px")
 				}
 			} else {
 				exTableHeight = 10 * 30 + 18;
 				$("#extable-ksu003").exTable("setHeight", exTableHeight);
-				$(".toDown").css('margin-top', exTableHeight - 8 + 'px');
+				$(".toDown").css('margin-top', exTableHeight - 6 + 'px');
 				$("#contents-area").css({ 'overflow-x': 'hidden' });
 				$("#contents-area").css({ 'overflow-y': 'hidden' });
 				$("#note-color").css("margin-right", "23px")
 				if (navigator.userAgent.indexOf("Chrome") == -1) {
 					$("#master-wrapper").css({ 'overflow-y': 'hidden' });
 				}
-
-				if (window.innerWidth >= 1320) {
+				
+				if (window.innerWidth >= 1340) {
 					/*$("#A1_4").css("margin-right", "20px")
 					$("#note-color").css("margin-right", "23px")*/
-				}
+				} 
 			}
 			self.indexBtnToDown(self.indexBtnToDown() + 1);
 		}

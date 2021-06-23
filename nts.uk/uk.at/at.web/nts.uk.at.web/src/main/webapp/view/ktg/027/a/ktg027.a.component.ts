@@ -355,7 +355,7 @@ module nts.uk.at.view.ktg027.a {
                     vm.targetYear
                         .subscribe((ym: string | null) => {
                             vm.$validate('#ktg027-datepick').then(valid => {
-                                if (!valid) return;
+                                if (!valid || _.isEmpty(ym)) return;
 
                                 if (typeof ym === 'string') {
                                     vm.$window.storage('KTG027_TARGET', {

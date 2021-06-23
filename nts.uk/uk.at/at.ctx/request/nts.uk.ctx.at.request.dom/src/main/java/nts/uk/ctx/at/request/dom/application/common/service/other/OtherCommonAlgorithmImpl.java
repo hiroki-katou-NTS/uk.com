@@ -296,14 +296,14 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		// ドメインモデル「申請メール設定」を取得する(get domain model 「」)
 		AppEmailSet appEmailSet = appEmailSetRepository.findByDivision(Division.APPLICATION_APPROVAL);
 		// アルゴリズム「承認者へ送る」を実行する(thực hiện thuật toán 「Gửi tới người phê duyệt」)
-		MailResult mailResult = sendMailApprover(employeeIDList, application, appEmailSet.getEmailContentLst().get(0).getOpEmailText().map(x -> x.v()).orElse(""));
+		MailResult mailResult = sendMailApprover(employeeIDList, application, appEmailSet.getEmailContentLst().get(0).getOpEmailText().map(x -> x.v()).orElse(""), "");
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application) {
+	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application, String content) {
 		String inputText = I18NText.getText("Msg_1262",Collections.emptyList());
 		// アルゴリズム「承認者へ送る」を実行する (Thực hiện thuật toán "Gửi tới người phê duyệt")
-		MailResult mailResult = sendMailApprover(employeeIDList, application, inputText);
+		MailResult mailResult = sendMailApprover(employeeIDList, application, inputText, content);
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
@@ -319,7 +319,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		return new MailResult(mailResult.getSuccessList(), mailResult.getFailList(), mailResult.getFailServerList());
 	}
 	@Override
-	public MailResult sendMailApprover(List<String> listDestination, Application application, String text) {
+	public MailResult sendMailApprover(List<String> listDestination, Application application, String text, String content) {
 		List<String> successList = new ArrayList<>();
 		List<String> failList = new ArrayList<>();
 		List<String> failServerList = new ArrayList<>();
@@ -371,7 +371,10 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 						employeeID);
 			};
 			// メール送信時申請内容の作成
-			String appContent = applicationContentService.getApplicationContent(application);
+			String appContent = content; 
+			if(Strings.isBlank(appContent)) {
+				applicationContentService.getApplicationContent(application);
+			} 
 			// 申請を差し戻すメール本文の編集
 			String newText = Strings.isNotBlank(URL) ? text + "\n" + URL : text;
 			String appName = application.getAppType().name;
