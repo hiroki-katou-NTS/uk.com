@@ -39,6 +39,7 @@ import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.*;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.ComplileInPeriodOfSpecialLeaveAdapter;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialVacationImported;
+import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialVacationImportedKdr;
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.ReserveHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.ReservedYearHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.RsvLeaUsedCurrentMonImported;
@@ -514,7 +515,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         }
         // hoatt
         Map<Integer, SpecialVacationImported> mapSpecVaca = new HashMap<>();
+        Map<Integer, SpecialVacationImportedKdr> map273New = new HashMap<>();
         Map<YearMonth, Map<Integer, SpecialVacationImported>> lstMapSPVaCurrMon = new HashMap<>();// key
+        Map<YearMonth, Map<Integer, SpecialVacationImportedKdr>> lstMap273CurrMon = new HashMap<>();// key
         // ym,
         // values:
         Map<Integer, List<SpecialHolidayImported>> mapSpeHd = new HashMap<>();
@@ -528,6 +531,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             }
             for (YearMonth ym : lstMon) {// year mon
                 Map<Integer, SpecialVacationImported> mapSPVaCurrMon = new HashMap<>();
+                Map<Integer, SpecialVacationImportedKdr> mapSP273CurrMon = new HashMap<>();
                 for (SpecialHoliday specialHolidayDto : variousVacationControl.getListSpecialHoliday()) {// sphdCd
                     int sphdCode = specialHolidayDto.getSpecialHolidayCode().v();
                     YearMonth ymEnd = ym.addMonths(1);
@@ -536,9 +540,18 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                             new DatePeriod(GeneralDate.ymd(ym.year(), ym.month(), 1),
                                     GeneralDate.ymd(ymEnd.year(), ymEnd.month(), 1).addDays(-1)),
                             false, baseDate, sphdCode, false);
+
+                    SpecialVacationImportedKdr spVaImportedNew = specialLeaveAdapter.get273New(cId,
+                            employeeId,
+                            new DatePeriod(GeneralDate.ymd(ym.year(), ym.month(), 1),
+                                    GeneralDate.ymd(ymEnd.year(), ymEnd.month(), 1).addDays(-1)),
+                            false, baseDate, sphdCode, false);
+
                     mapSPVaCurrMon.put(sphdCode, spVaImported);
+                    mapSP273CurrMon.put(sphdCode, spVaImportedNew);
                 }
                 lstMapSPVaCurrMon.put(ym, mapSPVaCurrMon);
+                lstMap273CurrMon.put(ym, mapSP273CurrMon);
             }
         }
         for (SpecialHoliday specialHolidayDto : variousVacationControl.getListSpecialHoliday()) {
@@ -546,10 +559,11 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             // Call RequestList273
             SpecialVacationImported specialVacationImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(cId,
                     employeeId, closureInforOpt.get().getPeriod(), false, baseDate, sphdCode, false);
+           SpecialVacationImportedKdr specialVacationImportedNew = specialLeaveAdapter.get273New(cId,
+                    employeeId, closureInforOpt.get().getPeriod(), false, baseDate, sphdCode, false);
             mapSpecVaca.put(sphdCode, specialVacationImported);
-
+            map273New.put(sphdCode, specialVacationImportedNew);
             // Call RequestList263 ver2 -
-
             if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
                 List<SpecialHolidayImported> specialHolidayList = specialLeaveAdapter.getSpeHoliOfConfirmedMonthly(
                         employeeId, startDate.yearMonth(), currentMonth.previousMonth(), Arrays.asList(sphdCode));
@@ -662,7 +676,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 listCurrentHoliday, listStatusHoliday, listCurrentHolidayRemain, listStatusOfHoliday, mapSpecVaca,
                 lstMapSPVaCurrMon, mapSpeHd, childNursingLeave, nursingLeave, currentHolidayLeft,
                 currentHolidayRemainLeft, substituteHolidayAggrResult, subVaca, aggrResultOfHolidayOver60h,getRs363,
-                getSpeHdOfConfMonVer2,substituteHolidayAggrResultsRight,closureInforOpt);
+                getSpeHdOfConfMonVer2,substituteHolidayAggrResultsRight,closureInforOpt,lstMap273CurrMon, map273New);
     }
     private Optional<ClosureInfo> getClosureInfor(int closureId) {
         val listClosureInfo = ClosureService.getAllClosureInfo(ClosureService.createRequireM2(closureRepository));

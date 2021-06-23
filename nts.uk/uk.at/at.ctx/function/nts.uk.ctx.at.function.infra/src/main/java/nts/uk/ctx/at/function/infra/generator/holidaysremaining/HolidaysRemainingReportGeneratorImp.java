@@ -6,6 +6,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.*;
+import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialVacationImportedKdr;
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.ReservedYearHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.RsvLeaUsedCurrentMonImported;
 import nts.uk.ctx.at.function.dom.adapter.vacation.StatusHolidayImported;
@@ -753,16 +754,16 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         if (value23afOpt.isPresent() && value23afOpt.get().getUsedDays().get() != null) {
                             value23af = df.format(value23afOpt.get().getUsedDays().get().v());
                         }
-                        if(closeDateOpt.isPresent()){
+                        if (closeDateOpt.isPresent()) {
                             val cls = closeDateOpt.get();
                             val ymd = item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getYmd();
-                            if(ymd.day()  <= (cls.getClosureDate().getClosureDay().v() +1) ){
-                                if(value23bf != null &&value23bf!=0.0){
+                            if (ymd.day() <= (cls.getClosureDate().getClosureDay().v() + 1)) {
+                                if (value23bf != null && value23bf != 0.0) {
                                     val vl23 = df.format(value23bf);
                                     cells.get(firstRow, 10 + totalMonth)
                                             .setValue(vl23);
                                 }
-                            }else{
+                            } else {
                                 if (value23af != null && value23bf != null) {
                                     val vl23 = df.format(value23bf) + "/" + value23af;
                                     // E2_3 当月以降, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
@@ -819,12 +820,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                 && value243afOpt.get().getUsedTime().get().v() != 0) {
                             e24af = convertToTime((int) value243afOpt.get().getUsedTime().get().v());
                         }
-                        if(closeDateOpt.isPresent()){
+                        if (closeDateOpt.isPresent()) {
                             val cls = closeDateOpt.get();
                             val ymd = item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getYmd();
-                            if(ymd.day()  <= (cls.getClosureDate().getClosureDay().v() +1) ){
+                            if (ymd.day() <= (cls.getClosureDate().getClosureDay().v() + 1)) {
                                 cells.get(firstRow + 1, 10 + totalMonth).setValue(e24bf);
-                            }else{
+                            } else {
                                 if (e24af != null && e24bf != null) {
                                     cells.get(firstRow + 1, 10 + totalMonth).setValue(e24bf + "/" + e24af);
                                 } else {
@@ -1088,8 +1089,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         val hdRemainingInfor = dataSource.getMapEmployees().get(employee.getEmployeeId()).getHolidayRemainingInfor();
         val checkShow = dataSource.getVariousVacationControl();
         int totalRows = 2;
-        int rowIndexRepresentSubstitute = 0;
-        int rowIndexIsRemainingChargeSubstitute = 0;
         if (count >= MAX_ROW_IN_PAGE || MAX_ROW_IN_PAGE - count < 4) {
             Integer countEmployeeBefore = dtoCheck.getCountEmployeeBefore();
             printEmployeeInfore(cells, firstRow - (count - 6 - countEmployeeBefore), dataSource, employee);
@@ -1130,20 +1129,18 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             return dtoCheck;
         }
         if (checkTakeABreak_02(dataSource.getHolidaysRemainingManagement())) {
-            rowIndexRepresentSubstitute = firstRow + totalRows;
 
-            cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 14, rowIndexRepresentSubstitute, 1);
+            cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 14, firstRow + 2, 1);
             // I4_1
             if (checkTakeABreak_02(dataSource.getHolidaysRemainingManagement()))
-                cells.get(rowIndexRepresentSubstitute, 9).setValue(TextResource.localize("KDR001_11"));
+                cells.get(firstRow + 2, 9).setValue(TextResource.localize("KDR001_11"));
             totalRows += 1;
 
         }
         if (checkTakeABreak_03(dataSource.getHolidaysRemainingManagement())) {
-            rowIndexIsRemainingChargeSubstitute = firstRow + totalRows;
-            cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 15, rowIndexIsRemainingChargeSubstitute, 1);
+            cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 15, firstRow + 3, 1);
             // I5_1
-            cells.get(rowIndexIsRemainingChargeSubstitute, 9).setValue(TextResource.localize("KDR001_18"));
+            cells.get(firstRow + 3, 9).setValue(TextResource.localize("KDR001_18"));
             totalRows += 1;
         }
 
@@ -1172,9 +1169,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         if (statusHolidayImported != null) {
             for (StatusHolidayImported statusHolidayItem : statusHolidayImported) {
                 int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), statusHolidayItem.getYm());
-                val isDate = statusHolidayItem.getUseDays()!=null && statusHolidayItem.getUnUsedTimes() ==null;
-                val isTimes = (statusHolidayItem.getUseDays()==null||(statusHolidayItem.getUseDays() !=null && statusHolidayItem.getUseDays() == 0))
-                        && statusHolidayItem.getUseTimes()!=null;
+                val isDate = statusHolidayItem.getUseDays() != null && statusHolidayItem.getUnUsedTimes() == null;
+                val isTimes = (statusHolidayItem.getUseDays() == null || (statusHolidayItem.getUseDays() != null && statusHolidayItem.getUseDays() == 0))
+                        && statusHolidayItem.getUseTimes() != null;
                 if (maxRange < totalMonth || totalMonth < 0) {
                     continue;
                 }
@@ -1201,7 +1198,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         remain = statusHolidayItem.getRemainDays() == null ? "0" : df.format(statusHolidayItem.getRemainDays().doubleValue());
 
                     }
-                    if (isTimes){
+                    if (isTimes) {
                         occurrence = (statusHolidayItem.getOccurrenceTimes() == null || statusHolidayItem.getOccurrenceTimes() == 0 ? "" :
                                 convertToTime(statusHolidayItem.getOccurrenceTimes()));
                         use = (statusHolidayItem.getUseTimes() == null || statusHolidayItem.getUseTimes() == 0 ? "" :
@@ -1218,10 +1215,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         cells.get(firstRow + 2, 10 + totalMonth)
                                 .setValue(unUsed);
                         if (isTimes && statusHolidayItem.getUnUsedTimes() != null && statusHolidayItem.getUnUsedTimes() > 0) {
-                            setForegroundRed(cells.get(rowIndexRepresentSubstitute, 10 + totalMonth));
+                            setForegroundRed(cells.get(firstRow + 2, 10 + totalMonth));
                         }
-                        if (isDate && statusHolidayItem.getUseDays() != null && statusHolidayItem.getUseDays() > 0) {
-                            setForegroundRed(cells.get(rowIndexRepresentSubstitute, 10 + totalMonth));
+                        if (isDate && statusHolidayItem.getUnUsedDays() != null && statusHolidayItem.getUnUsedDays() > 0) {
+                            setForegroundRed(cells.get(firstRow + 2, 10 + totalMonth));
                         }
                     }
                     if (checkTakeABreak_03(dataSource.getHolidaysRemainingManagement())) {
@@ -1274,24 +1271,30 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             unUsed = statusHolidayItem.getUnusedDay() == null
                                     || statusHolidayItem.getUnusedDay().v() == 0 ? "" :
                                     df.format(statusHolidayItem.getUnusedDay().v());
-                        } else if (checkShow.isSubstituteHolidaySetting() && checkShow.isHourlyLeaveSetting()) {
+                        } else {
                             unUsed = (statusHolidayItem.getUnusedTime() == null ||
                                     statusHolidayItem.getUnusedTime().v() == 0 ? "" :
                                     convertToTime(statusHolidayItem.getUnusedTime().minute()));
                         }
                         cells.get(firstRow + 2, 10 + totalMonth)
                                 .setValue(unUsed);
+                        if (isTime && statusHolidayItem.getUnusedTime() != null && statusHolidayItem.getUnusedTime().v() > 0) {
+                            setForegroundRed(cells.get(firstRow + 2, 10 + totalMonth));
+                        }
+                        if (!isTime && statusHolidayItem.getUnusedDay() != null && statusHolidayItem.getUnusedDay().v() > 0) {
+                            setForegroundRed(cells.get(firstRow + 2, 10 + totalMonth));
+                        }
                     }
                     if (checkTakeABreak_03(dataSource.getHolidaysRemainingManagement())) {
                         // I5_3 代休_残数_日数
                         String remain = "";
-                        if (checkShow.isSubstituteHolidaySetting() && checkShow.isHourlyLeaveSetting()) {
+                        if (isTime) {
                             remain = (statusHolidayItem.getRemainTime() == null ? "" :
                                     convertToTime(statusHolidayItem.getRemainTime().minute()));
                         }
                         cells.get(firstRow + 3, 10 + totalMonth)
                                 .setValue(remain);
-                        if (checkShow.isSubstituteHolidaySetting() && checkShow.isHourlyLeaveSetting() && statusHolidayItem.getRemainTime().v() < 0) {
+                        if (isTime && statusHolidayItem.getRemainTime() != null && statusHolidayItem.getRemainTime().v() < 0) {
                             setForegroundRed(cells.get(firstRow + 3, 10 + totalMonth));
                         }
                     }
@@ -1846,7 +1849,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                 }
                         ).mapToDouble(e -> e).sum();
                 //valueF14 = number_of_use == 0 ? "" : (number_of_use + uses_after_granting + TextResource.localize("KDR001_75"));
-                valueF14 = ((uses_after_granting == 0.0? "0" :uses_after_granting) + TextResource.localize("KDR001_75"));
+                valueF14 = ((uses_after_granting == 0.0 ? "0" : uses_after_granting) + TextResource.localize("KDR001_75"));
                 // F1_5: 半日年休_残回数 : 月度残回数: 年月毎年休の集計結果．年休の集計結果．年休情報(期間終了日時点)．残数．半日年休(マイナスあり)
                 val number_of_date_remain = rs363New.stream()
                         .map(e ->
@@ -1943,24 +1946,24 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         number_of_useBf += number_of_useOpt255;
                     }
                 }
-                if(date_of_useAfOpt.isPresent()){
+                if (date_of_useAfOpt.isPresent()) {
                     val optUseDate = date_of_useAfOpt.get().getUsedDays();
-                    if(optUseDate.isPresent()){
+                    if (optUseDate.isPresent()) {
                         date_of_useAf = optUseDate.get().v();
                     }
                 }
-                if(closeDateOpt.isPresent()){
+                if (closeDateOpt.isPresent()) {
                     val cls = closeDateOpt.get();
                     val ymd = item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getYmd();
-                    if(ymd.day()  <= (cls.getClosureDate().getClosureDay().v() +1) ){
+                    if (ymd.day() <= (cls.getClosureDate().getClosureDay().v() + 1)) {
                         cells.get(firstRow, 10 + totalMonth)
                                 .setValue(number_of_useBf + TextResource.localize("KDR001_75"));
-                    }else{
-                        if (number_of_useBf != null && number_of_useBf !=0 && date_of_useAf != null && date_of_useAf!=0.0) {
-                            cells.get(firstRow , 10 + totalMonth).setValue(number_of_useBf + "/" + date_of_useAf + TextResource.localize("KDR001_75"));
+                    } else {
+                        if (number_of_useBf != null && number_of_useBf != 0 && date_of_useAf != null && date_of_useAf != 0.0) {
+                            cells.get(firstRow, 10 + totalMonth).setValue(number_of_useBf + "/" + date_of_useAf + TextResource.localize("KDR001_75"));
                         } else {
-                           val e24bf = number_of_useBf != null && number_of_useBf !=0 ? number_of_useBf.toString()   : "";
-                           val e24af = date_of_useAf != null && date_of_useAf !=0 ? date_of_useAf.toString()   : "";
+                            val e24bf = number_of_useBf != null && number_of_useBf != 0 ? number_of_useBf.toString() : "";
+                            val e24af = date_of_useAf != null && date_of_useAf != 0 ? date_of_useAf.toString() : "";
                             cells.get(firstRow, 10 + totalMonth).setValue(e24bf + e24af);
                         }
                     }
@@ -2004,6 +2007,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         dtoCheck.setCount(count);
         return dtoCheck;
     }
+
     //G
     private DtoCheck printLimitUsageHolidays(Cells cells, int firstRow, HolidaysRemainingEmployee employee,
                                              HolidayRemainingDataSource dataSource, DtoCheck dtoCheck,
@@ -2254,6 +2258,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
                 // Result RequestList273
                 val specialVacationImported = hdRemainingInfor.getMapSpecialVacation().get(specialHolidayCode);
+                val result273New = hdRemainingInfor.getMap273New().get(specialHolidayCode);
                 // Result RequestList263
                 // RS263 NEW
                 val rs263 = hdRemainingInfor.getGetSpeHdOfConfMonVer2()
@@ -2264,85 +2269,56 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                 LeaveExpirationStatus.AVAILABLE.value);
 
                 // 全てのドメインモデル「特別休暇付与残数データ」の残時間を合計
-                Double dayNumbers = listSpecialLeaveGrant.stream()
-//						.mapToDouble(item -> item.getDetails().getRemainingNumber().getDayNumberOfRemain().v()).sum();
+                Double remainDate = listSpecialLeaveGrant.stream()
                         .mapToDouble(item -> item.getDetails().getRemainingNumber().getDays() != null ?
                                 item.getDetails().getRemainingNumber().getDays().v() : 0).sum();
-                Double timeNumbers = listSpecialLeaveGrant.stream()
-//						.mapToDouble(item -> item.getDetails().getRemainingNumber().getDayNumberOfRemain().v()).sum();
+                Double remainTime = listSpecialLeaveGrant.stream()
                         .mapToDouble(item -> item.getDetails().getRemainingNumber().getMinutes().isPresent() ?
                                 item.getDetails().getRemainingNumber().getMinutes().get().v() : 0).sum();
 
-                // 全てのドメインモデル「特別休暇付与残数データ」の残時間を合計
-                Double dayUse = listSpecialLeaveGrant.stream()
-//						.mapToDouble(item -> item.getDetails().getRemainingNumber().getDayNumberOfRemain().v()).sum();
-                        .mapToDouble(item -> item.getDetails().getUsedNumber().getDays() != null ?
-                                item.getDetails().getUsedNumber().getDays().v() : 0).sum();
-                Double timeUse = listSpecialLeaveGrant.stream()
-//						.mapToDouble(item -> item.getDetails().getRemainingNumber().getDayNumberOfRemain().v()).sum();
-                        .mapToDouble(item -> item.getDetails().getUsedNumber().getMinutes().isPresent() ?
-                                item.getDetails().getUsedNumber().getMinutes().get().v() : 0).sum();
-
-
-                // M1_2 特別休暇１_付与数日数
-
-                val vlm12 = listSpecialLeaveGrant.stream()
-//						.mapToDouble(item -> item.getDetails().getRemainingNumber().getDayNumberOfRemain().v()).sum();
-                        .mapToDouble(item -> item.getDetails().getGrantNumber().getDays() != null ?
-                                item.getDetails().getGrantNumber().getDays().v() : 0).sum();
-
-                val vlm16 = listSpecialLeaveGrant.stream()
-//						.mapToDouble(item -> item.getDetails().getRemainingNumber().getDayNumberOfRemain().v()).sum();
-                        .mapToDouble(item -> item.getDetails().getGrantNumber().getMinutes().isPresent() ?
-                                item.getDetails().getGrantNumber().getMinutes().get().v() : 0).sum();
-
-                val vlm19 = listSpecialLeaveGrant.stream()
-                        .mapToDouble(item -> item.getDetails().getRemainingNumber().getMinutes().isPresent() ?
-                                item.getDetails().getRemainingNumber().getMinutes().get().v() : 0).sum();
-
+                // 特別休暇_付与数日数
+                val vlm12 = result273New.getGrantDays();
+                val vlm16 = result273New.getGrantTime();
                 cells.get(firstRow, 4)
                         .setValue(df.format(vlm12));
                 if (!itemFrame.isEmpty()) {
                     // M 1_6
                     cells.get(firstRow + 1, 4).setValue(convertToTime((int) vlm16));
-                    // M1_7
-                    cells.get(firstRow + 1, 5).setValue(convertToTime((int) timeNumbers.doubleValue()));
-                    if (timeNumbers < 0) {
+                    // M1_7 特別休暇_月初残時間
+                    cells.get(firstRow + 1, 5).setValue(convertToTime((int) remainTime.doubleValue()));
+                    if (remainTime < 0) {
                         setForegroundRed(cells.get(firstRow + 1, 5));
                     }
-                    // M1_4 特別休暇１_使用数日数
-                    cells.get(firstRow, 6).setValue(df.format(dayUse));
-
-                    // M1_8
-                    cells.get(firstRow + 1, 6).setValue(convertToTime((int) timeUse.doubleValue()));
-                    // M1_9
+                    // M1_4 特別休暇_使用数日数
+                    val vlm14 = result273New.getUsedDateBf();
+                    cells.get(firstRow, 6).setValue(df.format(vlm14));
+                    // M1_8 特別休暇_使用数時間
+                    val vlm18 = result273New.getUsedHoursBf();
+                    cells.get(firstRow + 1, 6).setValue(convertToTime((int) vlm18.doubleValue()));
+                    // M1_9 特別休暇_残数時間
+                    val vlm19 = result273New.getRemainHoursBf();
                     cells.get(firstRow + 1, 7).setValue(convertToTime((int) vlm19));
-                    if (specialVacationImported.getRemainHours() < 0) {
+                    if (vlm19 < 0) {
                         setForegroundRed(cells.get(firstRow + 1, 7));
                     }
                 }
-
-
-                // M1_3 特別休暇１_月初残日数
-                cells.get(firstRow, 5).setValue(df.format(dayNumbers));
-                if (dayNumbers < 0) {
+                // M1_3 特別休暇_月初残日数
+                cells.get(firstRow, 5).setValue(df.format(remainDate));
+                if (remainDate < 0) {
                     setForegroundRed(cells.get(firstRow, 5));
                 }
-
-                // M1_5 特別休暇１_残数日数
-                cells.get(firstRow, 7).setValue(df.format(specialVacationImported.getRemainDate()));
+                // M1_5 特別休暇_残数日数
+                val vlm15 = result273New.getRemainDateBf();
+                cells.get(firstRow, 7).setValue(df.format(vlm15));
 
                 if (specialVacationImported.getRemainDate() < 0) {
                     setForegroundRed(cells.get(firstRow, 7));
                 }
-
-
                 if (rs263 != null) {
                     for (SpecialHolidayRemainDataOutputKdr item : rs263) {
                         // Before this month
                         int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), item.getYm());
                         if (currentMonth.compareTo(item.getYm()) > 0) {
-
                             if (maxRange >= totalMonth && totalMonth >= 0) {
                                 val bfNumofDate = item.getBeforeUseDays();
                                 // M2_5 特別休暇１_使用日数, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
@@ -2360,7 +2336,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                     if (item.getBeforeUseTimes() < 0) {
                                         setForegroundRed(cells.get(firstRow + 1, 10 + totalMonth));
                                     }
-
                                 }
                                 // M2_7 特別休暇１_残数日数
                                 cells.get(firstRow + 2, 10 + totalMonth).setValue(df.format(item.getBeforeRemainDays()));
@@ -2370,85 +2345,101 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                 if (item.getBeforeRemainDays() < 0) {
                                     setForegroundRed(cells.get(firstRow + 2, 10 + totalMonth));
                                 }
-
                             }
                         }
                     }
-//                    for (val item : listSpecialLeaveGrant){
-//                        int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), item.getGrantDate().yearMonth());
-//                        val bfDate = item.getDetails().getUsedNumber().;
-//                        val afDate = item.getAfterUseDays();
-//                        String vlm25 = "";
-//                        if (bfDate != 0 && afDate != 0) {
-//                            vlm25 = String.valueOf(df.format(bfDate)) + "/" + String.valueOf(df.format(afDate));
-//                        } else {
-//                            vlm25 = (bfDate == 0 ? "" : String.valueOf(df.format(bfDate))) + (afDate == 0 ? "" : String.valueOf(df.format(afDate)));
-//                        }
-//                        cells.get(firstRow, 10 + totalMonth).setValue(vlm25);
-//
-//                        //M2_6
-//                        if (item.getBeforeUseDays() < 0) {
-//                            setForegroundRed(cells.get(firstRow, 10 + totalMonth));
-//                        }
-//                        val bftime = item.getBeforeUseTimes();
-//                        val afdtime = item.getBeforeUseTimes();
-//
-//                        String vlm26 = "";
-//                        if (bftime != 0 && afdtime != 0) {
-//                            vlm26 = String.valueOf(convertToTime(bftime)) + "/" + String.valueOf(convertToTime(afdtime));
-//                        } else {
-//                            vlm26 = (bftime == 0 ? "" : String.valueOf(convertToTime(bftime))) + (afdtime == 0 ? "" : String.valueOf(convertToTime(afdtime)));
-//                        }
-//                        if (!itemFrame.isEmpty()) {
-//                            cells.get(firstRow + 1, 10 + totalMonth).setValue(vlm26);
-//                            if (item.getBeforeUseTimes() < 0) {
-//                                setForegroundRed(cells.get(firstRow + 1, 10 + totalMonth));
-//                            }
-//                        }
-//                        // M2_7 特別休暇１_残数日数
-//
-//                        val bfdateRemain = item.getBeforeRemainDays();
-//                        val afdateReman = item.getAfterRemainDays();
-//                        val m27 = String.valueOf(df.format(bfdateRemain) + "/" + String.valueOf(df.format(afdateReman)));
-//
-//                        cells.get(firstRow + 2, 10 + totalMonth).setValue(m27);
-//                        if (item.getBeforeRemainDays() < 0) {
-//                            setForegroundRed(cells.get(firstRow + 2, 10 + totalMonth));
-//                        }
-//                        //M2_8
-//                        val bfRemainTime = item.getBeforeRemainTimes();
-//                        val afRemanTime = item.getAfterRemainTimes();
-//                        val m28 = String.valueOf(convertToTime(bfRemainTime) + "/" + String.valueOf(convertToTime(afRemanTime)));
-//                        if (!itemFrame.isEmpty()) {
-//                            cells.get(firstRow + 3, 10 + totalMonth).setValue(m28);
-//                            if (item.getBeforeRemainTimes() < 0) {
-//                                setForegroundRed(cells.get(firstRow + 2, 10 + totalMonth));
-//                            }
-//                        }
-//
-//                        if (currentMonth.compareTo(item.getYm()) < 0) {
-//                            //M25
-//                            val bfDate = item.getBeforeUseDays();
-//                            cells.get(firstRow, 10 + totalMonth).setValue(bfDate == 0 ? "" : df.format(bfDate));
-//                            if (item.getBeforeUseDays() < 0) {
-//                                setForegroundRed(cells.get(firstRow, 10 + totalMonth));
-//                            }
-//                            val bftime = item.getBeforeUseTimes();
-//                            cells.get(firstRow + 1, 10 + totalMonth).setValue(bftime == 0 ? "" : convertToTime(bftime));
-//                            // M2_7 特別休暇１_残数日数
-//                            if (item.getBeforeUseDays() < 0) {
-//                                setForegroundRed(cells.get(firstRow, 10 + totalMonth));
-//                            }
-//                            if (item.getBeforeUseTimes() < 0) {
-//                                setForegroundRed(cells.get(firstRow + 1, 10 + totalMonth));
-//                            }
-//                            setBackgroundGray(cells.get(firstRow + 2, 10 + totalMonth));
-//                            setBackgroundGray(cells.get(firstRow + 3, 10 + totalMonth));
-//                        }
-//                    }
+                    int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), currentMonth);
+                    List<YearMonth> lstYm = new ArrayList<>();
+                    for (YearMonth i = currentMonth; i.lessThanOrEqualTo(dataSource.getEndMonth().yearMonth()); i = i.addMonths(1)) {
+                        lstYm.add(i);
+                    }
+                    Collections.sort(lstYm);
+                    for (YearMonth ym : lstYm) {
+                        SpecialVacationImportedKdr spVaCrurrentMonthImported = hdRemainingInfor.getLstMap273CurrMon().get(ym) != null ?
+                                hdRemainingInfor.getLstMap273CurrMon().get(ym).get(specialHolidayCode) : null;
+                        if (spVaCrurrentMonthImported != null) {
+                            if (totalMonth <= maxRange && totalMonth >= 0) {
+                                if (ym.compareTo(currentMonth) == 0) {
+                                    val bfDate = spVaCrurrentMonthImported.getUsedDateBf();
+                                    val afDate = spVaCrurrentMonthImported.getUsedDateAf();
+                                    String vlm25 = "";
+                                    if (bfDate!=null && bfDate != 0 &&afDate!=null&& afDate != 0) {
+                                        vlm25 = String.valueOf(df.format(bfDate)) + "/" + String.valueOf(df.format(afDate));
+                                    } else {
+                                        vlm25 = ((bfDate == null||bfDate == 0) ? "" : String.valueOf(df.format(bfDate))) + ((afDate == null ||afDate == 0) ? "" : String.valueOf(df.format(afDate)));
+                                    }
+                                    cells.get(firstRow, 10 + totalMonth).setValue(vlm25);
+                                    if ((bfDate!=null&&bfDate < 0) || (afDate!=null&&afDate< 0)) {
+                                        setForegroundRed(cells.get(firstRow, 10 + totalMonth));
+                                    }
+                                    //M2_6
+                                    val bftime = spVaCrurrentMonthImported.getUsedHoursBf();
+                                    val afdtime = spVaCrurrentMonthImported.getUsedHoursAf();
+                                    String vlm26 = "";
+                                    if (bftime!=null&& bftime != 0 &&afdtime!=null&& afdtime != 0) {
+                                        vlm26 = String.valueOf(convertToTime(bftime)) + "/" + String.valueOf(convertToTime(afdtime));
+                                    } else {
+                                        vlm26 = ((bftime==null||bftime == 0) ? "" : String.valueOf(convertToTime(bftime))) + ((afdtime == null ||afdtime == 0) ? "" : String.valueOf(convertToTime(afdtime)));
+                                    }
+                                    if (!itemFrame.isEmpty()) {
+                                        cells.get(firstRow + 1, 10 + totalMonth).setValue(vlm26);
+                                        if ((bftime!=null && bftime < 0) || (afdtime!=null &&afdtime < 0)) {
+                                            setForegroundRed(cells.get(firstRow + 1, 10 + totalMonth));
+                                        }
+                                    }
+                                    // M2_7 特別休暇１_残数日数
+                                    val bfdateRemain = spVaCrurrentMonthImported.getRemainDateBf();
+                                    val afdateReman = spVaCrurrentMonthImported.getRemainDateAf();
+
+                                    String m27 = "";
+                                    if ((bfdateRemain!=null&& bfdateRemain != 0) && (afdateReman!=null && afdtime != 0)) {
+                                        m27 = String.valueOf(df.format(bfdateRemain)) + "/" + String.valueOf(df.format(afdateReman));
+                                    } else {
+                                        m27 = ((bfdateRemain==null ||bfdateRemain == 0) ? "" : String.valueOf(df.format(bfdateRemain))) + ((afdateReman==null||afdateReman == 0) ? "" : String.valueOf(df.format(afdateReman)));
+                                    }
+                                    cells.get(firstRow + 2, 10 + totalMonth).setValue(m27);
+                                    if ((bfdateRemain!=null && bfdateRemain < 0) || (afdateReman!=null&& afdateReman < 0)) {
+                                        setForegroundRed(cells.get(firstRow + 2, 10 + totalMonth));
+                                    }
+                                    //M2_8
+                                    val bfRemainTime = spVaCrurrentMonthImported.getRemainHoursBf();
+                                    val afRemanTime = spVaCrurrentMonthImported.getRemainHoursAf();
+                                    String vlm28 = "";
+                                    if (bfRemainTime!=null && bftime != 0 && afRemanTime!=null&& afdtime != 0) {
+                                        vlm28 = String.valueOf(convertToTime(bfRemainTime)) + "/" + String.valueOf(convertToTime(afRemanTime));
+                                    } else {
+                                        vlm28 = ((bfRemainTime == null ||bfRemainTime == 0) ? "" : String.valueOf(convertToTime(bfRemainTime))) + ((afRemanTime== null||afRemanTime == 0) ? "" : String.valueOf(convertToTime(afRemanTime)));
+                                    }
+                                    if (!itemFrame.isEmpty()) {
+                                        cells.get(firstRow + 3, 10 + totalMonth).setValue(vlm28);
+                                        if ((bfRemainTime!=null&& bfRemainTime < 0) || (afRemanTime!=null && afRemanTime < 0) ){
+                                            setForegroundRed(cells.get(firstRow + 2, 10 + totalMonth));
+                                        }
+                                    }
+                                } else {
+                                    if (currentMonth.compareTo(ym) < 0) {
+                                        //M25
+                                        val bfDate = spVaCrurrentMonthImported.getUsedDateBf();
+                                        cells.get(firstRow, 10 + totalMonth).setValue((bfDate==null || bfDate == 0) ? "" : df.format(bfDate));
+                                        if (bfDate!=null && bfDate< 0) {
+                                            setForegroundRed(cells.get(firstRow, 10 + totalMonth));
+                                        }
+                                        val bftime = spVaCrurrentMonthImported.getUsedHoursBf();
+                                        cells.get(firstRow + 1, 10 + totalMonth).setValue((bftime==null||bftime == 0) ? "" : convertToTime(bftime));
+                                        // M2_7 特別休暇１_残数日数
+                                        if (bftime!=null &&bftime < 0) {
+                                            setForegroundRed(cells.get(firstRow + 1, 10 + totalMonth));
+                                        }
+                                        setBackgroundGray(cells.get(firstRow + 2, 10 + totalMonth));
+                                        setBackgroundGray(cells.get(firstRow + 3, 10 + totalMonth));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    totalMonth++;
                 }
             }
-
             firstRow += 4;
             count += 4;
         }

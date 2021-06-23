@@ -12,6 +12,7 @@ import nts.uk.ctx.at.function.dom.adapter.holidayover60h.AggrResultOfHolidayOver
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.*;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialVacationImported;
+import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialVacationImportedKdr;
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.ReserveHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.ReservedYearHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.RsvLeaUsedCurrentMonImported;
@@ -73,7 +74,8 @@ public class HolidayRemainingInfor {
     List<SpecialHolidayRemainDataOutputKdr> getSpeHdOfConfMonVer2;
     Map<YearMonth,SubstituteHolidayAggrResult> substituteHolidayAggrResultsRight;
     Optional<ClosureInfo> closureInforOpt;
-
+    Map<YearMonth, Map<Integer, SpecialVacationImportedKdr>> lstMap273CurrMon;
+    Map<Integer, SpecialVacationImportedKdr> map273New;
     public HolidayRemainingInfor(Optional<GeneralDate> grantDate, List<AnnLeaGrantNumberImported> listAnnLeaGrantNumber,
                                  AnnLeaveOfThisMonthImported annLeaveOfThisMonth, List<AnnualLeaveUsageImported> listAnnualLeaveUsage,
                                  List<AnnLeaveUsageStatusOfThisMonthImported> listAnnLeaveUsageStatusOfThisMonth,
@@ -94,7 +96,10 @@ public class HolidayRemainingInfor {
                                  List<AggrResultOfAnnualLeaveEachMonthKdr> rs363New,
                                  List<SpecialHolidayRemainDataOutputKdr> getSpeHdOfConfMonVer2,
                                  Map<YearMonth,SubstituteHolidayAggrResult> substituteHolidayAggrResultsRight,
-                                 Optional<ClosureInfo> closureInforOpt) {
+                                 Optional<ClosureInfo> closureInforOpt,
+                                 Map<YearMonth, Map<Integer, SpecialVacationImportedKdr>> lstMap273CurrMon,
+                                 Map<Integer, SpecialVacationImportedKdr> map273New
+    ) {
         super();
         this.grantDate = grantDate;
         this.listAnnLeaGrantNumber = listAnnLeaGrantNumber;
@@ -122,6 +127,9 @@ public class HolidayRemainingInfor {
         this.getSpeHdOfConfMonVer2 = getSpeHdOfConfMonVer2;
         this.substituteHolidayAggrResultsRight = substituteHolidayAggrResultsRight;
         this.closureInforOpt = closureInforOpt;
+        this.lstMap273CurrMon = lstMap273CurrMon;
+        this.map273New = map273New;
+
     }
 
 
