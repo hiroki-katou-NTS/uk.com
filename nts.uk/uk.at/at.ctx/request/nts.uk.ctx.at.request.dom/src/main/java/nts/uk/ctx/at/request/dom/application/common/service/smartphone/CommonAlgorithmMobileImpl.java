@@ -43,6 +43,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.MsgErrorOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.AppReasonOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.DeadlineLimitCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.RequestMsgInfoOutput;
@@ -243,6 +244,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 	public AppDispInfoWithDateOutput getAppSetInfoRelatedBaseDate(boolean mode, String companyID, String employeeID,
 			List<GeneralDate> appDateLst, ApplicationType appType, ApplicationSetting applicationSetting,
 			Optional<OvertimeAppAtr> opOvertimeAppAtr) {
+		List<MsgErrorOutput> msgErrorLst = new ArrayList<>();
 		// 基準日として扱う日の取得
 		GeneralDate baseDate = this.getBaseDate(applicationSetting, appType, appDateLst);
 		// 社員IDから申請承認設定情報の取得
@@ -325,7 +327,22 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 				NotUseAtr.NOT_USE);
 		appDispInfoWithDateOutput.setOpEmploymentSet(opAppEmploymentSet);
 		appDispInfoWithDateOutput.setOpListApprovalPhaseState(opListApprovalPhaseState);
-		appDispInfoWithDateOutput.setOpErrorFlag(opErrorFlag);
+		if(opErrorFlag.isPresent()) {
+			switch (opErrorFlag.get()) {
+			case NO_CONFIRM_PERSON:
+				msgErrorLst.add(new MsgErrorOutput("Msg_238", Collections.emptyList()));
+				break;
+			case APPROVER_UP_10:
+				msgErrorLst.add(new MsgErrorOutput("Msg_237", Collections.emptyList()));
+				break;
+			case NO_APPROVER:
+				msgErrorLst.add(new MsgErrorOutput("Msg_324", Collections.emptyList()));
+				break;
+			default:
+				break;
+			}
+		}
+		appDispInfoWithDateOutput.setOpMsgErrorLst(Optional.of(msgErrorLst));
 		appDispInfoWithDateOutput.setOpActualContentDisplayLst(opActualContentDisplayLst);
 		appDispInfoWithDateOutput.setOpPreAppContentDisplayLst(opPreAppContentDisplayLst);
 		appDispInfoWithDateOutput.setOpWorkTimeLst(opWorkTimeSettingLst);

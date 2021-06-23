@@ -320,7 +320,7 @@ public class HolidayServiceImpl implements HolidayService {
 				isProxy, 
 				appHolidayWork.getApplication(), 
 				null,
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(null),
+				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
 				Collections.emptyList(), 
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput());
 		
