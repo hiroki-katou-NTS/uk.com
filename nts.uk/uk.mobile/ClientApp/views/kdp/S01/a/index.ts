@@ -491,7 +491,7 @@ export class KdpS01AComponent extends Vue {
                 return 221;
             }
             case 18: {
-                return 213;
+                return 222;
             }
             case 19: {
                 return 223;
