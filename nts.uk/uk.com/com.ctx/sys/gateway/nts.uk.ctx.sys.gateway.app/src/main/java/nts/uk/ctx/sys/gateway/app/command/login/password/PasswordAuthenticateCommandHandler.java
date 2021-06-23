@@ -14,6 +14,8 @@ import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticateEmployeePassword;
 import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticateEmployeePasswordResult;
+import nts.uk.shr.com.system.config.SystemConfiguration;
+import nts.uk.shr.com.system.property.UKServerSystemProperties;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -29,9 +31,18 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	@Inject
 	private LoginBuiltInUser loginBuiltInUser;
 	
+	@Inject
+	private SystemConfiguration systemConfig;
+	
 	@Override
 	protected Require getRequire(PasswordAuthenticateCommand command) {
-		return requireProvider.createRequire(command.getContractCode());
+		
+		// クラウドモードなら画面入力値、オンプレモードならシステム構成から取得
+		String tenantCode = UKServerSystemProperties.isCloud()
+				? command.getContractCode()
+				: systemConfig.getTenantCodeOnPremise().get();
+		
+		return requireProvider.createRequire(tenantCode);
 	}
 	
 	/**

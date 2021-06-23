@@ -53,6 +53,11 @@ public class PasswordAuthenticateCommandRequire {
 	public class RequireImpl extends LoginRequire.BaseImpl implements Require {
 
 		private final String tenantCode;
+		
+		@Override
+		public String getTenantCode() {
+			return tenantCode;
+		}
 
 		@Override
 		public String getLoginUserContractCode() {
