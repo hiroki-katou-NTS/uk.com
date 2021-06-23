@@ -625,7 +625,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				false,
 				appOverTime.getApplication(),
 				appOverTime.getOverTimeClf(),
-				displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(null),
+				displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
 				Collections.emptyList(), 
 				displayInfoOverTime.getAppDispInfoStartup());
 		// 残業申請の個別登録前チェッ処理
@@ -1227,7 +1227,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 					false,
 					appOverTime.getApplication(),
 					appOverTime.getOverTimeClf(),
-					displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(null),
+					displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
 					Collections.emptyList(), 
 					displayInfoOverTime.getAppDispInfoStartup());
 			

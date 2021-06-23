@@ -7,12 +7,12 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.CheckBeforeRegisMultiEmpOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.MsgErrorOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 
 /**
@@ -83,7 +83,7 @@ public interface NewBeforeRegister {
 	 * @return
 	 */
 	public List<ConfirmMsgOutput> processBeforeRegister_New(String companyID, EmploymentRootAtr employmentRootAtr, boolean agentAtr,
-			Application application, OvertimeAppAtr overtimeAppAtr, ErrorFlagImport errorFlg, List<GeneralDate> lstDateHd,
+			Application application, OvertimeAppAtr overtimeAppAtr, List<MsgErrorOutput> msgErrorLst, List<GeneralDate> lstDateHd,
 			AppDispInfoStartupOutput appDispInfoStartupOutput);
 	
 	/**
