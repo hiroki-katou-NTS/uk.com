@@ -53,7 +53,7 @@ public class CorrectWorkSchedule {
 				Optional.empty(), workSchedule.getLstEditState(), Optional.empty(), new ArrayList<>(), Optional.empty());
 		//勤怠ルールの補正処理 
 		
-		ChangeDailyAttendance changeAtt = new ChangeDailyAttendance(true, false, false, true, ScheduleRecordClassifi.SCHEDULE, false);
+		ChangeDailyAttendance changeAtt = new ChangeDailyAttendance(true, false, false, true, ScheduleRecordClassifi.SCHEDULE, false, false);
 		integrationOfDaily = rule.process(integrationOfDaily, changeAtt);
 		
 		//勤務予定情報を計算する

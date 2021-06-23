@@ -22,8 +22,8 @@ public class ChangeDailyAttendance {
 	/** 計算区分 */
 	public boolean calcCategory;
 	
-	/** 固定休憩補正 */
-	public boolean fixBreakCorrect;
+	/** 勤務予定から移送した値も補正する */
+	public boolean correctValCopyFromSche;
 	
 	/** 予定実績区分*/
 	public ScheduleRecordClassifi classification;
@@ -31,4 +31,6 @@ public class ChangeDailyAttendance {
 	/** 直行直帰区分*/
 	public boolean directBounceClassifi; 
 
+	/** 始業、終業時刻を補正しない */
+	public boolean noCorrectStartEndWork;
 }

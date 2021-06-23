@@ -87,7 +87,7 @@ public class RecoverWorkRecordBeforeAppReflect {
 		boolean directBounceClassifi = lstItemId.stream()
 				.filter(x -> x.intValue() == 859 || x.intValue() == 860)
 				.findFirst().isPresent();
-		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.SCHEDULE, directBounceClassifi);
+		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.SCHEDULE, directBounceClassifi, false);
 	}
 
 	public static interface Require extends CancellationOfApplication.Require, WorkingConditionService.RequireM1 {

@@ -84,10 +84,10 @@ public class CreateDailyOneDay {
         		return new OutputCreateDailyOneDay( listErrorMessageInfo,null,new ArrayList<>());
         	}
         	
-        	changeDailyAtt = new ChangeDailyAttendance(true, true, true, false, ScheduleRecordClassifi.RECORD, false);
+        	changeDailyAtt = new ChangeDailyAttendance(true, true, true, false, ScheduleRecordClassifi.RECORD, false, true);
         } else { 
         	
-        	changeDailyAtt = new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD, false);
+        	changeDailyAtt = new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD, false, true);
         }
         
         //打刻を取得して反映する 

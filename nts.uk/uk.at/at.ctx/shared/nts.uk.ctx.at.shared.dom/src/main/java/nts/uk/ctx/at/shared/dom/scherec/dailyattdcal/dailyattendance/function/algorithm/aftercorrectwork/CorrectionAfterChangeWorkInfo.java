@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectwork.startendwork.CorrectStartEndWorkForWorkInfo;
@@ -56,7 +55,8 @@ public class CorrectionAfterChangeWorkInfo {
 	public IntegrationOfDaily correction(String companyId, IntegrationOfDaily domainDaily,
 			Optional<WorkingConditionItem> workCondition, ChangeDailyAttendance changeDailyAttendance) {
 
-		if (changeDailyAttendance.workInfo) {
+		/** 日別勤怠の何が変更されたか.勤務情報=true　＆＆　日別勤怠の何が変更されたか。始業、終業時刻を補正しない＝False */
+		if (changeDailyAttendance.workInfo && !changeDailyAttendance.noCorrectStartEndWork) {
 			/** 始業終業時刻の補正 */
 			CorrectStartEndWorkForWorkInfo.correctStartEndWork(createRequire(companyId), domainDaily);
 		}
