@@ -1,17 +1,13 @@
 .left-contents {
-	float: left;
-	margin-left: 30px;
-	margin-top: 10px;
+	position: absolute;
+	top: 110px;
+	left: 40px;
 }
 
 .right-contents {
-	float: left;
-	margin-top: 66px;
-	margin-left: 30px;
-}
-
-.cbb-system-data {
-	position: fixed;
+	position: absolute;
+	left: 420px;
+	top: 163px;
 }
 
 .top-left-contents {
@@ -19,8 +15,9 @@
 }
 
 .move-function {
-	float: left;
-	margin-top: 173px;
+	position: absolute;
+	left: 335px;
+	top: 260px;
 	width: 60px;
 }
 
@@ -29,10 +26,10 @@
 }
 
 .chane-position-function {
-	float: left;
-	margin-top: 112px;
 	width: 30px;
-	margin-left: 20px;
+	position: absolute;
+	left: 860px;
+	top: 245px;
 }
 
 .chane-position-function button {
@@ -97,6 +94,11 @@ button#c1_26 {
 	width: 160px;
 }
 
-div#combo-box {
-	margin-top: -15px;
+#swap-up-down,
+#swap-up-down .upDown-container {
+	height: 100px !important;
+}
+.functions-area-content {
+	position: absolute;
+	top: 10px;
 }

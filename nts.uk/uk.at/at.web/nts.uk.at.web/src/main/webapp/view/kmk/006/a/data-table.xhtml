@@ -10,21 +10,21 @@
 			data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 			<div class="tab-content-1">
 				<div class="control-group">
-					<div class="pull-left">
-						<div data-bind="ntsFormLabel: {}">
-							<label>#{i18n.getText('KMK006_17')}</label>
-						</div>
-					</div>
-					<div tabindex="-1" class="pull-left helpButton">
-						<button tabindex="-1"
-							data-bind="ntsHelpButton: {image: 'image/IMG_KMK006_4.png', position: 'right top', enable: true }">?</button>
-					</div>
-					<br></br> <br></br> <br></br>
-					<div>
+					<div class="content-row flex valign-center">
+            <div>
+              <div data-bind="ntsFormLabel: {}">
+                <label>#{i18n.getText('KMK006_17')}</label>
+              </div>
+            </div>
+            <div tabindex="-1" class="pull-left helpButton">
+              <button tabindex="-1"
+                data-bind="ntsHelpButton: {image: 'image/IMG_KMK006_4.png', position: 'right top', enable: true }">?</button>
+            </div>
+          </div>
+					<div class="content-row">
 						<label class="inputDivLabelMain">#{i18n.getText('KMK006_18')}</label>
 					</div>
-					<br></br>
-					<div style="margin-left: 30px;">
+					<div class="content-row" style="margin-left: 30px;">
 						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
@@ -69,11 +69,10 @@
 						</table>
 					</div>
 
-					<div>
+					<div class="content-row">
 						<label class="inputDivLabelMain">#{i18n.getText('KMK006_21')}</label>
 					</div>
-					<br></br>
-					<div style="margin-left: 30px;">
+					<div class="content-row" style="margin-left: 30px;">
 						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
@@ -121,17 +120,15 @@
 			</div>
 			<div class="tab-content-2">
 				<div class="control-group">
-					<div class="pull-left">
+					<div class="content-row">
 						<div data-bind="ntsFormLabel: {}">
 							<label>#{i18n.getText('KMK006_22')}</label>
 						</div>
 					</div>
-					<br></br> <br></br> <br></br>
-					<div>
+					<div class="content-row">
 						<label class="inputDivLabelMain">#{i18n.getText('KMK006_18')}</label>
 					</div>
-					<br></br>
-					<div style="margin-left: 30px;">
+					<div class="content-row" style="margin-left: 30px;">
 						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
@@ -176,11 +173,10 @@
 						</table>
 					</div>
 
-					<div>
+					<div class="content-row">
 						<label class="inputDivLabelMain">#{i18n.getText('KMK006_21')}</label>
 					</div>
-					<br></br>
-					<div style="margin-left: 30px;">
+					<div class="content-row" style="margin-left: 30px;">
 						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
@@ -225,17 +221,15 @@
 						</table>
 					</div>
 
-					<div class="pull-left">
+					<div class="content-row">
 						<div data-bind="ntsFormLabel: {}">
 							<label>#{i18n.getText('KMK006_23')}</label>
 						</div>
 					</div>
-					<br></br> <br></br> <br></br>
-					<div>
+					<div class="content-row">
 						<label class="inputDivLabelMain">#{i18n.getText('KMK006_18')}</label>
 					</div>
-					<br></br>
-					<div style="margin-left: 30px;">
+					<div class="content-row" style="margin-left: 30px;">
 						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
@@ -280,11 +274,10 @@
 						</table>
 					</div>
 
-					<div>
+					<div class="content-row">
 						<label class="inputDivLabelMain">#{i18n.getText('KMK006_21')}</label>
 					</div>
-					<br></br>
-					<div style="margin-left: 30px;">
+					<div class="content-row" style="margin-left: 30px;">
 						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
@@ -329,17 +322,15 @@
 						</table>
 					</div>
 
-					<div class="pull-left">
+					<div class="content-row">
 						<div data-bind="ntsFormLabel: {}">
 							<label>#{i18n.getText('KMK006_24')}</label>
 						</div>
 					</div>
-					<br></br> <br></br> <br></br>
-					<div>
-						<label class="inputDivLabelMain">#{i18n.getText('KMK006_24')}</label>
+					<div class="content-row">
+						<label class="inputDivLabelMain" style="width: auto">#{i18n.getText('KMK006_24')}</label>
 					</div>
-					<br></br>
-					<div style="margin-left: 30px;">
+					<div class="content-row" style="margin-left: 30px;">
 						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
@@ -388,17 +379,15 @@
 			<div class="tab-content-3">
 				<div class="control-group">
 
-					<div class="pull-left">
+					<div class="content-row">
 						<div data-bind="ntsFormLabel: {}">
 							<label>#{i18n.getText('KMK006_25')}</label>
 						</div>
 					</div>
-					<br></br> <br></br> <br></br>
-					<div>
-						<label class="inputDivLabelMain">#{i18n.getText('KMK006_36')}</label>
+					<div class="content-row">
+						<label class="inputDivLabelMain" style="width: auto">#{i18n.getText('KMK006_36')}</label>
 					</div>
-					<br></br>
-					<div style="margin-left: 30px;">
+					<div class="content-row" style="margin-left: 30px;">
 						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
@@ -443,11 +432,10 @@
 						</table>
 					</div>
 
-					<div>
+					<div class="content-row">
 						<label class="inputDivLabelMain">#{i18n.getText('KMK006_21')}</label>
 					</div>
-					<br></br>
-					<div style="margin-left: 30px;">
+					<div class="content-row" style="margin-left: 30px;">
 						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
@@ -495,13 +483,12 @@
 			</div>
 			<div class="tab-content-4">
 				<div class="control-group">
-					<div class="pull-left">
+					<div class="content-row">
 						<div data-bind="ntsFormLabel: {}">
 							<label>#{i18n.getText('KMK006_37')}</label>
 						</div>
 					</div>
-					<br></br> <br></br> <br></br>
-					<div style="margin-left: 30px;">
+					<div class="content-row" style="margin-left: 30px;">
 						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
@@ -528,8 +515,7 @@
 						</table>
 					</div>
 					
-					<br></br>
-					<div style="margin-left: 30px;">
+					<div class="content-row" style="margin-left: 30px;">
 						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
@@ -556,13 +542,12 @@
 						</table>
 					</div>
 
-					<div class="pull-left">
+					<div class="content-row">
 						<div data-bind="ntsFormLabel: {}">
 							<label>#{i18n.getText('KMK006_38')}</label>
 						</div>
 					</div>
-					<br></br> <br></br> <br></br>
-					<div style="margin-left: 30px;">
+					<div class="content-row" style="margin-left: 30px;">
 						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
@@ -588,8 +573,7 @@
 							</tr>
 						</table>
 					</div>
-					<br></br>
-					<div style="margin-left: 30px;">
+					<div class="content-row" style="margin-left: 30px;">
 						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
@@ -616,13 +600,12 @@
 						</table>
 					</div>
 
-					<div class="pull-left">
+					<div class="content-row">
 						<div data-bind="ntsFormLabel: {}">
 							<label>#{i18n.getText('KMK006_39')}</label>
 						</div>
 					</div>
-					<br></br> <br></br> <br></br>
-					<div style="margin-left: 30px;">
+					<div class="content-row" style="margin-left: 30px;">
 						<table tabindex="-1" class="whole-company-tbl"
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">

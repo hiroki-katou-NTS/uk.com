@@ -57,7 +57,9 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 			"ON pii.PER_INFO_ITEM_DEFINITION_ID = pim.PERSON_INFO_ITEM_ID",
 			"AND pii.PER_INFO_CTG_ID = pim.PERSON_INFO_CATEGORY_ID",
 			"WHERE pii.PER_INFO_CTG_ID = ?",
-			"AND pii.ABOLITION_ATR = 0");	
+			"AND pii.ABOLITION_ATR = 0",
+			"AND icm.CONTRACT_CD = ?",
+			"AND ctm.CONTRACT_CD = ?");	
 	
 	private static final String SELECT_DATA_INFO_BY_ITEM_IDS = String.join(" ",
 			"SELECT pii.PER_INFO_ITEM_DEFINITION_ID, pii.ITEM_CD, icm.ITEM_PARENT_CD, pii.ITEM_NAME, pim.REGULATION_ATR, pio.DISPORDER, pim.COLUMN_WIDTH, pii.REQUIRED_ATR",
@@ -157,6 +159,7 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 	@Override
 	public List<PersonInfoMatrixData> findInfoData(String pInfoCategoryID) {
 		String cid = AppContexts.user().companyId();
+		String contractCd = AppContexts.user().contractCode();
 		if (pInfoCategoryID.isEmpty()) {
 			return new ArrayList<>();
 		}
@@ -166,6 +169,8 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 			.createNativeQuery(SELECT_DATA_INFO)
 				.setParameter(1, cid)
 				.setParameter(2, pInfoCategoryID)
+				.setParameter(3, contractCd)
+				.setParameter(4, contractCd)
 			.getResultList();
 
 		List<PersonInfoMatrixData> returnData = result.stream().map(m -> new PersonInfoMatrixData(

@@ -47,4 +47,6 @@ public interface EmpInfoTerminalRepository {
 
 	// [7] 取得する
 	List<EmpInfoTerminal> get(ContractCode contractCode, ModelEmpInfoTer model);
+	
+	public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode);
 }

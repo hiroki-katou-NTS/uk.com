@@ -1750,15 +1750,27 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     @Override
     public void registerVacationLinkManage(List<LeaveComDayOffManagement> leaveComDayOffMana, List<PayoutSubofHDManagement> payoutSubofHDManagements) {
         if (!leaveComDayOffMana.isEmpty()) {
-            // ドメインモデル「休出代休紐付け管理」を登録する
             for (LeaveComDayOffManagement leaveMana : leaveComDayOffMana) {
+                // ドメインモデル「休出代休紐付け管理」を削除する
+                this.leaveComDayOffManaRepo.deleteByDigestTarget(
+                        leaveMana.getSid(), 
+                        leaveMana.getAssocialInfo().getDateOfUse(), 
+                        TargetSelectionAtr.REQUEST);
+                
+                // ドメインモデル「休出代休紐付け管理」を登録する
                 this.leaveComDayOffManaRepo.add(leaveMana);
             }
         }
 
         if (!payoutSubofHDManagements.isEmpty()) {
-            // ドメインモデル「振出振休紐付け管理」を登録する
             for (PayoutSubofHDManagement payoutHdMana : payoutSubofHDManagements) {
+                // ドメインモデル「振出振休紐付け管理」を削除する
+                this.payoutHdManaRepo.deleteByDigestTarget(
+                        payoutHdMana.getSid(), 
+                        payoutHdMana.getAssocialInfo().getDateOfUse(), 
+                        TargetSelectionAtr.REQUEST);
+                
+                // ドメインモデル「振出振休紐付け管理」を登録する
                 this.payoutHdManaRepo.add(payoutHdMana);
             }
         }
@@ -1940,39 +1952,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     }
 
     @Override
-    public void updateVacationLinkManage(List<LeaveComDayOffManagement> oldLeaveComDayOffMana,
-            List<PayoutSubofHDManagement> oldPayoutSubofHDManagements,
-            List<LeaveComDayOffManagement> newLeaveComDayOffMana,
-            List<PayoutSubofHDManagement> newPayoutSubofHDManagements) {
-        // ドメインモデル「休出代休紐付け管理」を削除する
-        for (LeaveComDayOffManagement leaveComDayOffMana : oldLeaveComDayOffMana) {
-            this.leaveComDayOffManaRepo.delete(leaveComDayOffMana.getSid(), leaveComDayOffMana.getAssocialInfo().getOutbreakDay(), leaveComDayOffMana.getAssocialInfo().getDateOfUse());
-        }
-
-        // ドメインモデル「振出振休紐付け管理」を削除する
-        for (PayoutSubofHDManagement payoutSubofHDManagement : oldPayoutSubofHDManagements) {
-            this.payoutHdManaRepo.delete(payoutSubofHDManagement.getSid(), payoutSubofHDManagement.getAssocialInfo().getOutbreakDay(), payoutSubofHDManagement.getAssocialInfo().getDateOfUse());
-        }
-
-        // ドメインモデル「休出代休紐付け管理」を登録する
-        if (!newLeaveComDayOffMana.isEmpty()) {
-            for (LeaveComDayOffManagement leaveComDayOffMana : newLeaveComDayOffMana) {
-                this.leaveComDayOffManaRepo.add(leaveComDayOffMana);
-            }
-        }
-
-        // ドメインモデル「振出振休紐付け管理」を登録する
-        if (!newPayoutSubofHDManagements.isEmpty()) {
-            for (PayoutSubofHDManagement payoutSubofHDManagement : newPayoutSubofHDManagements) {
-                this.payoutHdManaRepo.add(payoutSubofHDManagement);
-            }
-        }
-    }
-
-    @Override
     public ProcessResult updateApplyForLeave(ApplyForLeave applyForLeave, List<String> holidayAppDates,
-            List<LeaveComDayOffManagement> oldLeaveComDayOffMana,
-            List<PayoutSubofHDManagement> oldPayoutSubofHDManagements,
             List<LeaveComDayOffManagement> leaveComDayOffMana,
             List<PayoutSubofHDManagement> payoutSubofHDManagements,
             AppDispInfoStartupOutput appDispInfoStartupOutput) {
@@ -1984,7 +1964,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         this.applyForLeaveRepository.update(applyForLeave, companyID, application.getAppID());
 
         // 休暇紐付け管理を更新する
-        this.updateVacationLinkManage(oldLeaveComDayOffMana, oldPayoutSubofHDManagements, leaveComDayOffMana, payoutSubofHDManagements);
+        this.registerVacationLinkManage(leaveComDayOffMana, payoutSubofHDManagements);
 
         // 年月日Listを作成する
         GeneralDate startDate = applyForLeave.getApplication().getOpAppStartDate().isPresent() ?
@@ -2002,7 +1982,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         listDates = listDates.stream().filter(date -> !listHolidayDates.contains(date)).collect(Collectors.toList());
 
         // 暫定データの登録
-        //this.interimRemainData.registerDateChange(companyID, applyForLeave.getApplication().getEmployeeID(), listDates);
+        this.interimRemainDataMngRegisterDateChange.registerDateChange(companyID, applyForLeave.getApplication().getEmployeeID(), listDates);
 
         // アルゴリズム「詳細画面登録後の処理」を実行する
         // (Thực hiện 「xử lý sau khi đăng ký màn hình detail」)

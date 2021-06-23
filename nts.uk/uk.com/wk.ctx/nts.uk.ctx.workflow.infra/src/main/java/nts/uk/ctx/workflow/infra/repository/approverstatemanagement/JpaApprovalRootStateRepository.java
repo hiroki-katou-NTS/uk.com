@@ -21,8 +21,8 @@ import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -36,10 +36,10 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateReposito
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdpApprovalPhaseStatePK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdpApproverStatePK;
+import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtAppInstApprover;
+import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtAppInstRoute;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtAppRootStateSimple;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtApprovalPhaseState;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtAppInstRoute;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtAppInstApprover;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtFullJoinState;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmday.WwfdpApprovalRootDayPK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmday.WwfdtAppRootDaySimple;
@@ -406,7 +406,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 			entityApprover.wwfdpApprovrStatePK.approverId = approver.getApproverID();
 			entityApprover.agentID = approver.getAgentID();
 			entityApprover.approvalDate = approver.getApprovalDate();
-			entityApprover.approvalReason = approver.getApprovalReason();
+			entityApprover.approvalReason = approver.getApprovalReason()==null ? null : approver.getApprovalReason().v();
 			lstEntityApprover.add(entityApprover);
 		}
 		return lstEntityApprover;

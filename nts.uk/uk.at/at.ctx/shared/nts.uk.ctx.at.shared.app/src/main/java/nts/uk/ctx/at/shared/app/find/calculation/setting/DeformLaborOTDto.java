@@ -10,5 +10,5 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Data
 public class DeformLaborOTDto {
 	/*変形法定内残業を計算する*/
-	private Integer legalOtCalc;
+	private NotUseAtr legalOtCalc;
 }

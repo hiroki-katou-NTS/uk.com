@@ -331,18 +331,18 @@ public class DataDialogWithTypeProcessor {
 	}
 	
 	// get application NO19
-	public List<EnumConstant> getNameAppliction(){
+	public List<Integer> getNameAppliction(){
 		String companyId = AppContexts.user().companyId();
-		List<Integer> lstAppSlect = iAppliCalDaiCorrecRepository.findByCom(companyId).stream().map(x -> x.getAppType().value).collect(Collectors.toList());
-		List<AppWithDetailExportDto> lstApp = applicationListForScreen.getAppWithOvertimeInfo(companyId).stream()
-				.map(x -> {
-					x.setAppType(convertTypeUi(x));
-					return x;
-				}).filter(x -> lstAppSlect.contains(x.getAppType())).collect(Collectors.toList());
-		List<EnumConstant> result =  lstApp.stream().map(x -> {
-			return new EnumConstant(x.getAppType(), x.getAppName(), x.getOvertimeAtr() == null ? "" : x.getOvertimeAtr().toString());
-		}).collect(Collectors.toList());
-		return result;
+		return iAppliCalDaiCorrecRepository.findByCom(companyId).stream().map(x -> x.getAppType().value).collect(Collectors.toList());
+//		List<AppWithDetailExportDto> lstApp = applicationListForScreen.getAppWithOvertimeInfo(companyId).stream()
+//				.map(x -> {
+//					x.setAppType(convertTypeUi(x));
+//					return x;
+//				}).filter(x -> lstAppSlect.contains(x.getAppType())).collect(Collectors.toList());
+//		List<EnumConstant> result =  lstApp.stream().map(x -> {
+//			return new EnumConstant(x.getAppType(), x.getAppName(), x.getOvertimeAtr() == null ? "" : x.getOvertimeAtr().toString());
+//		}).collect(Collectors.toList());
+//		return result;
 	}
 	
 	public int convertTypeUi(AppWithDetailExportDto dto) {

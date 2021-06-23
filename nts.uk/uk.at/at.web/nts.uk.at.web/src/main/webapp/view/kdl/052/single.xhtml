@@ -12,9 +12,10 @@
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdl052.style.css" />
 			<com:scriptfile path="kdl052.vm.js" />
-			<script>var dialogSize = { width: 543 , height: 550};</script>
+			<script>var dialogSize = { width: 543 , height: 560};</script>
 		</ui:define>
 		<ui:define name="content">
+      <div id="contents-area">
       <com:ko-if bind="manageDisabled()">
         <div class="kdl052-content">
           <div class="inline-row mt-20">
@@ -87,7 +88,6 @@
                   tabindex="4"
                   data-bind="ntsGridList: {
                     name: '#[KDL047_5]',
-                    height: 400,
                     width: 357,
                     columns: tableColumns,
                     options: tableDatas,
@@ -100,7 +100,7 @@
             </div>
           </div>
         </div>
-    </com:ko-if>
+      </com:ko-if>
       <com:ko-if bind="!manageDisabled()">
         <div class="right-content">
           <div class="inline-row mt-20">
@@ -124,6 +124,7 @@
           </div>
         </div>
       </com:ko-if>
+      </div>
       <div id="functions-area-bottom">
         <!-- btn close dialog -->
         <button class="large" id="btnCancel" data-bind="click: close">#{i18n.getText('KDL052_15')}</button>

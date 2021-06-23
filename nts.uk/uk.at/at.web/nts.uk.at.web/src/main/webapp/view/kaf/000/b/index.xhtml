@@ -5,7 +5,7 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
 				nts.uk.ctx.at.request.dom.application.AppReason
@@ -34,6 +34,8 @@
 			<com:stylefile path="/view/kaf/000/b/component6/kaf000.b.component6.css" />
 			<com:stylefile path="/view/kaf/000/b/component7/kaf000.b.component7.css" />
 			<com:stylefile path="/view/kaf/000/b/component8/kaf000.b.component8.css" />
+			<com:stylefile path="/view/kaf/000/b/component9/kaf000.b.component9.css" />
+			<com:stylefile path="/view/kaf/000/shr/kaf000.shr.css" />
 			<com:stylefile path="/view/kaf/007/shr/kaf007.shr.css" />
 			<com:stylefile path="/view/kaf/009/shr/kaf009.share.style.css" />
 			<com:stylefile path="/view/kaf/002/m/kaf002.m.main.css" />
@@ -105,112 +107,106 @@
 			
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area">
-				<div style="display: inline-block;">
-					<a class="goback link-button" data-bind="click: backtoCMM045">#{i18n.getText('KAF000_14')}</a>
+			<div id="functions-area" style="background-color: inherit;">
+				<!-- B1_4 -->
+				<div class="controlButtonCell_kaf000"
+					data-bind="if: displayApprovalButton">
+					<button class="proceed kaf000-function-btn"
+						data-bind="click: btnApprove,
+												enable: enableApprovalButton() &amp;&amp; $root.errors.isEmpty
+												">#{i18n.getText('KAF000_15')}</button>
 				</div>
-				<div style="display: inline-block; margin-left: 10px; margin-right: 10px;">
-					<!-- B1_2 -->
+				<!-- B1_16 -->
+				<div class="controlButtonCell_kaf000"
+					data-bind="if: displayApprovalButton">
+					<button class="proceed kaf000-function-btn"
+						data-bind="click: btnApproveComment,
+												enable: enableApprovalButton() &amp;&amp; $root.errors.isEmpty
+												">#{i18n.getText('KAF000_60')}</button>
+				</div>
+				<!-- B1_14 -->
+				<div class="controlButtonCell_kaf000"
+					data-bind="if: displayApprovalLabel">
+					<div class="comment">
+						<label>【承認】</label>
+					</div>
+				</div>
+				<!-- B1_5 -->
+				<div class="controlButtonCell_kaf000"
+					data-bind="if: displayDenyButton">
 					<button class="kaf000-function-btn"
-						data-bind="click: back, enable: $vm.enableBack">
-						<i class="icon icon-button-arrow-left"></i>
-					</button>
-					<!-- B1_3 -->
+						data-bind="click: btnDenyComment,
+								enable: enableDenyButton() &amp;&amp; $root.errors.isEmpty
+								">#{i18n.getText('KAF000_16')}</button>
+				</div>
+				<!-- B1_15 -->
+				<div class="controlButtonCell_kaf000"
+					data-bind="if: displayDenyLabel">
+					<div class="comment">
+						<label>【否認】</label>
+					</div>
+				</div>
+				<!-- B1_7 -->
+				<div class="controlButtonCell_kaf000"
+					data-bind="if: displayReleaseButton">
 					<button class="kaf000-function-btn"
-						data-bind="click: next, enable: $vm.enableNext">
-						<i class="icon icon-button-arrow-right"></i>
-					</button>
+						data-bind="click: btnRelease,
+								enable: enableReleaseButton() &amp;&amp; $root.errors.isEmpty
+								">#{i18n.getText('KAF000_18')}</button>
 				</div>
-				<div style="display: inline-block;">
-					<!-- B1_4 -->
-					<div class="controlButtonCell_kaf000"
-						data-bind="if: displayApprovalButton">
-						<button class="proceed kaf000-function-btn"
-							data-bind="click: btnApprove,
-													enable: enableApprovalButton() &amp;&amp; $root.errors.isEmpty
-													">#{i18n.getText('KAF000_15')}</button>
-					</div>
-					<!-- B1_14 -->
-					<div class="controlButtonCell_kaf000"
-						data-bind="if: displayApprovalLabel">
-						<div class="comment">
-							<label>【承認】</label>
-						</div>
-					</div>
-					<!-- B1_5 -->
-					<div class="controlButtonCell_kaf000"
-						data-bind="if: displayDenyButton">
-						<button class="kaf000-function-btn"
-							data-bind="click: btnDeny,
-									enable: enableDenyButton() &amp;&amp; $root.errors.isEmpty
-									">#{i18n.getText('KAF000_16')}</button>
-					</div>
-					<!-- B1_15 -->
-					<div class="controlButtonCell_kaf000"
-						data-bind="if: displayDenyLabel">
-						<div class="comment">
-							<label>【否認】</label>
-						</div>
-					</div>
-					<!-- B1_7 -->
-					<div class="controlButtonCell_kaf000"
-						data-bind="if: displayReleaseButton">
-						<button class="kaf000-function-btn"
-							data-bind="click: btnRelease,
-									enable: enableReleaseButton() &amp;&amp; $root.errors.isEmpty
-									">#{i18n.getText('KAF000_18')}</button>
-					</div>
-					<!-- B1_6 -->
-					<div class="controlButtonCell_kaf000"
-						data-bind="if: displayRemandButton">
-						<button class="kaf000-function-btn"
-							data-bind="click: btnRemand,
-									enable: enableRemandButton() &amp;&amp; $root.errors.isEmpty
-									   ">#{i18n.getText('KAF000_17')}</button>
-					</div>
+				<!-- B1_6 -->
+				<div class="controlButtonCell_kaf000"
+					data-bind="if: displayRemandButton">
+					<button class="kaf000-function-btn"
+						data-bind="click: btnRemand,
+								enable: enableRemandButton() &amp;&amp; $root.errors.isEmpty
+								   ">#{i18n.getText('KAF000_17')}</button>
 				</div>
-				<div class="kaf000-function-div-update">
-					<!-- B1_8 -->
-					<div class="controlButtonCell_kaf000"
-						data-bind="if: displayUpdateButton">
-						<button id = "updateKAF000" class="proceed kaf000-function-btn"
-							data-bind="click: updateData, enable: enableUpdateButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_19')}</button>
+				<!-- B1_8 -->
+				<div class="controlButtonCell_kaf000"
+					data-bind="if: displayUpdateButton">
+					<button id = "updateKAF000" class="proceed kaf000-function-btn"
+						data-bind="click: updateData, enable: enableUpdateButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_19')}</button>
 
-					</div>
-					<!-- B1_9 -->
-					<div class="controlButtonCell_kaf000">
-						<button class="kaf000-function-btn"
-							data-bind="click: btnPrint, enable: $root.errors.isEmpty">#{i18n.getText('KAF000_20')}</button>
-					</div>
-					<!-- B1_10 -->
-					<div class="controlButtonCell_kaf000" style="display: none">
-						<button class="kaf000-function-btn"
-							data-bind="click: btnReferences">#{i18n.getText('KAF000_21')}</button>
-					</div>
-					<!-- B1_11 -->
-					<div class="controlButtonCell_kaf000">
-						<button class="kaf000-function-btn"
-							data-bind="click: btnSendEmail">#{i18n.getText('KAF000_22')}</button>
-					</div>
 				</div>
-				<div class="kaf000-function-div-delete">
-					<!-- B1_12 -->
-					<div class="controlButtonCell_kaf000"
-						data-bind="if: displayDeleteButton">
-						<button class="danger kaf000-function-btn"
-							data-bind="click: btnDelete, enable : enableDeleteButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_23')}</button>
-					</div>
+				<!-- B1_9 -->
+				<div class="controlButtonCell_kaf000">
+					<button class="kaf000-function-btn"
+						data-bind="click: btnPrint, enable: $root.errors.isEmpty">#{i18n.getText('KAF000_20')}</button>
 				</div>
-				<div class="kaf000-function-div-cancel">
-					<!-- B1_13 -->
-					<div class="controlButtonCell_kaf000"
-						data-bind="if: displayCancelButton">
-						<button class="danger kaf000-function-btn"
-							data-bind="click: btnCancel, enable : enableCancelButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_24')}</button>
-					</div>
+				<!-- B1_10 -->
+				<div class="controlButtonCell_kaf000" style="display: none">
+					<button class="kaf000-function-btn"
+						data-bind="click: btnReferences">#{i18n.getText('KAF000_21')}</button>
+				</div>
+				<!-- B1_11 -->
+				<div class="controlButtonCell_kaf000">
+					<button class="kaf000-function-btn"
+						data-bind="click: btnSendEmail">#{i18n.getText('KAF000_22')}</button>
+				</div>
+				<!-- B1_12 -->
+				<div class="controlButtonCell_kaf000"
+					data-bind="if: displayDeleteButton">
+					<button class="danger kaf000-function-btn"
+						data-bind="click: btnDelete, enable : enableDeleteButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_23')}</button>
+				</div>
+				<!-- B1_13 -->
+				<div class="controlButtonCell_kaf000"
+					data-bind="if: displayCancelButton">
+					<button class="danger kaf000-function-btn"
+						data-bind="click: btnCancel, enable : enableCancelButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_24')}</button>
 				</div>
 			</div>
-			<div id="contents-area">
+			<div style="display: inline-block; position: absolute; left: 60px; z-index: 10;">
+				<a class="goback link-button" data-bind="click: backtoCMM045">#{i18n.getText('KAF000_14')}</a>
+			</div>
+			<div style="display: inline-block; margin-left: 5px; margin-right: 5px; position: absolute; left: 180px; z-index: 10;">
+				<!-- B1_2 -->
+				<button data-bind="click: back, enable: $vm.enableBack" style="width: 27px;">◀</button>
+				<!-- B1_3 -->
+				<button data-bind="click: next, enable: $vm.enableNext" style="width: 27px;">▶</button>
+			</div>
+			<div>
 				<div data-bind="if: currentApp()=='sample'">
 					<div data-bind="if: ko.unwrap(appType) != null">
 						<div data-bind="component: {
@@ -220,79 +216,79 @@
 					</div>
 				</div>
 				<div data-bind="if: currentApp()!='sample'">
-				<div data-bind="if: ko.unwrap(appType) === getAppType('OVER_TIME_APPLICATION')">
-					<div data-bind="component: {
-							name: 'kaf005-b',
-							params: childParam
-						}"></div>
-				</div>
-				<div data-bind="if: ko.unwrap(appType) === getAppType('ABSENCE_APPLICATION')">
-					<div data-bind="component: {
-						name: 'kaf006-b', 
-						params: childParam
-					}"></div>
-				</div>
-				<div data-bind="if: ko.unwrap(appType) === getAppType('WORK_CHANGE_APPLICATION')">
-					<div data-bind="component: {
-							name: 'kaf007-b',
-							params: childParam
-						}"></div>
-				</div>
-				<div data-bind="if: ko.unwrap(appType) === getAppType('BUSINESS_TRIP_APPLICATION')">
-					<div data-bind="component: {
-							name: 'kaf008-b',
-							params: childParam
-						}"></div>
-				</div>
-				<div data-bind="if: ko.unwrap(appType) === getAppType('GO_RETURN_DIRECTLY_APPLICATION')">
-					<div data-bind="component: {
-							name: 'kaf009-b',
-							params: childParam
-						}"></div>
-				</div>
-				<div data-bind="if: ko.unwrap(appType) === getAppType('HOLIDAY_WORK_APPLICATION')">
-					<div data-bind="component: {
-						name: 'kaf010-b',
-						params: childParam
-					}"></div>
-				</div>
-				<div data-bind="if: ko.unwrap(appType) === getAppType('STAMP_APPLICATION')">
-					<div data-bind="if: ko.toJS(application).opStampRequestMode == 0">
+					<div data-bind="if: ko.unwrap(appType) === getAppType('OVER_TIME_APPLICATION')">
 						<div data-bind="component: {
-							name: 'kaf002-c',
-							params: childParam
-						}"></div>
+								name: 'kaf005-b',
+								params: childParam
+							}"></div>
 					</div>
-					<div data-bind="if: ko.toJS(application).opStampRequestMode == 1">
+					<div data-bind="if: ko.unwrap(appType) === getAppType('ABSENCE_APPLICATION')">
 						<div data-bind="component: {
-							name: 'kaf002-d',
+							name: 'kaf006-b', 
 							params: childParam
 						}"></div>
 					</div>
-				</div>
-				<div data-bind="if: ko.unwrap(appType) === getAppType('ANNUAL_HOLIDAY_APPLICATION')">
-                    <div data-bind="component: {
-							name: 'kaf012-b',
-							params: childParam
-						}"></div>
-				</div>
-				<div data-bind="if: ko.unwrap(appType) === getAppType('EARLY_LEAVE_CANCEL_APPLICATION')">
-					<div data-bind="component: {
-							name: 'kaf004-b',
-							params: childParam
-						}"></div>
-				</div>
-				<div data-bind="if: ko.unwrap(appType) === getAppType('COMPLEMENT_LEAVE_APPLICATION') ">
-					<div class="kaf011" data-bind="with: kaf011BViewModel">
-						<ui:include src="../../011/b/index.xhtml" />
+					<div data-bind="if: ko.unwrap(appType) === getAppType('WORK_CHANGE_APPLICATION')">
+						<div data-bind="component: {
+								name: 'kaf007-b',
+								params: childParam
+							}"></div>
 					</div>
-				</div>
-				<div data-bind="if: ko.unwrap(appType) === getAppType('OPTIONAL_ITEM_APPLICATION')">
-					<div data-bind="component: {
-							name: 'kaf020-c',
+					<div data-bind="if: ko.unwrap(appType) === getAppType('BUSINESS_TRIP_APPLICATION')">
+						<div data-bind="component: {
+								name: 'kaf008-b',
+								params: childParam
+							}"></div>
+					</div>
+					<div data-bind="if: ko.unwrap(appType) === getAppType('GO_RETURN_DIRECTLY_APPLICATION')">
+						<div data-bind="component: {
+								name: 'kaf009-b',
+								params: childParam
+							}"></div>
+					</div>
+					<div data-bind="if: ko.unwrap(appType) === getAppType('HOLIDAY_WORK_APPLICATION')">
+						<div data-bind="component: {
+							name: 'kaf010-b',
 							params: childParam
 						}"></div>
-				</div>
+					</div>
+					<div data-bind="if: ko.unwrap(appType) === getAppType('STAMP_APPLICATION')">
+						<div data-bind="if: ko.toJS(application).opStampRequestMode == 0">
+							<div data-bind="component: {
+								name: 'kaf002-c',
+								params: childParam
+							}"></div>
+						</div>
+						<div data-bind="if: ko.toJS(application).opStampRequestMode == 1">
+							<div data-bind="component: {
+								name: 'kaf002-d',
+								params: childParam
+							}"></div>
+						</div>
+					</div>
+					<div data-bind="if: ko.unwrap(appType) === getAppType('ANNUAL_HOLIDAY_APPLICATION')">
+						<div data-bind="component: {
+								name: 'kaf012-b',
+								params: childParam
+							}"></div>
+					</div>
+					<div data-bind="if: ko.unwrap(appType) === getAppType('EARLY_LEAVE_CANCEL_APPLICATION')">
+						<div data-bind="component: {
+								name: 'kaf004-b',
+								params: childParam
+							}"></div>
+					</div>
+					<div data-bind="if: ko.unwrap(appType) === getAppType('COMPLEMENT_LEAVE_APPLICATION') ">
+						<div class="kaf011" data-bind="with: kaf011BViewModel">
+							<ui:include src="../../011/b/index.xhtml" />
+						</div>
+					</div>
+					<div data-bind="if: ko.unwrap(appType) === getAppType('OPTIONAL_ITEM_APPLICATION')">
+						<div data-bind="component: {
+								name: 'kaf020-c',
+								params: childParam
+							}"></div>
+					</div>
 				</div>
 			</div>
 		</ui:define>

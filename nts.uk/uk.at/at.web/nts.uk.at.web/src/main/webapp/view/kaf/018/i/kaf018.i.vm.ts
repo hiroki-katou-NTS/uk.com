@@ -37,36 +37,36 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 			]);
 			vm.selectedTab = ko.observable('tab-1');
 			
-			vm.selectedTab.subscribe((newValue) => {
-				nts.uk.ui.errors.clearAll();
-				vm.hasError();
-				switch (newValue) {
-					case 'tab-1':
-						vm.screenEditMode(vm.appApprovalUnapproved().editMode());
-						vm.$nextTick(() => $("#I3_1_1").focus());
-						break;
-					case 'tab-2':
-						vm.screenEditMode(vm.dailyUnconfirmByPrincipal().editMode());
-						vm.$nextTick(() => $("#I4_1_1").focus());
-						break;
-					case 'tab-3':
-						vm.screenEditMode(vm.dailyUnconfirmByConfirmer().editMode());
-						vm.$nextTick(() => $("#I5_1_1").focus());
-						break;
-					case 'tab-6':
-						vm.screenEditMode(vm.monthlyUnconfirmByPrincipal().editMode());
-						vm.$nextTick(() => $("#I8_1_1").focus());
-						break;
-					case 'tab-4':
-						vm.screenEditMode(vm.monthlyUnconfirmByConfirmer().editMode());
-						vm.$nextTick(() => $("#I6_1_1").focus());
-						break;
-					case 'tab-5':
-						vm.screenEditMode(vm.workConfirmation().editMode());
-						vm.$nextTick(() => $("#I7_1_1").focus());
-						break;
-				}
-			});
+			// vm.selectedTab.subscribe((newValue) => {
+			// 	nts.uk.ui.errors.clearAll();
+			// 	vm.hasError();
+			// 	switch (newValue) {
+			// 		case 'tab-1':
+			// 			vm.screenEditMode(vm.appApprovalUnapproved().editMode());
+			// 			vm.$nextTick(() => $("#I3_1_1").focus());
+			// 			break;
+			// 		case 'tab-2':
+			// 			vm.screenEditMode(vm.dailyUnconfirmByPrincipal().editMode());
+			// 			vm.$nextTick(() => $("#I4_1_1").focus());
+			// 			break;
+			// 		case 'tab-3':
+			// 			vm.screenEditMode(vm.dailyUnconfirmByConfirmer().editMode());
+			// 			vm.$nextTick(() => $("#I5_1_1").focus());
+			// 			break;
+			// 		case 'tab-6':
+			// 			vm.screenEditMode(vm.monthlyUnconfirmByPrincipal().editMode());
+			// 			vm.$nextTick(() => $("#I8_1_1").focus());
+			// 			break;
+			// 		case 'tab-4':
+			// 			vm.screenEditMode(vm.monthlyUnconfirmByConfirmer().editMode());
+			// 			vm.$nextTick(() => $("#I6_1_1").focus());
+			// 			break;
+			// 		case 'tab-5':
+			// 			vm.screenEditMode(vm.workConfirmation().editMode());
+			// 			vm.$nextTick(() => $("#I7_1_1").focus());
+			// 			break;
+			// 	}
+			// });
 			vm.$blockui("show");
 			vm.$ajax('at', API.getUseSetting).done(function(useSetting) {
 				vm.useSetting = useSetting;
@@ -76,9 +76,9 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 							mail.mailType,
 							mail.mailSubject,
 							mail.mailContent,
-							mail.urlApprovalEmbed,
-							mail.urlDayEmbed,
-							mail.urlMonthEmbed,
+							1, //mail.urlApprovalEmbed,
+							1, //mail.urlDayEmbed,
+							1, //mail.urlMonthEmbed,
 							mail.editMode);
 						switch (mail.mailType) {
 							case 0:
@@ -117,6 +117,40 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 			}).always(() => {
 				vm.$blockui("hide");
 				
+			});
+		}
+
+		mounted() {
+			let vm = this;
+			vm.selectedTab.subscribe((newValue) => {
+				nts.uk.ui.errors.clearAll();
+				// vm.hasError();
+				switch (newValue) {
+					case 'tab-1':
+						vm.screenEditMode(vm.appApprovalUnapproved().editMode());
+						vm.$nextTick(() => $("#I3_1_1").focus());
+						break;
+					case 'tab-2':
+						vm.screenEditMode(vm.dailyUnconfirmByPrincipal().editMode());
+						vm.$nextTick(() => $("#I4_1_1").focus());
+						break;
+					case 'tab-3':
+						vm.screenEditMode(vm.dailyUnconfirmByConfirmer().editMode());
+						vm.$nextTick(() => $("#I5_1_1").focus());
+						break;
+					case 'tab-6':
+						vm.screenEditMode(vm.monthlyUnconfirmByPrincipal().editMode());
+						vm.$nextTick(() => $("#I8_1_1").focus());
+						break;
+					case 'tab-4':
+						vm.screenEditMode(vm.monthlyUnconfirmByConfirmer().editMode());
+						vm.$nextTick(() => $("#I6_1_1").focus());
+						break;
+					case 'tab-5':
+						vm.screenEditMode(vm.workConfirmation().editMode());
+						vm.$nextTick(() => $("#I7_1_1").focus());
+						break;
+				}
 			});
 		}
 
@@ -215,29 +249,47 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 				vm.$dialog.confirm({ messageId: "Msg_800", messageParams: [data] }).then((result) => {
 					if (result === 'yes') {
 						//アルゴリズム「承認状況メールテスト送信実行」を実行する
-						let mailType = 0;
+						let mailType = 0,
+							mailTempJS: any = {},
+							screenUrlApprovalEmbed = false,
+							screenUrlDayEmbed = false,
+							screenUrlMonthEmbed = false;
 						switch (vm.selectedTab()) {
 							case 'tab-1':
 								mailType = 0;
+								mailTempJS = vm.getMailTempJS(vm.appApprovalUnapproved());
+								screenUrlApprovalEmbed = mailTempJS.urlApprovalEmbed == 1 ? true : false;
 								break;
 							case 'tab-2':
 								mailType = 1;
+								mailTempJS = vm.getMailTempJS(vm.dailyUnconfirmByPrincipal());
+								screenUrlDayEmbed = mailTempJS.urlDayEmbed == 1 ? true : false;
 								break;
 							case 'tab-3':
 								mailType = 2;
+								mailTempJS = vm.getMailTempJS(vm.dailyUnconfirmByConfirmer());
+								screenUrlDayEmbed = mailTempJS.urlDayEmbed == 1 ? true : false;
 								break;
 							case 'tab-6':
 								mailType = 5;
+								mailTempJS = vm.getMailTempJS(vm.monthlyUnconfirmByPrincipal());
+								screenUrlMonthEmbed = mailTempJS.urlMonthEmbed == 1 ? true : false;
 								break;
 							case 'tab-4':
 								mailType = 3;
+								mailTempJS = vm.getMailTempJS(vm.monthlyUnconfirmByConfirmer());
+								screenUrlMonthEmbed = mailTempJS.urlMonthEmbed == 1 ? true : false;
 								break;
 							case 'tab-5':
 								mailType = 4;
+								mailTempJS = vm.getMailTempJS(vm.workConfirmation());
+								screenUrlDayEmbed = mailTempJS.urlDayEmbed == 1 ? true : false;
+								screenUrlMonthEmbed = mailTempJS.urlMonthEmbed == 1 ? true : false;
 								break;
 						}
 						vm.$blockui("show");
-						vm.$ajax('at', nts.uk.text.format(API.sendTestMail, mailType)).done(function(result: any) {
+						vm.$ajax('at', API.sendTestMail, { mailType, screenUrlApprovalEmbed, screenUrlDayEmbed, screenUrlMonthEmbed })
+						.done(function(result: any) {
 							shareModel.showMsgSendEmail(result);
 						}).fail(function(err) {
 							vm.$dialog.error({ messageId: err.messageId });
@@ -267,7 +319,7 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 		getMailTemp: "at/request/application/approvalstatus/getMailTemp",
 		registerMail: "at/request/application/approvalstatus/registerMail",
 		confirmSenderMail: "at/request/application/approvalstatus/confirmSenderMail",
-		sendTestMail: "at/request/application/approvalstatus/sendTestMail/{0}",
+		sendTestMail: "at/request/application/approvalstatus/sendTestMail",
 		getUseSetting: "at/record/application/realitystatus/getUseSetting"
 	}
 }

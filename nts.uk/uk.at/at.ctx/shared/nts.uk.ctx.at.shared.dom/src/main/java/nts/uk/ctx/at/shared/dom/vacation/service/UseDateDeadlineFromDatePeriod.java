@@ -5,6 +5,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ManageDeadline;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -16,7 +17,7 @@ public class UseDateDeadlineFromDatePeriod {
 	 * @return
 	 */
 	public static GeneralDate useDateDeadline(RequireM1 require, String employmentCd,
-			ExpirationTime expirationDate, GeneralDate baseDate) {
+			ExpirationTime expirationDate, GeneralDate baseDate, ManageDeadline manageDeadline) {
 		//締めを取得する
 		Closure closureData = ClosureService.getClosurByEmployment(require, employmentCd);
 		if(closureData == null) {
@@ -26,12 +27,19 @@ public class UseDateDeadlineFromDatePeriod {
 		YearMonth ym = yearMonthUseDeadline(baseDate, expirationDate);
 		//休暇使用期限基準日を作成する
 		GeneralDate ymd = getUseDeadlineDate(ym, baseDate.day());
-		//締め->アルゴリズム「指定した年月日時点の締め期間を取得する」を実行する
-		Optional<ClosurePeriod> periodByYmd = closureData.getClosurePeriodByYmd(ymd);
-		if(periodByYmd.isPresent()) {
-			return periodByYmd.get().getPeriod().end();
+		
+		//休暇使用期限基準日を使用期限日に設定する
+		if(manageDeadline == ManageDeadline.MANAGE_BY_BASE_DATE && expirationDate != ExpirationTime.THIS_MONTH) {
+			return ymd;
 		}
 		
+		if (manageDeadline == ManageDeadline.MANAGE_BY_TIGHTENING || expirationDate == ExpirationTime.THIS_MONTH) {
+			// 締め->アルゴリズム「指定した年月日時点の締め期間を取得する」を実行する
+			Optional<ClosurePeriod> periodByYmd = closureData.getClosurePeriodByYmd(ymd);
+			if (periodByYmd.isPresent()) {
+				return periodByYmd.get().getPeriod().end();
+			}
+		}
 		return null;
 	}
 	

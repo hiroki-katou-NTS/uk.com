@@ -208,6 +208,7 @@ module nts.uk.ui.koExtentions {
             let tabIndex = _.isEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
             $container.addClass("nts-searchbbox-wrapper").removeAttr("tabindex");
             $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span></div>");  
+            $container.find('.input-wrapper').append("<i id='search-icon' class='img-icon'></i>");
             $container.append("<div class='input-wrapper'><button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button></div>"); 
             
             if(!_.isEmpty(label)){
@@ -222,8 +223,8 @@ module nts.uk.ui.koExtentions {
             var $input = $container.find("input.ntsSearchBox");
             minusWidth += $button.outerWidth(true);
             if(searchMode === "filter"){
-                $container.append("<button class='clear-btn ntsSearchBox_Component'>"+ nts.uk.ui.toBeResource.clear +"</button>"); 
-                let $clearButton = $container.find("button.clear-btn");  
+                $container.append("<button class='clear-icon proceed ntsSearchBox_Component'>"); 
+                let $clearButton = $container.find("button.clear-icon");  
                 minusWidth +=  $clearButton.outerWidth(true);
                 $clearButton.click(function(evt: Event, ui: any) {
                     let component = $("#" + ko.unwrap(data.comId));    

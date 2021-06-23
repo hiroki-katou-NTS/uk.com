@@ -7,18 +7,13 @@
 }
 
 #contents-area table.cover {
-	margin: 30px 10px 20px 30px;
+	margin: 0px 10px 20px 30px;
 }
 
 #contents-area div.caret-background {
 	width: 250px;
 	height: 470px;
 	background-color: #E0F59E;
-}
-
-#contents-area div.leftCover {
-	padding-left: 25px;
-	padding-top: 10px;
 }
 
 #contents-area div.leftCover input.txtSearch {
@@ -44,7 +39,7 @@
 }
 
 .leftFormLabel {
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 }
 
 .txtCheckBox {
@@ -64,6 +59,10 @@
 	width: 100px !important;
 }
 
+#multiList_headers colgroup col:NTH-CHILD(2), #multiList col:NTH-CHILD(2)
+{
+	width: 175px !important;
+}
 #multiList .ui-state-active {
 	background-color: white !important;
 	color: black !important;

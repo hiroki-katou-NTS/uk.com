@@ -19,19 +19,36 @@ module nts.uk.at.view.ccg005.a.screenModel {
   @component({
     name: 'ccg005-component',
     template: 
-    `<div data-bind="widget-content: 290, default: 510">
-    <div id="ccg005-content">
-      <div>
-        <div class="grade-header-top">
-          <!-- A0 -->
-          <span data-bind="i18n: 'CCG005_1'" class="ccg005-bold"></span>
-          <!-- A1_5 -->
-          <i tabindex=3
-            data-bind="visible: $component.inCharge, ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openScreenCCG005B"></i>
-          &#160;
-          <!-- A1_6 -->
-          <i tabindex=4 data-bind="click: $component.resetLastestData, ntsIcon: {no: 194, width: 25, height: 25}"></i>
-        </div>
+    `
+    <div class="widget-title">
+      <table style="width: 100%;">
+        <colgroup>
+          <col width="auto" />
+          <col width="70px" />
+          <col width="40px" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="ccg005-fs-biger">
+              <!-- A0 -->
+              <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('CCG005_1') }"></div>
+            </th>
+            <th>
+              <!-- A2_1 -->
+              <button tabindex=11 id="ccg005-legends" style="margin-left: 5px;"
+                data-bind="visible: $component.isBaseDate, ntsLegendButton: legendOptions"></button>
+            </th>
+            <th>
+              <!-- A1_5 -->
+              <i tabindex=3 style="position: relative; right: 0; top: 5px;" data-bind="visible: $component.inCharge, ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openScreenCCG005B"></i>
+            </th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+    <div data-bind="widget-content: 200, default: 430" id="ccg005-watching">
+    <div id="ccg005-content" style="padding-bottom: 0px;">
+      <div style="height: 100%; position: relative;">
         <div class="grade-header-center" style="padding-bottom: 5px;">
           <table>
             <tr>
@@ -89,16 +106,13 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 fiscalMonthsMode: true,
                 showJumpButtons: true
               }"></div>
-          <!-- A2_1 -->
-          <button tabindex=11 id="ccg005-legends" style="margin-left: 5px;"
-            data-bind="visible: $component.isBaseDate, ntsLegendButton: legendOptions"></button>
           <div style="right: 0; position: absolute; display: flex; align-items: center;">
             <!-- A3_2 -->
             <i tabindex=9 id="ccg005-star-img" style="margin-right: 5px;"
               data-bind="ntsIcon: {no: 184, width: 20, height: 20}"></i>
             <!-- A3_1 -->
             <div tabindex=10 data-bind="ntsComboBox: {
-                  width: '120px',
+                  width: '160px',
                   options: favoriteSpecifyData,
                   editable: true,
                   visibleItemsCount: 5,
@@ -112,28 +126,11 @@ module nts.uk.at.view.ccg005.a.screenModel {
                   ]}"></div>
           </div>
         </div>
-        <div class="grade-body-top" style="padding-top: 5px;">
-          <table style="width: 100%;">
-            <tr>
-              <td class="ccg005-bottom-unset" style="width: 35px;"></td>
-              <!-- A2_5 -->
-              <td class="ccg005-w100 ccg005-pl-5 ccg005-bottom-unset">
-                <span class="ccg005-bold" data-bind="i18n: 'CCG005_41'"></span>
-              </td>
-              <!-- A2_6 -->
-              <td class="ccg005-w100 ccg005-pl-5 ccg005-bottom-unset">
-                <span class="ccg005-bold" data-bind="i18n: 'CCG005_42'"></span>
-              </td>
-              <td class="ccg005-bottom-unset"></td>
-              <td class="ccg005-bottom-unset"></td>
-            </tr>
-          </table>
-        </div>
         <!-- A5 -->
         <div class="grade-body-bottom" style="min-height: 55px; height: 55px">
           <table style="width: 100%; border-collapse: separate; border-spacing: 0 5px">
             <tbody data-bind="foreach: attendanceInformationDtosDisplay">
-              <tr style="height: 45px;" class="ccg005-tr-background" data-bind="attr:{ id: backgroundColor }">
+              <tr style="height: 46px;" class="ccg005-tr-background" data-bind="attr:{ id: backgroundColor }">
                 <td style="padding-right: 5px; width: 30px; background-color: white;"
                   class="ccg005-apply-binding-avatar ccg005-bottom-unset">
                   <!-- A4_1 -->
@@ -142,26 +139,28 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 </td>
                 <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
                   <!-- A4_8 -->
-                  <label class="limited-label ccg005-w100" style="display: inline-block;"
-                    data-bind="text: businessName" />
+                  <div style="height: 20px">
+                    <label class="limited-label ccg005-w100" style="display: inline-block;"
+                      data-bind="text: businessName" />
+                  </div>
                   <!-- A4_5 -->
                   <div style="height: 20px;">
                     <i tabindex=13 data-bind="ntsIcon: {no: emojiIconNo, width: 20, height: 15}, visible: emojiVisitable"></i>
                   </div>
                 </td>
-                <td class="ccg005-w105 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
-                  <div class="ccg005-w100">
+                <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
+                  <div class="ccg005-w100" style="position: relative; height: 20px">
                     <!-- A4_2 -->
                     <label
                       data-bind="text: attendanceDetailDto.workName, attr:{ class: 'limited-label '+ attendanceDetailDto.workColorClass }"
-                      style="max-width: 80px; width: auto !important;" />
+                      style="max-width: 85px; width: auto !important;" />
                     <!-- A4_4 -->
-                    <i tabindex=14
+                    <i tabindex=14 style="position: absolute; top: 3px; right: 0;"
                       data-bind="visible: displayAppIcon, click: $component.initPopupA4_4InList.bind($component, $index, sid), attr:{ class: 'A4-4-application-icon-'+sid }, ntsIcon: {no: 190, width: 13, height: 13}"></i>
                   </div>
                   <div style="height: 20px;">
                     <!-- A4_3 -->
-                    <span class="limited-label" style="max-width: 120px;">
+                    <span style="white-space: nowrap;">
                       <label id="check-in-out"
                         data-bind="text: attendanceDetailDto.checkInTime, attr:{ class: attendanceDetailDto.checkInColorClass }" />
                       <label id="check-in-out"
@@ -183,10 +182,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
                   <p style="max-width: 125px;"
                     data-bind="text: goOutDto.goOutPeriod, visible: $component.goOutDisplay()" />
                   <!-- A4_6 text go out reason -->
-                  <p style="max-width: 125px;" class="limited-label"
+                  <p style="max-width: 125px;" class="limited-label ccg005-block"
                     data-bind="text: goOutDto.goOutReason, visible: $component.goOutDisplay()" />
                   <!-- A4_6 text comment -->
-                  <p style="max-width: 125px;" class="limited-label"
+                  <p style="max-width: 125px;" class="limited-label ccg005-block"
                     data-bind="text: comment, visible: $component.commentDisplay()" />
                 </td>
               </tr>
@@ -194,7 +193,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           </table>
         </div>
         <div class="grade-bottom ccg005-flex"
-          style="width: 100%; align-items: center; position: relative; margin-top: 5px;">
+          style="width: 100%; align-items: center; position: absolute; margin-top: 5px; bottom: 0;">
           <table style="width: 100%;">
             <tr style=" background: white;">
               <td class="ccg005-bottom-unset">
@@ -325,6 +324,16 @@ module nts.uk.at.view.ccg005.a.screenModel {
   </div>
   <!--------------------------------------- CSS --------------------------------------->
   <style>
+    .ccg005-block {
+      display: block;
+    }
+    .ccg005-fs-biger div.form-label>span.text {
+      font-size: 1.2rem;
+    }
+    .widget-container > #ccg005-watching > #ccg005-content table tr td {
+      border-width: 1px !important;
+    } 
+
     .ccg005-border-groove {
       border: 1px groove !important;
     }
@@ -345,12 +354,17 @@ module nts.uk.at.view.ccg005.a.screenModel {
       width: 100px;
     }
 
-    .ccg005-w105 {
-      width: 105px;
-    }
-
     .ccg005-bold {
       font-weight: bold;
+    }
+
+    .ccg005-bold span {
+      font-size: 1rem !important;
+      font-weight: bolder !important;
+    }
+
+    .ccg005-1rem span {
+      font-size: 1rem !important;
     }
 
     .ccg005-pl-5 {
@@ -375,15 +389,15 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     .bg-green-ccg005 {
-      background-color: #99FF99
+      background-color: #DDFFDD
     }
 
     .bg-yellow-ccg005 {
-      background-color: #FFFF00
+      background-color: #FFE1E1
     }
 
     .bg-gray-ccg005 {
-      background-color: #D9D9D9
+      background-color: #F2F2F2
     }
 
     #ccg005-content {
@@ -460,15 +474,15 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     #background-color-present {
-      background-color: #99FF99;
+      background-color: #DDFFDD;
     }
 
     #background-color-go-out {
-      background-color: #FFFF00;
+      background-color: #FFE1E1;
     }
 
     #background-color-holiday {
-      background-color: #D9D9D9;
+      background-color: #F2F2F2;
     }
 
   </style>`
@@ -964,11 +978,11 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
       switch (status) {
         case StatusClassfication.PRESENT:
-          return "background-color-present";  //グリーン（#99FF99）
+          return "background-color-present";  //グリーン（#DDFFDD）
         case StatusClassfication.GO_OUT:
-          return "background-color-go-out";  //黄色（#FFFF00）
+          return "background-color-go-out";  //黄色（#FFE1E1）
         case StatusClassfication.HOLIDAY:
-          return "background-color-holiday";  //グレー（#D9D9D9）
+          return "background-color-holiday";  //グレー（#F2F2F2）
         case StatusClassfication.NOT_PRESENT:
         case StatusClassfication.GO_HOME:
         default:
@@ -977,15 +991,15 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     private onResizeable(vm: any) {
+      const lineHeight = 50;
+      const paddingInContent = 10;
       const subHeight = $('#ccg005-content').height()
-        - $('.grade-header-top').height()
         - $('.grade-header-center').height()
         - $('.grade-header-bottom').height()
-        - $('.grade-body-top').height()
         - $('.grade-bottom').height()
-        - 40;
-      if (subHeight >= 50) {
-        vm.perPage(_.floor(subHeight / 50));
+        - paddingInContent;
+      if (subHeight >= lineHeight) {
+        vm.perPage(_.floor(subHeight / lineHeight));
       }
       $('.grade-body-bottom').height(subHeight);
     }

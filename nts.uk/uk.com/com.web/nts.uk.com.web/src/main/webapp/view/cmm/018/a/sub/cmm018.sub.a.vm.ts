@@ -48,7 +48,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             width = screen.width - 435 > 925 ? 925 : screen.width - 435;
 //                            width = (screen.width * 1000)/(1920);
                             if (screen.height == 768){
-                                height = 315;
+                              height = 385;
                             }
                             //1920*1040
                             if (screen.height == 1080 && screen.width == 1920) {
@@ -85,18 +85,12 @@ module nts.uk.com.view.cmm018.a.sub {
 						
                         if(systemAtr == 0) {
                             width = screen.width - 435 > 920 ? 920 : screen.width - 435;
-                            if (screen.height == 768){
-                                height = 315;
-                                $('#container_treegrid1').height(370);
-                                $('#treegrid1_scroll').height(260);
-                                $('#treegrid1_container').height(260);
+                            if (screen.height == 768) {
+                              height = 385;
                             }
                             if (screen.height == 1080 && screen.width == 1920) {
                                 width = 950;
                                 height = 600;
-								$('#container_treegrid1').height(470);
-								$('#treegrid1_scroll').height(359);
-								$('#treegrid1_container').height(359);
                             }
                             //1280 * 768
                             else if (screen.height == 768 && screen.width == 1280) {
@@ -116,7 +110,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         if(systemAtr == 0) {
                             width = screen.width - 435 > 925 ? 925 : screen.width - 435;
                             if (screen.height == 768){
-                                height = 315;
+                              height = 355;
                             }
                             if (screen.height == 1080 && screen.width == 1920) {
                                     width = 950;
@@ -151,10 +145,8 @@ module nts.uk.com.view.cmm018.a.sub {
                         if(systemAtr == 0) {
                             width = screen.width - 435 > 920 ? 920 : screen.width - 435;
                             if (screen.height == 768){
-                                height = 315;
-                                $('#container_treegrid2').height(370);
-                                $('#treegrid2_scroll').height(260);
-                                $('#treegrid2_container').height(260);
+                              height = 355;
+                                $('#treegrid2_scroll').height(330);
                             }
 							if (screen.height == 1080 && screen.width == 1920) {
                                 height = 600;
@@ -178,7 +170,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         if(systemAtr == 0) {
                             width = screen.width - 435 > 870 ? 870 : screen.width - 435;
                             if (screen.height == 768){
-                                height = 285;
+                               height = 300;
                             }
                             if (screen.height == 1080 && screen.width == 1920) {
                                 width = 950;
@@ -199,7 +191,6 @@ module nts.uk.com.view.cmm018.a.sub {
                             //1024*768
                             else if (screen.height == 768 && screen.width == 1024) {
                                 width = 550;
-
                                 // $('div#left-contents').css('margin-top',"-20px");
                                	if (window.outerHeight == 728 && window.outerWidth == 1024){
                                         $('html.sidebar-html').css('overflow','hidden');
@@ -229,10 +220,8 @@ module nts.uk.com.view.cmm018.a.sub {
                         if(systemAtr == 0) {
                             width = screen.width - 450 > 865 ? 865 : screen.width - 450;
                             if (screen.height == 768){
-                                height = 285;
-                                $('#container_treegrid3').height(350);
-                                $('#treegrid3_scroll').height(240);
-                                $('#treegrid3_container').height(240);
+                               height = 300;
+                                $('#treegrid3_scroll').height(275);
                             }
 							if (screen.height == 1080 && screen.width == 1920) {
                                 height = 580;
@@ -250,7 +239,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             else if (screen.height == 768 && screen.width == 1024) {
                                 width = 545;
                                 height = 265; 
-								$('#container_treegrid3').height(310);
+								$('#container_treegrid3').height(300);
 								$('#treegrid3_scroll').height(200);
 								$('#treegrid3_container').height(200); 
 								
@@ -585,7 +574,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         if(systemAtr == 0) {
                             width = screen.width - 435 > 925 ? 925 : screen.width - 435;
                             if (screen.height == 768){
-                                height = 315;
+                              height = 385;
                             }
                             if (screen.height == 1080 && screen.width == 1920) {
                                     width = 950;
@@ -620,10 +609,7 @@ module nts.uk.com.view.cmm018.a.sub {
                         if (systemAtr == 0) {
                             width = screen.width - 435 > 920 ? 920 : screen.width - 435;
                             if (screen.height == 768){
-                                height = 315;
-                                $('#container_treegrid1').height(370);
-                                $('#treegrid1_scroll').height(260);
-                                $('#treegrid1_container').height(260);
+                              height = 385;
                             }
                             if (screen.height == 1080 && screen.width == 1920) {
                                 width = 950;
@@ -655,7 +641,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             if(systemAtr == 0) {
                                 width = screen.width - 435 > 925 ? 925 : screen.width - 435;
                                 if (screen.height == 768){
-                                    height = 315;
+                                  height = 355;
                                 }
                                 if (screen.height == 1080 && screen.width == 1920) {
                                         width = 950;
@@ -689,10 +675,8 @@ module nts.uk.com.view.cmm018.a.sub {
                             if (systemAtr == 0) {
                                  width = screen.width - 435 > 920 ? 920 : screen.width - 435;
                                 if (screen.height == 768){
-                                    height = 315;
-                                    $('#container_treegrid2').height(370);
-                                    $('#treegrid2_scroll').height(260);
-                                    $('#treegrid2_container').height(260);
+                                  height = 355;
+                                    $('#treegrid2_scroll').height(330);
                                 }
 								 if (screen.height == 1080 && screen.width == 1920) {
                                     height = 600;
@@ -700,14 +684,7 @@ module nts.uk.com.view.cmm018.a.sub {
 									$('#treegrid2_scroll').height(359);
 									$('#treegrid2_container').height(359);
 	                             }
-	                             //1280 * 768
-	                             else if (screen.height == 768 && screen.width == 1280) {
-	                                 height = 315;
-	                             }
-	                             //1024*768
-	                             else if (screen.height == 768 && screen.width == 1024) {           
-	                                 height = 315;
-	                             }  
+
                             } else {
                                 width = screen.width - 124 > 950 ? 950 : screen.width - 124;
                             }       
@@ -718,7 +695,7 @@ module nts.uk.com.view.cmm018.a.sub {
                             if(systemAtr == 0) {
                                 width = screen.width - 435 > 870 ? 870 : screen.width - 435;
                                 if (screen.height == 768){
-                                    height = 285;
+                                   height = 300;
                                 }
                                 if (screen.height == 1080 && screen.width == 1920) {
                                     width = 950;
@@ -768,10 +745,8 @@ module nts.uk.com.view.cmm018.a.sub {
                             if(systemAtr == 0) {
                                 width = screen.width - 450 > 865 ? 865 : screen.width - 450;
                                 if (screen.height == 768){
-                                    height = 285;
-                                    $('#container_treegrid3').height(350);
-                                    $('#treegrid3_scroll').height(240);
-                                    $('#treegrid3_container').height(240);
+                                   height = 300;
+                                    $('#treegrid3_scroll').height(275);
                                 }
                                 if (screen.height == 1080 && screen.width == 1920) {
                                     height = 580;
@@ -789,7 +764,7 @@ module nts.uk.com.view.cmm018.a.sub {
 	                             //1024*768
 	                             else if (screen.height == 768 && screen.width == 1024) {           
 	                                height = 265;  
-									$('#container_treegrid3').height(330);
+									$('#container_treegrid3').height(300);
 									$('#treegrid3_scroll').height(220);
 									$('#treegrid3_container').height(220);
 									
@@ -807,14 +782,14 @@ module nts.uk.com.view.cmm018.a.sub {
 	                             }
 	                             //1280 * 768
 	                             else if (screen.height == 768 && screen.width == 1280) {
-									 $('#container_treegrid3').height(370);
+									 $('#container_treegrid3').height(355);
 									 $('#treegrid3_scroll').height(260);
 									 $('#treegrid3_container').height(260);
 									 $('#layout_change_mode').width(1190);
 	                             }
 	                             //1024*768
 	                             else if (screen.height == 768 && screen.width == 1024) {           
-									$('#container_treegrid3').height(310);
+									$('#container_treegrid3').height(300);
 									$('#treegrid3_scroll').height(200);
 									$('#treegrid3_container').height(200);
 									

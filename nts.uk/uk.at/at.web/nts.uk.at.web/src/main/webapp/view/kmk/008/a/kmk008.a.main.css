@@ -3,8 +3,8 @@
 	overflow-x: auto;
 }
 
-#contents-area-inner {
-	width: 780px;
+#contents-inner {
+	width: 890px;
 }
 
 .panel-row {
@@ -27,7 +27,7 @@
 	border-radius: 7px;
 	margin-left: 10px;
 	margin-bottom: 5px;
-	width: 729px;
+	width: 735px;
 }
 
 .border-style {
@@ -36,8 +36,8 @@
 }
 
 .panel-frame {
-	height: 250px;
-	width: 195px;
+	height: 282px;
+	width: 196px;
 }
 
 .no-border {
@@ -104,7 +104,7 @@
 }
 
 .lbl-general-labor-explanation-margin-top2 {
-	margin-top: 54px;
+	margin-top: 52px;
 }
 
 .lbl-general-labor-explanation-no-margin-top {
@@ -144,7 +144,7 @@
 }
 
 #A4_13 {
-	margin-top: 40px;
+	margin-top: 35px;
 	height: 30px;
 	padding: 3px 7px;
 	margin-bottom: 3px;
