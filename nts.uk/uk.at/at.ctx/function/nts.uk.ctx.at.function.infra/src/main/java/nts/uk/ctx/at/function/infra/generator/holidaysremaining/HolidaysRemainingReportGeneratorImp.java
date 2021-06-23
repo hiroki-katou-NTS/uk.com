@@ -2348,13 +2348,13 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             }
                         }
                     }
-                    int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), currentMonth);
                     List<YearMonth> lstYm = new ArrayList<>();
                     for (YearMonth i = currentMonth; i.lessThanOrEqualTo(dataSource.getEndMonth().yearMonth()); i = i.addMonths(1)) {
                         lstYm.add(i);
                     }
                     Collections.sort(lstYm);
                     for (YearMonth ym : lstYm) {
+                        int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), ym);
                         SpecialVacationImportedKdr spVaCrurrentMonthImported = hdRemainingInfor.getLstMap273CurrMon().get(ym) != null ?
                                 hdRemainingInfor.getLstMap273CurrMon().get(ym).get(specialHolidayCode) : null;
                         if (spVaCrurrentMonthImported != null) {
@@ -2405,7 +2405,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                     val bfRemainTime = spVaCrurrentMonthImported.getRemainHoursBf();
                                     val afRemanTime = spVaCrurrentMonthImported.getRemainHoursAf();
                                     String vlm28 = "";
-                                    if (bfRemainTime!=null && bftime != 0 && afRemanTime!=null&& afdtime != 0) {
+                                    if (bfRemainTime!=null && bfRemainTime != 0 && afRemanTime!=null&& afRemanTime != 0) {
                                         vlm28 = String.valueOf(convertToTime(bfRemainTime)) + "/" + String.valueOf(convertToTime(afRemanTime));
                                     } else {
                                         vlm28 = ((bfRemainTime == null ||bfRemainTime == 0) ? "" : String.valueOf(convertToTime(bfRemainTime))) + ((afRemanTime== null||afRemanTime == 0) ? "" : String.valueOf(convertToTime(afRemanTime)));
@@ -2437,7 +2437,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             }
                         }
                     }
-                    totalMonth++;
                 }
             }
             firstRow += 4;
