@@ -4712,7 +4712,7 @@ public class WorkTimeReportService {
             return "";
         }
         
-        String[] calculatedMethodAtr = {"休憩を計算しない", "退勤までの休憩時間を計算する(丸めを適用する)", "退勤以降も含め休憩時間を全て計上する"};
+        String[] calculatedMethodAtr = {"退勤までの休憩時間を計算する(丸めを適用する)", "退勤以降も含め休憩時間を全て計上する", "休憩を計算しない"};
         for (int i = 0; i < calculatedMethodAtr.length; i++) {
             if (calculatedMethod == i) {
                 return calculatedMethodAtr[i];
