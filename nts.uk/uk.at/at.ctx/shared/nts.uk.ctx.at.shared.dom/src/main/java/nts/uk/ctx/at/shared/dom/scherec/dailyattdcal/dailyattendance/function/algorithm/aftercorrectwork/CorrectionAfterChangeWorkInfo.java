@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -54,15 +55,20 @@ public class CorrectionAfterChangeWorkInfo {
 
 	public IntegrationOfDaily correction(String companyId, IntegrationOfDaily domainDaily,
 			Optional<WorkingConditionItem> workCondition, ChangeDailyAttendance changeDailyAttendance) {
-
+		
+		val require = createRequire(companyId);
+		
 		/** 日別勤怠の何が変更されたか.勤務情報=true　＆＆　日別勤怠の何が変更されたか。始業、終業時刻を補正しない＝False */
 		if (changeDailyAttendance.workInfo && !changeDailyAttendance.noCorrectStartEndWork) {
 			/** 始業終業時刻の補正 */
-			CorrectStartEndWorkForWorkInfo.correctStartEndWork(createRequire(companyId), domainDaily);
+			CorrectStartEndWorkForWorkInfo.correctStartEndWork(require, domainDaily);
 		}
 		
 		//時刻の補正
 		timeCorrectionProcess.process(companyId, workCondition, domainDaily, changeDailyAttendance.getClassification());
+		
+		/** 勤務回数の補正 */
+		AttendanceTimesCorrector.correct(require, domainDaily);
 		
 		// 短時間勤務の補正
 		IntegrationOfDaily domainCorrect = correctShortWorkingHour.correct(companyId, domainDaily);
@@ -74,9 +80,9 @@ public class CorrectionAfterChangeWorkInfo {
 		return domainCorrect;
 	}
 	
-	private CorrectStartEndWorkForWorkInfo.Require createRequire(String companyId) {
+	private Require createRequire(String companyId) {
 		
-		return new CorrectStartEndWorkForWorkInfo.Require() {
+		return new Require() {
 			
 			@Override
 			public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
@@ -115,4 +121,7 @@ public class CorrectionAfterChangeWorkInfo {
 		};
 	}
 
+	public static interface Require extends CorrectStartEndWorkForWorkInfo.Require, AttendanceTimesCorrector.Require {
+		
+	}
 }
