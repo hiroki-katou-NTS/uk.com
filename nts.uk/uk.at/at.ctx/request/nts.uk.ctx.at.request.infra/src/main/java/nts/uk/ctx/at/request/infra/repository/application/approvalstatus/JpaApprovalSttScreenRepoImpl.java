@@ -950,7 +950,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                                    ON      MIDFOD.EMPLOYEE_ID = SGJT.EMPLOYEE_ID " +
 				"                                        ) SGJKN " +
 				"                    LEFT JOIN   WWFDT_CONF_PHASE SYNZMF " +
-				"                    ON              SGJKN.ROOT_ID = SYNZMF.ROOT_ID " +
+				"                    ON        (        SGJKN.ROOT_ID = SYNZMF.ROOT_ID " +
+				"                    			AND   SGJKN.FINF = SYNZMF.PHASE_ORDER   ) " +
 				"                    WHERE       SYNZMF.APP_PHASE_ATR  IS NULL " +
 				"                ) JCHOSN_M " +
 				"ON              SKBSYITERM_MON.SID  = JCHOSN_M.EMPLOYEE_ID;";
