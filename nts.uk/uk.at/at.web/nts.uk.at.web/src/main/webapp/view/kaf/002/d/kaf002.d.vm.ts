@@ -12,7 +12,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 			<div class="left-panel"
 				style="padding-bottom: 5px; width: calc(1240px - 350px); height: inherit;">
 				<div
-					style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding: 0 10px;">
+					style="border: 1px solid #CCC; height: inherit; background-color: #fff; padding: 0 10px;">
 					<div class="table"
 						style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
 						<div class="cell" style="vertical-align: middle;">
