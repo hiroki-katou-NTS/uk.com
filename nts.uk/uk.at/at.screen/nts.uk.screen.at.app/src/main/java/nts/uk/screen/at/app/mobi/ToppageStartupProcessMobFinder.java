@@ -18,6 +18,7 @@ import javax.management.RuntimeErrorException;
 import lombok.AllArgsConstructor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -35,6 +36,13 @@ import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.ChildCareNursePeriodImport;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.ChildCareNurseRemainingNumberImport;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.TempChildCareNurseManagementImport;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberCareAdapter;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childcare.GetRemainingNumberChildCareNurseAdapter;
+import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.AggrResultOfHolidayOver60hImport;
+import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.GetHolidayOver60hRemNumWithinPeriodAdapter;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -50,6 +58,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
@@ -196,6 +206,16 @@ public class ToppageStartupProcessMobFinder {
     
     @Inject
     private InterimRecAbasMngRepository interimRecAbasMngRepo;
+    
+    @Inject
+    private GetHolidayOver60hRemNumWithinPeriodAdapter getHolidayOver60hRemNumWithinPeriodAdapter;
+
+    @Inject
+    private GetRemainingNumberChildCareNurseAdapter getRemainingNumberChildCareNurseAdapter;
+    
+    @Inject
+    private GetRemainingNumberCareAdapter getRemainingNumberCareAdapter;
+
 
 	public ToppageStartupDto startupProcessMob() {
 		String companyID = AppContexts.user().companyId();
@@ -552,6 +572,61 @@ public class ToppageStartupProcessMobFinder {
 						employeeId,
 						systemDate).v();
 				dataKTG029.setRemainsLeft(remainLeft != null ? remainLeft : 0.0);
+			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.CHILD_NURSING_LEAVE_REMAINING // 種類＝子の看護休暇残数が取得できた
+					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
+				
+				// アルゴリズム「21.子の看護休暇残数表示」を実行する
+				// [NO.206]期間中の子の看護休暇残数を取得
+				ChildCareNursePeriodImport childNursePeriod =
+						getRemainingNumberChildCareNurseAdapter.getChildCareNurseRemNumWithinPeriod(
+								employeeId,
+								datePeriod,
+								InterimRemainMngMode.OTHER,
+								systemDate,
+								Optional.of(false),
+								Optional.empty(),
+								Optional.empty(),
+								Optional.empty(),
+								Optional.empty());
+				ChildCareNurseRemainingNumberImport remainingNumber = childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber();
+				Double before = remainingNumber.getUsedDays();
+				Double after = Double.valueOf(remainingNumber.getUsedTime().orElse(0));
+				RemainingNumber childRemainNo = new RemainingNumber(
+						"",
+						before,
+						after,
+						GeneralDate.today(),
+						remainingNumber.getUsedTime().isPresent());
+				dataKTG029.setChildRemainNo(childRemainNo);
+				
+				
+			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.REMAINING_CARE_LEAVE // 種類＝介護休暇残数が取得できた
+					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
+				
+				// アルゴリズム「22.介護休暇残数表示」を実行する
+				// [NO.207]期間中の介護休暇残数を取得
+			    ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
+			            companyId, 
+			            employeeId, 
+			            datePeriod, 
+			            InterimRemainMngMode.OTHER, 
+			            systemDate, 
+			            Optional.of(false), 
+			            new ArrayList<TempChildCareNurseManagementImport>(),
+	                    Optional.empty(), 
+	                    Optional.empty(), 
+	                    Optional.empty());
+			    ChildCareNurseRemainingNumberImport remainingNumber = longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber();
+				Double before = remainingNumber.getUsedDays();
+				Double after = Double.valueOf(remainingNumber.getUsedTime().orElse(0));
+				RemainingNumber careLeaveNo = new RemainingNumber(
+						"",
+						before,
+						after,
+						GeneralDate.today(),
+						remainingNumber.getUsedTime().isPresent());
+				
+				dataKTG029.setCareLeaveNo(careLeaveNo);
 			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.REMAINING_HOLIDAY
 					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
 				// sử lý 23
@@ -594,6 +669,31 @@ public class ToppageStartupProcessMobFinder {
 
 				}
 				dataKTG029.setSPHDRamainNo(sPHDRamainNos);
+			} else if (
+					timeStatusDisplayItem.getDetailType() == TimeStatusType.EXCESS_NUMBER_REST_60H // 種類＝60H超休残数が取得できた
+					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE
+					) {
+				
+				// [RQ677]期間中の60H超休残数を取得する
+				AggrResultOfHolidayOver60hImport over60hImport = 
+						getHolidayOver60hRemNumWithinPeriodAdapter.algorithm(
+						            companyId, 
+						            employeeId, 
+						            datePeriod, 
+						            InterimRemainMngMode.OTHER, 
+						            systemDate, 
+						            Optional.of(false), 
+						            Optional.empty(), 
+						            Optional.empty());
+				
+				
+				AnnualLeaveRemainingTime over60h = over60hImport.getAsOfPeriodEnd().getRemainingNumber().getRemainingTimeWithMinus();
+				
+				TimeOT extraRest = new TimeOT(over60h.hour(), over60h.minute());
+				dataKTG029.setExtraRest(extraRest);
+				
+				
+				
 			}
 
 		}
