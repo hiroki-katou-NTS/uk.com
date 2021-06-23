@@ -172,8 +172,13 @@ table#grid_matome_headers_fixed thead tr th{
 .jinji_right1{
 	
 }
+
 .sidebar-content {
     overflow: unset !important;
+}
+
+.master-content {
+	overflow: auto !important;
 }
 
 #grid_matomeB_virtualContainer {
