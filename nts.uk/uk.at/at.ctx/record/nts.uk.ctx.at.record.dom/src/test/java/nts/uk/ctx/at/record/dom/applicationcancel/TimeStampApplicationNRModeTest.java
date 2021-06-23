@@ -74,7 +74,7 @@ public class TimeStampApplicationNRModeTest {
 		};
 
 		val actualResult = TimeStampApplicationNRMode.process(require, GeneralDate.ymd(2020, 01, 02), appNr,
-				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD, false, true));
+				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD, false));
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(91, 86));
 
@@ -108,7 +108,7 @@ public class TimeStampApplicationNRModeTest {
 		};
 
 		val actualResult = TimeStampApplicationNRMode.process(require, GeneralDate.ymd(2020, 01, 02), appNr,
-				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD, false, true));
+				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD, false));
 
 		assertThat(actualResult).isEmpty();
 
@@ -147,7 +147,7 @@ public class TimeStampApplicationNRModeTest {
 		};
 
 		val actualResult = TimeStampApplicationNRMode.process(require, GeneralDate.ymd(2020, 01, 02), appNr,
-				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD, false, true));
+				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD, false));
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(31));
 
@@ -186,7 +186,7 @@ public class TimeStampApplicationNRModeTest {
 		};
 
 		val actualResult = TimeStampApplicationNRMode.process(require, GeneralDate.ymd(2020, 01, 02), appNr,
-				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD, false, true));
+				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD, false));
 
 		assertThat(actualResult).isEmpty();
 

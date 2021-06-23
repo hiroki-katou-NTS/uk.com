@@ -62,7 +62,7 @@ public class GetApplicationReflectionResult {
 		boolean directBounceClassifi = lstItemId.stream()
 				.filter(x -> x.intValue() == 859 || x.intValue() == 860)
 				.findFirst().isPresent();
-		return new ChangeDailyAttendance(workInfo, attendance, false, true, ScheduleRecordClassifi.RECORD, directBounceClassifi, true);
+		return new ChangeDailyAttendance(workInfo, attendance, false, true, ScheduleRecordClassifi.RECORD, directBounceClassifi);
 	}
 	
 	public static interface Require extends RCCreateDailyAfterApplicationeReflect.Require{

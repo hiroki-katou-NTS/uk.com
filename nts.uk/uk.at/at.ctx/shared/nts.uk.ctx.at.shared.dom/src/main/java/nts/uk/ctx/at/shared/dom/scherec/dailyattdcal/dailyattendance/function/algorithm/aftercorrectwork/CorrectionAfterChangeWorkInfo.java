@@ -58,8 +58,8 @@ public class CorrectionAfterChangeWorkInfo {
 		
 		val require = createRequire(companyId);
 		
-		/** 日別勤怠の何が変更されたか.勤務情報=true　＆＆　日別勤怠の何が変更されたか。始業、終業時刻を補正しない＝False */
-		if (changeDailyAttendance.workInfo && !changeDailyAttendance.noCorrectStartEndWork) {
+		/** 日別勤怠の何が変更されたか.勤務情報=true　＆＆　日別勤怠の何が変更されたか。勤務予定から移送した値も補正する＝True */
+		if (changeDailyAttendance.workInfo && changeDailyAttendance.correctValCopyFromSche) {
 			/** 始業終業時刻の補正 */
 			CorrectStartEndWorkForWorkInfo.correctStartEndWork(require, domainDaily);
 		}

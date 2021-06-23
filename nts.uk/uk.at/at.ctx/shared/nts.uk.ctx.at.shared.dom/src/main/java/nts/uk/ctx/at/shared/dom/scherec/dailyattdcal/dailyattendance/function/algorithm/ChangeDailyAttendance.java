@@ -30,7 +30,4 @@ public class ChangeDailyAttendance {
 	
 	/** 直行直帰区分*/
 	public boolean directBounceClassifi; 
-
-	/** 始業、終業時刻を補正しない */
-	public boolean noCorrectStartEndWork;
 }
