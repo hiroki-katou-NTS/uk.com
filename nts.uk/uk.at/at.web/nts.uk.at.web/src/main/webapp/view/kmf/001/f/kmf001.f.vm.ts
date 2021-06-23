@@ -650,6 +650,7 @@ module nts.uk.pr.view.kmf001.f {
             //default data company
             private defaultData() {
                 var self = this;
+                self.manageDeadline.valueHasMutated();
                 return {
                     companyId: "",
                     isManaged: 0,
