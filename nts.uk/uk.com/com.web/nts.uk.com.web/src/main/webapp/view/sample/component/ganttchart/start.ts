@@ -15,12 +15,18 @@ __viewContext.ready(function() {
             this.selectedMode.subscribe(s => {
                 if (s !== "normal") {
                     this.otType.hide(true);
+                    this.coreTimeType.hide(true);
+                    this.c1Type.hide(false);
+                    this.c2Type.hide(false);
                     this.fixedType.color("#fff");
                     this.changableType.color("#fff");
                     this.flexType.color("#fff");
                     this.breakTimeType.zIndex(3000);
                 } else {
                     this.otType.hide(false);
+                    this.coreTimeType.hide(false);
+                    this.c1Type.hide(true);
+                    this.c2Type.hide(true);
                     this.fixedType.color("#ccccff");
                     this.changableType.color("#ffc000");
                     this.flexType.color("#ccccff");
@@ -280,27 +286,37 @@ __viewContext.ready(function() {
             
             this.ruler = extable.getChartRuler();
             ruler = this.ruler;
-            ruler.setMode("paste");
+//            ruler.setMode("paste");
             ruler.setSnatchInterval(3);
-            ruler.addType({
+            this.c1Type = {
                 name: "C1",
                 color: "#F00",
                 lineWidth: 30,
                 canSlide: false,
                 unitToPx: 4,
+                hide: ruler.loggable(false),
                 canPaste: true,
-                canPasteResize: true
-            });
+                canPasteResize: true,
+                pastingResizeFinished: (line, type, start, end) => {
+                    console.log(`${line}-${type}-${start}-${end}`);
+                }
+            };
+            ruler.addType(this.c1Type);
             
-            ruler.addType({
+            this.c2Type = {
                 name: "C2",
                 color: "#0F0",
                 lineWidth: 30,
                 canSlide: false,
                 unitToPx: 4,
+                hide: ruler.loggable(false),
                 canPaste: true,
-                canPasteResize: true
-            });
+                canPasteResize: true,
+                pastingResizeFinished: (line, type, start, end) => {
+                    console.log(`${line}-${type}-${start}-${end}`);
+                }
+            };
+            ruler.addType(this.c2Type);
             
             this.fixedType = {
                 name: "Fixed",
@@ -365,14 +381,17 @@ __viewContext.ready(function() {
             };
             this.ruler.addType(this.otType);
             
-            this.ruler.addType({
+            this.coreTimeType = {
                 name: "CoreTime",
                 color: "#00ffcc",
                 lineWidth: 30,
                 unitToPx: 4,
                 fixed: "Both",
-                canPaste: true
-            });
+                canPaste: true,
+                hide: ruler.loggable(false)
+            };
+            
+            this.ruler.addType(this.coreTimeType);
             
             for (let i = 0; i < 300; i++) {
                 let start = Math.round(((i % 60) + i / 60) / 2);
