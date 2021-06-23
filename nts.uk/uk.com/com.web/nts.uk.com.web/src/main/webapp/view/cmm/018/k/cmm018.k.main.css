@@ -15,11 +15,11 @@
 	margin-top: 5px;
 }
 #swap-list-gridArea2, #swap-list-grid2_displayContainer, #swap-list-grid2_scrollContainer {
-	height: 122px !important;
+	height: 123px !important;
 }
 
 #swap-list-grid2_container {
-	height: 143px !important;
+	height: 147px !important;
 }
 
 #swap-list-search-area-input {
@@ -29,7 +29,7 @@ table.ntsSwapGrid tbody tr td {
 	white-space: nowrap !important;
 }
 #swap-list-search-area{
-	height: 40px !important;
+	height: 36px !important;
 }
 .ntsMoveDataArea, #swap-list-move-data,  .move-button, #swap-list-gridArea1{
 	vertical-align: top;
@@ -94,4 +94,16 @@ html{
 
 #selected-approver {
 	margin-left: 23px !important;
+}
+
+#swap-list-grid1_container {
+	height: 270px !important;
+}
+
+#swap-list-grid1_displayContainer, #swap-list-grid1_scrollContainer {
+	height: 246px !important;
+}
+
+#single-tree-grid-tree-grid_displayContainer, #single-tree-grid-tree-grid_scrollContainer {
+	height: 292px !important;
 }
