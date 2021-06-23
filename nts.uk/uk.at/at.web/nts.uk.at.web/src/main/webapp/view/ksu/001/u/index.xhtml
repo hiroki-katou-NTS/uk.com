@@ -29,11 +29,11 @@
                 <hr id="line" />
                 <div class="container-custom">
                     <button id="prev-btn" tabindex="4" class="auto-height" data-bind="click: Prev, enable: isEnableBtn">                        
-                        <div class="flex valign-center btn-extra" ><i data-bind="ntsIcon: { no: 156 }"></i> #{i18n.getText('KSU001_4008')}</div>                        
+                        <div class="flex valign-center btn-extra" style="white-space: nowrap;" ><i data-bind="ntsIcon: { no: 156 }"></i> #{i18n.getText('KSU001_4008')}</div>                        
                     </button>
                     <div tabindex="5" data-bind="ntsPanel:{width: '140px', height: '16px', direction: 'bottom', showIcon: false, visible: true}"
                         style="margin: 0px 10px;">
-                        <div style="margin-top: -10px; margin-left: 14px;" data-bind="ntsSwitchButton:{
+                        <div style="margin-top: 9px;" data-bind="ntsSwitchButton:{
                                                                 name:'#[KSU001_4009]',
                                                                 options: $vm.lstStep,
                                                                 optionsValue: 'code',
@@ -44,7 +44,7 @@
                         </div>
                     </div>
                     <button id="next-btn" tabindex="6" class="auto-height" data-bind="click: Forward, enable: isEnableBtn">                        
-                        <div class="flex valign-center btn-extra">#{i18n.getText('KSU001_4012')} <i data-bind="ntsIcon: { no: 157 }"></i></div>                         
+                        <div class="flex valign-center btn-extra" style="white-space: nowrap;">#{i18n.getText('KSU001_4012')} <i data-bind="ntsIcon: { no: 157 }"></i></div>                         
                     </button>
                 </div>
                 

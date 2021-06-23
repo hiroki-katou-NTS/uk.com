@@ -519,6 +519,8 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         // save Daily Pattern in database
         public save() {
             let self = this;
+            $('.nts-input').ntsError('check');
+
             if ($('.nts-input').ntsError('hasError')) {
                 return;
             };

@@ -38,7 +38,7 @@ module nts.uk.at.view.knr001.a {
                         self.enableBtnDelete(true);
                         self.loadEmpInfoTerminal(empInfoTerminalCode);
                         self.enableBtnNew(true);
-                        $('#multi-list').focus();
+                        // $('#multi-list').focus();
                     } else {
                         self.createNewMode();
                         self.enableBtnDelete(false);

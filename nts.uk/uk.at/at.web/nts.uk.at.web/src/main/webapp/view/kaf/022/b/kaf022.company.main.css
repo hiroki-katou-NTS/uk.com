@@ -130,10 +130,19 @@ td .form-label {
 /*    height: inherit;*/
 /*}*/
 
+#tab-panel {
+    height: inherit;
+}
+
 #tab-panel .tabs-content {
     height: 100%;
+    overflow-y: auto;
 }
 
 div[class^="tab-content-"] .nts-fixed-table {
     display: table !important;
+}
+
+.tabs-list > .radio-wrapper {
+    height: 25px;
 }

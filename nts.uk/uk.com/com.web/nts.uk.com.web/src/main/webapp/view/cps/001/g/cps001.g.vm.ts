@@ -39,6 +39,9 @@ module nts.uk.com.view.cps001.g.vm {
         nameDayNumberOfRemain: KnockoutObservable<string> = ko.observable('');
         nameTimeReam: KnockoutObservable<string> = ko.observable('');
 
+        nameExpiredAnnualLeave: KnockoutObservable<string> = ko.observable('');
+        nameAnnualUseStatus: KnockoutObservable<string> = ko.observable('');
+
         itemDefs: any = [];
 
         sid: KnockoutObservable<string> = ko.observable(null);
@@ -52,8 +55,8 @@ module nts.uk.com.view.cps001.g.vm {
 
             _self.checked = ko.observable(false);
             _self.listExpirationStatus = ko.observableArray([
-                { code: EXPIRED_STATUS.AVAILABLE.toString(), name: '使用可能' },
-                { code: EXPIRED_STATUS.EXPIRED.toString(), name: '期限切れ' }
+                { code: EXPIRED_STATUS.AVAILABLE, name: '使用可能' },
+                { code: EXPIRED_STATUS.EXPIRED, name: '期限切れ' }
             ]);
 
             // Subsribe table
@@ -201,6 +204,12 @@ module nts.uk.com.view.cps001.g.vm {
                                     break;
                                 case "IS00386":
                                     self.nameDeadlineDateInp(itemDef.itemName);
+                                    break;
+                                case "IS00387":
+                                    self.nameExpiredAnnualLeave(itemDef.itemName);
+                                    break;
+                                case "IS00388":
+                                    self.nameAnnualUseStatus(itemDef.itemName);
                                     break;
                                 case "IS00390":
                                     self.nameDayNumberOfGrant(itemDef.itemName);

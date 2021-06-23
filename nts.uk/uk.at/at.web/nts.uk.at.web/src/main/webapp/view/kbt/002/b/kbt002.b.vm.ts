@@ -148,7 +148,7 @@ module nts.uk.at.view.kbt002.b {
               vm.updateList();
               vm.currentExecItem().workplaceList(res.workplaceInfos);
               vm.buildWorkplaceStr(_.map(vm.currentExecItem().workplaceList(), 'workplaceId')); // B4_6, 7, 9, 10
-              vm.hasExecTaskSetting(res.taskSetting);
+              vm.hasExecTaskSetting(!!res.taskSetting);
               if (vm.currentExecItem().perScheduleCls()) {
                 vm.targetDateText(vm.buildTargetDateStr(vm.currentExecItem()));
               }
@@ -240,6 +240,7 @@ module nts.uk.at.view.kbt002.b {
       vm.isNewMode(true);
       vm.selectedExecCode(null);
       vm.taskSetting(null);
+      vm.taskSetting.valueHasMutated();
 
       //Reset screen
       vm.currentExecItem(new ExecutionItem());
@@ -507,8 +508,8 @@ module nts.uk.at.view.kbt002.b {
       }
 
       // Calculate end target date
-      if (vm.currentExecItem().targetDate() === 1) {
-        if (execItem.creationPeriod() === 1) {
+      if (Number(vm.currentExecItem().targetDate()) === 1) {
+        if (Number(execItem.creationPeriod()) === 1) {
           endTargetDate = startTargetDate.endOf('month');
         } else {
           endTargetDate = startTargetDate.add(execItem.creationPeriod() - 1, 'months').endOf('month');
@@ -751,7 +752,7 @@ module nts.uk.at.view.kbt002.b {
         if (item.children && item.children.length > 0) {
           res = res.concat(vm.convertTreeToArray(item.children));
         }
-        res.push({ workplaceId: item.id, hierarchyCode: item.hierarchyCode, name: item.name });
+        res.push({ workplaceId: item.id, hierarchyCode: item.code, name: item.name });
       })
       return res;
     }

@@ -297,7 +297,7 @@ module nts.uk.at.view.kal013.a {
                                     i.errorAlarmWorkplaceId,
                                     i.orderNumber,
                                     i.checkDayItemsType,
-                                    i.useAtr ? 0 : 1,
+                                    i.useAtr ? 1 : 0,
                                     i.daiExtracConName,
                                     i.minValue,
                                     i.maxValue,
