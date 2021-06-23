@@ -97,7 +97,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 </div>
             </div>
             <div class="right-panel" style="width: 388px; padding-bottom: 5px; height: inherit; padding-right: 0px">
-                <div style="height: auto; min-height: 700px; background-color: #fff; overflow-x: hidden; overflow-y: auto">
+                <div style="border: 1px solid #CCC; height: auto; min-height: 700px; background-color: #fff; overflow-x: hidden; overflow-y: auto">
                     <div style="padding-top: 10px" data-bind="component: { name: 'kaf000-b-component1', 
                             params: {
                                 appType: appType,
