@@ -32,7 +32,7 @@ public class ClearConflictTimeWithDay {
 
 		// 所定時間帯をセットするか確認する
 		ConfirmSetSpecifiResult confirmSetSpecifi = confirmSetSpecifiTimeZone.confirmset(companyId, workCondItem,
-				domainDaily.getWorkInformation(), attendanceLeave, domainDaily.getYmd());
+				domainDaily.getWorkInformation(), attendanceLeave, domainDaily.getYmd(), domainDaily.getEditState());
 
 		// 自動打刻をクリアした結果を作成する ---mapping design domain
 		if (confirmSetSpecifi.getAutoStampSetClassifi().isPresent()) {
