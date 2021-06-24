@@ -240,40 +240,53 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 	@Override
 	public List<MessageNotice> getMsgRefBySidForPeriod(DatePeriod period, String sid) {
 		@SuppressWarnings("unchecked")
-		List<Object[]> resultList = this.getEntityManager()
-			.createNativeQuery(NATIVE_GET_REF_BY_SID_FOR_PERIOD)
-			.setParameter("endDate", period.end().toString())
-			.setParameter("startDate", period.start().toString())
-			.setParameter("sid", sid)
-			.getResultList();
-		
-		List<MessageNotice> list = resultList.stream()
-				.map(item -> {
-					SptdtInfoMessage entity = new SptdtInfoMessage();
-					SptdtInfoMessagePK entityPk = new SptdtInfoMessagePK();
-					entityPk.setSid(item[11].toString());
-					entityPk.setInputDate(GeneralDateTime.fromString(item[12].toString().substring(0, 21), "yyyy-MM-dd HH:mm:ss.S"));
-					entity.setPk(entityPk);
-					entity.setVersion(Long.parseLong(item[8].toString()));
-					entity.setContractCd(item[9].toString());
-					entity.setCompanyId(item[10].toString());
-					entity.setStartDate(GeneralDate.fromString(item[13].toString().substring(0, 21), "yyyy-MM-dd hh:mm:ss.S"));
-					entity.setEndDate(GeneralDate.fromString(item[14].toString().substring(0, 21), "yyyy-MM-dd hh:mm:ss.S"));
-					entity.setUpdateDate(GeneralDateTime.fromString(item[15].toString().substring(0, 21), "yyyy-MM-dd HH:mm:ss.S"));
-					entity.setMessage(item[16].toString());
-					entity.setDestination(Integer.parseInt(item[17].toString()));
-					
-					List<String> sidSeen = new ArrayList<String>();
-					if(item[18] != null) {
-						sidSeen.add(item[18].toString());
-					}
-					entity.setEmployeeIdSeen(sidSeen);
-					MessageNotice domain = new MessageNotice();
-					domain.getMemento(entity);
-					return domain;
-				})
-				.collect(Collectors.toList());
-		
+		List<Object[]> resultList = this.getEntityManager().createNativeQuery(NATIVE_GET_REF_BY_SID_FOR_PERIOD)
+				.setParameter("endDate", period.end().toString()).setParameter("startDate", period.start().toString())
+				.setParameter("sid", sid).getResultList();
+
+		List<MessageNotice> list = resultList.stream().map(item -> {
+			String formatDate = "";
+			switch (item[12].toString().length()) {
+			case 21:
+				formatDate = "yyyy-MM-dd HH:mm:ss.S";
+				break;
+			case 22:
+				formatDate = "yyyy-MM-dd HH:mm:ss.SS";
+				break;
+			case 23:
+				formatDate = "yyyy-MM-dd HH:mm:ss.SSS";
+				break;
+			default:
+				formatDate = "yyyy-MM-dd HH:mm:ss.S";
+				break;
+			}
+
+			SptdtInfoMessage entity = new SptdtInfoMessage();
+			SptdtInfoMessagePK entityPk = new SptdtInfoMessagePK();
+			entityPk.setSid(item[11].toString());
+			entityPk.setInputDate(
+					GeneralDateTime.fromString(item[12].toString().substring(0, item[12].toString().length()), formatDate));
+			entity.setPk(entityPk);
+			entity.setVersion(Long.parseLong(item[8].toString()));
+			entity.setContractCd(item[9].toString());
+			entity.setCompanyId(item[10].toString());
+			entity.setStartDate(GeneralDate.fromString(item[13].toString().substring(0, 21), "yyyy-MM-dd hh:mm:ss.S"));
+			entity.setEndDate(GeneralDate.fromString(item[14].toString().substring(0, 21), "yyyy-MM-dd hh:mm:ss.S"));
+			entity.setUpdateDate(
+					GeneralDateTime.fromString(item[15].toString().substring(0, 21), "yyyy-MM-dd HH:mm:ss.S"));
+			entity.setMessage(item[16].toString());
+			entity.setDestination(Integer.parseInt(item[17].toString()));
+
+			List<String> sidSeen = new ArrayList<String>();
+			if (item[18] != null) {
+				sidSeen.add(item[18].toString());
+			}
+			entity.setEmployeeIdSeen(sidSeen);
+			MessageNotice domain = new MessageNotice();
+			domain.getMemento(entity);
+			return domain;
+		}).collect(Collectors.toList());
+
 		return list;
 		
 	}
