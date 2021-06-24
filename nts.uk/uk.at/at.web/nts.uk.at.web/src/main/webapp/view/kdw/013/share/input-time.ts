@@ -268,9 +268,9 @@ module nts.uk.ui.at.kdw013.share {
                 }
 
                 // validate true value
-                if ([-3, -2, -1, 1441].indexOf(start) > -1) {
+                if ([-3, -2, -1, 1440].indexOf(start) > -1) {
                     errorId('MsgB_16');
-                    errorParams([$i18n('KDW013_14'), number2String(0), number2String(1440)]);
+                    errorParams([$i18n('KDW013_14'), number2String(0), number2String(1439)]);
 
                     return;
                 }
@@ -284,9 +284,9 @@ module nts.uk.ui.at.kdw013.share {
                 }
 
                 // validate true value
-                if ([-3, -2, -1, 1441].indexOf(end) > -1) {
+                if ([-3, -2, -1, 1440].indexOf(end) > -1) {
                     errorId('MsgB_16');
-                    errorParams([$i18n('KDW013_31'), number2String(0), number2String(1440)]);
+                    errorParams([$i18n('KDW013_31'), number2String(0), number2String(1439)]);
 
                     return;
                 }

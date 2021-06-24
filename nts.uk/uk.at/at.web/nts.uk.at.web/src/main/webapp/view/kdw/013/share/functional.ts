@@ -67,12 +67,12 @@ module nts.uk.ui.at.kdw013.share {
 
         // hour is not valid
         if (hour > 24) {
-            return 1441;
+            return 1440;
         }
 
         // case is not equal 24:00
         if (hour === 24 && minute !== 0) {
-            return 1441;
+            return 1440;
         }
 
         // minute is not valid
