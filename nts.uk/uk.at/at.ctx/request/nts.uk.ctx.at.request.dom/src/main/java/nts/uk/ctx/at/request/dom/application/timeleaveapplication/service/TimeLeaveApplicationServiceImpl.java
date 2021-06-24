@@ -334,16 +334,18 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
             // 基準日時点の年休残数を取得する
             ReNumAnnLeaReferenceDateImport reNumAnnLeave = leaveAdapter.getReferDateAnnualLeaveRemainNumber(employeeId, baseDate);
             if (reNumAnnLeave != null && reNumAnnLeave.getAnnualLeaveRemainNumberExport() != null) {
-                if (reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay() != null)
-                    timeLeaveRemaining.setAnnualTimeLeaveRemainingDays(reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay());
                 if (reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantTime() != null)
                     timeLeaveRemaining.setAnnualTimeLeaveRemainingTime(reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantTime());
             }
             // [No.210]次回年休付与日を取得する
-            List<NextAnnualLeaveGrantImport> nextGrantHoliday = holidayAdapter.acquireNextHolidayGrantDate(companyId, employeeId, baseDate);
-            boolean chekGrant = nextGrantHoliday != null && nextGrantHoliday.size() > 0;
-            timeLeaveRemaining.setGrantDate(Optional.ofNullable(chekGrant ? nextGrantHoliday.get(0).grantDate : null));
-            timeLeaveRemaining.setGrantedDays(Optional.ofNullable(chekGrant ? nextGrantHoliday.get(0).grantDays.intValue() : null));
+            List<NextAnnualLeaveGrantImport> nextGrantHolidays = holidayAdapter.acquireNextHolidayGrantDate(companyId, employeeId, baseDate);
+
+            Optional<NextAnnualLeaveGrantImport> closestFuture = nextGrantHolidays.stream()
+                    .filter(holiday -> holiday.grantDate.after(GeneralDate.today()))
+                    .min(Comparator.comparing(h -> h.grantDate));
+
+            timeLeaveRemaining.setGrantDate(closestFuture.map(NextAnnualLeaveGrantImport::getGrantDate));
+            timeLeaveRemaining.setGrantedDays(closestFuture.map(holiday -> holiday.grantDays.intValue()));
         }
 
         if (timeLeaveManagement.getTimeAllowanceManagement().isTimeBaseManagementClass()) {
