@@ -1956,6 +1956,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     val cls = closeDateOpt.get();
                     val ymd = item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getYmd();
                     if (ymd.day() <= (cls.getClosureDate().getClosureDay().v() + 1)) {
+                        if(number_of_useBf!=null)
                         cells.get(firstRow, 10 + totalMonth)
                                 .setValue(number_of_useBf + TextResource.localize("KDR001_75"));
                     } else {
