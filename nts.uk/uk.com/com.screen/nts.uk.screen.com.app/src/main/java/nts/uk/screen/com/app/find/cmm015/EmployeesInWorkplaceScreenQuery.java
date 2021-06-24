@@ -15,6 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
+import nts.uk.ctx.bs.employee.app.find.employee.employeeindesignated.StatusOfEmployment;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmploymentImport;
 import nts.uk.ctx.workflow.dom.service.CollectApprovalRootService;
@@ -53,19 +54,39 @@ public class EmployeesInWorkplaceScreenQuery {
 	 * @param retiree 退職者
 	 * @return
 	 */
-	public List<EmployeesInWorkplace> get(String wkpId, GeneralDate referDate, Boolean incumbent, Boolean closed, Boolean leave, Boolean retiree) {
-		List<String> wkpIds = new ArrayList<String>();
-		wkpIds.add(wkpId);
+	public List<EmployeesInWorkplace> get(List<String> wkpIds, GeneralDate referDate, Boolean incumbent, Boolean closed, Boolean leave, Boolean retiree) {
 		//1: <call> [No.597]職場の所属社員を取得する: Output 社員一覧
         List<EmployeeInfoImported> empInfos = syWorkplaceAdapter.getLstEmpByWorkplaceIdsAndPeriod(wkpIds, new DatePeriod(referDate, referDate));
         
         List<String> sids = new ArrayList<String>();
+        
+        // Param status .start
+        List<Integer> paramStatus = new ArrayList<Integer>();
+        if (incumbent) {
+        	paramStatus.add(StatusOfEmployment.INCUMBENT.value);
+        }
+        
+        if (closed) {
+        	paramStatus.add(StatusOfEmployment.HOLIDAY.value);
+        }
+        
+        if (leave) {
+        	paramStatus.add(StatusOfEmployment.LEAVE_OF_ABSENCE.value);
+        }
+        
+        if (retiree) {
+        	paramStatus.add(StatusOfEmployment.RETIREMENT.value);
+        }
+        // Param status .end
         // Loop 社員ID　in　List<社員ID>
         empInfos.forEach(e -> {
         	//2: <call>在職状態を取得
       		StatusOfEmploymentImport sttEmp = employeeAdapter.getStatusOfEmployment(e.getSid(), referDate);
       		
-      		sids.add(sttEmp.getEmployeeId());
+      		if (paramStatus.contains(sttEmp.getStatusOfEmployment().value)) {
+      			sids.add(sttEmp.getEmployeeId());
+      		}
+      		
         });
         
         EmployeeInformationQueryDto param = EmployeeInformationQueryDto.builder()
