@@ -15,6 +15,7 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataDt
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockType;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
 import nts.uk.shr.com.context.AppContexts;
 
 /*
@@ -57,6 +58,7 @@ public class AddLockOutDataCommandHandler extends CommandHandler<AddLockOutDataC
 				.contractCode(user.getContractCode())
 				.logoutDateTime(GeneralDateTime.now())
 				.lockType(LockType.ENFORCEMENT_LOCK.value)
+				.loginMethod(LoginMethod.NORMAL_LOGIN.value)
 				.build();
 		LockoutData lockOutData = new LockoutData(dto);
 		this.lockOutDataRepository.add(lockOutData);
