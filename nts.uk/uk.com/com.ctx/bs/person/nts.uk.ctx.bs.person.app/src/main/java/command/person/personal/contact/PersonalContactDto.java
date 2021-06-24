@@ -1,20 +1,19 @@
 package command.person.personal.contact;
 
-ctor;
-import nts.uk.ctx.bs.person.dom.person.personal.cont
+import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
-import l
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.bs.person.dom.person.personal.contact.ContactName;
 import nts.uk.ctx.bs.person.dom.person.personal.contact.EmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.personal.contact.OtherContact;
 import nts.uk.ctx.bs.person.dom.person.personal.contact.OtherContactAddress;
 import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContact;
 import nts.uk.ctx.bs.person.dom.person.personal.contact.PhoneNumber;
-import nts.uk.ctx.bs.person.dom.person.personal.contact.Remark;act.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.Remark;
 
 /**
  * Command dto 個人連絡先
