@@ -1,6 +1,16 @@
 package nts.uk.ctx.sys.auth.app.command.user.information;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
@@ -14,11 +24,6 @@ import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
 import nts.uk.shr.com.context.AppContexts;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import java.util.Optional;
 
 /**
  * アカウント情報を登録する
@@ -73,7 +78,10 @@ public class UserChangeCommandHandler extends CommandHandler<UserChangeCommand> 
 				passwordChangeLogRepository.add(passwordChangeLog);
 			});
 		} else {
-			throw new BusinessException(checkBeforeChangePassImport.getMessage().get(0).getMessage());
+			List<String> errorMessages = checkBeforeChangePassImport.getMessage().stream()
+				.map(msg -> msg.getErrorMessage())
+				.collect(Collectors.toList());
+			throw new BusinessException(new RawErrorMessage(String.join("\r\n", errorMessages)));
 		}
 	}
 }
