@@ -502,6 +502,7 @@ module nts.uk.ui.at.kdw013.calendar {
         firstDay: DayOfWeek;
         scrollTime: number;
         slotDuration: SlotDuration;
+        InitialView:string;
     };
 
     const DATE_FORMAT = 'YYYY-MM-DD';
@@ -541,7 +542,8 @@ module nts.uk.ui.at.kdw013.calendar {
         setting: {
             firstDay: ko.observable(0),
             scrollTime: ko.observable(420),
-            slotDuration: ko.observable(30)
+            slotDuration: ko.observable(30),
+            initialView : ko.observable('fullWeek')
         },
         excludeTimes: ko.observableArray([])
     });
@@ -1134,7 +1136,16 @@ module nts.uk.ui.at.kdw013.calendar {
                 .subscribe((settings: a.StartProcessDto | null) => {
                     computedDragItems(ko.unwrap($datas), settings);
                 });
+            //update initialView to storage
+            initialView.subscribe(view => {
 
+                storeSetting()
+                .then((value) => {
+                    value = value ? value : { initialView: view };
+                    value.initialView = view;
+                storeSetting(value);
+                });
+            });
             // fix ie display
             if (version.match(/IE/)) {
                 $el.addClass('ie');
@@ -3140,7 +3151,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 const vm = this;
                 const { params } = vm;
                 const state = { open: false };
-                const { firstDay, scrollTime, slotDuration, position } = params;
+                const { firstDay, scrollTime, slotDuration, position, initialView} = params;
 
                 // store all value to charactorgistic domain
                 ko.computed({
@@ -3149,13 +3160,22 @@ module nts.uk.ui.at.kdw013.calendar {
                         const fd = ko.unwrap(firstDay);
                         const sc = ko.unwrap(scrollTime);
                         const sd = ko.unwrap(slotDuration);
-
+                        const iv = ko.unwrap(initialView);
                         // store when popup opened
                         if (state.open) {
-                            storeSetting({
+                            storeSetting().then((value) => {
+                                value = value ? value :{
                                 firstDay: fd,
                                 scrollTime: sc,
-                                slotDuration: sd
+                                slotDuration: sd,
+                                initialView: iv
+                            };
+                                value.firstDay = fd;
+                                value.scrollTime = sc;
+                                value.slotDuration = sd;
+                                value.initialView = value.initialView;
+                                
+                                storeSetting(value);
                             });
                         } else if (ps) {
                             state.open = true;

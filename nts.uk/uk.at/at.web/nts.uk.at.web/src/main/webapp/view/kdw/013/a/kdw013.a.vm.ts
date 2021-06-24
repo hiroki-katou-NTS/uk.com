@@ -448,14 +448,15 @@ module nts.uk.ui.at.kdw013.a {
                     if (!tasks || tasks.length === 0) {
                         return vm.$dialog.error({ messageId: 'Msg_1961' });
                     }
-
-                    const $mode = !!_.find(frameSettingList, ({ useAtr, frameNo }) => frameNo === 5 && useAtr === 1);
-
-                    if (mode) {
-                        vm.initialView('oneDay');
-                    } else {
-                        vm.initialView('fullWeek');
-                    }
+                    
+                    vm.$window
+                        .storage('KDW013_SETTING')
+                        .then((value: any) => {
+                            if (value) {
+                                vm.initialView(value.initialView);
+                            }
+                        });
+                
 
                     vm.$settings(response);
                 })
