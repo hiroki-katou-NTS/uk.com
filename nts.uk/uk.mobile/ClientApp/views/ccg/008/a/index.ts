@@ -265,7 +265,7 @@ export class Ccg008AComponent extends Vue {
             const {hours, min} = item.extraRest;
             results.push({
                 name: 'CCGS08_28',
-                value: vm.$i18n('CCGS08_37', [String(0), vm.$dt.timedr(Number(hours) * 60 + Number(min))]),
+                value: vm.$i18n('CCGS08_37', [String(0), String(hours) + (min >= 10 ? min : ('0' + min))]),
                 isFormatNew: true
                 
             });
