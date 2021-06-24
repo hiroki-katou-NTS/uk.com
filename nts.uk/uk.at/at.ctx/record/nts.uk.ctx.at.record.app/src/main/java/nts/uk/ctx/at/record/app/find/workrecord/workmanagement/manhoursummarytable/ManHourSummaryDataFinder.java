@@ -6,6 +6,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.adapter.function.alarmworkplace.EmployeeInfoImport;
+import nts.uk.ctx.at.record.dom.adapter.workplace.GetAllEmployeeWithWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workplace.GetWorkplaceOfEmployeeAdapter;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSetting;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSettingRepository;
@@ -38,14 +40,19 @@ public class ManHourSummaryDataFinder {
     @Inject
     private ManHourRecordReferenceSettingRepository recordRefSettingRepo;
 
+    @Inject
+    private GetAllEmployeeWithWorkplaceAdapter empWithWkpAdapter;
+
+    @Inject
+    private GetWorkplaceOfEmployeeAdapter workplaceOfEmpAdapter;
+
     public ManHourSummaryData getManHourSummary(DatePeriod datePeriod, YearMonthPeriod yearMonthPeriod) {
         val cid = AppContexts.user().companyId();
         val userId = AppContexts.user().userId();
         val employeeId = AppContexts.user().employeeId();
 
-        // 1. get ManHourRecordReferenceSetting (cid) [工数実績参照設定]
-        val optManHourRecordRef = this.recordRefSettingRepo.get(cid).orElse(null);
-        if (optManHourRecordRef == null) return null;
+        // 1. get(cid) [工数実績参照設定]
+        val optManHourRecordRef = this.recordRefSettingRepo.get(cid);
 
         //INPUT「年月日期間」.isPresent　⇒　対象期間 = INPUT「年月日期間」
         //INPUT「年月日期間」.isEmpty　⇒　対象期間 = 期間#期間(INPUT「年月期間」.開始年月.初日(), INPUT「年月期間」.終了年月.末日())
@@ -55,7 +62,10 @@ public class ManHourSummaryDataFinder {
 
         // 2.参照可能範囲を取得する(@Require, 会社ID, ユーザID, 社員ID, 年月日): Map<社員ID,職場ID>
         RequireImpl require = new RequireImpl();
-        Map<String, String> rangeMap = optManHourRecordRef.getWorkCorrectionStartDate(require, cid, userId, employeeId, baseDate); //TODO: QA: not implement Require
+        Map<String, String> rangeMap = new HashMap<>();
+        if (optManHourRecordRef.isPresent()) {
+            rangeMap = optManHourRecordRef.get().getWorkCorrectionStartDate(require, cid, userId, employeeId, baseDate);
+        }
 
         // 3.作業詳細データを取得する(社員リスト,職場リスト,期間)
         //社員リスト = 取得した「参照可能範囲」：map $.key distinct
@@ -129,12 +139,12 @@ public class ManHourSummaryDataFinder {
 
         @Override
         public Map<String, String> getWorkPlace(String userID, String employeeID, GeneralDate date) {
-            return null;
+            return workplaceOfEmpAdapter.get(userID, employeeID, date);
         }
 
         @Override
         public Map<String, String> getByCID(String companyId, GeneralDate baseDate) {
-            return null;
+            return empWithWkpAdapter.get(companyId, baseDate);
         }
     }
 }

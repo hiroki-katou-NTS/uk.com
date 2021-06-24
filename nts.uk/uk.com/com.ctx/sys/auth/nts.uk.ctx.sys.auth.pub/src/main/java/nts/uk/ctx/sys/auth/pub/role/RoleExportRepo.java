@@ -138,4 +138,6 @@ public interface RoleExportRepo {
 	 */
 	Optional<RoleSetExport> getRoleSetFromUserId(String userId, GeneralDate baseDate);
 
+	Integer getEmployeeReferenceRange(String userId, int roleType, GeneralDate baseDate);
+
 }

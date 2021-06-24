@@ -26,7 +26,7 @@ public class DetailFormatSetting extends ValueObject {
 
     /**
      * [C-1] フォーマット詳細設定
-     * @return 工数集計表出力内容
+     * @return フォーマット詳細設定
      */
     public DetailFormatSetting(DisplayFormat displayFormat, TotalUnit totalUnit, NotUseAtr displayVertHoriTotal,
                                List<SummaryItem> summaryItemList) {
@@ -138,36 +138,5 @@ public class DetailFormatSetting extends ValueObject {
             summaryItemDetail.calculateHorizontalTotal();
 
         return summaryItemDetail;
-    }
-
-    /**
-     * [prv-4] 年月日別に作業時間明細を作成する
-     * @param dateList List<年月日>
-     * @param workDetailList List<作業詳細データ>
-     * @return List<日々縦計値>
-
-     */
-    public List<VerticalValueDaily> createWorkTimeDetailByDate(List<GeneralDate> dateList, List<WorkDetailData> workDetailList) {
-        List<VerticalValueDaily> verticalTotalList = new ArrayList<>();
-        for (val date : dateList) {
-            val workingTime = workDetailList.stream().filter(x -> x.getDate().equals(date)).mapToInt(WorkDetailData::getTotalWorkingHours).sum();
-            verticalTotalList.add(new VerticalValueDaily(workingTime, null, date));
-        }
-        return verticalTotalList;
-    }
-
-    /**
-     * [prv-5] 年月別に作業時間明細を作成する
-     * @param yearMonthList List<年月>
-     * @param workDetailList List<作業詳細データ>
-     * @return List<日々縦計値>
-     */
-    public List<VerticalValueDaily> createWorkTimeDetailByYearMonth(List<YearMonth> yearMonthList, List<WorkDetailData> workDetailList) {
-        List<VerticalValueDaily> verticalValueList = new ArrayList<>();
-        for (val ym : yearMonthList) {
-            val workingTime = workDetailList.stream().filter(x -> x.getDate().month() == ym.month()).mapToInt(WorkDetailData::getTotalWorkingHours).sum();
-            verticalValueList.add(new VerticalValueDaily(workingTime, ym, null));
-        }
-        return verticalValueList;
     }
 }

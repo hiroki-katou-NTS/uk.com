@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
  * TP:  工数集計表出力内容
  */
 @Getter
+@AllArgsConstructor
 public class ManHourSummaryTableOutputContent {
     /** 項目詳細 */
     private List<SummaryItemDetail> itemDetails;
