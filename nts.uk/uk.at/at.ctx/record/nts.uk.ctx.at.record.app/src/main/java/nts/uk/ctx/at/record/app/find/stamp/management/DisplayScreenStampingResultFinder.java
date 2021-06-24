@@ -134,7 +134,12 @@ public class DisplayScreenStampingResultFinder {
 					.orElse(null);
 			
 			//[No.560]職場IDから職場の情報をすべて取得する
-			List<WorkplaceInforImport> listWorkPlaceInfoExport = syWorkplaceAdapter.getWorkplaceInforByWkpIds(AppContexts.user().companyId(), Collections.singletonList(wkpId), refDate);
+			//EA4038
+			List<WorkplaceInforImport> listWorkPlaceInfoExport = new ArrayList<>();
+			
+			if (null != wkpId) {
+				listWorkPlaceInfoExport = syWorkplaceAdapter.getWorkplaceInforByWkpIds(AppContexts.user().companyId(), Collections.singletonList(wkpId), refDate);
+			}
 			
 			String workplaceCd = listWorkPlaceInfoExport.isEmpty() ? "" : listWorkPlaceInfoExport.get(0).getWorkplaceCode();
 			String workplaceName = listWorkPlaceInfoExport.isEmpty() ? "" : listWorkPlaceInfoExport.get(0).getWorkplaceDisplayName();
