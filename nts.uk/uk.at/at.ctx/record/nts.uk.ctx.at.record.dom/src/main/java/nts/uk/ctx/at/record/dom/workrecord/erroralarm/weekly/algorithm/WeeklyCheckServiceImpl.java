@@ -290,7 +290,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		String checkTargetValue = TextResource.localize("KAL010_1314", weeklyActualAttendanceTime);
 		
 		// 取得した該当区分　＝＝　True (QA#117728)
-		if (check) {
+		if (check) {			
 			// 「抽出結果詳細」を作成
 			// アラーム項目日付　＝Input．週別実績の勤怠時間．期間．開始日
 			extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(
@@ -305,16 +305,27 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			// 	チェック項目の種類は連続じゃないの場合　－＞#KAL010_1308
 			String param1 = TextResource.localize("KAL010_1308");
 			// チェック項目の種類は連続じゃないの場合　－＞Input．週別実績の勤怠時間から計算した値 
-			String param2 = weeklyActualAttendanceTime;
+			String param2 = Strings.EMPTY;
 			if (weeklyCond.isContinuos()) {
 				String continuousPeriodValue = String.valueOf(weeklyCond.getContinuousPeriod().get().v());
 				param0 += TextResource.localize("KAL010_1312", continuousPeriodValue);
 				// チェック項目の種類は連続の場合　－＞#KAL010_1309
 				param1 = TextResource.localize("KAL010_1309");
-				param2 += TextResource.localize("KAL010_1311");
 				
-				// チェック項目の種類は連続の場合　－＞#KAL010_1313 {0}　＝　取得した連続カウント　
-				checkTargetValue = TextResource.localize("KAL010_1313", String.valueOf(count));
+				// #117728
+				if (continuousOutput.continuousCountOpt.isPresent()) {
+					// 取得した連続カウント　+　#KAL010_1311
+					param2 = continuousOutput.continuousCountOpt.get().getConsecutiveYears() + TextResource.localize("KAL010_1311");
+					
+					// チェック項目の種類は連続の場合　－＞#KAL010_1313 {0}　＝　取得した連続カウント
+					checkTargetValue = TextResource.localize("KAL010_1313", String.valueOf(continuousOutput.continuousCountOpt.get().getConsecutiveYears()));
+				} else {
+					// 取得したカウン
+					param2 = String.valueOf(count);
+					
+					// チェック項目の種類は連続の場合　－＞#KAL010_1313 {0}　＝　取得したカウン
+					checkTargetValue = TextResource.localize("KAL010_1313", String.valueOf(count));
+				}
 			}
 			
 			alarmContent = TextResource.localize("KAL010_1310", param0, param1, param2);
@@ -328,6 +339,10 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 					Optional.ofNullable(wpkId),
 					comment,
 					Optional.ofNullable(checkTargetValue));
+			
+			// カウント　＝　０
+			count = 0;
+			
 			return new ExtractResultDetailAndCount(detail, count);
 		}
 		
@@ -390,7 +405,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 				errorAtr);
 		// QA#117728
 		ouput.check = calCountForConsecutivePeriodOutput.getOptContinuousCount().isPresent() 
-				|| (!calCountForConsecutivePeriodOutput.getOptContinuousCount().isPresent() && calCountForConsecutivePeriodOutput.getCount() > continuousPeriod);
+				|| (!calCountForConsecutivePeriodOutput.getOptContinuousCount().isPresent() && calCountForConsecutivePeriodOutput.getCount() >= continuousPeriod);
 		ouput.continuousCountOpt = calCountForConsecutivePeriodOutput.getOptContinuousCount();
 		ouput.count = calCountForConsecutivePeriodOutput.getCount();
 		
