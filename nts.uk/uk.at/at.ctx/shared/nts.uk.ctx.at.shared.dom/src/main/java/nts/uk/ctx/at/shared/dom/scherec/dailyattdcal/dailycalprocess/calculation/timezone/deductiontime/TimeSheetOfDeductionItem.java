@@ -344,9 +344,11 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 						}
 					}
 					//外出入れる
-					map.add(this);
+					map.addAll(this.timeSheet.getNotDuplicationWith(compareTimeSheet.timeSheet).stream()
+							.map(t -> this.cloneWithNewTimeSpan(Optional.of(t)))
+							.collect(Collectors.toList()));
 					//休憩を入れる
-					map.addAll(baseCompareNotDupSpan.stream().map(tc -> compareTimeSheet.cloneWithNewTimeSpan(Optional.of(tc))).collect(Collectors.toList()));
+					map.add(compareTimeSheet);
 					return map.stream().sorted((a, b) -> a.timeSheet.getStart().compareTo(b.timeSheet.getStart())).collect(Collectors.toList());
 				}
 			}

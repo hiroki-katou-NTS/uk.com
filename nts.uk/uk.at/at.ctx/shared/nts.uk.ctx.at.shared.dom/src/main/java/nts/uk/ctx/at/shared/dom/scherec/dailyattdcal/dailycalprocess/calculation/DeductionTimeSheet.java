@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.FluidFixedAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
@@ -103,6 +104,7 @@ public class DeductionTimeSheet {
 		useDedTimeSheet = new DeductionTimeSheetAdjustDuplicationTime(useDedTimeSheet).reCreate(
 				integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
 				integrationOfWorkTime.getRestClockManageAtr(),
+				FluidFixedAtr.of(integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType)),
 				integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeDailyAtr());
 
 		/* 控除でない外出削除 */
@@ -295,6 +297,7 @@ public class DeductionTimeSheet {
 		return new DeductionTimeSheetAdjustDuplicationTime(reNewSheetList).reCreate(
 										integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
 										integrationOfWorkTime.getRestClockManageAtr(),
+										FluidFixedAtr.of(integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType)),
 										integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeDailyAtr());
 	}
 
@@ -772,6 +775,7 @@ public class DeductionTimeSheet {
 		val correctedDeductionTimeSheet = new DeductionTimeSheetAdjustDuplicationTime(deductionTimeSheet).reCreate(
 												workTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
 												workTime.getRestClockManageAtr(),
+												FluidFixedAtr.of(workTime.getFlowWorkRestTimezone(workType)),
 												workTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeDailyAtr());
 		
 		/** ○流動休憩時間帯を取得 */
