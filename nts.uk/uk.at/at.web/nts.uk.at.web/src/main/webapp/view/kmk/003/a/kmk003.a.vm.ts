@@ -852,7 +852,7 @@ module nts.uk.at.view.kmk003.a {
                 // clear all errors
 
                 // reset data
-                self.mainSettingModel.resetData();
+                self.mainSettingModel.resetData(true);
                 self.settingEnum.workTimeMethodSet = _.filter(self.settingEnum.workTimeMethodSet, item => item.fieldName != 'DIFFTIME_WORK');
                 // set screen mode
                 self.screenMode(ScreenMode.NEW);
@@ -1425,11 +1425,11 @@ module nts.uk.at.view.kmk003.a {
                     self.workTimeSetting.resetData();
                     self.workTimeSetting.resetWorkTimeDivision();
                 }
+
                 if (isNewMode) {
-                    setTimeout(function () {
-                        self.commonSetting.stampSet.initJDialog();
-                    }, 500)
+                    self.commonSetting.stampSet.initJDialog();
                 }
+
                 self.isInterlockDialogJ(true);
             }
             
