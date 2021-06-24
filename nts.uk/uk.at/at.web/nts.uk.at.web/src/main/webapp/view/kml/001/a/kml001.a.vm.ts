@@ -101,7 +101,7 @@ module nts.uk.at.view.kml001.a {
               self.isInsert(false);
             } else self.$blockui('hide');
 
-            let height__: number = 424;
+            let height__: number = self.currentPersonCost().calculationSetting() == 0 ? 424 : 464;
             $("#premium-set-tbl").ntsFixedTable({ height: height__ });
 
             dfd.resolve();

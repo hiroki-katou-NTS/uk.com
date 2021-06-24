@@ -212,3 +212,8 @@ td input.premiumInput {
 #dateRange-list_headers > thead {
   display: none !important;
 }
+
+#premium-set-div .nts-fixed-table .nts-fixed-body-container {
+	overflow-y: scroll;
+	padding-right: 17px!important;
+}

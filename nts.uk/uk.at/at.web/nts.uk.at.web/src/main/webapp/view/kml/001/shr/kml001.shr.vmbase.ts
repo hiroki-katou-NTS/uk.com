@@ -78,6 +78,14 @@ module nts.uk.at.view.kml001.shr {
         self.inUnits = ko.observable(inUnits);
         self.workingHour = ko.observable(workingHour);
         self.workingHoursUnitPrice = ko.observable(workingHour);
+
+        self.calculationSetting.subscribe(value => {
+          if (value == 0) {
+            $("#premium-set-div .nts-fixed-body-wrapper").height('400.609px');
+          } else {
+            $("#premium-set-div .nts-fixed-body-wrapper").height('440.609px');
+          }
+        });
       }
 
 
