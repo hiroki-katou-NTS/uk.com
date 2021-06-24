@@ -7,6 +7,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.AffCompanyHistImport;
 import nts.uk.ctx.at.function.dom.adapter.EmployeeHistWorkRecordAdapter;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
@@ -25,7 +26,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -35,7 +40,7 @@ import java.util.stream.Collectors;
  * @author chinhhm
  */
 @Stateless
-public class CreateDisplayContentOfTheCourseQuery {
+public class CreateDisplayContentOfTheSubstituteLeaveQuery {
 
     @Inject
     EmployeeHistWorkRecordAdapter employeeHistWorkRecordAdapter;
@@ -47,18 +52,24 @@ public class CreateDisplayContentOfTheCourseQuery {
     private ShareEmploymentAdapter shareEmploymentAdapter;
     @Inject
     private RemainNumberTempRequireService requireService;
-    public  Object getDisplayContent(GeneralDate referenceDate, List<EmployeeBasicInfoImport> basicInfoImportList,
+    public  List<DisplayContentsOfSubLeaveConfirmationTable> getDisplayContent(GeneralDate referenceDate,  List<EmployeeInfor> basicInfoImportList,
                                            ManagermentAtr mngAtr, boolean moreSubstituteHolidaysThanHolidays, boolean moreHolidaysThanSubstituteHolidays,
                                            List<AffAtWorkplaceImport> lstAffAtWorkplaceImport, List<WorkplaceInfor> lstWorkplaceInfo) {
+
+
+        val mapEmployee = basicInfoImportList.stream()
+                .filter(distinctByKey(EmployeeInfor::getEmployeeId)).collect(Collectors.toMap(EmployeeInfor::getEmployeeId, e->e));
+        val mapWplInfo = lstWorkplaceInfo.stream().filter(distinctByKey(WorkplaceInfor::getWorkplaceId))
+                .collect(Collectors.toMap(WorkplaceInfor::getWorkplaceId, e->e));
         // 1. ① Get(「２」List<社員情報>．社員ID):所属会社履歴（社員別）
-        val listSid = basicInfoImportList.stream().map(EmployeeBasicInfoImport::getSid)
-                .collect(Collectors.toList());
+        val listSid = new ArrayList<>(mapEmployee.keySet());
         val listCompanyHist = employeeHistWorkRecordAdapter.getWplByListSid(listSid);
         // 2. ② Call 社員に対応する締め期間を取得する
         // 社員に対応する締め期間を取得する
         val sids = listCompanyHist.stream().map(AffCompanyHistImport::getEmployeeId)
                 .collect(Collectors.toList());
         val cid = AppContexts.user().companyId();
+        List<DisplayContentsOfSubLeaveConfirmationTable> rs = new ArrayList<>();
         for (String sid:sids  ) {
             // Call 社員に対応する締め期間を取得する
             DatePeriod period = ClosureService.findClosurePeriod(
@@ -83,7 +94,13 @@ public class CreateDisplayContentOfTheCourseQuery {
 
            val  substituteHolidayAggrResult = NumberRemainVacationLeaveRangeQuery
                     .getBreakDayOffMngInPeriod(rq, inputRefactor);
+           val item = new DisplayContentsOfSubLeaveConfirmationTable();
+           rs.add(item);
         }
         return null;
+    }
+    private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 }

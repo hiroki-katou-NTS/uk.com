@@ -6,6 +6,7 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -25,7 +26,9 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -91,7 +94,16 @@ public class OutputTraceConfirmationTableService extends ExportService<CreateTra
                 .findBySIdAndBaseDate(listemployees, referenceDate);
         val listWorkplaceId = lstAffAtWorkplaceImport.stream().map(AffAtWorkplaceImport::getWorkplaceId)
                 .collect(Collectors.toList());
-
+        List<EmployeeInfor> employeeInfoList = new ArrayList<>();
+        lstEmployeeInfo.forEach(e -> {
+            val wpl = lstAffAtWorkplaceImport.stream().filter(i -> i.getEmployeeId().equals(e.getSid())).findFirst();
+            employeeInfoList.add(new EmployeeInfor(
+                    e.getSid(),
+                    e.getEmployeeCode(),
+                    e.getEmployeeName(),
+                    wpl.isPresent() ? wpl.get().getWorkplaceId() : null
+            ));
+        });
         // 4.1-⑥
         List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter
                 .getWorkplaceInforByWkpIds(cid, listWorkplaceId, referenceDate);

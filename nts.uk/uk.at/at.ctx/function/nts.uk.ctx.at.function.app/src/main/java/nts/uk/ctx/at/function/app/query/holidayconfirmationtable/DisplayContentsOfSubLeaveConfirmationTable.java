@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.app.query.holidayconfirmationtable;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Optional;
@@ -11,9 +12,10 @@ import java.util.Optional;
  * Temporary: 代休確認表の帳票表示内容
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-public class HolidayCheckTableFormDisplayContents {
+public class DisplayContentsOfSubLeaveConfirmationTable {
     /**
      *  社員コード
      */
@@ -41,6 +43,6 @@ public class HolidayCheckTableFormDisplayContents {
     /**
      * 代休発生取得情報
      */
-    private Optional<ObservationOfExitLeave> observationOfExitLeave;
+    private Optional<SubstituteHolidayOccurrenceInfo> observationOfExitLeave;
 
 }
