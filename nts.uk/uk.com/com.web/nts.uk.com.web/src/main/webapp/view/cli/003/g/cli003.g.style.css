@@ -17,7 +17,6 @@
 
 .contentR {
 	width: 800px;
-	padding-left: 40px;
 }
 
 #G3 td {
@@ -61,6 +60,9 @@
 #G4_1 {
   width: auto;
   white-space: nowrap;
+}
+.ntsMoveDataArea {
+  padding: 0px 10px;
 }
 
 
