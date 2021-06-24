@@ -265,7 +265,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 					if(optWorkPlaceHistImportAl.isPresent()) {
 						Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get().getLstWkpIdAndPeriod().stream()
 								.filter(x -> x.getDatePeriod().start().beforeOrEquals(exMon.firstGeneralDate()) 
-										&& x.getDatePeriod().end().afterOrEquals(exMon.lastGeneralDate())).findFirst();
+										&& x.getDatePeriod().end().afterOrEquals(exMon.firstGeneralDate())).findFirst();
 						if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
 							wplId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
 						}
@@ -344,7 +344,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		
 		if (!StringUtils.isEmpty(listOptionalItem)) {
 			// スケジュール月次の任意抽出条件を取得する
-			scheCondMonths = this.extraCondScheMonRepository.getScheAnyCond(contractCode, cid, listOptionalItem);
+			scheCondMonths = this.extraCondScheMonRepository.getScheAnyCond(contractCode, cid, listOptionalItem).stream()
+					.filter(x -> x.isUse()).collect(Collectors.toList());
 		}
 		
 		Optional<PublicHolidaySetting> publicHdSettingOpt = Optional.empty();
