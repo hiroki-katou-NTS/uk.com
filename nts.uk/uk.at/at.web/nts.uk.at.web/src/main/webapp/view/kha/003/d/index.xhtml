@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = {width: 300, height: 200};</script>
+        <com:ValidatorScript>
+            nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.ManHourSummaryTableCode
+            nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.ManHourSummaryTableName
+        </com:ValidatorScript>
+        <com:stylefile path="kha003.d.style.css"/>
+        <com:scriptfile path="kha003.d.vm.js"/>
+        <com:scriptfile set="IGNITE"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area">
+            <!--D1_4-->
+            <a class="goback"
+               data-bind="ntsLinkButton: { jump: '/view/kha/003/a/index.xhtml' }">#{i18n.getText('KHA003_73')}</a>
+            <!--D1_1-->
+            <button tabindex="5" class="proceed"
+                    data-bind="">#{i18n.getText('KHA003_70')}</button>
+            <!--D1_2-->
+            <button class="proceed" data-bind="">#{i18n.getText('KHA003_71')}</button>
+            <!--D1_3-->
+            <button data-bind="">#{i18n.getText('KHA003_72')}</button>
+        </div>
+        <div id="contents-area">
+            <div class="table cmm045-div-table ">
+                <table id="content-table" style="width: 100%;">
+                    <thead>
+                        <tr style="background-color: #99ccff">
+                            <td style="text-align: center; padding: 5px;" data-bind="text:c21Params"></td>
+                            <td style="text-align: center; padding: 5px;" data-bind="text:c31Params"></td>
+                            <td style="text-align: center; padding: 5px;" data-bind="text:c41Params"></td>
+                            <td style="text-align: center; padding: 5px;" data-bind="text:c51Params"></td>
+                            <td style="text-align: center; padding: 5px;" >#{i18n.getText('CMM045_70')}</td>
+                            <td style="text-align: center; padding: 5px;">#{i18n.getText('CMM045_70')}</td>
+                            <td style="text-align: center; padding: 5px;">#{i18n.getText('CMM045_70')}</td>
+                            <td style="text-align: center; padding: 5px;">#{i18n.getText('CMM045_70')}</td>
+                            <td style="text-align: center; padding: 5px;">#{i18n.getText('CMM045_70')}</td>
+                            <td style="text-align: center; padding: 5px;">#{i18n.getText('CMM045_70')}</td>
+                            <td style="text-align: center; padding: 5px;">#{i18n.getText('CMM045_70')}</td>
+                            <td style="text-align: center; padding: 5px;">#{i18n.getText('CMM045_70')}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

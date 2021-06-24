@@ -24,12 +24,15 @@ module nts.uk.at.kha003.a {
         //A7_2
         isA72Enable: KnockoutObservable<boolean>;
 
+        layoutSettings: KnockoutObservableArray<any>;
+
         constructor() {
             super();
             const vm = this;
             vm.currentCode = ko.observable();
             vm.currentCodeList = ko.observableArray([]);
             vm.items = ko.observableArray([]);
+            vm.layoutSettings = ko.observableArray([]);
             for (var i = 1; i < 51; i++) {
                 vm.items.push(new ItemModel('code' + i, 'name' + i));
             }
@@ -79,7 +82,7 @@ module nts.uk.at.kha003.a {
                         $('#append_area').append('<div class="cell valign-center">\n' +
                             '                                        <div style="background-color: #e7d3193b" class="panel  item_a_6_4_to_67">\n' +
                             '                                            <button id="' + itemId + '" class="button_top_right_corner"><i class="icon icon-close"></i></button>\n' +
-                            '                                            <span class="label" style="display: table;margin: 71px auto;">' + $(this).children().html() + '</span>\n' +
+                            '                                            <span class="label layout-setting" style="display: table;margin: 71px auto;">' + $(this).children().html() + '</span>\n' +
                             '                                        </div>\n' +
                             '                                    </div>');
                     }
@@ -139,7 +142,15 @@ module nts.uk.at.kha003.a {
          * */
         clickDuplicateButton() {
             const vm = this;
-            alert("duplicate button is clicked")
+            let shareData={
+                code:vm.manHour.code(),
+                name:vm.manHour.name()
+            }
+            vm.$window.storage('kha003ERequiredData', shareData).then(() => {
+                vm.$window.modal("/view/kha/003/e/index.xhtml").then(() => {
+
+                });
+            });
         }
 
         /**
@@ -169,9 +180,34 @@ module nts.uk.at.kha003.a {
          * */
         clickRunButton() {
             const vm = this;
-            vm.$window.storage('inputData', []);
-            vm.$window.modal("/view/kha/003/b/index.xhtml").then(() => {
+            var c21 = '';
+            var c31 = '';
+            var c41 = '';
+            var c51 = '';
+            $('.layout-setting').each(function (i, obj) {
+                if (i == 0) {
+                    c21 = obj.innerHTML;
+                }
+                if (i == 1) {
+                    c31 = obj.innerHTML;
+                }
+                if (i == 2) {
+                    c41 = obj.innerHTML;
+                }
+                if (i == 3) {
+                    c51 = obj.innerHTML;
+                }
+            });
+            let shareData={
+                c21:c21,
+                c31:c31,
+                c41:c41,
+                c51:c51,
+            }
+            vm.$window.storage('kha003AShareData', shareData).then(() => {
+                vm.$window.modal("/view/kha/003/b/index.xhtml").then(() => {
 
+                });
             });
         }
     }

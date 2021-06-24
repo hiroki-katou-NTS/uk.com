@@ -90,14 +90,17 @@ module nts.uk.at.kha003.c {
         created() {
             const vm = this;
             _.extend(window, {vm});
-            vm.c21Params('c21 test data');
-            vm.c21Text(vm.$i18n('KHA003_61', [vm.c21Params()]))
-            vm.c31Params('c31 test data');
-            vm.c31Text(vm.$i18n('KHA003_61', [vm.c31Params()]))
-            vm.c41Params('c41 test data');
-            vm.c41Text(vm.$i18n('KHA003_61', [vm.c41Params()]))
-            vm.c51Params('c51 test data');
-            vm.c51Text(vm.$i18n('KHA003_61', [vm.c51Params()]))
+            vm.$window.storage('kha003AShareData').done((data: any) => {
+                console.log(data)
+                vm.c21Params(data.c21);
+                vm.c21Text(vm.$i18n('KHA003_61', [vm.c21Params()]))
+                vm.c31Params(data.c31);
+                vm.c31Text(vm.$i18n('KHA003_61', [vm.c31Params()]))
+                vm.c41Params(data.c41);
+                vm.c41Text(vm.$i18n('KHA003_61', [vm.c41Params()]))
+                vm.c51Params(data.c51);
+                vm.c51Text(vm.$i18n('KHA003_61', [vm.c51Params()]))
+            })
         }
 
         mounted() {
@@ -115,7 +118,8 @@ module nts.uk.at.kha003.c {
          * Event on click decide button.
          */
         public decide(): void {
-            alert('TODO write business logic');
+            const vm = this;
+            vm.$jump('/view/kha/003/d/index.xhtml');
             nts.uk.ui.windows.close();
         }
     }

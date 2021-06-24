@@ -26,7 +26,7 @@
                 </div>
                 <div class="cell valign-center" style="text-align: center">
                     <div id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: {
-                      required: required,
+                      required: true,
                       enable: enable,
                       showNextPrevious: true,
                       value: dateValue,
@@ -37,7 +37,7 @@
         </div>
         <div id="functions-area-bottom">
                 <button id="btn-f-close" tabindex="2" class="large proceed"
-                        data-bind="click:decide">#{i18n.getText('KHA003_53')}</button>
+                        data-bind="click:decide,enable: $root.errors.isEmpty">#{i18n.getText('KHA003_53')}</button>
             <!-- B2_2 -->
                 <button id="btn-f-stop" tabindex="4" class="large"
                         data-bind="click:cancel">#{i18n.getText('KHA003_54')}</button>
