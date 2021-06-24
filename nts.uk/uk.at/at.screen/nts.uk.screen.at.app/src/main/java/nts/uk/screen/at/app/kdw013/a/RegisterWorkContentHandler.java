@@ -60,8 +60,13 @@ public class RegisterWorkContentHandler {
 		
 		// 1: <call>() 日別実績の作成
 		OutputCreateDailyResult outputCreateDailyOneDay = createDailyResultDomainServiceNew.createDataNewNotAsync(
-				command.getEmployeeId(), new DatePeriod(command.getChangedDate(), command.getChangedDate()), ExecutionAttr.MANUAL, AppContexts.user().companyId(),
-				ExecutionTypeDaily.CREATE, Optional.empty(), Optional.empty());
+				command.getEmployeeId(), 
+				new DatePeriod(command.getChangedDate(), 
+				command.getChangedDate()), 
+				ExecutionAttr.MANUAL, 
+				AppContexts.user().companyId(),
+				ExecutionTypeDaily.CREATE, 
+				Optional.empty(), Optional.empty());
 
 		// 変更があった日付分をループする
 		List<ErrorMessageInfoDto> lstErrorMessageInfoDto = new ArrayList<>();
