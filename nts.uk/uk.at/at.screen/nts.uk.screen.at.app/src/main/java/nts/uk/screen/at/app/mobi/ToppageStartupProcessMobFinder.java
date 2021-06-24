@@ -687,7 +687,10 @@ public class ToppageStartupProcessMobFinder {
 						            Optional.empty());
 				
 				
-				AnnualLeaveRemainingTime over60h = over60hImport.getAsOfPeriodEnd().getRemainingNumber().getRemainingTimeWithMinus();
+				AnnualLeaveRemainingTime over60h = over60hImport
+						.getAsOfPeriodEnd()
+						.getRemainingNumber()
+						.getRemainingTimeWithMinus();
 				
 				TimeOT extraRest = new TimeOT(over60h.hour(), over60h.minute());
 				dataKTG029.setExtraRest(extraRest);

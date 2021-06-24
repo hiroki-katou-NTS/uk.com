@@ -214,20 +214,19 @@ export class Ccg008AComponent extends Vue {
             results.push({
                 name:'KTG029_23', 
                 value: yearlyHld.nextTimeInfo.day, 
-                prefix: 'KTG029_60',
-                isFormatNew: false
+                prefix: 'KTG029_60'
             }); 
         }
         if (item.reservedYearsRemainNo) {
-            results.push({name:'積立年休残数', value: item.reservedYearsRemainNo.before, prefix: 'KTG029_60', isFormatNew: false});
+            results.push({name:'積立年休残数', value: item.reservedYearsRemainNo.before, prefix: 'KTG029_60'});
         }
         //setRemainAlternationNoDay
         if (item.remainAlternationNoDay || item.remainAlternationNoDay === 0) {
-            results.push({name:'代休残数', value: item.remainAlternationNoDay, prefix: 'KTG029_60', isFormatNew: false});
+            results.push({name:'代休残数', value: item.remainAlternationNoDay, prefix: 'KTG029_60'});
         }
       
         if (item.remainsLeft || item.remainsLeft === 0) {
-            results.push({name:'振休残数', value: item.remainsLeft, prefix: 'KTG029_60', isFormatNew: false});
+            results.push({name:'振休残数', value: item.remainsLeft, prefix: 'KTG029_60'});
         }
         // 子看護管理区分
         if (!!item.childRemainNo) {
@@ -256,7 +255,7 @@ export class Ccg008AComponent extends Vue {
         if (item.sphdramainNo && item.sphdramainNo.length > 0) {
             results.push({name:'KTG029_31', value:''});
             _.forEach(item.sphdramainNo, function(sphd) {
-                results.push({name: sphd.name, value: sphd.before, prefix: 'KTG029_60', sub: true, isFormatNew: false});
+                results.push({name: sphd.name, value: sphd.before, prefix: 'KTG029_60', sub: true});
             });
         }
 
@@ -266,7 +265,7 @@ export class Ccg008AComponent extends Vue {
             const {hours, min} = item.extraRest;
             results.push({
                 name: 'CCGS08_28',
-                value: vm.$i18n('CCGS08_37', [String(0), String(`${hours}:${min}`)]),
+                value: vm.$i18n('CCGS08_37', [String(0), vm.$dt.timedr(Number(hours) * 60 + Number(min))]),
                 isFormatNew: true
                 
             });
