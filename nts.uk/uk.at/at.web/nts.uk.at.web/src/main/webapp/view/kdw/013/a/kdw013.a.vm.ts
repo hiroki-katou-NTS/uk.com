@@ -271,15 +271,15 @@ module nts.uk.ui.at.kdw013.a {
                 remove: ko.computed({
                     read: () => {
                         const editable = ko.unwrap(vm.editable);
-
-                        return !editable;
+                        let confimer = _.find(_.get(vm.$datas(),'lstComfirmerDto'), ['confirmSID',vm.$user.employeeId]);
+                        return !editable && !!confimer;
                     }
                 }),
                 confirm: ko.computed({
                     read: () => {
                         const editable = ko.unwrap(vm.editable);
-
-                        return !editable;
+                        let confimer = _.find(_.get(vm.$datas(),'lstComfirmerDto'), ['confirmSID',vm.$user.employeeId]);
+                        return !editable && !confimer;
                     }
                 }),
             };
@@ -492,11 +492,13 @@ module nts.uk.ui.at.kdw013.a {
 
                 return dates;
             };
+    
+            let sid = vm.employee() ? vm.employee() : vm.$user.employeeId;
 
             const command: RegisterWorkContentCommand = {
                 changedDate: moment().format(DATE_TIME_FORMAT),
                 editStateSetting: HAND_CORRECTION_MYSELF,
-                employeeId: vm.$user.employeeId,
+                employeeId: sid,
                 mode: 0,
                 workDetails: dateRanges().map((date) => {
                     const lstWorkDetailsParamCommand = _
@@ -621,7 +623,7 @@ module nts.uk.ui.at.kdw013.a {
                             $datas({ lstComfirmerDto, lstWorkRecordDetailDto: [], workCorrectionStartDate: '', workGroupDtos: [] });
                         }
                     })
-                    .then(() => vm.editable.valueHasMutated())
+                    //.then(() => vm.editable.valueHasMutated())
                     .always(() => vm.$blockui('clear'));
             }
         }
