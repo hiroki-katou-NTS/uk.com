@@ -199,7 +199,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 	 * @param compareTimeSheet　次のループで取り出すリスト　
 	 */
 	public List<TimeSheetOfDeductionItem> deplicateBreakGoOut(TimeSheetOfDeductionItem compareTimeSheet,WorkTimeMethodSet setMethod,RestClockManageAtr clockManage
-															,boolean useFixedRestTime,FluidFixedAtr fluidFixedAtr,WorkTimeDailyAtr workTimeDailyAtr) {
+															,FluidFixedAtr fluidFixedAtr,WorkTimeDailyAtr workTimeDailyAtr) {
 		List<TimeSheetOfDeductionItem> map = new ArrayList<TimeSheetOfDeductionItem>();
 		List<TimeSpanForDailyCalc> baseThisNotDupSpan = this.timeSheet.getNotDuplicationWith(compareTimeSheet.timeSheet);
 		List<TimeSpanForDailyCalc> baseCompareNotDupSpan = compareTimeSheet.timeSheet.getNotDuplicationWith(this.timeSheet);
@@ -292,10 +292,8 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 			}
 			else {
 				if(setMethod.isFluidWork()) {
-					if(!useFixedRestTime) {
-						if(clockManage.isNotClockManage()) {
-							return collectionBreakTime(this,compareTimeSheet);
-						}
+					if(clockManage.isNotClockManage()) {
+						return collectionBreakTime(this,compareTimeSheet);
 					}
 				}
 			}
@@ -338,10 +336,8 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 			}
 			else {
 				if(setMethod.isFluidWork()||workTimeDailyAtr.isFlex()) {
-					if(!useFixedRestTime) {
-						if(clockManage.isNotClockManage()) {
-							return collectionBreakTime(compareTimeSheet,this);
-						}
+					if(clockManage.isNotClockManage()) {
+						return collectionBreakTime(compareTimeSheet,this);
 					}
 					//外出入れる
 					map.addAll(this.timeSheet.getNotDuplicationWith(compareTimeSheet.timeSheet).stream()

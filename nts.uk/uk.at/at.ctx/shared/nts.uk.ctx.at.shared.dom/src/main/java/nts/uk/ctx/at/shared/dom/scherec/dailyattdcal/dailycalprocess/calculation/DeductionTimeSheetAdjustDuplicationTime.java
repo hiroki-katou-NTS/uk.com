@@ -78,7 +78,7 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 			WorkTimeMethodSet setMethod,RestClockManageAtr clockManage, FluidFixedAtr fluidFixedAtr, WorkTimeDailyAtr workTimeDailyAtr){
 		
 		return replaceListItem(originList,
-							   originList.get(number).deplicateBreakGoOut(originList.get(nextNumber),setMethod,clockManage,false,fluidFixedAtr,workTimeDailyAtr)
+							   originList.get(number).deplicateBreakGoOut(originList.get(nextNumber),setMethod,clockManage,fluidFixedAtr,workTimeDailyAtr)
 							   ,number,nextNumber);
 	}
 	
