@@ -17,7 +17,7 @@ module nts.uk.at.view.ksm013.a {
                 var self = this;
                 self.columns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KSM013_5'), key: 'code', formatter: _.escape, width: 50 },
-                    { headerText: nts.uk.resource.getText('KSM013_6'), key: 'name', formatter: _.escape, width: 190 }
+                    { headerText: nts.uk.resource.getText('KSM013_6'), key: 'name', formatter: _.escape, width: 100 }
                 ]);
                 self.nurseClModel = new NurseClassificationModel("", "", null, false);
                 self.isEditting = ko.observable(false);
@@ -44,6 +44,8 @@ module nts.uk.at.view.ksm013.a {
                     { licenseCode: 1, licenseName: nts.uk.resource.getText('Enum_LicenseClassification_NURSE_ASSOCIATE') },
                     { licenseCode: 2, licenseName: nts.uk.resource.getText('Enum_LicenseClassification_NURSE_ASSIST') }
                 ]);
+
+                $(window).on('wd.setAvatar', () => $('[tabindex= 5]').focus());
                 //self.selectedLicense = ko.observable(0);
             }
 
