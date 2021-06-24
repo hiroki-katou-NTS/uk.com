@@ -10,8 +10,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 420,
-					height : 640
+					width : 470,
+					height : 660
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -21,19 +21,30 @@
 		</ui:define>
 		
 		<ui:define name="content">
-			<div id="content-area" class="flex" style="padding-top: 15px; padding-left: 5px;">
-				<div style="margin-left: 15px">
-					<!-- B1-002 -->
-					<div tabindex="3" 
-						data-bind="ntsSearchBox: {
-					searchMode: 'filter',
-					searchText: '絞り込み',
-					placeHolder: '#{i18n.getText('CLI001_18')}',
-					targetKey: 'userId',
-					mode: 'igGrid',
-					items: items,
-					selectedKey: 'userId',
-					fields: ['userName', 'loginId']}">
+			<div id="content-area" class="flex" style="padding-top: 15px; padding-left: 5px; height:520px;">
+				<!-- B1-001 -->
+				<div id="searchLb" data-bind="ntsFormLabel: {required:true}">
+					<label>#{i18n.getText('CLI001_16')}</label>
+				</div>
+				<div>
+					<div class="nts-searchbbox-wrapper">
+						<!-- B1-002 -->
+						<div class="input-wrapper">
+							<input id="searchInput" data-bind="ntsTextEditor:{
+								 name: '#[CLI001_17]',
+								 value: searchText,
+								 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+									textmode: 'text',
+									placeholder: '#{i18n.getText('CLI001_18')}',
+									width: '230px',
+									textalign: 'left'
+								 }))
+							 }" tabindex="1" />
+						</div>
+						<!-- B1-003 -->
+						<div class="input-wrapper">
+							<button id="search" class="search-btn" style="padding: 0 25px;" data-bind="click: search" tabindex="2">#{i18n.getText('CLI001_19')}</button>
+						</div>
 					</div>
 					<!-- B2-001 -->
 					<div id="grid-table" class="listbox-wrapper" tabindex="3">
