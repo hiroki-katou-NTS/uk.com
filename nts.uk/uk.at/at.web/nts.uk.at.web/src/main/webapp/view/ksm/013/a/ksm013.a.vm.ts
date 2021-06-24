@@ -44,8 +44,6 @@ module nts.uk.at.view.ksm013.a {
                     { licenseCode: 1, licenseName: nts.uk.resource.getText('Enum_LicenseClassification_NURSE_ASSOCIATE') },
                     { licenseCode: 2, licenseName: nts.uk.resource.getText('Enum_LicenseClassification_NURSE_ASSIST') }
                 ]);
-
-                $(window).on('wd.setAvatar', () => $('[tabindex= 5]').focus());
                 //self.selectedLicense = ko.observable(0);
             }
 
