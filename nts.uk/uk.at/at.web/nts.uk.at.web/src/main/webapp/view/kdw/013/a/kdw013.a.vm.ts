@@ -98,7 +98,7 @@ module nts.uk.ui.at.kdw013.a {
         slotDuration: KnockoutObservable<number> = ko.observable(30);
         initialDate: KnockoutObservable<Date> = ko.observable(new Date());
         dateRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({});
-        initialView: KnockoutObservable<string> = ko.observable('fullWeek');
+        initialView: KnockoutObservable<string> = ko.observable('oneDay');
         availableView: KnockoutObservableArray<calendar.InitialView> = ko.observableArray(['oneDay', 'fullWeek']);
         validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({});
 
