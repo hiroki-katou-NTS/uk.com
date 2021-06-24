@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.env.app.find.mailnoticeset.setting;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionId;
@@ -9,6 +10,7 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.SortOrder;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class MailFunctionDto implements MailFunctionSetMemento {
 	/** The function id. */
 	// 機能ID
