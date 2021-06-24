@@ -145,15 +145,14 @@ module nts.uk.com.view.cmm018.a.sub {
                         self.gridName = '#grid_matomeD'; 
                         if(systemAtr == 0) {
                             width = screen.width - 435 > 920 ? 920 : screen.width - 435;
+                            $('#treegrid2_container').height(360);
                             if (screen.height == 768){
                                 height = 355;
                                 $('#treegrid2_scroll').height(330);
                             }
 							if (screen.height == 1080 && screen.width == 1920) {
                                 height = 650;
-								$('#container_treegrid2').height(470);
 								$('#treegrid2_scroll').height(360);
-								$('#treegrid2_container').height(360);
                             }
                             //1280 * 768
                             else if (screen.height == 768 && screen.width == 1280) {
@@ -222,7 +221,10 @@ module nts.uk.com.view.cmm018.a.sub {
                             width = screen.width - 450 > 865 ? 865 : screen.width - 450;
                             if (screen.height == 768){
                                height = 300;
+                                $('#container_treegrid3').height(300);
                                 $('#treegrid3_scroll').height(275);
+                                $('#treegrid3_container').height(275);
+                                $('#layout_change_mode').width(920);
                             }
 							if (screen.height == 1080 && screen.width == 1920) {
                                 height = 600;
@@ -240,10 +242,6 @@ module nts.uk.com.view.cmm018.a.sub {
                             else if (screen.height == 768 && screen.width == 1024) {
                                 width = 545;
                                 height = 300;
-								$('#container_treegrid3').height(300);
-								$('#treegrid3_scroll').height(275);
-								$('#treegrid3_container').height(275);
-								$('#layout_change_mode').width(920);                         
                             } 
                         } else {
                             width = screen.width - 195 > 950 ? 950 : screen.width - 195;
@@ -613,7 +611,6 @@ module nts.uk.com.view.cmm018.a.sub {
                             if (screen.height == 1080 && screen.width == 1920) {
                                 width = 950;
                                 height = 700;
-								$('#container_treegrid1').height(470);
 								$('#treegrid1_scroll').height(359);
 								$('#treegrid1_container').height(359);
                             }
@@ -678,7 +675,6 @@ module nts.uk.com.view.cmm018.a.sub {
                                 }
 								 if (screen.height == 1080 && screen.width == 1920) {
                                     height = 650;
-									$('#container_treegrid2').height(470);
 									$('#treegrid2_scroll').height(359);
 									$('#treegrid2_container').height(359);
 	                             }
