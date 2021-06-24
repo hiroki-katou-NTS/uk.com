@@ -638,6 +638,11 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         register() {
             const vm = this;
 
+            if (vm.selectedType() == undefined) {
+                vm.$dialog.error({messageId: 'Msg_2202'});
+                return;
+            }
+
             // validate
             if (!vm.validate()) {
                 return;
