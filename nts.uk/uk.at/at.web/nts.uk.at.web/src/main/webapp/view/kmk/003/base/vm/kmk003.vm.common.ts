@@ -1553,6 +1553,12 @@ module nts.uk.at.view.kmk003.a {
                     });
                 }
 
+                initJDialog() {
+                    //init value J4_5, J4_10 ver 3.8
+                    this.getRoundingSetsGoOut().roundingSet.fontRearSection(0);
+                    this.getRoundingSetsTurnBack().roundingSet.fontRearSection(1);
+                }
+
                 getPrioritySetsGoWork(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.GOING_WORK) }
                 getPrioritySetsLeaveWork(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.LEAVE_WORK) }
                 getPrioritySetsEnter(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.ENTERING) }

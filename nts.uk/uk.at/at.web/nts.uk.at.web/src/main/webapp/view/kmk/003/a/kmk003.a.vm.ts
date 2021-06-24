@@ -1425,6 +1425,11 @@ module nts.uk.at.view.kmk003.a {
                     self.workTimeSetting.resetData();
                     self.workTimeSetting.resetWorkTimeDivision();
                 }
+                if (isNewMode) {
+                    setTimeout(function () {
+                        self.commonSetting.stampSet.initJDialog();
+                    }, 500)
+                }
                 self.isInterlockDialogJ(true);
             }
             
