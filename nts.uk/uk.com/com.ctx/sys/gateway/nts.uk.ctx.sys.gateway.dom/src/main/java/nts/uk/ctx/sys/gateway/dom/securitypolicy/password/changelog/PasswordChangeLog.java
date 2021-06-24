@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -49,10 +50,14 @@ public class PasswordChangeLog implements DomainAggregate {
 	 * 最新（少なくとも最初のパスワードの分は必ず存在する）
 	 * @return
 	 */
-	public PasswordChangeLogDetail latestLog() {
-		return details.stream()
+	public Optional<PasswordChangeLogDetail> latestLog() {
+		if(this.details.isEmpty()) {
+			// TODO 「初期パスワードに変更履歴が作成されない問題」のため暫定対応
+			return Optional.empty();
+		}
+		return Optional.of(details.stream()
 				.sorted((a, b) -> a.ageInDays() - b.ageInDays())
 				.findFirst()
-				.get();
+				.get());
 	}
 }

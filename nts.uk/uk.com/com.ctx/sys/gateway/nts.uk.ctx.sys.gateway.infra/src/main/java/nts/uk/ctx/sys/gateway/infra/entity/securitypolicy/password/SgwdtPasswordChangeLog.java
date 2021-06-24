@@ -15,7 +15,7 @@ import lombok.Setter;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLogDetail;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * パスワード変更履歴
@@ -29,7 +29,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name="SGWDT_PASSWORD_CHANGE_LOG")
-public class SgwdtPasswordChangeLog extends UkJpaEntity{
+public class SgwdtPasswordChangeLog extends ContractUkJpaEntity{
 	
 	@EmbeddedId
 	public SgwdtPasswordChangeLogPK pk;

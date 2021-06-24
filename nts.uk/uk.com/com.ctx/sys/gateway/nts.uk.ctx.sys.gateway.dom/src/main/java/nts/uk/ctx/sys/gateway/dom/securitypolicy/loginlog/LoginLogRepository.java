@@ -1,8 +1,6 @@
 package nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog;
 
 
-import java.util.List;
-
 import nts.arc.time.GeneralDateTime;
 
 /**
@@ -32,11 +30,4 @@ public interface LoginLogRepository {
 	 * @param 操作区分 operation
 	 */
 	void deleteLoginLog(String userId,int successOrFail, int operation);
-	/**
-	 * delete List Login Log
-	 * @param ユーザID一覧 lstUserId
-	 * @param 成功失敗区分 successOrFail
-	 * @param 操作区分 operation
-	 */
-	void deleteLstLoginLog(List<String> lstUserId,int successOrFail, int operation);
 }
