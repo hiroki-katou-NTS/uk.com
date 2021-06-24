@@ -1303,7 +1303,9 @@ export class KafS11AComponent extends KafS00ShrComponent {
             if (failData.messageId == 'Msg_323') {
                 vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
                 .then(() => {
-                    vm.$goto('ccg008a');
+                    if (vm.displayInforWhenStarting.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.recordDate == 0) {
+                        vm.$goto('ccg008a');
+                    }
                 });
 
                 return resolve(false);		
