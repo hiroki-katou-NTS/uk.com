@@ -253,8 +253,6 @@ module nts.uk.com.view.cmf005.c {
           $("#C10_4 input").focus();
         }
       });
-      // Move C3_2 into position
-      $("#C3_2").appendTo("#C4-search-area");
       vm.initDisplay();
     }
 
@@ -292,6 +290,8 @@ module nts.uk.com.view.cmf005.c {
           }).fail(err => vm.$dialog.error({ messageId: err.messageId }));
       }).always(() => {
         vm.$blockui("clear");
+        // Move C3_2 into position
+        $("#C3_2").appendTo("#C4-search-area");
       });
     }
 
