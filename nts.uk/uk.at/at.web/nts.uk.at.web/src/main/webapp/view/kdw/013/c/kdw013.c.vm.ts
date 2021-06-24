@@ -934,7 +934,7 @@ module nts.uk.ui.at.kdw013.c {
 
             $.Deferred()
                 .resolve(true)
-                .then(() => $(vm.$el).find('input, textarea').trigger('blur'))
+                //.then(() => $(vm.$el).find('input, textarea').trigger('blur'))
                 .then(() => {
                     const { title, extendedProps } = ko.unwrap(data);
 
