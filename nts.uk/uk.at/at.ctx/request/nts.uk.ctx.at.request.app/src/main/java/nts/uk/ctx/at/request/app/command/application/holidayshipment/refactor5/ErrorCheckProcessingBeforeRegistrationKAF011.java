@@ -96,9 +96,6 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 		//4.社員の当月の期間を算出する (Tính thời gian tháng hiện tại của nhân viên)
 		PeriodCurrentMonth periodCurrentMonth = this.otherCommonAlgorithm.employeePeriodCurrentMonthCalculate(companyId, employeeId, GeneralDate.today());
 		
-		//ドメインモデル「休暇申請設定」を取得する - (lấy domain 「休暇申請設定」)
-		Optional<HolidayApplicationSetting> holidayAppSetOpt = holidayApplicationSettingRepo.findSettingByCompanyId(companyId);
-		
 		if(abs.isPresent()) {
 			InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(
 					companyId, 
@@ -112,12 +109,14 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 					new ArrayList<ScheRemainCreateInfor>(), 
 					createAppRemain(abs.get()), 
 					false, 
-					true, // confirm????
+					true, // #116616
 					false, 
 					false, 
 					true, 
 					false, 
-					true);
+					true, 
+					false, 
+					false);
 			EarchInterimRemainCheck earchInterimRemainCheck = this.interimRemainDataMngCheckRegister.checkRegister(inputParam); 
 			if(!earchInterimRemainCheck.isChkSubHoliday()) {
 				throw new BusinessException("Msg_1409", "代休不足区分");

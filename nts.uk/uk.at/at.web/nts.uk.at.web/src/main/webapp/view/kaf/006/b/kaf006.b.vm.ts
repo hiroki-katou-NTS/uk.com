@@ -41,6 +41,9 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		dateBeforeChange: KnockoutObservable<string> = ko.observable(null);
 		isDispTime2ByWorkTime: KnockoutObservable<boolean> = ko.observable(true);
 		isInit: KnockoutObservable<boolean> = ko.observable(true);
+		grantDate: KnockoutObservable<string> = ko.observable(null);
+        grantDays: KnockoutObservable<number> = ko.observable(0);
+        grantDaysOfYear: KnockoutComputed<string>;
 
 		checkAppDate: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -160,6 +163,14 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 				return vm.$i18n("KAF006_21");
             });
+
+			vm.grantDaysOfYear = ko.computed(() => {
+                if (vm.grantDate()) {
+                    return vm.$i18n('KAF006_98') + moment(vm.grantDate()).format('YYYY/MM/DD') + ' ' + vm.grantDays + '日';
+                }
+
+                return vm.$i18n('KAF006_98') + vm.$i18n('KAF006_99');
+            })
 
 			vm.selectedDateSpec.subscribe(() => {
 				if (vm.selectedType() !== 3 || vm.dateSpecHdRelationLst().length === 0) {

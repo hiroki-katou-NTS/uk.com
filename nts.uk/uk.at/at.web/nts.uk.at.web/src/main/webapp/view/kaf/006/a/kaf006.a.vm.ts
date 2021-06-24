@@ -44,6 +44,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         isEnableSwitchBtn: boolean = true;
         updateMode: KnockoutObservable<boolean> = ko.observable(true);
         isDispTime2ByWorkTime: KnockoutObservable<boolean> = ko.observable(false);
+        grantDate: KnockoutObservable<string> = ko.observable(null);
+        grantDays: KnockoutObservable<number> = ko.observable(0);
+        grantDaysOfYear: KnockoutComputed<string>;
 
         // appDate
         checkAppDate: KnockoutObservable<boolean> = ko.observable(true);
@@ -201,6 +204,14 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
                 return vm.$i18n("KAF006_21");
             });
+
+            vm.grantDaysOfYear = ko.computed(() => {
+                if (vm.grantDate()) {
+                    return vm.$i18n('KAF006_98') + moment(vm.grantDate()).format('YYYY/MM/DD') + ' ' + vm.grantDays + '日';
+                }
+
+                return vm.$i18n('KAF006_98') + vm.$i18n('KAF006_99');
+            })
 
             vm.selectedDateSpec.subscribe(() => {
                 if (vm.selectedType() !== 3 || vm.dateSpecHdRelationLst().length === 0) {
@@ -595,6 +606,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                 vm.subHdRemain(data.remainVacationInfo.subHdRemain);
                 vm.subVacaRemain(data.remainVacationInfo.subVacaRemain);
                 vm.remainingHours(data.remainVacationInfo.remainingHours);
+                vm.grantDate(data.remainVacationInfo.grantDate);
+                vm.grantDays(data.remainVacationInfo.grantDays);
                 vm.fetchRemainTime(data.remainVacationInfo);
             }
             if (data.requiredVacationTime) {

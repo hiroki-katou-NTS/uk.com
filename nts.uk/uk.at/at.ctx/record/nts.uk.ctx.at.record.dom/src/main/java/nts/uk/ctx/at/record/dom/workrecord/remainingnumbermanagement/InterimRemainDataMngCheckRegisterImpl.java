@@ -15,9 +15,13 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.care.GetRemainingNumberCareService;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggrResultOfChildCareNurse;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseRequireImplFactory;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.GetRemainingNumberChildCareService;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
@@ -42,6 +46,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAt
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
@@ -79,7 +84,13 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
     private GetRemainingNumberChildCareService getRemainingNumberChildCareService;
 	
 	@Inject
+    private GetRemainingNumberCareService getRemainingNumberCareService;
+	
+	@Inject
     private ChildCareNurseRequireImplFactory childCareNurseRequireImplFactory;
+	
+	@Inject
+    private RecordDomRequireService recordDomRequireService;
 
 	@Override
 	public EarchInterimRemainCheck checkRegister(InterimRemainCheckInputParam inputParam) {
@@ -138,6 +149,8 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		List<InterimRemain> interimSpecial = eachData.getInterimSpecial();
 		List<TempAnnualLeaveMngs> annualHolidayData = eachData.getAnnualHolidayData();
 		List<TmpResereLeaveMng> resereLeaveData = eachData.getResereLeaveData();
+		List<TempChildCareManagement> childCareData = eachData.getChildCareData();
+		List<TempCareManagement> careData = eachData.getCareData();
 
 		// 代休チェック区分をチェックする
 		if (inputParam.isChkSubHoliday()) {
@@ -192,6 +205,18 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 //					outputData.setChkSpecial(true);
 //					break;
 //				}
+				SpecialLeaveManagementService.complileInPeriodOfSpecialLeave(recordDomRequireService.createRequire(), cacheCarrier, 
+				        new ComplileInPeriodOfSpecialLeaveParam(
+				                inputParam.getCid(), 
+				                inputParam.getSid(), 
+				                inputParam.getDatePeriod(), 
+				                false, 
+				                inputParam.getBaseDate(), 
+				                a.getSpecialHolidayCode(), 
+				                false, 
+				                true, 
+				                specialHolidayData, 
+				                Optional.of(inputParam.getRegisterDate())));
 			}
 		}
 		// 年休チェック区分をチェックする
@@ -228,6 +253,9 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		}
 		// 子の看護チェック区分をチェックする
 		if (inputParam.isChkChildNursing()) {
+//		    specialHolidayData.stream()
+//		    .map(x -> TempChildCareManagement.of(x.getRemainManaID(), x.getSID(), x.getYmd(), x.getCreatorAtr(), ChildCareNurseUsedNumber.of(), x.getAppTimeType()))
+//		    .collect(Collectors.toList());
 		    // [NO.206]期間中の子の看護休暇残数を取得
 		    AggrResultOfChildCareNurse result =
 	                getRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
@@ -237,16 +265,37 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 	                        InterimRemainMngMode.of(inputParam.isMode()), 
 	                        inputParam.getBaseDate(),
 	                        Optional.of(true), 
-	                        new ArrayList<TempChildCareManagement>(), // ????
+	                        childCareData, 
 	                        Optional.empty(), 
-	                        Optional.empty(),  // confirm???
+	                        Optional.empty(),  // TODO: ???????????????
 	                        Optional.of(inputParam.getRegisterDate()),
 	                        cacheCarrier, 
 	                        childCareNurseRequireImplFactory.createRequireImpl());
+		    
+		    if (result.getChildCareNurseErrors().size() > 0) {
+		        outputData.setChkChildNursing(true);
+		    }
 		}
 		// 介護チェック区分をチェックする
 		if (inputParam.isChkLongTermCare()) {
-		    // TODO: Call RQ 207: [NO.207]期間中の介護休暇残数を取得
+		    // [NO.207]期間中の介護休暇残数を取得
+		    AggrResultOfChildCareNurse result = getRemainingNumberCareService.getCareRemNumWithinPeriod(
+		            inputParam.getCid(), 
+                    inputParam.getSid(), 
+                    inputParam.getDatePeriod(),
+                    InterimRemainMngMode.of(inputParam.isMode()), 
+                    inputParam.getBaseDate(),
+                    Optional.of(true), 
+	                careData, 
+	                Optional.empty(),
+	                Optional.empty(),  // TODO: ???????????????
+	                Optional.of(inputParam.getRegisterDate()),
+                    cacheCarrier, 
+                    childCareNurseRequireImplFactory.createRequireImpl());
+		    
+		    if (result.getChildCareNurseErrors().size() > 0) {
+		        outputData.setChkLongTermCare(true);
+		    }
 		}
 
 		return outputData;
@@ -280,7 +329,14 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		 * 積立年休の暫定残数管理
 		 */
 		List<InterimRemain> resereMng = new ArrayList<>();
-		List<TmpResereLeaveMng> resereLeaveData = new ArrayList<>();
+		List<TmpResereLeaveMng> resereLeaveData = new ArrayList<>();/**
+	     * 暫定子の看護休暇データ
+	     */
+	    List<TempChildCareManagement> childCareData = new ArrayList<TempChildCareManagement>();
+	    /**
+	     * 暫定介護休暇データ
+	     */
+	    List<TempCareManagement> careData = new ArrayList<TempCareManagement>();
 		mapDataOutput.forEach((x, y) -> {
 			// 積立年休
 			y.getResereData().ifPresent(z -> {
@@ -320,9 +376,11 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 						.filter(a -> c.getRemainManaID().equals(a.getRemainManaID())).collect(Collectors.toList());
 				interimMngAbsRec.addAll(lstTmp);
 			});
+			y.getChildCareData().forEach(b -> childCareData.add(b));
+			y.getCareData().forEach(b -> careData.add(b));
 		});
 		return new InterimEachData(interimMngAbsRec, useAbsMng, useRecMng, interimMngBreakDayOff, breakMng, dayOffMng,
-				interimSpecial, specialHolidayData, annualMng, annualHolidayData, resereMng, resereLeaveData);
+				interimSpecial, specialHolidayData, annualMng, annualHolidayData, resereMng, resereLeaveData, childCareData, careData);
 	}
 
 }

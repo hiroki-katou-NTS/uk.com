@@ -755,7 +755,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		}
 
 		//INPUT．「年休管理区分」がTRUE
-		List<NextAnnualLeaveGrantImport> nextYearHolidays = new ArrayList<NextAnnualLeaveGrantImport>();
+		GeneralDate grantDate = null;
+		int grantDays = 0;
 		if(annualLeaveManageDistinct.equals(ManageDistinct.YES)){//output．年休管理区分が管理する
 			//基準日時点の年休残数を取得する - RQ198
 			ReNumAnnLeaReferenceDateImport year = annLeaRemNumberAdapter.getReferDateAnnualLeaveRemainNumber(employeeID, baseDate);
@@ -766,7 +767,14 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 			    yearHourRemain += year.getAnnualLeaveGrantExports().get(i).getRemainMinutes();
 			}
 			//次回年休付与日を取得する
-			nextYearHolidays = annualHolidayManagementAdapter.acquireNextHolidayGrantDate(companyID, employeeID, GeneralDate.today());
+			List<NextAnnualLeaveGrantImport> nextYearHolidays = annualHolidayManagementAdapter.acquireNextHolidayGrantDate(companyID, employeeID, GeneralDate.today());
+			Optional<NextAnnualLeaveGrantImport> futureGrant = nextYearHolidays.stream()
+                    .filter(holiday -> holiday.grantDate.after(GeneralDate.today()))
+                    .min(Comparator.comparing(h -> h.grantDate));
+			if (futureGrant.isPresent()) {
+			    grantDate = futureGrant.get().getGrantDate();
+			    grantDays = futureGrant.get().getGrantDays().intValue();
+			}
 		}
 		
 		// 「60H超休管理区分」を確認する
@@ -838,8 +846,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		        childNursingHourRemain, 
 		        nursingRemain.intValue(), 
 		        nursingHourRemain,
-		        nextYearHolidays.size() > 0 ? nextYearHolidays.get(0).grantDate : null, 
-		        nextYearHolidays.size() > 0 ? nextYearHolidays.get(0).getGrantDays().intValue() : 0);
+		        grantDate, 
+		        grantDays);
 	}
 
 	@Override
