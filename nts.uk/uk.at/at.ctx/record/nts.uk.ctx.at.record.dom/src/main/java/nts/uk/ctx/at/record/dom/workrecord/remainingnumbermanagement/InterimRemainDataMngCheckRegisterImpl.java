@@ -267,7 +267,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 	                        Optional.of(true), 
 	                        childCareData, 
 	                        Optional.empty(), 
-	                        Optional.empty(),  // TODO: ???????????????
+	                        Optional.of(inputParam.getAppData().get(0).getPrePosAtr().value == 0 ? CreateAtr.APPBEFORE : CreateAtr.APPAFTER), 
 	                        Optional.of(inputParam.getRegisterDate()),
 	                        cacheCarrier, 
 	                        childCareNurseRequireImplFactory.createRequireImpl());
@@ -288,7 +288,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
                     Optional.of(true), 
 	                careData, 
 	                Optional.empty(),
-	                Optional.empty(),  // TODO: ???????????????
+	                Optional.of(inputParam.getAppData().get(0).getPrePosAtr().value == 0 ? CreateAtr.APPBEFORE : CreateAtr.APPAFTER), 
 	                Optional.of(inputParam.getRegisterDate()),
                     cacheCarrier, 
                     childCareNurseRequireImplFactory.createRequireImpl());
