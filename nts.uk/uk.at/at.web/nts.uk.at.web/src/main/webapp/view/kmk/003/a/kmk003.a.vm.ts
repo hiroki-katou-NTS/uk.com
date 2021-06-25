@@ -1309,18 +1309,21 @@ module nts.uk.at.view.kmk003.a {
                     worktimeSetting: self.workTimeSetting.toDto(),
                 };
 
-                //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
-                let times = self.autoGenerate();
+                if (!self.useHalfDayWorking()) {
+                    //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
+                    let times = self.autoGenerate();
 
-                command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = [];
-                times.morning.forEach(time => {
-                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone.push(time);
-                })
+                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = [];
+                    times.morning.forEach(time => {
+                        command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone.push(time);
+                    })
 
-                command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone = [];
-                times.afternoon.forEach(time => {
-                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone.push(time);
-                })
+                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone = [];
+                    times.afternoon.forEach(time => {
+                        command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone.push(time);
+                    })
+                }
+
                 return command;
             }
             
