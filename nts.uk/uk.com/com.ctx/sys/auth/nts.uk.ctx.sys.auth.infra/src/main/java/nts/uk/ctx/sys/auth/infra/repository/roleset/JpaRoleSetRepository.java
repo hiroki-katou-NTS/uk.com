@@ -11,11 +11,9 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
 import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRoleSet;
@@ -52,7 +50,8 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
      * @return
      */
     private RoleSet toDomain(SacmtRoleSet entity) {
-        return new RoleSet(entity.roleSetPK.roleSetCd
+// TODO Class RoleSet have @AllContructor since there is, I deleted it this time, please correct
+/*        return new RoleSet(entity.roleSetPK.roleSetCd
                 , entity.roleSetPK.companyId
                 , entity.roleSetName
                 , EnumAdaptor.valueOf(entity.approvalAuthority, ApprovalAuthority.class)
@@ -62,7 +61,8 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
                 , entity.personInfRole
                 , entity.employmentRole
                 , entity.salaryRole
-                );
+                );*/
+    	return null;
     }
 
     /**

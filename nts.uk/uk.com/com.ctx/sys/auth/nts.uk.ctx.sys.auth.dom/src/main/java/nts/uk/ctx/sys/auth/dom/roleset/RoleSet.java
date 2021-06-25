@@ -51,43 +51,6 @@ public class RoleSet extends AggregateRoot {
     private Optional<String> officeHelperRoleId;
     
     /**
-     * Instantiates a new role set.
-     *
-     * @param roleSetCd
-     * @param companyId
-     * @param roleSetName
-     * @param approvalAuthority
-     * @param officeHelperRoleId
-     * @param myNumberRoleId
-     * @param hRRoleId
-     * @param personInfRoleId
-     * @param employmentRoleId
-     * @param salaryRoleId
-     */
-    public RoleSet(String roleSetCd
-            , String companyId
-            , String roleSetName
-            , ApprovalAuthority approvalAuthority
-            , String officeHelperRoleId
-            , String myNumberRoleId
-            , String hRRoleId
-            , String personInfRoleId
-            , String employmentRoleId
-            , String salaryRoleId) {
-        super();
-        this.roleSetCd             = new RoleSetCode(roleSetCd);
-        this.companyId             = companyId;
-        this.roleSetName         = new RoleSetName(roleSetName);
-        this.approvalAuthority     = approvalAuthority;
-        this.officeHelperRoleId = Optional.of(officeHelperRoleId);
-        this.myNumberRoleId     = Optional.of(myNumberRoleId);
-        this.hRRoleId             = Optional.of(hRRoleId);
-        this.personInfRoleId     = Optional.of(personInfRoleId);
-        this.employmentRoleId     = Optional.of(employmentRoleId);
-        this.salaryRoleId         = Optional.of(salaryRoleId);
-    }
-    
-    /**
      * 作る
      * @param cid 会社ID
      * @param roleSetCd コード
@@ -99,14 +62,13 @@ public class RoleSet extends AggregateRoot {
     public static RoleSet create(String cid
     		,	String roleSetCd
     		,	String roleSetName
-    		,	String attendanceRoleId
-    		,	String personInfoRoleId) {
+    		,	Optional<String> attendanceRoleId
+    		,	Optional<String> personInfoRoleId) {
     	return new RoleSet(cid
     			,	new RoleSetCode(roleSetCd)
     			,	new RoleSetName(roleSetName)
     			,	ApprovalAuthority.HasRight //今、承認権限の値 = あり、今後　承認権限を削除するつもりです。
-    			,	Optional.of(attendanceRoleId)
-    			,	Optional.of(personInfoRoleId)
+    			,	attendanceRoleId, personInfoRoleId
     			,	Optional.empty(),	Optional.empty()
     			,	Optional.empty(),	Optional.empty() );
     }
@@ -161,19 +123,23 @@ public class RoleSet extends AggregateRoot {
     public String getRoleIDByRoleType(RoleType roleType) {
     	switch(roleType) {
 	    	case EMPLOYMENT:
-	    		return this.employmentRoleId.get();
+	    		return convertToString(this.employmentRoleId);
 	    	case SALARY:
-	    		return this.salaryRoleId.get();
+	    		return convertToString(this.salaryRoleId);
 	    	case HUMAN_RESOURCE:
-	    		return this.hRRoleId.get();
+	    		return convertToString(this.hRRoleId);
 	    	case OFFICE_HELPER:
-	    		return this.officeHelperRoleId.get();
+	    		return convertToString(this.officeHelperRoleId);
 	    	case MY_NUMBER:
-	    		return this.myNumberRoleId.get();
+	    		return this.convertToString(this.myNumberRoleId);
 	    	case PERSONAL_INFO:
-	    		return this.personInfRoleId.get();
+	    		return convertToString(this.personInfRoleId);
     		default:
     			return "";
     	}
+    }
+    
+    private String convertToString(Optional<String> roleID) {
+    	return roleID.isPresent()? roleID.get(): "";
     }
 }

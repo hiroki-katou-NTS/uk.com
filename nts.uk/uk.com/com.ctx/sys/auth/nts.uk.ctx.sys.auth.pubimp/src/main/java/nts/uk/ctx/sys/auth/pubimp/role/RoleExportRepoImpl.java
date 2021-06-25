@@ -287,60 +287,33 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 		
 		// アルゴリズム「ユーザIDからロールセットを取得する」を実行する(thuc hiện thuat toán 「ユーザIDからロールセットを取得する」)
 		Optional<RoleSet> roleSetOpt =  roleSetService.getRoleSetFromUserId( userId,  baseDate);
-		RollInformationExport result = new RollInformationExport();
 		if (roleSetOpt.isPresent()) {
+			Optional<String> roleID;
 			switch (roleType) {
 			case 3: // EMPLOYMENT
-				Optional<String> employmentRoleId = roleSetOpt.get().getEmploymentRoleId();
-				if (!employmentRoleId.isPresent()) {
-					return null;
-				}
-				
-				result = new RollInformationExport(false, employmentRoleId.get());
-				return result;
+				roleID = roleSetOpt.get().getEmploymentRoleId(); break;
 
 			case 4: // SALARY
-				Optional<String> salaryRoleId = roleSetOpt.get().getSalaryRoleId();
-				if (salaryRoleId.isPresent()) {
-					return new RollInformationExport(false, salaryRoleId.get());
-				}
-				return null;
-				
+				roleID = roleSetOpt.get().getSalaryRoleId(); break;
 			case 5: // HUMAN_RESOURCE
-				Optional<String> hRRoleId = roleSetOpt.get().getHRRoleId();
-				if (hRRoleId.isPresent()) {
-					return new RollInformationExport(false, hRRoleId.get());
-				}
-				
-				return null;
+				roleID  = roleSetOpt.get().getHRRoleId(); break;
 				
 			case 6: // OFFICE_HELPER
-				Optional<String> officeHelperRoleId = roleSetOpt.get().getOfficeHelperRoleId();
-				if (officeHelperRoleId.isPresent()) {
-					return new RollInformationExport(false, officeHelperRoleId.get());
-				}
-				
-				return null;
+				roleID  = roleSetOpt.get().getOfficeHelperRoleId(); break;
 				
 			case 7: // MY_NUMBER
-				Optional<String> myNumberRoleId = roleSetOpt.get().getMyNumberRoleId();
-				if (myNumberRoleId.isPresent()) {
-					return new RollInformationExport(false, myNumberRoleId.get());
-				}
-				
-				return null;
+				roleID  = roleSetOpt.get().getMyNumberRoleId(); break;
 				
 			case 8: // PERSONAL_INFO
-				Optional<String> personInfRoleId = roleSetOpt.get().getPersonInfRoleId();
-				if (personInfRoleId.isPresent()) {
-					return new RollInformationExport(false, personInfRoleId.get());
-				}
-				
-				return null;
-
+				roleID  = roleSetOpt.get().getPersonInfRoleId(); break;
 			default:
-				return null;
+				roleID = Optional.empty(); break;
 			}
+			
+			if(roleID.isPresent()) {
+				return new RollInformationExport(false, roleID.get());
+			}
+			
 		}
 		
 		return null;

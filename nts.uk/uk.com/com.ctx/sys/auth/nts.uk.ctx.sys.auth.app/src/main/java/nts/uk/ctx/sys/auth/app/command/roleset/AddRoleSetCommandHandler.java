@@ -9,10 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
-import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.service.RoleSetService;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
 * The Class AddRoleSetCommandHandler.
@@ -27,7 +24,8 @@ public class AddRoleSetCommandHandler extends CommandHandlerWithResult<RoleSetCo
     @Override
     protected String handle(CommandHandlerContext<RoleSetCommand> context) {
         RoleSetCommand command = context.getCommand();
-        RoleSet roleSetDom = new RoleSet(command.getRoleSetCd()
+//TODO Class RoleSet have @AllContructor since there is, I deleted it this time, please correct
+/*        RoleSet roleSetDom = new RoleSet(command.getRoleSetCd()
                 , AppContexts.user().companyId()
                 , command.getRoleSetName()
                 , command.isApprovalAuthority() ? ApprovalAuthority.HasRight : ApprovalAuthority.HasntRight
@@ -39,7 +37,7 @@ public class AddRoleSetCommandHandler extends CommandHandlerWithResult<RoleSetCo
                 , command.getSalaryRoleId());
 
         //アルゴリズム「新規登録」を実行する - Execute the algorithm "new registration"
-        this.roleSetService.registerRoleSet(roleSetDom);
+   			this.roleSetService.registerRoleSet(roleSetDom);*/
 
         return command.getRoleSetCd();
     }
