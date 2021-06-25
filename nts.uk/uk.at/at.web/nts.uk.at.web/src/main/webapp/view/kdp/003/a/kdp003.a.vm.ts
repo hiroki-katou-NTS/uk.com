@@ -1011,7 +1011,7 @@ module nts.uk.at.kdp003.a {
 			if (selectedId === undefined && nameSelectArt === true) {
 				return vm.$dialog.error({ messageId: 'Msg_1646' });
 			}
-
+			nts.uk.ui.block.invisible();
 			// case: 社員一覧(A2)を選択している場合(社員を選択) || 社員一覧(A2)を選択している場合(固有部品：PA4)、又は社員一覧が表示されていない場合
 			return vm.$window.storage(KDP003_SAVE_DATA)
 				.then((data: StorageData) => {

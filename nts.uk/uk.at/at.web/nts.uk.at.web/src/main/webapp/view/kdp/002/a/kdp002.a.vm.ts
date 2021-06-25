@@ -144,6 +144,7 @@ module nts.uk.at.view.kdp002.a {
                 const vm = this;
                 const view = new ko.ViewModel();
 
+                nts.uk.ui.block.invisible();
                 nts.uk.request
                     .syncAjax("com", "server/time/now/")
                     .done((res) => {

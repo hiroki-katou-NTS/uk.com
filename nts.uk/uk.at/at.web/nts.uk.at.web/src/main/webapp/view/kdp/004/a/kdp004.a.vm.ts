@@ -416,7 +416,7 @@ module nts.uk.at.view.kdp004.a {
 			public clickBtn1(btn: any, layout: any) {
 				const vm = this;
 				vm.getWorkPlacesInfo();
-
+				nts.uk.ui.block.invisible();
 				vm.doAuthent().done((res: IAuthResult) => {
 					if (res.isSuccess) {
 						vm.registerData(btn, layout, res);
