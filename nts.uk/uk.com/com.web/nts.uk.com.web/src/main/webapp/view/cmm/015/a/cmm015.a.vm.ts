@@ -2,9 +2,13 @@
 module cmm015.a.viewmodel {
 
     const API = {
-        getEmpInWkp: 'com/screen/cmm015/getEmployeesInWorkplace',
-        getTransferOfDay: 'com/screen/cmm015/getTransferOfDay'
+        getEmpInWkp: 'com/screen/cmm015/getEmployeesInWorkplace', //職場の所属社員一覧を取得する
+        getTransferOfDay: 'com/screen/cmm015/getTransferOfDay', //当日の異動を取得する
+        regisJTC: 'com/screen/cmm015/regisJTC', //職位異動の登録をする
+        createTransferList: 'com/screen/cmm015/createTransferList',//異動一覧を作成する
     };
+
+    const MAX_DATE: string = '9999/12/31';
 
     @bean()
     export class ScreenModel extends ko.ViewModel {
@@ -52,9 +56,7 @@ module cmm015.a.viewmodel {
         isEnableA6: KnockoutObservable<boolean> = ko.observable(true);
         isEnableA11: KnockoutObservable<boolean> = ko.observable(true);
 
-        isNullTransferDate: KnockoutComputed<boolean> = ko.computed(
-            () => _.isEmpty(this.transferDate()) || _.isNull(this.transferDate())
-        );
+        isNullTransferDate: KnockoutObservable<boolean> = ko.observable(true);
 
         baseDateLeftText: KnockoutComputed<string>;
         baseDateRightText: KnockoutComputed<string>;
@@ -167,7 +169,7 @@ module cmm015.a.viewmodel {
                 vm.loadDataWkp(Table.RIGHT);
             });
 
-            $('#A13').click((v) => {
+            $('#A13').click((v) => { //「職位の選択」ダイアログで職位変更
                 if (!v.target.classList.contains('custom-link')) {
                     return;
                 }
@@ -188,8 +190,24 @@ module cmm015.a.viewmodel {
                         const output = nts.uk.ui.windows.getShared('outputCDL004');
                         if (output) {
                             const index = _.findIndex(vm.tableDatasDest(), (item: DataTable) => item.id === employeeID);
-                            vm.tableDatasDest()[index].jtID = output;
-                            vm.tableDatasDest.valueHasMutated();
+                            const data: DataTable = vm.tableDatasDest()[index];
+                            if (vm.ui20(data.jtID, output)) return;
+
+                            // 職位異動の登録をする
+                            vm
+                                .$ajax('com', API.regisJTC, {
+                                    sid: data.id,
+                                    jobTitleId: output,
+                                    startDate: moment(vm.transferDate()).utc().toISOString(),
+                                    endDate: moment(MAX_DATE).utc().toISOString()
+                                })
+                                .then(() => {
+                                    vm.loadDataWkp(Table.RIGHT);
+                                    vm.ui6();
+                                    vm.$dialog.info({ messageId: 'Msg_15' });
+                                })
+                                .fail(({messageId}) => vm.$dialog.error({ messageId: messageId }));
+                            
                         }
                     });
             });
@@ -201,11 +219,13 @@ module cmm015.a.viewmodel {
 
             vm.$validate('#A1_3').then(valid => {
                 if (!valid) {
+                    vm.isNullTransferDate(true);
                     return;
                 }
                 const date = ko.unwrap<string>(vm.transferDate);
                 vm.baseDateRight(new Date(vm.transferDate()));
                 vm.baseDateLeft(new Date(moment.utc(date).subtract(1, 'd').toString()));
+                vm.isNullTransferDate(false);
                 vm.reloadKcp();
 
             })
@@ -220,6 +240,10 @@ module cmm015.a.viewmodel {
             vm.loadDataWkp(Table.RIGHT);
         }
 
+        /**
+         * 職場の所属社員一覧を取得する
+         * @param table LEFT OR RIGHT
+         */
         loadDataWkp(table: Table) {
             const vm = this;
             const paramLeft = {
@@ -254,9 +278,11 @@ module cmm015.a.viewmodel {
 
                     if (isLeft) {
                         vm.tableDatasSource.removeAll();
+                        vm.currentCodeListSource.removeAll();
                         vm.tableDatasSource(tableDatas);
                     } else {
                         vm.tableDatasDest.removeAll();
+                        vm.currentCodeListDest.removeAll();
                         vm.tableDatasDest(tableDatas);
                     }
 
@@ -264,6 +290,21 @@ module cmm015.a.viewmodel {
                 .always(() => vm.$blockui('clear'));
 
         }
+
+        ui6() {
+            const vm = this;
+            vm.currentCodeListDest([]);
+        }
+
+        ui20(jtID: string, newID: string): boolean {
+            const vm = this;
+            if(jtID === newID) {
+                vm.$dialog.error({ messageId: 'Msg_2120' });
+                return true;
+            }
+            return false;
+        }
+
     }
 
     enum Table { LEFT, RIGHT }
@@ -297,10 +338,6 @@ module cmm015.a.viewmodel {
             vm.od = data.order;
             vm.jtc = jtc;
             vm.css = 'red';
-        }
-
-        click() {
-            console.log('123')
         }
     }
 }

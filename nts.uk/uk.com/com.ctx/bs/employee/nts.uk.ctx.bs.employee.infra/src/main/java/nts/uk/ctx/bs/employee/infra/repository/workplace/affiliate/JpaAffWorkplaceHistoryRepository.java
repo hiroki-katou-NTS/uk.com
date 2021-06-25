@@ -654,12 +654,19 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 
 	@Override
 	public List<AffWorkplaceHistory> getAffWkpHists(List<String> sids, DatePeriod period) {
-		return this.queryProxy()
-				.query(GET_AFF_WKP_HISTS, BsymtAffiWorkplaceHist.class)
-				.setParameter("sids", sids)
-				.setParameter("startDate", period.start())
-				.setParameter("endDate", period.end())
-				.getList(e -> this.toDomain(e));
+		List<AffWorkplaceHistory> result = new ArrayList<AffWorkplaceHistory>();
+		
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subSids -> {
+			result.addAll(
+				this.queryProxy()
+					.query(GET_AFF_WKP_HISTS, BsymtAffiWorkplaceHist.class)
+					.setParameter("sids", sids)
+					.setParameter("startDate", period.start())
+					.setParameter("endDate", period.end())
+					.getList(e -> this.toDomain(e)));
+		});
+		
+		return result;
 	}
 
 	@Override
