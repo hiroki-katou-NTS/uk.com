@@ -33,9 +33,9 @@ div#combo-box {
 }
 
 .radio-wrapper, .checkbox-wrapper {
-    padding: 5px 1px 5px 30px;
+    padding: 5px 1px 5px 32px;
 }
 
 .radio-wrapper.no-text, .radio-wrapper.without-text, .checkbox-wrapper.no-text, .checkbox-wrapper.without-text {
-    margin: 0 10px 0 5px;
+    margin: 0 10px 0 3px;
 }
