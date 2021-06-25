@@ -235,7 +235,12 @@ module a4 {
                     dataObject.stampLeavingWork2Start = isFixedAndUseTime2?_self.mainSettingModel.flexWorkSetting.getLeaveWork2Stamp().startTime():null;
                     dataObject.stampLeavingWork2End = isFixedAndUseTime2?_self.mainSettingModel.flexWorkSetting.getLeaveWork2Stamp().endTime():null;
                 }
-            } 
+            }
+            //if new mode
+            if (_self.mainSettingModel.isNewMode()) {
+                dataObject.goOutFontRearSection = 0;
+                dataObject.turnBackFontRearSection = 1;
+            }
             // Set object
             nts.uk.ui.windows.setShared("KMK003_DIALOG_J_INPUT_DATA", dataObject);
             nts.uk.ui.windows.sub.modal("/view/kmk/003/j/index.xhtml").onClosed(() => {
