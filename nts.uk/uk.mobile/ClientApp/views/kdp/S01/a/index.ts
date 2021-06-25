@@ -206,9 +206,11 @@ export class KdpS01AComponent extends Vue {
                 };
             
             if (button) {
-                let btnType = vm.checkType(button.buttonType.stampType.changeClockArt, 
-                    button.buttonType.stampType.changeCalArt, button.buttonType.stampType.setPreClockArt, 
-                    button.buttonType.stampType.changeHalfDay, button.buttonType.reservationArt);
+                let btnType = vm.checkType(button.buttonType.stampType == null ? null : button.buttonType.stampType.changeClockArt, 
+                    button.buttonType.stampType == null ? null : button.buttonType.stampType.changeCalArt, 
+                    button.buttonType.stampType == null ? null : button.buttonType.stampType.setPreClockArt, 
+                    button.buttonType.stampType == null ? null : button.buttonType.stampType.changeHalfDay, 
+                    button.buttonType.reservationArt);
                 
                 // 応援利用＝Trueの場合				
                 if (vm.settingStampCommon.supportUse === true && _.includes ([14, 15, 16, 17, 18], btnType)) {
@@ -224,9 +226,11 @@ export class KdpS01AComponent extends Vue {
                     buttonSetting = button;
                 }
 
-                buttonSetting.icon = vm.getIcon(button.buttonType.stampType.changeClockArt, 
-                    button.buttonType.stampType.changeCalArt, button.buttonType.stampType.setPreClockArt, 
-                    button.buttonType.stampType.changeHalfDay, button.buttonType.reservationArt) + '.png';
+                buttonSetting.icon = vm.getIcon(button.buttonType.stampType == null ? null : button.buttonType.stampType.changeClockArt, 
+                    button.buttonType.stampType == null ? null : button.buttonType.stampType.changeCalArt, 
+                    button.buttonType.stampType == null ? null : button.buttonType.stampType.setPreClockArt, 
+                    button.buttonType.stampType == null ? null : button.buttonType.stampType.changeHalfDay, 
+                    button.buttonType.reservationArt) + '.png';
             }
             vm.setBtnColor(buttonSetting, stampToSuppress);
             resultList.push(buttonSetting);
@@ -341,6 +345,7 @@ export class KdpS01AComponent extends Vue {
                 vm.$http.post('at', servicePath.getOmission, stampButton).then((result: any) => {
                     let data: model.IGetOmissionContentDto = result.data;
                     if (data && data.errorInfo && data.errorInfo.length > 0) {
+                        console.log(data);
                         vm.openDialogT(data);
                     }
                 });
@@ -360,6 +365,7 @@ export class KdpS01AComponent extends Vue {
                     let data: model.IGetOmissionContentDto = result.data;
 
                     if (data && data.errorInfo && data.errorInfo.length > 0) {
+                        console.log(data);
                         vm.openDialogT(data);
                     }
                 });
