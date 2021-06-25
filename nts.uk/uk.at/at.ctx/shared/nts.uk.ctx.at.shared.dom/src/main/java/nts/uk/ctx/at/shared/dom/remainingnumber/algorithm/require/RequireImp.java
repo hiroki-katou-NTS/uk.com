@@ -645,25 +645,20 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	public Optional<GrantHdTbl> grantHdTbl(String companyId, int conditionNo, String yearHolidayCode, int grantNum) {
 		return grantYearHolidayRepo.find(companyId, conditionNo, yearHolidayCode, grantNum);
 	}
-
+	
 	@Override
-	public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String cid, String sid, GeneralDate ymd, double unOffseDays) {
-		return substitutionOfHDManaDataRepo.getByYmdUnOffset(cid, sid, ymd, unOffseDays);
+	public List<PayoutSubofHDManagement> getOccDigetByListSid(String sid, DatePeriod date) {
+		return payoutSubofHDManaRepo.getOccDigetByListSid(sid, date);
 	}
 
 	@Override
-	public List<PayoutSubofHDManagement> getBySubId(String sid, GeneralDate digestDate) {
-		return payoutSubofHDManaRepo.getBySubId(sid, digestDate);
+	public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String sid, DatePeriod period) {
+		return substitutionOfHDManaDataRepo.getBySidAndDatePeriod(sid, period);
 	}
 
 	@Override
-	public List<PayoutManagementData> getByUnUseState(String cid, String sid, GeneralDate ymd, double unUse, DigestionAtr state) {
-		return payoutManagementDataRepo.getByUnUseState(cid, sid, ymd, unUse, state);
-	}
-
-	@Override
-	public List<PayoutSubofHDManagement> getByPayoutId(String sid, GeneralDate occDate) {
-		return payoutSubofHDManaRepo.getByPayoutId(sid, occDate);
+	public List<PayoutManagementData> getPayoutMana(String sid, DatePeriod dateData) {
+		return payoutManagementDataRepo.getBySidAndDatePeriod(sid, dateData);
 	}
 
 	@Override
@@ -697,26 +692,6 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	}
 
 	@Override
-	public List<CompensatoryDayOffManaData> getBySidYmd(String companyId, String employeeId, GeneralDate startDateAggr) {
-		return comDayOffManaDataRepo.getBySidYmd(companyId, employeeId, startDateAggr);
-	}
-
-	@Override
-	public List<LeaveComDayOffManagement> getBycomDayOffID(String sid, GeneralDate digestDate) {
-		return leaveComDayOffManaRepo.getBycomDayOffID(sid, digestDate);
-	}
-
-	@Override
-	public List<LeaveManagementData> getBySidYmd(String cid, String sid, GeneralDate ymd, DigestionAtr state) {
-		return leaveManaDataRepo.getBySidYmd(cid, sid, ymd, state);
-	}
-
-	@Override
-	public List<LeaveComDayOffManagement> getByLeaveID(String sid, GeneralDate occDate) {
-		return leaveComDayOffManaRepo.getByLeaveID(sid, occDate);
-	}
-
-	@Override
 	public CompensatoryLeaveEmSetting findComLeavEmpSet(String companyId, String employmentCode) {
 		return compensLeaveEmSetRepo.find(companyId, employmentCode);
 	}
@@ -727,13 +702,28 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	}
 
 	@Override
-	public List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period) {
+	public List<LeaveComDayOffManagement> getDigestOccByListComId(String sid, DatePeriod period) {
+		return leaveComDayOffManaRepo.getDigestOccByListComId(sid, period);
+	}
+
+	@Override
+	public List<InterimDayOffMng> getTempDayOffBySidPeriod(String sid, DatePeriod period) {
 		return interimBreakDayOffMngRepo.getDayOffBySidPeriod(sid, period);
 	}
 
 	@Override
-	public List<InterimBreakMng> getBySidPeriod(String sid, DatePeriod period) {
+	public List<CompensatoryDayOffManaData> getFixByDayOffDatePeriod(String sid, DatePeriod dateData) {
+		return comDayOffManaDataRepo.getByDayOffDatePeriod(sid, dateData);
+	}
+
+	@Override
+	public List<InterimBreakMng> getTempBreakBySidPeriod(String sid, DatePeriod period) {
 		return interimBreakDayOffMngRepo.getBySidPeriod(sid, period);
+	}
+
+	@Override
+	public List<LeaveManagementData> getFixLeavByDayOffDatePeriod(String sid, DatePeriod dateData) {
+		return leaveManaDataRepo.getByDayOffDatePeriod(sid, dateData);
 	}
 
 	@Override

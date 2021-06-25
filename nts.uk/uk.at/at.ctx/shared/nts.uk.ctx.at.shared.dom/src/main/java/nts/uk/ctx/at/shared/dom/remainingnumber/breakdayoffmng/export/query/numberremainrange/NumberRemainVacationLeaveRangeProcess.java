@@ -10,10 +10,8 @@ import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
-import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
@@ -117,17 +115,6 @@ public class NumberRemainVacationLeaveRangeProcess {
 		}
 
 		@Override
-		public List<CompensatoryDayOffManaData> getBySidYmd(String companyId, String employeeId,
-				GeneralDate startDateAggr) {
-			return comDayOffManaDataRepository.getBySidYmd(companyId, employeeId, startDateAggr);
-		}
-
-		@Override
-		public List<LeaveManagementData> getBySidYmd(String cid, String sid, GeneralDate ymd, DigestionAtr state) {
-			return leaveManaDataRepository.getBySidYmd(cid, sid, ymd, state);
-		}
-
-		@Override
 		public Optional<BsEmploymentHistoryImport> findEmploymentHistory(String companyId, String employeeId,
 				GeneralDate baseDate) {
 			return shareEmploymentAdapter.findEmploymentHistory(companyId, employeeId, baseDate);
@@ -142,21 +129,30 @@ public class NumberRemainVacationLeaveRangeProcess {
 		public CompensatoryLeaveComSetting findComLeavComSet(String companyId) {
 			return compensLeaveComSetRepository.find(companyId);
 		}
+		
+		@Override
+		public List<LeaveComDayOffManagement> getDigestOccByListComId(String sid, DatePeriod period) {
+			return leaveComDayOffManaRepository.getDigestOccByListComId(sid, period);
+		}
 
 		@Override
-		public List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period) {
+		public List<InterimDayOffMng> getTempDayOffBySidPeriod(String sid, DatePeriod period) {
 			return interimBreakDayOffMngRepository.getDayOffBySidPeriod(sid, period);
 		}
 
 		@Override
-		public List<InterimBreakMng> getBySidPeriod(String sid, DatePeriod period) {
+		public List<CompensatoryDayOffManaData> getFixByDayOffDatePeriod(String sid, DatePeriod dateData) {
+			return comDayOffManaDataRepository.getByDayOffDatePeriod(sid, dateData);
+		}
+
+		@Override
+		public List<InterimBreakMng> getTempBreakBySidPeriod(String sid, DatePeriod period) {
 			return interimBreakDayOffMngRepository.getBySidPeriod(sid, period);
 		}
 
-
 		@Override
-		public List<EmploymentHistShareImport> findByEmployeeIdOrderByStartDate(String employeeId) {
-			return shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(employeeId);
+		public List<LeaveManagementData> getFixLeavByDayOffDatePeriod(String sid, DatePeriod dateData) {
+			return leaveManaDataRepository.getByDayOffDatePeriod(sid, dateData);
 		}
 
 		public static class RequireImplBuilder {
@@ -224,14 +220,5 @@ public class NumberRemainVacationLeaveRangeProcess {
 
 		}
 		
-		@Override
-		public List<LeaveComDayOffManagement> getBycomDayOffID(String sid, GeneralDate digestDate) {
-			return leaveComDayOffManaRepository.getBycomDayOffID(sid, digestDate);
-		}
-
-		@Override
-		public List<LeaveComDayOffManagement> getByLeaveID(String sid, GeneralDate occDate) {
-			return leaveComDayOffManaRepository.getByLeaveID(sid, occDate);
-		}
 	}
 }

@@ -52,4 +52,7 @@ public interface PayoutSubofHDManaRepository {
 	*/
 	//PayoutSubofHDManaRepository.getBySubId
 	List<PayoutSubofHDManagement> getWithOutbreakDay(String sid, GeneralDate outbreakDay, GeneralDate baseDate);
+	
+    //	[3] 取得する
+	List<PayoutSubofHDManagement> getOccDigetByListSid(String sid, DatePeriod date);
 }

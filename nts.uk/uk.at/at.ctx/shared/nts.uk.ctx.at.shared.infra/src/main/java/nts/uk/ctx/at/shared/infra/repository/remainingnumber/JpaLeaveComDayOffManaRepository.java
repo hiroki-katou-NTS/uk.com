@@ -276,4 +276,16 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 				.setParameter("baseDate", baseDate).getList().stream()
 				.map(item -> toDomain(item)).collect(Collectors.toList());
 	}
+
+	
+	private static final String QUERY_OCC_DIGEST_BY_PERIOD = String.join(" ", QUERY,
+			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid ",
+			"and ( lc.krcmtLeaveDayOffManaPK.digestDate between :startDate and :endDate or  lc.krcmtLeaveDayOffManaPK.occDate between :startDate and :endDate)");
+
+	@Override
+	public List<LeaveComDayOffManagement> getDigestOccByListComId(String sid, DatePeriod period) {
+		return this.queryProxy().query(QUERY_OCC_DIGEST_BY_PERIOD, KrcmtLeaveDayOffMana.class).setParameter("sid", sid)
+				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList().stream()
+				.map(item -> toDomain(item)).collect(Collectors.toList());
+	}
 }

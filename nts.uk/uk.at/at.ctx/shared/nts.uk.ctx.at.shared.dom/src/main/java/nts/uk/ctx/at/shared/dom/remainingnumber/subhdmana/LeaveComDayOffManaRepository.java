@@ -68,4 +68,7 @@ public interface LeaveComDayOffManaRepository {
 	*/
 	//LeaveComDayOffManaRepository.getLeaveComWithOutbreakDay
 	List<LeaveComDayOffManagement> getLeaveComWithOutbreakDay(String sid, GeneralDate outbreakDay, GeneralDate baseDate);
+	
+	//	[3] 取得する
+	List<LeaveComDayOffManagement> getDigestOccByListComId(String sid,  DatePeriod period);
 }

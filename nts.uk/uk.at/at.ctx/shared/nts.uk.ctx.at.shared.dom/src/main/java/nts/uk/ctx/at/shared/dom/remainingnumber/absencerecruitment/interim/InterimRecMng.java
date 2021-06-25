@@ -1,10 +1,21 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimMngCommon;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
@@ -40,6 +51,27 @@ public class InterimRecMng extends InterimRemain implements InterimMngCommon {
 		this.unUsedDays = unUsedDay;
 	}
 
-
+	//[1] 振出の未相殺に変換する
+	public AccumulationAbsenceDetail convertUnoffset() {
+		AccumulationAbsenceDetail detail = new AccuVacationBuilder(this.getSID(),
+				new CompensatoryDayoffDate(false, Optional.of(this.getYmd())), OccurrenceDigClass.OCCURRENCE,
+				this.getCreatorAtr().convertToMngData(false), this.getRemainManaID())
+						.numberOccurren(new NumberConsecuVacation(
+								new ManagementDataRemainUnit(this.getOccurrenceDays().v()), Optional.empty()))
+						.unbalanceNumber(
+								new NumberConsecuVacation(new ManagementDataRemainUnit(this.unUsedDays.v()), Optional.empty()))
+						.build();
+		return new UnbalanceCompensation(detail, this.getExpirationDate(),
+				determineDigest() ? DigestionAtr.USED : DigestionAtr.UNUSED, Optional.empty(),
+				HolidayAtr.STATUTORY_HOLIDAYS);
+	}
+	
+	//TODO: [2] 未相殺数を更新する
+	
+	//[1] 消化済みかどうか判断する
+	private boolean determineDigest() {
+		return this.unUsedDays.v() <= 0;
+	}
+	
 
 }
