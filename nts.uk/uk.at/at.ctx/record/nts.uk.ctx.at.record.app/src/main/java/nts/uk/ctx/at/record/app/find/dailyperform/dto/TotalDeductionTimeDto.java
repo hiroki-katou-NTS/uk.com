@@ -6,8 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.DeductionTotalTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 
 /** 控除合計時間 */
@@ -85,8 +87,8 @@ public class TotalDeductionTimeDto implements ItemConst, AttendanceItemDataGate 
 	
 	public DeductionTotalTime createDeductionTime() {
 		return DeductionTotalTime.of(
-					totalTime == null ? null : totalTime.createTimeWithCalc(),
-					withinStatutoryTotalTime == null ? null : withinStatutoryTotalTime.createTimeWithCalc(),
-					excessOfStatutoryTotalTime == null ? null : excessOfStatutoryTotalTime.createTimeWithCalc());
+					totalTime == null ? TimeWithCalculation.sameTime(AttendanceTime.ZERO) : totalTime.createTimeWithCalc(),
+					withinStatutoryTotalTime == null ? TimeWithCalculation.sameTime(AttendanceTime.ZERO) : withinStatutoryTotalTime.createTimeWithCalc(),
+					excessOfStatutoryTotalTime == null ? TimeWithCalculation.sameTime(AttendanceTime.ZERO) : excessOfStatutoryTotalTime.createTimeWithCalc());
 	}
 }
