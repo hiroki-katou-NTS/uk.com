@@ -123,6 +123,8 @@ public class HolidayDailyPerformDto implements ItemConst, AttendanceItemDataGate
 			return Optional.of(ItemValue.builder().value(retentionYearly).valueType(ValueType.TIME));
 		case ABSENCE:
 			return Optional.of(ItemValue.builder().value(absence).valueType(ValueType.TIME));
+		case TRANSFER_HOLIDAY:
+			return Optional.of(ItemValue.builder().value(transferHoliday).valueType(ValueType.TIME));
 		default:
 			break;
 		}
@@ -134,6 +136,7 @@ public class HolidayDailyPerformDto implements ItemConst, AttendanceItemDataGate
 		switch (path) {
 		case RETENTION:
 		case ABSENCE:
+		case TRANSFER_HOLIDAY:
 			return PropType.VALUE;
 		default:
 			return PropType.OBJECT;
@@ -148,6 +151,9 @@ public class HolidayDailyPerformDto implements ItemConst, AttendanceItemDataGate
 			break;
 		case ABSENCE:
 			absence = value.valueOrDefault(null);
+			break;
+		case TRANSFER_HOLIDAY:
+			transferHoliday = value.valueOrDefault(null);
 			break;
 		default:
 			break;
