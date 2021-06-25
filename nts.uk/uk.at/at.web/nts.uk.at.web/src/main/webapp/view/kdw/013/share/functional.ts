@@ -87,11 +87,11 @@ module nts.uk.ui.at.kdw013.share {
 
     export const getTasks = (wg: a.WorkGroupDto, tasks: c.TaskDto[]) => {
         const { workCD1, workCD2, workCD3, workCD4, workCD5 } = wg;
-        const task1 = _.find(tasks, ({ code }) => code === workCD1);
-        const task2 = _.find(tasks, ({ code }) => code === workCD2);
-        const task3 = _.find(tasks, ({ code }) => code === workCD3);
-        const task4 = _.find(tasks, ({ code }) => code === workCD4);
-        const task5 = _.find(tasks, ({ code }) => code === workCD5);
+        const task1 = _.find(tasks,{ 'taskFrameNo': 1, 'code': workCD1 });
+        const task2 = _.find(tasks,{ 'taskFrameNo': 2, 'code': workCD2 });
+        const task3 = _.find(tasks,{ 'taskFrameNo': 3, 'code': workCD3 });
+        const task4 = _.find(tasks,{ 'taskFrameNo': 4, 'code': workCD4 });
+        const task5 = _.find(tasks,{ 'taskFrameNo': 5, 'code': workCD5 });
 
         return [task1, task2, task3, task4, task5];
     };
@@ -121,7 +121,7 @@ module nts.uk.ui.at.kdw013.share {
     };
 
     export const getBackground = (wg: a.WorkGroupDto, tasks: c.TaskDto[]) => {
-        const task = getTask(wg, tasks);
+        const task =  _.find(tasks, { 'taskFrameNo': 1, 'code': wg.workCD1 });
 
         if (task) {
             const { displayInfo } = task;
