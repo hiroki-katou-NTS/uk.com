@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -23,7 +22,6 @@ import nts.arc.task.AsyncTask;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
-import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.request.app.command.application.common.ApproveAppHandler;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -180,28 +178,12 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 		});
 		
 		// reflect app
-		CountDownLatch cdlAggregation = new CountDownLatch(1);
-		MutableValue<RuntimeException> excepAggregation = new MutableValue<>();
 		AsyncTask task = AsyncTask.builder().keepsTrack(false).threadName(this.getClass().getName() + ".reflect-app: ")
 				.build(() -> {
-					try {
-						appReflectManager
+					appReflectManager
 							.reflectApplication(result.getSuccessMap().keySet().stream().collect(Collectors.toList()));
-					} catch (RuntimeException ex) {
-						cdlAggregation.countDown();
-					} finally {
-						cdlAggregation.countDown();
-					}
 				});
 		this.executerService.submit(task);
-		try {
-			cdlAggregation.await();
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
-		if (excepAggregation.optional().isPresent()) {
-			throw excepAggregation.get();
-		}
 		return result;
 	}
 
