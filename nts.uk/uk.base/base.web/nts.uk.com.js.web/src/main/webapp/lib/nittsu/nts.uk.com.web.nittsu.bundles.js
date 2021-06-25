@@ -48437,6 +48437,7 @@ var nts;
                         var data = valueAccessor(), $container = $(element), construct = new DateRangeHelper($container), value = ko.unwrap(data.value);
                         construct.bindInit(data, allBindingsAccessor, viewModel, bindingContext);
                         $container.data("construct", construct);
+                        $container.addClass("ntsDateRangePicker_Container");
                         return { 'controlsDescendantBindings': true };
                     };
                     /**
