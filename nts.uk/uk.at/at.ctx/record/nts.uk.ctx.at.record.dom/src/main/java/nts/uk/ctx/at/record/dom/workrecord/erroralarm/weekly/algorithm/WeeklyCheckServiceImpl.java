@@ -95,8 +95,12 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			// Input．List＜社員ID＞をループ
 			for (String sid: lstSid) {
                 List<AlarmExtractInfoResult> lstExtractInfoResult = new ArrayList<>();
+                
 				// 取得したList＜週別実績の任意抽出条件＞をループする
 				for (ExtractionCondScheduleWeekly weeklyCond: weeklyConds) {
+					// アカウント　＝　0
+					int count = 0;
+					
 					String alarmCode = String.valueOf(weeklyCond.getSortOrder());
 					val lstExtractCond = alarmExtractConditions.stream()
 							.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(alarmCode)))
@@ -110,7 +114,6 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 						));
 					}
 					
-					int count = 0;
 					// Input．期間の開始月からループする
 					for (YearMonth ym: period.yearMonthsBetween()) {
 						// ・職場ID　＝　Input．List＜職場ID＞をループ中の年月日から探す
@@ -136,11 +139,20 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 										&& x.getPeriod().start().afterOrEquals(startCompare) && x.getPeriod().start().beforeOrEquals(endCompare))
 								.collect(Collectors.toList());
 						
+						Collections.sort(attendanceTimeOfWeeklyYms, new Comparator<AttendanceTimeOfWeekly>() {
+		                	public int compare(AttendanceTimeOfWeekly o1, AttendanceTimeOfWeekly o2) {
+		                		if (o1.getPeriod() == null || o2.getPeriod() == null || o1.getPeriod().start() == null || o2.getPeriod().start() == null)
+		                			return 0;
+		                		return o1.getPeriod().start().compareTo(o2.getPeriod().start());
+						    }
+		            	});
+						
 						// 絞り込みしたList＜週別実績の勤怠時間＞をループする
 						for (AttendanceTimeOfWeekly attWeekly : attendanceTimeOfWeeklyYms) {
 							// 任意抽出条件のアラーム値を作成する
 							ExtractResultDetailAndCount extractDetail = createAlarmExtraction(
-									attWeekly, weeklyCond, count, attendanceItemMap, cid, sid, wpkId, ym, attendanceTimeOfWeeklyYms.size());
+									attWeekly, weeklyCond, count, attendanceItemMap, cid, sid, wpkId, ym, attendanceTimeOfWeeklyYms.size(),
+									attendanceTimeOfWeeklyYms);
 							count = extractDetail.count;
 							if (extractDetail.detail == null) {
 								continue;
@@ -222,10 +234,13 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			String sid,
 			String wpkId,
 			YearMonth ym,
-			int sizeWeeklyActualAttendanceTime) {
+			int sizeWeeklyActualAttendanceTime,
+			List<AttendanceTimeOfWeekly> attWeeklyBySid) {
 		
 		boolean check = false;
 		ContinuousOutput continuousOutput = new ContinuousOutput();
+		
+		int currentIndex = attWeeklyBySid.indexOf(attWeekly);
 		
 		// 週次のコンバーターを交換 ErAlAttendanceItemCondition
 		// QA#115685
@@ -257,7 +272,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		case CONTINUOUS_DAY:
 			// 連続の項目の実績をチェック
 			continuousOutput = checkPerformanceOfConsecutiveItem(
-					attWeekly, weeklyCond, cond, itemValues, count);
+					attWeekly, weeklyCond, cond, itemValues, count, currentIndex, sizeWeeklyActualAttendanceTime, attWeeklyBySid);
 			count = continuousOutput.count;
 			check = continuousOutput.check;
 			break;			
@@ -290,11 +305,13 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		String checkTargetValue = TextResource.localize("KAL010_1314", weeklyActualAttendanceTime);
 		
 		// 取得した該当区分　＝＝　True (QA#117728)
-		if (check) {			
+		if (check) {
 			// 「抽出結果詳細」を作成
-			// アラーム項目日付　＝Input．週別実績の勤怠時間．期間．開始日
+			// アラーム項目日付　＝Input．週別実績の勤怠時間．期間．開始日			
+			GeneralDate startDate = attWeeklyBySid.get((currentIndex + 1) == sizeWeeklyActualAttendanceTime && !continuousOutput.continuousCountOpt.isPresent()  ? currentIndex : currentIndex - 1).getPeriod().start();
+			
 			extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(
-					Optional.of(attWeekly.getPeriod().start()), Optional.empty());
+					Optional.of(startDate), Optional.empty());
 			// コメント　＝　Input．週別実績の任意抽出条件．表示メッセージ
 			if (weeklyCond.getErrorAlarmMessage() != null && weeklyCond.getErrorAlarmMessage().isPresent()) {
 				comment = Optional.ofNullable(weeklyCond.getErrorAlarmMessage().get().v());
@@ -341,7 +358,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 					Optional.ofNullable(checkTargetValue));
 			
 			// カウント　＝　０
-			count = 0;
+			//count = 0;
 			
 			return new ExtractResultDetailAndCount(detail, count);
 		}
@@ -380,7 +397,8 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 	}
 	
 	private ContinuousOutput checkPerformanceOfConsecutiveItem(AttendanceTimeOfWeekly attWeekly,
-			ExtractionCondScheduleWeekly weeklyCond, WeeklyAttendanceItemCondition<?> erAlAtdItemCon, List<ItemValue> convert, int count) {
+			ExtractionCondScheduleWeekly weeklyCond, WeeklyAttendanceItemCondition<?> erAlAtdItemCon, List<ItemValue> convert, int count,
+			int currentIndex, int sizeLoop, List<AttendanceTimeOfWeekly> attWeeklyBySid) {
 		ContinuousOutput ouput = new ContinuousOutput();
 		// 勤怠項目をチェックする
 		// Output: 該当区分
@@ -404,8 +422,9 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 				continuousPeriod, 
 				errorAtr);
 		// QA#117728
+		currentIndex = currentIndex + 1;
 		ouput.check = calCountForConsecutivePeriodOutput.getOptContinuousCount().isPresent() 
-				|| (!calCountForConsecutivePeriodOutput.getOptContinuousCount().isPresent() && calCountForConsecutivePeriodOutput.getCount() >= continuousPeriod);
+				|| (errorAtr && currentIndex == sizeLoop && calCountForConsecutivePeriodOutput.getCount() >= continuousPeriod);
 		ouput.continuousCountOpt = calCountForConsecutivePeriodOutput.getOptContinuousCount();
 		ouput.count = calCountForConsecutivePeriodOutput.getCount();
 		
