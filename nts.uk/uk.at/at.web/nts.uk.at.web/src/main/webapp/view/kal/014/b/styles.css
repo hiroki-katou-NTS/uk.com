@@ -26,3 +26,7 @@ div#combo-box {
 #B2_2 {
     padding-left: 48px;
 }
+
+.radio-wrapper, .checkbox-wrapper {
+    padding: 5px 7px 5px 30px !important;
+}
