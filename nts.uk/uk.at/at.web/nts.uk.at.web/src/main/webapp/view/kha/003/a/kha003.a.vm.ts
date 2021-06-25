@@ -1,12 +1,22 @@
 module nts.uk.at.kha003.a {
 
     const API = {
-        //TODO api path
+        INIT: 'at/screen/kha003/a/init',
+        REGISTER: 'at/screen/kha003/a/register',
+        FIND: 'at/screen/kha003/a/find',
+        UPDATE: 'at/screen/kha003/a/update',
+        DELETE: 'at/screen/kha003/a/delete'
     };
 
     @bean()
     export class ViewModel extends ko.ViewModel {
         items: KnockoutObservableArray<ItemModel>;
+        summaryItems: KnockoutObservableArray<any>;
+        taskFrameSettingA56: TaskFrameSetting = new TaskFrameSetting(0, '', 0);
+        taskFrameSettingA57: TaskFrameSetting = new TaskFrameSetting(0, '', 0);
+        taskFrameSettingA58: TaskFrameSetting = new TaskFrameSetting(0, '', 0);
+        taskFrameSettingA59: TaskFrameSetting = new TaskFrameSetting(0, '', 0);
+        taskFrameSettingA510: TaskFrameSetting = new TaskFrameSetting(0, '', 0);
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
         manHour: CodeName = new CodeName('', '');
@@ -25,6 +35,8 @@ module nts.uk.at.kha003.a {
         isA72Enable: KnockoutObservable<boolean>;
 
         layoutSettings: KnockoutObservableArray<any>;
+        isUpdateMode: KnockoutObservable<boolean>;
+        isInit: boolean = true;
 
         constructor() {
             super();
@@ -32,40 +44,48 @@ module nts.uk.at.kha003.a {
             vm.currentCode = ko.observable();
             vm.currentCodeList = ko.observableArray([]);
             vm.items = ko.observableArray([]);
+            vm.summaryItems = ko.observableArray([]);
             vm.layoutSettings = ko.observableArray([]);
-            for (var i = 1; i < 51; i++) {
-                vm.items.push(new ItemModel('code' + i, 'name' + i));
-            }
-            vm.manHour.code('111');
-            vm.manHour.name('name');
             vm.itemList = ko.observableArray([
-                new BoxModel(1, this.$i18n('KHA003_28')),
-                new BoxModel(2, this.$i18n('KHA003_29')),
+                new BoxModel(0, this.$i18n('KHA003_28')),
+                new BoxModel(1, this.$i18n('KHA003_29')),
             ]);
-            vm.selectedId = ko.observable(1);
+            vm.selectedId = ko.observable(0);
             vm.enable = ko.observable(true);
             vm.itemListA622 = ko.observableArray([
-                new BoxModel(1, this.$i18n('KHA003_32') + this.$i18n('KHA003_35')),
-                new BoxModel(2, this.$i18n('KHA003_33') + this.$i18n('KHA003_36')),
-                new BoxModel(3, this.$i18n('KHA003_34') + this.$i18n('KHA003_37')),
+                new BoxModel(0, this.$i18n('KHA003_32') + this.$i18n('KHA003_35')),
+                new BoxModel(1, this.$i18n('KHA003_33') + this.$i18n('KHA003_36')),
+                new BoxModel(2, this.$i18n('KHA003_34') + this.$i18n('KHA003_37')),
             ]);
-            vm.selectedIdA622 = ko.observable(1);
+            vm.selectedIdA622 = ko.observable(0);
             vm.enableA622 = ko.observable(true);
             vm.isA71Checked = ko.observable(true);
             vm.isA71Enable = ko.observable(true);
             vm.isA72Enable = ko.observable(true);
-
+            vm.isUpdateMode = ko.observable(false);
         }
 
         created() {
             const vm = this;
             _.extend(window, {vm});
+            vm.currentCode.subscribe((newValue: any) => {
+                vm.$errors("clear");
+                if (newValue != "") {
+                    vm.getScreenDetails(newValue).done(() => {
+                        this.isUpdateMode(true);
+                        $('#A4_3').focus();
+                    });
+                }
+            });
+            vm.loadScreenListData();
             var itemId = '';
+            var itemtype = '';
             var itemCount = 0;
             $("#appen-area-one .pannel_padding").draggable({
                 helper: function (e) {
                     var html = e.target
                     itemId = html.id;
+                    itemtype = $(html).data('itemtype');
                     itemCount = $('#append_area .cell').length;
                     if (itemCount <= 3) {
                         return '<div class="panel panel-gray-bg item_a_6_4_to_67">\n' +
@@ -82,7 +102,7 @@ module nts.uk.at.kha003.a {
                         $('#append_area').append('<div class="cell valign-center">\n' +
                             '                                        <div style="background-color: #e7d3193b" class="panel  item_a_6_4_to_67">\n' +
                             '                                            <button id="' + itemId + '" class="button_top_right_corner"><i class="icon icon-close"></i></button>\n' +
-                            '                                            <span class="label layout-setting" style="display: table;margin: 71px auto;">' + $(this).children().html() + '</span>\n' +
+                            '                                            <span data-itemtype="' + itemtype + '"  class="label layout-setting summary-item" style="display: table;margin: 71px auto;">' + $(this).children().html() + '</span>\n' +
                             '                                        </div>\n' +
                             '                                    </div>');
                     }
@@ -115,6 +135,95 @@ module nts.uk.at.kha003.a {
             const vm = this;
         }
 
+
+        /**
+         * get screen details
+         *
+         * @param code
+         * @author rafiqul.islam
+         * */
+        getScreenDetails(code: string): JQueryPromise<any> {
+            const vm = this;
+            let dfd = $.Deferred<any>();
+            if (code != "") {
+                //  $("#I6_3").focus();
+                vm.$blockui("invisible");
+                vm.$ajax(API.FIND + "/" + code).then(data => {
+                    vm.manHour.code(data.code);
+                    vm.manHour.name(data.name);
+                    vm.selectedId(data.totalUnit);
+                    vm.selectedIdA622(data.displayFormat);
+                    vm.isA71Checked(data.dispHierarchy);
+                    vm.summaryItems(_.map(data.summaryItems, function (item: any) {
+                        return {
+                            hierarchicalOrder:item.hierarchicalOrder,
+                            summaryItemType:item.itemType
+                        }
+                    }));
+                    dfd.resolve();
+                }).fail(err => {
+                    dfd.reject();
+                }).always(() => vm.$blockui("clear"));
+            }
+            return dfd.promise();
+        }
+
+        /**
+         * get I screen items list
+         *
+         * @author rafiqul.islam
+         * */
+        loadScreenListData(): JQueryPromise<any> {
+            const vm = this;
+            let dfd = $.Deferred<any>();
+            vm.$blockui("invisible");
+            vm.$blockui("invisible");
+            vm.$ajax(API.INIT).then(data => {
+                vm.items(_.map(data.manHoursSummaryTables, function (item: any) {
+                    return new ItemModel(item.code, item.name)
+                }));
+                if (data.manHoursSummaryTables.length > 0 && vm.isInit) {
+                    vm.isUpdateMode(true);
+                    vm.currentCode("");
+                    vm.currentCode(data.manHoursSummaryTables[0].code);
+                    // $("#I6_3").focus();
+                }
+                if (data.manHoursSummaryTables.length <= 0) {
+                    vm.isUpdateMode(false)
+                }
+                data.taskFrameSettings.forEach(function (value: any) {
+                    if (value.taskFrameNo == 1) {
+                        vm.taskFrameSettingA56.taskFrameNo(value.taskFrameNo);
+                        vm.taskFrameSettingA56.taskFrameName(value.taskFrameName);
+                        vm.taskFrameSettingA56.useAtr(value.useAtr);
+                    }
+                    if (value.taskFrameNo == 2) {
+                        vm.taskFrameSettingA57.taskFrameNo(value.taskFrameNo);
+                        vm.taskFrameSettingA57.taskFrameName(value.taskFrameName);
+                        vm.taskFrameSettingA57.useAtr(value.useAtr);
+                    }
+                    if (value.taskFrameNo == 3) {
+                        vm.taskFrameSettingA58.taskFrameNo(value.taskFrameNo);
+                        vm.taskFrameSettingA58.taskFrameName(value.taskFrameName);
+                        vm.taskFrameSettingA58.useAtr(value.useAtr);
+                    }
+                    if (value.taskFrameNo == 4) {
+                        vm.taskFrameSettingA59.taskFrameNo(value.taskFrameNo);
+                        vm.taskFrameSettingA59.taskFrameName(value.taskFrameName);
+                        vm.taskFrameSettingA59.useAtr(value.useAtr);
+                    }
+                    if (value.taskFrameNo == 5) {
+                        vm.taskFrameSettingA510.taskFrameNo(value.taskFrameNo);
+                        vm.taskFrameSettingA510.taskFrameName(value.taskFrameName);
+                        vm.taskFrameSettingA510.useAtr(value.useAtr);
+                    }
+                });
+            }).fail(err => {
+                vm.$dialog.error(err);
+            }).always(() => vm.$blockui("clear"));
+            return dfd.promise();
+        }
+
         /**
          * create new button
          *
@@ -122,7 +231,10 @@ module nts.uk.at.kha003.a {
          * */
         clickNewButton() {
             const vm = this;
-            alert("new button is clicked")
+            vm.isUpdateMode(false);
+            vm.currentCode('');
+            vm.manHour.code('');
+            vm.manHour.name('')
         }
 
         /**
@@ -132,7 +244,44 @@ module nts.uk.at.kha003.a {
          * */
         clickRegistrationButton() {
             const vm = this;
-            alert("Registration button is clicked")
+            $('#append_area .summary-item').each(function (index, object) {
+                let item = {
+                    hierarchicalOrder: index + 1,
+                    summaryItemType: $(object).data('itemtype')
+                }
+                vm.summaryItems.push(item);
+                console.log(vm.summaryItems());
+            })
+            vm.$validate('#A4_2', '#A4_3').then((valid: boolean) => {
+                if (!valid) {
+                    return;
+                }
+                else {
+                    let command = {
+                        code: vm.manHour.code(),
+                        name: vm.manHour.name(),
+                        totalUnit: vm.selectedId(),
+                        displayFormat: vm.selectedIdA622(),
+                        dispHierarchy: vm.isA71Checked() ? 1 : 0,
+                        summaryItems: vm.summaryItems()
+                    };
+                    vm.$blockui("invisible");
+                    vm.$ajax(vm.isUpdateMode() ? API.UPDATE : API.REGISTER, command).done((data) => {
+                        vm.$dialog.info({messageId: "Msg_15"})
+                            .then(() => {
+                                vm.isInit = false;
+                                vm.loadScreenListData();
+                                vm.currentCode(command.code);
+                                vm.getScreenDetails(command.code);
+                                $("#A4_3").focus();
+                            });
+                    }).fail(function (error) {
+                        vm.$dialog.error({messageId: error.messageId});
+                    }).always(() => {
+                        vm.$blockui("clear");
+                    });
+                }
+            });
         }
 
         /**
@@ -142,9 +291,9 @@ module nts.uk.at.kha003.a {
          * */
         clickDuplicateButton() {
             const vm = this;
-            let shareData={
-                code:vm.manHour.code(),
-                name:vm.manHour.name()
+            let shareData = {
+                code: vm.manHour.code(),
+                name: vm.manHour.name()
             }
             vm.$window.storage('kha003ERequiredData', shareData).then(() => {
                 vm.$window.modal("/view/kha/003/e/index.xhtml").then(() => {
@@ -198,11 +347,11 @@ module nts.uk.at.kha003.a {
                     c51 = obj.innerHTML;
                 }
             });
-            let shareData={
-                c21:c21,
-                c31:c31,
-                c41:c41,
-                c51:c51,
+            let shareData = {
+                c21: c21,
+                c31: c31,
+                c41: c41,
+                c51: c51,
             }
             vm.$window.storage('kha003AShareData', shareData).then(() => {
                 vm.$window.modal("/view/kha/003/b/index.xhtml").then(() => {
@@ -236,12 +385,24 @@ module nts.uk.at.kha003.a {
     }
 
     class ItemModel {
-        code: string;
-        name: string;
+        code: any;
+        name: any;
 
-        constructor(code: string, name: string) {
+        constructor(code: any, name: any) {
             this.code = code;
             this.name = name;
+        }
+    }
+
+    class TaskFrameSetting {
+        taskFrameNo: KnockoutObservable<any>;
+        taskFrameName: KnockoutObservable<any>;
+        useAtr: KnockoutObservable<any>;
+
+        constructor(taskFrameNo: any, taskFrameName: any, useAtr: any) {
+            this.taskFrameNo = ko.observable(taskFrameNo);
+            this.taskFrameName = ko.observable(taskFrameName);
+            this.useAtr = ko.observable(useAtr);
         }
     }
 }

@@ -41,7 +41,7 @@
 	                     items: items, selected: currentCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}"/>
                         <!--A3-->
                         <table tabindex="1" id="single-list" data-bind="ntsGridList: {
-                        height: 320,
+                        height: 500,
                         options: items,
                         optionsValue: 'code',
                         columns: [
@@ -63,7 +63,7 @@
                         <div class="cell valign-center">
                             <!-- A4_2 -->
                             <input tabindex="2" class="width-common" id="A4_2"
-                                   data-bind="ntsTextEditor: {constraint: 'ManHourSummaryTableCode', value: manHour.code,enable: true,required: true, name: '#[KHA003_21]'}, style: {marginRight: '5px'}"/>
+                                   data-bind="ntsTextEditor: {constraint: 'ManHourSummaryTableCode', value: manHour.code,enable: vm.isUpdateMode() ? false:true,required: true, name: '#[KHA003_21]'}, style: {marginRight: '5px'}"/>
                         </div>
                         <div class="cell valign-center">
                             <!-- A4_3 -->
@@ -82,38 +82,38 @@
                         <div class="table" id="appen-area-one">
                             <!-- A5_3 -->
                             <div class="cell valign-center pannel_padding">
-                                <div class="panel  panel_common bacg-active"
+                                <div class="panel  panel_common bacg-active" data-itemtype="0"
                                      id="a5_3">#{i18n.getText('KHA003_24')}</div>
                             </div>
                             <!-- A5_4 -->
                             <div class="cell valign-center pannel_padding">
-                                <div class="panel  panel_common bacg-active"
+                                <div class="panel  panel_common bacg-active" data-itemtype="1"
                                      id="a5_4">#{i18n.getText('KHA003_25')}</div>
                             </div>
                             <!-- A5_5 -->
                             <div class="cell valign-center pannel_padding">
-                                <div class="panel  panel_common bacg-active"
+                                <div class="panel  panel_common bacg-active" data-itemtype="2"
                                      id="a5_5">#{i18n.getText('KHA003_26')}</div>
                             </div>
                             <!-- A5_6 -->
                             <div class="cell valign-center pannel_padding">
-                                <div class="panel  panel_common bacg-active" id="a5_6">作業①パネル文字</div>
+                                <div class="panel  panel_common bacg-active" data-itemtype="3" id="a5_6" data-bind="text:taskFrameSettingA56.taskFrameName"></div>
                             </div>
                             <!-- A5_7 -->
                             <div class="cell valign-center pannel_padding">
-                                <div class="panel  panel_common bacg-active" id="a5_7">作業②パネル文字</div>
+                                <div class="panel  panel_common bacg-active" data-itemtype="4" id="a5_7" data-bind="text:taskFrameSettingA57.taskFrameName"></div>
                             </div>
                             <!-- A5_8 -->
                             <div class="cell valign-center pannel_padding">
-                                <div class="panel  panel_common bacg-active" id="a5_8">作業③パネル文字</div>
+                                <div class="panel  panel_common bacg-active" data-itemtype="5" id="a5_8" data-bind="text:taskFrameSettingA58.taskFrameName"></div>
                             </div>
                             <!-- A5_9 -->
                             <div class="cell valign-center pannel_padding">
-                                <div class="panel  panel_common bacg-active" id="a5_9">作業④パネル文字</div>
+                                <div class="panel  panel_common bacg-active" data-itemtype="6" id="a5_9" data-bind="text:taskFrameSettingA59.taskFrameName"></div>
                             </div>
                             <!-- A5_10 -->
                             <div class="cell valign-center pannel_padding">
-                                <div class="panel  panel_common bacg-active" id="a5_10">作業⑤パネル文字</div>
+                                <div class="panel  panel_common bacg-active" data-itemtype="7" id="a5_10" data-bind="text:taskFrameSettingA510.taskFrameName"></div>
                             </div>
                         </div>
                     </div>
@@ -144,8 +144,13 @@
                             <div class="panel panel-frame"
                                  style="border-radius: 3px;height: 149px;background-color: rgba(68,224,140,0.1);text-align: center">
                                 <div class="table" style="margin: -10px">
-                                    <div id="append_area">
-
+                                    <div id="append_area" data-bind="foreach: summaryItems">
+                                        <div class="cell valign-center">
+                                            <div style="background-color: #e7d3193b" class="panel  item_a_6_4_to_67">
+                                                <button id="a5_3" class="button_top_right_corner"><i class="icon icon-close"></i></button>
+                                                <span data-itemtype="0" class="label layout-setting summary-item" style="display: table;margin: 71px auto;">所属{Com_Workplace}</span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="cell valign-center" id="append_note">
                                         <div style="background-color: rgba(68,224,140,0.1)"
