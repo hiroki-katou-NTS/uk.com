@@ -25325,7 +25325,7 @@ var nts;
                                     headPart.width = freeWrapperWidth + "px";
                                 }
                                 headPart.isHeader = true;
-                                var $headerWrapper = v.createWrapper(_sheeting ? gp.SHEET_HEIGHT + "px" : "0px", left, headPart);
+                                var $headerWrapper = v.createWrapper("0px", left, headPart);
                                 pTable.owner.headers.push($headerWrapper);
                                 $headerWrapper.classList.add(HEADER);
                                 //                    self.$container.appendChild($headerWrapper);
@@ -25343,7 +25343,7 @@ var nts;
                                     if ($fixedHeaderTbl)
                                         $fixedHeaderTbl.style.height = self.headerHeight;
                                     $tbl.style.height = self.headerHeight;
-                                    top = (parseFloat(self.headerHeight) + DISTANCE + (_sheeting ? gp.SHEET_HEIGHT : 0)) + "px";
+                                    top = (parseFloat(self.headerHeight) + DISTANCE) + "px";
                                     _mafollicle[_currentPage][_currentSheet] = {};
                                     _vessel().$hGroup = $tbl.querySelector("colgroup");
                                     _vessel().$hBody = $tbl.querySelector("tbody");
@@ -25415,7 +25415,7 @@ var nts;
                         _bodyWrappers = bodyWrappers;
                         var dWrapper = _hasFixed ? bodyWrappers[1] : bodyWrappers[0];
                         _vessel().$bBody = dWrapper.querySelector("tbody");
-                        top = parseFloat(self.height) + DISTANCE - scrollWidth - SUM_HEIGHT + (_sheeting ? gp.SHEET_HEIGHT : 0);
+                        top = parseFloat(self.height) + DISTANCE - scrollWidth - SUM_HEIGHT;
                         ti.calcTotal();
                         [self.fixedSummaries, self.summaries].filter(function (s) { return s && s.columns; }).forEach(function (sumPart, i) {
                             if (!sumPart.columns || sumPart.columns.length === 0)
@@ -29609,8 +29609,10 @@ var nts;
                                 _sumWrappers[1].style.width = width + "px";
                                 height += SUM_HEIGHT;
                                 vari_1 += SUM_HEIGHT;
-                                _sumWrappers[0].style.top = (parseFloat(_sumWrappers[0].style.top) + vari_1) + "px";
-                                _sumWrappers[1].style.top = (parseFloat(_sumWrappers[1].style.top) + vari_1) + "px";
+                                if (height >= 0) {
+                                    _sumWrappers[0].style.top = (parseFloat(_sumWrappers[0].style.top) + vari_1) + "px";
+                                    _sumWrappers[1].style.top = (parseFloat(_sumWrappers[1].style.top) + vari_1) + "px";
+                                }
                             }
                             if (pageDiv) {
                                 pageDiv.style.width = btmw + "px";
@@ -29620,7 +29622,9 @@ var nts;
                             }
                             if (sheetDiv) {
                                 sheetDiv.style.width = btmw + "px";
-                                //                    sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
+                                if (height >= 0) {
+                                    sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari_1) + "px";
+                                }
                                 var sheetBtn = sheetDiv.querySelector(".mgrid-sheet-buttonlist");
                                 var scrollbar = sheetDiv.querySelector(".mgrid-sheet-scrollbar");
                                 if (sheetBtn.offsetHeight <= gp.SHEET_HEIGHT) {
@@ -29658,7 +29662,7 @@ var nts;
                         }
                         if (sheetDiv) {
                             sheetDiv.style.width = btmw + "px";
-                            //                sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
+                            sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
                         }
                         _bodyWrappers[0].style.height = height + "px";
                     }
@@ -32803,7 +32807,7 @@ var nts;
                     function imiSheets($container, top, width) {
                         if (!_sheeting)
                             return;
-                        gp.$sheetArea = v.createWrapper("0px" /*top + ti.getScrollWidth() + SUM_HEIGHT + "px"*/, 0, { width: parseFloat(width) + ti.getScrollWidth() + "px", height: gp.SHEET_HEIGHT + "px", containerClass: gp.SHEET_CLS });
+                        gp.$sheetArea = v.createWrapper(top + ti.getScrollWidth() + SUM_HEIGHT + "px", 0, { width: parseFloat(width) + ti.getScrollWidth() + "px", height: gp.SHEET_HEIGHT + "px", containerClass: gp.SHEET_CLS });
                         $container.appendChild(gp.$sheetArea);
                         var $scrollBar = document.createElement("ul");
                         $scrollBar.classList.add("mgrid-sheet-scrollbar");
@@ -48429,6 +48433,7 @@ var nts;
                         var data = valueAccessor(), $container = $(element), construct = new DateRangeHelper($container), value = ko.unwrap(data.value);
                         construct.bindInit(data, allBindingsAccessor, viewModel, bindingContext);
                         $container.data("construct", construct);
+                        $container.addClass("ntsDateRangePicker_Container");
                         return { 'controlsDescendantBindings': true };
                     };
                     /**
