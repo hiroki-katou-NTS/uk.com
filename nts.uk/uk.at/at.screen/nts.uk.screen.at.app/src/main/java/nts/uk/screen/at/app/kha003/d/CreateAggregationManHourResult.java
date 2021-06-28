@@ -28,8 +28,8 @@ public class CreateAggregationManHourResult {
      * @param dateList       年月日<List>
      * @param yearMonthList  年月<List>
      */
-    public AggregationResultDto get(String code, MasterNameInformation masterNameInfo, List<WorkDetailData> workDetailList,
-                                    List<GeneralDate> dateList, List<YearMonth> yearMonthList) {
+    public ManHourAggregationResultDto get(String code, MasterNameInformation masterNameInfo, List<WorkDetailData> workDetailList,
+                                           List<GeneralDate> dateList, List<YearMonth> yearMonthList) {
         val optManHour = this.manHourSummaryRepo.get(AppContexts.user().companyId(), code);
         if (!optManHour.isPresent()) return null;
 
@@ -37,6 +37,6 @@ public class CreateAggregationManHourResult {
         if (manHourOutputContent == null)
             throw new BusinessException("Msg_2171");
 
-        return new AggregationResultDto(optManHour.get(), manHourOutputContent);
+        return new ManHourAggregationResultDto(optManHour.get(), manHourOutputContent);
     }
 }

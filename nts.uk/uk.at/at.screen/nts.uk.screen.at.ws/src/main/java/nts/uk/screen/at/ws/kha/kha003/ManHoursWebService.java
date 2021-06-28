@@ -10,8 +10,8 @@ import nts.uk.screen.at.app.kha003.ManHoursDto;
 import nts.uk.screen.at.app.kha003.a.ManHourSummaryLayoutScreenQuery;
 import nts.uk.screen.at.app.kha003.a.ManHoursListScreenQuery;
 import nts.uk.screen.at.app.kha003.b.CreateManHourSummaryData;
-import nts.uk.screen.at.app.kha003.b.PeriodParam;
-import nts.uk.screen.at.app.kha003.d.AggregationResultDto;
+import nts.uk.screen.at.app.kha003.b.ManHourPeriod;
+import nts.uk.screen.at.app.kha003.d.ManHourAggregationResultDto;
 import nts.uk.screen.at.app.kha003.d.CreateAggregationManHourResult;
 import nts.uk.screen.at.app.kha003.d.AggregationResultQuery;
 import nts.uk.screen.at.app.kha003.exportcsv.ManHourAggregationResultExportService;
@@ -82,13 +82,13 @@ public class ManHoursWebService extends WebService {
 
     @POST
     @Path("b/get-data")
-    public ManHourSummaryData createManHourSummaryData(PeriodParam param) {
+    public ManHourSummaryData createManHourSummaryData(ManHourPeriod param) {
         return this.createManHour.get(param);
     }
 
     @POST
     @Path("d/aggregation-result")
-    public AggregationResultDto aggregationResult(AggregationResultQuery param) {
+    public ManHourAggregationResultDto aggregationResult(AggregationResultQuery param) {
         return this.aggregationResult.get(param.getCode(), param.getMasterNameInfo(), param.getWorkDetailList(),
                 param.getDateList(), param.getYearMonthList());
     }
@@ -104,4 +104,10 @@ public class ManHoursWebService extends WebService {
     public ExportServiceResult generateCsv(List<RegistrationErrorListDto> query) {
         return this.exportCsvService.start(query);
     }
+
+//    @POST
+//    @Path("export-excel")
+//    public ExportServiceResult generate(ArbitraryPeriodSummaryTableFileQuery fileQuery) {
+//        return service.start(fileQuery);
+//    }
 }

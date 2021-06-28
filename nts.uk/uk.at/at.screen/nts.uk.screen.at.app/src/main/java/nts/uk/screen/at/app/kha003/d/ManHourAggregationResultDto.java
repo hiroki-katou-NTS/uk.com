@@ -7,7 +7,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.Ma
 
 @Getter
 @AllArgsConstructor
-public class AggregationResultDto {
+public class ManHourAggregationResultDto {
     private ManHourSummaryTableFormat summaryTableFormat;
     private ManHourSummaryTableOutputContent outputContent;
 }

@@ -9,7 +9,7 @@ import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.*;
 import nts.uk.screen.at.app.kdl053.RegistrationErrorListDto;
-import nts.uk.screen.at.app.kha003.d.AggregationResultDto;
+import nts.uk.screen.at.app.kha003.d.ManHourAggregationResultDto;
 import nts.uk.screen.at.app.kha003.d.AggregationResultQuery;
 import nts.uk.screen.at.app.kha003.d.CreateAggregationManHourResult;
 import nts.uk.shr.com.context.AppContexts;
@@ -53,20 +53,20 @@ public class ManHourAggregationResultExportService extends ExportService<List<Re
 //        val query = exportServiceContext.getQuery();
 //        if (query == null) return;
         AggregationResultQuery query = new AggregationResultQuery(
-               "01", null, Collections.emptyList(),
+                "01", null, Collections.emptyList(),
                 Arrays.asList(
                         GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"),
                         GeneralDate.fromString("2021/06/02", "yyyy/MM/dd"),
                         GeneralDate.fromString("2021/06/03", "yyyy/MM/dd")),
                 Collections.singletonList(YearMonth.of(2021, 6))
-                );
+        );
 
         String executionTime = GeneralDateTime.now().toString().replaceAll("[/:\\s]", "");
 
         // Get data result
-//        AggregationResultDto data = this.createAggregationManHourResult.get(query.getCode(), query.getMasterNameInfo(), query.getWorkDetailList(),
+//        ManHourAggregationResultDto data = this.createAggregationManHourResult.get(query.getCode(), query.getMasterNameInfo(), query.getWorkDetailList(),
 //                query.getDateList(), query.getYearMonthList());
-        AggregationResultDto data = new AggregationResultDto(
+        ManHourAggregationResultDto data = new ManHourAggregationResultDto(
                 Dummy.SummaryTableFormat.create(),
                 Dummy.SummaryTableOutputContent.create());
         val detailFormatSetting = data.getSummaryTableFormat().getDetailFormatSetting();
@@ -81,7 +81,6 @@ public class ManHourAggregationResultExportService extends ExportService<List<Re
         // create Header list
         List<String> headerList = this.createTextHeader(query, detailFormatSetting, isDisplayTotal);
 
-//        // Handle data on needed data to export
 //        List<SummaryItemDetail> lstSummaryItemDetail = new ArrayList<>();
 //        // using Recursive to flat list
 //        convertTreeToFlatList(outputContent.getItemDetails(), lstSummaryItemDetail);
@@ -90,8 +89,8 @@ public class ManHourAggregationResultExportService extends ExportService<List<Re
 
         // Add data source
         List<Map<String, Object>> dataSource = new ArrayList<>();
-        // data processing
-        this.outputDataProcessing(outputContent, isDisplayTotal, totalUnit, dataSource, headerList, maxRangeDate);
+        // Handle data on needed data to export
+        this.dataOutputProcessing(outputContent, isDisplayTotal, totalUnit, dataSource, headerList, maxRangeDate, displayFormat);
 
         // Execute export
         CSVFileData fileData = new CSVFileData(
@@ -99,100 +98,152 @@ public class ManHourAggregationResultExportService extends ExportService<List<Re
         generator.generate(exportServiceContext.getGeneratorContext(), fileData);
     }
 
-    private void outputDataProcessing(ManHourSummaryTableOutputContent outputContent, boolean isDispTotal, TotalUnit unit, List<Map<String, Object>> dataSource, List<String> headerList, int maxRangeDate) {
-        Map<String, Object> row = new HashMap<>();
-        for (SummaryItemDetail layer1 : outputContent.getItemDetails()) {
-            if (layer1.getChildHierarchyList().isEmpty()) {
+    private void dataOutputProcessing(ManHourSummaryTableOutputContent outputContent, boolean isDispTotal, TotalUnit unit, List<Map<String, Object>> dataSource,
+                                      List<String> headerList, int maxRangeDate, DisplayFormat dispFormat) {
+        for (SummaryItemDetail level1 : outputContent.getItemDetails()) {
+            if (level1.getChildHierarchyList().isEmpty()) {
                 Map<String, Object> row1 = new HashMap<>();
-                row1.put(headerList.get(0), layer1.getDisplayInfo().getCode());
-                row1.put(headerList.get(1), layer1.getDisplayInfo().getName());
+                row1.put(headerList.get(0), level1.getDisplayInfo().getCode());
+                row1.put(headerList.get(1), level1.getDisplayInfo().getName());
 
+                val workingTimeMap1 = this.getWorkingTimeByDate(unit, level1.getVerticalTotalList());
                 for (int i = 2; i < maxRangeDate + 2; i++) {
-                    int index = i;
-                    Integer workingTime = unit == TotalUnit.DATE
-                            ? layer1.getVerticalTotalList().stream().filter(x -> x.getDate().toString().equals(headerList.get(index)))
-                            .map(VerticalValueDaily::getWorkingHours).findFirst().orElse(null)
-                            : layer1.getVerticalTotalList().stream().filter(x -> yearMonthToString(x.getYearMonth()).equals(headerList.get(index)))
-                            .map(VerticalValueDaily::getWorkingHours).findFirst().orElse(null);
-                    row1.put(headerList.get(index), workingTime);
+                    row1.put(headerList.get(i), workingTimeMap1.get(headerList.get(i)));
+                }
+                // Tong chieu ngang
+                if (isDispTotal) {
+                    row1.put(headerList.get(headerList.size() - 1), level1.getTotalPeriod().get());
                 }
                 dataSource.add(row1);
             } else {
-                for (SummaryItemDetail layer2 : layer1.getChildHierarchyList()) {
-                    if (layer2.getChildHierarchyList().isEmpty()) {
+                for (SummaryItemDetail level2 : level1.getChildHierarchyList()) {
+                    if (level2.getChildHierarchyList().isEmpty()) {
                         Map<String, Object> row2 = new HashMap<>();
-                        row2.put(headerList.get(0), layer1.getDisplayInfo().getCode());
-                        row2.put(headerList.get(1), layer1.getDisplayInfo().getName());
-                        row2.put(headerList.get(2), layer2.getDisplayInfo().getCode());
-                        row2.put(headerList.get(3), layer2.getDisplayInfo().getName());
+                        row2.put(headerList.get(0), level1.getDisplayInfo().getCode());
+                        row2.put(headerList.get(1), level1.getDisplayInfo().getName());
+                        row2.put(headerList.get(2), level2.getDisplayInfo().getCode());
+                        row2.put(headerList.get(3), level2.getDisplayInfo().getName());
 
                         for (int i = 4; i < maxRangeDate + 4; i++) {
-                            int index = i;
-                            Integer workingTime = unit == TotalUnit.DATE
-                                    ? layer2.getVerticalTotalList().stream().filter(x -> x.getDate().toString().equals(headerList.get(index)))
-                                    .map(VerticalValueDaily::getWorkingHours).findFirst().orElse(null)
-                                    : layer2.getVerticalTotalList().stream().filter(x -> yearMonthToString(x.getYearMonth()).equals(headerList.get(index)))
-                                    .map(VerticalValueDaily::getWorkingHours).findFirst().orElse(null);
-                            row2.put(headerList.get(index), workingTime);
+                            val workingTimeMap2 = this.getWorkingTimeByDate(unit, level2.getVerticalTotalList());
+                            row2.put(headerList.get(i), workingTimeMap2.get(headerList.get(i)));
+                        }
+                        // Tong chieu ngang
+                        if (isDispTotal) {
+                            row2.put(headerList.get(headerList.size() - 1), level2.getTotalPeriod().get());
                         }
                         dataSource.add(row2);
                     } else {
-                        for (SummaryItemDetail layer3 : layer2.getChildHierarchyList()) {
-                            if (layer3.getChildHierarchyList().isEmpty()) {
+                        for (SummaryItemDetail level3 : level2.getChildHierarchyList()) {
+                            if (level3.getChildHierarchyList().isEmpty()) {
                                 Map<String, Object> row3 = new HashMap<>();
-                                row3.put(headerList.get(0), layer1.getDisplayInfo().getCode());
-                                row3.put(headerList.get(1), layer1.getDisplayInfo().getName());
-                                row3.put(headerList.get(2), layer2.getDisplayInfo().getCode());
-                                row3.put(headerList.get(3), layer2.getDisplayInfo().getName());
-                                row3.put(headerList.get(4), layer3.getDisplayInfo().getCode());
-                                row3.put(headerList.get(5), layer3.getDisplayInfo().getName());
+                                row3.put(headerList.get(0), level1.getDisplayInfo().getCode());
+                                row3.put(headerList.get(1), level1.getDisplayInfo().getName());
+                                row3.put(headerList.get(2), level2.getDisplayInfo().getCode());
+                                row3.put(headerList.get(3), level2.getDisplayInfo().getName());
+                                row3.put(headerList.get(4), level3.getDisplayInfo().getCode());
+                                row3.put(headerList.get(5), level3.getDisplayInfo().getName());
 
                                 for (int i = 6; i < maxRangeDate + 6; i++) {
-                                    int index = i;
-                                    Integer workingTime = unit == TotalUnit.DATE
-                                            ? layer3.getVerticalTotalList().stream().filter(x -> x.getDate().toString().equals(headerList.get(index)))
-                                            .map(VerticalValueDaily::getWorkingHours).findFirst().orElse(null)
-                                            : layer3.getVerticalTotalList().stream().filter(x -> yearMonthToString(x.getYearMonth()).equals(headerList.get(index)))
-                                            .map(VerticalValueDaily::getWorkingHours).findFirst().orElse(null);
-                                    row3.put(headerList.get(index), workingTime);
+                                    val workingTimeMap3 = this.getWorkingTimeByDate(unit, level3.getVerticalTotalList());
+                                    row3.put(headerList.get(i), workingTimeMap3.get(headerList.get(i)));
+                                }
+                                // Tong chieu ngang
+                                if (isDispTotal) {
+                                    row3.put(headerList.get(headerList.size() - 1), level3.getTotalPeriod().get());
                                 }
                                 dataSource.add(row3);
                             } else {
-                                for (SummaryItemDetail layer4 : layer3.getChildHierarchyList()) {
+                                for (SummaryItemDetail level4 : level3.getChildHierarchyList()) {
                                     Map<String, Object> row4 = new HashMap<>();
-                                    row4.put(headerList.get(0), layer1.getDisplayInfo().getCode());
-                                    row4.put(headerList.get(1), layer1.getDisplayInfo().getName());
-                                    row4.put(headerList.get(2), layer2.getDisplayInfo().getCode());
-                                    row4.put(headerList.get(3), layer2.getDisplayInfo().getName());
-                                    row4.put(headerList.get(4), layer3.getDisplayInfo().getCode());
-                                    row4.put(headerList.get(5), layer3.getDisplayInfo().getName());
-                                    row4.put(headerList.get(6), layer4.getDisplayInfo().getCode());
-                                    row4.put(headerList.get(7), layer4.getDisplayInfo().getName());
+                                    row4.put(headerList.get(0), level1.getDisplayInfo().getCode());
+                                    row4.put(headerList.get(1), level1.getDisplayInfo().getName());
+                                    row4.put(headerList.get(2), level2.getDisplayInfo().getCode());
+                                    row4.put(headerList.get(3), level2.getDisplayInfo().getName());
+                                    row4.put(headerList.get(4), level3.getDisplayInfo().getCode());
+                                    row4.put(headerList.get(5), level3.getDisplayInfo().getName());
+                                    row4.put(headerList.get(6), level4.getDisplayInfo().getCode());
+                                    row4.put(headerList.get(7), level4.getDisplayInfo().getName());
 
                                     for (int i = 8; i < maxRangeDate + 8; i++) {
-                                        int index = i;
-                                        Integer workingTime = unit == TotalUnit.DATE
-                                                ? layer4.getVerticalTotalList().stream().filter(x -> x.getDate().toString().equals(headerList.get(index)))
-                                                .map(VerticalValueDaily::getWorkingHours).findFirst().orElse(null)
-                                                : layer4.getVerticalTotalList().stream().filter(x -> yearMonthToString(x.getYearMonth()).equals(headerList.get(index)))
-                                                .map(VerticalValueDaily::getWorkingHours).findFirst().orElse(null);
-                                        row4.put(headerList.get(index), workingTime);
+                                        val workingTimeMap4 = this.getWorkingTimeByDate(unit, level4.getVerticalTotalList());
+//                                        row4.put(headerList.get(i), workingTimeMap4.get(headerList.get(i))); // chưa test
+                                        row4.put(headerList.get(i), formatValue(Double.valueOf(workingTimeMap4.get(headerList.get(i))), dispFormat));
+                                    }
+                                    // Tong chieu ngang
+                                    if (isDispTotal) {
+                                        row4.put(headerList.get(headerList.size() - 1), level4.getTotalPeriod().get());
                                     }
                                     dataSource.add(row4);
                                 }
+                                if (isDispTotal) {
+                                    // Tong level 4 theo chieu doc
+                                    Map<String, Object> rowTotalLv4 = new HashMap<>();
+                                    rowTotalLv4.put(headerList.get(5), headerList.get(5) + TextResource.localize("KHA003_100"));
+                                    for (int i = 8; i < headerList.size(); i++) {
+                                        val mapTotal4 = this.getWorkingTimeByDate(unit, level3.getVerticalTotalList());
+                                        rowTotalLv4.put(headerList.get(i), mapTotal4.get(headerList.get(i)));
+                                    }
+                                    rowTotalLv4.put(headerList.get(headerList.size() - 1), level3.getTotalPeriod().get());
+                                    dataSource.add(rowTotalLv4);
+                                }
                             }
+                        }
+                        if (isDispTotal) {
+                            // Tong level 3 theo chieu doc
+                            Map<String, Object> rowTotalLv3 = new HashMap<>();
+                            rowTotalLv3.put(headerList.get(3), headerList.get(3) + TextResource.localize("KHA003_100"));
+                            for (int i = 6; i < headerList.size(); i++) {
+                                val mapTotal2 = this.getWorkingTimeByDate(unit, level2.getVerticalTotalList());
+                                rowTotalLv3.put(headerList.get(i), mapTotal2.get(headerList.get(i)));
+                            }
+                            rowTotalLv3.put(headerList.get(headerList.size() - 1), level2.getTotalPeriod().get());
+                            dataSource.add(rowTotalLv3);
                         }
                     }
                 }
+                if (isDispTotal) {
+                    // Tong level 2 theo chieu doc
+                    Map<String, Object> rowTotalLv2 = new HashMap<>();
+                    rowTotalLv2.put(headerList.get(1), headerList.get(1) + TextResource.localize("KHA003_100"));
+                    for (int i = 4; i < headerList.size(); i++) {
+                        val mapTotal2 = this.getWorkingTimeByDate(unit, level1.getVerticalTotalList());
+                        rowTotalLv2.put(headerList.get(i), mapTotal2.get(headerList.get(i)));
+                    }
+                    rowTotalLv2.put(headerList.get(headerList.size() - 1), level1.getTotalPeriod().get());
+                    dataSource.add(rowTotalLv2);
+                }
             }
+        }
+        if (isDispTotal) {
+            // Tong tat ca cac level theo chieu doc
+            Map<String, Object> rowTotal = new HashMap<>();
+            rowTotal.put(headerList.get(1), "総合計");
+            for (int i = 2; i < headerList.size(); i++) {
+                val mapTotal = this.getWorkingTimeByDate(unit, outputContent.getVerticalTotalValues());
+                rowTotal.put(headerList.get(i), mapTotal.get(headerList.get(i)));
+            }
+            rowTotal.put(headerList.get(headerList.size() - 1), outputContent.getTotalPeriod().get());
+            dataSource.add(rowTotal);
         }
     }
 
-    private void convertTreeToFlatList(ManHourSummaryTableOutputContent outputContent) {
+    private Map<String, Integer> getWorkingTimeByDate(TotalUnit unit, List<VerticalValueDaily> lstValueDaily) {
+        Map<String, Integer> map = new HashMap<>();
+        if (unit == TotalUnit.DATE) {
+            lstValueDaily.sort(Comparator.comparing(VerticalValueDaily::getDate));
+            lstValueDaily.forEach(d -> map.put(d.getDate().toString(), d.getWorkingHours()));
+        } else {
+            lstValueDaily.sort(Comparator.comparing(VerticalValueDaily::getYearMonth));
+            lstValueDaily.forEach(d -> map.put(d.getDate().toString(), d.getWorkingHours()));
+        }
+        return map;
+    }
 
-//        if (!CollectionUtil.isEmpty(itemDetails)) {
-//            return;
-//        }
+    private void getHierarchy(ManHourSummaryTableOutputContent outputContent, List<SummaryItemDetail> target, int levelTotal) {
+//        List<SummaryItemDetail> lstParent
+//        if (outputContent == null || CollectionUtil.isEmpty(outputContent.getItemDetails())) return ;
+//
 //        lstResult.addAll(itemDetails);
 //        List<SummaryItemDetail> childHierarchy = itemDetails.stream().flatMap(x -> x.getChildHierarchyList().stream()).collect(Collectors.toList());
 //        // Recursive
@@ -214,11 +265,11 @@ public class ManHourAggregationResultExportService extends ExportService<List<Re
         // Add code & name to header
         for (int i = 0; i < sortedList.size(); i++) {
             SummaryItem item = sortedList.get(i);
-            lstHeader.add(TextResource.localize(CODE_HEADER));
+            lstHeader.add(TextResource.localize(CODE_HEADER) + i);
             lstHeader.add(item.getSummaryItemType().nameId);
         }
 
-        // Add date/yearMonth to header
+        // Add date/yearMonth list to header
         if (detailSetting.getTotalUnit() == TotalUnit.DATE) {
             query.getDateList().forEach(date -> lstHeader.add(date.toString()));
         } else {
