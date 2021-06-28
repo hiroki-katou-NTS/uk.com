@@ -6,6 +6,7 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.function.app.query.holidayconfirmationtable.CreateDisplayContentOfTheSubstituteLeaveQuery;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
@@ -20,6 +21,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureIdPresentClos
 
 import nts.uk.ctx.bs.company.dom.company.*;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.SysAuthWorkplaceAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -60,12 +63,18 @@ public class OutputTraceConfirmationTableService extends ExportService<CreateTra
     @Inject
     private CompensLeaveComSetRepository compensLeaveComSetRepo;
 
+    @Inject
+    private CreateDisplayContentOfTheSubstituteLeaveQuery leaveQuery;
+
+    @Inject
+    private CompanyBsAdapter companyBsAdapter;
+
+
     @Override
     protected void handle(ExportServiceContext<CreateTraceConfirmationTableFileQuery> exportServiceContext) {
         val query = exportServiceContext.getQuery();
         val lstEmpIds = query.getListEmployeeId();
         val cid = AppContexts.user().companyId();
-        val dataSource = new OutputTraceConfirmTableDataSource();
         // 1-- ①= call 全ての締めの処理年月と締め期間を取得する
         List<ClosureIdPresentClosingPeriod> closingPeriods = getClosureIdPresentClosingPeriods.get(cid);
         // 1.1-②
@@ -87,7 +96,7 @@ public class OutputTraceConfirmationTableService extends ExportService<CreateTra
         val listemployees = lstEmployeeInfo.stream()
                 .map(EmployeeBasicInfoImport::getSid).collect(Collectors.toList());
         // 3--④= Call 会社を取得する
-        val companyInfo = companyRepository.getComanyByCid(cid);
+        CompanyBsImport companyInfo = companyBsAdapter.getCompanyByCid(cid);
 
         // 4--⑤= Call 社員ID（List）と基準日から所属職場IDを取得
         List<AffAtWorkplaceImport> lstAffAtWorkplaceImport = affWorkplaceAdapter
@@ -107,7 +116,14 @@ public class OutputTraceConfirmationTableService extends ExportService<CreateTra
         // 4.1-⑥
         List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter
                 .getWorkplaceInforByWkpIds(cid, listWorkplaceId, referenceDate);
-
+        val listDetail = leaveQuery.getDisplayContent(
+                referenceDate,
+                employeeInfoList,
+                query.getMngAtr(),
+                query.isMoreSubstituteHolidaysThanHolidays(),
+                query.isMoreHolidaysThanSubstituteHolidays(),
+                lstWorkplaceInfo);
+        val dataSource = new OutputTraceConfirmTableDataSource(listDetail,companyInfo);
         // 5-- ⑦ get 代休管理設定
         reportGenerator.generate(exportServiceContext.getGeneratorContext(), dataSource);
     }
