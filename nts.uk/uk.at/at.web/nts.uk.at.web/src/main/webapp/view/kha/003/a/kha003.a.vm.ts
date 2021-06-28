@@ -77,6 +77,28 @@ module nts.uk.at.kha003.a {
                     });
                 }
             });
+
+            vm.summaryItems.subscribe((newValue: any) => {
+                console.log("data:" + newValue);
+                if (newValue.length == 4) {
+                    $('#append_note').hide();
+                } else {
+                    $('#append_note').show();
+                }
+                $('.panel_common')
+                    .removeClass('bacg-inactive')
+                    .addClass('bacg-active')
+                    .parent()
+                    .css({'pointer-events': 'auto'});
+                newValue.forEach((item: any) => {
+                    $('#item_type_' + item.summaryItemType)
+                        .removeClass('bacg-active')
+                        .addClass('bacg-inactive')
+                        .parent()
+                        .css({'pointer-events': 'none'});
+                })
+            });
+
             vm.loadScreenListData();
             var itemId = '';
             var itemtype = '';
@@ -154,10 +176,25 @@ module nts.uk.at.kha003.a {
                     vm.selectedId(data.totalUnit);
                     vm.selectedIdA622(data.displayFormat);
                     vm.isA71Checked(data.dispHierarchy);
+                    let type0Name = vm.$i18n('KHA003_24');
+                    let type1Name = vm.$i18n('KHA003_25');
+                    let type2Name = vm.$i18n('KHA003_26');
+                    vm.summaryItems([]);
                     vm.summaryItems(_.map(data.summaryItems, function (item: any) {
+                        let itemTypeName = '';
+                        if (item.itemType === 0) {
+                            itemTypeName = type0Name;
+                        } else if (item.itemType === 1) {
+                            itemTypeName = type1Name;
+                        } else if (item.itemType === 2) {
+                            itemTypeName = type2Name;
+                        } else {
+                            itemTypeName = item.itemTypeName
+                        }
                         return {
-                            hierarchicalOrder:item.hierarchicalOrder,
-                            summaryItemType:item.itemType
+                            hierarchicalOrder: item.hierarchicalOrder,
+                            summaryItemType: item.itemType,
+                            itemTypeName: itemTypeName
                         }
                     }));
                     dfd.resolve();
@@ -235,6 +272,7 @@ module nts.uk.at.kha003.a {
             vm.currentCode('');
             vm.manHour.code('');
             vm.manHour.name('')
+            vm.summaryItems([]);
         }
 
         /**
@@ -244,13 +282,14 @@ module nts.uk.at.kha003.a {
          * */
         clickRegistrationButton() {
             const vm = this;
+            let summaryItemsParams: any = [];
             $('#append_area .summary-item').each(function (index, object) {
                 let item = {
                     hierarchicalOrder: index + 1,
                     summaryItemType: $(object).data('itemtype')
                 }
-                vm.summaryItems.push(item);
-                console.log(vm.summaryItems());
+                summaryItemsParams.push(item);
+                console.log(summaryItemsParams);
             })
             vm.$validate('#A4_2', '#A4_3').then((valid: boolean) => {
                 if (!valid) {
@@ -263,7 +302,7 @@ module nts.uk.at.kha003.a {
                         totalUnit: vm.selectedId(),
                         displayFormat: vm.selectedIdA622(),
                         dispHierarchy: vm.isA71Checked() ? 1 : 0,
-                        summaryItems: vm.summaryItems()
+                        summaryItems: summaryItemsParams
                     };
                     vm.$blockui("invisible");
                     vm.$ajax(vm.isUpdateMode() ? API.UPDATE : API.REGISTER, command).done((data) => {
@@ -303,13 +342,69 @@ module nts.uk.at.kha003.a {
         }
 
         /**
+         * get selectable code
+         *
+         * @param items
+         * @param code
+         * @return string
+         * @author rafiqul.islam         *
+         * */
+        getSelectableCode(items: any, code: string): string {
+            var currentIndex = 0;
+            var selectableCode = "";
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].code == code) {
+                    currentIndex = i;
+                    break;
+                }
+            }
+            if (currentIndex === items.length - 1 && items.length != 1) {
+                selectableCode = items[currentIndex - 1].code;
+            } else if (currentIndex === 0 && items.length > 1) {
+                selectableCode = items[1].code;
+            }
+            else {
+                if (items.length != 1) {
+                    selectableCode = items[currentIndex + 1].code;
+                }
+            }
+            return selectableCode;
+        }
+
+        /**
          * click delete
          *
          * @author rafiqul.islam
          * */
         clickDeleteButton() {
             const vm = this;
-            alert("delete button is clicked")
+            vm.$dialog.confirm({messageId: "Msg_18"}).then((result: 'yes' | 'cancel') => {
+                if (result === 'yes') {
+                    var selectableCode = vm.getSelectableCode(vm.items(), vm.manHour.code());
+                    let command = {
+                        code: vm.manHour.code()
+                    };
+                    vm.$blockui("invisible");
+                    vm.$ajax(API.DELETE, command).done((data) => {
+                        vm.$dialog.info({messageId: "Msg_16"})
+                            .then(() => {
+                                vm.isInit = false;
+                                vm.loadScreenListData();
+                                vm.currentCode(selectableCode);
+                                vm.getScreenDetails(selectableCode);
+                                if (vm.items().length === 0) {
+                                    $("#A4_2").focus();
+                                }
+                            });
+                    }).fail(function (error) {
+                        vm.$dialog.error({messageId: error.messageId});
+                    }).always(() => {
+                        vm.$blockui("clear");
+                        vm.$errors("clear");
+                    });
+                }
+                $("#J3_3").focus();
+            });
         }
 
         /**
@@ -319,7 +414,15 @@ module nts.uk.at.kha003.a {
          * */
         clickOutputAllButton() {
             const vm = this;
-            alert("output all button is clicked")
+            let shareData = {
+                isCsvOutPut: true,
+                totalUnit: vm.selectedId()
+            }
+            vm.$window.storage('kha003AShareData', shareData).then(() => {
+                vm.$window.modal("/view/kha/003/b/index.xhtml").then(() => {
+
+                });
+            });
         }
 
         /**
@@ -329,22 +432,35 @@ module nts.uk.at.kha003.a {
          * */
         clickRunButton() {
             const vm = this;
-            var c21 = '';
-            var c31 = '';
-            var c41 = '';
-            var c51 = '';
+            var c21 = {};
+            var c31 = {};
+            var c41 = {};
+            var c51 = {};
             $('.layout-setting').each(function (i, obj) {
+                let object=$(obj);
                 if (i == 0) {
-                    c21 = obj.innerHTML;
+                    c21 = {
+                        type: object.data('itemtype'),
+                        name: obj.innerHTML
+                    };
                 }
                 if (i == 1) {
-                    c31 = obj.innerHTML;
+                    c31 = {
+                        type: object.data('itemtype'),
+                        name: obj.innerHTML
+                    };;
                 }
                 if (i == 2) {
-                    c41 = obj.innerHTML;
+                    c41 = {
+                        type: object.data('itemtype'),
+                        name: obj.innerHTML
+                    };;
                 }
                 if (i == 3) {
-                    c51 = obj.innerHTML;
+                    c51 = {
+                        type: object.data('itemtype'),
+                        name: obj.innerHTML
+                    };;
                 }
             });
             let shareData = {
@@ -352,6 +468,8 @@ module nts.uk.at.kha003.a {
                 c31: c31,
                 c41: c41,
                 c51: c51,
+                totalUnit: vm.selectedId(),
+                isCsvOutPut: false,
             }
             vm.$window.storage('kha003AShareData', shareData).then(() => {
                 vm.$window.modal("/view/kha/003/b/index.xhtml").then(() => {
