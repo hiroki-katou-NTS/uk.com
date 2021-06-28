@@ -15,7 +15,7 @@ public class JpaImportingUserConditionRepository extends JpaRepository implement
 	@Override
 	public List<ImportingUserCondition> get(String companyId, String settingCode, List<Integer> itemNoList){
 		String sql = "select * "
-						+ "from OIOMT_USER_CONDITION "
+						+ "from XIMMT_VALID_VALUE "
 						+ "where CID = @cid "
 						+ "SETTING_CODE = @settingCode"
 						+ "ITEM_NO in @itemNos";

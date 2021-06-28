@@ -15,7 +15,7 @@ public class JpaImportableItemsRepository extends JpaRepository implements Impor
 	public List<ImportableItem> get(String companyId, ImportingGroupId groupId) {
 		
 		String sql = "select * "
-						+ "from OIOCT_IMPORTABLE_ITEM "
+						+ "from XIMCT_IMPORTABLE_ITEM "
 						+ "where CID = @cid "
 						+ "and GROUP_ID = @groupId";
 		return new NtsStatement(sql, this.jdbcProxy())
