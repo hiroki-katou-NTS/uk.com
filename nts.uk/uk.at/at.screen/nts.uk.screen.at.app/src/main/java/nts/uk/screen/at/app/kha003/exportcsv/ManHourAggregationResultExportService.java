@@ -6,9 +6,12 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.*;
 import nts.uk.screen.at.app.kdl053.RegistrationErrorListDto;
+import nts.uk.screen.at.app.kha003.b.ManHourPeriod;
 import nts.uk.screen.at.app.kha003.d.ManHourAggregationResultDto;
 import nts.uk.screen.at.app.kha003.d.AggregationResultQuery;
 import nts.uk.screen.at.app.kha003.d.CreateAggregationManHourResult;
@@ -54,11 +57,11 @@ public class ManHourAggregationResultExportService extends ExportService<List<Re
 //        if (query == null) return;
         AggregationResultQuery query = new AggregationResultQuery(
                 "01", null, Collections.emptyList(),
-                Arrays.asList(
-                        GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"),
-                        GeneralDate.fromString("2021/06/02", "yyyy/MM/dd"),
-                        GeneralDate.fromString("2021/06/03", "yyyy/MM/dd")),
-                Collections.singletonList(YearMonth.of(2021, 6))
+                new ManHourPeriod(
+                        0,
+                        new DatePeriod(GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd")),
+                        new YearMonthPeriod(YearMonth.of(2021, 6), YearMonth.of(2021, 6))
+                )
         );
 
         String executionTime = GeneralDateTime.now().toString().replaceAll("[/:\\s]", "");
@@ -73,19 +76,13 @@ public class ManHourAggregationResultExportService extends ExportService<List<Re
         val displayFormat = detailFormatSetting.getDisplayFormat();
         val outputContent = data.getOutputContent();
         val totalUnit = detailFormatSetting.getTotalUnit();
-        int maxRangeDate = totalUnit == TotalUnit.DATE ? query.getDateList().size() : query.getYearMonthList().size();
+        int maxRangeDate = totalUnit == TotalUnit.DATE ? query.getPeriod().getDateList().size() : query.getPeriod().getYearMonthList().size();
 
         // Flag display total
         val isDisplayTotal = detailFormatSetting.getDisplayVerticalHorizontalTotal().value == 1;
 
         // create Header list
         List<String> headerList = this.createTextHeader(query, detailFormatSetting, isDisplayTotal);
-
-//        List<SummaryItemDetail> lstSummaryItemDetail = new ArrayList<>();
-//        // using Recursive to flat list
-//        convertTreeToFlatList(outputContent.getItemDetails(), lstSummaryItemDetail);
-//        // get hierarchical number available : Convert Tree using Recursive to flat list
-//        val hierarchyLength = lstSummaryItemDetail.size();
 
         // Add data source
         List<Map<String, Object>> dataSource = new ArrayList<>();
@@ -271,9 +268,9 @@ public class ManHourAggregationResultExportService extends ExportService<List<Re
 
         // Add date/yearMonth list to header
         if (detailSetting.getTotalUnit() == TotalUnit.DATE) {
-            query.getDateList().forEach(date -> lstHeader.add(date.toString()));
+            query.getPeriod().getDateList().forEach(date -> lstHeader.add(date.toString()));
         } else {
-            query.getYearMonthList().forEach(ym -> lstHeader.add(yearMonthToString(ym)));
+            query.getPeriod().getYearMonthList().forEach(ym -> lstHeader.add(yearMonthToString(ym)));
         }
 
         // Add horizontal total to header
