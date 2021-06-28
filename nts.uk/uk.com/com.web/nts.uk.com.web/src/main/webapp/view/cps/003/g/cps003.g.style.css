@@ -23,41 +23,14 @@
 }
 
 #G1_002{
-	margin-left: 930px !important;
+	float: right;
 }
 
 #grid2_container{
 	margin-left:10px !important;
 }
 
-td[aria-describedby='grid2_empCd']{
-  width: 99%;
-  /* display: inline-block; */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-td[aria-describedby='grid2_empName']{
-  width: 99%;
-  /* display: inline-block; */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-td[aria-describedby='grid2_message']{
-  width: 99%;
-  /* display: inline-block; */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-td[aria-describedby='grid2_itemName']{
-  width: 99%;
-  /* display: inline-block; */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+#grid2_container .ui-iggrid-results {
+  display: flex;
+  align-items: center;
 }
