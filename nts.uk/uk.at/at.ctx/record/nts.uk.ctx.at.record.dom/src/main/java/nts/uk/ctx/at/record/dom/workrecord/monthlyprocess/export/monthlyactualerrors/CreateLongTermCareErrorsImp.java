@@ -13,6 +13,7 @@ public class CreateLongTermCareErrorsImp implements CreateLongTermCareErrors {
     @Override
     public List<EmployeeMonthlyPerError> createLongTermCareErrors(CreateLongTermCareErrorsParam param) {
         // 介護休暇エラーから月別残数エラー一覧を作成する
+        // http://192.168.50.4:3000/issues/118129
         List<EmployeeMonthlyPerError> employeeMonthlyPerError = CreatePerErrorsFromLeaveErrors.fromCareLeave(
                 param.getSID(), 
                 param.getYearMonth(), 

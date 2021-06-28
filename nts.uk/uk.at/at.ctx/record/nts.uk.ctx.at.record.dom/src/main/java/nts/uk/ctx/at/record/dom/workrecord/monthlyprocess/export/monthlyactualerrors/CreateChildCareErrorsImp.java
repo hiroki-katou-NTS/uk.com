@@ -13,6 +13,7 @@ public class CreateChildCareErrorsImp implements CreateChildCareErrors {
     @Override
     public List<EmployeeMonthlyPerError> createChildCareErrors(CreateChildCareErrorsParam param) {
         // 子の看護休暇エラーから月別残数エラー一覧を作成する
+        // http://192.168.50.4:3000/issues/118129
         List<EmployeeMonthlyPerError> employeeMonthlyPerError = CreatePerErrorsFromLeaveErrors.fromChildCareLeave(
                 param.getSID(), 
                 param.getYearMonth(), 
