@@ -15,7 +15,7 @@ public class CreateManHourSummaryData {
     @Inject
     private ManHourSummaryDataFinder finder;
 
-    public ManHourSummaryData get(PeriodParam param) {
-        return finder.getManHourSummary(param.getDatePeriod(), param.getYmPeriod());
+    public ManHourSummaryData get(ManHourPeriod param) {
+        return finder.getManHourSummary(param.getDatePeriod(), param.getYearMonthPeriod());
     }
 }

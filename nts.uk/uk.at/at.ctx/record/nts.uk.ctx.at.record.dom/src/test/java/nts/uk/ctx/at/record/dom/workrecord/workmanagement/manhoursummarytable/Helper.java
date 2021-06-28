@@ -104,7 +104,7 @@ public class Helper {
                         new DisplayInformation("0" + i + 1, "NAME" + i + 1),
                         Collections.emptyList(),
                         Helper.verticalValueDaily.getList(i),
-                        Optional.of(i * 2)
+                        Optional.of(Helper.verticalValueDaily.getList(i).stream().mapToInt(VerticalValueDaily::getWorkingHours).sum())
                 ));
 
                 lstSummaryItemDetail.add(new SummaryItemDetail(
@@ -112,7 +112,7 @@ public class Helper {
                         new DisplayInformation("0" + i, "NAME" + i),
                         lstChildSummaryItemDetail,
                         Helper.verticalValueDaily.getList(i),
-                        Optional.of(i * 2)
+                        Optional.of(Helper.verticalValueDaily.getList(i).stream().mapToInt(VerticalValueDaily::getWorkingHours).sum())
                 ));
             }
             return lstSummaryItemDetail;
