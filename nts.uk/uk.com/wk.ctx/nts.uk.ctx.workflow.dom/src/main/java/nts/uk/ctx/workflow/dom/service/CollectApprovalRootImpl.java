@@ -481,7 +481,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				}
 				// 承認者を整理(Điều chỉnh Approver)
 				levelApproverList.setApproverInfoLst(this.adjustApprover(approverInfoLst, baseDate, companyID, employeeID));
-				levelInforOutput.getApproverLst().add(levelApproverList);
+				if(!CollectionUtil.isEmpty(levelApproverList.getApproverInfoLst())) {
+					levelInforOutput.getApproverLst().add(levelApproverList);
+				}
 				if(approvalPhase.getApprovalAtr()!=ApprovalAtr.PERSON && !CollectionUtil.isEmpty(levelApproverList.getApproverInfoLst())) {
 					break;
 				}

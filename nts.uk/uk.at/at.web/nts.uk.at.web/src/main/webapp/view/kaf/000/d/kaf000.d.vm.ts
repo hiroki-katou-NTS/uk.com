@@ -41,9 +41,9 @@ module nts.uk.at.view.kaf000.d.viewmodel {
 
         getFrameIndex(loopPhase, loopFrame, loopApprover) {
             if(_.size(loopFrame.listApprover()) > 1) {
-                return _.findIndex(loopFrame.listApprover(), o => o == loopApprover);
+                return _.findIndex(loopFrame.listApprover(), o => o == loopApprover) + 1;
             }
-            return loopFrame.frameOrder();
+            return _.findIndex(loopPhase.listApprovalFrame(), o => o == loopFrame) + 1;
         }
 
         frameCount(listFrame) {
