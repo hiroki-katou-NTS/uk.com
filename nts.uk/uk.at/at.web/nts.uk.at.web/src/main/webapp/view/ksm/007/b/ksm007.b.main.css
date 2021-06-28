@@ -59,3 +59,9 @@
   width: 60px;
   text-align: center;
 }
+
+.set-spacing {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}

@@ -14,5 +14,9 @@ flex-direction: column;
 }
 
 div#master-wrapper div#master-content>div[id^="contents-area"]:first-child {
-  margin-left: 40px;
+  margin-left: 35px;
+}
+
+.control-group.valign-top>* {
+  margin-right: 10px;
 }
