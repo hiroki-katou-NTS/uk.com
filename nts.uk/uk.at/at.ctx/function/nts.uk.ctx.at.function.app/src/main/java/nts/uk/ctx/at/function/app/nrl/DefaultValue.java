@@ -24,10 +24,10 @@ public class DefaultValue {
 	public static final String SPACE5 = "     ";
 	public static final String SPACE6 = "      ";
 	
-	public static final int ALL_IO_PLS = 949; 
-	public static final int ALL_IO_PKT_LEN_XPL = 32;
-	public static final int ALL_PETITIONS_PLS = 949;
-	public static final int ALL_PETITIONS_PKT_LEN_XPL = 32;
+	public static final int ALL_IO_PLS = 1039; 
+	public static final int ALL_IO_PKT_LEN_XPL = 44;
+	public static final int ALL_PETITIONS_PLS = 1039;
+	public static final int ALL_PETITIONS_PKT_LEN_XPL = 44;
 	public static final int SINGLE_FRAME_LEN = 64;
 	public static final int SINGLE_FRAME_LEN_32 = 32;
 	public static final int SINGLE_FRAME_LEN_48 = 48;
