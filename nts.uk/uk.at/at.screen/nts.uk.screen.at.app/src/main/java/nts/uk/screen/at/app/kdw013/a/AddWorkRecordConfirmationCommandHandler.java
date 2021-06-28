@@ -28,7 +28,7 @@ public class AddWorkRecordConfirmationCommandHandler {
 		confirmHandler.handle(command);
 		
 		// 2: <call>() 作業確認状況を取得する
-		return getStatus.get(command.getConfirmerId(), command.getDate());
+		return getStatus.get(command.getEmployeeId(), command.getDate());
 	}
 
 }

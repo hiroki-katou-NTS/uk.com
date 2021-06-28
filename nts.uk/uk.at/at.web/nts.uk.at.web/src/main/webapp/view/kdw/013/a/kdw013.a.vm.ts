@@ -665,7 +665,7 @@ module nts.uk.ui.at.kdw013.a {
                         }
                     })
                     // trigger reload event on child component
-                    .then(() => vm.editable.valueHasMutated())
+                    //.then(() => vm.editable.valueHasMutated())
                     .always(() => vm.$blockui('clear'));
             }
         }

@@ -20,16 +20,19 @@ public class JpaConfirmationWorkResultsRepository extends JpaRepository implemen
 	@Override
 	public void insert(ConfirmationWorkResults confirmationWorkResults) {
 		this.commandProxy().insert(new KrcdtTaskConfirm(confirmationWorkResults));
+		this.getEntityManager().flush();
 	}
 
 	@Override
 	public void update(ConfirmationWorkResults confirmationWorkResults) {
 		this.commandProxy().update(new KrcdtTaskConfirm(confirmationWorkResults));
+		this.getEntityManager().flush();
 	}
 
 	@Override
 	public void delete(ConfirmationWorkResults confirmationWorkResults) {
 		this.commandProxy().remove(KrcdtTaskConfirm.class, new KrcdtTaskConfirmPK(confirmationWorkResults.getTargetSID(), confirmationWorkResults.getTargetYMD()));
+		this.getEntityManager().flush();
 	}
 
 	@Override
