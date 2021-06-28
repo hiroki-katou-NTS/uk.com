@@ -505,8 +505,8 @@ module nts.uk.ui.at.kdw013.c {
 
                         return [{
                             id: '',
-                            code: vm.$i18n('KDW013_41'),
-                            name: '',
+                            code: '',
+                            name: vm.$i18n('KDW013_41'),
                             $raw: null,
                             selected: false
                         }, ...wlcs]
@@ -569,8 +569,8 @@ module nts.uk.ui.at.kdw013.c {
             const getmapperList = (tasks: TaskDto[]) => {
                 const lst: DropdownItem[] = [{
                     id: '',
-                    code: vm.$i18n('KDW013_41'),
-                    name: '',
+                    code: '',
+                    name: vm.$i18n('KDW013_41'),
                     $raw: null,
                     selected: false
                 }];

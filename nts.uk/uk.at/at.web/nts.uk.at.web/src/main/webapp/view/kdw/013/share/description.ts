@@ -14,7 +14,7 @@ module nts.uk.ui.at.kdw013.share {
             const hasError: KnockoutObservable<boolean> = allBindingsAccessor.get('hasError');
 
             const message = $('<div>', { 'class': 'message' }).appendTo(element).get(0);
-            const textarea = $('<textarea>', { 'class': 'nts-input' }).prependTo(element).on('blur', () => subscribe(value())).get(0);
+            const textarea = $('<textarea style="resize: none;">', { 'class': 'nts-input' }).prependTo(element).on('blur', () => subscribe(value())).get(0);
 
             const text = ko.observable('');
             const value = ko.observable('');

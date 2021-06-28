@@ -494,12 +494,14 @@ module nts.uk.ui.at.kdw013.a {
             };
     
             let sid = vm.employee() ? vm.employee() : vm.$user.employeeId;
+    
+            let mode =  vm.editable() ? 0 : vm.employee() === vm.$user.employeeId ? 0 : 1;
 
             const command: RegisterWorkContentCommand = {
                 changedDate: moment().format(DATE_TIME_FORMAT),
                 editStateSetting: HAND_CORRECTION_MYSELF,
                 employeeId: sid,
-                mode: 0,
+                mode,
                 workDetails: dateRanges().map((date) => {
                     const lstWorkDetailsParamCommand = _
                         .chain($events)
