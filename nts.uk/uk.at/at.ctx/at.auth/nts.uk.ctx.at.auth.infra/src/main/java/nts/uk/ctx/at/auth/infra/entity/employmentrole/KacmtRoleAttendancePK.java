@@ -15,9 +15,6 @@ public class KacmtRoleAttendancePK implements Serializable {
 
 	private static final long serialVersionUID = 1893249814119833566L;
 
-	@Column(name = "CID")
-	public String companyID;
-	
 	@Column(name = "ROLE_ID")
 	public String roleID;
 
