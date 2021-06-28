@@ -2,6 +2,8 @@ package nts.uk.ctx.at.request.ac.remainingnumber;
 
 import java.util.Map;
 
+import javax.ejb.Stateless;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.InterimRemainDataMngCheckRegisterPub;
 import nts.uk.ctx.at.request.dom.workrecord.remainmanagement.InterimRemainDataMngCheckRegisterRequest;
@@ -10,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainChec
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimEachData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
 
+@Stateless
 public class InterimRemainDataMngCheckRegisterImpRequest implements InterimRemainDataMngCheckRegisterRequest {
     
     private InterimRemainDataMngCheckRegisterPub interimRemainDataMngCheckRegisterPub;
