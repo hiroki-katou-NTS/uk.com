@@ -51,6 +51,11 @@ module nts.uk.at.view.ccg005.a.screenModel {
       <div style="height: 100%; position: relative;">
         <div class="grade-header-center" style="padding-bottom: 5px;">
           <table>
+            <colgroup>
+              <col width="40px"/>
+              <col width="370px"/>
+              <col width="auto"/>
+            </colgroup>
             <tr>
               <td class="ccg005-bottom-unset">
                 <!-- A1_1 -->
@@ -63,7 +68,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 <div class="ccg005-flex none-enter-icon">
                   <!-- A1_3 -->
                   <i class="ccg005-currentEmoji"></i>
-                  <div style="position: relative;" class="CCG005-A1_4-border">
+                  <div style="position: relative; height: 30px;" class="CCG005-A1_4-border">
                     <!-- A1_4 -->
                     <input 
                       tabindex=2 
@@ -96,7 +101,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
             </tr>
           </table>
         </div>
-        <div class="grade-header-bottom ccg005-flex" style="position: relative;">
+        <div id="A2_3" class="grade-header-bottom ccg005-flex" style="position: relative;">
           <!-- A2_3 -->
           <div tabindex=6 id="ccg005-selected-date" data-bind="ntsDatePicker: {
                 name: '#[CCG005_36]',
@@ -105,7 +110,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 dateFormat: 'YYYY/MM/DD',
                 fiscalMonthsMode: true,
                 showJumpButtons: true
-              }"></div>
+              }" style="display: inline-flex;"></div>
           <div style="right: 0; position: absolute; display: flex; align-items: center;">
             <!-- A3_2 -->
             <i tabindex=9 id="ccg005-star-img" style="margin-right: 5px;"
@@ -130,7 +135,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         <div class="grade-body-bottom" style="min-height: 55px; height: 55px">
           <table style="width: 100%; border-collapse: separate; border-spacing: 0 5px">
             <tbody data-bind="foreach: attendanceInformationDtosDisplay">
-              <tr style="height: 46px;" class="ccg005-tr-background" data-bind="attr:{ id: backgroundColor }">
+              <tr style="height: 42px;" class="ccg005-tr-background" data-bind="attr:{ id: backgroundColor }">
                 <td style="padding-right: 5px; width: 30px; background-color: white;"
                   class="ccg005-apply-binding-avatar ccg005-bottom-unset">
                   <!-- A4_1 -->
@@ -158,9 +163,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
                     <i tabindex=14 style="position: absolute; top: 3px; right: 0;"
                       data-bind="visible: displayAppIcon, click: $component.initPopupA4_4InList.bind($component, $index, sid), attr:{ class: 'A4-4-application-icon-'+sid }, ntsIcon: {no: 190, width: 13, height: 13}"></i>
                   </div>
-                  <div style="height: 20px;">
+                  <div style="height: 20px; position: relative;">
                     <!-- A4_3 -->
-                    <span style="white-space: nowrap;">
+                    <span style="white-space: nowrap; position: absolute; bottom: 2px;">
                       <label id="check-in-out"
                         data-bind="text: attendanceDetailDto.checkInTime, attr:{ class: attendanceDetailDto.checkInColorClass }" />
                       <label id="check-in-out"
@@ -484,6 +489,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
     #background-color-holiday {
       background-color: #F2F2F2;
     }
+
+    #A2_3 .ntsDatePickerButton { height: 30px !important; }
 
   </style>`
   })
@@ -991,7 +998,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     private onResizeable(vm: any) {
-      const lineHeight = 50;
+      const lineHeight = 47;
       const paddingInContent = 10;
       const subHeight = $('#ccg005-content').height()
         - $('.grade-header-center').height()
