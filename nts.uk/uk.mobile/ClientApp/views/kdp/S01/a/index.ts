@@ -345,7 +345,6 @@ export class KdpS01AComponent extends Vue {
                 vm.$http.post('at', servicePath.getOmission, stampButton).then((result: any) => {
                     let data: model.IGetOmissionContentDto = result.data;
                     if (data && data.errorInfo && data.errorInfo.length > 0) {
-                        console.log(data);
                         vm.openDialogT(data);
                     }
                 });
