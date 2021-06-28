@@ -232,6 +232,18 @@ module nts.uk.pr.view.kmf001.f {
                   }
                 })
 
+                self.compenTimeManage.subscribe(value => {
+                  if (value === 0) {
+                    self.selectedOfWorkTime(0);
+                    self.selectedOfOverTime(0);
+                    self.transferSettingDivisionEnums()[1].enable(false);
+                    self.transferSettingDivisionEnums.valueHasMutated();
+                  } else {
+                    self.transferSettingDivisionEnums()[1].enable(true);
+                    self.transferSettingDivisionEnums.valueHasMutated();
+                  }
+                })
+
                 //employment
                 self.employmentBackUpData = ko.observable();
                 self.employmentList = ko.observableArray<ItemModel>([]);
@@ -429,7 +441,7 @@ module nts.uk.pr.view.kmf001.f {
                 let dfd = $.Deferred();
                 service.getEnumTransferSettingDivision().done(function(res: Array<RadioEnum>) {
                     res.forEach(function(item, index) {
-                        item.enable = true;
+                        item.enable = ko.observable(true);
                     });
                     self.transferSettingDivisionEnums(res);
                     dfd.resolve();
