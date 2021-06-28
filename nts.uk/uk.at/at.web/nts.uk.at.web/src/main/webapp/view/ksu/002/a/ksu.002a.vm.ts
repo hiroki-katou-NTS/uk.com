@@ -162,6 +162,8 @@ module nts.uk.ui.at.ksu002.a {
 				begin: null,
 				finish: null
 			};
+			
+			initEvent();
 
 			const loadData = () => {
 				const command = {
@@ -716,6 +718,21 @@ module nts.uk.ui.at.ksu002.a {
 			}
 		}
 	}
+	
+	function initEvent(): void {
+        //click btnA5
+        $('#A5_1').ntsPopup({
+            position: {
+                my: 'left top',
+                at: 'left bottom+3',
+                of: $('#A5')
+            }
+        });
+
+        $('#A5').click(function() {
+            $('#A5_1').ntsPopup("toggle");
+        });
+    }
 
 	interface StorageData {
 		date: string | Date;

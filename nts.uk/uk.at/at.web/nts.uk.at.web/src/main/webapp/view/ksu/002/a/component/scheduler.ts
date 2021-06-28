@@ -14,6 +14,7 @@ module nts.uk.ui.at.ksu002.a {
     import c = nts.uk.ui.calendar;
     import b = nts.uk.util.browser;
     import t = nts.uk.time;
+	import getText = nts.uk.resource.getText;
 
     interface WData<T = string> {
         code: T;
@@ -60,6 +61,20 @@ module nts.uk.ui.at.ksu002.a {
             begin: T;
             finish: T;
         }
+    }
+
+	 export class TotalData {
+		status0: KnockoutObservable<string> = ko.observable('');
+        dataInfo0: KnockoutObservable<string> = ko.observable('');
+        status1: KnockoutObservable<string> = ko.observable('');
+        dataInfo1: KnockoutObservable<string> = ko.observable('');
+        constructor() {}
+		setStatusFisrt(){
+			let self = this;
+			self.status0('<span>'+getText('KSU002_25')+'<br/>'+getText('KSU002_25')+'</span>');
+			self.status1('<span class="fz12">'+getText('KSU002_26')+'</span>');
+		}		
+		update(){}
     }
 
     export enum EDIT_STATE {
@@ -146,35 +161,16 @@ module nts.uk.ui.at.ksu002.a {
                             </div>
                         </div>
                     </div>
-                    <div class="month">
+                    <div id="total" class="month">
+                        <!-- ko foreach: totalData -->
                         <div class="week cf">
                             <div class="day">
-                                <div class="status wk-hours">
-                                    <span data-bind="i18n: 'KSU002_25'"></span>
-                                    <span data-bind="i18n: 'KSU002_35'"></span>
-                                </div>
-                                <div class="data-info">&nbsp;</div>
+                                <div class="status" data-bind="html: status0"></div>
+                                <div class="data-info" data-bind="html: dataInfo0"></div>
                             </div>
                             <div class="day">
-                                <div class="status wk-hours full-height">
-                                    <span data-bind="i18n: 'KSU002_26'"></span>
-                                </div>
-                                <div class="data-info">&nbsp;</div>
-                            </div>
-                        </div>
-                        <!-- ko foreach: [1, 2, 3, 4, 5] -->
-                        <div class="week cf">
-                            <div class="day">
-                                <div class="status">
-                                    <span>&nbsp;</span>
-                                </div>
-                                <div class="data-info">&nbsp;</div>
-                            </div>
-                            <div class="day">
-                                <div class="status">
-                                    <span>&nbsp;</span>
-                                </div>
-                                <div class="data-info">&nbsp;</div>
+                                <div class="status" data-bind="html: status1"></div>
+                                <div class="data-info" data-bind="html: dataInfo1"></div>
                             </div>
                         </div>
                         <!-- /ko -->
@@ -346,12 +342,40 @@ module nts.uk.ui.at.ksu002.a {
                     font-size: 12px;
                     line-height: 37px;
                 }
+				.scheduler #total .week:first-child .day .status{
+					background-color: #FFC91D;
+				}
+				.scheduler #total .week .day div{
+				    display: table;
+				    width: 100%;
+				    text-align: center;
+				}
+				.scheduler #total .week .day div span{
+					display: table-cell;
+					vertical-align: middle;
+				}
+				.scheduler #total .week .day div.data-info span{
+					font-size: 12px;
+				}
+				.fz12{
+					font-size: 12px !important;
+				}
             </style>`
     })
     export class ShedulerComponent extends ko.ViewModel {
 
+		totalData: KnockoutObservableArray<TotalData>;
+
         constructor(private data: c.Parameter) {
             super();
+			let self = this;
+			let tg: TotalData[] = [];
+			_.forEach([0,1,2,3,4,5], e => {
+				tg.push(new TotalData());
+			});
+			tg[0].setStatusFisrt();
+			self.demoData(tg);
+			self.totalData = ko.observableArray(tg);
         }
 
         created() {
@@ -372,6 +396,17 @@ module nts.uk.ui.at.ksu002.a {
                         });
                 });
         }
+
+		demoData(tg: TotalData[]){
+			tg[0].dataInfo0('<span>(16:00)<br/>(-8:00)</span>');
+			tg[0].dataInfo1('<span>1</span>');
+			tg[1].dataInfo0('<span>(15:00)<br/>(-7:00)</span>');
+			tg[1].dataInfo1('<span>2</span>');
+			tg[2].dataInfo0('<span>(17:00)<br/>(-7:30)</span>');
+			tg[2].dataInfo1('<span>3</span>');
+			tg[4].dataInfo0('<span>(16:00)<br/>(-7:30)</span>');
+			tg[4].dataInfo1('<span>4</span>');
+		}
     }
 
     export module controls {
