@@ -50,10 +50,13 @@
 
 .table-left {
   margin-left: 8px;
+  position: absolute;
 }
 
 .table-right {
   margin-left: 15px;
+  position: absolute;
+  right: 0;
 }
 
 .center-align-for-ccg005-b div {

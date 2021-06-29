@@ -71,13 +71,13 @@ module nts.uk.at.ksm008.c {
             ]);
 
             vm.columnsWithoutNightShift = ko.observableArray([
-                {headerText: vm.$i18n('KSM008_32'), key: 'code', width: 50, formatter: _.escape},
-                {headerText: vm.$i18n('KSM008_33'), key: 'name', width: 150, formatter: _.escape},
+                {headerText: vm.$i18n('KSM008_32'), key: 'code', width: 70, formatter: _.escape},
+                {headerText: vm.$i18n('KSM008_33'), key: 'name', width: 180, formatter: _.escape},
             ]);
 
             vm.switchOps = ko.observableArray([
-                {code: '0', name: vm.$i18n("KSM008_40")},
-                {code: '1', name: vm.$i18n("KSM008_41")}
+                {code: 0, name: vm.$i18n("KSM008_40")},
+                {code: 1, name: vm.$i18n("KSM008_41")}
             ]);
 
             vm.initEmployeeList();

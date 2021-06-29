@@ -28,7 +28,7 @@
 }
 
 #starting-group {
-	top: 40px;
+	top: 30px;
 	left: 110px;
 }
 
@@ -69,4 +69,8 @@
 }
 #tabpanel-1 {
 	position: absolute;
+}
+
+#sidebar-area {
+	width: 110px;
 }
