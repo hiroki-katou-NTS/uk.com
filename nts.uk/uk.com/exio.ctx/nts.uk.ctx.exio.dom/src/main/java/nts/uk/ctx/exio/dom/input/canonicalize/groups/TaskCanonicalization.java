@@ -77,12 +77,12 @@ public class TaskCanonicalization implements GroupCanonicalization {
 		
 		if (context.getMode() == DELETE_RECORD_BEFOREHAND) {
 			// 既存データがあれば削除する（DELETE文になるので、実際にデータがあるかどうかのチェックは不要）
-			require.save(key.toDelete(context));
+			require.save(context, key.toDelete(context));
 		}
 		
 		// データ自体を正準化する必要は無い
 		val result = CanonicalizedDataRecord.noChange(revisedData);
-		require.save(result);
+		require.save(context, result);
 	}
 
 	public static interface RequireCanonicalize {

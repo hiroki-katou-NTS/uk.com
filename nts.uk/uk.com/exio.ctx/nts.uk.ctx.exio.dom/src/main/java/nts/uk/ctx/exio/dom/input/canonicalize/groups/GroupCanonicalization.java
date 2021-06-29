@@ -38,9 +38,9 @@ public interface GroupCanonicalization {
 		TaskCanonicalization.RequireCanonicalize,
 		DailyPerformanceCanonicalization.RequireCanonicalize {
 		
-		void save(AnyRecordToDelete toDelete);
+		void save(ExecutionContext context, AnyRecordToDelete toDelete);
 		
-		void save(CanonicalizedDataRecord canonicalizedDataRecord);
+		void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord);
 	}
 	
 	public static interface RequireAdjsut extends

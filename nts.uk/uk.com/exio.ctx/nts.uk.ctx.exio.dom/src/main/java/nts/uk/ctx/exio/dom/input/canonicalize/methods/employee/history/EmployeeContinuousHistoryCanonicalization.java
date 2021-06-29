@@ -69,7 +69,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 		
 		for (String employeeCode : employeeCodes) {
 			canonicalize(require, context, employeeCode).forEach(result -> {
-				require.save(result.complete());
+				require.save(context, result.complete());
 			});
 		}
 	}
@@ -200,7 +200,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 			existingHistory.removeForcively(item);
 			
 			AnyRecordToDelete toDelete = new EmployeeHistoryItem(employeeId, item).toDelete(context);
-			require.save(toDelete);
+			require.save(context, toDelete);
 		});
 	}
 	
@@ -225,7 +225,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 		
 		latestExistingItemOpt.ifPresent(existing -> {
 			AnyRecordToChange toChange = new EmployeeHistoryItem(employeeId, existing).toChange(context);
-			require.save(toChange);
+			require.save(context, toChange);
 		});
 	}
 

@@ -95,8 +95,13 @@ public class PrepareImporting {
 			ValidateData.ValidateRequire,
 			CanonicalizeRevisedData.Require {
 		
-		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
+		void setupWorkspace(ExecutionContext context);
 		
+		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
+
+
+		
+
 		Optional<ExternalImportAssemblyMethod> getAssemblyMethod(String companyId, ExternalImportCode settingCode);
 		
 		void save(ExecutionContext context, RevisedDataRecord revisedDataRecord);

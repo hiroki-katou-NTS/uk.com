@@ -82,10 +82,10 @@ public class DailyPerformanceCanonicalization implements GroupCanonicalization {
 		
 		if (context.getMode() == DELETE_RECORD_BEFOREHAND) {
 			// 既存データがあれば削除する（DELETE文になるので、実際にデータがあるかどうかのチェックは不要）
-			require.save(key.toDelete(context));
+			require.save(context, key.toDelete(context));
 		}
 		
-		require.save(intermResult.complete());
+		require.save(context, intermResult.complete());
 	}
 	
 	public static interface RequireCanonicalize {
