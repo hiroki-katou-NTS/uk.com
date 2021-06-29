@@ -4812,7 +4812,7 @@ public class WorkTimeReportService {
             return "";
         }
         
-        String[] calculateMethods = {"マスタを参照する", "予定を参照する", "参照せずに打刻する"};
+        String[] calculateMethods = {"マスタを参照する", "参照せずに打刻する"};
         for (int i = 0; i < calculateMethods.length; i++) {
             if (calculateMethod == i) {
                 return calculateMethods[i];
