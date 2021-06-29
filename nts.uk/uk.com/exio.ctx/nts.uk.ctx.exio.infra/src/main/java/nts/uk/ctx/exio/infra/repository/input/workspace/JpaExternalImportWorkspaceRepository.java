@@ -27,26 +27,27 @@ public class JpaExternalImportWorkspaceRepository extends JpaRepository implemen
 		
 		// 正準化済み一時テーブル
 		this.jdbcProxy().query(builder.createTableCanonicalized(require)).execute();
+		
+		new LayoutAnyRecordToChange(jdbcProxy(), context).createTable();
 	}
 
 	@Override
 	public void save(Require require, ExecutionContext context, RevisedDataRecord record) {
 		
 		val builder = createSqlBuilder(require, context);
-		builder.executeInsert(require, record, jdbcProxy());
+		builder.insert(require, record);
 	}
 
 	@Override
 	public void save(Require require, ExecutionContext context, CanonicalizedDataRecord record) {
 
 		val builder = createSqlBuilder(require, context);
-		builder.executeInsert(require, record, jdbcProxy());
+		builder.insert(require, record);
 	}
 
 	@Override
 	public void save(ExecutionContext context, AnyRecordToChange record) {
-		// TODO Auto-generated method stub
-		
+		new LayoutAnyRecordToChange(jdbcProxy(), context).insert(record);
 	}
 
 	@Override
@@ -60,6 +61,6 @@ public class JpaExternalImportWorkspaceRepository extends JpaRepository implemen
 		val group = require.getImportingGroup(context.getGroupId());
 		val workspace = require.getGroupWorkspace(context.getGroupId());
 		
-		return new WorkspaceSql(context, group, workspace);
+		return new WorkspaceSql(context, group, workspace, jdbcProxy());
 	}
 }
