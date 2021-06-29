@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.dailyperformance.correction;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,10 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.ChildCareNursePeriodImport;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.TempChildCareNurseManagementImport;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberCareAdapter;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childcare.GetRemainingNumberChildCareNurseAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.AnnualHolidayManagementAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
@@ -29,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.procwithbasedate.NumberConsecutiveVacation;
@@ -47,6 +53,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepo
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AnnualHolidaySetOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
@@ -69,6 +76,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.Com60HVacationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.CompensLeaveComDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.HolidayRemainNumberDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.NursingRemainDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.NursingVacationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ReserveLeaveDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.SubstVacationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.YearHolidaySettingDto;
@@ -149,6 +158,12 @@ public class DisplayRemainingHolidayNumber {
     
     @Inject
     private NursingLeaveSettingRepository nursingLeaveSettingRepo;
+    
+    @Inject
+    private GetRemainingNumberChildCareNurseAdapter getRemainingNumberChildCareNurseAdapter;
+    
+    @Inject
+    private GetRemainingNumberCareAdapter getRemainingNumberCareAdapter;
 
 	public YearHolidaySettingDto getAnnualLeaveSetting(String companyId, String employeeId, GeneralDate date) {
 		AnnualHolidaySetOutput output = AbsenceTenProcess.getSettingForAnnualHoliday(
@@ -229,12 +244,60 @@ public class DisplayRemainingHolidayNumber {
 		return output;
 	}
 	
-	public void getNursingSetting(String companyId, String employeeId, GeneralDate date) {
-	    // TODO: childCare + longTerm
+	public NursingRemainDto getNursingSetting(String companyId, String employeeId, GeneralDate date) {
 	    // 子看護介護の設定の取得
-	    NursingLeaveSetting nursingLeaveSettings = nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyId, NursingCategory.ChildNursing.value);
+	    NursingLeaveSetting childCareSettings = nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyId, NursingCategory.ChildNursing.value);
         // 子看護介護の設定の取得
         NursingLeaveSetting nursingLeaveSetting = nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyId, NursingCategory.Nursing.value);
+        
+        NursingVacationDto childCareVacation = new NursingVacationDto();
+        NursingVacationDto longTermCareVacation = new NursingVacationDto();
+        if (childCareSettings.getManageType().equals(ManageDistinct.YES)) {
+            // [NO.206]期間中の子の看護休暇残数を取得
+            ChildCareNursePeriodImport childNursePeriod = getRemainingNumberChildCareNurseAdapter.getChildCareNurseRemNumWithinPeriod(
+                    employeeId, 
+                    new DatePeriod(date, date.addYears(1).addDays(-1)), 
+                    InterimRemainMngMode.OTHER, 
+                    date, 
+                    Optional.of(false), 
+                    Optional.empty(), 
+                    Optional.empty(), 
+                    Optional.empty(), 
+                    Optional.empty());
+            
+            // OUTPUT「子の看護残数」をセットする
+            childCareVacation = new NursingVacationDto(
+                    childCareSettings.isManaged(), 
+                    childCareSettings.getTimeCareNursingSetting().getManageDistinct().equals(ManageDistinct.YES), 
+                    childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays(), 
+                    childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().isPresent() ? 
+                            childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().get() : 0);
+        }
+        
+        if (nursingLeaveSetting.getManageType().equals(ManageDistinct.YES)) {
+            // [NO.207]期間中の介護休暇残数を取得
+            ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
+                    companyId, 
+                    employeeId, 
+                    new DatePeriod(date, date.addYears(1).addDays(-1)), 
+                    InterimRemainMngMode.OTHER, 
+                    date, 
+                    Optional.of(false), 
+                    new ArrayList<TempChildCareNurseManagementImport>(),
+                    Optional.empty(), 
+                    Optional.empty(), 
+                    Optional.empty());
+            
+            // OUTPUT「介護残数」をセットする
+            longTermCareVacation = new NursingVacationDto(
+                    nursingLeaveSetting.isManaged(), 
+                    nursingLeaveSetting.getTimeCareNursingSetting().getManageDistinct().equals(ManageDistinct.YES), 
+                    longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays(), 
+                    longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().isPresent() ? 
+                            longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().get() : 0);
+        }
+        
+        return new NursingRemainDto(childCareVacation, longTermCareVacation);
 	}
 	
 	private GeneralDate getNextGrantDate(String companyId, String employeeId, GeneralDate date) {
