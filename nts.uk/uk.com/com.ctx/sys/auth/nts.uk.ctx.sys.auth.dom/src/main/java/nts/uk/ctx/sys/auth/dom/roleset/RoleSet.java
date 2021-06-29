@@ -139,7 +139,7 @@ public class RoleSet extends AggregateRoot {
 	    	case PERSONAL_INFO:
 	    		return convertToString(this.personInfRoleId);
     		default:
-    			return null;
+    			return "";
     	}
     }
     
