@@ -39,7 +39,7 @@ public class ExternalImportAssemblyMethod extends AggregateRoot {
 	
 	public Optional<RevisedDataRecord> assembleExternalImportData(Require require, ExecutionContext context, CsvRecord csvRecord){
 		
-		val importData = new RevisedDataRecord();
+		val importData = new DataItemList();
 		
 		// CSVの取込内容を組み立てる
 		val csvAssemblyResult = AssembleCsvRecord.assemble(require, context, csvImportItem, csvRecord);
@@ -52,11 +52,12 @@ public class ExternalImportAssemblyMethod extends AggregateRoot {
 		// 固定値項目の組み立て
 		importData.addItemList(this.assembleFixedItem(fixedItem));
 		
-		if(importData.getItems().isEmpty()) {
+		if(importData.isEmpty()) {
 			// 受け入れられるデータがない
 			return Optional.empty();
 		}
-		return Optional.of(importData);
+		
+		return Optional.of(new RevisedDataRecord(csvRecord.getRowNo(), importData));
 	}
 	
 	// 固定値項目の組み立て

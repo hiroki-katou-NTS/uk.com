@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input;
+﻿package nts.uk.ctx.exio.dom.input;
 
 import java.io.InputStream;
 import java.util.List;
@@ -8,6 +8,7 @@ import lombok.val;
 import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeRevisedData;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
+import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
@@ -84,7 +85,11 @@ public class PrepareImporting {
 			return;
 		}
 		
-		ValidateData.validate(require, context, optRevisedData.get());
+		val revisedData = optRevisedData.get();
+
+		ValidateData.validate(require, context, revisedData);
+		
+		require.save(context, revisedData);
 	}
 	
 	public static interface Require extends
@@ -93,6 +98,10 @@ public class PrepareImporting {
 			CanonicalizeRevisedData.Require {
 		
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
+
+
 		Optional<ExternalImportAssemblyMethod> getAssemblyMethod(String companyId, ExternalImportCode settingCode);
+		
+		void save(ExecutionContext context, RevisedDataRecord revisedDataRecord);
 	}
 }
