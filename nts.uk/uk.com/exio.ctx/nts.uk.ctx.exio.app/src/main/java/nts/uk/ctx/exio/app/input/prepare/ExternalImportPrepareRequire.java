@@ -11,8 +11,15 @@ import javax.inject.Inject;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.PrepareImporting;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
@@ -20,6 +27,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.PrepareImportingRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalizationRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
@@ -35,9 +43,9 @@ public class ExternalImportPrepareRequire {
 	@Inject
 	PrepareImportingRepository prepareImportiongRepo;
 
-	public Require create() {
+	public Require create(String companyId) {
 		
-		return EmbedStopwatch.embed(new RequireImpl());
+		return EmbedStopwatch.embed(new RequireImpl(companyId));
 	}
 	
 	public static interface Require extends PrepareImporting.Require {
@@ -46,28 +54,48 @@ public class ExternalImportPrepareRequire {
 	}
 	
 	@Inject
-	private ImportingUserConditionRepository importingUserConditionRepo;
+	ImportingUserConditionRepository importingUserConditionRepo;
 	
 	@Inject
-	private ImportableItemsRepository importableItemsRepository;
+	ImportableItemsRepository importableItemsRepo;
+	
+	@Inject
+	GroupCanonicalizationRepository groupCanonicalizationRepo;
+	
+	@Inject
+	EmployeeDataMngInfoRepository employeeDataMngInfoRepo;
+	
+	@Inject
+	EmploymentHistoryRepository employmentHistoryRepo;
+	
+	@Inject
+	TaskingRepository taskingRepo;
+	
+	@Inject
+	WorkInformationRepository workInformationRepo;
 	
 	public class RequireImpl implements Require {
 
+		private final String companyId ;
+		
+		public RequireImpl(String companyId) {
+			this.companyId = companyId;
+		}
+
 		@Override
-		public List<ImportingUserCondition> getImportingUserCondition(String companyId, String settingCode,
+		public List<ImportingUserCondition> getImportingUserCondition(String settingCode,
 				List<Integer> itemNo) {
 			return importingUserConditionRepo.get(companyId, settingCode, itemNo);
 		}
 
 		@Override
-		public List<ImportableItem> getDefinition(String companyId, ImportingGroupId groupId) {
-			return importableItemsRepository.get(companyId, groupId);
+		public List<ImportableItem> getDefinition(ImportingGroupId groupId) {
+			return importableItemsRepo.get(companyId, groupId);
 		}
 
 		@Override
 		public GroupCanonicalization getGroupCanonicalization(ImportingGroupId groupId) {
-			// TODO Auto-generated method stub
-			return null;
+			return groupCanonicalizationRepo.find(groupId);
 		}
 
 		@Override
@@ -93,9 +121,8 @@ public class ExternalImportPrepareRequire {
 		}
 
 		@Override
-		public String getEmployeeIdByEmployeeCode(String companyId, String employeeCode) {
-			// TODO Auto-generated method stub
-			return null;
+		public Optional<EmployeeDataMngInfo> getEmployeeIdByEmployeeCode(String employeeCode) {
+			return employeeDataMngInfoRepo.findByScdNotDel(employeeCode, companyId);
 		}
 
 		@Override
@@ -118,21 +145,18 @@ public class ExternalImportPrepareRequire {
 		}
 
 		@Override
-		public EmploymentHistory getEmploymentHistory(String employeeId) {
-			// TODO Auto-generated method stub
-			return null;
+		public Optional<EmploymentHistory> getEmploymentHistory(String employeeId) {
+			return employmentHistoryRepo.getByEmployeeIdDesc(companyId, employeeId);
 		}
 
 		@Override
 		public Optional<Task> getTask(String companyId, int taskFrameNo, String taskCode) {
-			// TODO Auto-generated method stub
-			return null;
+			return taskingRepo.getOptionalTask(companyId, new TaskFrameNo(taskFrameNo), new TaskCode(taskCode));
 		}
 
 		@Override
 		public Optional<WorkInfoOfDailyPerformance> getWorkInfoOfDailyPerformance(String employeeId, GeneralDate date) {
-			// TODO Auto-generated method stub
-			return null;
+			return workInformationRepo.find(employeeId, date);
 		}
 
 		@Override

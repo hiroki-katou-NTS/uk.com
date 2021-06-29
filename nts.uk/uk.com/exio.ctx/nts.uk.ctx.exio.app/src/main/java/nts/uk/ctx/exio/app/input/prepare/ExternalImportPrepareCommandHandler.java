@@ -29,7 +29,7 @@ public class ExternalImportPrepareCommandHandler extends AsyncCommandHandler<Ext
 		
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		val require = this.require.create();
+		val require = this.require.create(companyId);
 		
 		String fileId = command.getUploadedCsvFileId();
 		try (val inputStream = fileStorage.getStream(fileId)

@@ -25,7 +25,6 @@ public class AdjustExistingData {
 		
 		return canonicalization.adjust(
 				require,
-				context,
 				require.getAllAnyRecordToChange(context),
 				require.getAllAnyRecordToDelete(context));
 	}
@@ -50,7 +49,6 @@ public class AdjustExistingData {
 		
 		return canonicalization.adjust(
 				require,
-				context,
 				require.getEmployeeAnyRecordToChange(context, employeeId),
 				require.getEmployeeAnyRecordToDelete(context, employeeId));
 	}

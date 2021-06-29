@@ -47,12 +47,12 @@ public class ValidateData{
 
 	private static List<ImportingUserCondition> getUserConditions(ValidateRequire require, ExecutionContext context, RevisedDataRecord record ) {
 		val itemNoList = record.getItems().stream().map(item -> item.getItemNo()).collect(Collectors.toList());
-		return require.getImportingUserCondition(context.getSettingCode(), context.getSettingCode(), itemNoList);
+		return require.getImportingUserCondition(context.getSettingCode(), itemNoList);
 	}
 	
 	
 	
 	public static interface ValidateRequire extends ValidateSystemRange.SystemRequire{
-		List<ImportingUserCondition> getImportingUserCondition(String companyId, String settingCode, List<Integer> itemNo);
+		List<ImportingUserCondition> getImportingUserCondition(String settingCode, List<Integer> itemNo);
 	}
 }

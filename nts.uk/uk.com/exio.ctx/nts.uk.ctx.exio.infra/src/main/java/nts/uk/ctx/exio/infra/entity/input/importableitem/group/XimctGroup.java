@@ -8,8 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.eclipse.persistence.jpa.JpaEntityManager;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;

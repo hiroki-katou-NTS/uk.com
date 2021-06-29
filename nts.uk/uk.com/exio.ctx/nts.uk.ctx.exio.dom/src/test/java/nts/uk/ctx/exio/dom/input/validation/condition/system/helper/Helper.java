@@ -24,6 +24,7 @@ public class Helper {
 				new ImportableItem(
 						Helper.DUMMY.GROUP_ID,
 						itemNo,
+						Helper.DUMMY.NAME,
 						Helper.DUMMY.ITEM_TYPE,
 						Helper.DUMMY.REQUIRED,
 						Optional.empty())
@@ -43,6 +44,7 @@ public class Helper {
 		public static int ROW_NO = 999; 
 		public static boolean REQUIRED = true; 
 		public static Object VALUE = 999;
+		public static String NAME = "name";
 		public static ItemType ITEM_TYPE = ItemType.TIME_POINT;
 		public static ImportingMode MODE =  ImportingMode.INSERT_ONLY;
 		public static ExecutionContext CONTEXT = new ExecutionContext(COMPANY_ID, SETTING_CODE, GROUP_ID, MODE);
