@@ -89,8 +89,8 @@
 								<div id="I4_2" class="cf" tabindex="7" data-bind="ntsSwitchButton: {
 									name: $i18n('KDW006_242'),
 									options: ko.observableArray([
-												{ code: 0, name: function() { return $i18n('KDW006_186'); } },
-												{ code: 1, name: function() { return $i18n('KDW006_185'); } }
+												{ code: 0, name: $i18n('KDW006_186')},
+												{ code: 1, name: $i18n('KDW006_185')}
 											]),
 									optionsValue: 'code',
 									optionsText: 'name',
@@ -103,10 +103,10 @@
 									position: 'right top' }">？</button>
 							</div>
 							<div class="I4-spacing">
-								<div class="inline">
+								<div class="d-flex">
 									<span id="I4_6" class="label">#{i18n.getText('KDW006_239')}</span>
 								</div>
-								<div class="inline mid-line-spacing">
+								<div class="d-flex mid-line-spacing">
 									<input id="I4_7" tabindex="9" data-bind="ntsTimeEditor: {
 										name: $i18n('KDW006_248'),
 										value: time,
@@ -117,15 +117,15 @@
 										required: useAtr() == 1,
 										enable: useAtr() == 1}" />
 								</div>
-								<div class="inline">
+								<div class="d-flex">
 									<span id="I4_8" class="label">#{i18n.getText('KDW006_247')}</span>
 								</div>
 							</div>
 							<div class="I4-spacing">
-								<div class="inline">
+								<div class="d-flex">
 									<span id="I4_9" class="label">#{i18n.getText('KDW006_240')}</span>
 								</div>
-								<div class="inline mid-line-spacing">
+								<div class="d-flex mid-line-spacing">
 									<input id="I4_10" tabindex="10" data-bind="ntsTextEditor: {
 										name: $i18n('KDW006_244'),
 										value: displayMessage,
@@ -139,12 +139,12 @@
 										readonly: false
 									}" />
 								</div>
-								<div id="I4_11" tabindex="11" class="inline mid-line-spacing" data-bind="ntsColorPicker: {
+								<div id="I4_11" tabindex="11" class="d-flex mid-line-spacing" data-bind="ntsColorPicker: {
 									name: $i18n('KDW006_243'),
 									value: messageColor,
 									enable: useAtr() == 1, 
 									width: 50}"></div>
-								<div id="I4_12" tabindex="12" class="inline" data-bind="ntsCheckBox: { 
+								<div id="I4_12" tabindex="12" class="d-flex" data-bind="ntsCheckBox: { 
 									checked: boldAtr, enable: useAtr() == 1 }">#{i18n.getText('KDW006_241')}</div>
 							</div>
 						</div>

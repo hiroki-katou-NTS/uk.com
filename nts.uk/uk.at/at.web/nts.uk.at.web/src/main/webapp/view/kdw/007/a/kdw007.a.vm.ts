@@ -23,19 +23,19 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         ]);
         showTypeAtr: KnockoutObservable<number> = ko.observable(0);
         listUseAtr: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '1', name: getText("Enum_UseAtr_Use") },
-            { code: '0', name: getText("Enum_UseAtr_NotUse") }
+            { code: 1, name: getText("Enum_UseAtr_Use") },
+            { code: 0, name: getText("Enum_UseAtr_NotUse") }
         ]);
         listRemarkCancelErrorInput: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '1', name: getText("KDW007_109") },
-            { code: '0', name: getText("KDW007_110") }
+            { code: 1, name: getText("KDW007_109") },
+            { code: 0, name: getText("KDW007_110") }
         ]);
         listRemarkColumnNo: KnockoutObservableArray<any> = ko.observableArray([]);
         listTypeAtr: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '0', name: getText("Enum_ErrorAlarmClassification_Error") },
-            { code: '1', name: getText("Enum_ErrorAlarmClassification_Alarm") },
+            { code: 0, name: getText("Enum_ErrorAlarmClassification_Error") },
+            { code: 1, name: getText("Enum_ErrorAlarmClassification_Alarm") },
             // { code: '2', name: getText("Enum_ErrorAlarmClassification_Other") }
-            { code: '2', name: getText("Enum_ErrorAlarmClassification_ExCondition") }
+            { code: 2, name: getText("Enum_ErrorAlarmClassification_ExCondition") }
            
         ]);
         gridListColumns: KnockoutObservableArray<any> = ko.observableArray([

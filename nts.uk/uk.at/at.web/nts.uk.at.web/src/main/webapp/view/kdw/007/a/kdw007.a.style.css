@@ -20,7 +20,7 @@
 }
 
 #noticed-label, #boldAtr {
-	margin-left: 30px;
+	margin-left: 187px;
 }
 
 #noticed-label {
@@ -36,7 +36,6 @@
 	vertical-align: text-top;
 	height: 120px;
 	width: 400px;
-	margin-top: -20px;
 }
 
 .table-template td {
@@ -79,4 +78,8 @@ div[id^="tab"] {
 .switchEnd{
     float: right;
     margin-right: -45px;
+}
+
+.d-flex {
+	display: flex;
 }

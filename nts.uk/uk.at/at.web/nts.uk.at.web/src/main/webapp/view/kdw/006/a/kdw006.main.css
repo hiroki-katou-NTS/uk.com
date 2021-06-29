@@ -14,14 +14,14 @@
 }
 
 .panel-frame {
-	width: 280px;
+	width: 308px;
 	text-align: center;
 }
 
 .panel-custom-font-size {
 	font-size: 2em;
 	text-align: center;
-	margin-top: 5px;
+	/* margin-top: 5px; */
 	border-radius: 5px;
 }
 
@@ -37,7 +37,7 @@
 }
 
 .lbl-unit-setting-explanation, .lbl-general-labor-explanation {
-	margin-top: 7px;
+	margin-top: 5px;
 }
 
 .btn-icon {
@@ -46,8 +46,8 @@
 
 .btn-unit-setting {
 	width: 225px;
-	margin-bottom: 4px;
-	margin-top: 10px;
+	margin-bottom: 3px;
+	margin-top: 3px;
 }
 
 .caret-right:after {
@@ -56,6 +56,7 @@
 
 .caret-inline {
 	margin-left: -5px;
+	top: -8px;
 }
 
 .caret-right-large:after {

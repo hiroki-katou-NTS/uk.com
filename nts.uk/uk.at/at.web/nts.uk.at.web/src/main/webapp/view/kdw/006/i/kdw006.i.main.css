@@ -19,14 +19,16 @@
 
 .I4-spacing{
 	margin: 10px 0;
+	display: flex;
 }
 
 .mid-line-spacing{
 	margin: 0 12px;
 }
 
-.inline{
-	display: inline-block;
+.d-flex{
+	display: flex;
+	align-items: center;
 }
 
 #contents {
@@ -35,8 +37,8 @@
 
 #I2_2 {
 	position: relative;
-    top: 12px;
-    width: 220px;
+    top: 9px;
+    width: 240px;
 }
 
 #I3_2 {

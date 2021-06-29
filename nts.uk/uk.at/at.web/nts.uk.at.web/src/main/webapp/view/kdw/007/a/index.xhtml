@@ -95,7 +95,7 @@
 								enable: true
 								}" />
 						</div>
-						<div class="valign-center control-group">
+						<div class="valign-center control-group d-flex">
 							<!--A3_5-->	
 							<div id="labelUseAtr" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDW007_8')}</div>
 							<!--A3_6-->
@@ -110,7 +110,7 @@
 						<div id="tab-panel"  tabindex="10" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 							<!-- Tab 1 --> <!--A4_2-->
 							<div class="settingTab">
-								<div class="valign-center control-group">
+								<div class="valign-center control-group d-flex">
 									<!--A4_6-->
 									<div id="type-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_10')}</div>
 									<!--A4_7-->
@@ -124,7 +124,7 @@
 								<!--A4_22-->
 								<div class="label" id="noticed-label">#{i18n.getText('KDW007_91')}</div>
 								
-								<div class="valign-center control-group">
+								<div class="valign-center control-group d-flex">
 									<!--A4_23-->
 									<div id="remark-cancel-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_105')}</div>
 									<!--A4_24-->
@@ -345,7 +345,7 @@
 		                            	<td>
 		                            		<span>#{i18n.getText('KDW007_66')}</span>
 		                            	</td>
-		                             	<td>
+		                             	<td class="d-flex">
 		                            		<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_67')}</div>
 		                            		<div data-bind="ntsSwitchButton: {
 												options: enumLogicalOperator,
@@ -428,7 +428,7 @@
 		                            <col width="60"/>
 									<col width="180"/>
 		                            <col width="55"/>
-		                            <col width="55"/>
+		                            <col width="65"/>
 		                            <tr>
 		                            	<th colspan="7">#{i18n.getText('KDW007_95')}</th>
 		                            </tr>
@@ -498,7 +498,7 @@
 		                            <col width="60"/>
 									<col width="180"/>
 		                            <col width="55"/>
-		                            <col width="55"/>
+		                            <col width="65"/>
 		                            <tr>
 		                            	<th colspan="7">#{i18n.getText('KDW007_95')}</th>
 		                            </tr>

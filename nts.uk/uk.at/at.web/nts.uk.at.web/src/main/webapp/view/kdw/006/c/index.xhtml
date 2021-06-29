@@ -33,7 +33,7 @@
 			<div id="contents-area">
 				<div id="contents">
 					<!--  -->
-					<div id="C2_1" class="header">#{i18n.getText('KDW006_280')}</div>
+					<div id="C2_1" class="header-text">#{i18n.getText('KDW006_280')}</div>
 
 					<hr id="C2_2"/>
 
@@ -42,8 +42,8 @@
 						<div id="C2_4" class="cf" tabindex="3" data-bind="ntsSwitchButton: {
 							name: $i18n('KDW006_281'),
 							options: ko.observableArray([
-										{ disp36AtrCode: 0, disp36AtrName: function() { return $i18n('KDW006_303'); } },
-										{ disp36AtrCode: 1, disp36AtrName: function() { return $i18n('KDW006_304'); } }
+										{ disp36AtrCode: false, disp36AtrName: $i18n('KDW006_303') },
+										{ disp36AtrCode: true, disp36AtrName: $i18n('KDW006_304') }
 									]),
 							optionsValue: 'disp36AtrCode',
 							optionsText: 'disp36AtrName',
@@ -51,14 +51,15 @@
 							enable: true,
 							required: false }"></div>
 					</div>
+					
 
 					<div id="C2_7" class="left-content" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDW006_282')}</div>
 					<div class="right-content">
 						<div id="C2_8" class="cf" tabindex="4" data-bind="ntsSwitchButton: {
 							name: $i18n('KDW006_282'),
 							options: ko.observableArray([
-										{ flexDispAtrCode: 0, flexDispAtrName: function() { return $i18n('KDW006_303'); } },
-										{ flexDispAtrCode: 1, flexDispAtrName: function() { return $i18n('KDW006_304'); } }
+										{ flexDispAtrCode: false, flexDispAtrName: $i18n('KDW006_303')},
+										{ flexDispAtrCode: true, flexDispAtrName: $i18n('KDW006_304')}
 									]),
 							optionsValue: 'flexDispAtrCode',
 							optionsText: 'flexDispAtrName',
@@ -72,8 +73,8 @@
 						<div id="C2_12" class="cf" tabindex="5" data-bind="ntsSwitchButton: {
 							name: $i18n('KDW006_283'),
 							options: ko.observableArray([
-										{ checkErrRefDispCode: 0, checkErrRefDispName: function() { return $i18n('KDW006_303'); } },
-										{ checkErrRefDispCode: 1, checkErrRefDispName: function() { return $i18n('KDW006_304'); } }
+										{ checkErrRefDispCode: false, checkErrRefDispName: $i18n('KDW006_303')},
+										{ checkErrRefDispCode: true, checkErrRefDispName: $i18n('KDW006_304')}
 									]),
 							optionsValue: 'checkErrRefDispCode',
 							optionsText: 'checkErrRefDispName',
@@ -114,7 +115,7 @@
 					</div>
 
 					<!--  -->
-					<div id="C3_1" class="header">#{i18n.getText('KDW006_286')}</div>
+					<div id="C3_1" class="header-text">#{i18n.getText('KDW006_286')}</div>
 
 					<hr id="C3_2"/>
 
@@ -123,8 +124,8 @@
 						<div id="C3_4" class="cf" tabindex="8" data-bind="ntsSwitchButton: {
 							name: $i18n('KDW006_287'),
 							options: ko.observableArray([
-										{ dailySelfChkDispAtrCode: 0, dailySelfChkDispAtrName: function() { return $i18n('KDW006_303'); } },
-										{ dailySelfChkDispAtrCode: 1, dailySelfChkDispAtrName: function() { return $i18n('KDW006_304'); } }
+										{ dailySelfChkDispAtrCode: false, dailySelfChkDispAtrName: $i18n('KDW006_303')},
+										{ dailySelfChkDispAtrCode: true, dailySelfChkDispAtrName: $i18n('KDW006_304')}
 									]),
 							optionsValue: 'dailySelfChkDispAtrCode',
 							optionsText: 'dailySelfChkDispAtrName',
@@ -150,7 +151,7 @@
 					</div>
 					
 					<!--  -->
-					<div id="C4_1" class="header">#{i18n.getText('KDW006_288')}</div>
+					<div id="C4_1" class="header-text">#{i18n.getText('KDW006_288')}</div>
 					<button id="C4_2" tabindex="10" data-bind="ntsHelpButton: {
 						textId: 'KDW006_289',
 						textParams:[], 
@@ -221,8 +222,8 @@
 						<div id="C4_23" class="cf" tabindex="17" data-bind="ntsSwitchButton: {
 							name: $i18n('KDW006_302'),
 							options: ko.observableArray([
-										{ confirmEmployment: false, confirmEmploymentName: function() { return $i18n('KDW006_303'); } },
-										{ confirmEmployment: true, confirmEmploymentName: function() { return $i18n('KDW006_304'); } }
+										{ confirmEmployment: false, confirmEmploymentName: $i18n('KDW006_303')},
+										{ confirmEmployment: true, confirmEmploymentName: $i18n('KDW006_304')}
 									]),
 							optionsValue: 'confirmEmployment',
 							optionsText: 'confirmEmploymentName',
