@@ -55,6 +55,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
@@ -143,6 +146,9 @@ public class DisplayRemainingHolidayNumber {
     
     @Inject
     private PayoutSubofHDManaRepository payoutHdManaRepo;
+    
+    @Inject
+    private NursingLeaveSettingRepository nursingLeaveSettingRepo;
 
 	public YearHolidaySettingDto getAnnualLeaveSetting(String companyId, String employeeId, GeneralDate date) {
 		AnnualHolidaySetOutput output = AbsenceTenProcess.getSettingForAnnualHoliday(
@@ -221,6 +227,14 @@ public class DisplayRemainingHolidayNumber {
 	public Com60HVacationDto getCom60HVacationSetting(String companyId, String employeeId, GeneralDate date) {
 		Com60HVacationDto output = new Com60HVacationDto("", false, null, null);
 		return output;
+	}
+	
+	public void getNursingSetting(String companyId, String employeeId, GeneralDate date) {
+	    // TODO: childCare + longTerm
+	    // 子看護介護の設定の取得
+	    NursingLeaveSetting nursingLeaveSettings = nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyId, NursingCategory.ChildNursing.value);
+        // 子看護介護の設定の取得
+        NursingLeaveSetting nursingLeaveSetting = nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyId, NursingCategory.Nursing.value);
 	}
 	
 	private GeneralDate getNextGrantDate(String companyId, String employeeId, GeneralDate date) {
