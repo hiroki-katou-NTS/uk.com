@@ -12,6 +12,7 @@ import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
 import nts.uk.ctx.exio.dom.input.revise.AssembleCsvRecord;
+import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.FixedItemMapping;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportItemMapping;
@@ -36,9 +37,9 @@ public class ExternalImportAssemblyMethod extends AggregateRoot {
 	private List<FixedItemMapping> fixedItem;
 	
 	
-	public Optional<ExternalImportData> assembleExternalImportData(Require require, ExecutionContext context, CsvRecord csvRecord){
+	public Optional<RevisedDataRecord> assembleExternalImportData(Require require, ExecutionContext context, CsvRecord csvRecord){
 		
-		val importData = new ExternalImportData();
+		val importData = new RevisedDataRecord();
 		
 		// CSVの取込内容を組み立てる
 		val csvAssemblyResult = AssembleCsvRecord.assemble(require, context, csvImportItem, csvRecord);
@@ -51,7 +52,7 @@ public class ExternalImportAssemblyMethod extends AggregateRoot {
 		// 固定値項目の組み立て
 		importData.addItemList(this.assembleFixedItem(fixedItem));
 		
-		if(importData.getOneRecordData().isEmpty()) {
+		if(importData.getItems().isEmpty()) {
 			// 受け入れられるデータがない
 			return Optional.empty();
 		}
@@ -69,7 +70,7 @@ public class ExternalImportAssemblyMethod extends AggregateRoot {
 	}
 	
 	// 組み立て失敗
-	private Optional<ExternalImportData> failedAssemble(){
+	private Optional<RevisedDataRecord> failedAssemble(){
 		return Optional.empty();
 	}
 	

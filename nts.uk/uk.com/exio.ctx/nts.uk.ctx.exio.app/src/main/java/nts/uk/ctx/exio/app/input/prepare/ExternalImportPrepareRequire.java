@@ -23,9 +23,13 @@ import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.revise.ReviseItem;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
+import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.CodeConvertCode;
+import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvert;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
+import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
 import nts.uk.ctx.exio.dom.input.validation.ImportingUserConditionRepository;
 import nts.uk.ctx.exio.dom.input.validation.condition.ImportingUserCondition;
 
@@ -141,6 +145,30 @@ public class ExternalImportPrepareRequire {
 			// TODO Auto-generated method stub
 			return null;
 		}
-		
+
+		@Override
+		public Optional<ExternalImportAssemblyMethod> getAssemblyMethod(String companyId,
+				ExternalImportCode settingCode) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<ReviseItem> getRevise(ExecutionContext context, int importItemNumber) {
+			// TODO 1発目では対象外のため取得できない体で実装
+			return Optional.empty();
+		}
+
+		@Override
+		public ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public ExternalImportCodeConvert getCodeConvert(CodeConvertCode code) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
 	}
 }
