@@ -63,7 +63,7 @@
 									<li class="context-menu-bar" data-bind="attr: {'id': menuBarId}">
 										<a class="tab-item" data-bind="attr: {href: targetContent}, style: {'background-color': backgroundColor}">
 											<span class="tab-item-content limited-label" data-bind="style: {'color': textColor}, text: menuBarName" />
-											<img style="width: 20px; height: 20px;" src="../resource/CCG013_1.png" data-bind="click: function() { $vm.openIdialog(menuBarId()); }" />
+											<i data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click:function() { $vm.openIdialog(menuBarId()); }"></i>
 										</a>
 									</li>
 								</ul>
@@ -80,7 +80,7 @@
 											<div class="title-menu-column valign-top" data-bind="attr:{id: titleMenuId}">
 												<div class="title-menu-name" data-bind="style: {'background-color': backgroundColor}">
 													<span class="title-menu-content limited-label" data-bind="style: {'color': textColor}, text: titleMenuName"></span>
-													<img style="width: 20px; height: 20px;" src="../resource/CCG013_1.png" data-bind="click: $parents[2].openCdialog.bind($parents[2], $data)" />
+													<i data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click: $parents[2].openCdialog.bind($parents[2], $data)"></i>
 												</div>
 												<span class="caret-bottom"></span>
 												<ul class="tree-menu" data-bind="foreach: {data: treeMenu}">
