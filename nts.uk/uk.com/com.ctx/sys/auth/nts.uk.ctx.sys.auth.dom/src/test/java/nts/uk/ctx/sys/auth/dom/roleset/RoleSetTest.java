@@ -59,49 +59,47 @@ public class RoleSetTest {
 	
 	/**
 	 * get roleID by roleType
-	 * 全部ロールIDが empty
+	 * 全部ロールIDが ない場合は　nullを返す
 	 */
 	@Test
 	public void getRoleIDByRoleType_empty() {
 		RoleSet roleSet = Helper.createRoleSet(Optional.empty(), Optional.empty()
 				, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 		
-		String expectual = String.valueOf("");
-		
 		//就業ロール
 		{
 			String result = roleSet.getRoleIDByRoleType(RoleType.EMPLOYMENT);
-			assertThat(result).isEqualTo(expectual);
+			assertThat(result).isNull();
 		}
 
 		//個人情報ロール
 		{
 			String result = roleSet.getRoleIDByRoleType(RoleType.PERSONAL_INFO);
-			assertThat(result).isEqualTo(expectual);
+			assertThat(result).isNull();
 		}
 		
 		//給与ロール
 		{
 			String result = roleSet.getRoleIDByRoleType(RoleType.SALARY);
-			assertThat(result).isEqualTo(expectual);
+			assertThat(result).isNull();
 		}
 		
 		//人事ロール
 		{
 			String result = roleSet.getRoleIDByRoleType(RoleType.HUMAN_RESOURCE);
-			assertThat(result).isEqualTo(expectual);
+			assertThat(result).isNull();
 		}		
 		
 		//マイナンバー
 		{
 			String result = roleSet.getRoleIDByRoleType(RoleType.MY_NUMBER);
-			assertThat(result).isEqualTo(expectual);
+			assertThat(result).isNull();
 		}
 		
 		//オフィスヘルパ
 		{
 			String result = roleSet.getRoleIDByRoleType(RoleType.OFFICE_HELPER);
-			assertThat(result).isEqualTo(expectual);
+			assertThat(result).isNull();
 		}
 		
 	}

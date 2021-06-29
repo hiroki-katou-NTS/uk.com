@@ -119,7 +119,11 @@ public class RoleSet extends AggregateRoot {
         this.employmentRoleId = Optional.empty();
     }
     
-    /** Get RoleID by RoleType */
+    /**
+     * get roleID by roleType
+     * @param roleType ロール種類
+     * @return
+     */
     public String getRoleIDByRoleType(RoleType roleType) {
     	switch(roleType) {
 	    	case EMPLOYMENT:
@@ -135,11 +139,17 @@ public class RoleSet extends AggregateRoot {
 	    	case PERSONAL_INFO:
 	    		return convertToString(this.personInfRoleId);
     		default:
-    			return "";
+    			return null;
     	}
     }
     
+    /**
+     * convert roleID to string
+     * roleId == empty, return null
+     * @param roleID
+     * @return
+     */
     private String convertToString(Optional<String> roleID) {
-    	return roleID.isPresent()? roleID.get(): "";
+    	return roleID.isPresent()? roleID.get(): null;
     }
 }

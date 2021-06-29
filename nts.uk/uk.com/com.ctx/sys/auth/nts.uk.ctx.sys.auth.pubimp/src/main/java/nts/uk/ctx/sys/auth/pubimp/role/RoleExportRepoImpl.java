@@ -292,18 +292,14 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 			switch (roleType) {
 			case 3: // EMPLOYMENT
 				roleID = roleSetOpt.get().getEmploymentRoleId(); break;
-
 			case 4: // SALARY
 				roleID = roleSetOpt.get().getSalaryRoleId(); break;
 			case 5: // HUMAN_RESOURCE
 				roleID  = roleSetOpt.get().getHRRoleId(); break;
-				
 			case 6: // OFFICE_HELPER
 				roleID  = roleSetOpt.get().getOfficeHelperRoleId(); break;
-				
 			case 7: // MY_NUMBER
 				roleID  = roleSetOpt.get().getMyNumberRoleId(); break;
-				
 			case 8: // PERSONAL_INFO
 				roleID  = roleSetOpt.get().getPersonInfRoleId(); break;
 			default:
