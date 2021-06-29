@@ -1,3 +1,6 @@
+.noborder {
+    border-top: none !important;
+}
 tr:hover > td {
     background-color: #ffffff !important;
 }
