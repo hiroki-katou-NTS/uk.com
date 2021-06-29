@@ -160,15 +160,15 @@ public class ExtractAlarmListFinder {
 				.collect(Collectors.toList());
 		if (filteredWebMenus.isEmpty()) {
 			filteredWebMenus = tmpWebMenus.stream()
-					.filter(w -> ((w.getAlarmCheckConditionCode() == null || w.getAlarmCheckConditionCode().v() == null)
+					.filter(w -> ((w.getAlarmCheckConditionCode() == null || w.getAlarmCheckConditionCode().v().equals("000"))
 							&& w.getAlarmCode().equals(alarmCode))
 							|| (w.getAlarmCheckConditionCode().v().equals(alarmCheckConditionCode.v())
-							&& w.getAlarmCode() == null))
+							&& w.getAlarmCode().equals("0")))
 					.collect(Collectors.toList());
 			if (filteredWebMenus.isEmpty()) {
 				filteredWebMenus = tmpWebMenus.stream()
-						.filter(w -> (w.getAlarmCheckConditionCode() == null || w.getAlarmCheckConditionCode().v() == null)
-								&& w.getAlarmCode() == null)
+						.filter(w -> (w.getAlarmCheckConditionCode() == null || w.getAlarmCheckConditionCode().v().equals("000"))
+								&& w.getAlarmCode().equals("0"))
 						.collect(Collectors.toList());
 			}
 		}
