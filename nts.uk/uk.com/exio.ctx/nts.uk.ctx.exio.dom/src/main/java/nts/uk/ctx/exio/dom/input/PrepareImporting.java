@@ -71,8 +71,6 @@ public class PrepareImporting {
 			List<String> columnNames,
 			CsvRecord csvRecord) {
 		
-		// TODO: データの組み立て
-		
 		val optAssembler = require.getAssemblyMethod(context.getCompanyId(), context.getExternalImportCode());
 		if(!optAssembler.isPresent()) {
 			// 受入データの組み立て方法が取得できない
@@ -86,7 +84,7 @@ public class PrepareImporting {
 		}
 		
 		val revisedData = optRevisedData.get();
-
+		
 		ValidateData.validate(require, context, revisedData);
 		
 		require.save(context, revisedData);
@@ -98,8 +96,7 @@ public class PrepareImporting {
 			CanonicalizeRevisedData.Require {
 		
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
-
-
+		
 		Optional<ExternalImportAssemblyMethod> getAssemblyMethod(String companyId, ExternalImportCode settingCode);
 		
 		void save(ExecutionContext context, RevisedDataRecord revisedDataRecord);

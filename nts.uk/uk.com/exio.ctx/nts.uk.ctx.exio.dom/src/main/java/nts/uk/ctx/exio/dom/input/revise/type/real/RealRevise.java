@@ -3,11 +3,12 @@ package nts.uk.ctx.exio.dom.input.revise.type.real;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import nts.uk.ctx.exio.dom.input.revise.RevisedValueResult;
-import nts.uk.ctx.exio.dom.dataformat.value.DecimalDigitNumber;
 import nts.uk.ctx.exio.dom.input.revise.ReviseValue;
 import nts.uk.ctx.exio.dom.input.revise.type.RangeOfValue;
 
+@AllArgsConstructor
 public class RealRevise implements ReviseValue {
 	
 	/** 値の有効範囲を指定する */

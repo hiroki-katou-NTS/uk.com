@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.CodeConvertCode;
 import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvert;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
@@ -26,6 +27,9 @@ public class ReviseItem extends AggregateRoot {
 	
 	/** 受入項目NO */
 	private int importItemNumber;
+	
+	/** 項目型 */
+	private ItemType itemType;
 	
 	/** 値の編集 */
 	private ReviseValue revisingValue;

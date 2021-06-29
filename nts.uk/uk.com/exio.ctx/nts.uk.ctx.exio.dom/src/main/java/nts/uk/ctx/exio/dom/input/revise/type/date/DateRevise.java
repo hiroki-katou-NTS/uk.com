@@ -1,11 +1,13 @@
 package nts.uk.ctx.exio.dom.input.revise.type.date;
 
+import lombok.AllArgsConstructor;
 import nts.uk.ctx.exio.dom.input.revise.ReviseValue;
 import nts.uk.ctx.exio.dom.input.revise.RevisedValueResult;
 
 /**
  * 日付型編集
  */
+@AllArgsConstructor
 public class DateRevise implements ReviseValue {
 	
 	/** 日付形式 */

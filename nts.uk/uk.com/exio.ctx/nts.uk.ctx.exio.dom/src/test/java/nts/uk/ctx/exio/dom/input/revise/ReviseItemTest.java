@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.dom.input.revise;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Optional;
 
@@ -13,6 +12,7 @@ import mockit.Injectable;
 import mockit.Mocked;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
+import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 
@@ -26,6 +26,7 @@ public class ReviseItemTest {
 		private static String COM_ID = "comcomcom";
 		private static ExternalImportCode EXI_CODE = new ExternalImportCode("exiexiexi");
 		private static int EXI_ITEM_NO = 765;
+		private static ItemType ITEM_TYPE = ItemType.STRING;
 		private static ReviseValue REVISE_VALUE;
 		private static ImportingGroupId EXI_GROUP = ImportingGroupId.TASK;
 		private static ImportingMode EXI_MODE = ImportingMode.INSERT_ONLY;
@@ -40,6 +41,7 @@ public class ReviseItemTest {
 				Dummy.COM_ID, 
 				Dummy.EXI_CODE, 
 				Dummy.EXI_ITEM_NO, 
+				Dummy.ITEM_TYPE,
 				Dummy.REVISE_VALUE, 
 				Optional.empty());
 		
