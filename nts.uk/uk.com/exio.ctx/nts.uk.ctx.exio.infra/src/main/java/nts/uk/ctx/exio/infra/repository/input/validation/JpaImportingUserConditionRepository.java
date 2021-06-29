@@ -8,7 +8,7 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.exio.dom.input.validation.ImportingUserConditionRepository;
 import nts.uk.ctx.exio.dom.input.validation.condition.ImportingUserCondition;
-import nts.uk.ctx.exio.infra.entity.input.validation.OiomtUserCondition;
+import nts.uk.ctx.exio.infra.entity.input.validation.XimctUserCondition;
 
 public class JpaImportingUserConditionRepository extends JpaRepository implements ImportingUserConditionRepository{
 	
@@ -24,7 +24,7 @@ public class JpaImportingUserConditionRepository extends JpaRepository implement
 			result.addAll(new NtsStatement(sql, this.jdbcProxy())
 				.paramString("cid", companyId)
 				.paramString("settingCode", settingCode)
-				.getList(rec -> OiomtUserCondition.MAPPER.toEntity(rec).toDomain()));
+				.getList(rec -> XimctUserCondition.MAPPER.toEntity(rec).toDomain()));
 		});
 		return result;
 	}

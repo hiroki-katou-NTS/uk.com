@@ -33,12 +33,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Getter
 @Table(name = "OIOMT_USER_CONDITION")
-public class OiomtUserCondition extends ContractUkJpaEntity implements Serializable{
+public class XimctUserCondition extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private OiomtUserConditionPK pk;
+	private XimctUserConditionPK pk;
 	
 	@Column(name = "ITEM_TYPE")
 	private int itemType;
@@ -66,7 +66,7 @@ public class OiomtUserCondition extends ContractUkJpaEntity implements Serializa
 		return pk;
 	}
 	
-	public static final JpaEntityMapper<OiomtUserCondition> MAPPER = new JpaEntityMapper<>(OiomtUserCondition.class);
+	public static final JpaEntityMapper<XimctUserCondition> MAPPER = new JpaEntityMapper<>(XimctUserCondition.class);
 	
 	public ImportingUserCondition toDomain() {
 		Validation validation = getValidation();

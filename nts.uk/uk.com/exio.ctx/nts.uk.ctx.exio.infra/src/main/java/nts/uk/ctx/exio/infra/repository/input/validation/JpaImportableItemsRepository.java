@@ -7,7 +7,7 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
-import nts.uk.ctx.exio.infra.entity.input.validation.OioctImportableItem;
+import nts.uk.ctx.exio.infra.entity.input.validation.XimctImportableItem;
 
 public class JpaImportableItemsRepository extends JpaRepository implements ImportableItemsRepository{
 
@@ -21,7 +21,7 @@ public class JpaImportableItemsRepository extends JpaRepository implements Impor
 		return new NtsStatement(sql, this.jdbcProxy())
 				.paramString("cid", companyId)
 				.paramInt("groupId", groupId.value)
-				.getList(rec -> OioctImportableItem.MAPPER.toEntity(rec).toDomain());
+				.getList(rec -> XimctImportableItem.MAPPER.toEntity(rec).toDomain());
 	}
 
 }
