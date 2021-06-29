@@ -114,7 +114,8 @@ module nts.uk.at.ksm008.f {
                 isShowSelectAllButton: false,
                 disableSelection: false,
                 maxRows: 10,
-                tabindex: 13
+                tabindex: 13,
+                hasPadding: false
             };
 
             vm.targetEmployeeComponentOption = {
@@ -128,7 +129,8 @@ module nts.uk.at.ksm008.f {
                 isShowSelectAllButton: false,
                 disableSelection: false,
                 maxRows: 10,
-                tabindex: 14
+                tabindex: 14,
+                hasPadding: false
             };
         }
 

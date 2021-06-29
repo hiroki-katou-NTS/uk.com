@@ -58,10 +58,6 @@
     width: 17px;
 }
 
-.pd-tl {
-    padding-left: 20px;
-}
-
 .panel.ntsPanel.direction-right {
     margin-right: 35px;
 }
@@ -72,4 +68,12 @@
 
 .F4_1 {
     width: 60px;
+}
+
+#kcp005-component-left {
+    margin: 0 0px;
+}
+
+#kcp005-component-right {
+    margin: 0 0px;
 }
