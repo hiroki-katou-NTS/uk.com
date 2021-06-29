@@ -29,6 +29,9 @@ public class PrepareImporting {
 				.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
 		val context = ExecutionContext.create(setting);
 		
+		// ワークスペース生成
+		require.setupWorkspace(context);
+		
 		// 受入データの組み立て
 		assembleImportingData(require, csvFileStream, setting, context);
 		
@@ -97,8 +100,9 @@ public class PrepareImporting {
 			ValidateData.ValidateRequire,
 			CanonicalizeRevisedData.Require {
 		
+		void setupWorkspace(ExecutionContext context);
+		
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
-
 
 		Optional<ExternalImportAssemblyMethod> getAssemblyMethod(String companyId, ExternalImportCode settingCode);
 		

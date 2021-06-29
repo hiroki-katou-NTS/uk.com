@@ -23,14 +23,13 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.PrepareImporting;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
-import nts.uk.ctx.exio.dom.input.canonicalize.PrepareImportingRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalizationRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
-import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.revise.ReviseItem;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
@@ -48,12 +47,6 @@ import nts.uk.ctx.exio.dom.input.workspace.GroupWorkspace;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ExternalImportPrepareRequire {
 	
-	@Inject
-	private ExternalImportWorkspaceRepository workspaceRepo;
-	
-	@Inject
-	PrepareImportingRepository prepareImportiongRepo;
-
 	public Require create(String companyId) {
 		
 		return EmbedStopwatch.embed(new RequireImpl(companyId));
@@ -95,6 +88,15 @@ public class ExternalImportPrepareRequire {
 			this.companyId = companyId;
 		}
 
+		
+		@Inject
+		private ExternalImportWorkspaceRepository workspaceRepo;
+		
+		@Override
+		public void setupWorkspace(ExecutionContext context) {
+			workspaceRepo.createWorkspace(this, context);
+		}
+
 		@Override
 		public List<ImportingUserCondition> getImportingUserCondition(String settingCode,
 				List<Integer> itemNo) {
@@ -110,27 +112,36 @@ public class ExternalImportPrepareRequire {
 		public GroupCanonicalization getGroupCanonicalization(ImportingGroupId groupId) {
 			return groupCanonicalizationRepo.find(groupId);
 		}
+		
+
 
 		@Override
-		public void save(AnyRecordToDelete toDelete) {
-			// TODO Auto-generated method stub
-			
+		public void save(ExecutionContext context, AnyRecordToDelete toDelete) {
+			workspaceRepo.save(context, toDelete);
 		}
+		
 
 		@Override
-		public void save(CanonicalizedDataRecord canonicalizedDataRecord) {
-			prepareImportiongRepo.save(canonicalizedDataRecord);
+		public void save(ExecutionContext context, AnyRecordToChange recordToChange) {
+			workspaceRepo.save(context, recordToChange);
+		}
+		
+
+		@Override
+		public void save(ExecutionContext context, RevisedDataRecord revisedDataRecord) {
+			
+			workspaceRepo.save(this, context, revisedDataRecord);
+		}
+		
+		@Override
+		public void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord) {
+			workspaceRepo.save(this, context, canonicalizedDataRecord);
 		}
 
 		@Override
 		public int getNumberOfRowsRevisedData() {
 			// TODO Auto-generated method stub
 			return 0;
-		}
-
-		@Override
-		public void save(AnyRecordToChange recordToChange) {
-			prepareImportiongRepo.save(recordToChange);
 		}
 
 		@Override
@@ -184,21 +195,6 @@ public class ExternalImportPrepareRequire {
 				ExternalImportCode settingCode) {
 			// TODO Auto-generated method stub
 			return null;
-		}
-		
-		/** 編集済みデータのワークスペースが作成済みか */
-		private boolean hasCreatedWorkspaceRevised = false;
-
-		@Override
-		public void save(ExecutionContext context, RevisedDataRecord revisedDataRecord) {
-			
-			// ワークスペース未作成なら作る
-			if (!hasCreatedWorkspaceRevised) {
-				workspaceRepo.createWorkspaceReviced(this, context);
-				hasCreatedWorkspaceRevised = true;
-			}
-			
-			workspaceRepo.save(this, context, revisedDataRecord);
 		}
 
 		@Override

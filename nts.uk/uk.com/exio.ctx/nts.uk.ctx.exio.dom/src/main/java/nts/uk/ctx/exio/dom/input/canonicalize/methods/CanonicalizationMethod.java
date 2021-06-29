@@ -35,8 +35,8 @@ public interface CanonicalizationMethod {
 		/** 受け入れた編集済みデータの行数を返す */
 		int getNumberOfRowsRevisedData();
 		
-		void save(AnyRecordToChange recordToChange);
+		void save(ExecutionContext context, AnyRecordToChange recordToChange);
 		
-		void save(AnyRecordToDelete recordToDelete);
+		void save(ExecutionContext context, AnyRecordToDelete recordToDelete);
 	}
 }
