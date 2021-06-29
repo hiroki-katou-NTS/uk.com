@@ -8,14 +8,14 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         <div class="space-between-table ">
             <!-- ko if: display1() -->
             <div class="row-underline" style="display: flex; justify-content: space-between">
-                <div data-bind=" text: $i18n('KAF012_3')"></div>
+                <div data-bind="text: $i18n('KAF012_3')"></div>
                 <a class="hyperlink" href="" data-bind="text: substituteRemaining, click: openKDL005"></a>
             </div>
             <!-- /ko -->
             <!-- ko if: display2() -->
             <div class="row-underline" style="height: 60px">
                 <div style="display: flex; justify-content: space-between">
-                  <div data-bind=" text: $i18n('KAF012_4')"></div>
+                  <div data-bind="text: $i18n('KAF012_4')"></div>
                   <a class="hyperlink" href="" data-bind="text: annualRemaining, click: openKDL020"></a>
                 </div>
                   <div style="margin-left: 15px; margin-top: -5px" data-bind="ntsFormLabel: {text: maxGrantDate}"></div>
@@ -23,25 +23,25 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
             <!-- /ko -->
             <!-- ko if: display3() -->
             <div class="row-underline" style="display: flex; justify-content: space-between">
-                <div data-bind=" text: $i18n('Com_ChildNurseHoliday')"></div>
+                <div data-bind="text: $i18n('Com_ChildNurseHoliday')"></div>
                 <a class="hyperlink" href="" data-bind="text: childNursingRemaining, click: openKDL051"></a>
             </div>
             <!-- /ko -->
             <!-- ko if: display4() -->
             <div class="row-underline"  style="display: flex; justify-content: space-between">
-                <div data-bind=" text: $i18n('Com_CareHoliday')"></div>
+                <div data-bind="text: $i18n('Com_CareHoliday')"></div>
                 <a class="hyperlink" href="" data-bind="text: nursingRemaining, click: openKDL052"></a>
             </div>
             <!-- /ko -->
             <!-- ko if: display5() -->
             <div class="row-underline" style="display: flex; justify-content: space-between">
-                <div data-bind=" text: $i18n('Com_ExsessHoliday')"></div>
+                <div data-bind="text: $i18n('Com_ExsessHoliday')"></div>
                 <a class="hyperlink" href="" data-bind="text: super60HRemaining, click: openKDL017"></a>
             </div>
             <!-- /ko -->
             <!-- ko if: display6() -->
             <div class="row-underline"  style="display: flex; justify-content: space-between">
-                <div data-bind=" text: $i18n('KAF012_46')"></div>
+                <div data-bind="text: $i18n('KAF012_46')"></div>
                 <span data-bind="text: specialRemaining"></span>
             </div>
             <!-- /ko -->

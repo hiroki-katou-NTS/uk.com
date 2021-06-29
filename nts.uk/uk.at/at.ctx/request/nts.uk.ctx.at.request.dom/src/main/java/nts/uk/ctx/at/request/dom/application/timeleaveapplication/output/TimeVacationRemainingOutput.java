@@ -50,9 +50,9 @@ public class TimeVacationRemainingOutput {
     private DatePeriod remainingPeriod;
 
     // 付与年月日
-    private Optional<GeneralDate> grantDate;
+    private Optional<GeneralDate> grantDate = Optional.empty();
 
     // 付与日数
-    private Optional<Integer> grantedDays;
+    private Optional<Integer> grantedDays = Optional.empty();
 
 }
