@@ -174,6 +174,7 @@ public class Role extends AggregateRoot {
 		memento.setContractCode(this.contractCode);
 		memento.setAssignAtr(this.assignAtr);
 		memento.setCompanyId(this.companyId);
+		memento.setApprovalAuthority(this.approvalAuthority);
 	}
 		
 	public boolean canInsert(){

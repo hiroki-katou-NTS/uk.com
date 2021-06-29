@@ -23,6 +23,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -48,7 +49,13 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 	private final static String GET_BY_ROLE_TYPE_ROLE_ATR = "SELECT e FROM SacmtRole e"
 			+ " WHERE e.cid = :companyId AND e.roleType = :roleType"
 			+ " AND e.assignAtr = :roleAtr ORDER BY e.assignAtr ASC, e.code ASC ";
-	
+
+	private final static String GET_BY_ROLE_TYPE_ROLE_ATR_ROLE_CD = "SELECT e FROM SacmtRole e"
+			+ " WHERE e.cid = :companyId"
+			+ " AND e.roleType = :roleType"
+			+ " AND e.assignAtr = :roleAtr "
+			+ " AND e.code = :roleCode ";
+
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.auth.dom.role.RoleRepository#findById(java.lang.String)
 	 */
@@ -128,6 +135,11 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 
 	@Override
 	public void update(Role role) {
+		Integer approvalAuthority = null;
+		Optional<Boolean> approvalAuthorityOpt = role.getApprovalAuthority();
+		if(approvalAuthorityOpt.isPresent()){
+			approvalAuthority = approvalAuthorityOpt.get()? 1: 0;
+		}
 		SacmtRole updateEntity = this.queryProxy().find(role.getRoleId(), SacmtRole.class).get();
 		updateEntity.setCid(role.getCompanyId());
 		updateEntity.setRoleType(role.getRoleType().value);
@@ -135,6 +147,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		updateEntity.setName(role.getName().toString());
 		updateEntity.contractCd = (role.getContractCode().toString());
 		updateEntity.setAssignAtr(role.getAssignAtr().value);
+		updateEntity.setApprovalAuthority(approvalAuthority);
 		this.commandProxy().update(updateEntity);		
 	}
 	
@@ -144,6 +157,11 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 	}
 	
 	private SacmtRole  toEntity(Role role){
+		Integer approvalAuthority = null;
+		Optional<Boolean> approvalAuthorityOpt = role.getApprovalAuthority();
+		if(approvalAuthorityOpt.isPresent()){
+			approvalAuthority = approvalAuthorityOpt.get()? 1: 0;
+		}
 		SacmtRole entity = new SacmtRole();
 		entity.setRoleId(role.getRoleId());
 		entity.setCid(role.getCompanyId());
@@ -153,6 +171,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		entity.setName(role.getName().toString());
 		entity.contractCd = (role.getContractCode().toString());
 		entity.setAssignAtr(role.getAssignAtr().value);
+		entity.setApprovalAuthority(approvalAuthority);
 		return entity;
 	}
 
@@ -253,7 +272,13 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 	@Override
 	public boolean exists(String cid, RoleType roleType, RoleAtr assignAtr, RoleCode roleCode) {
 		//TODO 会社ID、ロール種類、担当区分毎に、ロールコードが重複チェックするので、実装お願いします。
-		return false;
+		List<SacmtRole> entities = this.queryProxy().query(GET_BY_ROLE_TYPE_ROLE_ATR_ROLE_CD, SacmtRole.class)
+				.setParameter("companyId", cid)
+				.setParameter("roleType", roleType.value)
+				.setParameter("roleAtr", assignAtr.value)
+				.setParameter("roleCode", roleCode.v())
+				.getList();
+		return entities != null && !entities.isEmpty();
 	}
 
 }
