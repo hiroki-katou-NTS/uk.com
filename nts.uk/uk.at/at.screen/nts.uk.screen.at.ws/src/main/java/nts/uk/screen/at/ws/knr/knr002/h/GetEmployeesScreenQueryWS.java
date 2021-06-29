@@ -19,7 +19,7 @@ import nts.uk.screen.at.app.query.knr.knr002.h.GetEmployeesDto;
 */
 @Path("screen/at/employeestransfer")
 @Produces(MediaType.APPLICATION_JSON)
-public class GetEmployeesScreenQuery {
+public class GetEmployeesScreenQueryWS {
 	@Inject
 	private GetEmployees getEmployees;
 	@POST

@@ -46,12 +46,20 @@ table td.text-center {
   margin-right: 15px;
 }
 
-#fixedTable .nts-input {
-  width: 222px !important;
+#fixedTable  .switchbox-wrappers .radio-wrapper span {
+  width: 60px !important;
 }
 
-#fixedTable .nts-switch-button {
+#fixedTableCCDT .switchbox-wrappers .radio-wrapper span {
   width: 60px !important;
+}
+
+#fixedTableCCDT {
+  margin-top: 10px;
+}
+
+#fixedTable .ui-iggrid table thead tr, #fixedTableCCDT .ui-iggrid table thead tr {
+  height: 32px !important;
 }
 
 #fixedTableCCDT .nts-input:not(.radio-wrapper, .radio-wrappers, .checkbox-wrapper) {

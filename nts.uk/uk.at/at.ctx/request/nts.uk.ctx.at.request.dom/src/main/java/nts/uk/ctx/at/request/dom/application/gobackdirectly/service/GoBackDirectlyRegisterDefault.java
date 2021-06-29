@@ -134,8 +134,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		List<ConfirmMsgOutput> listResult = processBeforeRegister.processBeforeRegister_New(companyId,
 				EmploymentRootAtr.APPLICATION, agenAtr, application, null, 
 				inforGoBackCommonDirectOutput
-				.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().isPresent() ? inforGoBackCommonDirectOutput
-						.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get() : null,
+				.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
 				Collections.emptyList(),
 				inforGoBackCommonDirectOutput
 				.getAppDispInfoStartup());

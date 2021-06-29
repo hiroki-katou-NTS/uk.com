@@ -18,7 +18,6 @@
 }
 #A4_2 {
 	width: 643px;
-    height: 170px;
 }
 .message-td {
 	padding-left: 10px;
@@ -139,11 +138,11 @@
 }
 
 .min-774 {
-	min-width: 774px !important;
+	min-width: 784px !important;
 }
 
 .min-671 {
-	min-width: 671px !important;
+	min-width: 681px !important;
 }
 
 .break-all {

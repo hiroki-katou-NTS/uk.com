@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 560, height: 680 };</script>
+			<script>var dialogSize = { width: 600, height: 620 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.m.main.css" />
 			<com:scriptfile path="ksu001.m.start.js" />
@@ -16,6 +16,7 @@
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 
 		</ui:define>
+		
 
 		<ui:define name="content">
 			<div id="functions-area">
@@ -43,10 +44,10 @@
 							{ prop: 'rankSymbol', length: 10 },
 						]}"></div>
 				</div>
-				<div>
+				
 					<!--MULTI SELECTION EXAMPLE-->
-					<div id="component-items-list"></div>
-				</div>
+				<div id="component-items-list"></div>
+				
 			</div>
 
 		</ui:define>

@@ -1015,7 +1015,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					false,
 					appHolidayWork.getApplication(),
 					null,
-					appHdWorkDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(null),
+					appHdWorkDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
 					Collections.emptyList(), 
 					appHdWorkDispInfo.getAppDispInfoStartupOutput());
 			

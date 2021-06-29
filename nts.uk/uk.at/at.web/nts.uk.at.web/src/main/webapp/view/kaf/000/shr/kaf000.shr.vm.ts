@@ -24,6 +24,14 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
             this.opAppStartDate = ko.observable("");
             this.opAppEndDate = ko.observable("");
             this.opStampRequestMode = ko.observable(null);
+			this.appDate.subscribe(value => {
+				if(_.isEmpty(this.opAppStartDate())) {
+					this.opAppStartDate(value);
+				}
+				if(_.isEmpty(this.opAppEndDate())) {
+					this.opAppEndDate(value);
+				}
+			});
         }        
     }
     
@@ -270,13 +278,14 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
             element: string, // element select to set error
             vm: any
         ) {
-            vm.$errors("clear", [element]);
+            // vm.$errors("clear", [element]);
             let appDispInfoStartupOutput = vm.appDispInfoStartupOutput(),
                 useDivision = appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
                 recordDate = appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.recordDate,
                 empHistImport = appDispInfoStartupOutput.appDispInfoWithDateOutput.empHistImport,
-                opErrorFlag = appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
-                msgID = "";
+                opMsgErrorLst = appDispInfoStartupOutput.appDispInfoWithDateOutput.opMsgErrorLst,
+                msgID = "",
+				msgParam: Array<any> = [];
             if(mode && useDivision == 0) {
 				if(recordDate == 0) {
 					vm.$dialog.error({ messageId: "Msg_323" }).then(() => {
@@ -284,36 +293,24 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 	                });
 					return false;
 				}
-				vm.$errors(element, "Msg_323");
+				// vm.$errors(element, "Msg_323");
+				vm.$dialog.error({ messageId: "Msg_323" });
                 return true;
             }
-            
-            if(_.isNull(opErrorFlag)) {
-                return true;    
-            }
-            switch(opErrorFlag){
-                case 1:
-                    msgID = "Msg_324";
-                    break;
-                case 2: 
-                    msgID = "Msg_238";
-                    break;
-                case 3:
-                    msgID = "Msg_237";
-                    break;
-                default: 
-                    break;
-            }  
-            if(_.isEmpty(msgID)) { 
-                return true;
-            }
+			
+			if(_.isEmpty(opMsgErrorLst)) {
+				return true;	
+			}  
+            msgID = opMsgErrorLst[0].msgID;
+			msgParam = opMsgErrorLst[0].msgParam;
 			if(recordDate == 0) {
-				vm.$dialog.error({ messageId: msgID }).then(() => {
+				vm.$dialog.error({ messageId: msgID, messageParams: msgParam }).then(() => {
                 	vm.$jump("com", "/view/ccg/008/a/index.xhtml");
 	            });
 				return false;
 			}
-			vm.$errors(element, msgID);
+			// vm.$errors(element, msgID);
+			vm.$dialog.error({ messageId: msgID, messageParams: msgParam });
 			return true;
         }
 
