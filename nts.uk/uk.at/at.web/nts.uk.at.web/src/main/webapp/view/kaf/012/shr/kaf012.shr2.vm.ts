@@ -12,21 +12,21 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
 
     const template = `
     <div id="kaf012-share-component2">
-        <div class="control-group valign-center">
-            <div data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_46')}"></div>
-            <div id="leave-type-switch"
+        <div class="control-group table" style="margin-bottom: 13px">
+            <div class="cell valign-center" style="padding-right: 3px" data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_46')}"></div>
+            <div class="cell valign-center" id="leave-type-switch"
                 data-bind="ntsSwitchButton: {
 						name: $i18n('KAF012_5'),
 						options: switchOptions,
 						optionsValue: 'code',
 						optionsText: 'name',
 						value: leaveType,
-						enable: !viewMode(),
+						enable: true,
 						required: true }">
 			</div>
         </div>
         <div class="control-group valign-center" data-bind="if: displaySpecialLeaveFrames">
-            <div data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_47')}"/>
+            <div style="padding-right: 0" data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_47')}"/>
             <div data-bind="ntsComboBox: {
                     name: $i18n('KAF012_47'),
                     options: specialLeaveFrames,
@@ -38,10 +38,10 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     enable: !viewMode()}">  
             </div>
         </div>
-        <div class="control-group valign-top" data-bind="if: switchOptions().length > 0">
-            <div data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_6')}"></div>
-            <div style="display: inline-flex;" data-bind="css: {hidden: appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag > 0}">
-                <div class="pull-left">
+        <div class="control-group table" style="margin-bottom: -3px">
+            <div class="cell" style="padding-right: 3px; vertical-align: top" data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_6')}"></div>
+            <div class="cell valign-center" style="display: inline-flex;" data-bind="css: {hidden: appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag > 0}">
+                <div class="pull-left" >
                     <table id="kaf012-input-table">
                         <thead>
                             <tr data-bind="if: leaveType() == 6">
@@ -380,6 +380,15 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
             const vm = this;
             vm.leaveType.subscribe(value => {
                 vm.$errors("clear");
+                //change width
+                if (value < 6 ) { // small table
+                    $('.left-panel').css('width', '872px');
+                    $('.two-panel').css('width', '1260px');
+                } else {
+                    let hiddenCols = $('#kaf012-calc-table').find('th:hidden').length * 85;
+                    $('.left-panel').css('width', 1305 - hiddenCols + 'px');
+                    $('.two-panel').css('width', 1693 - hiddenCols + 'px');
+                }
             });
             vm.timeLeaveManagement.subscribe(value => {
                 if (value) {

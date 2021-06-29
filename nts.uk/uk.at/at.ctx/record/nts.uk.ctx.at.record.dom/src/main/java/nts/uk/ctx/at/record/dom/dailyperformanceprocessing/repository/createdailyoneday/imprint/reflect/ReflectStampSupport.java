@@ -69,7 +69,7 @@ public class ReflectStampSupport {
 		if (reflectionAtr == ReflectionAtr.REFLECTED) {
 			// 打刻は反映済みをする
 			stamp.setReflectedCategory(true);
-		} else if (reflectionAtr == ReflectionAtr.REFLECT_FAIL) {}
+		}
 	}
 	
 	// 開始区分を確認する -> 開始区分を取得する

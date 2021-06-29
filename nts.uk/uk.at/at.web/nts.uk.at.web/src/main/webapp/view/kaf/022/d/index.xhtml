@@ -27,7 +27,8 @@
             nts.uk.ctx.at.request.dom.application.ApplicationType
         </com:EnumScript>
     </ui:define>
-
+    <div id="functions-area">
+    </div>
     <ui:define name="sidebar">
         <ul class="navigator"
             data-bind="foreach: tabs">
@@ -44,7 +45,7 @@
         <div id="tabpanel-com" role="tabpanel" data-bind="with: viewmodelZ">
             <div class="sidebar-content-header">
                 <span class="title">#{i18n.getText('Com_Company')}</span>
-                <a data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KAF022_706')}</a>
+                <a style="height: 25px" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KAF022_706')}</a>
                 <button class="button proceed" data-bind="enable: $root.errors.isEmpty(), click: register">#{i18n.getText('KAF022_1')}</button>
             </div>
             <div class="contents-area">

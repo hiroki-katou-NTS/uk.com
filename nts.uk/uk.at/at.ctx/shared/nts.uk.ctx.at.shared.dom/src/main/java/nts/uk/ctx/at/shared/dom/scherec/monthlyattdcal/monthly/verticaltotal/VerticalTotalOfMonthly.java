@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanyS
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.WorkTypeDaysCountTable;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workamount.WorkAmountOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workclock.WorkClockOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT;
@@ -41,6 +42,8 @@ public class VerticalTotalOfMonthly implements Serializable{
 	private WorkTimeOfMonthlyVT workTime;
 	/** 勤務時刻 */
 	private WorkClockOfMonthly workClock;
+	/** 勤務金額 */
+	private WorkAmountOfMonthly workAmount;
 	
 	/**
 	 * コンストラクタ
@@ -50,6 +53,7 @@ public class VerticalTotalOfMonthly implements Serializable{
 		this.workDays = new WorkDaysOfMonthly();
 		this.workTime = new WorkTimeOfMonthlyVT();
 		this.workClock = new WorkClockOfMonthly();
+		this.workAmount = new WorkAmountOfMonthly();
 	}
 	
 	/**
@@ -62,12 +66,14 @@ public class VerticalTotalOfMonthly implements Serializable{
 	public static VerticalTotalOfMonthly of(
 			WorkDaysOfMonthly workDays,
 			WorkTimeOfMonthlyVT workTime,
-			WorkClockOfMonthly workClock){
+			WorkClockOfMonthly workClock,
+			WorkAmountOfMonthly workAmount){
 		
 		val domain = new VerticalTotalOfMonthly();
 		domain.workDays = workDays;
 		domain.workTime = workTime;
 		domain.workClock = workClock;
+		domain.workAmount = workAmount;
 		return domain;
 	}
 	
@@ -95,6 +101,7 @@ public class VerticalTotalOfMonthly implements Serializable{
 		this.workTime = new WorkTimeOfMonthlyVT();
 		this.workDays = new WorkDaysOfMonthly();
 		this.workClock = new WorkClockOfMonthly();
+		this.workAmount = new WorkAmountOfMonthly();
 		
 		// 日別実績の勤務情報　取得
 		Map<GeneralDate, WorkInfoOfDailyAttendance> workInfoOfDailyMap =
@@ -203,13 +210,16 @@ public class VerticalTotalOfMonthly implements Serializable{
 					predetermineTimeSet, isAttendanceDay, isTwoTimesStampExists, predTimeSetOnWeekday);
 			
 			// 勤務時間集計
-			this.workTime.aggregate(require, employeeId, procYmd, workType, attendanceTimeOfDaily);
+			this.workTime.aggregate(require, employeeId, procYmd, workType, attendanceTimeOfDaily, companyId);
 			
 			if (AppContexts.optionLicense().customize().ootsuka()) {
 				// 勤務時刻集計
 				this.workClock.aggregate(workType, pcLogonInfoOpt, attendanceTimeOfDaily, timeLeavingOfDaily,
 						predTimeSetForCalc, anyItemValueOpt);
 			}
+			
+			/** 就業時間金額の集計 */
+			this.workAmount.aggregate(attendanceTimeOfDaily);
 			
 			procYmd = procYmd.addDays(1);
 		}
@@ -224,6 +234,7 @@ public class VerticalTotalOfMonthly implements Serializable{
 		this.workDays.sum(target.workDays);
 		this.workTime.sum(target.workTime);
 		this.workClock.sum(target.workClock);
+		this.workAmount.sum(target.workAmount);
 	}
 	
 	public static interface RequireM1 extends MonAggrCompanySettings.RequireM4, 

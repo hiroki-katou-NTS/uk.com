@@ -111,7 +111,9 @@
 						<div class="dialog-rows">
 							<div data-bind="ntsFormLabel: { required: true }" style="width: 150px;">#{i18n.getText('KMK003_270')}</div>	
 							<div>
-								<span class="label">#{i18n.getText('KMK003_36')}</span>		
+								<com:ko tag="ifnot" bind="isFlex()">
+									<span class="label">#{i18n.getText('KMK003_36')}</span>
+								</com:ko>
 								<input tabindex="1" id="stampGoWork1Start" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_271]',		
 										value: stampGoWork1Start,
@@ -139,9 +141,9 @@
 						</div>
 						<com:ko tag="ifnot" bind="isFlex()">
 							<div class="dialog-rows">
-							<div style="width: 150px;"></div>	
+							<div style="width: 158px;"></div>
 							<div>
-								<span class="label">#{i18n.getText('KMK003_37')}</span>		
+								<span class="label">#{i18n.getText('KMK003_328')}</span>
 								<input tabindex="3" id="stampGoWork2Start" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_272]',		
 										value: stampGoWork2Start,
@@ -171,7 +173,9 @@
 						<div class="dialog-rows">
 							<div data-bind="ntsFormLabel: { required: true }" style="width: 150px;">#{i18n.getText('KMK003_273')}</div>		
 							<div>
-								<span class="label">#{i18n.getText('KMK003_36')}</span>		
+								<com:ko tag="ifnot" bind="isFlex()">
+									<span class="label">#{i18n.getText('KMK003_36')}</span>
+								</com:ko>
 								<input tabindex="5" id="stampLeavingWork1Start" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_274]',		
 										value: stampLeavingWork1Start,
@@ -199,9 +203,9 @@
 						</div>
 						<com:ko tag="ifnot" bind="isFlex()">
 							<div class="dialog-rows">
-							<div style="width: 150px;"></div>	
+							<div style="width: 158px;"></div>
 							<div>
-								<span class="label">#{i18n.getText('KMK003_37')}</span>		
+								<span class="label">#{i18n.getText('KMK003_328')}</span>
 								<input tabindex="7" id="stampLeavingWork2Start" class="input-warp" data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK003_275]',		
 										value: stampLeavingWork2Start,
@@ -290,10 +294,10 @@
 					<div><hr/></div>
 					<!-- END form label -  -->
 					<!-- START setting items -  -->
-					<div class="dialog-block">
+					<div class="dialog-block" style="margin: 10px">
 						<div class="dialog-rows">
 							<div class="label-warp"><span class="label">#{i18n.getText('KMK003_200')}</span></div>
-							<div class="control-warp" style="width: 100px; margin-right: 0px;">
+							<div class="control-warp" style="width: 100px; margin-right: 0; margin-top: 6px;">
 								<div tabindex="19" style="width: 100px;" data-bind="ntsComboBox: {
 										options: listRoundingTimeUnit,
 										optionsValue: 'value',
@@ -312,7 +316,7 @@
 						</div>	
 						<div class="dialog-rows">
 							<div class="label-warp"><span class="label">#{i18n.getText('KMK003_286')}</span></div>
-							<div class="control-warp" style="width: 100px; margin-right: 0px;">
+							<div class="control-warp" style="width: 100px; margin-right: 0; margin-top: 6px;">
 								<div tabindex="21" style="width: 100px;" data-bind="ntsComboBox: {
 										options: listRoundingTimeUnit,
 										optionsValue: 'value',

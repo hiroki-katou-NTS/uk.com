@@ -8,6 +8,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.StartEndClassificationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;

@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,24 +25,14 @@ import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskScheduleDetail;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskScheduleDetailTestHelper;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
@@ -51,16 +40,13 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.La
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class WorkScheduleTest {
@@ -76,24 +62,6 @@ public class WorkScheduleTest {
 	
 	@Injectable
 	OutingTimeOfDailyAttd outingTime;
-	
-	@Injectable
-	static WorkInfoOfDailyAttendance workInfo;
-	
-	@Mocked
-	static AffiliationInforOfDailyAttd affInfo;
-	
-	@Injectable
-	static TimevacationUseTimeOfDaily timeVacationUseOfDaily;
-	
-	@Injectable
-	static BreakTimeGoOutTimes workTime;
-	
-	@Injectable
-	static OutingTotalTime recordTotalTime;
-	
-	@Injectable
-	static OutingTotalTime deductionTotalTime;
 	
 //	@Test
 //	public void getters() {
@@ -256,10 +224,10 @@ public class WorkScheduleTest {
 			) {
 
 		TimeLeavingOfDailyAttd timeLeaving = 
-				Helper.createTimeLeavingOfDailyAttd(start1, end1, Optional.of( start2 ), Optional.of( end2 ));
+				TimeLeavingOfDailyAttdHelper.createTimeLeavingOfDailyAttd(start1, end1, Optional.of( start2 ), Optional.of( end2 ));
 		
 		
-		WorkSchedule workSchedule = Helper.createWithParams( Optional.of(timeLeaving), goStraight, backStraight );
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams( Optional.of(timeLeaving), goStraight, backStraight );
 		
 		val start1_OfWorkSchedule = NtsAssert.Invoke.privateMethod(workSchedule, "getAttendanceItemValue", WS_AttendanceItem.StartTime1.ID );
 		val end1_OfWorkSchedule = NtsAssert.Invoke.privateMethod(workSchedule, "getAttendanceItemValue", WS_AttendanceItem.EndTime1.ID );
@@ -295,10 +263,10 @@ public class WorkScheduleTest {
 			) {
 
 		TimeLeavingOfDailyAttd timeLeaving = 
-				Helper.createTimeLeavingOfDailyAttd(start1, end1, Optional.of( start2 ), Optional.of( end2 ));
+				TimeLeavingOfDailyAttdHelper.createTimeLeavingOfDailyAttd(start1, end1, Optional.of( start2 ), Optional.of( end2 ));
 		
 		
-		WorkSchedule workSchedule = Helper.createWithParams( Optional.of(timeLeaving), goStraight, backStraight );
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams( Optional.of(timeLeaving), goStraight, backStraight );
 		
 		NtsAssert.Invoke.privateMethod(workSchedule, "updateValue", WS_AttendanceItem.StartTime1.ID, newStart1 );
 		NtsAssert.Invoke.privateMethod(workSchedule, "updateValue", WS_AttendanceItem.EndTime1.ID, newEnd1 );
@@ -345,10 +313,10 @@ public class WorkScheduleTest {
 			) {
 		
 		TimeLeavingOfDailyAttd timeLeaving = 
-				Helper.createTimeLeavingOfDailyAttd(new TimeWithDayAttr(123), end1, Optional.empty(), Optional.empty());
+				TimeLeavingOfDailyAttdHelper.createTimeLeavingOfDailyAttd(new TimeWithDayAttr(123), end1, Optional.empty(), Optional.empty());
 		
 		
-		WorkSchedule workSchedule = Helper.createWithParams( 
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams( 
 				timeLeaving, 
 				new ArrayList<>()); // editStateList is empty
 		
@@ -375,13 +343,13 @@ public class WorkScheduleTest {
 			) {
 		
 		TimeLeavingOfDailyAttd timeLeaving = 
-				Helper.createTimeLeavingOfDailyAttd(new TimeWithDayAttr(123), end1, Optional.empty(), Optional.empty());
+				TimeLeavingOfDailyAttdHelper.createTimeLeavingOfDailyAttd(new TimeWithDayAttr(123), end1, Optional.empty(), Optional.empty());
 		
 		List<EditStateOfDailyAttd> editStateList = new ArrayList<>( Arrays.asList( 
 				new EditStateOfDailyAttd(WS_AttendanceItem.StartTime1.ID, EditStateSetting.IMPRINT )
 				));
 		
-		WorkSchedule workSchedule = Helper.createWithParams( timeLeaving, editStateList);
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams( timeLeaving, editStateList);
 		
 		// Act
 		NtsAssert.Invoke.privateMethod(workSchedule, "updateValueByHandCorrection", 
@@ -413,9 +381,9 @@ public class WorkScheduleTest {
 			) {
 		
 		TimeLeavingOfDailyAttd timeLeaving = 
-				Helper.createTimeLeavingOfDailyAttd( new TimeWithDayAttr(123), end1, Optional.empty(), Optional.empty());
+				TimeLeavingOfDailyAttdHelper.createTimeLeavingOfDailyAttd( new TimeWithDayAttr(123), end1, Optional.empty(), Optional.empty());
 		
-		WorkSchedule workSchedule = Helper.createWithParams( 
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams( 
 				timeLeaving, 
 				new ArrayList<>()); // editStateList is empty
 		
@@ -454,13 +422,13 @@ public class WorkScheduleTest {
 			) {
 		
 		TimeLeavingOfDailyAttd timeLeaving = 
-				Helper.createTimeLeavingOfDailyAttd( new TimeWithDayAttr(123), end1, Optional.empty(), Optional.empty());
+				TimeLeavingOfDailyAttdHelper.createTimeLeavingOfDailyAttd( new TimeWithDayAttr(123), end1, Optional.empty(), Optional.empty());
 		
 		List<EditStateOfDailyAttd> editStateList = new ArrayList<>( Arrays.asList( 
 				new EditStateOfDailyAttd(WS_AttendanceItem.StartTime1.ID, EditStateSetting.IMPRINT )
 				));
 		
-		WorkSchedule workSchedule = Helper.createWithParams( timeLeaving, editStateList);
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams( timeLeaving, editStateList);
 		
 		new Expectations() {{
 			require.getLoginEmployeeId();
@@ -494,7 +462,7 @@ public class WorkScheduleTest {
 	@Test
 	public void testConfirm() {
 		
-		WorkSchedule target = Helper.createWithConfirmAtr(ConfirmedATR.UNSETTLED);
+		WorkSchedule target = WorkScheduleHelper.createWithConfirmAtr(ConfirmedATR.UNSETTLED);
 		target.confirm();
 		
 		assertThat(target.getConfirmedATR()).isEqualTo(ConfirmedATR.CONFIRMED);
@@ -503,7 +471,7 @@ public class WorkScheduleTest {
 	@Test
 	public void testRemoveConfirm() {
 		
-		WorkSchedule target = Helper.createWithConfirmAtr(ConfirmedATR.CONFIRMED);
+		WorkSchedule target = WorkScheduleHelper.createWithConfirmAtr(ConfirmedATR.CONFIRMED);
 		target.removeConfirm();
 		
 		assertThat(target.getConfirmedATR()).isEqualTo(ConfirmedATR.UNSETTLED);
@@ -522,7 +490,7 @@ public class WorkScheduleTest {
 				new EditStateOfDailyAttd(7, EditStateSetting.REFLECT_APPLICATION),
 				new EditStateOfDailyAttd(8, EditStateSetting.IMPRINT)));
 		
-		WorkSchedule target = Helper.createWithEditStateList(editStateList);
+		WorkSchedule target = WorkScheduleHelper.createWithEditStateList(editStateList);
 		target.removeHandCorrections();
 		
 		assertThat(target.getLstEditState())
@@ -545,7 +513,7 @@ public class WorkScheduleTest {
 	public void testGetTimeVacation_empty_case1() {
 		
 		// Arrange
-		WorkSchedule target = Helper.createWithParams(
+		WorkSchedule target = WorkScheduleHelper.createWithParams(
 				Optional.of(timeLeaving), // 出退勤 mocked 
 				Optional.empty(), // 勤怠時間 empty
 				Optional.empty());
@@ -569,7 +537,7 @@ public class WorkScheduleTest {
 	public void testGetTimeVacation_empty_case2() {
 		
 		// Arrange
-		WorkSchedule target = Helper.createWithParams(
+		WorkSchedule target = WorkScheduleHelper.createWithParams(
 				Optional.empty(), // 出退勤 empty 
 				Optional.of(attendanceTime), // 勤怠時間 mocked
 				Optional.empty()); // 外出時間帯 empty
@@ -594,7 +562,7 @@ public class WorkScheduleTest {
 	public void testGetTimeVacation_empty_case3() {
 		
 		// Arrange
-		WorkSchedule target = Helper.createWithParams(
+		WorkSchedule target = WorkScheduleHelper.createWithParams(
 				Optional.empty(), // 出退勤 mocked 
 				Optional.empty(), // 勤怠時間 empty
 				Optional.of(outingTime)); // 外出時間帯
@@ -616,7 +584,7 @@ public class WorkScheduleTest {
 	public void testGetTimeVacation_empty_case5() {
 		
 		// Arrange
-		WorkSchedule target = Helper.createWithParams(
+		WorkSchedule target = WorkScheduleHelper.createWithParams(
 				Optional.empty(), // 出退勤 empty 
 				Optional.empty(), // 勤怠時間 empty
 				Optional.empty()); // 外出時間帯 empty
@@ -643,7 +611,7 @@ public class WorkScheduleTest {
 		
 		// Arrange
 		
-		WorkSchedule target = Helper.createWithParams(
+		WorkSchedule target = WorkScheduleHelper.createWithParams(
 										Optional.of(timeLeaving), 
 										Optional.of(attendanceTime),
 										Optional.of(outingTime));
@@ -704,7 +672,7 @@ public class WorkScheduleTest {
 			// result = timePaidUseTime2;
 		}};
 		
-		WorkSchedule target = Helper.createWithParams(
+		WorkSchedule target = WorkScheduleHelper.createWithParams(
 				Optional.of(timeLeaving), // 出退勤
 				Optional.of(attendanceTime), // 勤怠時間
 				Optional.empty());
@@ -761,7 +729,7 @@ public class WorkScheduleTest {
 			result = timePaidUseTime2;
 		}};
 		
-		WorkSchedule target = Helper.createWithParams(
+		WorkSchedule target = WorkScheduleHelper.createWithParams(
 				Optional.of(timeLeaving), // 出退勤
 				Optional.of(attendanceTime), // 勤怠時間
 				Optional.empty());
@@ -819,7 +787,7 @@ public class WorkScheduleTest {
 			// result = timePaidUseTime2;
 		}};
 		
-		WorkSchedule target = Helper.createWithParams(
+		WorkSchedule target = WorkScheduleHelper.createWithParams(
 				Optional.of(timeLeaving), // 出退勤
 				Optional.of(attendanceTime), // 勤怠時間
 				Optional.empty());
@@ -873,7 +841,7 @@ public class WorkScheduleTest {
 			result = timePaidUseTime2;
 		}};
 		
-		WorkSchedule target = Helper.createWithParams(
+		WorkSchedule target = WorkScheduleHelper.createWithParams(
 				Optional.of(timeLeaving), // 出退勤
 				Optional.of(attendanceTime), // 勤怠時間
 				Optional.empty());
@@ -911,7 +879,7 @@ public class WorkScheduleTest {
 		
 		// Arrange
 		
-		WorkSchedule target = Helper.createWithParams(
+		WorkSchedule target = WorkScheduleHelper.createWithParams(
 										Optional.empty(),
 										Optional.of(attendanceTime),
 										Optional.of(outingTime));
@@ -920,8 +888,8 @@ public class WorkScheduleTest {
 			
 			attendanceTime.getOutingTimeOfDaily();
 			result = Arrays.asList(
-					Helper.createOutingTimeOfDailyWithReason(GoingOutReason.COMPENSATION),
-					Helper.createOutingTimeOfDailyWithReason(GoingOutReason.PUBLIC)
+					OutingTimeOfDailyHelper.createOutingTimeOfDailyWithReason(GoingOutReason.COMPENSATION),
+					OutingTimeOfDailyHelper.createOutingTimeOfDailyWithReason(GoingOutReason.PUBLIC)
 					);
 			
 		}};
@@ -944,7 +912,7 @@ public class WorkScheduleTest {
 		
 		// Arrange
 		
-		WorkSchedule target = Helper.createWithParams(
+		WorkSchedule target = WorkScheduleHelper.createWithParams(
 										Optional.empty(),
 										Optional.of(attendanceTime), // 勤怠時間
 										Optional.of(outingTime)); // 外出時間帯
@@ -953,10 +921,10 @@ public class WorkScheduleTest {
 			
 			attendanceTime.getOutingTimeOfDaily();
 			result = Arrays.asList(
-					Helper.createOutingTimeOfDailyWithParams(GoingOutReason.PRIVATE, timevacationUseTimeOfDaily1),
-					Helper.createOutingTimeOfDailyWithParams(GoingOutReason.PUBLIC, timevacationUseTimeOfDaily2),
-					Helper.createOutingTimeOfDailyWithParams(GoingOutReason.COMPENSATION, timevacationUseTimeOfDaily3),
-					Helper.createOutingTimeOfDailyWithParams(GoingOutReason.UNION, timevacationUseTimeOfDaily4));
+					OutingTimeOfDailyHelper.createOutingTimeOfDailyWithParams(GoingOutReason.PRIVATE, timevacationUseTimeOfDaily1),
+					OutingTimeOfDailyHelper.createOutingTimeOfDailyWithParams(GoingOutReason.PUBLIC, timevacationUseTimeOfDaily2),
+					OutingTimeOfDailyHelper.createOutingTimeOfDailyWithParams(GoingOutReason.COMPENSATION, timevacationUseTimeOfDaily3),
+					OutingTimeOfDailyHelper.createOutingTimeOfDailyWithParams(GoingOutReason.UNION, timevacationUseTimeOfDaily4));
 			
 			outingTime.getTimeZoneByGoOutReason((GoingOutReason) any);
 			returns(
@@ -1017,7 +985,7 @@ public class WorkScheduleTest {
 					new EditStateOfDailyAttd(WS_AttendanceItem.BreakTime.ID, EditStateSetting.HAND_CORRECTION_MYSELF)
 					));
 			
-			workSchedule = Helper.createWithParams(breakTime, editStateList);
+			workSchedule = WorkScheduleHelper.createWithParams(breakTime, editStateList);
 			
 			new Expectations() {{
 				require.getLoginEmployeeId();
@@ -1093,7 +1061,7 @@ public class WorkScheduleTest {
 			@Injectable WorkInfoOfDailyAttendance workInfo,
 			@Injectable TaskSchedule taskSchedule) {
 		
-		WorkSchedule workSchedule = Helper.createWithWorkInfo(workInfo);
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithWorkInfo(workInfo);
 		
 		new Expectations() {{
 			workInfo.isAttendanceRate(require);
@@ -1111,7 +1079,7 @@ public class WorkScheduleTest {
 			@Injectable WorkInfoOfDailyAttendance workInfo,
 			@Injectable TimeLeavingOfDailyAttd timeLeaving) {
 		
-		WorkSchedule workSchedule = Helper.createWithWorkInfoAndTimeLeaving(workInfo, timeLeaving);
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithWorkInfoAndTimeLeaving(workInfo, timeLeaving);
 		
 		TaskSchedule taskSchedule = new TaskSchedule(Arrays.asList(
 				TaskScheduleDetailTestHelper.create("code1", 8, 0, 9, 0),
@@ -1140,7 +1108,7 @@ public class WorkScheduleTest {
 			@Injectable BreakTimeOfDailyAttd breakTime,
 			@Injectable TimeLeavingOfDailyAttd timeLeaving) {
 		
-		WorkSchedule workSchedule = Helper.createWithParams(workInfo, breakTime, timeLeaving);
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(workInfo, breakTime, timeLeaving);
 		
 		TaskSchedule taskSchedule = new TaskSchedule(Arrays.asList(
 				TaskScheduleDetailTestHelper.create("code1", 8, 0, 9, 0),
@@ -1173,7 +1141,7 @@ public class WorkScheduleTest {
 			@Injectable TimeLeavingOfDailyAttd timeLeaving,
 			@Injectable ShortTimeOfDailyAttd shortTimeWork) {
 		
-		WorkSchedule workSchedule = Helper.createWithParams(workInfo, breakTime, timeLeaving, shortTimeWork);
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(workInfo, breakTime, timeLeaving, shortTimeWork);
 		
 		TaskSchedule taskSchedule = new TaskSchedule(Arrays.asList(
 				TaskScheduleDetailTestHelper.create("code1", 8, 0, 9, 0),
@@ -1210,7 +1178,7 @@ public class WorkScheduleTest {
 			@Injectable ShortTimeOfDailyAttd shortTimeWork,
 			@Injectable TimevacationUseTimeOfDaily timevacationUseTimeOfDaily) {
 		
-		WorkSchedule workSchedule = Helper.createWithParams(workInfo, breakTime, timeLeaving, shortTimeWork);
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(workInfo, breakTime, timeLeaving, shortTimeWork);
 		
 		TaskSchedule taskSchedule = new TaskSchedule(Arrays.asList(
 				TaskScheduleDetailTestHelper.create("code1", 9, 0, 10, 0),
@@ -1255,7 +1223,7 @@ public class WorkScheduleTest {
 			@Injectable ShortTimeOfDailyAttd shortTimeWork,
 			@Injectable TimevacationUseTimeOfDaily timevacationUseTimeOfDaily) {
 		
-		WorkSchedule workSchedule = Helper.createWithParams(workInfo, breakTime, timeLeaving, shortTimeWork);
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(workInfo, breakTime, timeLeaving, shortTimeWork);
 		
 		TaskSchedule taskSchedule = new TaskSchedule(Arrays.asList(
 				TaskScheduleDetailTestHelper.create("code1", 9, 0, 10, 0),
@@ -1306,7 +1274,7 @@ public class WorkScheduleTest {
 			@Injectable ShortTimeOfDailyAttd shortTimeWork,
 			@Injectable TimevacationUseTimeOfDaily timevacationUseTimeOfDaily) {
 		
-		WorkSchedule workSchedule = Helper.createWithParams(workInfo, breakTime, timeLeaving, shortTimeWork);
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(workInfo, breakTime, timeLeaving, shortTimeWork);
 		
 		TaskSchedule taskSchedule = new TaskSchedule(Arrays.asList(
 				TaskScheduleDetailTestHelper.create("code1", 9, 0, 10, 0),
@@ -1357,7 +1325,7 @@ public class WorkScheduleTest {
 			@Injectable ShortTimeOfDailyAttd shortTimeWork,
 			@Injectable TimevacationUseTimeOfDaily timevacationUseTimeOfDaily) {
 		
-		WorkSchedule workSchedule = Helper.createWithParams(workInfo, breakTime, timeLeaving, shortTimeWork);
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(workInfo, breakTime, timeLeaving, shortTimeWork);
 		
 		TaskSchedule newTaskSchedule = new TaskSchedule(Arrays.asList(
 				TaskScheduleDetailTestHelper.create("code1", 9, 0, 10, 0),
@@ -1395,7 +1363,7 @@ public class WorkScheduleTest {
 				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(15, 0), TimeWithDayAttr.hourMinute(15, 30))
 				));
 		
-		WorkSchedule workSchedule = Helper.createWithBreakTimeAndShortTime(breakTime, Optional.empty());
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithBreakTimeAndShortTime(breakTime, Optional.empty());
 		
 		new Expectations(workSchedule) {{
 			workSchedule.getTimeVacation();
@@ -1434,7 +1402,7 @@ public class WorkScheduleTest {
 						TimeWithDayAttr.hourMinute(17, 0))
 				));
 		
-		WorkSchedule workSchedule = Helper.createWithBreakTimeAndShortTime(new BreakTimeOfDailyAttd(), Optional.of(shortTime) );
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithBreakTimeAndShortTime(new BreakTimeOfDailyAttd(), Optional.of(shortTime) );
 		
 		new Expectations(workSchedule) {{
 			workSchedule.getTimeVacation();
@@ -1459,7 +1427,7 @@ public class WorkScheduleTest {
 	public void testGetTimeSpansWhichNotDuplicatedWithTheNotWorkingTimeSpan_timeVacation(
 			@Injectable TimevacationUseTimeOfDaily useTime) {
 		
-		WorkSchedule workSchedule = Helper.createWithBreakTimeAndShortTime(new BreakTimeOfDailyAttd(), Optional.empty() );
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithBreakTimeAndShortTime(new BreakTimeOfDailyAttd(), Optional.empty() );
 		
 		Map<TimezoneToUseHourlyHoliday, TimeVacation> timeVacationMap = new HashMap<>();
 		timeVacationMap.put(
@@ -1513,7 +1481,7 @@ public class WorkScheduleTest {
 						TimeWithDayAttr.hourMinute(17, 0))
 				));
 		
-		WorkSchedule workSchedule = Helper.createWithBreakTimeAndShortTime( breakTime, Optional.of( shortTime ) );
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithBreakTimeAndShortTime( breakTime, Optional.of( shortTime ) );
 		
 		Map<TimezoneToUseHourlyHoliday, TimeVacation> timeVacationMap = new HashMap<>();
 		timeVacationMap.put(
@@ -1551,7 +1519,7 @@ public class WorkScheduleTest {
 	public void testGetWorkingTimeSpan_empty(
 			@Injectable WorkInfoOfDailyAttendance workInfo) {
 		
-		WorkSchedule workSchedule = Helper.createWithWorkInfo(workInfo);
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithWorkInfo(workInfo);
 		
 		new Expectations(workSchedule) {{
 			
@@ -1575,7 +1543,7 @@ public class WorkScheduleTest {
 				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(15, 0), TimeWithDayAttr.hourMinute(15, 30))
 				));
 		
-		WorkSchedule workSchedule = Helper.createWithParams(workInfo, breakTime, timeLeaving);
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(workInfo, breakTime, timeLeaving);
 		
 		List<TimeSpanForCalc> timeLeavingAttList = Arrays.asList(
 				new TimeSpanForCalc( TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(17, 00)),
@@ -1613,7 +1581,7 @@ public class WorkScheduleTest {
 	public void testCreateTaskScheduleForWholeDay_Msg_2103(
 			@Injectable WorkInfoOfDailyAttendance workInfo) {
 		
-		WorkSchedule workSchedule = Helper.createWithWorkInfo(workInfo);
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithWorkInfo(workInfo);
 		
 		new Expectations() {{
 			
@@ -1637,7 +1605,7 @@ public class WorkScheduleTest {
 				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(15, 0), TimeWithDayAttr.hourMinute(15, 30))
 				));
 		
-		WorkSchedule workSchedule = Helper.createWithParams(workInfo, breakTime, timeLeaving);
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams(workInfo, breakTime, timeLeaving);
 		
 		List<TimeSpanForCalc> timeLeavingAttList = Arrays.asList(
 				new TimeSpanForCalc( TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(17, 00)),
@@ -1670,74 +1638,94 @@ public class WorkScheduleTest {
 				tuple("code", 20, 0, 23, 0));
 	}
 	
+	/**
+	 * WorkSchedule: holiday
+	 * -----------
+	 * Expect: BusinessException Msg_2103
+	 */
 	@Test
-	public void testAddTaskScheduleWithTimeSpan_taskSchedule_empty() {
+	public void testAddTaskScheduleWithTimeSpan_Msg_2103(
+			@Injectable WorkInfoOfDailyAttendance workInfo) {
 		
-		BreakTimeOfDailyAttd breakTime = new BreakTimeOfDailyAttd(Arrays.asList(
-				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(12, 0), TimeWithDayAttr.hourMinute(13, 0)),
-				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(15, 0), TimeWithDayAttr.hourMinute(15, 30))
-				));
+		WorkSchedule workSchedule = WorkScheduleHelper.createWithWorkInfo(workInfo);
 		
-		WorkSchedule workSchedule = Helper.createWithBreakTimeAndShortTime( breakTime, Optional.empty() );
-		
-		new Expectations(workSchedule) {{
+		new Expectations() {{
 			
-			workSchedule.getTimeVacation();
-			result = new HashMap<>();
+			workInfo.isAttendanceRate(require);
+			result = false;
 		}};
 		
-		workSchedule.addTaskScheduleWithTimeSpan(
-			require,
-			new TimeSpanForCalc(
-				TimeWithDayAttr.hourMinute(14, 0),
-				TimeWithDayAttr.hourMinute(17, 0)),
-			new TaskCode("001") );
-		
-		assertThat( workSchedule.getTaskSchedule().getDetails() )
-			.extracting(
-				d -> d.getTaskCode().v(),
-				d -> d.getTimeSpan().getStart().hour(),
-				d -> d.getTimeSpan().getStart().minute(),
-				d -> d.getTimeSpan().getEnd().hour(),
-				d -> d.getTimeSpan().getEnd().minute())
-			.containsExactly(
-				tuple( "001", 14, 0, 15, 0),
-				tuple( "001", 15, 30, 17, 0)
-			);
+		NtsAssert.businessException("Msg_2103", () -> {
+			workSchedule.addTaskScheduleWithTimeSpan(
+					require,
+					new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(11, 0),
+						TimeWithDayAttr.hourMinute(18, 0)),
+					new TaskCode("001") );
+		});
 	}
 	
+	/**
+	 * WorkSchedule 8:00~17:00
+	 * 		breakTime: 12:00~13:00
+	 * 		existsTaskSchedule: "000" 8:00~12:00
+	 * ↑
+	 * insertTaskSchedule: "001" 10:00~18:00
+	 * ----------------------------------
+	 * Expect: 
+	 * 		"000" 8:00~10:00
+	 * 		"001" 10:00~12:00
+	 * 		"001" 13:00~17:00
+	 */
 	@Test
-	public void testAddTaskScheduleWithTimeSpan_taskSchedule_exist() {
+	public void testAddTaskScheduleWithTimeSpan_ok(
+			@Injectable WorkInfoOfDailyAttendance workInfo,
+			@Injectable TimeLeavingOfDailyAttd timeLeaving
+			) {
 		
+		// create WorkSchedule and its attributes
 		BreakTimeOfDailyAttd breakTime = new BreakTimeOfDailyAttd(Arrays.asList(
-				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(12, 0), TimeWithDayAttr.hourMinute(13, 0)),
-				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(15, 0), TimeWithDayAttr.hourMinute(15, 30))
+				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(12, 0), TimeWithDayAttr.hourMinute(13, 0))
 				));
 		
 		TaskSchedule taskSchedule = new TaskSchedule(Arrays.asList(
 				new TaskScheduleDetail(
 						new TaskCode("000"),
 						new TimeSpanForCalc(
-								TimeWithDayAttr.hourMinute(13, 00), 
-								TimeWithDayAttr.hourMinute(15, 00))
+								TimeWithDayAttr.hourMinute(8, 00), 
+								TimeWithDayAttr.hourMinute(12, 00))
 						)
 				));
 		
-		WorkSchedule workSchedule = Helper.createWithBreakTimeAndTaskSchedule( breakTime, taskSchedule );
+		WorkSchedule workSchedule = WorkScheduleHelper.createDefaultWorkSchedule();
+		workSchedule.setWorkInfo(workInfo);
+		workSchedule.setLstBreakTime(breakTime);
+		workSchedule.setTaskSchedule(taskSchedule);
+		workSchedule.setOptTimeLeaving(Optional.of(timeLeaving));
 		
+		// mock
 		new Expectations(workSchedule) {{
+			
+			workInfo.isAttendanceRate(require);
+			result = true;
+			
+			timeLeaving.getTimeOfTimeLeavingAtt();
+			result = Arrays.asList(
+					new TimeSpanForCalc( TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(17, 00)) );
 			
 			workSchedule.getTimeVacation();
 			result = new HashMap<>();
 		}};
 		
+		// run
 		workSchedule.addTaskScheduleWithTimeSpan(
 			require,
 			new TimeSpanForCalc(
-				TimeWithDayAttr.hourMinute(14, 0),
-				TimeWithDayAttr.hourMinute(17, 0)),
+				TimeWithDayAttr.hourMinute(10, 0),
+				TimeWithDayAttr.hourMinute(18, 0)),
 			new TaskCode("001") );
 		
+		// assert
 		assertThat( workSchedule.getTaskSchedule().getDetails() )
 			.extracting(
 				d -> d.getTaskCode().v(),
@@ -1746,366 +1734,10 @@ public class WorkScheduleTest {
 				d -> d.getTimeSpan().getEnd().hour(),
 				d -> d.getTimeSpan().getEnd().minute())
 			.containsExactly(
-				tuple( "000", 13, 0, 14, 0),
-				tuple( "001", 14, 0, 15, 0),
-				tuple( "001", 15, 30, 17, 0)
+				tuple( "000", 8, 0, 10, 0),
+				tuple( "001", 10, 0, 12, 0),
+				tuple( "001", 13, 0, 17, 0)
 			);
-	}
-	
-	static class Helper {
-		
-		/**
-		 * @param breakTime
-		 * @param taskSchedule
-		 * @return
-		 */
-		static WorkSchedule createWithBreakTimeAndTaskSchedule(BreakTimeOfDailyAttd breakTime, TaskSchedule taskSchedule) {
-			
-			return new WorkSchedule(
-					"employeeID",
-					GeneralDate.today(),
-					ConfirmedATR.UNSETTLED,
-					workInfo,
-					affInfo, 
-					breakTime,
-					Collections.emptyList(), // editState
-					taskSchedule,
-					Optional.empty(), // timeLeaving
-					Optional.empty(), // attendanceTime
-					Optional.empty(), // shortTime
-					Optional.empty()); // outingTime
-		}
-		
-		/**
-		 * @param breakTime
-		 * @param shortTime
-		 * @return
-		 */
-		static WorkSchedule createWithBreakTimeAndShortTime(BreakTimeOfDailyAttd breakTime, Optional<ShortTimeOfDailyAttd> shortTime) {
-			
-			return new WorkSchedule(
-					"employeeID",
-					GeneralDate.today(),
-					ConfirmedATR.UNSETTLED,
-					workInfo,
-					affInfo, 
-					breakTime,
-					Collections.emptyList(), // editState
-					TaskSchedule.createWithEmptyList(),
-					Optional.empty(), // timeLeaving
-					Optional.empty(), // attendanceTime
-					shortTime, // shortTime
-					Optional.empty()); // outingTime
-		}
-		
-		/**
-		 * @param workInfo
-		 * @return
-		 */
-		static WorkSchedule createWithWorkInfo(WorkInfoOfDailyAttendance workInfo) {
-			
-			return new WorkSchedule(
-					"employeeID",
-					GeneralDate.today(),
-					ConfirmedATR.UNSETTLED,
-					workInfo,
-					affInfo, 
-					new BreakTimeOfDailyAttd(),
-					Collections.emptyList(), // editState
-					TaskSchedule.createWithEmptyList(),
-					Optional.empty(), // timeLeaving
-					Optional.empty(), // attendanceTime
-					Optional.empty(), // shortTime
-					Optional.empty()); // outingTime
-		}
-		
-		/**
-		 * @param workInfo
-		 * @param timeLeaving
-		 * @return
-		 */
-		static WorkSchedule createWithWorkInfoAndTimeLeaving(
-				WorkInfoOfDailyAttendance workInfo,
-				TimeLeavingOfDailyAttd timeLeaving) {
-			
-			return new WorkSchedule(
-					"employeeID",
-					GeneralDate.today(),
-					ConfirmedATR.UNSETTLED,
-					workInfo,
-					affInfo, 
-					new BreakTimeOfDailyAttd(),
-					Collections.emptyList(), // editState
-					TaskSchedule.createWithEmptyList(),
-					Optional.of(timeLeaving), // timeLeaving
-					Optional.empty(), // attendanceTime
-					Optional.empty(), // shortTime
-					Optional.empty()); // outingTime
-		}
-		
-		/**
-		 * @param workInfo
-		 * @param breakTime
-		 * @param timeLeaving
-		 * @return
-		 */
-		static WorkSchedule createWithParams(
-				WorkInfoOfDailyAttendance workInfo,
-				BreakTimeOfDailyAttd breakTime,
-				TimeLeavingOfDailyAttd timeLeaving) {
-			
-			return new WorkSchedule(
-					"employeeID",
-					GeneralDate.today(),
-					ConfirmedATR.UNSETTLED,
-					workInfo,
-					affInfo, 
-					breakTime,
-					Collections.emptyList(), // editState
-					TaskSchedule.createWithEmptyList(),
-					Optional.of(timeLeaving), // timeLeaving
-					Optional.empty(), // attendanceTime
-					Optional.empty(), // shortTime
-					Optional.empty()); // outingTime
-		}
-		
-		/**
-		 * @param workInfo
-		 * @param breakTime
-		 * @param timeLeaving
-		 * @param shortTimeWork
-		 * @return
-		 */
-		static WorkSchedule createWithParams(
-				WorkInfoOfDailyAttendance workInfo,
-				BreakTimeOfDailyAttd breakTime,
-				TimeLeavingOfDailyAttd timeLeaving,
-				ShortTimeOfDailyAttd shortTimeWork) {
-			
-			return new WorkSchedule(
-					"employeeID",
-					GeneralDate.today(),
-					ConfirmedATR.UNSETTLED,
-					workInfo,
-					affInfo, 
-					breakTime,
-					Collections.emptyList(), // editState
-					TaskSchedule.createWithEmptyList(),
-					Optional.of(timeLeaving), // timeLeaving
-					Optional.empty(), // attendanceTime
-					Optional.of(shortTimeWork), // shortTime
-					Optional.empty()); // outingTime
-		}
-		
-		/**
-		 * @param optTimeLeaving 出退勤
-		 * @param optAttendanceTime 勤怠時間
-		 * @param outingTime 外出時間帯
-		 * @return
-		 */
-		static WorkSchedule createWithParams(
-				Optional<TimeLeavingOfDailyAttd> optTimeLeaving,
-				Optional<AttendanceTimeOfDailyAttendance> optAttendanceTime,
-				Optional<OutingTimeOfDailyAttd> outingTime
-				) {
-			
-			return new WorkSchedule(
-					"employeeID",
-					GeneralDate.today(),
-					ConfirmedATR.UNSETTLED,
-					workInfo,
-					affInfo, 
-					new BreakTimeOfDailyAttd(),
-					Collections.emptyList(),
-					TaskSchedule.createWithEmptyList(),
-					optTimeLeaving, // parameter
-					optAttendanceTime, // parameter
-					Optional.empty(),
-					outingTime); // parameter
-		}
-		
-		/**
-		 * @param timeLeaving 出退勤
-		 * @param editStateList 編修状態
-		 * @return
-		 */
-		static WorkSchedule createWithParams(
-				TimeLeavingOfDailyAttd timeLeaving,
-				List<EditStateOfDailyAttd> editStateList
-				) {
-			
-			return new WorkSchedule(
-					"employeeID",
-					GeneralDate.today(),
-					ConfirmedATR.UNSETTLED,
-					workInfo,
-					affInfo, 
-					new BreakTimeOfDailyAttd(),
-					editStateList, 
-					TaskSchedule.createWithEmptyList(),
-					Optional.of( timeLeaving ),
-					Optional.empty(), 
-					Optional.empty(),
-					Optional.empty()); 
-		}
-		
-		/**
-		 * @param optTimeLeaving 出退勤
-		 * @param goStraight 直行区分
-		 * @param backStraight 直帰区分 
-		 * @return
-		 */
-		static WorkSchedule createWithParams(
-				Optional<TimeLeavingOfDailyAttd> optTimeLeaving,
-				NotUseAttribute goStraight,
-				NotUseAttribute backStraight
-				) {
-			
-			WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance(
-					new WorkInformation(new WorkTypeCode("001"), new WorkTimeCode("002")),
-					CalculationState.No_Calculated, 
-					goStraight, 
-					backStraight, 
-					DayOfWeek.MONDAY, 
-					new ArrayList<>(), Optional.empty()); 
-			
-			return new WorkSchedule(
-					"employeeID",
-					GeneralDate.today(),
-					ConfirmedATR.UNSETTLED,
-					workInfo,
-					affInfo, 
-					new BreakTimeOfDailyAttd(),
-					Collections.emptyList(), 
-					TaskSchedule.createWithEmptyList(),
-					optTimeLeaving,
-					Optional.empty(), 
-					Optional.empty(),
-					Optional.empty()); 
-		}
-		
-		static WorkSchedule createWithParams(
-				BreakTimeOfDailyAttd breakTime,
-				List<EditStateOfDailyAttd> editStateList
-				) {
-			
-			return new WorkSchedule(
-					"employeeID",
-					GeneralDate.today(),
-					ConfirmedATR.UNSETTLED,
-					workInfo,
-					affInfo, 
-					breakTime,
-					editStateList, 
-					TaskSchedule.createWithEmptyList(),
-					Optional.empty(),
-					Optional.empty(), 
-					Optional.empty(),
-					Optional.empty()); 
-		}
-		
-		static WorkSchedule createWithConfirmAtr(ConfirmedATR confirmAtr) {
-			return new WorkSchedule(
-					"employeeID",
-					GeneralDate.today(),
-					confirmAtr,
-					workInfo,
-					affInfo, 
-					new BreakTimeOfDailyAttd(),
-					Collections.emptyList(),
-					TaskSchedule.createWithEmptyList(),
-					Optional.empty(),
-					Optional.empty(),
-					Optional.empty(),
-					Optional.empty());
-		}
-		
-		static WorkSchedule createWithEditStateList(List<EditStateOfDailyAttd> editStateList) {
-			return new WorkSchedule(
-					"employeeID",
-					GeneralDate.today(),
-					ConfirmedATR.UNSETTLED,
-					workInfo,
-					affInfo, 
-					new BreakTimeOfDailyAttd(),
-					editStateList,
-					TaskSchedule.createWithEmptyList(),
-					Optional.empty(),
-					Optional.empty(),
-					Optional.empty(),
-					Optional.empty());
-		}
-		
-		static OutingTimeOfDaily createOutingTimeOfDailyWithReason(GoingOutReason reason) {
-			return new OutingTimeOfDaily(
-					workTime,
-					reason,
-					timeVacationUseOfDaily,
-					recordTotalTime,
-					deductionTotalTime,
-					Collections.emptyList());
-			
-		}
-		
-		static OutingTimeOfDaily createOutingTimeOfDailyWithParams(GoingOutReason reason, TimevacationUseTimeOfDaily timeVacationUseOfDaily) {
-			return new OutingTimeOfDaily(
-					workTime,
-					reason,
-					timeVacationUseOfDaily,
-					recordTotalTime,
-					deductionTotalTime,
-					Collections.emptyList());
-			
-		}
-		
-		static TimeLeavingOfDailyAttd createTimeLeavingOfDailyAttd(
-				TimeWithDayAttr start1,
-				TimeWithDayAttr end1,
-				Optional<TimeWithDayAttr> start2,
-				Optional<TimeWithDayAttr> end2) {
-			
-			// 勤務時刻情報 １
-			WorkTimeInformation start1_wti = new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), start1);
-			WorkTimeInformation end1_wti = new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), end1);
-			// 勤怠打刻１
-			WorkStamp start1_ws = new WorkStamp(start1_wti, Optional.empty());
-			WorkStamp end1_ws = new WorkStamp(end1_wti, Optional.empty());
-			// 勤怠打刻（実打刻付き）１
-			TimeActualStamp timeActualStampStart1 = new TimeActualStamp(Optional.empty(), Optional.of(start1_ws), 1, Optional.empty(), Optional.empty());
-			TimeActualStamp timeActualStampEnd1 = new TimeActualStamp(Optional.empty(), Optional.of(end1_ws), 1, Optional.empty(), Optional.empty());
-			// 出退勤１
-			TimeLeavingWork timeLeavingWork1 = new TimeLeavingWork(
-					new WorkNo(1), 
-					Optional.of(timeActualStampStart1), 
-					Optional.of(timeActualStampEnd1), 
-					false, 
-					false);
-			
-			
-			if ( !start2.isPresent() || !end2.isPresent() ) {
-				return new TimeLeavingOfDailyAttd( Arrays.asList(timeLeavingWork1), new WorkTimes(1));
-			}
-			
-			// 勤務時刻情報 ２
-			WorkTimeInformation start2_wti = new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), start2.get());
-			WorkTimeInformation end2_wti = new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), end2.get());
-			// 勤怠打刻２
-			WorkStamp start2_ws = new WorkStamp(start2_wti, Optional.empty());
-			WorkStamp end2_ws = new WorkStamp(end2_wti, Optional.empty());
-			// 勤怠打刻（実打刻付き）２
-			TimeActualStamp timeActualStampStart2 = new TimeActualStamp(Optional.empty(), Optional.of(start2_ws), 1, Optional.empty(), Optional.empty());
-			TimeActualStamp timeActualStampEnd2 = new TimeActualStamp(Optional.empty(), Optional.of(end2_ws), 1, Optional.empty(), Optional.empty());
-			TimeLeavingWork timeLeavingWork2 = new TimeLeavingWork(
-					new WorkNo(2), 
-					Optional.of(timeActualStampStart2), 
-					Optional.of(timeActualStampEnd2), 
-					false, 
-					false);
-			
-			return new TimeLeavingOfDailyAttd( Arrays.asList(timeLeavingWork1, timeLeavingWork2), new WorkTimes(2) );
-			
-		}
-		
 	}
 	
 }

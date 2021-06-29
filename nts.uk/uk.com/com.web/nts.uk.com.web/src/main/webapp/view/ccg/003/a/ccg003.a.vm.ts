@@ -9,7 +9,8 @@ module nts.uk.com.view.ccg003.a {
     // <<Command>> お知らせを閲覧する
     viewMessageNotice: 'sys/portal/notice/viewMessageNotice',
     // <<Command>> 個人の記念日を閲覧する
-    updateAnnivesaryNotice: 'ctx/bs/person/personal/anniversary/updateAnnivesaryNotice'
+    updateAnnivesaryNotice: 'ctx/bs/person/personal/anniversary/updateAnnivesaryNotice',
+    isDisplayNewNotice: 'sys/portal/notice/is-new-notice'
   };
 
   const urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
@@ -21,12 +22,15 @@ module nts.uk.com.view.ccg003.a {
     <div id="A0-CCG003" class="panel panel-frame panel-ccg003">
       <div class="ccg003-top-content">
         <!-- A1 対象日 -->
-        <div><span data-bind="text: systemDate" style="color: black !important;"></span>
-        </div>
+        <div><span data-bind="text: systemDate" style="color: black !important;"></span></div>
         <div class="ccg003-fw-right">
           <div data-bind="if: roleFlag">
             <!-- A2 メッセージ入力 -->
-            <a class="ccg003-a2" class="mr-5" href="#" data-bind="click: openScreenB, text: $component.$i18n('CCG003_4')"></a>
+            <div data-bind="ntsFormLabel: { required: false, text: $i18n('CCG003_4') }"></div>
+            <!-- A2_1 -->
+            <a class="ccg003-a2" class="mr-5" href="#" data-bind="click: openScreenCInNewMode, text: $component.$i18n('CCG003_17')"></a>
+            <!-- A2_2 -->
+            <a class="ccg003-a2" class="mr-5" href="#" data-bind="click: openScreenB, text: $component.$i18n('CCG003_18')"></a>
           </div>
           <div>
             <!-- A3 ☓アイコン -->
@@ -41,21 +45,37 @@ module nts.uk.com.view.ccg003.a {
           <h3 data-bind="text: $component.$i18n('CCG003_5')" style="display: inline;"></h3>
         </div>
         <div id="body-title-ccg003" class="bg-accordion-1 no-border-radius pl-10">
-          <div style="align-items: center; display: inline-flex;">
-            <!-- A4_1 表示期間(ラベル) -->
-            <span class="auto-margin" data-bind="text: $component.$i18n('CCG003_6')"></span>
-            <!-- A4_2 表示期間 -->
-            <div id="ccg003-A4_2" tabindex="1" class="ml-10" data-bind="ntsDateRangePicker: {
-              required: true,
-              enable: true,
-              name: $i18n('CCG003_6'),
-              showNextPrevious: false,
-              value: dateValue,
-              maxRange: 'oneMonth'}"
-            />
-            <!-- A4_3 絞込 -->
-            <button tabindex="2" class="small pl-10 pr-10 ml-90" data-bind="click: onClickFilter, text: $component.$i18n('CCG003_7')"></button>
-          </div>
+
+          <table style="width: 100%;">
+            <colgroup>
+                <col width="auto" />
+                <col width="auto" />
+                <col width="auto" />
+            </colgroup>
+            <tbody>
+              <tr>
+                <td>
+                  <!-- A4_1 表示期間(ラベル) -->
+                  <span class="auto-margin" data-bind="text: $component.$i18n('CCG003_6')"></span>
+                </td>
+                <td>
+                  <!-- A4_2 表示期間 -->
+                  <div id="ccg003-A4_2" tabindex="1" class="ml-10" data-bind="ntsDateRangePicker: {
+                    required: true,
+                    enable: true,
+                    name: $i18n('CCG003_6'),
+                    showNextPrevious: false,
+                    value: dateValue,
+                    maxRange: 'oneMonth'}"
+                  />
+                </td>
+                <td>
+                  <!-- A4_3 絞込 -->
+                  <button tabindex="2" class="small pl-10 pr-10" data-bind="click: onClickFilter, text: $component.$i18n('CCG003_7')"></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
       <div class="ccg003-auto-overflow">
@@ -111,6 +131,7 @@ module nts.uk.com.view.ccg003.a {
     }
     #A0-CCG003 {
       min-height: 150px;
+      z-index: 99 !important;
     }
     #A3-CCG003 {
       cursor: pointer;
@@ -119,8 +140,10 @@ module nts.uk.com.view.ccg003.a {
       border-bottom: 0;
     }
     .ccg003-a2 {
-      color: blue !important;
+      color: #0D86D1 !important;
       text-decoration: underline;
+      padding-left: 10px;
+      padding-right: 10px;
     }
     .w-490 {
       width: 490px;
@@ -129,7 +152,6 @@ module nts.uk.com.view.ccg003.a {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 10px;
     }
     .ccg003-fw-right {
       display: flex;
@@ -238,28 +260,28 @@ module nts.uk.com.view.ccg003.a {
             }
           }
         })
-        .fail(error => vm.$dialog.error(error));
+        .fail(error => vm.$dialog.error(error))
+        .always(() => vm.$blockui('clearView'));
+      vm.isShowNewMark();
     }
 
     mounted() {
       const vm = this;
-      const elementId ='#notice-msg';
-      const marginTop = $('#user').height() - $('#notice-msg').height();
       $('#A0-CCG003').ntsPopup({
-        trigger: elementId,
         position: {
           my: 'right top',
-          at: `right bottom-${marginTop}`,
-          of: $('#user')
+          at: `right bottom`,
+          of: $('#header')
         },
         showOnStart: false,
         dismissible: false
       });
 
-      $(elementId).click(() => {
+      $('#notice-msg').click(() => {
         if (vm.isShow()) {
           $('#A0-CCG003').ntsPopup('show');
         } else {
+          vm.isShowNewMark();
           $('#A0-CCG003').ntsPopup('hide');
         }
         vm.isShow(!vm.isShow());
@@ -465,10 +487,41 @@ module nts.uk.com.view.ccg003.a {
       return `${displayDate} ${param.anniversaryTitle}`;
     }
 
+    /**
+     * A2_1:メッセージ追加のリンクをクリックする
+     */
+     openScreenCInNewMode(): void {
+      const vm = this;
+      vm.$window.modal('com', '/view/ccg/003/c/index.xhtml', {
+        isNewMode: true,
+        role: vm.role(),
+        messageNotice: null
+      })
+        .then(result => {
+          if (result && !result.isClose) {
+            vm.onClickFilter();
+          }
+        });
+    }
+
     closeWindow(): void {
       const vm = this;
       vm.isShow(!vm.isShow());
+      vm.isShowNewMark();
       $('#A0-CCG003').ntsPopup('hide');
+    }
+
+    private isShowNewMark(): void {
+      const vm = this;
+      vm.$ajax('com', API.isDisplayNewNotice)
+      .then((response) => {
+        if (response) {
+          $("#new-mark-msg").css({ display: "" });
+        } else {
+          $("#new-mark-msg").css({ display: "none" });
+        }
+      })
+      .fail(() => $("#new-mark-msg").css({ display: "none" }));
     }
   }
 

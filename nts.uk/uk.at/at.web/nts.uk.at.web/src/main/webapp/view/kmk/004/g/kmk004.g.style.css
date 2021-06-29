@@ -89,6 +89,7 @@
 
 #year-list_grid_container {
 	width: 120px !important;
+	height: 113px !important;
 }
 
 #year-list_grid_container col:nth-child(2) {
@@ -107,4 +108,15 @@
 
 #year-list_grid_scrollContainer {
 	height: 115px !important;
+}
+#selected-work-place {
+	height: 18px;
+}
+#work-place-list {
+	width: 490px;
+}
+
+#monthly-list {
+	border-right: solid grey 1px;
+	border-bottom: solid grey 1px;
 }

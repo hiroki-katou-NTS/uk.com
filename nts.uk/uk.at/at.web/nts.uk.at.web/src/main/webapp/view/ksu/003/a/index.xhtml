@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 1320,
+					width : 1340,
 					height : 768
 				};
 		</script>
@@ -35,6 +35,7 @@
 		</ui:define>
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
+		<div id="contents-area">
 			<div id="ui-area" data-bind="with: viewmodelA" style="display: none;">
 				<div id="functions-area">
 					<button tabindex="1" id="A1_1" class="proceed"
@@ -83,7 +84,7 @@
 							<div class="event-button">
 								<button tabindex="9" id="event" title=""
 									style="margin-left: 10px" class="small">#{i18n.getText('KSU003_6')}
-								</button>
+								</button> 
 							</div>
 						</div>
 					</div>
@@ -91,7 +92,6 @@
 						<!-- A2_2 -->
 						<label id="org-name" data-bind="text:organizationName"></label>
 					</div>
-
 					<div id="functon-area-row2-right">
 						<!-- A2_5 -->
 						<label id="label-display">#{i18n.getText('KSU003_7')}</label> <label
@@ -104,13 +104,15 @@
 										optionsText: 'name',
 										value: selectedDisplayPeriod}">
 						</div>
-						<!-- A12 -->
-						<div id="note-color">
+						<!-- new UI display: change 1 -->
+					</div>
+					<!-- A12 -->
+					<!-- new UI display: change 1 -->
+					<div id="note-color">
 							<button id="note" class="small ml-2 size-image-button1">
 								<i data-bind="ntsIcon: { no: 139, width: 22, height: 22 }"></i>
 							</button>
 						</div>
-					</div>
 				</div>
 
 				<hr id='hr-row2' />
@@ -151,7 +153,7 @@
 				</div> -->
 				<!-- ver 4 - comment -->
 
-				<div id="contents-area">
+				<div id="extable-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
 						<div id="row-left">
@@ -159,12 +161,12 @@
 								data-bind="click : toLeft">
 								<com:ko-if bind="indexBtnToLeft() % 2 == 0">
 									<div id="left-button">
-										<i data-bind="ntsIcon: { no: 152, width: 22, height: 13 }"></i>
+										<i data-bind="ntsIcon: { no: 152, width: 21, height: 11 }"></i>
 									</div>
 								</com:ko-if>
 								<com:ko-if bind="indexBtnToLeft() % 2 != 0">
 									<div id="left-button2">
-										<i data-bind="ntsIcon: { no: 153, width: 22, height: 13 }"></i>
+										<i data-bind="ntsIcon: { no: 153, width: 21, height: 11 }"></i>
 									</div>
 								</com:ko-if>
 							</button>
@@ -176,12 +178,12 @@
 								data-bind="click : toDown">
 								<com:ko-if bind="indexBtnToDown() % 2 == 0">
 									<div id="down-button">
-										<i data-bind="ntsIcon: { no: 150, width:13, height: 22 }"></i>
+										<i data-bind="ntsIcon: { no: 150, width:11, height: 22 }"></i>
 									</div>
 								</com:ko-if>
 								<com:ko-if bind="indexBtnToDown() % 2 != 0">
 									<div id="down-button2">
-										<i data-bind="ntsIcon: { no: 151, width:13, height: 22 }"></i>
+										<i data-bind="ntsIcon: { no: 151, width:11, height: 22 }"></i>
 									</div>
 								</com:ko-if>
 							</button>
@@ -386,6 +388,7 @@
 						</div>
 					</div>
 				</div>
+			</div>
 			</div>
 		</ui:define>
 	</ui:composition>

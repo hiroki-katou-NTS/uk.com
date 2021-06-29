@@ -2,9 +2,20 @@ html {
 	overflow: hidden;
 }
 
+#contents-area {
+	overflow-y: auto;
+    height: calc(100vh - 20px);
+}
+
 #kdp002a{
-	width: 76vmin;
+	width: 100%;
+	max-width: 480px;
 	margin: 0 auto;
+}
+
+.kdp005a {
+	background: linear-gradient(#EBFCF6, #F5F5F5);
+	padding: 10px;
 }
 
 #content-area {
@@ -15,9 +26,9 @@ html {
 	margin-left: 20px;
 }
 
-#stamp-input {
+/* #stamp-input {
 	max-width: 90vmin;
-}
+} */
 
 #stamp-info {
 	min-width: 37vmin;
@@ -97,7 +108,7 @@ html {
 	text-align: center;
 	font-size: 1.7vmin;
 }
-
-#kdp002a #stamp-header .button-group{
-	bottom: 15px;
+.pageComent {
+	word-break: break-all !important;
+	white-space: pre-wrap !important;
 }

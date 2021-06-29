@@ -9,7 +9,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,7 +32,6 @@ public class SptdtInfoMessageRead extends UkJpaEntity implements Serializable {
 	private SptdtInfoMessageReadPK pk;
 
 	/** 排他バージョン */
-	@Version
 	@Column(name = "EXCLUS_VER")
 	private long version;
 	

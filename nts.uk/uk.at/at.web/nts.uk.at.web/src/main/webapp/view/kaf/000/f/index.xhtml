@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 380,
+					height : 320
+				};
+			</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalComment
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/kaf/000/f/kaf000.f.css" />
+			<com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="/view/kaf/000/f/kaf000.f.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<div>
+					<textarea style="height: 170px;" id="inpReasonTextareaDeny"
+									data-bind="ntsMultilineEditor: {
+												name: $i18n('KAF000_28'),
+												value: approvalReason,
+												option: {
+													resizeable: false,
+							                    	width: '340',
+							                    	textalign: 'left'
+							                   	},
+					             				required : true,
+					             				enable: true,
+					             				constraint: 'ApprovalComment' }" />
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="proceed" style="width: 200px;" data-bind="click: deny, enable: $root.errors.isEmpty">#{i18n.getText('KAF000_19')}</button>
+				<button data-bind="click: close">#{i18n.getText('KAF000_36')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

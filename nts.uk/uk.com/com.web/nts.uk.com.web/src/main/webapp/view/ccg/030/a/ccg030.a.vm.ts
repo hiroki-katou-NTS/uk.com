@@ -26,7 +26,7 @@ module ccg030.a.viewmodel {
             });
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("CCG030_19"), key: 'defClassAtr', width: 40, columnCssClass: 'halign-center', template: '{{if ${defClassAtr} == 1 }}<i class="icon icon-dot "></i>{{/if}}' },
-                { headerText: nts.uk.resource.getText("CCG030_9"), key: 'topPageCode', width: 45 },
+                { headerText: nts.uk.resource.getText("CCG030_9"), key: 'topPageCode', width: 50 },
                 { headerText: nts.uk.resource.getText("CCG030_10"), key: 'topPageName', width: 260 }
             ]);
             // Details

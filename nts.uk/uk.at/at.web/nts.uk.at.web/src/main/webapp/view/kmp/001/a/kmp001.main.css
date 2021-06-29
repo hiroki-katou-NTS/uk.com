@@ -30,7 +30,7 @@
 }
 
 .view-kmp .model-component {
-	margin-left: 50px;
+	margin-left: 10px;
 }
 
 .ntsSearchBox_Component {
@@ -98,6 +98,7 @@
 
 .view-kmp .layout-date {
 	margin-bottom: 10px;
+	padding-left: 10px;
 }
 
 #td-bottom {
@@ -180,10 +181,11 @@
 
 .view-kmp .view-e {
 	min-width: 1244px;
+	display: flex;
 }
 
 .view-kmp .view-e .view-e-content {
-	width: 682px;
+	width: 715px;
 	margin-top: 10px;
 }
 
@@ -193,7 +195,7 @@
 }
 
 .view-kmp .view-e .view-e-content .view-e-bg-button {
-	width: 682px;
+	width: 715px;
 	text-align: right;
     margin-top: 25px;
 }
@@ -221,4 +223,9 @@
 }
 .ui-iggrid table tr td, .ui-iggrid table tr td.ui-iggrid-header, .ui-iggrid table tr td.ui-state-hover, .ui-iggrid table tr td.ui-state-active, .ui-iggrid table tr td.ui-state-focus, .ui-iggrid table tr td.ui-state-active.ui-state-focus, .ui-iggrid table tr th, .ui-iggrid table tr th.ui-iggrid-header, .ui-iggrid table tr th.ui-state-hover, .ui-iggrid table tr th.ui-state-active, .ui-iggrid table tr th.ui-state-focus, .ui-iggrid table tr th.ui-state-active.ui-state-focus {
 	white-space: pre;
+}
+
+#list-employee > div {
+	padding-top: 0 !important;
+	padding-left: 0 !important;
 }

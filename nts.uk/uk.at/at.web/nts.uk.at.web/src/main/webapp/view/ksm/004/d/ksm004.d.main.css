@@ -1,5 +1,5 @@
 #table-top {
-	width: 440px;
+	width: 425px;
 	margin-left: 7px;
 	margin-top: 7px;
 }
@@ -21,7 +21,7 @@
 }
 
 .nts-fixed-table{
-	margin-left: 87px;
+	margin-left: 71px;
 	margin-top: 4px;
 }
 
@@ -49,15 +49,15 @@
 	width: 90px;
 }
 
-.nts-first-radio>.ntsRadioBox:first-child {
+.nts-first-radio>.nts-input:first-child {
 	background-color: #D5FFFF;
 	
 }
-.nts-second-radio>.ntsRadioBox:nth-child(2) {
+.nts-second-radio>.nts-input:nth-child(2) {
 	background-color: #FDEADA;
 	
 }
-.nts-thirt-radio>.ntsRadioBox:nth-child(3) {
+.nts-thirt-radio>.nts-input:nth-child(3) {
 	background-color: #FDEADA;
 	
 }

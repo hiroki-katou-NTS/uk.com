@@ -1,60 +1,70 @@
-<div>
-	<div
-		data-bind="component: { name: 'kaf000-b-component1', 
-								params: {
-									appType: appType,
-									appDispInfoStartupOutput: appDispInfoStartupOutput	
-								} }"></div>
-	<div
-		data-bind="component: { name: 'kaf000-b-component2', 
-								params: {
-									appType: appType,
-									appDispInfoStartupOutput: appDispInfoStartupOutput
-								} }"></div>
-	<div
-		data-bind="component: { name: 'kaf000-b-component3', 
-								params: {
-									appType: appType,
-									approvalReason: approvalReason,
-									appDispInfoStartupOutput: appDispInfoStartupOutput
-								} }"></div>
-	<div class="table">
-		<div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-b-component4',
-							params: {
-								appType: appType,
-								application: application,
-								appDispInfoStartupOutput: appDispInfoStartupOutput
-							} }"></div>
-       	<div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-b-component9',
-							params: {
-								appType: appType,
-								application: application,
-								appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
-							} }"></div>
-	</div>
-	<div
-		data-bind="component: { name: 'kaf000-b-component5', 
-								params: {
-									appType: appType,
-									application: application,
-									appDispInfoStartupOutput: appDispInfoStartupOutput
-								} }"></div>
-	<div
-		data-bind="component: { name: 'kaf000-b-component6', 
-								params: {
-									appType: appType,
-									application: application,
-									appDispInfoStartupOutput: appDispInfoStartupOutput
-								} }"></div>
-	<div class="label" data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}" style="margin: 10px">
-	</div>
+<div id="kaf002-d">
+	<div id="contents-area"
+		style="background-color: inherit; height: calc(100vh - 137px);">
+		<div class="two-panel" style="height: 100%; width: 1260px">
+			<div class="left-panel"
+				style="width: calc(1260px - 388px); height: inherit;">
+				<div
+					style="height: inherit; overflow-y: auto; background-color: #fff; padding: 10px;">
+					<div class="table"
+						style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
+						<div class="cell" style="vertical-align: middle;">
+							<div
+								data-bind="component: { name: 'kaf000-b-component4',
+                                                params: {
+                                                    appType: appType,
+                                                    application: application,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+						</div>
+						<div class="cell"
+							style="text-align: right; vertical-align: middle;">
+							<div
+								data-bind="component: { name: 'kaf000-b-component8', 
+                                                params: {
+                                                    appType: appType,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+						</div>
+					</div>
+					<div
+						data-bind="component: { name: 'kaf000-b-component2', 
+														params: {
+															appType: appType,
+															appDispInfoStartupOutput: appDispInfoStartupOutput
+														} }"></div>
+					<div
+						data-bind="component: { name: 'kaf000-b-component5', 
+                                                params: {
+                                                    appType: appType,
+                                                    application: application,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+					<div
+						data-bind="component: { name: 'kaf000-b-component6', 
+                                                params: {
+                                                    appType: appType,
+                                                    application: application,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"
+						style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: 12px"></div>
 
-	<div class="inlineBlockFirst">
-		<!-- B6_1 -->
-		<div class="labelFirst"
-			data-bind="ntsFormLabel: {required: true}, html: $i18n('KAF002_79')"></div>
-		<div style="margin-left: 40px"
-			data-bind="ntsComboBox: {
+
+					<div style="margin-top: -8px">
+
+
+
+
+						<div class="label marginCustome1"
+							data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}"
+							style="margin: 10px"></div>
+
+						<div class="inlineBlockFirst">
+							<!-- B6_1 -->
+							<div class="labelFirst"
+								data-bind="ntsFormLabel: {required: true, text: $i18n('KAF002_79')} "></div>
+							<div
+								data-bind="ntsComboBox: {
 						options: dataSource,
 						optionsValue: 'code',
 						value: selectedCode,
@@ -62,36 +72,64 @@
 						required: true,
 						name: $i18n('KAF002_77')
 					}"></div>
-	</div>
+						</div>
 
-	<div class="blockSecond">
-		<input class="inputBlockSecond" id="inputTimeKAF002"
-			data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: {	name: $i18n('KAF002_79'), value: time, required: true, inputFormat: 'time', constraint: 'SampleTimeDuration', mode: 'time'
+						<div class="blockSecond">
+							<input class="inputBlockSecond" id="inputTimeKAF002"
+								data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: {	name: $i18n('KAF002_79'), value: time, required: true, inputFormat: 'time', constraint: 'SampleTimeDuration', mode: 'time'
 													}" />
 
-		<div class="dropListBlockSecond"
-			data-bind="visible: selectedCode() == 3, ntsComboBox: {
+							<div class="dropListBlockSecond"
+								data-bind="visible: selectedCode() == 3, ntsComboBox: {
 						options: dataSourceReason,
 						optionsValue: 'code',
 						value: selectedCodeReason,
 						optionsText: 'name',
 						required: true
 					}"></div>
+						</div>
+
+						<div
+							data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}"
+							class="label marginCustome2" style="margin: 10px"></div>
+
+
+					</div>
+
+
+
+
+					<div style="margin-top: -20px"
+						data-bind="component: { name: 'kaf000-b-component7', 
+                                                params: {
+                                                    appType: appType,
+                                                    application: application,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+
+					<div style="padding-top: 30px;"></div>
+				</div>
+			</div>
+			<div class="right-panel"
+				style="width: 388px; height: inherit; overflow-y: auto; padding-right: 0px">
+				<div
+					style="height: inherit; background-color: #fff; padding: 0px 10px;">
+					<div style="padding-top: 10px"
+						data-bind="component: { name: 'kaf000-b-component1', 
+                            params: {
+                                appType: appType,
+                                appDispInfoStartupOutput: appDispInfoStartupOutput	
+                            } }"></div>
+					<div
+						data-bind="component: { name: 'kaf000-b-component9',
+                            params: {
+                                appType: appType,
+                                application: application,
+                                appDispInfoStartupOutput: appDispInfoStartupOutput
+                            } }"></div>
+				</div>
+			</div>
+
+		</div>
 	</div>
-
-	<div data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}" class="label" style="margin: 10px"></div>
-	<div
-		data-bind="component: { name: 'kaf000-b-component7', 
-								params: {
-									appType: appType,
-									application: application,
-									appDispInfoStartupOutput: appDispInfoStartupOutput
-								} }"></div>
-	<div
-		data-bind="component: { name: 'kaf000-b-component8', 
-								params: {
-									appType: appType,
-									appDispInfoStartupOutput: appDispInfoStartupOutput
-								} }"></div>
-
 </div>

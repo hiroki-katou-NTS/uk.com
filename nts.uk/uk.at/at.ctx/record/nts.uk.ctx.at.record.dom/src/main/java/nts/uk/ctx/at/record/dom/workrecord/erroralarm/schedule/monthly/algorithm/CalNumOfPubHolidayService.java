@@ -78,14 +78,14 @@ public class CalNumOfPubHolidayService {
 			if (sysDate.beforeOrEquals(exDate) && workScheduleOpt.isPresent()) {
 				// 勤務集類コードをセット
 				// 勤務集類コード　＝　探した勤務予定．勤務情報．勤務情報．勤務種類コード
-				workTypeCode = workScheduleOpt.get().getWorkTyle();
+				workTypeCode = workScheduleOpt.get().getWorkType();
 			} else {
 				// 勤務種類コードをセット
 				if (integrationOfdailyOpt.isPresent()) {
 					IntegrationOfDaily integrationOfDaily = integrationOfdailyOpt.get();
 					workTypeCode = integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v();
 				} else {
-					workTypeCode = workScheduleOpt.get().getWorkTyle();
+					workTypeCode = workScheduleOpt.get().getWorkType();
 				}
 			}
 			

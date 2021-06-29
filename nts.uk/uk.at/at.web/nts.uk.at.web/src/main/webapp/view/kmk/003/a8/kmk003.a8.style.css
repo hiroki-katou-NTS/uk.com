@@ -9,5 +9,9 @@
 }
 
 .tab_8_radio_cell {
-	width: 200px;
+	width: 225px;
+}
+
+.official-setting-tab-content {
+	width: 620px !important;
 }

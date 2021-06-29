@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavemanagement.data;
 
 import java.util.List;
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 
 import lombok.val;
@@ -68,17 +70,20 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 				domain.getAppTimeType().map(x -> x.getAppTimeType().map(time -> time.value + 1).orElse(0)).orElse(0));
 
 		// 登録・更新
-		this.queryProxy().find(pk, KshdtInterimChildCare.class).ifPresent(entity -> {
-			entity.fromDomainForUpdate(domain);
-			this.commandProxy().insert(entity);
+		
+		Optional<KshdtInterimChildCare> entityOpt = this.queryProxy().find(pk, KshdtInterimChildCare.class);
+
+		if (entityOpt.isPresent()) {
+			entityOpt.get().fromDomainForUpdate(domain);
+			this.commandProxy().update(entityOpt.get());
 			this.getEntityManager().flush();
 			return;
-		});
+		}
 
 		KshdtInterimChildCare entity = new KshdtInterimChildCare();
 		entity.pk = pk;
 		entity.fromDomainForUpdate(domain);
-		this.getEntityManager().persist(entity);
+		this.commandProxy().insert(entity);
 		this.getEntityManager().flush();
 	}
 
