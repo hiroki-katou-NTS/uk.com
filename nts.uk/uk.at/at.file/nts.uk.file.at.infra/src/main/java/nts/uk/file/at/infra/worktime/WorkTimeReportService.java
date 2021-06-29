@@ -1947,7 +1947,7 @@ public class WorkTimeReportService {
                  * 休憩時間帯.流動休憩設定（休憩時間の固定しない）.外出の計上方法
                  */
                 Integer useStampCalcMethod = data.getFlowWorkSetting().getRestSetting().getFlowRestSetting().getFlowRestSetting().getUseStampCalcMethod();
-                cells.get("BQ" + (startIndex + 1)).setValue(useStampCalcMethod == 0 ? "外出として計上する" : "休憩として計上する");
+                cells.get("BQ" + (startIndex + 1)).setValue(useStampCalcMethod == 0 ? "休憩として計上する" : "外出として計上する");
                 
                 /*
                  * R5_128
@@ -3483,7 +3483,7 @@ public class WorkTimeReportService {
                  * 流動休憩設定（休憩時間の固定しない）.外出の計上方法
                  */
                 Integer useStampCalcMethod = data.getFlexWorkSetting().getRestSetting().getFlowRestSetting().getFlowRestSetting().getUseStampCalcMethod();
-                cells.get("CT" + (startIndex + 1)).setValue(useStampCalcMethod == 0 ? "外出として計上する" : "休憩として計上する");
+                cells.get("CT" + (startIndex + 1)).setValue(useStampCalcMethod == 0 ? "休憩として計上する" : "外出として計上する");
                 
                 /*
                  * R6_168
