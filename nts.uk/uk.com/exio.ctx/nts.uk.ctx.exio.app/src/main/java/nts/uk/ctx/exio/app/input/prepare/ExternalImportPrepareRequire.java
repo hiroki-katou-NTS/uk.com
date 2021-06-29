@@ -21,15 +21,22 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.validation.condition.ImportingUserCondition;
+import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
+import nts.uk.ctx.exio.dom.input.workspace.GroupWorkspace;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ExternalImportPrepareRequire {
+	
+	@Inject
+	private ExternalImportWorkspaceRepository workspaceRepo;
+	
 	@Inject
 	PrepareImportingRepository prepareImportiongRepo;
 
@@ -38,7 +45,9 @@ public class ExternalImportPrepareRequire {
 		return EmbedStopwatch.embed(new RequireImpl());
 	}
 	
-	public static interface Require extends PrepareImporting.Require {
+	public static interface Require extends
+			PrepareImporting.Require,
+			ExternalImportWorkspaceRepository.Require {
 		
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
 	}
@@ -132,6 +141,40 @@ public class ExternalImportPrepareRequire {
 		@Override
 		public Optional<ExternalImportSetting> getExternalImportSetting(String companyId,
 				ExternalImportCode settingCode) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		
+		/** 編集済みデータのワークスペースが作成済みか */
+		private boolean hasCreatedWorkspaceRevised = false;
+
+		@Override
+		public void save(ExecutionContext context, RevisedDataRecord revisedDataRecord) {
+			
+			// ワークスペース未作成なら作る
+			if (!hasCreatedWorkspaceRevised) {
+				workspaceRepo.createWorkspaceReviced(this, context);
+				hasCreatedWorkspaceRevised = true;
+			}
+			
+			workspaceRepo.save(this, context, revisedDataRecord);
+		}
+
+		@Override
+		public ImportingGroup getImportingGroup(ImportingGroupId groupId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public GroupWorkspace getGroupWorkspace(ImportingGroupId groupId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo) {
 			// TODO Auto-generated method stub
 			return null;
 		}

@@ -1,6 +1,11 @@
 package nts.uk.ctx.exio.dom.input.canonicalize;
 
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import lombok.Value;
+import nts.gul.util.OptionalUtil;
+import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 
@@ -29,5 +34,23 @@ public class CanonicalizedDataRecord {
 				new DataItemList(),
 				new DataItemList(),
 				new DataItemList(revisedData.getItems()));
+	}
+	
+	/**
+	 * 指定された項目NoのDataItemを返す(beforeよりもafter優先)
+	 * @return
+	 */
+	public Optional<DataItem> getItemByNo(int itemNo) {
+		
+		Stream<DataItemList> lists = Stream.of(
+				itemsNotCanonicalize,
+				itemsAfterCanonicalize,
+				itemsBeforeCanonicalize);
+		
+		return lists
+				.map(l -> l.getItemByNo(itemNo))
+				.filter(opt -> opt.isPresent())
+				.flatMap(OptionalUtil::stream)
+				.findFirst();
 	}
 }
