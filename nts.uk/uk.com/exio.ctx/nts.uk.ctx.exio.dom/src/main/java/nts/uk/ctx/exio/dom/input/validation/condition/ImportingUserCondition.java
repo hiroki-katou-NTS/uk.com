@@ -13,6 +13,9 @@ import nts.uk.ctx.exio.dom.input.validation.Validation;
 @Getter
 public class ImportingUserCondition implements DomainAggregate{
 	
+	/*会社ID */
+	private String companyId;
+	
 	/** 受入設定コード */
 	private String settingCode;
 

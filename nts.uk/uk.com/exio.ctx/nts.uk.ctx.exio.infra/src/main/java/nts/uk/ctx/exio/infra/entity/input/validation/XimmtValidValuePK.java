@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Embeddable
-public class XimctUserConditionPK implements Serializable{
+public class XimmtValidValuePK implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
