@@ -1,11 +1,12 @@
 package nts.uk.ctx.sys.gateway.dom.accessrestrictions;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
@@ -18,6 +19,7 @@ import nts.uk.shr.com.net.Ipv4Address;
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.GateWay.アクセス制限.アクセス制限
  */
 @Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AccessRestrictions extends AggregateRoot{
 	
 	/** 契約コード  */
@@ -38,11 +40,12 @@ public class AccessRestrictions extends AggregateRoot{
 	}
 	
 	/**	[C-1] アクセス制限管理しない */
-	public AccessRestrictions(String tenantCode) {
-		super();
-		this.tenantCode = new ContractCode(tenantCode);
-		this.accessLimitUseAtr = NotUseAtr.NOT_USE;
-		this.whiteList = Collections.emptyList();
+	public static AccessRestrictions createEmpty(String tenantCode) {
+		AccessRestrictions domain = new AccessRestrictions();
+		domain.tenantCode = new ContractCode(tenantCode);
+		domain.accessLimitUseAtr = NotUseAtr.NOT_USE;
+		domain.whiteList = new ArrayList<>();
+		return domain;
 	}
 	
 	/** [1] 許可IPアドレスを追加する */
@@ -69,8 +72,9 @@ public class AccessRestrictions extends AggregateRoot{
 		this.whiteList.removeIf(c->c.getStartAddress().compareObject(ipAddress));
 		if(this.whiteList.isEmpty()) {
 			this.accessLimitUseAtr = NotUseAtr.NOT_USE;
+		} else {
+			this.validateIpAddress(accessLimitUseAtr, ipAddressToCheck);
 		}
-		this.validateIpAddress(accessLimitUseAtr, ipAddressToCheck);
 	}	
 	
 	/**
