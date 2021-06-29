@@ -70,4 +70,5 @@
 
 #A_INP_NAME {
 	text-overflow: ellipsis;
+	width: 260px !important;
 }	
