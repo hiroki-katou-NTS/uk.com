@@ -20,28 +20,28 @@ public class JpaExternalImportWorkspaceRepository extends JpaRepository implemen
 	@Override
 	public void createWorkspace(Require require, ExecutionContext context) {
 		
-		val builder = createSqlBuilder(require, context);
+		val workspace = createWorkspaceSql(require, context);
 		
 		// 編集済み一時テーブル
-		this.jdbcProxy().query(builder.createTableRevised(require)).execute();
+		workspace.createTableRevised(require);
 		
 		// 正準化済み一時テーブル
-		this.jdbcProxy().query(builder.createTableCanonicalized(require)).execute();
-		
+		workspace.createTableCanonicalized(require);
 		new LayoutAnyRecordToChange(jdbcProxy(), context).createTable();
+		new LayoutAnyRecordToDelete(jdbcProxy(), context).createTable();
 	}
 
 	@Override
 	public void save(Require require, ExecutionContext context, RevisedDataRecord record) {
 		
-		val builder = createSqlBuilder(require, context);
+		val builder = createWorkspaceSql(require, context);
 		builder.insert(require, record);
 	}
 
 	@Override
 	public void save(Require require, ExecutionContext context, CanonicalizedDataRecord record) {
 
-		val builder = createSqlBuilder(require, context);
+		val builder = createWorkspaceSql(require, context);
 		builder.insert(require, record);
 	}
 
@@ -52,11 +52,10 @@ public class JpaExternalImportWorkspaceRepository extends JpaRepository implemen
 
 	@Override
 	public void save(ExecutionContext context, AnyRecordToDelete record) {
-		// TODO Auto-generated method stub
-		
+		new LayoutAnyRecordToDelete(jdbcProxy(), context).insert(record);
 	}
 
-	private WorkspaceSql createSqlBuilder(Require require, ExecutionContext context) {
+	private WorkspaceSql createWorkspaceSql(Require require, ExecutionContext context) {
 		
 		val group = require.getImportingGroup(context.getGroupId());
 		val workspace = require.getGroupWorkspace(context.getGroupId());

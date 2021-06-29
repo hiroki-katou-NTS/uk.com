@@ -119,14 +119,12 @@ public class ExternalImportPrepareRequire {
 		public void save(ExecutionContext context, AnyRecordToDelete toDelete) {
 			workspaceRepo.save(context, toDelete);
 		}
-		
 
 		@Override
 		public void save(ExecutionContext context, AnyRecordToChange recordToChange) {
 			workspaceRepo.save(context, recordToChange);
 		}
 		
-
 		@Override
 		public void save(ExecutionContext context, RevisedDataRecord revisedDataRecord) {
 			
@@ -145,15 +143,14 @@ public class ExternalImportPrepareRequire {
 		}
 
 		@Override
-		public Optional<EmployeeDataMngInfo> getEmployeeIdByEmployeeCode(String employeeCode) {
-			return employeeDataMngInfoRepo.findByScdNotDel(employeeCode, companyId);
+		public List<String> getAllEmployeeCodesOfImportingData(ExecutionContext context) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 		@Override
-		public List<RevisedDataRecord> getRevisedDataRecordsByEmployeeCode(ExecutionContext context,
-				String employeeCode) {
-			// TODO Auto-generated method stub
-			return null;
+		public Optional<EmployeeDataMngInfo> getEmployeeIdByEmployeeCode(String employeeCode) {
+			return employeeDataMngInfoRepo.findByScdNotDel(employeeCode, companyId);
 		}
 
 		@Override
@@ -163,7 +160,8 @@ public class ExternalImportPrepareRequire {
 		}
 
 		@Override
-		public List<String> getAllEmployeeCodesOfImportingData(ExecutionContext context) {
+		public List<RevisedDataRecord> getRevisedDataRecordsByEmployeeCode(ExecutionContext context,
+				String employeeCode) {
 			// TODO Auto-generated method stub
 			return null;
 		}
