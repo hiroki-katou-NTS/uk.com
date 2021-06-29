@@ -10,6 +10,9 @@ import lombok.Value;
 @Value
 public class CsvRecord {
 	
+	/** 行番号 */
+	private final int rowNo;
+	
 	/** CSV1行分のデータ */
-	private List<String> rawItems;
+	private final List<String> rawItems;
 }

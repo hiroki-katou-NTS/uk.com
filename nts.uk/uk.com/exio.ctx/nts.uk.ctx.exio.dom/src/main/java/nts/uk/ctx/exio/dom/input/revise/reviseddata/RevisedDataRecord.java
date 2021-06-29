@@ -2,20 +2,18 @@ package nts.uk.ctx.exio.dom.input.revise.reviseddata;
 
 import java.util.Optional;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Value;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.DataItemList;
 
 /**
  * 編集済みの1行分のデータ
  */
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Value
 public class RevisedDataRecord {
+	
+	/** CSV行番号 */
+	int rowNo;
 
 	/** 編集済みの項目 */
 	DataItemList items;

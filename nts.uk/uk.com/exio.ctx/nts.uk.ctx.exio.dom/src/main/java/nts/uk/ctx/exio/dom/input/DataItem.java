@@ -76,4 +76,8 @@ public class DataItem {
 	public GeneralDate getDate() {
 		return value != null ? (GeneralDate) value : null;
 	}
+	
+	public boolean isNull() {
+		return value == null;
+	}
 }

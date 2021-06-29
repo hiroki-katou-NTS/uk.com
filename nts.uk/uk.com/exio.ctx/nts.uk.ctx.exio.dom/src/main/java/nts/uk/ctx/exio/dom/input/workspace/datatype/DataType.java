@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.workspace;
+package nts.uk.ctx.exio.dom.input.workspace.datatype;
 
 import lombok.RequiredArgsConstructor;
 import nts.uk.ctx.exio.dom.input.importableitem.ItemType;

@@ -69,7 +69,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 		
 		for (String employeeCode : employeeCodes) {
 			canonicalize(require, context, employeeCode).forEach(result -> {
-				require.save(result.complete(context));
+				require.save(result.complete());
 			});
 		}
 	}

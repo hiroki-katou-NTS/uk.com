@@ -1,9 +1,9 @@
 package nts.uk.ctx.exio.dom.input.workspace;
 
 import lombok.Value;
-import lombok.val;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.workspace.datatype.DataTypeConfiguration;
 
 /**
  * ワークスペースの項目

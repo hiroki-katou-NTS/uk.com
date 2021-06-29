@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.dom.input.workspace;
 
 import lombok.RequiredArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 
 /**
  * ワークスペースの項目の種別
@@ -15,6 +16,10 @@ public enum WorkspaceItemType {
 	GUID(2),
 	
 	;
+	
+	public static WorkspaceItemType valueOf(int value) {
+		return EnumAdaptor.valueOf(value, WorkspaceItemType.class);
+	}
 	
 	public final int value;
 }

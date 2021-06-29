@@ -81,7 +81,7 @@ public class TaskCanonicalization implements GroupCanonicalization {
 		}
 		
 		// データ自体を正準化する必要は無い
-		val result = CanonicalizedDataRecord.noChange(context, revisedData);
+		val result = CanonicalizedDataRecord.noChange(revisedData);
 		require.save(result);
 	}
 

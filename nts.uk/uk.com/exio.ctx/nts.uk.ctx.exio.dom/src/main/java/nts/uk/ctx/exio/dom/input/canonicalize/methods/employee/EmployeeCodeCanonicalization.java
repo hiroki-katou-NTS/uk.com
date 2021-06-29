@@ -61,7 +61,7 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 		String employeeId = require.getEmployeeIdByEmployeeCode(employeeCode).get().getEmployeeId();
 		
 		return IntermediateResult.create(
-				revisedData.getItems(),
+				revisedData,
 				DataItem.of(itemNoEmployeeId, employeeId),
 				itemNoEmployeeCode);
 	}
@@ -84,7 +84,7 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 		
 		return revisedDataRecords.stream()
 				.map(revisedData -> IntermediateResult.create(
-						revisedData.getItems(),
+						revisedData,
 						DataItem.of(itemNoEmployeeId, employeeId),
 						itemNoEmployeeCode));
 	}

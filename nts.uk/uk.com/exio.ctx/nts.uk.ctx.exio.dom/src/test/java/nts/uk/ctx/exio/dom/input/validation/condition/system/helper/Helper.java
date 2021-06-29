@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.val;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
@@ -17,9 +16,7 @@ import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 public class Helper {
 	
 	public static RevisedDataRecord DUMMY_RECORD(List<DataItem> itemList) {
-		val result = new RevisedDataRecord();
-		result.addItemList(new DataItemList(itemList)); 
-		return result;
+		return new RevisedDataRecord(0, new DataItemList(itemList));
 	}
 	
 	public static List<ImportableItem> DUMMY_ImportableItems(int itemNo){
