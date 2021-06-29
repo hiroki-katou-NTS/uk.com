@@ -238,7 +238,6 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 	@Override
 	public AtomTask adjust(
 			RequireAdjsut require,
-			ExecutionContext context,
 			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete) {
 
@@ -246,11 +245,11 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 
 			recordsToDelete.stream()
 				.map(EmployeeHistoryItem::new)
-				.forEach(item -> adjustDeleting(require, context, item));
+				.forEach(item -> adjustDeleting(require, item));
 
 			recordsToChange.stream()
 				.map(EmployeeHistoryItem::new)
-				.forEach(item -> adjustChanging(require, context, item));
+				.forEach(item -> adjustChanging(require,  item));
 		});
 	}
 	
@@ -260,7 +259,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 	 * @param context
 	 * @param historyItem
 	 */
-	protected abstract void adjustChanging(GroupCanonicalization.RequireAdjsut require, ExecutionContext context, EmployeeHistoryItem historyItem);
+	protected abstract void adjustChanging(GroupCanonicalization.RequireAdjsut require, EmployeeHistoryItem historyItem);
 	
 	/**
 	 * 受入によって削除されるべき履歴項目を削除する
@@ -268,7 +267,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 	 * @param context
 	 * @param historyItem
 	 */
-	protected abstract void adjustDeleting(GroupCanonicalization.RequireAdjsut require, ExecutionContext context, EmployeeHistoryItem historyItem);
+	protected abstract void adjustDeleting(GroupCanonicalization.RequireAdjsut require, EmployeeHistoryItem historyItem);
 	
 	public static interface RequireAdjust extends
 			EmploymentHistoryCanonicalization.RequireAdjust {

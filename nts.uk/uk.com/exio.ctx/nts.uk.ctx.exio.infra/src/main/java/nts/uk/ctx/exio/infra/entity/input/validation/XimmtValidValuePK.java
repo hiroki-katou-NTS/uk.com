@@ -15,14 +15,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Embeddable
-public class OioctImportableItemPK implements Serializable{
-	private static final long serialVersionUID = 1L;
+public class XimmtValidValuePK implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	@Column(name = "CID")
 	private String companyId;
 	
-	@Column(name = "GROUP_ID")
-	private int groupdId;
+	@Column(name = "SETTING_CODE")
+	private String settingCode;
 	
 	@Column(name = "ITEM_NO")
 	private int itemNo;

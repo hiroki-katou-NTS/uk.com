@@ -16,6 +16,10 @@ import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.exio.dom.input.ExecuteImporting;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportiongItemRepository;
@@ -25,6 +29,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalizationRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.transfer.ConversionTableRepository;
@@ -44,6 +49,9 @@ public class ExternalImportExecuteRequire {
 	}
 	
 	@Inject
+	ImportingGroupRepository importingGroupRepo;
+	
+	@Inject
 	ImportiongItemRepository importingItemRepo;
 	
 	@Inject
@@ -54,6 +62,12 @@ public class ExternalImportExecuteRequire {
 	
 	@Inject
 	GroupCanonicalizationRepository groupCanonicalizationRepo;
+	
+	@Inject
+	TaskingRepository taskingRepo;
+	
+	@Inject
+	WorkInformationRepository workInformationRepo;
 	
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 	public class RequireImpl implements Require {
@@ -69,8 +83,7 @@ public class ExternalImportExecuteRequire {
 
 		@Override
 		public ImportingGroup getImportingGroup(ImportingGroupId groupId) {
-			// TODO Auto-generated method stub
-			return null;
+			return importingGroupRepo.find(groupId);
 		}
 
 		@Override
@@ -97,27 +110,25 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public void deleteTask(String companyId, int taskFrameNo, String taskCode) {
+		public void deleteTask(int taskFrameNo, String taskCode) {
+			taskingRepo.delete(companyId, new TaskFrameNo(taskFrameNo), new TaskCode(taskCode));			
+		}
+
+		@Override
+		public void changeEmploymentHistory(String employeeId, DateHistoryItem historyItem) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
-		public void changeEmploymentHistory(String companyId, String employeeId, DateHistoryItem historyItem) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void deleteEmploymentHistory(String companyId, String employeeId, DateHistoryItem historyItem) {
+		public void deleteEmploymentHistory(String employeeId, DateHistoryItem historyItem) {
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
 		public void deleteDailyPerformance(String employeeId, GeneralDate date) {
-			// TODO Auto-generated method stub
-			
+			workInformationRepo.delete(employeeId, date);
 		}
 
 		@Override

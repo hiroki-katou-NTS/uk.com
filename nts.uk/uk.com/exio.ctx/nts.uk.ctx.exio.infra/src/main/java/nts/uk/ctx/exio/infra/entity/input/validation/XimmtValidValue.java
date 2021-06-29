@@ -32,13 +32,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Getter
-@Table(name = "OIOMT_USER_CONDITION")
-public class OiomtUserCondition extends ContractUkJpaEntity implements Serializable{
+@Table(name = "XIMMT_VALID_VALUE")
+public class XimmtValidValue extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private OiomtUserConditionPK pk;
+	private XimmtValidValuePK pk;
 	
 	@Column(name = "ITEM_TYPE")
 	private int itemType;
@@ -66,11 +66,11 @@ public class OiomtUserCondition extends ContractUkJpaEntity implements Serializa
 		return pk;
 	}
 	
-	public static final JpaEntityMapper<OiomtUserCondition> MAPPER = new JpaEntityMapper<>(OiomtUserCondition.class);
+	public static final JpaEntityMapper<XimmtValidValue> MAPPER = new JpaEntityMapper<>(XimmtValidValue.class);
 	
 	public ImportingUserCondition toDomain() {
 		Validation validation = getValidation();
-		return new ImportingUserCondition(this.pk.getSettingCode(), this.pk.getItemNo(), EnumAdaptor.valueOf(itemType, ItemType.class), validation);
+		return new ImportingUserCondition(this.pk.getCompanyId(), this.pk.getSettingCode(), this.pk.getItemNo(), EnumAdaptor.valueOf(itemType, ItemType.class), validation);
 	}
 
 	private Validation getValidation() {

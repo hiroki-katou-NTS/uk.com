@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input;
+﻿package nts.uk.ctx.exio.dom.input;
 
 import java.io.InputStream;
 import java.util.List;
@@ -11,6 +11,7 @@ import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
+import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
 import nts.uk.ctx.exio.dom.input.validation.ValidateData;
 
 /**
@@ -71,19 +72,35 @@ public class PrepareImporting {
 			CsvRecord csvRecord) {
 		
 		// TODO: データの組み立て
-		//val revisedResults = ReviseCsvRecord.revise(require, context, csvRecord, null);
-		RevisedDataRecord revisedData = null;
 		
+		val optAssembler = require.getAssemblyMethod(context.getCompanyId(), context.getExternalImportCode());
+		if(!optAssembler.isPresent()) {
+			// 受入データの組み立て方法が取得できない
+			return;
+		}
+		
+		val optRevisedData = optAssembler.get().assembleExternalImportData(require, context, csvRecord);
+		if(!optRevisedData.isPresent()) {
+			// データの組み立て結果が空の場合
+			return;
+		}
+		
+		val revisedData = optRevisedData.get();
+
 		ValidateData.validate(require, context, revisedData);
 		
 		require.save(context, revisedData);
 	}
 	
 	public static interface Require extends
+	ExternalImportAssemblyMethod.Require, 
 			ValidateData.ValidateRequire,
 			CanonicalizeRevisedData.Require {
 		
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
+
+
+		Optional<ExternalImportAssemblyMethod> getAssemblyMethod(String companyId, ExternalImportCode settingCode);
 		
 		void save(ExecutionContext context, RevisedDataRecord revisedDataRecord);
 	}

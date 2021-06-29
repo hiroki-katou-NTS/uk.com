@@ -86,8 +86,8 @@ public class ExternalImportCsvFileInfo {
 			
 			advance(lineData);
 			
-			while (iterator.hasNext()) {
-				val record = new CsvRecord(toStringList(iterator.next()));
+			for (int rowNo = 1; iterator.hasNext(); rowNo++) {
+				val record = new CsvRecord(rowNo, toStringList(iterator.next()));
 				readRecords.accept(record);
 			}
 		}

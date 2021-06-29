@@ -100,7 +100,6 @@ public class DailyPerformanceCanonicalization implements GroupCanonicalization {
 	@Override
 	public AtomTask adjust(
 			GroupCanonicalization.RequireAdjsut require,
-			ExecutionContext context,
 			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete) {
 

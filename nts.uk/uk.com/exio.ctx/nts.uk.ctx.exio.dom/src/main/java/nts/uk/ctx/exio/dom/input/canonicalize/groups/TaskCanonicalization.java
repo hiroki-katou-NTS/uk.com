@@ -94,7 +94,6 @@ public class TaskCanonicalization implements GroupCanonicalization {
 	@Override
 	public AtomTask adjust(
 			RequireAdjsut require,
-			ExecutionContext context,
 			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete) {
 		
@@ -105,14 +104,14 @@ public class TaskCanonicalization implements GroupCanonicalization {
 		return AtomTask.of(() -> {
 			for (val record : recordsToDelete) {
 				val key = new UniqueKey(record);
-				require.deleteTask(context.getCompanyId(), key.frameNo, key.code);
+				require.deleteTask(key.frameNo, key.code);
 			}
 		});
 	}
 	
 	public static interface RequireAdjust {
 		
-		void deleteTask(String companyId, int taskFrameNo, String taskCode);
+		void deleteTask(int taskFrameNo, String taskCode);
 	}
 	
 	/**

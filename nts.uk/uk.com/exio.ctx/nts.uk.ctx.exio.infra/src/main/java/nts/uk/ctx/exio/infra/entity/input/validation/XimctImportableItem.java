@@ -29,13 +29,16 @@ import javax.persistence.Entity;
 @NoArgsConstructor
 @Entity
 @Getter
-@Table(name = "OIOCT_IMPORTABLE_ITEM")
-public class OioctImportableItem extends ContractUkJpaEntity 		implements Serializable{
+@Table(name = "XIMCT_IMPORTABLE_ITEM")
+public class XimctImportableItem extends ContractUkJpaEntity 		implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private OioctImportableItemPK pk;
+	private XimctImportableItemPK pk;
+	
+	@Column(name = "ITEM_NAME")
+	private String itemName;
 	
 	@Column(name = "ITEM_TYPE")
 	private int itemType;
@@ -54,7 +57,7 @@ public class OioctImportableItem extends ContractUkJpaEntity 		implements Serial
 		return pk;
 	}
 	
-	public static final JpaEntityMapper<OioctImportableItem> MAPPER = new JpaEntityMapper<>(OioctImportableItem.class);
+	public static final JpaEntityMapper<XimctImportableItem> MAPPER = new JpaEntityMapper<>(XimctImportableItem.class);
 	
 	public ImportableItem toDomain() {
 		Optional<DomainConstraint> constraint = Optional.empty();
@@ -68,13 +71,14 @@ public class OioctImportableItem extends ContractUkJpaEntity 		implements Serial
 		return new ImportableItem(
 				ImportingGroupId.valueOf(pk.getGroupdId()),
 				pk.getItemNo(),
+				itemName,
 				EnumAdaptor.valueOf(itemType, ItemType.class),
 				required,
 				constraint);
 	}
 	
-	public static OioctImportableItem fromDomain(String cid, ImportableItem target) {
-		val pk = new OioctImportableItemPK(
+	public static XimctImportableItem fromDomain(String cid, ImportableItem target) {
+		val pk = new XimctImportableItemPK(
 					cid,
 					target.getGroupId().value,
 					target.getItemNo()
@@ -87,8 +91,9 @@ public class OioctImportableItem extends ContractUkJpaEntity 		implements Serial
 			fqn = target.getDomainConstraint().get().getFqn();
 		}
 		
-		return new OioctImportableItem(
+		return new XimctImportableItem(
 				pk, 
+				target.getItemName(),
 				target.getItemType().value, 
 				target.isRequired(),
 				checkMethod, 

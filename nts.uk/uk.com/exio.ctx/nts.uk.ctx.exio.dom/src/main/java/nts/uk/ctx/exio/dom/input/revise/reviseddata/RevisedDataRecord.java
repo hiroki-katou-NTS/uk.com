@@ -12,7 +12,7 @@ import nts.uk.ctx.exio.dom.input.DataItemList;
 @Value
 public class RevisedDataRecord {
 	
-	/** 受入行番号 */
+	/** CSV行番号 */
 	int rowNo;
 
 	/** 編集済みの項目 */
@@ -20,5 +20,9 @@ public class RevisedDataRecord {
 	
 	public Optional<DataItem> getItemByNo(int itemNo) {
 		return items.getItemByNo(itemNo);
+	}
+	
+	public void addItemList(DataItemList itemList) {
+		this.items.addItemList(itemList);
 	}
 }

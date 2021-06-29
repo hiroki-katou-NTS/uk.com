@@ -17,6 +17,7 @@ public class ImportableItem implements DomainAggregate{
 
 	private ImportingGroupId groupId;
 	private int itemNo;
+	private String itemName;
 	private ItemType itemType;
 	private boolean required;
 	private Optional<DomainConstraint> domainConstraint;
