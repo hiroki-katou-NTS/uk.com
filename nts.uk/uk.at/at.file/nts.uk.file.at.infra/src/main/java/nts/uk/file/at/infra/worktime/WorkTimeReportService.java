@@ -4480,23 +4480,23 @@ public class WorkTimeReportService {
             cells.get(startIndex, columnIndex).setValue(useCoreTimeZone);
             columnIndex++;
             
-            /*
-             * R6_77
-             * 始業時刻
-             */
-            Integer coreTimeStart = data.getFlexWorkSetting().getCoreTimeSetting().getCoreTimeSheet().getStartTime();
-            cells.get(startIndex, columnIndex).setValue(coreTimeStart != null ? getInDayTimeWithFormat(coreTimeStart) : "");
-            columnIndex++;
-            
-            /*
-             * R6_78
-             * 終業時刻
-             */
-            Integer coreTimeEnd = data.getFlexWorkSetting().getCoreTimeSetting().getCoreTimeSheet().getEndTime();
-            cells.get(startIndex, columnIndex).setValue(coreTimeEnd != null ? getInDayTimeWithFormat(coreTimeEnd) : "");
-            columnIndex++;
-            
-            if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            if (coreTimeZoneUsage.equals(ApplyAtr.USE.value)) {
+                /*
+                 * R6_77
+                 * 始業時刻
+                 */
+                Integer coreTimeStart = data.getFlexWorkSetting().getCoreTimeSetting().getCoreTimeSheet().getStartTime();
+                cells.get(startIndex, columnIndex).setValue(coreTimeStart != null ? getInDayTimeWithFormat(coreTimeStart) : "");
+                columnIndex++;
+                
+                /*
+                 * R6_78
+                 * 終業時刻
+                 */
+                Integer coreTimeEnd = data.getFlexWorkSetting().getCoreTimeSetting().getCoreTimeSheet().getEndTime();
+                cells.get(startIndex, columnIndex).setValue(coreTimeEnd != null ? getInDayTimeWithFormat(coreTimeEnd) : "");
+                columnIndex++;
+                
                 /*
                  * R6_258
                  * コアタイム内と外の外出時間を分けて集計する
@@ -4512,17 +4512,19 @@ public class WorkTimeReportService {
                 Integer deductTime = data.getFlexWorkSetting().getCoreTimeSetting().getGoOutCalc().getRemoveFromWorkTime();
                 cells.get(startIndex, columnIndex).setValue(deductTime == 1 ? "○" : "-");
                 columnIndex++;
-                
+            } else {
+                columnIndex += 4;
+            }
+           
+            if (coreTimeZoneUsage.equals(ApplyAtr.NOT_USE.value)) {
                 /*
                  * R6_79
                  * 最低勤務時間
                  */
                 Integer minWorkTime = data.getFlexWorkSetting().getCoreTimeSetting().getMinWorkTime();
                 cells.get(startIndex, columnIndex).setValue(getInDayTimeWithFormat(minWorkTime));
-                columnIndex++;
-            } else {
-                columnIndex += 3;
             }
+            columnIndex++;
         }
         
         /*
