@@ -11,10 +11,13 @@ import lombok.Getter;
 public class ColumnDesign {
 	String id;
 	String name;
+	String jpName;
 	String type;
+	int maxLength;
+	int scale;
 	boolean nullable;
 	String defaultValue;
 	String comment;
+	String checkConstraint;
 	int dispOrder;
-	boolean isPk;
 }

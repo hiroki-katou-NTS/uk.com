@@ -13,12 +13,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class ScvmtErpColumnDesignPk implements Serializable {
+public class NemTdSnapshotColumnPk implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "TABLE_NAME")
-	public String tableName;
+	@Column(name = "TABLE_ID")
+	public String tableId;
+
+	@Column(name = "SNAPSHOT_ID")
+	public String snapshotId;
 
 	@Column(name = "ID")
 	public String id;
