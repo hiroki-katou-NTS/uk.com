@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { 
 					width: 600, 
-					height: 430 
+					height: 450 
 			};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -21,7 +21,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area dialog-contents">
+			<div id="contents-area" class="dialog-contents">
 				<label id="K1_1">#{i18n.getText('CMF003_180')}</label>
 				
 				<table id="K1_2">
@@ -103,18 +103,17 @@
 						</td>
 					</tr>
 				</table>
-				
-				<!-- F3 -->
-				<div class ="button">
-					<com:ko-if bind="dialogMode() == 'saving'">
- 						<button id="F3_1" class="large" data-bind="click : interrupt" tabindex="1">#{i18n.getText('CMF003_187')}</button> 
- 					</com:ko-if>
- 					<com:ko-if bind="(dialogMode() !== 'saving')">
-	 					<button id="F3_2" class="large" data-bind="click : download, enable: ((dialogMode() == 'done') &amp;&amp; (!isDownloaded()))" tabindex="2">#{i18n.getText('CMF003_188')}</button>
-	 					<button id="F3_3" class="large" data-bind="click : close" tabindex="3">#{i18n.getText('CMF003_189')}</button> 
-					</com:ko-if>
-				</div>
 			</div>
+      <!-- F3 -->
+      <div id="functions-area-bottom">
+        <com:ko-if bind="dialogMode() == 'saving'">
+          <button id="F3_1" class="large" data-bind="click : interrupt" tabindex="1">#{i18n.getText('CMF003_187')}</button> 
+        </com:ko-if>
+        <com:ko-if bind="(dialogMode() !== 'saving')">
+          <button id="F3_2" class="large" data-bind="click : download, enable: ((dialogMode() == 'done') &amp;&amp; (!isDownloaded()))" tabindex="2">#{i18n.getText('CMF003_188')}</button>
+          <button id="F3_3" class="large" data-bind="click : close" tabindex="3">#{i18n.getText('CMF003_189')}</button> 
+        </com:ko-if>
+      </div>
 		</ui:define>
 	</ui:composition>
 </body>

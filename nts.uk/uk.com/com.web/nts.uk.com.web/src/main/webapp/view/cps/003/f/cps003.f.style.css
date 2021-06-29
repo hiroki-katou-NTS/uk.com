@@ -1,7 +1,3 @@
-#contents-area {
-	height: auto !important;
-}
-
 #contents-area .col-50 {
 	vertical-align: top; box-sizing : border-box;
 	display: inline-block;
@@ -23,11 +19,11 @@
 
 #contents-area .form-group.change-box,
 #contents-area .form-group.radio-wrapper {
-	margin-left: 25px;
+	margin-left: 30px;
 }
 
 #contents-area .form-group.filter-box {
-	margin-left: 50px;
+	margin-left: 30px;
 }
 
 #contents-area .form-group.change-box>.change-desc,
@@ -51,7 +47,7 @@
 }
 
 #contents-area .ntsSearchBox {
-	width: 165px !important;
+	width: 130px !important;
 }
 
 #contents-area .caret.caret-bottom:after {
@@ -136,12 +132,14 @@
 }
 
 #contents-area .selection-group-box .text-box {
-	top: 115px;
+	top: 100px;
 }
 
 #contents-area .selection-group-box .dropdown-box {
-	top: 76px;
+	top: 65px;
 	vertical-align: top;
+  display: flex;
+  width: 100%;
 }
 
 #contents-area .selection-group-box .ntsControl.ntsMonthDays_Container {
@@ -177,4 +175,13 @@ div[dropdown-for="pk-amount"] .nts-column {
 
 #func-notifier-errors  {
 	top: 575px !important;
+}
+
+#contents-area .radio-wrappers > .radio-wrapper {
+  display: block !important;
+}
+
+#contents-area .radio-wrappers > .radio-wrapper.without-text {
+  padding: 5px 10px 5px 30px;
+  margin: 5px 5px 0px 3px;
 }
