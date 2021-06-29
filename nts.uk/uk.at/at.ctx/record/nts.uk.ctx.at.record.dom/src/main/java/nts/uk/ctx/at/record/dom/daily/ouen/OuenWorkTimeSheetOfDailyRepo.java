@@ -25,3 +25,4 @@ public interface OuenWorkTimeSheetOfDailyRepo {
 	List<OuenWorkTimeSheetOfDaily> find(Map<String, List<GeneralDate>> param);
 
 	void removePK(String sid, GeneralDate ymd, int ouenNo);
+}
