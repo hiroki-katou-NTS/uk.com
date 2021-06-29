@@ -2476,7 +2476,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     _.forEach(detailContentDs, (item: any, index) => {
                         let object: any = _.find(data.aggreratePersonal.estimatedSalary, loopItem => loopItem.sid==item.employeeId);
                         if(object) {
-                            vertSumContentDs.push({ empID: item.employeeId, criterion: object.criterion, salary: object.salary });
+                            vertSumContentDs.push({ 
+								empID: item.employeeId, 
+								criterion: nts.uk.ntsNumber.formatNumber(object.criterion, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})), 
+								salary: nts.uk.ntsNumber.formatNumber(object.salary, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})) 
+							});
                             if(!_.isEmpty(object.background)) {
                                 vertContentDeco.push(new CellColor("salary", index.toString(), "bg-daily-alter-self", 0));  
                             }
@@ -2495,7 +2499,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     _.forEach(detailContentDs, (item: any, index) => {
                         let object: any = _.find(data.aggreratePersonal.estimatedSalary, loopItem => loopItem.sid==item.employeeId);
                         if(object) {
-                            vertSumContentDs.push({ empID: item.employeeId, criterion: object.criterion, salary: object.salary });
+                            vertSumContentDs.push({ 
+								empID: item.employeeId, 
+								criterion: nts.uk.ntsNumber.formatNumber(object.criterion, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})), 
+								salary: nts.uk.ntsNumber.formatNumber(object.salary, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})) 
+							});
                             if(!_.isEmpty(object.background)) {
                                 vertContentDeco.push(new CellColor("salary", index.toString(), "bg-daily-alter-self", 0));  
                             }
@@ -2521,9 +2529,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 colum3Object = _.find(object.workHours, (objectItem: any) => objectItem.key==AttendanceTimesForAggregation.WORKING_EXTRA);
                             vertSumContentDs.push({ 
                                 empID: item.employeeId, 
-                                colum1: _.isEmpty(colum1Object) ? '' : colum1Object.value, 
-                                colum2: _.isEmpty(colum2Object) ? '' : colum1Object.value, 
-                                colum3: _.isEmpty(colum3Object) ? '' : colum1Object.value 
+                                colum1: _.isEmpty(colum1Object) ? '' : nts.uk.time.format.byId("Time_Short_HM", colum1Object.value), 
+                                colum2: _.isEmpty(colum2Object) ? '' : nts.uk.time.format.byId("Time_Short_HM", colum2Object.value), 
+                                colum3: _.isEmpty(colum3Object) ? '' : nts.uk.time.format.byId("Time_Short_HM", colum3Object.value)
                             });
                         } else {
                             vertSumContentDs.push({ empID: item.employeeId, colum1: null, colum2: null, colum3: null });
@@ -2545,8 +2553,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 colum2Object = _.find(object.workHours, (objectItem: any) => objectItem.key==WorkClassificationAsAggregationTarget.HOLIDAY);
                             vertSumContentDs.push({ 
                                 empID: item.employeeId, 
-                                colum1: _.isEmpty(colum1Object) ? '' : colum1Object.value, 
-                                colum2: _.isEmpty(colum2Object) ? '' : colum2Object.value
+                                colum1: _.isEmpty(colum1Object) ? '' : nts.uk.ntsNumber.formatNumber(colum1Object.value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 1})), 
+                                colum2: _.isEmpty(colum2Object) ? '' : nts.uk.ntsNumber.formatNumber(colum2Object.value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 1}))
                             });
                         } else {
                             vertSumContentDs.push({ empID: item.employeeId, colum1: null, colum2: null });
