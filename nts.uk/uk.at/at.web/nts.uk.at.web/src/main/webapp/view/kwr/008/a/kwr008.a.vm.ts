@@ -481,7 +481,7 @@ module nts.uk.at.view.kwr008.a {
 
                 var getPageBreakSelection = service.getPageBreakSelection().done((enumRes) => {
                     for (let i of enumRes) {
-                        self.breakPage.push({ code: i.value + '', name: i.localizedName });
+                        self.breakPage.push({ code: i.value, name: i.localizedName });
                     }
                     self.selectedBreakPage(enumRes.length > 0 ? enumRes[0].value : 0);
                 }).fail((enumError) => {

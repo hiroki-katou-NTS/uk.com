@@ -19,6 +19,7 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprSttMailTestParam;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailType;
@@ -128,9 +129,13 @@ public class ApprovalStatusFinder {
 		return appSttService.confirmApprovalStatusMailSender();
 	}
 
-	public SendMailResultOutput sendTestMail(int mailType) {
+	public SendMailResultOutput sendTestMail(ApprSttMailTestParam command) {
 		// アルゴリズム「承認状況メールテスト送信実行」を実行する
-		return appSttService.sendTestMail(mailType);
+		return appSttService.sendTestMail(
+				command.getMailType(),
+				command.isScreenUrlApprovalEmbed(),
+				command.isScreenUrlDayEmbed(),
+				command.isScreenUrlMonthEmbed());
 	}
 
 	
@@ -476,7 +481,8 @@ public class ApprovalStatusFinder {
 				command.getUrlMonthEmbed()==0 ? NotUseAtr.NOT_USE : NotUseAtr.USE, 
 				new Subject(command.getMailSubject()), 
 				new Content(command.getMailContent()));
-		return appSttService.sendMailToDestination(approvalStatusMailTemp, param.getWkpEmpMailLst());
+		return appSttService.sendMailToDestination(approvalStatusMailTemp, param.getWkpEmpMailLst(), 
+				param.isScreenUrlApprovalEmbed(), param.isScreenUrlDayEmbed(), param.isScreenUrlMonthEmbed());
 	}
 	
 	public List<ApprSttConfirmEmp> getConfirmApprSttByEmp(ConfirmSttEmpParam param) {

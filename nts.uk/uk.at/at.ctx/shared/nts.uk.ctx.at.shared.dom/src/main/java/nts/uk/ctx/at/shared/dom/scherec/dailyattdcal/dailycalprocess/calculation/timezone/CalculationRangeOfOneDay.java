@@ -132,27 +132,8 @@ public class CalculationRangeOfOneDay {
 	
 	public static CalculationRangeOfOneDay createEmpty(IntegrationOfDaily integrationOfDaily) {
 		return new CalculationRangeOfOneDay(
-				Finally.of(
-						new FlexWithinWorkTimeSheet(
-								Arrays.asList(
-										new WithinWorkTimeFrame(
-												new EmTimeFrameNo(5),
-												new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)),
-												new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)),
-												new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
-												Collections.emptyList(),
-												Collections.emptyList(),
-												Collections.emptyList(),
-												MidNightTimeSheetForCalcList.createEmpty(),
-												Collections.emptyList(),
-												Optional.empty(),
-												Optional.empty()
-										)
-								),
-								Collections.emptyList(),
-								Optional.empty()
-						)
-				),
+				Finally.of(new FlexWithinWorkTimeSheet(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+								Collections.emptyList(), Collections.emptyMap(), Finally.empty(), Optional.empty())),
 				Finally.of(new OutsideWorkTimeSheet(Optional.empty(),Optional.empty())),
 				null,
 				integrationOfDaily.getAttendanceLeave().orElse(null),

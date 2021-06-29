@@ -103,27 +103,39 @@ public class CreateAlarmDataTopPageService {
         Optional<String> patternName = alarmListInfo.get(0).getPatternName();
         //$エラーがある職場IDList：for
         for (String wkpl : wkplIdListErrors) {//職場、基準日からアラーム通知先の社員を取得する
-            List<String> empIds = require.getListEmployeeId(wkpl, GeneralDate.today());
+            //$上長の社員IDList　 =　require. 職場、基準日からアラーム通知先の社員を取得する($, 年月日#今日())
+            List<String> superiorEmpIDList = require.getListEmployeeId(wkpl, GeneralDate.today());
+
             //$発生日時　＝　$職場Map.get($)　：　sort $.発生日時 DESC first $.発生日時
             val topAlarmParamList = workplaceMap.getOrDefault(wkpl, new ArrayList<>());
-
             val optWkplTopAlarm = topAlarmParamList.stream().filter(Objects::nonNull).map(TopPageAlarmImport::getOccurrenceDateTime).max(GeneralDateTime::compareTo);
             GeneralDateTime occurrenceDateTime = optWkplTopAlarm.isPresent() ? optWkplTopAlarm.get() : GeneralDateTime.now();
 
-            val lstEmp = topAlarmParamList.stream().filter(Objects::nonNull).map(i -> i.getDisplaySId()).collect(Collectors.toList());
-            //$上長１　＝　$上長の社員IDList　：　トップアラームParam#作成する(アラームリスト、$発生日時、$、上長、[prv-1]部下のエラーがある社員IDを判断する（Loopしてる職場ID、$職場Map)、$パターンコード、Empty、Empty、$パターン名称）
-            topAlarmList.addAll(empIds.stream().map(empId -> new TopPageAlarmImport(
+            //$部下社員IDList　＝　[prv-1]部下のエラーがある社員IDを判断する（Loopしてる職場ID、$職場Map)
+            List<String> subEmpIdList = getEmployeeIdsWithChildWkpError(wkpl, workplaceMap);
+
+            //$上長１ = List.Empty
+            List<TopPageAlarmImport> superior1 = new ArrayList<>();
+            //$上長の社員IDList　：for　
+            for (String sid : superiorEmpIDList) {
+                //$部下社員IDListSub　＝　$部下社員IDList　：　filter　$　<>　Loopしてる社員ID
+                val superiorEmpIDListSub = subEmpIdList.stream().filter(e -> !e.equals(sid)).collect(Collectors.toList());
+                if (superiorEmpIDListSub.size() > 0){
+                    //$上長１.Add（トップアラームParam#作成する(アラームリスト、$発生日時、$、上長、$部下社員IDListSub, $パターンコード、Empty、Empty、$パターン名称））
+                    superior1.add(new TopPageAlarmImport(
                             deleteInfo.isPresent() ? deleteInfo.get().getAlarmClassification() : 0,
                             occurrenceDateTime,
-                            empId,
+                            sid,
                             1,
                             patternCode,
                             patternName,
                             Optional.empty(),
                             Optional.empty(),
-                            lstEmp
-                    )
-            ).collect(Collectors.toList()));
+                            superiorEmpIDListSub
+                    ));
+                }
+            }
+            topAlarmList.addAll(superior1);
         }
         //$上長のアラームリスト　：distinct　　//※重複の社員IDは追加しない
 //        List<TopPageAlarmImport> topAlarmListDistinct = topAlarmList.stream()
@@ -131,6 +143,17 @@ public class CreateAlarmDataTopPageService {
 
         Optional<DeleteInfoAlarmImport> finalDelInfo = delInfo;
         return AtomTask.of(() -> require.create(companyId, topAlarmList, finalDelInfo));
+    }
+
+    /**
+     * [prv-1]部下のエラーがある社員IDを判断する
+     * @param workplaceId
+     * @param workplaceMap
+     * @return 部下のエラーがある社員ID
+     */
+    private static List<String> getEmployeeIdsWithChildWkpError(String workplaceId, Map<String, List<TopPageAlarmImport>> workplaceMap) {
+        List<TopPageAlarmImport> topAlarmParamList = workplaceMap.getOrDefault(workplaceId, new ArrayList<>());
+        return topAlarmParamList.stream().filter(x -> x != null).map(i -> i.getDisplaySId()).collect(Collectors.toList());
     }
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {

@@ -59,14 +59,15 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			const vm = this;
 
 			let dataTransfer: DataTransfer;
-			if (_.isNil(params)) {
-				dataTransfer = __viewContext.transferred.value; // from spr		
-				
+			if(nts.uk.request.location.current.isFromMenu) {
+				sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');	
+			} else {
+				if(!_.isNil(__viewContext.transferred.value)) {
+					vm.isFromOther = true;
+					dataTransfer = __viewContext.transferred.value; // from spr		
+					params = __viewContext.transferred.value;
+				}
 			}
-			if(!_.isNil(__viewContext.transferred.value)) {
-				vm.isFromOther = true;
-			}
-			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
 			// __viewContext.transferred.value = undefined;
 
 			vm.createRestTime();
@@ -193,7 +194,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						vm.setComboDivergenceReason(vm.dataSource);
 						
 						//prePostAtr = 2 when none is selected
-						if (vm.application().prePostAtr() == 0 || vm.mode() == MODE.MULTiPLE_AGENT || vm.application().prePostAtr() == 2) {
+						if (vm.application().prePostAtr() == 0 || vm.mode() == MODE.MULTiPLE_AGENT || _.isNil(vm.application().prePostAtr())) {
 							$('.table-time2 .nts-fixed-header-wrapper').width(224);
 							if (vm.holidayTime().length > 3) {
 								$('.table-time2 .nts-fixed-body-wrapper').width(208);

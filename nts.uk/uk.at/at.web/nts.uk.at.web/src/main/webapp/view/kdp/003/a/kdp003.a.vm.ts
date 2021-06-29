@@ -16,19 +16,26 @@ module nts.uk.at.kdp003.a {
 		CONFIRM_STAMP_INPUT: '/at/record/stamp/employment/system/confirm-use-of-stamp-input',
 		EMPLOYEE_LIST: '/at/record/stamp/employment/in-workplace',
 		REGISTER: '/at/record/stamp/employment/system/register-stamp-input',
-		NOW: '/server/time/now'
+		NOW: '/server/time/now',
+		NOTICE: 'at/record/stamp/notice/getStampInputSetting',
+		GET_WORKPLACE_BASYO: 'at/record/stamp/employment_system/get_location_stamp_input',
+		confirmUseOfStampInput: 'at/record/stamp/employment_system/confirm_use_of_stamp_input',
 	};
 
 	const DIALOG = {
 		F: '/view/kdp/003/f/index.xhtml',
 		K: '/view/kdp/003/k/index.xhtml',
 		S: '/view/kdp/003/s/index.xhtml',
+		R: '/view/kdp/003/r/index.xhtml',
+		M: '/view/kdp/003/m/index.xhtml',
+		P: '/view/kdp/003/p/index.xhtml',
 		KDP002_B: '/view/kdp/002/b/index.xhtml',
 		KDP002_C: '/view/kdp/002/c/index.xhtml',
 		KDP002_T: '/view/kdp/002/t/index.xhtml'
 	};
 
 	const KDP003_SAVE_DATA = 'loginKDP003';
+	const WORKPLACES_STORAGE = 'WORKPLACES_STORAGE';
 
 	@bean()
 	export class ViewModel extends ko.ViewModel {
@@ -37,6 +44,20 @@ module nts.uk.at.kdp003.a {
 		// login false: has messageId
 		// login success: null
 		message: KnockoutObservable<f.Message | string | null | undefined | false> = ko.observable(undefined);
+
+		// Determined login equal basyo -> OpenView K ?
+		modeBasyo: KnockoutObservable<boolean> = ko.observable(false);
+		// workplace get in basyo;
+		workPlace: string[] | null = null;
+
+		// Notification
+		messageNoti: KnockoutObservable<IMessage> = ko.observable();
+
+		workPlaceInfos: IWorkPlaceInfo[] = [];
+
+		worklocationCode: null | string = null;
+		workPlaceId: string = null;
+		contractCd: string = '';
 
 		// setting for button A3
 		showClockButton: {
@@ -71,12 +92,17 @@ module nts.uk.at.kdp003.a {
 
 		fingerStampSetting: KnockoutObservable<FingerStampSetting> = ko.observable(DEFAULT_SETTING);
 
+		pageComment: KnockoutObservable<string> = ko.observable('');
+		commentColor: KnockoutObservable<string> = ko.observable('');
+
 		created() {
 			const vm = this;
 
 			// show or hide stampHistoryButton
 			vm.message.subscribe((value) => {
+
 				vm.showClockButton.company(value === null);
+
 			});
 
 			vm.$ajax('at', API.NOW)
@@ -99,6 +125,136 @@ module nts.uk.at.kdp003.a {
 						}
 					});
 			});
+
+			setInterval(() => {
+				vm.loadNotice();
+			}, 5000);
+		}
+
+		// get WorkPlace from basyo -> save locastorage.
+		basyo() {
+			$.urlParam = function (name) {
+				var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+				if (results == null) {
+					return null;
+				}
+				else {
+					return decodeURI(results[1]) || 0;
+				}
+			}
+
+			const vm = this,
+				locationCd = $.urlParam('basyo');
+
+			if (locationCd) {
+				const param = {
+					contractCode: vm.$user.contractCode,
+					workLocationCode: locationCd
+				}
+
+				vm.$ajax(API.GET_WORKPLACE_BASYO, param)
+					.done((data: IBasyo) => {
+						if (data) {
+
+							if (data.workLocationName != null || data.workpalceId != null) {
+								vm.worklocationCode = locationCd;
+							}
+
+							if (data.workpalceId) {
+								if (data.workpalceId.length > 0) {
+									vm.modeBasyo(true);
+									vm.workPlace = data.workpalceId;
+								}
+							}
+						}
+					});
+			}
+		}
+
+		shoNoti() {
+			const vm = this;
+
+			const param = { setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003' };
+
+			vm.$window.modal(DIALOG.R, param);
+		}
+
+		settingNoti() {
+			const vm = this;
+
+			vm.$window.storage(KDP003_SAVE_DATA)
+				.then((data: undefined | StorageData) => {
+					if (data) {
+						const mode = 'notification';
+						const companyId = (data || {}).CID;
+
+						vm.$window.modal('at', DIALOG.F, { mode, companyId })
+							.then((output: string) => {
+								if (output === 'loginSuccess') {
+									vm.$window.modal('at', DIALOG.P)
+										.then(() => {
+											window.location.reload(false);
+										});
+								}
+							});
+					}
+				});
+		}
+
+		loadNotice(storage?: StorageData) {
+			const vm = this;
+			let startDate = vm.$date.now();
+			//startDate.setDate(startDate.getDate() - 3);
+			var wkpIds: string[];
+
+			if (storage) {
+				wkpIds = storage.WKPID;
+			} else {
+				vm.$window
+					.storage('loginKDP003')
+					.then((data: any) => {
+						if (data.WKPID.length > 0) {
+							wkpIds = data.WKPID;
+						}
+					})
+					.then(() => {
+						if (wkpIds && wkpIds.length > 0) {
+							const param = {
+								periodDto: {
+									startDate: startDate,
+									endDate: vm.$date.now()
+								},
+								wkpIds: wkpIds
+							}
+
+							vm.$ajax(API.NOTICE, param)
+								.done((data: IMessage) => {
+									vm.messageNoti(data);
+								});
+						}
+					});
+			}
+
+			if (wkpIds && wkpIds.length > 0) {
+				const param = {
+					periodDto: {
+						startDate: startDate,
+						endDate: vm.$date.now()
+					},
+					wkpIds: wkpIds
+				}
+
+				vm.$blockui('invisible')
+					.then(() => {
+						vm.$ajax(API.NOTICE, param)
+							.done((data: IMessage) => {
+								vm.messageNoti(data);
+							});
+					})
+					.always(() => {
+						vm.$blockui('clear');
+					});
+			}
 		}
 
 		mounted() {
@@ -107,22 +263,21 @@ module nts.uk.at.kdp003.a {
 
 			$(window).trigger('resize');
 
+			var checkUsed: boolean | null;
+
+			vm.$ajax(API.confirmUseOfStampInput, { employeeId: null, stampMeans: 0 })
+				.then((data: any) => {
+
+					if (data.used == 2) {
+						checkUsed = false;
+					} else {
+						checkUsed = true;
+					}
+				});
+
 			return $.Deferred()
 				.resolve(true)
 				.then(() => storage(KDP003_SAVE_DATA))
-				.then((storageData: undefined | StorageData) => {
-					if (storageData !== undefined) {
-						return vm.$ajax('at', API.FINGER_STAMP_SETTING)
-							.then((data: FingerStampSetting) => {
-								if (data) {
-									vm.fingerStampSetting(data);
-								}
-							})
-							.then(() => storageData);
-					}
-
-					return storageData;
-				})
 				.then((storageData: undefined | StorageData) => {
 					if (storageData === undefined) {
 						return vm.$window.modal('at', DIALOG.F, { mode: 'admin' })
@@ -141,7 +296,7 @@ module nts.uk.at.kdp003.a {
 					} = storageData as StorageData;
 
 					const loginParams: f.ModelData = {
-						contractCode: '000000000000',
+						contractCode: vm.$user.contractCode,
 						companyCode: CCD,
 						companyId: CID,
 						employeeCode: SCD,
@@ -154,8 +309,10 @@ module nts.uk.at.kdp003.a {
 
 					// auto login by storage data of preview login
 					// <<ScreenQuery>> 打刻管理者でログインする
-					return vm.$ajax('at', API.COMPANIES)
+
+					return vm.$ajax('at', API.COMPANIES, { contractCode: vm.$user.contractCode })
 						.then((data: f.CompanyItem[]) => {
+
 							if (!data.length || _.every(data, d => d.selectUseOfName === false)) {
 								// note: ログイン失敗(打刻会社一覧が取得できない場合)
 								vm.setMessage({ messageId: 'Msg_1527' });
@@ -178,48 +335,177 @@ module nts.uk.at.kdp003.a {
 						}) as JQueryPromise<LoginData>;
 				})
 				.then((data: LoginData) => {
-					// if dialog f return data (first login)
-					if (data.loginData && !data.loginData.msgErrorId && !data.loginData.errorMessage && !data.storageData) {
-						const { loginData } = data;
-						const params = { multiSelect: true };
+					vm.$ajax(API.confirmUseOfStampInput, { employeeId: null, stampMeans: 0 })
+						.then((data: any) => {
 
-						return vm.$window
-							.modal('at', DIALOG.K, params)
-							.then((workplaceData: k.Return) => ({
-								loginData,
-								workplaceData
-							})) as JQueryPromise<LoginData>;
+							if (data.used == 2) {
+								checkUsed = false;
+							} else {
+								checkUsed = true;
+							}
+						});
+
+					$.urlParam = function (name) {
+						var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+
+						if (results == null) {
+							return null;
+						}
+						else {
+							return decodeURI(results[1]) || 0;
+						}
+					}
+
+					const locationCd = $.urlParam('basyo');
+
+					if (locationCd) {
+						const param = {
+							contractCode: vm.$user.contractCode,
+							workLocationCode: locationCd
+						}
+
+						return vm.$ajax(API.GET_WORKPLACE_BASYO, param)
+							.then((dataBasyo: IBasyo) => {
+								if (dataBasyo) {
+									if (dataBasyo.workLocationName != null || dataBasyo.workpalceId != null) {
+										vm.worklocationCode = locationCd;
+									}
+
+									if (dataBasyo.workpalceId) {
+										if (dataBasyo.workpalceId.length > 0) {
+											vm.modeBasyo(true);
+											vm.workPlace = dataBasyo.workpalceId;
+										}
+									}
+								}
+							})
+							.then(() => data);
 					}
 
 					return data;
 				})
 				.then((data: LoginData) => {
-					// if not return full data (first login)
-					if (!data.storageData && (!data.loginData || !data.workplaceData)) {
-						vm.setMessage({ messageId: 'Msg_1647' });
 
+					var exest = false;
+					var check1527 = false;
+
+					if (ko.unwrap(vm.message)) {
+						if (ko.unwrap(vm.message).messageId === 'Msg_1527') {
+							check1527 = true;
+						}
+					}
+
+					if (!check1527) {
+						if (data.loginData !== undefined) {
+							if (data.loginData.notification == null) {
+								exest = true;
+							}
+
+							if (data.loginData.result) {
+								exest = false;
+							}
+						}
+					}
+
+					// if dialog f return data (first login)
+
+					if (data.loginData && !data.loginData.msgErrorId && !data.loginData.errorMessage && !data.storageData && !exest) {
+						const { loginData } = data;
+						const params = { multiSelect: true };
+
+						if (!ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
+							return vm.$window
+								.modal('at', DIALOG.K, params)
+								.then((workplaceData: k.Return) => ({
+									loginData,
+									workplaceData
+								})) as JQueryPromise<LoginData>;
+						}
+					}
+
+					return data;
+				})
+				.then((data: LoginData) => {
+					var check1527 = false;
+
+					if (data.loginData === undefined) {
+						vm.setMessage({ messageId: 'Msg_1647' });
+						return false;
+					}
+
+					if (ko.unwrap(vm.message)) {
+						if (ko.unwrap(vm.message).messageId === 'Msg_1527') {
+							check1527 = true;
+						}
+					}
+
+					if (check1527) {
+						vm.setMessage({ messageId: 'Msg_1527' });
+						return false;
+					}
+
+					if (data.loginData.msgErrorId === "Msg_1527") {
+						vm.setMessage({ messageId: 'Msg_1527' });
+						return false;
+					}
+
+					var exest = false;
+
+					if (data.loginData.notification == null) {
+						exest = true;
+					}
+
+					if (!ko.unwrap(vm.modeBasyo)) {
+						if (!exest) {
+							vm.setMessage({ messageId: 'Msg_1647' });
+							return false;
+						}
+					} else {
+						if (data.loginData.result) {
+							exest = false;
+						}
+						if (exest) {
+							vm.setMessage({ messageId: 'Msg_1647' });
+							return false;
+						}
+					}
+
+					// if not return full data (first login)
+					if (!data.storageData && (!data.loginData || !data.workplaceData && !ko.unwrap(vm.modeBasyo))) {
+						vm.setMessage({ messageId: 'Msg_1647' });
 						return false;
 					}
 
 					const { loginData, storageData, workplaceData } = data;
 
+					if (data.workplaceData) {
+						if (!data.workplaceData.selectedId) {
+							if (data.workplaceData.notification == null) {
+								vm.setMessage({ messageId: 'Msg_1647' });
+								return false;
+							}
+						}
+					}
+
 					if (loginData.msgErrorId) {
 						vm.setMessage({ messageId: loginData.msgErrorId });
-
 						return false;
 					}
 
 					if (loginData.errorMessage) {
 						vm.setMessage(loginData.errorMessage);
+						return false;
+					}
 
+					if (!checkUsed) {
+						vm.message({ messageId: 'Msg_1645', messageParams: [vm.$i18n('KDP002_2')] });
 						return false;
 					}
 
 					// if login & select workspace success
 					const { em } = loginData;
 
-					if (workplaceData) {
-						const { selectedId } = workplaceData;
+					if (ko.unwrap(vm.modeBasyo)) {
 
 						const storeData = {
 							CCD: em.companyCode,
@@ -228,17 +514,53 @@ module nts.uk.at.kdp003.a {
 							SCD: em.employeeCode,
 							SID: em.employeeId,
 							WKLOC_CD: '',
-							WKPID: _.isString(selectedId) ? [selectedId] : selectedId
+							WKPID: vm.workPlace
 						};
-
 						return storage(KDP003_SAVE_DATA, storeData);
+					} else {
+						if (workplaceData) {
+							const { selectedId } = workplaceData;
+
+							const storeData = {
+								CCD: em.companyCode,
+								CID: em.companyId,
+								PWD: em.password,
+								SCD: em.employeeCode,
+								SID: em.employeeId,
+								WKLOC_CD: '',
+								WKPID: _.isString(selectedId) ? [selectedId] : selectedId
+							};
+
+							return storage(KDP003_SAVE_DATA, storeData);
+						}
+					}
+
+					return storageData;
+				})
+				.then((storageData: false | StorageData) => {
+
+					if (storageData) {
+						return vm.$ajax('at', API.FINGER_STAMP_SETTING)
+							.then((data: FingerStampSetting) => {
+								if (data) {
+									vm.fingerStampSetting(data);
+									var time = data.stampSetting.correctionInterval * 60000;
+
+									setInterval(() => {
+										vm.loadNotice();
+									}, time);
+								}
+							})
+							.then(() => storageData);
 					}
 
 					return storageData;
 				})
 				.then((data: false | StorageData) => {
+
 					// if login and storage data success
 					if (data) {
+						vm.loadNotice(data);
 						return vm.loadData(data);
 					}
 				})
@@ -341,6 +663,7 @@ module nts.uk.at.kdp003.a {
 
 			return vm.$ajax('at', API.EMPLOYEE_LIST, params)
 				.then((data: Employee[]) => {
+					data = _.orderBy(data, 'employeeName', 'desc');
 					vm.employeeData.employees(data);
 				}) as JQueryPromise<any>;
 		}
@@ -348,11 +671,12 @@ module nts.uk.at.kdp003.a {
 		setting() {
 			const vm = this;
 			const { storage } = vm.$window;
+			var openViewK: boolean | null = null;
+			var saveSuccess: boolean = false;
 
-			if (!!ko.unwrap(vm.message)) {
-				vm.message(false);
-			}
-
+			// if (!!ko.unwrap(vm.message)) {
+			// 	vm.message(false);
+			// }
 			storage(KDP003_SAVE_DATA)
 				.then((data: StorageData) => {
 					const mode = 'admin';
@@ -360,70 +684,218 @@ module nts.uk.at.kdp003.a {
 
 					return vm.$window.modal('at', DIALOG.F, { mode, companyId });
 				})
-				// check storage data
 				.then((loginData: undefined | f.TimeStampLoginData) => {
-					if (loginData === undefined) {
-						return {};
-					} else {
-						const params = { multiSelect: true };
+					$.urlParam = function (name) {
+						var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
 
+						if (results == null) {
+							return null;
+						}
+						else {
+							return decodeURI(results[1]) || 0;
+						}
+					}
+
+					const locationCd = $.urlParam('basyo');
+
+					if (locationCd) {
+						const param = {
+							contractCode: vm.$user.contractCode,
+							workLocationCode: locationCd
+						}
+
+						return vm.$ajax(API.GET_WORKPLACE_BASYO, param)
+							.then((data: IBasyo) => {
+
+								if (data) {
+
+									if (data.workLocationName != null || data.workpalceId != null) {
+										vm.worklocationCode = locationCd;
+									}
+
+									if (data.workpalceId) {
+										if (data.workpalceId.length > 0) {
+											vm.modeBasyo(true);
+											vm.workPlace = data.workpalceId;
+										}
+
+										if (data.workpalceId.length == 0) {
+											vm.modeBasyo(false);
+										}
+									}
+								}
+							})
+							.then(() => loginData);
+					}
+
+					return loginData;
+				})
+				.then((loginData: undefined | f.TimeStampLoginData) => {
+
+					var exist = false;
+					var exist1 = false;
+					if (loginData === undefined) {
+						exist = true;
+					}
+
+					if (loginData.result) {
+						exist1 = true;
+					}
+
+					if (loginData.notification == null && !exist1) {
+						exist = true;
+					}
+
+					const params = { multiSelect: true };
+					if (!exist && !ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
 						return vm.$window.modal('at', DIALOG.K, params)
 							.then((workplaceData: undefined | k.Return) => {
+								openViewK = true;
 								return {
 									loginData,
 									workplaceData
 								};
 							}) as JQueryPromise<LoginData>;
+					} else {
+
+						return loginData;
 					}
 				})
 				.then((data: LoginData) => {
-					if (!data.loginData || !data.workplaceData) {
-						return storage(KDP003_SAVE_DATA)
-							.then((data: undefined | StorageData) => {
-								if (_.isNil(data)) {
-									vm.setMessage({ messageId: 'Msg_1647' });
+					var exist = true;
+					var exist1 = false;
+					var checkExistBasyo = false;
+					var check1527 = false;
 
-									return false;
+					if (data.msgErrorId) {
+						if (data.msgErrorId === "Msg_1527") {
+							check1527 = true;
+						}
+					}
+
+					if (check1527) {
+						vm.setMessage({ messageId: 'Msg_1527' });
+						return false;
+					}
+
+					if (data === undefined) {
+						return false;
+					}
+
+					if (data.loginData) {
+						exist1 = true;
+					}
+
+					if (ko.unwrap(vm.modeBasyo)) {
+
+						if (data.notification == null) {
+							var checkExistBasyo = true;
+						}
+						if (data.result) {
+							checkExistBasyo = false;
+						}
+					}
+
+					if (checkExistBasyo) {
+						checkExistBasyo = false;
+						return false;
+					}
+
+					if (data.notification == null && !exist1 && !ko.unwrap(vm.modeBasyo)) {
+
+						exist = false;
+					}
+
+					if (!exist) {
+						return false;
+					}
+
+					if (ko.unwrap(vm.modeBasyo)) {
+						if (vm.workPlace.length <= 0) {
+							vm.setMessage({ messageId: 'Msg_1647' });
+							return false;
+						}
+					} else {
+						if (data.workplaceData) {
+							if (!data.workplaceData.selectedId) {
+								if (data.workplaceData.notification == null) {
+									return storage(KDP003_SAVE_DATA)
+										.then((data: undefined | StorageData) => {
+											if (_.isNil(data)) {
+												vm.setMessage({ messageId: 'Msg_1647' });
+
+												return false;
+											}
+										});
 								}
-
-								// reload with old data
-								return data;
-							});
+							}
+						}
 					}
 
-					const { loginData, workplaceData } = data;
+					if (ko.unwrap(vm.modeBasyo)) {
+						if (data.msgErrorId) {
+							vm.setMessage({ messageId: data.msgErrorId });
 
-					if (loginData.msgErrorId) {
-						vm.setMessage({ messageId: loginData.msgErrorId });
+							return false;
+						}
 
-						return false;
-					}
+						if (data.errorMessage) {
+							vm.setMessage(data.errorMessage);
 
-					if (loginData.errorMessage) {
-						vm.setMessage(loginData.errorMessage);
+							return false;
+						}
+					} else {
+						if (data.loginData.msgErrorId) {
+							vm.setMessage({ messageId: data.loginData.msgErrorId });
 
-						return false;
+							return false;
+						}
+
+						if (data.loginData.errorMessage) {
+							vm.setMessage(data.loginData.errorMessage);
+
+							return false;
+						}
 					}
 
 					// if login & select workspace success
-					const { em } = loginData;
-					const { selectedId } = workplaceData;
 
-					const storageData = {
-						CCD: em.companyCode,
-						CID: em.companyId,
-						PWD: em.password,
-						SCD: em.employeeCode,
-						SID: em.employeeId,
-						WKLOC_CD: '',
-						WKPID: _.isString(selectedId) ? [selectedId] : selectedId
-					};
+					if (ko.unwrap(vm.modeBasyo)) {
+						const storageData = {
+							CCD: data.em.companyCode,
+							CID: data.em.companyId,
+							PWD: data.em.password,
+							SCD: data.em.employeeCode,
+							SID: data.em.employeeId,
+							WKLOC_CD: '',
+							WKPID: vm.workPlace
+						};
 
-					return storage(KDP003_SAVE_DATA, storageData) as JQueryPromise<StorageData>;
+						return storage(KDP003_SAVE_DATA, storageData) as JQueryPromise<StorageData>;
+					} else {
+
+						const { em } = data.loginData;
+						const { selectedId } = data.workplaceData;
+
+						const storageData = {
+							CCD: em.companyCode,
+							CID: em.companyId,
+							PWD: em.password,
+							SCD: em.employeeCode,
+							SID: em.employeeId,
+							WKLOC_CD: '',
+							WKPID: _.isString(selectedId) ? [selectedId] : selectedId
+						};
+
+						return storage(KDP003_SAVE_DATA, storageData) as JQueryPromise<StorageData>;
+					}
+
 				})
 				.then((data: false | StorageData) => {
+
 					// if login and storage data success
 					if (data) {
+						saveSuccess = true;
 						// data login by storage
 						const {
 							CCD,
@@ -434,7 +906,7 @@ module nts.uk.at.kdp003.a {
 						} = data;
 
 						const loginParams: f.ModelData = {
-							contractCode: '000000000000',
+							contractCode: vm.$user.contractCode,
 							companyCode: CCD,
 							companyId: CID,
 							employeeCode: SCD,
@@ -459,6 +931,20 @@ module nts.uk.at.kdp003.a {
 				// show message from login data (return by f dialog)
 				.fail((message: { messageId: string }) => {
 					vm.message(message);
+				})
+				.always(() => {
+					if (ko.unwrap(vm.modeBasyo)) {
+						if (saveSuccess) {
+							window.location.reload(false);
+							saveSuccess = false;
+						}
+					} else {
+						if (openViewK && saveSuccess) {
+							window.location.reload(false);
+							openViewK = false;
+							saveSuccess = false;
+						}
+					}
 				});
 		}
 
@@ -499,6 +985,7 @@ module nts.uk.at.kdp003.a {
 		}
 
 		stampButtonClick(btn: share.ButtonSetting, layout: share.PageLayout) {
+
 			const vm = this;
 			const { buttonPage, employeeData } = vm;
 			const { selectedId, employees, nameSelectArt } = ko.toJS(employeeData) as EmployeeListData;
@@ -549,61 +1036,190 @@ module nts.uk.at.kdp003.a {
 							});
 						}
 					}
-
+					params.passwordRequired = vm.fingerStampSetting().stampSetting.passwordRequiredArt
 					return vm.$window.modal('at', DIALOG.F, params);
 				})
 				.then((data: f.TimeStampLoginData) => {
+
 					if (data && !data.msgErrorId && !data.errorMessage) {
 
 						if (data.em) {
 							const mode: number = 1;
 							const { employeeId, employeeCode } = data.em;
 							const fingerStampSetting = ko.unwrap(vm.fingerStampSetting);
-							const employeeInfo = { mode, employeeId, employeeCode };
+							// const workLocationName = vm.workplaceName;
+							// const workpalceId = vm.workplaceId;
+
 							// shorten name
 							const { modal, storage } = vm.$window;
 
+							// var isSupport: boolean = false;
+
+							// if (btn.supportWplset == 1) {
+							// 	isSupport = true;
+							// }
 							if (fingerStampSetting) {
-								vm.$ajax(API.REGISTER, {
-									employeeId,
-									dateTime: moment(vm.$date.now()).format(),
-									stampButton: {
-										pageNo: layout.pageNo,
-										buttonPositionNo: btn.btnPositionNo
-									},
-									refActualResult: {
-										cardNumberSupport: '',
-										workLocationCD: '',
-										workTimeCode: '',
-										overtimeDeclaration: {
-											overTime: 0,
-											overLateNightTime: 0
+								vm.$window.storage(KDP003_SAVE_DATA)
+									.then((dataStorage: StorageData) => {
+										if (dataStorage.WKPID.length > 1) {
+											if (btn.supportWplset == 1) {
+												vm.$window.modal('at', DIALOG.M, { screen: 'KDP003', employeeId: employeeId })
+													.then((data: string) => {
+														if (data) {
+															if (data.notification !== null) {
+																vm.workPlaceId = data;
+																vm.$ajax(API.REGISTER, {
+																	employeeId,
+																	dateTime: moment(vm.$date.now()).format(),
+																	stampButton: {
+																		pageNo: layout.pageNo,
+																		buttonPositionNo: btn.btnPositionNo
+																	},
+																	refActualResult: {
+																		cardNumberSupport: null,
+																		workPlaceId: vm.workPlaceId,
+																		workLocationCD: vm.worklocationCode,
+																		workTimeCode: '',
+																		overtimeDeclaration: {
+																			overTime: 0,
+																			overLateNightTime: 0
+																		}
+																	}
+																}).then(() => {
+																	const { stampResultDisplay } = fingerStampSetting;
+																	const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
+																	const { USE } = NotUseAtr;
+
+																	vm.playAudio(btn.audioType);
+																	const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
+
+																	if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
+
+																		return storage('KDP010_2C', displayItemId)
+																			.then(() => storage('infoEmpToScreenC', employeeInfo))
+																			.then(() => storage('screenC', { screen: "KDP003" }))
+																			.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;
+																	} else {
+																		const { stampSetting } = fingerStampSetting;
+																		const { resultDisplayTime } = stampSetting;
+
+																		return storage('resultDisplayTime', resultDisplayTime)
+																			.then(() => storage('infoEmpToScreenB', employeeInfo))
+																			.then(() => storage('screenB', { screen: "KDP003" }))
+																			.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
+																	}
+																})
+																	.fail((message: BussinessException) => {
+																		const { messageId, parameterIds } = message;
+
+																		vm.$dialog.error({ messageId, messageParams: parameterIds });
+																	});
+
+															}
+														}
+													})
+											} else {
+												vm.workPlaceId = dataStorage.WKPID[0];
+
+												vm.$ajax(API.REGISTER, {
+													employeeId,
+													dateTime: moment(vm.$date.now()).format(),
+													stampButton: {
+														pageNo: layout.pageNo,
+														buttonPositionNo: btn.btnPositionNo
+													},
+													refActualResult: {
+														cardNumberSupport: null,
+														workPlaceId: vm.workPlaceId,
+														workLocationCD: vm.worklocationCode,
+														workTimeCode: '',
+														overtimeDeclaration: {
+															overTime: 0,
+															overLateNightTime: 0
+														}
+													}
+												}).then(() => {
+													const { stampResultDisplay } = fingerStampSetting;
+													const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
+													const { USE } = NotUseAtr;
+
+													vm.playAudio(btn.audioType);
+													const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
+
+													if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
+
+														return storage('KDP010_2C', displayItemId)
+															.then(() => storage('infoEmpToScreenC', employeeInfo))
+															.then(() => storage('screenC', { screen: "KDP003" }))
+															.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;
+													} else {
+														const { stampSetting } = fingerStampSetting;
+														const { resultDisplayTime } = stampSetting;
+
+														return storage('resultDisplayTime', resultDisplayTime)
+															.then(() => storage('infoEmpToScreenB', employeeInfo))
+															.then(() => storage('screenB', { screen: "KDP003" }))
+															.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
+													}
+												})
+													.fail((message: BussinessException) => {
+														const { messageId, parameterIds } = message;
+
+														vm.$dialog.error({ messageId, messageParams: parameterIds });
+													});
+											}
+										} else {
+
+											if (dataStorage.WKPID.length = 1) {
+												vm.workPlaceId = dataStorage.WKPID[0];
+											}
+
+											vm.$ajax(API.REGISTER, {
+												employeeId,
+												dateTime: moment(vm.$date.now()).format(),
+												stampButton: {
+													pageNo: layout.pageNo,
+													buttonPositionNo: btn.btnPositionNo
+												},
+												refActualResult: {
+													cardNumberSupport: null,
+													workPlaceId: vm.workPlaceId,
+													workLocationCD: vm.worklocationCode,
+													workTimeCode: '',
+													overtimeDeclaration: {
+														overTime: 0,
+														overLateNightTime: 0
+													}
+												}
+											}).then(() => {
+												const { stampResultDisplay } = fingerStampSetting;
+												const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
+												const { USE } = NotUseAtr;
+
+												vm.playAudio(btn.audioType);
+												const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
+
+												if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
+													return storage('KDP010_2C', displayItemId)
+														.then(() => storage('infoEmpToScreenC', employeeInfo))
+														.then(() => storage('screenC', { screen: "KDP003" }))
+														.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;
+												} else {
+													const { stampSetting } = fingerStampSetting;
+													const { resultDisplayTime } = stampSetting;
+
+													return storage('resultDisplayTime', resultDisplayTime)
+														.then(() => storage('infoEmpToScreenB', employeeInfo))
+														.then(() => storage('screenB', { screen: "KDP003" }))
+														.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
+												}
+											})
+												.fail((message: BussinessException) => {
+													const { messageId, parameterIds } = message;
+
+													vm.$dialog.error({ messageId, messageParams: parameterIds });
+												});
 										}
-									}
-								}).then(() => {
-									const { stampResultDisplay } = fingerStampSetting;
-									const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
-									const { USE } = NotUseAtr;
-
-									vm.playAudio(btn.audioType);
-
-									if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
-										return storage('KDP010_2C', displayItemId)
-											.then(() => storage('infoEmpToScreenC', employeeInfo))
-											.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;
-									} else {
-										const { stampSetting } = fingerStampSetting;
-										const { resultDisplayTime } = stampSetting;
-
-										return storage('resultDisplayTime', resultDisplayTime)
-											.then(() => storage('infoEmpToScreenB', employeeInfo))
-											.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
-									}
-								})
-									.fail((message: BussinessException) => {
-										const { messageId, parameterIds } = message;
-
-										vm.$dialog.error({ messageId, messageParams: parameterIds });
 									});
 							}
 						}
@@ -676,6 +1292,7 @@ module nts.uk.at.kdp003.a {
 	export interface FingerStampSetting {
 		stampResultDisplay: StampResultDisplay;
 		stampSetting: StampSetting;
+		noticeSetDto: INoticeSet;
 	}
 
 	interface StampResultDisplay {
@@ -697,6 +1314,7 @@ module nts.uk.at.kdp003.a {
 		passwordRequiredArt: boolean;
 		resultDisplayTime: number;
 		textColor: string;
+		supportWplset: number;
 	}
 
 	enum NotUseAtr {
@@ -754,6 +1372,56 @@ module nts.uk.at.kdp003.a {
 
 	const DEFAULT_SETTING: FingerStampSetting = {
 		stampSetting: null,
-		stampResultDisplay: null
+		stampResultDisplay: null,
+		noticeSetDto: null
 	};
+
+	interface INoticeSet {
+		comMsgColor: IColorSetting;
+		companyTitle: string;
+		personMsgColor: IColorSetting;
+		wkpMsgColor: IColorSetting;
+		wkpTitle: string;
+		displayAtr: number;
+	}
+
+	interface IColorSetting {
+		textColor: string;
+		backGroundColor: string;
+	}
+
+	interface IMessage {
+		messageNotices: IMessageNotice[];
+	}
+
+	interface IMessageNotice {
+		creatorID: string;
+		inputDate: Date;
+		modifiedDate: Date;
+		targetInformation: ITargetInformation;
+		startDate: Date;
+		endDate: Date;
+		employeeIdSeen: string[];
+		notificationMessage: string;
+	}
+
+	interface ITargetInformation {
+		targetSIDs: string[];
+		targetWpids: string[];
+		destination: number | null;
+	}
+
+	interface IBasyo {
+		workLocationName: string;
+		workpalceId: string[];
+	}
+
+	interface IWorkPlaceInfo {
+		code: string,
+		hierarchyCode: string,
+		id: string,
+		name: string,
+		workplaceDisplayName: string,
+		workplaceGeneric: string
+	}
 }

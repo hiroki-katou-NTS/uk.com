@@ -22,9 +22,8 @@
 	height: 145px !important;
 }
 
-.ntsMoveDataArea {
-	padding-top: 35px;
-	vertical-align: initial;
+#up-down{
+	padding-left: 30px;
 }
 
 .upDown-container {
@@ -49,7 +48,7 @@
 }
 .btn-large{
     display: inline-block;
-    margin-left: 25px;
+    margin-left: 16px;
     vertical-align: top;
     margin-top: 70px;
 }
@@ -58,4 +57,15 @@ div.btn-large button{
     word-wrap: break-word;
     width: 75px;
     height: 70px;
+}
+#swap-list-move-data.ntsMoveDataArea.ntsSwapComponent{
+	padding-left: 10px;
+	padding-right: 10px;
+	
+}
+#swap-list-grid2_container{
+	height: auto !important;
+}
+#swap-list-grid1_container{
+	height: auto !important;
 }

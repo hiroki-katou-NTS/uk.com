@@ -7,16 +7,12 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 355, height: 440 };</script>
+        <script>var dialogSize = { width: 360, height: 570 };</script>
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="/view/kcp/016/kcp016.js" of="/nts.uk.com.web"/>
         <com:scriptfile path="ksm011.f.vm.js" />
     </ui:define>
     <ui:define name="content">
-        <div id="functions-area-bottom">
-            <button tabindex="2" class="proceed x-large" data-bind="click: proceed">#{i18n.getText('KSM011_111')}</button>
-            <button tabindex="3" data-bind="click: cancel">#{i18n.getText('KSM011_112')}</button>
-        </div>
         <div id="contents-area">
             <div style="padding-left: 10px;" data-bind="text: $i18n('KSM011_110')"/>
             <div data-bind="component: {
@@ -29,6 +25,10 @@
                         tabindex: 1
                     }
                 }"/>
+        </div>
+        <div id="functions-area-bottom">
+            <button tabindex="2" class="proceed x-large" data-bind="click: proceed">#{i18n.getText('KSM011_111')}</button>
+            <button tabindex="3" data-bind="click: cancel">#{i18n.getText('KSM011_112')}</button>
         </div>
     </ui:define>
 </ui:composition>

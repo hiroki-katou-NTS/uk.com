@@ -19,7 +19,7 @@
 
     <ui:define name="content">
         <div id="functions-area">
-            <a data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KAF022_706')}</a>
+            <a style="height: 25px" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KAF022_706')}</a>
             <button  id="btn_001" class="button proceed separate-button fix-button"
                      data-bind="click: registerEmploymentSet,
                                 enable: allowRegister() &amp;&amp; $root.errors.isEmpty()">#{i18n.getText('KAF022_1')}</button>
@@ -35,10 +35,10 @@
                 <div id="empt-list-setting"/>
             </div>
             <div id="right-content" class="fixed-flex-layout-right">
-                <div class="block-style">
+                <div class="control-group valign-center">
                     <!--L4_1 単位情報-->
-                    <div data-bind="ntsFormLabel: {}"> <span data-bind="text: nts.uk.resource.getText('KAF022_276',[ nts.uk.resource.getText('Com_Employment')])"/></div>
-                    <div style="margin-left: 30px;padding: 0 10px 0 8px; margin-top: 7px;">
+                    <div data-bind="ntsFormLabel: {required: false, text: nts.uk.resource.getText('KAF022_276',[ nts.uk.resource.getText('Com_Employment')])}"> </div>
+                    <div style="margin-left: 30px;padding: 0 10px 0 8px; display: inline-block;">
                         <label data-bind="text : employmentName"/>
                     </div>
                 </div>

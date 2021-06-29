@@ -23,7 +23,7 @@ public class WorkScheduleWorkInforImport  {
 	/**
 	 * 勤務情報．勤務情報．勤務種類コード
 	 */
-	private String workTyle;
+	private String workType;
 	
 	private String workTime;
 	
@@ -42,16 +42,19 @@ public class WorkScheduleWorkInforImport  {
 	
 	/** 勤怠時間 */
 	private Optional<AttendanceTimeOfDailyAttendanceImport> optAttendanceTime;
+	
+	private Optional<NumberOfDaySuspensionImport> numberOfDaySuspension;
 
-	public WorkScheduleWorkInforImport(String employeeId, int confirmedATR, String workTyle, String workTime, int goStraightAtr, int backStraightAtr,
+	public WorkScheduleWorkInforImport(String employeeId, int confirmedATR, String workType, String workTime, int goStraightAtr, int backStraightAtr,
 			TimeLeavingOfDailyAttdImport timeLeavingOfDailyAttd,
 			BreakTimeOfDailyAttdImport listBreakTimeOfDailyAttdImport,
 			GeneralDate ymd,
-			AttendanceTimeOfDailyAttendanceImport attendanceTime) {
+			AttendanceTimeOfDailyAttendanceImport attendanceTime,
+			Optional<NumberOfDaySuspensionImport> numberOfDaySuspension) {
 		super();
 		this.employeeId = employeeId;
 		this.confirmedATR = confirmedATR;
-		this.workTyle = workTyle;
+		this.workType = workType;
 		this.workTime = workTime;
 		this.goStraightAtr = goStraightAtr;
 		this.backStraightAtr = backStraightAtr;
@@ -59,6 +62,7 @@ public class WorkScheduleWorkInforImport  {
 		this.breakTime = listBreakTimeOfDailyAttdImport;
 		this.ymd = ymd;
 		this.optAttendanceTime = Optional.ofNullable(attendanceTime);
+		this.numberOfDaySuspension = numberOfDaySuspension;
 	}
 	
 }

@@ -36,6 +36,7 @@ module nts.uk.com.view.kcp016.a.viewmodel {
         onDialog: KnockoutObservable<boolean>;
         selectType: KnockoutObservable<SelectType>;
         rows: KnockoutObservable<number>;
+        showNoSelectionItem: boolean = false;
 
         items: KnockoutObservableArray<any> = ko.observableArray([]);
         value: KnockoutObservable<string> | KnockoutObservableArray<string>;
@@ -50,6 +51,7 @@ module nts.uk.com.view.kcp016.a.viewmodel {
                 vm.rows = ko.observable(params.rows || 10);
                 vm.value = params.selectedValue;
                 vm.tabindex = params.tabindex;
+                vm.showNoSelectionItem = params.showNoSelectionItem;
             } else {
                 vm.multiple = ko.observable(false);
                 vm.onDialog = ko.observable(false);
@@ -76,6 +78,9 @@ module nts.uk.com.view.kcp016.a.viewmodel {
                 } else {
                     if (vm.selectType() == SelectType.SELECT_FIRST_ITEM && !_.isEmpty(data)) (vm.value as KnockoutObservable<string>)(data[0].code);
                     else if (vm.selectType() == SelectType.NO_SELECT) (vm.value as KnockoutObservable<string>)(null);
+                    if (vm.showNoSelectionItem) {
+                        vm.items.unshift({ code: null, name: nts.uk.resource.getText('KCP001_5')});
+                    }
                 }
             }).fail(error => {
                 vm.$dialog.error(error);
@@ -93,6 +98,7 @@ module nts.uk.com.view.kcp016.a.viewmodel {
         rows?: number; // default: 10
         selectedValue: KnockoutObservable<string> | KnockoutObservableArray<string>;
         tabindex?: number;
+        showNoSelectionItem?: boolean;
     }
 
     class SelectType {

@@ -49,13 +49,6 @@ public class RemainCreateInforByScheDataImpl implements RemainCreateInforByScheD
 		
 		return this.lstResult(lstScheData, sid);
 	}
-	@Override
-	public List<ScheRemainCreateInfor> createRemainInfor(CacheCarrier cacheCarrier, String cid, String sid, List<GeneralDate> dates) {
-
-		//ドメインモデル「勤務予定基本情報」を取得する
-		List<BasicSchedule> lstScheData = scheRepos.getBasicScheduleBySidPeriodDate(sid, dates);
-		return this.lstResult(lstScheData, sid);
-	}
 
 	private List<ScheRemainCreateInfor> lstResult(List<BasicSchedule> lstScheData, String sid){
 		List<ScheRemainCreateInfor> lstOutputData = new ArrayList<>();

@@ -21,18 +21,18 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         ]);
         showTypeAtr: KnockoutObservable<number> = ko.observable(0);
         listUseAtr: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '1', name: getText("Enum_UseAtr_Use") },
-            { code: '0', name: getText("Enum_UseAtr_NotUse") }
+            { code: 1, name: getText("Enum_UseAtr_Use") },
+            { code: 0, name: getText("Enum_UseAtr_NotUse") }
         ]);
         listRemarkCancelErrorInput: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '1', name: getText("KDW007_109") },
-            { code: '0', name: getText("KDW007_110") }
+            { code: 1, name: getText("KDW007_109") },
+            { code: 0, name: getText("KDW007_110") }
         ]);
         listRemarkColumnNo: KnockoutObservableArray<any> = ko.observableArray([]);
         listTypeAtr: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '0', name: getText("Enum_ErrorAlarmClassification_Error") },
-            { code: '1', name: getText("Enum_ErrorAlarmClassification_Alarm") },
-            { code: '2', name: getText("Enum_ErrorAlarmClassification_Other") }
+            { code: 0, name: getText("Enum_ErrorAlarmClassification_Error") },
+            { code: 1, name: getText("Enum_ErrorAlarmClassification_Alarm") },
+            { code: 2, name: getText("Enum_ErrorAlarmClassification_Other") }
         ]);
         gridListColumns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: getText("KDW007_6"), key: 'code', width: 45 },
@@ -115,7 +115,11 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                                 self.selectedErrorAlarmCode(self.codeToSelect());
                         }
                         self.isNewMode(false);
-                        self.selectedTab('tab-1');
+                        if (val == 1) {
+                            self.selectedTab('tab-5');
+                        } else {
+                            self.selectedTab('tab-1');
+                        }
                     } else {
                         if(val == 0){
                         self.setNewMode();
@@ -159,6 +163,10 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                         if (self.screenMode() == ScreenMode.Daily && self.isNewMode() == true) {
                             self.newTab();
                         }
+
+                        if (self.showTypeAtr() == 1) {
+                            self.selectedTab('tab-5');
+                        } 
                     }
                 setTimeout(() => {
                     nts.uk.ui.block.clear();

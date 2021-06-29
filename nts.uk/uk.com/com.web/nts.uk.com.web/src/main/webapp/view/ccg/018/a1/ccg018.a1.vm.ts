@@ -120,7 +120,7 @@ module ccg018.a1.viewmodel {
             headerText: nts.uk.resource.getText('CCG018_8'),
             key: 'roleSetCode',
             dataType: 'string',
-            width: '50px'
+            width: '60px'
           },
           {
             headerText: nts.uk.resource.getText('CCG018_9'),
@@ -132,7 +132,7 @@ module ccg018.a1.viewmodel {
             headerText: nts.uk.resource.getText('CCG018_11'),
             key: 'topMenuCode',
             dataType: 'string',
-            width: '204px',
+            width: '240px',
             ntsControl: 'Combobox1'
           },
           {
@@ -147,14 +147,14 @@ module ccg018.a1.viewmodel {
             headerText: nts.uk.resource.getText('CCG018_10'),
             key: 'uniqueCode',
             dataType: 'string',
-            width: '204px',
+            width: '240px',
             ntsControl: 'Combobox3'
           },
         ],
         headerRendered: (evt: any, ui: any) => {
           const buttonNote: JQuery = $("<button>", { "id": 'A3_1', "text": "?" }).click(() => vm.showNote());
           ui.table.find("#grid2_switchingDate").html(`
-            <span class="ui-iggrid-headertext">${nts.uk.resource.getText('CCG018_51')}</span>
+            <span class="ui-iggrid-headertext" style="line-height: 30px;">${nts.uk.resource.getText('CCG018_51')}</span>
           `);
           ui.table.find("#grid2_switchingDate").append(buttonNote);
         },

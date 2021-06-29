@@ -17,7 +17,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 	@bean()
 	class Kaf005AViewModel extends Kaf000AViewModel {
-
+	
 		appType: KnockoutObservable<number> = ko.observable(AppType.OVER_TIME_APPLICATION);
 		application: KnockoutObservable<Application>;
 		isSendMail: KnockoutObservable<boolean>;
@@ -47,26 +47,64 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		restTemp: Array<any>;
 		
 	
+		titleLabel1: KnockoutObservable<String>;
+		titleLabelInput1: KnockoutObservable<String>;
+		titleLabel2: KnockoutObservable<String>;
+		titleLabelInput2: KnockoutObservable<String>;
 
 		agentForTable: KnockoutObservable<Boolean> = ko.observable(false);
 		
 		
-		
-		
+		setTitleLabel() {
+			const vm = this;
+			
+			vm.titleLabel1 = ko.computed(() => {
+				if (_.isEmpty( vm.messageInfos())) return '';
+				const param = vm.messageInfos()[0].titleDrop();
+				
+				return vm.$i18n('KAF005_90', [param]);
+			})
+			vm.titleLabelInput1 = ko.computed(() => {
+				if (_.isEmpty( vm.messageInfos())) return '';
+				const param = vm.messageInfos()[0].titleInput();
+				
+				return vm.$i18n('KAF005_92', [param]);
+			})
+			vm.titleLabel2 = ko.computed(() => {
+				if (_.isEmpty( vm.messageInfos())) return '';
+				const param = vm.messageInfos()[1].titleDrop();
+				
+				return vm.$i18n('KAF005_90', [param]);
+			})
+			vm.titleLabelInput2 = ko.computed(() => {
+				if (_.isEmpty( vm.messageInfos())) return '';
+				const param = vm.messageInfos()[1].titleInput();
+				
+				return vm.$i18n('KAF005_92', [param]);
+			})
+			
+		}
 		
 		created(params: AppInitParam) {
 			// new 
 			const vm = this;
 			vm.$blockui("show");
+			
+			vm.setTitleLabel();
+			
+			
 			vm.urlParam = $(location).attr('search').split("=")[1];
 			let dataTransfer: DataTransfer;
-			if (_.isNil(params)) {
-				dataTransfer = __viewContext.transferred.value; // from spr		
+			if(nts.uk.request.location.current.isFromMenu) {
+				sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');	
+			} else {
+				if(!_.isNil(__viewContext.transferred.value)) {
+					vm.isFromOther = true;
+					dataTransfer = __viewContext.transferred.value; // from spr		
+					params = __viewContext.transferred.value;
+				}
 			}
-			if(!_.isNil(__viewContext.transferred.value)) {
-				vm.isFromOther = true;
-			}
-			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
+			
 			//__viewContext.transferred.value = undefined;
 			
 			vm.application = ko.observable(new Application(ko.toJS(vm.appType)));
@@ -458,7 +496,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 		changeDate() {
 			const self = this;
-			
+			self.$blockui('show');
 			let param1 = {
 
 			} as FirstParam;
@@ -485,23 +523,27 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				displayInfoOverTime: self.dataSource,
 				agent: self.isAgentNew()
 			}
-			self.$ajax(API.changeDate, command)
+			self.$validate(
+			'#kaf000-a-component3-prePost')
+				.then((isVal: any) => {
+					if (isVal) {
+						return self.$ajax(API.changeDate, command)
+					}
+				})
+			
 				.done((res: DisplayInfoOverTime) => {
-					self.dataSource = res;
-					self.createVisibleModel(self.dataSource);
-					// self.dataSource.infoWithDateApplicationOp = res.infoWithDateApplicationOp;
-					// self.dataSource.calculationResultOp = res.calculationResultOp;
-					// self.dataSource.workdayoffFrames = res.workdayoffFrames;
-					// self.dataSource.calculatedFlag = res.calculatedFlag;
-					// self.dataSource.appDispInfoStartup = res.appDispInfoStartup;
-					// self.createVisibleModel(self.dataSource);
-					self.bindOverTimeWorks(self.dataSource);
-					self.bindWorkInfo(self.dataSource, ACTION.CHANGE_DATE);
-					self.bindRestTime(self.dataSource);
-					self.bindHolidayTime(self.dataSource, 1);
-					self.bindOverTime(self.dataSource, 1);
-					self.assginTimeTemp();
-					self.assignWorkHourAndRest(true);
+					if (res) {
+						self.dataSource = res;
+						self.createVisibleModel(self.dataSource);
+						self.bindOverTimeWorks(self.dataSource);
+						self.bindWorkInfo(self.dataSource, ACTION.CHANGE_DATE);
+						self.bindRestTime(self.dataSource);
+						self.bindHolidayTime(self.dataSource, 1);
+						self.bindOverTime(self.dataSource, 1);
+						self.assginTimeTemp();
+						self.assignWorkHourAndRest(true);
+						
+					}
 
 				})
 				.fail((res: any) => {
@@ -2499,7 +2541,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						agent: self.isAgentNew()
 					};
 					self.$blockui('show')
-					self.$ajax(API.selectWorkInfo, command)
+					
+					self.$validate(
+						'#kaf000-a-component3-prePost')
+						.then((isVal) => {
+							if (isVal) {
+								return self.$ajax(API.selectWorkInfo, command);
+							}
+						})
+					
 						.done((res: DisplayInfoOverTime) => {
 							if (res) {
 								self.dataSource.infoWithDateApplicationOp = res.infoWithDateApplicationOp;
@@ -2847,7 +2897,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			});
 			workContent.breakTimes = breakTimeSheetArray;
 			command.workContent = workContent;
-			self.$ajax(API.calculate, command)
+			self.$validate(
+						'#kaf000-a-component3-prePost')
+						.then((isVal) => {
+							if (isVal) {
+								return self.$ajax(API.calculate, command);
+							}
+						})
+			
 				.done((res: DisplayInfoOverTime) => {
 					if (res) {
 						self.dataSource.calculationResultOp = res.calculationResultOp;

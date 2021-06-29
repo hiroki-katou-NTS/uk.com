@@ -4,6 +4,7 @@ import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
+import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatDetailSettingMonthly;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatMonthDaysSelect;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.EndDateClassification;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.EndTimeClassification;
@@ -240,7 +242,9 @@ public class ExecutionTaskSetting extends AggregateRoot {
 		List<LocalDate> allWeekDays = IntStream.range(0, 7).mapToObj(sunday::plusDays).collect(Collectors.toList());
 
 		// get picked weekdays from setting screen
-		List<DayOfWeek> pickedWeekDays = this.detailSetting.getWeekly().get().getWeekdaySetting().setWeekDaysList();
+		List<DayOfWeek> pickedWeekDays = this.detailSetting.getWeekly()
+				.map(data -> data.getWeekdaySetting().setWeekDaysList())
+				.orElse(Collections.emptyList());
 		GeneralDateTime startDateTime = this.buildGeneralDateTime(this.startDate);
 
 		GeneralDateTime tempDateTime = null;
@@ -274,9 +278,11 @@ public class ExecutionTaskSetting extends AggregateRoot {
 	private GeneralDateTime getNextExecDateTimeByMonth(GeneralDate startDate, GeneralDateTime now) {
 		GeneralDateTime tempDateTime = null;
 		GeneralDateTime startDateTime = this.buildGeneralDateTime(this.startDate);
-		List<Integer> pickedMonths = this.detailSetting.getMonthly().get().getMonth()
-				.getMonthsAfterEqualsStartMonth(startDate.month());
-		List<RepeatMonthDaysSelect> pickedDates = this.detailSetting.getMonthly().get().getDays();
+		List<Integer> pickedMonths = this.detailSetting.getMonthly()
+				.map(data -> data.getMonth().getMonthsAfterEqualsStartMonth(startDate.month()))
+				.orElse(Collections.emptyList());
+		List<RepeatMonthDaysSelect> pickedDates = this.detailSetting.getMonthly()
+				.map(RepeatDetailSettingMonthly::getDays).orElse(Collections.emptyList());
 		for (Integer month : pickedMonths) {
 			// init date by first day of current month
 			tempDateTime = this.buildGeneralDateTime(GeneralDate.ymd(startDate.year(), month, 1));

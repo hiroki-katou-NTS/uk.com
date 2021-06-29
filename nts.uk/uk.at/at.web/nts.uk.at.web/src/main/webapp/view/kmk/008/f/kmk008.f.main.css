@@ -1,6 +1,6 @@
 .settingButton {
     float: right;
-    margin-top: 22px;
+    margin-top: 10px;
     margin-right: 23px;
 }
 
@@ -15,7 +15,7 @@
 }
 
 .tab-data {
-    height: 260px;
+    height: 280px;
     margin-top: 44px;
 }
 

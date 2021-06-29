@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+    <ui:composition template="/master/dialog.xhtml">
+        <ui:define name="htmlHead">
+
+            <com:scriptfile set="IGNITE" />
+            <script>var dialogSize = { width: 699, height: 500 };</script>
+            <com:stylefile path="./style.css" />
+            <com:scriptfile path="./kdp003.m.vm.js" />
+
+        </ui:define>
+        <ui:define name="content">
+            <div id="contents-area">
+                <div class="view-m">
+                    <div class="title" data-bind="i18n: 'KDP003_70'"></div>
+                    <div class="content">
+                        <div class="btn-back" data-bind="if: $vm.mode_hiden">
+                            <button data-bind="click: back, enable: check_back"><i class="icon icon-button-arrow-left"></i></button>
+                        </div>
+                        <div class="workplaces cf" data-bind="foreach: { data: $vm.buttonDisplays, as: 'col'}, firstFocus: $vm.buttonDisplays">
+                            <div class="column" data-bind="foreach: {data: col, as: 'row' }">
+                                <button data-bind="i18n: row.displayName, click: function() { $vm.seleceted.apply($vm, [row.workplaceId]) } "></button>
+                            </div>
+                        </div>
+                        <div class="btn-next" data-bind="if: $vm.mode_hiden">
+                            <button data-bind="click: next , enable: check_next"><i class="icon icon-button-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="functions-area-bottom">
+                <button class="large" data-bind="i18n: 'KDP003_71', click: close"></button>
+            </div>
+        </ui:define>
+    </ui:composition>
+</body>
+</html>

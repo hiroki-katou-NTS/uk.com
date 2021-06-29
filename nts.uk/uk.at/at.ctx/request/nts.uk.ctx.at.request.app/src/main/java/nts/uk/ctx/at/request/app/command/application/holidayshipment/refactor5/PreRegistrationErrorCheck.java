@@ -237,7 +237,7 @@ public class PreRegistrationErrorCheck {
 		default:
 			// QA: http://192.168.50.4:3000/issues/113331 => done
 			// thiếu employmentCode Và thừa "期限日の管理方法"
-			resultDate = UseDateDeadlineFromDatePeriod.useDateDeadline(createRequireM1(), employmentCode, expirationDate, recDate);
+			resultDate = UseDateDeadlineFromDatePeriod.useDateDeadline(createRequireM1(), employmentCode, expirationDate, recDate, manageDeadline);
 			break;
 
 		}

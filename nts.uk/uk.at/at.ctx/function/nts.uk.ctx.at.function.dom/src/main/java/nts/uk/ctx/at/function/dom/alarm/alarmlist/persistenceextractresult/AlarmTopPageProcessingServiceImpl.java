@@ -96,7 +96,7 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                                             if (c.getAlarmCategory().value == AlarmCategory.MONTHLY.value) {
                                                 return z.getPeriodDate().getStartDate().get().compareTo(p.getStartDate()) == 0;
                                             } else {
-                                                if (z.getPeriodDate() == null) {
+                                                if (z.getPeriodDate() == null || c.getAlarmCategory().value == AlarmCategory.MASTER_CHECK.value) {
                                                     return true;
                                                 } else if (!z.getPeriodDate().getEndDate().isPresent()) {
                                                     return z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getStartDate().get().beforeOrEquals(p.getEndDate());

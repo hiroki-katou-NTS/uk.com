@@ -74,7 +74,7 @@ public class TimeStampApplicationNRModeTest {
 		};
 
 		val actualResult = TimeStampApplicationNRMode.process(require, GeneralDate.ymd(2020, 01, 02), appNr,
-				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD));
+				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD, false));
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(91, 86));
 
@@ -108,7 +108,7 @@ public class TimeStampApplicationNRModeTest {
 		};
 
 		val actualResult = TimeStampApplicationNRMode.process(require, GeneralDate.ymd(2020, 01, 02), appNr,
-				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD));
+				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD, false));
 
 		assertThat(actualResult).isEmpty();
 
@@ -147,7 +147,7 @@ public class TimeStampApplicationNRModeTest {
 		};
 
 		val actualResult = TimeStampApplicationNRMode.process(require, GeneralDate.ymd(2020, 01, 02), appNr,
-				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD));
+				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD, false));
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(31));
 
@@ -186,7 +186,7 @@ public class TimeStampApplicationNRModeTest {
 		};
 
 		val actualResult = TimeStampApplicationNRMode.process(require, GeneralDate.ymd(2020, 01, 02), appNr,
-				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD));
+				dailyRecordApp, stamp, new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD, false));
 
 		assertThat(actualResult).isEmpty();
 
@@ -202,6 +202,6 @@ public class TimeStampApplicationNRModeTest {
 						SetPreClockArt.NONE, // 所定時刻セット区分
 						ChangeClockArt.GOING_TO_WORK, // 時刻変更区分
 						ChangeCalArt.NONE), // 計算区分変更対象
-				new RefectActualResult(null, null, null, null), Optional.empty());
+				new RefectActualResult( null, null, null), Optional.empty());
 	}
 }

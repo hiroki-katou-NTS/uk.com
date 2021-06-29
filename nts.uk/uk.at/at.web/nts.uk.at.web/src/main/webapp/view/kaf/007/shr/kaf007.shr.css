@@ -4,7 +4,7 @@
 }
 
 #kaf007-share .col-1 {
-	width: 120px;
+	width: 110px;
 }
 
 #kaf007-share .col-2 {
@@ -21,4 +21,8 @@
 
 #kaf007-share .inputTime {
 	width: 80px;
+}
+
+.mv-13 {
+	margin: 13px 0;
 }

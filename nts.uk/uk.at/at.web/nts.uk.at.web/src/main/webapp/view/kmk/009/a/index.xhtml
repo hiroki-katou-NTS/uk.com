@@ -7,6 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
 			<com:ValidatorScript>
 				nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesName
 				nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesABName
@@ -47,7 +48,7 @@
 								data-bind="ntsGridList:{
 									name: '#[KMK009_3]',
 									width: 330,
-									height: 368,
+									rows: 10,
 									options: itemTotalTimes,								
 									optionsValue: 'totalCountNo',
 									primaryKey: 'totalCountNo',
@@ -61,7 +62,7 @@
 				<div id="right-content" class="fixed-flex-layout-right">
 					<table>
 						<colgroup>
-							<col width="135px" />
+							<col width="100px" />
 							<col width="*" />
 						</colgroup>
 						<tr class="row">
@@ -172,7 +173,7 @@
 								data-bind="ntsTextEditor:{
 										name: '#[KMK011_31]',
 										value: itemTotalTimesDetail.workingInfo,
-										required: true,
+										required: false,
 										readonly: true,
 										enable: enableWorkTime}" />
 							</td>

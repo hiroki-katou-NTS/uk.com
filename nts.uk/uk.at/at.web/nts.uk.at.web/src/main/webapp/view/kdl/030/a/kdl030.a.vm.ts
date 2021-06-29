@@ -225,6 +225,26 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                     return "";
             }
         }
+		
+	    getApproverLabelNew(loopFrame, loopApprover, indexFrame, indexApprover) {
+			const vm = this;
+		
+			let indexForApprover = 0;
+			if (indexFrame >= 1) {
+				_.forEach(ko.toJS(loopFrame), (item, index) => {
+					if (index < indexFrame) {
+						const length = (_.get(item.listApprover, 'length') || 0);
+						indexForApprover += Number(length);
+					}
+				})
+				
+				
+			}
+			const orderNumber = indexForApprover + indexApprover + 1;
+			
+			return vm.$i18n("KAF000_9", [orderNumber]);
+		
+		}
 
         getApproverLabel(loopPhase, loopFrame, loopApprover) {
             const vm = this;

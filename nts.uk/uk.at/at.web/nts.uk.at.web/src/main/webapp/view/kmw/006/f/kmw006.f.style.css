@@ -14,3 +14,11 @@
 #fixed-table td {
 	padding-left: 20px;
 }
+
+#single-list_container{
+	height: 400px !important;
+}
+
+#single-list_scroll{
+	height: 81% !important;
+}

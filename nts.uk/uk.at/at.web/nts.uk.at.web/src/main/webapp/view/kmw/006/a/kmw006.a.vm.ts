@@ -171,9 +171,9 @@ module nts.uk.at.view.kmw006.a.viewmodel {
                     for (var i = 0; i < self.listClosureInfo().length; i++) {
                         let info = self.listClosureInfo()[i];
                         if (moment.utc(info.periodEnd, "YYYY/MM/DD") < moment.utc(closureInfo.periodEnd, "YYYY/MM/DD")) {
-                            $("#A1_14 tr:nth-child(" + (i + 1) + ") td").addClass("dipsRed");
+                            $("#A1_14 tr:nth-child(" + (i + 1) + ") td span").addClass("dipsRed");
                         } else {
-                            $("#A1_14 tr:nth-child(" + (i + 1) + ") td").removeClass("dipsRed");
+                            $("#A1_14 tr:nth-child(" + (i + 1) + ") td span").removeClass("dipsRed");
                         }
                     }
                 }
