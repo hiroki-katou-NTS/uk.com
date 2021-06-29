@@ -59,7 +59,6 @@
 }
 
 .pd-tl {
-    padding-top: 10px;
     padding-left: 20px;
 }
 
@@ -69,4 +68,8 @@
 
 .pd-l {
     padding-left: 5px;
+}
+
+.F4_1 {
+    width: 60px;
 }
