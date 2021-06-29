@@ -425,10 +425,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.updateExTableWhenChangeModeBg($.merge(detailContentDeco, self.listCellNotEditBg));
 
                 self.setIconEventHeader();
-                
-                if(self.mode() === 'edit') {
-                    self.bindingEventClickFlower();    
-                }
 
                 let item = uk.localStorage.getItem(self.KEY);
                 let userInfor: IUserInfor = JSON.parse(item.get());
@@ -521,8 +517,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.checkEnableCombWTime();
                 self.setHeightScreen();
                 self.setPositionButonToRightToLeft();
-                self.setTextResourceA173();
                 self.bindingEventClickFlower();
+                self.setTextResourceA173();
                 if (viewMode == 'time') {
                     self.diseableCellsTime();
                     console.log(self.listTimeDisable.length);
@@ -1777,7 +1773,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
             
             self.setIconEventHeader();
-            
+
             result = {
                 leftmostDs: leftmostDs,
                 middleDs: middleDs,
@@ -1836,6 +1832,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         setIconEventHeader() {
+            let self = this;
             setTimeout(() => {
                 // set icon Employee
                 let iconEmpPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("7.png").serialize();
@@ -1845,6 +1842,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $('.header-image-event').attr('src', iconEventPath);
                 let iconNoEventPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("121.png").serialize();
                 $('.header-image-no-event').attr('src', iconNoEventPath);
+                if (self.mode() === 'edit') {
+                    self.bindingEventClickFlower();
+                }
             }, 1);
         }
             
@@ -2498,7 +2498,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $('.extable-header-detail img').css('margin-top', '2px');
             let itemLocal = uk.localStorage.getItem(self.KEY);
             let userInfor = JSON.parse(itemLocal.get());
+            $(".header-image-no-event, .header-image-event").unbind('click');
             $(".header-image-no-event, .header-image-event").on("click", function(event) {
+                if(self.mode() == 'confirm') return;
                 let index = $(event.target).parent().index();
                 let columnKey = self.detailColumns[index].key;
                 let param = {
@@ -2518,9 +2520,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let companyEventName = rs.companyEventName;
                         let wkpEventName     = rs.wkpEventName;
                         // update lai header grid
-                        self.updateHeader();
+                        self.updateHeader().done(() => {
+                            if (userInfor.disPlayFormat == 'time') {
+                                // enable những cell đã disable trước đó đi rồi sau khi update grid mới disable đi được
+                                self.enableCellsTime();
+                                self.diseableCellsTime();
+                            }
+                        });
                     }
-                    console.log('closed');
                 });
             });
         }
@@ -2612,8 +2619,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 });
 
                 self.updateHeaderExTable(detailHeaderDeco, objDetailHeaderDs, htmlToolTip);
-                
-                self.mode() === 'edit' ? self.editMode() : self.confirmMode();
+                self.setIconEventHeader();
+                dfd.resolve();
                 nts.uk.ui.block.clear();
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
@@ -3350,7 +3357,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         editMode() {
             let self = this;
-            if(self.mode()=='edit') return;
             let arrCellUpdated = $("#extable").exTable("updatedCells");
             let arrTmp = _.clone(arrCellUpdated);
             let lockCells = $("#extable").exTable("lockCells");
@@ -3387,7 +3393,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.setIconEventHeader();
             $('div.ex-body-leftmost a').css("pointer-events", "");
             $('div.ex-header-detail.xheader a').css("pointer-events", "");
-            self.bindingEventClickFlower();
             
             if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                 // enable combobox workType, workTime
@@ -3416,9 +3421,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         confirmMode() {
             let self = this;
-            
-            if(self.mode()=='confirm') return;
-
             let arrCellUpdated = $("#extable").exTable("updatedCells");
 
             if (arrCellUpdated.length > 0) {
@@ -3467,7 +3469,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $('div.ex-body-leftmost a').css("pointer-events", "none");
             $('div.ex-header-detail.xheader a').css("pointer-events", "none");
             self.setIconEventHeader();
-            self.bindingEventClickFlower();
             if (self.selectedModeDisplayInBody() == 'time'){
                 self.enableCellsTime();    
             }
