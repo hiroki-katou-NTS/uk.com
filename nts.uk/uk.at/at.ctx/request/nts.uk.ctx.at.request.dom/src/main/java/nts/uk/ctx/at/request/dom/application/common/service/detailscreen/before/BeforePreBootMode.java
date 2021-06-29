@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 
 /**
  * refactor 4
@@ -20,6 +19,6 @@ public interface BeforePreBootMode {
 	 * @param baseDate
 	 * @return
 	 */
-	public DetailedScreenPreBootModeOutput judgmentDetailScreenMode(String companyID, String employeeID, Application application, GeneralDate baseDate);
+	public DetailedScreenBeforeStartOutput judgmentDetailScreenMode(String companyID, String employeeID, Application application, GeneralDate baseDate);
 	
 }

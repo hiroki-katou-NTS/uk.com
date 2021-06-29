@@ -29,11 +29,12 @@ module nts.uk.at.view.kmk003.a {
     import WorkTimezoneCommonSetDto = service.model.common.WorkTimezoneCommonSetDto;
     import SubHolTransferSetDto = service.model.common.SubHolTransferSetDto;
     import NotUseAtr = nts.uk.at.view.kmk003.a.viewmodel.common.NotUseAtr;
+
+    import EmTimeZoneSetDto = nts.uk.at.view.kmk003.a.service.model.common.EmTimeZoneSetDto;
+    import WorkTimeDailyAtr = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeDailyAtr;
+    import OverTimeOfTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.OverTimeOfTimeZoneSetModel;
     
     export module viewmodel {
-
-        import EmTimeZoneSetDto = nts.uk.at.view.kmk003.a.service.model.common.EmTimeZoneSetDto;
-        import WorkTimeDailyAtr = nts.uk.at.view.kmk003.a.service.model.worktimeset.WorkTimeDailyAtr;
 
         export class ScreenModel {
             
@@ -111,7 +112,7 @@ module nts.uk.at.view.kmk003.a {
                 self.useHalfDayBreak = ko.observable(false); // A19_3_2 initial value = false
 
 
-                self.mainSettingModel = new MainSettingModel(self.tabMode, self.isNewOrCopyMode, self.useHalfDayOptions, self.useHalfDayWorking, self.useHalfDayOvertime, self.useHalfDayBreak);
+                self.mainSettingModel = new MainSettingModel(self.tabMode, self.isNewOrCopyMode, self.useHalfDayOptions, self.useHalfDayWorking, self.useHalfDayOvertime, self.useHalfDayBreak, self.isNewMode);
                 self.selectedWorkTimeCode = ko.observable('');
                 self.workTimeSettingLoader = new WorkTimeSettingLoader(self.mainSettingModel.workTimeSetting.worktimeCode);
                 self.workTimeSettings = ko.observableArray([]);
@@ -258,11 +259,11 @@ module nts.uk.at.view.kmk003.a {
                 self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe((val) => {
 
                     if (val == EnumWorkForm.FLEX ){
-                        $('.tabs-list').find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_317'));
+                        $($('.tabs-list')[0]).find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_317'));
                         $('#tab-panel > .tabs-content').removeClass('left-122');
                         $('#tab-panel > .tabs-content').addClass('left-178');
                     } else {
-                        $('.tabs-list').find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_18'));
+                        $($('.tabs-list')[0]).find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_18'));
                         $('#tab-panel > .tabs-content').removeClass('left-178');
                         $('#tab-panel > .tabs-content').addClass('left-122');
                     }
@@ -607,11 +608,11 @@ module nts.uk.at.view.kmk003.a {
                 _.find(_self.tabs(),['id', TabID.TAB17]).setVisible(_self.otsukaMode());
 
                 if (_self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr() === WorkTimeDailyAtr.FLEX_WORK ){
-                    $('.tabs-list').find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_317'));
+                    $($('.tabs-list')[0]).find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_317'));
                     $('#tab-panel > .tabs-content').removeClass('left-122');
                     $('#tab-panel > .tabs-content').addClass('left-178');
                 } else{
-                    $('.tabs-list').find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_18'));
+                    $($('.tabs-list')[0]).find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_18'));
                     $('#tab-panel > .tabs-content').removeClass('left-178');
                     $('#tab-panel > .tabs-content').addClass('left-122');
                 }
@@ -1047,6 +1048,7 @@ module nts.uk.at.view.kmk003.a {
             useHalfDayBreak: KnockoutObservable<boolean>;
             tabMode: KnockoutObservable<number>;
             addMode: KnockoutComputed<boolean>;
+            isNewMode: KnockoutObservable<boolean>;
             
             // Interlock dialog J
             isInterlockDialogJ: KnockoutObservable<boolean>;
@@ -1055,7 +1057,8 @@ module nts.uk.at.view.kmk003.a {
                         useHalfDayOptions: KnockoutObservable<any>,
                         halfDayWorking: KnockoutObservable<boolean>,
                         halfDayOverTime: KnockoutObservable<boolean>,
-                        halfDayBreak: KnockoutObservable<boolean>) {
+                        halfDayBreak: KnockoutObservable<boolean>,
+                        isNewMode: KnockoutObservable<boolean>) {
                 let self = this;
                 self.isChangeItemTable = ko.observable(false);
                 self.useHalfDayOptions = useHalfDayOptions;
@@ -1066,6 +1069,7 @@ module nts.uk.at.view.kmk003.a {
                 self.tabMode = tabMode;
                 
                 self.addMode = isNewOrCopyMode;
+                self.isNewMode = isNewMode;
                 
                 self.workTimeSetting = new WorkTimeSettingModel();
                 self.manageEntryExit = new ManageEntryExitModel();
@@ -1143,106 +1147,203 @@ module nts.uk.at.view.kmk003.a {
                 return dfd.promise();
             }
 
-            //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
-            autoGenerate(): any {
+            //auto generate data
+
+            //半日の勤務時間帯を作成する
+            autoCreateHalfDayWT(timeZones: any): any {
                 let _self = this;
+                let workTimezones = timeZones;
+                workTimezones.sort((w1, w2) => w1.timezone.start() - w2.timezone.start());
                 let presSetting = _self.predetemineTimeSetting.prescribedTimezoneSetting;
                 let morningEnd = presSetting.morningEndTime();
                 let afterStart = presSetting.afternoonStartTime();
-                let shiftOneStart = presSetting.shiftOne.start();
-                let shiftOneEnd = presSetting.shiftOne.end();
-                let isShiftTwo = presSetting.shiftTwo.useAtr();
-                let shiftTwoStart = presSetting.shiftTwo.start();
-                let shiftTwoEnd = presSetting.shiftTwo.end();
+
+                let morningTimes: any = [];
+                let afternoonTimes:any = [];
+
+                let morningNo = 1;
+                let afternoonNo = 1;
+                //morning
+                workTimezones
+                    .filter(w => w.timezone.start() <= morningEnd)
+                    .map(w => {
+                        if (w.timezone.end() <= morningEnd) {
+                            let dto = w.toDto();
+                            dto.employmentTimeFrameNo = morningNo++;
+                            morningTimes.push(dto);
+                        } else { //split time zone
+                            if (w.timezone.start() < morningEnd) {
+                                let dto = w.toDto();
+                                dto.employmentTimeFrameNo = morningNo++;
+                                dto.timezone.end = morningEnd;
+                                morningTimes.push(dto);
+                            }
+
+                            if (w.timezone.end() > afterStart) {
+                                let dto = w.toDto();
+                                dto.employmentTimeFrameNo = afternoonNo++;
+                                dto.timezone.start = afterStart;
+                                afternoonTimes.push(dto);
+                            }
+                        }
+                    })
+
+                //afternoon
+                workTimezones
+                    .filter(w => w.timezone.start() >= afterStart)
+                    .map(w => {
+                        let dto = w.toDto();
+                        dto.employmentTimeFrameNo = afternoonNo++;
+                        afternoonTimes.push(dto);
+                    })
+
+                return {
+                    morning: morningTimes,
+                    afternoon: afternoonTimes
+                }
+            }
+
+            //半日の残業時間帯を作成する
+            autoCreateHalfDayOT(timeZones: any): any {
+                let _self = this;
+                let OTTimezones = timeZones;
+                OTTimezones.sort((w1, w2) => w1.timezone.start() - w2.timezone.start());
+                let presSetting = _self.predetemineTimeSetting.prescribedTimezoneSetting;
+                let morningEnd = presSetting.morningEndTime();
+                let afterStart = presSetting.afternoonStartTime();
+
+                let morningTimes: any = [];
+                let afternoonTimes:any = [];
+
+                let morningNo = 1;
+                let afternoonNo = 1;
+                //morning
+                OTTimezones
+                    .filter(w => w.timezone.start() <= morningEnd)
+                    .map(w => {
+                        if (w.timezone.end() <= morningEnd) {
+                            let dto = w.toDto();
+                            dto.workTimezoneNo = morningNo++;
+                            morningTimes.push(dto);
+                        } else { //split time zone
+                            if (w.timezone.start() < morningEnd) {
+                                let dto = w.toDto();
+                                dto.workTimezoneNo = morningNo++;
+                                dto.timezone.end = morningEnd;
+                                morningTimes.push(dto);
+                            }
+                            if (w.timezone.end() > afterStart) {
+                                let dto = w.toDto();
+                                dto.workTimezoneNo = afternoonNo++;
+                                dto.timezone.start = afterStart;
+                                afternoonTimes.push(dto);
+                            }
+                        }
+                    })
+
+                //afternoon
+                OTTimezones
+                    .filter(w => w.timezone.start() >= afterStart)
+                    .map(w => {
+                        let dto = w.toDto();
+                        dto.workTimezoneNo = afternoonNo++;
+                        afternoonTimes.push(dto);
+                    })
+
+                return {
+                    morning: morningTimes,
+                    afternoon: afternoonTimes
+                }
+            }
+
+            //半日の休憩時間帯を作成する
+            autoCreateHalfDayBreak(timeZones: any): any {
+                let self = this;
+                let timezones = timeZones;
+                timezones.sort((w1, w2) => w1.start() - w2.start());
+                let presSetting = self.predetemineTimeSetting.prescribedTimezoneSetting;
+                let morningEnd = presSetting.morningEndTime();
+                let afterStart = presSetting.afternoonStartTime();
+
+                let morningTimes: any = [];
+                let afternoonTimes:any = [];
 
                 //morning
-                let morningTimes = [];
-                let afternoonTimes = [];
-                if (!isShiftTwo) {
-                    let timeZoneAMDto: EmTimeZoneSetDto = {
-                        employmentTimeFrameNo: 1,
-                        timezone: {
-                            start: presSetting.shiftOne.start(),
-                            end: morningEnd,
-                            rounding: {rounding: 0, roundingTime: 0}
-                        }
-                    }
-                    morningTimes.push(timeZoneAMDto);
-                    //afternoon
-                    let timeZonePMDto: EmTimeZoneSetDto = {
-                        employmentTimeFrameNo: 1,
-                        timezone: {
-                            start: afterStart,
-                            end: presSetting.shiftTwo.useAtr() ? presSetting.shiftTwo.end() : presSetting.shiftOne.end(),
-                            rounding: {rounding: 0, roundingTime: 0}
-                        }
-                    }
-                    afternoonTimes.push(timeZonePMDto);
-                } else {
-                    if (shiftOneEnd > morningEnd) {
-                        let count1 = 1;
-                        //morning1
-                        morningTimes.push({
-                            employmentTimeFrameNo: 1,
-                            timezone: {
-                                start: shiftOneStart,
-                                end: morningEnd,
-                                rounding: {rounding: 0, roundingTime: 0}
+                timezones
+                    .filter(w => w.start() <= morningEnd)
+                    .map(w => {
+                        if (w.end() <= morningEnd) {
+                            let dto = w.toDto();
+                            morningTimes.push(dto);
+                        } else { //split time zone
+                            if (w.start() < morningEnd) {
+                                let dto = w.toDto();
+                                dto.end = morningEnd;
+                                morningTimes.push(dto);
                             }
-                        });
-                        if (shiftOneEnd > afterStart) {
-                            //afternoon1
-                            afternoonTimes.push({
-                                employmentTimeFrameNo: 1,
-                                timezone: {
-                                    start: afterStart,
-                                    end: shiftOneEnd,
-                                    rounding: {rounding: 0, roundingTime: 0}
-                                }
-                            })
-                            count1++;
+                            if (w.end() > afterStart) {
+                                let dto = w.toDto();
+                                dto.start = afterStart;
+                                afternoonTimes.push(dto);
+                            }
                         }
-                        //afternoon2
-                        afternoonTimes.push({
-                            employmentTimeFrameNo: count1,
-                            timezone: {
-                                start: afterStart > shiftTwoStart ? afterStart : shiftTwoStart,
-                                end: shiftTwoEnd,
-                                rounding: {rounding: 0, roundingTime: 0}
-                            }
-                        })
-                    } else {
-                        //morning1
-                        morningTimes.push({
-                            employmentTimeFrameNo: 1,
-                            timezone: {
-                                start: shiftOneStart,
-                                end: shiftOneEnd,
-                                rounding: {rounding: 0, roundingTime: 0}
-                            }
-                        });
-                        if (morningEnd > shiftTwoStart) {
-                            //morning2
-                            morningTimes.push({
-                                employmentTimeFrameNo: 2,
-                                timezone: {
-                                    start: shiftTwoStart,
-                                    end: morningEnd,
-                                    rounding: {rounding: 0, roundingTime: 0}
-                                }
-                            });
-                        }
-                        //afternoon1
-                        afternoonTimes.push({
-                            employmentTimeFrameNo: 1,
-                            timezone: {
-                                start: afterStart > shiftTwoStart ? afterStart : shiftTwoStart,
-                                end: shiftTwoEnd,
-                                rounding: {rounding: 0, roundingTime: 0}
-                            }
-                        })
-                    }
+                    })
+
+                //afternoon
+                timezones
+                    .filter(w => w.start() >= afterStart)
+                    .map(w => {
+                        let dto = w.toDto();
+                        afternoonTimes.push(dto);
+                    })
+
+                return {
+                    morning: morningTimes,
+                    afternoon: afternoonTimes
                 }
+            }
+
+            //半日の休憩時間帯を作成する Flex
+            autoCreateHalfDayRestFlex(): any {
+                let self = this;
+                let timezones = self.flexWorkSetting.getHDWtzOneday().restTimezone.flowRestTimezone.flowRestSets();
+                timezones.sort((w1, w2) => w1.flowPassageTime() - w2.flowPassageTime());
+                let presSetting = self.predetemineTimeSetting.prescribedTimezoneSetting;
+                let morningEnd = presSetting.morningEndTime();
+                let afterStart = presSetting.afternoonStartTime();
+
+                let morningTimes: any = [];
+                let afternoonTimes:any = [];
+
+                //morning
+                timezones
+                    .filter(w => w.flowPassageTime() <= morningEnd)
+                    .map(w => {
+                        if (w.flowRestTime() <= morningEnd) {
+                            let dto = w.toDto();
+                            morningTimes.push(dto);
+                        } else { //split time zone
+                            if (w.flowPassageTime() < morningEnd) {
+                                let dto = w.toDto();
+                                dto.flowRestTime = morningEnd;
+                                morningTimes.push(dto);
+                            }
+                            if (w.flowRestTime() > afterStart) {
+                                let dto = w.toDto();
+                                dto.flowPassageTime = afterStart;
+                                afternoonTimes.push(dto);
+                            }
+                        }
+                    })
+
+                //afternoon
+                timezones
+                    .filter(w => w.flowRestTime() >= afterStart)
+                    .map(w => {
+                        let dto = w.toDto();
+                        afternoonTimes.push(dto);
+                    })
+
                 return {
                     morning: morningTimes,
                     afternoon: afternoonTimes
@@ -1262,17 +1363,24 @@ module nts.uk.at.view.kmk003.a {
                     screenMode: _self.tabMode()
                 };
 
-                let times = _self.autoGenerate();
+                let workTimes = _self.autoCreateHalfDayWT(_self.fixedWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezone());
 
-                command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = [];
-                times.morning.forEach(time => {
-                    command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone.push(time);
-                })
+                command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = workTimes.morning;
+                command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone = workTimes.afternoon;
 
-                command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone = [];
-                times.afternoon.forEach(time => {
-                    command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone.push(time);
-                })
+                if (!_self.useHalfDayOverTime()) {
+                    let OTTimes = _self.autoCreateHalfDayOT(_self.fixedWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone());
+
+                    command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstOTTimezone = OTTimes.morning;
+                    command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstOTTimezone = OTTimes.afternoon;
+                }
+
+                if (!_self.useHalfDayBreak()) {
+                    let restTimes = _self.autoCreateHalfDayBreak(_self.fixedWorkSetting.getHDWtzOneday().restTimezone.timezones());
+
+                    command.fixedWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.timezones = restTimes.morning;
+                    command.fixedWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.timezones = restTimes.afternoon;
+                }
 
                 return command;
             }
@@ -1306,18 +1414,32 @@ module nts.uk.at.view.kmk003.a {
                     worktimeSetting: self.workTimeSetting.toDto(),
                 };
 
-                //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
-                let times = self.autoGenerate();
+                if (!self.useHalfDayWorking()) {
+                    //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
+                    let times = self.autoCreateHalfDayWT(self.flexWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezone());
 
-                command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = [];
-                times.morning.forEach(time => {
-                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone.push(time);
-                })
+                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone =  times.morning;
+                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone =  times.afternoon;
+                }
 
-                command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone = [];
-                times.afternoon.forEach(time => {
-                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone.push(time);
-                })
+                if (!self.useHalfDayOverTime()) {
+                    let OTTimes = self.autoCreateHalfDayOT(self.flexWorkSetting.getHDWtzOneday().workTimezone.lstOTTimezone());
+
+                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstOTTimezone = OTTimes.morning;
+                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstOTTimezone = OTTimes.afternoon;
+                }
+
+                if (!self.useHalfDayBreak()) {
+                    let breakTimes = self.autoCreateHalfDayBreak(self.flexWorkSetting.getHDWtzOneday().restTimezone.fixedRestTimezone.timezones());
+
+                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.fixedRestTimezone.timezones = breakTimes.morning;
+                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.fixedRestTimezone.timezones = breakTimes.afternoon;
+
+                    let restTimeFlex = self.autoCreateHalfDayRestFlex();
+                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.flowRestTimezone.flowRestSets = restTimeFlex.morning;
+                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].restTimezone.flowRestTimezone.flowRestSets = restTimeFlex.afternoon;
+                }
+
                 return command;
             }
             

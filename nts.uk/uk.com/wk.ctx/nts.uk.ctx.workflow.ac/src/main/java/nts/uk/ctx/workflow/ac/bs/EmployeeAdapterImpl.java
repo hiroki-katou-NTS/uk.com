@@ -114,19 +114,23 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 		List<String> empId = roleSetPub.findEmpGrantedInWkpVer2(workplaceIds, baseDate, sysAtr);
 		lstEmpId.addAll(empId);
 
-		List<EmployeeImport> lstEmpDto = Collections.synchronizedList(new ArrayList<>());
-		this.parallel.forEach(lstEmpId, x -> {
-			PersonImport perInfo = psInfor.getPersonInfo(x);
-			EmployeeImport emplpyeeImport = new EmployeeImport(companyId,
-					"",
-					x,
-					perInfo.getEmployeeCode(),
-					perInfo.getEmployeeName(),
-					"","","",null,null);
-			lstEmpDto.add(emplpyeeImport);
-		});
+		List<EmployeeImport> lstEmpDto = lstEmpId.stream()
+					.map(x -> psInfor.getPersonInfo(x))
+					.map(x -> new EmployeeImport(
+							companyId,
+							"",
+							x.getSID(),
+							x.getEmployeeCode(),
+							x.getEmployeeName(),
+							"",
+							"",
+							"",
+							null,
+							null))
+					.collect(Collectors.toList());
 		
-		return new ArrayList<>(lstEmpDto);
+		
+		return lstEmpDto;
 	}
 
 	@Override

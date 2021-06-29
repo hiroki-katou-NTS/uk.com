@@ -3,6 +3,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getText = nts.uk.resource.getText;
     import character = nts.uk.characteristics;
+    let __viewContext: any = window["__viewContext"] || {};
     export interface EmployeeSearchDto {
         employeeId: string;
         employeeCode: string;
@@ -3197,7 +3198,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         processLockButton(showLock: boolean) {
             let self = this;
-            if (!self.hasEmployee || self.hasErrorBuss) return;
+            if (!self.hasEmployee || self.hasErrorBuss || self.dailyPerfomanceData().length == 0) return;
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             let lstData = _.map(self.dailyPerfomanceData(), (map) => {
@@ -3980,7 +3981,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             let date = moment(dataShare.date, "YYYY/MM/DD");
             $.when(service.getApplication()).done((data) => {
-                dataShare.listValue = data;
+                let dataToShare = [];
+                let appTypeEnum = __viewContext.enums.ApplicationType;  
+                let app = [];
+                _.forEach(data, (obj) => {
+                    app = _.filter(appTypeEnum, function(o) { return o.value == obj; });
+                    dataToShare.push({value: obj, fieldName: app.length > 0 ? app[0].name : ''});
+                });
+                dataShare.listValue = dataToShare;
                 setShared("shareToKdw003e", dataShare);
                 modal("/view/kdw/003/e/index.xhtml").onClosed(() => {
                     let screen = nts.uk.ui.windows.getShared("shareToKdw003a");

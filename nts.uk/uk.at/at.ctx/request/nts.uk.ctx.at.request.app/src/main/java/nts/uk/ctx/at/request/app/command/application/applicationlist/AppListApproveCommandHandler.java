@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -122,12 +120,13 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 				return;
 			}
 			// アルゴリズム「申請一覧の承認登録」を実行する
-			Pair<Boolean, String> pair = this.approveSingleApp(companyID, listOfApplicationCmd, Collections.emptyList());
-			if(pair.getLeft()) {
-				result.getSuccessMap().put(listOfApplicationCmd.getAppID(), pair.getRight());
-			} else {
-				result.getFailMap().put(listOfApplicationCmd.getAppID(), pair.getRight());
-			}
+//			Pair<Boolean, String> pair = this.approveSingleApp(companyID, listOfApplicationCmd, Collections.emptyList());
+//			if(pair.getLeft()) {
+//				result.getSuccessMap().put(listOfApplicationCmd.getAppID(), pair.getRight());
+//			} else {
+//				result.getFailMap().put(listOfApplicationCmd.getAppID(), pair.getRight());
+//			}
+			result.getSuccessMap().put(listOfApplicationCmd.getAppID(), "");
 		});
 		return result;
 	}

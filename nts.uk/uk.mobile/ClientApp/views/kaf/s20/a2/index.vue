@@ -1,6 +1,6 @@
 <template>
   <div class="kafs20a2">
-    <KafS00AComponent v-if="!!kafS00AParams" v-bind:params="kafS00AParams" />
+    <KafS00AComponent v-if="!!kaf000_A_Params" v-bind:params="kaf000_A_Params" />
     <!-- A2_3 -->
     <div class="field-set">
       <!-- A2_3_1 -->
@@ -39,8 +39,8 @@
       </div>
     </div>
     <KafS00BComponent 
-    v-if="!!kafS00BParams" 
-    v-bind:params="kafS00BParams" 
+    v-if="!!kaf000_B_Params"
+    v-bind:params="kaf000_B_Params"
     @kaf000BChangePrePost="handleKaf00BChangePrePost"
     @kaf000BChangeDate="handleKaf00BChangeDate"
     />
@@ -152,8 +152,8 @@
       </div>
     </div>
     <KafS00CComponent 
-    v-if="!!kafS00CParams" 
-    v-bind:params="kafS00CParams" 
+    v-if="!!kaf000_C_Params"
+    v-bind:params="kaf000_C_Params"
     @kaf000CChangeAppReason="handleKaf00CChangeAppReason"
     @kaf000CChangeReasonCD="handleKaf00CChangeReasonCD"
     />
