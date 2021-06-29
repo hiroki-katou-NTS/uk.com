@@ -8,7 +8,7 @@ html {
 
 #pannel-top {
 	margin-left: 50px;
-	margin-top: 20px;
+	margin-top: 5px;
 }
 
 #button-search {
@@ -45,6 +45,10 @@ span {
 	margin: 4px;
 }
 
-#single-list_container{
-	height: 380px !important;
+
+#single-list_displayContainer{
+	height: 333px !important;	
+}
+#single-list_scrollContainer{
+	height: 333px !important;
 }
