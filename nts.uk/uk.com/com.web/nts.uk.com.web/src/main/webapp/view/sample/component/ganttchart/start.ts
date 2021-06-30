@@ -245,6 +245,7 @@ __viewContext.ready(function() {
                 horizontalSumHeaderHeight: "75px", horizontalSumBodyHeight: "140px",
                 horizontalSumBodyRowHeight: "20px",
                 areaResize: true,
+                columnVirtualization: true,
                 errorMessagePopup: true,
                 showTooltipIfOverflow: true,
                 manipulatorId: "6",
@@ -599,7 +600,7 @@ __viewContext.ready(function() {
                 
                 // フレックス
                 if (i % 5 === 3) {
-                    this.ruler.addChartWithType("Flex", {
+                    let flexChart = this.ruler.addChartWithType("Flex", {
                         id: `rgc${i}`,
                         start: 102,
                         end: 210,
@@ -609,6 +610,26 @@ __viewContext.ready(function() {
 //                        limitEndMin: 168,
 //                        limitEndMax: 264,
                         title: "フレックス勤務"
+                    });
+                    
+                    $(flexChart).on("gcdrop", e => {
+                        let param = e.detail;
+                        let minutes = nts.uk.time.minutesBased.duration.create(param[0] * 5).text;
+                        $("#extable").exTable("cellValue", "middle", i + "", "startTime1", minutes);
+                        minutes = nts.uk.time.minutesBased.duration.create(param[1] * 5).text;
+                        $("#extable").exTable("cellValue", "middle", i + "", "endTime1", minutes);
+                    });
+                    
+                    $(flexChart).on("gcresize", (e) => {
+                        let param = e.detail;
+                        let minutes;
+                        if (param[2]) {
+                            minutes = nts.uk.time.minutesBased.duration.create(param[0] * 5).text;
+                            $("#extable").exTable("cellValue", "middle", i + "", "startTime1", minutes);
+                        } else {
+                            minutes = nts.uk.time.minutesBased.duration.create(param[1] * 5).text;
+                            $("#extable").exTable("cellValue", "middle", i + "", "endTime1", minutes);
+                        }
                     });
                     
                     this.ruler.addChartWithType("CoreTime", {
