@@ -250,7 +250,7 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 					String alarmDescription = "";
 					CompareOperatorText compareOperatorText = convertComparaToText.convertCompareType(
 							erCondition.getCompareSingleValue() != null 
-									? erCondition.getCompareSingleValue().getConditionType().value
+									? erCondition.getCompareSingleValue().getCompareOpertor().value
 									: erCondition.getCompareRange().getCompareOperator().value);
 					
 					if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_AMOUNT
