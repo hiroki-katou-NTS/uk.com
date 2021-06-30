@@ -1072,7 +1072,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                             workCD3,
                                             workCD4,
                                             workCD5,
-                                            remarks: getTitles(wg, tasks)
+                                            remarks: ''
                                         } as any
                                     };
                                 })
