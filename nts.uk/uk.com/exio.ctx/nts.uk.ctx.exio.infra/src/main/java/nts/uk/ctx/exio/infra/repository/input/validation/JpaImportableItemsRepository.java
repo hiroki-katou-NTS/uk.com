@@ -13,7 +13,7 @@ import nts.uk.ctx.exio.infra.entity.input.validation.XimctImportableItem;
 public class JpaImportableItemsRepository extends JpaRepository implements ImportableItemsRepository{
 
 	@Override
-	public Optional<ImportableItem> find(ImportingGroupId groupId, int itemNo) {
+	public Optional<ImportableItem> get(ImportingGroupId groupId, int itemNo) {
 		
 		String sql = "select * from XIMCT_IMPORTABLE_ITEM"
 						+ " where GROUP_ID = @group"
