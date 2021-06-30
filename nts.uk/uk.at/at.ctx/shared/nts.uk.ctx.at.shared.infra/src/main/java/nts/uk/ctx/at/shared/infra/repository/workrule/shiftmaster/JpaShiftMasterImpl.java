@@ -180,6 +180,7 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 		oldData.remarks = newData.remarks;
 		oldData.workTypeCd = newData.workTypeCd;
 		oldData.workTimeCd = newData.workTimeCd;
+		oldData.importCode = newData.importCode;
 		this.commandProxy().update(oldData);
 	}
 
