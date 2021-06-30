@@ -2437,7 +2437,8 @@ module nts.uk.ui.mgrid {
                             update: (v, i, r, p) => {
                                 su.wedgeCell(_$grid[0], { rowIdx: (_.isNil(i) ? rowIdx : i), columnKey: key }, v, r, null, p);
                                 if (_.isFunction(controlDef.onChange)) {
-                                    controlDef.onChange(id, key, v, rData);
+                                    let rObj = _dataSource[i];
+                                    controlDef.onChange(rObj[_pk], key, v, rObj);
                                 }
                             },
                             deleteRow: su.deleteRow,
@@ -2464,7 +2465,8 @@ module nts.uk.ui.mgrid {
                         update: (v, i, r, p) => {
                             su.wedgeCell(_$grid[0], { rowIdx: (_.isNil(i) ? rowIdx : i), columnKey: key }, v, r, null, p);
                             if (_.isFunction(controlDef.onChange)) {
-                                controlDef.onChange(id, key, v, rData);
+                                let rObj = _dataSource[i];
+                                controlDef.onChange(rObj[_pk], key, v, rObj);
                             }
                         },
                         deleteRow: su.deleteRow,
@@ -6719,6 +6721,8 @@ module nts.uk.ui.mgrid {
                             $cbxCell.textContent = selectedOpt ? selectedOpt.name : "";
                             $.data($cbxCell, lo.CBX_SELECTED_TD, inputVal);
                         }
+                        
+                        inputRidd();
                     } else if ((sCol = _specialLinkColumn[editor.columnKey]) && sCol.changed) {
                         let data = _mafollicle[_currentPage].origDs[editor.rowIdx];
                         sCol.changed(editor.columnKey, data[_pk], formatted, data[editor.columnKey]).done(res => {
