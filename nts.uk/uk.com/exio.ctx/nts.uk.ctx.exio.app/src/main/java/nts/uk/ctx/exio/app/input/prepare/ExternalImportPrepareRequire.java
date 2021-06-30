@@ -32,13 +32,16 @@ import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.revise.ReviseItem;
+import nts.uk.ctx.exio.dom.input.revise.ReviseItemRepository;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.CodeConvertCode;
 import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvert;
+import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvertRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
+import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethodRepository;
 import nts.uk.ctx.exio.dom.input.validation.ImportingUserConditionRepository;
 import nts.uk.ctx.exio.dom.input.validation.condition.ImportingUserCondition;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
@@ -84,29 +87,38 @@ public class ExternalImportPrepareRequire {
 	@Inject
 	private WorkInformationRepository workInformationRepo;
 	
+	@Inject
+	ExternalImportSettingRepository settingRepo;
+	
+	@Inject
+	ExternalImportAssemblyMethodRepository assemblyMethodRepo;
+	
+	@Inject
+	ReviseItemRepository reviseItemRepo;
+	
+	@Inject
+	ExternalImportCodeConvertRepository codeConvertRepo;
+	
 	public class RequireImpl implements Require {
-
+		
 		private final String companyId ;
 		
 		public RequireImpl(String companyId) {
 			this.companyId = companyId;
 		}
 		
-		
+
 		/***** 外部受入関連 *****/
 
+		
 		@Override
-		public Optional<ExternalImportSetting> getExternalImportSetting(String companyId,
-				ExternalImportCode settingCode) {
-			// TODO Auto-generated method stub
-			return null;
+		public Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode) {
+			return settingRepo.get(companyId, settingCode);
 		}
-
+		
 		@Override
-		public Optional<ExternalImportAssemblyMethod> getAssemblyMethod(String companyId,
-				ExternalImportCode settingCode) {
-			// TODO Auto-generated method stub
-			return null;
+		public Optional<ExternalImportAssemblyMethod> getAssemblyMethod(String companyId, ExternalImportCode settingCode) {
+			return assemblyMethodRepo.get(companyId, settingCode);
 		}
 
 		@Override
@@ -123,27 +135,28 @@ public class ExternalImportPrepareRequire {
 
 		@Override
 		public Optional<ReviseItem> getRevise(String companyId, ExternalImportCode importCode, int importItemNumber) {
-			// TODO Auto-generated method stub
-			return null;
+			// TODO 1発目では対象外のため取得できない体で実装
+			return Optional.empty();
+			//return reviseItemRepo.get(companyId, importItemNumber, importItemNumber);
+			
 		}
 		
 		@Override
-		public ExternalImportCodeConvert getCodeConvert(CodeConvertCode code) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+		public Optional<ExternalImportCodeConvert> getCodeConvert(String companyId, CodeConvertCode code) {
+			return codeConvertRepo.get(companyId, code);
 		}
 		
 		@Override
 		public ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo) {
 			return importableItemsRepo.find(groupId, itemNo).get();
 		}
-
+		
 		@Override
 		public List<ImportingUserCondition> getImportingUserCondition(String settingCode,
 				List<Integer> itemNo) {
 			return importingUserConditionRepo.get(companyId, settingCode, itemNo);
 		}
-
+		
 		@Override
 		public GroupCanonicalization getGroupCanonicalization(ImportingGroupId groupId) {
 			return groupCanonicalizationRepo.find(groupId);
@@ -161,11 +174,11 @@ public class ExternalImportPrepareRequire {
 		public void save(ExecutionContext context, AnyRecordToDelete toDelete) {
 			workspaceRepo.save(context, toDelete);
 		}
-
 		@Override
 		public void save(ExecutionContext context, AnyRecordToChange recordToChange) {
 			workspaceRepo.save(context, recordToChange);
 		}
+		
 		
 		@Override
 		public void save(ExecutionContext context, RevisedDataRecord revisedDataRecord) {
@@ -177,22 +190,22 @@ public class ExternalImportPrepareRequire {
 		public void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord) {
 			workspaceRepo.save(this, context, canonicalizedDataRecord);
 		}
-
+		
 		@Override
 		public int getMaxRowNumberOfRevisedData(ExecutionContext context) {
 			return workspaceRepo.getMaxRowNumberOfRevisedData(context);
 		}
-
+		
 		@Override
 		public List<String> getStringsOfRevisedData(ExecutionContext context, int itemNo) {
 			return workspaceRepo.getStringsOfRevisedData(context, itemNo);
 		}
-
+		
 		@Override
 		public Optional<RevisedDataRecord> getRevisedDataRecordByRowNo(ExecutionContext context, int rowNo) {
 			return workspaceRepo.findRevisedByRowNo(context, rowNo);
 		}
-
+		
 		@Override
 		public List<RevisedDataRecord> getRevisedDataRecordWhere(
 				ExecutionContext context, int itemNoCondition, String conditionString) {
@@ -211,18 +224,16 @@ public class ExternalImportPrepareRequire {
 		public Optional<EmploymentHistory> getEmploymentHistory(String employeeId) {
 			return employmentHistoryRepo.getByEmployeeIdDesc(companyId, employeeId);
 		}
-
+		
 		@Override
 		public Optional<Task> getTask(String companyId, int taskFrameNo, String taskCode) {
 			return taskingRepo.getOptionalTask(companyId, new TaskFrameNo(taskFrameNo), new TaskCode(taskCode));
 		}
-
+		
 		@Override
 		public Optional<WorkInfoOfDailyPerformance> getWorkInfoOfDailyPerformance(String employeeId, GeneralDate date) {
 			return workInformationRepo.find(employeeId, date);
 		}
-
-
 
 	}
 }

@@ -51,14 +51,16 @@ public class ReviseItem extends AggregateRoot {
 		
 		if(this.codeConvertCode.isPresent()) {
 			// コード変換を実施する場合
-			val convertor = require.getCodeConvert(this.codeConvertCode.get());
-			val cnvResult = convertor.convert(result.getRevisedvalue().get().toString());
-			return new RevisedItemResult(importItemNumber, result, Optional.of(cnvResult));
+			val optConvertor = require.getCodeConvert(context.getCompanyId(), this.codeConvertCode.get());
+			if(optConvertor.isPresent()) {
+				val cnvResult = optConvertor.get().convert(result.getRevisedvalue().get().toString());
+				return new RevisedItemResult(importItemNumber, result, Optional.of(cnvResult));
+			}
 		}
 		return new RevisedItemResult(importItemNumber, result, Optional.empty());
 	}
 	
 	public interface Require{
-		ExternalImportCodeConvert getCodeConvert(CodeConvertCode code);
+		Optional<ExternalImportCodeConvert> getCodeConvert(String companyId, CodeConvertCode code);
 	}
 }
