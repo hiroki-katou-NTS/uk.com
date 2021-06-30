@@ -2,12 +2,15 @@ package nts.uk.ctx.exio.infra.repository.input.setting;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtImportSetting;
 
+@Stateless
 public class JpaExternalImportSettingRepository extends JpaRepository implements ExternalImportSettingRepository {
 	
 	@Override

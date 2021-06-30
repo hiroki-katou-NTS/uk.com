@@ -1,8 +1,8 @@
 package nts.uk.ctx.exio.infra.entity.input.workspace;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -19,40 +19,37 @@ import nts.uk.ctx.exio.dom.input.workspace.WorkspaceItemType;
 @NoArgsConstructor
 public class XimctWorkspaceItem extends JpaEntity {
 	
-	public static final JpaEntityMapper<XimctWorkspaceItem> MAPPER = new JpaEntityMapper<>(XimctWorkspaceItem.class);
+	@EmbeddedId
+	private XimctWorkspaceItemPK pk;
 	
-	@Id
-	@Column(name = "GROUP_ID")
-	public int groupId;
-
-	@Column(name = "ITEM_NO")
-	public int itemNo;
-
+	/* 項目名 */
 	@Column(name = "NAME")
 	public String name;
-
+	
+	/* 種別 */
 	@Column(name = "TYPE")
 	public int type;
 	
+	public static final JpaEntityMapper<XimctWorkspaceItem> MAPPER = new JpaEntityMapper<>(XimctWorkspaceItem.class);
+	
 	@Override
 	protected Object getKey() {
-		return groupId;
+		return pk;
 	}
-
+	
 	public static XimctWorkspaceItem toEntity(WorkspaceItem domain) {
-		
 		return new XimctWorkspaceItem(
-				domain.getGroupId().value,
-				domain.getItemNo(),
+				new XimctWorkspaceItemPK(
+					domain.getGroupId().value,
+					domain.getItemNo()),
 				domain.getName(),
 				domain.getType().value);
 	}
 	
 	public WorkspaceItem toDomain() {
-		
 		return new WorkspaceItem(
-				ImportingGroupId.valueOf(groupId),
-				itemNo,
+				ImportingGroupId.valueOf(pk.groupId),
+				pk.itemNo,
 				name,
 				WorkspaceItemType.valueOf(type));
 	}

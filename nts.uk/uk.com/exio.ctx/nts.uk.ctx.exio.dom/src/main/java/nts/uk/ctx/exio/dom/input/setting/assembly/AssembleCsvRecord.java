@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.revise;
+package nts.uk.ctx.exio.dom.input.setting.assembly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +10,10 @@ import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.revise.ReviseItem;
+import nts.uk.ctx.exio.dom.input.revise.RevisedItemResult;
+import nts.uk.ctx.exio.dom.input.revise.ReviseItem.Require;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
-import nts.uk.ctx.exio.dom.input.setting.assembly.AssemblyResult;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportItemMapping;
 
 /**

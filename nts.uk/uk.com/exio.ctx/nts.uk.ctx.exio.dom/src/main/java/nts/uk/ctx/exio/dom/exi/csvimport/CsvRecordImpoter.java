@@ -18,7 +18,7 @@ import nts.uk.ctx.exio.dom.exi.condset.AcceptanceLineNumber;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryItem;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
-import nts.uk.ctx.exio.dom.input.revise.AssembleCsvRecord;
+import nts.uk.ctx.exio.dom.input.setting.assembly.AssembleCsvRecord;
 import nts.uk.ctx.exio.dom.input.setting.source.ExternalImportCharset;
 
 /**

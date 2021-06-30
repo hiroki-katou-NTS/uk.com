@@ -14,7 +14,7 @@ import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
  */
 @Value
 public class GroupWorkspace {
-
+	
 	/** 受入グループID */
 	private final ImportingGroupId groupId;
 	
@@ -23,7 +23,7 @@ public class GroupWorkspace {
 	
 	/** 非主キーの項目一覧 */
 	private final List<WorkspaceItem> itemsNotPk;
-
+	
 	public List<WorkspaceItem> getAllItemsSortedByItemNo() {
 		return Stream.concat(itemsPk.stream(), itemsNotPk.stream())
 				.sorted(Comparator.comparing(i -> i.getItemNo()))

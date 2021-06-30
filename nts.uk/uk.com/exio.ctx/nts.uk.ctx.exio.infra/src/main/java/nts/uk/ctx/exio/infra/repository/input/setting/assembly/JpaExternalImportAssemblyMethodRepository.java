@@ -3,6 +3,8 @@ package nts.uk.ctx.exio.infra.repository.input.setting.assembly;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
@@ -13,6 +15,7 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportItemMapping;
 import nts.uk.ctx.exio.infra.entity.input.setting.assembly.XimmtMappingFixedItem;
 import nts.uk.ctx.exio.infra.entity.input.setting.assembly.XimmtMappingImportItem;
 
+@Stateless
 public class JpaExternalImportAssemblyMethodRepository extends JpaRepository implements ExternalImportAssemblyMethodRepository {
 	
 	@Override

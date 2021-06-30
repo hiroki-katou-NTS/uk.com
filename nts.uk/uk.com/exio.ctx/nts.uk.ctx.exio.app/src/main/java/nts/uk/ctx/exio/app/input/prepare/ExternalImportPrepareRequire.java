@@ -46,6 +46,7 @@ import nts.uk.ctx.exio.dom.input.validation.ImportingUserConditionRepository;
 import nts.uk.ctx.exio.dom.input.validation.condition.ImportingUserCondition;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
 import nts.uk.ctx.exio.dom.input.workspace.GroupWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.GroupWorkspaceRepository;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -95,6 +96,9 @@ public class ExternalImportPrepareRequire {
 	
 	@Inject
 	ExternalImportCodeConvertRepository codeConvertRepo;
+	
+	@Inject
+	GroupWorkspaceRepository groupWorkspaceRepo;
 	
 	public class RequireImpl implements Require {
 		
@@ -229,8 +233,7 @@ public class ExternalImportPrepareRequire {
 		
 		@Override
 		public GroupWorkspace getGroupWorkspace(ImportingGroupId groupId) {
-			// TODO Auto-generated method stub
-			return null;
+			return groupWorkspaceRepo.get(groupId);
 		}
 		
 		@Override

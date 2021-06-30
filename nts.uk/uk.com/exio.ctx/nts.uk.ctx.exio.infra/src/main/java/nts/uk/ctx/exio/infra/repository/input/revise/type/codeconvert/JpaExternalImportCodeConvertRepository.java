@@ -3,6 +3,8 @@ package nts.uk.ctx.exio.infra.repository.input.revise.type.codeconvert;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+
 import org.apache.commons.lang3.BooleanUtils;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -12,6 +14,7 @@ import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConve
 import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvertRepository;
 import nts.uk.ctx.exio.infra.entity.input.revise.type.codeconvert.XimmtCodeConvert;
 
+@Stateless
 public class JpaExternalImportCodeConvertRepository extends JpaRepository implements ExternalImportCodeConvertRepository{
 
 	@Override
