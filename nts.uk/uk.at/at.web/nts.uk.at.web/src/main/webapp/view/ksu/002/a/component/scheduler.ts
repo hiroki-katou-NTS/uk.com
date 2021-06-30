@@ -714,7 +714,12 @@ module nts.uk.ui.at.ksu002.a {
                                 .then(() => $begin.ntsError('clear'))
                                 .then(() => {
                                     if (model.begin() !== b) {
-                                        model.begin(b)
+										try {
+                                        	model.begin(b);
+										} catch (e) {
+											$begin.val(b);
+											$begin.trigger(VALIDATE);
+										}
                                     } else {
 										$begin.trigger(VALIDATE);
                                         model.begin.valueHasMutated();
@@ -752,7 +757,12 @@ module nts.uk.ui.at.ksu002.a {
                                 .then(() => $finish.ntsError('clear'))
                                 .then(() => {
                                     if (model.finish() !== f) {
-                                        model.finish(f);
+										try {
+                                        	model.finish(f);
+										} catch (e) {
+											$finish.val(f);
+											$finish.trigger(VALIDATE);
+										}
                                     } else {
 										$finish.trigger(VALIDATE);
                                         model.finish.valueHasMutated();
