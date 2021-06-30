@@ -18,6 +18,7 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -42,7 +43,7 @@ public class TransferCanonicalData {
 	}
 	
 	private static AtomTask transfer(Require require, ExecutionContext context, List<WhereSentence> wherelist) {
-		List<String> importiongItem = require.getImportingItem();
+		List<String> importiongItem = require.getImportingDataMeta(context).getItemNames();
 		ConversionCodeType cct = context.getMode().getType();
 		
 		ImportingGroup importingGroup = require.getImportingGroup(context.getGroupId());
@@ -93,7 +94,7 @@ public class TransferCanonicalData {
 	}
 
 	public interface Require{
-		List<String> getImportingItem();
+		ImportingDataMeta getImportingDataMeta(ExecutionContext context);
 		ImportingGroup getImportingGroup(ImportingGroupId groupId);
 		ConversionSource getConversionSource(String groupName);
 		List<ConversionTable> getConversionTable(ConversionSource source, String groupName, ConversionCodeType cct);

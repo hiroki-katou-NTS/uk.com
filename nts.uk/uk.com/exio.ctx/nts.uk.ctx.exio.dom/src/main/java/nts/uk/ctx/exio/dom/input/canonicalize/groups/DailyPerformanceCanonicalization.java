@@ -20,6 +20,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.EmployeeCodeCanonicalization;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 
 /**
  * 日別実績の正準化
@@ -40,9 +41,10 @@ public class DailyPerformanceCanonicalization implements GroupCanonicalization {
 	 * 正準化する
 	 */
 	@Override
-	public void canonicalize(
+	public ImportingDataMeta canonicalize(
 			GroupCanonicalization.RequireCanonicalize require,
-			ExecutionContext context) {
+			ExecutionContext context,
+			ImportingDataMeta meta) {
 
 		List<String> employeeCodes = require.getStringsOfRevisedData(
 				context,
@@ -65,6 +67,8 @@ public class DailyPerformanceCanonicalization implements GroupCanonicalization {
 			});
 			
 		}
+		
+		return meta.addItem(require, employeeCodeCanonicalization.getItemNoEmployeeId());
 	}
 	
 	private void canonicalize(

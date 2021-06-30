@@ -33,6 +33,8 @@ import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupRepository;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMetaRepository;
 import nts.uk.ctx.exio.dom.input.revise.ReviseItem;
 import nts.uk.ctx.exio.dom.input.revise.ReviseItemRepository;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
@@ -86,6 +88,9 @@ public class ExternalImportPrepareRequire {
 	
 	@Inject
 	private ExternalImportExistingRepository existingRepo;
+	
+	@Inject
+	private ImportingDataMetaRepository metaRepo;
 	
 	@Inject
 	private EmployeeDataMngInfoRepository employeeDataMngInfoRepo;
@@ -177,8 +182,9 @@ public class ExternalImportPrepareRequire {
 		
 		@Override
 		public void setupWorkspace(ExecutionContext context) {
-			workspaceRepo.createWorkspace(this, context);
-			existingRepo.createWorkspace(context);
+			workspaceRepo.setup(this, context);
+			existingRepo.setup(context);
+			metaRepo.setup(context);
 		}
 
 		@Override
@@ -222,6 +228,11 @@ public class ExternalImportPrepareRequire {
 			return workspaceRepo.findRevisedWhere(context, itemNoCondition, conditionString);
 		}
 
+		@Override
+		public void save(ImportingDataMeta meta) {
+			metaRepo.save(meta);
+		}
+
 		
 		/***** domains for canonicalization *****/
 		
@@ -244,6 +255,8 @@ public class ExternalImportPrepareRequire {
 		public Optional<WorkInfoOfDailyPerformance> getWorkInfoOfDailyPerformance(String employeeId, GeneralDate date) {
 			return workInformationRepo.find(employeeId, date);
 		}
+
+
 
 	}
 }

@@ -6,7 +6,7 @@ import nts.uk.ctx.exio.dom.input.ExecutionContext;
 
 public interface ExternalImportExistingRepository {
 	
-	void createWorkspace(ExecutionContext context);
+	void setup(ExecutionContext context);
 	
 	void save(ExecutionContext context, AnyRecordToChange record);
 

@@ -10,6 +10,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.EmploymentHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.history.EmployeeContinuousHistoryCanonicalization;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 
 /**
@@ -31,6 +32,7 @@ public interface CanonicalizationMethod {
 			Consumer<IntermediateResult> intermediateResultProvider);
 
 	public static interface Require extends
+			ImportingDataMeta.RequireAddItem,
 			EmployeeCodeCanonicalization.Require,
 			EmployeeContinuousHistoryCanonicalization.RequireCanonicalize,
 			EmploymentHistoryCanonicalization.RequireGetHistory {

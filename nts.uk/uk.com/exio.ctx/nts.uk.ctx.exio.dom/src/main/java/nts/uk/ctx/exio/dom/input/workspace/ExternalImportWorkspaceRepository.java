@@ -14,7 +14,7 @@ import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
  */
 public interface ExternalImportWorkspaceRepository {
 	
-	void createWorkspace(Require require, ExecutionContext context);
+	void setup(Require require, ExecutionContext context);
 
 	void save(Require require, ExecutionContext context, RevisedDataRecord record);
 	

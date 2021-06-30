@@ -23,7 +23,6 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.exio.dom.input.ExecuteImporting;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.ImportiongItemRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRepository;
@@ -32,6 +31,8 @@ import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalizationReposi
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupRepository;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMetaRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
@@ -59,9 +60,6 @@ public class ExternalImportExecuteRequire {
 	private ImportingGroupRepository importingGroupRepo;
 	
 	@Inject
-	private ImportiongItemRepository importingItemRepo;
-	
-	@Inject
 	private ConversionTableRepository conversionTableRepo;
 	
 	@Inject
@@ -75,6 +73,9 @@ public class ExternalImportExecuteRequire {
 	
 	@Inject
 	private ExternalImportExistingRepository existingRepo;
+	
+	@Inject
+	private ImportingDataMetaRepository metaRepo;
 	
 	@Inject
 	private TaskingRepository taskingRepo;
@@ -152,11 +153,6 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public List<String> getImportingItem() {
-			return importingItemRepo.get(companyId);
-		}
-
-		@Override
 		public ConversionSource getConversionSource(String groupName) {
 			return conversionTableRepo.getSource(groupName);
 		}
@@ -169,6 +165,11 @@ public class ExternalImportExecuteRequire {
 		@Override
 		public int execute(List<ConversionSQL> conversionSqls) {
 			return transferCanonicalDataRepo.execute(conversionSqls);
+		}
+
+		@Override
+		public ImportingDataMeta getImportingDataMeta(ExecutionContext context) {
+			return metaRepo.find(context).get();
 		}
 		
 	}

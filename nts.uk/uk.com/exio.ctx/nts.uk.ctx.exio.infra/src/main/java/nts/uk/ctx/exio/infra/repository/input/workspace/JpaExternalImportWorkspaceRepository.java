@@ -19,7 +19,7 @@ import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
 public class JpaExternalImportWorkspaceRepository extends JpaRepository implements ExternalImportWorkspaceRepository {
 	
 	@Override
-	public void createWorkspace(Require require, ExecutionContext context) {
+	public void setup(Require require, ExecutionContext context) {
 		
 		val workspace = createWorkspaceSql(require, context);
 		

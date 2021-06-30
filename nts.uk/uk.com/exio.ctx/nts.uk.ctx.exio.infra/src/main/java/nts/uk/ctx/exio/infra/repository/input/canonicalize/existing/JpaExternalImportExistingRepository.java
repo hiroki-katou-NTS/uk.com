@@ -17,7 +17,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRep
 public class JpaExternalImportExistingRepository extends JpaRepository implements ExternalImportExistingRepository {
 
 	@Override
-	public void createWorkspace(ExecutionContext context) {
+	public void setup(ExecutionContext context) {
 		new LayoutAnyRecordToChange(jdbcProxy(), context).createTable();
 		new LayoutAnyRecordToDelete(jdbcProxy(), context).createTable();
 	}
