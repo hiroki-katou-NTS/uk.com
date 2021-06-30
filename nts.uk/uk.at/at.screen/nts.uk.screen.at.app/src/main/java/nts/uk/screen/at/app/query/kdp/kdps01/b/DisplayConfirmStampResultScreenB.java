@@ -111,7 +111,7 @@ public class DisplayConfirmStampResultScreenB {
 		String wkpId =  empDatas.stream()
 				.map(x -> x.getListStampInfoDisp())
 				.flatMap(Collection::stream)
-				.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime))
+				.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime).reversed())
 				.findFirst()
 				.map(x -> x.getStamp()
 						.stream()
@@ -128,7 +128,7 @@ public class DisplayConfirmStampResultScreenB {
 		GeneralDate refDate = empDatas.stream()
 				.map(x -> x.getListStampInfoDisp())
 				.flatMap(Collection::stream)
-				.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime))
+				.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime).reversed())
 				.findFirst()
 				.map(x -> x.getStampDatetime().toDate())
 				.orElse(null);

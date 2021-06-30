@@ -111,7 +111,7 @@ public class DisplayScreenStampingResultFinder {
 			String wkpId =  listStampDataOfEmployees.stream()
 					.map(x -> x.getListStampInfoDisp())
 					.flatMap(Collection::stream)
-					.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime))
+					.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime).reversed())
 					.findFirst()
 					.map(x -> x.getStamp()
 							.stream()
@@ -128,7 +128,7 @@ public class DisplayScreenStampingResultFinder {
 			GeneralDate refDate = listStampDataOfEmployees.stream()
 					.map(x -> x.getListStampInfoDisp())
 					.flatMap(Collection::stream)
-					.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime))
+					.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime).reversed())
 					.findFirst()
 					.map(x -> x.getStampDatetime().toDate())
 					.orElse(null);
