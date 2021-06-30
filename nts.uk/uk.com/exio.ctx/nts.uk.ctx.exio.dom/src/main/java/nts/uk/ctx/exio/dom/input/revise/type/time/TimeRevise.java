@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.dom.input.revise.type.time;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import nts.uk.ctx.exio.dom.input.revise.ReviseValue;
 import nts.uk.ctx.exio.dom.input.revise.RevisedValueResult;
 import nts.uk.ctx.exio.dom.input.revise.type.RangeOfValue;
@@ -10,6 +11,7 @@ import nts.uk.ctx.exio.dom.input.revise.type.RangeOfValue;
 /**
  * 時間・時刻型編集
  */
+@AllArgsConstructor
 public class TimeRevise implements ReviseValue {
 	
 	/** 値の有効範囲を指定する */

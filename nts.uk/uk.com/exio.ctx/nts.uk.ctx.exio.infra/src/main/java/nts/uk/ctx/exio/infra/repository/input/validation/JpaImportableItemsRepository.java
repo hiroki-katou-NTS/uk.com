@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.infra.repository.input.validation;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -22,6 +23,17 @@ public class JpaImportableItemsRepository extends JpaRepository implements Impor
 				.paramInt("group", groupId.value)
 				.paramInt("item", itemNo)
 				.getSingle(rec -> XimctImportableItem.MAPPER.toEntity(rec).toDomain());
+	}
+
+	@Override
+	public List<ImportableItem> get(ImportingGroupId groupId) {
+		
+		String sql = "select * "
+						+ "from XIMCT_IMPORTABLE_ITEM "
+						+ "where GROUP_ID = @groupId";
+		return new NtsStatement(sql, this.jdbcProxy())
+				.paramInt("groupId", groupId.value)
+				.getList(rec -> XimctImportableItem.MAPPER.toEntity(rec).toDomain());
 	}
 
 }

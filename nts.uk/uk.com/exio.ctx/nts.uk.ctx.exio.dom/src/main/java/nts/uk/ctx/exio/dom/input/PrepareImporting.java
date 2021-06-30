@@ -29,9 +29,6 @@ public class PrepareImporting {
 				.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
 		val context = ExecutionContext.create(setting);
 		
-		// ワークスペース生成
-		require.setupWorkspace(context);
-		
 		// 受入データの組み立て
 		assembleImportingData(require, csvFileStream, setting, context);
 		
@@ -74,8 +71,6 @@ public class PrepareImporting {
 			List<String> columnNames,
 			CsvRecord csvRecord) {
 		
-		// TODO: データの組み立て
-		
 		val optAssembler = require.getAssemblyMethod(context.getCompanyId(), context.getExternalImportCode());
 		if(!optAssembler.isPresent()) {
 			// 受入データの組み立て方法が取得できない
@@ -89,7 +84,7 @@ public class PrepareImporting {
 		}
 		
 		val revisedData = optRevisedData.get();
-
+		
 		ValidateData.validate(require, context, revisedData);
 		
 		require.save(context, revisedData);
@@ -103,6 +98,9 @@ public class PrepareImporting {
 		void setupWorkspace(ExecutionContext context);
 		
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
+
+
+		
 
 		Optional<ExternalImportAssemblyMethod> getAssemblyMethod(String companyId, ExternalImportCode settingCode);
 		

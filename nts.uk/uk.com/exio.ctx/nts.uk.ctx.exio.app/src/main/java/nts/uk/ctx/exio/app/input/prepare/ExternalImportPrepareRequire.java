@@ -120,19 +120,19 @@ public class ExternalImportPrepareRequire {
 			// TODO Auto-generated method stub
 			return null;
 		}
-		
-		@Override
-		public Optional<ReviseItem> getRevise(ExecutionContext context, int importItemNumber) {
-			// TODO 1発目では対象外のため取得できない体で実装
-			return Optional.empty();
-		}
 
+		@Override
+		public Optional<ReviseItem> getRevise(String companyId, ExternalImportCode importCode, int importItemNumber) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
 		@Override
 		public ExternalImportCodeConvert getCodeConvert(CodeConvertCode code) {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}
-
+		
 		@Override
 		public ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo) {
 			return importableItemsRepo.find(groupId, itemNo).get();
@@ -221,6 +221,7 @@ public class ExternalImportPrepareRequire {
 		public Optional<WorkInfoOfDailyPerformance> getWorkInfoOfDailyPerformance(String employeeId, GeneralDate date) {
 			return workInformationRepo.find(employeeId, date);
 		}
+
 
 
 	}

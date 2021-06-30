@@ -10,6 +10,7 @@ import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.AssemblyResult;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportItemMapping;
 
@@ -31,7 +32,7 @@ public class AssembleCsvRecord {
 			val csvValue = csvRecord.getRawItems().get(mapping.get(i).getCsvLineNumber());
 			
 			// 項目の編集を取得
-			val revisionist = require.getRevise(context, itemNo);
+			val revisionist = require.getRevise(context.getCompanyId(), context.getExternalImportCode(), itemNo);
 			if(revisionist.isPresent()) {
 				// 編集あり
 				val revisedResult =revisionist.get().revise(require, context, csvValue);
@@ -48,7 +49,7 @@ public class AssembleCsvRecord {
 	}
 	
 	public interface Require extends ReviseItem.Require{
-		Optional<ReviseItem> getRevise(ExecutionContext context, int importItemNumber);
+		Optional<ReviseItem> getRevise(String companyId, ExternalImportCode importCode, int importItemNumber);
 		ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo);
 	}
 }
