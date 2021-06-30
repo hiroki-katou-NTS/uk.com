@@ -2022,6 +2022,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     }
                 },
                 eventReceive: ({ event }) => {
+                    //drag event from used list
                     const {
                         title,
                         start,
@@ -2031,7 +2032,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     } = event;
                     const sd = ko.unwrap(params.slotDuration);
                     const end = moment(start).add(sd, 'minute').toDate();
-
+                
                     // remove drop event
                     event.remove();
 
@@ -2047,7 +2048,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         extendedProps: {
                             ...extendedProps,
                             id: randomId(),
-                            status: 'new'
+                            status: 'update'
                         } as any
                     });
                 },
