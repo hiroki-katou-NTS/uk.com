@@ -720,18 +720,18 @@ module nts.uk.at.view.kdr001.b.viewmodel {
     export class SpecialHoliday {
 
         /*特別休暇コード*/
-        specialHolidayCode: KnockoutObservable<number>;
+        specialHolidayCode: number;
 
         /*特別休暇名称*/
-        specialHolidayName: KnockoutObservable<string>;
+        specialHolidayName: string;
 
-        enable: KnockoutObservable<boolean>;
+        enable: boolean;
 
         constructor(param: any) {
             let self = this;
-            self.specialHolidayCode = ko.observable(param ? param.specialHolidayCode || null : null);
-            self.specialHolidayName = ko.observable(param ? param.specialHolidayName || '' : '');
-            self.enable = ko.observable(param ? param.enable || false : false);
+            self.specialHolidayCode = param ? param.specialHolidayCode || null : null;
+            self.specialHolidayName = param ? param.specialHolidayName || '' : '';
+            self.enable = param ? param.enable || false : false;
         }
     }
 

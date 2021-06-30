@@ -190,14 +190,16 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 						new CacheCarrier(), param);
 		if (specialLeave == null)
 			return null;
+		Double grantDays = null;
+		Integer grantTime = null;
+		if(!specialLeave.getAsOfPeriodEnd().getGrantRemainingDataList().isEmpty()){
+			 grantDays = specialLeave.getAsOfPeriodEnd().getGrantRemainingDataList().stream()
+					.mapToDouble(e->e.getDetails().getGrantNumber().getDays().v()).sum();
 
-		Double grantDays = specialLeave.getAsOfPeriodEnd().getGrantRemainingDataList().stream()
-				.mapToDouble(e->e.getDetails().getGrantNumber().getDays().v()).sum();
-
-		Integer grantTime = specialLeave.getAsOfPeriodEnd().getGrantRemainingDataList().stream()
-				.mapToInt(e->e.getDetails().getGrantNumber().getMinutes().isPresent()?
-						e.getDetails().getGrantNumber().getMinutes().get().v():0).sum();
-
+			 grantTime = specialLeave.getAsOfPeriodEnd().getGrantRemainingDataList().stream()
+					.mapToInt(e->e.getDetails().getGrantNumber().getMinutes().isPresent()?
+							e.getDetails().getGrantNumber().getMinutes().get().v():0).sum();
+		}
 		Double usedDate =  specialLeave.getAsOfPeriodEnd()
 				.getRemainingNumber().getSpecialLeaveWithMinus().getUsedNumberInfo()
 				.getUsedNumber().getUseDays().map(PrimitiveValueBase::v).orElse(null);

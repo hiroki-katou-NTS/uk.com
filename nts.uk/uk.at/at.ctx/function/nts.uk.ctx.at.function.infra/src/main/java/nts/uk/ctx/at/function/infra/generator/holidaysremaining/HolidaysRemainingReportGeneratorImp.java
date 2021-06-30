@@ -1251,6 +1251,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     occurrence = statusHolidayItem.getOccurrenceDay() == null
                             || statusHolidayItem.getOccurrenceDay().v() == 0 ? "" :
                             df.format(statusHolidayItem.getOccurrenceDay().v());
+                    use = statusHolidayItem.getDayUse() == null
+                            || statusHolidayItem.getDayUse().v() == 0 ? "" :
+                            df.format(statusHolidayItem.getDayUse().v());
                 } else {
                     occurrence = (statusHolidayItem.getOccurrenceTime() == null
                             || statusHolidayItem.getOccurrenceTime().v() == 0 ? "" :
@@ -2270,12 +2273,16 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                 LeaveExpirationStatus.AVAILABLE.value);
 
                 // 全てのドメインモデル「特別休暇付与残数データ」の残時間を合計
-                Double remainDate = listSpecialLeaveGrant.stream()
-                        .mapToDouble(item -> item.getDetails().getRemainingNumber().getDays() != null ?
-                                item.getDetails().getRemainingNumber().getDays().v() : 0).sum();
-                Double remainTime = listSpecialLeaveGrant.stream()
-                        .mapToDouble(item -> item.getDetails().getRemainingNumber().getMinutes().isPresent() ?
-                                item.getDetails().getRemainingNumber().getMinutes().get().v() : 0).sum();
+                Double remainDate = null;
+                Double remainTime = null;
+                if(!listSpecialLeaveGrant.isEmpty()){
+                     remainDate = listSpecialLeaveGrant.stream()
+                            .mapToDouble(item -> item.getDetails().getRemainingNumber().getDays() != null ?
+                                    item.getDetails().getRemainingNumber().getDays().v() : 0).sum();
+                     remainTime = listSpecialLeaveGrant.stream()
+                            .mapToDouble(item -> item.getDetails().getRemainingNumber().getMinutes().isPresent() ?
+                                    item.getDetails().getRemainingNumber().getMinutes().get().v() : 0).sum();
+                }
 
                 // 特別休暇_付与数日数
                 val vlm12 = result273New.getGrantDays();
