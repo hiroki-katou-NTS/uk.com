@@ -18,7 +18,7 @@
 }
 
 .nts-searchbbox-wrapper {
-    margin-bottom: initial;
+    margin-bottom: 5px;
 }
 
 .switchbox-wrappers.radio-wrappers label:first-child input+span {
