@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDateTime;
 /**
  * @author thanh_nx
  *
- *         申請
+ *         申請(反映用)
  */
 @Getter
 @AllArgsConstructor
@@ -59,19 +59,13 @@ public class ApplicationShare {
 	/**
 	 * 反映状態
 	 */
-	private ReflectionStatusShare reflectionStatus;
+	//private ReflectionStatusShare reflectionStatus;
 
 	/**
 	 * 打刻申請モード
 	 */
 	@Setter
 	private Optional<StampRequestModeShare> opStampRequestMode;
-
-	/**
-	 * 差戻し理由
-	 */
-	@Setter
-	private Optional<ReasonForReversionShare> opReversionReason;
 
 	/**
 	 * 申請開始日
@@ -85,21 +79,8 @@ public class ApplicationShare {
 	@Setter
 	private Optional<ApplicationDateShare> opAppEndDate;
 
-	/**
-	 * 申請理由
-	 */
-	@Setter
-	private Optional<AppReasonShare> opAppReason;
-
-	/**
-	 * 定型理由
-	 */
-	@Setter
-	private Optional<AppStandardReasonCodeShare> opAppStandardReasonCD;
-
 	public ApplicationShare(int version, String appID, PrePostAtrShare prePostAtr, String employeeID,
-			ApplicationTypeShare appType, ApplicationDateShare appDate, String enteredPerson, GeneralDateTime inputDate,
-			ReflectionStatusShare reflectionStatus) {
+			ApplicationTypeShare appType, ApplicationDateShare appDate, String enteredPerson, GeneralDateTime inputDate) {
 		this.version = version;
 		this.appID = appID;
 		this.prePostAtr = prePostAtr;
@@ -108,25 +89,18 @@ public class ApplicationShare {
 		this.appDate = appDate;
 		this.enteredPersonID = enteredPerson;
 		this.inputDate = inputDate;
-		this.reflectionStatus = reflectionStatus;
 		this.opStampRequestMode = Optional.empty();
-		this.opReversionReason = Optional.empty();
 		this.opAppStartDate = Optional.empty();
 		this.opAppEndDate = Optional.empty();
-		this.opAppReason = Optional.empty();
-		this.opAppStandardReasonCD = Optional.empty();
 
 	}
 
 	public ApplicationShare(ApplicationShare application) {
 		this(application.getVersion(), application.getAppID(), application.getPrePostAtr(), application.getEmployeeID(),
 				application.getAppType(), application.getAppDate(), application.getEnteredPersonID(),
-				application.getInputDate(), application.getReflectionStatus());
+				application.getInputDate());
 		this.opStampRequestMode = application.getOpStampRequestMode();
-		this.opReversionReason = application.getOpReversionReason();
 		this.opAppStartDate = application.getOpAppStartDate();
 		this.opAppEndDate = application.getOpAppEndDate();
-		this.opAppReason = application.getOpAppReason();
-		this.opAppStandardReasonCD = application.getOpAppStandardReasonCD();
 	}
 }

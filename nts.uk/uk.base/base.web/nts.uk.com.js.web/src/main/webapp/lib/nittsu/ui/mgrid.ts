@@ -2385,7 +2385,7 @@ module nts.uk.ui.mgrid {
                 
                 if (key === "rowNumber") {
                     td.innerHTML = cData; //!_.isNil(numText) ? numText : rowIdx + 1;
-                    tdStyle += "; background-color: #CFF1A5; ";
+                    //tdStyle += "; background-color: #CFF1A5; ";
                     td.style.cssText += tdStyle;
                     td.classList.add(STT_CLS);
                     return td;
@@ -3051,10 +3051,15 @@ module nts.uk.ui.mgrid {
                 style = wrapperStyles(top, left, _maxFixedWidth + "px", undefined, options.height);
                 style["background-color"] = "#F3F3F3";
                 style["padding-right"] = "1px";
-            } else if (options.containerClass === gp.PAGING_CLS || options.containerClass === gp.SHEET_CLS) {
+            } else if (options.containerClass === gp.PAGING_CLS) {
                 style = wrapperStyles(top, left, options.width, undefined, options.height);
                 style["background-color"] = "#E9E9E9";
                 style["border"] = "1px solid #dddddd";
+                style["color"] = "#333333";
+            } else if (options.containerClass === gp.SHEET_CLS) {
+                style = wrapperStyles(top, left, options.width, undefined, options.height);
+//                style["background-color"] = "#E9E9E9";
+                style["border"] = "0px solid #dddddd";
                 style["color"] = "#333333";
             } else {
                 width = options.containerClass === FIXED + "-summaries" ? _maxFixedWidth + "px" : options.width;
@@ -4734,16 +4739,23 @@ module nts.uk.ui.mgrid {
                     _sumWrappers[1].style.width = width + "px";
                     height += SUM_HEIGHT;
                     vari += SUM_HEIGHT;
-                    _sumWrappers[0].style.top = (parseFloat(_sumWrappers[0].style.top) + vari) + "px";
-                    _sumWrappers[1].style.top = (parseFloat(_sumWrappers[1].style.top) + vari) + "px";
+                    if (height >= 0) {
+                        _sumWrappers[0].style.top = (parseFloat(_sumWrappers[0].style.top) + vari) + "px";
+                        _sumWrappers[1].style.top = (parseFloat(_sumWrappers[1].style.top) + vari) + "px";
+                    }
                 }
                 if (pageDiv) {
                     pageDiv.style.width = btmw + "px";
-                    pageDiv.style.top = (parseFloat(pageDiv.style.top) + vari) + "px";
+                    if(height >= 0) {
+                        pageDiv.style.top = (parseFloat(pageDiv.style.top) + vari) + "px";
+                    }
                 }
                 if (sheetDiv) {
                     sheetDiv.style.width = btmw + "px";
-                    sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
+                    if (height >= 0) {
+                        sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
+                    }
+                    
                     let sheetBtn = sheetDiv.querySelector(".mgrid-sheet-buttonlist");
                     let scrollbar = sheetDiv.querySelector(".mgrid-sheet-scrollbar");
                     if (sheetBtn.offsetHeight <= gp.SHEET_HEIGHT) {
@@ -7725,7 +7737,7 @@ module nts.uk.ui.mgrid {
         export const PAGING_CLS = "mgrid-paging";
         export const SHEET_CLS = "mgrid-sheet";
         export const PAGE_HEIGHT = 44;
-        export const SHEET_HEIGHT = 30;
+        export const SHEET_HEIGHT = 45;
         export let $sheetArea;
         
         /**
@@ -7850,7 +7862,7 @@ module nts.uk.ui.mgrid {
             _.forEach(Object.keys(_mafollicle[SheetDef]), s => {
                 let $btn = document.createElement("li");
                 $btn.classList.add("mgrid-sheet-button");
-                $btn.classList.add("ui-state-default");
+//                $btn.classList.add("ui-state-default");
                 $btn.textContent = _mafollicle[SheetDef][s].text;
                 if (s === _currentSheet) $btn.classList.add("ui-state-active");
                 $btn.addXEventListener(ssk.CLICK_EVT, evt => {
@@ -8268,7 +8280,7 @@ module nts.uk.ui.mgrid {
         /**
          * Get control.
          */
-        export function getControl(name: string): NtsControlBase {
+        export function getControl(name: string): any {
             switch (name) {
                 case TEXTBOX:
                     return textBox();

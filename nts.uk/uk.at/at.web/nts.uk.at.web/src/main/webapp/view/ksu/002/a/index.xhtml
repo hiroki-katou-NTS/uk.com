@@ -26,7 +26,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="ksu-002a cf">
-					<button tabindex="1" class="proceed" data-bind="i18n: 'KSU002_1', click: $vm.saveData, enable: $vm.enable"></button>
+					<button tabindex="1" class="proceed" data-bind="i18n: 'KSU002_1', click: $vm.saveData, mutable: $vm.enable"></button>
 					<button tabindex="2" class="" data-bind="i18n: 'KSU002_2', enable: $vm.enable"></button>
 					<button tabindex="3" class="" data-bind="i18n: 'NO_COMPONENT', enable: $vm.enable"></button>
 					<button tabindex="4" class="btn-right" data-bind="i18n: 'KSU002_4', enable: $vm.enable"></button>
@@ -34,7 +34,7 @@
 			</div>
 			<div id="contents-area">
 				<div class="ksu-002a cf">
-					<div data-bind="ntsFormLabel: { required: false, text: currentUser }"></div>
+					<div data-bind="ntsFormLabel: { required: false }, html: currentUser"></div>
 					<div class="cf">
 						<div tabindex="5" data-bind="
 								title-date: $vm.baseDate,

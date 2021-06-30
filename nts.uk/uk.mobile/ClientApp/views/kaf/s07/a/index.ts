@@ -9,6 +9,7 @@ import {
     KafS00CComponent
 } from 'views/kaf/s00';
 import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
+import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 // import { AppWorkChange } from '../../../cmm/s45/components/app2/index';
 @component({
     name: 'kafs07a',
@@ -34,6 +35,7 @@ import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
         'worktype': KDL002Component,
         'kafs00d': KafS00DComponent,
         'worktime': Kdl001Component,
+        'cmms45c': CmmS45CComponent
     },
 
 })
@@ -62,6 +64,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
     public isCondition3: boolean = false;
 
     public isCondition4: boolean = false;
+
+    public appWorkChangeDisp: any = null;
 
     // data is fetched service
     public data: any = 'data';
@@ -105,6 +109,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
         if (self.params) {
             self.mode = false;
             self.data = self.params;
+            self.appWorkChangeDisp = self.data.appWorkChangeDispInfo;
         }
         
 
@@ -158,8 +163,12 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     appWorkChangeOutputCmd: self.data,
                     appWorkChangeDto: self.mode ? null : self.data.appWorkChange
                 };
+                if (self.mode) {
 
-                return self.$http.post('at', API.startS07, param);
+                    return self.$http.post('at', API.startS07, param);
+                } else {
+                    return true;
+                }
             }
             if (!_.isNil(_.get(self.appDispInfoStartupOutput, 'appDispInfoWithDateOutput.opErrorFlag'))) {
                 if (self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag != 0) {
@@ -189,7 +198,13 @@ export class KafS07AComponent extends KafS00ShrComponent {
             if (!res) {
                 return;
             }
-            self.data = res.data;
+            if (res !== true) {
+                self.data = res.data;
+
+                if (res.data.appWorkChangeDispInfo) {
+                    self.appWorkChangeDisp = res.data.appWorkChangeDispInfo;
+                }
+            }
             self.createParamA();
             self.createParamB();
             self.createParamC();
@@ -634,6 +649,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             //         self.fetchStart();
             //         self.$forceUpdate();
             //     });
+            self.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
             self.$goto('kafs07a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appIDLst[0] });
         }).catch((res: any) => {
             self.$mask('hide');
@@ -769,7 +785,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
             appWorkChangeDto: self.appWorkChangeDto,
             // 申請表示情報．申請表示情報(基準日関係あり)．承認ルートエラー情報
             isError: self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
-            appDispInfoStartupDto: self.appDispInfoStartupOutput
+            appDispInfoStartupDto: self.appDispInfoStartupOutput, 
+            appWorkChangeDispInfo: self.appWorkChangeDisp
         }).then((res: any) => {
             //self.$mask('hide');
             // confirmMsgLst
@@ -832,6 +849,19 @@ export class KafS07AComponent extends KafS00ShrComponent {
     public handleErrorMessage(res: any) {
         const self = this;
         self.$mask('hide');
+        if (res.messageId == 'Msg_197') {
+            self.$modal.error({ messageId: 'Msg_197', messageParams: [] }).then(() => {
+                let appID = self.appDispInfoStartupOutput.appDetailScreenInfo.application.appID;
+                self.$modal('cmms45c', { 'listAppMeta': [appID], 'currentApp': appID }).then((newData) => {
+                    self.mode = false;
+                    self.data = newData;
+                    self.appWorkChangeDisp = self.data.appWorkChangeDispInfo;
+                    self.fetchStart();     
+                });
+            });
+
+            return;
+        }
         if (res.messageId) {
             return self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         } else {
@@ -1033,5 +1063,6 @@ const API = {
     checkBeforRegister: 'at/request/application/workchange/mobile/checkBeforeRegister_New',
     registerAppWorkChange: 'at/request/application/workchange/mobile/addWorkChange_New',
     updateAppWorkChange: 'at/request/application/workchange/mobile/changeDateKAFS07',
-    checkWorkTime: 'at/request/application/workchange/mobile/checkWorkTime'
+    checkWorkTime: 'at/request/application/workchange/mobile/checkWorkTime',
+    reflectApp: 'at/request/application/reflect-app'
 };

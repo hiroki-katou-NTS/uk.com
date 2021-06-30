@@ -29,9 +29,11 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.net.Ipv4Address;
 
 /**
  * @author ThanhNX
@@ -226,13 +228,12 @@ public class StampReceptionDataTest {
 
 		StampReceptionData dataNRA = new StampDataBuilder("1", "B", "1", "B", "200303", "01").time("0101")
 				.overTimeHours("1101").midnightTime(" ").build();
-		EmpInfoTerminal ter = new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
-				new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))),
+		EmpInfoTerminal ter = new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")),
 				new MacAddress("AABBCCDD"), new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")),
 				new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(
 						new CreateStampInfo(new OutPlaceConvert(NotUseAtr.USE, Optional.of(GoingOutReason.UNION)),
 								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE),
-								Optional.of(new WorkLocationCD("A"))))
+								Optional.of(new WorkLocationCD("A")), Optional.of(new WorkplaceId("WorkplaceId"))))
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
 
 		assertThatStamp(new StampType(true, GoingOutReason.UNION, SetPreClockArt.NONE,
@@ -240,12 +241,11 @@ public class StampReceptionDataTest {
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "O", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		ter = new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
-				new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))), new MacAddress("AABBCCDD"),
+		ter = new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")), new MacAddress("AABBCCDD"),
 				new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
 				new ContractCode("1")).createStampInfo(
 						new CreateStampInfo(new OutPlaceConvert(NotUseAtr.USE, Optional.of(GoingOutReason.UNION)),
-								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty()))
+								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty(), Optional.empty()))
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
 
 		assertThatStamp(new StampType(true, GoingOutReason.PUBLIC, SetPreClockArt.NONE,
@@ -254,12 +254,11 @@ public class StampReceptionDataTest {
 	}
 
 	private EmpInfoTerminal createEmpInfoTer(NotUseAtr entranceExitOrGout) {
-		return new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
-				new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))), new MacAddress("AABBCCDD"),
+		return new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")), new MacAddress("AABBCCDD"),
 				new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
 				new ContractCode("1"))
 						.createStampInfo(new CreateStampInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.empty()),
-								new ConvertEmbossCategory(entranceExitOrGout, entranceExitOrGout), Optional.empty()))
+								new ConvertEmbossCategory(entranceExitOrGout, entranceExitOrGout), Optional.empty(), Optional.empty()))
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
 	}
 

@@ -9,7 +9,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 		baseDate: KnockoutObservable<Date>;
 		alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
 		treeGrid: TreeComponentOption;
-		shiftColumns: Array<any>;
+		shiftColumns: KnockoutObservableArray<any>;
 		shiftItems: KnockoutObservableArray<ShiftMaster>;
 		selectedShiftMaster: KnockoutObservableArray<any>;
 		forAttendent: KnockoutObservable<Boolean>;
@@ -41,6 +41,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 				tabindex: 1,
 				systemType: 2
 			};
+
 			$("#sidebar").ntsSideBar("init", {
                 active: 0,
                 activate: (event, info) => {
@@ -94,6 +95,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 					nts.uk.ui.errors.clearAll();
 					$('#add-new-shift').focus();
 				});
+
 		}
 
 		startPage(): JQueryPromise<any> {
@@ -297,7 +299,6 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			panelWidthResize = panelWidthResize < 400 ? 400 : 700;
 			$('#form-title').css("width", panelWidthResize + "px");
 		}
-
 
 	}
 

@@ -122,9 +122,9 @@ public class JudgingStatusDomainService {
 					.stream().filter(fil -> fil.getWorkNo().v() == 1).findFirst();
 			attendanceTime = defineAttendanceTime(time);
 			leaveTime = defineLeaveTime(time);
-			workDivision = defineWorkDivision(workingNow);
-			directDivision = defineDirectDivision(dailyActualWorkInfo);
 		}
+		workDivision = defineWorkDivision(workingNow);
+		directDivision = defineDirectDivision(dailyActualWorkInfo);
 		
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 		
@@ -173,7 +173,7 @@ public class JudgingStatusDomainService {
 		}
 		
 		// case 10
-		if (workDivision.get() == WORK) {
+		if (workDivision.get().equals(WORK)) {
 			return buildData(StatusClassfication.NOT_PRESENT, workingNow);
 		}
 		

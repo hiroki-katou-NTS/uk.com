@@ -65,7 +65,7 @@ declare module nts.uk.ui.vm {
 
 		readonly bind: {
 			(viewModel: any): void;
-			(viewModel: any, dialogOptions: DialogOption): void;
+			(viewModel: any, dialogOptions: JQueryUI.DialogOptions): void;
 		};
 
 		readonly ready: (callback: () => void) => void;
@@ -109,6 +109,9 @@ declare module nts.uk.ui.vm {
 		readonly programName: string;
 		readonly path: string;
 		readonly isDebugMode: boolean;
+		readonly operationSetting: {
+			readonly message: string;
+		};
 	}
 
 	// Data structure of names and messages
@@ -160,6 +163,7 @@ declare module nts.uk.ui.vm {
 	export interface ViewModelOption {
 		readonly name: string;
 		readonly template: string;
+		readonly alternalBinding?: boolean;
 	}
 
 	interface ModalMethods {
@@ -228,7 +232,9 @@ declare module nts.uk.ui.vm {
 			(webapp: WEB_APP, url: string, data: any): JQueryDeferred<any>;
 		};
 		readonly $window: {
-			readonly mode: 'view' | 'modal';
+			readonly mode: KnockoutObservable<'view' | 'modal'>;
+			readonly title: KnockoutObservable<string>;
+			readonly header: KnockoutObservable<boolean>;
 			readonly size: {
 				(height: string | number, width: string | number): void;
 				readonly width: (width: number | string) => void;
@@ -266,7 +272,7 @@ declare module nts.uk.ui.vm {
 				yesCancel: {
 					(message: string): JQueryDeferred<void>;
 					(options: { messageId: string; }): JQueryDeferred<'cancel' | 'yes'>;
-					(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<'cancel' | 'yes'>;					
+					(options: { messageId: string; messageParams: string[]; }): JQueryDeferred<'cancel' | 'yes'>;
 				};
 			};
 		}
@@ -304,5 +310,9 @@ declare module nts.uk.ui.vm {
 		readonly $nextTick: {
 			(cb: () => void): number;
 		};
+		/**
+		 * Query Object binding search query in URL.
+		 */
+		readonly $query: { readonly [key: string]: string };
 	}
 }

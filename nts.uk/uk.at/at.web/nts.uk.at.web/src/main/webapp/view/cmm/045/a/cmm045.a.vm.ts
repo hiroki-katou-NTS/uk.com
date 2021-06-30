@@ -75,7 +75,11 @@ module cmm045.a.viewmodel {
                 dismissible: false
             });
 
-            $("a.hyperlink").click(() => {$(".popup-panel-cmm045").ntsPopup("toggle");});
+            $("a.hyperlink").click(() => {
+            	$(".popup-panel-cmm045").ntsPopup("toggle");
+				$(".popup-panel-cmm045").css('top', '200px');
+            });
+
             $(window).on("mousedown.popup", function(e) {
                 let control = $(".popup-panel-cmm045");
                 if (!$(e.target).is(control)
@@ -942,6 +946,8 @@ module cmm045.a.viewmodel {
 			let obj = self.appListExtractConditionDto,
 				date: vmbase.Date = { startDate: obj.periodStartDate, endDate: obj.periodEndDate }
             self.dateValue(date);
+			self.isBeforeCheck(obj.preOutput ? true : false);	
+			self.isAfterCheck(obj.postOutput ? true : false);
             let arraySelectedIds = [];
             if (obj.opUnapprovalStatus) {//未承認
                 arraySelectedIds.push(1);
@@ -1207,6 +1213,9 @@ module cmm045.a.viewmodel {
 					//}
 				}
 				nameStr += item[key];
+				if(item.application.employeeID != item.application.enteredPerson) {
+					nameStr += item.opEntererName;
+				}
 				return _.escape(nameStr).replace(/\n/g, '<br/>');
 			}
 
@@ -1879,10 +1888,10 @@ module cmm045.a.viewmodel {
             //fill color text input date
             let colorIn = input.substring(11,12);
             if (colorIn == '土') {//土
-                inputDate = '<div class = "saturdayCell ' + classApp + '" >' + input + '</div>';
+                inputDate = '<div class = "saturdayCell ' + classApp + '" >' + '<div>'  + input + '</div></div>';
             }
             if (colorIn == '日') {//日
-                inputDate = '<div class = "sundayCell ' + classApp + '" >' + input + '</div>';
+                inputDate = '<div class = "sundayCell ' + classApp + '" >' + '<div>'  + input + '</div></div>';
             }
             return inputDate;
         }
@@ -1914,27 +1923,25 @@ module cmm045.a.viewmodel {
         }
         appDateColor(date: string, classApp: string, priod: string, linkAppDate: string): string{
             let appDate = '<div class = "' + classApp + '" >' + '<div>' + date + priod + '</div>';
-			if(linkAppDate) {
-				appDate += '<div style="margin-top: 5px;">' + linkAppDate + priod + '</div>';
+			let dateDay = date.split("(")[1].substring(0,1);
+			if (dateDay == '土') {//土
+				appDate = '<div class = "saturdayCell ' + classApp + '" >' + '<div>' + date + priod + '</div></div>';
 			}
-			appDate += '</div>';
-            //color text appDate
-            let a = date.split("(")[1];
-            let color = a.substring(0,1);
-            if (color == '土') {//土
-                appDate = '<div class = "saturdayCell  ' + classApp + '" >' + '<div>' + date + priod + '</div>';
-				if(linkAppDate) {
-					appDate += '<div style="margin-top: 5px;">' + linkAppDate + priod + '</div>';
+			if (dateDay == '日') {//日
+				appDate = '<div class = "sundayCell ' + classApp + '" >' + '<div>' + date + priod + '</div></div>';
+			}
+            if(linkAppDate) {
+            	let linkAppDateHtml = "<div style='margin-top: 5px;'>" + linkAppDate + priod + "</div>";
+				let linkAppDateDay = linkAppDate.split("(")[1].substring(0,1);
+				if (linkAppDateDay == '土') {
+					linkAppDateHtml = '<div class="saturdayCell" style="margin-top: 5px;">' + '<div>' + linkAppDate + priod + '</div></div>';
 				}
-				appDate += '</div>';
-            }
-            if (color == '日') {//日
-                appDate = '<div class = "sundayCell  ' + classApp + '" >' + '<div>' + date + priod + '</div>';
-				if(linkAppDate) {
-					appDate += '<div style="margin-top: 5px;">' + linkAppDate + priod + '</div>';
+				if (linkAppDateDay == '日') {
+					linkAppDateHtml = '<div class="sundayCell" style="margin-top: 5px;">' + '<div>' + linkAppDate + priod + '</div></div>';
 				}
-				appDate += '</div>';
+				appDate += linkAppDateHtml;
             }
+
             return appDate;
         }
         //doi ung theo y amid-mizutani さん
@@ -1946,17 +1953,17 @@ module cmm045.a.viewmodel {
             let b = endDate.split("(")[1];
             let color1 = a.substring(0,1);
             if (color1 == '土') {//土
-                sDate = '<div class = "saturdayCell  dateRange" >' + startDate +  '</div>';
+                sDate = '<div class = "saturdayCell  dateRange" >' + '<div>' + startDate +  '</div></div>';
             }
             if (color1 == '日') {//日
-                sDate = '<div class = "sundayCell  dateRange" >' + startDate + '</div>';
+                sDate = '<div class = "sundayCell  dateRange" >' + '<div>'  + startDate + '</div></div>';
             }
             let color2 = b.substring(0,1);
             if (color2 == '土') {//土
-                eDate = '<div class = "saturdayCell  dateRange" >' + endDate + '</div>';
+                eDate = '<div class = "saturdayCell  dateRange" >' + '<div>'  + endDate + '</div></div>';
             }
             if (color2 == '日') {//日
-                eDate = '<div class = "sundayCell  dateRange" >' + endDate +  '</div>';
+                eDate = '<div class = "sundayCell  dateRange" >' + '<div>'  + endDate +  '</div></div>';
             }
             return sDate + '<div class = "dateRange" >' + '－' +  '</div>' +  eDate;
         }
@@ -2509,6 +2516,7 @@ module cmm045.a.viewmodel {
 							linkItem.appDate = item.opComplementLeaveApp.linkAppDate;
 							linkItem.opAppStartDate = item.opComplementLeaveApp.linkAppDate;
 							linkItem.opAppEndDate = item.opComplementLeaveApp.linkAppDate;
+							linkItem.application = item.opComplementLeaveApp.application;
 							listOfApplicationCmds.push(item);
 	                    	listOfApplicationCmds.push(linkItem);	
 						}
@@ -2539,7 +2547,7 @@ module cmm045.a.viewmodel {
 								}
 							});
 							return service.approverAfterConfirm(comfirmData).done((data)=>{
-								service.reflectListApp(Object.keys(data.successMap));
+								//service.reflectListApp(Object.keys(data.successMap));
 							});
 						}
 					}).then((data: any) => {

@@ -70,5 +70,15 @@ public interface WorkScheduleRepository {
 	void deleteSchAtdLvwTime(String sid, GeneralDate ymd, int workNo);
 
 	void deleteListDate(String sid, List<GeneralDate> ymds);
+	
+	List<WorkSchedule> getListBySid(String sid, DatePeriod period);
+	/**
+	 * 	[7] 最も未来の勤務予定の年月日を取得する
+	 * @param listEmp
+	 * @return
+	 */
+	Optional<GeneralDate> getMaxDateWorkSche(List<String> listEmp);
+
+	//Optional<GeneralDate> getMaxDate(List<String> employeeIDs, GeneralDate ymd);
 }
 

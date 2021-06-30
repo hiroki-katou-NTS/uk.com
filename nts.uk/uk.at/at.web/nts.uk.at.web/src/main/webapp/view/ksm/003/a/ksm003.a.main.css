@@ -134,3 +134,7 @@
 .ui-iggrid-scrolldi.igscroll-touchscrollable {
 	transition: all .5s;
 }
+
+#fixed-table-list {
+	margin-bottom: 10px;
+}

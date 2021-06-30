@@ -71,6 +71,9 @@ import nts.uk.ctx.at.request.dom.application.stamp.TimeStampApp;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeStampAppEnum;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeStampAppOther;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeZoneStampClassification;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
@@ -150,6 +153,9 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 	
 	@Inject
 	private RelationshipRepository relationshipRepository;
+	
+	@Inject
+	private TimeLeaveApplicationRepository timeLeaveApplicationRepository;
 
 	/**
 	 * get content work change
@@ -696,6 +702,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		if(Strings.isNotBlank(linkComplementLeaveOutput.getAppID())) {
 			// ドメインモデル「申請」を取得 (Lấy domain model 「application」)
 			Application applicationLink = applicationRepository.findByID(linkComplementLeaveOutput.getAppID()).get();
+			complementLeaveAppLink.setApplication(applicationLink);
 			// 振休振出申請紐付け．紐づけ申請日　＝　取得した申請．申請日 ( AbsResSub.AppDate =  AppDate của đơn lấy được)
 			complementLeaveAppLink.setLinkAppDate(applicationLink.getAppDate().getApplicationDate());
 		}
@@ -802,6 +809,23 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 			result += "\n" + appReasonContent;
 		}
 		return result;
+	}
+
+	@Override
+	public String createAnnualHolidayData(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr,
+			String companyID) {
+		// ドメインモデル「時間休暇申請」を取得する
+		TimeLeaveApplication timeLeaveApplication = timeLeaveApplicationRepository.findById(companyID, application.getAppID()).get();
+		// 取得したドメインモデルより<List>を作成する※「値＝０又はempty」の場合はemptyとする
+		List<TimeLeaveApplicationDetail> leaveApplicationDetails = timeLeaveApplication.getLeaveApplicationDetails().stream()
+				.sorted(Comparator.comparing((TimeLeaveApplicationDetail x) -> x.getAppTimeType().value)).collect(Collectors.toList());
+		// アルゴリズム「申請内容（時間年休申請）」を実行する
+		return appContentService.getAnnualHolidayContent(
+				application.getOpAppReason().orElse(null), 
+				appReasonDisAtr, 
+				screenAtr, 
+				leaveApplicationDetails, 
+				application.getOpAppStandardReasonCD().orElse(null));
 	}
 	
 }

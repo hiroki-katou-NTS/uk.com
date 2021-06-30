@@ -8167,6 +8167,18 @@ module nts.uk.ui.exTable {
                 disables[i].splice(found, 1);
                 if (disables[i].length === 0) delete disables[i];
                 helper.stripCellWith(style.SEAL_CLS, $cell, innerIdx);
+            } else {
+                let cellStyles = $.data($table, internal.CELLS_STYLE);
+                let removed = _.remove(cellStyles, s => {
+                    return s.rowId === rowId && s.columnKey === columnKey 
+                        && ((_.isNil(innerIdx) && _.isNil(s.innerIdx)) ? true : innerIdx === s.innerIdx)
+                        && s.clazz === style.SEAL_CLS;
+                });
+                
+                if (removed.length > 0) {
+                    let $cell = selection.cellAt($table, i, columnKey);
+                    helper.stripCellWith(style.SEAL_CLS, $cell, innerIdx);
+                }
             }
         }
         

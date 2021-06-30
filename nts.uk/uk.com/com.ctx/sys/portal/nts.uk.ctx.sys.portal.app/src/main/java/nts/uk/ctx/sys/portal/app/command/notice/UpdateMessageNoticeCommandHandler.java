@@ -35,7 +35,7 @@ public class UpdateMessageNoticeCommandHandler extends CommandHandler<UpdateMess
 
 			// 3. [お知らせメッセージ is empty]
 			if (listMsg.isEmpty()) {
-				throw new BusinessException("MSG_1806");
+				throw new BusinessException("Msg_1806");
 			}
 
 			// 2. [not お知らせメッセージ is empty]: set(お知らせメッセージ)

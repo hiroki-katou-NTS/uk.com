@@ -72,7 +72,7 @@ module nts.uk.at.view.kmt010.a {
                     const s = _.find(frameSettings, d => d.frameNo == (i + 1));
                     if (s) {
                         t.title = s.frameName;
-                        $("a[href='#" + t.id + "']")[0].innerText = s.frameName;
+                        // $("a[href='#" + t.id + "']")[0].innerText = s.frameName;
                         t.enable(s.useAtr == 1);
                         t.visible(s.useAtr == 1);
                     }
@@ -100,6 +100,7 @@ module nts.uk.at.view.kmt010.a {
             const vm = this;
             vm.multiSelectedId.subscribe((workplaceId) => {
                 vm.getWorkPlaceDetails(workplaceId);
+                vm.selectedTab('tab-1');
             });
         }
 

@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
  */
 @Getter
 @Setter
-@NoArgsConstructor
 public class AnnualLeaveUndigestNumber extends LeaveUndigestNumber {
 
 //	/**
@@ -27,16 +26,20 @@ public class AnnualLeaveUndigestNumber extends LeaveUndigestNumber {
 //	 */
 //	private Optional<AnnualLeaveUndigestTime> minutes;
 
+	public AnnualLeaveUndigestNumber() {
+		super();
+	}
+
 	private AnnualLeaveUndigestNumber(double days, Integer minutes) {
 		// super(days, minutes);
 		this.days = new AnnualLeaveUndigestDayNumber(days);
 		this.minutes = minutes != null ? Optional.of(new AnnualLeaveUndigestTime(minutes)) : Optional.empty();
 	}
-	
+
 	public static AnnualLeaveUndigestNumber createFromJavaType(double days, Integer minutes) {
 		return new AnnualLeaveUndigestNumber(days, minutes);
 	}
-	
+
 	@Override
 	public AnnualLeaveUndigestNumber clone() {
 		AnnualLeaveUndigestNumber cloned;
@@ -45,7 +48,7 @@ public class AnnualLeaveUndigestNumber extends LeaveUndigestNumber {
 			if ( this.minutes.isPresent() ){
 				int_minutes = minutes.get().v();
 			}
-			
+
 			cloned = AnnualLeaveUndigestNumber.createFromJavaType(
 					days.v(), int_minutes);
 		}
@@ -54,5 +57,5 @@ public class AnnualLeaveUndigestNumber extends LeaveUndigestNumber {
 		}
 		return cloned;
 	}
-	
+
 }

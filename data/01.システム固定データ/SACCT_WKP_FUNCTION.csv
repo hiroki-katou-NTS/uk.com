@@ -1,0 +1,4 @@
+INS_DATE,INS_CCD,INS_SCD,INS_PG,UPD_DATE,UPD_CCD,UPD_SCD,UPD_PG,EXCLUS_VER,FUNCTION_NO,INITIAL_VALUE(BOOL),DISPLAY_NAME,DISPLAY_ORDER,DESCRIPTION
+,,,,,,,,0,1,0,"スケジュール確定ができる",1,"管理対象の職場の個人スケジュールの確定処理をすることができるようになります。"
+,,,,,,,,0,2,0,"日次・月次確定ができる",2,"管理対象の職場の日別実績、月別実績を確定することができるようになります。"
+,,,,,,,,0,3,0,"アラーム通知が届く",3,"管理対象の職場にアラームがある場合、アラームメールが送信されます。"

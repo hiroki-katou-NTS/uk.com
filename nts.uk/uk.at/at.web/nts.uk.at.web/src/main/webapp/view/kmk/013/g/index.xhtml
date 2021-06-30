@@ -31,9 +31,8 @@
 					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_486')}</div>
 				</div>
 				<div class="control-group valign-center">
-					<div class="child-lb">#{i18n.getText('KMK013_207')}</div>
-					<div id="flex-radio"
-                         data-bind="ntsSwitchButton: {
+					<span class="label child-lb">#{i18n.getText('KMK013_207')}</span>
+					<div data-bind="ntsSwitchButton: {
 										name:'#{i18n.getText('KMK013_208')}',
 										options: settingOptions,
 										optionsValue: 'id',
@@ -41,7 +40,7 @@
 										value: flexSetting}, hasFocus: true"/>
 				</div>
 				<div class="control-group valign-center">
-					<div class="child-lb">#{i18n.getText('KMK013_211')}</div>
+					<span class="label child-lb">#{i18n.getText('KMK013_211')}</span>
 					<div data-bind="ntsSwitchButton: {
 										name:'#{i18n.getText('KMK013_212')}',
 										options: settingOptions,
@@ -50,7 +49,7 @@
 										value: aggWorkSet}"/>
 				</div>
 				<div class="control-group valign-center">
-					<div class="child-lb">#{i18n.getText('KMK013_216')}</div>
+					<span class="label child-lb">#{i18n.getText('KMK013_216')}</span>
 					<div data-bind="ntsSwitchButton: {
 										name:'#{i18n.getText('KMK013_217')}',
 										options: settingOptions,
@@ -59,7 +58,7 @@
 										value: multipleWorkSet}"/>
 				</div>
 				<div class="control-group valign-center">
-					<div class="child-lb">#{i18n.getText('KMK013_220')}</div>
+					<span class="label child-lb">#{i18n.getText('KMK013_220')}</span>
 					<div data-bind="ntsSwitchButton: {
 										name:'#{i18n.getText('KMK013_221')}',
 										options: settingOptions,
@@ -68,7 +67,7 @@
 										value: tempWorkSet}"/>
 				</div>
 				<div class="control-group valign-center">
-					<span class="label" style="padding-left: 232px;">#{i18n.getText('KMK013_348')}</span>
+					<span class="label" style="margin-left: 235px;">#{i18n.getText('KMK013_348')}</span>
 					<input id="tempmaxuse" style="width: 20px;"
 						   data-bind="ntsNumberEditor: {
 											name: '#{i18n.getText('KMK013_423')}',
@@ -122,7 +121,7 @@
 					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_489')}</div>
 				</div>
 				<div class="control-group valign-center">
-					<div class="child-lb">#{i18n.getText('KMK013_289')}</div>
+					<span class="label child-lb">#{i18n.getText('KMK013_289')}</span>
 					<div data-bind="ntsSwitchButton: {
 										options: settingOptions,
 										optionsValue: 'id',
@@ -130,7 +129,7 @@
 										value: goOutUsage }"/>
 				</div>
 				<div class="control-group valign-center">
-					<span class="label" style="padding-left: 232px;">#{i18n.getText('KMK013_290')}</span>
+					<span class="label" style="margin-left: 235px;">#{i18n.getText('KMK013_290')}</span>
 					<input id="gooutmaxuse" style="width: 20px;"
 						   data-bind="ntsNumberEditor: {
 											name: '#{i18n.getText('KMK013_291')}',
@@ -153,8 +152,8 @@
 											{ prop: 'name', length: 2 }
 										]}"/>
 				</div>
-				<div class="control-group valign-center" style="margin-bottom: 20px;">
-					<div class="child-lb">#{i18n.getText('KMK013_227')}</div>
+				<div class="control-group valign-center">
+					<span class="label child-lb">#{i18n.getText('KMK013_227')}</span>
 					<div data-bind="ntsSwitchButton: {
 										options: settingOptions,
 										optionsValue: 'id',

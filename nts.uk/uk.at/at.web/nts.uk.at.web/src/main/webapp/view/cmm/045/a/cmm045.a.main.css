@@ -89,10 +89,16 @@
 #grid2 tbody tr td:NTH-CHILD(1){
 	text-align: center;
 }
-.saturdayCell{
+
+.saturdayCell > div {
 	color: #0000ff;
 }
-.sundayCell{
+
+.saturdayCell > div {
+	color: #0000ff;
+}
+
+.sundayCell > div {
 	color: #ff0000;
 }
 .rec{
@@ -140,7 +146,7 @@ html {
     overflow: auto;
 }
 .grid-text-label {
-	padding-top: 10px;
+	padding-top: 6px;
 	vertical-align: top;
 }
 .reflectionStatus, .opApprovalStatusInquiry {

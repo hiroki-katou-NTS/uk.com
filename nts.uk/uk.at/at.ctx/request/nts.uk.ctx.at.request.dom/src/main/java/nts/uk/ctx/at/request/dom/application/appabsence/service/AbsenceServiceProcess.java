@@ -35,7 +35,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSe
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 public interface AbsenceServiceProcess {
-	
+
 	/**
 	 * @author hoatt
 	 * 13.計画年休上限チェック
@@ -46,7 +46,7 @@ public interface AbsenceServiceProcess {
 	 * @param eDate: 申請終了日
 	 * @param lstDateIsHoliday: 休日の申請日
 	 */
-	public void checkLimitAbsencePlan(String cID, String sID, String workTypeCD, 
+	public void checkLimitAbsencePlan(String cID, String sID, String workTypeCD,
 			GeneralDate sDate, GeneralDate eDate, List<GeneralDate> lstDateIsHoliday);
 	/**
 	 * @author hoatt
@@ -57,7 +57,7 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public CheckDispHolidayType checkDisplayAppHdType(String companyID, String sID, GeneralDate baseDate);
-	
+
 	/**
 	 * 代休振休優先消化チェック
 	 * @param mode 画面モード  新規モード: true/更新モード: false
@@ -86,7 +86,7 @@ public interface AbsenceServiceProcess {
 	public List<ConfirmMsgOutput> checkPriorityHoliday(AppliedDate pridigCheck,
 			boolean isSubVacaManage, boolean subVacaTypeUseFlg, boolean isSubHdManage, boolean subHdTypeUseFlg,
 			int numberSubHd, int numberSubVaca);
-	
+
 	/**
 	 * 残数取得する
 	 * @param companyID 会社ID
@@ -99,17 +99,17 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public NumberOfRemainOutput getNumberOfRemaining(String companyID, String employeeID, GeneralDate baseDate,
-            ManageDistinct annualLeaveManageDistinct, ManageDistinct accumulatedManage, ManageDistinct substituteLeaveManagement, 
-            ManageDistinct holidayManagement, ManageDistinct overrest60HManagement, ManageDistinct childNursingManagement, 
+            ManageDistinct annualLeaveManageDistinct, ManageDistinct accumulatedManage, ManageDistinct substituteLeaveManagement,
+            ManageDistinct holidayManagement, ManageDistinct overrest60HManagement, ManageDistinct childNursingManagement,
             ManageDistinct longTermCareManagement);
-	
+
 	/**
 	 * 休暇申請設定を取得する
 	 * @param companyID 会社ID
 	 * @return
 	 */
 	public HolidayRequestSetOutput getHolidayRequestSet(String companyID);
-	
+
 	/**
 	 * 休暇残数情報を取得する
 	 * @param companyID 会社ID
@@ -118,7 +118,7 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public RemainVacationInfo getRemainVacationInfo(String companyID, String employeeID, GeneralDate date);
-	
+
 	/**
 	 * 特別休暇の上限情報取得する
 	 * @param companyID 会社ID
@@ -127,7 +127,7 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public AppAbsenceStartInfoOutput getSpecAbsenceUpperLimit(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Optional<String> workTypeCD);
-	
+
 	/**
 	 * 就業時間帯変更時処理
 	 * @param companyID 会社ID
@@ -136,9 +136,9 @@ public interface AbsenceServiceProcess {
 	 * @param workTimeCD 就業時間帯コード<Optional>
 	 * @return
 	 */
-	public AppAbsenceStartInfoOutput workTimesChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, String workTypeCD, 
+	public AppAbsenceStartInfoOutput workTimesChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, String workTypeCD,
 			Optional<String> workTimeCD);
-	
+
 	/**
 	 * 勤務種類変更時処理
 	 * @param companyID 会社ID
@@ -147,33 +147,33 @@ public interface AbsenceServiceProcess {
 	 * @param workTypeCD 勤務種類コード<Optional>
 	 * @return
 	 */
-	public AppAbsenceStartInfoOutput workTypeChangeProcess(String companyID, List<String> appDates, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, HolidayAppType holidayType, 
+	public AppAbsenceStartInfoOutput workTypeChangeProcess(String companyID, List<String> appDates, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, HolidayAppType holidayType,
 			Optional<String> workTypeCD);
-	
+
 	/**
 	 * 休暇種類変更時処理
 	 * @param companyID 会社ID
 	 * @param appAbsenceStartInfoOutput 休暇申請起動時の表示情報
 	 * @param displayHalfDayValue 勤務種類組み合わせ全表示チェック
-	 * @param alldayHalfDay 終日半日休暇区分 
+	 * @param alldayHalfDay 終日半日休暇区分
 	 * @param holidayType 休暇種類
 	 * @return
 	 */
-	public AppAbsenceStartInfoOutput holidayTypeChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, 
+	public AppAbsenceStartInfoOutput holidayTypeChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput,
 			List<String> appDates, HolidayAppType holidayType);
-	
+
 	/**
 	 * 終日半日休暇変更時処理
 	 * @param companyID 会社ID
 	 * @param appAbsenceStartInfoOutput 休暇申請起動時の表示情報
 	 * @param displayHalfDayValue 勤務種類組み合わせ全表示チェック
-	 * @param alldayHalfDay 終日半日休暇区分 
+	 * @param alldayHalfDay 終日半日休暇区分
 	 * @param holidayType 休暇種類<Optional>
 	 * @return
 	 */
-	public AppAbsenceStartInfoOutput allHalfDayChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, 
+	public AppAbsenceStartInfoOutput allHalfDayChangeProcess(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput,
 			boolean displayHalfDayValue, Integer alldayHalfDay, Optional<HolidayAppType> holidayType);
-	
+
 	/**
 	 * A画面 - 登録前のエラーチェック処理
 	 * @param companyID 会社ID
@@ -194,10 +194,10 @@ public interface AbsenceServiceProcess {
 	 * @param hdAppSet 休暇申請設定
 	 * @return
 	 */
-	public List<ConfirmMsgOutput> inconsistencyCheck(String companyID, String employeeID, GeneralDate startDate, GeneralDate endDate, 
+	public List<ConfirmMsgOutput> inconsistencyCheck(String companyID, String employeeID, GeneralDate startDate, GeneralDate endDate,
 			Integer alldayHalfDay, HolidayApplicationSetting hdAppSet, boolean mode);
-	
-		
+
+
 	/**
 	 * 休暇種類共通エラーチェック
 	 * @param companyID 会社ID
@@ -205,9 +205,9 @@ public interface AbsenceServiceProcess {
 	 * @param appAbsence 休暇申請
 	 * @param appAbsenceStartInfoOutput 休暇申請起動時の表示情報
 	 */
-	public List<ConfirmMsgOutput> holidayCommonCheck(String companyID, GeneralDate closureStartDate, ApplyForLeave appAbsence, 
-			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput);
-	
+	public List<ConfirmMsgOutput> holidayCommonCheck(String companyID, GeneralDate closureStartDate, ApplyForLeave appAbsence,
+			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, List<GeneralDate> lstHolidayDate);
+
 	/**
 	 * 年休のチェック処理
 	 * @param mode 画面モード
@@ -222,7 +222,7 @@ public interface AbsenceServiceProcess {
 	 */
 	public List<ConfirmMsgOutput> annualLeaveCheck(boolean mode, String companyID, String employeeID, GeneralDate startDate, GeneralDate endDate,
 			String workTypeCD, List<GeneralDate> lstDateIsHoliday, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput);
-	
+
 	/**
 	 * 特別休暇の上限チェック
 	 * @param companyID 会社ID
@@ -232,9 +232,9 @@ public interface AbsenceServiceProcess {
 	 * @param specAbsenceDispInfo 特別休暇表示情報
 	 * @param lstDateIsHoliday 休日の申請日<List>
 	 */
-	public void checkSpecHoliday(String companyID, GeneralDate startDate, GeneralDate endDate, Boolean mournerAtr, 
+	public void checkSpecHoliday(String companyID, GeneralDate startDate, GeneralDate endDate, Boolean mournerAtr,
 			SpecAbsenceDispInfo specAbsenceDispInfo, List<GeneralDate> lstDateIsHoliday);
-	
+
 	/**
 	 * 特別休暇のチェック処理
 	 * @param companyID 会社ID
@@ -252,9 +252,9 @@ public interface AbsenceServiceProcess {
 	 * @param specAbsenceDispInfo 特別休暇表示情報
 	 * @param mournerAtr 喪主区分
 	 */
-	public void checkSpecLeaveProcess(String companyID, GeneralDate startDate, GeneralDate endDate, List<GeneralDate> holidayDateLst, 
+	public void checkSpecLeaveProcess(String companyID, GeneralDate startDate, GeneralDate endDate, List<GeneralDate> holidayDateLst,
 			SpecAbsenceDispInfo specAbsenceDispInfo, Boolean mournerAtr);
-	
+
 	/**
 	 * 時間消化のチェック処理
 	 * @param startDate
@@ -262,7 +262,7 @@ public interface AbsenceServiceProcess {
 	 */
 	public void checkTimeDigestProcess(String companyID, TimeDigestApplication timeDigestApplicationGeneralDate
 			, RemainVacationInfo remainVacationInfo, String employeeId, GeneralDate baseDate, Optional<AttendanceTime> requiredTime );
-	
+
 	/**
 	 * 休暇種類別エラーチェック
 	 * @param mode 画面モード
@@ -274,7 +274,7 @@ public interface AbsenceServiceProcess {
 	 */
 	public List<ConfirmMsgOutput> errorCheckByHolidayType(boolean mode, String companyID, ApplyForLeave appAbScene
 			, List<GeneralDate> lstDate, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput);
-	
+
 	/**
 	 * C画面 - 登録前のエラーチェック処理
 	 * @param mode 画面モード
@@ -289,7 +289,7 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public AbsenceCheckRegisterOutput checkAppAbsenceRegister(boolean mode, String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput,ApplyForLeave appBeforeChange,ApplyForLeave appAfterChange);
-	
+
 	/**
 	 * 休暇申請登録時チェック処理
 	 * @param mode 画面モード
@@ -300,7 +300,7 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public List<ConfirmMsgOutput> checkAbsenceWhenRegister(boolean mode, String companyID, ApplyForLeave appAbscene, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, List<GeneralDate> lstHolidayDate);
-	
+
 	/**
 	 * 勤務種類・就業時間帯情報を取得する
 	 * @param companyID 会社ID
@@ -309,7 +309,7 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public AppAbsenceStartInfoOutput getWorkTypeWorkTimeInfo(String companyID, ApplyForLeave appAbsence, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput);
-	
+
 	/**
 	 * 更新前のエラーチェック処理
 	 * @param companyID 会社ID
@@ -323,7 +323,7 @@ public interface AbsenceServiceProcess {
 	 */
 	/*public AbsenceCheckRegisterOutput checkBeforeUpdate(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Application application,
 			AppAbsence appAbsence, Integer alldayHalfDay, boolean agentAtr, Optional<Boolean> mourningAtr);*/
-	
+
 	/**
 	 * 1.休暇申請（新規）起動処理
 	 * @param String companyID 会社ID
@@ -331,7 +331,7 @@ public interface AbsenceServiceProcess {
 	 * @return AppAbsenceStartInfoOutput 休暇申請起動時の表示情報
 	 */
 	public AppAbsenceStartInfoOutput getVacationActivation(String companyID, AppDispInfoStartupOutput appDispInfoStartupOutput);
-	
+
 	/**
 	 * 休暇紐付管理をチェックする
 	 * @param WorkType workType before 変更前の勤務種類
@@ -343,7 +343,7 @@ public interface AbsenceServiceProcess {
 	 *         振休紐付管理をクリアする(boolean)
 	 */
 	public VacationCheckOutput checkVacationTyingManage(WorkType wtBefore, WorkType wtAfter, List<LeaveComDayOffManagement> leaveComDayOffMana, List<PayoutSubofHDManagement> payoutSubofHDManagements);
-	
+
 	/**
 	 *     休暇申請（新規）登録処理
 	 * @param applyForLeave
@@ -354,9 +354,9 @@ public interface AbsenceServiceProcess {
 	 * @param approvalRoot
 	 */
 	public ProcessResult registerAppAbsence(ApplyForLeave applyForLeave, List<String> appDates, List<LeaveComDayOffManagement> leaveComDayOffMana, List<PayoutSubofHDManagement> payoutSubofHDManagements, boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalRoot, AppTypeSetting applicationSetting);
-	
-	
-	/** 
+
+
+	/**
 	 * 5.休暇申請（詳細）起動処理
 	 * @param companyID
 	 * @param appID
@@ -364,8 +364,8 @@ public interface AbsenceServiceProcess {
 	 * @return
 	 */
 	public AppForLeaveStartOutput getAppForLeaveStartB(String companyID, String appID, AppDispInfoStartupOutput appDispInfoStartupOutput);
-	
-	
+
+
 	/**
 	 *     休暇紐付管理情報を取得する
 	 * @param employeeID
@@ -375,7 +375,7 @@ public interface AbsenceServiceProcess {
 	 * @param actualContentDisplayLst
 	 */
 	public VacationLinkManageInfo getVacationLinkManageInfo(String employeeID, String appStartDate, String appEndDate, WorkType workType, List<ActualContentDisplay> actualContentDisplayLst);
-	
+
 	/**
 	 *     登録前のエラーチェック処理
 	 * @param companyID
@@ -386,27 +386,16 @@ public interface AbsenceServiceProcess {
 	 */
 	public AbsenceCheckRegisterOutput checkBeforeUpdate(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput,
             ApplyForLeave appAbsence, boolean agentAtr);
-	
-	
+
+
     /**
          * 休暇紐付け管理を登録する
      * @param leaveComDayOffMana
      * @param payoutSubofHDManagements
      */
-    public void registerVacationLinkManage(List<LeaveComDayOffManagement> leaveComDayOffMana, 
+    public void registerVacationLinkManage(List<LeaveComDayOffManagement> leaveComDayOffMana,
             List<PayoutSubofHDManagement> payoutSubofHDManagements);
-    
-    /**
-         * 休暇紐付け管理を更新する
-     * @param oldLeaveComDayOffMana
-     * @param oldPayoutSubofHDManagements
-     * @param newLeaveComDayOffMana
-     * @param newPayoutSubofHDManagements
-     */
-    public void updateVacationLinkManage(List<LeaveComDayOffManagement> oldLeaveComDayOffMana, 
-            List<PayoutSubofHDManagement> oldPayoutSubofHDManagements, List<LeaveComDayOffManagement> newLeaveComDayOffMana, 
-            List<PayoutSubofHDManagement> newPayoutSubofHDManagements);
-    
+
     /**
          * 指定する勤務種類に必要な休暇時間を算出する
      * @param employeeID
@@ -417,14 +406,14 @@ public interface AbsenceServiceProcess {
      * @param workingCondition
      * @return
      */
-    public AttendanceTime calculateTimeRequired(String employeeID, 
-            Optional<GeneralDate> date, 
-            Optional<String> workTypeCode, 
-            Optional<String> workTimeCode, 
+    public AttendanceTime calculateTimeRequired(String employeeID,
+            Optional<GeneralDate> date,
+            Optional<String> workTypeCode,
+            Optional<String> workTimeCode,
             Optional<WorkInfoOfDailyAttendance> workInfoDaily,
-            Optional<ScBasicScheduleImport> scheduleToWork, 
+            Optional<ScBasicScheduleImport> scheduleToWork,
             Optional<WorkingConditionItem> workingCondition);
-    
+
     /**
          * 休暇申請（詳細）更新処理
      * @param applyForLeave
@@ -436,14 +425,12 @@ public interface AbsenceServiceProcess {
      * @return
      */
     public ProcessResult updateApplyForLeave(
-            ApplyForLeave applyForLeave, 
-            List<String> holidayAppDates, 
-            List<LeaveComDayOffManagement> oldLeaveComDayOffMana, 
-            List<PayoutSubofHDManagement> oldPayoutSubofHDManagements,
-            List<LeaveComDayOffManagement> leaveComDayOffMana, 
-            List<PayoutSubofHDManagement> payoutSubofHDManagements, 
+            ApplyForLeave applyForLeave,
+            List<String> holidayAppDates,
+            List<LeaveComDayOffManagement> leaveComDayOffMana,
+            List<PayoutSubofHDManagement> payoutSubofHDManagements,
             AppDispInfoStartupOutput appDispInfoStartupOutput);
-    
+
     /**
             *  代休日を変更する
      * @param companyID
@@ -452,7 +439,7 @@ public interface AbsenceServiceProcess {
      * @return
      */
     public AppAbsenceStartInfoOutput getChangeHolidayDates(String companyID, List<GeneralDate> holidayDates, AppAbsenceStartInfoOutput appAbsenceStartInfoDto);
-    
+
     /**
          * 休暇申請を登録する
      * @param companyID
@@ -462,7 +449,7 @@ public interface AbsenceServiceProcess {
      * @param appAbsenceStartInfoDto
      */
     public ProcessResult registerHolidayDates(String companyID, ApplyForLeave newApplyForLeave, ApplyForLeave originApplyForLeave, List<GeneralDate> holidayDates, AppAbsenceStartInfoOutput appAbsenceStartInfoDto);
-    
+
     /**
      * UKDesign.UniversalK.就業.KAF_申請.KAF011_振休振出申請.振休振出申請共通アルゴリズム.勤務種類・就業時間帯関連.勤務時間初期値の取得.勤務時間初期値の取得
      * @param companyID
@@ -470,8 +457,9 @@ public interface AbsenceServiceProcess {
      * @param workTimeCode
      * @return
      */
+
     public List<TimeZone> initWorktimeCode(String companyID, String workTypeCode, String workTimeCode);
-    
+
     /**
      * UKDesign.UniversalK.就業.KAF_申請.KAF006_休暇申請.アルゴリズム.休暇に必要な時間をチェックする.休暇に必要な時間をチェックする
      * @param timeDigestApplication 時間消化申請

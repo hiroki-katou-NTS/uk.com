@@ -6,6 +6,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.dom.adapter.alarm.AffAtWorkplaceExport;
+import nts.uk.ctx.at.function.dom.adapter.alarm.EmployeeWorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Days;
@@ -32,10 +34,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -56,6 +55,8 @@ public class ExtractAlarmListWorkPlaceFinder {
     private AlarmListExtractProcessStatusWorkplaceRepository alarmListExtractProcessStatusWorkplaceRepo;
     @Inject
     private ClosureEmploymentService closureEmploymentService;
+    @Inject
+    private EmployeeWorkplaceAdapter empWkpAdapter;
 
     /**
      * アラームリストの初期起動
@@ -63,6 +64,10 @@ public class ExtractAlarmListWorkPlaceFinder {
     public InitActiveAlarmListDto initActiveAlarmList() {
         String cid = AppContexts.user().companyId();
         String sid = AppContexts.user().employeeId();
+        GeneralDate baseDate = GeneralDate.today();
+
+        List<AffAtWorkplaceExport> empWkpData = empWkpAdapter.getWorkplaceId(Arrays.asList(sid), baseDate);
+        String workplaceId = empWkpData.isEmpty() ? null : empWkpData.get(0).getWorkplaceId();
 
         // ドメインモデル「アラームリストパターン設定(職場別)」を取得する。
         List<AlarmPatternSettingWorkPlace> alarmPatterns = alarmPatternSettingWorkPlaceRepo.findByCompanyId(cid);
@@ -70,10 +75,9 @@ public class ExtractAlarmListWorkPlaceFinder {
                 .collect(Collectors.toList());
 
         // アルゴリズム「社員IDと基準日から社員の雇用コードを取得」を実行する。
-        Optional<EmploymentHistoryImported> empHistory = this.employmentAdapter.getEmpHistBySid(cid, sid,
-                GeneralDate.today());
+        Optional<EmploymentHistoryImported> empHistory = this.employmentAdapter.getEmpHistBySid(cid, sid, baseDate);
         if (!empHistory.isPresent()) {
-            return new InitActiveAlarmListDto(null, alarmPatterns, null, null);
+            return new InitActiveAlarmListDto(null, alarmPatterns, null, null, null);
         }
         String employmentCode = empHistory.get().getEmploymentCode();
         Integer closureId = null;
@@ -95,7 +99,7 @@ public class ExtractAlarmListWorkPlaceFinder {
                         closureOpt);
             }
         }
-        return new InitActiveAlarmListDto(employmentCode, alarmPatterns, processingYm, datePeriodClosure);
+        return new InitActiveAlarmListDto(employmentCode, alarmPatterns, processingYm, datePeriodClosure, workplaceId);
     }
 
     /**

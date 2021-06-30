@@ -13,6 +13,8 @@ module nts.uk.at.view.kmk003.a {
         export module model {
             export module difftimeset {
 
+                import HalfDayWorkSetDto = nts.uk.at.view.kmk003.a.service.model.common.HalfDayWorkSetDto;
+
                 export interface DayOffTimezoneSettingDto extends HDWorkTimeSheetSettingDto {
                     isUpdateStartTime: boolean;
                 }
@@ -62,7 +64,7 @@ module nts.uk.at.view.kmk003.a {
                     restSet: FixedWorkRestSetDto;
                     dayoffWorkTimezone: DiffTimeDayOffWorkTimezoneDto;
                     commonSet: WorkTimezoneCommonSetDto;
-                    useHalfDayShift: boolean;
+                    useHalfDayShift: HalfDayWorkSetDto;
                     changeExtent: EmTimezoneChangeExtentDto;
                     halfDayWorkTimezones: DiffTimeHalfDayWorkTimezoneDto[];
                     stampReflectTimezone: DiffTimeWorkStampReflectTimezoneDto;

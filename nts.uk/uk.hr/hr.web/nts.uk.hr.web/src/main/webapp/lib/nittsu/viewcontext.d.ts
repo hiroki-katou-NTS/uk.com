@@ -161,6 +161,7 @@ declare module nts.uk.ui.vm {
 	export interface ViewModelOption {
 		readonly name: string;
 		readonly template: string;
+		readonly alternalBinding?: boolean;
 	}
 
 	interface ModalMethods {
@@ -229,7 +230,9 @@ declare module nts.uk.ui.vm {
 			(webapp: WEB_APP, url: string, data: any): JQueryDeferred<any>;
 		};
 		readonly $window: {
-			readonly mode: 'view' | 'modal';
+			readonly mode: KnockoutObservable<'view' | 'modal'>;
+			readonly title: KnockoutObservable<string>;
+			readonly header: KnockoutObservable<boolean>;
 			readonly size: {
 				(height: string | number, width: string | number): void;
 				readonly width: (width: number | string) => void;
@@ -305,5 +308,9 @@ declare module nts.uk.ui.vm {
 		readonly $nextTick: {
 			(cb: () => void): number;
 		};
+		/**
+		 * Query Object binding search query in URL.
+		 */
+		readonly $query: { readonly [key: string]: string };
 	}
 }

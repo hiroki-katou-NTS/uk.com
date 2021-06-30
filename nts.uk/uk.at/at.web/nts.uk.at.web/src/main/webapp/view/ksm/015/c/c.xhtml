@@ -1,4 +1,4 @@
-<div>
+<div id="contents-area">
   <div class="sidebar-content-header">
     <span class="title">#{i18n.getText('Com_Workplace')}</span>
     <!-- Go back Style -->
@@ -42,7 +42,7 @@
 
         <div class="valign-center control-group">
         <!-- C5 -->
-          <div data-bind="ntsFormLabel: {required: true}">
+          <div data-bind="ntsFormLabel: {required: true}" class="ksm015-label">
             #{i18n.getText('KSM015_23',["#Com_Workplace"])}
           </div>
         </div>
@@ -55,7 +55,7 @@
             #{i18n.getText('KSM015_31')}
           </button>
         </div>
-        <div id = "table-d" style="margin-top: -8px;">
+        <div id = "table-d">
         <table tabindex="9"
           id="shift-list"
           data-bind="ntsGridList: {

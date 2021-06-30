@@ -43,13 +43,8 @@ public class EmployeeInfoContactAdapterImpl implements EmployeeInfoContactAdapte
 							item.getPhoneMailAddress(),
 							item.getCellPhoneNo(),
 							item.getSeatDialIn(),
-							item.getSeatExtensionNo(),
-							Optional.of(item.isMailAddressDisplay()),
-							Optional.of(item.isMobileMailAddressDisplay()),
-							Optional.of(item.isCellPhoneNumberDisplay()),
-							Optional.of(item.isSeatDialInDisplay()),
-							Optional.of(item.isSeatExtensionNumberDisplay()))
-					).collect(Collectors.toList());
+							item.getSeatExtensionNo()))
+				.collect(Collectors.toList());
 	}
 
 	/*
@@ -71,17 +66,14 @@ public class EmployeeInfoContactAdapterImpl implements EmployeeInfoContactAdapte
 		EmployeeContactObject item = this.employeeContactPub.get(employeeId);
 		EmployeeInfoContactImport employeeInfoContactImport = null;
 		if (item != null) {
-			employeeInfoContactImport = new EmployeeInfoContactImport(item.getSid(),
+			employeeInfoContactImport = new EmployeeInfoContactImport(
+					item.getSid(),
 					item.getMailAddress(),
 					item.getPhoneMailAddress(),
 					item.getCellPhoneNo(),
 					item.getSeatDialIn(),
-					item.getSeatExtensionNo(),
-					Optional.of(item.isMailAddressDisplay()),
-					Optional.of(item.isMobileMailAddressDisplay()),
-					Optional.of(item.isCellPhoneNumberDisplay()),
-					Optional.of(item.isSeatDialInDisplay()),
-					Optional.of(item.isSeatExtensionNumberDisplay()));
+					item.getSeatExtensionNo()
+					);
 		}
 		return Optional.ofNullable(employeeInfoContactImport);
 	}

@@ -11,14 +11,13 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterProcessDelete;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
@@ -31,11 +30,11 @@ public class DeleteAppHandler extends CommandHandlerWithResult<AppDetailBehavior
 	@Inject
 	private DetailBeforeUpdate beforeRegisterRepo;
 	
-	@Inject 
-	private HolidayService holidayService;
-	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
+	
+	@Inject
+	private IApplicationContentService applicationContentService;
 
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<AppDetailBehaviorCmd> context) {
@@ -48,6 +47,7 @@ public class DeleteAppHandler extends CommandHandlerWithResult<AppDetailBehavior
 		int version = application.getVersion();
 		
 		beforeRegisterRepo.exclusiveCheck(companyID, appID, version);
+		String content = applicationContentService.getApplicationContent(application);
 		// 共通アルゴリズム「詳細画面削除後の処理」を実行する(thực hiện xử lý 「詳細画面削除後の処理」)
 		List<String> destinationLst = afterProcessDelete.screenAfterDelete(
 				appID, 
@@ -64,16 +64,11 @@ public class DeleteAppHandler extends CommandHandlerWithResult<AppDetailBehavior
 			// 送信先リストに項目がいるかチェックする(kiểm tra danh sách người xác nhận có mục nào hay không)
 			if(!CollectionUtil.isEmpty(destinationLst)){
 				// 送信先リストにメールを送信する(gửi mail cho danh sách người xác nhận)
-				MailResult mailResult = otherCommonAlgorithm.sendMailApproverDelete(destinationLst, application);
+				MailResult mailResult = otherCommonAlgorithm.sendMailApproverDelete(destinationLst, application, content);
 				processResult.setAutoSuccessMail(mailResult.getSuccessList());
 				processResult.setAutoFailMail(mailResult.getFailList());
 				processResult.setAutoFailServer(mailResult.getFailServerList());
 			}
-		}
-		
-		// アルゴリズム「11.休出申請（振休変更）削除」を実行する
-		if(application.getAppType()==ApplicationType.HOLIDAY_WORK_APPLICATION){
-			holidayService.deleteHdChange(appID);
 		}
 		processResult.setAppIDLst(Arrays.asList(appID));
 		return processResult;

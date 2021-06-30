@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = { width: 360, height: 570 };</script>
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="/view/kcp/016/kcp016.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="ksm011.f.vm.js" />
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area">
+            <div style="padding-left: 10px;" data-bind="text: $i18n('KSM011_110')"/>
+            <div data-bind="component: {
+                    name: 'kcp016-component',
+                    params: {
+                        multiple: true,
+                        onDialog: true,
+                        selectType: 1,
+                        selectedValue: value,
+                        tabindex: 1
+                    }
+                }"/>
+        </div>
+        <div id="functions-area-bottom">
+            <button tabindex="2" class="proceed x-large" data-bind="click: proceed">#{i18n.getText('KSM011_111')}</button>
+            <button tabindex="3" data-bind="click: cancel">#{i18n.getText('KSM011_112')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

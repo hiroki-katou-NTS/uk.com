@@ -161,3 +161,22 @@ table.table-right th, table.table-right td {
     width: 85%;
     padding-bottom: 8px;
 }
+
+.checkbox-wrapper, .radio-wrapper {
+	display: block;
+}
+
+#b5_7, #b5_8, #b5_9, #b5_10,
+#b6_1,
+#b7_7_1, #b7_8, #b7_9, #b7_10,
+#b8_7, #b8_8, #b8_9, #b8_10,
+#b9_1,
+#b10_7_1, #b10_8, #b10_9, #b10_10,
+#b11_7, #b11_8, #b11_9, #b11_10, #b11_11,
+#b12_1,
+#b13_7, #b13_8, #b13_9, #b13_10,
+#b14_7, #b14_8, #b14_9, #b14_10, #b14_11,
+#b15_1,
+#b16_7_1, #b16_8, #b16_9, #b16_10 {
+	margin-left: 30px;
+}

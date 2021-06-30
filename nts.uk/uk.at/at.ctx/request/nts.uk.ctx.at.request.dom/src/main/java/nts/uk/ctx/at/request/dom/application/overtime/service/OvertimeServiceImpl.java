@@ -29,6 +29,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -51,11 +53,18 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutputMulti;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
@@ -154,7 +163,16 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private GetApplicationReflectionResultAdapter getApplicationReflectionResultAdapter;
 	@Inject
 	private TimeLeaveApplicationRepository timeLeaveApplicationRepo;
-	
+	@Inject
+	private ApplyForLeaveRepository applyForLeaveRepository;
+	@Inject
+	private AppHolidayWorkRepository appHolidayWorkRepository;
+	@Inject
+	private AbsenceLeaveAppRepository absenceLeaveAppRepository;
+	@Inject
+	private RecruitmentAppRepository recruitmentAppRepository;
+	@Inject
+	private OptionalItemApplicationRepository optionalItemApplicationRepository;
 	
 	
 	@Override
@@ -393,8 +411,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 				companyId,
 				workTypeCode,
 				workTimeCode,
-				startTimeSPR.map(x -> Optional.of(new TimeWithDayAttr(x))).orElse(Optional.empty()),
-				endTimeSPR.map(x -> Optional.of(new TimeWithDayAttr(x))).orElse(Optional.empty()),
+				workHoursOp.flatMap(x -> x.getStartTimeOp1()),
+				workHoursOp.flatMap(x -> x.getEndTimeOp1()),
 				actualContentDisplay.map(x -> x.getOpAchievementDetail()).orElse(Optional.empty()));
 		// 07-02_実績取得・状態チェック
 		ApplicationTime applicationTime = preActualColorCheck.checkStatus(
@@ -455,13 +473,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 				}
 			}
 		}
-		if(!opIntegrationOfDaily.isPresent() && reasonDissociation.isPresent()) {
-			// エラーメッセージ（Msg_1298）を表示する
-			throw new BusinessException("Msg_1298");
-		}
+		String errorMessage = "";
 		if(opIntegrationOfDaily.isPresent()) {
 			// エラーメッセージを表示する
-			String errorMessage = "";
 			if(opIntegrationOfDaily.isPresent()) {
 				List<EmployeeDailyPerError> employeeDailyPerErrorLst = new ArrayList<>();
 				if(appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
@@ -506,6 +520,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 			if(Strings.isNotBlank(errorMessage)) {
 				throw new BusinessException(errorMessage);
 			}
+		}
+		if(Strings.isBlank(errorMessage) && reasonDissociation.isPresent()) {
+			// エラーメッセージ（Msg_1298）を表示する
+			throw new BusinessException("Msg_1298");
 		}
 	}
 	
@@ -560,6 +578,35 @@ public class OvertimeServiceImpl implements OvertimeService {
 			@Override
 			public Optional<TimeLeaveApplication> findTimeLeavById(String companyId, String appId) {
 				return timeLeaveApplicationRepo.findById(companyId, appId);
+			}
+			@Override
+			public Optional<AppOverTime> findOvertime(String companyId, String appId) {
+				return appOverTimeRepository.find(companyId, appId);
+			}
+
+			@Override
+			public Optional<ApplyForLeave> findApplyForLeave(String CID, String appId) {
+				return applyForLeaveRepository.findApplyForLeave(CID, appId);
+			}
+
+			@Override
+			public Optional<AppHolidayWork> findAppHolidayWork(String companyId, String appId) {
+				return appHolidayWorkRepository.find(companyId, appId);
+			}
+			
+			@Override
+			public Optional<AbsenceLeaveApp> findAbsenceByID(String applicationID) {
+				return absenceLeaveAppRepository.findByAppId(applicationID);
+			}
+
+			@Override
+			public Optional<RecruitmentApp> findRecruitmentByID(String applicationID) {
+				return recruitmentAppRepository.findByAppId(applicationID);
+			}
+
+			@Override
+			public Optional<OptionalItemApplication> getOptionalByAppId(String companyId, String appId) {
+				return optionalItemApplicationRepository.getByAppId(companyId, appId);
 			}
 		};
 	}
@@ -749,8 +796,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 		String workTimeCode = appOverTime.getWorkInfoOp().flatMap(x -> x.getWorkTimeCodeNotNull()).map(x -> x.v()).orElse(null);
 		
 		if (displayInfoOverTime.getWorkInfo().isPresent()) {
-			workTypeCode = workTypeCode.equals(displayInfoOverTime.getWorkInfo().get().getWorkType()) ? workTypeCode : null;
-			workTimeCode = workTimeCode.equals(displayInfoOverTime.getWorkInfo().get().getWorkTime()) ? workTimeCode : null;			
+			workTypeCode = !workTypeCode.equals(displayInfoOverTime.getWorkInfo().get().getWorkType()) ? workTypeCode : null;
+			workTimeCode = !workTimeCode.equals(displayInfoOverTime.getWorkInfo().get().getWorkTime()) ? workTimeCode : null;			
 		}
 		
 		// 4-1.詳細画面登録前の処理

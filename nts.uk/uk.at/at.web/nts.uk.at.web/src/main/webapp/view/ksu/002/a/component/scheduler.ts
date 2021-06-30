@@ -336,7 +336,7 @@ module nts.uk.ui.at.ksu002.a {
                     background-color: #d9d9d9;
                     box-sizing: border-box;
                     border-bottom: 1px solid #808080;
-                    padding: 0 25px;
+                    padding: 0 20px;
                 }
                 .scheduler .calendar+.calendar .month+.month .day .status.wk-hours {
                     overflow: hidden;
@@ -716,6 +716,7 @@ module nts.uk.ui.at.ksu002.a {
                                     if (model.begin() !== b) {
                                         model.begin(b)
                                     } else {
+										$begin.trigger(VALIDATE);
                                         model.begin.valueHasMutated();
                                     }
 
@@ -753,6 +754,7 @@ module nts.uk.ui.at.ksu002.a {
                                     if (model.finish() !== f) {
                                         model.finish(f);
                                     } else {
+										$finish.trigger(VALIDATE);
                                         model.finish.valueHasMutated();
                                     }
 

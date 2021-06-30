@@ -5,28 +5,29 @@
 .caret-top,
 .caret-left,
 .caret-right {
+	color: inherit;
 	position: relative;
-	
+
 	&:after {
-		content: '';
+		content: "";
 		display: inline-block;
 		width: 0;
 		height: 0;
 		vertical-align: middle;
 		font-size: 1em;
 	}
-	
+
 	&.outline {
 		display: inline-block;
 		font-size: 1.2rem;
 		&:before {
-			content: '';
+			content: "";
 			position: absolute;
 			color: #fff;
 			z-index: 1;
 		}
 		&:after {
-			content: '';
+			content: "";
 			position: absolute;
 			color: $green_background_color;
 			z-index: 2;
@@ -58,7 +59,7 @@
 	}
 }
 .caret-top {
-	&:after{
+	&:after {
 		border-bottom: 1em solid;
 		border-right: 1em solid transparent;
 		border-left: 1em solid transparent;
@@ -129,7 +130,7 @@
 
 .caret-inline {
 	display: inline-block;
-	&:after{
+	&:after {
 		border-width: 10px;
 		color: $green_formlabel_color;
 	}
@@ -139,33 +140,34 @@ button {
 	&.caret-bottom,
 	&.caret-top,
 	&.caret-left,
-	&.caret-right{
+	&.caret-right {
+		overflow: visible;
 		&:after {
 			position: absolute;
 			color: $button-disabled-base-color;
 		}
 	}
-	
+
 	&:focus {
 		&.caret-bottom,
 		&.caret-top,
 		&.caret-left,
-		&.caret-right{
+		&.caret-right {
 			&:after {
 				color: #0096f2;
 			}
 		}
 	}
-	
+
 	&.caret-bottom:after {
-		top: 100%;
+		top: 104%;
 		left: 50%;
 		border-top-width: 0.8em;
 		border-right-width: 1.5em;
 		border-left-width: 1.5em;
 		margin-left: -1.5em;
 	}
-	
+
 	&.caret-top:after {
 		bottom: 100%;
 		left: 50%;
@@ -174,10 +176,17 @@ button {
 		border-left-width: 1.5em;
 		margin-left: -1.5em;
 	}
-	
-	&.caret-left:after { right: 100%; top: 50%; margin-top: -1em; }
-	&.caret-right:after { left: 100%; top: 50%; margin-top: -1em; }
-	
+
+	&.caret-left:after {
+		right: 100%;
+		top: 50%;
+		margin-top: -1em;
+	}
+	&.caret-right:after {
+		left: 100%;
+		top: 50%;
+		margin-top: -1em;
+	}
 }
 
 .caret-background {
@@ -185,73 +194,113 @@ button {
 		position: absolute;
 		color: $green_background_color;
 	}
-	&.caret-right:after {top: 60px; left: 100%; border-width: 35px 20px;}
-	&.caret-left:after {top: 60px; right: 100%; border-width: 35px 20px;}
-	&.caret-top:after {left: 50px; bottom: 100%; border-width: 20px 35px;}
-	&.caret-bottom:after {left: 50px; top: 100%; border-width: 20px 35px;}
+	&.caret-right:after {
+		top: 60px;
+		left: 100%;
+		border-width: 35px 20px;
+	}
+	&.caret-left:after {
+		top: 60px;
+		right: 100%;
+		border-width: 35px 20px;
+	}
+	&.caret-top:after {
+		left: 50px;
+		bottom: 100%;
+		border-width: 20px 35px;
+	}
+	&.caret-bottom:after {
+		left: 50px;
+		top: 100%;
+		border-width: 20px 35px;
+	}
 }
 
 .caret-overlay {
 	&:before {
-		content: '';
+		content: "";
 		position: absolute;
 		border-width: 10px;
-		color: rgba(0,0,0,0.2);
+		color: rgba(0, 0, 0, 0.2);
 		font-size: 12px;
 	}
 	&.caret-right:before {
 		border-left: 1em solid;
 		border-top: 1em solid transparent;
 		border-bottom: 1em solid transparent;
-		top: 50%; left: 100%; margin-top:-1em;
+		top: 50%;
+		left: 100%;
+		margin-top: -1em;
 	}
 	&.caret-left:before {
 		border-right: 1em solid;
 		border-top: 1em solid transparent;
 		border-bottom: 1em solid transparent;
-		top: 50%; right: 100%; margin-top:-1em;
+		top: 50%;
+		right: 100%;
+		margin-top: -1em;
 	}
 	&.caret-top:before {
 		border-bottom: 1em solid;
 		border-right: 1em solid transparent;
 		border-left: 1em solid transparent;
-		bottom: 100%; left: 50%; margin-left:-1em;
+		bottom: 100%;
+		left: 50%;
+		margin-left: -1em;
 	}
 	&.caret-bottom:before {
 		border-top: 1em solid;
 		border-right: 1em solid transparent;
 		border-left: 1em solid transparent;
-		top: 100%; left: 50%; margin-left:-1em;
+		top: 100%;
+		left: 50%;
+		margin-left: -1em;
 	}
-	
+
 	&:after {
 		position: absolute;
 		border-width: 10px;
 		color: #fff;
 	}
-	
-	&.caret-right:after {top: 50%; left: 100%; margin-top:-10px;}
-	&.caret-left:after {top: 50%; right: 100%; margin-top:-10px;}
-	&.caret-top:after {bottom: 100%; left: 50%; margin-left:-10px;}
-	&.caret-bottom:after {top: 100%; left: 50%; margin-left:-10px;}
+
+	&.caret-right:after {
+		top: 50%;
+		left: 100%;
+		margin-top: -10px;
+	}
+	&.caret-left:after {
+		top: 50%;
+		right: 100%;
+		margin-top: -10px;
+	}
+	&.caret-top:after {
+		bottom: 100%;
+		left: 50%;
+		margin-left: -10px;
+	}
+	&.caret-bottom:after {
+		top: 100%;
+		left: 50%;
+		margin-left: -10px;
+	}
 }
 
 .caret-helpbutton {
 	position: absolute;
 	font-size: 10px;
-	
+
 	&:before {
-		content: '';
+		content: "";
 		position: absolute;
 		border-width: 1.1em;
-		color: rgba(0,0,0,0.15);
+		color: rgba(0, 0, 0, 0.15);
 	}
 	&:after {
 		position: absolute;
 		border-width: 2em;
 		color: $green_background_color;
 	}
-	
+
 	&.caret-right {
 		right: 0;
 		&:before {
@@ -259,8 +308,8 @@ button {
 			border-left: 2.1em solid;
 			border-top: 1.1em solid transparent;
 			border-bottom: 1.1em solid transparent;
-			margin-right:-0.1em;
-			margin-top:-0.1em;
+			margin-right: -0.1em;
+			margin-top: -0.1em;
 		}
 		&:after {
 			top: 0.5em;
@@ -276,8 +325,8 @@ button {
 			border-right: 2.1em solid;
 			border-top: 1.1em solid transparent;
 			border-bottom: 1.1em solid transparent;
-			margin-left:-0.1em;
-			margin-top:-0.1em;
+			margin-left: -0.1em;
+			margin-top: -0.1em;
 		}
 		&:after {
 			top: 0.5em;
@@ -293,8 +342,8 @@ button {
 			border-bottom: 2.1em solid;
 			border-right: 1.1em solid transparent;
 			border-left: 1.1em solid transparent;
-			margin-left:-0.1em;
-			margin-top:-0.1em;
+			margin-left: -0.1em;
+			margin-top: -0.1em;
 		}
 		&:after {
 			left: 0.5em;
@@ -310,14 +359,36 @@ button {
 			border-top: 2.1em solid;
 			border-right: 1.1em solid transparent;
 			border-left: 1.1em solid transparent;
-			margin-left:-0.1em;
-			margin-bottom:-0.1em;
+			margin-left: -0.1em;
+			margin-bottom: -0.1em;
 		}
 		&:after {
 			left: 0.5em;
 			border-top: 2em solid;
 			border-right: 1em solid transparent;
 			border-left: 1em solid transparent;
+		}
+	}
+}
+
+/*Remove caret style for new ui*/
+.caret-background {
+	&:not(.deprecate) {
+		background-color: transparent !important;
+		&.caret-bottom,
+		&.caret-top,
+		&.caret-left,
+		&.caret-right {
+			background-color: transparent !important;
+
+			&:after,
+			&::before {
+				content: none;
+			}
+
+			.icon-searchbox {
+				display: none !important;
+			}
 		}
 	}
 }

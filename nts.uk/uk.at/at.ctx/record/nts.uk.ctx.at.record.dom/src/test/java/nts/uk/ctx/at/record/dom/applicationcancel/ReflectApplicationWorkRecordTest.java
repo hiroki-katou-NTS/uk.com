@@ -16,6 +16,8 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectStatusResult;
+import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectedState;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
@@ -30,9 +32,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.common.ReflectedStateShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.StampRequestModeShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.reflect.ReflectStatusResultShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppRecordImageShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.EngraveShareAtr;
@@ -74,8 +74,8 @@ public class ReflectApplicationWorkRecordTest {
 
 		appImg.setOpStampRequestMode(Optional.of(StampRequestModeShare.STAMP_ONLINE_RECORD));
 
-		ReflectStatusResultShare reflectStatus = new ReflectStatusResultShare();
-		reflectStatus.setReflectStatus(ReflectedStateShare.WAITREFLECTION);
+		RCReflectStatusResult reflectStatus = new RCReflectStatusResult();
+		reflectStatus.setReflectStatus(RCReflectedState.WAITREFLECTION);
 
 		new Expectations() {
 			{
@@ -98,9 +98,9 @@ public class ReflectApplicationWorkRecordTest {
 		};
 
 		val actualResult = ReflectApplicationWorkRecord.process(require, appImg,
-				GeneralDate.ymd(2020, 01, 01), reflectStatus);
+				GeneralDate.ymd(2020, 01, 01), reflectStatus, GeneralDateTime.FAKED_NOW);
 
-		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedStateShare.REFLECTED);
+		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(RCReflectedState.REFLECTED);
 
 		NtsAssert.atomTask(() -> actualResult.getRight().get(), any -> require.addAllDomain(any.get()));
 
@@ -125,8 +125,8 @@ public class ReflectApplicationWorkRecordTest {
 
 		appImg.setOpStampRequestMode(Optional.empty());
 
-		ReflectStatusResultShare reflectStatus = new ReflectStatusResultShare();
-		reflectStatus.setReflectStatus(ReflectedStateShare.WAITREFLECTION);
+		RCReflectStatusResult reflectStatus = new RCReflectStatusResult();
+		reflectStatus.setReflectStatus(RCReflectedState.WAITREFLECTION);
 
 		new Expectations() {
 			{
@@ -144,9 +144,9 @@ public class ReflectApplicationWorkRecordTest {
 		};
 
 		val actualResult = ReflectApplicationWorkRecord.process(require, appImg,
-				GeneralDate.ymd(2020, 01, 01), reflectStatus);
+				GeneralDate.ymd(2020, 01, 01), reflectStatus, GeneralDateTime.FAKED_NOW);
 
-		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedStateShare.REFLECTED);
+		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(RCReflectedState.REFLECTED);
 
 		NtsAssert.atomTask(() -> actualResult.getRight().get(), any -> require.addAllDomain(any.get()));
 
@@ -162,6 +162,6 @@ public class ReflectApplicationWorkRecordTest {
 						SetPreClockArt.NONE, // 所定時刻セット区分
 						ChangeClockArt.GOING_TO_WORK, // 時刻変更区分
 						ChangeCalArt.NONE), // 計算区分変更対象
-				new RefectActualResult(null, null, null, null), Optional.empty());
+				new RefectActualResult( null, null, null), Optional.empty());
 	}
 }

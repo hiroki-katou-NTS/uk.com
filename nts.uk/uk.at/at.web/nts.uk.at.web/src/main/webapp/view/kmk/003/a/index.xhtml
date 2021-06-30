@@ -26,11 +26,11 @@
 			<com:scriptfile path="kmk003.a.vm.js" />
 			<com:scriptfile path="../a1/kmk003.a1.vm.js" />
 			<com:stylefile path="../a1/kmk003.a1.style.css" />
-			
+
 			<!-- Begin tab 02 -->
 			<com:scriptfile path="../a2/kmk003.a2.vm.js" />
 			<com:stylefile path="../a2/kmk003.a2.style.css" /><!-- End tab 02 -->
-			
+
 			<com:scriptfile path="../a3/kmk003.a3.vm.js" />
 			<com:stylefile path="../a3/kmk003.a3.style.css" />
 			<com:scriptfile path="../a4/kmk003.a4.vm.js" />
@@ -44,57 +44,57 @@
 			<com:stylefile path="../a7/kmk003.a7.style.css" />
 			<com:scriptfile path="../a8/kmk003.a8.vm.js" />
 			<com:stylefile path="../a8/kmk003.a8.style.css" />
-			
+
 			<!-- Begin tab 09 -->
 			<com:scriptfile path="../a9/kmk003.a9.vm.js" />
 			<com:stylefile path="../a9/kmk003.a9.style.css" /><!-- End tab 09 -->
-			
+
 			<!-- Begin tab 10 -->
 			<com:scriptfile path="../a10/kmk003.a10.service.js" />
 			<com:scriptfile path="../a10/kmk003.a10.vm.js" />
 			<com:stylefile path="../a10/kmk003.a10.style.css" /><!-- End tab 10 -->
-			
+
 			<!-- Begin tab 11 -->
 			<com:scriptfile path="../a11/kmk003.a11.vm.js" />
 			<com:stylefile path="../a11/kmk003.a11.style.css" /><!-- End tab 11 -->
-			
+
 			<!-- Begin tab 12 -->
 			<com:scriptfile path="../a12/kmk003.a12.vm.js" />
 			<com:stylefile path="../a12/kmk003.a12.style.css" /><!-- End tab 12 -->
-			
+
 			<!-- Begin tab 13 -->
 			<com:scriptfile path="../a13/kmk003.a13.vm.js" />
 			<com:stylefile path="../a13/kmk003.a13.style.css" /><!-- End tab 13 -->
-			
+
 			<!-- Begin tab 14 -->
 			<com:scriptfile path="../a14/kmk003.a14.vm.js" />
 			<com:stylefile path="../a14/kmk003.a14.style.css" /><!-- End tab 14 -->
-			
+
 			<!-- Begin tab 15 -->
 			<com:scriptfile path="../a15/kmk003.a15.vm.js" />
 			<com:stylefile path="../a15/kmk003.a15.style.css" /><!-- End tab 15 -->
-			
+
 			<!-- Begin tab 16 -->
 			<com:scriptfile path="../a16/kmk003.a16.vm.js" />
 			<com:stylefile path="../a16/kmk003.a16.style.css" /><!-- End tab 16 -->
-			
+
 			<!-- Begin tab 17 -->
 			<com:scriptfile path="../a17/kmk003.a17.vm.js" />
 			<com:stylefile path="../a17/kmk003.a17.style.css" /><!-- End tab 17 -->
-			
+
 			<com:scriptfile path="/view/kmk/003/base/fixedtable/fixedtable.js" of="/nts.uk.at.web"/>
 			<com:scriptfile path="/view/kmk/003/base/timerange/timerange.js" of="/nts.uk.at.web"/>
-			
+
 			<com:stylefile path="kmk003.a.style.css" />
 			<com:scriptfile path="kmk003.a.start.js" />
 			<com:scriptfile path="kmk003.a.service.js" />
-			
+
 			<com:scriptfile
 				path="/view/language/select/languagemasterselect-jquery-ext.js"
 				of="nts.uk.com.web" />
 			<com:stylefile path="/view/language/select/languagemasterselect.css"
 				of="nts.uk.com.web" />
-				
+
 			<com:ValidatorScript>
 				nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeName
 				nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeAbName
@@ -111,8 +111,8 @@
 				<button id="createButton" tabindex="1" data-bind="enable: (!isNewMode() &amp;&amp; isJapanese()), click: enterNewMode">#{i18n.getText('KMK003_3')}</button>
 				<button id="saveButton" tabindex="2" class="proceed" data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('KMK003_4')}</button>
 				<button tabindex="3" data-bind="enable: (isUpdateMode &amp;&amp; isJapanese()), click: enterCopyMode">
-					#{i18n.getText('KMK003_5')}</button>		
-				<button tabindex="4" data-bind="click: exportExcel">#{i18n.getText('KMK003_312')}</button>	
+					#{i18n.getText('KMK003_5')}</button>
+				<button tabindex="4" data-bind="click: exportExcel">#{i18n.getText('KMK003_312')}</button>
 				<div tabindex="5"  id="switch-language"></div>
 				<button tabindex="6" class="danger" data-bind="enable: isUpdateMode, click: removeWorkTime">
 					#{i18n.getText('KMK003_6')}</button>
@@ -143,7 +143,7 @@
 								</div>
 								<div class="control-group">
 									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}</div>
-									<span tabindex="8" id="combo-box" 
+									<span tabindex="8" id="combo-box"
 										data-bind="ntsComboBox: {
 										name: '#[KMK003_8]',
 										options: workTimeMethodEnums,
@@ -160,7 +160,7 @@
 								</com:ko>
 								<div style="clear: both">
 									<div style="width: 300px" tabindex="9"
-									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'worktimeCode', 
+									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'worktimeCode',
 									comId: 'single-list', items: workTimeSettings,  selectedKey: 'worktimeCode', 
 									fields: ['workTimeName', 'worktimeCode'], mode: 'igGrid'}">
 									</div>
@@ -194,7 +194,7 @@
 									option: siftCodeOption,
 									required: true,
 									enable: $parent.isNewOrCopyMode() &amp;&amp; $parent.isJapanese()}">
-								</input> 
+								</input>
 								<input class="main-input" tabindex="12" id="inp-worktimename" data-bind="ntsTextEditor: {
 									name: '#[KMK003_11]',
 									value: workTimeDisplayName.workTimeName,
@@ -204,34 +204,24 @@
 									enable: true
 									}">
 								</input>
-								<div class="label_header" data-bind="ntsFormLabel: {constraint: 'WorkTimeAbName'}">#{i18n.getText('KMK003_14')}
+								<div class="label_header workTimeAbName-label" data-bind="ntsFormLabel: {constraint: 'WorkTimeAbName', required: true}">#{i18n.getText('KMK003_14')}
 								</div>
-								<input class="main-input" tabindex="13" data-bind="ntsTextEditor: {
+								<input class="main-input workTimeAbName-input" tabindex="13" data-bind="ntsTextEditor: {
 									name: '#[KMK003_14]',
 									value: workTimeDisplayName.workTimeAbName,
 									constraint: 'WorkTimeAbName',
 									option: siftShortNameOption,
-									required: false,
+									required: true,
 									enable: true
 									}" />
-								<div class="label_header" data-bind="ntsFormLabel: {constraint: 'WorkTimeSymbol'}">#{i18n.getText('KMK003_15')}
-								</div>
-								<input class="main-input" tabindex="14" data-bind="ntsTextEditor: {
-									name: '#[KMK003_15]',
-									value: workTimeDisplayName.workTimeSymbol,
-									constraint: 'WorkTimeSymbol',
-									option: siftSymbolNameOption,
-									required: false,
-									enable: $parent.isJapanese()
-									}" />
-								<div tabindex="15" class="label_header" style="padding-top: 5px;" 
+								<div tabindex="15" class="label_header" style="padding-top: 5px;"
 									data-bind="ntsCheckBox: { checked: isAbolish, enable: $parent.isJapanese() }">#{i18n.getText('KMK003_16')}
 								</div>
 								<div class="main-input" tabindex="16" id="colorpicker"
 									data-bind="ntsColorPicker: {name: '#[KMK003_161]',value: colorCode, enable: $parent.isJapanese(), width: 50},visible: false" />
 							</div>
 							<div class="setting_header_br">
-								<div style="width: 190px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
+								<div style="width: 94px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
 								<div id="cbb-worktime-atr" style="margin-right: 10px" tabindex="17"
 									data-bind="ntsComboBox: {
 									name: '#[KMK003_7]',
@@ -245,7 +235,7 @@
 									columns: [
 									{ prop: 'localizedName', length: 10 }]}">
 								</div>
-								<div class="label_header" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}
+								<div class="label_header label-worktime-method" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}
 								</div>
 								<div id="cbb-worktime-method" tabindex="18"
 									data-bind="ntsComboBox: {
@@ -273,7 +263,7 @@
 									required: false,
 									enable: $parent.isJapanese()
 									}" />
-								<div class="label_memo label_header" data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('KMK003_183')}
+								<div class="label_memo label_header label-memo-option" data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('KMK003_183')}
 								</div>
 								<textarea tabindex="20" class="memo-field"
 									data-bind="ntsMultilineEditor: {
@@ -287,10 +277,10 @@
 							</div>
 							</com:ko>
 							<table style="width: 885px;">
-								
+
 								<tr style="height: 50px;">
-									<td class="td-cell" width="300px">
-										<div tabindex="21" class="cf"
+									<td class="td-cell" style="display: flex">
+										<div tabindex="21" class="cf" id="switch-tab-mode"
 											data-bind="ntsSwitchButton: {
 											name: '#[KMK003_207]',
 											options: tabModeOptions,
@@ -299,49 +289,36 @@
 											value: tabMode,
 											enable: isJapanese() }">
 										</div>
+
+										<button style="margin-left: 25px;" data-bind="ntsHelpButton: {position: 'right center', textId: 'KMK003_326', textParams: ['{#KMK003_315}', '{#KMK003_316}']}">?</button>
 									</td>
-									<com:ko tag="if" bind ="isDetailMode">
-									<com:ko tag="ifnot" bind="mainSettingModel.workTimeSetting.isFlow">
-									<td class="td-cell" width="100px">
-										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_48')}</div>
-									</td>
-									<td class="td-cell">
-										<div class="cf" tabindex="22"
-											data-bind="ntsSwitchButton: {
-											name: '#[KMK003_165]',
-											options: useHalfDayOptions,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: useHalfDay,
-											enable: isJapanese() }">
-										</div>
-									</td>
-									</com:ko>
-									</com:ko>
+
 								</tr>
 								<!-- panels -->
 								<tr>
 									<td colspan="3" class="td-cell">
 										<div id="tab-panel"
-											data-bind="ntsTabPanel: {width:250, dataSource: tabs, 
+											data-bind="ntsTabPanel: {width:150, dataSource: tabs,
 											active: selectedTab,direction: 'vertical' }">
 											<div tabindex="23" class="tab-a1">
 												<div data-bind="ntsKMK003A1: {
 													selectedTab: selectedTab,
 													isDetailMode: isDetailMode,
-													useHalfDay: useHalfDay,
 													enum: settingEnum,
 													mainSettingModel: mainSettingModel,
-													isNewMode: isNewMode 
+													isNewMode: isNewMode,
+													workMultiple: workMultiple
 													}">
 												</div>
 											</div>
 											<div tabindex="45" class="tab-a2">
 												<div class="tab-outline" data-bind="ntsKMK003A2: {
 													isSimpleMode: isSimpleMode,
-													useHalfDay: useHalfDay,
+													isNewMode: isNewMode,
 													enum: settingEnum,
-													mainModel: mainSettingModel }">
+													useHalfDayWorking: useHalfDayWorking,
+													mainModel: mainSettingModel
+													}">
 												</div>
 											</div>
 											<div tabindex="53" class="tab-a3">
@@ -350,12 +327,12 @@
 													overTimeWorkFrameOptions: overTimeWorkFrameOptions,
 													isDetailMode: isDetailMode,
 													isNewMode: isNewMode,
-													useHalfDay: useHalfDay,
+													useHalfDayOvertime: useHalfDayOvertime,
 													mainModel: mainSettingModel }">
 												</div>
 											</div>
 											<div tabindex="60" class="tab-a4">
-												<div class="tab-outline" data-bind="ntsKMK003A4: { 
+												<div class="tab-outline" data-bind="ntsKMK003A4: {
 													tabMode: tabMode, 
 													mainSettingModel: mainSettingModel,
 													enum: settingEnum,
@@ -365,8 +342,9 @@
 											<div tabindex="68" class="tab-a5">
 												<div class="tab-outline" data-bind="ntsKMK003A5: {
 													isDetailMode: isDetailMode,
-													useHalfDay: useHalfDay,
+													isNewMode: isNewMode,
 													mainSettingModel: mainSettingModel,
+													useHalfDayBreak: useHalfDayBreak,
 													enum: settingEnum }">
 												</div>
 											</div>
@@ -387,7 +365,7 @@
 												</div>
 											</div>
 											<div tabindex="98" class="tab-a8">
-												<div class="tab-outline" data-bind="ntsKMK003A8: { 
+												<div class="tab-outline" data-bind="ntsKMK003A8: {
 													isNewMode: isNewMode,
 													screenMode: tabMode,
 													model: mainSettingModel,
@@ -396,7 +374,7 @@
 												</div>
 											</div>
 											<div tabindex="130" class="tab-a9">
-												<div class="tab-outline" data-bind="ntsKMK003A9: { 
+												<div class="tab-outline" data-bind="ntsKMK003A9: {
 													isNewMode: isNewMode,
 													screenMode: tabMode,
 													model: mainSettingModel,
@@ -422,7 +400,7 @@
 												</div>
 											</div>
 											<div tabindex="149" class="tab-a12">
-												<div class="tab-outline" data-bind="ntsKMK003A12: { 
+												<div class="tab-outline" data-bind="ntsKMK003A12: {
 													isNewMode: isNewMode,
 													screenMode: tabMode,
 													model: mainSettingModel,
@@ -431,7 +409,7 @@
 												</div>
 											</div>
 											<div tabindex="152" class="tab-a13">
-												<div class="tab-outline" data-bind="ntsKMK003A13: { 
+												<div class="tab-outline" data-bind="ntsKMK003A13: {
 													isNewMode: isNewMode,
 													screenMode: tabMode,
 													model: mainSettingModel,
@@ -463,7 +441,7 @@
 													enum: settingEnum
 												}">
 												</div>
-											</div>											
+											</div>
 											<div tabindex="167" class="tab-a17">
 												<div class="tab-outline" data-bind="ntsKMK003A17: {
 													isNewMode: isNewMode,

@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 1250,
-					height : 520
+					width : 1275,
+					height : 705
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -25,8 +25,8 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="#contents-area">
-				<div style="margin-bottom: 10px; margin-left: 10px;">#{i18n.getText('KDL003_2')}</div>
+			<div id="contents-area">
+				<div style=" margin-left: 10px; margin-bottom: 5px">#{i18n.getText('KDL003_2')}</div>
 				<!--  <div style="border: 0.5px solid; border-radius: 12px; padding-top: 15px; 
 						margin-left: 10px; margin-right: 10px;" class="caret-bottom kdl003-border">-->
 				<div style="margin-left: 10px;">
@@ -38,16 +38,20 @@
 								colspan="2"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL003_8')}</div></td>
 						</tr>
 						<tr>
-							<td><hr /></td>
-							<td style="padding-right: 20px"><hr /></td>
+							<td >
+								<div class="runeLine"></div>
+							</td>
+							<td style="padding-right: 20px">
+								<div class="runeLine"></div>
+							</td>
 							<td style="border-left: solid #9a9a9a 1px; padding-left: 20px;"
-								colspan="2"><hr /></td>
+								colspan="2"><div class="runeLine"></div></td>
 						</tr>
 						<tr>
 							<td colspan="2" style="vertical-align: top; padding-right: 20px;">
-								<div style="width: 300px; padding-top: 5px;" tabindex="1"
+								<div style="width: 300px;" tabindex="1"
 									data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'workTypeCode', comId: 'list-worktype', 
-										items: listWorkType, selected: selectedWorkTypeCode, selectedKey: 'workTypeCode', fields: ['name', 'workTypeCode'], mode: 'igGrid'}" />
+										items: listWorkType, selected: selectedWorkTypeCode, selectedKey: 'workTypeCode', fields: ['name', 'workTypeCode'], mode: 'igGrid'}"></div>
 								<table id="list-worktype" tabindex="2"
 									data-bind="ntsGridList: {
 											width: 380,
@@ -62,7 +66,7 @@
 							</td>
 							<td style="vertical-align: top; border-left: solid grey 1px;"
 								colspan="2">
-								<div id="search-div" class="control-group valign-center">
+								<div id="search-div" class="valign-center">
 									<div class="table">
 										<div class="cell valign-center">
 											<div class="text-vcener" data-bind="ntsFormLabel: {}, text: '#{i18n.getText('KDL003_46')}'"></div>

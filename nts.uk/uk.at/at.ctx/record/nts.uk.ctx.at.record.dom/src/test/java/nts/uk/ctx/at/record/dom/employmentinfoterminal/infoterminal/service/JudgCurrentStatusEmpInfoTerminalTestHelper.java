@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.adapter.imploymentinfoterminal.infoterminal.EmpInfoTerminalComStatusImport;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpInfoTerminalComStatusImport;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ConvertEmbossCategory;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.CreateStampInfo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSerialNo;
@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.OutPlaceConv
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.PartialIpAddress;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.net.Ipv4Address;
 
 public class JudgCurrentStatusEmpInfoTerminalTestHelper {
 
@@ -28,12 +29,11 @@ public class JudgCurrentStatusEmpInfoTerminalTestHelper {
 	public static EmpInfoTerminal createEmpInfoTerminal() {
 
 		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminalBuilder(
-				Optional.of(new FullIpAddress(new PartialIpAddress(192), new PartialIpAddress(168),
-						new PartialIpAddress(1), new PartialIpAddress(1))),
+				Optional.of(Ipv4Address.parse("192.168.1.1")),
 				new MacAddress("AABBCCDD"), empInfoTerminalCode, Optional.of(new EmpInfoTerSerialNo("1")),
 				new EmpInfoTerminalName(""), contractCode)
 						.createStampInfo(new CreateStampInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.empty()),
-								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty()))
+								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty(),Optional.empty()))
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
 
 		return empInfoTerminal;

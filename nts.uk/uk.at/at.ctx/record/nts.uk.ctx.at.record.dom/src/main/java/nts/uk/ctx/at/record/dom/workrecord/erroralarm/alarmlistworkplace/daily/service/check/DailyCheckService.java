@@ -92,11 +92,14 @@ public class DailyCheckService {
             // Input．Map＜職場ID、List＜社員情報＞＞をループする
             for (Map.Entry<String, List<EmployeeInfoImported>> empInfosByWp : empInfosByWpMap.entrySet()) {
                 List<ExtractResultDto> results = new ArrayList<>();
+                List<PersonEmpBasicInfoImport> filteredPersonInfos = personInfos.stream()
+                        .filter(i -> empInfosByWp.getValue().stream().anyMatch(e -> e.getSid().equals(i.getEmployeeId())))
+                        .collect(Collectors.toList());
                 // Noをチェックする
                 switch (item.getFixedCheckDayItems()) {
                     case NEW_EMPLOYEE:
                         // 1.入社者をチェック
-                        results = newEmployeeCheckService.check(personInfos, period);
+                        results = newEmployeeCheckService.check(filteredPersonInfos, period);
                         break;
                     case LEAVE:
                         // 2.休職・休業者をチェック
@@ -104,17 +107,15 @@ public class DailyCheckService {
                         break;
                     case RETIREE:
                         // 3.退職者をチェック
-                        results = retireeCheckService.check(personInfos, period);
+                        results = retireeCheckService.check(filteredPersonInfos, period);
                         break;
                     case PERSONS_ELIGIBLE_ANNUAL_LEAVE:
                         // 4.年休付与対象者をチェック
-                        results = personEligibleAnnualLeaveCheckService.check(cid,
-                                getPersonInfosByWp(personInfos, empInfosByWp.getValue()), period);
+                        results = personEligibleAnnualLeaveCheckService.check(cid, filteredPersonInfos, period);
                         break;
                     case PERSONS_NOT_ELIGIBLE:
                         // 5.年休未付与者（本年=0の人）をチェック
-                        results = personNotEligibleCheckService.check(cid,
-                                getPersonInfosByWp(personInfos, empInfosByWp.getValue()), period);
+                        results = personNotEligibleCheckService.check(cid, filteredPersonInfos, period);
                         break;
                     case PLAN_NOT_REGISTERED_PEOPLE:
                         // 6.計画データ未登録をチェック
@@ -136,13 +137,11 @@ public class DailyCheckService {
                         break;
                     case STAMPING_BEFORE_JOINING:
                         // 10.入社日よりも前の打刻をチェック
-                        results = stampBeforeJoinCheckService.check(getPersonInfosByWp(personInfos, empInfosByWp.getValue()),
-                                stampsByEmpMap, period);
+                        results = stampBeforeJoinCheckService.check(filteredPersonInfos, stampsByEmpMap, period);
                         break;
                     case STAMPING_AFTER_RETIREMENT:
                         // 11.退職日よりも後の打刻をチェック
-                        results = stampAfterRetirementCheckService.check(getPersonInfosByWp(personInfos, empInfosByWp.getValue()),
-                                stampsByEmpMap, period);
+                        results = stampAfterRetirementCheckService.check(filteredPersonInfos, stampsByEmpMap, period);
                         break;
                 }
 
@@ -164,11 +163,5 @@ public class DailyCheckService {
 
         // List＜アラーム抽出結果（職場別）＞を返す
         return alarmListResults;
-    }
-
-    private List<PersonEmpBasicInfoImport> getPersonInfosByWp(List<PersonEmpBasicInfoImport> personInfos,
-                                                              List<EmployeeInfoImported> empInfos) {
-        return personInfos.stream().filter(x -> empInfos.stream().anyMatch(c -> c.getSid().equals(x.getEmployeeId())))
-                .collect(Collectors.toList());
     }
 }

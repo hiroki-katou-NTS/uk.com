@@ -43,8 +43,15 @@ module nts.uk.at.view.kdl053.a {
             if (_.isNull(data) || _.isEmpty(data)) {
                 self.closeDialog();
             }
-            errorRegistrationListTmp = data.errorRegistrationList;
-            employeeIds = data.employeeIds;  
+			if(_.isNil(data.errorRegistrationList)){
+				if(!_.isNil(data.dataShareDialogKDL053.errorRegistrationList))
+				errorRegistrationListTmp = data.dataShareDialogKDL053.errorRegistrationList;
+				employeeIds = data.dataShareDialogKDL053.employeeIds;
+			} else {
+				errorRegistrationListTmp = data.errorRegistrationList;
+				employeeIds = data.employeeIds;
+			}
+              
             _.each(employeeIds, id =>{      
                 let temp: any = [];
                 _.each(errorRegistrationListTmp, err => {                   

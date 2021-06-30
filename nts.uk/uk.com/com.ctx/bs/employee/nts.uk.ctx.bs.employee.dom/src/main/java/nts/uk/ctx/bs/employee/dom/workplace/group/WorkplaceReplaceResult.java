@@ -19,9 +19,9 @@ public class WorkplaceReplaceResult {
 
 	/** 処理結果 */
 	private final WorkplaceReplacement workplaceReplacement;
-	
+
 	/** 所属済み職場グループID */
-	private final Optional<String> wKPGRPID;
+	private final Optional<String> workplaceGroupId;
 
 	/** 永続化処理 */
 	private final Optional<AtomTask> persistenceProcess;

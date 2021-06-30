@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.Time
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.premiumtarget.getvacationaddtime.AddSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 時系列の就業時間
@@ -79,8 +80,7 @@ public class WorkTimeOfTimeSeries implements Serializable{
 				new WithinStatutoryMidNightTime(
 						this.legalTime.getWithinStatutoryMidNightTime().getTime().addMinutes(
 								addTime.getWithinStatutoryMidNightTime().getTime().getTime(),
-								addTime.getWithinStatutoryMidNightTime().getTime().getCalcTime())),
-				this.legalTime.getVacationAddTime().addMinutes(addTime.getVacationAddTime().v()));
+								addTime.getWithinStatutoryMidNightTime().getTime().getCalcTime())));
 	}
 	
 	/**
@@ -93,7 +93,7 @@ public class WorkTimeOfTimeSeries implements Serializable{
 		boolean isReturnWorkTime = false;		// 就業時間を返すかどうか
 		
 		// 大塚モードの確認
-		if (true) {
+		if (AppContexts.optionLicense().customize().ootsuka()) {
 			
 			// 勤務種類が1日特別休暇かどうか判断
 			if (this.workType != null) {

@@ -8,6 +8,7 @@ module nts.uk.com.view.cmm018.a {
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
 	import mode_system = nts.uk.com.view.cmm018.x.viewmodel.MODE_SYSTEM;
+	import ScreenModelSubA = nts.uk.com.view.cmm018.a.sub.viewmodelSubA.ScreenModel;
     //=========Mode A: まとめて登録モード==============
     export module viewmodelA {
         export class ScreenModel{
@@ -20,6 +21,8 @@ module nts.uk.com.view.cmm018.a {
             c1_4: KnockoutObservable<string> = ko.observable('');
             a1_3: KnockoutObservable<string> = ko.observable('');
             rowHist: KnockoutObservable<number> = ko.observable(10);
+            rowHist2: KnockoutObservable<number> = ko.observable(9);
+            rowHist3: KnockoutObservable<number> = ko.observable(8);
             unitSet: KnockoutObservable<vmbase.ApprDisSet> = ko.observable({
                     companyUnit: 0,
                     workplaceUnit: 0,
@@ -1505,6 +1508,8 @@ module nts.uk.com.view.cmm018.a {
                                         });
                 modal("/view/cmm/018/k/index.xhtml").onClosed(() => {
                     block.clear();
+					const subA = __viewContext.viewModel.viewmodelSubA as ScreenModelSubA;
+					subA.setWidthCloseDialog(tabSel, phaseOrder);
                     let modeA = __viewContext.viewModel.viewmodelA.selectedModeCode();
                     self.approverInfor([]);
                     let data: vmbase.KData = getShared('CMM018K_DATA');

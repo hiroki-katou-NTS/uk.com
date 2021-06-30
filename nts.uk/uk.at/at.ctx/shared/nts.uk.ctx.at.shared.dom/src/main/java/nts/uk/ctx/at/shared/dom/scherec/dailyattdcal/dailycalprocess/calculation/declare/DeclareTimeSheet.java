@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculatio
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;

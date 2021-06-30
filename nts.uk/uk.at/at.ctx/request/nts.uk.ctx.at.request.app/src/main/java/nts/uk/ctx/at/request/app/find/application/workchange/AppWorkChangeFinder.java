@@ -182,7 +182,8 @@ public class AppWorkChangeFinder {
         int isError = command.getIsError();
         WorkChangeCheckRegOutput workChangeCheckRegOutput = appWorkChangeService.checkBeforeRegister(mode, companyId,
                 application, appWorkChangeDto.toDomain(application),
-                EnumAdaptor.valueOf(isError, ErrorFlagImport.class), command.getAppDispInfoStartupDto().toDomain());
+                EnumAdaptor.valueOf(isError, ErrorFlagImport.class), command.getAppDispInfoStartupDto().toDomain(), 
+                command.getAppWorkChangeDispInfo() != null ? command.getAppWorkChangeDispInfo().toDomain() : null);
 
         return WorkChangeCheckRegisterDto.fromDomain(workChangeCheckRegOutput);
 
@@ -227,7 +228,8 @@ public class AppWorkChangeFinder {
         int isError = command.getIsError();
         WorkChangeCheckRegOutput workChangeCheckRegOutput = appWorkChangeService.checkBeforeRegister(mode, companyId,
                 application, appWorkChangeDto.toDomain(application),
-                EnumAdaptor.valueOf(isError, ErrorFlagImport.class), command.getAppDispInfoStartupDto().toDomain());
+                EnumAdaptor.valueOf(isError, ErrorFlagImport.class), command.getAppDispInfoStartupDto().toDomain(), 
+                command.getAppWorkChangeDispInfo() != null ? command.getAppWorkChangeDispInfo().toDomain() : null);
 
         return WorkChangeCheckRegisterDto.fromDomain(workChangeCheckRegOutput);
 

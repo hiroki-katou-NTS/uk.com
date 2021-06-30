@@ -12,8 +12,6 @@ module nts.uk.at.view.kmk003.i {
             
             // Data
             delFromEmTime: KnockoutObservable<boolean>;
-            lateStampExactlyTimeIsLateEarly: KnockoutObservable<boolean>;
-            leaveEarlyStampExactlyTimeIsLateEarly: KnockoutObservable<boolean>;   
            
             lateGraceTime: KnockoutObservable<number>;
             lateIncludeWorkingHour: KnockoutObservable<boolean>;
@@ -27,8 +25,6 @@ module nts.uk.at.view.kmk003.i {
                 _self.isFlow = ko.observable(null);
                 
                 _self.delFromEmTime = ko.observable(true);
-                _self.lateStampExactlyTimeIsLateEarly = ko.observable(false);
-                _self.leaveEarlyStampExactlyTimeIsLateEarly = ko.observable(false);
                 _self.lateGraceTime = ko.observable(0);
                 _self.lateIncludeWorkingHour = ko.observable(false);
                 _self.leaveEarlyGraceTime = ko.observable(0);
@@ -67,9 +63,7 @@ module nts.uk.at.view.kmk003.i {
                     _self.delFromEmTime(dataObject.delFromEmTime);
                     _self.isFlow(false);  
                 }
-     
-                _self.lateStampExactlyTimeIsLateEarly(dataObject.lateStampExactlyTimeIsLateEarly);
-                _self.leaveEarlyStampExactlyTimeIsLateEarly(dataObject.leaveEarlyStampExactlyTimeIsLateEarly);
+
                 _self.lateGraceTime(dataObject.lateGraceTime);
                 _self.lateIncludeWorkingHour(dataObject.lateIncludeWorkingHour);
                 _self.leaveEarlyGraceTime(dataObject.leaveEarlyGraceTime);
@@ -86,11 +80,9 @@ module nts.uk.at.view.kmk003.i {
                 }
                 
                 let dataObject: any = {
-                    delFromEmTime: _self.delFromEmTime(),       
-                    lateStampExactlyTimeIsLateEarly: _self.lateStampExactlyTimeIsLateEarly(),
+                    delFromEmTime: _self.delFromEmTime(),
                     lateGraceTime: nts.uk.util.isNullOrUndefined(_self.lateGraceTime()) ? 0 : _self.lateGraceTime(),
                     lateIncludeWorkingHour: _self.lateIncludeWorkingHour(),
-                    leaveEarlyStampExactlyTimeIsLateEarly: _self.leaveEarlyStampExactlyTimeIsLateEarly(),
                     leaveEarlyGraceTime: nts.uk.util.isNullOrUndefined(_self.leaveEarlyGraceTime()) ? 0 : _self.leaveEarlyGraceTime(),
                     leaveEarlyIncludeWorkingHour: _self.leaveEarlyIncludeWorkingHour()
                 };

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.monthlycheckcondition;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -66,6 +67,29 @@ public class JpaFixedExtraMonRepository extends JpaRepository implements FixedEx
 				.setParameter("useAtr", useAtr ? 1 : 0)
 				.getList(c->c.toDomain());
 		return data;
+	}
+
+	@Override
+	public Optional<FixedExtraMon> getForKey(String id, int no) {
+		KrcmtFixedExtraMonPK pk = new KrcmtFixedExtraMonPK(id, no);
+		Optional<KrcmtFixedExtraMon> result = this.queryProxy().find(pk, KrcmtFixedExtraMon.class);
+		if(result.isPresent()) {
+			FixedExtraMon domain = result.get().toDomain();
+			return Optional.ofNullable(domain);
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public void persistFixedExtraMon(FixedExtraMon fixedExtraMon) {
+		KrcmtFixedExtraMonPK pk = new KrcmtFixedExtraMonPK(fixedExtraMon.getMonAlarmCheckID(), fixedExtraMon.getFixedExtraItemMonNo().value);
+		Optional<KrcmtFixedExtraMon> optKrcmtFixedExtraMon = this.queryProxy().find(pk, KrcmtFixedExtraMon.class);
+		if(optKrcmtFixedExtraMon.isPresent()) {
+			KrcmtFixedExtraMon newEntity = KrcmtFixedExtraMon.toEntity(fixedExtraMon);
+			this.commandProxy().update(newEntity);
+		} else {
+			this.commandProxy().insert(KrcmtFixedExtraMon.toEntity(fixedExtraMon));
+		}
 	}
 
 }

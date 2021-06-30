@@ -2,8 +2,6 @@ package nts.uk.ctx.bs.person.dom.person.personal.contact;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
-import java.util.Optional;
-
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.bs.person.dom.person.personal.PersonInformationHelper.PersonalContactHelper;
 
@@ -70,7 +68,6 @@ public class PersonalContactTest {
 	public void otherContactBuilderToString() {
 		String contact = OtherContact.builder()
 				.otherContactNo(1)
-				.isDisplay(Optional.ofNullable(false))
 				.address(new OtherContactAddress("address"))
 				.toString();
 		assertThat(contact.isEmpty()).isFalse();

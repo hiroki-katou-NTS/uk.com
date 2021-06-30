@@ -8,23 +8,24 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave;
  * The Interface MaxPersonSettingGetMemento.
  */
 public interface MaxPersonSettingGetMemento {
-    
+
     /**
      * Gets the nursing number leave day.
      *
      * @return the nursing number leave day
      */
-    NursingNumberLeaveDay getNursingNumberLeaveDay();
+	ChildCareNurseUpperLimit getNursingNumberLeaveDay();
 
     /**
      * Gets the nursing number person.
      *
      * @return the nursing number person
      */
-    NursingNumberPerson getNursingNumberPerson();
+	NumberOfCaregivers getNursingNumberPerson();
     
-    NursingNumberLeaveDay getNursingNumberLeaveDay2();
+    ChildCareNurseUpperLimit getNursingNumberLeaveDay2();
 
-    NursingNumberPerson getNursingNumberPerson2();
+    NumberOfCaregivers getNursingNumberPerson2();
 
 }
+

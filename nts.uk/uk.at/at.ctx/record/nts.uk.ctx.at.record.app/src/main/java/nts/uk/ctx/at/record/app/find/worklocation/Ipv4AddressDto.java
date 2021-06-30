@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.worklocation;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.shr.com.net.Ipv4Address;
 /**
@@ -8,6 +9,7 @@ import nts.uk.shr.com.net.Ipv4Address;
  *
  */
 @Getter
+@AllArgsConstructor
 public class Ipv4AddressDto {
 
 	/** net1 */
