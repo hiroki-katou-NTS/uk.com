@@ -1,122 +1,170 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="kdr001.a.main.css" />
-			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js"
-				of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="kdr001.a.start.js" />
-			<com:scriptfile path="kdr001.a.vm.js" />
-			<com:scriptfile path="kdr001.a.service.js" />
-		</ui:define>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="kdr001.a.main.css"/>
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.service.js"
+                        of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="kdr001.a.start.js"/>
+        <com:scriptfile path="kdr001.a.vm.js"/>
+        <com:scriptfile path="kdr001.a.service.js"/>
+    </ui:define>
 
-		<ui:define name="content">
-			<div id="functions-area">
-				<!-- A1_1 -->
-				<button id="A1_1" tabindex="1" class="proceed"
-					data-bind="click: exportButton, enable: (!nts.uk.ui.errors.hasError()) &amp;&amp; (holidayRemainingSelectedCd())">#{i18n.getText('KDR001_25')}</button>
-			</div>
+    <ui:define name="content">
+        <div id="functions-area">
+            <!-- A1_1 -->
+            <button id="A1_1" tabindex="1" class="proceed"
+                    data-bind="click: exportButton, enable: (!nts.uk.ui.errors.hasError()) ">#{i18n.getText('KDR001_25')}</button>
+        </div>
 
-			<div class="cf" id="contents-area">
-				<!-- A2_1  CCG001-->
-				<div id="ccgcomponent"></div>
-				
-				<div class="panel panel-frame ccg001searchkcp005">
-					<!-- A2_2  -->
-					<div class="employeeInfoSearch">
-						<div class="selectionHoliday">
-							<div id="employeeSearch" tabindex="2" style="margin-top: -5px;"></div>
-						</div>
-					</div>
-				</div>
-				<div class="panel panel-frame holidayAction">
-					<div class="table valign-center control-group" style="margin-top: 17px;">
-						<div class="cell" style="width:110px">
-							<!-- A3_1 -->
-							<div class="labelRangeDate"
-								data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_26')}
-							</div>
-						</div>
-						<div class="cell valign-center control-group">
-							<div id="daterangepicker" tabindex="4"
-								data-bind="ntsDateRangePicker: { 
-								required: true, 
-								enable: true, 
-								showNextPrevious: true, 
-								value: dateValue, 
-								maxRange: 'oneYear', 
-								type: 'yearmonth'}" />
-						</div>
-					</div>
-					<div class="table valign-center control-group">
-						<div class="cell" style="width:110px">
-							<!-- A4_1  -->
-							<div class="labelRangeDate"
-								data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_30')}
-							</div>
-						</div>
-						<div class="cell valign-center control-group">
-							<!-- A4_2  -->
-							<div style="display: inline-block;" tabindex="6"
-								data-bind="ntsComboBox: {
+        <div class="cf" id="contents-area">
+            <!-- A2_1  CCG001-->
+            <div id="ccgcomponent"></div>
+            <div style="margin-top: 10px">
+                <!-- A3_0 -->
+                <div class="panel panel-frame fixed-panel-dayselected" style="margin-left: 90px; height:35px;margin-top:-15px">
+                    <div class="table valign-center control-group" style="margin-top: 4px; margin-left: 40px;">
+                        <div class="cell" >
+                            <!-- A3_1 -->
+                            <div class="labelRangeDate"
+                                 data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_26')}
+                            </div>
+                        </div>
+                        <div class="cell valign-center control-group">
+                            <div id="daterangepicker" tabindex="2"
+                                 data-bind="ntsDateRangePicker: {
+								required: true,
+								enable: true,
+								showNextPrevious: true,
+								value: dateValue,
+								maxRange: '12',
+								type: 'yearmonth'}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-panel">
+                    <div class="panel panel-frame ccg001searchkcp005">
+                        <!-- A2_2  -->
+                        <div class="employeeInfoSearch">
+                            <div class="selectionHoliday">
+                                <div id="employeeSearch" tabindex="4" style="margin-top: -5px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-frame holidayAction">
+                        <div class="table valign-center control-group">
+                            <div class="cell" style="width:110px">
+                                <!-- A4_1  -->
+                                <div class="labelRangeDate"
+                                     data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_30')}
+                                </div>
+                            </div>
+                            <!--A4_4-->
+                            <div class="radios" tabindex="5" data-bind="ntsRadioBoxGroup: {
+	                    options:  [
+                          { id: 0, name: '#{i18n.getText('KDR001_66')}'},
+                          { id: 1, name: '#{i18n.getText('KDR001_67')}', enable: $vm.getCheckauthor()}
+                        ],
+	                    optionsValue: 'id',
+	                    optionsText: 'name',
+	                    value: $vm.selectedId,
+	                    enable: true,
+	                    name: '#{i18n.getText('KDR001_59')}'
+	                    }" style="width:100px; position: relative; top: 25px;">
+                            </div>
+                            <div class="cell valign-center control-group" style="position: relative; top: 25px;">
+                                <!-- A4_2  -->
+                                <div >
+                                    <div style="display: inline-block;" tabindex="6"
+                                         data-bind="ntsComboBox: {
 						    name:'#[KDR001_30]',
-							options: lstHolidayRemaining,
-							optionsValue: 'cd',
-							value: holidayRemainingSelectedCd,
+							options:listStandard ,
+							optionsValue: 'layoutId',
+							value: standardCode,
 							optionsText: 'name',
 							editable: false,
-							enable: true,
+							enable: enable(),
+							columns: [
+								{ prop: 'cd', length: 1 },
+								{ prop: 'name', length: 14}
+
+							]}">
+                                    </div>
+                                    <!-- A4_3  -->
+                                    <div style="display: inline-block">
+                                        <button data-bind="click: function(){ return openKDR001b(0)},enable: enable()"
+                                                tabindex="7"
+                                                style="margin-left: 20px; position: relative; top: -12px;">#{i18n.getText('KDR001_31')}</button>
+                                    </div>
+                                </div>
+                                <div id ='listFreeSetting'>
+                                    <!-- A4_5 -->
+                                    <div style="display: inline-block;" tabindex="8"
+                                         data-bind="ntsComboBox: {
+						    name:'#[KDR001_60]',
+							options: listFreeSetting,
+							optionsValue: 'layoutId',
+							value: freeCode,
+							optionsText: 'name',
+							editable: false,
+							enable: !enable() &amp;&amp; $vm.getCheckauthor,
 							columns: [
 								{ prop: 'cd', length: 1 },
 								{ prop: 'name', length: 14 }
 							]}">
-							</div> 
-							<!-- A4_3  -->
-							<div style="display: inline-block">
-								<button data-bind="click: openKDR001b, enable: isEmployeeCharge()"
-									tabindex="7" style="margin-left: 20px">#{i18n.getText('KDR001_31')}</button>
-							</div>
-						</div>
-					</div>
-					<div class="table valign-center control-group">
-						<div class="cell" style="width:110px">
-							<!-- A6_1  -->
-							<div class="labelRangeDate"
-								data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_35')}
-							</div>
-						</div>
-						<div class="cell valign-center control-group">
-							<!-- A6_2  -->
-							<div id="combo-box2" tabindex="9" 
-								data-bind="ntsComboBox: {
+                                    </div>
+                                    <!-- A4_6  -->
+                                    <div style="display: inline-block">
+                                        <button data-bind="click: function(){return openKDR001b(1) } , enable: !enable()&amp;&amp; $vm.getCheckauthor"
+                                                tabindex="9"
+                                                style="margin-left: 20px; position: relative; top: -12px;">#{i18n.getText('KDR001_61')}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table valign-center control-group" style="margin-top: 40px;">
+                            <div class="cell" style="width:110px">
+                                <!-- A6_1  -->
+                                <div class="labelRangeDate"
+                                     data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_35')}
+                                </div>
+                            </div>
+                            <div class="cell valign-center control-group" style="padding-left: 20px">
+                                <!-- A6_2  -->
+                                <div id="combo-box2" tabindex="10"
+                                     data-bind="ntsSwitchButton: {
 							required: true,
-							options: itemSelected,
+							name: '#{i18n.getText('KDR001_62')}',
+							options:  [
+                              { code: 0, name: '#{i18n.getText('KDR001_63')}'},
+                              { code: 1, name: '#{i18n.getText('KDR001_64')}'},
+                              { code: 2, name: '#{i18n.getText('KDR001_65')}'}
+                            ],
 							optionsValue: 'code',
-							visibleItemsCount: 3,
 							value: selectedCode,
 							optionsText: 'name',
 							editable: false,
-							enable: true,
-							
-							columns: [
-								{ prop: 'name', length: 10 }
-							]}">
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</ui:define>
-	</ui:composition>
+							enable: true
+							}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </ui:define>
+</ui:composition>
 </body>
 </html>

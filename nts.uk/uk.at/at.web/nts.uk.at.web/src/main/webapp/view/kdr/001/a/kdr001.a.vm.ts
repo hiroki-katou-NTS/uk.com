@@ -55,7 +55,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         dateValue: KnockoutObservable<any>;
         startDateString: KnockoutObservable<string>;
         endDateString: KnockoutObservable<string>;
-        
+
         lstLabelInfomation: KnockoutObservableArray<string>;
         infoPeriodDate: KnockoutObservable<string>;
         lengthEmployeeSelected: KnockoutObservable<string>;
@@ -69,18 +69,29 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         ccgcomponentPerson: GroupOption;
 
         //combo-box
-        lstHolidayRemaining: KnockoutObservableArray<HolidayRemainingModel> = ko.observableArray([]) ;
+        lstHolidayRemaining: KnockoutObservableArray<HolidayRemainingModel> = ko.observableArray([]);
         itemSelected: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         selectedCode: KnockoutObservable<string> = ko.observable('0');
-        holidayRemainingSelectedCd: KnockoutObservable<string> = ko.observable('');
-        
-        isEmployeeCharge: KnockoutObservable<boolean> =  ko.observable(false);
+        freeCode: KnockoutObservable<string> = ko.observable('');
+        standardCode: KnockoutObservable<string> = ko.observable('');
+
+        isEmployeeCharge: KnockoutObservable<boolean> = ko.observable(false);
         closureId: KnockoutObservable<number> = ko.observable(0);
+
+        //radio test
+        selectedId: KnockoutObservable<number> = ko.observable(0);
+        enable: KnockoutObservable<boolean> = ko.observable(true);
+        listFreeSetting: KnockoutObservableArray<ItemNewModel> = ko.observableArray([]);
+        listStandard: KnockoutObservableArray<ItemNewModel> = ko.observableArray([]);
+
+        getCheckauthor: KnockoutObservable<boolean> = ko.observable(false);
+
+        //end
         constructor() {
             var self = this;
             self.systemType = ko.observableArray([
-                { name: 'システム管理者', value: 1 }, // PERSONAL_INFORMATION
-                { name: '就業', value: 2 } // EMPLOYMENT
+                {name: 'システム管理者', value: 1}, // PERSONAL_INFORMATION
+                {name: '就業', value: 2} // EMPLOYMENT
             ]);
             self.lstSearchEmployee = ko.observableArray([]);
             // initial ccg options
@@ -91,6 +102,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     self.showClosure(true);
                 }
             });
+
             self.dateValue = ko.observable("");
             self.selectedEmployeeCode = ko.observableArray([]);
             self.alreadySettingPersonal = ko.observableArray([]);
@@ -100,12 +112,12 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             });
             self.startDateString = ko.observable("");
             self.endDateString = ko.observable("");
-            self.startDateString.subscribe(function(value) {
+            self.startDateString.subscribe(function (value) {
                 self.dateValue().startDate = value;
                 self.dateValue.valueHasMutated();
             });
 
-            self.endDateString.subscribe(function(value) {
+            self.endDateString.subscribe(function (value) {
                 self.dateValue().endDate = value;
                 self.dateValue.valueHasMutated();
             });
@@ -117,19 +129,27 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             self.resetAbsentHolidayBusines = ko.observable(false);
             self.resetTimeAssignment = ko.observable(false);
             self.copyStartDate = ko.observable(new Date());
-            
+
             ko.computed({
                 read: () => {
                     let start = ko.toJS(self.dateValue().startDate),
                         end = ko.toJS(self.dateValue().endDate),
                         elm = document.querySelector('#ccg001-search-period'),
                         ccgVM = elm && ko.dataFor(elm);
-                    
-                    if(ccgVM && ko.isObservable(ccgVM.inputPeriod)) {
-                        ccgVM.inputPeriod({ startDate: start, endDate: end });
+
+                    if (ccgVM && ko.isObservable(ccgVM.inputPeriod)) {
+                        ccgVM.inputPeriod({startDate: start, endDate: end});
                     }
                 }
-            });        
+            });
+
+            //radio test
+            self.selectedId = ko.observable(0);
+            // self.enable = ko.observable(true);
+            self.selectedId.subscribe((value) => {
+                self.enable(value === StandardOrFree.Standard);
+            });
+            //end
         }
 
         /**
@@ -218,7 +238,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 isMutipleCheck: self.isMutipleCheck(), // 選択モード
 
                 /** Return data */
-                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     self.lstSearchEmployee(data.listEmployee);
                     self.dateValue().startDate = moment(data.periodStart).format("YYYY/MM/DD");
                     self.dateValue().endDate = moment(data.periodEnd).format("YYYY/MM/DD");
@@ -233,9 +253,9 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             }
         }
 
-       /**
-       * start page data 
-       */
+        /**
+         * start page data
+         */
         public startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -248,70 +268,79 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 }
             });
             $.when(service.findAll(),
-                    service.getDate(),
-                    service.getCurrentLoginerRole(),
-                    nts.uk.characteristics.restore("UserSpecific_" + user.employeeId)
-                    ).done((
-                            holidayRemainings: Array<any>,
-                            dateData: GetDate,
-                            role: any,
-                            userSpecific
-                            ) => {
-                    self.loadAllHolidayRemaining(holidayRemainings);
-                    
-                    let startDate = moment(dateData ? dateData.startDate || moment() : moment());
-                    let endDate = moment(dateData ? dateData.endDate || moment() : moment());
-                    //画面項目「A3_4：終了年月」にパラメータ「当月+１月」をセットする    
-                    let nextMonth = moment(endDate).add(1, 'M');
+                service.getDate(),
+                service.getCurrentLoginerRole(),
+                service.getCheckAuthor(),
+                nts.uk.characteristics.restore("UserSpecific_" + user.employeeId)
+            ).done((holidayRemainings: any,
+                    dateData: GetDate,
+                    role: any,
+                    author: boolean,
+                    userSpecific) => {
+                self.loadAllHolidayRemaining(holidayRemainings);
+                self.getCheckauthor(author);
+                let startDate = moment(dateData ? dateData.startDate || moment() : moment());
+                let endDate = moment(dateData ? dateData.endDate || moment() : moment());
+                //画面項目「A3_4：終了年月」にパラメータ「当月+１月」をセットする
+                let nextMonth = moment(endDate).add(1, 'M');
 
-                    //画面項目「A3_2：開始年月」にパラメータ「当月」－1年した値をセットする
-                    let preYear = moment(nextMonth).add(-1, 'Y');
-                    self.dateValue({
-                        startDate: moment(startDate).add(1, 'M').format("YYYY/MM"),
-                        endDate: moment(endDate).format("YYYY/MM")
-                    });
-                    self.dateValue.valueHasMutated();
-                        
-                    self.isEmployeeCharge(role.employeeCharge);
-                    if (userSpecific) {
-                        if (_.find(holidayRemainings, x => { return x.cd == userSpecific.outputItemSettingCode; })) {
-                            self.holidayRemainingSelectedCd(userSpecific.outputItemSettingCode);
-                        }
-                        else {
-                            self.holidayRemainingSelectedCd('');
-                        }
-                        self.selectedCode(userSpecific.pageBreakAtr);
+                //画面項目「A3_2：開始年月」にパラメータ「当月」－1年した値をセットする
+                let preYear = moment(nextMonth).add(-1, 'Y');
+                self.dateValue({
+                    startDate: moment(startDate).add(1, 'M').format("YYYY/MM"),
+                    endDate: moment(endDate).format("YYYY/MM")
+                });
+                self.dateValue.valueHasMutated();
+
+                self.isEmployeeCharge(role.employeeCharge);
+                if (userSpecific) {
+                    if (_.find(holidayRemainings, x => {
+                            return x.cd == userSpecific.outputItemSettingCode;
+                        })) {
+                        self.freeCode(userSpecific.outputItemSettingCode);
                     }
-                    // Init component.
-                    self.reloadCcg001();
-                    dfd.resolve(self);
-               }).fail(function(res) {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                    else {
+                        self.freeCode('');
+                        self.standardCode('');
+
+                    }
+                    self.selectedCode(userSpecific.pageBreakAtr);
+                }
+                // Init component.
+                self.reloadCcg001();
+                dfd.resolve(self);
+
+            }).fail(function (res) {
+                nts.uk.ui.dialog.alertError({messageId: res.messageId});
             }).always(() => {
                 nts.uk.ui.block.clear();
             });
             return dfd.promise();
         }
-        
+
         /**
          * load and set item selected
          */
-        loadAllHolidayRemaining(data: Array<HolidayRemainingModel>) {
+        loadAllHolidayRemaining(data: any) {
+
             let self = this;
-            if (data && data.length > 0) {
-                data = _.sortBy(data, ['cd']);
-                self.lstHolidayRemaining(data);
+            if (data) {
+                let freeSetting = data.listFreeSetting;
+                let standard = data.listStandard;
+                self.listFreeSetting(freeSetting);
+                self.listStandard(standard);
+
             }
             // no data
             else {
-                self.lstHolidayRemaining([]);
-                self.holidayRemainingSelectedCd('');
+                self.freeCode('');
+                self.standardCode('');
             }
         }
-        
+
         /**
-        * apply ccg001 search data to kcp005
-        */
+         * apply ccg001 search data to kcp005
+         */
         public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
             var self = this;
             self.employeeList([]);
@@ -356,81 +385,165 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             nts.uk.ui.block.invisible();
             let startMonth = moment(self.dateValue().startDate, 'YYYY/MM');
             let endMonth = moment(self.dateValue().endDate, 'YYYY/MM');
-            let totalMonths = (parseInt(endMonth.format("YYYY"))*12 + parseInt(endMonth.format("MM")))
-                             - (parseInt(startMonth.format("YYYY"))*12 + parseInt(startMonth.format("MM")));
-            if (totalMonths < 0){
-                nts.uk.ui.dialog.alertError({ messageId: 'Msg_1217' });
-                nts.uk.ui.block.clear();  
+            let end = (parseInt(endMonth.format("YYYY")) * 12 + parseInt(endMonth.format("MM")))
+            let start = (parseInt(startMonth.format("YYYY")) * 12 + parseInt(startMonth.format("MM")));
+            let totalMonths = (end - start) + 1;
+            if (totalMonths < 0) {
+                nts.uk.ui.dialog.alertError({messageId: 'Msg_1217'});
+                nts.uk.ui.block.clear();
                 return;
             }
-            if (totalMonths > 12){
-                nts.uk.ui.dialog.alertError({ messageId: 'Msg_1173' });
-                nts.uk.ui.block.clear();  
+            if (totalMonths > 13) {
+                nts.uk.ui.dialog.alertError({messageId: 'Msg_1173'});
+                nts.uk.ui.block.clear();
                 return;
             }
             // get and build selected employee
-            let lstSelectedEployee : Array<EmployeeSearchDto> = [];
+            let lstSelectedEployee: Array<EmployeeSearchDto> = [];
             var index = -1;
             for (var i = 0; i < self.selectedEmployeeCode().length; i++) {
-                index = _.findIndex(self.lstSearchEmployee(), function(x)
-                { return x.employeeCode === self.selectedEmployeeCode()[i] });
+                index = _.findIndex(self.lstSearchEmployee(), function (x) {
+                    return x.employeeCode === self.selectedEmployeeCode()[i]
+                });
                 if (index > -1) {
                     lstSelectedEployee.push(self.lstSearchEmployee()[index]);
                 }
             }
-            if (!lstSelectedEployee || lstSelectedEployee.length === 0){
-                nts.uk.ui.dialog.alertError({ messageId: 'Msg_884' });
-                nts.uk.ui.block.clear();  
+            if (!lstSelectedEployee || lstSelectedEployee.length === 0) {
+                nts.uk.ui.dialog.alertError({messageId: 'Msg_884'});
+                nts.uk.ui.block.clear();
                 return;
             }
-            
+
             let user: any = __viewContext.user,
-                objComboxSelected = _.find(self.lstHolidayRemaining(), function(c){ return c.cd == self.holidayRemainingSelectedCd();});
+                objComboxSelected = _.find(self.lstHolidayRemaining(), function (c) {
+                    return c.cd == self.freeCode();
+                });
             let userSpecificInformation = new UserSpecificInformation(
                 user.employeeId,
                 user.companyId,
-                self.holidayRemainingSelectedCd(),
+                self.freeCode(),
                 self.selectedCode()
             );
             nts.uk.characteristics.save("UserSpecific_" + user.employeeId, userSpecificInformation);
-
+            let layOutId = self.selectedId() == 0 ? self.standardCode() : self.freeCode();
             let holidayRemainingOutputCondition = new HolidayRemainingOutputCondition(
                 startMonth.format("YYYY/MM/DD"),
                 endMonth.endOf('month').format("YYYY/MM/DD"),
-                self.holidayRemainingSelectedCd(),
+                layOutId,
                 self.selectedCode(),
                 self.baseDate().format("YYYY/MM/DD"),
                 self.closureId(),
-                objComboxSelected != undefined? objComboxSelected.name: ""
+                objComboxSelected != undefined ? objComboxSelected.name : ""
             );
-
-            let data = new ReportInfor(holidayRemainingOutputCondition, lstSelectedEployee);
-            service.saveAsExcel(data).done(() => {
-            }).fail(function(res: any) {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-            }).always(() => {
+            let lstSelected: Array<EmployeeQuery> = [];
+            for (let i = 0; i < lstSelectedEployee.length; i++) {
+                let e = lstSelectedEployee[i];
+                lstSelected.push(new EmployeeQuery(
+                    e.employeeCode,
+                    e.employeeId,
+                    e.employeeName,
+                    e.affiliationCode,
+                    e.affiliationId,
+                    e.affiliationName
+                ))
+            }
+            let data = new ReportInfor(holidayRemainingOutputCondition, lstSelected);
+            if (nts.uk.util.isNullOrUndefined(data.holidayRemainingOutputCondition.layOutId)) {
+                $('#listFreeSetting').ntsError('set', {messageId: 'Msg_880'});
+                $('#listFreeSetting').focus();
+                $('#residence-code').ntsError('set', {messageId: 'Msg_880'});
                 nts.uk.ui.block.clear();
+            } else {
+                service.saveAsExcel(data).always(() => {
+
+                }).done(() => {
+                }).fail(function (res: any) {
+                    nts.uk.ui.dialog.alertError({messageId: res.messageId});
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+            }
+            self.selectedId.subscribe(() => {
+                nts.uk.ui.errors.clearAll();
             });
+
+            self.freeCode.subscribe(() => {
+                nts.uk.ui.errors.clearAll();
+            })
+
+            self.standardCode.subscribe(() => {
+                nts.uk.ui.errors.clearAll();
+            })
+
         }
-        
+
         /**
          * Open dialog B
          */
-        openKDR001b() {
+        openKDR001b(settingId: number) {
             let self = this;
             nts.uk.ui.block.invisible();
-            setShared('KDR001Params', self.holidayRemainingSelectedCd());
-            modal("/view/kdr/001/b/index.xhtml").onClosed(function() {
-                self.holidayRemainingSelectedCd(getShared('KDR001B2A_cd'));
-                service.findAll().done(function(data: Array<any>) {
+            nts.uk.ui.errors.clearAll();
+            let id: any;
+            if (settingId == 1) {
+                id = this.freeCode();
+            } else {
+                id = this.standardCode();
+            }
+            let params = new PramToScrrenB(settingId, id);
+            setShared('KDR001Params', params);
+            modal("/view/kdr/001/b/index.xhtml").onClosed(function () {
+                self.freeCode(getShared('KDR001B2A_cd'));
+                self.standardCode(getShared('KDR001B2A_cd'));
+                service.findAll().done(function (data: Array<any>) {
                     self.loadAllHolidayRemaining(data);
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                }).fail(function (res) {
+                    nts.uk.ui.dialog.alertError({messageId: res.messageId});
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
             });
         }
+    }
+
+    //radio test
+    export enum StandardOrFree {
+        Standard = 0,
+        Free = 1
+    }
+
+    //end
+    export class PramToScrrenB {
+        settingId: number;
+        layOutId: string
+
+        constructor(settingId: number, layOutId: string) {
+            this.layOutId = layOutId;
+            this.settingId = settingId;
+        }
+
+    }
+
+    export class EmployeeQuery {
+        employeeCode: string;
+        employeeId: string;
+        employeeName: string;
+        workplaceCode: string;
+        workplaceId: string;
+        workplaceName: string;
+
+        constructor(employeeCode: string, employeeId: string, employeeName: string, workplaceCode: string,
+                    workplaceId: string, workplaceName: string) {
+            this.employeeCode = employeeCode;
+            this.employeeId = employeeId;
+            this.employeeName = employeeName;
+            this.workplaceCode = workplaceCode;
+            this.workplaceId = workplaceId;
+            this.workplaceName = workplaceName;
+        }
+
+
     }
 
     export class HolidayRemainingModel {
@@ -452,7 +565,40 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             this.name = name;
         }
     }
-    
+
+    export class ItemNewModel {
+        layoutId: string;
+        cd: string;
+        name: string;
+
+        constructor(layoutId: string, name: string, cd: string) {
+            this.layoutId = layoutId;
+            this.name = name;
+            this.cd = cd;
+        }
+    }
+
+    export class Datta {
+        listFreeSetting: [ItemNewModel];
+        listStandard: [ItemNewModel];
+
+        constructor(listFreeSetting: [ItemNewModel], listStandard: [ItemNewModel]) {
+            this.listFreeSetting = listFreeSetting;
+            this.listStandard = listStandard;
+        }
+    }
+
+    export class BoxModel {
+        id: number;
+        name: string;
+
+        constructor(id: number, name: string) {
+            var vm = this;
+            vm.id = id;
+            vm.name = name;
+        }
+    }
+
     // スケジュール一括修正設定
     export class ScheduleBatchCorrectSetting {
         // 勤務種類
@@ -479,14 +625,15 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             self.worktimeCode = '';
         }
     }
-    
-    export class GetDate{
-        startDate : string;
-        endDate : string;
-        constructor(startDate : string, endDate : string ){
+
+    export class GetDate {
+        startDate: string;
+        endDate: string;
+
+        constructor(startDate: string, endDate: string) {
             this.startDate = startDate;
             this.endDate = endDate;
-        }    
+        }
     }
 
     export class ListType {
@@ -574,10 +721,11 @@ module nts.uk.at.view.kdr001.a.viewmodel {
 
         onApplyEmployee: (data: EmployeeSearchDto[]) => void;
     }
-    
+
     export class ReportInfor {
         holidayRemainingOutputCondition: any;
         lstEmpIds: any[];
+
         constructor(holidayRemainingOutputCondition: any, lstEmpIds: any[]) {
             this.holidayRemainingOutputCondition = holidayRemainingOutputCondition;
             this.lstEmpIds = lstEmpIds;
@@ -587,16 +735,17 @@ module nts.uk.at.view.kdr001.a.viewmodel {
     export class HolidayRemainingOutputCondition {
         startMonth: string;
         endMonth: string;
-        outputItemSettingCode: string;
+        layOutId: string;
         pageBreak: string;
         baseDate: string;
         closureId: number;
         title: string;
-        constructor(startMonth: string, endMonth: string, outputItemSettingCode: string, pageBreak: string, 
-                baseDate: string, closureId: number, title: string) {
+
+        constructor(startMonth: string, endMonth: string, layOutId: string, pageBreak: string,
+                    baseDate: string, closureId: number, title: string) {
             this.startMonth = startMonth;
             this.endMonth = endMonth;
-            this.outputItemSettingCode = outputItemSettingCode;
+            this.layOutId = layOutId;
             this.pageBreak = pageBreak;
             this.baseDate = baseDate;
             this.closureId = closureId;
@@ -609,6 +758,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         companyId: string;
         outputItemSettingCode: string;
         pageBreakAtr: string;
+
         constructor(userId: string, companyId: string, outputItemSettingCode: string, pageBreakAtr: string) {
             this.userId = userId;
             this.companyId = companyId;
@@ -616,4 +766,5 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             this.pageBreakAtr = pageBreakAtr;
         }
     }
+
 }
