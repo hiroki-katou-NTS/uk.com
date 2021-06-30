@@ -12,14 +12,12 @@ import nts.uk.ctx.exio.infra.entity.input.validation.XimctImportableItem;
 public class JpaImportableItemsRepository extends JpaRepository implements ImportableItemsRepository{
 
 	@Override
-	public List<ImportableItem> get(String companyId, ImportingGroupId groupId) {
+	public List<ImportableItem> get(ImportingGroupId groupId) {
 		
 		String sql = "select * "
 						+ "from XIMCT_IMPORTABLE_ITEM "
-						+ "where CID = @cid "
-						+ "and GROUP_ID = @groupId";
+						+ "where GROUP_ID = @groupId";
 		return new NtsStatement(sql, this.jdbcProxy())
-				.paramString("cid", companyId)
 				.paramInt("groupId", groupId.value)
 				.getList(rec -> XimctImportableItem.MAPPER.toEntity(rec).toDomain());
 	}

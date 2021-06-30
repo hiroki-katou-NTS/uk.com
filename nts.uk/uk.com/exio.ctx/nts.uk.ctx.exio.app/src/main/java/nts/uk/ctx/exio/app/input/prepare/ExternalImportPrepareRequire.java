@@ -120,8 +120,8 @@ public class ExternalImportPrepareRequire {
 		}
 		
 		@Override
-		public List<ImportableItem> getDefinition(ImportingGroupId groupId) {
-			return importableItemsRepo.get(companyId, groupId);
+		public List<ImportableItem> getImportableItems(ImportingGroupId groupId) {
+			return importableItemsRepo.get(groupId);
 		}
 		
 		@Override

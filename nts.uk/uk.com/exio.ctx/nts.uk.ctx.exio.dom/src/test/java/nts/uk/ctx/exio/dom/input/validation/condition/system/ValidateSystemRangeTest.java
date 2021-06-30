@@ -34,7 +34,7 @@ public class ValidateSystemRangeTest {
 		List<ImportableItem> DUMMY_IMPORTABLEITEMS = Helper.DUMMY_ImportableItems(sameItemNo);
 		
 		new Expectations() {{
-			require.getDefinition(Helper.DUMMY.GROUP_ID);
+			require.getImportableItems(Helper.DUMMY.GROUP_ID);
 			result = DUMMY_IMPORTABLEITEMS;
 		}};
 		
@@ -56,7 +56,7 @@ public class ValidateSystemRangeTest {
 		List<ImportableItem> DUMMY_IMPORTABLEITEMS = Helper.DUMMY_ImportableItems(diffItemNo1);
 		
 		new Expectations() {{
-			require.getDefinition(Helper.DUMMY.GROUP_ID);
+			require.getImportableItems(Helper.DUMMY.GROUP_ID);
 			result = DUMMY_IMPORTABLEITEMS;
 		}};
 		
