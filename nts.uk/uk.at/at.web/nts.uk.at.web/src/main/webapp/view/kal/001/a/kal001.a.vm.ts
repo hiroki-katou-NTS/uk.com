@@ -288,15 +288,10 @@ module nts.uk.at.view.kal001.a.model {
             this.category = dto.category;
             this.categoryName = dto.categoryName;
             this.period36Agreement = dto.period36Agreement;
-            if(dto.category == CATEGORY.SCHEDULE_DAILY
-                || dto.category == CATEGORY.SCHEDULE_MONTHLY
-                || dto.category == 5
-                || dto.category == CATEGORY.WEEKLY
-                || dto.category == 7
-                || dto.category == CATEGORY.SCHEDULE_YEAR){
-                this.isEnable =  ko.observable(true);
-            } else {
+            if(dto.category == CATEGORY.SCHEDULE_4_WEEK){
                 this.isEnable =  ko.observable(false);
+            } else {
+                this.isEnable =  ko.observable(true);
             }
             if(dto.category==2 || dto.category==5 || dto.category==8 || dto.category == 0 || dto.category == 6){
                 this.dateValue= ko.observable(new DateValue(dto.startDate, dto.endDate) );
@@ -545,6 +540,7 @@ module nts.uk.at.view.kal001.a.model {
                 this.startDate = dto.multiMonthAverage().toString().slice(0, 4)+"/" + dto.multiMonthAverage().toString().slice(4, 6);
                 this.endDate = dto.multiMonthAverage().toString().slice(0, 4)+"/" + dto.multiMonthAverage().toString().slice(4, 6);
             }
+            this.typeInput = dto.typeInput;
           }
       }
 }

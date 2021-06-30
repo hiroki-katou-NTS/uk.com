@@ -42,8 +42,8 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 			, "ON m.pk.sid = n.pk.sid AND m.pk.inputDate = n.pk.inputDate"
 			, "WHERE m.startDate <= :endDate"
 			, "AND m.endDate >= :startDate"
-			, "AND m.destination = 0"
-			, "OR (m.destination = 1 AND n.pk.tgtInfoId IN :tgtInfoId)"
+			, "AND (m.destination = 0"
+			, "OR (m.destination = 1 AND n.pk.tgtInfoId IN :tgtInfoId))"
 			, "ORDER BY m.destination ASC, m.startDate DESC, m.endDate DESC, m.pk.inputDate DESC");
 	
 	private static final String GET_MSG_REF_BY_PERIOD = String.join(" "
@@ -73,9 +73,9 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 	
 	private static final String GET_REF_BY_SID_FOR_PERIOD = String.join(" "
 			, "SELECT m FROM SptdtInfoMessage m"
-			, "LEFT JOIN SptdtInfoMessageRead s"
-			, "ON m.pk.sid = s.pk.sid AND m.pk.inputDate = s.pk.inputDate"
-			, "WHERE m.startDate <= :endDate"
+			, "LEFT JOIN SptdtInfoMessageTgt n ON m.pk.sid = n.pk.sid AND m.pk.inputDate = n.pk.inputDate"
+			, "LEFT JOIN SptdtInfoMessageRead s ON m.pk.sid = s.pk.sid AND m.pk.inputDate = s.pk.inputDate"
+			, "AND m.startDate <= :endDate"
 			, "AND m.endDate >= :startDate"
 			, "AND m.destination = 2 AND n.pk.tgtInfoId = :sid"
 			, "AND s.pk.sid = :sid"

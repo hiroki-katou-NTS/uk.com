@@ -21,14 +21,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.E
 public class CreateApplicationReflectionHist {
 
 	public static void create(Require require, String appId, ScheduleRecordClassifi classifi,
-			DailyRecordOfApplication dailyRecordApp, IntegrationOfDaily domainBefore) {
+			DailyRecordOfApplication dailyRecordApp, IntegrationOfDaily domainBefore, GeneralDateTime reflectTime) {
 
 		// 申請反映前のデータを取得
 		addDataBeforeAppReflect(require, dailyRecordApp.getAttendanceBeforeReflect(), domainBefore);
 
 		// 申請反映履歴を追加する
 		require.insertAppReflectHist(new ApplicationReflectHistory(domainBefore.getEmployeeId(), domainBefore.getYmd(), appId,
-				GeneralDateTime.now(), classifi, false, dailyRecordApp.getAttendanceBeforeReflect()));
+				reflectTime, classifi, false, dailyRecordApp.getAttendanceBeforeReflect()));
 	}
 
 	public static interface Require {
@@ -61,7 +61,7 @@ public class CreateApplicationReflectionHist {
 					: "";
 
 			// 取得した値を該当する[反映前の勤怠（List）]に追加する
-			data.setValue(value);
+			data.setValue(Optional.ofNullable(value));
 
 			// [反映前の日別勤怠(Work）]から、該当する編集状態を取得
 			EditStateOfDailyAttd state = domainBefore.getEditState().stream()

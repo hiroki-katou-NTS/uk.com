@@ -40,6 +40,21 @@ public class SendMailCommandHandler extends CommandHandlerWithResult<SendMailCom
 			if(!sendMailParam.getOpSendMailApplicant().orElse(false)) {
 				throw new BusinessException("Msg_14");
 			}
+			// 申請者のメールアドレスをチェックする
+			List<SendMailAppInfoParam> listNotExistApplicantMail = sendMailParam.getAppInfoLst().stream().filter(x -> !x.getOpApplicantMail().isPresent()).collect(Collectors.toList());
+			if(!CollectionUtil.isEmpty(listNotExistApplicantMail)) {
+				// エラーメッセージを表示する（Msg_1309）
+				throw new BusinessException("Msg_1309");
+			}
+		}
+		
+		if(sendMailParam.getOpSendMailApplicant().orElse(false)) {
+			// 申請者のメールアドレスをチェックする
+			List<SendMailAppInfoParam> listNotExistApplicantMail = sendMailParam.getAppInfoLst().stream().filter(x -> !x.getOpApplicantMail().isPresent()).collect(Collectors.toList());
+			if(!CollectionUtil.isEmpty(listNotExistApplicantMail)) {
+				// エラーメッセージを表示する（Msg_1309）
+				throw new BusinessException("Msg_1309");
+			}
 		}
 		
 		List<String> successList = new ArrayList<>();

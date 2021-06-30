@@ -5,7 +5,6 @@
 }
 
 #list {
-	background-color: #E0F59E;
 	width: 320px;
 	height: 333px;
 	margin-left: 15px;
@@ -50,10 +49,6 @@ table.control {
 	margin-top: 10px;
 }
 
-.ntsControl.ntsHelpButton {
-	bottom: 30px;
-}
-
 .sp-replacer.sp-light.sp-active {
 	width: 40px;
 }
@@ -68,4 +63,15 @@ table.control {
 
 #contents-area>span {
 	margin-left: 15px
+}
+.ccg013-nowrap {
+	white-space: nowrap;
+}
+
+.inline-flex {
+  display: inline-flex;
+}
+
+#contents-area {
+	overflow: hidden;
 }

@@ -1,116 +1,78 @@
 /// <reference path="../../reference.ts"/>
 
 interface JQuery {
-    ntsWizard(action: string, param?: any): any;
+    ntsWizard: {
+        (act: 'getCurrentStep'): number;
+        (act: 'begin' | 'end' | 'next' | 'prev'): JQueryPromise<boolean>;
+        (act: 'goto', index: number): JQueryPromise<boolean>;
+    }
 }
 
 module nts.uk.ui.jqueryExtentions {
+    export module ntsWizard {
+        // mock function ntsWizard (shit)
+        $.fn.ntsWizard = function (act: 'begin' | 'end' | 'next' | 'prev' | 'getCurrentStep' | 'goto', index?: number) {
+            const $el = $(this);
+            const steps = $el.find('.step-list').children();
+            const current = $el.find('.step-list').children('.current');
 
-    module ntsWizard {
-        $.fn.ntsWizard = function(action: string, index?: number): any {
-            var $wizard = $(this);
-            if (action === "begin") {
-                return begin($wizard);
+            if (['begin', 'end', 'next', 'prev'].indexOf(act) > -1) {
+                steps.each((__: number, e: HTMLElement) => e.classList.remove('current'));
             }
-            else if (action === "end") {
-                return end($wizard);
+
+            switch (act) {
+                case 'begin':
+                    steps.first().addClass('current');
+                    $el.trigger('wz.change');
+                    break;
+                case 'end':
+                    steps.last().addClass('current');
+                    $el.trigger('wz.change');
+                    break;
+                case 'next':
+                    const next = current.next();
+
+                    if (next.length) {
+                        next.addClass('current');
+                        $el.trigger('wz.change');
+                    } else {
+                        current.addClass('current');
+                    }
+                    break;
+                case 'prev':
+                    const prev = current.prev();
+
+                    if (prev.length) {
+                        prev.addClass('current');
+                        $el.trigger('wz.change');
+                    } else {
+                        current.addClass('current');
+                    }
+                    break;
+                case 'getCurrentStep':
+                    const indexs = steps
+                        .toArray()
+                        .map((e: HTMLElement, i: number) => e.classList.contains('current') ? i : -1)
+                        .filter((c) => c > -1);
+
+                    const [step] = indexs;
+
+                    return _.isNumber(step) ? step : -1;
+                case 'goto':
+                    if (_.isNumber(index) && index > -1 && index < steps.length) {
+                        steps.each((i: number, e: HTMLElement) => {
+                            if (i === index) {
+                                e.classList.add('current');
+                                $el.trigger('wz.change');
+                            } else {
+                                e.classList.remove('current');
+                            }
+                        });
+                    }
+                    break;
             }
-            else if (action === "goto") {
-                return goto($wizard, index);
-            }
-            else if (action === "prev") {
-                return prev($wizard);
-            }
-            else if (action === "next") {
-                return next($wizard);
-            }
-            else if (action === "getCurrentStep") {
-                return getCurrentStep($wizard);
-            }
-            else {
-                return $wizard;
-            };
-        }
 
-        function begin(wizard: JQuery): JQueryPromise<any> {
-            let dfd = $.Deferred();
-
-            wizard.data("waitStepShowed", true);
-            
-            wizard.setStep(0);
-            
-            wizard.bind("stepShowed", function(evt, ui) {
-                wizard.unbind("stepShowed");
-                wizard.data("waitStepShowed", false);
-                dfd.resolve();
-            });
-
-            return dfd.promise();
-        }
-
-        function end(wizard: JQuery): JQueryPromise<any> {
-            let dfd = $.Deferred();
-            
-            wizard.data("waitStepShowed", true);
-            wizard.setStep(wizard.data("length") - 1);
-            
-            wizard.bind("stepShowed", function(evt, ui) {
-                wizard.unbind("stepShowed");
-                wizard.data("waitStepShowed", false);
-                dfd.resolve();
-            });
-
-            return dfd.promise();
-        }
-
-        function goto(wizard: JQuery, index: number): JQueryPromise<any> {
-            let dfd = $.Deferred();
-
-            wizard.data("waitStepShowed", true);
-            wizard.setStep(index);
-            
-            wizard.bind("stepShowed", function(evt, ui) {
-                wizard.unbind("stepShowed");
-                wizard.data("waitStepShowed", false);
-                dfd.resolve();
-            });
-
-            return dfd.promise();
-        }
-
-        function prev(wizard: JQuery): JQueryPromise<any> {
-            let dfd = $.Deferred();
-
-            wizard.data("waitStepShowed", true);
-            wizard.steps("previous");
-            
-            wizard.bind("stepShowed", function(evt, ui) {
-                wizard.unbind("stepShowed");
-                wizard.data("waitStepShowed", false);
-                dfd.resolve();
-            });
-
-            return dfd.promise();
-        }
-
-        function next(wizard: JQuery): JQueryPromise<any> {
-            let dfd = $.Deferred();
-
-            wizard.data("waitStepShowed", true);
-            wizard.steps("next");
-            
-            wizard.bind("stepShowed", function(evt, ui) {
-                wizard.unbind("stepShowed");
-                wizard.data("waitStepShowed", false);
-                dfd.resolve();
-            });
-
-            return dfd.promise();
-        }
-
-        function getCurrentStep(wizard: JQuery): number {
-            return wizard.steps("getCurrentIndex");
-        }
-
+            return $.Deferred().resolve(true);
+        };
     }
 }

@@ -13,7 +13,6 @@ import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplic
     route: '/kaf/s10/step2',
     style: require('./style.scss'),
     template: require('./index.vue'),
-    resource: require('./resources.json'),
     validations: {
         overTimes: {
             applicationTime: {
@@ -83,6 +82,14 @@ export class KafS10Step2Component extends Vue {
 
     public created() {
         const self = this;
+
+        if (self.$appContext.getNumb == 1) {
+            self.pgName = 'kafs10step1';
+        } else if (self.$appContext.getNumb == 2) {
+            self.pgName = 'kafs10step2';
+        } else {
+            self.pgName = 'kafs10step3';
+        }
     }
     public mounted() {
         const self = this;

@@ -27,7 +27,7 @@
             </tr>
             <tr>
                 <td class="color-header">#{i18n.getText('KAF022_708')}</td>
-                <td><button data-bind="click: openODialog, enable: enableBtn">#{i18n.getText('KAF022_708')}</button></td>
+                <td><button style="margin: 5px 13px" data-bind="click: openODialog, enable: enableBtn">#{i18n.getText('KAF022_708')}</button></td>
             </tr>
             <tr class="inline-radio" data-bind="with: overtimeLeaveAppCommonSetting">
                 <td class="color-header" id="b5">#{i18n.getText('KAF022_430')}</td>
@@ -165,7 +165,7 @@
             </tr>
             <tr style="height: 45px">
                 <td class="color-header" id="b29">#{i18n.getText('KAF022_431')}</td>
-                <td class="three-radio">
+                <td class="vertical-radio">
                     <div id="b30" data-bind="ntsRadioBoxGroup: {
                             options: $parent.itemListB30,
                             optionsValue: 'code',

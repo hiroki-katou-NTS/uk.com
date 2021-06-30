@@ -35,11 +35,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LateLeaveEarlyTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LateTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -137,7 +140,10 @@ public class LateTimeOfDaily {
 						work.getWorkNo(),
 						recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
 						recordClass.getHolidayCalcMethodSet(),
-						recordClass.getWorkTimezoneCommonSet()));
+						recordClass.getWorkTimezoneCommonSet(),
+						recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().isPresent()
+							? recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily()
+							: Collections.emptyList()));
 			}
 		}
 		return lateTime;
@@ -157,7 +163,8 @@ public class LateTimeOfDaily {
 			WorkNo workNo,
 			boolean late,
 			HolidayCalcMethodSet holidayCalcMethodSet,
-			Optional<WorkTimezoneCommonSet> commonSetting) {
+			Optional<WorkTimezoneCommonSet> commonSetting,
+			List<LateTimeOfDaily> lateDailies) {
 		
 		//勤務Noに一致する遅刻時間をListで取得する
 		List<LateTimeSheet> lateTimeSheetList = oneDay.getWithinWorkingTimeSheet().isPresent()
@@ -215,12 +222,16 @@ public class LateTimeOfDaily {
 		TimeWithCalculation lateTime = lateTimeSheet.calcForRecordTime(late);
 		//遅刻控除時間の計算
 		TimeWithCalculation lateDeductionTime = lateTimeSheet.calcDedctionTime(late,notDeductLateLeaveEarly);
+		//休暇使用時間
+		Optional<TimevacationUseTimeOfDaily> useTime = lateDailies.stream()
+				.filter(l -> l.getWorkNo().equals(workNo))
+				.map(l -> l.getTimePaidUseTime()).findFirst();
 		
 		LateTimeOfDaily lateTimeOfDaily = new LateTimeOfDaily(
 				lateTime,
 				lateDeductionTime,
 				workNo,
-				TimevacationUseTimeOfDaily.defaultValue(),
+				useTime.orElse(TimevacationUseTimeOfDaily.defaultValue()),
 				IntervalExemptionTime.defaultValue());
 		return lateTimeOfDaily;
 	}
@@ -271,7 +282,8 @@ public class LateTimeOfDaily {
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Optional.of(leaveLateSet),
-				NotUseAtr.NOT_USE);
+				NotUseAtr.NOT_USE,
+				Optional.of(recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork()));
 		
 		//控除用コアタイム無しの遅刻時間計算
 		TimeWithCalculation calcedLateDeductionTime = changedFlexTimeSheet.calcNoCoreCalcLateTime(
@@ -296,9 +308,24 @@ public class LateTimeOfDaily {
 				Collections.emptyList(),
 				Collections.emptyList(),
 				Optional.of(leaveLateSet),
-				NotUseAtr.NOT_USE);
+				NotUseAtr.NOT_USE,
+				Optional.of(recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork()));
 		
-		return new LateTimeOfDaily(calcedLateTime, calcedLateDeductionTime, new WorkNo(1), TimevacationUseTimeOfDaily.defaultValue(), IntervalExemptionTime.defaultValue());
+		List<LateTimeOfDaily> lateDailies = recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().isPresent()
+				? recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily()
+				: Collections.emptyList();
+		//休暇使用時間
+		Optional<TimevacationUseTimeOfDaily> useTime = lateDailies.stream()
+				.filter(l -> l.getWorkNo().equals(new WorkNo(1)))
+				.map(l -> l.getTimePaidUseTime()).findFirst();
+		
+		return new LateTimeOfDaily(
+				calcedLateTime,
+				calcedLateDeductionTime,
+				new WorkNo(1),
+				useTime.orElse(TimevacationUseTimeOfDaily.defaultValue()),
+				IntervalExemptionTime.defaultValue());
+		
 	}
 	
 	/**
@@ -320,17 +347,39 @@ public class LateTimeOfDaily {
 	}
 	/**
 	 * 休暇加算時間の計算
-	 * @return
+	 * @param calcMethodSet 休暇の計算方法の設定
+	 * @param holidayAddtionSet 休暇加算時間設定
+	 * @param workTimeForm 就業時間帯の勤務形態
+	 * @return 時間休暇加算時間
 	 */
-	public int calcVacationAddTime(Optional<HolidayAddtionSet> holidayAddtionSet) {
-		int result = 0;	
-		int totalAddTime = this.timePaidUseTime.calcTotalVacationAddTime(holidayAddtionSet, AdditionAtr.WorkingHoursOnly);	
-		if(this.lateTime.getCalcTime().lessThanOrEqualTo(totalAddTime)) {
-			result = this.lateTime.getCalcTime().valueAsMinutes();
-		}else {
-			result = totalAddTime;
+	public AttendanceTime calcVacationAddTime(HolidayCalcMethodSet calcMethodSet, Optional<HolidayAddtionSet> holidayAddtionSet, WorkTimeForm workTimeForm) {
+		if(calcMethodSet.getNotUseAtr(PremiumAtr.RegularWork).isNotUse()) {
+			return AttendanceTime.ZERO;
 		}
-		return result;
+		return holidayAddtionSet.get().getAddTime(this.timePaidUseTime, this.lateTime.getCalcTime(), workTimeForm);
+	}
+	
+	/**
+	 * 時間休暇加算時間を取得する
+	 * @param calcMethodSet 休暇の計算方法の設定
+	 * @param holidayAddtionSet 休暇加算時間設定
+	 * @param frames 就業時間内時間枠(List)
+	 * @param workTimeForm 就業時間帯の勤務形態
+	 * @return 時間休暇加算時間
+	 */
+	public AttendanceTime calcVacationAddTime(HolidayCalcMethodSet calcMethodSet, Optional<HolidayAddtionSet> holidayAddtionSet,
+			List<WithinWorkTimeFrame> frames, WorkTimeForm workTimeForm) {
+		if(calcMethodSet.getNotUseAtr(PremiumAtr.RegularWork).isNotUse()) {
+			return AttendanceTime.ZERO;
+		}
+		Optional<LateTimeSheet> late = frames.stream()
+				.filter(f -> f.getWorkingHoursTimeNo().equals(new EmTimeFrameNo(this.workNo.v())))
+				.map(f -> f.getLateTimeSheet())
+				.findFirst().flatMap(l -> l);
+		//計算遅刻計上時間
+		AttendanceTime lateCalcTime = late.isPresent() ? late.get().calcForRecordTime(true).getCalcTime() : AttendanceTime.ZERO;
+		
+		return holidayAddtionSet.get().getAddTime(this.timePaidUseTime, lateCalcTime, workTimeForm);
 	}
 	
 	public void resetData() {

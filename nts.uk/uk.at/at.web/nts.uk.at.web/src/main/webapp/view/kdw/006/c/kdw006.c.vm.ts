@@ -14,14 +14,14 @@ module nts.uk.at.view.kdw006.c.viewmodel {
 
         sideBar: KnockoutObservable<number>;
         appType: KnockoutObservable<string>;
-        appTypeEnum : KnockoutObservable<any>;
+        appTypeEnum : KnockoutObservableArray<any>;
 
         constructor() {
             let self = this;
             self.itemList = ko.observableArray([]);
             self.hiddenYourself = ko.observable(true);
             self.hiddenSuper = ko.observable(true);
-            self.appTypeEnum = ko.observable(null);
+            // self.appTypeEnum = ko.observable(null);
 
             self.sideBar = ko.observable(0);
             let yourSelf = __viewContext.enums.YourselfConfirmError;
@@ -48,6 +48,7 @@ module nts.uk.at.view.kdw006.c.viewmodel {
                 overtimeCalcUpdAtr: 0,
                 lawOverCalcUpdAtr: 0,
                 manualFixAutoSetAtr: 0,
+                checkErrRefDisp: 0,
             }));
             self.approvalProcessDto = ko.observable(new ApprovalProcessDto({
                 cid: '',
@@ -68,29 +69,42 @@ module nts.uk.at.view.kdw006.c.viewmodel {
                 dailySelfChkDispAtr: 0
             }));
             
-            service.getApplicationType().done(function(data) {
-                let dfd = $.Deferred();
-                self.appTypeEnum(data);
-                dfd.resolve();
-                return dfd.promise();
-            });
+            self.appTypeEnum = ko.observableArray([]);
+            let appTypeEnum = __viewContext.enums.ApplicationType;
+            _.forEach(appTypeEnum, (item) => {
+                if (item.value == 0 || 
+                    item.value == 1 ||
+                    item.value == 2 ||
+                    item.value == 3 ||
+                    item.value == 4 ||
+                    item.value == 5 ||
+                    item.value == 6 ||
+                    item.value == 7 ||
+                    item.value == 8 ||
+                    item.value == 13 ||
+                    item.value == 14 ||
+                    item.value == 15) {
+                    self.appTypeEnum().push({
+                        value: item.value,
+                        name: item.name
+                    })
+                }
+            })
 
             self.appType = ko.observable('');
             self.appTypeDto.subscribe((value) => {
-                let temp = nts.uk.ui.windows.getShared("kdw006HResult");
-                let result = "",valueSort = _.sortBy(value.appTypes()),listAppType = __viewContext.enums.ApplicationType;
-                if(temp){
-                    valueSort = value.appTypes();
-                }
-                _.forEach(valueSort, function(item) {
+                let valueSort = _.sortBy(value.appTypes());
+
+                let appType = valueSort.map((item) => {
                     let itemModel = _.find(self.appTypeEnum(), function(obj) {
                         return obj.value == item;
                     });
-                   if(!_.isEmpty(itemModel))
-                        result += itemModel.fieldName + ",";
-                })
-                let size = result.length - 1;
-                self.appType(result.slice(0, size));
+                    if (!_.isEmpty(itemModel)) {
+                        return itemModel.name;
+                    }
+                }).join("、");
+               
+                self.appType(appType);
             });
         }
 
@@ -213,7 +227,7 @@ module nts.uk.at.view.kdw006.c.viewmodel {
 
         }
 
-        opentHDialog() {
+        openHDialog() {
             let self = this;
             let share = {
                 appTypes: self.appTypeDto().appTypes(),
@@ -224,7 +238,7 @@ module nts.uk.at.view.kdw006.c.viewmodel {
                 let temp = nts.uk.ui.windows.getShared("kdw006HResult");
                 if (temp) {
                     let output = {
-                        appTypes: temp,
+                        appTypes: temp.map((item: any) => parseInt(item, 10)),
                     }
                     self.appTypeDto(new AppTypeDto(output));
                 }

@@ -19,10 +19,10 @@ public class AddTimeItemIDToTimeBeforeReflect {
 			Optional<AttendanceBeforeApplicationReflect> itemOpt = dailyApp.getAttendanceBeforeReflect().stream()
 					.filter(x -> x.getAttendanceId() == id).findFirst();
 			if (itemOpt.isPresent()) {
-				itemOpt.get().setValue("");
+				itemOpt.get().setValue(Optional.empty());
 			} else {
 				dailyApp.getAttendanceBeforeReflect()
-						.add(new AttendanceBeforeApplicationReflect(id, "", Optional.empty()));
+						.add(new AttendanceBeforeApplicationReflect(id, Optional.empty(), Optional.empty()));
 			}
 		});
 	}

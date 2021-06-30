@@ -51,7 +51,7 @@ public class ChangeDailyAttendanceProcess {
 //				Optional<EngravingMethod> engravingMethod, Optional<TimeWithDayAttr> timeWithDay,
 //				Optional<WorkLocationCD> locationCode
 				timeLeavOpt.get().getAttendanceStamp().get().getStamp().get().change(new RequireImpl(), companyId,
-						Optional.of(workStampNew.getTimeDay().getReasonTimeChange().getTimeChangeMeans()),
+						Optional.ofNullable(workStampNew.getTimeDay().getReasonTimeChange().getTimeChangeMeans()),
 						workStampNew.getTimeDay().getReasonTimeChange().getEngravingMethod(),
 						workStampNew.getTimeDay().getTimeWithDay(),
 						workStampNew.getLocationCode());
@@ -67,7 +67,7 @@ public class ChangeDailyAttendanceProcess {
 				// 勤怠打刻を変更する
 				WorkStamp workStampNew = newData.getLeaveStamp().get().getStamp().get();
 				timeLeavOpt.get().getLeaveStamp().get().getStamp().get().change(new RequireImpl(), companyId,
-						Optional.of(workStampNew.getTimeDay().getReasonTimeChange().getTimeChangeMeans()),
+						Optional.ofNullable(workStampNew.getTimeDay().getReasonTimeChange().getTimeChangeMeans()),
 						workStampNew.getTimeDay().getReasonTimeChange().getEngravingMethod(),
 						workStampNew.getTimeDay().getTimeWithDay(),
 						workStampNew.getLocationCode());

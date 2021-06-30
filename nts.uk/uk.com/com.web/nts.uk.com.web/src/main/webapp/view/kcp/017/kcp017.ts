@@ -11,7 +11,8 @@ module nts.uk.com.view.kcp017.a.viewmodel {
         }">
         <div class="control-group valign-center">
             <div data-bind="ntsFormLabel: {text: $i18n('KCP017_2')}"/>
-            <div id="kcp017-switch" data-bind="ntsSwitchButton: {
+            <div id="kcp017-switch" style="display: inline-block;"
+            data-bind="ntsSwitchButton: {
                 name: $i18n('KCP017_2'),
                 options: [
                     {code: 0, name: $i18n('Com_Workplace')},
@@ -36,6 +37,13 @@ module nts.uk.com.view.kcp017.a.viewmodel {
         </div>
         <i class="icon icon-searchbox" data-bind="visible: !onDialog()"></i>
     </div>
+    <style>
+        #kcp017-switch .radio-wrapper {
+            width: 100px;
+            flex-direction: column;
+            text-align: center;
+        }
+    </style>
     `;
 
     @component({
@@ -116,7 +124,8 @@ module nts.uk.com.view.kcp017.a.viewmodel {
                 hasPadding: false,
                 maxRows: vm.rows(),
                 alreadySettingList: vm.alreadySettingWorkplaces,
-                selectedId: vm.selectedIds
+                selectedId: vm.selectedIds,
+                restrictionOfReferenceRange: false
             };
             vm.kcp011Options = {
                 currentIds: vm.selectedGroupIds,
@@ -134,10 +143,11 @@ module nts.uk.com.view.kcp017.a.viewmodel {
 
         mounted() {
             const vm = this;
-            $($("#kcp017-switch button")[0]).width($($("#kcp017-switch button")[1]).width());
             vm.selectedUnit.subscribe(value => {
                 if (value == 1 && $("#workplace-group-pannel input.ntsSearchBox").width() == 0)
                     $("#workplace-group-pannel input.ntsSearchBox").css("width", "auto");
+                if (value == 0 && vm.multipleUsage() && $("#workplace-tree-grid input.ntsSearchBox").width() != 161)
+                    $("#workplace-tree-grid input.ntsSearchBox").css("width", "161px");
             });
         }
     }

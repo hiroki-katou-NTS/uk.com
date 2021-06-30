@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
@@ -90,8 +91,21 @@ public class JpaApplicationReflectHistoryRepo extends JpaRepository implements A
 
 	@Override
 	public void insertAppReflectHist(String cid, ApplicationReflectHistory hist) {
-		this.commandProxy().insert(toEntityHist(cid, hist));
-		this.commandProxy().insertAll(toEntityRestore(cid, hist));
+		Optional<KsrdtReflectAppHist> findData = this.queryProxy().find(new KsrdtReflectAppHistPK(hist.getEmployeeId(), hist.getDate(), hist.getApplicationId(),
+				hist.getClassification().value, hist.getReflectionTime()), KsrdtReflectAppHist.class);
+		if (!findData.isPresent()) {
+			this.commandProxy().insert(toEntityHist(cid, hist));
+			this.commandProxy().insertAll(toEntityRestore(cid, hist));
+		}else {
+			List<KsrdtReflectAppHistRestore> lstRestore = toEntityRestore(cid, hist);
+			lstRestore.forEach(x -> {
+				val data = this.queryProxy().find(x.pk, KsrdtReflectAppHistRestore.class);
+				if (!data.isPresent()) {
+					this.commandProxy().insert(x);
+				} 
+			});
+		}
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -137,13 +151,13 @@ public class JpaApplicationReflectHistoryRepo extends JpaRepository implements A
 			return new KsrdtReflectAppHistRestore(
 					new KsrdtReflectAppHistRestorePK(dom.getEmployeeId(), dom.getDate(), dom.getApplicationId(),
 							dom.getClassification().value, dom.getReflectionTime(), x.getAttendanceId()), cid, 
-					x.getValue(), x.getEditState().map(y -> y.getEditStateSetting().value).orElse(null));
+					x.getValue().orElse(null), x.getEditState().map(y -> y.getEditStateSetting().value).orElse(null));
 		}).collect(Collectors.toList());
 	}
 
 	private ApplicationReflectHistory toDomain(NtsResultRecord rec) {
 		AttendanceBeforeApplicationReflect restore = new AttendanceBeforeApplicationReflect(rec.getInt("ATTENDANCE_ID"),
-				rec.getString("VALUE"),
+				Optional.ofNullable(rec.getString("VALUE")),
 				Optional.ofNullable(rec.getInt("STATUS") == null ? null
 						: new EditStateOfDailyAttd(rec.getInt("ATTENDANCE_ID"),
 								EnumAdaptor.valueOf(rec.getInt("STATUS"), EditStateSetting.class))));

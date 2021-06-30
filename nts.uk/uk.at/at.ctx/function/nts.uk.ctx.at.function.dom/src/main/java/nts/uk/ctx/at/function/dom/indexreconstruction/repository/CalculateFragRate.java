@@ -12,17 +12,17 @@ public class CalculateFragRate {
 	private int indexId;
 
 	/** 
-	 * インデックス名 
+	 * インデックス名
 	 **/
 	private String indexName;
 
 	/** 
-	 * テーブル物理名 
+	 * テーブル物理名
 	 **/
 	private String tablePhysicalName;
 
 	/** 
-	 * 処理前の断片化率
+	 * 処理後の断片化率
 	 **/
 	private BigDecimal fragmentationRate;
 }

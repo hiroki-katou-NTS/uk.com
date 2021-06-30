@@ -163,6 +163,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
@@ -441,9 +442,11 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		// アルゴリズム「自動実行登録処理」を実行する
 		this.updateDomains(execItemCd, execType, companyId, execId, execSetting, procExecLogData.get(),
 				lastExecDateTime, processExecutionLogManage, dateTimeOutput);
-
-		// アルゴリズム「実行状態ログファイル作成処理」を実行する
-		createLogFileExecution.createLogFile(companyId, execItemCd);
+		// 実行時情報「アプリケーションコンテキスト．オプションライセンス．カスタマイズ．大塚」をチェックする
+		if (AppContexts.optionLicense().customize().ootsuka()) {
+			// アルゴリズム「実行状態ログファイル作成処理」を実行する
+			createLogFileExecution.createLogFile(companyId, execItemCd);
+		}
 		
         //更新処理自動実行エラーからトップページアラームを作成する
         DefaultRequireImpl rq = new DefaultRequireImpl(processExecutionLogManageRepository, employeeManageAdapter, topPageAlarmAdapter);
@@ -2670,6 +2673,16 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				if (processExecution.getExecSetting().getAlarmExtraction().getMailAdministrator().get().booleanValue())
 					sendMailAdmin = true;
 			}
+			boolean isDisplayAdmin = false;
+			if (processExecution.getExecSetting().getAlarmExtraction().getDisplayOnTopPageAdministrator().isPresent()) {
+				if (processExecution.getExecSetting().getAlarmExtraction().getDisplayOnTopPageAdministrator().get().booleanValue())
+					isDisplayAdmin = true;
+			}
+			boolean isDisplayPerson = false;
+			if (processExecution.getExecSetting().getAlarmExtraction().getDisplayOnTopPagePrincipal().isPresent()) {
+				if (processExecution.getExecSetting().getAlarmExtraction().getDisplayOnTopPagePrincipal().get().booleanValue())
+					isDisplayPerson = true;
+			}
 			try {
 				// アラームリスト自動実行処理を実行する
 				outputExecAlarmListPro = this.execAlarmListProcessingService.execAlarmListProcessing(
@@ -2677,7 +2690,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 						sendMailPerson, sendMailAdmin,
 						!processExecution.getExecSetting().getAlarmExtraction().getAlarmCode().isPresent() ? ""
 								: processExecution.getExecSetting().getAlarmExtraction().getAlarmCode().get().v(),
-						execId);
+						execId, execItemCd, isDisplayAdmin, isDisplayPerson);
 				log.info("更新処理自動実行_アラーム抽出_END_" + processExecution.getExecItemCode() + "_" + GeneralDateTime.now());
 				if (outputExecAlarmListPro.isCheckStop()) {
 					checkStopExec = true;

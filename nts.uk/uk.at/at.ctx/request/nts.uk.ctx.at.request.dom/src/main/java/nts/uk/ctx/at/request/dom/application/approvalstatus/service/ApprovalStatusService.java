@@ -77,18 +77,19 @@ public interface ApprovalStatusService {
 	 * @param mailType
 	 *            対象メール
 	 */
-	SendMailResultOutput sendTestMail(int mailType);
+	SendMailResultOutput sendTestMail(int mailType, boolean screenUrlApprovalEmbed, boolean screenUrlDayEmbed, boolean screenUrlMonthEmbed);
 
 	/**
 	 * 承認状況メール送信実行
 	 * 
 	 * @param listMailContent
 	 *            メール送信内容＜社員ID、社員名、メールアドレス、件名、送信本文＞(リスト)
+	 *        transmissionAtr 送信区分: false = 本人, true = 上長
 	 * @param domain
 	 *            承認状況メールテンプレート
 	 */
-	SendMailResultOutput exeApprovalStatusMailTransmission(List<MailTransmissionContentOutput> listMailContent,
-			ApprovalStatusMailTemp domain, ApprovalStatusMailType mailType);
+	SendMailResultOutput exeApprovalStatusMailTransmission(List<MailTransmissionContentOutput> listMailContent, ApprovalStatusMailTemp domain,
+			boolean transmissionAtr, boolean screenUrlApprovalEmbed, boolean screenUrlDayEmbed, boolean screenUrlMonthEmbed);
 
 	/**
 	 * 承認状況送信者メール確認
@@ -268,7 +269,7 @@ public interface ApprovalStatusService {
 	 * @param employmentCDLst
 	 * @return
 	 */
-	public Map<String, String> getMailCountUnConfirmDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
+	public List<Pair<String, String>> getMailCountUnConfirmDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_対象再取得_日別上長.C:メール送信_対象再取得_日別上長
@@ -277,7 +278,7 @@ public interface ApprovalStatusService {
 	 * @param employmentCDLst
 	 * @return
 	 */
-	public Map<String, Pair<String, GeneralDate>> getMailCountUnApprDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
+	public List<Pair<String, Pair<String, GeneralDate>>> getMailCountUnApprDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_対象再取得_月別本人.C:メール送信_対象再取得_月別本人
@@ -286,7 +287,7 @@ public interface ApprovalStatusService {
 	 * @param employmentCDLst
 	 * @return
 	 */
-	public Map<String, String> getMailCountUnConfirmMonth(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
+	public List<Pair<String, String>> getMailCountUnConfirmMonth(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_対象再取得_月別上長.C:メール送信_対象再取得_月別上長
@@ -295,7 +296,7 @@ public interface ApprovalStatusService {
 	 * @param employmentCDLst
 	 * @return
 	 */
-	public Map<String, String> getMailCountUnApprMonth(DatePeriod period, YearMonth processingYm, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
+	public List<Pair<String, String>> getMailCountUnApprMonth(DatePeriod period, YearMonth processingYm, List<DisplayWorkplace> displayWorkplaceLst, List<String> employmentCDLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_対象再取得_就業確定.C:メール送信_対象再取得_就業確定
@@ -321,7 +322,7 @@ public interface ApprovalStatusService {
 	 * @param paramPeriod
 	 * @return
 	 */
-	public List<ApprSttWkpEmpMailOutput> getDayApproverToSendMail(Map<String, Pair<String, GeneralDate>> mapDayApproval);
+	public List<ApprSttWkpEmpMailOutput> getDayApproverToSendMail(List<Pair<String, Pair<String, GeneralDate>>> lstDayApproval);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF018_承認状況の照会.C:メール送信ダイアログ.アルゴリズム.C:メール送信_月別上長の情報を取得.C:メール送信_月別上長の情報を取得
@@ -329,7 +330,7 @@ public interface ApprovalStatusService {
 	 * @param paramPeriod
 	 * @return
 	 */
-	public List<ApprSttWkpEmpMailOutput> getMonthApproverToSendMail(Map<String, String> mapMonthApproval, DatePeriod paramPeriod,
+	public List<ApprSttWkpEmpMailOutput> getMonthApproverToSendMail(List<Pair<String, String>> lstMonthApproval, DatePeriod paramPeriod,
 			Integer closureID, YearMonth yearMonth, ClosureDate closureDate);
 	
 	/**
@@ -342,7 +343,8 @@ public interface ApprovalStatusService {
 	/**
 	 * C:メール送信_対象者へメール送信
 	 */
-	public SendMailResultOutput sendMailToDestination(ApprovalStatusMailTemp approvalStatusMailTemp, List<ApprSttWkpEmpMailOutput> wkpEmpMailLst);
+	public SendMailResultOutput sendMailToDestination(ApprovalStatusMailTemp approvalStatusMailTemp, List<ApprSttWkpEmpMailOutput> wkpEmpMailLst,
+			boolean screenUrlApprovalEmbed, boolean screenUrlDayEmbed, boolean screenUrlMonthEmbed);
 	
 	/**
 	 * 承認状況未承認申請取得

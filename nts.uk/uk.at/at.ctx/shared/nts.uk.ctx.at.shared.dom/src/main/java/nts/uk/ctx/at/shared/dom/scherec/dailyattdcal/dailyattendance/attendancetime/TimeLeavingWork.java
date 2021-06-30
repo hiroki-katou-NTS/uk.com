@@ -8,10 +8,8 @@ import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
@@ -226,12 +224,8 @@ public class TimeLeavingWork extends DomainObject{
 	//NOとデフォルトを作成する
 	public static TimeLeavingWork createDefaultWithNo(int no, TimeChangeMeans reason) {
 		return new TimeLeavingWork(new WorkNo(no),
-				new TimeActualStamp(null,
-						new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(reason, null), null),
-								Optional.empty()),
-						0), //
-				new TimeActualStamp(null, new WorkStamp(
-						new WorkTimeInformation(new ReasonTimeChange(reason, null), null), Optional.empty()), 0));
+				TimeActualStamp.createDefaultWithReason(reason), //
+				TimeActualStamp.createDefaultWithReason(reason));
 	}
 	
 	/**

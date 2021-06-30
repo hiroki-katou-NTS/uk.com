@@ -4,8 +4,8 @@ import nts.uk.ctx.at.record.pub.anyperiod.GetAnyPeriodRecordPub;
 import nts.uk.ctx.at.record.pub.anyperiod.AnyPeriodRecordValuesExport;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriodRepository;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.anyperiod.attendancetime.converter.AnyPeriodRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

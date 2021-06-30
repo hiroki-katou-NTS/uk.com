@@ -33,7 +33,7 @@
 					</div>
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 5px;">
-					<div id="cGrid"></div>
+					<table id="cGrid"></table>
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 10px;">
 					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_353')}</div>
@@ -42,10 +42,11 @@
 					<input id="kaf018-c-input" data-bind="ntsTextEditor: { 
 										name: '#{i18n.getText('KAF018_354')}',
 										value: mailSubject,
-										constraint: 'Subject' }" />
+										constraint: 'Subject',
+										required: true }" />
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 10px;">
-					<div class="cell">
+					<div class="cell" style="position: relative; top: -1px; width: 80px">
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_355')}</div>
 					</div>
 					<div class="cell">#{i18n.getText('KAF018_356')}</div>
@@ -54,7 +55,8 @@
 					<textarea id="kaf018-c-textarea" data-bind="ntsMultilineEditor: { 
 										name: '#{i18n.getText('KAF018_357')}',
 										value: mailContent,
-										constraint: 'Content' }" />
+										constraint: 'Content',
+										required: true }" />
 				</div>
 				<div class="table" style="margin-left: 5px; margin-top: 10px;">
 					<div data-bind="if: displayUrlApprovalEmbed">
@@ -67,7 +69,7 @@
 						<div data-bind="ntsCheckBox: { checked: urlMonthEmbed }">#{i18n.getText('KAF018_364')}</div>
 					</div>
 				</div>
-				<div class="table" style="margin-left: 5px; margin-top: 10px;">
+				<div class="table" style="margin-left: 5px; margin-top: 10px;" data-bind="if: displayUpdTmpBtn">
 					<div class="cell" style="width: 60px">
 						<button data-bind="click: updateMailTemplate, enable: $root.errors.isEmpty">#{i18n.getText('KAF018_358')}</button>
 					</div>

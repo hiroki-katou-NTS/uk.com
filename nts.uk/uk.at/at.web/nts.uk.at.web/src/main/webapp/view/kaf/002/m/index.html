@@ -1,15 +1,36 @@
-
-<div id="tab-panel" style="width: 485px !important;"
-	data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}, if: tabs">
-
-
-	<!-- ko foreach: nameGrids, -->
-	<div style="padding-bottom: 20px"
-		data-bind="attr: {'role': 'tabpanel','class': 'tab-content-'+ String($index() +1) + ' ui-tabs-panel ui-corner-bottom ui-widget-content ' + ($index() +1 == 1 ? '' : 'disappear'), 'id': 'tab-'+ String($index() +1), 'aria-labelledby': 'ui-id-' + String($index() +1) , 'aria-hidden': $index() +1 == 1 ? 'false' : 'true'}">
-		<table data-bind="attr: {'id': $data}"></table>
-
+<div
+	id="kaf002TabPanel"
+	data-bind="ntsTabPanel: { dataSource:  $component.tabs, active: selectedTab }" style="width: 450px">
+	<div data-bind="if: comment1().content != ''" >
+		<div
+			data-bind="text: comment1().content,
+					   style: {color: comment1().color,
+					   marginBottom:'9px',
+					   fontWeight: comment1().isBold ? 'bold' : 'normal'}"
+			class="label"
+			style="white-space: break-spaces; width: auto !important">
+			
+		</div>
 	</div>
-	<!-- /ko -->
-	
+
+	<div data-bind="foreach: $component.nameGrids">
+		<div
+			data-bind="css: { 'hidden': $component.selectedTab() !== 'tab-' + ($index() + 1) }">
+			<table data-bind="attr: { 'id': $data }"></table>
+		</div>
+	</div>
+
+	<div data-bind="if: comment2().content != ''" >
+		<div
+			data-bind="text: comment2().content,
+					   style: {color: comment2().color,
+					   marginTop:'10px',
+					   fontWeight: comment2().isBold ? 'bold' : 'normal'}"
+			class="label"
+			style="white-space: break-spaces; width: auto !important">
+			
+		</div>
+	</div>
+
 
 </div>

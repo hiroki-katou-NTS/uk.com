@@ -3,43 +3,75 @@ module nts.uk.at.view.kaf006.shr.component1.viewmodel {
     @component({
         name: 'kaf006-shr-component1',
         template: `
-        <div id="kaf006-shr-component1" data-bind="visible: $parent.selectedType() !== 6">
-            <table>
-                <tr class="text-center bg-green">
-                    <!-- A14_1 -->
-                    <td class="table-border py-10 text-center" data-bind="text: $i18n('KAF006_69'), visible: $parent.condition21"></td>
-                    <!-- A14_2 -->
-                    <td class="table-border py-10 text-center" data-bind="text: $i18n('KAF006_70'), visible: $parent.condition22"></td>
-                    <!-- A14_3 -->
-                    <td class="table-border py-10 text-center" data-bind="text: $i18n('KAF006_71'), visible: $parent.condition23"></td>
-                    <!-- A14_4 -->
-                    <td class="table-border py-10 text-center" data-bind="text: $i18n('KAF006_72'), visible: $parent.condition24"></td>
-                </tr>
-                <tr class="text-right">
-                    <td class="table-border text-right py-5 text-center" data-bind="text: $i18n('KAF006_46', [$parent.yearRemain()]), visible: $parent.condition21"></td>
-                    <td class="table-border text-right py-5 text-center" data-bind="text: $i18n('KAF006_46', [$parent.subHdRemain()]), visible: $parent.condition22"></td>
-                    <td class="table-border text-right py-5 text-center" data-bind="text: $i18n('KAF006_46', [$parent.subVacaRemain()]), visible: $parent.condition23"></td>
-                    <td class="table-border text-right py-5 text-center" data-bind="text: $i18n('KAF006_46', [$parent.remainingHours()]), visible: $parent.condition24"></td>
-                </tr>
-            </table>
+        <div id="kaf006-shr-component1" class="control-group" 
+            data-bind="visible: $parent.selectedType() !== 6 && ($parent.condition21 || $parent.condition22 || $parent.condition23 || $parent.condition24)" 
+            style="border-bottom: 2px solid #B1B1B1; padding-bottom: 25px; margin: 15px 15px 0">
+            <div class="cell" style="font-weight: bold" data-bind="text: $i18n('KAF006_97')"></div>
+            <div class="space-between-table ">
+                <!-- ko if: $parent.condition22 -->
+                <div class="row-underline" style="display: flex; justify-content: space-between">
+                    <div data-bind="ntsFormLabel: {}, text: $i18n('KAF006_70')"></div>
+                    <a class="hyperlink" href="" data-bind="text: $i18n('KAF006_46', [$parent.subHdRemain()]), click: openKDL005"></a>
+                </div>
+                <!-- /ko -->
+                <!-- ko if: $parent.condition23 -->
+                <div class="row-underline" style="display: flex; justify-content: space-between">
+                    <div data-bind="ntsFormLabel: {}, text: $i18n('KAF006_71')"></div>
+                    <a class="hyperlink" href="" data-bind="text: $i18n('KAF006_46', [$parent.subVacaRemain()]), click: openKDL009"></a>
+                </div>
+                <!-- /ko -->
+                <!-- ko if: $parent.condition21 -->
+                <div class="row-underline" style="display: flex; justify-content: space-between">
+                    <div data-bind="ntsFormLabel: {}, text: $i18n('KAF006_69')"></div>
+                    <a class="hyperlink" href="" data-bind="text: $i18n('KAF006_46', [$parent.yearRemain()]), click: openKDL020"></a>
+                </div>
+                <!-- /ko -->
+                <!-- ko if: $parent.condition24 -->
+                <div class="row-underline"  style="display: flex; justify-content: space-between">
+                    <div data-bind="ntsFormLabel: {}, text: $i18n('KAF006_72')"></div>
+                    <a class="hyperlink" href="" data-bind="text: $i18n('KAF006_46', [$parent.remainingHours()]), click: openKDL029"></a>
+                </div>
+                <!-- /ko -->
+            </div>
+            <div class="end-line"></div>
         </div>
-        <div id="kaf006-shr-component1" data-bind="visible: $parent.selectedType() === 6">
-            <table>
-                <tr class="text-center bg-green">
-                    <td class="table-border py-10 text-center" data-bind="text: $i18n('Com_ExsessHoliday')"></td>
-                    <td class="table-border py-10 text-center" data-bind="text: $i18n('KAF006_30')"></td>
-                    <td class="table-border py-10 text-center" data-bind="text: $i18n('KAF006_29')"></td>
-                    <td class="table-border py-10 text-center" data-bind="text: $i18n('Com_ChildNurseHoliday')"></td>
-                    <td class="table-border py-10 text-center" data-bind="text: $i18n('Com_CareHoliday')"></td>
-                </tr>
-                <tr class="text-right">
-                    <td class="table-border text-right py-5 text-center" data-bind="text: $parent.over60HHourRemain"></td>
-                    <td class="table-border text-right py-5 text-center" data-bind="text: $parent.subVacaHourRemain"></td>
-                    <td class="table-border text-right py-5 text-center" data-bind="text: $parent.timeYearLeave"></td>
-                    <td class="table-border text-right py-5 text-center" data-bind="text: $parent.childNursingRemain"></td>
-                    <td class="table-border text-right py-5 text-center" data-bind="text: $parent.nursingRemain"></td>
-                </tr>
-            </table>
+        <div id="kaf006-shr-component1" class="control-group" 
+            data-bind="visible: $parent.selectedType() === 6 && ($parent.condition19Over60 || $parent.condition19Annual || $parent.condition19ChildNursing || $parent.condition19Nursing || $parent.condition19Substitute)" 
+            style="border-bottom: 2px solid #B1B1B1; padding-bottom: 25px; margin: 15px 15px 0">
+            <div class="cell" style="font-weight: bold" data-bind="text: $i18n('KAF006_97')"></div>
+            <div class="space-between-table ">
+                <!-- ko if: $parent.condition19Over60 -->
+                <div class="row-underline" style="display: flex; justify-content: space-between">
+                    <div data-bind="ntsFormLabel: {}, text: $i18n('Com_ExsessHoliday')"></div>
+                    <a class="hyperlink" href="" data-bind="text: $parent.over60HHourRemain, click: openKDL017"></a>
+                </div>
+                <!-- /ko -->
+                <!-- ko if: $parent.condition19Substitute -->
+                <div class="row-underline" style="display: flex; justify-content: space-between">
+                    <div data-bind="ntsFormLabel: {}, text: $i18n('KAF006_30')"></div>
+                    <a class="hyperlink" href="" data-bind="text: $parent.subVacaHourRemain, click: openKDL005"></a>
+                </div>
+                <!-- /ko -->
+                <!-- ko if: $parent.condition19Annual -->
+                <div class="row-underline" style="display: flex; justify-content: space-between">
+                    <div data-bind="ntsFormLabel: {}, text: $i18n('KAF006_29')"></div>
+                    <a class="hyperlink" href="" data-bind="text: $parent.timeYearLeave, click: openKDL020"></a>
+                </div>
+                <!-- /ko -->
+                <!-- ko if: $parent.condition19ChildNursing -->
+                <div class="row-underline"  style="display: flex; justify-content: space-between">
+                    <div data-bind="ntsFormLabel: {}, text: $i18n('Com_ChildNurseHoliday')"></div>
+                    <a class="hyperlink" href="" data-bind="text: $parent.childNursingRemain, click: openKDL051"></a>
+                </div>
+                <!-- /ko -->
+                <!-- ko if: $parent.condition19Nursing -->
+                <div class="row-underline" style="display: flex; justify-content: space-between">
+                    <div data-bind="ntsFormLabel: {}, text: $i18n('Com_CareHoliday')"></div>
+                    <a class="hyperlink" href="" data-bind="text: $parent.nursingRemain, click: openKDL052"></a>
+                </div>
+                <!-- /ko -->
+            </div>
+            <div class="end-line"></div>
         </div>
         `
     })
@@ -51,6 +83,34 @@ module nts.uk.at.view.kaf006.shr.component1.viewmodel {
 
         mounted() {
 
+        }
+
+        openKDL020() {
+            ko.contextFor(this.$el).$data.openKDL020();
+        }
+
+        openKDL029() {
+            ko.contextFor(this.$el).$data.openKDL029();
+        }
+
+        openKDL005() {
+            ko.contextFor(this.$el).$data.openKDL005();
+        }
+
+        openKDL051() {
+            ko.contextFor(this.$el).$data.openKDL051();
+        }
+
+        openKDL052() {
+            ko.contextFor(this.$el).$data.openKDL052();
+        }
+
+        openKDL017() {
+            ko.contextFor(this.$el).$data.openKDL017();
+        }
+
+        openKDL009() {
+            ko.contextFor(this.$el).$data.openKDL009();
         }
     }
 }

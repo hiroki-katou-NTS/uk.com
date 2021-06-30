@@ -9,19 +9,19 @@
 .rightComponent {
 	display: inline-block; 
 	position: absolute; 
-	top: 100px; 
+	top: 80px;
 	left: 700px
 }
 
 .N3Component {
 	position: relative; 
 	display: inline-block; 
-	top: 70px; 
+	top: 50px;
 	left: 100px	
 }
 .rightButton {
 	margin-bottom: 20px; 
-	margin-left: 375px; 
+	margin-left: 403px;
 	display: inline-block
 }
 .rightButtonKCP005 {
@@ -36,6 +36,10 @@
 .controlTop {
 	display: inline-block; 
 	position: absolute; 
-	top: 43px; 
+	top: 30px;
 	left: 130px
+}
+
+#multi-list_container {
+	height: 385px !important;
 }

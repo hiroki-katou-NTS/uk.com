@@ -4,88 +4,85 @@ module nts.uk.at.view.ktg027.a {
         GET_DATA_INIT: "/screen/at/overtimehours/getOvertimedDisplayForSuperiorsDto",
     };
 
-
-
-    // get text color of 対象時間
-    const genTextColor = (state: number) => {
-        if ([1, 3].indexOf(state) > -1) {
-            return "#ffffff";
+    // 色	※色定義-就業.xlsxを参照
+    const timeStyle = (state: number): string => {
+        if (state === 1) {
+            return 'exceeding-limit-error';
         }
 
-        if ([2, 4].indexOf(state) > -1) {
-            return "#ff0000";
+        if (state === 2) {
+            return 'exceeding-limit-alarm';
         }
 
-        return "";
-    };
-
-    // get background color of 対象時間
-    const genBackgroundColor = (state: number) => {
-        if ([1, 3].indexOf(state) > -1) {
-            return "#FD4D4D";
+        if (state === 3) {
+            return 'special-exceeded-limit-error';
         }
 
-        if ([2, 4].indexOf(state) > -1) {
-            return "#F6F636";
+        if (state === 4) {
+            return 'special-exceeded-limit-alarm';
         }
 
-        if ([6, 7].indexOf(state) > -1) {
-            return "#eb9152";
+        if (state === 6) {
+            return 'special-exceeding-limit-error';
         }
 
-        return "";
-    };
+        if (state === 7) {
+            return 'special-exceeding-limit';
+        }
+
+        return '';
+    }
 
     @component({
         name: 'ktg-027-a',
         template: `
             <div class="ktg-027-a widget-title">
-                <table>
-                    <thead>
-                        <tr>
-                            <th data-bind="i18n: 'KTG027_5'"></th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-            <div class="ktg-027-a widget-content">
-                <table>
+                <table style="width: 100%;">
                     <colgroup>
                         <col width="auto" />
-                        <col width="180px" />
+                        <col width="155px" />
+                        <col width="65px" />
                     </colgroup>
-                    <tbody>
+                    <thead>
                         <tr>
-                            <td>
-                                <div data-bind="ntsDatePicker: {
+                            <th class="ktg027-fontsize">
+                                <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG027_5') }"></div>
+                            </th>
+                            <th style="padding-right: 5px;">
+                                <div id="ktg027-datepick" data-bind="ntsDatePicker: {
                                     name: $component.$i18n('KTG027_1'),
                                     value: $component.targetYear,
                                     dateFormat: 'yearmonth',
                                     valueFormat: 'YYYYMM',
                                     showJumpButtons: true
                                 }"></div>
-                            </td>
-                            <td class="text-left">
-                                <div class="statutory" data-bind="i18n: 'KTG027_2'"></div>
-                                <div class="outside" data-bind="i18n: 'KTG027_3'"></div>
-                            </td>
+                            </th>
+                            <th>
+                                <button data-bind="ntsLegendButton: legendOptions"></button>
+                            </th>
                         </tr>
-                    </tbody>
+                    </thead>
                 </table>
             </div>
-            <div class="ktg-027-a widget-content widget-fixed scroll-padding ui-resizable">
+            <div class="ktg-027-a widget-content widget-fixed scroll-padding ui-resizable ktg027-border-top ktg027-1rem">
                 <div>
                     <table>
                         <colgroup>
                             <col width="25%" />
-                            <col width="25%" />
-                            <col width="50%" />
+                            <col width="17%" />
+                            <col width="58%" />
                         </colgroup>
                         <head>
                             <tr>
-                                <th class="text-center" data-bind="i18n: 'Com_Person'"></th>
-                                <th class="text-center" data-bind="i18n: 'KTG027_4'"></th>
-                                <td rowspan="1">
+                                <th class="text-center">
+                                    <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('Com_Person') }"></div>
+                                </th>
+                                <th class="text-center" style="white-space: nowrap;">
+                                    <div style="padding-right: 0;" data-bind="
+                                        ntsFormLabel: { required: false, text: $component.$i18n('KTG027_4') }">
+                                    </div>
+                                </th>
+                                <td style="padding-left: 10px;" rowspan="1">
                                     <canvas data-bind="ktg-026-chart: $component.dataTable, type: 'head'"></canvas>
                                 </td>
                             </tr>
@@ -97,21 +94,60 @@ module nts.uk.at.view.ktg027.a {
                 <div>
                     <table>
                         <colgroup>
-                            <col width="25%" />
-                            <col width="25%" />
-                            <col width="50%" />
+                            <col width="42%" />
+                            <col width="58%" />
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.dataTable, as: 'row' }">
-                            <tr>
-                                <td data-bind="text: row.businessName, click: function() { $component.openKTG026(row) }"></td>
-                                <td class="text-right" data-bind="time: row.time.tt, click: function() { $component.openKDW003(row) }, style: row.state"></td>
-                                <td data-bind="ktg-chart: $component.dataTable"></td>
+                            <tr style="height: 35px;">
+                                <td>
+                                    <div class="text-underline limited-label" data-bind="
+                                        text: row.businessName,
+                                        click: function() { $component.openKTG026(row) }"
+                                        style="float:left; width: 60%; padding-left: 5px;">
+                                    </div>
+                                    <div class="text-right text-underline" data-bind="
+                                        time: row.time.tt,
+                                        click: function() { $component.openKDW003(row) },
+                                        css: row.state"
+                                        style="height: 25px; padding-right: 5px;">
+                                    </div>
+                                </td>
+                                <td style="padding-left: 10px;" data-bind="ktg-chart: $component.dataTable"></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
             <style>
+                .text-underline {
+                    text-decoration: underline;
+                }
+                .ktg-027-a table tr th,
+                .ktg-027-a table tr td {
+                    border-bottom: none !important;
+                }
+                .ktg-027-a table tr td.text-right div.text-underline {
+                    line-height: 30px;
+                    width: 60px;
+                    float: right;
+                }
+                .ktg027-1rem div.form-label>span.text {
+                    font-size: 1rem;
+                }
+                .ktg027-border-top {
+                    border-top: none !important;
+                }
+                .ktg027-border-top::before {
+                    width: 100%;
+                    height: 1px;
+                    background: #b1b1b1;
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                }
+                .ktg027-fontsize div.form-label>span.text {
+                    font-size: 1.2rem !important;
+                }
                 .ktg-027-a .outside {
                     color: #e05f4e;
                 }
@@ -127,15 +163,10 @@ module nts.uk.at.view.ktg027.a {
                 .ktg-027-a.widget-content:not(.ui-resizable) td {
                     border-bottom: 0;
                 }
-                .ktg-027-a.widget-content.ui-resizable th,
-                .ktg-027-a.widget-content.ui-resizable td {
-                    border-bottom: 1px solid #999;
-                }
                 .ktg-027-a.widget-content.ui-resizable th:first-child,
                 .ktg-027-a.widget-content.ui-resizable td:first-child {
                     overflow: hidden;
                     white-space: nowrap;
-                    min-width: 100px;
                     max-width: 100px;
                     padding-left: 0px;
                     padding-right: 0px;
@@ -167,6 +198,34 @@ module nts.uk.at.view.ktg027.a {
                 .widget-container.has-scroll .ktg-027-a.scroll-padding {
                     padding-right: 17px;
                 }
+                /* 限度アラーム時間超過 */
+                .ktg-027-a.widget-content.ui-resizable .exceeding-limit-alarm {
+                    background-color: #FFFF99; /* 36協定アラーム */
+                    color: #FF9900; /* 36協定アラーム文字 */
+                }
+                /* 限度エラー時間超過 */
+                .ktg-027-a.widget-content.ui-resizable .exceeding-limit-error {
+                    background-color: #FF99CC; /* 36協定エラー */
+                    color: #ffffff; /* 36協定エラー文字 */
+                }
+                /* 限度アラーム時間超過（特例あり） */
+                .ktg-027-a.widget-content.ui-resizable .special-exceeding-limit {
+                    background-color: #eb9152; /* 36協定特例 */
+                }
+                /* 限度エラー時間超過（特例あり） */
+                .ktg-027-a.widget-content.ui-resizable .special-exceeding-limit-error {
+                    background-color: #eb9152; /* 36協定特例 */
+                }
+                /* 特例限度アラーム時間超過 */
+                .ktg-027-a.widget-content.ui-resizable .special-exceeded-limit-alarm  {
+                    background-color: #FFFF99; /* 36協定アラーム */
+                    color: #FF9900; /* 36協定アラーム文字 */
+                }
+                /* 特例限度エラー時間超過 */
+                .ktg-027-a.widget-content.ui-resizable .special-exceeded-limit-error {
+                    background-color: #FF99CC; /* 36協定エラー */
+                    color: #ffffff; /* 36協定エラー文字 */
+                }
             </style>
             <style data-bind="html: $component.chartStyle"></style>
         `
@@ -183,6 +242,7 @@ module nts.uk.at.view.ktg027.a {
 
         dataTable!: KnockoutComputed<any[]>;
         chartStyle!: KnockoutComputed<string>;
+        legendOptions: any;
 
         constructor(private cache: { currentOrNextMonth: 1 | 2; }) {
             super();
@@ -205,6 +265,13 @@ module nts.uk.at.view.ktg027.a {
 
                     return _
                         .chain(employees)
+                        .filter((emp: PersonalInfo) => {
+                            const os = _.find(overtimeSubor, ({ employeeId }) => employeeId === emp.employeeId);
+                            if (os) {
+                                return true;
+                            }
+                            return false;
+                        })
                         .map((emp: PersonalInfo) => {
                             const os = _.find(overtimeSubor, ({ employeeId }) => employeeId === emp.employeeId);
                             const ps = _.find(personalSubor, ({ employeeId }) => employeeId === emp.employeeId);
@@ -220,11 +287,11 @@ module nts.uk.at.view.ktg027.a {
                                         ot: Math.min(6000, at.agreementTime),
                                         wh: at.agreementTime >= 6000 ? 0 : Math.max((am.agreementTime || 0) - (at.agreementTime || 0), 0)
                                     },
-                                    state: `color: ${genTextColor(state)}; background-color: ${genBackgroundColor(state)}`
+                                    state: timeStyle(state)
                                 });
                             }
 
-                            return _.extend(emp, { time: { tt: 0, ot: 0, wh: 0 }, state: '' });
+                            return _.extend(emp, { time: { tt: 0, ot: 0, wh: 0 }, state: 'a' });
                         })
                         // trigger rerender table & chart
                         .filter(() => employees.length && overtimeSubor.length && personalSubor.length)
@@ -240,7 +307,7 @@ module nts.uk.at.view.ktg027.a {
                         return '.ktg-027-a.widget-content:not(.widget-fixed) td[rowspan] canvas { height: 0px !important; }';
                     }
 
-                    return `.ktg-027-a.widget-content:not(.widget-fixed) td[rowspan] canvas { height: ${data.length * 41}px !important; }`;
+                    return `.ktg-027-a.widget-content:not(.widget-fixed) td[rowspan] canvas { height: ${data.length * 35}px !important; }`;
                 }
             });
 
@@ -266,6 +333,17 @@ module nts.uk.at.view.ktg027.a {
             const vm = this;
             const { cache } = vm;
 
+            vm.legendOptions = {
+                items: [
+                    { colorCode: '#99FF66', labelText: vm.$i18n('KTG027_2') },
+                    { colorCode: '#00CC00', labelText: vm.$i18n('KTG027_3') },
+                ],
+                template :
+                '<div class="legend-item-label">'
+                + '<div style="color: #{colorCode};" data-bind="ntsFormLabel: { required: false }">#{labelText}</div>'
+                + '</div>'
+            };
+
             vm
                 .$blockui('invisibleView')
                 .then(() => vm.$ajax('at', `${API.GET_DATA_INIT}/${cache.currentOrNextMonth}`))
@@ -276,13 +354,17 @@ module nts.uk.at.view.ktg027.a {
 
                     vm.targetYear
                         .subscribe((ym: string | null) => {
-                            if (typeof ym === 'string') {
-                                vm.$window.storage('KTG027_TARGET', {
-                                    isRefresh: false,
-                                    target: ym
-                                });
-                                vm.loadData(ym, closureId);
-                            }
+                            vm.$validate('#ktg027-datepick').then(valid => {
+                                if (!valid || _.isEmpty(ym)) return;
+
+                                if (typeof ym === 'string') {
+                                    vm.$window.storage('KTG027_TARGET', {
+                                        isRefresh: false,
+                                        target: ym
+                                    });
+                                    vm.loadData(ym, closureId);
+                                }
+                            });
                         });
 
                     vm.$window.storage('KTG027_TARGET').then((rs: {isRefresh: boolean, target: any}) => {

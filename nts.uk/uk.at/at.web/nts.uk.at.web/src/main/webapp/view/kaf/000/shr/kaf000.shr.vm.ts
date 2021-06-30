@@ -24,6 +24,14 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
             this.opAppStartDate = ko.observable("");
             this.opAppEndDate = ko.observable("");
             this.opStampRequestMode = ko.observable(null);
+			this.appDate.subscribe(value => {
+				if(_.isEmpty(this.opAppStartDate())) {
+					this.opAppStartDate(value);
+				}
+				if(_.isEmpty(this.opAppEndDate())) {
+					this.opAppEndDate(value);
+				}
+			});
         }        
     }
     
@@ -262,7 +270,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 			if(appDeadlineUseCategory) {
 				deadlinePart = vm.$i18n('KAF000_40', [value.appDispInfoWithDateOutput.opAppDeadline]);	
 			}
-            vm.deadline(prePart + postPart + deadlinePart);    
+            vm.deadline(_.chain([prePart, postPart, deadlinePart]).filter(o => o).join('<br/>').value());
         }
         
         public static checkUsage(
@@ -275,7 +283,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
                 useDivision = appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
                 recordDate = appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.recordDate,
                 empHistImport = appDispInfoStartupOutput.appDispInfoWithDateOutput.empHistImport,
-           		opErrorFlag = appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
+                opErrorFlag = appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
                 msgID = "";
             if(mode && useDivision == 0) {
 				if(recordDate == 0) {

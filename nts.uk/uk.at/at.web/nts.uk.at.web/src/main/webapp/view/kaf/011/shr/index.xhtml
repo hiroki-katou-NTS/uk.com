@@ -10,38 +10,38 @@
 						<div class="name">#{i18n.getText('KAF011_1')}</div>
 						<div class="ruleLine"></div>
 						<div class="row">
-							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_22')}</div>
+							<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_22')}</div>
 							<com:ko-if bind="isAScreen">
-								<div id="recAppDate" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: application.appDate, dateFormat: 'YYYY/MM/DD', required: true }"></div>
+								<div id="recAppDate" class="marginNag" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: application.appDate, dateFormat: 'YYYY/MM/DD', required: true }"></div>
 							</com:ko-if>
 							<com:ko-if bind="!isAScreen()">
-								<div class="ntsControl" style="padding-top: 10px;" data-bind="text: application.appDate"></div>
+								<div class="ntsControl marginNag" style="padding-top: 10px;" data-bind="text: application.appDate"></div>
 							</com:ko-if>
 						</div>
 						<div class="row">
-							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_28')}</div>
-							<div data-bind="ntsComboBox: {
+							<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_28')}</div>
+							<div class="marginNag" data-bind="ntsComboBox: {
 		                                        name: '#{i18n.getText('KAF000_28')}',
 		                                        options: workTypeList,
 		                                        optionsValue: 'workTypeCode',
 		                                        optionsText: 'name',
 		                                        value: workInformation.workType,
-		                                        columns: [{ prop: 'workTypeCode', length: 3 },{ prop: 'name', length: 15 }],
+		                                        columns: [{ prop: 'workTypeCode', length: 4 },{ prop: 'name', length: 15 }],
 		                                        required: true,
 		                                        enable: outputMode() == 1 
 		                                        }">
 		                    </div>					
 						</div>
 						<div class="row">
-							<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_30')}</div>
-							<div class="ntsControl">
-								<button class="" data-bind="click: openKDL003, enable: outputMode() == 1" tabindex="">#{i18n.getText('KAF011_5')}</button>
-								<span data-bind="text: workTimeDisplay"></span>
+							<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_30')}</div>
+							<div class="ntsControl marginNag">
+								<button data-bind="click: openKDL003, enable: outputMode() == 1" tabindex="">#{i18n.getText('KAF011_5')}</button>
+								<div style="margin: 5px 5px" class="ntsControl" data-bind="text: workTimeDisplay"></div>
 							</div>
 						</div>
 						<div class="row">
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_31')}</div>
-							<div class="ntsControl">
+							<div class="ntsLabelCustome" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_31')}</div>
+							<div class="ntsControl marginNag">
 								<input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 	                                                    constraint:'TimeWithDayAttr',
 	                                                    value: _.find(workingHours(), {'workNo': 1}).timeZone.startTime,
@@ -57,8 +57,8 @@
 						</div>
 						<com:ko-if bind="($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles) &amp;&amp; _.find(workingHours(), {'workNo': 2})">
 							<div class="row">
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_34')}</div>
-								<div class="ntsControl">
+								<div class="ntsLabelCustome" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_34')}</div>
+								<div class="ntsControl marginNag">
 									<input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 		                                                    constraint:'TimeWithDayAttr',
 		                                                    value: _.find(workingHours(), {'workNo': 2}).timeZone.startTime,
@@ -75,8 +75,8 @@
 						</com:ko-if>
 						<com:ko-if bind="dk1">
 							<div class="row tableRelase">
-								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_46')}</div>
-								<div class="ntsControl">
+								<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_46')}</div>
+								<div class="ntsControl marginNag">
 									<div>
 										<button class="" data-bind="click: openKDL036, enable: outputMode() == 1 ">#{i18n.getText('KAF011_5')}</button>
 										#{i18n.getText('KAF011_48')}
@@ -102,37 +102,42 @@
 								</div>
 							</div>
 						</com:ko-if>
-						<div class="comment" data-bind="text: $parent.comment.subWorkComment, style: {color: $parent.comment.subWorkColor, 'font-weight': $parent.comment.subWorkBold()? 'bold': ''}"></div>
+						<div class="comment" data-bind="text: $parent.comment.subWorkComment, style: {color: $parent.comment.subWorkColor, 'font-weight': $parent.comment.subWorkBold()? 'bold': 'normal'}"></div>
 					</div>
 				</com:ko-if>
 				<com:ko-if bind="appCombinaSelected() != 1 &amp;&amp; displayInforWhenStarting">
-					<div class="application holiday" data-bind="with: absenceLeaveApp">
+					<div class="application2 holiday" data-bind="with: absenceLeaveApp">
 						<div class="name">#{i18n.getText('KAF011_2')}</div>
 						<div class="ruleLine"></div>
+						<com:ko-if bind="isAScreen()">
+							<div class="row">
+								<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_22')}</div>
+								<div id="absAppDate" class="marginNag" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: application.appDate, dateFormat: 'YYYY/MM/DD', required: true }"></div>
+							</div>
+						</com:ko-if>
+						<com:ko-if bind="!isAScreen()">
+							<div class="row" style="margin-top: -2px;
+    							margin-bottom: -1px;">
+								<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_22')}</div>
+									<div class="ntsControl marginNag" style="margin-top: 6px;" data-bind="text: application.appDate"></div>
+									<com:ko-if bind="displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr == 0 &amp;&amp; _.find(displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo.application.reflectionStatus.listReflectionStatusOfDay, function(i) {return i.actualReflectStatus == 3 || i.scheReflectStatus == 3;}) == undefined ">
+										<button style="margin-left: 100px;" data-bind="enable: outputMode() == 1, click: openKAF011C">#{i18n.getText('KAF011_26')}</button>
+									</com:ko-if>
+									<com:ko-if bind="changeSourceHoliday">
+										<div class="ntsControl marginNag" style="padding-top: 5px;" data-bind="text: nts.uk.resource.getText('KAF011_87', [changeSourceHoliday()])"></div>
+									</com:ko-if>
+							</div>
+						</com:ko-if>
+						
 						<div class="row">
-							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_22')}</div>
-							<com:ko-if bind="isAScreen">
-								<div id="absAppDate" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: application.appDate, dateFormat: 'YYYY/MM/DD', required: true }"></div>
-							</com:ko-if>
-							<com:ko-if bind="!isAScreen()">
-								<div class="ntsControl" style="padding-top: 10px;" data-bind="text: application.appDate"></div>
-								<com:ko-if bind="displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr == 0 &amp;&amp; _.find(displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo.application.reflectionStatus.listReflectionStatusOfDay, function(i) {return i.actualReflectStatus == 3 || i.scheReflectStatus == 3;}) == undefined ">
-									<button style="margin-left: 100px;" data-bind="enable: outputMode() == 1, click: openKAF011C">#{i18n.getText('KAF011_26')}</button>
-								</com:ko-if>
-								<com:ko-if bind="changeSourceHoliday">
-									<div class="ntsControl" style="padding-top: 10px;" data-bind="text: nts.uk.resource.getText('KAF011_87', [changeSourceHoliday()])"></div>
-								</com:ko-if>
-							</com:ko-if>
-						</div>
-						<div class="row">
-							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_28')}</div>
-							<div data-bind="ntsComboBox: {
+							<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_28')}</div>
+							<div class="marginNag" data-bind="ntsComboBox: {
 		                                        name: '#{i18n.getText('KAF000_28')}',
 		                                        options: workTypeList,
 		                                        optionsValue: 'workTypeCode',
 		                                        optionsText: 'name',
 		                                        value: workInformation.workType,
-		                                        columns: [{ prop: 'workTypeCode', length: 3 },{ prop: 'name', length: 15 }],
+		                                        columns: [{ prop: 'workTypeCode', length: 4 },{ prop: 'name', length: 15 }],
 		                                        required: true,
 		                                        enable: outputMode() == 1  }">
 		                    </div>					
@@ -140,18 +145,18 @@
 						<div class="holidaySetting">
 							<com:ko-if bind="dk2">	
 								<div data-bind="ntsCheckBox: { checked: workChangeUse, enable: outputMode() == 1 }">#{i18n.getText('KAF011_29')}</div>
-								<div class="ruleLine"></div>
+								<div class="ruleLineHoliday"></div>
 								<div class="row">
 									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_30')}</div>
-									<div class="ntsControl" >
-										<button class="" data-bind="click: openKDL003, enable: workChangeUse() &amp;&amp; outputMode() == 1 " tabindex="">#{i18n.getText('KAF011_5')}</button>
+									<div class="ntsControl marginNag" >
+										<button style="margin-left: -3px" data-bind="click: openKDL003, enable: workChangeUse() &amp;&amp; outputMode() == 1 " tabindex="">#{i18n.getText('KAF011_5')}</button>
 										<span data-bind="text: workTimeDisplay"></span>
 									</div>
 								</div>
 								<com:ko-if bind="dk3">
 									<div class="row">
-										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_31')}</div>
-										<div class="ntsControl">
+										<div class="ntsLabelCustome" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_31')}</div>
+										<div class="ntsControl marginNag">
 											<input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 				                                                    constraint:'TimeWithDayAttr',
 				                                                    value: _.find(workingHours(), {'workNo': 1}).timeZone.startTime,
@@ -168,8 +173,8 @@
 								</com:ko-if>
 								<com:ko-if bind="dk3() &amp;&amp; _.find(workingHours(), {'workNo': 2}) &amp;&amp; ($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles == 1)">
 									<div class="row">
-										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_34')}</div>
-										<div class="ntsControl">
+										<div class="ntsLabelCustome" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_34')}</div>
+										<div class="ntsControl marginNag">
 											<input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 				                                                    constraint:'TimeWithDayAttr',
 				                                                    value: _.find(workingHours(), {'workNo': 2}).timeZone.startTime,
@@ -186,12 +191,12 @@
 								</com:ko-if>
 							</com:ko-if>
 							<com:ko-if bind="dk1">
-								<div class="row tableRelase">
-									<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_46')}</div>
-									<div class="ntsControl">
-										<div>
+								<div class="row tableRelase" style="margin-top: -1px !important">
+									<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_46')}</div>
+									<div class="ntsControl marginNag">
+										<div class="table">
 											<button class="" data-bind="click: openKDL036, enable: outputMode() == 1 ">#{i18n.getText('KAF011_5')}</button>
-											#{i18n.getText('KAF011_48')}
+											<span style="padding-left: 4px" class="cell valign-center">#{i18n.getText('KAF011_48')}</span>
 										</div>
 										<com:ko-if bind="leaveComDayOffMana().length > 0">
 											<div>
@@ -215,12 +220,12 @@
 								</div>
 							</com:ko-if>
 							<com:ko-if bind="$parent.appCombinaSelected() == 2 &amp;&amp; ($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().holidayManage == 1)">
-								<div class="row tableRelase">
-									<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_44')}</div>
-									<div class="ntsControl">
-										<div>
-											<button class="" data-bind="click: openKDL035, enable: outputMode() == 1 ">#{i18n.getText('KAF011_5')}</button>
-											#{i18n.getText('KAF011_47')}
+								<div class="row tableRelase" style="margin-top: -1px !important">
+									<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_44')}</div>
+									<div class="ntsControl marginNag">
+										<div class="table">
+											<button class="cell valign-center" data-bind="click: openKDL035, enable: outputMode() == 1 ">#{i18n.getText('KAF011_5')}</button>
+											<span style="padding-left: 4px;" class="cell valign-center	">#{i18n.getText('KAF011_47')}</span>
 										</div>
 										<com:ko-if bind="payoutSubofHDManagements().length > 0">
 											<div>
@@ -244,7 +249,7 @@
 								</div>
 							</com:ko-if>
 						</div>
-						<div class="comment" data-bind="text: $parent.comment.subHolidayComment, style: {color: $parent.comment.subHolidayColor, 'font-weight': $parent.comment.subHolidayBold()? 'bold': ''}"></div>
+						<div class="comment" data-bind="text: $parent.comment.subHolidayComment, style: {color: $parent.comment.subHolidayColor, 'font-weight': $parent.comment.subHolidayBold()? 'bold': 'normal'}"></div>
 					</div>
 				</com:ko-if>
 			</div>

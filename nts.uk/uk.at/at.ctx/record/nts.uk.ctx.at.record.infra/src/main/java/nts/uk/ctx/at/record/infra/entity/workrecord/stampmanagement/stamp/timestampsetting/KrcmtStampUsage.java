@@ -69,6 +69,12 @@ public class KrcmtStampUsage extends ContractUkJpaEntity implements Serializable
 	 */
 	@Column(name = "SMART_PHONE_STAMP")
 	public int smartPhoneStamp;
+	
+	/**
+	 * RICOH複写機打刻
+	 */
+	@Column(name = "RICOH_STAMP")
+	public int ricohStamp;
 
 	@Override
 	protected Object getKey() {
@@ -88,6 +94,7 @@ public class KrcmtStampUsage extends ContractUkJpaEntity implements Serializable
 		this.personStamp = domain.isIndivition() ? 1 : 0;
 		this.portalStamp = domain.isPortal() ? 1 : 0;
 		this.smartPhoneStamp = domain.isSmart_phone() ? 1 : 0;
+		this.ricohStamp = domain.isRicohStamp() ? 1 : 0;
 	}
 
 }

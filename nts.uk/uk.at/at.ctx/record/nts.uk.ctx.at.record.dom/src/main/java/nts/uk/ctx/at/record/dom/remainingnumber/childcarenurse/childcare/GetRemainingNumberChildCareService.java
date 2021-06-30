@@ -13,8 +13,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.GetRemainingNumberChildCareNurseService.Require;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.export.GetRemNumClosureStart;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ConfirmLeavePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.ConfirmLeavePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberData;
@@ -257,7 +257,7 @@ public class GetRemainingNumberChildCareService {
 		}
 
 		// 上書きフラグを確認
-		if (isOverWrite.isPresent()) {
+		if (isOverWrite.orElse(false) && periodOverWrite.isPresent()) {
 			// ※残数共通処理にする必要あり：一時対応
 			// 上書き用暫定残数データで置き換える
 			//	ドメインモデル「暫定子の看護介護管理データ」．作成元区分 = パラメータ「作成元区分」
@@ -269,6 +269,7 @@ public class GetRemainingNumberChildCareService {
 					.collect(Collectors.toList()); //上書き用の暫定管理データから上書対象でない暫定データを退避
 			noOverwriteRemains.addAll(tempChildCareDataforOverWriteList);
 			return noOverwriteRemains;
+		
 		}
 		// 暫定子の看護管理データを返す
 		return interimDate;

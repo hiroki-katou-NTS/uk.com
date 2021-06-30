@@ -1,3 +1,2 @@
 .x-large{ margin: 40px 0px 0px 60px; display : inline-block;  }
-.caret-right{top:-3px;}
-.caret-right::after{border-width: 24px !important;}
+.caret-right::after{border-width: 23px !important;}

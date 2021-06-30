@@ -7,50 +7,38 @@
     <div class="row content-div border-top uk-border-light-gray">
         <div class="col-12">
             <div class="row pb-2">
-                <kaf-s00-p1 class="col-4 px-2"
-                            v-bind:params="kafS00P1Params1"
-                />
-                <span class="col-8 px-2" v-if="cond1">{{time.attendanceTime | timewd}} から出勤</span>
-                <span class="col-8 px-2" v-else-if="cond1 == false && time.attendanceTime == null">{{  }} {{'KAFS04_14' | i18n}}</span>
-                <span class="col-8 px-2" v-else-if="cond1 == false && time.attendanceTime != null">{{ time.attendanceTime | timewd }} から出勤{{'KAFS04_14' | i18n}}</span>
-                <span v-else class="col-8 px-2">{{'KAFS04_18' | i18n}}</span>
+                <kaf-s00-p1 class="px-2" style="width: 110px;" v-bind:params="kafS00P1Params1" />
+                <span class="col-4 px-2" v-if="time.attendanceTime != null">{{'KAFS04_19' | i18n($dt.timewd(time.attendanceTime))}}</span>
+                <span class="col-4 px-2" v-else>{{'KAFS04_18' | i18n}}</span>
+                <span v-if="displayCancelText">{{  }} {{'KAFS04_14' | i18n}}</span>
             </div>
             <div class="row">
-                <kaf-s00-p1 class="col-4 px-2"
-                            v-bind:params="kafS00P1Params2"
-                />
-                <span class="col-8 px-2" v-if="cond2">{{time.leaveTime | timewd}} に退勤</span>
-                <span class="col-8 px-2" v-else-if="cond2 == false && time.leaveTime == null">{{  }} {{'KAFS04_15' | i18n}}</span>
-                <span class="col-8 px-2" v-else-if="cond2 == false && time.leaveTime != null">{{ time.leaveTime | timewd }} に退勤{{'KAFS04_15' | i18n}}</span>
-                <span v-else class="col-8 px-2">{{'KAFS04_18' | i18n}}</span>
+                <kaf-s00-p1 class="px-2" style="width: 110px;" v-bind:params="kafS00P1Params2" />
+                <span class="col-4 px-2" v-if="time.leaveTime != null">{{'KAFS04_20' | i18n($dt.timewd(time.leaveTime))}}</span>
+                <span class="col-4 px-2" v-else>{{'KAFS04_18' | i18n}}</span>
+                <span v-if="displayCancelText">{{  }} {{'KAFS04_15' | i18n}}</span>
             </div>
         </div>
     </div>
 
     <!-- B2 -->
-    <template v-if="showData">
+    <template v-if="managementMultipleWorkCycles">
         <div class="row content-div uk-bg-headline border-top uk-border-light-gray">
             <span>{{ "KAFS04_8" | i18n }}</span>
         </div>
       <div class="row content-div border-top uk-border-light-gray">
           <div class="col-12">
               <div class="row pb-2">
-                  <kaf-s00-p1 class="col-4 px-2"
-                              v-bind:params="kafS00P1Params3"
-                  />
-                  <span class="col-8 px-2" v-if="cond3">{{time.attendanceTime2 | timewd}} から出勤</span>
-                  <span class="col-8 px-2" v-else-if="cond3 == false && time.attendanceTime2 == null">{{  }} {{'KAFS04_16' | i18n}}</span>
-                  <span class="col-8 px-2" v-else-if="cond3 == false && time.attendanceTime2 != null">{{ time.attendanceTime2 | timewd }} から出勤{{'KAFS04_16' | i18n}}</span>
-                  <span v-else class="col-8 px-2">{{'KAFS04_18' | i18n}}</span>
+                  <kaf-s00-p1 class="px-2" style="width: 110px;" v-bind:params="kafS00P1Params3" />
+                  <span class="col-4 px-2" v-if="time.attendanceTime2 != null">{{'KAFS04_19' | i18n($dt.timewd(time.attendanceTime2))}}</span>
+                  <span class="col-4 px-2" v-else>{{'KAFS04_18' | i18n}}</span>
+                  <span v-if="displayCancelText">{{  }} {{'KAFS04_16' | i18n}}</span>
               </div>
               <div class="row">
-                  <kaf-s00-p1 class="col-4 px-2"
-                              v-bind:params="kafS00P1Params4"
-                  />
-                  <span class="col-8 px-2" v-if="cond4">{{time.leaveTime2 | timewd}} に退勤</span>
-                  <span class="col-8 px-2" v-else-if="cond4 == false && time.leaveTime2 == null">{{ }} {{'KAFS04_17' | i18n}}</span>
-                  <span class="col-8 px-2" v-else-if="cond4 == false && time.leaveTime2 != null">{{ time.leaveTime2 | timewd }} に退勤{{'KAFS04_17' | i18n}}</span>
-                  <span v-else class="col-8 px-2">{{'KAFS04_18' | i18n}}</span>
+                  <kaf-s00-p1 class="px-2" style="width: 110px;" v-bind:params="kafS00P1Params4" />
+                  <span class="col-4 px-2" v-if="time.leaveTime2 != null">{{'KAFS04_20' | i18n($dt.timewd(time.leaveTime2))}}</span>
+                  <span class="col-4 px-2" v-else>{{'KAFS04_18' | i18n}}</span>
+                  <span v-if="displayCancelText">{{ }} {{'KAFS04_17' | i18n}}</span>
               </div>
           </div>
       </div>
