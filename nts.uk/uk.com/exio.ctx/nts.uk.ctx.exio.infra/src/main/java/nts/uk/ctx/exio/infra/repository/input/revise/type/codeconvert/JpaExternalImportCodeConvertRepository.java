@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.BooleanUtils;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.CodeConvertCode;
 import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.CodeConvertDetail;
 import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvert;
 import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvertRepository;
@@ -14,7 +15,7 @@ import nts.uk.ctx.exio.infra.entity.input.revise.type.codeconvert.XimmtCodeConve
 public class JpaExternalImportCodeConvertRepository extends JpaRepository implements ExternalImportCodeConvertRepository{
 
 	@Override
-	public Optional<ExternalImportCodeConvert> get(String cid, String convertCd) {
+	public Optional<ExternalImportCodeConvert> get(String cid, CodeConvertCode convertCd) {
 		
 		String sql = " select f "
 				+ " from XimmtCodeConvert f"
@@ -22,7 +23,7 @@ public class JpaExternalImportCodeConvertRepository extends JpaRepository implem
 		
 		return this.queryProxy().query(sql, XimmtCodeConvert.class)
 				.setParameter("cid", cid)
-				.setParameter("convertCd", convertCd)
+				.setParameter("convertCd", convertCd.toString())
 				.getSingle(c -> toDomain(c));
 	}
 	

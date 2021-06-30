@@ -32,12 +32,16 @@ import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.revise.ReviseItem;
+import nts.uk.ctx.exio.dom.input.revise.ReviseItemRepository;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.CodeConvertCode;
 import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvert;
+import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvertRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
+import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
+import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethodRepository;
 import nts.uk.ctx.exio.dom.input.validation.ImportingUserConditionRepository;
 import nts.uk.ctx.exio.dom.input.validation.condition.ImportingUserCondition;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
@@ -80,14 +84,26 @@ public class ExternalImportPrepareRequire {
 	@Inject
 	WorkInformationRepository workInformationRepo;
 	
+	@Inject
+	ExternalImportSettingRepository settingRepo;
+	
+	@Inject
+	ExternalImportAssemblyMethodRepository assemblyMethodRepo;
+	
+	@Inject
+	ReviseItemRepository reviseItemRepo;
+	
+	@Inject
+	ExternalImportCodeConvertRepository codeConvertRepo;
+	
 	public class RequireImpl implements Require {
-
+		
 		private final String companyId ;
 		
 		public RequireImpl(String companyId) {
 			this.companyId = companyId;
 		}
-
+		
 		
 		@Inject
 		private ExternalImportWorkspaceRepository workspaceRepo;
@@ -96,37 +112,36 @@ public class ExternalImportPrepareRequire {
 		public void setupWorkspace(ExecutionContext context) {
 			workspaceRepo.createWorkspace(this, context);
 		}
-
+		
 		@Override
 		public List<ImportingUserCondition> getImportingUserCondition(String settingCode,
 				List<Integer> itemNo) {
 			return importingUserConditionRepo.get(companyId, settingCode, itemNo);
 		}
-
+		
 		@Override
 		public List<ImportableItem> getDefinition(ImportingGroupId groupId) {
 			return importableItemsRepo.get(companyId, groupId);
 		}
-
+		
 		@Override
 		public GroupCanonicalization getGroupCanonicalization(ImportingGroupId groupId) {
 			return groupCanonicalizationRepo.find(groupId);
 		}
 		
-
-
+		
 		@Override
 		public void save(ExecutionContext context, AnyRecordToDelete toDelete) {
 			workspaceRepo.save(context, toDelete);
 		}
 		
-
+		
 		@Override
 		public void save(ExecutionContext context, AnyRecordToChange recordToChange) {
 			workspaceRepo.save(context, recordToChange);
 		}
 		
-
+		
 		@Override
 		public void save(ExecutionContext context, RevisedDataRecord revisedDataRecord) {
 			
@@ -137,72 +152,81 @@ public class ExternalImportPrepareRequire {
 		public void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord) {
 			workspaceRepo.save(this, context, canonicalizedDataRecord);
 		}
-
+		
 		@Override
 		public int getNumberOfRowsRevisedData() {
 			// TODO Auto-generated method stub
 			return 0;
 		}
-
+		
 		@Override
 		public Optional<EmployeeDataMngInfo> getEmployeeIdByEmployeeCode(String employeeCode) {
 			return employeeDataMngInfoRepo.findByScdNotDel(employeeCode, companyId);
 		}
-
+		
 		@Override
 		public List<RevisedDataRecord> getRevisedDataRecordsByEmployeeCode(ExecutionContext context,
 				String employeeCode) {
 			// TODO Auto-generated method stub
 			return null;
 		}
-
+		
 		@Override
 		public RevisedDataRecord getRevisedDataRecordByRowNo(ExecutionContext context, int rowNo) {
 			// TODO Auto-generated method stub
 			return null;
 		}
-
+		
 		@Override
 		public List<String> getAllEmployeeCodesOfImportingData(ExecutionContext context) {
 			// TODO Auto-generated method stub
 			return null;
 		}
-
+		
 		@Override
 		public Optional<EmploymentHistory> getEmploymentHistory(String employeeId) {
 			return employmentHistoryRepo.getByEmployeeIdDesc(companyId, employeeId);
 		}
-
+		
 		@Override
 		public Optional<Task> getTask(String companyId, int taskFrameNo, String taskCode) {
 			return taskingRepo.getOptionalTask(companyId, new TaskFrameNo(taskFrameNo), new TaskCode(taskCode));
 		}
-
+		
 		@Override
 		public Optional<WorkInfoOfDailyPerformance> getWorkInfoOfDailyPerformance(String employeeId, GeneralDate date) {
 			return workInformationRepo.find(employeeId, date);
 		}
-
+		
 		@Override
-		public Optional<ExternalImportSetting> getExternalImportSetting(String companyId,
-				ExternalImportCode settingCode) {
-			// TODO Auto-generated method stub
-			return null;
+		public Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode) {
+			return settingRepo.get(companyId, settingCode);
 		}
-
+		
 		@Override
-		public Optional<ExternalImportAssemblyMethod> getAssemblyMethod(String companyId,
-				ExternalImportCode settingCode) {
-			// TODO Auto-generated method stub
-			return null;
+		public Optional<ExternalImportAssemblyMethod> getAssemblyMethod(String companyId, ExternalImportCode settingCode) {
+			return assemblyMethodRepo.get(companyId, settingCode);
 		}
-
+		
+		@Override
+		public Optional<ReviseItem> getRevise(String companyId, ExternalImportCode importCode, int importItemNumber) {
+			// TODO 1発目では対象外のため取得できない体で実装
+			return Optional.empty();
+			//return reviseItemRepo.get(companyId, importItemNumber, importItemNumber);
+			
+		}
+		
+		@Override
+		public Optional<ExternalImportCodeConvert> getCodeConvert(String companyId, CodeConvertCode code) {
+			return codeConvertRepo.get(companyId, code);
+		}
+		
 		@Override
 		public ImportingGroup getImportingGroup(ImportingGroupId groupId) {
 			// TODO Auto-generated method stub
 			return null;
 		}
-
+		
 		@Override
 		public GroupWorkspace getGroupWorkspace(ImportingGroupId groupId) {
 			// TODO Auto-generated method stub
@@ -210,19 +234,7 @@ public class ExternalImportPrepareRequire {
 		}
 		
 		@Override
-		public Optional<ReviseItem> getRevise(String companyId, ExternalImportCode importCode, int importItemNumber) {
-			// TODO 1発目では対象外のため取得できない体で実装
-			return Optional.empty();
-		}
-
-		@Override
 		public ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
-		}
-
-		@Override
-		public ExternalImportCodeConvert getCodeConvert(CodeConvertCode code) {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}

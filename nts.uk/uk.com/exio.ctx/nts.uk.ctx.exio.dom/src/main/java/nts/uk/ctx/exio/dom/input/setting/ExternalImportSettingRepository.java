@@ -1,7 +1,7 @@
 package nts.uk.ctx.exio.dom.input.setting;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface ExternalImportSettingRepository {
-	List<ExternalImportSetting> get(String companyId, String settingCode);
+	Optional<ExternalImportSetting> get(String companyId, ExternalImportCode settingCode);
 }
