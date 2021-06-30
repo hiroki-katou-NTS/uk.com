@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.*;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import lombok.Value;
@@ -28,5 +29,12 @@ public class GroupWorkspace {
 		return Stream.concat(itemsPk.stream(), itemsNotPk.stream())
 				.sorted(Comparator.comparing(i -> i.getItemNo()))
 				.collect(toList());
+	}
+	
+	public Optional<WorkspaceItem> getItem(int itemNo) {
+		
+		return Stream.concat(itemsPk.stream(), itemsNotPk.stream())
+				.filter(item -> item.getItemNo() == itemNo)
+				.findFirst();
 	}
 }

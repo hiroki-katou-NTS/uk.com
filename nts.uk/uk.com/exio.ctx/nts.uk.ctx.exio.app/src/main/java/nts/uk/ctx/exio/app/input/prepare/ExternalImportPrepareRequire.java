@@ -209,23 +209,23 @@ public class ExternalImportPrepareRequire {
 		
 		@Override
 		public int getMaxRowNumberOfRevisedData(ExecutionContext context) {
-			return workspaceRepo.getMaxRowNumberOfRevisedData(context);
+			return workspaceRepo.getMaxRowNumberOfRevisedData(this, context);
 		}
 		
 		@Override
 		public List<String> getStringsOfRevisedData(ExecutionContext context, int itemNo) {
-			return workspaceRepo.getStringsOfRevisedData(context, itemNo);
+			return workspaceRepo.getStringsOfRevisedData(this, context, itemNo);
 		}
 		
 		@Override
 		public Optional<RevisedDataRecord> getRevisedDataRecordByRowNo(ExecutionContext context, int rowNo) {
-			return workspaceRepo.findRevisedByRowNo(context, rowNo);
+			return workspaceRepo.findRevisedByRowNo(this, context, rowNo);
 		}
 		
 		@Override
 		public List<RevisedDataRecord> getRevisedDataRecordWhere(
 				ExecutionContext context, int itemNoCondition, String conditionString) {
-			return workspaceRepo.findRevisedWhere(context, itemNoCondition, conditionString);
+			return workspaceRepo.findRevisedWhere(this, context, itemNoCondition, conditionString);
 		}
 
 		@Override

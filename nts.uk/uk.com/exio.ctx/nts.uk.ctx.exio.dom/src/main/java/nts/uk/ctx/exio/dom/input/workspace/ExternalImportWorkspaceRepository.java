@@ -18,18 +18,18 @@ public interface ExternalImportWorkspaceRepository {
 
 	void save(Require require, ExecutionContext context, RevisedDataRecord record);
 	
-	int getMaxRowNumberOfRevisedData(ExecutionContext context);
+	int getMaxRowNumberOfRevisedData(Require require, ExecutionContext context);
 	
-	List<String> getStringsOfRevisedData(ExecutionContext context, int itemNo);
+	List<String> getStringsOfRevisedData(Require require, ExecutionContext context, int itemNo);
 	
-	Optional<RevisedDataRecord> findRevisedByRowNo(ExecutionContext context, int rowNo);
+	Optional<RevisedDataRecord> findRevisedByRowNo(Require require, ExecutionContext context, int rowNo);
 	
 	List<RevisedDataRecord> findRevisedWhere(
-			ExecutionContext context, int itemNoCondition, String conditionString);
+			Require require, ExecutionContext context, int itemNoCondition, String conditionString);
 	
 	void save(Require require, ExecutionContext context, CanonicalizedDataRecord record);
 	
-	List<String> getAllEmployeeIdsOfCanonicalizedData(ExecutionContext context);
+	List<String> getAllEmployeeIdsOfCanonicalizedData(Require require, ExecutionContext context);
 	
 	public static interface Require extends WorkspaceItem.RequireConfigureDataType {
 		
