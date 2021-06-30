@@ -137,15 +137,12 @@ module nts.uk.at.view.kbt002.b {
                 vm.targetDateText(vm.buildTargetDateStr(vm.currentExecItem()));
               }
             })
+            .then(() => vm.focusInput())
             .always(() => vm.$blockui("clear"));
         }
         vm.$ajax(API.getSystemProperties).then((value: any) => {
           vm.otsukaOption(value.otsukaOption);
           vm.isCloud(value.cloud);
-        });
-
-        vm.$nextTick(() => {
-          vm.focusInput();
         });
         errors.clearAll();
       });
@@ -261,7 +258,7 @@ module nts.uk.at.view.kbt002.b {
         vm.stdAcceptList(_.cloneDeep(vm.defaultMasterData.stdAcceptList));
         vm.stdOutputList(_.cloneDeep(vm.defaultMasterData.stdOutputList));
         vm.indexReconList(_.cloneDeep(vm.defaultMasterData.indexReconList));
-      });
+      }).then(() => vm.focusInput());
     }
 
     /**

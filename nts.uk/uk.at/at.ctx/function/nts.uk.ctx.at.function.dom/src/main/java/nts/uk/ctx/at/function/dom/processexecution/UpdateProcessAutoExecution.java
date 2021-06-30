@@ -116,7 +116,7 @@ public class UpdateProcessAutoExecution extends AggregateRoot {
 					execSetting.getDailyPerf().getDailyPerfCls().isNotUse() && // B8_1
 					execSetting.getReflectAppResult().getReflectResultCls().isNotUse() && // B9_1
 					execSetting.getMonthlyAggregate().getMonthlyAggCls().isNotUse() && // B10_1
-					execSetting.getAlarmExtraction().getAlarmExtractionCls().isNotUse() && // B11_1
+					execSetting.getAggrAnyPeriod().getAggAnyPeriodAttr().isNotUse() && // B11_1
 					execSetting.getAppRouteUpdateDaily().getAppRouteUpdateAtr().isNotUse() && // B12_1
 					execSetting.getAppRouteUpdateMonthly().getAppRouteUpdateAtr().isNotUse() && // B12_3
 					execSetting.getAlarmExtraction().getAlarmExtractionCls().isNotUse() && //B17_1

@@ -106,7 +106,6 @@ import nts.uk.ctx.at.function.dom.processexecution.updateprocessautoexeclog.over
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.changepersionlist.ChangePersionList;
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.changepersionlist.ListLeaderOrNotEmp;
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.changepersionlistforsche.ChangePersionListForSche;
-import nts.uk.ctx.at.function.dom.resultsperiod.optionalaggregationperiod.ExecuteAggrPeriodDomainAdapter;
 import nts.uk.ctx.at.function.dom.statement.EmployeeGeneralInfoAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
@@ -123,6 +122,7 @@ import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.peri
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodtarget.State;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService.AggregationResult;
+import nts.uk.ctx.at.record.dom.monthlyprocess.byperiod.ByPeriodAggregationService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CalExeSettingInfor;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
@@ -278,9 +278,6 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	private AggrPeriodTargetAdapter aggrPeriodTargetAdapter;
 
 	@Inject
-	private ExecuteAggrPeriodDomainAdapter executeAggrPeriodDomainAdapter;
-
-	@Inject
 	private AggrPeriodExcutionAdapter aggrPeriodExcutionAdapter;
 
 	@Inject
@@ -321,6 +318,9 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	
 	@Inject
 	private TopPageAlarmAdapter topPageAlarmAdapter;
+	
+	@Inject
+	private ByPeriodAggregationService byPeriodAggregationService;
 	
 	@Override
 	public boolean keepsTrack() {
@@ -3533,7 +3533,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				this.aggrPeriodTargetAdapter.addTarget(targetLists);
 				try {
 					// Step 任意期間集計Mgrクラス
-					this.executeAggrPeriodDomainAdapter.excuteOptionalPeriod(companyId, execId, context.asAsync());
+					this.byPeriodAggregationService.manager(companyId, execId, context.asAsync());
 				} catch (Exception e) {
 					isHasException = true;
 					errorMessage = "Msg_1339";
