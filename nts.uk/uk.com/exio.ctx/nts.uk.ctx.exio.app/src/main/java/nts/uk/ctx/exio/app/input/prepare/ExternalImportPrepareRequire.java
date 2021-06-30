@@ -105,16 +105,16 @@ public class ExternalImportPrepareRequire {
 	private WorkInformationRepository workInformationRepo;
 	
 	@Inject
-	ExternalImportSettingRepository settingRepo;
+	private ExternalImportSettingRepository settingRepo;
 	
 	@Inject
-	ExternalImportAssemblyMethodRepository assemblyMethodRepo;
+	private ExternalImportAssemblyMethodRepository assemblyMethodRepo;
 	
 	@Inject
-	ReviseItemRepository reviseItemRepo;
+	private ReviseItemRepository reviseItemRepo;
 	
 	@Inject
-	ExternalImportCodeConvertRepository codeConvertRepo;
+	private ExternalImportCodeConvertRepository codeConvertRepo;
 	
 	public class RequireImpl implements Require {
 		

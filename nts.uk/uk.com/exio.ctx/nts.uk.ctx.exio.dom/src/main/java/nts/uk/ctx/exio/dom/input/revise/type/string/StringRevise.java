@@ -29,12 +29,16 @@ public class StringRevise implements ReviseValue {
 		
 		if(useSpecifyRange) {
 			// 値の有効範囲を指定する場合
-			strResult = this.rangeOfValue.get().extract(strResult);
+			if(rangeOfValue.isPresent()) {
+				strResult = this.rangeOfValue.get().extract(strResult);
+			}
 		}
 		
 		if(useFixedLength) {
 			// 固定長編集をする場合
-			strResult = this.fixedLength.get().fix(strResult);
+			if(fixedLength.isPresent()) {
+				strResult = this.fixedLength.get().fix(strResult);
+			}
 		}
 		
 		return RevisedValueResult.succeeded(strResult);
