@@ -139,11 +139,11 @@ public class UserInformationScreenQuery {
 
         //SQ3 - Handle ユーザ情報の使用方法.Empty
         if (
-        		userInfoUseMethod.isPresent()
-        		&& userInfoUseMethod.get().getUseOfProfile().isNotUse()
-        		&& userInfoUseMethod.get().getUseOfNotice().isNotUse()
-        		&& userInfoUseMethod.get().getUseOfPassword().isNotUse()
-        		&& userInfoUseMethod.get().getUseOfLanguage().isNotUse()
+        		!userInfoUseMethod.isPresent()
+        		|| (userInfoUseMethod.get().getUseOfProfile().isNotUse()
+	        		&& userInfoUseMethod.get().getUseOfNotice().isNotUse()
+	        		&& userInfoUseMethod.get().getUseOfPassword().isNotUse()
+	        		&& userInfoUseMethod.get().getUseOfLanguage().isNotUse())
         ) {
             if (isInCharge) {
                 throw new BusinessException("Msg_1775");
