@@ -3748,6 +3748,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             //console.log(self.formatDate(self.dailyPerfomanceData()));
             self.createNtsMControl();
             self.lstDataSourceLoad = self.formatDate(_.cloneDeep(self.dailyPerfomanceData()));
+            
             let startTime = performance.now();
             let subWidth = "50px";
             if (self.displayFormat() === 0) {
@@ -3840,6 +3841,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         createNtsMControl(): void {
             let self = this;
+            let isConfirmMonth: boolean = true;
+            _.each(self.dailyPerfomanceData(), item => {
+                if(item.state == ''){
+                    isConfirmMonth = false;
+                }
+            })
             self.ntsMControl = [
                 { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                 {
@@ -3878,6 +3885,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 if (lock[i] == "H") tempD += getText("KDW003_70") + '<br/>';
                                 if (lock[i] == "A") tempD += getText("KDW003_69") + '<br/>';
                             }
+                            if(isConfirmMonth){
+                                tempD += getText("KDW003_68") + '<br/>';
+                            } 
                             tempD += '</span>'
                             $('#textLock').html(tempD);
                         }
