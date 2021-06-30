@@ -1,5 +1,11 @@
 package nts.uk.ctx.exio.infra.entity.input.validation;
 
+import java.io.Serializable;
+import java.util.Optional;
+
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -13,14 +19,7 @@ import nts.uk.ctx.exio.dom.input.importableitem.DomainConstraint;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-
-import java.io.Serializable;
-import java.util.Optional;
-
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 受入可能項目の定義 
@@ -30,7 +29,7 @@ import javax.persistence.Entity;
 @Entity
 @Getter
 @Table(name = "XIMCT_IMPORTABLE_ITEM")
-public class XimctImportableItem extends ContractUkJpaEntity 		implements Serializable{
+public class XimctImportableItem extends UkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -77,9 +76,8 @@ public class XimctImportableItem extends ContractUkJpaEntity 		implements Serial
 				constraint);
 	}
 	
-	public static XimctImportableItem fromDomain(String cid, ImportableItem target) {
+	public static XimctImportableItem fromDomain(ImportableItem target) {
 		val pk = new XimctImportableItemPK(
-					cid,
 					target.getGroupId().value,
 					target.getItemNo()
 				);
