@@ -244,7 +244,9 @@ public class DisplayRemainingHolidayNumber {
 		return output;
 	}
 	
-	public NursingRemainDto getNursingSetting(String companyId, String employeeId, GeneralDate date) {
+	public NursingRemainDto getNursingSetting(String companyId, String employeeId, GeneralDate date, String closureDate) {
+	    GeneralDate closureStart = GeneralDate.fromString(closureDate, "yyyy/MM/dd");
+	    
 	    // 子看護介護の設定の取得
 	    NursingLeaveSetting childCareSettings = nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyId, NursingCategory.ChildNursing.value);
         // 子看護介護の設定の取得
@@ -256,7 +258,7 @@ public class DisplayRemainingHolidayNumber {
             // [NO.206]期間中の子の看護休暇残数を取得
             ChildCareNursePeriodImport childNursePeriod = getRemainingNumberChildCareNurseAdapter.getChildCareNurseRemNumWithinPeriod(
                     employeeId, 
-                    new DatePeriod(date, date.addYears(1).addDays(-1)), 
+                    new DatePeriod(closureStart, closureStart.addYears(1).addDays(-1)), 
                     InterimRemainMngMode.OTHER, 
                     date, 
                     Optional.of(false), 
@@ -279,7 +281,7 @@ public class DisplayRemainingHolidayNumber {
             ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
                     companyId, 
                     employeeId, 
-                    new DatePeriod(date, date.addYears(1).addDays(-1)), 
+                    new DatePeriod(closureStart, closureStart.addYears(1).addDays(-1)), 
                     InterimRemainMngMode.OTHER, 
                     date, 
                     Optional.of(false), 
@@ -305,7 +307,7 @@ public class DisplayRemainingHolidayNumber {
 		return lstOutput.isEmpty() ? null : lstOutput.get(0).grantDate;
 	}
 	
-	public HolidayRemainNumberDto getRemainingHolidayNumber(String employeeId) {
+	public HolidayRemainNumberDto getRemainingHolidayNumber(String employeeId, String closureDate) {
 		String companyId = AppContexts.user().companyId();
 		GeneralDate baseDate = GeneralDate.today();
 		HolidayRemainNumberDto result = new HolidayRemainNumberDto();
@@ -314,7 +316,7 @@ public class DisplayRemainingHolidayNumber {
 		result.setReserveLeave(this.getReserveLeaveSetting(companyId, employeeId, baseDate));
 		result.setSubstitutionLeave(this.getSubsitutionVacationSetting(companyId, employeeId, baseDate));
 		result.setCom60HVacation(this.getCom60HVacationSetting(companyId, employeeId, baseDate));
-		NursingRemainDto nursingRemainDto = this.getNursingSetting(companyId, employeeId, baseDate);
+		NursingRemainDto nursingRemainDto = this.getNursingSetting(companyId, employeeId, baseDate, closureDate);
 		result.setChildCareVacation(nursingRemainDto.getChildCareVacation());
 		result.setLongTermCareVacation(nursingRemainDto.getLongTermCareVacation());
 		if (result.getAnnualLeave().isManageYearOff())

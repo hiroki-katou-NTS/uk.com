@@ -491,9 +491,9 @@ public class DailyPerformanceCorrectionWebService {
 	}
 	
 	@POST
-	@Path("getRemainNum/{employeeId}")
-	public HolidayRemainNumberDto getRemainNumb(@PathParam(value = "employeeId") String employeeId) {
-		return remainNumberService.getRemainingHolidayNumber(employeeId);
+	@Path("getRemainNum/{employeeId}/{closureDate}")
+	public HolidayRemainNumberDto getRemainNumb(@PathParam(value = "employeeId") String employeeId, @PathParam(value = "closureDate") String closureDate) {
+		return remainNumberService.getRemainingHolidayNumber(employeeId, closureDate);
 	}
 
 	@POST

@@ -92,8 +92,8 @@ module nts.uk.at.view.kdw003.a.service {
         return nts.uk.request.ajax(paths.calculation, param);
     }
 
-    export function getRemainNum(employeeId: string) {
-        return nts.uk.request.ajax(paths.getRemainNum + "/" + employeeId);
+    export function getRemainNum(employeeId: string, closureDate: string) {
+        return nts.uk.request.ajax(paths.getRemainNum + "/" + employeeId + "/" + closureDate);
     }
 
     export function lock(param: any) {
