@@ -341,7 +341,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					//　・カウント
 					//　・Optional<連続カウント＞
 					boolean errorAtr = applicableAtr;
-					calCountForConsecutivePeriodOutput = calcCountForConsecutivePeriodChecking.getContinuousCount(count, continuousPeriod, errorAtr, exDate);
+					calCountForConsecutivePeriodOutput = calcCountForConsecutivePeriodChecking.getContinuousCount(count, continuousPeriod, errorAtr);
 					count = calCountForConsecutivePeriodOutput.getCount();
 				}
 				
