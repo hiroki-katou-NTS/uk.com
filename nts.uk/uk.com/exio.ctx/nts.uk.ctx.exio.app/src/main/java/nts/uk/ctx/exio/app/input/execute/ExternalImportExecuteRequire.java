@@ -53,22 +53,22 @@ public class ExternalImportExecuteRequire {
 	}
 	
 	@Inject
-	ExternalImportSettingRepository settingRepo;
+	private ExternalImportSettingRepository settingRepo;
 	
 	@Inject
-	ImportingGroupRepository importingGroupRepo;
+	private ImportingGroupRepository importingGroupRepo;
 	
 	@Inject
-	ImportiongItemRepository importingItemRepo;
+	private ImportiongItemRepository importingItemRepo;
 	
 	@Inject
-	ConversionTableRepository conversionTableRepo;
+	private ConversionTableRepository conversionTableRepo;
 	
 	@Inject
-	TransferCanonicalDataRepository transferCanonicalDataRepo;
+	private TransferCanonicalDataRepository transferCanonicalDataRepo;
 	
 	@Inject
-	GroupCanonicalizationRepository groupCanonicalizationRepo;
+	private GroupCanonicalizationRepository groupCanonicalizationRepo;
 	
 	@Inject
 	private ExternalImportWorkspaceRepository workspaceRepo;
@@ -77,10 +77,10 @@ public class ExternalImportExecuteRequire {
 	private ExternalImportExistingRepository existingRepo;
 	
 	@Inject
-	TaskingRepository taskingRepo;
+	private TaskingRepository taskingRepo;
 	
 	@Inject
-	WorkInformationRepository workInformationRepo;
+	private WorkInformationRepository workInformationRepo;
 	
 	@Inject
 	private EmploymentHistoryRepository employmentHistoryRepo;
