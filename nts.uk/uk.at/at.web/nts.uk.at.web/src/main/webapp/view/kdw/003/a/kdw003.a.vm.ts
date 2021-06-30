@@ -900,7 +900,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         loadRemainNumberTable() {
             let self = this;
-            service.getRemainNum(self.selectedEmployee(), self.dateRanger().startDate).done((data: any) => {
+            let param = {
+                employeeId: self.selectedEmployee(),
+                closureDate: self.dateRanger().startDate
+            }
+            service.getRemainNum(param).done((data: any) => {
                 self.dataHoliday(new DataHoliday(data.annualLeave, data.reserveLeave, data.compensatoryLeave, data.substitutionLeave, data.nextGrantDate));
                 self.referenceVacation(
                     new ReferenceVacation(
