@@ -118,7 +118,8 @@ module nts.uk.ui.at.kdw013.a {
             super();
 
             const vm = this;
-            const { $query, employee } = vm;
+            let $query = vm.getQuery();
+            const { employee } = vm;
             const { mode } = $query;
             const cache: ChangeDateParam & { pair: -1 | 0 | 1 | 2 } = { ...initialCache(), pair: 0 };
             const sameCache = (params: ChangeDateParam): -1 | 0 | 1 | 2 => {
@@ -467,6 +468,15 @@ module nts.uk.ui.at.kdw013.a {
             const vm = this;
 
             _.extend(window, { vm });
+        }
+
+        getQuery(){
+            let query = location.search.substring(1);
+            if (!query || !query.match(/=/)) {
+                return {};
+            }
+            return JSON.parse('{"' + decodeURI(query).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
+    
         }
 
         saveData() {
