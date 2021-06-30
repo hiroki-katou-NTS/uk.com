@@ -34,8 +34,8 @@ public class ManHourSummaryTableExportExcel extends ExportService<ManHourSummary
                         0,
                         "2021/06/01",
                         "2021/06/03",
-                        YearMonth.of(2021, 6),
-                        YearMonth.of(2021, 6)
+                        "2021/06",
+                        "2021/06"
                 )
         );
 

@@ -183,19 +183,6 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         }
     }
 
-    private int checkTotalColumn(int maxColumnTemplate, int countColumn) {
-        int countColumnNeedHandle;
-        if (countColumn < maxColumnTemplate) { // Thua: > 0
-            countColumnNeedHandle = maxColumnTemplate - countColumn;
-        } else if (countColumn > maxColumnTemplate) { // Thieu: < 0
-            countColumnNeedHandle = maxColumnTemplate - countColumn;
-        } else {
-            countColumnNeedHandle = 0;
-        }
-
-        return countColumnNeedHandle;
-    }
-
     private void printData1Level(Cells cellsTemplate, Cells cells, ManHourSummaryTableOutputContent outputContent, boolean isDispTotal, int maxDateRange, List<String> headerList, DisplayFormat dispFormat, TotalUnit unit) throws Exception {
         List<SummaryItemDetail> itemDetails = outputContent.getItemDetails();
         cells.copyRows(cellsTemplate, 3, 3, itemDetails.size());
@@ -224,14 +211,14 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
             List<SummaryItemDetail> childHierarchyList = level1.getChildHierarchyList();
             for (int j = 0; j < childHierarchyList.size(); j++) {
                 SummaryItemDetail level2 = childHierarchyList.get(j);
-                cells.get(j + 2, 0).setValue(level1.getDisplayInfo().getName());
-                cells.get(j + 2, 1).setValue(level2.getDisplayInfo().getName());
+                cells.get(j + 3, 0).setValue(level1.getDisplayInfo().getName());
+                cells.get(j + 3, 1).setValue(level2.getDisplayInfo().getName());
                 val workingTimeMap2 = this.getWorkingTimeByDate(unit, level2.getVerticalTotalList());
                 for (int r = 1; r <= maxDateRange; r++) {
-                    cells.get(j + 2, r + 1).setValue(formatValue(Double.valueOf(workingTimeMap2.getOrDefault(headerList.get(r), 0)), dispFormat));
+                    cells.get(j + 3, r + 1).setValue(formatValue(Double.valueOf(workingTimeMap2.getOrDefault(headerList.get(r), 0)), dispFormat));
                 }
                 if (isDispTotal) {  // Tong level2 theo chieu ngang
-                    cells.get(j + 2, headerList.size() - 1).setValue(formatValue(level2.getTotalPeriod().isPresent() ? Double.valueOf(level2.getTotalPeriod().get()) : 0, dispFormat));
+                    cells.get(j + 3, headerList.size() - 1).setValue(formatValue(level2.getTotalPeriod().isPresent() ? Double.valueOf(level2.getTotalPeriod().get()) : 0, dispFormat));
                 }
             }
             if (isDispTotal) { // Tong level 2 theo chieu doc
@@ -250,15 +237,15 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                 List<SummaryItemDetail> childHierarchyList = level2.getChildHierarchyList();
                 for (int i = 0; i < childHierarchyList.size(); i++) {
                     SummaryItemDetail level3 = childHierarchyList.get(i);
-                    cells.get(i + 2, 0).setValue(level1.getDisplayInfo().getName());
-                    cells.get(i + 2, 1).setValue(level2.getDisplayInfo().getName());
-                    cells.get(i + 2, 2).setValue(level3.getDisplayInfo().getName());
+                    cells.get(i + 3, 0).setValue(level1.getDisplayInfo().getName());
+                    cells.get(i + 3, 1).setValue(level2.getDisplayInfo().getName());
+                    cells.get(i + 3, 2).setValue(level3.getDisplayInfo().getName());
                     val workingTimeMap3 = this.getWorkingTimeByDate(unit, level3.getVerticalTotalList());
                     for (int r = 1; r <= maxDateRange; r++) {
-                        cells.get(i + 2, r + 2).setValue(formatValue(Double.valueOf(workingTimeMap3.getOrDefault(headerList.get(r), 0)), dispFormat));
+                        cells.get(i + 3, r + 2).setValue(formatValue(Double.valueOf(workingTimeMap3.getOrDefault(headerList.get(r), 0)), dispFormat));
                     }
                     if (isDispTotal) {  // Tong chieu ngang level 3
-                        cells.get(i + 2, headerList.size() - 1).setValue(formatValue(level3.getTotalPeriod().isPresent() ? Double.valueOf(level3.getTotalPeriod().get()) : 0, dispFormat));
+                        cells.get(i + 3, headerList.size() - 1).setValue(formatValue(level3.getTotalPeriod().isPresent() ? Double.valueOf(level3.getTotalPeriod().get()) : 0, dispFormat));
                     }
                 }
                 if (isDispTotal) { // Tong chieu doc level 3
@@ -283,16 +270,16 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                     List<SummaryItemDetail> childHierarchyList = level3.getChildHierarchyList();
                     for (int i = 0; i < childHierarchyList.size(); i++) {
                         SummaryItemDetail level4 = childHierarchyList.get(i);
-                        cells.get(i + 2, 0).setValue(level1.getDisplayInfo().getName());
-                        cells.get(i + 2, 1).setValue(level2.getDisplayInfo().getName());
-                        cells.get(i + 2, 2).setValue(level3.getDisplayInfo().getName());
-                        cells.get(i + 2, 3).setValue(level4.getDisplayInfo().getName());
+                        cells.get(i + 3, 0).setValue(level1.getDisplayInfo().getName());
+                        cells.get(i + 3, 1).setValue(level2.getDisplayInfo().getName());
+                        cells.get(i + 3, 2).setValue(level3.getDisplayInfo().getName());
+                        cells.get(i + 3, 3).setValue(level4.getDisplayInfo().getName());
                         val workingTimeMap4 = this.getWorkingTimeByDate(unit, level4.getVerticalTotalList());
                         for (int r = 1; r <= maxDateRange; r++) {
-                            cells.get(i + 2, r + 3).setValue(formatValue(Double.valueOf(workingTimeMap4.getOrDefault(headerList.get(r), 0)), dispFormat));
+                            cells.get(i + 3, r + 3).setValue(formatValue(Double.valueOf(workingTimeMap4.getOrDefault(headerList.get(r), 0)), dispFormat));
                         }
                         if (isDispTotal) {  // Tong chieu ngang level 4
-                            cells.get(i + 2, headerList.size() - 1).setValue(formatValue(level4.getTotalPeriod().isPresent() ? Double.valueOf(level4.getTotalPeriod().get()) : 0, dispFormat));
+                            cells.get(i + 3, headerList.size() - 1).setValue(formatValue(level4.getTotalPeriod().isPresent() ? Double.valueOf(level4.getTotalPeriod().get()) : 0, dispFormat));
                         }
                     }
                     if (isDispTotal) { // Tong chieu doc level 4
@@ -331,6 +318,19 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
             cells.get(cells.getMaxRow() + 1, t).setValue(formatValue(Double.valueOf(mapTotal.getOrDefault(headerList.get(t), 0)), dispFormat));
         }
         cells.get(row, headerList.size() - 1).setValue(formatValue(outputContent.getTotalPeriod().isPresent() ? Double.valueOf(outputContent.getTotalPeriod().get()) : 0, dispFormat));
+    }
+
+    private int checkTotalColumn(int maxColumnTemplate, int countColumn) {
+        int countColumnNeedHandle;
+        if (countColumn < maxColumnTemplate) { // Thua: > 0
+            countColumnNeedHandle = maxColumnTemplate - countColumn;
+        } else if (countColumn > maxColumnTemplate) { // Thieu: < 0
+            countColumnNeedHandle = maxColumnTemplate - countColumn;
+        } else {
+            countColumnNeedHandle = 0;
+        }
+
+        return countColumnNeedHandle;
     }
 
     private Map<String, Integer> getWorkingTimeByDate(TotalUnit unit, List<VerticalValueDaily> lstValueDaily) {
