@@ -11,9 +11,7 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
-import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.PublicHolidayMonthSetting;
@@ -138,18 +136,19 @@ public class PublicHolidayManagementUsageUnit extends AggregateRoot{
 		//社員と基準日から雇用履歴項目を取得する
 		List<String> employeeIds = new ArrayList<>();
 		employeeIds.add(employeeId);
-		List<SharedSidPeriodDateEmploymentImport> employmentHistList =
-				require.getEmpHistBySidAndPeriod(employeeIds,  new DatePeriod(criteriaDate, criteriaDate));
+		Optional<SharedSidPeriodDateEmploymentImport> employmentHist =
+				require.getEmpHistBySidAndPeriod(employeeIds,  new DatePeriod(criteriaDate, criteriaDate))
+				.stream().findFirst().map(c ->c);
 		
-		if(employmentHistList.isEmpty()){
+		if(employmentHist.isPresent()){
 			return new ArrayList<>();
 		}
-		if(employmentHistList.get(0).getAffPeriodEmpCodeExports().isEmpty()){
+		if(employmentHist.get().getAffPeriodEmpCodeExports().isEmpty()){
 			return new ArrayList<>();
 		}
 		
 		EmploymentMonthDaySetting employmentMonthDaySetting = require.employmentMonthDaySetting(
-				new CompanyId(companyID),employmentHistList.get(0).getAffPeriodEmpCodeExports().get(0).getEmploymentCode());
+				new CompanyId(companyID),employmentHist.get().getAffPeriodEmpCodeExports().get(0).getEmploymentCode());
 		
 		//期間から雇用月間日数設定を取得する
 		return employmentMonthDaySetting.getPublicHolidayMonthSetting(periodList);

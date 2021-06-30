@@ -15,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.PublicHolidayMonthSetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PeriodList;
-import nts.arc.time.YearMonth;
 /**
  * The Class CompanyMonthDaySetting.
  */
@@ -102,8 +101,7 @@ public class CompanyMonthDaySetting extends AggregateRoot{
 		for(PeriodList period : periodList){
 			publicHolidayMonthSetting.addAll(this.publicHolidayMonthSettings
 					.stream()
-					.filter(x -> period.getYearMonth().equals(YearMonth.of(x.getPublicHdManagementYear().v().intValue(),
-							x.getMonth().intValue())))
+					.filter(x -> period.getYearMonth().equals(x.createYearMonth()))
 					.collect(Collectors.toList())); 
 			}
 		return publicHolidayMonthSetting;

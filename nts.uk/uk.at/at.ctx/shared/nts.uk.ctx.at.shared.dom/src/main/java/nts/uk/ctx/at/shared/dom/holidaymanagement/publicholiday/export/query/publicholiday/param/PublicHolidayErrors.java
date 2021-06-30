@@ -12,7 +12,7 @@ public class PublicHolidayErrors {
 	 * 公休未取得エラー
 	 */
 	
-	public boolean publicHolidayUnGetError;
+	public boolean publicHolidayUnGetError = false;
 	
 	
 	

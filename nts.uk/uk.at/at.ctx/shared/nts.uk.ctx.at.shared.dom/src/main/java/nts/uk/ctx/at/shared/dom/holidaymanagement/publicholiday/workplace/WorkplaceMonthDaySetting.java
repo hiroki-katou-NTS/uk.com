@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.PublicHolidayMonthSetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
@@ -116,7 +115,7 @@ public class WorkplaceMonthDaySetting extends AggregateRoot{
 		for(PeriodList period : periodList){
 			publicHolidayMonthSetting.addAll(this.publicHolidayMonthSettings
 					.stream()
-					.filter(x -> period.getYearMonth().equals(YearMonth.of(x.getPublicHdManagementYear().v().intValue(),x.getMonth().intValue())))
+					.filter(x -> period.getYearMonth().equals(x.createYearMonth()))
 					.collect(Collectors.toList())); 
 			}
 		return publicHolidayMonthSetting;

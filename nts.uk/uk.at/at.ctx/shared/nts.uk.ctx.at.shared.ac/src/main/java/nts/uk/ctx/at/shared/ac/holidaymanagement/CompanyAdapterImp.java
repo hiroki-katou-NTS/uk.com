@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.AddInforImport;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
@@ -106,5 +107,11 @@ public class CompanyAdapterImp implements CompanyAdapter {
 	@Override
 	public YearMonthPeriod get(String cid, int year) {
 		return this.companyPub.getyearMonth(cid, year);
+	}
+	
+	//年月から年月日期間を作成する
+	@Override
+	public Optional<DatePeriod> createDatePeriod(String cid, YearMonth yearMonth) {
+		return this.companyPub.createDatePeriod(cid, yearMonth);
 	}
 }

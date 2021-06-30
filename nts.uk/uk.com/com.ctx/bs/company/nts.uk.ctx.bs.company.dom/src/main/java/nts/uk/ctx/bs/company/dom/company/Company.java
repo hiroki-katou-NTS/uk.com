@@ -6,8 +6,10 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.company.dom.company.primitive.ABName;
@@ -152,5 +154,22 @@ public class Company extends AggregateRoot {
 		YearMonthPeriod result = new YearMonthPeriod(yearStart, yearEnd.previousMonth());
 		
 		return result;
+	}
+	
+	//[3]年月から年月日期間を作成する
+	
+	public DatePeriod createDatePeriod(YearMonth yearMonth){
+		YearMonthPeriod yearMonthPeriod = getPeriodTheYear(getYearBySpecifying(yearMonth).v());
+		
+		GeneralDate startymd = GeneralDate.ymd(
+				yearMonthPeriod.start().year(),
+				yearMonthPeriod.start().month(),
+				yearMonthPeriod.start().firstGeneralDate().day());
+		GeneralDate endymd = GeneralDate.ymd(
+				yearMonthPeriod.end().year(),
+				yearMonthPeriod.end().month(),
+				yearMonthPeriod.end().firstGeneralDate().day());
+		
+		return new DatePeriod(startymd,endymd);
 	}
 }

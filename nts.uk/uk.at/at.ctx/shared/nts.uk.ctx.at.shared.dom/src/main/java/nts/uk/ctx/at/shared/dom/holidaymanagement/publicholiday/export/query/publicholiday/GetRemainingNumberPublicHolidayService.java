@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
@@ -16,11 +15,8 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardData;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.AggrResultOfPublicHoliday;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayCarryForwardInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayCarryForwardInformationOutput;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayDigestionInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayDigestionInformationOutput;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayErrors;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHolidayManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
@@ -76,7 +72,7 @@ public class GetRemainingNumberPublicHolidayService {
 		List<AggregatePublicHolidayWork> aggregatePublicHolidayWork = publicHolidaySetting.createAggregatePeriodWork(
 				employeeId, yearMonth,criteriaDate, cacheCarrier, require);
 		//繰越データを取得する
-		List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData = getPublicHolidayCarryForwardData(employeeId, require);
+		List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData = require.publicHolidayCarryForwardData(employeeId);
 		
 		//暫定公休管理データを取得する
 		List<TempPublicHolidayManagement> tempPublicHolidayManagement = getTempPublicHolidayManagement(
@@ -119,21 +115,7 @@ public class GetRemainingNumberPublicHolidayService {
 	}
 	
 	/**
-	 * 公休繰越データを取得する。
-	 * 
-	 * @param employeeId
-	 * @param require
-	 * @return PublicHolidayCarryForwardData
-	 */
-	public List<PublicHolidayCarryForwardData> getPublicHolidayCarryForwardData(String employeeId, RequireM5 require){
-	
-		List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData = require.publicHolidayCarryForwardData(employeeId);
-		
-		return publicHolidayCarryForwardData;
-		
-	}
-	/**
-	 * 
+	 * 暫定公休管理データを取得する
 	 * @param employeeId
 	 * @param period
 	 * @param isOverWrite
@@ -156,11 +138,11 @@ public class GetRemainingNumberPublicHolidayService {
 		// 実績のみ参照区分を確認
 		if (performReferenceAtr == InterimRemainMngMode.OTHER) {
 			// 暫定公休管理データを取得
-			interimDate = require.tempPublicHolidayManagement(employeeId , period , RemainType.CHILDCARE);
+			interimDate = require.tempPublicHolidayManagement(employeeId , period , RemainType.PUBLICHOLIDAY);
 		}
 		
 		// 上書きフラグを確認
-		if (isOverWrite.isPresent()) {
+		if (isOverWrite.orElse(false)){
 			// ※残数共通処理にする必要あり：一時対応
 			// 上書き用暫定残数データで置き換える
 			//	ドメインモデル「暫定公休管理データ」．作成元区分 = パラメータ「作成元区分」

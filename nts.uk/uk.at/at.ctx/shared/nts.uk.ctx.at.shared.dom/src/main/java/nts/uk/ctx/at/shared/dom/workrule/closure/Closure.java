@@ -11,7 +11,6 @@ import java.util.Optional;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -409,7 +408,8 @@ public class Closure extends AggregateRoot {
 			return Optional.empty();
 		}
 		//締め開始日を求める
-		Day start = new Day(closureDate.get().getLastDayOfMonth() ? 1 : closureDate.get().getClosureDay().v() +1);
+		Day start = new Day(closureDate.get().getLastDayOfMonth() ? 1 : 
+			GeneralDate.ymd(closureMonth.getProcessingYm(),closureDate.get().getClosureDay().v()).addDays(1).day());
 		//締め日を取得する
 		Day closure = closureDate.get().getClosureDay();
 		
