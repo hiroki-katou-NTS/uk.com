@@ -47,10 +47,15 @@ public class TaskCanonicalization implements GroupCanonicalization {
 		// 重複チェック用のセット
 		Set<UniqueKey> importingKeys = new HashSet<>();
 		
-		int rowsCount = require.getNumberOfRowsRevisedData();
+		int rowsCount = require.getMaxRowNumberOfRevisedData(context);
 		for (int rowNo = 0; rowNo < rowsCount; rowNo++) {
 			
-			val revisedData = require.getRevisedDataRecordByRowNo(context, rowNo);
+			val revisedDataOpt = require.getRevisedDataRecordByRowNo(context, rowNo);
+			if (!revisedDataOpt.isPresent()) {
+				continue;
+			}
+			
+			val revisedData = revisedDataOpt.get();
 			
 			val uniqueKey = new UniqueKey(revisedData);
 			if (importingKeys.contains(uniqueKey)) {

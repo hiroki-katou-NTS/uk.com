@@ -65,7 +65,9 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 			GroupCanonicalization.RequireCanonicalize require,
 			ExecutionContext context) {
 		
-		List<String> employeeCodes = require.getAllEmployeeCodesOfImportingData(context);
+		List<String> employeeCodes = require.getStringsOfRevisedData(
+				context,
+				employeeCodeCanonicalization.getItemNoEmployeeCode());
 		
 		for (String employeeCode : employeeCodes) {
 			canonicalize(require, context, employeeCode).forEach(result -> {
@@ -231,8 +233,6 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 
 	public static interface RequireCanonicalize extends
 			EmploymentHistoryCanonicalization.RequireGetHistory {
-
-		List<String> getAllEmployeeCodesOfImportingData(ExecutionContext context);
 	}
 	
 	@Override

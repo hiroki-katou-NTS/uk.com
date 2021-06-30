@@ -43,8 +43,10 @@ public class DailyPerformanceCanonicalization implements GroupCanonicalization {
 	public void canonicalize(
 			GroupCanonicalization.RequireCanonicalize require,
 			ExecutionContext context) {
-		
-		val employeeCodes = require.getAllEmployeeCodesOfImportingData(context);
+
+		List<String> employeeCodes = require.getStringsOfRevisedData(
+				context,
+				employeeCodeCanonicalization.getItemNoEmployeeCode());
 		
 		for (String employeeCode : employeeCodes) {
 			

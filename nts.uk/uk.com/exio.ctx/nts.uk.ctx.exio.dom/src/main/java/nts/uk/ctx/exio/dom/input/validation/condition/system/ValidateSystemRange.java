@@ -3,7 +3,6 @@ package nts.uk.ctx.exio.dom.input.validation.condition.system;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
@@ -18,23 +17,18 @@ public class ValidateSystemRange {
 	 * @return 
 	 */
 	public static boolean validate(SystemRequire require, ExecutionContext context, RevisedDataRecord record) {
-		val importableItems = require.getDefinition(context.getGroupId());
 		List<Boolean> successFlags = new ArrayList<Boolean>();
 		
 		record.getItems().forEach(recordItem ->{
 			successFlags.add(
-				importableItems.stream()
-				.filter(importableItem -> recordItem.getItemNo() == importableItem.getItemNo())
-				.findFirst()
-				.get()
-				.validate(recordItem)
+				require.getImportableItem(context.getGroupId(), recordItem.getItemNo()).validate(recordItem)
 			);
 		});
 		//falseが含まれてたら失敗したことを伝えたい
 		return !successFlags.contains(false);
 	}
 	
-	public static interface SystemRequire{
-		List<ImportableItem> getDefinition(ImportingGroupId groupId);
+	public static interface SystemRequire {
+		ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo);
 	}
 }
