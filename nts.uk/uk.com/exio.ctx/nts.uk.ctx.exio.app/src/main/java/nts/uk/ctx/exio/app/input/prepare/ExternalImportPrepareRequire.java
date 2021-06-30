@@ -31,6 +31,7 @@ import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupRepository;
 import nts.uk.ctx.exio.dom.input.revise.ReviseItem;
 import nts.uk.ctx.exio.dom.input.revise.ReviseItemRepository;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
@@ -46,6 +47,7 @@ import nts.uk.ctx.exio.dom.input.validation.ImportingUserConditionRepository;
 import nts.uk.ctx.exio.dom.input.validation.condition.ImportingUserCondition;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
 import nts.uk.ctx.exio.dom.input.workspace.GroupWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.GroupWorkspaceRepository;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -70,7 +72,13 @@ public class ExternalImportPrepareRequire {
 	private ImportableItemsRepository importableItemsRepo;
 	
 	@Inject
+	private ImportingGroupRepository importingGroupRepo;
+	
+	@Inject
 	private GroupCanonicalizationRepository groupCanonicalizationRepo;
+	
+	@Inject
+	private GroupWorkspaceRepository groupWorkspaceRepo;
 	
 	@Inject
 	private ExternalImportWorkspaceRepository workspaceRepo;
@@ -123,14 +131,12 @@ public class ExternalImportPrepareRequire {
 
 		@Override
 		public ImportingGroup getImportingGroup(ImportingGroupId groupId) {
-			// TODO Auto-generated method stub
-			return null;
+			return importingGroupRepo.find(groupId);
 		}
 
 		@Override
 		public GroupWorkspace getGroupWorkspace(ImportingGroupId groupId) {
-			// TODO Auto-generated method stub
-			return null;
+			return groupWorkspaceRepo.find(groupId).get();
 		}
 
 		@Override
@@ -148,7 +154,7 @@ public class ExternalImportPrepareRequire {
 		
 		@Override
 		public ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo) {
-			return importableItemsRepo.find(groupId, itemNo).get();
+			return importableItemsRepo.get(groupId, itemNo).get();
 		}
 		
 		@Override
@@ -174,15 +180,14 @@ public class ExternalImportPrepareRequire {
 		public void save(ExecutionContext context, AnyRecordToDelete toDelete) {
 			workspaceRepo.save(context, toDelete);
 		}
+		
 		@Override
 		public void save(ExecutionContext context, AnyRecordToChange recordToChange) {
 			workspaceRepo.save(context, recordToChange);
 		}
 		
-		
 		@Override
 		public void save(ExecutionContext context, RevisedDataRecord revisedDataRecord) {
-			
 			workspaceRepo.save(this, context, revisedDataRecord);
 		}
 		

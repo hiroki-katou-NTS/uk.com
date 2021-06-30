@@ -11,6 +11,9 @@ import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 
+/**
+ * 外部受入のワークスペースに対する入出力を担当するRepository
+ */
 public interface ExternalImportWorkspaceRepository {
 	
 	void createWorkspace(Require require, ExecutionContext context);
