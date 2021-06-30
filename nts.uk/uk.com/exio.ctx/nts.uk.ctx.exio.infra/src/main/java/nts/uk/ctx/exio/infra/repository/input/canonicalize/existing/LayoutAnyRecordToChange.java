@@ -1,9 +1,16 @@
 package nts.uk.ctx.exio.infra.repository.input.canonicalize.existing;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import nts.arc.layer.infra.data.jdbc.JdbcProxy;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
@@ -21,6 +28,10 @@ public class LayoutAnyRecordToChange {
 	private static final String TABLE_NAME = "XIMTT_ANY_RECORD_TO_CHANGE";
 	private static final int ATR_PRIMARY_KEYS = 1;
 	private static final int ATR_CHANGES = 2;
+	
+	private String tableName() {
+		return TABLE_NAME + "_" + context.getCompanyId().replace("-", "");
+	}
 	
 	public void createTable() {
 		
@@ -54,7 +65,89 @@ public class LayoutAnyRecordToChange {
 		});
 	}
 	
-	private String tableName() {
-		return TABLE_NAME + "_" + context.getCompanyId().replace("-", "");
+	public List<AnyRecordToChange> findAll() {
+		
+		String sql 	= " select *"
+					+ " from " + tableName();
+		
+		List<Entity> allEntitys = this.jdbcProxy.query(sql)
+				.getList(rec -> {
+					return new Entity(
+						rec.getString("ID"), 
+						rec.getInt("ITEM_NO"), 
+						rec.getInt("ATR"), 
+						rec.getString("VALUE"));
+				});
+		
+		return assembleChanges(allEntitys);
+	}
+	
+	public List<AnyRecordToChange> findAllWhere(int keyItemNo, String keyValue){
+		
+		String sqlByKey = " select *"
+					+ " from " + tableName()
+					+ " where ITEM_NO = @itemNO"
+					+ " and VALUE = @value";
+		
+		List<String> ids = this.jdbcProxy.query(sqlByKey)
+				.paramInt("itemNO", keyItemNo)
+				.paramString("value", keyValue)
+				.getList(rec -> {
+					return rec.getString("ID");
+				});
+		
+		String sqlByID = " select *"
+				+ " from " + tableName()
+				+ " where ID in @ids";
+		
+		List<Entity> allEntitys = new ArrayList<>();
+		CollectionUtil.split(ids, 1000, subIdList -> {
+			allEntitys.addAll(
+				this.jdbcProxy.query(sqlByID)
+					.paramString("ids", subIdList)
+					.getList(rec -> {
+						return new Entity(
+								rec.getString("ID"), 
+								rec.getInt("ITEM_NO"), 
+								rec.getInt("ATR"), 
+								rec.getString("VALUE"));
+					}));
+		});
+		
+		return assembleChanges(allEntitys);
+	}
+	
+	private List<AnyRecordToChange> assembleChanges(List<Entity> allEntitys){
+		val entitysMap = allEntitys
+					.stream()
+					.collect(Collectors.groupingBy(Entity::getId));
+		val result = new ArrayList<AnyRecordToChange>();
+		for(List<Entity> entitys : entitysMap.values()) {
+			result.add(toDomain(entitys));
+		}
+		return result;
+	}
+	
+	
+	private AnyRecordToChange toDomain(List<Entity> entitys){
+		val result = AnyRecordToChange.create(context);
+		
+		entitys.forEach(entity -> {
+			if(entity.atr == 1) {
+				result.addKey(entity.itemNo, StringifiedValue.of(entity.value));
+			}else {
+				result.addChange(entity.itemNo, StringifiedValue.of(entity.value));
+			}
+		});
+		return result;
+	}
+	
+	@AllArgsConstructor
+	@Getter
+	private class Entity{
+		private final String id;
+		private final int itemNo;
+		private final int atr;
+		private final String value;
 	}
 }
