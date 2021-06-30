@@ -46,6 +46,8 @@ module nts.uk.at.view.kdl053.a {
             }
             if (!nts.uk.util.isNullOrUndefined(data.dispItemCol)) {
                 self.dispItemCol = data.dispItemCol;
+            } else {
+                self.dispItemCol = true;
             }
 			if(_.isNil(data.errorRegistrationList)){
 				if(!_.isNil(data.dataShareDialogKDL053.errorRegistrationList)) {
