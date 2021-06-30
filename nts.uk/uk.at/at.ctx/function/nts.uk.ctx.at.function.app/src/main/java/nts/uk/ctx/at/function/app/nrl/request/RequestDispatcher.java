@@ -108,7 +108,7 @@ public class RequestDispatcher {
 			
 			String soh = frame.pickItem(Element.SOH);
 			if (!DefaultValue.SOH.equals(soh)) throw new InvalidFrameException();
-			String hdr = frame.pickItem(Element.HDR);
+			String hdr = (frame.pickItem(Element.HDR)).toUpperCase();
 
 			String nrlNo = frame.pickItem(Element.NRL_NO);
 			String macAddr = frame.pickItem(Element.MAC_ADDR);

@@ -243,4 +243,11 @@ public class Codryptofy {
 		byte[] bytes = DatatypeConverter.parseHexBinary(hexText);
 		return encodeUTF8(bytes);
 	}
+	
+	public static String paddingWithByte(String text, int byteText) {
+		byte[] name = new byte[byteText];
+		System.arraycopy(decode(text), 0, name, 0, decode(text).length);
+		return encode(name);
+	}
+	
 }

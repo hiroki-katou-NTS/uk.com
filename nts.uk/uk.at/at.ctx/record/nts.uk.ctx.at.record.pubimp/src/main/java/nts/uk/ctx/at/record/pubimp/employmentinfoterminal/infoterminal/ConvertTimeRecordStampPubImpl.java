@@ -125,7 +125,7 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		@Override
 		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
 				GeneralDateTime dateTime) {
-			return stampRecordRepository.findByKey(stampNumber, dateTime);
+			return stampRecordRepository.get(contractCode.v(), stampNumber.v(), dateTime);
 		}
 
 		@Override

@@ -110,7 +110,7 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			Element.BCC);
 	public static final List<String> APP_REASON_RES_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
 			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
-			Element.PAYLOAD, Element.BCC);
+			Element.NUMBER, Element.PAYLOAD, Element.BCC);
 	
 	public static final List<String> UK_SWITCH_MODE_REQ =  Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
 			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,

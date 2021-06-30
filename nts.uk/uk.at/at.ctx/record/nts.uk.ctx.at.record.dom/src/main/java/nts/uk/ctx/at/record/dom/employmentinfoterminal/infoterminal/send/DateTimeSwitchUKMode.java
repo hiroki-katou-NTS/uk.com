@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.send;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.arc.time.GeneralDateTime;
@@ -15,35 +17,35 @@ public class DateTimeSwitchUKMode implements DomainValue {
 	/**
 	 * Year
 	 */
-	private final Integer year;
+	private final String year;
 
 	/**
 	 * month
 	 */
-	private final Integer month;
+	private final String month;
 
 	/**
 	 * day
 	 */
-	private final Integer day;
+	private final String day;
 
 	/**
 	 * hour
 	 */
-	private final Integer hour;
+	private final String hour;
 
 	/**
 	 * minute
 	 */
-	private final Integer minute;
+	private final String minute;
 
 	/**
 	 * second
 	 */
-	private final Integer second;
+	private final String second;
 
-	public DateTimeSwitchUKMode(Integer year, Integer month, Integer day, Integer hour, Integer minute,
-			Integer second) {
+	public DateTimeSwitchUKMode(String year, String month, String day, String hour, String minute,
+			String second) {
 		super();
 		this.year = year;
 		this.month = month;
@@ -54,7 +56,13 @@ public class DateTimeSwitchUKMode implements DomainValue {
 	}
 
 	public static DateTimeSwitchUKMode create(GeneralDateTime time) {
-		return new DateTimeSwitchUKMode(time.year() % 100, time.month(), time.day(), time.hours(), time.minutes(),
-				time.seconds());
+		return new DateTimeSwitchUKMode(hexPadding(time.year(), 4), hexPadding(time.month(), 2),
+				hexPadding(time.day(), 2), hexPadding(time.hours(), 2), hexPadding(time.minutes(), 2),
+				hexPadding(time.seconds(), 2));
+	}
+
+    //[S-1] hexパディング
+	private static String hexPadding(int data, int length) {
+		return StringUtils.leftPad(Integer.toHexString(data), length, "0");
 	}
 }

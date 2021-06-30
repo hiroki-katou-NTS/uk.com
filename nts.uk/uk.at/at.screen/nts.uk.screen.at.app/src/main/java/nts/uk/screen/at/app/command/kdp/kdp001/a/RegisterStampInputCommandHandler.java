@@ -24,6 +24,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
@@ -230,6 +231,11 @@ public class RegisterStampInputCommandHandler
 			return Optional.ofNullable(stampCardEdit);
 		}
 
+		@Override
+		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
+				GeneralDateTime dateTime) {
+			return stampRecordRepo.get(contractCode.v(), stampNumber.v(), dateTime);
+		}
 	}
 
 }

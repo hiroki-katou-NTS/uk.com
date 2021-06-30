@@ -13,40 +13,40 @@ public class SendTimeInfomationImport {
 	/**
 	 * Year
 	 */
-	private final Integer year;
+	private final String year;
 
 	/**
 	 * month
 	 */
-	private final Integer month;
+	private final String month;
 
 	/**
 	 * day
 	 */
-	private final Integer day;
+	private final String day;
 
 	/**
 	 * hour
 	 */
-	private final Integer hour;
+	private final String hour;
 
 	/**
 	 * minute
 	 */
-	private final Integer minute;
+	private final String minute;
 
 	/**
 	 * second
 	 */
-	private final Integer second;
+	private final String second;
 
 	/**
 	 * week
 	 */
-	private final Integer week;
+	private final String week;
 
-	public SendTimeInfomationImport(Integer year, Integer month, Integer day, Integer hour, Integer minute,
-			Integer second, Integer week) {
+	public SendTimeInfomationImport(String year, String month, String day, String hour, String minute,
+			String second, String week) {
 		this.year = year;
 		this.month = month;
 		this.day = day;

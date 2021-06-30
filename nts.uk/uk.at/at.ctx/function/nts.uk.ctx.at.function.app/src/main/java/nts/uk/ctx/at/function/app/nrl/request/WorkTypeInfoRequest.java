@@ -40,11 +40,11 @@ public class WorkTypeInfoRequest extends NRLRequest<Frame> {
 		}
 		String payload = builder.toString();
 		byte[] payloadBytes = Codryptofy.decode(payload);
-		int length = payloadBytes.length + DefaultValue.DEFAULT_LENGTH;
+		int length = payloadBytes.length + DefaultValue.DEFAULT_PADDING_LENGTH;
 		List<MapItem> items = NRContentList.createDefaultField(Command.WORKTYPE_INFO,
 				Optional.ofNullable(Integer.toHexString(length)), context.getTerminal());
 		// Number of records
-		items.add(new MapItem(Element.NUMBER, String.valueOf(lstWTInfo.size())));
+		items.add(new MapItem(Element.NUMBER, StringUtils.leftPad(Integer.toHexString(lstWTInfo.size()), 4, "0")));
 		context.collectEncrypt(items, payload);
 	}
 
@@ -53,9 +53,8 @@ public class WorkTypeInfoRequest extends NRLRequest<Frame> {
 		builder.append(StringUtils.rightPad(data.getWorkTypeNumber(), 3));
 		builder.append(StringUtils.rightPad(data.getDaiClassifiNum(), 2));
 		// half payload16
-		builder.append(StringUtils.rightPad(data.getWorkName(), 6));
-		builder.append(StringUtils.rightPad("", 5, " "));
-		return builder.toString();
+		builder.append(Codryptofy.paddingWithByte(data.getWorkName(), 6));
+		return  Codryptofy.paddingWithByte(builder.toString(), 16);
 	}
 
 	@Override

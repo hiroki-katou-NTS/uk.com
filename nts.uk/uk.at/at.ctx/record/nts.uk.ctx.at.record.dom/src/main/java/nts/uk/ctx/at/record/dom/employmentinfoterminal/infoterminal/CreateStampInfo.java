@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampTypeDisplay;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
@@ -72,7 +73,7 @@ public class CreateStampInfo implements DomainValue {
 		if (!stampType.isPresent())
 			return Optional.empty();
 
-		Stamp stamp = new Stamp(contractCode, new StampNumber(recept.getIdNumber()), recept.getDateTime(), relieve,
+		Stamp stamp = new Stamp(contractCode, new StampNumber(recept.getIdNumber().trim()), recept.getDateTime(), relieve,
 				stampType.get(), refActualResults, Optional.empty());
 
 		StampRecord stampRecord = createStampRecord(contractCode, recept, stamp);
@@ -89,8 +90,8 @@ public class CreateStampInfo implements DomainValue {
 			changeHalfDay = true;
 		}
 
-		val leavCategory = LeaveCategory.valueStringOf(nrData.getLeavingCategory());
-		val changeClockArt = this.stampInfoConver.convertFromNR(leavCategory);
+		val leavCategory = LeaveCategory.valueStringOf(category);
+		Optional<ChangeClockArt>  changeClockArt = (leavCategory == null ? Optional.empty() : this.stampInfoConver.convertFromNR(leavCategory));
 		if (!changeClockArt.isPresent())
 			return Optional.empty();
 

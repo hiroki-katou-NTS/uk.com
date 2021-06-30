@@ -1,10 +1,17 @@
 package nts.uk.ctx.at.function.ws.nrl;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXB;
 
 import nts.uk.ctx.at.function.app.nrl.Command;
 import nts.uk.ctx.at.function.app.nrl.data.RequestData;
@@ -43,10 +50,43 @@ public class NRLWebService extends RequestDispatcher {
 
 	@POST
 	@Path("masterCollect")
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@RequestData({ Command.PERSONAL_INFO, Command.OVERTIME_INFO, Command.RESERVATION_INFO, 
 			Command.WORKTIME_INFO, Command.WORKTYPE_INFO, Command.APPLICATION_INFO, Command.TR_REMOTE, Command.UK_SWITCH_MODE })
-	public Frame requestMasterDatas(InputStream is) {
+	public Response requestMasterDatas(InputStream is) {
 		NRLResponse response = ignite(is);
-		return response.getEntity(Frame.class);
+		Frame frame = response.getEntity(Frame.class);
+		return Response.ok().type(MediaType.APPLICATION_OCTET_STREAM).entity(trim(frame)).build();
+	}
+	
+	public String trim(Frame frame) {
+		StringWriter sw = new StringWriter();
+		JAXB.marshal(frame, sw);
+		String xmlString = sw.toString();
+	    BufferedReader reader = new BufferedReader(new StringReader(xmlString));
+	    StringBuffer result = new StringBuffer();
+	    try {
+	    	int lineNumber = 0;
+	        String line;
+	        while ( (line = reader.readLine() ) != null) {
+	        	if(lineNumber != 0) {
+	        	String row = line.trim();
+	        	if(row.length() >=2 && row.substring(row.length()-2, row.length()).endsWith("/>")) {
+	        		String endChar = row.substring(0, row.length()-2) + " />";
+	        		 result.append(endChar);
+	        	}else {
+	            result.append(row);
+	        	}
+	            result.append("\n");
+	        	}else {
+	        		result.append("<?xml version=\"1.0\" encoding=\"shift_jis\" ?>");
+	 	            result.append("\n");
+	        		lineNumber++;
+	        	}
+	        }
+	        return result.toString().trim();
+	    } catch (IOException e) {
+	        throw new RuntimeException(e);
+	    }
 	}
 }

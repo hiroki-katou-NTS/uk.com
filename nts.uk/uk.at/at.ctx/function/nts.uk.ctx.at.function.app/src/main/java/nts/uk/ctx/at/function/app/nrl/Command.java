@@ -33,17 +33,17 @@ public enum Command {
 	//就業時間帯(1D, 09)
 	WORKTIME_INFO("WorkTimeInfo", "1D", "09"),
 	//残業・休日出勤(1E, 0A)
-	OVERTIME_INFO("OverTimeInfo", "1E", "0A"),
+	OVERTIME_INFO("OverTimeInfo", "1E", "10"),
 	//予約メニュー(1F, 0B)
-	RESERVATION_INFO("ReservationInfo", "1F", "0B"),
+	RESERVATION_INFO("ReservationInfo", "1F", "11"),
 	//申請理由(20, 0C)
-	APPLICATION_INFO("ApplicationInfo", "20", "0C"),
+	APPLICATION_INFO("ApplicationInfo", "20", "12"),
 	//時刻合わせ(16, 05)
 	TIMESET_INFO("TimeSetInfo", "16", "05"),
 	//NRリモート設定(21, 0D)
-	TR_REMOTE("TimeRecordRemote", "21", "0D"),
+	TR_REMOTE("TimeRecordRemote", "21", "13"),
 	//UKモードへの切替日時(22, 0E)
-	UK_SWITCH_MODE("DateTimeSwitchUKMode", "22", "0E");
+	UK_SWITCH_MODE("DateTimeSwitchUKMode", "22", "14");
 
 	/**
 	 * Name

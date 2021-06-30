@@ -51,11 +51,10 @@ public class ReservationMenuInfoRequest extends NRLRequest<Frame> {
 		StringBuilder builder = new StringBuilder();
 		for(SendReservationMenuImport data : lstInfo) {
 			//half
-			builder.append(StringUtils.rightPad(data.getBentoMenu(), 16));
+			builder.append(Codryptofy.paddingWithByte(data.getBentoMenu(), 16));
 			builder.append(StringUtils.rightPad(data.getUnit(), 2));
 		}
-		builder.append(StringUtils.rightPad("", 8, " "));
-		return builder.toString();
+		return Codryptofy.paddingWithByte(builder.toString(), 224);
 	}
 
 }

@@ -82,14 +82,14 @@ public class StampReceptionData implements ReceptionData {
 
 	public String getOverTimeHours() {
 		if (overTimeHours.trim().isEmpty())
-			return overTimeHours;
+			return "";
 		return String.valueOf(
 				(Integer.parseInt(overTimeHours.trim()) / 100) * 60 + (Integer.parseInt(overTimeHours.trim()) % 100));
 	}
 
 	public String getMidnightTime() {
 		if (midnightTime.trim().isEmpty())
-			return midnightTime;
+			return "";
 		return String.valueOf(
 				(Integer.parseInt(midnightTime.trim()) / 100) * 60 + (Integer.parseInt(midnightTime.trim()) % 100));
 	}
@@ -100,6 +100,10 @@ public class StampReceptionData implements ReceptionData {
 
 	public String getShift() {
 		return shift.trim();
+	}
+	
+	public String getIdNumber() {
+		return idNumber.trim();
 	}
 
 	// 認証方法

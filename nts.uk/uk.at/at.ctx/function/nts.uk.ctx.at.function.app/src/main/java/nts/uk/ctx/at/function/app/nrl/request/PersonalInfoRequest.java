@@ -44,11 +44,11 @@ public class PersonalInfoRequest extends NRLRequest<Frame> {
 		}
 		String payload = builder.toString();
 		byte[] payloadBytes = Codryptofy.decode(payload);
-		int length = payloadBytes.length + DefaultValue.DEFAULT_LENGTH;
+		int length = payloadBytes.length + DefaultValue.DEFAULT_PADDING_LENGTH;
 		List<MapItem> items = NRContentList.createDefaultField(Command.PERSONAL_INFO,
 				Optional.ofNullable(Integer.toHexString(length)), context.getTerminal());
 		// Number of records
-		items.add(new MapItem(Element.NUMBER, String.valueOf(lstPerInfo.size())));
+		items.add(new MapItem(Element.NUMBER, StringUtils.leftPad(Integer.toHexString(lstPerInfo.size()), 4, "0")));
 		context.collectEncrypt(items, payload);
 	}
 
@@ -64,12 +64,11 @@ public class PersonalInfoRequest extends NRLRequest<Frame> {
 		StringBuilder builder = new StringBuilder(); 
 		builder.append(StringUtils.rightPad(data.getIdNumber(), 20));
 		//half payload16
-		builder.append(StringUtils.rightPad(data.getPerName(), 20));
+		builder.append(Codryptofy.paddingWithByte(data.getPerName(), 20));
 		builder.append(StringUtils.rightPad(data.getDepartmentCode(), 10));
 		builder.append(StringUtils.rightPad(data.getCompanyCode(), 4));
 		builder.append(StringUtils.rightPad(data.getReservation(), 4));
-		builder.append(StringUtils.rightPad("", 6, " "));
-		return builder.toString();
+		return Codryptofy.paddingWithByte(builder.toString(), 64);
 	}
 
 }

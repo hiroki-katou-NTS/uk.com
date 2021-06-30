@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal;
 
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
-import nts.arc.time.GeneralDateTime;
 
 /**
  * @author thanh_nx
@@ -15,35 +14,35 @@ public class DateTimeSwitchUKModeImport implements DomainValue {
 	/**
 	 * Year
 	 */
-	private final Integer year;
+	private final String year;
 
 	/**
 	 * month
 	 */
-	private final Integer month;
+	private final String month;
 
 	/**
 	 * day
 	 */
-	private final Integer day;
+	private final String day;
 
 	/**
 	 * hour
 	 */
-	private final Integer hour;
+	private final String hour;
 
 	/**
 	 * minute
 	 */
-	private final Integer minute;
+	private final String minute;
 
 	/**
 	 * second
 	 */
-	private final Integer second;
+	private final String second;
 
-	public DateTimeSwitchUKModeImport(Integer year, Integer month, Integer day, Integer hour, Integer minute,
-			Integer second) {
+	public DateTimeSwitchUKModeImport(String year, String month, String day, String hour, String minute,
+			String second) {
 		super();
 		this.year = year;
 		this.month = month;
@@ -51,10 +50,5 @@ public class DateTimeSwitchUKModeImport implements DomainValue {
 		this.hour = hour;
 		this.minute = minute;
 		this.second = second;
-	}
-
-	public static DateTimeSwitchUKModeImport create(GeneralDateTime time) {
-		return new DateTimeSwitchUKModeImport(time.year() % 100, time.month(), time.day(), time.hours(), time.minutes(),
-				time.seconds());
 	}
 }

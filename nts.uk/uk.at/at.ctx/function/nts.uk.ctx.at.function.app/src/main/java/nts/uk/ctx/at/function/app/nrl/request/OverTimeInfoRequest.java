@@ -6,8 +6,6 @@ import java.util.Optional;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.uk.ctx.at.function.app.nrl.Command;
 import nts.uk.ctx.at.function.app.nrl.DefaultValue;
 import nts.uk.ctx.at.function.app.nrl.NRContentList;
@@ -53,12 +51,12 @@ public class OverTimeInfoRequest extends NRLRequest<Frame> {
 		StringBuilder builder = new StringBuilder();
 		for (SendOvertimeDetailImport overTime : info.getOvertimes()) {
 			// half
-			builder.append(StringUtils.rightPad(overTime.getSendOvertimeName(), 12));
+			builder.append(Codryptofy.paddingWithByte(overTime.getSendOvertimeName(), 12));
 		}
 
 		for (SendOvertimeDetailImport vacation : info.getVacations()) {
 			// half
-			builder.append(StringUtils.rightPad(vacation.getSendOvertimeName(), 12));
+			builder.append(Codryptofy.paddingWithByte(vacation.getSendOvertimeName(), 12));
 		}
 
 		return builder.toString();
