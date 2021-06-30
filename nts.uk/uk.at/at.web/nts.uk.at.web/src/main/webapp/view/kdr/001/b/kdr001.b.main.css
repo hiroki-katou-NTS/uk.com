@@ -41,11 +41,11 @@
    
 }
 
-.ntsCheckBox{
-	width: 150px;
-	height: 20px;
+.checkbox-wrapper{
+	width: 150px !important;
+	height: 20px !important;
 }
-.multicheckbox-wrapper label{
+.checkbox-wrappers label{
 	margin-right: 4px;
 }
 
