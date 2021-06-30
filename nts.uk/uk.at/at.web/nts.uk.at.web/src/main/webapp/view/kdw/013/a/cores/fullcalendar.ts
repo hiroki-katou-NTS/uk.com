@@ -1054,7 +1054,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                     return {
                                         start: new Date(),
                                         end: new Date(),
-                                        title: getTitles(wg, tasks),
+                                        title: getTitles(wg, tasks, '/'),
                                         backgroundColor: getBackground(wg, tasks),
                                         textColor: '',
                                         extendedProps: {
@@ -2037,10 +2037,16 @@ module nts.uk.ui.at.kdw013.calendar {
                     event.remove();
 
                     vm.selectedEvents = [{ start, end }];
-
+                    const wg = {
+                        workCD1,
+                        workCD2,
+                        workCD3,
+                        workCD4,
+                        workCD5
+                    } = extendedProps;
                     // add cloned event to datasources
                     events.push({
-                        title,
+                        title: getTitles(wg, vm.params.$settings().startManHourInputResultDto.tasks),
                         start,
                         end,
                         textColor,
