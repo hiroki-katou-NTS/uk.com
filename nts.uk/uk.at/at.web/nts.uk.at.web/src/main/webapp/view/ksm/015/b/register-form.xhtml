@@ -48,7 +48,7 @@ required: true}" />
         </div>
     </div>
     <!-- B9 -->
-    <div class="valign-center control-group">
+    <div class="valign-center control-group color-pick">
         <div data-bind="ntsFormLabel: { required: true, enable: true}">
             #{i18n.getText('KSM015_19')}</div>
         <!-- B9_1_2 -->    
@@ -72,7 +72,7 @@ required: true}" />
                 required: false}" />
     </div>
     <!-- B11 -->
-    <div class="valign-center control-group">
+    <div class="valign-center control-group import-cd">
         <div data-bind="ntsFormLabel: {required: false, enable: true, constraint: 'ShiftMasterImportCode'}">
             #{i18n.getText('KSM015_37')}</div>
         <button tabindex="13" id="help-button-2" data-bind="ntsHelpButton: {textId: 'KSM015_38', textParams:['{#KSM015_38}'], position: 'right center' }">？</button>
@@ -80,7 +80,7 @@ required: true}" />
                 name: '#[KSM015_39]',
                 constraint: 'ShiftMasterImportCode',
                 value: registrationForm().importCode,
-                option: { width: '60px', textalign: 'left' },
+                option: { width: '70px', textalign: 'left' },
                 required: false}" />
     </div>
 </div>
