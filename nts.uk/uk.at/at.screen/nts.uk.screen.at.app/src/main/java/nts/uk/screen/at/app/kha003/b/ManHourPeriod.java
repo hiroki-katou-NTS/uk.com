@@ -17,27 +17,38 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class ManHourPeriod {
+    /**
+     * 0: DATE
+     * 1: YEAR_MONTH
+     */
+    private int totalUnit;
     private String startDate;
     private String endDate;
-    private YearMonth yearMonthStart;
-    private YearMonth yearMonthEnd;
-
+    private String yearMonthStart;
+    private String yearMonthEnd;
 
     public DatePeriod getDatePeriod() {
+        if (totalUnit == 1) return null;
         return new DatePeriod(GeneralDate.fromString(startDate, "yyyy/MM/dd"), GeneralDate.fromString(endDate, "yyyy/MM/dd"));
     }
 
     public YearMonthPeriod getYearMonthPeriod() {
-        return new YearMonthPeriod(yearMonthStart, yearMonthEnd);
+        if (totalUnit == 0) return null;
+        return new YearMonthPeriod(
+                YearMonth.of(Integer.parseInt(yearMonthStart.substring(0, 4)), Integer.parseInt(yearMonthStart.substring(6, 7))),
+                YearMonth.of(Integer.parseInt(yearMonthEnd.substring(0, 4)), Integer.parseInt(yearMonthEnd.substring(6, 7)))
+        );
     }
 
     public List<GeneralDate> getDateList() {
-        val datePeriod = new DatePeriod(GeneralDate.fromString(startDate, "yyyy/MM/dd"), GeneralDate.fromString(endDate, "yyyy/MM/dd"));
+        val datePeriod = getDatePeriod();
+        if (datePeriod == null) return new ArrayList<>();
         return datePeriod.datesBetween();
     }
 
     public List<YearMonth> getYearMonthList() {
-        val yearMonthPeriod = new YearMonthPeriod(yearMonthStart, yearMonthEnd);
+        val yearMonthPeriod = getYearMonthPeriod();
+        if (yearMonthPeriod == null) return new ArrayList<>();
         return yearMonthPeriod.yearMonthsBetween();
     }
 }

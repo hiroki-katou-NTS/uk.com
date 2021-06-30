@@ -61,6 +61,7 @@ public class ManHourAggregationResultExportService extends ExportService<List<Re
         AggregationResultQuery query = new AggregationResultQuery(
                 "01", null, Collections.emptyList(),
                 new ManHourPeriod(
+                        0,
                         "2021/06/01",
                         "2021/06/03",
                         YearMonth.of(2021, 6),
