@@ -334,6 +334,16 @@ module nts.uk.com.view.cmm048.a {
           default: break;
         }
       });
+
+      if (vm.isUseOfProfile()) {
+        vm.selectedTab('tab-1');
+      } else if (vm.isUseOfPassword()) {
+        vm.selectedTab('tab-2');
+      } else if (vm.isUseOfNotice()) {
+        vm.selectedTab('tab-3');
+      } else {
+        vm.selectedTab('tab-4');
+      }
     }
 
     private init() {
@@ -352,6 +362,7 @@ module nts.uk.com.view.cmm048.a {
       //data binding
       vm.$blockui('grayout');
       vm.$ajax(API.find).then((data: UserInformationDto) => {
+        $('#master-content').css({ 'display': '' });
         //set code
         vm.companyId(data.employeeDataMngInfo.companyId);
         vm.employeeId(data.employeeDataMngInfo.employeeId);
@@ -374,6 +385,7 @@ module nts.uk.com.view.cmm048.a {
       })
         .fail((error: any) => {
           vm.$blockui('clear');
+          $('#master-content').css({ 'display': 'none' });
           if (error.messageId === "Msg_1775") {
             vm.$dialog.error(error).then(() => {
               vm.openDialogCmm049();
