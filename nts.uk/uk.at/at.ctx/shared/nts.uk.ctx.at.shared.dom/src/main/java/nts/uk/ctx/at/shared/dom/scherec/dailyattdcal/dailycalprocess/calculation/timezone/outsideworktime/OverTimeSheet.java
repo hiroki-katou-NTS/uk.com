@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -930,22 +929,14 @@ public class OverTimeSheet {
 	 */
 	public List<TimeSpanForCalc> getTimeSheetNotDupOverTime(TimeSpanForCalc timeSpan){
 		
-		List<TimeSpanForCalc> results = new ArrayList<>(Arrays.asList(timeSpan));
-		
-		// 確認中Listに保存
-		List<TimeSpanForCalc> checking = new ArrayList<>(Arrays.asList(timeSpan));
+		List<TimeSpanForCalc> target = new ArrayList<>();	// 比較対象List
 		// 残業枠時間帯を確認する
 		for (OverTimeFrameTimeSheetForCalc frame : this.frameTimeSheets){
-			// 確認中Listを確認する
-			for (TimeSpanForCalc check : checking){
-				// 結果Listをクリア
-				results = new ArrayList<>();
-				// 基準時間帯の比較対象と重複していない部分の取得
-				results.addAll(check.getNotDuplicationWith(frame.getTimeSheet().getTimeSpan()));
-				// 確認中List ←　結果List
-				checking = new ArrayList<>(results);
-			}
+			// 比較対象Listに追加する
+			target.add(frame.getTimeSheet().getTimeSpan());
 		}
+		// 指定Listと重複していない時間帯の取得
+		List<TimeSpanForCalc> results = timeSpan.getNotDuplicatedWith(target);
 		// 結果を返す
 		return results;
 	}

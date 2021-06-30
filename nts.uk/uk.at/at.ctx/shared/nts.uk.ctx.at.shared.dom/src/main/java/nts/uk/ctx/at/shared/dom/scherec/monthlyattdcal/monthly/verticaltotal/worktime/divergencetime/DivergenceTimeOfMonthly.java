@@ -65,9 +65,6 @@ public class DivergenceTimeOfMonthly implements Serializable{
 			val targetDivergenceTime = this.divergenceTimeList.get(divTimeNo);
 			
 			targetDivergenceTime.addMinutesToDivergenceTime(divergenceTime.getDivTime().v());
-			targetDivergenceTime.addMinutesToDeductionTime(divergenceTime.getDeductionTime().v());
-			targetDivergenceTime.addMinutesToDivergenceTimeAfterDeduction(
-					divergenceTime.getDivTimeAfterDeduction().v());
 		}
 	}
 	
@@ -205,9 +202,6 @@ public class DivergenceTimeOfMonthly implements Serializable{
 			if (target.divergenceTimeList.containsKey(timeNo)){
 				val targetDivergenceTime = target.divergenceTimeList.get(timeNo);
 				divergenceTime.addMinutesToDivergenceTime(targetDivergenceTime.getDivergenceTime().v());
-				divergenceTime.addMinutesToDeductionTime(targetDivergenceTime.getDeductionTime().v());
-				divergenceTime.addMinutesToDivergenceTimeAfterDeduction(
-						targetDivergenceTime.getDivergenceTimeAfterDeduction().v());
 				switch (targetDivergenceTime.getDivergenceAtr()){
 				case NORMAL:
 					break;

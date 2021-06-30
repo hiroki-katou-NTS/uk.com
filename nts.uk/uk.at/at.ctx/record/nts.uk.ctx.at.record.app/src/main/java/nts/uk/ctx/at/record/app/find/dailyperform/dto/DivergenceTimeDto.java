@@ -25,11 +25,6 @@ public class DivergenceTimeDto implements ItemConst, AttendanceItemDataGate {
 	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer divergenceTime;
 
-	/** 控除時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = DEDUCTION)
-	@AttendanceItemValue(type = ValueType.TIME)
-	private Integer deductionTime;
-
 	/** 乖離理由コード: 乖離理由コード */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = DIVERGENCE + REASON + CODE)
 	@AttendanceItemValue
@@ -40,11 +35,6 @@ public class DivergenceTimeDto implements ItemConst, AttendanceItemDataGate {
 	@AttendanceItemValue(type = ValueType.TEXT)
 	private String divergenceReason;
 
-	/** 控除後乖離時間: 勤怠時間 */
-	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = DEDUCTION + AFTER)
-	@AttendanceItemValue(type = ValueType.TIME)
-	private Integer divergenceTimeAfterDeduction;
-
 	/** 乖離時間NO: 乖離時間NO */
 	private int no;
 	
@@ -53,14 +43,10 @@ public class DivergenceTimeDto implements ItemConst, AttendanceItemDataGate {
 		switch (path) {
 		case DIVERGENCE:
 			return Optional.of(ItemValue.builder().value(divergenceTime).valueType(ValueType.TIME));
-		case DEDUCTION:
-			return Optional.of(ItemValue.builder().value(deductionTime).valueType(ValueType.TIME));
 		case (DIVERGENCE + REASON + CODE):
 			return Optional.of(ItemValue.builder().value(divergenceReasonCode).valueType(ValueType.CODE));
 		case (DIVERGENCE + REASON):
 			return Optional.of(ItemValue.builder().value(divergenceReason).valueType(ValueType.TEXT));
-		case (DEDUCTION + AFTER):
-			return Optional.of(ItemValue.builder().value(divergenceTimeAfterDeduction).valueType(ValueType.TIME));
 		default:
 			return Optional.empty();
 		}
@@ -86,17 +72,11 @@ public class DivergenceTimeDto implements ItemConst, AttendanceItemDataGate {
 		case DIVERGENCE:
 			this.divergenceTime = value.valueOrDefault(null);
 			break;
-		case DEDUCTION:
-			this.deductionTime = value.valueOrDefault(null);
-			break;
 		case (DIVERGENCE + REASON + CODE):
 			this.divergenceReasonCode = value.valueOrDefault(null);
 			break;
 		case (DIVERGENCE + REASON):
 			this.divergenceReason = value.valueOrDefault(null);
-			break;
-		case (DEDUCTION + AFTER):
-			this.divergenceTimeAfterDeduction = value.valueOrDefault(null);
 			break;
 		default:
 			break;
@@ -106,20 +86,16 @@ public class DivergenceTimeDto implements ItemConst, AttendanceItemDataGate {
 	@Override
 	public DivergenceTimeDto clone(){
 		return new DivergenceTimeDto(divergenceTime, 
-									deductionTime,
 									divergenceReasonCode, 
 									divergenceReason, 
-									divergenceTimeAfterDeduction, 
 									no);
 	}
 	
 	public static DivergenceTimeDto fromDivergenceTime(DivergenceTime domain){
 		return domain == null ? null : new DivergenceTimeDto(
 				getAttendanceTime(domain.getDivTime()), 
-				getAttendanceTime(domain.getDeductionTime()),
 				!domain.getDivResonCode().isPresent() ? null : domain.getDivResonCode().get().v(), 
 				!domain.getDivReason().isPresent() ? null : domain.getDivReason().get().v(), 
-				getAttendanceTime(domain.getDivTimeAfterDeduction()), 
 				domain.getDivTimeId());
 	}
 

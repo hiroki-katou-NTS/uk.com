@@ -182,7 +182,7 @@ public class HolidayWorkFrameTime implements Cloneable{
 								new AttendanceTimeOfExistMinus(this.holidayWorkTime.get().getDivergenceTime().v())))
 						: Finally.empty(),
 
-				this.holidayWorkTime.isPresent()
+				this.transferTime.isPresent()
 						? Finally.of(new TimeDivergenceWithCalculation(
 								new AttendanceTime((this.transferTime.get().getTime().v())),
 								new AttendanceTime(this.transferTime.get().getCalcTime().v()),

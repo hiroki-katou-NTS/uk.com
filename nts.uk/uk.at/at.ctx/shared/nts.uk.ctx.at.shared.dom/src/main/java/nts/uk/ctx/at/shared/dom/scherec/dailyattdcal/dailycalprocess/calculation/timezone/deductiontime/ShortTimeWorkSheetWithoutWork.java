@@ -9,18 +9,29 @@ import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.OutsideWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSheetRoundingAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -31,12 +42,15 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Getter
 public class ShortTimeWorkSheetWithoutWork {
 	
-	/** 計上用 */
-	private List<TimeSheetOfDeductionItem> forRecord;
+	/** 所定内 */
+	private List<TimeSheetOfDeductionItem> within;
+	/** 所定外 */
+	private List<TimeSheetOfDeductionItem> without;
 
 	/** コンストラクタ */
 	public ShortTimeWorkSheetWithoutWork(){
-		this.forRecord = new ArrayList<>();
+		this.within = new ArrayList<>();
+		this.without = new ArrayList<>();
 	}
 	
 	/**
@@ -71,10 +85,16 @@ public class ShortTimeWorkSheetWithoutWork {
 				Optional.empty(),
 				companyCommonSetting,
 				personCommonSetting);
-		// 控除時間帯の作成（控除用）
-		result.forRecord = getShortTimeWithoutWork(
-				calcRangeOfOneDay,
-				deductionTimeSheet.getForRecordTimeZoneList());
+		// 勤務外短時間の取得
+		List<TimeSheetOfDeductionItem> shortTimeWithoutWorkList = getShortTimeWithoutWork(
+				calcRangeOfOneDay, deductionTimeSheet.getForRecordTimeZoneList());
+		// 1日半日出勤・1日休日系の判定
+		WorkStyle workStyle = workType.checkWorkDay();
+		// 勤務外短時間の所定時間帯の取得
+		List<TimeSpanForCalc> predSheetList = getPredSheetOfShortTimeWithoutWork(
+				integrationOfWorkTime, calcRangeOfOneDay, workStyle.toAttendanceHolidayAttr());
+		// 勤務外短時間の登録
+		registShortTimeWithoutWork(result, integrationOfWorkTime, shortTimeWithoutWorkList, predSheetList);;
 		// 勤務外短時間勤務時間帯を返す
 		return result;
 	}
@@ -82,43 +102,177 @@ public class ShortTimeWorkSheetWithoutWork {
 	/**
 	 * 勤務外短時間の取得
 	 * @param oneDay 1日の計算範囲
-	 * @param itemList 控除項目の時間帯List
+	 * @param itemList 計上用控除項目
 	 * @return 勤務外短時間List
 	 */
 	private static List<TimeSheetOfDeductionItem> getShortTimeWithoutWork(
 			CalculationRangeOfOneDay oneDay,
 			List<TimeSheetOfDeductionItem> itemList){
 		
-		List<TimeSheetOfDeductionItem> results = new ArrayList<>();
+		List<TimeSheetOfDeductionItem> shortTimeWithoutWork = new ArrayList<>();
 		
+		// 計上用控除項目を確認する
 		List<TimeSheetOfDeductionItem> childCareList =
 				itemList.stream().filter(t -> t.getDeductionAtr().isChildCare()).collect(Collectors.toList());
 		for (TimeSheetOfDeductionItem item : childCareList){
 			// 遅刻早退控除前時間帯に含まない時間帯の取得
-			List<TimeSpanForCalc> checking = new ArrayList<>(
+			List<TimeSpanForCalc> checkingList = new ArrayList<>(
 					oneDay.getWithinWorkingTimeSheet().get().getTimeSheetNotDupBeforeLateEarly(
 							item.getTimeSheet().getTimeSpan()));
 			// 確認中Listを確認する
-			List<TimeSpanForCalc> checked = new ArrayList<>(checking);
-			if (oneDay.getOutsideWorkTimeSheet().isPresent()){
-				OutsideWorkTimeSheet outsideWorkTimeSheet = oneDay.getOutsideWorkTimeSheet().get();
-				if (outsideWorkTimeSheet.getOverTimeWorkSheet().isPresent()){
-					OverTimeSheet overTimeSheet = outsideWorkTimeSheet.getOverTimeWorkSheet().get();
-					checking = new ArrayList<>(checked);
-					checked = new ArrayList<>();
-					for (TimeSpanForCalc check : checking){
+			List<TimeSpanForCalc> results = new ArrayList<>();
+			for (TimeSpanForCalc checking : checkingList){
+				boolean isChecked = false;
+				if (oneDay.getOutsideWorkTimeSheet().isPresent()){
+					OutsideWorkTimeSheet outsideWorkTimeSheet = oneDay.getOutsideWorkTimeSheet().get();
+					if (outsideWorkTimeSheet.getOverTimeWorkSheet().isPresent()){
+						OverTimeSheet overTimeSheet = outsideWorkTimeSheet.getOverTimeWorkSheet().get();
 						// 残業時間帯に含まない時間帯の取得
-						checked.addAll(overTimeSheet.getTimeSheetNotDupOverTime(check));
+						results.addAll(overTimeSheet.getTimeSheetNotDupOverTime(checking));
+						isChecked = true;
 					}
 				}
+				if (!isChecked) results.add(checking);	// 残業時間帯がない時、確認中Listをそのまま追加する
 			}
 			// 結果Listを控除項目の時間帯Listに変換する
-			for (TimeSpanForCalc target : checked){
-				results.add(item.cloneWithNewTimeSpan(Optional.of(TimeSpanForDailyCalc.of(target))));
+			for (TimeSpanForCalc result : results){
+				shortTimeWithoutWork.add(item.cloneWithNewTimeSpan(Optional.of(TimeSpanForDailyCalc.of(result))));
 			}
 		}
 		// 勤務外短時間Listを返す
-		return results;
+		return shortTimeWithoutWork;
+	}
+	
+	/**
+	 * 勤務外短時間の所定時間帯の取得
+	 * @param integrationOfWorkTime 統合就業時間帯
+	 * @param calcRangeOfOneDay 1日の計算範囲
+	 * @param attendanceHolidayAttr 出勤休日区分
+	 * @return 所定時間帯List
+	 */
+	private static List<TimeSpanForCalc> getPredSheetOfShortTimeWithoutWork(
+			IntegrationOfWorkTime integrationOfWorkTime,
+			CalculationRangeOfOneDay calcRangeOfOneDay,
+			AttendanceHolidayAttr attendanceHolidayAttr){
+		
+		List<TimeSpanForCalc> predSheetList = new ArrayList<>();	// 所定時間帯List
+
+		// 勤務形態を取得する
+		WorkTimeForm workTimeForm = integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm();
+		switch(workTimeForm){
+		case FIXED:
+			// 固定勤務の所定時間帯の取得
+			predSheetList = getPredSheetOfFixed(integrationOfWorkTime, attendanceHolidayAttr,
+					calcRangeOfOneDay.getPredetermineTimeSetForCalc());
+			break;
+		case FLOW:
+			// 流動勤務の所定時間帯の取得
+			predSheetList = getPredSheetOfFlow(calcRangeOfOneDay.getWorkInformationOfDaily());
+			break;
+		case FLEX:
+			break;
+		default:
+			break;
+		}
+		// 所定時間帯Listを返す
+		return predSheetList;
+	}
+	
+	/**
+	 * 固定勤務の所定時間帯の取得
+	 * @param integrationOfWorkTime 統合就業時間帯
+	 * @param attendanceHolidayAttr 出勤休日区分
+	 * @param predTimeSetForCalc 計算用所定時間設定
+	 * @return 所定時間帯List
+	 */
+	private static List<TimeSpanForCalc> getPredSheetOfFixed(
+			IntegrationOfWorkTime integrationOfWorkTime,
+			AttendanceHolidayAttr attendanceHolidayAttr,
+			PredetermineTimeSetForCalc predTimeSetForCalc){
+		
+		List<TimeSpanForCalc> predSheetList = new ArrayList<>();
+		
+		// 出勤休日区分から平日出勤用勤務時間帯を取得する
+		// ※　半日年休の時、年休部分の短時間勤務時間帯を所定内として判定するため、半日出勤時でも１日の所定・勤務で所定内外判定する。
+		Optional<FixedWorkSetting> fixedWorkSet = integrationOfWorkTime.getFixedWorkSetting();
+		if (!fixedWorkSet.isPresent()) return predSheetList;
+		Optional<FixHalfDayWorkTimezone> halfDaySheetSet =
+				fixedWorkSet.get().getFixHalfDayWorkTimezone(AttendanceHolidayAttr.FULL_TIME);
+		if (!halfDaySheetSet.isPresent()) return predSheetList;
+		FixedWorkTimezoneSet workSheetSet = halfDaySheetSet.get().getWorkTimezone();
+		// 所定時間内に含まれる就業時間帯を取得する
+		List<TimezoneUse> predTimeSetList = predTimeSetForCalc.getTimeSheets(AttendanceHolidayAttr.FULL_TIME);
+		for (TimezoneUse predTimeSet : predTimeSetList){
+			List<EmTimeZoneSet> workSheetList = workSheetSet.getWorkTimeSpanWithinPred(predTimeSet);
+			// 所定時間帯Listに追加する
+			for (EmTimeZoneSet workSheet : workSheetList){
+				predSheetList.add(new TimeSpanForCalc(
+						workSheet.getTimezone().getStart(), workSheet.getTimezone().getEnd()));
+			}
+		}
+		// 所定時間帯Listを返す
+		return predSheetList;
+	}
+	
+	/**
+	 * 流動勤務の所定時間帯の取得
+	 * @param workInfoOfDaily 日別勤怠の勤務情報
+	 * @return 所定時間帯List
+	 */
+	private static List<TimeSpanForCalc> getPredSheetOfFlow(
+			WorkInfoOfDailyAttendance workInfoOfDaily){
+		
+		List<TimeSpanForCalc> predSheetList = new ArrayList<>();
+		
+		// 始業終業時間帯の取得
+		for (ScheduleTimeSheet scheTimeSheet : workInfoOfDaily.getScheduleTimeSheets()){
+			// 所定時間帯Listに追加する
+			predSheetList.add(new TimeSpanForCalc(scheTimeSheet.getAttendance(), scheTimeSheet.getLeaveWork()));
+		}
+		// 所定時間帯Listを返す
+		return predSheetList;
+	}
+	
+	/**
+	 * 勤務外短時間の登録
+	 * @param target 登録対象
+	 * @param integrationOfWorkTime 統合就業時間帯
+	 * @param shortTimeWithoutWorkList 勤務外短時間
+	 * @param predSheetList 所定時間帯
+	 */
+	private static void registShortTimeWithoutWork(
+			ShortTimeWorkSheetWithoutWork target,
+			IntegrationOfWorkTime integrationOfWorkTime,
+			List<TimeSheetOfDeductionItem> shortTimeWithoutWorkList,
+			List<TimeSpanForCalc> predSheetList){
+		
+		// 勤務形態を取得する
+		WorkTimeForm workTimeForm = integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm();
+		if (workTimeForm.isFlex()){
+			// フレックス勤務
+			// 所定内　←　勤務外短時間
+			target.within.addAll(shortTimeWithoutWorkList);
+			return;
+		}
+		// フレックス勤務以外
+		for (TimeSheetOfDeductionItem shortTimeWithoutWork : shortTimeWithoutWorkList){
+			// 勤務外時間帯を計算用時間帯に変換する
+			TimeSpanForCalc timeSpan = shortTimeWithoutWork.getTimeSheet().getTimeSpan();
+			// 指定Listと重複している時間帯の取得
+			List<TimeSpanForCalc> withinSpanList = timeSpan.getDuplicatedWith(predSheetList);
+			// 所定内Listを控除項目の時間帯Listに変換する
+			for (TimeSpanForCalc withinSpan : withinSpanList){
+				target.within.add(shortTimeWithoutWork.cloneWithNewTimeSpan(
+						Optional.of(TimeSpanForDailyCalc.of(withinSpan))));
+			}
+			// 指定Listと重複していない時間帯の取得
+			List<TimeSpanForCalc> withoutSpanList = timeSpan.getNotDuplicatedWith(predSheetList);
+			// 所定外Listを控除項目の時間帯Listに変換する
+			for (TimeSpanForCalc withoutSpan : withoutSpanList){
+				target.without.add(shortTimeWithoutWork.cloneWithNewTimeSpan(
+						Optional.of(TimeSpanForDailyCalc.of(withoutSpan))));
+			}
+		}
 	}
 	
 	/**
@@ -126,14 +280,16 @@ public class ShortTimeWorkSheetWithoutWork {
 	 * @param conditionAtr 控除種別区分
 	 * @param roundAtr 丸め区分(時間帯で丸めるかの区分)
 	 * @param sumRoundSet 合算丸め設定
+	 * @param isWithin 所定内かどうか
 	 * @return 勤務外短時間勤務時間
 	 */
 	public AttendanceTime sumShortWorkTimeWithoutWork(
 			ConditionAtr conditionAtr,
 			TimeSheetRoundingAtr roundAtr,
-			Optional<TimeRoundingSetting> sumRoundSet) {
-		
-		// 計上用を確認する
+			Optional<TimeRoundingSetting> sumRoundSet,
+			boolean isWithin) {
+
+		List<TimeSheetOfDeductionItem> source = new ArrayList<>();
 		final ChildCareAtr childCareAtr;
 		if (conditionAtr.isChild()){
 			childCareAtr = ChildCareAtr.CHILD_CARE;
@@ -144,7 +300,15 @@ public class ShortTimeWorkSheetWithoutWork {
 		else{
 			return AttendanceTime.ZERO;
 		}
-		List<TimeSheetOfDeductionItem> target = this.forRecord.stream()
+		if (isWithin) {
+			// 所定内を確認する
+			source = this.within;
+		}
+		else {
+			// 所定外を確認する
+			source = this.without;
+		}
+		List<TimeSheetOfDeductionItem> target = source.stream()
 				.filter(t -> t.getDeductionAtr().isChildCare())
 				.filter(t -> t.getChildCareAtr().isPresent())
 				.filter(t -> t.getChildCareAtr().get() == childCareAtr)

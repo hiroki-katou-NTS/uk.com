@@ -48,14 +48,14 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 				for(int nextNumber = number + 1; nextNumber < originCopyList.size(); nextNumber++) {
 					if(originCopyList.get(number).getTimeSheet().checkDuplication(originCopyList.get(nextNumber).getTimeSheet()).isDuplicated()){
 						originCopyList = convertFromDeductionItemToList(originCopyList,number,nextNumber, setMethod, clockManage,workTimeDailyAtr);
-						if(originCopyList.size()>beforeCorrectSize)
-							break;
+						// 2021.6.30 shuichi_ishida
+						// 時間帯を調整した後、時間帯の数が増えるだけでなく、育児内に外出が内包されるケース等に、時間帯の数が減るケースがあるため、
+						// 数が変わった時、確認中の時間帯の調整をやり直す必要がある。
+						if (originCopyList.size() != beforeCorrectSize) break;
 					}
 				}
-				//分割などで元の時間帯より数が増えたらループを頭からやり直す
-				if(originCopyList.size()>beforeCorrectSize) {
-					break;
-				}
+				// 分割などで元の時間帯より数が変わったらループを頭からやり直す
+				if (originCopyList.size() != beforeCorrectSize) break;
 			}
 		}
 		this.timeSpanList = originCopyList;

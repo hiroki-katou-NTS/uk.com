@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.schedule.basicschedule;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 
 /**
   * The Enum WorkStyle.
@@ -58,5 +59,22 @@ public enum WorkStyle {
 				return Optional.empty();
 		}
 
+	}
+	
+	/**
+	 * 出勤休日区分に変換
+	 * @return 出勤休日区分
+	 */
+	public AttendanceHolidayAttr toAttendanceHolidayAttr(){
+		switch (this){
+		case MORNING_WORK:
+			return AttendanceHolidayAttr.MORNING;
+		case AFTERNOON_WORK:
+			return AttendanceHolidayAttr.AFTERNOON;
+		case ONE_DAY_WORK:
+			return AttendanceHolidayAttr.FULL_TIME;
+		default:
+			return AttendanceHolidayAttr.HOLIDAY;
+		}
 	}
 }
