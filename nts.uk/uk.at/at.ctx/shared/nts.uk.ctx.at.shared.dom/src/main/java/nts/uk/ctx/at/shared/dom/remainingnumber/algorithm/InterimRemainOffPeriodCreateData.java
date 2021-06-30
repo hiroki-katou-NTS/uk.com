@@ -193,7 +193,7 @@ public class InterimRemainOffPeriodCreateData {
 		//Input「予定」がNULLかどうかチェック
 		if(param.getScheData().isEmpty()) {
 			//(Imported)「残数作成元の勤務予定を取得する」
-			param.setScheData(require.scheRemainCreateInfor(cacheCarrier, param.getCid(), param.getSid(), param.getDateData()));
+			param.setScheData(require.scheRemainCreateInfor(param.getSid(), param.getDateData()));
 		}
 		//Input「実績」がNULLかどうかチェック
 		if(param.getRecordData().isEmpty()) {
@@ -232,7 +232,7 @@ public class InterimRemainOffPeriodCreateData {
 	}
 
 	public static interface RequireM2 extends RequireM4 {
-		List<ScheRemainCreateInfor> scheRemainCreateInfor(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData);
+		List<ScheRemainCreateInfor> scheRemainCreateInfor(String sid, DatePeriod dateData);
 
 		List<RecordRemainCreateInfor> recordRemainCreateInfor(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData);
 
