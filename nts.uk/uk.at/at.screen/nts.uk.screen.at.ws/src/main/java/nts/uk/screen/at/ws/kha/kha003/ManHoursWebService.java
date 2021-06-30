@@ -96,21 +96,10 @@ public class ManHoursWebService extends WebService {
                 param.getPeriod().getDateList(), param.getPeriod().getYearMonthList());
     }
 
-//    @POST
-//    @Path("d/export-csv")
-//    public ExportServiceResult generateCsv(AggregationResultQuery query) {
-//        return this.exportCsvService.start(query);
-//    }
-
     @POST
     @Path("d/export-csv")
+//    public ExportServiceResult generateCsv(AggregationResultQuery query) {
     public ExportServiceResult generateCsv(List<RegistrationErrorListDto> query) {
         return this.exportCsvService.start(query);
     }
-
-//    @POST
-//    @Path("export-excel")
-//    public ExportServiceResult generate(ArbitraryPeriodSummaryTableFileQuery fileQuery) {
-//        return service.start(fileQuery);
-//    }
 }

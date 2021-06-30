@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.kha003.b;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -16,24 +17,27 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class ManHourPeriod {
-    /**
-     * 0: DATE
-     * 1 : YEAR_MONTH
-     */
-    private int totalUnit;
+    private String startDate;
+    private String endDate;
+    private YearMonth yearMonthStart;
+    private YearMonth yearMonthEnd;
 
-    // If totalUnit == DATE => yearMonthPeriod = null OR if totalUnit == YEAR_MONTH => datePeriod = null
-    private DatePeriod datePeriod;
 
-    private YearMonthPeriod yearMonthPeriod;
+    public DatePeriod getDatePeriod() {
+        return new DatePeriod(GeneralDate.fromString(startDate, "yyyy/MM/dd"), GeneralDate.fromString(endDate, "yyyy/MM/dd"));
+    }
+
+    public YearMonthPeriod getYearMonthPeriod() {
+        return new YearMonthPeriod(yearMonthStart, yearMonthEnd);
+    }
 
     public List<GeneralDate> getDateList() {
-        if (totalUnit == TotalUnit.YEAR_MONTH.value) return new ArrayList<>();
+        val datePeriod = new DatePeriod(GeneralDate.fromString(startDate, "yyyy/MM/dd"), GeneralDate.fromString(endDate, "yyyy/MM/dd"));
         return datePeriod.datesBetween();
     }
 
     public List<YearMonth> getYearMonthList() {
-        if (totalUnit == TotalUnit.DATE.value) return new ArrayList<>();
+        val yearMonthPeriod = new YearMonthPeriod(yearMonthStart, yearMonthEnd);
         return yearMonthPeriod.yearMonthsBetween();
     }
 }

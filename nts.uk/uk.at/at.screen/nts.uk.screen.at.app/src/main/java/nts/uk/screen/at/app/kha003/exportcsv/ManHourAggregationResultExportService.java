@@ -8,13 +8,12 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.*;
 import nts.uk.screen.at.app.kdl053.RegistrationErrorListDto;
 import nts.uk.screen.at.app.kha003.b.ManHourPeriod;
-import nts.uk.screen.at.app.kha003.d.ManHourAggregationResultDto;
 import nts.uk.screen.at.app.kha003.d.AggregationResultQuery;
 import nts.uk.screen.at.app.kha003.d.CreateAggregationManHourResult;
+import nts.uk.screen.at.app.kha003.d.ManHourAggregationResultDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.csv.CSVFileData;
@@ -42,7 +41,11 @@ public class ManHourAggregationResultExportService extends ExportService<List<Re
 
     private static final String CODE_HEADER = "KHA003_103";
 
-    private static final String TOTAL_HEADER = "KHA003_98";
+    private static final String VERTICAL_TOTAL = "KHA003_99";
+
+    private static final String HORIZONTAL_TOTAL = "KHA003_98";
+
+    private static final String TOTAL = "KHA003_100";
 
     private static final String PGID = "KHA003";
 
@@ -58,9 +61,10 @@ public class ManHourAggregationResultExportService extends ExportService<List<Re
         AggregationResultQuery query = new AggregationResultQuery(
                 "01", null, Collections.emptyList(),
                 new ManHourPeriod(
-                        0,
-                        new DatePeriod(GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), GeneralDate.fromString("2021/06/03", "yyyy/MM/dd")),
-                        new YearMonthPeriod(YearMonth.of(2021, 6), YearMonth.of(2021, 6))
+                        "2021/06/01",
+                        "2021/06/03",
+                        YearMonth.of(2021, 6),
+                        YearMonth.of(2021, 6)
                 )
         );
 
@@ -100,151 +104,130 @@ public class ManHourAggregationResultExportService extends ExportService<List<Re
         for (SummaryItemDetail level1 : outputContent.getItemDetails()) {
             if (level1.getChildHierarchyList().isEmpty()) {
                 Map<String, Object> row1 = new HashMap<>();
-                row1.put(headerList.get(0), level1.getDisplayInfo().getCode());
+                row1.put(headerList.get(0), level1.getCode());
                 row1.put(headerList.get(1), level1.getDisplayInfo().getName());
 
                 val workingTimeMap1 = this.getWorkingTimeByDate(unit, level1.getVerticalTotalList());
                 for (int i = 2; i < maxRangeDate + 2; i++) {
-                    row1.put(headerList.get(i), workingTimeMap1.get(headerList.get(i)));
+                    row1.put(headerList.get(i), formatValue(Double.valueOf(workingTimeMap1.getOrDefault(headerList.get(i), 0)), dispFormat));
                 }
-                // Tong chieu ngang
-                if (isDispTotal) {
-                    row1.put(headerList.get(headerList.size() - 1), level1.getTotalPeriod().get());
+                if (isDispTotal) {  // Tong chieu ngang
+                    row1.put(headerList.get(headerList.size() - 1), formatValue(level1.getTotalPeriod().isPresent() ? Double.valueOf(level1.getTotalPeriod().get()) : 0, dispFormat));
                 }
                 dataSource.add(row1);
             } else {
                 for (SummaryItemDetail level2 : level1.getChildHierarchyList()) {
                     if (level2.getChildHierarchyList().isEmpty()) {
                         Map<String, Object> row2 = new HashMap<>();
-                        row2.put(headerList.get(0), level1.getDisplayInfo().getCode());
+                        row2.put(headerList.get(0), level1.getCode());
                         row2.put(headerList.get(1), level1.getDisplayInfo().getName());
-                        row2.put(headerList.get(2), level2.getDisplayInfo().getCode());
+                        row2.put(headerList.get(2), level2.getCode());
                         row2.put(headerList.get(3), level2.getDisplayInfo().getName());
 
                         for (int i = 4; i < maxRangeDate + 4; i++) {
                             val workingTimeMap2 = this.getWorkingTimeByDate(unit, level2.getVerticalTotalList());
-                            row2.put(headerList.get(i), workingTimeMap2.get(headerList.get(i)));
+                            row2.put(headerList.get(i), formatValue(Double.valueOf(workingTimeMap2.getOrDefault(headerList.get(i), 0)), dispFormat));
                         }
-                        // Tong chieu ngang
-                        if (isDispTotal) {
-                            row2.put(headerList.get(headerList.size() - 1), level2.getTotalPeriod().get());
+                        if (isDispTotal) {  // Tong chieu ngang
+                            row2.put(headerList.get(headerList.size() - 1), formatValue(level2.getTotalPeriod().isPresent() ? Double.valueOf(level2.getTotalPeriod().get()) : 0, dispFormat));
                         }
                         dataSource.add(row2);
                     } else {
                         for (SummaryItemDetail level3 : level2.getChildHierarchyList()) {
                             if (level3.getChildHierarchyList().isEmpty()) {
                                 Map<String, Object> row3 = new HashMap<>();
-                                row3.put(headerList.get(0), level1.getDisplayInfo().getCode());
+                                row3.put(headerList.get(0), level1.getCode());
                                 row3.put(headerList.get(1), level1.getDisplayInfo().getName());
-                                row3.put(headerList.get(2), level2.getDisplayInfo().getCode());
+                                row3.put(headerList.get(2), level2.getCode());
                                 row3.put(headerList.get(3), level2.getDisplayInfo().getName());
-                                row3.put(headerList.get(4), level3.getDisplayInfo().getCode());
+                                row3.put(headerList.get(4), level3.getCode());
                                 row3.put(headerList.get(5), level3.getDisplayInfo().getName());
 
                                 for (int i = 6; i < maxRangeDate + 6; i++) {
                                     val workingTimeMap3 = this.getWorkingTimeByDate(unit, level3.getVerticalTotalList());
-                                    row3.put(headerList.get(i), workingTimeMap3.get(headerList.get(i)));
+                                    row3.put(headerList.get(i), formatValue(Double.valueOf(workingTimeMap3.getOrDefault(headerList.get(i), 0)), dispFormat));
                                 }
-                                // Tong chieu ngang
-                                if (isDispTotal) {
-                                    row3.put(headerList.get(headerList.size() - 1), level3.getTotalPeriod().get());
+                                if (isDispTotal) { // Tong chieu ngang
+                                    row3.put(headerList.get(headerList.size() - 1), formatValue(level3.getTotalPeriod().isPresent() ? Double.valueOf(level3.getTotalPeriod().get()) : 0, dispFormat));
                                 }
                                 dataSource.add(row3);
                             } else {
                                 for (SummaryItemDetail level4 : level3.getChildHierarchyList()) {
                                     Map<String, Object> row4 = new HashMap<>();
-                                    row4.put(headerList.get(0), level1.getDisplayInfo().getCode());
+                                    row4.put(headerList.get(0), level1.getCode());
                                     row4.put(headerList.get(1), level1.getDisplayInfo().getName());
-                                    row4.put(headerList.get(2), level2.getDisplayInfo().getCode());
+                                    row4.put(headerList.get(2), level2.getCode());
                                     row4.put(headerList.get(3), level2.getDisplayInfo().getName());
-                                    row4.put(headerList.get(4), level3.getDisplayInfo().getCode());
+                                    row4.put(headerList.get(4), level3.getCode());
                                     row4.put(headerList.get(5), level3.getDisplayInfo().getName());
-                                    row4.put(headerList.get(6), level4.getDisplayInfo().getCode());
+                                    row4.put(headerList.get(6), level4.getCode());
                                     row4.put(headerList.get(7), level4.getDisplayInfo().getName());
 
                                     for (int i = 8; i < maxRangeDate + 8; i++) {
                                         val workingTimeMap4 = this.getWorkingTimeByDate(unit, level4.getVerticalTotalList());
-//                                        row4.put(headerList.get(i), workingTimeMap4.get(headerList.get(i))); // chưa test
-                                        row4.put(headerList.get(i), formatValue(Double.valueOf(workingTimeMap4.get(headerList.get(i))), dispFormat));
+                                        row4.put(headerList.get(i), formatValue(Double.valueOf(workingTimeMap4.getOrDefault(headerList.get(i), 0)), dispFormat));
                                     }
-                                    // Tong chieu ngang
-                                    if (isDispTotal) {
-                                        row4.put(headerList.get(headerList.size() - 1), level4.getTotalPeriod().get());
+                                    if (isDispTotal) { // Tong chieu ngang
+                                        row4.put(headerList.get(headerList.size() - 1), formatValue(level4.getTotalPeriod().isPresent() ? Double.valueOf(level4.getTotalPeriod().get()) : 0, dispFormat));
                                     }
                                     dataSource.add(row4);
                                 }
-                                if (isDispTotal) {
-                                    // Tong level 4 theo chieu doc
+                                if (isDispTotal) {  // Tong level 4 theo chieu doc
                                     Map<String, Object> rowTotalLv4 = new HashMap<>();
-                                    rowTotalLv4.put(headerList.get(5), headerList.get(5) + TextResource.localize("KHA003_100"));
+                                    rowTotalLv4.put(headerList.get(5), headerList.get(5) + TextResource.localize(TOTAL));
                                     for (int i = 8; i < headerList.size(); i++) {
                                         val mapTotal4 = this.getWorkingTimeByDate(unit, level3.getVerticalTotalList());
-                                        rowTotalLv4.put(headerList.get(i), mapTotal4.get(headerList.get(i)));
+                                        rowTotalLv4.put(headerList.get(i), formatValue(Double.valueOf(mapTotal4.getOrDefault(headerList.get(i), 0)), dispFormat));
                                     }
-                                    rowTotalLv4.put(headerList.get(headerList.size() - 1), level3.getTotalPeriod().get());
+                                    rowTotalLv4.put(headerList.get(headerList.size() - 1), formatValue(level3.getTotalPeriod().isPresent() ? Double.valueOf(level3.getTotalPeriod().get()) : 0, dispFormat));
                                     dataSource.add(rowTotalLv4);
                                 }
                             }
                         }
-                        if (isDispTotal) {
-                            // Tong level 3 theo chieu doc
+                        if (isDispTotal) {  // Tong level 3 theo chieu doc
                             Map<String, Object> rowTotalLv3 = new HashMap<>();
-                            rowTotalLv3.put(headerList.get(3), headerList.get(3) + TextResource.localize("KHA003_100"));
+                            rowTotalLv3.put(headerList.get(3), headerList.get(3) + TextResource.localize(TOTAL));
                             for (int i = 6; i < headerList.size(); i++) {
                                 val mapTotal2 = this.getWorkingTimeByDate(unit, level2.getVerticalTotalList());
-                                rowTotalLv3.put(headerList.get(i), mapTotal2.get(headerList.get(i)));
+                                rowTotalLv3.put(headerList.get(i), formatValue(Double.valueOf(mapTotal2.getOrDefault(headerList.get(i), 0)), dispFormat));
                             }
-                            rowTotalLv3.put(headerList.get(headerList.size() - 1), level2.getTotalPeriod().get());
+                            rowTotalLv3.put(headerList.get(headerList.size() - 1), formatValue(level2.getTotalPeriod().isPresent() ? Double.valueOf(level2.getTotalPeriod().get()) : 0, dispFormat));
                             dataSource.add(rowTotalLv3);
                         }
                     }
                 }
-                if (isDispTotal) {
-                    // Tong level 2 theo chieu doc
+                if (isDispTotal) { // Tong level 2 theo chieu doc
                     Map<String, Object> rowTotalLv2 = new HashMap<>();
-                    rowTotalLv2.put(headerList.get(1), headerList.get(1) + TextResource.localize("KHA003_100"));
+                    rowTotalLv2.put(headerList.get(1), headerList.get(1) + TextResource.localize(TOTAL));
                     for (int i = 4; i < headerList.size(); i++) {
                         val mapTotal2 = this.getWorkingTimeByDate(unit, level1.getVerticalTotalList());
-                        rowTotalLv2.put(headerList.get(i), mapTotal2.get(headerList.get(i)));
+                        rowTotalLv2.put(headerList.get(i), formatValue(Double.valueOf(mapTotal2.getOrDefault(headerList.get(i), 0)), dispFormat));
                     }
-                    rowTotalLv2.put(headerList.get(headerList.size() - 1), level1.getTotalPeriod().get());
+                    rowTotalLv2.put(headerList.get(headerList.size() - 1), formatValue(level1.getTotalPeriod().isPresent() ? Double.valueOf(level1.getTotalPeriod().get()) : 0, dispFormat));
                     dataSource.add(rowTotalLv2);
                 }
             }
         }
-        if (isDispTotal) {
-            // Tong tat ca cac level theo chieu doc
+        if (isDispTotal) {  // Tong tat ca cac level theo chieu doc
             Map<String, Object> rowTotal = new HashMap<>();
-            rowTotal.put(headerList.get(1), "総合計");
+            rowTotal.put(headerList.get(1), TextResource.localize(VERTICAL_TOTAL));
             for (int i = 2; i < headerList.size(); i++) {
                 val mapTotal = this.getWorkingTimeByDate(unit, outputContent.getVerticalTotalValues());
-                rowTotal.put(headerList.get(i), mapTotal.get(headerList.get(i)));
+                rowTotal.put(headerList.get(i), formatValue(Double.valueOf(mapTotal.getOrDefault(headerList.get(i), 0)), dispFormat));
             }
-            rowTotal.put(headerList.get(headerList.size() - 1), outputContent.getTotalPeriod().get());
+            rowTotal.put(headerList.get(headerList.size() - 1), formatValue(outputContent.getTotalPeriod().isPresent() ? Double.valueOf(outputContent.getTotalPeriod().get()) : 0, dispFormat));
             dataSource.add(rowTotal);
         }
     }
 
     private Map<String, Integer> getWorkingTimeByDate(TotalUnit unit, List<VerticalValueDaily> lstValueDaily) {
         Map<String, Integer> map = new HashMap<>();
-        if (unit == TotalUnit.DATE) {
-            lstValueDaily.sort(Comparator.comparing(VerticalValueDaily::getDate));
+        if (unit == TotalUnit.DATE)
             lstValueDaily.forEach(d -> map.put(d.getDate().toString(), d.getWorkingHours()));
-        } else {
-            lstValueDaily.sort(Comparator.comparing(VerticalValueDaily::getYearMonth));
+        else
             lstValueDaily.forEach(d -> map.put(d.getDate().toString(), d.getWorkingHours()));
-        }
-        return map;
-    }
 
-    private void getHierarchy(ManHourSummaryTableOutputContent outputContent, List<SummaryItemDetail> target, int levelTotal) {
-//        List<SummaryItemDetail> lstParent
-//        if (outputContent == null || CollectionUtil.isEmpty(outputContent.getItemDetails())) return ;
-//
-//        lstResult.addAll(itemDetails);
-//        List<SummaryItemDetail> childHierarchy = itemDetails.stream().flatMap(x -> x.getChildHierarchyList().stream()).collect(Collectors.toList());
-//        // Recursive
-//        convertTreeToFlatList(childHierarchy, lstResult);
+        return map;
     }
 
     /**
@@ -267,15 +250,14 @@ public class ManHourAggregationResultExportService extends ExportService<List<Re
         }
 
         // Add date/yearMonth list to header
-        if (detailSetting.getTotalUnit() == TotalUnit.DATE) {
+        if (detailSetting.getTotalUnit() == TotalUnit.DATE)
             query.getPeriod().getDateList().forEach(date -> lstHeader.add(date.toString()));
-        } else {
+        else
             query.getPeriod().getYearMonthList().forEach(ym -> lstHeader.add(yearMonthToString(ym)));
-        }
 
         // Add horizontal total to header
         if (isDispTotal) {
-            lstHeader.add(TextResource.localize(TOTAL_HEADER));
+            lstHeader.add(TextResource.localize(HORIZONTAL_TOTAL));
         }
         return lstHeader;
     }
