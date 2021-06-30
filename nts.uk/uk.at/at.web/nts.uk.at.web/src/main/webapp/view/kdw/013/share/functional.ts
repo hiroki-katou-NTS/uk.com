@@ -102,22 +102,16 @@ module nts.uk.ui.at.kdw013.share {
         return task5 || task4 || task3 || task2 || task1;
     };
 
-    export const getTitles = (wg: a.WorkGroupDto, tasks: c.TaskDto[]) => {
-        return getTasks(wg, tasks)
-            .map((m: c.TaskDto | undefined) => {
-                if (m) {
-                    const { displayInfo } = m;
+    export const getTitles = (wg: a.WorkGroupDto, tasks: c.TaskDto[], character?) => {
 
-                    if (displayInfo) {
-                        return displayInfo.taskName;
-                    }
+        let taskNames = _.chain(getTasks(wg, tasks))
+            .filter((item) => { return item })
+            .map((item) => {
+                return item.displayInfo.taskName;
+            }).value();
 
-                    return '';
-                }
-            })
-            .join('/')
-            .replace(/\/{2,}/, '/')
-            .replace(/\/$/, '');
+        return taskNames.join(character ? character : "\n");
+
     };
 
     export const getBackground = (wg: a.WorkGroupDto, tasks: c.TaskDto[]) => {

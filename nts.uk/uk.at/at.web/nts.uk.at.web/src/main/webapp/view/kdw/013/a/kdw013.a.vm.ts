@@ -189,17 +189,23 @@ module nts.uk.ui.at.kdw013.a {
                                                 workCD5
                                             } = workGroup;
                                             const task = getTask(workGroup, tasks) || { displayInfo: {} } as any as c.TaskDto;
-                                            const { displayInfo } = task;
-                                            const { color: backgroundColor } = displayInfo;
+                                            
+                                            const wg = {
+                                                workCD1,
+                                                workCD2,
+                                                workCD3,
+                                                workCD4,
+                                                workCD5
+                                            }
 
                                             const { timeWithDay: startTime } = start;
                                             const { timeWithDay: endTime } = end;
-
+                                            
                                             return {
                                                 start: setTimeOfDate($date, startTime),
                                                 end: setTimeOfDate($date, endTime || (startTime + 60)),
-                                                title: '',
-                                                backgroundColor,
+                                                title: getTitles(wg, tasks),
+                                                backgroundColor : getBackground(wg, tasks),
                                                 textColor: '',
                                                 extendedProps: {
                                                     id: randomId(),
