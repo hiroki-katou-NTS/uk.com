@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.val;
+import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -439,6 +441,19 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 		}
 		total.setCalcDiffTime(new AttendanceTime(calcDiffTime));
 		return total;
+	}
+	
+	public void correct(List<EditStateOfDailyPerformanceDto> editStates) {
+
+		if (editStates.isEmpty()) return;
+		
+		val haveChildCare = editStates.stream().filter(c -> c.getAttendanceItemId() >= 580 && c.getAttendanceItemId() <= 585).findFirst();
+		val haveCare = editStates.stream().filter(c -> c.getAttendanceItemId() >= 586 && c.getAttendanceItemId() <= 591).findFirst();
+		
+		val prioNo = haveChildCare.map(c -> 0).orElseGet(() -> haveCare.map(c -> 1).orElse(-1));
+		
+		if (prioNo != -1 && this.shortWorkTime != null)
+			this.shortWorkTime.removeIf(c -> c.getAttr() != prioNo);
 	}
 
 	private AttendanceTime toAttendanceTime(Integer time) {
