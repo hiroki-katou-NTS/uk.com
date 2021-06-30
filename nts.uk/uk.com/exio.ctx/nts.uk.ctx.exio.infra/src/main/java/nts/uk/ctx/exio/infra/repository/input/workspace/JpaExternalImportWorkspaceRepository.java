@@ -1,5 +1,8 @@
 package nts.uk.ctx.exio.infra.repository.input.workspace;
 
+import java.util.List;
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -61,5 +64,30 @@ public class JpaExternalImportWorkspaceRepository extends JpaRepository implemen
 		val workspace = require.getGroupWorkspace(context.getGroupId());
 		
 		return new WorkspaceSql(context, group, workspace, jdbcProxy());
+	}
+
+	@Override
+	public int getMaxRowNumberOfRevisedData(ExecutionContext context) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public List<String> getStringsOfRevisedData(ExecutionContext context, int itemNo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<RevisedDataRecord> findRevisedByRowNo(ExecutionContext context, int rowNo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<RevisedDataRecord> findRevisedWhere(ExecutionContext context, int itemNoCondition,
+			String conditionString) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

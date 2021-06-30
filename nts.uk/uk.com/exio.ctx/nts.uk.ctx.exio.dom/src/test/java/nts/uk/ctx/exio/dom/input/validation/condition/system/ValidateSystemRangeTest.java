@@ -1,9 +1,8 @@
 package nts.uk.ctx.exio.dom.input.validation.condition.system;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.junit.Test;
 
@@ -34,7 +33,7 @@ public class ValidateSystemRangeTest {
 		List<ImportableItem> DUMMY_IMPORTABLEITEMS = Helper.DUMMY_ImportableItems(sameItemNo);
 		
 		new Expectations() {{
-			require.getImportableItems(Helper.DUMMY.GROUP_ID);
+			require.getImportableItem(Helper.DUMMY.GROUP_ID, anyInt);
 			result = DUMMY_IMPORTABLEITEMS;
 		}};
 		
@@ -46,29 +45,5 @@ public class ValidateSystemRangeTest {
 				Helper.DUMMY_RECORD(DUMMY_DATEITEMS));
 		
 		assertThat(result).isTrue();
-	}
-	
-	@Test
-	public void notExist_ImportableItemByItemNo() {
-
-		int diffItemNo1 = 1;
-		int diffItemNo2 = 2;
-		List<ImportableItem> DUMMY_IMPORTABLEITEMS = Helper.DUMMY_ImportableItems(diffItemNo1);
-		
-		new Expectations() {{
-			require.getImportableItems(Helper.DUMMY.GROUP_ID);
-			result = DUMMY_IMPORTABLEITEMS;
-		}};
-		
-		List<DataItem> DUMMYDATEITEMS = Helper.DUMMY_dataItems(diffItemNo2);
-		try {
-			 ValidateSystemRange.validate(
-						require, 
-						Helper.DUMMY.CONTEXT, 
-						Helper.DUMMY_RECORD(DUMMYDATEITEMS));
-			 assertThat(false).isTrue();
-		}catch(NoSuchElementException e) {
-			assertThat(true).isTrue();
-		}
 	}
 }
