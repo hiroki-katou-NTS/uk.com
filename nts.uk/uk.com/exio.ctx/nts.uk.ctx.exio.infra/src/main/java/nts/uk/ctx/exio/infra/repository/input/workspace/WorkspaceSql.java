@@ -23,23 +23,26 @@ public class WorkspaceSql {
 	private final ExecutionContext context;
 	private final ImportingGroup group;
 	private final GroupWorkspace workspace;
+	private final JdbcProxy jdbcProxy;
 
 	/**
-	 * 編集済み用のCREATE TABLE文を生成する
+	 * 編集済み用のCREATE TABLEを実行する
 	 * @param require
 	 * @return
 	 */
-	public String createTableRevised(WorkspaceItem.RequireConfigureDataType require) {
-		return createTable(require, tableName().asRevised());
+	public void createTableRevised(WorkspaceItem.RequireConfigureDataType require) {
+		String sql = createTable(require, tableName().asRevised());
+		jdbcProxy.query(sql).execute();
 	}
 
 	/**
-	 * 正準化済み用のCREATE TABLE文を生成する
+	 * 正準化済み用のCREATE TABLEを実行する
 	 * @param require
 	 * @return
 	 */
-	public String createTableCanonicalized(WorkspaceItem.RequireConfigureDataType require) {
-		return createTable(require, tableName().asCanonicalized());
+	public void createTableCanonicalized(WorkspaceItem.RequireConfigureDataType require) {
+		String sql = createTable(require, tableName().asCanonicalized());
+		jdbcProxy.query(sql).execute();
 	}
 
 	private String createTable(WorkspaceItem.RequireConfigureDataType require, String tableName) {
@@ -59,86 +62,46 @@ public class WorkspaceSql {
 	}
 	
 	/**
-	 * INSERT文を生成する
+	 * 編集済み用のINSERT文を実行する
 	 * @param require
 	 * @param record
 	 * @return
 	 */
-	public void executeInsert(WorkspaceItem.RequireConfigureDataType require, RevisedDataRecord record, JdbcProxy jdbcProxy) {
-		executeInsert(require, record.getRowNo(), itemNo -> record.getItemByNo(itemNo), jdbcProxy);
+	public void insert(WorkspaceItem.RequireConfigureDataType require, RevisedDataRecord record) {
+		insert(require, tableName().asRevised(), record.getRowNo(), itemNo -> record.getItemByNo(itemNo));
 	}
 	
-	public void executeInsert(WorkspaceItem.RequireConfigureDataType require, CanonicalizedDataRecord record, JdbcProxy jdbcProxy) {
-		executeInsert(require, record.getRowNo(), itemNo -> record.getItemByNo(itemNo), jdbcProxy);
+	/**
+	 * 正準化済み用のINSERT文を実行する
+	 * @param require
+	 * @param record
+	 */
+	public void insert(WorkspaceItem.RequireConfigureDataType require, CanonicalizedDataRecord record) {
+		insert(require, tableName().asCanonicalized(), record.getRowNo(), itemNo -> record.getItemByNo(itemNo));
 	}
 	
-	private void executeInsert(
+	private void insert(
 			WorkspaceItem.RequireConfigureDataType require,
+			String tableName,
 			int rowNo,
-			Function<Integer, Optional<DataItem>> itemGetter,
-			JdbcProxy jdbcProxy) {
+			Function<Integer, Optional<DataItem>> itemGetter) {
 
 		/*
 		 * VALUES句の列順は、項目No順にテーブルが作られるという仕様を前提とする。
 		 * ただし先頭はROW_NO列で固定。
 		 */
 		String paramRowNo = "rowno";
-		String sql = createInsertSql(paramRowNo);
+		String sql = Insert.createInsertSql(tableName, workspace, paramRowNo);
 		
 		val statement = jdbcProxy.query(sql);
 		statement.paramInt(paramRowNo, rowNo);
 		
 		for (val workspaceItem : workspace.getAllItemsSortedByItemNo()) {
 			val dataType = workspaceItem.configureDataType(require);
-			setParam(dataType, itemGetter, statement, workspaceItem);
+			Insert.setParam(dataType, itemGetter, statement, workspaceItem);
 		}
 		
 		statement.execute();
-	}
-
-	private String createInsertSql(String paramRowNo) {
-		
-		return new StringBuilder()
-			.append("insert into ")
-			.append(tableName())
-			.append(" values (")
-			.append("@" + paramRowNo + ",")
-			.append(workspace.getAllItemsSortedByItemNo().stream()
-					.map(item -> "@" + paramItem(item.getItemNo()))
-					.collect(Collectors.joining(",")))
-			.append(");")
-			.toString();
-	}
-
-	private static void setParam(
-			DataTypeConfiguration dataType,
-			Function<Integer, Optional<DataItem>> itemGetter,
-			NtsStatement statement,
-			WorkspaceItem workspaceItem) {
-		
-		String param = paramItem(workspaceItem.getItemNo());
-		DataItem item = itemGetter.apply(workspaceItem.getItemNo()).get();
-		
-		switch (dataType.getType()) {
-		case INT:
-			statement.paramLong(param, item.getInt());
-			break;
-		case REAL:
-			statement.paramDecimal(param, item.getReal());
-			break;
-		case STRING:
-			statement.paramString(param, item.getString());
-			break;
-		case DATE:
-			statement.paramDate(param, item.getDate());
-			break;
-		default:
-			throw new RuntimeException("unknown: " + dataType.getType());
-		}
-	}
-	
-	private static String paramItem(int itemNo) {
-		return "p" + itemNo;
 	}
 	
 	private WorkspaceTableName tableName() {
@@ -197,6 +160,51 @@ public class WorkspaceSql {
 	}
 	
 	static class Insert {
+
+		static String createInsertSql(String tableName, GroupWorkspace workspace, String paramRowNo) {
+			
+			return new StringBuilder()
+				.append("insert into ")
+				.append(tableName)
+				.append(" values (")
+				.append("@" + paramRowNo + ",")
+				.append(workspace.getAllItemsSortedByItemNo().stream()
+						.map(item -> "@" + Insert.paramItem(item.getItemNo()))
+						.collect(Collectors.joining(",")))
+				.append(");")
+				.toString();
+		}
+
+		static void setParam(
+				DataTypeConfiguration dataType,
+				Function<Integer, Optional<DataItem>> itemGetter,
+				NtsStatement statement,
+				WorkspaceItem workspaceItem) {
+			
+			String param = paramItem(workspaceItem.getItemNo());
+			DataItem item = itemGetter.apply(workspaceItem.getItemNo()).get();
+			
+			switch (dataType.getType()) {
+			case INT:
+				statement.paramLong(param, item.getInt());
+				break;
+			case REAL:
+				statement.paramDecimal(param, item.getReal());
+				break;
+			case STRING:
+				statement.paramString(param, item.getString());
+				break;
+			case DATE:
+				statement.paramDate(param, item.getDate());
+				break;
+			default:
+				throw new RuntimeException("unknown: " + dataType.getType());
+			}
+		}
+		
+		static String paramItem(int itemNo) {
+			return "p" + itemNo;
+		}
 		
 		static String value(DataItem dataItem, DataTypeConfiguration dataType) {
 			

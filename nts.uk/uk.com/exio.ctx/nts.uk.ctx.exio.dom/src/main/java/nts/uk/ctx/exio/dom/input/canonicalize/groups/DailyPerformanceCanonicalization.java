@@ -20,6 +20,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.EmployeeCodeCanonicalization;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 
 /**
  * 日別実績の正準化
@@ -40,11 +41,14 @@ public class DailyPerformanceCanonicalization implements GroupCanonicalization {
 	 * 正準化する
 	 */
 	@Override
-	public void canonicalize(
+	public ImportingDataMeta canonicalize(
 			GroupCanonicalization.RequireCanonicalize require,
-			ExecutionContext context) {
-		
-		val employeeCodes = require.getAllEmployeeCodesOfImportingData(context);
+			ExecutionContext context,
+			ImportingDataMeta meta) {
+
+		List<String> employeeCodes = require.getStringsOfRevisedData(
+				context,
+				employeeCodeCanonicalization.getItemNoEmployeeCode());
 		
 		for (String employeeCode : employeeCodes) {
 			
@@ -63,6 +67,8 @@ public class DailyPerformanceCanonicalization implements GroupCanonicalization {
 			});
 			
 		}
+		
+		return meta.addItem(require, context.getGroupId(), employeeCodeCanonicalization.getItemNoEmployeeId());
 	}
 	
 	private void canonicalize(
@@ -152,5 +158,10 @@ public class DailyPerformanceCanonicalization implements GroupCanonicalization {
 					.addKey(itemNoEmployeeId(), StringifiedValue.of(employeeId))
 					.addKey(itemNoDate, StringifiedValue.of(date));
 		}
+	}
+
+	@Override
+	public int getItemNoOfEmployeeId() {
+		return employeeCodeCanonicalization.getItemNoEmployeeId();
 	}
 }

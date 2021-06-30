@@ -24,6 +24,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.EmployeeCodeCanonicalization;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.History;
 
@@ -61,17 +62,24 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 			String employeeId);
 	
 	@Override
-	public void canonicalize(
+	public ImportingDataMeta canonicalize(
 			GroupCanonicalization.RequireCanonicalize require,
-			ExecutionContext context) {
+			ExecutionContext context,
+			ImportingDataMeta meta) {
 		
-		List<String> employeeCodes = require.getAllEmployeeCodesOfImportingData(context);
+		List<String> employeeCodes = require.getStringsOfRevisedData(
+				context,
+				employeeCodeCanonicalization.getItemNoEmployeeCode());
 		
 		for (String employeeCode : employeeCodes) {
 			canonicalize(require, context, employeeCode).forEach(result -> {
 				require.save(context, result.complete());
 			});
 		}
+		
+		return meta
+				.addItem(require, context.getGroupId(), employeeCodeCanonicalization.getItemNoEmployeeId())
+				.addItem(require, context.getGroupId(), itemNoHistoryId);
 	}
 
 	private List<IntermediateResult> canonicalize(
@@ -231,8 +239,6 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 
 	public static interface RequireCanonicalize extends
 			EmploymentHistoryCanonicalization.RequireGetHistory {
-
-		List<String> getAllEmployeeCodesOfImportingData(ExecutionContext context);
 	}
 	
 	@Override

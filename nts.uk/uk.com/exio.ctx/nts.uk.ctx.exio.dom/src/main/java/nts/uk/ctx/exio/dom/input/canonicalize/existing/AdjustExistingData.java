@@ -47,17 +47,19 @@ public class AdjustExistingData {
 
 		val canonicalization = require.getGroupCanonicalization(context.getGroupId());
 		
+		int itemNoEmployeeId = canonicalization.getItemNoOfEmployeeId();
+		
 		return canonicalization.adjust(
 				require,
-				require.getEmployeeAnyRecordToChange(context, employeeId),
-				require.getEmployeeAnyRecordToDelete(context, employeeId));
+				require.getAnyRecordToChangeWhere(context, itemNoEmployeeId, employeeId),
+				require.getAnyRecordToDeleteWhere(context, itemNoEmployeeId, employeeId));
 	}
 
 	public static interface RequireEmployee extends RequireCommon {
 
-		List<AnyRecordToChange> getEmployeeAnyRecordToChange(ExecutionContext context, String employeeId);
+		List<AnyRecordToChange> getAnyRecordToChangeWhere(ExecutionContext context, int keyItemNo, String keyValue);
 
-		List<AnyRecordToDelete> getEmployeeAnyRecordToDelete(ExecutionContext context, String employeeId);
+		List<AnyRecordToDelete> getAnyRecordToDeleteWhere(ExecutionContext context, int keyItemNo, String keyValue);
 	}
 	
 	public static interface RequireCommon extends GroupCanonicalization.RequireAdjsut {

@@ -1,13 +1,17 @@
 ﻿package nts.uk.ctx.exio.dom.input;
 
+import static java.util.stream.Collectors.*;
+
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.val;
-import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeRevisedData;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
+import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
@@ -28,12 +32,15 @@ public class PrepareImporting {
 		val setting = require.getExternalImportSetting(companyId, settingCode)
 				.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
 		val context = ExecutionContext.create(setting);
+
+		val assembly = require.getAssemblyMethod(context.getCompanyId(), context.getExternalImportCode())
+				.orElseThrow(() -> new RuntimeException("組立方法が取得できない: " + context.toString()));
 		
 		// 受入データの組み立て
-		assembleImportingData(require, csvFileStream, setting, context);
+		val meta = assembleImportingData(require, context, csvFileStream, setting, assembly);
 		
 		// 編集済みデータの正準化
-		CanonicalizeRevisedData.canonicalize(require, context);
+		CanonicalizeRevisedData.canonicalize(require, context, meta);
 	}
 
 	/**
@@ -43,19 +50,23 @@ public class PrepareImporting {
 	 * @param setting
 	 * @param context
 	 */
-	private static void assembleImportingData(
+	private static ImportingDataMeta assembleImportingData(
 			Require require,
+			ExecutionContext context,
 			InputStream csvFileStream,
 			ExternalImportSetting setting,
-			ExecutionContext context) {
+			ExternalImportAssemblyMethod assembly) {
 		
 		val parser = setting.getCsvFileInfo().createParser();
 
-		MutableValue<List<String>> columnNames = new MutableValue<>();
 		parser.parse(
 				csvFileStream,
-				cn -> columnNames.set(cn),
-				r -> processRecord(require, context, columnNames.get(), r));
+				cn -> { },
+				r -> processRecord(require, context, assembly, r));
+		
+		val itemNames = getItemNames(require, context, assembly);
+		
+		return new ImportingDataMeta(context.getCompanyId(), itemNames);
 	}
 
 	/**
@@ -68,16 +79,10 @@ public class PrepareImporting {
 	private static void processRecord(
 			Require require,
 			ExecutionContext context,
-			List<String> columnNames,
+			ExternalImportAssemblyMethod assembly,
 			CsvRecord csvRecord) {
 		
-		val optAssembler = require.getAssemblyMethod(context.getCompanyId(), context.getExternalImportCode());
-		if(!optAssembler.isPresent()) {
-			// 受入データの組み立て方法が取得できない
-			return;
-		}
-		
-		val optRevisedData = optAssembler.get().assembleExternalImportData(require, context, csvRecord);
+		val optRevisedData = assembly.assembleExternalImportData(require, context, csvRecord);
 		if(!optRevisedData.isPresent()) {
 			// データの組み立て結果が空の場合
 			return;
@@ -89,6 +94,17 @@ public class PrepareImporting {
 		
 		require.save(context, revisedData);
 	}
+
+	private static List<String> getItemNames(
+			Require require,
+			ExecutionContext context,
+			ExternalImportAssemblyMethod assembly) {
+		
+		return assembly.getAllItemNo().stream()
+				.map(itemNo -> require.getImportableItem(context.getGroupId(), itemNo))
+				.map(item -> item.getItemName())
+				.collect(toList());
+	}
 	
 	public static interface Require extends
 	ExternalImportAssemblyMethod.Require, 
@@ -99,10 +115,9 @@ public class PrepareImporting {
 		
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
 
-
-		
-
 		Optional<ExternalImportAssemblyMethod> getAssemblyMethod(String companyId, ExternalImportCode settingCode);
+		
+		ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo);
 		
 		void save(ExecutionContext context, RevisedDataRecord revisedDataRecord);
 	}

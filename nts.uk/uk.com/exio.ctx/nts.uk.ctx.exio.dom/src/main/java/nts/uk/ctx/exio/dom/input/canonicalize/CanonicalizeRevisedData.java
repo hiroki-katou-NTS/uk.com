@@ -4,6 +4,7 @@ import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 
 /**
  * 編集済みデータを正準化する
@@ -18,14 +19,18 @@ public class CanonicalizeRevisedData {
 	 * @param require
 	 * @param context
 	 */
-	public static void canonicalize(Require require, ExecutionContext context) {
+	public static void canonicalize(Require require, ExecutionContext context, ImportingDataMeta meta) {
 		
 		val canonicalization = require.getGroupCanonicalization(context.getGroupId());
-		canonicalization.canonicalize(require, context);
+		val metaCanonicalized = canonicalization.canonicalize(require, context, meta);
+		
+		require.save(metaCanonicalized);
 	}
 	
 	public static interface Require extends GroupCanonicalization.RequireCanonicalize {
 		
 		GroupCanonicalization getGroupCanonicalization(ImportingGroupId groupId);
+		
+		void save(ImportingDataMeta meta);
 	}
 }

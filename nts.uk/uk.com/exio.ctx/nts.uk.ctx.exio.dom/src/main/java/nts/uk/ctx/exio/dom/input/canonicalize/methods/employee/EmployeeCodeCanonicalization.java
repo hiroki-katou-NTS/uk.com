@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.methods.employee;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -36,10 +35,10 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 			ExecutionContext context,
 			Consumer<IntermediateResult> intermediateResultProvider) {
 		
-		int rows = require.getNumberOfRowsRevisedData();
+		int rows = require.getMaxRowNumberOfRevisedData(context);
 		for (int rowNo = 0; rowNo < rows; rowNo++) {
 			
-			val revisedData = require.getRevisedDataRecordByRowNo(context, rowNo);
+			val revisedData = require.getRevisedDataRecordByRowNo(context, rowNo).get();
 			val result = canonicalize(require, revisedData);
 			
 			intermediateResultProvider.accept(result);
@@ -58,7 +57,7 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 		
 		val itemEmployeeCode = revisedData.getItemByNo(itemNoEmployeeCode).get();
 		String employeeCode = itemEmployeeCode.getString();
-		String employeeId = require.getEmployeeIdByEmployeeCode(employeeCode).get().getEmployeeId();
+		String employeeId = require.getEmployeeDataMngInfoByEmployeeCode(employeeCode).get().getEmployeeId();
 		
 		return IntermediateResult.create(
 				revisedData,
@@ -74,13 +73,19 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 	 * @return
 	 */
 	public Stream<IntermediateResult> canonicalize(
-			Require require,
+			CanonicalizationMethod.Require require,
 			ExecutionContext context,
 			String employeeCode) {
 		
-		val revisedDataRecords = require.getRevisedDataRecordsByEmployeeCode(context, employeeCode);
+		val revisedDataRecords = require.getRevisedDataRecordWhere(
+				context,
+				itemNoEmployeeCode,
+				employeeCode);
 		
-		String employeeId = require.getEmployeeIdByEmployeeCode(employeeCode).get().getEmployeeId();
+		String employeeId = require.getEmployeeDataMngInfoByEmployeeCode(employeeCode)
+				// TODO: 新規社員の追加について仕様が必要
+				.orElseThrow(() -> new RuntimeException("社員が存在しない: " + employeeCode))
+				.getEmployeeId();
 		
 		return revisedDataRecords.stream()
 				.map(revisedData -> IntermediateResult.create(
@@ -91,10 +96,6 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 	
 	public static interface Require {
 		
-		Optional<EmployeeDataMngInfo> getEmployeeIdByEmployeeCode(String employeeCode);
-
-		List<RevisedDataRecord> getRevisedDataRecordsByEmployeeCode(ExecutionContext context, String employeeCode);
-		
-		RevisedDataRecord getRevisedDataRecordByRowNo(ExecutionContext context, int rowNo);
+		Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeCode(String employeeCode);
 	}
 }

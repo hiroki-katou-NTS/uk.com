@@ -18,6 +18,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 
 /**
@@ -40,17 +41,23 @@ public class TaskCanonicalization implements GroupCanonicalization {
 	 * レコード数が多いことが予想されるので、1行ずつ処理する
 	 */
 	@Override
-	public void canonicalize(
+	public ImportingDataMeta canonicalize(
 			GroupCanonicalization.RequireCanonicalize require,
-			ExecutionContext context) {
+			ExecutionContext context,
+			ImportingDataMeta meta) {
 		
 		// 重複チェック用のセット
 		Set<UniqueKey> importingKeys = new HashSet<>();
 		
-		int rowsCount = require.getNumberOfRowsRevisedData();
+		int rowsCount = require.getMaxRowNumberOfRevisedData(context);
 		for (int rowNo = 0; rowNo < rowsCount; rowNo++) {
 			
-			val revisedData = require.getRevisedDataRecordByRowNo(context, rowNo);
+			val revisedDataOpt = require.getRevisedDataRecordByRowNo(context, rowNo);
+			if (!revisedDataOpt.isPresent()) {
+				continue;
+			}
+			
+			val revisedData = revisedDataOpt.get();
 			
 			val uniqueKey = new UniqueKey(revisedData);
 			if (importingKeys.contains(uniqueKey)) {
@@ -60,6 +67,8 @@ public class TaskCanonicalization implements GroupCanonicalization {
 			
 			canonicalize(require, context, revisedData);
 		}
+		
+		return meta;
 	}
 	
 	private void canonicalize(
@@ -143,5 +152,10 @@ public class TaskCanonicalization implements GroupCanonicalization {
 					.addKey(itemNoTaskFrameNo, StringifiedValue.of(frameNo))
 					.addKey(itemNoTaskCode, StringifiedValue.of(code));
 		}
+	}
+
+	@Override
+	public int getItemNoOfEmployeeId() {
+		throw new UnsupportedOperationException();
 	}
 }

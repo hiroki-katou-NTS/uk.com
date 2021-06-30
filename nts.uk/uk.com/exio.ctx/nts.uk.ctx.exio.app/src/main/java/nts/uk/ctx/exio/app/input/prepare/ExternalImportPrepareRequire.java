@@ -25,12 +25,16 @@ import nts.uk.ctx.exio.dom.input.PrepareImporting;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
+import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalizationRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupRepository;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMetaRepository;
 import nts.uk.ctx.exio.dom.input.revise.ReviseItem;
 import nts.uk.ctx.exio.dom.input.revise.ReviseItemRepository;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
@@ -65,25 +69,40 @@ public class ExternalImportPrepareRequire {
 	}
 	
 	@Inject
-	ImportingUserConditionRepository importingUserConditionRepo;
+	private ImportingUserConditionRepository importingUserConditionRepo;
 	
 	@Inject
-	ImportableItemsRepository importableItemsRepo;
+	private ImportableItemsRepository importableItemsRepo;
 	
 	@Inject
-	GroupCanonicalizationRepository groupCanonicalizationRepo;
+	private ImportingGroupRepository importingGroupRepo;
 	
 	@Inject
-	EmployeeDataMngInfoRepository employeeDataMngInfoRepo;
+	private GroupCanonicalizationRepository groupCanonicalizationRepo;
 	
 	@Inject
-	EmploymentHistoryRepository employmentHistoryRepo;
+	private GroupWorkspaceRepository groupWorkspaceRepo;
 	
 	@Inject
-	TaskingRepository taskingRepo;
+	private ExternalImportWorkspaceRepository workspaceRepo;
 	
 	@Inject
-	WorkInformationRepository workInformationRepo;
+	private ExternalImportExistingRepository existingRepo;
+	
+	@Inject
+	private ImportingDataMetaRepository metaRepo;
+	
+	@Inject
+	private EmployeeDataMngInfoRepository employeeDataMngInfoRepo;
+	
+	@Inject
+	private EmploymentHistoryRepository employmentHistoryRepo;
+	
+	@Inject
+	private TaskingRepository taskingRepo;
+	
+	@Inject
+	private WorkInformationRepository workInformationRepo;
 	
 	@Inject
 	ExternalImportSettingRepository settingRepo;
@@ -97,9 +116,6 @@ public class ExternalImportPrepareRequire {
 	@Inject
 	ExternalImportCodeConvertRepository codeConvertRepo;
 	
-	@Inject
-	GroupWorkspaceRepository groupWorkspaceRepo;
-	
 	public class RequireImpl implements Require {
 		
 		private final String companyId ;
@@ -108,99 +124,9 @@ public class ExternalImportPrepareRequire {
 			this.companyId = companyId;
 		}
 		
-		
-		@Inject
-		private ExternalImportWorkspaceRepository workspaceRepo;
-		
-		@Override
-		public void setupWorkspace(ExecutionContext context) {
-			workspaceRepo.createWorkspace(this, context);
-		}
-		
-		@Override
-		public List<ImportingUserCondition> getImportingUserCondition(String settingCode,
-				List<Integer> itemNo) {
-			return importingUserConditionRepo.get(companyId, settingCode, itemNo);
-		}
-		
-		@Override
-		public List<ImportableItem> getImportableItems(ImportingGroupId groupId) {
-			return importableItemsRepo.get(groupId);
-		}
-		
-		@Override
-		public GroupCanonicalization getGroupCanonicalization(ImportingGroupId groupId) {
-			return groupCanonicalizationRepo.find(groupId);
-		}
-		
-		
-		@Override
-		public void save(ExecutionContext context, AnyRecordToDelete toDelete) {
-			workspaceRepo.save(context, toDelete);
-		}
-		
-		
-		@Override
-		public void save(ExecutionContext context, AnyRecordToChange recordToChange) {
-			workspaceRepo.save(context, recordToChange);
-		}
-		
-		
-		@Override
-		public void save(ExecutionContext context, RevisedDataRecord revisedDataRecord) {
-			
-			workspaceRepo.save(this, context, revisedDataRecord);
-		}
-		
-		@Override
-		public void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord) {
-			workspaceRepo.save(this, context, canonicalizedDataRecord);
-		}
-		
-		@Override
-		public int getNumberOfRowsRevisedData() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-		
-		@Override
-		public Optional<EmployeeDataMngInfo> getEmployeeIdByEmployeeCode(String employeeCode) {
-			return employeeDataMngInfoRepo.findByScdNotDel(employeeCode, companyId);
-		}
-		
-		@Override
-		public List<RevisedDataRecord> getRevisedDataRecordsByEmployeeCode(ExecutionContext context,
-				String employeeCode) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-		@Override
-		public RevisedDataRecord getRevisedDataRecordByRowNo(ExecutionContext context, int rowNo) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-		@Override
-		public List<String> getAllEmployeeCodesOfImportingData(ExecutionContext context) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-		@Override
-		public Optional<EmploymentHistory> getEmploymentHistory(String employeeId) {
-			return employmentHistoryRepo.getByEmployeeIdDesc(companyId, employeeId);
-		}
-		
-		@Override
-		public Optional<Task> getTask(String companyId, int taskFrameNo, String taskCode) {
-			return taskingRepo.getOptionalTask(companyId, new TaskFrameNo(taskFrameNo), new TaskCode(taskCode));
-		}
-		
-		@Override
-		public Optional<WorkInfoOfDailyPerformance> getWorkInfoOfDailyPerformance(String employeeId, GeneralDate date) {
-			return workInformationRepo.find(employeeId, date);
-		}
+
+		/***** 外部受入関連 *****/
+
 		
 		@Override
 		public Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode) {
@@ -210,6 +136,16 @@ public class ExternalImportPrepareRequire {
 		@Override
 		public Optional<ExternalImportAssemblyMethod> getAssemblyMethod(String companyId, ExternalImportCode settingCode) {
 			return assemblyMethodRepo.get(companyId, settingCode);
+		}
+
+		@Override
+		public ImportingGroup getImportingGroup(ImportingGroupId groupId) {
+			return importingGroupRepo.find(groupId);
+		}
+		
+		@Override
+		public GroupWorkspace getGroupWorkspace(ImportingGroupId groupId) {
+			return groupWorkspaceRepo.get(groupId);
 		}
 		
 		@Override
@@ -226,20 +162,100 @@ public class ExternalImportPrepareRequire {
 		}
 		
 		@Override
-		public ImportingGroup getImportingGroup(ImportingGroupId groupId) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-		@Override
-		public GroupWorkspace getGroupWorkspace(ImportingGroupId groupId) {
-			return groupWorkspaceRepo.get(groupId);
-		}
-		
-		@Override
 		public ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return importableItemsRepo.get(groupId, itemNo).get();
 		}
+		
+		@Override
+		public List<ImportingUserCondition> getImportingUserCondition(String settingCode,
+				List<Integer> itemNo) {
+			return importingUserConditionRepo.get(companyId, settingCode, itemNo);
+		}
+		
+		@Override
+		public GroupCanonicalization getGroupCanonicalization(ImportingGroupId groupId) {
+			return groupCanonicalizationRepo.find(groupId);
+		}
+		
+		
+		/***** Workspace *****/
+		
+		@Override
+		public void setupWorkspace(ExecutionContext context) {
+			workspaceRepo.setup(this, context);
+			existingRepo.setup(context);
+			metaRepo.setup(context);
+		}
+
+		@Override
+		public void save(ExecutionContext context, AnyRecordToDelete toDelete) {
+			existingRepo.save(context, toDelete);
+		}
+		
+		@Override
+		public void save(ExecutionContext context, AnyRecordToChange recordToChange) {
+			existingRepo.save(context, recordToChange);
+		}
+		
+		@Override
+		public void save(ExecutionContext context, RevisedDataRecord revisedDataRecord) {
+			workspaceRepo.save(this, context, revisedDataRecord);
+		}
+		
+		@Override
+		public void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord) {
+			workspaceRepo.save(this, context, canonicalizedDataRecord);
+		}
+		
+		@Override
+		public int getMaxRowNumberOfRevisedData(ExecutionContext context) {
+			return workspaceRepo.getMaxRowNumberOfRevisedData(context);
+		}
+		
+		@Override
+		public List<String> getStringsOfRevisedData(ExecutionContext context, int itemNo) {
+			return workspaceRepo.getStringsOfRevisedData(context, itemNo);
+		}
+		
+		@Override
+		public Optional<RevisedDataRecord> getRevisedDataRecordByRowNo(ExecutionContext context, int rowNo) {
+			return workspaceRepo.findRevisedByRowNo(context, rowNo);
+		}
+		
+		@Override
+		public List<RevisedDataRecord> getRevisedDataRecordWhere(
+				ExecutionContext context, int itemNoCondition, String conditionString) {
+			return workspaceRepo.findRevisedWhere(context, itemNoCondition, conditionString);
+		}
+
+		@Override
+		public void save(ImportingDataMeta meta) {
+			metaRepo.save(meta);
+		}
+
+		
+		/***** domains for canonicalization *****/
+		
+		@Override
+		public Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeCode(String employeeCode) {
+			return employeeDataMngInfoRepo.findByScdNotDel(employeeCode, companyId);
+		}
+		
+		@Override
+		public Optional<EmploymentHistory> getEmploymentHistory(String employeeId) {
+			return employmentHistoryRepo.getByEmployeeIdDesc(companyId, employeeId);
+		}
+		
+		public Optional<Task> getTask(String companyId, int taskFrameNo, String taskCode) {
+			return taskingRepo.getOptionalTask(companyId, new TaskFrameNo(taskFrameNo), new TaskCode(taskCode));
+		}
+		
+		@Override
+		public Optional<WorkInfoOfDailyPerformance> getWorkInfoOfDailyPerformance(String employeeId, GeneralDate date) {
+			return workInformationRepo.find(employeeId, date);
+		}
+
+
+
 	}
 }

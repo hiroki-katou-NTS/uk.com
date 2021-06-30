@@ -9,6 +9,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.history.EmployeeContinuousHistoryCanonicalization;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 
 /**
  * 受入グループ別の正準化
@@ -20,7 +21,7 @@ public interface GroupCanonicalization {
 	 * @param require
 	 * @param context
 	 */
-	void canonicalize(RequireCanonicalize require, ExecutionContext context);
+	ImportingDataMeta canonicalize(RequireCanonicalize require, ExecutionContext context, ImportingDataMeta meta);
 	
 	/**
 	 * 受入に影響される既存データを補正する
@@ -32,6 +33,13 @@ public interface GroupCanonicalization {
 			RequireAdjsut require,
 			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete);
+	
+	/**
+	 * この受入グループにおける社員IDの項目Noを返す
+	 * @return
+	 * @throws UnSupportedOperationException そもそも社員IDの項目が存在しないグループに対して実行した場合
+	 */
+	int getItemNoOfEmployeeId();
 	
 	public static interface RequireCanonicalize extends
 		CanonicalizationMethod.Require,

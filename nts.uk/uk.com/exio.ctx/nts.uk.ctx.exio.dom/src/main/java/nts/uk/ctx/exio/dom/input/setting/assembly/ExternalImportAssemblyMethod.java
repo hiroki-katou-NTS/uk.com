@@ -1,7 +1,10 @@
 package nts.uk.ctx.exio.dom.input.setting.assembly;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -72,6 +75,13 @@ public class ExternalImportAssemblyMethod extends AggregateRoot {
 	// 組み立て失敗
 	private Optional<RevisedDataRecord> failedAssemble(){
 		return Optional.empty();
+	}
+	
+	public List<Integer> getAllItemNo() {
+		return Stream.concat(
+				csvImportItem.stream().map(i -> i.getImportItemNumber()),
+				fixedItem.stream().map(i -> i.getImportItemNumber()))
+				.collect(toList());
 	}
 	
 	public interface Require extends AssembleCsvRecord.Require {

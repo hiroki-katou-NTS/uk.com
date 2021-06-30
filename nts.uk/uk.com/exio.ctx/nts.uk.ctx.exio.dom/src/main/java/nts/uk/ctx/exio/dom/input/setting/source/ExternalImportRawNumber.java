@@ -9,6 +9,7 @@ import nts.arc.primitive.constraint.IntegerMinValue;
  * 受入行番号
  *
  */
+@SuppressWarnings("serial")
 @IntegerMinValue(1)
 @IntegerMaxValue(999999999)
 public class ExternalImportRawNumber extends IntegerPrimitiveValue<ExternalImportRawNumber> {
