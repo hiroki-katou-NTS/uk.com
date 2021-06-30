@@ -11,8 +11,6 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
-import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
-import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
 
@@ -30,8 +28,6 @@ public class JpaExternalImportWorkspaceRepository extends JpaRepository implemen
 		
 		// 正準化済み一時テーブル
 		workspace.createTableCanonicalized(require);
-		new LayoutAnyRecordToChange(jdbcProxy(), context).createTable();
-		new LayoutAnyRecordToDelete(jdbcProxy(), context).createTable();
 	}
 
 	@Override
@@ -46,16 +42,6 @@ public class JpaExternalImportWorkspaceRepository extends JpaRepository implemen
 
 		val builder = createWorkspaceSql(require, context);
 		builder.insert(require, record);
-	}
-
-	@Override
-	public void save(ExecutionContext context, AnyRecordToChange record) {
-		new LayoutAnyRecordToChange(jdbcProxy(), context).insert(record);
-	}
-
-	@Override
-	public void save(ExecutionContext context, AnyRecordToDelete record) {
-		new LayoutAnyRecordToDelete(jdbcProxy(), context).insert(record);
 	}
 
 	private WorkspaceSql createWorkspaceSql(Require require, ExecutionContext context) {
@@ -87,6 +73,12 @@ public class JpaExternalImportWorkspaceRepository extends JpaRepository implemen
 	@Override
 	public List<RevisedDataRecord> findRevisedWhere(ExecutionContext context, int itemNoCondition,
 			String conditionString) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> getAllEmployeeIdsOfCanonicalizedData(ExecutionContext context) {
 		// TODO Auto-generated method stub
 		return null;
 	}

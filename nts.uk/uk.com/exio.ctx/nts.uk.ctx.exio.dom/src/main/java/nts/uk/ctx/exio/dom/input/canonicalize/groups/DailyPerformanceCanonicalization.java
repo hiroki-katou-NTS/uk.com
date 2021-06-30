@@ -155,4 +155,9 @@ public class DailyPerformanceCanonicalization implements GroupCanonicalization {
 					.addKey(itemNoDate, StringifiedValue.of(date));
 		}
 	}
+
+	@Override
+	public int getItemNoOfEmployeeId() {
+		return employeeCodeCanonicalization.getItemNoEmployeeId();
+	}
 }

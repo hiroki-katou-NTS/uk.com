@@ -149,4 +149,9 @@ public class TaskCanonicalization implements GroupCanonicalization {
 					.addKey(itemNoTaskCode, StringifiedValue.of(code));
 		}
 	}
+
+	@Override
+	public int getItemNoOfEmployeeId() {
+		throw new UnsupportedOperationException();
+	}
 }

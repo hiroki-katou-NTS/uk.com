@@ -33,6 +33,13 @@ public interface GroupCanonicalization {
 			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete);
 	
+	/**
+	 * この受入グループにおける社員IDの項目Noを返す
+	 * @return
+	 * @throws UnSupportedOperationException そもそも社員IDの項目が存在しないグループに対して実行した場合
+	 */
+	int getItemNoOfEmployeeId();
+	
 	public static interface RequireCanonicalize extends
 		CanonicalizationMethod.Require,
 		TaskCanonicalization.RequireCanonicalize,

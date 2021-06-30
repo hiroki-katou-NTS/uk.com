@@ -20,11 +20,13 @@ import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationReposi
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.exio.dom.input.ExecuteImporting;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportiongItemRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
+import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalizationRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
@@ -32,8 +34,10 @@ import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
+import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.ctx.exio.dom.input.transfer.ConversionTableRepository;
 import nts.uk.ctx.exio.dom.input.transfer.TransferCanonicalDataRepository;
+import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 @Stateless
@@ -47,6 +51,9 @@ public class ExternalImportExecuteRequire {
 	public static interface Require extends ExecuteImporting.Require {
 		
 	}
+	
+	@Inject
+	ExternalImportSettingRepository settingRepo;
 	
 	@Inject
 	ImportingGroupRepository importingGroupRepo;
@@ -64,10 +71,20 @@ public class ExternalImportExecuteRequire {
 	GroupCanonicalizationRepository groupCanonicalizationRepo;
 	
 	@Inject
+	private ExternalImportWorkspaceRepository workspaceRepo;
+	
+	@Inject
+	private ExternalImportExistingRepository existingRepo;
+	
+	@Inject
 	TaskingRepository taskingRepo;
 	
 	@Inject
 	WorkInformationRepository workInformationRepo;
+	
+	@Inject
+	private EmploymentHistoryRepository employmentHistoryRepo;
+	
 	
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 	public class RequireImpl implements Require {
@@ -75,10 +92,8 @@ public class ExternalImportExecuteRequire {
 		private final String companyId;
 
 		@Override
-		public Optional<ExternalImportSetting> getExternalImportSetting(String companyId,
-				ExternalImportCode settingCode) {
-			// TODO Auto-generated method stub
-			return null;
+		public Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode) {
+			return settingRepo.get(companyId, settingCode);
 		}
 
 		@Override
@@ -88,20 +103,27 @@ public class ExternalImportExecuteRequire {
 
 		@Override
 		public List<String> getAllEmployeeIdsOfCanonicalizedData(ExecutionContext context) {
-			// TODO Auto-generated method stub
-			return null;
+			return workspaceRepo.getAllEmployeeIdsOfCanonicalizedData(context);
 		}
 
 		@Override
 		public List<AnyRecordToChange> getAllAnyRecordToChange(ExecutionContext context) {
-			// TODO Auto-generated method stub
-			return null;
+			return existingRepo.findAllChanges(context);
 		}
 
 		@Override
 		public List<AnyRecordToDelete> getAllAnyRecordToDelete(ExecutionContext context) {
-			// TODO Auto-generated method stub
-			return null;
+			return existingRepo.findAllDeletes(context);
+		}
+
+		@Override
+		public List<AnyRecordToChange> getAnyRecordToChangeWhere(ExecutionContext context, int keyItemNo, String keyValue) {
+			return existingRepo.findAllChangesWhere(context, keyItemNo, keyValue);
+		}
+
+		@Override
+		public List<AnyRecordToDelete> getAnyRecordToDeleteWhere(ExecutionContext context, int keyItemNo, String keyValue) {
+			return existingRepo.findAllDeletesWhere(context, keyItemNo, keyValue);
 		}
 
 		@Override
@@ -116,31 +138,17 @@ public class ExternalImportExecuteRequire {
 
 		@Override
 		public void changeEmploymentHistory(String employeeId, DateHistoryItem historyItem) {
-			// TODO Auto-generated method stub
-			
+			employmentHistoryRepo.update(historyItem);
 		}
 
 		@Override
 		public void deleteEmploymentHistory(String employeeId, DateHistoryItem historyItem) {
-			// TODO Auto-generated method stub
-			
+			employmentHistoryRepo.delete(historyItem.identifier());
 		}
 
 		@Override
 		public void deleteDailyPerformance(String employeeId, GeneralDate date) {
 			workInformationRepo.delete(employeeId, date);
-		}
-
-		@Override
-		public List<AnyRecordToChange> getEmployeeAnyRecordToChange(ExecutionContext context, String employeeId) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<AnyRecordToDelete> getEmployeeAnyRecordToDelete(ExecutionContext context, String employeeId) {
-			// TODO Auto-generated method stub
-			return null;
 		}
 
 		@Override

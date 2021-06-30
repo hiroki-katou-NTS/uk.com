@@ -25,6 +25,7 @@ import nts.uk.ctx.exio.dom.input.PrepareImporting;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
+import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalizationRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
@@ -82,6 +83,9 @@ public class ExternalImportPrepareRequire {
 	
 	@Inject
 	private ExternalImportWorkspaceRepository workspaceRepo;
+	
+	@Inject
+	private ExternalImportExistingRepository existingRepo;
 	
 	@Inject
 	private EmployeeDataMngInfoRepository employeeDataMngInfoRepo;
@@ -174,16 +178,17 @@ public class ExternalImportPrepareRequire {
 		@Override
 		public void setupWorkspace(ExecutionContext context) {
 			workspaceRepo.createWorkspace(this, context);
+			existingRepo.createWorkspace(context);
 		}
 
 		@Override
 		public void save(ExecutionContext context, AnyRecordToDelete toDelete) {
-			workspaceRepo.save(context, toDelete);
+			existingRepo.save(context, toDelete);
 		}
 		
 		@Override
 		public void save(ExecutionContext context, AnyRecordToChange recordToChange) {
-			workspaceRepo.save(context, recordToChange);
+			existingRepo.save(context, recordToChange);
 		}
 		
 		@Override

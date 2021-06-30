@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.repository.input.workspace;
+package nts.uk.ctx.exio.infra.repository.input.canonicalize.existing;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.JdbcProxy;

@@ -61,4 +61,9 @@ public class EmploymentHistoryCanonicalization
 		/** 雇用履歴を削除する */
 		void deleteEmploymentHistory(String employeeId, DateHistoryItem historyItem);
 	}
+
+	@Override
+	public int getItemNoOfEmployeeId() {
+		return this.getEmployeeCodeCanonicalization().getItemNoEmployeeId();
+	}
 }
