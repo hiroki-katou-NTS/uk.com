@@ -50,8 +50,8 @@
                         <td>
                             <div id="A4_1" data-bind="text: $vm.$i18n('KMR004_6'), ntsFormLabel: {required: true}"></div>
                         </td>
-                        <td>
-                            <div id="A4_2" tabindex="6" class="cf" data-bind="ntsSwitchButton: {
+                        <td class="flex valign-center">
+                            <div id="A4_2" tabindex="6" class="cf custom-label" data-bind="ntsSwitchButton: {
 									name: $i18n('KMR004_7'),
 									options: closingTimeOptions,
 									optionsValue: 'code',
@@ -69,7 +69,7 @@
             <div id="right-content">
                 <table class="table_content">
                     <tr>
-                        <td>
+                        <td class="flex valgin-center">
                             <div id="A5_1" data-bind="text: $vm.$i18n('KMR004_11'), ntsFormLabel: {required: true}"></div>
                             <div id="A5_2" tabindex="8" data-bind="ntsRadioBoxGroup: {
 								options: [
@@ -161,7 +161,7 @@
                                                 <div id="A10_1" data-bind="text: $vm.$i18n('KMR004_15'), ntsFormLabel: {required: true}"></div>
                                             </td>
                                             <td>
-                                                <div>
+                                                <div style="position: relative;">
                                                     <!--A10_2-->
                                                     <div id="A10_2" tabindex="19" class="verticalRadioBoxGroup" data-bind="ntsRadioBoxGroup: {
                                                         name: $i18n('KMR004_23'),

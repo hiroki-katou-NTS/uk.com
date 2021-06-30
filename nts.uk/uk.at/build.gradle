@@ -23,11 +23,6 @@ buildscript {
 		classpath "com.bmuschko:gradle-cargo-plugin:2.2.1"
 		
 		classpath "de.aaschmid.gradle.plugins:gradle-cpd-plugin:0.5"
-		
-		// compile typescript to js  plugin
-		classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
-		
-		classpath "de.richsource.gradle.plugins:typescript-gradle-plugin:1.8.0"
 	}
 }
 
@@ -104,7 +99,11 @@ subprojects {
 		compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
 		
 		// Lombok
-		compile group: 'org.projectlombok', name: 'lombok', version: '1.16.18'
+		compileOnly 'org.projectlombok:lombok:1.16.18'
+		annotationProcessor 'org.projectlombok:lombok:1.16.18'
+		
+		testCompileOnly 'org.projectlombok:lombok:1.16.18'
+		testAnnotationProcessor 'org.projectlombok:lombok:1.16.18'
 		
 		// JUnit
 		testCompile group: 'junit', name: 'junit', version: '4.12'
@@ -742,6 +741,10 @@ project (':at.screen:nts.uk.screen.at.app') {
 		compile(group: 'com.query', name: 'nts.uk.query.app', version: version)
 		compile(group: 'com.query', name: 'nts.uk.query.model', version: version)
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
+		
+		compile(group: 'com.health', name: 'nts.uk.ctx.health.dom', version: version)
+		compile(group: 'com.health', name: 'nts.uk.ctx.health.app', version: version)
+		compile(group: 'com.health', name: 'nts.uk.ctx.health.pub', version: version)
 	}
 }
 
@@ -798,8 +801,6 @@ project (':at.file:nts.uk.file.at.infra') {
 //=====================nts.uk.at.web�=============================
 project (':at.web:nts.uk.at.web') {
 	apply plugin: 'war'
-	apply plugin: 'com.moowork.node'
-	apply plugin: 'de.richsource.gradle.plugins.typescript'
 	
 	war {
 		exclude '**/*.ts'
@@ -1036,7 +1037,7 @@ project (':at.web:nts.uk.at.web') {
 		
 		runtime group: 'com.screen', name: 'nts.uk.screen.com.app', version: version
 		runtime group: 'com.screen', name: 'nts.uk.screen.com.infra', version: version
-	}	
+	}
 	
 	task tsc(type: Exec) {
 		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {

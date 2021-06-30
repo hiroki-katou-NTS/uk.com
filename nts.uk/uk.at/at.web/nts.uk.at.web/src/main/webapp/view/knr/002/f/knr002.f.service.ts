@@ -4,7 +4,12 @@ module knr002.f.service {
     let paths: any = {
         getRecoveryTargetList: "screen/at/recoverytargetter/getAll",
         recovery: "screen/at/performrecovery/recovery",
+        updateRemoteSettings: 'screen/knr002/c/updateRemoteSetting'
     };
+
+    export function updateRemoteSettings(input: any): JQueryPromise<any> {
+        return ajax(paths.updateRemoteSettings, input);
+    }
 
     /**
      * Get Recovery Target List

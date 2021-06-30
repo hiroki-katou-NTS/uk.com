@@ -1,6 +1,3 @@
-.kwr-003 {
-  margin-top: 10px;
-}
 .kwr-003 .fixed-flex-layout-left {
   margin-right: 10px;
   margin-left: 80px;
@@ -61,4 +58,7 @@
 }
 .kwr-003 .panel .switchButton-wrapper button {
   width: 65px;
+}
+.w-50 {
+  width: 50px;
 }

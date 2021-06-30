@@ -3,6 +3,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getText = nts.uk.resource.getText;
     import character = nts.uk.characteristics;
+    let __viewContext: any = window["__viewContext"] || {};
     export interface EmployeeSearchDto {
         employeeId: string;
         employeeCode: string;
@@ -44,7 +45,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         "26": "25"
     }
 
-    var ITEM_CHANGE = [28, 29, 31, 34, 41, 44, 623, 625];
+    var ITEM_CHANGE = [28, 29, 31, 34, 41, 44, 859, 860, 623, 625];
 
     var DEVIATION_REASON_MAP = { "438": 1, "443": 2, "448": 3, "453": 4, "458": 5, "801": 6, "806": 7, "811": 8, "816": 9, "821": 10 };
 
@@ -3197,7 +3198,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         processLockButton(showLock: boolean) {
             let self = this;
-            if (!self.hasEmployee || self.hasErrorBuss) return;
+            if (!self.hasEmployee || self.hasErrorBuss || self.dailyPerfomanceData().length == 0) return;
             nts.uk.ui.block.invisible();
             nts.uk.ui.block.grayout();
             let lstData = _.map(self.dailyPerfomanceData(), (map) => {
@@ -3839,6 +3840,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         createNtsMControl(): void {
             let self = this;
+			let comboDoWork: any = _.filter(self.headersGrid, (h : any) => {
+				return _.includes(h.group && h.group[1].ntsControl,"ComboboxDoWork");
+			});
+			
             self.ntsMControl = [
                 { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                 {
@@ -3858,7 +3863,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 { name: 'TextEditorTimeShortHM', controlType: 'TextEditor', constraint: { valueType: 'Time', required: true, format: "Time_Short_HM" } },
                 { name: 'ComboboxCalc', options: self.comboItemsCalc(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumnsCalc(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
                 { name: 'ComboboxReason', options: self.comboItemsReason(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
-                { name: 'ComboboxDoWork', options: self.comboItemsDoWork(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
                 { name: 'ComboItemsCompact', options: self.comboItemsCompact(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
                 { name: 'ComboboxTimeLimit', options: self.comboTimeLimit(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
 
@@ -3895,7 +3899,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         __viewContext.vm.clickButtonList(data);
                     }
                 }
-            ]
+            ];
+			
+			_.forEach(comboDoWork, (c, i) => {
+				self.ntsMControl.push({ name: 'ComboboxDoWork' + c.group[1].key, options: self.comboItemsDoWork(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small', 
+					inputProcess: (value, id, obj) => { self.inputProcess(id, c.group[1].key, value); }});
+			});
         }
 
         loadMIGrid(data: any): void {
@@ -3980,7 +3989,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             let date = moment(dataShare.date, "YYYY/MM/DD");
             $.when(service.getApplication()).done((data) => {
-                dataShare.listValue = data;
+                let dataToShare = [];
+                let appTypeEnum = __viewContext.enums.ApplicationType;  
+                let app = [];
+                _.forEach(data, (obj) => {
+                    app = _.filter(appTypeEnum, function(o) { return o.value == obj; });
+                    dataToShare.push({value: obj, fieldName: app.length > 0 ? app[0].name : ''});
+                });
+                dataShare.listValue = dataToShare;
                 setShared("shareToKdw003e", dataShare);
                 modal("/view/kdw/003/e/index.xhtml").onClosed(() => {
                     let screen = nts.uk.ui.windows.getShared("shareToKdw003a");
@@ -4264,8 +4280,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         delete header.ntsType;
                         delete header.onChange;
                         delete header.group[1].ntsType;
-                        delete header.group[1].onChange;
-                        delete header.group[1].inputProcess;
+						if(header.group[1].key != "Name859" && header.group[1].key != "Name860"){
+							delete header.group[1].onChange;
+                        	delete header.group[1].inputProcess;
+						}
                         delete header.inputProcess;
 
                         if (header.group[0].inputProcess != null && header.group[0].inputProcess != undefined) {
@@ -4273,6 +4291,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         } else {
                             delete header.group[0].inputProcess;
                         }
+						
+						if(header.group[1].key == "Name859" && header.group[1].key == "Name860"){
+							if (!_.isNil(header.group[1].onChange)) {
+								header.group[1].onChange = self.inputProcess;
+							} else {
+								delete header.group[1].onChange;
+							}
+						}
 
                         if (header.group[0].dataType == "String") {
                             header.group[0].onChange = self.search;
@@ -4489,6 +4515,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 } else {
                     keyId = columnKey.substring(1, columnKey.length);
                 }
+				
+				if (columnKey.indexOf("Name") != -1) {
+					keyId = columnKey.substring(4, columnKey.length);
+				}
+
             }
 
             let valueErrorRow = _.find(__viewContext.vm.workTypeNotFound, data => {
@@ -4560,6 +4591,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     if(_.isEmpty(itemSelectChange)){
                         param.notChangeCell = true;
                     }
+
+					if(columnKey.indexOf("Name859") != -1 || columnKey.indexOf("Name860") != -1){
+						if(param.itemEdits.length > 1){
+							param.itemEdits = _.filter(param.itemEdits, (it : any) => {
+								return it.columnKey == "Name859" || it.columnKey == "Name860";
+							});
+						}
+					}
 
                     service.calcTime(param).done((value) => {
                         // workType, workTime not found
@@ -4881,7 +4920,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         setShared('KDL002_AllItemObj', nts.uk.util.isNullOrEmpty(self.listCode()) ? [] : self.listCode(), true);
                         //selected items
                         setShared('KDL002_SelectedItemId', [self.selectedCode()], true);
-                        modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', width: 700 , height: 520}).onClosed(function(): any {
+                        modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目' }).onClosed(function(): any {
                             let lst = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
                             if (lst != undefined && lst.length > 0 && lst[0].code != "") {
                                 self.updateCodeName(self.rowId(), self.attendenceId, lst[0].name, lst[0].code, self.selectedCode());

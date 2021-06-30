@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.BonusPayAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculationMinusExist;
@@ -315,7 +316,8 @@ public class OverTimeOfDaily {
 					predetermineTimeSetByPersonInfo,
 					coreTimeSetting,
 					NotUseAtr.NOT_USE,
-					Optional.of(DeductionAtr.Appropriate));
+					Optional.of(DeductionAtr.Appropriate),
+					Optional.of(recordReGet.getCalculationRangeOfOneDay().getAttendanceLeavingWork()));
 		}
 
 		val overTimeWork = new AttendanceTime(0);
@@ -393,7 +395,8 @@ public class OverTimeOfDaily {
 							conditionItem,
 							predetermineTimeSetByPersonInfo,
 							coreTimeSetting,
-							NotUseAtr.NOT_USE);
+							NotUseAtr.NOT_USE,
+							Optional.of(recordReGet.getCalculationRangeOfOneDay().getAttendanceLeavingWork()));
 				}
 			}
 		}

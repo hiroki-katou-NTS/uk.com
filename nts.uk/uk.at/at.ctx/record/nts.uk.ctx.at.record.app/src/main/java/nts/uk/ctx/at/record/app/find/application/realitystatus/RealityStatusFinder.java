@@ -7,11 +7,8 @@ import java.util.Objects;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.adapter.request.application.dto.SendMailResultImport;
 import nts.uk.ctx.at.record.dom.application.realitystatus.RealityStatusService;
-import nts.uk.ctx.at.record.dom.application.realitystatus.enums.ApprovalStatusMailType;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.DailyConfirmOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.EmpPerformanceOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.ErrorStatusOutput;
@@ -37,15 +34,6 @@ public class RealityStatusFinder {
 	public void checkSendUnconfirmedMail(List<WkpIdMailCheckParam> listWkp) {
 		// アルゴリズム「承認状況未確認メール送信」を実行する
 		realityStatusService.checkSendUnconfirmedMail(this.getWkpIdMailCheck(listWkp));
-	}
-
-	public SendMailResultDto exeSendUnconfirmMail(ExeSendUnconfirmMailParam dto) {
-		List<WkpIdMailCheckOutput> listWkp = this.getWkpIdMailCheck(dto.getListWkp());
-		// アルゴリズム「承認状況未確認メール送信実行」を実行する
-		SendMailResultImport result = realityStatusService.exeSendUnconfirmMail(
-				EnumAdaptor.valueOf(dto.getType(), ApprovalStatusMailType.class), listWkp, dto.getStartDate(),
-				dto.getEndDate(), dto.getListEmpCd(), dto.getClosureID());
-		return new SendMailResultDto(result.isOK(), result.getListError());
 	}
 
 	private List<WkpIdMailCheckOutput> getWkpIdMailCheck(List<WkpIdMailCheckParam> listWkpParam) {

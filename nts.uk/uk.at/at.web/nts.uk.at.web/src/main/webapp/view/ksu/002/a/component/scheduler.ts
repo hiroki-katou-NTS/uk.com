@@ -336,7 +336,7 @@ module nts.uk.ui.at.ksu002.a {
                     background-color: #d9d9d9;
                     box-sizing: border-box;
                     border-bottom: 1px solid #808080;
-                    padding: 0 25px;
+                    padding: 0 20px;
                 }
                 .scheduler .calendar+.calendar .month+.month .day .status.wk-hours {
                     overflow: hidden;

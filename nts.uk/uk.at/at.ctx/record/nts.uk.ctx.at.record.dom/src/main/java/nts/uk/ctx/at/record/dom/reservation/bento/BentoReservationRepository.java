@@ -16,7 +16,7 @@ public interface BentoReservationRepository {
 
 	void delete(BentoReservation bentoReservation);
 
-	List<BentoReservation> findByOrderedPeriodEmpLst(List<ReservationRegisterInfo> inforLst, DatePeriod period, boolean ordered);
+	List<BentoReservation> findByOrderedPeriodEmpLst(List<ReservationRegisterInfo> inforLst, DatePeriod period, boolean ordered, String companyID);
 
 	/**
 	 * 注文状態から予約内容を取得する

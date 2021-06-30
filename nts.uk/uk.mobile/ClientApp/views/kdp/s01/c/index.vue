@@ -4,50 +4,34 @@
       <div class="uk-bg-teal p-2">
         <h4 class="modal-title text-white">
           <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
-          <span>{{ "KDPS01_5" | i18n }}</span>
         </h4>
       </div>
     </div>
-    <div class="row ml-1 title uk-text-over-time">
-      <label>{{ "KDPS01_26" | i18n }}</label>
-    </div>
-    <div class="col-12 value">
-      <label>{{ screenData.employeeCode }} {{ screenData.employeeName }}</label>
-    </div>
-
-    <div class="row ml-1 title uk-text-over-time">
-      <label>{{ "KDPS01_27" | i18n }}</label>
-    </div>
-    <div class="col-12 value">
-      <label
+    <div style="text-align: center;">
+      <div
         v-bind:style="{
           color: getTextColor(screenData.date)
         }"
-        class="col-7 px-1"
-        >{{ screenData.date | date("YYYY/MM/DD") }}</label
+        >{{ screenData.date | date("YYYY/MM/DD（ddd）") }}</div
       >
-      <label
-        class="col-5 stamp-time font-weight-bold"
-        style="line-height: 1rem;"
-        >{{ screenData.date | date("HH:mm") }}</label
+      <div
+        class="stamp-time font-weight-bold"
+        style="line-height: 2.5rem;"
+        >{{ screenData.date | date("HH:mm") }}</div
       >
     </div>
-
-    <div class="row ml-1 title uk-text-over-time">
-      <label>{{ "KDPS01_28" | i18n }}</label>
-    </div>
-    <div class="row">
-      <div class="col-7 d-inline-block"></div>
+    <div style="text-align: center;" >
+      <div class="d-inline-block"></div>
       <label
-        class="col-5 px-0 stamp-text font-weight-bold"
-        style="line-height: 1.5rem; color:#0033cc;"
+        class="stamp-text font-weight-bold"
+        style="line-height: 3rem; color:#0033cc;"
         >{{ screenData.stampAtr }}</label
       >
     </div>
-
-    <div class="row ml-1 title uk-text-over-time">
-      <label>{{ "KDPS01_30" | i18n }}</label>
+    <div class="col-12 value" style="padding-top: 20px; text-align: left;">
+      <label>{{ screenData.employeeCode }} {{ screenData.employeeName }}</label>
     </div>
+
     <div class="col-12 value">
       <label>{{ screenData.localtion }}</label>
     </div>
@@ -58,22 +42,17 @@
 
     <div v-if="screenData.workTypeName" class="value">
       <label class="col-12">{{ screenData.workTypeName }}</label>
-      <hr class="uk-bg-white-smoke mb-2 mt-0" />
     </div>
 
     <div v-if="screenData.workTimeName" class="value">
       <label class="col-12">{{ screenData.workTimeName }}</label>
-      <hr class="uk-bg-white-smoke mb-2 mt-0" />
     </div>
 
     <div class=" value">
-      <div class="col-12">
-        <label class="px-0 col-6 uk-text-over-time"
-          >{{ "KDPS01_44" | i18n }}
+      <div class="col-12" style="text-align: center;">
+        <label class="col-12 px-0">
+        {{screenData.attendanceItem.attendance}}
         </label>
-        <label class="col-6 px-0">{{
-          screenData.attendanceItem.attendance
-        }}</label>
       </div>
       <hr class="uk-bg-white-smoke mb-2 mt-0" />
     </div>
@@ -87,7 +66,6 @@
         <label class="px-0 col-6">{{ item.title }}</label>
         <label class="col-6 px-0">{{ item.value }}</label>
       </div>
-      <hr class="uk-bg-white-smoke mb-2 mt-0" />
     </div>
 
     <div class="col-12 value mt-3">

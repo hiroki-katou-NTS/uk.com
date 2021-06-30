@@ -105,4 +105,6 @@ public class DPText {
 	
 	public static final List<Integer> ALL_ITEM_TYPE_MASTER = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14);
 	
+	public static final List<Integer> ITEM_DIRECT_BOUNCE = Arrays.asList(859, 860);
+	
 }

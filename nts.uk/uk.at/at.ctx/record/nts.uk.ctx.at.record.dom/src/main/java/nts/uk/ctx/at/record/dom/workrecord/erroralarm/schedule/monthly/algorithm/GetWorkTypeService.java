@@ -92,7 +92,7 @@ public class GetWorkTypeService {
 		//　勤務種類コード＝　探した勤務予定．勤務情報．勤務情報．勤務種類コード
 		return ScheMonWorkTypeWorkTime.builder()
 				.workTimeCode(Optional.ofNullable(workSchedule.getWorkTime()))
-				.workTypeCode(workSchedule.getWorkTyle())
+				.workTypeCode(workSchedule.getWorkType())
 				.build();
 	}
 }

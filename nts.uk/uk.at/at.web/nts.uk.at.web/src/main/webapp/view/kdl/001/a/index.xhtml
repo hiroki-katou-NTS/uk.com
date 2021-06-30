@@ -30,9 +30,7 @@
             <div class="table">
               <div class="cell">
                 <div id="search-div">
-                  <div data-bind="ntsFormLabel: {}">
-                    #{i18n.getText('KDL001_3')}
-                  </div>
+                  <label>#{i18n.getText('KDL001_3')}</label>
                   <input
                     class="inputTime"
                     id="inputStartTime"
@@ -56,7 +54,7 @@
               </div>
               <div class="cell cell-right">
                 <div class="table search-by-code">
-                  <div class="cell valign-bottom">
+                  <div class="cell">
                     <input
                       id="A2_6"
                       data-bind="ntsTextEditor: { 
@@ -76,7 +74,7 @@
                     </button>
                   </div>
                   <div class="cell">
-                    <div class="control-group">
+                    <div class="control-group" style="height: inherit;">
                       <div
                         data-bind="ntsCheckBox: { checked: isAllCheckShow, enable: isEnableCheckStatus, text: '#{i18n.getText('KDL001_24')}' }"
                       ></div>

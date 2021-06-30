@@ -71,11 +71,12 @@
                   <com:ko tag="with" bind="optionalItem">
                      <div class="table">
                         <div class="cell">
-                           <table class="control-group">
+                           <table class="control-group top-sw">
                               <tr>
                                  <td>
                                     <div data-bind="ntsFormLabel: {required: true, constraint: 'OptionalItemName'}">
                                        #{i18n.getText('KMK002_11')}</div>
+
                                  </td>
                                  <td><input tabindex="1" id="inpName" data-bind="ntsTextEditor: {
                                              name: '#[KMK002_12]',
@@ -97,7 +98,7 @@
                                                 optionsText: 'name',
                                                 value: usageAtr,
                                                 required: true,
-                                                enable: $parent.hasSelected &amp;&amp; $parents[1].langJP()
+                                                enable: ko.computed(function() { return $parent.hasSelected() &amp;&amp; $parents[1].langJP(); }, this )
                                              }"></div>
                                  </td>
                               </tr>
@@ -106,14 +107,15 @@
                                  <td>
                                     <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_13')}</div>
                                  </td>
-                                 <td>
+                                 <td >
                                     <div tabindex="1" data-bind="ntsSwitchButton: {
                                                 name: '#[KMK002_13]',
                                                 options: calculationAtr,
                                                 optionsValue: 'code',
                                                 optionsText: 'name',
                                                 value: selectedClac,
-                                                enable: usageAtr() === 1 &amp;&amp; $parent.hasSelected &amp;&amp; $parents[1].langJP() }"></div>
+                                                enable: ko.computed(function() { return usageAtr() === 1 &amp;&amp; $parent.hasSelected() &amp;&amp; $parents[1].langJP(); }, this )
+                                    }"></div>
                                  </td>
                               </tr>
                               <tr>
@@ -121,14 +123,15 @@
                                  <td>
                                     <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_20')}</div>
                                  </td>
-                                 <td>
+                                 <td id="special-switch">
                                     <div tabindex="1" data-bind="ntsSwitchButton: {
                                                 name: '#[KMK002_21]',
                                                 options: perfClsDatasource,
                                                 optionsValue: 'code',
                                                 optionsText: 'name',
                                                 value: performanceAtr,
-                                                enable: usageAtr() === 1 &amp;&amp; $parents[1].langJP()}"></div>
+                                                enable: ko.computed(function() { return usageAtr() === 1 &amp;&amp; $parents[1].langJP(); }, this )
+                                    }"></div>
                                  </td>
                               </tr>
                               <tr>
@@ -378,8 +381,8 @@
                         </div>
                         <div class="cell" style="padding-left: 10px;">
                            <div>
-                              <div class="cell col-1">
-                                 <div data-bind="ntsFormLabel: {required: false, constraint: 'DescritionOptionalItem'}">
+                              <div class="cell col-1" style="width: 75px;">
+                                 <div style="width: 60px;" data-bind="ntsFormLabel: {required: false, constraint: 'DescritionOptionalItem'}">
                                     #{i18n.getText('KMK002_105')}</div>
                               </div>
                               <div class="cell" style="vertical-align: bottom;">
@@ -396,8 +399,8 @@
                               </div>
                            </div>
                            <div style="margin-top: 5px;">
-                              <div class="cell col-1">
-                                 <div data-bind="ntsFormLabel: {required: false, constraint: 'NoteOptionalItem'}">
+                              <div class="cell col-1" style="width: 75px;">
+                                 <div style="width: 60px;" data-bind="ntsFormLabel: {required: false, constraint: 'NoteOptionalItem'}">
                                     #{i18n.getText('KMK002_107')}</div>
                               </div>
                               <div class="cell" style="vertical-align: bottom;">
@@ -427,15 +430,18 @@
                               <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_16')}</div>
                            </td>
                            <td style="width: 140px;">
-                              <div tabindex="2" data-bind="ntsSwitchButton: {
+                              <div style="display: flex;">
+                                 <div style="margin-right: 5px;" tabindex="2" data-bind="ntsSwitchButton: {
                                     name: '#[KMK002_16]',
                                     options: empConClsDatasource,
                                     optionsValue: 'code',
                                     optionsText: 'name',
                                     value: empConditionAtr,
-                                    enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()}"></div>
-                              <button tabindex="2"
-                                 data-bind="click: openDialogB, enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; empConditionAtr() == 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_19')}</button>
+                                    enable: ko.computed(function() { return usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP(); })
+                                 }"></div>
+                                 <button tabindex="2"
+                                    data-bind="click: openDialogB, enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; empConditionAtr() == 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_19')}</button>
+                              </div>
                            </td>
                            <td></td>
                         </tr>
@@ -479,7 +485,7 @@
                         </colgroup>
                         <thead>
                            <tr>
-                              <th class="ui-widget-header">
+                              <th class="ui-widget-header p-5008">
                                  <div tabindex="-1" data-bind="ntsCheckBox: {
                                        checked: checkedAllFormula,
                                        enable: isUsed &amp;&amp; usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; calcFormulas().length > 0,
@@ -498,7 +504,7 @@
                         <tbody>
                            <com:ko tag="foreach" bind="calcFormulas">
                               <tr>
-                                 <td>
+                                 <td class="p-5008">
                                     <div tabindex="-1" data-bind="ntsCheckBox: {
                                           checked: selected,
                                           enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed,

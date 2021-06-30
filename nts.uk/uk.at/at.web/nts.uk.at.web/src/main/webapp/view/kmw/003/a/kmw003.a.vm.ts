@@ -226,11 +226,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 // $("#dpGrid").igGrid("option", "dataSource", self.displayNumberZero(self.formatDate(self.dpData)));
                 self.displayNumberZero1();
             });
-            
+
             $(window).on('resize', function() {
             	self.setScreenSize();
             });
-
         }
 
         displayNumberZero1() {
@@ -329,7 +328,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.ui.block.grayout();
             self.initScreen().done((processDate, selectedClosure) => {
                 //date process
+				if(!_.isNil(processDate))
                 self.yearMonth(processDate);
+
                 if (selectedClosure) {
                     self.selectedClosure(selectedClosure);
                 }
@@ -364,18 +365,20 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         	if (window.innerHeight < 447) {
         		return;
         	}
-        	$('.mgrid-fixed').height(window.innerHeight - 364);
+        	/*$('.mgrid-fixed').height(window.innerHeight - 364);
         	$('.mgrid-free').height(window.innerHeight - 364);
         	$('.grid-container').height(window.innerHeight - 240);
-        	$('.mgrid-fixed-summaries').css({ top: window.innerHeight - 376 + 'px' });
-        	$('.mgrid-free-summaries').css({ top: window.innerHeight - 376 + 'px' });
-        	$('.mgrid-paging').css({ top: window.innerHeight - 330 + 'px' });
-        	$('.mgrid-sheet').css({ top: window.innerHeight - 285 + 'px' });
+        	$('.mgrid-fixed-summaries').css({ top: window.innerHeight - 367 + 'px' });
+        	$('.mgrid-free-summaries').css({ top: window.innerHeight - 367 + 'px' });
+        	$('.mgrid-paging').css({ top: window.innerHeight - 321 + 'px' });
+        	$('.mgrid-sheet').css({ top: window.innerHeight - 275 + 'px' });
+            $('.mgrid-free').css({ top: '41px' });
+            $('.mgrid-header').css({ top: '3px' });
         	$('.mgrid-free').width(window.innerWidth - 627);
         	$('.mgrid-free.mgrid-header').width(window.innerWidth - 644);
         	$('.mgrid-free-summaries').width(window.innerWidth - 644);
         	$('.mgrid-paging').width($('.mgrid-fixed').width() + $('.mgrid-free.mgrid-header').width() + 19);
-        	$('.mgrid-sheet').width($('.mgrid-fixed').width() + $('.mgrid-free.mgrid-header').width() + 19);
+        	$('.mgrid-sheet').width($('.mgrid-fixed').width() + $('.mgrid-free.mgrid-header').width() + 19);*/
         }
         /**********************************
         * Initialize Screen 
@@ -436,7 +439,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.actualTimeSelectedDat(data.selectedActualTime);
                 self.initActualTime();
                 //comment
-                self.comment(data.comment != null ? '■ ' + data.comment : null);
+                self.comment(data.comment ? '■ ' + data.comment : null);
                 /*********************************
                  * Grid data
                  *********************************/
@@ -520,6 +523,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.ui.block.grayout();
             localStorage.removeItem(window.location.href + '/dpGrid');
             nts.uk.ui.errors.clearAllGridErrors();
+			self.monthlyParam().initMenuMode = self.initMode();
+			self.monthlyParam().formatCodes = self.formatCodes();
             self.monthlyParam().lstLockStatus = [];
             if (self.monthlyParam().actualTime) {
                 self.monthlyParam().actualTime.startDate = moment.utc(self.monthlyParam().actualTime.startDate, "YYYY/MM/DD").toISOString();
@@ -537,6 +542,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.employIdLogin = __viewContext.user.employeeId;
                 self.dataAll(data);
                 self.monthlyParam(data.param);
+				nts.uk.characteristics.save("cacheKMW003",self.monthlyParam());
                 self.dataBackup = _.cloneDeep(data);
                 self.itemValueAll(data.itemValues);
                 self.receiveData(data);
@@ -567,6 +573,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 // Fixed Header
                 self.setFixedHeader(data.lstFixedHeader);
                 self.extractionData();
+				$("#dpGrid").mGrid("destroy");
                 self.loadGrid();
                 _.forEach(data.mpsateCellHideControl, (cellHide =>{
                     $('#dpGrid').mGrid("setState", cellHide.rowId, cellHide.columnKey, ["mgrid-hide"])
@@ -1027,11 +1034,22 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let self = this;
             self.setHeaderColor();
             let dataSource = self.formatDate(self.dpData);
-
+			let subWidth = "50px";
+            if (self.displayFormat() === 0) {
+                subWidth = "135px";
+            } else if (self.displayFormat() === 1) {
+                subWidth = "135px";
+            } else {
+                subWidth = "155px";
+            }
+			let comment = (window.screen.availHeight - 240 - 88) + "px";
+			$('#comment-text').css("margin-top",comment);
             new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
+				subWidth: subWidth,
+                subHeight: '285px',
+                height: (window.screen.availHeight - 240) + "px",
                 width: (window.screen.availWidth - 200) + "px",
-                height: '612px',
-                headerHeight: '32px',
+                headerHeight: '40px',
                 dataSource: dataSource,
                 dataSourceAdapter: function(ds) {
                     return ds;
@@ -1741,6 +1759,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     self.formatCodes.removeAll();
                     self.formatCodes.push(formatCd);
                     self.initScreenFormat().done((processDate) => {
+						if(!_.isNil(processDate)){
+							self.yearMonth(processDate);
+						}
                         dfd.resolve();
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {

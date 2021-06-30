@@ -269,13 +269,29 @@ table#grid_matomeF_headers_fixed thead tr th{
 .switch-mode {
 	width: fit-content;
 	position: relative;
-	bottom: 67px;
+	bottom: 17px;
 	float: right;
 }
 
 .switch-mode-e {
 	width: fit-content;
 	position: relative;
-	bottom: 78px;
+	bottom: 17px;
 	float: right;
+}
+
+.hyperlink > span {
+	color: #06c;
+}
+
+.matome-table {
+	margin-top: -5px;
+	margin-left: 20px;
+	display: table;
+}
+
+.matome-table-e {
+	margin-top: -10px;
+	margin-left: 20px;
+	display: table;
 }

@@ -35,3 +35,8 @@
 	background-size: 17px 17px;
 	margin-left: 46px;
 }
+
+#functions-area-bottom {
+  position: fixed !important;
+  bottom: 0px;
+}

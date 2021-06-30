@@ -18,15 +18,15 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         grantDate: KnockoutObservable<string> = ko.observable("");
         enableGrantDate: KnockoutObservable<boolean> = ko.observable(true);
         A6_2Data: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '0', name: nts.uk.resource.getText("KMF003_17") },
-            { code: '1', name: nts.uk.resource.getText("KMF003_18") }
+            { code: 0, name: nts.uk.resource.getText("KMF003_17") },
+            { code: 1, name: nts.uk.resource.getText("KMF003_18") }
         ]);
-        A6_2SelectedRuleCode: any = ko.observable(0);
+        A6_2SelectedRuleCode: KnockoutObservable<any> = ko.observable(0);
         A7_4Data: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '0', name: nts.uk.resource.getText("KMF003_21") },
-            { code: '1', name: nts.uk.resource.getText("KMF003_22") }
+            { code: 0, name: nts.uk.resource.getText("KMF003_21") },
+            { code: 1, name: nts.uk.resource.getText("KMF003_22") }
         ]);
-        A7_4SelectedRuleCode: any = ko.observable(0);
+        A7_4SelectedRuleCode: KnockoutObservable<any> = ko.observable(0);
         symbols: KnockoutObservable<string> = ko.observable("%");
         limitedValue01: KnockoutObservable<string> = ko.observable("100");
         limitedValue02: KnockoutObservable<string> = ko.observable("");

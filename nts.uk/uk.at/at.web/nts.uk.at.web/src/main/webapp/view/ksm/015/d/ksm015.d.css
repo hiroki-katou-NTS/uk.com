@@ -6,6 +6,10 @@
     margin: 17px 30px 0px 20px;
     width: 453px;
     float: left;
+    
+}
+#tree-grid-d .ntsSearchBox {
+  width: 228px !important;
 }
 .form-label {
     width: 150px;

@@ -8,10 +8,10 @@
 		<div class="sidebar-content-header">
 			<span class="title">#{i18n.getText('CMM007_2')}</span>
 			<button tabindex="1" class="proceed"
-				data-bind="click: saveSysResourceSetting">#{i18n.getText('CMM007_5')}</button>
+				data-bind="click: saveSysResourceSetting, mutable">#{i18n.getText('CMM007_5')}</button>
 		</div>
 
-		<div class="contents-area">
+		<div id="contents-area">
 			<div class="system_define">
 				<p>#{i18n.getText('CMM007_6')}</p>
 

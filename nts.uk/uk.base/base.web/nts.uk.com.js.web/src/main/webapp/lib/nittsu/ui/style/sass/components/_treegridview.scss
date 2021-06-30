@@ -26,6 +26,17 @@
 				background-color: #CCC;
   				color: #333;
 			}
+			.ui-state-hover {
+				color: #30CC40;
+				background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;					
+			}
+
+			.ui-state-active {
+				font-weight: 700;
+				color: #30CC40;
+				background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;
+				box-shadow: 0px 8px 10px rgba(22, 154, 28, 0.1);
+			}
 		}
 	}
 }
@@ -45,7 +56,7 @@
 			
 			span.ui-iggrid-headertext {
 				width: 100%;
-				display: inline-block;
+				// display: inline-block;
 				text-overflow: ellipsis;
 				white-space: nowrap;
 				overflow: hidden;
@@ -58,10 +69,16 @@
 	table {
 		th:first-child.ui-iggrid-rowselector-class {
 			visibility: hidden;
+			width: 0;
+			border: none;
+			padding: 0;
 		}
 		
 		th:first-child.ui-iggrid-rowselector-header {
 			visibility: hidden;
+			width: 0;
+			border: none;
+			padding: 0;
 		}
 	}
 }

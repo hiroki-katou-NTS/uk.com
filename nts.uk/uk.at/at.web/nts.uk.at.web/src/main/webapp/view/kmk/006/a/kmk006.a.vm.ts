@@ -24,8 +24,8 @@ module nts.uk.at.view.kmk006.a {
             totalSelectedWorkplaceId: KnockoutObservable<string>;
             multiSelectedWorkplaceId: KnockoutObservable<string>;
             wkpAlreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
-            treeOptionsWkp: TreeComponentOption;
-            treeOptionsWkpTotal: TreeComponentOption;
+            treeOptionsWkp: any;
+            treeOptionsWkpTotal: any;
             autoCalAtrOvertimeEnum: Array<Enum>;
             autoCalAtrOvertimeEnumWithoutTimeRecorder: Array<Enum>;
             selectedTab: KnockoutObservable<string>;
@@ -109,7 +109,7 @@ module nts.uk.at.view.kmk006.a {
             yearMonth: KnockoutObservable<number>;
 
             // Common
-            tabs: KnockoutObservableArray<NtsTabPanelModel>;
+            tabs: KnockoutObservableArray<any>;
             
             // UI 
             createModeScreenB: KnockoutObservable<boolean>;
@@ -1093,12 +1093,11 @@ module nts.uk.at.view.kmk006.a {
                 var dfd = $.Deferred<void>();
 
                 self.clearAllError();
-                
-                nts.uk.ui.block.grayout();
-                self.loadComAutoCal().then(() => { nts.uk.ui.block.clear(); });
-
                 self.isLoading(true);
-
+                nts.uk.ui.block.grayout();
+                self.loadComAutoCal().then(() => { nts.uk.ui.block.clear(); })
+                self.isLoading(false);
+                $(window).resize();
                 dfd.resolve();
 
                 return dfd.promise();
@@ -1120,8 +1119,9 @@ module nts.uk.at.view.kmk006.a {
                         self.loadJobAutoCal(code);
                         nts.uk.ui.block.clear();
                     });
-                });
-                
+                })
+                self.isLoading(false);
+                $(window).resize();
             }
 
 
@@ -1141,7 +1141,9 @@ module nts.uk.at.view.kmk006.a {
                     $('#tree-grid-srcc').ntsTreeComponent(self.treeOptionsWkp).done(function() {
                         self.loadWkpAutoCal(self.multiSelectedWorkplaceId()).then(() => {nts.uk.ui.block.clear();});                       
                     });                  
-                });
+                })
+                self.isLoading(false);
+                $(window).resize();
             }
 
             public onSelectWkpJob(): void {
@@ -1171,9 +1173,10 @@ module nts.uk.at.view.kmk006.a {
                         self.loadWkpJobAlreadySettingList().done(function() {
                             self.loadWkpJobAutoCal(self.totalSelectedWorkplaceId(), code).done(() => {nts.uk.ui.block.clear();});                          
                         });
-                    });   
+                    })
 
-                           
+                    self.isLoading(false);
+                $(window).resize();
             }
 
             /**

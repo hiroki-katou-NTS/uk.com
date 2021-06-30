@@ -96,8 +96,8 @@ module nts.uk.com.view.cmm021.a {
                 _self.currentCode = ko.observable();
 
                 _self.useSet = ko.observableArray([
-                    { code: '1', name: nts.uk.resource.getText("CMM021_11") },
-                    { code: '0', name: nts.uk.resource.getText("CMM021_10") },
+                    { code: 1, name: nts.uk.resource.getText("CMM021_11") },
+                    { code: 0, name: nts.uk.resource.getText("CMM021_10") },
                 ]);
                 _self.selectUse = ko.observable(1);
 
