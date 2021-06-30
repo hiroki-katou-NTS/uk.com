@@ -2986,15 +2986,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	}
 	const COLOR_36 = {
 		// 36協定エラー
-		error: '#FD4D4D',
+		error: 'bg-36contract-error',
 		// 36協定アラーム
-		alarm: '#F6F636',
+		alarm: 'bg-36contract-alarm',
 		// 36協定特例
-		exceptions: '#eb9152',
+		exceptions: 'bg-36contract-exception',
 		// 36協定エラー文字
-		error_letter: '#ffffff',
+		error_letter: 'color-36contract-error',
 		// 36協定アラーム文字
-		alarm_character: '#ff0000'
+		alarm_character: 'color-36contract-alarm'
 		
 	}
 	export class VisibleModel {
