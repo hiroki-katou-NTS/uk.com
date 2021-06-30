@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.infra.repository.input.meta;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -17,20 +18,36 @@ public class JpaImportingDataMetaRepository extends JpaRepository implements Imp
 
 	@Override
 	public void setup(ExecutionContext context) {
-		// TODO Auto-generated method stub
+
+		String sql = "create table " + tableName(context.getCompanyId()) + " ("
+				+ "ITEM_NAME varchar(100) not null"
+				+ ");";
 		
+		this.jdbcProxy().query(sql).execute();
 	}
 
 	@Override
 	public void save(ImportingDataMeta meta) {
-		// TODO Auto-generated method stub
 		
+		String sql = "insert into " + tableName(meta.getCompanyId()) + " values (@name);";
+		
+		for (String name : meta.getItemNames()) {
+			this.jdbcProxy().query(sql)
+				.paramString("name", name)
+				.execute();
+		}
 	}
 
 	@Override
-	public Optional<ImportingDataMeta> find(ExecutionContext context) {
-		// TODO Auto-generated method stub
-		return null;
+	public ImportingDataMeta find(ExecutionContext context) {
+		
+		String sql = "select * from " + tableName(context.getCompanyId());
+		List<String> itemNames = this.jdbcProxy().query(sql).getList(rec -> rec.getString("ITEM_NAME"));
+		
+		return new ImportingDataMeta(context.getCompanyId(), itemNames);
 	}
 
+	private static String tableName(String companyId) {
+		return "XIMTT_META_ITEMNAMES_" + companyId.replace("-", "");
+	}
 }

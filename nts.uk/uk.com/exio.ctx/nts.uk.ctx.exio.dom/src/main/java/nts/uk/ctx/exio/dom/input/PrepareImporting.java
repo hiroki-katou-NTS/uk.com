@@ -66,7 +66,7 @@ public class PrepareImporting {
 		
 		val itemNames = getItemNames(require, context, assembly);
 		
-		return new ImportingDataMeta(context.getCompanyId(), context.getGroupId(), itemNames);
+		return new ImportingDataMeta(context.getCompanyId(), itemNames);
 	}
 
 	/**

@@ -169,7 +169,7 @@ public class ExternalImportExecuteRequire {
 
 		@Override
 		public ImportingDataMeta getImportingDataMeta(ExecutionContext context) {
-			return metaRepo.find(context).get();
+			return metaRepo.find(context);
 		}
 		
 	}

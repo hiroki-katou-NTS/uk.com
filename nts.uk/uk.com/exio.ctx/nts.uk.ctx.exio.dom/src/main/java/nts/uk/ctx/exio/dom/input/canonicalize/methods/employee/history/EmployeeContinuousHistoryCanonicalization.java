@@ -78,8 +78,8 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 		}
 		
 		return meta
-				.addItem(require, employeeCodeCanonicalization.getItemNoEmployeeId())
-				.addItem(require, itemNoHistoryId);
+				.addItem(require, context.getGroupId(), employeeCodeCanonicalization.getItemNoEmployeeId())
+				.addItem(require, context.getGroupId(), itemNoHistoryId);
 	}
 
 	private List<IntermediateResult> canonicalize(

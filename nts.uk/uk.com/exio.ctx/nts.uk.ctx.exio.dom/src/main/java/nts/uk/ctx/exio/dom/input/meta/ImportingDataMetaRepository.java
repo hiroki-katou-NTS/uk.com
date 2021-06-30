@@ -1,7 +1,5 @@
 package nts.uk.ctx.exio.dom.input.meta;
 
-import java.util.Optional;
-
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 
 public interface ImportingDataMetaRepository {
@@ -10,5 +8,5 @@ public interface ImportingDataMetaRepository {
 	
 	void save(ImportingDataMeta meta);
 
-	Optional<ImportingDataMeta> find(ExecutionContext context);
+	ImportingDataMeta find(ExecutionContext context);
 }

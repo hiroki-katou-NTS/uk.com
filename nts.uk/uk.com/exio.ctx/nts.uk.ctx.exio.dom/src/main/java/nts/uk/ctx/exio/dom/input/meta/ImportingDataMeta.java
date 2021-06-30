@@ -17,19 +17,17 @@ public class ImportingDataMeta {
 	/** 会社ID */
 	String companyId;
 	
-	ImportingGroupId groupId;
-
 	/** 受入項目と正準化によって生成される項目の名称一覧 */
 	List<String> itemNames;
 	
-	public ImportingDataMeta addItem(RequireAddItem require, int itemNo) {
+	public ImportingDataMeta addItem(RequireAddItem require, ImportingGroupId groupId, int itemNo) {
 		
 		String name = require.getImportableItem(groupId, itemNo).getItemName();
 		
 		val newNames = new ArrayList<>(itemNames);
 		newNames.add(name);
 		
-		return new ImportingDataMeta(name, groupId, newNames);
+		return new ImportingDataMeta(name, newNames);
 	}
 	
 	public static interface RequireAddItem {
