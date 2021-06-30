@@ -2,6 +2,7 @@ package nts.uk.ctx.exio.infra.repository.input.canonicalize.existing;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.JdbcProxy;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 
@@ -18,8 +19,8 @@ public class LayoutAnyRecordToDelete {
 	
 	public void createTable() {
 		
-		String tableName = TABLE_NAME + "_" + context.getCompanyId().replace("-", "");
-		String sql = "create table " + tableName + "("
+		String sql = "create table " + tableName() + "("
+				+ " ID char(36) not null"
 				+ " ITEM_NO decimal(5) not null,"
 				+ " VALUE varchar(1000) null"
 				+ ");";
@@ -29,16 +30,19 @@ public class LayoutAnyRecordToDelete {
 	
 	public void insert(AnyRecordToDelete record) {
 		
-		String tableName = TABLE_NAME + "_" + context.getCompanyId().replace("-", "");
-		
 		record.getPrimaryKeys().forEach((itemNo, value) -> {
 			
-			String sql = "insert into " + tableName + " values ("
+			String sql = "insert into " + tableName() + " values ("
+					+ IdentifierUtil.randomUniqueId()
 					+ itemNo
 					+ ", " + value.asString()
 					+ ")";
 			
 			jdbcProxy.query(sql).execute();
 		});
+	}
+	
+	private String tableName() {
+		return TABLE_NAME + "_" + context.getCompanyId().replace("-", "");
 	}
 }
