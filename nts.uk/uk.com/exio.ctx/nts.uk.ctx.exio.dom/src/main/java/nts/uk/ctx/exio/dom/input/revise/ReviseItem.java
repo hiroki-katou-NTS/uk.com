@@ -47,10 +47,11 @@ public class ReviseItem extends AggregateRoot {
 	 */
 	public RevisedItemResult revise(Require require, ExecutionContext context, String targetValue) {
 		
+		// 値の編集
 		val result = this.revisingValue.revise(targetValue);
 		
+		// コード変換
 		if(this.codeConvertCode.isPresent()) {
-			// コード変換を実施する場合
 			val optConvertor = require.getCodeConvert(context.getCompanyId(), this.codeConvertCode.get());
 			if(optConvertor.isPresent()) {
 				val cnvResult = optConvertor.get().convert(result.getRevisedvalue().get().toString());
