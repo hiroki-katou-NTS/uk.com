@@ -32,16 +32,41 @@ public class JpaExternalImportWorkspaceRepository extends JpaRepository implemen
 
 	@Override
 	public void save(Require require, ExecutionContext context, RevisedDataRecord record) {
-		
-		val builder = createWorkspaceSql(require, context);
-		builder.insert(require, record);
+		createWorkspaceSql(require, context).insert(require, record);
 	}
 
 	@Override
 	public void save(Require require, ExecutionContext context, CanonicalizedDataRecord record) {
+		createWorkspaceSql(require, context).insert(require, record);
+	}
 
-		val builder = createWorkspaceSql(require, context);
-		builder.insert(require, record);
+	@Override
+	public int getMaxRowNumberOfRevisedData(Require require, ExecutionContext context) {
+		return createWorkspaceSql(require, context).getMaxRowNumberOfRevisedData();
+	}
+
+	@Override
+	public List<String> getStringsOfRevisedData(Require require, ExecutionContext context, int itemNo) {
+		
+		val workspace = require.getGroupWorkspace(context.getGroupId());
+		String columnName = workspace.getItem(itemNo).get().getName();
+		return createWorkspaceSql(require, context).getStringsOfRevisedData(columnName);
+	}
+
+	@Override
+	public Optional<RevisedDataRecord> findRevisedByRowNo(Require require, ExecutionContext context, int rowNo) {
+		return createWorkspaceSql(require, context).findRevisedByRowNo(require, rowNo);
+	}
+
+	@Override
+	public List<RevisedDataRecord> findRevisedWhere(
+			Require require, ExecutionContext context, int itemNoCondition, String conditionString) {
+		return createWorkspaceSql(require, context).findRevisedWhere(require, itemNoCondition, conditionString);
+	}
+
+	@Override
+	public List<String> getAllEmployeeIdsOfCanonicalizedData(Require require, ExecutionContext context) {
+		return createWorkspaceSql(require, context).getAllEmployeeIdsOfCanonicalizedData();
 	}
 
 	private WorkspaceSql createWorkspaceSql(Require require, ExecutionContext context) {
@@ -50,36 +75,5 @@ public class JpaExternalImportWorkspaceRepository extends JpaRepository implemen
 		val workspace = require.getGroupWorkspace(context.getGroupId());
 		
 		return new WorkspaceSql(context, group, workspace, jdbcProxy());
-	}
-
-	@Override
-	public int getMaxRowNumberOfRevisedData(ExecutionContext context) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public List<String> getStringsOfRevisedData(ExecutionContext context, int itemNo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<RevisedDataRecord> findRevisedByRowNo(ExecutionContext context, int rowNo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<RevisedDataRecord> findRevisedWhere(ExecutionContext context, int itemNoCondition,
-			String conditionString) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<String> getAllEmployeeIdsOfCanonicalizedData(ExecutionContext context) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

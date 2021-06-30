@@ -1,5 +1,8 @@
 package nts.uk.ctx.exio.infra.repository.input.workspace;
 
+import static java.util.stream.Collectors.*;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -7,14 +10,17 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.layer.infra.data.jdbc.JdbcProxy;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.exio.dom.input.DataItem;
+import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.workspace.GroupWorkspace;
 import nts.uk.ctx.exio.dom.input.workspace.WorkspaceItem;
+import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository.Require;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataTypeConfiguration;
 
 @RequiredArgsConstructor
@@ -24,6 +30,8 @@ public class WorkspaceSql {
 	private final ImportingGroup group;
 	private final GroupWorkspace workspace;
 	private final JdbcProxy jdbcProxy;
+	
+	private static final String ROW_NO = "ROW_NO";
 
 	/**
 	 * 編集済み用のCREATE TABLEを実行する
@@ -59,6 +67,57 @@ public class WorkspaceSql {
 		sql.append(");");
 		
 		return sql.toString();
+	}
+	
+	@RequiredArgsConstructor
+	class CreateTable {
+		
+		private final StringBuilder sql;
+		
+		void primaryKey(String tableName, GroupWorkspace workspace) {
+			
+			String pkName = "PK_" + tableName;
+			
+			String keys = workspace.getItemsPk().stream()
+					.map(item -> item.getName())
+					.collect(Collectors.joining(", "));
+			
+			sql.append("constraint ").append(pkName).append(" key (").append(keys).append(")");
+		}
+		
+		void columnRowNo() {
+			// ROW_NO列はdecimal使わなくても良いんじゃないかな、さすがにintで足りると思う
+			sql.append(ROW_NO + " int not null,");
+		}
+		
+		void column(WorkspaceItem.RequireConfigureDataType require, WorkspaceItem item) {
+			
+			sql.append(item.getName()).append(" ");
+			
+			dataType(item.configureDataType(require));
+			
+			sql.append(" null,");
+		}
+		
+		void dataType(DataTypeConfiguration config) {
+			
+			switch (config.getType()) {
+			case DATE:
+				sql.append("datetime2");
+				break;
+			case STRING:
+				sql.append("nvarchar(").append(config.getLength()).append(")");
+				break;
+			case INT:
+				sql.append("decimal(").append(config.getLength()).append(")");
+				break;
+			case REAL:
+				sql.append("decimal(").append(config.getLength()).append(",").append(config.getScale()).append(")");
+				break;
+			default:
+				throw new RuntimeException("error: " + config);
+			}
+		}
 	}
 	
 	/**
@@ -103,62 +162,7 @@ public class WorkspaceSql {
 		
 		statement.execute();
 	}
-	
-	private WorkspaceTableName tableName() {
-		return new WorkspaceTableName(context, group.getName());
-	}
 
-	@RequiredArgsConstructor
-	class CreateTable {
-		
-		private final StringBuilder sql;
-		
-		void primaryKey(String tableName, GroupWorkspace workspace) {
-			
-			String pkName = "PK_" + tableName;
-			
-			String keys = workspace.getItemsPk().stream()
-					.map(item -> item.getName())
-					.collect(Collectors.joining(", "));
-			
-			sql.append("constraint ").append(pkName).append(" key (").append(keys).append(")");
-		}
-		
-		void columnRowNo() {
-			// ROW_NO列はdecimal使わなくても良いんじゃないかな、さすがにintで足りると思う
-			sql.append("ROW_NO int not null,");
-		}
-		
-		void column(WorkspaceItem.RequireConfigureDataType require, WorkspaceItem item) {
-			
-			sql.append(item.getName()).append(" ");
-			
-			dataType(item.configureDataType(require));
-			
-			sql.append(" null,");
-		}
-		
-		void dataType(DataTypeConfiguration config) {
-			
-			switch (config.getType()) {
-			case DATE:
-				sql.append("datetime2");
-				break;
-			case STRING:
-				sql.append("nvarchar(").append(config.getLength()).append(")");
-				break;
-			case INT:
-				sql.append("decimal(").append(config.getLength()).append(")");
-				break;
-			case REAL:
-				sql.append("decimal(").append(config.getLength()).append(",").append(config.getScale()).append(")");
-				break;
-			default:
-				throw new RuntimeException("error: " + config);
-			}
-		}
-	}
-	
 	static class Insert {
 
 		static String createInsertSql(String tableName, GroupWorkspace workspace, String paramRowNo) {
@@ -224,5 +228,82 @@ public class WorkspaceSql {
 			
 			throw new RuntimeException(dataItem + ", " + dataType);
 		}
+	}
+	
+	public int getMaxRowNumberOfRevisedData() {
+		String sql = "select max(" + ROW_NO + ") from " + tableName().asRevised();
+		return jdbcProxy.query(sql).getSingle(rec -> rec.getInt(1)).get();
+	}
+	
+	public List<String> getStringsOfRevisedData(String columnName) {
+		String sql = "select " + columnName + " from " + tableName().asRevised();
+		return jdbcProxy.query(sql).getList(rec -> rec.getString(1));
+	}
+	
+	public Optional<RevisedDataRecord> findRevisedByRowNo(WorkspaceItem.RequireConfigureDataType require, int rowNo) {
+		String sql = "select * from " + tableName().asRevised()
+				+ " where " + ROW_NO + " = " + rowNo;
+		return jdbcProxy.query(sql).getSingle(rec -> toRevised(require, rec));
+	}
+	
+	public List<RevisedDataRecord> findRevisedWhere(Require require, int itemNoCondition, String conditionString) {
+		
+		String columnName = workspace.getItem(itemNoCondition)
+				.orElseThrow(() -> new RuntimeException("not found: " + itemNoCondition))
+				.getName();
+		
+		String sql = "select * from " + tableName().asRevised()
+				+ " where " + columnName + " = '" + conditionString + "'";
+		
+		return jdbcProxy.query(sql)
+				.paramString(columnName, conditionString)
+				.getList(rec -> toRevised(require, rec));
+	}
+	
+	private RevisedDataRecord toRevised(WorkspaceItem.RequireConfigureDataType require, NtsResultRecord record) {
+		
+		int rowNo = record.getInt(ROW_NO);
+		
+		val items = workspace.getAllItemsSortedByItemNo().stream()
+				.map(wi -> toDataItem(require, record, wi))
+				.collect(toList());
+		
+		return new RevisedDataRecord(rowNo, new DataItemList(items));
+	}
+	
+	private static DataItem toDataItem(WorkspaceItem.RequireConfigureDataType require, NtsResultRecord record, WorkspaceItem workspaceItem) {
+		
+		val dataType = workspaceItem.configureDataType(require);
+		int itemNo = workspaceItem.getItemNo();
+		String name = workspaceItem.getName();
+		
+		switch (dataType.getType()) {
+		case INT:
+			return DataItem.of(itemNo, record.getLong(name));
+		case REAL:
+			return DataItem.of(itemNo, record.getBigDecimal(name));
+		case STRING:
+			return DataItem.of(itemNo, record.getString(name));
+		case DATE:
+			return DataItem.of(itemNo, record.getGeneralDate(name));
+		default:
+			throw new RuntimeException("unknown: " + dataType.getType());
+		}
+	}
+	
+	public List<String> getAllEmployeeIdsOfCanonicalizedData() {
+		
+		// 社員IDのカラム名は固定で SID
+		String sql = "select SID from " + tableName().asCanonicalized();
+		
+		return jdbcProxy.query(sql)
+				.getList(rec -> rec.getString(1))
+				.stream()
+				.distinct()
+				.collect(toList());
+	}
+	
+	private WorkspaceTableName tableName() {
+		return new WorkspaceTableName(context, group.getName());
 	}
 }

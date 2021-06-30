@@ -28,6 +28,8 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalizationRepository;
+import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
+import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupRepository;
@@ -39,6 +41,8 @@ import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.ctx.exio.dom.input.transfer.ConversionTableRepository;
 import nts.uk.ctx.exio.dom.input.transfer.TransferCanonicalDataRepository;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
+import nts.uk.ctx.exio.dom.input.workspace.GroupWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.GroupWorkspaceRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 @Stateless
@@ -49,8 +53,9 @@ public class ExternalImportExecuteRequire {
 		return EmbedStopwatch.embed(new RequireImpl(companyId));
 	}
 	
-	public static interface Require extends ExecuteImporting.Require {
-		
+	public static interface Require extends
+			ExecuteImporting.Require,
+			ExternalImportWorkspaceRepository.Require {
 	}
 	
 	@Inject
@@ -63,10 +68,16 @@ public class ExternalImportExecuteRequire {
 	private ConversionTableRepository conversionTableRepo;
 	
 	@Inject
+	private ImportableItemsRepository importableItemsRepo;
+	
+	@Inject
 	private TransferCanonicalDataRepository transferCanonicalDataRepo;
 	
 	@Inject
 	private GroupCanonicalizationRepository groupCanonicalizationRepo;
+	
+	@Inject
+	private GroupWorkspaceRepository groupWorkspaceRepo;
 	
 	@Inject
 	private ExternalImportWorkspaceRepository workspaceRepo;
@@ -101,10 +112,15 @@ public class ExternalImportExecuteRequire {
 		public ImportingGroup getImportingGroup(ImportingGroupId groupId) {
 			return importingGroupRepo.find(groupId);
 		}
+		
+		@Override
+		public GroupWorkspace getGroupWorkspace(ImportingGroupId groupId) {
+			return groupWorkspaceRepo.get(groupId);
+		}
 
 		@Override
 		public List<String> getAllEmployeeIdsOfCanonicalizedData(ExecutionContext context) {
-			return workspaceRepo.getAllEmployeeIdsOfCanonicalizedData(context);
+			return workspaceRepo.getAllEmployeeIdsOfCanonicalizedData(this, context);
 		}
 
 		@Override
@@ -170,6 +186,11 @@ public class ExternalImportExecuteRequire {
 		@Override
 		public ImportingDataMeta getImportingDataMeta(ExecutionContext context) {
 			return metaRepo.find(context);
+		}
+
+		@Override
+		public ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo) {
+			return importableItemsRepo.get(groupId, itemNo).get();
 		}
 		
 	}

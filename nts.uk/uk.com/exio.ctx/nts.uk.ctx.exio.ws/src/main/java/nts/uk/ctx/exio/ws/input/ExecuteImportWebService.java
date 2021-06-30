@@ -7,17 +7,28 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.exio.app.input.execute.ExternalImportExecuteCommand;
 import nts.uk.ctx.exio.app.input.execute.ExternalImportExecuteCommandHandler;
+import nts.uk.ctx.exio.app.input.prepare.ExternalImportPrepareCommand;
+import nts.uk.ctx.exio.app.input.prepare.ExternalImportPrepareCommandHandler;
 
 @Path("exio/input")
 @Produces("application/json")
 public class ExecuteImportWebService {
 	
 	@Inject
-	ExternalImportExecuteCommandHandler handler;
+	private ExternalImportPrepareCommandHandler prepare;
+
+	@POST
+	@Path("prepare")
+	public void prepare(ExternalImportPrepareCommand command) {
+		prepare.handle(command);
+	}
+	
+	@Inject
+	private ExternalImportExecuteCommandHandler execute;
 
 	@POST
 	@Path("execute")
 	public void execute(ExternalImportExecuteCommand command) {
-		handler.handle(command);
+		execute.handle(command);
 	}
 }
