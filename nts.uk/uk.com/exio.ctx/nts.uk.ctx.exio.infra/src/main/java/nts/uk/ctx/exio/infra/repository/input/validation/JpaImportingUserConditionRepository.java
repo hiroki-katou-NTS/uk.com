@@ -3,6 +3,8 @@ package nts.uk.ctx.exio.infra.repository.input.validation;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
@@ -10,6 +12,7 @@ import nts.uk.ctx.exio.dom.input.validation.ImportingUserConditionRepository;
 import nts.uk.ctx.exio.dom.input.validation.condition.ImportingUserCondition;
 import nts.uk.ctx.exio.infra.entity.input.validation.XimmtValidValue;
 
+@Stateless
 public class JpaImportingUserConditionRepository extends JpaRepository implements ImportingUserConditionRepository{
 	
 	@Override
