@@ -81,9 +81,9 @@ module nts.uk.at.view.kml001.shr {
 
         self.calculationSetting.subscribe(value => {
           if (value == 0) {
-            $("#premium-set-div .nts-fixed-body-wrapper").height('400.609px');
+            $("#premium-set-div .nts-fixed-body-wrapper").height('400px');
           } else {
-            $("#premium-set-div .nts-fixed-body-wrapper").height('440.609px');
+            $("#premium-set-div .nts-fixed-body-wrapper").height('440px');
           }
         });
       }
