@@ -69,37 +69,37 @@ public class RoleSetTest {
 		//就業ロール
 		{
 			String result = roleSet.getRoleIDByRoleType(RoleType.EMPLOYMENT);
-			assertThat(result).isNull();
+			assertThat(result).isEmpty();
 		}
 
 		//個人情報ロール
 		{
 			String result = roleSet.getRoleIDByRoleType(RoleType.PERSONAL_INFO);
-			assertThat(result).isNull();
+			assertThat(result).isEmpty();
 		}
 		
 		//給与ロール
 		{
 			String result = roleSet.getRoleIDByRoleType(RoleType.SALARY);
-			assertThat(result).isNull();
+			assertThat(result).isEmpty();
 		}
 		
 		//人事ロール
 		{
 			String result = roleSet.getRoleIDByRoleType(RoleType.HUMAN_RESOURCE);
-			assertThat(result).isNull();
+			assertThat(result).isEmpty();
 		}		
 		
 		//マイナンバー
 		{
 			String result = roleSet.getRoleIDByRoleType(RoleType.MY_NUMBER);
-			assertThat(result).isNull();
+			assertThat(result).isEmpty();
 		}
 		
 		//オフィスヘルパ
 		{
 			String result = roleSet.getRoleIDByRoleType(RoleType.OFFICE_HELPER);
-			assertThat(result).isNull();
+			assertThat(result).isEmpty();
 		}
 		
 	}

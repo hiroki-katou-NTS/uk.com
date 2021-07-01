@@ -72,8 +72,9 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
      */
     private SacmtRoleSet toEntity(RoleSet domain) {
         SacmtRoleSetPK key = new SacmtRoleSetPK(domain.getRoleSetCd().v(), domain.getCompanyId());
-// TODO 就業ロール, 個人情報ロール, 給与ロール, 人事ロール, マイナンバーロール, オフィスヘルパーロール StringからOptional<String>を変更したので、修正お願いいたします。
-/*        return new SacmtRoleSet(key
+/** TODO 就業ロール, 個人情報ロール, 給与ロール, 人事ロール, マイナンバーロール, オフィスヘルパーロール (roleId) are updated from String to Optional<String>
+    	、case roleId are Optional.empty、value is "", please fix 
+        return new SacmtRoleSet(key
                 , domain.getRoleSetName().v()
                 , domain.getApprovalAuthority().value
                 , domain.getOfficeHelperRoleId().isPresent()? domain.getOfficeHelperRoleId().get(): null
@@ -94,16 +95,17 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
      * @return
      */
     private SacmtRoleSet toEntiryForUpdate(RoleSet domain, SacmtRoleSet upEntity) {
-// TODO 就業ロール, 個人情報ロール, 給与ロール, 人事ロール, マイナンバーロール, オフィスヘルパーロール StringからOptional<String>を変更したので、修正お願いいたします。
-/*        upEntity.buildEntity(upEntity.roleSetPK
+/** TODO 就業ロール, 個人情報ロール, 給与ロール, 人事ロール, マイナンバーロール, オフィスヘルパーロール (roleId) are updated from String to Optional<String>
+	、case roleId are Optional.empty、value is "", please fix 
+       upEntity.buildEntity(upEntity.roleSetPK
                 , domain.getRoleSetName().v()
                 , domain.getApprovalAuthority().value
-                , domain.getOfficeHelperRoleId().isPresent()? domain.getOfficeHelperRoleId().get(): null
-                , domain.getMyNumberRoleId().isPresent()? domain.getMyNumberRoleId().get(): null
-                , domain.getHRRoleId().isPresent()? domain.getHRRoleId().get(): null
-                , domain.getPersonInfRoleId().isPresent()? domain.getPersonInfRoleId().get(): null
-                , domain.getEmploymentRoleId().isPresent()? domain.getEmploymentRoleId().get(): null
-                , domain.getSalaryRoleId().isPresent()? domain.getSalaryRoleId().get(): null);*/
+                , domain.getOfficeHelperRoleId().isPresent()? domain.getOfficeHelperRoleId().get():""
+                , domain.getMyNumberRoleId().isPresent()? domain.getMyNumberRoleId().get(): ""
+                , domain.getHRRoleId().isPresent()? domain.getHRRoleId().get(): ""
+                , domain.getPersonInfRoleId().isPresent()? domain.getPersonInfRoleId().get(): ""
+                , domain.getEmploymentRoleId().isPresent()? domain.getEmploymentRoleId().get(): ""
+                , domain.getSalaryRoleId().isPresent()? domain.getSalaryRoleId().get(): "");*/
         return upEntity;
     }
 

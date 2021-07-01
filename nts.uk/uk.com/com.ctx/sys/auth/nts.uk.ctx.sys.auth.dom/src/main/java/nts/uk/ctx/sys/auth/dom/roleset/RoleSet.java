@@ -150,6 +150,6 @@ public class RoleSet extends AggregateRoot {
      * @return
      */
     private String convertToString(Optional<String> roleID) {
-    	return roleID.isPresent()? roleID.get(): null;
+    	return roleID.isPresent()? roleID.get(): "";
     }
 }
