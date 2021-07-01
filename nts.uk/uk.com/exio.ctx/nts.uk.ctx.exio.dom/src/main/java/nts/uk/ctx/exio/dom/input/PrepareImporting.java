@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.exio.dom.input;
+package nts.uk.ctx.exio.dom.input;
 
 import static java.util.stream.Collectors.*;
 

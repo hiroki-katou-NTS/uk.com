@@ -5,14 +5,13 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.CodeConvertDetail;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -34,13 +33,18 @@ public class XimmtCodeConvertDetail extends ContractUkJpaEntity implements Seria
 	@Column(name = "SYSTEM_CODE")
 	private String systemCode;
 	
-	@ManyToOne
-	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-			@PrimaryKeyJoinColumn(name = "CONVERT_CD", referencedColumnName = "CONVERT_CD") })
-	private XimmtCodeConvert cimmtCodeConvert;
+	public static final JpaEntityMapper<XimmtCodeConvertDetail> MAPPER = new JpaEntityMapper<>(XimmtCodeConvertDetail.class);
 	
 	@Override
 	protected Object getKey() {
 		return pk;
+	}
+	
+	public CodeConvertDetail toDomain() {
+		return new CodeConvertDetail(
+				pk.getCompanyId(), 
+				pk.getConvertCode(), 
+				pk.getTargetCode(), 
+				systemCode);
 	}
 }
