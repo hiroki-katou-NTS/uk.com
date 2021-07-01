@@ -86,7 +86,7 @@ module nts.uk.at.view.kdl053.test {
 					errorRegistrationList.push(self.errorRegistrations()[id]);
 				})
 				request.errorRegistrationList = errorRegistrationList;
-				request.dispItemCol = self.dispItemCol() ? self.dispItemCol() == 1 : null;
+				request.dispItemCol = self.dispItemCol() != null ? self.dispItemCol() == 1 : null;
 				// setShare('dataShareDialogKDL053', request);
 				// self.currentScreen = nts.uk.ui.windows.sub.modal('/view/kdl/053/a/index.xhtml');
 				vm.$window.modal('at', '/view/kdl/053/a/index.xhtml', request);
