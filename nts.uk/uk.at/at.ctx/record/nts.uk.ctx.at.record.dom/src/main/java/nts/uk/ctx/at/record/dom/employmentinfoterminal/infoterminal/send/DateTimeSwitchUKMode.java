@@ -63,6 +63,6 @@ public class DateTimeSwitchUKMode implements DomainValue {
 
     //[S-1] hexパディング
 	private static String hexPadding(int data, int length) {
-		return StringUtils.leftPad(Integer.toHexString(data), length, "0");
+		return StringUtils.leftPad(Integer.toHexString(data), length, "0").toUpperCase();
 	}
 }
