@@ -75,7 +75,7 @@ public class RemainAnnualLeaveUpdating {
 		
 		return AtomTask.bundle(atomTasks)
 				/** アルゴリズム「年休付与残数データ更新処理」を実行する */
-				.then(updateAnnualLeaveRemainProcess(require, output.getAsOfPeriodEnd()))
+				.then(updateAnnualLeaveRemainProcess(require, output.getAsOfStartNextDayOfPeriodEnd()))
 				/** ドメインモデル「年休付与時点残数履歴データ」を更新する */
 				.then(updateAnnualLeaveTimeRemainProcess(require, cid, output.getAsOfGrant().orElse(Collections.emptyList())));
 	}
