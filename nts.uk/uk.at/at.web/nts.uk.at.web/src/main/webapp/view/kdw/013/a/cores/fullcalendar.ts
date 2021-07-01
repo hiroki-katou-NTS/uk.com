@@ -1831,8 +1831,16 @@ module nts.uk.ui.at.kdw013.calendar {
 
                         // update mouse pointer
                         const { screenX, screenY } = jsEvent;
-
-                        dataEvent.pointer({ screenX, screenY });
+                        
+                     
+                        if (vm.params.initialView() === "oneDay" && screenX === 0 && screenY === 0) {
+                            const width = window.innerWidth;
+                            const height = window.innerHeight;
+                            dataEvent.pointer({ screenX: width / 2, screenY: height / 2 });
+                        } else {
+                            dataEvent.pointer({ screenX, screenY });
+                        }
+                      
                     } else {
                         // multi select
                         const [first] = seletions();
@@ -2021,7 +2029,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         $caches.new(null);
                     }
                 },
-                eventReceive: ({ event }) => {
+                eventReceive: ({ event }) => {  
                     //drag event from used list
                     const {
                         title,
