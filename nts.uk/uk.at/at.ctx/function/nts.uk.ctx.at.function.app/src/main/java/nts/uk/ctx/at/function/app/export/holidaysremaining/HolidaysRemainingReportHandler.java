@@ -620,7 +620,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                     new ArrayList<>(),
                     new ArrayList<>(),
                     Optional.empty(), new FixedManagementDataMonth());
-            val  item =   substituteHolidayAggrResult = NumberRemainVacationLeaveRangeQuery
+            val  item  = NumberRemainVacationLeaveRangeQuery
                     .getBreakDayOffMngInPeriod(rq, input);
             substituteHolidayAggrResultsRight.put(s,item);
         }
