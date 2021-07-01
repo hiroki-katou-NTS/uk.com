@@ -20,22 +20,22 @@ public class EmployementHistoryCanonicalizationTest {
 	CanonicalizationMethod.Require require;
 
 	//@Test
-	public void canonicalizeHistory() {
-		
-		val empCodeCano = new EmployeeCodeCanonicalization(0, 1);
-		val target = new EmploymentHistoryCanonicalization(2, 3, 4, empCodeCano);
-		val context = Helper.context(ImportingMode.DELETE_RECORD_BEFOREHAND);
-		List<IntermediateResult> employeeCanonicalized = Arrays.asList(
-				new IntermediateResult(0, null, null, null)
-				);
-		
-		new Expectations() {{
-
-		}};
-		
-		List<IntermediateResult> actual = NtsAssert.Invoke.privateMethod(
-				target, "canonicalizeHistory", require, context, employeeCanonicalized);
-	}
+//	public void canonicalizeHistory() {
+//		
+//		val empCodeCano = new EmployeeCodeCanonicalization(0, 1);
+//		val target = new EmploymentHistoryCanonicalization(2, 3, 4, empCodeCano);
+//		val context = Helper.context(ImportingMode.DELETE_RECORD_BEFOREHAND);
+//		List<IntermediateResult> employeeCanonicalized = Arrays.asList(
+//				new IntermediateResult(0, null, null, null)
+//				);
+//		
+//		new Expectations() {{
+//
+//		}};
+//		
+//		List<IntermediateResult> actual = NtsAssert.Invoke.privateMethod(
+//				target, "canonicalizeHistory", require, context, employeeCanonicalized);
+//	}
 
 	static class Helper {
 		public static ExecutionContext context(ImportingMode mode) {

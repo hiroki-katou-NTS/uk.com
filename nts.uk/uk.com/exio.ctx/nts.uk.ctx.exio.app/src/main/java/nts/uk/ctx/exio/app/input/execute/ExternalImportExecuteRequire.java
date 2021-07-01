@@ -26,8 +26,6 @@ import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRepository;
-import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalizationRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
@@ -72,9 +70,6 @@ public class ExternalImportExecuteRequire {
 	
 	@Inject
 	private TransferCanonicalDataRepository transferCanonicalDataRepo;
-	
-	@Inject
-	private GroupCanonicalizationRepository groupCanonicalizationRepo;
 	
 	@Inject
 	private GroupWorkspaceRepository groupWorkspaceRepo;
@@ -141,11 +136,6 @@ public class ExternalImportExecuteRequire {
 		@Override
 		public List<AnyRecordToDelete> getAnyRecordToDeleteWhere(ExecutionContext context, int keyItemNo, String keyValue) {
 			return existingRepo.findAllDeletesWhere(context, keyItemNo, keyValue);
-		}
-
-		@Override
-		public GroupCanonicalization getGroupCanonicalization(ImportingGroupId groupId) {
-			return groupCanonicalizationRepo.find(groupId);
 		}
 
 		@Override

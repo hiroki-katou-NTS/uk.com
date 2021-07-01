@@ -20,12 +20,12 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
+import nts.uk.ctx.exio.dom.input.workspace.GroupWorkspace;
 
 /**
  * 作業の正準化
  * レコード間の整合性制約が無いので、レコード単体で処理を完結できる
  */
-@RequiredArgsConstructor
 @Getter
 @ToString
 public class TaskCanonicalization implements GroupCanonicalization {
@@ -35,6 +35,11 @@ public class TaskCanonicalization implements GroupCanonicalization {
 	
 	/** 作業コードの項目No */
 	final int itemNoTaskCode;
+	
+	public TaskCanonicalization(GroupWorkspace group) {
+		itemNoTaskFrameNo = group.getItemByName("作業枠NO").getItemNo();
+		itemNoTaskCode = group.getItemByName("作業枠コード").getItemNo();
+	}
 	
 	/**
 	 * 正準化する

@@ -55,14 +55,12 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 			CanonicalizationMethod.Require require,
 			RevisedDataRecord revisedData) {
 		
-		val itemEmployeeCode = revisedData.getItemByNo(itemNoEmployeeCode).get();
-		String employeeCode = itemEmployeeCode.getString();
+		String employeeCode = revisedData.getItemByNo(itemNoEmployeeCode).get().getString();
+		
+		// TODO: 新規社員の追加について仕様が必要
 		String employeeId = require.getEmployeeDataMngInfoByEmployeeCode(employeeCode).get().getEmployeeId();
 		
-		return IntermediateResult.create(
-				revisedData,
-				DataItem.of(itemNoEmployeeId, employeeId),
-				itemNoEmployeeCode);
+		return canonicalize(revisedData, employeeId);
 	}
 
 	/**
@@ -88,10 +86,15 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 				.getEmployeeId();
 		
 		return revisedDataRecords.stream()
-				.map(revisedData -> IntermediateResult.create(
-						revisedData,
-						DataItem.of(itemNoEmployeeId, employeeId),
-						itemNoEmployeeCode));
+				.map(revisedData -> canonicalize(revisedData, employeeId));
+	}
+
+	private IntermediateResult canonicalize(RevisedDataRecord revisedData, String employeeId) {
+		
+		return IntermediateResult.create(
+				revisedData,
+				DataItem.of(itemNoEmployeeId, employeeId),
+				itemNoEmployeeCode);
 	}
 	
 	public static interface Require {

@@ -1,10 +1,19 @@
 package nts.uk.ctx.exio.dom.input.canonicalize;
 
+import static nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId.*;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.canonicalize.groups.EmploymentHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.groups.TaskCanonicalization;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
+import nts.uk.ctx.exio.dom.input.workspace.GroupWorkspace;
 
 /**
  * 編集済みデータを正準化する
@@ -20,16 +29,28 @@ public class CanonicalizeRevisedData {
 	 * @param context
 	 */
 	public static void canonicalize(Require require, ExecutionContext context, ImportingDataMeta meta) {
+
+		val canonicalization = GroupCanonicalizations.get(require, context.getGroupId());
 		
-		val canonicalization = require.getGroupCanonicalization(context.getGroupId());
 		val metaCanonicalized = canonicalization.canonicalize(require, context, meta);
 		
 		require.save(metaCanonicalized);
 	}
 	
-	public static interface Require extends GroupCanonicalization.RequireCanonicalize {
+	private static final Map<ImportingGroupId, Function<GroupWorkspace, GroupCanonicalization>> CREATES;
+	static {
+		CREATES = new HashMap<>();
+
+		// 作業
+		CREATES.put(TASK, TaskCanonicalization::new);
 		
-		GroupCanonicalization getGroupCanonicalization(ImportingGroupId groupId);
+		// 雇用履歴
+		CREATES.put(ImportingGroupId.EMPLOYMENT_HISTORY, EmploymentHistoryCanonicalization::new);
+	}
+	
+	public static interface Require extends
+			GroupCanonicalizations.Require,
+			GroupCanonicalization.RequireCanonicalize {
 		
 		void save(ImportingDataMeta meta);
 	}

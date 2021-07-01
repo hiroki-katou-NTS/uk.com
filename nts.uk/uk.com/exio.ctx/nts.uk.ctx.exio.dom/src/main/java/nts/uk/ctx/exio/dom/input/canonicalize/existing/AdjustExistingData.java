@@ -5,8 +5,8 @@ import java.util.List;
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.canonicalize.GroupCanonicalizations;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
-import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 
 /**
  * 受入の影響を受ける既存データを補正する
@@ -21,7 +21,7 @@ public class AdjustExistingData {
 	 */
 	public static AtomTask adjust(RequireAll require, ExecutionContext context) {
 		
-		val canonicalization = require.getGroupCanonicalization(context.getGroupId());
+		val canonicalization = GroupCanonicalizations.get(require, context.getGroupId());
 		
 		return canonicalization.adjust(
 				require,
@@ -45,7 +45,7 @@ public class AdjustExistingData {
 	 */
 	public static AtomTask adjust(RequireEmployee require, ExecutionContext context, String employeeId) {
 
-		val canonicalization = require.getGroupCanonicalization(context.getGroupId());
+		val canonicalization = GroupCanonicalizations.get(require, context.getGroupId());
 		
 		int itemNoEmployeeId = canonicalization.getItemNoOfEmployeeId();
 		
@@ -62,8 +62,9 @@ public class AdjustExistingData {
 		List<AnyRecordToDelete> getAnyRecordToDeleteWhere(ExecutionContext context, int keyItemNo, String keyValue);
 	}
 	
-	public static interface RequireCommon extends GroupCanonicalization.RequireAdjsut {
+	public static interface RequireCommon extends
+			GroupCanonicalizations.Require,
+			GroupCanonicalization.RequireAdjsut {
 		
-		GroupCanonicalization getGroupCanonicalization(ImportingGroupId groupId);
 	}
 }

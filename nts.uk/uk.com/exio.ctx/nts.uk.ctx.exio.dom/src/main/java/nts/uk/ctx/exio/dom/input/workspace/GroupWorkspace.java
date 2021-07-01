@@ -37,4 +37,12 @@ public class GroupWorkspace {
 				.filter(item -> item.getItemNo() == itemNo)
 				.findFirst();
 	}
+	
+	public WorkspaceItem getItemByName(String itemName) {
+
+		return Stream.concat(itemsPk.stream(), itemsNotPk.stream())
+				.filter(item -> item.getName() == itemName)
+				.findFirst()
+				.get();
+	}
 }

@@ -26,8 +26,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRepository;
-import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalizationRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
@@ -76,9 +74,6 @@ public class ExternalImportPrepareRequire {
 	
 	@Inject
 	private ImportingGroupRepository importingGroupRepo;
-	
-	@Inject
-	private GroupCanonicalizationRepository groupCanonicalizationRepo;
 	
 	@Inject
 	private GroupWorkspaceRepository groupWorkspaceRepo;
@@ -171,12 +166,6 @@ public class ExternalImportPrepareRequire {
 				List<Integer> itemNo) {
 			return importingUserConditionRepo.get(companyId, settingCode, itemNo);
 		}
-		
-		@Override
-		public GroupCanonicalization getGroupCanonicalization(ImportingGroupId groupId) {
-			return groupCanonicalizationRepo.find(groupId);
-		}
-		
 		
 		/***** Workspace *****/
 		
