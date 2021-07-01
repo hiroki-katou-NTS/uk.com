@@ -17,6 +17,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -45,6 +51,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 	})
 public class KrcmtCalcSetHdWork extends ContractUkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
+    public static final JpaEntityMapper<KrcmtCalcSetHdWork> MAPPER = new JpaEntityMapper<>(KrcmtCalcSetHdWork.class);
     @Id
     @Basic(optional = false)
     @NotNull
@@ -83,6 +90,14 @@ public class KrcmtCalcSetHdWork extends ContractUkJpaEntity implements Serializa
         this.lateNightTimeLimitSet = lateNightTimeLimitSet;
     }
 
+	public static KrcmtCalcSetHdWork toEntity(AutoCalRestTimeSetting domain, String holWorkTimeId) {
+		return new KrcmtCalcSetHdWork(
+				holWorkTimeId,
+				domain.getRestTime().getCalAtr().value,
+				domain.getRestTime().getUpLimitORtSet().value,
+				domain.getLateNightTime().getCalAtr().value,
+				domain.getLateNightTime().getUpLimitORtSet().value);
+	}
 
     @Override
     public int hashCode() {
@@ -108,6 +123,16 @@ public class KrcmtCalcSetHdWork extends ContractUkJpaEntity implements Serializa
     public String toString() {
         return "entities.KrcmtCalcSetHdWork[ holWorkTimeId=" + holWorkTimeId + " ]";
     }
+
+	public AutoCalRestTimeSetting toDomain() {
+		return new AutoCalRestTimeSetting(
+				new AutoCalSetting(
+						EnumAdaptor.valueOf(this.holWorkTimeLimitSet, TimeLimitUpperLimitSetting.class),
+						EnumAdaptor.valueOf(this.holWorkTimeCalAtr, AutoCalAtrOvertime.class)),
+				new AutoCalSetting(
+						EnumAdaptor.valueOf(this.lateNightTimeLimitSet, TimeLimitUpperLimitSetting.class),
+						EnumAdaptor.valueOf(this.lateNightTimeCalAtr, AutoCalAtrOvertime.class)));
+	}
 
 	@Override
 	protected Object getKey() {

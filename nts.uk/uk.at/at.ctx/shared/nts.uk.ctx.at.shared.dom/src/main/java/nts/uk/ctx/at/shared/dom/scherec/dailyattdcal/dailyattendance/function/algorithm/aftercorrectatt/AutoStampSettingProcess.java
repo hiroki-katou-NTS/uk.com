@@ -11,6 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.predeterminetimezone.ConfirmSetSpecifiTimeZone;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.predeterminetimezone.ConfirmSetSpecifiTimeZone.ConfirmSetSpecifiResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.functionalgorithm.SetTimeOfAttendance;
@@ -35,11 +36,12 @@ public class AutoStampSettingProcess {
 	private ChangeDailyAttendanceProcess changeDailyAttendanceProcess;
 
 	public TimeLeavingOfDailyAttd process(String companyId, GeneralDate date, WorkingConditionItem workingCond,
-			WorkInfoOfDailyAttendance workInfo, TimeLeavingOfDailyAttd timeLeavingOptional) {
+			WorkInfoOfDailyAttendance workInfo, TimeLeavingOfDailyAttd timeLeavingOptional,
+			List<EditStateOfDailyAttd> lstEditState) {
 
 		// 所定時間帯をセットするか確認する
 		ConfirmSetSpecifiResult confirmSetSpecifiResult = confirmSetSpecifiTimeZone.confirmset(companyId, workingCond,
-				workInfo, Optional.ofNullable(timeLeavingOptional), date);
+				workInfo, Optional.ofNullable(timeLeavingOptional), date, lstEditState);
 
 		// 返ってきた「時刻セット区分」を確認する
 		if (!confirmSetSpecifiResult.isTimeSetClassification()) {
