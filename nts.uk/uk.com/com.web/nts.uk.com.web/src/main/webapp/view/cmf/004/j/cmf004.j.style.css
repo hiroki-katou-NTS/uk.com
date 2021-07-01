@@ -1,5 +1,5 @@
-tbody > td:first-child {
-  background-color: rgb(207, 241, 165);
+.mgrid .mgrid-header td {
+  background-color: #CFF1A5;
 }
 
 .content {
@@ -8,7 +8,7 @@ tbody > td:first-child {
 
 .search-panel {
   width: 555px;
-  height: 300px !important;
+  height: 200px !important;
   margin-top: 20px;
   margin-bottom: 20px;
 }

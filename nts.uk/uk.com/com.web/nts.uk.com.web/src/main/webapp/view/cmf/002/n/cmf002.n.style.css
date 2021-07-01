@@ -1,14 +1,4 @@
-div.form-label {
-	display: inline-block;
-	box-sizing: border-box;
-	border-style: solid;
-	border-width: 0 0 0 5px;
-	padding: 0 10px 0 8px;
-}
-
 .row_2_3_4 {
-	margin-top: 8px;
-	margin-left: 114px;
 	margin-right: 12px;
 }
 
@@ -30,7 +20,7 @@ div.label {
 }
 
 .title_content {
-	margin: 20px;
+	margin: 15px;
 	font-size: 1.4em;
 }
 
@@ -44,23 +34,6 @@ div.label {
 
 input {
 	height: 20px;
-}
-
-button.x-large {
-	font-size: 22px;
-	padding: 6px 35px;
-	background-color: #A4EEB0;
-	margin-bottom: 5px;
-	height: 45px;
-	box-shadow: 0 5px #999;
-}
-
-button.large {
-	font-size: 15px;
-	padding: 4px 10px;
-	margin-bottom: 4px;
-	height: 34px;
-	box-shadow: 0 4px rgba(0, 0, 0, 0.4);
 }
 
 #tbl_devision {
@@ -89,7 +62,6 @@ button.large {
 }
 
 .div-table-row {
-	display: table-row;
 	clear: both;
 	height: 40px;
 }
@@ -122,4 +94,8 @@ button.large {
 .div-table-col-medium {
 	float: left;
 	display: table-column;
+}
+
+.div-table-row.flex > div:first-child {
+  width: 120px;
 }

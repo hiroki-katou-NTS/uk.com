@@ -28,3 +28,10 @@
 .width-common{
     width: 27px;
 }
+
+.content-right {
+    padding-left: 20px;
+}
+.content-right .form-label {
+    width: 120px;
+}

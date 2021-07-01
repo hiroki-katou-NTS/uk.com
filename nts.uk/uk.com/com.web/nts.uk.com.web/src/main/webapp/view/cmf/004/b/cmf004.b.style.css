@@ -1,6 +1,6 @@
 #data-recovery-wizard {
 	width: 1253px;
-	height: 735px;
+	height: 760px;
 }
 
 #data-recovery-wizard>.content {
@@ -109,9 +109,17 @@
 
 .compressGrid td {
 	padding-right: 10px;
-	height: 100%;
+	height: 40px;
 }
 
 .contentG {
 	margin-left: 100px !important;
+}
+
+.contentG div.form-label, .contentH div.form-label {
+  padding-right: 0px !important;
+}
+
+.contentG .flex.div-line > label, .contentH .flex.div-line > label {
+  margin-right: 10px;
 }

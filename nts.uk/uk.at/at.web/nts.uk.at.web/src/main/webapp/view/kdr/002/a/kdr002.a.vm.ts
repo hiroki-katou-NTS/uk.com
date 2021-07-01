@@ -111,6 +111,11 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         // A5_3
         optionExtractionValue: KnockoutObservable<number> = ko.observable(1);
 
+        selectedDateTypeOption: KnockoutObservableArray<any> = ko.observableArray([
+          { code: 0, name: getText("KDR002_3") },
+          { code: 1, name: getText("KDR002_41") },
+          { code: 2, name: getText("KDR002_4") },
+        ]);
 
         constructor() {
             let self = this;

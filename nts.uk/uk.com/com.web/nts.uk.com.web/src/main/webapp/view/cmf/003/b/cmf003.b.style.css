@@ -25,7 +25,7 @@
 
 .box-list {
   width: 70%;
-  margin-left: 20px;
+  display: inline-block;
 }
 
 .title-right {
@@ -66,8 +66,8 @@
 }
 
 .fixed-flex-layout-right-screenD{
-	float: right;
-	margin-right: 20px;
+	display: grid;
+  margin-left: 100px;
 }
 
 .button-bottom-area {
@@ -88,7 +88,7 @@
 	display: inline-block;
 }
 
-#B4_12, #B4_30, #B4_34, #B4_36, .space {
+#B4_12, #B4_30, #B4_34, #B4_36, #B4_42, .space {
 	width: 135px;
 }
 
@@ -189,10 +189,8 @@
 .selectionEmployee {
 	border: 1px solid #ccc !important;
 	border-radius: 5px;
-	margin: 0px 0px 0px 90px;
 	padding: 20px;
 	width: 600px;
-	float: right;
 	margin-bottom: 20px;
 }
 
@@ -245,15 +243,6 @@
 	width: 350px;
 }
 
-.top-right-panel{
-	margin-left: 276px;
-}
-
-.bot-right-panel{
-	float: right;
-    margin-right: 400px;
-}
-
 .other .space {
 	width: 135px;
 }
@@ -275,4 +264,19 @@
 }
 #B4_41 {
 	width: 150px !important;
+}
+
+#B3_4 input.ntsSearchBox {
+  width: 173px !important;
+}
+
+.nts-wizard .steps+.contents {
+  margin-left: 260px !important;
+}
+
+/* Fix bug on screen D for IE only */
+@media screen and (min-width:0\0) {
+  .selectionEmployee {
+    margin-top: 30px;
+  }
 }
