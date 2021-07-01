@@ -710,18 +710,18 @@ public class HolidaySettingExportImpl implements MasterListData{
 			}else{
 				putDataCustom(datas,"",TextResource.localize("KMF002_7"),"-",0);
 			}
-			putDataCustom(datas,TextResource.localize("KMF002_72"),"",getPubHdPeriod(pubHdPeriodSetting), 1);
+			putDataCustom(datas,TextResource.localize("KMF002_72"),"",getPubHdPeriod(pubHdPeriodSetting), 0);
 			
 		}else if(optPubHdSetting !=null){
 			putDataCustom(datas,TextResource.localize("KMF002_61"),"","管理しない",0);
 			putDataCustom(datas,TextResource.localize("KMF002_4"),"","",1);
 			putDataCustom(datas,"",TextResource.localize("KMF002_7"),"",0);
-			putDataCustom(datas,TextResource.localize("KMF002_72"),"","", 1);
+			putDataCustom(datas,TextResource.localize("KMF002_72"),"","", 0);
 		}else{
 			putDataCustom(datas,TextResource.localize("KMF002_61"),"","",0);
 			putDataCustom(datas,TextResource.localize("KMF002_4"),"","",1);
 			putDataCustom(datas,"",TextResource.localize("KMF002_7"),"",0);
-			putDataCustom(datas,TextResource.localize("KMF002_72"),"","", 1);
+			putDataCustom(datas,TextResource.localize("KMF002_72"),"","", 0);
 		}
 		SheetData sheet = SheetData.builder()
 				.mainData(datas)

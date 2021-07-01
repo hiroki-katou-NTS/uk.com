@@ -79,37 +79,41 @@ public class GetMoreInformation {
 		//1 
 		Optional<WorkStyle> workStyle =  wi.getWorkStyle(requireWorkInfo);
 		Integer style = workStyle.isPresent()?workStyle.get().value: null;
+		data.setWorkStyle(style);
 		if(workStyle.isPresent() && workStyle.get() != WorkStyle.ONE_DAY_REST) {
-			//2 :休憩時間帯を取得する (require: Require): Optional<休憩時間>
-			
+			//2.1 :休憩時間帯を取得する (require: Require): Optional<休憩時間>
 			Optional<BreakTimeZone> optBreakTimeZone = wi.getBreakTimeZone(requireWorkInfo);
 			if(optBreakTimeZone.isPresent()) {
 				data.setBreakTime(BreakTimeKdl045Dto.convertToBreakTimeZone(optBreakTimeZone.get()));
-			}else {
-				data.setBreakTime(null);
 			}
 			
-			//3 : 共通設定の取得
+			//2.2 : 共通設定の取得
 			Optional<WorkTimezoneCommonSet> optWorktimezone = GetCommonSet.workTimezoneCommonSet(require, companyId, workTimeCode);
 			WorkTimezoneCommonSetDto workTimezoneCommonSetDto = new WorkTimezoneCommonSetDto(); 
-			if(!optWorktimezone.isPresent()) {
-				data.setWorkTimezoneCommonSet(null);
-			}else {
+			if(optWorktimezone.isPresent()) {
 				optWorktimezone.get().saveToMemento(workTimezoneCommonSetDto);
 				data.setWorkTimezoneCommonSet(workTimezoneCommonSetDto);
 			}
-		}else {
-			data.setBreakTime(null);
-			data.setWorkTimezoneCommonSet(null);
 		}
-		data.setWorkStyle(style);
 		
+		//就業時間帯コード<>NULL
+		if(workTimeCode != null) {
+			//3.1:就業時間帯の設定を取得する
+			//emptyの運用はあり得ないため - QA : 112354
+			Optional<WorkTimeSetting> workTimeSetting = workTimeSettingRepository.findByCode(companyId, workTimeCode);
+			//3.2:call()
+			data.setWorkTimeForm(workTimeSetting.get().getWorkTimeDivision().getWorkTimeForm().value);
+			if(workTimeSetting.isPresent()) {
+				data.setWorkTimeSettingName(new WorkTimeSettingNameDto(
+						workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v(),
+						workTimeSetting.get().getWorkTimeDisplayName().getWorkTimeAbName().v()));
+			}
+		}
 
-		//4:就業時間帯の設定を取得する
-		//emptyの運用はあり得ないため - QA : 112354
-		Optional<WorkTimeSetting> workTimeSetting = workTimeSettingRepository.findByCode(companyId, workTimeCode);
-		//5:call()
-		data.setWorkTimeForm(workTimeSetting.get().getWorkTimeDivision().getWorkTimeForm().value);
+		//4 : 勤務種類を取得する
+		Optional<WorkType> workTypeOpt = workTypeRepo.findByPK(companyId, workType);
+		data.setWorkTypeSettingName(new WorkTypeSettingNameDto(workTypeOpt.get().getName().v(), workTypeOpt.get().getAbbreviationName().v()));
+		
 		return data;
 		
 	}
