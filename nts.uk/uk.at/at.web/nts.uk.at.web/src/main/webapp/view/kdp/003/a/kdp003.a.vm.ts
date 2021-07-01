@@ -20,6 +20,7 @@ module nts.uk.at.kdp003.a {
 		NOTICE: 'at/record/stamp/notice/getStampInputSetting',
 		GET_WORKPLACE_BASYO: 'at/record/stamp/employment_system/get_location_stamp_input',
 		confirmUseOfStampInput: 'at/record/stamp/employment_system/confirm_use_of_stamp_input',
+		CREATE_DAILY: 'at/record/stamp/craeteDaily'
 	};
 
 	const DIALOG = {
@@ -125,10 +126,6 @@ module nts.uk.at.kdp003.a {
 						}
 					});
 			});
-
-			setInterval(() => {
-				vm.loadNotice();
-			}, 5000);
 		}
 
 		// get WorkPlace from basyo -> save locastorage.
@@ -663,7 +660,9 @@ module nts.uk.at.kdp003.a {
 
 			return vm.$ajax('at', API.EMPLOYEE_LIST, params)
 				.then((data: Employee[]) => {
-					data = _.orderBy(data, 'employeeName', 'desc');
+					// console.log(data);
+					// data = _.orderBy(data, 'employeeNameKana', 'asc');
+					// console.log(data);
 					vm.employeeData.employees(data);
 				}) as JQueryPromise<any>;
 		}
@@ -727,15 +726,14 @@ module nts.uk.at.kdp003.a {
 							})
 							.then(() => loginData);
 					}
-
 					return loginData;
 				})
 				.then((loginData: undefined | f.TimeStampLoginData) => {
-
 					var exist = false;
 					var exist1 = false;
 					if (loginData === undefined) {
 						exist = true;
+						return loginData;
 					}
 
 					if (loginData.result) {
@@ -750,22 +748,28 @@ module nts.uk.at.kdp003.a {
 					if (!exist && !ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
 						return vm.$window.modal('at', DIALOG.K, params)
 							.then((workplaceData: undefined | k.Return) => {
+								if(workplaceData === undefined) {
+									location.reload();
+								}
+								
 								openViewK = true;
 								return {
 									loginData,
 									workplaceData
 								};
 							}) as JQueryPromise<LoginData>;
-					} else {
-
-						return loginData;
 					}
+					return loginData;
 				})
 				.then((data: LoginData) => {
 					var exist = true;
 					var exist1 = false;
 					var checkExistBasyo = false;
 					var check1527 = false;
+
+					if (data === undefined) {
+						return false;
+					}
 
 					if (data.msgErrorId) {
 						if (data.msgErrorId === "Msg_1527") {
@@ -775,10 +779,6 @@ module nts.uk.at.kdp003.a {
 
 					if (check1527) {
 						vm.setMessage({ messageId: 'Msg_1527' });
-						return false;
-					}
-
-					if (data === undefined) {
 						return false;
 					}
 
@@ -802,7 +802,6 @@ module nts.uk.at.kdp003.a {
 					}
 
 					if (data.notification == null && !exist1 && !ko.unwrap(vm.modeBasyo)) {
-
 						exist = false;
 					}
 
@@ -935,12 +934,12 @@ module nts.uk.at.kdp003.a {
 				.always(() => {
 					if (ko.unwrap(vm.modeBasyo)) {
 						if (saveSuccess) {
-							window.location.reload(false);
+							location.reload();
 							saveSuccess = false;
 						}
 					} else {
 						if (openViewK && saveSuccess) {
-							window.location.reload(false);
+							location.reload();
 							openViewK = false;
 							saveSuccess = false;
 						}
@@ -1012,7 +1011,7 @@ module nts.uk.at.kdp003.a {
 			if (selectedId === undefined && nameSelectArt === true) {
 				return vm.$dialog.error({ messageId: 'Msg_1646' });
 			}
-
+			nts.uk.ui.block.invisible();
 			// case: 社員一覧(A2)を選択している場合(社員を選択) || 社員一覧(A2)を選択している場合(固有部品：PA4)、又は社員一覧が表示されていない場合
 			return vm.$window.storage(KDP003_SAVE_DATA)
 				.then((data: StorageData) => {
@@ -1092,6 +1091,12 @@ module nts.uk.at.kdp003.a {
 
 																	vm.playAudio(btn.audioType);
 																	const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
+
+																	const param = {
+																		sid: employeeId,
+																		date: vm.$date.now()
+																	}
+																	vm.$ajax('at', API.CREATE_DAILY, param);
 
 																	if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
 

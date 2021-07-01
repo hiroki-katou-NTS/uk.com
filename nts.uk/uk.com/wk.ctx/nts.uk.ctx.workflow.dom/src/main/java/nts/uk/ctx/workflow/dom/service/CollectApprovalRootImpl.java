@@ -23,6 +23,7 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmpInfoImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.SimpleJobTitleImport;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.StatusOfEmployment;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApproverRegisterSet;
@@ -44,9 +45,9 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalComment;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalComment;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
@@ -480,7 +481,9 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 				}
 				// 承認者を整理(Điều chỉnh Approver)
 				levelApproverList.setApproverInfoLst(this.adjustApprover(approverInfoLst, baseDate, companyID, employeeID));
-				levelInforOutput.getApproverLst().add(levelApproverList);
+				if(!CollectionUtil.isEmpty(levelApproverList.getApproverInfoLst())) {
+					levelInforOutput.getApproverLst().add(levelApproverList);
+				}
 				if(approvalPhase.getApprovalAtr()!=ApprovalAtr.PERSON && !CollectionUtil.isEmpty(levelApproverList.getApproverInfoLst())) {
 					break;
 				}
@@ -598,7 +601,7 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	public List<LevelApproverInfo> adjustApprover(List<LevelApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID, String employeeID) {
 		List<LevelApproverInfo> result = new ArrayList<>();
 		// 指定社員が基準日に承認権限を持っているかチェック
-		List<LevelApproverInfo> approverInfoAfterLst = this.checkApproverAuthor(approverInfoLst, baseDate, companyID);
+		List<LevelApproverInfo> approverInfoAfterLst = this.checkApproverStatusAndAuthor(approverInfoLst, baseDate, companyID);
 		// 取得した承認者リストをチェック(Check ApproverList đã lấy)
 		if(CollectionUtil.isEmpty(approverInfoAfterLst)) {
 			return Collections.emptyList();
@@ -763,5 +766,28 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 			// 部門の上位部門を基準部門を含めて取得する
 			return wkApproverAdapter.getDepartmentIDAndUpper(companyID, departmentID, date);
 		} 
+	}
+	
+	@Override
+	public List<LevelApproverInfo> checkApproverStatusAndAuthor(List<LevelApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID) {
+		List<LevelApproverInfo> removeLst = new ArrayList<>();
+		// 承認者リストをループ(Loop ApproverList)
+		for(LevelApproverInfo approverInfo : approverInfoLst) {
+			// 在職状態を取得(lấy trạng thái atwork)
+			StatusOfEmployment statusOfEmployment = employeeAdapter.getStatusOfEmployment(approverInfo.getApproverID(), baseDate).getStatusOfEmployment();
+			// 承認者の在職状態をチェック(Check AtWorkStatus của approver)
+			if(statusOfEmployment==StatusOfEmployment.INCUMBENT){
+				// 指定社員が基準日に承認権限を持っているかチェックする(Check xem employee chỉ định có quyền approve ở thời điểm baseDate hay ko)
+				boolean canApproval = employeeAdapter.canApprovalOnBaseDate(companyID, approverInfo.getApproverID(), baseDate);
+				// 取得した権限状態をチェック(Check trạng thái quyền hạn đã lấy)
+				if(canApproval) {
+					continue;
+				}
+			}
+			// 承認者リストにループ中の承認者を除く(Xóa approver đang loop trong ApproverList)
+			removeLst.add(approverInfo);
+		}
+		approverInfoLst.removeAll(removeLst);
+		return approverInfoLst;
 	}
 }

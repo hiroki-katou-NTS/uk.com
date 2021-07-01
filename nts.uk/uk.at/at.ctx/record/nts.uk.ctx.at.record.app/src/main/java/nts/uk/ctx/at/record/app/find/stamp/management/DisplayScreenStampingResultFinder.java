@@ -111,7 +111,7 @@ public class DisplayScreenStampingResultFinder {
 			String wkpId =  listStampDataOfEmployees.stream()
 					.map(x -> x.getListStampInfoDisp())
 					.flatMap(Collection::stream)
-					.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime))
+					.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime).reversed())
 					.findFirst()
 					.map(x -> x.getStamp()
 							.stream()
@@ -128,13 +128,18 @@ public class DisplayScreenStampingResultFinder {
 			GeneralDate refDate = listStampDataOfEmployees.stream()
 					.map(x -> x.getListStampInfoDisp())
 					.flatMap(Collection::stream)
-					.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime))
+					.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime).reversed())
 					.findFirst()
 					.map(x -> x.getStampDatetime().toDate())
 					.orElse(null);
 			
 			//[No.560]職場IDから職場の情報をすべて取得する
-			List<WorkplaceInforImport> listWorkPlaceInfoExport = syWorkplaceAdapter.getWorkplaceInforByWkpIds(AppContexts.user().companyId(), Collections.singletonList(wkpId), refDate);
+			//EA4038
+			List<WorkplaceInforImport> listWorkPlaceInfoExport = new ArrayList<>();
+			
+			if (null != wkpId) {
+				listWorkPlaceInfoExport = syWorkplaceAdapter.getWorkplaceInforByWkpIds(AppContexts.user().companyId(), Collections.singletonList(wkpId), refDate);
+			}
 			
 			String workplaceCd = listWorkPlaceInfoExport.isEmpty() ? "" : listWorkPlaceInfoExport.get(0).getWorkplaceCode();
 			String workplaceName = listWorkPlaceInfoExport.isEmpty() ? "" : listWorkPlaceInfoExport.get(0).getWorkplaceDisplayName();

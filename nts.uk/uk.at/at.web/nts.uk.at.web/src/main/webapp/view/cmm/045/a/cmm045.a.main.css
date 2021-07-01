@@ -164,3 +164,7 @@ td.appType {
 td.appContent {
 	min-width: 75px;
 }
+
+#multi-list_scrollContainer {
+	overflow: hidden !important;
+}

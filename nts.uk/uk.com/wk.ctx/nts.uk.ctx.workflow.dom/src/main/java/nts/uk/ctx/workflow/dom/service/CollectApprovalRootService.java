@@ -163,4 +163,12 @@ public interface CollectApprovalRootService {
 	 * @return
 	 */
 	public List<String> getUpperIDIncludeSelf(String companyID, String employeeID, GeneralDate date, SystemAtr systemAtr);
+	
+	/**
+	 * 承認者の在職状態と承認権限をチェック
+	 * @param approverInfoLst
+	 * @param baseDate
+	 * @return
+	 */
+	public List<LevelApproverInfo> checkApproverStatusAndAuthor(List<LevelApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID);
 }

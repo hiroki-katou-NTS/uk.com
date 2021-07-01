@@ -718,8 +718,8 @@ module nts.uk.at.view.kdl045.a {
                         self.employee().unit ==1?self.employee().targetId:null)
                 }
                 service.getInformationStartup(command).done(function (result) {
-					self.workTypeAbName(result.workTypeSettingName.workTypeAbName);
-        			self.workTimeAbName(result.workTimeSettingName.workTimeAbName);
+					self.workTypeAbName(result.workTypeSettingName !=null?result.workTypeSettingName.workTypeAbName:null);
+        			self.workTimeAbName(result.workTimeSettingName !=null?result.workTimeSettingName.workTimeAbName:null);
                     self.informationStartup = new shareModelData.GetInformationStartupOutput(
                         result.workTimezoneCommonSet, result.listUsageTimeAndType, result.showYourDesire, result.workAvaiOfOneDayDto ,result.workStyle,result.workTypeSettingName,result.workTimeSettingName
                     );
@@ -778,10 +778,10 @@ module nts.uk.at.view.kdl045.a {
                 }
                 block.grayout();
                 service.getMoreInformation(command).done(function (result) {
-					self.workTypeName(result.workTypeSettingName.workTypeName);
-	            	self.workTimeName(result.workTimeSettingName.workTimeName);
-					self.workTypeAbName(result.workTypeSettingName.workTypeAbName);
-	            	self.workTimeAbName(result.workTimeSettingName.workTimeAbName);
+					self.workTypeName(result.workTypeSettingName == null?null : result.workTypeSettingName.workTypeName);
+	            	self.workTimeName(result.workTimeSettingName == null?null :result.workTimeSettingName.workTimeName);
+					self.workTypeAbName(result.workTypeSettingName == null?null : result.workTypeSettingName.workTypeAbName);
+	            	self.workTimeAbName(result.workTimeSettingName == null?null :result.workTimeSettingName.workTimeAbName);
                     self.workStyle(result.workStyle);
                     self.workStyle.valueHasMutated();
                     self.disableA10(false);
@@ -894,8 +894,8 @@ module nts.uk.at.view.kdl045.a {
 
             displayInformationStartup(): void {
                 let self = this;
-				self.workTypeName(self.informationStartup.workTypeSettingName.workTypeName);
-	            self.workTimeName(self.informationStartup.workTimeSettingName.workTimeName);
+				self.workTypeName(self.informationStartup.workTypeSettingName == null?null: self.informationStartup.workTypeSettingName.workTypeName);
+	            self.workTimeName(self.informationStartup.workTimeSettingName == null?null: self.informationStartup.workTimeSettingName.workTimeName);
                 //displayA87
                 for (let i = 0; i < self.informationStartup.listUsageTimeAndType.length; i++) {
                     if (self.informationStartup.listUsageTimeAndType[i].typeVacation == shareModelData.TimeVacationType.ATWORK) {
