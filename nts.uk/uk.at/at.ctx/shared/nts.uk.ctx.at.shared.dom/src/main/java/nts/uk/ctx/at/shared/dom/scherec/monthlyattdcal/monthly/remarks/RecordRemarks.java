@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author phongtq
  *
  */
-@StringMaxLength(50)
+@StringMaxLength(100)
 public class RecordRemarks extends StringPrimitiveValue<RecordRemarks> {
 	/**
 	 * 

@@ -1757,6 +1757,10 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 							this.tdvTime = vacationDomain.getTimeDigest() == null ? 0 : vacationDomain.getTimeDigest().getUseTime().valueAsMinutes();
 							this.tdvShortageTime = vacationDomain.getTimeDigest() == null ? 0 : vacationDomain.getTimeDigest().getLeakageTime().valueAsMinutes();;
 						}
+						// 振休
+						if(vacationDomain.getTransferHoliday() != null) {
+							this.transferHolidayTime = vacationDomain.getTransferHoliday() == null ? 0 : vacationDomain.getTransferHoliday().getUseTime().valueAsMinutes(); 
+						}
 					}
 					/*----------------------日別実績の休暇------------------------------*/
 					

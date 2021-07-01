@@ -73,7 +73,6 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
                 
                 let workType = _.filter(self.listWorkType(), function(o) { return o.workTypeCode == newValue; });
-                console.log(workType);
                 if (workType.length > 0) {
                     if (workType[0].workTimeSetting == 2) {
                         self.disabled(true);
@@ -88,7 +87,6 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             self.selected.subscribe((wkpTimeCd) => {
                 if(_.isNil(wkpTimeCd) || wkpTimeCd == '')
                     return;
-                console.log(wkpTimeCd);
                 
                 let item = uk.localStorage.getItem(self.KEY);
                 let userInfor: IUserInfor = JSON.parse(item.get());

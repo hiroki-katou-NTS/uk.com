@@ -84,4 +84,7 @@ public interface RemarksMonthlyRecordRepository {
 
 	void remove(String employeeId, ClosureId closureId, RemarksNo remarksNo, YearMonth yearMonth,
 			ClosureDate closureDate);
+
+	void removeRemark(String employeeId, YearMonth yearMonth, RemarksNo remarksNo, ClosureId closureId,
+			ClosureDate closureDate);
 }
