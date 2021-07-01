@@ -410,7 +410,10 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.errors == null ? new ArrayList<>() : this.errors.stream().map(x -> x.toDomain(employeeId, date)).collect(Collectors.toList()),
 				this.outingTime.map(ot -> ot.toDomain(employeeId, date)),
 				this.breakTime.map(bt -> bt.toDomain(employeeId, date)).orElse(new BreakTimeOfDailyAttd()),
-				this.attendanceTime.map(at -> at.toDomain(employeeId, date)),
+				this.attendanceTime.map(at -> {
+					at.correctWithEditState(this.editStates);
+					return at.toDomain(employeeId, date); 
+				}),
 				this.timeLeaving.map(tl -> tl.toDomain(employeeId, date)),
 				this.shortWorkTime.map(swt -> swt.toDomain(employeeId, date)),
 				this.specificDateAttr.map(sda -> sda.toDomain(employeeId, date)),

@@ -106,6 +106,7 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 				dto.setReserveLeaveGrant(g.getGrantDays().v());
 			});
 			dto.setGrantAtr(domain.isGrantAtr());
+			dto.setUndigestedNumber(domain.getUndigestedNumber().getUndigestedDays().v());
 			dto.exsistData();
 			dto.setUndigestedNumber(domain.getUndigestedNumber().getUndigestedDays().v());
 		}

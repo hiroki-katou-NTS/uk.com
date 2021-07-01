@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.predeterminetimezone;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -11,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.calculationsetting.query.DetermineAutoSetFutureDayStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.DetermineClassifiByWorkInfoCond;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.DetermineClassifiByWorkInfoCond.AutoStampSetClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
@@ -36,11 +38,11 @@ public class ConfirmSetSpecifiTimeZone {
 	// 所定時間帯をセットするか確認する
 	public ConfirmSetSpecifiResult confirmset(String companyId, WorkingConditionItem workCondItem,
 			WorkInfoOfDailyAttendance workInformation, Optional<TimeLeavingOfDailyAttd> attendanceLeave,
-			GeneralDate date) {
+			GeneralDate date, List<EditStateOfDailyAttd> lstEditState) {
 
 		// 勤務情報と労働条件元に直行直帰区分を判断する
 		AutoStampSetClassifi autoStampClassifi = DetermineClassifiByWorkInfoCond.determine(workCondItem,
-				workInformation);
+				workInformation, lstEditState);
 
 		if (!autoStampClassifi.isReflect()) {
 			return new ConfirmSetSpecifiResult();

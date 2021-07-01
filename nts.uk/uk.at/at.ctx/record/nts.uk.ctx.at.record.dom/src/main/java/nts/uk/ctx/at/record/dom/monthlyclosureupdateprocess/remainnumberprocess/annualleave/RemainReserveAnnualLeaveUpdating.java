@@ -70,7 +70,7 @@ public class RemainReserveAnnualLeaveUpdating {
 
 		return AtomTask.bundle(atomTask)
 				/** アルゴリズム「積立年休付与残数データ更新処理」を実行する */
-				.then(updateProcess(require, output.getAsOfPeriodEnd()))
+				.then(updateProcess(require, output.getAsOfStartNextDayOfPeriodEnd()))
 				/** ドメインモデル「積休付与時点残数履歴データ」を更新する */
 				.then(updateRsvLeaveTimeRemainHistProcess(require, output.getAsOfGrant().orElse(Collections.emptyList())));
 	}

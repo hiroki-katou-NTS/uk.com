@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
@@ -124,6 +125,12 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst, AttendanceItemD
 										c -> new PremiumTime(c.getNo(), 
 												toAttendanceTime(c.getPremitumTime()),
 												new AttendanceAmountDaily(c.getPremitumAmount())))));
+	}
+	
+	public void correct(List<EditStateOfDailyPerformanceDto> editStates) {
+		
+		if (this.totalWorkingTime != null) 
+			this.totalWorkingTime.correct(editStates);
 	}
 
 	private AttendanceTime toAttendanceTime(Integer value) {

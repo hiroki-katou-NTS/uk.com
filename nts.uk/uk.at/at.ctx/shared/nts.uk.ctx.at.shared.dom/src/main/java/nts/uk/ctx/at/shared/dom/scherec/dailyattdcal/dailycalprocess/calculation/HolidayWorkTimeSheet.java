@@ -44,6 +44,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -223,6 +224,11 @@ public class HolidayWorkTimeSheet{
 			return;
 		}
 
+		//代休を発生させるをチェック
+		if (workTypeOpt.get().getWorkTypeSetAvailable().getGenSubHodiday() == WorkTypeSetCheck.NO_CHECK) {
+			return;
+		}
+		
 		// ○当日が代休管理する日かどうかを判断する
 		boolean checkDateForMag = require.checkDateForManageCmpLeave(require, cid, sid, date);
 		if (!checkDateForMag) {
