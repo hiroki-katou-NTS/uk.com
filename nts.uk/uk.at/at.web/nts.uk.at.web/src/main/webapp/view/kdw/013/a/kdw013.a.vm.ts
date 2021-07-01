@@ -806,9 +806,15 @@ module nts.uk.ui.at.kdw013.a {
                 vm.employees
                     .subscribe((emps: EmployeeBasicInfoDto[]) => {
                         if (emps.length && !ko.unwrap(vm.params.employee)) {
-                            const [first] = emps;
 
-                            vm.params.employee(first.employeeId);
+                            let emp = _.find(emps, { 'employeeId': vm.$user.employeeId });
+                            if (emp) {
+                                vm.params.employee(emp.employeeId);
+                            } else {
+                                const [first] = emps;
+                                vm.params.employee(first.employeeId);
+                            }
+
                         }
                     });
             }
