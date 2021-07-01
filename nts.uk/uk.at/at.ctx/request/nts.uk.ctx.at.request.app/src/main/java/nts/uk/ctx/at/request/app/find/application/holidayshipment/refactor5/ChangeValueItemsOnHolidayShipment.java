@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualC
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.MsgErrorOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentService;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
 import nts.uk.ctx.at.shared.app.find.common.TimeZoneWithWorkNoDto;
@@ -204,7 +206,21 @@ public class ChangeValueItemsOnHolidayShipment {
 		if(referDate.isPresent() && displayInforWhenStarting.appDispInfoStartup.getAppDispInfoNoDateOutput().getApplicationSetting().toDomain().getRecordDate() == RecordDate.APP_DATE) {
 			ApprovalRootContentImport_New approvalRootContentImport_New = commonAlgorithm.getApprovalRoot(companyId, displayInforWhenStarting.appDispInfoStartup.getAppDetailScreenInfo().getApplication().getEmployeeID(), EmploymentRootAtr.APPLICATION, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, newDate);
 			displayInforWhenStarting.appDispInfoStartup.getAppDispInfoWithDateOutput().setOpListApprovalPhaseState(approvalRootContentImport_New.getApprovalRootState().getListApprovalPhaseState().stream().map(c->ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(c)).collect(Collectors.toList()));
-			displayInforWhenStarting.appDispInfoStartup.getAppDispInfoWithDateOutput().setOpErrorFlag(approvalRootContentImport_New.getErrorFlag().value);
+			List<MsgErrorOutput> msgErrorLst = new ArrayList<>();
+			switch (approvalRootContentImport_New.getErrorFlag()) {
+			case NO_CONFIRM_PERSON:
+				msgErrorLst.add(new MsgErrorOutput("Msg_238", Collections.emptyList()));
+				break;
+			case APPROVER_UP_10:
+				msgErrorLst.add(new MsgErrorOutput("Msg_237", Collections.emptyList()));
+				break;
+			case NO_APPROVER:
+				msgErrorLst.add(new MsgErrorOutput("Msg_324", Collections.emptyList()));
+				break;
+			default:
+				break;
+			}
+			displayInforWhenStarting.appDispInfoStartup.getAppDispInfoWithDateOutput().setOpMsgErrorLst(msgErrorLst);
 		}
 		
 		List<ActualContentDisplay> achievementContents = collectAchievement.getAchievementContents(companyId, displayInforWhenStarting.appDispInfoStartup.getAppDetailScreenInfo().getApplication().getEmployeeID(), Arrays.asList(newDate), ApplicationType.COMPLEMENT_LEAVE_APPLICATION);

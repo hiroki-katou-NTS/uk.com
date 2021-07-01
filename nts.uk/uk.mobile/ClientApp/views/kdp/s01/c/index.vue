@@ -4,6 +4,7 @@
       <div class="uk-bg-teal p-2">
         <h4 class="modal-title text-white">
           <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
+          <span>{{ "KDPS01_6" | i18n }}</span>
         </h4>
       </div>
     </div>

@@ -7,7 +7,6 @@ import { AppHolidayWork, AppHdWorkDispInfo, ExcessStateMidnight, AttendanceType,
 
 @component({
     name: 'cmms45shrcomponentsapp6',
-    route: '/cmm/s45/shr/components/app6',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),

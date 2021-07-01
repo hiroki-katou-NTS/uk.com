@@ -241,26 +241,19 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
             // check selected item
             vm.selectedType.subscribe(() => {
-                vm.selectedWorkTimeCD(null);
-                vm.selectedWorkTimeName(null);
-                vm.startTime1(null);
-                vm.startTime2(null);
-                vm.endTime1(null);
-                vm.endTime2(null);
+                // vm.selectedWorkTimeCD(null);
+                // vm.selectedWorkTimeName(null);
+                // vm.startTime1(null);
+                // vm.startTime2(null);
+                // vm.endTime1(null);
+                // vm.endTime2(null);
 
-                vm.data.selectedWorkTypeCD = null;
-                vm.data.selectedWorkTimeCD = null;
+                // vm.data.selectedWorkTypeCD = null;
+                // vm.data.selectedWorkTimeCD = null;
 
-                // vm.$errors("clear");
                 nts.uk.ui.errors.clearAll()
 
                 let appDates = [];
-                // if (!_.isNil(vm.application().opAppStartDate())) {
-                // 	appDates.push(vm.application().opAppStartDate());
-                // }
-                // if (!_.isNil(vm.application().opAppEndDate()) && vm.application().opAppStartDate() !== vm.application().opAppEndDate()) {
-                // 	appDates.push(vm.application().opAppEndDate());
-                // }
 
                 if (vm.checkTimeValid(vm.application().opAppStartDate)) {
                     appDates.push(vm.application().opAppStartDate());
@@ -295,9 +288,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     if (data) {
                         $("#work-type-combobox").focus()
                         vm.fetchData(data);
-                        vm.selectedWorkTimeCD(null);
-                        vm.selectedWorkTimeName(null);
-                        vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", 0));
+                        // vm.selectedWorkTimeCD(null);
+                        // vm.selectedWorkTimeName(null);
                         vm.appDispInfoStartupOutput(data.appDispInfoStartupOutput);
                         return data;
                     }
@@ -646,6 +638,11 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         register() {
             const vm = this;
 
+            if (vm.selectedType() == undefined) {
+                vm.$dialog.error({messageId: 'Msg_2202'});
+                return;
+            }
+
             // validate
             if (!vm.validate()) {
                 return;
@@ -792,12 +789,12 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         validate() {
             const vm = this;
             if (vm.condition11() && vm.condition30()) {
-                if (vm.isChangeWorkHour() && vm.selectedWorkTimeCD()) {
-                    if (!vm.checkTimeValid(vm.startTime1) && !vm.checkTimeValid(vm.endTime1)) {
-                        vm.$dialog.error({messageId: "Msg_307"});
-                        return false;
-                    }
-                }
+                // if (vm.isChangeWorkHour() && vm.selectedWorkTimeCD()) {
+                //     if (!vm.checkTimeValid(vm.startTime1) && !vm.checkTimeValid(vm.endTime1)) {
+                //         vm.$dialog.error({messageId: "Msg_307"});
+                //         return false;
+                //     }
+                // }
                 if (!vm.checkTimeValid(vm.startTime1) && vm.checkTimeValid(vm.endTime1)) {
                     vm.$dialog.error({messageId: "Msg_307"});
                     return false;

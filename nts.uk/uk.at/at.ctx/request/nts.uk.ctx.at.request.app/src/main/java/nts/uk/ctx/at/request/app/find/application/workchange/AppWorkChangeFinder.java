@@ -24,7 +24,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.MsgErrorOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
@@ -179,10 +179,10 @@ public class AppWorkChangeFinder {
         Application application = applicationDto.toDomain();
 
         AppWorkChangeDto appWorkChangeDto = command.getAppWorkChangeDto();
-        int isError = command.getIsError();
+        List<MsgErrorOutput> msgErrorLst = command.getOpMsgErrorLst();
         WorkChangeCheckRegOutput workChangeCheckRegOutput = appWorkChangeService.checkBeforeRegister(mode, companyId,
                 application, appWorkChangeDto.toDomain(application),
-                EnumAdaptor.valueOf(isError, ErrorFlagImport.class), command.getAppDispInfoStartupDto().toDomain(), 
+                msgErrorLst, command.getAppDispInfoStartupDto().toDomain(), 
                 command.getAppWorkChangeDispInfo() != null ? command.getAppWorkChangeDispInfo().toDomain() : null);
 
         return WorkChangeCheckRegisterDto.fromDomain(workChangeCheckRegOutput);
@@ -225,10 +225,10 @@ public class AppWorkChangeFinder {
         }
 
         AppWorkChangeDto appWorkChangeDto = command.getAppWorkChangeDto();
-        int isError = command.getIsError();
+        List<MsgErrorOutput> msgErrorLst = command.getOpMsgErrorLst();
         WorkChangeCheckRegOutput workChangeCheckRegOutput = appWorkChangeService.checkBeforeRegister(mode, companyId,
                 application, appWorkChangeDto.toDomain(application),
-                EnumAdaptor.valueOf(isError, ErrorFlagImport.class), command.getAppDispInfoStartupDto().toDomain(), 
+                msgErrorLst, command.getAppDispInfoStartupDto().toDomain(), 
                 command.getAppWorkChangeDispInfo() != null ? command.getAppWorkChangeDispInfo().toDomain() : null);
 
         return WorkChangeCheckRegisterDto.fromDomain(workChangeCheckRegOutput);

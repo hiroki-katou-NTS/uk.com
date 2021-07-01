@@ -114,7 +114,8 @@ module nts.uk.at.kdp003.a {
 		 * order list employee by name and code
 		 */
 		private orderedData(data: Employee[]) {
-			return _.orderBy(data, ['employeeName', 'employeeCode'], ['asc', 'asc'])
+			// return _.orderBy(data, ['employeeName', 'employeeCode'], ['asc', 'asc'])
+			return _.orderBy(data, ['employeeNameKana', 'employeeCode'], ['asc','asc']);
 		}
 
 		created() {
@@ -254,24 +255,24 @@ module nts.uk.at.kdp003.a {
 			// 		}
 			// 	})
 			// 	.trigger('resize');
-
+			
+			var paramSize = 0;
+			
 			setInterval(function () {
-
-				var paramSize = 0;
 
 				const grid = $grid.get(0);
 
 				if (grid && $grid.data('igGrid')) {
-					// const top = grid.getBoundingClientRect().top;
-					// const maxHeight = size.y + size.height;
-					let param: number = $('#contents-area').height() - 178;
-					if(param <  ($('#stamp-input').height() - 178)){
-						param = ($('#stamp-input').height() - 178);
-					}
+					
+					var bottomMasterWrapper = $('#contents-area')[0].getBoundingClientRect().bottom;
+			        var topGridEmployee = $('.list-employee')[0].getBoundingClientRect().top;
+			        var param = bottomMasterWrapper - topGridEmployee - 20;
+					if (param < 45) param = 45;
 
 					if (paramSize !== param) {
 						paramSize = param;
 						$grid.igGrid('option', 'height', param + 'px');
+						$grid.data("height", param + 'px');
 					}
 				}
 			}, 100);

@@ -42,7 +42,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 			, "ON m.pk.sid = n.pk.sid AND m.pk.inputDate = n.pk.inputDate"
 			, "WHERE m.startDate <= :endDate"
 			, "AND m.endDate >= :startDate"
-			, "AND (m.destination = 0"
+			, "AND ((m.destination = 0 AND m.companyId = :companyId)"
 			, "OR (m.destination = 1 AND n.pk.tgtInfoId IN :tgtInfoId))"
 			, "ORDER BY m.destination ASC, m.startDate DESC, m.endDate DESC, m.pk.inputDate DESC");
 	
@@ -71,14 +71,23 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 			, "WHERE READ_SID <> ?SID OR READ_SID IS NULL"
 			, "ORDER BY DESTINATION_ATR ASC, START_DATE DESC");
 	
-	private static final String GET_REF_BY_SID_FOR_PERIOD = String.join(" "
-			, "SELECT m FROM SptdtInfoMessage m"
-			, "LEFT JOIN SptdtInfoMessageTgt n ON m.pk.sid = n.pk.sid AND m.pk.inputDate = n.pk.inputDate"
-			, "LEFT JOIN SptdtInfoMessageRead s ON m.pk.sid = s.pk.sid AND m.pk.inputDate = s.pk.inputDate"
+	private static final String NATIVE_GET_REF_BY_SID_FOR_PERIOD = String.join(" "
+			, "SELECT m.*, s.READ_SID"
+			, "FROM SPTDT_INFO_MESSAGE m"
+			, "INNER JOIN SPTDT_INFO_MESSAGE_TGT n ON m.SID = n.SID AND m.INPUT_DATE = n.INPUT_DATE"
+			, "AND m.START_DATE <= ?endDate"
+			, "AND m.END_DATE >= ?startDate"
+			, "AND m.DESTINATION_ATR = 2"
+			, "AND n.TGT_INFO_ID = ?sid"
+			, "LEFT JOIN SPTDT_INFO_MESSAGE_READ s"
+			, "ON m.SID = s.SID AND m.INPUT_DATE = s.INPUT_DATE AND s.READ_SID = ?sid"
+			, "ORDER BY m.START_DATE DESC, m.END_DATE DESC, m.INPUT_DATE DESC");
+	
+	private static final String GET_BY_DEST_CATEGORY_AND_CID = String.join(" "
+			, "SELECT m FROM SptdtInfoMessage m WHERE m.companyId = :companyId"
 			, "AND m.startDate <= :endDate"
 			, "AND m.endDate >= :startDate"
-			, "AND m.destination = 2 AND n.pk.tgtInfoId = :sid"
-			, "AND s.pk.sid = :sid"
+			, "AND m.destination = :destination"
 			, "ORDER BY m.startDate DESC, m.endDate DESC, m.pk.inputDate DESC");
 	
 	/**
@@ -160,11 +169,12 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 	}
 
 	@Override
-	public List<MessageNotice> getMsgFromWpIdList(DatePeriod period, List<String> wpIds) {
+	public List<MessageNotice> getMsgFromWpIdList(DatePeriod period, List<String> wpIds, String cid) {
 		return this.queryProxy()
 				.query(GET_FROM_LIST_WORKPLACE_ID, SptdtInfoMessage.class)
 				.setParameter("endDate", period.end())
 				.setParameter("startDate", period.start())
+				.setParameter("companyId", cid)
 				.setParameter("tgtInfoId", wpIds)
 				.getList(MessageNotice::createFromMemento);
 	}
@@ -229,12 +239,56 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 
 	@Override
 	public List<MessageNotice> getMsgRefBySidForPeriod(DatePeriod period, String sid) {
-		return this.queryProxy()
-				.query(GET_REF_BY_SID_FOR_PERIOD, SptdtInfoMessage.class)
-				.setParameter("endDate", period.end())
-				.setParameter("startDate", period.start())
-				.setParameter("sid", sid)
-				.getList(MessageNotice::createFromMemento);
+		@SuppressWarnings("unchecked")
+		List<Object[]> resultList = this.getEntityManager().createNativeQuery(NATIVE_GET_REF_BY_SID_FOR_PERIOD)
+				.setParameter("endDate", period.end().toString()).setParameter("startDate", period.start().toString())
+				.setParameter("sid", sid).getResultList();
+
+		List<MessageNotice> list = resultList.stream().map(item -> {
+			String formatDate = "";
+			switch (item[12].toString().length()) {
+			case 21:
+				formatDate = "yyyy-MM-dd HH:mm:ss.S";
+				break;
+			case 22:
+				formatDate = "yyyy-MM-dd HH:mm:ss.SS";
+				break;
+			case 23:
+				formatDate = "yyyy-MM-dd HH:mm:ss.SSS";
+				break;
+			default:
+				formatDate = "yyyy-MM-dd HH:mm:ss.S";
+				break;
+			}
+
+			SptdtInfoMessage entity = new SptdtInfoMessage();
+			SptdtInfoMessagePK entityPk = new SptdtInfoMessagePK();
+			entityPk.setSid(item[11].toString());
+			entityPk.setInputDate(
+					GeneralDateTime.fromString(item[12].toString().substring(0, item[12].toString().length()), formatDate));
+			entity.setPk(entityPk);
+			entity.setVersion(Long.parseLong(item[8].toString()));
+			entity.setContractCd(item[9].toString());
+			entity.setCompanyId(item[10].toString());
+			entity.setStartDate(GeneralDate.fromString(item[13].toString().substring(0, 21), "yyyy-MM-dd hh:mm:ss.S"));
+			entity.setEndDate(GeneralDate.fromString(item[14].toString().substring(0, 21), "yyyy-MM-dd hh:mm:ss.S"));
+			entity.setUpdateDate(
+					GeneralDateTime.fromString(item[15].toString().substring(0, 21), "yyyy-MM-dd HH:mm:ss.S"));
+			entity.setMessage(item[16].toString());
+			entity.setDestination(Integer.parseInt(item[17].toString()));
+
+			List<String> sidSeen = new ArrayList<String>();
+			if (item[18] != null) {
+				sidSeen.add(item[18].toString());
+			}
+			entity.setEmployeeIdSeen(sidSeen);
+			MessageNotice domain = new MessageNotice();
+			domain.getMemento(entity);
+			return domain;
+		}).collect(Collectors.toList());
+
+		return list;
+		
 	}
 
 	@Override
@@ -259,6 +313,18 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 		return this.queryProxy().query(query, SptdtInfoMessage.class)
 				.setParameter("sid", creatorId)
 				.setParameter("inputDate", inputDate)
+				.getList(MessageNotice::createFromMemento);
+	}
+
+	@Override
+	public List<MessageNotice> getMsgInDestinationCategoryAndCid(DatePeriod period,
+			DestinationClassification destination, String cid) {
+		return this.queryProxy()
+				.query(GET_BY_DEST_CATEGORY_AND_CID, SptdtInfoMessage.class)
+				.setParameter("companyId", cid)
+				.setParameter("endDate", period.end())
+				.setParameter("startDate", period.start())
+				.setParameter("destination", destination.value)
 				.getList(MessageNotice::createFromMemento);
 	}
 

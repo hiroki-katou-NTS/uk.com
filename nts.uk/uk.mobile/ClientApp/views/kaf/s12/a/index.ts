@@ -150,9 +150,10 @@ export class KafS12AComponent extends KafS00ShrComponent {
                 }
                 vm.$mask('hide');
             }).catch((error: any) => {
-                vm.$modal.error(error).then(() => {
-                    vm.$mask('hide');
-                });
+                if (_.isEmpty(vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opMsgErrorLst)) {
+                    vm.$modal.error(error);
+                }
+                vm.$mask('hide');
             });
         }
     }
