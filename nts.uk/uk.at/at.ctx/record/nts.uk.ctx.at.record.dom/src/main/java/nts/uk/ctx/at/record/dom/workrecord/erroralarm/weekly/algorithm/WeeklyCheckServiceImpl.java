@@ -307,14 +307,17 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		// 取得した該当区分　＝＝　True (QA#117728)
 		if (check) {
 			// 「抽出結果詳細」を作成
-			// アラーム項目日付　＝Input．週別実績の勤怠時間．期間．開始日		
-			int index = 0; //(currentIndex + 1) == sizeWeeklyActualAttendanceTime && !continuousOutput.continuousCountOpt.isPresent()  ? currentIndex : currentIndex - 1;
-			if (!continuousOutput.continuousCountOpt.isPresent()) {
-				index = currentIndex - count + 1;
-			} else {
-				index = currentIndex - continuousOutput.continuousCountOpt.get().getConsecutiveYears();
+			// アラーム項目日付　＝Input．週別実績の勤怠時間．期間．開始日
+			GeneralDate startDate = attWeekly.getPeriod().start();
+			if (weeklyCond.isContinuos()) {
+				int index = 0; //(currentIndex + 1) == sizeWeeklyActualAttendanceTime && !continuousOutput.continuousCountOpt.isPresent()  ? currentIndex : currentIndex - 1;
+				if (!continuousOutput.continuousCountOpt.isPresent()) {
+					index = currentIndex - count + 1;
+				} else {
+					index = currentIndex - continuousOutput.continuousCountOpt.get().getConsecutiveYears();
+				}
+				startDate = attWeeklyBySid.get(index).getPeriod().start();
 			}
-			GeneralDate startDate = attWeeklyBySid.get(index).getPeriod().start();
 			
 			extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(
 					Optional.of(startDate), Optional.empty());
