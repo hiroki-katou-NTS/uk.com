@@ -60,7 +60,7 @@ module nts.uk.at.view.kmf002.g {
 
     private saveAsExcel(startDate: string, endDate: string): JQueryPromise<any> {
       const program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-      let domainType = "KMF002";
+      let domainType = "KMF002"+nts.uk.resource.getText('KMF002_1');
       if (program.length > 1) {
         program.shift();
         domainType = domainType + program.join(" ");

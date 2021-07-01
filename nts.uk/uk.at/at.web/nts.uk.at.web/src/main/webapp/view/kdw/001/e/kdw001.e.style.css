@@ -3,18 +3,18 @@
 table.info-table {border-collapse: collapse; min-width:580px;}
 table.info-table td {border: 1px solid #CCC; padding:2px 7px;}
 table.info-table td.fix-width {width: 150px; background:#CFF1A5; padding:2px;}
-
+table.info-table tr { height: 10px;}
 .process-name {display:inline-block; width: 150px;}
 .process-count {display:inline-block; width: 105px;}
 .process-status {display:inline-block; width: 70px;}
 .process-error {display:inline-block; width: 60px; white-space: nowrap;}
-.control-group {margin-bottom: 6px;}
+.control-group {margin-bottom: 4px;}
 .setting-info {display:inline-block; margin-bottom: 3px;}
 
-.log-selection {min-height: 35px;}
+.log-selection {min-height: 25px;}
 
-.place-holder {width: 89% !important; height: 35% !important; background-color: #F3F3F3; margin-top: 5px}
+.place-holder { height: 20% !important; background-color: #F3F3F3; margin-top: 5px}
 #functions-area-bottom{height: 52px !important;}
-#single-list_scrollContainer {height: 184px !important;}
-#single-list_displayContainer {height: 184px !important;}
+#single-list_scrollContainer {height: 117px !important;}
+#single-list_displayContainer {height: 117px !important;}
 #single-list_container {height: 100% !important;}

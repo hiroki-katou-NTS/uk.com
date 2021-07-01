@@ -396,7 +396,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				errorContent = this.internationalization.localize("Msg_1509").get();
 				
 				if(stateAndValueDatePeriod.state == StateValueDate.NO_EMPLOYMENT_HIST)
-				errorContent = this.internationalization.localize("Msg_426").get();
+				errorContent = this.internationalization.localize("Msg_2196").get();
 				
 				// ドメインモデル「スケジュール作成エラーログ」を登録する
 				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(),

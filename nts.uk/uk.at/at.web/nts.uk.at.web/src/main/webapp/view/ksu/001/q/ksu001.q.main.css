@@ -63,12 +63,12 @@ table {
 	border-style: double;
 	border-color: darkgrey;
 	border-left: none;
-	width: 263px;
+	/* width: 263px; */
 	border-bottom: none;
 }
 
 th, td {
-	width: 122px;
+	width: 141px;
 	border: 1px solid black;
 	border-color: darkgrey;
 	padding-right: 0px;
@@ -88,6 +88,9 @@ thead>tr>th {
 	box-sizing: border-box;
 	background-color: lightgreen;
 	border-top: none;
+}
+tbody>tr>td {
+	width: 141px !important;
 }
 
 input {
@@ -109,7 +112,7 @@ tbody>tr>td{
 }
 hr {
 	border-color: E0FFFF;
-	width: 390px;
+	width: 410px;
 	margin: 9px 9px 9px 25px;
 }
 
