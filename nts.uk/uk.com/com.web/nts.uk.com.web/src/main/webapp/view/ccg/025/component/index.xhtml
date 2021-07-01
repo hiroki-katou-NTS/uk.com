@@ -9,6 +9,21 @@
 		<!-- <div style="width: 350px" data-bind="ntsSearchBox: {searchMode: searchMode, targetKey: 'roleCode', comId: 'multi-list', 
 				items: listRole,  selectedKey: 'roleCode', fields: ['name', 'roleCode'], mode: 'igGrid'}" /> -->
 		<div class="caret-right caret-background">
+			<div class="control-group valign-center" data-bind="if: displayRoleClassification()">
+				<div data-bind="ntsFormLabel: {required: true, text: '#{i18n.getText('CCG025_2')}'}"/>
+				<div style="display: inline-block"
+						data-bind="ntsSwitchButton: {
+									name: '#[CCG025_2]',
+									options: [
+										{code: 0, name: '#{i18n.getText('CCG025_3')}'},
+										{code: 1, name: '#{i18n.getText('CCG025_4')}'}
+									],
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: roleClassification,
+									required: true,
+									enable: true }"/>
+			</div>
 			<table id="multi-list"
 				data-bind="attr: {tabindex: setting.tabindex}, 
 					   ntsGridList: {

@@ -100,8 +100,9 @@ public class JpaRoleGetMemento implements RoleGetMemento {
 
 	@Override
 	public Optional<Boolean> getApprovalAuthority() {
-		return this.entity.getApprovalAuthority() == null ?
-				Optional.empty():Optional.of(this.entity.getApprovalAuthority()==1);
+		return this.entity.getApprovalAuthority() == null
+				? Optional.empty()
+				: Optional.of(this.entity.getApprovalAuthority() == 1);
 	}
 
 }

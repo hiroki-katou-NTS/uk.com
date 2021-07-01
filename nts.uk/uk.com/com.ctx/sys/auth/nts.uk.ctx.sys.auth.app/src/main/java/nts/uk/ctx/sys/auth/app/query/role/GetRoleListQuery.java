@@ -30,14 +30,14 @@ public class GetRoleListQuery {
         RoleType roleType = EnumAdaptor.valueOf(param.getRoleType(), RoleType.class);
 
         RoleAtr assignAtr;
-        if(param.getAssignAtr() == null){
+        if (param.getAssignAtr() == null) {
             assignAtr = RoleAtr.INCHARGE;
-        }else {
+        } else {
             assignAtr =  EnumAdaptor.valueOf(param.getAssignAtr(), RoleAtr.class);
         }
         val cid = AppContexts.user().companyId();
-        val domain = roleRepository.findByTypeAndRoleAtr(cid, roleType.value, assignAtr.value);
-        return domain.stream().sorted(Comparator.comparing(e -> e.getRoleCode().v()))
+        val domains = roleRepository.findByTypeAndRoleAtr(cid, roleType.value, assignAtr.value);
+        return domains.stream().sorted(Comparator.comparing(e -> e.getRoleCode().v()))
                 .map(DtoRole::fromDomain).collect(Collectors.toList());
     }
 }

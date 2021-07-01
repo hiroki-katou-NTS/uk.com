@@ -73,6 +73,7 @@ public class Role extends AggregateRoot {
 		this.contractCode = memento.getContractCode();
 		this.assignAtr = memento.getAssignAtr();
 		this.companyId = memento.getCompanyId();
+		this.approvalAuthority = memento.getApprovalAuthority();
 	}
 	
 	public Role(String roleId,RoleCode roleCode, RoleType roleType, EmployeeReferenceRange employeeReferenceRange,
