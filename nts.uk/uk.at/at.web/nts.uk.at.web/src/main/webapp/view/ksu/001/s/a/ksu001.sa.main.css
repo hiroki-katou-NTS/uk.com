@@ -63,3 +63,9 @@ div.btn-large button{
 	padding-right: 10px;
 	
 }
+#swap-list-grid2_container{
+	height: auto !important;
+}
+#swap-list-grid1_container{
+	height: auto !important;
+}

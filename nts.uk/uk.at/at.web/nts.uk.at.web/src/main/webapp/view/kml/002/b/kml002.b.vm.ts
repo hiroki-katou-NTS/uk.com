@@ -212,7 +212,8 @@ module nts.uk.at.view.kml002.b {
       let links = [
         { icon: "images/go-out.png", link: '/view/kml/001/a/index.xhtml', text: vm.$i18n('KML002_11') },
         { icon: "images/go-out.png", link: '/view/kmk/009/a/index.xhtml', text: vm.$i18n('KML002_12') },
-        { icon: "images/go-out.png", link: '/view/ksu/006/a/index.xhtml', text: vm.$i18n('KML002_117') },
+        // Comment #117983 - Không release
+        // { icon: "images/go-out.png", link: '/view/ksu/006/a/index.xhtml', text: vm.$i18n('KML002_117') },
       ];
       _.forEach(links, (item) => {
         vm.functionItems.push({

@@ -13,6 +13,7 @@ import javax.ejb.TransactionAttributeType;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrame;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrameRepository;
 import nts.uk.ctx.at.shared.infra.entity.worktype.specialholidayframe.KshmtSpecialHolidayFrame;
@@ -43,7 +44,7 @@ public class JpaSpecialHolidayFrameRepository extends JpaRepository implements S
 	public List<SpecialHolidayFrame> findSpecialHolidayFrame(String companyId) {
 		return this.queryProxy().query(SEL_1, KshmtSpecialHolidayFrame.class)
 				.setParameter("companyId", companyId)
-				.setParameter("useAtr", 0)
+				.setParameter("useAtr", DeprecateClassification.Deprecated.value) //#117919
 				.getList(a -> toDomain(a));
 	}
 

@@ -425,10 +425,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.updateExTableWhenChangeModeBg($.merge(detailContentDeco, self.listCellNotEditBg));
 
                 self.setIconEventHeader();
-                
-                if(self.mode() === 'edit') {
-                    self.bindingEventClickFlower();    
-                }
 
                 let item = uk.localStorage.getItem(self.KEY);
                 let userInfor: IUserInfor = JSON.parse(item.get());
@@ -521,8 +517,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.checkEnableCombWTime();
                 self.setHeightScreen();
                 self.setPositionButonToRightToLeft();
+                self.bindingEventClickFlower();
                 self.setTextResourceA173();
-                //self.bindingEventClickFlower();
                 if (viewMode == 'time') {
                     self.diseableCellsTime();
                     console.log(self.listTimeDisable.length);
@@ -1777,7 +1773,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
             
             self.setIconEventHeader();
-            
+
             result = {
                 leftmostDs: leftmostDs,
                 middleDs: middleDs,
@@ -2502,7 +2498,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $('.extable-header-detail img').css('margin-top', '2px');
             let itemLocal = uk.localStorage.getItem(self.KEY);
             let userInfor = JSON.parse(itemLocal.get());
+            $(".header-image-no-event, .header-image-event").unbind('click');
             $(".header-image-no-event, .header-image-event").on("click", function(event) {
+                if(self.mode() == 'confirm') return;
                 let index = $(event.target).parent().index();
                 let columnKey = self.detailColumns[index].key;
                 let param = {
@@ -2522,9 +2520,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let companyEventName = rs.companyEventName;
                         let wkpEventName     = rs.wkpEventName;
                         // update lai header grid
-                        self.updateHeader();
+                        self.updateHeader().done(() => {
+                            if (userInfor.disPlayFormat == 'time') {
+                                // enable những cell đã disable trước đó đi rồi sau khi update grid mới disable đi được
+                                self.enableCellsTime();
+                                self.diseableCellsTime();
+                            }
+                        });
                     }
-                    console.log('closed');
                 });
             });
         }
@@ -2617,7 +2620,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 self.updateHeaderExTable(detailHeaderDeco, objDetailHeaderDs, htmlToolTip);
                 self.setIconEventHeader();
-                self.mode() === 'edit' ? self.editMode() : self.confirmMode();
+                dfd.resolve();
                 nts.uk.ui.block.clear();
             }).fail(function(error) {
                 nts.uk.ui.block.clear();

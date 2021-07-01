@@ -32,6 +32,7 @@ public class EmployeeInfoByWorkplaceService {
             // [No.597]職場の所属社員を取得する
             List<EmployeeInfoImported> empInfos = syWorkplaceAdapter.getLstEmpByWorkplaceIdsAndPeriod(
                     Collections.singletonList(workplaceId), period);
+            empInfos.sort(Comparator.comparing(EmployeeInfoImported::getEmployeeCode));
             // Map＜職場ID、List＜社員情報＞＞を作成する。
             empInfoMap.put(workplaceId, empInfos);
         }

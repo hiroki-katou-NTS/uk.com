@@ -166,29 +166,31 @@ module knr002.g {
                     let isCancel = getShared("KNR002H_isCancel");
                     if(isCancel !== undefined && isCancel === false){
                         self.selectEmployee(true);
+                        self.sendEmployeeId(true);
                         self.selectableEmployees(selectable !== undefined? selectable : []);
                         if(self.selectableEmployees().length <= 0){
                             dialog.error({ messageId: "Msg_2023" }).then(() => {
                                 //  do something
                             });
                         } else {
-                            let command: any = {};
-                            command.terminalCode = self.empInfoTerCode();
-                            command.selectedEmployeesID = self.selectableEmployees();
-                            service.makeSelectedEmployees(command).done(() => {
-                                blockUI.invisible();
-                                dialog.info({ messageId: "Msg_15" }).then(() => {
-                                    self.sendEmployeeId(true);
-                                });                      
-                            }).fail(() => {
+                          //  let command: any = {};
+                          //  command.terminalCode = self.empInfoTerCode();
+                          //  command.selectedEmpIds = self.selectableEmployees();
+                          //  service.makeSelectedEmployees(command).done(() => {
+                          //      blockUI.invisible();
+                          //      dialog.info({ messageId: "Msg_15" }).then(() => {
+                          //          self.sendEmployeeId(true);
+                          //      });                      
+                          //  }).fail(() => {
                                 // do something
-                            }).always(() => {
-                                blockUI.clear();
-                            });              
-                        }
-                    } else self.selectEmployee(false);
+                          //  }).always(() => {
+                          //      blockUI.clear();
+                          //  }); 
+                        } 
+                    }  else self.selectEmployee(false);
                 });
             }
+            
 
             /**
              * get worktype to be sent
@@ -329,12 +331,11 @@ module knr002.g {
             private enter(): void{
                 var self = this;
                 self.clearErrors();
-//                service.confirm(self.empInfoTerCode()).done((data) => {
-//                    console.log("data: ", data);
-//                    if(!data){
-//                        // do something
-//                        console.log("no data");
-//                    } else {
+               service.confirm(self.empInfoTerCode()).done((data) => {
+                   console.log("data: ", data);
+                   if(!data){
+                        // do nothing
+                   } else {
                         if(!self.sendEmployeeId() && 
                             !self.sendWorkType() && 
                             !self.sendWorkTime() && 
@@ -352,29 +353,46 @@ module knr002.g {
                             return;
                         }
                         
-                        let selectedEmployees = self.selectableEmployees();
-                        if((!self.initialSendStates.sendEmployeeId && (isNullOrUndefined(selectedEmployees) || selectedEmployees.length == 0) && self.sendEmployeeId())
-                            || (self.initialSendStates.sendEmployeeId && self.selectEmployee() && selectedEmployees.length == 0 && self.sendEmployeeId())) {
+                        // let selectedEmployees = self.selectableEmployees();
+                        // if((!self.initialSendStates.sendEmployeeId && (isNullOrUndefined(selectedEmployees) || selectedEmployees.length == 0) && self.sendEmployeeId())
+                        //     || (self.initialSendStates.sendEmployeeId && self.selectEmployee() && selectedEmployees.length == 0 && self.sendEmployeeId())) {
+                        //     $('#G6_1').ntsError('set', { messageId:'Msg_2023' });
+                        // }
+
+                        // let selectedWorkTypes = self.selectableWorkTypes(); 
+                        // if((!self.initialSendStates.sendWorkType && (isNullOrUndefined(selectedWorkTypes) || selectedWorkTypes.length == 0) && self.sendWorkType())
+                        //     || (self.initialSendStates.sendWorkType && self.selectWorkType() && selectedWorkTypes.length == 0 && self.sendWorkType())) {
+                        //     $('#G6_2').ntsError('set', { messageId:'Msg_2024' });
+                        // }
+
+                        // let selectedWorkTimes = self.selectableWorkTimes();
+                        // if((!self.initialSendStates.sendWorkTime && (isNullOrUndefined(selectedWorkTimes) || selectedWorkTimes.length == 0) && self.sendWorkTime())
+                        //     || (self.initialSendStates.sendWorkTime && self.selectWorkTime() && selectedWorkTimes.length == 0 && self.sendWorkTime())){
+                        //     $('#G6_3').ntsError('set', { messageId:'Msg_2025' });
+                        // }
+
+                        // let selectedBentos = self.selectableBentos();
+                        // if((!self.initialSendStates.sendBentoMenu && (isNullOrUndefined(selectedBentos) || selectedBentos.length == 0) && self.sendBentoMenu())
+                        //     || (self.initialSendStates.sendBentoMenu && self.selectReservation() && selectedBentos.length == 0 && self.sendBentoMenu())) {
+                        //     $('#G6_6').ntsError('set', { messageId:'Msg_2026' });
+                        // }
+                                                
+                        if(self.sendEmployeeId() && (!data.employeeIds || data.employeeIds.length <= 0)) {
                             $('#G6_1').ntsError('set', { messageId:'Msg_2023' });
                         }
 
-                        let selectedWorkTypes = self.selectableWorkTypes(); 
-                        if((!self.initialSendStates.sendWorkType && (isNullOrUndefined(selectedWorkTypes) || selectedWorkTypes.length == 0) && self.sendWorkType())
-                            || (self.initialSendStates.sendWorkType && self.selectWorkType() && selectedWorkTypes.length == 0 && self.sendWorkType())) {
+                        if(self.sendWorkType() && (!data.workTypeCodes || data.workTypeCodes.length <= 0)) {
                             $('#G6_2').ntsError('set', { messageId:'Msg_2024' });
                         }
 
-                        let selectedWorkTimes = self.selectableWorkTimes();
-                        if((!self.initialSendStates.sendWorkTime && (isNullOrUndefined(selectedWorkTimes) || selectedWorkTimes.length == 0) && self.sendWorkTime())
-                            || (self.initialSendStates.sendWorkTime && self.selectWorkTime() && selectedWorkTimes.length == 0 && self.sendWorkTime())){
+                        if(self.sendWorkTime() && (!data.workTimeCodes || data.workTimeCodes.length <= 0)) {
                             $('#G6_3').ntsError('set', { messageId:'Msg_2025' });
                         }
 
-                        let selectedBentos = self.selectableBentos();
-                        if((!self.initialSendStates.sendBentoMenu && (isNullOrUndefined(selectedBentos) || selectedBentos.length == 0) && self.sendBentoMenu())
-                            || (self.initialSendStates.sendBentoMenu && self.selectReservation() && selectedBentos.length == 0 && self.sendBentoMenu())) {
+                        if(self.sendBentoMenu() && (!data.bentoMenuFrameNumbers || data.bentoMenuFrameNumbers.length <= 0)) {
                             $('#G6_6').ntsError('set', { messageId:'Msg_2026' });
                         }
+        
                         if(self.hasError()){
                             return;
                         }
@@ -393,17 +411,14 @@ module knr002.g {
                                           self.reboot())
                                 .done(() => {
                                     nts.uk.ui.windows.close();
-                                    //  blockUI.invisible();
-                                    // dialog.info({ messageId: "Msg_15" }).then(() => {
-                                    //     nts.uk.ui.windows.close();
-                                    // }); 
+                                    // do nothing
                                 }).fail(() => {
-                                    
+                                    // do nothing
                                 }).always(() => {
                                     blockUI.clear();
                                 });
-//                    }
-//                });
+                   }
+               });
             }
             
             /**
