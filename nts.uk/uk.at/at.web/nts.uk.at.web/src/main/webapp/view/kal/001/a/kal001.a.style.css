@@ -1,6 +1,5 @@
 #component-employee-list {
 	margin-left: 90px;
-	margin-top: 10px;
 }
 
 .pattern-group td {
@@ -36,4 +35,12 @@
 }
 #fixed-table::before {
 	height: 350px !important;
+}
+
+#right-content > table {
+  margin-top: 10px;
+}
+
+#right-content > table .scroll-header.nts-fixed-header {
+  height: 26px !important;
 }

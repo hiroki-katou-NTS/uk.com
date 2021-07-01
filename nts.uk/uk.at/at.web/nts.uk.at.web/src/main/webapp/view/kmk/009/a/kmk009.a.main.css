@@ -45,3 +45,7 @@ td.valign-top {
 .valign-top .ntsHelpButton {
 	margin-left: 21%;
 }
+
+.table.coverage .cell > .flex.valign-center .nts-input {
+  margin-right: 5px;
+}

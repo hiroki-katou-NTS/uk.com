@@ -24,7 +24,7 @@
         <div class="table custom_table_j1_x" >
             <!-- L1_1-->
             <div class="cell valign-center">
-                <div data-bind="ntsFormLabel: {inline: true, required: true, enable: true}, style:{marginBottom: '5px'}">#{i18n.getText('KSM008_167')}</div>
+                <div data-bind="ntsFormLabel: {inline: true, required: true, enable: true}, style:{marginBottom: '5px', marginRight: '10px'}">#{i18n.getText('KSM008_167')}</div>
             </div>
             <!-- L1_2-->
             <div class="cell valign-center">
@@ -48,9 +48,9 @@
                     <table tabindex="7" id="single-list" data-bind="ntsGridList: {
                             dataSource: lScreenGridListData,
                             primaryKey: 'code',
-                            columns: [ { headerText: '#{i18n.getText('KSM008_170')}', key: 'code', width: 80, formatter: _.escape },
+                            columns: [ { headerText: '#{i18n.getText('KSM008_170')}', key: 'code', width: 45, formatter: _.escape },
                                        { headerText: '#{i18n.getText('KSM008_171')}', key: 'name', width: 180, formatter: _.escape },
-                                       { headerText: '#{i18n.getText('KSM008_172')}', key: 'maxNumberOfDay', width: 80, formatter: _.escape }
+                                       { headerText: '#{i18n.getText('KSM008_172')}', key: 'maxNumberOfDay', width: 60, formatter: _.escape }
                                       ],
                             deleteOptions : {visible : false},
                             multiple: false,
@@ -59,10 +59,10 @@
                         }"></table>
                 </div>
             </div>
-            <div class="cell valign-top">
+            <div class="cell valign-top" style="padding-left: 20px;">
                 <div class="table">
                     <!-- L3_1 -->
-                    <div class="cell valign-center" style="width: 155px">
+                    <div class="cell valign-center" style="width: 120px">
                         <div data-bind="ntsFormLabel: { constraint: ['MaxDayOfWorkTimeCode','MaxDayOfWorkTimeName'], enable: true, required:true }">#{i18n.getText('KSM008_173')}</div>
                     </div>
                     <div class="cell valign-center">
@@ -78,12 +78,12 @@
                 </div>
                 <div class="table" style="margin-top: 7px">
                     <!-- L4_1 -->
-                    <div class="cell valign-center" style="width: 155px">
+                    <div class="cell valign-center" style="width: 120px">
                         <div data-bind="ntsFormLabel: {enable: true, required:true}">#{i18n.getText('KSM008_176')}</div>
                     </div>
                     <!-- L4_2 -->
                     <div class="cell valign-center">
-                        <button id="L4_2"  tabindex="10" data-bind="click: openKdl001ModalLScreen" style="margin-right: 5px;margin-left: 28px;width: 48px">#{i18n.getText('KSM008_177')}</button>
+                        <button id="L4_2"  tabindex="10" data-bind="click: openKdl001ModalLScreen" style="margin-right: 5px;width: 48px">#{i18n.getText('KSM008_177')}</button>
                     </div>
                     <!-- L4_3-->
                     <div class="cell valign-center">
@@ -92,13 +92,13 @@
                 </div>
                 <div class="table" style="margin-top: 7px">
                     <!-- L5_1 -->
-                    <div class="cell valign-center" style="width: 155px">
+                    <div class="cell valign-center" style="width: 120px">
                         <div data-bind="ntsFormLabel: { constraint: 'MaxDay', enable: true, required:true}">#{i18n.getText('KSM008_179')}</div>
                     </div>
                     <!-- L5_2 -->
                     <div class="cell valign-center">
                         <input id="L5_2" tabindex="11"
-                               data-bind="ntsNumberEditor: {constraint: 'MaxDay', value: vm.lScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_180]'}, style: { width: '27px', marginRight: '5px',marginLeft: '28px'}"/>
+                               data-bind="ntsNumberEditor: {constraint: 'MaxDay', value: vm.lScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_180]'}, style: { width: '27px', marginRight: '5px'}"/>
                     </div>
                     <!-- L5_3 -->
                     <div class="cell valign-center">

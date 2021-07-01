@@ -1,6 +1,6 @@
 @CHARSET "UTF-8";
 #contents-area {
-	height: calc(100vh - 165px);
+	height: calc(100vh - 145px);
 	white-space: nowrap;
 }
 
@@ -185,6 +185,7 @@ supports (-ms-ime-align:auto ) { .table1 tbody {
 	min-width: 100% !important;
 	padding-top: 0 !important;
 	padding-left: 0 !important;
+	height: 25px !important;
 }
 .ui-igcombo-list {
 	max-height: 130px !important;

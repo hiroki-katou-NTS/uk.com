@@ -25,7 +25,6 @@ module nts.uk.at.view.ksm004.a {
                 eventUpdatable: ko.observable(true),
                 holidayDisplay: ko.observable(true),
                 cellButtonDisplay: ko.observable(false),
-				reloadOnSameYM: true,
 				hidden: false
             }
             calendarPanel1: ICalendarPanel = {
@@ -40,7 +39,6 @@ module nts.uk.at.view.ksm004.a {
                 eventUpdatable: ko.observable(true),
                 holidayDisplay: ko.observable(true),
                 cellButtonDisplay: ko.observable(false),
-				reloadOnSameYM: true,
 				hidden: true
             }
             calendarPanel2: ICalendarPanel = {
@@ -55,7 +53,6 @@ module nts.uk.at.view.ksm004.a {
                 eventUpdatable: ko.observable(false),
                 holidayDisplay: ko.observable(true),
                 cellButtonDisplay: ko.observable(false),
-				reloadOnSameYM: true,
 				hidden: true
             }
             kcpTreeGrid: ITreeGrid = {
@@ -306,7 +303,9 @@ module nts.uk.at.view.ksm004.a {
                     if(existItem!=null) {
                         existItem.changeListText(self.currentWorkingDayAtr);   
                     } else {
-                        dateData().push(new CalendarItem(date,self.currentWorkingDayAtr));    
+                        let item = new CalendarItem(date,self.currentWorkingDayAtr);
+                        item.insertText = true;
+                        dateData().push(item);    
                     }
                     dateData.valueHasMutated();
                 }

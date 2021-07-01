@@ -26,8 +26,8 @@ module nts.uk.com.view.cmf003.i {
     ];
     columnHeadersRes: any[] = [
       { headerText: '', key: 'rowNumber', width: '30px' },
-      { headerText: getText('CMF003_309'), key: 'deleteFile', width: '75px', dataType: 'string', ntsControl: "Button" },
-      { headerText: getText('CMF003_310'), key: 'downloadFile', width: '75px', dataType: 'string', ntsControl: "FlexImage" },
+      { headerText: getText('CMF003_309'), key: 'deleteFile', width: '90px', dataType: 'string', ntsControl: "Button" },
+      { headerText: getText('CMF003_310'), key: 'downloadFile', width: '90px', dataType: 'string', ntsControl: "FlexImage" },
       { headerText: getText('CMF003_311'), key: 'save', width: '75px', dataType: 'string', ntsControl: "Label" },
       { headerText: getText('CMF003_312'), key: 'saveStartDatetime', width: '150px', dataType: 'string', ntsControl: "Label" },
       { headerText: getText('CMF003_313'), key: 'practitioner', width: '150px', dataType: 'string', ntsControl: "Label" },

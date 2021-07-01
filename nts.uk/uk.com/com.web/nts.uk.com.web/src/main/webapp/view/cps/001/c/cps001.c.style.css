@@ -67,3 +67,8 @@
     max-width: 300px;
     margin-top: 8px;
 }
+
+#A_INP_NAME {
+	text-overflow: ellipsis;
+	width: 260px !important;
+}	

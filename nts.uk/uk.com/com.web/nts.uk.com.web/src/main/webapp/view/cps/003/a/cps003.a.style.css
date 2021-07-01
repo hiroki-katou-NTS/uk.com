@@ -6,11 +6,6 @@
     font-size: 0.8rem;
 }
 
-button:not(.x-large) {
-    height: 25px !important;
-    min-width: 10px !important;
-}
-
 .ccg-lbl-vertical {
     font-size: 18pt !important;
 }
@@ -62,7 +57,7 @@ button:not(.x-large) {
 }
 
 .data-layout .form-group #history-type {
-	margin-right: 40px;
+	margin-right: 20px;
 }
 
 .data-layout .form-group #emp-redisplay {
@@ -132,3 +127,11 @@ tr.blue-color {
 	font-size: 0.99rem;
 }
 
+#history-type-lbl {
+  width: 65px !important;
+}
+
+.cf.switchbox-wrappers > label > span {
+  width: 130px;
+  text-align: center;
+}
