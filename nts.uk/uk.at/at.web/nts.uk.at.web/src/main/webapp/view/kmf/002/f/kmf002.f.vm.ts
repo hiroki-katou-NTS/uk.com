@@ -35,7 +35,6 @@ module nts.uk.at.view.kmf002.f {
                         } else {
                             self.enableTypeSelectUnitRadioBox(true);
                         }   
-                        $( "#selectUnitCheck" ).focus();
                 });
                 
                 self.selectEmployee.subscribe(function(newValue) {
@@ -68,8 +67,8 @@ module nts.uk.at.view.kmf002.f {
             
             public startPage(): JQueryPromise<any> {
                 let self = this;
-                $( "#selectUnitCheck" ).focus();
-                return service.findAll().then(data => {
+                let dfd = $.Deferred();
+                 service.findAll().then(data => {
                   self.isManageEmpPublicHd(data.isManageEmpPublicHd);
                   self.isManageEmployeePublicHd(data.isManageEmployeePublicHd);
                   self.isManageWkpPublicHd(data.isManageWkpPublicHd);
@@ -91,13 +90,20 @@ module nts.uk.at.view.kmf002.f {
                   } else {
                       self.selectEmployee(false);    
                   }
+                    dfd.resolve();  
                 });
+                  return dfd.promise();
             }
             
             private closeSaveDialog(): void {
                 let self = this;
                 service.saveManageUnit(self.isManageEmployeePublicHd(), self.isManageWkpPublicHd(), self.isManageEmpPublicHd())
-                .always(() => nts.uk.ui.windows.close());  
+                .always(() => 
+                   { nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function () {
+                                                    nts.uk.ui.windows.close();
+                                                })}
+                    ); 
+                
             }
             
             private closeDialog(): void {
