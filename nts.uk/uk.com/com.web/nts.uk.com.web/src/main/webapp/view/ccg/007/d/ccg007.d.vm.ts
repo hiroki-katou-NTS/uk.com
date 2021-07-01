@@ -58,7 +58,9 @@
                 }
 
                 var dfd = $.Deferred<void>();
-                let defaultContractCode: string = "000000000000";
+                let defaultContractCode: string = __viewContext.env.isOnPremise 
+                                    		? __viewContext.user.contractCode
+                                    		: "000000000000";;
                 //get system config
                 blockUI.invisible();
 
