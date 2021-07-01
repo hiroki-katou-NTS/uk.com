@@ -145,7 +145,7 @@ public class RoleSet extends AggregateRoot {
     
     /**
      * convert roleID to string
-     * roleId == empty, return null
+     * roleId == empty, return ""
      * @param roleID
      * @return
      */
