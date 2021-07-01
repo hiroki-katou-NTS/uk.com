@@ -3903,7 +3903,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 			
 			_.forEach(comboDoWork, (c, i) => {
 				self.ntsMControl.push({ name: 'ComboboxDoWork' + c.group[1].key, options: self.comboItemsDoWork(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small', 
-					inputProcess: (value, id, obj) => { self.inputProcess(id, c.group[1].key, value); }});
+					onChange: self.inputProcess });
 			});
         }
 
