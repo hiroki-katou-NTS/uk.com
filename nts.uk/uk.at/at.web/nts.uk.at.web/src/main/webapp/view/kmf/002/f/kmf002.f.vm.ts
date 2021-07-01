@@ -99,10 +99,10 @@ module nts.uk.at.view.kmf002.f {
                 let self = this;
                 service.saveManageUnit(self.isManageEmployeePublicHd(), self.isManageWkpPublicHd(), self.isManageEmpPublicHd())
                 .always(() => 
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function () {
+                   { nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function () {
                                                     nts.uk.ui.windows.close();
-                                                });
-                    )  
+                                                })}
+                    ); 
                 
             }
             
