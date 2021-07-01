@@ -82,7 +82,7 @@ public class RegisterAlarmDataDs {
 			return Optional.ofNullable(linkUrl.map(LinkURL::v).orElse(null));
 		}
 		if (alClass == AlarmClassification.ALARM_LIST) {
-			return rq.getUrl(cid, KINJIRO, STANDARD, KAL001, B);
+			return Optional.of("/nts.uk.at.web/view/kal/001/b/index.xhtml");
 		}
 		return rq.getUrl(cid, KINJIRO, STANDARD, KBT002, F);
 	}
