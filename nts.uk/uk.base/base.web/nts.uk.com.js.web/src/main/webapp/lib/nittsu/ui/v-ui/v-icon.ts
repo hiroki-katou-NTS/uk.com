@@ -9,7 +9,7 @@ module nts.ui.icons {
     })
     export class SvgIconBindingHandler implements KnockoutBindingHandler {
         init(element: SVGElement, valueAccessor: () => string | KnockoutObservable<string>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
-            element.removeAttribute('data-bind');
+//            element.removeAttribute('data-bind');
 
             return { controlsDescendantBindings: false };
         }
