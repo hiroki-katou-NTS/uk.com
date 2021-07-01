@@ -545,16 +545,16 @@ module nts.uk.ui.at.kdw013.a {
                                 remarks,
                                 supportFrameNo
                             } = extendedProps;
-
+                           
                             return {
                                 remarks,
                                 supportFrameNo,
                                 workGroup: {
-                                    workCD1,
-                                    workCD2,
-                                    workCD3,
-                                    workCD4,
-                                    workCD5
+                                    workCD1: !_.isEmpty(workCD1) ? workCD1 : undefined,
+                                    workCD2: !_.isEmpty(workCD2) ? workCD2 : undefined,
+                                    workCD3: !_.isEmpty(workCD3) ? workCD3 : undefined,
+                                    workCD4: !_.isEmpty(workCD4) ? workCD4 : undefined,
+                                    workCD5: !_.isEmpty(workCD5) ? workCD5 : undefined,
                                 },
                                 workLocationCD: workLocationCD == "" ? null :workLocationCD,
                                 timeZone: {
