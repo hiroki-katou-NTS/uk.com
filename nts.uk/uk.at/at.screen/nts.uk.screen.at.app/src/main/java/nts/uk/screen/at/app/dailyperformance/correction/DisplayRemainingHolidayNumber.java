@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.dailyperformance.correction;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -302,9 +303,12 @@ public class DisplayRemainingHolidayNumber {
         return new NursingRemainDto(childCareVacation, longTermCareVacation);
 	}
 	
-	private GeneralDate getNextGrantDate(String companyId, String employeeId, GeneralDate date) {
+	private NextAnnualLeaveGrantImport getNextGrantDate(String companyId, String employeeId, GeneralDate date) {
 		List<NextAnnualLeaveGrantImport> lstOutput = this.annualHolidayMng.acquireNextHolidayGrantDate(companyId, employeeId, date);
-		return lstOutput.isEmpty() ? null : lstOutput.get(0).grantDate;
+		Optional<NextAnnualLeaveGrantImport> futureGrant = lstOutput.stream()
+                .filter(holiday -> holiday.grantDate.after(GeneralDate.today()))
+                .min(Comparator.comparing(h -> h.grantDate));
+		return futureGrant.isPresent() ? futureGrant.get() : null;
 	}
 	
 	public HolidayRemainNumberDto getRemainingHolidayNumber(String employeeId, String closureDate) {
@@ -319,8 +323,17 @@ public class DisplayRemainingHolidayNumber {
 		NursingRemainDto nursingRemainDto = this.getNursingSetting(companyId, employeeId, baseDate, closureDate);
 		result.setChildCareVacation(nursingRemainDto.getChildCareVacation());
 		result.setLongTermCareVacation(nursingRemainDto.getLongTermCareVacation());
-		if (result.getAnnualLeave().isManageYearOff())
-			result.setNextGrantDate(this.getNextGrantDate(companyId, employeeId, baseDate));
+		if (result.getAnnualLeave().isManageYearOff()) {
+		    NextAnnualLeaveGrantImport nextAnnualLeaveGrantImport = this.getNextGrantDate(companyId, employeeId, baseDate);
+		    if (nextAnnualLeaveGrantImport != null) {
+		        result.setNextGrantDate(nextAnnualLeaveGrantImport.getGrantDate());
+		        result.setGrantDays(nextAnnualLeaveGrantImport.getGrantDays());
+		    } else {
+		        result.setNextGrantDate(null);
+		        result.setGrantDays(0.0);
+		    }
+		}
+//			result.setNextGrantDate(this.getNextGrantDate(companyId, employeeId, baseDate));
 		return result;
 	}
 
