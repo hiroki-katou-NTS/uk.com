@@ -131,6 +131,7 @@
         </div>
       </div> 
     </div>
+    <!-- D3_1 -->
     <div class="row pl-2 pt-1 pb-1 border-top border-bottom uk-border-light-gray"
       v-bind:class="commentColor"
       v-show="commentDis">{{'CMMS45_62' | i18n}}
@@ -219,17 +220,26 @@
         <div v-if="reasons[0].c3">{{reasons[0].content}}</div>
       </div>
     </div>
+    <!-- D3_3 -->
+
     <div class="row pl-2 pt-1 pb-1 uk-bg-alice-blue border-top border-bottom uk-border-light-gray"
       v-show="displayApproveReasonInput()">{{'CMMS45_62' | i18n}}
     </div>
+
+    <!-- D3_4 -->
     <div class="mt-2">
       <nts-text-area v-model="memo" v-show="displayApproveReasonInput()"/>
     </div>
+
+    
     <div class="card invisible" v-show="displayReleaseLock() || displayReleaseOpen()">
       <div class="card-body">
         Hidden Content
       </div>
     </div>
+
+    <!-- D4_1 -->
+
     <div class="row fixed-bottom" v-show="(displayReleaseLock() || displayReleaseOpen()) && isLoadingComplete">
       <div class="col-12">
         <div class="row release-lock p-1" v-show="displayReleaseLock()">

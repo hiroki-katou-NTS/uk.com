@@ -1,6 +1,6 @@
 #right-content {
 	margin-left: 20px;
-	margin-right: 20px;
+	overflow-y: auto;
 	/* float: left;
 	width: 735px; */
 }

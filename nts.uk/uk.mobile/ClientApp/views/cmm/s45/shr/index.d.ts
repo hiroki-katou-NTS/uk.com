@@ -77,5 +77,6 @@ export interface AppDetailScreenInfo {
     authorizableFlags: boolean;
     approvalATR: number;
     alternateExpiration: boolean;
+    pastApp: boolean;
 }
 
