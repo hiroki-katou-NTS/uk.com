@@ -4,7 +4,7 @@ module nts.uk.at.view.ksm013.a {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
         }).then(function() {
-            $('[tabindex= 5]').focus();
+            setTimeout(() => { $('[tabindex= 5]').focus(); }, 1);
         });
     });
 }
