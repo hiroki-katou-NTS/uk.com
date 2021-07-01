@@ -768,6 +768,8 @@ public class DailyPerformanceCorrectionProcessor {
 						} else {
 							cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 						}
+					} else if(attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value){
+						cellDatas.add(new DPCellDataDto(anyChar, value.equals("0.0") ? "0" : value, attendanceAtrAsString, DPText.TYPE_LABEL));
 					} else {
 						cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 					}
