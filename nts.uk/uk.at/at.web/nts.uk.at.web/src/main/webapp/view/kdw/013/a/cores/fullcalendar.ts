@@ -1557,38 +1557,57 @@ module nts.uk.ui.at.kdw013.calendar {
                 dateClick: (info) => {
                     const events = vm.calendar.getEvents();
 
-                    _.each(events, (e: EventApi) => {
-                        // remove new event (empty data)
-                        if (!e.extendedProps.id) {
-                            e.remove();
-                        } else if (e.groupId === SELECTED) {
-                            e.setProp(GROUP_ID, '');
-                            // unselect events
-                            e.setProp(BORDER_COLOR, TRANSPARENT);
-                            e.setProp(DURATION_EDITABLE, true);
+
+                    let hasEventNotSave = _.find(events, (e) => !_.get(e, 'extendedProps.id'));
+
+                    if (!hasEventNotSave) {
+                        const event = vm.calendar
+                            .addEvent({
+                                id: randomId(),
+                                start: formatDate(info.date),
+                                end: formatDate(moment(info.date).add(vm.params.slotDuration(), 'm').toDate()),
+                                [BORDER_COLOR]: BLACK,
+                                [GROUP_ID]: SELECTED,
+                                extendedProps: {
+                                    status: 'new'
+                                }
+                            });
+
+                        $caches.new(event);
+                        const el: HTMLElement = vm.$el.querySelector(`[event-id="${event.id}"]`);
+
+                        if (el) {
+                            const { view } = vm.calendar;
+
+                            vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view });
                         }
-                    });
-                    
-                    const event = vm.calendar
-                        .addEvent({
-                            id: randomId(),
-                            start: formatDate(info.date),
-                            end: formatDate(moment(info.date).add( vm.params.slotDuration(), 'm').toDate()),
-                            [BORDER_COLOR]: BLACK,
-                            [GROUP_ID]: SELECTED,
-                            extendedProps: {
-                                status: 'new'
+                    } else {
+                        _.each(events, (e: EventApi) => {
+                            // remove new event (empty data)
+                            if (!e.extendedProps.id) {
+
+                                vm.$dialog
+                                    .confirm({ messageId: 'Msg_2094' })
+                                    .then((v: 'yes' | 'no') => {
+                                        if (v === 'yes') {
+                                            e.remove();
+                                            dataEvent.delete(false);
+                                            popupPosition.event(null);
+                                            popupPosition.setting(null);
+                                        }
+
+                                        dataEvent.delete(false);
+                                    });
+                            } else if (e.groupId === SELECTED) {
+                                e.setProp(GROUP_ID, '');
+                                // unselect events
+                                e.setProp(BORDER_COLOR, TRANSPARENT);
+                                e.setProp(DURATION_EDITABLE, true);
                             }
                         });
 
-                    $caches.new(event);
-                    const el: HTMLElement = vm.$el.querySelector(`[event-id="${event.id}"]`);
 
-                    if (el) {
-                        const { view } = vm.calendar;
-
-                        vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view });
-                    } 
+                    }
                 },
                 dropAccept: () => !!ko.unwrap(editable),
                 dayHeaderContent: (opts: DayHeaderContentArg) => moment(opts.date).format('DD(ddd)'),
