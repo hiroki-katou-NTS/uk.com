@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.uk.ctx.at.function.app.nrl.data.FrameItemArranger;
 import nts.uk.ctx.at.function.app.nrl.data.ItemSequence.MapItem;
 import nts.uk.ctx.at.function.app.nrl.repository.Terminal;
@@ -16,19 +18,24 @@ import nts.uk.ctx.at.function.app.nrl.xml.Element;
  */
 public class NRContentList {
 
-	// [S-1] デフォルトのコンテンツListを作る
-	public static List<MapItem> createDefaultField(Command command, Optional<String> payloadLength, Terminal teminal) {
+	// [S-0] デフォルトのコンテンツListを作る
+	public static List<MapItem> createDefaultField(Command command, Optional<String> payloadLength, Terminal teminal, String padding) {
 		List<MapItem> items = new ArrayList<>();
 		items.add(FrameItemArranger.SOH());
 		items.add(new MapItem(Element.HDR, command.Response));
-		items.add(new MapItem(Element.LENGTH, payloadLength.orElse(null)));
+		items.add(new MapItem(Element.LENGTH, payloadLength.map(x -> StringUtils.leftPad(x, 4, "0").toUpperCase()).orElse(null)));
 		items.add(FrameItemArranger.Version());
 		items.add(FrameItemArranger.FlagEndNoAck());
 		items.add(FrameItemArranger.NoFragment());
 		items.add(new MapItem(Element.NRL_NO, teminal.getNrlNo()));
 		items.add(new MapItem(Element.MAC_ADDR, teminal.getMacAddress()));
 		items.add(new MapItem(Element.CONTRACT_CODE, teminal.getContractCode()));
-		items.add(FrameItemArranger.ZeroPadding());
+		items.add(new MapItem(Element.PADDING, padding));
 		return items;
 	};
+	
+	// [S-1] デフォルトのコンテンツListを作る
+		public static List<MapItem> createDefaultField(Command command, Optional<String> payloadLength, Terminal teminal) {
+			return createDefaultField(command, payloadLength, teminal, DefaultValue.ZERO_PADDING);
+		};
 }

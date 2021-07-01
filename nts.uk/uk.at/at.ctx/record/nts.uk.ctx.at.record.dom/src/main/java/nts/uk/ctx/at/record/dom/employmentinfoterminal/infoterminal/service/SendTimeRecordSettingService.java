@@ -38,6 +38,10 @@ public class SendTimeRecordSettingService {
 						.createReq11(setting.isApplicationReason())
 						.createReq12(setting.isRemoteSetting())
 						.createReq13(setting.isSendTimeSwitchUKMode())
+						.createReq14(false)
+						.createReq15(false)
+						.createReq16(false)
+						.createReq17(setting.isReboot())
 						.build();
 	}
 

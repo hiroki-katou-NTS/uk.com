@@ -28,6 +28,7 @@ public class ReservationMenuInfoRequest extends NRLRequest<Frame> {
 	@Inject
 	private SendNRDataAdapter sendNRDataAdapter;
 
+	private final static String PADDING = "0000000000000000000000000000";
 	@Override
 	public void sketch(String empInfoTerCode, ResourceContext<Frame> context) {
 		List<SendReservationMenuImport> lstInfo = sendNRDataAdapter.sendReservMenu(empInfoTerCode,
@@ -36,7 +37,7 @@ public class ReservationMenuInfoRequest extends NRLRequest<Frame> {
 		byte[] payloadBytes = Codryptofy.decode(payload);
 		int length = payloadBytes.length + 52;
 		List<MapItem> items = NRContentList.createDefaultField(Command.RESERVATION_INFO,
-				Optional.ofNullable(Integer.toHexString(length)), context.getTerminal());
+				Optional.ofNullable(Integer.toHexString(length)), context.getTerminal(), PADDING);
 		// Number of records
 		context.collectEncrypt(items, payload);
 
@@ -56,5 +57,4 @@ public class ReservationMenuInfoRequest extends NRLRequest<Frame> {
 		}
 		return Codryptofy.paddingWithByte(builder.toString(), 224);
 	}
-
 }

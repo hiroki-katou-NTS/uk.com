@@ -44,7 +44,7 @@ public class WorkTimeInfoRequest extends NRLRequest<Frame>{
 		List<MapItem> items = NRContentList.createDefaultField(Command.WORKTIME_INFO,
 				Optional.ofNullable(Integer.toHexString(length)), context.getTerminal());
 		// Number of records
-		items.add(new MapItem(Element.NUMBER, StringUtils.leftPad(Integer.toHexString(lstInfo.size()), 4, "0")));
+		items.add(new MapItem(Element.NUMBER, StringUtils.leftPad(Integer.toHexString(lstInfo.size()).toUpperCase(), 4, "0")));
 		context.collectEncrypt(items, payload);
 	}
 

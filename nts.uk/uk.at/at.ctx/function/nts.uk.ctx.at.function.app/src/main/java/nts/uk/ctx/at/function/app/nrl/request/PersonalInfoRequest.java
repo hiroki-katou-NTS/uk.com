@@ -48,7 +48,7 @@ public class PersonalInfoRequest extends NRLRequest<Frame> {
 		List<MapItem> items = NRContentList.createDefaultField(Command.PERSONAL_INFO,
 				Optional.ofNullable(Integer.toHexString(length)), context.getTerminal());
 		// Number of records
-		items.add(new MapItem(Element.NUMBER, StringUtils.leftPad(Integer.toHexString(lstPerInfo.size()), 4, "0")));
+		items.add(new MapItem(Element.NUMBER, StringUtils.leftPad(Integer.toHexString(lstPerInfo.size()), 4, "0").toUpperCase()));
 		context.collectEncrypt(items, payload);
 	}
 

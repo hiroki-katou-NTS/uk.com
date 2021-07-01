@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.app.nrl.request;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -53,13 +54,32 @@ public class OverTimeInfoRequest extends NRLRequest<Frame> {
 			// half
 			builder.append(Codryptofy.paddingWithByte(overTime.getSendOvertimeName(), 12));
 		}
-
+		
+		addDefault(info.getOvertimes().size()).ifPresent(data ->{
+			builder.append(data);
+		});
+		
 		for (SendOvertimeDetailImport vacation : info.getVacations()) {
 			// half
 			builder.append(Codryptofy.paddingWithByte(vacation.getSendOvertimeName(), 12));
 		}
 
+		addDefault(info.getVacations().size()).ifPresent(data ->{
+			builder.append(data);
+		});
+		
 		return builder.toString();
 	}
 
+	private final int MAX_RECORD = 10;
+	private Optional<String> addDefault(int recordNumberInDB) {
+		if(recordNumberInDB == MAX_RECORD) {
+			return Optional.empty();
+		}
+		StringBuilder builder = new StringBuilder();
+		IntStream.range(0, MAX_RECORD-recordNumberInDB).boxed().forEach(ind ->{
+			builder.append(Codryptofy.paddingWithByte(" ", 12));
+		});
+		return Optional.of(builder.toString());
+	}
 }
