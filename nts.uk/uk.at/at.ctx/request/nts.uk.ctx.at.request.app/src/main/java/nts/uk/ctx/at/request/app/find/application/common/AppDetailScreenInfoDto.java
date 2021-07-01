@@ -71,6 +71,11 @@ public class AppDetailScreenInfoDto {
 	 */
 	private Boolean alternateExpiration;
 	
+	/**
+	 * 過去申請か（boolean)
+	 */
+	private boolean isPastApp = false;
+	
 	public static AppDetailScreenInfoDto fromDomain(AppDetailScreenInfo appDetailScreenInfo) {
 		return new AppDetailScreenInfoDto(
 				ApplicationDto.fromDomain(appDetailScreenInfo.getApplication()), 
@@ -81,7 +86,9 @@ public class AppDetailScreenInfoDto {
 				appDetailScreenInfo.getOutputMode().value, 
 				appDetailScreenInfo.getAuthorizableFlags().orElse(null), 
 				appDetailScreenInfo.getApprovalATR().map(x -> x.value).orElse(null), 
-				appDetailScreenInfo.getAlternateExpiration().orElse(null));
+				appDetailScreenInfo.getAlternateExpiration().orElse(null),
+				appDetailScreenInfo.isPastApp()
+				);
 	}
 	
 	public AppDetailScreenInfo toDomain() {
@@ -101,6 +108,7 @@ public class AppDetailScreenInfoDto {
 		if(alternateExpiration!=null) {
 			appDetailScreenInfo.setAlternateExpiration(Optional.of(alternateExpiration));
 		}
+		appDetailScreenInfo.setPastApp(isPastApp);
 		return appDetailScreenInfo;
 	}
 	

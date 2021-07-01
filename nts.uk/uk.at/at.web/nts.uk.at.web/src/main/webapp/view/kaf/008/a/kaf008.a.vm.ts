@@ -153,7 +153,9 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             }).fail(err => {
                 vm.dataFetch().businessTripOutput.businessTripActualContent = [];
                 vm.dataFetch.valueHasMutated();
-                vm.handleError(err);
+                if (_.isEmpty(vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opMsgErrorLst)) {
+                    vm.handleError(err);
+                }
             }).always(() => vm.$blockui("hide"));
         }
 

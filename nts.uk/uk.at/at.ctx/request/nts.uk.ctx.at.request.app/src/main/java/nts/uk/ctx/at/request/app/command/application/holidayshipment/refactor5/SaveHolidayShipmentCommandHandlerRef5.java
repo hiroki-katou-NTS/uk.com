@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,7 +19,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
@@ -101,7 +101,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 				abs,
 				rec, 
 				command.represent, 
-				appDispInfoStartup.getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(ErrorFlagImport.NO_ERROR), 
+				appDispInfoStartup.getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()), 
 				appDispInfoStartup.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(new ArrayList<ActualContentDisplay>()), 
 				appDispInfoStartup);
 		

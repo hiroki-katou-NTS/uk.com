@@ -6,7 +6,6 @@ import { ExtraTime, OverTime, HolidayTime } from 'views/kaf/s05/step2';
 import { AppOverTime, ExcessStateMidnight, AttendanceType, WorkdayoffFrame, OutDateApplication, ExcessStateDetail, BreakTimeZoneSetting, OvertimeWorkFrame, TimeZoneWithWorkNo, DisplayInfoOverTime, TimeZoneNew, HolidayMidNightTime, NotUseAtr, OvertimeApplicationSetting, StaturoryAtrOfHolidayWork } from 'views/kaf/s05/a/define.interface';
 @component({
     name: 'cmms45shrcomponentsapp0',
-    route: '/cmm/s45/shr/components/app0',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
