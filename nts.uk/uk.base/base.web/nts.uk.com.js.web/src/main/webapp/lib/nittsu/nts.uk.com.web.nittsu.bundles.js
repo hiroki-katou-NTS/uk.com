@@ -52303,7 +52303,7 @@ var nts;
                     };
                     NtsFormLabelComponent.prototype.mounted = function () {
                         var vm = this;
-                        $(vm.$el).find('[data-bind]').removeAttr('data-bind');
+                        //            $(vm.$el).find('[data-bind]').removeAttr('data-bind');
                     };
                     NtsFormLabelComponent.prototype.destroyed = function () {
                         var vm = this;
@@ -53443,7 +53443,7 @@ var nts;
                 function SvgIconBindingHandler() {
                 }
                 SvgIconBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                    element.removeAttribute('data-bind');
+                    //            element.removeAttribute('data-bind');
                     return { controlsDescendantBindings: false };
                 };
                 SvgIconBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
