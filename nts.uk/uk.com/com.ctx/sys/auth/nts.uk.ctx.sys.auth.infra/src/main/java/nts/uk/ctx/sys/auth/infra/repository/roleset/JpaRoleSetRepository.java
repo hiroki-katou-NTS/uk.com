@@ -50,7 +50,7 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
      * @return
      */
     private RoleSet toDomain(SacmtRoleSet entity) {
-// TODO Class RoleSet have @AllContructor since there is, I deleted it this time, please correct
+// TODO Class RoleSet have @AllContructor since there is, I deleted it this time, please fix
 /*        return new RoleSet(entity.roleSetPK.roleSetCd
                 , entity.roleSetPK.companyId
                 , entity.roleSetName
@@ -72,8 +72,8 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
      */
     private SacmtRoleSet toEntity(RoleSet domain) {
         SacmtRoleSetPK key = new SacmtRoleSetPK(domain.getRoleSetCd().v(), domain.getCompanyId());
-/** TODO 就業ロール, 個人情報ロール, 給与ロール, 人事ロール, マイナンバーロール, オフィスヘルパーロール (roleId) are updated from String to Optional<String>
-    	、case roleId are Optional.empty、value is "", please fix 
+/** TODO 就業ロール, 個人情報ロール, 給与ロール, 人事ロール, マイナンバーロール, オフィスヘルパーロール (roleId) are updated
+ *  from String to Optional<String>, case roleId are Optional.empty、value is "", please fix 
         return new SacmtRoleSet(key
                 , domain.getRoleSetName().v()
                 , domain.getApprovalAuthority().value
@@ -96,7 +96,7 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
      */
     private SacmtRoleSet toEntiryForUpdate(RoleSet domain, SacmtRoleSet upEntity) {
 /** TODO 就業ロール, 個人情報ロール, 給与ロール, 人事ロール, マイナンバーロール, オフィスヘルパーロール (roleId) are updated from String to Optional<String>
-	、case roleId are Optional.empty、value is "", please fix 
+	case roleId are Optional.empty、value is "", please fix 
        upEntity.buildEntity(upEntity.roleSetPK
                 , domain.getRoleSetName().v()
                 , domain.getApprovalAuthority().value

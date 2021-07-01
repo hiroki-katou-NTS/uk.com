@@ -59,7 +59,7 @@ public class RoleSetTest {
 	
 	/**
 	 * get roleID by roleType
-	 * 全部ロールIDが ない場合は　nullを返す
+	 * 全部ロールIDが ない場合は　empty を返す
 	 */
 	@Test
 	public void getRoleIDByRoleType_empty() {
