@@ -27492,7 +27492,8 @@ var nts;
                                         update: function (v, i, r, p) {
                                             su.wedgeCell(_$grid[0], { rowIdx: (_.isNil(i) ? rowIdx : i), columnKey: key }, v, r, null, p);
                                             if (_.isFunction(controlDef.onChange)) {
-                                                controlDef.onChange(id, key, v, rData);
+                                                var rObj = _dataSource[i];
+                                                controlDef.onChange(rObj[_pk], key, v, rObj);
                                             }
                                         },
                                         deleteRow: su.deleteRow,
@@ -27518,7 +27519,8 @@ var nts;
                                     update: function (v, i, r, p) {
                                         su.wedgeCell(_$grid[0], { rowIdx: (_.isNil(i) ? rowIdx : i), columnKey: key }, v, r, null, p);
                                         if (_.isFunction(controlDef.onChange)) {
-                                            controlDef.onChange(id, key, v, rData);
+                                            var rObj = _dataSource[i];
+                                            controlDef.onChange(rObj[_pk], key, v, rObj);
                                         }
                                     },
                                     deleteRow: su.deleteRow,
