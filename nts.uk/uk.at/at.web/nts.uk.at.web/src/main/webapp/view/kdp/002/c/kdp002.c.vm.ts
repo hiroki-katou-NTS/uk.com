@@ -27,6 +27,7 @@ module nts.uk.at.view.kdp002.c {
 			employeeId: string;
 			employeeCode: string;
 			mode: a.Mode;
+			error: any;
 		}
 
 		export class ScreenModel extends ko.ViewModel {
@@ -96,21 +97,21 @@ module nts.uk.at.view.kdp002.c {
 					self.setSizeDialog();
 				});
 			}
-			
-			setSizeDialog(){
+
+			setSizeDialog() {
 				let self = this;
-				if(self.laceName() == ''){
-					if(self.showBtnNoti()){
+				if (self.laceName() == '') {
+					if (self.showBtnNoti()) {
 						self.$window.size(565, 450);
-					}else{
+					} else {
 						self.$window.size(535, 450);
 					}
-				}else{
-					if(self.showBtnNoti()){
+				} else {
+					if (self.showBtnNoti()) {
 						self.$window.size(600, 450);
-					}else{
+					} else {
 						self.$window.size(565, 450);
-					}					
+					}
 				}
 			}
 
@@ -140,6 +141,8 @@ module nts.uk.at.view.kdp002.c {
 				let itemIds: DISPLAY_ITEM_IDS = nts.uk.ui.windows.getShared("KDP010_2C");
 				self.infoEmpFromScreenA = nts.uk.ui.windows.getShared("infoEmpToScreenC");
 
+				console.log(self.infoEmpFromScreenA);
+
 				self.getWorkPlacwName(self.infoEmpFromScreenA.workPlaceId);
 
 				let data = {
@@ -153,8 +156,6 @@ module nts.uk.at.view.kdp002.c {
 				service.startScreen(data).done((res) => {
 					let itemIds = ["TIME", "AMOUNT", "TIME_WITH_DAY", "DAYS", "COUNT", "CLOCK"];
 
-					console.log(res);
-					
 					if (res) {
 
 						if (_.size(res.stampRecords) > 0) {
@@ -222,22 +223,24 @@ module nts.uk.at.view.kdp002.c {
 						}
 					}
 					if (res.confirmResult) {
-						if (res.confirmResult.permissionCheck == 1) 
-						self.permissionCheck(res.confirmResult.permissionCheck == 1);
+						if (res.confirmResult.permissionCheck == 1)
+							self.permissionCheck(res.confirmResult.permissionCheck == 1);
 					} else {
 						self.displayButton(false);
 					}
 
 					if (ko.unwrap(self.permissionCheck)) {
 						if (res.setting == 2) {
-							self.permissionCheck(false);
+							if (self.infoEmpFromScreenA.error && self.infoEmpFromScreenA.error.dailyAttdErrorInfos && self.infoEmpFromScreenA.error.dailyAttdErrorInfos.length > 0) {
+								self.permissionCheck(false);
+							}else {
+								self.permissionCheck(true);
+							}
 						}
 					}
 				});
 
 				self.$window.shared("screenC").done((nameScreen: any) => {
-					console.log(nameScreen);
-					
 					switch (nameScreen.screen) {
 						case 'KDP001':
 						case 'KDP002':

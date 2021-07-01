@@ -39,7 +39,7 @@ public class ContentOfNotificationByStamp {
 		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
 		ContentOfNotificationByStampDto result = new ContentOfNotificationByStampDto();
 		
-		List<MessageNotice> messageNotices = this.messageNoticeRepo.getMsgByPeriodAndSid(period, param.sid);
+		List<MessageNotice> messageNotices = this.messageNoticeRepo.getMsgRefBySidForPeriod(period, param.sid);
 		
 		if (!messageNotices.isEmpty()) {
 			List<EmployeeInfoImport> listEmp = messageNoticeAdapter

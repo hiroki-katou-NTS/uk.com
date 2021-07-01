@@ -72,19 +72,20 @@ export class KdpS01BComponent extends Vue {
                 vm.employeeId = user.employeeId;
             });
 
-        }).catch((res: any) => {
-            vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
-        });
-
-        vm.$http.post('at', servicePath.getEmojiSetting).then((result: any) => {
+        }).then(() => {
+            vm.$http.post('at', servicePath.getEmojiSetting).then((result: any) => {
            
-            if (result.data == true && _.includes (['出勤', '出勤応援'], vm.screenData.stampAtr)) {
-                vm.isEmotionMode = true;
-            }
-
-            if (!vm.isEmotionMode) {
-                vm.InitCountTime();
-            }
+                if (result.data == true && _.includes (['出勤', '出勤応援', '直行', '早出', '休出'], vm.screenData.stampAtr)) {
+                    vm.isEmotionMode = true;
+                }
+    
+                if (!vm.isEmotionMode) {
+                    vm.InitCountTime();
+                }
+            });
+        })
+        .catch((res: any) => {
+            vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         });
 
     }
