@@ -113,6 +113,8 @@ module nts.uk.ui.at.kdw013.a {
 
         // settings (first load data)
         $settings: KnockoutObservable<StartProcessDto | null> = ko.observable(null);
+    
+        dataChanged: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             super();
@@ -240,6 +242,8 @@ module nts.uk.ui.at.kdw013.a {
 
             vm.$datas
                 .subscribe((datas) => computedEvents(datas, ko.unwrap(vm.$settings)));
+    
+            vm.events.subscribe((datas) => vm.dataChanged(true));
 
             vm.$settings
                 .subscribe((settings) => computedEvents(ko.unwrap(vm.$datas), settings));
@@ -248,6 +252,10 @@ module nts.uk.ui.at.kdw013.a {
                 save: ko.computed({
                     read: () => {
                         const $settings = ko.unwrap(vm.$settings);
+                        
+                        if (!vm.dataChanged()) {
+                            return false;
+                        }
 
                         if (!$settings) {
                             return true;
@@ -265,6 +273,7 @@ module nts.uk.ui.at.kdw013.a {
 
                             return true;
                         }
+                        
 
 //                        const { frameSettingList } = taskFrameUsageSetting;
 
@@ -329,7 +338,10 @@ module nts.uk.ui.at.kdw013.a {
                             vm
                                 .$blockui('grayout')
                                 .then(() => vm.$ajax('at', API.CHANGE_DATE, params))
-                                .then((data: ChangeDateDto) => vm.$datas(data))
+                                .then((data: ChangeDateDto) => {
+                                    vm.$datas(data);
+                                    vm.dataChanged(false);
+                                })
                                 .always(() => vm.$blockui('clear'));
                         }
                     }
