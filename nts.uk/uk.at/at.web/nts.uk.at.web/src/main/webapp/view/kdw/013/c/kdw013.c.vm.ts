@@ -299,21 +299,6 @@ module nts.uk.ui.at.kdw013.c {
                 </tbody>
             </table>
         </div>
-        <div class="message overlay" data-bind="css: { show: !!$component.confirm() }"></div>
-        <div class="message container" data-bind="
-                css: { show: !!$component.confirm() },
-                draggable: { 
-                    handle: '.title',
-                    containment: 'body',
-                    disabled: ko.computed(function() { return !$component.confirm(); })
-                }">
-            <div class="title" data-bind="i18n: '確認'"></div>
-            <div class="body" data-bind="kdw-confirm: $component.confirm"></div>
-            <div class="foot">
-                <button class="yes large danger" data-bind="click: $component.yes, i18n: 'はい'"></button>
-                <button class="cancel large" data-bind="click: $component.cancel, i18n: 'キャンセル'"></button>
-            </div>
-        </div>
         <style>
             .message.overlay {
                 position: fixed;
@@ -428,8 +413,6 @@ module nts.uk.ui.at.kdw013.c {
                 taskUse4: ko.observable(false),
                 taskUse5: ko.observable(false)
             };
-
-        confirm: KnockoutObservable<ConfirmContent | null> = ko.observable(null);
 
         taskFrameSettings!: KnockoutComputed<a.TaskFrameSettingDto[]>;
 
@@ -856,7 +839,6 @@ module nts.uk.ui.at.kdw013.c {
                 .subscribe((p: any) => {
                     if (!p) {
                         hasError(false);
-                        vm.confirm(null);
                         cache.view = 'view';
                     }
 
@@ -894,36 +876,13 @@ module nts.uk.ui.at.kdw013.c {
                 $('<style>', { id: COMPONENT_NAME, html: style }).appendTo('head');
             }
 
-            vm.confirm
-                .subscribe((cf) => {
-                    if (!cf) {
-                        $('#master-wrapper>#header')
-                            .css({ 'position': '', 'z-index': '' });
-                    } else {
-                        $('#master-wrapper>#header')
-                            .css({ 'position': 'relative', 'z-index': '0' });
-                    }
-                });
-
             _.extend(window, { pp: vm });
         }
 
         yes() {
             const vm = this;
             const { params } = vm;
-
-            vm.confirm(null);
             params.close('yes');
-        }
-
-        cancel() {
-            const vm = this;
-
-            vm.confirm(null);
-
-//            if (!vm.hasError()) {
-//                vm.save('cancel');
-//            }
         }
 
         close() {
@@ -942,7 +901,13 @@ module nts.uk.ui.at.kdw013.c {
                 })
                 .then((isNew: boolean | null) => {
                     if (isNew) {
-                        vm.confirm({ messageId: 'Msg_2094' });
+                        vm.$dialog
+                            .confirm({ messageId: 'Msg_2094' })
+                            .then((v: 'yes' | 'no') => {
+                                if (v === 'yes') {
+                                    vm.yes();
+                                }
+                            });
                     } else {
                         params.close();
                     }
