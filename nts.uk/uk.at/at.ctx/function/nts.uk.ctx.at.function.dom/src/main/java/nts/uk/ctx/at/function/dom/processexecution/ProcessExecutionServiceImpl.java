@@ -2,8 +2,6 @@ package nts.uk.ctx.at.function.dom.processexecution;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -247,7 +245,7 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 			break;
 		}
 		UkJobScheduleOptions.Builder builder = UkJobScheduleOptions.builder(job, scheduleId, cron).userData(userData)
-				.startDate(startDate).startClock(startTime).cleanupJobClass(job);
+				.startDate(startDate).startClock(startTime);
 		endDate.ifPresent(builder::endDate);
 		endTime.ifPresent(builder::endClock);
 		return builder.build();

@@ -1013,31 +1013,18 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			}
 			// 異動者・新入社員のみ作成の場合
 			else {
-				// DatePeriod period =
-				// procExecLog.getEachProcPeriod().get().getScheduleCreationPeriod().get();
-				// ・社員ID（異動者、勤務種別変更者、休職者・休業者）（List）
-				List<String> reEmployeeList = new ArrayList<>();
-				// 社員ID（新入社員）（List）
-				List<String> newEmployeeList = new ArrayList<>();
-				// 社員ID（休職者・休業者）（List）
-				List<String> temporaryEmployeeList = new ArrayList<>();
-				// 対象社員を絞り込み -> Đổi tên (異動者・勤務種別変更者リスト作成処理（スケジュール用）)
-				// this.filterEmployeeList(procExec, empIds, reEmployeeList, newEmployeeList,
-				// temporaryEmployeeList);
-				changePersionListForSche.filterEmployeeList(procExec, listEmp, reEmployeeList, newEmployeeList,
-						temporaryEmployeeList);
+				// 対象社員を絞り込む
+				GeneralDate startDate = this.changePersionListForSche.filterEmployeeList(procExec, listEmp);
+				
 				// 社員ID（異動者、勤務種別変更者）（List）のみ
-				if (!CollectionUtil.isEmpty(reEmployeeList) && !checkStopExec) {
+				if (!CollectionUtil.isEmpty(listEmp) && !checkStopExec) {
 					// 異動者、勤務種別変更者、休職者・休業者の期間の計算 (RQ 439)
-					Optional<GeneralDate> endDate = basicScheduleAdapter.acquireMaxDateBasicSchedule(reEmployeeList);
+					Optional<GeneralDate> endDate = basicScheduleAdapter.acquireMaxDateBasicSchedule(listEmp);
 
 					if (endDate.isPresent()) {
-						DatePeriod periodDate = this.getMinPeriodFromStartDate(companyId);
 						ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp = this
 								.getScheduleCreatorExecutionOneEmp(execId, procExec,
-										calculateSchedulePeriod, reEmployeeList, companyId, execItemCd);
-						scheduleCreatorExecutionOneEmp.getScheduleExecutionLog()
-								.setPeriod(new DatePeriod(periodDate.start(), endDate.get()));
+										calculateSchedulePeriod, listEmp, companyId, execItemCd);
 //
 						boolean isTransfer = procExec.getReExecCondition().getRecreateTransfer().equals(NotUseAtr.USE);
 						boolean isWorkType = procExec.getReExecCondition().getRecreatePersonChangeWkt()
@@ -1045,8 +1032,22 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 
 						// 異動者・勤務種別変更者の作成対象期間の計算（個人別）
 						listApprovalPeriodByEmp = calPeriodTransferAndWorktype.calPeriodTransferAndWorktype(companyId,
-								reEmployeeList, scheduleCreatorExecutionOneEmp.getScheduleExecutionLog().getPeriod(),
+								listEmp, new DatePeriod(startDate, endDate.get()),
 								isTransfer, isWorkType);
+						List<DatePeriod> targetDates = listApprovalPeriodByEmp.stream()
+								.map(ApprovalPeriodByEmp::getListPeriod)
+								.flatMap(List::stream)
+								.collect(Collectors.toList());
+						GeneralDate targetStartDate = targetDates.stream()
+								.map(DatePeriod::start)
+								.min(GeneralDate::compareTo)
+								.orElse(null);
+						GeneralDate targetEndDate = targetDates.stream()
+								.map(DatePeriod::end)
+								.max(GeneralDate::compareTo)
+								.orElse(null);
+						scheduleCreatorExecutionOneEmp.getScheduleExecutionLog()
+								.setPeriod(new DatePeriod(targetStartDate, targetEndDate));
 						try {
 							// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new
 							// AsyncCommandHandlerContext<>(scheduleCreatorExecutionOneEmp1);

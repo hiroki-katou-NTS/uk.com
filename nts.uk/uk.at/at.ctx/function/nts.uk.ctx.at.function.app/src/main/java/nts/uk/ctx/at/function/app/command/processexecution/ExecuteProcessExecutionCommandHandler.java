@@ -54,6 +54,7 @@ import nts.uk.ctx.at.function.dom.adapter.resultsperiod.optionalaggregationperio
 import nts.uk.ctx.at.function.dom.adapter.resultsperiod.optionalaggregationperiod.AnyAggrPeriodImport;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.TopPageAlarmAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapter;
+import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.WorkInfoOfDailyPerFnImport;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.createextractionprocess.CreateExtraProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.execalarmlistprocessing.ExecAlarmListProcessingService;
@@ -108,7 +109,6 @@ import nts.uk.ctx.at.function.dom.processexecution.updatelogafterprocess.UpdateL
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessautoexeclog.overallerrorprocess.ErrorConditionOutput;
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessautoexeclog.overallerrorprocess.OverallErrorProcess;
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.changepersionlist.ChangePersionList;
-import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.changepersionlist.ListLeaderOrNotEmp;
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.changepersionlistforsche.ChangePersionListForSche;
 import nts.uk.ctx.at.function.dom.statement.EmployeeGeneralInfoAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.EmployeeGeneralInfoImport;
@@ -152,6 +152,10 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.SpecifyCreation;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
+import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.DateHistoryItemImport;
+import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.SharedTempAbsenceAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.TempAbsenceHisItemImport;
+import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.TempAbsenceImport;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeService;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
@@ -167,6 +171,9 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -325,6 +332,12 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	
 	@Inject
 	private ByPeriodAggregationService byPeriodAggregationService;
+
+  @Inject
+	private SharedTempAbsenceAdapter sharedTempAbsenceAdapter;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepository;
 	
     /**
      * 更新処理を開始する
@@ -1022,32 +1035,18 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
             }
             // 異動者・新入社員のみ作成の場合
             else {
-                // DatePeriod period =
-                // procExecLog.getEachProcPeriod().get().getScheduleCreationPeriod().get();
-                // ・社員ID（異動者、勤務種別変更者、休職者・休業者）（List）
-				List<String> reEmployeeList = new ArrayList<>();
-				// 社員ID（新入社員）（List）
-				List<String> newEmployeeList = new ArrayList<>();
-				// 社員ID（休職者・休業者）（List）
-				List<String> temporaryEmployeeList = new ArrayList<>();
-				// 対象社員を絞り込み -> Đổi tên (異動者・勤務種別変更者リスト作成処理（スケジュール用）)
-				// this.filterEmployeeList(procExec, empIds, reEmployeeList, newEmployeeList,
-				// temporaryEmployeeList);
-				changePersionListForSche.filterEmployeeList(procExec, listEmp, reEmployeeList, newEmployeeList,
-						temporaryEmployeeList);
+            	// 対象社員を絞り込む
+				GeneralDate startDate = this.changePersionListForSche.filterEmployeeList(procExec, listEmp);
 
 				// 社員ID（異動者、勤務種別変更者）（List）のみ
-				if (!CollectionUtil.isEmpty(reEmployeeList) && !checkStopExec) {
+				if (!CollectionUtil.isEmpty(listEmp) && !checkStopExec) {
 					// 異動者、勤務種別変更者、休職者・休業者の期間の計算
-					Optional<GeneralDate> endDate = basicScheduleAdapter.acquireMaxDateBasicSchedule(reEmployeeList);
+					Optional<GeneralDate> endDate = basicScheduleAdapter.acquireMaxDateBasicSchedule(listEmp);
 
 					if (endDate.isPresent()) {
-						DatePeriod periodDate = this.getMinPeriodFromStartDate(companyId);
 						ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp = this
 								.getScheduleCreatorExecutionOneEmp(execId, procExec,
-										calculateSchedulePeriod, reEmployeeList, companyId, execItemCd);
-						scheduleCreatorExecutionOneEmp.getScheduleExecutionLog()
-								.setPeriod(new DatePeriod(periodDate.start(), endDate.get()));
+										calculateSchedulePeriod, listEmp, companyId, execItemCd);
 
 						boolean isTransfer = procExec.getReExecCondition().getRecreateTransfer().equals(NotUseAtr.USE);
 						boolean isWorkType = procExec.getReExecCondition().getRecreatePersonChangeWkt()
@@ -1055,8 +1054,22 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 
 						// 異動者・勤務種別変更者の作成対象期間の計算（個人別）
 						listApprovalPeriodByEmp = calPeriodTransferAndWorktype.calPeriodTransferAndWorktype(companyId,
-								reEmployeeList, scheduleCreatorExecutionOneEmp.getScheduleExecutionLog().getPeriod(),
+								listEmp, new DatePeriod(startDate, endDate.get()),
 								isTransfer, isWorkType);
+						List<DatePeriod> targetDates = listApprovalPeriodByEmp.stream()
+								.map(ApprovalPeriodByEmp::getListPeriod)
+								.flatMap(List::stream)
+								.collect(Collectors.toList());
+						GeneralDate targetStartDate = targetDates.stream()
+								.map(DatePeriod::start)
+								.min(GeneralDate::compareTo)
+								.orElse(null);
+						GeneralDate targetEndDate = targetDates.stream()
+								.map(DatePeriod::end)
+								.max(GeneralDate::compareTo)
+								.orElse(null);
+						scheduleCreatorExecutionOneEmp.getScheduleExecutionLog()
+								.setPeriod(new DatePeriod(targetStartDate, targetEndDate));
 						try {
 							// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new
 							// AsyncCommandHandlerContext<>(scheduleCreatorExecutionOneEmp1);
@@ -1539,15 +1552,11 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                             procExec.getExecScope().getExecScopeCls(), Optional.of(workplaceIdList),
                             Optional.of(lstEmploymentCode));
 
-                    // 異動者・勤務種別変更者リスト作成処理
-//					 ListLeaderOrNotEmpOutput createProcessForChangePerOrWorktype = this
-//					 .createProcessForChangePerOrWorktype(companyId, empIds,
-//					 calculateDate, procExec);
-                    ListLeaderOrNotEmp listLeaderOrNotEmp = changePersionList
-                            .createProcessForChangePerOrWorktype(companyId, listEmp, calculateDate, procExec);
+                    // 異動者、勤務種別変更者、休職者・休業者のみの社員ID（List）を作成する
+                    this.changePersionListForSche.filterEmployeeList(procExec, listEmp);
 
                     boolean isHasInterrupt = false;
-                    for (String empLeader : listLeaderOrNotEmp.getLeaderEmpIdList()) {
+                    for (String empLeader : listEmp) {
                         // ドメインモデル「日別実績の勤務情報」を取得する
                         List<WorkInfoOfDailyPerFnImport> listWorkInfo = recordWorkInfoFunAdapter
                                 .findByPeriodOrderByYmd(empLeader);
@@ -1563,6 +1572,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                             DatePeriod datePeriod = new DatePeriod(calculateDate, maxDate);
                             List<DatePeriod> listDatePeriodWorkplace = new ArrayList<>();
                             List<DatePeriod> listDatePeriodWorktype = new ArrayList<>();
+                            List<DatePeriod> listDatePeriodLeave = new ArrayList<>();
                             List<DatePeriod> listDatePeriodAll = new ArrayList<>();
                             //INPUT．「異動時に再作成」をチェックする
                             if (procExec.getReExecCondition()
@@ -1593,7 +1603,15 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                                 //勤務種別情報変更期間を求める
                                 listDatePeriodWorktype = wkTypeInfoChangePeriod.getWkTypeInfoChangePeriod(empLeader, datePeriod, listBusinessTypeOfEmpDto, true);
                             }
-                            listDatePeriodAll.addAll(createListAllPeriod(listDatePeriodWorkplace, listDatePeriodWorktype));
+                            // INPUT．「休職・休業者再作成」をチェックする
+                            if (procExec.getReExecCondition().getRecreateLeave().isUse()) {
+                            	// 社員（List）と期間から休職休業を取得する
+                            	TempAbsenceImport tempAbsence = this.sharedTempAbsenceAdapter
+                            			.getTempAbsence(companyId, datePeriod, Arrays.asList(empLeader));
+                            	listDatePeriodLeave = this.findChangingLeaveHistoryPeriod(empLeader, datePeriod, tempAbsence,
+                            			procExec.getReExecCondition().getRecreateLeave().isUse());
+                            }
+                            listDatePeriodAll.addAll(createListAllPeriod(listDatePeriodWorkplace, listDatePeriodWorktype, listDatePeriodLeave));
                             //取り除いた期間をOUTPUT「承認結果の反映対象期間（List）」に追加する
                             listApprovalPeriodByEmp.add(new ApprovalPeriodByEmp(empLeader, listDatePeriodAll));
                             try {
@@ -1640,12 +1658,121 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                 procExec, procExecLog, isHasDailyCalculateException, false, errorMessage);
         return new OutputCreateScheduleAndDaily(true, listApprovalPeriodByEmp);
     }
-
-    private List<DatePeriod> createListAllPeriod(List<DatePeriod> list1, List<DatePeriod> list2) {
+    
+    /**
+     * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.日別実績.アルゴリズム.休職休業履歴変更期間を求める.休職休業履歴変更期間を求める
+     * @param sid					社員ID
+     * @param period				処理期間
+     * @param tempAbsence			List<休職休業履歴，休職休業履歴項目>
+     * @param isRecreateLeave		休職・休業者再作成(true，false)　
+     * @return
+     */
+    private List<DatePeriod> findChangingLeaveHistoryPeriod(String sid, DatePeriod period, TempAbsenceImport tempAbsence, boolean isRecreateLeave) {
+    	List<DatePeriod> periodList = new ArrayList<>();
+    	String cid = AppContexts.user().companyId();
+    	// INPUT「休職・休業者再作成」をチェックする
+    	// INPUT「休職・休業者再作成」　=　FALSE
+    	if (!isRecreateLeave) {
+    		// INPUT「処理期間」をOUTPUTとして返す
+    		return Arrays.asList(period);
+    	}
+    	// INPUT「休職・休業者再作成」　=　TRUE
+    	// 「休職休業履歴差異」を作成する
+    	boolean leaveHistoryDifferent = false;
+    	// ドメインモデル「日別実績の勤務情報」を取得する
+        List<RecordWorkInfoFunAdapterDto> listWorkInfo = this.recordWorkInfoFunAdapter
+        		.findByEmpAndPeriod(sid, period);
+        // INPUT．「期間」をループする
+        DatePeriod newPeriod = null;
+        for (GeneralDate date: period.datesBetween()) {
+        	// ドメインモデル「勤務種類」を取得する
+        	RecordWorkInfoFunAdapterDto workInfoDto = listWorkInfo.stream()
+        			.filter(data -> data.getWorkingDate().afterOrEquals(date)).findFirst().orElse(null);
+        	if (workInfoDto != null) {
+        		// ドメインモデル「勤務種類」を取得する
+        		Optional<WorkType> optWorkType = this.workTypeRepository.findNoAbolishByPK(cid, workInfoDto.getWorkTypeCode());
+        		if (optWorkType.isPresent()) {
+        			WorkType workType = optWorkType.get();
+        			// 取得したドメインモデル「勤務種類」とINPUT「休職休業履歴項目」を比較する
+            		boolean compareResult = this.compareLeaveHistory(tempAbsence, workType, date);
+            		// 比較結果 == TRUE　&&　休職休業履歴差異 = FALSE
+            		if (compareResult && !leaveHistoryDifferent) {
+            			// 「期間」を作成する
+            			newPeriod = new DatePeriod(date, null);
+            			// 「休職休業履歴差異」を更新する
+            			leaveHistoryDifferent = true;
+            		} else if (!compareResult && leaveHistoryDifferent) {
+            			// 「期間」の終了日を更新する
+            			newPeriod = new DatePeriod(newPeriod.start(), date.addDays(-1));
+            			// 「休職休業履歴差異」を更新する
+            			leaveHistoryDifferent = false;
+            			// OUTPUT「期間（List）」に作成した「期間」を追加する
+            			periodList.add(newPeriod);
+            		}
+        		}
+        	}
+        }
+        // 処理の「期間」の終了日がNULLであるかチェック
+        // NULL　の場合
+        if (newPeriod != null && newPeriod.end().equals(null)) {
+        	// 「期間」の終了日を更新してOUTPUT「期間（List）」に追加する
+        	newPeriod = new DatePeriod(newPeriod.start(), period.end());
+        	periodList.add(newPeriod);
+        }
+        return periodList;
+    }
+    
+    /**
+     * 取得したドメインモデル「勤務種類」とINPUT「休職休業履歴項目」を比較する
+     * @return
+     */
+    private boolean compareLeaveHistory(TempAbsenceImport tempAbsence, WorkType workType, GeneralDate date) {
+    	if (tempAbsence.getHistories().isEmpty()) {
+    		return false;
+    	}
+    	// 【比較条件】
+    	// ・処理中の年月日が「休職休業履歴．期間」に含まれている
+    	Optional<DateHistoryItemImport> optHist = tempAbsence.getHistories().get(0).getDateHistoryItems().stream()
+    			.filter(data -> data.getStartDate().beforeOrEquals(date) && data.getEndDate().afterOrEquals(date))
+    			.findAny();
+    	if (!optHist.isPresent()) {
+    		return false;
+    	}
+    	DateHistoryItemImport hist = optHist.get();
+    	// 休職休業履歴項目
+    	// ※履歴IDが「休職休業履歴」同じもの
+    	Optional<TempAbsenceHisItemImport> optHistItem = tempAbsence.getHistoryItem().stream()
+    			.filter(data -> data.getHistoryId().contentEquals(hist.getHistoryId()))
+    			.findAny();
+    	if (!optHist.isPresent()) {
+    		return false;
+    	}
+    	TempAbsenceHisItemImport histItem = optHistItem.get();
+    	if (workType.getDailyWork().isOneDay()) {
+    		// 「勤務種類．１日の勤務．勤務区分」 = 1日　AND　「勤務種類．１日の勤務．1日」= 休職　の場合
+    		if (workType.getDailyWork().getOneDay().equals(WorkTypeClassification.LeaveOfAbsence)) {
+    			// ・「休職休業履歴項目．NO」 <> 1  → True
+        		//　・それ以外  → False
+        		return histItem.getTempAbsenceFrNo() != 1;
+    		}
+    		// 「勤務種類．１日の勤務．勤務区分」 = 1日　AND　「勤務種類．１日の勤務．1日」= 休業　の場合
+    		if (workType.getDailyWork().getOneDay().equals(WorkTypeClassification.Closure)) {
+    			// ・「休職休業履歴項目．NO」 <> 「勤務種類．勤務種類設定．休業の設定」  → True
+    			// ・それ以外  → False
+    			boolean result = !workType.getWorkTypeSetList().stream()
+    					.anyMatch(data -> data.getCloseAtr().value + 2 == histItem.getTempAbsenceFrNo());
+    			return result;
+    		}
+    	}
+    	return false;
+    }
+ 
+    private List<DatePeriod> createListAllPeriod(List<DatePeriod> list1, List<DatePeriod> list2, List<DatePeriod> list3) {
 //		List<DatePeriod> listResult = new ArrayList<>();
         List<DatePeriod> listAll = new ArrayList<>();
         listAll.addAll(list1);
         listAll.addAll(list2);
+        listAll.addAll(list3);
 //		listAll.sort((x, y) -> x.start().compareTo(y.start()));
 //
 //		for(int i = 0;i< listAll.size();i++) {
@@ -3078,7 +3205,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                     asyncContext,
                     empId,
                     period,
-                    ExecutionAttr.MANUAL,
+                    ExecutionAttr.AUTO,
                     companyId,
                     ExecutionTypeDaily.CREATE,
                     oEmpCalAndSumExeLog,

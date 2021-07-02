@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.function.ac.workplace;
 
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.adapter.AffWorkplaceHistoryImport;
+import nts.uk.ctx.at.function.dom.adapter.AffWorkplaceHistoryItemImport;
 import nts.uk.ctx.at.function.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WkpConfigAtTimeAdapterDto;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpConfigAtTimeExport;
@@ -33,6 +36,18 @@ public class SyWorkplaceAcFinder implements SyWorkplaceAdapter {
 				export.getWorkplaceId(),
 				export.getHierarchyCd()
 				);
+	}
+
+	@Override
+	public List<AffWorkplaceHistoryImport> getWorkplaceBySidsAndBaseDate(List<String> sids, GeneralDate baseDate) {
+		return this.workplacePub.getWorkplaceBySidsAndBaseDate(sids, baseDate).stream()
+				.map(data -> new AffWorkplaceHistoryImport(data.getSid(), data.getHistoryItems(), 
+						data.getWorkplaceHistItems().entrySet().stream()
+						.collect(Collectors.toMap(
+								Entry::getKey, 
+								item -> new AffWorkplaceHistoryItemImport(item.getValue().getHistoryId(), 
+										item.getValue().getWorkplaceId(), item.getValue().getNormalWorkplaceId())))))
+				.collect(Collectors.toList());
 	}
 
 }
