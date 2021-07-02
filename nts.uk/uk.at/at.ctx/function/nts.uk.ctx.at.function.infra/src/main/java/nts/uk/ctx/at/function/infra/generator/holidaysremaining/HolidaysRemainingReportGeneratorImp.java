@@ -1133,20 +1133,19 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             dtoCheck.setCount(count);
             return dtoCheck;
         }
+        if(checkTakeABreak_02(dataSource.getHolidaysRemainingManagement())
+                ||checkTakeABreak_03(dataSource.getHolidaysRemainingManagement())){
+            cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 14, firstRow + 2, 2);
+            totalRows += 2;
+        }
         if (checkTakeABreak_02(dataSource.getHolidaysRemainingManagement())) {
-
-            cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 14, firstRow + 2, 1);
             // I4_1
             if (checkTakeABreak_02(dataSource.getHolidaysRemainingManagement()))
                 cells.get(firstRow + 2, 9).setValue(TextResource.localize("KDR001_11"));
-            totalRows += 1;
-
         }
         if (checkTakeABreak_03(dataSource.getHolidaysRemainingManagement())) {
-            cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 15, firstRow + 3, 1);
             // I5_1
             cells.get(firstRow + 3, 9).setValue(TextResource.localize("KDR001_18"));
-            totalRows += 1;
         }
 
         if (!employee.getCurrentMonth().isPresent()) {
@@ -1247,7 +1246,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             val statusHolidayItem = substituteHolidayAggrResultsRight.get(item);
             if (item.compareTo(currentMonth) < 0) {
                 continue;
-            } else if (item.compareTo(currentMonth) == 0) {
+            } else if (item.compareTo(currentMonth) >= 0) {
                 //I2_3
                 String occurrence = "";
                 // I3_3
@@ -3352,13 +3351,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         if (hdRemainingInfor == null) {
             return firstRow + 2;
         }
-        if (checkTakeABreak_02(dataSource.getHolidaysRemainingManagement())) {
-            totalRows += 1;
+        if (checkTakeABreak_02(dataSource.getHolidaysRemainingManagement())
+                ||checkTakeABreak_03(dataSource.getHolidaysRemainingManagement())) {
+            totalRows += 2;
         }
-        if (checkTakeABreak_03(dataSource.getHolidaysRemainingManagement())) {
-            totalRows += 1;
-        }
-
         if (!employee.getCurrentMonth().isPresent()) {
             return firstRow + totalRows;
         }
