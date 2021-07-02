@@ -729,7 +729,7 @@ module nts.uk.ui.at.kdw013.a {
                 optionsValue: 'workplaceId',
                 optionsText: 'wkpDisplayName',
                 columns: [
-                    { prop: 'workplaceId', length: 4 },
+                    { prop: 'workplaceCode', length: 4 },
                     { prop: 'wkpDisplayName', length: 10 }
                 ]
             }"></div>
