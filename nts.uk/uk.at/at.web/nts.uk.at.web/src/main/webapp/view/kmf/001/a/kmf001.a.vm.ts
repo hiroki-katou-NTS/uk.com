@@ -8,7 +8,7 @@ module nts.uk.at.view.kmf001.a.viewmodel {
 
         startPage(): JQueryPromise<any> {
             var self = this;
-
+            setTimeout(() => $("#A2_3").focus(), 1000);
             var dfd = $.Deferred();
             dfd.resolve();
             return dfd.promise();
