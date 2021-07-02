@@ -42,10 +42,10 @@ public class RegisterPersonRoleCommandHandler extends CommandHandler<RegisterPer
 
 		if (command.getCreateMode()) {
 			roleService.insertRole(role);
-			personRoleRepo.insert(personRole);
+//			personRoleRepo.insert(personRole);
 		} else {
 			roleService.updateRole(role);
-			personRoleRepo.update(personRole);
+//			personRoleRepo.update(personRole);
 		}
 
 		// 個人情報の権限
