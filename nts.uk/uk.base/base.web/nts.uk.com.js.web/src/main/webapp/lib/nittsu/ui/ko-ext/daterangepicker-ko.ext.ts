@@ -19,6 +19,7 @@ module nts.uk.ui.koExtentions {
             construct.bindInit(data, allBindingsAccessor, viewModel, bindingContext);
             
             $container.data("construct", construct);
+            $container.addClass("ntsDateRangePicker_Container");
             
             return { 'controlsDescendantBindings': true };
         }

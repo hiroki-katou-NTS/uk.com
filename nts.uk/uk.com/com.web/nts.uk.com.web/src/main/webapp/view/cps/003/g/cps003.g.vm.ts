@@ -30,7 +30,7 @@ module cps003.g.vm {
             let isDisplayRegiter = _.filter(self.data, c =>{ return c.isDisplayRegister == true });
         
             $("#grid2").ntsGrid({
-                height: '343px',
+                height: '361px',
                 dataSource: self.data,
                 primaryKey: 'id',
                 virtualization: true,

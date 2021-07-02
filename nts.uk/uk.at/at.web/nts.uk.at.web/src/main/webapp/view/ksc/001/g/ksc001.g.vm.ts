@@ -104,7 +104,7 @@ module nts.uk.at.view.ksc001.g {
                 var self = this;
                 $("#gridTable").ntsGrid({
                     width: null,
-                    height: window.innerHeight - 320 + 'px',
+                    height: window.innerHeight - 285 + 'px',
                     dataSource: screenModel.items(),
                     primaryKey: 'id',
                     virtualization: true,

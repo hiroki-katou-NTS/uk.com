@@ -12,49 +12,26 @@
 	<com:stylefile set="BASIC" />
 	<com:viewcontext />
 	<com:scriptfile set="BASIC" />
-	<com:scriptfile path="/view/ccg/020/a/ccg020.a.vm.js" />
-	<com:stylefile path="/view/ccg/020/a/ccg020.a.style.css" />
-	<com:scriptfile path="/view/ccg/003/a/ccg003.a.vm.js" />
-	<com:ValidatorScript>
-		nts.uk.ctx.sys.portal.dom.generalsearch.SearchContent
-	</com:ValidatorScript>
-
+	<com:scriptfile path="/view/ccg/020/a/ccg020.a.vm.js" of="nts.uk.com.web" />
+	<com:scriptfile path="/view/ccg/003/a/ccg003.a.vm.js" of="nts.uk.com.web" />
+	<com:stylefile path="/view/ccg/020/a/ccg020.a.style.css" of="nts.uk.com.web" />
 	<ui:insert name="htmlHead" />
 </h:head>
 
 <h:body>
-	<div id="master-wrapper" data-bind="with: content">
-		<com:ko tag="let" bind="{ $vm: $data }">
-			<ui:insert name="base-content">
-				<ui:insert name="header-content">
-					<div id="header">
-						<div id="menu-header">
-							<div id="logo-area" class="cf">
-								<div id="logo">
-									<img src="#{request.contextPath}/master/images/kinjirou.png" />
-								</div>
-								<div id="user-info" class="cf">
-									<ccg020-component></ccg020-component>
-									<div id="company" class="cf"></div>
-									<div id="user" class="cf"></div>
-								</div>
-							</div>
-							<div id="nav-area" class="cf" />
-							<div id="pg-area" class="cf" />
-						</div>
-					</div>
-				</ui:insert>
-				<div id="master-content">
-					<ui:insert name="content" />
-				</div>
-			</ui:insert>
-		</com:ko>
+	<div data-bind="vm: content">
+		<div data-bind="ui-master-notification" class="hidden"></div>
+		<div data-bind="ui-master-header" class="hidden"></div>
+		<div data-bind="ui-master-content">
+			<ui:insert name="content" />
+		</div>
 	</div>
-	<div data-bind="with: kiban.errorDialogViewModel">
-		<div
-			data-bind="ntsErrorDialog: {title: title, errors: displayErrors, option: option}"></div>
-		<div id="func-notifier-errors"
-			data-bind="css: { shown: occurs }, click: open">エラーがあります</div>
+	<div data-bind="kb: kiban">
+		<div data-bind="ntsErrorDialog: {
+				title: title,
+				errors: displayErrors,
+				option: option
+			}"></div>
 	</div>
 </h:body>
 

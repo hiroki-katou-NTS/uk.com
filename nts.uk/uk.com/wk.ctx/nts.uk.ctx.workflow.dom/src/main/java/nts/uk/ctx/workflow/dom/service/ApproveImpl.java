@@ -21,6 +21,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalComment;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
@@ -90,7 +91,7 @@ public class ApproveImpl implements ApproveService {
 								approverInfor.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
 								approverInfor.setAgentID(employeeID);
 								approverInfor.setApprovalDate(GeneralDateTime.now());
-								approverInfor.setApprovalReason(memo);
+								approverInfor.setApprovalReason(new ApprovalComment(memo));
 								breakLoop = true;
 							} else {
 								continue;
@@ -101,7 +102,7 @@ public class ApproveImpl implements ApproveService {
 							approverInfor.setApproverID(employeeID);
 							approverInfor.setAgentID("");
 							approverInfor.setApprovalDate(GeneralDateTime.now());
-							approverInfor.setApprovalReason(memo);
+							approverInfor.setApprovalReason(new ApprovalComment(memo));
 							breakLoop = true;
 						}
 					} else {
@@ -115,7 +116,7 @@ public class ApproveImpl implements ApproveService {
 							approverInfor.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
 							approverInfor.setAgentID(employeeID);
 							approverInfor.setApprovalDate(GeneralDateTime.now());
-							approverInfor.setApprovalReason(memo);
+							approverInfor.setApprovalReason(new ApprovalComment(memo));
 							breakLoop = true;
 						}
 						if(approverInfor.getApproverID().equals(employeeID)) {
@@ -123,7 +124,7 @@ public class ApproveImpl implements ApproveService {
 							approverInfor.setApproverID(employeeID);
 							approverInfor.setAgentID("");
 							approverInfor.setApprovalDate(GeneralDateTime.now());
-							approverInfor.setApprovalReason(memo);
+							approverInfor.setApprovalReason(new ApprovalComment(memo));
 							breakLoop = true;
 						}
 					}
@@ -299,5 +300,18 @@ public class ApproveImpl implements ApproveService {
 			destinationList.add(approvalRepresenterInforOutput.getRepresenter().getValue());
 		});
 		return destinationList;
+	}
+
+	@Override
+	public List<String> getApprovedApproverFromPhase(ApprovalPhaseState approvalPhaseState) {
+		List<String> listUnapproveApprover = new ArrayList<>();
+		approvalPhaseState.getListApprovalFrame().forEach(approvalFrame -> {
+			approvalFrame.getLstApproverInfo().forEach(approverInfor -> {
+				if(approverInfor.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+					listUnapproveApprover.add(approverInfor.getApproverID());
+				}
+			});
+		});
+		return listUnapproveApprover.stream().distinct().collect(Collectors.toList());
 	}
 }

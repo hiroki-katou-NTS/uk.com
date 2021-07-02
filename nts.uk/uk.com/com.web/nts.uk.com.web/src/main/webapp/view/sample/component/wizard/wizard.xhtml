@@ -7,7 +7,7 @@
 
     <body>
 		
-        <ui:composition template="../../../../master/base.xhtml">
+        <ui:composition template="/master/base.xhtml">
             <ui:define name="htmlHead">
             	<script>var dialogSize = { width: 300, height: 200 };</script>
             	<com:ValidatorScript>
@@ -17,9 +17,9 @@
    				</com:ValidatorScript>
 				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="../../catalog/catalog.css" />
-				<com:scriptfile path="start.js" />
-				<com:scriptfile path="viewmodel.js" />
 				<com:scriptfile path="../../catalog/catalog.js" />
+
+				<com:scriptfile path="viewmodel.js" />
             </ui:define>
             
             <ui:define name="content">
@@ -36,9 +36,8 @@
 								<button data-bind="click: goto">Go to Step</button>
 							</div>
 							<br/>
-							<div id="wizard" data-bind="ntsWizard: {active: activeStep, steps: stepList, theme: 'yellow'}" class="cf">
+							<div id="wizard" data-bind="ntsWizard: { active: activeStep }">
 								<div class="header">
-									<div class="image" data-icon="../../../lib/nittsu/ui/style/images/ntsWizard/start-images.jpg"></div>
 									<div class="content">再集計</div>
 								</div>
 								<div class="steps">

@@ -187,38 +187,41 @@ export class CmmS45ComponentsApp9Component extends Vue {
 
             vm.params.appDetail.arrivedLateLeaveEarly.lateCancelation.forEach((item) => {
                 if (item.workNo == 1 && item.lateOrEarlyClassification == 0) {
-                    vm.time.attendanceTime = opAchievementDetail ? opAchievementDetail.opWorkTime : null;
+                    vm.time.attendanceTime = opAchievementDetail && opAchievementDetail.trackRecordAtr == 0 ? opAchievementDetail.opWorkTime : null;
                 }
                 if (item.workNo == 1 && item.lateOrEarlyClassification == 1) {
-                    vm.time.leaveTime = opAchievementDetail ? opAchievementDetail.opLeaveTime : null;
+                    vm.time.leaveTime = opAchievementDetail && opAchievementDetail.trackRecordAtr == 0 ? opAchievementDetail.opLeaveTime : null;
                 }
                 if (item.workNo == 2 && item.lateOrEarlyClassification == 0) {
-                    vm.time.attendanceTime2 = opAchievementDetail ? opAchievementDetail.opWorkTime2 : null;
+                    vm.time.attendanceTime2 = opAchievementDetail && opAchievementDetail.trackRecordAtr == 0 ? opAchievementDetail.opWorkTime2 : null;
                 }
                 if (item.workNo == 2 && item.lateOrEarlyClassification == 1) {
-                    vm.time.leaveTime2 = opAchievementDetail ? opAchievementDetail.opDepartureTime2 : null;
+                    vm.time.leaveTime2 = opAchievementDetail && opAchievementDetail.trackRecordAtr == 0 ? opAchievementDetail.opDepartureTime2 : null;
                 }
             });
 
             //update component S00 P1
             if (opAchievementDetail != null) {
-                const {opWorkTime, opLeaveTime, opWorkTime2, opDepartureTime2} = opAchievementDetail;
+                const {opWorkTime, opLeaveTime, opWorkTime2, opDepartureTime2, trackRecordAtr} = opAchievementDetail;
                 const {scheAttendanceTime1, scheAttendanceTime2, scheDepartureTime1, scheDepartureTime2} = opAchievementDetail.achievementEarly;
                 vm.kafS00P1Params1.scheduleTime = scheAttendanceTime1;
                 vm.kafS00P1Params2.scheduleTime = scheDepartureTime1;
                 vm.kafS00P1Params3.scheduleTime = scheAttendanceTime2;
                 vm.kafS00P1Params4.scheduleTime = scheDepartureTime2;
-                if (opWorkTime != null && scheAttendanceTime1 != null && scheAttendanceTime1 < opWorkTime) {
-                    vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.ALARM;
-                }
-                if (opLeaveTime != null && scheDepartureTime1 != null && scheDepartureTime1 > opLeaveTime) {
-                    vm.kafS00P1Params2.scheduleExcess = ExcessTimeStatus.ALARM;
-                }
-                if (opWorkTime2 != null && scheAttendanceTime2 != null && scheAttendanceTime2 < opWorkTime2) {
-                    vm.kafS00P1Params3.scheduleExcess = ExcessTimeStatus.ALARM;
-                }
-                if (opDepartureTime2 != null && scheDepartureTime2 != null && scheDepartureTime2 > opDepartureTime2) {
-                    vm.kafS00P1Params4.scheduleExcess = ExcessTimeStatus.ALARM;
+
+                if (trackRecordAtr == 0) {
+                    if (opWorkTime != null && scheAttendanceTime1 != null && scheAttendanceTime1 < opWorkTime) {
+                        vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.ALARM;
+                    }
+                    if (opLeaveTime != null && scheDepartureTime1 != null && scheDepartureTime1 > opLeaveTime) {
+                        vm.kafS00P1Params2.scheduleExcess = ExcessTimeStatus.ALARM;
+                    }
+                    if (opWorkTime2 != null && scheAttendanceTime2 != null && scheAttendanceTime2 < opWorkTime2) {
+                        vm.kafS00P1Params3.scheduleExcess = ExcessTimeStatus.ALARM;
+                    }
+                    if (opDepartureTime2 != null && scheDepartureTime2 != null && scheDepartureTime2 > opDepartureTime2) {
+                        vm.kafS00P1Params4.scheduleExcess = ExcessTimeStatus.ALARM;
+                    }
                 }
             }
             vm.$emit('loading-complete');

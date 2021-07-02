@@ -1,22 +1,34 @@
 <div id="kaf000-a-component2">
-	<div class="table">
-		<div class="cell col-1">
+	<div style="margin-top: 10px;">
+	    <div class="col-1">
 			<div class="cell valign-center" data-bind="ntsFormLabel:{}, text: $i18n('KAF000_44')"></div>
 		</div>
-		<div class="cell valign-center" data-bind="if: !isAgentMode">
-			<div data-bind="text: employeeName"></div>
-		</div>
-		<div class="cell valign-center" data-bind="if: isAgentMode">
-			<div style="overflow-y: auto; height: 120px; width: 325px; border: 1px solid grey;">
-				<table id="kaf000-a-component2-table">
-					<tbody data-bind="foreach: employeeLst">
-						<tr>
-							<td data-bind="text: bussinessName"></td>
-						</tr>
-					</tbody>
-				</table>
+		<div class="valign-center" data-bind="if: employeeLst().length <= 1">
+			<div style="display: inline-block; max-width: calc(100% - 26px);">
+				<div style="min-width: 112px; vertical-align: bottom; padding-right: 10px;" class="limited-label" data-bind="text: employeeName"></div>
 			</div>
-			<div style="margin-top: 5px;" data-bind="text: sumEmp"></div>
+		</div>
+		<div class="valign-center" data-bind="if: employeeLst().length > 1">
+			<div style="display: inline-block; max-width: calc(100% - 26px);">
+				<div style="min-width: 112px; vertical-align: bottom; padding-right: 10px;" class="limited-label" data-bind="text: employeeName"></div>
+			</div>
+			<div style="display: inline-block;">
+				<button class="popup-btn" style="width: 20px; height: 20px;">
+				    <i data-bind="ntsIcon: { no: 11 }"></i>
+				</button>
+			</div>
+			<div class="popup-area">
+				<div style="margin-top: 5px;" data-bind="text: sumEmp"></div>
+				<div style="overflow-y: auto; height: 125px; width: 325px;">
+					<table id="kaf000-a-component2-table">
+						<tbody data-bind="foreach: employeeLst">
+							<tr>
+								<td data-bind="text: bussinessName"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

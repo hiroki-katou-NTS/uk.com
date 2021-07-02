@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.query.kdp.kdps01.b;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepo
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EmployeeStampInfo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetListStampEmployeeService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampInfoDisp;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInforExport;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.screen.at.app.query.kdp.kdp001.a.EmployeeStampInfoDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -50,6 +53,9 @@ public class DisplayConfirmStampResultScreenB {
 	
 	@Inject
 	private EmployeeRecordAdapter sysEmpPub;
+	
+	@Inject
+	private WorkplacePub workplacePub;
 
 	/**
 	 * 打刻結果(スマホ)の打刻情報を取得する
@@ -85,21 +91,57 @@ public class DisplayConfirmStampResultScreenB {
 				.map(x -> x.getStamp()
 						.stream()
 						.findFirst()
-						.map(stamp -> stamp.getRefActualResults().getWorkLocationCD()
-								.map(workLoc -> workLoc != null ? workLoc.v()
-										: null)
-								.orElse(null))
+						.map(stamp -> stamp.getRefActualResults().getWorkInforStamp()
+							.map(wInfo -> wInfo.getWorkLocationCD()
+									.map(workLoc -> workLoc != null ? workLoc.v() : null)
+									.orElse(null))
+							.orElse(null))
 						.orElse(null))
 				.orElse(null);
 		
 		String workLocationName = this.workLocationRepo.findByCode(AppContexts.user().companyId(), workLocationCd)
 				.map(x -> x.getWorkLocationName() != null ? x.getWorkLocationName().v() : null).orElse("");
 		
-		//thêm 1 xử lý dể lấy username nữa;
+		//2: get(勤務場所ｺｰﾄﾞ): 名称
+		//[No.560]職場IDから職場の情報をすべて取得する
+		//会社ID
+		String cid = AppContexts.user().companyId();
+		
+		//職場ID
+		String wkpId =  empDatas.stream()
+				.map(x -> x.getListStampInfoDisp())
+				.flatMap(Collection::stream)
+				.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime))
+				.findFirst()
+				.map(x -> x.getStamp()
+						.stream()
+						.findFirst()
+						.map(stamp -> stamp.getRefActualResults().getWorkInforStamp()
+								.map(wInfo -> wInfo.getWorkplaceID()
+										.map(w -> w!= null ? w : null)
+										.orElse(null))
+										.orElse(null))
+									.orElse(null))
+							.orElse(null);
+						
+		//基準日
+		GeneralDate refDate = empDatas.stream()
+				.map(x -> x.getListStampInfoDisp())
+				.flatMap(Collection::stream)
+				.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime))
+				.findFirst()
+				.map(x -> x.getStampDatetime().toDate())
+				.orElse(null);
+				
+		List<WorkplaceInforExport> listWorkPlaceInfoExport = workplacePub.getWorkplaceInforByWkpIds(cid, Collections.singletonList(wkpId), refDate);
+		
+		String workplaceCd = listWorkPlaceInfoExport.isEmpty() ? "" : listWorkPlaceInfoExport.get(0).getWorkplaceCode();
+		String workplaceNm = listWorkPlaceInfoExport.isEmpty() ? "" : listWorkPlaceInfoExport.get(0).getWorkplaceDisplayName();
 		
 		return new DisplayConfirmStampResultScreenBDto(
 				empDatas.stream().map(x -> EmployeeStampInfoDto.fromDomain(x)).collect(Collectors.toList()),
-				workLocationCd, workLocationName, this.sysEmpPub.getPersonInfor(AppContexts.user().employeeId()));
+				workLocationCd, workLocationName, this.sysEmpPub.getPersonInfor(AppContexts.user().employeeId()),
+				workplaceCd, workplaceNm);
 	}
 
 	@AllArgsConstructor

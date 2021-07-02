@@ -9,9 +9,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForOrganization;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForOrganizationRepo;
-import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.WorkAvailabilityPeriodUnit;
 import nts.uk.ctx.at.schedule.infra.entity.shift.management.shifttable.KscmtShiftTableRuleForOrg;
-import nts.uk.ctx.at.schedule.infra.entity.shift.management.shifttable.KscdtManagementOfShiftTablePk;
+import nts.uk.ctx.at.schedule.infra.entity.shift.management.shifttable.KscmtShiftTableRuleForOrgPK;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 @Stateless
@@ -63,7 +62,7 @@ public class JpaShiftTableRuleForOrganizationRepo extends JpaRepository implemen
 		Optional<ShiftTableRuleForOrganization> data = this.get(companyId, targetOrg);
 		if (data.isPresent()) {
 			this.commandProxy().remove(KscmtShiftTableRuleForOrg.class,
-					new KscdtManagementOfShiftTablePk(companyId, targetOrg.getUnit().value, targetOrg.getTargetId()));
+					new KscmtShiftTableRuleForOrgPK(companyId, targetOrg.getUnit().value, targetOrg.getTargetId()));
 		}
 	}
 

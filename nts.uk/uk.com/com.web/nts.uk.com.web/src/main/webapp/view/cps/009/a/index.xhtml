@@ -57,9 +57,9 @@
 								primaryKey: 'settingId' ,
 								columns: settingColums ,
 								multiple: false,
-								columnResize: true,
+								columnResize: false,
 								value: initSettingId,
-								rows:15 }"
+								rows: 12 }"
 								tabindex="6">
 							</table>
 						</div>
@@ -109,12 +109,12 @@
 									selectedKey: 'perInfoCtgId',
 									fields: ['categoryName'],
 									placeHolder:'名称で検索・・・'}" />
-								<div id="history" class="flex valign-center" data-bind="style: { 'margin-left': _.size(currentCategory().itemList()) &lt; 15 ? '345px' : '362px'}">
+								<div id="history" class="flex valign-center" data-bind="style: { 'margin-left': _.size(currentCategory().itemList()) &lt; 15 ? '345px' : '357px'}">
 									<!-- A3_012: Label: 基準日ラベル -->
 									<label> #{i18n.getText('CPS009_19')}</label>
 									<!-- A3_13: button ヘルプボタン -->
 									<button id="A3_13" class="small"
-										data-bind="ntsHelpButton: {image: 'helpcps0091.png',position: 'right top',enable: true }"
+										data-bind="ntsHelpButton: {image: 'helpcps0091.png',position: 'bottom center',enable: true }"
 										tabindex="11">?</button>
 									<!-- A3_014: 履歴参照基準日(History reference date) -->
 									<div id="date1"
@@ -138,9 +138,9 @@
 									primaryKey: 'perInfoCtgId' ,
 									columns: currentCategory().ctgColums ,
 									multiple: false,
-									columnResize: true,
+									columnResize: false,
 									value: currentItemId,
-									rows: Math.round((window.screen.height - 492)/23) >= 15 ? 15 : Math.round((window.screen.height - 492)/23)}"
+									rows: 8 }"
 									tabindex="10">
 								</table>
 								<div style="margin-top: 10px;">

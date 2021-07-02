@@ -51,7 +51,7 @@ module nts.uk.ui.jqueryExtentions {
         $dialog.dialog("option", "position", {
             my: "center",
             at: "center",
-            of: window,
+            of: document.body,
             collision: "none"
         });
         

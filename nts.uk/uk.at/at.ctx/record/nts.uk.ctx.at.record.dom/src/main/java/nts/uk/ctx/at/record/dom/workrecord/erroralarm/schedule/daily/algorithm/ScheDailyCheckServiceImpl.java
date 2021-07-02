@@ -276,7 +276,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				// 勤務種類の条件
 				RangeToCheck targetWorkType = scheCondItem.getTargetWrkType();
 				// 勤務種類コード
-				WorkTypeCode workTypeCode = new WorkTypeCode(workSched.getWorkTyle());
+				WorkTypeCode workTypeCode = new WorkTypeCode(workSched.getWorkType());
 				
 				// ループ中のスケジュール日次の任意抽出条件．時間のチェック条件をチェック
 				if (DaiCheckItemType.TIME == scheCondItem.getCheckItemType()) {
@@ -527,22 +527,25 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			// {1}: チェック条件　（例：　＜＞8：00）
 			String checkCondTypeName = dailyCheckType.nameId;
 			String variable1 = "";
-			if(compare <= 5) {
-				variable1 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue;
-			} else {
-				if (compare == 6 || compare == 7) {
-					variable1 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName 
-							+ compareOperatorText.getCompareright() + endValue;
+			
+			if (compareOperatorText != null) {
+				if(compare <= 5) {
+					variable1 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue;
 				} else {
-					variable1 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue
-							+ ", " + checkCondTypeName + compareOperatorText.getCompareright() + endValue;
+					if (compare == 6 || compare == 7) {
+						variable1 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName 
+								+ compareOperatorText.getCompareright() + endValue;
+					} else {
+						variable1 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue
+								+ ", " + checkCondTypeName + compareOperatorText.getCompareright() + endValue;
+					}
 				}
 			}
 			
 			// {2}: 
 				// チェック項目種類　＝＝　「時間」　－＞""
 				// チェック項目種類　！＝　「時間」  －＞ #KAL010_1015　（{0}: ループ中のスケジュール日次の任意抽出条件．連続期間）
-			String variable2 = DaiCheckItemType.TIME != dailyCheckType ? TextResource.localize("KAL010_1013", conPeriodStr) : Strings.EMPTY;
+			String variable2 = DaiCheckItemType.TIME != dailyCheckType ? TextResource.localize("KAL010_1015", conPeriodStr) : Strings.EMPTY;
 			// {3}:
 				// チェック項目種類　＝＝　「時間」　－＞探した勤務予定．勤怠時間．勤務時間．総労働時間
 			String variable3 = "";
@@ -793,7 +796,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					
 					// NO2 = ：勤務種類未登録
 					// Input．日別勤怠の勤務情報が存在するかチェックする					
-					String wkType = workSchedule.getWorkTyle();
+					String wkType = workSchedule.getWorkType();
 					Optional<WorkType> listWk = listWorkType.stream()
 							.filter(x -> x.getWorkTypeCode().v().equals(wkType)).findFirst();
 					if(!listWk.isPresent()) {
@@ -831,7 +834,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					
 					// NO5 = ：複数回勤務
 					alarmMsgOutput = getNo5(
-							workScheWorkMultiTime.getWorkTyle(), 
+							workScheWorkMultiTime.getWorkType(), 
 							workScheWorkMultiTime.getWorkTime(), 
 							workScheWorkMultiTime.getTimeLeaving(),
 							workScheWorkMultiTime.getOptAttendanceTime(),
@@ -844,7 +847,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					WorkScheduleWorkInforImport workScheWorkOn = workScheduleWorks.get();
 					
 					// NO6 = ：特定日出勤
-					String wtCode = workScheWorkOn.getWorkTyle();
+					String wtCode = workScheWorkOn.getWorkType();
 					WorkType workType = listWorkType.stream().filter(x -> x.getWorkTypeCode().v().equals(wtCode)).findFirst().get();
 					alarmMsgOutput = getNo6(companyId, wplId, exDate, workType);
 					break;

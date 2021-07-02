@@ -3,17 +3,16 @@
 }
 
 #content-left {
-  float: left;
-  margin-top: 35px;
   width: 350px;
+  position: absolute;
+  top: 130px;
 }
 
 #content-mid {
-  float: left;
-  margin-top: 215px;
-  margin-left: 15px;
   width: 60px;
-  height: 300px;
+  position: absolute;
+  top: 300px;
+  left: 400px;
 }
 
 #button {
@@ -31,18 +30,18 @@
 
 .ntsPanel {
   width: 350px;
-  height: 450px;
 }
 
 .combo {
   height: 55px;
+  margin: -10px -2px 10px 0px;
 }
 
 .combo-box {
   float: right;
-  width: 140px;
+  width: 155px;
   margin-top: 4px;
-  margin-right: 95px;
+  margin-right: 80px;
 }
 
 .input {
@@ -52,13 +51,13 @@
 }
 
 .text-input {
-display: inline-flex;
+/* display: inline-flex; */
 }
 
 #content-right {
-  float: left;
-  margin-left: 15px;
-  margin-top: 160px;
+  position: absolute;
+  left: 475px;
+  top: 230px;
 }
 #content-top {
   float: top;
@@ -94,4 +93,12 @@ hr {
 
 .text-center {
   text-align: center;
+}
+
+.form-label.disabled.required {
+  margin-top: 5px;
+}
+
+.nts-searchbbox-wrapper button.clear-icon {
+  margin-left: 10px;
 }

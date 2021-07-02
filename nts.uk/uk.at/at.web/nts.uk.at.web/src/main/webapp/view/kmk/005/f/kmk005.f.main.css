@@ -38,8 +38,9 @@
 	padding-top: 0px;
 	float: left;
 	width: 800px;
+	margin-left: 35px;
 }
-.column1 { width: 200px; }
+.column1 { width: 120px; }
 .column2 { width: 75px; }
 #tab-panel { margin-top: 5px; }
 .tab-content-1, .tab-content-2 {

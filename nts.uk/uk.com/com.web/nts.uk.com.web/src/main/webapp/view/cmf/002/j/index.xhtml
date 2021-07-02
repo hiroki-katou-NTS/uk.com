@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 575, height: 500 };</script>
+			<script>var dialogSize = { width: 575, height: 570 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatCharacterDigit
 			    nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatNullReplacement
@@ -23,7 +23,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area dialog-contents"
+			<div id="contents-area" class="dialog-contents"
 				data-bind="with: characterDataFormatSetting">
 				<!-- J1 - タイトル -->
 				<div id="J1" class="label dialog-title">#{i18n.getText('CMF002_163')}</div>
@@ -33,7 +33,7 @@
 						<div class="div-table-col-medium">
 							<div id="J2" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_164')}</div>
 						</div>
-						<div class="div-table-col-standard">
+						<div class="div-table-col-standard radio-group">
 							<div id="J2_1" tabindex="1" class="div-table-col-standard"
 								data-bind="ntsRadioBoxGroup: {
 									options: $vm.effectDigitLengthItem,
@@ -70,7 +70,7 @@
 						<div class="div-table-col-medium">
 							<div id="J3" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_170')}</div>
 						</div>
-						<div id="J3_1" class="div-table-col-standard">
+						<div id="J3_1" class="div-table-col-standard radio-group">
 							<div tabindex="4"
 								data-bind="ntsRadioBoxGroup: {
 									options: $vm.codeEditingItem,
@@ -142,7 +142,7 @@
 						<div class="div-table-col-medium">
 							<div id="J6" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_157')}</div>
 						</div>
-						<div id="J6_1" class="div-table-col-standard">
+						<div id="J6_1" class="div-table-col-standard radio-group">
 							<div tabindex="9"
 								data-bind="ntsRadioBoxGroup: {
 									options: $vm.nullValueReplaceItem,
@@ -167,7 +167,7 @@
 						<div class="div-table-col-medium">
 							<div id="J7" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF002_159')}</div>
 						</div>
-						<div class="div-table-col-standard">
+						<div class="div-table-col-standard radio-group">
 							<div id="J7_1" tabindex="11"
 								data-bind="ntsRadioBoxGroup: {
 									options: $vm.fixedValueItem,

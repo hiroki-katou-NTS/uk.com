@@ -131,12 +131,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
             // luôn là component
             params.eventUpdate(vm.update.bind(vm));
 			params.eventReload(vm.reload.bind(vm));
-        };
-		
-        mounted() {
-			const vm = this;
 
-            vm.maxNumberOfDay = ko.computed(() => {
+			vm.maxNumberOfDay = ko.computed(() => {
 				let data = vm.$i18n("KAF006_44").concat("\n");
 				if (vm.specAbsenceDispInfo()) {
 					if (vm.isDispMourn() && vm.isCheckMourn()) {
@@ -164,8 +160,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 				return vm.$i18n("KAF006_21");
             });
-            
-            vm.selectedDateSpec.subscribe(() => {
+
+			vm.selectedDateSpec.subscribe(() => {
 				if (vm.selectedType() !== 3 || vm.dateSpecHdRelationLst().length === 0) {
 					return;
 				}
@@ -212,6 +208,9 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				vm.endTime1(null);
 				vm.endTime2(null);
 
+				vm.data.selectedWorkTypeCD = null;
+                vm.data.selectedWorkTimeCD = null;
+
 				// vm.$errors("clear");
 				nts.uk.ui.errors.clearAll()
 				
@@ -248,6 +247,9 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
                 }).then((data) => {
 					if (data) {
 						vm.fetchData(data);
+						vm.selectedWorkTimeCD(null);
+                        vm.selectedWorkTimeName(null);
+                        vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", 0));
 						vm.appDispInfoStartupOutput(data.appDispInfoStartupOutput);
 						$("#work-type-combobox").focus()
 						return data;
@@ -507,6 +509,11 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				return false;
 			});
         };
+		
+        mounted() {
+			const vm = this;
+
+        };
 
         reload() {
 			const vm = this;
@@ -566,8 +573,6 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				applyForLeave: this.createDataVacationApp(),
 				appDispInfoStartupOutput: ko.toJS(vm.appDispInfoStartupOutput),
 				holidayAppDates: appDates,
-				oldLeaveComDayOffMana: vm.data.leaveComDayOffManas ? vm.data.leaveComDayOffManas : [],
-				oldPayoutSubofHDManagements: vm.data.payoutSubofHDManas ? vm.data.payoutSubofHDManas : [],
 				leaveComDayOffMana: _.map(vm.leaveComDayOffManas(), (x: any) => {
 					x.dateOfUse = new Date(x.dateOfUse).toISOString();
 					x.outbreakDay = new Date(x.outbreakDay).toISOString();
@@ -773,7 +778,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				vm.nursing(null);
 			}
 
-			if (vm.selectedType() === 3) {
+			if (vm.selectedType() === 3 && param.vacationInfo.info.applyForSpeLeave != null) {
 				// B9_2
 				if (param.vacationInfo.info.applyForSpeLeave.relationshipCD !== null) {
 					vm.selectedDateSpec(param.vacationInfo.info.applyForSpeLeave.relationshipCD);
@@ -1452,49 +1457,49 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			if (vm.data && vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet && vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst) {
 				let targetWorkType = _.filter(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst, { 'appType': 1 });
 				if (targetWorkType.length > 0) {
-					if (_.filter(targetWorkType, { 'opHolidayAppType': 0 }).length > 0 && _.filter(targetWorkType, { 'opHolidayAppType': 0 })[0].opHolidayTypeUse) {
+					if (_.filter(targetWorkType, { 'opHolidayAppType': 0 }).length > 0 && !_.filter(targetWorkType, { 'opHolidayAppType': 0 })[0].opHolidayTypeUse) {
 						vm.condition1_0(true);
 					} else {
 						vm.condition1_0(false);
 						// vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 0}));
 					}
 
-					if (_.filter(targetWorkType, { 'opHolidayAppType': 1 }).length > 0 && _.filter(targetWorkType, { 'opHolidayAppType': 1 })[0].opHolidayTypeUse) {
+					if (_.filter(targetWorkType, { 'opHolidayAppType': 1 }).length > 0 && !_.filter(targetWorkType, { 'opHolidayAppType': 1 })[0].opHolidayTypeUse) {
 						vm.condition1_1(true);
 					} else {
 						vm.condition1_1(false);
 						// vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 1}));
 					}
 
-					if (_.filter(targetWorkType, { 'opHolidayAppType': 2 }).length > 0 && _.filter(targetWorkType, { 'opHolidayAppType': 2 })[0].opHolidayTypeUse) {
+					if (_.filter(targetWorkType, { 'opHolidayAppType': 2 }).length > 0 && !_.filter(targetWorkType, { 'opHolidayAppType': 2 })[0].opHolidayTypeUse) {
 						vm.condition1_2(true);
 					} else {
 						vm.condition1_2(false);
 						// vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 2}));
 					}
 
-					if (_.filter(targetWorkType, { 'opHolidayAppType': 3 }).length > 0 && _.filter(targetWorkType, { 'opHolidayAppType': 3 })[0].opHolidayTypeUse) {
+					if (_.filter(targetWorkType, { 'opHolidayAppType': 3 }).length > 0 && !_.filter(targetWorkType, { 'opHolidayAppType': 3 })[0].opHolidayTypeUse) {
 						vm.condition1_3(true);
 					} else {
 						vm.condition1_3(false);
 						// vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 3}));
 					}
 
-					if (_.filter(targetWorkType, { 'opHolidayAppType': 4 }).length > 0 && _.filter(targetWorkType, { 'opHolidayAppType': 4 })[0].opHolidayTypeUse) {
+					if (_.filter(targetWorkType, { 'opHolidayAppType': 4 }).length > 0 && !_.filter(targetWorkType, { 'opHolidayAppType': 4 })[0].opHolidayTypeUse) {
 						vm.condition1_4(true);
 					} else {
 						vm.condition1_4(false);
 						// vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 4}));
 					}
 
-					if (_.filter(targetWorkType, { 'opHolidayAppType': 5 }).length > 0 && _.filter(targetWorkType, { 'opHolidayAppType': 5 })[0].opHolidayTypeUse) {
+					if (_.filter(targetWorkType, { 'opHolidayAppType': 5 }).length > 0 && !_.filter(targetWorkType, { 'opHolidayAppType': 5 })[0].opHolidayTypeUse) {
 						vm.condition1_5(true);
 					} else {
 						vm.condition1_5(false);
 						// vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 5}));
 					}
 
-					if (_.filter(targetWorkType, { 'opHolidayAppType': 6 }).length > 0 && _.filter(targetWorkType, { 'opHolidayAppType': 6 })[0].opHolidayTypeUse) {
+					if (_.filter(targetWorkType, { 'opHolidayAppType': 6 }).length > 0 && !_.filter(targetWorkType, { 'opHolidayAppType': 6 })[0].opHolidayTypeUse) {
 						vm.condition1_6(true);
 					} else {
 						vm.condition1_6(false);
@@ -1525,6 +1530,84 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 			vm.condition32(false);
 		}
+
+		openKDL020() {
+            let vm = this;
+            var employeeIds = [];
+            employeeIds.push(__viewContext.user.employeeId);
+            nts.uk.ui.windows.setShared('KDL020A_PARAM', {
+                baseDate: new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate), 
+                employeeIds: employeeIds});
+            if (employeeIds.length > 1) {
+                nts.uk.ui.windows.sub.modal("/view/kdl/020/a/multi.xhtml");
+            } else {
+                nts.uk.ui.windows.sub.modal("/view/kdl/020/a/single.xhtml");
+            }
+        }
+
+        openKDL029() {
+            let vm = this;
+            let param = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: moment(new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate)).format("YYYY/MM/DD")
+            }
+            nts.uk.ui.windows.setShared('KDL029_PARAM', param);
+            nts.uk.ui.windows.sub.modal('/view/kdl/029/a/index.xhtml');
+        }
+
+        openKDL005() {
+            let vm = this;
+            let data = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: moment(new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate)).format("YYYYMMDD")
+            }
+            nts.uk.ui.windows.setShared('KDL005_DATA', data);
+            if (data.employeeIds.length > 1) {
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/multi.xhtml");
+            } else {
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/single.xhtml");
+            }
+        }
+
+        public openKDL051() {
+            let vm = this;
+            let param = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate)
+            };
+
+            Kaf006ShrViewModel.openKDL051(param);
+        }
+
+        public openKDL052() {
+            let vm = this;
+            let param = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: moment(new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate)).format("YYYYMMDD")
+            };
+
+            Kaf006ShrViewModel.openKDL052(param);
+        }
+
+        public openKDL017() {
+            let vm = this;
+            let param = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: moment(new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate)).format("YYYYMMDD")
+            };
+            
+            Kaf006ShrViewModel.openKDL017(param);
+        }
+
+        public openKDL009() {
+            let vm = this;
+            let param = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: moment(new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate)).format("YYYYMMDD")
+            };
+
+            Kaf006ShrViewModel.openKDL009(param); 
+        }
     };
 
     const API = {

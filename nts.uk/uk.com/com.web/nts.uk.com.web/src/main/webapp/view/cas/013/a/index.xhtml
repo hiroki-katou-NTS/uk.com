@@ -24,7 +24,7 @@
 					data-bind="click: save, enable: $root.errors.isEmpty() &amp;&amp; listRole().length > 0">#{i18n.getText('CAS013_5')}</button>
 				<button class="danger" tabindex="3"
 					data-bind="click: Delete, enable: isDelete() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CAS013_6')}</button>
-				<button tabindex="3" id="print-button" data-bind="click: exportExcel" style="width: 120px;">#{i18n.getText('CAS013_48')}</button>
+				<button tabindex="3" id="print-button" data-bind="click: exportExcel" style="width: 130px;">#{i18n.getText('CAS013_48')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="container cf">
@@ -41,7 +41,7 @@
 							]}"></div>
 					</div>
 					<span class="caret-bottom outline"></span>
-					<div class="cf">
+					<div class="content-grid cf">
 						<div class="pull-left">
 							<div class="valign-center control-group">
 								<span class="text-left">#{i18n.getText('CAS013_9')}</span>
@@ -84,7 +84,7 @@
 									data-bind="ntsDateRangePicker: 
 								{ required: true, 
 								enable: true, 
-								showNextPrevious: true, 
+								showNextPrevious: false, 
 								value: dateValue, 
 								maxRange: 'none'} 
 							"

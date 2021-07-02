@@ -23,16 +23,21 @@ public class CMM022ScreenQuery {
 	/** IPアドレスの制限設定内容を取得する */
 	public AccessRestrictionsDto get() {
 		String contractCode = AppContexts.user().contractCode();
+		String userIpAddress = AppContexts.requestedWebApi().getRequestIpAddress();
 		/* 1: <call>() */
 		Optional<AccessRestrictions> d = repo.get(new ContractCode(contractCode));
 		/* アクセス制限のデータがあるか */
 		if(d.isPresent()) {
-			return new AccessRestrictionsDto(d.get());
+			AccessRestrictionsDto dto = new AccessRestrictionsDto(d.get());
+			dto.userIpAddress = userIpAddress;
+			return dto;
 		}else {
 			/* 2.1:[データがない]:<call>() */
 			commandHandler.insertAccessRestrictions();
 			/* 2.2: <call>() */
-			return new AccessRestrictionsDto(repo.get(new ContractCode(contractCode)).get());
+			AccessRestrictionsDto dto = new AccessRestrictionsDto(repo.get(new ContractCode(contractCode)).get());
+			dto.userIpAddress = userIpAddress;
+			return dto;
 		}
 	}
 }

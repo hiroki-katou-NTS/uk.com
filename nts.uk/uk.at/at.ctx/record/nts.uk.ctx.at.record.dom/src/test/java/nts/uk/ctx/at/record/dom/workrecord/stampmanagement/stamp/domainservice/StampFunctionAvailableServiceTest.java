@@ -61,7 +61,7 @@ public class StampFunctionAvailableServiceTest{
 		new Expectations() {
 			{
 				require.get();
-				result = Optional.of(new SettingsUsingEmbossing("companyId", false, false, false, false, false, false));
+				result = Optional.of(new SettingsUsingEmbossing("companyId", false, false, false, false, false, false, false));
 				
 			}
 		};
@@ -85,7 +85,7 @@ public class StampFunctionAvailableServiceTest{
 		new Expectations() {
 			{
 				require.get();
-				result = Optional.of(new SettingsUsingEmbossing("companyId", false, false, true, false, false, false));
+				result = Optional.of(new SettingsUsingEmbossing("companyId", false, false, true, false, false, false, false));
 				
 			}
 		};
@@ -134,7 +134,7 @@ public class StampFunctionAvailableServiceTest{
 		new Expectations() {
 			{
 				require.get();
-				result = Optional.of(new SettingsUsingEmbossing("companyId", true, false, false, false, false, false));
+				result = Optional.of(new SettingsUsingEmbossing("companyId", true, false, false, false, false, false, false));
 				
 			}
 		};
@@ -150,7 +150,7 @@ public class StampFunctionAvailableServiceTest{
 		new Expectations() {
 			{
 				require.get();
-				result = Optional.of(new SettingsUsingEmbossing("companyId", true, false, false, false, false, false));
+				result = Optional.of(new SettingsUsingEmbossing("companyId", true, false, false, false, false, false, false));
 			}
 		};
 		
@@ -167,7 +167,7 @@ public class StampFunctionAvailableServiceTest{
 		new Expectations() {
 			{
 				require.get();
-				result = Optional.of(new SettingsUsingEmbossing("companyId", true, false, false, false, true, false));
+				result = Optional.of(new SettingsUsingEmbossing("companyId", true, false, false, false, true, false, false));
 				
 				require.getListStampCard(employeeId);
 				result = StampFunctionAvailableServiceHelper.getStampCards();
@@ -187,7 +187,7 @@ public class StampFunctionAvailableServiceTest{
 		new Expectations() {
 			{
 				require.get();
-				result = Optional.of(new SettingsUsingEmbossing("companyId", true, false, false, false, true, false));
+				result = Optional.of(new SettingsUsingEmbossing("companyId", true, false, false, false, true, false, false));
 				
 				require.getListStampCard(employeeId);
 				result = new ArrayList<>();
@@ -207,7 +207,7 @@ public class StampFunctionAvailableServiceTest{
 		new Expectations() {
 			{
 				require.get();
-				result = Optional.of(new SettingsUsingEmbossing("companyId", true, false, false, false, true, false));
+				result = Optional.of(new SettingsUsingEmbossing("companyId", true, false, false, false, true, false, false));
 				
 				require.getListStampCard(employeeId);
 				result = new ArrayList<>();

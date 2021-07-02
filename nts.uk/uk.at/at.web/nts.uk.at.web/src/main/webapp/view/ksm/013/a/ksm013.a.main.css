@@ -5,6 +5,7 @@
 	/* margin-top: 20px; */
 	float: left;
 	max-height: 300px;
+  margin-right: 50px;
 }
 
 #right-content {
@@ -13,7 +14,7 @@
 }
 
 #code_name {
-	margin-left: 30px;
+	margin-left: -50px;
 	display: inline-block;
 	vertical-align: bottom;
 	width: 280px;
@@ -21,7 +22,7 @@
 }
 
 #license {
-	margin-left: 30px;
+	margin-left: -50px;
 	display: inline-block;
 	vertical-align: bottom;
 	width: 234px;
@@ -29,12 +30,16 @@
 }
 
 #officeWorker{
-	margin-left: 25px;
+	margin-left: -50px;
 	display: inline-block;
 	vertical-align: bottom;
 	width: 220px;
 	position: absolute;
 	margin-top: 5px;
+}
+
+#nurseClassificationName{
+	width: 130px !important;
 }
 
 .label_left {

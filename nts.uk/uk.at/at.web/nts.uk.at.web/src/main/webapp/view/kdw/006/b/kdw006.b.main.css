@@ -31,3 +31,17 @@
 #screen-b .cf > button.nts-switch-button {
     width: 90px;
 }
+
+.d-flex {
+    display: flex;
+}
+
+#switchBtn1 {
+    margin-left: 13px;
+}
+
+#switchBtn1 span {
+    display: flex;
+    justify-content: center;
+    width: 75px;
+}

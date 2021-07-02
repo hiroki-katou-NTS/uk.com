@@ -1,17 +1,16 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <head>
-<link rel="stylesheet"
-	href="path/to/font-awesome/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css" />
 </head>
+
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
+	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 530, height: 630 };</script>
+			<script>var dialogSize = { width: 475, height: 558 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="main.css" />
 			<com:scriptfile path="viewmodel.js" />
@@ -26,103 +25,77 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div id="right-area" >
-					<table class="basic-items">
-						<tr>
-							<td><span id="label-b1-1">#{i18n.getText('KDP002_37')}</span>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div class = "item-screen">
-									<!-- B2_1 -->
-									<div id="label-b2-2"
-										data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP002_38')}</div>
-									<!-- B2_2 -->
-									<span id="text-b2-2" data-bind="text: employeeCodeName"></span>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div class = "item-screen">
-									<!-- B3_1 -->
-									<div id="correc-label1"
-										data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP002_39')}
-									</div>
-									<!-- B3_2 -->
-									<span id="label-b3-2" data-bind="html: currentStampData().stampDate"></span>
-									<!-- B3_3 -->
-									<span id="text-b3-3" style="font-size: 15px;font-weight: bold;" data-bind="text: currentStampData().stampTime"></span>
-								</div>
-							</td>
-
-						</tr>
-						<tr>
-							<!-- B4_1 -->
-							<td>
-							<div class = "item-screen">
-							<div id="label-b3-1"
-									data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KDP002_40')}</div>
-							<!-- B4_2 -->
-							<span style="color:#0033cc; font-size: 15px;font-weight: bold;" id="text-b4-2" class="large" data-bind="text: currentStampData().stampArtName"></span>
-							</div>
-							
-							</td>
-						</tr>
-						<tr>
-							<!-- B5_1 -->
-							<td>
-							<div class = "item-screen">
-							<div id="text-b5-2"
-									data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KDP002_41')}</div>
-							<!-- B5_2 -->
-							<span id="label-b5-2" data-bind="text: currentStampData().cardNumberSupport"></span>
-							</div>
-							</td>
-						</tr>
-						<tr>
-							<!-- B6_1 -->
-							<td>
-							<div class = "item-screen">
-							<div id="color"
-									data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KDP002_42')}</div>
-							<!-- B6_2 -->
-							<span id="text-b6-2" data-bind="text: currentStampData().workLocationCD"></span><span id="text-b6-2" data-bind="text:laceName"></span>
-							</div>
-							</td>
-						</tr>
-
-					</table>
-
+				<div id="right-area">
+					<div id="right-area">
+						<div style="text-align: center;" class="title">
+							<div class="date" data-bind="date: $vm.time.now, format: 'YYYY/MM/DD(ddd)'"></div>
+							<div class="time" data-bind="date: $vm.time.now, format: 'HH:mm'"></div>
+							<div class="commuting" data-bind="text: currentStampData().stampArtName"></div>
+						</div>
+					</div>
 				</div>
+				<div data-bind="i18n: $vm.employeeCodeName"></div>
+				<div class="workPlaceName" data-bind="i18n: $vm.workPlace, visible: $vm.workPlace() != ''"></div>
 				<!-- G7 -->
-				<div id="table-stamp" class="caret-background bg-green">
-					<span id="text-b8-1" data-bind="text: currentDate"></span>
-					<table id="single-list"
-						data-bind="ntsGridList: {								
-								height: 140,
+				<div id="table-stamp">
+					<div class="currentDate" data-bind="text: currentDate"></div>
+					<table id="single-list" data-bind="ntsGridList: {								
+								height: 176,
+								width: 450,
 								dataSource: items,
 								primaryKey: 'id',
 								columns: columns2,
 								multiple: false,
 								value: currentCode
 							}"></table>
-
 				</div>
-				<com:ko-if bind="disableResultDisplayTime">
-					<div style="margin-top: 10px;font-weight: bold;" >
-						<span id="text-b20-1" data-bind="text: resultDisplayTime"
-						style="margin-top: 10px"></span> <span
-							id="text-b20-2" style="margin-top:10px">#{i18n.getText('KDP002_48')}</span>
+				<!-- <com:ko-if bind="disableResultDisplayTime"> -->
+				<div>
+					<div data-bind="if: $vm.showBtnNoti" style="position: relative;">
+						<button data-bind="click: openDialogU" class="large, btn-showNoti">
+							<i data-bind="ntsIcon: { no: 164, width: 28, height: 28 }">
+							</i>
+							<div>#{i18n.getText('KDP002_103')}</div>
+						</button>
+						<div data-bind="if: $vm.modeShowPointNoti" style="box-sizing: border-box;">
+							<i style="left: 27px; top: 29px; position: absolute;"
+								data-bind="ntsIcon: { no: 165, width: 8, height: 8 }"></i>
+						</div>
 					</div>
-				</com:ko-if>
+					<div>
+						<div style="font-weight: bold; margin-top: 5px;">
+							<div data-bind="if: $vm.modeNikoNiko">
+								<span id="text-b20-2" data-bind="i18n: 'KDP002_97'"></span>
+							</div>
+							<div data-bind="ifnot: $vm.modeNikoNiko">
+								<span id="text-b20-1" data-bind="i18n: resultDisplayTime"></span>
+								<span id="text-b20-2" data-bind="i18n: 'KDP002_48'"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- </com:ko-if> -->
 			</div>
 			<div id="functions-area-bottom">
-				<button class = "large" tabindex="9" id="close-button"
-					data-bind="click: closeDialog">#{i18n.getText('KDP002_49')}</button>
+				<div data-bind="if: $vm.modeNikoNiko">
+					<button class="btn-happy" data-bind="ntsIcon: { no: 185, width: 60, height: 60 }, click: happy">
+					</button>
+					<button class="btn-emoji" data-bind="ntsIcon: { no: 186, width: 60, height: 60 }, click: good">
+					</button>
+					<button class="btn-emoji" data-bind="ntsIcon: { no: 187, width: 60, height: 60 }, click: average">
+					</button>
+					<button class="btn-emoji" data-bind="ntsIcon: { no: 188, width: 60, height: 60 }, click: sad">
+					</button>
+					<button class="btn-emoji" data-bind="ntsIcon: { no: 189, width: 60, height: 60 }, click: weary">
+					</button>
+				</div>
+				<div data-bind="ifnot: $vm.modeNikoNiko">
+					<button class="large" tabindex="9" id="close-button"
+						data-bind="click: closeDialog">#{i18n.getText('KDP002_49')}</button>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
 </body>
+
 </html>

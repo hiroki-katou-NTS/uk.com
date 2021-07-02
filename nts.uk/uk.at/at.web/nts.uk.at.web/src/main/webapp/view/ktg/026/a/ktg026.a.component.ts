@@ -54,7 +54,7 @@ module nts.uk.at.view.ktg026.a {
                     },
                     stepSize: 2700,
                     fontSize: 14,
-                    fontColor: '#000',
+                    fontColor: '#C6C6D1',
                     fontFamily: 'Meiryo UI'
                 },
                 stacked: true,
@@ -63,20 +63,18 @@ module nts.uk.at.view.ktg026.a {
                     scale.height = type === 'body' ? 0 : 41;
                 },
                 gridLines: {
-                    color: '#999',
+                    drawBorder: false,
+                    color: '#BFBFBF',
                     z: 1,
-                    borderDash: [3, 2]
+                    borderDash: [3, 2],
+                    zeroLineColor: 'rgba(0, 0, 0, 0)'
                 }
             }],
             yAxes: [{
                 ticks: {
                     display: false
                 },
-                gridLines: {
-                    color: '#999',
-                    z: 1,
-                    zeroLineColor: '#fff'
-                },
+                gridLines: { display: false },
                 stacked: true
             }]
         }
@@ -176,10 +174,10 @@ module nts.uk.at.view.ktg026.a {
                                     labels: tpe === 'head' ? [] : data.map(({ date }) => date),
                                     datasets: tpe === 'head' ? [] : [{
                                         data: data.map(({ time }) => Math.min(time.ot, 6000)),
-                                        backgroundColor: data.map(() => "#49bfa8")
+                                        backgroundColor: data.map(() => "#99FF66")
                                     }, {
                                         data: data.map(({ time }) => time.wh),
-                                        backgroundColor: data.map(() => "#e05f4e")
+                                        backgroundColor: data.map(() => "#00CC00")
                                     }]
                                 },
                                 options: options(max || 4800, tpe)
@@ -242,62 +240,80 @@ module nts.uk.at.view.ktg026.a {
         name: 'ktg-026-a',
         template: `
             <div class="ktg-026-a widget-title">
-                <table>
+                <table style="width: 100%;">
                     <colgroup>
                         <col width="auto" />
-                        <col width="32px" />
+                        <col width="155px" />
+                        <col width="65px" />
                     </colgroup>
                     <thead>
                         <tr>
-                            <th data-bind="i18n: 'KTG026_5'"></th>
-                            <th>
-                                <button class="hidden" data-bind="click: $component.close, i18n: 'KTG026_8'"></button>
+                            <th class="ktg026-fontsize">
+                                <!-- A1_1 -->
+                                <div class="ktg026-title" data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG026_5') }"></div>
                             </th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-            <div class="ktg-026-a widget-content">
-                <table>
-                    <colgroup>
-                        <col width="auto" />
-                        <col width="180px" />
-                    </colgroup>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div data-bind="ntsDatePicker: {
+                            <th style="padding-right: 5px;font-size: medium;font-weight: normal;">
+                                <div id="ktg026-datepick" style="float: right;" data-bind="ntsDatePicker: {
                                     name: $component.$i18n('KTG026_1'),
                                     value: $component.targetYear,
                                     dateFormat: 'YYYY',
                                     valueFormat: 'YYYY',
                                     showJumpButtons: true
                                 }"></div>
-                            </td>
-                            <td class="text-left">
-                                <div class="statutory" data-bind="i18n: 'KTG026_2'"></div>
-                                <div class="outside" data-bind="i18n: 'KTG026_3'"></div>
+                                <!-- A1_7 -->
+                                <button style="float: right; width: 75px;" class="ktg026-hidden" data-bind="click: $component.close, i18n: 'KTG026_8'"></button>
+                            </th>
+                            <th>
+                                <!-- A1_9 -->
+                                <button data-bind="ntsLegendButton: legendOptions"></button>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="ktg-026-a widget-content ktg026-border-top">
+                <table>
+                    <colgroup>
+                        <col width="auto" />
+                        <col width="180px" />
+                    </colgroup>
+                    <tbody>
+                        <tr class="ktg026-hidden">
+                            <td colspan="2">
+                                <!-- A1_6 -->
+                                <label class="ktg026-employee-name" data-bind="text: $component.employeeName"></label>
                             </td>
                         </tr>
                         <tr>
-                            <td data-bind="text: $component.exceededNumber" colspan="2"></td>
+                            <td colspan="2" class="ktg026-1rem" style="padding-left: 8px;">
+                                <!-- A1_5 -->
+                                <div data-bind="ntsFormLabel: { required: false, text: $component.textExceededNumber }" style="padding: 0"></div>
+                                <label data-bind="text: $component.exceededNumber"></label>
+                            </td>
                         </tr>
+                        
                     </tbody>
                 </table>
             </div>
-            <div class="ktg-026-a widget-content widget-fixed scroll-padding ui-resizable">
+            <div class="ktg-026-a widget-content widget-fixed scroll-padding ui-resizable ktg026-1rem">
                 <div>
                     <table>
                         <colgroup>
                             <col width="25%" />
-                            <col width="25%" />
-                            <col width="50%" />
+                            <col width="20%" />
+                            <col width="55%" />
                         </colgroup>
                         <head>
                             <tr>
-                                <th class="text-center" data-bind="i18n: 'KTG026_7'"></th>
-                                <th class="text-center" data-bind="i18n: 'KTG026_4'"></th>
-                                <td rowspan="1">
+                                <th class="text-center">
+                                    <!-- A2_1 -->
+                                    <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG026_7') }"></div>
+                                </th>
+                                <th class="text-center">
+                                    <!-- A2_2 -->
+                                    <div style="padding-right: 0px;" data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG026_4') }"></div>
+                                </th>
+                                <td rowspan="1"style="padding-left: 10px;">
                                     <canvas data-bind="ktg-026-chart: $component.dataTable, type: 'head'"></canvas>
                                 </td>
                             </tr>
@@ -305,25 +321,48 @@ module nts.uk.at.view.ktg026.a {
                     </table>
                 </div>
             </div>
-            <div class="ktg-026-a" data-bind="widget-content: 110, default: 425">
+            <div class="ktg-026-a" data-bind="widget-content: 110, default: 220">
                 <div>
                     <table>
                         <colgroup>
-                            <col width="25%" />
-                            <col width="25%" />
-                            <col width="50%" />
+                            <col width="45%" />
+                            <col width="55%" />
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.dataTable, as: 'row' }">
-                            <tr>
-                                <td data-bind="text: row.date"></td>
-                                <td class="text-right" data-bind="time: row.time.tt, css: row.state"></td>
-                                <td data-bind="ktg-chart: $component.dataTable"></td>
+                            <tr style="height: 35px;">
+                                <td>
+                                    <div>
+                                        <div class="text-center" data-bind="text: row.date" style="float:left; width: 60%;"></div>
+                                        <div class="text-right" data-bind="time: row.time.tt, css: row.state" style="height: 25px; padding-right: 5px;"></div>
+                                    </div>
+                                </td>
+                                <td style="padding-left: 10px;" data-bind="ktg-chart: $component.dataTable"></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
             <style>
+                .ktg026-border-top {
+                    border-top: none !important;
+                }
+                .ktg026-border-top::before {
+                    width: 100%;
+                    height: 1px;
+                    background: #b1b1b1;
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                }
+                .ktg026-1rem div.form-label>span.text {
+                    font-size: 1rem;
+                }
+                .ktg026-fontsize div.form-label>span.text {
+                    font-size: 1.2rem !important;
+                }
+                .ktg026-hidden {
+                    display: none;
+                }
                 .ktg-026-a .outside {
                     color: #e05f4e;
                 }
@@ -341,7 +380,7 @@ module nts.uk.at.view.ktg026.a {
                 }
                 .ktg-026-a.widget-content.ui-resizable th,
                 .ktg-026-a.widget-content.ui-resizable td {
-                    border-bottom: 1px solid #999;
+                    border-bottom: none !important;
                 }
                 .ktg-026-a.widget-content.ui-resizable td[rowspan] {
                     padding: 0;
@@ -363,34 +402,34 @@ module nts.uk.at.view.ktg026.a {
                     margin-top: -1px;
                 }
                 .widget-container.has-scroll .ktg-026-a.scroll-padding {
-                    padding-right: 17px;
+                    padding-right: 17px !important;
                 }
                 /* 限度アラーム時間超過 */
-                .ktg-026-a.widget-content.ui-resizable .exceeding-limit-alarm {
-                    background-color: #f6f636; /* 36協定アラーム */
-                    color: #ff0000; /* 36協定アラーム文字 */
+                .ktg-026-a.widget-content.ui-resizable table tr td div.exceeding-limit-alarm {
+                    background-color: #FFFF99; /* 36協定アラーム */
+                    color: #FF9900; /* 36協定アラーム文字 */
                 }
                 /* 限度エラー時間超過 */
-                .ktg-026-a.widget-content.ui-resizable .exceeding-limit-error {
-                    background-color: #FD4D4D; /* 36協定エラー */
+                .ktg-026-a.widget-content.ui-resizable table tr td div.exceeding-limit-error {
+                    background-color: #FF99CC; /* 36協定エラー */
                     color: #ffffff; /* 36協定エラー文字 */
                 }
                 /* 限度アラーム時間超過（特例あり） */
-                .ktg-026-a.widget-content.ui-resizable .special-exceeding-limit {
+                .ktg-026-a.widget-content.ui-resizable table tr td div.special-exceeding-limit {
                     background-color: #eb9152; /* 36協定特例 */
                 }
                 /* 限度エラー時間超過（特例あり） */
-                .ktg-026-a.widget-content.ui-resizable .special-exceeding-limit-error {
+                .ktg-026-a.widget-content.ui-resizable table tr td div.special-exceeding-limit-error {
                     background-color: #eb9152; /* 36協定特例 */
                 }
                 /* 特例限度アラーム時間超過 */
-                .ktg-026-a.widget-content.ui-resizable .special-exceeded-limit-alarm  {
-                    background-color: #f6f636; /* 36協定アラーム */
-                    color: #ff0000; /* 36協定アラーム文字 */
+                .ktg-026-a.widget-content.ui-resizable table tr td div.special-exceeded-limit-alarm  {
+                    background-color: #FFFF99; /* 36協定アラーム */
+                    color: #FF9900; /* 36協定アラーム文字 */
                 }
                 /* 特例限度エラー時間超過 */
-                .ktg-026-a.widget-content.ui-resizable .special-exceeded-limit-error {
-                    background-color: #FD4D4D; /* 36協定エラー */
+                .ktg-026-a.widget-content.ui-resizable table tr td div.special-exceeded-limit-error {
+                    background-color: #FF99CC; /* 36協定エラー */
                     color: #ffffff; /* 36協定エラー文字 */
                 }
             </style>
@@ -405,6 +444,7 @@ module nts.uk.at.view.ktg026.a {
         excessTimes: KnockoutObservable<number> = ko.observable(0);
         // A1_5 超過回数
         exceededNumber!: KnockoutComputed<string>;
+        textExceededNumber!: KnockoutComputed<string>;
 
         // A1_6 社員名
         employeeName: KnockoutObservable<String> = ko.observable('');
@@ -415,6 +455,8 @@ module nts.uk.at.view.ktg026.a {
         employeesOvertime!: any;
         isDialog: boolean = false;
         dialogParam: any;
+
+        legendOptions: any;
 
         constructor(private cache: { currentOrNextMonth: 1 | 2; } | null) {
             super();
@@ -437,16 +479,22 @@ module nts.uk.at.view.ktg026.a {
                         return '.ktg-026-a.widget-content:not(.widget-fixed) td[rowspan] canvas { height: 0px !important; }';
                     }
 
-                    return `.ktg-026-a.widget-content:not(.widget-fixed) td[rowspan] canvas { height: ${data.length * 41}px !important; }`;
+                    return `.ktg-026-a.widget-content:not(.widget-fixed) td[rowspan] canvas { height: ${data.length * 35}px !important; }`;
                 }
             });
 
-            vm.exceededNumber = ko.computed({
+            vm.textExceededNumber = ko.computed({
                 read: () => {
                     const year = ko.unwrap<string>(vm.targetYear);
+
+                    return `${vm.$i18n('KTG026_6', [`${year}`])}`;
+                }
+            });
+            vm.exceededNumber = ko.computed({
+                read: () => {
                     const time = ko.unwrap<number>(vm.excessTimes);
 
-                    return vm.$i18n('KTG026_6', [`${year}`, `${time}回`]);
+                    return `${vm.$i18n('KTG026_9', [`${time}`])}`;
                 }
             });
         }
@@ -463,6 +511,16 @@ module nts.uk.at.view.ktg026.a {
             let targetYear: any = vm.isDialog ? vm.dialogParam.targetYear : null;
 
             const command = { employeeId, targetDate, targetYear, currentOrNextMonth };
+            vm.legendOptions = {
+                items: [
+                    { colorCode: '#99FF66', labelText: vm.$i18n('KTG026_2') },
+                    { colorCode: '#00CC00', labelText: vm.$i18n('KTG026_3') },
+                ],
+                template :
+                '<div class="legend-item-label">'
+                + '<div style="color: #{colorCode};" data-bind="ntsFormLabel: { required: false }">#{labelText}</div>'
+                + '</div>'
+            };
 
             vm
                 .$blockui('invisibleView')
@@ -481,7 +539,7 @@ module nts.uk.at.view.ktg026.a {
                                     targetYear = rs.target;
                                 }
                                 
-                                const year = !_.isNull(targetYear)
+                                const year = !_.isNil(targetYear) && !_.isEmpty(targetYear)
                                 ? targetYear
                                 : ((currentOrNextMonth === 1 ? yearIncludeThisMonth : yearIncludeNextMonth) || '');
     
@@ -510,22 +568,27 @@ module nts.uk.at.view.ktg026.a {
 
             vm.targetYear
                 .subscribe((targetYear) => {
-                    vm.$window.storage('KTG026_TARGET', {
-                        isRefresh: false,
-                        target: targetYear
+                    vm.$validate('#ktg026-datepick').then(valid => {
+                        if (!valid || _.isEmpty(targetYear)) return;
+
+                        vm.$window.storage('KTG026_TARGET', {
+                            isRefresh: false,
+                            target: targetYear
+                        });
+                        const { employeesOvertime } = vm;
+                        const { closureID, closingPeriod } = employeesOvertime;
+                        const { processingYm } = closingPeriod || { processingYm: moment().format('YYYYMM') };
+    
+                        const requestBody = {
+                            employeeId,
+                            targetYear,
+                            processingYm,
+                            closingId: closureID
+                        };
+    
+                        vm.extractOvertime(requestBody);
                     });
-                    const { employeesOvertime } = vm;
-                    const { closureID, closingPeriod } = employeesOvertime;
-                    const { processingYm } = closingPeriod || { processingYm: moment().format('YYYYMM') };
-
-                    const requestBody = {
-                        employeeId,
-                        targetYear,
-                        processingYm,
-                        closingId: closureID
-                    };
-
-                    vm.extractOvertime(requestBody);
+                    
                 });
 
             $('.ktg-026-a.ui-resizable').trigger('wg.resize');
@@ -557,7 +620,6 @@ module nts.uk.at.view.ktg026.a {
 
         private displayDataTable(data: EmployeesOvertimeDisplay): void {
             const vm = this;
-
             // clear table
             vm.dataTable([]);
 

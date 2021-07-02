@@ -15,3 +15,7 @@
 div.valign-center.control-group {
 	width: 750px;
 }
+
+#A4_1 {
+  height: 350px !important;
+}

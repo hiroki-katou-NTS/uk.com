@@ -269,11 +269,16 @@ module nts.uk.com.view.ccg003.c {
         vm.$dialog.error({ messageId: error });
         return;
       }
-      if (vm.isNewMode()) {
-        vm.registerOnNewMode();
-      } else {
-        vm.registerOnUpdateMode();
-      }
+
+      vm.$validate().then(valid => {
+        if (valid) {
+          if (vm.isNewMode()) {
+            vm.registerOnNewMode();
+          } else {
+            vm.registerOnUpdateMode();
+          }
+        }
+      })
     }
 
     /**

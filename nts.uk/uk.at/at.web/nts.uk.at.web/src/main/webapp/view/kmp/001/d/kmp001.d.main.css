@@ -30,6 +30,6 @@
 	padding-right: 10px;
 }
 
-#viewd-radio-box {
-	padding-top: 20px !important;
+.viewd-radio-box {
+  display: inline-block;
 }

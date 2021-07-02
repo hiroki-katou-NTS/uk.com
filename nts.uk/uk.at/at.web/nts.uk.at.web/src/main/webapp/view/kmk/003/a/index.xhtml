@@ -221,7 +221,7 @@
 									data-bind="ntsColorPicker: {name: '#[KMK003_161]',value: colorCode, enable: $parent.isJapanese(), width: 50},visible: false" />
 							</div>
 							<div class="setting_header_br">
-								<div style="width: 190px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
+								<div style="width: 94px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_7')}</div>
 								<div id="cbb-worktime-atr" style="margin-right: 10px" tabindex="17"
 									data-bind="ntsComboBox: {
 									name: '#[KMK003_7]',
@@ -279,7 +279,7 @@
 							<table style="width: 885px;">
 
 								<tr style="height: 50px;">
-									<td class="td-cell">
+									<td class="td-cell" style="display: flex">
 										<div tabindex="21" class="cf" id="switch-tab-mode"
 											data-bind="ntsSwitchButton: {
 											name: '#[KMK003_207]',
@@ -298,7 +298,7 @@
 								<tr>
 									<td colspan="3" class="td-cell">
 										<div id="tab-panel"
-											data-bind="ntsTabPanel: {width:250, dataSource: tabs,
+											data-bind="ntsTabPanel: {width:150, dataSource: tabs,
 											active: selectedTab,direction: 'vertical' }">
 											<div tabindex="23" class="tab-a1">
 												<div data-bind="ntsKMK003A1: {

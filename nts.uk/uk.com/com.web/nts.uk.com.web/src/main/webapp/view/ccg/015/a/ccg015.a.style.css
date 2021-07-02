@@ -32,7 +32,7 @@
 
 /* css width */
 .w-100 {
-  width: 100%;
+  width: 102%;
 }
 
 /* css margin */
@@ -52,6 +52,10 @@
   margin-top: 45px;
 }
 
+.ml-30 {
+  margin-left: 30px;
+}
+
 .ml-40 {
   margin-left: 40px;
 }
@@ -60,12 +64,16 @@
   margin-left: 50px;
 }
 
+.mb-15 {
+  margin-bottom: 15px;
+}
+
 .fix-color-caret::after {
   color: #97D155 !important;
 }
 
 .width-btn {
-  width: 142px;
+  width: 165px;
 }
 
 .fix-btn {

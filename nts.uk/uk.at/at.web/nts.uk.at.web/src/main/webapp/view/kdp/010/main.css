@@ -1,3 +1,7 @@
+#functions-area .button-group .ntsControl {
+	vertical-align: middle;
+}
+
 .sidebar-content{
 	min-width: 1000px;
 }
@@ -53,35 +57,36 @@
 	width: 50px;
 }
 
-.nts-input{
-	width: 24px;
-}
-
 .label-top{
 	margin: 10px 30px;
 }
-.form-data .inline-display{
+.inline-display{
 	display: inline-block;
 }
 .display-none{
 	display: none;	
 }
+
+.number-input{
+	width: 24px;
+}
+
 .form-data td{
 	height: 50px;
 }
 .form-data .row-label{
 	margin: 10px 10px 0px 30px;
-    width: 198px;
+    width: 220px;
 }
 .form-data .colorpicker{
     margin-left: 10px;
 }
 .form-data .row-data{
 	vertical-align: top;
-    margin-top: 15px;
+    margin-top: 10px;
 }
 .form-data .text-note{
-    margin: 0 20px;
+    margin: 0 10px 0 20px;
 }
 .label-middle{
 	margin: 15px 30px 0px;
@@ -90,59 +95,62 @@
 	margin-right: 15px;
 }
 .form-data .ntsRadioBox:nth-child(1){
-	min-width: 200px;
+	min-width: 150px;
 	margin-right: 0;
 }
 .margin-left5{
 	margin-left: 50px;
 }
+.margin-left3{
+	margin-left: 30px;
+}
 .option-authent .ntsRadioBox:nth-child(1){
-	min-width: 90px;
+	min-width: 80px;
 }
 .option-authent .row-data{
-	margin-right: 100px;
+	margin-right: 60px;
 	margin-top: 14px;
 }
-
-
-
-/* screen A */
-#tabpanel-a{
-	
+.vertical-align-top .nts-editor-wrapped{
+	vertical-align: top;
+}
+.form-data .vertical-align-top .text-note{
+    margin: 7px 20px 10px;
+}
+.radio-wrappers.min-with-120 label:nth-child(1){
+	min-width: 80px;
 }
 
+
 /* screen B */
-#tabpanel-b{
+.screenB {
 	
 }
 
 /* screen C */
-#tabpanel-c{
+.screenC {
 	
 }
 
 /* screen D */
-#tabpanel-d .label-top{
+.screenE .label-top{
 	margin: 10px 30px 5px;
 }
-#tabpanel-d .label-middle{
+.screenE .label-middle{
 	margin: 10px 30px 0px;
 }
-#tabpanel-d .reason{
+.screenE .reason{
 	height: 20px;
 }
-#tabpanel-d .reason .row-data{
-    margin-left: 244px;
+.screenE .reason .row-data{
+    margin-left: 272px;
     margin-top: 5px;
 }
-#tabpanel-d .form-data .reason .ntsRadioBox:nth-child(1){
+.screenE .reason .row-data .radio-wrappers {
+	margin-left: 20px;
+}
+.screenE .form-data .reason .ntsRadioBox:nth-child(1){
 	min-width: auto;
 	margin-right: 15px;
 	margin-left: 15px;
 }
-
-/* screen F */
-#tabpanel-f .check{
-	margin: 5px 0 5px 80px;
-}
-

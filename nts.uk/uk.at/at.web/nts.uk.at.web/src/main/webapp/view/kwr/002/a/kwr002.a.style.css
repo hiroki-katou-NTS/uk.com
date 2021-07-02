@@ -53,8 +53,9 @@ body {
 	margin-left: 67px;
 }
 
-.switch-btn>button {
-    width: 80px;
+.switchbox-wrappers .radio-wrapper span {
+	width: 80px;
+	text-align: center;
 }
 
 .switch-ml {
@@ -67,4 +68,8 @@ body {
 
 #employee-search > div {
 	padding: 0px !important;
+}
+
+.ui-igcombo-wrapper {
+    margin-top: 10px;
 }

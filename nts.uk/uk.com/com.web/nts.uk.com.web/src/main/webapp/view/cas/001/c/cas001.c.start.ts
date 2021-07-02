@@ -2,6 +2,7 @@ module nts.uk.com.view.cas001.c {
     __viewContext.ready(function() {
         __viewContext["viewModel"] = new viewmodel.ScreenModel();
  
+        setTimeout(() => {
             $("#grid0").ntsGrid({
                 width: '300px',
                 height: '345px',
@@ -29,7 +30,8 @@ module nts.uk.com.view.cas001.c {
                         visibility: "overflow"
                     }
                 ]
-            });       
+            });      
+        }, 50); 
         __viewContext.bind(__viewContext["viewModel"]);
         
         
