@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.kdw013.a;
 
+import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -8,6 +9,7 @@ import lombok.Setter;
  *
  */
 @Setter
+@Getter
 public class StartProcessDto {
 	
 	// 工数入力を起動する

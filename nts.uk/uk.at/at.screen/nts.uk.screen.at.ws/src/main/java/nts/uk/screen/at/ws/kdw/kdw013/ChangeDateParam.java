@@ -1,9 +1,8 @@
 package nts.uk.screen.at.ws.kdw.kdw013;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 
 /**
  * 
@@ -11,6 +10,7 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
  *
  */
 @Getter
+@Setter
 public class ChangeDateParam {
 
 	// 社員ID
@@ -20,6 +20,6 @@ public class ChangeDateParam {
 	private GeneralDate refDate;
 
 	// 表示期間
-	private DatePeriodDto displayPeriod;
+	private DatePeriodCommand displayPeriod;
 	
 }

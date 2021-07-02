@@ -1,6 +1,8 @@
-module nts.uk.ui.at.kdp013.c {
+module nts.uk.ui.at.kdw013.c {
     const COMPONENT_NAME = 'kdp013c';
-    import calendar = nts.uk.ui.components.fullcalendar;
+
+    const DATE_FORMAT = 'YYYY-MM-DD';
+    const DATE_TIME_FORMAT = 'YYYY-MM-DDT00:00:00.000\\Z';
 
     const style = `.edit-event {
         width: 350px;
@@ -36,7 +38,7 @@ module nts.uk.ui.at.kdp013.c {
         text-align: center;
     }
     .edit-event>table>tbody>tr>td>.ntsControl {
-        width: 100%;
+        width: 280px;
         display: block;
         box-sizing: border-box;
         margin-bottom: 10px;
@@ -83,7 +85,7 @@ module nts.uk.ui.at.kdp013.c {
     }`;
 
     const { randomId } = nts.uk.util;
-    const { number2String, string2Number, validateNumb, getTimeOfDate, setTimeOfDate } = share;
+    const { number2String, string2Number, validateNumb, getTimeOfDate, setTimeOfDate, getTitles } = share;
 
     const API: API = {
         START: '/screen/at/kdw013/c/start',
@@ -154,6 +156,37 @@ module nts.uk.ui.at.kdp013.c {
     }
 
     @handler({
+        bindingName: 'kdw-ttg',
+        validatable: true,
+        virtual: false
+    })
+    export class KdwToggleBindingHandler implements KnockoutBindingHandler {
+        init(element: HTMLElement, valueAccessor: () => KnockoutObservable<boolean>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
+            const accessor = valueAccessor();
+
+            const $if = ko.computed({
+                read: () => {
+                    return ko.unwrap(accessor);
+                },
+                disposeWhenNodeIsRemoved: element
+            });
+
+            const hidden = ko.computed({
+                read: () => {
+                    return !ko.unwrap(accessor);
+                },
+                disposeWhenNodeIsRemoved: element
+            });
+
+            ko.applyBindingsToNode(element, { if: $if, css: { hidden } }, bindingContext);
+
+            element.removeAttribute('data-bind');
+
+            return { controlsDescendantBindings: true };
+        }
+    }
+
+    @handler({
         bindingName: COMPONENT_NAME,
         validatable: true,
         virtual: false
@@ -196,45 +229,45 @@ module nts.uk.ui.at.kdp013.c {
                                 "></div>
                         </td>
                     </tr>
-                    <tr>
-                        <td data-bind="i18n: 'C1_10'"></td>
+                    <tr data-bind="kdw-ttg: $component.usages.taskUse1">
+                        <td data-bind="i18n: $component.labels.taskLbl1"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.task1,
                                 items: $component.combobox.taskList1,
                                 required: true,
-                                name: 'GET_FROM_DOMAIN',
+                                name: $component.labels.taskLbl1,
                                 hasError: $component.errors.dropdown
                             "></div></td>
                     </tr>
-                    <tr>
-                        <td data-bind="i18n: 'C1_13'"></td>
+                    <tr data-bind="kdw-ttg: $component.usages.taskUse2">
+                        <td data-bind="i18n: $component.labels.taskLbl2"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.task2,
-                                name: 'GET_FROM_DOMAIN',
+                                name: $component.labels.taskLbl2,
                                 items: $component.combobox.taskList2
                             "></div></td>
                     </tr>
-                    <tr>
-                        <td data-bind="i18n: 'C1_16'"></td>
+                    <tr data-bind="kdw-ttg: $component.usages.taskUse3">
+                        <td data-bind="i18n: $component.labels.taskLbl3"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.task3,
-                                name: 'GET_FROM_DOMAIN',
+                                name: $component.labels.taskLbl3,
                                 items: $component.combobox.taskList3
                             "></div></td>
                     </tr>
-                    <tr>
-                        <td data-bind="i18n: 'C1_19'"></td>
+                    <tr data-bind="kdw-ttg: $component.usages.taskUse4">
+                        <td data-bind="i18n: $component.labels.taskLbl4"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.task4,
-                                name: 'GET_FROM_DOMAIN',
+                                name: $component.labels.taskLbl4,
                                 items: $component.combobox.taskList4
                             "></div></td>
                     </tr>
-                    <tr>
-                        <td data-bind="i18n: 'C1_22'"></td>
+                    <tr data-bind="kdw-ttg: $component.usages.taskUse5">
+                        <td data-bind="i18n: $component.labels.taskLbl5"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.task5,
-                                name: 'GET_FROM_DOMAIN',
+                                name: $component.labels.taskLbl5,
                                 items: $component.combobox.taskList5
                             "></div></td>
                     </tr>
@@ -242,8 +275,7 @@ module nts.uk.ui.at.kdp013.c {
                         <td data-bind="i18n: 'KDW013_28'"></td>
                         <td><div data-bind="
                                 dropdown: $component.model.workplace,
-                                items: $component.items,
-                                required: true,
+                                items: $component.combobox.workLocations,
                                 name: 'WORKPLACE',
                                 hasError: $component.errors.workplace
                             "></div></td>
@@ -261,7 +293,7 @@ module nts.uk.ui.at.kdp013.c {
                     </tr>
                     <tr class="functional">
                         <td colspan="2">
-                            <button class="proceed" data-bind="i18n: 'KDW013_43', click: $component.save, disable: $component.hasError"></button>
+                            <button class="proceed" data-bind="i18n: 'KDW013_43', click: function() { $component.save.apply($component, []) }, disable: $component.hasError"></button>
                         </td>
                     </tr>
                 </tbody>
@@ -359,18 +391,138 @@ module nts.uk.ui.at.kdp013.c {
             taskList3: KnockoutObservableArray<DropdownItem>;
             taskList4: KnockoutObservableArray<DropdownItem>;
             taskList5: KnockoutObservableArray<DropdownItem>;
+            workLocations: KnockoutComputed<DropdownItem[]>;
         } = {
                 taskList1: ko.observableArray([]),
                 taskList2: ko.observableArray([]),
                 taskList3: ko.observableArray([]),
                 taskList4: ko.observableArray([]),
-                taskList5: ko.observableArray([])
+                taskList5: ko.observableArray([]),
+                workLocations: ko.computed(() => [])
+            };
+
+        labels: {
+            taskLbl1: KnockoutObservable<string>;
+            taskLbl2: KnockoutObservable<string>;
+            taskLbl3: KnockoutObservable<string>;
+            taskLbl4: KnockoutObservable<string>;
+            taskLbl5: KnockoutObservable<string>;
+        } = {
+                taskLbl1: ko.observable('C1_10'),
+                taskLbl2: ko.observable('C1_13'),
+                taskLbl3: ko.observable('C1_16'),
+                taskLbl4: ko.observable('C1_19'),
+                taskLbl5: ko.observable('C1_22'),
+            };
+
+        usages: {
+            taskUse1: KnockoutObservable<boolean>;
+            taskUse2: KnockoutObservable<boolean>;
+            taskUse3: KnockoutObservable<boolean>;
+            taskUse4: KnockoutObservable<boolean>;
+            taskUse5: KnockoutObservable<boolean>;
+        } = {
+                taskUse1: ko.observable(false),
+                taskUse2: ko.observable(false),
+                taskUse3: ko.observable(false),
+                taskUse4: ko.observable(false),
+                taskUse5: ko.observable(false)
             };
 
         confirm: KnockoutObservable<ConfirmContent | null> = ko.observable(null);
 
+        taskFrameSettings!: KnockoutComputed<a.TaskFrameSettingDto[]>;
+
         constructor(public params: Params) {
             super();
+
+            const vm = this;
+            const { labels, usages } = vm;
+            const { $settings } = params;
+            const subscribe = (t: a.TaskFrameSettingDto[]) => {
+                const [first, second, thirt, four, five] = t;
+
+                if (first) {
+                    labels.taskLbl1(first.frameName);
+                    usages.taskUse1(first.useAtr === 1);
+                }
+
+                if (second) {
+                    labels.taskLbl2(second.frameName);
+                    usages.taskUse2(second.useAtr === 1);
+                }
+
+                if (thirt) {
+                    labels.taskLbl3(thirt.frameName);
+                    usages.taskUse3(thirt.useAtr === 1);
+                }
+
+                if (four) {
+                    labels.taskLbl4(four.frameName);
+                    usages.taskUse4(four.useAtr === 1);
+                }
+
+                if (five) {
+                    labels.taskLbl5(five.frameName);
+                    usages.taskUse5(five.useAtr === 1);
+                }
+            };
+
+            vm.taskFrameSettings = ko.computed({
+                read: () => {
+                    const settings = ko.unwrap($settings);
+
+                    if (settings) {
+                        const { startManHourInputResultDto } = settings;
+
+                        const { taskFrameUsageSetting } = startManHourInputResultDto;
+                        const { frameSettingList } = taskFrameUsageSetting;
+
+                        return frameSettingList;
+                    }
+
+                    return [];
+                }
+            });
+
+            vm.combobox.workLocations = ko.computed({
+                read: () => {
+                    const settings = ko.unwrap($settings);
+
+                    if (settings) {
+                        const { startManHourInputResultDto } = settings;
+
+                        const { workLocations } = startManHourInputResultDto;
+
+                        const wlcs = workLocations
+                            .map((m) => ({
+                                id: m.workLocationCD,
+                                code: m.workLocationCD,
+                                name: m.workLocationName,
+                                selected: false,
+                                $raw: m
+                            }));
+
+                        return [{
+                            id: '',
+                            code: '',
+                            name: vm.$i18n('KDW013_41'),
+                            $raw: null,
+                            selected: false
+                        }, ...wlcs]
+                    }
+
+                    return [];
+                },
+                write: (value: DropdownItem[]) => {
+
+                }
+            });
+
+            this.taskFrameSettings
+                .subscribe(subscribe);
+
+            subscribe(this.taskFrameSettings());
 
             this.hasError = ko
                 .computed({
@@ -393,8 +545,11 @@ module nts.uk.ui.at.kdp013.c {
 
         mounted() {
             const vm = this;
-            const { $el, params, model, hasError } = vm;
+            const { $el, params, model, combobox, hasError } = vm;
+            const { taskList1, taskList2, taskList3, taskList4, taskList5 } = combobox;
+            const { task1, task2, task3, task4, task5, workplace: workLocation } = model;
             const { view, position, data, excludeTimes } = params;
+
             const cache = {
                 view: ko.unwrap(view),
                 position: ko.unwrap(position)
@@ -404,11 +559,27 @@ module nts.uk.ui.at.kdp013.c {
                 const { taskName } = displayInfo;
 
                 return {
+                    id: code,
                     code,
                     name: taskName,
                     selected: false,
                     $raw
                 };
+            };
+            const getmapperList = (tasks: TaskDto[]) => {
+                const lst: DropdownItem[] = [{
+                    id: '',
+                    code: '',
+                    name: vm.$i18n('KDW013_41'),
+                    $raw: null,
+                    selected: false
+                }];
+
+                _.each(tasks, (t: TaskDto) => {
+                    lst.push(mapper(t));
+                });
+
+                return lst;
             };
             const subscribe = (event: FullCalendar.EventApi | null) => {
                 $.Deferred()
@@ -416,23 +587,31 @@ module nts.uk.ui.at.kdp013.c {
                     .then(() => {
                         if (event) {
                             const { extendedProps, start, end } = event as any as calendar.EventRaw;
-                            const { descriptions, employeeId } = extendedProps;
+                            const {
+                                remarks,
+                                sId,
+                                workCD1,
+                                workCD2,
+                                workCD3,
+                                workCD4,
+                                workCD5
+                            } = extendedProps;
                             const startTime = getTimeOfDate(start);
                             const endTime = getTimeOfDate(end);
 
-                            model.descriptions(descriptions);
+                            model.descriptions(remarks);
 
                             model.timeRange({ start: startTime, end: endTime });
 
-                            const params: StartWorkInputParam = {
+                            const params: StartWorkInputPanelParam = {
                                 refDate: moment(start).toISOString(),
-                                sId: employeeId || vm.$user.employeeId,
+                                sId,
                                 workGroupDto: {
-                                    workCD1: '',
-                                    workCD2: '',
-                                    workCD3: '',
-                                    workCD4: '',
-                                    workCD5: ''
+                                    workCD1,
+                                    workCD2,
+                                    workCD3,
+                                    workCD4,
+                                    workCD5
                                 }
                             };
 
@@ -444,17 +623,68 @@ module nts.uk.ui.at.kdp013.c {
 
                         return null;
                     })
-                    .then((params: StartWorkInputParam | null) => !!params ? null : null) //vm.$ajax('at', API.START, params) : null)
+                    .then((params: StartWorkInputPanelParam | null) => !!params ? vm.$ajax('at', API.START, params) : null)
                     .then((response: StartWorkInputPanelDto | null) => {
                         if (response) {
-                            const { taskList1, taskList2, taskList3, taskList4, taskList5 } = vm.combobox;
+                            vm.params.$share(response);
                             const { taskListDto1, taskListDto2, taskListDto3, taskListDto4, taskListDto5 } = response;
 
-                            taskList1(taskListDto1.map(mapper));
-                            taskList2(taskListDto2.map(mapper));
-                            taskList3(taskListDto3.map(mapper));
-                            taskList4(taskListDto4.map(mapper));
-                            taskList5(taskListDto5.map(mapper));
+                            if (taskListDto1) {
+                                taskList1(getmapperList(taskListDto1));
+                            } else {
+                                taskList1([]);
+                            }
+
+                            if (taskListDto2) {
+                                taskList2(getmapperList(taskListDto2));
+                            } else {
+                                taskList2([]);
+                            }
+
+                            if (taskListDto3) {
+                                taskList3(getmapperList(taskListDto3));
+                            } else {
+                                taskList3([]);
+                            }
+
+                            if (taskListDto4) {
+                                taskList4(getmapperList(taskListDto4));
+                            } else {
+                                taskList4([]);
+                            }
+
+                            if (taskListDto5) {
+                                taskList5(getmapperList(taskListDto5));
+                            } else {
+                                taskList5([]);
+                            }
+
+                            // update selected
+                            if (event) {
+                                const { extendedProps } = event as any as calendar.EventRaw;
+                                const {
+                                    workCD1,
+                                    workCD2,
+                                    workCD3,
+                                    workCD4,
+                                    workCD5,
+                                    workLocationCD: wlc
+                                } = extendedProps;
+
+                                task1(workCD1);
+                                task2(workCD2);
+                                task3(workCD3);
+                                task4(workCD4);
+                                task5(workCD5);
+                                workLocation(wlc);
+                            } else {
+                                task1(null);
+                                task2(null);
+                                task3(null);
+                                task4(null);
+                                task5(null);
+                                workLocation(null);
+                            }
                         }
 
                         return true;
@@ -488,6 +718,139 @@ module nts.uk.ui.at.kdp013.c {
                         position.valueHasMutated();
                     }, 200);
                 });
+
+            task1
+                .subscribe((taskCode: string) => {
+                    if (taskCode) {
+                        const { employeeId } = vm.$user;
+                        const { start } = ko.unwrap(data);
+
+                        const params: SelectWorkItemParam = {
+                            refDate: moment(start).format(DATE_TIME_FORMAT),
+                            sId: employeeId,
+                            taskCode,
+                            taskFrameNo: 2
+                        };
+
+                        vm
+                            .$blockui('grayoutView')
+                            .then(() => vm.$ajax('at', API.SELECT, params))
+                            .then((data: TaskDto[]) => {
+                                if (data) {
+                                    taskList2(getmapperList(data));
+                                } else {
+                                    taskList2([]);
+                                }
+                            })
+                            .always(() => vm.$blockui('clearView'));
+                    }
+                });
+
+            task2
+                .subscribe((taskCode: string) => {
+                    if (taskCode) {
+                        const { employeeId } = vm.$user;
+                        const { start } = ko.unwrap(data);
+
+                        const params: SelectWorkItemParam = {
+                            refDate: moment(start).format(DATE_TIME_FORMAT),
+                            sId: employeeId,
+                            taskCode,
+                            taskFrameNo: 3
+                        };
+
+                        vm
+                            .$blockui('grayoutView')
+                            .then(() => vm.$ajax('at', API.SELECT, params))
+                            .then((data: TaskDto[]) => {
+                                if (data) {
+                                    taskList3(getmapperList(data));
+                                } else {
+                                    taskList3([]);
+                                }
+                            })
+                            .always(() => vm.$blockui('clearView'));
+                    }
+                });
+
+            task3
+                .subscribe((taskCode: string) => {
+                    if (taskCode) {
+                        const { employeeId } = vm.$user;
+                        const { start } = ko.unwrap(data);
+
+                        const params: SelectWorkItemParam = {
+                            refDate: moment(start).format(DATE_TIME_FORMAT),
+                            sId: employeeId,
+                            taskCode,
+                            taskFrameNo: 4
+                        };
+
+                        vm
+                            .$blockui('grayoutView')
+                            .then(() => vm.$ajax('at', API.SELECT, params))
+                            .then((data: TaskDto[]) => {
+                                if (data) {
+                                    taskList4(getmapperList(data));
+                                } else {
+                                    taskList4([]);
+                                }
+                            })
+                            .always(() => vm.$blockui('clearView'));
+                    }
+                });
+
+            task4
+                .subscribe((taskCode: string) => {
+                    if (taskCode) {
+                        const { employeeId } = vm.$user;
+                        const { start } = ko.unwrap(data);
+
+                        const params: SelectWorkItemParam = {
+                            refDate: moment(start).format(DATE_TIME_FORMAT),
+                            sId: employeeId,
+                            taskCode,
+                            taskFrameNo: 5
+                        };
+
+                        vm
+                            .$blockui('grayoutView')
+                            .then(() => vm.$ajax('at', API.SELECT, params))
+                            .then((data: TaskDto[]) => {
+                                if (data) {
+                                    taskList5(getmapperList(data));
+                                } else {
+                                    taskList5([]);
+                                }
+                            })
+                            .always(() => vm.$blockui('clearView'));
+                    }
+                });
+
+            /*
+            task5
+                .subscribe((taskCode: string) => {
+                    if (taskCode) {
+                        const { employeeId } = vm.$user;
+                        const { start } = ko.unwrap(data);
+
+                        const params: SelectWorkItemParam = {
+                            refDate: moment(start).format(DATE_TIME_FORMAT),
+                            sId: employeeId,
+                            taskCode,
+                            taskFrameNo: 5
+                        };
+
+                        vm
+                            .$blockui('grayoutView')
+                            .then(() => vm.$ajax('at', API.SELECT, params))
+                            .then((data: TaskDto[]) => {
+                                console.log(data);
+                            })
+                            .always(() => vm.$blockui('clearView'));
+                    }
+                });
+            */
 
             position
                 .subscribe((p: any) => {
@@ -558,9 +921,9 @@ module nts.uk.ui.at.kdp013.c {
 
             vm.confirm(null);
 
-            if (!vm.hasError()) {
-                vm.save('cancel');
-            }
+//            if (!vm.hasError()) {
+//                vm.save('cancel');
+//            }
         }
 
         close() {
@@ -571,7 +934,7 @@ module nts.uk.ui.at.kdp013.c {
 
             $.Deferred()
                 .resolve(true)
-                .then(() => $(vm.$el).find('input, textarea').trigger('blur'))
+                //.then(() => $(vm.$el).find('input, textarea').trigger('blur'))
                 .then(() => {
                     const { title, extendedProps } = ko.unwrap(data);
 
@@ -588,10 +951,100 @@ module nts.uk.ui.at.kdp013.c {
 
         save(result?: 'yes' | 'cancel' | null) {
             const vm = this;
-            const { params, model } = vm;
+            const { params, model, combobox } = vm;
             const { data } = params;
             const event = data();
             const { timeRange, descriptions } = model;
+            const { employeeId } = vm.$user;
+            const { task1, task2, task3, task4, task5, workplace } = model;
+            const { taskList1, taskList2, taskList3, taskList4, taskList5 } = combobox;
+            const t1 = ko.unwrap(task1);
+            const t2 = ko.unwrap(task2);
+            const t3 = ko.unwrap(task3);
+            const t4 = ko.unwrap(task4);
+            const t5 = ko.unwrap(task5);
+
+            const getTaskInfo = (): TaskDto | null => {
+            if (t1) {
+                const selected = _.find(ko.unwrap(taskList1), ({ id }) => t1 === id);
+
+                if (selected) {
+                    return selected.$raw;
+                }
+            }
+            if (t2) {
+                const selected = _.find(ko.unwrap(taskList2), ({ id }) => t2 === id);
+
+                if (selected) {
+                    return selected.$raw;
+                }
+            }
+            if (t3) {
+                const selected = _.find(ko.unwrap(taskList3), ({ id }) => t3 === id);
+
+                if (selected) {
+                    return selected.$raw;
+                }
+            }
+            if (t4) {
+                const selected = _.find(ko.unwrap(taskList4), ({ id }) => t4 === id);
+
+                if (selected) {
+                    return selected.$raw;
+                }
+            }
+            if (t5) {
+                const selected = _.find(ko.unwrap(taskList5), ({ id }) => t5 === id);
+
+                if (selected) {
+                    return selected.$raw;
+                }
+            }
+
+                return null;
+            };
+        
+            const getTitles = (): string |null=>{
+            
+            let tastNames = [];
+                if (t1) {
+                    const selected = _.find(ko.unwrap(taskList1), ({ id }) => t1 === id);
+
+                    if (selected) {
+                       tastNames.push(selected.name);
+                    }
+                }
+                if (t2) {
+                    const selected = _.find(ko.unwrap(taskList2), ({ id }) => t2 === id);
+
+                    if (selected) {
+                        tastNames.push(selected.name);
+                    }
+                }
+                if (t3) {
+                    const selected = _.find(ko.unwrap(taskList3), ({ id }) => t3 === id);
+
+                    if (selected) {
+                       tastNames.push(selected.name);
+                    }
+                }
+                if (t4) {
+                    const selected = _.find(ko.unwrap(taskList4), ({ id }) => t4 === id);
+
+                    if (selected) {
+                        tastNames.push(selected.name);
+                    }
+                }
+                if (t5) {
+                    const selected = _.find(ko.unwrap(taskList5), ({ id }) => t5 === id);
+
+                    if (selected) {
+                       tastNames.push(selected.name);
+                    }
+                }
+
+                return tastNames.join("\n");
+            }
 
             $.Deferred()
                 .resolve(true)
@@ -603,18 +1056,44 @@ module nts.uk.ui.at.kdp013.c {
                         if (event) {
                             const { start } = event;
                             const tr = ko.unwrap(timeRange);
+                            const task = getTaskInfo();
 
                             event.setStart(setTimeOfDate(start, tr.start));
                             event.setEnd(setTimeOfDate(start, tr.end));
 
                             const { status } = event.extendedProps;
 
+                            if (!event.extendedProps.id) {
+                                event.setExtendedProp('id', randomId());
+                            }
+
                             if (['new', 'add'].indexOf(status) === -1) {
                                 event.setExtendedProp('status', 'add');
                             } else {
                                 event.setExtendedProp('status', 'update');
                             }
-                            event.setExtendedProp('descriptions', descriptions());
+
+                            if (task) {
+                                const { displayInfo } = task;
+
+                                if (displayInfo) {
+                                    const { color, taskName } = displayInfo;
+
+                                    event.setProp('title', getTitles());
+                                    event.setProp('backgroundColor', color);
+                                }
+                            }
+
+                            event.setExtendedProp('workCD1', ko.unwrap(task1));
+                            event.setExtendedProp('workCD2', ko.unwrap(task2));
+                            event.setExtendedProp('workCD3', ko.unwrap(task3));
+                            event.setExtendedProp('workCD4', ko.unwrap(task4));
+                            event.setExtendedProp('workCD5', ko.unwrap(task5));
+
+                            event.setExtendedProp('sId', employeeId);
+                            event.setExtendedProp('workLocationCD', ko.unwrap(workplace));
+
+                            event.setExtendedProp('remarks', descriptions());
                         }
 
                         // close popup
@@ -632,12 +1111,15 @@ module nts.uk.ui.at.kdp013.c {
         data: KnockoutObservable<FullCalendar.EventApi>;
         position: KnockoutObservable<null | any>;
         excludeTimes: KnockoutObservableArray<share.BussinessTime>;
+        $settings: KnockoutObservable<a.StartProcessDto | null>;
+        $share: KnockoutObservable<StartWorkInputPanelDto | null>;
     }
 
     type DropdownItem = {
+        id: string;
         code: string;
         name: string;
         selected: boolean;
-        $raw: TaskDto;
+        $raw: any;
     };
 }

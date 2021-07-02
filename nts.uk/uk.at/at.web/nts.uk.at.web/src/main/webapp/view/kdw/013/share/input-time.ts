@@ -1,4 +1,4 @@
-module nts.uk.ui.at.kdp013.share {
+module nts.uk.ui.at.kdw013.share {
     const { number2String, string2Number, validateNumb } = share;
 
     export type BussinessTime = {
@@ -139,6 +139,7 @@ module nts.uk.ui.at.kdp013.share {
             const excludeTimes: KnockoutObservableArray<BussinessTime> = allBindingsAccessor.get('exclude-times');
             const value = valueAccessor();
 
+            const { $i18n } = viewModel;
             const errorId = ko.observable('');
             const errorParams = ko.observableArray(['']);
             const startTime: KnockoutObservable<number | null> = ko.observable(null).extend({ rateLimit: 50 });
@@ -261,15 +262,15 @@ module nts.uk.ui.at.kdp013.share {
                 // validate start required
                 if (start === null) {
                     errorId('MsgB_1');
-                    errorParams(['KDW013_14']);
+                    errorParams([$i18n('KDW013_14')]);
 
                     return;
                 }
 
                 // validate true value
-                if ([-3, -2, -1, 1441].indexOf(start) > -1) {
+                if ([-3, -2, -1, 1440].indexOf(start) > -1) {
                     errorId('MsgB_16');
-                    errorParams(['KDW013_14', number2String(0), number2String(1440)]);
+                    errorParams([$i18n('KDW013_14'), number2String(0), number2String(1439)]);
 
                     return;
                 }
@@ -277,21 +278,54 @@ module nts.uk.ui.at.kdp013.share {
                 // validate end required
                 if (end === null) {
                     errorId('MsgB_1');
-                    errorParams(['KDW013_31']);
+                    errorParams([$i18n('KDW013_31')]);
 
                     return;
                 }
 
                 // validate true value
-                if ([-3, -2, -1, 1441].indexOf(end) > -1) {
+                if ([-3, -2, -1, 1440].indexOf(end) > -1) {
                     errorId('MsgB_16');
-                    errorParams(['KDW013_31', number2String(0), number2String(1440)]);
+                    errorParams([$i18n('KDW013_31'), number2String(0), number2String(1439)]);
 
                     return;
                 }
 
                 // validate outofrange at here
                 // Msg_2164
+                const msg2164 = !!_
+                    .chain($excludes)
+                    .filter(({ endTime, startTime }) => {
+                        // inside other event
+                        if (start > startTime && start < endTime) {
+                            return true;
+                        }
+
+                        // inside other event
+                        if (end > startTime && end < endTime) {
+                            return true;
+                        }
+
+                        // overlap start time of other event
+                        if (start < startTime && end > startTime) {
+                            return true;
+                        }
+
+                        // overlap end time of other event
+                        if (start < endTime && end > endTime) {
+                            return true;
+                        }
+
+                        return false;
+                    })
+                    .size()
+                    .value();
+
+                if (msg2164) {
+                    errorId('Msg_2164');
+
+                    return;
+                }
 
                 // validate revert value
                 if (start >= end) {

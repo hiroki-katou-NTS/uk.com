@@ -23,10 +23,9 @@ public class GetTheWorkYouUseMostRecentlyService {
 	 * 	[1] 取得する
 	 * @input require
 	 * @input empId 社員ID	
-	 * @input ymd 年月日
 	 * @output List<WorkGroup>	よく利用作業一覧	List<作業グループ>
 	 */
-	public static List<WorkGroup> get(Require require, String empId, GeneralDate ymd) {
+	public static List<WorkGroup> get(Require require, String empId) {
 		//	$対象期間 = 期間#期間(年月日#今日().月を足す(-1), 年月日#今日())  	
 		DatePeriod targetPeriod = new DatePeriod(GeneralDate.today().addMonths(-1), GeneralDate.today());
 		//	$実績作業一覧 = require.日別実績を取得する(社員ID, $対象期間)	

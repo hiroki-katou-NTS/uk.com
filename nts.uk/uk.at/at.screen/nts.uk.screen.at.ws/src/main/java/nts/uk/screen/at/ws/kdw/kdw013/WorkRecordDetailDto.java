@@ -3,6 +3,7 @@ package nts.uk.screen.at.ws.kdw.kdw013;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.screen.at.app.kdw013.a.WorkRecordDetail;
@@ -13,13 +14,14 @@ import nts.uk.screen.at.app.kdw013.a.WorkRecordDetail;
  *
  */
 @Setter
+@Getter
 public class WorkRecordDetailDto {
 
 	// 年月日
 	private GeneralDate date;
 
 	// 社員ID
-	private String sId;
+	private String employeeId;
 
 	// 作業詳細リスト
 	private List<WorkDetailsParamDto> lstWorkDetailsParamDto;
@@ -31,7 +33,7 @@ public class WorkRecordDetailDto {
 		WorkRecordDetailDto workRecordDetailDto = new WorkRecordDetailDto();
 
 		workRecordDetailDto.setDate(domain.getDate());
-		workRecordDetailDto.setSId(domain.getSId());
+		workRecordDetailDto.setEmployeeId(domain.getSID());
 		workRecordDetailDto.setLstWorkDetailsParamDto(domain.getLstworkDetailsParam().orElse(null).stream()
 				.map(m -> WorkDetailsParamDto.toDto(m)).collect(Collectors.toList()));
 		workRecordDetailDto.setActualContent(

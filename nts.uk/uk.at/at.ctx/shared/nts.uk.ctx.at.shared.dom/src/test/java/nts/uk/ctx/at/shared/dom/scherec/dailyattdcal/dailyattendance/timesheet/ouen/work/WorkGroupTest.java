@@ -105,7 +105,7 @@ public class WorkGroupTest {
 	@Test
 	public void testPublic1_2() {
 
-		WorkGroup workGroup = WorkGroup.create("WorkCode", "WorkCode1", "WorkCode2", "WorkCode3", "WorkCode4");
+		WorkGroup workGroup = WorkGroup.create("WorkCode", null, null, null, null);
 		Task task = new Task(new TaskCode("Code"), taskFrameNo, null, new ArrayList<>(), new DatePeriod(date, date),
 				null);
 

@@ -35,40 +35,42 @@ public class TimeZoneDto {
 
 	public static TimeZoneDto toDto(TimeZone timeZone) {
 		TimeZoneDto timeZoneDto = new TimeZoneDto();
-		WorkTimeInformationDto startWorkTimeInformationDto = new WorkTimeInformationDto();
-		startWorkTimeInformationDto.setReasonTimeChange(
+		
+		WorkTimeInformationDto startInfo = new WorkTimeInformationDto();
+		startInfo.setReasonTimeChange(
 				new ReasonTimeChangeDto(timeZone.getStart().getReasonTimeChange().getTimeChangeMeans().value,
 						timeZone.getStart().getReasonTimeChange().getEngravingMethod().map(m -> m.value).orElse(null)));
-		startWorkTimeInformationDto.setTimeWithDay(timeZone.getStart().getTimeWithDay().map(m -> m.v()).orElse(null));
-
-		WorkTimeInformationDto endWorkTimeInformationDto = new WorkTimeInformationDto();
-		startWorkTimeInformationDto.setReasonTimeChange(
+		startInfo.setTimeWithDay(timeZone.getStart().getTimeWithDay().map(m -> m.v()).orElse(null));
+		timeZoneDto.setStart(startInfo);
+		
+		WorkTimeInformationDto endInfo = new WorkTimeInformationDto();
+		endInfo.setReasonTimeChange(
 				new ReasonTimeChangeDto(timeZone.getEnd().getReasonTimeChange().getTimeChangeMeans().value,
 						timeZone.getEnd().getReasonTimeChange().getEngravingMethod().map(m -> m.value).orElse(null)));
-		startWorkTimeInformationDto.setTimeWithDay(timeZone.getEnd().getTimeWithDay().map(m -> m.v()).orElse(null));
+		endInfo.setTimeWithDay(timeZone.getEnd().getTimeWithDay().map(m -> m.v()).orElse(null));
 
 		timeZoneDto.setWorkingHours(timeZone.getWorkingHours().map(m -> m.v()).orElse(null));
-		timeZoneDto.setStart(startWorkTimeInformationDto);
-		timeZoneDto.setEnd(endWorkTimeInformationDto);
+		
+		timeZoneDto.setEnd(endInfo);
 
 		return timeZoneDto;
 	}
 
-	public TimeZone toDomain() {
+	public static TimeZone toDomain(TimeZoneDto dto) {
 
 		return new TimeZone(
 				new WorkTimeInformation(
 						new ReasonTimeChange(
-								TimeChangeMeans.valueOf(this.start.getReasonTimeChange().getTimeChangeMeans()),
+								TimeChangeMeans.valueOf(dto.getStart().getReasonTimeChange().getTimeChangeMeans()),
 								Optional.of(EngravingMethod
-										.valueOf(this.start.getReasonTimeChange().getEngravingMethod()))),
-						new TimeWithDayAttr(this.start.getTimeWithDay())),
+										.valueOf(dto.getStart().getReasonTimeChange().getEngravingMethod()))),
+						new TimeWithDayAttr(dto.getStart().getTimeWithDay())),
 				new WorkTimeInformation(
 						new ReasonTimeChange(
-								TimeChangeMeans.valueOf(this.end.getReasonTimeChange().getTimeChangeMeans()),
+								TimeChangeMeans.valueOf(dto.getEnd().getReasonTimeChange().getTimeChangeMeans()),
 								Optional.of(EngravingMethod
-										.valueOf(this.end.getReasonTimeChange().getEngravingMethod()))),
-						new TimeWithDayAttr(this.end.getTimeWithDay())),
-				Optional.of(new AttendanceTime(this.workingHours)));
+										.valueOf(dto.getEnd().getReasonTimeChange().getEngravingMethod()))),
+						new TimeWithDayAttr(dto.getEnd().getTimeWithDay())),
+				Optional.of(new AttendanceTime(dto.getWorkingHours())));
 	}
 }

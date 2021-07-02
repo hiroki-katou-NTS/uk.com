@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.kdw013.a;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,8 +42,8 @@ public class GetDailyPerformanceData {
 		// 1: get(社員ID,期間)
 		List<IntegrationOfDaily> lstIntegrationOfDaily = getter.getIntegrationOfDaily(sId, period);
 
-		for (IntegrationOfDaily i : lstIntegrationOfDaily) {
-			List<TimeLeavingWork> timeLeavingWorks = i.getAttendanceLeave().get().getTimeLeavingWorks();
+		for (IntegrationOfDaily interDaily : lstIntegrationOfDaily) {
+			List<TimeLeavingWork> timeLeavingWorks = interDaily.getAttendanceLeave().map(x-> x.getTimeLeavingWorks()).orElse(Collections.emptyList());
 
 			for (TimeLeavingWork time : timeLeavingWorks) {
 
@@ -50,44 +51,51 @@ public class GetDailyPerformanceData {
 				WorkRecordDetail detail = new WorkRecordDetail();
 
 				// 年月日
-				detail.setDate(i.getYmd());
+				detail.setDate(interDaily.getYmd());
 				// 社員ID
-				detail.setSId(i.getEmployeeId());
+				detail.setSID(interDaily.getEmployeeId());
 
 				// 作業詳細リスト
 				List<WorkDetailsParam> lstworkDetailsParam = new ArrayList<>();
 
-				for (OuenWorkTimeSheetOfDailyAttendance a : i.getOuenTimeSheet()) {
-					for (OuenWorkTimeOfDailyAttendance b : i.getOuenTime()) {
-						WorkDetailsParam workDetailsParam = new WorkDetailsParam(
-								new SupportFrameNo(a.getTimeSheet().getStart().get().getTimeWithDay().get().v()),
-								new TimeZone(a.getTimeSheet().getStart().get(), a.getTimeSheet().getEnd().get(),
-										Optional.ofNullable(b.getWorkTime().getTotalTime())),
-								a.getWorkContent().getWork(), a.getWorkContent().getWorkRemarks(),
-								a.getWorkContent().getWorkplace().getWorkLocationCD());
-						lstworkDetailsParam.add(workDetailsParam);
-					}
+				for (OuenWorkTimeSheetOfDailyAttendance ouenSheet : interDaily.getOuenTimeSheet()) {
+					
+					Optional<OuenWorkTimeOfDailyAttendance> ouentime = interDaily.getOuenTime().stream()
+							.filter(x -> x.getWorkNo() == ouenSheet.getWorkNo()).findFirst();
+					
+					WorkDetailsParam workDetailsParam = new WorkDetailsParam(
+							new SupportFrameNo(ouenSheet.getWorkNo()),
+							new TimeZone(ouenSheet.getTimeSheet().getStart().get(),
+									ouenSheet.getTimeSheet().getEnd().get(),
+									Optional.ofNullable(
+											ouentime.map(x -> x.getWorkTime().getTotalTime()).orElse(null))),
+							ouenSheet.getWorkContent().getWork(), ouenSheet.getWorkContent().getWorkRemarks(),
+							ouenSheet.getWorkContent().getWorkplace().getWorkLocationCD());
+					lstworkDetailsParam.add(workDetailsParam);
+					
 				}
 
 				// 実績内容
 				ActualContent actualContent = new ActualContent();
 
 				// 休憩リスト
-				actualContent.setBreakTimeSheets(i.getBreakTime().getBreakTimeSheets());
+				actualContent.setBreakTimeSheets(interDaily.getBreakTime().getBreakTimeSheets());
 				// 休憩時間
-				actualContent.setBreakHours(Optional.of(i.getAttendanceTimeOfDailyPerformance().get()
-						.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getWorkTime()));
+				actualContent.setBreakHours(Optional.ofNullable(interDaily.getAttendanceTimeOfDailyPerformance().map(
+						x -> x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime())
+						.orElse(null)));
 				// 総労働時間
-				actualContent.setTotalWorkingHours(Optional.of(i.getAttendanceTimeOfDailyPerformance().get()
-						.getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime()));
+				actualContent.setTotalWorkingHours(Optional.ofNullable(interDaily.getAttendanceTimeOfDailyPerformance()
+						.map(x -> x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime()).orElse(null)));
 
 				if (time.getWorkNo().v() == 1) {
 					// 開始時刻
-					actualContent
-							.setStart(Optional.of(time.getAttendanceStamp().get().getActualStamp().get().getTimeDay()));
+					actualContent.setStart(Optional.ofNullable(time.getAttendanceStamp()
+							.map(x -> x.getStamp().map(y -> y.getTimeDay()).orElse(null)).orElse(null)));
 
 					// 終了時刻
-					actualContent.setEnd(Optional.of(time.getLeaveStamp().get().getActualStamp().get().getTimeDay()));
+					actualContent.setEnd(Optional.ofNullable(time.getLeaveStamp()
+							.map(x -> x.getStamp().map(y -> y.getTimeDay()).orElse(null)).orElse(null)));
 				}
 
 				// 実績内容

@@ -38,13 +38,13 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.日別時間帯別実績.App.作業工数を登録する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.日別時間帯別実績.App.作業工数を登録する.応援作業別勤怠時間帯を登録する
  * 
  * @author tutt
  *
  */
 @Stateless
-public class AddAttendanceTimeZoneCommandHandler
+public class RegisterWorkManHoursCommandHandler
 		extends CommandHandlerWithResult<AddAttendanceTimeZoneCommand, List<IntegrationOfDaily>> {
 
 	@Inject
@@ -86,13 +86,24 @@ public class AddAttendanceTimeZoneCommandHandler
 		RequireImpl require = new RequireImpl(ouenWorkTimeSheetOfDailyRepo, ouenWorkTimeOfDailyRepo,
 				editStateOfDailyPerformanceRepo, syWorkplaceAdapter, taskingRepo, taskFrameUsageSettingRepo, getter, empDailyPerErrorRepo);
 		
+		if (workDetails == null || workDetails.isEmpty()) {
+			return result;
+		}
+		
 		for (WorkDetail w : workDetails) {
 			ManHourInputResult manHourInputResult = RegisterWorkHoursService.register(require, AppContexts.user().companyId(), command.getEmployeeId(),
 					w.getDate(), command.getEditStateSetting(), w.getLstWorkDetailsParam());
 			
-			if(manHourInputResult.getIntegrationOfDaily().isPresent()) {
+			
+			
+			if (manHourInputResult.getIntegrationOfDaily().isPresent()) {
 				result.add(manHourInputResult.getIntegrationOfDaily().get());
 			}
+			transaction.execute(() -> {
+				// 2:persist
+				manHourInputResult.getAtomTask().run();
+			});
+			
 		}
 		
 		return result;
@@ -209,7 +220,7 @@ public class AddAttendanceTimeZoneCommandHandler
 
 		@Override
 		public Optional<OuenWorkTimeSheetOfDaily> findOuenWorkTimeSheetOfDaily(String empId, GeneralDate ymd) {
-			return Optional.of(ouenWorkTimeSheetOfDailyRepo.find(empId, ymd));
+			return Optional.ofNullable(ouenWorkTimeSheetOfDailyRepo.find(empId, ymd));
 		}
 
 		@Override

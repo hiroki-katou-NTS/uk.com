@@ -29,10 +29,11 @@ public class RegisterOuenWorkTimeOfDailyService {
 		Optional<OuenWorkTimeOfDaily> domain = require.getOuenWorkTimeOfDaily(empId, ymd);
 		//	if $実績の作業時間.isPresent
 		if(domain.isPresent()) {
-			//$更新時間 = $実績の作業時間.変更する(作業時間)	
-			domain.get().setOuenTime(ouenTimes);
+			//$更新時間 = $実績の作業時間.変更する(作業時間)
+			OuenWorkTimeOfDaily newDomain = OuenWorkTimeOfDaily.create(domain.get().getEmpId(), domain.get().getYmd(),
+					ouenTimes);
 			//	if $更新時間.応援時間.isEmpty	
-			if(domain.get().getOuenTimes().isEmpty()) {
+			if(newDomain.getOuenTimes().isEmpty()) {
 				//return require.作業時間を削除する($実績の作業時間)
 				return AtomTask.of(() -> {
 					require.delete(domain.get());
@@ -40,7 +41,7 @@ public class RegisterOuenWorkTimeOfDailyService {
 			}else {
 				//return require.作業時間を更新する($更新時間)
 				return AtomTask.of(() -> {
-					require.update(domain.get());
+					require.update(newDomain);
 				});
 			}
 		}

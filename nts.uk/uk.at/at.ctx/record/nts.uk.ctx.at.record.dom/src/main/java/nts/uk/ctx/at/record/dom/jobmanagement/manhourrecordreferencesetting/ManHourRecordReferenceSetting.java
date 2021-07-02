@@ -32,11 +32,9 @@ public class ManHourRecordReferenceSetting extends AggregateRoot {
 	 * @output 修正可能開始日付 GeneralDate
 	 */
 	public GeneralDate getWorkCorrectionStartDate(Require require, String employeeId) {
-		//$作業変更可能期間設定 = require.作業変更可能期間設定を取得する()
-		ManHourRecordReferenceSetting workChangeablePeriodSetting = require.get();
 		//$期間 = require.締め期間を取得する(社員ID, 年月日#今日())
 		DatePeriod period = require.getPeriod(employeeId, GeneralDate.today());
-		switch (workChangeablePeriodSetting.getElapsedMonths()) {
+		switch (this.elapsedMonths) {
 			case ONE_MONTH_AGO:
 				return period.start().addMonths(-1);
 			case TOW_MONTH_AGO:
@@ -47,6 +45,8 @@ public class ManHourRecordReferenceSetting extends AggregateRoot {
 				return period.start().addMonths(-4);
 			case FIVE_MONTH_AGO:
 				return period.start().addMonths(-5);
+			case SIX_MONTH_AGO:
+				return period.start().addMonths(-6);
 			default:
 				return period.start();
 		}

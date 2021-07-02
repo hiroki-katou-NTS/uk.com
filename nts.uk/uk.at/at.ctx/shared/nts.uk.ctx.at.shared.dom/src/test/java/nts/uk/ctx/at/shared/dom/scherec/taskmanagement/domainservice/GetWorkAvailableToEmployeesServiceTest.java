@@ -70,6 +70,9 @@ public class GetWorkAvailableToEmployeesServiceTest {
 			{
 				require.getTask();
 				result = taskFrameUsageSetting;
+				
+				require.getListTask(date, taskFrameNo, new ArrayList<>());
+				result = tasks;
 
 				require.getOptionalTask(taskFrameNo, new TaskCode("DUMMY"));
 			}
@@ -83,7 +86,7 @@ public class GetWorkAvailableToEmployeesServiceTest {
 	// if $子作業.isEmpty AND $絞込作業.isEmpty
 	@Test
 	public void test_3() {
-		
+
 		tasks.add(task);
 		tasks.add(task);
 		tasks.add(task);
@@ -95,13 +98,13 @@ public class GetWorkAvailableToEmployeesServiceTest {
 
 				require.getOptionalTask(taskFrameNo, new TaskCode("DUMMY"));
 				result = Optional.of(task);
-				
+
 				require.getListTask(date, taskFrameNo, new ArrayList<>());
 				result = tasks;
-				
+
 			}
 		};
-		
+
 		new MockUp<NarrowingDownTaskByWorkplaceFromEmployeesService>() {
 			@Mock
 			public Optional<NarrowingDownTaskByWorkplace> get(
@@ -113,7 +116,44 @@ public class GetWorkAvailableToEmployeesServiceTest {
 
 		List<Task> result = GetWorkAvailableToEmployeesService.get(require, companyID, employeeID, date,
 				new TaskFrameNo(2), Optional.of(new TaskCode("DUMMY")));
-//		assertThat(result.isEmpty()).isFalse();
-//		assertThat(result.size()).isEqualTo(3);
+		assertThat(result.isEmpty()).isTrue();
+	}
+
+	// if $子作業.isEmpty AND $絞込作業.isEmpty
+	@Test
+	public void test_4() {
+
+		tasks.add(task);
+		tasks.add(task);
+		tasks.add(task);
+
+		Optional<Task> optTask = Optional.of(this.task);
+
+		new Expectations() {
+			{
+				require.getOptionalTask(taskFrameNo, new TaskCode("DUMMY"));
+				result = optTask;
+
+				require.getTask();
+				result = taskFrameUsageSetting;
+
+				require.getListTask(date, taskFrameNo, new ArrayList<>());
+				result = tasks;
+			}
+		};
+
+		new MockUp<NarrowingDownTaskByWorkplaceFromEmployeesService>() {
+			@Mock
+			public Optional<NarrowingDownTaskByWorkplace> get(
+					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignworkplace.NarrowingDownTaskByWorkplaceFromEmployeesService.Require require,
+					String companyID, String employeeID, GeneralDate date, TaskFrameNo taskFrameNo) {
+				return Optional.of(narrowingDown);
+			}
+		};
+
+		List<Task> result = GetWorkAvailableToEmployeesService.get(require, companyID, employeeID, date,
+				new TaskFrameNo(2), Optional.of(new TaskCode("DUMMY")));
+		assertThat(result.isEmpty()).isFalse();
+		assertThat(result.size()).isEqualTo(3);
 	}
 }

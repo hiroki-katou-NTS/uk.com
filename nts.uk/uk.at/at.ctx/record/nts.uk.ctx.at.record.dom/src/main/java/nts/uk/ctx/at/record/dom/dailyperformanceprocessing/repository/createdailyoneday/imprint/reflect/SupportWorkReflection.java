@@ -614,7 +614,8 @@ public class SupportWorkReflection {
 			JudgmentCriteriaSameStampOfSupport judgmentSupport, List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSet) {
 		List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSetNew = new ArrayList<>();
 		// パラメータ。応援データ一覧のsizeを確認する
-		if (dataAutoSet.size() <= 1 || dataAutoSet.size() <= judgmentSupport.getSupportMaxFrame().v()) {
+		if (dataAutoSet.size() <= 1
+				|| dataAutoSet.size() <= (judgmentSupport == null ? 0 : judgmentSupport.getSupportMaxFrame().v())) {
 			// １以下の場合 - パラメータ。応援データ一覧を返す
 			return dataAutoSet;
 		} else {
@@ -624,8 +625,11 @@ public class SupportWorkReflection {
 			// パラメータ。応援データ一覧の先頭の応援データを取得する
 			OuenWorkTimeSheetOfDailyAttendance firstData = dataAutoSet.get(0);
 			// 最大応援回数で補正する
-			dataAutoSetNew = this.correctWithMaxNumberCheers(judgmentSupport.getSupportMaxFrame().v() - 1, dataAutoSet);
-			if (judgmentSupport.getSupportMaxFrame().v() == 1) {
+			dataAutoSetNew = this
+					.correctWithMaxNumberCheers(judgmentSupport != null &&
+					judgmentSupport.getSupportMaxFrame() != null ? judgmentSupport.getSupportMaxFrame().v() - 1 : 0,
+					dataAutoSet);
+			if (judgmentSupport!=null&& judgmentSupport.getSupportMaxFrame().v() == 1) {
 				// 最後の退勤の応援データを補正する
 				if(lastData.getTimeSheet().getStart().isPresent() && lastData.getTimeSheet().getEnd().isPresent()) {
 					lastData.getTimeSheet()
@@ -637,7 +641,7 @@ public class SupportWorkReflection {
 				}
 			}
 			
-			if(judgmentSupport.getSupportMaxFrame().v() >= 2){
+			if (judgmentSupport != null && judgmentSupport.getSupportMaxFrame().v() >= 2) {
 				// 補正で使う応援データを探す
 				Optional<WorkTimeInformation> endOuenLast = dataAutoSetNew.get(dataAutoSetNew.size() - 1).getTimeSheet().getEnd();
 				
@@ -803,9 +807,11 @@ public class SupportWorkReflection {
 		Optional<OuenWorkTimeSheetOfDailyAttendance> ouenBeforeNew = lstOuenBefore.stream()
 				.filter(x -> x.getWorkNo() == workFrameNo).findFirst();
 		Optional<OuenWorkTimeSheetOfDailyAttendance> correctMaximumNew = Optional.empty();
+		
 		// 取得できる応援データの開始データが自動セットかどうか確認する
 		if( !ouenBeforeNew.isPresent()) return -1;
 		if (ouenBeforeNew.get().getTimeSheet().getStart().isPresent() && ouenBeforeNew.get().getTimeSheet().getStart().get().getReasonTimeChange()
+
 				.getTimeChangeMeans() == TimeChangeMeans.AUTOMATIC_SET) {
 			// 自動セットの場合
 			// 反映前の応援時刻を取得する
@@ -817,6 +823,7 @@ public class SupportWorkReflection {
 			}).findFirst();
 		} else {
 			Optional<WorkTimeInformation> start = ouenBeforeNew.get().getTimeSheet().getStart();
+			
 			correctMaximumNew = lstCorrectMaximum.stream().filter(x -> {
 				if(!x.getTimeSheet().getStart().isPresent() || !start.isPresent()) return false;
 				
@@ -849,12 +856,14 @@ public class SupportWorkReflection {
 			if ((changeMeansStart == TimeChangeMeans.HAND_CORRECTION_PERSON)
 					|| (changeMeansStart == TimeChangeMeans.HAND_CORRECTION_OTHERS)
 					|| (changeMeansStart == TimeChangeMeans.APPLICATION)) {
-				// 編集状態追加する
-				Optional<ItemValue> itemStart = mapItemValue.isEmpty() ? Optional.empty() : mapItemValue.get(attendance.getWorkNo()).stream()
-						.filter(x -> x.getPathLink().toString().contains(ItemConst.START)).findFirst();
-				
-				if(itemStart.isPresent())
-				this.addEditStatus(itemStart.get().getItemId(), integrationOfDaily, changeMeansStart);
+				if (!mapItemValue.values().isEmpty()) {
+					// 編集状態追加する
+					Optional<ItemValue> itemStart = mapItemValue.get(attendance.getWorkNo()).stream()
+							.filter(x -> x.getPathLink().toString().contains(ItemConst.START)).findFirst();
+					if(itemStart.isPresent())
+					this.addEditStatus(itemStart.get().getItemId(), integrationOfDaily, changeMeansStart);
+				}
+
 			}
 			TimeChangeMeans changeMeansEnd = attendance.getTimeSheet().getEnd().isPresent()
 					? attendance.getTimeSheet().getEnd().get().getReasonTimeChange().getTimeChangeMeans()
@@ -862,12 +871,13 @@ public class SupportWorkReflection {
 			if ((changeMeansEnd == TimeChangeMeans.HAND_CORRECTION_PERSON)
 					|| (changeMeansEnd == TimeChangeMeans.HAND_CORRECTION_OTHERS)
 					|| (changeMeansEnd == TimeChangeMeans.APPLICATION)) {
-				// 編集状態追加する
-				Optional<ItemValue> itemEnd = mapItemValue.isEmpty() ? Optional.empty() : mapItemValue.get(attendance.getWorkNo()).stream()
-						.filter(x -> x.getPathLink().toString().contains(ItemConst.END)).findFirst();
-				
-				if(itemEnd.isPresent())
-				this.addEditStatus(itemEnd.get().getItemId(), integrationOfDaily, changeMeansEnd);
+				if (!mapItemValue.values().isEmpty()) {
+					// 編集状態追加する
+					Optional<ItemValue> itemEnd = mapItemValue.get(attendance.getWorkNo()).stream()
+							.filter(x -> x.getPathLink().toString().contains(ItemConst.END)).findFirst();
+					if(itemEnd.isPresent())
+					this.addEditStatus(itemEnd.get().getItemId(), integrationOfDaily, changeMeansEnd);
+				}
 			}
 		}
 	}
@@ -963,7 +973,7 @@ public class SupportWorkReflection {
 					detectAttendance.getFirstAttendance().get().getStamp().get().getTimeDay().getTimeWithDay()
 					.get().v() : null;
 			// 同一打刻の判断基準。同一打刻とみなす範囲
-			Integer time2 = judgmentSupport.getSameStampRanceInMinutes().v();
+			Integer time2 = judgmentSupport == null ? 0 : judgmentSupport.getSameStampRanceInMinutes().v();
 			Optional<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeAfter = lstOuenWorkTime.stream().filter(x ->{
 					val time = x.getTimeSheet().getStart().flatMap(c -> c.getTimeWithDay()).map(c -> c.v()).orElse(null);
 					
@@ -1006,7 +1016,7 @@ public class SupportWorkReflection {
 			// 最後の退勤。打刻。時刻。時刻
 			Integer time1 = detectAttendance.getLastLeave().get().getStamp().isPresent() ? detectAttendance.getLastLeave().get().getStamp().get().getTimeDay().getTimeWithDay().get().v() : null;
 			// 同一打刻の判断基準。同一打刻とみなす範囲
-			Integer time2 = judgmentSupport.getSameStampRanceInMinutes().v();
+			Integer time2 = judgmentSupport == null ? 0 : judgmentSupport.getSameStampRanceInMinutes().v();
 			
 				// 最後の退勤の応援データ
 			Optional<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeAfter = Optional.empty();

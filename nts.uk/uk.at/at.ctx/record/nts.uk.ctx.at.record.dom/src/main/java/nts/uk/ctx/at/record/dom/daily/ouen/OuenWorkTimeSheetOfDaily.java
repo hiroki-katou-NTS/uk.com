@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemIdContainer;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 
@@ -56,7 +56,7 @@ public class OuenWorkTimeSheetOfDaily extends AggregateRoot {
 		
 		this.ouenTimeSheet = ouenTimeSheet;
 		
-		return new AttendanceItemToChange(attendanceId, this);
+		return new AttendanceItemToChange(attendanceId.stream().distinct().collect(Collectors.toList()), this);
 	}
 	
 	/**
@@ -70,13 +70,15 @@ public class OuenWorkTimeSheetOfDaily extends AggregateRoot {
 	private List<Integer> getAttendanceId(List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet){
 		
 		List<ItemValue> itemValues = AttendanceItemIdContainer.getIds(AttendanceItemType.DAILY_ITEM);
-		
-		Map<Integer, List<ItemValue>> mapWorkNoItemsValue = AttendanceItemIdContainer.mapWorkNoItemsValue(itemValues);
+		List<ItemValue> values = itemValues.stream().filter(x -> !x.path().replace(x.path().replaceAll("[0-9]+$", ""), "").equals("")).collect(Collectors.toList());
+		Map<Integer, List<ItemValue>> mapWorkNoItemsValue = AttendanceItemIdContainer.mapWorkNoItemsValue(values);
 		List<Integer> result = new ArrayList<Integer>();
 		for (OuenWorkTimeSheetOfDailyAttendance i : ouenTimeSheet) {
 			List<ItemValue> id = mapWorkNoItemsValue.get(i.getWorkNo());
-			result.addAll(id.stream().map(c->c.getItemId()).collect(Collectors.toList()));
+			if (id != null) {
+				result.addAll(id.stream().map(c -> c.getItemId()).collect(Collectors.toList()));
+			}
 		}
-		return result;
+		return result.stream().distinct().collect(Collectors.toList());
 	}
 }

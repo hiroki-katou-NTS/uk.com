@@ -157,7 +157,8 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				optAbsApp.ifPresent(x -> {
 					outData.setWorkTypeCode(Optional.of(x.getWorkInformation().getWorkTypeCode().v()));
 					if(x.getWorkChangeUse().equals(NotUseAtr.USE)) {
-						outData.setWorkTimeCode(x.getWorkInformation().getWorkTimeCodeNotNull().isPresent() ? Optional.empty() : Optional.of(x.getWorkInformation().getWorkTimeCode().v()));
+						outData.setWorkTimeCode(Optional.ofNullable(x.getWorkInformation().getWorkTimeCodeNotNull()
+								.map(wt -> wt == null ? null : wt.v()).orElse(null)));
 					}
 
 				});

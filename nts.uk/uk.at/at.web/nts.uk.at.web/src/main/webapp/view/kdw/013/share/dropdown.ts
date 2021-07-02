@@ -1,7 +1,9 @@
-module nts.uk.ui.at.kdp013.share {
+module nts.uk.ui.at.kdw013.share {
     const { randomId } = nts.uk.util;
 
     export module dropdown {
+        const vm = new ko.ViewModel();
+
         const style = `
             .nts-dropdown {
                 position: relative;
@@ -27,44 +29,14 @@ module nts.uk.ui.at.kdp013.share {
                 top: 4px;
                 right: 9px;
             }
-            .nts-dropdown.focus>div.dropdown-container {
-                box-shadow: 0 0 1px 1px #0096f2;
-            }
-            .nts-dropdown>div.dropdown-container>table {
-                width: 100%;
-                display: block;
-            }
-            .nts-dropdown>div.dropdown-container>table tr {
-                height: 30px;
-            }
-            .nts-dropdown>div.dropdown-container>table>tbody>tr.space {
+            .dropdown-container .space {
                 height: 38px;
             }
-            .nts-dropdown>div.dropdown-container>table tr td:first-child,
-            .nts-dropdown>div.dropdown-container>table+div>table tr td:first-child {
-                padding-left: 10px;
-                padding-right: 5px;
-            }
-            .nts-dropdown>div.dropdown-container>table tr td:first-child,
-            .nts-dropdown>div.dropdown-container>table+div>table tr td:first-child {
-                padding-left: 5px;
-                padding-right: 10px;
-            }
-            .nts-dropdown>div.dropdown-container>table+div {
-                overflow-y: auto;
-                max-height: 270px;
-            }
-            .nts-dropdown>div.dropdown-container>table+div>table {
-                width: 100%;
-            }
-            .nts-dropdown>div.dropdown-container>table+div>table tr {
-                height: 27px;
-            }
-            .nts-dropdown>div.dropdown-container>table+div>table tr.selected {
+            .dropdown-container .selected {
                 color: #fff;
                 background-color: #007fff;
             }
-            .nts-dropdown>div.dropdown-container>table+div>table tr.highlight {
+            .dropdown-container .highlight {
                 background-color: #91c8ff;
             }
             .nts-dropdown.show {
@@ -111,6 +83,7 @@ module nts.uk.ui.at.kdp013.share {
         const COMPONENT_NAME = 'dropdown';
 
         interface DropdownItem {
+            id: string;
             name: string;
             code: string;
         }
@@ -243,10 +216,16 @@ module nts.uk.ui.at.kdp013.share {
                 ko.computed({
                     read: () => {
                         const item = ko.unwrap(selected);
-                        const { code, name } = item;
 
-                        $(element)
-                            .html(`<td>${name}</td><td>${code}</td>`);
+                        if (item) {
+                            const { code, name } = item;
+
+                            $(element)
+                                .html(`<div style='height:31px;' >${code}</div><div style='margin-left:10px;' >${name}</div>`);
+                        } else {
+                            $(element)
+                                .html(`<div style='height:31px;' ></div><div style='margin-left:10px;' >${vm.$i18n('KDW013_41')}</div>`);
+                        }
                     },
                     disposeWhenNodeIsRemoved: element
                 });
@@ -286,31 +265,20 @@ module nts.uk.ui.at.kdp013.share {
                             readonly: !ko.unwrap($component.show)
                         }
                     " />
-                <table>
-                    <colgroup>
-                        <col width="180px" />
-                    </colgroup>
-                    <thead>
-                        <tr data-bind="dropdownSelect: $component.selected"></tr>
-                    </thead>
-                    <tbody>
-                        <tr class="space">
-                            <td colspan="2">&nbsp;</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div style="line-height: 31px; padding-left: 5px;" data-bind="scrollTo: $component.highlight">
+                    <div style="display: flex;line-height: 31px;" data-bind="dropdownSelect: $component.selected"> 
+                        
+                    </div>
+                    <div class='space'></div>
+                </div>
+               
                 <div data-bind="scrollTo: $component.highlight">
-                    <table>
-                        <colgroup>
-                            <col width="180px" />
-                        </colgroup>
-                        <tbody data-bind="foreach: { data: $component.items, as: 'item' }">
-                            <tr data-bind="click: function(item, evt) { $component.selecteItem(item, evt) }, css: { selected: item.selected, highlight: item.highlight }">
-                                <td data-bind="text: item.name"></td>
-                                <td data-bind="text: item.code"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div style="width: 280px;overflow: auto;" data-bind="foreach: { data: $component.items, as: 'item' }"> 
+                        <div style='display: flex;line-height: 31px;padding-left: 5px;' data-bind="click: function(item, evt) { $component.selecteItem(item, evt) }, css: { selected: item.selected, highlight: item.highlight }">  
+                                    <div data-bind="text: item.code"></div>
+                                    <div style='margin-left:10px;' data-bind="text: item.name"></div> 
+                        </div>
+                    </div>
                 </div>
             </div>
             `
@@ -340,7 +308,8 @@ module nts.uk.ui.at.kdp013.share {
 
                         return _.chain(items)
                             .filter(({ name, code }) => name.indexOf(filter) > -1 || code.indexOf(filter) > -1)
-                            .map(({ name, code }, index) => ({
+                            .map(({ id, name, code }, index) => ({
+                                id,
                                 code,
                                 name,
                                 selected: selected === code,
@@ -355,16 +324,16 @@ module nts.uk.ui.at.kdp013.share {
                         const items = ko.unwrap(params.items);
                         const highlight = ko.unwrap(vm.highlight);
                         const selected = ko.unwrap(params.selected);
-                        const exist = _.find(items, ({ code }, index) => highlight === index || code === selected);
+                        const exist = _.find(items, ({ id }, index) => highlight === index || id === selected);
 
 
                         if (exist) {
-                            const { code, name } = exist;
+                            const { id, code, name } = exist;
 
-                            return { code, name };
+                            return { id, code, name };
                         }
 
-                        return { code: '', name: '' };
+                        return null;
                     }
                 });
             }
@@ -383,7 +352,7 @@ module nts.uk.ui.at.kdp013.share {
                         vm.filter('');
                         vm.highlight(-1);
                     } else {
-                        const items = ko.unwrap(vm.items).map(({ code }) => code);
+                        const items = ko.unwrap(vm.items).map(({ id }) => id);
                         const selected = ko.unwrap(vm.params.selected);
                         const index = _.indexOf(items, selected);
 
@@ -465,7 +434,7 @@ module nts.uk.ui.at.kdp013.share {
                                     const exist = _.find(items, ({ }, index) => index === highlight);
 
                                     if (exist) {
-                                        vm.params.selected(exist.code);
+                                        vm.params.selected(exist.id);
                                     }
 
                                     vm.show(false);
@@ -513,7 +482,7 @@ module nts.uk.ui.at.kdp013.share {
                 const { params } = vm;
 
                 // emit selected id to parent component
-                params.selected(item.code);
+                params.selected(item.id);
 
                 vm.show(false);
 

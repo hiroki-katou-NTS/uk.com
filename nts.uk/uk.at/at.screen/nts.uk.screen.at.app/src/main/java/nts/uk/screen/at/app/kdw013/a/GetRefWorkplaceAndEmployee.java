@@ -13,12 +13,12 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workplace.GetAllEmployeeWithWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workplace.GetWorkplaceOfEmployeeAdapter;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSetting;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.CheckShortageFlex;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.WorkplaceExportServiceAdapter;
 import nts.uk.ctx.bs.employee.dom.workplace.info.OutsideWorkplaceCode;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WkpCode;
@@ -49,7 +49,10 @@ public class GetRefWorkplaceAndEmployee {
 	private ManHourRecordReferenceSettingRepository manRepo;
 	
 	@Inject
-	private SyWorkplaceAdapter syWorkplaceAdapter;
+	private GetWorkplaceOfEmployeeAdapter getWorkplaceOfEmployeeAdapter;
+
+	@Inject
+	private GetAllEmployeeWithWorkplaceAdapter getAllEmployeeWithWorkplaceAdapter;
 	
 	@Inject
 	private CheckShortageFlex checkShortageFlex;
@@ -63,7 +66,7 @@ public class GetRefWorkplaceAndEmployee {
 				.get(companyId);
 
 		// 2: 参照可能範囲を取得する(ログイン会社ID, ログインユーザID, ログイン社員ID, 基準日): Map<社員ID,職場ID>
-		RequireImpl require = new RequireImpl(manRepo, syWorkplaceAdapter, checkShortageFlex);
+		RequireImpl require = new RequireImpl(manRepo, getWorkplaceOfEmployeeAdapter,getAllEmployeeWithWorkplaceAdapter, checkShortageFlex);
 		List<String> lstEmpIds = new ArrayList<>();
 		List<String> listWorkplaceId = new ArrayList<>();
 		Map<String, String> employeeInfos = new HashMap<>();
@@ -79,7 +82,9 @@ public class GetRefWorkplaceAndEmployee {
 		// 3: <call>()
 		// [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
 		DatePeriod datePeriod = new DatePeriod(refDate, refDate);
-		List<EmployeeBasicInfoImport> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, true);
+		List<EmployeeBasicInfoDto> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, true).stream().map(info-> {
+					return new EmployeeBasicInfoDto(info.getSid(), info.getEmployeeCode(), info.getEmployeeName());
+		}).collect(Collectors.toList());
 
 		// 4: <call>()
 		// [No.560]職場IDから職場の情報をすべて取得する
@@ -109,7 +114,9 @@ public class GetRefWorkplaceAndEmployee {
 		
 		private ManHourRecordReferenceSettingRepository manRepo;
 		
-		private SyWorkplaceAdapter syWorkplaceAdapter;
+		private GetWorkplaceOfEmployeeAdapter getWorkplaceOfEmployeeAdapter;
+		
+		private GetAllEmployeeWithWorkplaceAdapter getAllEmployeeWithWorkplaceAdapter;
 		
 		private CheckShortageFlex checkShortageFlex;
 		
@@ -125,12 +132,12 @@ public class GetRefWorkplaceAndEmployee {
 
 		@Override
 		public Map<String, String> getWorkPlace(String userID, String employeeID, GeneralDate date) {
-			return syWorkplaceAdapter.getWorkPlace(userID, employeeID, date);
+			return getWorkplaceOfEmployeeAdapter.get(userID, employeeID, date);
 		}
 
 		@Override
 		public Map<String, String> getByCID(String companyId, GeneralDate baseDate) {
-			return syWorkplaceAdapter.getByCID(companyId, baseDate);
+			return getAllEmployeeWithWorkplaceAdapter.get(companyId, baseDate);
 		}
 		
 	}

@@ -38,6 +38,8 @@ public class RegisterOuenWorkTimeSheetOfDailyService {
 		List<EditStateOfDailyPerformance> editStateOfDailyPerformance = require.getEditStateOfDailyPerformance(empId, ymd);
 		//	if $実績の作業時間帯.isPresent
 		if(ouenWorkTimeSheetOfDaily.isPresent()) {
+			OuenWorkTimeSheetOfDaily OldtimeSheet = new OuenWorkTimeSheetOfDaily(ouenWorkTimeSheetOfDaily.get().getEmpId(),
+					ouenWorkTimeSheetOfDaily.get().getYmd(), ouenWorkTimeSheetOfDaily.get().getOuenTimeSheet());
 			//	$変更結果 = $実績の作業時間帯.変更する(作業時間帯)
 			AttendanceItemToChange attendanceItemToChange = ouenWorkTimeSheetOfDaily.get().change(ouenWorkTimeSheetOfDailys);
 			//	$更新時間帯 = $変更結果.応援作業別時間帯.応援時間帯	
@@ -45,7 +47,7 @@ public class RegisterOuenWorkTimeSheetOfDailyService {
 			//		if $更新時間帯.isEmpty	
 			if(ouenTimeSheet.isEmpty()) {
 				//	$登録対象.add(require.作業時間帯を削除する($実績の作業時間帯))
-				atomTasks.add(AtomTask.of(() -> require.delete(ouenWorkTimeSheetOfDaily.get())));
+				atomTasks.add(AtomTask.of(() -> require.delete(OldtimeSheet)));
 			}else {
 				//$登録対象.add(require.作業時間帯を更新する($更新時間帯))		
 				atomTasks.add(AtomTask.of(() -> require.update(ouenWorkTimeSheetOfDaily.get())));

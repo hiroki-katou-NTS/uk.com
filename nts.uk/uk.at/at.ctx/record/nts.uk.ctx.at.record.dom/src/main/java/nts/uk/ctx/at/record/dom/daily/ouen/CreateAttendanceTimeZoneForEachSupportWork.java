@@ -30,16 +30,23 @@ public class CreateAttendanceTimeZoneForEachSupportWork {
 	 * @input workDetailsParams 作業詳細	
 	 * @output 	日別勤怠の応援作業時間帯 	OuenWorkTimeSheetOfDailyAttendance
 	 */
-	public static List<OuenWorkTimeSheetOfDailyAttendance> create(Require require, String empId, GeneralDate ymd, List<WorkDetailsParam> workDetailsParams) {
-		
+	public static List<OuenWorkTimeSheetOfDailyAttendance> create(Require require, String empId, GeneralDate ymd,
+			List<WorkDetailsParam> workDetailsParams) {
+
+		// $旧の応援作業 = require.応援作業別勤怠時間帯を取得する(社員ID,年月日)
 		OuenWorkTimeSheetOfDaily ouenWorkTimeSheetOfDaily = require.find(empId, ymd);
-		
-		return workDetailsParams.stream().map(c-> {
-			//$旧の作業時間帯 = $旧の応援作業.応援時間帯：filter 応援勤務枠No == $.応援勤務枠No
-			Optional<OuenWorkTimeSheetOfDailyAttendance> o = ouenWorkTimeSheetOfDaily.getOuenTimeSheet().stream().filter(e -> e.getWorkNo() == c.getSupportFrameNo().v()).findAny();
-			//[prv-1] 応援作業時間帯を作成する(require,社員ID,年月日,$,$旧の作業時間帯)
-			return createSupportWorkTimeZone(require, empId, ymd, c, o);
+
+		return workDetailsParams.stream().map(wd -> {
+			// $旧の作業時間帯 = $旧の応援作業.応援時間帯：filter 応援勤務枠No == $.応援勤務枠No
+
+			Optional<OuenWorkTimeSheetOfDailyAttendance> oldTime = ouenWorkTimeSheetOfDaily == null ? Optional.empty()
+					: ouenWorkTimeSheetOfDaily.getOuenTimeSheet().stream()
+							.filter(oen -> oen.getWorkNo() == wd.getSupportFrameNo().v()).findFirst();
+			//	[prv-1] 応援作業時間帯を作成する(require,社員ID,年月日,$,$旧の作業時間帯)	
+			return createSupportWorkTimeZone(require, empId, ymd, wd, oldTime);
+
 		}).collect(Collectors.toList());
+
 	}
 	
 //■Private

@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainObject;
@@ -56,19 +58,15 @@ public class WorkGroup implements DomainObject {
 	}
 	
 	public boolean compare(WorkGroup workGroup) {
-		if(this.workCD1.v() != workGroup.getWorkCD1().v())
+		if(!this.workCD1.v().equals(workGroup.getWorkCD1().v()))
 			return false;
-		if(this.workCD2.isPresent() != workGroup.workCD2.isPresent() || 
-				this.workCD2.isPresent() ? this.workCD2.get().v() != workGroup.getWorkCD2().get().v() : false)
+		if (!StringUtils.equals(this.workCD2.map(x -> x.v()).orElse(null),workGroup.workCD2.map(x -> x.v()).orElse(null)))
 			return false;
-		if(this.workCD3.isPresent() != workGroup.workCD3.isPresent() || 
-				this.workCD3.isPresent() ? this.workCD3.get().v() != workGroup.getWorkCD3().get().v() : false)
+		if (!StringUtils.equals(this.workCD3.map(x -> x.v()).orElse(null),workGroup.workCD3.map(x -> x.v()).orElse(null)))
 			return false;
-		if(this.workCD4.isPresent() != workGroup.workCD4.isPresent() || 
-				this.workCD4.isPresent() ? this.workCD4.get().v() != workGroup.getWorkCD4().get().v() : false)
+		if (!StringUtils.equals(this.workCD4.map(x -> x.v()).orElse(null),workGroup.workCD4.map(x -> x.v()).orElse(null)))
 			return false;
-		if(this.workCD5.isPresent() != workGroup.workCD5.isPresent() || 
-				this.workCD5.isPresent() ? this.workCD5.get().v() != workGroup.getWorkCD5().get().v() : false)
+		if (!StringUtils.equals(this.workCD5.map(x -> x.v()).orElse(null),workGroup.workCD5.map(x -> x.v()).orElse(null)))
 			return false;
 		return true;
 	}

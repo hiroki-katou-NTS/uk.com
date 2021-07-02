@@ -35,7 +35,7 @@ public class CancelConfirmationWorkResultsServiceTest {
 	private GeneralDateTime dateTime = GeneralDateTime.now();
 	
 	private List<Confirmer> confirmers = new ArrayList<>();
-	private Confirmer confirmer = new Confirmer(confirmSid, dateTime);
+
 
 //	 if (!confirmationWorkResults.isPresent())
 //	 return Optional.Empty
@@ -51,7 +51,7 @@ public class CancelConfirmationWorkResultsServiceTest {
 				.isFalse();
 	}
 
-	// require.delete(confirmationWorkResults.get());
+//	 require.delete(confirmationWorkResults.get());
 	@Test
 	public void test_1() {
 
@@ -75,20 +75,27 @@ public class CancelConfirmationWorkResultsServiceTest {
 	// require.update(confirmationWorkResults.get());
 	@Test
 	public void test_2() {
-		this.confirmers.add(confirmer);
+		Confirmer confirmer = new Confirmer("confirmSid", dateTime);
+		Confirmer confirmer1 = new Confirmer("confirmSid1", dateTime);
+		Confirmer confirmer2 = new Confirmer("confirmSid2", dateTime);
 		
-		ConfirmationWorkResults confirmationWorkResults = new ConfirmationWorkResults(targetSid, targetYMD, this.confirmers);
+		List<Confirmer> confirmers1 = new ArrayList<>();
+		confirmers1.add(confirmer);
+		confirmers1.add(confirmer1);
+		confirmers1.add(confirmer2);
+		
+		Optional<ConfirmationWorkResults> confirmationWorkResults = Optional.of(new ConfirmationWorkResults(targetSid, targetYMD, confirmers1));
 		
 		new Expectations() {
 			{
 				require.get(targetSid, targetYMD);
-				result = Optional.of(confirmationWorkResults);
+				result = confirmationWorkResults;
 			}
 		};
 
 		Optional<AtomTask> result = CancelConfirmationWorkResultsService.check(require, targetSid, targetYMD,
 				confirmSid);
 		NtsAssert.atomTask(() -> result.get(),
-				any -> require.update(confirmationWorkResults));
+				any -> require.update(confirmationWorkResults.get()));
 	}
 }

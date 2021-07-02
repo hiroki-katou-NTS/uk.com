@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.screen.at.app.kdw013.a.TaskDto;
 import nts.uk.screen.at.app.kdw013.c.StartWorkInputPanelResult;
@@ -14,6 +16,8 @@ import nts.uk.screen.at.app.kdw013.c.StartWorkInputPanelResult;
  *
  */
 @AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class StartWorkInputPanelDto {
 
 	/** 利用可能作業1リスト */

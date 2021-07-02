@@ -1,12 +1,10 @@
-module nts.uk.ui.at.kdp013.a {
+module nts.uk.ui.at.kdw013.a {
     export type API = {
         readonly ADD: string;
         readonly START: string;
         readonly DELETE: string;
         readonly REGISTER: string;
-        readonly SELECT: string;
         readonly CHANGE_DATE: string;
-        readonly REG_WORKTIME: string;
     };
 
     export type StartProcessDto = {
@@ -19,7 +17,7 @@ module nts.uk.ui.at.kdp013.a {
 
     export type ProcessInitialStartDto = {
         // 工数入力を起動する
-        startManHourInputDto: StartManHourInputResultDto;
+        startManHourInputResultDto: StartManHourInputResultDto;
 
         // 参照可能職場・社員を取得する
         refWorkplaceAndEmployeeDto: GetRefWorkplaceAndEmployeeDto;
@@ -37,16 +35,16 @@ module nts.uk.ui.at.kdp013.a {
     };
 
     export type GetRefWorkplaceAndEmployeeResultDto = {
-
         /** 社員の所属情報(Map<社員ID,職場ID>)*/
-        employeeInfos: EmployeInfo[];
+        employeeInfos: {
+            [key: string]: string;
+        };
 
         /** List＜社員ID（List）から社員コードと表示名を取得＞*/
-        lstEmployeeInfo: EmployeeBasicInfoImport[];
+        lstEmployeeInfo: EmployeeBasicInfoDto[];
 
         /** List＜職場情報一覧＞ */
         workplaceInfos: WorkplaceInfoDto[];
-
     }
 
     export type WorkplaceInfoDto = {
@@ -69,30 +67,64 @@ module nts.uk.ui.at.kdp013.a {
         outsideWkpCode: string;
     }
 
-
     export type GetRefWorkplaceAndEmployeeDto = {
         /** 社員の所属情報(Map<社員ID,職場ID>)*/
-        employeeInfos: [];
+        employeeInfos: {
+            [key: string]: string;
+        };
 
         /** List＜社員ID（List）から社員コードと表示名を取得＞*/
-        lstEmployeeInfo: EmployeeBasicInfoImport[];
+        lstEmployeeInfo: EmployeeBasicInfoDto[];
 
         /** List＜職場情報一覧＞ */
         workplaceInfos: WorkplaceInfo[];
     };
 
-    export type EmployeInfo = {
-
-    };
-
-    export type EmployeeBasicInfoImport = {
-        sid: string;
+    export type EmployeeBasicInfoDto = {
+        /**
+         * 社員ID
+         */
+        employeeId: string;
+        /**
+         * 社員コード
+         */
         employeeCode: string;
+        /**
+         * 社員名
+         */
         employeeName: string;
+        /**
+         * 所属CD
+         */
+        affiliationCode: string;
+        /**
+         * 所属ID
+         */
+        affiliationId: string;
+        /**
+         * 所属名称
+         */
+        affiliationName: string;
     };
 
     export type WorkplaceInfo = {
+        /** 職場ID */
+        workplaceId: string;
 
+        /** The workplace code. */
+        workplaceCode: string;
+
+        /** The workplace name. */
+        workplaceName: string;
+
+        /** The wkp generic name. */
+        wkpGenericName: string;
+
+        /** The wkp display name. */
+        wkpDisplayName: string;
+
+        /** The outside wkp code. */
+        outsideWkpCode: string;
     };
 
     export type TaskFrameUsageSettingDto = {
@@ -160,8 +192,6 @@ module nts.uk.ui.at.kdp013.a {
     };
 
     export type RegisterWorkContentParam = {
-
-
         /** 対象日 */
         date: string;
 
@@ -169,10 +199,27 @@ module nts.uk.ui.at.kdp013.a {
         employeeId: string;
 
         /** 編集状態<Enum.日別勤怠の編集状態> */
-        editStateSetting: number;
+        editStateSetting: EditStateSetting;
 
         /** List<年月日,List<作業詳細>> */
         workDetails: WorkDetailDto[];
+    };
+
+    /**
+     * 日別勤怠の編集状態
+     */
+    enum EditStateSetting {
+        /** 手修正（本人） */
+        HAND_CORRECTION_MYSELF = 0,
+        /** 手修正（他人） */
+        HAND_CORRECTION_OTHER = 1,
+        /** 申請反映 */
+        REFLECT_APPLICATION = 2,
+        /** 打刻反映 */
+        IMPRINT = 3,
+        /** 申告反映 */
+        DECLARE_APPLICATION = 4
+
     };
 
     export type WorkDetailDto = {
@@ -247,7 +294,6 @@ module nts.uk.ui.at.kdp013.a {
     };
 
     export type SelectTargetEmployeeParam = {
-
         // 社員ID
         employeeId: string;
 
@@ -258,28 +304,85 @@ module nts.uk.ui.at.kdp013.a {
         displayPeriod: DatePeriodDto;
     };
 
-    export type DatePeriodDto = {
-        /** 開始日 */
-        start: string;
-
-        /** 終了日 */
-        end: string;
-    };
+    export type ChangeDateDto = SelectTargetEmployeeDto;
 
     export type SelectTargetEmployeeDto = {
-        // よく利用作業一覧：List<作業グループ>
-        lstWorkGroupDto: WorkGroupDto[];
 
-        // List＜確認者> 
-        lstConfirmerDto: ConfirmerDto[];
-
-        // List<日別勤怠(Work)>
-        integrationOfDailyDto: IntegrationOfDailyDto[];
+        // List<作業グループ>
+        workGroupDtos: WorkGroupDto[];
 
         // 修正可能開始日付
-        modifyableStartDate: string;
+        workCorrectionStartDate: string;
+
+        // List＜確認者>
+        lstComfirmerDto: ConfirmerDto[];
+
+        // List<作業実績詳細>
+        lstWorkRecordDetailDto: WorkRecordDetailDto[];
     };
 
+    export type WorkRecordDetailDto = {
+
+        // 年月日
+        date: string;
+
+        // 社員ID
+        employeeId: string;
+
+        // 作業詳細リスト
+        lstWorkDetailsParamDto: WorkDetailsParamDto[];
+
+        // 実績内容
+        actualContent: ActualContentDto;
+
+    };
+
+    export type ActualContentDto = {
+
+        // 休憩リスト
+        breakTimeSheets: BreakTimeSheetDto[];
+
+        // 休憩時間
+        breakHours: number | null;
+
+        // 終了時刻
+        end: WorkTimeInformationDto;
+
+        // 総労働時間
+        totalWorkingHours: number | null;
+
+        // 開始時刻
+        start: WorkTimeInformationDto;
+    };
+
+    export type BreakTimeSheetDto = {
+        /** 開始: 勤怠打刻 */
+        start: number | null;
+
+        /** 終了: 勤怠打刻 */
+        end: number | null;
+
+        /** 休憩時間: 勤怠打刻 */
+        breakTime: number | null;
+
+        /** 休憩枠NO: 休憩枠NO */
+        no: number;
+    };
+
+    export type WorkTimeInformationDto = {
+        // 時刻変更理由
+        reasonTimeChange: ReasonTimeChangeDto;
+        // 時刻 
+        timeWithDay: number | null;
+    };
+
+    export type ReasonTimeChangeDto = {
+        //時刻変更手段
+        timeChangeMeans: number | null;
+
+        //打刻方法
+        engravingMethod: number | null;
+    };
 
     export type ConfirmerDto = {
         /** 社員ID */
@@ -357,13 +460,16 @@ module nts.uk.ui.at.kdp013.a {
         employeeId: string;
 
         /** 編集状態<Enum.日別勤怠の編集状態> */
-        editStateSetting: number;
+        editStateSetting: EditStateSetting;
 
         /** List<年月日,List<作業詳細>> */
         workDetails: WorkDetailCommand[];
 
-        /// ????
+        /** 確認モード */
         mode: number;
+
+        /** 変更対象日 */
+        changedDate: string;
     };
 
     export type WorkDetailCommand = {
@@ -378,28 +484,56 @@ module nts.uk.ui.at.kdp013.a {
         // 応援勤務枠No: 応援勤務枠No
         supportFrameNo: number;
 
-        // 時間帯: 時間帯
-
-        // 作業グループ
-        workGroup: WorkGroupDto;
-
         // 備考: 作業入力備考
         remarks: string;
 
         // 勤務場所: 勤務場所コード
         workLocationCD: string;
+
+        // 時間帯: 時間帯
+        timeZone: TimeZoneCommand;
+
+        // 作業グループ
+        workGroup: WorkGroupCommand;
     };
 
-    export type DeleteWorkResultConfirmationCommand = {
-        //対象者
+    export type TimeZoneCommand = {
+        // 開始
+        start: number;
+
+        // 終了
+        end: number;
+    };
+
+    export type WorkGroupCommand = {
+        /** 作業CD1 */
+        workCD1: string;
+
+        /** 作業CD2 */
+        workCD2: string;
+
+        /** 作業CD3 */
+        workCD3: string;
+
+        /** 作業CD4 */
+        workCD4: string;
+
+        /** 作業CD5 */
+        workCD5: string;
+    };
+
+    export type AddWorkRecodConfirmationCommand = {
+        // 対象者
         employeeId: string;
 
-        //対象日
+        // 対象日
         date: string;
 
-        //確認者
+        // 確認者
         confirmerId: string;
     };
+
+    export type DeleteWorkResultConfirmationCommand = AddWorkRecodConfirmationCommand;
 
     export type ChangeDateParam = {
 
@@ -414,7 +548,11 @@ module nts.uk.ui.at.kdp013.a {
     };
 
     export type DatePeriodDto = {
+        /** 開始日 */
+        start: string;
 
+        /** 終了日 */
+        end: string;
     };
 
     export type AddAttendanceTimeZoneParam = {
@@ -422,9 +560,72 @@ module nts.uk.ui.at.kdp013.a {
         employeeId: string;
 
         /** 編集状態<Enum.日別勤怠の編集状態> */
-        editStateSetting: number;
+        editStateSetting: EditStateSetting;
 
         /** List<年月日,List<作業詳細>> */
         workDetails: WorkDetailDto[];
     };
+
+    export type RegisterWorkContentDto = {
+        // エラー一覧
+        lstErrorMessageInfo: ErrorMessageInfoDto[];
+        // List<残業休出時間>
+        lstOvertimeLeaveTime: OvertimeLeaveTime[];
+    };
+
+    export type ErrorMessageInfoDto = {
+        /**
+         * 会社ID
+         */
+        companyID: string;
+        /**
+         * 社員ID
+         */
+        employeeID: string;
+        /**
+         * 処理日
+         */
+        processDate: string;
+        /**
+         * 実施内容
+         */
+        executionContent: number;
+        /**
+         * リソースID
+         */
+        resourceID: string;
+        /**
+         * エラーメッセージ
+         */
+        messageError: string;
+    };
+
+    export type OvertimeLeaveTime = {
+        //年月日
+        date: string;
+
+        //時間
+        time: number;
+
+        //残業休出区分
+        overtimeLeaveAtr: OverTimeLeaveAtr;
+    };
+
+    enum OverTimeLeaveAtr {
+        // 0: 残業申請
+        OVER_TIME_APPLICATION = 0,
+
+        //1: 休日出勤申請
+        HOLIDAY_WORK_APPLICATION = 1
+    };
+
+    export type ErrorMessage = {
+        atTime: string;
+        businessException: boolean;
+        errorMessage: string;
+        message: string;
+        messageId: string;
+        parameterIds: string[];
+        responseStatus: string;
+    }
 }

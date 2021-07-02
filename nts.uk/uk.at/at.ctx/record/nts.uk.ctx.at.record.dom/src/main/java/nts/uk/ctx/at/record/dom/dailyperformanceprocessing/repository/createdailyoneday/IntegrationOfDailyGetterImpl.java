@@ -25,6 +25,8 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavi
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
@@ -128,6 +130,9 @@ public class IntegrationOfDailyGetterImpl implements IntegrationOfDailyGetter {
 	@Inject
 	private OuenWorkTimeSheetOfDailyRepo ouenSheetRepo;
 	
+	@Inject
+	private OuenWorkTimeOfDailyRepo ouenWorkTimeOfDailyRepo;
+	
 	
 	/**
 	 * 日別実績(WORK)の作成
@@ -215,6 +220,12 @@ public class IntegrationOfDailyGetterImpl implements IntegrationOfDailyGetter {
 			
 			if(ouenSheet != null)
 			daily.setOuenTimeSheet(ouenSheet.getOuenTimeSheet());
+			
+			OuenWorkTimeOfDaily OuenTime = ouenWorkTimeOfDailyRepo.find(employeeId, attendanceTime.getYmd()); 
+
+			if (OuenTime != null) {
+				daily.setOuenTime(OuenTime.getOuenTimes());
+			}
 			
 			returnList.add(daily);
 		}

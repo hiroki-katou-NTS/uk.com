@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.kdw013.a;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 public class StartProcess {
 
 	@Inject
-	private StartManHourInput startManHourInput;
+	private StartManHourInputScreenQuery startManHourInputScreenQuery;
 
 	@Inject
 	private GetRefWorkplaceAndEmployee getRefWorkplaceAndEmployee;
@@ -33,20 +34,31 @@ public class StartProcess {
 		// 1: <call>()
 		StartManHourInputResultDto startManHourInputResultDto = new StartManHourInputResultDto();
 
-		StartManHourInputDto startManHourInputDto = startManHourInput.startManHourInput();
+		StartManHourInput startManHourInput = startManHourInputScreenQuery.startManHourInput();
 
-		TaskFrameUsageSetting taskFrameUsageSetting = startManHourInputDto.getTaskFrameUsageSetting();
-		List<Task> tasks = startManHourInputDto.getTasks();
-		List<WorkLocation> workLocations = startManHourInputDto.getWorkLocations();
+		TaskFrameUsageSetting taskFrameUsageSetting = startManHourInput.getTaskFrameUsageSetting();
+		List<Task> tasks = startManHourInput.getTasks();
+		List<WorkLocation> workLocations = startManHourInput.getWorkLocations();
 
 		// convert to DTO
-		TaskFrameUsageSettingDto taskFrameUsageSettingDto = new TaskFrameUsageSettingDto(taskFrameUsageSetting
-				.getFrameSettingList().stream().map(m -> TaskFrameSettingDto.toDto(m)).collect(Collectors.toList()));
-
-		List<TaskDto> taskDtos = tasks.stream().map(m -> TaskDto.toDto(m)).collect(Collectors.toList());
-
-		List<WorkLocationDto> lstWorkLocationDto = workLocations.stream().map(m -> WorkLocationDto.fromDomain(m))
-				.collect(Collectors.toList());
+		TaskFrameUsageSettingDto taskFrameUsageSettingDto = new TaskFrameUsageSettingDto();
+		
+		if (taskFrameUsageSetting != null) {
+			taskFrameUsageSettingDto = new TaskFrameUsageSettingDto(taskFrameUsageSetting
+					.getFrameSettingList().stream().map(m -> TaskFrameSettingDto.toDto(m)).collect(Collectors.toList()));
+		}
+		
+		List<TaskDto> taskDtos = new ArrayList<>();
+		
+		if (!tasks.isEmpty()) {
+			taskDtos = tasks.stream().map(m -> TaskDto.toDto(m)).collect(Collectors.toList());
+		}
+		List<WorkLocationDto> lstWorkLocationDto = new ArrayList<>();
+		
+		if (!workLocations.isEmpty()) {
+			lstWorkLocationDto = workLocations.stream().map(m -> WorkLocationDto.fromDomain(m))
+					.collect(Collectors.toList());
+		}
 
 		startManHourInputResultDto.setTaskFrameUsageSetting(taskFrameUsageSettingDto);
 		startManHourInputResultDto.setTasks(taskDtos);
@@ -56,14 +68,17 @@ public class StartProcess {
 		
 		// 2: [画面モード = 確認モード]: <call>()
 		GetRefWorkplaceAndEmployeeDto refWorkplaceAndEmployeeDto = getRefWorkplaceAndEmployee.get(GeneralDate.today());
-		startProcessDto.setRefWorkplaceAndEmployeeDto(new GetRefWorkplaceAndEmployeeResultDto(
-				refWorkplaceAndEmployeeDto.getEmployeeInfos(), 
-				refWorkplaceAndEmployeeDto.getLstEmployeeInfo(),
-				refWorkplaceAndEmployeeDto.getWorkplaceInfos().stream().map(m -> 
-				new WorkplaceInfoDto(m.getHistoryId(), m.getWorkplaceCode().v(), m.getWorkplaceName().v()
-						, m.getWkpGenericName().v(), m.getWkpDisplayName().v(), m.getOutsideWkpCode().v())
-				).collect(Collectors.toList())));
-
+		
+		if (refWorkplaceAndEmployeeDto != null) {
+			startProcessDto.setRefWorkplaceAndEmployeeDto(new GetRefWorkplaceAndEmployeeResultDto(
+					refWorkplaceAndEmployeeDto.getEmployeeInfos(), 
+					refWorkplaceAndEmployeeDto.getLstEmployeeInfo(),
+					refWorkplaceAndEmployeeDto.getWorkplaceInfos().stream().map(m -> 
+					new WorkplaceInfoDto(m.getWorkplaceId(), m.getWorkplaceCode().v(), m.getWorkplaceName().v()
+							, m.getWkpGenericName().v(), m.getWkpDisplayName().v(), m.getOutsideWkpCode().v())
+					).collect(Collectors.toList())));
+		}
+		
 		return startProcessDto;
 	}
 

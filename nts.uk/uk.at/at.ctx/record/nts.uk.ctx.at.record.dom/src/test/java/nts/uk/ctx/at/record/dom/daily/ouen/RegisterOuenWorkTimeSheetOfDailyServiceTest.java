@@ -44,35 +44,6 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 
 	// $実績の作業時間帯 notPresent
 	// and attendanceIds == empty
-	@Test
-	public void test1() {
-		this.editStateOfDailyPerformance.add(editStateOfDaily);
-		this.editStateOfDailyPerformance.add(editStateOfDaily);
-
-		new Expectations() {
-			{
-				require.findOuenWorkTimeSheetOfDaily(empId, ymd);
-
-				require.getEditStateOfDailyPerformance(empId, ymd);
-				result = editStateOfDailyPerformance;
-			}
-		};
-
-		new MockUp<OuenWorkTimeSheetOfDaily>() {
-			@Mock
-			public List<Integer> getAttendanceId() {
-				return new ArrayList<>();
-
-			}
-		};
-
-		OuenWorkTimeSheetOfDaily domain = new OuenWorkTimeSheetOfDaily(empId, ymd, ouenWorkTimeSheetOfDailys);
-
-		AtomTask atomtask = RegisterOuenWorkTimeSheetOfDailyService.register(require, empId, ymd,
-				ouenWorkTimeSheetOfDailys, EnumAdaptor.valueOf(1, EditStateSetting.class));
-
-		NtsAssert.atomTask(() -> atomtask, any -> require.insert(domain));
-	}
 
 	// $実績の作業時間帯 notPresent
 	// and attendanceIds not empty
@@ -117,6 +88,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 	// createEditState => Update
 	@Test
 	public void test3() {
+		this.editStateOfDailyPerformance.add(editStateOfDaily);
 		this.editStateOfDailyPerformance.add(editStateOfDaily);
 		this.editStateOfDailyPerformance.add(editStateOfDaily);
 
@@ -190,8 +162,8 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 		NtsAssert.atomTask(() -> atomtask, any -> require.delete(domain));
 	}
 
-	// $実績の作業時間帯 notPresent
-	// if $更新時間帯.isNotEmpty
+//	// $実績の作業時間帯 notPresent
+//	// if $更新時間帯.isNotEmpty
 	@Test
 	public void test5() {
 

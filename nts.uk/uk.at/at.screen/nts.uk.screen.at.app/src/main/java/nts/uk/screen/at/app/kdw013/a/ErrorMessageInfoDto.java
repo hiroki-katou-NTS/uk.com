@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.kdw013.a;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.Err
  *
  */
 @Setter
+@Getter
 @AllArgsConstructor
 public class ErrorMessageInfoDto {
 	/**

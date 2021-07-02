@@ -1,6 +1,7 @@
 package nts.uk.screen.at.ws.kdw.kdw013;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 
 /**
@@ -9,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
  *
  */
 @AllArgsConstructor
+@Data
 public class ScheduleTimeSheetDto {
 
 	private Integer workNo;

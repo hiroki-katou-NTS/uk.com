@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.jobmanagement.workconfirmation.CheckWorkPerformanceService;
 import nts.uk.ctx.at.record.dom.jobmanagement.workconfirmation.ConfirmationWorkResults;
@@ -32,8 +33,13 @@ public class AddWorkRecodConfirmationCommandHandler
 
 		AddWorkRecodConfirmationCommand command = context.getCommand();
 
-		CheckWorkPerformanceService.check(require, command.getEmployeeId(), command.getDate(),
+		AtomTask atom = CheckWorkPerformanceService.check(require, command.getEmployeeId(), command.getDate(),
 				command.getConfirmerId());
+		
+		transaction.execute(() -> {
+			// 2:persist
+			atom.run();
+		});
 	}
 
 	@AllArgsConstructor

@@ -20,19 +20,25 @@ import nts.uk.ctx.at.record.dom.jobmanagement.workconfirmation.ConfirmationWorkR
  *
  */
 @Stateless
-public class DeleteWorkResultConfirmationCommandHandler extends CommandHandler<DeleteWorkResultConfirmationCommand> {
+public class DeleteWorkResultConfirmationCommandHandler extends CommandHandler<DeleteWorkResultConfirmCommand> {
 
 	@Inject
 	private ConfirmationWorkResultsRepository confirmationWorkResultsRepository;
 	
 	@Override
-	protected void handle(CommandHandlerContext<DeleteWorkResultConfirmationCommand> context) {
+	protected void handle(CommandHandlerContext<DeleteWorkResultConfirmCommand> context) {
 		RequireImpl require = new RequireImpl(confirmationWorkResultsRepository);
 
-		DeleteWorkResultConfirmationCommand command = context.getCommand();
+		DeleteWorkResultConfirmCommand command = context.getCommand();
 		
 		//1: 解除する(require, 対象者, 対象日, 確認者):AtomTask
-		CancelConfirmationWorkResultsService.check(require, command.getEmployeeId(), command.getDate(), command.getConfirmerId()).orElse((AtomTask) Optional.empty().get());
+		Optional<AtomTask> atomOpt = CancelConfirmationWorkResultsService.check(require, command.getEmployeeId(), command.getDate(), command.getConfirmerId());
+		
+		if (atomOpt.isPresent()) {
+			transaction.execute(() -> {
+				atomOpt.get().run();
+			});
+		}
 	}
 	
 	@AllArgsConstructor
@@ -47,7 +53,7 @@ public class DeleteWorkResultConfirmationCommandHandler extends CommandHandler<D
 
 		@Override
 		public void delete(ConfirmationWorkResults confirmationWorkResults) {
-			confirmationWorkResultsRepo.insert(confirmationWorkResults);
+			confirmationWorkResultsRepo.delete(confirmationWorkResults);
 		}
 
 		@Override

@@ -21,7 +21,7 @@ public class WorkRecordDetail {
 	private GeneralDate date;
 	
 	// 社員ID
-	private String sId;
+	private String sID;
 	
 	// 作業詳細リスト
 	private Optional<List<WorkDetailsParam>> lstworkDetailsParam;

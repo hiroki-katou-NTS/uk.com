@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.AddWorkRecodCo
  *
  */
 @Stateless
-public class AddWorkRecordConfirmation {
+public class AddWorkRecordConfirmationCommandHandler {
 	
 	@Inject
 	private AddWorkRecodConfirmationCommandHandler confirmHandler;
@@ -28,7 +28,7 @@ public class AddWorkRecordConfirmation {
 		confirmHandler.handle(command);
 		
 		// 2: <call>() 作業確認状況を取得する
-		return getStatus.get(command.getConfirmerId(), command.getDate());
+		return getStatus.get(command.getEmployeeId(), command.getDate());
 	}
 
 }

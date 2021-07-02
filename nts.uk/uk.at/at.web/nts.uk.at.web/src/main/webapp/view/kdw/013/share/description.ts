@@ -1,4 +1,4 @@
-module nts.uk.ui.at.kdp013.share {
+module nts.uk.ui.at.kdw013.share {
     const { countHalf } = nts.uk.text;
 
     @handler({
@@ -14,7 +14,7 @@ module nts.uk.ui.at.kdp013.share {
             const hasError: KnockoutObservable<boolean> = allBindingsAccessor.get('hasError');
 
             const message = $('<div>', { 'class': 'message' }).appendTo(element).get(0);
-            const textarea = $('<textarea>', { 'class': 'nts-input' }).prependTo(element).on('blur', () => subscribe(value())).get(0);
+            const textarea = $('<textarea style="resize: none;">', { 'class': 'nts-input' }).prependTo(element).on('blur', () => subscribe(value())).get(0);
 
             const text = ko.observable('');
             const value = ko.observable('');
@@ -25,7 +25,7 @@ module nts.uk.ui.at.kdp013.share {
                 const primitive = primitiveValueConstraints[constraint];
                 const maxLength = (primitive || { maxLength: 9999 }).maxLength || 9999;
 
-                if (!$value || countHalf($value) > maxLength) {
+                if (countHalf($value) > maxLength) {
                     if (ko.isObservable(hasError)) {
                         hasError(true);
                     }
@@ -51,7 +51,7 @@ module nts.uk.ui.at.kdp013.share {
                 .$validate
                 .constraint(constraint)
                 .then((value: vm.Constraint) => {
-                    console.log(value);
+                    // console.log(value);
                 });
 
             value

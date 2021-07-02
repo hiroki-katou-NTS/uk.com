@@ -10,7 +10,8 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workplace.GetAllEmployeeWithWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workplace.GetWorkplaceOfEmployeeAdapter;
 import nts.uk.ctx.at.record.dom.daily.ouen.GetTheWorkYouUseMostRecentlyService;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
@@ -58,7 +59,10 @@ public class GetEmployeeDisplayInfo {
 	private GetDailyPerformanceData getDailyPerformanceData;
 	
 	@Inject
-	private SyWorkplaceAdapter syWorkplaceAdapter;
+	private GetWorkplaceOfEmployeeAdapter getWorkplaceOfEmployeeAdapter;
+	
+	@Inject
+	private GetAllEmployeeWithWorkplaceAdapter getAllEmployeeWithWorkplaceAdapter;
 
 	/**
 	 * 
@@ -72,9 +76,9 @@ public class GetEmployeeDisplayInfo {
 
 		// 1: 取得する(@Require, 社員ID, 年月日):List<作業グループ>
 		RequireImpl require = new RequireImpl(ouenRepo, taskRepo, taskFrameUsageSettingRepo);
-		RequireImpl1 require1 = new RequireImpl1(workChangeablePeriodSettingRepo, checkShortageFlex, syWorkplaceAdapter);
+		RequireImpl1 require1 = new RequireImpl1(workChangeablePeriodSettingRepo, checkShortageFlex, getWorkplaceOfEmployeeAdapter,getAllEmployeeWithWorkplaceAdapter);
 
-		List<WorkGroup> workGroups = GetTheWorkYouUseMostRecentlyService.get(require, sid, refDate);
+		List<WorkGroup> workGroups = GetTheWorkYouUseMostRecentlyService.get(require, sid);
 		employeeDisplayInfo.setWorkGroups(workGroups);
 
 		// 2: get(ログイン会社ID)
@@ -128,7 +132,9 @@ public class GetEmployeeDisplayInfo {
 
 		private CheckShortageFlex checkShortageFlex;
 		
-		private SyWorkplaceAdapter syWorkplaceAdapter;
+		private GetWorkplaceOfEmployeeAdapter getWorkplaceOfEmployeeAdapter;
+		
+		private GetAllEmployeeWithWorkplaceAdapter getAllEmployeeWithWorkplaceAdapter;
 
 		@Override
 		public ManHourRecordReferenceSetting get() {
@@ -142,12 +148,12 @@ public class GetEmployeeDisplayInfo {
 
 		@Override
 		public Map<String, String> getWorkPlace(String userID, String employeeID, GeneralDate date) {
-			return syWorkplaceAdapter.getWorkPlace(userID, employeeID, date);
+			return getWorkplaceOfEmployeeAdapter.get(userID, employeeID, date);
 		}
 
 		@Override
 		public Map<String, String> getByCID(String companyId, GeneralDate baseDate) {
-			return syWorkplaceAdapter.getByCID(companyId, baseDate);
+			return getAllEmployeeWithWorkplaceAdapter.get(companyId, baseDate);
 		}
 
 	}
