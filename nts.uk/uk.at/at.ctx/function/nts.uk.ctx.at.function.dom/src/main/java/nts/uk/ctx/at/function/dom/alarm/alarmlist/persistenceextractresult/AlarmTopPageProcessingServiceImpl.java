@@ -118,15 +118,14 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                     dataProcessingInputOutput(p, lstExtractResultInput, lstExtractResultDB, lstExResultInsert, lstExResultDelete);
                 }
 
-                // Lấy các record còn sót lại sau khi đã lọc theo extractConds để xoá ra khỏi Db
-                val empIdOfDbRemains = lstExtractResultDB.stream().map(AlarmEmployeeList::getEmployeeID).collect(Collectors.toList());
-                if (!empIdOfDbRemains.isEmpty()) {
-                    val tempDbRemain = persisAlarmExtract.getAlarmListExtractResults().stream().filter(x ->
-                            !empIdOfDbRemains.contains(x.getEmployeeID())).collect(Collectors.toList());
-                    if (!tempDbRemain.isEmpty()) {
-                        lstExResultDelete.addAll(tempDbRemain);
-                    }
-                }
+//                val empIdOfDbRemains = lstExtractResultDB.stream().map(AlarmEmployeeList::getEmployeeID).collect(Collectors.toList());
+//                if (!empIdOfDbRemains.isEmpty()) {
+//                    val tempDbRemain = persisAlarmExtract.getAlarmListExtractResults().stream().filter(x ->
+//                            !empIdOfDbRemains.contains(x.getEmployeeID())).collect(Collectors.toList());
+//                    if (!tempDbRemain.isEmpty()) {
+//                        lstExResultDelete.addAll(tempDbRemain);
+//                    }
+//                }
 
                 //Delete: 今回のアラーム結果がないがデータベースに存在している場合データベースを削除
                 if (!CollectionUtil.isEmpty(lstExResultDelete)) {
