@@ -2406,10 +2406,15 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                     val afdateReman = spVaCrurrentMonthImported.getRemainDateAf();
 
                                     String m27 = "";
-                                    if ((bfdateRemain!=null&& bfdateRemain != 0) && (afdateReman!=null && afdtime != 0)) {
+                                    if ((bfdateRemain!=null) && (afdateReman!=null)) {
                                         m27 = String.valueOf(df.format(bfdateRemain)) + "/" + String.valueOf(df.format(afdateReman));
                                     } else {
-                                        m27 = ((bfdateRemain==null ||bfdateRemain == 0) ? "" : String.valueOf(df.format(bfdateRemain))) + ((afdateReman==null||afdateReman == 0) ? "" : String.valueOf(df.format(afdateReman)));
+                                        if(afdateReman==null){
+                                            m27 = ((bfdateRemain==null) ? "" : String.valueOf(df.format(bfdateRemain)));
+                                        }
+                                        if(bfdateRemain == null){
+                                            m27 = ((afdateReman==null) ? "" : String.valueOf(df.format(afdateReman)));
+                                        }
                                     }
                                     cells.get(firstRow + 2, 10 + totalMonth).setValue(m27);
                                     if ((bfdateRemain!=null && bfdateRemain < 0) || (afdateReman!=null&& afdateReman < 0)) {
@@ -2419,10 +2424,15 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                     val bfRemainTime = spVaCrurrentMonthImported.getRemainHoursBf();
                                     val afRemanTime = spVaCrurrentMonthImported.getRemainHoursAf();
                                     String vlm28 = "";
-                                    if (bfRemainTime!=null && bfRemainTime != 0 && afRemanTime!=null&& afRemanTime != 0) {
+                                    if (bfRemainTime!=null  && afRemanTime!=null) {
                                         vlm28 = String.valueOf(convertToTime(bfRemainTime)) + "/" + String.valueOf(convertToTime(afRemanTime));
                                     } else {
-                                        vlm28 = ((bfRemainTime == null ||bfRemainTime == 0) ? "" : String.valueOf(convertToTime(bfRemainTime))) + ((afRemanTime== null||afRemanTime == 0) ? "" : String.valueOf(convertToTime(afRemanTime)));
+                                        if(afRemanTime==null) {
+                                            vlm28 = ((bfRemainTime == null) ? "" : String.valueOf(convertToTime(bfRemainTime)));
+                                        }
+                                        if(bfRemainTime == null){
+                                            vlm28 =  ((afRemanTime== null) ? "" : String.valueOf(convertToTime(afRemanTime)));
+                                        }
                                     }
                                     if (!itemFrame.isEmpty()) {
                                         cells.get(firstRow + 3, 10 + totalMonth).setValue(vlm28);
