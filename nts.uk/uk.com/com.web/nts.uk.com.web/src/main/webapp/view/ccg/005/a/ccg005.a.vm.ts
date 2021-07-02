@@ -184,13 +184,13 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 </td>
                 <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
                   <!-- A4_6 time -->
-                  <p style="max-width: 125px;"
+                  <p style="max-width: 125px; line-height: 20px;"
                     data-bind="text: goOutDto.goOutPeriod, visible: $component.goOutDisplay()" />
                   <!-- A4_6 text go out reason -->
-                  <p style="max-width: 125px;" class="limited-label ccg005-block"
+                  <p style="max-width: 125px; line-height: 20px;" class="limited-label ccg005-block"
                     data-bind="text: goOutDto.goOutReason, visible: $component.goOutDisplay()" />
                   <!-- A4_6 text comment -->
-                  <p style="max-width: 125px;" class="limited-label ccg005-block"
+                  <p style="max-width: 125px; line-height: 20px;" class="limited-label ccg005-block"
                     data-bind="text: comment, visible: $component.commentDisplay()" />
                 </td>
               </tr>
