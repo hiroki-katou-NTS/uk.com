@@ -768,9 +768,11 @@ module nts.uk.ui.at.kdw013.a {
 
                             if (refWorkplaceAndEmployeeDto) {
                                 const { employeeInfos, lstEmployeeInfo } = refWorkplaceAndEmployeeDto;
-
+                                let emps = _.filter(employeeInfos,{'workplaceId': $dept });
                                 // updating
-                                return loaded ? [] : lstEmployeeInfo.filter(({ employeeId }) => employeeInfos[employeeId] === $dept);
+                                return loaded ? [] : _.filter(lstEmployeeInfo, (o) => {
+                                   return !!_.find(emps, { 'employeeId': o.employeeId });
+                                });
                             }
                         }
 
@@ -802,6 +804,25 @@ module nts.uk.ui.at.kdw013.a {
 
                     }
                 });
+    
+                vm.departments
+                    .subscribe((deps) => {
+                        if (!_.isEmpty(deps)) {
+
+                            let empInfo = _.find(vm.params.$settings().refWorkplaceAndEmployeeDto.employeeInfos, { 'employeeId': vm.$user.employeeId });
+
+                            if (empInfo) {
+
+                                let selectedWkp = _.find(deps, { 'workplaceId': empInfo.workplaceId });
+
+                                if (selectedWkp) {
+
+                                    vm.department(selectedWkp.workplaceId);
+                                }
+                            }
+
+                        }
+                    });
 
                 vm.employees
                     .subscribe((emps: EmployeeBasicInfoDto[]) => {

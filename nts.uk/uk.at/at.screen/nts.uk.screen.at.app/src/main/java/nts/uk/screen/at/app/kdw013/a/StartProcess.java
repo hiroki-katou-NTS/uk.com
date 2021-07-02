@@ -71,7 +71,8 @@ public class StartProcess {
 		
 		if (refWorkplaceAndEmployeeDto != null) {
 			startProcessDto.setRefWorkplaceAndEmployeeDto(new GetRefWorkplaceAndEmployeeResultDto(
-					refWorkplaceAndEmployeeDto.getEmployeeInfos(), 
+					refWorkplaceAndEmployeeDto.getEmployeeInfos().entrySet().stream()
+							.map(x -> new RefEmpWkpInfoDto(x.getKey(), x.getValue())).collect(Collectors.toList()), 
 					refWorkplaceAndEmployeeDto.getLstEmployeeInfo(),
 					refWorkplaceAndEmployeeDto.getWorkplaceInfos().stream().map(m -> 
 					new WorkplaceInfoDto(m.getWorkplaceId(), m.getWorkplaceCode().v(), m.getWorkplaceName().v()
