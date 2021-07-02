@@ -17,10 +17,7 @@ import nts.uk.shr.com.i18n.TextResource;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -46,10 +43,7 @@ public class WorkplaceCodeCfmService {
      */
     public List<ExtractResultDto> confirm(String cid, BasicCheckName name, DisplayMessage displayMessage,
                                           Map<String, List<EmployeeInfoImported>> empInfosByWpMap, YearMonthPeriod ymPeriod) {
-        DatePeriod period = new DatePeriod(
-                GeneralDate.ymd(ymPeriod.start().year(), ymPeriod.start().month(), 1),
-                GeneralDate.ymd(ymPeriod.end().year(), ymPeriod.end().month(), 1).addMonths(1).addDays(-1)
-        );
+        DatePeriod period = new DatePeriod(ymPeriod.start().firstGeneralDate(), ymPeriod.end().lastGeneralDate());
         // 空欄のリスト「抽出結果」を作成する。
         List<ExtractResultDto> results = new ArrayList<>();
 
@@ -66,11 +60,17 @@ public class WorkplaceCodeCfmService {
             if (CollectionUtil.isEmpty(filteredInfo)) {
                 alarmValueDate = new AlarmValueDate(ymPeriod.start().toString(), Optional.of(ymPeriod.end().toString()));
             } else if (filteredInfo.stream().anyMatch(i -> i.getPeriod() != null && i.getPeriod().start().yearMonth().greaterThan(ymPeriod.start()))) {
-                WorkplaceInformationImport errorWkp = filteredInfo.stream().filter(i -> i.getPeriod() != null && i.getPeriod().start().yearMonth().greaterThan(ymPeriod.start())).findFirst().get();
-                alarmValueDate = new AlarmValueDate(ymPeriod.start().toString(), Optional.of(errorWkp.getPeriod().start().toString()));
+                WorkplaceInformationImport errorWkp = filteredInfo.stream()
+                        .filter(i -> i.getPeriod() != null && i.getPeriod().start().yearMonth().greaterThan(ymPeriod.start()))
+                        .min(Comparator.comparing(i -> i.getPeriod().start().yearMonth()))
+                        .get();
+                alarmValueDate = new AlarmValueDate(ymPeriod.start().toString(), Optional.of(errorWkp.getPeriod().start().yearMonth().toString()));
             } else if (filteredInfo.stream().anyMatch(i -> i.getPeriod() != null && i.getPeriod().end().yearMonth().lessThan(ymPeriod.end()))) {
-                WorkplaceInformationImport errorWkp = filteredInfo.stream().filter(i -> i.getPeriod() != null && i.getPeriod().end().yearMonth().lessThan(ymPeriod.end())).findFirst().get();
-                alarmValueDate = new AlarmValueDate(errorWkp.getPeriod().start().toString(), Optional.of(ymPeriod.end().toString()));
+                WorkplaceInformationImport errorWkp = filteredInfo.stream()
+                        .filter(i -> i.getPeriod() != null && i.getPeriod().end().yearMonth().lessThan(ymPeriod.end()))
+                        .max(Comparator.comparing(i -> i.getPeriod().end().yearMonth()))
+                        .get();
+                alarmValueDate = new AlarmValueDate(errorWkp.getPeriod().end().yearMonth().toString(), Optional.of(ymPeriod.end().toString()));
             }
 
             if (alarmValueDate != null) {
