@@ -27,5 +27,8 @@ public class ChangeDailyAttendance {
 	
 	/** 予定実績区分*/
 	public ScheduleRecordClassifi classification;
+	
+	/** 直行直帰区分*/
+	public boolean directBounceClassifi; 
 
 }

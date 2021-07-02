@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.ot.frame;
 
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWorkEnum;
+
 /**
  * The Interface OvertimeWorkFrameGetMemento.
  */
@@ -49,7 +51,7 @@ public interface OvertimeWorkFrameGetMemento {
 	 * 
 	 * @return the role
 	 */
-	RoleOvertimeWork getRole();
+	RoleOvertimeWorkEnum getRole();
 	
 	/**
 	 * Gets the transfer atr.

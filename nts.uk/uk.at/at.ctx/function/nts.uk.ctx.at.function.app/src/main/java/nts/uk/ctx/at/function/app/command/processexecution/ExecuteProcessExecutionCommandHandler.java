@@ -2635,6 +2635,16 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                 if (processExecution.getExecSetting().getAlarmExtraction().getMailAdministrator().get().booleanValue())
                     sendMailAdmin = true;
             }
+            boolean isDisplayAdmin = false;
+            if (processExecution.getExecSetting().getAlarmExtraction().getDisplayOnTopPageAdministrator().isPresent()) {
+                if (processExecution.getExecSetting().getAlarmExtraction().getDisplayOnTopPageAdministrator().get().booleanValue())
+                    isDisplayAdmin = true;
+            }
+            boolean isDisplayPerson = false;
+            if (processExecution.getExecSetting().getAlarmExtraction().getDisplayOnTopPagePrincipal().isPresent()) {
+                if (processExecution.getExecSetting().getAlarmExtraction().getDisplayOnTopPagePrincipal().get().booleanValue())
+                    isDisplayPerson = true;
+            }
             try {
                 // アラームリスト自動実行処理を実行する
                 outputExecAlarmListPro = this.execAlarmListProcessingService
@@ -2642,7 +2652,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                                 GeneralDateTime.now(), sendMailPerson, sendMailAdmin,
                                 !processExecution.getExecSetting().getAlarmExtraction().getAlarmCode().isPresent() ? ""
                                         : processExecution.getExecSetting().getAlarmExtraction().getAlarmCode().get().v(),
-                                execId);
+                                execId, execItemCd, isDisplayAdmin, isDisplayPerson);
 				log.info("更新処理自動実行_アラーム抽出_END_" + processExecution.getExecItemCode() + "_" + GeneralDateTime.now());
                 if (outputExecAlarmListPro.isCheckStop()) {
                     checkStopExec = true;

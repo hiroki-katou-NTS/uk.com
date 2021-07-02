@@ -249,7 +249,7 @@ public class HolidayShipmentMobileWS extends WebService {
 					command.getWorkTimeCD());
 		    List<TimezoneUse> timezoneUses = new ArrayList<TimezoneUse>();
 		    for (int i = 0; i < timeZones.size(); i++) {
-                timezoneUses.add(new TimezoneUse(timeZones.get(i).getStart(), timeZones.get(i).getEnd(), UseSetting.USE, i));
+                timezoneUses.add(new TimezoneUse(timeZones.get(i).getStart(), timeZones.get(i).getEnd(), UseSetting.USE, i + 1));
             }
 //			if(predetermineTimeSetForCalc!=null) {
 				for(TimezoneUse timezoneUse : timezoneUses) {

@@ -46,6 +46,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -176,42 +177,46 @@ public class ActualWorkingTimeOfDaily {
 					recordWorkTimeCode,
 					declareResult);
 		
-		TotalWorkingTime calcResultOotsuka;
-		if(workType.getDailyWork().decisionMatchWorkType(WorkTypeClassification.SpecialHoliday).isFullTime()) {
-			//大塚モード(特休時計算)
-			calcResultOotsuka = totalWorkingTime.SpecialHolidayCalculationForOotsuka(recordClass,
-				    vacationClass,
-				    workType,
-				    workTimeDailyAtr,
-				    flexCalcMethod,
-					bonusPayAutoCalcSet,
-					eachCompanyTimeSet,
-					conditionItem,
-					predetermineTimeSetByPersonInfo,
-					leaveLateSet);
-		}
-		else {
-			/*大塚残業*/
-			calcResultOotsuka = calcOotsuka(recordClass,
-											totalWorkingTime,
-											workType,
-											workScheduleTime.getRecordPrescribedLaborTime(),
-											conditionItem.getLaborSystem());
-		}
-		
+		TotalWorkingTime calcResultOotsuka = totalWorkingTime;
+		// 大塚モードの確認
+		if (AppContexts.optionLicense().customize().ootsuka()){
+			// 勤務種類が1日特休かどうか確認する
+			if (workType.getDailyWork().decisionMatchWorkType(WorkTypeClassification.SpecialHoliday).isFullTime()){
+				// 大塚モード(特休時計算)
+				calcResultOotsuka = totalWorkingTime.SpecialHolidayCalculationForOotsuka(
+						recordClass,
+						vacationClass,
+						workType,
+						workTimeDailyAtr,
+						flexCalcMethod,
+						bonusPayAutoCalcSet,
+						eachCompanyTimeSet,
+						conditionItem,
+						predetermineTimeSetByPersonInfo,
+						leaveLateSet);
+			}
+			else{
+				// 大塚残業
+				calcResultOotsuka = calcOotsuka(
+						recordClass,
+						totalWorkingTime,
+						workType,
+						workScheduleTime.getRecordPrescribedLaborTime(),
+						conditionItem.getLaborSystem());
+			}
+			// 大塚モードの計算（欠勤控除時間）
+			// 1日出勤系の場合は処理を呼ばないように作成が必要
+			if (recordClass.getCalculatable()){
+				// 大塚モード休憩未取得
+				calcResultOotsuka = calcResultOotsuka.reCalcLateLeave(
+						recordClass.getWorkTimezoneCommonSet(),
+						recordClass.getFixRestTimeSetting(),
+						recordClass.getFixWoSetting(),
+						recordClass.getIntegrationOfDaily().getAttendanceLeave(),
+						workScheduleTime.getRecordPrescribedLaborTime(), 
+						workType);	
 
-		
-		/*大塚モードの計算（欠勤控除時間）*/
-		//1日出勤系の場合は処理を呼ばないように作成が必要
-		if(recordClass.getCalculatable()) {
-			//大塚モード休憩未取得
-			calcResultOotsuka = calcResultOotsuka.reCalcLateLeave(recordClass.getWorkTimezoneCommonSet(),
-					  recordClass.getFixRestTimeSetting(),
-					  recordClass.getFixWoSetting(),
-					  recordClass.getIntegrationOfDaily().getAttendanceLeave(),
-					  workScheduleTime.getRecordPrescribedLaborTime(), 
-					  workType);	
-
+			}
 		}
 		
 		/*拘束差異時間*/
@@ -324,7 +329,15 @@ public class ActualWorkingTimeOfDaily {
 										.findFirst().ifPresent(tdi -> {
 											int totalTime = 0;
 											int deductionTime = (tdi.getDeductionTime() == null ?  0 : tdi.getDeductionTime().valueAsMinutes());
-											if(1 < tdi.getDivTimeId() && tdi.getDivTimeId() <=7) {
+											boolean isCustom = false;
+											if (AppContexts.optionLicense().customize().ootsuka()){
+												if (1 < tdi.getDivTimeId() && tdi.getDivTimeId() <= 7){
+												}
+												else{
+													isCustom = true;
+												}
+											}
+											if(!isCustom) {
 												totalTime = divergenceTimeClass.totalDivergenceTimeWithAttendanceItemId(forCalcDivergenceDto);
 											}
 											//大塚ｶｽﾀﾏｲｽﾞ(乖離No1,8～10は別の処理をさせる

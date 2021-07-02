@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.pub.toppagealarm;
 
+import java.util.List;
 import java.util.Optional;
 import lombok.Data;
 import nts.arc.time.GeneralDateTime;
@@ -25,6 +26,9 @@ public class ToppageAlarmExport {
 	 * 表示社員区分
 	 */
 	private DisplayEmpClassfication displayEmpClassfication;
+	
+	//部下の社員ID
+	private List<String> subSids; //#116503
 	
 	/*
 	 * パターンコード

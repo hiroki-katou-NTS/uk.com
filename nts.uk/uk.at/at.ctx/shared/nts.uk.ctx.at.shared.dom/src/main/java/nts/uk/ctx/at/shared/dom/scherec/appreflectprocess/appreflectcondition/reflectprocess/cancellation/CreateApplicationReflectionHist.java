@@ -61,7 +61,7 @@ public class CreateApplicationReflectionHist {
 					: "";
 
 			// 取得した値を該当する[反映前の勤怠（List）]に追加する
-			data.setValue(value);
+			data.setValue(Optional.ofNullable(value));
 
 			// [反映前の日別勤怠(Work）]から、該当する編集状態を取得
 			EditStateOfDailyAttd state = domainBefore.getEditState().stream()

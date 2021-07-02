@@ -118,6 +118,7 @@ public class WorkInformation implements Serializable{
 		this.workTimeCode = Optional.empty();
 	}
 
+	/** 就業時間帯が試験日かどうか判断 */
 	public boolean isExamWorkTime() {
 
 		return workTimeCode
@@ -201,6 +202,7 @@ public class WorkInformation implements Serializable{
 	public Optional<WorkStyle> getWorkStyle(Require require) {
 
 		// 勤務種類を取得する
+		if (this.workTypeCode == null) return Optional.empty();
 		val workType = require.getWorkType( this.workTypeCode.v() );
 		if ( !workType.isPresent() ) {
 			// 勤務種類が取得できない

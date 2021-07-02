@@ -42,7 +42,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CareUseDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DayoffTranferInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.EmploymentHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.InforFormerRemainData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.OccurrenceUseDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.SpecialHolidayUseDetail;
@@ -51,7 +50,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationUsageTimeDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.WorkTypeRemainInfor;
 import nts.uk.ctx.at.shared.dom.vacation.service.UseDateDeadlineFromDatePeriod;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ManageDeadline;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -85,7 +86,7 @@ public class TempRemainCreateEachData {
 				Optional.empty());
 		mngData.getRecAbsData().add(annualMng);
 
-		mngData.setAnnualHolidayData(Optional.of(annualMng));
+		mngData.getAnnualHolidayData().add(annualMng);
 		return mngData;
 	}
 
@@ -127,10 +128,10 @@ public class TempRemainCreateEachData {
 		Optional<OccurrenceUseDetail> occUseDetail = inforData.getOccurrenceUseDetail(workTypeClass);
 		if(occUseDetail.isPresent()) {
 			String mngId = IdentifierUtil.randomUniqueId();
-			
+
 			WorkTypeRemainInfor Rinfor = inforData.getWorkTypeRemainInfor(workTypeClass).map(ri -> ri)
 					.orElse(inforData.getWorkTypeRemainInforByOd(workTypeClass));
-			
+
 			InterimAbsMng absDataMng = new InterimAbsMng(mngId,inforData.getSid(),
 					inforData.getYmd(),
 					Rinfor.getCreateData(),
@@ -168,9 +169,9 @@ public class TempRemainCreateEachData {
 						new RequiredDay(occUseDetail.get().getDays()),
 						new UnOffsetTime(occUseDetail.get().getSubstituteHolidayTime().map(x -> x.v()).orElse(0)),
 						new UnOffsetDay(occUseDetail.get().getDays()),
-						Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.empty()))
+						Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty()))
 						);
-				mngData.setDayOffData(Optional.of(dayoffMng));
+				mngData.getDayOffData().add(dayoffMng);
 				mngData.getRecAbsData().add(dayoffMng);
 		}
 		return mngData;
@@ -193,7 +194,7 @@ public class TempRemainCreateEachData {
 		//アルゴリズム「振休使用期限日の算出」を実行する
 		GeneralDate useDate = getUseDays(require, inforData);
 		String mngId = IdentifierUtil.randomUniqueId();
-		
+
 		WorkTypeRemainInfor Rinfor = inforData.getWorkTypeRemainInfor(workTypeClass).map(ri -> ri)
 				.orElse(inforData.getWorkTypeRemainInforByOd(workTypeClass));
 
@@ -287,7 +288,7 @@ public class TempRemainCreateEachData {
 	 * @param inforData
 	 * @param workTypeClass
 	 * @param mngData
-	 * @param workTypeInfor 
+	 * @param workTypeInfor
 	 * @return
 	 */
 	public static DailyInterimRemainMngData createInterimSpecialHoliday(InforFormerRemainData inforData,
@@ -457,10 +458,10 @@ public class TempRemainCreateEachData {
 
 		occUseDetail.ifPresent(x -> {
 			//発生使用明細＝設定あり
-			
+
 			WorkTypeRemainInfor Rinfor = inforData.getWorkTypeRemainInfor(workTypeClass).map(ri -> ri)
 					.orElse(inforData.getWorkTypeRemainInforByOd(workTypeClass));
-			
+
 			InterimHolidayMng holidayMng = new InterimHolidayMng(IdentifierUtil.randomUniqueId(), inforData.getSid(),
 					inforData.getYmd(), Rinfor.getCreateData(),
 					RemainType.PUBLICHOLIDAY, x.getDays());
@@ -476,24 +477,19 @@ public class TempRemainCreateEachData {
 	 * @return
 	 */
 	private static GeneralDate getUseDays(RequireM1 require, InforFormerRemainData inforData) {
-		//雇用別休暇管理設定の振休をチェックする
-		EmploymentHolidayMngSetting employmentHolidaySetting = inforData.getEmploymentHolidaySetting();
 		SubstVacationSetting subSetting = null;
-		if(employmentHolidaySetting != null
-				&& employmentHolidaySetting.getAbsSetting().isPresent()) {
-		//	subSetting = employmentHolidaySetting.getAbsSetting().get().getSetting();
-
-		} else {
-			Optional<ComSubstVacation> companyHolidaySettingOpt = inforData.getCompanyHolidaySetting().getAbsSetting();
-			if(companyHolidaySettingOpt.isPresent()) {
-				subSetting = companyHolidaySettingOpt.get().getSetting();
-			}
+		//取得・使用方法を決定する
+		Optional<ComSubstVacation> companyHolidaySettingOpt = inforData.getCompanyHolidaySetting().getAbsSetting();
+		if (companyHolidaySettingOpt.isPresent()) {
+			subSetting = companyHolidaySettingOpt.get().getSetting();
 		}
 		if (subSetting == null) {
 			return GeneralDate.max();
 		}
 
-		return commonDate(require, subSetting.getExpirationDate(), inforData.getEmploymentHolidaySetting().getEmploymentCode(), inforData.getYmd());
+		return commonDate(require, subSetting.getExpirationDate(),
+				inforData.getEmploymentHolidaySetting().getEmploymentCode(), inforData.getYmd(),
+				companyHolidaySettingOpt.get().getSetting().getManageDeadline());
 	}
 
 	/**
@@ -502,20 +498,18 @@ public class TempRemainCreateEachData {
 	 * @return
 	 */
 	private static GeneralDate getDayDaikyu(RequireM1 require, InforFormerRemainData inforData) {
+		CompensatoryLeaveComSetting dayOffSetting = inforData.getCompanyHolidaySetting().getDayOffSetting();
+		if (dayOffSetting == null)
+			return GeneralDate.max();
 		//取得・使用方法を決定する
-		EmploymentHolidayMngSetting employmentHolidaySetting = inforData.getEmploymentHolidaySetting();
-		ExpirationTime expriTime = ExpirationTime.UNLIMITED;
-		if(employmentHolidaySetting != null
-				&& employmentHolidaySetting.getDayOffSetting() != null) {
-		/*	expriTime = employmentHolidaySetting.getDayOffSetting().getCompensatoryAcquisitionUse().getExpirationTime();*/
-		} else {
-			expriTime = inforData.getCompanyHolidaySetting().getDayOffSetting().getCompensatoryAcquisitionUse().getExpirationTime();
-		}
-		//アルゴリズム「休暇使用期限から使用期限日を算出する」を実行する
-		return commonDate(require, expriTime, inforData.getEmploymentHolidaySetting().getEmploymentCode(), inforData.getYmd());
+		ExpirationTime expriTime = dayOffSetting.getCompensatoryAcquisitionUse().getExpirationTime();
+		// アルゴリズム「休暇使用期限から使用期限日を算出する」を実行する
+		return commonDate(require, expriTime, inforData.getEmploymentHolidaySetting().getEmploymentCode(),
+				inforData.getYmd(),
+				ManageDeadline.valueOf(dayOffSetting.getCompensatoryAcquisitionUse().getTermManagement().value));
 	}
 
-	private static GeneralDate commonDate(RequireM1 require, ExpirationTime expriTime, String employmentCode, GeneralDate dateInfor) {
+	private static GeneralDate commonDate(RequireM1 require, ExpirationTime expriTime, String employmentCode, GeneralDate dateInfor, ManageDeadline manageDeadline) {
 		//アルゴリズム「休暇使用期限から使用期限日を算出する」を実行する
 		if(expriTime == ExpirationTime.END_OF_YEAR) {
 			// 使用期限日を作成する
@@ -525,7 +519,7 @@ public class TempRemainCreateEachData {
 		} else {
 			//期限指定のある使用期限日を作成する
 			if(expriTime != null) {
-				return UseDateDeadlineFromDatePeriod.useDateDeadline(require, employmentCode, expriTime, dateInfor);
+				return UseDateDeadlineFromDatePeriod.useDateDeadline(require, employmentCode, expriTime, dateInfor, manageDeadline);
 			}
 		}
 		return GeneralDate.max();
@@ -542,13 +536,13 @@ public class TempRemainCreateEachData {
 		int  startMonth = companyDto.getStartMonth();
 
 		GeneralDate nextPeriod = GeneralDate.fromString(
-				String.valueOf(date.year()) + "/" + startMonth + "/" + String.valueOf(date.day()), "yyyy/MM/dd");
+				String.valueOf(date.year()) + "/" + String.format("%02d", startMonth) + "/" + String.format("%02d", date.day()), "yyyy/MM/dd");
 		//月　＝　次の期首月 －１
-		String endPeriodMonth = String.valueOf(nextPeriod.addMonths(-1).month());
+		int endPeriodMonth = nextPeriod.addMonths(-1).month();
 		//日　＝　次の期首月－１の月末の日
-		String endPeriodDay = String.valueOf(nextPeriod.addMonths(-1).lastDateInMonth());
+		int endPeriodDay = nextPeriod.addMonths(-1).lastDateInMonth();
 
-		String endPeriodYear = "";
+		String endPeriodYear = ""; 
 
 		//年月日．月　＜　次の期首月
 		if(date.month() < startMonth){
@@ -568,7 +562,7 @@ public class TempRemainCreateEachData {
 			endPeriodYear = String.valueOf(date.addYears(-1).year());
 		}
 
-		return GeneralDate.fromString(endPeriodYear + "/" + endPeriodMonth + "/" + endPeriodDay, "yyyy/MM/dd");
+		return GeneralDate.fromString(endPeriodYear + "/" +  String.format("%02d", endPeriodMonth)  + "/" +  String.format("%02d", endPeriodDay) , "yyyy/MM/dd");
 	}
 
 
@@ -796,11 +790,11 @@ public class TempRemainCreateEachData {
 
 	/**
 	 * 残数作成元情報から暫定介護管理データ（時間）を作成する
-	 * 
+	 *
 	 * @param inforData
 	 * @return
 	 */
-	public static Collection<? extends InterimRemain> createCareTime(InforFormerRemainData inforData) {
+	public static List<TempCareManagement> createCareTime(InforFormerRemainData inforData) {
 		List<TempCareManagement> cares = new ArrayList<TempCareManagement>();
 
 		// 休暇種類を指定して時間休暇使用時間を取得する
@@ -829,7 +823,7 @@ public class TempRemainCreateEachData {
 
 	/**
 	 * 残数作成元情報から暫定子の看護管理データを作成する
-	 * 
+	 *
 	 * @param inforData
 	 * @param care
 	 * @param workTypeClass
@@ -849,6 +843,7 @@ public class TempRemainCreateEachData {
 				ChildCareNurseUsedNumber.of(new DayNumberOfUse(care.getDays()), Optional.empty()),
 				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty())));
 
+		mngData.getChildCareData().add(childData);
 		mngData.getRecAbsData().add(childData);
 		return mngData;
 
@@ -875,6 +870,7 @@ public class TempRemainCreateEachData {
 				ChildCareNurseUsedNumber.of(new DayNumberOfUse(care.getDays()), Optional.empty()),
 				Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.empty())));
 
+		mngData.getCareData().add(careData);
 		mngData.getRecAbsData().add(careData);
 		return mngData;
 	}

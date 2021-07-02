@@ -86,8 +86,8 @@ public class RegisterOrganizationShiftTableRuleCommandHandler extends CommandHan
 
         /** get(会社ID、対象組織) **/
         Optional<ShiftTableRuleForOrganization> shiftTableRuleOrg = shiftTableRuleOrgRepo.get(
-                companyId
-                , TargetOrgIdenInfor.createFromTargetUnit(targetOrgUnit, targetId)
+                companyId,
+                TargetOrgIdenInfor.createFromTargetUnit(targetOrgUnit, targetId)
         );
 
         if (shiftTableRuleOrg.isPresent()) {

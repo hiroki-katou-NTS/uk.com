@@ -545,6 +545,7 @@ module nts.uk.at.view.kal001.a.model {
                 this.startDate = dto.multiMonthAverage().toString().slice(0, 4)+"/" + dto.multiMonthAverage().toString().slice(4, 6);
                 this.endDate = dto.multiMonthAverage().toString().slice(0, 4)+"/" + dto.multiMonthAverage().toString().slice(4, 6);
             }
+            this.typeInput = dto.typeInput;
           }
       }
 }

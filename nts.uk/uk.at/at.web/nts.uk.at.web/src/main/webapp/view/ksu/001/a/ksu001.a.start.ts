@@ -1,46 +1,52 @@
 module nts.uk.at.view.ksu001.a {
     let __viewContext: any = window["__viewContext"] || {};
     __viewContext.ready(function() {
-        __viewContext.viewModel = {
-            viewAB: new ksu001.ab.viewmodel.ScreenModel(),
-            viewAC: new ksu001.ac.viewmodel.ScreenModel(),
-            viewA: new ksu001.a.viewmodel.ScreenModel()
-        };
-        
-        nts.uk.ui.block.grayout();
-        __viewContext.viewModel.viewA.startPage().done(() => {
-            __viewContext.bind(__viewContext.viewModel);
+        nts.uk.characteristics.restore("ksu001Data").done(function(data: any) {
+            __viewContext.viewModel = {
+                viewAB: new ksu001.ab.viewmodel.ScreenModel(data),
+                viewAC: new ksu001.ac.viewmodel.ScreenModel(data),
+                viewA: new ksu001.a.viewmodel.ScreenModel(data)
+            };
 
-            __viewContext.viewModel.viewA.setIconEventHeader();
+            nts.uk.ui.block.grayout();
+            __viewContext.viewModel.viewA.startPage().done(() => {
+                __viewContext.bind(__viewContext.viewModel);
 
-            if (__viewContext.viewModel.viewAC.listPageComIsEmpty == true) {
-                $('.ntsButtonTableButton').addClass('nowithContent');
-            } 
+                __viewContext.viewModel.viewA.setIconEventHeader();
 
-            if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
-                $('.ntsButtonTableButton').addClass('nowithContent');
-            }
-            
-            let item = uk.localStorage.getItem('nts.uk.characteristics.ksu001Data');
-            let userInfor = JSON.parse(item.get());
-            if (userInfor.updateMode == 'copyPaste') {
-                setTimeout(() => {
-                    __viewContext.viewModel.viewA.setStyler();
-                }, 800);
-            }
-            
-            __viewContext.viewModel.viewA.setWidthButtonnInPopupA1_12();
-            
-            $(window).resize(function() {
-                __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
-                __viewContext.viewModel.viewA.setPositionButonToRight();
-                __viewContext.viewModel.viewA.setHeightScreen();
+                if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
+                    $('.ntsButtonTableButton').addClass('nowithContent');
+                }
+
+                if (!_.isNil(data)) {
+                    if (data.updateMode == 'copyPaste') {
+                        setTimeout(() => {
+                            __viewContext.viewModel.viewA.setStyler();
+                        }, 800);
+                    }
+                }
+
+                if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
+                    $('.ntsButtonTableButton').addClass('nowithContent');
+                }
+
+                if (__viewContext.viewModel.viewA.userInfor.updateMode == 'copyPaste') {
+                    setTimeout(() => {
+                        __viewContext.viewModel.viewA.setStyler();
+                    }, 800);
+                }
+
+                $(window).resize(function() {
+                    __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
+                    __viewContext.viewModel.viewA.setPositionButonToRight();
+                    __viewContext.viewModel.viewA.setHeightScreen();
+                });
+
+                nts.uk.ui.block.clear();
             });
 
-            nts.uk.ui.block.clear();
+            initEvent();
         });
-
-        initEvent();
     });
     
     function initEvent(): void {

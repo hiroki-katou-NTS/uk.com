@@ -48,6 +48,8 @@ public interface WorkScheduleRepository {
 	
 	void update(WorkSchedule workSchedule);
 	
+	void updateConfirmedState(WorkSchedule workSchedule);
+	
 	void delete(String sid, DatePeriod datePeriod);
 	
 	/** Delete (勤務予定) **/
@@ -78,5 +80,7 @@ public interface WorkScheduleRepository {
 	 * @return
 	 */
 	Optional<GeneralDate> getMaxDateWorkSche(List<String> listEmp);
+
+	//Optional<GeneralDate> getMaxDate(List<String> employeeIDs, GeneralDate ymd);
 }
 

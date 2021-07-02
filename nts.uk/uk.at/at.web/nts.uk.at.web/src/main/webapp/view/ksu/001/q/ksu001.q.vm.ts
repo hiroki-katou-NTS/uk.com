@@ -81,20 +81,20 @@ module nts.uk.at.view.ksu001.q {
 									self.check2(false);
 									self.check3(false);
 									break;
-								case "人数":
-									self.labelQ32(nts.uk.resource.getText('KSU001_3709'));
-									self.check(false);
-									self.check1(false);
-									self.check2(true);
-									self.check3(false);
-									break;
-								case "数値":
-									self.labelQ32(nts.uk.resource.getText('KSU001_3710'));
-									self.check(false);
-									self.check1(false);
-									self.check2(false);
-									self.check3(true);
-									break;
+//								case "人数":
+//									self.labelQ32(nts.uk.resource.getText('KSU001_3709'));
+//									self.check(false);
+//									self.check1(false);
+//									self.check2(true);
+//									self.check3(false);
+//									break;
+//								case "数値":
+//									self.labelQ32(nts.uk.resource.getText('KSU001_3710'));
+//									self.check(false);
+//									self.check1(false);
+//									self.check2(false);
+//									self.check3(true);
+//									break;
 							};
 							
 							// $("table tbody tr td:nth-child(1)").css("background-color", "#D9D9D9");

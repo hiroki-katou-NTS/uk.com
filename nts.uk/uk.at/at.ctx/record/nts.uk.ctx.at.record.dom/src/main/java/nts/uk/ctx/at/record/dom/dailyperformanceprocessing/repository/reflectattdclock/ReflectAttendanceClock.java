@@ -135,9 +135,10 @@ public class ReflectAttendanceClock {
 				return null;
 			}
 			Optional<WorkStamp> workStamp = timeActualStamp.get().getActualStamp();
-			if(actualStampAtr == ActualStampAtr.STAMP ) {
-				workStamp = timeActualStamp.get().getStamp();
-			}
+			//fixbug 115441
+//			if(actualStampAtr == ActualStampAtr.STAMP ) {
+//				workStamp = timeActualStamp.get().getStamp();
+//			}
 			if(!workStamp.isPresent() 
 //					|| !workStamp.get().getLocationCode().isPresent()
 					|| !workStamp.get().getTimeDay().getTimeWithDay().isPresent()) {

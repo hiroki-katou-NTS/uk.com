@@ -83,6 +83,17 @@ module a1 {
                 width: "50"
             }));
 
+            self.isNewMode.subscribe(v => {
+                if (v) {
+                    //start timezoneModelTwo
+                    setTimeout(function () {
+                        self.timeZoneModelTwo.start(0);
+                        self.timeZoneModelTwo.end(0);
+                    }, 100);
+
+                }
+            })
+
             self.isDiffTimeMode.subscribe(function(isDifftime: boolean){
                 if(isDifftime && !(self.changeExtent)){
                     self.changeExtent = self.mainSettingModel.diffWorkSetting.changeExtent;
@@ -185,7 +196,10 @@ module a1 {
                 if (!v) {
                     $('#shiftTwoStart').ntsError('clear');
                     $('#shiftTwoEnd').ntsError('clear');
-                } 
+                } else {
+                    self.timeZoneModelTwo.start(0);
+                    self.timeZoneModelTwo.end(0);
+                }
             });
         }
 

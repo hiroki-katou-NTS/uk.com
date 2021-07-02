@@ -50,6 +50,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	
 	private static final String DELETE_BY_LIST_DATE = "WHERE a.pk.sid = :sid AND a.pk.ymd IN :ymds";
 	
+//	private static final String SELECT_MAX = "SELECT MAX(c.startDate) FROM KscdtSchBasicInfo c WHERE c.pk.sid IN :employeeIDs";
+	
 //	private static final String GET_MAX_DATE_WORK_SCHE_BY_LIST_EMP = "SELECT c.pk.ymd FROM KscdtSchBasicInfo c "
 //			+ " WHERE c.pk.sid IN :listEmp"
 //			+ " ORDER BY c.pk.ymd desc ";
@@ -78,6 +80,14 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				.getSingle(c -> c.toDomain(employeeID, ymd));
 		return workSchedule;
 	}
+	
+//	@Override
+//	public Optional<GeneralDate> getMaxDate(List<String> employeeIDs, GeneralDate ymd) {
+//		GeneralDate date = this.queryProxy().query(SELECT_MAX, GeneralDate.class)
+//				.setParameter("employeeIDs", employeeIDs)
+//				.getSingleOrNull();
+//		return Optional.ofNullable(date);
+//	}
 
 	@Override
 	public List<WorkSchedule> getList(List<String> sids, DatePeriod period) {
@@ -109,15 +119,19 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 	public KscdtSchBasicInfo toEntity(WorkSchedule workSchedule, String cID) {
 		return KscdtSchBasicInfo.toEntity(workSchedule, cID);
-	}
-
+	} 
+	
 	@Override
 	public void update(WorkSchedule workSchedule) {
 		String cID = AppContexts.user().companyId();
-		Optional<KscdtSchBasicInfo> oldData = this.queryProxy().query(SELECT_BY_KEY, KscdtSchBasicInfo.class)
-				.setParameter("employeeID", workSchedule.getEmployeeID()).setParameter("ymd", workSchedule.getYmd())
-				.getSingle(c -> c);
-
+		/*
+		 * Optional<KscdtSchBasicInfo> oldData = this.queryProxy().query(SELECT_BY_KEY,
+		 * KscdtSchBasicInfo.class) .setParameter("employeeID",
+		 * workSchedule.getEmployeeID()).setParameter("ymd", workSchedule.getYmd())
+		 * .getSingle(c -> c);
+		 */
+		KscdtSchBasicInfo entity = KscdtSchBasicInfo.toEntity(workSchedule, cID);
+		Optional<KscdtSchBasicInfo> oldData = this.queryProxy().find(entity.getPk(), KscdtSchBasicInfo.class);
 		if (oldData.isPresent()) {
 			KscdtSchBasicInfo newData = KscdtSchBasicInfo.toEntity(workSchedule, cID);
 			oldData.get().confirmedATR = newData.confirmedATR;
@@ -432,6 +446,61 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				}
 			}
 			
+//			if (!oldData.get().kscdtSchTime.kscdtSchTask.isEmpty()) {
+//				// get list insert and update data exist
+//				List<KscdtSchTask> listInsert = new ArrayList<>();
+//				for (KscdtSchTask task : newData.kscdtSchTime.kscdtSchTask) {
+//					List<KscdtSchTask> checkLst = new ArrayList<>();
+//					oldData.get().kscdtSchTime.kscdtSchTask.forEach(x -> {
+//						if(task.pk.sid.equals(x.pk.sid)
+//								&& task.pk.ymd.equals(x.pk.ymd)
+//								&& task.pk.serialNo == x.pk.serialNo) {
+//							x.taskCode = task.taskCode;
+//							x.startClock = task.startClock;
+//							x.endClock = task.endClock;
+//							checkLst.add(x);
+//						} 
+//					});
+//					if(checkLst.isEmpty()) {
+//						listInsert.add(task);
+//					}
+//				}
+				
+//				List<KscdtSchTask> listRemove = new ArrayList<>();
+//				for (KscdtSchTask taskOld : oldData.get().kscdtSchTime.kscdtSchTask) {
+//					boolean checkExist = false;
+//					for (KscdtSchTask task : newData.kscdtSchTime.kscdtSchTask) {
+//						if(task.pk.serialNo == taskOld.pk.serialNo
+//								&& task.pk.sid.equals(taskOld.pk.sid)
+//								&& task.pk.ymd.equals(taskOld.pk.ymd)
+//								) {
+//							checkExist = true;
+//							break;
+//						}
+//					}
+//					if(!checkExist) {
+//						listRemove.add(taskOld);
+//					}
+//				}
+//				
+//				//remove
+//				String delete = "delete from KscdtSchTask o " + " where o.pk.sid = :sid "
+//						+ " and o.pk.ymd = :ymd " + " and o.pk.serialNo = :serialNo";
+//				for(KscdtSchTask sle : listRemove) {
+//					this.getEntityManager().createQuery(delete).setParameter("sid", sle.pk.sid)
+//					.setParameter("ymd", sle.pk.ymd)
+//					.setParameter("serialNo", sle.pk.serialNo).executeUpdate();
+//				}
+//				//add
+//				for(KscdtSchTask sle : listInsert) {
+//					this.commandProxy().insert(sle);
+//				}
+//				
+//			} else {
+//				oldData.get().kscdtSchTime.kscdtSchTask = newData.kscdtSchTime.kscdtSchTask;
+//			}
+//			
+
 			// List<KscdtSchEditState> editStates;			
 			if (!oldData.get().editStates.isEmpty()) {
 				// get list insert and update data exist
@@ -751,5 +820,14 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		if (data.isEmpty())
 			return Optional.empty();
 		return Optional.of(data.get(0));
+	}
+
+	@Override
+	public void updateConfirmedState(WorkSchedule workSchedule) {
+		Optional<KscdtSchBasicInfo> entity = this.queryProxy().find(new KscdtSchBasicInfoPK(workSchedule.getEmployeeID(), workSchedule.getYmd()), KscdtSchBasicInfo.class);
+		if(entity.isPresent()){
+			entity.get().confirmedATR = workSchedule.getConfirmedATR().value == 1 ? true : false;
+			this.commandProxy().update(entity.get());
+		}
 	}
 }

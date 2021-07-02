@@ -10,6 +10,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
@@ -19,6 +23,7 @@ import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.EventInfoAndPerso
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ExtractTargetEmployeesParam;
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ScreenQueryExtractTargetEmployees;
 import nts.uk.screen.at.app.ksu001.getschedulesbyshift.GetScheduleActualOfShift;
+import nts.uk.screen.at.app.ksu001.getschedulesbyshift.SchedulesbyShiftDataResult;
 import nts.uk.screen.at.app.ksu001.getschedulesbyshift.SchedulesbyShiftDataResult;
 import nts.uk.screen.at.app.ksu001.getschedulesbyshift.SchedulesbyShiftParam;
 
@@ -35,6 +40,7 @@ public class ChangePeriodInShift {
 	private ScreenQueryExtractTargetEmployees extractTargetEmployees;
 	@Inject
 	private GetScheduleActualOfShift getSchedulesAndAchievementsByShift;
+
 	
 	public ChangePeriodInShiftResult getData(ChangePeriodInShiftParam param) {
 		
@@ -59,11 +65,27 @@ public class ChangePeriodInShift {
 				param.startDate,param.endDate, sids, targetOrgIdenInfor);
 		DataSpecDateAndHolidayDto resultStep1 = eventInfoAndPersonalCondPeriod.getData(param1);
 		
-		// Step 3 call ScreenQuery 予定・実績をシフトで取得する
-		SchedulesbyShiftParam paramStep2 = new SchedulesbyShiftParam(param.listShiftMasterNotNeedGetNew, sids,
-				param.startDate, param.endDate , param.getActualData);
-		SchedulesbyShiftDataResult resultStep3 = getSchedulesAndAchievementsByShift.getData(paramStep2);
 		
-		return new ChangePeriodInShiftResult(resultStep2, resultStep1, resultStep3);
+		
+		// step 3
+		SchedulesbyShiftDataResult schedulesbyShiftDataResult_New = 
+				getSchedulesAndAchievementsByShift.getData(
+						param.getListShiftMasterNotNeedGetNew(),
+						param.getSids(),
+						new DatePeriod(param.getStartDate(), param.getEndDate()),
+						param.getCloseDate(),
+						param.getActualData,
+						targetOrgIdenInfor,
+						Optional.ofNullable(param.getPersonalCounterOp()).flatMap(x -> Optional.of(EnumAdaptor.valueOf(x, PersonalCounterCategory.class))),
+						Optional.ofNullable(param.getWorkplaceCounterOp()).flatMap(x -> Optional.of(EnumAdaptor.valueOf(x, WorkplaceCounterCategory.class)))
+						);
+		
+		return new ChangePeriodInShiftResult(
+				resultStep2,
+				resultStep1,
+				schedulesbyShiftDataResult_New.getAggreratePersonal(),
+				schedulesbyShiftDataResult_New.getAggrerateWorkplace(),
+				schedulesbyShiftDataResult_New.getMapShiftMasterWithWorkStyle(),
+				schedulesbyShiftDataResult_New.getListWorkScheduleShift());
 	}
 }
