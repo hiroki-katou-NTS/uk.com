@@ -130,9 +130,10 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             }));
                         }
                     }
-                    self.currentHoliday().listSpecialHoliday(listSpecialHoliday);
+                    if(holidayRemainings.length != 0){
+                        self.currentHoliday().listSpecialHoliday(listSpecialHoliday);
+                    }
                 }
-
                 if (holidayRemainings && holidayRemainings.length) {
                     holidayRemainings = _.sortBy(holidayRemainings, ['cd']);
 
@@ -162,8 +163,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     else {
                         self.currentCode.valueHasMutated();
                     }
-                }else if(holidayRemainings.length ==0){
-                    self.isNewMode(true)
                 }
                 dfd.resolve(self);
             }).fail(function (res) {
@@ -239,6 +238,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 });
                 self.currentHoliday().listSpecialHoliday(listSpecialHoliday);
             }
+            self.isNewMode(false)
         }
 
         getAllData(code?: string): JQueryPromise<any> {
@@ -342,6 +342,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.setSpecialHolidayStyle();
             $('.nts-input').ntsError('clear');
             nts.uk.ui.errors.clearAll();
+            nts.uk.ui.block.clear();
         }
 
         setFocus() {
