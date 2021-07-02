@@ -78,7 +78,7 @@ module nts.uk.com.view.ccg025.a.component {
              */
             startPage(listRoleId?: any, selectedRoleId?: string): JQueryPromise<any> {
                 let self = this, roleIds = listRoleId || [];
-                return self.getListRoleByRoleType(self.setting.roleType, self.setting.roleAtr, roleIds, selectedRoleId);
+                return self.getListRoleByRoleType(self.setting.roleType, self.roleClassification(), roleIds, selectedRoleId);
             }
 
             /** Get list Role by Type */
