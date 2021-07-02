@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.aspose.cells.Cell;
 import com.aspose.cells.Cells;
+import com.aspose.cells.CellsException;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 
@@ -72,8 +73,14 @@ public class AsposeWorkScheFileCheck implements CheckFileService {
 
         // get cell range start
         Cells cells = worksheet.getCells();
+        Cell cellStart = null;
         if (checkFileParam.isCaptureCheckCell() && !StringUtils.isBlank(checkFileParam.getCaptureCell())) {
-            Cell cellStart = cells.get(checkFileParam.getCaptureCell());
+            try {
+                cellStart = cells.get(checkFileParam.getCaptureCell());
+            } catch (CellsException e) {
+                throw new BusinessException("Msg_2192");
+            }
+            
             if (cellStart != null) {
                 rowStart = cellStart.getRow();
                 columnStart = cellStart.getColumn();
@@ -99,6 +106,9 @@ public class AsposeWorkScheFileCheck implements CheckFileService {
             try {
                 date = GeneralDate.fromString(cellValueDisplay, "yyyy/MM/dd");
             } catch (Exception e) {
+                throw new BusinessException("Msg_1796");
+            }
+            if (!isValidDate(cellValueDisplay)) {
                 throw new BusinessException("Msg_1796");
             }
 
@@ -131,9 +141,7 @@ public class AsposeWorkScheFileCheck implements CheckFileService {
                 break;
             }
 
-            // TODO: edit and check employeeCode PrimitiveValue
             String employeeCode = this.validateCodePrimitive(employeeCodeDisplay, setting);
-//            String valueForGrid = employeeCode + " " + employeeNameDisplay;
             
             // check duplicate employee
             if (employeeCodes.contains(employeeCode)) {
@@ -236,5 +244,15 @@ public class AsposeWorkScheFileCheck implements CheckFileService {
         public EmployeeCodePrimitive(String rawValue) {
             super(rawValue);
         }
+    }
+    
+    public static boolean isValidDate(String dateStr) {
+        String[] pattern = dateStr.split("/");
+        GeneralDate generalDate = GeneralDate.fromString(dateStr, "yyyy/MM/dd");
+        if (pattern[2].equals(generalDate.toString("dd"))) {
+            return true;
+        }
+        
+        return false;
     }
 }
