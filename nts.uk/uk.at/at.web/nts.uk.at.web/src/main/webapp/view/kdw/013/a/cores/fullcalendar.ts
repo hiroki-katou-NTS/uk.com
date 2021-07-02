@@ -1609,7 +1609,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     }
                 },
-                dropAccept: () => !!ko.unwrap(editable),
+                dropAccept: () => !!ko.unwrap(true),
                 dayHeaderContent: (opts: DayHeaderContentArg) => moment(opts.date).format('DD(ddd)'),
                 selectAllow: ({ start, end }) => start.getDate() === end.getDate(),
                 slotLabelContent: (opts: SlotLabelContentArg) => {
