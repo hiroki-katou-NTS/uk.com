@@ -23,13 +23,13 @@
     <ui:define name="content">
         <div id="functions-area">
             <!-- A1_1 -->
-            <button id="A1_1" tabindex="1" class="proceed"
+            <button id="A1_1"  class="proceed"
                     data-bind="click: exportButton, enable: (!nts.uk.ui.errors.hasError()) ">#{i18n.getText('KDR001_25')}</button>
         </div>
 
         <div class="cf" id="contents-area">
             <!-- A2_1  CCG001-->
-            <div id="ccgcomponent"></div>
+            <div id="ccgcomponent" tabindex="-1"></div>
             <div style="margin-top: 10px">
                 <!-- A3_0 -->
                 <div class="panel panel-frame fixed-panel-dayselected" style="margin-left: 90px; height:35px;margin-top:-15px">
@@ -41,13 +41,13 @@
                             </div>
                         </div>
                         <div class="cell valign-center control-group">
-                            <div id="daterangepicker" tabindex="2"
+                            <div id="daterangepicker"
                                  data-bind="ntsDateRangePicker: {
 								required: true,
 								enable: true,
 								showNextPrevious: true,
 								value: dateValue,
-								maxRange: '12',
+								maxRange: '13',
 								type: 'yearmonth'}"/>
                         </div>
                     </div>
@@ -57,7 +57,7 @@
                         <!-- A2_2  -->
                         <div class="employeeInfoSearch">
                             <div class="selectionHoliday">
-                                <div id="employeeSearch" tabindex="4" style="margin-top: -5px;"></div>
+                                <div id="employeeSearch"  style="margin-top: -5px;"></div>
                             </div>
                         </div>
                     </div>
@@ -70,7 +70,7 @@
                                 </div>
                             </div>
                             <!--A4_4-->
-                            <div class="radios" tabindex="5" data-bind="ntsRadioBoxGroup: {
+                            <div class="radios"  data-bind="ntsRadioBoxGroup: {
 	                    options:  [
                           { id: 0, name: '#{i18n.getText('KDR001_66')}'},
                           { id: 1, name: '#{i18n.getText('KDR001_67')}', enable: $vm.getCheckauthor()}
@@ -85,7 +85,7 @@
                             <div class="cell valign-center control-group" style="position: relative; top: 25px;">
                                 <!-- A4_2  -->
                                 <div >
-                                    <div style="display: inline-block;" tabindex="6"
+                                    <div style="display: inline-block;"
                                          data-bind="ntsComboBox: {
 						    name:'#[KDR001_30]',
 							options:listStandard ,
@@ -103,13 +103,13 @@
                                     <!-- A4_3  -->
                                     <div style="display: inline-block">
                                         <button data-bind="click: function(){ return openKDR001b(0)},enable: enable()"
-                                                tabindex="7"
+
                                                 style="margin-left: 20px; position: relative; top: -12px;">#{i18n.getText('KDR001_31')}</button>
                                     </div>
                                 </div>
                                 <div id ='listFreeSetting'>
                                     <!-- A4_5 -->
-                                    <div style="display: inline-block;" tabindex="8"
+                                    <div style="display: inline-block;"
                                          data-bind="ntsComboBox: {
 						    name:'#[KDR001_60]',
 							options: listFreeSetting,
@@ -126,7 +126,7 @@
                                     <!-- A4_6  -->
                                     <div style="display: inline-block">
                                         <button data-bind="click: function(){return openKDR001b(1) } , enable: !enable()&amp;&amp; $vm.getCheckauthor"
-                                                tabindex="9"
+
                                                 style="margin-left: 20px; position: relative; top: -12px;">#{i18n.getText('KDR001_61')}</button>
                                     </div>
                                 </div>
@@ -141,7 +141,7 @@
                             </div>
                             <div class="cell valign-center control-group" style="padding-left: 20px">
                                 <!-- A6_2  -->
-                                <div id="combo-box2" tabindex="10"
+                                <div id="combo-box2"
                                      data-bind="ntsSwitchButton: {
 							required: true,
 							name: '#{i18n.getText('KDR001_62')}',

@@ -1303,7 +1303,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                 .setValue(remain);
                         if (isTime && statusHolidayItem.getRemainTime() != null && statusHolidayItem.getRemainTime().v() < 0) {
                             setForegroundRed(cells.get(firstRow + 3, 10 + totalMonth));
-                        }   if (!isTime && statusHolidayItem.getRemainTime() != null && statusHolidayItem.getRemainDay().v() < 0) {
+                        }   if (!isTime && statusHolidayItem.getRemainDay() != null && statusHolidayItem.getRemainDay().v() < 0) {
                             setForegroundRed(cells.get(firstRow + 3, 10 + totalMonth));
                         }
                     }
