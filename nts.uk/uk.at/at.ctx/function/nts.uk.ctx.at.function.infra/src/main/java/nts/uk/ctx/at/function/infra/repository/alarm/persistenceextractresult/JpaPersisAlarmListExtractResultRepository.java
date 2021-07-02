@@ -105,7 +105,7 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
                             y.getAlarmCheckConditionCode().v(),
                             y.getAlarmListCheckType().value,
                             y.getAlarmCheckConditionNo(),
-                            z.getPeriodDate().getStartDate().isPresent() ? String.valueOf(z.getPeriodDate().getStartDate().get()) : String.valueOf(GeneralDate.min())));
+                            z.getPeriodDate().getStartDate().isPresent() ? String.valueOf(z.getPeriodDate().getStartDate().get()) : String.valueOf(GeneralDate.today())));
                 }
             }
         }
