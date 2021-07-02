@@ -236,6 +236,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 showJobTitle: self.showJobTitle(), // 職位条件
                 showWorktype: self.showWorktype(), // 勤種条件
                 isMutipleCheck: self.isMutipleCheck(), // 選択モード
+                tabindex: - 1,
 
                 /** Return data */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
@@ -287,7 +288,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 //画面項目「A3_2：開始年月」にパラメータ「当月」－1年した値をセットする
                 let preYear = moment(nextMonth).add(-1, 'Y');
                 self.dateValue({
-                    startDate: moment(startDate).add(1, 'M').format("YYYY/MM"),
+                    startDate: moment(startDate).add(0, 'M').format("YYYY/MM"),
                     endDate: moment(endDate).format("YYYY/MM")
                 });
                 self.dateValue.valueHasMutated();
