@@ -2915,8 +2915,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     headerText: '<div id="horzDropDown"></div>', 
                     icon: { for: "header", class: "aaaa", width: "0px"},
                     group: [
-                        { headerText: '', key: "title", width: "40px" },
-                        { headerText: '', key: "subtitle", width: "120px" }
+                        { headerText: '', key: "title", width: "110px" },
+                        { headerText: '', key: "subtitle", width: "90px" }
                     ]
                 }
             ];  
