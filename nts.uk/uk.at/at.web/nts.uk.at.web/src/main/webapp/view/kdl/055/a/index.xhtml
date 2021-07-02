@@ -11,6 +11,9 @@
             <com:scriptfile set="IGNITE" />
             <com:scriptfile path="kdl055.a.vm.js" />
             <com:stylefile path="kdl055.a.style.css" />
+            <com:ValidatorScript>
+                nts.uk.ctx.at.shared.dom.workrule.shiftmaster.CaptureSheetName
+			</com:ValidatorScript>
         </ui:define>
 
         <ui:define name="content">       
@@ -45,9 +48,17 @@
                             <div style="width: 195px;" tabindex="5" data-bind="ntsCheckBox: { 
                                 checked: scheduleImport.captureCheckSheet, 
                                 text: $i18n('KDL055_11'), 
-                                enable: isEnable() }"></div>
+                                enable: isEnable }"></div>
                                 <!-- A3_3 -->
-                            <input style="width: 217px;" tabindex="6" data-bind="ntsTextEditor: {value: scheduleImport.captureSheet, enable: isEnable() &amp;&amp; scheduleImport.captureCheckSheet}" />
+                            <input style="width: 190px;" tabindex="6" data-bind="ntsTextEditor: {
+                                value: scheduleImport.captureSheet, 
+                                enable: isEnable &amp;&amp; scheduleImport.captureCheckSheet, 
+                                constraint: 'CaptureSheetName', 
+                                name:  $i18n('KDL055_13'), 
+                                option: {
+                                    width: '190px', 
+                                    placeholder: $i18n('KDL055_31')
+                                }}" />
                         </div>
                     </div>
                     <div class="table">
@@ -65,9 +76,15 @@
                             <div style="width: 195px;" tabindex="7" data-bind="ntsCheckBox: { 
                                 checked: scheduleImport.captureCheckCell, 
                                 text: $i18n('KDL055_15'), 
-                                enable: isEnable() }"></div>
+                                enable: isEnable }"></div>
                                 <!-- A4_3 -->
-                            <input style="width: 40px;" tabindex="8" data-bind="ntsTextEditor: {value: scheduleImport.captureCell, enable: isEnable() &amp;&amp; scheduleImport.captureCheckCell}" />
+                            <input style="width: 40px;" tabindex="8" data-bind="ntsTextEditor: {
+                                value: scheduleImport.captureCell, 
+                                enable: isEnable &amp;&amp; scheduleImport.captureCheckCell, 
+                                name: $i18n('KDL055_17'), 
+                                option: {
+                                    placeholder: $i18n('KDL055_19')
+                                }}" />
                         </div>
                     </div>
                     <div class="table">
@@ -86,7 +103,7 @@
                         optionsValue: 'overwrite',
                         optionsText: 'name',
                         value: scheduleImport.overwrite, 
-                        enable: isEnable()}"></div>
+                        enable: isEnable}"></div>
                 </div>
             </div>           
         </ui:define>
