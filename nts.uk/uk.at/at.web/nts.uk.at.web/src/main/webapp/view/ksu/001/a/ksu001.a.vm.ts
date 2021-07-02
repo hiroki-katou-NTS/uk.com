@@ -465,6 +465,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 self.displayButtonsHerder(data);
                 
+                self.checkSettingOpenKsu003(data);
+                
                 viewMode = self.selectedModeDisplayInBody();
                 // trong trưởng hợp ở localstorage lưu viewMode = time, và updateMode = edit
                 // Nhưng khi lấy setting từ server về lại chỉ có 2 viewMode là shortName và shift 
@@ -1747,13 +1749,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else {
                 self.keyGrid = '0';
                 self.rowIndexOfEmpLogin = 0;
-            }
-            
-            // ※28 /** 日付別  - ByDate(0), /** 個人別   - ByPerson(1);
-            let pageCanBeStarted = [0,1];
-            let canOpenKsu003 = _.find(pageCanBeStarted, function(o) { return o == 0; });
-            if(_.isNil(canOpenKsu003)){
-                self.canOpenKsu003 = false;    
             }
             
             return result;
@@ -5219,6 +5214,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
 
             self.funcNo15_WorkPlace = funcNo15_WorkPlace;
+        }
+        
+        checkSettingOpenKsu003(data){
+            let self = this;
+            // ※28 /** 日付別  - ByDate(0), /** 個人別   - ByPerson(1);
+            // スケジュール修正職場別の機能制御    - ScheFunctionCtrlByWorkplace
+            let pageCanBeStarted = [0,1];
+            let canOpenKsu003 = _.find(data.dataBasicDto.scheFunctionCtrlByWorkplace.pageCanBeStarted, function(o) { return o == 0; });
+            if(_.isNil(canOpenKsu003)){
+                self.canOpenKsu003 = false;    
+            }
         }
 
         calculateDisPlayPopupA12(funcNo10_WorkPlace, funcNo11_WorkPlace, funcNo12_WorkPlace, medicalOP) {
