@@ -301,7 +301,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             self.currentCode('');
             // clear holiday setting
             self.currentHoliday(new HolidayRemaining(null));
-
+            self.layoutId(null);
             self.allSpecialHolidays([]);
             let check = vacationControl && vacationControl.listSpecialHoliday.length > 0;
             // Set new mode
