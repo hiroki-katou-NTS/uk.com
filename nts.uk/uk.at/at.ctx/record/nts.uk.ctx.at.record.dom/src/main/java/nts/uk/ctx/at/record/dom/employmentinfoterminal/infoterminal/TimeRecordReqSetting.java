@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -130,7 +131,8 @@ public class TimeRecordReqSetting implements DomainAggregate {
 	 * リモート設定
 	 */
 	@Getter
-	private final boolean remoteSetting;
+	@Setter
+	private boolean remoteSetting;
 
 	/**
 	 * 再起動を行う

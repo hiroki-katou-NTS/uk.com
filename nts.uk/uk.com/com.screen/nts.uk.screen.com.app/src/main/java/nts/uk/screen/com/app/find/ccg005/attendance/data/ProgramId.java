@@ -3,11 +3,13 @@ package nts.uk.screen.com.app.find.ccg005.attendance.data;
 public class ProgramId {
 
 	public static final String KAF005 = "KAF005";
+	public static final String KAF006 = "KAF006";
+	public static final String KAF007 = "KAF007";
 	public static final String KAF008 = "KAF008";
 	public static final String KAF009 = "KAF009";
 	public static final String KAF010 = "KAF010";
 	public static final String KAF012 = "KAF012";
-	public static final String KAF014 = "KAF014";
+	public static final String KAF004 = "KAF004";
 	public static final String KAF002 = "KAF002";
 	public static final String KAF011 = "KAF011";
 	public static final String KAF020 = "KAF020";
@@ -27,6 +29,7 @@ public class ProgramId {
 
 	public class ScreenId {
 		public static final String A = "A";
+		public static final String B = "B";
 	}
 
 	public class QueryString {

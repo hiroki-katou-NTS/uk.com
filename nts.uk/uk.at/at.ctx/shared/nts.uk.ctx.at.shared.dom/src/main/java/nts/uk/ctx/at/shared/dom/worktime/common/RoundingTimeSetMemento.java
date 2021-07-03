@@ -22,6 +22,6 @@ public interface RoundingTimeSetMemento {
 	 * Sets the rounding set.
 	 * @return the rounding set
 	 */
-	void getRoundingSets(List<RoundingSet> roundingSets);
+	void setRoundingSets(List<RoundingSet> roundingSets);
 
 }

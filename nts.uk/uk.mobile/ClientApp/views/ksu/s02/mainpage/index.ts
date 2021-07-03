@@ -29,7 +29,7 @@ export class Ksus02Component extends Vue {
     public params!: any;
     public clnLst = [];
     public datas = [];
-    public dataCalendar = { data: null };
+    public dataCalendar = { data: null,checkRegister : false };
     public paramRegister = null;
     public isCurrentMonth: any = true;
 
@@ -107,10 +107,12 @@ export class Ksus02Component extends Vue {
         });
     }
 
+    public checkRegister = false;
     public loadData() {
         let self = this;
         self.dataCalendar = {
-            data: self.dataStartPage
+            data: self.dataStartPage,
+            checkRegister : self.checkRegister
         };
     }
     public register() {
@@ -125,11 +127,13 @@ export class Ksus02Component extends Vue {
         self.$http.post('at', servicePath.saveWorkRequest, self.paramRegister).then((result: any) => {
             self.$modal.info('Msg_15').then(() => {
                 self.$mask('hide');
+                
                 let data = {
                     startDate: self.paramRegister.startPeriod,
                     endDate: self.paramRegister.endPeriod
                 };
                 self.dataChange(data);
+                self.checkRegister = true;
             });
         }).catch((res: any) => {
             self.showError(res);
@@ -141,20 +145,25 @@ export class Ksus02Component extends Vue {
         switch (error.messageId) {
             case 'Msg_2049':
                 vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds })
-                .then(() => {
-                    vm.$goto('ccg008a');
-                });
+                    .then(() => {
+                        vm.$goto('ccg008a');
+                    });
+                break;
+            case 'Msg_2050':
+                vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds })
+                    .then(() => {
+                    });
                 break;
             case 'Msg_2051':
-            vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds })
-            .then(() => {
-            });
-            break;
+                vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds })
+                    .then(() => {
+                    });
+                break;
             default:
                 vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds })
-                .then(() => {
-                    vm.$goto('ccg008a');
-                });
+                    .then(() => {
+                        vm.$goto('ccg008a');
+                    });
                 break;
         }
     }

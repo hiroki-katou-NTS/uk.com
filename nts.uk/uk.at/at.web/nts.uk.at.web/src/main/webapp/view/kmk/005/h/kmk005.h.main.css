@@ -22,14 +22,11 @@ div[class^=screen-h] {
 }
 
 .screen-h #tree-grid{
-	width: 500px;
+
 	float: left;
-	margin-right: 30px; 
+
 }
 
 .screen-h .ntsSearchBox {
 	min-width: 300px;
-}
-#nts-component-tree{
-	padding : 20px !important
 }

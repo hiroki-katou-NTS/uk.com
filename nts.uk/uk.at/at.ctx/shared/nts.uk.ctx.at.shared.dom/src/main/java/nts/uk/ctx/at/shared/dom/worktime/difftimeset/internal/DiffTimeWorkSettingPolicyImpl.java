@@ -117,8 +117,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 			DiffTimeWorkSetting diffTimeWorkSetting) {
 		// Filter AM PM
 		diffTimeWorkSetting.getHalfDayWorkTimezones().forEach(diffTime -> {
-			this.diffTimeHalfPolicy.filterTimezone(pred, diffTime, displayMode.getDisplayMode(),
-					diffTimeWorkSetting.isUseHalfDayShift());
+			this.diffTimeHalfPolicy.filterTimezone(pred, diffTime, displayMode.getDisplayMode());
 		});
 	}
 
@@ -358,8 +357,7 @@ public class DiffTimeWorkSettingPolicyImpl implements DiffTimeWorkSettingPolicy 
 				.filter(diffHalfWork -> lstAmPm.contains(diffHalfWork.getAmPmAtr())).collect(Collectors.toList());
 
 		lstDiffHalfWork.forEach(diffHalfWork -> {
-			this.diffTimeHalfPolicy.validate(be, predTime, displayMode, diffHalfWork,
-					diffTimeWorkSetting.isUseHalfDayShift());
+			this.diffTimeHalfPolicy.validate(be, predTime, displayMode, diffHalfWork);
 		});
 	}
 

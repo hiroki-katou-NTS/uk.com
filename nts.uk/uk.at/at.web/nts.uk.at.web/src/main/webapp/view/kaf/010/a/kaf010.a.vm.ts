@@ -59,14 +59,15 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			const vm = this;
 
 			let dataTransfer: DataTransfer;
-			if (_.isNil(params)) {
-				dataTransfer = __viewContext.transferred.value; // from spr		
-				
+			if(nts.uk.request.location.current.isFromMenu) {
+				sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');	
+			} else {
+				if(!_.isNil(__viewContext.transferred.value)) {
+					vm.isFromOther = true;
+					dataTransfer = __viewContext.transferred.value; // from spr		
+					params = __viewContext.transferred.value;
+				}
 			}
-			if(!_.isNil(__viewContext.transferred.value)) {
-				vm.isFromOther = true;
-			}
-			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
 			// __viewContext.transferred.value = undefined;
 
 			vm.createRestTime();
@@ -176,7 +177,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 									empList,
 								 	dateList,
 							 		appDispInfoStartupOutput,
-									isAgent: vm.isAgentMode() 
+									isAgent: vm.isAgentNew() 
 								};
 						return vm.$ajax(API.startNew, command);
 					}
@@ -193,7 +194,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						vm.setComboDivergenceReason(vm.dataSource);
 						
 						//prePostAtr = 2 when none is selected
-						if (vm.application().prePostAtr() == 0 || vm.mode() == MODE.MULTiPLE_AGENT || vm.application().prePostAtr() == 2) {
+						if (vm.application().prePostAtr() == 0 || vm.mode() == MODE.MULTiPLE_AGENT || _.isNil(vm.application().prePostAtr())) {
 							$('.table-time2 .nts-fixed-header-wrapper').width(224);
 							if (vm.holidayTime().length > 3) {
 								$('.table-time2 .nts-fixed-body-wrapper').width(208);
@@ -445,11 +446,22 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				return;
 			}
 			
-			if(vm.mode() != MODE.MULTiPLE_AGENT){
+			if (!vm.isAgentNew()){
 				vm.registerSingle();
 			} else {
 				vm.registerMulti();
 			}
+		}
+		
+		isAgentNew() {
+			const vm = this;
+			let isMultipleEmp = true;
+			if (_.isEmpty(vm.employeeIdLst)) {
+				isMultipleEmp = false;
+			} else {
+				isMultipleEmp = vm.employeeIdLst.length != 1;
+			}
+			return isMultipleEmp;
 		}
 
 		registerSingle(){
@@ -499,7 +511,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						return vm.$ajax('at', API.register, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 								nts.uk.request.ajax("at", API.reflectApp, successData.reflectAppIdLst);
-								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm);
+								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, false, vm.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst);
 							});
 						});
 					}
@@ -619,7 +631,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						return vm.$ajax('at', API.registerMulti, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 								nts.uk.request.ajax("at", API.reflectApp, successData.reflectAppIdLst);
-								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm);
+								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, true);
 							});
 						});
 					}
@@ -1447,7 +1459,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						startTime: 0,
 						endTime: 0,
 						appHdWorkDispInfoDto: self.dataSource,
-						isAgent: self.isAgentMode()
+						isAgent: self.isAgentNew()
 					};
 
 					self.$blockui('show');
@@ -1528,7 +1540,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			param.applicationType = AppType.HOLIDAY_WORK_APPLICATION;
 			self.dataSource.appDispInfoStartupOutput.appDispInfoWithDateOutput.prePostAtr = self.application().prePostAtr;
 			param.appHdWorkDispInfoDto = ko.toJS(self.dataSource);
-			param.isAgent = self.isAgentMode();
+			param.isAgent = self.isAgentNew();
 			self.$blockui('show');
 			self.$ajax(API.changeAppDate, param)
 				.done((res: AppHdWorkDispInfo) => { 
@@ -1551,7 +1563,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				.then(isValid => {
 					if (isValid) {
 						let command = {} as ParamCalculationHolidayWork;
-						command.isAgent = self.isAgentMode();
+						command.isAgent = self.isAgentNew();
 						let workContent = {} as WorkContent;
 						let workInfo = self.workInfo() as WorkInfo;
 						workContent.workTypeCode = workInfo.workType().code as string;

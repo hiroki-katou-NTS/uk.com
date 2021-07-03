@@ -15,9 +15,9 @@
         <com:scriptfile path="ksm005.b.vm.js"/>
     </ui:define>
     <ui:define name="content">
-        <div class="contents">
+        <div id="contents-area" class="contents">
             <div class="period_labels">
-                <div style="width: 79px" data-bind="ntsFormLabel: {required: true}">
+                <div style="width: 55px" data-bind="ntsFormLabel: {required: true}">
                     <label>#{i18n.getText('KSM005_27')}</label>
                 </div>
                 <div id="daterangepicker" tabindex="1"
@@ -57,7 +57,7 @@
                         </div>
                     </div>
                     <div class="pull-left workday_labels d-flex">
-                        <div class="pull-left lableData"></div>
+                        <div class="pull-left lableData label-pr-8"></div>
                         <button tabindex="6" class="pull-left large"
                                 data-bind="click: openDialogPublicHolidays, enable: visibleHolidaySetting()">#{i18n.getText('KSM005_23')}</button>
                         <div class="pull-left contentDetail">

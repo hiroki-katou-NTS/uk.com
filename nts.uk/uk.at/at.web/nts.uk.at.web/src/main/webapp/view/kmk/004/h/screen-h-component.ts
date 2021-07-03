@@ -24,7 +24,10 @@ const h_template = `
 							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
 							<hr style="text-align: left;
 						    margin-left: 0;"  />
-							<label id="selected-work-place" data-bind="i18n: screenData().selectedName"></label>
+                        <div style='height: 18px;' >
+                            <label id="selected-work-place" data-bind="i18n: screenData().selectedName">
+                            </label>
+                        </div>
 							<div style="margin-top: 10px;" data-bind="component: {
 								name: 'basic-settings-company',
 								params: {
@@ -180,13 +183,13 @@ class ScreenHComponent extends ko.ViewModel {
 		vm.$blockui('invisible');
 		$('#work-place-list').ntsTreeComponent(workPlaceGrid).done(() => {
 
-			vm.regSelectedEvent();
+                vm.regSelectedEvent();
 
-			vm.$blockui("hide");
+                vm.$blockui("hide");
 
-			vm.screenData().selected.valueHasMutated();
+                vm.screenData().selected.valueHasMutated();
 
-			dfd.resolve(vm.screenData().selected());
+                dfd.resolve(vm.screenData().selected());
 		});
 		return dfd.promise();
 	}
@@ -203,6 +206,7 @@ class ScreenHComponent extends ko.ViewModel {
 			vm.$blockui('invisible')
 				.then(() => vm.$ajax(API_H_URL.CHANGE_WKPID + wkpId))
 				.done((data) => {
+                   
 					vm.screenData().yearList(_.chain(data.yearList).map((item: any) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
 					vm.screenData().serverYears(data.yearList);
 					vm.screenData().unSaveSetComs = [];
@@ -212,8 +216,8 @@ class ScreenHComponent extends ko.ViewModel {
 					} else {
 						vm.screenData().selectedYear(data.yearList[0]);
 					}
-
-					vm.screenData().flexMonthActCalSet(data.flexBasicSetting.flexMonthActCalSet);
+                     vm.screenData().flexMonthActCalSet(data.flexBasicSetting.flexMonthActCalSet);
+					
 					vm.screenData().setFocus('load');
 				})
 				.always(() => vm.$blockui('clear'));
@@ -239,6 +243,8 @@ class ScreenHComponent extends ko.ViewModel {
 	}
 
 	mounted() {
+        const vm = this;
+            
 		$("#year-list").focus();
 	}
 

@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -21,10 +22,10 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -108,10 +109,24 @@ public class AttendanceInformationScreenQuery {
 		
 		// 1: get(社員IDリスト　＝　パラメータ社員のIDリスト.社員ID, 基準日): List<日別実績の勤務情報>
 		List<WorkInfoOfDailyPerformance> workInfoList = workInfoRepo.findByPeriodOrderByYmdAndEmps(sids, datePeriod);
-		List<String> subSids = workInfoList.stream().map(mapper -> mapper.getEmployeeId()).collect(Collectors.toList());
+		List<String> subSids1 = workInfoList.stream()
+				.filter(item -> item.getWorkInformation() == null)
+				.map(WorkInfoOfDailyPerformance::getEmployeeId)
+				.collect(Collectors.toList());
 		
 		// 2: get(社員IDリスト　＝　パラメータ社員のIDリスト.社員ID, 基準日): List<日別実績の出退勤>
 		List<TimeLeavingOfDailyPerformance> timeLeaveList = timeLeaveRepo.finds(sids, datePeriod);
+		
+		List<String> subSids2 = timeLeaveList.stream()
+			.filter(item -> {
+				Optional<TimeLeavingWork> attendance = item.getAttendance().getAttendanceLeavingWork(1);		
+				if(attendance.isPresent() && attendance.get().getAttendanceStamp().isPresent() && attendance.get().getAttendanceTime().isPresent()) {
+					return false;
+				}
+				return true;
+			})
+			.map(TimeLeavingOfDailyPerformance::getEmployeeId)
+			.collect(Collectors.toList());
 		
 		// 3: get(社員IDリスト　＝　パラメータ社員のIDリスト.社員ID, 基準日、勤務実績のエラーアラームコード＝S007、S008): List<社員の日別実績エラー一覧>
 		List<String> errorAlarmCodeLst = new ArrayList<>();
@@ -122,7 +137,8 @@ public class AttendanceInformationScreenQuery {
 		// 4: get(社員IDリスト　＝　パラメータ社員のIDリスト.社員ID, 基準日):  List<勤務予定>
 		List<String> allSids = new ArrayList<String>();
 		allSids.addAll(sids);
-		allSids.removeAll(subSids); //except「日別実績の勤務情報.社員ID」
+		allSids.removeAll(subSids1); //日別実績の勤務情報がある
+		allSids.removeAll(subSids2); //日別実績の出退勤の出勤時刻（NO＝１）がある　AND 日別実績の出退勤の退勤時刻（NO＝１）がある
 		List<WorkSchedule> workScheduleList = workScheduleRepo.getList(allSids, datePeriod);
 		
 		// 5: get(ログイン会社ID): List<勤務種類>
@@ -157,16 +173,17 @@ public class AttendanceInformationScreenQuery {
 		List<UserAvatar> avatarList = avatarRepo.getAvatarByPersonalIds(pids);
 		
 		return empIds.stream().map(empId -> {
-			
+
 			// 13:  get(申請IDリスト): List<残業申請>
 			List<Application> applications = mapListApplication.get(empId.getSid());
 			List <String> appIds = applications.stream().map(item -> item.getAppID()).collect(Collectors.toList());
-			List<AppOverTime> listAppOverTime = appOverTimeRepo.getByListAppId(loginCid, appIds);
-			
+			Map<String, Integer> mapAppIdAndOTAttr = appOverTimeRepo.getByAppIdAndOTAttr(loginCid, appIds); //#115387
+			 
 			// 14: create()
-			List<ApplicationDto> applicationDtos = applications.stream().map(item -> ApplicationDto.toDto(item, listAppOverTime))
+			List<ApplicationDto> applicationDtos = applications.stream()
+					.map(item -> ApplicationDto.toDto(item, mapAppIdAndOTAttr))
 					.collect(Collectors.toMap(ApplicationDto::getAppType, p -> p, (p, q) -> p)).values().stream()
-					.collect(Collectors.toList());
+						.collect(Collectors.toList());
 			
 			// 6: create() - start
 			String sid = empId.getSid();
@@ -234,11 +251,11 @@ public class AttendanceInformationScreenQuery {
 						workDivision = WorkDivision.HOLIDAY.value;
 					}
 					// 午前と午後の場合、午前が休み AND 午後が休み → 休み || その他 → 出勤
-					if (daily.getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon.value && !notIn.stream().anyMatch(item -> item == daily.getMorning())
+					else if (daily.getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon.value && !notIn.stream().anyMatch(item -> item == daily.getMorning())
 							&& !notIn.stream().anyMatch(item -> item == daily.getAfternoon())) {
 						workDivision = WorkDivision.HOLIDAY.value;
 					}
-					workDivision = WorkDivision.WORK.value;
+					else workDivision = WorkDivision.WORK.value;
 				}
 			}
 			
@@ -307,14 +324,14 @@ public class AttendanceInformationScreenQuery {
 			}
 			
 			AttendanceDetailDto attendanceDetailDto = AttendanceDetailDto.builder()
-			.workColor(workColor)
-			.workName(workName)
-			.checkOutColor(checkOutColor)
-			.checkOutTime(checkOutTime)
-			.checkInColor(checkInColor)
-			.checkInTime(checkInTime)
-			.workDivision(workDivision)
-			.build();
+				.workColor(workColor)
+				.workName(workName)
+				.checkOutColor(checkOutColor)
+				.checkOutTime(checkOutTime)
+				.checkInColor(checkInColor)
+				.checkInTime(checkInTime)
+				.workDivision(workDivision)
+				.build();
 				
 			// UserAvatarDto
 			Optional<UserAvatar> avatarDomain = avatarList.stream().filter(ava -> ava.getPersonalId().equalsIgnoreCase(empId.getPid())).findFirst();
@@ -343,15 +360,15 @@ public class AttendanceInformationScreenQuery {
 			emojiDomain.ifPresent(consumer -> consumer.setMemento(emojiDto));
 
 			return AttendanceInformationDto.builder()
-					.applicationDtos(applicationDtos)
-					.sid(empId.getSid())
-					.attendanceDetailDto(attendanceDetailDto)
-					.avatarDto(avatarDto)
-					.activityStatusDto(activityStatus == null ? null : activityStatus.getAttendanceState().value)
-					.commentDto(commentDto)
-					.goOutDto(goOutDto)
-					.emojiDto(emojiDto)
-					.build();
+						.applicationDtos(applicationDtos)
+						.sid(empId.getSid())
+						.attendanceDetailDto(attendanceDetailDto)
+						.avatarDto(avatarDto)
+						.activityStatusDto(activityStatus == null ? null : activityStatus.getAttendanceState().value)
+						.commentDto(commentDto)
+						.goOutDto(goOutDto)
+						.emojiDto(emojiDto)
+						.build();
 		}).collect(Collectors.toList());
 	}
 	

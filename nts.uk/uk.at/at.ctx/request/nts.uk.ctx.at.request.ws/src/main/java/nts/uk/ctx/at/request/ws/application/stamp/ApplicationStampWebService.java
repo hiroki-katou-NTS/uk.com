@@ -9,18 +9,14 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.stamp.RegisterAppStampCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.stamp.RegisterOrUpdateAppStampParam;
 import nts.uk.ctx.at.request.app.command.application.stamp.UpdateAppStampCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampCmd;
+import nts.uk.ctx.at.request.app.command.application.stamp.command.RegisterOrUpdateAppStampCmd;
 import nts.uk.ctx.at.request.app.find.application.stamp.AppStampFinder;
 import nts.uk.ctx.at.request.app.find.application.stamp.BeforeRegisterOrUpdateParam;
 import nts.uk.ctx.at.request.app.find.application.stamp.ChangeDateParamMobile;
 import nts.uk.ctx.at.request.app.find.application.stamp.DetailAppStampParam;
 import nts.uk.ctx.at.request.app.find.application.stamp.StartAppStampParam;
-import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampNewPreDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampOutputDto;
-import nts.uk.ctx.at.request.app.find.application.stamp.dto.StampCombinationDto;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 /**
@@ -46,12 +42,6 @@ public class ApplicationStampWebService extends WebService {
 	
 	
 	
-	@POST
-	@Path("enum/stampCombination")
-	public List<StampCombinationDto> getStampCombinationAtr(){
-		return this.appStampFinder.getStampCombinationAtr();
-	}
-	
 	
 	
 //	Refctor4
@@ -76,19 +66,19 @@ public class ApplicationStampWebService extends WebService {
 	
 	@POST
 	@Path("register")
-	public ProcessResult register(RegisterOrUpdateAppStampParam command) {
+	public ProcessResult register(RegisterOrUpdateAppStampCmd command) {
 		return registerApplicationStampCommandHandlerNew.handle(command);
 	}
 	
 	@POST
 	@Path("updateNew")
-	public ProcessResult update(RegisterOrUpdateAppStampParam command) {
+	public ProcessResult update(RegisterOrUpdateAppStampCmd command) {
 		return updateApplicationStampCommandHandlerNew.handle(command);
 	}
 	
 	@POST
 	@Path("changeDate")
-	public ProcessResult changeDate(RegisterOrUpdateAppStampParam command) {
+	public ProcessResult changeDate(RegisterOrUpdateAppStampCmd command) {
 		return null;
 	}
 	

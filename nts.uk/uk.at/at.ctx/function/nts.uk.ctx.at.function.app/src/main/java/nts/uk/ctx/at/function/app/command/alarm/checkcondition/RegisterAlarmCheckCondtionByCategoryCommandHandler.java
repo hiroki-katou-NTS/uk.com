@@ -21,13 +21,23 @@ import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.AgreeCond
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.AgreeConditionErrorCommand;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AlarmCheckConditionByCategoryFinder;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AppApprovalFixedExtractConditionDto;
-import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AppFixedConditionWorkRecordDto;
+import nts.uk.ctx.at.function.app.find.alarm.checkcondition.FixedConditionWorkRecordDto;
 import nts.uk.ctx.at.function.app.find.alarm.mastercheck.MasterCheckFixedExtractConditionDto;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
+import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapterDto;
+import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErAlConAttendanceItemAdapterDto;
+import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErrorAlarmConAdapterDto;
+import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ScheMonCondDto;
+import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.WorkTimeConAdapterDto;
+import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.WorkTypeConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunImport;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.annual.ScheduleAnnualAlarmCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.schemonthly.ScheduleMonthlyAlarmCheckCond;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.weekly.WeeklyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
@@ -56,11 +66,50 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraRes
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCondEvent;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.doevent.MulMonCheckCondDomainEventDto;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AddSubAttendanceItems;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AttendanceItemCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CountableTarget;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.ErrorAlarmMessageMSTCHK;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedCheckItem;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractConditionRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ExtractionCondScheduleYear;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.ExtractionCondScheduleYearRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.YearCheckItemType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CheckTimeType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CondContinuousTime;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CondContinuousTimeZone;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CondContinuousWrkType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CondTime;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.DaiCheckItemType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.ExtraCondScheDayRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.ExtractionCondScheduleDay;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.FixedExtractSDailyConRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.FixedExtractionSDailyCon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.RangeToCheck;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.TimeZoneTargetRange;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.DayCheckCond;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.ExtractionCondScheduleMonth;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.ExtractionCondScheduleMonthRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedExtractionSMonCon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedExtractionSMonConRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.MonCheckItemType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.PublicHolidayCheckCond;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.ScheduleMonRemainCheckCond;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TimeCheckCond;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfContrast;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfDays;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfTime;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfVacations;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeekly;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeeklyRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.WeeklyCheckItemType;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -106,10 +155,30 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 	@Inject
 	private MasterCheckFixedExtractConditionRepository fixedMasterCheckConditionRepo;
 	
+	@Inject
+	private FixedExtractSDailyConRepository fixedExtractSDailyConRepository;
+	
+	@Inject
+	private ExtraCondScheDayRepository extraCondScheDayRepository;
+	
+	@Inject
+	private FixedExtractionSMonConRepository fixedExtractSMonthlyConRepository;
+	
+	@Inject
+	private ExtractionCondScheduleMonthRepository extraCondScheMonRepository;
+	
+	@Inject
+	private ExtractionCondScheduleYearRepository extraCondScheYearRepository;
+	
+	@Inject
+	private ExtractionCondScheduleWeeklyRepository extraCondScheWeeklyRepository;
+	
 	@Override
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
 		AlarmCheckConditionByCategoryCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
+		String contractCode = AppContexts.user().contractCode();
+		
 		if (command.getAction() == 0
 				&& conditionRepo.isCodeExist(companyId, command.getCategory(), command.getCode())) {
 			throw new BusinessException("Msg_3");
@@ -224,14 +293,8 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 
 				// update list fixedExtraMonFun
 				for (FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
-					if (fixedExtraMonFun.getMonAlarmCheckID() == null
-							|| fixedExtraMonFun.getMonAlarmCheckID().equals("")) {
-						fixedExtraMonFun.setMonAlarmCheckID(monAlarmCheckCon.getMonAlarmCheckConID());
-						this.fixedExtraMonFunAdapter.addFixedExtraMon(fixedExtraMonFun);
-					} else {
-						this.fixedExtraMonFunAdapter.updateFixedExtraMon(fixedExtraMonFun);
-
-					}
+					fixedExtraMonFun.setMonAlarmCheckID(monAlarmCheckCon.getMonAlarmCheckConID());
+					this.fixedExtraMonFunAdapter.persistFixedExtraMon(fixedExtraMonFun);
 				}
 				break;
 
@@ -435,6 +498,41 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				}
 				fixedMasterCheckConditionRepo.persist(lstCondition);
 				break;
+			case SCHEDULE_DAILY:
+				if (!command.getScheFixCondDay().getSheFixItemDays().isEmpty()) {
+					saveScheduleFixCondDay(companyId, command.getScheFixCondDay().getErAlCheckLinkId(), command.getScheFixCondDay().getSheFixItemDays(), false);
+				}
+				if (!command.getScheAnyCondDay().getScheAnyCondDays().isEmpty()) {
+					saveScheduleAnyCondDay(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
+				} else {
+					extraCondScheDayRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getErAlCheckLinkId());
+				}
+				break;
+			case SCHEDULE_MONTHLY:
+				if (!command.getScheFixCondDay().getSheFixItemDays().isEmpty()) {
+					saveScheduleFixCondMonth(companyId, command.getScheFixCondDay().getErAlCheckLinkId(), command.getScheFixCondDay().getSheFixItemDays(), false);
+				}
+				if (!command.getScheAnyCondDay().getScheAnyCondDays().isEmpty()) {
+					saveScheduleAnyCondMon(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
+				} else {
+					extraCondScheMonRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getErAlCheckLinkId());
+				}
+				break;
+			case SCHEDULE_YEAR:
+				if (!command.getScheAnyCondDay().getScheAnyCondDays().isEmpty()) {
+					saveScheduleAnyCondYear(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
+				}
+				else {
+					extraCondScheYearRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getErAlCheckLinkId());
+				}
+				break;
+			case WEEKLY:
+				if (!command.getScheAnyCondDay().getScheAnyCondDays().isEmpty()) {
+					saveScheduleAnyCondWeekly(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
+				} else {
+					extraCondScheWeeklyRepository.delete(contractCode, companyId, command.getScheAnyCondDay().getErAlCheckLinkId());
+				}
+				break;
 			default:
 				break;
 			}
@@ -518,7 +616,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				// add list fixedExtraMonFun
 				for (FixedExtraMonFunImport fixedExtraMonFun : command.getMonAlarmCheckCon().getListFixExtraMon()) {
 					fixedExtraMonFun.setMonAlarmCheckID(monAlarmCheckConID);
-					this.fixedExtraMonFunAdapter.addFixedExtraMon(fixedExtraMonFun);
+					this.fixedExtraMonFunAdapter.persistFixedExtraMon(fixedExtraMonFun);
 				}
 
 				break;
@@ -622,6 +720,32 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				}
 				fixedMasterCheckConditionRepo.persist(lstMasterCheck);
 				break;
+			case SCHEDULE_DAILY:
+				String eralCheckIdFixedItem = IdentifierUtil.randomUniqueId();
+				String eralCheckIdOptionalItem = IdentifierUtil.randomUniqueId();
+				
+				saveScheduleFixCondDay(companyId, eralCheckIdFixedItem, command.getScheFixCondDay().getSheFixItemDays(), true);
+				saveScheduleAnyCondDay(companyId, eralCheckIdOptionalItem, command.getScheAnyCondDay().getScheAnyCondDays());
+				extractionCondition = new ScheduleDailyAlarmCheckCond(eralCheckIdOptionalItem, eralCheckIdFixedItem);
+				break;
+			case SCHEDULE_MONTHLY:
+				String eralCheckIdFixedMonItem = IdentifierUtil.randomUniqueId();
+				String eralCheckIdOptionalMonItem = IdentifierUtil.randomUniqueId();
+				
+				saveScheduleFixCondMonth(companyId, eralCheckIdFixedMonItem, command.getScheFixCondDay().getSheFixItemDays(), true);
+				saveScheduleAnyCondMon(companyId, eralCheckIdOptionalMonItem, command.getScheAnyCondDay().getScheAnyCondDays());
+				extractionCondition = new ScheduleMonthlyAlarmCheckCond(eralCheckIdOptionalMonItem, eralCheckIdFixedMonItem);
+				break;
+			case SCHEDULE_YEAR:
+				String eralCheckIdOptionalYearItem = IdentifierUtil.randomUniqueId();
+				saveScheduleAnyCondYear(companyId, eralCheckIdOptionalYearItem, command.getScheAnyCondDay().getScheAnyCondDays());
+				extractionCondition = new ScheduleAnnualAlarmCheckCond(eralCheckIdOptionalYearItem);
+				break;
+			case WEEKLY:
+				String eralCheckIdOptionalWeeklyItem = IdentifierUtil.randomUniqueId();
+				saveScheduleAnyCondWeekly(companyId, eralCheckIdOptionalWeeklyItem, command.getScheAnyCondDay().getScheAnyCondDays());
+				extractionCondition = new WeeklyAlarmCheckCond(eralCheckIdOptionalWeeklyItem);
+				break;
 			default:
 				break;
 			}
@@ -653,6 +777,366 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				EnumAdaptor.valueOf(dto.getNo(), AppApprovalFixedCheckItem.class),
 				Optional.ofNullable(new ErrorAlarmMessage(dto.getDisplayMessage())), 
 				dto.isUseAtr());
+	}
+	
+	/**
+	 * Schedule Daily with tab3
+	 * (process tab 固有のチェック条件)
+	 * @param sheFixItemDays
+	 */
+	private void saveScheduleFixCondDay(String companyId, String eralCheckId, List<FixedConditionWorkRecordDto> sheFixItemDays, boolean isAdd) {
+		String contractCode = AppContexts.user().contractCode();
+		
+		for(FixedConditionWorkRecordDto item: sheFixItemDays) {
+			FixedExtractionSDailyCon domain = FixedExtractionSDailyCon.create(
+					eralCheckId, item.getFixConWorkRecordNo(), item.getMessage(), item.isUseAtr());
+			if (isAdd) {
+				domain = FixedExtractionSDailyCon.create(
+						eralCheckId, item.getFixConWorkRecordNo(), item.getMessage(), item.isUseAtr());
+				fixedExtractSDailyConRepository.add(contractCode, companyId, domain);
+			} else {
+				fixedExtractSDailyConRepository.update(contractCode, companyId, domain);
+			}
+		}
+	}
+	
+	/**
+	 * Schedule daily with tab2
+	 * @param companyId
+	 * @param scheAnyCondDays
+	 * @return list of error alarm check id
+	 */
+	private void saveScheduleAnyCondDay(String companyId, String eralCheckId, List<WorkRecordExtraConAdapterDto> scheAnyCondDays) {
+		String contractCode = AppContexts.user().contractCode();
+		List<ExtractionCondScheduleDay> listOptionalItem = extraCondScheDayRepository.getScheAnyCondDay(contractCode, companyId, eralCheckId);
+		
+		int alarmNo = 0;
+		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
+			alarmNo++;
+			item.setSortOrderBy(alarmNo);
+			DaiCheckItemType dailyCheckItemType = EnumAdaptor.valueOf(item.getCheckItem(), DaiCheckItemType.class);
+			RangeToCheck rangeToCheck = RangeToCheck.ALL;
+			
+			ExtractionCondScheduleDay domain = ExtractionCondScheduleDay.create(
+					eralCheckId, item.getSortOrderBy(), item.isUseAtr(), item.getNameWKRecord(),
+					item.getErrorAlarmCondition().getDisplayMessage(),
+					dailyCheckItemType,
+					rangeToCheck);
+			
+			WorkTypeConAdapterDto workTypeCondition = item.getErrorAlarmCondition().getWorkTypeCondition();
+			if (item.getErrorAlarmCondition().getWorkTypeCondition() != null) {
+				rangeToCheck = EnumAdaptor.valueOf(workTypeCondition.getComparePlanAndActual(), RangeToCheck.class);
+				domain.setTargetWrkType(rangeToCheck);
+			}
+			
+			if (dailyCheckItemType == DaiCheckItemType.TIME) {
+				CheckTimeType checkTimeType = EnumAdaptor.valueOf(workTypeCondition.getCheckTimeType(), CheckTimeType.class);
+				if (workTypeCondition.getComparisonOperator() > 5) {
+					if (workTypeCondition.getCompareStartValue() != null && workTypeCondition.getCompareEndValue() != null) {
+						CompareRange checkedCondition = new CompareRange<>(workTypeCondition.getComparisonOperator());
+		                ((CompareRange) checkedCondition).setStartValue(workTypeCondition.getCompareStartValue());
+		                ((CompareRange) checkedCondition).setEndValue(workTypeCondition.getCompareEndValue());
+		                
+						CondTime time = new CondTime(checkedCondition, checkTimeType, workTypeCondition.getPlanLstWorkType());
+						domain.setScheduleCheckCond(time);
+					}
+				} else {
+					if (workTypeCondition.getCompareStartValue() != null) {
+						CompareSingleValue checkedCondition = new CompareSingleValue<>(workTypeCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
+						((CompareSingleValue)checkedCondition).setValue(workTypeCondition.getCompareStartValue());
+						CondTime time = new CondTime(checkedCondition, checkTimeType, workTypeCondition.getPlanLstWorkType());
+						domain.setScheduleCheckCond(time);
+					}
+				}
+			}
+			
+			if (dailyCheckItemType == DaiCheckItemType.CONTINUOUS_TIME) {
+				CheckTimeType checkTimeType = EnumAdaptor.valueOf(workTypeCondition.getCheckTimeType(), CheckTimeType.class);
+				if (workTypeCondition.getComparisonOperator() > 5) {
+					if (workTypeCondition.getCompareStartValue() != null && workTypeCondition.getCompareEndValue() != null) {
+						CompareRange checkedCondition = new CompareRange<>(workTypeCondition.getComparisonOperator());
+		                ((CompareRange) checkedCondition).setStartValue(workTypeCondition.getCompareStartValue());
+		                ((CompareRange) checkedCondition).setEndValue(workTypeCondition.getCompareEndValue());
+		                
+		                CondContinuousTime continuousTime = new CondContinuousTime(checkedCondition, checkTimeType,
+		                		workTypeCondition.getPlanLstWorkType(),
+		                		new ContinuousPeriod(item.getErrorAlarmCondition().getContinuousPeriod()));
+						domain.setScheduleCheckCond(continuousTime);
+					}
+				} else {
+					if (workTypeCondition.getCompareStartValue() != null) {
+						CompareSingleValue checkedCondition = new CompareSingleValue<>(workTypeCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
+						((CompareSingleValue)checkedCondition).setValue(workTypeCondition.getCompareStartValue());
+						CondContinuousTime continuousTime = new CondContinuousTime(checkedCondition,
+								checkTimeType,
+								workTypeCondition.getPlanLstWorkType(),
+								new ContinuousPeriod(item.getErrorAlarmCondition().getContinuousPeriod()));
+						domain.setScheduleCheckCond(continuousTime);
+					}
+				}
+			}
+			
+			if (dailyCheckItemType == DaiCheckItemType.CONTINUOUS_TIMEZONE) {
+				WorkTimeConAdapterDto workTimeCondition = item.getErrorAlarmCondition().getWorkTimeCondition();
+				CondContinuousTimeZone continuousTimeZone = new CondContinuousTimeZone(
+						workTypeCondition.getPlanLstWorkType(),
+						workTimeCondition.getPlanLstWorkTime(),
+						new ContinuousPeriod(item.getErrorAlarmCondition().getContinuousPeriod()));
+				domain.setScheduleCheckCond(continuousTimeZone);
+				domain.setTimeZoneTargetRange(EnumAdaptor.valueOf(workTimeCondition.getComparePlanAndActual(), TimeZoneTargetRange.class));
+			}
+			
+			if (dailyCheckItemType == DaiCheckItemType.CONTINUOUS_WORK) {
+				CondContinuousWrkType continuousWorkType = new CondContinuousWrkType(
+						workTypeCondition.getPlanLstWorkType(), 
+						new ContinuousPeriod(item.getErrorAlarmCondition().getContinuousPeriod()));
+				domain.setScheduleCheckCond(continuousWorkType);
+			}
+			
+			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId().equals(eralCheckId) && x.getSortOrder() == item.getSortOrderBy())) {
+				extraCondScheDayRepository.add(contractCode, companyId, domain);
+			} else {
+				extraCondScheDayRepository.update(contractCode, companyId, domain);
+			}
+		}
+		
+		// sync again item when user remove in list
+		for(ExtractionCondScheduleDay item: listOptionalItem) {
+			if (!scheAnyCondDays.stream().anyMatch(x -> item.getErrorAlarmId().equals(eralCheckId) && item.getSortOrder() == x.getSortOrderBy())) {
+				extraCondScheDayRepository.delete(contractCode, companyId, eralCheckId, item.getSortOrder());
+			}
+		}
+	}
+	
+	/**
+	 * Schedule Monthly with tab3
+	 * (process tab 固有のチェック条件)
+	 * @param sheFixItemDays
+	 */
+	private void saveScheduleFixCondMonth(String companyId, String eralCheckId, List<FixedConditionWorkRecordDto> sheFixItemDays, boolean isAdd) {
+		String contractCode = AppContexts.user().contractCode();
+		
+		for(FixedConditionWorkRecordDto item: sheFixItemDays) {
+			FixedExtractionSMonCon domain = FixedExtractionSMonCon.create(
+					eralCheckId, item.getFixConWorkRecordNo(), item.getMessage(), item.isUseAtr());
+			if (isAdd) {
+				fixedExtractSMonthlyConRepository.add(contractCode, companyId, domain);
+			} else {
+				fixedExtractSMonthlyConRepository.update(contractCode, companyId, domain);
+			}
+		}
+	}
+	
+	/**
+	 * Schedule daily with tab2
+	 * @param companyId
+	 * @param eralCheckId
+	 * @param scheAnyCondDays
+	 * @return list of error alarm check id
+	 */
+	private void saveScheduleAnyCondMon(String companyId, String eralCheckId, List<WorkRecordExtraConAdapterDto> scheAnyCondDays) {
+		String contractCode = AppContexts.user().contractCode();
+		List<ExtractionCondScheduleMonth> listOptionalItem = extraCondScheMonRepository.getScheAnyCond(contractCode, companyId, eralCheckId);
+		
+		int alarmNo = 0;
+		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
+			alarmNo++;
+			item.setSortOrderBy(alarmNo);
+			MonCheckItemType checkItemType = EnumAdaptor.valueOf(item.getCheckItem(), MonCheckItemType.class);
+			ErrorAlarmConAdapterDto errorAlarmCondition = item.getErrorAlarmCondition();
+			ScheMonCondDto monthlyCondition = errorAlarmCondition.getMonthlyCondition();
+			
+			ExtractionCondScheduleMonth domain = ExtractionCondScheduleMonth.create(
+					eralCheckId, item.getSortOrderBy(), item.isUseAtr(), item.getNameWKRecord(),
+					item.getErrorAlarmCondition().getDisplayMessage(),
+					checkItemType);
+			
+			if (checkItemType == MonCheckItemType.CONTRAST) {
+				TypeOfContrast typeOfContrast = EnumAdaptor.valueOf(monthlyCondition.getScheCheckCondition(), TypeOfContrast.class);
+				PublicHolidayCheckCond scheCheckedCondition = new PublicHolidayCheckCond(typeOfContrast);
+				domain.setScheCheckConditions(scheCheckedCondition);
+			}
+			
+			if (checkItemType == MonCheckItemType.TIME) {
+				TypeOfTime typeOfTime = EnumAdaptor.valueOf(monthlyCondition.getScheCheckCondition(), TypeOfTime.class);
+				TimeCheckCond scheCheckedCondition = new TimeCheckCond(typeOfTime);
+				
+				domain.setScheCheckConditions(scheCheckedCondition);
+			}
+			
+			if (checkItemType == MonCheckItemType.NUMBER_DAYS) {
+				TypeOfDays typeOfDays = EnumAdaptor.valueOf(monthlyCondition.getScheCheckCondition(), TypeOfDays.class);
+				DayCheckCond scheCheckedCondition = new DayCheckCond(typeOfDays);
+				domain.setScheCheckConditions(scheCheckedCondition);
+			}
+			
+			if (checkItemType == MonCheckItemType.REMAIN_NUMBER) {
+				TypeOfVacations typeOfVacations = EnumAdaptor.valueOf(monthlyCondition.getScheCheckCondition(), TypeOfVacations.class);
+				ScheduleMonRemainCheckCond scheCheckedCondition = new ScheduleMonRemainCheckCond(
+						typeOfVacations, 
+						Optional.of(new SpecialHolidayCode(monthlyCondition.getSpecialHolidayCode())));
+				domain.setScheCheckConditions(scheCheckedCondition);
+			}
+			
+			if (monthlyCondition.getComparisonOperator() > 5) {
+				if (monthlyCondition.getCompareStartValue() != null && monthlyCondition.getCompareEndValue() != null) {
+					CompareRange checkedCondition = new CompareRange<>(monthlyCondition.getComparisonOperator());
+	                ((CompareRange) checkedCondition).setStartValue(monthlyCondition.getCompareStartValue());
+	                ((CompareRange) checkedCondition).setEndValue(monthlyCondition.getCompareEndValue());
+	                domain.setCheckConditions(checkedCondition);
+				}
+			} else {
+				if (monthlyCondition.getCompareStartValue() != null) {
+					CompareSingleValue checkedCondition = new CompareSingleValue<>(monthlyCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
+					((CompareSingleValue)checkedCondition).setValue(monthlyCondition.getCompareStartValue());
+					domain.setCheckConditions(checkedCondition);
+				}
+			}
+			
+			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId().equals(eralCheckId) && x.getSortOrder() == item.getSortOrderBy())) {
+				extraCondScheMonRepository.add(contractCode, companyId, domain);
+			} else {
+				extraCondScheMonRepository.update(contractCode, companyId, domain);
+			}
+		}
+		
+		// sync again item when user remove in list
+		for(ExtractionCondScheduleMonth item: listOptionalItem) {
+			if (!scheAnyCondDays.stream().anyMatch(x -> item.getErrorAlarmId().equals(eralCheckId) && item.getSortOrder() == x.getSortOrderBy())) {
+				extraCondScheMonRepository.delete(contractCode, companyId, eralCheckId, item.getSortOrder());
+			}
+		}
+	}
+	
+	/**
+	 * Schedule year with tab2
+	 * @param companyId
+	 * @param eralCheckId
+	 * @param scheAnyCondDays
+	 * @return list of error alarm check id
+	 */
+	private void saveScheduleAnyCondYear(String companyId, String eralCheckId, List<WorkRecordExtraConAdapterDto> scheAnyCondDays) {
+		String contractCode = AppContexts.user().contractCode();
+		List<ExtractionCondScheduleYear> listOptionalItem = extraCondScheYearRepository.getScheAnyCond(contractCode, companyId, eralCheckId);
+		
+		int alarmNo = 0;
+		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
+			alarmNo++;
+			item.setSortOrderBy(alarmNo);
+			YearCheckItemType checkItemType = EnumAdaptor.valueOf(item.getCheckItem(), YearCheckItemType.class);
+			ErrorAlarmConAdapterDto errorAlarmCondition = item.getErrorAlarmCondition();
+			ScheMonCondDto monthlyCondition = errorAlarmCondition.getMonthlyCondition();
+			
+			ExtractionCondScheduleYear domain = ExtractionCondScheduleYear.create(
+					eralCheckId, item.getSortOrderBy(), item.isUseAtr(), item.getNameWKRecord(),
+					item.getErrorAlarmCondition().getDisplayMessage(),
+					checkItemType);
+			
+			if (checkItemType == YearCheckItemType.TIME) {
+				TypeOfTime typeOfTime = EnumAdaptor.valueOf(monthlyCondition.getScheCheckCondition(), TypeOfTime.class);
+				nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.TimeCheckCond scheCheckedCondition = new nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.TimeCheckCond(typeOfTime);
+				domain.setScheCheckConditions(scheCheckedCondition);
+			}
+			
+			if (checkItemType == YearCheckItemType.DAY_NUMBER) {
+				TypeOfDays typeOfDays = EnumAdaptor.valueOf(monthlyCondition.getScheCheckCondition(), TypeOfDays.class);
+				nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.DayCheckCond scheCheckedCondition = new nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.annual.DayCheckCond(typeOfDays);
+				domain.setScheCheckConditions(scheCheckedCondition);
+			}
+			
+			if (monthlyCondition.getComparisonOperator() > 5) {
+				if (monthlyCondition.getCompareStartValue() != null && monthlyCondition.getCompareEndValue() != null) {
+					CompareRange checkedCondition = new CompareRange<>(monthlyCondition.getComparisonOperator());
+	                ((CompareRange) checkedCondition).setStartValue(monthlyCondition.getCompareStartValue());
+	                ((CompareRange) checkedCondition).setEndValue(monthlyCondition.getCompareEndValue());
+	                domain.setCheckConditions(checkedCondition);
+				}
+			} else {
+				if (monthlyCondition.getCompareStartValue() != null) {
+					CompareSingleValue checkedCondition = new CompareSingleValue<>(monthlyCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
+					((CompareSingleValue)checkedCondition).setValue(monthlyCondition.getCompareStartValue());
+					domain.setCheckConditions(checkedCondition);
+				}
+			}
+			
+			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId().equals(eralCheckId) && x.getSortOrder() == item.getSortOrderBy())) {
+				extraCondScheYearRepository.add(contractCode, companyId, domain);
+			} else {
+				extraCondScheYearRepository.update(contractCode, companyId, domain);
+			}
+		}
+		
+		// sync again item when user remove in list
+		for(ExtractionCondScheduleYear item: listOptionalItem) {
+			if (!scheAnyCondDays.stream().anyMatch(x -> item.getErrorAlarmId().equals(eralCheckId) && item.getSortOrder() == x.getSortOrderBy())) {
+				extraCondScheYearRepository.delete(contractCode, companyId, eralCheckId, item.getSortOrder());
+			}
+		}
+	}
+	
+	
+	/**
+	 * Schedule weekly with tab2
+	 * @param companyId
+	 * @param eralCheckId
+	 * @param scheAnyCondDays
+	 * @return list of error alarm check id
+	 */
+	private void saveScheduleAnyCondWeekly(String companyId, String eralCheckId, List<WorkRecordExtraConAdapterDto> scheAnyCondDays) {
+		String contractCode = AppContexts.user().contractCode();
+		List<ExtractionCondScheduleWeekly> listOptionalItem = extraCondScheWeeklyRepository.getScheAnyCond(contractCode, companyId, eralCheckId);
+		
+		int alarmNo = 0;
+		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
+			alarmNo++;
+			item.setSortOrderBy(alarmNo);
+			WeeklyCheckItemType checkItemType = WeeklyCheckItemType.TIME;
+			if (item.getCheckItem() > 0) {
+				checkItemType = EnumAdaptor.valueOf(item.getCheckItem(), WeeklyCheckItemType.class);
+			}
+			
+			ErrorAlarmConAdapterDto errorAlarmCondition = item.getErrorAlarmCondition();
+			ScheMonCondDto monthlyCondition = errorAlarmCondition.getMonthlyCondition();
+			
+			ExtractionCondScheduleWeekly domain = ExtractionCondScheduleWeekly.create(
+					eralCheckId, item.getSortOrderBy(), item.isUseAtr(), item.getNameWKRecord(),
+					item.getErrorAlarmCondition().getDisplayMessage(),
+					checkItemType,
+					errorAlarmCondition.getContinuousPeriod());
+			
+			List<Integer> additionAttendanceItems = monthlyCondition.getCountableAddAtdItems();
+			List<Integer> substractionAttendanceItems = monthlyCondition.getCountableSubAtdItems();
+			CountableTarget checkedTarget = new CountableTarget(new AddSubAttendanceItems(additionAttendanceItems, substractionAttendanceItems));
+			domain.setCheckedTarget(Optional.of(checkedTarget));
+			
+			if (monthlyCondition.getComparisonOperator() > 5) {
+				if (monthlyCondition.getCompareStartValue() != null && monthlyCondition.getCompareEndValue() != null) {
+					CompareRange checkedCondition = new CompareRange<>(monthlyCondition.getComparisonOperator());
+	                ((CompareRange) checkedCondition).setStartValue(monthlyCondition.getCompareStartValue());
+	                ((CompareRange) checkedCondition).setEndValue(monthlyCondition.getCompareEndValue());
+	                domain.setCheckConditions(checkedCondition);
+                }
+			} else {
+				if (monthlyCondition.getCompareStartValue() != null) {
+					CompareSingleValue checkedCondition = new CompareSingleValue<>(monthlyCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
+					((CompareSingleValue)checkedCondition).setValue(monthlyCondition.getCompareStartValue());
+					domain.setCheckConditions(checkedCondition);
+				}
+			}
+			
+			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId().equals(eralCheckId) && x.getSortOrder() == item.getSortOrderBy())) {
+				extraCondScheWeeklyRepository.add(contractCode, companyId, domain);
+			} else {
+				extraCondScheWeeklyRepository.update(contractCode, companyId, domain);
+			}
+		}
+		
+		// sync again item when user remove in list
+		for(ExtractionCondScheduleWeekly item: listOptionalItem) {
+			if (!scheAnyCondDays.stream().anyMatch(x -> item.getErrorAlarmId().equals(eralCheckId) && item.getSortOrder() == x.getSortOrderBy())) {
+				extraCondScheWeeklyRepository.delete(contractCode, companyId, eralCheckId, item.getSortOrder());
+			}
+		}
 	}
 
 }

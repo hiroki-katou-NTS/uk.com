@@ -37,11 +37,12 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingDateTimeColorOfStampScreen;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageComment;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageName;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SupportWplSet;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -94,10 +95,10 @@ public class EnterStampFromSmartPhoneServiceTest {
 		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
 		GeoCoordinate geoCoordinate = new GeoCoordinate(1, 1);
 		DisplaySettingsStampScreen displaySettingsStamScreen = new DisplaySettingsStampScreen(new CorrectionInterval(1),
-				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DUMMY")),
+				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 				new ResultDisplayTime(1));
 		List<StampPageLayout> stampPageLayouts = new ArrayList<>();
-		SettingsSmartphoneStamp settingsSmartphoneStamp = new SettingsSmartphoneStamp(contractCode.v(), displaySettingsStamScreen, stampPageLayouts, true);
+		SettingsSmartphoneStamp settingsSmartphoneStamp = new SettingsSmartphoneStamp(contractCode.v(), displaySettingsStamScreen, stampPageLayouts, true, NotUseAtr.USE, NotUseAtr.USE);
 		
 		new Expectations() {
 		{
@@ -126,7 +127,7 @@ public class EnterStampFromSmartPhoneServiceTest {
 		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
 		GeoCoordinate geoCoordinate = new GeoCoordinate(1, 1);
 		DisplaySettingsStampScreen displaySettingsStamScreen = new DisplaySettingsStampScreen(new CorrectionInterval(1),
-				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DUMMY")),
+				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 				new ResultDisplayTime(1));
 		
 		List<StampPageLayout> stampPageLayouts = new ArrayList<>();
@@ -136,25 +137,28 @@ public class EnterStampFromSmartPhoneServiceTest {
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.NONE , Optional.empty()),
 				NotUseAtr.USE,
-				AudioType.NONE));
+				AudioType.NONE,
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		
 		lstButtonSet.add(new ButtonSettings(new ButtonPositionNo(1),
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.NONE , Optional.empty()),
 				NotUseAtr.USE,
-				AudioType.NONE));
+				AudioType.NONE,
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		
 		lstButtonSet.add(new ButtonSettings(new ButtonPositionNo(1),
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.NONE , Optional.empty()),
 				NotUseAtr.USE,
-				AudioType.NONE));
+				AudioType.NONE,
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		
 		stampPageLayouts.add(new StampPageLayout(new PageNo(1), new StampPageName("DUMMY"),
 				new StampPageComment(new PageComment("DUMMY"), new ColorCode("DUMMY")), ButtonLayoutType.SMALL_8,
 				lstButtonSet));
 		
-		SettingsSmartphoneStamp settingsSmartphoneStamp = new SettingsSmartphoneStamp(contractCode.v(), displaySettingsStamScreen, stampPageLayouts, true);
+		SettingsSmartphoneStamp settingsSmartphoneStamp = new SettingsSmartphoneStamp(contractCode.v(), displaySettingsStamScreen, stampPageLayouts, true, NotUseAtr.USE, NotUseAtr.USE);
 		
 		new Expectations() {
 		{

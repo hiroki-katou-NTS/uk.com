@@ -5,10 +5,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectwork.startendwork.CorrectStartEndWorkForWorkInfo;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -53,16 +54,18 @@ public class CorrectionAfterChangeWorkInfo {
 	private TimeCorrectionProcess timeCorrectionProcess;
 
 	public IntegrationOfDaily correction(String companyId, IntegrationOfDaily domainDaily,
-			Optional<WorkingConditionItem> workCondition, ScheduleRecordClassifi classification) {
+			Optional<WorkingConditionItem> workCondition, ChangeDailyAttendance changeDailyAttendance) {
 
-		// 短時間勤務の補正
-		IntegrationOfDaily domainCorrect = correctShortWorkingHour.correct(companyId, domainDaily);
-
-		/**始業終業時刻の補正 */
-		CorrectStartEndWorkForWorkInfo.correctStartEndWork(createRequire(companyId), domainDaily);
+		if (changeDailyAttendance.workInfo) {
+			/** 始業終業時刻の補正 */
+			CorrectStartEndWorkForWorkInfo.correctStartEndWork(createRequire(companyId), domainDaily);
+		}
 		
 		//時刻の補正
-		timeCorrectionProcess.process(companyId, workCondition, domainDaily, classification);
+		timeCorrectionProcess.process(companyId, workCondition, domainDaily, changeDailyAttendance.getClassification());
+		
+		// 短時間勤務の補正
+		IntegrationOfDaily domainCorrect = correctShortWorkingHour.correct(companyId, domainDaily);
 		
 		// fix 111738
 		// remove TODO: ドメインモデル「予実反映」を取得 - mock new domain

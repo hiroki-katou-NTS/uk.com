@@ -14,21 +14,25 @@ public class WorkLocationImport {
 	 * 場所名
 	 */
 	private String workLocationName;
+//	/**
+//	 * 
+//	 */
+//	private String horiDistance;
+//	/**
+//	 * 
+//	 */
+//	private String vertiDistance;
+	/**
+	 * bỏ dài rộng, thay bằng bán kính (Enum Radius)
+	 */
+	private int radius;
 	/**
 	 * 
 	 */
-	private String horiDistance;
+	private double latitude;
 	/**
 	 * 
 	 */
-	private String vertiDistance;
-	/**
-	 * 
-	 */
-	private String latitude;
-	/**
-	 * 
-	 */
-	private String longitude;
+	private double longitude;
 
 }

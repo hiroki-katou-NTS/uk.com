@@ -3,17 +3,16 @@ table.fixed-table tbody tr td:first-child {
   width: 230px;
 }
 table.fixed-table thead th {
-  font-weight: normal;
   height: 30px;
   vertical-align: middle;
 }
 table.fixed-table thead tr:first-child th:first-child {
   vertical-align: bottom;
-  padding-bottom: 6px;
+  padding-bottom: 17px;
 }
-table.fixed-table tbody tr:last-child td {
-  width: 70px;
-}
+/*table.fixed-table tbody tr:last-child td {*/
+  /*width: 70px;*/
+/*}*/
 
 table.fixed-table tbody td {
   height: 28px;
@@ -31,9 +30,9 @@ table.fixed-table {
 table.fixed-table th {
   text-align: center;
 }
-table.fixed-table tr:first-child th:first-child {
-  text-align: left;
-}
+/*table.fixed-table tr:first-child th:first-child {*/
+  /*text-align: left;*/
+/*}*/
 #contents-area .content-body {
   padding: 5px 15px;
 }

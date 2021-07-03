@@ -7,9 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculation;
@@ -26,35 +24,35 @@ public class AggregateOverTimeDto implements ItemConst, AttendanceItemDataGate {
 	private int no;
 
 	/** 残業時間 */
-	@AttendanceItemLayout(jpPropertyName = OVERTIME, layout = LAYOUT_A)
 	private TimeMonthWithCalculationDto overTime;
 
 	/** 事前残業時間 */
-	@AttendanceItemValue(type = ValueType.TIME)
-	@AttendanceItemLayout(jpPropertyName = BEFORE, layout = LAYOUT_B)
 	private int beforeOverTime;
 
 	/** 振替残業時間 */
-	@AttendanceItemLayout(jpPropertyName = TRANSFER, layout = LAYOUT_C)
 	private TimeMonthWithCalculationDto transferOverTime;
 
 	/** 法定内残業時間 */
-	@AttendanceItemValue(type = ValueType.TIME)
-	@AttendanceItemLayout(jpPropertyName = LEGAL, layout = LAYOUT_D)
 	private int legalOverTime;
 
 	/** 法定内振替残業時間 */
-	@AttendanceItemValue(type = ValueType.TIME)
-	@AttendanceItemLayout(jpPropertyName = LEGAL + TRANSFER, layout = LAYOUT_E)
 	private int legalTransferOverTime;
 
+	/** フレックス内残業時間 */
+	private int flexOverTime;
+
+	/** フレックス内振替残業時間 */
+	private int flexTransferOverTime;
+	
 	public AggregateOverTime toDomain() {
 		return AggregateOverTime.of(new OverTimeFrameNo(no), 
 									overTime == null ? new TimeMonthWithCalculation() : overTime.toDomain(),
 									new AttendanceTimeMonth(beforeOverTime),
 									transferOverTime == null ? new TimeMonthWithCalculation() : transferOverTime.toDomain(),
 									new AttendanceTimeMonth(legalOverTime),
-									new AttendanceTimeMonth(legalTransferOverTime));
+									new AttendanceTimeMonth(legalTransferOverTime),
+									new AttendanceTimeMonth(flexOverTime),
+									new AttendanceTimeMonth(flexTransferOverTime));
 	}
 	
 	public static AggregateOverTimeDto from(AggregateOverTime domain) {
@@ -66,6 +64,8 @@ public class AggregateOverTimeDto implements ItemConst, AttendanceItemDataGate {
 			dto.setOverTime(TimeMonthWithCalculationDto.from(domain.getOverTime()));
 			dto.setNo(domain.getOverTimeFrameNo().v());
 			dto.setTransferOverTime(TimeMonthWithCalculationDto.from(domain.getTransferOverTime()));
+			dto.setFlexOverTime(domain.getFlexOverTime().valueAsMinutes());
+			dto.setFlexTransferOverTime(domain.getFlexTransferOverTime().valueAsMinutes());
 		}
 		return dto;
 	}
@@ -79,6 +79,10 @@ public class AggregateOverTimeDto implements ItemConst, AttendanceItemDataGate {
 			return Optional.of(ItemValue.builder().value(legalOverTime).valueType(ValueType.TIME));
 		case (LEGAL + TRANSFER):
 			return Optional.of(ItemValue.builder().value(legalTransferOverTime).valueType(ValueType.TIME));
+		case FLEX:
+			return Optional.of(ItemValue.builder().value(flexOverTime).valueType(ValueType.TIME));
+		case (FLEX + TRANSFER):
+			return Optional.of(ItemValue.builder().value(flexTransferOverTime).valueType(ValueType.TIME));
 		default:
 		}
 		return AttendanceItemDataGate.super.valueOf(path);
@@ -113,6 +117,8 @@ public class AggregateOverTimeDto implements ItemConst, AttendanceItemDataGate {
 		case BEFORE:
 		case LEGAL:
 		case (LEGAL + TRANSFER):
+		case FLEX:
+		case (FLEX + TRANSFER):
 			return PropType.VALUE;
 		default:
 		}
@@ -130,6 +136,12 @@ public class AggregateOverTimeDto implements ItemConst, AttendanceItemDataGate {
 			break;
 		case (LEGAL + TRANSFER):
 			legalTransferOverTime = value.valueOrDefault(0);
+			break;
+		case FLEX:
+			flexOverTime = value.valueOrDefault(0);
+			break;
+		case (FLEX + TRANSFER):
+			flexTransferOverTime = value.valueOrDefault(0);
 			break;
 		default:
 		}

@@ -16,12 +16,12 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                     <div class="cell valign-top">
                         <div class="table">
                             <div class="cell valign-top" data-bind="if: dispCheckBox">
-                                <div data-bind="i18n: 'KAF000_50', ntsCheckBox: { checked: checkBoxValue }"></div>
+                                <div style="margin-left: -3px" data-bind="i18n: 'KAF000_50', ntsCheckBox: { checked: checkBoxValue }"></div>
                             </div>
                             <div class="cell valign-top" data-bind="if: dispSingleDate">
                                 <div id="kaf000-a-component4-singleDate"
                                     data-bind="ntsDatePicker: {name: $i18n('KAF000_49'),
-                                                            required:true,
+                                                            required: true,
                                                             value: appDate }">
                                 </div>
                             </div>
@@ -32,7 +32,8 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                                                             startName: $i18n('KAF000_49'),
                                                             endName: $i18n('KAF000_49'),
                                                             required: true,
-                                                            value: dateValue }">
+                                                            value: dateValue, 
+                                                            showNextPrevious: false }">
                                 </div>
                             </div>
                         </div>
@@ -51,7 +52,7 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
         dispSingleDate: KnockoutObservable<boolean> = ko.observable(true);
         checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
         dispCheckBox: KnockoutObservable<boolean> = ko.observable(false);
-        checkAppDate: KnockoutObservable<boolean> = ko.observable(true);
+        checkAppDate: KnockoutObservable<boolean>;
 
         created(params: any) {
             const vm = this;
@@ -59,8 +60,7 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
             vm.dateValue = ko.observable({});
             vm.application = params.application;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
-            if (params.checkAppDate)
-                vm.checkAppDate = params.checkAppDate;
+            vm.checkAppDate = params.checkAppDate ? params.checkAppDate : ko.observable(true);
 
 			if (!_.isEmpty(vm.application().appDate())) {
 				vm.appDate(vm.application().appDate());
@@ -72,16 +72,15 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                     if (vm.appType == AppType.ABSENCE_APPLICATION || vm.appType == AppType.WORK_CHANGE_APPLICATION || vm.appType == AppType.BUSINESS_TRIP_APPLICATION) {
                         vm.dispCheckBox(true);
                         vm.dispSingleDate(true);
+						vm.checkBoxValue.subscribe(oldValue => {
+							$('#kaf000-a-component4-singleDate').ntsError('clear');
+							$('#kaf000-a-component4-rangeDate .nts-input').ntsError('clear');
+						}, null, "beforeChange");
                         vm.checkBoxValue.subscribe(value => {
                             if(value) {
                                 vm.dispSingleDate(false);
-                                vm.dateValue.valueHasMutated();
-                                nts.uk.ui.errors.clearAll();
-                                // vm.$errors("clear", ['#kaf000-a-component4-singleDate']);
                             } else {
                                 vm.dispSingleDate(true);
-                                nts.uk.ui.errors.clearAll();
-                                // vm.$errors("clear", ['#kaf000-a-component4-rangeDate']);
                                 if(_.isEmpty(vm.appDate())) {
                                     vm.application().opAppStartDate('');
                                     vm.application().opAppEndDate('');

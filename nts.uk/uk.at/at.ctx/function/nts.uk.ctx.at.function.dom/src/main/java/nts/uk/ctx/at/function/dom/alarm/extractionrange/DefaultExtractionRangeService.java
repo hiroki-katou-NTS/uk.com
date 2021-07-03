@@ -28,8 +28,10 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.ExtractionPeriodMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.FixedMonthly;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyEndMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyStartMonth;
+import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.YearSpecifiedType;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.AverageMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPeriodUnit;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
@@ -66,7 +68,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		List<CheckCondition> checkConList = alarmRepo.getCheckCondition(companyId, alarmCode);
 
 		checkConList.forEach(c -> {
-			if (c.isDaily() || c.isApplication()) {
+			if (c.isDaily() || c.isApplication() || c.isScheduleDaily() || c.isWeekly()) {
 				CheckConditionTimeDto daily = this.getDailyTime(c, closureId, new YearMonth(processingYm));
 				result.add(daily);
 				
@@ -74,7 +76,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				CheckConditionTimeDto schedual_4week = this.get4WeekTime(c, closureId, new YearMonth(processingYm), companyId);
 				result.add(schedual_4week);
 				
-			} else if(c.isMonthly() || c.isMultipleMonth()) {
+			} else if(c.isMonthly() || c.isMultipleMonth() || c.isScheduleMonthly()) {
 				CheckConditionTimeDto other = this.getMonthlyTime(c,closureId,new YearMonth(processingYm));
 				result.add(other);
 				
@@ -84,8 +86,10 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				CheckConditionTimeDto attHoliday = new CheckConditionTimeDto(c.getAlarmCategory().value, c.getAlarmCategory().nameId, 0);
 				attHoliday.setTabOrder(7);
 				result.add(attHoliday);
+			} else if (c.isScheduleYear()) {
+				CheckConditionTimeDto other = this.getScheYearTime(c,closureId,new YearMonth(processingYm));
+				result.add(other);
 			}
-			
 
 		});
 		
@@ -111,7 +115,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 			
 			if(extractBase instanceof ExtractionPeriodDaily) {
 				ExtractionPeriodDaily extraction = (ExtractionPeriodDaily) extractBase;				
-				CheckConditionPeriod period  = this.getPeriodDaily(extraction, closureId, yearMonth);
+				CheckConditionPeriod period  = this.getPeriodDaily(extraction, closureId, yearMonth, c);
 				startDate = period.getStartDate();
 				endDate = period.getEndDate();
 				CheckConditionTimeDto dailyDto = new CheckConditionTimeDto(c.getAlarmCategory().value, 
@@ -231,7 +235,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 	
 		ExtractionPeriodDaily extraction = (ExtractionPeriodDaily) c.getExtractPeriodList().get(0);
 		
-		CheckConditionPeriod period = this.getPeriodDaily(extraction, closureId, yearMonth);
+		CheckConditionPeriod period = this.getPeriodDaily(extraction, closureId, yearMonth, c);
 		startDate = period.getStartDate();
 		endDate = period.getEndDate();
 		
@@ -253,10 +257,74 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		YearMonth endMonthly = yearMonth;
 		ExtractionPeriodMonth extractionPeriodMonth =  (ExtractionPeriodMonth) c.getExtractPeriodList().get(0);
 		if(extractionPeriodMonth.getStartMonth().getSpecifyStartMonth().value == SpecifyStartMonth.DESIGNATE_CLOSE_START_MONTH.value) {
-			startMonthly = yearMonth.addMonths((-1)*extractionPeriodMonth.getStartMonth().getStrMonthNo().get().getMonthNo());
+			if (c.isScheduleMonthly()) {
+				startMonthly = yearMonth.addMonths(extractionPeriodMonth.getStartMonth().getStrMonthNo().get().getMonthNo());
+			} else {
+				startMonthly = yearMonth.addMonths((-1)*extractionPeriodMonth.getStartMonth().getStrMonthNo().get().getMonthNo());
+			}
 		}
 		if(extractionPeriodMonth.getEndMonth().getSpecifyEndMonth().value == SpecifyEndMonth.SPECIFY_CLOSE_END_MONTH.value ) {
-			endMonthly = yearMonth.addMonths((-1)*extractionPeriodMonth.getEndMonth().getEndMonthNo().get().getMonthNo());
+			if (c.isScheduleMonthly()) {
+				endMonthly = yearMonth.addMonths(extractionPeriodMonth.getEndMonth().getEndMonthNo().get().getMonthNo());
+			} else {
+				endMonthly = yearMonth.addMonths((-1)*extractionPeriodMonth.getEndMonth().getEndMonthNo().get().getMonthNo());
+			}
+		}
+		
+		return new CheckConditionTimeDto(c.getAlarmCategory().value,
+				EnumAdaptor.convertToValueName(c.getAlarmCategory()).getLocalizedName(), null,
+				null, startMonthly.toString(), endMonthly.toString());
+	}
+	
+	/**
+	 * 月次単位の期間を算出する
+	 * @param c
+	 * @param closureId
+	 * @param yearMonth
+	 * @return
+	 */
+	public CheckConditionTimeDto getScheYearTime(CheckCondition c, int closureId, YearMonth yearMonth) {
+		GeneralDate sysDate = GeneralDate.today();
+		YearMonth startMonthly = yearMonth;
+		YearMonth endMonthly = yearMonth;
+		ExtractionPeriodMonth extractionPeriodMonth =  (ExtractionPeriodMonth) c.getExtractPeriodList().get(0);
+		
+		// 固定の月度を指定する
+		if (SpecifyStartMonth.SPECIFY_FIXED_MOON_DEGREE == extractionPeriodMonth.getStartMonth().getSpecifyStartMonth()) {
+			if (extractionPeriodMonth.getStartMonth().getFixedMonthly().isPresent()) {
+				FixedMonthly fixedMonthly = extractionPeriodMonth.getStartMonth().getFixedMonthly().get();
+				int fixMonNo = fixedMonthly.getDesignatedMonth();
+				YearMonth targetYearMonth = YearMonth.of(sysDate.year(), fixMonNo);
+						
+				// 固定月度．年の種類　＝　本年の場合
+				if (YearSpecifiedType.FISCAL_YEAR == fixedMonthly.getYearSpecifiedType()) {
+					// 開始月の年　＝　システム日付．年
+					startMonthly = targetYearMonth;
+				} else {
+					// 固定月度．年の種類　＝　本年度の場合
+					// 固定月度．指定月　＜　４　の場合　開始月の年　＝　システム日付．年　－　1
+					if (fixMonNo < 4) {
+						startMonthly = targetYearMonth.addYears(-1);
+					} else {
+						// 固定月度．指定月　＞＝　４の場合　開始月の年　＝　システム日付．年
+						startMonthly = targetYearMonth;
+					}
+				}
+			}
+		} else {
+			// 締め開始月を指定する
+			int startMonthNo = extractionPeriodMonth.getStartMonth().getStrMonthNo().get().getMonthNo();
+			startMonthly = yearMonth.addMonths((-1) * startMonthNo);
+		}
+		
+		// 開始から期間を指定する
+		// 終了月　=　「パラメータ．処理月」　-　「月数指定．月数」とする 
+		if(extractionPeriodMonth.getEndMonth().getSpecifyEndMonth().value == SpecifyEndMonth.SPECIFY_PERIOD_FROM_START_MONTH.value ) {
+			endMonthly = startMonthly.addMonths(extractionPeriodMonth.getEndMonth().getExtractFromStartMonth().value - 1);
+		} else {
+			// 締め終了月を指定する
+			int endMonthNo = extractionPeriodMonth.getEndMonth().getEndMonthNo().get().getMonthNo();
+			endMonthly = yearMonth.addMonths(endMonthNo);
 		}
 		
 		return new CheckConditionTimeDto(c.getAlarmCategory().value,
@@ -271,7 +339,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 	 * @param yearMonth
 	 * @return
 	 */
-	private CheckConditionPeriod getPeriodDaily(ExtractionPeriodDaily extraction, int closureId, YearMonth yearMonth ) {
+	private CheckConditionPeriod getPeriodDaily(ExtractionPeriodDaily extraction, int closureId, YearMonth yearMonth, CheckCondition c) {
 		val require = ClosureService.createRequireM1(closureRepo, closureEmploymentRepo);
 		Date startDate =null;
 		Date endDate =null;
@@ -288,7 +356,15 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				startDate = calendar.getTime();
 
 		} else {
-			DatePeriod datePeriod = ClosureService.getClosurePeriod(require, closureId, startMonthly.addMonths((-1)*extraction.getStartDate().getStrMonth().get().getMonth()));
+			YearMonth extractStartMon = null;
+			// QA#115836
+			if (c.isScheduleDaily()) {
+				extractStartMon = startMonthly.addMonths(extraction.getStartDate().getStrMonth().get().getMonth());
+			} else {
+				extractStartMon = startMonthly.addMonths((-1)*extraction.getStartDate().getStrMonth().get().getMonth());
+			}
+			
+			DatePeriod datePeriod = ClosureService.getClosurePeriod(require, closureId, extractStartMon);
 			if(datePeriod == null) {
 				return new CheckConditionPeriod(GeneralDate.ymd(startMonthly, 1).date(), GeneralDate.ymd(endMonthly.addMonths(1), 1).addDays(-1).date());
 			}
@@ -306,7 +382,14 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 
 			endDate = calendar.getTime();
 		} else {
-			DatePeriod datePeriod = ClosureService.getClosurePeriod(require, closureId, endMonthly.addMonths((-1)*extraction.getEndDate().getEndMonth().get().getMonth()));
+			YearMonth extractEndMon = null;
+			if (c.isScheduleDaily()) {
+				extractEndMon = endMonthly.addMonths(extraction.getEndDate().getEndMonth().get().getMonth());
+			} else {
+				extractEndMon = endMonthly.addMonths((-1)*extraction.getEndDate().getEndMonth().get().getMonth());
+			}
+			
+			DatePeriod datePeriod = ClosureService.getClosurePeriod(require, closureId, extractEndMon);
 			if(datePeriod == null) {
 				return new CheckConditionPeriod(GeneralDate.ymd(startMonthly, 1).date(), GeneralDate.ymd(endMonthly.addMonths(1), 1).addDays(-1).date());
 			}

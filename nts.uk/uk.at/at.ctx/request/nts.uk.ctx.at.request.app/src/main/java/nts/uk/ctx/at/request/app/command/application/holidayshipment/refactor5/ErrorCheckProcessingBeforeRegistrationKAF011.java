@@ -54,7 +54,9 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 		this.PreRegistrationErrorCheck.errorCheck(companyId, abs, rec, 
 												opActualContentDisplayLst,
 												appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0), 
-												appDispInfoStartup.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode());
+												appDispInfoStartup.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(),
+												Optional.empty(), 
+												Optional.empty());
 		//振休残数不足チェック (Check số nghỉ bù thiếu)
 		this.checkForInsufficientNumberOfHolidays(companyId, appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), abs, rec);
 		

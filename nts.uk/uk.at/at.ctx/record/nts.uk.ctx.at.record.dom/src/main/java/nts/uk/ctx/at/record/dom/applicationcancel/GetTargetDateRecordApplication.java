@@ -20,7 +20,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
-import nts.uk.ctx.at.shared.dom.application.stamp.AppRecordImageShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppRecordImageShare;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
 /**
@@ -50,7 +50,7 @@ public class GetTargetDateRecordApplication {
 				new StampType(false,
 						applicaton.getAppStampGoOutAtr().map(x -> EnumAdaptor.valueOf(x.value, GoingOutReason.class)),
 						SetPreClockArt.NONE, ChangeClockArt.GOING_TO_WORK, ChangeCalArt.NONE),
-				new RefectActualResult(null, null, null, null), Optional.empty());
+				new RefectActualResult(null, null, null), Optional.empty());
 
 		Optional<GeneralDate> date = ReflectDataStampDailyService.getJudgment(require, applicaton.getEmployeeID(),
 				stamp);

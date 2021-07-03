@@ -3,11 +3,12 @@ package nts.uk.ctx.sys.assist.app.find.autosetting.deletion;
 import java.util.List;
 
 import lombok.Data;
+import nts.uk.ctx.sys.assist.app.find.autosetting.AbstractCategoryDto;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionPatternSetting;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionSelectionCategory;
 
 @Data
-public class DataDeletionPatternSettingDto implements DataDeletionPatternSetting.MementoSetter {
+public class DataDeletionPatternSettingDto<X extends AbstractCategoryDto> implements DataDeletionPatternSetting.MementoSetter {
 
 	/**
 	 * パスワード有無
@@ -67,7 +68,7 @@ public class DataDeletionPatternSettingDto implements DataDeletionPatternSetting
 	/**
 	 * データ削除の選択カテゴリ
 	 */
-	private List<DelSelectionCategoryNameDto> selectCategories;
+	private List<X> selectCategories;
 	
 	/**
 	 * 削除パターン補足説明
@@ -85,11 +86,12 @@ public class DataDeletionPatternSettingDto implements DataDeletionPatternSetting
 	 * @param domain the domain
 	 * @return the Data deletion pattern setting dto
 	 */
-	public static DataDeletionPatternSettingDto createFromDomain(DataDeletionPatternSetting domain) {
+	public static <X extends AbstractCategoryDto> DataDeletionPatternSettingDto<X> createFromDomain(
+			DataDeletionPatternSetting domain) {
 		if (domain == null) {
 			return null;
 		}
-		DataDeletionPatternSettingDto dto = new DataDeletionPatternSettingDto();
+		DataDeletionPatternSettingDto<X> dto = new DataDeletionPatternSettingDto<>();
 		domain.setMemento(dto);
 		return dto;
 	}

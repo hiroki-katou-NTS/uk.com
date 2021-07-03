@@ -21,7 +21,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
@@ -33,9 +32,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.AppContentService;
@@ -49,7 +46,6 @@ import nts.uk.ctx.at.request.dom.application.applist.service.param.AttendanceNam
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailType;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationApprContent;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttComfirmSet;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttConfirmEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttConfirmEmpMonthDay;
@@ -63,25 +59,18 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprS
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttSendMailInfoOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttWkpEmpMailOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverSpecial;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ConfirmWorkplaceInfoOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyConfirmOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DailyStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DisplayWorkplace;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmpPeriod;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.EmployeeEmailOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailTransmissionContentOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.MailTransmissionContentResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.PeriodOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.PhaseApproverStt;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SumCountOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalPerson;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalPersonAndResult;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmploymentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -92,8 +81,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoI
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmploymentHisImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.actualsituation.confirmstatusmonthly.StatusConfirmMonthImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.DailyAttendanceItemAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
@@ -107,13 +94,10 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AppPhas
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AppRootInsImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AppRootInsPeriodImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFormImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApproveImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverEmpImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.EmpPerformMonthParamAt;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Request533Import;
@@ -122,10 +106,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceA
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
-import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.WorkplaceInforExport;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -133,7 +113,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.mail.SendMailFailedException;
@@ -167,9 +146,6 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 
 	@Inject
 	private RegisterEmbededURL registerEmbededURL;
-
-	@Inject
-	private DailyAttendanceItemAdapter dailyAttendanceItemAdapter;
 
 	@Inject
 	private AtEmploymentAdapter atEmploymentAdapter;
@@ -296,109 +272,6 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	/**
-	 * アルゴリズム「承認状況取得申請承認」を実行する
-	 * 
-	 * @param wkpInfor
-	 * @return ApprovalSttAppDto
-	 */
-	@Override
-	public ApprovalSttAppOutput getApprovalSttApp(WorkplaceInfor wkpInfor,
-			List<ApprovalStatusEmployeeOutput> listAppStatusEmp) {
-		List<ApprovalSttAppOutput> appSttAppliStateList = new ArrayList<>();
-		
-		val mailDestCache = this.approvalStateAdapter.createMailDestinationCache(AppContexts.user().companyId());
-		
-		for (ApprovalStatusEmployeeOutput approvalStt : listAppStatusEmp) {
-			// アルゴリズム「承認状況取得申請」を実行する
-			List<ApplicationApprContent> getAppSttAcquisitionAppl = this.getAppSttAcquisitionAppl(approvalStt, mailDestCache);
-			// アルゴリズム「承認状況取得申請状態カウント」を実行する
-			ApprovalSttAppOutput appStt = this.getCountAppSttAppliState(wkpInfor, getAppSttAcquisitionAppl);
-			appSttAppliStateList.add(appStt);
-		}
-
-		if (appSttAppliStateList.isEmpty()) {
-			return new ApprovalSttAppOutput(wkpInfor.getCode(), wkpInfor.getName(), false, false, null, null, null,
-					null, null);
-		} else {
-			int numOfApp = appSttAppliStateList.stream().mapToInt(ApprovalSttAppOutput::getNumOfApp).sum();
-			int appNumOfCase = appSttAppliStateList.stream().mapToInt(ApprovalSttAppOutput::getApprovedNumOfCase).sum();
-			int numOfUnreflected = appSttAppliStateList.stream().mapToInt(ApprovalSttAppOutput::getNumOfUnreflected)
-					.sum();
-			int numOfUnapproval = appSttAppliStateList.stream().mapToInt(ApprovalSttAppOutput::getNumOfUnapproval)
-					.sum();
-			int numOfDenials = appSttAppliStateList.stream().mapToInt(ApprovalSttAppOutput::getNumOfDenials).sum();
-			Integer numOfAppDisp = numOfApp == 0 ? null : numOfApp;
-			Integer appNumOfCaseDisp = appNumOfCase == 0 ? null : appNumOfCase;
-			Integer numOfUnreflectedDisp = numOfUnreflected == 0 ? null : numOfUnreflected;
-			Integer numOfUnapprovalDisp = numOfUnapproval == 0 ? null : numOfUnapproval;
-			Integer numOfDenialsDisp = numOfDenials == 0 ? null : numOfDenials;
-			boolean isEnable = true;
-			if (Objects.isNull(numOfUnapprovalDisp) || numOfUnapprovalDisp <= 0) {
-				isEnable = false;
-			}
-			return new ApprovalSttAppOutput(wkpInfor.getCode(), wkpInfor.getName(), isEnable, false, numOfAppDisp,
-					appNumOfCaseDisp, numOfUnreflectedDisp, numOfUnapprovalDisp, numOfDenialsDisp);
-		}
-	}
-
-	/**
-	 * アルゴリズム「承認状況取得申請」を実行する
-	 */
-	private List<ApplicationApprContent> getAppSttAcquisitionAppl(ApprovalStatusEmployeeOutput approvalStt,
-			ApprovalRootStateAdapter.MailDestinationCache mailDestCache) {
-		List<ApplicationApprContent> listAppSttAcquisitionAppl = new ArrayList<>();
-		String companyId = AppContexts.user().companyId();
-		String sId = approvalStt.getSid();
-		GeneralDate startDate = approvalStt.getStartDate();
-		GeneralDate endDate = approvalStt.getEndDate();
-		List<Application_New> listApp = applicationRepository.getListAppBySID(companyId, sId, startDate, endDate);
-		if (!listApp.isEmpty()) {
-			for (Application_New app : listApp) {
-				// 申請承認内容(リスト）
-				ApprovalRootContentImport_New approvalRoot = this.approvalStateAdapter.getApprovalRootContent(companyId,
-						app.getEmployeeID(), app.getAppType().value, app.getAppDate(), app.getAppID(), false, mailDestCache);
-				listAppSttAcquisitionAppl.add(new ApplicationApprContent(app, approvalRoot));
-			}
-		}
-		return listAppSttAcquisitionAppl;
-	}
-
-	/**
-	 * アルゴリズム「承認状況取得申請状態カウント」を実行する
-	 */
-	private ApprovalSttAppOutput getCountAppSttAppliState(WorkplaceInfor wkpInfor,
-			List<ApplicationApprContent> listAppContent) {
-		int numOfApp = 0;
-		int numOfUnapproval = 0;
-		int numOfUnreflected = 0;
-		int approvedNumOfCase = 0;
-		int numOfDenials = 0;
-		for (ApplicationApprContent appContent : listAppContent) {
-			Application_New app = appContent.getApplication();
-			// 申請.反映情報.実績反映状態
-			ReflectedState_New reflectState = app.getReflectionInformation().getStateReflectionReal();
-			if (!ReflectedState_New.WAITCANCEL.equals(reflectState)
-					|| !ReflectedState_New.CANCELED.equals(reflectState)) {
-				numOfApp++;
-				if (ReflectedState_New.NOTREFLECTED.equals(reflectState)
-						|| ReflectedState_New.REMAND.equals(reflectState)) {
-					numOfUnapproval++;
-					numOfUnreflected++;
-				} else if (ReflectedState_New.WAITREFLECTION.equals(reflectState)) {
-					approvedNumOfCase++;
-					numOfUnreflected++;
-				} else if (ReflectedState_New.DENIAL.equals(reflectState)) {
-					numOfDenials++;
-				} else if (ReflectedState_New.REFLECTED.equals(reflectState)) {
-					approvedNumOfCase++;
-				}
-			}
-		}
-		return new ApprovalSttAppOutput(wkpInfor.getCode(), wkpInfor.getName(), false, false, numOfApp,
-				approvedNumOfCase, numOfUnreflected, numOfUnapproval, numOfDenials);
-	}
-
-	/**
 	 * 承認状況社員メールアドレス取得
 	 * 
 	 * @return ・取得社員ID（リスト）＜社員ID、社員名、メールアドレス、期間＞
@@ -432,7 +305,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public SendMailResultOutput sendTestMail(int mailType) {
+	public SendMailResultOutput sendTestMail(int mailType, boolean screenUrlApprovalEmbed, boolean screenUrlDayEmbed, boolean screenUrlMonthEmbed) {
 		// 会社ID
 		String cid = AppContexts.user().companyId();
 		// アルゴリズム「承認状況メール本文取得」を実行する
@@ -451,14 +324,38 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// ログイン者よりメール送信内容を作成する(create nội dung send mail theo người login)
 		List<MailTransmissionContentOutput> listMailContent = new ArrayList<MailTransmissionContentOutput>();
 		listMailContent.add(new MailTransmissionContentOutput(sid, sName, mailAddr, subject, text));
+		// 送信区分の編集
+		ApprovalStatusMailType mailTypeEnum = EnumAdaptor.valueOf(mailType, ApprovalStatusMailType.class);
+		boolean transmissionAtr = false;
+		switch (mailTypeEnum) {
+		case DAILY_UNCONFIRM_BY_PRINCIPAL:
+			transmissionAtr = false;
+			break;
+		case DAILY_UNCONFIRM_BY_CONFIRMER:
+			transmissionAtr = true;
+			break;
+		case MONTHLY_UNCONFIRM_BY_PRINCIPAL:
+			transmissionAtr = false;
+			break;
+		case MONTHLY_UNCONFIRM_BY_CONFIRMER:
+			transmissionAtr = true;
+			break;
+		case APP_APPROVAL_UNAPPROVED:
+			transmissionAtr = true;
+			break;
+		case WORK_CONFIRMATION:
+			transmissionAtr = true;
+			break;
+		default:
+			break;
+		}
 		// アルゴリズム「承認状況メール送信実行」を実行する
-		return this.exeApprovalStatusMailTransmission(listMailContent, domain,
-				EnumAdaptor.valueOf(mailType, ApprovalStatusMailType.class));
+		return this.exeApprovalStatusMailTransmission(listMailContent, domain, transmissionAtr, screenUrlApprovalEmbed, screenUrlDayEmbed, screenUrlMonthEmbed);
 	}
 
 	@Override
-	public SendMailResultOutput exeApprovalStatusMailTransmission(List<MailTransmissionContentOutput> listMailInput,
-			ApprovalStatusMailTemp domain, ApprovalStatusMailType mailType) {
+	public SendMailResultOutput exeApprovalStatusMailTransmission(List<MailTransmissionContentOutput> listMailInput, ApprovalStatusMailTemp domain, 
+			boolean transmissionAtr, boolean screenUrlApprovalEmbed, boolean screenUrlDayEmbed, boolean screenUrlMonthEmbed) {
 		//メール送信内容(リスト)
 		List<String> listError = new ArrayList<>();
 		//社員の名称（ビジネスネーム）、社員コードを取得する RQ228
@@ -482,7 +379,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				continue;
 			}
 			// アルゴリズム「承認状況メール埋込URL取得」を実行する
-			String embeddedURL = this.getEmbeddedURL(mailTransmission.getSId(), domain, mailType);
+			String embeddedURL = this.getEmbeddedURL(mailTransmission.getSId(), domain, transmissionAtr, screenUrlApprovalEmbed, screenUrlDayEmbed, screenUrlMonthEmbed);
 			try {
 				// アルゴリズム「メールを送信する」を実行する
 				mailsender.sendFromAdmin(mailTransmission.getMailAddr(),
@@ -509,12 +406,13 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	/**
 	 * 承認状況メール埋込URL取得
 	 */
-	private String getEmbeddedURL(String eid, ApprovalStatusMailTemp domain, ApprovalStatusMailType mailType) {
+	private String getEmbeddedURL(String eid, ApprovalStatusMailTemp domain, boolean transmissionAtr, 
+			boolean screenUrlApprovalEmbed, boolean screenUrlDayEmbed, boolean screenUrlMonthEmbed) {
 		List<String> listUrl = new ArrayList<>();
 		String contractCD = AppContexts.user().contractCode();
 		String employeeCD = AppContexts.user().employeeCode();
 		// 承認状況メールテンプレート.URL承認埋込
-		if (NotUseAtr.USE.equals(domain.getUrlApprovalEmbed())) {
+		if (screenUrlApprovalEmbed) {
 			List<UrlTaskIncre> listTask = new ArrayList<>();
 			listTask.add(new UrlTaskIncre("", "", "", "activeMode", "approval", UrlParamAtr.URL_PARAM));
 			// アルゴリズム「埋込URL情報登録」を実行する
@@ -522,13 +420,13 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			listUrl.add(url1);
 		}
 		// 承認状況メールテンプレート.URL日別埋込
-		if (NotUseAtr.USE.equals(domain.getUrlDayEmbed())) {
+		if (screenUrlDayEmbed) {
 			List<UrlTaskIncre> listTask = new ArrayList<>();
-			if (ApprovalStatusMailType.DAILY_UNCONFIRM_BY_CONFIRMER.equals(mailType)) {
+			if (transmissionAtr) {
 				// アルゴリズム「埋込URL情報登録」を実行する
 				String url2 = registerEmbededURL.embeddedUrlInfoRegis("KDW004", "A", 1, 1, eid, contractCD, "", employeeCD, 0, listTask);
 				listUrl.add(url2);
-			} else if (ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL.equals(mailType)){
+			} else {
 				listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "screenMode", "normal"));
 				listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "errorRef", "true"));
 				listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "changePeriod", "true"));
@@ -538,14 +436,14 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			}
 		}
 		// 承認状況メールテンプレート.URL月別埋込
-		if (NotUseAtr.USE.equals(domain.getUrlMonthEmbed())) {
+		if (screenUrlMonthEmbed) {
 			List<UrlTaskIncre> listTask = new ArrayList<>();
-			if (ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_CONFIRMER==mailType) {
+			if (transmissionAtr) {
 				listTask.add(new UrlTaskIncre("", "", "", "activeMode", "approval", UrlParamAtr.URL_PARAM));
 				// アルゴリズム「埋込URL情報登録」を実行する
 				String url3 = registerEmbededURL.embeddedUrlInfoRegis("KMW003", "A", 1, 1, eid, contractCD, "", employeeCD, 0, listTask);
 				listUrl.add(url3);
-			} else if (ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_PRINCIPAL==mailType) {
+			} else {
 				listTask.add(new UrlTaskIncre("", "", "", "activeMode", "normal", UrlParamAtr.URL_PARAM));
 				// アルゴリズム「埋込URL情報登録」を実行する
 				String url3 = registerEmbededURL.embeddedUrlInfoRegis("KMW003", "A", 1, 1, eid, contractCD, "", employeeCD, 0, listTask);
@@ -555,8 +453,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		if (listUrl.size() == 0) {
 			return "";
 		}
-		String url = StringUtils.join(listUrl, System.lineSeparator());
-		return System.lineSeparator() + TextResource.localize("KAF018_190") + System.lineSeparator() + url;
+		String url = StringUtils.join(listUrl, System.lineSeparator() + TextResource.localize("KAF018_510") + System.lineSeparator());
+		return System.lineSeparator() + TextResource.localize("KAF018_510") + System.lineSeparator() + url;
 	}
 
 	@Override
@@ -592,194 +490,6 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	/**
-	 * アルゴリズム「承認状況未承認メール送信実行」を実行する
-	 */
-	@Override
-	public SendMailResultOutput exeSendUnconfirmedMail(List<String> listWkpId, GeneralDate closureStart,
-			GeneralDate closureEnd, List<String> listEmpCd) {
-		List<ApprovalStatusEmployeeOutput> listTotalEmp = new ArrayList<>();
-		for (String wkpId : listWkpId) {
-			List<ApprovalStatusEmployeeOutput> listAppSttEmpOut = this.getApprovalStatusEmployee(wkpId, closureStart,
-					closureEnd, listEmpCd);
-			listTotalEmp.addAll(listAppSttEmpOut);
-		}
-		List<ApprovalStatusEmployeeOutput> listEmpOutput = listTotalEmp.stream().distinct()
-				.collect(Collectors.toList());
-		// アルゴリズム「承認状況未承認申請取得」を実行する
-		List<UnApprovalPerson> listApprovalPerson = this.getUnapprovalForAppStt(listEmpOutput);
-		// アルゴリズム「承認状況未承認メール本文取得」を実行する
-		MailTransmissionContentResultOutput getMailTransmissContent = this.getMailTransmissContent(listApprovalPerson);
-		// アルゴリズム「承認状況メール送信実行」を実行する
-		return this.exeApprovalStatusMailTransmission(getMailTransmissContent.getListMailTransmisContent(),
-				getMailTransmissContent.getMailDomain(), EnumAdaptor.valueOf(0, ApprovalStatusMailType.class));
-	}
-
-	/**
-	 * 承認状況未承認申請取得
-	 */
-	private List<UnApprovalPerson> getUnapprovalForAppStt(List<ApprovalStatusEmployeeOutput> listEmpOutput) {
-		List<UnApprovalPerson> listUnAppPerson = new ArrayList<>();
-
-		val mailDestCache = this.approvalStateAdapter.createMailDestinationCache(AppContexts.user().companyId());
-		
-		for (ApprovalStatusEmployeeOutput appEmp : listEmpOutput) {
-			// アルゴリズム「承認状況取得申請」を実行する
-			List<ApplicationApprContent> listAppContent = this.getAppSttAcquisitionAppl(appEmp, mailDestCache);
-			GeneralDate startDate = appEmp.getStartDate();
-			GeneralDate endDate = appEmp.getEndDate();
-			for (ApplicationApprContent app : listAppContent) {
-				if (Objects.isNull(app)) {
-					continue;
-				}
-				if (app.getApplication().getReflectionInformation().getStateReflectionReal().value != 0) {
-					continue;
-				}
-				GeneralDate appDate = app.getApplication().getEndDate().get();
-				// アルゴリズム「承認状況未承認メール対象者取得」を実行する
-				List<String> listUnAppEmpIds = this.getUnApprovalMailTarget(app.getApprRootContentExport(), appDate);
-				listUnAppEmpIds.stream().forEach(item -> {
-					listUnAppPerson.add(new UnApprovalPerson(item, startDate, endDate));
-				});
-			}
-		}
-		return listUnAppPerson;
-	}
-
-	/**
-	 * アルゴリズム「承認状況未承認メール対象者取得」を実行する
-	 * 
-	 * @param appRoot
-	 * @param appDate
-	 * @return List<UnApprovalPerson>
-	 */
-	private List<String> getUnApprovalMailTarget(ApprovalRootContentImport_New appRoot, GeneralDate appDate) {
-		List<ApprovalPhaseStateImport_New> listPhaseState = appRoot.getApprovalRootState().getListApprovalPhaseState();
-		List<String> listUnAppPerson = new ArrayList<>();
-		boolean result = false;
-		UnApprovalPersonAndResult getUnAppPersonAndResult = null;
-		// クラス：承認フェーズClass: Approval Phase
-		for (ApprovalPhaseStateImport_New appPhase : listPhaseState) {
-			// 承認フェーズ.承認区分
-			if (appPhase.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.APPROVED)
-					|| appPhase.getApprovalAtr().equals(ApprovalBehaviorAtrImport_New.DENIAL)) {
-				continue;
-			}
-			List<ApprovalFrameImport_New> listAppFrame = appPhase.getListApprovalFrame();
-			// クラス：承認枠
-			for (ApprovalFrameImport_New appFrame : listAppFrame) {
-				// 承認済、否認の場合
-				Optional<ApproverStateImport_New> opDenyApproverState = appFrame.getListApprover().stream()
-						.filter(x -> x.getApprovalAtr()==ApprovalBehaviorAtrImport_New.DENIAL).findAny();
-				if(opDenyApproverState.isPresent()) {
-					continue;
-				}
-				if(appPhase.getApprovalForm()==ApprovalFormImport.SINGLE_APPROVED) {
-					Optional<ApproverStateImport_New> opApproveApproverState = appFrame.getListApprover().stream()
-							.filter(x -> x.getApprovalAtr()==ApprovalBehaviorAtrImport_New.APPROVED).findAny();
-					if(opApproveApproverState.isPresent()) {
-						continue;
-					}
-				} else {
-					Optional<ApproverStateImport_New> opNotApproveApproverState = appFrame.getListApprover().stream()
-							.filter(x -> x.getApprovalAtr()!=ApprovalBehaviorAtrImport_New.APPROVED).findAny();
-					if(!opNotApproveApproverState.isPresent()) {
-						continue;
-					}
-				}
-				// 未承認、差し戻しの場合
-				// アルゴリズム「承認状況未承認メール未承認者取得」を実行する
-				getUnAppPersonAndResult = this.getUnApprovalMailPerson(listAppFrame, appDate);
-				if (getUnAppPersonAndResult.isResult()) {
-					result = true;
-				}
-			}
-			// 次の承認枠が存在しない場合
-			listUnAppPerson = getUnAppPersonAndResult.getListUnAppPerson();
-			if (result)
-				return listUnAppPerson;
-		}
-		return Collections.emptyList();
-	}
-
-	/**
-	 * 承認状況未承認メール未承認者取得
-	 */
-	private UnApprovalPersonAndResult getUnApprovalMailPerson(List<ApprovalFrameImport_New> listAppFrame,
-			GeneralDate appDate) {
-		String companyID = AppContexts.user().companyId();
-		UnApprovalPersonAndResult unAppPersonAndResult = new UnApprovalPersonAndResult(null, false);
-		List<String> listApprovalEmpId = new ArrayList<>();
-
-		for (ApprovalFrameImport_New appFrame : listAppFrame) {
-			if (Objects.isNull(appFrame)) {
-				continue;
-			}
-			List<ApproverStateImport_New> listAppState = appFrame.getListApprover();
-			for (ApproverStateImport_New appState : listAppState) {
-				if (Objects.isNull(appFrame)) {
-					continue;
-				}
-				listApprovalEmpId.add(appState.getApproverID());
-			}
-		}
-		// imported（申請承認）「代行者」を取得する
-		// RequestList310
-		List<String> listUnAppPersonEmp = new ArrayList<>();
-		for (int i = 1; i < 5; i++) {
-			List<AgentInfoImport> listAgentInfor = agentApdater.findAgentByPeriod(companyID, listApprovalEmpId, appDate,
-					appDate, i);
-			// 対象が存在する場合
-			if (listAgentInfor.size() > 0) {
-				for (AgentInfoImport agent : listAgentInfor) {
-					listUnAppPersonEmp.add(agent.getAgentID());
-				}
-			}
-			// 対象が存在しない場合
-			listUnAppPersonEmp.addAll(listApprovalEmpId);
-		}
-
-		if (!listUnAppPersonEmp.isEmpty()) {
-			unAppPersonAndResult.setResult(true);
-			unAppPersonAndResult.setListUnAppPerson(listUnAppPersonEmp);
-		}
-		return unAppPersonAndResult;
-	}
-
-	/**
-	 * 承認状況未承認メール本文取得
-	 */
-	private MailTransmissionContentResultOutput getMailTransmissContent(List<UnApprovalPerson> listUnAppPerson) {
-		List<MailTransmissionContentOutput> listMailTransmissContent = new ArrayList<>();
-		// アルゴリズム「承認状況メール本文取得」を実行する
-		ApprovalStatusMailTemp mailDomain = this
-				.getApprovalStatusMailTemp(ApprovalStatusMailType.APP_APPROVAL_UNAPPROVED.value);
-		MailTransmissionContentResultOutput mailTransContentResult = new MailTransmissionContentResultOutput(
-				Collections.emptyList(), mailDomain);
-		// 未承認者を社員ID順に並び替える
-		// 未承認者（リスト）
-		List<String> listEmpId = new ArrayList<>();
-		for (UnApprovalPerson unAppPerson : listUnAppPerson) {
-			listEmpId.add(unAppPerson.getSId());
-		}
-		// 次の未承認者の社員IDが異なる(EmployeeID chưa approval tiếp theo có khác không)
-		// アルゴリズム「承認状況社員メールアドレス取得」を実行する
-		// imported（就業）「個人社員基本情報」を取得する
-		if (listEmpId.isEmpty())
-			return mailTransContentResult;
-		List<EmployeeEmailImport> listEmailEmployee = this.findEmpMailAddr(listEmpId);
-		for (EmployeeEmailImport emp : listEmailEmployee) {
-			// 件名
-			String subject = mailDomain.getMailSubject().v();
-			// 送信本文
-			String text = mailDomain.getMailContent().v();
-			listMailTransmissContent.add(
-					new MailTransmissionContentOutput(emp.getSId(), emp.getSName(), emp.getMailAddr(), subject, text));
-		}
-		mailTransContentResult.setListMailTransmisContent(listMailTransmissContent);
-		return mailTransContentResult;
-	}
-
-	/**
 	 * アルゴリズム「承認状況未承認メール送信」を実行する
 	 */
 	@Override
@@ -803,107 +513,6 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			throw new BusinessException("Msg_794");
 		}
 		return listWorksp;
-	}
-
-	@Override
-	public List<ApprovalSttByEmpListOutput> getApprovalSttById(String selectedWkpId, List<String> listWkpId,
-			GeneralDate startDate, GeneralDate endDate, List<String> listEmpCode) {
-		List<ApprovalSttByEmpListOutput> lstApprovalSttByEmpList = new ArrayList<>();
-		// アルゴリズム「承認状況取得社員」を実行する
-		List<ApprovalStatusEmployeeOutput> listAppSttEmp = this.getApprovalStatusEmployee(selectedWkpId, startDate,
-				endDate, listEmpCode);
-		
-		val mailDestCache = this.approvalStateAdapter.createMailDestinationCache(AppContexts.user().companyId());
-		
-		// 社員ID(リスト)
-		for (ApprovalStatusEmployeeOutput appStt : listAppSttEmp) {
-			List<String> listEmpId = new ArrayList<>();
-			listEmpId.add(appStt.getSid());
-			if (listEmpId.isEmpty())
-				continue;
-			// Imported（就業）「個人社員基本情報」を取得する
-			// RequestList126
-			String empName = "";
-			List<EmployeeBasicInfoImport> listEmpInfor = this.workplaceAdapter.findBySIds(listEmpId);
-			if (!listEmpInfor.isEmpty()) {
-				EmployeeBasicInfoImport empInfo = listEmpInfor.stream().findFirst().get();
-				empName = empInfo.getEmployeeCode() + "　" + empInfo.getPName();
-			}
-			// アルゴリズム「承認状況取得申請」を実行する
-			List<ApplicationApprContent> listAppSttAcquisitionAppl = this.getAppSttAcquisitionAppl(appStt, mailDestCache);
-			List<Application_New> listApprovalContent = new ArrayList<>();
-			for (ApplicationApprContent applicationContent : listAppSttAcquisitionAppl) {
-				Application_New app = applicationContent.getApplication();
-				listApprovalContent.add(app);
-			}
-			// アルゴリズム「承認状況日別状態作成」を実行する
-			List<DailyStatus> dailyStatus = this.getApprovalSttByDate(appStt.getStartDate(), appStt.getEndDate(),
-					listApprovalContent);
-			lstApprovalSttByEmpList.add(new ApprovalSttByEmpListOutput(appStt.getSid(), empName, dailyStatus,
-					appStt.getStartDate(), appStt.getEndDate()));
-		}
-		return lstApprovalSttByEmpList;
-	}
-
-	/**
-	 * 承認状況日別状態作成
-	 */
-	private List<DailyStatus> getApprovalSttByDate(GeneralDate startDate, GeneralDate endDate,
-			List<Application_New> listApprovalContent) {
-		List<DailyStatus> listDailyStatus = new ArrayList<>();
-		for (Application_New app : listApprovalContent) {
-			DailyStatus dailyStatus = new DailyStatus();
-			ReflectedState_New reflectedState = app.getReflectionInformation().getStateReflectionReal();
-			Integer symbol = null;
-			switch (reflectedState) {
-			case REFLECTED:
-				symbol = 0;
-				break;
-			case WAITREFLECTION:
-				symbol = 1;
-				break;
-			case DENIAL:
-				symbol = 2;
-				break;
-			case NOTREFLECTED:
-				symbol = 3;
-				break;
-			case REMAND:
-				symbol = 3;
-				break;
-			case WAITCANCEL:
-				continue;
-			case CANCELED:
-				continue;
-			}
-			GeneralDate dateTemp;
-			// 申請開始日が期間内に存在する
-			if (app.getStartDate().get().afterOrEquals(startDate) && app.getStartDate().get().beforeOrEquals(endDate)) {
-				// 対象日付を申請開始日とする
-				dateTemp = app.getStartDate().get();
-			} else {
-				// 対象日付を期間の開始日とする
-				dateTemp = startDate;
-			}
-
-			Optional<DailyStatus> dailyStt = listDailyStatus.stream().filter(x -> x.getDate().equals(dateTemp))
-					.findFirst();
-
-			if (!dailyStt.isPresent()) {
-				List<Integer> listSymbol = new ArrayList<>();
-				listSymbol.add(symbol);
-				dailyStatus = new DailyStatus(dateTemp, listSymbol);
-				listDailyStatus.add(dailyStatus);
-			} else {
-				// 日別状態(リスト)に社員ID＝社員ID、日付＝対象日付が存在する
-				Integer sbTemp = symbol;
-				DailyStatus dailyTemp = dailyStt.get();
-				if (dailyTemp.getStateSymbol().stream().filter(x -> x.equals(sbTemp)).count() == 0) {
-					dailyTemp.getStateSymbol().add(sbTemp);
-				}
-			}
-		}
-		return listDailyStatus;
 	}
 
 	/**
@@ -951,27 +560,6 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			}
 		}
 		return listEmpId;
-	}
-
-	/**
-	 * 勤務実績の取得
-	 */
-	List<AttendanceResultImport> getAttendanceResult(Application_New application) {
-		int[] listKey = { 30, 40, 31, 41, 33, 43, 3451, 59, 67, 52, 60, 68, 53, 61, 69, 86, 91, 96, 101, 106, 111, 116,
-				121, 126, 131, 87, 92, 65, 102, 107, 112, 117, 122, 127, 132, 88, 93, 67, 103, 108, 113, 118, 123, 128,
-				133, 89, 94, 68, 104, 109, 114, 119, 124, 129, 134, 90, 95, 70, 105, 110, 115, 120, 125, 130, 135 };
-		List<Integer> itemIds = new ArrayList<>();
-		for (int x : listKey) {
-			itemIds.add(x);
-		}
-		DatePeriod workingDate = new DatePeriod(application.getAppDate(), application.getAppDate());
-		List<String> listEmps = new ArrayList<>();
-		listEmps.add(application.getEmployeeID());
-		// Imported（申請承認）勤怠項目実績を取得
-		// RequestList6
-		List<AttendanceResultImport> listAttendanceResult = dailyAttendanceItemAdapter.getValueOf(listEmps, workingDate,
-				itemIds);
-		return listAttendanceResult;
 	}
 
 	@Override
@@ -1545,7 +1133,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			break;
 		case DAILY_UNCONFIRM_BY_PRINCIPAL:
 			// アルゴリズム「メール送信_対象再取得_日別本人」を実行
-			Map<String, String> mapMailCountUnConfirmDay = this.getMailCountUnConfirmDay(period, displayWorkplaceLst, employmentCDLst);
+			List<Pair<String, String>> lstMailCountUnConfirmDay = this.getMailCountUnConfirmDay(period, displayWorkplaceLst, employmentCDLst);
 			List<ApprSttWkpEmpMailOutput> wkpEmpMailDayLstQuery = apprSttExecutionOutputLst.stream().map(x -> new ApprSttWkpEmpMailOutput(
 					x.getWkpID(), 
 					x.getWkpCD(), 
@@ -1554,7 +1142,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 					0, 
 					Collections.emptyList()))
 					.collect(Collectors.toList());
-			mapMailCountUnConfirmDay.entrySet().stream().collect(Collectors.groupingBy(obj -> obj.getKey())).entrySet().stream().forEach(x -> {
+			lstMailCountUnConfirmDay.stream().collect(Collectors.groupingBy(obj -> obj.getKey())).entrySet().stream().forEach(x -> {
 				wkpEmpMailDayLstQuery.stream().filter(y -> y.getWkpID().equals(x.getKey())).findAny().ifPresent(z -> {
 					z.setCountEmp(x.getValue().size());
 					z.setEmpMailLst(x.getValue().stream().map(t -> new ApprSttEmpMailOutput(t.getValue(), "", "")).collect(Collectors.toList()));
@@ -1564,9 +1152,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			break;
 		case DAILY_UNCONFIRM_BY_CONFIRMER:
 			// アルゴリズム「メール送信_対象再取得_日別上長」を実行
-			Map<String, Pair<String, GeneralDate>> mapDayApproval = this.getMailCountUnApprDay(period, displayWorkplaceLst, employmentCDLst);
+			List<Pair<String, Pair<String, GeneralDate>>> lstDayApproval = this.getMailCountUnApprDay(period, displayWorkplaceLst, employmentCDLst);
 			// アルゴリズム「メール送信_日別上長の情報を取得」を実行
-			wkpEmpMailLst = this.getDayApproverToSendMail(mapDayApproval).stream().map(x -> {
+			wkpEmpMailLst = this.getDayApproverToSendMail(lstDayApproval).stream().map(x -> {
 				Optional<ApprSttExecutionOutput> opApprSttExecutionOutput = apprSttExecutionOutputLst.stream().filter(y -> y.getWkpID().equals(x.getWkpID())).findAny();
 				return new ApprSttWkpEmpMailOutput(
 						x.getWkpID(), 
@@ -1579,7 +1167,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			break;
 		case MONTHLY_UNCONFIRM_BY_PRINCIPAL:
 			// アルゴリズム「メール送信_対象再取得_月別本人」を実行
-			Map<String, String> mapMailCountUnConfirmMonth = this.getMailCountUnConfirmMonth(period, displayWorkplaceLst, employmentCDLst);
+			List<Pair<String, String>> lstMailCountUnConfirmMonth = this.getMailCountUnConfirmMonth(period, displayWorkplaceLst, employmentCDLst);
 			List<ApprSttWkpEmpMailOutput> wkpEmpMailMonthLstQuery = apprSttExecutionOutputLst.stream().map(x -> new ApprSttWkpEmpMailOutput(
 					x.getWkpID(), 
 					x.getWkpCD(), 
@@ -1588,7 +1176,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 					0, 
 					Collections.emptyList()))
 					.collect(Collectors.toList());
-			mapMailCountUnConfirmMonth.entrySet().stream().collect(Collectors.groupingBy(obj -> obj.getKey())).entrySet().stream().forEach(x -> {
+			lstMailCountUnConfirmMonth.stream().collect(Collectors.groupingBy(obj -> obj.getKey())).entrySet().stream().forEach(x -> {
 				wkpEmpMailMonthLstQuery.stream().filter(y -> y.getWkpID().equals(x.getKey())).findAny().ifPresent(z -> {
 					z.setCountEmp(x.getValue().size());
 					z.setEmpMailLst(x.getValue().stream().map(t -> new ApprSttEmpMailOutput(t.getValue(), "", "")).collect(Collectors.toList()));
@@ -1598,9 +1186,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			break;
 		case MONTHLY_UNCONFIRM_BY_CONFIRMER:
 			// アルゴリズム「メール送信_対象再取得_月別上長」を実行
-			Map<String, String> mapMonthApproval = this.getMailCountUnApprMonth(period, processingYm, displayWorkplaceLst, employmentCDLst);
+			List<Pair<String, String>> lstMonthApproval = this.getMailCountUnApprMonth(period, processingYm, displayWorkplaceLst, employmentCDLst);
 			// アルゴリズム「メール送信_月別上長の情報を取得」を実行
-			wkpEmpMailLst = this.getMonthApproverToSendMail(mapMonthApproval, period, closureId.value, processingYm, closureDate).stream().map(x -> {
+			wkpEmpMailLst = this.getMonthApproverToSendMail(lstMonthApproval, period, closureId.value, processingYm, closureDate).stream().map(x -> {
 				Optional<ApprSttExecutionOutput> opApprSttExecutionOutput = apprSttExecutionOutputLst.stream().filter(y -> y.getWkpID().equals(x.getWkpID())).findAny();
 				return new ApprSttWkpEmpMailOutput(
 						x.getWkpID(), 
@@ -1655,7 +1243,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 	
 	@Override
-	public Map<String, String> getMailCountUnConfirmDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst,
+	public List<Pair<String, String>> getMailCountUnConfirmDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst,
 			List<String> employmentCDLst) {
 		// クエリモデル「日別の本人確認で未確認の社員」を実行する
 		return approvalSttScreenRepository.getMailCountUnConfirmDay(
@@ -1666,7 +1254,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public Map<String, Pair<String, GeneralDate>> getMailCountUnApprDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst,
+	public List<Pair<String, Pair<String, GeneralDate>>> getMailCountUnApprDay(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst,
 			List<String> employmentCDLst) {
 		// クエリモデル「日別上長承認の未承認者で対象の期間内の社員」を実行する
 		return approvalSttScreenRepository.getMailCountUnApprDay(
@@ -1677,7 +1265,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public Map<String, String> getMailCountUnConfirmMonth(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst,
+	public List<Pair<String, String>> getMailCountUnConfirmMonth(DatePeriod period, List<DisplayWorkplace> displayWorkplaceLst,
 			List<String> employmentCDLst) {
 		// クエリモデル「社員の月別の雇用が合致する本人未確認の社員」を実行する
 		return approvalSttScreenRepository.getMailCountUnConfirmMonth(
@@ -1687,7 +1275,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public Map<String, String> getMailCountUnApprMonth(DatePeriod period, YearMonth processingYm, List<DisplayWorkplace> displayWorkplaceLst,
+	public List<Pair<String, String>> getMailCountUnApprMonth(DatePeriod period, YearMonth processingYm, List<DisplayWorkplace> displayWorkplaceLst,
 			List<String> employmentCDLst) {
 		// クエリモデル「月別上長承認で未承認の社員」を実行する
 		return approvalSttScreenRepository.getMailCountUnApprMonth(
@@ -1750,37 +1338,41 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 	
 	@Override
-	public List<ApprSttWkpEmpMailOutput> getDayApproverToSendMail(Map<String, Pair<String, GeneralDate>> mapDayApproval) {
+	public List<ApprSttWkpEmpMailOutput> getDayApproverToSendMail(List<Pair<String, Pair<String, GeneralDate>>> lstDayApproval) {
 		List<ApprSttWkpEmpMailOutput> result = new ArrayList<>();
-		mapDayApproval.entrySet().stream().collect(Collectors.groupingBy(x -> x.getKey())).entrySet().forEach(entry -> {
+		lstDayApproval.stream().collect(Collectors.groupingBy(x -> x.getKey())).entrySet().forEach(entry -> {
 			List<String> employeeIDLst = entry.getValue().stream().map(x -> x.getValue().getLeft()).distinct().collect(Collectors.toList());
 			List<GeneralDate> dateLst = entry.getValue().stream().map(x -> x.getValue().getRight()).distinct().collect(Collectors.toList());
 			List<ApproverApproveImport> approverApproveImportLst = approvalStateAdapter.getApproverByDateLst(employeeIDLst, dateLst, 1);
-			List<ApproverEmpImport> approverEmpImportLst = approverApproveImportLst.stream()
-					.map(x -> x.getAuthorList()).flatMap(Collection::stream).collect(Collectors.toList());
+			List<String> approverEmpImporIDtLst = approverApproveImportLst.stream()
+					.map(x -> x.getAuthorList()).flatMap(Collection::stream).map(x -> x.getEmployeeID()).distinct().collect(Collectors.toList());
 			result.add(new ApprSttWkpEmpMailOutput(
 					entry.getKey(), "", "", "", 
 					employeeIDLst.size(), 
-					approverEmpImportLst.stream().map(x -> new ApprSttEmpMailOutput(x.getEmployeeID(), "", "")).collect(Collectors.toList())));
+					approverEmpImporIDtLst.stream().map(x -> new ApprSttEmpMailOutput(x, "", "")).collect(Collectors.toList())));
 		});
 		return result;
 	}
 
 	@Override
-	public List<ApprSttWkpEmpMailOutput> getMonthApproverToSendMail(Map<String, String> mapMonthApproval, DatePeriod paramPeriod,
+	public List<ApprSttWkpEmpMailOutput> getMonthApproverToSendMail(List<Pair<String, String>> lstMonthApproval, DatePeriod paramPeriod,
 			Integer closureID, YearMonth yearMonth, ClosureDate closureDate) {
 		List<ApprSttWkpEmpMailOutput> result = new ArrayList<>();
-		mapMonthApproval.entrySet().stream().collect(Collectors.groupingBy(x -> x.getKey())).entrySet().forEach(entry -> {
+		lstMonthApproval.stream().collect(Collectors.groupingBy(x -> x.getKey())).entrySet().forEach(entry -> {
 			List<String> employeeIDLst = entry.getValue().stream().map(x -> x.getValue()).distinct().collect(Collectors.toList());
+			List<ApproverApproveImport> approverApproveImportLst = new ArrayList<>();
 			employeeIDLst.forEach(employeeID -> {
 				ApproverApproveImport approverApproveImport = approvalStateAdapter
 						.getApproverByPeriodMonth(employeeID, closureID, yearMonth, closureDate, paramPeriod.end());
-				result.add(new ApprSttWkpEmpMailOutput(
-						entry.getKey(), "", "", "", 
-						employeeIDLst.size(), 
-						approverApproveImport.getAuthorList().stream().map(x -> new ApprSttEmpMailOutput(x.getEmployeeID(), "", ""))
-						.collect(Collectors.toList())));
+				approverApproveImportLst.add(approverApproveImport);
 			});
+			List<String> approverEmpImporIDtLst = approverApproveImportLst.stream()
+					.map(x -> x.getAuthorList()).flatMap(Collection::stream).map(x -> x.getEmployeeID()).distinct().collect(Collectors.toList());
+			result.add(new ApprSttWkpEmpMailOutput(
+					entry.getKey(), "", "", "", 
+					employeeIDLst.size(), 
+					approverEmpImporIDtLst.stream().map(x -> new ApprSttEmpMailOutput(x, "", ""))
+					.collect(Collectors.toList())));
 		});
 		return result;
 	}
@@ -1814,7 +1406,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public SendMailResultOutput sendMailToDestination(ApprovalStatusMailTemp approvalStatusMailTemp, List<ApprSttWkpEmpMailOutput> wkpEmpMailLst) {
+	public SendMailResultOutput sendMailToDestination(ApprovalStatusMailTemp approvalStatusMailTemp, List<ApprSttWkpEmpMailOutput> wkpEmpMailLst,
+			boolean screenUrlApprovalEmbed, boolean screenUrlDayEmbed, boolean screenUrlMonthEmbed) {
 		List<MailTransmissionContentOutput> listMailInput = wkpEmpMailLst.stream().filter(x -> x.getCountEmp() > 0 && x.getEmpMailLst().size() > 0)
 				.map(x -> x.getEmpMailLst()
 						.stream().map(y -> new MailTransmissionContentOutput(
@@ -1826,13 +1419,46 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 						.collect(Collectors.toList()))
 				.flatMap(List::stream)
 		        .collect(Collectors.toList());
+		List<MailTransmissionContentOutput> listMailInputHaveMail = listMailInput.stream()
+				.filter(x -> Strings.isNotBlank(x.getMailAddr())).collect(Collectors.toList());
+		List<String> empNotDuplicateLst = listMailInputHaveMail.stream().map(x -> x.getSId()).distinct().collect(Collectors.toList());
+		List<MailTransmissionContentOutput> listMailInputNotDuplicate = new ArrayList<>();
+		empNotDuplicateLst.forEach(emp -> {
+			listMailInputHaveMail.stream().filter(x -> x.getSId().equals(emp)).findAny().ifPresent(item -> {
+				listMailInputNotDuplicate.add(item);
+			});
+		});
 		// 送信対象があるか判別
-		if(CollectionUtil.isEmpty(listMailInput)) {
+		if(CollectionUtil.isEmpty(listMailInputNotDuplicate)) {
 			// メッセージ（Msg_787)を表示する
 			throw new BusinessException("Msg_787");
 		}
+		// 起動区分から送信区分を編集する
+		boolean transmissionAtr = false;
+		switch (approvalStatusMailTemp.getMailType()) {
+		case DAILY_UNCONFIRM_BY_PRINCIPAL:
+			transmissionAtr = false;
+			break;
+		case DAILY_UNCONFIRM_BY_CONFIRMER:
+			transmissionAtr = true;
+			break;
+		case MONTHLY_UNCONFIRM_BY_PRINCIPAL:
+			transmissionAtr = false;
+			break;
+		case MONTHLY_UNCONFIRM_BY_CONFIRMER:
+			transmissionAtr = true;
+			break;
+		case APP_APPROVAL_UNAPPROVED:
+			transmissionAtr = true;
+			break;
+		case WORK_CONFIRMATION:
+			transmissionAtr = true;
+			break;
+		default:
+			break;
+		}
 		// アルゴリズム「承認状況メール送信実行」を実行する
-		return this.exeApprovalStatusMailTransmission(listMailInput, approvalStatusMailTemp, approvalStatusMailTemp.getMailType());
+		return this.exeApprovalStatusMailTransmission(listMailInputNotDuplicate, approvalStatusMailTemp, transmissionAtr, screenUrlApprovalEmbed, screenUrlDayEmbed, screenUrlMonthEmbed);
 	}
 
 	@Override

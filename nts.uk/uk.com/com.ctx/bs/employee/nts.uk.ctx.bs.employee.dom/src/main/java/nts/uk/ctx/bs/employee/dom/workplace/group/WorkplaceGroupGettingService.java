@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.EmployeeAffiliation;
 
 /*
@@ -16,7 +15,7 @@ public class WorkplaceGroupGettingService {
 
 	/**
 	 * [1] 取得する
-	 * 
+	 *
 	 * @param require
 	 * @param date
 	 * @param employeeID
@@ -36,7 +35,7 @@ public class WorkplaceGroupGettingService {
 
 	/**
 	 * [prv-1] 社員の所属組織を作成する
-	 * 
+	 *
 	 * @param employeeID
 	 * @param workPlace
 	 * @param affWorkplaceGroups
@@ -46,11 +45,11 @@ public class WorkplaceGroupGettingService {
 			List<AffWorkplaceGroup> affWorkplaceGroups) {
 		String wkpIDs = workPlace.get(employeeID);
 		Optional<AffWorkplaceGroup> affWorkplaceGroup = affWorkplaceGroups.stream()
-				.filter(i -> i.getWKPID().equals(wkpIDs)).findFirst();
+				.filter(i -> i.getWorkplaceId().equals(wkpIDs)).findFirst();
 		if (!affWorkplaceGroup.isPresent()) {
 			return EmployeeAffiliation.createWithoutInfoAndWG(employeeID, wkpIDs);
 		} else {
-			return EmployeeAffiliation.createWithoutInfo(employeeID, wkpIDs, affWorkplaceGroup.get().getWKPGRPID());
+			return EmployeeAffiliation.createWithoutInfo(employeeID, wkpIDs, affWorkplaceGroup.get().getWorkplaceGroupId());
 		}
 	}
 

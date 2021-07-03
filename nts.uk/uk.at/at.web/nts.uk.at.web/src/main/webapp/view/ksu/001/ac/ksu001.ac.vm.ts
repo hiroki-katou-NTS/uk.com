@@ -551,13 +551,8 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
 
             service.getShiftPalletWhenChangePage(param).done((data) => {
                 if (self.selectedpalletUnit() === 1) {
-                    // link button has color gray when clicked
-                    _.each($('#group-link-button-ja a.hyperlink'), (a) => {
-                        $(a).removeClass('color-gray');
-                        $(a).removeClass('background-linkbtn');
-                    });
-                    $($('#group-link-button-ja a.hyperlink')[indexBtn]).addClass('color-gray');
-                    $($('#group-link-button-ja a.hyperlink')[indexBtn]).addClass('background-linkbtn');
+                    
+                    self.setLinkSelected(indexBtn);
 
                     let shiftPalletPositionNumberCom = {};
                     uk.localStorage.getItem(self.KEY).ifPresent((dataLocal) => {
@@ -617,13 +612,8 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     nts.uk.ui.block.clear();
 
                 } else if (self.selectedpalletUnit() === 2) {
-                    // link button has color gray when clicked
-                    _.each($('#group-link-button-ja a.hyperlink'), (a) => {
-                        $(a).removeClass('color-gray');
-                        $(a).removeClass('background-linkbtn');
-                    });
-                    $($('#group-link-button-ja a.hyperlink')[indexBtn]).addClass('color-gray');
-                    $($('#group-link-button-ja a.hyperlink')[indexBtn]).addClass('background-linkbtn');
+                    
+                    self.setLinkSelected(indexBtn);
 
                     let shiftPalletPositionNumberOrg = {};
                     uk.localStorage.getItem(self.KEY).ifPresent((dataLocal) => {
@@ -682,13 +672,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 }
 
                 // set css table button
-                _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
-                    if ($('.ntsButtonTableButton')[index].innerHTML == "+") {
-                        $($('.ntsButtonTableButton')[index]).addClass('nowithContent');
-                    } else {
-                        $($('.ntsButtonTableButton')[index]).addClass('withContent');
-                    }
-                });
+                self.setStyleBtn();
 
                 if (__viewContext.viewModel.viewA.mode() === 'confirm') {
                     if (self.selectedpalletUnit() == 1) { // 1 : mode company , 2: mode workPlace
@@ -702,6 +686,28 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 nts.uk.ui.block.clear();
             });
         }
+        
+        setLinkSelected(index) {
+            let self = this;
+            // link button has color gray when clicked
+            _.each($('#group-link-button-ja a.hyperlink'), (a) => {
+                $(a).removeClass('link-selected');
+            });
+            $($('#group-link-button-ja a.hyperlink')[index]).addClass('link-selected');
+        }
+        
+        setStyleBtn() {
+            // set css table button
+            _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
+                if ($('.ntsButtonTableButton')[index].innerHTML == "+") {
+                    $($('.ntsButtonTableButton')[index]).addClass('nowithContent');
+                } else {
+                    $($('.ntsButtonTableButton')[index]).addClass('withContent');
+                }
+            });
+        }
+        
+        
         
         getRowColumnIndex(indexBtnSelected: number) {
             if (indexBtnSelected < 10) {
@@ -784,13 +790,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 // truowng hop khong co page nao duoc dang ky
                 if (data.listPageInfo.length == 0) {
                     // set css table button
-                    _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
-                        if ($('.ntsButtonTableButton')[index].innerHTML == "+") {
-                            $($('.ntsButtonTableButton')[index]).addClass('nowithContent');
-                        } else {
-                            $($('.ntsButtonTableButton')[index]).addClass('withContent');
-                        }
-                    });
+                    self.setStyleBtn();
                 }
                 
                 nts.uk.ui.block.clear();
@@ -829,13 +829,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 // truowng hop khong co page nao duoc dang ky
                 if (data.listPageInfo.length == 0) {
                     // set css table button
-                    _.each($('.ntsButtonTableButton'), function(buttonTbl, index) {
-                        if ($('.ntsButtonTableButton')[index].innerHTML == "+") {
-                            $($('.ntsButtonTableButton')[index]).addClass('nowithContent');
-                        } else {
-                            $($('.ntsButtonTableButton')[index]).addClass('withContent');
-                        }
-                    });
+                    self.setStyleBtn();
                 }
                 
                 nts.uk.ui.block.clear();

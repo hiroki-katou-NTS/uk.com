@@ -9,19 +9,17 @@
 #right-content{
 	float: left;
     margin: 12px 0px 0 30px;
-    height: 200px;
+    height: 645px;
 }
 
 .provision-cbx {
-	padding-top: 15px;
     padding-bottom: 10px;
 }
 
 .mid-content {
-    width: 126%;
-    float: left;
+    width: 120%;
     display: inline-block;
-    padding-bottom: 15px;
+    margin-top: -27px;
 }
 
 .text-lbl {
@@ -39,6 +37,7 @@ hr {
 
 .data-items{
     width: 296px;
+    height: 250px;
     margin-left: 20px;
 }
 

@@ -40,12 +40,10 @@
 
 .title {
 	height:50px;
-	padding-top: 8px;
 }
 
 #title-txt {
 	height: 24px;
-    position: relative;
-    top: -10px;
-    width: 218px !important;
+	top: -10px;
+	width: 218px !important;
 }

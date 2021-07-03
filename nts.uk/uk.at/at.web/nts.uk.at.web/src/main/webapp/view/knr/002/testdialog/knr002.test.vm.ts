@@ -40,6 +40,10 @@ module knr002.test {
             empInfoTerName_G: KnockoutObservable<string>;
             modelEmpInfoTerName_G: KnockoutObservable<string>;
             workLocationName_G: KnockoutObservable<string>;
+
+            // H_Dialog
+            companyId : KnockoutObservable<string> = ko.observable("");
+           // empNo : KnockoutObservable<string> = ko.observable("");
             //  K_Dialog
             empInfoTerCode_K: KnockoutObservable<string>;
             
@@ -122,7 +126,6 @@ module knr002.test {
                 blockUI.invisible();
                 //setShared From C
                 setShared('KNR002D_command', self.command_D);
-                console.log(self.command_D);
                 //setShare From A
                 setShared('KNR002D_empInfoTerList', self.empInfoTerList_D());
                 //setShared('KNR002D_currentCodeList', self.currentCodeList_D());
@@ -193,6 +196,451 @@ module knr002.test {
                 });
             }
 
+            private resetEmps(): void{
+                let self = this;
+                if(!self.companyId())
+                    return;
+                 for(let i = 1; i <= 1000; i++){
+                    let command: any = {
+                            employeeName: "シュアン　　シュアン",
+                            employeeCode: `knr${self.fillZeros(i)}`,
+                            hireDate: "2021-05-18T00:00:00.000Z",
+                            cardNo: "",
+                            loginId: `KNR002${self.fillZeros(i)}`,
+                            password: "0",
+                            avatarOrgId: "",
+                            avatarCropedId: "",
+                            categoryName: "ファイル管理",
+                            itemName: "顔写真",
+                            fileName: "",
+                            employeeCopyId: "",
+                            initSettingId: "",
+                            inputs: [
+                                {
+                                    categoryCd: "CS00002",
+                                    categoryId: `${self.companyId()}00000000000_CS00002`,
+                                    categoryName: "個人基本情報",
+                                    categoryType: 1,
+                                    delete: false,
+                                    items: [
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00002_IS00004`,
+                                            itemCode: "IS00004",
+                                            itemName: "個人名カナ",
+                                            value: "シュアン　　シュアン",
+                                            type: 1,
+                                            logType: 1
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00002_IS00009`,
+                                            itemCode: "IS00009",
+                                            itemName: "表示氏名(ビジネスネーム)",
+                                            value: "シュアン　　シュアン",
+                                            defValue: "シュアン　　シュアン",
+                                            type: 1,
+                                            logType: 1
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00002_IS00017`,
+                                            itemCode: "IS00017",
+                                            itemName: "生年月日",
+                                            value: "2021/05/03",
+                                            type: 3,
+                                            logType: 3
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00002_IS00018`,
+                                            itemCode: "IS00018",
+                                            itemName: "性別",
+                                            text: "男性",
+                                            value: "1",
+                                            defText: "男性",
+                                            defValue: "1",
+                                            type: 2,
+                                            logType: 6
+                                        }
+                                    ]
+                                },
+                                {
+                                    categoryCd: "CS00014",
+                                    categoryId: `${self.companyId()}00000000000_CS00014`,
+                                    categoryName: "雇用",
+                                    categoryType: 3,
+                                    delete: false,
+                                    items: [
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00014_IS00068`,
+                                            itemCode: "IS00068",
+                                            itemName: "雇用CD",
+                                            text: "99　<雇用>",
+                                            value: "99",
+                                            defText: "99　<雇用>",
+                                            defValue: "99",
+                                            type: 2,
+                                            logType: 6
+                                        }
+                                    ]
+                                },
+                                {
+                                    categoryCd: "CS00016",
+                                    categoryId: `${self.companyId()}00000000000_CS00016`,
+                                    categoryName: "職位",
+                                    categoryType: 3,
+                                    delete: false,
+                                    items: [
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00016_IS00079`,
+                                            itemCode: "IS00079",
+                                            itemName: "職位CD",
+                                            text: "99999　<職位>",
+                                            value: `JOB_ID_xxxxxxxxxxx_${self.companyId()}`,
+                                            defText: "99999　<職位>",
+                                            defValue: `JOB_ID_xxxxxxxxxxx_${self.companyId()}`,
+                                            type: 1,
+                                            logType: 6
+                                        }
+                                    ]
+                                },
+                                {
+                                    categoryCd: "CS00017",
+                                    categoryId: `${self.companyId()}00000000000_CS00017`,
+                                    categoryName: "職場",
+                                    categoryType: 3,
+                                    delete: false,
+                                    items: [
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00017_IS00084`,
+                                            itemCode: "IS00084",
+                                            itemName: "職場CD",
+                                            text: "000000000　0",
+                                            value: "66c7f8bb-9a59-4594-a2ca-1eab4dcd4f83",
+                                            type: 1,
+                                            logType: 8
+                                        }
+                                    ]
+                                },
+                                {
+                                    categoryCd: "CS00021",
+                                    categoryId: `${self.companyId()}00000000000_CS00021`,
+                                    categoryName: "勤務種別",
+                                    categoryType: 3,
+                                    delete: false,
+                                    items: [
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00021_IS00257`,
+                                            itemCode: "IS00257",
+                                            itemName: "勤務種別CD",
+                                            text: "0000000001　<勤務種別>",
+                                            value: "0000000001",
+                                            defText: "0000000001　<勤務種別>",
+                                            defValue: "0000000001",
+                                            type: 1,
+                                            logType: 6
+                                        }
+                                    ]
+                                },
+                                {
+                                    categoryCd: "CS00004",
+                                    categoryId: `${self.companyId()}00000000000_CS00004`,
+                                    categoryName: "分類",
+                                    categoryType: 3,
+                                    delete: false,
+                                    items: [
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00004_IS00028`,
+                                            itemCode: "IS00028",
+                                            itemName: "分類CD",
+                                            text: "9999999999　<分類>",
+                                            value: "9999999999",
+                                            defText: "9999999999　<分類>",
+                                            defValue: "9999999999",
+                                            type: 2,
+                                            logType: 6
+                                        }
+                                    ]
+                                },
+                                {
+                                    categoryCd: "CS00020",
+                                    categoryId: `${self.companyId()}00000000000_CS00020`,
+                                    categoryName: "労働条件",
+                                    categoryType: 3,
+                                    delete: false,
+                                    items: [
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00252`,
+                                            itemCode: "IS00252",
+                                            itemName: "就業区分",
+                                            text: "通常勤務",
+                                            value: "0",
+                                            defText: "通常勤務",
+                                            defValue: "0",
+                                            type: 2,
+                                            logType: 6
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00121`,
+                                            itemCode: "IS00121",
+                                            itemName: "スケジュール管理",
+                                            text: "管理しない",
+                                            value: "0",
+                                            defText: "管理する",
+                                            defValue: "1",
+                                            type: 2,
+                                            logType: 7
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00123`,
+                                            itemCode: "IS00123",
+                                            itemName: "スケジュール作成方法",
+                                            text: "カレンダー",
+                                            value: "0",
+                                            defText: "カレンダー",
+                                            defValue: "0",
+                                            type: 2,
+                                            logType: 6
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00124`,
+                                            itemCode: "IS00124",
+                                            itemName: "カレンダーの参照先",
+                                            text: "職場",
+                                            value: "0",
+                                            defText: "職場",
+                                            defValue: "0",
+                                            type: 2,
+                                            logType: 6
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00125`,
+                                            itemCode: "IS00125",
+                                            itemName: "基本勤務の参照先",
+                                            text: "職場",
+                                            value: "0",
+                                            defText: "職場",
+                                            defValue: "0",
+                                            type: 2,
+                                            logType: 6
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00127`,
+                                            itemCode: "IS00127",
+                                            itemName: "月間パターン",
+                                            text: "001　<月間パターン>",
+                                            value: "001",
+                                            defText: "001　<月間パターン>",
+                                            defValue: "001",
+                                            type: 1,
+                                            logType: 6
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00126`,
+                                            itemCode: "IS00126",
+                                            itemName: "就業時間帯の参照先",
+                                            text: "マスタ参照区分に従う",
+                                            value: "0",
+                                            defText: "マスタ参照区分に従う",
+                                            defValue: "0",
+                                            type: 2,
+                                            logType: 6
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00130`,
+                                            itemCode: "IS00130",
+                                            itemName: "平日の勤務種類",
+                                            text: "001　<勤務種類１>",
+                                            value: "001",
+                                            type: 1,
+                                            logType: 8
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00131`,
+                                            itemCode: "IS00131",
+                                            itemName: "平日の就業時間帯",
+                                            text: "001　<就業時間帯>",
+                                            value: "001",
+                                            type: 1,
+                                            logType: 8
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00133`,
+                                            itemCode: "IS00133",
+                                            itemName: "平日の開始時刻1",
+                                            value: "480",
+                                            type: 2,
+                                            logType: 5
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00134`,
+                                            itemCode: "IS00134",
+                                            itemName: "平日の終了時刻1",
+                                            value: "1020",
+                                            type: 2,
+                                            logType: 5
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00128`,
+                                            itemCode: "IS00128",
+                                            itemName: "休日の勤務種類",
+                                            text: "002　<勤務種類２>",
+                                            value: "002",
+                                            type: 1,
+                                            logType: 8
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00139`,
+                                            itemCode: "IS00139",
+                                            itemName: "休出の勤務種類",
+                                            text: "001　<勤務種類１>",
+                                            value: "001",
+                                            type: 1,
+                                            logType: 8
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00140`,
+                                            itemCode: "IS00140",
+                                            itemName: "休出の就業時間帯",
+                                            text: "001　<就業時間帯>",
+                                            value: "001",
+                                            type: 1,
+                                            logType: 8
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00142`,
+                                            itemCode: "IS00142",
+                                            itemName: "休出の開始時刻1",
+                                            value: "480",
+                                            type: 2,
+                                            logType: 5
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00143`,
+                                            itemCode: "IS00143",
+                                            itemName: "休出の終了時刻1",
+                                            value: "1020",
+                                            type: 2,
+                                            logType: 5
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00247`,
+                                            itemCode: "IS00247",
+                                            itemName: "休暇時の就業時間帯の自動設定",
+                                            text: "しない",
+                                            value: "0",
+                                            defText: "しない",
+                                            defValue: "0",
+                                            type: 2,
+                                            logType: 7
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00253`,
+                                            itemCode: "IS00253",
+                                            itemName: "契約時間",
+                                            value: "480",
+                                            type: 2,
+                                            logType: 4
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00248`,
+                                            itemCode: "IS00248",
+                                            itemName: "休暇時の加算時間",
+                                            text: "しない",
+                                            value: "0",
+                                            defText: "しない",
+                                            defValue: "0",
+                                            type: 2,
+                                            logType: 7
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00249`,
+                                            itemCode: "IS00249",
+                                            itemName: "加算時間１日",
+                                            type: 2,
+                                            logType: 4
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00250`,
+                                            itemCode: "IS00250",
+                                            itemName: "加算時間午前",
+                                            type: 2,
+                                            logType: 4
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00251`,
+                                            itemCode: "IS00251",
+                                            itemName: "加算時間午後",
+                                            type: 2,
+                                            logType: 4
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00258`,
+                                            itemCode: "IS00258",
+                                            itemName: "勤務時間の自動設定",
+                                            text: "しない",
+                                            value: "0",
+                                            defText: "しない",
+                                            defValue: "0",
+                                            type: 2,
+                                            logType: 7
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00020_IS00259`,
+                                            itemCode: "IS00259",
+                                            itemName: "時給者区分",
+                                            text: "時給者",
+                                            value: "0",
+                                            defText: "時給者",
+                                            defValue: "0",
+                                            type: 2,
+                                            logType: 6
+                                        }
+                                    ]
+                                },
+                                {
+                                    categoryCd: "CS00024",
+                                    categoryId: `${self.companyId()}00000000000_CS00024`,
+                                    categoryName: "年休情報",
+                                    categoryType: 1,
+                                    delete: false,
+                                    items: [
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00024_IS00279`,
+                                            itemCode: "IS00279",
+                                            itemName: "年休付与基準日",
+                                            value: "2021/05/11",
+                                            type: 3,
+                                            logType: 3
+                                        },
+                                        {
+                                            definitionId: `${self.companyId()}000_CS00024_IS00280`,
+                                            itemCode: "IS00280",
+                                            itemName: "年休付与テーブル",
+                                            text: "<付与テーブル>",
+                                            value: "01",
+                                            defText: "<付与テーブル>",
+                                            defValue: "01",
+                                            type: 1,
+                                            logType: 6
+                                        }
+                                    ]
+                                }
+                            ],
+                            createType: 3
+                        };
+
+                    blockUI.invisible();
+                    setTimeout(() => {
+                        service.addNewEmployee(command).done(() => {
+                            console.log("add emp: done!!!__", i);
+                        }).fail(() => {
+                            console.log("add emp: false!!!__", i);
+                            return;
+                        }).always(() => {
+                            blockUI.clear();
+                        });
+                    }, 3000);
+                }
+            }
+
             /**
              * 
              */
@@ -204,6 +652,11 @@ module knr002.test {
                 modal('/view/knr/002/k/index.xhtml', { title: 'K_Screen', }).onClosed(() => {
                     blockUI.clear();
                 });
+            }
+
+            private fillZeros(i: number): string{
+                let str : string = i.toString()
+                return str.length == 1 ? `000${str}` : str.length == 2 ? `00${str}` : str.length == 3 ? `0${str}` : str;
             }
         }
 
@@ -243,6 +696,80 @@ module knr002.test {
                 this.workLocationName = workLocationName;
                 this.availability = false;
             }
-        }       
+        }  
+        class ItemsByCategory {
+           categoryId: string;
+           categoryCd: string;          
+           categoryName: string;           
+           categoryType: number;
+           recordId: string;
+           delete: boolean;
+           items: Array<ItemValueP>;
+            constructor(categoryId: string,
+                        categoryCd: string,
+                        categoryName: string, 
+                        categoryType: number, 
+                        recordId: string, 
+                        delet: boolean,
+                        items: Array<ItemValueP>){
+                this.categoryId = categoryId;
+                this.categoryCd =  categoryCd;
+                this.categoryName =  categoryName;     
+                this.categoryType =  categoryType;
+                this.recordId =  recordId;
+                this.delete = delet;
+                this.items = items;
+            }
+        }
+        class ItemValueP{
+           definitionId: string;
+           itemCode: string;
+           itemName: string;
+           value: string;
+           text: string;
+           defValue: string;
+           defText: string;
+           type: number;
+           logType: number;
+            constructor(definitionId: string,
+                                                itemCode: string,
+                                                itemName: string,
+                                                value: string,
+                                                text: string,
+                                                defValue: string, 
+                                                defText: string, 
+                                                type: number, 
+                                                logType: number){
+                this.definitionId = definitionId;
+                this.itemCode = itemCode;
+                this.itemName = itemName;
+                this.value = value;
+                this.text = text;
+                this.defValue = defValue;
+                this.defText = defText;
+                this.type = type;
+                this.logType = logType;
+            }
+        }
+
+        class AddEmployeeCommand {
+             employeeCopyId: string;
+             initSettingId: string;
+             employeeName: string;
+             employeeCode: string;
+             hireDate: string;
+             cardNo: string;
+             createType: number;
+             password: string;
+             loginId: string;
+             avatarOrgId: string;
+             avatarCropedId: string;
+             categoryName: string;
+             itemName: string;             
+             fileName: string;            
+            inputs: Array<ItemsByCategory>;
+	
+        }
+
     }
 }

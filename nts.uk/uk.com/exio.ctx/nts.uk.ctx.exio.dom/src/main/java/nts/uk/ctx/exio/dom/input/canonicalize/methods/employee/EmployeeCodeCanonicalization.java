@@ -56,11 +56,8 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 			RevisedDataRecord revisedData) {
 		
 		String employeeCode = revisedData.getItemByNo(itemNoEmployeeCode).get().getString();
-		
-		// TODO: 新規社員の追加について仕様が必要
-		String employeeId = require.getEmployeeDataMngInfoByEmployeeCode(employeeCode).get().getEmployeeId();
-		
-		return canonicalize(revisedData, employeeId);
+
+		return canonicalize(revisedData, getEmployeeId(require, employeeCode));
 	}
 
 	/**
@@ -80,13 +77,17 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 				itemNoEmployeeCode,
 				employeeCode);
 		
-		String employeeId = require.getEmployeeDataMngInfoByEmployeeCode(employeeCode)
-				// TODO: 新規社員の追加について仕様が必要
-				.orElseThrow(() -> new RuntimeException("社員が存在しない: " + employeeCode))
-				.getEmployeeId();
+		String employeeId = getEmployeeId(require, employeeCode);
 		
 		return revisedDataRecords.stream()
 				.map(revisedData -> canonicalize(revisedData, employeeId));
+	}
+
+	private static String getEmployeeId(CanonicalizationMethod.Require require, String employeeCode) {
+		
+		return require.getEmployeeDataMngInfoByEmployeeCode(employeeCode)
+				.orElseThrow(() -> new RuntimeException("社員が存在しない: " + employeeCode))
+				.getEmployeeId();
 	}
 
 	private IntermediateResult canonicalize(RevisedDataRecord revisedData, String employeeId) {

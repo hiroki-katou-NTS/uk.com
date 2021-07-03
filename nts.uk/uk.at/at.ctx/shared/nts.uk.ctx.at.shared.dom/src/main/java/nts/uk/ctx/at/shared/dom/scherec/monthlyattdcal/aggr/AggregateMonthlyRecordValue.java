@@ -16,10 +16,10 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMont
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemain;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.childnursing.MonChildHdRemain;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.care.CareRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
@@ -62,9 +62,11 @@ public class AggregateMonthlyRecordValue {
 	/** 特別休暇月別残数データ */
 	private List<SpecialHolidayRemainData> specialLeaveRemainList;
 	/** 介護休暇月別残数データ */
-	private Optional<MonCareHdRemain> monCareHdRemain;
+	@Setter
+	private List<CareRemNumEachMonth> careHdRemainList;
 	/** 子の看護休暇月別残数データ */
-	private Optional<MonChildHdRemain> monChildHdRemain;
+	@Setter
+	private List<ChildcareRemNumEachMonth> childHdRemainList;
 
 //	/** 年休積立年休の集計結果 */
 //	@Setter
@@ -100,8 +102,8 @@ public class AggregateMonthlyRecordValue {
 		this.absenceLeaveRemainList = new ArrayList<>();
 		this.monthlyDayoffRemainList = new ArrayList<>();
 		this.specialLeaveRemainList = new ArrayList<>();
-		this.monCareHdRemain = Optional.empty();
-		this.monChildHdRemain = Optional.empty();
+		this.careHdRemainList = new ArrayList<>();
+		this.childHdRemainList = new ArrayList<>();
 
 //		this.aggrResultOfAnnAndRsvLeave = new AggrResultOfAnnAndRsvLeave();
 //		this.absRecRemainMngOfInPeriodOpt = Optional.empty();
@@ -241,8 +243,12 @@ public class AggregateMonthlyRecordValue {
 		result.getSpecialLeaveRemain().addAll(this.specialLeaveRemainList);
 		result.getAttendanceTimeOfWeek().addAll(this.attendanceTimeWeeks);
 		result.getEmployeeMonthlyPerError().addAll(this.perErrors);
-		result.setCare(this.monCareHdRemain);
-		result.setChildCare(this.monChildHdRemain);
+		CareRemNumEachMonth careRemain = null;
+		if (this.careHdRemainList.size() > 0) careRemain = this.careHdRemainList.get(0);
+		result.setCare(Optional.ofNullable(careRemain));
+		ChildcareRemNumEachMonth childCareRemain = null;
+		if (this.childHdRemainList.size() > 0) childCareRemain = this.childHdRemainList.get(0);
+		result.setChildCare(Optional.ofNullable(childCareRemain));
 		return result;
 	}
 }

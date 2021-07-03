@@ -22,28 +22,47 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		isSendMail = ko.observable(false);
 		remainDays = ko.observable('');
 		comment = new Comment();
+
+		remainDayList: KnockoutObservableArray<RemainDays> = ko.observableArray([]);
 		
 		appCombinaSelected = ko.observable(0);
 		appCombinaDipslay = ko.observable(false);
 		
-		recruitmentApp = new RecruitmentApp(0);
-		absenceLeaveApp = new AbsenceLeaveApp(1);
+		recruitmentApp = new RecruitmentApp(0, ko.observable(false));
+		absenceLeaveApp = new AbsenceLeaveApp(1, ko.observable(false));
 		
 		isAgentMode = ko.observable(false);
 		
 		settingCheck = ko.observable(true);
 		isFromOther: boolean = false;
+
+		bindRemainDays() {
+			const vm = this;
+
+			const remainDayList = [] as RemainDays[];
+			
+			const item = {
+				label: vm.$i18n('KAF011_64'),
+				name: vm.$i18n('KAF011_65'),
+				content: vm.remainDays()
+			} as RemainDays;
+
+			remainDayList.push(item);
+			vm.remainDayList(remainDayList);
+			
+		}
 		
 		created(params?: AppInitParam) {
 			const vm = this;
-			if(params){
-				vm.params = params;	
+			if(nts.uk.request.location.current.isFromMenu) {
+				sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');	
+			} else {
+				if(!_.isNil(__viewContext.transferred.value)) {
+					vm.isFromOther = true;
+					params = __viewContext.transferred.value;
+					vm.params = params;
+				}
 			}
-			
-			if(!_.isNil(__viewContext.transferred.value)) {
-				vm.isFromOther = true;
-			}
-			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
 			let paramDate;
 			if(vm.params){
 				if (!_.isEmpty(vm.params.baseDate)) {
@@ -70,6 +89,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.displayInforWhenStarting(data);
 					vm.isSendMail(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr == 1);
 					vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
+					vm.bindRemainDays();
 					vm.appCombinaDipslay(data.substituteHdWorkAppSet.simultaneousApplyRequired == 0);
 					vm.recruitmentApp.bindingScreenA(data.applicationForWorkingDay, data);
 					vm.absenceLeaveApp.bindingScreenA(data.applicationForHoliday, data);
@@ -98,12 +118,17 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			vm.absenceLeaveApp.application.opAppReason = vm.recruitmentApp.application.opAppReason = vm.applicationCommon().opAppReason;
 			
 			vm.recruitmentApp.application.appDate.subscribe(value =>{
-				if(value != "" && !$('#recAppDate').ntsError('hasError') && vm.recruitmentApp.started){
+				const recDateMoment = moment(value, 'YYYY/MM/DD') as any;
+				if(recDateMoment._isValid && vm.recruitmentApp.started){
 					vm.$blockui("grayout");
-					let holidayDate = (vm.appCombinaSelected() != 1 && vm.absenceLeaveApp.application.appDate() && !$('#absAppDate').ntsError('hasError')) ? moment(vm.absenceLeaveApp.application.appDate()).format('YYYY/MM/DD'): null;
+					vm.$errors('clear');
+					const absDate = vm.absenceLeaveApp.application.appDate() as any;
+					const absDateMoment = moment(absDate, 'YYYY/MM/DD') as any;
+					let holidayDate = (vm.appCombinaSelected() != 1 && vm.absenceLeaveApp.application.appDate() && absDateMoment._isValid) ? absDateMoment.format('YYYY/MM/DD') : null;
 					let displayInforWhenStartingdto = vm.displayInforWhenStarting();
 					displayInforWhenStartingdto.rec = null;
 					displayInforWhenStartingdto.abs = null;
+					
 					vm.$ajax('at/request/application/holidayshipment/changeRecDate',{workingDate: moment(value).format('YYYY/MM/DD'), holidayDate: holidayDate, displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
 						vm.appDispInfoStartupOutput(data.appDispInfoStartup);
 						vm.displayInforWhenStarting(data);
@@ -111,7 +136,11 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 							vm.recruitmentApp.bindingScreenA(data.applicationForWorkingDay, data);					
 						}
 						vm.absenceLeaveApp.workInformation.workType(data.applicationForHoliday.workType);
-						CommonProcess.checkUsage(true, "#recAppDate", vm);
+						if (recDateMoment.format('YYYY/MM/DD') === data.appDispInfoStartup.appDispInfoWithDateOutput.baseDate) {
+							CommonProcess.checkUsage(true, "#recAppDate", vm);							
+						} else {
+							CommonProcess.checkUsage(true, "#absAppDate", vm);	
+						}
 					}).always(() => {
 						vm.$blockui("hide"); 
 					});
@@ -119,19 +148,27 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			});
 			
 			vm.absenceLeaveApp.application.appDate.subscribe(value =>{
-				if(value != "" && !$('#absAppDate').ntsError('hasError') && vm.recruitmentApp.started){
+				const absDateMoment = moment(value, 'YYYY/MM/DD') as any;
+				if(absDateMoment._isValid && vm.recruitmentApp.started){
 					vm.$blockui("grayout");
+					vm.$errors('clear');
 					let displayInforWhenStartingdto = vm.displayInforWhenStarting();
 					displayInforWhenStartingdto.rec = null;
 					displayInforWhenStartingdto.abs = null;
-					let workingDate = (vm.appCombinaSelected() != 2 && vm.recruitmentApp.application.appDate() && !$('#recAppDate').ntsError('hasError')) ? moment(vm.recruitmentApp.application.appDate()).format('YYYY/MM/DD'): null;
+					const recDate = vm.recruitmentApp.application.appDate() as any;
+					const recDateMoment = moment(recDate, 'YYYY/MM/DD') as any;
+					let workingDate = (vm.appCombinaSelected() != 2 && vm.recruitmentApp.application.appDate() && recDateMoment._isValid) ? recDateMoment.format('YYYY/MM/DD') : null;
 					vm.$ajax('at/request/application/holidayshipment/changeAbsDate',{workingDate: workingDate, holidayDate: moment(value).format('YYYY/MM/DD'), displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
 						vm.appDispInfoStartupOutput(data.appDispInfoStartup)
 						vm.displayInforWhenStarting(data);
 						if(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.recordDate == 1){
 							vm.absenceLeaveApp.bindingScreenA(data.applicationForHoliday, data);
 						}
-						CommonProcess.checkUsage(true, "#absAppDate", vm);
+						if (absDateMoment.format('YYYY/MM/DD') === data.appDispInfoStartup.appDispInfoWithDateOutput.baseDate) {
+							CommonProcess.checkUsage(true, "#absAppDate", vm);							
+						} else {
+							CommonProcess.checkUsage(true, "#recAppDate", vm);		
+						}
 					}).always(() => {
 						vm.$blockui("hide"); 
 					});
@@ -148,6 +185,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				}
 			});
 		}
+		
 		
 		mounted(){
 			
@@ -184,7 +222,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.$blockui("hide");
 					vm.$dialog.info({messageId: "Msg_15"}).done(() => {
 						nts.uk.request.ajax("at", "at/request/application/reflect-app", result.reflectAppIdLst);
-						CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+						CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 					});
 				}).fail((failData) => {
 					vm.$dialog.error({messageId: failData.messageId, messageParams: failData.parameterIds});
@@ -217,6 +255,10 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		absAppDate: string;
 		
 	}
-	
+	export interface RemainDays {
+		label: string;
+		name: string;
+		content: string;
+	}
 
 }

@@ -6,7 +6,7 @@ import { KafS00BComponent, KAFS00BParams, ScreenMode } from '../../s00/b';
 import { KafS00CComponent, KAFS00CParams } from '../../s00/c';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
 import { IAppDispInfoStartupOutput, IApplication, IRes } from '../../s04/a/define';
-
+import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 
 @component({
     name: 'kafs20a2',
@@ -17,6 +17,7 @@ import { IAppDispInfoStartupOutput, IApplication, IRes } from '../../s04/a/defin
         'KafS00AComponent': KafS00AComponent,
         'KafS00BComponent': KafS00BComponent,
         'KafS00CComponent': KafS00CComponent,
+        'cmms45c': CmmS45CComponent
     },
     resource: require('./resources.json'),
     validations: {
@@ -56,7 +57,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
     public readonly settingItems!: IOptionalItemAppSet;
 
     @Prop({default : () => {}})
-    public readonly params!: IParams;
+    public params!: IParams;
 
     @Watch('appDispInfoStartupOutput', { deep: true, immediate: true })
     public appDispInfoStartupOutputWatcher(value: IAppDispInfoStartupOutput | null) {
@@ -180,6 +181,11 @@ export class KafS20A2Component extends KafS00ShrComponent {
     }
 
     public created() {
+        const vm = this;
+        vm.initService();
+    }
+
+    public initService() {
         const vm = this;
         const { OPTIONAL_ITEM_APPLICATION } = AppType;
 
@@ -353,7 +359,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
         vm.$http.post('at', API.register, params).then((res: IRes) => {
             vm.$mask('hide');
-
+            vm.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
             vm.$emit('nextToStep3', res);
         }).catch((error) => {
             vm.$mask('hide');
@@ -405,6 +411,17 @@ export class KafS20A2Component extends KafS00ShrComponent {
     public handleErrorMessage(res: any) {
         const vm = this;
         vm.$mask('hide');
+        if (res.messageId == 'Msg_197') {
+            vm.$modal.error({ messageId: 'Msg_197', messageParams: [] }).then(() => {
+                let appID = vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.appID;
+                vm.$modal('cmms45c', { 'listAppMeta': [appID], 'currentApp': appID }).then((newData: IParams) => {
+                    vm.params = newData;
+                    vm.initService();
+                });
+            });
+
+            return;
+        }
         if (_.isArray(res.errors)) {
             res.errors.forEach((error) => {
                 document.querySelector('.item-' + error.parameterIds[1] + ' input').classList.add('is-invalid');
@@ -443,4 +460,5 @@ const API = {
     getControlAttendance: 'ctx/at/request/application/optionalitem/getControlAttendance',
     getListItemNo: 'ctx/at/record/optionalitem/findByListItemNo',
     update: 'ctx/at/request/application/optionalitem/update',
+    reflectApp: 'at/request/application/reflect-app'
 };

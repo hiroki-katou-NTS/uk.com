@@ -8,6 +8,7 @@ module nts.uk.at.view.kaf011 {
 
 	/** 振出申請 */
 	export class RecruitmentApp {
+		isInit: KnockoutObservable<boolean> = ko.observable(true);
 		appType: number; //0: Rec-振出, 1: Abs-振休
 		application: Application = new Application();
 		applicationInsert: Application = this.application;
@@ -37,14 +38,15 @@ module nts.uk.at.view.kaf011 {
 		isAScreen: KnockoutObservable<boolean> = ko.observable(true); //true: screen A, false: screen B
 		outputMode: KnockoutObservable<number> = ko.observable(1); //DISPLAYMODE(0),EDITMODE(1);
 
-		constructor(appType: number, isAScreen?: boolean){
+		constructor(appType: number, isInit: KnockoutObservable<boolean>, isAScreen?: boolean){
 			let self = this;
 			if(isAScreen != undefined){
 				self.isAScreen(isAScreen);
 			}
+			self.isInit = isInit;
 			self.appType = appType;
 			self.workInformation.workType.subscribe((data: string)=>{
-				if(data){
+				if(data && !self.isInit()){
 					let workTypeAfter = _.find(self.workTypeList(), {'workTypeCode': data});
 					self.workTypeSelected.update(workTypeAfter);
 					self.checkDisplay();
@@ -116,7 +118,7 @@ module nts.uk.at.view.kaf011 {
 			if(data.workTime){
 				let workTime: any = _.find(displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, {'worktimeCode': data.workTime});
 				self.workTimeDisplay(data.workTime + ' ' +
-					(workTime?(workTime.workTimeDisplayName.workTimeName + ' ') : '' )+
+					(workTime?(workTime.workTimeDisplayName.workTimeName + ' ') : 'マスタ未登録 ' )+
 					moment(Math.floor(data.startTime / 60),'mm').format('mm') + ":" + moment(data.startTime % 60,'mm').format('mm') + getText('KAF011_37') + moment(Math.floor(data.endTime / 60),'mm').format('mm') + ":" + moment(data.endTime % 60,'mm').format('mm'));
 			}
 			self.checkDisplay();
@@ -128,7 +130,12 @@ module nts.uk.at.view.kaf011 {
 			let self = this;
 			self.application.update(param.application);
 			self.workTypeList(workTypeList);
+			if (_.filter(self.workTypeList(), {'workTypeCode': param.workInformation.workType}).length == 0) {
+				self.workTypeList().push({ workTypeCode: param.workInformation.workType, name: 'マスタ未登録' });
+			}
+			self.workTypeList(_.sortBy(self.workTypeList(), [ 'workTypeCode' ]));
 			self.workInformation.update(param.workInformation);
+
 			self.leaveComDayOffMana(_.map(param.leaveComDayOffMana, (c) =>new SubWorkSubHolidayLinkingMng(c)));
 			self.leaveComDayOffManaOld(self.leaveComDayOffMana());
 
@@ -152,7 +159,7 @@ module nts.uk.at.view.kaf011 {
 			if(param.workInformation.workTime != null && time1 != undefined){
 				let workTime: any = _.find(displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, {'worktimeCode': param.workInformation.workTime});
 				self.workTimeDisplay(param.workInformation.workTime + ' ' +
-					(workTime?(workTime.workTimeDisplayName.workTimeName + ' ') : '' )+
+					(workTime?(workTime.workTimeDisplayName.workTimeName + ' ') : 'マスタ未登録 ' )+
 					moment(Math.floor(time1.timeZone.startTime / 60),'mm').format('mm') + ":" + moment(time1.timeZone.startTime % 60,'mm').format('mm') + getText('KAF011_37') + moment(Math.floor(time1.timeZone.endTime / 60),'mm').format('mm') + ":" + moment(time1.timeZone.endTime % 60,'mm').format('mm'));
 			}
 			self.checkDisplay();
@@ -267,17 +274,19 @@ module nts.uk.at.view.kaf011 {
 
 	/** 振休申請 */
 	export class AbsenceLeaveApp extends RecruitmentApp {
+		isInit: KnockoutObservable<boolean> = ko.observable(true);
 		workChangeUse: KnockoutObservable<boolean> = ko.observable(false);
 		changeSourceHoliday: KnockoutObservable<string> = ko.observable();
 		payoutSubofHDManagements: KnockoutObservableArray<SubWorkSubHolidayLinkingMng> = ko.observableArray([]);
 		payoutSubofHDManagementsOld: KnockoutObservableArray<SubWorkSubHolidayLinkingMng> = ko.observableArray([]);
 
-		constructor(appType: number, isAScreen?: boolean){
-			super(appType, isAScreen);
+		constructor(appType: number, isInit: KnockoutObservable<boolean>, isAScreen?: boolean){
+			super(appType, isInit, isAScreen);
 			let self = this;
+			self.isInit = isInit;
 			self.workInformation.workType.subscribe((data: string)=>{
 				//only Abs-振休
-				if(data && self.appType == 1 && self.started){
+				if(data && self.appType == 1 && !self.isInit() && self.started){
 					let workTypeAfter = _.find(self.workTypeList(), {'workTypeCode': data});
 					let workTypeBefore = _.find(self.workTypeList(), {'workTypeCode': self.displayInforWhenStarting.applicationForHoliday.workType});
 					let command = {

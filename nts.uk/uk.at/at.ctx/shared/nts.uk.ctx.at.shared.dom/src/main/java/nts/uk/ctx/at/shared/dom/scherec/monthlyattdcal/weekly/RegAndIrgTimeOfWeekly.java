@@ -262,16 +262,16 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 	private boolean confirmDistributeStatutoryWorkTime(DatePeriod weekPeriod, DatePeriod period,
 			WeekStart weekStart, AggregateMethodOfMonthly verticalSetting) {
 		
+		/** 週開始を取得する */
 		if (weekStart == WeekStart.TighteningStartDate) {
-			if (shouldDistributeStatutoryWorkTime(weekPeriod)) {
-				return true;
-			}
+			
+			/** 按分すべきか */
+			return shouldDistributeStatutoryWorkTime(weekPeriod);
 		} else {
 			
+			/** 締め開始日じゃない場合の確認 */
 			return confirmDistributeInNotClosureDayCase(weekPeriod, period, verticalSetting);
 		}
-		
-		return false;
 	}
 	
 	/** 締め開始日じゃない場合の確認 */

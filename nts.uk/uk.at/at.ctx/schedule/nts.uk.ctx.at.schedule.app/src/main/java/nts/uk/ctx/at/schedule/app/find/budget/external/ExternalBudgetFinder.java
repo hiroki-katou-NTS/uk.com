@@ -25,8 +25,8 @@ import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.External
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.UnitAtr;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.ExtBudgetFileCheckService;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.FileUtil;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.service.ExtBudgetFileCheckService;
+import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.service.FileUtil;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

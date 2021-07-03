@@ -5,7 +5,6 @@ import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.AggregateTotalTimeSpentAtWork;
@@ -82,20 +81,17 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 	 * @param period 期間
 	 * @param workingSystem 労働制
 	 * @param calcDailys 月の計算中の日別実績データ
-	 * @param companySets 月別集計で必要な会社別設定
 	 */
 	public void calculation(RequireM1 require, 
 			DatePeriod period,
 			WorkingSystem workingSystem,
-			MonthlyCalculatingDailys calcDailys,
-			MonAggrCompanySettings companySets){
+			MonthlyCalculatingDailys calcDailys){
 
 		// 総労働時間の集計
-		this.aggregateTime.aggregate(require, period,
+		this.aggregateTime.aggregate(require, period, workingSystem,
 				calcDailys.getAttendanceTimeOfDailyMap(),
 				calcDailys.getWorkInfoOfDailyMap(),
-				calcDailys.getSnapshots(),
-				companySets);
+				calcDailys.getSnapshots());
 
 		// フレックス時間の集計
 		this.flexTime.aggregate(period, calcDailys.getAttendanceTimeOfDailyMap());

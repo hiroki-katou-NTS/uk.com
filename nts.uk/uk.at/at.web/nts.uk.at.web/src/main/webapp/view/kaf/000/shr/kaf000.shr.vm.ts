@@ -24,6 +24,14 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
             this.opAppStartDate = ko.observable("");
             this.opAppEndDate = ko.observable("");
             this.opStampRequestMode = ko.observable(null);
+			this.appDate.subscribe(value => {
+				if(_.isEmpty(this.opAppStartDate())) {
+					this.opAppStartDate(value);
+				}
+				if(_.isEmpty(this.opAppEndDate())) {
+					this.opAppEndDate(value);
+				}
+			});
         }        
     }
     
@@ -151,7 +159,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
             APPLICANT_APPROVER = 0, // 申請本人&承認者
             APPROVER = 1, // 承認者
             APPLICANT = 2, // 申請本人
-            OTHER = 3, // その他        
+            OTHER = 99, // その他        
         }; 
         
         // trạng thái của phase chứa user
@@ -262,7 +270,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 			if(appDeadlineUseCategory) {
 				deadlinePart = vm.$i18n('KAF000_40', [value.appDispInfoWithDateOutput.opAppDeadline]);	
 			}
-            vm.deadline(prePart + postPart + deadlinePart);    
+            vm.deadline(_.chain([prePart, postPart, deadlinePart]).filter(o => o).join('<br/>').value());
         }
         
         public static checkUsage(
@@ -358,13 +366,17 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 			});
 		}
 		
-		public static handleAfterRegister(result: any, isSendMail: boolean, vm: any) {
+		public static handleAfterRegister(result: any, isSendMail: boolean, vm: any, isMultiEmp: boolean, employeeInfoLst?: any) {
 			if(result.autoSendMail) {
 				CommonProcess.handleMailResult(result, vm).then(() => {
 					location.reload();		
 				});
 			} else if(isSendMail) {
-				let command = {appID: result.appIDLst[0]};
+				let command = {
+					appIDLst: result.appIDLst,
+					isMultiEmp: isMultiEmp,
+					employeeInfoLst: employeeInfoLst
+				};
                 nts.uk.ui.windows.setShared("KDL030_PARAM", command);
                 nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
                     location.reload();

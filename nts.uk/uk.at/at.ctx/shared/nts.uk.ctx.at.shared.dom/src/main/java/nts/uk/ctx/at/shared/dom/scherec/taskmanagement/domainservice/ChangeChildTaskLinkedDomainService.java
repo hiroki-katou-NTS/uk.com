@@ -50,7 +50,7 @@ public class ChangeChildTaskLinkedDomainService {
         }
         val taskOptional = require.getOptionalWork(cid, taskFrameNo, parentWorkCode);
         if (!taskOptional.isPresent()) {
-            throw new BusinessException("Msg_2065");
+            throw new BusinessException("Msg_2065", parentWorkCode.v());
         }
         val taskOld = taskOptional.get();
         taskOld.changeChildTaskList(require, childWorkList);

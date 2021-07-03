@@ -37,7 +37,7 @@ public class TemporaryStampOrderChecking {
 	private RangeOfDayTimeZoneService rangeOfDayTimeZoneService;
 
 	public EmployeeDailyPerError temporaryStampOrderChecking(String employeeID, String companyID,
-			GeneralDate processingDate, TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance) {
+			GeneralDate processingDate, TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance,TimeLeavingOfDailyPerformance attendanceLeave) {
 
 		EmployeeDailyPerError employeeDailyPerError = null;
 
@@ -86,7 +86,7 @@ public class TemporaryStampOrderChecking {
 				if (attendanceTimeWithDay.lessThanOrEqualTo(leaveTimeWithDay)) {
 					// 他の出退勤との時間帯重複を確認する
 					duplicationStateAttr = confirmDuplication(employeeID, processingDate, timeLeavingWork,
-							temporaryTimeOfDailyPerformance);
+							temporaryTimeOfDailyPerformance,attendanceLeave);
 					if (duplicationStateAttr == StateAttr.DUPLICATION) {
 						if (timeLeavingWork.getWorkNo().equals(new WorkNo((1)))) {
 							attendanceItemIDList.add(51);
@@ -122,17 +122,17 @@ public class TemporaryStampOrderChecking {
 	}
 
 	private StateAttr confirmDuplication(String employeeID, GeneralDate processingDate, TimeLeavingWork timeLeavingWork,
-			TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance) {
+			TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance,TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
 
 		StateAttr stateAttr = StateAttr.NO_DUPLICATION;
 
 		List<DuplicationStatusOfTimeZone> statusOfTimeZones = new ArrayList<>();
 
 		// ドメインモデル「日別実績の出退勤」を取得する
-		Optional<TimeLeavingOfDailyPerformance> timeLeavingOfDailyPerformance = this.timeLeavingOfDailyPerformanceRepository
-				.findByKey(employeeID, processingDate);
+//		Optional<TimeLeavingOfDailyPerformance> timeLeavingOfDailyPerformance = this.timeLeavingOfDailyPerformanceRepository
+//				.findByKey(employeeID, processingDate);
 
-		if (timeLeavingOfDailyPerformance.isPresent()) {
+		if (timeLeavingOfDailyPerformance!=null) {
 			// 【パラメータ】出退勤が出退勤と重複しているか確認する
 			TimeWithDayAttr stampStartTimeFirstTime = timeLeavingWork.getAttendanceStamp().get().getStamp().get()
 					.getTimeDay().getTimeWithDay().get();
@@ -141,7 +141,7 @@ public class TemporaryStampOrderChecking {
 			
 			TimeSpanForCalc timeSpanFirstTime = new TimeSpanForCalc(stampStartTimeFirstTime, endStartTimeFirstTime);
 
-			List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.get().getAttendance().getTimeLeavingWorks();
+			List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks();
 			for (TimeLeavingWork leavingWork : timeLeavingWorks) {
 
 				if (leavingWork.getAttendanceStamp() != null && leavingWork.getAttendanceStamp().isPresent()

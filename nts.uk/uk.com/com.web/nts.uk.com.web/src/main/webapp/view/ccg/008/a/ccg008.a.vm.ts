@@ -114,6 +114,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
                       const doc = frame.contentDocument || frame.contentWindow.document;
   
                       doc.body.innerHTML = res.htmlContent;
+											doc.body.setAttribute('style', 'overflow: auto; position: relative;');
                     });
                 } else {
                   element.innerHTML = `<iframe src="${ntsFile.liveViewUrl(fileId, 'index.htm')}"></iframe>`;
@@ -173,8 +174,8 @@ module nts.uk.com.view.ccg008.a.screenModel {
 			const vm = this;
 
 			vm.dateSwitch([
-				{ code: "1", name: vm.$i18n("CCG008_14") },
-				{ code: "2", name: vm.$i18n("CCG008_15") }
+				{ code: 1, name: vm.$i18n("CCG008_14") },
+				{ code: 2, name: vm.$i18n("CCG008_15") }
 			]);
 
 			vm.classLayoutName = ko.computed({
@@ -452,22 +453,18 @@ module nts.uk.com.view.ccg008.a.screenModel {
 						break;
 				}
 
-
+				let showSwitchLayout2: any[] = [];
+				let showSwitchLayout3: any[] = [];
 				if (layout2) {
-					const showSwitch = _.filter(layout2, ({ widgetType }) => [0, 1, 2, 3, 4].indexOf(widgetType) > -1);
-					vm.isShowSwitch(!!showSwitch.length);
+					showSwitchLayout2 = _.filter(layout2, ({ widgetType }) => [0, 1, 2, 3, 4].indexOf(widgetType) > -1);
 				}
 
 				if (layout3) {
-					const showSwitch = _.filter(layout3, ({ widgetType }) => [0, 1, 2, 3, 4].indexOf(widgetType) > -1);
+					showSwitchLayout3 = _.filter(layout3, ({ widgetType }) => [0, 1, 2, 3, 4].indexOf(widgetType) > -1);
 					const showClosure = _.filter(layout3, ({ widgetType }) => widgetType === 1);
-
-					// not overwrite value of layout2
-					if (ko.unwrap<boolean>(vm.isShowSwitch) === false) {
-						vm.isShowSwitch(!!showSwitch.length);
-					}
-
 				}
+
+				vm.isShowSwitch(!_.isEmpty(showSwitchLayout2) || !_.isEmpty(showSwitchLayout3));
 			};
 
 			if (screen === 'login') {
@@ -529,6 +526,26 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
 		getMinutes(value: number) {
 			return [0, 1, 5, 10, 20, 30, 40, 50, 60][value] || 0;
+		}
+
+		refreshLayout() {
+			const vm = this;
+			const restoreKtg026 = vm.$window.storage('KTG026_TARGET').then((rs: {isRefresh: boolean, target: any}) => {
+				if (rs) {
+					rs.isRefresh = true;
+					vm.$window.storage('KTG026_TARGET', rs);
+				}
+			});
+			const restoreKtg027 = vm.$window.storage('KTG027_TARGET').then((rs: {isRefresh: boolean, target: any}) => {
+				if (rs) {
+					rs.isRefresh = true;
+					vm.$window.storage('KTG027_TARGET', rs);
+				}
+			});
+
+			$.when(restoreKtg026, restoreKtg027).then(() => {
+				vm.callApiTopPage();
+			})
 		}
 	}
 

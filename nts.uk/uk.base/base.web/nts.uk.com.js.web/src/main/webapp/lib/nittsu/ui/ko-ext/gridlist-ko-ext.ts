@@ -9,7 +9,7 @@ module nts.uk.ui.koExtentions {
 
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             let HEADER_HEIGHT = 27;
-            let ROW_HEIGHT = 23;
+            let ROW_HEIGHT = 24;
             let DIFF_NUMBER = 2;
             
             var $grid = $(element).addClass("nts-gridlist");

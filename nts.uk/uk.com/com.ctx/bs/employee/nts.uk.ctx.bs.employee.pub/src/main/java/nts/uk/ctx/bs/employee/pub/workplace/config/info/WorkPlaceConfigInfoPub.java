@@ -19,6 +19,7 @@ public interface WorkPlaceConfigInfoPub {
 	 */
 	List<WorkPlaceConfigInfoExport> findByHistoryIdsAndWplIds(String companyId, List<String> historyIds,
 			List<String> workplaceIds);
-	
+
 	List<JobTitleExport> findAllById(String companyId,List<String> positionIds ,GeneralDate baseDate );
+
 }

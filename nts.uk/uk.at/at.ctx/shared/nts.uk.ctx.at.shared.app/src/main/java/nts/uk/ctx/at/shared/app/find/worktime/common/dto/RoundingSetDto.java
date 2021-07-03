@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.common.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.InstantRounding;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.Superiority;
  */
 @Getter
 @Setter
+@AllArgsConstructor
 public class RoundingSetDto implements RoundingSetSetMemento {
 
 	/** The rounding set. */

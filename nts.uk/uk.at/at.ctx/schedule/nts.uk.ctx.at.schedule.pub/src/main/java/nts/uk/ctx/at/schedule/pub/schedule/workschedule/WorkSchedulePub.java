@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkScheduleExport_New;
+
 /**
  * 
  * @author tutk
@@ -12,6 +14,11 @@ import nts.arc.time.calendar.period.DatePeriod;
  */
 public interface WorkSchedulePub {
 	public Optional<WorkScheduleExport> get(String employeeID , GeneralDate ymd);
+
+	/**
+	 * 社員ID(List)、期間を設定して勤務予定を取得する
+	 */
+	public List<WorkScheduleExport> getList(List<String> sids, DatePeriod period);
 	
 	public List<WorkScheduleBasicInforExport> get(List<String> lstSid , DatePeriod ymdPeriod);
 	
@@ -24,4 +31,35 @@ public interface WorkSchedulePub {
 	 * @return 勤務種類コード
 	 */
 	public Optional<String> getWorkTypeCode(String sid, GeneralDate baseDate);
+	
+	/**
+	 * 最も未来の勤務予定の年月日を取得する
+	 * 
+	 * RequestList439
+	 * 
+	 * 異動者、勤務種別変更者の作成期間の計算
+	 * 社員ID（List）を条件に、存在するスケジュール期間の中で最も大きい年月日を取得する
+	 * 
+	 * @param sIds
+	 * @return GeneralDate
+	 */
+	public Optional<GeneralDate> acquireMaxDateBasicSchedule(List<String> sIds);
+	
+	/**
+     * TEAMD reqlist4 9/10/2020
+     * @param employeeId
+     * @param baseDate
+     * @return
+     */
+	// Update bug redmine: http://192.168.50.4:3000/issues/116305
+    public Optional<ScWorkScheduleExport_New> findByIdNewV2(String employeeId, GeneralDate baseDate);
+    
+    /**
+	 * 
+	 * 勤務予定の確定状態を取得する
+	 * @param employeeID
+	 * @param date
+	 * @return
+	 */
+	public List<WorkScheduleConfirmExport> findConfirmById(List<String> employeeID, DatePeriod date);
 }

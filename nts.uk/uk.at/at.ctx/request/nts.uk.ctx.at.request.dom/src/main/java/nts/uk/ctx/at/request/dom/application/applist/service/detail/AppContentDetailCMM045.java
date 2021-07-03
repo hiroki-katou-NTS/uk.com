@@ -148,4 +148,14 @@ public interface AppContentDetailCMM045 {
 	public String getContentApplyForLeave(Application application, String companyID, List<WorkType> workTypeLst, DisplayAtr appReasonDisAtr,
 			ScreenAtr screenAtr);
 	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請データ作成ver4.時間年休申請データを作成.時間年休申請データを作成
+	 * @param application 申請
+	 * @param appReasonDisAtr 申請理由表示区分
+	 * @param screenAtr ScreenID
+	 * @param companyID 会社ID
+	 * @return
+	 */
+	public String createAnnualHolidayData(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, String companyID);
+	
 }

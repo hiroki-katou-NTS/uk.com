@@ -1,5 +1,7 @@
 package nts.uk.screen.at.ws.ktg.ktg005;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -17,6 +19,8 @@ import nts.uk.screen.at.app.find.ktg.ktg005.a.ExecutionResultNumberOfApplication
 import nts.uk.screen.at.app.find.ktg.ktg005.a.StartScreenA;
 import nts.uk.screen.at.app.find.ktg.ktg005.b.StartScreenB;
 import nts.uk.screen.at.app.find.ktg.ktg005.b.StartScreenBResult;
+import nts.uk.screen.at.app.ktgwidget.ktg004.TopPageDisplayDateDto;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -41,9 +45,11 @@ public class KTG005WebServices extends WebService {
 	 */
 	@POST
 	@Path("start_screen_a")
-	public ExecutionResultNumberOfApplicationDto startScreenA(StartQuery query) {
-		return this.sreenAFinder.startScreenA(query.getCompanyId(), query.getPeriod(), query.getEmployeeId());
-
+	public ExecutionResultNumberOfApplicationDto startScreenA(TopPageDisplayDateDto param) {
+		return this.sreenAFinder.startScreenA(
+				AppContexts.user().companyId(), 
+				AppContexts.user().employeeId(),
+				Optional.ofNullable(param));
 	}
 
 	/**

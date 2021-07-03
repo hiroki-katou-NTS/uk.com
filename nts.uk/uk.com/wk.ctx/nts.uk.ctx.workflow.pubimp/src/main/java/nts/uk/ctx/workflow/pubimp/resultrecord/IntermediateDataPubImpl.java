@@ -725,7 +725,7 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 														"", 
 														"",
 														z.getApprovalDate(),
-														z.getApprovalReason(),
+														z.getApprovalReason()==null ? null : z.getApprovalReason().v(),
 														z.getApproverInListOrder());
 											}).collect(Collectors.toList()), 
 											y.getConfirmAtr().value,
@@ -782,7 +782,7 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 														"", 
 														"",
 														z.getApprovalDate(),
-														z.getApprovalReason(),
+														z.getApprovalReason()==null ? null : z.getApprovalReason().v(),
 														z.getApproverInListOrder());
 											}).collect(Collectors.toList()), 
 											y.getConfirmAtr().value,

@@ -4,48 +4,48 @@ module nts.uk.at.view.kaf000.b.component7.viewmodel {
         name: 'kaf000-b-component7',
         template: `
             <div id="kaf000-b-component7">
-                <div class="table" style="margin-bottom: 5px;" data-bind="if: appReasonCDDisp">
-                    <div class="cell col-1">
-                        <div class="cell valign-center" data-bind="ntsFormLabel: {required: appReasonCDRequired}, text: $i18n('KAF000_51')"></div>
-                    </div>
-                    <div class="cell valign-center">
-                        <div id="combo-box" style="width: 390px"
-                            data-bind="ntsComboBox: {
-                                            name: $i18n('KAF000_51'),
-                                            options: reasonTypeItemLst,
-                                            optionsValue: 'appStandardReasonCD',
-                                            optionsText: 'reasonForFixedForm',
-                                            value: opAppStandardReasonCD,
-                                            columns: [{ prop: 'reasonForFixedForm', length: 20 }],
-                                            required: appReasonCDRequired,
+				<div class="table" style="margin-bottom: 6px;" data-bind="if: appReasonCDDisp">
+			    	<div class="cell col-1">
+			        	<div class="cell valign-center" data-bind="ntsFormLabel: {required: appReasonCDRequired}, text: $i18n('KAF000_51')"></div>
+					</div>
+					<div class="cell valign-center">
+						<div id="combo-box" style="width: 472px"
+							data-bind="ntsComboBox: {
+			        						name: $i18n('KAF000_51'),
+			                                options: reasonTypeItemLst,
+			                                optionsValue: 'appStandardReasonCD',
+			                                optionsText: 'reasonForFixedForm',
+			                                value: opAppStandardReasonCD,
+			                                columns: [{ prop: 'reasonForFixedForm', length: 20 }],
+			                                required: appReasonCDRequired,
 											enable: appReasonCDEnable }">
-                        </div>
-                    </div>
-                </div>
-                <div class="table" style="margin-top: 5px;" data-bind="if: appReasonDisp">
-                    <div class="cell col-1">
-                        <div class="cell valign-center" data-bind="ntsFormLabel: {
-                                                required: appReasonRequired,
-                                                constraint: 'AppReason',
-                                                text: $i18n('KAF000_52')
-                                            }"></div>
-                    </div>
-                    <div class="cell valign-center">
-                        <textarea style="height: 80px;" id="inpReasonTextarea"
-                            data-bind="ntsMultilineEditor: {
-                                        name: $i18n('KAF000_52'),
-                                        value: opAppReason,
-                                        constraint: 'AppReason',
-                                        option: {
-                                            resizeable: false,
-                                            width: '450',
-                                            textalign: 'left'
-                                        },
-                                        required : appReasonRequired,
-										enable: appReasonEnable }" />
-                    </div>
-                </div>
-            </div>
+			             </div>
+			         </div>
+				</div>
+				<div class="table" data-bind="if: appReasonDisp">
+					<div class="cell col-1">
+						<div class="cell valign-center" data-bind="ntsFormLabel: {
+											required: appReasonRequired,
+							            	constraint: 'AppReason',
+								       		text: $i18n('KAF000_52')
+							       		}"></div>
+			     	</div>
+			       	<div class="cell valign-center">
+			           	<textarea style="height: 80px;" id="inpReasonTextarea"
+			               	data-bind="ntsMultilineEditor: {
+			                  				name: $i18n('KAF000_52'),
+				                            value: opAppReason,
+				                            constraint: 'AppReason',
+				                            option: {
+				                               	resizeable: false,
+				                                width: '450',
+				                                textalign: 'left'
+				                            },
+				                            required : appReasonRequired,
+											enable: appReasonEnable }" />
+					</div>
+				</div>
+			</div>
         `
     })
     class Kaf000BComponent7ViewModel extends ko.ViewModel {
@@ -82,7 +82,8 @@ module nts.uk.at.view.kaf000.b.component7.viewmodel {
             vm.appReasonEnable(vm.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 1);
             vm.reasonTypeItemLst(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.reasonTypeItemLst);
             vm.opAppStandardReasonCD(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppStandardReasonCD);
-			let initReasonTypeItem = _.find(vm.reasonTypeItemLst(), (o) => o.appStandardReasonCD == vm.opAppStandardReasonCD());
+			let initReasonTypeItem = _.find(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.reasonTypeItemLst, 
+					(o: any) => o.appStandardReasonCD == vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppStandardReasonCD);
 			if(_.isUndefined(initReasonTypeItem)) {
 				let dataLst = [{
 		            appStandardReasonCD: '',
@@ -104,7 +105,8 @@ module nts.uk.at.view.kaf000.b.component7.viewmodel {
             	vm.appReasonEnable(value.appDetailScreenInfo.outputMode == 1);
 	            vm.reasonTypeItemLst(value.appDispInfoNoDateOutput.reasonTypeItemLst);
 	            vm.opAppStandardReasonCD(value.appDetailScreenInfo.application.opAppStandardReasonCD);
-				let initReasonTypeItem = _.find(vm.reasonTypeItemLst(), (o) => o.appStandardReasonCD == vm.opAppStandardReasonCD());
+				let initReasonTypeItem = _.find(value.appDispInfoNoDateOutput.reasonTypeItemLst, 
+					(o: any) => o.appStandardReasonCD == value.appDetailScreenInfo.application.opAppStandardReasonCD);
 				if(_.isUndefined(initReasonTypeItem)) {
 					let dataLst = [{
 			            appStandardReasonCD: '',

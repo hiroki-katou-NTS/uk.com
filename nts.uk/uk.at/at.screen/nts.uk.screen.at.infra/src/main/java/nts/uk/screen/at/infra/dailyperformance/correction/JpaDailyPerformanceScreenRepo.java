@@ -3,6 +3,8 @@
  */
 package nts.uk.screen.at.infra.dailyperformance.correction;
 
+import static java.util.stream.Collectors.*;
+
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
@@ -249,7 +251,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	private final static String SELECT_WORKTYPE_JDBC = " SELECT CD, NAME FROM KSHMT_WKTP WHERE CID = ?";
 
-	private final static String SEL_FIND_WORKPLACE_LOCATION_JDBC = "SELECT WORK_LOCATION_CD, WORK_LOCATION_NAME FROM KRCMT_WORK_LOCATION WHERE CID = ?";
+	private final static String SEL_FIND_WORKPLACE_LOCATION_JDBC = "SELECT WK_LOCATION_CD, WK_LOCATION_NAME FROM KRCMT_WORK_LOCATION WHERE CONTRACT_CD = ?";
 
 	private final static String SEL_EMPLOYMENT_BY_CLOSURE_JDBC = "SELECT CODE, NAME FROM BSYMT_EMPLOYMENT WHERE CID = ?";
 
@@ -928,7 +930,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		String companyId = AppContexts.user().companyId();
 		List<KrcmtDailyAttendanceItem> entities = this.queryProxy()
 				.query(SEL_ATTENDANCE_ITEM, KrcmtDailyAttendanceItem.class).setParameter("companyId", companyId)
-				.setParameter("lstItem", lstAttendanceItem).getList();
+				.setParameter("lstItem", lstAttendanceItem).getList()
+			.stream().filter(KrcmtDailyAttendanceItem::FILTER_NOSAI_0624).collect(toList());
 		return entities.stream().map(i -> {
 			return new DPAttendanceItem(i.krcmtDailyAttendanceItemPK.attendanceItemId, i.attendanceItemName,
 					i.displayNumber, i.userCanSet == 1 ? true : false, i.nameLineFeedPosition, i.dailyAttendanceAtr,
@@ -1263,11 +1266,12 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<CodeName> findWorkplaceLocation(String companyId) {
+		String contractCode = AppContexts.user().contractCode();
 		String sql = SEL_FIND_WORKPLACE_LOCATION_JDBC;
 		try (PreparedStatement statement = this.connection().prepareStatement(sql)) {
-			statement.setString(1, companyId);
+			statement.setString(1, contractCode);
 			return new NtsResultSet(statement.executeQuery()).getList(rs -> {
-				return new CodeName(rs.getString("WORK_LOCATION_CD"), rs.getString("WORK_LOCATION_NAME"), "");
+				return new CodeName(rs.getString("WK_LOCATION_CD"), rs.getString("WK_LOCATION_NAME"), "");
 			});
 
 		} catch (SQLException e) {

@@ -95,7 +95,7 @@ public class TimeLeaveApplicationFinder {
         TimeLeaveApplicationReflect reflectSetting = timeLeaveApplicationService.getTimeLeaveAppReflectSetting(companyId);
 
         // 休暇残数情報を取得する
-        TimeVacationManagementOutput timeVacationManagement = timeLeaveApplicationService.getTimeLeaveManagement(companyId, employeeId, baseDate);
+        TimeVacationManagementOutput timeVacationManagement = timeLeaveApplicationService.getTimeLeaveManagement(companyId, employeeId, baseDate, reflectSetting.getCondition());
         TimeVacationRemainingOutput timeVacationRemaining = timeLeaveApplicationService.getTimeLeaveRemaining(companyId, employeeId, baseDate, timeVacationManagement);
 
         // 社員の労働条件を取得する
@@ -165,7 +165,8 @@ public class TimeLeaveApplicationFinder {
         TimeVacationManagementOutput timeVacationManagement = timeLeaveApplicationService.getTimeLeaveManagement(
                 companyId,
                 params.getAppDisplayInfo().getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
-                params.getAppDate()
+                params.getAppDate(),
+                TimeLeaveAppReflectDto.toDomain(params.getAppDisplayInfo().getReflectSetting()).getCondition()
         );
 
         params.getAppDisplayInfo().setTimeLeaveManagement(TimeLeaveManagement.fromOutput(timeVacationManagement));

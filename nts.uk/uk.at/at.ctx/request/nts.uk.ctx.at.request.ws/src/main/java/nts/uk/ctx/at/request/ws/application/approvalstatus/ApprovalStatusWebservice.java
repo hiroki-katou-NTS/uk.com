@@ -20,6 +20,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprSttMailTestParam;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttActivationParam;
@@ -33,8 +34,6 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttSendMail
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttSendMailInfoParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttSpecDeadlineDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttSpecDeadlineSetDto;
-import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityData;
-import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusByIdDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusFinder;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusMailTempDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusPeriorDto;
@@ -42,13 +41,10 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.ConfirmSttEmpMo
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ConfirmSttEmpParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ConfirmWorkplaceInfoParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.EmpConfirmAfterParam;
-import nts.uk.ctx.at.request.app.find.application.approvalstatus.UnAppMailTransmisDto;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprSttEmpDateParam;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttConfirmEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
-import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ConfirmWorkplaceInfoOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
@@ -94,32 +90,10 @@ public class ApprovalStatusWebservice extends WebService {
 		return this.finder.getApprovalStatusPerior(closureId);
 	}
 	
-	/**
-	 * getAppSttByWorkpace
-	 */
-	@POST
-	@Path("getAppSttByWorkpace")
-	public List<ApprovalSttAppOutput> getAppSttByWorkpace(ApprovalStatusActivityData param){
-		return finder.getAppSttByWorkpace(param);
-	}
-	
 	@POST
 	@Path("getCheckSendMail")
 	public List<String> getAppSttSendingUnapprovedMail(List<UnApprovalSendMail> listAppSttApp) {
 		return this.finder.getAppSttSendingUnapprovedMail(listAppSttApp);
-	}
-	
-	@POST
-	@Path("exeSendUnconfirmedMail")
-	public SendMailResultOutput exeSendUnconfirmedMail(UnAppMailTransmisDto unAppMailTransmis) {
-		return this.finder.exeSendUnconfirmedMail(unAppMailTransmis);
-	}
-	
-	@POST
-	@Path("initApprovalSttByEmployee")
-	public List<ApprovalSttByEmpListOutput> initApprovalSttByEmployee(ApprovalStatusByIdDto appSttById){
-		return this.finder.initApprovalSttByEmployee(appSttById);
-		
 	}
 	
 	@POST
@@ -180,9 +154,9 @@ public class ApprovalStatusWebservice extends WebService {
 	}
 	
 	@POST
-	@Path("sendTestMail/{mailType}")
-	public SendMailResultOutput sendTestMail(@PathParam("mailType") int mailType) {
-		return approvalMailFinder.sendTestMail(mailType);
+	@Path("sendTestMail")
+	public SendMailResultOutput sendTestMail(ApprSttMailTestParam param) {
+		return approvalMailFinder.sendTestMail(param);
 	}
 	
 	@POST

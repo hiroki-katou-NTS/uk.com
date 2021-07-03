@@ -1,9 +1,21 @@
 package nts.uk.ctx.at.request.app.command.application.businesstrip;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -24,14 +36,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
-import org.apache.logging.log4j.util.Strings;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -101,9 +105,9 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
 
         //アルゴリズム「出張申請暫定残数を更新する」を実行する
         //アルゴリズム「暫定データの登録」を実行する
-//        this.interimRemainDataMngRegisterDateChange.registerDateChange(cid,
-//                application.getEmployeeID(),
-//                businessTrip.getInfos().stream().map(i -> i.getDate()).collect(Collectors.toList()));
+        this.interimRemainDataMngRegisterDateChange.registerDateChange(cid,
+                application.getEmployeeID(),
+                businessTrip.getInfos().stream().map(i -> i.getDate()).collect(Collectors.toList()));
 
         // アルゴリズム「4-2.詳細画面登録後の処理」を実行する
         return detailAfterUpdate.processAfterDetailScreenRegistration(cid, application.getAppID(), infoOutput.getAppDispInfoStartup());
