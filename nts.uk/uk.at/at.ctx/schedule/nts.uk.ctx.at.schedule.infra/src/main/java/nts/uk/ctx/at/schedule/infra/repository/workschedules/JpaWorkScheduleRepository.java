@@ -53,25 +53,32 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	
 	private static final String SELECT_MAX = "SELECT MAX(c.startDate) FROM KscdtSchBasicInfo c WHERE c.pk.sid IN :employeeIDs";
 	
-
-//	private static final String SELECT_MAX = "SELECT MAX(c.startDate) FROM KscdtSchBasicInfo c WHERE c.pk.sid IN :employeeIDs";
-
 //	private static final String GET_MAX_DATE_WORK_SCHE_BY_LIST_EMP = "SELECT c.pk.ymd FROM KscdtSchBasicInfo c "
 //			+ " WHERE c.pk.sid IN :listEmp"
 //			+ " ORDER BY c.pk.ymd desc ";
 
-	private static final List<String> DELETE_TABLES = Arrays.asList("DELETE FROM KscdtSchTime a ",
-			"DELETE FROM KscdtSchOvertimeWork a ", "DELETE FROM KscdtSchHolidayWork a ",
-			"DELETE FROM KscdtSchBonusPay a ", "DELETE FROM KscdtSchPremium a ", "DELETE FROM KscdtSchShortTime a ",
-			"DELETE FROM KscdtSchBasicInfo a ", "DELETE FROM KscdtSchEditState a ", "DELETE FROM KscdtSchAtdLvwTime a ",
-			"DELETE FROM KscdtSchShortTimeTs a ", "DELETE FROM KscdtSchBreakTs a ", "DELETE FROM KscdtSchComeLate a ",
-			"DELETE FROM KscdtSchGoingOut a ", "DELETE FROM KscdtSchLeaveEarly a ");
+	private static final List<String> DELETE_TABLES = Arrays.asList(
+			"DELETE FROM KscdtSchTime a ",
+			"DELETE FROM KscdtSchOvertimeWork a ", 
+			"DELETE FROM KscdtSchHolidayWork a ",
+			"DELETE FROM KscdtSchBonusPay a ", 
+			"DELETE FROM KscdtSchPremium a ", 
+			"DELETE FROM KscdtSchShortTime a ",
+			"DELETE FROM KscdtSchBasicInfo a ", 
+			"DELETE FROM KscdtSchEditState a ", 
+			"DELETE FROM KscdtSchAtdLvwTime a ",
+			"DELETE FROM KscdtSchShortTimeTs a ", 
+			"DELETE FROM KscdtSchBreakTs a ", 
+			"DELETE FROM KscdtSchComeLate a ",
+			"DELETE FROM KscdtSchGoingOut a ", 
+			"DELETE FROM KscdtSchLeaveEarly a ");
 
 	@Override
 	public Optional<WorkSchedule> get(String employeeID, GeneralDate ymd) {
 		Optional<WorkSchedule> workSchedule = this.queryProxy().query(SELECT_BY_KEY, KscdtSchBasicInfo.class)
-				.setParameter("employeeID", employeeID).setParameter("ymd", ymd)
-				.getSingle(c -> c.toDomain(employeeID, ymd));
+				.setParameter("employeeID", employeeID)
+				.setParameter("ymd", ymd)
+				.getSingle( c -> c.toDomain(employeeID, ymd));
 		return workSchedule;
 	}
 	
@@ -82,14 +89,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				.getSingleOrNull();
 		return Optional.ofNullable(date);
 	}
-
-//	@Override
-//	public Optional<GeneralDate> getMaxDate(List<String> employeeIDs, GeneralDate ymd) {
-//		GeneralDate date = this.queryProxy().query(SELECT_MAX, GeneralDate.class)
-//				.setParameter("employeeIDs", employeeIDs)
-//				.getSingleOrNull();
-//		return Optional.ofNullable(date);
-//	}
 
 	@Override
 	public List<WorkSchedule> getList(List<String> sids, DatePeriod period) {
@@ -495,66 +494,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			} else {
 				oldData.get().kscdtSchTime.kscdtSchTask = newData.kscdtSchTime.kscdtSchTask;
 			}
-			
-			// List<KscdtSchEditState> editStates;			
-
-//			if (!oldData.get().kscdtSchTime.kscdtSchTask.isEmpty()) {
-//				// get list insert and update data exist
-//				List<KscdtSchTask> listInsert = new ArrayList<>();
-//				for (KscdtSchTask task : newData.kscdtSchTime.kscdtSchTask) {
-//					List<KscdtSchTask> checkLst = new ArrayList<>();
-//					oldData.get().kscdtSchTime.kscdtSchTask.forEach(x -> {
-//						if(task.pk.sid.equals(x.pk.sid)
-//								&& task.pk.ymd.equals(x.pk.ymd)
-//								&& task.pk.serialNo == x.pk.serialNo) {
-//							x.taskCode = task.taskCode;
-//							x.startClock = task.startClock;
-//							x.endClock = task.endClock;
-//							checkLst.add(x);
-//						} 
-//					});
-//					if(checkLst.isEmpty()) {
-//						listInsert.add(task);
-//					}
-//				}
-
-//				List<KscdtSchTask> listRemove = new ArrayList<>();
-//				for (KscdtSchTask taskOld : oldData.get().kscdtSchTime.kscdtSchTask) {
-//					boolean checkExist = false;
-//					for (KscdtSchTask task : newData.kscdtSchTime.kscdtSchTask) {
-//						if(task.pk.serialNo == taskOld.pk.serialNo
-//								&& task.pk.sid.equals(taskOld.pk.sid)
-//								&& task.pk.ymd.equals(taskOld.pk.ymd)
-//								) {
-//							checkExist = true;
-//							break;
-//						}
-//					}
-//					if(!checkExist) {
-//						listRemove.add(taskOld);
-//					}
-//				}
-//				
-//				//remove
-//				String delete = "delete from KscdtSchTask o " + " where o.pk.sid = :sid "
-//						+ " and o.pk.ymd = :ymd " + " and o.pk.serialNo = :serialNo";
-//				for(KscdtSchTask sle : listRemove) {
-//					this.getEntityManager().createQuery(delete).setParameter("sid", sle.pk.sid)
-//					.setParameter("ymd", sle.pk.ymd)
-//					.setParameter("serialNo", sle.pk.serialNo).executeUpdate();
-//				}
-//				//add
-//				for(KscdtSchTask sle : listInsert) {
-//					this.commandProxy().insert(sle);
-//				}
-//				
-//			} else {
-//				oldData.get().kscdtSchTime.kscdtSchTask = newData.kscdtSchTime.kscdtSchTask;
-//			}
-//			
 
 			// List<KscdtSchEditState> editStates;
-
 			if (!oldData.get().editStates.isEmpty()) {
 				// get list insert and update data exist
 				List<KscdtSchEditState> listInsert = new ArrayList<>();
@@ -574,15 +515,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				}
 				
 				List<KscdtSchEditState> listRemove = new ArrayList<>();
-
-				for (KscdtSchEditState editStateOld : oldData.get().editStates) {
-					boolean checkExist = false;
-					for (KscdtSchEditState editState : newData.editStates) {
-						if(editState.pk.atdItemId == editStateOld.pk.atdItemId
-								&& editState.pk.sid.equals(editStateOld.pk.sid)
-								&& editState.pk.ymd.equals(editStateOld.pk.ymd)
-								) {
-
 				for (KscdtSchEditState editOld : oldData.get().editStates) {
 					boolean checkExist = false;
 					for (KscdtSchEditState edit : newData.editStates) {
@@ -594,22 +526,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 					}
 
 					if(!checkExist) {
-						listRemove.add(editStateOld);
-					}
-				}
-				
-				//remove
-				String delete = "delete from KscdtSchEditState o " + " where o.pk.sid = :sid "
-						+ " and o.pk.ymd = :ymd " + " and o.pk.atdItemId = :atdItemId";
-				for(KscdtSchEditState sle : listRemove) {
-					this.getEntityManager().createQuery(delete).setParameter("sid", sle.pk.sid)
-					.setParameter("ymd", sle.pk.ymd)
-					.setParameter("atdItemId", sle.pk.atdItemId).executeUpdate();
-				}
-				//add
-				for(KscdtSchEditState sle : listInsert) {
-					this.commandProxy().insert(sle);
-					if (!checkExist) {
 						listRemove.add(editOld);
 					}
 				}
