@@ -1,50 +1,100 @@
 /// <reference path="./viewcontext.d.ts" />
 
-type KibanViewModel = {
-	errorDialogViewModel: {
-		errors: KnockoutObservableArray<string>;
-	}
-};
-
 /** Create new ViewModel and automatic binding to __viewContext */
-function bean(dialogOption?: DialogOption): any {
+function bean(dialogOption?: JQueryUI.DialogOptions): any {
 	return function (ctor: any): any {
 		__viewContext.ready(() => {
-			nts.uk.ui.viewmodel.$storage().then(($params: any) => {
-				const $viewModel = new ctor($params)
-					, $created = $viewModel['created'];
+			const { localShared } = nts.uk.ui.windows.container;
 
-				_.extend($viewModel, { $el: undefined });
+			nts.uk.ui.viewmodel
+				.$storage()
+				.then(($params: any) => {
+					const $viewModel = new ctor($params || (_.isEmpty(localShared) ? undefined : localShared))
+						, $created = $viewModel['created'];
 
-				// hook to created function
-				if ($created && _.isFunction($created)) {
-					$created.apply($viewModel, [$params]);
-				}
+					_.extend($viewModel, { $el: undefined });
 
-				// hook to mounted function
-				$viewModel.$nextTick(() => {
-					const $mounted = $viewModel['mounted'];
-					const kvm: KibanViewModel = nts.uk.ui._viewModel.kiban;
+					// hook to created function
+					if ($created && _.isFunction($created)) {
+						$created.apply($viewModel, [$params || (_.isEmpty(localShared) ? undefined : localShared)]);
+					}
 
-					_.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+					__viewContext.bind($viewModel, dialogOption);
 
-					if (kvm) {
-						ko.computed({
-							read: () => {
-								$viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
-							},
-							owner: $viewModel,
-							disposeWhenNodeIsRemoved: $viewModel.$el
+					const { $window } = $viewModel;
+					const kvm = nts.uk.ui._viewModel.kiban;
+
+					kvm.title
+						.subscribe((title: string) => {
+							const old = ko.unwrap($window.title)
+
+							if (title !== old) {
+								$window.title(title);
+							} else {
+								$window.title.valueHasMutated();
+							}
 						});
-					}
 
-					if ($mounted && _.isFunction($mounted)) {
-						$mounted.apply($viewModel, []);
-					}
+					kvm.systemName.valueHasMutated();
+
+					$window.title
+						.subscribe((title: string) => kvm.title(title));
+
+					kvm.mode
+						.subscribe((mode: string) => {
+							const old = ko.unwrap($window.mode)
+
+							if (mode !== old) {
+								$window.mode(mode);
+							} else {
+								$window.mode.valueHasMutated();
+							}
+						});
+
+					kvm.mode.valueHasMutated();
+
+					$window.mode
+						.subscribe((mode: 'view' | 'modal') => kvm.mode.valueHasMutated());
+
+					kvm.header
+						.subscribe((header: boolean) => {
+							const old = ko.unwrap($window.header)
+
+							if (header !== old) {
+								$window.header(header);
+							} else {
+								$window.header.valueHasMutated();
+							}
+						});
+
+					kvm.header.valueHasMutated();
+
+					$window.header
+						.subscribe((header: boolean) => kvm.header(header));
+
+					$(() => {
+						// hook to mounted function
+						$viewModel.$nextTick(() => {
+							const $mounted = $viewModel['mounted'];
+
+							_.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+
+							if (kvm) {
+								ko.computed({
+									read: () => {
+										$viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+									},
+									owner: $viewModel,
+									disposeWhenNodeIsRemoved: $viewModel.$el
+								});
+							}
+
+							if ($mounted && _.isFunction($mounted)) {
+								$mounted.apply($viewModel, []);
+							}
+						});
+					});
 				});
-
-				__viewContext.bind($viewModel, dialogOption);
-			});
 		});
 	};
 }
@@ -71,10 +121,61 @@ function component(options: { name: string; template: string; }): any {
 									$created.apply($viewModel, [$params]);
 								}
 
+								const { $window } = $viewModel;
+								const kvm = nts.uk.ui._viewModel.kiban;
+
+								kvm.title
+									.subscribe((title: string) => {
+										const old = ko.unwrap($window.title)
+
+										if (title !== old) {
+											$window.title(title);
+										} else {
+											$window.title.valueHasMutated();
+										}
+									});
+
+								kvm.systemName.valueHasMutated();
+
+								$window.title
+									.subscribe((title: string) => kvm.title(title));
+
+								kvm.mode
+									.subscribe((mode: string) => {
+										const old = ko.unwrap($window.mode)
+
+										if (mode !== old) {
+											$window.mode(mode);
+										} else {
+											$window.mode.valueHasMutated();
+										}
+									});
+
+								kvm.mode.valueHasMutated();
+
+								$window.mode
+									.subscribe((mode: 'view' | 'modal') => kvm.mode.valueHasMutated());
+
+								kvm.header
+									.subscribe((header: boolean) => {
+										const old = ko.unwrap($window.header)
+
+										if (header !== old) {
+											$window.header(header);
+										} else {
+											$window.header.valueHasMutated();
+										}
+									});
+
+								kvm.header.valueHasMutated();
+
+								$window.header
+									.subscribe((header: boolean) => kvm.header(header));
+
 								// hook to mounted function
 								$viewModel.$nextTick(() => {
 									const $mounted = $viewModel['mounted'];
-									const kvm: KibanViewModel = nts.uk.ui._viewModel.kiban;
+									const kvm = nts.uk.ui._viewModel.kiban;
 
 									_.extend($viewModel, { $el: $el.element });
 
@@ -248,16 +349,16 @@ module nts.uk.ui.viewmodel {
 	};
 
 	// get date time now
-	setInterval(() => {
-		const now = Date.now();
-		const diff = now - $date.clock;
+	// setInterval(() => {
+	// 	const now = Date.now();
+	// 	const diff = now - $date.clock;
 
-		$date.clock = now;
+	// 	$date.clock = now;
 
-		if (Math.abs(diff) > 5000) {
-			getTime();
-		}
-	}, 500);
+	// 	if (Math.abs(diff) > 5000) {
+	// 		getTime();
+	// 	}
+	// }, 500);
 
 	BaseViewModel.prototype.$date = Object.defineProperties($date, {
 		now: {
@@ -425,9 +526,13 @@ module nts.uk.ui.viewmodel {
 
 	BaseViewModel.prototype.$window = Object.defineProperties({}, {
 		mode: {
-			get() {
-				return window === window.top ? 'view' : 'modal';
-			}
+			value: ko.observable('view') // nts.uk.ui._viewModel.kiban.mode
+		},
+		title: {
+			value: ko.observable('') //nts.uk.ui._viewModel.kiban.title
+		},
+		header: {
+			value: ko.observable(null).extend({ rateLimit: 100 }) //nts.uk.ui._viewModel.kiban.header
 		},
 		size: {
 			value: $size
@@ -609,7 +714,7 @@ module nts.uk.ui.viewmodel {
 	};
 
 	BaseViewModel.prototype.$errors = function $errors() {
-		const kvm: KibanViewModel = nts.uk.ui._viewModel.kiban;
+		const kvm = nts.uk.ui._viewModel.kiban;
 		const args: any[] = Array.prototype.slice.apply(arguments);
 
 		if (args.length == 1) {

@@ -11,27 +11,27 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationDateShare;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
-import nts.uk.ctx.at.shared.dom.application.common.PrePostAtrShare;
-import nts.uk.ctx.at.shared.dom.application.common.ReflectionStatusShare;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.cancellation.AttendanceBeforeApplicationReflect;
-import nts.uk.ctx.at.shared.dom.application.stamp.AppRecordImageShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.DestinationTimeAppShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.DestinationTimeZoneAppShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.EngraveShareAtr;
-import nts.uk.ctx.at.shared.dom.application.stamp.StartEndClassificationShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppEnumShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppOtherShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppShare;
-import nts.uk.ctx.at.shared.dom.application.stamp.TimeZoneStampClassificationShare;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationDateShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppRecordImageShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.DestinationTimeAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.DestinationTimeZoneAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.EngraveShareAtr;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.StartEndClassificationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppEnumShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppOtherShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeStampAppShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeZoneStampClassificationShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.cancellation.AttendanceBeforeApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -56,7 +56,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
@@ -75,6 +74,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.At
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.AttendanceClock;
@@ -110,18 +110,22 @@ public class ReflectApplicationHelper {
 	}
 
 	public static DailyRecordOfApplication createRCWithTimeLeav(ScheduleRecordClassifi classification, int no) {
+		return createRCWithTimeLeav(classification, no, TimeChangeMeans.AUTOMATIC_SET);
+	}
+	
+	public static DailyRecordOfApplication createRCWithTimeLeav(ScheduleRecordClassifi classification, int no, TimeChangeMeans change) {
 
 		TimeLeavingWork work = new TimeLeavingWork(new WorkNo(no), null, null);
 		work.setAttendanceStamp(Optional.of(new TimeActualStamp(null,
 				new WorkStamp(
-						new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
+						new WorkTimeInformation(new ReasonTimeChange(change, null),
 								new TimeWithDayAttr(480)),
 						Optional.empty()),
 				0)));
 
 		work.setLeaveStamp(Optional.of(new TimeActualStamp(null,
 				new WorkStamp(
-						new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
+						new WorkTimeInformation(new ReasonTimeChange(change, null),
 								new TimeWithDayAttr(1200)),
 						Optional.empty()),
 				0)));
@@ -189,7 +193,7 @@ public class ReflectApplicationHelper {
 
 		// 日別勤怠の短時間勤務時間帯
 		List<ShortWorkingTimeSheet> shortWorkingTimeSheets = new ArrayList<>();
-		shortWorkingTimeSheets.add(new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(no), ChildCareAttribute.CARE,
+		shortWorkingTimeSheets.add(new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(no), ChildCareAtr.CARE,
 				new TimeWithDayAttr(480), new TimeWithDayAttr(1020)));
 		Optional<ShortTimeOfDailyAttd> shortTime = Optional.of(new ShortTimeOfDailyAttd(shortWorkingTimeSheets));
 
@@ -201,8 +205,8 @@ public class ReflectApplicationHelper {
 		// 日別勤怠の応援作業時間帯
 		List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = new ArrayList<>();
 		ouenTimeSheet.add(OuenWorkTimeSheetOfDailyAttendance.create(no,
-				WorkContent.create("1", WorkplaceOfWorkEachOuen.create("11111", new WorkLocationCD("AAAA")),
-						Optional.empty()),
+				WorkContent.create(WorkplaceOfWorkEachOuen.create(new WorkplaceId("11111"), new WorkLocationCD("AAAA")),
+						Optional.empty(), Optional.empty()),
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(no),
 						Optional.of(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
 								new TimeWithDayAttr(480))),
@@ -258,13 +262,13 @@ public class ReflectApplicationHelper {
 	public static ApplicationShare createAppShare(ApplicationTypeShare appType, PrePostAtrShare pre) {
 
 		return new ApplicationShare(1, "1", pre, "1", appType, new ApplicationDateShare(GeneralDate.today()), "1",
-				GeneralDateTime.now(), new ReflectionStatusShare(new ArrayList<>()));
+				GeneralDateTime.now());
 	}
 
 	public static ApplicationShare createAppShare(ApplicationTypeShare appType, PrePostAtrShare pre, GeneralDate date) {
 
 		return new ApplicationShare(1, "1", pre, "1", appType, new ApplicationDateShare(date), "1",
-				GeneralDateTime.now(), new ReflectionStatusShare(new ArrayList<>()));
+				GeneralDateTime.now());
 	}
 
 	public static ApplicationShare createAppShare(PrePostAtrShare pre) {
@@ -277,7 +281,7 @@ public class ReflectApplicationHelper {
 		List<TimeStampAppShare> lstResult = new ArrayList<>();
 		TimeStampAppShare timeStamp = new TimeStampAppShare(
 				new DestinationTimeAppShare(timeStampApp, no, startOrEnd, Optional.of(no)), new TimeWithDayAttr(time),
-				Optional.of(new WorkLocationCD(location)), Optional.empty());
+				Optional.of(new WorkLocationCD(location)), Optional.empty(), Optional.empty());
 
 		lstResult.add(timeStamp);
 

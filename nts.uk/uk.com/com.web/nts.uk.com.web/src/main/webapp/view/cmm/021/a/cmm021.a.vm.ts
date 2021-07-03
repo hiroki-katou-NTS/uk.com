@@ -96,8 +96,8 @@ module nts.uk.com.view.cmm021.a {
                 _self.currentCode = ko.observable();
 
                 _self.useSet = ko.observableArray([
-                    { code: '1', name: nts.uk.resource.getText("CMM021_11") },
-                    { code: '0', name: nts.uk.resource.getText("CMM021_10") },
+                    { code: 1, name: nts.uk.resource.getText("CMM021_11") },
+                    { code: 0, name: nts.uk.resource.getText("CMM021_10") },
                 ]);
                 _self.selectUse = ko.observable(1);
 
@@ -665,7 +665,7 @@ module nts.uk.com.view.cmm021.a {
                 service.saveWindowAccount(saveCommand)
                     .done((data: any) => {
                         _self.isSaveActive = true;
-                        service.findListUserInfo(_self.employeeIds(), false)
+                        service.findListUserInfo(_self.employeeIds())
                             .done((data: UserDto[]) => {
                                 _self.reloadAlreadySettingWindow().done(() => {
                                     _self.listUserDto = data;
@@ -808,7 +808,7 @@ module nts.uk.com.view.cmm021.a {
                 let dfd = $.Deferred<any>();
 
                 nts.uk.ui.block.grayout();
-                service.findListUserInfo(_self.employeeIds(), false)
+                service.findListUserInfo(_self.employeeIds())
                     .done((data: UserDto[]) => {
                         _self.listUserDto = data;
                         if (_.isEmpty(_self.listUserDto)) {
@@ -838,7 +838,7 @@ module nts.uk.com.view.cmm021.a {
                 let dfd = $.Deferred<any>();
 
                 nts.uk.ui.block.grayout();
-                service.findListUserInfo(_self.employeeIds(), true)
+                service.findListUserInfo(_self.employeeIds())
                     .done((data: UserDto[]) => {
                         _self.listUserDtoScreenAC = [];
                         _self.listUserDtoScreenAC = data;
@@ -1265,7 +1265,7 @@ module nts.uk.com.view.cmm021.a {
                     service.saveOtherSysAccount(otherAcc)
                         .done((data: any) => {
                             //
-                            service.findListUserInfo(_self.employeeIds(), true)
+                            service.findListUserInfo(_self.employeeIds())
                                 .done((data2: UserDto[]) => {
                                     _self.listUserDtoScreenAC = data2;
                                     _self.reloadAlreadySettingOtherAcc().done(() => {

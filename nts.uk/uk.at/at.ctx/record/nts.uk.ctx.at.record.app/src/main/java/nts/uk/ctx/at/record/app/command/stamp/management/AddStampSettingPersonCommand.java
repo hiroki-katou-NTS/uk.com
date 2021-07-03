@@ -1,15 +1,14 @@
 package nts.uk.ctx.at.record.app.command.stamp.management;
 
+import java.util.List;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ColorSetting;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval;
+import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.DisplaySettingsStampScreenCommand;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.HistoryDisplayMethod;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampingScreenSet;
-import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 
@@ -20,7 +19,6 @@ import nts.uk.shr.com.context.AppContexts;
 @NoArgsConstructor
 public class AddStampSettingPersonCommand {
 	
-
 	/** 打刻ボタンを抑制する */
 	private boolean buttonEmphasisArt;
 	
@@ -28,27 +26,15 @@ public class AddStampSettingPersonCommand {
 	private int historyDisplayMethod;
 	
 	/** 打刻画面のサーバー時刻補正間隔 */
-	private int correctionInterval;
+	private DisplaySettingsStampScreenCommand stampingScreenSet;
 	
-	/** 文字色 */
-	private String textColor;
-	
-	/** 背景色 */
-	private String backGroundColor;
-	
-	/** 打刻結果自動閉じる時間 */
-	private int resultDisplayTime;
-	
-	public StampSettingPerson toDomain(){
+	public StampSettingPerson toDomain(List<StampPageLayout> lstStampPageLayout){
 		String companyId = AppContexts.user().companyId();
-		HistoryDisplayMethod historyDisplayMethods = EnumAdaptor.valueOf(historyDisplayMethod, HistoryDisplayMethod.class);
-		CorrectionInterval correctionIntervals = new CorrectionInterval(correctionInterval);
-		ColorCode textColors = new ColorCode(textColor);
-		ColorCode backGroundColors = new ColorCode(backGroundColor);
-		ColorSetting colorSetting = new ColorSetting(textColors, backGroundColors);
-		ResultDisplayTime resultDisplayTimes = new ResultDisplayTime(resultDisplayTime);
-		StampingScreenSet stampingScreenSet = new StampingScreenSet(historyDisplayMethods, correctionIntervals, colorSetting, resultDisplayTimes);
-		
-		return new StampSettingPerson(companyId, buttonEmphasisArt, stampingScreenSet, null, null);
+		return new StampSettingPerson(
+				companyId, 
+				buttonEmphasisArt, 
+				this.stampingScreenSet.toDomain(), 
+				lstStampPageLayout,
+				EnumAdaptor.valueOf(historyDisplayMethod, HistoryDisplayMethod.class));
 	}
 }

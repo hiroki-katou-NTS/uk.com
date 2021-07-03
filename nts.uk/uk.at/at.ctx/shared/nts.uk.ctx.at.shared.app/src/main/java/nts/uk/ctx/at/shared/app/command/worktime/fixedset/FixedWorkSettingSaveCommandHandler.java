@@ -4,20 +4,23 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.fixedset;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
+import lombok.val;
 import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonSaveCommandHandler;
+import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.policy.FixedWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.shr.com.context.AppContexts;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 /**
  * The Class FixedWorkSettingSaveCommandHandler.
@@ -102,6 +105,20 @@ public class FixedWorkSettingSaveCommandHandler extends CommandHandler<FixedWork
 
 		// Check domain
 		try {
+			val isUseShiftTwo = command.getPredseting().getPrescribedTimezoneSetting().isUseShiftTwo();
+			//check FixOffDayWorkTimezone
+			val offDay = fixedWorkSetting.getOffdayWorkTimezone();
+			val offDayCheck = new FixOffdayWorkTimezone(offDay.getRestTimezone(), offDay.getLstWorkTimezone(), isUseShiftTwo);
+			bundledBusinessExceptions.addMessage(offDayCheck.getBundledBusinessExceptions().bundle().cloneExceptions());
+			//check List<FixHalfDayWorkTimezone>
+			fixedWorkSetting.getLstHalfDayWorkTimezone()
+					.forEach(halfDay -> {
+								val check = new FixedWorkTimezoneSet(halfDay.getWorkTimezone().getLstWorkingTimezone(),
+										halfDay.getWorkTimezone().getLstOTTimezone(),
+										isUseShiftTwo);
+								bundledBusinessExceptions.addMessage(check.getBundledBusinessExceptions().bundle().cloneExceptions());
+							}
+					);
 			fixedWorkSetting.validate();
 		} catch (BundledBusinessException e) {
 			bundledBusinessExceptions.addMessage(e.cloneExceptions());

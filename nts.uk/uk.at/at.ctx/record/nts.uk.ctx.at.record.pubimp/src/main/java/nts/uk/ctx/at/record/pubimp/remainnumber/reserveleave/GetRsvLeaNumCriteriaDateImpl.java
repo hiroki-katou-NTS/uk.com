@@ -25,8 +25,6 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
@@ -43,9 +41,6 @@ public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
 	/** 社員 */
 	@Inject
 	private EmpEmployeeAdapter empEmployee;
-	/** 暫定残数管理データ */
-	@Inject
-	private InterimRemainRepository interimRemainRepo;
 	/** 暫定積立年休管理データ */
 	@Inject
 	private TmpResereLeaveMngRepository tmpReserveLeaveMng;
@@ -110,20 +105,15 @@ public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
 
 		// 「暫定積立年休管理データ」を取得する
 		List<TmpReserveLeaveMngExport> tmpManageList = new ArrayList<>();
-		val interimRemains = this.interimRemainRepo.getRemainBySidPriod(
-				employeeId, new DatePeriod(closureStart, employee.getRetiredDate()), RemainType.FUNDINGANNUAL);
-		interimRemains.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
-		for (val interimRemain : interimRemains){
-			val tmpReserveLeaveMngOpt = this.tmpReserveLeaveMng.getById(interimRemain.getRemainManaID());
-			if (!tmpReserveLeaveMngOpt.isPresent()) continue;
-			val tmpReserveLeaveMng = tmpReserveLeaveMngOpt.get();
-
-			// 取得結果を出力用クラスに格納
-			tmpManageList.add(new TmpReserveLeaveMngExport(
-					interimRemain.getYmd(),
-					interimRemain.getCreatorAtr(),
-					new UseDay(tmpReserveLeaveMng.getUseDays().v())));
-		}
+		
+		this.tmpReserveLeaveMng.findBySidPriod(employeeId, new DatePeriod(closureStart, employee.getRetiredDate()))
+				.forEach(x -> {
+					// 取得結果を出力用クラスに格納
+					tmpManageList.add(new TmpReserveLeaveMngExport(
+							x.getYmd(), 
+							x.getCreatorAtr(),
+							new UseDay(x.getUseDays().v())));
+				});
 
 		// 積立年休付与日を出力用クラスに格納
 		Optional<GeneralDate> grantDateOpt = Optional.empty();
@@ -181,6 +171,7 @@ public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
 				Optional.empty(),
 				Optional.empty(),
 				Optional.of(true),
+				Optional.empty(),
 				Optional.empty(),
 				Optional.empty());
 	}

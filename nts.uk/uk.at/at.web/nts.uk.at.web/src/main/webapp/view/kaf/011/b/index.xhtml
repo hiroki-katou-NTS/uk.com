@@ -4,79 +4,124 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<div>
-		<div data-bind="component: {
-				        name: 'kaf000-b-component1',
-				        params: {
-				            appType: appType,
-				            appDispInfoStartupOutput: appDispInfoStartupOutput
-				        }
-				    }"></div>
-		<div data-bind="component: { 
-						name: 'kaf000-b-component2', 
-						params: {
-							appType: appType,
-							appDispInfoStartupOutput: appDispInfoStartupOutput
-						} }"></div>
-		<div data-bind="component: { 
-						name: 'kaf000-b-component3',
-                        params: {
-                            appType: appType,
-                            approvalReason: approvalReason,
-                            appDispInfoStartupOutput: appDispInfoStartupOutput
-                        } }"></div>
-        <div class="remainInfor">
-			<div class="remainLable">#{i18n.getText('KAF011_64')}</div>
-			<div class="remainNumber">
-				<table class="table">
-					<tr>
-						<th class="bg-green" >#{i18n.getText('KAF011_65')}</th>
-					</tr>
-					<tr>
-						<td data-bind="text:remainDays"></td>
-					</tr>
-				</table>
+
+<div id="kaf011-b">
+	<div id="contents-area-kaf011b"
+		style="background-color: inherit; height: calc(100vh - 137px);">
+		<div class="two-panel" style="height: 100%; width: 1260px">
+			<div class="left-panel"
+				style="width: calc(1260px - 388px); height: inherit">
+				<div
+					style="height: inherit; overflow-y: auto; background-color: #fff; padding: 0 10px;  overflow-x: hidden">
+					<div class="table"
+						style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
+						<div class="cell" style="vertical-align: middle;">
+							<div
+								data-bind="component: { name: 'kaf000-b-component4',
+                                                params: {
+                                                    appType: appType,
+                                                    application: applicationCommon,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+						</div>
+						<div class="cell"
+							style="text-align: right; vertical-align: middle;">
+							<div
+								data-bind="component: { name: 'kaf000-b-component8', 
+                                                params: {
+                                                    appType: appType,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+						</div>
+					</div>
+					<div data-bind="component: { name: 'kaf000-b-component2', 
+														params: {
+															appType: appType,
+															appDispInfoStartupOutput: appDispInfoStartupOutput
+														} }"></div>
+					<div
+						data-bind="component: { name: 'kaf000-b-component5', 
+                                                params: {
+                                                    appType: appType,
+                                                    application: applicationCommon,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+					<div
+						data-bind="component: { name: 'kaf000-b-component6', 
+                                                params: {
+                                                    appType: appType,
+                                                    application: applicationCommon,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"
+						style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: -15px"></div>
+
+
+					<div style="margin-top: -16px;">
+
+
+
+						<ui:include src="../shr/index.xhtml" />
+
+					</div>
+
+
+					<div style="margin-top: -16px"
+						data-bind="component: { name: 'kaf000-b-component7', 
+                                                params: {
+                                                    appType: appType,
+                                                    application: applicationCommon,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+
+					<div style="padding-top: 30px;"></div>
+				</div>
 			</div>
-			<com:ko-if bind="displayInforWhenStarting() != null &amp;&amp; displayInforWhenStarting().remainingHolidayInfor.closestDueDate">		
-				<span data-bind="text: nts.uk.resource.getText('KAF011_82', [displayInforWhenStarting().remainingHolidayInfor.closestDueDate])"></span>
-			</com:ko-if>
+			<div class="right-panel"
+				style="width: 388px; height: inherit; padding-right: 0px">
+				<div style="height: inherit; background-color: #fff; overflow-x: hidden; overflow-y: auto;">
+					
+					<div style="padding-top: 10px"
+						data-bind="component: { name: 'kaf000-b-component1', 
+                            params: {
+                                appType: appType,
+                                appDispInfoStartupOutput: appDispInfoStartupOutput	
+                            } }"></div>
+
+					<div class="remainDay" style="margin: 0 15px; padding-top: 20px; padding-bottom: 10px; border-bottom: 2px solid #B1B1B1; min-height: 100px">
+						<div data-bind="foreach: remainDayList">
+							<div
+								style="padding-bottom: 10px; display: block;">
+								<div style="display: block; font-weight: bold" data-bind="text: label"></div>
+								<div class="panel panel-frame"
+									 style="display: block; padding: 8px 16px; margin-top: 12px;">
+									<div style="display: inline;" data-bind="text: name"></div>
+
+									<div style="display: inline; float: right;"><a class="hyperlink"
+																				   data-bind="click: $parent.openKDL009, text: content"></a>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+						<com:ko-if
+							bind="displayInforWhenStarting() != null &amp;&amp; displayInforWhenStarting().remainingHolidayInfor.closestDueDate">
+									<span style="margin-left: -8px" data-bind="text: nts.uk.resource.getText('KAF011_82', [displayInforWhenStarting().remainingHolidayInfor.closestDueDate])"></span>
+						</com:ko-if>
+					</div>
+
+
+					<div
+						data-bind="component: { name: 'kaf000-b-component9',
+                            params: {
+                                appType: appType,
+                                application: applicationCommon,
+                                appDispInfoStartupOutput: appDispInfoStartupOutput
+                            } }"></div>
+				</div>
+			</div>
 		</div>
-        <div class="table">
-			<div class="cell" style="width: 825px;" data-bind="component: { 
-							name: 'kaf000-b-component4',
-	                        params: {
-	                            appType: appType,
-	                            application: applicationCommon,
-	                            appDispInfoStartupOutput: appDispInfoStartupOutput
-	                        } }"></div>
-	        <div class="cell" style="position: absolute;" data-bind="component: { 
-	        				name: 'kaf000-b-component9',
-	                        params: {
-	                            appType: appType,
-	                            application: applicationCommon,
-	                            appDispInfoStartupOutput: appDispInfoStartupOutput
-	                        } }"></div>
-	    </div>
-        <div data-bind="component: { 
-        				name: 'kaf000-b-component5',
-                        params: {
-                            appType: appType,
-                            application: applicationCommon,
-                            appDispInfoStartupOutput: appDispInfoStartupOutput
-                        } }"></div>
-		<ui:include src="../shr/index.xhtml" />
-		<div data-bind="component: { 
-						name: 'kaf000-b-component7',
-	                    params: {
-	                        appType: appType,
-	                        application: applicationCommon,
-	                        appDispInfoStartupOutput: appDispInfoStartupOutput
-	                    } }"></div>
-	    <div data-bind="component: { 
-    					name: 'kaf000-b-component8',
-                        params: {
-                            appType: applicationCommon,
-                            appDispInfoStartupOutput: appDispInfoStartupOutput
-                        } }"></div>
 	</div>
+</div>
+
 </html>

@@ -58,7 +58,7 @@ module nts.uk.at.view.kbt002.h {
       // var execItemCdHeader = '<button tabindex="5" class="setting small" style="text-align: center;margin-top: 0px !important;margin-bottom: 0px !important;" onclick="$vm.openDialogG(this, \'${execItemCd}\',\'${execId}\')"  >' + vm.$i18n("KBT002_159") + '</button>';
       $("#grid").igGrid({
         primaryKey: "execId",
-        height: 520,
+        height: 420,
         dataSource: vm.execLogList(),
         autoGenerateColumns: false,
         alternateRowStyles: false,

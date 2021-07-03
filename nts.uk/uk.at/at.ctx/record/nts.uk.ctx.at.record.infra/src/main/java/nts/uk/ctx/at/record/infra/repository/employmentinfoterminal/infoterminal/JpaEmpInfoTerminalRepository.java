@@ -26,9 +26,12 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.EmpInfo
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.KrcmtTimeRecorder;
 import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.KrcmtTimeRecorderPK;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.net.Ipv4Address;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -53,6 +56,12 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 					return toDomain(x);
 				});
 	}
+	
+	@Override
+	public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode) {
+		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
+		return getEmpInfoTerminal(empInfoTerCode, contractCode);
+	}
 
 	@Override
 	public Optional<EmpInfoTerminal> getEmpInfoTerWithMac(MacAddress macAdd, ContractCode contractCode) {
@@ -70,10 +79,7 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 	private EmpInfoTerminal toDomain(KrcmtTimeRecorder entity) {
 		return new EmpInfoTerminal.EmpInfoTerminalBuilder(
 				Optional.ofNullable(entity.ipAddress1 == null ? null 
-						: new FullIpAddress(new PartialIpAddress(Integer.parseInt(entity.ipAddress1)),
-								new PartialIpAddress(Integer.parseInt(entity.ipAddress2)),
-								new PartialIpAddress(Integer.parseInt(entity.ipAddress3)),
-								new PartialIpAddress(Integer.parseInt(entity.ipAddress4)))),
+						: Ipv4Address.parse(entity.getIpAddress())),
 				new MacAddress(entity.macAddress),
 				new EmpInfoTerminalCode(entity.pk.timeRecordCode),
 				Optional.ofNullable(entity.serialNo).map(x -> new EmpInfoTerSerialNo(x)),
@@ -82,10 +88,9 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 								new OutPlaceConvert(NotUseAtr.valueOf(entity.replaceGoOut),
 										Optional.ofNullable(entity.reasonGoOut == null ? null
 												: GoingOutReason.valueOf(entity.reasonGoOut))),
-								new ConvertEmbossCategory(NotUseAtr.valueOf(entity.replaceLeave),
-										NotUseAtr.valueOf(entity.replaceSupport)),
-								Optional.ofNullable(entity.workLocationCode == null ? null
-										: new WorkLocationCD(entity.workLocationCode))))
+								new ConvertEmbossCategory(NotUseAtr.valueOf(entity.replaceLeave),NotUseAtr.valueOf(entity.replaceSupport)),
+								Optional.ofNullable(entity.workLocationCode == null ? null : new WorkLocationCD(entity.workLocationCode)),
+								Optional.ofNullable(entity.workPlaceId == null ? null : new WorkplaceId(entity.workPlaceId))))
 						.modelEmpInfoTer(ModelEmpInfoTer.valueOf(entity.type))
 						.intervalTime(new MonitorIntervalTime(entity.inverterTime))
 						.empInfoTerMemo(Optional.ofNullable(entity.memo).map(x -> new EmpInfoTerMemo(x)))
@@ -114,10 +119,10 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 		return new KrcmtTimeRecorder(
 				new KrcmtTimeRecorderPK(domain.getContractCode().v(), domain.getEmpInfoTerCode().v()),
 				domain.getEmpInfoTerName().v(), domain.getModelEmpInfoTer().value,
-				domain.getIpAddress().isPresent() ? domain.getIpAddress().get().getIpAddress1().v().toString() : null, 
-				domain.getIpAddress().isPresent() ? domain.getIpAddress().get().getIpAddress2().v().toString() : null,
-				domain.getIpAddress().isPresent() ? domain.getIpAddress().get().getIpAddress3().v().toString() : null,
-				domain.getIpAddress().isPresent() ? domain.getIpAddress().get().getIpAddress4().v().toString() : null,
+				domain.getIpAddress().isPresent() ? String.valueOf(domain.getIpAddress().get().getNet1()) : null, 
+				domain.getIpAddress().isPresent() ? String.valueOf(domain.getIpAddress().get().getNet2()) : null,
+				domain.getIpAddress().isPresent() ? String.valueOf(domain.getIpAddress().get().getHost1()) : null,
+				domain.getIpAddress().isPresent() ? String.valueOf(domain.getIpAddress().get().getHost2()) : null,
 				domain.getMacAddress().v(),
 				domain.getTerSerialNo().isPresent() ? domain.getTerSerialNo().get().v() : null,
 				domain.getCreateStampInfo().getWorkLocationCd().isPresent() ? domain.getCreateStampInfo().getWorkLocationCd().get().v() : null,
@@ -127,7 +132,8 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 				domain.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value,
 				domain.getCreateStampInfo().getConvertEmbCate().getOutSupport().value,
 				domain.getIntervalTime().v().intValue(),
-				domain.getEmpInfoTerMemo().isPresent() ? domain.getEmpInfoTerMemo().get().v() : null);
+				domain.getEmpInfoTerMemo().isPresent() ? domain.getEmpInfoTerMemo().get().v() : null,
+				domain.getCreateStampInfo().getWorkPlaceId().isPresent() ? domain.getCreateStampInfo().getWorkPlaceId().get().v() : null);
 	}
 	
 	@Override
@@ -141,10 +147,10 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 		KrcmtTimeRecorder entity = this.queryProxy().find(new KrcmtTimeRecorderPK(domain.getContractCode().v(), domain.getEmpInfoTerCode().v()), KrcmtTimeRecorder.class).get();
 		entity.setName(domain.getEmpInfoTerName().v());
 		entity.setType(domain.getModelEmpInfoTer().value);
-		entity.setIpAddress1(domain.getIpAddress().isPresent() ? domain.getIpAddress().get().getIpAddress1().v().toString() : null);
-		entity.setIpAddress2(domain.getIpAddress().isPresent() ? domain.getIpAddress().get().getIpAddress2().v().toString() : null);
-		entity.setIpAddress3(domain.getIpAddress().isPresent() ? domain.getIpAddress().get().getIpAddress3().v().toString() : null);
-		entity.setIpAddress4(domain.getIpAddress().isPresent() ? domain.getIpAddress().get().getIpAddress4().v().toString() : null);
+		entity.setIpAddress1(domain.getIpAddress().isPresent() ? String.valueOf(domain.getIpAddress().get().getNet1()) : null);
+		entity.setIpAddress2(domain.getIpAddress().isPresent() ? String.valueOf(domain.getIpAddress().get().getNet2()) : null);
+		entity.setIpAddress3(domain.getIpAddress().isPresent() ? String.valueOf(domain.getIpAddress().get().getHost1()) : null);
+		entity.setIpAddress4(domain.getIpAddress().isPresent() ? String.valueOf(domain.getIpAddress().get().getHost2()) : null);
 		entity.setMacAddress(domain.getMacAddress().v());
 		entity.setSerialNo(domain.getTerSerialNo().isPresent() ? domain.getTerSerialNo().get().v() : null);
 		entity.setWorkLocationCode(domain.getCreateStampInfo().getWorkLocationCd().isPresent() ? domain.getCreateStampInfo().getWorkLocationCd().get().v() : null);
@@ -164,5 +170,4 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 		this.commandProxy().remove(KrcmtTimeRecorder.class, pk);
 	}
 
-	
 }

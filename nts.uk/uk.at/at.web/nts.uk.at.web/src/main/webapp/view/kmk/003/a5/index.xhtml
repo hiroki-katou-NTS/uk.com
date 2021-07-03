@@ -1,154 +1,121 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<div class="pull-right">
-		<button tabindex="69"  data-bind="click: openDialogG, visible: isDetailMode">#{i18n.getText('KMK003_192')}</button>
-		<com:ko tag="if" bind="isFlowTimezone() || isFlexTimezone()">
-			<button tabindex="69" data-bind="click: openFixedBreakSetting, visible: isDetailMode">#{i18n.getText('KMK003_225')}</button>
-		</com:ko>
-		<com:ko tag="if" bind="isFlowRestTime() || isFlexRestTime()">
-			<button tabindex="69" data-bind="click: openFlowBreakSetting, visible: isDetailMode">#{i18n.getText('KMK003_227')}</button>
-		</com:ko>
-	</div>
-	<!-- Begin Fixed rest time switch button -->
-	<com:ko tag="if" bind="isFlex">
-		<div class="pull-left">
-			<div style="width: 150px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_141')}</div>	
-			<div tabindex ="69" class="cf" data-bind="ntsSwitchButton: {
-					name: '#[KMK003_141]',
-					options: switchDs,
-					optionsValue: 'code',
-					optionsText: 'name',
-					value: flexFixedRestTime,
-					enable: true }"></div>
-		</div>	
-	</com:ko>
-	<com:ko tag="if" bind="isFlow">
-		<div class="pull-left">
-			<div style="width: 150px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_141')}</div>	
-			<div tabindex ="69" class="cf" data-bind="ntsSwitchButton: {
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+
+    <div class="inline-flex">
+        <div>
+            <!-- Begin Fixed rest time switch button -->
+
+            <div class="pull-left">
+                <!--	use halfDay-->
+                <com:ko tag="if" bind="isDetailMode">
+                    <div class="use-halfday tab-rows" style="margin-bottom: 10px">
+                        <com:ko tag="ifnot" bind="isFlow">
+                            <td class="td-cell" width="100px">
+                                <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_319')}</div>
+                            </td>
+                            <td class="td-cell">
+                                <div class="cf" tabindex="70"
+                                     data-bind="ntsSwitchButton: {
+											name: '#[KMK003_320]',
+											options: mainSettingModel.useHalfDayOptions,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: useHalfDay,
+											enable: true }">
+                                </div>
+                            </td>
+                        </com:ko>
+                    </div>
+                </com:ko>
+                <com:ko tag="if" bind="isFlex">
+                    <div class="tab-rows">
+                        <div style="width: 122px;" data-bind="ntsFormLabel: { required: false }">
+                            #{i18n.getText('KMK003_141')}
+                        </div>
+                        <com:ko tag="if" bind="isFlow() || isFlex()">
+                            <button style="margin-right: 30px"
+                                    data-bind="ntsHelpButton: {textId: 'KMK003_323', position: 'right center' }">?
+                            </button>
+                        </com:ko>
+                        <div tabindex="71" class="cf" data-bind="ntsSwitchButton: {
+                        name: '#[KMK003_141]',
+                        options: switchDs,
+                        optionsValue: 'code',
+                        optionsText: 'name',
+                        value: flexFixedRestTime,
+                        enable: true }"></div>
+                    </div>
+                </com:ko>
+            </div>
+            <com:ko tag="if" bind="isFlow">
+                <div class="pull-left mb-20 tab-rows">
+                    <div style="width: 122px;" data-bind="ntsFormLabel: { required: false }">
+                        #{i18n.getText('KMK003_141')}
+                    </div>
+                    <com:ko tag="if" bind="isFlow() || isFlex()">
+                        <button style="margin-right: 30px"
+                                data-bind="ntsHelpButton: {textId: 'KMK003_323', position: 'right center' }">?
+                        </button>
+                    </com:ko>
+                    <div tabindex="71" class="cf" data-bind="ntsSwitchButton: {
 					name: '#[KMK003_141]',
 					options: switchDs,
 					optionsValue: 'code',
 					optionsText: 'name',
 					value: flowFixedRestTime,
 					enable: true }"></div>
-		</div>	
-	</com:ko>
-	<div class="cf"></div>
-	<!-- End of Fixed rest time switch button -->
-	
-	<div class="tab-seperator">	
-	
-		<!-- Begin Fixed timezones -->
-		<com:ko tag="if" bind="isFixed">
-			<!-- Begin Simple mode -->
-			<com:ko tag="ifnot" bind="isDetailMode">
-				<div id="fixedOneDay" data-bind="ntsFixTableCustom: {option: oneDayFixedTimezoneOption}"></div>
-			</com:ko>
-			<!-- End of Simple mode -->
-			<!-- Begin Detail mode -->
-			<com:ko tag="if" bind="isDetailMode">
-				<!-- One day -->
-				<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
-					<h3>
-						<label>#{i18n.getText('KMK003_51')}</label>
-					</h3>
-					<div class ="accordion-content">
-						<div id="fixedOneDay" data-bind="ntsFixTableCustom: {option: oneDayFixedTimezoneOption}"></div>
-					</div>
-				</div>
-				<!-- One day -->
-				<com:ko tag="if" bind="useHalfDay">
-					<!-- Morning -->
-					<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
-						<h3>
-							<label>#{i18n.getText('KMK003_60')}</label>
-						</h3>
-						<div class ="accordion-content">
-							<div id="fixedMorning" data-bind="ntsFixTableCustom: {option: morningFixedTimezoneOption}"></div>
-						</div>
-					</div>
-					<!-- Morning -->
-					<!-- Afternoon -->
-					<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
-						<h3>
-							<label>#{i18n.getText('KMK003_61')}</label>
-						</h3>
-						<div class ="accordion-content">
-							<div id="fixedAfternoon" data-bind="ntsFixTableCustom: {option: afternoonFixedTimezoneOption}"></div>
-						</div>
-					</div>
-					<!-- Afternoon -->
-				</com:ko>
-			</com:ko>
-			<!-- End of Detail mode -->
-		</com:ko>
-		<!-- End of Fixed timezones -->
-		
-		<!-- Begin Flex timezones -->
-		<com:ko tag="if" bind="isFlexTimezone">
-			<!-- Simple mode -->
-			<com:ko tag="ifnot" bind="isDetailMode">
-				<div id="flexOneDay" data-bind="ntsFixTableCustom: {option: oneDayFlexTimezoneOption}"></div>
-			</com:ko>
-			<!-- Simple mode -->
-			<com:ko tag="if" bind="isDetailMode">
-				<!-- One day -->
-				<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
-					<h3>
-						<label>#{i18n.getText('KMK003_51')}</label>
-					</h3>
-					<div class ="accordion-content">
-						<div id="flexOneDay" data-bind="ntsFixTableCustom: {option: oneDayFlexTimezoneOption}"></div>
-					</div>
-				</div>
-				<!-- One day -->
-				<com:ko tag="if" bind="useHalfDay">
-					<!-- Morning -->
-					<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
-						<h3>
-							<label>#{i18n.getText('KMK003_60')}</label>
-						</h3>
-						<div class ="accordion-content">
-							<div id="flexMorning" data-bind="ntsFixTableCustom: {option: morningFlexTimezoneOption}"></div>
-						</div>
-					</div>
-					<!-- Morning -->
-					<!-- Afternoon -->
-					<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
-						<h3>
-							<label>#{i18n.getText('KMK003_61')}</label>
-						</h3>
-						<div class ="accordion-content">
-							<div id="flexAfternoon" data-bind="ntsFixTableCustom: {option: afternoonFlexTimezoneOption}"></div>
-						</div>
-					</div>
-					<!-- Afternoon -->
-				</com:ko>
-			</com:ko>
-		</com:ko>
-		<!-- End of Flex timezones -->
-		
-		<!-- Begin Flex rest set -->
-		<com:ko tag="if" bind="isFlexRestTime">
-			<!-- Simple mode -->
-			<com:ko tag="ifnot" bind="isDetailMode">
-				<div>
-						<div id="flexRestOneDay" class="default-input-width"
-							data-bind="ntsFixTableCustom: {option: oneDayFlexRestSetOption}"></div>
-						<com:ko tag="with" bind="oneDayFlexRestSet">
-							<div tabindex="1" class="tab_5_checkbox" data-bind="ntsCheckBox: {
+                </div>
+            </com:ko>
+            <!-- End of Fixed rest time switch button -->
+        </div>
+        <!--Dialog button-->
+        <div class="pull-right">
+            <com:ko tag="ifnot" bind="isFlow() || isFlex()">
+                <button tabindex="71"
+                        data-bind="click: openDialogG, visible: isDetailMode">#{i18n.getText('KMK003_192')}
+                </button>
+            </com:ko>
+            <com:ko tag="if" bind="isFlow() || isFlex()">
+                <button tabindex="71" data-bind="click: openDialogG,
+				 visible: isDetailMode,
+				 enable: isFlexTimezone() || isFlowTimezone()">#{i18n.getText('KMK003_225')}
+                </button>
+            </com:ko>
+            <com:ko tag="if" bind="isFlow() || isFlex()">
+                <button tabindex="71" data-bind="click: openFlowBreakSetting,
+				 visible: isDetailMode,
+				 enable: isFlexRestTime() || isFlowRestTime()">#{i18n.getText('KMK003_227')}
+                </button>
+            </com:ko>
+        </div>
+    </div>
+
+    <!-- Begin Simple mode -->
+    <com:ko tag="ifnot" bind="isDetailMode">
+        <com:ko tag="if" bind="isFixed">
+            <div id="fixedOneDay" data-bind="ntsFixTableCustom: {option: oneDayFixedTimezoneOption}"></div>
+        </com:ko>
+        <com:ko tag="if" bind="isFlexTimezone">
+            <div id="flexOneDay" data-bind="ntsFixTableCustom: {option: oneDayFlexTimezoneOption}"></div>
+        </com:ko>
+        <com:ko tag="if" bind="isFlexRestTime">
+            <div id="flexRestOneDay" class="default-input-width"
+                 data-bind="ntsFixTableCustom: {option: oneDayFlexRestSetOption}"></div>
+            <com:ko tag="with" bind="oneDayFlexRestSet">
+                <div tabindex="1" class="tab_5_checkbox" data-bind="ntsCheckBox: {
 								checked: useHereAfterRestSet,
 								enable: true,
 								text: nts.uk.resource.getText('KMK003_144') }"></div>
-							<table tabindex="1" class="tbl-after-restset default-input-width">
-								<tr>
-									<th>#{i18n.getText('KMK003_174')}</th>
-									<th>#{i18n.getText('KMK003_176')}</th>
-								</tr>
-								<tr>
-									<td>
-										<input tabindex="1" data-bind="ntsTimeEditor: {
+                <table tabindex="1" class="tbl-after-restset default-input-width">
+                    <tr>
+                        <th>#{i18n.getText('KMK003_174')}</th>
+                        <th>#{i18n.getText('KMK003_176')}</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input tabindex="1" data-bind="ntsTimeEditor: {
 											name: '#[KMK003_174]',
 											option: {textalign: 'center'},
 											constraint: 'AttendanceTime',
@@ -156,10 +123,10 @@
 											required: true,
 											inputFormat: 'time',
 											mode: 'time',
-											enable: useHereAfterRestSet }" />
-									</td>
-									<td>
-										<input tabindex="1" data-bind="ntsTimeEditor: {
+											enable: useHereAfterRestSet }"/>
+                        </td>
+                        <td>
+                            <input tabindex="1" data-bind="ntsTimeEditor: {
 											name: '#[KMK003_176]',
 											option: {textalign: 'center'},
 											constraint: 'AttendanceTime',
@@ -167,38 +134,138 @@
 											required: true,
 											inputFormat: 'time',
 											mode: 'time',
-											enable: useHereAfterRestSet }" />
-									</td>
-								</tr>
-							</table>
-						</com:ko>
-					</div>
-			</com:ko>
-			<!-- End of Simple mode -->
-			
-			<!-- Begin Detail mode -->
-			<com:ko tag="if" bind="isDetailMode">
-				<!-- One day -->
-				<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
-					<h3>
-						<label>#{i18n.getText('KMK003_51')}</label>
-					</h3>
-					<div class="accordion-content">
-						<div id="flexRestOneDay" class="default-input-width"
-							data-bind="ntsFixTableCustom: {option: oneDayFlexRestSetOption}"></div>
-						<com:ko tag="with" bind="oneDayFlexRestSet">
-							<div tabindex="1" class="tab_5_checkbox" data-bind="ntsCheckBox: {
+											enable: useHereAfterRestSet }"/>
+                        </td>
+                    </tr>
+                </table>
+            </com:ko>
+        </com:ko>
+        <com:ko tag="if" bind="isDiffTime">
+            <div id="diffOneDay" data-bind="ntsFixTableCustom: {option: oneDayDiffTimezoneOption}"></div>
+        </com:ko>
+    </com:ko>
+    <!-- End of Simple mode -->
+
+    <!-- Begin Detail mode -->
+    <div class="tab-seperator">
+
+        <!-- Begin Fixed timezones -->
+        <com:ko tag="if" bind="isFixed">
+            <!-- Begin Detail mode -->
+            <com:ko tag="if" bind="isDetailMode">
+                <!-- One day -->
+                <div tabindex="-1" class="accordion"
+                     data-bind="ntsAccordion: {enable: true, collapsible:true, active: oneDayActive} ">
+                    <h3>
+                        <label>#{i18n.getText('KMK003_51')}</label>
+                    </h3>
+                    <div class="accordion-content">
+                        <div id="fixedOneDay2" data-bind="ntsFixTableCustom: {option: oneDayFixedTimezoneOption}"></div>
+                    </div>
+                </div>
+                <!-- One day -->
+                <com:ko tag="if" bind="useHalfDay">
+                    <!-- Morning -->
+                    <div tabindex="-1" class="accordion"
+                         data-bind="ntsAccordion: {enable: true, collapsible:true, active: morningActive} ">
+                        <h3>
+                            <label>#{i18n.getText('KMK003_60')}</label>
+                        </h3>
+                        <div class="accordion-content">
+                            <div id="fixedMorning"
+                                 data-bind="ntsFixTableCustom: {option: morningFixedTimezoneOption}"></div>
+                        </div>
+                    </div>
+                    <!-- Morning -->
+                    <!-- Afternoon -->
+                    <div tabindex="-1" class="accordion"
+                         data-bind="ntsAccordion: {enable: true, collapsible:true, active: afternoonActive} ">
+                        <h3>
+                            <label>#{i18n.getText('KMK003_61')}</label>
+                        </h3>
+                        <div class="accordion-content">
+                            <div id="fixedAfternoon"
+                                 data-bind="ntsFixTableCustom: {option: afternoonFixedTimezoneOption}"></div>
+                        </div>
+                    </div>
+                    <!-- Afternoon -->
+                </com:ko>
+            </com:ko>
+            <!-- End of Detail mode -->
+        </com:ko>
+        <!-- End of Fixed timezones -->
+
+        <!-- Begin Flex timezones -->
+        <com:ko tag="if" bind="isFlexTimezone">
+            <com:ko tag="if" bind="isDetailMode">
+                <!-- One day -->
+                <div tabindex="-1" class="accordion"
+                     data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0}">
+                    <h3>
+                        <label>#{i18n.getText('KMK003_51')}</label>
+                    </h3>
+                    <div class="accordion-content">
+                        <div id="flexOneDay2" data-bind="ntsFixTableCustom: {option: oneDayFlexTimezoneOption}"></div>
+                    </div>
+                </div>
+                <!-- One day -->
+                <com:ko tag="if" bind="useHalfDay">
+                    <!-- Morning -->
+                    <div tabindex="-1" class="accordion"
+                         data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0} ">
+                        <h3>
+                            <label>#{i18n.getText('KMK003_60')}</label>
+                        </h3>
+                        <div class="accordion-content">
+                            <div id="flexMorning"
+                                 data-bind="ntsFixTableCustom: {option: morningFlexTimezoneOption}"></div>
+                        </div>
+                    </div>
+                    <!-- Morning -->
+                    <!-- Afternoon -->
+                    <div tabindex="-1" class="accordion"
+                         data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0} ">
+                        <h3>
+                            <label>#{i18n.getText('KMK003_61')}</label>
+                        </h3>
+                        <div class="accordion-content">
+                            <div id="flexAfternoon"
+                                 data-bind="ntsFixTableCustom: {option: afternoonFlexTimezoneOption}"></div>
+                        </div>
+                    </div>
+                    <!-- Afternoon -->
+                </com:ko>
+            </com:ko>
+        </com:ko>
+        <!-- End of Flex timezones -->
+
+        <!-- Begin Flex rest set -->
+        <com:ko tag="if" bind="isFlexRestTime">
+
+            <!-- Begin Detail mode -->
+            <com:ko tag="if" bind="isDetailMode">
+                <!-- One day -->
+                <div tabindex="-1" class="accordion"
+                     data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0} ">
+                    <h3>
+                        <label>#{i18n.getText('KMK003_51')}</label>
+                    </h3>
+                    <div class="accordion-content">
+                        <div id="flexRestOneDay2" class="default-input-width"
+                             data-bind="ntsFixTableCustom: {option: oneDayFlexRestSetOption}"></div>
+                        <com:ko tag="with" bind="oneDayFlexRestSet">
+                            <div tabindex="1" class="tab_5_checkbox" data-bind="ntsCheckBox: {
 								checked: useHereAfterRestSet,
 								enable: true,
 								text: nts.uk.resource.getText('KMK003_144') }"></div>
-							<table class="tbl-after-restset default-input-width">
-								<tr>
-									<th>#{i18n.getText('KMK003_174')}</th>
-									<th>#{i18n.getText('KMK003_176')}</th>
-								</tr>
-								<tr>
-									<td>
-										<input tabindex="1" data-bind="ntsTimeEditor: {
+                            <table class="tbl-after-restset default-input-width">
+                                <tr>
+                                    <th>#{i18n.getText('KMK003_174')}</th>
+                                    <th>#{i18n.getText('KMK003_176')}</th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input tabindex="1" data-bind="ntsTimeEditor: {
 											name: '#[KMK003_174]',
 											option: {textalign: 'center'},
 											constraint: 'AttendanceTime',
@@ -206,10 +273,10 @@
 											required: true,
 											inputFormat: 'time',
 											mode: 'time',
-											enable: useHereAfterRestSet }" />
-									</td>
-									<td>
-										<input tabindex="1" data-bind="ntsTimeEditor: {
+											enable: useHereAfterRestSet }"/>
+                                    </td>
+                                    <td>
+                                        <input tabindex="1" data-bind="ntsTimeEditor: {
 											name: '#[KMK003_176]',
 											option: {textalign: 'center'},
 											constraint: 'AttendanceTime',
@@ -217,35 +284,36 @@
 											required: true,
 											inputFormat: 'time',
 											mode: 'time',
-											enable: useHereAfterRestSet }" />
-									</td>
-								</tr>
-							</table>
-						</com:ko>
-					</div>
-				</div>
-				<!-- Morning -->
-				<com:ko tag="if" bind="useHalfDay">
-					<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
-						<h3>
-							<label>#{i18n.getText('KMK003_60')}</label>
-						</h3>
-						<div class="accordion-content">
-							<div id="flexRestMorning" class="default-input-width"
-								data-bind="ntsFixTableCustom: {option: morningFlexRestSetOption}"></div>
-							<com:ko tag="with" bind="morningFlexRestSet">
-								<div tabindex="1" class="tab_5_checkbox" data-bind="ntsCheckBox: {
+											enable: useHereAfterRestSet }"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </com:ko>
+                    </div>
+                </div>
+                <!-- Morning -->
+                <com:ko tag="if" bind="useHalfDay">
+                    <div tabindex="-1" class="accordion"
+                         data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0} ">
+                        <h3>
+                            <label>#{i18n.getText('KMK003_60')}</label>
+                        </h3>
+                        <div class="accordion-content">
+                            <div id="flexRestMorning" class="default-input-width"
+                                 data-bind="ntsFixTableCustom: {option: morningFlexRestSetOption}"></div>
+                            <com:ko tag="with" bind="morningFlexRestSet">
+                                <div tabindex="1" class="tab_5_checkbox" data-bind="ntsCheckBox: {
 									checked: useHereAfterRestSet,
 									enable: true,
 									text: nts.uk.resource.getText('KMK003_144') }"></div>
-								<table class="tbl-after-restset default-input-width">
-									<tr>
-										<th>#{i18n.getText('KMK003_174')}</th>
-										<th>#{i18n.getText('KMK003_176')}</th>
-									</tr>
-									<tr>
-										<td>
-											<input tabindex="1" data-bind="ntsTimeEditor: {
+                                <table class="tbl-after-restset default-input-width">
+                                    <tr>
+                                        <th>#{i18n.getText('KMK003_174')}</th>
+                                        <th>#{i18n.getText('KMK003_176')}</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input tabindex="1" data-bind="ntsTimeEditor: {
 												name: '#[KMK003_174]',
 												option: {textalign: 'center'},
 												constraint: 'AttendanceTime',
@@ -253,10 +321,10 @@
 												required: true,
 												inputFormat: 'time',
 												mode: 'time',
-												enable: useHereAfterRestSet }" />
-										</td>
-										<td>
-											<input tabindex="1" data-bind="ntsTimeEditor: {
+												enable: useHereAfterRestSet }"/>
+                                        </td>
+                                        <td>
+                                            <input tabindex="1" data-bind="ntsTimeEditor: {
 												name: '#[KMK003_176]',
 												option: {textalign: 'center'},
 												constraint: 'AttendanceTime',
@@ -264,34 +332,35 @@
 												required: true,
 												inputFormat: 'time',
 												mode: 'time',
-												enable: useHereAfterRestSet }" />
-										</td>
-									</tr>
-								</table>
-							</com:ko>
-						</div>
-					</div>
-					<!-- Afternoon -->
-					<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
-						<h3>
-							<label>#{i18n.getText('KMK003_61')}</label>
-						</h3>
-						<div class="accordion-content">
-							<div id="flexRestAfternoon" class="default-input-width"
-								data-bind="ntsFixTableCustom: {option: afternoonFlexRestSetOption}"></div>
-							<com:ko tag="with" bind="afternoonFlexRestSet">
-								<div tabindex="1" class="tab_5_checkbox" data-bind="ntsCheckBox: {
+												enable: useHereAfterRestSet }"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </com:ko>
+                        </div>
+                    </div>
+                    <!-- Afternoon -->
+                    <div tabindex="-1" class="accordion"
+                         data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0} ">
+                        <h3>
+                            <label>#{i18n.getText('KMK003_61')}</label>
+                        </h3>
+                        <div class="accordion-content">
+                            <div id="flexRestAfternoon" class="default-input-width"
+                                 data-bind="ntsFixTableCustom: {option: afternoonFlexRestSetOption}"></div>
+                            <com:ko tag="with" bind="afternoonFlexRestSet">
+                                <div tabindex="1" class="tab_5_checkbox" data-bind="ntsCheckBox: {
 									checked: useHereAfterRestSet,
 									enable: true,
 									text: nts.uk.resource.getText('KMK003_144') }"></div>
-								<table class="tbl-after-restset default-input-width">
-									<tr>
-										<th>#{i18n.getText('KMK003_174')}</th>
-										<th>#{i18n.getText('KMK003_176')}</th>
-									</tr>
-									<tr>
-										<td>
-											<input tabindex="1" data-bind="ntsTimeEditor: {
+                                <table class="tbl-after-restset default-input-width">
+                                    <tr>
+                                        <th>#{i18n.getText('KMK003_174')}</th>
+                                        <th>#{i18n.getText('KMK003_176')}</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input tabindex="1" data-bind="ntsTimeEditor: {
 												name: '#[KMK003_174]',
 												option: {textalign: 'center'},
 												constraint: 'AttendanceTime',
@@ -299,10 +368,10 @@
 												required: true,
 												inputFormat: 'time',
 												mode: 'time',
-												enable: useHereAfterRestSet }" />
-										</td>
-										<td>
-											<input tabindex="1" data-bind="ntsTimeEditor: {
+												enable: useHereAfterRestSet }"/>
+                                        </td>
+                                        <td>
+                                            <input tabindex="1" data-bind="ntsTimeEditor: {
 												name: '#[KMK003_176]',
 												option: {textalign: 'center'},
 												constraint: 'AttendanceTime',
@@ -310,43 +379,43 @@
 												required: true,
 												inputFormat: 'time',
 												mode: 'time',
-												enable: useHereAfterRestSet }" />
-										</td>
-									</tr>
-								</table>
-							</com:ko>
-						</div>
-					</div>
-				</com:ko>
-			</com:ko>
-			<!-- End of Detail mode -->
-		</com:ko>
-		<!-- End of Flex rest set -->
-		
-		<!-- Begin flow timezones -->
-		<com:ko tag="if" bind="isFlowTimezone">
-			<div id="flowTz" data-bind="ntsFixTableCustom: {option: flowTimezoneOption}"></div>
-		</com:ko>
-		<!-- End of flow timezones -->
-		
-		<!-- Begin flow rest set -->
-		<com:ko tag="if" bind="isFlowRestTime">
-			<div id="flowRt" data-bind="ntsFixTableCustom: {option: flowRestSetOption}"></div>
-				
-			<com:ko tag="with" bind="flowRestSet">
-				<div tabindex="86" class="tab_5_checkbox" data-bind="ntsCheckBox: {
+												enable: useHereAfterRestSet }"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </com:ko>
+                        </div>
+                    </div>
+                </com:ko>
+            </com:ko>
+            <!-- End of Detail mode -->
+        </com:ko>
+        <!-- End of Flex rest set -->
+
+        <!-- Begin flow timezones -->
+        <com:ko tag="if" bind="isFlowTimezone">
+            <div id="flowTz" data-bind="ntsFixTableCustom: {option: flowTimezoneOption}"></div>
+        </com:ko>
+        <!-- End of flow timezones -->
+
+        <!-- Begin flow rest set -->
+        <com:ko tag="if" bind="isFlowRestTime">
+            <div id="flowRt" data-bind="ntsFixTableCustom: {option: flowRestSetOption}"></div>
+
+            <com:ko tag="with" bind="flowRestSet">
+                <div tabindex="88" class="tab_5_checkbox" data-bind="ntsCheckBox: {
 					checked: useHereAfterRestSet,
 					enable: true,
 					text: nts.uk.resource.getText('KMK003_144') }"></div>
-					
-				<table class="tbl-after-restset default-input-width">
-					<tr>
-						<th>#{i18n.getText('KMK003_174')}</th>
-						<th>#{i18n.getText('KMK003_176')}</th>
-					</tr>
-					<tr>
-						<td>
-							<input tabindex="87" data-bind="ntsTimeEditor: {
+
+                <table class="tbl-after-restset default-input-width">
+                    <tr>
+                        <th>#{i18n.getText('KMK003_174')}</th>
+                        <th>#{i18n.getText('KMK003_176')}</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input tabindex="89" data-bind="ntsTimeEditor: {
 								name: '#[KMK003_174]',
 								option: {textalign: 'center'},
 								constraint: 'AttendanceTime',
@@ -354,10 +423,10 @@
 								required: true,
 								inputFormat: 'time',
 								mode: 'time',
-								enable: useHereAfterRestSet }" />
-						</td>
-						<td>
-							<input tabindex="87" data-bind="ntsTimeEditor: {
+								enable: useHereAfterRestSet }"/>
+                        </td>
+                        <td>
+                            <input tabindex="89" data-bind="ntsTimeEditor: {
 								name: '#[KMK003_176]',
 								option: {textalign: 'center'},
 								constraint: 'AttendanceTime',
@@ -365,60 +434,61 @@
 								required: true,
 								inputFormat: 'time',
 								mode: 'time',
-								enable: useHereAfterRestSet }" />
-						</td>
-					</tr>
-				</table>
-			</com:ko>
-				
-		</com:ko>
-		<!-- End of flow rest set -->
-		
-		<!-- Begin Diff timezones -->
-		<com:ko tag="if" bind="isDiffTime">
-			<!-- Begin Simple mode -->
-			<com:ko tag="ifnot" bind="isDetailMode">
-				<div id="diffOneDay" data-bind="ntsFixTableCustom: {option: oneDayDiffTimezoneOption}"></div>
-			</com:ko>
-			<!-- End of Simple mode -->
-			<!-- Begin Detail mode -->
-			<com:ko tag="if" bind="isDetailMode">
-				<!-- One day -->
-				<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
-					<h3>
-						<label>#{i18n.getText('KMK003_51')}</label>
-					</h3>
-					<div class ="accordion-content">
-						<div id="diffOneDay" data-bind="ntsFixTableCustom: {option: oneDayDiffTimezoneOption}"></div>
-					</div>
-				</div><!-- One day -->
-				
-				<com:ko tag="if" bind="useHalfDay">
-					<!-- Morning -->
-					<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
-						<h3>
-							<label>#{i18n.getText('KMK003_60')}</label>
-						</h3>
-						<div class ="accordion-content">
-							<div id="diffMorning" data-bind="ntsFixTableCustom: {option: morningDiffTimezoneOption}"></div>
-						</div>
-					</div><!-- Morning -->
-					
-					<!-- Afternoon -->
-					<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true} ">
-						<h3>
-							<label>#{i18n.getText('KMK003_61')}</label>
-						</h3>
-						<div class ="accordion-content">
-							<div id="diffAfternoon" data-bind="ntsFixTableCustom: {option: afternoonDiffTimezoneOption}"></div>
-						</div>
-					</div><!-- Afternoon -->
-				</com:ko>
-			</com:ko>
-			<!-- End of Detail mode -->
-		</com:ko>
-		<!-- End Diff timezones -->
-		
-	</div>
-	
+								enable: useHereAfterRestSet }"/>
+                        </td>
+                    </tr>
+                </table>
+            </com:ko>
+
+        </com:ko>
+        <!-- End of flow rest set -->
+
+        <!-- Begin Diff timezones -->
+        <com:ko tag="if" bind="isDiffTime">
+            <!-- Begin Detail mode -->
+            <com:ko tag="if" bind="isDetailMode">
+                <!-- One day -->
+                <div tabindex="-1" class="accordion"
+                     data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0} ">
+                    <h3>
+                        <label>#{i18n.getText('KMK003_51')}</label>
+                    </h3>
+                    <div class="accordion-content">
+                        <div id="diffOneDay2" data-bind="ntsFixTableCustom: {option: oneDayDiffTimezoneOption}"></div>
+                    </div>
+                </div><!-- One day -->
+
+                <com:ko tag="if" bind="useHalfDay">
+                    <!-- Morning -->
+                    <div tabindex="-1" class="accordion"
+                         data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0} ">
+                        <h3>
+                            <label>#{i18n.getText('KMK003_60')}</label>
+                        </h3>
+                        <div class="accordion-content">
+                            <div id="diffMorning"
+                                 data-bind="ntsFixTableCustom: {option: morningDiffTimezoneOption}"></div>
+                        </div>
+                    </div><!-- Morning -->
+
+                    <!-- Afternoon -->
+                    <div tabindex="-1" class="accordion"
+                         data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0} ">
+                        <h3>
+                            <label>#{i18n.getText('KMK003_61')}</label>
+                        </h3>
+                        <div class="accordion-content">
+                            <div id="diffAfternoon"
+                                 data-bind="ntsFixTableCustom: {option: afternoonDiffTimezoneOption}"></div>
+                        </div>
+                    </div><!-- Afternoon -->
+                </com:ko>
+            </com:ko>
+            <!-- End of Detail mode -->
+        </com:ko>
+        <!-- End Diff timezones -->
+
+    </div>
+    <!-- End Detail mode -->
+
 </ui:composition>

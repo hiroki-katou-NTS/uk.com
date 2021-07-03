@@ -20,20 +20,15 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.task.parallel.ManagedParallelWithContext;
-import nts.arc.task.parallel.ManagedParallelWithContext.ControlOption;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.BasicWorkSettingByClassificationGetterCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.BasicWorkSettingByWorkplaceGetterCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.CalculationCache;
-import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicScheduleHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicWorkSettingHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeErrorLogHandler;
-import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeMonthlyPatternHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTimeHandler;
-import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTypeHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheduleErrorLogGeterCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.WorkTimeConvertCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.WorkdayAttrByClassGetterCommand;
@@ -104,7 +99,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.D
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
@@ -112,6 +106,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeek;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
@@ -167,25 +162,11 @@ public class ScheduleCreatorExecutionTransaction {
 	@Inject
 	private ScheduleErrorLogRepository scheduleErrorLogRepository;
 
-	/** The sche cre exe work type handler. */
-	@Inject
-	private ScheCreExeWorkTypeHandler scheCreExeWorkTypeHandler;
-
-	/** The sche cre exe basic schedule handler. */
-	@Inject
-	private ScheCreExeBasicScheduleHandler scheCreExeBasicScheduleHandler;
-
-	@Inject
-	private ScheCreExeMonthlyPatternHandler scheCreExeMonthlyPatternHandler;
-
 	@Inject
 	private I18NResourcesForUK internationalization;
 
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
-
-	@Inject
-	private ManagedParallelWithContext managedParallelWithContext;
 
 	public static int MAX_DELAY_PARALLEL = 0;
 
@@ -237,9 +218,6 @@ public class ScheduleCreatorExecutionTransaction {
 
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
-
-	@Inject
-	private WorkTimeSettingService workTimeSettingService;
 
 	@Inject
 	private BasicScheduleService basicScheduleService;
@@ -338,26 +316,23 @@ public class ScheduleCreatorExecutionTransaction {
 			this.workScheduleRepository.insertAll(companyId, result.getListWorkSchedule());
 			
 			// Outputの勤務種類一覧を繰り返す
-			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
-					result.getListWorkSchedule(), ws -> {
-						// 暫定データの登録
-						if (ws != null) {
-							this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
-									Arrays.asList(ws.getYmd()));
-						}
-					});
-
+			result.getListWorkSchedule().forEach( ws -> {
+				// 暫定データの登録
+				if (ws != null) {
+					this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
+							Arrays.asList(ws.getYmd()));
+				}
+			});
+			
 			// エラー一覧を繰り返す
-			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
-					result.getListError(), error -> {
-						// エラーを登録する
-						if (error != null) {
-							error.setExecutionId(command.getExecutionId());
-							this.scheduleErrorLogRepository.addByTransaction(error);
-						}
-					});
-
-			// }
+			result.getListError().forEach( error -> {
+				// エラーを登録する
+				if (error != null) {
+					error.setExecutionId(command.getExecutionId());
+					this.scheduleErrorLogRepository.addByTransaction(error);
+				}
+			});
+			
 		}
 	}
 
@@ -513,7 +488,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 	/**
 	 * 個人情報をもとにスケジュールを作成する-Creates the schedule based person. 勤務予定を作成する
-	 * 
+	 * 勤務予定作成共通処理
 	 * @param command
 	 * @param creator
 	 * @param domain
@@ -560,7 +535,7 @@ public class ScheduleCreatorExecutionTransaction {
 			// ・勤務サイクルコード・スタート勤務サイクル ・勤務サイクルスタート位置 ・休日優先方法 ・個人スケジュール休日パターン設定
 			// 「Output」 ・勤務予定 ・エラー ・処理状態/
 
-			// Output。処理状態を確認する (call to method 処理状態を確認する)
+			// Output。処理状態を確認する (call to method 勤務予定反映する)
 			OutputCreateScheduleOneDate createScheduleOneDate = this.reflectWorkSchedule(command, creator, domain,
 					context, targetPeriod, dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche, carrier);
 			switch (createScheduleOneDate.getProcessingStatus()) {
@@ -672,8 +647,7 @@ public class ScheduleCreatorExecutionTransaction {
 				// 勤務情報が正常な状態かをチェックする
 
 				WorkInformation.Require require = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository,
-						workTimeSettingService, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet,
-						predetemineTimeSet);
+						basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
 				ErrorStatusWorkInfo checkErrorCondition = information.checkErrorCondition(require);
 
 				// 正常の場合
@@ -716,7 +690,7 @@ public class ScheduleCreatorExecutionTransaction {
 								ShortWorkingTimeSheet timeSheet = new ShortWorkingTimeSheet(
 										new ShortWorkTimFrameNo(shortChild.getTimeSlot()),
 										EnumAdaptor.valueOf(shortWork.getChildCareAtr().value,
-												ChildCareAttribute.class),
+												ChildCareAtr.class),
 										shortChild.getStartTime(), shortChild.getEndTime());
 								lstSheets.add(timeSheet);
 
@@ -1101,7 +1075,7 @@ public class ScheduleCreatorExecutionTransaction {
 		// 勤務予定をコピーして作成する
 		// コピー元勤務予定一覧キャッシュを確認する
 
-		// データなし
+		// データなし - hiện tại đang lúc nào cũng rơi vào case này
 		if (workSchedules.isEmpty()) {
 
 			int daysToAdd = targetPeriod.datesBetween().size() - 1;
@@ -1242,7 +1216,10 @@ public class ScheduleCreatorExecutionTransaction {
 			if(getMonthlySetting.isPresent()) {
 				return new PrepareWorkOutput(getMonthlySetting.get().getWorkInformation(), null, null, Optional.empty());
 			}
-			return new PrepareWorkOutput(null, null, null, Optional.empty());
+			String errorContent = this.internationalization.localize("Msg_604", "#Msg_604").get();
+			ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
+					creator.getEmployeeId());
+			return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheduleErrorLog));
 		} else {
 			// 「労働条件項目．月間パターン」をチェックする
 			// Nullでない 場合
@@ -1661,6 +1638,8 @@ public class ScheduleCreatorExecutionTransaction {
 				if (!optionalCompanyBasicWork.isPresent()) {
 					this.scheCreExeErrorLogHandler.addError(geterCommand, creator.getEmployeeId(), "Msg_589");
 					return Optional.empty();
+				} else {
+					return optionalCompanyBasicWork.get().getBasicWorkSetting().stream().findFirst();
 				}
 			}
 			
@@ -1715,9 +1694,6 @@ public class ScheduleCreatorExecutionTransaction {
 
 		@Inject
 		private WorkTimeSettingRepository workTimeSettingRepository;
-
-		@Inject
-		private WorkTimeSettingService workTimeSettingService;
 
 		@Inject
 		private BasicScheduleService basicScheduleService;

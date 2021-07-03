@@ -54,20 +54,21 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.ParamI
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.RegisterIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.SelfConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EmpProvisionalInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RegisterProvisionalData;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.CorrectDailyAttendanceService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
@@ -108,6 +109,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.month.LeaveDayErrorD
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IGetDataClosureStart;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
+import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCalcTimeService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -176,12 +178,15 @@ public class DailyModifyRCommandFacade {
 
 	@Inject
 	private ProcessMonthlyCalc processMonthlyCalc;
-	
+
 	@Inject
 	private CorrectDaiAttRequireImpl correctDaiAttRequireImpl;
-	
+
 	@Inject
 	private DailyCorrectEventServiceCenter dailyCorrectEventServiceCenter;
+	
+	@Inject
+	private DailyCorrectCalcTimeService dCCalcTimeService;
 
 	public DataResultAfterIU insertItemDomain(DPItemParent dataParent) {
 		// Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
@@ -216,7 +221,7 @@ public class DailyModifyRCommandFacade {
 					});
 					domainMonth.getAttendanceTime().ifPresent(d -> {
 						d.setVersion(dataParent.getMonthValue().getVersion());
-					}); 
+					});
 					domainMonthOpt = Optional.of(domainMonth);
 				}
 				monthParam = new UpdateMonthDailyParam(month.getYearMonth(), month.getEmployeeId(),
@@ -234,6 +239,11 @@ public class DailyModifyRCommandFacade {
 						dataParent.getMonthValue().getVersion());
 			}
 		}
+		
+		dCCalcTimeService.getWplPosId(dataParent.getItemValues()); 
+		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
+				.findAll(AppContexts.user().companyId()).stream()
+				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
 
 		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate = dataParent.getItemValues().stream()
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
@@ -241,7 +251,7 @@ public class DailyModifyRCommandFacade {
 		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateNotChange = dataParent.getItemValues().stream()
 				//.filter(x -> !DPText.ITEM_CHANGE.contains(x.getItemId()))
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
-
+		
 		List<DailyModifyQuery> querys = createQuerys(mapSidDate);
 		List<DailyModifyQuery> queryNotChanges = createQuerys(mapSidDateNotChange);
 		// map to list result -> check error;
@@ -326,14 +336,14 @@ public class DailyModifyRCommandFacade {
 				clearConfirmApprovalService.clearConfirmApproval(dataParent.getSpr().getEmployeeId(),
 						Arrays.asList(dataParent.getSpr().getDate()));
 			}
-			
+
 			// only insert check box
 			// insert sign
 			insertSign(dataParent.getDataCheckSign(), dailyEdits, dataParent.getDailyOlds(), updated);
 			// insert approval
 			Set<Pair<String, GeneralDate>> dataApprovalCheck = insertApproval(dataParent.getDataCheckApproval(),
 					updated);
-						
+
 			List<String> empList = updated.stream().map(x -> x.getLeft()).distinct().collect(Collectors.toList());
 			List<GeneralDate> empDate = updated.stream().map(x -> x.getRight()).sorted((x, y) -> x.compareTo(y))
 					.distinct().collect(Collectors.toList());
@@ -375,7 +385,7 @@ public class DailyModifyRCommandFacade {
 			if (dataParent.isCheckDailyChange() || flagTempCalc) {
 				//勤怠ルールの補正処理
 				//2021/03/19 - 日別修正から補正処理を実行する対応
-				val changeSetting = new ChangeDailyAttendance(false, false, false, true, ScheduleRecordClassifi.RECORD);
+				val changeSetting = new ChangeDailyAttendance(false, false, false, true, ScheduleRecordClassifi.RECORD, false);
 				List<DailyRecordDto> dtoOldTemp = dailyOlds;
 				dailyEdits = dailyEdits.stream().map(x -> {
 					val domDaily = CorrectDailyAttendanceService.processAttendanceRule(
@@ -391,21 +401,22 @@ public class DailyModifyRCommandFacade {
 					if (AppContexts.optionLicense().customize().ootsuka()) {
 						 List<DPItemValue> lstItemValue = mapSidDateNotChange.get(Pair.of(x.getEmployeeId(), x.getDate()));
 						 if(lstItemValue.isEmpty()) {
-							 return  DailyRecordDto.from(domDaily);
+							 return  DailyRecordDto.from(domDaily, optionalMaster);
 						 }
 						 val itemValues = lstItemValue.stream()
 									.map(it -> new ItemValue(it.getValue(),
 											it.getValueType() == null ? ValueType.UNKNOWN : ValueType.valueOf(it.getValueType()),
 											it.getLayoutCode(), it.getItemId()))
 									.collect(Collectors.toList());
-							
+
 						DailyModifyRCResult updatedOoTsuka = DailyModifyRCResult.builder().employeeId(x.getEmployeeId())
 								.workingDate(x.getDate()).items(itemValues).completed();
-						EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(DailyRecordDto
-								.from(domDaily), updatedOoTsuka, AppContexts.user().companyId());
+						EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(
+								DailyRecordDto.from(domDaily, optionalMaster), 
+								updatedOoTsuka, AppContexts.user().companyId());
 						return result.getCorrected();
 					}
-					return DailyRecordDto.from(domDaily);
+					return DailyRecordDto.from(domDaily, optionalMaster);
 				}).collect(Collectors.toList());
 				//日別実績の計算
 				DailyCalcResult daiCalcResult = processDailyCalc.processDailyCalc(
@@ -543,9 +554,7 @@ public class DailyModifyRCommandFacade {
 					errorMonthAfterCalc = errorMonth.getHasError();
 					if (!errorMonthAfterCalc) {
 						this.insertAllData.handlerInsertAllMonth(resultMonth.getLstMonthDomain(), monthParam);
-						Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
-								.findAll(AppContexts.user().companyId()).stream()
-								.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
+						
 						dataResultAfterIU.setDomainMonthOpt(resultMonth.getLstMonthDomain().isEmpty() ? Optional.empty()
 								: resultMonth.getLstMonthDomain().stream()
 										.map(x -> MonthlyRecordWorkDto.fromDtoWithOptional(x, optionalMaster))
@@ -577,13 +586,13 @@ public class DailyModifyRCommandFacade {
 			dataParent.setDataCheckApproval(dataParent.getDataCheckApproval().stream()
 					.filter(x -> !rowRemoveInsert.contains(Pair.of(x.getEmployeeId(), x.getDate())))
 					.collect(Collectors.toList()));
-			
+
 			// SPR連携時の確認承認解除
 			if (dataParent.getSpr() != null) {
 				clearConfirmApprovalService.clearConfirmApproval(dataParent.getSpr().getEmployeeId(),
 						Arrays.asList(dataParent.getSpr().getDate()));
 			}
-			
+
 			// insert sign
 			// 日の本人確認を登録する
 			// TODO: neu ko goi xu ly ngay thi ko co domain loi cho ngay
@@ -899,7 +908,7 @@ public class DailyModifyRCommandFacade {
 					return false;
 				return true;
 			}).collect(Collectors.toList());
-			
+
 			if (!listEmpDate.isEmpty()) {
 				registerProvisionalData.registerProvisionalData(AppContexts.user().companyId(),
 						listEmpDate.stream().map(i -> new EmpProvisionalInput(i.getLeft(), Arrays.asList(i.getRight())))
@@ -914,7 +923,7 @@ public class DailyModifyRCommandFacade {
 					return false;
 				return true;
 			}).collect(Collectors.toList());
-			
+
 			Map<String, List<Pair<String, GeneralDate>>> mapEmpDate = listEmpDate.stream()
 					.collect(Collectors.groupingBy(x -> x.getLeft()));
 			mapEmpDate.entrySet().forEach(x -> {
@@ -934,7 +943,7 @@ public class DailyModifyRCommandFacade {
 			List<ItemValue> niv = ProcessCommonCalc.getFrom(news, o.getKey());
 			if (!CollectionUtil.isEmpty(niv)) {
 				if (niv.stream().anyMatch(c -> o.getValue().stream()
-						.filter(oi -> c.valueAsObjet() != null && c.equals(oi)).findFirst().isPresent())) {
+						.filter(oi -> c.valueAsObjet() != null && !c.equals(oi)).findFirst().isPresent())) {
 					editedDate.add(o.getKey());
 				}
 			}
@@ -1037,85 +1046,6 @@ public class DailyModifyRCommandFacade {
 		if (isErAl == false)
 			return false;
 		return settingMaster == null ? false : settingMaster.isShowError();
-	}
-
-	public ErrorAfterCalcDaily checkErrorAfterCalcDaily(RCDailyCorrectionResult resultIU,
-			List<DailyModifyResult> resultOlds, DateRange range, List<DailyRecordDto> dailyDtoEditAll,
-			List<DPItemValue> lstItemEdits) {
-		Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> resultErrorDaily = new HashMap<>();
-		Map<Integer, List<DPItemValue>> resultErrorMonth = new HashMap<>();
-		boolean hasError = false;
-		DataResultAfterIU dataResultAfterIU = new DataResultAfterIU();
-
-		val errorDivergence = validatorDataDaily.errorCheckDivergence(resultIU.getLstDailyDomain(),
-				resultIU.getLstMonthDomain());
-		if (!errorDivergence.isEmpty()) {
-			resultErrorDaily.putAll(errorDivergence);
-			hasError = true;
-		}
-
-		// 残数系のエラーチェック（月次集計なし）
-		val sidChange = ProcessCommonCalc.itemInGroupChange(resultIU.getLstDailyDomain(), resultOlds);
-		val pairError = mapDomainMonthChange(sidChange, resultIU.getLstDailyDomain(), resultIU.getLstMonthDomain(),
-				dailyDtoEditAll, range, lstItemEdits);
-		Map<Integer, List<DPItemValue>> errorMonth = validatorDataDaily.errorMonthNew(pairError.getErrorMonth());
-		// val errorMonth = validatorDataDaily.errorMonth(resultIU.getLstMonthDomain(),
-		// monthParam);
-		List<EmployeeMonthlyPerError> errorYearHoliday = pairError.getErrorMonth().stream()
-				.collect(Collectors.toList());
-		Set<Pair<String, GeneralDate>> detailEmployeeError = new HashSet<>();
-		if (!errorMonth.isEmpty() && !pairError.isOnlyErrorOldDb()) {
-			resultErrorMonth.putAll(errorMonth);
-			detailEmployeeError.addAll(pairError.getDetailEmployeeError());
-			hasError = true;
-		}
-
-		return new ErrorAfterCalcDaily(hasError, resultErrorMonth, detailEmployeeError, resultErrorDaily,
-				dataResultAfterIU.getFlexShortage(), errorYearHoliday);
-	}
-
-	public ErrorAfterCalcDaily checkErrorAfterCalc(RCDailyCorrectionResult resultIU, UpdateMonthDailyParam monthlyParam,
-			List<DailyModifyResult> resultOlds, int mode, DPMonthValue monthValue, DateRange range,
-			List<DailyRecordDto> dailyEditAll, List<DPItemValue> lstItemEdits) {
-		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
-		Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> resultErrorDaily = new HashMap<>();
-		boolean hasError = false;
-		DataResultAfterIU dataResultAfterIU = new DataResultAfterIU();
-
-		val errorDivergence = validatorDataDaily.errorCheckDivergence(resultIU.getLstDailyDomain(),
-				resultIU.getLstMonthDomain());
-		if (!errorDivergence.isEmpty()) {
-			resultErrorDaily.putAll(errorDivergence);
-			hasError = true;
-		}
-		if (mode == 0 && monthlyParam.getHasFlex() != null && monthlyParam.getHasFlex()) {
-			val flexShortageRCDto = validatorDataDaily.errorCheckFlex(resultIU.getLstMonthDomain(), monthlyParam);
-			if (flexShortageRCDto.isError() || !flexShortageRCDto.getMessageError().isEmpty()) {
-				hasError = true;
-				if (!resultIU.getLstMonthDomain().isEmpty())
-					flexShortageRCDto.createDataCalc(ProcessCommonCalc.convertMonthToItem(
-							MonthlyRecordWorkDto.fromOnlyAttTime(resultIU.getLstMonthDomain().get(0)), monthValue));
-			}
-			flexShortageRCDto.setVersion(monthValue.getVersion());
-			dataResultAfterIU.setFlexShortage(flexShortageRCDto);
-		}
-		// 残数系のエラーチェック（月次集計なし）
-		val sidChange = ProcessCommonCalc.itemInGroupChange(resultIU.getLstDailyDomain(), resultOlds);
-		val pairError = mapDomainMonthChange(sidChange, resultIU.getLstDailyDomain(), resultIU.getLstMonthDomain(),
-				dailyEditAll, range, lstItemEdits);
-		Map<Integer, List<DPItemValue>> errorMonth = validatorDataDaily.errorMonthNew(pairError.getErrorMonth());
-		// val errorMonth = validatorDataDaily.errorMonthNew();
-		// val errorMonth = validatorDataDaily.errorMonth(resultIU.getLstMonthDomain(),
-		// monthParam);
-		Set<Pair<String, GeneralDate>> detailEmployeeError = new HashSet<>();
-		if (!errorMonth.isEmpty() && !pairError.isOnlyErrorOldDb()) {
-			resultError.putAll(errorMonth);
-			detailEmployeeError.addAll(pairError.getDetailEmployeeError());
-			hasError = true;
-		}
-
-		return new ErrorAfterCalcDaily(hasError, resultError, detailEmployeeError, resultErrorDaily,
-				dataResultAfterIU.getFlexShortage(), new ArrayList<>());
 	}
 
 	private List<IntegrationOfDaily> unionDomain(List<IntegrationOfDaily> parent, List<IntegrationOfDaily> child) {
@@ -1257,7 +1187,7 @@ public class DailyModifyRCommandFacade {
 
 	public List<DailyRecordDto> toDto(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoEdits, boolean isOptional) {
 		List<DailyRecordDto> dtoNews = new ArrayList<>();
-          
+
 		dtoNews = dtoEdits.stream().map(o -> {
 			val itemChanges = querys.stream()
 					.filter(q -> q.getBaseDate().equals(o.workingDate()) && q.getEmployeeId().equals(o.employeeId()))
@@ -1276,7 +1206,7 @@ public class DailyModifyRCommandFacade {
 					.addAll(lstState.stream()
 							.map(c -> EditStateOfDailyPerformanceDto.getDto(o.getEmployeeId(), o.getDate(), c))
 							.collect(Collectors.toList()));
-			
+
 			createStampSourceInfo(o, querys);
 			o.getTimeLeaving().ifPresent(dto -> {
 				if (dto.getWorkAndLeave() != null)
@@ -1284,7 +1214,7 @@ public class DailyModifyRCommandFacade {
 			});
 			return o;
 		}).collect(Collectors.toList());
-		
+
 		if (isOptional) {
 			Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo.findAll(AppContexts.user().companyId())
 					.stream().collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c.getOptionalItemAtr()));

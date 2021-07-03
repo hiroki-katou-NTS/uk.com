@@ -35,7 +35,7 @@ public class AllReservationRequest extends NRLRequest<Frame> {
 	 * @see nts.uk.ctx.at.function.app.nrl.request.NRLRequest#sketch(nts.uk.ctx.at.function.app.nrl.request.ResourceContext)
 	 */
 	@Override
-	public void sketch(ResourceContext<Frame> context) {
+	public void sketch(String empInfoTerCode, ResourceContext<Frame> context) {
 		String payload = context.getEntity().pickItem(Element.PAYLOAD);
 		int length = payload.length();
 		int q = length / DefaultValue.SINGLE_FRAME_LEN_48;
@@ -63,8 +63,7 @@ public class AllReservationRequest extends NRLRequest<Frame> {
 		}
 
 		//Insert 予約データ into DB
-		String nrlNo = context.getEntity().pickItem(Element.NRL_NO);
-		//TODO: default ContractCode "000000000000"
+		String contractCode =  context.getEntity().pickItem(Element.CONTRACT_CODE);
 		for (int i = 0; i < q; i++) {
 			Record record = exchange.getRecord(i);
 			
@@ -72,7 +71,7 @@ public class AllReservationRequest extends NRLRequest<Frame> {
 					record.get(FieldName.RSV_MENU), record.get(FieldName.RSV_YMD), record.get(FieldName.RSV_HMS),
 					record.get(FieldName.RSV_QUAN));
 
-			Optional<AtomTask> result = convertTRReservationAdapter.convertData(nrlNo.trim(), "000000000000", reservData);
+			Optional<AtomTask> result = convertTRReservationAdapter.convertData(empInfoTerCode, contractCode, reservData);
 			if (result.isPresent())
 				result.get().run();
 		}

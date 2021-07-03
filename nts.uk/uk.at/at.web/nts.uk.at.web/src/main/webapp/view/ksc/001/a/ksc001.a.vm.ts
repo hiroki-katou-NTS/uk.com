@@ -1,7 +1,9 @@
 module nts.uk.at.view.ksc001.a {
     export module viewmodel {
         export class ScreenModel {
+
             constructor() {
+                const self = this;
             }
             /**
              * get data on start page

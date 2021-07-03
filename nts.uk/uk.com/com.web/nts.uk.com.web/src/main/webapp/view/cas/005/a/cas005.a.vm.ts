@@ -54,6 +54,8 @@ module nts.uk.com.view.cas005.a {
             isCopy: KnockoutObservable<boolean>;
             enableRoleCode: KnockoutObservable<boolean>;
             visibleWebmenu: KnockoutObservable<boolean>;
+            //visible
+            canOpenDialogC: KnockoutObservable<boolean>;
 
             //obj roleCas005Command
             roleCas005Command: KnockoutObservable<model.RoleCas005Command>;
@@ -122,8 +124,8 @@ module nts.uk.com.view.cas005.a {
 
                 //switch
                 self.categoryAssign = ko.observableArray([
-                    { code: '0', name: getText('CAS005_35') },
-                    { code: '1', name: getText('CAS005_36') }
+                    { code: 0, name: getText('CAS005_35') },
+                    { code: 1, name: getText('CAS005_36') }
                 ]);
                 self.referenceAuthority = ko.observableArray([
                     { code: '0', name: getText('CAS005_41') },
@@ -157,6 +159,8 @@ module nts.uk.com.view.cas005.a {
                 self.isDelete = ko.observable(true);
                 self.isCopy = ko.observable(false);
                 self.enableRoleCode = ko.observable(false);
+                //visible
+                self.canOpenDialogC = ko.observable(false);	// 遷移先のダイアログに表示するメニューがないためボタン自体を非表示#117331
 
                 //table right
                 self.component = new ccg.component.viewmodel.ComponentModel({
@@ -325,10 +329,9 @@ module nts.uk.com.view.cas005.a {
                         else {
                             self.createButton();
                         }
-                        dfd.resolve();
                     });
                 });
-
+                dfd.resolve();
                 return dfd.promise();
             }//end start page
 

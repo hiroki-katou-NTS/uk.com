@@ -52,7 +52,7 @@
 							multiple: false,
 							enable: true,										
 							showCheckBox: false,
-							rows : 15}">
+							rows : 10}">
 					</table>
 
 
@@ -60,8 +60,9 @@
 				</div>
 				<div class="rightContent"></div>
 				<div class="component-area">
-					<label>#{i18n.getText('KDW002_23')} </label> <label class="mylabel"
-						data-bind="text: txtItemId"></label> <label class="mylabel">#{i18n.getText('KDW002_4')}</label>
+					<div data-bind="ntsFormLabel={}">#{i18n.getText('KDW002_23')}</div>
+					<label class="mylabel" data-bind="text: txtItemId"></label>
+					<div class="mylabel2" data-bind="ntsFormLabel={}">#{i18n.getText('KDW002_4')}</div>
 					<label class="mylabel" data-bind="text: txtItemName"></label>
 				</div>
 				<label data-bind="value: linebreak "></label>

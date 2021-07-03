@@ -2,7 +2,6 @@
 // import result = require("lodash/result");
 
 module kdl012.test.viewmodel {
-    import login = nts.uk.at.view.kdp004.a.service.login;
     import getShared = nts.uk.ui.windows.getShared;
 
     @bean()
@@ -14,10 +13,13 @@ module kdl012.test.viewmodel {
 
         isMultiple: KnockoutObservable<boolean>;
         showExpireDate: KnockoutObservable<boolean>;
-        workFrameNoSelection: KnockoutObservable<string>;
+        workFrameNoSelection: KnockoutObservable<number>;
         referenceDate: KnockoutObservable<string>
         selectionCodeTxt: KnockoutObservable<string>
         selectionCodeList: KnockoutObservableArray<string>;
+        items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+        header: KnockoutObservableArray<any> = ko.observableArray([]);
+        // selectionTaskList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -29,18 +31,37 @@ module kdl012.test.viewmodel {
                 {code: '1', name: 'Multiple'}
             ]);
             self.selectedModeCode = ko.observable(0);
-
+            self.isMultiple = ko.observable(self.selectedModeCode() === '1');
             self.showExpireDateOptions = ko.observableArray([
                 {code: '0', name: 'Not show expireDate'},
                 {code: '1', name: 'Show ExpireDate'}
             ]);
             self.selectedShowExpireDateCode = ko.observable(1);
 
-            self.workFrameNoSelection = ko.observable("");
+            self.workFrameNoSelection = ko.observable(1);
             self.referenceDate = ko.observable(moment.utc().format("YYYY/MM/DD"));
             self.showExpireDate = ko.observable(false);
             self.selectionCodeTxt = ko.observable("B0000000000000000001, B0000000000000000002");
             self.selectionCodeList = ko.observableArray([]);
+
+            self.header([
+                {headerText: self.$i18n('KDL012_4'), prop: 'code', width: 150},
+                {
+                    headerText: self.$i18n('KDL012_5'),
+                    prop: 'taskName',
+                    width: 150,
+                    columnCssClass: 'limited-label',
+                    formatter: _.escape
+                },
+                {headerText: self.$i18n('KDL012_6'), prop: 'expireDate', width: 250},
+                {
+                    headerText: self.$i18n('KDL012_7'),
+                    prop: 'remark',
+                    width: 100,
+                    formatter: _.escape,
+                    columnCssClass: 'limited-label'
+                }
+            ]);
 
             self.startPage();
         }
@@ -63,7 +84,7 @@ module kdl012.test.viewmodel {
                 if (self.selectionCodeTxt() !== undefined) {
                     let temp = _.split(self.selectionCodeTxt(), ", ");
                     // If isMultiple = false
-                    if (self.selectedModeCode() === 0) {
+                    if (self.selectedModeCode() == '0') {
                         let tempArr: string[] = [];
                         tempArr.push(temp[0]);
                         self.selectionCodeList(tempArr);
@@ -80,26 +101,55 @@ module kdl012.test.viewmodel {
                     referenceDate: moment(self.referenceDate()).format("YYYY/MM/DD"),
                     selectionCodeList: self.selectionCodeList()
                 };
-                nts.uk.ui.windows.setShared('KDL012', request);
+                nts.uk.ui.windows.setShared('KDL012Params', request);
 
                 nts.uk.ui.windows.sub.modal("/view/kdl/012/index.xhtml", {dialogClass: "no-close"}).onClosed(() => {
                     let self = this;
-                    let curentCode = getShared('currentCodeList_KDL012');
+                    let curentCode: any = getShared('KDL012Output');
+                    let selectionTaskList: any = getShared('KDL012OutputList');
 
                     if (curentCode !== undefined) {
-                        self.selectionCodeList(curentCode);
-                        self.currentCodeList(curentCode);
-                        self.selectionCodeTxt(curentCode.toString());
-                        nts.uk.ui.block.clear();
+                        if (_.isArray(curentCode)) {
+                            self.selectionCodeList(curentCode);
+                            self.currentCodeList(curentCode);
+                            self.selectionCodeTxt(curentCode.join(', '));
+                        } else {
+                            self.selectionCodeList([curentCode]);
+                            self.currentCodeList([curentCode]);
+                            self.selectionCodeTxt(curentCode.toString());
+                        }
+                    } else {
+                        self.selectionCodeList([]);
+                        self.selectionCodeTxt("");
+                        self.currentCodeList([]);
                     }
-                    else {
-                        self.selectionCodeList = ko.observableArray([]);
-                        self.selectionCodeTxt = ko.observable("");
-                        self.currentCodeList = ko.observableArray([]);
-                        nts.uk.ui.block.clear();
+
+                    if (selectionTaskList.length > 0 && selectionTaskList !== undefined) {
+                        self.items(selectionTaskList);
                     }
+                    nts.uk.ui.block.clear();
                 });
             });
+        }
+    }
+
+    class ItemModel {
+        code: string | number;
+        taskName: string;
+        taskAbName: string;
+        expirationStartDate: string;
+        expirationEndDate: string;
+        expireDate: string;
+        remark: string;
+
+        constructor(code: string | number, taskName: string, expirationStartDate?: string, expirationEndDate?: string, remark?: string) {
+            this.code = code;
+            this.taskName = taskName;
+            this.taskAbName = this.taskAbName;
+            this.expirationStartDate = expirationStartDate;
+            this.expirationEndDate = expirationEndDate;
+            this.expireDate = expirationStartDate + ' ～ ' + expirationEndDate;
+            this.remark = remark;
         }
     }
 }

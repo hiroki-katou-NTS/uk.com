@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+> 
+  <div>
+    <div class="buttons">
+      <button data-bind="text: $i18n('KAL003_21'), click: addNewCheckCondition" />
+      <button class="danger" data-bind="text: $i18n('KAL003_22'), click: removeCheckCondition, enable: isEnableRemove" />
+    </div>
+    <div class="ui-iggrid">   
+      <table id="fixedTableCCDT">
+        <thead>
+          <tr>
+            <th class="ui-iggrid-header ui-widget-header text-center" style ="text-align: center; background-color: #CFF1A5;width:36px">
+              <div data-bind="ntsCheckBox: { checked: selectedAll }"></div>
+            </th>
+            <th
+              class="ui-iggrid-header ui-widget-header text-center" style ="text-align: center; background-color: #CFF1A5;width:36px"
+              data-bind="text: $i18n('KAL003_24')"
+            ></th>
+            <th
+              class="ui-iggrid-header ui-widget-header text-center" style ="background-color: #CFF1A5;width:190px"
+              data-bind="text: $i18n('KAL003_12')"
+            ></th>
+            <th
+              class="ui-iggrid-header ui-widget-header" style ="background-color: #CFF1A5;width:80px;"
+              data-bind="text: $i18n('KAL003_23')"
+            ></th>
+            <th
+              class="ui-iggrid-header ui-widget-header" style ="background-color: #CFF1A5;width:190px"
+              data-bind="text: $i18n('KAL003_25')"
+            ></th>
+            <th
+            class="ui-iggrid-header ui-widget-header" style ="background-color: #CFF1A5;width:155px;"
+            data-bind="text: $i18n('KAL003_188')"
+          ></th>
+          </tr>
+        </thead>
+        <tbody data-bind="foreach: checkConditionsList">
+          <tr data-bind="attr: { 'data-id': no }">
+            <td class="text-center">
+              <div data-bind="ntsCheckBox: { checked: isCheck }"></div>
+            </td>
+            <td class="text-center">
+              <span data-bind="text: no"></span>
+            </td>            
+            <td>
+              <input tabindex="10"
+                     data-bind="ntsTextEditor: {
+                                  value: name,
+                                  required: true,
+                                  name: '#[KAL003_12]',
+                                  constraint: 'NameAlarmExtractionCondition'
+                                }, attr: {id: no}"/>
+            </td>
+            <td class="text-center">
+              <button data-bind="text: $vm.$i18n('KAL003_14'), click: function(data) { $parent.displayScreenKAL003B(data) }" />
+            </td>
+            <td><span data-bind="text: message"></span></td>
+            <td class="text-center">
+              <div class="cf" data-bind="ntsSwitchButton: {
+                name: 'UsageCategory',
+                options: $parent.swithchButton,
+                optionsValue: 'code',
+                optionsText: 'name',
+                value: useAtr
+              }"></div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ui:composition>

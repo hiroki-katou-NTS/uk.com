@@ -71,7 +71,7 @@ public class AuthenticateEmployeePassword {
 			return Optional.empty();
 		}
 		
-		return Optional.of(new IdentifiedEmployeeInfo(employee.get(), user.get()));
+		return Optional.of(new IdentifiedEmployeeInfo(require.getTenantCode(), employee.get(), user.get()));
 	}
 	
 	/**
@@ -97,6 +97,8 @@ public class AuthenticateEmployeePassword {
 	public static interface Require extends
 			FailedAuthenticateEmployeePassword.Require,
 			PasswordPolicy.ValidateOnLoginRequire {
+		
+		String getTenantCode();
 		
 		Optional<EmployeeDataMngInfoImport> getEmployeeDataMngInfoImportByEmployeeCode(String companyId, String employeeCode);
 		

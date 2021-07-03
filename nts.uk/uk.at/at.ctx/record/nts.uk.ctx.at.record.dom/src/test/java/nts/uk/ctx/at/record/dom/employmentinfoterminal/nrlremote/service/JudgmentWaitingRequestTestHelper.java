@@ -23,6 +23,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetUp
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal.EmpInfoTerminalBuilder;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.net.Ipv4Address;
 
 public class JudgmentWaitingRequestTestHelper {
 
@@ -32,20 +33,18 @@ public class JudgmentWaitingRequestTestHelper {
 	
 	public static List<EmpInfoTerminal> createEmpInfoTerminalList() {
 		
-		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
-				new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))), new MacAddress("AABBCCDD"),
+		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")), new MacAddress("AABBCCDD"),
 				empInfoTerminalCode, Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
 				contractCode)
 						.createStampInfo(new CreateStampInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.empty()),
-								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty()))
+								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty(),Optional.empty()))
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
 		
-		EmpInfoTerminal empInfoTerminal2 = new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
-				new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))), new MacAddress("AABBCCDD"),
+		EmpInfoTerminal empInfoTerminal2 = new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")), new MacAddress("AABBCCDD"),
 				empInfoTerminalCode2, Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
 				contractCode)
 						.createStampInfo(new CreateStampInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.empty()),
-								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty()))
+								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty(),Optional.empty()))
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
 		
 		List<EmpInfoTerminal> empInfoTerminalList = new ArrayList<EmpInfoTerminal>();

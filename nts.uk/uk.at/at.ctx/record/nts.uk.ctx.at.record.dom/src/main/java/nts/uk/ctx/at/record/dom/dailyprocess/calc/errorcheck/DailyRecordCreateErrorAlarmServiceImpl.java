@@ -98,7 +98,7 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 				integrationOfDaily.getWorkInformation());
 		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = new TimeLeavingOfDailyPerformance(empId,
 				targetDate, integrationOfDaily.getAttendanceLeave().orElse(null));
-		// 出勤系打刻漏れをチェックする
+		// 出勤系打刻漏れをチェックする - (出退勤打刻漏れ(sót chấm công vào-tan làm))
 		this.lackOfStamping.lackOfStamping(companyId, empId, targetDate, workInfoOfDailyPerformance,timeLeavingOfDailyPerformance).ifPresent(c -> {
 			returnList.add(c);
 		});
@@ -227,12 +227,14 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 				timeLeavingOfDailyPerformance, 
 				temporaryTimeOfDailyPerformance));
 		// 休憩系打刻順序不正をチェックする
-		
+		TimeLeavingOfDailyPerformance attendanceLeave = integrationOfDaily.getAttendanceLeave().isPresent()
+				? new TimeLeavingOfDailyPerformance(empId, targetDate, integrationOfDaily.getAttendanceLeave().get())
+				: null;
 		returnList.addAll(breakTimeStampIncorrectOrderChecking.breakTimeStampIncorrectOrderChecking(
 				companyId, empId, targetDate,new BreakTimeOfDailyPerformance(empId, targetDate, integrationOfDaily.getBreakTime())));
 		// 臨時系打刻順序不正をチェックする
 		returnList.add(temporaryStampOrderChecking.temporaryStampOrderChecking(empId, companyId, targetDate,
-				temporaryTimeOfDailyPerformance));
+				temporaryTimeOfDailyPerformance,attendanceLeave));
 		// PCログオンログオフの打刻順序不正をチェックする
 		PCLogOnInfoOfDaily pCLogOnInfoOfDaily = integrationOfDaily.getPcLogOnInfo().isPresent()
 				? new PCLogOnInfoOfDaily(integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(), integrationOfDaily.getPcLogOnInfo().get()):null;

@@ -18,6 +18,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
+import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskScheduleDetail;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -31,6 +32,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
@@ -497,6 +500,33 @@ public class WorkSchedule implements DomainAggregate {
 	}
 	
 	/**
+	 * 日別勤怠Workに変換する
+	 * @return
+	 */
+	public IntegrationOfDaily convertToIntegrationOfDaily() {
+		return new IntegrationOfDaily(
+				  this.employeeID
+				, this.ymd
+				, this.workInfo
+				, CalAttrOfDailyAttd.createAllCalculate()
+				, this.affInfo
+				, Optional.empty()
+				, Collections.emptyList()
+				, this.outingTime
+				, this.lstBreakTime
+				, this.optAttendanceTime
+				, this.optTimeLeaving
+				, this.optSortTimeWork
+				, Optional.empty()
+				, Optional.empty()
+				, Optional.empty()
+				, this.lstEditState
+				, Optional.empty()
+				, Collections.emptyList()
+				, Optional.empty());
+	}
+	
+	/**
 	 * 作業予定を入れ替える
 	 * @param require
 	 * @param newtaskSchedule 作業予定
@@ -535,9 +565,15 @@ public class WorkSchedule implements DomainAggregate {
 	 */
 	public void addTaskScheduleWithTimeSpan(Require require, TimeSpanForCalc targetTimeSpan, TaskCode taskCode) {
 		
-		List<TaskScheduleDetail> addingDetails = 
-				this.getTimeSpansWhichNotDuplicatedWithTheNotWorkingTimeSpan(require, targetTimeSpan).stream()
-				.map( timeSpan -> new TaskScheduleDetail(taskCode, timeSpan))
+		List<TimeSpanForCalc> workingTimeSpanList = this.getWorkingTimeSpan(require);
+		if ( workingTimeSpanList.isEmpty() ) {
+			throw new BusinessException("Msg_2103");
+		}
+		
+		List<TaskScheduleDetail> addingDetails = workingTimeSpanList.stream()
+				.map( workingTimeSpan -> workingTimeSpan.getDuplicatedWith(targetTimeSpan))
+				.flatMap(OptionalUtil::stream)
+				.map( timeSpan -> new TaskScheduleDetail(taskCode, timeSpan) )
 				.collect( Collectors.toList() );
 		
 		addingDetails.forEach( detail -> {

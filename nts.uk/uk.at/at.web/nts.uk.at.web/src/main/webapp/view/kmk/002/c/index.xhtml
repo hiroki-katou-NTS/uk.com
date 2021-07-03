@@ -1,39 +1,39 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
-		<ui:define name="htmlHead">
-			<script>
-				var dialogSize = {
-					width : 900,
-					height : 700
-				};
-			</script>
-			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="kmk002.c.style.css" />
-			<com:scriptfile path="../a/kmk002.a.service.js" />
-			<com:scriptfile path="kmk002.c.start.js" />
-			<com:scriptfile path="kmk002.c.vm.js" />
-			<com:scriptfile path="kmk002.c.service.js" />
-		</ui:define>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>
+            var dialogSize = {
+                width: 870,
+                height: 700
+            };
+        </script>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="kmk002.c.style.css"/>
+        <com:scriptfile path="../a/kmk002.a.service.js"/>
+        <com:scriptfile path="kmk002.c.start.js"/>
+        <com:scriptfile path="kmk002.c.vm.js"/>
+        <com:scriptfile path="kmk002.c.service.js"/>
+    </ui:define>
 
-		<ui:define name="content">
-			<div id="contents-area" style="display: none; margin-left: 20px;" data-bind="visible: true">
-				<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_24')}</div>
-				<label style="margin-right: 200px" data-bind="text: formulaAtr"></label>
-				<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_34')}</div>
-				<label data-bind="text: formulaName"></label>
-				<hr/>
-					<table style="margin-top: 20px;">
-						<tr>
-							<td>
-								<div style="width: 330px; margin-right: 30px; padding: 20px " class="caret-right caret-background bg-green">
-									<div id="searchbox-attd-item" tabindex="1"
-										data-bind="ntsSearchBox: {
+    <ui:define name="content">
+        <div id="contents-area" style="display: none; margin-left: 20px;" data-bind="visible: true">
+            <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_24')}</div>
+            <div data-bind="ntsFormLabel: {text: formulaAtr}" style="margin-right: 200px"></div>
+            <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_34')}</div>
+            <div data-bind="ntsFormLabel: {text: formulaName}"></div>
+            <hr/>
+            <div style="margin-top: 20px; display: flex">
+
+                <div style="width: 330px"
+                     class="caret-right caret-background bg-green">
+                    <div id="searchbox-attd-item" tabindex="1"
+                         data-bind="ntsSearchBox: {
 										targetKey: 'attendanceItemId',
 										mode:'igGrid',
 										searchMode: 'filter',
@@ -41,9 +41,9 @@
 										items: leftItems,
 										selected: selectedLeftItem,
 										selectedKey: 'attendanceItemId',
-										fields: ['attendanceItemDisplayNumber', 'attendanceItemName']}" />
-									<table id="tbl-left"
-										data-bind="ntsGridList: {
+										fields: ['attendanceItemDisplayNumber', 'attendanceItemName']}"/>
+                    <table id="tbl-left"
+                           data-bind="ntsGridList: {
 										name: '#[KMK002_55]',
 										width: 330,
 										dataSource: leftItems,
@@ -51,28 +51,27 @@
 										columns: columnsLeft,
 										multiple: true,
 										value: selectedLeftItem,
-										rows: 15}">
-									</table>
-								</div>
-							</td>
-							<td>
-								<div class="action-center">
-									<div style="width: 100%">
-										<button tabindex="4" data-bind="click: onClickAdd">#{i18n.getText('KMK002_56')}</button>
-									</div>
-									<div style="width: 100%">
-										<button tabindex="5" data-bind="click: onClickSubtract">#{i18n.getText('KMK002_57')}</button>
-									</div>
-									<div style="width: 100%">
-										<button tabindex="6" data-bind="click: onClickBack" id="btn-back">
-										<i class="icon icon-button-arrow-left"/>
-									</button>
-									</div>
-								</div>
-							</td>
-							<td style="vertical-align: bottom;">
-								<table id="tbl-right"
-									data-bind="ntsGridList: {
+										height: 395
+										}">
+                    </table>
+                </div>
+
+                <div class="action-center">
+                    <div style="width: 100%">
+                        <button tabindex="4" data-bind="click: onClickAdd">#{i18n.getText('KMK002_56')}</button>
+                    </div>
+                    <div style="width: 100%">
+                        <button tabindex="5" data-bind="click: onClickSubtract">#{i18n.getText('KMK002_57')}</button>
+                    </div>
+                    <div style="width: 100%">
+                        <button tabindex="6" data-bind="click: onClickBack" id="btn-back">
+                            <i class="icon icon-button-arrow-left"/>
+                        </button>
+                    </div>
+                </div>
+                <div style="padding-top: 47px">
+                    <table id="tbl-right"
+                           data-bind="ntsGridList: {
 									name: '#[KMK002_6]',
 								width: 300,
 								dataSource: rightItems,
@@ -80,29 +79,25 @@
 								columns: columnsRight,
 								multiple: true,
 								value: selectedRightItem,
-								rows: 15}">
-								</table>
-								<hr />
-							</td>
-						</tr>
-						<tr>
-							<td></td>
-							<td></td>
-							<td><div tabindex="7" id="cb-minus"
-									data-bind="ntsCheckBox: {
+								height: 393
+								}">
+                    </table>
+                    <hr/>
+                    <div tabindex="7" id="cb-minus"
+                         data-bind="ntsCheckBox: {
 									name: '#[KMK002_59]',
 									checked: minusSegment,
 									enable: true,
 									text: nts.uk.resource.getText('KMK002_59') }"></div>
-							</td>
-						</tr>
-					</table>
-			</div>
-			<div id="functions-area-bottom">
-				<button tabindex="8" data-bind="click: submit" class="x-large proceed">#{i18n.getText('KMK002_60')}</button>
-				<button tabindex="9" data-bind="click: close">#{i18n.getText('KMK002_61')}</button>
-			</div>
-		</ui:define>
-	</ui:composition>
+                </div>
+            </div>
+
+        </div>
+        <div id="functions-area-bottom">
+            <button tabindex="8" data-bind="click: submit" class="x-large proceed">#{i18n.getText('KMK002_60')}</button>
+            <button tabindex="9" data-bind="click: close">#{i18n.getText('KMK002_61')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
 </body>
 </html>

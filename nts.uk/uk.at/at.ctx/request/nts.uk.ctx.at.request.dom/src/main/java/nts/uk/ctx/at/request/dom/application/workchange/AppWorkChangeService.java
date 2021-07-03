@@ -124,7 +124,7 @@ public interface AppWorkChangeService {
 	 * @return
 	 */
 	public List<ConfirmMsgOutput> checkBeforeUpdate(String companyID, Application application, 
-			AppWorkChange appWorkChange, boolean agentAtr, AppDispInfoStartupOutput appDispInfoStartupOutput);
+			AppWorkChange appWorkChange, boolean agentAtr, AppDispInfoStartupOutput appDispInfoStartupOutput, AppWorkChangeDispInfo appWorkChangeDispInfo);
 	/**
 	 * 勤務変更申請の起動処理
 	 * Refactor4
@@ -167,5 +167,5 @@ public interface AppWorkChangeService {
 	 * @param opErrorFlag
 	 * @return
 	 */
-	public WorkChangeCheckRegOutput checkBeforeRegister(Boolean mode, String companyId, Application application, AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag, AppDispInfoStartupOutput appDispInfoStartupOutput);
+	public WorkChangeCheckRegOutput checkBeforeRegister(Boolean mode, String companyId, Application application, AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag, AppDispInfoStartupOutput appDispInfoStartupOutput, AppWorkChangeDispInfo appWorkChangeDispInfo);
 }

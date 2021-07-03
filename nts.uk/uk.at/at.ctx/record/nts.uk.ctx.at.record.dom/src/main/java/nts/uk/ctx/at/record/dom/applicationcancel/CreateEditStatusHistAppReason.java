@@ -9,9 +9,9 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.cancellation.ApplicationReflectHistory;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.cancellation.AttendanceBeforeApplicationReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.cancellation.ApplicationReflectHistory;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.cancellation.AttendanceBeforeApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 
 /**
@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.E
 public class CreateEditStatusHistAppReason {
 
 	public static List<AttendanceBeforeApplicationReflect> process(Require require, String employeeId, GeneralDate date, String appId,
-			ScheduleRecordClassifi classification, Map<Integer, String> mapValue) {
+			ScheduleRecordClassifi classification, Map<Integer, String> mapValue, GeneralDateTime reflectTime) {
 		List<AttendanceBeforeApplicationReflect> lstAttBeforeReflect = new ArrayList<>();
 		// 日別実績から、該当する編集状態を取得する
 		List<EditStateOfDailyPerformance> lstEditState = require.findByKey(employeeId, date);
@@ -32,7 +32,7 @@ public class CreateEditStatusHistAppReason {
 					.filter(x -> x.getEditState().getAttendanceItemId() == key).findFirst().orElse(null);
 			if (edit == null) {
 				// 申請反映前の勤怠へセットする
-				lstAttBeforeReflect.add(new AttendanceBeforeApplicationReflect(key, value, Optional.empty()));
+				lstAttBeforeReflect.add(new AttendanceBeforeApplicationReflect(key, Optional.ofNullable(value), Optional.empty()));
 
 				// 日別実績の更新（日別勤怠の編集状態を追加する）
 				require.addAndUpdate(Arrays.asList(
@@ -41,7 +41,7 @@ public class CreateEditStatusHistAppReason {
 
 				// 申請反映前の勤怠へセット
 				lstAttBeforeReflect
-						.add(new AttendanceBeforeApplicationReflect(key, value, Optional.of(edit.getEditState())));
+						.add(new AttendanceBeforeApplicationReflect(key, Optional.ofNullable(value), Optional.of(edit.getEditState())));
 
 				// 日別実績の更新（日別勤怠の編集状態を更新する）
 				require.addAndUpdate(Arrays.asList(
@@ -50,7 +50,7 @@ public class CreateEditStatusHistAppReason {
 		});
 
 		// 申請反映履歴を作成する
-		require.insertAppReflectHist(new ApplicationReflectHistory(employeeId, date, appId, GeneralDateTime.now(),
+		require.insertAppReflectHist(new ApplicationReflectHistory(employeeId, date, appId, reflectTime,
 				classification, false, lstAttBeforeReflect));
 
 		return lstAttBeforeReflect;

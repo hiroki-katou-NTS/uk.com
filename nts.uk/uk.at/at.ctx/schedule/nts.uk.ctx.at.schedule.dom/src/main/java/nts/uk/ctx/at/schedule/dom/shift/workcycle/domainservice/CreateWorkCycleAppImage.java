@@ -56,18 +56,16 @@ public class CreateWorkCycleAppImage {
         val weeklyWorkSet = require.getWeeklyWorkSetting();
         weeklyWorkSet.ifPresent(value -> {
             createPeriod.stream().forEach(i -> {
-                String legalHolidayCode = config.getLegalHolidayCd().isPresent() ? config.getLegalHolidayCd().get().v() : null;
-                String nonStatutoryHolidayCd = config.getNonStatutoryHolidayCd().isPresent() ? config.getNonStatutoryHolidayCd().get().v() : null;
                 val workdayDivision = value.getWorkingDayCtgOfTagertDay(i);
                 if (workdayDivision == null) return;
                 switch (workdayDivision) {
                     case WORKINGDAYS:
                         return;
                     case NON_WORKINGDAY_INLAW:
-                        reflectionImage.addByWeeklyWorking(i, new WorkInformation(legalHolidayCode, ""));
+                        reflectionImage.addByWeeklyWorking(i, new WorkInformation(config.getLegalHolidayCd().orElse(null), null));
                         break;
                     case NON_WORKINGDAY_EXTRALEGAL:
-                        reflectionImage.addByWeeklyWorking(i, new WorkInformation(nonStatutoryHolidayCd, ""));
+                        reflectionImage.addByWeeklyWorking(i, new WorkInformation(config.getNonStatutoryHolidayCd().orElse(null), null));
                         break;
                 }
             });
@@ -82,10 +80,10 @@ public class CreateWorkCycleAppImage {
      * @param config
      */
     private static void createImageHoliday(Require require, ReflectionImage reflectionImage, DatePeriod createPeriod, WorkCycleRefSetting config) {
+    	
         val holidayList = require.getpHolidayWhileDate(createPeriod.start(), createPeriod.end());
-        String workTypeCD = config.getHolidayCd().isPresent() ? config.getHolidayCd().get().v() : null;
         for (PublicHoliday pubHoliday : holidayList) {
-            reflectionImage.addHolidays(pubHoliday.getDate(), new WorkInformation(workTypeCD, ""));
+            reflectionImage.addHolidays(pubHoliday.getDate(), new WorkInformation(config.getHolidayCd().get(), null));
         }
     }
 

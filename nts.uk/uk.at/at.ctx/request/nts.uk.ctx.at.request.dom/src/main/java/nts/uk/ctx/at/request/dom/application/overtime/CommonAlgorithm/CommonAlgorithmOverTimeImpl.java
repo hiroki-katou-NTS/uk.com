@@ -1042,11 +1042,13 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		commonOvertimeholiday.calculateButtonCheck(
 				displayInfoOverTime.getCalculatedFlag(),
 				EnumAdaptor.valueOf(displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getApplicationDetailSetting().getTimeCalUse().value, UseAtr.class));
-		// 勤務種類、就業時間帯のマスタ未登録チェックする
-		detailBeforeUpdate.displayWorkingHourCheck(
-				companyId,
-				appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null),
-				appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTimeCode())).map(x -> x.v()).orElse(null));
+		if (!displayInfoOverTime.getWorkInfo().isPresent()) {
+			// 勤務種類、就業時間帯のマスタ未登録チェックする
+			detailBeforeUpdate.displayWorkingHourCheck(
+					companyId,
+					appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null),
+					appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTimeCode())).map(x -> x.v()).orElse(null));			
+		}
 		// 申請する残業時間をチェックする
 		this.checkOverTime(appOverTime.getApplicationTime());
 		// 事前申請・実績超過チェックする
@@ -1122,10 +1124,10 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				appDispInfoStartup,
 				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet());
 		if (CollectionUtil.isEmpty(displayInfoOverTime.getInfoBaseDateOutput().getWorktypes())) {
-			throw new BusinessException("Msg_1568");
+			throw new BusinessException("Msg_1567");
 		}
 		if (CollectionUtil.isEmpty(displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpWorkTimeLst().orElse(Collections.emptyList()))) {
-			throw new BusinessException("Msg_1567");
+			throw new BusinessException("Msg_1568");
 		}
 		
 		displayInfoOverTime.setInfoWithDateApplicationOp(Optional.ofNullable(infoWithDateApplication));

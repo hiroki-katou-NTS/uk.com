@@ -174,6 +174,18 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			// 申請の矛盾チェック
 			commonAlgorith.appConflictCheck(companyId, employeeInfo, dateLst, workTypeLst, actualContentDisplayLst);
 			
+			String workTypeCode = goBackDirectly.getDataWork().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null);
+			String workTimeCode = goBackDirectly.getDataWork().flatMap(x -> x.getWorkTimeCodeNotNull()).map(x -> x.v()).orElse(null);
+			
+			if (inforGoBackCommonDirectOutput.getWorkInfo().isPresent()) {
+				if (workTypeCode != null) {
+					workTypeCode = !workTypeCode.equals(inforGoBackCommonDirectOutput.getWorkInfo().get().getWorkType()) ? workTypeCode : null;
+				}
+				if (workTimeCode != null) {
+					workTimeCode = !workTimeCode.equals(inforGoBackCommonDirectOutput.getWorkInfo().get().getWorkTime()) ? workTimeCode : null;
+				}
+				}
+			
 			// アルゴリズム「4-1.詳細画面登録前の処理」を実行する
 			detailBeforeUpdate.processBeforeDetailScreenRegistration(
 				companyId,
@@ -183,8 +195,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				application.getAppID(),
 				application.getPrePostAtr(),
 				application.getVersion(),
-				goBackDirectly.getDataWork().isPresent() ? goBackDirectly.getDataWork().get().getWorkTypeCode().v() : null,
-				goBackDirectly.getDataWork().isPresent() ? (goBackDirectly.getDataWork().get().getWorkTimeCode() != null ? goBackDirectly.getDataWork().get().getWorkTimeCode().v() : null) : null,
+				workTypeCode,
+				workTimeCode,
 				inforGoBackCommonDirectOutput.getAppDispInfoStartup());
 	}
 	/**
@@ -238,40 +250,6 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		}
 	}
 	
-	@Override
-	public List<String> inconsistencyCheck(String companyID, String employeeID, GeneralDate appDate) {
-		// ドメインモデル「直行直帰申請共通設定」を取得
-//		Optional<GoBackDirectlyCommonSetting> opGoBackDirectlyCommonSet = this.goBackDirectCommonSetRepo
-//				.findByCompanyID(companyID);
-//		if(!opGoBackDirectlyCommonSet.isPresent()){
-//			return Collections.emptyList();
-//		}
-//		GoBackDirectlyCommonSetting goBackDirectlyCommonSet = opGoBackDirectlyCommonSet.get();
-//		CheckAtr appDateContradictionAtr = goBackDirectlyCommonSet.getContraditionCheckAtr();
-//		if(appDateContradictionAtr==CheckAtr.NOTCHECK){
-//			return Collections.emptyList();
-//		}
-		// アルゴリズム「11.指定日の勤務実績（予定）の勤務種類を取得」を実行する
-		WorkType workType = otherCommonAlgorithm.getWorkTypeScheduleSpec(companyID, employeeID, appDate);
-		if(workType==null){
-			// 「申請日矛盾区分」をチェックする
-//			if(appDateContradictionAtr==CheckAtr.CHECKNOTREGISTER){
-//				throw new BusinessException("Msg_1519", appDate.toString("yyyy/MM/dd"));
-//			}
-			return Arrays.asList("Msg_1520", appDate.toString("yyyy/MM/dd")); 
-		}
-		// アルゴリズム「01_直行直帰_勤務種類の分類チェック」を実行する
-		boolean checked = this.workTypeInconsistencyCheck(workType);
-		if(!checked){
-			return Collections.emptyList();
-		}
-		String name = workType.getName().v();
-		// 「申請日矛盾区分」をチェックする
-//		if(appDateContradictionAtr==CheckAtr.CHECKNOTREGISTER){
-//			throw new BusinessException("Msg_1521", appDate.toString("yyyy/MM/dd"), Strings.isNotBlank(name) ? name : "未登録のマスタ");
-//		}
-		return Arrays.asList("Msg_1522", appDate.toString("yyyy/MM/dd"), Strings.isNotBlank(name) ? name : "未登録のマスタ"); 
-	}
 	
 	/**
 	 * 01_直行直帰_勤務種類の分類チェック

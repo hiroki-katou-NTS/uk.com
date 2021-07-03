@@ -1,379 +1,229 @@
-module nts.uk.at.view.kdp010.e.viewmodel {
-    import blockUI = nts.uk.ui.block;
+module nts.uk.at.view.kdp010.e {
+    import getText = nts.uk.resource.getText;
+    import block = nts.uk.ui.block;
+    import info = nts.uk.ui.dialog.info;
+    import error = nts.uk.ui.dialog.error;
+	import ajax = nts.uk.request.ajax;
 
-    export class ScreenModel {
-
-        // E4_1, E4_2, E4_6, E4_7
-        optionImprint: KnockoutObservableArray<any> = ko.observableArray([
-            { id: 0, name: nts.uk.resource.getText("KDP010_59") },
-            { id: 1, name: nts.uk.resource.getText("KDP010_60") }
-        ]);
-        selectedImprint: KnockoutObservable<number> = ko.observable(0);
-        messageValueFirst: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KDP010_130"));
-        firstColors: KnockoutObservable<string> = ko.observable('#000000');
-
-        // E5_1, E5_2, E5_6, E5_7
-        optionHoliday: KnockoutObservableArray<any> = ko.observableArray([
-            { id: 0, name: nts.uk.resource.getText("KDP010_59") },
-            { id: 1, name: nts.uk.resource.getText("KDP010_60") }
-        ]);
-        selectedHoliday: KnockoutObservable<number> = ko.observable(0);
-        messageValueSecond: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KDP010_131"));
-        secondColors: KnockoutObservable<string> = ko.observable('#000000');
-
-        // E6_1, E6_2, E6_5, E6_6
-        optionOvertime: KnockoutObservableArray<any> = ko.observableArray([
-            { id: 0, name: nts.uk.resource.getText("KDP010_59") },
-            { id: 1, name: nts.uk.resource.getText("KDP010_60") }
-        ]);
-        selectedOvertime: KnockoutObservable<number> = ko.observable(0);
-        messageValueThird: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KDP010_132"));
-        thirdColors: KnockoutObservable<string> = ko.observable('#000000');
-
-        workTypeList: KnockoutObservableArray<any> = ko.observableArray([]);
-        workTypeNames: KnockoutObservable<string> = ko.observable();
-        currentItem: KnockoutObservable<DailyItemDto> = ko.observable(new DailyItemDto({}));
-
-        // E31_2
-        optionImp: KnockoutObservableArray<any> = ko.observableArray([
-            { id: 0, name: nts.uk.resource.getText("KDP010_85") },
-            { id: 1, name: nts.uk.resource.getText("KDP010_84") }
-        ]);
-        selectedImp: KnockoutObservable<number> = ko.observable(0);
-        
-        dataKdl: KnockoutObservableArray<any> = ko.observableArray([]);
-        
-        constructor() {
-            let self = this;
-
-            self.messageValueFirst.subscribe(function(codeChanged: string) {
-                self.messageValueFirst($.trim(self.messageValueFirst()));
-            });
-            self.messageValueSecond.subscribe(function(codeChanged: string) {
-                self.messageValueSecond($.trim(self.messageValueSecond()));
-            });
-            self.messageValueThird.subscribe(function(codeChanged: string) {
-                self.messageValueThird($.trim(self.messageValueThird()));
-            });
-        }
-
-        /**
-         * Start page.
-         */
-        start(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            nts.uk.ui.block.clear();
-            self.getStampApp();
-            $.when(self.getWorkTypeList()).done(function() {
-                $(document).ready(function() {
-                    $('#imprint-leakage-radio-e').focus();
-                });
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
-
-        registration() {
-            let self = this, dfd = $.Deferred();
-
-            if (nts.uk.ui.errors.hasError()) {
-                return;
+    export module viewmodel {
+		const paths: any = {
+	       	getData: "at/record/stamp/timestampinputsetting/portalstampsettings/get",
+        	save: "at/record/stamp/timestampinputsetting/portalstampsettings/save"
+	    }
+        export class ScreenModel {
+            suppressStampBtnOption: KnockoutObservableArray<any> = ko.observableArray([
+                { id: 1, name: getText("KDP010_202") },
+                { id: 0, name: getText("KDP010_203") }
+            ]);
+            useTopMenuLinkOption: KnockoutObservableArray<any> = ko.observableArray([
+                { id: 1, name: getText("KDP010_271") },
+                { id: 0, name: getText("KDP010_272") }
+            ]);
+			displayStampListOption: KnockoutObservableArray<any> = ko.observableArray([
+                { id: 1, name: getText("KDP010_278") },
+                { id: 0, name: getText("KDP010_279") }
+            ]);
+			gooutUseAtrOption: KnockoutObservableArray<any> = ko.observableArray([
+                { id: 1, name: getText("KDP010_309") },
+                { id: 0, name: getText("KDP010_310") }
+            ]);
+            goOutArtOption: KnockoutObservableArray<any> = ko.observableArray([
+                { id: 0, name: getText("KDP010_112") },
+                { id: 1, name: getText("KDP010_113") },
+                { id: 2, name: getText("KDP010_114") },
+                { id: 3, name: getText("KDP010_115") }
+            ]);
+            portalStampSettings = new PortalStampSettings();
+            constructor(){
+                let self = this;
             }
-            $.when(self.registrationApp(), self.deleteStampFunc()).done(function() {
-                if (nts.uk.ui.errors.hasError()) {
-                    nts.uk.ui.block.clear();
-                    return;
-                }
-                self.registrationFunc();
-                dfd.resolve();
-            });
-            return dfd.promise();
-
-        }
-
-        /**
-         * Registration function.
-         */
-        registrationApp() {
-            let self = this;
-            $('#message-text-2').ntsEditor('validate');
-            $('.text-color-1').find('#message-1').find('#message-text-1').ntsEditor('validate');
-            $('#message-text-3').ntsEditor('validate');
-            if (nts.uk.ui.errors.hasError()) {
-                return;
-            }
-            nts.uk.ui.block.invisible();
-            // Data from Screen 
-            let StampRecordDisCommand = {
-                lstStampRecord: [{
-                    useArt: self.selectedImprint(),
-                    checkErrorType: 0,
-                    promptingMssage: {
-                        messageContent: self.messageValueFirst(),
-                        messageColor: self.firstColors()
-                    }
-                }, {
-                        useArt: self.selectedHoliday(),
-                        checkErrorType: 1,
-                        promptingMssage: {
-                            messageContent: self.messageValueSecond(),
-                            messageColor: self.secondColors()
-                        }
-                    }, {
-                        useArt: self.selectedOvertime(),
-                        checkErrorType: 2,
-                        promptingMssage: {
-                            messageContent: self.messageValueThird(),
-                            messageColor: self.thirdColors()
-                        }
-                    }]
-            };
-            service.saveStampApp(StampRecordDisCommand).done(function() {
-
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message);
-            }).always(() => {
-                nts.uk.ui.block.clear();
-            });
-        }
-
-        registrationFunc() {
-            let self = this;
-            let lstDisplayItem: StampAttenDisplayCommand[] = [];
-            let lstDisplay = new Array<>();
-             _.forEach(self.currentItem().dailyList(), function(item) {
-                    lstDisplay = new StampAttenDisplayCommand({
-                        displayItemId : item
-                    });
-                 lstDisplayItem.push(lstDisplay);
-                });
             
-            // Data from Screen 
-            let StampRecordDisCommand = {
-                usrAtr: self.selectedImp(),
-                lstDisplayItemId: lstDisplayItem
-            };
-            service.saveStampFunc(StampRecordDisCommand).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message);
-            }).always(() => {
-                nts.uk.ui.block.clear();
-            });
-        }
-
-        getWorkTypeList() {
-            let self = this, dfd = $.Deferred();
-            service.getOptItemByAtr().done(function(res) {
-                self.workTypeList.removeAll();
-                _.forEach(res, function(item) {
-                    self.workTypeList.push({
-                        attendanceItemId: item.attendanceItemId,
-                        attendanceName: item.attendanceItemName
-                    });
-                });
-                self.getStampFunc();
-                dfd.resolve();
-            }).fail(function(error) {
-                alert(error.message);
-                dfd.reject(error);
-            });
-            return dfd.promise();
-        }
-
-        getStampApp(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            service.getStampApp().done(function(totalStamp) {
-                if (totalStamp.length > 0) {
-                    totalStamp = _.sortBy(totalStamp, item => item.checkErrorType)
-                    self.selectedImprint(totalStamp[0].useArt);
-                    self.messageValueFirst(totalStamp[0].messageContent);
-                    self.firstColors(totalStamp[0].messageColor);
-                    self.selectedHoliday(totalStamp[1].useArt);
-                    self.messageValueSecond(totalStamp[1].messageContent);
-                    self.secondColors(totalStamp[1].messageColor);
-                    self.selectedOvertime(totalStamp[2].useArt);
-                    self.messageValueThird(totalStamp[2].messageContent);
-                    self.thirdColors(totalStamp[2].messageColor);
-                }
-                dfd.resolve();
-            }).fail(function(error) {
-                alert(error.message);
-                dfd.reject(error);
-            });
-            return dfd.promise();
-        }
-
-        getStampFunc(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            service.getStampFunc().done(function(totalStamp) {
-                if (totalStamp) {
-                    self.selectedImp(totalStamp.usrAtr);
-                    var workTypeCodes = _.map(totalStamp.lstDisplayItemId, function(item: any) { return item.displayItemId; });
-                    self.generateNameCorrespondingToAttendanceItem(workTypeCodes);
-                    var names = self.getNames(self.workTypeList(), totalStamp.workTypeList);
-                    if (names) {
-                        self.workTypeNames(names);
-                    } else {
-                        self.workTypeNames("");
+            start(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred();
+                block.grayout();
+                ajax("at", paths.getData).done(function(data: any) {
+                    if (data) {
+//                        console.log(data);
+                        self.portalStampSettings.update(data);
                     }
-
-                }
-                dfd.resolve();
-            }).fail(function(error) {
-                alert(error.message);
-                dfd.reject(error);
-            });
-            return dfd.promise();
-        }
-
-        deleteStampFunc(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
-            let data = {
-                displayItemId: 1
-            }
-            service.deleteStampFunc(data).done(function(totalStamp) {
-                dfd.resolve();
-            }).fail(function(error) {
-                alert(error.message);
-                dfd.reject(error);
-            });
-            return dfd.promise();
-        }
-
-        getNames(data: Array<IDailyItemModal>, workTypeCodesSelected: Array<string>) {
-            var name = [];
-            var self = this;
-            if (workTypeCodesSelected && workTypeCodesSelected.length > 0) {
-                _.forEach(data, function(item: IDailyItemModal) {
-                    _.forEach(workTypeCodesSelected, function(items: any) {
-                        if (_.includes(items.attendanceItemId, item.attendanceItemId)) {
-                            name.push(item.attendanceName);
-                        }
+                    dfd.resolve();
+                    $(document).ready(function() {
+                        $('#d-serverCorrectionInterval').focus();
                     });
+                }).fail(function (res: any) {
+                    error({ messageId: res.messageId });
+                }).always(function () {
+                    block.clear();
                 });
+                return dfd.promise();
             }
-            return name.join(" + ");
-        }
-
-        /**
-         * Open Dialog KDL021
-         */
-        openKDL021Dialog(datas : any) {
-            let self = this;
-            nts.uk.ui.errors.clearAll();
-            nts.uk.ui.block.invisible();
-            var workTypeCodes = _.map(self.workTypeList(), function(item: IDailyItemModal) { return item.attendanceItemId });
-            nts.uk.ui.windows.setShared('Multiple', true);
-            nts.uk.ui.windows.setShared('DailyMode', 0);
-            nts.uk.ui.windows.setShared('AllAttendanceObj', workTypeCodes);
             
-            if(datas ==1) {
-                let data021 = self.dataKdl.map(i=>Number(i))
-                nts.uk.ui.windows.setShared('SelectedAttendanceId', data021, true);
-            }
-            else{
-                nts.uk.ui.windows.setShared('SelectedAttendanceId', self.currentItem().dailyList(), true);
-            }    
-
-            nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml').onClosed(function(): any {
-                nts.uk.ui.block.clear();
-                self.dataKdl = nts.uk.ui.windows.getShared('selectedChildAttendace');
-                self.generateNameCorrespondingToAttendanceItem(self.dataKdl);
-            });
-            nts.uk.ui.block.clear();
-        }
-
-        /**
-       * アルゴリズム「勤怠項目に対応する名称を生成する」を実行する - Execute algorithm "Generate name corresponding to attendance item"
-       * @param List<itemAttendanceId>
-       */
-        private generateNameCorrespondingToAttendanceItem(listAttendanceItemCode: Array<any>): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred();
-            if (self.dataKdl && self.dataKdl.length > 5) {
-                    nts.uk.ui.dialog.error({ messageId: "Msg_1631" }).then(() => {
-                        self.openKDL021Dialog(1);
-                    });
-                    return;
-                }
-            if (listAttendanceItemCode && listAttendanceItemCode.length > 0) {
-                service.getAttendNameByIds(listAttendanceItemCode).done((dailyAttendanceItemNames) => {
-                    if (dailyAttendanceItemNames && dailyAttendanceItemNames.length > 0) {
-                        var attendanceName: string = '';
-                        var name = [];
-                        dailyAttendanceItemNames = dailyAttendanceItemNames.sort((x,y) => {return x.attendanceItemDisplayNumber - y.attendanceItemDisplayNumber});
-                        for (var i = 0; i < dailyAttendanceItemNames.length; i++) {
-                            attendanceName = dailyAttendanceItemNames[i].attendanceItemName;
-                            name.push(dailyAttendanceItemNames[i].attendanceItemName);
-                        }
-                        self.workTypeNames(name.join(" 、 "));
-                        var workTypeCodes = _.map(dailyAttendanceItemNames, function(item: any) { return item.attendanceItemId; });
-                        self.currentItem().dailyList(workTypeCodes);
-                        dfd.resolve(attendanceName);
-                    } else {
-                        dfd.resolve('');
-                    }
-                }).always(() => {
-                    dfd.resolve('');
+            save(){
+                let self = this;
+                block.grayout();
+                ajax("at", paths.save, ko.toJS(self.portalStampSettings)).done(function() {
+                    info({ messageId: "Msg_15"});
+                }).fail(function (res: any) {
+                    error({ messageId: res.messageId });
+                }).always(function () {
+                    block.clear();
                 });
-            } else {
-                dfd.resolve('');
             }
-            return dfd.promise();
         }
-
-    }
-    export class DailyItemDto {
-        useAtr: KnockoutObservable<number>;
-        dailyList: KnockoutObservableArray<DailyItemSetDto>;
-        constructor(param: IDailyItemDto) {
-            this.useAtr = ko.observable(param.useAtr || 0);
-            this.dailyList = ko.observableArray(param.dailyList || null);
+        
+        class ButtonNameSet{
+            buttonName: KnockoutObservable<string>;
+            textColor: KnockoutObservable<string> = ko.observable("#ffffff");
+            constructor(buttonPositionNo: number){
+                let self = this;
+                if(buttonPositionNo == 1){
+                    self.buttonName = ko.observable(getText("KDP010_212"));    
+                }else if(buttonPositionNo == 2){
+                    self.buttonName = ko.observable(getText("KDP010_213"));    
+                }else if(buttonPositionNo == 3){
+                    self.buttonName = ko.observable(getText("KDP010_214"));    
+                }else if(buttonPositionNo == 4){
+                    self.buttonName = ko.observable(getText("KDP010_215"));    
+                }
+            }
+            update(param: any){
+                let self = this;
+                self.buttonName(param.buttonName);
+                self.textColor(param.textColor);
+            }
         }
-    }
-
-    export interface IDailyItemDto {
-        useAtr?: number;
-        dailyList?: Array<IDailyItemSetDto>;
-    }
-
-    export class DailyItemModal {
-        attendanceItemId: string;
-        attendanceName: string;
-        constructor(param: IDailyItemModal) {
-            this.attendanceItemId = param.attendanceItemId;
-            this.attendanceName = param.attendanceName;
+        
+        class ButtonDisSet{
+            backGroundColor: KnockoutObservable<string> = ko.observable("#127D09");
+            buttonNameSet: ButtonNameSet;
+            constructor(buttonPositionNo: number){
+                let self = this;
+                self.buttonNameSet = new ButtonNameSet(buttonPositionNo)
+            }
+            update(param: any){
+                let self = this;
+                self.backGroundColor(param.backGroundColor);
+                self.buttonNameSet.update(param.buttonNameSet);
+            }
         }
-    }
-
-    export interface IDailyItemModal {
-        attendanceItemId: string;
-        attendanceName: string;
-    }
-
-    export class DailyItemSetDto {
-        attendanceItemId: string;
-        constructor(param: IDailyItemSetDto) {
-            this.attendanceItemId = param.attendanceItemId;
+        
+        class ButtonSettings {
+            buttonPositionNo: number;
+            buttonDisSet: any;
+            buttonType: any;
+            usrArt: KnockoutObservable<number> = ko.observable(1);
+            audioType: number = 0;
+            goOutArt: KnockoutObservable<number> = ko.observable(null);
+            constructor(buttonPositionNo: number, goOutUseAtr: KnockoutObservable<number>){
+                let self = this;
+                self.buttonPositionNo = buttonPositionNo;
+                self.buttonDisSet = new ButtonDisSet(self.buttonPositionNo);
+                if(self.buttonPositionNo == 1){
+                    self.buttonType = {
+                        stampType: { changeClockArt: 0, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: false, goOutArt: null },
+                        reservationArt: 0
+                    }
+                }else if(self.buttonPositionNo == 2){
+                    self.buttonType = {
+                        stampType: { changeClockArt: 1, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: false, goOutArt: null },
+                        reservationArt: 0
+                    }
+                }else if(self.buttonPositionNo == 3){
+					self.usrArt = goOutUseAtr;
+                    self.buttonType = {
+                        stampType: { changeClockArt: 4, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: false, goOutArt: 0},
+                        reservationArt: 0
+                    }
+                    self.goOutArt(0);
+                    self.goOutArt.subscribe((newValue) => {
+                        self.buttonType.stampType.goOutArt = newValue;
+                    });
+                }else if(self.buttonPositionNo == 4){
+					self.usrArt = goOutUseAtr;
+                    self.buttonType = {
+                        stampType: { changeClockArt: 5, changeCalArt: 0, setPreClockArt: 0, changeHalfDay: false, goOutArt: null },
+                        reservationArt: 0
+                    }
+                }
+            }
+            update(param: any){
+                let self = this;
+                if(param){
+                    self.buttonDisSet.update(param.buttonDisSet);
+                    if(param.buttonPositionNo == 3 && param.buttonType.stampType){
+                        self.goOutArt(param.buttonType.stampType.goOutArt);
+                    }
+                }
+            }
         }
-    }
-
-    export interface IDailyItemSetDto {
-        attendanceItemId?: string;
-    }
-    
-export class StampAttenDisplayCommand {
-        displayItemId: number;
-        constructor(param: IStampAttenDisplayCommand) {
-            this.displayItemId = param.displayItemId;
+        
+        class SettingDateTimeClorOfStampScreen {
+            textColor: KnockoutObservable<string> = ko.observable("#7F7F7F");
+            constructor(){}
+            update(data?: any){
+                let self = this;
+                if(data){
+                    self.textColor(data.textColor);
+                }
+            }
         }
+        
+        class DisplaySettingsStampScreen {
+            serverCorrectionInterval: KnockoutObservable<number> = ko.observable(10);
+            resultDisplayTime: KnockoutObservable<number> = ko.observable(3);
+            settingDateTimeColor = new SettingDateTimeClorOfStampScreen();
+            constructor(){}
+            update(data?:any){
+                let self = this;
+                if(data){
+                    self.serverCorrectionInterval(data.serverCorrectionInterval);
+                    self.resultDisplayTime(data.resultDisplayTime);
+                    self.settingDateTimeColor.update(data.settingDateTimeColor);
+                }
+            }
+        }
+        
+        class PortalStampSettings {
+            displaySettingsStampScreen = new DisplaySettingsStampScreen();
+            suppressStampBtn: KnockoutObservable<number> = ko.observable(0);
+            useTopMenuLink: KnockoutObservable<number> = ko.observable(0);
+			goOutUseAtr: KnockoutObservable<number> = ko.observable(0);
+			goOutUseAtrEnable: KnockoutObservable<boolean> = ko.computed(():boolean => {
+				return this.goOutUseAtr() == 1;
+			});
+			displayStampList: KnockoutObservable<number> = ko.observable(0);
+            buttonSettings: any;
+            constructor(){
+                let self = this;
+                let buttonSettingsArray = [];
+                for(let i = 1; i <= 4; i++){
+                    buttonSettingsArray.push(new ButtonSettings(i, self.goOutUseAtr));
+                }
+                self.buttonSettings = buttonSettingsArray;
+            }
+            update(data?:any){
+                let self = this;
+                if(data){
+                    self.displaySettingsStampScreen.update(data.displaySettingsStampScreen);
+                    self.suppressStampBtn(data.suppressStampBtn);
+                    self.useTopMenuLink(data.useTopMenuLink);
+					self.goOutUseAtr(data.goOutUseAtr);
+					self.displayStampList(data.displayStampList);
+                    _.forEach(self.buttonSettings, function(buttonSetting) {
+                        let setting = _.find(data.buttonSettings, function(item: any) { return item.buttonPositionNo == buttonSetting.buttonPositionNo; });
+                        if(setting){
+                            buttonSetting.update(setting);
+                        }
+                    });
+                }
+            }
+        }  
     }
-
-    export interface IStampAttenDisplayCommand {
-        displayItemId?: number;
-    }
+	__viewContext.ready(function() {
+        var screenModel = new viewmodel.ScreenModel();
+        screenModel.start().done(function() {
+            __viewContext.bind(screenModel);
+        });
+    });
 }

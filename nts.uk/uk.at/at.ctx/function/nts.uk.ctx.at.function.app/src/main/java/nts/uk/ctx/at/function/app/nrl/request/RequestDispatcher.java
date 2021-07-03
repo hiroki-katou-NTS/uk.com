@@ -5,12 +5,16 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
+import lombok.AllArgsConstructor;
+import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.app.nrl.Command;
 import nts.uk.ctx.at.function.app.nrl.DefaultValue;
 import nts.uk.ctx.at.function.app.nrl.data.MarshalResult;
@@ -21,9 +25,23 @@ import nts.uk.ctx.at.function.app.nrl.response.NRLResponse;
 import nts.uk.ctx.at.function.app.nrl.xml.DefaultXDocument;
 import nts.uk.ctx.at.function.app.nrl.xml.Element;
 import nts.uk.ctx.at.function.app.nrl.xml.Frame;
+import nts.uk.ctx.at.function.app.nrlremote.SendToNRLRemote;
+import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.FuncEmpInfoTerminalImport;
+import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.RQEmpInfoTerminalAdapter;
+import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.ContractCode;
+import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.EmpInfoTerComAbPeriod;
+import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalComStatus;
+import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.RecordCommunicationStatus;
+import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.repo.EmpInfoTerComAbPeriodRepository;
+import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.repo.EmpInfoTerminalComStatusRepository;
+import nts.uk.shr.com.system.property.UKServerSystemProperties;
+import nts.uk.shr.infra.data.TenantLocatorService;
 
 /**
  * Request dispatcher.
+ * 
+ * NRLをオブジェクトに変換する
  * 
  * @author manhnd
  */
@@ -47,6 +65,8 @@ public class RequestDispatcher {
 		RequestMapper.put(Command.TIMESET_INFO.Request, TimeSettingInfoRequest.class);
 		RequestMapper.put(Command.WORKTIME_INFO.Request, WorkTimeInfoRequest.class);
 		RequestMapper.put(Command.WORKTYPE_INFO.Request, WorkTypeInfoRequest.class);
+		RequestMapper.put(Command.TR_REMOTE.Request, SendToNRLRemote.class);
+		RequestMapper.put(Command.APPLICATION_INFO.Request, ApplicationReasonRequest.class);
 	}
 	
 	/**
@@ -54,6 +74,18 @@ public class RequestDispatcher {
 	 */
 	@Inject
 	private DefaultXDocument document;
+	
+	@Inject
+	private AuthenticateNRCommunicationQuery authenQuery;
+	
+	@Inject
+	private RQEmpInfoTerminalAdapter rqEmpInfoTerminalAdapter;
+	
+	@Inject
+	private EmpInfoTerminalComStatusRepository empInfoTerminalComStatusRepo;
+
+	@Inject
+	private EmpInfoTerComAbPeriodRepository empInfoTerComAbPeriodRepo;
 	
 	/**
 	 * Ignite.
@@ -77,25 +109,94 @@ public class RequestDispatcher {
 			if (!DefaultValue.SOH.equals(soh)) throw new InvalidFrameException();
 			String hdr = frame.pickItem(Element.HDR);
 
+			String nrlNo = frame.pickItem(Element.NRL_NO);
+			String macAddr = frame.pickItem(Element.MAC_ADDR);
+			String contractCode = frame.pickItem(Element.CONTRACT_CODE);
 			Command command = Command.findName(hdr).orElseThrow(InvalidFrameException::new);
 			if (command == Command.ACCEPT || command == Command.NOACCEPT) return NRLResponse.mute();
 			if (Arrays.asList(datas).stream().noneMatch(d -> d == command)) {
-				String nrlNo = frame.pickItem(Element.NRL_NO);
-				String macAddr = frame.pickItem(Element.MAC_ADDR);
-				return NRLResponse.noAccept(nrlNo, macAddr).build().addPayload(Frame.class, ErrorCode.PARAM.value);
+				return NRLResponse.noAccept(nrlNo, macAddr, contractCode).build().addPayload(Frame.class, ErrorCode.PARAM.value);
 			}
 			
 			NRLRequest<Frame> request = CDI.current().select(RequestMapper.get(hdr)).get();
 			if (request.intrEntity(frame.isCracked())) {
 				frame = document.unmarshal(result.toInputStream());
 			}
-			return request.responseTo(frame);
+			
+			//タイムレコーダの通信を認証する
+			boolean checkAuthen = authenQuery.process(contractCode, macAddr);
+			if(!checkAuthen) {
+				return NRLResponse.noAccept(nrlNo, macAddr, contractCode).build().addPayload(Frame.class, ErrorCode.PARAM.value);
+			}
+			
+			//就業情報端末を取得する
+			val empInfoTerCodeOpt = rqEmpInfoTerminalAdapter.getEmpInfoTerminalCode(contractCode, macAddr);
+			if(!empInfoTerCodeOpt.isPresent()) {
+				return NRLResponse.noAccept(nrlNo, macAddr, contractCode).build().addPayload(Frame.class, ErrorCode.PARAM.value);
+			}
+
+			// DS_通信状況を記録する.通信状況を記録する
+			RequireImpl impl = new RequireImpl(rqEmpInfoTerminalAdapter, empInfoTerminalComStatusRepo,
+					empInfoTerComAbPeriodRepo);
+			val status = RecordCommunicationStatus.recordStatus(impl, new ContractCode(contractCode),
+					new EmpInfoTerminalCode(empInfoTerCodeOpt.get()));
+			status.run();
+
+			NRLResponse reponse =  request.responseTo(empInfoTerCodeOpt.get(), frame);
+			
+			return reponse;
+			
 		} catch (JAXBException | NoSuchMethodException ex) {
 			throw new RuntimeException(ex);
 		} finally {
 			if (Objects.nonNull(result)) {
 				result.dispose();
 			}
+			if(UKServerSystemProperties.usesTenantLocator()) {
+				TenantLocatorService.disconnect();
+			}
 		}
+	}
+
+	@AllArgsConstructor
+	public class RequireImpl implements RecordCommunicationStatus.Require {
+
+		private final RQEmpInfoTerminalAdapter rQEmpInfoTerminalAdapter;
+
+		private final EmpInfoTerminalComStatusRepository empInfoTerminalComStatusRepo;
+
+		private final EmpInfoTerComAbPeriodRepository empInfoTerComAbPeriodRepo;
+
+		@Override
+		public Optional<FuncEmpInfoTerminalImport> getEmpInfoTerminal(String empInfoTerCode, String contractCode) {
+			return rQEmpInfoTerminalAdapter.getEmpInfoTerminal(empInfoTerCode, contractCode);
+		}
+
+		@Override
+		public Optional<EmpInfoTerminalComStatus> getEmpTerComStatus(ContractCode contractCode,
+				EmpInfoTerminalCode empInfoTerCode) {
+			return empInfoTerminalComStatusRepo.get(contractCode, empInfoTerCode);
+		}
+
+		@Override
+		public void insertEmpComAbPeriod(EmpInfoTerComAbPeriod empInfoTerComAbPeriod) {
+			empInfoTerComAbPeriodRepo.insert(empInfoTerComAbPeriod);
+		}
+
+		@Override
+		public void updateEmpTerStatus(EmpInfoTerminalComStatus empInfoTerComStatus) {
+			empInfoTerminalComStatusRepo.update(empInfoTerComStatus);
+		}
+
+		@Override
+		public void deleteEmpTerComAbPast(ContractCode contractCode, EmpInfoTerminalCode code, GeneralDate dateDelete) {
+			empInfoTerComAbPeriodRepo.deletePast(contractCode, code, dateDelete);
+		}
+
+		@Override
+		public void insertEmpTerStatus(EmpInfoTerminalComStatus empInfoTerComStatus) {
+			empInfoTerminalComStatusRepo.insert(empInfoTerComStatus);
+		}
+		
 	}
 }

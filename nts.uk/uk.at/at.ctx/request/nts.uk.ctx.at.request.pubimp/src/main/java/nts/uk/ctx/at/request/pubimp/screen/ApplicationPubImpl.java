@@ -19,8 +19,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.DeadlineLimitCurrentMonth;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.service.AppDeadlineSettingGet;
 import nts.uk.ctx.at.request.pub.screen.AppGroupExport;
 import nts.uk.ctx.at.request.pub.screen.AppWithDetailExport;
@@ -196,26 +194,26 @@ public class ApplicationPubImpl implements ApplicationPub {
 	@Override
 	public List<ApplicationExport> getAppById(String cid, List<String> lstAppId) {
 		List<Application> lstApp = applicationRepository_New.findByListID(cid, lstAppId);
-//		if (lstApp.isEmpty())
+		if (lstApp.isEmpty())
 			return new ArrayList<>();
-//		List<AppDispName> allApps = appDispNameRepository.getAll(lstApp.stream().map(c -> c.getAppType().value).distinct().collect(Collectors.toList()));
-//		return lstApp.stream().map(x -> toAppExportDto(cid, allApps, x, x.getAppDate().getApplicationDate()))
-//				.collect(Collectors.toList());
+		//List<AppDispName> allApps = appDispNameRepository.getAll(lstApp.stream().map(c -> c.getAppType().value).distinct().collect(Collectors.toList()));
+		return lstApp.stream().map(x -> toAppExportDto(x))
+				.collect(Collectors.toList());
 	}
-//	private ApplicationExport toAppExportDto(String companyID, List<AppDispName> allApps, Application app, GeneralDate appDate) {
-//
-//		ApplicationExport appExport = ApplicationExport.builder()
-//				.appID(app.getAppID())
-//				.appDate(appDate)
-//				.appType(app.getAppType().value)
-//				.employeeID(app.getEmployeeID())
-//				.reflectState(app.getAppReflectedState().value)
-//				.appTypeName(getAppName(companyID, allApps, app.getAppType()))
-//				.prePostAtr(app.getPrePostAtr().value)
-//				.build();
-//
-//		return appExport;
-//	}
+	private ApplicationExport toAppExportDto(Application app) {
+
+		ApplicationExport appExport = ApplicationExport.builder()
+				.appID(app.getAppID())
+				.appDate(app.getAppDate().getApplicationDate())
+				.appType(app.getAppType().value)
+				.employeeID(app.getEmployeeID())
+				.reflectState(app.getAppReflectedState().value)
+				.appTypeName(app.getAppType().name)
+				.prePostAtr(app.getPrePostAtr().value)
+				.build();
+
+		return appExport;
+	}
 	/** No.2846
 	 * 対象日リストを取得する
 	 * @param application

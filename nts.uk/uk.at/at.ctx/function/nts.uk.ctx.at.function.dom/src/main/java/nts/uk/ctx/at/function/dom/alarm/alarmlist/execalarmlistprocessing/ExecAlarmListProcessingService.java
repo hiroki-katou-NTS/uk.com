@@ -11,5 +11,6 @@ import nts.arc.time.GeneralDateTime;
 public interface ExecAlarmListProcessingService {
 	public OutputExecAlarmListPro execAlarmListProcessing(String extraProcessStatusID, String companyId,
 			List<String> workplaceIdList, List<String> listPatternCode, GeneralDateTime dateTime,
-			boolean sendMailPerson, boolean sendMailAdmin, String alarmCode, String empCalAndSumExecLogID);
+			boolean sendMailPerson, boolean sendMailAdmin, String alarmCode, String empCalAndSumExecLogID,
+			String runCode, boolean isDisplayAdmin, boolean isDisplayPerson);
 }

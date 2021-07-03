@@ -1,14 +1,13 @@
 package nts.uk.ctx.at.request.dom.application.common.service.other;
 
 import java.util.List;
-import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
@@ -87,7 +86,7 @@ public interface OtherCommonAlgorithm {
 	 * @param application
 	 * @return
 	 */
-	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application);
+	public MailResult sendMailApproverDelete(List<String> employeeIDList, Application application, String content);
 	
 	/**
 	 * refactor 4
@@ -114,7 +113,7 @@ public interface OtherCommonAlgorithm {
 	 * @param appName 申請表示名
 	 * @return
 	 */
-	public MailResult sendMailApprover(List<String> listDestination, Application application, String text);
+	public MailResult sendMailApprover(List<String> listDestination, Application application, String text, String content);
 	
 	/**
 	 * refactor 4
@@ -169,4 +168,13 @@ public interface OtherCommonAlgorithm {
 	 * @return
 	 */
 	public CheckWorkingInfoResult checkWorkingInfo(String companyID, String wkTypeCode, String wkTimeCode);
+	
+	/**
+	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.アルゴリズム.利用者の判定.利用者の判定
+	 * @param companyID
+	 * @param appID
+	 * @param employeeID
+	 * @return
+	 */
+	public User userJudgment(String companyID, String appID, String employeeID);
 }

@@ -29,5 +29,5 @@ public interface RemainCreateInforByApplicationData {
 	 * @param appID
 	 * @return
 	 */
-	Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid,String appID);
+	//Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid,String appID);
 }

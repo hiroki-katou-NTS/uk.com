@@ -106,12 +106,11 @@ public class AddBusinessTripCommandHandler extends CommandHandlerWithResult<AddB
 
         // アルゴリズム「出張申請暫定残数を更新する」を実行する
         // アルゴリズム「暫定データの登録」を実行する
-        // Refactor not done
-//        this.interimRemainDataMngRegisterDateChange.registerDateChange(
-//                AppContexts.user().companyId(),
-//                application.getEmployeeID(),
-//                dates
-//        );
+        this.interimRemainDataMngRegisterDateChange.registerDateChange(
+                AppContexts.user().companyId(),
+                application.getEmployeeID(),
+                dates
+        );
 
         Optional<AppTypeSetting> appTypeSet = businessTripInfoOutput
                 .getAppDispInfoStartup()

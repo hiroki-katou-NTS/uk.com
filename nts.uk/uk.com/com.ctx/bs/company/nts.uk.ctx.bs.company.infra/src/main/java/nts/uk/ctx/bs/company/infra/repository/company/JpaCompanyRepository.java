@@ -41,6 +41,8 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 
 	public static final String GET_COMPANY_BY_CID = "SELECT c FROM BcmmtCompanyInfor c WHERE c.bcmmtCompanyInforPK.companyId = :cid ";
 	
+	public static final String GET_COMPANY_BY_LIST_CID = "SELECT c FROM BcmmtCompanyInfor c WHERE c.bcmmtCompanyInforPK.companyId IN :listCid AND c.contractCd = :contractCd";
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString = new StringBuilder();
@@ -120,6 +122,14 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	@Override
 	public List<Company> getAllCompany(String contractCd) {
 		return this.queryProxy().query(GETALLCOMPANY, BcmmtCompanyInfor.class)
+				.setParameter("contractCd",contractCd)
+				.getList(c -> toDomainCom(c));
+	}
+	
+	@Override
+	public List<Company> findAllByListCid(String contractCd, List<String> companyIds) {
+		return this.queryProxy().query(GET_COMPANY_BY_LIST_CID, BcmmtCompanyInfor.class)
+				.setParameter("listCid", companyIds)
 				.setParameter("contractCd",contractCd)
 				.getList(c -> toDomainCom(c));
 	}
@@ -447,5 +457,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		}
 		return Optional.of(company);
 	}
+
+	
 }
 

@@ -48,6 +48,7 @@ import nts.uk.screen.at.app.ksm003.find.GetWorkCycle;
 import nts.uk.screen.at.app.ksm003.find.WorkCycleDto;
 import nts.uk.screen.at.app.ksm003.find.WorkCycleQueryRepository;
 import nts.uk.shr.com.context.AppContexts;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 勤務サイクル反映ダイアログ
@@ -84,21 +85,23 @@ public class WorkCycleReflectionDialog {
 			List<WorkCreateMethod> refOrder,
 			int numOfSlideDays){
 		val dto = new WorkCycleReflectionDto();
-		List<WorkCycleDto> workCycleDtoList = new ArrayList<>();
+
 		// 1. 勤務サイクル一覧を取得する [Get a list of work cycles]
-		if (bootMode == BootMode.EXEC_MODE){
-			workCycleDtoList = getWorkCycle.getDataStartScreen();
-			if(CollectionUtil.isEmpty(workCycleDtoList))
-				throw new BusinessException("Msg_37");
+		List<WorkCycleDto> workCycleDtoList = getWorkCycle.getDataStartScreen();
+		if (CollectionUtil.isEmpty(workCycleDtoList))
+			throw new BusinessException("Msg_37");
+		if (StringUtils.isEmpty(workCycleCode)){
 			workCycleCode = workCycleDtoList.get(0).getCode();
 		}
 		dto.setWorkCycleList(workCycleDtoList);
+
 		// 2. 休日系の勤務種類を取得する [Get holiday type of work]
 		List<WorkType> workTypes = holidayWorkTypeService.acquiredHolidayWorkType();
         Map<Optional<HolidayAtr>, List<WorkType>> map = workTypes.stream().collect(
                 Collectors.groupingBy(WorkType::getHolidayAtr)
         );
-		// 3. 作成する(Require, 期間, 勤務サイクルの反映設定)
+
+		// 3. 勤務サイクルの適用イメージを取得する
 		dto.setPubHoliday(convertToDomain(map.get(Optional.of(HolidayAtr.PUBLIC_HOLIDAY))));
 		dto.setSatHoliday(convertToDomain(map.get(Optional.of(HolidayAtr.STATUTORY_HOLIDAYS))));
 		dto.setNonSatHoliday(convertToDomain(map.get(Optional.of(HolidayAtr.NON_STATUTORY_HOLIDAYS))));
@@ -115,20 +118,7 @@ public class WorkCycleReflectionDialog {
 				nonSatHoliday,
 				pubHoliday
 		);
-		val cRequire = new CreateWorkCycleAppImageRequire(
-				weeklyWorkDayRepository,
-				publicHolidayRepository,
-				workCycleRepository);
-		List<RefImageEachDay> refImageEachDayList = CreateWorkCycleAppImage.create(cRequire, creationPeriod, config);
-		List<WorkCycleReflectionDto.RefImageEachDayDto> refImageEachDayDtos = new ArrayList<>();
-		val wRequire = new WorkInformationRequire(workTypeRepository);
-
-		Map<String, String> workTypeCodeNameMap = getWorkTypeCodeNameMap(refImageEachDayList);
-        refImageEachDayList.forEach(ref -> refImageEachDayDtos.add(
-        		WorkCycleReflectionDto.RefImageEachDayDto
-						.fromDomain(ref, wRequire, workTimeSettingRepository, workTypeCodeNameMap
-				)
-		));
+		List<WorkCycleReflectionDto.RefImageEachDayDto> refImageEachDayDtos = getWorkCycleAppImage(creationPeriod, config);
 		dto.setReflectionImage(refImageEachDayDtos); // 反映イメージ
 		return dto;
 	}

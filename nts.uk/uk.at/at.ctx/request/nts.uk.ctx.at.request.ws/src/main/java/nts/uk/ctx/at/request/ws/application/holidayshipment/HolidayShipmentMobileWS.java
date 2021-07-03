@@ -45,7 +45,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/request/application/holidayshipment/mobile")
@@ -123,7 +122,9 @@ public class HolidayShipmentMobileWS extends WebService {
 				rec, 
 				appDispInfoStartup.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(new ArrayList<ActualContentDisplay>()),
 				appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0), 
-				appDispInfoStartup.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode());
+				appDispInfoStartup.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), 
+				Optional.ofNullable(displayInforWhenStarting.getApplicationForHoliday() == null ? null : displayInforWhenStarting.getApplicationForHoliday().getWorkInformationForApplication()), 
+				Optional.ofNullable(displayInforWhenStarting.getApplicationForWorkingDay() == null ? null : displayInforWhenStarting.getApplicationForWorkingDay().getWorkInformationForApplication()));
 		//振休残数不足チェック (Check số nghỉ bù thiếu)
 		errorCheckProcessingBeforeRegistrationKAF011.checkForInsufficientNumberOfHolidays(
 				companyId, 
@@ -218,10 +219,7 @@ public class HolidayShipmentMobileWS extends WebService {
 					companyID,
 					rec, 
 					abs, 
-					CollectionUtil.isEmpty(command.getRecOldHolidayMngLst()) ? new ArrayList<>() : command.getRecOldHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 					CollectionUtil.isEmpty(command.getRecHolidayMngLst()) ? new ArrayList<>() : command.getRecHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
-					CollectionUtil.isEmpty(command.getAbsOldHolidayMngLst()) ? new ArrayList<>() : command.getAbsOldHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
-					CollectionUtil.isEmpty(command.getAbsOldWorkMngLst()) ? new ArrayList<>() : command.getAbsOldWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 					CollectionUtil.isEmpty(command.getAbsHolidayMngLst()) ? new ArrayList<>() : command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 					CollectionUtil.isEmpty(command.getAbsWorkMngLst()) ? new ArrayList<>() : command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 					appDispInfoStartup);
@@ -246,9 +244,9 @@ public class HolidayShipmentMobileWS extends WebService {
 					companyID, 
 					command.getWorkTypeNew().getWorkTypeCode(), 
 					command.getWorkTimeCD());
-		    List<TimezoneUse> timezoneUses = Collections.emptyList();
+		    List<TimezoneUse> timezoneUses = new ArrayList<TimezoneUse>();
 		    for (int i = 0; i < timeZones.size(); i++) {
-                timezoneUses.add(new TimezoneUse(timeZones.get(i).getStart(), timeZones.get(i).getEnd(), UseSetting.USE, i));
+                timezoneUses.add(new TimezoneUse(timeZones.get(i).getStart(), timeZones.get(i).getEnd(), UseSetting.USE, i + 1));
             }
 //			if(predetermineTimeSetForCalc!=null) {
 				for(TimezoneUse timezoneUse : timezoneUses) {

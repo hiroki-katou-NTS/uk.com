@@ -6,8 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 
 /** 日別実績の早退時間 */
 /** 日別実績の遅刻時間 */
@@ -37,6 +39,11 @@ public class LateEarlyTimeDailyPerformDto implements ItemConst, AttendanceItemDa
 	// @AttendanceItemLayout(layout = "E")
 	// @AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private int no;
+	
+	//遅刻報告したのでアラームにしない
+	//早退報告したのでアラームにしない
+	@AttendanceItemLayout(layout = LAYOUT_F, jpPropertyName = VALUE)
+	private boolean doNotSetAlarm;
 	
 	@Override
 	public AttendanceItemDataGate newInstanceOf(String path) {
@@ -81,9 +88,41 @@ public class LateEarlyTimeDailyPerformDto implements ItemConst, AttendanceItemDa
 	}
 	
 	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case VALUE:
+			return Optional.of(ItemValue.builder().value(doNotSetAlarm).valueType(ValueType.FLAG));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case VALUE:
+			doNotSetAlarm = value.valueOrDefault(null);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case VALUE:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+	
+	@Override
 	public LateEarlyTimeDailyPerformDto clone() {
 		return new LateEarlyTimeDailyPerformDto(time == null ? null : time.clone(),
 						deductionTime == null ? null : deductionTime.clone(),
-						valicationUseTime == null ? null : valicationUseTime.clone(), intervalExemptionTime, no);
+						valicationUseTime == null ? null : valicationUseTime.clone(), intervalExemptionTime, no, doNotSetAlarm);
 	}
 }

@@ -31,6 +31,8 @@ public class ClosureHistoryMasterDto implements ClosureHistorySetMemento {
 
 	/** The start date. */
 	private int startDate;
+	
+	private int closureDate;
 
 	/*
 	 * (non-Javadoc)
@@ -74,7 +76,7 @@ public class ClosureHistoryMasterDto implements ClosureHistorySetMemento {
 	 */
 	@Override
 	public void setClosureDate(ClosureDate closureDate) {
-		// No thing code
+		this.closureDate = closureDate.getLastDayOfMonth() ? 0 : closureDate.getClosureDay().v();
 	}
 
 	/*

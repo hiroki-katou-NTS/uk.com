@@ -14,10 +14,10 @@
 			<com:scriptfile path="kdl007.a.start.js" />
 			<com:scriptfile path="kdl007.a.service.js" />
 			<com:scriptfile path="kdl007.a.vm.js" />
-			<script>var dialogSize = { width: 350 , height: 580};</script>
+			<script>var dialogSize = { width: 380 , height: 580};</script>
 		</ui:define>
 		<ui:define name="content">
-			<div id="total">
+			<div id="contents-area">
 				<div id="label">
 					<label style="margin-left: 25px">#{i18n.getText('KDL007_1')}</label>
 				</div>
@@ -38,13 +38,13 @@
 						</table>
 					</div>
 				</div>
-				<div id="functions-area-bottom">
-					<div id="process">
-						<button id="btnSetting" class="x-large proceed"
+			</div>
+			<div id="functions-area-bottom">
+				<div id="process">
+					<button id="btnSetting" class="x-large proceed"
 							data-bind="click: register" tabindex="2">#{i18n.getText('KDL007_4')}</button>
-						<button id="btnCancel" class="large" data-bind="click: close"
+					<button id="btnCancel" class="large" data-bind="click: close"
 							tabindex="3">#{i18n.getText('KDL007_5')}</button>
-					</div>
 				</div>
 			</div>
 		</ui:define>

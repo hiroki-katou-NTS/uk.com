@@ -1,0 +1,64 @@
+#contents-area .group {
+  margin-left: 25px;
+  margin-bottom: 5px;
+  max-width: 630px;
+}
+#contents-area .sub-group {
+  width: 460px;
+}
+.cell-left {
+  width: 100px;
+}
+.table .cell-left {
+  width: 155px;
+  padding-left: 15px;
+}
+
+.table .group .cell-left {
+  width: 180px;
+} 
+.sidebar-content {
+  height: 100%;
+}
+
+.table .cell-left .form-label {
+  line-height: 37px;
+}
+.table.mb-5 {
+  margin-bottom: 15px;
+}
+.table .cell.mr-5 {
+  padding-right: 15px;
+}
+.table .cell-left .form-label.normal {
+  line-height: normal;
+}
+
+.table .divi {
+  margin-top: 20px;
+}
+
+.comboBox {
+  width: 70px;
+}
+
+#contents-area .sub-group .radio-wrappers:not(.switchbox-wrappers) .radio-wrapper  {
+  display: block;
+}
+#contents-area .sub-group .radio-wrappers:not(.switchbox-wrappers) .radio-wrapper:first-child {
+  margin-bottom: 15px;
+}
+#contents-area .sub-group .table .cell-left {
+  width: 130px;
+}
+#contents-area .sub-group span.limited-label {
+  width: 220px;
+  border: solid 1px #999;
+  border-radius: 4px;
+  padding: 6px 10px;
+  margin-left: 5px;
+  min-height: 20px;
+}
+.ntsMoveDataArea {
+  padding: 0 5px;
+}

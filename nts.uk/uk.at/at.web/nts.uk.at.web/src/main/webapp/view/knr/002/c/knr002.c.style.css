@@ -74,7 +74,7 @@ body > div:nth-child(2) {
 
 .letter-pnl {
 	padding: 5px;
-	height: 100px;
+	height: 125px;
 	border: 1px solid #999999;
 }
 
@@ -89,7 +89,7 @@ body > div:nth-child(2) {
 }
 
 .letter-pnl {
-	margin: 25px 0 10px 20px;
+	margin: 15px 0 10px 20px;
 }
 
 .letter-pnl > div > span:nth-child(1) {
@@ -193,7 +193,29 @@ body > div:nth-child(2) {
 	width: 184px;
 }
 
+.ntsSearchBox  {
+	width: 157px !important;
+}
 
+#column-1 {
+	width: 280px;
+}
+
+.radio-left > label {
+	margin-top: 10px;
+}
+
+.radio-left > label:nth-child(1) {
+	margin-top: 5px;
+}
+
+.current-check > div {
+	margin-top: 12px;
+}
+
+.current-check > div:nth-child(1) {
+	margin-top: 5px;
+}
  
 
 

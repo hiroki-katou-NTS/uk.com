@@ -35,10 +35,15 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
         created(params: AppInitParam) {
             
             const self = this;
-			if(!_.isNil(__viewContext.transferred.value)) {
-				self.isFromOther = true;
+			if(nts.uk.request.location.current.isFromMenu) {
+				sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');	
+			} else {
+				if(!_.isNil(__viewContext.transferred.value)) {
+					self.isFromOther = true;
+					params = __viewContext.transferred.value;
+				}	
 			}
-			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
+			
             let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
             let itemModelList = [];
@@ -252,7 +257,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                 }
             }).then((result) => {
 				if(result) {
-					CommonProcess.handleAfterRegister(result, self.isSendMail(), self);
+					CommonProcess.handleAfterRegister(result, self.isSendMail(), self, false, self.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
 				}
 			}).fail(res => {
                 self.showError(res);

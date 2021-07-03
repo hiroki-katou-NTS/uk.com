@@ -18,12 +18,12 @@ public class WorkInformationFinder {
     @Inject
     TaskingRepository repo;
 
-    public List<WorkInformationDto> get(TaskFrameNo frameNo, TaskCode code) {
-        String cid = AppContexts.user().companyId();
-        return repo.getListTask(cid, frameNo, code).stream().map(e -> new WorkInformationDto(
-                cid,
-                e.getTaskFrameNo().v(),
-                e.getCode().v()
-        )).collect(Collectors.toList());
-    }
+//    public List<WorkInformationDto> get(TaskFrameNo frameNo, TaskCode code) {
+//        String cid = AppContexts.user().companyId();
+//        return repo.getListTask(cid, frameNo, code).stream().map(e -> new WorkInformationDto(
+//                cid,
+//                e.getTaskFrameNo().v(),
+//                e.getCode().v()
+//        )).collect(Collectors.toList());
+//    }
 }

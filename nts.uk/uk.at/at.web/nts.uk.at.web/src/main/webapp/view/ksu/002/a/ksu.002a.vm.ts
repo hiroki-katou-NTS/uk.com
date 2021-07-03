@@ -3,6 +3,7 @@
 module nts.uk.ui.at.ksu002.a {
 	import m = nts.uk.ui.memento;
 	import c = nts.uk.ui.calendar;
+	import setShared = nts.uk.ui.windows.setShared;
 
 	type DayData = c.DayData<ScheduleData>;
 	type DayDataRawObsv = c.DayData<ObserverScheduleData>;
@@ -154,7 +155,7 @@ module nts.uk.ui.at.ksu002.a {
 		workplaceId: KnockoutObservable<string> = ko.observable('');
 		achievement: KnockoutObservable<ACHIEVEMENT> = ko.observable(ACHIEVEMENT.NO);
 		workData: KnockoutObservable<null | WorkData> = ko.observable(null);
-
+		kdl053Open: any = null;
 		created() {
 			const vm = this;
 			const dr: c.DateRange = {
@@ -653,9 +654,15 @@ module nts.uk.ui.at.ksu002.a {
 										employeeIds: [sid],
 										isRegistered: Number(registered)
 									};
-
+									setShared('dataShareDialogKDL053', params);
 									// call KDL053
-									return vm.$window.modal('at', '/view/kdl/053/a/index.xhtml', params);
+									try {
+									  vm.kdl053Open.close();
+									}
+									catch (exception_var) {}
+									
+									vm.kdl053Open =  nts.uk.ui.windows.sub.modeless('at', '/view/kdl/053/a/index.xhtml');
+									return vm.kdl053Open;
 								}
 							})
 							// reload data

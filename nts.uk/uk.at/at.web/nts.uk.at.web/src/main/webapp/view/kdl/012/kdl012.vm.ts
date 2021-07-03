@@ -24,6 +24,7 @@ module nts.uk.at.view.kdl012 {
         selectionCodeList: KnockoutObservableArray<string> = ko.observableArray([]);
         referenceDate: KnockoutObservable<string> = ko.observable();
         workFrameNoSelection: KnockoutObservable<number> = ko.observable(null);
+        listHeight: KnockoutComputed<number>;
 
         constructor(params: ParamModel) {
             super();
@@ -38,6 +39,7 @@ module nts.uk.at.view.kdl012 {
                 vm.workFrameNoSelection(object.workFrameNoSelection);//作業枠NO選択
                 vm.selectionCodeList(object.selectionCodeList);
                 vm.currentCodeList(object.selectionCodeList); //初期選択コードリスト
+                vm.currentCode(_.isEmpty(object.selectionCodeList) ? null : object.selectionCodeList[0]);
             }
 
             if (vm.isShowExpireDate()) {
@@ -50,7 +52,7 @@ module nts.uk.at.view.kdl012 {
                         columnCssClass: 'limited-label',
                         formatter: _.escape
                     },
-                    {headerText: vm.$i18n('KDL012_6'), prop: 'expireDate', width: 205},
+                    {headerText: vm.$i18n('KDL012_6'), prop: 'expireDate', width: 210},
                     {
                         headerText: vm.$i18n('KDL012_7'),
                         prop: 'remark',
@@ -79,6 +81,13 @@ module nts.uk.at.view.kdl012 {
                 ]);
             }
 
+            vm.listHeight = ko.computed(() => {
+                const isIE = !!document.documentMode;
+                if (vm.isMultiple && isIE) {
+                    return 244 + 25 + 1;
+                }
+                return 240 + 25 + 1;
+            });
             //get data from api
             vm.getWorkFrameSetting();
         }
@@ -94,19 +103,35 @@ module nts.uk.at.view.kdl012 {
         proceed() {
             const vm = this;
 
-            let selectionList: Array<any> = _.filter(vm.items(), (x) => {
-                return _.includes(vm.currentCodeList(), x.code)
-            });
-
-            if (selectionList.length === 0) {
-                vm.$dialog.error({messageId: 'Msg_1629'}).then(() => {
+            if (vm.isMultiple) {
+                let selectionList: Array<any> = _.filter(vm.items(), (x) => {
+                    return _.includes(vm.currentCodeList(), x.code)
                 });
+
+                if (selectionList.length === 0) {
+                    vm.$dialog.error({messageId: 'Msg_2092'}).then(() => {
+                    });
+                } else {
+                    let currentCodeList: Array<any> = selectionList.map(i => i.code);
+                    nts.uk.ui.windows.setShared('KDL012Output', currentCodeList);
+                    nts.uk.ui.windows.setShared('KDL012OutputList', selectionList);
+                    //new
+                    vm.$window.close({setShareKDL012: currentCodeList});
+                }
             } else {
-                let currentCodeList: Array<any> = selectionList.map(i => i.code);
-                nts.uk.ui.windows.setShared('KDL012Output', currentCodeList);
-                //new
-                vm.$window.close({setShareKDL012: currentCodeList});
+                if (_.isEmpty(vm.currentCode())) {
+                    vm.$dialog.error({messageId: 'Msg_2092'});
+                } else {
+                    nts.uk.ui.windows.setShared('KDL012Output', vm.currentCode());
+                    let selectionList: Array<any> = _.filter(vm.items(), (x) => {
+                        return _.isEqual(vm.currentCode(), x.code);
+                    });
+                    nts.uk.ui.windows.setShared('KDL012OutputList', selectionList);
+                    //new
+                    vm.$window.close({setShareKDL012: vm.currentCode()});
+                }
             }
+
         }
 
         closeDialog() {
@@ -124,7 +149,7 @@ module nts.uk.at.view.kdl012 {
                 let result: Array<ItemModel> = [];
                 if (data) {
                     data.forEach(item => {
-                        result.push(new ItemModel(item.code, item.taskName, item.expirationStartDate, item.expirationEndDate, item.remark));
+                        result.push(new ItemModel(item.code, item.taskName, item.taskAbName, item.expirationStartDate, item.expirationEndDate, item.remark));
                     });
                     vm.items(result);
                 }
@@ -146,10 +171,10 @@ module nts.uk.at.view.kdl012 {
         expireDate: string;
         remark: string;
 
-        constructor(code: string | number, taskName: string, expirationStartDate?: string, expirationEndDate?: string, remark?: string) {
+        constructor(code: string | number, taskName: string, taskAbName: string, expirationStartDate?: string, expirationEndDate?: string, remark?: string) {
             this.code = code;
             this.taskName = taskName;
-            // this.taskAbName = this.taskAbName;
+            this.taskAbName = taskAbName;
             this.expirationStartDate = expirationStartDate;
             this.expirationEndDate = expirationEndDate;
             this.expireDate = expirationStartDate + CONCAT_DATE + expirationEndDate;

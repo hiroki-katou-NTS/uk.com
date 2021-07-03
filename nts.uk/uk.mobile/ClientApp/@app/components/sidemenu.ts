@@ -200,6 +200,7 @@ export class SideMenuBar extends Vue {
     }
 
     public hideSideBar() {
+        EventBus.$emit('hideSideBar', true);
         if (browser.width < 992) {
             SideMenu.show = false;
         }
@@ -281,3 +282,6 @@ export class SideMenuBar extends Vue {
 }
 
 export { SideMenu };
+
+const EventBus = new Vue();
+export default EventBus;

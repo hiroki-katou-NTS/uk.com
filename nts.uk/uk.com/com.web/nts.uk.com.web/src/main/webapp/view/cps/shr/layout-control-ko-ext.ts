@@ -116,7 +116,6 @@ module nts.custombinding {
                     }
 
                     .layout-control .control-group {
-                        margin-top: 10px;
                         padding-left: 10px;
                     }
 
@@ -136,7 +135,7 @@ module nts.custombinding {
                     }
 
                     .layout-control .ntsControl.search-control .nts-editor {
-                        width: 178px !important;
+                        width: 141px !important;
                     }
 
                     .layout-control .ui-iggrid-scrolldiv {
@@ -148,7 +147,6 @@ module nts.custombinding {
                         line-height: 23px;
                         background-color: #CFF1A5;
                         box-sizing: border-box;
-                        border: 1px solid gray;
                         border-bottom: none;
                         width: calc(100% - 1px);
                         padding-left: 3px;
@@ -640,21 +638,24 @@ module nts.custombinding {
                         height: 27px;
                         vertical-align: middle;
                     }
+                    #cps007_lbl_control {
+                        padding-left: 10px;
+                    }
                 </style>`;
 
         private tmp = `<div class="left-area">
                     <div id="cps007_lbl_control"></div>
                     <div class="control-group">
-                        <div class="form-group">
+                        <div>
                             <div id="cps007_rdg_control" class="radio-control ntsControl"></div>
                         </div>
-                        <div class="form-group">
+                        <div>
                             <div id="cps007_cbx_control" class="combobox-control ntsControl"></div>
                         </div>
-                        <div class="form-group">
+                        <div>
                             <div id="cps007_sch_control" class="search-control ntsControl"></div>
                         </div>
-                        <div class="form-group">
+                        <div>
                             <div id="cps007_lst_header"></div>
                             <div id="cps007_lst_control" class="listbox-control ntsControl"></div>
                         </div>
@@ -1317,7 +1318,7 @@ module nts.custombinding {
                     listbox: {
                         enable: ko.observable(true),
                         multiple: ko.observable(true),
-                        rows: 15,
+                        rows: 10,
                         options: ko.observableArray([]),
                         value: ko.observableArray([]),
                         optionsValue: 'id',

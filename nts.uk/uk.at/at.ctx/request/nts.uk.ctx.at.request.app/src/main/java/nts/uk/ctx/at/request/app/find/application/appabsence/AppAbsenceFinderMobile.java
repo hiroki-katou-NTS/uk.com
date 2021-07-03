@@ -29,6 +29,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcessMobile;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AbsenceCheckRegisterOutput;
@@ -196,6 +197,22 @@ public class AppAbsenceFinderMobile {
 		AbsenceCheckRegisterOutput output;
 		ApplyForLeave applyForLeave = param.getApplyForLeave().toDomain();
 		Application application;
+		
+		if (applyForLeave.getVacationInfo().getHolidayApplicationType() == HolidayAppType.DIGESTION_TIME) {
+			if (!applyForLeave.getReflectFreeTimeApp().getTimeDegestion().isPresent()) {
+				applyForLeave.getReflectFreeTimeApp().setTimeDegestion(Optional.of(new TimeDigestApplication(
+						new AttendanceTime(0), 
+						new AttendanceTime(0), 
+						new AttendanceTime(0), 
+						new AttendanceTime(0), 
+						new AttendanceTime(0), 
+						new AttendanceTime(0),
+			            Optional.empty()
+						)));
+				
+			}
+		}
+		
 		
 		// INPUT．「画面モード」をチェックする
 		if (param.getMode()) {

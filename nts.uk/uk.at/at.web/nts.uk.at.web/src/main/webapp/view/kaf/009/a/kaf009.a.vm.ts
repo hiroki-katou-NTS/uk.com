@@ -51,10 +51,15 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         created(params: AppInitParam) {
             const vm = this;
             vm.$blockui("show");
-			if(!_.isNil(__viewContext.transferred.value)) {
-				vm.isFromOther = true;
+			if(nts.uk.request.location.current.isFromMenu) {
+				sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');	
+			} else {
+				if(!_.isNil(__viewContext.transferred.value)) {
+					vm.isFromOther = true;
+					params = __viewContext.transferred.value;
+				}
 			}
-			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
+			
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
             vm.isSendMail = ko.observable(false);
@@ -256,7 +261,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     if (result != undefined) {
                         vm.$dialog.info( { messageId: "Msg_15" } ).then(() => {
 							nts.uk.request.ajax("at", API.reflectApp, result.reflectAppIdLst);
-                       		CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+                       		CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
                         });                
                     }
                 })

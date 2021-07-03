@@ -31,12 +31,14 @@ module nts.uk.at.view.knr001.a {
                 //select an employment information terminal
                 self.selectedCode.subscribe(function(empInfoTerminalCode){
                     blockUI.invisible();
-                    self.clearErrors();
+                    setTimeout(() => {
+                        self.clearErrors();
+                    }, 7);
                     if(empInfoTerminalCode){
                         self.enableBtnDelete(true);
                         self.loadEmpInfoTerminal(empInfoTerminalCode);
                         self.enableBtnNew(true);
-                        $('#multi-list').focus();
+                        // $('#multi-list').focus();
                     } else {
                         self.createNewMode();
                         self.enableBtnDelete(false);
@@ -258,7 +260,8 @@ module nts.uk.at.view.knr001.a {
                 
                 dialog.confirm({messageId:"Msg_18"})
                     .ifYes(() => {
-                        var index = self.empInfoTerminalList().indexOf(self.empInfoTerminalList().find(empInfoTer => delCode == empInfoTer.empInfoTerCode));
+                        //  var index = self.empInfoTerminalList().indexOf(self.empInfoTerminalList().find(empInfoTer => delCode == empInfoTer.empInfoTerCode));
+                        var index = _.indexOf(self.empInfoTerminalList().map(e => e.empInfoTerCode), delCode);
                         let command = {
                             empInfoTerCode: delCode
                         };

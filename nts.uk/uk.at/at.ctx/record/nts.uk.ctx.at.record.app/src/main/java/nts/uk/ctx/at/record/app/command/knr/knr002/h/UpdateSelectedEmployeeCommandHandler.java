@@ -55,7 +55,6 @@ public class UpdateSelectedEmployeeCommandHandler extends CommandHandler<UpdateS
 															Collections.emptyList())
 														.build();
 		// 3. persist()
-		this.timeRecordReqSettingSendEmployeeRepository.delete(timeRecordSettingValue);
 		this.timeRecordReqSettingSendEmployeeRepository.insert(timeRecordSettingUpdate);
 	}
 

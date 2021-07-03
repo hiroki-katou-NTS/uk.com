@@ -26,13 +26,13 @@ public enum Superiority {
 	TURN_BACK(3, "Enum_Superiority_certainTimeExcSubHol", "戻り");
 
 	/** The value. */
-	public final int value;
+	public int value;
 
 	/** The name id. */
-	public final String nameId;
+	public String nameId;
 
 	/** The description. */
-	public final String description;
+	public String description;
 
 	/** The Constant values. */
 	private final static Superiority[] values = Superiority.values();

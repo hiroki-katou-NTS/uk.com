@@ -4,7 +4,7 @@
 }
 
 .view-s .view-dialog {
-    padding: 20px;
+    padding: 20px 20px 0px 20px;
 }
 
 .title {
@@ -13,7 +13,7 @@
 }
 
 .ntsRadioBox {
-    margin-left: 35px;
+    margin-left: 30px;
 }
 
 .title-1 {
@@ -25,6 +25,14 @@
     margin-bottom: 10px;
 }
 
-.view-dialog {
-    width: 285px;
+.label title {
+    box-sizing: border-box;
 }
+
+.content {
+    padding-left: 30px;
+}
+
+/* .view-dialog {
+    width: 285px;
+} */

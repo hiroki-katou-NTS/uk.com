@@ -21,8 +21,8 @@ import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -36,10 +36,10 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateReposito
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdpApprovalPhaseStatePK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdpApproverStatePK;
+import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtAppInstApprover;
+import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtAppInstRoute;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtAppRootStateSimple;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtApprovalPhaseState;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtAppInstRoute;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtAppInstApprover;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application.WwfdtFullJoinState;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmday.WwfdpApprovalRootDayPK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmday.WwfdtAppRootDaySimple;
@@ -73,6 +73,8 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 
 	private static final String SELECT_CF_DAY_BY_EMP_DATE_SP;
 
+	private static final String SELECT_DAY_BY_LIST_EMP_DATE;
+	private static final String SELECT_MONTH_BY_LIST_EMP_DATE;
 	private static final String SELECT_BY_LIST_EMP_DATE;
 
 	private static final String SELECT_APPS_BY_EMP_AND_DATES;
@@ -166,6 +168,22 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" AND e.recordDate <= :endDate");
 		builderString.append(" AND e.employeeID = :employeeID");
 		SELECT_CF_DAY_BY_EMP_DATE_SP = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM WwfdtApprovalRootDay e");
+		builderString.append(" WHERE e.recordDate >= :startDate");
+		builderString.append(" AND e.recordDate <= :endDate");
+		builderString.append(" AND e.employeeID IN :employeeID");
+		SELECT_DAY_BY_LIST_EMP_DATE = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM WwfdtApprovalRootMonth e");
+		builderString.append(" WHERE e.recordDate >= :startDate");
+		builderString.append(" AND e.recordDate <= :endDate");
+		builderString.append(" AND e.employeeID IN :employeeID");
+		SELECT_MONTH_BY_LIST_EMP_DATE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -388,7 +406,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 			entityApprover.wwfdpApprovrStatePK.approverId = approver.getApproverID();
 			entityApprover.agentID = approver.getAgentID();
 			entityApprover.approvalDate = approver.getApprovalDate();
-			entityApprover.approvalReason = approver.getApprovalReason();
+			entityApprover.approvalReason = approver.getApprovalReason()==null ? null : approver.getApprovalReason().v();
 			lstEntityApprover.add(entityApprover);
 		}
 		return lstEntityApprover;
@@ -490,10 +508,21 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	@Override
 	public List<ApprovalRootState> findAppByListEmployeeIDRecordDate(GeneralDate startDate, GeneralDate endDate,
 			List<String> employeeIDs, Integer rootType) {
-		return this.queryProxy().query(SELECT_BY_LIST_EMP_DATE, WwfdtAppInstRoute.class)
-				.setParameter("startDate", startDate).setParameter("endDate", endDate)
-				//.setParameter("rootType", rootType)
-				.setParameter("employeeID", employeeIDs).getList(x -> x.toDomain());
+		switch (rootType) {
+			case 1:
+				return this.queryProxy().query(SELECT_DAY_BY_LIST_EMP_DATE, WwfdtApprovalRootDay.class)
+						.setParameter("startDate", startDate).setParameter("endDate", endDate)
+						.setParameter("employeeID", employeeIDs).getList(x -> x.toDomain());
+			case 2:
+				return this.queryProxy().query(SELECT_MONTH_BY_LIST_EMP_DATE, WwfdtApprovalRootMonth.class)
+						.setParameter("startDate", startDate).setParameter("endDate", endDate)
+						.setParameter("employeeID", employeeIDs).getList(x -> x.toDomain());
+			default:
+				return this.queryProxy().query(SELECT_BY_LIST_EMP_DATE, WwfdtAppInstRoute.class)
+						.setParameter("startDate", startDate).setParameter("endDate", endDate)
+						.setParameter("employeeID", employeeIDs).getList(x -> x.toDomain());
+		}
+
 	}
 
 	@Override

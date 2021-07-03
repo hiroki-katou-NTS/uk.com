@@ -2,6 +2,8 @@ package nts.uk.shr.com.context.loginuser;
 
 import java.io.Serializable;
 
+import lombok.val;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
@@ -33,7 +35,7 @@ public class NullLoginUserContext implements LoginUserContext, Serializable {
 
 	@Override
 	public String contractCode() {
-		return "";
+		return AppContexts.system().isCloud() ? "" : AppContexts.system().getTenantCodeOnPremise().get() ;
 	}
 
 	@Override

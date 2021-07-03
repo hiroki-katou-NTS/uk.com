@@ -22,6 +22,7 @@ import javax.ejb.TransactionAttributeType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -72,7 +73,8 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 
         builderString = new StringBuilder();
         builderString.append(SELECT);
-        builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate' AND a.ORDERED IN (ordered)");
+        builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate' AND a.ORDERED IN (ordered)"
+        		+ "AND a.CID = 'companyID' ");
         FIND_BY_ORDER_PERIOD_EMP = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -130,7 +132,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		List<FullJoinBentoReservation> listFullData = new ArrayList<>();
 		while (rs.next()) {
 			String frameNo = rs.getString("MANU_FRAME");
-			String registerDate = rs.getString("REGIST_DATETIME");
+			Timestamp registerDate = rs.getTimestamp("REGIST_DATETIME"); 
 			String quantity = rs.getString("QUANTITY");
 			String autoReservation = rs.getString("AUTO_RESERVATION_ATR");
 			listFullData.add(new FullJoinBentoReservation(
@@ -143,7 +145,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 					Integer.valueOf(rs.getString("ORDERED")) == 1 ? true : false,
 					rs.getString("WORK_LOCATION_CD"),
 					frameNo == null ? null : Integer.valueOf(frameNo),
-					registerDate == null ? null : GeneralDateTime.fromString(registerDate, DATE_TIME_FORMAT),
+					registerDate == null ? null : GeneralDateTime.localDateTime(registerDate.toLocalDateTime()),
 					quantity == null ? null : Integer.valueOf(quantity),
 					autoReservation == null ? null : Boolean.valueOf(autoReservation)));
 		}
@@ -232,7 +234,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
     }
 
     @Override
-    public List<BentoReservation> findByOrderedPeriodEmpLst(List<ReservationRegisterInfo> inforLst, DatePeriod period, boolean ordered) {
+    public List<BentoReservation> findByOrderedPeriodEmpLst(List<ReservationRegisterInfo> inforLst, DatePeriod period, boolean ordered, String companyID) {
         String query = FIND_BY_ORDER_PERIOD_EMP;
         List<String> cardLst = inforLst.stream().map(x -> x.getReservationCardNo()).collect(Collectors.toList());
         String cardLstStr = "";
@@ -252,6 +254,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
         query = query.replaceFirst("startDate", period.start().toString());
         query = query.replaceFirst("endDate", period.end().toString());
         query = query.replaceFirst("ordered", orderedParam);
+        query = query.replace("companyID", companyID);
         return getBentoReservations(query);
     }
 

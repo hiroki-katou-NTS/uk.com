@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto;
 
 import lombok.Builder;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDisplayName;
 
 @Builder
 public class WorkTimeDisplayNameDto {
@@ -16,5 +17,11 @@ public class WorkTimeDisplayNameDto {
 	public String workTimeAbName;
 	
 	/** The work time symbol. */
-	public String workTimeSymbol;
+//	public String workTimeSymbol;
+
+    
+    public static WorkTimeDisplayNameDto fromDomain(WorkTimeDisplayName domain) {
+        return new WorkTimeDisplayNameDto(domain.getWorkTimeName() == null ? null : domain.getWorkTimeName().v(), 
+                domain.getWorkTimeAbName() == null ? null : domain.getWorkTimeAbName().v());
+    }
 }

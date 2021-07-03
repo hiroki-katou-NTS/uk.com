@@ -12,9 +12,10 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.HDWorkTimeSheetSettingDto;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.TimezoneOfFixedRestTimeSetDto;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezoneSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 
 /**
  * The Class FixOffdayWorkTimezoneDto.
@@ -24,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 public class FixOffdayWorkTimezoneDto implements FixOffdayWorkTimezoneSetMemento {
 
 	/** The rest timezone. */
-	private FixRestTimezoneSetDto restTimezone;
+	private TimezoneOfFixedRestTimeSetDto restTimezone;
 
 	/** The lst work timezone. */
 	private List<HDWorkTimeSheetSettingDto> lstWorkTimezone;
@@ -37,9 +38,9 @@ public class FixOffdayWorkTimezoneDto implements FixOffdayWorkTimezoneSetMemento
 	 * worktime.fixedset.FixRestTimezoneSet)
 	 */
 	@Override
-	public void setRestTimezone(FixRestTimezoneSet restTimezone) {
+	public void setRestTimezone(TimezoneOfFixedRestTimeSet restTimezone) {
 		if (restTimezone != null) {
-			this.restTimezone = new FixRestTimezoneSetDto();
+			this.restTimezone = new TimezoneOfFixedRestTimeSetDto();
 			restTimezone.saveToMemento(this.restTimezone);
 		}
 	}
