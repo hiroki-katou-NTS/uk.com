@@ -15,4 +15,13 @@ public class CsvRecord {
 	
 	/** CSV1行分のデータ */
 	private final List<String> rawItems;
+	
+	/**
+	 * 列番号で取得する（列番号は1スタート）
+	 * @param columnNo
+	 * @return
+	 */
+	public String getItemByColumnNo(int columnNo) {
+		return rawItems.get(columnNo - 1);
+	}
 }
