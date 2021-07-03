@@ -30,8 +30,8 @@ public class XimmtMappingImportItem extends ContractUkJpaEntity implements Seria
 	private XimmtMappingImportItemPK pk;
 	
 	/* CSV列番号 */
-	@Column(name = "CSV_LINE_NO")
-	private int csvLineNumber;
+	@Column(name = "CSV_COLUMN_NO")
+	private int csvColumnNumber;
 	
 	@Override
 	protected Object getKey() {
@@ -41,7 +41,7 @@ public class XimmtMappingImportItem extends ContractUkJpaEntity implements Seria
 	public static final JpaEntityMapper<XimmtMappingImportItem> MAPPER = new JpaEntityMapper<>(XimmtMappingImportItem.class);
 	
 	public ImportItemMapping toDomain(){
-		return new ImportItemMapping(this.pk.getItemNo(), this.csvLineNumber);
+		return new ImportItemMapping(this.pk.getItemNo(), this.csvColumnNumber);
 		
 	}
 }
