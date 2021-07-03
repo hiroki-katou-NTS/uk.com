@@ -302,7 +302,7 @@ public class DisplayWorkInfoByDateSc {
 			if(param.getSelectedDisplayPeriod() == 2) {
 				Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMa = new HashMap<ScheManaStatuTempo, Optional<WorkSchedule>>();
 				mngStatusAndWScheMa.put(key, value);
-				taskInfoDto = getListEmpWorkHours.get(mngStatusAndWScheMa).get(0);
+				taskInfoDto = getListEmpWorkHours.get(mngStatusAndWScheMa).isEmpty() ? null : getListEmpWorkHours.get(mngStatusAndWScheMa).get(0);
 			}
 			// 2.3.4
 			infoByDateDto = new DisplayWorkInfoByDateDto(key.getEmployeeID(), workInfoDto, workScheduleDto, inforDto == null ? null : inforDto.getFixedWorkInforDto().get(0), taskInfoDto);
