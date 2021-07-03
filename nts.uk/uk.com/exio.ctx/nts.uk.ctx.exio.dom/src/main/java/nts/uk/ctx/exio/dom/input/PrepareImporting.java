@@ -36,6 +36,8 @@ public class PrepareImporting {
 		val assembly = require.getAssemblyMethod(context.getCompanyId(), context.getExternalImportCode())
 				.orElseThrow(() -> new RuntimeException("組立方法が取得できない: " + context.toString()));
 		
+		require.setupWorkspace(context);
+		
 		// 受入データの組み立て
 		val meta = assembleImportingData(require, context, csvFileStream, setting, assembly);
 		
