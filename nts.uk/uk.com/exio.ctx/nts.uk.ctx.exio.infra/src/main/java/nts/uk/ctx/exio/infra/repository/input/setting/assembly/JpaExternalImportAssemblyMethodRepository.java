@@ -31,8 +31,8 @@ public class JpaExternalImportAssemblyMethodRepository extends JpaRepository imp
 	private List<FixedItemMapping> getFixed(String companyId, ExternalImportCode settingCode){
 		String sql 	= " select f "
 					+ " from XimmtMappingFixedItem f "
-					+ " where f.pk.companyId = @companyID "
-					+ " and f.pk.code = @settingCD";
+					+ " where f.pk.companyId = :companyID "
+					+ " and f.pk.code = :settingCD";
 		return this.queryProxy().query(sql, XimmtMappingFixedItem.class)
 				.setParameter("companyID", companyId)
 				.setParameter("settingCD", settingCode.toString())
@@ -42,8 +42,8 @@ public class JpaExternalImportAssemblyMethodRepository extends JpaRepository imp
 	private List<ImportItemMapping> getImport(String companyId, ExternalImportCode settingCode){
 		String sql 	= "select f "
 					+ " from XimmtMappingImportItem f "
-					+ " where f.pk.companyId = @companyID "
-					+ " and f.pk.code = @settingCD";
+					+ " where f.pk.companyId = :companyID "
+					+ " and f.pk.code = :settingCD";
 		return this.queryProxy().query(sql, XimmtMappingImportItem.class)
 				.setParameter("companyID", companyId)
 				.setParameter("settingCD", settingCode.toString())

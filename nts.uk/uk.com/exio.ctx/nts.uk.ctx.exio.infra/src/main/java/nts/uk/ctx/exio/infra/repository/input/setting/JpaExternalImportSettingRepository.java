@@ -17,8 +17,8 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 	public Optional<ExternalImportSetting> get(String companyId, ExternalImportCode settingCode) {
 		String sql 	= " select f "
 					+ " from XimmtImportSetting f "
-					+ " where f.pk.companyId = @companyID "
-					+ " and f.pk.code = @settingCD";
+					+ " where f.pk.companyId = :companyID "
+					+ " and f.pk.code = :settingCD";
 		
 		return this.queryProxy().query(sql, XimmtImportSetting.class)
 				.setParameter("companyID", companyId)
