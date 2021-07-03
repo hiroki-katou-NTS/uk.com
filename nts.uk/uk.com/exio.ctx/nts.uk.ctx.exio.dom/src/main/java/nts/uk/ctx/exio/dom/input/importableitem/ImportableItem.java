@@ -27,7 +27,7 @@ public class ImportableItem implements DomainAggregate{
 			return false;
 		}
 		
-		return domainConstraint.map(constraint -> constraint.validate(dataItem))
+		return domainConstraint.map(constraint -> constraint.validate(dataItem.getValue()))
 				//↓はそもそも制限が無いという意図.
 				.orElse(true);
 	}
