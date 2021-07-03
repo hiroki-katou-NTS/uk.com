@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.algorithm;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.algorithm;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

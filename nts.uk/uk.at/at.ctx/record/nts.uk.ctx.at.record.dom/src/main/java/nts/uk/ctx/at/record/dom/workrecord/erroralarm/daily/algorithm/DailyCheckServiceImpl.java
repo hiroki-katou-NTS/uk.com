@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.algorithm;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.algorithm;
 
 import java.util.ArrayList;
 import java.util.Arrays;
