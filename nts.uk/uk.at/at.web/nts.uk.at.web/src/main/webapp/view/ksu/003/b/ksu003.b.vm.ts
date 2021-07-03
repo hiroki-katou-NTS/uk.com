@@ -39,7 +39,8 @@ module nts.uk.at.view.ksu003.b {
         taskPaletteOrgnization: KnockoutObservable<TaskPaletteOrgnization> = ko.observable(new TaskPaletteOrgnization());       
         sourceEmpty: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
         isClickLink: KnockoutObservable<boolean> = ko.observable(false);
-        endStatus: KnockoutObservable<string> = ko.observable("Cancel"); 
+        endStatus: KnockoutObservable<string> = ko.observable("Cancel");
+		dataShareA : any = getShared("dataShareKsu003b"); 
 
         constructor() {
             super();
@@ -285,14 +286,14 @@ module nts.uk.at.view.ksu003.b {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            let dataShare = getShared("dataShareKsu003b");
+            
             data ? position = Number(data.target.dataset.idx) + 1 : position = Number($(event)[0].dataset.idx) + 1
 
             let request = {
                 isMultiple: false,
                 showExpireDate: true,
                 workFrameNoSelection: 1,
-                referenceDate: moment(dataShare.referenceDate).format("YYYY/MM/DD"),
+                referenceDate: moment(self.dataShareA.referenceDate).format("YYYY/MM/DD"),
                 selectionCodeList: [self.taskPaletteOrgnization().taskCodes()[index]]
             };
             setShared('KDL012Params', request);
