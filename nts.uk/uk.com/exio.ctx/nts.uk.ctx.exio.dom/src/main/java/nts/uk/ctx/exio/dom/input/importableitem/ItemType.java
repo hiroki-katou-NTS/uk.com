@@ -58,9 +58,11 @@ public enum ItemType {
 			return new BigDecimal(value);
 		case DATE:
 			// TODO:デフォルトの日付形式が必要
-			return GeneralDate.fromString(value, "YYYY/MM/DD");
+			return GeneralDate.fromString(value, "yyyyMMdd");
+		case STRING:
+			return value;
 		default:
-			throw new RuntimeException("システム上使用できない型が指定されたか、変換が必要ありません。");
+			throw new RuntimeException("unknown: " + this);
 		}
 	}
 }
