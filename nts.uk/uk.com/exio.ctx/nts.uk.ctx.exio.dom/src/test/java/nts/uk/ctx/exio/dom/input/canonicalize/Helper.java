@@ -8,13 +8,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.DataItemList;
+import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 
 public class Helper {
 
 	public static class Dummy {
 		public static final int ROW_NO = -1;
+		
+		public static final String COMPANY_ID = null;
+	}
+	
+	public static ExecutionContext context(ImportingMode mode) {
+		return new ExecutionContext("companyId", "settingCode", ImportingGroupId.TASK, mode);
 	}
 	
 	public static class Revised {
@@ -27,11 +35,18 @@ public class Helper {
 	}
 	
 	public static class ItemList {
-		public static DataItemList of(DataItem item) {
+		public static DataItemList of(DataItem... item) {
 			return new DataItemList(Arrays.asList(item));
 		}
 	}
 	
+	public static class Interm {
+		
+		public static IntermediateResult of(
+				DataItemList itemsAfterCanonicalize, DataItemList itemsBeforeCanonicalize, DataItemList itemsNotCanonicalize) {
+			return new IntermediateResult(Dummy.ROW_NO, itemsAfterCanonicalize, itemsBeforeCanonicalize, itemsNotCanonicalize);
+		}
+	}
 	
 	public static AssertsIntermediateResult asserts(IntermediateResult result) {
 		return new AssertsIntermediateResult(result);

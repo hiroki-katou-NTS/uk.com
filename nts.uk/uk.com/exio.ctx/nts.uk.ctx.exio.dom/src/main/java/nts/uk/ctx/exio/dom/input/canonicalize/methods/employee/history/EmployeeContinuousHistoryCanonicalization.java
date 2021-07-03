@@ -119,7 +119,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 		// 以下の2ケースでは受け入れない
 		// 1:「新規のみ」で既存の履歴がある
 		// 2:「上書きのみ」で既存の履歴が無い
-		if (context.getMode().canImport(existingHistory.isPresent())) {
+		if (!context.getMode().canImport(existingHistory.isPresent())) {
 			return Collections.emptyList();
 		}
 		

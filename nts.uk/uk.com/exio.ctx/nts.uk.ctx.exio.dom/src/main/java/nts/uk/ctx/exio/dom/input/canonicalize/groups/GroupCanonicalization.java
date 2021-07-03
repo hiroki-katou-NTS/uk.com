@@ -46,8 +46,6 @@ public interface GroupCanonicalization {
 		TaskCanonicalization.RequireCanonicalize,
 		DailyPerformanceCanonicalization.RequireCanonicalize {
 		
-		void save(ExecutionContext context, AnyRecordToDelete toDelete);
-		
 		void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord);
 	}
 	

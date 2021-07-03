@@ -18,8 +18,17 @@ public class EmploymentHistoryCanonicalization
 		extends EmployeeContinuousHistoryCanonicalization
 		implements GroupCanonicalization {
 	
+	public EmploymentHistoryCanonicalization(
+			int itemNoStartDate,
+			int itemNoEndDate,
+			int itemNoHistoryId,
+			EmployeeCodeCanonicalization employeeCodeCanonicalization) {
+		
+		super(itemNoStartDate, itemNoEndDate, itemNoHistoryId, employeeCodeCanonicalization);
+	}
+
 	public EmploymentHistoryCanonicalization(GroupWorkspace workspace) {
-		super(
+		this(
 				workspace.getItemByName("開始日").getItemNo(),
 				workspace.getItemByName("終了日").getItemNo(),
 				workspace.getItemByName("HIST_ID").getItemNo(),
