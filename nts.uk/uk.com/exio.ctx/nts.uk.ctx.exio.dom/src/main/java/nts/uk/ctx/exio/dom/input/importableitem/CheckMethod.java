@@ -2,7 +2,9 @@ package nts.uk.ctx.exio.dom.input.importableitem;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.PrimitiveValue;
+import nts.gul.reflection.ClassReflection;
 
 /**
  * 受入値の検証方法
@@ -13,6 +15,11 @@ public enum CheckMethod {
 	PRIMITIVE_VALUE(1) {
 		@Override
 		public boolean validate(Class<?> pvClass, Object value) {
+			
+			if (ClassReflection.isSubclass(pvClass, IntegerPrimitiveValue.class)) {
+				value = value == null ? null : Integer.parseInt(value.toString());
+			}
+			
 			try {
 				PrimitiveValue<?> pv = (PrimitiveValue<?>) pvClass.getConstructors()[0].newInstance(value);
 				pv.validate();
