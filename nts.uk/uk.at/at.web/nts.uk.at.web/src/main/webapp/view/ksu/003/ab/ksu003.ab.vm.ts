@@ -72,6 +72,9 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 					__viewContext.viewModel.viewmodelA.localStore.workPalletDetails = value;
 					characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
 				}
+				
+				__viewContext.viewModel.viewmodelA.addTypeOfTask("#6495ED", value);
+				
 				//$("#tableButton1").ntsButtonTable("setSelectedCell", value.row, value.column);
 			});
 		}
@@ -92,7 +95,14 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 							contextMenu: self.contextMenu,
 							disableMenuOnDataNotSet: [1], mode: "normal"
 						});
-
+						
+						if($("#contain-view-right-ksu003").width() > 920){
+							$("#tableButton1 button").css("width", "202px");
+						} else {
+							$("#comboTime").css("width", "800px");
+						}
+						
+						
 					if (self.sourceCompany() != null)
 						self.checkSelectButton(0);
 
@@ -444,10 +454,11 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 
 		openC() {
 			let self = this;
+			block.grayout();
 			self.checkEmpAttendance().done((data: any) => {
 				setShared("dataShareKsu003c", self.lstEmpToC);
 				nts.uk.ui.windows.sub.modal('/view/ksu/003/c/index.xhtml').onClosed(() => {
-					console.log();
+					block.clear();
 				});
 			});
 		}

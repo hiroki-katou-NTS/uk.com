@@ -29,12 +29,12 @@
 	background-color: rgb(237,250,194);
 	height: 60px;
 	margin-top: 3px;
-	width: 981px;
+	width: -webkit-fill-available;
     margin-left: 9px;
 }
 
 #tableButton1 button {
-	width: 190px !important;
+	min-width: 176px;
 	height: 20px;
 	line-height: 18px;
 	box-shadow : 0 1px rgba(0, 0, 0, 0.4);
@@ -76,7 +76,6 @@
 }
 
 #screen-Ab2 .listLink {
-	width: 981px;
 	margin-bottom: -6px;
 }
 
@@ -107,7 +106,7 @@
 }
 
 .ntsTable .ntsButtonCellSelected {
-    background-color: #007fff;
+    background-color: #007fff !important;
     color: white !important;
     border : 1px solid grey;
     box-shadow : none;
