@@ -327,44 +327,25 @@ module nts.uk.at.view.ksu003.a.model {
 
 	// setting show hide for middle
 	export function showHide(showA9: any, indexBtnToLeft: any, targetInfor: any) {
+		let margin = $(".ex-header-leftmost").width() - 12 + $(".ex-header-middle").width();
+		let x = $('.ex-header-leftmost').width() + $('.ex-header-middle').width() + $('.ex-header-detail').width();
 		$("#contents-area").css({ 'overflow-y': 'hidden' });
 		if (indexBtnToLeft() % 2 == 0) {
-			if (!showA9) {
-				$("#extable-ksu003").exTable("showMiddle");
-			}
-			if (window.outerWidth >= 1920) {
-				$(".toLeft").css('margin-left', 587 + 'px');
-				if (targetInfor == 0) {
-					$(".toLeft").css("margin-left", 504 + 'px');
-				}
-			}
-			if (window.outerWidth < 1920) {
-				$(".toLeft").css("margin-left", 588 + 'px');
-				if (targetInfor == 0) {
-					$(".toLeft").css("margin-left", 505 + 'px');
-				}
-			}
+			if (!showA9) 
+			$("#extable-ksu003").exTable("showMiddle");
+			
+			$(".toLeft").css('margin-left', margin + 'px');
+			$("#setting-time-grid").css("margin-left", x + 16 + 'px');
 		} else {
+			margin = $(".ex-header-leftmost").width() - 12	
 			if (showA9) {
 				$("#extable-ksu003").exTable("hideMiddle");
 			}
-			if (window.outerWidth < 1920) {
-				$(".toLeft").css("margin-left", 189 + 'px');
-			}
-			if (window.outerWidth >= 1920) {
-				$(".toLeft").css('margin-left', 188 + 'px');
-			}
+			$(".toLeft").css("margin-left", margin + 'px');
+			
+			x = $('.ex-header-leftmost').width() + $('.ex-header-detail').width();
+				$("#setting-time-grid").css("margin-left", x + 16 + 'px');
 		}
-
-		if (window.innerHeight < 700) {
-			if (window.outerWidth <= 1366) {
-				//$("#label-display").css("margin-left", 55 + 'px');
-				//$(".toDown").css('margin-left', 0 + 'px');
-				if (navigator.userAgent.indexOf("Chrome") == -1) {
-					//$(".toDown").css('margin-left', 0 + 'px');
-				}
-			}
-		} 
 	}
 
 	export function buidDataReg(cellsGroup: any, targetInfor: any, employeeInfo: any, employeeIdLogin: any, colorBreak45: any, index045: any) {
