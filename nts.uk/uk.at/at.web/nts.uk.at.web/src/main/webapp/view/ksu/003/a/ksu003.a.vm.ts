@@ -196,6 +196,60 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				characteristics.save(self.KEY, self.localStore);
 			});
 			
+			self.selectedDisplayPeriod.subscribe((value) => {
+				let mode = "normal";
+				if(value == 1){
+					if(_.isNil(self.fixedType)) return;
+					self.fixedType.color("#ccccff")
+					self.changeableType.color("#ffc000")
+					self.flexType.color("#ccccff")
+					self.otType.color("#ffff00")
+					self.otType.hide(false);
+					self.otType.color("#00ffcc")
+					self.coreType.hide(false);
+					self.breakType.zIndex(1001);
+					self.holidayType.zIndex(1103);
+					self.shortType.zIndex(1052);
+					
+					$(".ex-body-leftmost").removeClass("dis-pointer");
+					$(".ex-body-middle").removeClass("dis-pointer");
+					$(".ex-body-detail").removeClass("disable-css");
+					$(".x-button").removeClass("dis-pointer");
+					$(".xcell").removeClass("bg-color");
+				} else {
+					if(_.isNil(self.fixedType)) return;
+					self.fixedType.color("#fff")
+					self.changeableType.color("#fff")
+					self.flexType.color("#fff")
+					self.otType.color("#fff")
+					self.otType.hide(true);
+					self.otType.color("#fff")
+					self.coreType.hide(true);
+					self.breakType.zIndex(1999);
+					self.holidayType.zIndex(1996);
+					self.shortType.zIndex(1995);
+					
+					$(".ex-body-leftmost").addClass("dis-pointer");
+					$(".ex-body-middle").addClass("dis-pointer");
+					$(".ex-body-detail").addClass("disable-css");
+					$(".x-button").addClass("dis-pointer");
+					$(".xcell").addClass("bg-color");
+					$(".extable-header-leftmost").addClass("header-color");
+					$(".extable-header-detail").addClass("header-color");
+					
+					if(!_.isNil(self.localStore.workSelection)){
+						if(self.localStore.workSelection == 0)
+							mode = "paste";
+						if(self.localStore.workSelection == 1)
+							mode = "pasteFlex";
+					}
+				}
+				
+				ruler.setMode(mode);
+				self.localStore.displayFormat = value;
+				characteristics.save(self.KEY, self.localStore);
+			});
+			
 			self.checkUpdateTime = {name: "", id: 0};
 			
 			$('#content').on({
@@ -240,34 +294,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				else
 					$("#extable-ksu003").exTable("scrollBack", 0, { h: 0 });
 					
-				/** A2_5 */
-			self.selectedDisplayPeriod.subscribe((value) => {
-				if(value == 1){
-					self.fixedType.color("#ccccff")
-					self.changeableType.color("#ffc000")
-					self.flexType.color("#ccccff")
-					self.otType.color("#ffff00")
-					self.otType.hide(false);
-				} else {
-					self.fixedType.color("#fff")
-					self.changeableType.color("#fff")
-					self.flexType.color("#fff")
-					self.otType.color("#fff")
-					self.otType.hide(true);
-				}
-				let mode = "normal";
-				
-				if(!_.isNil(self.localStore.workSelection)){
-					if(self.localStore.workSelection == 0)
-					mode = "paste";
-					else
-					mode = "pasteFlex";
-				}
-				ruler.setMode(mode);
-				self.localStore.displayFormat = value;
-				characteristics.save(self.KEY, self.localStore);
+				self.selectedDisplayPeriod.valueHasMutated();
 			});
-			});
+			
 			return dfd.promise();
 		}
 
@@ -695,12 +724,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					self.dataScreen003A().scheCorrection = self.dataInitStartKsu003Dto().functionControlDto != null
 						? self.dataInitStartKsu003Dto().functionControlDto.changeableWorks : [];
 					
-					if(data.taskOperationMethod != 0)
-					self.selectedDisplayPeriod(1);
-					else
-					self.selectedDisplayPeriod(self.localStore.displayFormat);
-					
-					
+					if(data.taskOperationMethod != 0){
+						self.selectedDisplayPeriod(self.localStore.displayFormat); // fix tạm self.selectedDisplayPeriod(1);
+						self.selectedDisplayPeriod.valueHasMutated();
+					} else {
+						self.selectedDisplayPeriod(self.localStore.displayFormat);
+						self.selectedDisplayPeriod.valueHasMutated();
+					}
 				}).fail(function(error) {
 					errorDialog({ messageId: error.messageId });
 					dfd.reject();
@@ -3375,33 +3405,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						dataDrop.push(lineNo);
 						if (!_.isNil(id) && _.includes(id, 'lgc')) {
 							self.gcDrop(dataDrop, lineNo, datafilter, "lgc", 1);
+							
+							
+							
 						} else {
 							self.gcDrop(dataDrop, lineNo, datafilter, "rgc", 1);
 						}
 					}
 				}
 			}
-		}
-		
-		addTypeOfTask(color : any, value : any) {
-			let self = this;
-			self.taskType = ({
-                name: value.data.text,
-                color: color,
-                lineWidth: 30,
-                canSlide: false,
-                unitToPx: 3.5,
-                hide: ruler.loggable(false),
-                canPaste: true,
-                canPasteResize: true,
-                pastingResizeFinished: (line, type, start, end) => {
-                    console.log(`${line}-${type}-${start}-${end}`);
-                }
-            });
-
-			ruler.addType(self.taskType);
-			
-            ruler.pasteChart({ typeName: value.data.text, zIndex: 2002 });
 		}
 
 		/** ADD TYPE CHART */
@@ -3429,7 +3441,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				canSlide: self.checkDisByDate == false ? false : true,
 				unitToPx: self.operationUnit(),
 				fixed: fixed,
-				bePassedThrough: false // 114290
+				bePassedThrough: false, // 114290
+				canPaste: true
 			});
 			ruler.addType(self.changeableType);
 			
@@ -3439,7 +3452,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				lineWidth: 30,
 				canSlide: self.checkDisByDate == false ? false : true,
 				unitToPx: self.operationUnit(),
-				fixed: fixed
+				fixed: fixed,
+				canPaste: true
 			});
 			ruler.addType(self.flexType);
 			
@@ -3454,7 +3468,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				rollup: true, // có thể cuộn thanh chart
 				roundEdge: true,
 				fixed: "Both",
-				bePassedThrough: false // 2 thanh không kéo qua nhau khi bằng false
+				bePassedThrough: false, // 2 thanh không kéo qua nhau khi bằng false
+				zIndex: ruler.loggable(1001)
 			});
 			ruler.addType(self.breakType);
 			
@@ -3478,7 +3493,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				lineWidth: 30,
 				unitToPx: self.operationUnit(),
 				pin: true,
-				fixed: "Both"
+				fixed: "Both",
+				zIndex: ruler.loggable(1103)
 			});
 			ruler.addType(self.holidayType);
 			
@@ -3488,7 +3504,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				lineWidth: 30,
 				unitToPx: self.operationUnit(),
 				pin: true,
-				fixed: "Both"
+				fixed: "Both",
+				zIndex: ruler.loggable(1052)
 			});
 			ruler.addType(self.shortType);
 				
@@ -5051,6 +5068,37 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				errorDialog({ messageId: error.messageId });
 			}).always(function() {
 			});
+		}
+		
+		addTypeOfTask(color : any, value : any, checkMode : boolean) {
+			let self = this;
+			
+			if(self.localStore.workSelection == 1 && self.selectedDisplayPeriod() == 2)
+			ruler.setMode("pasteFlex");
+			
+			self.taskType = ({
+                name: value.data.text + "TASK",
+                color: color,
+                lineWidth: 30,
+                canSlide: false,
+                unitToPx: 3.5,
+                hide: ruler.loggable(false),
+                canPaste: true,
+                canPasteResize: true,
+                pastingResizeFinished: (line, type, start, end) => {
+                    console.log(`${line}-${type}-${start}-${end}`);
+                }
+            });
+
+			ruler.addType(self.taskType);
+		}
+		
+		pasteTask(value : any){
+			ruler.pasteChart({ typeName: value.data.text + "TASK", zIndex: 1990 });
+		}
+		
+		public setTaskMode(mode : string) {
+			ruler.setMode(mode);
 		}
 		
 		// 決定（A14_11）をクリックする (click A14_11)

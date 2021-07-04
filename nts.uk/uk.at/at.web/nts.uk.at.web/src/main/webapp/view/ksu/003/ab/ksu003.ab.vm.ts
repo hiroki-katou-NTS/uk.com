@@ -59,21 +59,27 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 			});
 
 			self.selectedButton.subscribe((value) => {
-
 				if (value.data == null || value.data == {})
 					return;
 
 				if (value.data.text == getText("KSU003_70") || value.data.text == getText("KSU003_83"))
 					return;
-
+				
+				if (_.isEmpty(self.dataTaskPallet) && _.isEmpty(self.dataTaskPalletDis))
+					return;
+				
 				if (value.column == -1 || value.row == -1) {
 					self.selectedButton(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails);
 				} else {
 					__viewContext.viewModel.viewmodelA.localStore.workPalletDetails = value;
 					characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
 				}
-				
-				__viewContext.viewModel.viewmodelA.addTypeOfTask("#6495ED", value);
+				//__viewContext.viewModel.viewmodelA.ruler.setMode("pasteFlex");
+				if(!_.isNil(value.data)){
+					if(value.data.text != "t" && value.data.tooltip != "test" && __viewContext.viewModel.viewmodelA.selectedDisplayPeriod() == 2)
+					__viewContext.viewModel.viewmodelA.addTypeOfTask("#6495ED", value, true);
+					__viewContext.viewModel.viewmodelA.pasteTask(value);
+				}
 				
 				//$("#tableButton1").ntsButtonTable("setSelectedCell", value.row, value.column);
 			});
@@ -96,7 +102,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 							disableMenuOnDataNotSet: [1], mode: "normal"
 						});
 						
-						if($("#contain-view-right-ksu003").width() > 920){
+						if(window.innerWidth >= 1380){
 							$("#tableButton1 button").css("width", "202px");
 						} else {
 							$("#comboTime").css("width", "800px");
@@ -160,10 +166,10 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 
 			service.getTaskPallet(param)
 				.done((data: any) => {
-					if (!_.isNil(data))
-						self.hasDataButton.add(data.page);
-
-					self.dataTaskPallet = data;
+					if (!_.isNil(data)){
+						self.hasDataButton.add(data.page);	
+						self.dataTaskPallet = data;					
+					}
 					dfd.resolve();
 				}).fail(function(error) {
 					alertError({ messageId: error.messageId });
@@ -186,7 +192,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 			service.getTaskPaletteDisplay(param)
 				.done((data: any) => {
 					if (!_.isNil(data))
-						//self.hasDataButton.add(data.page);
+						self.hasDataButton.add(data.taskPalette.page);
 
 						self.dataTaskPalletDis = data;
 					dfd.resolve();
@@ -255,7 +261,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 		setPalletButton(data: any) {
 			let self = this, pallet = data;
 			let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}], lstPallet: any = [];
-			if (_.isNil(pallet)) {
+			if (_.isEmpty(pallet)) {
 				self.dataSourceCompany().splice(self.selectedPage(), 1, source);
 			} else {
 				let dataPallet = pallet.tasks;
@@ -423,6 +429,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 			$("#screen-Ab2").show();
 			__viewContext.viewModel.viewmodelA.localStore.workSelection = 1;
 			characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
+			__viewContext.viewModel.viewmodelA.setTaskMode("pasteFlex");
 		}
 
 		closeAb2() {
@@ -431,6 +438,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 			$("#screen-Ab1").show();
 			__viewContext.viewModel.viewmodelA.localStore.workSelection = 0;
 			characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
+			__viewContext.viewModel.viewmodelA.setTaskMode("paste");
 		}
 
 		openB() {
