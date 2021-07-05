@@ -121,7 +121,7 @@ public class AsposeWorkScheFileCheck implements CheckFileService {
             listDate.add(date);
 
             // check number of date > 62
-            if (i == (columnStart + 66)) {
+            if (i == (columnStart + 64)) {
                 throw new BusinessException("Msg_1799");
             }
 
@@ -169,7 +169,7 @@ public class AsposeWorkScheFileCheck implements CheckFileService {
             }
             
             // check if employee > 999
-            if (i == (rowStart + 1002)) {
+            if (i == (rowStart + 1000)) {
                 throw new BusinessException("Msg_1800");
             }
         }
