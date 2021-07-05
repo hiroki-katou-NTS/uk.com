@@ -77,9 +77,10 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 			});
 		}
 		
+		// TODO: この知識は誰が持つべき？
 		return meta
-				.addItem(require, context.getGroupId(), employeeCodeCanonicalization.getItemNoEmployeeId())
-				.addItem(require, context.getGroupId(), itemNoHistoryId);
+				.addItem("SID")
+				.addItem("HIST_ID");
 	}
 
 	private List<IntermediateResult> canonicalize(

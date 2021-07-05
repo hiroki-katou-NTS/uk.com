@@ -20,6 +20,12 @@ public class ImportingDataMeta {
 	/** 受入項目と正準化によって生成される項目の名称一覧 */
 	List<String> itemNames;
 	
+	public ImportingDataMeta addItem(String itemName) {
+		val newNames = new ArrayList<>(itemNames);
+		newNames.add(itemName);
+		return new ImportingDataMeta(companyId, newNames);
+	}
+	
 	public ImportingDataMeta addItem(RequireAddItem require, ImportingGroupId groupId, int itemNo) {
 		
 		String name = require.getImportableItem(groupId, itemNo).getItemName();
