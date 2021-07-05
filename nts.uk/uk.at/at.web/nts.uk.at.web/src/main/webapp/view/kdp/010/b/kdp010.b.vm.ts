@@ -1,161 +1,161 @@
-module nts.uk.at.view.kdp010.b.viewmodel {
+module nts.uk.at.view.kdp010.b {
     import getText = nts.uk.resource.getText;
-    import alert = nts.uk.ui.dialog.alert;
     import block = nts.uk.ui.block;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import href = nts.uk.request.jump;
-    import modal = nts.uk.ui.windows.sub.modal;
-    import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
+    import info = nts.uk.ui.dialog.info;
+    import error = nts.uk.ui.dialog.error;
+	import ajax = nts.uk.request.ajax;
+	import viewModelscreenG = nts.uk.at.view.kdp010.g.viewmodel;
+    
+    module viewmodel {
+        const paths: any = {
+	        getData: "at/record/stamp/timestampinputsetting/stampsetcommunal/get",
+        	save: "at/record/stamp/timestampinputsetting/stampsetcommunal/save"
+	    }
+        export class ScreenModel {
+            nameSelectArtOption: KnockoutObservableArray<any> = ko.observableArray([
+                { id: 1, name: getText("KDP010_163") },
+                { id: 0, name: getText("KDP010_164") }
+            ]);
+            passwordRequiredArtOption: KnockoutObservableArray<any> = ko.observableArray([
+                { id: 1, name: getText("KDP010_166") },
+                { id: 0, name: getText("KDP010_167") }
+            ]);
+            employeeAuthcUseArtOption: KnockoutObservable<any> = ko.observable({ id: 1, name: getText("KDP010_170") });
+            employeeAuthcUseArtOption2: KnockoutObservable<any> = ko.observable({ id: 0, name: getText("KDP010_172") });
+            stampSetCommunal = new StampSetCommunal();
 
-    export class ScreenModel {
-        // B4_2 - 打刻画面のサーバー時刻補正間隔 
-        correcValue: KnockoutObservable<number> = ko.observable(10);
-        // B5_2 - 打刻履歴表示方法
-        optionStamping: KnockoutObservableArray<any> = ko.observableArray([
-            { id: 0, name: getText("KDP010_19") },
-            { id: 1, name: getText("KDP010_20") },
-            { id: 2, name: getText("KDP010_21") }
-        ]);
-        selectedStamping: KnockoutObservable<number> = ko.observable(0);
-        // B6_3
-        letterColors: KnockoutObservable<string> = ko.observable("#ffffff");
-        // B6_5
-        backgroundColors: KnockoutObservable<string> = ko.observable("#0033cc");
-        // B10_2
-        optionHighlight: KnockoutObservableArray<any> = ko.observableArray([
-            { id: 1, name: getText("KDP010_39") },
-            { id: 0, name: getText("KDP010_40") }
-        ]);
-        selectedHighlight: KnockoutObservable<number> = ko.observable(0);
-        // B7_2
-        stampValue: KnockoutObservable<number> = ko.observable(3);
-        // List StampPageLayout (ページレイアウト設定)
-        lstStampPage: KnockoutObservable<any> = ko.observable({});
-        checkInUp: KnockoutObservable<boolean> = ko.observable(false);
-
-        /**
-         * Start page.
-         */
-        start(): JQueryPromise<any> {
-            let self = this,dfd = $.Deferred();
-            block.grayout();
-            $.when(self.getStamp(), self.getData()).done(function() {
-                dfd.resolve();
-                block.clear();
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * Get data from db.
-         */
-        getData(): JQueryPromise<any> {
-            let self = this,dfd = $.Deferred();
-            service.getStampSetting().done(function(totalTimeArr) {
-                if (totalTimeArr) {
-                    self.selectedHighlight(totalTimeArr.buttonEmphasisArt ? 1 : 0);
-                    self.selectedStamping(totalTimeArr.historyDisplayMethod);
-                    self.correcValue(totalTimeArr.correctionInterval);
-                    self.letterColors(totalTimeArr.textColor);
-                    self.backgroundColors(totalTimeArr.backGroundColor);
-                    self.stampValue(totalTimeArr.resultDisplayTime);
-                }
-                $('#correc-input').focus();
-            }).fail(function(error) {
-                alert(error.message);
-            }).always(function () {
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
-
-        getStamp(): JQueryPromise<any> {
-            let self = this,dfd = $.Deferred();
-            service.getStampPage().done(function(stampPage) {
-                if (stampPage && stampPage.length > 0)
-                    self.checkInUp(true);
-                else
-                    self.checkInUp(false);
-            }).fail(function(error) {
-                alert(error.message);
-            }).always(function () {
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * Registration function. 
-         */
-        registration() {
-            let self = this;
-            if (nts.uk.ui.errors.hasError()) {
-                return;
+			screenModelG = new viewModelscreenG.ScreenModel();
+            constructor(){
             }
-            block.invisible();
-            // Data from Screen 
-            let data = new StampSettingPersonDto({
-                buttonEmphasisArt: self.selectedHighlight(),
-                historyDisplayMethod: self.selectedStamping(),
-                correctionInterval: self.correcValue(),
-                textColor: self.letterColors(),
-                backGroundColor: self.backgroundColors(),
-                resultDisplayTime: self.stampValue()
-            });
-            service.saveStampSetting(data).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message);
-            }).always(() => {
-                block.clear();
-            });
-        }
+            start(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred();
+				block.grayout();
+				$.when(self.getData(), self.screenModelG.start()).done(function() {
+					dfd.resolve();
+					$(document).ready(function() {
+                        $('#a-serverCorrectionInterval').focus();
+                    });
+				}).always(function() {
+                    block.clear();
+                });
+                return dfd.promise();
+            }
 
-        /**
-         * Open G dialog to set condition list.
-         */
-        openGDialog() {
-            let self = this;
-            nts.uk.ui.windows.setShared('STAMP_MEANS', 1);
-            nts.uk.ui.windows.sub.modal("/view/kdp/010/g/index.xhtml").onClosed(() => {
-                self.getStamp();   
-            });
+			getData(): JQueryPromise<any> {
+				let self = this;
+                let dfd = $.Deferred();
+                block.grayout();
+                ajax("at", paths.getData).done(function(data: any) {
+                    if (data) {
+                        self.stampSetCommunal.update(data);
+                    }
+                    dfd.resolve();
+                }).fail(function (res: any) {
+                    error({ messageId: res.messageId });
+                }).always(function () {
+                    block.clear();
+                });
+                return dfd.promise();
+			}
+            
+            checkSetStampPageLayout(){
+                let self = this;
+                block.grayout();
+                 ajax("at", paths.getData).done(function(data: any) {
+                    if(data){
+                        self.stampSetCommunal.lstStampPageLayout(data.lstStampPageLayout || []);
+                    }
+                }).fail(function (res: any) {
+                    error({ messageId: res.messageId });
+                }).always(function () {
+                    block.clear();
+                });
+            }
+            
+            save(){
+                let self = this;
+                block.grayout();
+                ajax("at", paths.save, ko.toJS(self.stampSetCommunal)).done(function() {
+                    info({ messageId: "Msg_15"});
+                }).fail(function (res: any) {
+                    error({ messageId: res.messageId });
+                }).always(function () {
+                    block.clear();
+                });
+            }
+            
+            openHDialog() {
+                let self = this;
+                nts.uk.ui.windows.setShared('STAMP_MEANS', 0);
+                nts.uk.ui.windows.sub.modal("/view/kdp/010/h/index.xhtml").onClosed(() => {
+                    self.checkSetStampPageLayout();   
+                });
+            }
+        }
+        
+        class SettingDateTimeClorOfStampScreen {
+            textColor: KnockoutObservable<string> = ko.observable("#7F7F7F");
+            constructor(){}
+            update(data?: any){
+                let self = this;
+                if(data){
+                    self.textColor(data.textColor);
+                }
+            }
+        }
+        
+        class DisplaySettingsStampScreen {
+            serverCorrectionInterval: KnockoutObservable<number> = ko.observable(10);
+            resultDisplayTime: KnockoutObservable<number> = ko.observable(3);
+            settingDateTimeColor = new SettingDateTimeClorOfStampScreen();
+            constructor(){}
+            update(data?:any){
+                let self = this;
+                if(data){
+                    self.serverCorrectionInterval(data.serverCorrectionInterval);
+                    self.resultDisplayTime(data.resultDisplayTime);
+                    self.settingDateTimeColor.update(data.settingDateTimeColor);
+                }
+            }
+        }
+        
+        class StampSetCommunal {
+            displaySetStampScreen = new DisplaySettingsStampScreen();
+            nameSelectArt: KnockoutObservable<number> = ko.observable(0);
+            passwordRequiredArt: KnockoutObservable<number> = ko.observable(1);
+            employeeAuthcUseArt: KnockoutObservable<number> = ko.observable(0);
+            authcFailCnt: KnockoutObservable<number> = ko.observable(1);
+            required: KnockoutObservable<boolean> = ko.observable(false);
+            lstStampPageLayout = ko.observableArray([]);
+            constructor(){
+                let self = this;
+                self.employeeAuthcUseArt.subscribe((newValue) => {
+                    if(newValue == 1){
+                        self.required(true);
+                    }else{
+                        self.required(false);
+                    }
+                    $('#numberAuthenfailures').ntsError('check'); 
+                });    
+            }
+            update(data?:any){
+                let self = this;
+                if(data){
+                    self.displaySetStampScreen.update(data.displaySetStampScreen);
+                    self.nameSelectArt(data.nameSelectArt);
+                    self.passwordRequiredArt(data.passwordRequiredArt);
+                    self.employeeAuthcUseArt(data.employeeAuthcUseArt);
+                    self.authcFailCnt(data.authcFailCnt);
+                    self.lstStampPageLayout(data.lstStampPageLayout || []);
+                }
+            }
         }
     }
-
-    export class StampSettingPersonDto {
-
-        /** 個人利用の打刻設定.打刻ボタンを抑制する */
-        buttonEmphasisArt: boolean;
-        /** 個人利用の打刻設定.打刻画面の表示設定.打刻履歴表示方法 */
-        historyDisplayMethod: number;
-        /** 個人利用の打刻設定.打刻画面の表示設定.打刻画面のサーバー時刻補正間隔 */
-        correctionInterval: number;
-        /** 個人利用の打刻設定.打刻画面の表示設定.打刻画面の日時の色設定.文字色 */
-        textColor: string;
-        /** 個人利用の打刻設定.打刻画面の表示設定.打刻画面の日時の色設定.背景色  */
-        backGroundColor: string;
-        /** 個人利用の打刻設定.打刻画面の表示設定.打刻結果自動閉じる時間 */
-        resultDisplayTime: number;
-
-        constructor(param: IStampSettingPersonDto) {
-            this.buttonEmphasisArt = param.buttonEmphasisArt;
-            this.historyDisplayMethod = param.historyDisplayMethod;
-            this.correctionInterval = param.correctionInterval;
-            this.textColor = param.textColor;
-            this.backGroundColor = param.backGroundColor;
-            this.resultDisplayTime = param.resultDisplayTime;
-        }
-    }
-
-    interface IStampSettingPersonDto {
-        buttonEmphasisArt: number;
-        historyDisplayMethod: number;
-        correctionInterval: number;
-        textColor: number;
-        backGroundColor: number;
-        resultDisplayTime: number;
-    }
-
+	__viewContext.ready(function() {
+        var screenModel = new viewmodel.ScreenModel();
+        screenModel.start().done(function() {
+            __viewContext.bind(screenModel);
+        });
+    });
 }

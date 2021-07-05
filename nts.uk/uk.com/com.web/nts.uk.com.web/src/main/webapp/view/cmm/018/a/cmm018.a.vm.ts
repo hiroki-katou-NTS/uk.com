@@ -21,6 +21,8 @@ module nts.uk.com.view.cmm018.a {
             c1_4: KnockoutObservable<string> = ko.observable('');
             a1_3: KnockoutObservable<string> = ko.observable('');
             rowHist: KnockoutObservable<number> = ko.observable(10);
+            rowHist2: KnockoutObservable<number> = ko.observable(9);
+            rowHist3: KnockoutObservable<number> = ko.observable(8);
             unitSet: KnockoutObservable<vmbase.ApprDisSet> = ko.observable({
                     companyUnit: 0,
                     workplaceUnit: 0,

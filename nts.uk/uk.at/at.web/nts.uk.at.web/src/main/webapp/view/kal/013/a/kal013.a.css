@@ -46,20 +46,29 @@ table td.text-center {
   margin-right: 15px;
 }
 
-#fixedTable .nts-input {
-  width: 222px !important;
-}
-
-#fixedTable .nts-switch-button {
+#fixedTable  .switchbox-wrappers .radio-wrapper span {
   width: 60px !important;
 }
 
-#fixedTableCCDT .nts-input {
-  width: 122px !important;
+#fixedTableCCDT .switchbox-wrappers .radio-wrapper span {
+  width: 60px !important;
 }
 
-#fixedTableCCDT .nts-switch-button {
+#fixedTableCCDT {
+  margin-top: 10px;
+}
+
+#fixedTable .ui-iggrid table thead tr, #fixedTableCCDT .ui-iggrid table thead tr {
+  height: 32px !important;
+}
+
+#fixedTableCCDT .nts-input:not(.radio-wrapper, .radio-wrappers, .checkbox-wrapper) {
+  width: 168px !important;
+}
+
+#fixedTableCCDT .radio-wrapper {
   width: 60px !important;
+  flex-direction: column;
 }
 
 .tab-content-2 .nts-fixed-table .nts-fixed-body-wrapper {

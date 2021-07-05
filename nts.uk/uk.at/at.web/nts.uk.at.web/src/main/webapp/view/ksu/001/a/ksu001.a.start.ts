@@ -10,6 +10,7 @@ module nts.uk.at.view.ksu001.a {
 
             nts.uk.ui.block.grayout();
             __viewContext.viewModel.viewA.startPage().done(() => {
+				document.getElementById("main-area").style.display = '';
                 __viewContext.bind(__viewContext.viewModel);
 
                 __viewContext.viewModel.viewA.setIconEventHeader();

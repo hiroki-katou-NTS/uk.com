@@ -109,7 +109,7 @@ module nts.uk.ui.koExtentions {
                             $show.find(`.${k.toLowerCase()}`)
                                 .css({
                                     'height': '31px',
-                                    'line-height': '27px'
+                                    'line-height': '31px'
                                 })
                                 .find('.nts-column:last-child')
                                 .css('margin-right', 0);
@@ -117,7 +117,7 @@ module nts.uk.ui.koExtentions {
                     } else {
                         // show text
                         if (!_.isNil(ko.toJS(accessor.nullText)) && !_.isNil(data[SHOWVALUE])) {
-                            $show.html($('<div>', { 'class': 'nts-combo-column', text: _.escape(ko.toJS(accessor.nullText)), css: { 'line-height': '27px' } }));
+                            $show.html($('<div>', { 'class': 'nts-combo-column', text: _.escape(ko.toJS(accessor.nullText)), css: { 'line-height': '31px' } }));
                         } else {
                             $show.empty();
                         }
@@ -215,14 +215,14 @@ module nts.uk.ui.koExtentions {
                             .css({
                                 'float': 'none',
                                 'width': '100%',
-                                'border': '0px',
+                                'border': '1px solid #ccc',
                                 'padding': '0px',
                                 'position': 'absolute',
                                 'box-sizing': 'border-box',
                                 'background-color': 'transparent'
                             })
                             .find('.ui-igcombo-buttonicon')
-                            .text('▼')
+                            .html('▼')
                             .css({
                                 'right': '0px',
                                 'font-size': '0.85rem',
@@ -233,8 +233,8 @@ module nts.uk.ui.koExtentions {
                                 'width': '30px',
                                 'text-align': 'center',
                                 'line-height': '30px',
-                                'margin': '0px',
-                                'border-left': '1px solid #ccc'
+                                'margin': '-1px',
+                                'border': '1px solid #ccc'
                             })
                             .removeClass('ui-icon')
                             .removeClass('ui-icon-triangle-1-s');
@@ -375,14 +375,7 @@ module nts.uk.ui.koExtentions {
                 .trigger(CHANGED, [DATA, options])
                 .trigger(CHANGED, [TAB_INDEX, $element.attr(TAB_INDEX) || 0])
                 .addClass('ntsControl')
-                .on('blur', () => { $element.css('box-shadow', ''); })
-                .on('focus', () => {
-                    $element
-                        .css({
-                            'outline': 'none',
-                            'box-shadow': '0 0 1px 1px #0096f2'
-                        });
-                });
+                .removeAttr('data-bind');
         }
 
         update = (element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) => {

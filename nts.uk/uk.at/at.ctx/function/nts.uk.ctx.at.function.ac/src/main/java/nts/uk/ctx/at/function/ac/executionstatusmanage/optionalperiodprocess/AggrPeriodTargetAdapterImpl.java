@@ -47,8 +47,8 @@ public class AggrPeriodTargetAdapterImpl implements AggrPeriodTargetAdapter {
 	public void addTarget(List<AggrPeriodTargetImport> target) {
 		this.pub.addTarget(target.stream()
 			.map(itemImport -> AggrPeriodTarget.createFromJavaType(
-					itemImport.getEmployeeId(), 
-					itemImport.getAggrId(),
+					itemImport.getAggrId(), 
+					itemImport.getEmployeeId(),
 					itemImport.getState()))
 			.collect(Collectors.toList())
 			);

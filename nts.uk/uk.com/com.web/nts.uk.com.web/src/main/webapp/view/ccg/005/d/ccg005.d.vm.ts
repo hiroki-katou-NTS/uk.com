@@ -145,18 +145,15 @@ module nts.uk.at.view.ccg005.d.screenModel {
             });
             vm.favoriteList.push(favoriteSpecify);
           } else {
-            _.map(vm.favoriteList(), (item => {
-              if (item.order === Number(vm.selectedFavoriteInputDate())) {
+            _.map(vm.favoriteList(), (item, index) => {
+              if (item.inputDate === vm.selectedFavoriteInputDate()) {
                 item.favoriteName = vm.favoriteName();
                 item.targetSelection = vm.selectedRuleCode();
                 item.workplaceId = vm.selectedRuleCode() === TargetSelection.WORKPLACE ? vm.workPlaceIdList() : [];
               }
-            }));
+              item.order = index;
+            });
           }
-          //re set order for item
-          _.map(vm.favoriteList(), (item, index) => {
-            item.order = index;
-          });
           //Call API
           vm.$blockui("grayout");
           vm.$ajax(API.save, vm.favoriteList()).then(() => {

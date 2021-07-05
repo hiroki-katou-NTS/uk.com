@@ -42,7 +42,6 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriod
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.converter.WeeklyRecordToAttendanceItemConverter;
 import nts.uk.shr.com.context.AppContexts;
@@ -140,9 +139,10 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 						// 絞り込みしたList＜週別実績の勤怠時間＞をループする
 						for (AttendanceTimeOfWeekly attWeekly : attendanceTimeOfWeeklyYms) {
 							// 任意抽出条件のアラーム値を作成する
-							ExtractResultDetail extractDetail = createAlarmExtraction(
+							ExtractResultDetailAndCount extractDetail = createAlarmExtraction(
 									attWeekly, weeklyCond, count, attendanceItemMap, cid, sid, wpkId, ym, attendanceTimeOfWeeklyYms.size());
-							if (extractDetail == null) {
+							count = extractDetail.count;
+							if (extractDetail.detail == null) {
 								continue;
 							}
 
@@ -156,13 +156,13 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 											&& i.getAlarmListCheckType() == AlarmListCheckType.FreeCheck
 											&& i.getAlarmCheckConditionNo().equals(alarmCode)) {
 										List<ExtractResultDetail> tmp = new ArrayList<>(i.getExtractionResultDetails());
-										tmp.add(extractDetail);
+										tmp.add(extractDetail.detail);
 										i.setExtractionResultDetails(tmp);
 										break;
 									}
 								}
 							} else {
-								List<ExtractResultDetail> listDetail = new ArrayList<>(Arrays.asList(extractDetail));
+								List<ExtractResultDetail> listDetail = new ArrayList<>(Arrays.asList(extractDetail.detail));
 								lstExtractInfoResult.add(new AlarmExtractInfoResult(
 										alarmCode,
 										new AlarmCheckConditionCode(alarmCheckConditionCode),
@@ -213,7 +213,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 	/*
 	 * Create alarm extraction condition
 	 */
-	private ExtractResultDetail createAlarmExtraction(
+	private ExtractResultDetailAndCount createAlarmExtraction(
 			AttendanceTimeOfWeekly attWeekly,
 			ExtractionCondScheduleWeekly weeklyCond,
 			int count,
@@ -231,10 +231,12 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		// QA#115685
 		WeeklyRecordToAttendanceItemConverter weeklyConvert = attendanceItemConvertFactory.createWeeklyConverter();
 		weeklyConvert.withAttendanceTime(attWeekly);
+		List<ItemValue> itemValues =  weeklyConvert.convert(attendanceItemMap.keySet());
 		
 		@SuppressWarnings("rawtypes")
 		WeeklyAttendanceItemCondition cond = convertToErAlAttendanceItem(cid, weeklyCond);
 		
+		// Input．週別実績の任意抽出条件．チェック項目の種類をチェック
 		WeeklyCheckItemType checkItemType = weeklyCond.getCheckItemType();
 		switch (checkItemType) {
 		case TIME:
@@ -242,7 +244,11 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		case DAY_NUMBER:
 			// 勤怠項目をチェックする
 			check = checkAttendanceItem(cond, item -> {
-				return weeklyConvert.convert(attendanceItemMap.keySet()).stream().map(iv -> getValue(iv))
+				if (item.isEmpty()) {
+					return new ArrayList<>();
+				}
+				
+				return itemValues.stream().filter(x -> item.contains(x.getItemId())).map(iv -> getValue(iv))
 						.collect(Collectors.toList());
 			});
 			break;
@@ -251,12 +257,22 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		case CONTINUOUS_DAY:
 			// 連続の項目の実績をチェック
 			continuousOutput = checkPerformanceOfConsecutiveItem(
-					attWeekly, weeklyCond, cond, weeklyConvert.convert(attendanceItemMap.keySet()), count);
+					attWeekly, weeklyCond, cond, itemValues, count);
 			break;
 			
 		default:
 			break;
 		}
+		
+		count = continuousOutput.count;
+		
+		Double weeklyActualAttendanceTimeValue = calAttendanceItem(cond, item -> {
+			if (item.isEmpty()) {
+				return new ArrayList<>();
+			}
+			return itemValues.stream().filter(x -> item.contains(x.getItemId())).map(iv -> getValue(iv))
+					.collect(Collectors.toList());
+		});
 		
 		// 
 		ExtractionAlarmPeriodDate extractionAlarmPeriodDate = null;
@@ -265,17 +281,26 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		
 		// チェック項目の種類は連続じゃないの場合　－＞#KAL010_1314 
 		// {0}　＝　Input．週別実績の勤怠時間から計算した値 QA#115666
-		String weeklyActualAttendanceTime = String.valueOf(sizeWeeklyActualAttendanceTime);
+		String weeklyActualAttendanceTime = weeklyActualAttendanceTimeValue.toString();
+		if (checkItemType == WeeklyCheckItemType.TIME || checkItemType == WeeklyCheckItemType.CONTINUOUS_TIME) {
+			weeklyActualAttendanceTime = formatTime(weeklyActualAttendanceTimeValue.intValue());
+		} else if (checkItemType == WeeklyCheckItemType.TIMES || checkItemType == WeeklyCheckItemType.CONTINUOUS_TIMES) {
+			weeklyActualAttendanceTime = String.valueOf(weeklyActualAttendanceTimeValue.intValue());
+		}
+
 		String checkTargetValue = TextResource.localize("KAL010_1314", weeklyActualAttendanceTime);
 		
 		// 週別実績の任意抽出条件．チェック項目の種類！＝4,5,6　AND　該当区分　＝　True
 		// OR
-		// 週別実績の任意抽出条件．チェック項目の種類＝＝4 or 5or 6　AND　取得したOptional<連続カウント＞　!＝　Empty
-		if ((!weeklyCond.isContinuos() && check) || (weeklyCond.isContinuos() && continuousOutput.continuousCountOpt.isPresent())) {
+		// Input．週別実績の任意抽出条件．チェック項目の種類＝＝4 or 5or 6　AND　取得したカウント　>=　ドメインモデル「週別実績の任意抽出条件」．連続期間 (QA#117728)
+		boolean checkContinuos = continuousOutput.continuousCountOpt.isPresent()
+				&& weeklyCond.getContinuousPeriod().isPresent()
+				&& continuousOutput.continuousCountOpt.get().getConsecutiveYears() >= weeklyCond.getContinuousPeriod().get().v();
+		if ((!weeklyCond.isContinuos() && check) || (weeklyCond.isContinuos() && checkContinuos)) {
 			// 「抽出結果詳細」を作成
 			// アラーム項目日付　＝Input．週別実績の勤怠時間．期間．開始日
 			extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(
-					Optional.of(ym.firstGeneralDate()), Optional.empty());
+					Optional.of(attWeekly.getPeriod().start()), Optional.empty());
 			// コメント　＝　Input．週別実績の任意抽出条件．表示メッセージ
 			if (weeklyCond.getErrorAlarmMessage() != null && weeklyCond.getErrorAlarmMessage().isPresent()) {
 				comment = Optional.ofNullable(weeklyCond.getErrorAlarmMessage().get().v());
@@ -295,7 +320,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 				param2 += TextResource.localize("KAL010_1311");
 				
 				// チェック項目の種類は連続の場合　－＞#KAL010_1313 {0}　＝　取得した連続カウント　
-				checkTargetValue = TextResource.localize("KAL010_1313", String.valueOf(continuousOutput.continuousCountOpt.get().getConsecutiveYears()));
+				checkTargetValue = TextResource.localize("KAL010_1313", String.valueOf(count));
 			}
 			
 			alarmContent = TextResource.localize("KAL010_1310", param0, param1, param2);
@@ -309,10 +334,10 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 					Optional.ofNullable(wpkId),
 					comment,
 					Optional.ofNullable(checkTargetValue));
-			return detail;
+			return new ExtractResultDetailAndCount(detail, count);
 		}
 		
-		return null;
+		return new ExtractResultDetailAndCount(null, count);
 	}
 	
 	/**
@@ -357,18 +382,21 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			return convert.stream().filter(x -> item.contains(x.getItemId())).map(iv -> getValue(iv))
 					.collect(Collectors.toList());
 		});
-		// 
+		
+		//
 		int continuousPeriod = 0;
 		if (weeklyCond.getContinuousPeriod().isPresent()) {
 			continuousPeriod = weeklyCond.getContinuousPeriod().get().v();
 		}
 		
+		// 連続期間のカウントを計算
 		CalCountForConsecutivePeriodOutput calCountForConsecutivePeriodOutput = calCountForConsecutivePeriodChecking.getContinuousCount(
 				count, 
 				continuousPeriod, 
 				errorAtr, 
 				null);
-		ouput.check = errorAtr;
+				
+		ouput.check = calCountForConsecutivePeriodOutput.getOptContinuousCount().isPresent();
 		ouput.continuousCountOpt = calCountForConsecutivePeriodOutput.getOptContinuousCount();
 		ouput.count = calCountForConsecutivePeriodOutput.getCount();
 		
@@ -377,6 +405,10 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 
 	private Boolean checkAttendanceItem(WeeklyAttendanceItemCondition<?> erAlAtdItemCon, Function<List<Integer>, List<Double>> getValueFromItemIds) {
 		return erAlAtdItemCon.checkTarget(getValueFromItemIds);
+	}
+	
+	private Double calAttendanceItem(WeeklyAttendanceItemCondition<?> erAlAtdItemCon, Function<List<Integer>, List<Double>> getValueFromItemIds) {
+		return erAlAtdItemCon.calculateTargetValue(getValueFromItemIds);
 	}
 	
 	private Double getValue(ItemValue value) {
@@ -421,6 +453,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 				CheckedTimeDuration endTime = new CheckedTimeDuration(endValue.intValue());
 				endValueStr = endTime.getTimeWithFormat();
 			}
+			break;
 		case TIMES:
 		case CONTINUOUS_TIMES:		
 			startValueStr = String.valueOf(startValue.intValue());
@@ -434,6 +467,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			if (endValue != null) {
 				endValueStr = endValue.toString();
 			}
+			break;
 		default:
 			break;
 		}
@@ -454,9 +488,21 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		return variable0;
 	}
 	
+	/**
+	 * Format time
+	 * because not defined primitive value => function created!
+	 * @param value integer value time
+	 * @return format time HH:MM
+	 */
+	private String formatTime(int value) {
+		int hours = Math.abs(value) / 60;
+		int minute = Math.abs(value) % 60;
+		
+		return hours + ":" + (minute < 10 ? "0" + minute : minute); 
+	}
+	
 	private class ContinuousOutput {
 		/** カウント */
-		@SuppressWarnings("unused")
 		public int count = 0;
 		
 		/** 該当区分 */
@@ -465,5 +511,16 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		
 		/** Optional<連続カウント＞ */
 		public Optional<ContinuousCount> continuousCountOpt = Optional.empty();
+	}
+	
+	private class ExtractResultDetailAndCount {
+		public ExtractResultDetail detail;
+		
+		public int count = 0;
+		
+		public ExtractResultDetailAndCount(ExtractResultDetail detail, int count) {
+			this.detail = detail;
+			this.count = count;
+		}
 	}
 }

@@ -47,7 +47,7 @@ public class JpaWkpCalSettingRepository extends JpaRepository implements WkpAuto
 		sql.append("   k.WKP_CD,  ");
 		sql.append("   w.WKP_NAME,  ");
 		sql.append("   k.WKPID ,");
-		sql.append("   HIERARCHY_CD");
+		sql.append("   HIERARCHY_CD ");
 		sql.append("FROM ");
 		sql.append("  (SELECT WKP_HIST_ID, CID, WKP_ID, WKP_CD, WKP_NAME, HIERARCHY_CD  ");
 		sql.append("   FROM BSYMT_WKP_INFO) w  ");
@@ -108,9 +108,9 @@ public class JpaWkpCalSettingRepository extends JpaRepository implements WkpAuto
 		sql.append("                WKPID, ");
 		sql.append("                CID ");
 		sql.append("            FROM KRCMT_CALC_SET_WKP ");
-		sql.append("            WHERE CID = ?cid)");
+		sql.append("            WHERE CID = ?cid) ");
 		sql.append("            a ON a.CID = i.CID AND a.WKPID = i.WKP_ID) k ");
-		sql.append("      ON w.WKP_ID = k.WKPID AND w.CID = k.CID");
+		sql.append("      ON w.WKP_ID = k.WKPID AND w.CID = k.CID ");
 		sql.append("ORDER BY CASE WHEN w.HIERARCHY_CD IS NULL THEN 1 ELSE 0 END ASC, HIERARCHY_CD");
 		SELECT_ALL_WORKPLACE_BY_CID = sql.toString();
 }

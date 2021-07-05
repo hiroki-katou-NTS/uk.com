@@ -17,6 +17,7 @@ import mockit.Injectable;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
@@ -80,7 +81,7 @@ public class ProcessReflectWorkRecordTest {
 				result = Optional
 						.of(new AppReflectExecutionCondition(companyId, PreApplicationWorkScheReflectAttr.NOT_REFLECT, NotUseAtr.NOT_USE, NotUseAtr.USE));// 勤務実績が確定状態でも反映する
 
-				require.processWork((ApplicationShare)any, dateRefer, (ReflectStatusResult) any);
+				require.processWork((ApplicationShare)any, dateRefer, (ReflectStatusResult) any, (GeneralDateTime)any);
 				result = Pair.of(new ReflectStatusResult(ReflectedState.REFLECTED, null, null),
 						Optional.empty());
 
@@ -161,7 +162,7 @@ public class ProcessReflectWorkRecordTest {
 						(ReflectStatusResult) any, dateRefer);
 				result = new PreCheckProcessResult(NotUseAtr.USE, statusWorkRecord);
 				
-				require.processWork((ApplicationShare)any, dateRefer, (ReflectStatusResult) any);
+				require.processWork((ApplicationShare)any, dateRefer, (ReflectStatusResult) any, (GeneralDateTime) any);
 				result = Pair.of(new ReflectStatusResult(ReflectedState.REFLECTED, null, null),
 						Optional.empty());
 			}

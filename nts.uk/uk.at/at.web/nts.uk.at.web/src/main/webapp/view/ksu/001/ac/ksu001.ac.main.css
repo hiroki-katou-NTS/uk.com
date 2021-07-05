@@ -35,47 +35,32 @@
 	color: #E0F59E !important;
 }
 
-#tableButton1 {
+#tableButton1, #tableButton2 {
 	background-color: rgb(237,250,194);
 	width: 910px;
 	height: 55px;
 	margin-top: 5px;
 }
 
-#tableButton1 button {
+#tableButton1 button, #tableButton2 button {
 	width: 85px !important;
 	height: 20px;
 	box-shadow : 0 1px rgba(0, 0, 0, 0.4);
 	border : 1px solid grey;
 	color : black;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
-#tableButton1 table td {
-	padding: 3px 3px !important;
-}
-
-#tableButton2 {
-	background-color: rgb(237,250,194);
-	width: 910px;
-	height: 55px;
-	margin-top: 5px;
-}
-
-#tableButton2 button {
-	width: 85px !important;
-	height: 20px;
-	box-shadow : 0 1px rgba(0, 0, 0, 0.4);
-	border : 1px solid grey;
-	color : black;
-}
-
-#tableButton2 table td {
-	padding: 3px 3px !important;
+#tableButton1 table td, #tableButton2 table td {
+	padding-top: 1px !important;
+	padding-bottom: 3px !important;
+	padding-left: 3px !important;
+	padding-right: 3px !important;
 }
 
 #Aa1_2 {
 	margin-left: 5px; 
-	margin-bottom: 10px
 }
 
 .listLink {
@@ -86,8 +71,15 @@
 	color: #0066CC;
 	margin-top: 14px;
 	width: max-content;
-	height: 32px;
+	height: 22px;
 }
+
+#qViewModel .hyperlink a:active {
+	background: rgb(237,250,194);
+	color: gray !important
+}
+
+
 
 #part-1-1, #part-1-2 {
 	margin-left: -8px;
@@ -122,21 +114,18 @@
 	font-size: 14px !important;
 }
 
+.link-selected {
+	background: rgb(237,250,194);	
+	color: gray !important;
+}
+
 #popup-area>div {
 	margin-top: 10px
 }
 
-.color-gray {
-	color: gray !important
-}
-
-.background-linkbtn {
-	background: rgb(237,250,194);	
-}
-
 #group-link-button-ja {
 	height: 30px;
-	margin-top: -5px;
+	margin-top: -3px;
 
 }
 
@@ -165,6 +154,11 @@
     color: white !important;
     top: 2px;
 }
+
+.ntsTable .ntsButtonCellSelected:not(:disabled):focus, .ntsTable .ntsButtonCellSelected:not(:disabled):hover {
+    background-color: #007fff !important;
+}
+
 
 .withContent {
 	border: 1px solid grey !important;

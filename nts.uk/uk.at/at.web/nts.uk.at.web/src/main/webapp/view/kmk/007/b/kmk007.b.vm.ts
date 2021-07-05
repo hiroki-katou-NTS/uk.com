@@ -16,16 +16,16 @@ module nts.uk.at.view.kmk007.b.viewmodel {
             self.frameName = ko.observable("");
             
             self.frameElimination = ko.observableArray([
-                { code: '1', frameValue: nts.uk.resource.getText("KMK007_55") },
-                { code: '0', frameValue: nts.uk.resource.getText("KMK007_56") }
+                { code: 1, frameValue: nts.uk.resource.getText("KMK007_55") },
+                { code: 0, frameValue: nts.uk.resource.getText("KMK007_56") }
             ]);
             
             self.frameEliminationSelectedCode = ko.observable(0);
             
             self.timeMngAtr =  ko.observable(0);
              self.itemListB41 = ko.observableArray([
-                { code: '1', frameValue: nts.uk.resource.getText("KMK007_114") },
-                { code: '0', frameValue: nts.uk.resource.getText("KMK007_115") }
+                { code: 1, frameValue: nts.uk.resource.getText("KMK007_114") },
+                { code: 0, frameValue: nts.uk.resource.getText("KMK007_115") }
             ]);
             
             self.frameId = ko.observable(nts.uk.ui.windows.getShared("KMK007_ITEM_ID"));

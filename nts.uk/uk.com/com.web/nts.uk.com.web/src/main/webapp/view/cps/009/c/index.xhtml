@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 750,
-					height :270
+					width : 660,
+					height :255
 				};
 			</script>
 			<com:ValidatorScript>
@@ -67,18 +67,20 @@
 
 				</div>
 			</div>
-			<div id='functions-area-bottom' style="height: 100px !important;">
-				<!-- C_009: check box -->
-				<div id='copyCheck' tabindex="3"
-					data-bind="ntsCheckBox: {checked: isCopy, text: nts.uk.resource.getText('CPS009_28'), style: 'warnpanel'}"></div>
-				<div style="margin-top: 10px;">
-					<!-- C_010: button 実行 -->
-					<button id="registration" tabindex="4"
-						data-bind="click: copyInitValue" class="proceed large">#{i18n.getText('CPS009_29')}</button>
-					<!-- C_011: button キャンセル -->
-					<button id="cancel" tabindex="5"
-						data-bind="click: cancelCopyInitValue">#{i18n.getText('CPS009_30')}</button>
-				</div>
+			<div id='functions-area-bottom'>
+				<div style="height: 100px;">
+          <!-- C_009: check box -->
+          <div id='copyCheck' tabindex="3"
+            data-bind="ntsCheckBox: {checked: isCopy, text: nts.uk.resource.getText('CPS009_28'), style: 'warnpanel'}"/>
+          <div style="margin-top: 10px;">
+            <!-- C_010: button 実行 -->
+            <button id="registration" tabindex="4"
+              data-bind="click: copyInitValue" class="proceed large">#{i18n.getText('CPS009_29')}</button>
+            <!-- C_011: button キャンセル -->
+            <button id="cancel" tabindex="5"
+              data-bind="click: cancelCopyInitValue">#{i18n.getText('CPS009_30')}</button>
+          </div>
+        </div>
 			</div>
 		</ui:define>
 	</ui:composition>

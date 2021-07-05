@@ -10,13 +10,14 @@
       <com:ValidatorScript>
         nts.uk.ctx.sys.portal.dom.notice.NotificationMessage
       </com:ValidatorScript>
-      <script>var dialogSize = { width: 600, height: 560 };</script>
+      <script>var dialogSize = { width: 600, height: 570 };</script>
       <com:stylefile path="ccg003.c.style.css" />
       <com:scriptfile path="ccg003.c.vm.js" />
     </ui:define>
 
     <ui:define name="content">
-      <div id="contents-area">
+      <div id="functions-area" style="display: none"></div>
+      <div id="contents-area" style="padding: 5px 10px 0px 10px;">
         <table class="content-table">
           <colgroup>
             <col width="auto" />
@@ -30,7 +31,7 @@
                   #{i18n.getText('CCG003_20')}</div>
               </td>
               <td>
-                <textarea id="C1_2" tabindex="1" rows="11" data-bind="ntsTextEditor: {
+                <textarea id="C1_2" style="font-size: 1rem;" tabindex="1" rows="11" data-bind="ntsTextEditor: {
                   name:'#[CCG003_20]',
                   value: messageText,
                   constraint: 'NotificationMessage',
@@ -115,12 +116,14 @@
       </div>
 
       <div id="functions-area-bottom">
-        <!-- C20_1 登録 -->
-        <button id="C20_1" class="proceed left ml-60" data-bind="enable: $root.errors.isEmpty, click: onClickRegister">#{i18n.getText('CCG003_28')}</button>
-        <!-- C20_2 削除 -->
-        <button id="C20_2" data-bind="enable: isActiveDelete, click: onClickDelete" class="danger left ml-60">#{i18n.getText('CCG003_29')}</button>
-        <!-- C20_3 戻る -->
-        <button id="C20_3" data-bind="click: closeWindow" class="right mr-60">#{i18n.getText('CCG003_30')}</button>
+        <div style="width: 100%; height: 30px;">
+          <!-- C20_1 登録 -->
+          <button id="C20_1" class="proceed left ml-60" data-bind="enable: $root.errors.isEmpty, click: onClickRegister">#{i18n.getText('CCG003_28')}</button>
+          <!-- C20_2 削除 -->
+          <button id="C20_2" data-bind="enable: isActiveDelete, click: onClickDelete" class="danger left ml-60">#{i18n.getText('CCG003_29')}</button>
+          <!-- C20_3 戻る -->
+          <button id="C20_3" data-bind="click: closeWindow" class="right mr-60">#{i18n.getText('CCG003_30')}</button>
+        </div>
       </div>
     </ui:define>
   </ui:composition>
