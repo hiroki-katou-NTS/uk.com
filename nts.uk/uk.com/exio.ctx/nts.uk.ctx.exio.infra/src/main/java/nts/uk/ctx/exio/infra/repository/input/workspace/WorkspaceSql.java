@@ -2,12 +2,14 @@ package nts.uk.ctx.exio.infra.repository.input.workspace;
 
 import static java.util.stream.Collectors.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.val;
 import nts.arc.layer.infra.data.jdbc.JdbcProxy;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
@@ -24,6 +26,7 @@ import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository.Req
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataTypeConfiguration;
 import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
 import nts.uk.ctx.exio.dom.input.workspace.item.WorkspaceItem;
+import nts.uk.shr.com.company.CompanyId;
 
 @RequiredArgsConstructor
 public class WorkspaceSql {
@@ -33,8 +36,6 @@ public class WorkspaceSql {
 	private final GroupWorkspace workspace;
 	private final JdbcProxy jdbcProxy;
 	
-	private static final String ROW_NO = "ROW_NO";
-
 	/**
 	 * 編集済み用のCREATE TABLEを実行する
 	 * @param require
@@ -63,7 +64,7 @@ public class WorkspaceSql {
 		
 		sql.append("create table ").append(tableName).append(" (");
 		
-		createTable.columnRowNo();
+		createTable.columnCommonColumns();
 		workspace.getAllItemsSortedByItemNo().forEach(
 				item -> createTable.column(require, item, workspace.isPrimaryKey(item)));
 		
@@ -72,6 +73,41 @@ public class WorkspaceSql {
 		sql.append(");");
 		
 		return sql.toString();
+	}
+	
+	static class CommonColumns {
+		static final Column ROW_NO = new Column("ROW_NO", "int not null", "rowno");
+		static final Column CONTRACT_CD = new Column("CONTRACT_CD", "char(12) not null", "contract");
+		static final Column CID = new Column("CID", "char(17) not null", "cid");
+
+		static final List<Column> LIST = Arrays.asList(ROW_NO, CONTRACT_CD, CID);
+		
+		static String sqlParams() {
+			return LIST.stream()
+					.map(c -> "@" + c.paramName)
+					.collect(Collectors.joining(","));
+		}
+		
+		static void setParams(NtsStatement statement, int rowNo, ExecutionContext context) {
+			
+			statement.paramInt(ROW_NO.paramName, rowNo);
+			
+			String companyId = context.getCompanyId();
+			String contractCode = CompanyId.getContractCodeOf(companyId);
+			statement.paramString(CONTRACT_CD.paramName, contractCode);
+			statement.paramString(CID.paramName, companyId);
+		}
+	}
+	
+	@Value
+	static class Column {
+		String name;
+		String type;
+		String paramName;
+		
+		public String sqlDefine() {
+			return name + " " + type;
+		}
 	}
 	
 	@RequiredArgsConstructor
@@ -90,9 +126,11 @@ public class WorkspaceSql {
 			sql.append("constraint ").append(pkName).append(" primary key nonclustered (").append(keys).append(")");
 		}
 		
-		void columnRowNo() {
+		void columnCommonColumns() {
 			// ROW_NO列はdecimal使わなくても良いんじゃないかな、さすがにintで足りると思う
-			sql.append(ROW_NO + " int not null,");
+			sql.append(CommonColumns.ROW_NO.sqlDefine() + ",");
+			sql.append(CommonColumns.CONTRACT_CD.sqlDefine() + ",");
+			sql.append(CommonColumns.CID.sqlDefine() + ",");
 		}
 		
 		void column(WorkspaceItem.RequireConfigureDataType require, WorkspaceItem item, boolean isPK) {
@@ -156,13 +194,13 @@ public class WorkspaceSql {
 
 		/*
 		 * VALUES句の列順は、項目No順にテーブルが作られるという仕様を前提とする。
-		 * ただし先頭はROW_NO列で固定。
+		 * ただし先頭はROW_NO, CONTRACT_CD, CID列で固定。
 		 */
-		String paramRowNo = "rowno";
-		String sql = Insert.createInsertSql(tableName, workspace, paramRowNo);
+		String sql = Insert.createInsertSql(tableName, workspace);
 		
 		val statement = jdbcProxy.query(sql);
-		statement.paramInt(paramRowNo, rowNo);
+		
+		CommonColumns.setParams(statement, rowNo, context);
 		
 		for (val workspaceItem : workspace.getAllItemsSortedByItemNo()) {
 			val dataType = workspaceItem.configureDataType(require);
@@ -174,13 +212,13 @@ public class WorkspaceSql {
 
 	static class Insert {
 
-		static String createInsertSql(String tableName, GroupWorkspace workspace, String paramRowNo) {
+		static String createInsertSql(String tableName, GroupWorkspace workspace) {
 			
 			return new StringBuilder()
 				.append("insert into ")
 				.append(tableName)
 				.append(" values (")
-				.append("@" + paramRowNo + ",")
+				.append(CommonColumns.sqlParams() + ",")
 				.append(workspace.getAllItemsSortedByItemNo().stream()
 						.map(item -> "@" + Insert.paramItem(item.getItemNo()))
 						.collect(Collectors.joining(",")))
@@ -240,7 +278,7 @@ public class WorkspaceSql {
 	}
 	
 	public int getMaxRowNumberOfRevisedData() {
-		String sql = "select max(" + ROW_NO + ") from " + tableName().asRevised();
+		String sql = "select max(" + CommonColumns.ROW_NO.name + ") from " + tableName().asRevised();
 		return jdbcProxy.query(sql).getSingle(rec -> rec.getInt(1)).get();
 	}
 	
@@ -251,7 +289,7 @@ public class WorkspaceSql {
 	
 	public Optional<RevisedDataRecord> findRevisedByRowNo(WorkspaceItem.RequireConfigureDataType require, int rowNo) {
 		String sql = "select * from " + tableName().asRevised()
-				+ " where " + ROW_NO + " = " + rowNo;
+				+ " where " + CommonColumns.ROW_NO.name + " = " + rowNo;
 		return jdbcProxy.query(sql).getSingle(rec -> toRevised(require, rec));
 	}
 	
@@ -271,7 +309,7 @@ public class WorkspaceSql {
 	
 	private RevisedDataRecord toRevised(WorkspaceItem.RequireConfigureDataType require, NtsResultRecord record) {
 		
-		int rowNo = record.getInt(ROW_NO);
+		int rowNo = record.getInt(CommonColumns.ROW_NO.name);
 		
 		val items = workspace.getAllItemsSortedByItemNo().stream()
 				.map(wi -> toDataItem(require, record, wi))

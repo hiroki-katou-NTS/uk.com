@@ -47,7 +47,11 @@ public class TransferCanonicalData {
 	}
 	
 	private static AtomTask transfer(Require require, ExecutionContext context, List<WhereSentence> wherelist) {
-		List<String> importiongItem = require.getImportingDataMeta(context).getItemNames();
+		
+		List<String> importingItem = new ArrayList<>(require.getImportingDataMeta(context).getItemNames());
+		importingItem.add("CONTRACT_CD");
+		importingItem.add("CID");
+		
 		ConversionCodeType cct = context.getMode().getType();
 		
 		ImportingGroup importingGroup = require.getImportingGroup(context.getGroupId());
@@ -71,7 +75,7 @@ public class TransferCanonicalData {
 					conversionTable.getEndDateColumnName(),
 					conversionTable.getWhereList(),
 					conversionTable.getConversionMap().stream()
-						.filter(m -> importiongItem.contains(((NotChangePattern) m.getPattern()).getSourceColumn()))
+						.filter(m -> importingItem.contains(((NotChangePattern) m.getPattern()).getSourceColumn()))
 						.collect(toList())
 					);
 			
