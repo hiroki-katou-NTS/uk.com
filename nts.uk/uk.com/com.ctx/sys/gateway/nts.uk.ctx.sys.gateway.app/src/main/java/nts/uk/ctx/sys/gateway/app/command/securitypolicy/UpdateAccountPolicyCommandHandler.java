@@ -26,7 +26,7 @@ public class UpdateAccountPolicyCommandHandler extends CommandHandler<UpdateAcco
 		UpdateAccountPolicyCommand command = context.getCommand();
 		String contractCode = AppContexts.user().contractCode();
 		PasswordComplexityRequirement complexity = PasswordComplexityRequirement.createFromJavaType(
-				command.lowestDigits, command.numberOfDigits, command.symbolCharacters, command.alphabetDigit);
+				command.lowestDigits, command.alphabetDigit, command.numberOfDigits, command.symbolCharacters);
 		PasswordPolicy passwordPolicy = PasswordPolicy.createFromJavaType(contractCode,
 				command.notificationPasswordChange, command.loginCheck, command.initialPasswordChange,
 				command.isPasswordUse, command.historyCount, command.validityPeriod, complexity);
