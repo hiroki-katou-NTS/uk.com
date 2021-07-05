@@ -103,6 +103,7 @@ module nts.uk.at.kal011.d {
                 vm.$ajax(API.EXTRACT_EXECUTE, param).done((task: any) => {
                     vm.taskId = task.id;
                     nts.uk.deferred.repeat(conf => conf.task(() => {
+                        $(window).resize();
                         return nts.uk.request.asyncTask.getInfo(vm.taskId).done(function (res: any) {
                             vm.updateProgress(res.taskDatas);
                             if (res.succeeded) {
