@@ -62,15 +62,21 @@ public class AuthenticationResult implements LoginCommandHandlerBase.Authenticat
 				Optional.empty(), 
 				true, tenantCode, companyId);
 	}
-
+	
 	@Override
 	public boolean isSuccess() {
 		return isBuiltInUser || success;
 	}
-
+	
 	@Override
 	public IdentifiedEmployeeInfo getIdentified() {
 		return employeeInfo.get();
 	}
-
+	
+	public boolean isNeedToChangePassword() {
+		if(passwordValidation.isPresent()) {
+			return passwordValidation.get().getStatus().isNeedToChangePassword();
+		}
+		return false;
+	}
 }

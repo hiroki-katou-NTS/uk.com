@@ -95,12 +95,24 @@ public class ValidationResultOnLogin {
 		
 		private final String messageId;
 		
-		String getMessageId() {
+		public String getMessageId() {
 			if (messageId == null) {
 				throw new RuntimeException("has no message: " + this);
 			}
 			
 			return messageId;
+		}
+		
+		public boolean isNeedToChangePassword() {
+			switch(this) {
+			case RESET:
+			case INITIAL:
+			case VIOLATED:
+			case EXPIRED:
+				return true;
+			default:
+				return false;
+			}
 		}
 	}
 }

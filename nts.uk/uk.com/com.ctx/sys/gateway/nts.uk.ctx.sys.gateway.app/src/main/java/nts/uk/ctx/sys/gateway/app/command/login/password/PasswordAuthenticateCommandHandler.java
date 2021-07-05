@@ -121,7 +121,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	 */
 	@Override
 	protected CheckChangePassDto loginCompleted(Require require, AuthenticationResult authen) {
-		return CheckChangePassDto.successToAuthPassword();
+		return CheckChangePassDto.successToAuthPassword(authen);
 	}
 
 	public static interface Require extends PasswordAuthenticateWithEmployeeCode.Require,

@@ -5,6 +5,8 @@
 package nts.uk.ctx.sys.gateway.app.command.login.password;
 
 import lombok.Setter;
+import lombok.val;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin.Status;
 
 /**
  * The Class CheckChangePassDto.
@@ -54,19 +56,33 @@ public class CheckChangePassDto {
 		this.spanDays = spanDays;
 	}
 	
+	// テナント認証に失敗
 	public static CheckChangePassDto failedToAuthTenant() {
 		return new CheckChangePassDto(false, null, true);
 	}
-
-	public static CheckChangePassDto successToAuthPassword() {
-		return new CheckChangePassDto(false, null, false);
-	}
 	
+	// 社員の識別に失敗
 	public static CheckChangePassDto failedToIdentificate() {
 		return new CheckChangePassDto(false, "Msg_301", false);
 	}
 	
+	// パスワード認証による認証に失敗
 	public static CheckChangePassDto failedToAuthPassword() {
 		return new CheckChangePassDto(false, "Msg_302", false);
+	}
+	
+	// パスワード認証による認証に成功
+	public static CheckChangePassDto successToAuthPassword(AuthenticationResult authen) {
+		val passwordValidation = authen.getPasswordValidation().get();
+		// パスワードの変更が必要な場合
+		if(passwordValidation.getStatus().isNeedToChangePassword()) {
+			return new CheckChangePassDto(passwordValidation.getStatus().getMessageId());
+		}
+		// パスワードの期限が迫っている場合
+		if(passwordValidation.getStatus() == Status.EXPIRES_SOON) {
+			return new CheckChangePassDto(passwordValidation.getStatus().getMessageId(), passwordValidation.getRemainingDays().get());
+		}
+		// 特に問題なし
+		return new CheckChangePassDto(false, passwordValidation.getStatus().getMessageId(), false);
 	}
 }

@@ -46,7 +46,7 @@ public class SgwdtPasswordChangeLog extends ContractUkJpaEntity{
 	
 	public static PasswordChangeLog toDomain(String userId, List<SgwdtPasswordChangeLog> entityLst) {
 		
-		if(entityLst.stream().map(e -> e.pk.getUserId()).anyMatch(u -> u != userId)) {
+		if(!entityLst.stream().map(e -> e.pk.getUserId()).allMatch(u -> u.equals(userId))) {
 	        throw new RuntimeException("複数ユーザへの処理には対応していません。");
 		}
 		
