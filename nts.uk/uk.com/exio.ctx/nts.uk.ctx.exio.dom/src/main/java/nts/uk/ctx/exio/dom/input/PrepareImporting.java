@@ -63,7 +63,7 @@ public class PrepareImporting {
 
 		parser.parse(
 				csvFileStream,
-				cn -> { },
+				cn -> { }, // 今のところヘッダ行を取得する必要が無い
 				r -> processRecord(require, context, assembly, r));
 		
 		val itemNames = getItemNames(require, context, assembly);
