@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.setting.source;
+package nts.uk.ctx.exio.dom.input.csvimport;
 
 import static java.util.stream.Collectors.*;
 
@@ -19,7 +19,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
-import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
 
 /**
  * CSVファイル情報

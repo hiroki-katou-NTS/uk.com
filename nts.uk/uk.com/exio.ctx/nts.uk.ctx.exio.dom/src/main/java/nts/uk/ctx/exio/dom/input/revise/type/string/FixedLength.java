@@ -2,7 +2,7 @@ package nts.uk.ctx.exio.dom.input.revise.type.string;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.exio.dom.input.setting.source.ExternalImportRawNumber;
+import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRawNumber;
 
 /**
  * 

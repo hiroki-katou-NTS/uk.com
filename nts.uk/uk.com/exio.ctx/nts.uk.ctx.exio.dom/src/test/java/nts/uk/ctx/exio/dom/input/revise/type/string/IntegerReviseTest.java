@@ -10,9 +10,9 @@ import lombok.val;
 import mockit.Expectations;
 import mockit.Mocked;
 import mockit.Verifications;
+import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRawNumber;
 import nts.uk.ctx.exio.dom.input.revise.type.RangeOfValue;
 import nts.uk.ctx.exio.dom.input.revise.type.integer.IntegerRevise;
-import nts.uk.ctx.exio.dom.input.setting.source.ExternalImportRawNumber;
 
 public class IntegerReviseTest {
 	

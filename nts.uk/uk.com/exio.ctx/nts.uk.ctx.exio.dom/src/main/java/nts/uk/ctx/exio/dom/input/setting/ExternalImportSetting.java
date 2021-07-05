@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
-import nts.uk.ctx.exio.dom.input.setting.source.ExternalImportCsvFileInfo;
+import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 
 /**
  * 受入設定

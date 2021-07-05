@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRawNumber;
 import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 import nts.uk.ctx.exio.dom.input.revise.ReviseItem;
 import nts.uk.ctx.exio.dom.input.revise.ReviseValue;
@@ -34,7 +35,6 @@ import nts.uk.ctx.exio.dom.input.revise.type.time.TimeBaseNumber;
 import nts.uk.ctx.exio.dom.input.revise.type.time.TimeRevise;
 import nts.uk.ctx.exio.dom.input.revise.type.time.TimeRounding;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
-import nts.uk.ctx.exio.dom.input.setting.source.ExternalImportRawNumber;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**

@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.setting.source;
+package nts.uk.ctx.exio.dom.input.csvimport;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerMaxValue;
