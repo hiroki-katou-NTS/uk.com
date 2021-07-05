@@ -16,8 +16,12 @@ public enum CheckMethod {
 		@Override
 		public boolean validate(Class<?> pvClass, Object value) {
 			
+			if (value == null) {
+				return true;
+			}
+			
 			if (ClassReflection.isSubclass(pvClass, IntegerPrimitiveValue.class)) {
-				value = value == null ? null : Integer.parseInt(value.toString());
+				value = Integer.parseInt(value.toString());
 			}
 			
 			try {
@@ -34,6 +38,11 @@ public enum CheckMethod {
 	ENUM(2) {
 		@Override
 		public boolean validate(Class<?> pvClass, Object value) {
+			
+			if (value == null) {
+				return true;
+			}
+			
 			try {
 				EnumAdaptor.valueOf((int)value, pvClass);
 				return true;
