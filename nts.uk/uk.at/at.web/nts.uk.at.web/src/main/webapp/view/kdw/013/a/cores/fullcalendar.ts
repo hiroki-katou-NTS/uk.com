@@ -269,10 +269,10 @@ module nts.uk.ui.at.kdw013.calendar {
         .fc-timegrid-cols .fc-day-today {
             background-color: white !important;
         }
-        .fc-container .fc-day-sat {
+        .fc-container .fc-day-sat .fc-col-header-cell-cushion{
             color: #0086EA;
         }
-        .fc-container .fc-day-sun {
+        .fc-container .fc-day-sun .fc-col-header-cell-cushion {
             color: #FF2D2D;
         }
         .fc-container .fc-event-title h4 {
