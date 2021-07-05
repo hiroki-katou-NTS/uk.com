@@ -10,6 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMetaRepository;
+import nts.uk.ctx.exio.infra.repository.input.TemporaryTable;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -17,8 +18,12 @@ public class JpaImportingDataMetaRepository extends JpaRepository implements Imp
 
 	@Override
 	public void setup(ExecutionContext context) {
+		
+		String tableName = tableName(context.getCompanyId());
+		
+		TemporaryTable.dropTable(jdbcProxy(), tableName);
 
-		String sql = "create table " + tableName(context.getCompanyId()) + " ("
+		String sql = "create table " + tableName + " ("
 				+ "ITEM_NAME varchar(100) not null"
 				+ ");";
 		
@@ -47,6 +52,6 @@ public class JpaImportingDataMetaRepository extends JpaRepository implements Imp
 	}
 
 	private static String tableName(String companyId) {
-		return "XIMTT_META_ITEMNAMES_" + companyId.replace("-", "");
+		return TemporaryTable.PREFIX + "META_ITEMNAMES_" + companyId.replace("-", "");
 	}
 }

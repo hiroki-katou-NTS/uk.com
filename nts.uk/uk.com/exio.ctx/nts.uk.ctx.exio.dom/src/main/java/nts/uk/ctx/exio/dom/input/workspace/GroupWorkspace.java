@@ -31,6 +31,10 @@ public class GroupWorkspace {
 				.collect(toList());
 	}
 	
+	public boolean isPrimaryKey(WorkspaceItem item) {
+		return itemsPk.contains(item);
+	}
+	
 	public Optional<WorkspaceItem> getItem(int itemNo) {
 		
 		return Stream.concat(itemsPk.stream(), itemsNotPk.stream())

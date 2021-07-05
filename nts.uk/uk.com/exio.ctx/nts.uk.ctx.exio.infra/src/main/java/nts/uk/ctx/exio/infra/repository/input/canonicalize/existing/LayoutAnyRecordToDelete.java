@@ -14,6 +14,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
+import nts.uk.ctx.exio.infra.repository.input.TemporaryTable;
 
 /**
  * AnyRecordToDelete用一時テーブルのレイアウト
@@ -24,7 +25,7 @@ public class LayoutAnyRecordToDelete {
 	private final JdbcProxy jdbcProxy;
 	private final ExecutionContext context;
 	
-	private static final String TABLE_NAME = "XIMTT_ANY_RECORD_TO_DELETE";
+	private static final String TABLE_NAME = TemporaryTable.PREFIX + "ANY_RECORD_TO_DELETE";
 	
 	private String tableName() {
 		return TABLE_NAME + "_" + context.getCompanyId().replace("-", "");
@@ -32,8 +33,10 @@ public class LayoutAnyRecordToDelete {
 	
 	public void createTable() {
 		
+		TemporaryTable.dropTable(jdbcProxy, tableName());
+		
 		String sql = "create table " + tableName() + "("
-				+ " ID char(36) not null"
+				+ " ID char(36) not null,"
 				+ " ITEM_NO decimal(5) not null,"
 				+ " VALUE varchar(1000) null"
 				+ ");";

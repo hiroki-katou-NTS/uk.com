@@ -22,6 +22,7 @@ import nts.uk.ctx.exio.dom.input.workspace.GroupWorkspace;
 import nts.uk.ctx.exio.dom.input.workspace.WorkspaceItem;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository.Require;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataTypeConfiguration;
+import nts.uk.ctx.exio.infra.repository.input.TemporaryTable;
 
 @RequiredArgsConstructor
 public class WorkspaceSql {
@@ -39,6 +40,7 @@ public class WorkspaceSql {
 	 * @return
 	 */
 	public void createTableRevised(WorkspaceItem.RequireConfigureDataType require) {
+		TemporaryTable.dropTable(jdbcProxy, tableName().asRevised());
 		String sql = createTable(require, tableName().asRevised());
 		jdbcProxy.query(sql).execute();
 	}
@@ -49,6 +51,7 @@ public class WorkspaceSql {
 	 * @return
 	 */
 	public void createTableCanonicalized(WorkspaceItem.RequireConfigureDataType require) {
+		TemporaryTable.dropTable(jdbcProxy, tableName().asCanonicalized());
 		String sql = createTable(require, tableName().asCanonicalized());
 		jdbcProxy.query(sql).execute();
 	}
@@ -57,10 +60,11 @@ public class WorkspaceSql {
 		val sql = new StringBuilder();
 		val createTable = new CreateTable(sql);
 		
-		sql.append("create table ").append(tableName()).append(" (");
+		sql.append("create table ").append(tableName).append(" (");
 		
 		createTable.columnRowNo();
-		workspace.getAllItemsSortedByItemNo().forEach(item -> createTable.column(require, item));
+		workspace.getAllItemsSortedByItemNo().forEach(
+				item -> createTable.column(require, item, workspace.isPrimaryKey(item)));
 		
 		createTable.primaryKey(tableName, workspace);
 		
@@ -82,7 +86,7 @@ public class WorkspaceSql {
 					.map(item -> item.getName())
 					.collect(Collectors.joining(", "));
 			
-			sql.append("constraint ").append(pkName).append(" key (").append(keys).append(")");
+			sql.append("constraint ").append(pkName).append(" primary key nonclustered (").append(keys).append(")");
 		}
 		
 		void columnRowNo() {
@@ -90,13 +94,17 @@ public class WorkspaceSql {
 			sql.append(ROW_NO + " int not null,");
 		}
 		
-		void column(WorkspaceItem.RequireConfigureDataType require, WorkspaceItem item) {
+		void column(WorkspaceItem.RequireConfigureDataType require, WorkspaceItem item, boolean isPK) {
 			
 			sql.append(item.getName()).append(" ");
 			
 			dataType(item.configureDataType(require));
 			
-			sql.append(" null,");
+			if (isPK) {
+				sql.append(" not null,");
+			} else {
+				sql.append(" null,");
+			}
 		}
 		
 		void dataType(DataTypeConfiguration config) {
