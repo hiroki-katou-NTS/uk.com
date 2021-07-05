@@ -19,21 +19,23 @@ import java.util.Optional;
 @AllArgsConstructor
 @Getter
 public class ManHourPeriod {
-    private Optional<String> startDate;
-    private Optional<String> endDate;
-    private Optional<String> yearMonthStart;
-    private Optional<String> yearMonthEnd;
+    // 0: DATE  ;  1: YEAR_MONTH
+    private int totalUnit;
+    private String startDate;
+    private String endDate;
+    private String yearMonthStart;
+    private String yearMonthEnd;
 
     public DatePeriod getDatePeriod() {
-        if (!startDate.isPresent() || !endDate.isPresent()) return null;
-        return new DatePeriod(GeneralDate.fromString(startDate.get(), "yyyy/MM/dd"), GeneralDate.fromString(endDate.get(), "yyyy/MM/dd"));
+        if (totalUnit == 1) return null;
+        return new DatePeriod(GeneralDate.fromString(startDate, "yyyy/MM/dd"), GeneralDate.fromString(endDate, "yyyy/MM/dd"));
     }
 
     public YearMonthPeriod getYearMonthPeriod() {
-        if (!yearMonthStart.isPresent() || !yearMonthEnd.isPresent()) return null;
+        if (totalUnit == 0) return null;
         return new YearMonthPeriod(
-                YearMonth.of(Integer.parseInt(yearMonthStart.get().substring(0, 4)), Integer.parseInt(yearMonthStart.get().substring(6, 7))),
-                YearMonth.of(Integer.parseInt(yearMonthEnd.get().substring(0, 4)), Integer.parseInt(yearMonthEnd.get().substring(6, 7)))
+                YearMonth.of(Integer.parseInt(yearMonthStart.substring(0, 4)), Integer.parseInt(yearMonthStart.substring(6, 7))),
+                YearMonth.of(Integer.parseInt(yearMonthEnd.substring(0, 4)), Integer.parseInt(yearMonthEnd.substring(6, 7)))
         );
     }
 

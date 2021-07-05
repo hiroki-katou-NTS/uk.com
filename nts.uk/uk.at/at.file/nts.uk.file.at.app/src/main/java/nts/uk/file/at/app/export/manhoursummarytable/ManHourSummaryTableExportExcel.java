@@ -33,10 +33,11 @@ public class ManHourSummaryTableExportExcel extends ExportService<ManHourSummary
                 Dummy.SummaryTableFormat.create(),
                 Dummy.SummaryTableOutputContent.create(),
                 new ManHourPeriod(
-                        Optional.of("2021/06/01"),
-                        Optional.of("2021/06/03"),
-                        Optional.of("2021/06"),
-                        Optional.of("2021/06")
+                        0,
+                        "2021/06/01",
+                        "2021/06/03",
+                        "2021/06",
+                        "2021/06"
                 )
         );
 

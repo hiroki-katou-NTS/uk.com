@@ -238,7 +238,7 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                 printTotalByVerticalOfEachLevel(cells, level1, maxDateRange, headerList, dispFormat, unit, countRow, 1, 0);
                 countRow++;
             }
-            cells.merge(mergeIndexLv1, 1, countRow - mergeIndexLv1 - 1, 1, true, true);
+            cells.merge(mergeIndexLv1, 0, countRow - mergeIndexLv1 - 1, 1, true, true);
             setVerticalAlignment(cells.get(mergeIndexLv1, 1));
         }
         if (isDispTotal) { // Tong chieu doc cua level 1
@@ -282,7 +282,7 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                     printTotalByVerticalOfEachLevel(cells, level2, maxDateRange, headerList, dispFormat, unit, countRow, 2, 1);
                     countRow++;
                 }
-                cells.merge(mergeIndexLv2, 2, countRow - mergeIndexLv2 - 1, 1, true, true);
+                cells.merge(mergeIndexLv2, 1, countRow - mergeIndexLv2 - 1, 1, true, true);
                 setVerticalAlignment(cells.get(mergeIndexLv2, 2));
             }
             if (isDispTotal) { // Tong chieu doc level 2
@@ -290,7 +290,7 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                 printTotalByVerticalOfEachLevel(cells, level1, maxDateRange, headerList, dispFormat, unit, countRow, 2, 0);
                 countRow++;
             }
-            cells.merge(mergeIndexLv1, 1, countRow - mergeIndexLv1 - 1, 1, true, true);
+            cells.merge(mergeIndexLv1, 0, countRow - mergeIndexLv1 - 1, 1, true, true);
             setVerticalAlignment(cells.get(mergeIndexLv1, 1));
         }
         if (isDispTotal) { // Tong chieu doc cua level 1
