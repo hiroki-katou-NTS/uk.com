@@ -158,6 +158,7 @@ public class AsposeWorkScheFileCheck implements CheckFileService {
                 if (!StringUtils.isBlank(itemValue)) {
                     try {
                         shiftCode = new ShiftMasterImportCode(itemValue);
+                        shiftCode.validate();
                     } catch (Exception e) {
                         throw new BusinessException("Msg_2173");
                     }
