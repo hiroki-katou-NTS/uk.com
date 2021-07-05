@@ -58,9 +58,9 @@ public class SgwmtPasswordPolicy extends UkJpaEntity implements Serializable {
 		
 		val complexity = PasswordComplexityRequirement.createFromJavaType(
 				lowestDigits,
+				alphabetDigit,
 				numberOfDigits,
-				symbolCharacters,
-				alphabetDigit);
+				symbolCharacters);
 		
 		return PasswordPolicy.createFromJavaType(
 				contractCd,
