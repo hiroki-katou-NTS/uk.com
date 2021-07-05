@@ -38,7 +38,7 @@ public class WorkTimeInfoRequest extends NRLRequest<Frame>{
 		for (SendWorkTimeNameImport infoName : lstInfo) {
 			builder.append(toStringObject(infoName));
 		}
-		String payload = builder.toString();
+		String payload = Codryptofy.paddingFullBlock(builder.toString());
 		byte[] payloadBytes = Codryptofy.decode(payload);
 		int length = payloadBytes.length + DefaultValue.DEFAULT_PADDING_LENGTH;
 		List<MapItem> items = NRContentList.createDefaultField(Command.WORKTIME_INFO,
@@ -54,8 +54,7 @@ public class WorkTimeInfoRequest extends NRLRequest<Frame>{
 		//half payload16
 		builder.append(Codryptofy.paddingWithByte(data.getWorkTimeName(), 6));
 		builder.append(StringUtils.rightPad(data.getTime(), 9));
-		String result = Codryptofy.paddingWithByte(builder.toString(), 32);
-		return result;
+		return builder.toString();
 	}
 	
 	@Override

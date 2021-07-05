@@ -38,7 +38,7 @@ public class WorkTypeInfoRequest extends NRLRequest<Frame> {
 		for (SendWorkTypeNameImport infoName : lstWTInfo) {
 			builder.append(toStringObject(infoName));
 		}
-		String payload = builder.toString();
+		String payload = Codryptofy.paddingFullBlock(builder.toString());
 		byte[] payloadBytes = Codryptofy.decode(payload);
 		int length = payloadBytes.length + DefaultValue.DEFAULT_PADDING_LENGTH;
 		List<MapItem> items = NRContentList.createDefaultField(Command.WORKTYPE_INFO,
@@ -54,7 +54,7 @@ public class WorkTypeInfoRequest extends NRLRequest<Frame> {
 		builder.append(StringUtils.rightPad(data.getDaiClassifiNum(), 2));
 		// half payload16
 		builder.append(Codryptofy.paddingWithByte(data.getWorkName(), 6));
-		return  Codryptofy.paddingWithByte(builder.toString(), 16);
+		return  builder.toString();
 	}
 
 	@Override

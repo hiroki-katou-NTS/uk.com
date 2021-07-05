@@ -253,4 +253,10 @@ public class Codryptofy {
 		return encode(decode(text + emptyString));
 	}
 	
+	public static String paddingFullBlock(String payload) {
+		int sizeText = decode(payload).length;
+		if(sizeText % 16 == 0)
+			return payload;
+		return paddingWithByte(payload, (sizeText/16+1) * 16);
+	}
 }

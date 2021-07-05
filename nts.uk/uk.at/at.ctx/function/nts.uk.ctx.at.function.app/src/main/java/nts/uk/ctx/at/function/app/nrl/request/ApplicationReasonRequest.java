@@ -37,7 +37,7 @@ public class ApplicationReasonRequest extends NRLRequest<Frame>{
 		for(SendReasonApplicationImport infoName : lstInfo) {
 			builder.append(toStringObject(infoName));
 		}
-		String payload = builder.toString();
+		String payload = Codryptofy.paddingFullBlock(builder.toString());
 		byte[] payloadBytes = Codryptofy.decode(payload);
 		int length =  payloadBytes.length + DefaultValue.DEFAULT_PADDING_LENGTH;
 		List<MapItem> items = NRContentList.createDefaultField(Command.APPLICATION_INFO,
@@ -52,7 +52,7 @@ public class ApplicationReasonRequest extends NRLRequest<Frame>{
 		builder.append(StringUtils.rightPad(data.getAppReasonNo(), 2));
 		//half payload16
 		builder.append(Codryptofy.paddingWithByte(data.getAppReasonName(), 40));
-		return Codryptofy.paddingWithByte(builder.toString(), 48);
+		return builder.toString();
 	}
 	
 	@Override

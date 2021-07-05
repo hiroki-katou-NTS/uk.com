@@ -42,7 +42,7 @@ public class PersonalInfoRequest extends NRLRequest<Frame> {
 		for (SendPerInfoNameImport infoName : lstPerInfo) {
 			builder.append(toStringObject(infoName));
 		}
-		String payload = builder.toString();
+		String payload = Codryptofy.paddingFullBlock(builder.toString());
 		byte[] payloadBytes = Codryptofy.decode(payload);
 		int length = payloadBytes.length + DefaultValue.DEFAULT_PADDING_LENGTH;
 		List<MapItem> items = NRContentList.createDefaultField(Command.PERSONAL_INFO,
@@ -68,7 +68,7 @@ public class PersonalInfoRequest extends NRLRequest<Frame> {
 		builder.append(StringUtils.rightPad(data.getDepartmentCode(), 10));
 		builder.append(StringUtils.rightPad(data.getCompanyCode(), 4));
 		builder.append(StringUtils.rightPad(data.getReservation(), 4));
-		return Codryptofy.paddingWithByte(builder.toString(), 64);
+		return builder.toString();
 	}
 
 }

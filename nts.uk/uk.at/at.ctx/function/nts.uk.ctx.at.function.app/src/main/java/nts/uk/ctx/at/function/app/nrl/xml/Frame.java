@@ -1,9 +1,14 @@
 package nts.uk.ctx.at.function.app.nrl.xml;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Optional;
 
+import javax.xml.bind.JAXB;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -195,5 +200,36 @@ public class Frame implements MeanCarryable {
 	 */
 	public byte[] asciiCharToBytes(String s) {
 		return s.getBytes(Charset.forName("ASCII"));
+	}
+	
+	public String createFormatFrom() {
+		StringWriter sw = new StringWriter();
+		JAXB.marshal(this, sw);
+		String xmlString = sw.toString();
+	    BufferedReader reader = new BufferedReader(new StringReader(xmlString));
+	    StringBuffer result = new StringBuffer();
+	    try {
+	    	int lineNumber = 0;
+	        String line;
+	        while ( (line = reader.readLine() ) != null) {
+	        	if(lineNumber != 0) {
+	        	String row = line.trim();
+	        	if(row.length() >=2 && row.substring(row.length()-2, row.length()).endsWith("/>")) {
+	        		String endChar = row.substring(0, row.length()-2) + " />";
+	        		 result.append(endChar);
+	        	}else {
+	            result.append(row);
+	        	}
+	            result.append("\n");
+	        	}else {
+	        		result.append("<?xml version=\"1.0\" encoding=\"shift_jis\" ?>");
+	 	            result.append("\n");
+	        		lineNumber++;
+	        	}
+	        }
+	        return result.toString().trim();
+	    } catch (IOException e) {
+	        throw new RuntimeException(e);
+	    }
 	}
 }

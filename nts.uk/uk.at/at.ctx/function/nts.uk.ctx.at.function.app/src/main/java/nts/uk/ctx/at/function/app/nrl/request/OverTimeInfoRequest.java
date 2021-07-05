@@ -33,7 +33,7 @@ public class OverTimeInfoRequest extends NRLRequest<Frame> {
 	public void sketch(String empInfoTerCode, ResourceContext<Frame> context) {
 		Optional<SendOvertimeNameImport> info = sendNRDataAdapter.sendOvertime(empInfoTerCode,
 				context.getTerminal().getContractCode());
-		String payload = info.isPresent() ? toStringObject(info.get()) : "";
+		String payload = Codryptofy.paddingFullBlock(info.isPresent() ? toStringObject(info.get()) : addDefault(0, MAX_RECORD_ALL).orElse(""));
 		byte[] payloadBytes = Codryptofy.decode(payload);
 		int length = payloadBytes.length + DefaultValue.DEFAULT_LENGTH;
 		List<MapItem> items = NRContentList.createDefaultField(Command.OVERTIME_INFO,
@@ -55,7 +55,7 @@ public class OverTimeInfoRequest extends NRLRequest<Frame> {
 			builder.append(Codryptofy.paddingWithByte(overTime.getSendOvertimeName(), 12));
 		}
 		
-		addDefault(info.getOvertimes().size()).ifPresent(data ->{
+		addDefault(info.getOvertimes().size(), MAX_RECORD).ifPresent(data ->{
 			builder.append(data);
 		});
 		
@@ -64,7 +64,7 @@ public class OverTimeInfoRequest extends NRLRequest<Frame> {
 			builder.append(Codryptofy.paddingWithByte(vacation.getSendOvertimeName(), 12));
 		}
 
-		addDefault(info.getVacations().size()).ifPresent(data ->{
+		addDefault(info.getVacations().size(), MAX_RECORD).ifPresent(data ->{
 			builder.append(data);
 		});
 		
@@ -72,12 +72,13 @@ public class OverTimeInfoRequest extends NRLRequest<Frame> {
 	}
 
 	private final int MAX_RECORD = 10;
-	private Optional<String> addDefault(int recordNumberInDB) {
-		if(recordNumberInDB == MAX_RECORD) {
+	private final int MAX_RECORD_ALL = 20;
+	private Optional<String> addDefault(int recordNumberInDB, int maxRecord) {
+		if(recordNumberInDB == maxRecord) {
 			return Optional.empty();
 		}
 		StringBuilder builder = new StringBuilder();
-		IntStream.range(0, MAX_RECORD-recordNumberInDB).boxed().forEach(ind ->{
+		IntStream.range(0, maxRecord-recordNumberInDB).boxed().forEach(ind ->{
 			builder.append(Codryptofy.paddingWithByte(" ", 12));
 		});
 		return Optional.of(builder.toString());

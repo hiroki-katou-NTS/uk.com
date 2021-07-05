@@ -33,7 +33,7 @@ public class ReservationMenuInfoRequest extends NRLRequest<Frame> {
 	public void sketch(String empInfoTerCode, ResourceContext<Frame> context) {
 		List<SendReservationMenuImport> lstInfo = sendNRDataAdapter.sendReservMenu(empInfoTerCode,
 				context.getTerminal().getContractCode());
-		String payload = toStringObject(lstInfo);
+		String payload = Codryptofy.paddingFullBlock(toStringObject(lstInfo));
 		byte[] payloadBytes = Codryptofy.decode(payload);
 		int length = payloadBytes.length + 52;
 		List<MapItem> items = NRContentList.createDefaultField(Command.RESERVATION_INFO,
@@ -55,6 +55,6 @@ public class ReservationMenuInfoRequest extends NRLRequest<Frame> {
 			builder.append(Codryptofy.paddingWithByte(data.getBentoMenu(), 16));
 			builder.append(StringUtils.rightPad(data.getUnit(), 2));
 		}
-		return Codryptofy.paddingWithByte(builder.toString(), 224);
+		return builder.toString();
 	}
 }
