@@ -203,20 +203,11 @@ public class StartKSU001Ver5 {
 		}
 		result.setShiftMasterWithWorkStyleLst(shiftMasterWithWorkStyleLst);
 		if (viewModeSelected == FuncCtrlDisplayFormatDto.Shift.value) {
-			result.setAggreratePersonal(
-					AggregatePersonalMapDto.convertMap(resultStep51.aggreratePersonal)
-					
-					);
-			result.setAggrerateWorkplace(
-					AggregateWorkplaceMapDto.convertMap(resultStep51.aggrerateWorkplace)
-					);
+			result.setAggreratePersonal(resultStep51.aggreratePersonal == null ? null : AggregatePersonalMapDto.convertMap(resultStep51.aggreratePersonal));
+			result.setAggrerateWorkplace(resultStep51.aggrerateWorkplace == null ? null : AggregateWorkplaceMapDto.convertMap(resultStep51.aggrerateWorkplace));
 		} else {
-			result.setAggreratePersonal(
-					AggregatePersonalMapDto.convertMap(resultStep4.aggreratePersonal)
-					);
-			result.setAggrerateWorkplace(
-					AggregateWorkplaceMapDto.convertMap(resultStep4.aggrerateWorkplace)
-					);
+			result.setAggreratePersonal(resultStep4.aggreratePersonal == null ?  null : AggregatePersonalMapDto.convertMap(resultStep4.aggreratePersonal));
+			result.setAggrerateWorkplace(resultStep4.aggrerateWorkplace == null ? null : AggregateWorkplaceMapDto.convertMap(resultStep4.aggrerateWorkplace));
 		}
 		return result;
 	}
