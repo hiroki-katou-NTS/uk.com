@@ -156,11 +156,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         // 個人計カテゴリ
         useCategoriesPersonal: KnockoutObservableArray<any> = ko.observableArray([]);
-        useCategoriesPersonalValue: KnockoutObservable<number> = ko.observable(6);
+        useCategoriesPersonalValue: KnockoutObservable<number> = ko.observable(null);
         
         // 職場計カテゴリ
         useCategoriesWorkplace: KnockoutObservableArray<any> = ko.observableArray([]);
-        useCategoriesWorkplaceValue: KnockoutObservable<any> = ko.observable(3);
+        useCategoriesWorkplaceValue: KnockoutObservable<any> = ko.observable(null);
         
         // 締め日 (Deadline) , 初期起動時の期間 ( Initial startup period )
         closeDate = null;
@@ -441,7 +441,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this, dfd = $.Deferred();
             let viewMode   = _.isNil(self.userInfor) ? 'time' : self.userInfor.disPlayFormat ;
             let updateMode = _.isNil(self.userInfor) ? 'stick': self.userInfor.updateMode;
-            
+
             let param = {
                 viewMode: viewMode,
                 startDate: null,
@@ -455,11 +455,57 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 unit: !_.isNil(self.userInfor) ? self.userInfor.unit : 0,
                 workplaceId: null,
                 workplaceGroupId: null,
-                personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
-                workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
+                personTotalSelected: _.isNil(self.userInfor) ? self.useCategoriesPersonalValue() : self.userInfor.useCategoriesPersonalValue, // A11_1
+                workplaceSelected: _.isNil(self.userInfor) ? self.useCategoriesWorkplaceValue() : self.userInfor.useCategoriesWorkplaceValue// A12_1
             }
 
             service.getDataStartScreen(param).done((data: any) => {
+				_.remove(data.dataBasicDto.useCategoriesPersonal, (item: any) => _.includes([2, 4, 5], item.value));
+                _.remove(data.dataBasicDto.useCategoriesWorkplace, (item: any) => item.value == 4);
+				
+                self.useCategoriesPersonal(data.dataBasicDto.useCategoriesPersonal);
+                self.useCategoriesWorkplace(data.dataBasicDto.useCategoriesWorkplace);
+
+				//self.useCategoriesPersonal([]);
+                //self.useCategoriesWorkplace([]);
+                
+                _.isEmpty(self.useCategoriesPersonal()) ? self.showA11(false) : self.showA11(true);
+                _.isEmpty(self.useCategoriesWorkplace()) ? self.showA12(false) : self.showA12(true);
+                
+                if(self.userInfor && _.includes(_.map(self.useCategoriesPersonal(), o => o.value), self.userInfor.useCategoriesPersonalValue)) {
+                    self.useCategoriesPersonalValue(self.userInfor.useCategoriesPersonalValue);     
+                } else {
+					if(!_.isEmpty(self.useCategoriesPersonal())) {
+						self.useCategoriesPersonalValue(_.head(self.useCategoriesPersonal()).value);	
+					}  
+                }
+                if(self.userInfor && _.includes(_.map(self.useCategoriesWorkplace(), o => o.value), self.userInfor.useCategoriesWorkplaceValue)) {
+                    self.useCategoriesWorkplaceValue(self.userInfor.useCategoriesWorkplaceValue);       
+                } else {
+					if(!_.isEmpty(self.useCategoriesWorkplace())) {
+						self.useCategoriesWorkplaceValue(_.head(self.useCategoriesWorkplace()).value);	
+					}
+                }
+                self.useCategoriesPersonalValue.subscribe(value => {
+                    self.userInfor.useCategoriesPersonalValue = value;
+                    characteristics.save(self.KEY, self.userInfor);
+//                  let newVertSumHeader = self.createVertSumHeader();
+//                  let newVertSumContent = self.createVertSumContent(detailContent);
+//                  $("#cacheDiv").append($('#vertDiv'));
+//                  $("#extable").exTable("updateTable", "verticalSummaries", newVertSumHeader, newVertSumContent);
+//                  $("#vertDropDown").html(function() { return $('#vertDiv'); });
+                    self.getAggregatedInfo(true, false);
+                });
+                
+                self.useCategoriesWorkplaceValue.subscribe(value => {
+                    self.userInfor.useCategoriesWorkplaceValue = value;
+                    characteristics.save(self.KEY, self.userInfor);
+                    self.showA12_2(_.includes([WorkplaceCounterCategory.WORKTIME_PEOPLE, WorkplaceCounterCategory.LABOR_COSTS_AND_TIME], value) ||
+                            (_.includes([WorkplaceCounterCategory.EXTERNAL_BUDGET], value) && self.funcNo15_WorkPlace));
+                    // $("#cacheDiv").append($('#horzDiv'));
+                    self.getAggregatedInfo(false, true);
+                });
+                
                 // khởi tạo data localStorage khi khởi động lần đầu.
                 self.creatDataLocalStorege(data);
                 
@@ -501,44 +547,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.bindingToHeader(data);
                 
                 // set data Grid
-                _.remove(data.dataBasicDto.useCategoriesPersonal, (item: any) => _.includes([2, 4, 5], item.value));
-                _.remove(data.dataBasicDto.useCategoriesWorkplace, (item: any) => item.value == 4);
-                self.useCategoriesPersonal(data.dataBasicDto.useCategoriesPersonal);
-                self.useCategoriesWorkplace(data.dataBasicDto.useCategoriesWorkplace);
-                
-                _.isEmpty(self.useCategoriesPersonal()) ? self.showA11(false) : self.showA11(true);
-                _.isEmpty(self.useCategoriesWorkplace()) ? self.showA12(false) : self.showA12(true);
-                
-                if(self.userInfor && _.includes(_.map(self.useCategoriesPersonal(), o => o.value), self.userInfor.useCategoriesPersonalValue)) {
-                    self.useCategoriesPersonalValue(self.userInfor.useCategoriesPersonalValue);     
-                } else {
-                    self.useCategoriesPersonalValue(_.head(self.useCategoriesPersonal()).value);    
-                }
-                if(self.userInfor && _.includes(_.map(self.useCategoriesWorkplace(), o => o.value), self.userInfor.useCategoriesWorkplaceValue)) {
-                    self.useCategoriesWorkplaceValue(self.userInfor.useCategoriesWorkplaceValue);       
-                } else {
-                    self.useCategoriesWorkplaceValue(_.head(self.useCategoriesWorkplace()).value);  
-                }
-                self.useCategoriesPersonalValue.subscribe(value => {
-                    self.userInfor.useCategoriesPersonalValue = value;
-                    characteristics.save(self.KEY, self.userInfor);
-//                  let newVertSumHeader = self.createVertSumHeader();
-//                  let newVertSumContent = self.createVertSumContent(detailContent);
-//                  $("#cacheDiv").append($('#vertDiv'));
-//                  $("#extable").exTable("updateTable", "verticalSummaries", newVertSumHeader, newVertSumContent);
-//                  $("#vertDropDown").html(function() { return $('#vertDiv'); });
-                    self.getAggregatedInfo(true, false);
-                });
-                
-                self.useCategoriesWorkplaceValue.subscribe(value => {
-                    self.userInfor.useCategoriesWorkplaceValue = value;
-                    characteristics.save(self.KEY, self.userInfor);
-                    self.showA12_2(_.includes([WorkplaceCounterCategory.WORKTIME_PEOPLE, WorkplaceCounterCategory.LABOR_COSTS_AND_TIME], value) ||
-                            (_.includes([WorkplaceCounterCategory.EXTERNAL_BUDGET], value) && self.funcNo15_WorkPlace));
-                    // $("#cacheDiv").append($('#horzDiv'));
-                    self.getAggregatedInfo(false, true);
-                });
-                
                 let dataBindGrid = self.convertDataToGrid(data, viewMode);
                 self.initExTable(dataBindGrid, viewMode, updateMode);
                 
@@ -615,11 +623,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 data.workType = {};
                 data.workTime = {};
                 data.shiftMasterWithWorkStyleLst = [];
+				data.useCategoriesPersonalValue = self.useCategoriesPersonalValue();
+				data.useCategoriesWorkplaceValue = self.useCategoriesWorkplaceValue();
                 self.userInfor = data;
                 characteristics.save(self.KEY, self.userInfor);
             } else {
                 self.userInfor.disPlayFormat = dataSetting.dataBasicDto.viewModeSelected;
                 self.userInfor.achievementDisplaySelected = false;
+				self.userInfor.useCategoriesPersonalValue = self.useCategoriesPersonalValue();
+				self.userInfor.useCategoriesWorkplaceValue = self.useCategoriesWorkplaceValue();
                 characteristics.save(self.KEY, self.userInfor);
             }
         }
