@@ -204,7 +204,8 @@ public class WorkspaceSql {
 		
 		for (val workspaceItem : workspace.getAllItemsSortedByItemNo()) {
 			val dataType = workspaceItem.configureDataType(require);
-			Insert.setParam(dataType, itemGetter, statement, workspaceItem);
+			val itemOpt = itemGetter.apply(workspaceItem.getItemNo());
+			Insert.setParam(dataType, itemOpt, statement, workspaceItem);
 		}
 		
 		statement.execute();
@@ -228,25 +229,24 @@ public class WorkspaceSql {
 
 		static void setParam(
 				DataTypeConfiguration dataType,
-				Function<Integer, Optional<DataItem>> itemGetter,
+				Optional<DataItem> item,
 				NtsStatement statement,
 				WorkspaceItem workspaceItem) {
 			
 			String param = paramItem(workspaceItem.getItemNo());
-			DataItem item = itemGetter.apply(workspaceItem.getItemNo()).get();
 			
 			switch (dataType.getType()) {
 			case INT:
-				statement.paramLong(param, item.getInt());
+				statement.paramLong(param, item.map(d -> d.getInt()).orElse(null));
 				break;
 			case REAL:
-				statement.paramDecimal(param, item.getReal());
+				statement.paramDecimal(param, item.map(d -> d.getReal()).orElse(null));
 				break;
 			case STRING:
-				statement.paramString(param, item.getString());
+				statement.paramString(param, item.map(d -> d.getString()).orElse(null));
 				break;
 			case DATE:
-				statement.paramDate(param, item.getDate());
+				statement.paramDate(param, item.map(d -> d.getDate()).orElse(null));
 				break;
 			default:
 				throw new RuntimeException("unknown: " + dataType.getType());
@@ -300,10 +300,10 @@ public class WorkspaceSql {
 				.getName();
 		
 		String sql = "select * from " + tableName().asRevised()
-				+ " where " + columnName + " = '" + conditionString + "'";
+				+ " where " + columnName + " = @p";
 		
 		return jdbcProxy.query(sql)
-				.paramString(columnName, conditionString)
+				.paramString("p", conditionString)
 				.getList(rec -> toRevised(require, rec));
 	}
 	
