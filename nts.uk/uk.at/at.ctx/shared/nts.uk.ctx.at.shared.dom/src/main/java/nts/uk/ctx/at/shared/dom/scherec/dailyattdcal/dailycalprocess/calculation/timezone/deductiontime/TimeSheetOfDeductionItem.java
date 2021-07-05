@@ -474,7 +474,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		case CONNOTATE_BEGINTIME://開始時間を含む
 			returnList.add(frontBreakTimeSheet.cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(frontBreakTimeSheet.start(),backGoOutTimeSheet.start()))));
 			returnList.add(backGoOutTimeSheet);
-			returnList.add(frontBreakTimeSheet.cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(backGoOutTimeSheet.end(),frontBreakTimeSheet.getTimeSheet().getEnd().backByMinutes(backGoOutTimeSheet.getTimeSheet().lengthAsMinutes())))));
+			returnList.add(frontBreakTimeSheet.cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(backGoOutTimeSheet.end(),frontBreakTimeSheet.getTimeSheet().getEnd().forwardByMinutes(backGoOutTimeSheet.getTimeSheet().lengthAsMinutes())))));
 			return returnList;
 		case NOT_DUPLICATE://重複していない
 			returnList.add(frontBreakTimeSheet);
