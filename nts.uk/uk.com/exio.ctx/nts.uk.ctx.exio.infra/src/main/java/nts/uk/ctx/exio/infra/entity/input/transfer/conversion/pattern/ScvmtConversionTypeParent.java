@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.input.conversiontable.pattern;
+package nts.uk.ctx.exio.infra.entity.input.transfer.conversion.pattern;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -27,8 +27,8 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ParentJoinPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.manager.ParentJoinPatternManager;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.ScvmtConversionTable;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.ScvmtConversionTablePk;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.ScvmtConversionTable;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.ScvmtConversionTablePk;
 
 @Getter
 @Entity

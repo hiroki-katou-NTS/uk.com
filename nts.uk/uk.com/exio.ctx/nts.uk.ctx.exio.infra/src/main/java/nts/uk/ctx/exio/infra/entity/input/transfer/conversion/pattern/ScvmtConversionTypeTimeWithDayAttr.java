@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.input.conversiontable.pattern;
+package nts.uk.ctx.exio.infra.entity.input.transfer.conversion.pattern;
 
 import java.io.Serializable;
 
@@ -15,26 +15,28 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.core.dom.conversionsql.Join;
-import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
-import nts.uk.cnv.core.dom.conversiontable.pattern.PasswordPattern;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.ScvmtConversionTable;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.ScvmtConversionTablePk;
+import nts.uk.cnv.core.dom.conversiontable.pattern.TimeWithDayAttrPattern;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.ScvmtConversionTable;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.ScvmtConversionTablePk;
 
 @Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SCVMT_CONVERSION_TYPE_PASSWORD")
-public class ScvmtConversionTypePassword extends JpaEntity implements Serializable {
+@Table(name = "SCVMT_CONVERSION_TYPE_TIME_WITH_DAY_ATTR")
+public class ScvmtConversionTypeTimeWithDayAttr extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	public ScvmtConversionTablePk pk;
 
-	@Column(name = "SOURCE_COLUMN_NAME")
-	private String SourceColumnName;
+	@Column(name = "TIME_COLUMN_NAME")
+	private String timeColumnName;
+
+	@Column(name = "DAY_ATTR_COLUMN_NAME")
+	private String dayAttrColumnName;
 
 	@OneToOne(optional=true) @PrimaryKeyJoinColumns({
         @PrimaryKeyJoinColumn(name="CATEGORY_NAME", referencedColumnName="CATEGORY_NAME"),
@@ -49,22 +51,22 @@ public class ScvmtConversionTypePassword extends JpaEntity implements Serializab
 		return pk;
 	}
 
-	public PasswordPattern toDomain(ConversionInfo info, Join sourceJoin) {
-		return new PasswordPattern(
-				info,
+	public TimeWithDayAttrPattern toDomain(Join sourceJoin) {
+		return new TimeWithDayAttrPattern(
 				sourceJoin,
-				this.SourceColumnName
+				this.timeColumnName,
+				this.dayAttrColumnName
 			);
 	}
 
-	public static ScvmtConversionTypePassword toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
-		if (!(conversionPattern instanceof PasswordPattern)) {
+	public static ScvmtConversionTypeTimeWithDayAttr toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
+		if (!(conversionPattern instanceof TimeWithDayAttrPattern)) {
 			return null;
 		}
 
-		PasswordPattern domain = (PasswordPattern) conversionPattern;
+		TimeWithDayAttrPattern domain = (TimeWithDayAttrPattern) conversionPattern;
 
-		return new ScvmtConversionTypePassword(pk, domain.getSourceColumnName(), null);
+		return new ScvmtConversionTypeTimeWithDayAttr(pk, domain.getTimeColumn(), domain.getDayAttrColumn(), null);
 	}
 
 }

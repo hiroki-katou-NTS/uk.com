@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.input.conversiontable.pattern;
+package nts.uk.ctx.exio.infra.entity.input.transfer.conversion.pattern;
 
 import java.io.Serializable;
 
@@ -16,17 +16,17 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
-import nts.uk.cnv.core.dom.conversiontable.pattern.CodeToCodePattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.CodeToIdPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.ScvmtConversionTable;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.ScvmtConversionTablePk;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.ScvmtConversionTable;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.ScvmtConversionTablePk;
 
 @Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SCVMT_CONVERSION_TYPE_CODE_TO_CODE")
-public class ScvmtConversionTypeCodeToCode extends JpaEntity implements Serializable {
+@Table(name = "SCVMT_CONVERSION_TYPE_CODE_TO_ID")
+public class ScvmtConversionTypeCodeToId extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -36,8 +36,11 @@ public class ScvmtConversionTypeCodeToCode extends JpaEntity implements Serializ
 	@Column(name = "SOURCE_COLUMN_NAME")
 	private String sourceColumnName;
 
-	@Column(name = "MAPPING_TYPE")
-	private String mappingType;
+	@Column(name = "CODE_TO_ID_TYPE")
+	private String codeToIdType;
+
+	@Column(name = "CCD_COLUMN_NAME")
+	private String companyCodeColumnName;
 
 	@OneToOne(optional=true) @PrimaryKeyJoinColumns({
         @PrimaryKeyJoinColumn(name="CATEGORY_NAME", referencedColumnName="CATEGORY_NAME"),
@@ -52,22 +55,28 @@ public class ScvmtConversionTypeCodeToCode extends JpaEntity implements Serializ
 		return pk;
 	}
 
-	public CodeToCodePattern toDomain(ConversionInfo info, Join sourcejoin) {
-		return new CodeToCodePattern(
+	public CodeToIdPattern toDomain(ConversionInfo info, Join sourcejoin) {
+		return new CodeToIdPattern(
 				info,
 				sourcejoin,
 				this.sourceColumnName,
-				mappingType
-			);
+				this.codeToIdType,
+				this.companyCodeColumnName);
 	}
 
-	public static ScvmtConversionTypeCodeToCode toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
-		if (!(conversionPattern instanceof CodeToCodePattern)) {
+	public static ScvmtConversionTypeCodeToId toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
+		if (!(conversionPattern instanceof CodeToIdPattern)) {
 			return null;
 		}
 
-		CodeToCodePattern domain = (CodeToCodePattern) conversionPattern;
+		CodeToIdPattern domain = (CodeToIdPattern) conversionPattern;
 
-		return new ScvmtConversionTypeCodeToCode(pk, domain.getSourceColumnName(), domain.getMappingType(), null);
+		return new ScvmtConversionTypeCodeToId(
+				pk,
+				domain.getSourceColumnName(),
+				domain.getCodeToIdType().name(),
+				(domain.getSourceCcdColumnName().isPresent()) ? domain.getSourceCcdColumnName().get() : null,
+				null);
 	}
+
 }

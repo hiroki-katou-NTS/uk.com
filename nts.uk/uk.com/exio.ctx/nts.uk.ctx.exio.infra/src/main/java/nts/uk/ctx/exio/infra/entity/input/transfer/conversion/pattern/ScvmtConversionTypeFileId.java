@@ -1,7 +1,8 @@
-package nts.uk.ctx.exio.infra.entity.input.conversiontable.pattern;
+package nts.uk.ctx.exio.infra.entity.input.transfer.conversion.pattern;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
@@ -12,24 +13,28 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nemunoki.oruta.shr.tabledefinetype.DatabaseSpec;
 import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.uk.cnv.core.dom.conversionsql.Join;
+import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
-import nts.uk.cnv.core.dom.conversiontable.pattern.GuidPattern;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.ScvmtConversionTable;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.ScvmtConversionTablePk;
+import nts.uk.cnv.core.dom.conversiontable.pattern.FileIdPattern;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.ScvmtConversionTable;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.ScvmtConversionTablePk;
 
 @Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SCVMT_CONVERSION_TYPE_GUID")
-public class ScvmtConversionTypeGuid extends JpaEntity implements Serializable {
+@Table(name = "SCVMT_CONVERSION_TYPE_FILEID")
+public class ScvmtConversionTypeFileId extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	public ScvmtConversionTablePk pk;
+
+	@Column(name = "SOURCE_COLUMN_NAME")
+	private String sourceColumnName;
 
 	@OneToOne(optional=true) @PrimaryKeyJoinColumns({
         @PrimaryKeyJoinColumn(name="CATEGORY_NAME", referencedColumnName="CATEGORY_NAME"),
@@ -44,16 +49,22 @@ public class ScvmtConversionTypeGuid extends JpaEntity implements Serializable {
 		return pk;
 	}
 
-	public GuidPattern toDomain(DatabaseSpec spec) {
-		return new GuidPattern(spec);
+	public FileIdPattern toDomain(ConversionInfo info, Join sourcejoin) {
+		return new FileIdPattern(
+				info,
+				sourcejoin,
+				this.sourceColumnName
+			);
 	}
 
-	public static ScvmtConversionTypeGuid toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
-		if (!(conversionPattern instanceof GuidPattern)) {
+	public static ScvmtConversionTypeFileId toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
+		if (!(conversionPattern instanceof FileIdPattern)) {
 			return null;
 		}
 
-		return new ScvmtConversionTypeGuid(pk, null);
+		FileIdPattern domain = (FileIdPattern) conversionPattern;
+
+		return new ScvmtConversionTypeFileId(pk, domain.getSourceColumnName(), null);
 	}
 
 }

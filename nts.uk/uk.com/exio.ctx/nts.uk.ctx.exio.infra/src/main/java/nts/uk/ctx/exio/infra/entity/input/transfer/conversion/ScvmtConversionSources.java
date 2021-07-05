@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.input.conversiontable;
+package nts.uk.ctx.exio.infra.entity.input.transfer.conversion;
 
 import java.io.Serializable;
 import java.util.List;

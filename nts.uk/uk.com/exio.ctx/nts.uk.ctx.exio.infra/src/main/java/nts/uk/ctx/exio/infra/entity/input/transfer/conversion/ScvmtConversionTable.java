@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.input.conversiontable;
+package nts.uk.ctx.exio.infra.entity.input.transfer.conversion;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,18 +29,18 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionType;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.pattern.ScvmtConversionTypeCodeToCode;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.pattern.ScvmtConversionTypeCodeToId;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.pattern.ScvmtConversionTypeDateTimeMerge;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.pattern.ScvmtConversionTypeFileId;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.pattern.ScvmtConversionTypeFixedValue;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.pattern.ScvmtConversionTypeFixedValueWithCondition;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.pattern.ScvmtConversionTypeGuid;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.pattern.ScvmtConversionTypeNone;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.pattern.ScvmtConversionTypeParent;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.pattern.ScvmtConversionTypePassword;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.pattern.ScvmtConversionTypeStringConcat;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.pattern.ScvmtConversionTypeTimeWithDayAttr;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.pattern.ScvmtConversionTypeCodeToCode;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.pattern.ScvmtConversionTypeCodeToId;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.pattern.ScvmtConversionTypeDateTimeMerge;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.pattern.ScvmtConversionTypeFileId;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.pattern.ScvmtConversionTypeFixedValue;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.pattern.ScvmtConversionTypeFixedValueWithCondition;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.pattern.ScvmtConversionTypeGuid;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.pattern.ScvmtConversionTypeNone;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.pattern.ScvmtConversionTypeParent;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.pattern.ScvmtConversionTypePassword;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.pattern.ScvmtConversionTypeStringConcat;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.pattern.ScvmtConversionTypeTimeWithDayAttr;
 
 /**
  * コンバート表

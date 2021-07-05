@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.input.conversiontable.pattern;
+package nts.uk.ctx.exio.infra.entity.input.transfer.conversion.pattern;
 
 import java.io.Serializable;
 
@@ -17,27 +17,24 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ConversionPattern;
-import nts.uk.cnv.core.dom.conversiontable.pattern.FixedValuePattern;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.ScvmtConversionTable;
-import nts.uk.ctx.exio.infra.entity.input.conversiontable.ScvmtConversionTablePk;
+import nts.uk.cnv.core.dom.conversiontable.pattern.PasswordPattern;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.ScvmtConversionTable;
+import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.ScvmtConversionTablePk;
 
 @Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SCVMT_CONVERSION_TYPE_FIXED_VALUE")
-public class ScvmtConversionTypeFixedValue extends JpaEntity implements Serializable {
+@Table(name = "SCVMT_CONVERSION_TYPE_PASSWORD")
+public class ScvmtConversionTypePassword extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	public ScvmtConversionTablePk pk;
 
-	@Column(name = "IS_PARAMATER")
-	private boolean isParameter;
-
-	@Column(name = "FIXED_VALUE")
-	private String fixedValue;
+	@Column(name = "SOURCE_COLUMN_NAME")
+	private String SourceColumnName;
 
 	@OneToOne(optional=true) @PrimaryKeyJoinColumns({
         @PrimaryKeyJoinColumn(name="CATEGORY_NAME", referencedColumnName="CATEGORY_NAME"),
@@ -52,22 +49,22 @@ public class ScvmtConversionTypeFixedValue extends JpaEntity implements Serializ
 		return pk;
 	}
 
-	public FixedValuePattern toDomain(ConversionInfo info, Join join) {
-		return new FixedValuePattern(
+	public PasswordPattern toDomain(ConversionInfo info, Join sourceJoin) {
+		return new PasswordPattern(
 				info,
-				join,
-				this.isParameter,
-				this.fixedValue
+				sourceJoin,
+				this.SourceColumnName
 			);
 	}
 
-	public static ScvmtConversionTypeFixedValue toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
-		if (!(conversionPattern instanceof FixedValuePattern)) {
+	public static ScvmtConversionTypePassword toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
+		if (!(conversionPattern instanceof PasswordPattern)) {
 			return null;
 		}
 
-		FixedValuePattern domain = (FixedValuePattern) conversionPattern;
+		PasswordPattern domain = (PasswordPattern) conversionPattern;
 
-		return new ScvmtConversionTypeFixedValue(pk, domain.isParamater(), domain.getExpression(), null);
+		return new ScvmtConversionTypePassword(pk, domain.getSourceColumnName(), null);
 	}
+
 }

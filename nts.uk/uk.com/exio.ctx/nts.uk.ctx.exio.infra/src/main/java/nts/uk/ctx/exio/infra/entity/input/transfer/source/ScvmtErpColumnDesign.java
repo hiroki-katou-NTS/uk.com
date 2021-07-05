@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.input.tabledesign;
+package nts.uk.ctx.exio.infra.entity.input.transfer.source;
 
 import java.io.Serializable;
 
