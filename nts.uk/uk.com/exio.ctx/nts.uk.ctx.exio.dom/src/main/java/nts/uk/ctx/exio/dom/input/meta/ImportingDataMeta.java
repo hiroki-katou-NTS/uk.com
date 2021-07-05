@@ -27,7 +27,7 @@ public class ImportingDataMeta {
 		val newNames = new ArrayList<>(itemNames);
 		newNames.add(name);
 		
-		return new ImportingDataMeta(name, newNames);
+		return new ImportingDataMeta(companyId, newNames);
 	}
 	
 	public static interface RequireAddItem {
