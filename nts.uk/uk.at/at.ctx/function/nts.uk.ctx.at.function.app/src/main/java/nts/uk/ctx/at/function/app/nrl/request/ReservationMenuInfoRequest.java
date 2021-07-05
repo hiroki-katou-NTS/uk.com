@@ -6,9 +6,8 @@ import java.util.Optional;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.uk.ctx.at.function.app.nrl.Command;
+import nts.uk.ctx.at.function.app.nrl.DefaultValue;
 import nts.uk.ctx.at.function.app.nrl.NRContentList;
 import nts.uk.ctx.at.function.app.nrl.crypt.Codryptofy;
 import nts.uk.ctx.at.function.app.nrl.data.ItemSequence.MapItem;
@@ -28,16 +27,15 @@ public class ReservationMenuInfoRequest extends NRLRequest<Frame> {
 	@Inject
 	private SendNRDataAdapter sendNRDataAdapter;
 
-	private final static String PADDING = "0000000000000000000000000000";
 	@Override
 	public void sketch(String empInfoTerCode, ResourceContext<Frame> context) {
 		List<SendReservationMenuImport> lstInfo = sendNRDataAdapter.sendReservMenu(empInfoTerCode,
 				context.getTerminal().getContractCode());
 		String payload = Codryptofy.paddingFullBlock(toStringObject(lstInfo));
 		byte[] payloadBytes = Codryptofy.decode(payload);
-		int length = payloadBytes.length + 52;
+		int length = payloadBytes.length + 42;
 		List<MapItem> items = NRContentList.createDefaultField(Command.RESERVATION_INFO,
-				Optional.ofNullable(Integer.toHexString(length)), context.getTerminal(), PADDING);
+				Optional.ofNullable(Integer.toHexString(length)), context.getTerminal(), DefaultValue.ZERO_PADDING);
 		// Number of records
 		context.collectEncrypt(items, payload);
 
@@ -53,7 +51,7 @@ public class ReservationMenuInfoRequest extends NRLRequest<Frame> {
 		for(SendReservationMenuImport data : lstInfo) {
 			//half
 			builder.append(Codryptofy.paddingWithByte(data.getBentoMenu(), 16));
-			builder.append(StringUtils.rightPad(data.getUnit(), 2));
+			builder.append(Codryptofy.paddingWithByte(data.getUnit(), 2));
 		}
 		return builder.toString();
 	}

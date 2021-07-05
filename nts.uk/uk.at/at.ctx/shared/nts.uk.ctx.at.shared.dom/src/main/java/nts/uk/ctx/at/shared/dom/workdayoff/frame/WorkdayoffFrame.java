@@ -110,4 +110,8 @@ public class WorkdayoffFrame extends AggregateRoot{
 		
 		return true;
 	}
+	
+	public boolean isUse() {
+		return this.useClassification == NotUseAtr.USE;
+	}
 }

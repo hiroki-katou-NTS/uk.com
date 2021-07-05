@@ -39,7 +39,7 @@ public class SendReservationMenuService {
 	// [pvt-1] 予約メニュー名称送信に変換
 	private static List<SendReservationMenu> convert(List<Bento> lstBento) {
 		List<SendReservationMenu> lstResult = new ArrayList<>();
-		IntStream.range(1, 13).boxed().forEach(indx -> {
+		IntStream.range(1, 41).boxed().forEach(indx -> {
 			lstResult.add(lstBento.stream().filter(x -> x.getFrameNo() == indx).findFirst()
 					.map(x -> new SendReservationMenu(x.getName().v(), x.getUnit().v(), x.getFrameNo()))
 					.orElse(new SendReservationMenu("", "", indx)));
