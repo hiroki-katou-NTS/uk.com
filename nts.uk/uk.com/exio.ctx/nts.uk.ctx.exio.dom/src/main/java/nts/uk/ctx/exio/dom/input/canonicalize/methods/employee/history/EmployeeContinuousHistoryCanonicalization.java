@@ -111,6 +111,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 			return Collections.emptyList();
 		}
 		
+		// 複数レコードあったとしても同じ社員のデータなので、社員IDは先頭レコードから取り出せば良い
 		String employeeId = employeeCanonicalized.get(0)
 				.getItemByNo(itemNoEmployeeId())
 				.get().getString();
