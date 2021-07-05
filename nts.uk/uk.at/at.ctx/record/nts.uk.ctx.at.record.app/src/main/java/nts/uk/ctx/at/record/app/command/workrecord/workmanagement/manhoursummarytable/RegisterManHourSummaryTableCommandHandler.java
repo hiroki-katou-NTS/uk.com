@@ -29,7 +29,7 @@ public class RegisterManHourSummaryTableCommandHandler extends CommandHandler<Re
         if (!checkDuplicate.isPresent()) {
             this.repository.insert(command.toDomain());
         } else {
-            throw new BusinessException("Msg_3");
+            throw new BusinessException("Msg_2204");
         }
     }
 }
