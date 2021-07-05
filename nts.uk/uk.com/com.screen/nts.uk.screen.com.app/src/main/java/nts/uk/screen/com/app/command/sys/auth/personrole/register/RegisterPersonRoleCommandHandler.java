@@ -38,14 +38,14 @@ public class RegisterPersonRoleCommandHandler extends CommandHandler<RegisterPer
 		String contractCode = AppContexts.user().contractCode();
 
 		Role role = command.toDomain(companyId, contractCode);
-		PersonRole personRole = new PersonRole(role.getRoleId(), command.getReferFutureDate());
+		PersonRole personRole = new PersonRole(role.getRoleId(), false);
 
 		if (command.getCreateMode()) {
 			roleService.insertRole(role);
-//			personRoleRepo.insert(personRole);
+			personRoleRepo.insert(personRole);
 		} else {
 			roleService.updateRole(role);
-//			personRoleRepo.update(personRole);
+			personRoleRepo.update(personRole);
 		}
 
 		// 個人情報の権限
