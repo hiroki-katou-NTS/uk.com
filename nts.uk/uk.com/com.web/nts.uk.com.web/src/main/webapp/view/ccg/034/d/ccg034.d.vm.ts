@@ -111,7 +111,7 @@ module nts.uk.com.view.ccg034.d {
             vm.$copyPlaceholder.remove();
             vm.$hoverHighlight.remove();
             // Create copy item
-            const offsetX = event.pageX - vm.layoutOffsetLeft() + vm.$menuCreationLayoutContainer.scrollLeft();
+            const offsetX = event.pageX - vm.layoutOffsetLeft();
             const offsetY = event.pageY - vm.layoutOffsetTop();
             // Calculate copy item div position
             const oldPartData = vm.mapPartData[vm.copyingPartId()];
@@ -955,7 +955,7 @@ module nts.uk.com.view.ccg034.d {
         case MenuPartType.PART_MENU:
           vm.$window.modal('/view/ccg/034/f/index.xhtml', selectedPartData)
             .then((result: PartDataModel) => {
-              if (result && result.clientId) {
+              if (result && !nts.uk.text.isNullOrEmpty(String(result.clientId))) {
                 // Update part data
                 vm.mapPartData[partClientId] = result;
                 // Update part DOM
@@ -969,7 +969,7 @@ module nts.uk.com.view.ccg034.d {
         case MenuPartType.PART_LABEL:
           vm.$window.modal('/view/ccg/034/e/index.xhtml', selectedPartData)
             .then((result: PartDataModel) => {
-              if (result && result.clientId) {
+              if (result && !nts.uk.text.isNullOrEmpty(String(result.clientId))) {
                 // Update part data
                 vm.mapPartData[partClientId] = result;
                 // Update part DOM
@@ -983,7 +983,7 @@ module nts.uk.com.view.ccg034.d {
         case MenuPartType.PART_LINK:
           vm.$window.modal('/view/ccg/034/g/index.xhtml', selectedPartData)
             .then((result: PartDataModel) => {
-              if (result && result.clientId) {
+              if (result && !nts.uk.text.isNullOrEmpty(String(result.clientId))) {
                 // Update part data
                 vm.mapPartData[partClientId] = result;
                 // Update part DOM
@@ -1047,7 +1047,7 @@ module nts.uk.com.view.ccg034.d {
         case MenuPartType.PART_ARROW:
           vm.$window.modal('/view/ccg/034/j/index.xhtml', selectedPartData)
             .then((result: PartDataModel) => {
-              if (result && result.clientId) {
+              if (result && !nts.uk.text.isNullOrEmpty(String(result.clientId))) {
                 // Update part data
                 vm.mapPartData[partClientId] = result;
                 // Update part DOM
@@ -1115,13 +1115,12 @@ module nts.uk.com.view.ccg034.d {
       vm.layoutOffsetTop(layoutOffset.top);
       vm.layoutOffsetLeft(layoutOffset.left);
       vm.$menuCreationLayout.mousemove((event) => {
-        const offsetX = event.pageX - layoutOffset.left + vm.$menuCreationLayoutContainer.scrollLeft();
+        const offsetX = event.pageX - layoutOffset.left;
         const offsetY = event.pageY - layoutOffset.top;
         vm.$copyPlaceholder.css({ 'top': `${offsetY}px`, 'left': `${offsetX}px` });
         // Calculate highlight div position
         const positionTop: number = LayoutUtils.calculatePositionTop(partData.height, offsetY);
         const positionLeft: number = LayoutUtils.calculatePositionLeft(partData.width, offsetX);
-        console.log(`${event.pageY} : ${layoutOffset.top} : ${vm.$menuCreationLayoutContainer.scrollTop()} : ${offsetY}`);
         vm.renderHoveringItem(vm.$copyPlaceholder, vm.partClientId, partData.width, partData.height, positionTop, positionLeft);
       });
     }
