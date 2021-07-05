@@ -43,7 +43,7 @@ public class TenantAuthenticateCommandHandler extends CommandHandler<TenantAuthe
 		val request = command.getRequest();
 		if(command.getTenantCode().isEmpty()) {
 			// テナントコード未入力
-			throw new BusinessException("Msg313");
+			throw new BusinessException("Msg_313");
 		}
 		
 		// ログインクライアントの生成
