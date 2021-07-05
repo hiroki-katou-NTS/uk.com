@@ -34,7 +34,7 @@ public class CheckBeforePasswordPublisherImpl implements CheckBeforePasswordPubl
 	private UserRepository userRepo;
 
 	/** The password change log repository. */
-//	@Inject
+	@Inject
 	private PasswordChangeLogRepository passwordChangeLogRepository;
 
 	/** The password policy adap. */
