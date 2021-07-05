@@ -5114,65 +5114,44 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let funcNo15_WorkPlace = self.checkVisableByAuth(scheModifyAuthCtrlByWorkplace, 15); // 予算実績入力 Budget actual input
             let funcNo16_WorkPlace = self.checkVisableByAuth(scheModifyAuthCtrlByWorkplace, 16); // 計画人数入力 Enter the planned number of people
             // button A1_1  職1
-            if (funcNo1_WorkPlace == false) {
-                $('#A1_1').css('visibility', 'hidden');
-                $('#A1_1').off('click');
-            }
+            if (funcNo1_WorkPlace == false)
+                document.getElementById("A1_1").remove();
 
             // btn A1_2 職3 - ※35 
-            if (funcNo3_WorkPlace == false || scheFunctionCtrlByWorkplaceUse == false) {
-                $('#A1_2').css('visibility', 'hidden');
-                $('#A1_2').off('click');
-            }
+            if (funcNo3_WorkPlace == false || scheFunctionCtrlByWorkplaceUse == false)
+                document.getElementById("A1_2").remove();
 
             // btn A1_3 職4
-            if (funcNo4_WorkPlace == false) {
-                $('#A1_3').css('visibility', 'hidden');
-                $('#A1_3').off('click');
-            }
+            if (funcNo4_WorkPlace == false)
+                document.getElementById("A1_3").remove();
 
             // btn A1_5 職8 - ※27
-            if (funcNo8_WorkPlace == false || data.dataBasicDto.usePublicAtr == false) {
-                $('#A1_5').css('visibility', 'hidden');
-                $('#A1_5').off('click');
-            }
+            if (funcNo8_WorkPlace == false || data.dataBasicDto.usePublicAtr == false)
+                document.getElementById("A1_5").remove();
 
             // btn A1_6 職5
-            if (funcNo5_WorkPlace == false) {
-                $('#A1_6').css('visibility', 'hidden');
-                $('#A1_6').off('click');
-            }
+            if (funcNo5_WorkPlace == false)
+                document.getElementById("A1_6").remove();
 
             // btn A1_7 職7  - ※1
-            if (funcNo7_WorkPlace == false || data.dataBasicDto.useWorkAvailabilityAtr == false) {
-                $('#A1_7').css('visibility', 'hidden');
-                $('#A1_7_1').css('display', 'none');
-                $('#A1_7').off('click');
-            }
+            if (funcNo7_WorkPlace == false || data.dataBasicDto.useWorkAvailabilityAtr == false)
+                document.getElementById("A1_7").remove();
 
             // btn A1_8 職9  -  ※2 (tạm thời chưa đối ứng thằng ※2 này)
-            if (funcNo9_WorkPlace == false) {
-                $('#A1_8').css('visibility', 'hidden');
-                $('#A1_8').off('click');
-            }
+            if (funcNo9_WorkPlace == false)
+                document.getElementById("A1_8").remove();
 
             // btn A1_9 職6
-            if (funcNo6_WorkPlace == false) {
-                $('#A1_9').css('visibility', 'hidden');
-                $('#A1_9').off('click');
-            }
+            if (funcNo6_WorkPlace == false)
+                document.getElementById("A1_9").remove();
 
             // btn A1_10 共1
-            if (funcNo1_Common == false) {
-                $('#A1_10').css('visibility', 'hidden');
-                $('#A1_10').off('click');
-            }
+            if (funcNo1_Common == false)
+                document.getElementById("A1_10").remove();
 
             // btn A1_11 共2
-            if (funcNo2_Common == false) {
-                $('#A1_11').css('visibility', 'hidden');
-                $('#A1_11').off('click');
-            }
+            if (funcNo2_Common == false)
+                document.getElementById("A1_11").remove();
 
             // btn A6_1, A6_2 職2    
             if (funcNo2_WorkPlace == false) {
