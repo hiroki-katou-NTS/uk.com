@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.core.dom.conversionsql.ColumnName;
@@ -22,7 +23,7 @@ import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.exio.dom.input.workspace.WorkspaceTableName;
 
 /**
  * 正準化データを移送する
@@ -52,7 +53,7 @@ public class TransferCanonicalData {
 		ImportingGroup importingGroup = require.getImportingGroup(context.getGroupId());
 		
 		ConversionSource source = require.getConversionSource(importingGroup.getName());
-		ConversionSource sourceWithSuffix = editSourceTableName(source);
+		ConversionSource sourceWithSuffix = editSourceTableName(source, context, importingGroup.getName());
 		List<ConversionTable> conversionTables = require.getConversionTable(sourceWithSuffix, importingGroup.getName(), cct);
 		
 		List<ConversionSQL> conversionSql = new ArrayList<>();
@@ -89,13 +90,15 @@ public class TransferCanonicalData {
 		});
 	}
 	
-	private static ConversionSource editSourceTableName(ConversionSource base) {
-		String cid = AppContexts.user().companyId();
+	private static ConversionSource editSourceTableName(ConversionSource base, ExecutionContext context, String groupName) {
+		
+		val tableName = new WorkspaceTableName(context, groupName);
+		
 		// TODO: 正準化テーブルのサフィックスの付与ルールは適正なクラスに委譲予定
 		return new ConversionSource(
 				base.getSourceId(),
 				base.getCategory(),
-				base.getSourceTableName() + "_" + cid.replace("-", "_"),
+				tableName.asCanonicalized(),
 				base.getCondition(),
 				base.getMemo(),
 				base.getDateColumnName(),
