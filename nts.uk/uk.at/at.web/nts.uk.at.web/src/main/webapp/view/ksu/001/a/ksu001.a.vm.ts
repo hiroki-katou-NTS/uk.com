@@ -461,6 +461,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             service.getDataStartScreen(param).done((data: any) => {
 				_.remove(data.dataBasicDto.useCategoriesPersonal, (item: any) => _.includes([2, 4, 5], item.value));
+				if(!self.checkVisableByAuth(data.dataBasicDto.scheModifyAuthCtrlByWorkplace, 14)) {
+					_.remove(data.dataBasicDto.useCategoriesPersonal, (item: any) => _.includes([0, 1], item.value));
+				}
                 _.remove(data.dataBasicDto.useCategoriesWorkplace, (item: any) => item.value == 4);
 				
                 self.useCategoriesPersonal(data.dataBasicDto.useCategoriesPersonal);
