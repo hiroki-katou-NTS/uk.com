@@ -1,5 +1,7 @@
 package nts.uk.ctx.exio.dom.input.transfer;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,6 +17,7 @@ import nts.uk.cnv.core.dom.conversionsql.WhereSentence;
 import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
+import nts.uk.cnv.core.dom.conversiontable.pattern.NotChangePattern;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
@@ -59,7 +62,17 @@ public class TransferCanonicalData {
 			});
 			
 			// 受入項目の列名リストを元に移送する列をフィルタ
-			ConversionTable filteredConversionTable = conversionTable.filterColumns(importiongItem);
+			ConversionTable filteredConversionTable = new ConversionTable(
+					conversionTable.getSpec(),
+					conversionTable.getTargetTableName(),
+					conversionTable.getDateColumnName(),
+					conversionTable.getStartDateColumnName(),
+					conversionTable.getEndDateColumnName(),
+					conversionTable.getWhereList(),
+					conversionTable.getConversionMap().stream()
+						.filter(m -> importiongItem.contains(((NotChangePattern) m.getPattern()).getSourceColumn()))
+						.collect(toList())
+					);
 			
 			// TODO: Insert & Update両方のモードは未対応
 			if(context.getMode().getType() == ConversionCodeType.INSERT) {
