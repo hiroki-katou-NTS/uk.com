@@ -135,7 +135,11 @@ public class RegisterLayoutFinder {
 				if (!classItem.getItems().isEmpty()) {
 					classItem.getItems().stream().forEach(f -> {
 						if (f.getCategoryCode().equals("CS00049") && f.getItemCode().equals("IS00560")) {
-							if (f.getValue().toString().equals("")) {
+							if (f.getValue() != null) {
+								if (f.getValue().toString().equals("")) {
+									f.setValue("0");
+								}
+							}else {
 								f.setValue("0");
 							}
 						}
