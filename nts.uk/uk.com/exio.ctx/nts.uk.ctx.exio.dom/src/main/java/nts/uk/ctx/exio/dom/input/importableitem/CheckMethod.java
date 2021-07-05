@@ -42,6 +42,8 @@ public enum CheckMethod {
 			if (value == null) {
 				return true;
 			}
+
+			value = Integer.parseInt(value.toString());
 			
 			try {
 				EnumAdaptor.valueOf((int)value, pvClass);
