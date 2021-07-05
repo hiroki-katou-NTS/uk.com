@@ -408,8 +408,10 @@
 								</div>
 								<div style="clear: left"></div>
 								<div id = "sub-content-main">
-									<div style="float: left">
-										<button class="toDown inline" data-bind="click : toDown"><i class="iconToDown" data-bind="ntsIcon : { no: 150,width: 11, height: 22 }"></i></button>
+									<div style="float: left; width: 29px; height: 349px;">
+										<div data-bind="if: showA12">
+											<button class="toDown inline" data-bind="click : toDown"><i class="iconToDown" data-bind="ntsIcon : { no: 150,width: 11, height: 22 }"></i></button>
+										</div>
 									</div>
 									<div id="extable-outside" style="float: left">
 										<div id="extable"></div>
