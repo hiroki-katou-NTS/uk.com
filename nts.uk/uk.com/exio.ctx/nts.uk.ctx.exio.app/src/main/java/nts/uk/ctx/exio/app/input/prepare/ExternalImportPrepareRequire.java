@@ -47,8 +47,8 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethodRe
 import nts.uk.ctx.exio.dom.input.validation.ImportingUserConditionRepository;
 import nts.uk.ctx.exio.dom.input.validation.condition.ImportingUserCondition;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
-import nts.uk.ctx.exio.dom.input.workspace.GroupWorkspace;
-import nts.uk.ctx.exio.dom.input.workspace.GroupWorkspaceRepository;
+import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspaceRepository;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)

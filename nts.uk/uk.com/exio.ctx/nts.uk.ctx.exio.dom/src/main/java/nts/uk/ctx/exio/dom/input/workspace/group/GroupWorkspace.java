@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.workspace;
+package nts.uk.ctx.exio.dom.input.workspace.group;
 
 import static java.util.stream.Collectors.*;
 
@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import lombok.Value;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.workspace.item.WorkspaceItem;
 
 /**
  * 受入グループのワークスペース

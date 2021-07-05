@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
-import nts.uk.ctx.exio.dom.input.workspace.GroupWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
 
 /**
  * 受入グループ別の正準化インスタンスを作る

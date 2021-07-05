@@ -20,7 +20,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
-import nts.uk.ctx.exio.dom.input.workspace.GroupWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
 
 /**
  * 作業の正準化

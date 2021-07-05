@@ -8,6 +8,8 @@ import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
+import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.item.WorkspaceItem;
 
 /**
  * 外部受入のワークスペースに対する入出力を担当するRepository

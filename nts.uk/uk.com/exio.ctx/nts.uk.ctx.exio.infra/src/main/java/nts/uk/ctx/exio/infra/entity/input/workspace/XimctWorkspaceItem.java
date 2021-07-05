@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
-import nts.uk.ctx.exio.dom.input.workspace.WorkspaceItem;
-import nts.uk.ctx.exio.dom.input.workspace.WorkspaceItemType;
+import nts.uk.ctx.exio.dom.input.workspace.item.WorkspaceItem;
+import nts.uk.ctx.exio.dom.input.workspace.item.WorkspaceItemType;
 
 @Entity
 @Table(name = "XIMCT_WORKSPACE_ITEM")

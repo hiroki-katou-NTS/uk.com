@@ -39,8 +39,8 @@ import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.ctx.exio.dom.input.transfer.ConversionTableRepository;
 import nts.uk.ctx.exio.dom.input.transfer.TransferCanonicalDataRepository;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
-import nts.uk.ctx.exio.dom.input.workspace.GroupWorkspace;
-import nts.uk.ctx.exio.dom.input.workspace.GroupWorkspaceRepository;
+import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspaceRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 @Stateless

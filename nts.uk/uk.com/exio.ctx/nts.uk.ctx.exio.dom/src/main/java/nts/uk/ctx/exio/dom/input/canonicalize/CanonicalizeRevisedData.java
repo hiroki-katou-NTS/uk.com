@@ -13,7 +13,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.TaskCanonicalization;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
-import nts.uk.ctx.exio.dom.input.workspace.GroupWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
 
 /**
  * 編集済みデータを正準化する
