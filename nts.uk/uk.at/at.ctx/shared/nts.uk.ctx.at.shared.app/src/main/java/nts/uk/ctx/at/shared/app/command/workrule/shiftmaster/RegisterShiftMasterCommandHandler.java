@@ -242,7 +242,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 
 		@Override
 		public boolean checkDuplicateImportCode(ShiftMasterImportCode importCode) {
-			return shiftMasterRepo.checkExistsByCd(companyId, importCode.v());
+			return shiftMasterRepo.checkExistByImportCd(companyId, importCode);
 		}
 
 		@Override

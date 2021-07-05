@@ -237,4 +237,9 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 				.getSingle(c -> c.toDomain());
 	}
 
+    @Override
+    public boolean checkExistByImportCd(String companyId, ShiftMasterImportCode importCd) {
+        return getShiftMaster(companyId, importCd).isPresent();
+    }
+
 }

@@ -17,6 +17,8 @@ public interface ShiftMasterRepository {
 	public boolean checkExists(String companyId, String workTypeCd, String workTimeCd);
 	
 	public boolean checkExistsByCd(String companyId, String shiftMaterCode);
+	
+	public boolean checkExistByImportCd(String companyId, ShiftMasterImportCode importCd);
 
 	public void insert(ShiftMaster shiftMater);
 
