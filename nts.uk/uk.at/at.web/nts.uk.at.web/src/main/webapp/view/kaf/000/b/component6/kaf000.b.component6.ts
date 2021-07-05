@@ -37,7 +37,7 @@ module nts.uk.at.view.kaf000.b.component6.viewmodel {
 			let appDateString = "";
 			if(params.application().opAppStartDate()==params.application().opAppEndDate()) {
 				appDateString = params.application().appDate();
-				vm.dispSingleDate = false;
+				vm.dispSingleDate = true;
 			} else {
 				appDateString = params.application().opAppStartDate() + '～' +params.application().opAppEndDate();
 				vm.dispSingleDate = false;
