@@ -118,13 +118,6 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 
 		val existingHistory = getHistory(require, employeeId);
 		
-		// 以下の2ケースでは受け入れない
-		// 1:「新規のみ」で既存の履歴がある
-		// 2:「上書きのみ」で既存の履歴が無い
-		if (!context.getMode().canImport(existingHistory.isPresent())) {
-			return Collections.emptyList();
-		}
-		
 		/*
 		 *  複数の履歴を追加する場合、全て追加し終えるまで補正結果が確定しない点に注意が必要。
 		 *  例えば永続する履歴であれば、追加するたびにその履歴項目の終了日が9999/12/31に変更されるが、
