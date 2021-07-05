@@ -271,7 +271,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                     } else {
                         cells.copyRow(cells, 6, countRow);
                     }
-                     cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
+                    cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
 
                     for (int j = 0; j < listItem.size(); j++) {
                         val item = listItem.get(j);
@@ -284,8 +284,8 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                                 .setVerticalAlignment(TextAlignmentType.RIGHT);
                         cells.get(countRow, maxColumnData - 2).setValue(formatValue(item.getTotalOfOneLine(), null, item.getDailyValue().getAttributes(), isZeroDisplay));
                         Cell cell1 = cells.get(countRow, maxColumnData - 2);
-                        Style style1 =   cell1.getStyle();
-                        style1.setHorizontalAlignment(checkText(item.getDailyValue().getAttributes())? ColumnTextAlign.LEFT.value:ColumnTextAlign.RIGHT.value);
+                        Style style1 = cell1.getStyle();
+                        style1.setHorizontalAlignment(checkText(item.getDailyValue().getAttributes()) ? ColumnTextAlign.LEFT.value : ColumnTextAlign.RIGHT.value);
                         cell1.setStyle(style1);
 
                         cells.merge(countRow, maxColumnData - 2, 1, 2, true, true);
@@ -294,8 +294,8 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                         cells.get(countRow, column).setValue(formatValue(item.getDailyValue().getActualValue(), item.getDailyValue().getCharacterValue(),
                                 item.getDailyValue().getAttributes(), isZeroDisplay));
                         Cell cell = cells.get(countRow, column);
-                        Style style =   cell.getStyle();
-                        style.setHorizontalAlignment(checkText(item.getDailyValue().getAttributes())? ColumnTextAlign.LEFT.value:ColumnTextAlign.RIGHT.value);
+                        Style style = cell.getStyle();
+                        style.setHorizontalAlignment(checkText(item.getDailyValue().getAttributes()) ? ColumnTextAlign.LEFT.value : ColumnTextAlign.RIGHT.value);
                         cell.setStyle(style);
                     }
                     countRow++;
@@ -373,12 +373,12 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                 rs = valueString;
                 break;
             case TIME_OF_DAY:
-                if(valueDouble!=null){
+                if (valueDouble != null) {
                     rs = convertToTime((int) valueDouble.intValue());
                 }
                 break;
             case TIME:
-                if(valueDouble!=null){
+                if (valueDouble != null) {
                     val minute = (int) valueDouble.intValue();
                     if (minute != 0 || isZeroDisplay) {
                         rs = convertToTime(minute);
@@ -386,7 +386,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                 }
                 break;
             case NUMBER_OF_TIMES:
-                if(valueDouble!=null){
+                if (valueDouble != null) {
                     if (valueDouble != 0 || isZeroDisplay) {
                         DecimalFormat formatter1 = new DecimalFormat("#.#");
                         rs = formatter1.format(valueDouble) + TextResource.localize("KWR_2");
@@ -395,7 +395,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
 
                 break;
             case DAYS:
-                if(valueDouble!=null){
+                if (valueDouble != null) {
                     if (valueDouble != 0 || isZeroDisplay) {
                         DecimalFormat formatter2 = new DecimalFormat("#.#");
                         rs = formatter2.format(valueDouble) + TextResource.localize("KWR_1");
@@ -403,7 +403,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                 }
                 break;
             case AMOUNT_OF_MONEY:
-                if(valueDouble!=null){
+                if (valueDouble != null) {
                     if (valueDouble != 0 || isZeroDisplay) {
                         DecimalFormat formatter3 = new DecimalFormat("#,###");
                         rs = formatter3.format((int) valueDouble.intValue()) + TextResource.localize("KWR_3");
@@ -416,19 +416,24 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
     }
 
     private String convertToTime(int minute) {
-        val minuteAbs = Math.abs(minute);
+        int  minuteAbs = Math.abs(minute);
+        if (minute < 0) {
+            minuteAbs = Math.abs(minute +1440);
+        }
         int hours = minuteAbs / 60;
         int minutes = minuteAbs % 60;
         return (minute < 0 ? "-" : "") + String.format("%d:%02d", hours, minutes);
     }
-    public boolean checkText(CommonAttributesOfForms attributes){
+
+    public boolean checkText(CommonAttributesOfForms attributes) {
         return attributes == CommonAttributesOfForms.WORK_TYPE
-                ||attributes == CommonAttributesOfForms.WORKING_HOURS
-                ||attributes == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER
-                ||attributes == CommonAttributesOfForms.OTHER_CHARACTERS
-                ||attributes == CommonAttributesOfForms.OTHER_NUMERICAL_VALUE;
+                || attributes == CommonAttributesOfForms.WORKING_HOURS
+                || attributes == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER
+                || attributes == CommonAttributesOfForms.OTHER_CHARACTERS
+                || attributes == CommonAttributesOfForms.OTHER_NUMERICAL_VALUE;
 
     }
+
     @AllArgsConstructor
     @Getter
     @Setter
