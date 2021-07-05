@@ -319,7 +319,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void upDateCalcState(ManageCalcStateAndResult stateInfo) {
-		stateInfo.getIntegrationOfDaily().getWorkInformation().changeCalcState(stateInfo.isCalc?CalculationState.Calculated:CalculationState.No_Calculated);
+		stateInfo.getIntegrationOfDaily().getWorkInformation().changeCalcState(CalculationState.Calculated);
 //		workInformationRepository.updateByKeyFlush(stateInfo.getIntegrationOfDaily().getWorkInformation());
 		WorkInfoOfDailyPerformance data = new WorkInfoOfDailyPerformance(
 				stateInfo.getIntegrationOfDaily().getEmployeeId(), stateInfo.getIntegrationOfDaily().getYmd(),
