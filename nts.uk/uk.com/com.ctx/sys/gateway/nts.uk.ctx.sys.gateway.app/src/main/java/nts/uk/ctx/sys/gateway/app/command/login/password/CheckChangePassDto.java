@@ -83,6 +83,6 @@ public class CheckChangePassDto {
 			return new CheckChangePassDto(passwordValidation.getStatus().getMessageId(), passwordValidation.getRemainingDays().get());
 		}
 		// 特に問題なし
-		return new CheckChangePassDto(false, passwordValidation.getStatus().getMessageId(), false);
+		return new CheckChangePassDto(false, null, false);
 	}
 }
