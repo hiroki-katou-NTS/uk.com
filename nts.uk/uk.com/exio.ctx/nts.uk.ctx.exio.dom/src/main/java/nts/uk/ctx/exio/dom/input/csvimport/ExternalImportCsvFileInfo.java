@@ -62,8 +62,7 @@ public class ExternalImportCsvFileInfo {
 				
 				this.iterator = parser.iterator();
 				
-				val header = readHeader();
-				readHeader.accept(header);
+				readHeader.accept(readHeader());
 				
 				readRows(readRecords);
 			}
@@ -77,8 +76,7 @@ public class ExternalImportCsvFileInfo {
 				return Collections.emptyList();
 			}
 			
-			val record = iterator.next();
-			return toStringList(record);
+			return toStringList(readNextRow());
 		}
 
 		private void readRows(Consumer<CsvRecord> readRecords) {
@@ -86,20 +84,20 @@ public class ExternalImportCsvFileInfo {
 			advance(lineData);
 			
 			for (int rowNo = 1; iterator.hasNext(); rowNo++) {
-				val record = new CsvRecord(rowNo, toStringList(iterator.next()));
+				val record = new CsvRecord(rowNo, toStringList(readNextRow()));
 				readRecords.accept(record);
 			}
 		}
 		
 		private void advance(int targetRow) {
-			
-			for (; nextRow < targetRow; nextRow++) {
-				if (!iterator.hasNext()) {
-					return;
-				}
-				
-				iterator.next();
+			while (iterator.hasNext() && nextRow < targetRow) {
+				readNextRow(); // 空読み
 			}
+		}
+		
+		private CSVRecord readNextRow() {
+			nextRow++;
+			return iterator.next();
 		}
 
 		private static List<String> toStringList(CSVRecord record) {
