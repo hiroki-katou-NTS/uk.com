@@ -2258,7 +2258,15 @@ module nts.uk.ui.at.kdw013.calendar {
                     vm.calendar.gotoDate(formatDate(id));
 
                     // update selected header color
-                    vm.updateStyle('selectday', `.fc-container .fc-timegrid.fc-timeGridWeek-view th.fc-day[data-date='${formatDate(id, 'YYYY-MM-DD')}'] { background-color: #ffffcc; }`);
+                    
+                    if (vm.params.initialView() == "oneDay") {
+
+                        vm.updateStyle('selectday', `.fc-container .fc-timegrid.fc-timeGridDay-view th.fc-day[data-date='${formatDate(id, 'YYYY-MM-DD')}'] { background-color: #ffffcc; }`);
+                    } else {
+                        vm.updateStyle('selectday', `.fc-container .fc-timegrid.fc-timeGridWeek-view th.fc-day[data-date='${formatDate(id, 'YYYY-MM-DD')}'] { background-color: #ffffcc; }`);
+
+                    }
+                    
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
