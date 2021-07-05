@@ -98,13 +98,13 @@ module nts.uk.ui.at.kdw013.calendar {
             width: 210px;
             min-width: 210px;
             max-width: calc(100vw - 755px);
-            min-height: 1px;
             overflow: hidden;
             margin-right: 10px;
             box-sizing: border-box;
             border-right: 1px solid #ccc;
             position: relative;
             padding-right: 1px;
+            min-height: calc(100vh - 162px);
         }
         .fc-container .fc-sidebar>div {
             padding: 0 10px;
@@ -1720,9 +1720,9 @@ module nts.uk.ui.at.kdw013.calendar {
 
                                     if (fce) {
                                         const { top } = fce;
-                                        const { innerHeight } = window;
+                                        const  innerHeight  = $('.fc-sidebar').height();
 
-                                        vm.calendar.setOption('height', `${innerHeight - top - 10}px`);
+                                        vm.calendar.setOption('height', `${innerHeight }px`);
 
                                         const sidebar = $('.fc-sidebar').get(0);
 
