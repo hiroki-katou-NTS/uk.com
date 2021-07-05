@@ -99,7 +99,6 @@ module nts.uk.ui.at.kdw013.calendar {
             min-width: 210px;
             max-width: calc(100vw - 755px);
             min-height: 1px;
-            height: calc(100vh - 162px);
             overflow: hidden;
             margin-right: 10px;
             box-sizing: border-box;
