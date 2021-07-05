@@ -58,10 +58,10 @@ public class LayoutAnyRecordToChange {
 		
 		map.forEach((itemNo, value) -> {
 			String sql = "insert into " + tableName + " values ("
-					+ IdentifierUtil.randomUniqueId()
-					+ itemNo
+					+ "'" + IdentifierUtil.randomUniqueId() + "'"
+					+ ", " + itemNo
 					+ ", " + atr
-					+ ", " + value.asString()
+					+ ", '" + value.asString() + "'"
 					+ ")";
 			
 			jdbcProxy.query(sql).execute();
