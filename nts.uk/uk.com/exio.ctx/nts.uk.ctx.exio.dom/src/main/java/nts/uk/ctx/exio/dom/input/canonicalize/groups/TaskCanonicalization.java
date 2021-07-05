@@ -38,7 +38,7 @@ public class TaskCanonicalization implements GroupCanonicalization {
 	
 	public TaskCanonicalization(GroupWorkspace group) {
 		itemNoTaskFrameNo = group.getItemByName("作業枠NO").getItemNo();
-		itemNoTaskCode = group.getItemByName("作業枠コード").getItemNo();
+		itemNoTaskCode = group.getItemByName("作業コード").getItemNo();
 	}
 	
 	/**
@@ -55,7 +55,7 @@ public class TaskCanonicalization implements GroupCanonicalization {
 		Set<UniqueKey> importingKeys = new HashSet<>();
 		
 		int rowsCount = require.getMaxRowNumberOfRevisedData(context);
-		for (int rowNo = 0; rowNo < rowsCount; rowNo++) {
+		for (int rowNo = 1; rowNo <= rowsCount; rowNo++) {
 			
 			val revisedDataOpt = require.getRevisedDataRecordByRowNo(context, rowNo);
 			if (!revisedDataOpt.isPresent()) {
@@ -85,7 +85,7 @@ public class TaskCanonicalization implements GroupCanonicalization {
 		Optional<Task> existing = require.getTask(context.getCompanyId(), key.frameNo, key.code);
 		
 		// 受け入れず無視するケース
-		if (context.getMode().canImport(existing.isPresent())) {
+		if (!context.getMode().canImport(existing.isPresent())) {
 			return;
 		}
 		
