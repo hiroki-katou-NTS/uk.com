@@ -7,12 +7,12 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
- * 期間(List)
+ * 集計期間リスト
  * @author hayata_maekawa
  *
  */
 @Getter
-public class PeriodList {
+public class AggregationPeriodList {
 
 	/*
 	 * 年月
@@ -26,7 +26,7 @@ public class PeriodList {
 	
 	
 	
-	public PeriodList(YearMonth yearMonth, DatePeriod period){
+	public AggregationPeriodList(YearMonth yearMonth, DatePeriod period){
 		this.yearMonth = yearMonth;
 		this.period = period;
 	}

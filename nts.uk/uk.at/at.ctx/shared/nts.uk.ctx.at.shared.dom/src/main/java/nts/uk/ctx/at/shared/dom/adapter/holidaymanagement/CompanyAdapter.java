@@ -44,7 +44,7 @@ public interface CompanyAdapter {
 	// 年度の期間を取得
 	YearMonthPeriod get(String cid, int year);
 	
-	//年月から年月日期間を作成する
-	Optional<DatePeriod> createDatePeriod(String cid, YearMonth yearMonth);
+	//暦の年月から年月期間を作成する
+	Optional<YearMonthPeriod> createPeriod(String cid, YearMonth yearMonth);
 
 }

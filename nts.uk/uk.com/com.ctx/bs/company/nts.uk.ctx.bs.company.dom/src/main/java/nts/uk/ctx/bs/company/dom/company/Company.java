@@ -156,20 +156,11 @@ public class Company extends AggregateRoot {
 		return result;
 	}
 	
-	//[3]年月から年月日期間を作成する
+	//[3]暦の年月から年月期間を作成する
 	
-	public DatePeriod createDatePeriod(YearMonth yearMonth){
-		YearMonthPeriod yearMonthPeriod = getPeriodTheYear(getYearBySpecifying(yearMonth).v());
+	public YearMonthPeriod createPeriod(YearMonth yearMonth){
+		return  getPeriodTheYear(getYearBySpecifying(yearMonth).v());
 		
-		GeneralDate startymd = GeneralDate.ymd(
-				yearMonthPeriod.start().year(),
-				yearMonthPeriod.start().month(),
-				yearMonthPeriod.start().firstGeneralDate().day());
-		GeneralDate endymd = GeneralDate.ymd(
-				yearMonthPeriod.end().year(),
-				yearMonthPeriod.end().month(),
-				yearMonthPeriod.end().firstGeneralDate().day());
-		
-		return new DatePeriod(startymd,endymd);
+
 	}
 }

@@ -66,12 +66,7 @@ public class PublicHolidayCarryForwardData implements DomainAggregate{
 	 * @return
 	 */
 	public double offsetUnacquiredDays(double carryForwardNotAcquired){
-		double x = Math.abs(this.numberCarriedForward.v()/carryForwardNotAcquired);
-		if (x > 1) {
-			return carryForwardNotAcquired;
-		}else{
-			return this.numberCarriedForward.v();
-		}
+		return Math.min(this.numberCarriedForward.v(), carryForwardNotAcquired);
 	}
 	
 }

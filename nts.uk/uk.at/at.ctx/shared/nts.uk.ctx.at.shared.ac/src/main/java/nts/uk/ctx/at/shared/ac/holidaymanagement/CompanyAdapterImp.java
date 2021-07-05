@@ -111,7 +111,7 @@ public class CompanyAdapterImp implements CompanyAdapter {
 	
 	//年月から年月日期間を作成する
 	@Override
-	public Optional<DatePeriod> createDatePeriod(String cid, YearMonth yearMonth) {
-		return this.companyPub.createDatePeriod(cid, yearMonth);
+	public Optional<YearMonthPeriod> createPeriod(String cid, YearMonth yearMonth) {
+		return this.companyPub.createPeriod(cid, yearMonth);
 	}
 }

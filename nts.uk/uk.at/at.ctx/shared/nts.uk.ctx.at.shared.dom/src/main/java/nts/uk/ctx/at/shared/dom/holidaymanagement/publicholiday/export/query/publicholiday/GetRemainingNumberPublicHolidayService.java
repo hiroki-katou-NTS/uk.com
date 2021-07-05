@@ -16,7 +16,8 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Pu
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardData;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.AggrResultOfPublicHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayCarryForwardInformationOutput;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayDigestionInformationOutput;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayDigestionInformation;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayErrors;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHolidayManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
@@ -91,12 +92,17 @@ public class GetRemainingNumberPublicHolidayService {
 		//公休集計期間WORKでループ
 		for(AggregatePublicHolidayWork publicHolidayWork : aggregatePublicHolidayWork){
 		
-			//消化処理
-			PublicHolidayDigestionInformationOutput afterDigestion = 
+			//公休消化情報を作成する
+			PublicHolidayDigestionInformation afterDigestion = 
 					publicHolidayWork.createDigestionInformation(
 							publicHolidayCarryForwardData, tempPublicHolidayManagement);
-				
-				
+			
+			//翌月繰越数を求める
+			publicHolidayWork.calculateCarriedForward(publicHolidayCarryForwardData,afterDigestion.getNumberOfAcquisitions());
+			
+			//エラーチェック
+			Optional<PublicHolidayErrors> Errors = publicHolidayWork.errorCheck();
+			
 			//繰越データを作成
 			PublicHolidayCarryForwardInformationOutput CarryForwardInformation=
 					publicHolidayWork.calculateCarriedForwardInformation(
@@ -104,9 +110,9 @@ public class GetRemainingNumberPublicHolidayService {
 
 			
 			publicHolidayInformation.add(new PublicHolidayInformation(publicHolidayWork.getYearMonth(),
-																		afterDigestion.getPublicHolidayDigestionInformation(),
+																		afterDigestion,
 																		CarryForwardInformation.getPublicHolidayCarryForwardInformation(),
-																		afterDigestion.getErrors()));
+																		Errors));
 			
 			publicHolidayCarryForwardData = CarryForwardInformation.getPublicHolidayCarryForwardData();
 		}

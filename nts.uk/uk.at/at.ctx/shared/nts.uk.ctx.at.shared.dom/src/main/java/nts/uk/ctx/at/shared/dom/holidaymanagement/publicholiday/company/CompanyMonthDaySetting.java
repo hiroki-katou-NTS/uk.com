@@ -14,7 +14,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.PublicHolidayMonthSetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PeriodList;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.AggregationPeriodList;
 /**
  * The Class CompanyMonthDaySetting.
  */
@@ -95,10 +95,10 @@ public class CompanyMonthDaySetting extends AggregateRoot{
 	}
 	
 	//期間から会社月間日数設定を取得する
-	public List<PublicHolidayMonthSetting> getPublicHolidayMonthSetting(List<PeriodList> periodList){
+	public List<PublicHolidayMonthSetting> getPublicHolidayMonthSetting(List<AggregationPeriodList> periodList){
 		List<PublicHolidayMonthSetting> publicHolidayMonthSetting = new ArrayList<>();
 		
-		for(PeriodList period : periodList){
+		for(AggregationPeriodList period : periodList){
 			publicHolidayMonthSetting.addAll(this.publicHolidayMonthSettings
 					.stream()
 					.filter(x -> period.getYearMonth().equals(x.createYearMonth()))

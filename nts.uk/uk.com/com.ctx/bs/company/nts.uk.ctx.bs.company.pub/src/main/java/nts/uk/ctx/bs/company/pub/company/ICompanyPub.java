@@ -96,6 +96,6 @@ public interface ICompanyPub {
 	
 	YearMonthPeriod getyearMonth(String cid, int year);
 	
-	//年月から年月日期間を作成する
-	public Optional<DatePeriod> createDatePeriod(String cid, YearMonth yearMonth);
+	//暦の年月から年月期間を作成する
+	public Optional<YearMonthPeriod> createPeriod(String cid, YearMonth yearMonth);
 }
