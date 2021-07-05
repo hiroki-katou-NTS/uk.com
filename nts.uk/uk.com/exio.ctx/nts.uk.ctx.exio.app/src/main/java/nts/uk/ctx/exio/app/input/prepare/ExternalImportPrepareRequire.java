@@ -158,7 +158,8 @@ public class ExternalImportPrepareRequire {
 		
 		@Override
 		public ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo) {
-			return importableItemsRepo.get(groupId, itemNo).get();
+			return importableItemsRepo.get(groupId, itemNo)
+					.orElseThrow(() -> new RuntimeException("not found: " + groupId + ", " + itemNo));
 		}
 		
 		@Override
