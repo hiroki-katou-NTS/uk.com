@@ -36,6 +36,9 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                                                             showNextPrevious: false }">
                                 </div>
                             </div>
+                            <div data-bind="if: !dispSingleDate() && from006">
+                                <div class="pl-15 cell valign-center" data-bind=" text: $i18n('KAF006_101')"></div>
+                            </div>
                         </div>
                     </div>
                     <div id="comment1" class="cell valign-top" style="vertical-align: middle; padding-left: 10px" data-bind="text: $vm.comment1, visible: $vm.application().appType === 2"></div>
@@ -53,6 +56,7 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
         checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
         dispCheckBox: KnockoutObservable<boolean> = ko.observable(false);
         checkAppDate: KnockoutObservable<boolean>;
+        from006: boolean;
 
         created(params: any) {
             const vm = this;
@@ -61,6 +65,7 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
             vm.application = params.application;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.checkAppDate = params.checkAppDate ? params.checkAppDate : ko.observable(true);
+            vm.from006 = params.from006;
 
 			if (!_.isEmpty(vm.application().appDate())) {
 				vm.appDate(vm.application().appDate());
