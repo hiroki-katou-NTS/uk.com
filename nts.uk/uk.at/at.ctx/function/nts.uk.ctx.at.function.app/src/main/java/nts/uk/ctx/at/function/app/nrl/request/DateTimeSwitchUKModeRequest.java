@@ -49,13 +49,14 @@ public class DateTimeSwitchUKModeRequest extends NRLRequest<Frame> {
 		items.add(new MapItem(Element.HOUR, String.valueOf(setting.get().getHour())));
 		items.add(new MapItem(Element.MINITE, String.valueOf(setting.get().getMinute())));
 		items.add(new MapItem(Element.SECOND, String.valueOf(setting.get().getSecond())));
+		items.add(new MapItem(Element.WEEK, String.valueOf(setting.get().getWeek())));
 		context.collect(items);
 
 	}
 
 	@Override
 	public String responseLength() {
-		return "0031";
+		return "0032";
 	}
 
 }

@@ -18,7 +18,7 @@ public class SendDateTimeSwitchUKModeAC implements SendDateTimeSwitchUKModeAdapt
 	@Override
 	public Optional<DateTimeSwitchUKModeImport> process(String empInfoTerCode, String contractCode) {
 		return pub.process(empInfoTerCode, contractCode).map(x -> new DateTimeSwitchUKModeImport(x.getYear(),
-				x.getMonth(), x.getDay(), x.getHour(), x.getMinute(), x.getSecond()));
+				x.getMonth(), x.getDay(), x.getHour(), x.getMinute(), x.getSecond(), x.getWeek()));
 	}
 
 }

@@ -40,9 +40,14 @@ public class DateTimeSwitchUKModeExport implements DomainValue {
 	 * second
 	 */
 	private final String second;
+	
+	/**
+	 * week
+	 */
+	private final String week;
 
 	public DateTimeSwitchUKModeExport(String year, String month, String day, String hour, String minute,
-			String second) {
+			String second, String week) {
 		super();
 		this.year = year;
 		this.month = month;
@@ -50,5 +55,6 @@ public class DateTimeSwitchUKModeExport implements DomainValue {
 		this.hour = hour;
 		this.minute = minute;
 		this.second = second;
+		this.week = week;
 	}
 }

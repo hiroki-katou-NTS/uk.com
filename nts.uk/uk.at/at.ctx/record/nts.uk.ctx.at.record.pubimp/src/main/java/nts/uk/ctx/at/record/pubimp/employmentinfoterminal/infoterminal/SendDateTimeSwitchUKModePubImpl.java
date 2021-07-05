@@ -30,7 +30,7 @@ public class SendDateTimeSwitchUKModePubImpl implements SendDateTimeSwitchUKMode
 		return SendDateTimeSwitchUKModeService
 				.process(impl, new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode))
 				.map(x -> new DateTimeSwitchUKModeExport(x.getYear(), x.getMonth(), x.getDay(), x.getHour(),
-						x.getMinute(), x.getSecond()));
+						x.getMinute(), x.getSecond(), x.getWeek()));
 	}
 
 	@AllArgsConstructor

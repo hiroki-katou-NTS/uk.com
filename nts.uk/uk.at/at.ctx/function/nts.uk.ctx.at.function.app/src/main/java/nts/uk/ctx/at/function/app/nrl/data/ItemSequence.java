@@ -117,7 +117,7 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			Element.BCC);
 	public static final List<String> UK_SWITCH_MODE_RES = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
 			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
-			Element.YEAR, Element.MONTH, Element.DAY, Element.HOUR, Element.MINITE, Element.SECOND,
+			Element.YEAR, Element.MONTH, Element.DAY, Element.HOUR, Element.MINITE, Element.SECOND, Element.WEEK,
 			Element.BCC);
 	
 	/**
