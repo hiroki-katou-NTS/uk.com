@@ -15,7 +15,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
-import nts.uk.ctx.exio.infra.repository.input.TemporaryTable;
+import nts.uk.ctx.exio.dom.input.workspace.TemporaryTable;
 
 /**
  * AnyRecordToChange用一時テーブルのレイアウト

@@ -1,8 +1,7 @@
-package nts.uk.ctx.exio.infra.repository.input.workspace;
+package nts.uk.ctx.exio.dom.input.workspace;
 
 import lombok.RequiredArgsConstructor;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.infra.repository.input.TemporaryTable;
 
 @RequiredArgsConstructor
 public class WorkspaceTableName {

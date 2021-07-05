@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.repository.input;
+package nts.uk.ctx.exio.dom.input.workspace;
 
 import nts.arc.layer.infra.data.jdbc.JdbcProxy;
 
