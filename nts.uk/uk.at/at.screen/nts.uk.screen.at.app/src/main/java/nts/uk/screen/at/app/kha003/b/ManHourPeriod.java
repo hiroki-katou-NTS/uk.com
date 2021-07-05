@@ -11,32 +11,29 @@ import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.To
 import nts.uk.ctx.at.shared.dom.common.Year;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Getter
 public class ManHourPeriod {
-    /**
-     * 0: DATE
-     * 1: YEAR_MONTH
-     */
-    private int totalUnit;
-    private String startDate;
-    private String endDate;
-    private String yearMonthStart;
-    private String yearMonthEnd;
+    private Optional<String> startDate;
+    private Optional<String> endDate;
+    private Optional<String> yearMonthStart;
+    private Optional<String> yearMonthEnd;
 
     public DatePeriod getDatePeriod() {
-        if (totalUnit == 1) return null;
-        return new DatePeriod(GeneralDate.fromString(startDate, "yyyy/MM/dd"), GeneralDate.fromString(endDate, "yyyy/MM/dd"));
+        if (!startDate.isPresent() || !endDate.isPresent()) return null;
+        return new DatePeriod(GeneralDate.fromString(startDate.get(), "yyyy/MM/dd"), GeneralDate.fromString(endDate.get(), "yyyy/MM/dd"));
     }
 
     public YearMonthPeriod getYearMonthPeriod() {
-        if (totalUnit == 0) return null;
+        if (!yearMonthStart.isPresent() || !yearMonthEnd.isPresent()) return null;
         return new YearMonthPeriod(
-                YearMonth.of(Integer.parseInt(yearMonthStart.substring(0, 4)), Integer.parseInt(yearMonthStart.substring(6, 7))),
-                YearMonth.of(Integer.parseInt(yearMonthEnd.substring(0, 4)), Integer.parseInt(yearMonthEnd.substring(6, 7)))
+                YearMonth.of(Integer.parseInt(yearMonthStart.get().substring(0, 4)), Integer.parseInt(yearMonthStart.get().substring(6, 7))),
+                YearMonth.of(Integer.parseInt(yearMonthEnd.get().substring(0, 4)), Integer.parseInt(yearMonthEnd.get().substring(6, 7)))
         );
     }
 

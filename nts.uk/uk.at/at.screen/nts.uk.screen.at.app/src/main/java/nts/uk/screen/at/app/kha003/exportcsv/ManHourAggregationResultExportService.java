@@ -3,11 +3,8 @@ package nts.uk.screen.at.app.kha003.exportcsv;
 import lombok.val;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.*;
 import nts.uk.screen.at.app.kdl053.RegistrationErrorListDto;
 import nts.uk.screen.at.app.kha003.b.ManHourPeriod;
@@ -26,6 +23,7 @@ import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -61,11 +59,10 @@ public class ManHourAggregationResultExportService extends ExportService<List<Re
         AggregationResultQuery query = new AggregationResultQuery(
                 "01", null, Collections.emptyList(),
                 new ManHourPeriod(
-                        0,
-                        "2021/06/01",
-                        "2021/06/03",
-                        "2021/06",
-                        "2021/06"
+                        Optional.of("2021/06/01"),
+                        Optional.of("2021/06/03"),
+                        Optional.of("2021/06"),
+                        Optional.of("2021/06")
                 )
         );
 
@@ -270,29 +267,24 @@ public class ManHourAggregationResultExportService extends ExportService<List<Re
      * @param displayFormat
      * @return String
      */
-    private String formatValue(Double value, DisplayFormat displayFormat) {
-        String targetValue = null;
+    private Double formatValue(Double value, DisplayFormat displayFormat) {
+        Double targetValue = null;
         switch (displayFormat) {
             case DECIMAL:
-                if (value != null && value != 0) {
-                    DecimalFormat formatter = new DecimalFormat("#.#");
-                    targetValue = formatter.format(value);
-                }
+                BigDecimal decimaValue = new BigDecimal(value);
+                decimaValue = decimaValue.divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
+                targetValue = decimaValue.doubleValue();
                 break;
             case HEXA_DECIMAL:
                 BigDecimal decimalValue = new BigDecimal(value);
-                BigDecimal intValue = decimalValue.divideToIntegralValue(BigDecimal.valueOf(60.00));
-                BigDecimal remainValue = decimalValue.subtract(intValue.multiply(BigDecimal.valueOf(60.00)));
-                decimalValue = intValue.add(remainValue.divide(BigDecimal.valueOf(100.00), 2, RoundingMode.HALF_UP));
-                targetValue = decimalValue.toString();
+                BigDecimal intValue = decimalValue.divideToIntegralValue(BigDecimal.valueOf(60));
+                BigDecimal remainValue = decimalValue.subtract(intValue.multiply(BigDecimal.valueOf(60)));
+                decimalValue = intValue.add(remainValue.divide(BigDecimal.valueOf(100), 3, RoundingMode.UNNECESSARY));
+                targetValue = decimalValue.doubleValue();
                 break;
             case MINUTE:
-                if (value != null) {
-                    val intItemValue = value.intValue();
-                    if (intItemValue != 0) {
-                        targetValue = toMinute(intItemValue);
-                    }
-                }
+                NumberFormat df = new DecimalFormat("#0.0");
+                targetValue = new Double(df.format(value));
                 break;
         }
 
