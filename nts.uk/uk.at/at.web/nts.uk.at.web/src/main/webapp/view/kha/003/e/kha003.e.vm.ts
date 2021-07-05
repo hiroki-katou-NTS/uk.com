@@ -1,45 +1,50 @@
 module nts.uk.at.kha003.e {
 
     const API = {
-        //TODO api path
+        update: 'at/screen/kha003/e/update',
+        create: 'at/screen/kha003/e/register'
     };
 
     @bean()
     export class ViewModel extends ko.ViewModel {
         enable: KnockoutObservable<boolean>;
         required: KnockoutObservable<boolean>;
+        isCopy: KnockoutObservable<boolean>;
         dateValue: KnockoutObservable<any>;
         startDateString: KnockoutObservable<string>;
         endDateString: KnockoutObservable<string>;
         manHour: CodeName = new CodeName('', '');
         e1718ManHour: CodeName = new CodeName('', '');
+        isUpdateMode: KnockoutObservable<boolean>;
 
         constructor() {
             super();
             const vm = this;
             vm.enable = ko.observable(true);
             vm.required = ko.observable(true);
+            vm.isCopy = ko.observable(true);
 
             vm.startDateString = ko.observable("");
             vm.endDateString = ko.observable("");
             vm.dateValue = ko.observable({});
 
-            vm.startDateString.subscribe(function(value){
+            vm.startDateString.subscribe(function (value) {
                 vm.dateValue().startDate = value;
                 vm.dateValue.valueHasMutated();
             });
 
-            vm.endDateString.subscribe(function(value){
+            vm.endDateString.subscribe(function (value) {
                 vm.dateValue().endDate = value;
                 vm.dateValue.valueHasMutated();
             });
+            vm.isUpdateMode = ko.observable(false);
         }
 
         created() {
             const vm = this;
             _.extend(window, {vm});
             vm.$window.storage('kha003ERequiredData').done((data: any) => {
-                console.log("data:"+data.code)
+                console.log("data:" + data.code)
                 vm.manHour.code(data.code);
                 vm.manHour.name(data.name);
             })
@@ -61,9 +66,30 @@ module nts.uk.at.kha003.e {
          */
         public decide(): void {
             const vm = this;
-            nts.uk.ui.windows.close();
-            vm.$window.modal("/view/kha/003/c/index.xhtml").then(() => {
-
+            vm.$validate('#E1_7', '#E1_4').then((valid: boolean) => {
+                if (!valid) {
+                    return;
+                }
+                else {
+                    let command = {
+                        sourcecode: vm.e1718ManHour.code(),
+                        destinationCode: vm.manHour.code(),
+                        name: vm.e1718ManHour.name(),
+                        isCopy: vm.isCopy(),
+                    };
+                    vm.$blockui("invisible");
+                    vm.$ajax(vm.isUpdateMode() ? API.update : API.create, command).done((data) => {
+                        vm.$dialog.info({messageId: "Msg_15"})
+                            .then(() => {
+                                $("#A4_3").focus();
+                                nts.uk.ui.windows.close();
+                            });
+                    }).fail(function (error) {
+                        vm.$dialog.error({messageId: error.messageId});
+                    }).always(() => {
+                        vm.$blockui("clear");
+                    });
+                }
             });
         }
     }

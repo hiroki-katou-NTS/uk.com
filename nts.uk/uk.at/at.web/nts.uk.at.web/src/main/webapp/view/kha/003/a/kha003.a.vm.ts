@@ -336,7 +336,7 @@ module nts.uk.at.kha003.a {
             }
             vm.$window.storage('kha003ERequiredData', shareData).then(() => {
                 vm.$window.modal("/view/kha/003/e/index.xhtml").then(() => {
-
+                    vm.loadScreenListData()
                 });
             });
         }
@@ -437,7 +437,7 @@ module nts.uk.at.kha003.a {
             var c41 = {};
             var c51 = {};
             $('.layout-setting').each(function (i, obj) {
-                let object=$(obj);
+                let object = $(obj);
                 if (i == 0) {
                     c21 = {
                         type: object.data('itemtype'),
@@ -448,19 +448,22 @@ module nts.uk.at.kha003.a {
                     c31 = {
                         type: object.data('itemtype'),
                         name: obj.innerHTML
-                    };;
+                    };
+                    ;
                 }
                 if (i == 2) {
                     c41 = {
                         type: object.data('itemtype'),
                         name: obj.innerHTML
-                    };;
+                    };
+                    ;
                 }
                 if (i == 3) {
                     c51 = {
                         type: object.data('itemtype'),
                         name: obj.innerHTML
-                    };;
+                    };
+                    ;
                 }
             });
             let shareData = {

@@ -42,6 +42,12 @@ public class ManHoursWebService extends WebService {
     private UpdateManHourSummaryTableCommandHandler update;
 
     @Inject
+    private RegisterManHourSummaryTableDuplicateCommandHandler registerDuplicate;
+
+    @Inject
+    private UpdateManHourSummaryTableDuplicateCommandHandler updateDuplicate;
+
+    @Inject
     private DeleteManHourSummaryTableCommandHandler delete;
 
     @Inject
@@ -113,4 +119,16 @@ public class ManHoursWebService extends WebService {
 //    public ExportServiceResult generate(ArbitraryPeriodSummaryTableFileQuery fileQuery) {
 //        return service.start(fileQuery);
 //    }
+
+    @POST
+    @Path("e/register")
+    public void registerManHourSummaryTableDuplicate(RegisterOrUpdateManHourSummaryTableDuplicateCommand command) {
+        this.registerDuplicate.handle(command);
+    }
+
+    @POST
+    @Path("e/update")
+    public void updateManHourSummaryTableDuplicate(RegisterOrUpdateManHourSummaryTableDuplicateCommand command) {
+        this.updateDuplicate.handle(command);
+    }
 }

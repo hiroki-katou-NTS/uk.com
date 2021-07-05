@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import java.util.Optional;
 
 /**
- * ＜＜Command＞＞ 工数集計表の登録する
+ * ＜＜Command＞＞ 工数集計表の複製登録する
  */
 @Stateless
 public class RegisterManHourSummaryTableCommandHandler extends CommandHandler<RegisterOrUpdateManHourSummaryTableCommand> {
