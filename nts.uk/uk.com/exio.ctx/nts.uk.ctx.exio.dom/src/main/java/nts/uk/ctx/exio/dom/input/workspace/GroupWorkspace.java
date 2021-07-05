@@ -45,8 +45,8 @@ public class GroupWorkspace {
 	public WorkspaceItem getItemByName(String itemName) {
 
 		return Stream.concat(itemsPk.stream(), itemsNotPk.stream())
-				.filter(item -> item.getName() == itemName)
+				.filter(item -> item.getName().equals(itemName))
 				.findFirst()
-				.get();
+				.orElseThrow(() -> new RuntimeException("not found: '" + itemName + "' in: " + this));
 	}
 }
