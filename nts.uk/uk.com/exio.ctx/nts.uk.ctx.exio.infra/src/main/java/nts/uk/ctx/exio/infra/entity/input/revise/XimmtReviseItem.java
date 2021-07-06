@@ -61,11 +61,11 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 	private Integer useSpecifyRange;
 	
 	/*  */
-	@Column(name = "SPECIFY_START_RAW")
+	@Column(name = "SPECIFY_RANGE_START")
 	private Integer startRaw;
 	
 	/*  */
-	@Column(name = "SPECIFY_END_RAW")
+	@Column(name = "SPECIFY_RANGE_END")
 	private Integer endRaw;
 	
 	/*  */

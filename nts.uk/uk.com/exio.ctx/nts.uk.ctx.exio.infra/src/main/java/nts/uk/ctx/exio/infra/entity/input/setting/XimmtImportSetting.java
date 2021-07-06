@@ -48,11 +48,11 @@ public class XimmtImportSetting extends ContractUkJpaEntity implements Serializa
 	private int importingMode;
 	
 	/* CSV項目名取得行 */
-	@Column(name = "ITEM_NAME_RAW_NUMBER")
+	@Column(name = "ITEM_NAME_ROW_NUMBER")
 	private int itemNameRawNumber;
 	
 	/* CSV受入開始行 */
-	@Column(name = "IMPORT_START_RAW_NUMBER")
+	@Column(name = "IMPORT_START_ROW_NUMBER")
 	private int importStartRawNumber;
 	
 	@Override
