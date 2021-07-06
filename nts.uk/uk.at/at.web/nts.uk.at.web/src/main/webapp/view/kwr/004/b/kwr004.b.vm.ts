@@ -81,6 +81,9 @@ module nts.uk.at.view.kwr004.b {
           nts.uk.ui.errors.clearAll();
           if (_.isNil(newCode)) return;
           vm.getSettingListItemsDetails(newCode);
+            //KDL 047, 048
+            vm.shareParam.titleLine.layoutCode = vm.attendanceCode();
+            vm.shareParam.titleLine.layoutName = vm.attendanceName();
         });
 
         vm.settingListItemsDetails.subscribe((newList) => {
