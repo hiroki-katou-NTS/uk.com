@@ -50,15 +50,17 @@ public class LayoutAnyRecordToChange {
 	
 	public void insert(AnyRecordToChange record) {
 		
-		insert(tableName(), record.getPrimaryKeys(), ATR_PRIMARY_KEYS);
-		insert(tableName(), record.getChanges(), ATR_CHANGES);
+		String id = IdentifierUtil.randomUniqueId();
+
+		insert(tableName(), id, record.getPrimaryKeys(), ATR_PRIMARY_KEYS);
+		insert(tableName(), id, record.getChanges(), ATR_CHANGES);
 	}
 	
-	private void insert(String tableName, Map<Integer, StringifiedValue> map, int atr) {
+	private void insert(String tableName, String id, Map<Integer, StringifiedValue> map, int atr) {
 		
 		map.forEach((itemNo, value) -> {
 			String sql = "insert into " + tableName + " values ("
-					+ "'" + IdentifierUtil.randomUniqueId() + "'"
+					+ "'" + id + "'"
 					+ ", " + itemNo
 					+ ", " + atr
 					+ ", '" + value.asString() + "'"

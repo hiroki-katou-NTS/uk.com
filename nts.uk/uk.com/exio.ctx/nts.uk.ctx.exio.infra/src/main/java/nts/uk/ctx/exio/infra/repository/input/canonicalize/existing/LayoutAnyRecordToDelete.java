@@ -46,10 +46,12 @@ public class LayoutAnyRecordToDelete {
 	
 	public void insert(AnyRecordToDelete record) {
 		
+		String id = IdentifierUtil.randomUniqueId();
+		
 		record.getPrimaryKeys().forEach((itemNo, value) -> {
 			
 			String sql = "insert into " + tableName() + " values ("
-					+ "'" + IdentifierUtil.randomUniqueId() + "'"
+					+ "'" + id + "'"
 					+ ", " + itemNo
 					+ ", '" + value.asString() + "'"
 					+ ")";
