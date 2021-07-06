@@ -315,6 +315,8 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                     });
                 }
                 // vm.isOpenKDL053 = true;
+            } else {
+                $('#register').focus();
             }
         }
 
