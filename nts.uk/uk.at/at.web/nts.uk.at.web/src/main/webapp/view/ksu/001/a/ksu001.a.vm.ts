@@ -3905,8 +3905,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.showA9) {
                 let offsetWidthA9 = document.getElementsByClassName('ex-header-middle')[0].offsetWidth;
                 $(".toLeft").css("margin-left", offsetLeftGrid + offsetWidthA8 + offsetWidthA9 + 'px');
-            } else {
-                document.getElementById("A13").remove();
             }
 
             if (self.showA11()) {
