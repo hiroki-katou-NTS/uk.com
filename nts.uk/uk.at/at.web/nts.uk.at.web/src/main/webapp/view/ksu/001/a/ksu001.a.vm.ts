@@ -4128,7 +4128,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.diseableCellsTime();
                     nts.uk.ui.block.clear();
                     
-                }).ifNo(() => {});
+                }).ifNo(() => {$("#A6_2").focus()});
             } else {
                 self.editModeAct();
                 self.setUpdateMode();
@@ -4199,7 +4199,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.confirmModeAct();
                     self.listCellRetained = [];
                     nts.uk.ui.block.clear();
-                }).ifNo(() => {});
+                }).ifNo(() => {$("#A6_1").focus()});
             } else {
                 self.enableBtnReg(true);
                 self.confirmModeAct();
