@@ -13,6 +13,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
         data: CaptureDataOutput = null;
         isOpenKDL053: boolean = false;
         isEnableRegister: KnockoutObservable<boolean> = ko.observable(true);
+        isEnableOpenKDL053: KnockoutObservable<boolean> = ko.observable(false);
         windows_lst: any = null;
 
         created(params: any) {
@@ -51,8 +52,10 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                         let errors = $('#grid').mGrid('errors');
                         if (errors.length > 0) {
                             this.isEnableRegister(false);
+                            this.isEnableOpenKDL053(true);
                         } else {
                             this.isEnableRegister(true);
+                            this.isEnableOpenKDL053(false);
                         }
                     } catch (error) {
                         // empty                        
