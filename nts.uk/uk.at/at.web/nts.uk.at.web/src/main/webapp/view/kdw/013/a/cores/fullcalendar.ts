@@ -1199,6 +1199,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                     } else {
                                         vm.calendar.changeView('timeGridDay');
                                     }
+                                    const sc = ko.unwrap(scrollTime);
+
+                                    vm.calendar.scrollToTime(formatTime(sc));
                                 })
                                 .then(() => {
                                     if (version.match(/IE/)) {
@@ -1211,6 +1214,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                     }
                                 });
                         }
+
                     }
                 },
                 'five-day': {
@@ -1228,6 +1232,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                 vm.calendar.changeView('timeGridWeek');
                             }
                         }
+                        const sc = ko.unwrap(scrollTime);
+
+                        vm.calendar.scrollToTime(formatTime(sc));
                     }
                 },
                 'full-week': {
@@ -1245,6 +1252,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                 vm.calendar.changeView('timeGridWeek');
                             }
                         }
+                        const sc = ko.unwrap(scrollTime);
+
+                        vm.calendar.scrollToTime(formatTime(sc));
                     }
                 },
                 'full-month': {
@@ -1262,6 +1272,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                 vm.calendar.changeView('dayGridMonth');
                             }
                         }
+                        const sc = ko.unwrap(scrollTime);
+
+                        vm.calendar.scrollToTime(formatTime(sc));
                     }
                 },
                 'list-week': {
@@ -1349,6 +1362,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                     break;
                             }
                         }
+                        const sc = ko.unwrap(scrollTime);
+
+                        vm.calendar.scrollToTime(formatTime(sc));
                     }
                 },
                 'preview-day': {
@@ -1405,7 +1421,11 @@ module nts.uk.ui.at.kdw013.calendar {
                                     break;
                             }
                         }
+                        const sc = ko.unwrap(scrollTime);
+
+                        vm.calendar.scrollToTime(formatTime(sc));
                     }
+                   
                 },
                 'settings': {
                     text: '',
