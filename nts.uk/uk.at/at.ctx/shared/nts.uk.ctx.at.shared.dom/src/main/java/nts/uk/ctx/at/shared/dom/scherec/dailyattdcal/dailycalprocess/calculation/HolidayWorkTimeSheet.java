@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.service.ActualWorkTimeSheetListService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.worktime.common.GetSubHolOccurrenceSetting;
@@ -92,6 +93,15 @@ public class HolidayWorkTimeSheet{
 				.flatMap(x -> x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()
 						.getWorkHolidayTime()).orElse(HolidayWorkTimeOfDaily.createDefaultBeforeApp(
 					workHolidayTime.stream().map(x -> x.getFrameTime().getHolidayFrameNo().v()).collect(Collectors.toList())));
+		if(holidayWorkTime.getHolidayWorkFrameTime().isEmpty()) {
+			List<HolidayWorkFrameTime> workFrameTime = workHolidayTime.stream().map(x -> {
+				return new HolidayWorkFrameTime(new HolidayWorkFrameNo(x.getFrameTime().getHolidayFrameNo().v()),
+						Finally.of(TimeDivergenceWithCalculation.emptyTime()),
+						Finally.of(TimeDivergenceWithCalculation.emptyTime()), Finally.of(new AttendanceTime(0)));
+			}).collect(Collectors.toList());
+			holidayWorkTime.setHolidayWorkFrameTime(workFrameTime);
+		}
+		
 		List<HolidayWorkFrameTime> aftertransTimeList  = new ArrayList<HolidayWorkFrameTime>();
 		// 時間帯毎に休出時間を計算する(補正、制御含む)
 		calculateHolidayEachTimeZone(require, cid, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
