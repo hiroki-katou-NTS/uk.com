@@ -96,7 +96,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
 
                     // close KDL053
                     let btnCloseKDL053 = $('#btnClose');
-                    if (btnCloseKDL053) {
+                    if (!_.isEmpty(btnCloseKDL053)) {
                         btnCloseKDL053.click();
                     }
                     if (res.length > 0) {
@@ -201,11 +201,21 @@ module nts.uk.at.view.kdl055.b.viewmodel {
         }
 
         close() {
+            // close KDL053
+            let btnCloseKDL053 = $('#btnClose');
+            if (!_.isEmpty(btnCloseKDL053)) {
+                btnCloseKDL053.click();
+            }
             this.$window.close();
         }
 
         loadGrid() {
             let vm = this;
+
+            if (vm.gridOptions.columns.length > 1) {
+                let columnFixing = { name: 'ColumnFixing', columnSettings: [{ columnKey: 'nameHeader', isFixed: true }]};
+                vm.gridOptions.features.push(columnFixing);
+            }
 
             if ($("#grid").data("mGrid")) $("#grid").mGrid("destroy");
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
@@ -230,7 +240,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             const vm = this;
 
             let mappingErrorList = param.mappingErrorList;
-            let errors = [];
+            let errors: any[] = [];
             
             _.forEach(mappingErrorList, (error: MappingErrorOutput) => {
                 let err = { columnKey: 'nameHeader', id: null, index: null, message: error.errorMessage };
@@ -247,13 +257,16 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                     err.columnKey = error.date;
                 }
                 
-                errors.push(err);
+                if (err.index != null) {
+                    errors.push(err);
+                }
             });
 
             $("#grid").mGrid("setErrors", errors);
 
             if (mappingErrorList.length > 0) {
                 let request: any = {};
+                request.employeeIds = _.map(param.listPersonEmp, (item) => item.employeeId);
                 request.errorRegistrationList = [];
                 for (let i = 0; i < mappingErrorList.length; i++) {
                     let empList = vm.data.listPersonEmp;
@@ -267,10 +280,12 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                 }
                 request.isRegistered = 0;
                 request.dispItemCol = true;
-                request.employeeIds = _.map(param.listPersonEmp, (item) => item.employeeId);
-                vm.$window.modeless('at', '/view/kdl/053/a/index.xhtml', request).then(() => {
-                    vm.isOpenKDL053 = false;
-                });
+
+                if (request.errorRegistrationList.length > 0) {
+                    vm.$window.modeless('at', '/view/kdl/053/a/index.xhtml', request).then(() => {
+                        vm.isOpenKDL053 = false;
+                    });
+                }
                 // vm.isOpenKDL053 = true;
             }
         }
@@ -332,9 +347,9 @@ module nts.uk.at.view.kdl055.b.viewmodel {
 
             // features
             vm.gridOptions.features = [{ name: 'Copy' }, { name: 'Tooltip', error: true }];
-            let columnFixing = { name: 'ColumnFixing', columnSettings: [{ columnKey: 'nameHeader', isFixed: true }]};
+            // let columnFixing = { name: 'ColumnFixing', columnSettings: [{ columnKey: 'nameHeader', isFixed: true }]};
 
-            vm.gridOptions.features.push(columnFixing);
+            // vm.gridOptions.features.push(columnFixing);
             vm.gridOptions.features.push(headerStyle);
             vm.gridOptions.features.push({ name: 'CellStyles', states: cellStates });
         }

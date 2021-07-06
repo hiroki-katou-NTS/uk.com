@@ -258,7 +258,10 @@ public class WorkPlaceCheckFileService {
         
         //7: 取得する(期間)
         long startGetHolidays = System.currentTimeMillis();
-        List<PublicHoliday> holidays = getHolidaysByPeriod.get(new DatePeriod(importableDates.get(0), importableDates.get(importableDates.size() - 1)));
+        List<PublicHoliday> holidays = new ArrayList<PublicHoliday>();
+        if (importableDates.size() > 0) {
+            holidays = getHolidaysByPeriod.get(new DatePeriod(importableDates.get(0), importableDates.get(importableDates.size() - 1)));
+        }
         long endGetHolidays = System.currentTimeMillis();
         System.out.println("Time Get Holidays: " + (endGetHolidays - startGetHolidays));
         
