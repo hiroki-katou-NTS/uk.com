@@ -879,18 +879,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         bindingEventCellUpdatedGrid() {
             let self = this;
             $("#extable").on("extablecellupdated", (dataCell) => {
-                let itemLocal = uk.localStorage.getItem(self.KEY);
-                let userInfor: IUserInfor = JSON.parse(itemLocal.get());
-                if (userInfor.disPlayFormat == 'time' && userInfor.updateMode == 'edit') {
-                    self.validTimeInEditMode(dataCell, userInfor, false);
-                } else if (userInfor.disPlayFormat == 'time' && userInfor.updateMode == 'stick') {
+                if (self.userInfor.disPlayFormat == 'time' && self.userInfor.updateMode == 'edit') {
+                    self.validTimeInEditMode(dataCell, self.userInfor, false);
+                } else if (self.userInfor.disPlayFormat == 'time' && self.userInfor.updateMode == 'stick') {
                     // check xem cell vừa được stick data có nằm trong list cell lỗi do edit time hay không, nếu nằm trong list đấy thì rmove cell đó khỏi list lỗi đi.
-                    self.validTimeStickMode(dataCell, userInfor);
-                }  else if (userInfor.disPlayFormat == 'time' && userInfor.updateMode == 'copyPaste') {
+                    self.validTimeStickMode(dataCell);
+                }  else if (self.userInfor.disPlayFormat == 'time' && self.userInfor.updateMode == 'copyPaste') {
                     // check xem cell vừa được stick data có nằm trong list cell lỗi do edit time hay không, nếu nằm trong list đấy thì rmove cell đó khỏi list lỗi đi.
-                    self.validTimeCopyPaste(dataCell, userInfor);
+                    self.validTimeCopyPaste(dataCell);
                 } else {
-                    
                     self.checkExitCellUpdated();
                 }
             });
@@ -1051,7 +1048,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
         }
 
-        validTimeStickMode(dataCellUpdated: any, userInfor: any) {
+        validTimeStickMode(dataCellUpdated: any) {
             let self = this;
             let rowIndex = dataCellUpdated.originalEvent.detail.rowIndex;
             let columnKey = dataCellUpdated.originalEvent.detail.columnKey;
@@ -1062,7 +1059,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.checkExitCellUpdated();
         }
 
-        validTimeCopyPaste(dataCellUpdated: any, userInfor: any) {
+        validTimeCopyPaste(dataCellUpdated: any) {
             let self = this;
             let rowIndex = dataCellUpdated.originalEvent.detail.rowIndex;
             let columnKey = dataCellUpdated.originalEvent.detail.columnKey;
@@ -2502,6 +2499,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.showA12_2(_.includes([WorkplaceCounterCategory.WORKTIME_PEOPLE, WorkplaceCounterCategory.LABOR_COSTS_AND_TIME], self.useCategoriesWorkplaceValue()) ||
                             (_.includes([WorkplaceCounterCategory.EXTERNAL_BUDGET], self.useCategoriesWorkplaceValue()) && self.funcNo15_WorkPlace));
             }
+            
+            $("#extable").exTable("saveScroll");
         }
 
         createVertSumData(data: any) {
@@ -5148,8 +5147,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     startDate: self.dateTimePrev(),
                     endDate: self.dateTimeAfter()
                 };
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor : IUserInfor = JSON.parse(item.get());
+            let userInfor  = self.userInfor;
             
             setShared('target', {
                 unit: userInfor.unit,
@@ -5954,6 +5952,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         columnId: string;
         constructor(rowId: string, columnId: string) {
             this.rowId    = rowId;
+            this.columnId = columnId;
+        }
+    }
+
+    class TimeError {
+        rowId: string;
+        columnId: string;
+        constructor(rowId: string, columnId: string) {
+            this.rowId = rowId;
             this.columnId = columnId;
         }
     }
