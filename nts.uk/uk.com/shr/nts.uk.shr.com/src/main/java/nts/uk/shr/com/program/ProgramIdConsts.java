@@ -1560,6 +1560,7 @@ public class ProgramIdConsts {
 	public static final String KDP002C = "KDP002C";
 	public static final String KDP002T = "KDP002T";
 	public static final String KDP002U = "KDP002U";
+	public static final String KDP002L = "KDP002L";
 	
 	/** KCP011*/
 	public static final String KCP011 = "KCP011";
