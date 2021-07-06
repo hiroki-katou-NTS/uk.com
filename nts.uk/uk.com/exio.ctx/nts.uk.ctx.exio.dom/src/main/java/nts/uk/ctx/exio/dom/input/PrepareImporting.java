@@ -1,9 +1,6 @@
 package nts.uk.ctx.exio.dom.input;
 
-import static java.util.stream.Collectors.*;
-
 import java.io.InputStream;
-import java.util.List;
 import java.util.Optional;
 
 import lombok.val;
@@ -39,9 +36,10 @@ public class PrepareImporting {
 		require.setupWorkspace(context);
 		
 		// 受入データの組み立て
-		val meta = assembleImportingData(require, context, csvFileStream, setting, assembly);
+		assembleImportingData(require, context, csvFileStream, setting, assembly);
 		
 		// 編集済みデータの正準化
+		val meta = ImportingDataMeta.create(require, context, assembly.getAllItemNo());
 		CanonicalizeRevisedData.canonicalize(require, context, meta);
 	}
 
@@ -52,7 +50,7 @@ public class PrepareImporting {
 	 * @param setting
 	 * @param context
 	 */
-	private static ImportingDataMeta assembleImportingData(
+	private static void assembleImportingData(
 			Require require,
 			ExecutionContext context,
 			InputStream csvFileStream,
@@ -65,8 +63,6 @@ public class PrepareImporting {
 				csvFileStream,
 				cn -> { }, // 今のところヘッダ行を取得する必要が無い
 				r -> processRecord(require, context, assembly, r));
-		
-		return ImportingDataMeta.create(require, context, assembly.getAllItemNo());
 	}
 
 	/**
