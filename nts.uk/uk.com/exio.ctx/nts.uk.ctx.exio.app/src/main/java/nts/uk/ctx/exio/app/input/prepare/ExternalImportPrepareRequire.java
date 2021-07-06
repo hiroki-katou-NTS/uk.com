@@ -42,8 +42,6 @@ import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConve
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
-import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
-import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethodRepository;
 import nts.uk.ctx.exio.dom.input.validation.ImportingUserConditionRepository;
 import nts.uk.ctx.exio.dom.input.validation.condition.ImportingUserCondition;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
@@ -101,9 +99,6 @@ public class ExternalImportPrepareRequire {
 	
 	@Inject
 	private ExternalImportSettingRepository settingRepo;
-	
-	@Inject
-	private ExternalImportAssemblyMethodRepository assemblyMethodRepo;
 	
 	@Inject
 	private ReviseItemRepository reviseItemRepo;
