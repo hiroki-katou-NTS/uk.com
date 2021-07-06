@@ -16,11 +16,11 @@ module nts.uk.com.view.ccg022.a.screenModel {
         isAdmin: KnockoutObservable<boolean> = ko.observable(false);
         systemMode = ko.observableArray([
             //A2_1
-            { id: 0, name: text('CCG022_13') },
+            { id: 1, name: text('CCG022_13') },
             //A3_1
-            { id: 1, name: text('CCG022_14') },
+            { id: 2, name: text('CCG022_14') },
             //A4_1
-            { id: 2, name: text('CCG022_21') },
+            { id: 3, name: text('CCG022_21') },
         ]);
         selectedSystemMode: KnockoutObservable<number> = ko.observable(0);
         infoLbl1: KnockoutObservable<string> = ko.observable("");
@@ -51,16 +51,16 @@ module nts.uk.com.view.ccg022.a.screenModel {
                                                                 name: '#[CCG022_20]', 
                                                                 constraint: 'StopMessage', 
                                                                 option: { width: '500px'},
-                                                                enable:value==1,
-                                                                required:value==1
+                                                                enable:value==2,
+                                                                required:value==2
                                                                 }});
                 
                 ko.applyBindingsToNode($("#stop_message_txt")[0],{ntsMultilineEditor: { value: self.stopMessage , 
                                                                 name: '#[CCG022_25]', 
                                                                 constraint: 'StopMessage', 
                                                                 option: { width: '500px'},
-                                                                enable:value==2,
-                                                                required:value==2
+                                                                enable:value==3,
+                                                                required:value==3
                                                                 }});
             });
         }

@@ -18,8 +18,6 @@ import nts.uk.ctx.sys.gateway.dom.outage.PlannedOutageState;
 import nts.uk.ctx.sys.gateway.dom.outage.SystemAvailability;
 import nts.uk.ctx.sys.gateway.dom.outage.tenant.PlannedOutageByTenant;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopMessage;
-import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopModeType;
-import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.saml.SgwmtSamlOperation;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
