@@ -52,7 +52,7 @@ public class ScreenQueryAggregateNumberTimePs {
 	@Inject
 	private AttendanceItemConvertFactory converterFactory;
 	
-	public Map<EmployeeId, Map<TotalTimes, BigDecimal>> aggrerate(
+	public Map<EmployeeId, Map<TotalTimes, BigDecimal>> aggregate(
 			PersonalCounterCategory personalCounter,
 			List<IntegrationOfDaily> aggrerateintegrationOfDaily
 			) {
@@ -96,12 +96,15 @@ public class ScreenQueryAggregateNumberTimePs {
 			countTotalTime.entrySet()
 				.stream()
 				.forEach(e -> {
-					Map<TotalTimes, BigDecimal> value = e.getValue().entrySet().stream().collect(Collectors.toMap(
-							x -> totalTimes.stream().filter(a -> a.getTotalCountNo() == (Integer) x.getKey()).findFirst().orElse(null),
-							x -> (BigDecimal)x.getValue()))
-							.entrySet().stream()
-							.filter(y -> y.getKey()!=null)
-							.collect(Collectors.toMap(z -> z.getKey(), z -> z.getValue()));
+					Map<TotalTimes, BigDecimal> value = new HashMap<>();
+					totalTimes.stream().forEach(item -> {
+						
+						Map<TotalTimes, BigDecimal> totalTimeMap = e.getValue().entrySet().stream().collect(Collectors.toMap(
+								x -> item,
+								x -> (BigDecimal)x.getValue()));
+						value.putAll(totalTimeMap);
+						
+					});
 					output.put(((EmployeeId)e.getKey()), value);
 				});
 			
