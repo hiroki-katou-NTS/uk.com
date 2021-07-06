@@ -137,6 +137,9 @@ public class AsposeWorkScheduleGenerator extends AsposeCellsReportGenerator impl
             for(int j = 0; j < period.size(); j++) {
                 Cell cell = cells.get(i + 1, j + 2);
                 this.setBorder(cell);
+                Style style = cell.getStyle();
+                style.setHorizontalAlignment(HorizontalAlignment.Center);
+                cell.setStyle(style);
             }
         }
     }
