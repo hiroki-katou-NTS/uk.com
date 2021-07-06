@@ -17,6 +17,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AssignmentMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AudioType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonDisSet;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonName;
@@ -120,6 +121,14 @@ private static final long serialVersionUID = 1L;
 	@Column(name ="SUPPORT_WPL_SET")
 	public Integer supportWplSet;
 	
+	/**
+	 * 作業指定方法
+	 * 0：指定なし
+	 * 1：打刻時に選択
+	 */
+	@Column(name = "TASK_CHOICE_ART")
+	public Integer taskChoiceArt;
+	
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
@@ -147,7 +156,7 @@ private static final long serialVersionUID = 1L;
 	
 	public KrcmtStampLayoutDetail(KrcmtStampLayoutDetailPk pk, int useArt, String buttonName, int reservationArt,
 			Integer changeClockArt, Integer changeCalArt, Integer setPreClockArt, Integer changeHalfDay, Integer goOutArt,
-			String textColor, String backGroundColor, int aidioType, Integer supportWplSet) {
+			String textColor, String backGroundColor, int aidioType, Integer supportWplSet, Integer taskChoiceArt) {
 		super();
 		this.pk = pk;
 		this.useArt = useArt;
@@ -162,6 +171,7 @@ private static final long serialVersionUID = 1L;
 		this.backGroundColor = backGroundColor;
 		this.aidioType = aidioType;
 		this.supportWplSet = supportWplSet;
+		this.taskChoiceArt = taskChoiceArt;
 	}
 	
 	public ButtonSettings toDomain(){
@@ -189,7 +199,8 @@ private static final long serialVersionUID = 1L;
 				,
 				EnumAdaptor.valueOf(this.useArt, NotUseAtr.class), 
 				EnumAdaptor.valueOf(this.aidioType, AudioType.class),
-				Optional.ofNullable(this.supportWplSet == null? null: SupportWplSet.valueOf(this.supportWplSet)));
+				Optional.ofNullable(this.supportWplSet == null? null: SupportWplSet.valueOf(this.supportWplSet)),
+				Optional.ofNullable(this.taskChoiceArt == null? null: AssignmentMethod.valueOf(this.supportWplSet)));
 	}
 	
 	public static KrcmtStampLayoutDetail toEntity(ButtonSettings settings, String companyId, Integer pageNo, int stampMeans) {
@@ -231,6 +242,7 @@ private static final long serialVersionUID = 1L;
 				, settings.getButtonDisSet().getButtonNameSet().getTextColor().v()
 				,settings.getButtonDisSet().getBackGroundColor().v()
 				, settings.getAudioType().value
-				, settings.getSupportWplSet().map(c->c.value).orElse(null));
+				, settings.getSupportWplSet().map(c->c.value).orElse(null)
+				, settings.getTaskChoiceArt().map(c -> c.value).orElse(null));
 	}
 }

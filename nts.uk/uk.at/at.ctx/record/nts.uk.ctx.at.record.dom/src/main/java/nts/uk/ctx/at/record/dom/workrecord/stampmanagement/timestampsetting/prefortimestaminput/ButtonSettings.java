@@ -36,6 +36,9 @@ public class ButtonSettings {
 	
 	/** 応援職場設定方法 */
 	@Getter
-	private Optional<SupportWplSet> supportWplSet; 
+	private Optional<SupportWplSet> supportWplSet;
 
+	@Getter
+	private Optional<AssignmentMethod> taskChoiceArt;
+	
 }
