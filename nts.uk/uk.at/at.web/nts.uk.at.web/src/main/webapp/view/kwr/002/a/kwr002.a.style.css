@@ -3,14 +3,11 @@
 }
 
 #contents-area .drag-panel {
-	display:inline-block;
-	vertical-align: top;
-	border: 2px solid #ccc;
-	border-radius: 10px;
-	width: 535px;
-	padding: 25px;
-	box-sizing: border-box;
-
+	margin: 5px;
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  padding: 5px;
 }
 
 table tr td {
@@ -28,7 +25,9 @@ body {
 
 .layout-date {
 	display: flex;
-	margin-top: -10px;
+  align-items: center;
+  margin-left: 10px;
+  height: 32px;
 }
 
 .va-bottom {
@@ -67,7 +66,7 @@ body {
 }
 
 #employee-search > div {
-	padding: 0px !important;
+	padding: 10px !important;
 }
 
 .ui-igcombo-wrapper {
@@ -76,4 +75,12 @@ body {
 
 .group-button-1 {
   margin-left: 5px;
+}
+
+.layout-list-date > .panel {
+  width: 517px;
+}
+
+.drag-panel > .row {
+  margin-left: 15px;
 }

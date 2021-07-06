@@ -36,23 +36,19 @@
 				<!--The component container-->
 				<div id="ccgcomponent" ></div>
 
-				<div style="min-width: 1250px">
+				<div style="min-width: 1250px; display: flex; margin-left: 100px;">
 					<div class="layout-list-date">
-						<div class="drag-panel" style="margin-left: 75px; margin-top: 30px; height: 70px;">
+						<div class="drag-panel panel panel-frame" style="margin-top: 30px; margin-bottom: 0px;">
 							<div class="layout-date">
 								<!-- A7_2 -->
-								<div class="w-label-date">
-									<div data-bind="ntsFormLabel: { }">#{i18n.getText('KWR002_17')}</div>
-								</div>
+								<div data-bind="ntsFormLabel: { }" style="width: 50px">#{i18n.getText('KWR002_17')}</div>
 								<!-- A7_3 -->
-								<div class="va-bottom">
-									<div id="daterangepicker" tabindex="3"
-										data-bind="ntsDateRangePicker: { required: true, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneYear', type: 'yearmonth'}" />
-								</div>
+                <div id="daterangepicker" tabindex="3"
+                  data-bind="ntsDateRangePicker: { required: true, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneYear', type: 'yearmonth'}" />
 							</div>
 						</div>
 						<!-- A3_1 -->
-						<div class="drag-panel" style="margin-left: 75px; margin-top: 10px; height: 560px;">
+						<div class="drag-panel panel panel-frame" style="margin-top: 10px;">
 							<div style="margin-bottom: 10px; display: none">
 								<label>#{i18n.getText('KWR002_11')}</label>
 							</div>
@@ -62,12 +58,12 @@
 							</div>
 						</div>
 					</div>
-					<div class="drag-panel" style="margin-left: 30px; margin-top: 30px; height: 640px;">
+					<div class="drag-panel panel panel-frame" style="margin-top: 30px; height: 584px; align-items: baseline; display: block;">
 						<div class="row">
 							<!-- A7_1 -->
 							<table>
 								<colgroup>
-									<col width="150px" />
+									<col width="100px" />
 									<col width="150px" />
 									<col width="210px" />
 									<col width="70px" />

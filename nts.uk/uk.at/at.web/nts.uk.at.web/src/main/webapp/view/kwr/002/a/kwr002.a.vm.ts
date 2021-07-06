@@ -332,7 +332,6 @@ module nts.uk.com.view.kwr002.a {
                     isShowWorkPlaceName: true,
                     isShowSelectAllButton: false,
                     isSelectAllAfterReload: true,
-                    maxWidth: 480,
                     maxRows: 20
                 };
             }
