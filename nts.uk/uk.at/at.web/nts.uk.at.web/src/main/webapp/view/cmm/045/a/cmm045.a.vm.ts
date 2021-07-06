@@ -2523,10 +2523,10 @@ module cmm045.a.viewmodel {
 							linkItem.application = item.opComplementLeaveApp.application;
 							listOfApplicationCmds.push(item);
 	                    	listOfApplicationCmds.push(linkItem);	
+							return;
 						}
-	                }else{
-	                    listOfApplicationCmds.push(item);
 	                }
+	            	listOfApplicationCmds.push(item);
 	            });
 				if(_.isEmpty(listOfApplicationCmds)) {
 					block.clear();
