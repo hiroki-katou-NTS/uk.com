@@ -286,13 +286,19 @@ module nts.uk.ui.at.kdw013.a {
                 }),
                 remove: ko.computed({
                     read: () => {
+                        
+                        let confirms = _.get(vm.$datas(),'lstComfirmerDto');
                         const editable = ko.unwrap(vm.editable);
-                        let confimer = _.find(_.get(vm.$datas(),'lstComfirmerDto'), ['confirmSID',vm.$user.employeeId]);
+                        let confimer = _.find(confirms, ['confirmSID',vm.$user.employeeId]);
                         return !editable && !!confimer;
                     }
                 }),
                 confirm: ko.computed({
                     read: () => {
+                        let confirms = _.get(vm.$datas(),'lstComfirmerDto');
+                        if (!_.isEmpty(confirms) && confirms.length === 5) {
+                            return false;
+                        }
                         const editable = ko.unwrap(vm.editable);
                         let confimer = _.find(_.get(vm.$datas(),'lstComfirmerDto'), ['confirmSID',vm.$user.employeeId]);
                         return !editable && !confimer;
