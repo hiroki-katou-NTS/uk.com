@@ -82,10 +82,10 @@ public class ExternalImportAssemblyMethod {
 		val assemblyItems = new DataItemList();
 		
 		// マッピング内の項目数処理する
-		for(int i = 0; i < csvImportItem.size(); i++) {
+		for (val mapping : csvImportItem) {
 			
-			val itemNo = csvImportItem.get(i).getImportItemNumber();
-			val csvValue = csvRecord.getItemByColumnNo(csvImportItem.get(i).getCsvColumnNumber());
+			val itemNo = mapping.getImportItemNumber();
+			val csvValue = csvRecord.getItemByColumnNo(mapping.getCsvColumnNumber());
 			
 			// 項目の編集を取得
 			val revisionist = require.getRevise(context.getCompanyId(), context.getExternalImportCode(), itemNo);
