@@ -177,7 +177,7 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
         }
       }
 
-      for (let i = 0; i < 9; i++) {
+      for (let i = 0; i < 6; i++) {
         if ($(`#WG3-${i}`)) {
           $(`#WG3-${i}`).resizable({
             grid: [10000, 1]
