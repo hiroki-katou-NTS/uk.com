@@ -135,10 +135,7 @@ public class ExternalImportPrepareRequire {
 		
 		@Override
 		public Optional<ReviseItem> getRevise(String companyId, ExternalImportCode importCode, int importItemNumber) {
-			// TODO 1発目では対象外のため取得できない体で実装
-			return Optional.empty();
-			//return reviseItemRepo.get(companyId, importItemNumber, importItemNumber);
-			
+			return reviseItemRepo.get(companyId, importCode, importItemNumber);
 		}
 		
 		@Override
