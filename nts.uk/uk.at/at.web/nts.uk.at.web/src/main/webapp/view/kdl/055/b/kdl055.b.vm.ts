@@ -9,7 +9,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
     export class KDL055BViewModel extends ko.ViewModel {
         overwrite: boolean = false;
         filename: KnockoutObservable<string> = ko.observable(null);
-        gridOptions = { dataSource: [], columns: [], features: [], ntsControls: [] };
+        gridOptions: any = { dataSource: [], columns: [], features: [], ntsControls: [] };
         data: CaptureDataOutput = null;
         isOpenKDL053: boolean = false;
         isEnableRegister: KnockoutObservable<boolean> = ko.observable(true);
@@ -104,10 +104,11 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                         request.errorRegistrationList = [];
                         _.forEach(res, errorItem => {
                             // bind to list mappingErrorList
-                            let empFilter = _.filter(vm.data.listPersonEmp, {'employeeCode': errorItem.employeeCode});
-                            let empId = empFilter.length > 0 ? empFilter[0].employeeId : '';
 
-                            let error: MappingErrorOutput = {employeeId: empId, employeeName: errorItem.employeename, date: errorItem.date, errorMessage: errorItem.errorMessage};
+                            // let empFilter = _.filter(vm.data.listPersonEmp, {'employeeCode': errorItem.employeeCode});
+                            // let empId = empFilter.length > 0 ? empFilter[0].employeeId : '';
+
+                            let error: MappingErrorOutput = {employeeCode: errorItem.employeeCode, employeeName: errorItem.employeename, date: errorItem.date, errorMessage: errorItem.errorMessage};
                             vm.data.mappingErrorList.push(error);
                             vm.$blockui("hide");
 
@@ -117,7 +118,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                         let errors: any[] = [];
             
                         _.forEach(res, (errorItem) => {
-                            let err = { columnKey: 'nameHeader', id: null, index: null, message: errorItem.errorMessage };
+                            let err: any = { columnKey: 'nameHeader', id: null, index: null, message: errorItem.errorMessage };
                             
                             if (errorItem.employeeCode) {
                                 for (let i = 0; i < vm.data.listPersonEmp.length; i++) {
@@ -131,24 +132,29 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                                 err.columnKey = errorItem.date;
                             }
                             
-                            errors.push(err);
+                            if (err.index != null) {
+                                errors.push(err);
+                            }
                         });
 
                         $("#grid").mGrid("setErrors", errors);
 
                         // open KDL053
+                        request.employeeIds = _.map(vm.data.listPersonEmp, (item) => item.employeeId);
                         let empList = vm.data.listPersonEmp;
                         for (let i = 0; i < vm.data.mappingErrorList.length; i++) {
-                            let empFilter = _.filter(empList, {'employeeId': vm.data.mappingErrorList[i].employeeId});
-                            let empCode = empFilter.length > 0 ? empFilter[0].employeeCode : '';
+                            let empFilter = _.filter(empList, {'employeeCode': vm.data.mappingErrorList[i].employeeCode});
+                            let empId = empFilter.length > 0 ? empFilter[0].employeeId : '';
 
-                            let item = {id: i, sid: vm.data.mappingErrorList[i].employeeId, scd: empCode, empName: vm.data.mappingErrorList[i].employeeName, 
+                            let item: any = {id: i, sid: empId, scd: vm.data.mappingErrorList[i].employeeCode, empName: vm.data.mappingErrorList[i].employeeName, 
                                 date: vm.data.mappingErrorList[i].date, attendanceItemId: null, errorMessage: vm.data.mappingErrorList[i].errorMessage};
                             request.errorRegistrationList.push(item);
+                            if (!request.employeeIds.includes(item.sid)) {
+                                request.employeeIds.push(item.sid);
+                            }
                         }
                         request.isRegistered = 0;
                         request.dispItemCol = true;
-                        request.employeeIds = _.map(vm.data.listPersonEmp, (item) => item.employeeId);
                         if (!vm.isOpenKDL053) {
                             vm.$window.modeless('at', '/view/kdl/053/a/index.xhtml', request).then(() => {
                                 vm.isOpenKDL053 = false;
@@ -156,8 +162,10 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                             vm.isOpenKDL053 = true;
                         }
                     } else {
-                        vm.$dialog.info({ messageId: "Msg_15"}).then(() => vm.$blockui("hide"));                        
-                        vm.close();
+                        vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
+                            vm.$blockui("hide");
+                            vm.close();
+                        });                        
                     }
                 }
             }).fail((err) => {
@@ -184,9 +192,12 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                 let empFilter = _.filter(empList, {'employeeId': empId});
                 let empCode = empFilter.length > 0 ? empFilter[0].employeeCode : '';
                 let empname = empFilter.length > 0 ? empFilter[0].businessName : '';
-                let item = {id: errorList[i].index, sid: empId, scd: empCode, empName: empname, 
+                let item: any = {id: errorList[i].index, sid: empId, scd: empCode, empName: empname, 
                             date: errorList[i].columnKey, attendanceItemId: null, errorMessage: errorList[i].message};
                 request.errorRegistrationList.push(item);
+                if (!empIds.includes(item.sid)) {
+                    empIds.push(item.sid);
+                }
             }
             request.isRegistered = 0;
             request.dispItemCol = false;
@@ -243,12 +254,15 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             let errors: any[] = [];
             
             _.forEach(mappingErrorList, (error: MappingErrorOutput) => {
-                let err = { columnKey: 'nameHeader', id: null, index: null, message: error.errorMessage };
+                let err: any = { columnKey: 'nameHeader', id: null, index: null, message: error.errorMessage };
                 
-                if (error.employeeId) {
-                    err.id = error.employeeId;
+                if (error.employeeCode) {
+                    let empFilter = _.filter(param.listPersonEmp, {'employeeCode': error.employeeCode});
+                    let empId = empFilter.length > 0 ? empFilter[0].employeeId : '';
+                    err.id = empId;
                     for (let i = 0; i < param.listPersonEmp.length; i++) {
-                        if (param.listPersonEmp[i].employeeId === error.employeeId) {
+                        if (param.listPersonEmp[i].employeeId === empId) {
+                            err.id = param.listPersonEmp[i].employeeId;
                             err.index = i;
                         }
                     }
@@ -270,13 +284,16 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                 request.errorRegistrationList = [];
                 for (let i = 0; i < mappingErrorList.length; i++) {
                     let empList = vm.data.listPersonEmp;
-                    let empFilter = _.filter(empList, {'employeeId': mappingErrorList[i].employeeId});
-                    let empCode = empFilter.length > 0 ? empFilter[0].employeeCode : '';
+                    let empFilter = _.filter(empList, {'employeeCode': mappingErrorList[i].employeeCode});
+                    let empId = empFilter.length > 0 ? empFilter[0].employeeId : '';
 
 
-                    let item = {id: i, sid: mappingErrorList[i].employeeId, scd: empCode, empName: mappingErrorList[i].employeeName, 
+                    let item: any = {id: i, sid: empId, scd: mappingErrorList[i].employeeCode, empName: mappingErrorList[i].employeeName, 
                         date: mappingErrorList[i].date, attendanceItemId: null, errorMessage: mappingErrorList[i].errorMessage};
                     request.errorRegistrationList.push(item);
+                    if (!request.employeeIds.includes(item.sid)) {
+                        request.employeeIds.push(item.sid);
+                    }
                 }
                 request.isRegistered = 0;
                 request.dispItemCol = true;
@@ -294,7 +311,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             const vm = this;
 
             let headerStyle = { name: 'HeaderStyles', columns: [{ key: 'nameHeader', colors: ['weekday', 'align-center'] }] };
-            let cellStates = [];
+            let cellStates: any[] = [];
 
             // columns
             let importableDates: string[] = data.importableDates;
@@ -478,7 +495,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
 
     export interface MappingErrorOutput {
         // 社員コード
-        employeeId: string;
+        employeeCode: string;
         // 社員名
         employeeName: string;
         // 年月日

@@ -222,7 +222,7 @@ public class WorkPlaceCheckFileService {
                     .filter(y -> y.getEmployeeId().equals(x.getEmployeeId().v())).findFirst();
             if (personEmpOptional.isPresent()) {
                 mappingErrorList.add(new MappingErrorDto(
-                        Optional.of(personEmpOptional.get().getEmployeeId()), 
+                        Optional.of(personEmpOptional.get().getEmployeeCode()), 
                         Optional.of(personEmpOptional.get().getBusinessName()), 
                         Optional.of(x.getYmd()), 
                         x.getStatus().getMessageId().isPresent() ? TextResource.localize(x.getStatus().getMessageId().get().replace("#", "")) : ""));
@@ -244,7 +244,7 @@ public class WorkPlaceCheckFileService {
                     .filter(y -> y.getEmployeeId().equals(x.getEmployeeId().v())).findFirst();
             if (personEmpOptional.isPresent()) {
                 mappingErrorList.add(new MappingErrorDto(
-                        Optional.of(personEmpOptional.get().getEmployeeId()), 
+                        Optional.of(personEmpOptional.get().getEmployeeCode()), 
                         Optional.of(personEmpOptional.get().getBusinessName()), 
                         Optional.of(x.getYmd()), 
                         x.getStatus().getMessageId().isPresent() ? TextResource.localize(x.getStatus().getMessageId().get().replace("#", "")) : ""));

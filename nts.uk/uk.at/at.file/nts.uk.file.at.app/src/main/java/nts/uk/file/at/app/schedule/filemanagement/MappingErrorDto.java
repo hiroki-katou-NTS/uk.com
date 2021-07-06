@@ -18,7 +18,7 @@ import nts.arc.time.GeneralDate;
 public class MappingErrorDto {
 
     // 社員コード
-    private Optional<String> employeeId;
+    private Optional<String> employeeCode;
     
     // 社員名
     private Optional<String> employeeName;

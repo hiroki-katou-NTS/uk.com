@@ -15,7 +15,7 @@ import nts.uk.file.at.app.schedule.filemanagement.MappingErrorDto;
 public class MappingErrorOutput {
     
     // 社員コード
-    private String employeeId;
+    private String employeeCode;
     
     // 社員名
     private String employeeName;
@@ -28,7 +28,7 @@ public class MappingErrorOutput {
     
     public static MappingErrorOutput fromDomain(MappingErrorDto domain) {
         return new MappingErrorOutput(
-                domain.getEmployeeId().orElse(null), 
+                domain.getEmployeeCode().orElse(null), 
                 domain.getEmployeeName().orElse(null), 
                 domain.getDate().map(x -> x.toString("yyyy/MM/dd")).orElse(null), 
                 domain.getErrorMessage());
