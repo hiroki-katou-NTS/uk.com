@@ -43,8 +43,8 @@ public class CanonicalizedDataRecord {
 	public Optional<DataItem> getItemByNo(int itemNo) {
 		
 		Stream<DataItemList> lists = Stream.of(
+				itemsAfterCanonicalize,  // NotにはSIDなどにNULLが入っているので、Notより前にしないとダメ
 				itemsNotCanonicalize,
-				itemsAfterCanonicalize,
 				itemsBeforeCanonicalize);
 		
 		return lists
