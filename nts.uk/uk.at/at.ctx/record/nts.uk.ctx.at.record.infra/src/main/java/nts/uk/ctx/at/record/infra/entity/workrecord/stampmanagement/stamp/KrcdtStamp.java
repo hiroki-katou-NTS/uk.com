@@ -31,6 +31,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -173,6 +175,41 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 	@Basic(optional = true)
 	@Column(name = "TIME_RECORD_CODE")
 	public String timeRecordCode;
+	
+	/**
+	 * 作業コード1
+	 */
+	@Basic(optional = true)
+	@Column(name = "TASK_CD1")
+	public String taskCd1;
+	
+	/**
+	 * 作業コード2
+	 */
+	@Basic(optional = true)
+	@Column(name = "TASK_CD2")
+	public String taskCd2;
+	
+	/**
+	 * 作業コード3
+	 */
+	@Basic(optional = true)
+	@Column(name = "TASK_CD3")
+	public String taskCd3;
+	
+	/**
+	 * 作業コード4
+	 */
+	@Basic(optional = true)
+	@Column(name = "TASK_CD4")
+	public String taskCd4;
+	
+	/**
+	 * 作業コード5
+	 */
+	@Basic(optional = true)
+	@Column(name = "TASK_CD5")
+	public String taskCd5;
 
 	@Override
 	protected Object getKey() {
@@ -206,6 +243,11 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 		this.locationLat = stamp.getLocationInfor().isPresent()? new BigDecimal(stamp.getLocationInfor().get().getLatitude()):null;
 		this.workplaceId = (stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getWorkplaceID().isPresent()) ? stamp.getRefActualResults().getWorkInforStamp().get().getWorkplaceID().get() : null;
 		this.timeRecordCode = (stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().isPresent()) ? stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().get().toString() : null;
+		this.taskCd1 = stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD1().v()).orElse(null);
+		this.taskCd2 = stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD2().map(t -> t.v()).orElse(null)).orElse(null);
+		this.taskCd3 = stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD3().map(t -> t.v()).orElse(null)).orElse(null);
+		this.taskCd4 = stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD4().map(t -> t.v()).orElse(null)).orElse(null);
+		this.taskCd5 = stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD5().map(t -> t.v()).orElse(null)).orElse(null);
 		
 		return this;
 	}
@@ -230,11 +272,21 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 				this.workplaceId  == null ? Optional.empty() : Optional.of(this.workplaceId), 
 				this.timeRecordCode == null ? Optional.empty() : Optional.of(new EmpInfoTerminalCode(this.timeRecordCode)),
 				this.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(this.stampPlace)), 
-				this.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(this.suportCard)));				
+				this.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(this.suportCard)));
+		
+		WorkGroup workGroup = null;
+		
+		if (this.taskCd1 != null) {
+			workGroup = new WorkGroup(new WorkCode(this.taskCd1),
+					Optional.ofNullable(new WorkCode(this.taskCd2)),
+					Optional.ofNullable(new WorkCode(this.taskCd3)),
+					Optional.ofNullable(new WorkCode(this.taskCd4)),
+					Optional.ofNullable(new WorkCode(this.taskCd5)));
+		}
 		
 		val refectActualResult = new RefectActualResult(workInformationStamp,
 				this.workTime == null ? null : new WorkTimeCode(this.workTime),
-				overtime );
+				overtime, workGroup );
 		
 		return new Stamp(new ContractCode(this.pk.contractCode) ,
 						stampNumber, 

@@ -33,12 +33,13 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
-import nts.uk.ctx.at.record.infra.entity.stamp.stampcard.KrcmtStampCard;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStamp;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStampPk;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -181,7 +182,12 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 						: null,  // WORKPLACE_ID
 				(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().isPresent())
 						? stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().get().toString()
-						: null); // TIME_RECORD_CODE		
+						: null,// TIME_RECORD_CODE
+				stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD1().v()).orElse(null),
+				stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD2().map(t -> t.v()).orElse(null)).orElse(null),
+				stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD3().map(t -> t.v()).orElse(null)).orElse(null),
+				stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD4().map(t -> t.v()).orElse(null)).orElse(null),
+				stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD5().map(t -> t.v()).orElse(null)).orElse(null)); 
 		
 		
 		
@@ -209,9 +215,19 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
 				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
 		
+		WorkGroup workGroup = null;
+		
+		if (entity.taskCd1 != null) {
+			workGroup = new WorkGroup(new WorkCode(entity.taskCd1),
+					Optional.ofNullable(new WorkCode(entity.taskCd2)),
+					Optional.ofNullable(new WorkCode(entity.taskCd3)),
+					Optional.ofNullable(new WorkCode(entity.taskCd4)),
+					Optional.ofNullable(new WorkCode(entity.taskCd5)));
+		}
+		
 		val refectActualResult = new RefectActualResult(workInformationStamp,
 				entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
-				overtime );
+				overtime, workGroup);
 		
 		return new Stamp(new ContractCode(entity.pk.contractCode) ,
 						stampNumber, 
@@ -230,6 +246,15 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				entity.timeRecordCode ==  null ? Optional.empty():Optional.of(new EmpInfoTerminalCode(entity.timeRecordCode)),
 				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
 				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
+		WorkGroup workGroup = null;
+		
+		if (entity.taskCd1 != null) {
+			workGroup = new WorkGroup(new WorkCode(entity.taskCd1),
+					Optional.ofNullable(new WorkCode(entity.taskCd2)),
+					Optional.ofNullable(new WorkCode(entity.taskCd3)),
+					Optional.ofNullable(new WorkCode(entity.taskCd4)),
+					Optional.ofNullable(new WorkCode(entity.taskCd5)));
+		}
 		
 		Stamp stamp = new Stamp(new ContractCode(entity.pk.contractCode), new StampNumber(entity.pk.cardNumber),
 				entity.pk.stampDateTime,
@@ -242,7 +267,8 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 						entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
 						entity.overTime == null ? null
 								: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
-										new AttendanceTime(entity.lateNightOverTime))),
+										new AttendanceTime(entity.lateNightOverTime)), 
+						workGroup),
 				entity.reflectedAtr,
 				Optional.ofNullable(( entity.locationLat == null && entity.locationLon == null ) ? null
 						: new GeoCoordinate(entity.locationLat.doubleValue(), entity.locationLon.doubleValue())), 
@@ -255,6 +281,16 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		String workLocationName = (String) object[1];
 		KrcdtStamp entity = (KrcdtStamp) object[2];
 		ContractCode contractCd = new ContractCode(AppContexts.user().contractCode());
+		
+		WorkGroup workGroup = null;
+		
+		if (entity.taskCd1 != null) {
+			workGroup = new WorkGroup(new WorkCode(entity.taskCd1),
+					Optional.ofNullable(new WorkCode(entity.taskCd2)),
+					Optional.ofNullable(new WorkCode(entity.taskCd3)),
+					Optional.ofNullable(new WorkCode(entity.taskCd4)),
+					Optional.ofNullable(new WorkCode(entity.taskCd5)));
+		}
 		
 		WorkInformationStamp workInformationStamp = new WorkInformationStamp(
 				entity.workplaceId ==  null ? Optional.empty():Optional.of(entity.workplaceId), 
@@ -273,7 +309,8 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 							entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
 							entity.overTime == null ? null
 									: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
-											new AttendanceTime(entity.lateNightOverTime))),
+											new AttendanceTime(entity.lateNightOverTime)),
+							workGroup),
 
 					entity.reflectedAtr,
 					Optional.ofNullable(( entity.locationLat == null && entity.locationLon == null) ? null :

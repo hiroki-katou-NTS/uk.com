@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
@@ -34,12 +35,20 @@ public class RefectActualResult implements DomainValue {
 	 */
 	@Getter
 	private final Optional<OvertimeDeclaration> overtimeDeclaration;
-
+	
+	/**
+	 * 	作業グループ
+	 */
+	@Getter
+	private final Optional<WorkGroup> workGroup;
+	
+	
 	public RefectActualResult(WorkInformationStamp workInforStamp,
-			WorkTimeCode workTimeCode,OvertimeDeclaration overtimeDeclaration) {
+			WorkTimeCode workTimeCode,OvertimeDeclaration overtimeDeclaration, WorkGroup workGroup) {
 		super();
 		this.workInforStamp = Optional.ofNullable(workInforStamp);
 		this.workTimeCode = Optional.ofNullable(workTimeCode);
 		this.overtimeDeclaration = Optional.ofNullable(overtimeDeclaration);
+		this.workGroup = Optional.ofNullable(workGroup);
 	}
 }

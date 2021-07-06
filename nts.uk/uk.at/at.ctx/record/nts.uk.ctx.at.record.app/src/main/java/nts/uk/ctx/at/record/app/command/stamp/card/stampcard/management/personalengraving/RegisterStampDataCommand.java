@@ -21,6 +21,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
@@ -52,6 +54,7 @@ public class RegisterStampDataCommand {
 	private Double longitude;
 	
 	private String empInfoTerCode;
+	private WorkGroupCommand workGroup;
 	
 	public Relieve toRelieve() {
 		return new Relieve(AuthcMethod.valueOf(authcMethod), StampMeans.valueOf(stampMeans));
@@ -72,11 +75,24 @@ public class RegisterStampDataCommand {
 	public RefectActualResult toRefectActualResult() {
 		WorkInformationStamp workInformationStamp = new WorkInformationStamp(Optional.empty(), Optional.empty(),
 				this.workLocationCD == null ? Optional.empty() : Optional.of(new WorkLocationCD(this.workLocationCD)),
-				this.cardNumberSupport == null ? Optional.empty() : Optional.of(new SupportCardNumber(Integer.valueOf(cardNumberSupport))));	
+				this.cardNumberSupport == null ? Optional.empty() : Optional.of(new SupportCardNumber(Integer.valueOf(cardNumberSupport))));
+		
+		WorkGroup workGroupResult = null;
+		
+		if (workGroup != null) {
+			if (workGroup.getWorkCode1() != null) {
+				workGroupResult = new WorkGroup(new WorkCode(workGroup.getWorkCode1()),
+						Optional.ofNullable(new WorkCode(workGroup.getWorkCode2())),
+						Optional.ofNullable(new WorkCode(workGroup.getWorkCode3())),
+						Optional.ofNullable(new WorkCode(workGroup.getWorkCode4())),
+						Optional.ofNullable(new WorkCode(workGroup.getWorkCode5())));
+			}
+		}
 		
 		return new RefectActualResult(workInformationStamp,
 				workTimeCode != null ? new WorkTimeCode(workTimeCode) : null,
-				overTime != null && overLateNightTime != null ? new OvertimeDeclaration(new AttendanceTime(overTime), new AttendanceTime(overLateNightTime)) : null);
+				overTime != null && overLateNightTime != null ? new OvertimeDeclaration(new AttendanceTime(overTime), new AttendanceTime(overLateNightTime)) : null,
+				workGroupResult);
 	}
 	
 	public GeoCoordinate toGeoCoordinate() {

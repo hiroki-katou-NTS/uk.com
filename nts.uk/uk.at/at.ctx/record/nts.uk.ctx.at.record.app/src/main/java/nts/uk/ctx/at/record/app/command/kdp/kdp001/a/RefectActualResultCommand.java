@@ -42,6 +42,7 @@ public class RefectActualResultCommand {
 	 */
 	@Getter
 	private OvertimeDeclarationComamnd overtimeDeclaration;
+	
 
 	public RefectActualResult toDomainValue() {
 		WorkInformationStamp workInformationStamp = new WorkInformationStamp(
@@ -51,6 +52,7 @@ public class RefectActualResultCommand {
 				this.cardNumberSupport == null ? Optional.empty() : Optional.of(new SupportCardNumber(Integer.valueOf(this.cardNumberSupport))));	
 		return new RefectActualResult(workInformationStamp,
 				workTimeCode != null ? new WorkTimeCode(workTimeCode) : null,
-				overtimeDeclaration != null ? overtimeDeclaration.toDomainValue() : null);
+				overtimeDeclaration != null ? overtimeDeclaration.toDomainValue() : null,
+				null);
 	}
 }
