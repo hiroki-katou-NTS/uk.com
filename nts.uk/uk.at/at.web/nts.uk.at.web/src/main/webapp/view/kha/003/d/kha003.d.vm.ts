@@ -10,6 +10,10 @@ module nts.uk.at.kha003.d {
         c31Params: KnockoutObservable<any>;
         c41Params: KnockoutObservable<any>;
         c51Params: KnockoutObservable<any>;
+        c21Text: KnockoutObservable<any>;
+        c31Text: KnockoutObservable<any>;
+        c41Text: KnockoutObservable<any>;
+        c51Text: KnockoutObservable<any>;
         constructor() {
             super();
             const vm = this;
@@ -17,6 +21,10 @@ module nts.uk.at.kha003.d {
             vm.c31Params = ko.observable();
             vm.c41Params = ko.observable();
             vm.c51Params = ko.observable();
+            vm.c21Text = ko.observable();
+            vm.c31Text = ko.observable();
+            vm.c41Text = ko.observable();
+            vm.c51Text = ko.observable();
 
         }
 
@@ -29,6 +37,10 @@ module nts.uk.at.kha003.d {
                 vm.c31Params(data.c31);
                 vm.c41Params(data.c41);
                 vm.c51Params(data.c51);
+                vm.c21Text(data.c21.name);
+                vm.c31Text(data.c31.name);
+                vm.c41Text(data.c41.name);
+                vm.c51Text(data.c51.name);
             })
         }
 

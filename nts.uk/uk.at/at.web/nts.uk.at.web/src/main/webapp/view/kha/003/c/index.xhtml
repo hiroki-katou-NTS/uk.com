@@ -22,7 +22,7 @@
             <!-- C1_1 -->
             <span class="label" style="font-size: 16px;    font-weight: bold;margin-left: 40px">#{i18n.getText('KHA003_60')}</span>
             <div class="table" style="margin-top: 8px;">
-                <div class="cell valign-top" data-bind="if:c21Params" style="padding: 10px;padding-left: 40px">
+                <div class="cell valign-top" data-bind="if:vm.c21isVisible()" style="padding: 10px;padding-left: 40px">
                     <!-- C2_1 -->
                     <span class="label"
                           style="font-size: 16px;    font-weight: bold;" data-bind="text:c21Text"></span>
@@ -40,7 +40,7 @@
 	                        }">
                     </table>
                 </div>
-                <div class="cell valign-top" data-bind="if:c31Params" style="padding: 10px">
+                <div class="cell valign-top" data-bind="if:vm.c31isVisible()" style="padding: 10px">
                     <!-- C3_1 -->
                     <span class="label"
                           style="font-size: 16px;    font-weight: bold;" data-bind="text:c31Text"></span>
@@ -58,7 +58,7 @@
 	                        }">
                     </table>
                 </div>
-                <div class="cell valign-top" data-bind="if:c41Params" style="padding: 10px">
+                <div class="cell valign-top" data-bind="if:vm.c41isVisible()" style="padding: 10px">
                     <!-- C4_1 -->
                     <span class="label"
                           style="font-size: 16px;    font-weight: bold;" data-bind="text:c41Text"></span>
@@ -76,7 +76,7 @@
 	                        }">
                     </table>
                 </div>
-                <div class="cell valign-top" data-bind="if:c51Params" style="padding: 10px">
+                <div class="cell valign-top" data-bind="if:vm.c51isVisible()" style="padding: 10px">
                     <!-- C5_1 -->
                     <span class="label"
                           style="font-size: 16px;    font-weight: bold;" data-bind="text:c51Text"></span>

@@ -27,18 +27,18 @@ module nts.uk.at.kha003.c {
         c41Text: KnockoutObservable<any>;
         c51Params: KnockoutObservable<any>;
         c51Text: KnockoutObservable<any>;
+
+        c21isVisible: KnockoutObservable<boolean>;
+        c31isVisible: KnockoutObservable<boolean>;
+        c41isVisible: KnockoutObservable<boolean>;
+        c51isVisible: KnockoutObservable<boolean>;
+
         constructor() {
             super();
             const vm = this;
             // c2_4
             vm.c24Items = ko.observableArray([]);
             var str = ['a0', 'b0', 'c0', 'd0'];
-            for (var j = 0; j < 4; j++) {
-                for (var i = 1; i < 51; i++) {
-                    var code = i < 10 ? str[j] + '0' + i : str[j] + i;
-                    vm.c24Items.push(new ItemModel(code, code));
-                }
-            }
             vm.columns = ko.observableArray([
                 {headerText: this.$i18n('KHA003_62'), prop: 'code', width: 80}, //c2_5,c3_5,c4_5,c5_5
                 {headerText: this.$i18n('KHA003_63'), prop: 'name', width: 150}  //c2_6,c3_6,c4_6,c5_6
@@ -48,34 +48,14 @@ module nts.uk.at.kha003.c {
             // c3_4
             vm.c34Items = ko.observableArray([]);
             var str = ['a0', 'b0', 'c0', 'd0'];
-            for (var j = 0; j < 4; j++) {
-                for (var i = 1; i < 51; i++) {
-                    var code = i < 10 ? str[j] + '0' + i : str[j] + i;
-                    vm.c34Items.push(new ItemModel(code, code));
-                }
-            }
             vm.c34CurrentCodeList = ko.observableArray([]);
 
             // c4_4
             vm.c44Items = ko.observableArray([]);
-            var str = ['a0', 'b0', 'c0', 'd0'];
-            for (var j = 0; j < 4; j++) {
-                for (var i = 1; i < 51; i++) {
-                    var code = i < 10 ? str[j] + '0' + i : str[j] + i;
-                    vm.c44Items.push(new ItemModel(code, code));
-                }
-            }
             vm.c44CurrentCodeList = ko.observableArray([]);
 
             // c5_4
             vm.c54Items = ko.observableArray([]);
-            var str = ['a0', 'b0', 'c0', 'd0'];
-            for (var j = 0; j < 4; j++) {
-                for (var i = 1; i < 51; i++) {
-                    var code = i < 10 ? str[j] + '0' + i : str[j] + i;
-                    vm.c54Items.push(new ItemModel(code, code));
-                }
-            }
             vm.c54CurrentCodeList = ko.observableArray([]);
             vm.c21Params = ko.observable();
             vm.c21Text = ko.observable();
@@ -85,22 +65,105 @@ module nts.uk.at.kha003.c {
             vm.c41Text = ko.observable();
             vm.c51Params = ko.observable();
             vm.c51Text = ko.observable();
+            vm.c21isVisible = ko.observable(false);
+            vm.c31isVisible = ko.observable(false);
+            vm.c41isVisible = ko.observable(false);
+            vm.c51isVisible = ko.observable(false);
         }
 
         created() {
             const vm = this;
             _.extend(window, {vm});
+            vm.c24CurrentCodeList.subscribe((newValue: any) => {
+                vm.$errors("clear");
+            });
+            vm.c34CurrentCodeList.subscribe((newValue: any) => {
+                vm.$errors("clear");
+            });
+            vm.c44CurrentCodeList.subscribe((newValue: any) => {
+                vm.$errors("clear");
+            });
+            vm.c54CurrentCodeList.subscribe((newValue: any) => {
+                vm.$errors("clear");
+            });
             vm.$window.storage('kha003AShareData').done((data: any) => {
                 console.log(data)
+                if (!(data.c21.type === undefined || data.c21.type === null)) {
+                    vm.c21isVisible(true)
+                }
+                if (!(data.c31.type === undefined || data.c31.type === null)) {
+                    vm.c31isVisible(true)
+                }
+                if (!(data.c41.type === undefined || data.c41.type === null)) {
+                    vm.c41isVisible(true)
+                }
+                if (!(data.c51.type === undefined || data.c51.type === null)) {
+                    vm.c51isVisible(true)
+                }
                 vm.c21Params(data.c21);
-                vm.c21Text(vm.$i18n('KHA003_61', [vm.c21Params()]))
+                vm.c21Text(vm.$i18n('KHA003_61', [data.c21.name]))
                 vm.c31Params(data.c31);
-                vm.c31Text(vm.$i18n('KHA003_61', [vm.c31Params()]))
+                vm.c31Text(vm.$i18n('KHA003_61', [vm.c31Params().name]))
                 vm.c41Params(data.c41);
-                vm.c41Text(vm.$i18n('KHA003_61', [vm.c41Params()]))
+                vm.c41Text(vm.$i18n('KHA003_61', [vm.c41Params().name]))
                 vm.c51Params(data.c51);
-                vm.c51Text(vm.$i18n('KHA003_61', [vm.c51Params()]))
+                vm.c51Text(vm.$i18n('KHA003_61', [vm.c51Params().name]))
             })
+
+            vm.$window.storage('kha003BShareData').done((data: any) => {
+                vm.c24Items(this.getItemData(vm.c21Params().type, data));
+                vm.c34Items(this.getItemData(vm.c31Params().type, data));
+                vm.c44Items(this.getItemData(vm.c41Params().type, data));
+                vm.c54Items(this.getItemData(vm.c51Params().type, data));
+            })
+        }
+
+        getItemData(taskCode: any, data: any) {
+            let itemList: any = [];
+            let task = data.masterNameInfo;
+            switch (taskCode) {
+                case 0:
+                    task.affWorkplaceInfoList.forEach((data: any) => {
+                        itemList.push(new ItemModel(data.workplaceCode, data.workplaceName))
+                    });
+                    break;
+                case 1:
+                    task.workPlaceInfoList.forEach((data: any) => {
+                        itemList.push(new ItemModel(data.workplaceCode, data.workplaceName))
+                    });
+                    break;
+                case 2:
+                    task.employeeInfoList.forEach((data: any) => {
+                        itemList.push(new ItemModel(data.employeeCode, data.employeeName))
+                    });
+                    break;
+                case 3:
+                    task.task1List.forEach((data: any) => {
+                        itemList.push(new ItemModel(data.code, data.taskName))
+                    });
+                    break;
+                case 4:
+                    task.task2List.forEach((data: any) => {
+                        itemList.push(new ItemModel(data.code, data.taskName))
+                    });
+                    break;
+                case 5:
+                    task.task3List.forEach((data: any) => {
+                        itemList.push(new ItemModel(data.code, data.taskName))
+                    });
+                    break;
+                case 6:
+                    task.task4List.forEach((data: any) => {
+                        itemList.push(new ItemModel(data.code, data.taskName))
+                    });
+                    break;
+                case 7:
+                    task.task5List.forEach((data: any) => {
+                        itemList.push(new ItemModel(data.code, data.taskName))
+                    });
+                    break;
+            }
+            return itemList;
         }
 
         mounted() {
@@ -119,8 +182,45 @@ module nts.uk.at.kha003.c {
          */
         public decide(): void {
             const vm = this;
-            vm.$jump('/view/kha/003/d/index.xhtml');
-            nts.uk.ui.windows.close();
+            vm.$validate().then((valid: boolean) => {
+                if (!valid) {
+                    return;
+                }
+                if (vm.ifAnyDialogNotSelected()) {
+                    vm.$errors("#multi-list-c2_4", "Msg_2165");
+                } else {
+                    let shareData = {
+                        c24CurrentCodeList: vm.c24CurrentCodeList(),
+                        c34CurrentCodeList: vm.c34CurrentCodeList(),
+                        c44CurrentCodeList: vm.c44CurrentCodeList(),
+                        c54CurrentCodeList: vm.c54CurrentCodeList(),
+                    }
+                    vm.$window.storage('kha003CShareData', shareData).then(() => {
+                        vm.$jump('/view/kha/003/d/index.xhtml');
+                        nts.uk.ui.windows.close();
+                    })
+                }
+            });
+        }
+
+        /**
+         * Event on click decide button.
+         */
+        public ifAnyDialogNotSelected(): boolean {
+            const vm = this;
+            if (vm.c21isVisible() && vm.c24CurrentCodeList().length <= 0) {
+                return true;
+            }
+            if (vm.c31isVisible() && vm.c34CurrentCodeList().length <= 0) {
+                return true;
+            }
+            if (vm.c41isVisible() && vm.c44CurrentCodeList().length <= 0) {
+                return true;
+            }
+            if (vm.c21isVisible() && vm.c54CurrentCodeList().length <= 0) {
+                return true;
+            }
+            return false;
         }
     }
 

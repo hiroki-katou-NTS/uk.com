@@ -37,6 +37,7 @@ module nts.uk.at.kha003.a {
         layoutSettings: KnockoutObservableArray<any>;
         isUpdateMode: KnockoutObservable<boolean>;
         isInit: boolean = true;
+        isOutPutAll: KnockoutObservable<boolean>;
 
         constructor() {
             super();
@@ -63,6 +64,7 @@ module nts.uk.at.kha003.a {
             vm.isA71Enable = ko.observable(true);
             vm.isA72Enable = ko.observable(true);
             vm.isUpdateMode = ko.observable(false);
+            vm.isOutPutAll = ko.observable(false);
         }
 
         created() {
@@ -418,6 +420,13 @@ module nts.uk.at.kha003.a {
                 isCsvOutPut: true,
                 totalUnit: vm.selectedId()
             }
+            vm.isOutPutAll(true);
+            vm.currentCode('');
+            vm.manHour.code('');
+            vm.manHour.name('')
+            vm.summaryItems([]);
+            vm.selectedIdA622(0);
+            vm.selectedId(0);
             vm.$window.storage('kha003AShareData', shareData).then(() => {
                 vm.$window.modal("/view/kha/003/b/index.xhtml").then(() => {
 
@@ -432,6 +441,8 @@ module nts.uk.at.kha003.a {
          * */
         clickRunButton() {
             const vm = this;
+            vm.isOutPutAll(false);
+            vm.selectedId(0);
             var c21 = {};
             var c31 = {};
             var c41 = {};
