@@ -310,7 +310,7 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 					}
 					
 					GeneralDate startDate = GeneralDate.ymd(mPeriod.start().year() , mPeriod.start().month(), 1);
-					GeneralDate enDate = GeneralDate.ymd(mPeriod.start().year() , mPeriod.start().month() + 1, 1).addDays(-1);
+					GeneralDate enDate = GeneralDate.ymd(mPeriod.end().year() , mPeriod.end().month() + 1, 1).addDays(-1);
 					ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(startDate), Optional.ofNullable(enDate));
 					
 					String workplaceId = "";
