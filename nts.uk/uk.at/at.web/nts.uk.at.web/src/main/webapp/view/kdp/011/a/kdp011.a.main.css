@@ -56,7 +56,7 @@ div.data{
 	 margin-left: 85px;
 }
 .rangeDate{
-	margin : 10px 0px 10px 85px;
+	margin : 10px 0px 20px 85px;
 }
 #daterangepicker{
 	display: inline-block;
@@ -70,6 +70,10 @@ div.data{
 .proseccselect{
 	margin-left: 140px;
 }
+.proseccselect>label{
+	display: block;
+}
+
 .ntsRadioBox{
 	display: block;
 	margin: 10px 0px 10px 0px;

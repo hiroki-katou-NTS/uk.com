@@ -30,7 +30,7 @@ module nts.uk.ui.formlabel {
         mounted() {
             const vm = this;
 
-            $(vm.$el).find('[data-bind]').removeAttr('data-bind');
+//            $(vm.$el).find('[data-bind]').removeAttr('data-bind');
         }
 
         destroyed() {

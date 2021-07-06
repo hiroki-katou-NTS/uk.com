@@ -57,7 +57,6 @@
 
 		& + span {
 			cursor: pointer;
-			background-color: #fff;
 			line-height: 20px;
 
 			&::before {
@@ -123,6 +122,8 @@
 
 	input[type="radio"] {
 		& + span {
+			background-color: #fff;
+			
 			&::before,
 			&::after {
 				border-radius: 50%;

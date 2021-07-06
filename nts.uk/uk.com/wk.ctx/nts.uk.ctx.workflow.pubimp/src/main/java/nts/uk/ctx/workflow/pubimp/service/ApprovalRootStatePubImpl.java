@@ -283,10 +283,11 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 					}).collect(Collectors.toList())
 				), 
 				EnumAdaptor.valueOf(approvalRootContentOutput.getErrorFlag().value, ErrorFlagExport.class));
-		if(date==null) {
-			return checkApproverStatus(result, approvalRootContentOutput.approvalRootState.getApprovalRecordDate());
-		}
-		return checkApproverStatus(result, date);
+//		if(date==null) {
+//			return checkApproverStatus(result, approvalRootContentOutput.approvalRootState.getApprovalRecordDate());
+//		}
+//		return checkApproverStatus(result, date);
+		return result;
 	}
 	
 	@Override
@@ -893,7 +894,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		ApprovalRootState approvalRootState = approvalRootStateRepository.findEmploymentApp(appID).orElseThrow(()->
 			new BusinessException("Msg_198")
 		);
-		return approvalRootState.getListApprovalPhaseState()
+		List<ApprovalPhaseStateExport> approvalPhaseStateExportLst = approvalRootState.getListApprovalPhaseState()
 				.stream()
 				.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
 				.map(x -> {
@@ -935,6 +936,15 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 										y.getAppDate());
 							}).collect(Collectors.toList()));
 				}).collect(Collectors.toList());
+		ApprovalRootContentExport approvalRootContentExport = new ApprovalRootContentExport(
+				new ApprovalRootStateExport(
+						approvalRootState.getRootStateID(), 
+						approvalRootState.getRootType().value, 
+						approvalRootState.getApprovalRecordDate(), 
+						approvalRootState.getEmployeeID(), 
+						approvalPhaseStateExportLst), 
+				ErrorFlagExport.NO_ERROR);
+		return checkApproverStatus(approvalRootContentExport, approvalRootContentExport.getApprovalRootState().getApprovalRecordDate()).getApprovalRootState().getListApprovalPhaseState();
 	}
 	/**
      * [No.309]承認ルートを取得する
