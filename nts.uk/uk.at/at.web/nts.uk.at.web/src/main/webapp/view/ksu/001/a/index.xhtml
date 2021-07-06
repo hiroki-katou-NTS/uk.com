@@ -384,14 +384,14 @@
 										<button tabindex="41"  data-bind="ntsHelpButton: {textId: '', textParams:[], position: 'right center' ,enable: enableHelpBtn}"
 											style="margin-top: 13px;">？</button>
 									</div>
-									<div data-bind="ifnot: visibleShiftPalette">
+									<div data-bind="ifnot: visibleShiftPalette" style="width: 100%;margin-left: 140px; margin-top: 5px;">
 										<div id="oViewModel">
 											<div data-bind="with: $parent.viewAB">
 												<ui:include src="../ab/index.xhtml" />
 											</div>
 										</div>
 									</div>
-									<div data-bind="if: visibleShiftPalette">
+									<div data-bind="if: visibleShiftPalette" style="width: 100%;margin-left: 140px; margin-top: 5px;">
 										<div id="qViewModel">
 											<div data-bind="with: $parent.viewAC">
 												<ui:include src="../ac/index.xhtml" />
@@ -403,16 +403,16 @@
 							<div style="clear: left"></div>
 							<div style="width: fit-content;">
 								<div id = "btnControlLeftRight">
-									<button id = "A13" class="toLeft inline" data-bind="click : toLeft"> <i class="iconToLeft" data-bind="ntsIcon : { no: 152, width: 15, height: 22 }"></i></button>
+									<button id = "A13" class="toLeft inline" data-bind="click : toLeft"> <i class="iconToLeft" data-bind="ntsIcon : { no: 152, width: 15, height: 20 }"></i></button>
 									<div style="display: inline-block;" data-bind="if: showA11">
-										<button id = "A14" class="toRight inline" data-bind="click: toRight"><i class="iconToRight " data-bind="ntsIcon: { no: 153, width: 15, height: 22 }"></i></button>
+										<button id = "A14" class="toRight inline" data-bind="click: toRight"><i class="iconToRight " data-bind="ntsIcon: { no: 153, width: 15, height: 20 }"></i></button>
 									</div>
 								</div>
 								<div style="clear: left"></div>
 								<div id = "sub-content-main">
 									<div style="float: left; width: 29px; height: 349px;">
 										<div data-bind="if: showA12">
-											<button class="toDown inline" data-bind="click : toDown"><i class="iconToDown" data-bind="ntsIcon : { no: 150,width: 11, height: 22 }"></i></button>
+											<button class="toDown inline" data-bind="click : toDown"><i class="iconToDown" data-bind="ntsIcon : { no: 150,width: 15, height: 20 }"></i></button>
 										</div>
 									</div>
 									<div id="extable-outside" style="float: left">

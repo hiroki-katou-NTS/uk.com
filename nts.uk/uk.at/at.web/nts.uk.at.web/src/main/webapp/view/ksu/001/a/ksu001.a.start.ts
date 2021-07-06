@@ -13,8 +13,12 @@ module nts.uk.at.view.ksu001.a {
 				document.getElementById("main-area").style.display = '';
                 __viewContext.bind(__viewContext.viewModel);
 
-                __viewContext.viewModel.viewA.setIconEventHeader();
+                //__viewContext.viewModel.viewA.setIconEventHeader();
 
+                if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
+                    $('.ntsButtonTableButton').addClass('nowithContent');
+                }
+                
                 if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
                     $('.ntsButtonTableButton').addClass('nowithContent');
                 }
@@ -25,18 +29,15 @@ module nts.uk.at.view.ksu001.a {
                             __viewContext.viewModel.viewA.setStyler();
                         }, 800);
                     }
-                }
 
-                if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
-                    $('.ntsButtonTableButton').addClass('nowithContent');
+                    if (data.disPlayFormat == 'shift') {
+                        setTimeout(() => {
+                            __viewContext.viewModel.viewAC.setStyleBtn();
+                            __viewContext.viewModel.viewAC.setLinkSelected(data.shiftPalletUnit == 2 ? (data.shiftPalettePageNumberOrg - 1) : (data.shiftPalettePageNumberCom - 1));
+                        }, 100);
+                    }
                 }
-
-                if (__viewContext.viewModel.viewA.userInfor.updateMode == 'copyPaste') {
-                    setTimeout(() => {
-                        __viewContext.viewModel.viewA.setStyler();
-                    }, 800);
-                }
-
+                
                 $(window).resize(function() {
                     __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
                     __viewContext.viewModel.viewA.setPositionButonToRight();
