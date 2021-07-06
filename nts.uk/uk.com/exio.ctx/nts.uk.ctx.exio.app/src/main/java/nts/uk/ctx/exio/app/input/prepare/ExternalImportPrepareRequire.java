@@ -127,11 +127,6 @@ public class ExternalImportPrepareRequire {
 		public Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode) {
 			return settingRepo.get(companyId, settingCode);
 		}
-		
-		@Override
-		public Optional<ExternalImportAssemblyMethod> getAssemblyMethod(String companyId, ExternalImportCode settingCode) {
-			return assemblyMethodRepo.get(companyId, settingCode);
-		}
 
 		@Override
 		public ImportingGroup getImportingGroup(ImportingGroupId groupId) {

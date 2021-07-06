@@ -19,7 +19,6 @@ import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryItem;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCharset;
-import nts.uk.ctx.exio.dom.input.setting.assembly.AssembleCsvRecord;
 
 /**
  * CSVの1レコードを取り込む
@@ -118,7 +117,7 @@ public class CsvRecordImpoter {
         }
     }
 	
-	public interface Require extends AssembleCsvRecord.Require{
+	public interface Require {
 		InputStream get();
 
 		StdAcceptItem getStdAcceptItem(int csvItemNo);

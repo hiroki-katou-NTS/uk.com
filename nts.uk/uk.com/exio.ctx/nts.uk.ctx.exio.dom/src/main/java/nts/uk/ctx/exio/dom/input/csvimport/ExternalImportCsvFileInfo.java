@@ -33,8 +33,12 @@ public class ExternalImportCsvFileInfo {
 	/** CSVの取込開始行 */
 	private final ExternalImportRawNumber importStartRawNumber;
 	
-	public Parser createParser() {
-		return new Parser(itemNameRawNumber.v(), importStartRawNumber.v());
+	public void parse(InputStream csvFileStream, Consumer<CsvRecord> readRecords) {
+
+		new Parser(itemNameRawNumber.v(), importStartRawNumber.v()).parse(
+				csvFileStream,
+				cn -> { }, // 今のところヘッダ行を取得する必要が無い
+				readRecords);
 	}
 	
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
