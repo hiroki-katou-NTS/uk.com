@@ -29,7 +29,8 @@ public class AttendanceTimesCorrector {
 
 					/** 出勤2をクリアすべきかを確認する */
 					if (attendanceStampInfo == TimeChangeMeans.AUTOMATIC_SET 
-							|| attendanceStampInfo == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION) 
+							|| attendanceStampInfo == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION
+					   		|| attendanceStampInfo == TimeChangeMeans.DIRECT_BOUNCE) 
 						
 						/** 出勤2をクリアすべきかを確認する */
 						a.setStamp(Optional.empty());
@@ -41,7 +42,8 @@ public class AttendanceTimesCorrector {
 
 					/** 退勤2をクリアすべきかを確認する */
 					if (leaveStampInfo == TimeChangeMeans.AUTOMATIC_SET 
-							|| leaveStampInfo == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION) 
+							|| leaveStampInfo == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION
+					   		|| attendanceStampInfo == TimeChangeMeans.) 
 						
 						/** 退勤2をクリアする */
 						l.setStamp(Optional.empty());
