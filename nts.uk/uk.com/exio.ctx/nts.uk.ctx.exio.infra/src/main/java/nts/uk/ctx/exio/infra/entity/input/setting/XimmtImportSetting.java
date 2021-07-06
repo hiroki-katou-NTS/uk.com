@@ -13,8 +13,6 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
-import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
-import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRawNumber;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportName;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
@@ -69,8 +67,6 @@ public class XimmtImportSetting extends ContractUkJpaEntity implements Serializa
 				new ExternalImportName(this.name), 
 				this.externalImportGroupId,
 				EnumAdaptor.valueOf(importingMode, ImportingMode.class), 
-				new ExternalImportCsvFileInfo(
-						new ExternalImportRawNumber(itemNameRawNumber), 
-						new ExternalImportRawNumber(importStartRawNumber)));
+				null /* TODO */);
 	}
 }
