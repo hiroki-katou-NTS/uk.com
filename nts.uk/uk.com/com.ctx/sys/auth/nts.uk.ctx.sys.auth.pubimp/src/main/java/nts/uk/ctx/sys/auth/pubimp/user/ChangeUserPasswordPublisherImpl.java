@@ -19,7 +19,7 @@ import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 @Stateless
 public class ChangeUserPasswordPublisherImpl implements ChangeUserPasswordPublisher {
 
-//	@Inject
+	@Inject
 	private PasswordChangeLogRepository passwordChangeLogRepository;
 	
 	@Inject
