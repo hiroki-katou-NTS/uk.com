@@ -860,7 +860,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
         }
         
-        destroyAndCreateGrid(dataBindGrid,viewMode){
+        destroyAndCreateGrid(dataBindGrid, viewMode) {
             let self = this;
             $("#cacheDiv").append($('#vertDiv'));
             $("#cacheDiv").append($('#horzDiv'));
@@ -871,7 +871,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let updateMode = self.mode() === 'edit' ? 'stick' : 'determine'
             self.initExTable(dataBindGrid, viewMode, updateMode);
             if (!self.showA9) {
-                $(".toLeft").css("display", "none");
+                if (!._isNil(document.getElementById('A13'))) {
+                    document.getElementById('A13').remove();
+                }
             }
             self.bindingEventCellUpdatedGrid();
         }
@@ -1683,6 +1685,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 if (self.showTeamCol == false && self.showRankCol == false && self.showQualificCol == false) {
                     self.showA9 = false;
+                }
+            }
+
+            if (!self.showA9) {
+                if (!._isNil(document.getElementById('A13'))) {
+                    document.getElementById('A13').remove();
                 }
             }
             
@@ -3824,25 +3832,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             if (!self.showA9)
                 return;
-            let offsetLeftA13 = document.getElementById('A13').offsetLeft;
-
+            let offsetLeftGrid = document.getElementById('extable').offsetLeft;
+            let offsetWidthA8 = document.getElementsByClassName('extable-header-leftmost')[0].offsetWidth;
             if (self.indexBtnToLeft % 2 == 0) {
                 $("#extable").exTable("hideMiddle");
                 $('.iconToLeft').css('background-image', 'url(' + self.pathToRight + ')');
-                $(".toLeft").css("margin-left", offsetLeftA13 - self.widthMid + "px");
-                if (!_.isNil(document.getElementById('A14'))) {
-                    let offsetLeftA14 = document.getElementById('A14').offsetLeft;
-                    $(".toRight").css('margin-left', offsetLeftA14 - offsetLeftA13 + self.widthMid*2 - self.widthBtnToLeftToRight + 'px');
-                }
-
+                $(".toLeft").css("margin-left", offsetLeftGrid + offsetWidthA8 + "px");
             } else {
                 $("#extable").exTable("showMiddle");
                 $('.iconToLeft').css('background-image', 'url(' + self.pathToLeft + ')');
-                $(".toLeft").css("margin-left", offsetLeftA13 + self.widthMid + 'px');
-                if (!_.isNil(document.getElementById('A14'))) {
-                    let offsetLeftA14 = document.getElementById('A14').offsetLeft;
-                    $(".toRight").css('margin-left', offsetLeftA14 - offsetLeftA13 - self.widthMid*2 - self.widthBtnToLeftToRight + 'px');
-                }
+                let offsetWidthA9 = document.getElementsByClassName('ex-header-middle')[0].offsetWidth;
+                $(".toLeft").css("margin-left", offsetLeftGrid + offsetWidthA8 + offsetWidthA9 + 'px');
+            }
+            if (!_.isNil(document.getElementById('A14'))) {
+                let offsetWidthA14 = document.getElementsByClassName('ex-header-detail')[0].offsetWidth;
+                $(".toRight").css('margin-left', offsetWidthA14 - self.widthBtnToLeftToRight * 2 + 'px');
             }
             self.indexBtnToLeft = self.indexBtnToLeft + 1;
         }
@@ -3856,37 +3860,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.indexBtnToRight % 2 == 0) {
                 $("#extable").exTable("hideVerticalSummary");
                 $('.iconToRight').css('background-image', 'url(' + self.pathToLeft + ')');
-                if (self.showA9 && self.indexBtnToLeft % 2 == 0) {
-                    // trong truong hop nay phải check thêm là A9 đang show hay hidden do click btn toLeft
-                    let offsetLeftA13 = document.getElementById('A13').offsetLeft;
-                    marginleft = offsetLeftA14 - offsetLeftA13 + self.widthVertSum - self.widthBtnToLeftToRight;
-                    $(".toRight").css('margin-left', marginleft + 'px');
-                } else {
-                    if (_.isNil(document.getElementById('A13'))) {
-                        marginleft = offsetLeftA14 + self.widthVertSum;
-                    } else {
-                        let offsetLeftA13 = document.getElementById('A13').offsetLeft;
-                        marginleft = offsetLeftA14 - offsetLeftA13 + self.widthVertSum - self.widthBtnToLeftToRight;
-                    }
-                    $(".toRight").css('margin-left', marginleft + 'px');
-                }
             } else {
                 $("#extable").exTable("showVerticalSummary");
                 $('.iconToRight').css('background-image', 'url(' + self.pathToRight + ')');
-                if (self.showA9 && self.indexBtnToLeft % 2 == 0) {
-                    // trong truong hop nay phải check thêm là A9 đang show hay hidden do click btn toLeft
-                    let offsetLeftA13 = document.getElementById('A13').offsetLeft;
-                    marginleft = offsetLeftA14 - offsetLeftA13 - self.widthVertSum - self.widthBtnToLeftToRight;
-                    $(".toRight").css('margin-left', marginleft + 'px');
-                } else {
-                    if(_.isNil(document.getElementById('A13'))){
-                        marginleft =  offsetLeftA14  - self.widthVertSum;
-                    }else{
-                        let offsetLeftA13 = document.getElementById('A13').offsetLeft;
-                        marginleft =  offsetLeftA14 - offsetLeftA13 - self.widthVertSum - self.widthBtnToLeftToRight;
-                    }
-                    $(".toRight").css('margin-left', marginleft + 'px');
-                }
+            }
+
+            let offsetWidthA10 = document.getElementsByClassName('ex-header-detail')[0].offsetWidth;
+            if (self.showA9) {
+                $(".toRight").css('margin-left', offsetWidthA10 - self.widthBtnToLeftToRight * 2 + 'px');
+            } else {
+                let offsetWidthA8 = document.getElementsByClassName('ex-header-leftmost')[0].offsetWidth;
+                let offsetLeftGrid = document.getElementById('extable').offsetLeft;
+                $(".toRight").css('margin-left', offsetLeftGrid + offsetWidthA8 + offsetWidthA10 - self.widthBtnToLeftToRight + 'px');
             }
             self.indexBtnToRight = self.indexBtnToRight + 1;
         }
@@ -3917,24 +3902,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         setPositionButonToRightToLeft() {
             let self = this;
-            self.indexBtnToLeft = 0;
-            $("#sub-content-main").width($('#extable').width() + 30);
-
-            let marginleftOfbtnToRight: number = 0;
-            let marginleftOfbtnToLeft: number = self.widthA8 + self.offetLeftGrid + self.widthMid;
+            let offsetLeftGrid = document.getElementById('extable').offsetLeft;
+            let offsetWidthA8 = document.getElementsByClassName('extable-header-leftmost')[0].offsetWidth;
             if (self.showA9) {
-                $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
-                marginleftOfbtnToRight = $("#extable").width() - self.widthA8 - self.widthMid - self.widthBtnToLeftToRight*2 - self.offetLeftGrid;
+                let offsetWidthA9 = document.getElementsByClassName('ex-header-middle')[0].offsetWidth;
+                $(".toLeft").css("margin-left", offsetLeftGrid + offsetWidthA8 + offsetWidthA9 + 'px');
             } else {
                 document.getElementById("A13").remove();
-                marginleftOfbtnToRight = $("#extable").width() + self.offetLeftGrid - self.widthBtnToLeftToRight - self.widthScrollRG -  3;
             }
-            
-            if(self.showA11()){
-                marginleftOfbtnToRight = marginleftOfbtnToRight - self.widthVertSum;
+
+            if (self.showA11()) {
+                let offsetWidthA10 = document.getElementsByClassName('ex-header-detail')[0].offsetWidth;
+                if (self.showA9) {
+                    $(".toRight").css('margin-left', offsetWidthA10 - self.widthBtnToLeftToRight * 2 + 'px');
+                } else {
+                    $(".toRight").css('margin-left', offsetLeftGrid + offsetWidthA8 + offsetWidthA10 - self.widthBtnToLeftToRight + 'px');
+                }
             }
-            
-            $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
         }
         
         setHeightScreen() {
