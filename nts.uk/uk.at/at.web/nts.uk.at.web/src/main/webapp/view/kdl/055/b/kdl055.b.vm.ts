@@ -146,8 +146,8 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                             let empFilter = _.filter(empList, {'employeeCode': vm.data.mappingErrorList[i].employeeCode});
                             let empId = empFilter.length > 0 ? empFilter[0].employeeId : '';
 
-                            let item: any = {id: i, sid: empId, scd: vm.data.mappingErrorList[i].employeeCode, empName: vm.data.mappingErrorList[i].employeeName, 
-                                date: vm.data.mappingErrorList[i].date, attendanceItemId: null, errorMessage: vm.data.mappingErrorList[i].errorMessage};
+                            let item: any = {id: i, sid: empId, scd: vm.data.mappingErrorList[i].employeeCode, empName: vm.data.mappingErrorList[i].employeeName == null ? '' : vm.data.mappingErrorList[i].employeeName, 
+                                date: vm.data.mappingErrorList[i].date == null ? '' : vm.data.mappingErrorList[i].date, attendanceItemId: null, errorMessage: vm.data.mappingErrorList[i].errorMessage};
                             request.errorRegistrationList.push(item);
                             if (!request.employeeIds.includes(item.sid)) {
                                 request.employeeIds.push(item.sid);
@@ -288,8 +288,8 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                     let empId = empFilter.length > 0 ? empFilter[0].employeeId : '';
 
 
-                    let item: any = {id: i, sid: empId, scd: mappingErrorList[i].employeeCode, empName: mappingErrorList[i].employeeName, 
-                        date: mappingErrorList[i].date, attendanceItemId: null, errorMessage: mappingErrorList[i].errorMessage};
+                    let item: any = {id: i, sid: empId, scd: mappingErrorList[i].employeeCode, empName: mappingErrorList[i].employeeName == null ? '' : mappingErrorList[i].employeeName, 
+                        date: mappingErrorList[i].date == null ? '' : mappingErrorList[i].date, attendanceItemId: null, errorMessage: mappingErrorList[i].errorMessage};
                     request.errorRegistrationList.push(item);
                     if (!request.employeeIds.includes(item.sid)) {
                         request.employeeIds.push(item.sid);
