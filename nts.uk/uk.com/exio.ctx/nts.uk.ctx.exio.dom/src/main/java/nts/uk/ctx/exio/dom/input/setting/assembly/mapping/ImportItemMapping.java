@@ -14,6 +14,6 @@ public class ImportItemMapping {
 	private int importItemNumber;
 	
 	/** CSV列番号 */
-	private int csvLineNumber;
+	private int csvColumnNumber;
 	
 }

@@ -30,7 +30,7 @@ public class AssembleCsvRecord {
 		for(int i = 0; i < mapping.size(); i++) {
 			
 			val itemNo = mapping.get(i).getImportItemNumber();
-			val csvValue = csvRecord.getItemByColumnNo(mapping.get(i).getCsvLineNumber());
+			val csvValue = csvRecord.getItemByColumnNo(mapping.get(i).getCsvColumnNumber());
 			
 			// 項目の編集を取得
 			val revisionist = require.getRevise(context.getCompanyId(), context.getExternalImportCode(), itemNo);
