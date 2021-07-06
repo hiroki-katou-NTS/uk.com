@@ -185,7 +185,8 @@ module nts.uk.ui.at.kdw013.b {
                             workCD3,
                             workCD4,
                             workCD5,
-                            workLocationCD
+                            workLocationCD,
+                            range
                         } = extendedProps;
 
                         const startTime = getTimeOfDate(start);
@@ -193,7 +194,7 @@ module nts.uk.ui.at.kdw013.b {
 
                         //
                         model.push({ key: 'KDW013_27', value: `${number2String(startTime)}${vm.$i18n('KDW013_30')}${number2String(endTime)}` });
-                        model.push({ key: 'KDW013_25', value: number2String(endTime - startTime) });
+                        model.push({ key: 'KDW013_25', value: range || number2String(0) });
 
                         if (first && first.useAtr === 1) {
                             vm.setTaskData(model, _.get(shared, 'taskListDto1'), workCD1, first);

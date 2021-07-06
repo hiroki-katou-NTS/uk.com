@@ -1138,6 +1138,17 @@ module nts.uk.ui.at.kdw013.c {
                             event.setExtendedProp('workLocationCD', ko.unwrap(workplace));
 
                             event.setExtendedProp('remarks', descriptions());
+                            
+                            const start = ko.unwrap(tr.start);
+                            const end = ko.unwrap(tr.end);
+                            let range = ''
+                            if (_.isNil(start) || _.isNil(end) || start > end) {
+                                range = '';
+                            } else {
+                                range = number2String(end - start);
+                            }
+
+                            event.setExtendedProp('range', number2String(end - start));
                         }
 
                         // close popup
