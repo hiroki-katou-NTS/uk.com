@@ -383,7 +383,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 			// return 社員の当日在職状態＝Null, 社員の当日労働条件＝Null, エラー＝Null, 勤務予定＝Null, 処理状態＝処理終了する
 			DataProcessingStatusResult result = new DataProcessingStatusResult(null, null,
-					ProcessingStatus.valueOf(ProcessingStatus.END_PROCESS.value), null, null, null);
+					ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY.value), null, null, null);
 			return result;
 		}
 		ScheManaStatuTempo employmentInfo = optEmploymentInfo.get();

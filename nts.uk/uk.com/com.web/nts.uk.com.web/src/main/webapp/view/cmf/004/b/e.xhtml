@@ -75,7 +75,7 @@
             </table>
         </div>
         <div>
-            <div class="div-line">
+            <div class="div-line flex">
                 <!--E8_1 復旧前に保存(ラベル)-->
                 <div id="E8_1" class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_471')}</div>
                 <!--E8_2 復旧前に保存-->
@@ -92,9 +92,9 @@
                 <table class="compressGrid" style="height: 100%;">
                     <tr>
                         <!--E8_3 圧縮パスワ－ド(ラベル)-->
-                        <td><div id="E8_3" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_474')}</div></td>
+                        <td style="width: 117px;"><div id="E8_3" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_474')}</div></td>
                         <!--E8_3_1 圧縮パスワ－ド有無-->
-                        <td><div id="E8_3_1" class="form-B" data-bind="ntsCheckBox: { checked: $vm.checkboxChk, enable: $vm.selectedRuleCode() === 1 }" tabindex="4" style="height: initial;"></div></td>
+                        <td class="flex valign-center"><div id="E8_3_1" class="form-B" data-bind="ntsCheckBox: { checked: $vm.checkboxChk, enable: $vm.selectedRuleCode() === 1 }" tabindex="4"></div></td>
                         <td>#{i18n.getText('CMF004_475')}</td>
                         <!--E8_3_2 圧縮パスワ－ド-->
                         <td id="E8_3_2" data-bind="with: $vm.pwdCompressEdt">

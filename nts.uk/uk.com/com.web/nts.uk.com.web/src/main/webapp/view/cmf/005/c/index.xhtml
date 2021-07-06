@@ -174,9 +174,6 @@
                 editable: false,
               }">
               </div>
-              <!-- C3_2 削除するカテゴリ -->
-              <div id="C3_2" class="div-column-2" data-bind="ntsFormLabel: { required: true }">
-                #{i18n.getText('CMF005_47')}</div>
             </div>
             <div class="div-line swap-zone">
               <!-- C4 削除可能カテゴリ一覧 -->
@@ -199,6 +196,10 @@
                 afterMoveLeft: checkAfterMoveLeft,
                 afterMoveRight: checkAfterMoveRight
               }">
+                <!-- C3_2 削除するカテゴリ -->
+                <div id="C3_2" class="div-column-2" data-bind="ntsFormLabel: { required: true }">
+                  #{i18n.getText('CMF005_47')}
+                </div>
               </div>
             </div>
             <div class="div-line flex">

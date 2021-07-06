@@ -10,7 +10,7 @@
 			<script>
 				    var dialogSize = {
 				        width : 550,
-				        height : 300
+				        height : 280
 				    };
             </script>
 			<com:stylefile path="kal001.d.style.css" />
@@ -21,7 +21,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-		<div style="overflow-y: hidden;">
+		<div id="contents-area">
 			<!--D1_1-->
 			<div id="titleScreen">
 				<label>#{i18n.getText('KAL001_28')}</label>
@@ -52,8 +52,8 @@
 					</tr>
 				</table>
 			</div>
-			<hr />
-			<div align="center">
+			</div>
+      <div id="functions-area-bottom">
 				<com:ko-if bind="dialogMode() == 2 ">
  						<button tabindex="1" id="D3_1" data-bind="click : interrupt" class="danger">#{i18n.getText('KAL001_36')}</button> 
  				</com:ko-if>
@@ -63,7 +63,6 @@
 				<com:ko-if bind="dialogMode() == 1 || dialogMode() == 3 || dialogMode() == 0">
 	 					<button tabindex="3" id="D3_2" data-bind="click : closePopup" >#{i18n.getText('KAL001_40')}</button> 
 				</com:ko-if>
-			</div>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -44,14 +44,14 @@ module nts.custombinding {
                 }
                 .cps003.setting-dialog .ui-igcombo-wrapper {                    
                     position: absolute;
-                    top: 2px;
+                    top: 1px;
                     left: 210px;
                 }
-                .cps003.setting-dialog .form-group .multicheckbox-wrapper {
+                .cps003.setting-dialog .form-group .checkbox-multi {
                     margin-top: -30px;
                     padding-left: 175px;
                 }
-                .cps003.setting-dialog .form-group .multicheckbox-wrapper .ntsCheckBox {
+                .cps003.setting-dialog .form-group .checkbox-multi .checkbox-wrapper {
                     display: block;
                 }
                 .cps003.setting-dialog .form-group.btn-group {
@@ -61,12 +61,15 @@ module nts.custombinding {
                     margin: 0 -7px -7px -7px;
                     border-radius: 0 0 7px 7px;
                 }
+                .cps003.setting-dialog .form-group .ntsHelpButton button {
+                  font-size: 0.8rem;
+                }
                 </style>
                 <div class="form-group">
                     <div data-bind="ntsFormLabel: { text: i18n('CPS003_25') }"></div>
-                    <button data-bind="ntsHelpButton: {textId: 'CPS003_26', position: 'bottom center' }">？</button>
+                    <button data-bind="ntsHelpButton: {textId: 'CPS003_26', position: 'bottom center' }">?</button>
                     <div data-bind="ntsComboBox: {
-                            width: 120,
+                            width: 60,
                             name: i18n('CPS003_25'),
                             value: cursorDirection,
                             options: ko.observableArray([
@@ -83,8 +86,8 @@ module nts.custombinding {
                         }"></div>
                 </div>
                 <div class="form-group">
-                    <div data-bind="ntsFormLabel: { text: i18n('CPS003_27') }"></div>
-                    <div data-bind="ntsMultiCheckBox: {
+                    <div class="checkbox-label" data-bind="ntsFormLabel: { text: i18n('CPS003_27') }"></div>
+                    <div class="checkbox-multi" data-bind="ntsMultiCheckBox: {
                             options: ko.observableArray([
                                 { id: 1, name: i18n('CPS003_28'), enable: false },
                                 { id: 2, name: i18n('CPS003_29'), enable: false },

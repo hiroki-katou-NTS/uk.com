@@ -7,7 +7,6 @@ import {
 
 @component({
     name: 'cmms45shrcomponentsapp70',
-    route: '/cmm/s45/shr/components/app7/app70',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),

@@ -45,15 +45,14 @@
 					<label id="itemSel">#{i18n.getText('CPS009_34')}</label>
 				</div>
 				<!-- B010: switch button 項目初期値設定-->
-				<div id="B_010" class="cf"
+				<div id="B_010" class="cf" tab-index="4"
 					data-bind="ntsSwitchButton: {
 											name: '#[CPS009_35]',
 											options: roundingRules,
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: selectedRuleCode,
-											enable: true }"
-					tab-index="4"></div>
+											enable: true }"></div>
 			</div>
 			<div id='functions-area-bottom'>
 				<!-- B011: button 決定 -->
