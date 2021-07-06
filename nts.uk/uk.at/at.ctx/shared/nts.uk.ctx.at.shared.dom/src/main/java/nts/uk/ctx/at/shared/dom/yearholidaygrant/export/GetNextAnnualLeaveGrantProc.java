@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.UseSimultaneousGrant;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdTime;;
 
 /**
  * 処理：次回年休付与を取得する
@@ -58,12 +59,14 @@ public class GetNextAnnualLeaveGrantProc {
 	 * @param grantHdTblSetParam 年休付与テーブル設定
 	 * @param lengthServiceTblsParam 勤続年数テーブルリスト
 	 * @param closureStartDate 締め開始日
+	 * @param contractTime 契約時間
 	 * @return 次回年休付与リスト
 	 */
 	public static List<NextAnnualLeaveGrant> algorithm(RequireM1 require, CacheCarrier cacheCarrier,
 			String companyId, String grantTableCode, GeneralDate entryDate, GeneralDate criteriaDate,
 			DatePeriod period, boolean isSingleDay, Optional<GrantHdTblSet> grantHdTblSetParam,
-			Optional<List<LengthServiceTbl>> lengthServiceTblsParam, Optional<GeneralDate> closureStartDate){
+			Optional<List<LengthServiceTbl>> lengthServiceTblsParam, Optional<GeneralDate> closureStartDate
+			){
 
 		List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList = new ArrayList<>();
 
@@ -148,19 +151,24 @@ public class GetNextAnnualLeaveGrantProc {
 					entryDate, criteriaDate, simultaneousGrantMDOpt, lengthServiceTbls,
 					period, isSingleDay, nextAnnualLeaveGrantList);
 //		}
-//		for (val nextAnnualLeaveGrant : this.nextAnnualLeaveGrantList){
-//
-//			// 付与回数をもとに年休付与テーブルを取得
-//			val grantTimes = nextAnnualLeaveGrant.getTimes().v();
-//			val grantHdTblOpt = this.grantYearHolidayRepo.find(companyId, 1, grantTableCode, grantTimes);
-//
-//			// 次回年休付与に付与日数・半日年休上限回数・時間年休上限日数をセット
-//			if (!grantHdTblOpt.isPresent()) continue;
-//			val grantHdTbl = grantHdTblOpt.get();
-//			nextAnnualLeaveGrant.setGrantDays(grantHdTbl.getGrantDays());
-//			nextAnnualLeaveGrant.setHalfDayAnnualLeaveMaxTimes(grantHdTbl.getLimitDayYear());
-//			nextAnnualLeaveGrant.setTimeAnnualLeaveMaxDays(grantHdTbl.getLimitTimeHd());
-//		}
+
+		for (val nextAnnualLeaveGrant : nextAnnualLeaveGrantList){
+
+			// 付与回数をもとに年休付与テーブルを取得
+			val grantTimes = nextAnnualLeaveGrant.getTimes().v();
+			val grantHdTblOpt = require.grantHdTbl(companyId, 1, grantTableCode, grantTimes);
+
+			// 次回年休付与に付与日数・半日年休上限回数・時間年休上限日数をセット
+			if (!grantHdTblOpt.isPresent()) continue;
+			val grantHdTbl = grantHdTblOpt.get();
+			nextAnnualLeaveGrant.setGrantDays(nts.gul.util.value.Finally.of(grantHdTbl.getGrantDays()));
+			nextAnnualLeaveGrant.setHalfDayAnnualLeaveMaxTimes(grantHdTbl.getLimitDayYear());
+			nextAnnualLeaveGrant.setTimeAnnualLeaveMaxDays(grantHdTbl.getLimitTimeHd());
+
+			// 要修正　契約時間を取得する
+			nextAnnualLeaveGrant.setTimeAnnualLeaveMaxTime(
+					grantHdTbl.getLimitTimeHd().map(c->new LimitedTimeHdTime(c.v() * 480)));
+		}
 
 		// 期間がNULLであった場合は取得した付与年月日の最初の1件にする
 		if ( isPeriodNull ){
