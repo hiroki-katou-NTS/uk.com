@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.auth.app.find.grant.rolesetjob;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -64,9 +63,11 @@ public class RoleSetGrantedJobTitleFinder {
 		listRoleSet.sort((rs1, rs2) -> rs1.getCode().compareTo(rs2.getCode()));
 
 		// get Role Set Granted Job Title
-		Optional<RoleSetGrantedJobTitleDto> roleSetJobOpt = roleSetJobRepo.getOneByCompanyId(companyId)
-				.map(item -> RoleSetGrantedJobTitleDto.fromDomain(item));
-		RoleSetGrantedJobTitleDto roleSetJob = roleSetJobOpt.isPresent() ? roleSetJobOpt.get() : null;
+		List<RoleSetGrantedJobTitleDetailDto> detailDtoList = roleSetJobRepo.getByCompanyId(companyId).stream()
+				.map(detail -> RoleSetGrantedJobTitleDetailDto.fromDomain(detail))
+				.collect(Collectors.toList());
+		
+		RoleSetGrantedJobTitleDto roleSetJob = new RoleSetGrantedJobTitleDto(detailDtoList);
 
 		return new GrantRoleSetJobDto(listRoleSet, roleSetJob, listJobTitle);
 	}

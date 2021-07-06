@@ -11,7 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RoleSetGrantedJobTitleDto {
 
-	private String companyId;
-
 	private List<RoleSetGrantedJobTitleDetailDto> details;
 }
