@@ -68,10 +68,12 @@ public class AccountLockPolicy extends AggregateRoot {
 	 */
 	public Optional<LockoutData> lockIfViolated(Require require, String userId) {
 		
-		// 前回の失敗までしかまだ永続化されていないため、今回失敗分の１回を加算する
-		int failCount = countFailure(require, userId) + 1;
-		if(failCount >= errorCount.v().intValue()) {
-			return Optional.of(LockoutData.autoLock(contractCode, userId, LoginMethod.NORMAL_LOGIN));
+		if(this.isUse) {
+			// 前回の失敗までしかまだ永続化されていないため、今回失敗分の１回を加算する
+			int failCount = countFailure(require, userId) + 1;
+			if(failCount >= errorCount.v().intValue()) {
+				return Optional.of(LockoutData.autoLock(contractCode, userId, LoginMethod.NORMAL_LOGIN));
+			}
 		}
 		return Optional.empty();
 	}
