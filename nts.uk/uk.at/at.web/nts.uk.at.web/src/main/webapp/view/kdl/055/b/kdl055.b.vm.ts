@@ -246,7 +246,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
                 width: '1200px',
                 height: '600px',
-                headerHeight: "40px",
+                headerHeight: "45px",
                 subHeight: "140px",
                 subWidth: "100px",
                 dataSource: vm.gridOptions.dataSource,
