@@ -3120,7 +3120,13 @@ module nts.uk.ui.at.kdw013.calendar {
                             <tr>
                                 <td data-bind="i18n: 'KDW013_14'"></td>
                                 <td>
-                                    <input class="nts-input" type="text" data-bind="input-time: $component.params.scrollTime" />
+                                <select class="nts-input" data-bind="
+                                        value: $component.params.scrollTime,
+                                        options: $component.timeList,
+                                        optionsText: 'text',
+                                        optionsValue: 'value'
+                                    ">
+                                    <option></option>
                                 </td>
                             </tr>
                             <tr>
@@ -3162,11 +3168,21 @@ module nts.uk.ui.at.kdw013.calendar {
         export class FullCalendarSettingViewmodel extends ko.ViewModel {
             firstDays: KnockoutObservableArray<{ id: number; title: string; }> = ko.observableArray([]);
             slotDurations: KnockoutObservableArray<{ id: number; title: string; }> = ko.observableArray([]);
+            timeList: KnockoutObservableArray<{ value: number; text: string; }> = ko.observableArray([]);
 
             constructor(private params: SettingApi & { position: KnockoutObservable<any | null> }) {
                 super();
-
+    
+                
                 const vm = this;
+    
+                let times = [];
+                for (let i = 0; i < 49; i++) {
+                    var value = i * 30;
+                    times.push({ value: value, text: nts.uk.time.format.byId("Clock_Short_HM", value) });
+                }
+
+                vm.timeList(times);
                 // resource for slotDuration
                 const resource = [
                     'KDW013_16',
