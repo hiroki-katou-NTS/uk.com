@@ -52,12 +52,12 @@
 						<div class="titleSelect" data-bind="ntsFormLabel: {required: false, text: k2_1 }"></div>
 						<!--選択された承認者 -->
 						<!--K2_14-->
-						<div class="approverSelect" style="margin-left: 50px" data-bind="ntsFormLabel: {required: false, text: k2_2 }, visible: selectTypeSet() == 0"></div>
+						<div class="approverSelect k2-14" data-bind="ntsFormLabel: {required: false, text: k2_2 }, visible: selectTypeSet() == 0"></div>
 						<div class="approverSelect" style="margin-left: 70px" data-bind="ntsFormLabel: {required: false, text: k2_2 }, visible: selectTypeSet() != 0"></div>
 						<br />
 						<!-- List Approver -->
 						<!-- TH SETTING CA NHAN -->
-						<div data-bind="if: selectTypeSet() == 0">
+						<div class="top-8" data-bind="if: selectTypeSet() == 0">
 						<div style="display: inline-flex;margin-top: 13px">
 							<div id="swap-list"
 								data-bind="ntsSwapList: { 
@@ -122,7 +122,7 @@
 						</div>
 					</div>
 						<!-- TH SETTING PHONG BAN CHI DINH -->		
-						<div data-bind="if: selectTypeSet() == 2">
+						<div class="top-16" data-bind="if: selectTypeSet() == 2">
 							<div style="display: inline-flex;margin-top: 5px;">
 							<div  style="margin-top: 15px;">
 								<table id="lst-spec-L" data-bind="ntsGridList: {								

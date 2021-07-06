@@ -11,9 +11,6 @@
 	padding-top: 25px;
 }
 
-.approverSelect {
-	margin-top: 5px;
-}
 #swap-list-gridArea2, #swap-list-grid2_displayContainer, #swap-list-grid2_scrollContainer, #swap-list-grid2_container{
 	height:160px !important;
 }
@@ -37,7 +34,7 @@ table.ntsSwapGrid tbody tr td {
 	display:none;
 }
 .settingApprover {
-	margin-top: 10px !important;
+	margin-top: 30px !important;
 	height: 300px;
 }
 .titleSelect {
@@ -90,4 +87,18 @@ html{
 
 #selected-approver {
 	margin-left: 23px !important;
+}
+
+.top-16 {
+	margin-top: -16px;
+}
+
+.top-8 {
+	margin-top: -8px;
+}
+
+.k2-14 {
+	position: absolute !important;
+	margin-left: 50px;
+	top: 120px;
 }
