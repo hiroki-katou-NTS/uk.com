@@ -871,7 +871,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let updateMode = self.mode() === 'edit' ? 'stick' : 'determine'
             self.initExTable(dataBindGrid, viewMode, updateMode);
             if (!self.showA9) {
-                if (!._isNil(document.getElementById('A13'))) {
+                if (!_.isNil(document.getElementById('A13'))) {
                     document.getElementById('A13').remove();
                 }
             }
@@ -1689,7 +1689,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
 
             if (!self.showA9) {
-                if (!._isNil(document.getElementById('A13'))) {
+                if (!_.isNil(document.getElementById('A13'))) {
                     document.getElementById('A13').remove();
                 }
             }
