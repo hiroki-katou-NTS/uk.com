@@ -66,9 +66,7 @@ public class PrepareImporting {
 				cn -> { }, // 今のところヘッダ行を取得する必要が無い
 				r -> processRecord(require, context, assembly, r));
 		
-		val itemNames = getItemNames(require, context, assembly);
-		
-		return new ImportingDataMeta(context.getCompanyId(), itemNames);
+		return ImportingDataMeta.create(require, context, assembly.getAllItemNo());
 	}
 
 	/**
@@ -97,16 +95,6 @@ public class PrepareImporting {
 		require.save(context, revisedData);
 	}
 
-	private static List<String> getItemNames(
-			Require require,
-			ExecutionContext context,
-			ExternalImportAssemblyMethod assembly) {
-		
-		return assembly.getAllItemNo().stream()
-				.map(itemNo -> require.getImportableItem(context.getGroupId(), itemNo))
-				.map(item -> item.getItemName())
-				.collect(toList());
-	}
 	
 	public static interface Require extends
 	ExternalImportAssemblyMethod.Require, 

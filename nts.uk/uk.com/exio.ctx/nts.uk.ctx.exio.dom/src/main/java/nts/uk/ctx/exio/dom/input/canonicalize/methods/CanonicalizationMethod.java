@@ -32,7 +32,7 @@ public interface CanonicalizationMethod {
 			Consumer<IntermediateResult> intermediateResultProvider);
 
 	public static interface Require extends
-			ImportingDataMeta.RequireAddItem,
+			ImportingDataMeta.Require,
 			EmployeeCodeCanonicalization.Require,
 			EmployeeContinuousHistoryCanonicalization.RequireCanonicalize,
 			EmploymentHistoryCanonicalization.RequireGetHistory {

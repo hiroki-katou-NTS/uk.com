@@ -68,7 +68,7 @@ public class DailyPerformanceCanonicalization implements GroupCanonicalization {
 			
 		}
 		
-		return meta.addItem(require, context.getGroupId(), employeeCodeCanonicalization.getItemNoEmployeeId());
+		return meta.addItem("SID");
 	}
 	
 	private void canonicalize(
