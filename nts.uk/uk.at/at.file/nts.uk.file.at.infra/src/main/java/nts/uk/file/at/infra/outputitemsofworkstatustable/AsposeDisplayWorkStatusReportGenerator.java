@@ -73,8 +73,8 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         String companyName = dataSource.getCompanyName();
-        pageSetup.setHeader(0, "&9&\"ＭＳ フォントサイズ\"" + companyName);
-        pageSetup.setHeader(1, "&16&\"ＭＳ フォントサイズ,Bold\""
+        pageSetup.setHeader(0, "&7&\"ＭＳ フォントサイズ\"" + companyName);
+        pageSetup.setHeader(1, "&12&\"ＭＳ フォントサイズ,Bold\""
                 + dataSource.getTitle());
         pageSetup.setBottomMarginInch(1.5);
         pageSetup.setTopMarginInch(1.5);
@@ -85,7 +85,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
         pageSetup.setHeader(2,
-                "&9&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
+                "&7&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
         if (dataSource.getMode() == EXPORT_EXCEL) {
             pageSetup.setZoom(100);
