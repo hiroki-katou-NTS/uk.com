@@ -67,9 +67,10 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
         if (!optPersisAlarmExtractResult.isPresent() && CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())) {
             return;
         } else {
-            if(optPersisAlarmExtractResult.isPresent() && CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())){
-                alarmExtractResultRepo.delete(optPersisAlarmExtractResult.get());
-            } else if (!optPersisAlarmExtractResult.isPresent() && !CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())) {
+//            if(optPersisAlarmExtractResult.isPresent() && CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())){
+//                alarmExtractResultRepo.delete(optPersisAlarmExtractResult.get());
+//            } else
+            if (!optPersisAlarmExtractResult.isPresent() && !CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())) {
                 alarmExtractResultRepo.insert(alarmResult);
             } else {
                 List<AlarmEmployeeList> lstExResultInsert = new ArrayList<>();
