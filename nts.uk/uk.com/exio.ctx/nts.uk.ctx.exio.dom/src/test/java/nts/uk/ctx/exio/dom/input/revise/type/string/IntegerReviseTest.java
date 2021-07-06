@@ -10,7 +10,7 @@ import lombok.val;
 import mockit.Expectations;
 import mockit.Mocked;
 import mockit.Verifications;
-import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRawNumber;
+import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.revise.type.RangeOfValue;
 import nts.uk.ctx.exio.dom.input.revise.type.integer.IntegerRevise;
 
@@ -22,7 +22,7 @@ public class IntegerReviseTest {
 	private static class Dummy{
 		private static String TARGET = "12345";
 		private static Long RESULT = (long) 12345;
-		private static RangeOfValue RANGE_OF_VALUE = new RangeOfValue(new ExternalImportRawNumber(2), new ExternalImportRawNumber(4));
+		private static RangeOfValue RANGE_OF_VALUE = new RangeOfValue(new ExternalImportRowNumber(2), new ExternalImportRowNumber(4));
 	}
 	
 	@Test

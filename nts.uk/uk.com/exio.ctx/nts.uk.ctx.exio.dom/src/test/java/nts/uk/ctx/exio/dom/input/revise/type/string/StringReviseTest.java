@@ -8,7 +8,7 @@ import lombok.val;
 import mockit.Expectations;
 import mockit.Mocked;
 import mockit.Verifications;
-import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRawNumber;
+import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.revise.type.RangeOfValue;
 
 public class StringReviseTest {
@@ -22,8 +22,8 @@ public class StringReviseTest {
 	private static class Dummy{
 		private static String TARGET = "value";
 		private static String RESULT = "value";
-		private static RangeOfValue RANGE_OF_VALUE = new RangeOfValue(new ExternalImportRawNumber(2), new ExternalImportRawNumber(4));
-		private static FixedLength FIXED_LENGTH = new FixedLength(new ExternalImportRawNumber(10), FixedLengthReviseMethod.ZERO_BEFORE);
+		private static RangeOfValue RANGE_OF_VALUE = new RangeOfValue(new ExternalImportRowNumber(2), new ExternalImportRowNumber(4));
+		private static FixedLength FIXED_LENGTH = new FixedLength(new ExternalImportRowNumber(10), FixedLengthReviseMethod.ZERO_BEFORE);
 	}
 	
 	

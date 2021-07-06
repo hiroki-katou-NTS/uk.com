@@ -2,7 +2,7 @@ package nts.uk.ctx.exio.dom.input.revise.type;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRawNumber;
+import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 
 /**
  * 
@@ -14,10 +14,10 @@ import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRawNumber;
 public class RangeOfValue {
 	
 	/** 開始桁数 */
-	private ExternalImportRawNumber startRaw;
+	private ExternalImportRowNumber startRaw;
 	
 	/** 終了桁数 */
-	private ExternalImportRawNumber endRaw;
+	private ExternalImportRowNumber endRaw;
 	
 	/**
 	 * 値の抽出

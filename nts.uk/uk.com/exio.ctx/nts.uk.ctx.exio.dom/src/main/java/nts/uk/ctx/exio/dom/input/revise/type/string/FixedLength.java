@@ -2,7 +2,7 @@ package nts.uk.ctx.exio.dom.input.revise.type.string;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRawNumber;
+import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 
 /**
  * 
@@ -14,7 +14,7 @@ import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRawNumber;
 public class FixedLength {
 	
 	/** 桁長 */
-	private ExternalImportRawNumber length;
+	private ExternalImportRowNumber length;
 	
 	/** 編集方法 */
 	private FixedLengthReviseMethod reviseMethod;

@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRawNumber;
+import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 import nts.uk.ctx.exio.dom.input.revise.ReviseItem;
 import nts.uk.ctx.exio.dom.input.revise.ReviseValue;
@@ -138,7 +138,7 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 						Optional.ofNullable(useSpecifyRange == 1 ? createRangeOfValue() : null), 
 						useFixedLength == 1, 
 						Optional.ofNullable(useFixedLength == 1 ? new FixedLength(
-								new ExternalImportRawNumber(fixLength), 
+								new ExternalImportRowNumber(fixLength), 
 								EnumAdaptor.valueOf(reviseMethod, FixedLengthReviseMethod.class)) : null));
 			case INT:
 				return new IntegerRevise(
@@ -169,7 +169,7 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 	
 	private RangeOfValue createRangeOfValue() {
 		return new RangeOfValue(
-				new ExternalImportRawNumber(startRaw), 
-				new ExternalImportRawNumber(endRaw));
+				new ExternalImportRowNumber(startRaw), 
+				new ExternalImportRowNumber(endRaw));
 	}
 }

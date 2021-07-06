@@ -28,14 +28,14 @@ import lombok.val;
 public class ExternalImportCsvFileInfo {
 	
 	/** CSVの項目名取得行 */
-	private final ExternalImportRawNumber itemNameRawNumber;
+	private final ExternalImportRowNumber itemNameRowNumber;
 	
 	/** CSVの取込開始行 */
-	private final ExternalImportRawNumber importStartRawNumber;
+	private final ExternalImportRowNumber importStartRowNumber;
 	
 	public void parse(InputStream csvFileStream, Consumer<CsvRecord> readRecords) {
 
-		new Parser(itemNameRawNumber.v(), importStartRawNumber.v()).parse(
+		new Parser(itemNameRowNumber.v(), importStartRowNumber.v()).parse(
 				csvFileStream,
 				cn -> { }, // 今のところヘッダ行を取得する必要が無い
 				readRecords);
