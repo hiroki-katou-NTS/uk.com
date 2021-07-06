@@ -658,6 +658,16 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(313, join(excessHoliday, FRAMES, TIME, joinNS(CALC, NUMBER_1, NUMBER_0)));
 		temp.put(312, join(excessHoliday, FRAMES, TRANSFER, joinNS(TIME, NUMBER_1, NUMBER_0)));
 		temp.put(314, join(excessHoliday, FRAMES, TRANSFER, joinNS(CALC, NUMBER_1, NUMBER_0)));
+		temp.put(848, join(excessHoliday, FRAMES, TRANSFER, DIVERGENCE + NUMBER_1));
+		temp.put(849, join(excessHoliday, FRAMES, TRANSFER, DIVERGENCE + NUMBER_2));
+		temp.put(850, join(excessHoliday, FRAMES, TRANSFER, DIVERGENCE + NUMBER_3));
+		temp.put(851, join(excessHoliday, FRAMES, TRANSFER, DIVERGENCE + NUMBER_4));
+		temp.put(852, join(excessHoliday, FRAMES, TRANSFER, DIVERGENCE + NUMBER_5));
+		temp.put(853, join(excessHoliday, FRAMES, TRANSFER, DIVERGENCE + NUMBER_6));
+		temp.put(854, join(excessHoliday, FRAMES, TRANSFER, DIVERGENCE + NUMBER_7));
+		temp.put(855, join(excessHoliday, FRAMES, TRANSFER, DIVERGENCE + NUMBER_8));
+		temp.put(856, join(excessHoliday, FRAMES, TRANSFER, DIVERGENCE + NUMBER_9));
+		temp.put(857, join(excessHoliday, FRAMES, TRANSFER, DIVERGENCE + NUMBER_1 + NUMBER_0)); 
 		
 		temp.put(777, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_1)));
 		temp.put(778, join(excessHoliday, FRAMES, TIME, joinNS(DIVERGENCE, NUMBER_2)));
