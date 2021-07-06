@@ -25,3 +25,7 @@
 #grid .limited-label {
     display: table-cell;
 }
+
+.padding-3 {
+    padding: 0 3px !important;
+}

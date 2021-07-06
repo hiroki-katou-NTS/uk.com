@@ -351,7 +351,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
 
             _.forEach(listPersonEmp, (emp) => {
                 let record: any = { employeeId: emp.employeeId, employeeCode: emp.employeeCode, employeeName: emp.businessName, nameHeader: emp.employeeCode + ' ' + emp.businessName };
-                cellStates.push({rowId: emp.employeeId, columnKey: 'nameHeader', state: ['limited-label']});
+                cellStates.push({rowId: emp.employeeId, columnKey: 'nameHeader', state: ['limited-label', 'padding-3']});
                 _.forEach(results, (result: ImportResultDetail) => {
                     if (result.employeeId === emp.employeeId) {
                         // record[result.ymd] = result.importCode;
