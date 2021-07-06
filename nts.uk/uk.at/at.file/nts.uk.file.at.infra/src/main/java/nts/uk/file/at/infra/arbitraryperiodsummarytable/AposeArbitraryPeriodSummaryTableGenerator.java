@@ -355,7 +355,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
      * Convert minute to HH:mm
      */
     private String convertToTime(int minute) {
-        val minuteAbs = Math.abs(minute);
+        int minuteAbs = Math.abs(minute);
         if (minute < 0) {
             minuteAbs = Math.abs(minute +1440);
         }

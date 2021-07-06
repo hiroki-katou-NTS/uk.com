@@ -59,22 +59,22 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         String companyName = dataSource.getCompanyName();
-        pageSetup.setHeader(0, "&9&\"ＭＳ フォントサイズ\"" + companyName);
-        pageSetup.setHeader(1, "&16&\"ＭＳ フォントサイズ,Bold\""
+        pageSetup.setHeader(0, "&7&\"ＭＳ フォントサイズ\"" + companyName);
+        pageSetup.setHeader(1, "&12&\"ＭＳ フォントサイズ,Bold\""
                 + dataSource.getTitle());
 
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
-        pageSetup.setHeader(2, "&9&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
+        pageSetup.setHeader(2, "&7&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
         pageSetup.setFitToPagesTall(0);
         pageSetup.setFitToPagesWide(0);
         pageSetup.setZoom(100);
-        pageSetup.setBottomMarginInch(1.5);
-        pageSetup.setTopMarginInch(1.5);
+        pageSetup.setBottomMarginInch(0.8);
+        pageSetup.setTopMarginInch(2);
         pageSetup.setLeftMarginInch(1.0);
         pageSetup.setRightMarginInch(1.0);
-        pageSetup.setHeaderMarginInch(0.8);
+        pageSetup.setHeaderMarginInch(1);
         pageSetup.setCenterHorizontally(true);
 
     }
@@ -96,11 +96,11 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                 cells.copyRow(cells, 2, count + 2);
                 cells.clearContents(count, 0, cells.getMaxRow(), 15);
             }
-            cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + "　" + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
-            cells.get(count, 7).setValue(TextResource.localize(TextResource.localize("KWR005_303")) +
+            cells.get(count, 0).setValue(TextResource.localize("KWR005_301")  + content.getWorkplaceCode() + " " + content.getWorkplaceName());
+            cells.get(count, 6).setValue(TextResource.localize(TextResource.localize("KWR005_303")) +
                     this.toYearMonthString(dataSource.getYearMonthPeriod().start()) + TextResource.localize("KWR005_305") +
                     this.toYearMonthString(dataSource.getYearMonthPeriod().end()));
-            cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + "　" + content.getEmployeeCode() + "　" + content.getEmployeeName());
+            cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302")  + content.getEmployeeCode()+ " " + content.getEmployeeName());
             // print date
             printDate(worksheet, count + 2, yearMonths);
             count += 3;
@@ -118,8 +118,8 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                             this.toYearMonthString(dataSource.getYearMonthPeriod().start()) + TextResource.localize("KWR005_305") +
                             this.toYearMonthString(dataSource.getYearMonthPeriod().end()));
 
-                    cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + "　" + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
-                    cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + "　" + content.getEmployeeCode() + "　" + content.getEmployeeName());
+                    cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
+                    cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + content.getEmployeeCode() + "　" + content.getEmployeeName());
 
                     printDate(worksheet, count + 2, yearMonths);
                     count += 3;
@@ -179,9 +179,17 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
         }
         PageSetup pageSetup = worksheet.getPageSetup();
         pageSetup.setPrintArea(PRINT_AREA + count);
+        for (int index = 0; index < 14; index++) {
+            setBottomBorderStyle(cells.get(count, index));
+        }
+        cells.removeDuplicates(count+1,0,cells.getMaxRow(),cells.getMaxColumn());
 
     }
-
+    private void setBottomBorderStyle(Cell cell) {
+        Style style = cell.getStyle();
+        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+        cell.setStyle(style);
+    }
     private void printDate(Worksheet worksheet, int rowCount, List<YearMonth> yearMonths) {
         Cells cells = worksheet.getCells();
         for (int i = 0; i < 15 ; i++) {
