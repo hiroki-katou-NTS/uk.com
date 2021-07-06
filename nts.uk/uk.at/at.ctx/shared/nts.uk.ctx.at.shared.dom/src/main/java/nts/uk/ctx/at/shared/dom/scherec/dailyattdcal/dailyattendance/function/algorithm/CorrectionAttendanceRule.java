@@ -149,7 +149,7 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 		}
 		
 		/** 休憩時間帯の補正 */
-		BreakTimeSheetCorrector.correct(createBreakRequire(optionalItems), afterDomain, changeAtt.fixBreakCorrect);
+		BreakTimeSheetCorrector.correct(createBreakRequire(optionalItems), afterDomain, changeAtt.correctValCopyFromSche);
 
 		// 手修正を基に戻す
 		DailyRecordToAttendanceItemConverter afterConverter = attendanceItemConvertFactory.createDailyConverter().setData(afterDomain)

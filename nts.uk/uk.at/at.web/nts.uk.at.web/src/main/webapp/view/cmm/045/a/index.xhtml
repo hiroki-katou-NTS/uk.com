@@ -169,8 +169,14 @@
 											class="hyperlink">#{i18n.getText("CMM045_87")}</a></div>
 								</td>
 								<td>
-									<button tabindex="6" data-bind="click: findByPeriod"
-										style="width: 70px; height: 70px;">#{i18n.getText('CMM045_32')}</button>
+									<com:ko-if bind="mode() == 0">
+										<button tabindex="6" data-bind="click: findByPeriod"
+											style="width: 70px; height: 70px;">#{i18n.getText('CMM045_32')}</button>
+									</com:ko-if>
+									<com:ko-if bind="mode() == 1">
+										<button tabindex="6" data-bind="click: findByPeriod"
+												style="width: 70px; height: 70px; margin-top: -50px">#{i18n.getText('CMM045_32')}</button>
+									</com:ko-if>
 								</td>
 							</tr>
 							<!-- <tr> -->

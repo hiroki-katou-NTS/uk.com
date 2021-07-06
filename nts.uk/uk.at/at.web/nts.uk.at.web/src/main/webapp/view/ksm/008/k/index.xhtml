@@ -69,9 +69,9 @@
                             <table tabindex="6" id="single-list" data-bind="ntsGridList: {
                             dataSource: kScreenGridListData,
                             primaryKey: 'code',
-                            columns: [ { headerText: '#{i18n.getText('KSM008_155')}', key: 'code', width: 80, formatter: _.escape },
+                            columns: [ { headerText: '#{i18n.getText('KSM008_155')}', key: 'code', width: 45, formatter: _.escape },
                                        { headerText: '#{i18n.getText('KSM008_156')}', key: 'name', width: 180, formatter: _.escape },
-                                       { headerText: '#{i18n.getText('KSM008_157')}', key: 'maxNumberOfDay', width: 80, formatter: _.escape }
+                                       { headerText: '#{i18n.getText('KSM008_157')}', key: 'maxNumberOfDay', width: 60, formatter: _.escape }
                                       ],
                             deleteOptions : {visible : false},
                             multiple: false,
@@ -80,10 +80,10 @@
                         },name:#{i18n.getText('KSM008_154')}"></table>
                         </div>
                     </div>
-                    <div class="cell valign-top">
+                    <div class="cell valign-top" style="padding-left: 20px;">
                         <div class="table">
                             <!-- k6_1 -->
-                            <div class="cell valign-center" style="width: 155px">
+                            <div class="cell valign-center" style="width: 120px">
                                 <div data-bind="
                                 ntsFormLabel: { constraint: ['MaxDayOfWorkTimeCode','MaxDayOfWorkTimeName'], enable: true, required:true }
                               ">#{i18n.getText('KSM008_158')}</div>
@@ -106,13 +106,13 @@
                         </div>
                         <div class="table" style="margin-top: 7px">
                             <!-- K7_1 -->
-                            <div class="cell valign-center" style="width: 155px">
+                            <div class="cell valign-center" style="width: 120px">
                                 <div data-bind="ntsFormLabel: {enable: true, required:true}">#{i18n.getText('KSM008_161')}</div>
                             </div>
                             <!-- K7_2 -->
                             <div class="cell valign-center">
                                 <button tabindex="9" data-bind="click: openKdl001ModalKScreen" id="K7_2"
-                                        style="margin-right: 6px;margin-left: 27px;width: 48px">#{i18n.getText('KSM008_162')}</button>
+                                        style="margin-right: 6px;width: 48px">#{i18n.getText('KSM008_162')}</button>
                             </div>
                             <!-- K7_3-->
                             <div class="cell valign-center">
@@ -121,13 +121,13 @@
                         </div>
                         <div class="table" style="margin-top: 7px">
                             <!-- K8_1 -->
-                            <div class="cell valign-center" style="width: 155px">
+                            <div class="cell valign-center" style="width: 120px">
                                 <div data-bind="ntsFormLabel: { constraint: 'MaxDay', enable: true, required:true}">#{i18n.getText('KSM008_164')}</div>
                             </div>
                             <!-- K8_2 -->
                             <div class="cell valign-center">
                                 <input tabindex="10" id="K8_2"
-                                       data-bind="ntsNumberEditor: {constraint: 'MaxDay', value: vm.kScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_165]'}, style: { width: '27px', marginRight: '6px', marginLeft: '26px'}"/>
+                                       data-bind="ntsNumberEditor: {constraint: 'MaxDay', value: vm.kScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_165]'}, style: { width: '27px', marginRight: '6px'}"/>
                             </div>
                             <!-- K8_3 -->
                             <div class="cell valign-center">

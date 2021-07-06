@@ -39,19 +39,19 @@ module nts.uk.at.view.kaf005.shr.header.viewmodel {
 						<tr>
 							<!--A2_14 年月ラベル-->
 							<td
-								data-bind="text: yearMonth, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+								data-bind="text: yearMonth, attr: { class: backgroundColor() + ' ' + textColor() } "></td>
 							<!--A2_15  限度ラベル-->
 							<td
-								data-bind="text: $parent.getFormatTime(limitTime()), style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+								data-bind="text: $parent.getFormatTime(limitTime()), attr: { class: backgroundColor() + ' ' + textColor() }"></td>
 							<!--A2_16 実績ラベル-->
 							<td
-								data-bind="text: $parent.getFormatTime(actualTime()), style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+								data-bind="text: $parent.getFormatTime(actualTime()), attr: { class: backgroundColor() + ' ' + textColor() }"></td>
 							<!--A2_17  申請ラベル-->
 							<td style="display: none"
-								data-bind="text: appTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+								data-bind="text: appTime, attr: { class: backgroundColor() + ' ' + textColor() }"></td>
 							<!--A2_18  合計ラベル-->
 							<td style="display: none"
-								data-bind="text: totalTime, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+								data-bind="text: totalTime, attr: { class: backgroundColor() + ' ' + textColor() }"></td>
 						</tr>
 					</tbody>
 				</table>
