@@ -14,10 +14,10 @@ import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 public class RangeOfValue {
 	
 	/** 開始桁数 */
-	private ExternalImportRowNumber startRaw;
+	private ExternalImportRowNumber start;
 	
 	/** 終了桁数 */
-	private ExternalImportRowNumber endRaw;
+	private ExternalImportRowNumber end;
 	
 	/**
 	 * 値の抽出
@@ -25,6 +25,6 @@ public class RangeOfValue {
 	 * @return
 	 */
 	public String extract(String target) {
-		return target.substring(this.startRaw.v(), this.endRaw.v());
+		return target.substring(this.start.v(), this.end.v());
 	}
 }
