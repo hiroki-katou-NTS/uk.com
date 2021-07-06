@@ -1,10 +1,12 @@
 package nts.uk.ctx.exio.infra.repository.input.transfer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nemunoki.oruta.shr.tabledefinetype.databasetype.DatabaseType;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
@@ -50,18 +52,27 @@ public class ConversionTableRepositoryImpl extends JpaRepository implements Conv
 			.setParameter("category", groupName)
 			.getList();
 		
-		DatabaseType  type = DatabaseType.parse(this.database());
-
-		ConversionInfo info = new ConversionInfo(type, "", "", "" , "", "", "", "", cct);
-		List<OneColumnConversion> columns = entities.stream()
-				.map(entity -> entity.toDomain(info, info.getJoin(source)))
-				.collect(Collectors.toList());
+		DatabaseType type = DatabaseType.parse(this.database());
 		
-		return entities.stream()
-				.map(entity -> entity.pk.getTargetTableName())
-				.distinct()
-				.map(targetTableName -> ScvmtConversionTable.toDomain(targetTableName, info, columns, source))
-				.collect(Collectors.toList());
+		val entitiesByTable = entities.stream()
+				.collect(Collectors.groupingBy(e -> e.pk.getTargetTableName()));
+		
+		List<ConversionTable> results = new ArrayList<>();
+		
+		for (val entry : entitiesByTable.entrySet()) {
+			
+			String targetTableName = entry.getKey();
+			val entitiesOfTable = entry.getValue();
+			
+			ConversionInfo info = new ConversionInfo(type, "", "", "" , "", "", "", "", cct);
+			List<OneColumnConversion> columns = entitiesOfTable.stream()
+					.map(entity -> entity.toDomain(info, info.getJoin(source)))
+					.collect(Collectors.toList());
+			
+			results.add(ScvmtConversionTable.toDomain(targetTableName, info, columns, source));
+		}
+
+		return results;
 	}
 
 }
