@@ -34,6 +34,8 @@ module nts.uk.com.view.ccg022.a.screenModel {
         ]);
         selectedStopMode: KnockoutObservable<number> = ko.observable(1);
         stopMessage: KnockoutObservable<string> = ko.observable("");
+        isSelectedStop:KnockoutObservable<boolean> = ko.observable(false);
+        	
         constructor() {
             let self = this;
             self.isSystemSelected.subscribe((state) => {
@@ -46,6 +48,7 @@ module nts.uk.com.view.ccg022.a.screenModel {
             self.selectedSystemMode.subscribe((value) => {
                 $("#stop_message_txt").ntsError("clear");
                 $("#in_progress_message_txt").ntsError("clear");
+                self.isSelectedStop(value==3);
                 
                 ko.applyBindingsToNode($("#in_progress_message_txt")[0],{ntsMultilineEditor: { value: self.usageStopMessage , 
                                                                 name: '#[CCG022_20]', 
@@ -98,6 +101,7 @@ module nts.uk.com.view.ccg022.a.screenModel {
                 self.usageStopMessage(setting ? setting.usageStopMessage : "");
                 self.selectedStopMode(setting ? setting.stopMode : 1);
                 self.stopMessage(setting ? setting.stopMessage : "");
+                self.isSelectedStop(setting.systemStatus==3);
             }
         }
 
