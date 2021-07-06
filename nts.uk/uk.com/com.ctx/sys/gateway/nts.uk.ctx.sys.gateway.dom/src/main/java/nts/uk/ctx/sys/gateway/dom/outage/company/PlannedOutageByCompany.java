@@ -11,12 +11,11 @@ import nts.uk.ctx.sys.gateway.dom.outage.PlannedOutageState;
  * 会社単位の利用停止の設定
  */
 @AllArgsConstructor
+@Getter
 public class PlannedOutageByCompany implements PlannedOutage, DomainAggregate {
 
-	@Getter
 	private final String companyId;
 	
-	@Getter
 	private PlannedOutageState state;
 	
 	public void setState(@NonNull PlannedOutageState newState) {

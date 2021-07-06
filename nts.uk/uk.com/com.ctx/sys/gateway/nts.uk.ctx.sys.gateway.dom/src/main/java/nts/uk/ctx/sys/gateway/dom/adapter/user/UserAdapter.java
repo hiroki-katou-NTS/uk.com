@@ -51,17 +51,6 @@ public interface UserAdapter {
 	Optional<UserImportNew> findByUserId(String userId);
 	
 	/**
-	 * Password policy check.
-	 *
-	 * @param userId the user id
-	 * @param newPass the new pass
-	 * @param contractCode the contract code
-	 * @return the check before change pass input
-	 */
-	//check passPolicy
-	CheckBeforeChangePass passwordPolicyCheck(String userId, String newPass, String contractCode);
-	
-	/**
 	 * Password policy check for submit.
 	 *
 	 * @param userId the user id

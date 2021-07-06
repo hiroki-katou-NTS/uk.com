@@ -167,22 +167,7 @@ public class UserAdapterImpl implements UserAdapter {
 		return userPublisher.getByEmpID(empID)
 				.map(x -> new UserInforExImport(x.getUserID(), x.getLoginID(), x.getEmpID(), x.getEmpCD()));
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#passwordPolicyCheck(
-	 * java.lang.String, java.lang.String, java.lang.String)
-	 */
-	@Override
-	public CheckBeforeChangePass passwordPolicyCheck(String userId, String newPass, String contractCode) {
-		CheckBeforeChangePassOutput result = this.checkPasswordPublisher.passwordPolicyCheck(userId, newPass,
-				contractCode);
-
-		return new CheckBeforeChangePass(result.isError(), this.convert(result.getMessage()));
-	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
