@@ -422,6 +422,9 @@ module nts.uk.ui.at.kdw013.c {
             const vm = this;
             const { labels, usages } = vm;
             const { $settings } = params;
+        
+        
+            
             const subscribe = (t: a.TaskFrameSettingDto[]) => {
                 const [first, second, thirt, four, five] = t;
 
@@ -454,8 +457,9 @@ module nts.uk.ui.at.kdw013.c {
             vm.taskFrameSettings = ko.computed({
                 read: () => {
                     const settings = ko.unwrap($settings);
-
+                   
                     if (settings) {
+                        
                         const { startManHourInputResultDto } = settings;
 
                         const { taskFrameUsageSetting } = startManHourInputResultDto;
@@ -524,13 +528,16 @@ module nts.uk.ui.at.kdw013.c {
                 .extend({ rateLimit: 250 });
 
             // this.model.timeRange.subscribe(({ start, end }) => { console.log(start, end) });
+        
+            
+        
         }
 
         mounted() {
             const vm = this;
             const { $el, params, model, combobox, hasError } = vm;
             const { taskList1, taskList2, taskList3, taskList4, taskList5 } = combobox;
-            const { task1, task2, task3, task4, task5, workplace: workLocation } = model;
+            const { task1, task2, task3, task4, task5, workplace: workLocation ,timeRange ,descriptions } = model;
             const { view, position, data, excludeTimes } = params;
 
             const cache = {
@@ -704,15 +711,19 @@ module nts.uk.ui.at.kdw013.c {
 
             task1
                 .subscribe((taskCode: string) => {
+                    const { $settings } = params;
+                    const settings = ko.unwrap($settings);
+                    settings.isChange = vm.changed();
+                    
                     if (taskCode) {
                         const { employeeId } = vm.$user;
                         const { start } = ko.unwrap(data);
 
                         const params: SelectWorkItemParam = {
                             refDate: moment(start).format(DATE_TIME_FORMAT),
-                            sId: employeeId,
-                            taskCode,
-                            taskFrameNo: 2
+                            employeeId,
+                            taskCode:"",
+                            taskFrameNo: 1
                         };
 
                         vm
@@ -731,6 +742,10 @@ module nts.uk.ui.at.kdw013.c {
 
             task2
                 .subscribe((taskCode: string) => {
+                    const { $settings } = params;
+                    const settings = ko.unwrap($settings);
+                    if(settings)
+                    settings.isChange = vm.changed();
                     if (taskCode) {
                         const { employeeId } = vm.$user;
                         const { start } = ko.unwrap(data);
@@ -738,8 +753,8 @@ module nts.uk.ui.at.kdw013.c {
                         const params: SelectWorkItemParam = {
                             refDate: moment(start).format(DATE_TIME_FORMAT),
                             sId: employeeId,
-                            taskCode,
-                            taskFrameNo: 3
+                            taskCode:vm.model.task1(),
+                            taskFrameNo: 2
                         };
 
                         vm
@@ -758,6 +773,10 @@ module nts.uk.ui.at.kdw013.c {
 
             task3
                 .subscribe((taskCode: string) => {
+                    const { $settings } = params;
+                    const settings = ko.unwrap($settings);
+                    if(settings)
+                    settings.isChange = vm.changed();
                     if (taskCode) {
                         const { employeeId } = vm.$user;
                         const { start } = ko.unwrap(data);
@@ -765,8 +784,8 @@ module nts.uk.ui.at.kdw013.c {
                         const params: SelectWorkItemParam = {
                             refDate: moment(start).format(DATE_TIME_FORMAT),
                             sId: employeeId,
-                            taskCode,
-                            taskFrameNo: 4
+                            taskCode:vm.model.task2(),
+                            taskFrameNo: 3
                         };
 
                         vm
@@ -785,6 +804,10 @@ module nts.uk.ui.at.kdw013.c {
 
             task4
                 .subscribe((taskCode: string) => {
+                    const { $settings } = params;
+                    const settings = ko.unwrap($settings);
+                    if(settings)
+                    settings.isChange = vm.changed();
                     if (taskCode) {
                         const { employeeId } = vm.$user;
                         const { start } = ko.unwrap(data);
@@ -792,8 +815,8 @@ module nts.uk.ui.at.kdw013.c {
                         const params: SelectWorkItemParam = {
                             refDate: moment(start).format(DATE_TIME_FORMAT),
                             sId: employeeId,
-                            taskCode,
-                            taskFrameNo: 5
+                            taskCode:vm.model.task3(),
+                            taskFrameNo: 4
                         };
 
                         vm
@@ -808,6 +831,22 @@ module nts.uk.ui.at.kdw013.c {
                             })
                             .always(() => vm.$blockui('clearView'));
                     }
+                });
+        
+            timeRange
+                .subscribe((data: string) => {
+                    const { $settings } = params;
+                    const settings = ko.unwrap($settings);
+                    if(settings)
+                    settings.isChange = vm.changed();
+                });
+
+            descriptions
+                .subscribe((data: string) => {
+                    const { $settings } = params;
+                    const settings = ko.unwrap($settings);
+                    if(settings)
+                    settings.isChange = vm.changed();
                 });
 
             /*
@@ -837,6 +876,10 @@ module nts.uk.ui.at.kdw013.c {
 
             position
                 .subscribe((p: any) => {
+                    const { $settings } = params;
+                    const settings = ko.unwrap($settings);
+                    if(settings)
+                    settings.isChange = vm.changed();
                     if (!p) {
                         hasError(false);
                         cache.view = 'view';
@@ -877,6 +920,9 @@ module nts.uk.ui.at.kdw013.c {
             }
 
             _.extend(window, { pp: vm });
+        
+        
+            
         }
 
         yes() {
@@ -887,10 +933,10 @@ module nts.uk.ui.at.kdw013.c {
 
         close() {
             const vm = this;
-            const { params } = vm;
+            const { params ,model} = vm;
             const { data } = params;
             const event = ko.unwrap(data);
-
+            const { timeRange, descriptions } = model;
             $.Deferred()
                 .resolve(true)
                 //.then(() => $(vm.$el).find('input, textarea').trigger('blur'))
@@ -909,18 +955,27 @@ module nts.uk.ui.at.kdw013.c {
                                 }
                             });
                     } else {
-                        params.close();
+                        
+                        if (vm.changed()) {
+                            vm.$dialog
+                                .confirm({ messageId: 'Msg_2094' })
+                                .then((v: 'yes' | 'no') => {
+                                    if (v === 'yes') {
+                                         params.close();
+                                    }
+                                });
+                        } else {
+                            params.close();
+                        }
+                        
+                        
                     }
                 });
         }
-
-        save(result?: 'yes' | 'cancel' | null) {
+    
+        getTaskInfo(){
             const vm = this;
-            const { params, model, combobox } = vm;
-            const { data } = params;
-            const event = data();
-            const { timeRange, descriptions } = model;
-            const { employeeId } = vm.$user;
+            const {  model, combobox} = vm;
             const { task1, task2, task3, task4, task5, workplace } = model;
             const { taskList1, taskList2, taskList3, taskList4, taskList5 } = combobox;
             const t1 = ko.unwrap(task1);
@@ -929,7 +984,6 @@ module nts.uk.ui.at.kdw013.c {
             const t4 = ko.unwrap(task4);
             const t5 = ko.unwrap(task5);
 
-            const getTaskInfo = (): TaskDto | null => {
             if (t1) {
                 const selected = _.find(ko.unwrap(taskList1), ({ id }) => t1 === id);
 
@@ -966,50 +1020,74 @@ module nts.uk.ui.at.kdw013.c {
                 }
             }
 
-                return null;
-            };
-        
-            const getTitles = (): string |null=>{
-            
+            return null;
+        }
+    
+        getTitles(){
+            const vm = this;
+            const {  model, combobox} = vm;
+            const { task1, task2, task3, task4, task5, workplace } = model;
+            const { taskList1, taskList2, taskList3, taskList4, taskList5 } = combobox;
+            const t1 = ko.unwrap(task1);
+            const t2 = ko.unwrap(task2);
+            const t3 = ko.unwrap(task3);
+            const t4 = ko.unwrap(task4);
+            const t5 = ko.unwrap(task5);
+
             let tastNames = [];
-                if (t1) {
-                    const selected = _.find(ko.unwrap(taskList1), ({ id }) => t1 === id);
+            if (t1) {
+                const selected = _.find(ko.unwrap(taskList1), ({ id }) => t1 === id);
 
-                    if (selected) {
-                       tastNames.push(selected.name);
-                    }
+                if (selected) {
+                    tastNames.push(selected.name);
                 }
-                if (t2) {
-                    const selected = _.find(ko.unwrap(taskList2), ({ id }) => t2 === id);
-
-                    if (selected) {
-                        tastNames.push(selected.name);
-                    }
-                }
-                if (t3) {
-                    const selected = _.find(ko.unwrap(taskList3), ({ id }) => t3 === id);
-
-                    if (selected) {
-                       tastNames.push(selected.name);
-                    }
-                }
-                if (t4) {
-                    const selected = _.find(ko.unwrap(taskList4), ({ id }) => t4 === id);
-
-                    if (selected) {
-                        tastNames.push(selected.name);
-                    }
-                }
-                if (t5) {
-                    const selected = _.find(ko.unwrap(taskList5), ({ id }) => t5 === id);
-
-                    if (selected) {
-                       tastNames.push(selected.name);
-                    }
-                }
-
-                return tastNames.join("\n");
             }
+            if (t2) {
+                const selected = _.find(ko.unwrap(taskList2), ({ id }) => t2 === id);
+
+                if (selected) {
+                    tastNames.push(selected.name);
+                }
+            }
+            if (t3) {
+                const selected = _.find(ko.unwrap(taskList3), ({ id }) => t3 === id);
+
+                if (selected) {
+                    tastNames.push(selected.name);
+                }
+            }
+            if (t4) {
+                const selected = _.find(ko.unwrap(taskList4), ({ id }) => t4 === id);
+
+                if (selected) {
+                    tastNames.push(selected.name);
+                }
+            }
+            if (t5) {
+                const selected = _.find(ko.unwrap(taskList5), ({ id }) => t5 === id);
+
+                if (selected) {
+                    tastNames.push(selected.name);
+                }
+            }
+
+            return tastNames.join("\n");
+        }
+
+        save(result?: 'yes' | 'cancel' | null) {
+            const vm = this;
+            const { params, model, combobox } = vm;
+            const { data } = params;
+            const event = data();
+            const { timeRange, descriptions } = model;
+            const { employeeId } = vm.$user;
+            const { task1, task2, task3, task4, task5, workplace } = model;
+            const { taskList1, taskList2, taskList3, taskList4, taskList5 } = combobox;
+            const t1 = ko.unwrap(task1);
+            const t2 = ko.unwrap(task2);
+            const t3 = ko.unwrap(task3);
+            const t4 = ko.unwrap(task4);
+            const t5 = ko.unwrap(task5);
 
             $.Deferred()
                 .resolve(true)
@@ -1018,10 +1096,11 @@ module nts.uk.ui.at.kdw013.c {
                 .then(() => vm.hasError())
                 .then((invalid: boolean) => {
                     if (!invalid) {
+                        
                         if (event) {
                             const { start } = event;
                             const tr = ko.unwrap(timeRange);
-                            const task = getTaskInfo();
+                            const task = vm.getTaskInfo();
 
                             event.setStart(setTimeOfDate(start, tr.start));
                             event.setEnd(setTimeOfDate(start, tr.end));
@@ -1044,7 +1123,7 @@ module nts.uk.ui.at.kdw013.c {
                                 if (displayInfo) {
                                     const { color, taskName } = displayInfo;
 
-                                    event.setProp('title', getTitles());
+                                    event.setProp('title', vm.getTitles());
                                     event.setProp('backgroundColor', color);
                                 }
                             }
@@ -1065,6 +1144,41 @@ module nts.uk.ui.at.kdw013.c {
                         params.close(result);
                     }
                 });
+        }
+    
+        changed(){
+            const vm = this;
+            const { params, model} = vm;
+            const { data } = params;
+            const event = ko.unwrap(data);
+            const { timeRange, descriptions } = model;
+
+
+            if (event) {
+                const tr = ko.unwrap(timeRange);
+                const { start, end } = event;
+                const task = vm.getTaskInfo();
+
+                if (start.getTime() != setTimeOfDate(start, tr.start).getTime())
+                    return true;
+
+                if (end.getTime() != setTimeOfDate(start, tr.end).getTime())
+                    return true;
+
+                if (task) {
+                    const { displayInfo } = task;
+
+                    if (displayInfo) {
+                        const { color, taskName } = displayInfo;
+                        if (_.get(event, 'title') != vm.getTitles())
+                            return true;
+
+                    }
+                }
+                if (_.get(event, 'extendedProps.remarks') != descriptions())
+                    return true;
+            }
+            return false;
         }
     }
 

@@ -1560,6 +1560,23 @@ module nts.uk.ui.at.kdw013.calendar {
                     let hasEventNotSave = _.find(events, (e) => !_.get(e, 'extendedProps.id'));
 
                     if (!hasEventNotSave) {
+                        if (vm.$view() == "edit" && vm.params.$settings().isChange) {
+                            vm.$dialog
+                                .confirm({ messageId: 'Msg_2094' })
+                                .then((v: 'yes' | 'no') => {
+                                    if (v === 'yes') {
+                                        dataEvent.delete(false);
+                                        popupPosition.event(null);
+                                        popupPosition.setting(null);
+                                    }
+
+                                    dataEvent.delete(false);
+
+                                });
+                            return;
+                        }
+                        
+
                         const event = vm.calendar
                             .addEvent({
                                 id: randomId(),
@@ -1578,8 +1595,9 @@ module nts.uk.ui.at.kdw013.calendar {
                         if (el) {
                             const { view } = vm.calendar;
 
-                            vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view });
+                            vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view, noCheckSave: true });
                         }
+                        
                     } else {
                         _.each(events, (e: EventApi) => {
                             // remove new event (empty data)
@@ -1804,11 +1822,53 @@ module nts.uk.ui.at.kdw013.calendar {
                         }
                     }
                 },
-                eventClick: ({ el, event, jsEvent }) => {
+                eventClick: ({ el, event, jsEvent, noCheckSave}) => {
                     const shift = ko.unwrap<boolean>(dataEvent.shift);
                     /**
                      * Note: remove group id before change other prop
                      */
+                    
+                    const events = vm.calendar.getEvents();
+                    
+                    let hasEventNotSave = _.find(events, (e) => !_.get(e, 'extendedProps.id'));
+                    
+                    if (hasEventNotSave && !noCheckSave) {
+                        _.each(events, (e: EventApi) => {
+                            // remove new event (empty data)
+                            if (!e.extendedProps.id) {
+
+                                vm.$dialog
+                                    .confirm({ messageId: 'Msg_2094' })
+                                    .then((v: 'yes' | 'no') => {
+                                        if (v === 'yes') {
+                                            e.remove();
+                                            dataEvent.delete(false);
+                                            popupPosition.event(null);
+                                            popupPosition.setting(null);
+                                        }
+
+                                        dataEvent.delete(false);
+                                    });
+                            }
+                        });
+                        return;
+                    }
+                    
+                    if (vm.$view() == "edit" && vm.params.$settings().isChange) {
+                        vm.$dialog
+                            .confirm({ messageId: 'Msg_2094' })
+                            .then((v: 'yes' | 'no') => {
+                                if (v === 'yes') {
+                                    dataEvent.delete(false);
+                                    popupPosition.event(null);
+                                    popupPosition.setting(null);
+                                }
+
+                                dataEvent.delete(false);
+
+                            });
+                        return;
+                    }
 
                     // remove new event (with no data) & background event
                     removeNewEvent(event);
@@ -1955,7 +2015,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         if (el) {
                             const { view } = vm.calendar;
 
-                            vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view });
+                            vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view, noCheckSave: true});
                         }
                     }
                 },
@@ -2029,7 +2089,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     if (el) {
                         const { view } = vm.calendar;
 
-                        vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view });
+                        vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view , noCheckSave: true});
                     }
                 },
                 eventRemove: ({ event }) => {
