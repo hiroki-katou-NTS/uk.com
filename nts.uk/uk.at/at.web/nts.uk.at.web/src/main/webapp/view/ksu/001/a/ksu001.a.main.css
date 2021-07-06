@@ -589,16 +589,18 @@ html {
 }
 
 .toLeft {
-	margin-left: 308px;  
+	margin-left: 230px;  
 	float: left;
     height: 18px;
     padding-top: 2px;
+    width: 30px;
 }
 
 .toRight {
 	float: left;
     height: 18px;
     padding-top: 2px;
+    width: 30px;
 }
 
 .toDown {

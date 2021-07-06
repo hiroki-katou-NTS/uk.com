@@ -13,7 +13,8 @@ module nts.uk.at.view.ksu001.a {
 				document.getElementById("main-area").style.display = '';
                 __viewContext.bind(__viewContext.viewModel);
 
-                //__viewContext.viewModel.viewA.setIconEventHeader();
+                __viewContext.viewModel.viewA.setHeightScreen();
+                __viewContext.viewModel.viewA.setPositionButonToRightToLeft();
 
                 if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
                     $('.ntsButtonTableButton').addClass('nowithContent');

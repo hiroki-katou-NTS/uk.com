@@ -555,8 +555,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.setUpdateMode();
                 self.setDataWorkType(data.listWorkTypeInfo);
                 self.checkEnableCombWTime();
-                self.setHeightScreen();
-                self.setPositionButonToRightToLeft();
                 self.bindingEventClickFlower();
                 self.setTextResourceA173();
                 if (viewMode == 'time') {
