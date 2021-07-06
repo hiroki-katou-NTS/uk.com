@@ -13,6 +13,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
         data: CaptureDataOutput = null;
         isOpenKDL053: boolean = false;
         isEnableRegister: KnockoutObservable<boolean> = ko.observable(true);
+        windows_lst: any = null;
 
         created(params: any) {
             const vm = this;
@@ -63,7 +64,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
         mounted() {
             const vm = this;
 
-            // vm.loadGrid();
+            vm.windows_lst = nts.uk.ui.windows.container.windows;
         }
 
         register() {
@@ -212,11 +213,21 @@ module nts.uk.at.view.kdl055.b.viewmodel {
         }
 
         close() {
-            // close KDL053
-            let btnCloseKDL053 = $('#btnClose');
-            if (!_.isEmpty(btnCloseKDL053)) {
-                btnCloseKDL053.click();
+            const vm = this;
+            // let selfId = nts.uk.ui.windows.selfId;
+            // let btnCloseKDL053 = nts.uk.ui.windows.container.windows[selfId].$iframe.find('#btnClose');
+            // if (!_.isEmpty(btnCloseKDL053)) {
+            //     btnCloseKDL053.click();
+            // }
+            if (vm.windows_lst) {
+                let selfId = nts.uk.ui.windows.selfId;
+                for (let id in vm.windows_lst) {
+                    if (nts.uk.ui.windows.container.windows[id].parent && nts.uk.ui.windows.container.windows[id].parent.id == selfId) {
+                        nts.uk.ui.windows.container.windows[id].close();
+                    }
+                }
             }
+
             this.$window.close();
         }
 
