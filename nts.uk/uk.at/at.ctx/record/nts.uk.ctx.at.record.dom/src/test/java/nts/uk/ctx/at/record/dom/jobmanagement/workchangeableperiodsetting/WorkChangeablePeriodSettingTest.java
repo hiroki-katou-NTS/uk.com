@@ -13,6 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSetting;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ElapsedMonths;
+import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ReferenceRange;
 
 /**
  * 
@@ -43,7 +44,7 @@ public class WorkChangeablePeriodSettingTest {
 		};
 
 		ManHourRecordReferenceSetting periodSetting = new ManHourRecordReferenceSetting(
-				EnumAdaptor.valueOf(0, ElapsedMonths.class));
+				EnumAdaptor.valueOf(0, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
 
 		GeneralDate result = periodSetting.getWorkCorrectionStartDate(require, employeeId);
 
@@ -53,7 +54,7 @@ public class WorkChangeablePeriodSettingTest {
 	@Test
 	public void testCaseOneMonthAgo() {
 
-		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(EnumAdaptor.valueOf(1, ElapsedMonths.class));
+		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(EnumAdaptor.valueOf(1, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
 
 		new Expectations() {
 			{
@@ -66,7 +67,7 @@ public class WorkChangeablePeriodSettingTest {
 		};
 
 		ManHourRecordReferenceSetting periodSetting = new ManHourRecordReferenceSetting(
-				EnumAdaptor.valueOf(0, ElapsedMonths.class));
+				EnumAdaptor.valueOf(1, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
 
 		GeneralDate result = periodSetting.getWorkCorrectionStartDate(require, employeeId);
 
@@ -76,7 +77,7 @@ public class WorkChangeablePeriodSettingTest {
 	@Test
 	public void testCaseTowMonthAgo() {
 
-		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(EnumAdaptor.valueOf(2, ElapsedMonths.class));
+		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(EnumAdaptor.valueOf(2, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
 
 		new Expectations() {
 			{
@@ -89,7 +90,7 @@ public class WorkChangeablePeriodSettingTest {
 		};
 
 		ManHourRecordReferenceSetting periodSetting = new ManHourRecordReferenceSetting(
-				EnumAdaptor.valueOf(0, ElapsedMonths.class));
+				EnumAdaptor.valueOf(2, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
 
 		GeneralDate result = periodSetting.getWorkCorrectionStartDate(require, employeeId);
 
@@ -99,7 +100,7 @@ public class WorkChangeablePeriodSettingTest {
 	@Test
 	public void testCaseThreeMonthAgo() {
 
-		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(EnumAdaptor.valueOf(3, ElapsedMonths.class));
+		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(EnumAdaptor.valueOf(3, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
 
 		new Expectations() {
 			{
@@ -112,7 +113,7 @@ public class WorkChangeablePeriodSettingTest {
 		};
 
 		ManHourRecordReferenceSetting periodSetting = new ManHourRecordReferenceSetting(
-				EnumAdaptor.valueOf(0, ElapsedMonths.class));
+				EnumAdaptor.valueOf(3, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
 
 		GeneralDate result = periodSetting.getWorkCorrectionStartDate(require, employeeId);
 
@@ -122,7 +123,7 @@ public class WorkChangeablePeriodSettingTest {
 	@Test
 	public void testCaseFourMonthAgo() {
 
-		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(EnumAdaptor.valueOf(4, ElapsedMonths.class));
+		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(EnumAdaptor.valueOf(4, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
 
 		new Expectations() {
 			{
@@ -135,7 +136,7 @@ public class WorkChangeablePeriodSettingTest {
 		};
 
 		ManHourRecordReferenceSetting periodSetting = new ManHourRecordReferenceSetting(
-				EnumAdaptor.valueOf(0, ElapsedMonths.class));
+				EnumAdaptor.valueOf(4, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
 
 		GeneralDate result = periodSetting.getWorkCorrectionStartDate(require, employeeId);
 
@@ -145,7 +146,7 @@ public class WorkChangeablePeriodSettingTest {
 	@Test
 	public void testCaseFiveMonthAgo() {
 
-		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(EnumAdaptor.valueOf(5, ElapsedMonths.class));
+		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(EnumAdaptor.valueOf(5, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
 
 		new Expectations() {
 			{
@@ -158,11 +159,34 @@ public class WorkChangeablePeriodSettingTest {
 		};
 
 		ManHourRecordReferenceSetting periodSetting = new ManHourRecordReferenceSetting(
-				EnumAdaptor.valueOf(0, ElapsedMonths.class));
+				EnumAdaptor.valueOf(5, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
 
 		GeneralDate result = periodSetting.getWorkCorrectionStartDate(require, employeeId);
 
 		assertThat(result.month()).isEqualTo(GeneralDate.today().addMonths(-5).month());
+	}
+	
+	@Test
+	public void testCaseSixMonthAgo() {
+
+		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(EnumAdaptor.valueOf(6, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
+
+		new Expectations() {
+			{
+				require.get();
+				result = setting;
+
+				require.getPeriod(employeeId, date);
+				result = new DatePeriod(date, date);
+			}
+		};
+
+		ManHourRecordReferenceSetting periodSetting = new ManHourRecordReferenceSetting(
+				EnumAdaptor.valueOf(6, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
+
+		GeneralDate result = periodSetting.getWorkCorrectionStartDate(require, employeeId);
+
+		assertThat(result.month()).isEqualTo(GeneralDate.today().addMonths(-6).month());
 	}
 
 }
