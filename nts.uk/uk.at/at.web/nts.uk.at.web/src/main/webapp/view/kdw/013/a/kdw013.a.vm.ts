@@ -299,6 +299,9 @@ module nts.uk.ui.at.kdw013.a {
                         if (!_.isEmpty(confirms) && confirms.length === 5) {
                             return false;
                         }
+                        if (vm.employee() == vm.$user.employeeId) {
+                            return false;
+                        }
                         const editable = ko.unwrap(vm.editable);
                         let confimer = _.find(_.get(vm.$datas(),'lstComfirmerDto'), ['confirmSID',vm.$user.employeeId]);
                         return !editable && !confimer;
