@@ -558,25 +558,30 @@ module nts.uk.ui.calendar {
 		created() {
 			const vm = this;
 			const { data, baseDate } = vm;
-			const { options, start } = baseDate;
-
-			const listDates = ([
-					{ id: 1, title: "月曜日" + getText('KSU002_38')},
-                    { id: 2, title: "火曜日"},
-                    { id: 3, title: "水曜日"},
-                    { id: 4, title: "木曜日"},
-                    { id: 5, title: "金曜日"},
-                    { id: 6, title: "土曜日"},
-                    { id: 7, title: "日曜日"}
-                ]);
+			let options = [
+					{ id: 0, title: getText('KSU002_39')},
+					{ id: 1, title: getText('KSU002_40')},
+                    { id: 2, title: getText('KSU002_41')},
+                    { id: 3, title: getText('KSU002_42')},
+                    { id: 4, title: getText('KSU002_43')},
+                    { id: 5, title: getText('KSU002_44')},
+                    { id: 6, title: getText('KSU002_45')}
+                ];
+			baseDate.options(options);
+			vm.data.rootVm.dayStartWeek.subscribe((item: any) => {
+				if(item != null){
+					_.each(options, (option:{ id: number, title: string}) => {
+						if(option.id == item) {
+							option.title = option.title + getText('KSU002_38');
+						}
+					});
+					baseDate.options(options);
+					vm.startDaySelected(vm.baseDate.start() == item);
+				}
+			});
 			
 			vm.$window
 				.storage(KSU_USER_DATA)
-				.then((v: StorageData) => {
-					options(listDates);
-
-					return v;
-				})
 				.then((v: StorageData) => vm.baseDate.start(v.fdate));
 
 			ko.computed({
@@ -605,7 +610,7 @@ module nts.uk.ui.calendar {
 								vm.$window.storage(KSU_USER_DATA, { fdate, wtimec: null, wtypec: null });
 							}
 						});
-					if(fdate == 1){
+					if(fdate == vm.data.rootVm.dayStartWeek()){
 						vm.startDaySelected(true);
 					}else {
 						vm.startDaySelected(false);
@@ -760,14 +765,14 @@ module nts.uk.ui.calendar {
 							const start = moment(baseDate).startOf('month').startOf('day');
 							const end = moment(baseDate).endOf('month').endOf('day');
 							
-							let tg = vm.calculateDays(start.toDate(), end.toDate());
+							let tg = calculateDaysStartEndWeek(start.toDate(), end.toDate(), vm.baseDate.start(), vm.startDaySelected());
 							
 							const diff = moment(tg.end).diff(tg.start, 'day');
 
 							initRange(diff, tg.start);
 						}
 					} else {
-						let tg = vm.calculateDays(baseDate.begin, baseDate.finish);
+						let tg = calculateDaysStartEndWeek(baseDate.begin, baseDate.finish, vm.baseDate.start(), vm.startDaySelected());
 						const { begin, finish } = { begin: moment(tg.start), finish: moment(tg.end)};
 						const initDate = () => {
 							const diff = moment(finish).diff(begin, 'day');
@@ -790,17 +795,6 @@ module nts.uk.ui.calendar {
 					}
 				});
 		}
-		
-		calculateDays(start: Date, end: Date): ({start: Date, end: Date}){
-			let self = this;
-			let nStart = moment(start);
-			let nEnd = moment(end);
-			if(self.startDaySelected()){
-				nStart.add((self.baseDate.start() <= end.getDay() ? start.getDay() - self.baseDate.start(): start.getDay() + 7 - self.baseDate.start()) * -1, 'day');
-				nEnd.add(self.baseDate.start() > end.getDay() ? self.baseDate.start() - end.getDay() : self.baseDate.start() + 6 - end.getDay(),'day');
-			}
-			return {start: nStart.toDate(), end: nEnd.toDate()};
-		}
 	}
 
 	interface DateOption {
@@ -820,4 +814,22 @@ module nts.uk.ui.calendar {
 		start: KnockoutObservable<number | null>;
 		options: KnockoutObservableArray<DateOption>;
 	}
+}
+var calculateDaysStartEndWeek = function(start: Date, end: Date, dayStartWeek: number, isdayStartWeek: boolean): ({start: Date, end: Date}){
+	let nStart = moment(start);
+	let nEnd = moment(end);
+	if(isdayStartWeek){
+		if(start.getDay() > dayStartWeek){
+			nStart.add((start.getDay() - dayStartWeek) * -1, 'day');
+		}else if(start.getDay() < dayStartWeek){ 
+			nStart.add((start.getDay() + 7 - dayStartWeek) * -1, 'day');					
+		}
+		
+		if(end.getDay() >= dayStartWeek){
+			nEnd.add((dayStartWeek + 6 - end.getDay()), 'day');
+		}else if(end.getDay() < dayStartWeek){ 
+			nEnd.add((dayStartWeek - end.getDay() - 1), 'day');
+		}
+	}
+	return {start: nStart.toDate(), end: nEnd.toDate()};
 }

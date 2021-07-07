@@ -161,6 +161,8 @@ module nts.uk.ui.at.ksu002.a {
 		
 		data: WorkSchedule<moment.Moment>[] = [];
 		
+		dayStartWeek: KnockoutObservable<number> = ko.observable(null);
+		
 		created() {
 			const vm = this;
 			vm.employeeId = ko.observableArray([vm.$user.employeeId]);
@@ -170,12 +172,14 @@ module nts.uk.ui.at.ksu002.a {
 			};
 			
 			initEvent();
-
 			const loadData = () => {
+				
+				let tg = calculateDaysStartEndWeek(moment(dr.begin).toDate(),moment(dr.finish).toDate(), vm.dayStartWeek(), true);
+				
 				const command = {
 					listSid: [vm.$user.employeeId],
-					startDate: moment(dr.begin).add(-6, 'd').toISOString(),
-					endDate: moment(dr.finish).add(6, 'd').toISOString(),
+					startDate: moment(tg.start).toISOString(),
+					endDate: moment(tg.end).toISOString(),
 					actualData: vm.achievement() === ACHIEVEMENT.YES
 				};
 
@@ -195,6 +199,7 @@ module nts.uk.ui.at.ksu002.a {
 							vm.data = response;
 							vm.bidingData();
 						}
+						vm.dayStartWeek(0);
 					})
 					.always(() => vm.$blockui('hide'));
 			};
@@ -260,14 +265,15 @@ module nts.uk.ui.at.ksu002.a {
 			// UI-4
 			vm.achievement
 				.subscribe((arch) => {
-					const { NO } = ACHIEVEMENT;
 					const { IMPRINT } = EDIT_STATE;
 					const { begin, finish } = vm.baseDate();
+					
+					let tg = calculateDaysStartEndWeek(moment(begin).toDate(),moment(finish).toDate(), vm.dayStartWeek(), true);
 
 					const command = {
 						listSid: [vm.$user.employeeId],
-						startDate: moment(begin).toISOString(),
-						endDate: moment(finish).toISOString()
+						startDate: moment(tg.start).toISOString(),
+						endDate: moment(tg.end).toISOString()
 					};
 
 					const schedules: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
@@ -362,7 +368,7 @@ module nts.uk.ui.at.ksu002.a {
 		mounted() {
 			const vm = this;
 
-			$(vm.$el).find('[data-bind]').removeAttr('data-bind');
+			//$(vm.$el).find('[data-bind]').removeAttr('data-bind');
 		}
 		
 		bidingData(vm?: any): void {
