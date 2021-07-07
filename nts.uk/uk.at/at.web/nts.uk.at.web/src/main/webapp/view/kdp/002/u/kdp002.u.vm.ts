@@ -10,6 +10,7 @@ module nts.uk.at.kdp002.u {
 	interface IParams {
 		sid: string;
 		data: IModel;
+		setting: INoticeSet;
 	}
 
 	@bean()
@@ -18,6 +19,8 @@ module nts.uk.at.kdp002.u {
 		modelShowView: KnockoutObservableArray<IEmployeeIdSeen> = ko.observableArray([]);
 		model: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
 		sid: string;
+		noticeSetting: NoticeSet = new NoticeSet();
+
 
 		created(param: IParams) {
 			const vm = this;
@@ -43,6 +46,10 @@ module nts.uk.at.kdp002.u {
 			vm.model(param.data.msgNotices);
 
 			vm.sid = param.sid;
+
+			if (param) {
+	            vm.noticeSetting = param.setting;
+            }
 
 		}
 
@@ -110,5 +117,22 @@ module nts.uk.at.kdp002.u {
 	interface ICreatorAndDate {
 		creatorId: string;
 		inputDate: Date;
+	}
+
+	class NoticeSet {
+		personMsgColor: ColorSettingDto ; //個人メッセージ色
+		
+		constructor() {
+			this.personMsgColor = new ColorSettingDto();
+		}
+	}
+	
+	class ColorSettingDto {
+		textColor: string; //文字色
+		backGroundColor: string //背景色
+		constructor() {
+			this.textColor = '';
+			this.backGroundColor = '';
+		}
 	}
 }
