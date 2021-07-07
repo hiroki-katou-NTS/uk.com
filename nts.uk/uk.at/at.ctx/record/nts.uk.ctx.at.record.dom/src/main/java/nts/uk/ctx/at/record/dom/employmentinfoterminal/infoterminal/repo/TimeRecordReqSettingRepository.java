@@ -60,4 +60,7 @@ public interface TimeRecordReqSettingRepository {
     List<Integer> getbentoMenuFrameNumbers(ContractCode contractCode, EmpInfoTerminalCode code);
 
     void insert(TimeRecordReqSetting reqSetting);
+    
+    void insert(EmpInfoTerminalCode terCode, ContractCode contractCode);
+    
 }

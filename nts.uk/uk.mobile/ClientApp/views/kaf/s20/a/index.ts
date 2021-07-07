@@ -1,5 +1,5 @@
 import { Vue } from '@app/provider';
-import { component, Prop } from '@app/core/component';
+import { component, Prop, Watch } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
 import { KafS20A1Component } from '../a1';
 import { KafS20A2Component } from '../a2';
@@ -32,6 +32,19 @@ export class KafS20AComponent extends Vue {
     
     @Prop()
     public readonly params: IParams;
+    @Watch('step', {deep: true})
+    public watchStep(data: any) {
+        const vm = this;
+
+        if (data === 'KAFS20_10') {
+            vm.pgName = 'kafs20a1';
+        } else if (data == 'KAFS20_11') {
+            vm.pgName = 'kafs20a2';
+        } else if (data == 'KAFS20_12') {
+            vm.pgName = 'kafs20c';
+        }
+        
+    }
 
     public beforeCreate() {
         const vm = this;

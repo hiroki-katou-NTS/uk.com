@@ -10,8 +10,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
@@ -206,7 +204,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 															representerID, 
 															representerName,
 															z.getApprovalDate(),
-															z.getApprovalReason(),
+															z.getApprovalReason()==null?null:z.getApprovalReason().v(),
 															z.getApproverInListOrder());
 												}).collect(Collectors.toList()), 
 												y.getConfirmAtr().value,
@@ -276,7 +274,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 														representerID, 
 														representerName,
 														z.getApprovalDate(),
-														z.getApprovalReason(),
+														z.getApprovalReason()==null?null:z.getApprovalReason().v(),
 														z.getApproverInListOrder());
 											}).collect(Collectors.toList()), 
 											y.getConfirmAtr().value,
@@ -878,7 +876,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 															representerID, 
 															representerName,
 															z.getApprovalDate(),
-															z.getApprovalReason(),
+															z.getApprovalReason()==null?null:z.getApprovalReason().v(),
 															z.getApproverInListOrder());
 												}).collect(Collectors.toList()), 
 												y.getConfirmAtr().value,
@@ -930,7 +928,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 													representerID, 
 													representerName,
 													z.getApprovalDate(),
-													z.getApprovalReason(),
+													z.getApprovalReason()==null?null:z.getApprovalReason().v(),
 													z.getApproverInListOrder());
 										}).collect(Collectors.toList()), 
 										y.getConfirmAtr().value,
@@ -1000,7 +998,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 														representerID, 
 														representerName,
 														z.getApprovalDate(),
-														z.getApprovalReason(),
+														z.getApprovalReason()==null?null:z.getApprovalReason().v(),
 														z.getApproverInListOrder());
 											}).collect(Collectors.toList()), 
 											y.getConfirmAtr().value,
@@ -1108,7 +1106,7 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 									Strings.EMPTY, 
 									Strings.EMPTY, 
 									z.getApprovalDate(), 
-									z.getApprovalReason(), 
+									z.getApprovalReason()==null?null:z.getApprovalReason().v(), 
 									z.getApproverInListOrder())
 									).collect(Collectors.toList()), 
 							y.getConfirmAtr().value, 

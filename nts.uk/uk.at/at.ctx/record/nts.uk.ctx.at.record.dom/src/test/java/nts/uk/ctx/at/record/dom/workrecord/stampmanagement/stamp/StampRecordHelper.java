@@ -2,10 +2,8 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
@@ -21,8 +19,7 @@ public class StampRecordHelper {
 				new ContractCode("DUMMY"),
 				new StampNumber("stampNumber"), 
 				GeneralDateTime.now(), 
-				new StampTypeDisplay(""),
-				Optional.of(new EmpInfoTerminalCode("1000")));
+				new StampTypeDisplay(""));
 	}
 	
 	public static List<StampRecord> getListStampRecord() {
@@ -33,15 +30,13 @@ public class StampRecordHelper {
 				new ContractCode("DUMMY"),
 				new StampNumber("stampNumber"), 
 				GeneralDateTime.now(), 
-				new StampTypeDisplay(""),  
-				Optional.of(new EmpInfoTerminalCode("0"))));
+				new StampTypeDisplay("")));
 		
 		data.add(new StampRecord(
 				new ContractCode("DUMMY"),
 				new StampNumber("stampNumber"), 
 				GeneralDateTime.now(),
-				new StampTypeDisplay(""), 
-				Optional.of(new EmpInfoTerminalCode("0"))));
+				new StampTypeDisplay("")));
 		
 		return data;
 	}
@@ -50,7 +45,6 @@ public class StampRecordHelper {
 				new ContractCode("DUMMY"),
 				new StampNumber("stampNumber"), 
 				GeneralDateTime.now(),
-				new StampTypeDisplay(""), 
-				Optional.of(new EmpInfoTerminalCode("1000")));
+				new StampTypeDisplay(""));
 	}
 }

@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 1120, height: 617 };</script>
+        <script>var dialogSize = { width: 1120, height: 620 };</script>
 
         <com:scriptfile set="IGNITE" />
 
@@ -67,8 +67,8 @@
                         required: true,
                         enable: true}" />
                 </div>
-                <div class="control-group valign-center">
-                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF022_99')}</div>
+                <div class="control-group valign-center" style="display: flex">
+                    <div style="width: 104px" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF022_99')}</div>
                     <div data-bind="ntsSwitchButton: {
                                 name: '#{i18n.getText('KAF022_99')}',
                                 options: [

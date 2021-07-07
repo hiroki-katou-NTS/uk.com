@@ -103,8 +103,8 @@ public class JpaTimeAnnualSettingSetMemento implements TimeAnnualSettingSetMemen
 	@Override
 	public void setTimeAnnualLeaveTimeDay(TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay) {
 		this.entity.setTimeOfDayRef(timeAnnualLeaveTimeDay.getTimeOfDayReference().value);
-		this.entity.setUniformTime(timeAnnualLeaveTimeDay.getUniformTime().isPresent() ? timeAnnualLeaveTimeDay.getUniformTime().get().v() : null );
-		this.entity.setContractTimeRound(timeAnnualLeaveTimeDay.getContractTimeRound().isPresent() ? timeAnnualLeaveTimeDay.getContractTimeRound().get().value : null );
+		this.entity.setUniformTime(timeAnnualLeaveTimeDay.getUniformTime().isPresent() ? timeAnnualLeaveTimeDay.getUniformTime().get().v() : 0 );
+		this.entity.setContractTimeRound(timeAnnualLeaveTimeDay.getContractTimeRound().isPresent() ? timeAnnualLeaveTimeDay.getContractTimeRound().get().value : 0 );
 		
 	}
 }

@@ -221,6 +221,8 @@ module nts.uk.pr.view.kmf001.f {
                     self.inputOverAll.ntsError('check');
                 });
 
+                self.compenManage.subscribe(() => self.clearError());
+
                 //employment
                 self.employmentBackUpData = ko.observable();
                 self.employmentList = ko.observableArray<ItemModel>([]);

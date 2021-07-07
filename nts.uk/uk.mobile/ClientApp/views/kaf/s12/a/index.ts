@@ -17,6 +17,7 @@ import {
     AppTimeType,
     GoingOutReason
 } from '../shr';
+import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 
 @component({
     name: 'kafs12a',
@@ -29,6 +30,7 @@ import {
         'kaf-s12-a1': KafS12A1Component,
         'kaf-s12-a2': KafS12A2Component,
         'kaf-s12-c': KafS12CComponent,
+        'cmms45c': CmmS45CComponent
     },
     validations: {},
     constraints: []
@@ -47,7 +49,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
     public appID: string = null;
 
     @Prop()
-    public readonly params: InitParam;
+    public params: InitParam;
 
     public created() {
         const vm = this;
@@ -63,8 +65,13 @@ export class KafS12AComponent extends KafS00ShrComponent {
             vm.application = vm.createApplicationInsert(AppType.ANNUAL_HOLIDAY_APPLICATION);
         }
     }
-    
+
     public mounted() {
+        const vm = this;
+        vm.initService();
+    }
+    
+    public initService() {
         const vm = this;
         vm.$mask('show');
         vm.$auth.user.then((user: any) => {
@@ -329,6 +336,24 @@ export class KafS12AComponent extends KafS00ShrComponent {
                 vm.$mask('hide');
             }
         }).catch((error: any) => {
+            if (error.messageId == 'Msg_197') {
+                vm.$modal.error({ messageId: 'Msg_197', messageParams: [] }).then(() => {
+                    let appID = vm.appDispInfoStartupOutput.appDetailScreenInfo.application.appID;
+                    vm.$modal('cmms45c', { 'listAppMeta': [appID], 'currentApp': appID }).then((newData: InitParam) => {
+                        vm.params = newData;
+                        vm.newMode = false;
+                        vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
+                        vm.reflectSetting = vm.params.appDetail.reflectSetting;
+                        vm.timeLeaveRemaining = vm.params.appDetail.timeLeaveRemaining;
+                        vm.timeLeaveManagement = vm.params.appDetail.timeLeaveManagement;
+                        vm.details = vm.params.appDetail.details;
+                        vm.application = vm.appDispInfoStartupOutput.appDetailScreenInfo.application;
+                        vm.initService();
+                    });
+                });
+    
+                return;
+            }
             vm.$modal.error(error).then(() => {
                 vm.$mask('hide');
             });

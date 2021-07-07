@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 570, height: 500 };</script>
+			<script>var dialogSize = { width: 570, height: 320 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../shr/cmm018.shr.servicebase.js" />
 			<com:scriptfile path="../shr/cmm018.shr.vmbase.js" />
@@ -25,7 +25,7 @@
 					<div data-bind="if: dataSource.mode">
 						<div class="cell column1">
 							<!-- J1_2: Label 設定対象 -->
-							<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_47')}</div>
+							<div data-bind="ntsFormLabel: { required: false, text: 'CMM018_47' }"></div>
 						</div>
 						<div class="cell">
 							<!-- J1_3: 設定対象 -->

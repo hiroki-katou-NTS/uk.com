@@ -37,6 +37,14 @@ module nts.uk.at.view.kaf020.b {
 
         created(params: any) {
             const vm = this;
+			if(nts.uk.request.location.current.isFromMenu) {
+				sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');	
+			} else {
+				if(!_.isNil(__viewContext.transferred.value)) {
+					vm.isFromOther = true;
+					params = __viewContext.transferred.value;
+				}
+			}
             if (params && params.isAgentMode) vm.isAgentMode(params.isAgentMode);
             if (params != undefined && params.optionalItem) {
                 nts.uk.characteristics.save("KAF020InitParams", params.optionalItem);
@@ -49,10 +57,6 @@ module nts.uk.at.view.kaf020.b {
                     }
                 })
             }
-			if(!_.isNil(__viewContext.transferred.value)) {
-				vm.isFromOther = true;
-			}
-			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
             if (params && params.empLst) vm.empLst = params.empLst;
             if (params && params.baseDate) {
                 vm.baseDate = params.baseDate;

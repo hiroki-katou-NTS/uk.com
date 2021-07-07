@@ -10,6 +10,7 @@
       <com:stylefile path="../../share/kdp.main.css" />
       <com:scriptfile path="../../share/kdpbutton.vm.js" />
       <com:scriptfile path="../../share/kdpclock.vm.js" />
+      <com:scriptfile path="../../share/kdp-tabbutton.js" />
       <com:stylefile path="kdp002.a.main.css" />
       <com:scriptfile path="kdp002.a.service.js" />
       <com:scriptfile path="kdp002.a.vm.js" />
@@ -22,24 +23,33 @@
     </ui:define>
 
     <ui:define name="content">
-      <div id="functions-area"></div>
-
-      <div id="contents-area" class="cf">
+      <div id="contents-area" class="cf kdp002a">
         <!-- A1 -->
-        <div id="kdp002a" class="cf">
-          <div class="pull-left" id="stamp-input">
-            <stamp-clock params="setting: stampSetting()"></stamp-clock>
-            
-            <div class="panel" style="padding: 0 10px 10px 10px">
-              <div id="stamp-desc" data-bind="style: {'color': stampTab().stampPageCommentColor }">
-                <span data-bind="text: stampTab().stampPageComment"></span>
-              </div>
-              <ui:include src="stamp-tab.xhtml" />
-            </div>
-          </div>
-          <div class="pull-left" id="stamp-info">
-            <ui:include src="emboss-info.xhtml" />
-          </div>
+        <div id="kdp002a" class="cf" data-bind="css: { 'has-info': $vm.state() === 'state2' , 'has-info-work2': $vm.state() === 'state1'}">
+          <div data-bind="stamp-clock: { setting: stampSetting() }"></div>
+          <com:ko-if bind="pageComment() != ''">
+          		<div class="pageComent" data-bind="html: pageComment, style: {color: commentColor}"></div>
+          </com:ko-if>
+          <!-- </div> --> 
+          <div id="stamp-input" class="pull-left" data-bind="
+          css: stampGrid().displayMethod() == 1 ? 'pageScale1': 
+          		stampGrid().displayMethod() == 2 ? 
+          			workManagementMultiple() ? 'pageScale2' : 'pageScale1' : 
+          		'', 
+          kdp-tab-button-panel: { 
+            tabs: stampTab().tabs,
+            stampToSuppress: $vm.stampToSuppress,
+            pageComment: pageComment,
+            commentColor: commentColor,
+            click: function(btn, layout) { $vm.clickBtn1.apply($vm, [btn, layout]); },
+            reCalGridWidthHeight: reCalGridWidthHeight,
+            marginBottom: 0
+          }"></div> 
+          <com:ko-if bind=" stampGrid().displayMethod() != 0 ">
+          	<div class="pull-left" id="stamp-info" data-bind="style:{'padding-top':stampTab().tabs().length > 1 ? '42px' : '0'}">
+              <ui:include src="emboss-info.xhtml" />
+          	</div>
+          </com:ko-if>
         </div>
       </div>
     </ui:define>

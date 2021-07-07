@@ -52,15 +52,15 @@ public class RegisterLaborCalculationSettingCommandHandler extends CommandHandle
                     e.getAttendanceItems()
             )).collect(Collectors.toList()));
         }
+        val workingHoursUnitPrice = unitPrice != null? unitPrice : command.getWorkingHoursUnitPrice();
         PersonCostCalculation domain = new PersonCostCalculation(
                 roundingSetting,
                 cid,
                 new Remarks(command.getMemo()),
-                premiumSettings
-                ,
+                premiumSettings,
                 optUnitPrice,
                 EnumAdaptor.valueOf(command.getHowToSetUnitPrice(), HowToSetUnitPrice.class),
-                new WorkingHoursUnitPrice(command.getWorkingHoursUnitPrice()),
+                EnumAdaptor.valueOf(workingHoursUnitPrice, UnitPrice.class),
                 null
         );
         this.service.registerLaborCalculationSetting(domain, command.getStartDate());

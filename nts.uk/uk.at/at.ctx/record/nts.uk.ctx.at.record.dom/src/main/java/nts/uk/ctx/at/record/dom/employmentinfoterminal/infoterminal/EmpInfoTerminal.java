@@ -157,7 +157,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 		// TODO: contractCode
 		ButtonType bt = new ButtonType(ReservationArt.NONE, Optional.of(stamp.getType()));
 		return new StampRecord(new ContractCode(""), new StampNumber(recept.getIdNumber()), recept.getDateTime(),
-				new StampTypeDisplay(bt.getStampTypeDisplay()), Optional.of(empInfoTerCode));
+				new StampTypeDisplay(bt.getStampTypeDisplay()));
 	}
 
 	// [pvt-2] 予約の打刻記録を作成
@@ -165,8 +165,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 		// TODO: contractCode
 		ButtonType bt = new ButtonType(ReservationArt.RESERVATION, Optional.empty());
 		return new StampRecord(new ContractCode(""), new StampNumber(reservReceptData.getIdNumber()),
-				reservReceptData.getDateTime(), new StampTypeDisplay(bt.getStampTypeDisplay()),
-				Optional.of(empInfoTerCode));
+				reservReceptData.getDateTime(), new StampTypeDisplay(bt.getStampTypeDisplay()));
 	}
 
 	// [pvt-3] 弁当予約を作成

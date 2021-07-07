@@ -6,14 +6,15 @@ input {
 }
 .inlineBlockFirst {
 	display: inline-block;
+	margin-top: -20px;
 }
 .labelFirst {
 	float: left;
-	padding-top: 10px !important;
+	width: 112px;
 }
 .blockSecond {
 	display: block;
-	margin-top: 10px;
+	margin-top: 7px;
 	margin-left: 40px;
 }
 .inputBlockSecond {
@@ -26,4 +27,11 @@ input {
 	height: 30px; 
 	margin-left: 25px;
 	width: 100px;
+}.marginCustome1 {
+	margin-top: 5px !important;
+	margin-bottom: 10px !important;
+}
+.marginCustome2 {
+	margin-top: 2px !important;
+	margin-bottom: 10px !important;
 }

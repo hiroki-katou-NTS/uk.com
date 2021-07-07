@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.record.app.command.stamp.management;
 
+import java.util.Optional;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AudioType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SupportWplSet;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * ボタン詳細設定
@@ -29,25 +32,29 @@ public class ButtonSettingsCommand {
 	/** 音声使用方法 */
 	private int audioType;
 	
+	private Integer supportWplSet;
+	
 	public ButtonSettings toDomain() {
 		return new ButtonSettings(
 				new ButtonPositionNo(this.getButtonPositionNo()), 
 				this.buttonDisSet.toDomain(), 
 				this.buttonType.toDomain(), 
 				NotUseAtr.valueOf(this.usrArt), 
-				AudioType.valueOf(this.audioType)
+				AudioType.valueOf(this.audioType),
+				Optional.ofNullable(this.supportWplSet == null? null: SupportWplSet.valueOf(this.supportWplSet))
 			);
 	}
 
 
 
 	public ButtonSettingsCommand(int buttonPositionNo, ButtonDisSetCommand buttonDisSet, ButtonTypeCommand buttonType,
-			int usrArt, int audioType) {
+			int usrArt, int audioType, Integer supportWplSet) {
 		super();
 		this.buttonPositionNo = buttonPositionNo;
 		this.buttonDisSet = buttonDisSet;
 		this.buttonType = buttonType;
 		this.usrArt = usrArt;
 		this.audioType = audioType;
+		this.supportWplSet = supportWplSet;
 	}
 }

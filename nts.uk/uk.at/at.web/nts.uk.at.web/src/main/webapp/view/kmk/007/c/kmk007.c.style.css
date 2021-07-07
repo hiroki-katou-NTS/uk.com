@@ -1,9 +1,9 @@
 @CHARSET "UTF-8";
 
-#contents-area{
-	padding: 40px 20px;
-	float: left;
-    display: inline-flex;
+#swap-list {
+  display: inline-flex;
+  margin-left: 20px;
+  height: 320px;
 }
 
 .swap-contents{

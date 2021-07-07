@@ -30,10 +30,14 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 
 		created(params: AppInitParam) {
 			const vm = this;
-			if(!_.isNil(__viewContext.transferred.value)) {
-				vm.isFromOther = true;
+			if(nts.uk.request.location.current.isFromMenu) {
+				sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');	
+			} else {
+				if(!_.isNil(__viewContext.transferred.value)) {
+					vm.isFromOther = true;
+					params = __viewContext.transferred.value;
+				}
 			}
-			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
 			if (!_.isEmpty(params)) {

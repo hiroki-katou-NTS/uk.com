@@ -142,8 +142,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             ]);
 
             self.roundingRules = ko.observableArray([
-                { code: '0', name: nts.uk.resource.getText('KMK007_19') },
-                { code: '1', name: nts.uk.resource.getText('KMK007_20') }
+                { code: 0, name: nts.uk.resource.getText('KMK007_19') },
+                { code: 1, name: nts.uk.resource.getText('KMK007_20') }
             ]);
 
 

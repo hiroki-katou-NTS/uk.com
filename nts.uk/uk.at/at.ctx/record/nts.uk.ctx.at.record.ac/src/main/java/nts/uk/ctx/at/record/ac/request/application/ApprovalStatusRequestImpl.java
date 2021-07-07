@@ -11,12 +11,8 @@ import nts.uk.ctx.at.record.dom.adapter.request.application.ApprovalStatusReques
 import nts.uk.ctx.at.record.dom.adapter.request.application.dto.ApprovalStatusMailTempImport;
 import nts.uk.ctx.at.record.dom.adapter.request.application.dto.EmployeeUnconfirmImport;
 import nts.uk.ctx.at.record.dom.adapter.request.application.dto.RealityStatusEmployeeImport;
-import nts.uk.ctx.at.record.dom.adapter.request.application.dto.SendMailResultImport;
-import nts.uk.ctx.at.record.dom.application.realitystatus.output.MailTransmissionContentOutput;
 import nts.uk.ctx.at.request.pub.application.approvalstatus.ApprovalStatusMailTempExport;
 import nts.uk.ctx.at.request.pub.application.approvalstatus.ApprovalStatusPub;
-import nts.uk.ctx.at.request.pub.application.approvalstatus.MailTransmissionContentExport;
-import nts.uk.ctx.at.request.pub.application.approvalstatus.SendMailResultExport;
 
 @Stateless
 public class ApprovalStatusRequestImpl implements ApprovalStatusRequestAdapter {
@@ -50,20 +46,5 @@ public class ApprovalStatusRequestImpl implements ApprovalStatusRequestAdapter {
 	@Override
 	public String confirmApprovalStatusMailSender() {
 		return approvalStatusPub.confirmApprovalStatusMailSender();
-	}
-
-	@Override
-	public SendMailResultImport exeApprovalStatusMailTransmission(List<MailTransmissionContentOutput> listMailContent,
-			ApprovalStatusMailTempImport domain, int mailType) {
-		List<MailTransmissionContentExport> listData = listMailContent.stream()
-				.map(x -> new MailTransmissionContentExport(x.getSId(), x.getSName(), x.getMailAddr(), x.getSubject(),
-						x.getText()))
-				.collect(Collectors.toList());
-		ApprovalStatusMailTempExport domainMail = new ApprovalStatusMailTempExport(domain.getMailType(),
-				domain.getUrlApprovalEmbed(), domain.getUrlDayEmbed(), domain.getUrlMonthEmbed(),
-				domain.getMailSubject(), domain.getMailContent());
-		SendMailResultExport result = approvalStatusPub.exeApprovalStatusMailTransmission(listData, domainMail, mailType);
-
-		return new SendMailResultImport(result.isOK(), result.getListError());
 	}
 }

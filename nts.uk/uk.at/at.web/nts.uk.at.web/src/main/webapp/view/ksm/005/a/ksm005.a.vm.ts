@@ -631,7 +631,7 @@ module nts.uk.at.view.ksm005.a {
 
 			        if(dto) {
                         let endYearMonth: number = nts.uk.ui.windows.getShared("endYearMonth");
-                        self.setYearMonthPicked(Number(endYearMonth))
+                        self.setYearMonthPicked(Number(moment.utc(endYearMonth, "YYYY/MM").format("YYYYMM")))
                     }
 
 			        if(self.selectMonthlyPattern()) {

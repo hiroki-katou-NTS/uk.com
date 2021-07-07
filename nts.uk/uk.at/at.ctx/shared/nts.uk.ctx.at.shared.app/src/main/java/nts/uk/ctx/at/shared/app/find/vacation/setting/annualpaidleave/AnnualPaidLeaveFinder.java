@@ -52,18 +52,38 @@ public class AnnualPaidLeaveFinder {
 
         // Manage Annual
         dto.setAddAttendanceDay(setting.getManageAnnualSetting().isWorkDayCalculate() == true ? 1 : 0);
-        dto.setMaxManageSemiVacation(setting.getManageAnnualSetting().getHalfDayManage().manageType.value);
-        dto.setMaxNumberSemiVacation(setting.getManageAnnualSetting().getHalfDayManage().reference.value);
-        dto.setMaxNumberCompany(setting.getManageAnnualSetting().getHalfDayManage().maxNumberUniformCompany.v());
+        //dto.setMaxManageSemiVacation(setting.getManageAnnualSetting().getHalfDayManage().manageType.value);
+        if(setting.getManageAnnualSetting().getHalfDayManage().manageType == null){
+        	dto.setMaxManageSemiVacation(1);
+        }      
+        else{
+        	dto.setMaxManageSemiVacation(setting.getManageAnnualSetting().getHalfDayManage().manageType.value);
+        }
+        if(setting.getManageAnnualSetting().getHalfDayManage().reference ==null){
+        	 dto.setMaxNumberSemiVacation(0);
+        }
+        else{
+        dto.setMaxNumberSemiVacation(setting.getManageAnnualSetting().getHalfDayManage().reference.value);}
+        if(setting.getManageAnnualSetting().getHalfDayManage().maxNumberUniformCompany.v() == null){
+        	dto.setMaxNumberCompany(5);
+        }else{
+        dto.setMaxNumberCompany(setting.getManageAnnualSetting().getHalfDayManage().maxNumberUniformCompany.v());}
       /*  dto.setMaxGrantDay(setting.getManageAnnualSetting().getMaxGrantDay().v());
         dto.setMaxRemainingDay(setting.getManageAnnualSetting().getRemainingNumberSetting().remainingDayMaxNumber.v());*/
         /*dto.setRemainingNumberDisplay(setting.getManageAnnualSetting().getDisplaySetting().remainingNumberDisplay.value);
         dto.setNextGrantDayDisplay(setting.getManageAnnualSetting().getDisplaySetting().nextGrantDayDisplay.value);*/
-        dto.setYearlyOfDays(setting.getManageAnnualSetting().getYearlyOfNumberDays().v());        
-        dto.setRoundProcessCla(setting.getManageAnnualSetting().getHalfDayManage().roundProcesCla.value);
-        
-        dto.setNumberYearRetain(setting.getManageAnnualSetting().getRemainingNumberSetting().retentionYear.v());
-
+        dto.setYearlyOfDays(setting.getManageAnnualSetting().getYearlyOfNumberDays().v());
+        if(setting.getManageAnnualSetting().getHalfDayManage().roundProcesCla == null){
+        	dto.setRoundProcessCla(0);
+        }else{
+        	dto.setRoundProcessCla(setting.getManageAnnualSetting().getHalfDayManage().roundProcesCla.value);
+        }
+        if(setting.getManageAnnualSetting().getRemainingNumberSetting().retentionYear.v() == null){
+        	dto.setNumberYearRetain(2);
+        }
+        else{
+        	 dto.setNumberYearRetain(setting.getManageAnnualSetting().getRemainingNumberSetting().retentionYear.v());
+        }
         // Time Manage
         dto.setTimeManageType(setting.getTimeSetting().getTimeManageType().value);
         dto.setTimeUnit(setting.getTimeSetting().getTimeUnit().value);

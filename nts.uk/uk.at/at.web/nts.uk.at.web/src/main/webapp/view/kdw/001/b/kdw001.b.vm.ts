@@ -45,10 +45,10 @@ module nts.uk.at.view.kdw001.b {
             roundingRules3: KnockoutObservableArray<any>;
             roundingRules1: KnockoutObservableArray<any>;
             selectedRuleCode: any;
-            selectedCreatDivisionCode: any;
-            selectedCalDivisionCode: any
-            selectedReflectClassCode: any;
-            selectedAggregateClassCode: any;
+            selectedCreatDivisionCode: KnockoutObservable<any> = ko.observable(0);
+            selectedCalDivisionCode: KnockoutObservable<any> = ko.observable(0);
+            selectedReflectClassCode: KnockoutObservable<any> = ko.observable(0);
+            selectedAggregateClassCode: KnockoutObservable<any> = ko.observable(0);
 
             //Declare checkbox properties
             checked: KnockoutObservable<boolean>;
@@ -120,26 +120,22 @@ module nts.uk.at.view.kdw001.b {
 
                 //Init for switch button
                 self.roundingRules5 = ko.observableArray([
-                    { code: '0', name: getText('KDW001_69') },
-                    { code: '1', name: getText('KDW001_70') }
+                    { code: 0, name: getText('KDW001_69') },
+                    { code: 1, name: getText('KDW001_70') }
                 ]);
                 self.roundingRules4 = ko.observableArray([
-                    { code: '0', name: getText('KDW001_66') },
-                    { code: '1', name: getText('KDW001_67') }
+                    { code: 0, name: getText('KDW001_66') },
+                    { code: 1, name: getText('KDW001_67') }
                 ]);
                 self.roundingRules3 = ko.observableArray([
-                    { code: '0', name: getText('KDW001_64') },
-                    { code: '1', name: getText('KDW001_65') }
+                    { code: 0, name: getText('KDW001_64') },
+                    { code: 1, name: getText('KDW001_65') }
                 ]);
                 self.roundingRules1 = ko.observableArray([
-                    { code: '0', name: getText('KDW001_54') },
-                    { code: '1', name: getText('KDW001_55') }
+                    { code: 0, name: getText('KDW001_54') },
+                    { code: 1, name: getText('KDW001_55') }
                 ]);
                 self.selectedRuleCode = ko.observable(0);
-                self.selectedCreatDivisionCode = ko.observable(0);
-                self.selectedCalDivisionCode = ko.observable(0);
-                self.selectedReflectClassCode = ko.observable(0);
-                self.selectedAggregateClassCode = ko.observable(0);
                 // Init enable check box for area
                 self.enableAll = ko.observable(false);
 

@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 490, height: 560 };</script>
+			<script>var dialogSize = { width: 490, height: 520 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksm004.d.main.css" />
 			<com:scriptfile path="ksm004.d.start.js" />
@@ -24,21 +24,22 @@
 						</td>
 						<td>
 							<!-- D1_4 -->
-							 <div tabindex="1" id="daterangepicker"
+							 <div tabindex="1"
 								data-bind="ntsDateRangePicker: {
 								name:'#[KSM004_36]',
 								valueFormat: 'YYYYMM',
 								required: true,
 								value: dateValue,
 								maxRange: 'oneYear',
-								type:'yearmonth'}"></div>
+								type:'yearmonth',
+								showNextPrevious: false}"></div>
 						</td>
 					</tr>
 					<tr>
 						<td></td>
 						<td>
 							<!-- D1_8 -->
-							<div tabindex="2"
+							<div tabindex="2" style="white-space: nowrap;"
 								data-bind="ntsCheckBox:{
 								checked: checkHoliday,
 								text: '#{i18n.getText('KSM004_53')}'

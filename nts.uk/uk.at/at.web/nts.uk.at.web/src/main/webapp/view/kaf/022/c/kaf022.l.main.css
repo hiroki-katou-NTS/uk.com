@@ -99,3 +99,8 @@ td .control-group {
 .clear-btn.ntsSearchBox_Component {
     vertical-align: middle !important;
 }
+
+.radio-wrapper {
+	min-width: 100px;
+	margin-left: 5px;
+}

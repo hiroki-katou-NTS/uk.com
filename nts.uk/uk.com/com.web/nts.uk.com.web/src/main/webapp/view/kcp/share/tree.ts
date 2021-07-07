@@ -649,7 +649,7 @@ module kcp.share.tree {
                 self.selectedIds(found);
                 
                 let options = {
-                    width: self.isShowSelectButton ? '474px' : self.treeStyle.width,
+                    width: self.treeStyle.width,
                     dataSource: self.itemList(),
                     selectedValues: self.selectedIds(),
                     optionsValue: 'id',
@@ -1026,15 +1026,15 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
         <div class="row-search control-group valign-center" style ="width: 430px;" data-bind="visible: !isMultipleUse">
             <div data-bind="ntsFormLabel: {required: true}">`+TreeComponentTextResource.KCP004_2+`</div>
             <div class="base-date-editor" id="work-place-base-date"
-                style="margin-left: -9px; margin-right: 5px;"
+                style="margin-left: 0; margin-right: 5px;"
                 data-bind="attr: {tabindex: tabindex},
                 ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name:'#[KCP004_2]', required: true}"></div>
             <button
                 data-bind="click: reload, attr: {tabindex: tabindex}"
                 style="min-width: 65px">`+TreeComponentTextResource.KCP004_3+`</button>
-            <div data-bind="ntsFormLabel: {}" style="margin-left: 10px; border-color: transparent;">`+TreeComponentTextResource.KCP004_4+`</div>
+            <div data-bind="ntsFormLabel: {}" style="margin-left: 30px; border-color: transparent;">`+TreeComponentTextResource.KCP004_4+`</div>
             <div id="combo-box-tree-component"
-                style="width: 60px; margin-left: 5px;"
+                style="width: 60px; margin-left: -10px;"
                 data-bind="attr: {tabindex: tabindex}, ntsComboBox: {
                     options: levelList,
                     optionsValue: 'level',
@@ -1046,7 +1046,7 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
                         { prop: 'name', length: 4 },
                     ]}"></div>
         </div>
-        <div class = "search-filter" style="margin-top:10px " data-bind="style: { width: isShowSelectButton ? '474px' : '420px' }">
+        <div class = "search-filter" style="margin-top:10px " data-bind="style: { width: '450px' }">
             <div style="display: inline-block; float: left" data-bind="attr: {id: searchBoxId, tabindex: tabindex}, style: { width : !isMultipleUse ? '327px' : '268px'}">
             </div>
             <div style="display: inline-block; margin-left: 2px; float: left">

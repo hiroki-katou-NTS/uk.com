@@ -48,7 +48,7 @@
 }
  */
 #messageSwaplist {
-	margin-left: 385px;
+	margin-left: 412px;
 	width: 48%;
 	margin-bottom: -10px;
 }
@@ -98,4 +98,33 @@ html {
 }
 .nts-searchbbox-wrapper {
 	margin-bottom: 0px;
+}
+
+#swap-list2-gridArea1,
+#swap-list2-gridArea2,
+#swap-list-gridArea1,
+#swap-list-gridArea2,
+#swap-list3-gridArea1,
+#swap-list3-gridArea2 {
+	width: 318px !important;
+}
+
+.ntsSwapSearchLeft #swap-list2-search-area-input,
+.ntsSwapSearchLeft #swap-list-search-area-input,
+.ntsSwapSearchLeft #swap-list3-search-area-input {
+	width: 171px !important;
+}
+
+.ntsSwapSearchRight #swap-list2-search-area-input,
+.ntsSwapSearchRight #swap-list-search-area-input,
+.ntsSwapSearchRight #swap-list3-search-area-input {
+	width: 210px !important;
+}
+
+.ntsSwapSearchRight {
+	right: -90px !important;
+}
+
+.ntsMoveDataArea  {
+	padding: 0 10px; 
 }

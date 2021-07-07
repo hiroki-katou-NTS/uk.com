@@ -5,10 +5,10 @@
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF010_40'), ntsFormLabel: {}"></div>
 		</div>
-		<div class="table-time1">
+		<div class="table-time1" style="margin-left: 16px">
 			<table id="fixed-table">
 				<colgroup>
-					<col width="109px" />
+					<col width="25px" />
 					<col width="115px" />
 					<col width="115px" />
 				</colgroup>
@@ -34,7 +34,7 @@
 									name: '#[KAF010_337]', 
 									value: start, 
 									constraint:'TimeWithDayAttr', 
-									enable: true,
+									enable: $parent.mode() != 3,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻-->
 						<td><input tabindex="12" class="right-content"
@@ -43,7 +43,7 @@
 									name: '#[KAF010_338]', 
 									value: end, 
 									constraint:'TimeWithDayAttr', 
-									enable: true,
+									enable: $parent.mode() != 3,
 									option: {width: '85px', timeWithDay: true}}" /></td>
 					</tr>
 				</tbody>
@@ -52,19 +52,19 @@
 	</div>
 
 	<!-- calculate button A5_8-->
-	<div style="margin-bottom: 20px" data-bind="visible: restTimeTableVisible2()">
-		<button style="width: 100px; margin-left: 200px" data-bind="text: $i18n('KAF010_43'), click: calculate" class="caret-bottom caret-inline" ></button>
+	<div style="margin-bottom: 20px; margin-top: 13px;" data-bind="visible: restTimeTableVisible2()">
+		<button style="width: 100px; margin-left: 200px" data-bind="text: $i18n('KAF010_43'), click: calculate, enable: mode() != 3" class="caret-bottom caret-inline" ></button>
 	</div>
 
 	<!-- holiday time -->
-	<div class="cf valign-top control-group" data-bind="if: true">
+	<div class="cf valign-top control-group" data-bind="if: true" style="margin-bottom: 2px; margin-top: 23px;">
 		<!--A6_1 -->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF010_50'), ntsFormLabel: {required: true}"></div>
 		</div>
 		
-		<div class="table-time2">
+		<div class="table-time2" style="margin-left: 16px">
 			<table id="fixed-table-holiday">
 				<colgroup>
 					<col width="109px" />
@@ -91,15 +91,16 @@
 						<!--A6_7-->
 						<td class="header" data-bind="text: frameName()"></td>
 						<!--A6_8 -->
-						<td><input tabindex="12" class="right-content"
+						<td data-bind="style: {'background-color': backgroundColor()}"><input tabindex="12" class="right-content"
 							data-bind="
+								style: {'background-color': backgroundColor()},
 								ntsTimeWithDayEditor: {
-									name: '#[KAF005_337]', 
+									name: frameName, 
 									value: start,
 									constraint:'OvertimeAppPrimitiveTime',
 									inputFormat: 'time',
 									mode: 'time',
-									enable: true,
+									enable: $parent.inputEnable() && ($parent.mode() != 3 || type() != 1),
 									option: {width: '85px', timeWithDay: false}}" /></td>
 						<!--A6_9 -->
 						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(preApp)), visible: $parent.application().prePostAtr() == 1 && $parent.mode() != 2"></td>
@@ -112,13 +113,14 @@
 	</div>
 
 	<!-- over time hours -->
-	<div class="cf valign-top control-group" data-bind="visible: overTimeTableVisible()">
+	<div style="margin-top: 13px;
+    margin-bottom: 1px;" class="cf valign-top control-group" data-bind="visible: overTimeTableVisible()">
 		<!--A7_1 残業時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF005_50'), ntsFormLabel: {}"></div>
 		</div>
-		<div class="table-time3">
+		<div class="table-time3" style="margin-left: 16px">
 			<table id="fixed-overtime-hour-table">
 				<colgroup>
 					<col width="109px" />
@@ -143,16 +145,18 @@
 						<td class="header" data-bind="text: frameName()"
 							></td>
 						<!--A7_8 残業申請時間入力-->
-						<td>
+						<td data-bind="style: {'background-color': backgroundColor()}">
 							<input tabindex="12" class="right-content overtimeHoursCheck"
 							data-bind=" 
+								style: {'background-color': backgroundColor()},
 								ntsTimeEditor: { 
+									name: frameName, 
 									value: applicationTime, 
 									option: {width: '85px', timeWithDay: true},
 									inputFormat: 'time',
 									mode: 'time',
 									constraint:'OvertimeAppPrimitiveTime',
-									enable: true }" />
+									enable: $parent.mode() != 3 || type() != 0 }" />
 						</td>
 						<!--A7_9 残業事前申請時間-->
 						<td class="right-content" data-bind="text: $parent.getFormatTime(ko.toJS(preTime)), visible: $parent.application().prePostAtr() == 1 && $parent.mode() != 2"></td>

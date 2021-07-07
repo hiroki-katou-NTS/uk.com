@@ -81,7 +81,7 @@ public class ReflectSupportStartEnd {
 		}
 
 		WorkplaceOfWorkEachOuen workplace = WorkplaceOfWorkEachOuen.create(
-				data.getWorkPlaceId().map(x -> x.v()).orElse(dailyApp.getAffiliationInfor().getWplID()),
+				new WorkplaceId(data.getWorkPlaceId().map(x -> x.v()).orElse(dailyApp.getAffiliationInfor().getWplID())),
 				data.getWorkLocationCd().orElse(null));
 		lstItemId.add(CancelAppStamp.createItemId(921, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
 

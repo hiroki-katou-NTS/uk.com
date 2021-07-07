@@ -1,56 +1,156 @@
+#button-del {
+	margin: 0 10px !important;
+}
+
 #combobox1 {
-	margin-left: -274px;
+	margin-top: 2px;
 }
 
-#first-color-picker,#second-color-picker, #date-time-label, #correc-label1, #combobox1, #stamping-his-label, #stamping-his-radio {
-	margin-top: 10px;
-}
-
-#stamping-his-label{
-	margin-left:30px;
-}
-
-#combobox1{
-    width: 140px;
-}
-
-#correc-text{
-    width: 114px;
-}
-
-#correc-text{
-	margin-left: 93px;
-	margin-top: -33px;
-}
-
-#highlight-radio{
-	margin-left: 3px;
-}
-
-#first-color-picker{
-	margin-left: 23px;
-}
-
-#second-color-picker{
-	margin-left: 37px;
-}
-
-#correc-label{
+#combobox {
 	margin-top: 9px;
 }
 
-#contents-area{
-	margin-left: 20px;
+#correc-label1 {
+	margin-top: 7px;
 }
 
-.box{
-	margin-left: 6px !important;
+#correc-label {
+	float: left;
 }
 
-.ui-igcombo-list{
-	max-height: 210px  !important;
-	max-width: 140px !important;
+#combobox1 {
+	width: 112px;
 }
+
+#comment-text {
+	width: 235px;
+}
+#comment-text textarea {
+	height: 105px;
+	width: 260px;
+}
+
+#right-area tr td:nth-child(1) {
+	width: 100px;
+}
+
+#right-area tr td:nth-child(2) {
+	width: 283px;
+}
+
+.left-area {
+    width: 502px;
+    margin: 0 auto;
+}
+
+#right-area {
+	margin-left: 122px;
+	margin-top: -134px;
+}
+
+#combobox {
+	width: 90px;
+}
+
+#item-panel {
+	height: 357px;
+	margin: 10px auto 0;
+    width: 478px;
+}
+
+.btn-name.btn5, .btn-name.btn3, .btn-name.btn1 {
+    margin-left: 1px;
+}
+
+.btn_2, .btn_3, .btn_4 {
+	margin-top: 18px;
+	width: 100px;
+	height: 100px;
+	margin-left: 5px;
+}
+
+.btn_6, .btn_7, .btn_8 {
+	width: 100px;
+	height: 100px;
+	margin-top: 20px;
+	margin-left: 5px;
+}
+
+.btn_1 {
+	margin-top: 18px;
+	width: 100px;
+	height: 100px;
+	margin-left: 33px;
+}
+
+.btn_5 {
+	width: 100px;
+	height: 100px;
+	margin-left: 33px;
+	margin-top: 20px;
+}
+
 .sp-container{
-	left: 37px !important;
+	left: 130px !important;
+}
+
+.basic-items{
+	width: 383px;
+}
+
+.btn1 div, .btn2 div {
+	margin-top: 2px;
+}
+
+.btn-name {
+	border-radius: 5px;
+	box-shadow: 1px 1px 2px 1px #808080;
+    border: 0;
+}
+.btn-name div {
+	font-size: 18px;
+}
+
+.btn1 div, .btn2 div {
+	font-size: 26px;
+}
+.table1 .btn-name.btn1 div, .table1 .btn-name.btn2 div {
+	height: 42px;
+} 
+.table1 .btn-name div  {
+	height: 32px;
+    word-break: break-all;
+} 
+.btn-name div.smallText {
+	font-size: 21px;
+	height: 32px;
+	position: relative;
+    top: 6px;
+}
+
+.btn-name-2{
+	font-size: 16px;
+}
+.popupButton {
+	margin: 7px 0 23px;
+	width: 90px;
+	padding: 0;
+}
+.popup-area table{
+    border: solid 1px #b1b1b1;
+}
+.popup-area tr td {
+	padding: 4px 6px;
+}
+.popup-area tr td div{
+    cursor: pointer;
+    width: fit-content;
+}
+.popup-area tr td div:focus{
+	outline-width: 0;
+}
+.popup-area tr td div:hover {
+	color: #30CC40;
+    background: linear-gradient(0deg, rgba(68,224,140,0.1), rgba(68,224,140,0.1)),#fff;
+    box-shadow: 0px 8px 10px rgb(22 154 28 / 10%);
 }

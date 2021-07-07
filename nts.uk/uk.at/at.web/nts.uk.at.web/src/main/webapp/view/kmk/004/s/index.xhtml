@@ -7,7 +7,7 @@
     <ui:composition template="/master/dialog.xhtml">
         <ui:define name="htmlHead">
             <com:scriptfile set="IGNITE" />
-            <script>var dialogSize = { width: 350, height: 380 };</script>
+            <script>var dialogSize = { width: 388, height: 335 };</script>
             <com:stylefile path="./style.css" />
             <com:scriptfile path="./kmk004.s.vm.js" />
 
@@ -19,13 +19,13 @@
                         <div class="boxSquare">
                             <div class="title-1" data-bind="i18n: 'KMK004_331'"></div>
                             <div class="title-1" data-bind="i18n: 'KMK004_332'"></div>
-                            <div class="label title">
+                            <div style="padding-left: 30px;">
                                 <label data-bind="i18n: 'Com_Company'"></label>
                             </div>
                             <div>
                                 <div class="check-box">
-                                    <div tabindex="1" class="check-box-unit" data-bind="ntsCheckBox: { checked: managerUnit}"></div>
-                                    <label data-bind="i18n: 'KMK004_333'"></label>
+                                    <div style="float: left;" tabindex="1" class="check-box-unit" data-bind="ntsCheckBox: { checked: managerUnit}"></div>
+                                    <div class="content" data-bind="i18n: 'KMK004_333'"></div>
                                 </div>
                                 <div class="label-column-select">
                                     <div class="ntsControl">
@@ -44,8 +44,8 @@
                                     </div>
                                 </div>
                                 <div class="check-box">
-                                    <div tabindex="4" data-bind="ntsCheckBox: { checked: model.employee}"></div>
-                                    <label data-bind="i18n: 'Com_Person'"></label>
+                                    <div style="float: left;" tabindex="4" data-bind="ntsCheckBox: { checked: model.employee}"></div>
+                                    <div class="content" data-bind="i18n: 'Com_Person'"></div>
                                 </div>
                             </div>
                         </div>

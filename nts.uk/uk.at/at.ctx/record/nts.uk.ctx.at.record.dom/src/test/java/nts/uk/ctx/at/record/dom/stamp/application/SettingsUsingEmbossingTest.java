@@ -103,10 +103,8 @@ public class SettingsUsingEmbossingTest {
 	@Test
 	public void testSettingsUsingEmbossingTest_6() {
 		
-		SettingsUsingEmbossing settingsUsingEmbossing = SettingsUsingEmbossingHelper.getSettingsUsingEmbossingSmartPhone();
-		
-		assertThat(settingsUsingEmbossing.canUsedStamping(StampMeans.TIME_CLOCK)).isTrue();
-		assertThat(settingsUsingEmbossing.canUsedStamping(StampMeans.TEXT)).isTrue();
+		SettingsUsingEmbossing settingsUsingEmbossing = SettingsUsingEmbossingHelper.getSettingsUsingEmbossingRicohStamp();
+
 		assertThat(settingsUsingEmbossing.canUsedStamping(StampMeans.RICOH_COPIER)).isTrue();
 		
 	}

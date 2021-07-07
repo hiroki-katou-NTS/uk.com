@@ -21,9 +21,7 @@ div[class^=screen-i] {
 }
 
 .screen-i #ccgcomponent {
-	background-color: #fff;
 	margin: -30px 0 0 -30px;
-	padding: 30px 0 30px 30px;
 }
 
 .screen-i #kcpcomponent>div {
@@ -31,7 +29,7 @@ div[class^=screen-i] {
 }
 
 .screen-i .right-content {
-	padding-left: 120px;
+	padding-left: 60px;
 	
 }
 
@@ -48,7 +46,6 @@ div[class^=screen-i] {
 
 .screen-i .information {
 	padding-top: 0;
-	padding-left: 30px;
 	min-width: 400px;
 }
 .container-custom {

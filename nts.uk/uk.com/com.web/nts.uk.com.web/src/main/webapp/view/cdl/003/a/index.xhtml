@@ -15,11 +15,13 @@
 			<com:scriptfile path="cdl003.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div class="classificationContent" tabindex="-1">
-				<div class="lableCDL" tabindex="-1">
-					<label>#{i18n.getText('CDL003_1')}</label>
+			<div id="contents-area">
+				<div class="classificationContent" tabindex="-1">
+					<div class="lableCDL" tabindex="-1">
+						<label>#{i18n.getText('CDL003_1')}</label>
+					</div>
+					<div id="classification" tabindex="-1"></div>
 				</div>
-				<div id="classification" tabindex="-1"></div>
 			</div>
 			<div id="functions-area-bottom">
 				<button class="proceed x-large" tabindex="2"

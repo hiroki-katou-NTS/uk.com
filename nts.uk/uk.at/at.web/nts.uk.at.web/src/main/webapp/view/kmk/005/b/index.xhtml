@@ -12,20 +12,20 @@
 			<com:scriptfile path="kmk005.b.vm.js" />
 			<com:scriptfile path="kmk005.b.service.js" />
 			<com:stylefile path="kmk005.b.main.css" />
-				<script>var dialogSize = { width: 590, height: 650 };</script>
+				<script>var dialogSize = { width: 590, height: 670 };</script>
 				<com:ValidatorScript>
 					nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.TimeItemName
    				</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area">
+			<div id="contents-area" style="overflow-y: unset;">
 				<div>
 					<div class="label">#{i18n.getText('KMK005_16')}</div>
 				</div>
-				<div tabindex="1" id="tab-panel" style="height: 415px"
+				<div tabindex="1" id="tab-panel" style="height: 510px"
 					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-					<div class="tab-content-1"  style="height: 415px">
+					<div class="tab-content-1"  style="height: 510px">
 						<table id="premium-set-tbl-b" height="410">
 							<thead>
 								<tr>
@@ -38,7 +38,7 @@
 							</thead>
 							<tbody data-bind="foreach: timeItemList">
 								 
-								<tr>
+								<tr style="height: 10px; ">
 									<td data-bind="text: timeItemNo"></td>
 									<td>
 										<div class="cf"
@@ -55,7 +55,7 @@
 									</td>
 									<td><input class="premiumName itemName"
 										data-bind="ntsTextEditor: {
-										name: '#[KMK005_21]', 
+										name: nameValidate(), 
 										value: timeItemName, 
 										constraint: 'TimeItemName',
 										option: { width: '220px' }, 
@@ -71,10 +71,10 @@
 
 
 					</div>
-					<div class="tab-content-2"  style="height: 415px">
+					<div class="tab-content-2"  style="height: 510px">
 						<table id="premium-set-tbl-b"  height="410">
 							<thead>
-								<tr>
+								<tr style="height:15px;">
 									<th>#{i18n.getText('KMK005_19')}</th>
 									<th>#{i18n.getText('KMK005_20')}</th>
 									<th>
@@ -84,7 +84,7 @@
 							</thead>
 							<tbody data-bind="foreach: timeItemSpecList">
 								 
-								<tr>
+								<tr style="height:15px;">
 									<td data-bind="text: timeItemNo"></td>
 									<td>
 										<div class="cf"
@@ -101,7 +101,7 @@
 									</td>
 									<td><input class="premiumName specialItemName"
 										data-bind="ntsTextEditor: {
-										name: '#[KMK005_21]', 
+										name: nameValidate(), 
 										value: timeItemName, 
 										constraint: 'TimeItemName',
 										option: { width: '220px' }, 

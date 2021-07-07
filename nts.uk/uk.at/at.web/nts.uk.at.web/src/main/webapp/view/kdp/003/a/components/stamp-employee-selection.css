@@ -2,7 +2,7 @@
 	padding: 10px;
 	min-width: 260px;
 	box-sizing: border-box;
-	background-color: #165660;
+	background-color: #E2EFDA;
 }
 
 #stamp-employee-selection .ntsControl.nts-datepicker-wrapper,
@@ -16,11 +16,11 @@
 }
 
 #stamp-employee-selection .button-group-filter button {
-	width: 36px;
+	width: 35px;
 	overflow: hidden;
 	font-weight: bold;
     color: #fff;
-	background-color: #94B7FE;
+	background-color: #A6A6A6;
 	margin-top: 5px;
 }
 
@@ -29,7 +29,7 @@
 }
 
 #stamp-employee-selection .button-group-filter button.selected {
-	background-color: #a9a9a9;
+	background-color: #94B7FE;
 }
 
 #stamp-employee-selection .button-group-filter button:focus {
@@ -56,6 +56,7 @@
     margin: 0;
     text-align: left;
     border-radius: 0;
+	background-color: #a9a9a9;
 }
 
 #stamp-employee-selection .list-group .check-out-of-list.active {

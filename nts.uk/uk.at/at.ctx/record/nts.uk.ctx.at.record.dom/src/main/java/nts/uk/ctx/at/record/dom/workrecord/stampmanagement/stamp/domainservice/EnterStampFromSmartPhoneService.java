@@ -6,14 +6,15 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.FindWorkPlaceFromStampedPositionService;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
 
 /**
  * @author sonnlb
@@ -46,19 +47,17 @@ public class EnterStampFromSmartPhoneService {
 	public static TimeStampInputResult create(Require require, ContractCode contractCode, String employeeID,
 			GeneralDateTime stampDatetime, StampButton stampButton, Optional<GeoCoordinate> positionInfor,
 			RefectActualResult refActualResults) {
-		// $打刻場所情報 = empty
-		StampLocationInfor stampLocalInfo = null;
-
-		if (positionInfor.isPresent()) {
-			stampLocalInfo = new StampLocationInfor(positionInfor.get(), false);
+		//	$打刻場所 = 打刻場所を求める#取得する(require,地理座標)
+		Optional<WorkLocation> workLocation = FindWorkPlaceFromStampedPositionService.find(require, positionInfor);
+		//  if $打刻場所.isPresent
+		if(workLocation.isPresent()) {
+			refActualResults.getWorkInforStamp().ifPresent(c->c.setWorkLocationCD(Optional.of(workLocation.get().getWorkLocationCD())));
 		}
-
+		
 		// $スマホ打刻の打刻設定 = require.スマホ打刻の打刻設定を取得する()
-		Optional<SettingsSmartphoneStamp> settingSmartPhoneStampOpt = require
-				.getSmartphoneStampSetting();
+		Optional<SettingsSmartphoneStamp> settingSmartPhoneStampOpt = require.getSmartphoneStampSetting();
 
 		if (!settingSmartPhoneStampOpt.isPresent()) {
-
 			throw new BusinessException("Msg_1632");
 		}
 
@@ -80,7 +79,7 @@ public class EnterStampFromSmartPhoneService {
 
 	}
 
-	public static interface Require extends CreateStampDataForEmployeesService.Require {
+	public static interface Require extends CreateStampDataForEmployeesService.Require, FindWorkPlaceFromStampedPositionService.Require {
 
 		// [R-1] スマホ打刻の打刻設定を取得する
 		Optional<SettingsSmartphoneStamp> getSmartphoneStampSetting();

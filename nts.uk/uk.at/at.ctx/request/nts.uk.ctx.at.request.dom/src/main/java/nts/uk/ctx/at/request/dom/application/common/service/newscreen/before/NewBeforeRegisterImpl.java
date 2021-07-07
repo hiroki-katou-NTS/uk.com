@@ -201,7 +201,13 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 				companyID, application.getEmployeeID(), application.getAppDate().getApplicationDate());
 		
 		Optional<GeneralDate> opStartDate = application.getOpAppStartDate().map(x -> x.getApplicationDate());
+		if(!opStartDate.isPresent()) {
+			opStartDate = Optional.of(application.getAppDate().getApplicationDate());
+		}
 		Optional<GeneralDate> opEndDate = application.getOpAppEndDate().map(x -> x.getApplicationDate());
+		if(!opEndDate.isPresent()) {
+			opEndDate = Optional.of(application.getAppDate().getApplicationDate());
+		}
 		if (opStartDate.isPresent() && opEndDate.isPresent()) {
 			// 登録する期間のチェック
 			//((TimeSpan)(申請する終了日 - 申請する開始日)).Days > 31がtrue

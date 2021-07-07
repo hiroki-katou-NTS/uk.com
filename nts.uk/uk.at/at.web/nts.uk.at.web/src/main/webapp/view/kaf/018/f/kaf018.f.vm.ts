@@ -427,7 +427,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 		empCD: string;
 		empName: string;
 		monthConfirm: boolean;
-		monthApproval: boolean;
+		monthApproval: number;
 		empID: string;
 	}
 	
@@ -469,9 +469,9 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 				this.empCD = apprSttConfirmEmp.empCD;
 				this.empName = apprSttConfirmEmp.empName;
 				this.sttUnConfirmDay = _.chain(apprSttConfirmEmp.listDailyConfirm).filter(o => !o.personConfirm).isEmpty().value() ? vm.$i18n('KAF018_530') : "";
-				this.sttUnApprDay = _.chain(apprSttConfirmEmp.listDailyConfirm).filter(o => o.bossConfirm!=2).isEmpty().value() ? vm.$i18n('KAF018_530') : "";
+				this.sttUnApprDay = _.chain(apprSttConfirmEmp.listDailyConfirm).filter(o => o.bossConfirm!=DailyConfirmAtr.ALREADY_APPROVED).isEmpty().value() ? vm.$i18n('KAF018_530') : "";
 				this.sttUnConfirmMonth = apprSttConfirmEmp.monthConfirm ? vm.$i18n('KAF018_530') : "";
-				this.sttUnApprMonth = apprSttConfirmEmp.monthApproval ? vm.$i18n('KAF018_530') : "";
+				this.sttUnApprMonth = apprSttConfirmEmp.monthApproval==DailyConfirmAtr.ALREADY_APPROVED ? vm.$i18n('KAF018_530') : "";
 				let a: Array<DateInfo> = [],
 					apprSttComfirmSet = vm.apprSttComfirmSet,
 					dateRangeNumber = moment(vm.endDate,'YYYY/MM/DD').diff(moment(vm.startDate,'YYYY/MM/DD'), 'days');
@@ -483,7 +483,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 							if(_.isNull(item.bossConfirm) && _.isNull(item.personConfirm)) {
 								a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.NO_TARGET));	
 							} else {
-								if(item.bossConfirm) {
+								if(item.bossConfirm==DailyConfirmAtr.ALREADY_APPROVED) {
 									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.CONFIRMED));	
 								} else if(item.personConfirm) {
 									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.BOSS_UNCONFIRMED));	
@@ -507,7 +507,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 							if(_.isNull(item.bossConfirm)) {
 								a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.NO_TARGET));	
 							} else {
-								if(item.bossConfirm) {
+								if(item.bossConfirm==DailyConfirmAtr.ALREADY_APPROVED) {
 									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.CONFIRMED));	
 								} else {
 									a.push(new DateInfo(item.targetDate, CONFIRMSTATUS.BOSS_UNCONFIRMED));	
@@ -553,6 +553,15 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         //実績対象外
         NO_TARGET = 3
     }
+
+	enum DailyConfirmAtr {
+		// 未承認 
+		UNAPPROVED = 0,
+		// 承認中 
+		ON_APPROVED = 1,
+		// 承認済 
+		ALREADY_APPROVED = 2,
+	}
 
 	const API = {
 		getConfirmSttByEmp: "at/request/application/approvalstatus/getConfirmApprSttByEmp",

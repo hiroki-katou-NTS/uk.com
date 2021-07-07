@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				 nts.uk.ctx.bs.person.dom.person.personal.anniversary.NotificationMessage
+			</com:ValidatorScript>
+
+			<script type='text/javascript'>
+				var dialogSize = {
+					width : 448,
+					height : 400
+				};
+			</script>
+
+			<com:scriptfile set="IGNITE" />
+
+			<com:stylefile path="./kdp003.q.style.css" />
+			<com:scriptfile path="./kdp003.q.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area" style="height: 270px !important;">
+				<div class="top-panel header-green">
+					<!-- Q2_1 表示期間(ラベル) -->
+					<div id="lbl-range" data-bind="text: $i18n('KDP003_60')"></div>
+					<!-- Q2_2 表示期間 -->
+					<div id="date-range" tabindex="1"
+						data-bind="ntsDateRangePicker: { 
+							required: true, 
+							enable: true, 
+							showNextPrevious: false, 
+							value: dateValue, 
+							name: $i18n('KDP003_60'),
+							maxRange: 'none'}"></div>
+				</div>
+				<!-- Q3メッセージ -->
+				<div id="txt-area-notice">
+					<textarea id="area-notice" style="height: 126px" rows="6" tabindex="2"
+						data-bind="ntsTextEditor: {
+								value: messageText,
+								constraint:'NotificationMessage',
+								name: $i18n('KDP003_61'),
+	                            required: true}
+								"></textarea>
+				</div>
+				<!-- Q2_3 更新日 -->
+				<div id="update-date">
+					<label id="lbl-update-date" data-bind="text: updateDate"></label>
+				</div>
+
+				<div id="wkp-area">
+					<!-- Q4_1 対象職場(タイトル) -->
+					<label id="lbl-wkp" data-bind="text: $i18n('KDP003_62')"></label>
+					<!-- Q4_2 対象職場 -->
+					<span data-bind="text: workPlaceTxtRefer"></span>
+				</div>
+				
+			</div>
+			<div id="functions-area-bottom" style="height: 60px;">
+				<div>
+					<!-- Q20_1 登録 -->
+					<button tabindex="3" class="btn-footer proceed normal"
+						data-bind="click: onClickRegister, i18n: 'KDP003_63'"></button>
+					<!-- Q20_2 削除 -->
+					<button tabindex="4" class="btn-footer danger normal"
+						data-bind="click: onClickDelete, i18n: 'KDP003_64', enable: isActiveDelete"></button>
+					<!-- Q20_3 職場選択 -->
+					<button tabindex="5" class="btn-footer normal"
+						data-bind="click: openKDP003KDialog, i18n: 'KDP003_65', enable: isActiveWorkplaceBtn, visible: isActiveWorkplaceBtn"></button>
+					<!-- Q20_4 戻る -->
+					<button tabindex="6" class="btn-footer normal" data-bind="click: returnP, i18n: 'KDP003_66'"></button>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

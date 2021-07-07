@@ -1,129 +1,27 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
-		<ui:define name="htmlHead">
-			<script>
-				var dialogSize = {
-					width : 314,
-					height : 139
-				};
-			</script>
-			<com:scriptfile path="viewmodel.js" />
-			<com:stylefile path="kdp001.a.style.css" />
-		</ui:define>
+    <ui:composition template="../../../../master/dialog.xhtml">
+        <ui:define name="htmlHead">
+            <script>
+                var dialogSize = {
+                    width: 450,
+                    height: 600
+                };
+            </script>
+            <com:scriptfile path="viewmodel.js" />
+            <com:scriptfile path="kdp001.a.component.js" />
+        </ui:define>
+        <ui:define name="content">
+            <div id="contents-area">
+                <div data-bind="component: { name: 'kdp-001-a', params: {} }"></div>
+            </div>
+        </ui:define>
 
-
-		<ui:define name="content">
-
-			<div id="functions-area"
-				data-bind="css: {'notUsed':usedSatus() !== 0, 'functions-area-big': isWidget() ,'functions-area-small':!isWidget()  },style: { 'color':settingDateTimeColor().textColor,'background-color': settingDateTimeColor().backgroundColor}">
-				<div
-					data-bind=" style:{ 'float': 'left' , 'margin-left': isScreenCD() ? '0px' : '30px' }">
-					<span class="label stamp-date-big"
-						data-bind="css: { 'stamp-date-big': isWidget() ,'stamp-date-small':!isWidget()  } ,text:getSystemDate()"></span>
-				</div>
-				<div
-					data-bind="style:{'float':'left', 'margin-left': isScreenCD() ? '10px' : '100px' }">
-					<span class="label "
-						data-bind="css: { 'stamp-time-big': isWidget() ,'stamp-time-small':!isWidget()  },text:getSystemTime()"></span>
-				</div>
-			</div>
-			<div id="contents-area"
-				data-bind="css: { 'contents-area-big': isWidget() ,'contents-area-small':!isWidget()  }">
-				<div data-bind="if: usedSatus() === 0" id="left-area">
-					<!-- A2_1 -->
-					<div>
-						<com:ko-foreach bind="buttons">
-							<button
-								data-bind="css: {
-										'button-big': $vm.isWidget(),
-										'button-small' :!$vm.isWidget() },
-										enable:true,
-										click: function(data, event) { $vm.stamp($vm,data) }  ,
-										text: buttonDisSet.buttonNameSet.buttonName,
-										style: { 
-											'color': buttonDisSet.buttonNameSet.textColor,
-											'background-color': $vm.getBGButton($data)
-										}"
-								class="button "></button>
-						</com:ko-foreach>
-						<!-- <div style="line-height: 6px; margin-left: 8px;"
-							data-bind="if: !isWidget()">
-							<a class="hyperlink hyperlink-small" data-bind="click: toTopPage">#{i18n.getText('KDP001_4')}</a>
-						</div> -->
-					</div>
-				</div>
-				<div
-					data-bind="if:( isWidget() &amp;&amp; !isScreenCD() &amp;&amp; usedSatus() === 0) ,visible:isWidget() , css: { 'right-area-big' : isWidget() , 'right-area-small' :!isWidget()  } "
-					id="right-area">
-					<table data-bind="visible:showTable" id="fixed-table">
-						<colgroup>
-							<col width="60px" />
-							<col width="55px" />
-							<col width="75px" />
-						</colgroup>
-
-						<thead>
-						</thead>
-						<tbody>
-							
-							<com:ko-foreach bind="stampDatas">
-								<tr >
-									<td style="font-size:10px;line-height:20px;"
-										data-bind="style:{'color': $vm.getDateColor($data)},text:$vm.convertToShortMDW($data)"></td>
-									<td>
-										<div style="font-size:10px;line-height:20px;min-height: 10px; min-width:20px;" data-bind="text:stampHow"></div>
-										<div style="font-size:10px;line-height:20px;" data-bind="text:$vm.getStampTime($data)"></div>
-									</td>
-									<td style="font-size:10px;"
-										data-bind="style:{'text-align':$vm.getTextAlign($data) }, text:stampArt"></td>
-								</tr>
-							</com:ko-foreach>
-						</tbody>
-					</table>
-				</div>
-
-				<div
-					data-bind="if:(!isWidget() &amp;&amp; !isScreenCD() &amp;&amp; usedSatus() === 0)   ,visible:!isWidget(), css: { 'right-area-big' : isWidget() , 'right-area-small' :!isWidget()  } "
-					id="right-area">
-					<table data-bind="visible:showTable" id="fixed-table">
-						<colgroup>
-							<col width="65px" />
-							<col width="65px" />
-							<col width="85px" />
-						</colgroup>
-
-						<thead>
-						</thead>
-						<tbody>
-							<com:ko-foreach bind="stampDatas">
-								<tr >
-									<td style="font-size:8px;"
-										data-bind="style:{'color': $vm.getDateColor($data)},text:$vm.convertToShortMDW($data)"></td>
-									<td>
-										<div style="font-size:8px;min-height: 10px; min-width:20px;" data-bind="text:stampHow"></div>
-										<div style="font-size:8px;" data-bind="text:$vm.getStampTime($data)"></div>
-									</td>
-									<td style="font-size:8px;"
-										data-bind="style:{'text-align':$vm.getTextAlign($data) }, text:stampArt"></td>
-								</tr>
-							</com:ko-foreach>
-						</tbody>
-					</table>
-				</div>
-
-				<div data-bind="if: usedSatus() !== 0">
-					<span class="label "
-						data-bind="text:getNotUseMessage(),css: { 'not_used_label-big' : isWidget() , 'not_used_label-small' :!isWidget()  }"></span>
-				</div>
-			</div>
-		</ui:define>
-
-	</ui:composition>
+    </ui:composition>
 </body>
+
 </html>

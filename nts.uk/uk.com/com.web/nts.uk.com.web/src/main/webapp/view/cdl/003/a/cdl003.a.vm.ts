@@ -42,7 +42,7 @@ module nts.uk.com.view.cdl003.a {
                     selectedCode: null,
                     isDialog: true,
                     maxRows: 10,
-                    tabindex: 1
+                    tabindex: 1,
                 }
                 if (self.isMultiple) {
                     self.classifications.selectedCode = self.selectedMulClassification;

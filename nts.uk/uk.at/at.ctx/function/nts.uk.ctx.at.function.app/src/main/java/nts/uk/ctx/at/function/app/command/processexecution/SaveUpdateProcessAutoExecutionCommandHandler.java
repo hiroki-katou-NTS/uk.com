@@ -79,7 +79,7 @@ public class SaveUpdateProcessAutoExecutionCommandHandler
 		this.processExecutionRepository.insert(execTaskSetting);
 		// ドメインモデル「更新処理自動実行管理」に新規登録する
 		this.processExecutionLogManageRepository.insert(ProcessExecutionLogManage.builder().companyId(cid)
-				.currentStatus(Optional.of(CurrentExecutionStatus.INVALID))
+				.currentStatus(Optional.of(CurrentExecutionStatus.WAITING))
 				.execItemCd(execTaskSetting.getExecItemCode()).overallStatus(Optional.of(EndStatus.NOT_IMPLEMENT))
 				.build());
 		// ドメインモデル「更新処理前回実行日時」に新規登録する

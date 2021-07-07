@@ -83,6 +83,13 @@ module nts.uk.at.kmk004.components.flex {
 				this.comFlexMonthActCalSet(param.flexBasicSetting.comFlexMonthActCalSet);
 				this.alreadySettingList(param.alreadySettings);
 			}
+            this.comFlexMonthActCalSet.subscribe(() => {
+                 $('#monthly-list').css('border-right','solid grey 1px');
+                 $('#monthly-list').css('border-bottom','solid grey 1px');
+                 setTimeout(() => {
+                     $('#monthly-list').css('border', 'none');
+                 }, 200);
+            });
 
 		}
 

@@ -58,7 +58,7 @@ table#table6 td {
 .block-left-2 {
 	height: 400px;
 	width: 424px;
-	float: left;
+/* 	float: left; */
 	margin-top: 10px;
 }
 
@@ -141,5 +141,5 @@ table#table-3 td{
 }
 #table-3{
 	margin-left: 15px;
-    margin-top: 15px;
+   /*  margin-top: 15px; */
 }

@@ -124,7 +124,7 @@ public class ReflectSupportStartEndTest {
 		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkLocationCD().get().v())
 				.isEqualTo("lo");// 勤務場所コード
 
-		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkplaceId())
+		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkplaceId().v())
 				.isEqualTo("wplId");// 職場
 	}
 	
@@ -211,7 +211,7 @@ public class ReflectSupportStartEndTest {
 		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkLocationCD().get().v())
 				.isEqualTo("lo");// 勤務場所コード
 
-		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkplaceId())
+		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkplaceId().v())
 				.isEqualTo("wplId");// 職場
 	}
 }

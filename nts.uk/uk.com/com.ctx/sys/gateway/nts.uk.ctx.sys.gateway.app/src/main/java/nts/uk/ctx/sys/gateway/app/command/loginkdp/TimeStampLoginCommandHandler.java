@@ -127,10 +127,10 @@ public class TimeStampLoginCommandHandler extends LoginBaseTimeStampCommandHandl
 				this.service.callLoginRecord(param);
 				throw new BusinessException("Msg_302");
 			}
+			
+			// note: ユーザーの有効期限チェック (Kiểm tra thời hạn hiệu lực của User)
+//			this.checkLimitTime(user, companyId, employeeCode, em.getEmployeeId(), remarkMessage);
 		}
-
-		// note: ユーザーの有効期限チェック (Kiểm tra thời hạn hiệu lực của User)
-		this.checkLimitTime(user, companyId, employeeCode, em.getEmployeeId(), remarkMessage);
 
 		// note: 実行時環境作成
 		if(command.isRuntimeEnvironmentCreate()){

@@ -59,96 +59,133 @@ module nts.uk.ui.ktg001.a {
         name: 'ktg-001-a',
         template: `
             <div class="widget-title">
-                <table>
+                <table style="width: 100%;">
                     <colgroup>
                         <col width="auto" />
-                        <col width="auto" />
-                        <col width="27px" />
+                        <col width="30px" />
                     </colgroup>
                     <thead>
                         <tr>
-                            <th colspan="2" data-bind="i18n: title"></th>
+                            <th class="ktg001-fontsize-larger">
+                                <!-- A1_1 -->
+                                <div data-bind="ntsFormLabel: { required: false, text: title }"></div>
+                            </th>
                             <th>
-                                <button class="icon" data-bind="
+                                <!-- A1_2 -->
+                                <button class="icon ktg001-no-border" data-bind="
                                         click : $component.setting,
-                                        timeClick: -1,
                                         visible: $component.settingIconVisible
                                     ">
-                                    <i data-bind="ntsIcon: { no: 5 }"></i>
+                                    <i data-bind="ntsIcon: { no: 5, width: 25, height: 25 }"></i>
                                 </button>
                             </th>
                         </tr>
                     </thead>
                 </table>
             </div>
-            <div class="ktg-001-a" data-bind="widget-content: 100">
-                <div>
-                    <table>
+            <div class="ktg-001-a ktg001-fontsize" data-bind="widget-content: 100">
+                <div class="ktg001-border" style="padding: 0px 40px 0px 30px;">
+                    <table style="width: 100%;">
                         <colgroup>
-                            <col width="auto" />
-                            <col width="auto" />
-                            <col width="120px" />
+                            <col width="1%" />
+                            <col width="99%" />
                         </colgroup>
                         <tbody>
-                            <tr data-bind="visible: $component.appRowVisible">
-                                <td data-bind="text: $i18n('KTG001_1')"></td>
-                                <td class="text-center">
-                                    <button class="icon" data-bind="
-                                            click: $component.applicationList,
-                                            visible: $component.appIconVisible
-                                        ">
-                                        <i data-bind="ntsIcon: { no: 145 }"></i>
+                            <tr data-bind="css: $component.appRowVisible() ? 'row-show' : '', visible: $component.appRowVisible">
+                                <td class="text-center" style="position: relative;">
+                                    <!-- A2_2 -->
+                                    <button class="ktg001-no-border" data-bind="ntsIcon: { no: 200, width: 28, height: 28 },
+                                            enable: $component.appIconVisible,
+                                            click: $component.applicationList">
                                     </button>
+                                    <!-- A2_3 -->
+                                    <i style="position: absolute; bottom: 5px; left: 15px; cursor: pointer;"
+                                        data-bind="visible: $component.appIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }, click: $component.applicationList""></i>
                                 </td>
-                                <td class="text-right" data-bind="text: $component.appText"></td>
+                                <td style="padding-left: 5px;">
+                                    <!-- A2_1 -->
+                                    <div data-bind="ntsFormLabel: { required: false, text: $i18n('KTG001_1') }"></div>
+                                </td>
                             </tr>
-                            <tr data-bind="visible: $component.dayRowVisible">
-                                <td data-bind="i18n: 'KTG001_2'"></td>
-                                <td class="text-center">
-                                    <button class="icon" data-bind="
-                                            click: $component.dayPerformanceConfirm,
-                                            visible: $component.dayIconVisible
-                                        ">
-                                        <i data-bind="ntsIcon: { no: 145 }"></i>
+
+                            <tr data-bind="css: $component.dayRowVisible() ? 'row-show' : '', visible: $component.dayRowVisible">
+                                <td class="text-center" style="position: relative;">
+                                    <!-- A3_2 -->
+                                    <button class="ktg001-no-border" data-bind="ntsIcon: { no: 200, width: 28, height: 28 },
+                                        click: $component.dayPerformanceConfirm,
+                                        enable: $component.dayIconVisible">
                                     </button>
+                                    <!-- A3_3 -->
+                                    <i style="position: absolute; bottom: 5px; left: 15px; cursor: pointer;"
+                                        data-bind="visible: $component.dayIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }, click: $component.dayPerformanceConfirm"></i>
                                 </td>
-                                <td class="text-right" data-bind="text: $component.dayText"></td>
+                                <td style="padding-left: 5px;">
+                                    <!-- A3_1 -->
+                                    <div data-bind="ntsFormLabel: { required: false, text: $i18n('KTG001_2') }"></div>
+                                </td>
                             </tr>
-                            <tr data-bind="visible: $component.monRowVisible">
-                                <td data-bind="i18n: 'KTG001_3'"></td>
-                                <td class="text-center">
-                                    <button class="icon" data-bind="
-                                            click: $component.monPerformanceConfirm,
-                                            visible: monIconVisible
-                                        ">
-                                        <i data-bind="ntsIcon: { no: 145 }"></i>
+
+                            <tr data-bind="css: $component.monRowVisible() ? 'row-show' : '', visible: $component.monRowVisible">
+                                <td class="text-center" style="position: relative;">
+                                    <!-- A4_2 -->
+                                    <button class="ktg001-no-border" data-bind="ntsIcon: { no: 200, width: 28, height: 28 },
+                                        click: $component.monPerformanceConfirm,
+                                        enable: monIconVisible">
                                     </button>
+                                    <!-- A4_3 -->
+                                    <i style="position: absolute; bottom: 5px; left: 15px; cursor: pointer;"
+                                        data-bind="visible: monIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }, click: $component.monPerformanceConfirm"></i>
                                 </td>
-                                <td class="text-right" data-bind="text: $component.monText"></td>
+                                <td style="padding-left: 5px;">
+                                    <!-- A4_1 -->
+                                    <div data-bind="ntsFormLabel: { required: false, text: $i18n('KTG001_3') }"></div>
+                                </td>
                             </tr>
-                            <tr data-bind="visible: $component.aggrRowVisible">
-                                <td data-bind="i18n: 'KTG001_4'"></td>
-                                <td class="text-center">
-                                    <button class="icon" data-bind="
-                                            click: $component.aggrementApproval,
-                                            visible: $component.aggrIconVisible
-                                        ">
-                                        <i data-bind="ntsIcon: { no: 145 }"></i>
+
+                            <tr data-bind="css: $component.aggrRowVisible() ? 'row-show' : '', visible: $component.aggrRowVisible">
+                                <td class="text-center" style="position: relative;;">
+                                    <!-- A5_2 -->
+                                    <button class="ktg001-no-border" data-bind="ntsIcon: { no: 200, width: 28, height: 28 },
+                                        click: $component.aggrementApproval,
+                                        enable: $component.aggrIconVisible">
                                     </button>
+                                    <!-- A5_3 -->
+                                    <i style="position: absolute; bottom: 5px; left: 15px; cursor: pointer;"
+                                        data-bind="visible: $component.aggrIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }, click: $component.aggrementApproval"></i>
                                 </td>
-                                <td class="text-right" data-bind="text: $component.aggrText"></td>
+                                <td style="padding-left: 5px;">
+                                    <!-- A5_1 -->
+                                    <div data-bind="ntsFormLabel: { required: false, text: $i18n('KTG001_4') }"></div>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
             <style rel="stylesheet">
+                .ktg-001-a table tr {
+                    height: 30px !important;
+                }
                 .ktg-001-a .text-center {
                     text-align: center;
                 }
                 .ktg-001-a .text-right {
                     text-align: right;
                 }
+                .ktg001-no-border {
+                    border: none !important;
+                }
+                .ktg001-fontsize-larger div.form-label>span.text {
+                    font-size: 1.2rem !important;
+                }
+                .ktg001-fontsize div.form-label>span.text {
+                    font-size: 1rem !important;
+                }
+                .ktg001-border table tr td,
+			    .ktg001-border table tr th {
+                    border-width: 0px;
+                    border-bottom: 1px solid #BFBFBF;
+			    }
             </style>
         `
     })
@@ -255,13 +292,7 @@ module nts.uk.ui.ktg001.a {
                                 }
 
                             })
-                        } else {
-							vm.title(vm.$i18n('KTG001_12'));
-							vm.appRowVisible(true);
-							vm.aggrRowVisible(false);
-							vm.dayRowVisible(approvalProcessingUse.useDayApproverConfirm);
-							vm.monRowVisible(approvalProcessingUse.useMonthApproverConfirm);
-						}
+                        }
                     }
                 })
                 .then(() => {
@@ -269,6 +300,8 @@ module nts.uk.ui.ktg001.a {
                         $(vm.$el)
                             .find('[data-bind]')
                             .removeAttr('data-bind');
+                        _.forEach($(".row-show td"), element => $(element).removeClass("ktg001-no-border"));    
+                        _.forEach($($(".row-show").last().children()), element => $(element).addClass("ktg001-no-border"));
                     });
                 })
                 .always(() => vm.$blockui("clearView"));

@@ -1,8 +1,8 @@
 #screen-g #left-side {
 	vertical-align: top;
 	padding-top: 20px;
-	padding-left: 40px;
-	width: 450px;
+	padding-left: 0;
+	width: 350px;
 }
 
 #screen-g #right-side {
@@ -48,4 +48,8 @@
 
 #work-type-comment {
 	margin-left: 80px;	
+}
+
+#default-value {
+	top: -10px !important;
 }

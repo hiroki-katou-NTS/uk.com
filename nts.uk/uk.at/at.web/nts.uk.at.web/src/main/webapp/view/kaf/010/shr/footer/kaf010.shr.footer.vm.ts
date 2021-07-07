@@ -6,7 +6,7 @@ module nts.uk.at.view.kaf010.shr.footer.viewmodel {
 			<div class="cell valign-center" data-bind="ntsFormLabel: { text: $i18n('KAF010_90') }"></div>
 		</div>
 		<div class="cell valign-center">
-			<div id="kaf000-a-component5-comboReason" style="width: 390px"
+			<div id="kaf000-a-component5-comboReason" style="width: 472px"
 				data-bind="ntsComboBox: {
 								name: $i18n('KAF010_91'),
 								options: $parent.comboDivergenceReason,
@@ -34,7 +34,7 @@ module nts.uk.at.view.kaf010.shr.footer.viewmodel {
 							constraint: 'DivergenceReasonContent',
 							option: {
 								resizeable: false,
-		                    	width: '450',
+		                    	width: '449',
 		                    	textalign: 'left'
 		                   	}}"></textarea>
 		</div>

@@ -11,7 +11,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
@@ -113,15 +112,12 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 				new KrcdtStampRecordPk(domain.getContractCode().v(), domain.getStampNumber().v(),
 						domain.getStampDateTime()),
 				AppContexts.user().companyId(),
-				domain.getStampTypeDisplay() != null ? domain.getStampTypeDisplay().v() : null,
-				domain.getEmpInfoTerCode() != null ? String.valueOf(domain.getEmpInfoTerCode().get().v()) : null);
+				domain.getStampTypeDisplay() != null ? domain.getStampTypeDisplay().v() : null);
 	}
 
 	public StampRecord toDomain(KrcdtStampRecord entity) {
 		return new StampRecord(new ContractCode(entity.pk.contractCd), new StampNumber(entity.pk.cardNumber),
-				entity.pk.stampDateTime, new StampTypeDisplay(entity.stampTypeDisplay),
-				Optional.ofNullable(entity.empInfoTerCode == null ? null
-						: new EmpInfoTerminalCode(entity.empInfoTerCode)));
+				entity.pk.stampDateTime, new StampTypeDisplay(entity.stampTypeDisplay));
 	}
 
 

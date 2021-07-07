@@ -24,7 +24,7 @@ public class StampSettingPerson implements DomainAggregate {
 	private boolean buttonEmphasisArt;
 	
 	/** 打刻画面の表示設定 */
-	private StampingScreenSet stampingScreenSet;
+	private DisplaySettingsStampScreen stampingScreenSet;
 	
 	/** ページレイアウト設定 */
 	private List<StampPageLayout> lstStampPageLayout;
@@ -32,7 +32,7 @@ public class StampSettingPerson implements DomainAggregate {
 	/**	打刻履歴表示方法 */
 	private HistoryDisplayMethod historyDisplayMethod;
 	
-	/**t
+	/**
 	 * ボタン詳細設定を取得する
 	 * @param StampButton (打刻ボタン)
 	 * @return Optional<ボタン詳細設定>
@@ -59,16 +59,16 @@ public class StampSettingPerson implements DomainAggregate {
 	 * ページを追加する
 	 * @param pageLayout
 	 */
-	public void insert(StampPageLayout pageLayout){
+	public void addPage(StampPageLayout pageLayout){
 		// ページレイアウト設定.add(打刻ページ)
-		lstStampPageLayout.add(pageLayout);
+		this.lstStampPageLayout.add(pageLayout);
 	}
 	
 	/**
 	 * ページを更新する
 	 * @param pageLayout
 	 */
-	public void update(StampPageLayout pageLayout) {
+	public void updatePage(StampPageLayout pageLayout) {
 		// $打刻ページレイアウト = @ページレイアウト設定 : filter not $.ページNO = ページNO
 		List<StampPageLayout> layout = this.lstStampPageLayout.stream().filter(x -> x.getPageNo().v() != pageLayout.getPageNo().v()).collect(Collectors.toList());
 		

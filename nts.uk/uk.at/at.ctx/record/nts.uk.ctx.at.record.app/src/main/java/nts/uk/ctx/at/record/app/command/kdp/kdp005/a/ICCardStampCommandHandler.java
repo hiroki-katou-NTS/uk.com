@@ -15,8 +15,12 @@ import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.createdailyresults.CreateDailyResults;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
+import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.TemporarilyReflectStampDailyAttd;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
@@ -32,8 +36,17 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.S
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeReflectFromWorkinfo;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -66,6 +79,15 @@ public class ICCardStampCommandHandler extends CommandHandlerWithResult<ICCardSt
 
 	@Inject
 	private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
+	
+	@Inject
+	private CreateDailyResults createDailyResults;
+	
+	@Inject
+	private TimeReflectFromWorkinfo timeReflectFromWorkinfo;
+	
+	@Inject
+	private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
 
 	@Override
 	protected GeneralDate handle(CommandHandlerContext<ICCardStampCommand> context) {
@@ -73,7 +95,17 @@ public class ICCardStampCommandHandler extends CommandHandlerWithResult<ICCardSt
 		
 		ICCardStampCommand cmd = context.getCommand();
 
-		EnterStampFromICCardServiceRequireImpl require = new EnterStampFromICCardServiceRequireImpl(stampSetCommunalRepository, stampCardRepo, stampCardEditRepo, companyAdapter, sysEmpPub, stampRecordRepo, stampDakokuRepo, createDailyResultDomainServiceNew);
+		EnterStampFromICCardServiceRequireImpl require = new EnterStampFromICCardServiceRequireImpl(stampSetCommunalRepository,
+				stampCardRepo,
+				stampCardEditRepo,
+				companyAdapter,
+				sysEmpPub,
+				stampRecordRepo,
+				stampDakokuRepo,
+				createDailyResultDomainServiceNew,
+				createDailyResults,
+				timeReflectFromWorkinfo,
+				temporarilyReflectStampDailyAttd);
 
 		//作成する(@Require, 契約コード, 日時, 打刻カード番号, 打刻ボタン, 実績への反映内容)
 		StampingResultEmployeeId stampingResultEmployeeId = EnterStampFromICCardService.create(require, new ContractCode(contractCode), cmd.getStampNumber(), cmd.getStampDatetime(), cmd.getStampButton(), cmd.getRefActualResult().toDomainValue());
@@ -121,8 +153,13 @@ public class ICCardStampCommandHandler extends CommandHandlerWithResult<ICCardSt
 		@Inject
 		private StampDakokuRepository stampDakokuRepo;
 
-		@Inject
 		private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
+		
+		private CreateDailyResults createDailyResults;
+
+		private TimeReflectFromWorkinfo timeReflectFromWorkinfo;
+
+		private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
 
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
@@ -176,6 +213,26 @@ public class ICCardStampCommandHandler extends CommandHandlerWithResult<ICCardSt
 		@Override
 		public Optional<StampSetCommunal> gets() {
 			return this.stampSetCommunalRepository.gets(AppContexts.user().companyId());
+		}
+
+		@Override
+		public OutputCreateDailyOneDay createDailyResult(String employeeId, GeneralDate ymd,
+				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
+				EmployeeGeneralInfoImport employeeGeneralInfoImport, PeriodInMasterList periodInMasterList,
+				IntegrationOfDaily integrationOfDaily) {
+			return this.createDailyResults.createDailyResult(AppContexts.user().companyId(), employeeId, ymd, executionType, flag, employeeGeneralInfoImport, periodInMasterList, integrationOfDaily);
+		}
+
+		@Override
+		public OutputTimeReflectForWorkinfo get(String employeeId, GeneralDate ymd,
+				WorkInfoOfDailyAttendance workInformation) {
+			return this.timeReflectFromWorkinfo.get(AppContexts.user().companyId(), employeeId, ymd, workInformation);
+		}
+
+		@Override
+		public List<ErrorMessageInfo> reflectStamp(Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
+				IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt) {
+			return this.temporarilyReflectStampDailyAttd.reflectStamp(stamp, stampReflectRangeOutput, integrationOfDaily, changeDailyAtt);
 		}
 
 	}

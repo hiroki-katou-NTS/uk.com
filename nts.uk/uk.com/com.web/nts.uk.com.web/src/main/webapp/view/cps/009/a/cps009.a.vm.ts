@@ -78,7 +78,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 } else {
                     $('#sub-right>table>tbody').css('max-height', subrightTbodyHeightResize + 'px');
                 }
-                console.log('resize');
             }).trigger('resize');
         }
         

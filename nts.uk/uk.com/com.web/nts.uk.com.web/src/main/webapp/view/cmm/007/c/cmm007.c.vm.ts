@@ -67,9 +67,9 @@ module nts.uk.com.view.cmm007.c {
             /*
             *   status check/uncheck checkbox
             */
-            public checkStatusEnable(value): KnockoutObservable<boolean> {
+            public checkStatusEnable(value): KnockoutComputed<boolean> {
                 let _self = this;
-                return ko.observable(_self.mapModel.get(value).useClassification() == USE_CLASSIFICATION.USE ? true : false);
+                return ko.computed(() => _self.mapModel.get(value).useClassification() == USE_CLASSIFICATION.USE);
             }
             
             /*

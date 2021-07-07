@@ -159,12 +159,12 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 	@Override
 	public List<AuthorityFomatMonthly> getListAuthorityFormatDaily(String companyId,
 			List<String> listDailyPerformanceFormatCode) {
-		return getListAuthorityFormatDaily(companyId, listDailyPerformanceFormatCode);
+		return getListAuthorityFormatDailyByCollection(companyId, listDailyPerformanceFormatCode);
 	}
 	
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
-	public List<AuthorityFomatMonthly> getListAuthorityFormatDaily(String companyId,
+	public List<AuthorityFomatMonthly> getListAuthorityFormatDailyByCollection(String companyId,
 			Collection<String> listDailyPerformanceFormatCode) {
 		List<KfnmtAuthorityMonthlyItem> results = new ArrayList<>();
 		CollectionUtil.split(new ArrayList<>(listDailyPerformanceFormatCode), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
@@ -179,7 +179,7 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 	public void updateColumnsWidth(String companyId, Map<Integer, Integer> lstHeader, List<String> formatCodes) {
 		List<Integer> itemIds = new ArrayList<>();
 		itemIds.addAll(lstHeader.keySet());
-		List<KfnmtAuthorityMonthlyItem> items = this.getListAuthorityFormatDaily(companyId, formatCodes)
+		List<KfnmtAuthorityMonthlyItem> items = this.getListAuthorityFormatDailyByCollection(companyId, formatCodes)
 				.stream().map(x -> toEntity(x)).collect(Collectors.toList());
 		List<KfnmtAuthorityMonthlyItem> entities = items.stream()
 				.map(x -> new KfnmtAuthorityMonthlyItem(x.kfnmtAuthorityMonthlyItemPK, x.displayOrder,

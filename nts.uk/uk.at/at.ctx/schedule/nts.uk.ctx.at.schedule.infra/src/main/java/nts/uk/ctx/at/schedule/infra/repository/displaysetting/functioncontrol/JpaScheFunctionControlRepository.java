@@ -29,7 +29,7 @@ public class JpaScheFunctionControlRepository extends JpaRepository implements S
 
 	@Override
 	public Optional<ScheFunctionControl> get(String companyId) {
-		String subSql = "SELECT f.* FROM KSCMT_FUNC_CTR_USE_WKTP f JOIN KSHMT_WKTP w ON f.CID = w.CID AND f.WKTP_CD = w.CD WHERE f.CID  = @companyId AND w.ABOLISH_ATR = 0";
+		String subSql = "SELECT f.* FROM KSCMT_FUNC_CTR_USE_WKTP f JOIN KSHMT_WKTP w ON f.CID = w.CID AND f.WKTP_CD = w.CD WHERE f.CID = @companyId AND w.ABOLISH_ATR = 0 ORDER BY f.WKTP_CD";
 		List<WorkTypeCode> lstCode = new NtsStatement(subSql, this.jdbcProxy())
 				.paramString("companyId", companyId)
 				.getList(x -> KscmtFuncCtrUseWktp.MAPPER.toEntity(x).toWorkTypeCode());

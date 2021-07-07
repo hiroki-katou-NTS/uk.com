@@ -8,13 +8,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.stamp.management.AddStampPageLayoutCommandHandler;
 import nts.uk.ctx.at.record.app.command.stamp.management.AddStampSettingPersonCommand;
 import nts.uk.ctx.at.record.app.command.stamp.management.AddStampSettingPersonCommandHandler;
 import nts.uk.ctx.at.record.app.command.stamp.management.DeleteStampSettingCommand;
 import nts.uk.ctx.at.record.app.command.stamp.management.DeleteStampSettingCommandHandler;
-import nts.uk.ctx.at.record.app.command.stamp.management.StampPageLayoutCommand;
-import nts.uk.ctx.at.record.app.command.stamp.management.UpdateStampPageLayoutCommandHandler;
 import nts.uk.ctx.at.record.app.find.stamp.management.StamDisplayFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.StampPageLayoutDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.StampSettingPersonDto;
@@ -33,12 +30,6 @@ public class StampDisplayWS extends WebService {
 	
 	@Inject
 	private AddStampSettingPersonCommandHandler addSetPerHandler;
-	
-	@Inject
-	private AddStampPageLayoutCommandHandler  addStampPageHandler;
-	
-	@Inject
-	private UpdateStampPageLayoutCommandHandler  updateStampPageHandler;
 	
 	@Inject
 	private DeleteStampSettingCommandHandler removeHandler;
@@ -71,18 +62,6 @@ public class StampDisplayWS extends WebService {
 	@Path("getStampPageByCid")
 	public List<StampPageLayoutDto> getStampPageByCid() {
 		return this.finder.getAllStampPage();
-	}
-	
-	@POST
-	@Path("saveStampPage")
-	public void saveStampPage(StampPageLayoutCommand command) {
-		this.addStampPageHandler.handle(command);
-	}
-	
-	@POST
-	@Path("updateStampPage")
-	public void updateStampPage(StampPageLayoutCommand command) {
-		this.updateStampPageHandler.handle(command);
 	}
 	
 }

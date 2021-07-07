@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /*
@@ -64,67 +65,43 @@ public class LackOfStampingAlgorithm {
 				//１から所定労働時間帯の件数までループする
 				for(int number = 1;number<=predTimeSpanCount;number++) { //start for 1
 					boolean checkExist = false;
-					for (TimeLeavingWork timeLeavingWork : timeLeavingWorkList) { //start for 2
-						if(timeLeavingWork.getWorkNo().v().intValue() == number) { //start if 2
-							Optional<WorkStamp> leavingStamp = timeLeavingWork.getLeaveStamp().isPresent() ? timeLeavingWork.getLeaveStamp().get().getStamp() : Optional.empty();
-							Optional<WorkStamp> attendanceStamp = timeLeavingWork.getAttendanceStamp().isPresent() ? timeLeavingWork.getAttendanceStamp().get().getStamp() : Optional.empty();
-							if (leavingStamp.isPresent() && !attendanceStamp.isPresent()) {
-								if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
-									attendanceItemIDList.add(31);
-								} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
-									attendanceItemIDList.add(41);
-								}
-							} else if (!leavingStamp.isPresent() && attendanceStamp.isPresent()) {
-								if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
-									attendanceItemIDList.add(34);
-								} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
-									attendanceItemIDList.add(44);
-								}
-							} else if (!leavingStamp.isPresent() && !attendanceStamp.isPresent()) { //両方存在しない(không có cả 2)
-								if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
-									attendanceItemIDList.add(31);
-									attendanceItemIDList.add(34);
-								} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
-									attendanceItemIDList.add(41);
-									attendanceItemIDList.add(44);
-								}
-							} else if (leavingStamp.isPresent() && attendanceStamp.isPresent()){//start if 2
-								TimeWithDayAttr leavingTimeWithDay = leavingStamp.get().getTimeDay().getTimeWithDay().get();
-								TimeWithDayAttr attendanceTimeWithDay = attendanceStamp.get().getTimeDay().getTimeWithDay().get();
-								if (leavingTimeWithDay != null && attendanceTimeWithDay == null) {
-									if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
-										attendanceItemIDList.add(31);
-									} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
-										attendanceItemIDList.add(41);
-									}
-								} else if (leavingTimeWithDay == null && attendanceTimeWithDay != null) {
-									if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
-										attendanceItemIDList.add(34);
-									} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
-										attendanceItemIDList.add(44);
-									}
-								} else if (leavingTimeWithDay == null && attendanceTimeWithDay == null) {
-									if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
-										attendanceItemIDList.add(31);
-										attendanceItemIDList.add(34);
-									} else if (timeLeavingWork.getWorkNo().v().intValue() == 2) {
-										attendanceItemIDList.add(41);
-										attendanceItemIDList.add(44);
-									}
-								}
-							}//end if 2
-							checkExist =true;
-						}//end if 1
-						if(!checkExist) { //両方存在しない(không có cả 2)
-							if (number == 1) {
+					WorkNo workNo = new WorkNo(number);
+					Optional<TimeLeavingWork> timeLeavingWork = timeLeavingWorkList.stream().filter(t -> t.getWorkNo().equals(workNo)).findFirst();
+					if(timeLeavingWork.isPresent()) {
+						Optional<TimeWithDayAttr> attendanceTimeWithDay = timeLeavingWork.get().getAttendanceTime();
+						Optional<TimeWithDayAttr> leavingTimeWithDay = timeLeavingWork.get().getLeaveTime();
+						if (leavingTimeWithDay.isPresent() && !attendanceTimeWithDay.isPresent()) {
+							if (timeLeavingWork.get().getWorkNo().v().intValue() == 1) {
+								attendanceItemIDList.add(31);
+							} else if (timeLeavingWork.get().getWorkNo().v().intValue() == 2) {
+								attendanceItemIDList.add(41);
+							}
+						} else if (!leavingTimeWithDay.isPresent() && attendanceTimeWithDay.isPresent()) {
+							if (timeLeavingWork.get().getWorkNo().v().intValue() == 1) {
+								attendanceItemIDList.add(34);
+							} else if (timeLeavingWork.get().getWorkNo().v().intValue() == 2) {
+								attendanceItemIDList.add(44);
+							}
+						} else if (!leavingTimeWithDay.isPresent() && !attendanceTimeWithDay.isPresent()) {
+							if (timeLeavingWork.get().getWorkNo().v().intValue() == 1) {
 								attendanceItemIDList.add(31);
 								attendanceItemIDList.add(34);
-							} else if (number == 2) {
+							} else if (timeLeavingWork.get().getWorkNo().v().intValue() == 2) {
 								attendanceItemIDList.add(41);
 								attendanceItemIDList.add(44);
 							}
 						}
-					} //end for 2
+						checkExist =true;
+					}
+					if(!checkExist) { //両方存在しない(không có cả 2)
+						if (number == 1) {
+							attendanceItemIDList.add(31);
+							attendanceItemIDList.add(34);
+						} else if (number == 2) {
+							attendanceItemIDList.add(41);
+							attendanceItemIDList.add(44);
+						}
+					}
 				}//end for 1
 				
 				if (!attendanceItemIDList.isEmpty()) {

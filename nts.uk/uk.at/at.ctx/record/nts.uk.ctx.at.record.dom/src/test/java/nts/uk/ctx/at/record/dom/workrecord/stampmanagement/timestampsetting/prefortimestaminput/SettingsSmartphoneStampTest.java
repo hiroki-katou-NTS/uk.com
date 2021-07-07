@@ -2,12 +2,14 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pre
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
 
 /**
  * 
@@ -21,6 +23,13 @@ public class SettingsSmartphoneStampTest {
 	public void getters() {
 		SettingsSmartphoneStamp settingsSmartphoneStamp = SettingsSmartphoneStampHelper.getSettingsSmartphoneStampDefault();
 		NtsAssert.invokeGetters(settingsSmartphoneStamp);
+	}
+	
+	@Test
+	public void setters() {
+		SettingsSmartphoneStamp settingsSmartphoneStamp = SettingsSmartphoneStampHelper.getSettingsSmartphoneStampDefault();
+		settingsSmartphoneStamp.setPageLayoutSettings(new ArrayList<StampPageLayout>());
+		assertThat(settingsSmartphoneStamp.getPageLayoutSettings()).isEmpty();
 	}
 	
 	@Test

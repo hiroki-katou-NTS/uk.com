@@ -51,6 +51,32 @@ public class StampHelper {
 				Optional.empty()
 				);
 	}
+	
+	public static Stamp getStampDefaultIsTrue() {
+		return new Stamp(new ContractCode("DUMMY"),
+				new StampNumber("stampNumber"),
+				GeneralDateTime.now(), 
+				new Relieve(
+						AuthcMethod.valueOf(0), 
+						StampMeans.valueOf(0)), 
+				new StampType(
+						false,
+						GoingOutReason.valueOf(0), 
+						SetPreClockArt.valueOf(0), 
+						ChangeClockArt.valueOf(0),
+						ChangeCalArt.valueOf(0)),
+				new RefectActualResult(
+						new WorkInformationStamp(Optional.empty(), Optional.empty(),
+								Optional.of(new WorkLocationCD("workLocationCD")), 
+										Optional.of(new SupportCardNumber(9999))), 
+						new WorkTimeCode("workTimeCode"), 
+						new OvertimeDeclaration(
+								new AttendanceTime(1),
+								new AttendanceTime(2))),
+				true,Optional.ofNullable(getGeoCoordinateDefault()),
+				Optional.empty());
+	}
+	
 	public static Stamp getStampByChangeClockArt(String stampNumber,ChangeClockArt changeClockArt,GeneralDateTime dateTime) {
 		return new Stamp(new ContractCode("DUMMY"),
 				new StampNumber(stampNumber),

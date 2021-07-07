@@ -132,6 +132,7 @@ module nts.uk.ui.calendar {
                 display: inline-block;
             }
             .calendar .filter {
+			    height: 35px;
                 padding-bottom: 5px;
             }
             .calendar .filter-title {
@@ -172,6 +173,7 @@ module nts.uk.ui.calendar {
             }
             .calendar .calendar-container .month.title .week .day .status {
                 background-color: #C7F391 !important;
+				font-size: 11px;
             }
             .calendar .calendar-container .month.title .week .day .status span {
                 color: #404040;

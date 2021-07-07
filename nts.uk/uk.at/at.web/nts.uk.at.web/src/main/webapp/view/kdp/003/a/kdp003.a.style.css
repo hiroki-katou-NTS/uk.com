@@ -1,5 +1,11 @@
+#contents-area {
+	overflow-y: auto;
+    height: calc(100vh - 10px);
+}
+
 .kdp-003-a {
-	padding: 10px;
+	padding: 10px 0 0;
+	background: linear-gradient(#EBFCF6, #F5F5F5);
 }
 
 .kdp-003-a .time-sheet,
@@ -12,28 +18,38 @@
 	margin-right: 10px;
 }
 
-.kdp-003-a #stamp-input.time-stamp {
+/* .kdp-003-a #stamp-input.time-stamp {
 	min-width: 100%;
-}
+} */
 
-.kdp-003-a .has-time-sheet #stamp-input.time-stamp {
+/* .kdp-003-a .has-time-sheet #stamp-input.time-stamp {
 	min-width: calc(100% - 270px);
-}
+} */
 
 .kdp-003-a .control-panel {
 	margin: 0 auto;
-	width: 720px;
+	width: 542px;
 }
 
 .kdp-003-a .control-panel.has-time-sheet {
-	width: 990px;
+    max-width: 750px;
+    width: 100%;
 }
 
 .kdp-003-a .control-panel:not(.has-time-sheet) .time-sheet {
 	display: none;
 }
 
+.kdp-003-a #stamp-input {
+	/* width: calc(100% - 270px); */
+	width: 100%;
+}
+
 .kdp-003-a .not_used_label {
 	color: red;
 	font-size: 1.2rem !important;
+}
+.pageComent {
+	word-break: break-all !important;
+	white-space: pre-wrap !important;
 }

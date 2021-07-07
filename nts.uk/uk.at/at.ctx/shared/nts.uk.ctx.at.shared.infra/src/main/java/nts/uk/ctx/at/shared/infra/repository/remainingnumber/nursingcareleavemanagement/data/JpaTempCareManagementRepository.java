@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber.nursingcareleavemanagement.data;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -71,16 +72,19 @@ public class JpaTempCareManagementRepository extends JpaRepository implements Te
 				domain.getAppTimeType().flatMap(c -> c.getAppTimeType()).map(c -> c.value + 1).orElse(0));
 
 		// 登録・更新
-		this.queryProxy().find(pk, KshdtInterimCareData.class).ifPresent(entity -> {
-			entity.fromDomainForUpdate(domain);
+		Optional<KshdtInterimCareData> entityOpt = this.queryProxy().find(pk, KshdtInterimCareData.class);
+
+		if (entityOpt.isPresent()) {
+			entityOpt.get().fromDomainForUpdate(domain);
+			this.commandProxy().update(entityOpt.get());
 			this.getEntityManager().flush();
 			return;
-		});
+		}
 
 		KshdtInterimCareData entity = new KshdtInterimCareData();
 		entity.pk = pk;
 		entity.fromDomainForPersist(domain);
-		this.getEntityManager().persist(entity);
+		this.commandProxy().insert(entity);
 		this.getEntityManager().flush();
 	}
 

@@ -19,7 +19,7 @@ module nts.uk.at.view.ksu001.m.viewmodel {
         //Grird list
         columns: KnockoutObservableArray<NtsGridListColumn>;
         //KCP005
-        istComponentOption: any;
+        listComponentOption: any;
         selectedCode: KnockoutObservable<string>;
 
         isShowAlreadySet: KnockoutObservable<boolean>;
@@ -36,7 +36,7 @@ module nts.uk.at.view.ksu001.m.viewmodel {
         selectIds: KnockoutObservable<string> = ko.observable(['']);
 
         enableSave: KnockoutObservable<boolean> = ko.observable(true);
-
+        baseDate : any;
 
         constructor() {
             let self = this;
@@ -70,7 +70,8 @@ module nts.uk.at.view.ksu001.m.viewmodel {
                 showOptionalColumn: self.showOptionalColumn(),
                 optionalColumnName: nts.uk.resource.getText('KSU001_3307'),
                 optionalColumnDatasource: self.optionalColumnDatasource,
-                maxRows: 15
+                maxRows: 15,
+                width: 505
             };
             self.selectedCode.subscribe(function(value) {
                 if (nts.uk.util.isNullOrEmpty(value)) {
@@ -100,8 +101,13 @@ module nts.uk.at.view.ksu001.m.viewmodel {
 
             service.startPage(self.selectedCode()).done(function(data) {
                 console.log(data);
+                
                  if(data.listRankDto.length == 0) {
-                     nts.uk.ui.dialog.error({ messageId: "Msg_1643"});
+//                nts.uk.ui.dialog.error({ messageId: "Msg_1643" });
+                     nts.uk.ui.dialog.error({ messageId: "Msg_1643" }).then(() => {
+                         nts.uk.ui.windows.close();
+                     });
+                     
                  }
                 _.orderBy(data.listRankDto, 'priority', 'asc');
                 
@@ -146,9 +152,10 @@ module nts.uk.at.view.ksu001.m.viewmodel {
                 self.optionalColumnDatasource(tempOptionalDataSource);
                 $('#component-items-list').ntsListComponent(self.listComponentOption).done(function() {
                     _.defer(function() {
-                        let componentGridId = "#" + $("#component-items-list").find("[id$='tooltips_ruler']").attr('id').split("_")[0];
-                        $(componentGridId).igGrid("option", "width", 500);
-                        $("#component-items-list .bg-green").width(500);
+//                        let componentGridId = "#" + $("#component-items-list").find("[id$='tooltips_ruler']").attr('id').split("_")[0];
+//                        $(componentGridId).igGrid("option", "width", 490);
+//                        $("#component-items-list .bg-green").width(490);
+//                        $(componentGridId).igGrid("option", "height", 400);
                     });
                 });
                 self.enableSave(false);
@@ -158,7 +165,6 @@ module nts.uk.at.view.ksu001.m.viewmodel {
                 nts.uk.ui.dialog.alert({ messageId: error.messageId });
               
             });
-            // dfd.resolve(); -- đéo có thì nó disable luôn vcc
             return dfd.promise();
         }
         

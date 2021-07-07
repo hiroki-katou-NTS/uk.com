@@ -88,7 +88,7 @@ public class JpaReasonApplicationDailyResultRepo extends JpaRepository implement
 			} else if (valueFix.get() != null || value != null) {
 				ReasonApplicationDailyResult result = new ReasonApplicationDailyResult(entity.pk.sid, entity.pk.ymd,
 						new ApplicationTypeReason(appAno.type(),
-								appAno.type() == ApplicationType.STAMP_APPLICATION ? Optional.of(appAno.overType())
+								appAno.type() == ApplicationType.OVER_TIME_APPLICATION ? Optional.of(appAno.overType())
 										: Optional.empty()),
 						appAno.before(),
 						new ApplicationReasonInfo(

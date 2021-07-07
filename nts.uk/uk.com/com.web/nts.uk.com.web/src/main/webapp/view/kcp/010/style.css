@@ -66,10 +66,10 @@ td.wkp-tdpad {
 }
 
 .over_text {
-	overflow: auto;
+	/*overflow: auto;*/
 	height: 20px;
 }
 
-#search-input {
+table#wkp_view #search-input {
 	width: 150px;
 }

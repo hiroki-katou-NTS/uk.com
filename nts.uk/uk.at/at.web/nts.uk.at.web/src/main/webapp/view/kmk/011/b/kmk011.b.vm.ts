@@ -73,7 +73,7 @@ module nts.uk.at.view.kmk011.b {
                     { isUse: false, name: nts.uk.resource.getText("Enum_UseAtr_NotUse") },
                 ]);
 
-                self.selectUse = ko.observable(0);
+                self.selectUse = ko.observable('0');
                 self.divergenceTypeName = ko.observable('');
                 self.divTimeName = ko.observable('');
                 self.timeItemName = ko.observable('');
@@ -99,7 +99,7 @@ module nts.uk.at.view.kmk011.b {
                         return;
                     }
                     self.enableState(true);
-                    self.selectUse(null);
+                    self.selectUse('0');
                     self.findDivergenceTime(self.currentCode()).done((itemDivTime) => {
                         self.itemDivergenceTime(itemDivTime);
                         self.setValueDivergenceTimeDisplay();
@@ -220,7 +220,7 @@ module nts.uk.at.view.kmk011.b {
              */
             private setValueDivergenceTimeDisplay() {
                 var self = this;
-                self.selectUse(self.itemDivergenceTime().divergenceTimeUseSet);
+                self.selectUse(self.itemDivergenceTime().divergenceTimeUseSet.toString());
                 self.selectSelect(self.itemDivergenceTime().divergenceReasonSelected);
                 self.selectInput(self.itemDivergenceTime().divergenceReasonInputed);
                 self.divergenceTimeId(self.itemDivergenceTime().divergenceTimeNo);

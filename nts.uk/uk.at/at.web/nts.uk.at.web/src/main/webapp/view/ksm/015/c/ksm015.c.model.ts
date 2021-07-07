@@ -20,8 +20,8 @@ class Ksm015Data {
 	
         this.shiftGridColumns = [
 			// ver 17
-            { headerText: nts.uk.resource.getText('KSM015_13'), key: 'shiftMasterCode', width: 40, formatter: _.escape  },
-            { headerText: nts.uk.resource.getText('KSM015_14'), key: 'shiftMasterName', width: 40, formatter: _.escape}, 
+            { headerText: nts.uk.resource.getText('KSM015_13'), key: 'shiftMasterCode', width: 50, formatter: _.escape  },
+            { headerText: nts.uk.resource.getText('KSM015_14'), key: 'shiftMasterName', width: 50, formatter: _.escape}, 
             /*{ headerText: nts.uk.resource.getText('KSM015_15'), key: 'workTypeName', width: 100, hidden: true }, 
             { headerText: nts.uk.resource.getText('KSM015_16'), key: 'workTimeName', width: 100, hidden: true},*/
             { headerText: nts.uk.resource.getText('KSM015_32'), key: 'workTime1', width: 200, formatter: _.escape },
@@ -31,8 +31,8 @@ class Ksm015Data {
 
 		 this.shiftGridColumnsD = [
 			// ver 17
-            { headerText: nts.uk.resource.getText('KSM015_13'), key: 'shiftMasterCode', width: 40, formatter: _.escape  },
-            { headerText: nts.uk.resource.getText('KSM015_14'), key: 'shiftMasterName', width: 40, formatter: _.escape}, 
+            { headerText: nts.uk.resource.getText('KSM015_13'), key: 'shiftMasterCode', width: 50, formatter: _.escape  },
+            { headerText: nts.uk.resource.getText('KSM015_14'), key: 'shiftMasterName', width: 50, formatter: _.escape}, 
 /*            { headerText: nts.uk.resource.getText('KSM015_15'), key: 'workTypeName', width: 100, hidden: true }, 
             { headerText: nts.uk.resource.getText('KSM015_16'), key: 'workTimeName', width: 100, hidden: true},*/
             { headerText: nts.uk.resource.getText('KSM015_32'), key: 'workTime1', width: 210, formatter: _.escape },

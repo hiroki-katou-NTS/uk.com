@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.record.dom.workrecord.workingtype.ChangeableWorkTypeGroupName;
 import nts.uk.ctx.at.record.dom.workrecord.workingtype.ChangeableWorktypeGroup;
 import nts.uk.ctx.at.record.dom.workrecord.workingtype.WorkingTypeChangedByEmployment;
 import nts.uk.ctx.at.record.dom.workrecord.workingtype.WorkingTypeChangedByEmpRepo;
@@ -37,7 +38,7 @@ public class WorkTypeEmploymentCommandHandler extends CommandHandler<WorkTypeEmp
 				.map(group -> new ChangeableWorktypeGroup(group.getNo(), group.getName() == null ? null : group.getName(), group.getWorkTypeList()))
 				.collect(Collectors.toList());
 		for(int i = 0; i < 4; i++){
-			changeableWorkTypeGroups.get(i).setName(null); 
+			changeableWorkTypeGroups.get(i).setName(new ChangeableWorkTypeGroupName("")); 
 		}
 		WorkingTypeChangedByEmployment workingType = new WorkingTypeChangedByEmployment(new CompanyId(companyId),
 				new EmploymentCode(employmentCode), changeableWorkTypeGroups);

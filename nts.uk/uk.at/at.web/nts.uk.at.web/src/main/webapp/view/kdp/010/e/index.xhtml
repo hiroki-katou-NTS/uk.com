@@ -4,149 +4,151 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
-	<ui:composition>
-		<div class="sidebar-content-header">
-			<span class="title">#{i18n.getText('KDP010_6')}</span>
-			<button tabindex="1" class="proceed" data-bind="click: registration">#{i18n.getText('KDP010_10')}</button>
-		</div>
-		<div class="contents-area-c cf">
-			<div class="block-1">
-				<div id="basic-label">
-					<label class="basic-label-1">#{i18n.getText('KDP010_54')}</label>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.NumberAuthenfailures
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonName
+			</com:ValidatorScript>
+	
+			<com:stylefile path="../main.css"/>
+			<com:scriptfile path="kdp010.e.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KDP010_144')}</a>
+				<button tabindex="1" class="proceed" data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('KDP010_10')}</button>
+			</div>
+			<div id="contents-area" class="screenE">
+				<div class="label-top">
+					<label>#{i18n.getText('KDP010_190')}</label>
 				</div>
-				<div id="basic-label">
-					<label class="basic-label-2">#{i18n.getText('KDP010_55')}</label>
-				</div>
-				<div class="function-area">
-				<table class="symbol-control">
-					<tr>
-						<!-- E4_1 -->
-						<td><div id="imprint-leakage-label"
-								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_56')}</div>
-							<!-- E4_2 -->
-							<div tabindex="3" id="imprint-leakage-radio-e"
-								data-bind="ntsRadioBoxGroup: {
-														options: optionImprint,
-														optionsValue: 'id',
-														optionsText: 'name',
-														value: selectedImprint,
-														enable: true }"></div>
-							<!-- E4_5 -->
-							<div class="text-color-1">
-								<div id="message-1"
-									data-bind="ntsFormLabel: { required: true, constraint: 'MessageContent' }">#{i18n.getText('KDP010_129')}</div>
-								<div id="mess-color-1">
-									<!-- E4_6 -->
-									<input tabindex="4" id="message-text-1"
-										data-bind="ntsTextEditor: {
-										name: '#[KDP010_62]',
-										required: true, 
-										value: messageValueFirst, 
-										constraint: 'MessageContent', 
-										enable: selectedImprint() == 1}" />
-									<!-- E4_7 -->
-									<div id="first-color-picker" class="colorpicker"
-										data-bind="ntsColorPicker: {value: firstColors, enable: selectedImprint() == 1, width: 50, name:'#[KDP010_63]' }" />
-								</div>
-		
-		
-							</div></td>
-					</tr>
-					<tr>
-						<!-- E5_1 -->
-						<td><div id="holiday-label"
-								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_57')}</div>
-							<!-- E5_2 -->
-							<div tabindex="5" id="holiday-radio-e"
-								data-bind="ntsRadioBoxGroup: {
-														options: optionHoliday,
-														optionsValue: 'id',
-														optionsText: 'name',
-														value: selectedHoliday,
-														enable: true }"></div>
-							<!-- E5_5 -->
-							<div class="text-color-1">
-								<div id="message-2"
-									data-bind="ntsFormLabel: { required: true, constraint: 'MessageContent' }">#{i18n.getText('KDP010_129')}</div>
-								<div id="mess-color-1">
-									<!-- E5_6 -->
-									<input tabindex="6" id="message-text-2"
-										data-bind="ntsTextEditor: {name: '#[KDP010_62]', required: true, value: messageValueSecond, constraint: 'MessageContent', enable: selectedHoliday() == 1}" />
-									<!-- E5_7 -->
-									<div id="second-color-picker" class="colorpicker"
-										data-bind="ntsColorPicker: {value: secondColors, enable: selectedHoliday() == 1, width: 50, name:'#[KDP010_63]' }" />
-								</div>
-							</div></td>
-					</tr>
-					<!-- <tr>
-						E6_1
-						<td><div id="overtime-label"
-								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_58')}</div>
-							E6_2
-							<div tabindex="7" id="overtime-radio-e"
-								data-bind="ntsRadioBoxGroup: {
-														options: optionOvertime,
-														optionsValue: 'id',
-														optionsText: 'name',
-														value: selectedOvertime,
-														enable: true }"></div>
-							E6_5
-							<div class="text-color-1">
-								<div id="message-3"
-									data-bind="ntsFormLabel: { required: true, constraint: 'MessageContent' }">#{i18n.getText('KDP010_129')}</div>
-								<div id="mess-color-1">
-									E6_6
-									<input tabindex="8" id="message-text-3"
-										data-bind="ntsTextEditor: {name: '#[KDP010_62]',required: true, value: messageValueThird, constraint: 'MessageContent', enable: selectedOvertime() == 1 }" />
-									E6_7
-									<div id="third-color-picker" class="colorpicker"
-										data-bind="ntsColorPicker: {value: thirdColors, enable: selectedOvertime() == 1, width: 50, name:'#[KDP010_63]' }" />
-								</div>
-							</div></td>
-					</tr> -->
+				<table class="form-data" data-bind="with: portalStampSettings">
 					<tr>
 						<td>
-							<!-- E30_1 -->
-							<div id="basic-label-2">
-								<label class="basic-label">#{i18n.getText('KDP010_82',["#Com_WorkOut"])}</label>
-							</div> <!-- E31_2 -->
-							<div tabindex="9" id="highlight-radio-1"
-								data-bind="ntsRadioBoxGroup: {
-														options: optionImp,
-														optionsValue: 'id',
-														optionsText: 'name',
-														value: selectedImp,
-														enable: true }"></div>
-							<!-- E31_5 -->
-							<div id="basic-label-3">
-								<label class="basic-label">#{i18n.getText('KDP010_86',["#Com_WorkOut"])}</label>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'CorrectionInterval' }">#{i18n.getText('KDP010_191')}</div>
+							<div class="inline-display row-data">
+								<input tabindex="3" id="d-serverCorrectionInterval" class="number-input" data-bind="ntsNumberEditor: {name: '#[KDP010_192]',value: displaySettingsStampScreen.serverCorrectionInterval, constraint: 'CorrectionInterval', required: true}" />
 							</div>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<!-- E31_1 -->
-							<div tabindex="10" id="highlight-label"
-								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_83',["#Com_WorkOut"])}</div>
-							<!-- E32_1 -->
+							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_193')}</div> 
+							<label>#{i18n.getText('KDP010_194')}</label>
+							<div class="colorpicker" data-bind="ntsColorPicker: {value: displaySettingsStampScreen.settingDateTimeColor.textColor, enable: true, width: 50, name:'#[KDP010_195]' }"></div> 
 						</td>
 					</tr>
 					<tr>
-					<td>
-						<button class="small" 
-								data-bind="click: openKDL021Dialog, enable: selectedImp() == 1">#{i18n.getText('KDP010_88')}</button>
-							<span id ="text-adt" data-bind="text: workTypeNames"></span>
+						<td>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_198')}</div> 
+							<div class="inline-display row-data vertical-align-top">
+								<input tabindex="4" class="number-input" data-bind="ntsNumberEditor: {name: '#[KDP010_199]',value: displaySettingsStampScreen.resultDisplayTime, constraint: 'ResultDisplayTime', required: true}" /> 
+								<div class="inline-display">
+									<div class="text-note">#{i18n.getText('KDP010_200')}</div>
+									<div class="text-note">#{i18n.getText('KDP010_31')}</div>
+								</div>
+							</div>
 						</td>
 					</tr>
 					<tr>
-						<td><label class="text-end">#{i18n.getText('KDP010_127')}</label>
+						<td>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_201')}</div> 
+							<div tabindex="5" class="inline-display min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.suppressStampBtnOption, optionsValue: 'id', optionsText: 'name', value: suppressStampBtn, enable: true }"></div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_277')}</div> 
+							<div tabindex="6" class="inline-display min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.displayStampListOption, optionsValue: 'id', optionsText: 'name', value: displayStampList, enable: true }"></div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_270')}</div> 
+							<div class="inline-display row-data vertical-align-top">
+								<div tabindex="7" class="min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.useTopMenuLinkOption, optionsValue: 'id', optionsText: 'name', value: useTopMenuLink, enable: true }"></div>
+								<div class="row-data">#{i18n.getText('KDP010_133')}</div>
+							</div>
 						</td>
 					</tr>
 				</table>
-				</div>
+				<div class="label-middle">
+					<label>#{i18n.getText('KDP010_204')}</label>
+				</div>	
+				<table class="form-data" data-bind="with:portalStampSettings">
+					<tr data-bind="with: _.find(buttonSettings,['buttonPositionNo',1])">
+						<td>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ButtonName' }">#{i18n.getText('KDP010_205')}</div>
+							<div class="inline-display row-data">
+								<input tabindex="8" data-bind="ntsTextEditor: {name: '#[KDP010_205]',value: buttonDisSet.buttonNameSet.buttonName, constraint: 'ButtonName', required: true, option: {width: '130'}}" /> 
+								<label class="margin-left5">#{i18n.getText('KDP010_206')}</label>
+								<div class="colorpicker" data-bind="ntsColorPicker: {value: buttonDisSet.buttonNameSet.textColor, enable: true, width: 50, name:'#[KDP010_206]' }"></div> 
+								<label class="margin-left5">#{i18n.getText('KDP010_207')}</label>
+								<div class="colorpicker" data-bind="ntsColorPicker: {value: buttonDisSet.backGroundColor, enable: true, width: 50, name:'#[KDP010_207]' }"></div>
+							</div>
+						</td>
+					</tr>
+					<tr data-bind="with: _.find(buttonSettings,['buttonPositionNo',2])">
+						<td>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ButtonName' }">#{i18n.getText('KDP010_208')}</div>
+							<div class="inline-display row-data">
+								<input tabindex="9" data-bind="ntsTextEditor: {name: '#[KDP010_208]',value: buttonDisSet.buttonNameSet.buttonName, constraint: 'ButtonName', required: true, option: {width: '130'}}" /> 
+								<label class="margin-left5">#{i18n.getText('KDP010_206')}</label>
+								<div class="colorpicker" data-bind="ntsColorPicker: {value: buttonDisSet.buttonNameSet.textColor, enable: true, width: 50, name:'#[KDP010_206]' }"></div> 
+								<label class="margin-left5">#{i18n.getText('KDP010_207')}</label>
+								<div class="colorpicker" data-bind="ntsColorPicker: {value: buttonDisSet.backGroundColor, enable: true, width: 50, name:'#[KDP010_207]' }"></div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_308')}</div> 
+							<div tabindex="10" class="inline-display min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.gooutUseAtrOption, optionsValue: 'id', optionsText: 'name', value: goOutUseAtr, enable: true }"></div>
+						</td>
+					</tr>
+					
+					<tr data-bind="with: _.find(buttonSettings,['buttonPositionNo',3])">
+						<td>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ButtonName' }">#{i18n.getText('KDP010_209')}</div>
+							<div class="inline-display row-data">
+								<input tabindex="11" data-bind="ntsTextEditor: {name: '#[KDP010_209]',value: buttonDisSet.buttonNameSet.buttonName, constraint: 'ButtonName', required: true, option: {width: '130'}, enable: $parent.goOutUseAtrEnable}" /> 
+								<label class="margin-left5">#{i18n.getText('KDP010_206')}</label>
+								<div class="colorpicker" data-bind="ntsColorPicker: {value: buttonDisSet.buttonNameSet.textColor, enable: $parent.goOutUseAtrEnable, width: 50, name:'#[KDP010_206]' }"></div> 
+								<label class="margin-left5">#{i18n.getText('KDP010_207')}</label>
+								<div class="colorpicker" data-bind="ntsColorPicker: {value: buttonDisSet.backGroundColor, enable: $parent.goOutUseAtrEnable, width: 50, name:'#[KDP010_207]' }"></div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="reason">
+							<div class="inline-display row-data">
+								<label>#{i18n.getText('KDP010_210')}</label>
+								<div class="inline-display" tabindex="12" data-bind="ntsRadioBoxGroup: {options: $parent.goOutArtOption, optionsValue: 'id', optionsText: 'name', value: _.find(buttonSettings,['buttonPositionNo',3]).goOutArt, enable: goOutUseAtrEnable }"></div>
+							</div>
+						</td>
+					</tr>
+					<tr data-bind="with: _.find(buttonSettings,['buttonPositionNo',4])">
+						<td>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ButtonName' }">#{i18n.getText('KDP010_211')}</div>
+							<div class="inline-display row-data">
+								<input tabindex="13" data-bind="ntsTextEditor: {name: '#[KDP010_211]',value: buttonDisSet.buttonNameSet.buttonName, constraint: 'ButtonName', required: true, option: {width: '130'}, enable: $parent.goOutUseAtrEnable}" /> 
+								<label class="margin-left5">#{i18n.getText('KDP010_206')}</label>
+								<div class="colorpicker" data-bind="ntsColorPicker: {value: buttonDisSet.buttonNameSet.textColor, enable: $parent.goOutUseAtrEnable, width: 50, name:'#[KDP010_206]' }"></div> 
+								<label class="margin-left5">#{i18n.getText('KDP010_207')}</label>
+								<div class="colorpicker" data-bind="ntsColorPicker: {value: buttonDisSet.backGroundColor, enable: $parent.goOutUseAtrEnable, width: 50, name:'#[KDP010_207]' }"></div>
+							</div>
+						</td>
+					</tr>
+				</table> 
 			</div>
-		</div>
+		</ui:define>
 	</ui:composition>
 </body>
 </html>

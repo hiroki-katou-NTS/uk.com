@@ -29,12 +29,14 @@ module nts.uk.at.view.kdl001.a {
             selectAbleCodeListBk: KnockoutObservableArray<string> = ko.observableArray([]);
             selectedCodeListBk: KnockoutObservableArray<string> = ko.observableArray([]);
             selectedCodeBk: KnockoutObservable<string> = ko.observable(null);
+            showNoSelectionRow: boolean = false;
 
             constructor() {
                 var self = this;
                 self.columns = ko.observableArray([]);
                 self.multiSelectMode = nts.uk.ui.windows.getShared('kml001multiSelectMode');
                 self.isSelection = nts.uk.ui.windows.getShared('kml001isSelection');
+                self.showNoSelectionRow = nts.uk.ui.windows.getShared('kdl00showNoSelectionRow');
                 if (!self.multiSelectMode) {
                     self.gridHeight = 400;
                 } else {
@@ -98,7 +100,7 @@ module nts.uk.at.view.kdl001.a {
                                 { headerText: nts.uk.resource.getText('KDL001_14'), prop: 'workTime1', width: 180 },
                                 { headerText: nts.uk.resource.getText('KDL001_15'), prop: 'workTime2', width: 180 }, //tam thoi comment theo yeu cau cua oohashi san
                                 { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 150 },
-                                { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', columnCssClass: "limited-label", template: '<span>${remark}</span>' }
+                                { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', template: '<span class="limited-label">${remark}</span>' }
                             ]);
                         } else {
                             self.columns([
@@ -107,7 +109,7 @@ module nts.uk.at.view.kdl001.a {
                                 { headerText: nts.uk.resource.getText('KDL001_14'), prop: 'workTime1', width: 180 },
                                 //{ headerText: nts.uk.resource.getText('KDL001_15'), prop: 'workTime2', width: 200 }, //tam thoi comment theo yeu cau cua oohashi san
                                 { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 150 },
-                                { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', columnCssClass: "limited-label", template: '<span>${remark}</span>' }
+                                { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', template: '<span class="limited-label">${remark}</span>' }
                             ]);
                         }
 
@@ -174,7 +176,9 @@ module nts.uk.at.view.kdl001.a {
                 }
 
                 self.selectAbleItemList.removeAll();
-                selectAbleItemList.unshift(new WorkTimeSet());
+                if (self.showNoSelectionRow) {
+                    selectAbleItemList.unshift(new WorkTimeSet());
+                }
                 self.selectAbleItemList(_.orderBy(selectAbleItemList, 'code', 'asc'));
                 // Set initial work time list.
                 self.initialWorkTimeCodes = _.map(self.selectAbleItemList(), function (item) { return item.code })

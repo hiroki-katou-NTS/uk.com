@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 520, height: 700 };</script>
+			<script>var dialogSize = { width: 500, height: 630 };</script>
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
@@ -18,19 +18,19 @@
 			<com:scriptfile path="kdl047.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div class="contents-area">
+			<div id="contents-area">
 				<div class="contents-header">
 					<!-- Visible A1_1, A1_2, A1_3. A1_4 by isVisibleA1 -->
 					<div data-bind="visible: isVisibleA1">
 						<div class="div-line">
 							<!-- A1_1 -->
-							<div id="A1_1" class="w-100" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL047_2')}</div>
+							<div id="A1_1" style="width: 75px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL047_2')}</div>
 							<!-- A1_2 -->
-							<label id="A1_2" class="ml-10" data-bind="text: layoutCode"></label>
+							<label id="A1_2" style="padding-left: 10px;" data-bind="css: {'display-none': isEmptyLayoutCode }, text: layoutCode"></label>
 							<!-- A1_3 -->
-							<label id="A1_3" class="ml-5" data-bind="text: layoutName"></label>
+							<label id="A1_3" style="padding-left: 10px;" data-bind="css: {'display-none': isEmptyLayoutName }, text: layoutName"></label>
 							<!-- A1_4 -->
-							<label id="A1_4" class="ml-25" data-bind="text: comment"></label>
+							<label id="A1_4" style="padding-left: 10px;" data-bind="css: {'display-none': isEmptyComment }, text: comment"></label>
 						</div>
 					</div>
 					<hr/>
@@ -39,7 +39,7 @@
 						<!-- A3_1 -->
 						<div id="A3_1" class="w-85" data-bind="ntsFormLabel: {constraint: 'ItemName'}">#{i18n.getText('KDL047_3')}</div>
 						<!-- A3_2 -->
-						<input id="A3_2" tabindex="1" class="ml-25 mt-5" data-bind="ntsTextEditor: {
+						<input id="A3_2" tabindex="1" class="ml-5 mt-5" data-bind="ntsTextEditor: {
 							name: '#[KDL047_3]',
 							value: attendanceRecordName,
 							constraint: 'ItemName',
@@ -58,7 +58,7 @@
 					<div
 						class="margin-panel"
 						data-bind="ntsPanel: {
-							width: '400px',
+							width: '450px',
 							height: '370px',
 							direction: 'none',
 							showIcon: true,
@@ -90,7 +90,7 @@
 						<div
 							id="A5_3"
 							tabindex="3"
-							style="width: 400px"
+							style="width: 450px"
 							data-bind="ntsSearchBox:	{
 									items: tableDatas,
 									searchMode: 'filter',
@@ -109,7 +109,7 @@
 							data-bind="ntsGridList: {
 								name: '#[KDL047_5]',
 								height: 400,
-								width: 400,
+								width: 450,
 								columns: tableColumns,
 								options: tableDatas,
 								optionsValue: 'id',

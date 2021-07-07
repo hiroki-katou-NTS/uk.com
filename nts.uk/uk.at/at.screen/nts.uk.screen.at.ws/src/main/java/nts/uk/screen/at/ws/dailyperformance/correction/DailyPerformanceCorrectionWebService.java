@@ -325,7 +325,7 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@POST
 	@Path("getApplication")
-	public List<EnumConstant> getApplicationName() {
+	public List<Integer> getApplicationName() {
 		return dataDialogWithTypeProcessor.getNameAppliction();
 	}
 	

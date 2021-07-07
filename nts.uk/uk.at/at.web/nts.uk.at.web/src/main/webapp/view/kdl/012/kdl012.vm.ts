@@ -52,7 +52,7 @@ module nts.uk.at.view.kdl012 {
                         columnCssClass: 'limited-label',
                         formatter: _.escape
                     },
-                    {headerText: vm.$i18n('KDL012_6'), prop: 'expireDate', width: 205},
+                    {headerText: vm.$i18n('KDL012_6'), prop: 'expireDate', width: 210},
                     {
                         headerText: vm.$i18n('KDL012_7'),
                         prop: 'remark',

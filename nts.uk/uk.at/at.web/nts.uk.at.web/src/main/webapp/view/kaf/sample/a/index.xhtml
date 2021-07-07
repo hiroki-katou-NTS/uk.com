@@ -5,7 +5,7 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
 				nts.uk.ctx.at.request.dom.application.AppReason
@@ -17,6 +17,7 @@
 			<com:stylefile path="/view/kaf/000/a/component4/kaf000.a.component4.css" />
 			<com:stylefile path="/view/kaf/000/a/component5/kaf000.a.component5.css" />
 			<com:stylefile path="/view/kaf/000/a/component6/kaf000.a.component6.css" />
+			<com:stylefile path="/view/kaf/000/a/component8/kaf000.a.component8.css" />
 			<com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
 			<com:scriptfile path="/view/kaf/000/a/component1/kaf000.a.component1.js" />
 			<com:scriptfile path="/view/kaf/000/a/component2/kaf000.a.component2.js" />
@@ -32,7 +33,7 @@
 			<com:scriptfile path="/view/kaf/sample/a/kafsample.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area">
+			<div id="functions-area" style="background-color: inherit;">
 				<div style="display: inline-block;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
 				<!-- A1_1 -->
 				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KAF007_54')}</button>
@@ -43,53 +44,80 @@
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }" style="display: inline-block;"></div>
 			</div>
-			<div id="contents-area">
-				<div data-bind="component: { name: 'kaf000-a-component1', 
-											params: {
-												appType: appType,
-												appDispInfoStartupOutput: appDispInfoStartupOutput
-											} }"></div>
-				<div class="table">
-					<div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-a-component2',
-									params: {
-										appType: appType,
-										application: application,
-										appDispInfoStartupOutput: appDispInfoStartupOutput,
-										isAgentMode: isAgentMode
-                                          } }"></div>
-                  	<div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-a-component8',
-									params: {
-										appType: appType,
-										application: application,
-										appDispInfoStartupOutput: appDispInfoStartupOutput
-									} }"></div>
+			<div id="contents-area" style="background-color: inherit;">
+				<div class="two-panel" style="height: 100%;">
+					<div class="left-panel" style="width: calc(100% - 410px); height: inherit;">
+						<div style="height: inherit; background-color: #fff; padding: 10px;">
+							<div class="table" style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
+								<div class="cell" style="vertical-align: middle;">
+									<div data-bind="component: { name: 'kaf000-a-component2',
+														params: {
+															appType: appType,
+															application: application,
+															appDispInfoStartupOutput: appDispInfoStartupOutput,
+															isAgentMode: isAgentMode
+					                                          } }"></div>
+								</div>
+								<div class="cell" style="text-align: right; vertical-align: middle;">
+									<div data-bind="component: { name: 'kaf000-a-component6', 
+														params: {
+															appType: appType,
+															application: application,
+															appDispInfoStartupOutput: appDispInfoStartupOutput
+														} }"></div>
+								</div>
+							</div>
+							<div data-bind="component: { name: 'kaf000-a-component3', 
+														params: {
+															appType: appType,
+															application: application,
+															appDispInfoStartupOutput: appDispInfoStartupOutput
+														} }"></div>
+							<div data-bind="component: { name: 'kaf000-a-component4', 
+														params: {
+															appType: appType,
+															application: application,
+															appDispInfoStartupOutput: appDispInfoStartupOutput
+														} }"></div>
+							<div data-bind="component: { name: 'kafsample-share', 
+														params: {} }"></div>
+							<div data-bind="component: { name: 'kaf000-a-component5', 
+														params: {
+															appType: appType,
+															application: application,
+															appDispInfoStartupOutput: appDispInfoStartupOutput
+														} }"></div>
+							<div style="text-align: center; padding-top: 30px;">
+								<div style="padding-bottom: 5px;">
+									<button style="width: 300px;" class="proceed x-large" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KAF007_54')}</button>
+								</div>
+								<div>
+									<div data-bind="component: { name: 'kaf000-a-component7', 
+															params: {
+																appType: appType,
+																checkBoxValue: isSendMail,
+																appDispInfoStartupOutput: appDispInfoStartupOutput
+															} }" style="display: inline-block;"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="right-panel" style="width: 410px; height: inherit;">
+						<div style="height: inherit; background-color: #fff; padding: 10px;">
+							<div data-bind="component: { name: 'kaf000-a-component1', 
+														params: {
+															appType: appType,
+															appDispInfoStartupOutput: appDispInfoStartupOutput
+														} }"></div>
+							<div data-bind="component: { name: 'kaf000-a-component8',
+														params: {
+															appType: appType,
+															application: application,
+															appDispInfoStartupOutput: appDispInfoStartupOutput
+														} }"></div>
+						</div>
+					</div>
 				</div>
-				<div data-bind="component: { name: 'kaf000-a-component3', 
-											params: {
-												appType: appType,
-												application: application,
-												appDispInfoStartupOutput: appDispInfoStartupOutput
-											} }"></div>
-				<div data-bind="component: { name: 'kaf000-a-component4', 
-											params: {
-												appType: appType,
-												application: application,
-												appDispInfoStartupOutput: appDispInfoStartupOutput
-											} }"></div>
-				<div data-bind="component: { name: 'kafsample-share', 
-											params: {} }"></div>
-				<div data-bind="component: { name: 'kaf000-a-component5', 
-											params: {
-												appType: appType,
-												application: application,
-												appDispInfoStartupOutput: appDispInfoStartupOutput
-											} }"></div>
-				<div data-bind="component: { name: 'kaf000-a-component6', 
-											params: {
-												appType: appType,
-												application: application,
-												appDispInfoStartupOutput: appDispInfoStartupOutput
-											} }"></div>
 			</div>
 		</ui:define>
 	</ui:composition>

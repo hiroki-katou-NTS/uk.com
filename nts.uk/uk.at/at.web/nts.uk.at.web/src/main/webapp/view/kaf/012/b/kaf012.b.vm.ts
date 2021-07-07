@@ -14,89 +14,9 @@ module nts.uk.at.view.kaf012.b.viewmodel {
         getDetail: "at/request/application/timeLeave/init"
     };
 
-    const template = `
-        <div>
-            <div data-bind="component: { name: 'kaf000-b-component1', 
-                                        params: {
-                                            appType: appType,
-                                            appDispInfoStartupOutput: appDispInfoStartupOutput	
-                                        } }"></div>
-            <div data-bind="component: { name: 'kaf000-b-component2', 
-                                        params: {
-                                            appType: appType,
-                                            appDispInfoStartupOutput: appDispInfoStartupOutput
-                                        } }"></div>
-            <div data-bind="component: { name: 'kaf000-b-component3', 
-                                        params: {
-                                            appType: appType,
-                                            approvalReason: approvalReason,
-                                            appDispInfoStartupOutput: appDispInfoStartupOutput
-                                        } }"></div>
-            <div data-bind="component: { name: 'kaf012-share-component1',
-                                                    params: {
-                                                        reflectSetting: reflectSetting,
-                                                        timeLeaveManagement: timeLeaveManagement,
-                                                        timeLeaveRemaining: timeLeaveRemaining,
-                                                        leaveType: leaveType,
-                                                        application: application,
-                                                        specialLeaveFrame: specialLeaveFrame
-                                                    }}"/>
-            <div class="table">
-                <div class="cell" style="min-width: 825px; padding-right: 10px;">
-                    <div data-bind="component: { name: 'kaf000-b-component4',
-							params: {
-								appType: appType,
-								application: application,
-								appDispInfoStartupOutput: appDispInfoStartupOutput
-							} }"></div>
-                    <div data-bind="component: { name: 'kaf000-b-component5', 
-                                                params: {
-                                                    appType: appType,
-                                                    application: application,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }"></div>
-                    <div data-bind="component: { name: 'kaf000-b-component6', 
-                                                params: {
-                                                    appType: appType,
-                                                    application: application,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }"></div>
-                    <div data-bind="component: { name: 'kaf012-share-component2',
-                                        params: {
-                                            reflectSetting: reflectSetting,
-                                            timeLeaveManagement: timeLeaveManagement,
-                                            timeLeaveRemaining: timeLeaveRemaining,
-                                            leaveType: leaveType,
-                                            appDispInfoStartupOutput: appDispInfoStartupOutput,
-                                            application: application,
-                                            applyTimeData: applyTimeData,
-                                            specialLeaveFrame: specialLeaveFrame,
-                                            eventCalc: eventCalc
-                                        }}"/>
-                    <div data-bind="component: { name: 'kaf000-b-component7', 
-                                                params: {
-                                                    appType: appType,
-                                                    application: application,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }"></div>
-                    <div data-bind="component: { name: 'kaf000-b-component8', 
-                                                params: {
-                                                    appType: appType,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }"></div>
-                </div>
-                <div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-b-component9',
-							params: {
-								appType: appType,
-								application: application,
-								appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
-							} }"></div>
-            </div>
-        </div>
-    `
     @component({
         name: 'kaf012-b',
-        template: template
+        template: '/nts.uk.at.web/view/kaf/012/b/index.html'
     })
     class Kaf012BViewModel extends ko.ViewModel {
 

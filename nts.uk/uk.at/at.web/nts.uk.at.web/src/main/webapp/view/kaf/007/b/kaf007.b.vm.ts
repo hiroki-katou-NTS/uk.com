@@ -44,8 +44,8 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
             const vm = this;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.printContentOfEachAppDto = ko.observable(params.printContentOfEachAppDto);
-            vm.application = params.application,
-                vm.appType = params.appType,
+            vm.application = params.application;
+                vm.appType = params.appType;
                 vm.appWorkChange = new AppWorkChange("", "", "", "", null, null, null, null);
             vm.approvalReason = params.approvalReason;
             vm.reflectWorkChange = new ReflectWorkChangeApp("", 1);
@@ -86,6 +86,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
             vm.appWorkChangeDisp = params.appWorkChangeDispInfo;
             let appWorkChangeDispInfo = params.appWorkChangeDispInfo;
             let appWorkChangeParam = params.appWorkChange;
+            vm.appDispInfoStartupOutput(appWorkChangeDispInfo.appDispInfoStartupOutput);
             vm.model({
                 workTypeCD: ko.observable(appWorkChangeParam.opWorkTypeCD),
                 workTimeCD: ko.observable(appWorkChangeParam.opWorkTimeCD),

@@ -57,3 +57,7 @@ hr {
 .pl-15{
 	padding-left: 15px;
 }
+.switch_layout {
+	display: flex;
+	align-items: center;
+}

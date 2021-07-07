@@ -73,13 +73,16 @@ module nts.uk.at.ktg005.b {
 		}
 
 		updateData(param: IStartScreenBResult) {
-			this.topPagePartName(param.topPagePartName);
+			const vm = new ko.ViewModel();
+			this.topPagePartName(_.isEmpty(param.topPagePartName) ? vm.$i18n('KTG005_15') : param.topPagePartName);
 			if (!param.appSettings.length) {
-				param.appSettings = [{ displayType: 0, item: 0 },
-				{ displayType: 0, item: 1 },
-				{ displayType: 0, item: 2 },
-				{ displayType: 0, item: 3 },
-				{ displayType: 0, item: 4 }]
+				param.appSettings = [
+					{ displayType: 1, item: 0 }, //チェックあり
+					{ displayType: 1, item: 1 }, //チェックあり
+					{ displayType: 1, item: 2 }, //チェックあり
+					{ displayType: 1, item: 3 }, //チェックあり
+					{ displayType: 1, item: 4 }  //チェックあり
+				];
 			}
 			this.appSettings(_.chain(param.appSettings).sortBy(['item']).map(x => { return new AppSetting(x); }).value());
 			$("#item_table").ntsFixedTable({ height: 164, width: 350 });

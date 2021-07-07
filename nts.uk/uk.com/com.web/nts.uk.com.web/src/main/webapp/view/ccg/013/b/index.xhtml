@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 533, height: 620 };</script>
+			<script>var dialogSize = { width: 560, height: 600 };</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.sys.portal.dom.webmenu.MenuBarName
 				</com:ValidatorScript>
@@ -25,16 +25,18 @@
 				<span>#{i18n.getText('CCG013_17')}</span>
 				<table class="control">
 					<tr>
-						<td><div data-bind="ntsFormLabel: { constraint: 'MenuBarName', required: true }">#{i18n.getText('CCG013_18')}</div></td>
+						<td><div data-bind="ntsFormLabel: { constraint: 'MenuBarName', required: true }" class="ccg013-nowrap">#{i18n.getText('CCG013_18')}</div></td>
 						<td><input id="B1_3" class="menu-bar-name"
 							data-bind="ntsTextEditor: {name: '#[CCG013_18]',value: nameMenuBar, constraint: 'MenuBarName', required: true, option: {width: '160px'} }, hasFocus: true" /></td>
+            <td></td>
 						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_19')}</div></td>
 						<td><div id="colorpicker"
 								data-bind="ntsColorPicker: {name: '#[CCG013_19]',value: letterColor, enable: true, width: 50, required: true}" /></td>
 					</tr>
 					<tr>
 						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_20')}</div></td>
-						<td><div
+						<td style="width: 195px">
+              <div
 								data-bind="ntsRadioBoxGroup: {
 										options: itemRadioAtcClass,
 										optionsValue: 'value',
@@ -42,10 +44,11 @@
 										value: selectedRadioAtcClass,
 										enable: true}">
 							</div>
-							<button
-								data-bind="ntsHelpButton: {image: 'CCG013_002.png', position: 'bottom center', enable: true }">?</button>
 						</td>
-						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_23')}</div></td>
+            <td>
+              <button data-bind="ntsHelpButton: {image: 'CCG013_002.png', position: 'bottom center', enable: true }">?</button>
+            </td>
+						<td><div data-bind="ntsFormLabel: { required: true }" class="ccg013-nowrap">#{i18n.getText('CCG013_23')}</div></td>
 						<td><div id="colorpicker"
 								data-bind="ntsColorPicker: {name: '#[CCG013_23]', value: backgroundColor, enable: true, width: 50, required: true}" /></td>
 					</tr>
@@ -53,7 +56,7 @@
 
 				<div id="list">
 					<div class="system selec">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_24')}</div>
+						<div data-bind="ntsFormLabel: {}" class="ccg013-nowrap">#{i18n.getText('CCG013_24')}</div>
 						<div id="system selection"
 							data-bind="ntsComboBox: {
 									options: listSystemSelect,
@@ -79,7 +82,7 @@
 							enable: selectedRadioAtcClass()==1}" />
 						<table id="multi-list"
 									data-bind="ntsGridList: {
-										height: 200,
+										height: 210,
 										options: listStandardMenu,
 										optionsValue: 'uniqueCode',
 										columns: columns,

@@ -14,7 +14,7 @@ import nts.uk.file.at.app.export.attendanceitemprepare.ControlOfAttendanceItemsD
 @Stateless
 public class JpaControlOfAttItemsRepo extends JpaRepository implements ControlOfAttItemsRepoExcel {
 
-	private static final String GET_ALL = "select a.ITEM_DAILY_ID, a.TIME_INPUT_UNIT, a.HEADER_BACKGROUND_COLOR "
+	private static final String GET_ALL = "select a.ITEM_DAILY_ID, a.INPUT_UNIT, a.HEADER_BACKGROUND_COLOR "
 			+ "from KSHMT_DAY_ATD_CTR a where a.CID=?companyId";
 
 	@Override

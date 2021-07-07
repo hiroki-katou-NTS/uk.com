@@ -203,7 +203,7 @@ module nts.uk.com.view.cmf003.b {
 
         this.columnCategorys = ko.observableArray([
           { headerText: '', key: 'id', hidden: true },
-          { headerText: getText('CMF003_30'), key: 'displayName', width: 230 },
+          { headerText: getText('CMF003_30'), key: 'displayName', width: 250 },
           { headerText: getText('CMF003_31'), formatter: timeStore, key: 'periodDivision', width: 100 },
           { headerText: getText('CMF003_32'), formatter: storageRangeSaved, key: 'storeRange', width: 120 }
         ]);

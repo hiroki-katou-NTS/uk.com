@@ -17,14 +17,14 @@
 
 .arrow-top {
 	position: absolute;
-	top: 73px;
-	left: 610px;
+	top: 82px;
+	left: 577px;
 }
 
 .arrow-bottom {
 	position: absolute;
-	top: 375px;
-	left: 610px;
+	top: 359px;
+	left: 577px;
 }
 
 .content {
@@ -35,10 +35,11 @@
 	margin-bottom: 10px;
 	align-items: center;
 	margin-right: 15px;
+	display: flex;
 }
 
 .top > button {
-	margin-right: 30px;
+	margin-right: 110px;
 }
 
 .caret-background.caret-right:after {
@@ -93,6 +94,21 @@
 	white-space: nowrap;
 }
 
-..ui-iggrid-tablebody > tr > td {
+.ui-iggrid-tablebody > tr > td {
 	padding: 0;
+}
+
+.nts-input > span { 
+	width: 110px;
+	text-align: center;
+}
+
+.left-bottom > div:nth-child(1), 
+.left-bottom > div:nth-child(3) {
+	display: flex;
+	align-items: center;
+}
+
+.right {
+	margin-left: 60px;
 }

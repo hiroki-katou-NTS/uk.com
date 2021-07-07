@@ -33,7 +33,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 			vm.displayUrlMonthEmbed = vm.mailType==ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_PRINCIPAL || 
 										vm.mailType==ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_CONFIRMER ||
 										vm.mailType==ApprovalStatusMailType.WORK_CONFIRMATION;
-			vm.displayUpdTmpBtn = __viewContext.user.role.isInCharge.payroll;
+			vm.displayUpdTmpBtn = __viewContext.user.role.isInCharge.attendance;
 			switch(vm.mailType) {
 				case ApprovalStatusMailType.APP_APPROVAL_UNAPPROVED:
 					vm.name = vm.$i18n('KAF018_491');
@@ -81,7 +81,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 				vm.mailSubject(data.approvalStatusMailTempDto.mailSubject);
 				vm.mailContent(data.approvalStatusMailTempDto.mailContent);
 				vm.editMode = data.approvalStatusMailTempDto.editMode;
-				vm.dataSource = data.wkpEmpMailLst;
+				vm.dataSource = _.sortBy(data.wkpEmpMailLst, 'hierarchyCode');
 				_.forEach(vm.dataSource, item => {
 					_.set(item, 'flag', false);	
 				});
@@ -172,7 +172,14 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 			const vm = this;
 			let command = vm.getMailTemplateParam(),
 				wkpEmpMailLst = _.filter(vm.dataSource, 'flag'),
-				wsParam = { command, wkpEmpMailLst };
+				screenUrlApprovalEmbed = vm.urlApprovalEmbed(),
+				screenUrlDayEmbed = vm.urlDayEmbed(),
+				screenUrlMonthEmbed = vm.urlMonthEmbed(),
+				wsParam = { command, wkpEmpMailLst, screenUrlApprovalEmbed, screenUrlDayEmbed, screenUrlMonthEmbed };
+			if(_.isEmpty(wkpEmpMailLst)) {
+				vm.$dialog.info({ messageId: "Msg_786" });
+				return;
+			}
 			vm.$blockui('show');
 			vm.$ajax('at', API.sendMailToDestination, wsParam).then((data) => {
 				if(data.ok) {

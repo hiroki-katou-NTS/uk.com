@@ -77,18 +77,19 @@ public interface ApprovalStatusService {
 	 * @param mailType
 	 *            対象メール
 	 */
-	SendMailResultOutput sendTestMail(int mailType);
+	SendMailResultOutput sendTestMail(int mailType, boolean screenUrlApprovalEmbed, boolean screenUrlDayEmbed, boolean screenUrlMonthEmbed);
 
 	/**
 	 * 承認状況メール送信実行
 	 * 
 	 * @param listMailContent
 	 *            メール送信内容＜社員ID、社員名、メールアドレス、件名、送信本文＞(リスト)
+	 *        transmissionAtr 送信区分: false = 本人, true = 上長
 	 * @param domain
 	 *            承認状況メールテンプレート
 	 */
-	SendMailResultOutput exeApprovalStatusMailTransmission(List<MailTransmissionContentOutput> listMailContent,
-			ApprovalStatusMailTemp domain, ApprovalStatusMailType mailType);
+	SendMailResultOutput exeApprovalStatusMailTransmission(List<MailTransmissionContentOutput> listMailContent, ApprovalStatusMailTemp domain,
+			boolean transmissionAtr, boolean screenUrlApprovalEmbed, boolean screenUrlDayEmbed, boolean screenUrlMonthEmbed);
 
 	/**
 	 * 承認状況送信者メール確認
@@ -342,7 +343,8 @@ public interface ApprovalStatusService {
 	/**
 	 * C:メール送信_対象者へメール送信
 	 */
-	public SendMailResultOutput sendMailToDestination(ApprovalStatusMailTemp approvalStatusMailTemp, List<ApprSttWkpEmpMailOutput> wkpEmpMailLst);
+	public SendMailResultOutput sendMailToDestination(ApprovalStatusMailTemp approvalStatusMailTemp, List<ApprSttWkpEmpMailOutput> wkpEmpMailLst,
+			boolean screenUrlApprovalEmbed, boolean screenUrlDayEmbed, boolean screenUrlMonthEmbed);
 	
 	/**
 	 * 承認状況未承認申請取得

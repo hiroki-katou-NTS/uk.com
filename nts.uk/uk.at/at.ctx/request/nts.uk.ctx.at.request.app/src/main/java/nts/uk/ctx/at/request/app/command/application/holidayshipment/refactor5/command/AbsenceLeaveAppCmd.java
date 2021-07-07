@@ -77,25 +77,20 @@ public class AbsenceLeaveAppCmd extends RecruitmentAppCmd{
 				WorkInformationDto.fromDomain(domain.getWorkInformation()),
 				domain.getWorkingHours().stream().map(c->TimeZoneWithWorkNoDto.fromDomain(c)).collect(Collectors.toList()),
 				new ArrayList<>(),
-				new ArrayList<>(),
 				domain.getWorkChangeUse().value,
 				domain.getChangeSourceHoliday().map(c->c.toString()).orElse(null),
-				new ArrayList<>(),
 				new ArrayList<>());
 	}
 
 	public AbsenceLeaveAppCmd(ApplicationDto applicationDto, ApplicationInsertCmd applicationInsert,
 			ApplicationUpdateCmd applicationUpdate, WorkInformationDto workInformation, 
 			List<TimeZoneWithWorkNoDto> workingHours, List<LeaveComDayOffManaDto> leaveComDayOffMana,
-			List<LeaveComDayOffManaDto> leaveComDayOffManaOld, Integer workChangeUse, String changeSourceHoliday,
-			List<PayoutSubofHDManagementDto> payoutSubofHDManagements,
-			List<PayoutSubofHDManagementDto> payoutSubofHDManagementsOld) {
-		super(applicationDto, applicationInsert, applicationUpdate, workInformation, workingHours, leaveComDayOffMana,
-				leaveComDayOffManaOld);
+			Integer workChangeUse, String changeSourceHoliday,
+			List<PayoutSubofHDManagementDto> payoutSubofHDManagements) {
+		super(applicationDto, applicationInsert, applicationUpdate, workInformation, workingHours, leaveComDayOffMana);
 		this.workChangeUse = workChangeUse == 1;
 		this.changeSourceHoliday = changeSourceHoliday;
 		this.payoutSubofHDManagements = payoutSubofHDManagements;
-		this.payoutSubofHDManagementsOld = payoutSubofHDManagementsOld;
 	}
 
 }

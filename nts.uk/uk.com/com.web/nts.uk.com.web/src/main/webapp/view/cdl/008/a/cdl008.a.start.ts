@@ -16,6 +16,15 @@ module nts.uk.com.view.cdl008.a {
                 screenModel.selectedMulWorkplace(selectedCodesExist);
                 return;
             }
+
+            ko.tasks.schedule(() => {
+                let currentDialog = nts.uk.ui.windows.getSelf();
+                if (screenModel.isMultipleSelect) {
+                    currentDialog.setHeight(600);
+                } else {
+                    currentDialog.setWidth(520);
+                }
+            });
             
             if (!screenModel.selectedSelWorkplace()) {
                 return;

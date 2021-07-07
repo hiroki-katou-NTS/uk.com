@@ -488,7 +488,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 	/**
 	 * 個人情報をもとにスケジュールを作成する-Creates the schedule based person. 勤務予定を作成する
-	 * 
+	 * 勤務予定作成共通処理
 	 * @param command
 	 * @param creator
 	 * @param domain
@@ -535,7 +535,7 @@ public class ScheduleCreatorExecutionTransaction {
 			// ・勤務サイクルコード・スタート勤務サイクル ・勤務サイクルスタート位置 ・休日優先方法 ・個人スケジュール休日パターン設定
 			// 「Output」 ・勤務予定 ・エラー ・処理状態/
 
-			// Output。処理状態を確認する (call to method 処理状態を確認する)
+			// Output。処理状態を確認する (call to method 勤務予定反映する)
 			OutputCreateScheduleOneDate createScheduleOneDate = this.reflectWorkSchedule(command, creator, domain,
 					context, targetPeriod, dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche, carrier);
 			switch (createScheduleOneDate.getProcessingStatus()) {
@@ -1641,6 +1641,8 @@ public class ScheduleCreatorExecutionTransaction {
 				if (!optionalCompanyBasicWork.isPresent()) {
 					this.scheCreExeErrorLogHandler.addError(geterCommand, creator.getEmployeeId(), "Msg_589");
 					return Optional.empty();
+				} else {
+					return optionalCompanyBasicWork.get().getBasicWorkSetting().stream().findFirst();
 				}
 			}
 			
