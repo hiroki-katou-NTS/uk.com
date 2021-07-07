@@ -368,7 +368,6 @@ module nts.uk.ui.at.kdw013.a {
 
                         return _
                             .chain(lstComfirmerDto)
-                            .filter(({ confirmDateTime }) => (confirmDateTime || "").indexOf($moment) === 0)
                             .map(({
                                 confirmSID: id,
                                 confirmSCD: code,

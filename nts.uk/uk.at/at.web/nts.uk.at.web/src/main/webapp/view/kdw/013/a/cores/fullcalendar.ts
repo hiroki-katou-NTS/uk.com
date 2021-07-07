@@ -2459,7 +2459,7 @@ module nts.uk.ui.at.kdw013.calendar {
             ko.computed({
                 read: () => {
                     const validRange = ko.unwrap<DateRangeInput>(params.validRange);
-
+                    //lỗi của calendar, nếu set '9999-12-31' thì sẽ không hiện ngày '9999-12-31' nên phải set là '9999-12-32'
                     vm.calendar.setOption('validRange', {end: '9999-12-32'});
                 },
                 disposeWhenNodeIsRemoved: vm.$el
