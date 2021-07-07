@@ -17,7 +17,6 @@
 
 .contentR {
 	width: 800px;
-	padding-left: 40px;
 }
 
 #G3 td {
@@ -49,9 +48,6 @@
 .nts-searchbox-wrapper.ntsSearchArea {
 	margin-bottom: -3px;
 }
-#G4_2_container {
-	height: 220px !important;
-}
 #up-down {
 	height: inherit;
 }
@@ -61,6 +57,9 @@
 #G4_1 {
   width: auto;
   white-space: nowrap;
+}
+.ntsMoveDataArea {
+  padding: 0px 10px;
 }
 
 

@@ -143,7 +143,7 @@ public class DPHeaderDto {
 				groups.get(0).setConstraint(new Constraint("Integer", true, "3"));
 			}else if (item.getTypeGroup() == TypeLink.DOWORK.value) {
 				DPHeaderDto dtoG = new DPHeaderDto("名称", "Name" + keyId, "number",
-						String.valueOf(withChild) + "px", "", false, "ComboboxDoWork", false, false, "center-align", null);
+						String.valueOf(withChild) + "px", "", false, "ComboboxDoWork" + "Name" + keyId, false, false, "center-align", null);
 				groups.add(dtoG);
 				groups.get(0).setConstraint(new Constraint("Integer", true, "1"));
 			}else if (item.getTypeGroup() == TypeLink.TIME_LIMIT.value) {

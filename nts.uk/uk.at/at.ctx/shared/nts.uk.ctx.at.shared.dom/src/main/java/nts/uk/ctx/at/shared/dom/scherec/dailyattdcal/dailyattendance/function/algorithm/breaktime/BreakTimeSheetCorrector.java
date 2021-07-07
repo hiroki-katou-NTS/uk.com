@@ -26,7 +26,7 @@ public class BreakTimeSheetCorrector {
 	public final static List<Integer> BREAKTIME_ID = Arrays.asList(157, 159, 163, 165, 171, 169, 177, 175, 183, 181,
 			189, 187, 195, 193, 199, 201, 205, 207, 211, 213);
 			
-	public static void correct(RequireM1 require, IntegrationOfDaily dailyRecord, boolean fixedBreakCorrect) {
+	public static void correct(RequireM1 require, IntegrationOfDaily dailyRecord, boolean correctValCopyFromSche) {
 
 		val cid = AppContexts.user().companyId();
 		
@@ -49,8 +49,8 @@ public class BreakTimeSheetCorrector {
 			return;
 		}
 		
-		/** [変更状態.勤務情報]をチェック */
-		if (isFixedBreak == BreakTimeType.FIXED_BREAK && !fixedBreakCorrect) {
+		/** 勤務予定から移送した値も補正するをチェック */
+		if (isFixedBreak == BreakTimeType.FIXED_BREAK && !correctValCopyFromSche) {
 			
 			return;
 		}

@@ -12,3 +12,15 @@
 .red-color {
     color: red;
 }
+
+.ntsMoveDataArea .move-button {
+    margin: 10px 10px 10px 10px !important;
+}
+
+.nts-searchbbox-wrapper {
+    margin-bottom: 5px;
+}
+
+.switchbox-wrappers.radio-wrappers label:first-child input+span {
+    margin-left: 15px !important;
+}

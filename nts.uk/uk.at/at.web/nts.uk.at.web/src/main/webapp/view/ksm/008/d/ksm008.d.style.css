@@ -8,6 +8,7 @@
 
 .padding-5 {
     padding: 5px;
+    display: flex;
 }
 
 .margin-15 {
@@ -15,7 +16,7 @@
 }
 
 .width-form-label {
-    width: 180px;
+    width: 100px;
 }
 
 .label-warning {
@@ -57,4 +58,8 @@ div.ntsControl.ntsHelpButton {
     display: inline-block;
     padding-left: 10px;
     padding-right: 5px;
+}
+
+#D10 {
+    padding-left: 10px;
 }

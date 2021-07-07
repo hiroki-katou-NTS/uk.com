@@ -11,9 +11,22 @@
 	padding-top: 25px;
 }
 
+<<<<<<< HEAD
 #swap-list-gridArea2, #swap-list-grid2_displayContainer, #swap-list-grid2_scrollContainer, #swap-list-grid2_container{
 	height:160px !important;
+=======
+.approverSelect {
+	margin-top: 5px;
 }
+#swap-list-gridArea2, #swap-list-grid2_displayContainer, #swap-list-grid2_scrollContainer {
+	height: 123px !important;
+>>>>>>> uk/release_bug/main
+}
+
+#swap-list-grid2_container {
+	height: 147px !important;
+}
+
 #swap-list-search-area-input {
 	width: 180px !important;
 }
@@ -21,18 +34,17 @@ table.ntsSwapGrid tbody tr td {
 	white-space: nowrap !important;
 }
 #swap-list-search-area{
-	height: 35px !important;
+	height: 36px !important;
 }
 .ntsMoveDataArea, #swap-list-move-data,  .move-button, #swap-list-gridArea1{
 	vertical-align: top;
 	width: 45px !important;
 }
-#single-tree-grid_scroll, #single-tree-grid_container{
-	height:307px !important;
-}
+
 .row-search {
 	display:none;
 }
+
 .settingApprover {
 	margin-top: 30px !important;
 	height: 300px;
@@ -89,6 +101,7 @@ html{
 	margin-left: 23px !important;
 }
 
+<<<<<<< HEAD
 .top-16 {
 	margin-top: -16px;
 }
@@ -101,4 +114,16 @@ html{
 	position: absolute !important;
 	margin-left: 50px;
 	top: 120px;
+=======
+#swap-list-grid1_container {
+	height: 270px !important;
+}
+
+#swap-list-grid1_displayContainer, #swap-list-grid1_scrollContainer {
+	height: 246px !important;
+}
+
+#single-tree-grid-tree-grid_displayContainer, #single-tree-grid-tree-grid_scrollContainer {
+	height: 292px !important;
+>>>>>>> uk/release_bug/main
 }

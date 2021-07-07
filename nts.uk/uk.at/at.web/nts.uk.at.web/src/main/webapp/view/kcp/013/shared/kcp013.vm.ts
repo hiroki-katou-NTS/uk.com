@@ -376,11 +376,11 @@ module nts.uk.ui.at.kcp013.shared {
             }
 
             if (ko.isObservable(data.workplaceId)) {
-                data.workplaceId.subscribe(subscribe);
+                data.workplaceId.subscribe((id:string) => subscribe(id));
+				if(data.workplaceId()!=''){
+					subscribe(data.workplaceId());
+				}
             }
-
-            // call first subscribe
-            subscribe(data.workplaceId());
         }
     }
 
