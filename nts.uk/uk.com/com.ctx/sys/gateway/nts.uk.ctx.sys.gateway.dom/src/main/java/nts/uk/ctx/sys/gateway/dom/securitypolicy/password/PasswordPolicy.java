@@ -5,11 +5,11 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUser;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.PasswordState;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.complexity.PasswordComplexityRequirement;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
-import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 @Getter
 /**
@@ -69,10 +69,9 @@ public class PasswordPolicy extends AggregateRoot {
 	/**
 	 * ログイン時にポリシー違反してないか
 	 */
-	public ValidationResultOnLogin violatedOnLogin(ValidateOnLoginRequire require,
-			String userId,
-			String password,
-			PassStatus passwordStatus) {
+	public ValidationResultOnLogin violatedOnLogin(LoginPasswordOfUser changeLog, String passwordPlainText) {
+		
+		PasswordState passwordStatus = changeLog.getPasswordState();
 		
 		// ポリシー利用しない
 		if (!isUse) {
@@ -80,24 +79,24 @@ public class PasswordPolicy extends AggregateRoot {
 		}
 
 		// パスワードリセット
-		if (passwordStatus.equals(PassStatus.Reset)) {
+		if (passwordStatus.equals(PasswordState.RESET)) {
 			return ValidationResultOnLogin.reset();
 		}
 		
 		// 初期パスワード
-		if (initialPasswordChange && passwordStatus.equals(PassStatus.InitPassword)) {
+		if (initialPasswordChange && passwordStatus.equals(PasswordState.INITIAL)) {
 			return ValidationResultOnLogin.initial();
 		}
 		
 		// 文字構成をチェック
-		val errorList = complexityRequirement.validatePassword(password);
+		val errorList = complexityRequirement.validatePassword(passwordPlainText);
 		if (loginCheck && errorList.size() > 0) {
 			return ValidationResultOnLogin.complexityError(errorList);
 		}
 		
 		// 有効期限をチェック
 		if (!validityPeriod.isUnlimited()) {
-			int remainingDays = calculateRemainingDays(require, userId);
+			int remainingDays = calculateRemainingDays(changeLog);
 			
 			// 有効期限切れ
 			if (remainingDays < 0) {
@@ -117,22 +116,10 @@ public class PasswordPolicy extends AggregateRoot {
 	 * 有効期限が切れるまでの残日数を求める
 	 * @return 有効期限までの日数
 	 */
-	private int calculateRemainingDays(ValidateOnLoginRequire require, String userId) {
-		
-		val changeLog = require.getPasswordChangeLog(userId);
-		if(changeLog.latestLog().isPresent()) {
-			// 前回変更してからの日数
-			int ageInDays = changeLog.latestLog().get().ageInDays();
-			// 有効日数から上の日数を引く
-			return validityPeriod.v().intValue() - ageInDays;
-		}
-		// TODO 「初期パスワードに変更履歴が作成されない問題」のため変更履歴がない場合はチェックを回避
-		// ※通知するかどうかの日数がMAX99のため100で回避
-		return 100;
-	}
-	
-	public static interface ValidateOnLoginRequire {
-		
-		PasswordChangeLog getPasswordChangeLog(String userId);
+	private int calculateRemainingDays(LoginPasswordOfUser changeLog) {
+		// 前回変更してからの日数
+		int ageInDays = changeLog.latestLog().get().ageInDays();
+		// 有効日数から上の日数を引く
+		return validityPeriod.v().intValue() - ageInDays;
 	}
 }

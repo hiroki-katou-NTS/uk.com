@@ -14,9 +14,9 @@ import mockit.Mock;
 import mockit.MockUp;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUser;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.PasswordChangeLogDetail;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy.ValidateOnLoginRequire;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLog;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLogDetail;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.complexity.PasswordComplexityRequirement;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
 import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
@@ -36,7 +36,7 @@ public class PasswordPolicyTest {
 		
 		new Expectations() {{
 			require.getPasswordChangeLog(PasswordPolicyTestHelper.DUMMY.USER_ID);
-			result = new PasswordChangeLog(PasswordPolicyTestHelper.DUMMY.USER_ID, list);;
+			result = new LoginPasswordOfUser(PasswordPolicyTestHelper.DUMMY.USER_ID, list);;
 		}};
 		
 		val result = (int)NtsAssert.Invoke.privateMethod(

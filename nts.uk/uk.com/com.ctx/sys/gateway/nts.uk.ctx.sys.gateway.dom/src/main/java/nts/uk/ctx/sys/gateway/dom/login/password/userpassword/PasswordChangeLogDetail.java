@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog;
+package nts.uk.ctx.sys.gateway.dom.login.password.userpassword;
 
 import lombok.Value;
 
@@ -16,7 +16,7 @@ public class PasswordChangeLogDetail implements DomainValue {
 	private final GeneralDateTime changedDateTime;
 	
 	/** パスワード */
-	private final String hashedPassword;
+	private final HashedLoginPassword hashedPassword;
 	
 	/**
 	 * 日齢

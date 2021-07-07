@@ -8,11 +8,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.gul.security.hash.password.PasswordHash;
-import nts.gul.security.hash.password.PasswordHash.Verifier;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
-import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 @Getter
 @Setter
@@ -28,10 +24,6 @@ public class User extends AggregateRoot {
 	
 	// デフォルトユーザ
 	private boolean defaultUser;
-	
-	// パスワード
-	/** The password. */
-	private HashPassword password;
 	
 	// ログインID
 	/** The login id. */
@@ -65,32 +57,21 @@ public class User extends AggregateRoot {
 	/** The associated employee id. */
 	private Optional<String> associatedPersonID;
 	
-	@Getter
-	// パスワード状態
-	/** PasswordStatus **/
-	private PassStatus passStatus;
-	
 
-	public static User createFromJavatype(String userID, Boolean defaultUser, String password, String loginID,
+	public static User createFromJavatype(String userID, Boolean defaultUser, String loginID,
 			String contractCode, GeneralDate expirationDate, int specialUser, int multiCompanyConcurrent,
-			String mailAddress, String userName, String associatedPersonID, int passStatus) {
+			String mailAddress, String userName, String associatedPersonID) {
 
-		return new User(userID, defaultUser, new HashPassword(password), new LoginID(loginID.trim()),
+		return new User(userID, defaultUser, new LoginID(loginID.trim()),
 				new ContractCode(contractCode), expirationDate, EnumAdaptor.valueOf(specialUser, DisabledSegment.class),
 				EnumAdaptor.valueOf(multiCompanyConcurrent, DisabledSegment.class),
 				Optional.ofNullable(mailAddress == null ? null : new MailAddress(mailAddress)),
 				Optional.ofNullable(userName == null ? null : new UserName(userName)),
-				Optional.ofNullable(associatedPersonID == null ? null : associatedPersonID),
-				EnumAdaptor.valueOf(passStatus, PassStatus.class));
+				Optional.ofNullable(associatedPersonID == null ? null : associatedPersonID));
 	}
 
 	public boolean hasAssociatedPersonID() {
 		return !StringUtil.isNullOrEmpty(this.associatedPersonID.get(), false);
-	}
-	
-	public boolean isCorrectPassword(String password) {
-		Verifier salt = PasswordHash.verifyThat(password, this.getUserID());
-		return salt.isEqualTo(this.getPassword().toString());
 	}
 	
 	/**
