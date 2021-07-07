@@ -25,6 +25,8 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavi
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
@@ -123,6 +125,9 @@ public class IntegrationOfDailyGetterImpl implements IntegrationOfDailyGetter {
 	@Inject
 	private DailySnapshotWorkAdapter snapshotAdapter;
 	
+	@Inject
+	private OuenWorkTimeSheetOfDailyRepo ouenSheetRepo;
+	
 	
 	/**
 	 * 日別実績(WORK)の作成
@@ -183,10 +188,10 @@ public class IntegrationOfDailyGetterImpl implements IntegrationOfDailyGetter {
 			
 			List<RemarksOfDailyPerform> listRemarksOfDailyPerform = remarksRepository.getRemarks(employeeId, attendanceTime.getYmd());
 			
-			val snapshot = snapshotAdapter.find(employeeId, attendanceTime.getYmd());
+			OuenWorkTimeSheetOfDaily ouenSheet = ouenSheetRepo.find(employeeId, attendanceTime.getYmd());
 			
-			returnList.add(
-				new IntegrationOfDaily(
+			val snapshot = snapshotAdapter.find(employeeId, attendanceTime.getYmd());
+			IntegrationOfDaily daily = new IntegrationOfDaily(
 					attendanceTime.getEmployeeId(),
 					attendanceTime.getYmd(),
 					workInf.get().getWorkInformation(),
@@ -206,8 +211,12 @@ public class IntegrationOfDailyGetterImpl implements IntegrationOfDailyGetter {
 					listEditStateOfDailyPerformance.stream().map(c->c.getEditState()).collect(Collectors.toList()),
 					temporaryTimeOfDailyAttd,
 					listRemarksOfDailyPerform.stream().map(c->c.getRemarks()).collect(Collectors.toList()),
-					snapshot.map(c -> c.getSnapshot().toDomain())
-					));
+					snapshot.map(c -> c.getSnapshot().toDomain()));
+			
+			if(ouenSheet != null)
+			daily.setOuenTimeSheet(ouenSheet.getOuenTimeSheet());
+			
+			returnList.add(daily);
 		}
 		return returnList;
 	}

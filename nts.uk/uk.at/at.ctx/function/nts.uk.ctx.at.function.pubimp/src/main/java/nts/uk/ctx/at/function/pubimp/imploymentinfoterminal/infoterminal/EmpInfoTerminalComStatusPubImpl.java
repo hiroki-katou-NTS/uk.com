@@ -14,8 +14,8 @@ import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.ContractCo
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalComStatus;
 import nts.uk.ctx.at.function.dom.employmentinfoterminal.infoterminal.repo.EmpInfoTerminalComStatusRepository;
-import nts.uk.ctx.at.function.pub.imploymentinfoterminal.infoterminal.EmpInfoTerminalComStatusExport;
-import nts.uk.ctx.at.function.pub.imploymentinfoterminal.infoterminal.EmpInfoTerminalComStatusPub;
+import nts.uk.ctx.at.function.pub.employmentinfoterminal.infoterminal.EmpInfoTerminalComStatusExport;
+import nts.uk.ctx.at.function.pub.employmentinfoterminal.infoterminal.EmpInfoTerminalComStatusPub;
 
 /**
  * 

@@ -49,6 +49,8 @@ import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthAfterProce
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.command.dailyperform.optionalitem.OptionalItemOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.optionalitem.OptionalItemOfDailyPerformCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.ouen.OuenWorkTimeSheetOfDailyCommandAddHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.ouen.OuenWorkTimeSheetOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.remark.RemarkOfDailyCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.remark.RemarkOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.shorttimework.ShortTimeOfDailyCommandAddHandler;
@@ -79,7 +81,6 @@ import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.Attendance
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.RecordHandler;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
@@ -228,6 +229,13 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	@Inject
 	@AttendanceItemLayout(layout = DAILY_REMARKS_CODE, jpPropertyName = DAILY_REMARKS_NAME, index = 17)
 	private RemarkOfDailyCommandUpdateHandler remarksUpdateHandler;
+	
+	@Inject
+	@AttendanceItemLayout(layout = DAILY_SUPPORT_TIME_CODE, jpPropertyName = DAILY_SUPPORT_TIME_NAME, index = 18)
+	private OuenWorkTimeSheetOfDailyCommandAddHandler supportAddHandler;
+	@Inject
+	@AttendanceItemLayout(layout = DAILY_SUPPORT_TIME_CODE, jpPropertyName = DAILY_SUPPORT_TIME_NAME, index = 18)
+	private OuenWorkTimeSheetOfDailyCommandUpdateHandler supportUpdateHandler;
 
 	@Inject
 	private CalculateDailyRecordServiceCenter calcService;
@@ -664,6 +672,8 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 			return isUpdate ? this.pcLogInfoUpdateHandler : this.pcLogInfoAddHandler;
 		case DAILY_REMARKS_NAME:
 			return isUpdate ? this.remarksUpdateHandler : this.remarksAddHandler;
+		case DAILY_SUPPORT_TIMESHEET_NAME:
+			return isUpdate ? this.supportUpdateHandler : this.supportAddHandler;
 		default:
 			return null;
 		}

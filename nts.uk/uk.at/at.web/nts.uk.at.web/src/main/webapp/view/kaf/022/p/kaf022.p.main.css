@@ -1,5 +1,5 @@
 .form-label {
-    width: 178.11px;
+    width: 100px;
 }
 
 #swap-up-down {
@@ -12,10 +12,15 @@
 
 .upDown-container {
     height: 268px !important;
+    padding-left: 10px;
 }
 
 .grid-col-text-right {
     text-align: right;
+}
+
+.move-button {
+    margin: 10px 10px !important;
 }
 
 .ui-iggrid .ui-iggrid-tablebody td {
@@ -24,4 +29,9 @@
 
 #grid-setting-optional-item_scrollContainer {
     height: 423px !important;
+}
+
+.radio-wrapper span {
+    min-width: 85px;
+    text-align: center;
 }

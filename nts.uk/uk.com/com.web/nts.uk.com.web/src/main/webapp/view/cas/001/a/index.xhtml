@@ -34,7 +34,7 @@
 					<button tabindex="2" id="A1_003"
 						data-bind="click:openCModal,enable:(personRoleList().length > 1)">#{i18n.getText('CAS001_4')}</button>
 					<!-- 	<button id="A1_004" class="danger">#{i18n.getText('CAS001_5')}</button> -->
-					<button id="print-button" tabindex="2" data-bind="click: exportExcel, visible:hasPermission()" style="width: 120px;">#{i18n.getText('KMK007_4')}</button>
+					<button id="print-button" tabindex="2" data-bind="click: exportExcel, visible:hasPermission()" style="width: 125px;">#{i18n.getText('KMK007_4')}</button>
 					
 					<div tabindex="3" class="float-right">
 						<a  id="A1_005" class="goout "
@@ -118,9 +118,9 @@
 											<h3>#{i18n.getText('CAS001_23')}</h3>
 											<div>
 												<div id="file_permission_settings">
-													<div>
-														<span id="A4_007">#{i18n.getText('CAS001_24')}</span>
-														<div   id="A4_008" class="cf margin_left_10"
+													<div class="flex valign-center">
+														<span id="A4_007" class="cas001-label">#{i18n.getText('CAS001_24')}</span>
+														<div id="A4_008" class="cf margin_left_10"
 															data-bind="ntsSwitchButton: {
 															options:  $parents[1].roundingRules,
 															optionsValue: 'code',
@@ -128,7 +128,7 @@
 															value: $parents[1].allowOtherRef ,
 															enable: true }" tabindex="9" ></div>
 														</div>
-													<div>
+													<div class="flex valign-center">
 														<span id="A4_009">#{i18n.getText('CAS001_26')} </span>
 														<div  id="A4_010" class="cf margin_left_10"
 															data-bind="ntsSwitchButton: {

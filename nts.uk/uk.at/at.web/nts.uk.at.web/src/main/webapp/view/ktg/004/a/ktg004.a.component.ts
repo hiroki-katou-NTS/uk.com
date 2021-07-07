@@ -68,8 +68,8 @@ module nts.uk.ui.ktg004.a {
                                             enable: row.canClick">
                                         </button>
                                         <!-- A2_3 -->
-                                        <i style="position: absolute; left: 13px; bottom: 0px;"
-                                            data-bind="visible: row.canClick, ntsIcon: { no: 165, width: 13, height: 13 }">
+                                        <i style="position: absolute; left: 13px; bottom: 0px; cursor: pointer;"
+                                            data-bind="visible: row.canClick, ntsIcon: { no: 165, width: 13, height: 13 }, click: function() { $component.openKDW003() }">
                                         </i>
                                     </div>
                                     <div data-bind="ntsFormLabel: { required: false, text: row.name }"></div>

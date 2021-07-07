@@ -75,7 +75,7 @@ module nts.custom.component {
                                 multiple: false,
                                 columns: [
                                     { headerText: '', key: 'maintenanceLayoutID', width: 100, hidden: true },
-                                    { headerText: text('CPS001_26'), key: 'layoutName', width: 232, hidden: false }
+                                    { headerText: text('CPS001_26'), key: 'layoutName', width: 240, hidden: false }
                                 ],
                                 primaryKey: 'maintenanceLayoutID',
                                 value: gridlist.value,
@@ -154,7 +154,7 @@ module nts.custom.component {
                                 multiple: false,
                                 columns: [
                                     { headerText: '', key: 'optionValue', width: 100, hidden: true },
-                                    { headerText: '', key: 'optionText', width: 232, hidden: false }
+                                    { headerText: '', key: 'optionText', width: 240, hidden: false }
                                 ],
                                 primaryKey: 'optionValue',
                                 value: gridlist.value,
@@ -170,7 +170,7 @@ module nts.custom.component {
                                 multiple: false,
                                 columns: [
                                     { headerText: '', key: 'optionValue', width: 100, hidden: true },
-                                    { headerText: '', key: 'optionText', width: 232, hidden: false }
+                                    { headerText: '', key: 'optionText', width: 240, hidden: false }
                                 ],
                                 primaryKey: 'optionValue',
                                 value: gridlist.value,
@@ -461,7 +461,7 @@ module nts.custom.component {
 
                         obj.categoryId(cat.id);
                         obj.categoryCode(cat.categoryCode);
-                        obj.categoryType = ko.observable(cat.categoryType);   // Fix bug #116469
+                        obj.categoryType(cat.categoryType);
                         obj.categoryName(cat.categoryName);
 
                         let personId = ko.toJS(params.personId),

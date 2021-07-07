@@ -15,6 +15,8 @@ public class JudgmentCriteriaSameStampOfSupportTest {
 		NtsAssert.invokeGetters(support);
 	}
 	
+	
+	// case standardStamp - targetStamp < sameStampRanceInMinutes(同一打刻とみなす範囲)
 	@Test
 	public void test_func_checkStampRecognizedAsSame1() {
 		TimeWithDayAttr standardStamp = new TimeWithDayAttr(25);
@@ -24,6 +26,7 @@ public class JudgmentCriteriaSameStampOfSupportTest {
 		assertThat(rs).isTrue();
 	}
 	
+	// case standardStamp - targetStamp > sameStampRanceInMinutes(同一打刻とみなす範囲)
 	@Test
 	public void test_func_checkStampRecognizedAsSame2() {
 		TimeWithDayAttr standardStamp = new TimeWithDayAttr(250);
@@ -32,5 +35,45 @@ public class JudgmentCriteriaSameStampOfSupportTest {
 		boolean rs = support.checkStampRecognizedAsSame(standardStamp, targetStamp);
 		assertThat(rs).isFalse();
 	}
+	
+	// case standardStamp - targetStamp = sameStampRanceInMinutes(同一打刻とみなす範囲)
+	@Test
+	public void test_func_checkStampRecognizedAsSame3() {
+		TimeWithDayAttr standardStamp = new TimeWithDayAttr(30);
+		TimeWithDayAttr targetStamp   = new TimeWithDayAttr(20);
+		JudgmentCriteriaSameStampOfSupport support = JudgmentCriteriaSameStampOfSupportHelper.getDataDefault();
+		boolean rs = support.checkStampRecognizedAsSame(standardStamp, targetStamp);
+		assertThat(rs).isTrue();
+	}
+	
+	// case standardStamp - targetStamp = sameStampRanceInMinutes(同一打刻とみなす範囲)
+		@Test
+		public void test_func_checkStampRecognizedAsSame4() {
+			TimeWithDayAttr standardStamp = new TimeWithDayAttr(30);
+			TimeWithDayAttr targetStamp   = new TimeWithDayAttr(19);
+			JudgmentCriteriaSameStampOfSupport support = JudgmentCriteriaSameStampOfSupportHelper.getDataDefault();
+			boolean rs = support.checkStampRecognizedAsSame(standardStamp, targetStamp);
+			assertThat(rs).isFalse();
+		}
+		
+		// case standardStamp - targetStamp = sameStampRanceInMinutes(同一打刻とみなす範囲)
+		@Test
+		public void test_func_checkStampRecognizedAsSame5() {
+			TimeWithDayAttr standardStamp = new TimeWithDayAttr(20);
+			TimeWithDayAttr targetStamp   = new TimeWithDayAttr(30);
+			JudgmentCriteriaSameStampOfSupport support = JudgmentCriteriaSameStampOfSupportHelper.getDataDefault();
+			boolean rs = support.checkStampRecognizedAsSame(standardStamp, targetStamp);
+			assertThat(rs).isTrue();
+		}
+		
+		// case standardStamp - targetStamp = sameStampRanceInMinutes(同一打刻とみなす範囲)
+		@Test
+		public void test_func_checkStampRecognizedAsSame6() {
+			TimeWithDayAttr standardStamp = new TimeWithDayAttr(19);
+			TimeWithDayAttr targetStamp   = new TimeWithDayAttr(30);
+			JudgmentCriteriaSameStampOfSupport support = JudgmentCriteriaSameStampOfSupportHelper.getDataDefault();
+			boolean rs = support.checkStampRecognizedAsSame(standardStamp, targetStamp);
+			assertThat(rs).isFalse();
+		}
 
 }

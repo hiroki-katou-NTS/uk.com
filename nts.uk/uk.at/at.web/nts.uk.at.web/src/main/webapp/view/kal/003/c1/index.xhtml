@@ -10,7 +10,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 1030,
+					width : 1100,
 					height : 315
 				};
 			</script>
@@ -30,8 +30,8 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="valign-center control-group mb-20" style = "display: inline-flex">
-					<div style = "margin-right: 20px; margin-top: 7px">#{i18n.getText('KAL003_37')}</div>
+				<div class="valign-center control-group mb-20">
+					<div data-bind="ntsFormLabel: {required: true}" style = "margin-right: 32px;">#{i18n.getText('KAL003_37')}</div>
 					<div id="conditionAtr-cbb"
 						data-bind="ntsComboBox: {
 						dropDownAttachedToBody: true,
@@ -46,7 +46,7 @@
 							{ prop: 'name', length: 5 },
 						],
 						dropDownAttachedToBody: true}"></div>
-					<div style = "margin-right: 20px; margin-top: 2px">#{i18n.getText('KAL003_38')}</div>
+					<div data-bind="ntsFormLabel: {required: true}" style="margin-right: 20px;">#{i18n.getText('KAL003_38')}</div>
 					<div
 						data-bind="ntsRadioBoxGroup: {
 						options: enumConditionType,
@@ -56,10 +56,10 @@
 						value: currentAtdItemCondition.conditionType,
 						enable: true}"></div>
 				</div>
-				<div class="valign-center control-group" style = "display: inline-flex">
-					<div style = "margin-right: 20px; margin-top: 7px">#{i18n.getText('KAL003_33')}</div>
-					<div style = "margin-right: 20px; margin-top: 7px">#{i18n.getText('KAL003_39')}</div>
-					<button style = "margin-right: 5px" data-bind="click: openSelectAtdItemDialogTarget">#{i18n.getText('KAL003_42')}</button>
+				<div class="valign-center control-group">
+					<div data-bind="ntsFormLabel: {required: true}" style = "margin-right: 20px;">#{i18n.getText('KAL003_33')}</div>
+					<div style = "display: inline-block">#{i18n.getText('KAL003_39')}</div>
+					<button data-bind="click: openSelectAtdItemDialogTarget">#{i18n.getText('KAL003_42')}</button>
 					<input id="display-target-item"
 						class="display-list-label need-check"
 						data-bind="ntsTextEditor: {
@@ -105,7 +105,7 @@
 							]}"></div>
 					</com:ko-if>
 					<com:ko-if bind="currentAtdItemCondition.conditionType() == 1">
-						<div style="margin-left: -20px; margin-right: 20px; margin-top: 7px">#{i18n.getText('KAL003_26')}</div>
+						<div data-bind="ntsFormLabel: {required: true}" style="margin-left: -20px; margin-right: 20px;">#{i18n.getText('KAL003_26')}</div>
 						<button style = "margin-right: 5px" data-bind="click: openSelectAtdItemDialogComparison">#{i18n.getText('KAL003_42')}</button>
 						<input id="display-compare-item"
 							class="display-list-label need-check"
@@ -117,7 +117,7 @@
 								 	}" />
 					</com:ko-if>
 					<com:ko-if bind="currentAtdItemCondition.conditionType() == 0">
-						<div style = "margin-right: 20px; margin-top: 7px">#{i18n.getText('KAL003_44')}</div>
+						<div data-bind="ntsFormLabel: {required: true}" style = "margin-right: 20px;">#{i18n.getText('KAL003_44')}</div>
 						<com:ko-if bind="currentAtdItemCondition.conditionAtr() == 0">
 							<input id="startValue" style = "margin-right: 5px; width : 100px ! important" class="value-input needcheck"
 								data-bind="ntsNumberEditor: {

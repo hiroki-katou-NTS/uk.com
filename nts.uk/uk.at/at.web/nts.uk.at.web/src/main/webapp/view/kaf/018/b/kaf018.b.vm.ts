@@ -48,7 +48,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 			vm.startDate = params.startDate;
 			vm.endDate = params.endDate;
 			vm.selectWorkplaceInfo = params.selectWorkplaceInfo;
-			vm.dataSource = _.map(vm.selectWorkplaceInfo, x => {
+			vm.dataSource = _.map(_.sortBy(vm.selectWorkplaceInfo, 'hierarchyCode'), x => {
 				return {
 					wkpID: x.id,
 					wkpCD: x.code,
@@ -207,7 +207,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 						headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_333') + '</p>' + vm.createButtonHtml(0), 
 						key: 'countUnApprApp', 
 						dataType: 'number', 
-						width: '75px', 
+						width: '80px',
 						headerCssClass: 'kaf018-b-header-countUnApprApp',
 						columnCssClass: 'kaf018-b-column-count',
 						formatter: (key: number) => {
@@ -224,7 +224,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_337') + '</p>' + vm.createButtonHtml(1), 
 								key: 'countUnConfirmDay', 
 								dataType: 'number', 
-								width: '75px', 
+								width: '78px', 
 								columnCssClass: 'kaf018-b-column-count',
 								formatter: (key: number) => {
 									if(!key) {
@@ -237,7 +237,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_338') + '</p>' + vm.createButtonHtml(2), 
 								key: 'countUnApprDay', 
 								dataType: 'number', 
-								width: '75px', 
+								width: '78px', 
 								columnCssClass: 'kaf018-b-column-count',
 								formatter: (key: number) => {
 									if(!key) {
@@ -255,7 +255,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_339') + '</p>' + vm.createButtonHtml(5), 
 								key: 'countUnConfirmMonth', 
 								dataType: 'number', 
-								width: '75px', 
+								width: '78px', 
 								columnCssClass: 'kaf018-b-column-count',
 								formatter: (key: number) => {
 									if(!key) {
@@ -268,7 +268,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_340') + '</p>' + vm.createButtonHtml(3), 
 								key: 'countUnApprMonth', 
 								dataType: 'number', 
-								width: '75px', 
+								width: '78px', 
 								columnCssClass: 'kaf018-b-column-count',
 								formatter: (key: number) => {
 									if(!key) {
@@ -286,7 +286,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_341') + '</p>' + vm.createButtonHtml(4), 
 								key: 'displayConfirm', 
 								dataType: 'boolean', 
-								width: '75px', 
+								width: '78px', 
 								columnCssClass: 'kaf018-b-column-count',
 								formatter: (key: boolean, object: any) => {
 									if(!object.countEmp) {

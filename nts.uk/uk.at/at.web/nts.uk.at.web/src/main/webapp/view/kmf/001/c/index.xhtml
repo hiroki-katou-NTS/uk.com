@@ -45,7 +45,7 @@
 										optionsValue: 'value',
 										optionsText: 'localizedName',
 										value: selectedAnnualManage,
-										enable: true }, click: clearError">
+										enable: true }">
 					</span>
 					<div class="hr_width">
 						<hr />
@@ -166,7 +166,7 @@
 							<td><div></div></td>
 						</tr>
 						<tr>
-							<td style="min-width: 364px;"><label class="content-label">#{i18n.getText('KMF001_133')}</label></td>
+							<td style="min-width: 364px;"><label class="content-label">#{i18n.getText('KMF001_345')}</label></td>
 							<td><!-- <div tabindex="11" id="combo-box"
 									data-bind="ntsComboBox: {
 										options: maxDayReferenceList,
@@ -383,9 +383,42 @@
 							<td><div></div></td>
 						</tr>
 						<tr>
-						<td><label class="content-label">#{i18n.getText('KMF001_338')}</label></td>
+						<td><label class="content-label">#{i18n.getText('KMF001_134')}</label></td>
 						<td>
-						<div  id="combo-box"
+              <div tabindex="20" id="combo-box"
+                data-bind="ntsComboBox: {
+                  options: maxDayReferenceList,
+                  optionsValue: 'value',
+                  visibleItemsCount: 2,
+                  value: selectedMaxDayVacation,
+                  optionsText: 'localizedName',
+                  editable: false,
+                  enable: enableTimeSetting,
+                  columns: [
+                    {prop: 'localizedName', length: 10 }
+                  ]}">
+              </div>
+						</td>
+            <td>
+              <div style="margin-left: 50px;" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMF001_132')}</div>
+            </td>
+            <td>            
+              <input tabindex="21" id="time-max-day-company" class="nts-input" data-bind="ntsNumberEditor: {
+            									value: timeMaxNumberCompany,
+            									constraint: 'MaxTimeDay',
+            									name: '#[KMF001_132]',
+            									required: requiredTimeMaxNumberCompany,
+            									option: {
+            										width: '70px',
+            										unitID: 'DAYS'
+            									},
+            									enable: enableTimeMaxNumberCompany}" />
+            </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                <div id="combo-box"
 									data-bind="ntsComboBox: {
 										options: C531List,
 										optionsValue: 'code',
@@ -396,11 +429,9 @@
 										enable: enableC5_31,
 										columns: [
 											{prop: 'name', length: 10 }
-										]}"></div>
-						
-						
-						
-						</td>
+										]}">
+                </div>
+              </td>
 						<td><div style = "margin-left: 50px;" data-bind="ntsFormLabel: { constraint: 'LaborContractTime', required: true }">#{i18n.getText('KMF001_341')}</div></td>
 						<td><input tabindex="21" id="time-max-day-company"
 								class="nts-input"
@@ -411,87 +442,29 @@
 									required: requiredC533,
 									mode: 'time', option: inputOption, inputFormat: 'time',
 									enable: requiredC533 }" /> </td>
-						
-						</tr>
-						<tr>
-						<td></td>
-						<td></td>
-						<td><div style = "margin-left: 50px;" data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('KMF001_342')}</div>
-						</td>
-						<td>
-						<div  id="combo-box"
-									data-bind="ntsComboBox: {
-										options: C535List,
-										optionsValue: 'code',
-										visibleItemsCount: 2,
-										value: selectC535,
-										optionsText: 'name',
-										editable: false,
-										enable: requiredC535,
-										required: requiredC535,
-										columns: [
-											{prop: 'name', length: 10 }
-										]}"></div>
-						
-						
-						
-						</td>
 						 </tr>
 						<tr>
-							<td><label class="content-label">#{i18n.getText('KMF001_134')}</label></td>
-							<td><!-- <div tabindex="20" id="combo-box"
-									data-bind="ntsComboBox: {
-										options: maxDayReferenceList,
-										optionsValue: 'value',
-										visibleItemsCount: 2,
-										value: selectedMaxDayVacation,
-										optionsText: 'localizedName',
-										editable: false,
-										enable: enableTimeSetting,
-										columns: [
-											{prop: 'localizedName', length: 10 }
-										]}"></div> -->
-										<div tabindex="20" id="combo-box"
-									data-bind="ntsComboBox: {
-										options: maxDayReferenceList,
-										optionsValue: 'value',
-										visibleItemsCount: 2,
-										value: selectedMaxDayVacation,
-										optionsText: 'localizedName',
-										editable: false,
-										enable: enableTimeSetting,
-										columns: [
-											{prop: 'localizedName', length: 10 }
-										]}"></div>
-										</td>
-
-							<td><label class="content-label">#{i18n.getText('KMF001_132')}</label></td>
-							<td><!-- <input tabindex="21" id="time-max-day-company"
-								class="nts-input"
-								data-bind="ntsNumberEditor: {
-									value: timeMaxNumberCompany,
-									constraint: 'MaxTimeDay',
-									name: '#[KMF001_132]',
-									required: requiredTimeMaxNumberCompany,
-									option: {
-										width: '70px',
-										unitID: 'DAYS'
-									},
-									enable: enableTimeMaxNumberCompany}" /> -->
-									
-									<input tabindex="21" id="time-max-day-company"
-								class="nts-input"
-								data-bind="ntsNumberEditor: {
-									value: timeMaxNumberCompany,
-									constraint: 'MaxTimeDay',
-									name: '#[KMF001_132]',
-									required: requiredTimeMaxNumberCompany,
-									option: {
-										width: '70px',
-										unitID: 'DAYS'
-									},
-									enable: enableTimeMaxNumberCompany}" />
-									</td>
+							<td></td>
+							<td></td>
+              <td>
+                <div style="margin-left: 50px;" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMF001_342')}</div>
+              </td>
+              <td>
+                <div id="combo-box" 
+                  data-bind="ntsComboBox: {
+                    options: C535List,
+                    optionsValue: 'code',
+                    visibleItemsCount: 2,
+                    value: selectC535,
+                    optionsText: 'name',
+                    editable: false,
+                    enable: requiredC535,
+                    required: requiredC535,
+                    columns: [
+                      {prop: 'name', length: 10 }
+                    ]}">
+                </div>
+              </td>
 						</tr>
 						<tr>
 							<td><label class="content-label">#{i18n.getText('KMF001_140')}</label></td>

@@ -5,21 +5,18 @@ module nts.uk.ui.header {
         name: 'ui-header',
         template: `
         <div class="hamberger" data-bind="
-                event: {
-                    mouseover: $component.hambergerHover,
-                    mouseout: $component.hambergerMouseOut
-                },
+                click: $component.hambergerClick,
                 css: {
-                    'hover': $component.menuSet.hover
+                    'hover': $component.menuSet.click()
                 }">
             <svg viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect width="16" height="2" rx="1" fill="white"/>
                 <rect y="6" width="16" height="2" rx="1" fill="white"/>
                 <rect y="12" width="16" height="2" rx="1" fill="white"/>
             </svg>
-            <div class="menu-dropdown menu-hamberger" data-bind="css: { hidden: !$component.menuSet.hover() }">
+            <div class="menu-dropdown menu-hamberger" data-bind="css: { hidden: !$component.menuSet.click() }">
                 <div class="menu-column">
-                    <div class="menu-header" data-bind="i18n: nts.uk.ui.toBeResource.selectMenu"></div>
+                    <div class="menu-header" data-bind="i18n: 'CCG020_1'"></div>
                     <div class="menu-item" data-bind="foreach: $component.menuSet.items">
                         <div class="item" data-bind="
                             i18n: $data.webMenuName,
@@ -84,30 +81,42 @@ module nts.uk.ui.header {
                 <div class="item-group" style="margin-right: 10px;">
                     <ccg020-component></ccg020-component>
                 </div>
-                <div class="item-group">
-                    <span class="bar-item-title company" data-bind="text: $component.companyName"></span>
-                    <i data-bind="ntsIcon: { no: 135, width: 10, height: 10 }"></i>
-                </div>
-                <span class="divider"></span>
                 <div class="item-group" data-bind="
-                        event: {
-                            mouseover: $component.userHover,
-                            mouseout: $component.userMouseOut
-                        },
                         css: {
-                            hover: $component.userNameHover
+                            hover: $component.companyNameClick
                         }">
-                    <span class="bar-item-title user-name" data-bind="text: $component.userName"></span>
+                    <span class="bar-item-title company" data-bind="text: $component.companyName, click: $component.companiesClick"></span>
                     <div class="menu-dropdown menu-item">
                         <div class="menu-column">
-                            <div class="menu-items">
-                                <div class="item" data-bind="i18n: nts.uk.ui.toBeResource.manual, click: $component.manual"></div>
-                                <div class="item divider"></div>
-                                <div class="item" data-bind="i18n: nts.uk.ui.toBeResource.logout, click: $component.logout"></div>
+                            <div class="menu-items" data-bind="foreach: { data: $component.companies, as: 'company' }">
+                                <div class="item" data-bind="
+                                    i18n: company.companyName,
+                                    click: function() { $component.selectCompany($data) }
+                                "></div>
+                                <div class="item divider divider-company"></div>
                             </div>
                         </div>
                     </div>
-                    <i data-bind="ntsIcon: { no: 135, width: 10, height: 10 }" style="margin-right: 5px;"></i>
+                    <i data-bind="ntsIcon: { no: 135, width: 10, height: 10 }, click: $component.companiesClick" style="margin-right: 5px; cursor: pointer;"></i>
+                </div>
+                <span class="divider"></span>
+                <div class="item-group" data-bind="
+                        css: {
+                            hover: $component.userNameClick
+                        }">
+                    <span class="bar-item-title user-name" data-bind="text: $component.userName, click: $component.userClick"></span>
+                    <div class="menu-dropdown menu-item">
+                        <div class="menu-column">
+                            <div class="menu-items">
+                                <div class="item" data-bind="i18n: 'CCG020_5', click: $component.settingPerson, if: $component.showPersonSetting"></div>
+                                <div data-bind="if: $component.showPersonSetting" class="item divider"></div>
+                                <div class="item" data-bind="i18n: 'CCG020_4', click: $component.manual, if: $component.showManual"></div>
+                                <div data-bind="if: $component.showManual" class="item divider"></div>
+                                <div class="item" data-bind="i18n: 'CCG020_3', click: $component.logout"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <i data-bind="ntsIcon: { no: 135, width: 10, height: 10 }, click: $component.userClick" style="margin-right: 5px; cursor: pointer;"></i>
                 </div>
             </div>
             <div id="notice-msg" class="avatar notification">
@@ -126,10 +135,10 @@ module nts.uk.ui.header {
         click: KnockoutObservable<boolean> = ko.observable(false);
 
         menuSet: {
-            hover: KnockoutObservable<boolean>;
+            click: KnockoutObservable<boolean>;
             items: KnockoutObservableArray<MenuSet>;
         } = {
-                hover: ko.observable(false),
+                click: ko.observable(false),
                 items: ko.observableArray([])
             }
 
@@ -137,13 +146,21 @@ module nts.uk.ui.header {
         countMenuBar: KnockoutObservable<number> = ko.observable(0);
 
         userName: KnockoutObservable<string> = ko.observable('');
-        userNameHover: KnockoutObservable<boolean> = ko.observable(false);
+        userNameClick: KnockoutObservable<boolean> = ko.observable(false);
 
         companies: KnockoutObservableArray<any> = ko.observableArray([]);
 
         companyName!: KnockoutComputed<string>;
 
+        currentCompanyId: KnockoutObservable<string> = ko.observable('');
+
+        companyNameClick: KnockoutObservable<boolean> = ko.observable(false);
+
         pgName: KnockoutObservable<string> = ko.observable('');
+
+        showManual: KnockoutObservable<boolean> = ko.observable(false);
+
+        showPersonSetting: KnockoutObservable<boolean> = ko.observable(false);
 
         created() {
             const vm = this;
@@ -170,11 +187,14 @@ module nts.uk.ui.header {
 
             vm.companyName = ko.computed({
                 read: () => {
-                    const [first] = ko.unwrap<any>(vm.companies);
+                    
+                    const selectedCid = ko.unwrap<string>(vm.currentCompanyId);
+                    
+                    const companies = ko.unwrap<any>(vm.companies);
 
-                    if (first) {
-                        return first.companyName || '';
-                    }
+                    const comp = _.find(companies, (c: any) => c.companyId === selectedCid);
+
+                    if (comp) return comp.companyName;
 
                     return '';
                 }
@@ -214,6 +234,14 @@ module nts.uk.ui.header {
                             });
 
                         vm
+                            .$ajax('com', 'sys/env/userinformationusermethod/canOpenInfor')
+                            .then((data: boolean) => vm.showPersonSetting(__viewContext.user.isEmployee && data));
+
+                        vm
+                            .$ajax('com', 'sys/portal/webmenu/showmanual')
+                            .then((data: boolean) => vm.showManual(data));
+
+                        vm
                             .$ajax('com', '/sys/portal/webmenu/username')
                             .then((data: string) => vm.userName(data));
 
@@ -222,15 +250,44 @@ module nts.uk.ui.header {
                             .then((data) => vm.companies(data));
 
                         vm
+                            .$ajax('com', '/sys/portal/webmenu/currentCompany')
+                            .then((data) => vm.currentCompanyId(data));
+
+                        vm
                             .$ajax('com', '/sys/portal/webmenu/program')
                             .then((response: { name: string }[]) => {
-                                const [first] = response;
-            
-                                if (first) {
-                                    const { name } = first;
-            
-                                    if (name) {
-                                        vm.pgName(name);
+                                if(!_.isEmpty($(".pg-name span").html())){
+                                    return;
+                                }
+                                let queryString = nts.uk.request.location.current.queryString;
+                                if (!_.isEmpty(queryString.items)) {
+                                    let queryStringArray = Object.keys(queryString.items).map((key) => {
+                                        return key + "=" + queryString.get(key);
+                                    })
+                                    const findResult = response.filter((el: any) => {
+                                        let findResult = _.find(queryStringArray, (query)=>{
+                                            return query == el.param;
+                                        });
+                                        return !_.isNil(findResult);
+                                    });
+                                    const pgName = findResult.length > 0 ? findResult[0] : response[0];
+                
+                                    if (pgName) {
+                                        const { name } = pgName;
+                
+                                        if (name) {
+                                            vm.pgName(name);
+                                        }
+                                    }
+                                } else {
+                                    const [first] = response;
+
+                                    if (first) {
+                                        const { name } = first;
+
+                                        if (name) {
+                                            vm.pgName(name);
+                                        }
                                     }
                                 }
                             });
@@ -328,8 +385,6 @@ module nts.uk.ui.header {
                 vm.setDisplayMenu();
             }
 
-            vm.menuSet.hover(false);
-
             _.each(sets, (set: MenuSet) => {
                 set.selected = false;
             });
@@ -371,10 +426,14 @@ module nts.uk.ui.header {
             const vm = this;
             _.each(vm.menuBars(), (bar: MenuBar, index: number) => {
                 const getPositionLeftRight = $('.slide-item').eq(index).position().left + $('.slide-item').eq(index).outerWidth();
-                if (getPositionLeftRight > $('.user-info').last().position().left) {
+                const getPositionLeft = $('.slide-item').eq(index).position().left;
+                const userInfoLeft = $('.user-info').last().position().left;
+                if (getPositionLeftRight > userInfoLeft && getPositionLeft > userInfoLeft) {
+
                     bar.hover(false);
                     bar.canHover(false);
                 } else {
+
                     bar.canHover(true);
                 }
             });
@@ -407,12 +466,47 @@ module nts.uk.ui.header {
             if (item.url && item.url !== '-') {
                 bar.hover(false);
 
+                localStorage.setItem(nts.uk.request.IS_FROM_MENU, "true");
                 if (!item.queryString) {
                     window.location.href = item.url;
                 } else {
                     window.location.href = `${item.url}?${item.queryString}`.replace(/\?{2,}/, '?');
                 }
             }
+        }
+
+        selectCompany(item: any) {
+            const vm = this;
+
+            vm
+                .$ajax('com', 'sys/portal/webmenu/changeCompany', item.companyId)
+                .then((data) => {
+
+                    vm.currentCompanyId(item.companyId);
+
+                    vm.userName(data.personName);
+
+                    if (!nts.uk.util.isNullOrEmpty(data.msgResult)) {
+
+                        nts.uk.ui.dialog
+                            .info({ messageId: data.msgResult })
+                            .then(() => uk.request.jumpToTopPage());
+                    } else {
+
+                        uk.request.jumpToTopPage();
+                    }
+                })
+                .fail((msg: any) => {
+
+                    nts.uk.ui.dialog.alertError(msg.messageId);
+
+                    vm.companies([]);
+
+                    vm
+                        .$ajax('com', 'sys/portal/webmenu/companies')
+                        .then((data: any) => vm.companies(data));
+                })
+                
         }
 
         showPrevOrNextSlider() {
@@ -435,39 +529,50 @@ module nts.uk.ui.header {
             } else {
                 $('.next-slider').css("visibility", "");
                 $('.next-slider').css("visibility", "hidden");
+                console.log(lastItemPositionLeft + ' ' + userInfoLeft)
             }
         }
 
-        hambergerHover() {
+        hambergerClick() {
             const vm = this;
-
-            vm.menuSet.hover(true);
-        }
-
-        hambergerMouseOut() {
-            const vm = this;
-
-            vm.menuSet.hover(false);
+            const click: boolean = ko.unwrap<boolean>(vm.menuSet.click());
+            vm.setFalseAllClick();
+            vm.menuSet.click(!click);
         }
 
         itemBarHover(item: MenuBar) {
+            const vm = this;
+
             item.hover(true);
+            vm.setFalseAllClick();
         }
 
         itemBarMouseOut(item: MenuBar) {
             item.hover(false);
         }
 
-        userHover() {
+        companiesClick() {
             const vm = this;
 
-            vm.userNameHover(true);
+            const companyNameClick = ko.unwrap<boolean>(vm.companyNameClick());
+            vm.setFalseAllClick();
+            vm.companyNameClick(!companyNameClick);
         }
 
-        userMouseOut() {
+        userClick() {
             const vm = this;
 
-            vm.userNameHover(false);
+            const userNameClick = ko.unwrap<boolean>(vm.userNameClick());
+            vm.setFalseAllClick();
+            vm.userNameClick(!userNameClick);
+        }
+
+        setFalseAllClick() {
+            const vm = this;
+
+            vm.userNameClick(false);
+            vm.companyNameClick(false);
+            vm.menuSet.click(false);
         }
 
         handleNextSlider() {
@@ -494,6 +599,10 @@ module nts.uk.ui.header {
             }
             vm.setDisplayMenu();
             vm.showPrevOrNextSlider();
+        }
+
+        settingPerson() {
+            nts.uk.request.jumpToSettingPersonalPage();
         }
 
         manual() {

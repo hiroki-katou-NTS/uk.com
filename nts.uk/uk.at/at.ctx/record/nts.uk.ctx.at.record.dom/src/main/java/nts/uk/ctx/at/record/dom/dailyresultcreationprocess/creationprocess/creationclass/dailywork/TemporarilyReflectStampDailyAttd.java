@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.breakouting.reflectgoingoutandreturn.ReflectGoingOutAndReturn;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.entranceandexit.EntranceAndExit;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflect.ReflectStampSupport;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflectpclogoninfo.ReflectPcLogonInfo;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectleavingwork.ReflectLeavingWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflecttemporarystartend.ReflectTemporaryStartEnd;
@@ -52,6 +53,9 @@ public class TemporarilyReflectStampDailyAttd {
 	
 	@Inject
 	private ReflectPcLogonInfo reflectPcLogonInfo;
+	
+	@Inject
+	private ReflectStampSupport reflectStampSupport;
 	/**
 	 * 打刻を反映する
 	 */
@@ -127,8 +131,14 @@ public class TemporarilyReflectStampDailyAttd {
 				return listErrorMessageInfo;
 			}
 			break;
-		default :
+		case START_OF_SUPPORT:
+		case END_OF_SUPPORT:	
+		case SUPPORT:
+		case TEMPORARY_SUPPORT_WORK:
 			//応援開始 OR 応援終了　OR　応援出勤　OR 臨時+応援出勤
+		reflectStampSupport.reflect(stamp, integrationOfDaily, stampReflectRangeOutput);
+			return listErrorMessageInfo;
+		default :
 			return listErrorMessageInfo;
 		}
 		

@@ -15,9 +15,9 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @AllArgsConstructor
 public class AddDeformLaborOTCommand {
 	/*変形法定内残業を計算する*/
-	private NotUseAtr legalOtCalc;
+	private int legalOtCalc;
 	
 	public DeformLaborOT toDomain(String cid){
-		return DeformLaborOT.createFromJavaType(cid, this.legalOtCalc.value);
+		return DeformLaborOT.createFromJavaType(cid, this.legalOtCalc);
 	}
 }

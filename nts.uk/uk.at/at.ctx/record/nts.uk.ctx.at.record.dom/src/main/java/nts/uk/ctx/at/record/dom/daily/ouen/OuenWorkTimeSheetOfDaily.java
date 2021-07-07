@@ -21,7 +21,7 @@ public class OuenWorkTimeSheetOfDaily extends AggregateRoot {
 	/** 応援時間帯: 日別勤怠の応援作業時間帯 */
 	private List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet;
 
-	private OuenWorkTimeSheetOfDaily(String empId, GeneralDate ymd, List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet) {
+	public OuenWorkTimeSheetOfDaily(String empId, GeneralDate ymd, List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet) {
 		super();
 		this.empId = empId;
 		this.ymd = ymd;

@@ -15,3 +15,7 @@
 #B3_16, #B3_25, #B3_30 {
 	color: blue;
 }
+
+table.table-basic-setting-list .nts-editor-wrapped.ntsControl {
+  text-align: center;
+}

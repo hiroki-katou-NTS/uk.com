@@ -57,15 +57,17 @@ public class JpaDailyPatternRepository extends JpaRepository implements DailyPat
 	 */
 	@Override
 	public void update(WorkCycle item) {
-		val oldItem = this.getEntityManager().find(KdpstDailyPatternSet.class,new KdpstDailyPatternSetPK(item.getCid(),item.getCode().v()) );
-		this.commandProxy().update(oldItem.updateEntity(item));
-		// Delete detail
-		deleteDetail(item.getCid(),item.getCode().v());
-		// Update detail
-		List<KdpstDailyPatternVal> infos = KdpstDailyPatternVal.toEntity(item);
-		infos.stream().forEach(i -> {
-			this.commandProxy().insert(i);
-		});
+		val oldItem = this.getEntityManager().find(KdpstDailyPatternSet.class, new KdpstDailyPatternSetPK(item.getCid(),item.getCode().v()) );
+		if (oldItem != null) {
+			this.commandProxy().update(oldItem.updateEntity(item));
+			// Delete detail
+			deleteDetail(item.getCid(),item.getCode().v());
+			// Update detail
+			List<KdpstDailyPatternVal> infos = KdpstDailyPatternVal.toEntity(item);
+			infos.stream().forEach(i -> {
+				this.commandProxy().insert(i);
+			});
+		}
 	}
 
 	private void deleteDetail(String cid, String code) {

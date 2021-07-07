@@ -4,6 +4,7 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 
 public interface PayoutSubofHDManaRepository {
 	
@@ -30,6 +31,8 @@ public interface PayoutSubofHDManaRepository {
 	void delete(String sid, GeneralDate occDate);
 	
 	void deleteBySubID(String sid, GeneralDate digestDate);
+	
+	void deleteByDigestTarget(String sid, GeneralDate digestDate, TargetSelectionAtr target);
 	
 	/**
 	 * ＜条件＞

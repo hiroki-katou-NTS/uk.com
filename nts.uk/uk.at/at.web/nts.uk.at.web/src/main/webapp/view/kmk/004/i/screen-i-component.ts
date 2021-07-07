@@ -17,32 +17,33 @@ const i_template = `
 								height: calc(100vh - 163px);
     							overflow-y: scroll;">
 					
-						<div style="display:inline-block;padding:30px 20px 30px 30px;"> 
-							<div id="empt-list-setting"></div>
+    						<div style="display:inline-block;padding:30px 20px 30px 30px;"> 
+    							<div id="empt-list-setting">
+                            </div>
 						</div>
 						<div id="right-layout"> 
-						<div  style="display:inline-block">
-							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
-							<hr style="text-align: left;
-						    margin-left: 0;" />
-							<label id="selected-work-place" data-bind="i18n:screenData().selectedName"></label>
-							<div style="margin-top: 10px;" data-bind="component: {
-								name: 'basic-settings-company',
-								params: {
-											screenData:screenData,
-											screenMode:screenMode
-										}
-								}">
-						</div>
-						<div style=" margin-top:15px; display: inline-block;"  data-bind="component: {
-								name: 'monthly-working-hours',
-								params: {
-											screenData:screenData,
-											screenMode:screenMode,
-											startYM:startYM
-										}
-								}">
-						</div>
+    						<div  style="display:inline-block">
+    							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
+    							<hr style="text-align: left;
+    						    margin-left: 0;" />
+    							<div style='height: 18px;' ><label id="selected-work-place" data-bind="i18n:screenData().selectedName"></label></div>
+    							<div style="margin-top: 10px;" data-bind="component: {
+    								name: 'basic-settings-company',
+    								params: {
+    											screenData:screenData,
+    											screenMode:screenMode
+    										}
+    								}">
+    						</div>
+    						<div style=" margin-top:15px; display: inline-block;"  data-bind="component: {
+    								name: 'monthly-working-hours',
+    								params: {
+    											screenData:screenData,
+    											screenMode:screenMode,
+    											startYM:startYM
+    										}
+    								}">
+    						</div>
 						</div>
 					</div>
 	`;
@@ -184,18 +185,19 @@ class ScreenIComponent extends ko.ViewModel {
 		let dfd = $.Deferred();
 		vm.$blockui('grayout');
 		$('#empt-list-setting').ntsListComponent(listComponentOption).done(() => {
+            
+                vm.regSelectedEvent();
 
-			vm.regSelectedEvent();
+                vm.$blockui("hide");
 
-			vm.$blockui("hide");
+                vm.screenData().selected.valueHasMutated();
 
-			vm.screenData().selected.valueHasMutated();
+                dfd.resolve(vm.screenData().selected());
 
-			dfd.resolve(vm.screenData().selected());
-
-			vm.selectedClosureId.subscribe(() => {
-				$('#empt-list-setting').ntsListComponent(listComponentOption);
-			});
+                vm.selectedClosureId.subscribe(() => {
+                    $('#empt-list-setting').ntsListComponent(listComponentOption);
+                });
+			
 		});
 
 		return dfd.promise();
@@ -208,7 +210,8 @@ class ScreenIComponent extends ko.ViewModel {
 			if (!empCd || !empCd.length) {
 				return;
 			}
-
+            vm.setSelectedName(empCd);
+            
 			vm.$blockui('invisible')
 				.then(() => vm.$ajax(API_I_URL.CHANGE_EMPCD + empCd))
 				.done((data) => {
@@ -227,8 +230,6 @@ class ScreenIComponent extends ko.ViewModel {
 				})
 				.always(() => vm.$blockui('clear'));
 
-			vm.setSelectedName(empCd);
-
 
 		});
 	}
@@ -244,6 +245,8 @@ class ScreenIComponent extends ko.ViewModel {
 	}
 
 	mounted() {
+       
+        
 		$("#year-list").focus();
 	}
 

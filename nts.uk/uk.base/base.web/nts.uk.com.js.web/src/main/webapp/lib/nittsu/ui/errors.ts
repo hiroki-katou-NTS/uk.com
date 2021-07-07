@@ -114,7 +114,7 @@ module nts.uk.ui.errors {
             const vme = this;
             const { show } = ko.unwrap(vme.option);
 
-            show(hide);
+            show(false);
         }
 
         addError(error: ErrorListItem) {
@@ -321,7 +321,8 @@ module nts.uk.ui.errors {
      *  Public API
     **/
     export function errorsViewModel(): ErrorsViewModel {
-        return _.get<ErrorsViewModel>(nts.uk.ui._viewModel, 'kiban.errorDialogViewModel', new ErrorsViewModel());
+        let errorDialogViewModel: ErrorsViewModel = _.get<ErrorsViewModel>(nts.uk.ui._viewModel, 'kiban.errorDialogViewModel');
+		return !_.isNil(errorDialogViewModel) ? errorDialogViewModel : new ErrorsViewModel();
     }
 
     export function show(): void {

@@ -6,15 +6,15 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdai
  */
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Setter
+@Getter
 public class WorkInformationWork {
 	/** 勤務場所 - 場所コード*/
 	private WorkLocationCD locationCD;

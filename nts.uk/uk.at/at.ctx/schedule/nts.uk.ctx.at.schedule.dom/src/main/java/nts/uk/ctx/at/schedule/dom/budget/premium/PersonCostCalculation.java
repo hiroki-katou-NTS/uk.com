@@ -56,7 +56,7 @@ public class PersonCostCalculation extends AggregateRoot {
     // 6: 単価の設定方法 :単価の設定方法
     private HowToSetUnitPrice howToSetUnitPrice;
     // 7: 就業時間単価: 単価
-    private WorkingHoursUnitPrice workingHoursUnitPrice;
+    private UnitPrice workingHoursUnitPrice;
     // 8: 履歴ID
     private String historyID;
 

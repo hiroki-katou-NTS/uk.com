@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 490, height: 560 };</script>
+			<script>var dialogSize = { width: 490, height: 520 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksm004.d.main.css" />
 			<com:scriptfile path="ksm004.d.start.js" />
@@ -31,7 +31,8 @@
 								required: true,
 								value: dateValue,
 								maxRange: 'oneYear',
-								type:'yearmonth'}"></div>
+								type:'yearmonth',
+								showNextPrevious: false}"></div>
 						</td>
 					</tr>
 					<tr>

@@ -4,15 +4,25 @@ module nts.uk.at.view.kaf000.a.component9.viewmodel {
         name: 'kaf000-a-component9',
         template: `
 			<div id="kaf000-a-component9" style="display: inline-block; margin-left: 5px;" data-bind="if: params">
-				<a class="goback link-button" data-bind="click: backtoPre, text: $i18n('KAF000_53')"></a>
+				<div data-bind="if: displayBack">
+					<a class="goback link-button" data-bind="click: backtoPre, text: $i18n('KAF000_53')"></a>
+				</div>
 			</div>
         `
     })
     class Kaf000AComponent9ViewModel extends ko.ViewModel {
 		params: any = null;
+		displayBack: KnockoutObservable<boolean> = ko.pureComputed(() => {
+			if(nts.uk.request.location.current.isFromMenu) {
+				return false;	
+			} else {
+				return true;
+			}
+		});
         created(params: any) {
             const vm = this;
 			vm.params = params;
+			
         }
 
 		backtoPre() {

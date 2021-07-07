@@ -23,6 +23,7 @@ import nts.uk.ctx.at.schedule.pub.schedule.workschedule.ActualWorkingTimeOfDaily
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.AttendanceTimeOfDailyAttendanceExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.BreakTimeOfDailyAttdExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.BreakTimeSheetExport;
+import nts.uk.ctx.at.schedule.pub.schedule.workschedule.NumberOfDaySuspensionExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.ReasonTimeChangeExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.TimeActualStampExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.TimeLeavingOfDailyAttdExport;
@@ -93,7 +94,13 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 				data.getWorkInfo().getRecordInfo().getWorkTimeCode() == null ? null
 						: data.getWorkInfo().getRecordInfo().getWorkTimeCode().v(),
 				data.getWorkInfo().getGoStraightAtr().value, data.getWorkInfo().getBackStraightAtr().value,
-				timeLeavingOfDailyAttd,Optional.of(listBreakTimeOfDaily));
+				timeLeavingOfDailyAttd,Optional.of(listBreakTimeOfDaily),
+				data.getWorkInfo().getNumberDaySuspension().isPresent()
+						? Optional.of(new NumberOfDaySuspensionExport(
+								data.getWorkInfo().getNumberDaySuspension().get().getDays().v(),
+								data.getWorkInfo().getNumberDaySuspension().get().getClassifiction().value))
+						: Optional.empty()
+				);
 		
 		workScheduleExport.setYmd(data.getYmd());
 		if (data.getOptAttendanceTime() != null && data.getOptAttendanceTime().isPresent()) {

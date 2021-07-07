@@ -129,9 +129,25 @@ html {
 }
 
 #tab-panel > .tabs-list {
-	width: 150px !important;
+	width: auto !important;
 }
 
-#tab-panel > .tabs-content {
-	margin-left: 150px !important;
+.left-178 {
+	margin-left: 178px !important;
+}
+
+.left-122 {
+	margin-left: 122px !important;
+}
+
+.switchbox-wrappers {
+	display: flex;
+}
+
+.tab-rows .ui-igcombo-wrapper {
+	margin-top: 6px;
+}
+
+td > .ui-igcombo-wrapper {
+	margin-top: 6px;
 }

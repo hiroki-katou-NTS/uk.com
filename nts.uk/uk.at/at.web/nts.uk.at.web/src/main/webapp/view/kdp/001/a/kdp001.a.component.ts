@@ -724,36 +724,24 @@ module nts.uk.ui.kdp001.a {
                     stampMeans: STAMP_MEANS_PORTAL
                 }))
                 .then((response: any) => {
-                    var timeNow = vm.$date.today().getDate().toString() + vm.$date.today().getMonth().toString() + vm.$date.today().getFullYear().toString();
 
                     if (response) {
                         const { dailyAttdErrorInfos } = response;
 
                         if (dailyAttdErrorInfos && dailyAttdErrorInfos.length) {
-                            var showViewT = 0;
-                            _.forEach(response.dailyAttdErrorInfos, ((value) => {
-                                var date: Date = new Date(value.lastDateError);
-                                var timeResult = date.getDate().toString() + date.getMonth().toString() + date.getFullYear().toString();
-                                if (timeResult > timeNow) {
-                                    showViewT++;
+                            vm.$window
+                            .shared('KDP010_2T', response)
+                            .then(() => vm.$window.modal('at', '/view/kdp/002/t/index.xhtml'))
+                            .then(() => vm.$window.shared('KDP010_T'))
+                            .then(({ isClose, errorDate, btn }) => {
+                                if (!isClose && errorDate) {
+                                    const { transfer, screen } = btn;
+
+                                    vm.$jump(screen, transfer);
+                                } else {
+                                    vm.stampData();
                                 }
-                            }));
-
-                            if (showViewT == 0) {
-                                vm.$window
-                                    .shared('KDP010_2T', response)
-                                    .then(() => vm.$window.modal('at', '/view/kdp/002/t/index.xhtml'))
-                                    .then(() => vm.$window.shared('KDP010_T'))
-                                    .then(({ isClose, errorDate, btn }) => {
-                                        if (!isClose && errorDate) {
-                                            const { transfer, screen } = btn;
-
-                                            vm.$jump(screen, transfer);
-                                        } else {
-                                            vm.stampData();
-                                        }
-                                    });
-                            }
+                            });
                         } else {
                             vm.stampData();
                         }

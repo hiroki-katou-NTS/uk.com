@@ -822,7 +822,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 const headerHeight = $('#header').outerHeight();
                 const sidebarHeaderHeight = $('.sidebar-content-header').outerHeight(); // for screen with sidebar
                 const functionAreaHeight = $('#functions-area').length > 0 ? $('#functions-area').outerHeight() : 0;
-                const buffer = 15;
+                const buffer = 25;
                 let componentHeight = 0;
 
                 // calculate component height
@@ -2370,8 +2370,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
             </div>
         <div id="tab-panel" class="cf ccg-tabpanel pull-left"
             data-bind="attr: {tabindex: ccg001Tabindex}, ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-            <!-- ko if: showQuickSearchTab -->
-                <div tabindex="-1" class="tab-content-1">
+                <div tabindex="-1" class="tab-content-1" data-bind="if: showQuickSearchTab">
                     <!-- ko if: showAllReferableEmployee -->
                         <div id="ccg001-btn-search-all" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
                             <div class="flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
@@ -2433,7 +2432,6 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                         </div>
                     <!-- /ko -->
                 </div>
-            <!-- /ko -->
             <!-- ko if: showAdvancedSearchTab -->
                 <div tabindex="-1" class="tab-content-2 height-maximum">
                         <div id="ccg001-tab-content-2" class="height-maximum">

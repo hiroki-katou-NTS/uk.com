@@ -89,6 +89,29 @@ module nts.uk.at.view.kdp002.c {
 					{ headerText: nts.uk.resource.getText("KDP002_59"), key: 'name', width: 175 },
 					{ headerText: nts.uk.resource.getText("KDP002_60"), key: 'value', width: 175 }
 				]);
+				self.showBtnNoti.subscribe(() => {
+					self.setSizeDialog();
+				});
+				self.laceName.subscribe(() => {
+					self.setSizeDialog();
+				});
+			}
+			
+			setSizeDialog(){
+				let self = this;
+				if(self.laceName() == ''){
+					if(self.showBtnNoti()){
+						self.$window.size(565, 450);
+					}else{
+						self.$window.size(535, 450);
+					}
+				}else{
+					if(self.showBtnNoti()){
+						self.$window.size(600, 450);
+					}else{
+						self.$window.size(565, 450);
+					}					
+				}
 			}
 
 			getWorkPlacwName(workPlaceId: string) {
@@ -130,6 +153,8 @@ module nts.uk.at.view.kdp002.c {
 				service.startScreen(data).done((res) => {
 					let itemIds = ["TIME", "AMOUNT", "TIME_WITH_DAY", "DAYS", "COUNT", "CLOCK"];
 
+					console.log(res);
+					
 					if (res) {
 
 						if (_.size(res.stampRecords) > 0) {
@@ -194,16 +219,19 @@ module nts.uk.at.view.kdp002.c {
 							}
 
 							self.items(res.itemValues);
-
-							if (!ko.unwrap(self.showBtnNoti)) {
-								self.$window.size(630, 450);
-							}
 						}
 					}
 					if (res.confirmResult) {
+						if (res.confirmResult.permissionCheck == 1) 
 						self.permissionCheck(res.confirmResult.permissionCheck == 1);
 					} else {
 						self.displayButton(false);
+					}
+
+					if (ko.unwrap(self.permissionCheck)) {
+						if (res.setting == 2) {
+							self.permissionCheck(false);
+						}
 					}
 				});
 

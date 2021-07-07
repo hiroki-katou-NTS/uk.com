@@ -198,7 +198,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"        INNER JOIN  ( " +
 				"                               SELECT   MIDFOD.EMPLOYEE_ID,SGJFOD.RECORD_DATE,'0' as NONAPP " +  
 				"                               FROM   ( " +
-				"                                             SELECT     SNRMID.EMPLOYEE_ID,MIN(SNFMID.PHASE_ORDER) as FINF,SNRMID.START_DATE,SNRMID.END_DATE " +
+				"                                             SELECT     SNRMID.EMPLOYEE_ID,MAX(SNFMID.PHASE_ORDER) as FINF,SNRMID.START_DATE,SNRMID.END_DATE " +
 				"                                             FROM       WWFDT_INST_ROUTE SNRMID " +
 				"                                             INNER JOIN WWFDT_INST_PHASE SNFMID " +
 				"                                             ON         SNRMID.ROOT_ID = SNFMID.ROOT_ID " +
@@ -224,7 +224,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                               SELECT         SGJKN.EMPLOYEE_ID,SGJKN.RECORD_DATE,ISNULL(SYNZMF.APP_PHASE_ATR,'0') as NONAPP " +
 				"                               FROM          (     SELECT MIDFOD.EMPLOYEE_ID,SGJT.RECORD_DATE,SGJT.ROOT_ID,MIDFOD.FINF " +
 				"                                                           FROM   ( " +
-				"                                                                         SELECT     SNRMID.EMPLOYEE_ID,MIN(SNFMID.PHASE_ORDER) as FINF,SNRMID.START_DATE,SNRMID.END_DATE " +
+				"                                                                         SELECT     SNRMID.EMPLOYEE_ID,MAX(SNFMID.PHASE_ORDER) as FINF,SNRMID.START_DATE,SNRMID.END_DATE " +
 				"                                                                         FROM       WWFDT_INST_ROUTE SNRMID " +
 				"                                                                         INNER JOIN WWFDT_INST_PHASE SNFMID " +
 				"                                                                         ON         SNRMID.ROOT_ID = SNFMID.ROOT_ID " +
@@ -389,7 +389,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"        INNER JOIN       ( " +
 				"                                    SELECT                MIDFOD.EMPLOYEE_ID,SGJFOD.RECORD_DATE,'0' as NONAPP " +
 				"                                    FROM       ( " +
-				"                                                                    SELECT SNRMID.EMPLOYEE_ID,MIN(SNFMID.PHASE_ORDER) as FINF " +
+				"                                                                    SELECT SNRMID.EMPLOYEE_ID,MAX(SNFMID.PHASE_ORDER) as FINF " +
 				"                                                                    FROM WWFDT_INST_ROUTE SNRMID " +
 				"                                                                    INNER JOIN WWFDT_INST_PHASE SNFMID " +
 				"                                                                    ON             SNRMID.ROOT_ID = SNFMID.ROOT_ID " +
@@ -412,7 +412,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                    SELECT      SGJKN.EMPLOYEE_ID,SGJKN.RECORD_DATE,ISNULL(SYNZMF.APP_PHASE_ATR,'0') as NONAPP " +
 				"                                    FROM        ( " +
 				"                                                                    SELECT  MIDFOD.EMPLOYEE_ID,SGJT.RECORD_DATE,SGJT.ROOT_ID,MIDFOD.FINF " +
-				"                                                                    FROM        (   SELECT     SNRMID.EMPLOYEE_ID,MIN(SNFMID.PHASE_ORDER) as FINF " +
+				"                                                                    FROM        (   SELECT     SNRMID.EMPLOYEE_ID,MAX(SNFMID.PHASE_ORDER) as FINF " +
 				"                                                                                                    FROM       WWFDT_INST_ROUTE SNRMID " +
 				"                                                                                                    INNER JOIN WWFDT_INST_PHASE SNFMID " +
 				"                                                                                                    ON         SNRMID.ROOT_ID = SNFMID.ROOT_ID " +
@@ -429,7 +429,8 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                                                    ON      MIDFOD.EMPLOYEE_ID = SGJT.EMPLOYEE_ID " +
 				"                                                            ) SGJKN " +
 				"                                    LEFT JOIN   WWFDT_CONF_PHASE SYNZMF " +
-				"                                    ON          SGJKN.ROOT_ID = SYNZMF.ROOT_ID " +
+				"                                    ON       (        SGJKN.ROOT_ID = SYNZMF.ROOT_ID " + 
+				"                                                AND   SGJKN.FINF = SYNZMF.PHASE_ORDER   ) " +
 				"                                    WHERE       SYNZMF.APP_PHASE_ATR  IS NULL " +
 				"                                     ) JCHOSN_M " +
 				"        ON              SKBSYITERM_MON.SID  = JCHOSN_M.EMPLOYEE_ID " +

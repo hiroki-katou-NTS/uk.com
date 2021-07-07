@@ -187,7 +187,7 @@ public class DPMonthFlexProcessor {
 		
 		if (param.getDailyPerformanceDto().getSettingUnit() == SettingUnitType.AUTHORITY) {
 			return authorityFormatMonthlyRepository
-					.getListAuthorityFormatDaily(companyId, param.getFormatCode()).stream()
+					.getListAuthorityFormatDailyByCollection(companyId, param.getFormatCode()).stream()
 					.map(x -> new FormatDailyDto(x.getDailyPerformanceFormatCode().v(), new Integer(x.getAttendanceItemId()),
 							x.getColumnWidth() == null ? BigDecimal.valueOf(100l): x.getColumnWidth(), x.getDisplayOrder()))
 					.collect(Collectors.toList());

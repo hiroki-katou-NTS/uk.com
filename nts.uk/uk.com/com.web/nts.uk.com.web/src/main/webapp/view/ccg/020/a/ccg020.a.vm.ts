@@ -111,10 +111,12 @@ module nts.uk.com.view.ccg020.a {
               .attr('id', 'img-avatar')
               .attr('src', (nts.uk.request as any).liveView(data.fileId))
               .appendTo($('#notice-msg'));
-            $('#search-bar').attr('style', 'bottom: 2px; position: relative;');
+            $('#search-bar').attr('style', 'position: relative;');
           } else {
             setAvatarByName();
           }
+
+          $(window).trigger('wd.resize');
         })
     }
 
@@ -168,7 +170,7 @@ module nts.uk.com.view.ccg020.a {
         }
       });
 
-      $('#list-box').on('selectionChanging', (event: any) => {
+      $('#popup-result #list-box').on('selectionChanging', (event: any) => {
         window.location.href = event.detail.url;
       });
     }

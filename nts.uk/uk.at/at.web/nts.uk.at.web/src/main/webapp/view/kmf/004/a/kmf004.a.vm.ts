@@ -516,6 +516,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
             $("#input-code").trigger("validate");
             $("#input-name").trigger("validate");
+            $("#limitCarryoverDays").trigger("validate");
             let dataItem = self.preData();
             if (dataItem.targetItemCommand.absenceFrameNo.length <= 0 && dataItem.targetItemCommand.frameNo.length <= 0) {
                 $("#target-items").ntsError('set', { messageId:'Msg_93' });

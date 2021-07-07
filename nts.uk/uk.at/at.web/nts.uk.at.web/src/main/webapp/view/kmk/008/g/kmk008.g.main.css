@@ -22,3 +22,9 @@ table tr:nth-child(2) td{
 .w-cb-fixed label:first-child {
   width: 78px;
 }
+#G1_7 {
+  white-space: pre-wrap;
+}
+.mt-10 {
+  margin-top: 20px;
+}

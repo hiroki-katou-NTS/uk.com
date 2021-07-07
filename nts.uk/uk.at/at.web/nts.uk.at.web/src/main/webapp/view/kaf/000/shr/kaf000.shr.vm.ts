@@ -24,6 +24,14 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
             this.opAppStartDate = ko.observable("");
             this.opAppEndDate = ko.observable("");
             this.opStampRequestMode = ko.observable(null);
+			this.appDate.subscribe(value => {
+				if(_.isEmpty(this.opAppStartDate())) {
+					this.opAppStartDate(value);
+				}
+				if(_.isEmpty(this.opAppEndDate())) {
+					this.opAppEndDate(value);
+				}
+			});
         }        
     }
     

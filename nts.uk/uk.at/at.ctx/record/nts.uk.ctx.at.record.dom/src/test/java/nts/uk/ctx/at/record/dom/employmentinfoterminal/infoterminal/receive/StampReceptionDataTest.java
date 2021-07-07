@@ -233,7 +233,7 @@ public class StampReceptionDataTest {
 				new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(
 						new CreateStampInfo(new OutPlaceConvert(NotUseAtr.USE, Optional.of(GoingOutReason.UNION)),
 								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE),
-								Optional.of(new WorkLocationCD("A")), Optional.of("WorkplaceId")))
+								Optional.of(new WorkLocationCD("A")), Optional.of(new WorkplaceId("WorkplaceId"))))
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
 
 		assertThatStamp(new StampType(true, GoingOutReason.UNION, SetPreClockArt.NONE,

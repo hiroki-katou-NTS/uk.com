@@ -21,16 +21,7 @@
 			<com:stylefile path="../../common/common.css" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="content-area" class="body">
-				<div id="functions-area-bottom">
-					<button id="i1_8" class="x-large proceed"
-						data-bind="click: submit">#{i18n.getText('CCG013_90')}</button>
-					<button id="i1_9" class="large" data-bind="click: closeDialog">#{i18n.getText('CCG013_91')}</button>
-					<button id="i1_10" class="danger" data-bind="click: removeMenuBar">削除</button>
-				</div>
-
-				<br />
-
+			<div id="contents-area" class="body">
 				<div class="functions-area-content">
 					<table class="contents-area">
 						<tr>
@@ -56,6 +47,12 @@
 						</tr>
 					</table>
 				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button id="i1_8" class="x-large proceed"
+					data-bind="click: submit">#{i18n.getText('CCG013_90')}</button>
+				<button id="i1_9" class="large" data-bind="click: closeDialog">#{i18n.getText('CCG013_91')}</button>
+				<button id="i1_10" class="danger" data-bind="click: removeMenuBar">削除</button>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -11,8 +11,9 @@
       <ui:define name="htmlHead">      
 				<com:scriptfile set="IGNITE" />
 				<script>
-          var dialogSize = { width: 750, height: 500 };
+          var dialogSize = { width: 750, height: 480 };
         </script>
+        <com:stylefile path="ksm007.b.main.css" />
         <com:stylefile path="ksm007.b.main.css" />
         <com:scriptfile path="ksm007.b.vm.js" />
       </ui:define>
@@ -28,7 +29,7 @@
         </div>
         <div id="contents-area" class="ksm-007">
           <div class="wrapper cf">
-            <div class="pull-left">
+            <div class="ksm007-left-content">
               <div class="control-group valign-center">
                 <span data-bind="text: workplaceGroupCode" style="padding-right: 10px;"/>
                 <span data-bind="text: workplaceGroupName"/>
@@ -36,7 +37,7 @@
               <div
                 data-bind="ntsPanel:{ width: '250px', height: '278px', direction: 'right', showIcon: false, visible: true}"
               >
-                <div class="buttons">
+                <div class="buttons" style="margin-bottom: 10px;">
                   <button
                     tabindex="4"
                     class="normal"
@@ -66,7 +67,7 @@
                 ></table>
               </div>
             </div>
-            <div class="pull-left">
+            <div class="ksm007-right-content">
               <div class="control-group valign-center" style="margin-top: 30px;">
                 <div data-bind="ntsFormLabel: { required: true, text: $i18n('KSM007_27')}"/>
                 <span class="cell valign-center" data-bind="text: startDate"/>
@@ -84,7 +85,7 @@
                           optionsText: 'name',
                           value: nightShiftOperation,
                           required: true,
-                          enable: historyListItems().length > 0
+                          enable: ko.computed(function() { return historyListItems().length > 0; })
                      }"/>
               </div>
               <div class="control-group valign-center">

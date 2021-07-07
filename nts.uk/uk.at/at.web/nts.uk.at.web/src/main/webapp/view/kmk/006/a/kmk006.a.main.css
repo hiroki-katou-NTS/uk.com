@@ -1,7 +1,7 @@
 @CHARSET "UTF-8";
 .tab-content-1, .tab-content-2, .tab-content-3, .tab-content-4 {
 	width: 560px;
-	height: 600px;
+	height: 500px;
 }
 .table-label {
 	width: 600px;
@@ -64,7 +64,8 @@
 	margin-top: 8px;
 }
 #nts-component-tree {
-    padding: 20px !important; 
+  padding-top: 0px !important;
+  padding-right: 0px !important;
 }
 .bg-dark-green {
 	background-color: #C7F391;
@@ -132,4 +133,12 @@
 }
 #input-date {
     margin-left: 20px;
+}
+.content-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+#jobtitles > .caret-right.caret-background.bg-green {
+  padding-top: 0px !important;
 }

@@ -86,9 +86,8 @@ html {
 }
 
 .help-btn-container {
-	position: absolute;
-	top: 5px;
-	right: 5px;
+	float: right;
+  margin-top: -55px;
 }
 
 .row-inline {
@@ -132,8 +131,7 @@ html {
 }
 
 .fix-position-b7_15 {
-	position: relative;
-	top: -13px;
+	margin-right: 5px;
 }
 
 /* CSS margin */
@@ -199,8 +197,8 @@ html {
 	width: 20%;
 }
 
-.w26 {
-	width: 26%;
+.w22 {
+	width: 22%;
 }
 
 .w100 {
@@ -227,8 +225,17 @@ html {
 
 #B5_6 {
   width: 400px;
+  margin-left: 15px;
 }
 
 #B12_2 {
   margin-left: 90px;
+}
+
+#B4_2 {
+  margin-right: 15px;
+}
+
+#start-month-day {
+  margin-left: 5px;
 }

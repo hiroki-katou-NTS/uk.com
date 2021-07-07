@@ -20,10 +20,6 @@ module nts.uk.at.kaf021.b {
 
         yearTimeValidation = new validation.TimeValidator(this.$i18n("KAF021_18"), "AgreementOneYearTime", { required: true, valueType: "Clock", inputFormat: "hh:mm", outputFormat: "time", mode: "time" });
         reasonsValidation = new validation.StringValidator(this.$i18n("KAF021_19"), "ReasonsForAgreement", { required: true });
-        constructor() {
-            super();
-            const vm = this;
-        }
 
         created(params: any) {
             const vm = this;
@@ -47,15 +43,12 @@ module nts.uk.at.kaf021.b {
                     })
                 }
             }
-            vm.loadMGrid();
-
             _.extend(window, { vm });
         }
 
         mounted() {
             const vm = this;
-
-
+            vm.loadMGrid();
         }
 
         loadMGrid() {
@@ -87,6 +80,25 @@ module nts.uk.at.kaf021.b {
                 ],
                 features: [
                     {
+                        name: "ColumnFixing",
+                        showFixButtons: false,
+                        fixingDirection: 'left',
+                        columnSettings: [
+                            {
+                                columnKey: "employeeId",
+                                isFixed: true
+                            },
+                            {
+                                columnKey: "wkpName",
+                                isFixed: true
+                            },
+                            {
+                                columnKey: "employeeName",
+                                isFixed: true
+                            }
+                        ]
+                    },
+                    {
                         name: 'HeaderStyles',
                         columns: vm.getHeaderStyles()
                     },
@@ -107,7 +119,7 @@ module nts.uk.at.kaf021.b {
             // B3_1
             columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'wkpName', dataType: 'string', width: '105px', ntsControl: "Label" });
             // B3_2
-            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employeeName', dataType: 'string', width: '105px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employeeName', dataType: 'string', width: '115px', ntsControl: "Label" });
             // B3_3
             columns.push({
                 headerText: vm.$i18n("KAF021_25"),
@@ -182,12 +194,16 @@ module nts.uk.at.kaf021.b {
         getHeaderStyles(): Array<any> {
             const vm = this;
             return [
-                { key: "monthAverage2Str", colors: ['padding-12'] },
-                { key: "monthAverage3Str", colors: ['padding-12'] },
-                { key: "monthAverage4Str", colors: ['padding-12'] },
-                { key: "monthAverage5Str", colors: ['padding-12'] },
-                { key: "monthAverage6Str", colors: ['padding-12'] },
-                { key: "exceededNumber", colors: ['padding-5'] },
+                { key: "wkpName", colors: ["#CFF1A5"] },
+                { key: "employeeName", colors: ["#CFF1A5"] },
+                { key: "monthStr", colors: ["#CFF1A5"] },
+                { key: "yearStr", colors: ["#CFF1A5"] },
+                { key: "monthAverage2Str", colors: ["#CFF1A5"] },
+                { key: "monthAverage3Str", colors: ["#CFF1A5"] },
+                { key: "monthAverage4Str", colors: ["#CFF1A5"] },
+                { key: "monthAverage5Str", colors: ["#CFF1A5"] },
+                { key: "monthAverage6Str", colors: ["#CFF1A5"] },
+                { key: "exceededNumber", colors: ["#CFF1A5"] },
                 { key: vm.getCurrentMaxKey(), colors: ['#F8EFD4'] },
                 { key: "newMax", colors: ['#F8EFD4'] },
                 { key: "reason", colors: ['#F8EFD4'] },

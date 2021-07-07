@@ -9,3 +9,7 @@
 .lableCDL {
 	margin-left: 20px;
 }
+
+#multiple-tree-grid-workplaceList_horizontalScrollContainer {
+ overflow: hidden !important;
+}

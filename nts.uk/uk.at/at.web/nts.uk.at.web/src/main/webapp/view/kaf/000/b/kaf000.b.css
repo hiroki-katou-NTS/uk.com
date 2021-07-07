@@ -5,6 +5,9 @@
 .controlButtonCell_kaf000 {
 	display: inline-block;
 }
+.controlButtonCell_kaf000 button {
+	margin-right: 8px !important;
+}
 .kaf000-function-div-update{
 	margin-left: calc(10vw - 102px);
 	display: inline-block;

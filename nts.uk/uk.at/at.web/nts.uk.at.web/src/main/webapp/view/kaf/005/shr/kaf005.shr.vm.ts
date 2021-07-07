@@ -29,7 +29,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				<tbody data-bind="foreach: restTime">
 					<tr>
 						<!--A5_5 休憩時間順序-->
-						<td class="header" data-bind="text: String(frameNo)"></td>
+						<td class="headerKAF005" data-bind="text: String(frameNo)"></td>
 						<!--A5_6 開始時刻-->
 						<td><input class="right-content"
 							data-bind="
@@ -97,7 +97,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				<tbody data-bind="foreach: overTime">
 					<tr data-bind="if: visible()">
 						<!--A6_7 残業時間名称-->
-						<td class="header">
+						<td class="headerKAF005">
 							<span data-bind="text: displayNo" class="limited-label" style="width: 110px"></span>
 						</td>
 						<!--A6_8 残業申請時間入力-->
@@ -144,7 +144,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				<tbody data-bind="foreach: overTime">
 					<tr data-bind="if: visible()">
 						<!--A6_7 残業時間名称-->
-						<td class="header">
+						<td class="headerKAF005">
 							<span data-bind="text: displayNo" class="limited-label" style="width: 110px"></span>
 						</td>
 						<!--A6_8 残業申請時間入力-->
@@ -206,7 +206,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				<tbody data-bind="foreach: holidayTime">
 					<tr data-bind="if: visible()">
 						<!--A5_5 休憩時間順序-->
-						<td class="header">
+						<td class="headerKAF005">
 							<span data-bind="text: displayNo" class="limited-label" style="width: 110px"></span>
 						</td>
 						<!--A5_6 開始時刻-->
@@ -249,7 +249,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				<tbody data-bind="foreach: holidayTime">
 					<tr data-bind="if: visible()">
 						<!--A5_5 休憩時間順序-->
-						<td class="header">
+						<td class="headerKAF005">
 							<span data-bind="text: displayNo" class="limited-label" style="width: 110px"></span>
 						</td>
 						<!--A5_6 開始時刻-->
@@ -281,7 +281,6 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 </div>
-
 
 
 	`

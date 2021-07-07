@@ -401,21 +401,35 @@ body {
   }
 }
 
-.nts-daterange-picker {
-  outline: none;
-  display: inline-block;
+// .nts-daterange-picker {
+//   outline: none;
+//   display: inline-block;
 
-  & > div {
-    display: inline-block;
-  }
+//   & > div {
+//     display: inline-block;
+//   }
 
-  & > button {
-    height: 32px;
-  }
+//   & > button {
+//     height: 32px;
+//   }
 
-  &:not(.has-btn) {
-    & > button {
-      display: none;
+//   &:not(.has-btn) {
+//     & > button {
+//       display: none;
+//     }
+//   }
+// }
+
+.ntsDateRange_Container {
+  display: flex;
+  align-items: center;
+
+  &>.ntsDateRangeComponent.ntsControl {
+    display: flex;
+    align-items: center;
+
+    &>.ntsRangeLabel{
+      margin: 0 5px;
     }
   }
 }

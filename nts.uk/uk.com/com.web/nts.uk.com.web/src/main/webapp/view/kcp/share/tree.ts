@@ -1032,9 +1032,9 @@ var TREE_COMPONENT_HTML = `<style type="text/css">
             <button
                 data-bind="click: reload, attr: {tabindex: tabindex}"
                 style="min-width: 65px">`+TreeComponentTextResource.KCP004_3+`</button>
-            <div data-bind="ntsFormLabel: {}" style="margin-left: 10px; border-color: transparent;">`+TreeComponentTextResource.KCP004_4+`</div>
+            <div data-bind="ntsFormLabel: {}" style="margin-left: 30px; border-color: transparent;">`+TreeComponentTextResource.KCP004_4+`</div>
             <div id="combo-box-tree-component"
-                style="width: 60px; margin-left: 5px;"
+                style="width: 60px; margin-left: -10px;"
                 data-bind="attr: {tabindex: tabindex}, ntsComboBox: {
                     options: levelList,
                     optionsValue: 'level',

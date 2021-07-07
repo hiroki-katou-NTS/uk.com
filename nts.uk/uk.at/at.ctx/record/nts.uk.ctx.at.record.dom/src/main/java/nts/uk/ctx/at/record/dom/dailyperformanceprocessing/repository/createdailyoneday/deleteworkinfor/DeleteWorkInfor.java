@@ -12,6 +12,8 @@ import nts.uk.ctx.at.record.dom.breakorgoout.repository.OutingTimeOfDailyPerform
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.deleteworkinfor.sysdomain.DeleteSystemDomain;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
@@ -67,6 +69,12 @@ public class DeleteWorkInfor {
 	@Inject
 	private RemarksOfDailyPerformRepo remarks;
 	
+	@Inject
+	private OuenWorkTimeOfDailyRepo ouen;
+	
+	@Inject
+	private OuenWorkTimeSheetOfDailyRepo ouenSheet;
+	
 	public void deleteWorkInfor(String companyId,String employeeId,GeneralDate ymd) {
 		
 		//「情報」系のドメイン削除する
@@ -97,6 +105,12 @@ public class DeleteWorkInfor {
 		temporary.delete(employeeId, ymd);
 		//「日別実績の備考」を削除する
 		remarks.remove(employeeId, ymd);
+		
+		// 「日別実績の応援作業時間」を削除する
+		ouen.remove(employeeId, ymd);
+		
+		// 「日別実績の応援作業時間帯」を削除する
+		ouenSheet.remove(employeeId, ymd);
 	}
 
 }

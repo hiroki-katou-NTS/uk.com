@@ -328,7 +328,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.ui.block.grayout();
             self.initScreen().done((processDate, selectedClosure) => {
                 //date process
+				if(!_.isNil(processDate))
                 self.yearMonth(processDate);
+
                 if (selectedClosure) {
                     self.selectedClosure(selectedClosure);
                 }
@@ -1742,6 +1744,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     self.formatCodes.removeAll();
                     self.formatCodes.push(formatCd);
                     self.initScreenFormat().done((processDate) => {
+						if(!_.isNil(processDate)){
+							self.yearMonth(processDate);
+						}
                         dfd.resolve();
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {

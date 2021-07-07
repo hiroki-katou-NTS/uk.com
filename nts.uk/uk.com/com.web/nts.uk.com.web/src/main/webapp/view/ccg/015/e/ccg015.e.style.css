@@ -1,6 +1,6 @@
 /* Refactor CSS */
 .main-area {
-  padding: 20px;
+  padding: 6px 20px;
   box-sizing: border-box;
   width: 100%;
   height: 100%;
@@ -13,13 +13,14 @@
   display: flex;
   flex-direction: row;
   align-items: flex-end;
+  padding: 15px 0px 10px 0px;
+  height: 25px;
 }
 .header-area > .header-label {
   width: 290px;
-  margin-bottom: 20px;
 }
 .header-area > .layout-label {
-  margin-bottom: 30px;
+  margin-bottom: 5px;
 }
 
 .contents-area {

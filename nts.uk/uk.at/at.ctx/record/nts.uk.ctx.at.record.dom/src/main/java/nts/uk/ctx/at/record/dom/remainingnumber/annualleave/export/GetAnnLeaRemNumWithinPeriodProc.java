@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Annu
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CalcAnnLeaAttendanceRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.CalYearOffWorkAttendRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
@@ -262,13 +263,19 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 					// 次回年休付与の付与日数を条件によって更新する
 					{
+						Optional<CalYearOffWorkAttendRate> resultRateOpt = Optional.of(new CalYearOffWorkAttendRate());
+						if(mode == InterimRemainMngMode.MONTHLY){
 						// 年休出勤率を計算する
-						val resultRateOpt = CalcAnnLeaAttendanceRate.algorithm(require, cacheCarrier,
+							resultRateOpt = CalcAnnLeaAttendanceRate.algorithm(require, cacheCarrier,
 								companyId, employeeId,
 								nextAnnualGrantList.getGrantDate(),
 								Optional.of(nextAnnualGrantList.getTimes().v()),
 								Optional.of(annualLeaveSet), Optional.of(employee), annualLeaveEmpBasicInfoOpt,
 								grantHdTblSetOpt, lengthServiceTblsOpt, operationStartSetOpt);
+						}else{
+							resultRateOpt = Optional.of(new CalYearOffWorkAttendRate(100.0,0.0,365.0,0.0));
+						}
+						
 						if (resultRateOpt.isPresent()){
 							val resultRate = resultRateOpt.get();
 							nextAnnualGrantList.setAttendanceRate(Optional.of(

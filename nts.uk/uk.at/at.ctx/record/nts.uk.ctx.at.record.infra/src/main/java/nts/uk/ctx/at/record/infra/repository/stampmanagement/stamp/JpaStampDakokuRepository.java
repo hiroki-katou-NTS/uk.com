@@ -18,6 +18,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.location.GeoCoordinate;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
@@ -201,7 +202,10 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		OvertimeDeclaration overtime = entity.overTime == null ? null
 				: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
 						new AttendanceTime(entity.lateNightOverTime));
-		WorkInformationStamp workInformationStamp = new WorkInformationStamp(Optional.empty(), Optional.empty(),
+		
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(
+				entity.workplaceId ==  null ? Optional.empty():Optional.of(entity.workplaceId), 
+				entity.timeRecordCode ==  null ? Optional.empty():Optional.of(new EmpInfoTerminalCode(entity.timeRecordCode)),
 				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
 				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
 		
@@ -221,7 +225,9 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		String workLocationName = (String) object[0];
 		KrcdtStamp entity = (KrcdtStamp) object[1];
 		
-		WorkInformationStamp workInformationStamp = new WorkInformationStamp(Optional.empty(), Optional.empty(),
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(
+				entity.workplaceId ==  null ? Optional.empty():Optional.of(entity.workplaceId), 
+				entity.timeRecordCode ==  null ? Optional.empty():Optional.of(new EmpInfoTerminalCode(entity.timeRecordCode)),
 				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
 				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
 		
@@ -250,7 +256,9 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		KrcdtStamp entity = (KrcdtStamp) object[2];
 		ContractCode contractCd = new ContractCode(AppContexts.user().contractCode());
 		
-		WorkInformationStamp workInformationStamp = new WorkInformationStamp(Optional.empty(), Optional.empty(),
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(
+				entity.workplaceId ==  null ? Optional.empty():Optional.of(entity.workplaceId), 
+				entity.timeRecordCode ==  null ? Optional.empty():Optional.of(new EmpInfoTerminalCode(entity.timeRecordCode)),
 				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
 				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
 		

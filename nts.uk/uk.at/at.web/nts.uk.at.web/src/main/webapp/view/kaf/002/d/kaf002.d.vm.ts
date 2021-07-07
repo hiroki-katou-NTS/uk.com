@@ -11,7 +11,8 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 		<div class="two-panel" style="height: 100%; width: 1260px">
 			<div class="left-panel"
 				style="width: calc(1260px - 388px); height: inherit;">
-				<div style="height: inherit; overflow-y: auto; background-color: #fff; padding: 10px;">
+				<div
+					style="height: inherit; overflow-y: auto; background-color: #fff; padding: 10px;">
 					<div class="table"
 						style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
 						<div class="cell" style="vertical-align: middle;">
@@ -33,7 +34,8 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                                                 } }"></div>
 						</div>
 					</div>
-					<div data-bind="component: { name: 'kaf000-b-component2', 
+					<div
+						data-bind="component: { name: 'kaf000-b-component2', 
 														params: {
 															appType: appType,
 															appDispInfoStartupOutput: appDispInfoStartupOutput
@@ -45,7 +47,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                                                     application: application,
                                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                                 } }"></div>
-					<div 
+					<div
 						data-bind="component: { name: 'kaf000-b-component6', 
                                                 params: {
                                                     appType: appType,
@@ -111,13 +113,14 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                                                     application: application,
                                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                                 } }"></div>
-                                                
-                                                <div style="padding-top: 30px;">
-								
-				 	</div>  
+
+					<div style="padding-top: 30px;"></div>
 				</div>
-				<div class="right-panel" style="width: 388px; height: inherit; overflow-y: auto; padding-right: 0px">
-				<div style="height: inherit; background-color: #fff; padding: 0px 10px;">
+			</div>
+			<div class="right-panel"
+				style="width: 388px; height: inherit; overflow-y: auto; padding-right: 0px">
+				<div
+					style="height: inherit; background-color: #fff; padding: 0px 10px;">
 					<div style="padding-top: 10px"
 						data-bind="component: { name: 'kaf000-b-component1', 
                             params: {
@@ -133,8 +136,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                             } }"></div>
 				</div>
 			</div>
-			</div>
-			
+
 		</div>
 	</div>
 </div>

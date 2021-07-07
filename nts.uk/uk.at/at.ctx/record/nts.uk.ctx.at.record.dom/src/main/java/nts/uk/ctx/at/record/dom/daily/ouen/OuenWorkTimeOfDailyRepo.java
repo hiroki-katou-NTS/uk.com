@@ -13,4 +13,6 @@ public interface OuenWorkTimeOfDailyRepo {
 	public void insert(List<OuenWorkTimeOfDaily> domain);
 	
 	public void delete(List<OuenWorkTimeOfDaily> domain);
+	
+	public void remove(String sid, GeneralDate ymd);
 }

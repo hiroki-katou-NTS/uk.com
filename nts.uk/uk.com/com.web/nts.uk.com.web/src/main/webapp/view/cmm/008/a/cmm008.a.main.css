@@ -4,18 +4,13 @@
 }
 
 #right-contents {
-	padding-left: 30px;
 	padding-top: 20px;
 	vertical-align: top;
 }
 
-#left-content {
-	padding: 20px;
-}
-
 .width-label {
-    white-space: nowrap;
-    width: 200px;
+	white-space: nowrap;
+	width: 95px;
 }
 
 #row2 > div:nth-child(1), #row2 > div:nth-child(2) {
@@ -23,5 +18,5 @@
 	padding-bottom: 12px;
 }
 #right-contents > div > div.fixed-flex-layout-left {
-	width: 200px;
+	width: 95px;
 }

@@ -177,12 +177,12 @@
 			overflow: hidden;
 			border-radius: 2px;
 			border: 1px solid #eae8f2;
-			background-color: #f1fdfb;
+			// background-color: #f1fdfb;
 
 			.ui-dialog-titlebar {
 				overflow: hidden;
 				border-color: #eae8f2;
-				background-color: transparent;
+				background-color: #f1fdfb;
 
 				.ui-dialog-titlebar-close {
 					right: 1.3rem;
@@ -190,9 +190,9 @@
 			}
 		}
 
-		.ui-widget-content {
-			background-color: #f1fdfb;
-		}
+		// .ui-widget-content {
+		// 	background-color: #f1fdfb;
+		// }
 
 		&.ui-dialog-error {
 			&.ui-widget-content {

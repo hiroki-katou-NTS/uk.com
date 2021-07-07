@@ -22,19 +22,19 @@ module nts.uk.at.view.kwr006.a {
             dataOutputType: KnockoutObservableArray<any>;
 
             // dropdownlist A7_3
-            itemCodeStandardSelection: KnockoutObservableArray<ItemModel>;
+            itemCodeStandardSelection: KnockoutObservableArray<any>;
             enableA7_3: KnockoutObservable<boolean> = ko.observable(true);
 
             // dropdownlist A7_11
-            itemCodeFreeSetting: KnockoutObservableArray<ItemModel>;
+            itemCodeFreeSetting: KnockoutObservableArray<any>;
             enableA7_11: KnockoutObservable<boolean> = ko.observable(false);
 
             // dropdownlist A9_2
-            itemListTypePageBrake: KnockoutObservableArray<ItemModel>;
+            itemListTypePageBrake: KnockoutObservableArray<any>;
             // switch button A12_2
-            dataDisplayClassification: KnockoutObservableArray<ItemModel>;
+            dataDisplayClassification: KnockoutObservableArray<any>;
             // switch button A13_2
-            dataDisplaySwitching: KnockoutObservableArray<ItemModel>;
+            dataDisplaySwitching: KnockoutObservableArray<any>;
             
             // Selected employee
             selectedEmployee: KnockoutObservableArray<string>;
@@ -127,23 +127,23 @@ module nts.uk.at.view.kwr006.a {
                 let self = this;
                 // dropdownlist A9_2
                 self.itemListTypePageBrake = ko.observableArray([
-                    new ItemModel('0', nts.uk.resource.getText("KWR006_99")),
-                    new ItemModel('1', nts.uk.resource.getText("KWR006_100")),
-                    new ItemModel('2', nts.uk.resource.getText("KWR006_101"))
+                    { code: 0, name: nts.uk.resource.getText("KWR006_99")},
+                    { code: 1, name: nts.uk.resource.getText("KWR006_100")},
+                    { code: 2, name: nts.uk.resource.getText("KWR006_101")}
                 ]);
                 self.dataOutputType = ko.observableArray([
-                    { code: '0', name: nts.uk.resource.getText("KWR006_10") },
-                    { code: '1', name: nts.uk.resource.getText("KWR006_11") }
+                    { code: 0, name: nts.uk.resource.getText("KWR006_10") },
+                    { code: 1, name: nts.uk.resource.getText("KWR006_11") }
                 ]);
                 // A12_1
                 self.dataDisplayClassification = ko.observableArray([
-                    new ItemModel('1', nts.uk.resource.getText("KWR006_88")),// 表示
-                    new ItemModel('0', nts.uk.resource.getText("KWR006_89")) // 非表示
+                    { code: 1, name: nts.uk.resource.getText("KWR006_88")},// 表示
+                    { code: 0, name: nts.uk.resource.getText("KWR006_89")} // 非表示
                 ]);
                 // A13_1
                 self.dataDisplaySwitching = ko.observableArray([
-                    new ItemModel('0', nts.uk.resource.getText("KWR006_97")),
-                    new ItemModel('1', nts.uk.resource.getText("KWR006_98"))
+                    { code: 0, name: nts.uk.resource.getText("KWR006_97")},
+                    { code: 1, name: nts.uk.resource.getText("KWR006_98")}
                 ]);
             }
 

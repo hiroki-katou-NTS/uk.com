@@ -10,7 +10,7 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 475, height: 658 };</script>
+			<script>var dialogSize = { width: 475, height: 558 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="main.css" />
 			<com:scriptfile path="viewmodel.js" />
@@ -35,7 +35,7 @@
 					</div>
 				</div>
 				<div data-bind="i18n: $vm.employeeCodeName"></div>
-				<div class="workPlaceName" data-bind="i18n: $vm.workPlace"></div>
+				<div class="workPlaceName" data-bind="i18n: $vm.workPlace, visible: $vm.workPlace() != ''"></div>
 				<!-- G7 -->
 				<div id="table-stamp">
 					<div class="currentDate" data-bind="text: currentDate"></div>
@@ -51,14 +51,14 @@
 				</div>
 				<!-- <com:ko-if bind="disableResultDisplayTime"> -->
 				<div>
-					<div data-bind="if: $vm.showBtnNoti">
+					<div data-bind="if: $vm.showBtnNoti" style="position: relative;">
 						<button data-bind="click: openDialogU" class="large, btn-showNoti">
 							<i data-bind="ntsIcon: { no: 164, width: 28, height: 28 }">
 							</i>
 							<div>#{i18n.getText('KDP002_103')}</div>
 						</button>
 						<div data-bind="if: $vm.modeShowPointNoti" style="box-sizing: border-box;">
-							<i style="left: 40px; top: 478px; position: absolute;"
+							<i style="left: 27px; top: 29px; position: absolute;"
 								data-bind="ntsIcon: { no: 165, width: 8, height: 8 }"></i>
 						</div>
 					</div>

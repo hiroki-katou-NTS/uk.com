@@ -8,7 +8,7 @@
 }
 
 .nts-gridlist {
-	overflow: hidden;
+	 /* overflow: hidden; */
 	.ui-icon-triangle-1-e {
 		display : none;
 	}
@@ -17,6 +17,7 @@
 		outline: none;
 		border-radius: 2px;
 		border: 1px solid #EAE8F2 !important;
+		//border-top: 3px solid #CFF1A5 !important;
 		// conflict with set option size of igGrid
 		// height: auto !important;
 
@@ -26,6 +27,16 @@
 		}
 
 		table {
+			&.ui-iggrid-headertable {
+				//line-height: 1.6;
+			}
+			
+			.ui-iggrid-tablebody {
+				td {
+					height: 21px;
+				}	
+			}
+		
 			th,
 			th.ui-iggrid-header {
 				padding: 0;
@@ -38,7 +49,7 @@
 			}
 
 			th.ui-widget-header {
-				padding: 5px 0;
+				//padding: 5px 0;
 				color: #4A4A58;
 				text-align: center;
 				background-color: transparent;
@@ -123,7 +134,7 @@
 					box-sizing: border-box;
 
 					&:not(.ui-iggrid-rowselector-class) {
-						padding: 7px 5px;
+						//padding: 7px 5px;
 					}
 				}
 

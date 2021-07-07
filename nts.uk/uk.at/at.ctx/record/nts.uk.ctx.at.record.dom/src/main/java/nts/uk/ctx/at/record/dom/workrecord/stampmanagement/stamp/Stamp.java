@@ -109,9 +109,9 @@ public class Stamp implements DomainAggregate {
 	 */
 	public WorkTimeInformation convertToAttendanceStamp(GeneralDate date) {
 
-		// 打刻。打刻日時から時 刻（日区分付き）を算出する
-		long diffTime = Math.abs(this.stampDateTime.date().getTime() - date.date().getTime());
-		int diffMin = (int) (diffTime / (60 * 1000));
+		// 打刻。打刻日時から時刻（日区分付き）を算出する
+		long diffTime = this.stampDateTime.date().getTime() - date.date().getTime();
+		int diffMin   = (int) (diffTime / (60 * 1000));
 		
 		// 打刻方法を打刻元情報に変換する
 		ReasonTimeChange reasonTimeChange = this.relieve.convertStampmethodtostampSourceInfo(date);

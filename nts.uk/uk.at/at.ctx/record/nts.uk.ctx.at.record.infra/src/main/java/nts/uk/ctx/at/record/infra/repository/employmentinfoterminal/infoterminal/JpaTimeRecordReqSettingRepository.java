@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -402,6 +403,19 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 	@Override
 	public void insert(TimeRecordReqSetting reqSetting) {
 		this.commandProxy().insert(toEntity(reqSetting));
+	}
+
+	@Override
+	public void insert(EmpInfoTerminalCode terCode, ContractCode contractCode) {
+		
+		String companyId   = AppContexts.user().companyId();
+		String companyCode = AppContexts.user().companyCode();
+		
+		KrcmtTrRequest entity = new KrcmtTrRequest(
+				new KrcmtTrRequestPK(contractCode.v(), terCode.v()),
+				companyId, companyCode,
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
+		this.commandProxy().insert(entity);
 	}
 
 }

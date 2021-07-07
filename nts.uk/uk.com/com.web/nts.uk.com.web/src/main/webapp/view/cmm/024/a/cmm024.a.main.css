@@ -148,3 +148,7 @@
 .fix1280.contents-area .panel-content .panel-right .panel-title .form-label {
     width: 100px;
 }
+
+.link-button {
+    color: #06c !important;
+}

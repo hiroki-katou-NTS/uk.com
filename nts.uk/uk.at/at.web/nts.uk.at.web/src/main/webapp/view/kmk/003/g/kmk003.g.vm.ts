@@ -35,9 +35,9 @@ module nts.uk.at.view.kmk003.g {
                 self.roundingValue = ko.observable(0);
 
                 self.calcMethodLst = ko.observableArray([
-                    new RadioBoxModel(0, nts.uk.resource.getText('KMK003_235')),
-                    new RadioBoxModel(1, nts.uk.resource.getText('KMK003_236')),
-                    new RadioBoxModel(2, nts.uk.resource.getText('KMK003_237'))
+                    new RadioBoxModel(1, nts.uk.resource.getText('KMK003_235')),
+                    new RadioBoxModel(2, nts.uk.resource.getText('KMK003_236')),
+                    new RadioBoxModel(0, nts.uk.resource.getText('KMK003_237'))
                 ]);
 
                 self.fixedCalcMethodLst = ko.observableArray([

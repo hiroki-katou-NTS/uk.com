@@ -26,10 +26,10 @@
 	margin-left: 80px;
 }
 .width-40 {
-    width: 35%;
+    width: 23%;
 }
 .width-40-sub{
-    width: calc(40% - 30px);
+    width: calc(40% - 80px);
 }
 
 .btn-apply-setting {
@@ -133,4 +133,11 @@
 #kdl023-holiday-warning-label-replace {
 	display: none;
 	height: 38px;
+}
+
+#cbb-daily-work-pattern,
+#cbb-work-type-statutory,
+#cbb-work-type-non-statutory,
+#cbb-work-type-holiday {
+	width: 225px !important;
 }

@@ -8,10 +8,10 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
             <div id="ruredLine"></div>
             <table id="kaf020-fixed-table">
                 <colgroup>
-                    <col width="200px"/>
+                    <col width="210px"/>
                     <col width="120px"/>
                     <col width="40px"/>
-                    <col width="300px"/>
+                    <col width="420px"/>
                 </colgroup>
                 <thead>
                 <tr>
@@ -149,7 +149,7 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                     value.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 1 ? vm.enableEdit(true) : vm.enableEdit(false);
                 }
             });
-            $('#kaf020-fixed-table').ntsFixedTable({width: 740});
+            $('#kaf020-fixed-table').ntsFixedTable({width: 790});
         }
     }
 

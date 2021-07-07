@@ -95,3 +95,8 @@ table#tbl-condition tr, table#tbl-grant-hd-set tr {
 .a7_10, .a7_14, .a7_18, a7_22 {
 	padding-right: 5px !important;
 }
+
+.radio-wrapper span {
+	width: 75px;
+	text-align: center;
+}

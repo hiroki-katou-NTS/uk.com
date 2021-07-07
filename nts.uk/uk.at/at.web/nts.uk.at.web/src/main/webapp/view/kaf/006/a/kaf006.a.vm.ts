@@ -111,13 +111,16 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         created(params: AppInitParam) {
             const vm = this;
             let dataTransfer: DataTransfer;
-            if (_.isNil(params)) {
-                dataTransfer = __viewContext.transferred.value; // from spr
-            }
-            if (!_.isNil(__viewContext.transferred.value)) {
-                vm.isFromOther = true;
-            }
-            sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
+			if(nts.uk.request.location.current.isFromMenu) {
+				sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');	
+			} else {
+				if(!_.isNil(__viewContext.transferred.value)) {
+					vm.isFromOther = true;
+					dataTransfer = __viewContext.transferred.value; // from spr		
+					params = __viewContext.transferred.value;
+				}
+			}
+
             let empLst: Array<string> = [],
                 dateLst: Array<string> = [];
             if (!_.isNil(_.get(dataTransfer, 'appDate'))) {
@@ -245,6 +248,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                 vm.endTime1(null);
                 vm.endTime2(null);
 
+                vm.data.selectedWorkTypeCD = null;
+                vm.data.selectedWorkTimeCD = null;
+
                 // vm.$errors("clear");
                 nts.uk.ui.errors.clearAll()
 
@@ -289,6 +295,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     if (data) {
                         $("#work-type-combobox").focus()
                         vm.fetchData(data);
+                        vm.selectedWorkTimeCD(null);
+                        vm.selectedWorkTimeName(null);
+                        vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", 0));
                         vm.appDispInfoStartupOutput(data.appDispInfoStartupOutput);
                         return data;
                     }
@@ -1292,7 +1301,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             if (vm.data && vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet && vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst) {
                 let targetWorkType = _.filter(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst, {'appType': 1});
                 if (targetWorkType.length > 0) {
-                    if (_.filter(targetWorkType, {'opHolidayAppType': 0}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 0})[0].opHolidayTypeUse) {
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 0}).length > 0 && !_.filter(targetWorkType, {'opHolidayAppType': 0})[0].opHolidayTypeUse) {
                         vm.condition1_0(true);
                     } else {
                         vm.condition1_0(false);
@@ -1301,7 +1310,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                         }));
                     }
 
-                    if (_.filter(targetWorkType, {'opHolidayAppType': 1}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 1})[0].opHolidayTypeUse) {
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 1}).length > 0 && !_.filter(targetWorkType, {'opHolidayAppType': 1})[0].opHolidayTypeUse) {
                         vm.condition1_1(true);
                     } else {
                         vm.condition1_1(false);
@@ -1310,7 +1319,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                         }));
                     }
 
-                    if (_.filter(targetWorkType, {'opHolidayAppType': 2}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 2})[0].opHolidayTypeUse) {
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 2}).length > 0 && !_.filter(targetWorkType, {'opHolidayAppType': 2})[0].opHolidayTypeUse) {
                         vm.condition1_2(true);
                     } else {
                         vm.condition1_2(false);
@@ -1319,7 +1328,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                         }));
                     }
 
-                    if (_.filter(targetWorkType, {'opHolidayAppType': 3}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 3})[0].opHolidayTypeUse) {
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 3}).length > 0 && !_.filter(targetWorkType, {'opHolidayAppType': 3})[0].opHolidayTypeUse) {
                         vm.condition1_3(true);
                     } else {
                         vm.condition1_3(false);
@@ -1328,7 +1337,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                         }));
                     }
 
-                    if (_.filter(targetWorkType, {'opHolidayAppType': 4}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 4})[0].opHolidayTypeUse) {
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 4}).length > 0 && !_.filter(targetWorkType, {'opHolidayAppType': 4})[0].opHolidayTypeUse) {
                         vm.condition1_4(true);
                     } else {
                         vm.condition1_4(false);
@@ -1337,7 +1346,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                         }));
                     }
 
-                    if (_.filter(targetWorkType, {'opHolidayAppType': 5}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 5})[0].opHolidayTypeUse) {
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 5}).length > 0 && !_.filter(targetWorkType, {'opHolidayAppType': 5})[0].opHolidayTypeUse) {
                         vm.condition1_5(true);
                     } else {
                         vm.condition1_5(false);
@@ -1346,7 +1355,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                         }));
                     }
 
-                    if (_.filter(targetWorkType, {'opHolidayAppType': 6}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 6})[0].opHolidayTypeUse) {
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 6}).length > 0 && !_.filter(targetWorkType, {'opHolidayAppType': 6})[0].opHolidayTypeUse) {
                         vm.condition1_6(true);
                     } else {
                         vm.condition1_6(false);

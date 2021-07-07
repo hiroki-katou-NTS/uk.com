@@ -5,7 +5,7 @@
 
 #screen-d .check-box-atr {
 	display:block;
-	padding-top: 9px;
+	padding-top: 5px;
 	margin-left: 60px;
 }
 
@@ -16,7 +16,6 @@
 
 #screen-d .radio-error {
 	margin-left: 90px;
-	margin-top: 5px;
 }
 
 .ntsRadioBox {
@@ -79,4 +78,7 @@ width: 500px;
 }
 html {
     overflow: hidden;
+}
+#dialog {
+	top: -5px;
 }

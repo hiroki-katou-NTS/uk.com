@@ -161,7 +161,7 @@ public class IntegrationOfDaily {
 	/**日別勤怠の応援作業時間 */
 	private List<OuenWorkTimeOfDailyAttendance> ouenTime = new ArrayList<>();
 	@Setter
-	/**日別勤怠の応援作業時間帯 */
+	/**応援時刻: 日別勤怠の応援作業時間帯 */
 	private List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = new ArrayList<>();
 	
 	private Optional<SnapShot> snapshot;

@@ -6,7 +6,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 930, height: 800 };</script>
+			<script>var dialogSize = { width: 930, height: 580 };</script>
 			<com:stylefile path="ccg013.c.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="ccg013.c.start.js" />
@@ -31,8 +31,7 @@
 										required: true,
 										value: nameTitleBar,
 										constraint: 'TitleBarName'
-									},
-									hasFocus: true" />
+									}" />
 							</td>
 							<td>
 								<div class="labelRight cellColor" data-bind="ntsFormLabel: { required: true }">
@@ -54,7 +53,7 @@
 							</td>
 						</tr>
 						<tr class="systemGroup">
-							<td>
+							<td class="flex valign-center">
 								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CCG013_47')}</div>
 							</td>
 							<td>

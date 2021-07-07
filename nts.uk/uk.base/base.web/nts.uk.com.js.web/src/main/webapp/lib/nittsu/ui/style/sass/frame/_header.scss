@@ -30,9 +30,10 @@ div#master-wrapper {
 			padding-left: 140px;
 			width: calc(100% - 200px);
 			word-break: break-all;
-			line-height: 24px;
+			line-height: 12px;
 			margin-top: 28px;
 			margin-bottom: 28px;
+			white-space: pre-wrap;
 
 			&.more-line {
 				margin-top: 16px;
@@ -208,14 +209,22 @@ div#master-wrapper {
 									}
 								}
 							}
+							
+							&>.divider-company:last-of-type {
+								border-bottom: none;
+							}
+
 						}
 					}
 				}
 
 				&.hover {
-					z-index: 99;
 					&>.menu-dropdown {
 						display: block;
+					}
+
+					&>.menu-item {
+						z-index: 1000;
 					}
 				}
 
@@ -224,7 +233,7 @@ div#master-wrapper {
 						width: 200px;
 					}
 				}
-	
+
 				&[data-column='2'] {
 					&>.menu-dropdown {
 						width: 410px;
@@ -286,17 +295,18 @@ div#master-wrapper {
 			position: absolute;
 			right: 0;
 			top: 0;
+			background-color: #127D09;
 			
 			&>div.menu-groups {
 				padding-left: 0px;
 				padding-right: 60px;
-				background-color: #127D09;
+				// background-color: #127D09;
 
 				&+div.avatar {
 					position: absolute;
 					width: 40px;
 					height: 40px;
-					top: 20px;
+					top: 10px;
 					right: 20px;
 				}
 				
@@ -336,20 +346,21 @@ div#master-wrapper {
 					position: absolute;
 					bottom: 0;
 					right: 0;
+					z-index: 1;
 				}
 			}
 			
 			&>.next-slider-area {
 				position: absolute;
 				height: 80px;
-    			width: 30px;
+				width: 30px;
 				z-index: 1000; 
 
 				&>.next-slider {
 					position: absolute; 
 					cursor: pointer; 
 					border-radius: 50%;
-					top: 30px;
+					top: 18px;
 					background-color: #2DCD3D;
 					transition: visibility 0s ease 0.1s;
 				}
@@ -367,7 +378,6 @@ div#master-wrapper {
 				line-height: 30px;
 				position: relative;
 				overflow: hidden;
-				cursor: pointer;
 				color: #2b2e44;
 				padding-right: 2px;
 				padding-left: 10px;

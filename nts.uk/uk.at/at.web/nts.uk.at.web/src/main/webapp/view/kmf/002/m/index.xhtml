@@ -1,0 +1,250 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.common.days.FourWeekDays
+				nts.uk.ctx.at.shared.dom.common.days.WeeklyDays
+			</com:ValidatorScript>
+
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmf002.m.style.css" />
+			<com:scriptfile path="kmf002.m.service.js" />
+			<com:scriptfile path="kmf002.m.vm.js" />
+			<com:scriptfile path="kmf002.m.start.js" />
+		</ui:define>
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="content">
+			<div id="functions-area">
+				<a class="goback"
+					data-bind="ntsLinkButton: { jump: '/view/kmf/002/g/index.xhtml' }"
+					tabindex="1">#{i18n.getText('KMF002_95')}</a>
+				<button class="proceed" data-bind="click: save" tabindex="2">#{i18n.getText('KMF002_2')}</button>
+			</div>
+
+			<div id="contents-area">
+
+				<div data-bind="with: holidaySetting">
+					<table id="table">
+						<!-- M2_1, M2_2  -->
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: {required: true}"
+									style="margin-right: 50px;">#{i18n.getText('KMF002_96')}</div>
+							</td>
+							<td><span tabindex="3" id="category"
+								data-bind="ntsSwitchButton: {
+												name: '#[KMF002_96]',
+												options: ko.observableArray([
+					                				{ code: 1, name: '#{i18n.getText('KMF002_97')}' },
+					                				{ code: 0, name: '#{i18n.getText('KMF002_99')}' }
+					            				]),
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: selectedCategory,
+												enable: true }">
+							</span></td>
+						</tr>
+
+						<!-- start 4 weeks and month-day  -->
+						<!-- M3_1, M3_2  -->
+						<tr data-bind="visible: is4weeksAndMonthDay">
+							<td>
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF002_100')}</div>
+							</td>
+							<td>
+								<div tabindex="4" id="radio-MD" 
+									data-bind="ntsRadioBoxGroup: {
+                                    name: '#{i18n.getText('KMF002_100')}',
+                                    options: [ { code: 0, name: '#{i18n.getText('KMF002_101')}' },
+                                            { code: 1, name: '#{i18n.getText('KMF002_102')}' }],
+                                    optionsValue: 'code',
+                                    optionsText: 'name',
+                                    value: selectedClassification}" />
+							</td>
+						</tr>
+
+						<!-- M4_1, M4_2, M4_3  -->
+						<tr data-bind="visible: is4weeksAndMonthDay">
+							<td>
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF002_103')}</div>
+							</td>
+							<td>
+								<div tabindex="5" id="MonthDays-MD"
+									data-bind="ntsMonthDays: {name: '#{i18n.getText('KMF002_103')}', value: monthDay, enable: true, required: true}">
+								</div> <label class="classM4_3">#{i18n.getText('KMF002_104')}</label>
+							</td>
+						</tr>
+
+						<!-- M6_1, M6_2, M6_3, M6_4  -->
+						<tr data-bind="visible: is4weeksAndMonthDay">
+							<td>
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF002_106')}</div>
+							</td>
+							<td>
+								<div style="display: inline;">
+									<input tabindex="6" id="numberEditor1-MD"
+										data-bind="ntsNumberEditor: {
+											value: holidayValue,
+											constraint: 'FourWeekDays',
+											name: '#[KMF002_106]',
+											required: true,
+											option: holidayOption,
+											enable: true}" />
+									<label>#{i18n.getText('KMF002_107')}</label>
+								</div>
+								<div tabindex="7"
+									data-bind="ntsCheckBox: { 
+																checked: nonStatutory, 
+																enable: true, 
+																text: '#{i18n.getText('KMF002_108')}' 
+															}"></div>
+							</td>
+						</tr>
+
+						<!-- M6_5  -->
+						<tr data-bind="visible: is4weeksAndMonthDay">
+							<td></td>
+							<td><label id="textM6_5">#{i18n.getText('KMF002_113')}</label></td>
+						</tr>
+
+						<!-- M7_1, M7_2, M7_3  -->
+						<tr data-bind="visible: is4weeksAndMonthDay">
+							<td>
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF002_109')}</div>
+							</td>
+							<td>
+								<div style="display: inline;">
+									<input tabindex="8" id="numberEditor2-MD"
+										data-bind="ntsNumberEditor: {
+											value: addHolidayValue,
+											constraint: 'WeeklyDays',
+											name: '#[KMF002_109]',
+											required: true,
+											option: addHolidayOption,
+											enable: true}" />
+								</div> <label>#{i18n.getText('KMF002_107')}</label>
+							</td>
+						</tr>
+						<!-- end 4 weeks and month-day  -->
+
+						<!-- start 4 weeks and year-month-day  -->
+						<!-- M3_1, M3_2  -->
+						<tr data-bind="visible: is4weeksAndMonthDayYear">
+							<td>
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF002_100')}</div>
+							</td>
+							<td>
+								<div id="radio-YMD" tabindex="4"
+									data-bind="ntsRadioBoxGroup: {
+                                    name: '#{i18n.getText('KMF002_100')}',
+                                    options: [ { code: 0, name: '#{i18n.getText('KMF002_101')}' },
+                                            { code: 1, name: '#{i18n.getText('KMF002_102')}' }],
+                                    optionsValue: 'code',
+                                    optionsText: 'name',
+                                    value: selectedClassification}" />
+							</td>
+						</tr>
+
+						<!-- M5_1, M5_2  -->
+						<tr data-bind="visible: is4weeksAndMonthDayYear">
+							<td>
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF002_105')}</div>
+							</td>
+							<td>
+								<div tabindex="5" id="datePicker-YMD"
+									data-bind="ntsDatePicker: { 
+											value: standardDate, 
+											dateFormat: 'YYYY/MM/DD', 
+											name: '#[KMF002_105]',
+											required: true }"></div>
+							</td>
+						</tr>
+
+						<!-- M5 -->
+						<tr data-bind="visible: is4weeksAndMonthDayYear">
+							<td>
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF002_106')}</div>
+							</td>
+							<td>
+								<div style="display: inline;">
+									<input tabindex="6" id="numberEditor-YMD"
+										data-bind="ntsNumberEditor: {
+											value: holidayValue,
+											constraint: 'FourWeekDays',
+											name: '#[KMF002_106]',
+											required: true,
+											option: holidayOption,
+											enable: true}" />
+									<label>#{i18n.getText('KMF002_107')}</label>
+								</div>
+								<div tabindex="7"
+									data-bind="ntsCheckBox: { 
+																checked: nonStatutory, 
+																enable: true, 
+																text: '#{i18n.getText('KMF002_108')}' 
+															}"></div>
+							</td>
+						</tr>
+
+						<!-- M6_5  -->
+						<tr data-bind="visible: is4weeksAndMonthDayYear">
+							<td></td>
+							<td><label id="textM6_5">#{i18n.getText('KMF002_113')}</label></td>
+						</tr>
+						<!-- end 4 weeks and year-month-day  -->
+
+						<!-- start 1 week  -->
+						<!-- M8  -->
+						<tr data-bind="visible: is1week">
+							<td>
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF002_106')}</div>
+							</td>
+							<td>
+								<div style="display: inline;">
+									<input tabindex="4" id="numberEditor-1week" 
+										data-bind="ntsNumberEditor: {
+											value: holidayValue,
+											constraint: 'WeeklyDays',
+											name: '#[KMF002_106]',
+											required: true,
+											option: holidayOption,
+											enable: true}" />
+									<label>#{i18n.getText('KMF002_107')}</label>
+								</div>
+								<div tabindex="5"
+									data-bind="ntsCheckBox: { 
+																checked: nonStatutory, 
+																enable: true, 
+																text: '#{i18n.getText('KMF002_108')}' 
+															}"></div>
+							</td>
+						</tr>
+
+						<!-- M6_5  -->
+						<tr data-bind="visible: is1week">
+							<td></td>
+							<td><label id="textM6_5">#{i18n.getText('KMF002_114')}</label></td>
+						</tr>
+
+						<!-- M8_1,M8_2,M8_3  -->
+						<tr data-bind="visible: is1week">
+							<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF002_110')}</div></td>
+							<td><label data-bind="text: startingDay"></label>　　<label data-bind="text: $parent.description"></label></td>
+						</tr>
+						<!-- end 1 week  -->
+
+					</table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -19,8 +19,7 @@ th {
 .div-table {
 	width: 775px;
     display: block;
-    
-    height: 350px;
+    height: 340px;
     margin: 20px;
 }
 thead, tbody {
@@ -30,9 +29,12 @@ thead, tbody {
 thead label {
 	font-weight: bold;
 }
-tbody {
-	height: 410px;
-	overflow-y: scroll;
+#cmm-001-e-table {
+  height: 315px !important;
+}
+#cmm-001-e-table tbody {
+    height: 250px !important;
+    overflow-y: scroll;
     overflow-x: hidden;
 }
 .selected { background-color: #CEE6FF; }

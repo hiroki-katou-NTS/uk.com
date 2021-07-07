@@ -36,8 +36,8 @@ module nts.uk.at.view.kmk012.a {
                 ]);
 
                 self.useClassification = ko.observableArray([
-                    { code: '1', name: nts.uk.resource.getText("KMK012_3") },
-                    { code: '0', name: nts.uk.resource.getText("KMK012_4") }
+                    { code: 1, name: nts.uk.resource.getText("KMK012_3") },
+                    { code: 0, name: nts.uk.resource.getText("KMK012_4") }
                 ]);
                 self.selectCodeLstClosure = ko.observable(new ClosureHistoryFindDto());
                 self.selectCodeLstClosureHistory = ko.observable(new ClosureHistoryMDto());

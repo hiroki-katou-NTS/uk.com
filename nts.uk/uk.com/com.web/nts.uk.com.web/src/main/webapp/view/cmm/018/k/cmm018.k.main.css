@@ -51,9 +51,7 @@ table.ntsSwapGrid tbody tr td {
 }
 .upDown-container {
 	padding-left: 10px;
-	vertical-align: top;
-	padding-top: 85px !important;
-	height: 180px !important;
+	height: 260px !important;
 }
 /*fix tam*/
 #swap-list-move-data{
@@ -66,4 +64,30 @@ table.ntsSwapGrid tbody tr td {
 }
 html{
 	overflow:hidden;
+}
+
+.titleSelected {
+	width: 60px;
+}
+
+#typeSetting {
+	float: right;
+	margin-right: 37px;
+}
+
+.swap-btn {
+	width: 75px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#prev-next-button {
+	width: 75px;
+	margin-top: 150px;
+	margin-left: 22px !important;
+}
+
+#selected-approver {
+	margin-left: 23px !important;
 }

@@ -32,7 +32,7 @@
                 <!-- B1_4: Button Export Excel -->
                 <button tabindex="5" data-bind="click: downloadExcel">#{i18n.getText('KSM003_45')}</button>
             </div>
-            <div id="content-area" class="ksm003-content-area">
+            <div id="contents-area">
                 <div id="left-content" style="float: left" class="bg-green caret-right caret-background">
                     <div style="float: left; margin: 20px">
                         <!-- B2_2: List Divergence Reason -->
@@ -70,7 +70,7 @@
                                           required: true}" />
                     </div>
                     <!-- Button -->
-                    <div>
+                    <div style="margin-bottom: 10px;">
                         <Button tabindex="9" class="button"
                             data-bind="click: addNewItem, enable: lessThan99Items()">#{i18n.getText('KSM003_4')}</Button>
                         <Button tabindex="10" class="button danger"

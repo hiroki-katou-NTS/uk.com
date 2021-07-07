@@ -14,7 +14,7 @@ module nts.uk.request {
     }
 
     export var STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
-
+    export var IS_FROM_MENU = "nts.uk.ui.FROM_MENU"
     export type WebAppId = 'comjs' | 'com' | 'pr' | 'at' | 'hr';
     export const WEB_APP_NAME = {
         comjs: 'nts.uk.com.js.web',
@@ -105,10 +105,15 @@ module nts.uk.request {
 
         rawUrl: string;
         queryString: QueryString;
+        isFromMenu: boolean;
 
         constructor(url: string) {
             this.rawUrl = url.split('?')[0];
             this.queryString = QueryString.parseUrl(url);
+            if (!this.isFromMenu && localStorage.nativeStorage.hasOwnProperty(IS_FROM_MENU)) {
+                this.isFromMenu = localStorage.getItem(IS_FROM_MENU).get() == "true";  
+            }
+            localStorage.setItem(IS_FROM_MENU, "false");
         }
 
         serialize() {

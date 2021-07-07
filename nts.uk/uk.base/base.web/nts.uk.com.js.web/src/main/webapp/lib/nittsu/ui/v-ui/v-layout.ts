@@ -262,6 +262,11 @@ module nts.uk.ui.layout {
 
             element.removeAttribute('data-bind');
 
+            let ntsFunctionPanel = $(element).find(".ntsFunctionPanel");
+            if (ntsFunctionPanel.length > 0) {
+                $("#master-content").addClass("overflow-visible");
+            }
+
             return { controlsDescendantBindings: false };
         }
     }

@@ -28,8 +28,7 @@
 	               				  placeHolder: placeHolders, mode: 'igGrid'}" />
 					<table id="multi-list" tabindex="0"
 						data-bind="ntsGridList: {	
-								name: '#[KDL044_11]',  
-								height: 450,
+								name: '#[KDL044_11]',
 								options: listShifuto,
 								optionsValue: 'shiftMasterCode',
 								columns: columns,
@@ -41,8 +40,10 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="0" class="x-large proceed" data-bind="click: decide">#{i18n.getText('KDL044_9')}</button>
-				<button tabindex="0" data-bind="click: closeDialog">#{i18n.getText('KDL044_10')}</button>
+				<div class="div-func-area">
+          <button tabindex="0" class="x-large proceed" data-bind="click: decide">#{i18n.getText('KDL044_9')}</button>
+				  <button tabindex="0" data-bind="click: closeDialog">#{i18n.getText('KDL044_10')}</button>
+        </div>
 			</div>
 		</ui:define>
 	</ui:composition>

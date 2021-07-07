@@ -1011,7 +1011,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 							// neu item loai thoi gian thi format lai dinh dang
 							int minute = 0;
 							if (item.getValue() != null) {
-								minute = Integer.parseInt(item.getValue());
+								Double data= Double.parseDouble(item.getValue());
+								minute = data.intValue();
 							}
 							int hours = Math.abs(minute) / 60;
 							int minutes = Math.abs(minute) % 60;
