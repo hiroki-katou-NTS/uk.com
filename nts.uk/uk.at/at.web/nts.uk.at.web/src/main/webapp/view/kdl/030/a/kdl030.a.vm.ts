@@ -19,17 +19,16 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 
         created() {
             const vm = this;
+			vm.$blockui('show');
             let param = getShared("KDL030_PARAM");
             vm.appIDLst = param.appIDLst;
 			vm.isMultiEmp = param.isMultiEmp;
             //from screen A
-            if (!_.isNil(param.employeeInfoLst)) {
-                if (vm.isMultiEmp) {
-                    vm.isExpandMode = true;
-                }
-                if (param.employeeInfoLst.length == 1) {
-                    vm.isExpandMode = !(param.employeeInfoLst[0].scd == __viewContext.user.employeeCode);
-                }
+            if (vm.isMultiEmp) {
+                vm.isExpandMode = true;
+            }
+            if (!_.isNil(param.employeeInfoLst) && param.employeeInfoLst.length == 1) {
+                vm.isExpandMode = !(param.employeeInfoLst[0].scd == __viewContext.user.employeeCode);
             }
             //from screenB
             if (!_.isNil(param.appDispInfoStartupOutput)) {
@@ -80,6 +79,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                     } else if ($('.switchBtn').length > 0) {
                         $('.switchBtn')[0].focus();
                     }
+					vm.$blockui('hide');
                 });
             }
         }
