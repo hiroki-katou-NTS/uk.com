@@ -2259,7 +2259,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 || ( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN], operator) == -1
                     && minValue > maxValue ))
             {
-                $(el).ntsError('set', { messageId: "Msg_927" });
+                $(el).ntsError('set', { messageId: "Msg_836" });
             }
             return;
         }
