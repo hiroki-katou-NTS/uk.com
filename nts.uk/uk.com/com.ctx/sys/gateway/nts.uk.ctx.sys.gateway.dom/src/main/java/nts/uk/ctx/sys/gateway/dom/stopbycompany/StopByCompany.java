@@ -23,13 +23,13 @@ public class StopByCompany extends AggregateRoot {
 	/** システム利用状態 */
 	private SystemStatusType systemStatus;
 
-	/** 利用停止のメッセージ */
+	/** 停止予告のメッセージ */
 	private StopMessage stopMessage;
 
 	/** 利用停止モード */
 	private StopModeType stopMode;
 
-	/** 停止予告のメッセージ */
+	/** 利用停止のメッセージ */
 	private StopMessage usageStopMessage;
 
 	public static StopByCompany createFromJavaType(String contractCd, String companyCd, Integer systemStatus,

@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.gateway.app.command.login.password;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -7,8 +9,8 @@ import javax.inject.Inject;
 
 import nts.arc.task.tran.TransactionService;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationResult;
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateWithEmployeeCode;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationResult;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.IdentificationResult;
 
@@ -87,17 +89,18 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	 * ビルトインユーザのための処理を組み込むためにoverride
 	 */
 	@Override
-	protected void authorize(Require require, AuthenticationResult authen) {
+	protected Optional<String> authorize(Require require, AuthenticationResult authen) {
 		
 		if (authen.isBuiltInUser()) {
 			loginBuiltInUser.login(
 					require,
 					authen.getTenantCodeForBuiltInUser(),
 					authen.getCompanyIdForBuiltInUser());
+			return Optional.empty();
 		}
 		
 		// 通常はsuper側に任せる
-		super.authorize(require, authen);
+		return super.authorize(require, authen);
 	}
 	
 	/**
@@ -120,8 +123,8 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	 * ログイン成功時の処理
 	 */
 	@Override
-	protected CheckChangePassDto loginCompleted(Require require, AuthenticationResult authen) {
-		return CheckChangePassDto.successToAuthPassword(authen);
+	protected CheckChangePassDto loginCompleted(Require require, AuthenticationResult authen, Optional<String> msg) {
+		return CheckChangePassDto.successToAuthPassword(authen, msg);
 	}
 
 	public static interface Require extends PasswordAuthenticateWithEmployeeCode.Require,

@@ -1,7 +1,10 @@
 package nts.uk.ctx.sys.gateway.dom.login;
 
+import java.util.Optional;
+
 import lombok.val;
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.sys.gateway.dom.outage.CheckSystemAvailability;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
 
@@ -10,16 +13,18 @@ import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
  */
 public class CheckIfCanLogin {
 
-	public static void check(Require require, IdentifiedEmployeeInfo identified) {
+	public static Optional<String> check(Require require, IdentifiedEmployeeInfo identified) {
 		
 		// 会社が廃止されていないかチェックする
 		checkAboloshCompany(require, identified);
 		
 		// システムが利用できるかチェックする
-		checkAbailableSystem(require, identified);
+		Optional<String> msg = checkAbailableSystem(require, identified);
 		
 		// ログインできる社員かチェックする
 		CheckEmployeeAvailability.check(require, identified);
+		
+		return msg;
 	}
 	
 	/**
@@ -40,15 +45,17 @@ public class CheckIfCanLogin {
 	 * @param require
 	 * @param identified
 	 */
-	private static void checkAbailableSystem(Require require, IdentifiedEmployeeInfo identified) {
+	private static Optional<String> checkAbailableSystem(Require require, IdentifiedEmployeeInfo identified) {
 		val status = CheckSystemAvailability.isAvailable(require, 
 				identified.getTenantCode(), 
 				identified.getCompanyId(), 
 				identified.getUserId());
 		
 		if (!status.isAvailable()) {
-			throw new BusinessException("Msg_285");
+			throw new BusinessException(new RawErrorMessage(status.getMessage().get()));
 		}
+		
+		return status.getMessage();
 	}
 	
 	public static interface Require extends

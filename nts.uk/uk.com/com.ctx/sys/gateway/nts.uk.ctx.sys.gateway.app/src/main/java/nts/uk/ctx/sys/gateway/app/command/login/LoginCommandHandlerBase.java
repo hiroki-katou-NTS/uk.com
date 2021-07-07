@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.gateway.app.command.login;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -66,10 +68,10 @@ public abstract class LoginCommandHandlerBase<
 		}
 		
 		// 認可
-		authorize(require, authen);
+		Optional<String> msg = authorize(require, authen);
 
 		// ログイン成功
-		return loginCompleted(require, authen);
+		return loginCompleted(require, authen, msg);
 	}
 	
 	/**
@@ -79,13 +81,15 @@ public abstract class LoginCommandHandlerBase<
 	 * @param authen
 	 * @return
 	 */
-	protected void authorize(Req require, Authen authen) {
+	protected Optional<String> authorize(Req require, Authen authen) {
 		
 		// ログインできるかチェックする
-		CheckIfCanLogin.check(require, authen.getIdentified());
+		Optional<String> msg = CheckIfCanLogin.check(require, authen.getIdentified());
 		
 		// セッション構築
 		require.authorizeLoginSession(authen.getIdentified());
+		
+		return msg;
 	}
 	
 	/**
@@ -115,7 +119,7 @@ public abstract class LoginCommandHandlerBase<
 	 * @param authen
 	 * @return
 	 */
-	protected abstract Result loginCompleted(Req require, Authen authen);
+	protected abstract Result loginCompleted(Req require, Authen authen, Optional<String> msg);
 	
 	
 	public static interface TenantAuth {
