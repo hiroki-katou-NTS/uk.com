@@ -54,7 +54,7 @@ public class CancelSupportStartEndTest {
 				.getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);// 時刻変更手段
 
 		assertThat(dailyApp.getOuenTimeSheet().get(0).getWorkContent().getWorkplace().getWorkLocationCD())
-				.isNull();// 勤務場所コード
+				.isEmpty();// 勤務場所コード
 
 		/************************************************************************************************/
 		// 開始終了区分が終了
@@ -76,7 +76,7 @@ public class CancelSupportStartEndTest {
 				.getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);// 時刻変更手段
 
 		assertThat(dailyApp2.getOuenTimeSheet().get(0).getWorkContent().getWorkplace().getWorkLocationCD())
-				.isNull();// 勤務場所コード
+				.isEmpty();// 勤務場所コード
 	}
 
 }

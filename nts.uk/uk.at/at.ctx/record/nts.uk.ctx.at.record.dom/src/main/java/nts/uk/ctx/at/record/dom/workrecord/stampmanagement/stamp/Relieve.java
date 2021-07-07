@@ -1,7 +1,13 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainValue;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 
 /**
  * VO : 打刻する方法
@@ -29,6 +35,17 @@ public class Relieve implements DomainValue {
 		super();
 		this.authcMethod = authcMethod;
 		this.stampMeans = stampMeans;
+	}
+	
+	// 「１」打刻方法を打刻元情報に変換する
+	// thuật toán này tạm thời fix cứng output( xác nhận với Tín rồi).
+	public ReasonTimeChange convertStampmethodtostampSourceInfo(GeneralDate referenceDate) {
+		
+		// 「打刻.打刻する方法」を確認する 
+		
+		// 時刻変更理由を判断
+		ReasonTimeChange reasonTimeChange =  new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT));
+		return reasonTimeChange;
 	}
 	
 }

@@ -40,8 +40,8 @@ module nts.uk.at.view.kmw005.b {
                 self.lockHist = new ActualLockHist;
                 self.lockHistColumn = ko.observableArray([
                     { headerText: getText(''), key: 'closureId', hide: true },
-                    { headerText: getText('KMW005_20'), key: 'lockDateTime', width: 170 },
-                    { headerText: getText('KMW005_21'), key: 'updater', width: 130 },
+                    { headerText: getText('KMW005_20'), key: 'lockDateTime', width: 190 },
+                    { headerText: getText('KMW005_21'), key: 'updater', width: 150 },
                     { headerText: getText('KMW005_26'), key: 'targetMonth', width: 80 },
                     { headerText: getText('KMW005_22'), key: 'dailyLockState', width: 120, formatter: lockIcon },
                     { headerText: getText('KMW005_23'), key: 'monthlyLockState', width: 120, formatter: lockIcon }

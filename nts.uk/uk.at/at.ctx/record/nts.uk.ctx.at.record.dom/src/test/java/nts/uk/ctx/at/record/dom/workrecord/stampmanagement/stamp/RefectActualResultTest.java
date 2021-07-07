@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
+import java.util.Optional;
+
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
@@ -22,14 +25,16 @@ public class RefectActualResultTest {
 
 	@Test
 	public void testRefectActualResult() {
-		String cardNumberSupport = "cardNumberSupport";//dummy
+		Integer cardNumberSupport = 9999;//dummy
 		WorkLocationCD workLocationCD = new WorkLocationCD("workLocationCD");//dummy
 		WorkTimeCode workTimeCode = new WorkTimeCode("workTimeCode");//dummy
 		OvertimeDeclaration overtimeDeclaration = new OvertimeDeclaration(new AttendanceTime(1),//dummy
 				new AttendanceTime(10));//dummy
-		RefectActualResult data = new RefectActualResult(cardNumberSupport, workLocationCD, workTimeCode,
-				overtimeDeclaration);
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(Optional.empty(), Optional.empty(),
+				Optional.of(workLocationCD), 
+				Optional.of(new SupportCardNumber(cardNumberSupport)));
+		
+		RefectActualResult data = new RefectActualResult(workInformationStamp, workTimeCode, overtimeDeclaration);
 		NtsAssert.invokeGetters(data);
 	}
-
 }

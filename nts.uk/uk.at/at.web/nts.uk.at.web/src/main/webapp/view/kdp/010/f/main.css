@@ -1,0 +1,17 @@
+.message-content {
+	width: 300px !important;
+}
+
+.small {
+	margin-left: 246px;
+}
+
+.text-adt{
+	margin-left: 10px;
+}
+.twoColunm div.inline-display:nth-child(1) {
+	vertical-align: top;	
+}
+.twoColunm div.inline-display:nth-child(2) .row-label{
+	width: 110px;
+}

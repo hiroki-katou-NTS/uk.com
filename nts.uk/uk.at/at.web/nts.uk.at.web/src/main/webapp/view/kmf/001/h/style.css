@@ -1,6 +1,6 @@
 @CHARSET "UTF-8";
 
-.contents-area {
+#contents-area {
 	margin-top: 20px;
 	margin-left: 50px;
 	min-width: 560px;
@@ -27,14 +27,25 @@
 }
 
 #right-content {
-	padding-left: 30px;
 	padding-top: 15px;
 	width: 600px;
 	vertical-align: top;
 }
 
 .set-row {
-	margin-left: -134px;
+	margin-left: -90px;
 	margin-top: 43px;
-	width: 143%;
+	width: 550px;
+}
+
+.col-label {
+  width: 150px;
+}
+
+.setting-zone {
+  margin-left: 50px;
+}
+
+.setting-zone > .flex.valign-center {
+  margin-top: 15px;
 }

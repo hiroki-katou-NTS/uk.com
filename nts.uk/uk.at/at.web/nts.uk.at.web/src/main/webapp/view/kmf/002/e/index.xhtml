@@ -6,21 +6,80 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-	<ui:composition >
-		<div class="sidebar-content-header">
-			<span>#{i18n.getText('Com_Company')}</span>
-   			<!-- E1_1 -->
-   			<button class="proceed" tabindex="1" data-bind="click: save, enable: enableSave">#{i18n.getText('KMF002_2')}</button>
-   			<!-- E1_2 -->
-   			<button class="danger" tabindex="2" data-bind="click: deleteObj, enable: enableDelete">#{i18n.getText('KMF002_11')}</button>
-   			
-   			<button tabindex="3" id = "opencdl028Dialog" data-bind="click: opencdl028Dialog2">#{i18n.getText('KSM004_100')}</button>
-   			
-		</div>
-		
-		<div id="scrE" class="contents-area" data-bind="with: commonTableMonthDaySet">
-			<ui:include src="../base.xhtml"></ui:include>
-		</div>
+	<ui:composition template="../../../../master/sidebar.xhtml">
+		<ui:define name="sidebar-head">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekNumberOfDay
+				nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.FourWeekDay
+				nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.MonthlyNumberOfDays
+			</com:ValidatorScript>
+			
+			<com:scriptfile set="IGNITE" />
+
+			
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			
+			<com:scriptfile path="../commonTableMonthDaySet.js" />
+			
+			<com:stylefile path="../c/kmf002.c.main.css" />
+			<com:scriptfile path="../c/kmf002.c.service.js" />
+			<com:scriptfile path="../c/kmf002.c.vm.js" />
+			
+			<com:stylefile path="../b/kmf002.b.main.css" />
+			<com:scriptfile path="../b/kmf002.b.service.js" />
+			<com:scriptfile path="../b/kmf002.b.vm.js" />
+			
+			<com:stylefile path="../d/kmf002.d.main.css" />
+			<com:scriptfile path="../d/kmf002.d.service.js" />
+			<com:scriptfile path="../d/kmf002.d.vm.js" />
+			
+			<com:stylefile path="kmf002.e.main.css" />
+			<com:scriptfile path="kmf002.e.service.js" />
+			<com:scriptfile path="kmf002.e.vm.js" />			
+			
+			<com:stylefile path="kmf002.sidebar.main.css" />
+			<com:scriptfile path="kmf002.sidebar.service.js" />
+			<com:scriptfile path="kmf002.sidebar.vm.js" />
+			<com:scriptfile path="kmf002.sidebar.start.js" />
+			
+		</ui:define>
+		<ui:define name="sidebar">
+			<ul tabindex="1" class="navigator">
+				<!-- <li data-bind="click: onSelectTabA"><a tabindex="-1"
+					href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('KMF002_30')}</a></li> -->
+				<li data-bind="click: onSelectTabE"><a tabindex="-1"
+					href="#tabpanel-1" role="tab-navigator">#{i18n.getText('Com_Company')}</a></li>
+				<li data-bind="click: onSelectTabB"><a tabindex="-1"
+					href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
+				<li data-bind="click: onSelectTabD"><a tabindex="-1"
+					href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Employment')}</a></li>
+				<li data-bind="click: onSelectTabC"><a tabindex="-1"
+					href="#tabpanel-4" role="tab-navigator">#{i18n.getText('Com_Person')}</a></li>
+				
+			</ul>
+		</ui:define>
+		<ui:define name="sidebar-content">
+			<!-- <div id="tabpanel-1" role="tabpanel" data-bind="">
+				<ui:include src="../a/a_index.xhtml" />
+			</div> -->
+			<div id="tabpanel-1" role="tabpanel" data-bind="with: screenE()">
+				<ui:include src="e.xhtml" />
+			</div>
+			<div id="tabpanel-2" role="tabpanel" data-bind="with: screenB()">
+				<ui:include src="../b/index.xhtml" />
+			</div>
+			<div id="tabpanel-3" role="tabpanel" data-bind="with: screenD()">
+				<ui:include src="../d/index.xhtml" />
+			</div>
+			<div id="tabpanel-4" role="tabpanel" data-bind="with: screenC()">
+				<ui:include src="../c/index.xhtml" />
+			</div>
+			
+		</ui:define>
 	</ui:composition>
 </body>
 </html>

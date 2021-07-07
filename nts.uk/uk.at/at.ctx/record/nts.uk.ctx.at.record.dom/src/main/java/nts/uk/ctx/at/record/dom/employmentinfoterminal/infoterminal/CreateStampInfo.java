@@ -4,12 +4,12 @@ import java.util.Optional;
 
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 
 /**
  * @author ThanhNX
- *
- *         打刻情報の作成
+ * 打刻情報の作成
  */
 @Value
 public class CreateStampInfo implements DomainValue {
@@ -28,4 +28,10 @@ public class CreateStampInfo implements DomainValue {
 	 * 勤務場所コード
 	 */
 	private final Optional<WorkLocationCD> workLocationCd;
+	
+	/**
+	 * 設置職場ID
+	 * update ver3
+	 */
+	private final Optional<WorkplaceId> workPlaceId;
 }

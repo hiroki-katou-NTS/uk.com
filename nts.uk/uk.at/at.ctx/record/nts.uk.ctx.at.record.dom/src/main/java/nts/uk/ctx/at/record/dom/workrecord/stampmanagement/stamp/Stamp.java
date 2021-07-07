@@ -5,11 +5,16 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * AR : 打刻
@@ -66,10 +71,10 @@ public class Stamp implements DomainAggregate {
 	private boolean reflectedCategory;
 
 	/**
-	 * 打刻場所情報
+	 * 打刻位置情報
 	 */
 	@Getter
-	private final Optional<StampLocationInfor> locationInfor;
+	private final Optional<GeoCoordinate> locationInfor;
 
 	// tạo tạm để lưu biến TimeWithDayAttr
 	@Getter
@@ -86,7 +91,7 @@ public class Stamp implements DomainAggregate {
 	 * @param locationInfor
 	 */
 	public Stamp(ContractCode contractCode, StampNumber cardNumber, GeneralDateTime stampDateTime, Relieve relieve,
-			StampType type, RefectActualResult refActualResults, Optional<StampLocationInfor> locationInfor) {
+			StampType type, RefectActualResult refActualResults, Optional<GeoCoordinate> locationInfor) {
 		super();
 		this.contractCode = contractCode; //ver2　属性追加
 		this.cardNumber = cardNumber;
@@ -96,6 +101,25 @@ public class Stamp implements DomainAggregate {
 		this.refActualResults = refActualResults;
 		this.reflectedCategory = false;
 		this.locationInfor = locationInfor;
+	}
+	
+	/**
+	 * [2] 勤怠打刻に変換する
+	 * @param referenceDate
+	 */
+	public WorkTimeInformation convertToAttendanceStamp(GeneralDate date) {
+
+		// 打刻。打刻日時から時刻（日区分付き）を算出する
+		long diffTime = this.stampDateTime.date().getTime() - date.date().getTime();
+		int diffMin   = (int) (diffTime / (60 * 1000));
+		
+		// 打刻方法を打刻元情報に変換する
+		ReasonTimeChange reasonTimeChange = this.relieve.convertStampmethodtostampSourceInfo(date);
+		
+		// 勤怠打刻を作成する
+		WorkTimeInformation workTimeInformation = new WorkTimeInformation(reasonTimeChange, new TimeWithDayAttr(diffMin));
+		
+		return workTimeInformation;
 	}
 
 	public void setAttendanceTime(AttendanceTime attendanceTime) {

@@ -267,7 +267,7 @@ module nts.uk.at.kaf021.c {
             // C2_2
             columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'workplaceName', dataType: 'string', width: '105px', ntsControl: "Label" });
             // C2_3
-            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employee', dataType: 'string', width: '105px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employee', dataType: 'string', width: '115px', ntsControl: "Label" });
             // C2_4
             columns.push({ headerText: vm.$i18n("KAF021_2"), key: 'appType', dataType: 'string', width: '70px', ntsControl: "Label" });
             // C2_5
@@ -368,15 +368,28 @@ module nts.uk.at.kaf021.c {
         getHeaderStyles(): Array<any> {
             const vm = this;
             return [
-                { key: "monthAverage2Str", colors: ['padding-12'] },
-                { key: "monthAverage3Str", colors: ['padding-12'] },
-                { key: "monthAverage4Str", colors: ['padding-12'] },
-                { key: "monthAverage5Str", colors: ['padding-12'] },
-                { key: "monthAverage6Str", colors: ['padding-12'] },
-                { key: "exceededNumber", colors: ['padding-5'] },
+                { key: "checked", colors: ["#CFF1A5"] },
+                { key: "workplaceName", colors: ["#CFF1A5"] },
+                { key: "employee", colors: ["#CFF1A5"] },
+                { key: "appType", colors: ["#CFF1A5"] },
+                { key: "month", colors: ["#CFF1A5"] },
+                { key: "year", colors: ["#CFF1A5"] },
+                { key: "monthAverage2Str", colors: ['#CFF1A5'] },
+                { key: "monthAverage3Str", colors: ['#CFF1A5'] },
+                { key: "monthAverage4Str", colors: ['#CFF1A5'] },
+                { key: "monthAverage5Str", colors: ['#CFF1A5'] },
+                { key: "monthAverage6Str", colors: ['#CFF1A5'] },
+                { key: "exceededNumber", colors: ['#CFF1A5'] },
                 { key: "currentMax", colors: ['#F8EFD4'] },
                 { key: "newMax", colors: ['#F8EFD4'] },
                 { key: "reason", colors: ['#F8EFD4'] },
+                { key: "comment", colors: ["#CFF1A5"] },
+                { key: "applicant", colors: ["#CFF1A5"] },
+                { key: "inputDateStr", colors: ["#CFF1A5"] },
+                { key: "approver", colors: ["#CFF1A5"] },
+                { key: "approverStatusStr", colors: ["#CFF1A5"] },
+                { key: "confirmer", colors: ["#CFF1A5"] },
+                { key: "confirmStatusStr", colors: ["#CFF1A5"] },
             ]
         }
 

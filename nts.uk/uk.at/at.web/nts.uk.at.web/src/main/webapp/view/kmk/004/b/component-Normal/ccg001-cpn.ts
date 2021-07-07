@@ -30,6 +30,7 @@ module nts.uk.at.view.kmk004.b {
 			vm.params = params;
 			vm.selectedCode = params.selectedCode;
 			vm.isReload = params.isReload;
+			const date = moment(new Date()).toDate();
 
 			$('#com-ccg001')
 				.ntsGroupComponent({
@@ -45,9 +46,9 @@ module nts.uk.at.view.kmk004.b {
 					periodFormatYM: false,
 
 					/** Required parameter */
-					baseDate: ko.observable(moment().format(DATE_FORMAT)),
-					periodStartDate: ko.observable(new Date()),
-					periodEndDate: ko.observable(new Date()),
+					baseDate: date,
+					periodStartDate: date,
+					periodEndDate: date,
 					inService: true,
 					leaveOfAbsence: true,
 					closed: true,

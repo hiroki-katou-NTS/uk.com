@@ -349,7 +349,8 @@ module nts.uk.com.view.cmm013.a {
                 if (!_self.validate()) {
                     return;
                 }
-                $('.nts-input').ntsEditor('validate');
+                $('#job-title-code').trigger('validate');
+                $('#job-title-name').trigger('validate');
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }

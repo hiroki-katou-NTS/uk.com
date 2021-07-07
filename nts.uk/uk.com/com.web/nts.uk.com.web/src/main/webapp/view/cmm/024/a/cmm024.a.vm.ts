@@ -12,7 +12,7 @@ module nts.uk.com.view.cmm024.a {
 	@bean()
 	class ViewModel extends ko.ViewModel {
 
-		ntsHeaderColumns: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([]);
+		ntsHeaderColumns: KnockoutObservableArray<any> = ko.observableArray([]);
 
 		//Screen A
 		modelA: KnockoutObservable<Model> = ko.observable(new Model());
@@ -77,7 +77,9 @@ module nts.uk.com.view.cmm024.a {
 			vm.companyScheduleHistoryListing();
 
 			let company = JSON.parse(nts.uk.sessionStorage.nativeStorage.getItem('nts.uk.session.COMPANY'));
-			vm.company({ name: company[0].companyName, id: company[0].companyId });
+			if(!_.isEmpty(company)) {
+				vm.company({ name: company[0].companyName, id: company[0].companyId });
+			}
 			vm.modelA().workPlaceCompanyId = vm.company().id;
 
 			vm.companyScheduleHistorySelected.subscribe((value: string) => {
@@ -847,7 +849,7 @@ module nts.uk.com.view.cmm024.a {
 					if (!nts.uk.util.isNullOrUndefined(response)) {
 						//A2-6 - Schedule history listing
 						if (!nts.uk.util.isNullOrEmpty(response.scheduleHistory)) {
-							response.scheduleHistory.map((history) => {
+							response.scheduleHistory.map((history: any) => {
 								tempScheduleList.push(
 									new ScheduleHistoryDto(
 										history.startDate,

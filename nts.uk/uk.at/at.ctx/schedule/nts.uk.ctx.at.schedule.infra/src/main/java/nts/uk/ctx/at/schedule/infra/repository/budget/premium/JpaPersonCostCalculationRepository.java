@@ -146,7 +146,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                 premiumSetting,
                 utr!=null?Optional.of(EnumAdaptor.valueOf(utr, UnitPrice.class)):Optional.empty(),
                 EnumAdaptor.valueOf(kmlmtPersonCostCalculation.getUnitPriceSettingMethod(), HowToSetUnitPrice.class),
-                new WorkingHoursUnitPrice(kmlmtPersonCostCalculation.getWorkingHoursUnitPriceAtr()),
+                EnumAdaptor.valueOf(kmlmtPersonCostCalculation.getWorkingHoursUnitPriceAtr(), UnitPrice.class),
                 kmlmtPersonCostCalculation.getPk().histID
         );
 
@@ -191,7 +191,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                 premiumSettings,
                 utr !=null ?Optional.of(EnumAdaptor.valueOf(utr, UnitPrice.class)):Optional.empty(),
                 EnumAdaptor.valueOf(kmlmtPersonCostCalculation.getUnitPriceSettingMethod(), HowToSetUnitPrice.class),
-                new WorkingHoursUnitPrice(kmlmtPersonCostCalculation.getWorkingHoursUnitPriceAtr()),
+                EnumAdaptor.valueOf(kmlmtPersonCostCalculation.getWorkingHoursUnitPriceAtr(), UnitPrice.class),
                 kmlmtPersonCostCalculation.getPk().histID
         );
     }
@@ -294,7 +294,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                     premiumSettings,
                     utr != null?Optional.of(EnumAdaptor.valueOf(utr, UnitPrice.class)):Optional.empty(),
                     EnumAdaptor.valueOf(entity.getUnitPriceSettingMethod(), HowToSetUnitPrice.class),
-                    new WorkingHoursUnitPrice(entity.getWorkingHoursUnitPriceAtr()),
+                    EnumAdaptor.valueOf(entity.getWorkingHoursUnitPriceAtr(), UnitPrice.class),
                     entity.getPk().histID
             );
             rs.setPersonCostCalculation(per);

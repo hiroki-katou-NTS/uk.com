@@ -72,9 +72,9 @@ module nts.uk.pr.view.kmf001.c {
                 self.selectedMaxNumberSemiVacation = ko.observable(0);
                 self.maxNumberCompany = ko.observable("5");
                 
-                self.maxGrantDay = ko.observable("");
+                self.maxGrantDay = ko.observable("0");
                 self.maxRemainingDay = ko.observable("");
-                self.numberYearRetain = ko.observable("0");
+                self.numberYearRetain = ko.observable("2");
                 self.yearlyOfNumberDays = ko.observable("0");
                 self.roundProcessClassificationList = ko.observableArray([]);
                 self.selectedRoundProcessCla = ko.observable(0);
@@ -119,7 +119,7 @@ module nts.uk.pr.view.kmf001.c {
                     return self.selectedAnnualManage() == 1;
                 }, self);
                 self.enableMaxNumberCompany = ko.computed(function() {
-                    return self.selectedMaxNumberSemiVacation() == 0 && self.enableAnnualVacation();
+                    return self.selectedMaxNumberSemiVacation() == 1 && self.enableAnnualVacation();
                 }, self);
                 self.enableTimeSetting = ko.computed(function() {
                     return self.selectedTimeManagement() == 1 && self.enableAnnualVacation();
@@ -140,7 +140,7 @@ module nts.uk.pr.view.kmf001.c {
                     return self.selectC531() == 1 && self.selectedAnnualManage() == 1;
                 });
                 self.requiredC533 = ko.computed(function() {
-                    return self.selectC531() == 0 && self.selectedAnnualManage() == 1;
+                    return self.selectC531() == 1 && self.selectedAnnualManage() == 1;
                 }); 
                 
                 self.enableC5_31 = ko.computed(function() {
@@ -169,7 +169,9 @@ module nts.uk.pr.view.kmf001.c {
                         $('#time-max-day-company').ntsError('clear');
                     }
                 });
-
+                self.selectedAnnualManage.subscribe(function(value) {
+                    self.clearError();
+                });
             }
             
             public startPage(): JQueryPromise<any> {
@@ -237,7 +239,7 @@ module nts.uk.pr.view.kmf001.c {
                 command.addAttendanceDay = self.enableAnnualVacation() ? self.selectedAddAttendanceDay() : dataBackup.addAttendanceDay;
                 command.maxManageSemiVacation = self.enableAnnualVacation() ? self.selectedMaxManageSemiVacation() : dataBackup.maxManageSemiVacation;
                 command.maxNumberSemiVacation = self.enableAnnualVacation() ? self.selectedMaxNumberSemiVacation() : dataBackup.maxNumberSemiVacation;
-                command.maxNumberCompany = self.enableMaxNumberCompany() ? self.maxNumberCompany() : dataBackup.maxNumberCompany;
+                command.maxNumberCompany = self.enableC222() ? self.maxNumberCompany() : dataBackup.maxNumberCompany;
                 command.maxGrantDay = self.enableAnnualVacation() ? self.maxGrantDay() : dataBackup.maxGrantDay;
                 command.maxRemainingDay = self.enableAnnualVacation() ? self.maxRemainingDay() : dataBackup.maxRemainingDay;
                 command.numberYearRetain = self.enableAnnualVacation() ? self.numberYearRetain() : dataBackup.numberYearRetain;
@@ -303,15 +305,16 @@ module nts.uk.pr.view.kmf001.c {
                 backup.addAttendanceDay = 1;
                 backup.maxManageSemiVacation = 1;
                 backup.maxNumberSemiVacation = 0;
-                backup.maxNumberCompany = '';
-                backup.maxGrantDay = '';
-                backup.maxRemainingDay = '';
-                backup.numberYearRetain = '';
+                backup.maxNumberCompany = 5;
+                backup.maxGrantDay = 0;
+                //backup.maxRemainingDay = '';
+                backup.maxRemainingDay = 0;
+                backup.numberYearRetain = 2;
                 backup.permitType = 1;
                 backup.annualPriority = 0;
                 backup.remainingNumberDisplay = 1;
                 backup.nextGrantDayDisplay = 1;
-                backup.yearlyOfDays = '';
+                backup.yearlyOfDays = 0;
                 backup.roundProcessCla = 0;
                 
                 // Time Leave Setting
@@ -319,7 +322,7 @@ module nts.uk.pr.view.kmf001.c {
                 backup.timeUnit = 0;
                 backup.manageMaxDayVacation = 1;
                 backup.reference = 0;
-                backup.maxTimeDay = '';
+                backup.maxTimeDay = 5;
                 backup.selectedEnoughTimeOneDay = 0;
                 
                 return backup;

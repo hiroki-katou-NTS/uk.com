@@ -193,7 +193,7 @@ module nts.custom.component {
                                 columns: [
                                     { headerText: 'コード', key: 'employeeId', width: 100, hidden: true },
                                     { headerText: text('CPS001_9'), key: 'employeeCode', width: 115, hidden: false },
-                                    { headerText: '', key: 'employeeName', width: 125, hidden: false }
+                                    { headerText: '', key: 'employeeName', width: 145, hidden: false }
                                 ],
                                 primaryKey: 'employeeId',
                                 value: employeeId,

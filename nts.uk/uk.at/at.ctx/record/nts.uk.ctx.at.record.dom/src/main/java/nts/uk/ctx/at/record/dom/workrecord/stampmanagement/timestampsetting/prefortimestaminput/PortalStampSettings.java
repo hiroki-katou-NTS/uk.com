@@ -19,7 +19,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 @Getter
 @AllArgsConstructor
-public class PortalStampSettings  implements DomainAggregate{
+public class PortalStampSettings implements DomainAggregate{
 
 	// 会社ID
 	private final String cid;
@@ -35,6 +35,12 @@ public class PortalStampSettings  implements DomainAggregate{
 	
 	// トップメニューリンク利用する
 	private boolean toppageLinkArt;
+	
+	//外出打刻を利用する
+	private boolean goOutUseAtr;
+	
+	//打刻一覧を表示する
+	private boolean displayStampList;
 	
 	// [C-0] ポータルの打刻設定(会社ID, 打刻画面の表示設定, 打刻ボタン設定, 打刻ボタンを抑制する,トップメニューリンク利用する)																							
 	

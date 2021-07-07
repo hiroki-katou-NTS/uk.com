@@ -193,7 +193,7 @@ public class ScreenQueryAggregatePersonal {
 			
 			// 回数集計を集計する
 			Map<String, Map<TotalTimesDto, BigDecimal>> timeCount = 
-					screenQueryAggrerateNumberTime.aggrerate(
+					screenQueryAggrerateNumberTime.aggregate(
 							personalCounter,
 							aggrerateintegrationOfDaily)
 					.entrySet()

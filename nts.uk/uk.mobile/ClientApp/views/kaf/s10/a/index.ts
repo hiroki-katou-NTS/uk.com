@@ -11,9 +11,10 @@ import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s
 import { OverTime } from '../step2/index';
 import { OverTimeWorkHoursDto } from '../../s00/sub/p2';
 import { ExcessTimeStatus } from '../../s00/sub/p1';
+import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 
 @component({
-    name: 'kafs10',
+    name: 'kafs10a',
     route: '/kaf/s10/a',
     style: require('./style.scss'),
     template: require('./index.vue'),
@@ -27,6 +28,7 @@ import { ExcessTimeStatus } from '../../s00/sub/p1';
         'kafS10Step3Component': KafS10Step3Component,
         'worktype': KDL002Component,
         'worktime': Kdl001Component,
+        'cmms45c': CmmS45CComponent
     }
 })
 export class KafS10Component extends KafS00ShrComponent {
@@ -46,7 +48,7 @@ export class KafS10Component extends KafS00ShrComponent {
     public isMsg_1557: boolean = false;
     
     @Prop()
-    public readonly params: InitParam;
+    public params: InitParam;
 
     public get getNumb(): number {
         const self = this;
@@ -681,6 +683,22 @@ export class KafS10Component extends KafS00ShrComponent {
 
         return new Promise((resolve) => {
             switch (failData.messageId) {
+                case 'Msg_197':
+                    vm.$modal.error({ messageId: 'Msg_197', messageParams: [] }).then(() => {
+                        let appID = vm.appDispInfoStartupOutput.appDetailScreenInfo.application.appID;
+                        vm.$modal('cmms45c', { 'listAppMeta': [appID], 'currentApp': appID }).then((newData: InitParam) => {
+                            vm.params = newData;
+                            vm.modeNew = false;
+                            let model = {} as Model;
+                            model.appHolidayWork = vm.params.appDetail.appHolidayWork as AppHolidayWork;
+                            model.appHdWorkDispInfo = vm.params.appDetail.appHdWorkDispInfo as AppHdWorkDispInfo;
+                            vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
+                            vm.model = model;
+                            vm.fetchData();
+                        });
+                    });
+        
+                    return resolve(false);
                 case 'Msg_26':
                     vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
                     .then(() => {

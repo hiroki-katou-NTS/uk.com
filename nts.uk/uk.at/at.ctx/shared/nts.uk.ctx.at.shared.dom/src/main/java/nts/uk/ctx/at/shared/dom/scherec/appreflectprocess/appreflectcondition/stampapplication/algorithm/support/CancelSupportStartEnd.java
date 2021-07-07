@@ -79,8 +79,7 @@ public class CancelSupportStartEnd {
 				.create(old.getWorkContent().getWorkplace().getWorkplaceId(), null);
 		lstItemId.add(CancelAppStamp.createItemId(921, data.getEngraveFrameNo(), 10));
 
-		WorkContent workContent = WorkContent.create(old.getWorkContent().getCompanyId(), workplace,
-				old.getWorkContent().getWork());
+		WorkContent workContent = WorkContent.create(workplace, old.getWorkContent().getWork(), old.getWorkContent().getWorkRemarks());
 		return Pair.of(OuenWorkTimeSheetOfDailyAttendance.create(old.getWorkNo(), workContent, sheet), lstItemId);
 
 	}

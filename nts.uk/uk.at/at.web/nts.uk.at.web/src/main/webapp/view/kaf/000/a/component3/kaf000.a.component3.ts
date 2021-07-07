@@ -13,8 +13,8 @@ module nts.uk.at.view.kaf000.a.component3.viewmodel {
                         <div id="kaf000-a-component3-prePost" data-bind="ntsSwitchButton: {
                                     name: $i18n('KAF000_46'),
                                     options: ko.observableArray([
-                                            { prePostCode: 0, prePostName: function() { return $i18n('KAF000_47'); } },
-                                            { prePostCode: 1, prePostName: function() { return $i18n('KAF000_48'); } }
+                                            { prePostCode: 0, prePostName: $i18n('KAF000_47') },
+                                            { prePostCode: 1, prePostName: $i18n('KAF000_48') }
                                             ]),
                                     optionsValue: 'prePostCode',
                                     optionsText: 'prePostName',
@@ -48,7 +48,11 @@ module nts.uk.at.view.kaf000.a.component3.viewmodel {
 						vm.application().prePostAtr(1);
 						vm.prePostAtrDisp(false);
 					} else {
-						vm.prePostAtr(value.appDispInfoWithDateOutput.prePostAtr);
+						if(_.includes([0, 1], value.appDispInfoWithDateOutput.prePostAtr)) {
+							vm.prePostAtr(value.appDispInfoWithDateOutput.prePostAtr);		
+						} else {
+							vm.prePostAtr(null);	
+						}
 	                	vm.prePostAtrDisp(value.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 1);
 					}
 					let appTypeSetting = _.find(value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting, (o: any) => o.appType == vm.appType());

@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 1160,
-					height : 550
+					height : 570
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -23,8 +23,7 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div>#{i18n.getText('CDL009_2')}</div>
-				<br></br>
+				<div style="height: 37px;">#{i18n.getText('CDL009_2')}</div>
 				<table>
 					<tr>
 						<td><div id="workplace-component" style="margin-top: -30px;"></div></td>
@@ -53,11 +52,10 @@
 									</tr>
 								</table>
 							</div></td>
-						<td style="padding-top: 20px"><div id="emp-component"></div></td>
+						<td style="padding-top: 15px;"><div id="emp-component"></div></td>
 					</tr>
 				</table>
 			</div>
-			<div id="ruled-line" style="border: 1px solid;"></div>
 			<div id="functions-area-bottom">
 				<button class="proceed x-large" data-bind="click: decideData">#{i18n.getText('CDL009_8')}</button>
 				<button class="large" data-bind="click: closeDialog">#{i18n.getText('CDL009_9')}</button>

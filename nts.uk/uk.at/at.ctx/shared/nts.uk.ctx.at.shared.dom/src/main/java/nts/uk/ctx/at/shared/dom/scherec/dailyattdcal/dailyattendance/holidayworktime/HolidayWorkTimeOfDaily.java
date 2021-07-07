@@ -437,12 +437,12 @@ public class HolidayWorkTimeOfDaily implements Cloneable{
 	//事前申請時間の前にデフォルトを作成
 	public static HolidayWorkTimeOfDaily createDefaultBeforeApp(List<Integer> lstNo) {
 		List<HolidayWorkFrameTime> workFrameTime = lstNo.stream().map(x -> {
-			return new HolidayWorkFrameTime(new HolidayWorkFrameNo(x), Finally.empty(), Finally.empty(),
+			return new HolidayWorkFrameTime(new HolidayWorkFrameNo(x), Finally.of(TimeDivergenceWithCalculation.emptyTime()), Finally.of(TimeDivergenceWithCalculation.emptyTime()),
 					Finally.of(new AttendanceTime(0)));
 		}).collect(Collectors.toList());
 		return new HolidayWorkTimeOfDaily(new ArrayList<>(), 
 				workFrameTime, 
-				Finally.empty(), 
+				Finally.of(new HolidayMidnightWork(new ArrayList<>())), 
 				new AttendanceTime(0));
 	}
 

@@ -4,9 +4,16 @@ module nts.uk.at.view.kmk011.a {
 
     export module viewmodel {
 
+        const path = {
+          getOtsukaOption: "at/record/divergencetime/setting/getOtsukaOption",
+        };
+
         export class ScreenModel {
+            otsukaOption: KnockoutObservable<boolean> = ko.observable(false);
+
             constructor() {
                 var self = this; 
+                nts.uk.request.ajax("at", path.getOtsukaOption).then((result: boolean) => self.otsukaOption(result));
             }
 
             /**

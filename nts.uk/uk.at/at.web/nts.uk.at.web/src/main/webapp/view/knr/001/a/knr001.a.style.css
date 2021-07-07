@@ -60,16 +60,18 @@
 
 .column-1 {
 	padding: 2px;
+	margin-left: 13px;
 }
 
 .column-2 {
-	margin-left: 0px;
+	margin-left: 39px;
 	
 }
 
 .column-2>div.div_line {
 	margin-top: 5px;
-    width: 417px;
+    width: 425px;
+	display: flex;
 }
 
 .column-3 {
@@ -85,7 +87,7 @@
 	margin-top: 4px;
 }
 .w_label {
-	width: 107px;
+	width: 110px;
 }
 .h_cbx{
 	height: 27px;
@@ -96,8 +98,7 @@
 }
 
 #A5_5{
-	position: absolute;
-    padding-top: 10px;
+    padding-top: 5px;
 }
 
 .testcss{

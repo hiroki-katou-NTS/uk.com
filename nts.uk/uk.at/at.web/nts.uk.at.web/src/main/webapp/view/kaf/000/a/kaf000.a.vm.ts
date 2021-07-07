@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf000.a.viewmodel {
     import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 
-    export class Kaf000AViewModel extends ko.ViewModel {
+    export abstract class Kaf000AViewModel extends ko.ViewModel {
     	appDispInfoStartupOutput: KnockoutObservable<any> = ko.observable(CommonProcess.initCommonSetting());
     	
         loadData(empLst: Array<string>, dateLst: Array<string>, appType: AppType, opHolidayAppType?: number, opOvertimeAppAtr?: number) {
@@ -81,6 +81,8 @@ module nts.uk.at.view.kaf000.a.viewmodel {
 					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });	
 			}
 		}
+		
+		abstract register(): any;
     }
 
     const API = {

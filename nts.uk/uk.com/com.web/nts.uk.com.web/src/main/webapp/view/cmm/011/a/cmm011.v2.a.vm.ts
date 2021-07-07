@@ -34,6 +34,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
             if (!_.isEmpty(queryString.items)) {
                 self.initMode = Number(queryString.items["initmode"]);
             }
+
             self.configuration = ko.observable(new WkpDepConfig(null, null, null));
             self.items = ko.observableArray([]);
             self.selectedId = ko.observable(null);

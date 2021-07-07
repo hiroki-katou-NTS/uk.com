@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.query.knr.knr002.g;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -10,6 +12,9 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.TimeRecordReqSettingRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -35,20 +40,27 @@ public class ConfirmTransmissionMaster {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		EmpInfoTerminalCode empInforTerCode = new EmpInfoTerminalCode(terminalCode);
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = this.timeRecordReqSettingRepository
-																  .getTimeRecordReqSetting(empInforTerCode, contractCode);
+																  .getTrRequest(empInforTerCode, contractCode);
+		
 		ConfirmTransmissionMasterDto dto = new ConfirmTransmissionMasterDto();
 		if (!timeRecordReqSetting.isPresent())
 			return dto;
+	    
+		Optional<TimeRecordReqSetting> timeRecordEmployee = this.timeRecordReqSettingRepository.getTimeRecordEmployee(empInforTerCode, contractCode);
+		Optional<TimeRecordReqSetting> timeRecordWorkType = this.timeRecordReqSettingRepository.getTimeRecordWorkType(empInforTerCode, contractCode);
+		Optional<TimeRecordReqSetting> timeRecordWorkTime = this.timeRecordReqSettingRepository.getTimeRecordWorkTime(empInforTerCode, contractCode);
+		Optional<TimeRecordReqSetting> timeRecordReservation = this.timeRecordReqSettingRepository.getTimeRecordReservation(empInforTerCode, contractCode);
+				
 		TimeRecordReqSetting timeRecordReqSettingVal = timeRecordReqSetting.get();
 		dto.setEmpInfoTerCode(timeRecordReqSettingVal.getTerminalCode().v());
 		dto.setSendEmployeeId(timeRecordReqSettingVal.isSendEmployeeId());
-		dto.setEmployeeIds(timeRecordReqSettingVal.getEmployeeIds().stream().map(e -> e.v()).collect(Collectors.toList()));
+		dto.setEmployeeIds(timeRecordEmployee.isPresent() ? timeRecordEmployee.get().getEmployeeIds().stream().map(e -> e.v()).collect(Collectors.toList()) : Collections.emptyList());
 		dto.setSendBentoMenu(timeRecordReqSettingVal.isSendBentoMenu());
-		dto.setBentoMenuFrameNumbers(timeRecordReqSettingVal.getBentoMenuFrameNumbers());
+		dto.setBentoMenuFrameNumbers(timeRecordReservation.isPresent() ? timeRecordReservation.get().getBentoMenuFrameNumbers() : Collections.emptyList());
 		dto.setSendWorkType(timeRecordReqSettingVal.isSendWorkType());
-		dto.setWorkTypeCodes(timeRecordReqSettingVal.getWorkTypeCodes().stream().map(e -> e.v()).collect(Collectors.toList()));
+		dto.setWorkTypeCodes(timeRecordWorkType.isPresent() ? timeRecordWorkType.get().getWorkTypeCodes().stream().map(e -> e.v()).collect(Collectors.toList()): Collections.emptyList());
 		dto.setSendWorkTime(timeRecordReqSettingVal.isSendWorkTime());
-		dto.setWorkTimeCodes(timeRecordReqSettingVal.getWorkTimeCodes().stream().map(e -> e.v()).collect(Collectors.toList()));
+		dto.setWorkTimeCodes(timeRecordWorkTime.isPresent()? timeRecordWorkTime.get().getWorkTimeCodes().stream().map(e -> e.v()).collect(Collectors.toList()): Collections.emptyList());
 		dto.setOverTimeHoliday(timeRecordReqSettingVal.isOverTimeHoliday());
 		dto.setApplicationReason(timeRecordReqSettingVal.isApplicationReason());
 		dto.setStampReceive(timeRecordReqSettingVal.isStampReceive());

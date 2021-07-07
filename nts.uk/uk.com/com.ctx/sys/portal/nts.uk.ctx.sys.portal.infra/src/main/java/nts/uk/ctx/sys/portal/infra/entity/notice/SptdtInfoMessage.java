@@ -45,7 +45,6 @@ public class SptdtInfoMessage extends UkJpaEntity
 	private SptdtInfoMessagePK pk;
 
 	/** 排他バージョン */
-	@Version
 	@Column(name = "EXCLUS_VER")
 	private long version;
 

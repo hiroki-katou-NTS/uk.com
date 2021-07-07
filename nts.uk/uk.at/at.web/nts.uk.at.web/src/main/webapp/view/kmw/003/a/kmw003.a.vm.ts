@@ -226,11 +226,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 // $("#dpGrid").igGrid("option", "dataSource", self.displayNumberZero(self.formatDate(self.dpData)));
                 self.displayNumberZero1();
             });
-            
+
             $(window).on('resize', function() {
             	self.setScreenSize();
             });
-
         }
 
         displayNumberZero1() {
@@ -329,7 +328,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.ui.block.grayout();
             self.initScreen().done((processDate, selectedClosure) => {
                 //date process
+				if(!_.isNil(processDate))
                 self.yearMonth(processDate);
+
                 if (selectedClosure) {
                     self.selectedClosure(selectedClosure);
                 }
@@ -367,10 +368,12 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         	$('.mgrid-fixed').height(window.innerHeight - 364);
         	$('.mgrid-free').height(window.innerHeight - 364);
         	$('.grid-container').height(window.innerHeight - 240);
-        	$('.mgrid-fixed-summaries').css({ top: window.innerHeight - 376 + 'px' });
-        	$('.mgrid-free-summaries').css({ top: window.innerHeight - 376 + 'px' });
-        	$('.mgrid-paging').css({ top: window.innerHeight - 330 + 'px' });
-        	$('.mgrid-sheet').css({ top: window.innerHeight - 285 + 'px' });
+        	$('.mgrid-fixed-summaries').css({ top: window.innerHeight - 367 + 'px' });
+        	$('.mgrid-free-summaries').css({ top: window.innerHeight - 367 + 'px' });
+        	$('.mgrid-paging').css({ top: window.innerHeight - 321 + 'px' });
+        	$('.mgrid-sheet').css({ top: window.innerHeight - 275 + 'px' });
+            $('.mgrid-free').css({ top: '41px' });
+            $('.mgrid-header').css({ top: '3px' });
         	$('.mgrid-free').width(window.innerWidth - 627);
         	$('.mgrid-free.mgrid-header').width(window.innerWidth - 644);
         	$('.mgrid-free-summaries').width(window.innerWidth - 644);
@@ -436,7 +439,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.actualTimeSelectedDat(data.selectedActualTime);
                 self.initActualTime();
                 //comment
-                self.comment(data.comment != null ? '■ ' + data.comment : null);
+                self.comment(data.comment ? '■ ' + data.comment : null);
                 /*********************************
                  * Grid data
                  *********************************/
@@ -1741,6 +1744,9 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     self.formatCodes.removeAll();
                     self.formatCodes.push(formatCd);
                     self.initScreenFormat().done((processDate) => {
+						if(!_.isNil(processDate)){
+							self.yearMonth(processDate);
+						}
                         dfd.resolve();
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alert({ messageId: error.messageId }).then(function() {

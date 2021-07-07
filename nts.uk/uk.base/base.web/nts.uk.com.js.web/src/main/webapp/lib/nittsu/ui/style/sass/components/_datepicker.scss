@@ -8,138 +8,145 @@
  * Date: @DATE
  */
 
-
 // Variables
 // -----------------------------------------------------------------------------
 
 $brand-color: #39f;
 
-
 // Container
 // -----------------------------------------------------------------------------
 
-.datepicker-container {
-  font-size: 12px;
-  line-height: 30px;
+body {
+  .datepicker-container {
+    font-size: 12px;
+    line-height: 30px;
 
-  position: fixed;
-  z-index: -1;
-  top: 0;
-  left: 0;
+    position: fixed;
+    z-index: -1;
+    top: 0;
+    left: 0;
 
-  width: 210px;
+    width: 210px;
 
-  user-select: none;
+    user-select: none;
 
-  background-color: #fff;
+    background-color: #fff;
 
-  direction: ltr !important; // Ignore global rtl
-  touch-action: none;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
+    direction: ltr !important; // Ignore global rtl
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
 
-  &:before,
-  &:after {
+    &:before,
+    &:after {
+      position: absolute;
+
+      display: block;
+
+      width: 0;
+      height: 0;
+
+      content: " ";
+
+      border: 5px solid transparent;
+    }
+  }
+
+  .datepicker-dropdown {
     position: absolute;
+    z-index: 1;
 
-    display: block;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
 
-    width: 0;
-    height: 0;
+    border: 1px solid #eae8f2;
+    box-shadow: 0 3px 6px #ccc;
+    border-radius: 2px;
+    overflow: hidden;
+  }
 
-    content: ' ';
+  .datepicker-inline {
+    position: static;
+  }
 
-    border: 5px solid transparent;
+  .nts-datepicker-wrapper {
+    &:before,
+    &:after {
+      position: absolute;
+      display: block;
+      width: 0;
+      height: 0;
+      content: " ";
+      border: 5px solid transparent;
+    }
+
+    &.arrow-top {
+      &:before,
+      &:after {
+        top: -5px;
+        left: 10px;
+        border-top: 0;
+      }
+      &:before {
+        border-bottom-color: $editor-border-color;
+      }
+      &:after {
+        top: -4px;
+        border-bottom-color: #fff;
+      }
+    }
+
+    &.arrow-bottom {
+      &:before,
+      &:after {
+        bottom: -5px;
+        left: 10px;
+        border-bottom: 0;
+      }
+      &:before {
+        border-top-color: $editor-border-color;
+      }
+      &:after {
+        bottom: -4px;
+        border-top-color: #fff;
+      }
+    }
+
+    &.arrow-right {
+      &:before,
+      &:after {
+        right: -5px;
+        top: 11px;
+        border-right: 0;
+      }
+      &:before {
+        border-left-color: $editor-border-color;
+      }
+      &:after {
+        right: -4px;
+        border-left-color: #fff;
+      }
+    }
+
+    &.arrow-left {
+      &:before,
+      &:after {
+        left: -5px;
+        top: 11px;
+        border-left: 0;
+      }
+      &:before {
+        border-right-color: $editor-border-color;
+      }
+      &:after {
+        left: -4px;
+        border-right-color: #fff;
+      }
+    }
   }
 }
 
-.datepicker-dropdown {
-  position: absolute;
-  z-index: 1;
-
-  -webkit-box-sizing: content-box;
-     -moz-box-sizing: content-box;
-          box-sizing: content-box;
-
-  border: 1px solid #ccc;
-  box-shadow: 0 3px 6px #ccc;
-}
-
-.datepicker-inline {
-  position: static;
-}
-
-.nts-datepicker-wrapper {
-  &:before,
-  &:after {
-    position: absolute;
-    display: block;
-    width: 0;
-    height: 0;
-    content: ' ';
-    border: 5px solid transparent;
-  }
-  
-  &.arrow-top {
-	&:before, &:after {
-		top: -5px;
-		left: 10px;
-		border-top: 0;
-	}
-	&:before {
-		border-bottom-color: $editor-border-color;
-	}
-	&:after {
-		  top: -4px;
-		  border-bottom-color: #fff;
-	}
-  }
-	
-  &.arrow-bottom {
-	&:before, &:after {
-		bottom: -5px;
-		left: 10px;
-		border-bottom: 0;
-	}
-	&:before {
-		border-top-color: $editor-border-color;
-	}
-	&:after {
-		bottom: -4px;
-		border-top-color: #fff;
-	}
-  }
-  
-  &.arrow-right {
-	&:before, &:after {
-		right: -5px;
-		top: 11px;
-		border-right: 0;
-	}
-	&:before {
-		border-left-color: $editor-border-color;
-	}
-	&:after {
-		right: -4px;
-		border-left-color: #fff;
-	}
-  }
-  
-  &.arrow-left {
-	&:before, &:after {
-		left: -5px;
-		top: 11px;
-		border-left: 0;
-	}
-	&:before {
-		border-right-color: $editor-border-color;
-	}
-	&:after {
-		left: -4px;
-		border-right-color: #fff;
-	}
-  }
-}
 .datepicker-top-left,
 .datepicker-top-right {
   border-top-color: $brand-color;
@@ -242,117 +249,120 @@ $brand-color: #39f;
 // Panels
 // -----------------------------------------------------------------------------
 
-.datepicker-panel {
-  > ul:before,
-  > ul:after {
-    display: table;
+body {
+  .datepicker-panel {
+    overflow: hidden;
+    border-radius: 2px;
 
-    content: ' ';
-  }
+    > ul:before,
+    > ul:after {
+      content: "";
+      display: block;
+    }
 
-  > ul:after {
-    clear: both;
-  }
+    > ul:after {
+      clear: both;
+    }
 
-  > ul {
-    width: 102%;
-    margin: 0;
-    padding: 0;
-
-    > li {
-      float: left;
-
-      width: 30px;
-      height: 30px;
+    > ul {
+      width: 102%;
       margin: 0;
       padding: 0;
 
-      list-style: none;
+      > li {
+        float: left;
 
-      cursor: pointer;
-      text-align: center;
+        width: 30px;
+        height: 30px;
+        margin: 0;
+        padding: 0;
 
-      background-color: #fff;
+        list-style: none;
 
-      &:hover {
-        background-color: lighten($brand-color, 35%);
-      }
+        cursor: pointer;
+        text-align: center;
 
-      &.muted,
-      &.muted:hover {
-        color: #999;
-      }
-
-      &.highlighted {
-        background-color: lighten($brand-color, 35%);
-      }
-
-      &.highlighted:hover {
-        background-color: lighten($brand-color, 30%);
-      }
-
-      &.picked,
-      &.picked:hover {
-        color: $brand-color;
-      }
-
-      &.disabled,
-      &.disabled:hover {
-        cursor: default;
-
-        color: #ccc;
         background-color: #fff;
+
+        &:hover {
+          background-color: lighten($brand-color, 35%);
+        }
+
+        &.muted,
+        &.muted:hover {
+          color: #999;
+        }
 
         &.highlighted {
           background-color: lighten($brand-color, 35%);
         }
+
+        &.highlighted:hover {
+          background-color: lighten($brand-color, 30%);
+        }
+
+        &.picked,
+        &.picked:hover {
+          color: $brand-color;
+        }
+
+        &.disabled,
+        &.disabled:hover {
+          cursor: default;
+
+          color: #ccc;
+          background-color: #fff;
+
+          &.highlighted {
+            background-color: lighten($brand-color, 35%);
+          }
+        }
+
+        &[data-view="years prev"],
+        &[data-view="year prev"],
+        &[data-view="month prev"],
+        &[data-view="years next"],
+        &[data-view="year next"],
+        &[data-view="month next"],
+        &[data-view="next"] {
+          font-size: 18px;
+        }
+
+        &[data-view="years current"],
+        &[data-view="year current"],
+        &[data-view="month current"] {
+          width: 150px;
+        }
       }
 
-      &[data-view='years prev'],
-      &[data-view='year prev'],
-      &[data-view='month prev'],
-      &[data-view='years next'],
-      &[data-view='year next'],
-      &[data-view='month next'],
-      &[data-view='next'] {
-        font-size: 18px;
+      &[data-view="years"],
+      &[data-view="months"] {
+        > li {
+          line-height: 30px;
+          height: 30px;
+
+          width: 52.5px;
+        }
       }
 
-      &[data-view='years current'],
-      &[data-view='year current'],
-      &[data-view='month current'] {
-        width: 150px;
+      &[data-view="days"] {
+        > li {
+          line-height: 22px;
+          height: 22px;
+        }
       }
-    }
 
-    &[data-view='years'],
-    &[data-view='months'] {
-      > li {
-        line-height: 30px;
-        height: 30px;
+      &[data-view="week"] {
+        > li,
+        > li:hover {
+          cursor: default;
 
-        width: 52.5px;
-      }
-    }
-    
-    &[data-view='days'] {
-    	> li {
-    		line-height: 22px;
-    		height: 22px
-    	}
-    }
-
-    &[data-view='week'] {
-      > li,
-      > li:hover {
-        cursor: default;
-
-        background-color: #fff;
+          background-color: #fff;
+        }
       }
     }
   }
 }
-
 
 // Utilities
 // -----------------------------------------------------------------------------
@@ -362,35 +372,64 @@ $brand-color: #39f;
 }
 
 /* ntsDatepicker */
-.nts-datepicker-wrapper{
-	position: relative;
-		
-	.ntsDatepicker {
-		width: 85px;
-		&.yearmonth-picker {width: 60px;}
-		
-		&.short-day {padding-right: 40px;}
-		&.long-day {padding-right: 68px;}
-	}
-	
-	.dayofweek-label {
-		position: absolute;
-		line-height: 30px;
-		right: 10px;
-		top: 1px;
-	}
-}
+.nts-datepicker-wrapper {
+  position: relative;
 
-.ntsDateRange_Container{
-	.ntsDateRangeComponent{
-	  float: left;
-	}
-	.ntsRangeLabel{
-	  padding: 6px 5px 6px 5px;
-	}
-	
-	.ntsRangeButton_Container {
-	    padding: 2px 2px 2px 2px;
+  .ntsDatepicker {
+    width: 85px;
+    &.yearmonth-picker {
+      width: 60px;
     }
+
+    &.short-day {
+      padding-right: 40px;
+    }
+    &.long-day {
+      padding-right: 68px;
+    }
+  }
+
+  .dayofweek-label {
+    position: absolute;
+    line-height: 30px;
+    right: 10px;
+    top: 1px;
+  }
+
+  & > .ntsDatePickerButton {
+    height: 32px;
+  }
 }
 
+// .nts-daterange-picker {
+//   outline: none;
+//   display: inline-block;
+
+//   & > div {
+//     display: inline-block;
+//   }
+
+//   & > button {
+//     height: 32px;
+//   }
+
+//   &:not(.has-btn) {
+//     & > button {
+//       display: none;
+//     }
+//   }
+// }
+
+.ntsDateRange_Container {
+  display: flex;
+  align-items: center;
+
+  &>.ntsDateRangeComponent.ntsControl {
+    display: flex;
+    align-items: center;
+
+    &>.ntsRangeLabel{
+      margin: 0 5px;
+    }
+  }
+}

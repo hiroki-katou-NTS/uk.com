@@ -33,7 +33,7 @@ public class DeformLaborOTFinder {
 	
 	private DeformLaborOTDto convertToDbType(DeformLaborOT deformLaborOT){
 		DeformLaborOTDto deformLaborOTDto = new DeformLaborOTDto();
-		deformLaborOTDto.setLegalOtCalc(deformLaborOT.getLegalOtCalc().value);
+		deformLaborOTDto.setLegalOtCalc(deformLaborOT.getLegalOtCalc());
 		return deformLaborOTDto;
 	}
 }

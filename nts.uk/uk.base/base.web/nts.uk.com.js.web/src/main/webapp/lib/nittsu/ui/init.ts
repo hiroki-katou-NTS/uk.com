@@ -1,122 +1,158 @@
 /// <reference path="../reference.ts"/>
 
 module nts.uk.ui {
-     
-    import option = nts.uk.ui.option;
-    export var _viewModel: any;
-    
-    /** Event to notify document ready to initialize UI. */
-    export var documentReady = $.Callbacks();
-    
-    /** Event to notify ViewModel built to bind. */
-    export var viewModelBuilt = $.Callbacks();
-    
-    /** Event to notify ViewModel applied bindings. */
-    export var viewModelApplied = $.Callbacks();
+    export interface WindowSize {
+        width: number;
+        height: number;
+    }
 
-    
+    export interface RootViewModel {
+        kiban: KibanViewModel;
+        content: nts.uk.ui.vm.ViewModel;
+        errors: {
+            isEmpty: KnockoutComputed<boolean>;
+        };
+    }
+
+    /** Event to notify document ready to initialize UI. */
+    export const documentReady = $.Callbacks();
+
+    /** Event to notify ViewModel built to bind. */
+    export const viewModelBuilt = $.Callbacks();
+
+    /** Event to notify ViewModel applied bindings. */
+    export const viewModelApplied = $.Callbacks();
+
     // Kiban ViewModel
-    export class KibanViewModel {
-        systemName: KnockoutObservable<string>;
-        programName: KnockoutObservable<string>;
-        title: KnockoutComputed<string>;
-        errorDialogViewModel: errors.ErrorsViewModel;
-        
-        constructor(dialogOptions?: any){
-            this.systemName = ko.observable("");
-            this.programName = ko.observable("");
-            this.title = ko.computed(() => {
-//                let pgName = this.programName();
-//                if (pgName === "" || pgName === undefined || pgName === null) {
-                return this.systemName();
-//                }
-                
-//                return this.programName() + " - " + this.systemName();
+    class KibanViewModel {
+        // deprecate
+        title!: KnockoutComputed<string>;
+
+        systemName: KnockoutObservable<string> = ko.observable("").extend({ rateLimit: 500 });
+        programName: KnockoutObservable<string> = ko.observable("").extend({ rateLimit: 500 });
+
+        // error model
+        errorDialogViewModel!: errors.ErrorsViewModel;
+
+        // set page as view or modal
+        mode: KnockoutObservable<'view' | 'modal'> = ko.observable(undefined).extend({ rateLimit: 500 });
+
+        // subscriber windows size
+        size: KnockoutObservable<WindowSize> = ko.observable({ width: window.innerWidth, height: window.innerHeight }).extend({ rateLimit: 500 });
+
+        // show or hide header
+        header: KnockoutObservable<boolean | null> = ko.observable(null).extend({ rateLimit: 500 });
+
+        // show or hide notification
+        notification: KnockoutObservable<string> = ko.observable('').extend({ rateLimit: 500 });
+
+        constructor() {
+            const vm = this;
+
+            vm.title = ko.computed({
+                read: () => {
+                    document.title = ko.unwrap(vm.systemName);
+
+                    return document.title;
+                },
+                write: (value: string) => {
+                    vm.systemName(value);
+                }
             });
-            this.errorDialogViewModel = new nts.uk.ui.errors.ErrorsViewModel(dialogOptions);
+
+            vm.mode
+                .subscribe((m) => {
+                    if (m === 'view') {
+                        $('body>div:first-child').addClass('view');
+                        $('body>div:first-child').removeClass('modal');
+                    } else {
+                        $('body>div:first-child').addClass('modal');
+                        $('body>div:first-child').removeClass('view');
+                    }
+                });
+
+            vm.errorDialogViewModel = new errors.ErrorsViewModel();
+        }
+
+        public initErrorModel(dialogOptions?: any) {
+            const vm = this;
+
+            vm.errorDialogViewModel.initErrorModel(dialogOptions);
         }
     }
-    
-    module init {
-        
-        var _start: any;
-        
-        __viewContext.ready = function (callback: () => void) {
-            _start = callback;
-        };
-        
-        __viewContext.bind = function (contentViewModel: any, dialogOptions?: any) {
-            
-            var kiban = new KibanViewModel(dialogOptions);
-            
-            _viewModel = {
-                content: contentViewModel,
-                kiban: kiban,
-                errors: {
-                    isEmpty: ko.computed(() => !kiban.errorDialogViewModel.occurs())
-                }
-            };
-            
-            kiban.title.subscribe(newTitle => {
-                document.title = newTitle;
-            });
-            
-            kiban.systemName(__viewContext.env.systemName);
-            
-            viewModelBuilt.fire(_viewModel);
-            
-            ko.applyBindings(_viewModel);
-            
-            viewModelApplied.fire(_viewModel);
-            
-            // off event reset for class reset-not-apply
-            $(".reset-not-apply").find(".reset-element").off("reset");
-            nts.uk.cookie.remove("startfrommenu", {path: "/"});
-            //avoid page content overlap header and function area
-            var content_height=20;
-            if ($("#header").length != 0) {
-                content_height += $("#header").outerHeight();//header height+ content area botton padding,top padding
+
+    export const _viewModel: RootViewModel | null = null; //{ kiban: null, content: null, errors: null };
+
+    export module init {
+        let _start: () => void;
+
+        _.extend(__viewContext, {
+            transferred: uk.sessionStorage
+                .getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
+                .map(v => JSON.parse(v)),
+            ready: (callback: () => void) => _start = callback,
+            bind: function (content: any, dialogOptions?: any) {
+                const kiban = new KibanViewModel();
+                const { systemName } = __viewContext.env;
+
+                // update title of name
+                kiban.systemName(systemName);
+
+                // update mode of view
+                kiban.mode(!util.isInFrame() ? 'view' : 'modal');
+
+                kiban.initErrorModel(dialogOptions);
+
+                const isEmpty = ko.computed(() => !kiban.errorDialogViewModel.occurs());
+
+                // mock ready function
+                _.extend(nts.uk.ui, { _viewModel: { kiban, content, errors: { isEmpty } } });
+
+                $(() => {
+                    viewModelBuilt.fire(_viewModel);
+
+                    // bind viewmodel to document body
+                    ko.applyBindings(_viewModel, document.body);
+
+                    viewModelApplied.fire(_viewModel);
+
+                    // update header
+                    if (kiban.header() === null) {
+                        kiban.header(!__viewContext.noHeader || (kiban.mode() === 'view'));
+                    }
+
+                    // update notification
+                    kiban.notification(__viewContext.program.operationSetting.message);
+
+                    // off event reset for class reset-not-apply
+                    $(".reset-not-apply").find(".reset-element").off("reset");
+
+                    nts.uk.cookie.remove("startfrommenu", { path: "/" });
+                });
+
+                // update size
+                $(window)
+                    .on('wd.resize', () => {
+                        kiban.size({
+                            width: window.innerWidth,
+                            height: window.innerHeight
+                        });
+                    })
+                    .on('resize', () => $(window).trigger('wd.resize'));
             }
-            if ($("#functions-area").length != 0) {
-                content_height += $("#functions-area").outerHeight();//top function area height
-            }
-            if ($("#functions-area-bottom").length != 0) {
-                content_height += $("#functions-area-bottom").outerHeight();//bottom function area height
-            }
-            
-            $("#contents-area").css("height", "calc(100vh - " + content_height + "px)");
-            //            if($("#functions-area-bottom").length!=0){
-            //            } 
-        }
-        
-        var startP = function(){
-            _.defer(() => {
-                if (cantCall()) {
-                    loadEmployeeCodeConstraints().always(() => _start.call(__viewContext));
+        });
+
+        const startP = function () {
+            setTimeout(() => {
+                if (!cantCall()) {
+                    _start.apply(__viewContext, [__viewContext]);
                 } else {
-                    _start.call(__viewContext);
+                    loadEmployeeCodeConstraints()
+                        .always(() => _start.apply(__viewContext, [__viewContext]));
                 }
-            });
-            
-            // Menu
-            if ($(document).find("#header").length > 0) {
-                menu.request();
-            } else if (!util.isInFrame() && !__viewContext.noHeader) {
-                let header = "<div id='header'><div id='menu-header'>" 
-                                + "<div id='logo-area' class='cf'>" 
-                                + "<div id='logo'>勤次郎</div>"
-                                + "<div id='user-info' class='cf'>"
-                                + "<div id='company' class='cf' />"
-                                + "<div id='user' class='cf' />"    
-                                + "</div></div>"                            
-                                + "<div id='nav-area' class='cf' />"
-                                + "<div id='pg-area' class='cf' />"
-                                + "</div></div>";
-                $("#master-wrapper").prepend(header);
-                menu.request();
-            }
-        }
-        
+            }, 1);
+        };
+
         const noSessionWebScreens = [
             "/view/sample/",
             "/view/common/error/",
@@ -127,124 +163,135 @@ module nts.uk.ui {
             "/view/kdp/003/a/index.xhtml",
             "/view/kdp/003/f/index.xhtml",
             "/view/kdp/004/a/index.xhtml",
-            "/view/kdp/005/a/index.xhtml"
+            "/view/kdp/005/a/index.xhtml",
+            "/view/sample/component/editor/text-editor.xhtml"
         ];
-        
-        let cantCall = function() {
-            return !_.some(noSessionWebScreens, w => request.location.current.rawUrl.indexOf(w) > -1)
-                || request.location.current.rawUrl.indexOf("/view/sample/component/editor/text-editor.xhtml") > -1;
+
+        const cantCall = function () {
+            const { location } = request;
+            const { current } = location;
+            const { rawUrl } = current;
+
+            return !_.some(noSessionWebScreens, (w: string) => rawUrl.indexOf(w) > -1);
         };
-        
-        let getEmployeeSetting = function() {
-            let dfd = $.Deferred(),
-                es = nts.uk.sessionStorage.getItem("nts.uk.session.EMPLOYEE_SETTING");
-            if (es.isPresent()) {
-                dfd.resolve(JSON.parse(es.get()));
-            } else {
-                request.ajax("com", "/bs/employee/setting/code/find").done(constraints => {
-                    nts.uk.sessionStorage.setItemAsJson("nts.uk.session.EMPLOYEE_SETTING", constraints);
-                    dfd.resolve(constraints);
-                });
-            }
-            
-            return dfd.promise();
-        };
-        
-        let loadEmployeeCodeConstraints = function() {
-            let self = this,
-                dfd = $.Deferred();
-        
-            getEmployeeSetting().done(res => {
-                
-                let formatOption: any = {
-                    autofill: true
-                };
-        
-                if (res.ceMethodAttr === 0) {
-                    formatOption.filldirection = "left";
-                    formatOption.fillcharacter = "0";
-                } else if (res.ceMethodAttr === 1) {
-                    formatOption.filldirection = "right";
-                    formatOption.fillcharacter = "0";
-                } else if (res.ceMethodAttr === 2) {
-                    formatOption.filldirection = "left";
-                    formatOption.fillcharacter = " ";
+
+        const loadEmployeeCodeConstraints = function () {
+            const getEmployeeSetting = function () {
+                const EMP_SESSION = 'nts.uk.session.EMPLOYEE_SETTING';
+
+                let dfd = $.Deferred(),
+                    es = nts.uk.sessionStorage.getItem(EMP_SESSION);
+
+                if (es.isPresent()) {
+                    dfd.resolve(JSON.parse(es.get()));
                 } else {
-                    formatOption.filldirection = "right";
-                    formatOption.fillcharacter = " ";
+                    request
+                        .ajax("com", "/bs/employee/setting/code/find")
+                        .done((constraints: any) => {
+                            nts.uk.sessionStorage.setItemAsJson(EMP_SESSION, constraints);
+
+                            dfd.resolve(constraints);
+                        });
                 }
-                
-                // if not have primitive, create new
-                if (!__viewContext.primitiveValueConstraints) {
-                    __viewContext.primitiveValueConstraints = {
-                        EmployeeCode: {
-                            valueType: "String",
-                            charType: "AlphaNumeric",
-                            maxLength: res.numberOfDigits,
-                            formatOption: formatOption
-                        }
+
+                return dfd.promise();
+            };
+
+            return getEmployeeSetting()
+                .done((res: any) => {
+                    const { ceMethodAttr, numberOfDigits } = res;
+                    const { primitiveValueConstraints } = __viewContext;
+
+                    const formatOption: any = {
+                        autofill: true,
+                        filldirection: '',
+                        fillcharacter: ''
                     };
-                } else {
-                    // extend primitive constraint
-                    _.extend(__viewContext.primitiveValueConstraints, {
-                        EmployeeCode: {
-                            valueType: "String",
-                            charType: "AlphaNumeric",
-                            maxLength: res.numberOfDigits,
-                            formatOption: formatOption
-                        }
-                    });
-                }
-        
-                dfd.resolve();
-            }).fail(res => {
-                dfd.reject();
-            });
-        
-            return dfd.promise();
+
+                    if (ceMethodAttr === 0) {
+                        formatOption.filldirection = "left";
+                        formatOption.fillcharacter = "0";
+                    } else if (ceMethodAttr === 1) {
+                        formatOption.filldirection = "right";
+                        formatOption.fillcharacter = "0";
+                    } else if (ceMethodAttr === 2) {
+                        formatOption.filldirection = "left";
+                        formatOption.fillcharacter = " ";
+                    } else {
+                        formatOption.filldirection = "right";
+                        formatOption.fillcharacter = " ";
+                    }
+
+                    // if not have primitive, create new
+                    if (!primitiveValueConstraints) {
+                        _.extend(__viewContext, {
+                            primitiveValueConstraints: {
+                                EmployeeCode: {
+                                    valueType: "String",
+                                    charType: "AlphaNumeric",
+                                    maxLength: numberOfDigits,
+                                    formatOption
+                                }
+                            }
+                        });
+                    } else {
+                        // extend primitive constraint
+                        _.extend(primitiveValueConstraints, {
+                            EmployeeCode: {
+                                valueType: "String",
+                                charType: "AlphaNumeric",
+                                maxLength: numberOfDigits,
+                                formatOption
+                            }
+                        });
+                    }
+                });
         };
-        
+
         $(function () {
-            __viewContext.noHeader = (__viewContext.noHeader === true) || $("body").hasClass("no-header");
-
             documentReady.fire();
-
-            __viewContext.transferred = uk.sessionStorage.getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
-                .map(v => JSON.parse(v));
 
             if ($(".html-loading").length <= 0) {
                 startP();
                 return;
             }
-            let dfd = [];
-            
-            _.forEach($(".html-loading"), function(e) {
+
+            let dfd: JQueryDeferred<any>[] = [];
+
+            _.forEach($(".html-loading").toArray(), (e: HTMLElement) => {
                 let $container = $(e);
                 let dX = $.Deferred();
-                $container.load($container.attr("link"), function() {
-                    dX.resolve();
-                });
+
+                $container
+                    .load($container.attr("link"), () => dX.resolve());
+
                 dfd.push(dX);
                 dX.promise();
             });
-            
-            $.when(...dfd).then(function(data, textStatus, jqXHR) {
-                $('.html-loading').contents().unwrap();
-                startP();
-            });
+
+            $.when(...dfd)
+                .then(function (data, textStatus, jqXHR) {
+                    $('.html-loading').contents().unwrap();
+                    startP();
+                });
         });
 
 
         $(function () {
-            let lastPause: any = new Date();
-            $(window).keydown(e => {
-                if (e.keyCode !== 19) return;
-                let now: any = new Date();
-                if (now - lastPause < 500) {
-                    ui.dialog.version();
-                }
-                lastPause = new Date();
-            });
+            let lastPause: number = Date.now();
+
+            $(window)
+                .keydown((e: JQueryEventObject) => {
+                    if (e.keyCode === 19) {
+                        const now: number = Date.now();
+
+                        if (now - lastPause < 500) {
+                            ui.dialog.version();
+                        }
+
+                        lastPause = now;
+                    }
+                });
         });
     }
 }

@@ -88,7 +88,7 @@ div[tabindex]:focus {
 }
 
 #D6_2 {
-	width: 200px;
+	width: 250px;
 }
 
 #D4_10 {
@@ -105,8 +105,4 @@ div[tabindex]:focus {
 
 #D3_4, #D4_4 {
 	padding-left: 35px;
-}
-
-#D5 .nts-input {
-	width: 40px;
 }

@@ -41,7 +41,7 @@ public class WorkScheWorkInforSharedImpl implements WorkScheWorkInforSharedAdapt
 											x.getEndTime(), x.getBreakTime()))
 									.collect(Collectors.toList()));
 			return Optional.of(new WorkScheduleWorkSharedImport(
-					data.get().getWorkTyle(), 
+					data.get().getWorkType(), 
 					data.get().getWorkTime(),
 					data.get().getGoStraightAtr(), 
 					data.get().getBackStraightAtr(),

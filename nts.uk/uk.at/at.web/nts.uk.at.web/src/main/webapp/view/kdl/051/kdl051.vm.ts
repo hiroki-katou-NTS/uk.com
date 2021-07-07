@@ -27,7 +27,7 @@ module nts.uk.at.view.kdl051.screenModel {
     nextStartDate: KnockoutObservable<string> = ko.observable('');
     tableDatas: KnockoutObservableArray<any> = ko.observableArray([]);
     tableColumns: KnockoutObservableArray<any> = ko.observableArray([
-        { headerText: '', width: 20 , template:'<div style = "background-color: #CFF1A5;">${id}</div>', key: 'id'},
+        { headerText: '', width: 20, key: 'id'},
         { headerText: this.$i18n('KDL051_7'), prop: 'date', width: 150 },
         { headerText: this.$i18n('KDL051_8'), prop: 'periodDate', width: 100 },
         { headerText: this.$i18n('KDL051_9'), prop: 'classification', width: 100 }

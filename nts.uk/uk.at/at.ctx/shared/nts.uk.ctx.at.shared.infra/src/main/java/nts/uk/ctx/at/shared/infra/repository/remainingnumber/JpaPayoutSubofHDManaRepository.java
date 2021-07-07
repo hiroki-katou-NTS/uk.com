@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcmtPayoutSubOfHDMana;
@@ -39,6 +40,8 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 	private static final String DELETE_BY_PAYOUTID = "DELETE FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.sid =:sid and ps.krcmtPayoutSubOfHDManaPK.occDate =:occDate";
 
 	private static final String DELETE_BY_SUBID = "DELETE FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.sid =:sid and ps.krcmtPayoutSubOfHDManaPK.digestDate =:digestDate";
+	
+	private static final String DELETE_BY_SUBID_TARGET= "DELETE FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.sid =:sid and ps.krcmtPayoutSubOfHDManaPK.digestDate =:digestDate and ps.targetSelectionAtr = :target";
 
 	private static final String DELETE_BY_SID = "DELETE FROM KrcmtPayoutSubOfHDMana ps"
 			+ " WHERE (ps.krcmtPayoutSubOfHDManaPK.sid = :sid1 OR ps.krcmtPayoutSubOfHDManaPK.sid = :sid2)"
@@ -199,4 +202,13 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 				.map(item -> toDomain(item)).collect(Collectors.toList());
 	}
 
+	@Override
+    public void deleteByDigestTarget(String sid, GeneralDate digestDate, TargetSelectionAtr target) {
+	    this.getEntityManager().createQuery(DELETE_BY_SUBID_TARGET)
+	        .setParameter("sid", sid)
+	        .setParameter("digestDate", digestDate)
+	        .setParameter("target", target.value)
+	        .executeUpdate();
+	    this.getEntityManager().flush();
+    }
 }

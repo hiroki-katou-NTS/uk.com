@@ -111,6 +111,7 @@ module knr002.d {
             private copy(): any {
                 let self = this;
                 // Process
+                
                 self.selectableCodeList = [];
                 _.forEach(self.destinationCopyList(), e => {
                     if(e.availability)
@@ -122,7 +123,8 @@ module knr002.d {
                     }); 
                 } else {    
                     setShared('KNR002D_selectableCodeList', self.selectableCodeList);
-                    self.command.empInfoTerCode = self.selectableCodeList;              
+                    self.command.empInfoTerCode = self.selectableCodeList;      
+                    blockUI.invisible();
                     service.checkRemoteSettingsToCopy(self.selectableCodeList).done(()=>{
                         self.call_C_Api(self.command);
                     }).fail(err => { 
@@ -130,9 +132,7 @@ module knr002.d {
                         .ifYes(() => {                   
                             self.call_C_Api(self.command);
                         }).ifNo(() => {
-                                // do nothing
-                        }).always(() => {
-                            blockUI.clear(); 
+                            blockUI.clear();
                         });
                     });
                 }          
@@ -163,11 +163,17 @@ module knr002.d {
              */
             private call_C_Api(command: any): any{
                 delete command.displayName;
+                blockUI.invisible();
                 service.registerAndSubmitChanges(command).done(() => { 
+                    let updateRemoteInput = {
+                        listEmpTerminalCode: command.empInfoTerCode
+                    }
+                    service.updateRemoteSettings(updateRemoteInput).done(() => {})
+
                     nts.uk.ui.windows.close();
                 }).fail(err => {
                     dialog.error({messageId: err.messageId});
-                });
+                }).always(() => blockUI.clear());
             }
         }
         class EmpInfoTerminal{

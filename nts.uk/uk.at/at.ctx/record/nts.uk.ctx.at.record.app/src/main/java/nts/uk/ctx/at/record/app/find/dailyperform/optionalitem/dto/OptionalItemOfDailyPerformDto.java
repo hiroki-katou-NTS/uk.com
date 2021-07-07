@@ -144,11 +144,11 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 
 	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, AnyItemValue c) {
 		OptionalItem optItem = master == null ? null : master.get(c.getItemNo().v());
-		OptionalItemAtr attr = null;
-		if(optItem != null){
-			attr = optItem.getOptionalItemAtr();
-		}
-		return attr;
+		
+		if(optItem != null)
+			return optItem.getOptionalItemAtr();
+		
+		return null;
 	}
 	
 	private static OptionalItemAtr getAttrFromMasterWith(Map<Integer, OptionalItemAtr> master, AnyItemValue c) {
@@ -157,11 +157,11 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	
 	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, OptionalItemValueDto c) {
 		OptionalItem optItem = master == null ? null : master.get(c.getNo());
-		OptionalItemAtr attr = null;
-		if(optItem != null){
-			attr = optItem.getOptionalItemAtr();
-		}
-		return attr;
+		
+		if(optItem != null)
+			return optItem.getOptionalItemAtr();
+		
+		return null;
 	}
 	
 	private static OptionalItemAtr getAttrFromMasterWith(Map<Integer, OptionalItemAtr> master, OptionalItemValueDto c) {

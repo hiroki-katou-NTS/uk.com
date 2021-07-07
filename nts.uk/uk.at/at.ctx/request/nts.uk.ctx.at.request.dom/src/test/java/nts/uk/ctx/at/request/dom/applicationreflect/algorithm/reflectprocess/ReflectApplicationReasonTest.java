@@ -21,6 +21,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.testing.assertion.NtsAssert.Invoke;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -53,7 +54,7 @@ public class ReflectApplicationReasonTest {
 
 		Application application = ReflectApplicationHelper.createApp(PrePostAtr.POSTERIOR);
 
-		val actualResult = ReflectApplicationReason.reflectReason(require, application, GeneralDate.today());
+		val actualResult = ReflectApplicationReason.reflectReason(require, application, GeneralDate.today(), GeneralDateTime.FAKED_NOW);
 
 		assertThat(actualResult).isEmpty();
 	}
@@ -91,9 +92,9 @@ public class ReflectApplicationReasonTest {
 			}
 		};
 
-		val actualResult = ReflectApplicationReason.reflectReason(require, application, GeneralDate.today());
+		val actualResult = ReflectApplicationReason.reflectReason(require, application, GeneralDate.today(), GeneralDateTime.FAKED_NOW);
 		NtsAssert.atomTask(() -> actualResult.get(), any -> require.addUpdateReason(any.get()),
-				any -> require.processCreateHist(any.get(), any.get(), any.get(), any.get(), any.get()));
+				any -> require.processCreateHist(any.get(), any.get(), any.get(), any.get(), any.get(), any.get()));
 
 	}
 
@@ -133,9 +134,9 @@ public class ReflectApplicationReasonTest {
 			}
 		};
 
-		val actualResult = ReflectApplicationReason.reflectReason(require, application, GeneralDate.today());
+		val actualResult = ReflectApplicationReason.reflectReason(require, application, GeneralDate.today(), GeneralDateTime.FAKED_NOW);
 		NtsAssert.atomTask(() -> actualResult.get(), any -> require.addUpdateReason(any.get()),
-				any -> require.processCreateHist(any.get(), any.get(), any.get(), any.get(), any.get()));
+				any -> require.processCreateHist(any.get(), any.get(), any.get(), any.get(), any.get(), any.get()));
 
 	}
 

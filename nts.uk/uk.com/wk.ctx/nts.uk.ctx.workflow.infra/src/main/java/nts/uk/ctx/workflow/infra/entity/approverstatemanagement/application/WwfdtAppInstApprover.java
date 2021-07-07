@@ -77,7 +77,7 @@ public class WwfdtAppInstApprover extends ContractUkJpaEntity {
 				.confirmAtr(frame.getConfirmAtr().value)
 				.agentID(approverInfo.getAgentID())
 				.approvalDate(approverInfo.getApprovalDate())
-				.approvalReason(approverInfo.getApprovalReason())
+				.approvalReason(approverInfo.getApprovalReason()==null?null:approverInfo.getApprovalReason().v())
 				.appDate(frame.getAppDate())
 				.approverInListOrder(approverInfo.getApproverInListOrder())
 				.build();

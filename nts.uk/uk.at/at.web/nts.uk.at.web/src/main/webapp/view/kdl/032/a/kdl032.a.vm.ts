@@ -13,7 +13,7 @@ module nts.uk.at.view.kdl032.a.viewmodel {
 
 
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KDL032_3"), prop: 'divergenceReasonCode', width: 40 },
+                { headerText: nts.uk.resource.getText("KDL032_3"), prop: 'divergenceReasonCode', width: 60 },
                 { headerText: nts.uk.resource.getText("KDL032_4"), prop: 'reason', width: 450 }
 
             ]);

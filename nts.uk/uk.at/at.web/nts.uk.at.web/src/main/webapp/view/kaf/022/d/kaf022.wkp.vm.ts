@@ -28,6 +28,7 @@ module nts.uk.at.view.kaf022.wkp.viewmodel {
             self.viewmodelZ = new ScreenModelZ();
             self.viewmodelM = new ScreenModelM();
             self.changeTab(self.tabs()[0]);
+
         }
 
         changeTab(tab: TabModel) {

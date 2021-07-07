@@ -62,7 +62,8 @@ public class EmpInfoTerminalRegisterCommandHandler extends CommandHandler<EmpInf
 								new ConvertEmbossCategory(NotUseAtr.valueOf(command.getEntranceExit()),
 										NotUseAtr.valueOf(command.getOutSupport())),
 								Optional.ofNullable(command.getWorkLocationCode() == null ? null
-										: new WorkLocationCD(command.getWorkLocationCode()))))
+										: new WorkLocationCD(command.getWorkLocationCode())),
+								Optional.empty()))
 						.modelEmpInfoTer(ModelEmpInfoTer.valueOf(command.getModelEmpInfoTer()))
 						.intervalTime(new MonitorIntervalTime(command.getIntervalTime()))
 						.empInfoTerMemo(Optional.ofNullable(command.getMemo()).map(e -> new EmpInfoTerMemo(e)))

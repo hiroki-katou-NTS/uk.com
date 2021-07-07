@@ -113,6 +113,12 @@ public class KrcmtTimeRecorder extends UkJpaEntity implements Serializable {
 	 */
 	@Column(name = "MEMO")
 	public String memo;
+	
+	/**
+	 * 設置職場ID
+	 */
+	@Column(name = "WORKPLACE_ID")
+	public String workPlaceId;
 
 	@Override
 	protected Object getKey() {

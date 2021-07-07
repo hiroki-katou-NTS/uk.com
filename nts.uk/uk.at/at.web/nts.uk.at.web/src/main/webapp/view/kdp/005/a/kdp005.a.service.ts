@@ -4,7 +4,7 @@ module nts.uk.at.view.kdp005.a {
 
 	export module service {
 		let url = {
-			startPage: 'at/record/stamp/finger/get-finger-stamp-setting',
+			startPage: 'at/record/stamp/ICCardStamp/get-iccard-stamp-setting',
 			addCheckCard: 'at/record/stamp/ICCardStamp/checks',
 			confirmUseOfStampInput: 'at/record/stamp/employment_system/confirm_use_of_stamp_input',
 			loginAdminMode: 'ctx/sys/gateway/kdp/login/adminmode',
@@ -47,8 +47,8 @@ module nts.uk.at.view.kdp005.a {
 		export function getStampToSuppress(): JQueryPromise<any> {
 			return ajax("at", url.getStampToSuppress);
 		}
-        export function getLogginSetting(): JQueryPromise<any> {
-            return ajax("at", url.getLogginSetting);
+        export function getLogginSetting(param): JQueryPromise<any> {
+            return ajax("at", url.getLogginSetting, {contractCode: param});
         }
 	}
 

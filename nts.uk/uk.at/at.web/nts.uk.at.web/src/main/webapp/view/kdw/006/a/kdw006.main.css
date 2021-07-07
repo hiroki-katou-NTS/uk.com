@@ -1,43 +1,8 @@
-#button1 {
-	width: 259px;
-	margin: 20px 20px 20px 20px;
-}
-
-#button2 {
-	width: 259px;
-	margin: 20px 20px 20px 20px;
-}
-
-#button3 {
-	width: 259px;
-	margin: 20px 20px 20px 20px;
-}
-
-#button4 {
-	width: 259px;
-	margin: 20px 20px 20px 20px;
-}
-
-#button5 {
-	width: 259px;
-	margin: 20px 20px 20px 20px;
-}
-
-#button6 {
-	width: 259px;
-	margin: 20px 20px 20px 20px;
-}
-
-#button7 {
-	width: 259px;
-	margin: 20px 20px 20px 20px;
-}
-
-#button8 {
-	width: 259px;
+.b-style {
+	width: 295px;
 	margin: 20px 20px 20px 20px;
 }
 
 #sidebar-area{
-	width: 115px;
+	width: 120px;
 }

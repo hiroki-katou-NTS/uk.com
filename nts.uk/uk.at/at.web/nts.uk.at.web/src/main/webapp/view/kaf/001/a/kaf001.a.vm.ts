@@ -7,7 +7,7 @@ module kaf001.a.viewmodel {
 	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
     export class ScreenModel {
 
-        selectedDate: KnockoutObservable<moment.Moment> = ko.observable(moment());
+        selectedDate: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));
 
         //_____CCG001________
         ccg001ComponentOption : GroupOption;
@@ -255,7 +255,7 @@ module kaf001.a.viewmodel {
                 let transfer: AppInitParam = {
                     appType: applicationType,
                     employeeIds,
-                    baseDate: self.selectedDate().toISOString(),
+                    baseDate: self.selectedDate(),
 					isAgentMode: true
                 };
                 switch (applicationType) {

@@ -62,10 +62,10 @@ public class CreateWorkCycleAppImage {
                     case WORKINGDAYS:
                         return;
                     case NON_WORKINGDAY_INLAW:
-                        reflectionImage.addByWeeklyWorking(i, new WorkInformation(config.getLegalHolidayCd().get(), null));
+                        reflectionImage.addByWeeklyWorking(i, new WorkInformation(config.getLegalHolidayCd().orElse(null), null));
                         break;
                     case NON_WORKINGDAY_EXTRALEGAL:
-                        reflectionImage.addByWeeklyWorking(i, new WorkInformation(config.getNonStatutoryHolidayCd().get(), null));
+                        reflectionImage.addByWeeklyWorking(i, new WorkInformation(config.getNonStatutoryHolidayCd().orElse(null), null));
                         break;
                 }
             });

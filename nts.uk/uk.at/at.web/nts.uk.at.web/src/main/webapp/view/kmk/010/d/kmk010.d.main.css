@@ -3,7 +3,6 @@ table.fixed-table tbody tr td:first-child {
   width: 230px;
 }
 table.fixed-table thead th {
-  font-weight: normal;
   height: 30px;
   vertical-align: middle;
 }

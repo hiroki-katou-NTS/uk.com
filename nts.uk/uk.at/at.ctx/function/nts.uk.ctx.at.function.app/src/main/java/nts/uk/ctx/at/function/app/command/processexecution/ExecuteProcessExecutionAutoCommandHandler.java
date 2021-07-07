@@ -163,6 +163,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
@@ -441,9 +442,11 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		// アルゴリズム「自動実行登録処理」を実行する
 		this.updateDomains(execItemCd, execType, companyId, execId, execSetting, procExecLogData.get(),
 				lastExecDateTime, processExecutionLogManage, dateTimeOutput);
-
-		// アルゴリズム「実行状態ログファイル作成処理」を実行する
-		createLogFileExecution.createLogFile(companyId, execItemCd);
+		// 実行時情報「アプリケーションコンテキスト．オプションライセンス．カスタマイズ．大塚」をチェックする
+		if (AppContexts.optionLicense().customize().ootsuka()) {
+			// アルゴリズム「実行状態ログファイル作成処理」を実行する
+			createLogFileExecution.createLogFile(companyId, execItemCd);
+		}
 		
         //更新処理自動実行エラーからトップページアラームを作成する
         DefaultRequireImpl rq = new DefaultRequireImpl(processExecutionLogManageRepository, employeeManageAdapter, topPageAlarmAdapter);

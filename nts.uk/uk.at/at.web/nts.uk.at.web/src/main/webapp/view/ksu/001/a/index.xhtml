@@ -84,7 +84,7 @@
 
 		</ui:define>
 		<ui:define name="content">
-			<div id = "main-area" data-bind="with: viewA" style="overflow-y: hidden;">
+			<div id = "main-area" data-bind="with: viewA" style="overflow-y: hidden; display: none;">
 				<div id="functions-area">
 					<button  id="A1_1"  class="proceed"  tabindex="1" data-bind="enable: enableBtnReg , click: saveData ">#{i18n.getText('KSU001_1')}</button>
 					<button  id="A1_2"  class="proceed marginleft15px" tabindex="2">#{i18n.getText('KSU001_2')}</button>
@@ -214,7 +214,7 @@
 								<div class="inline" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_53')}</div>
 							</td>
 							<td>
-								<div id ="A16_3" class="inline" style="width: 170px; height: 70px;"
+								<div id ="A16_3" class="inline" style="width: 185px; height: 70px;"
 									data-bind="ntsRadioBoxGroup: {
 											options: [{id: 1, name: '#{i18n.getText('KSU001_48')}'}, {id: 2, name: '#{i18n.getText('KSU001_49')}'}] ,
 											optionsValue: 'id',
@@ -333,21 +333,23 @@
 							</div>
 							<div id="functon-area-row2-center">
 								<div id="A3_1">
-									<button id="prevMonth" tabindex="26" class="size-image-button3"
-										data-bind="click: backMonth, timeClick: -1"><i data-bind="ntsIcon: { no: 57 }"></i> </button>
-									<span id="date-time-prev" data-bind="text: dateTimePrev"></span>
-									<span id="special">#{i18n.getText('KSU001_66')}</span> <span
-										id="date-time-after" data-bind="text: dateTimeAfter"></span>
-									<button id="nextMonth" tabindex="27" class="size-image-button3"
-										data-bind="click: nextMonth, timeClick: -1"><i data-bind="ntsIcon: { no: 58 }"></i></button>
-
-									<div id="A3_2" tabindex="28" class="cf" style="margin-left: 5px"
+									<div id="A3_1_left">
+										<button id="prevMonth" tabindex="26" class="size-image-button3"
+											data-bind="click: backMonth, timeClick: -1"><i data-bind="ntsIcon: { no: 57 }"></i> </button>
+										<span id="date-time-prev" class = 'date-time' data-bind="text: dateTimePrev"></span>
+										<span id="special" class = 'date-time'>#{i18n.getText('KSU001_66')}</span> 
+										<span id="date-time-after" class = 'date-time' data-bind="text: dateTimeAfter"></span>
+										<button id="nextMonth" tabindex="27" class="size-image-button3"
+											data-bind="click: nextMonth, timeClick: -1"><i data-bind="ntsIcon: { no: 58 }"></i></button>
+										</div>
+									<div id="A3_2" tabindex="28" class="cf"
 										data-bind="ntsSwitchButton: {
 										options: disPeriodSelectionList,
 										optionsValue: 'id',
 										optionsText: 'name',
 										value: selectedDisplayPeriod}">
 									</div>
+									<div style="clear: left"></div>
 								</div>
 							</div>
 							<div id="functon-area-row2-right">
@@ -382,14 +384,14 @@
 										<button tabindex="41"  data-bind="ntsHelpButton: {textId: '', textParams:[], position: 'right center' ,enable: enableHelpBtn}"
 											style="margin-top: 13px;">？</button>
 									</div>
-									<div data-bind="ifnot: visibleShiftPalette">
+									<div data-bind="ifnot: visibleShiftPalette" style="width: 100%;margin-left: 140px; margin-top: 5px;">
 										<div id="oViewModel">
 											<div data-bind="with: $parent.viewAB">
 												<ui:include src="../ab/index.xhtml" />
 											</div>
 										</div>
 									</div>
-									<div data-bind="if: visibleShiftPalette">
+									<div data-bind="if: visibleShiftPalette" style="width: 100%;margin-left: 140px; margin-top: 5px;">
 										<div id="qViewModel">
 											<div data-bind="with: $parent.viewAC">
 												<ui:include src="../ac/index.xhtml" />
@@ -401,19 +403,23 @@
 							<div style="clear: left"></div>
 							<div style="width: fit-content;">
 								<div id = "btnControlLeftRight">
-									<button class="toLeft inline" data-bind="click : toLeft"> <i class="iconToLeft" data-bind="ntsIcon : { no: 152, width: 15, height: 22 }"></i></button>
-									<button class="toRight inline" data-bind="click: toRight"><i class="iconToRight " data-bind="ntsIcon: { no: 153, width: 15, height: 22 }"></i></button>
+									<button id = "A13" class="toLeft inline" data-bind="click : toLeft"> <i class="iconToLeft" data-bind="ntsIcon : { no: 152, width: 15, height: 20 }"></i></button>
+									<div style="display: inline-block;" data-bind="if: showA11">
+										<button id = "A14" class="toRight inline" data-bind="click: toRight"><i class="iconToRight " data-bind="ntsIcon: { no: 153, width: 15, height: 20 }"></i></button>
+									</div>
 								</div>
 								<div style="clear: left"></div>
 								<div id = "sub-content-main">
-									<div style="float: left">
-										<button class="toDown inline" data-bind="click : toDown"><i class="iconToDown" data-bind="ntsIcon : { no: 150,width: 11, height: 22 }"></i></button>
+									<div style="float: left; height: 349px;">
+										<div data-bind="if: showA12">
+											<button class="toDown inline" data-bind="click : toDown"><i class="iconToDown" data-bind="ntsIcon : { no: 150,width: 15, height: 20 }"></i></button>
+										</div>
 									</div>
 									<div id="extable-outside" style="float: left">
 										<div id="extable"></div>
 									</div>
 									<div style="float: left; margin-left: -30px">
-										<button class="settingHeightGrid"> <i style="margin-left: -4px;" data-bind="ntsIcon: { no: 3,width: 18, height: 18 }"></i> </button>
+										<button class="settingHeightGrid"> <i data-bind="ntsIcon: { no: 3,width: 18, height: 18 }"></i> </button>
 									</div>
 								</div>
 							</div>

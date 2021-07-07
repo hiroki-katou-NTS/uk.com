@@ -80,7 +80,7 @@ module nts.uk.com.view.cmm008.a {
                         // Find and bind selected Employment
                         //self.loadEmployment(self.selectedCode());
                     }
-                
+
                 service.findGroupCommonMaster().done(function(data) {
                     // self.itemListMatter(data.commonMasterItems);
                    self.commonMasterName(data.commonMasterName);

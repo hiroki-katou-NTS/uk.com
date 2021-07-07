@@ -17,7 +17,7 @@ th.ui-widget-header .form-label {
     padding: 0;
 }
 
-#tabpanel-wkp .ntsRadioBox {
+#fixed-table-wkp .radio-wrapper {
     display: block;
 }
 
@@ -26,8 +26,8 @@ td .ntsRadioBox:first-child {
     margin-bottom: 5px;
 }
 
-td .ntsControl.radio-wrapper {
-    margin-left: 20px;
+td .radio-wrapper {
+    margin-left: 15px;
 }
 
 #nts-component-tree {

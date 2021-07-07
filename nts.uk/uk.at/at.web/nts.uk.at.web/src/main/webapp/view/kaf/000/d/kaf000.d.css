@@ -1,0 +1,13 @@
+#contents-area {
+	margin-top: 5px;
+	margin-bottom: 5px;	
+}
+
+#contents-area #listApproverRootState .table-phase, .table-phase td, .table-phase th {
+	border: 1px solid black;
+	text-align: center;
+}
+#contents-area #listApproverRootState #label-1 {
+	width: 120px;
+	vertical-align: top;
+}

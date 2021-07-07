@@ -1,6 +1,6 @@
 
 #kaf008-share .A5 span {
-    width: 120px;
+    width: 90px;
 }
 
 #kaf008-share #A5_2 span {
@@ -16,22 +16,22 @@
 }
 
 #kaf008-share .A5 #A5_1 {
-    width: 120px
+    width: 111px
 }
 
 
 #kaf008-share .A5 {
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 6px;
+    padding-bottom: 6px;
 }
 
 #kaf008-share .A5 .nts-input {
-    width: 100px;
+    width: 70px;
 }
 
 #kaf008-share #A6_1 {
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 3px;
+    padding-bottom: 7px;
 }
 
 #kaf008-share #A6_1 span {
@@ -62,7 +62,7 @@
 
 #kaf008-share #A10 {
     padding-left: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 8px;
 }
 
 #kaf008-share #A6_1 {
@@ -79,4 +79,7 @@
     margin-left: 5px;
 }
 
+.master-content {
+    overflow-x: auto !important;
+}
 

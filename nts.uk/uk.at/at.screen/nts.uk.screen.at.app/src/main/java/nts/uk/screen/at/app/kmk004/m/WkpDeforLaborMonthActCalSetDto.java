@@ -1,9 +1,7 @@
 package nts.uk.screen.at.app.kmk004.m;
 
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.sha.ShaDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.wkp.WkpDeforLaborMonthActCalSet;
-import nts.uk.screen.at.app.kmk004.o.ShaDeforLaborMonthActCalSetDto;
 import nts.uk.screen.at.app.query.kmk004.p.DeforLaborSettlementPeriodDto;
 import nts.uk.screen.at.app.query.kmk004.p.DeforWorkTimeAggrSetDto;
 import nts.uk.screen.at.app.query.kmk004.p.ExcessOutsideTimeSetRegDto;

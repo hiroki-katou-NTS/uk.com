@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Data;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.app.find.stamp.management.ButtonSettingsDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.StampTypeDto;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
@@ -35,7 +36,7 @@ public class StampRecordDto {
 	private String stampArt;
 	private String stampArtName;
 	private Integer revervationAtr;
-	private String empInfoTerCode;
+//	private String empInfoTerCode;
 	private String timeStampType;
 
 	// stamp
@@ -78,8 +79,8 @@ public class StampRecordDto {
 		this.stampArt = "";
 
 		// this.revervationAtr = stampRecord.getRevervationAtr().value;
-		this.empInfoTerCode = stampRecord.getEmpInfoTerCode().isPresent() ? stampRecord.getEmpInfoTerCode().get().v()
-				: null;
+//		this.empInfoTerCode = stampRecord.getEmpInfoTerCode().isPresent() ? stampRecord.getEmpInfoTerCode().get().v()
+//				: null;
 
 		// stamp
 		if (stamp != null) {
@@ -96,9 +97,9 @@ public class StampRecordDto {
 			this.changeCalArt = type.getChangeCalArt().value;
 
 			RefectActualResult raResult = stamp.getRefActualResults();
-			this.cardNumberSupport = raResult.getCardNumberSupport().isPresent() ? raResult.getCardNumberSupport().get()
+			this.cardNumberSupport = (raResult.getWorkInforStamp().isPresent() && raResult.getWorkInforStamp().get().getCardNumberSupport().isPresent()) ? raResult.getWorkInforStamp().get().getCardNumberSupport().get().toString()
 					: null;
-			this.workLocationCD = raResult.getWorkLocationCD().isPresent() ? raResult.getWorkLocationCD().get().v()
+			this.workLocationCD = (raResult.getWorkInforStamp().isPresent() && raResult.getWorkInforStamp().get().getWorkLocationCD().isPresent()) ? raResult.getWorkInforStamp().get().getWorkLocationCD().get().v()
 					: null;
 			this.workTimeCode = raResult.getWorkTimeCode().isPresent() ? raResult.getWorkTimeCode().get().v() : null;
 			if (raResult.getOvertimeDeclaration().isPresent()) {
@@ -108,12 +109,9 @@ public class StampRecordDto {
 			}
 			this.reflectedCategory = stamp.isReflectedCategory();
 			if (stamp.getLocationInfor().isPresent()) {
-				StampLocationInfor stampLocate = stamp.getLocationInfor().get();
-				this.outsideAreaAtr = stampLocate.isOutsideAreaAtr();
-				if (stampLocate.getPositionInfor() != null) {
-					this.latitude = stampLocate.getPositionInfor().getLatitude();
-					this.longitude = stampLocate.getPositionInfor().getLongitude();
-				}
+				GeoCoordinate stampLocate = stamp.getLocationInfor().get();
+				this.latitude = stampLocate.getLatitude();
+				this.longitude = stampLocate.getLongitude();
 			}
 			this.attendanceTime = stamp.getAttendanceTime().isPresent()
 					? getTimeString(stamp.getAttendanceTime().get().v())
@@ -154,9 +152,9 @@ public class StampRecordDto {
 			this.changeCalArt = type.getChangeCalArt().value;
 
 			RefectActualResult raResult = stamp.getRefActualResults();
-			this.cardNumberSupport = raResult.getCardNumberSupport().isPresent() ? raResult.getCardNumberSupport().get()
+			this.cardNumberSupport = (raResult.getWorkInforStamp().isPresent() && raResult.getWorkInforStamp().get().getCardNumberSupport().isPresent()) ? raResult.getWorkInforStamp().get().getCardNumberSupport().get().toString()
 					: null;
-			this.workLocationCD = raResult.getWorkLocationCD().isPresent() ? raResult.getWorkLocationCD().get().v()
+			this.workLocationCD = (raResult.getWorkInforStamp().isPresent() && raResult.getWorkInforStamp().get().getWorkLocationCD().isPresent()) ? raResult.getWorkInforStamp().get().getWorkLocationCD().get().v()
 					: null;
 			this.workTimeCode = raResult.getWorkTimeCode().isPresent() ? raResult.getWorkTimeCode().get().v() : null;
 			if (raResult.getOvertimeDeclaration().isPresent()) {
@@ -166,12 +164,9 @@ public class StampRecordDto {
 			}
 			this.reflectedCategory = stamp.isReflectedCategory();
 			if (stamp.getLocationInfor().isPresent()) {
-				StampLocationInfor stampLocate = stamp.getLocationInfor().get();
-				this.outsideAreaAtr = stampLocate.isOutsideAreaAtr();
-				if (stampLocate.getPositionInfor() != null) {
-					this.latitude = stampLocate.getPositionInfor().getLatitude();
-					this.longitude = stampLocate.getPositionInfor().getLongitude();
-				}
+				GeoCoordinate stampLocate = stamp.getLocationInfor().get();
+				this.latitude = stampLocate.getLatitude();
+				this.longitude = stampLocate.getLongitude();
 			}
 			this.attendanceTime = stamp.getAttendanceTime().isPresent()
 					? getTimeString(stamp.getAttendanceTime().get().v())

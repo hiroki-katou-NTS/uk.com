@@ -37,10 +37,10 @@
 							<div data-bind="ntsPanel:{width: '340px', direction: 'right', showIcon: true, visible: true}">
 								<div class="table mb-10">
 									<div class="cell valign-center" data-bind="ntsFormLabel: { required: true }" >
-										<label data-bind="text: $vm.$i18n('KMT009_6')"></label>										
+                    #{i18n.getText('KMT009_6')}
 									</div>
 									<div class="cell valign-center">
-										<div tabindex="5" class="combo-box" data-bind="ntsComboBox: {
+										<div id="op-type" tabindex="5" class="combo-box" data-bind="ntsComboBox: {
 											name: '#[KMT009_7]',
 											options: workList,
 											optionsValue: 'code',
@@ -73,11 +73,11 @@
 									}"></table>
 							</div>
 						</div>
-						<div class="pull-left">
+						<div class="pull-left" style="margin-left: 50px">
 							<div>
 								<div class="table mb-10">
 									<div class="cell w-35 valign-center" data-bind="ntsFormLabel: { required: false}">
-										<label data-bind="text: $vm.$i18n('KMT009_12')"></label>
+										#{i18n.getText('KMT009_12')}
 									</div>
 									<div class="cell valign-center">
 										<label data-bind="text: model().code"></label>
@@ -86,7 +86,7 @@
 
 								<div class="table mb-10">
 									<div class="cell w-35 valign-center" data-bind="ntsFormLabel: { required: false }">
-										<label data-bind="text: $vm.$i18n('KMT009_14')"></label>
+										#{i18n.getText('KMT009_14')}
 									</div>
 									<div class="cell valign-center">
 										<label data-bind="text: model().name"></label>
@@ -95,7 +95,7 @@
 
 								<div class="table mb-10">
 									<div class="cell w-35 valign-center" data-bind="ntsFormLabel: { required: false }">
-										<label data-bind="text: $vm.$i18n('KMT001_28')"></label>
+										#{i18n.getText('KMT001_28')}
 									</div>
 									<div class="cell valign-center">
 										<div class="table">
@@ -113,7 +113,7 @@
 								<div class="table mb-10">
 									<div class="cell w-35">
 										<div data-bind="ntsFormLabel: { required: false}">
-											<label data-bind="text: $vm.$i18n('KMT009_17')"></label>
+											#{i18n.getText('KMT009_17')}
 										</div>
 									</div> 									
 								</div>

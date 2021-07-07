@@ -4,19 +4,19 @@
 			<div class="cell valign-center" data-bind="ntsFormLabel: { text: $i18n('KAF010_90') }"></div>
 		</div>
 		<div class="cell valign-center">
-			<div id="kaf000-a-component5-comboReason" style="width: 390px"
+			<div id="kaf000-a-component5-comboReason" style="width: 472px"
 				data-bind="ntsComboBox: {
 								name: $i18n('KAF010_91'),
 								options: $parent.comboDivergenceReason,
 								optionsValue: 'divergenceReasonCode',
 								optionsText: 'reason',
 								value: $parent.selectedDivergenceReasonCode,
-								columns: [{ prop: 'reason', length: 20 }],
+								columns: [{ prop: 'comboBoxText', length: 20 }],
 								required: $parent.comboDivergenceReason()[0] && $parent.comboDivergenceReason()[0].reasonRequired == 0 }">
 			</div>
 		</div>
 	</div>
-	<div class="table" style="margin-top: 5px;" data-bind="visible: $parent.selectReflectDivergenceCheck()">
+	<div class="table" style="margin-top: 5px;" data-bind="visible: $parent.inputReflectDivergenceCheck()">
 		<div class="cell" style="width: 120px;">
 			<div class="cell valign-center" data-bind="ntsFormLabel: { 
 													text: $i18n('KAF010_92'),
@@ -32,7 +32,7 @@
 							constraint: 'DivergenceReasonContent',
 							option: {
 								resizeable: false,
-		                    	width: '450',
+		                    	width: '449',
 		                    	textalign: 'left'
 		                   	}}"></textarea>
 		</div>

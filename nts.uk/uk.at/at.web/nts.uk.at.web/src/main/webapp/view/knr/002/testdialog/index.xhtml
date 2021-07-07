@@ -36,12 +36,35 @@
 				<!-- -->
 				<button id="test_K_Dialog"
 					data-bind="click : test_K_Dialog">K_Reservation menu</button>
+			
 			</div>
 			<!-- Content -->
 			<div class="fixed-flex-layout" id="contents-area">
-				<TEXTAREA rows="7" cols="77" data-bind="value: sharedContent"></TEXTAREA>
-			</div>
+				<div style=""
+					data-bind="ntsFormLabel: {required: false}">CompanyId</div>
+				<div>
+					<input class="" style="width: 150px" id=""
+						data-bind="ntsTextEditor: {
+													value: companyId,
+													name: 'CID',
+													required:false,
+													enable: true }" />
+				</div>
 
+				<!-- <div style="margin-left: 75px;"
+					data-bind="ntsFormLabel: {required: false}">No</div> -->
+				<!-- <div>
+					<input class="" style="width: 150px" id=""
+						data-bind="ntsTextEditor: {
+													value: empNo,
+													name: 'No',
+													required:false,
+													enable: true }" />
+				</div> -->
+				<!-- -->
+				<button id="resetEmps" style="margin-left: 75px;"
+					data-bind="click : resetEmps">resetEmps</button>
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>

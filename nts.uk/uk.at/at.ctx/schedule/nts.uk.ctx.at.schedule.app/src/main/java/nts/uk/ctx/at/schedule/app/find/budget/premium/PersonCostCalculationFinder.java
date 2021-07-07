@@ -85,7 +85,7 @@ public class PersonCostCalculationFinder {
                 domain.getCompanyID(),
                 domain.getUnitPrice().isPresent() ? domain.getUnitPrice().get().value : null,
                 domain.getHowToSetUnitPrice().value,
-                domain.getWorkingHoursUnitPrice().v(),
+                domain.getWorkingHoursUnitPrice().value,
                 domain.getRemark().v(),
                 new PerCostRoundSettingDto(
                         domain.getRoundingSetting().getRoundingOfPremium().getPriceRounding().value,
@@ -220,7 +220,7 @@ public class PersonCostCalculationFinder {
                         domain.getCompanyID(),
                         domain.getUnitPrice().isPresent() ? domain.getUnitPrice().get().value : null,
                         domain.getHowToSetUnitPrice().value,
-                        domain.getWorkingHoursUnitPrice().v(),
+                        domain.getWorkingHoursUnitPrice().value,
                         domain.getRemark().v(),
                         new PerCostRoundSettingDto(
                                 domain.getRoundingSetting().getRoundingOfPremium().getPriceRounding().value,
@@ -260,7 +260,7 @@ public class PersonCostCalculationFinder {
                     domain.getCompanyID(),
                     domain.getUnitPrice().isPresent() ? domain.getUnitPrice().get().value : null,
                     domain.getHowToSetUnitPrice().value,
-                    domain.getWorkingHoursUnitPrice().v(),
+                    domain.getWorkingHoursUnitPrice().value,
                     domain.getRemark().v(),
                     new PerCostRoundSettingDto(
                             domain.getRoundingSetting().getRoundingOfPremium().getPriceRounding().value,

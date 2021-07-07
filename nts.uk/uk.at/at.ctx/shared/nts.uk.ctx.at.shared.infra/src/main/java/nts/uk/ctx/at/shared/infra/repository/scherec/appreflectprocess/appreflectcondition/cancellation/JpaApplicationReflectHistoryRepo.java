@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
@@ -90,8 +91,21 @@ public class JpaApplicationReflectHistoryRepo extends JpaRepository implements A
 
 	@Override
 	public void insertAppReflectHist(String cid, ApplicationReflectHistory hist) {
-		this.commandProxy().insert(toEntityHist(cid, hist));
-		this.commandProxy().insertAll(toEntityRestore(cid, hist));
+		Optional<KsrdtReflectAppHist> findData = this.queryProxy().find(new KsrdtReflectAppHistPK(hist.getEmployeeId(), hist.getDate(), hist.getApplicationId(),
+				hist.getClassification().value, hist.getReflectionTime()), KsrdtReflectAppHist.class);
+		if (!findData.isPresent()) {
+			this.commandProxy().insert(toEntityHist(cid, hist));
+			this.commandProxy().insertAll(toEntityRestore(cid, hist));
+		}else {
+			List<KsrdtReflectAppHistRestore> lstRestore = toEntityRestore(cid, hist);
+			lstRestore.forEach(x -> {
+				val data = this.queryProxy().find(x.pk, KsrdtReflectAppHistRestore.class);
+				if (!data.isPresent()) {
+					this.commandProxy().insert(x);
+				} 
+			});
+		}
+		this.getEntityManager().flush();
 	}
 
 	@Override

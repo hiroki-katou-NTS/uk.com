@@ -43,7 +43,7 @@ module nts.uk.at.view.kmk004.l {
 						</div>
 						
 						<div class="header_title">
-							<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
+							<div data-bind="ntsFormLabel: {inline: true, text: $i18n('KMK004_229')}"></div>
 							<button data-bind="enable: initBtnEnable, i18n: btn_text, click: openViewP"></button>
 						</div>
 						<div class="header_content">
@@ -52,7 +52,7 @@ module nts.uk.at.view.kmk004.l {
 								params: params
 							}"></div>
 						</div>
-						<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
+						<div data-bind="ntsFormLabel: {inline: true, text: $i18n('KMK004_232')}"></div>
 					</div>
 					<div class="content">
 						<div class="div_row"> 
@@ -154,6 +154,7 @@ module nts.uk.at.view.kmk004.l {
 
 		created() {
 			const vm = this;
+			const date = moment(new Date()).toDate();
 
 			vm.ccg001ComponentOption = {
 				/** Common properties */
@@ -168,9 +169,9 @@ module nts.uk.at.view.kmk004.l {
 				periodFormatYM: false,
 
 				/** Required parameter */
-				baseDate: ko.observable(moment().format(DATE_FORMAT)),
-				periodStartDate: ko.observable(new Date()),
-				periodEndDate: ko.observable(new Date()),
+				baseDate: date,
+				periodStartDate: date,
+				periodEndDate: date,
 				leaveOfAbsence: true,
 				closed: true,
 				retirement: true,

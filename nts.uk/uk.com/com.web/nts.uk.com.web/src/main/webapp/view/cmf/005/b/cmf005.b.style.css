@@ -42,7 +42,7 @@
 
 .contentL {
 	float: left;
-	width: 45%;
+	width: 40%;
 }
 
 .contentR {
@@ -177,4 +177,12 @@ top: 150px;
 
 #B20_2 {
   margin-left: 220px;
+}
+
+#B3_3 {
+  padding-left: 20px;
+}
+
+#B3_3_2 {
+  width: 310px;
 }

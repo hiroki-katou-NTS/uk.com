@@ -1,5 +1,7 @@
 package nts.uk.ctx.workflow.dom.approverstatemanagement;
 
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,7 +30,7 @@ public class ApproverInfor extends DomainObject {
 	/**承認日*/
 	private GeneralDateTime approvalDate;
 	/**理由*/
-	private String approvalReason;
+	private ApprovalComment approvalReason;
 	
 	private Integer approverInListOrder;
 	
@@ -46,7 +48,7 @@ public class ApproverInfor extends DomainObject {
 			int approvalAtr, String agentID, GeneralDateTime approvalDate, String approvalReason, Integer approverInListOrder){
 		return new  ApproverInfor (approverID,
 				EnumAdaptor.valueOf(approvalAtr, ApprovalBehaviorAtr.class),
-				agentID, approvalDate, approvalReason, approverInListOrder);
+				agentID, approvalDate, Strings.isBlank(approvalReason) ? null : new ApprovalComment(approvalReason), approverInListOrder);
 	}
 	
 	public boolean isNotApproved() {

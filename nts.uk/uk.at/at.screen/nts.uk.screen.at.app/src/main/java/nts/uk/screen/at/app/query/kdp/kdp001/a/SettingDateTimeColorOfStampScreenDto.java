@@ -15,10 +15,7 @@ public class SettingDateTimeColorOfStampScreenDto {
 	/** 文字色 */
 	private String textColor;
 
-	/** 背景色 */
-	private String backgroundColor;
-
 	public static SettingDateTimeColorOfStampScreenDto fromDomain(SettingDateTimeColorOfStampScreen domain) {
-		return new SettingDateTimeColorOfStampScreenDto(domain.getTextColor().v(), domain.getBackGroundColor().v());
+		return new SettingDateTimeColorOfStampScreenDto(domain.getTextColor().v());
 	}
 }

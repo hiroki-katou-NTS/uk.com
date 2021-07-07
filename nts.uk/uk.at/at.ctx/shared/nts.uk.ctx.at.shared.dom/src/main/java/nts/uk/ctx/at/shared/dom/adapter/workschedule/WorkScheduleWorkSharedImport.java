@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 public class WorkScheduleWorkSharedImport  {
 	
-	private String workTyle;
+	private String workType;
 	
 	private String workTime;
 	
@@ -30,11 +30,11 @@ public class WorkScheduleWorkSharedImport  {
 	///** 日別勤怠の出退勤**/
 	private Optional<TimeLeavingOfDailyAttdSharedImport> timeLeaving = Optional.empty();
 
-	public WorkScheduleWorkSharedImport(String workTyle, String workTime, int goStraightAtr, int backStraightAtr,
+	public WorkScheduleWorkSharedImport(String workType, String workTime, int goStraightAtr, int backStraightAtr,
 			TimeLeavingOfDailyAttdSharedImport timeLeavingOfDailyAttd,
 			BreakTimeOfDailyAttdSharedImport listBreakTimeOfDailyAttdImport) {
 		super();
-		this.workTyle = workTyle;
+		this.workType = workType;
 		this.workTime = workTime;
 		this.goStraightAtr = goStraightAtr;
 		this.backStraightAtr = backStraightAtr;

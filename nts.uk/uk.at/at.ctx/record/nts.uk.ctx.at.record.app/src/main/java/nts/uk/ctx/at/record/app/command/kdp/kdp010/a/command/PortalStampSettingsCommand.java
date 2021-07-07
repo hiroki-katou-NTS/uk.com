@@ -21,8 +21,12 @@ public class PortalStampSettingsCommand {
 	private Integer suppressStampBtn;
 	
 	private Integer useTopMenuLink;
+	
+	private Integer goOutUseAtr;
+	
+	private Integer displayStampList;
 
 	public PortalStampSettings toDomain() {
-		return new PortalStampSettings(AppContexts.user().companyId(), this.displaySettingsStampScreen.toDomain(), this.buttonSettings.stream().map(c->c.toDomain()).collect(Collectors.toList()), this.suppressStampBtn == 1, this.useTopMenuLink == 1);
+		return new PortalStampSettings(AppContexts.user().companyId(), this.displaySettingsStampScreen.toDomain(), this.buttonSettings.stream().map(c->c.toDomain()).collect(Collectors.toList()), this.suppressStampBtn == 1, this.useTopMenuLink == 1, this.goOutUseAtr == 1, this.displayStampList == 1);
 	}
 }

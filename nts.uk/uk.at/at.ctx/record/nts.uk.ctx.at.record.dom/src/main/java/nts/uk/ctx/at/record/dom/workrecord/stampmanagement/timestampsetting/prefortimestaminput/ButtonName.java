@@ -9,7 +9,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  */
 
-@StringMaxLength(10)
+@StringMaxLength(20)
 public class ButtonName extends StringPrimitiveValue<ButtonName>{
 	
 	private static final long serialVersionUID = 1L;

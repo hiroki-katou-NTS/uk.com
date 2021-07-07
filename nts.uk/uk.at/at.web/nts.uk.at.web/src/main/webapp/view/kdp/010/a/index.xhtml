@@ -4,101 +4,100 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-<body>
-	<ui:composition template="../../../../master/sidebar.xhtml">
-		<ui:define name="sidebar-head">
-			<com:ValidatorScript>
-				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval
-				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime
-				nts.uk.ctx.at.record.dom.stamp.application.MessageContent
-				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.NumberAuthenfailures
-				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonName
-			</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />
-			
-			<com:stylefile path="../main.css"/>
-			
-			<com:scriptfile path="../b/kdp010.b.vm.js" />
-			<com:scriptfile path="../b/kdp010.b.service.js" />
-			
-			<com:scriptfile path="../c/kdp010.c.vm.js" />
-			<com:scriptfile path="../c/kdp010.c.service.js" />
-			
-			<com:scriptfile path="../d/kdp010.d.vm.js" />
-			<com:scriptfile path="../d/kdp010.d.service.js" />
-			
-			<com:scriptfile path="../f/kdp010.f.vm.js" />
-			<com:scriptfile path="../f/kdp010.f.service.js" />
-			
-			<com:scriptfile path="../e/kdp010.e.vm.js" />
-			<com:scriptfile path="../e/kdp010.e.service.js" />
-			<com:stylefile path="../e/main.css" />
-			
-			<com:scriptfile path="kdp010.a.service.js" />
-			<com:scriptfile path="kdp010.a.vm.js" />
-			<com:scriptfile path="kdp010.a.start.js" />
-		</ui:define>
-
-		<!-- Side Bar -->
-		<ui:define name="sidebar">
-			<ul tabindex="1" class="navigator">
-			
-				<li data-bind="click: selectScreenA, visible: (controlTab.name_selection() || controlTab.finger_authc() || controlTab.ic_card())">
-					<a href="#tabpanel-a" role="tab-navigator" id="removeActive" >#{i18n.getText('KDP010_2')}</a>
-				</li>
-				<li data-bind="click: selectScreenB, visible: controlTab.indivition">
-					<a href="#tabpanel-b" role="tab-navigator" >#{i18n.getText('KDP010_3')}</a>
-				</li>
-				<li data-bind="click: selectScreenC, visible:controlTab.smart_phone">
-					<a href="#tabpanel-c" role="tab-navigator" >#{i18n.getText('KDP010_4')}</a>
-				</li>
-				<li data-bind="click: selectScreenD, visible:controlTab.portal">
-					<a href="#tabpanel-d" role="tab-navigator" >#{i18n.getText('KDP010_5')}</a>
-				</li>
-				<li data-bind="click: selectScreenF" style="display: block;">
-					<a href="#tabpanel-f" role="tab-navigator" >#{i18n.getText('KDP010_7')}</a>
-				</li>
-				<li data-bind="click: selectScreenE, visible:(controlTab.name_selection() || controlTab.finger_authc() || controlTab.ic_card() || controlTab.smart_phone() || controlTab.portal() || controlTab.indivition())">
-					<a href="#tabpanel-e" role="tab-navigator" >#{i18n.getText('KDP010_6')}</a>
-				</li>
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<com:scriptfile set="IGNITE" />
+				<com:stylefile path="kdp010.a.main.css" />
+				<com:scriptfile path="../g/kdp010.g.vm.js" />
+				<com:scriptfile path="kdp010.a.vm.js" />
+			</ui:define>
+	
+			<ui:define name="content">
+				<div id="functions-area">
+					<!-- <button data-bind="">#{i18n.getText('KDP010_280')}</button> -->
+				</div>
+				<div id="contents-area">
+					<div class="caret-inline master_setting">
+	                    <div class="panel panel-frame caret-inline">
+							<div>
+								<div class="inner-part-wrapper panel panel-gray-bg">
+									<label class="label_master">#{i18n.getText('KDP010_280')}</label>
+								</div>
+								<div class="inner-part-wrapper wrapper-tips">
+									<label class="label_tips">#{i18n.getText('KDP010_281')}</label>
+								</div>
+								<div class="inner-part-wrapper btn-wrapper">
+									<button tabindex="1" class="large btnconfig" id="X1_3" data-bind="click: openGDialog">#{i18n.getText('KDP010_282')}</button>
+								</div>
+							</div>
+	                    </div>
+	                    <span class="caret-right caret-inline"></span>
+	                </div>
+					<div class="caret-inline master_setting">
+						<div class="panel panel-frame">
+							<div>
+								<div class="inner-part-wrapper panel panel-gray-bg">
+									<label class="label_master">#{i18n.getText('KDP010_283')}</label>
+								</div>
+								<div class="inner-part-wrapper wrapper-tips">
+									<label class="label_tips">#{i18n.getText('KDP010_284')}</label>
+								</div>
+								<div class="inner-part-wrapper btn-wrapper">
+									<button tabindex="2" class="large btnconfig caret-right" data-bind="click: goToBScreen, enable: (screenModelG.settingsUsingEmbossing.name_selection() || screenModelG.settingsUsingEmbossing.finger_authc() || screenModelG.settingsUsingEmbossing.ic_card())">#{i18n.getText('KDP010_285')}</button>
+								</div>
+								<div class="inner-part-wrapper btn-wrapper">
+									<button tabindex="3" class="large btnconfig caret-right" data-bind="click: goToKScreen, enable: screenModelG.settingsUsingEmbossing.ricohStamp">#{i18n.getText('KDP010_286')}</button>
+								</div>
+							</div>
+						</div>
+						<div class="panel panel-frame">
+							<div>
+								<div class="inner-part-wrapper panel panel-gray-bg">
+									<label class="label_master">#{i18n.getText('KDP010_287')}</label>
+								</div>
+								<div class="inner-part-wrapper wrapper-tips">
+									<label class="label_tips">#{i18n.getText('KDP010_288')}</label>
+								</div>
+								<div class="inner-part-wrapper btn-wrapper">
+									<button tabindex="4" class="large btnconfig caret-right" data-bind="click: goToCScreen, enable: screenModelG.settingsUsingEmbossing.indivition">#{i18n.getText('KDP010_289')}</button>
+								</div>
+								<div class="inner-part-wrapper btn-wrapper">
+									<button tabindex="5" class="large btnconfig caret-right" data-bind="click: goToDScreen, enable: screenModelG.settingsUsingEmbossing.smart_phone">#{i18n.getText('KDP010_290')}</button>
+								</div>
+								<div class="inner-part-wrapper btn-wrapper">
+									<button tabindex="6" class="large btnconfig caret-right" data-bind="click: goToEScreen, enable: screenModelG.settingsUsingEmbossing.portal">#{i18n.getText('KDP010_291')}</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="caret-inline master_setting">
+						<div class="panel panel-frame">
+							<div>
+								<div class="inner-part-wrapper panel panel-gray-bg">
+									<label class="label_master">#{i18n.getText('KDP010_292')}</label>
+								</div>
+								<div class="inner-part-wrapper wrapper-tips">
+									<label class="label_tips">#{i18n.getText('KDP010_293')}</label>
+								</div>
+								<div class="inner-part-wrapper btn-wrapper">
+									<button tabindex="7" class="large btnconfig caret-right" data-bind="click: goToFScreen, 
+										enable: (
+												screenModelG.settingsUsingEmbossing.name_selection() 
+												|| screenModelG.settingsUsingEmbossing.finger_authc() 
+												|| screenModelG.settingsUsingEmbossing.ic_card()
+												|| screenModelG.settingsUsingEmbossing.indivition() 
+												|| screenModelG.settingsUsingEmbossing.portal() 
+												|| screenModelG.settingsUsingEmbossing.smart_phone()
+												|| screenModelG.settingsUsingEmbossing.ricohStamp()
+												)">#{i18n.getText('KDP010_294')}</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 				
-			</ul>
-		</ui:define>
-
-		<!-- Side Bar Content -->
-		<ui:define name="sidebar-content">
-		
-			<!-- Screen A -->
-				<div id="tabpanel-a" role="tabpanel" class="screen-a" data-bind="with: viewModelA">
-					<ui:include src="content.xhtml" />
-				</div>
-			
-			<!-- Screen B -->
-				<div id="tabpanel-b" role="tabpanel" class="screen-b" data-bind="with: viewModelB">
-					<ui:include src="../b/index.xhtml" />
-				</div>
-			
-			<!-- Screen C -->
-				<div id="tabpanel-c" role="tabpanel" class="screen-c" data-bind="with: viewModelC">
-					<ui:include src="../c/index.xhtml" />
-				</div>
-			
-			<!-- Screen D -->
-				<div id="tabpanel-d" role="tabpanel" class="screen-d" data-bind="with: viewModelD">
-					<ui:include src="../d/index.xhtml" />
-				</div>
-			
-			<!-- Screen F -->
-			<div id="tabpanel-f" role="tabpanel" class="screen-f" data-bind="with: viewModelF">
-				<ui:include src="../f/index.xhtml" />
-			</div>
-			
-			<!-- Screen E -->
-			<div id="tabpanel-e" role="tabpanel" class="screen-e" data-bind="with: viewModelE">
-				<ui:include src="../e/index.xhtml" />
-			</div>
-			
-		</ui:define>
-	</ui:composition>
-</body>
+			</ui:define>
+		</ui:composition>
+	</body>
 </html>

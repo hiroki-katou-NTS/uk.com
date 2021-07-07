@@ -120,7 +120,7 @@ public class ConvertTimeRecordReservationServiceTest {
 
 		Optional<StampRecord> stampRecord = 
 				Optional.of(new StampRecord(new ContractCode("1"), new StampNumber("1"), GeneralDateTime.now(),
-				new StampTypeDisplay("1"), Optional.empty()));
+				new StampTypeDisplay("1")));
 
 		new Expectations() {
 			{

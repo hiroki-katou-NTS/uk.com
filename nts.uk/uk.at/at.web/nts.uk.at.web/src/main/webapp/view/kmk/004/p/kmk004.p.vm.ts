@@ -76,14 +76,14 @@ module nts.uk.at.view.kmk004.p {
 				var vm = this;
 
 				vm.itemListP3_3 = ko.observableArray<ItemModel>([
-					new ItemModel('1', vm.$i18n("KMK004_313")), //単月
-					new ItemModel('0', vm.$i18n("KMK004_314")) //複数月
+					new ItemModel(1, vm.$i18n("KMK004_313")), //単月
+					new ItemModel(0, vm.$i18n("KMK004_314")) //複数月
 				]);
 
 				let tg = [], tg1 = [];
 				for (let i = 1; i <= 12; i++) {
 					tg.push(new MonthModel(i.toString(), i.toString() + '月'));
-					tg1.push(new ItemModel(i.toString(), i.toString() + 'ヶ月'));
+					tg1.push(new ItemModel(i, i.toString() + 'ヶ月'));
 				}
 				vm.itemListP3_5(tg);
 				vm.itemListP3_7(tg1);
@@ -605,10 +605,10 @@ module nts.uk.at.view.kmk004.p {
 	}
 
 	class ItemModel {
-		code: string;
+		code: number;
 		name: string;
 
-		constructor(code: string, name: string) {
+		constructor(code: number, name: string) {
 			this.code = code;
 			this.name = name;
 		}

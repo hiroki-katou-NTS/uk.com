@@ -74,7 +74,6 @@ public class GetListWorkTypeAvailable {
 									.collect(Collectors.toList())
 					)
 			.stream()
-			.filter(wk -> wk.getAbolishAtr() == NotUseAtr.NOT_USE.value)
 			.map(x -> new WorkTypeDto(x.getWorkTypeCode(), x.getName(), x.getAbbreviationName(), x.getMemo()))
 			.collect(Collectors.toList());
 			

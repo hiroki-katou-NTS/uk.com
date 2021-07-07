@@ -1,6 +1,6 @@
 module nts.uk.at.view.kaf005.shr.viewmodel {
 	const template = `
-<div class="container cf" data-bind="with: $parent">
+<div class="container cf" style="margin-top: -2px" data-bind="with: $parent">
 	<div class="cf valign-top control-group"
 		data-bind="visible: visibleModel.c7()">
 		<!--A5_1 休憩時間ラベル-->
@@ -8,10 +8,10 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF005_40'), ntsFormLabel: {}"></div>
 		</div>
-		<div class="table-time">
+		<div class="table-time" style="margin-left: 16px">
 			<table id="fixed-table">
 				<colgroup>
-					<col width="109px" />
+					<col width="25px" />
 					<col width="115px" />
 					<col width="115px" />
 				</colgroup>
@@ -29,7 +29,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				<tbody data-bind="foreach: restTime">
 					<tr>
 						<!--A5_5 休憩時間順序-->
-						<td class="header" data-bind="text: String(frameNo)"></td>
+						<td class="headerKAF005" data-bind="text: String(frameNo)"></td>
 						<!--A5_6 開始時刻-->
 						<td><input class="right-content"
 							data-bind="
@@ -57,7 +57,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 	<!-- calculate button A5_8-->
-	<div data-bind="if: visibleModel.c7()" style="margin-bottom: 20px">
+	<div data-bind="if: visibleModel.c7()" style="margin-bottom: 20px; margin-top: 12px;">
 		<button style="width: 100px; margin-left: 200px"
 			data-bind="text: $i18n('KAF005_43'), click: calculate, enable: outputMode()"
 			class="caret-bottom caret-inline"></button>
@@ -66,13 +66,13 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 	<!-- over time hours -->
-	<div class="cf valign-top control-group" data-bind="visible: true">
+	<div class="cf valign-top control-group" data-bind="visible: true" style="margin-bottom: 2px; margin-top: 22px;">
 		<!--A6_1 残業時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF005_50'), ntsFormLabel: {required: true}"></div>
 		</div>
-		<div class="table-time overTime1">
+		<div class="table-time overTime1" style="margin-left: 16px">
 			<table id="fixed-overtime-hour-table">
 				<colgroup>
 					<col width="109px" />
@@ -97,7 +97,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				<tbody data-bind="foreach: overTime">
 					<tr data-bind="if: visible()">
 						<!--A6_7 残業時間名称-->
-						<td class="header">
+						<td class="headerKAF005">
 							<span data-bind="text: displayNo" class="limited-label" style="width: 110px"></span>
 						</td>
 						<!--A6_8 残業申請時間入力-->
@@ -127,7 +127,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 
-		<div class="table-time overTime2">
+		<div class="table-time overTime2" style="margin-left: 16px; margin-bottom: 0px;">
 			<table id="fixed-overtime-hour-table-1">
 				<colgroup>
 					<col width="109px" />
@@ -144,7 +144,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				<tbody data-bind="foreach: overTime">
 					<tr data-bind="if: visible()">
 						<!--A6_7 残業時間名称-->
-						<td class="header">
+						<td class="headerKAF005">
 							<span data-bind="text: displayNo" class="limited-label" style="width: 110px"></span>
 						</td>
 						<!--A6_8 残業申請時間入力-->
@@ -175,14 +175,14 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 	<!-- holiday time -->
 	<div class="cf valign-top control-group"
-		data-bind="visible: visibleModel.c30()">
+		data-bind="visible: visibleModel.c30()" style="margin-top: 13px; margin-bottom: 2px">
 		<!--A5_1 休憩時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
 				data-bind="text: $i18n('KAF005_70'), ntsFormLabel: {required: true}"></div>
 		</div>
 
-		<div class="table-time holidayTime1">
+		<div class="table-time holidayTime1" style="margin-left: 16px; margin-bottom: 0px;">
 			<table id="fixed-table-holiday">
 				<colgroup>
 					<col width="109px" />
@@ -206,7 +206,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				<tbody data-bind="foreach: holidayTime">
 					<tr data-bind="if: visible()">
 						<!--A5_5 休憩時間順序-->
-						<td class="header">
+						<td class="headerKAF005">
 							<span data-bind="text: displayNo" class="limited-label" style="width: 110px"></span>
 						</td>
 						<!--A5_6 開始時刻-->
@@ -232,7 +232,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			</table>
 		</div>
 
-		<div class="table-time holidayTime2">
+		<div class="table-time holidayTime2" style="margin-left: 16px; margin-bottom: 0px;">
 			<table id="fixed-table-holiday-1">
 				<colgroup>
 					<col width="109px" />
@@ -249,7 +249,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				<tbody data-bind="foreach: holidayTime">
 					<tr data-bind="if: visible()">
 						<!--A5_5 休憩時間順序-->
-						<td class="header">
+						<td class="headerKAF005">
 							<span data-bind="text: displayNo" class="limited-label" style="width: 110px"></span>
 						</td>
 						<!--A5_6 開始時刻-->
@@ -281,7 +281,6 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 </div>
-
 
 
 	`

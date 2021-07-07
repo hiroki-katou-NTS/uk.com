@@ -1,0 +1,56 @@
+#contents-area .master_setting:nth-child(1) .panel-frame, #contents-area .master_setting:nth-child(3) .panel-frame{
+	min-height: 380px; 
+} 
+
+.master_setting {
+	margin-right: 30px;
+	vertical-align: top;
+}
+
+.master_setting .panel-frame{
+	margin: 8px 0;
+	width: 230px;
+}
+
+#contents-area .master_setting:nth-child(1) .caret-right{
+    top: -60px;
+    left: -3px;
+}
+#contents-area .master_setting:nth-child(1) .caret-inline:after{
+	border-width: 80px;
+    border-left: 2em solid;
+}
+
+.inner-part-wrapper {
+	margin-top: 5px;
+}
+
+.label_master {
+	font-size: 17pt;
+	display: block;
+}
+
+.wrapper-tips {
+	padding: 10px 13px;
+}
+
+.label_tips {
+	font-size: 16px;
+}
+
+.btnconfig {
+	width: 138px;
+}
+
+.btnconfig.caret-right:after {
+	color: #92D050;
+	margin-left: 3px;
+}
+
+.btn-wrapper {
+	text-align: left;
+    margin-left: 13px;
+}
+.btn-wrapper button {
+    min-width: 170px;
+}

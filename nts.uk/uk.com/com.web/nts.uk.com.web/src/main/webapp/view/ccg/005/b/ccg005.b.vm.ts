@@ -74,7 +74,7 @@ module nts.uk.at.view.ccg005.b.screenModel {
 
       $("#grid").ntsGrid({
         width: "240px",
-        height: "209px",
+        height: "244px",
         dataSource: vm.listJobDataSource(),
         primaryKey: "jobTitleId",
         virtualization: true,

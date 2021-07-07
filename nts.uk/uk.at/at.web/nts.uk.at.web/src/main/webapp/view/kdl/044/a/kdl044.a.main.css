@@ -28,3 +28,10 @@ body {
 .label{
 	margin-left: 20px;;
 }
+
+.div-func-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+}

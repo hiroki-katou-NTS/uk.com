@@ -162,8 +162,7 @@ public class KscmtShiftTableRuleForOrgAvai extends ContractUkJpaEntity implement
     }
 
     public static KscmtShiftTableRuleForOrgAvai toEntity(String companyId, int targetUnit, String targetID, ShiftTableRule shiftTableRule) {
-        // QA #112454
-        if (shiftTableRule.getUseWorkAvailabilityAtr() == NotUseAtr.NOT_USE) {
+        if (!shiftTableRule.getShiftTableSetting().isPresent()) {
             return null;
         }
 

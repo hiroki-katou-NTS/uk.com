@@ -76,22 +76,30 @@ module nts.uk.com.view.ccg034.c {
       // Try copy all the uploaded files and update the layout file
       return vm.$ajax(API.copyFile, { flowMenuCode: vm.flowMenu.flowMenuCode, newFlowMenuCode: vm.flowMenuCode(), flowMenuName: vm.flowMenuName() })
         .then(result => {
-          vm.deleteUnknownData(result.createFlowMenuDto);
-          newFlowMenu = result.createFlowMenuDto;
-          return vm.$ajax(API.generateHtml, { flowMenuCode: vm.flowMenuCode(), htmlContent: result.htmlContent });
+          if (result) {
+            vm.deleteUnknownData(result.createFlowMenuDto);
+            newFlowMenu = result.createFlowMenuDto;
+            return vm.$ajax(API.generateHtml, { flowMenuCode: vm.flowMenuCode(), htmlContent: result.htmlContent })
+            // 4. Input内容のファイルIDを別のファイルIDで作成する
+            .then(res => nts.uk.deferred.repeat(conf => conf
+              .task(() => (nts.uk.request as any).asyncTask.getInfo(res.taskId)
+                .done((taskResult: any) => {
+                  if (taskResult.succeeded) {
+                    newFlowMenu.fileId = res.taskId;
+                    return vm.$ajax(API.duplicate, { flowMenuCode: vm.flowMenuCode(), createFlowMenu: newFlowMenu});
+                  }
+                }))
+              .while(infor => infor.pending || infor.running)
+              .pause(1000))
+            );
+          } else {
+            return vm.$ajax(API.duplicate, { flowMenuCode: vm.flowMenuCode(), createFlowMenu: {
+              flowMenuCode: vm.flowMenuCode(),
+              flowMenuName: vm.flowMenuName(),
+              cid: __viewContext.user.companyId
+            } });
+          }
         })
-        // 4. Input内容のファイルIDを別のファイルIDで作成する
-        .then(res => nts.uk.deferred.repeat(conf => conf
-          .task(() => (nts.uk.request as any).asyncTask.getInfo(res.taskId)
-            .done((taskResult: any) => {
-              if (taskResult.succeeded) {
-                newFlowMenu.fileId = res.taskId;
-                return vm.$ajax(API.duplicate, { flowMenuCode: vm.flowMenuCode(), createFlowMenu: newFlowMenu });
-              }
-            }))
-          .while(infor => infor.pending || infor.running)
-          .pause(1000))
-        )
         // Perform save the copied flow menu
         .then(() => vm.$dialog.info({ messageId: "Msg_15" }))
         .then(() => vm.closeDialog(newFlowMenu))

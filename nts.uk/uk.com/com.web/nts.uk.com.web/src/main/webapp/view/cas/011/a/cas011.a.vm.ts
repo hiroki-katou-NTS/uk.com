@@ -48,13 +48,13 @@ module nts.uk.com.view.cas011.a.viewmodel {
 
             // A2_003, A2_004, A2_005, A2_006 
             self.gridColumns = ko.observableArray([
-                { headerText: resource.getText('CAS011_9'), key: 'roleSetCd', formatter: _.escape, width: 50 },
-                { headerText: resource.getText('CAS011_10'), key: 'roleSetName', formatter: _.escape, width: 230 }
+                { headerText: resource.getText('CAS011_9'), key: 'roleSetCd', formatter: _.escape, width: 65 },
+                { headerText: resource.getText('CAS011_10'), key: 'roleSetName', formatter: _.escape, width: 215 }
             ]);
 
             self.swapColumns = ko.observableArray([
-                { headerText: resource.getText('CAS011_9'), key: 'webMenuCode', width: 40 },
-                { headerText: resource.getText('CAS011_34'), key: 'webMenuName', width: 150 }
+                { headerText: resource.getText('CAS011_9'), key: 'webMenuCode', width: 65 },
+                { headerText: resource.getText('CAS011_34'), key: 'webMenuName', width: 135 }
             ]);
 
             // ---A3_024, A3_025 

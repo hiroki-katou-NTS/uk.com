@@ -26,10 +26,10 @@
 		<ui:define name="content">
 			<div id="contents-area" class="kdp-003-f">
 				<table class="layout">
-					<com:ko-if bind="ko.toJS(mode) === 'admin'">
+					<com:ko-if  bind="['admin'].indexOf(ko.toJS(mode)) &gt; -1">
 						<tbody data-bind="component: { name: 'kdp-003-f-admin-mode', params: { model: model, params: params, listCompany: listCompany } }"></tbody>
 					</com:ko-if>
-					<com:ko-if bind="['employee', 'fingerVein'].indexOf(ko.toJS(mode)) &gt; -1">
+					<com:ko-if bind="['employee', 'fingerVein', 'notification'].indexOf(ko.toJS(mode)) &gt; -1">
 						<tbody data-bind="component: { name: 'kdp-003-f-finger-vein-mode', params: { model: model, params: params } }"></tbody>
 					</com:ko-if>
 				</table>

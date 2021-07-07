@@ -1,9 +1,13 @@
 package nts.uk.screen.at.app.command.kdp.kdp001.a;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.WorkInformationStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
@@ -37,8 +41,12 @@ public class RefectActualResultCommand {
 	private OvertimeDeclarationComamnd overtimeDeclaration;
 
 	public RefectActualResult toDomainValue() {
-		return new RefectActualResult(cardNumberSupport,
-				workLocationCD != null ? new WorkLocationCD(workLocationCD) : null,
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(
+				Optional.empty(), 
+				Optional.empty(),
+				this.workLocationCD    == null ? Optional.empty() : Optional.of(new WorkLocationCD(this.workLocationCD)),
+				this.cardNumberSupport == null ? Optional.empty() : Optional.of(new SupportCardNumber(Integer.valueOf(this.cardNumberSupport))));
+		return new RefectActualResult(workInformationStamp,
 				workTimeCode != null ? new WorkTimeCode(workTimeCode) : null,
 				overtimeDeclaration != null ? overtimeDeclaration.toDomainValue() : null);
 	}

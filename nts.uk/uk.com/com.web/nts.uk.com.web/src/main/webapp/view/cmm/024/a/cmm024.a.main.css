@@ -28,7 +28,7 @@
 }
 
 .contents-area .panel-content .panel-right .noted {
-    max-width: 560px;
+    max-width: 670px;
     width: 100%;
     line-height: 22px;
     margin-bottom: 10px;
@@ -147,4 +147,8 @@
 
 .fix1280.contents-area .panel-content .panel-right .panel-title .form-label {
     width: 100px;
+}
+
+.link-button {
+    color: #06c !important;
 }

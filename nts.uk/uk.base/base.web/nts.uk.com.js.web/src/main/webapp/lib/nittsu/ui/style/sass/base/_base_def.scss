@@ -4,16 +4,16 @@
 $basic_font_size: 10px;
 $bfs: $basic_font_size; // arias
 $normal_font_size: $bfs * 1.4;
-$font_family: 'Meiryo UI';
-$font_family_monospace: 'DroidSansMono', 'Meiryo';
+$font_family: '游ゴシック';
+$font_family_monospace: 'DroidSansMono', '游ゴシック';
 
-$font_color: #000;
-$button_font_color: #404040;
+$font_color: #595959;
+$button_font_color: #595959;
 $hyperlink_color: #0066CC;
 $green_background_color: #E0F59E;
 $green_formlabel_color: #97D155;
 $green_button_color: #A4EEB0;
-$green_checkbox_color: #2FCC71;
+$green_checkbox_color: #30CC40;
 $activated_color: #00B050;
 $yellow_background_color: #F7EFD4;
 $yellow_formlabel_color: #FAC002;
@@ -24,13 +24,13 @@ $focused_color: #0096f2;
 /* IE */
 @font-face {
     font-family: 'DroidSansMono';
-    src: url('font/DroidSansMono.eot') format('truetype');
+    src: url('./font/DroidSansMono.eot') format('truetype');
 }
 
 /* Others */
 @font-face {
     font-family: 'DroidSansMono';
-    src: url('font/DroidSansMono.ttf') format('truetype');
+    src: url('./font/DroidSansMono.ttf') format('truetype');
 }
 
 /************************
@@ -38,8 +38,8 @@ $focused_color: #0096f2;
 ************************/
 $frame_border_color: #B1B1B1;
 
-$header_height: 92px;
-$functions_area_height: 40px;
+$header_height: 94px;
+$functions_area_height: 65px;
 $bottom_functions_area_height: 65px;
 
 

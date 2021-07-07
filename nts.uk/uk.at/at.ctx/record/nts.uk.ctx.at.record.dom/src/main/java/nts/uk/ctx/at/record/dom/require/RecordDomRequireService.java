@@ -37,7 +37,9 @@ import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInf
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.export.AggregateSpecifiedDailys;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgeementTimeCommonSettingService;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTime;
@@ -1964,16 +1966,21 @@ public class RecordDomRequireService {
 		@Override
 		public List<OuenWorkTimeOfDailyAttendance> ouenWorkTimeOfDailyAttendance(String empId, GeneralDate ymd) {
 
-			return ouenWorkTimeOfDailyRepo.find(empId, ymd)
-					.stream().map(c -> c.getOuenTime()).collect(Collectors.toList());
+			OuenWorkTimeOfDaily domain = ouenWorkTimeOfDailyRepo.find(empId, ymd);
+			if(domain == null)
+				return new ArrayList<>();
+			
+			return domain.getOuenTimes();
 		}
 
 		@Override
 		public List<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeSheetOfDailyAttendance(String empId,
 				GeneralDate ymd) {
-
-			return ouenWorkTimeSheetOfDailyRepo.find(empId, ymd)
-					.stream().map(c -> c.getOuenTimeSheet()).collect(Collectors.toList());
+			OuenWorkTimeSheetOfDaily domain =  ouenWorkTimeSheetOfDailyRepo.find(empId, ymd);
+			if(domain == null)
+				return new ArrayList<>();
+			
+			return domain.getOuenTimeSheet();
 		}
 
 		@Override
@@ -2261,9 +2268,9 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-		public ReservationOfMonthly reservation(String sid, GeneralDate date) {
+		public ReservationOfMonthly reservation(String sid, GeneralDate date, String companyID) {
 
-			return VerticalTotalAggregateService.aggregate(this, sid, date);
+			return VerticalTotalAggregateService.aggregate(this, sid, date, companyID);
 		}
 
 		@Override
@@ -2274,9 +2281,9 @@ public class RecordDomRequireService {
 
 		@Override
 		public List<BentoReservation> bentoReservation(List<ReservationRegisterInfo> inforLst, GeneralDate date,
-				boolean ordered) {
+				boolean ordered, String companyID) {
 
-			return bentoReservationRepo.findByOrderedPeriodEmpLst(inforLst, new DatePeriod(date, date), ordered);
+			return bentoReservationRepo.findByOrderedPeriodEmpLst(inforLst, new DatePeriod(date, date), ordered, companyID);
 		}
 
 		@Override

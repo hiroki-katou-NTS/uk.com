@@ -351,8 +351,8 @@ public class ReflectAttendanceClock {
 		//打刻反映先の時刻に日区分と時刻を入れる (put 時刻 và 日区分 vào 時刻)
 		timePrintDestinationOutput.setTimeOfDay(timeWithDayAttr);
 		//打刻反映先の場所コードに打刻の打刻場所をコピーする (Copy 打刻場所 của 打刻 vào 場所コード của 打刻反映先)
-		timePrintDestinationOutput.setLocationCode(stamp.getRefActualResults().getWorkLocationCD().isPresent()
-				? stamp.getRefActualResults().getWorkLocationCD().get()
+		timePrintDestinationOutput.setLocationCode((stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().isPresent())
+				? stamp.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().get()
 				: null);
 		//打刻反映先の「時刻変更理由」を入れる
 		timePrintDestinationOutput.setStampSourceInfo(TimeChangeMeans.REAL_STAMP);

@@ -22,9 +22,6 @@
     background-repeat: no-repeat;
 }
 
-.btnControlSelected{background-color : #007fff ; color : #ffffff}
-.btnControlUnSelected{background-color : #ffffff ; color : #000000 }
-
 .x-link {
     white-space: nowrap;
     text-align: left;
@@ -34,16 +31,22 @@
 	height: 525px;
 }
 
-.A6_hover:hover {
-    background-color: #007fff;
+#A6_1{
+	background-color : #007fff ; color : #ffffff;
 }
 
-.A6_not_hover:hover {
-    background-color: #ffffff;
+#A6_2{
+	background-color : #ffffff ; color : #000000;
 }
+
+#A6_1:hover,#A6_2:hover, .A7_1:hover,.A7_2:hover, .A7_3:hover {
+	background-color : '' ; color : '';
+}
+
+.btnControlSelected{background-color : #007fff !important; color : #ffffff !important}
+.btnControlUnSelected{background-color : #ffffff !important; color : #000000 !important}
 
 #functon-area-row2 *, #contain-view-right * {
-	font-size: 11.5px !important;
 	vertical-align: middle;
 }
 
@@ -65,7 +68,7 @@
 	margin-left: 2px;
 }
 
-#functions-area>button {
+#A1_1 {
 	margin-left: 5px;
 }
 
@@ -78,7 +81,7 @@
 }
 
 #A1_12 {
-	margin-left: 77px !important;	
+	margin-left: 105px !important;	
 }
 
 .hope {
@@ -110,7 +113,20 @@
 
 #work-setting button, #person-setting button, #sort-order-setting button{
 	width: auto;
-	margin-bottom: 10px;
+}
+
+
+#work-setting div, #person-setting div, #sort-order-setting div{
+	margin-top: 10px;
+}
+
+#work-setting span, #person-setting span, #sort-order-setting span{
+	display: inline-block;
+	margin-bottom: 3px;
+}
+
+#A1_12_10, #A1_12_14{
+	margin-top: 10px;
 }
 
 .btnSelectMode {
@@ -119,16 +135,7 @@
 
 #oViewModel, #qViewModel {
 	float: left;
-	width: 55%;
 	margin-left: 15px;
-}
-
-#qViewModel {
-	margin-top: 3px;
-}
-
-#oViewModel {
-	margin-top: 3px;
 }
 
 #group-btmode {
@@ -170,7 +177,6 @@
 
 #A1_10 {
 	display: inline;
-	margin-left: 0px;
 }
 
 #A1_7_1 {
@@ -265,6 +271,7 @@
 	font-size: 10px !important;
 	margin-left: 3px;
 	margin-right: 3px;
+	padding-left: 2px;
 }
 
 #input {
@@ -343,7 +350,7 @@
 }
 
 #functon-area-row2-left {
-	width: 617px;
+	width: 570px;
 	margin-top: 5px;
 	height: 45px;
 	display: inline-block;
@@ -361,7 +368,7 @@
 #functon-area-row2-right {
 	margin-top: 5px;
 	width: fit-content;
-	margin-left: 26px;
+	margin-left: 57px;
 	height: 45px;
 	display: inline-block;
 	float: right;
@@ -435,8 +442,16 @@ tbody a.x-link:hover {
 	color: #ff0000 !important;
 }
 
+.bg-schedule-that-day-color-schedule-sunday a{
+	color: #ff0000 !important;
+}
+
 .bg-schedule-that-day-color-schedule-saturday{
 	background-color: #ffff00 !important;
+	color: #0000ff !important;
+}
+
+.bg-schedule-that-day-color-schedule-saturday a{
 	color: #0000ff !important;
 }
 
@@ -445,8 +460,16 @@ tbody a.x-link:hover {
 	color: #404040 !important;
 }
 
+.bg-schedule-that-day-color-schedule-weekdays a{
+	color: #404040 !important;
+}
+
 .bg-schedule-specific-date-color-schedule-sunday{
 	background-color: #ffc0cb !important;
+	color: #ff0000 !important;
+}
+
+.bg-schedule-specific-date-color-schedule-sunday a{
 	color: #ff0000 !important;
 }
 
@@ -455,8 +478,16 @@ tbody a.x-link:hover {
 	color: #0000ff !important;
 }
 
+.bg-schedule-specific-date-color-schedule-saturday a{
+	color: #0000ff !important;
+}
+
 .bg-schedule-specific-date-color-schedule-weekdays{
 	background-color: #ffc0cb !important;
+	color: #404040 !important;
+}
+
+.bg-schedule-specific-date-color-schedule-weekdays a{
 	color: #404040 !important;
 }
 
@@ -465,14 +496,26 @@ tbody a.x-link:hover {
 	color: #ff0000 !important;
 }
 
+.bg-schedule-sunday a{
+	color: #ff0000 !important;
+}
+
 .bg-schedule-saturday{
 	background-color: #8bd8ff;
 	color: #0000ff !important;
 }
 
+.bg-schedule-saturday a{
+	color: #0000ff !important;
+}
+
 .bg-weekdays{
 	background-color: #D9D9D9;
-	color: #404040 !important;
+	color: #595959 !important;
+}
+
+.bg-weekdays a{
+	color: #595959 !important;
 }
 
 .right-content {
@@ -502,6 +545,22 @@ html {
 	padding: 5px;
 	border: 1px solid #cccccc;
 	border-radius: 5px;
+	height: 31px;
+}
+
+#A3_1_left {
+	float: left;
+	margin-top: 2px;
+}
+
+#A3_2 {
+	float: left;
+	margin-left: 5px
+}
+
+.date-time{
+	display: inline-block;
+    height: 16px;
 }
 
 .area6-left {
@@ -530,15 +589,17 @@ html {
 }
 
 .toLeft {
-	margin-left: 308px;  
+	margin-left: 230px;  
 	float: left;
-    height: 15px;
+    height: 18px;
+    padding-top: 2px;
     width: 30px;
 }
 
 .toRight {
 	float: left;
-    height: 15px;
+    height: 18px;
+    padding-top: 2px;
     width: 30px;
 }
 
@@ -551,7 +612,8 @@ html {
 }
 
 .iconToDown {
-	margin-left: -6px;
+	margin-left: -8px;
+	margin-top: 2px;
 }
 
 .iconToLeft {
@@ -564,7 +626,7 @@ html {
 
 #btnControlLeftRight {
 	width: max-content;
-	height: 10px;
+	height: 18px;
 }
 
 #A5 {
@@ -574,6 +636,8 @@ html {
 .settingHeightGrid {
 	width: 25px;
 	height: 25px;
+	padding-top: 3px;
+    padding-left: 2px;
 }
 
 .background-attendance {background-color: #0000ff !important;}
@@ -583,7 +647,7 @@ html {
 .bg-daily-alter-self {background-color:#94B7FE;}
 .bg-daily-alter-other {background-color:#CEE6FF;}
 .background-white {background-color: white}
-.color-default {color : #000000;}
+.color-default {color : #595959;}
 .bg-schedule-uncorrectable-ksu001 {background-color:#ddddd2;}
 
 table th, table td {

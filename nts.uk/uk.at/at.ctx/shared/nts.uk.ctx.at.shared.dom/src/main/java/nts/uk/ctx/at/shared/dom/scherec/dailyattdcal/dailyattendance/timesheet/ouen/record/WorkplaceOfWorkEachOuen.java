@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainObject;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 
 @Getter
@@ -9,18 +12,18 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 public class WorkplaceOfWorkEachOuen implements DomainObject {
 
 	/** 職場: 職場ID */
-	private String workplaceId;
+	private WorkplaceId workplaceId;
 	
 	/** 場所: 勤務場所コード */
-	private WorkLocationCD workLocationCD;
+	private Optional<WorkLocationCD> workLocationCD;
 
-	private WorkplaceOfWorkEachOuen(String workplaceId, WorkLocationCD workLocationCD) {
+	private WorkplaceOfWorkEachOuen(WorkplaceId workplaceId, WorkLocationCD workLocationCD) {
 		super();
 		this.workplaceId = workplaceId;
-		this.workLocationCD = workLocationCD;
+		this.workLocationCD = Optional.ofNullable(workLocationCD);
 	}
 	
-	public static WorkplaceOfWorkEachOuen create(String workplaceId, WorkLocationCD workLocationCD) {
+	public static WorkplaceOfWorkEachOuen create(WorkplaceId workplaceId, WorkLocationCD workLocationCD) {
 		
 		return new WorkplaceOfWorkEachOuen(workplaceId, workLocationCD);
 	}

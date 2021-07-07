@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -62,6 +63,30 @@ public class AttendanceItemIdContainer implements ItemConst {
 	}
 	
 	private static void getDailyKey(Map<Integer, String> temp){
+		
+		// 921, 922, 923, 924, 925, 926, 927, 928, 929, 930, 931, 932, 933, 934, 935, 936, 937, 938, 939, 940, 941, 942, 943, 944, 945, 946, 947, 948, 949, 950, 
+		// 951, 952, 953, 954, 955, 956, 957, 958, 959, 960, 961, 962, 963, 964, 965, 966, 967, 968, 969, 970, 971, 972, 973, 974, 975, 976, 977, 978, 979, 980, 
+		// 981, 982, 983, 984, 985, 986, 987, 988, 989, 990, 991, 992, 993, 994, 995, 996, 997, 998, 999, 1000, 
+		// 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1024, 1025, 
+		// 1026, 1027, 1028, 1029, 1030, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039, 1040, 1041, 1042, 1043, 1044, 1045, 1046, 1047, 1048, 1049, 1050, 1051, 
+		// 1052, 1053, 1054, 1055, 1056, 1057, 1058, 1059, 1060, 1061, 1062, 1063, 1064, 1065, 1066, 1067, 1068, 1069, 1070, 1071, 1072, 1073, 1074, 1075, 1076, 1077, 
+		// 1078, 1079, 1080, 1081, 1082, 1083, 1084, 1085, 1086, 1087, 1088, 1089, 1090, 1091, 1092, 1093, 1094, 1095, 1096, 1097, 1098, 1099, 1100, 1101, 1102, 1103, 
+		// 1104, 1105, 1106, 1107, 1108, 1109, 1110, 1111, 1112, 1113, 1114, 1115, 1116, 1117, 1118, 1119, 1120
+		for (int i = 0; i < 20; i++) {
+			String NUMBER = i+1 + "";
+			temp.put(921 + 10*i , join(DAILY_SUPPORT_TIMESHEET_NAME, FAKED, WORK_CONTENT, WORKPLACE_BYSUPPORT, WORKLOCATIONCD + NUMBER ));
+			temp.put(922 + 10*i , join(DAILY_SUPPORT_TIMESHEET_NAME, FAKED, WORK_CONTENT, WORKPLACE_BYSUPPORT, WORKPLACEID + NUMBER ));
+			temp.put(923 + 10*i , join(DAILY_SUPPORT_TIMESHEET_NAME, FAKED, WORK_CONTENT, WORKREMARKS + NUMBER ));
+			temp.put(924 + 10*i , join(DAILY_SUPPORT_TIMESHEET_NAME, FAKED, WORK_CONTENT, WORKGROUP, WORKCODE + LAYOUT_A + NUMBER));
+			temp.put(925 + 10*i , join(DAILY_SUPPORT_TIMESHEET_NAME, FAKED, WORK_CONTENT, WORKGROUP, WORKCODE + LAYOUT_B + NUMBER));
+			temp.put(926 + 10*i , join(DAILY_SUPPORT_TIMESHEET_NAME, FAKED, WORK_CONTENT, WORKGROUP, WORKCODE + LAYOUT_C + NUMBER));
+			temp.put(927 + 10*i , join(DAILY_SUPPORT_TIMESHEET_NAME, FAKED, WORK_CONTENT, WORKGROUP, WORKCODE + LAYOUT_D + NUMBER));
+			temp.put(928 + 10*i , join(DAILY_SUPPORT_TIMESHEET_NAME, FAKED, WORK_CONTENT, WORKGROUP, WORKCODE + LAYOUT_E + NUMBER));
+			temp.put(929 + 10*i , join(DAILY_SUPPORT_TIMESHEET_NAME, FAKED, TIME_ZONE, START, CLOCK + NUMBER));
+			temp.put(930 + 10*i , join(DAILY_SUPPORT_TIMESHEET_NAME, FAKED, TIME_ZONE, END,   CLOCK + NUMBER));
+		}
+		
+		
 		temp.put(833, join(DAILY_REMARKS_NAME, FAKED, joinNS(REMARK, NUMBER_1)));
 		temp.put(834, join(DAILY_REMARKS_NAME, FAKED, joinNS(REMARK, NUMBER_2)));
 		temp.put(835, join(DAILY_REMARKS_NAME, FAKED, joinNS(REMARK, NUMBER_3)));
@@ -3392,6 +3417,11 @@ public class AttendanceItemIdContainer implements ItemConst {
 		return toFilterStream(items).collect(Collectors.toMap(i -> i, i -> {
 			return Integer.parseInt(i.path().replace(i.path().replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING), EMPTY_STRING));
 		}));
+	}
+	
+	public static Map<Integer, List<ItemValue>> mapWorkNoItemsValue(Collection<ItemValue> items) {
+		Map<Integer, List<ItemValue>> rs = items.stream().collect(Collectors.groupingBy(i -> Integer.parseInt(i.path().replace(i.path().replaceAll(DEFAULT_NUMBER_REGEX, EMPTY_STRING), EMPTY_STRING))));
+		return rs;
 	}
 	
 	public static Map<Integer, Integer> mapOptionalItemIdsToNos(Collection<ItemValue> items) {

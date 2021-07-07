@@ -1,147 +1,389 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<head>
+	<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css" />
+</head>
+
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 430, height: 480 };</script>
+			<script>var dialogSize = { width: 545, height: 730 };</script>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="/view/kdp/010/h/main.css" />
+			<com:stylefile path="/view/kdp/share/kdp.main.css" />
+			<com:stylefile path="main.css" />
+			<com:scriptfile path="../../share/kdp-tabbutton.js" />
+			<com:scriptfile path="../../share/stampTemplate.js" />
 			<com:scriptfile path="kdp010.h.vm.js" />
-			<com:scriptfile path="kdp010.h.start.js" />
-			<com:scriptfile path="kdp010.h.service.js" />
+			
 			<com:EnumScript>
-				<!-- nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason -->
-				nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason
-				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ContentsStampType
-				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AudioType
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonLayoutType
 			</com:EnumScript>
 			<com:ValidatorScript>
-				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonName
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageName
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageComment
 			</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
+			<div id="functions-area">
+				<button tabindex="1" id="button-add" class="proceed" data-bind="click:registration">#{i18n.getText('KDP010_95')}</button>
+				<button tabindex="2" id="button-del" class="danger" data-bind="click: deleteStamp, enable: isDel">#{i18n.getText('KDP010_96')}</button>
+				<button tabindex="3" data-bind="click:closeDialog">#{i18n.getText('KDP010_128')}</button>
+			</div>
 			<div id="contents-area">
-				<table>
-					<tr>
-						<!-- H1_1 -->
-						<td><div id="highlight-label"
-								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_107')}</div>
-							<!-- H1_2 -->
-							<div tabindex="1" id="highlight-radio"
-								data-bind="ntsRadioBoxGroup: {
-												name : '#[KDP010_107]',
-												options: optionHighlight,
-												optionsValue: 'id',
-												optionsText: 'name',
-												value: selectedHighlight,
-												enable: true },
-												hasFocus: isFocus"></div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<!-- H2_1 -->
-							<div id="correc-label1"
-								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_110')}</div>
-						</td>
-						<td>
-							<!-- H2_2 -->
-							<div tabindex="2" id="combobox1" class="cbx-days"
-								data-bind="ntsComboBox: {
-											naem: '#[KDP010_110]',
-											options: contentsStampType,
-											optionsValue: 'value',
-											value: selectedDay,
-											optionsText: 'name',
-											visibleItemsCount: 5,
-											enable: selectedHighlight() == 1,
-											columns: [
-												{ prop: 'name' },
-											]}"></div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<!-- H3_1 -->
-							<div id="stamping-his-label"
-								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_111')}</div>
-							<!-- H3_2 -->
-							<div tabindex="3" id="stamping-his-radio"
-								data-bind="ntsRadioBoxGroup: {
-												name: '#[KDP010_111]',
-												options: optionStamping,
-												optionsValue: 'value',
-												optionsText: 'name',
-												value: selectedStamping,
-												enable: selectedHighlight() == 1 &amp;&amp; selectedDay() == 8}"></div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<!-- H4_1 -->
-							<div id="correc-label"
-								data-bind="ntsFormLabel: { required: true, constraint: 'ButtonName'}">#{i18n.getText('KDP010_116')}</div>
-							<!-- H4_2 -->
-							<div tabindex="4" id="correc-text">
-								<input id="correc"
-									data-bind="ntsTextEditor: {name: '#[KDP010_116]',required: true, value: simpleValue, constraint: 'ButtonName', enable: selectedHighlight() == 1}" />
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<!-- H5_1 -->
-							<div id="date-time-label"
-								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_118')}</div>
-							<!-- H5_2 -->
-							<div tabindex="5" id="first-color-picker" class="colorpicker"
-								data-bind="ntsColorPicker: {value: letterColors, width: 50, name:'#[KDP010_118]', enable: selectedHighlight() == 1 }" />
-
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<!-- H6_1 -->
-							<div id="date-time-label"
-								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_119')}</div>
-							<!-- H6_2 -->
-							<div tabindex="6" id="second-color-picker" class="colorpicker"
-								data-bind="ntsColorPicker: {value: backgroundColors, width: 50, name:'#[KDP010_119]', enable: selectedHighlight() == 1 }" />
-						</td>
-					</tr>
-					<com:ko-if bind = "showSelectedAudio">
+				<div id="left-area">
+					<table>
 						<tr>
-							<td>
-								<!-- H7_1 -->
-								<div id="correc-label1"
-									data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_122')}</div>
-							</td>
-							<!-- H7_2 -->
-							<td>
-								<div tabindex="7" id="combobox1" class="cbx-days" data-bind="ntsComboBox: {
-										options: optionAudio,
-										optionsValue: 'value',
-										value: selectedAudio,
-										optionsText: 'name',
-										visibleItemsCount: 15,
-										enable: selectedHighlight() == 1,
-										columns: [
-											{ prop: 'name' },
-										]}"></div>
+							<!-- G2_1 -->
+							<td><label class="basic-label">#{i18n.getText('KDP010_97')}</label>
 							</td>
 						</tr>
+						<tr>
+							<td>
+								<!-- G2_2 -->
+								<div tabindex="4" id="combobox" class="cbx-days" data-bind="ntsComboBox: {
+											options: optionPage,
+											optionsValue: 'code',
+											value: selectedPage,
+											optionsText: 'name',
+											visibleItemsCount: 25,
+											enable: true,
+											dropDownAttachedToBody: true,
+											columns: [
+												{ prop: 'name'},
+											]}"></div>
+							</td>
+						</tr>
+						<tr>
+							<!-- G10 -->
+							<td>
+								<button tabindex="5" class="popupButton">#{i18n.getText('KDP010_335')}</button>
+								<div class="popup-area">
+									<table>
+		                                <colgroup>
+		                                    <col width="195" />
+		                                </colgroup>
+		                                <tbody data-bind="foreach: optionPopup">
+		                                    <tr>
+		                                        <td>
+		                                        	<div tabindex="6" data-bind="click: $parent.popupSelected.bind($parent, $data), text: name"></div>
+		                                        </td>
+		                                    </tr>
+		                                </tbody>
+		                            </table>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div id="right-area">
+					<table class="basic-items">
+						<tr>
+							<td>
+								<!-- G3_1 -->
+								<div id="correc-label"
+									data-bind="ntsFormLabel: { required: true, constraint: 'StampPageName' }">
+									#{i18n.getText('KDP010_101')}
+								</div> 
+							</td>
+							<td style="height: 35px;">
+								<!-- G3_2 --> <input tabindex="7" id="correc-text"
+									data-bind="ntsTextEditor: {name: '#[KDP010_101]',required: true, value: pageName, constraint: 'StampPageName',  option: {width: '130'}}" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<!-- G4_1 -->
+								<div id="correc-label1" data-bind="ntsFormLabel: { required: true }">
+									#{i18n.getText('KDP010_102')}
+								</div>
+							</td>
+							<td>
+								<!-- G4_2 -->
+								<div tabindex="8" id="combobox1" class="cbx-days" data-bind="ntsComboBox: {
+											options: optionLayout,
+											optionsValue: 'value',
+											value: selectedLayout,
+											optionsText: 'name',
+											enable: true,
+											visibleItemsCount: 10,
+											columns: [
+												{ prop: 'name'},
+											]}">
+								</div>
+							</td>
+
+						</tr>
+						<tr>
+							<!-- G5_1 -->
+								<td>
+									<div id="comment"
+										data-bind="ntsFormLabel: { required: false, constraint: 'PageComment'  }">
+										#{i18n.getText('KDP010_103')}</div>
+										
+								</td>
+							
+							<!-- G5_2 -->
+							
+								<td>
+								<div id="comment-text"><textarea tabindex="9" id = "text-area-comment"
+										data-bind="ntsMultilineEditor: { name: '#[KDP010_103]',value: commentDaily, constraint: 'PageComment' }" /></div>
+									</td>
+							
+						</tr>
+					
+						<tr>
+							<!-- G6_1 -->
+							<td><div id="color"
+									data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_104')}</div>
+							</td>
+							<td>	
+							<!-- G6_2 -->
+							<div tabindex="10" id="first-color-picker" class="colorpicker"
+								data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_104]' }" />
+							</td>
+						</tr>
+
+					</table>
+				</div>
+				<!-- G7 -->
+				<div id="item-panel" class="panel panel-frame item-panel">
+					<com:ko-if bind="selectedLayout() ==0 ">
+						<table class="table1">
+							<tr>
+								<td>
+									<button class="btn-name btn1 stamp-rec-btn" id="button1" data-bind="
+																							click: openHDialog.bind($data,1), 
+																							style:{'background-color': $data.buttonInfo()[0].buttonColor()}">
+										<com:ko-if bind="buttonInfo()[0].usrArt() != 0">
+											<img width="100px" height="100px" data-bind="attr:{src: buttonInfo()[0].icon}" />  
+											<div data-bind="text: buttonInfo()[0].buttonName, 
+															style:{
+																'font-size': 
+															  		buttonInfo()[0].buttonName().length > 10 ? '18px' : buttonInfo()[0].buttonName().length > 8 ? '21px': '26px',
+																color: $data.buttonInfo()[0].textColor()
+														}"></div>
+										</com:ko-if>	
+									</button>
+								</td>
+								<td>
+									<button class="btn-name btn2 stamp-rec-btn" id="button2" data-bind="
+																							click: openHDialog.bind($data,2),
+																							style:{'background-color': $data.buttonInfo()[1].buttonColor()}">
+										<com:ko-if bind="buttonInfo()[1].usrArt() != 0">
+											<img width="100px" height="100px" data-bind="attr:{src: buttonInfo()[1].icon}" />
+											<div data-bind="text: buttonInfo()[1].buttonName, 
+															style:{
+																'font-size': 
+															  		buttonInfo()[1].buttonName().length > 10 ? '18px' : buttonInfo()[1].buttonName().length > 8 ? '21px': '26px',
+																color: $data.buttonInfo()[1].textColor()}"></div>
+										</com:ko-if>
+									</button>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<button class="btn-name btn3 stamp-rec-btn" id="button3" data-bind="
+																							click: openHDialog.bind($data,3), 
+																							style:{'background-color': $data.buttonInfo()[2].buttonColor()}">
+										<com:ko-if bind="buttonInfo()[2].usrArt() != 0">
+											<img width="40px" height="40px" data-bind="attr:{src: buttonInfo()[2].icon}" />
+											<div data-bind="text: buttonInfo()[2].buttonName, style:{color: $data.buttonInfo()[2].textColor()}"></div>
+										</com:ko-if>
+									</button>
+								</td>
+								<td>
+									<button class="btn-name btn4 stamp-rec-btn" id="button4" data-bind="
+																							click: openHDialog.bind($data,4), 
+																							style:{'background-color' :  $data.buttonInfo()[3].buttonColor()}">
+										<com:ko-if bind="buttonInfo()[3].usrArt() != 0">
+											<img width="40px" height="40px" data-bind="attr:{src: buttonInfo()[3].icon}" />
+											<div data-bind="text: buttonInfo()[3].buttonName, style:{color: $data.buttonInfo()[3].textColor()}"></div>
+										</com:ko-if>
+									</button>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<button class="btn-name btn5 stamp-rec-btn" id="button5" data-bind="
+																							click: openHDialog.bind($data,5), 
+																							style:{'background-color' :  $data.buttonInfo()[4].buttonColor()}">
+										<com:ko-if bind="buttonInfo()[4].usrArt() != 0">
+											<img width="40px" height="40px" data-bind="attr:{src: buttonInfo()[4].icon}" />
+											<div data-bind="text: buttonInfo()[4].buttonName, style:{color: $data.buttonInfo()[4].textColor()}"></div>
+										</com:ko-if>	
+									</button>
+								</td>
+								<td>
+									<button class="btn-name btn6 stamp-rec-btn" id="button6" data-bind="
+																							click: openHDialog.bind($data,6), 
+																							style:{'background-color' :  $data.buttonInfo()[5].buttonColor()}">
+										<com:ko-if bind="buttonInfo()[5].usrArt() != 0">
+											<img width="40px" height="40px" data-bind="attr:{src: buttonInfo()[5].icon}" />
+											<div data-bind="text: buttonInfo()[5].buttonName, style:{color: $data.buttonInfo()[5].textColor()}"></div>
+										</com:ko-if>	
+									</button>
+								</td>
+							</tr>
+						</table>
+
 					</com:ko-if>
-				</table>
-			</div>
-			<div id="functions-area-bottom">
-				<button tabindex="8" id="close-button" class="proceed x-large"
-					data-bind="click: passData">#{i18n.getText('KDP010_125')}</button>
-				<button tabindex="9" id="close-button" data-bind="click: closeDialog">#{i18n.getText('KDP010_126')}</button>
+
+					<com:ko-if bind="selectedLayout() !=0 ">
+						<table class="table2">
+							<tr>
+								<td>
+									<button class="btn-name btn3 stamp-rec-btn" id="button1"
+										data-bind="click: openHDialog.bind($data,1), style:{ 'background-color' :  buttonInfo()[0].buttonColor() }">
+										<com:ko-if bind="buttonInfo()[0].usrArt() != 0">
+											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[0].icon}" />
+											<div class="label" data-bind="text: buttonInfo()[0].buttonName, 
+																		  style: {
+																		  	'font-size': 
+																		  		buttonInfo()[0].buttonName().length > 17 ? '14px' :
+																		  		buttonInfo()[0].buttonName().length > 16 ? '15px' :
+																		  		buttonInfo()[0].buttonName().length > 15 ? '16px' :
+																		  		buttonInfo()[0].buttonName().length > 14 ? '17px' :
+																		  		buttonInfo()[0].buttonName().length > 13 ? '18px' : '20px', 
+																		  	color :  buttonInfo()[0].textColor()}"></div>
+										</com:ko-if>
+									</button>
+								</td>
+								<td>
+									<button class="btn-name btn4 stamp-rec-btn" id="button2"
+										data-bind="click: openHDialog.bind($data,2), style:{ 'background-color' : buttonInfo()[1].buttonColor()}">
+										<com:ko-if bind="buttonInfo()[1].usrArt() != 0">
+											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[1].icon}" />
+											<div class="label" data-bind="text: buttonInfo()[1].buttonName, 
+																		  style: {
+																		  	'font-size': 
+																		  		buttonInfo()[1].buttonName().length > 17 ? '14px' :
+																		  		buttonInfo()[1].buttonName().length > 16 ? '15px' :
+																		  		buttonInfo()[1].buttonName().length > 15 ? '16px' :
+																		  		buttonInfo()[1].buttonName().length > 14 ? '17px' :
+																		  		buttonInfo()[1].buttonName().length > 13 ? '18px' : '20px', 
+																		  	color :  buttonInfo()[1].textColor()}"></div>
+										</com:ko-if>	
+									</button>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<button class="btn-name btn3 stamp-rec-btn" id="button3"
+										data-bind="click: openHDialog.bind($data,3), style:{ 'background-color' :  buttonInfo()[2].buttonColor()}">
+										<com:ko-if bind="buttonInfo()[2].usrArt() != 0">
+											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[2].icon}" />
+											<div class="label" data-bind="text: buttonInfo()[2].buttonName, 
+																		  style: {
+																		  	'font-size': 
+																		  		buttonInfo()[2].buttonName().length > 17 ? '14px' :
+																		  		buttonInfo()[2].buttonName().length > 16 ? '15px' :
+																		  		buttonInfo()[2].buttonName().length > 15 ? '16px' :
+																		  		buttonInfo()[2].buttonName().length > 14 ? '17px' :
+																		  		buttonInfo()[2].buttonName().length > 13 ? '18px' : '20px', 
+																		  	color :  buttonInfo()[2].textColor()}"></div>
+										</com:ko-if>	
+									</button>
+								</td>
+								<td>
+									<button class="btn-name btn4 stamp-rec-btn" id="button4"
+										data-bind="click: openHDialog.bind($data,4), style:{ 'background-color' : buttonInfo()[3].buttonColor() }">
+										<com:ko-if bind="buttonInfo()[3].usrArt() != 0">
+											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[3].icon}" />
+											<div class="label" data-bind="text: buttonInfo()[3].buttonName, 
+																		  style: {
+																		  	'font-size': 
+																		  		buttonInfo()[3].buttonName().length > 17 ? '14px' :
+																		  		buttonInfo()[3].buttonName().length > 16 ? '15px' :
+																		  		buttonInfo()[3].buttonName().length > 15 ? '16px' :
+																		  		buttonInfo()[3].buttonName().length > 14 ? '17px' :
+																		  		buttonInfo()[3].buttonName().length > 13 ? '18px' : '20px', 
+																		  	color :  buttonInfo()[3].textColor()}"></div>
+										</com:ko-if>	
+									</button>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<button class="btn-name btn3 stamp-rec-btn" id="button5"
+										data-bind="click: openHDialog.bind($data,5), style:{ 'background-color' :  buttonInfo()[4].buttonColor()}">
+										<com:ko-if bind="buttonInfo()[4].usrArt() != 0">
+											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[4].icon}" />
+											<div class="label" data-bind="text: buttonInfo()[4].buttonName, 
+																		  style: {
+																		  	'font-size': 
+																		  		buttonInfo()[4].buttonName().length > 17 ? '14px' :
+																		  		buttonInfo()[4].buttonName().length > 16 ? '15px' :
+																		  		buttonInfo()[4].buttonName().length > 15 ? '16px' :
+																		  		buttonInfo()[4].buttonName().length > 14 ? '17px' :
+																		  		buttonInfo()[4].buttonName().length > 13 ? '18px' : '20px', 
+																		  	color :  buttonInfo()[4].textColor()}"></div>
+										</com:ko-if>	
+									</button>
+								</td>
+								<td>
+									<button class="btn-name btn4 stamp-rec-btn" id="button6"
+										data-bind="click: openHDialog.bind($data,6), style:{ 'background-color' :  buttonInfo()[5].buttonColor()}">
+										<com:ko-if bind="buttonInfo()[5].usrArt() != 0">
+											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[5].icon}" />
+											<div class="label" data-bind="text: buttonInfo()[5].buttonName, 
+																		  style: {
+																		  	'font-size': 
+																		  		buttonInfo()[5].buttonName().length > 17 ? '14px' :
+																		  		buttonInfo()[5].buttonName().length > 16 ? '15px' :
+																		  		buttonInfo()[5].buttonName().length > 15 ? '16px' :
+																		  		buttonInfo()[5].buttonName().length > 14 ? '17px' :
+																		  		buttonInfo()[5].buttonName().length > 13 ? '18px' : '20px', 
+																		  	color :  buttonInfo()[5].textColor()}"></div>
+										</com:ko-if>
+									</button>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<button class="btn-name btn3 stamp-rec-btn" id="button7"
+										data-bind="click: openHDialog.bind($data,7), style:{ 'background-color' :  buttonInfo()[6].buttonColor()}">
+										<com:ko-if bind="buttonInfo()[6].usrArt() != 0">
+											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[6].icon}" />
+											<div class="label" data-bind="text: buttonInfo()[6].buttonName, 
+																		  style: {
+																		  	'font-size': 
+																		  		buttonInfo()[6].buttonName().length > 17 ? '14px' :
+																		  		buttonInfo()[6].buttonName().length > 16 ? '15px' :
+																		  		buttonInfo()[6].buttonName().length > 15 ? '16px' :
+																		  		buttonInfo()[6].buttonName().length > 14 ? '17px' :
+																		  		buttonInfo()[6].buttonName().length > 13 ? '18px' : '20px', 
+																		  	color :  buttonInfo()[6].textColor()}"></div>
+										</com:ko-if>	
+									</button>
+								</td>
+								<td>
+									<button class="btn-name btn4 stamp-rec-btn" id="button8"
+										data-bind="click: openHDialog.bind($data,8), style:{ 'background-color' :  buttonInfo()[7].buttonColor()}">
+										<com:ko-if bind="buttonInfo()[7].usrArt() != 0">
+											<img width="60px" height="60px" data-bind="attr:{src: buttonInfo()[7].icon}" />
+											<div class="label" data-bind="text: buttonInfo()[7].buttonName, 
+																		  style: {
+																		  	'font-size': 
+																		  		buttonInfo()[7].buttonName().length > 17 ? '14px' :
+																		  		buttonInfo()[7].buttonName().length > 16 ? '15px' :
+																		  		buttonInfo()[7].buttonName().length > 15 ? '16px' :
+																		  		buttonInfo()[7].buttonName().length > 14 ? '17px' :
+																		  		buttonInfo()[7].buttonName().length > 13 ? '18px' : '20px', 
+																		  	color :  buttonInfo()[7].textColor()}"></div>
+										</com:ko-if>	
+									</button>
+								</td>
+							</tr>
+						</table>
+
+					</com:ko-if>
+
+				</div>
+
 			</div>
 		</ui:define>
 	</ui:composition>

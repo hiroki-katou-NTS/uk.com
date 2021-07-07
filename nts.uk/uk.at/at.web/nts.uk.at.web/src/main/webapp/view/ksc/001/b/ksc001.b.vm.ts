@@ -107,6 +107,7 @@ module nts.uk.at.view.ksc001.b {
 			isKCP005EmployeeSelectedAll: KnockoutObservable<boolean> = ko.observable( false );
 
 			fullSizeSpace: string = "　　";
+			activeStep: KnockoutObservable<number> = ko.observable(0);
 
 			constructor() {
 				super();

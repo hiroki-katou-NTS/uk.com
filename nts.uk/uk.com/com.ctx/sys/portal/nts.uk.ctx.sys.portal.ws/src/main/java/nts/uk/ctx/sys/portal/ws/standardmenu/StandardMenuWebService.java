@@ -15,6 +15,7 @@ import nts.uk.ctx.sys.portal.app.command.standardmenu.UpdateStandardMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.standardmenu.UpdateStandardMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuFinder;
+import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuQueryDto;
 import nts.uk.ctx.sys.portal.app.screenquery.standardmenu.StandardMenuScreenQuery;
 
 /**
@@ -99,6 +100,13 @@ public class StandardMenuWebService extends WebService {
 	public JavaTypeResult<String> getPgNameByQrystr(@PathParam("programID") String programID, @PathParam("screenID") String screenID, 
 			@PathParam("queryString") String queryString) {
 		return new JavaTypeResult<String>(finder.getPgNameByQry(programID, screenID, queryString));
+	}
+	
+	@POST
+	@Path("findPgName")
+	public JavaTypeResult<String> getPgNameByQrystrNullable(StandardMenuQueryDto param) {
+		return new JavaTypeResult<String>(finder
+				.getPgNameByQry(param.getProgramId(), param.getScreenId(), param.getQueryString()));
 	}
 	
 	@POST

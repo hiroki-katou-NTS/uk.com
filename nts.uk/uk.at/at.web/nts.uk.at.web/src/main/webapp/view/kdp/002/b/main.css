@@ -1,9 +1,5 @@
-.item-screen, #single-list_container {
-	margin-top: 10px !important;
-}
-
-#single-list_container {
-	margin-left: 20px !important;
+#contents-area{
+	padding-top: 2px !important;
 }
 
 #text-b6-2, #text-b2-2, #text-b3-2, #label-b3-2 {
@@ -18,22 +14,97 @@
 	margin-left: 43px;
 }
 
-#contents-area {
-	margin-left: 25px !important;
-}
-
 #table-stamp {
-	height: 190px;
 	width: 450px;
-    margin-top: 10px;
-    padding-top: 10px;
+	margin-top: 5px;
 }
 
 #text-b8-1 {
-	margin-left: 30px;
+	margin-left: 20px;
+	padding-left: 10px;
+	padding-top: 10px;
+	border: 1px solid black;
 }
 
-.inline-bl{
-  display: inline-block;
-  width: 30px;
+.inline-bl {
+	display: inline-block;
+	width: 30px;
+}
+
+#text-b20-1 {
+	margin-top: 4px;
+	margin-right: 5px;
+	font-size: 17px;
+	float: left;
+	margin-top: 5px;
+}
+
+#text-b20-2 {
+	float: left;
+	margin-top: 5px;
+	margin-top: 5px;
+}
+
+.workPlaceName {
+	min-height: 22px;
+}
+
+.title .time {
+	font-size: 35px;
+	font-weight: bold;
+	margin-top: 0px;
+	line-height: 1.2;
+}
+
+.title .commuting {
+	font-size: 30px;
+	color: #0033cc;
+	margin-top: 10px;
+	font-weight: bold;
+	line-height: 1.3;
+}
+
+.workPlaceName {
+	margin-top: 5px;
+}
+
+.currentDate {
+	padding-left: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	border: 1px solid #EAE8F2;
+	background-color: #F2F2F2;
+	width: 440px;
+}
+
+.btn-showNoti {
+	height: 34px;
+	width: 130px;
+	margin-top: 10px;
+}
+
+.btn-showNoti i {
+	float: left;
+}
+
+.btn-showNoti div {
+	margin-top: 5px;
+}
+
+.btn-emoji {
+	margin-left: 5px;
+	border: none;
+	background-color: transparent;
+	box-shadow: 0 0px rgb(0 0 0 / 40%);
+}
+
+.btn-happy {
+	margin-left: 5px;
+	border: none;
+	background-color: transparent;
+	box-shadow: 0 0px rgb(0 0 0 / 40%);
+}
+
+.nts-gridlist.ui-iggrid {
+	height: auto !important;
 }

@@ -80,13 +80,20 @@ class StampTab {
         for (let idx = 1; idx <= 5; idx++) {
             let layout = _.find(layouts, (ly) => { return ly.pageNo === idx });
             if(layout) {
-                tabs.push({ id: 'tab-' + idx, 
-                            title: layout ? layout.stampPageName : '', 
-                            content: layout ? '.tab-content-' + layout.pageNo : '',
-                            stampPageComment: layout.stampPageComment,
-                            color: layout.stampPageCommentColor,
-                            enable: ko.observable(true), 
-                            visible: ko.observable(true)});
+                tabs.push({ 
+                            // id: 'tab-' + idx, 
+                            // title: layout ? layout.stampPageName : '', 
+                            // content: layout ? '.tab-content-' + layout.pageNo : '',
+                            // stampPageComment: layout.stampPageComment,
+                            // color: layout.stampPageCommentColor,
+                            // enable: ko.observable(true), 
+                            // visible: ko.observable(true)});
+                        buttonLayoutType: layout.buttonLayoutType,
+                        pageNo: layout.pageNo,
+                        stampPageComment: layout.stampPageComment,
+                        stampPageCommentColor: layout.stampPageCommentColor,
+                        stampPageName: layout ? layout.stampPageName : '',
+                        buttonSettings: layout.buttonSettings});
             }
         };
         self.tabs(tabs);

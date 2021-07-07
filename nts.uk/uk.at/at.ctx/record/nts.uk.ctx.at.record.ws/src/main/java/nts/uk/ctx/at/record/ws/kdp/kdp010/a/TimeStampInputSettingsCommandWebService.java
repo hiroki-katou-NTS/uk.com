@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.PortalStampSettings
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.SettingsSmartphoneStampCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.SettingsUsingEmbossingCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.StampSetCommunalCommand;
+import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.StampSettingOfRICOHCopierCommand;
 import nts.uk.ctx.at.record.app.command.stamp.management.StampPageLayoutCommand;
 
 @Path("at/record/stamp/timestampinputsetting")
@@ -34,12 +35,6 @@ public class TimeStampInputSettingsCommandWebService extends WebService {
 		commandHandler.saveStampSetCommunal(command);
 	}
 	
-	@POST
-	@Path("stampsetcommunal/stamppagelayout/save")
-	public void saveStampPageLayout(StampPageLayoutCommand command) {
-		commandHandler.saveStampPageLayout(command);
-	}
-	
 	/**打刻の前準備(スマホ)を登録する */
 	@POST
 	@Path("settingssmartphonestamp/save")
@@ -55,9 +50,15 @@ public class TimeStampInputSettingsCommandWebService extends WebService {
 	}
 	
 	@POST
-	@Path("smartphonepagelayoutsettings/save")
-	public void savePageLayoutSettingsSmartphone(StampPageLayoutCommand command) {
-		commandHandler.savePageLayoutSettingsSmartphone(command);
+	@Path("stampsettingofRICOHcopier/save")
+	public void saveStampSettingOfRICOHCopier(StampSettingOfRICOHCopierCommand command) {
+		commandHandler.saveStampSettingOfRICOHCopier(command);
+	}
+	
+	@POST
+	@Path("saveStampPage")
+	public void saveStampPageLayout(StampPageLayoutCommand command) {
+		commandHandler.saveStampPageLayout(command);
 	}
 	
 	@POST

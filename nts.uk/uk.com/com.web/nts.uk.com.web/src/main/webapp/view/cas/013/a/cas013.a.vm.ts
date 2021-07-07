@@ -39,7 +39,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
             self.listRoleIndividual = ko.observableArray([]);
             self.columns = ko.observableArray([
                 { headerText: '', key: 'roleId', hidden: true },
-                { headerText: nts.uk.resource.getText("CAS013_11"), key: 'roleCode', width: 40 },
+                { headerText: nts.uk.resource.getText("CAS013_11"), key: 'roleCode', width: 60 },
                 { headerText: nts.uk.resource.getText("CAS013_12"), key: 'name', width: 200 },
             ]);
             self.columnsIndividual = ko.observableArray([

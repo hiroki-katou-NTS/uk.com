@@ -54,7 +54,7 @@ module nts.uk.com.view.cmm007.a {
                     activate: (event, info) => {
                         $('#com_company').focus();
                         let _self = this;
-                        _self.start_page();
+                        _self.start_page().done(() => $(window).resize());
                         _self.removeErrorMonitor();
                     }
                 });
@@ -69,7 +69,7 @@ module nts.uk.com.view.cmm007.a {
                     activate: (event, info) => {
                         $('#tempAbsenceNo7').focus();
                         let _self = this;
-                        _self.start_page();
+                        _self.start_page().done(() => $(window).resize());
                         _self.removeErrorMonitor();
                     }
                 });
@@ -84,7 +84,7 @@ module nts.uk.com.view.cmm007.a {
                     activate: (event, info) => {
                         $('#plan_year_hd_frame1').focus();
                         let _self = this;
-                        _self.start_page();
+                        _self.start_page().done(() => $(window).resize());
                         _self.removeErrorMonitor();
                     }
                 });   
@@ -99,7 +99,7 @@ module nts.uk.com.view.cmm007.a {
                     activate: (event, info) => {
                         $('#overtime_work_name1').focus();
                         let _self = this;
-                        _self.start_page();
+                        _self.start_page().done(() => $(window).resize());
                         _self.removeErrorMonitor();
                     }
                 }); 
@@ -114,7 +114,7 @@ module nts.uk.com.view.cmm007.a {
                     activate: (event, info) => {
                         $('#work_day_off_name1').focus();
                         let _self = this;
-                        _self.start_page();
+                        _self.start_page().done(() => $(window).resize());
                         _self.removeErrorMonitor();
                     }
                 });
@@ -129,7 +129,7 @@ module nts.uk.com.view.cmm007.a {
                    activate: (event, info) => {
                        $('#I2_2').focus();
                        let _self = this;
-                       _self.start_page();
+                       _self.start_page().done(() => $(window).resize());
                        _self.removeErrorMonitor();
                    }
                });
