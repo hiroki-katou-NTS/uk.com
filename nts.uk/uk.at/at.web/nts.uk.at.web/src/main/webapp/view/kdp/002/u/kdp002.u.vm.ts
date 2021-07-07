@@ -18,7 +18,6 @@ module nts.uk.at.kdp002.u {
 		modelShowView: KnockoutObservableArray<IEmployeeIdSeen> = ko.observableArray([]);
 		model: KnockoutObservableArray<IMsgNotices> = ko.observableArray([]);
 		sid: string;
-		modeNew: KnockoutObservable<boolean | null> = ko.observable(false);
 
 		created(param: IParams) {
 			const vm = this;
@@ -31,6 +30,12 @@ module nts.uk.at.kdp002.u {
 			_.forEach(param.data.msgNotices, (value) => {
 				
 				if (value.message.targetInformation.destination == 2) {
+
+					if (value.flag) {
+						value.message.modeNew = true;
+					} else {
+						value.message.modeNew = false;
+					}
 					vm.modelShowView.push(value.message);
 				}
 			})
@@ -39,18 +44,6 @@ module nts.uk.at.kdp002.u {
 
 			vm.sid = param.sid;
 
-			vm.setModeNew(ko.unwrap(vm.model));
-		}
-
-		setModeNew(param: IMsgNotices[]) {
-			const vm = this;
-
-			_.forEach(param, ((value) => {
-				if (value.message.targetInformation.destination == 2 && value.flag) {
-					vm.modeNew(true);
-					return;
-				}
-			}));
 		}
 
 		closeDialog() {
@@ -111,6 +104,7 @@ module nts.uk.at.kdp002.u {
 		targetInformation: ITargetInformation;
 		employeeIdSeen: any;
 		creator: string;
+		modeNew: Boolean;
 	}
 
 	interface ICreatorAndDate {

@@ -17,10 +17,10 @@
         <ui:define name="content">
             <div id="contents-area">
                 <div class="view-u">
-                    <div data-bind="if: $vm.modeNew" class="colum-1">
-                        <i data-bind="ntsIcon: { no: 175, width: 30, height: 30 }"></i>
-                    </div>
                     <div class="colum-2" data-bind="foreach: $vm.modelShowView">
+                        <div class="colum-1" data-bind="if: $data.modeNew">
+                            <i data-bind="ntsIcon: { no: 175, width: 30, height: 30 }"></i>
+                        </div>
                         <div class="box-content">
                             <span class="content" data-bind="i18n: $data.notificationMessage"></span>
                             <div class="content">
