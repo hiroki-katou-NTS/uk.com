@@ -160,6 +160,7 @@ module nts.uk.ui.at.ksu002.a {
 		employeeId: KnockoutObservableArray<string>;
 		
 		data: WorkSchedule<moment.Moment>[] = [];
+		dataDaily: Achievement[] = [];
 		
 		dayStartWeek: KnockoutObservable<number> = ko.observable(null);
 		
@@ -184,7 +185,7 @@ module nts.uk.ui.at.ksu002.a {
 				};
 
 				vm.$errors('clear')
-					.then(() => vm.$blockui('show'))
+					.then(() => vm.$blockui('grayout'))
 					.then(() => vm.$ajax('at', API.GSCHE, command))
 					.then((response: WorkSchedule<string>[]) => _.chain(response)
 						.orderBy(['date'])
@@ -197,11 +198,11 @@ module nts.uk.ui.at.ksu002.a {
 					.then((response: WorkSchedule<moment.Moment>[]) => {
 						if (response && response.length) {
 							vm.data = response;
-							vm.bidingData();
+							vm.bidingData(vm);
 						}
 						vm.dayStartWeek(0);
-					})
-					.always(() => vm.$blockui('hide'));
+						vm.$blockui('hide')
+					});
 			};
 
 			const bussinesName: KnockoutObservable<string> = ko.observable('');
@@ -265,7 +266,6 @@ module nts.uk.ui.at.ksu002.a {
 			// UI-4
 			vm.achievement
 				.subscribe((arch) => {
-					const { IMPRINT } = EDIT_STATE;
 					const { begin, finish } = vm.baseDate();
 					
 					let tg = calculateDaysStartEndWeek(moment(begin).toDate(),moment(finish).toDate(), vm.dayStartWeek(), true);
@@ -276,8 +276,6 @@ module nts.uk.ui.at.ksu002.a {
 						endDate: moment(tg.end).toISOString()
 					};
 
-					const schedules: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
-
 					if (arch === ACHIEVEMENT.NO) {
 						loadData();
 						return;
@@ -285,84 +283,100 @@ module nts.uk.ui.at.ksu002.a {
 
 					$.Deferred()
 						.resolve(true)
-						.then(() => vm.$blockui('show'))
+						.then(() => vm.$blockui('grayout'))
 						// fc
 						.then(() => vm.$ajax('at', API.GSCHER, command))
 						.then((response: Achievement[]) => {
-							if (response.length === 0) {
-								return;
-							}
-
-							_.each(schedules, (sc) => {
-								const { data } = sc;
-								const { $raw } = data;
-								const exist = _.find(response, (d: Achievement & { date: string; }) => moment(d.date, 'YYYY/MM/DD').isSame(sc.date, 'date'));
-
-								if (!exist) {
-									$raw.achievements = null;
-								} else {
-									const { endTime, startTime, workTimeCode, workTimeName, workTypeCode, workTypeName } = exist;
-
-									$raw.achievements = {
-										endTime,
-										startTime,
-										workTimeCode,
-										workTimeName,
-										workTypeCode,
-										workTypeName
-									};
-								}
-							});
-						})
-						.then(() => {
-							// reset data
-							_.each(schedules, (sc) => {
-								const { data } = sc;
-								const { $raw, wtype, wtime, value } = data;
-								const { endTimeEditState, startTimeEditState, workTimeEditStatus, workTypeEditStatus } = $raw;
-
-								// UI-4-1 実績表示を「する」に選択する
-								// UI-4-2 実績表示を「しない」に選択する
-								if (!!$raw.achievements) {
-									const {
-										workTypeCode,
-										workTypeName,
-										workTimeCode,
-										workTimeName,
-										startTime,
-										endTime
-									} = $raw.achievements;
-
-									wtype.code(workTypeCode || null);
-									wtype.name(workTypeName || null);
-
-									wtime.code(workTimeCode || null);
-									wtime.name(workTimeName || null);
-
-									value.begin(startTime);
-									value.finish(endTime);
-
-									data.confirmed($raw.confirmed);
-									data.achievement(null);
-									data.classification($raw.workHolidayCls);
-									data.need2Work($raw.needToWork);
-
-									data.state.wtype(workTypeEditStatus ? workTypeEditStatus.editStateSetting : IMPRINT);
-									data.state.wtime(workTimeEditStatus ? workTimeEditStatus.editStateSetting : IMPRINT);
-
-									data.state.value.begin(startTimeEditState ? startTimeEditState.editStateSetting : IMPRINT);
-									data.state.value.finish(endTimeEditState ? endTimeEditState.editStateSetting : IMPRINT);
-								}
-
-								// state of achievement (both data & switch select)
-								data.achievement(!!$raw.achievements);
-							});
-
-							// reset state of memento
-							vm.schedules.reset();
+							vm.dataDaily = response;
+							vm.bidingDataDaily(vm);
 						})
 						.always(() => vm.$blockui('clear'));
 				});
+		}
+		
+		rebidingData(vm: any){
+			if(vm.achievement)
+		}
+		
+		bidingDataDaily(vm: any): void {
+			const { IMPRINT } = EDIT_STATE;
+			const schedules: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
+			$.Deferred()
+			.resolve(true)
+			.then(() => {
+				let response = vm.dataDaily;
+				if (response.length === 0) {
+					return;
+				}
+
+				_.each(schedules, (sc) => {
+					const { data } = sc;
+					const { $raw } = data;
+					const exist = _.find(response, (d: Achievement & { date: string; }) => moment(d.date, 'YYYY/MM/DD').isSame(sc.date, 'date'));
+
+					if (!exist) {
+						$raw.achievements = null;
+					} else {
+						const { endTime, startTime, workTimeCode, workTimeName, workTypeCode, workTypeName } = exist;
+
+						$raw.achievements = {
+							endTime,
+							startTime,
+							workTimeCode,
+							workTimeName,
+							workTypeCode,
+							workTypeName
+						};
+					}
+				});
+			})
+			.then(() => {
+				// reset data
+				_.each(schedules, (sc) => {
+					const { data } = sc;
+					const { $raw, wtype, wtime, value } = data;
+					const { endTimeEditState, startTimeEditState, workTimeEditStatus, workTypeEditStatus } = $raw;
+
+					// UI-4-1 実績表示を「する」に選択する
+					// UI-4-2 実績表示を「しない」に選択する
+					if (!!$raw.achievements) {
+						const {
+							workTypeCode,
+							workTypeName,
+							workTimeCode,
+							workTimeName,
+							startTime,
+							endTime
+						} = $raw.achievements;
+
+						wtype.code(workTypeCode || null);
+						wtype.name(workTypeName || null);
+
+						wtime.code(workTimeCode || null);
+						wtime.name(workTimeName || null);
+
+						value.begin(startTime);
+						value.finish(endTime);
+
+						data.confirmed($raw.confirmed);
+						data.achievement(null);
+						data.classification($raw.workHolidayCls);
+						data.need2Work($raw.needToWork);
+
+						data.state.wtype(workTypeEditStatus ? workTypeEditStatus.editStateSetting : IMPRINT);
+						data.state.wtime(workTimeEditStatus ? workTimeEditStatus.editStateSetting : IMPRINT);
+
+						data.state.value.begin(startTimeEditState ? startTimeEditState.editStateSetting : IMPRINT);
+						data.state.value.finish(endTimeEditState ? endTimeEditState.editStateSetting : IMPRINT);
+					}
+
+					// state of achievement (both data & switch select)
+					data.achievement(!!$raw.achievements);
+				});
+
+				// reset state of memento
+				vm.schedules.reset();
+			});
 		}
 
 		mounted() {
@@ -371,10 +385,7 @@ module nts.uk.ui.at.ksu002.a {
 			//$(vm.$el).find('[data-bind]').removeAttr('data-bind');
 		}
 		
-		bidingData(vm?: any): void {
-			if(!vm){
-				vm = this;	
-			}
+		bidingData(vm: any): void {
 			const { NO } = ACHIEVEMENT;
 			const arch = ko.unwrap(vm.achievement);
 			const clones: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
@@ -507,7 +518,7 @@ module nts.uk.ui.at.ksu002.a {
 //				$(vm.$el).find('[data-bind]').removeAttr('data-bind');
 //			});
 		}
-
+		
 		// UI-8: Undo-Redoの処理
 		undoOrRedo(action: 'undo' | 'redo') {
 			const vm = this;

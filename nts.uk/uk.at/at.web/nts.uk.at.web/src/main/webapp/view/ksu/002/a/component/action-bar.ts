@@ -355,7 +355,7 @@ module nts.uk.ui.at.ksu002.a {
 										const command = { workTimeCode, workTypeCode };
 
 										return vm.$blockui('invisible')
-											.then(() => vm.$ajax('at', AB_API.CR_WT_HD, command));
+											.then(() => vm.$ajax('at', AB_API.CR_WT_HD, command).done(() => vm.$blockui('clear')));
 									}
 
 									return null;
@@ -389,8 +389,7 @@ module nts.uk.ui.at.ksu002.a {
 											}
 										}
 									});
-								})
-								.always(() => vm.$blockui('clear'));
+								});
 						}
 					}
 				},

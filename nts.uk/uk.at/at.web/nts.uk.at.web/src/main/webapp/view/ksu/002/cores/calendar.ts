@@ -618,7 +618,8 @@ module nts.uk.ui.calendar {
 				});
 			vm.startDaySelected.subscribe(() => {
 				data.baseDate(data.baseDate());
-				vm.data.reBidingData(vm.data.rootVm);
+				if(vm.data.rootVm)
+				vm.data.rootVm.bidingData(vm.data.rootVm);
 			});
 
 			vm.baseDate.model
