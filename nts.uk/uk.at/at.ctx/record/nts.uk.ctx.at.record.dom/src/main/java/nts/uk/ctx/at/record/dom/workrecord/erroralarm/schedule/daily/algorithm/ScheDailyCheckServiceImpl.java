@@ -533,45 +533,49 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		if (DaiCheckItemType.TIME == dailyCheckType || DaiCheckItemType.CONTINUOUS_TIME == dailyCheckType) {
 			// ※1内容:  対象勤務：{0}条件：予約時間{1}{2}　実績：{3}
 			// {0}: ループ中のスケジュール日次の任意抽出条件．勤務種類の条件．予実比較による絞り込み方法
-			String variable0 = targetWorkType.nameId;			
+			//  ※　== 全て の場合　-> Empty　＃117145
+			String variable0 = targetWorkType == RangeToCheck.ALL ? Strings.EMPTY : targetWorkType.nameId;			
 			
-			// {1}: チェック条件　（例：　＜＞8：00）
+			// {1} ：　ループ中のスケジュール日次の任意抽出条件．勤務種類コード　+　’ ’ + 勤務種類名称
+			// ※　＝＝　Emptyの場合　ー＞　#KAL010_133
+			String variable1 = workTypeMsg(listWorkType, lstWorkTypeCode, "KAL010_133");
+			
+			// {2}: チェック条件　（例：　3：00　＜　Enumチェック項目種類の名称　＜　8：30）
 			String checkCondTypeName = dailyCheckType.nameId;
-			String variable1 = "";
+			String variable2 = "";
 			
 			if (compareOperatorText != null) {
 				if(compare <= 5) {
-					variable1 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue;
+					variable2 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue;
 				} else {
 					if (compare == 6 || compare == 7) {
-						variable1 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName 
+						variable2 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName 
 								+ compareOperatorText.getCompareright() + endValue;
 					} else {
-						variable1 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue
+						variable2 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue
 								+ ", " + checkCondTypeName + compareOperatorText.getCompareright() + endValue;
 					}
 				}
 			}
 			
-			// {2}: 
-				// チェック項目種類　＝＝　「時間」　－＞""
+			// {3}:チェック項目種類　＝＝　「時間」　－＞’’
 				// チェック項目種類　！＝　「時間」  －＞ #KAL010_1015　（{0}: ループ中のスケジュール日次の任意抽出条件．連続期間）
-			String variable2 = DaiCheckItemType.TIME != dailyCheckType ? TextResource.localize("KAL010_1015", conPeriodStr) : Strings.EMPTY;
-			// {3}:
-				// チェック項目種類　＝＝　「時間」　－＞探した勤務予定．勤怠時間．勤務時間．総労働時間
-			String variable3 = "";
+			String variable3 = DaiCheckItemType.TIME != dailyCheckType ? TextResource.localize("KAL010_1015", conPeriodStr) : Strings.EMPTY;
+			
+			// {4}:　チェック項目種類　＝＝　「時間」　－＞探した勤務予定．勤怠時間．勤務時間．総労働時間
+			String variable4 = "";
 			if (DaiCheckItemType.TIME == dailyCheckType) {
 				if (workSched != null && workSched.getOptAttendanceTime().isPresent()) {
 					int actualTime = workSched.getOptAttendanceTime().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime();
-					variable3 = formatTime(actualTime);
+					variable4 = formatTime(actualTime);
 				}
 			} else {
 				// チェック項目種類　！＝　「時間」　－＞　取得した連続カウント　+　#KAL010_1017 
-				variable3 = consecutiveYears + TextResource.localize("KAL010_1017");
+				variable4 = consecutiveYears + TextResource.localize("KAL010_1017");
 			}
 			// 例1：対象勤務：選択　条件：予約時間＜＞8：00　実績：10：00
 			// 例２：対象勤務：選択　条件：予約時間＜＞8：00/5日連続　実績：10日連続
-			content = TextResource.localize("KAL010_1013", variable0, variable1, variable2, variable3);
+			content = TextResource.localize("KAL010_1013", variable0, variable1, variable2, variable3, variable4);
 		}
 		// チェック項目種類　＝＝　「連続勤務」の場合　ー＞#KAL010_1028  issue#117148
 		else if (DaiCheckItemType.CONTINUOUS_WORK == dailyCheckType) {
@@ -627,7 +631,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 	 */
 	private String workTypeMsg(List<WorkType> lstWorkType, List<String> lstWorkTypeCode, String nullMsg) {
 		if (lstWorkTypeCode.isEmpty()) {
-			return nullMsg != null ? TextResource.localize("nullMsg") : Strings.EMPTY;
+			return nullMsg != null ? TextResource.localize(nullMsg) : Strings.EMPTY;
 		}
 		
 		return lstWorkType.stream().filter(x -> lstWorkTypeCode.contains(x.getWorkTypeCode().v()))
