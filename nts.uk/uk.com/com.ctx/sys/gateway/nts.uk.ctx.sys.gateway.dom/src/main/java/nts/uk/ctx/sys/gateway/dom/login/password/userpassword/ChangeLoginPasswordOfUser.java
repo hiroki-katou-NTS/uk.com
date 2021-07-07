@@ -15,7 +15,7 @@ public class ChangeLoginPasswordOfUser {
 		return null;
 	}
 	
-	public static AtomTask change(Require require, String userId, String currentPassword, String newPassword) {
+	public static AtomTask change(Require require, String userId, String newPassword, String confirmPassword) {
 		// TODO 
 		return null;
 	}
