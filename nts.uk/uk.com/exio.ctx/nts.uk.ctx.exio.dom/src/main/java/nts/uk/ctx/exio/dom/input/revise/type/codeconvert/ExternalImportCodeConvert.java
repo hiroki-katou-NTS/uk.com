@@ -25,7 +25,7 @@ public class ExternalImportCodeConvert extends AggregateRoot {
 	private boolean importWithoutSetting;
 	
 	/** コード変換 */
-	private List<CodeConvertDetail> ConvertDetails;
+	private List<CodeConvertDetail> convertDetails;
 	
 	public ExternalImportCodeConvert(String companyId, String convertCode, String convertName, boolean importWithoutSetting,
 			List<CodeConvertDetail> listConvertDetails) {
@@ -34,7 +34,7 @@ public class ExternalImportCodeConvert extends AggregateRoot {
 		this.convertCode = new CodeConvertCode(convertCode);
 		this.convertName = new CodeConvertName(convertName);
 		this.importWithoutSetting = importWithoutSetting;
-		this.ConvertDetails = listConvertDetails;
+		this.convertDetails = listConvertDetails;
 	}
 	
 	/**
@@ -43,7 +43,7 @@ public class ExternalImportCodeConvert extends AggregateRoot {
 	 * @return
 	 */
 	public CodeConvertResult convert(String target) {
-		for (val detail : ConvertDetails) {
+		for (val detail : convertDetails) {
 			if (detail.getTargetCode().toString().equals(target)) {
 				return CodeConvertResult.succeeded(detail.getSystemCode());
 			}
