@@ -154,7 +154,7 @@
 								data-bind="ntsTextEditor:{
 										name: '#[KMK011_31]',
 										value: itemTotalTimesDetail.workTypeInfo ,
-										required: true,
+										required: false,
 										readonly: true,
 										enable: enableWorkType}" />
 							</td>
@@ -212,11 +212,11 @@
 									</div>
 									<div class="row-item">
 										<div class="table coverage">
-											<div class="cell">
+											<div class="cell valign-center">
 												<span>#{i18n.getText('KMK009_29')}</span>
 											</div>
 											<div class="cell">
-												<div>
+												<div class="flex valign-center">
 													<!--A3:17 : Check error(select) -->
 													<div tabindex="10"
 														data-bind="ntsCheckBox:{
@@ -233,7 +233,7 @@
 													value: itemTotalTimesDetail.totalCondition.thresoldLowerLimit,
 													inputFormat: 'time', 
 													mode: 'time', 
-													required: true,
+													required: enableUnder,
 													constraint: 'ConditionThresholdLimit',
 													enable: enableUnder}" />
 													<!-- A3_19 -->
@@ -241,7 +241,7 @@
 												</div>
 											</div>
 											<div class="cell">
-												<div>
+												<div class="flex valign-center">
 													<!-- :A3_20 Check error(select) -->
 													<div tabindex="12"
 														data-bind="ntsCheckBox:{
@@ -256,7 +256,7 @@
 													value: itemTotalTimesDetail.totalCondition.thresoldUpperLimit,
 													inputFormat: 'time', 
 													mode: 'time', 
-													required: true,
+													required: enableUpper,
 													constraint: 'ConditionThresholdLimit',
 													enable: enableUpper}" />
 													<!-- A3_22 -->

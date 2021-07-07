@@ -56,7 +56,7 @@
 }
 
 #C1_4 {
-  margin-left: 165px;
+  margin-left: 440px;
 }
 
 #C3_2 {
@@ -134,4 +134,8 @@
 
 #password-table tr td {
   padding-bottom: 10px;
+}
+
+#C2 > .nts-searchbbox-wrapper {
+  margin-top: 0px !important;
 }

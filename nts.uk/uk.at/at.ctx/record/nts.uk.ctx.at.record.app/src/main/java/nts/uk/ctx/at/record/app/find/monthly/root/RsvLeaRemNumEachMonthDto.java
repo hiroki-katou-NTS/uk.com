@@ -108,6 +108,7 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 			dto.setGrantAtr(domain.isGrantAtr());
 			dto.setUndigestedNumber(domain.getUndigestedNumber().getUndigestedDays().v());
 			dto.exsistData();
+			dto.setUndigestedNumber(domain.getUndigestedNumber().getUndigestedDays().v());
 		}
 		return dto;
 	}

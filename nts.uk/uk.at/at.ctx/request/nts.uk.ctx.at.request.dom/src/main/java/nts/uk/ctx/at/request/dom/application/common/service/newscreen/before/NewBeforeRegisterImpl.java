@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
@@ -18,7 +19,6 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.CheckBeforeRegisMultiEmpOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
@@ -27,6 +27,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.MsgErrorOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationrestrictionsetting.AppLimitSetting;
@@ -190,7 +191,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 
 	@Override
 	public List<ConfirmMsgOutput> processBeforeRegister_New(String companyID, EmploymentRootAtr employmentRootAtr, boolean agentAtr,
-			Application application, OvertimeAppAtr overtimeAppAtr, ErrorFlagImport errorFlg,
+			Application application, OvertimeAppAtr overtimeAppAtr, List<MsgErrorOutput> msgErrorLst,
 			List<GeneralDate> lstDateHd, AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// アルゴリズム「未入社前チェック」を実施する
@@ -230,15 +231,13 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 		}		
 		
 		// キャッシュから承認ルートを取得する(Lấy comfirm root từ cache)	
-		switch (errorFlg) {
-		case NO_CONFIRM_PERSON:
-			throw new BusinessException("Msg_238");
-		case APPROVER_UP_10:
-			throw new BusinessException("Msg_237");
-		case NO_APPROVER:
-			throw new BusinessException("Msg_324");
-		default:
-			break;
+		if(!CollectionUtil.isEmpty(msgErrorLst)) {
+			MsgErrorOutput msgErrorOutput = msgErrorLst.get(0);
+			I18NText.Builder builder = I18NText.main(msgErrorOutput.getMsgID());
+			for(String param : msgErrorOutput.getMsgParam()) {
+				builder.addId(param);
+			}
+			throw new BusinessException(builder.build());
 		}
 
 		// アルゴリズム「申請の締め切り期限をチェック」を実施する

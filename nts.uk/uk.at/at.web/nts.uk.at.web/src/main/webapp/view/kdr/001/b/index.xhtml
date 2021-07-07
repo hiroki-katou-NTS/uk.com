@@ -38,7 +38,7 @@
 				<button data-bind="click: closeDialog" tabindex="4">#{i18n.getText('KDR001_39')}</button>
 			</div>
 
-			<div class="cf" id="contents-area" style="display: flex;">
+			<div class="cf flex" id="contents-area">
 				<div class="selectionHoliday">
 					<div class="panel"
 						data-bind="ntsPanel:{width: '375px', height: '370px', direction: 'right',  visible: true}">
@@ -70,7 +70,7 @@
 						 	required: true,
 						  	enable: $parent.isNewMode(),
 						  	option: {width : '22px'}}" />
-						<input style="margin: 20px;" tabindex="7"
+						<input tabindex="7"
 							id="holidayName"
 							data-bind="ntsTextEditor: {
 							constraint: 'HolidayRemainingName',

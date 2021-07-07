@@ -20,14 +20,17 @@ contents-area .create-creation {
   margin-left: 60px;
 }
 
-.nts-wizard.ksc001 > .content > .body .panel-content {
-	min-height: 485px;
+.nts-wizard.ksc001 > .contents .panel-content {
+	height: 485px;
 	position: relative;
 }
-.nts-wizard.ksc001 > .content > .body .panel-content .buttonPrevNext {
+.nts-wizard.ksc001 > .contents .panel-content .buttonPrevNext {
 	position: absolute;
 	bottom: 7px;
 	right: 0;
+}
+.nts-wizard.ksc001 > .contents > div {
+  width: 770px
 }
 
 .contentB {
@@ -42,13 +45,11 @@ contents-area .create-creation {
 }
 
 .contentD {
-  margin-top: 10px;
   margin-left: 90px;
 	max-width: 730px;
 }
 
 .contentE {
-  margin-top: 10px;
   margin-left: 50px;
 }
 
