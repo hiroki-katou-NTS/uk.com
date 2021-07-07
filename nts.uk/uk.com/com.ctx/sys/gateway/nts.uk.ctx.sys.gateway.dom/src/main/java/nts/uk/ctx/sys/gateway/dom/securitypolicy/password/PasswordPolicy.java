@@ -69,10 +69,9 @@ public class PasswordPolicy extends AggregateRoot {
 	/**
 	 * ログイン時にポリシー違反してないか
 	 */
-	public ValidationResultOnLogin violatedOnLogin(ValidateOnLoginRequire require,
-			String userId,
-			String password,
-			PasswordState passwordStatus) {
+	public ValidationResultOnLogin violatedOnLogin(LoginPasswordOfUser changeLog, String passwordPlainText) {
+		
+		PasswordState passwordStatus = changeLog.getPasswordState();
 		
 		// ポリシー利用しない
 		if (!isUse) {
@@ -90,14 +89,14 @@ public class PasswordPolicy extends AggregateRoot {
 		}
 		
 		// 文字構成をチェック
-		val errorList = complexityRequirement.validatePassword(password);
+		val errorList = complexityRequirement.validatePassword(passwordPlainText);
 		if (loginCheck && errorList.size() > 0) {
 			return ValidationResultOnLogin.complexityError(errorList);
 		}
 		
 		// 有効期限をチェック
 		if (!validityPeriod.isUnlimited()) {
-			int remainingDays = calculateRemainingDays(require, userId);
+			int remainingDays = calculateRemainingDays(changeLog);
 			
 			// 有効期限切れ
 			if (remainingDays < 0) {
@@ -117,9 +116,8 @@ public class PasswordPolicy extends AggregateRoot {
 	 * 有効期限が切れるまでの残日数を求める
 	 * @return 有効期限までの日数
 	 */
-	private int calculateRemainingDays(ValidateOnLoginRequire require, String userId) {
+	private int calculateRemainingDays(LoginPasswordOfUser changeLog) {
 		
-		val changeLog = require.getPasswordChangeLog(userId);
 		if(changeLog.latestLog().isPresent()) {
 			// 前回変更してからの日数
 			int ageInDays = changeLog.latestLog().get().ageInDays();
@@ -129,10 +127,5 @@ public class PasswordPolicy extends AggregateRoot {
 		// TODO 「初期パスワードに変更履歴が作成されない問題」のため変更履歴がない場合はチェックを回避
 		// ※通知するかどうかの日数がMAX99のため100で回避
 		return 100;
-	}
-	
-	public static interface ValidateOnLoginRequire {
-		
-		LoginPasswordOfUser getPasswordChangeLog(String userId);
 	}
 }
