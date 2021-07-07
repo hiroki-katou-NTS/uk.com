@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.dom.input.revise.type.codeconvert;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -42,10 +43,11 @@ public class ExternalImportCodeConvert extends AggregateRoot {
 	 * @return
 	 */
 	public CodeConvertResult convert(String target) {
-		for(int i = 0; i < ConvertDetails.size(); i++) {
-			if(ConvertDetails.get(i).getTargetCode().toString().equals(target)) {
-				return CodeConvertResult.succeeded(ConvertDetails.get(i).getSystemCode());
+		for (val detail : ConvertDetails) {
+			if (detail.getTargetCode().toString().equals(target)) {
+				return CodeConvertResult.succeeded(detail.getSystemCode());
 			}
+			
 		}
 		if(importWithoutSetting) {
 			// 変換対象外を受け入れる設定のためINPUTを変換値として返す
