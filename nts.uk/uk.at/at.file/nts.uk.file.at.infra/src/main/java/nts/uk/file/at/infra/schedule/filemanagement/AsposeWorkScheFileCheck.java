@@ -129,7 +129,7 @@ public class AsposeWorkScheFileCheck implements CheckFileService {
         }
 
         // loop for row data
-        for (int i = rowStart + 1; i < (rowStart + 1000); i++) {
+        for (int i = rowStart + 1; i < (rowStart + 1001); i++) {
             Cell cellEmployeeCode = cells.get(i, columnStart);
 //            Cell cellEmployeeName = cells.get(i, columnStart + 1);
 
