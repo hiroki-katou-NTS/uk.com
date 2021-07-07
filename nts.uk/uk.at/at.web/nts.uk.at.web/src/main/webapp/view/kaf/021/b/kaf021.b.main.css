@@ -46,6 +46,10 @@
     height: 50px !important;
 }
 
+#grid .mgrid-fixed:not(.mgrid-header) .mgrid-fixed-table tr:not(.mgrid-top-space):not(.mgrid-bottom-space){
+    height: 50px !important;
+}
+
 #grid .cell-edit .medit-container{
     height: 47px !important;
 }
@@ -54,10 +58,18 @@
     padding: 0px 5px;;
 }
 
-#grid .padding-12{
-    padding: 0px 12px;;
+#grid .padding-10{
+    padding: 0px 10px;;
+}
+
+#grid .break-jp-cell {
+    line-break: strict;
 }
 
 .center-align {
     text-align: center;
+}
+
+.mgrid table th, .mgrid table td {
+    border-color: #9c9fa2;
 }

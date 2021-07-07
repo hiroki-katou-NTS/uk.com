@@ -33,13 +33,13 @@ module nts.uk.at.view.kaf010.shr.header.viewmodel {
 						<tr>
 							<!--A2_14 年月ラベル-->
 							<td
-								data-bind="text: yearMonth, style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+								data-bind="text: yearMonth, attr: { class: backgroundColor() + ' ' + textColor() }"></td>
 							<!--A2_15  限度ラベル-->
 							<td
-								data-bind="text: $parent.getFormatTime(limitTime()), style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+								data-bind="text: $parent.getFormatTime(limitTime()), attr: { class: backgroundColor() + ' ' + textColor() }"></td>
 							<!--A2_16 実績ラベル-->
 							<td
-								data-bind="text: $parent.getFormatTime(actualTime()), style: { 'background-color': backgroundColor, 'color': textColor }"></td>
+								data-bind="text: $parent.getFormatTime(actualTime()), attr: { class: backgroundColor() + ' ' + textColor() }"></td>
 						</tr>
 					</tbody>
 				</table>

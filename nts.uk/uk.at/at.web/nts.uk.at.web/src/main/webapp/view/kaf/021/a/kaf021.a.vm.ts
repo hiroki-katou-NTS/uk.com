@@ -248,8 +248,8 @@ module nts.uk.at.kaf021.a {
             const vm = this;
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
                 subWidth: "130px",
-                subHeight: "240px",
-                headerHeight: '80px',
+                subHeight: "255px",
+                headerHeight: '70px',
                 rowHeight: '40px',
                 dataSource: vm.datas,
                 primaryKey: 'employeeId',
@@ -322,7 +322,7 @@ module nts.uk.at.kaf021.a {
             // A3_3
             columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'wkpName', dataType: 'string', width: '105px', ntsControl: "Label" });
             // A3_4
-            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employeeName', dataType: 'string', width: '105px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employeeName', dataType: 'string', width: '115px', ntsControl: "Label" });
             // A3_5 ~ A3_16
             let date: Date = vm.$date.today();
             date.setDate(1);

@@ -2,7 +2,7 @@
 
 .contentDialog {
 	margin-top: 10px;
-	margin-left: 30px;
+	margin-left: 20px;
 }
 
 .bg-dark-green {
@@ -30,9 +30,9 @@
 	width: 150px;
 }
 
-.tbOvertime {
-	margin-top: 20px;
-}
+/*.tbOvertime {*/
+	/*margin-top: 20px;*/
+/*}*/
 
 #master-wrapper {
 	height: auto;

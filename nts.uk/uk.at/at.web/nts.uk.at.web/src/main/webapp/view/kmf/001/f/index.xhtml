@@ -53,7 +53,7 @@
 										optionsValue: 'value',
 										optionsText: 'localizedName',
 										value: compenManage,
-										enable: true }, click: clearError">
+										enable: true }">
 					</span>
 					<div class="hr_width">
 						<hr />
@@ -67,12 +67,27 @@
 								</div>
 							</td>
 						</tr>
+            <!-- F4_1, F4_2 -->
+						<tr>
+							<td class="pad_left_30" colspan="2"><label>#{i18n.getText('KMF001_327')}</label></td>
+							<td class="pad_over_left_80" style="padding-left: 70px;">
+								<div  
+									data-bind="ntsRadioBoxGroup: {
+                                    name: '#{i18n.getText('KMF001_327')}',
+                                    options: [ { code: 0, name: '#{i18n.getText('KMF001_347')}' },
+                                            { code: 1, name: '#{i18n.getText('KMF001_348')}' }],
+                                    optionsValue: 'code',
+                                    optionsText: 'name',
+                                    enable: isManageCompen,
+                                    value: manageDeadline }" />
+							</td>
+						</tr>
 						<tr>
 							<td class="pad_left_30" colspan="2"><label>#{i18n.getText('KMF001_76')}</label></td>
 							<td class="pad_over_left_80">
 								<div tabindex="5" class="combo-box"
 									data-bind="ntsComboBox: {
-										options: expirationTimeEnums,
+										options: filteredExpirationTimeEnums,
 										optionsValue: 'value',
 										value: expirationDateCode,
 										visibleItemsCount: 15,
@@ -101,21 +116,6 @@
 										columns: [
 											{ prop: 'localizedName', length: 10 },
 										]}"></div>
-							</td>
-						</tr>
-						<!-- F4_1, F4_2 -->
-						<tr>
-							<td class="pad_left_30" colspan="2"><label>#{i18n.getText('KMF001_327')}</label></td>
-							<td class="pad_over_left_80" style="padding-left: 70px;">
-								<div  
-									data-bind="ntsRadioBoxGroup: {
-                                    name: '#{i18n.getText('KMF001_327')}',
-                                    options: [ { code: 0, name: '#{i18n.getText('KMF001_328')}' },
-                                            { code: 1, name: '#{i18n.getText('KMF001_329')}' }],
-                                    optionsValue: 'code',
-                                    optionsText: 'name',
-                                    enable: isManageCompen,
-                                    value: manageDeadline }" />
 							</td>
 						</tr>
 						<!-- F4_3, F4_4, F4_5 -->

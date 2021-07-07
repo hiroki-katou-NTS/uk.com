@@ -41,8 +41,13 @@ import nts.uk.ctx.at.function.dom.processexecution.repository.RepeatMonthDayRepo
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSetting;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatMonthDaysSelect;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.CronType;
+import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.EndDateClassification;
+import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.EndTimeClassification;
+import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.OneDayRepeatClassification;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.RepeatContentItem;
+import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.EndTime;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.OneDayRepeatIntervalDetail;
+import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.StartTime;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.task.schedule.UkJobScheduleOptions;
 import nts.uk.shr.com.task.schedule.UkJobScheduler;
@@ -118,7 +123,37 @@ public class SaveExecutionTaskSettingCommandHandler
 				.collect(Collectors.toMap(Entry::getKey,
 						e -> this.processExecutionService.buildScheduleOptions(SortingProcessScheduleJob.class,
 								e.getKey(), e.getValue(), scheduletimeData, taskSetting)));
-
+		
+		//Hiện tại chưa có job schedule cho endTime
+		//Tạo thêm job cho endTime nếu tồn tại endTime
+		String finishCron = "";
+		if (command.getEndTimeCls() == 1) {
+			String dateCron = "";
+			if (command.getEndDateCls() == 1) {
+				GeneralDate endDate = command.getEndDate(); 
+				dateCron =" " + endDate.day() + " " + endDate.month() + " " + endDate.year();
+			} else {
+				dateCron = " * * ?"; 
+			}
+			
+			finishCron = "0 " + command.getEndTime() % 60 + " " + command.getEndTime() / 60 + dateCron;
+			
+			Optional<GeneralDate> endDate = taskSetting.getEndDate().getEndDateCls().equals(EndDateClassification.DATE)
+					? taskSetting.getEndDate().getEndDate()
+					: Optional.empty();
+			Optional<EndTime> endTime = taskSetting.getOneDayRepInr().getOneDayRepCls()
+					.equals(OneDayRepeatClassification.YES)
+					&& taskSetting.getEndTime().getEndTimeCls().equals(EndTimeClassification.YES)
+							? taskSetting.getEndTime().getEndTime()
+							: Optional.empty();
+			UkJobScheduleOptions.Builder builder = UkJobScheduleOptions.builder(SortingProcessEndScheduleJob.class,
+					"KBT002_" + taskSetting.getExecItemCd().v() + "_stop", new CronSchedule(Arrays.asList(finishCron)))
+					.userData(scheduletimeData);
+			endDate.ifPresent(builder::endDate);
+			endTime.ifPresent(builder::endClock);
+			this.scheduleOnCurrentCompany(builder.build());
+		}
+		
 		if (!command.isNewMode()) {
 			this.unscheduleOld(command, companyId);
 		}

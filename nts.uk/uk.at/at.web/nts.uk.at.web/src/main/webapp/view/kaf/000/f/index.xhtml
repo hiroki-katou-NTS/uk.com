@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 380,
-					height : 305
+					height : 320
 				};
 			</script>
 			<com:ValidatorScript>
@@ -26,20 +26,19 @@
 				<div>
 					<textarea style="height: 170px;" id="inpReasonTextareaDeny"
 									data-bind="ntsMultilineEditor: {
-												name: $i18n('KAF000_28'),
+												name: $i18n('KAF000_61'),
 												value: approvalReason,
 												option: {
 													resizeable: false,
 							                    	width: '340',
 							                    	textalign: 'left'
 							                   	},
-					             				required : true,
 					             				enable: true,
 					             				constraint: 'ApprovalComment' }" />
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed" style="width: 200px;" data-bind="click: deny, enable: $root.errors.isEmpty">#{i18n.getText('KAF000_19')}</button>
+				<button class="proceed" style="width: 200px;" data-bind="click: deny, enable: $root.errors.isEmpty">#{i18n.getText('KAF000_16')}</button>
 				<button data-bind="click: close">#{i18n.getText('KAF000_36')}</button>
 			</div>
 		</ui:define>

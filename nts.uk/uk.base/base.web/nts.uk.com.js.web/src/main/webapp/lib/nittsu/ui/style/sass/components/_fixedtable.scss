@@ -3,11 +3,24 @@
 	table.fixed-table {
 		width: 100%;
 		table-layout: fixed;
+		border-collapse: separate;
 		
 		> tbody > tr > td,
-		> tbody > tr > th {
+		> tbody > tr > th,
+		> thead > tr > td,
+		> thead > tr > th {
 			white-space: nowrap;
 			overflow: hidden;
+			border: solid 1px #CCC;
+			border-top: 0;
+			border-right: 0;
+		}
+
+		> tbody > tr:first-child > td,
+		> tbody > tr:first-child > th,
+		> thead > tr:first-child > td,
+		> thead > tr:first-child > th {
+			border-top: solid 1px #CCC;
 		}
 		
 		> tbody > tr:hover > td,

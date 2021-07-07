@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -159,38 +160,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 
 	
 	public static DailyRecordDto from(IntegrationOfDaily domain){
-		DailyRecordDto dto = new DailyRecordDto();
-		if(domain != null){
-			String employeeId = domain.getEmployeeId();
-			GeneralDate ymd = domain.getYmd();
-			dto.setEmployeeId(employeeId);
-			dto.setDate(ymd);
-			dto.setWorkInfo(WorkInformationOfDailyDto.getDto(employeeId,ymd,domain.getWorkInformation()));
-			dto.setCalcAttr(CalcAttrOfDailyPerformanceDto.getDto(employeeId,ymd,domain.getCalAttr()));
-			dto.setAffiliationInfo(AffiliationInforOfDailyPerforDto.getDto(employeeId,ymd,domain.getAffiliationInfor()));
-//			dto.setBusinessType(domain.getBusinessType().map(b -> BusinessTypeOfDailyPerforDto.getDto(b)));
-			if(domain.getEmployeeError() != null && !domain.getEmployeeError().isEmpty()) {
-				dto.setErrors(domain.getEmployeeError().stream().map(x -> EmployeeDailyPerErrorDto.getDto(x)).collect(Collectors.toList()));
-			}
-			dto.setOutingTime(domain.getOutingTime().map(o -> OutingTimeOfDailyPerformanceDto.getDto(employeeId,ymd,o)));
-			dto.setBreakTime(Optional.of(BreakTimeDailyDto.getDto(employeeId,ymd, domain.getBreakTime())));
-			dto.setAttendanceTime(domain.getAttendanceTimeOfDailyPerformance().map(a -> AttendanceTimeDailyPerformDto.getDto(employeeId,ymd,a)));
-//			dto.setAttendanceTimeByWork(domain.getAttendancetimeByWork().map(a -> AttendanceTimeByWorkOfDailyDto.getDto(a)));
-			dto.setTimeLeaving(domain.getAttendanceLeave().map(a -> TimeLeavingOfDailyPerformanceDto.getDto(employeeId,ymd,a)));
-			dto.setShortWorkTime(domain.getShortTime().map(s -> ShortTimeOfDailyDto.getDto(employeeId,ymd,s)));
-			dto.setSpecificDateAttr(domain.getSpecDateAttr().map(s -> SpecificDateAttrOfDailyPerforDto.getDto(employeeId,ymd,s)));
-			dto.setAttendanceLeavingGate(domain.getAttendanceLeavingGate().map(a -> AttendanceLeavingGateOfDailyDto.getDto(employeeId,ymd,a)));
-			dto.setOptionalItem(domain.getAnyItemValue().map(a -> OptionalItemOfDailyPerformDto.getDto(employeeId,ymd,a)));
-			dto.setEditStates(domain.getEditState().stream().map(c -> EditStateOfDailyPerformanceDto.getDto(employeeId,ymd,c)).collect(Collectors.toList()));
-			dto.setTemporaryTime(domain.getTempTime().map(t -> TemporaryTimeOfDailyPerformanceDto.getDto(employeeId,ymd,t)));
-			dto.setPcLogInfo(domain.getPcLogOnInfo().map(pc -> PCLogOnInforOfDailyPerformDto.from(employeeId,ymd,pc)));
-			dto.setRemarks(RemarksOfDailyDto.getDto(employeeId,ymd,domain.getRemarks()));
-			dto.setSnapshot(domain.getSnapshot().map(c -> SnapshotDto.from(employeeId, ymd, c)));
-			OuenWorkTimeSheetOfDaily ouenSheetOfDaily = OuenWorkTimeSheetOfDaily.create(employeeId, ymd, domain.getOuenTimeSheet()); 
-			dto.setOuenTimeSheet(OuenWorkTimeSheetOfDailyDto.getDto(employeeId, ymd, ouenSheetOfDaily));
-			dto.exsistData();
-		}
-		return dto;
+		return from(domain, new HashMap<>());
 	}
 	
 	public static DailyRecordDto from(IntegrationOfDaily domain, Map<Integer, OptionalItem> master){
@@ -440,7 +410,10 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.errors == null ? new ArrayList<>() : this.errors.stream().map(x -> x.toDomain(employeeId, date)).collect(Collectors.toList()),
 				this.outingTime.map(ot -> ot.toDomain(employeeId, date)),
 				this.breakTime.map(bt -> bt.toDomain(employeeId, date)).orElse(new BreakTimeOfDailyAttd()),
-				this.attendanceTime.map(at -> at.toDomain(employeeId, date)),
+				this.attendanceTime.map(at -> {
+					at.correctWithEditState(this.editStates);
+					return at.toDomain(employeeId, date); 
+				}),
 				this.timeLeaving.map(tl -> tl.toDomain(employeeId, date)),
 				this.shortWorkTime.map(swt -> swt.toDomain(employeeId, date)),
 				this.specificDateAttr.map(sda -> sda.toDomain(employeeId, date)),

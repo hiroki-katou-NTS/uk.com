@@ -125,7 +125,7 @@ module nts.uk.ui.header {
         </div>
         <div class="pg-area">
             <div class="pg-name">
-                <span data-bind="text: pgName"></span>
+                <span id="pg-disp-name" data-bind="text: pgName" style="cursor: default"></span>
             </div>
         </div>
         `
@@ -157,6 +157,7 @@ module nts.uk.ui.header {
         companyNameClick: KnockoutObservable<boolean> = ko.observable(false);
 
         pgName: KnockoutObservable<string> = ko.observable('');
+        pgId: KnockoutObservable<string> = ko.observable('');
 
         showManual: KnockoutObservable<boolean> = ko.observable(false);
 
@@ -276,7 +277,7 @@ module nts.uk.ui.header {
                                         const { name } = pgName;
                 
                                         if (name) {
-                                            vm.pgName(name);
+                                            vm.pgNameInit(name);
                                         }
                                     }
                                 } else {
@@ -286,7 +287,7 @@ module nts.uk.ui.header {
                                         const { name } = first;
 
                                         if (name) {
-                                            vm.pgName(name);
+                                            vm.pgNameInit(name);
                                         }
                                     }
                                 }
@@ -306,6 +307,29 @@ module nts.uk.ui.header {
             $(window)
                 .on('keyup', (evt) => vm.ctrl(evt.ctrlKey))
                 .on('keydown', (evt) => vm.ctrl(evt.ctrlKey));
+        }
+
+        pgNameInit(name: string) {
+            let vm = this;
+            vm.pgName(name.substr(7));
+            vm.pgId(name.substr(0,7));
+
+            let $el = $("#pg-disp-name");
+            let pgid = "<span id='pg-id'>" + vm.pgId() + "</span>";
+            let pgidcaret = "<div id='pg-id-caret'></div>"
+            $("body").append(pgid);
+            $("body").append(pgidcaret);
+
+            $el.mouseenter((e) => {
+                let top = $el.offset().top + 23;
+                let left = $el.offset().left + 5;
+                $("#pg-id").css({"visibility": "visible", "top": top + "px", "left" : left + "px", "z-index" : "1000"});
+                $("#pg-id-caret").css({"visibility": "visible", "top": top + "px", "left" : left + "px", "z-index" : "1000"});
+            });
+            $el.mouseleave((e) => {
+                $("#pg-id").css({"visibility": "hidden", "top": "0px", "left" : "0px", "z-index" : "-1"});
+                $("#pg-id-caret").css({"visibility": "hidden", "top": "0px", "left" : "0px", "z-index" : "-1"});
+            });
         }
 
         loadData() {
@@ -466,6 +490,7 @@ module nts.uk.ui.header {
             if (item.url && item.url !== '-') {
                 bar.hover(false);
 
+                localStorage.setItem(nts.uk.request.IS_FROM_MENU, "true");
                 if (!item.queryString) {
                     window.location.href = item.url;
                 } else {

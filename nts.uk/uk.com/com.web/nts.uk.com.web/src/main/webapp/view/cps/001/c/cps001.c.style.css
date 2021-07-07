@@ -29,11 +29,7 @@
 }
 
 .nts-searchbbox-wrapper div.input-wrapper {
-	max-width: 175px;
-}
-
-#contents-area .ntsSearchBox.nts-editor {
-	width: 86% !important;
+	max-width: 198px;
 }
 
 #contents-area .form-group {
@@ -71,3 +67,8 @@
     max-width: 300px;
     margin-top: 8px;
 }
+
+#A_INP_NAME {
+	text-overflow: ellipsis;
+	width: 260px !important;
+}	

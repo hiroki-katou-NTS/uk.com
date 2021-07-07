@@ -569,7 +569,7 @@ module nts.uk.at.view.ktg026.a {
             vm.targetYear
                 .subscribe((targetYear) => {
                     vm.$validate('#ktg026-datepick').then(valid => {
-                        if (!valid) return;
+                        if (!valid || _.isEmpty(targetYear)) return;
 
                         vm.$window.storage('KTG026_TARGET', {
                             isRefresh: false,

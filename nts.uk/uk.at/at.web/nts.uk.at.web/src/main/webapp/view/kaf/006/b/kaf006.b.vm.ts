@@ -201,15 +201,15 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					return;
 				}
 
-				vm.selectedWorkTimeCD(null);
-				vm.selectedWorkTimeName(null);
-				vm.startTime1(null);
-				vm.startTime2(null);
-				vm.endTime1(null);
-				vm.endTime2(null);
+				// vm.selectedWorkTimeCD(null);
+				// vm.selectedWorkTimeName(null);
+				// vm.startTime1(null);
+				// vm.startTime2(null);
+				// vm.endTime1(null);
+				// vm.endTime2(null);
 
-				vm.data.selectedWorkTypeCD = null;
-                vm.data.selectedWorkTimeCD = null;
+				// vm.data.selectedWorkTypeCD = null;
+                // vm.data.selectedWorkTimeCD = null;
 
 				// vm.$errors("clear");
 				nts.uk.ui.errors.clearAll()
@@ -247,9 +247,9 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
                 }).then((data) => {
 					if (data) {
 						vm.fetchData(data);
-						vm.selectedWorkTimeCD(null);
-                        vm.selectedWorkTimeName(null);
-                        vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", 0));
+						// vm.selectedWorkTimeCD(null);
+                        // vm.selectedWorkTimeName(null);
+                        // vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", 0));
 						vm.appDispInfoStartupOutput(data.appDispInfoStartupOutput);
 						$("#work-type-combobox").focus()
 						return data;
@@ -778,7 +778,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				vm.nursing(null);
 			}
 
-			if (vm.selectedType() === 3) {
+			if (vm.selectedType() === 3 && param.vacationInfo.info.applyForSpeLeave != null) {
 				// B9_2
 				if (param.vacationInfo.info.applyForSpeLeave.relationshipCD !== null) {
 					vm.selectedDateSpec(param.vacationInfo.info.applyForSpeLeave.relationshipCD);
@@ -1014,12 +1014,12 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		validate() {
 			const vm = this;
 			if (vm.condition11() && vm.condition30()) {
-				if (vm.isChangeWorkHour() && vm.selectedWorkTimeCD()) {
-					if (!vm.checkTimeValid(vm.startTime1) && !vm.checkTimeValid(vm.endTime1)) {
-						vm.$dialog.error({messageId: "Msg_307"});
-						return false;
-					}
-				}
+				// if (vm.isChangeWorkHour() && vm.selectedWorkTimeCD()) {
+				// 	if (!vm.checkTimeValid(vm.startTime1) && !vm.checkTimeValid(vm.endTime1)) {
+				// 		vm.$dialog.error({messageId: "Msg_307"});
+				// 		return false;
+				// 	}
+				// }
 				if (!vm.checkTimeValid(vm.startTime1) && vm.checkTimeValid(vm.endTime1)) {
 					vm.$dialog.error({messageId: "Msg_307"});
 					return false;

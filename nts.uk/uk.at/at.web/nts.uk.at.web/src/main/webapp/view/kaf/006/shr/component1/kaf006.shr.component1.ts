@@ -33,9 +33,10 @@ module nts.uk.at.view.kaf006.shr.component1.viewmodel {
                 </div>
                 <!-- /ko -->
             </div>
-            <div class="end-line"></div>
         </div>
-        <div id="kaf006-shr-component1" class="control-group" data-bind="visible: $parent.selectedType() === 6" style="border-bottom: 2px solid #B1B1B1; padding-bottom: 25px; margin: 15px 15px 0">
+        <div id="kaf006-shr-component1" class="control-group" 
+            data-bind="visible: $parent.selectedType() === 6 && ($parent.condition19Over60 || $parent.condition19Annual || $parent.condition19ChildNursing || $parent.condition19Nursing || $parent.condition19Substitute)" 
+            style="border-bottom: 2px solid #B1B1B1; padding-bottom: 25px; margin: 15px 15px 0">
             <div class="cell" style="font-weight: bold" data-bind="text: $i18n('KAF006_97')"></div>
             <div class="space-between-table ">
                 <!-- ko if: $parent.condition19Over60 -->
@@ -69,7 +70,6 @@ module nts.uk.at.view.kaf006.shr.component1.viewmodel {
                 </div>
                 <!-- /ko -->
             </div>
-            <div class="end-line"></div>
         </div>
         `
     })

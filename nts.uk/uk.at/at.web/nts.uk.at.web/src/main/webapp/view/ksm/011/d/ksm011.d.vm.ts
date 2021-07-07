@@ -178,7 +178,7 @@ module nts.uk.at.view.ksm011.d {
            if (error.messageId == "Msg_1690" && error.parameterIds && error.parameterIds.indexOf(vm.$i18n("KSM011_87")) >= 0) {
                $('#KSM011_D6_14').ntsError('set', {messageId:'Msg_1690', messageParams:[vm.$i18n("KSM011_87")]});
            } else {
-               vm.$dialog.info(error);
+               vm.$dialog.error(error);
            }
       }).always(() => {
            vm.$blockui('hide');

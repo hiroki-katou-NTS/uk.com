@@ -46,3 +46,23 @@
 
 /*}*/
 
+#kcp017-component, #workplace-group-pannel {
+  width: 100% !important;
+}
+#workplace-group-pannel #multi-list-nopanel_container {
+  width: 415px !important;
+}
+#workplace-group-pannel #multi-list-nopanel_displayContainer {
+  width: 398px !important;
+  max-width: 398px !important;
+}
+#workplace-group-pannel .ntsSearchBox.nts-editor.ntsSearchBox_Component {
+  width: 275px !important;
+}
+#combo-box-tree-component{
+	margin-left: 45px !important;
+}
+
+.control-group.valign-center{
+	width: 450px;
+}

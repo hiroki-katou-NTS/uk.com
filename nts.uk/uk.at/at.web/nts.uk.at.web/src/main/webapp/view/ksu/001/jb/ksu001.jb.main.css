@@ -5,7 +5,7 @@ span#workplaceCode {
 }
 
 hr {
-	width: 940px;
+	width: 920px;
 	position: absolute;
 	margin: 0px 30px 0px 30px;
 }
@@ -65,7 +65,7 @@ hr {
 }
 
 #classification {
-	margin-left: 150px
+	margin-left: 85px
 }
 
 #multiline-textbox {
@@ -106,6 +106,7 @@ hr {
 #contents-area {
 	overflow-y: hidden !important;
 	overflow-x: hidden !important;
+	height: auto !important;
 }
 
 .color-gray {
@@ -131,4 +132,9 @@ a.hyperlink {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+.cf.switchbox-wrappers.radio-wrappers.nts-input{
+	float: right;
+    margin-right: 480px;
+	
 }
