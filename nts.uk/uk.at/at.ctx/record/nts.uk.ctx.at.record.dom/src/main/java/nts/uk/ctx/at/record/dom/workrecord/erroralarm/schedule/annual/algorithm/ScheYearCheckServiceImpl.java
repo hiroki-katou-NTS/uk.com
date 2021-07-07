@@ -300,11 +300,9 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 							.filter(x -> x.getEmployeeId().equals(sid) && x.getYearMonth().equals(ym))
 							.findFirst();
 					AttendanceTimeOfMonthly attendanceTimeOfMonthly = null;
-					if(!lstMonthly.isPresent()) {
-						continue;
-					}
-					
-					attendanceTimeOfMonthly = lstMonthly.get();
+					if(lstMonthly.isPresent()) {
+						attendanceTimeOfMonthly = lstMonthly.get();
+					}					
 					
 					// 勤務予定を探す
 					//条件：

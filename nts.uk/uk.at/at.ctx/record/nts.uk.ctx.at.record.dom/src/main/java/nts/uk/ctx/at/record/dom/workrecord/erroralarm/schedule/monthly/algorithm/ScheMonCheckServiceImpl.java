@@ -256,11 +256,9 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 							.filter(x -> x.getEmployeeId().equals(sid) && x.getYearMonth().equals(exMon))
 							.findFirst();
 					AttendanceTimeOfMonthly attendanceTimeOfMon = null;
-					if(!attendanceTimeOfMonOpt.isPresent()) {
-						continue;
+					if(attendanceTimeOfMonOpt.isPresent()) {
+						attendanceTimeOfMon = attendanceTimeOfMonOpt.get();
 					}
-					
-					attendanceTimeOfMon = attendanceTimeOfMonOpt.get();
 					
 					// 職場ID　＝　Input．List＜社員IDと職場履歴＞から絞り込む update by #117211
 					// ・社員ID　＝　ループ中の社員ID
