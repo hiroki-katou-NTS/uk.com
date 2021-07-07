@@ -620,7 +620,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
         openKAL003dDialog() {
             let self = this;
             nts.uk.ui.errors.clearAll();
-
+            
+            nts.uk.ui.windows.setShared("inputKAL003d", self.selectedAlarmCheckCondition().category());
             modal("/view/kal/003/d/index.xhtml").onClosed(() => {
 
                 var output = getShared("outputKAL003d");
