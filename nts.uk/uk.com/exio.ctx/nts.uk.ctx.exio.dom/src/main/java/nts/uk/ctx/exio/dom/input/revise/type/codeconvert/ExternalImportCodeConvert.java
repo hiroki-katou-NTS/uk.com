@@ -43,7 +43,7 @@ public class ExternalImportCodeConvert extends AggregateRoot {
 	 */
 	public CodeConvertResult convert(String target) {
 		for(int i = 0; i < ConvertDetails.size(); i++) {
-			if(ConvertDetails.get(i).getTargetCode().toString() == target) {
+			if(ConvertDetails.get(i).getTargetCode().toString().equals(target)) {
 				return CodeConvertResult.succeeded(ConvertDetails.get(i).getSystemCode());
 			}
 		}
