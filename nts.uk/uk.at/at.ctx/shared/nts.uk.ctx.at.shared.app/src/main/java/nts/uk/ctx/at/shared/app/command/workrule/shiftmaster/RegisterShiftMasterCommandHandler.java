@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -89,7 +90,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 							, companyId
 							, new ShiftMasterCode(cmd.getShiftMasterCode())
 							, new WorkTypeCode(cmd.getWorkTypeCd())
-							, Optional.ofNullable( cmd.getWorkTimeSetCd() == null ? null : new WorkTimeCode(cmd.getWorkTimeSetCd()) )
+							, Optional.ofNullable( cmd.getWorkTimeSetCd().equals("") ? null : new WorkTimeCode(cmd.getWorkTimeSetCd()) )
 							, dom.getDisplayInfor()
 							, dom.getImportCode()
 						);
@@ -109,6 +110,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 	}
 
 	@AllArgsConstructor
+	@NoArgsConstructor
 	private static class MakeShiftMasterRequireImpl implements MakeShiftMasterService.Require {
 
 		@Inject
@@ -139,7 +141,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 
 		@Override
 		public boolean checkExists(WorkTypeCode workTypeCd, Optional<WorkTimeCode> workTimeCd) {
-			return shiftMasterRepo.checkExists(companyId, workTypeCd.v(), workTimeCd.map(WorkTimeCode::v).orElse(null));
+			return shiftMasterRepo.checkExists(companyId, workTypeCd.v(), workTimeCd.map(WorkTimeCode::v).orElse(""));
 		}
 
 		@Override
@@ -197,6 +199,7 @@ public class RegisterShiftMasterCommandHandler extends CommandHandler<RegisterSh
 	}
 
 	@AllArgsConstructor
+	@NoArgsConstructor
 	private static class UpdateShiftMasterRequireImpl implements UpdateShiftMasterService.Require {
 
 		private final String companyId = AppContexts.user().companyId();
