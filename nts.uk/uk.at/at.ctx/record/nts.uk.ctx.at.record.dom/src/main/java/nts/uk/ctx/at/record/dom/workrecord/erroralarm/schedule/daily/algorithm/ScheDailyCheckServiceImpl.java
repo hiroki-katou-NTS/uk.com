@@ -1256,7 +1256,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 		
 		// 1日休日じゃないの場合
 		// 職場の特定日設定を取得する (Acquire specific day setting of the workplace)
-		RecSpecificDateSettingImport specificDateSetting = specificDateSettingAdapter.specificDateSettingService(companyId, wplId, exDate);
+		RecSpecificDateSettingImport specificDateSetting = specificDateSettingAdapter.findSpecDateSetByWkpLst(companyId, Arrays.asList(wplId), exDate);
 		
 		// 取得した「特定日」．特定日項目をチェック
 		if (specificDateSetting.getDate() == null) {
