@@ -13,8 +13,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLog;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLogDetail;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUser;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.PasswordChangeLogDetail;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -44,7 +44,7 @@ public class SgwdtPasswordChangeLog extends ContractUkJpaEntity{
 	
 	public static final JpaEntityMapper<SgwdtPasswordChangeLog> MAPPER = new JpaEntityMapper<>(SgwdtPasswordChangeLog.class);
 	
-	public static PasswordChangeLog toDomain(String userId, List<SgwdtPasswordChangeLog> entityLst) {
+	public static LoginPasswordOfUser toDomain(String userId, List<SgwdtPasswordChangeLog> entityLst) {
 		
 		if(!entityLst.stream().map(e -> e.pk.getUserId()).allMatch(u -> u.equals(userId))) {
 	        throw new RuntimeException("複数ユーザへの処理には対応していません。");
@@ -55,6 +55,6 @@ public class SgwdtPasswordChangeLog extends ContractUkJpaEntity{
 					return new PasswordChangeLogDetail(x.pk.getChangeDateTime(), x.hashedPassword);
 				}).collect(Collectors.toList());
 		
-		return new PasswordChangeLog(userId, details);
+		return new LoginPasswordOfUser(userId, details);
 	}
 }

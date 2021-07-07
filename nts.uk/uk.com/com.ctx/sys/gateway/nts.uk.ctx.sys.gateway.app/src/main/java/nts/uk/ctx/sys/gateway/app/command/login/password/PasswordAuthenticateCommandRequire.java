@@ -16,14 +16,14 @@ import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthentica
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationFailureLogRepository;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLog;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLogRepository;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUser;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUserRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyRepository;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLog;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLogRepository;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInformationAdapter;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataManageInfoAdapter;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
@@ -63,7 +63,7 @@ public class PasswordAuthenticateCommandRequire {
 	private AccountLockPolicyRepository accountLockPolicyRepo;
 	
 	@Inject
-	private PasswordChangeLogRepository passwordChangeLogRepo;
+	private LoginPasswordOfUserRepository passwordChangeLogRepo;
 	
 	
 	public Require createRequire(String tenantCode) {
@@ -119,7 +119,7 @@ public class PasswordAuthenticateCommandRequire {
 		}
 
 		@Override
-		public PasswordChangeLog getPasswordChangeLog(String userId) {
+		public LoginPasswordOfUser getPasswordChangeLog(String userId) {
 			return passwordChangeLogRepo.find(userId);
 		}
 

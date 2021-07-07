@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUser;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.complexity.PasswordComplexityRequirement;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
 import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
@@ -133,6 +133,6 @@ public class PasswordPolicy extends AggregateRoot {
 	
 	public static interface ValidateOnLoginRequire {
 		
-		PasswordChangeLog getPasswordChangeLog(String userId);
+		LoginPasswordOfUser getPasswordChangeLog(String userId);
 	}
 }

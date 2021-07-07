@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog;
+package nts.uk.ctx.sys.gateway.dom.login.password.userpassword;
 
 import lombok.Value;
 

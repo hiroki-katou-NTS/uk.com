@@ -10,13 +10,15 @@ import lombok.val;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUser;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.PasswordChangeLogDetail;
 
 public class PasswordChangeLogTest {
 
 	@Test
 	public void latestLog() {
 		
-		val target = new PasswordChangeLog("user", Arrays.asList(
+		val target = new LoginPasswordOfUser("user", Arrays.asList(
 				changedAt(GeneralDate.ymd(2000, 1, 1)),
 				changedAt(GeneralDate.ymd(2020, 4, 1)),
 				changedAt(GeneralDate.ymd(1998, 9, 8))));
@@ -28,7 +30,7 @@ public class PasswordChangeLogTest {
 	@Test
 	public void getter() {
 
-		val target = PasswordChangeLog.firstPassword("user", "hash");
+		val target = LoginPasswordOfUser.firstPassword("user", "hash");
 		NtsAssert.invokeGetters(target);
 	}
 

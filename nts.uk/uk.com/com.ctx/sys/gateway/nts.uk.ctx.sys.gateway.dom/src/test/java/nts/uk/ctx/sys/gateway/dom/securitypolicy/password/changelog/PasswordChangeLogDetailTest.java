@@ -8,6 +8,7 @@ import lombok.val;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.PasswordChangeLogDetail;
 
 public class PasswordChangeLogDetailTest {
 

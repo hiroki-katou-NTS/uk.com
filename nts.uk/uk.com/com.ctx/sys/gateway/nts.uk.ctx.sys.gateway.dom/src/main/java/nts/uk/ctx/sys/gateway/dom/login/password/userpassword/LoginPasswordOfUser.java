@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog;
+package nts.uk.ctx.sys.gateway.dom.login.password.userpassword;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ import nts.arc.time.GeneralDateTime;
  */
 @RequiredArgsConstructor
 @Getter
-public class PasswordChangeLog implements DomainAggregate {
+public class LoginPasswordOfUser implements DomainAggregate {
 
 	/** ユーザID */
 	private final String userId;
@@ -30,9 +30,9 @@ public class PasswordChangeLog implements DomainAggregate {
 	 * @param hashedPassword
 	 * @return
 	 */
-	public static PasswordChangeLog firstPassword(String userId, String hashedPassword) {
+	public static LoginPasswordOfUser firstPassword(String userId, String hashedPassword) {
 		
-		val log = new PasswordChangeLog(userId, new ArrayList<>());
+		val log = new LoginPasswordOfUser(userId, new ArrayList<>());
 		log.add(new PasswordChangeLogDetail(GeneralDateTime.now(), hashedPassword));
 		
 		return log;
