@@ -1818,7 +1818,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                             });
                                         }
 
-                                        ko.applyBindingsToNode(dpker, { ntsDatePicker: { value, startDate, endDate } }, vm);
+                                        ko.applyBindingsToNode(dpker, { ntsDatePicker: { name:vm.$i18n('KDW013_8') ,value, startDate, endDate } }, vm);
                                     }
 
                                     const setting = $('.fc-settings-button').get(0);
