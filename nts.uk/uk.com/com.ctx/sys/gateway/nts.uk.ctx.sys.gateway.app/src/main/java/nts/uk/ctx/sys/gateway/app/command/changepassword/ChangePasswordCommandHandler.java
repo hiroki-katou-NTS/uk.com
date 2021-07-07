@@ -9,13 +9,9 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import lombok.val;
-import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.TransactionService;
-import nts.gul.text.StringUtil;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.CheckBeforeChangePass;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.ChangeLoginPasswordOfUser;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -27,7 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class ChangePasswordCommandHandler extends CommandHandler<ChangePasswordCommand> {
 	
 	@Inject
-	private ForgotPasswordCommandRequire requireProvider;
+	private ChangePasswordCommandRequire requireProvider;
 	
 	@Inject
 	private TransactionService transaction;
