@@ -56,9 +56,10 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
      * @param context the context
      */
     @Override //振り分け処理
-    protected void handle(CommandHandlerContext<ScheduleExecuteCommand> context) {
+	protected void handle(CommandHandlerContext<ScheduleExecuteCommand> context) {
         ScheduleExecuteCommand command = context.getCommand();
         String companyId = command.getCompanyId();
+        String companyCd = command.getCompanyCd();
         String execItemCd = command.getExecItemCd();
         GeneralDateTime nextDate = command.getNextDate();
         // Step 1: RQ580「会社の廃止をチェックする」を実行する
@@ -82,7 +83,7 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
         String execItemId = IdentifierUtil.randomUniqueId();
         // Step 4: 利用停止をチェックする
         String contractCode = AppContexts.user().contractCode();
-        UsageStopOutputImport isSuspension = this.stopBycompanyAdapter.checkUsageStop(contractCode, companyId);
+        UsageStopOutputImport isSuspension = this.stopBycompanyAdapter.checkUsageStop(contractCode, companyCd);
         if (isSuspension.isUsageStop()) {
             // case 利用停止する
             // Step 前回の更新処理が実行中の登録処理

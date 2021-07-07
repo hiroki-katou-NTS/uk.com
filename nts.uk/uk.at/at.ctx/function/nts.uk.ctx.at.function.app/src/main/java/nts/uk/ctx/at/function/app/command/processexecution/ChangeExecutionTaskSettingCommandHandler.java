@@ -77,6 +77,7 @@ public class ChangeExecutionTaskSettingCommandHandler
 				ScheduledJobUserData scheduletimeData = new ScheduledJobUserData();
 				scheduletimeData.put("companyId", AppContexts.user().companyId());
 				scheduletimeData.put("execItemCd", command.getExecItemCd());
+				scheduletimeData.put("companyCd", AppContexts.user().companyCode());
 
 				Map<CronType, UkJobScheduleOptions> optionsList = cronList.entrySet().stream()
 						.filter(e -> CronExpression.isValidExpression(e.getValue().getCronExpressions().get(0)))

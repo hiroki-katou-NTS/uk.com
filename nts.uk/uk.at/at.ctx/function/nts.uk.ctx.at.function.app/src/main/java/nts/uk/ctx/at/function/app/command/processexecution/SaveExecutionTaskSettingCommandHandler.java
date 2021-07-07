@@ -30,6 +30,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 //import nts.arc.primitive.TimeAsMinutesPrimitiveValue;
 import nts.arc.task.schedule.cron.CronSchedule;
 import nts.arc.task.schedule.job.jobdata.ScheduledJobUserData;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionTaskSettingDto;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionService;
@@ -47,7 +48,6 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.OneDayRepea
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.RepeatContentItem;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.EndTime;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.OneDayRepeatIntervalDetail;
-import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.StartTime;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.task.schedule.UkJobScheduleOptions;
 import nts.uk.shr.com.task.schedule.UkJobScheduler;
@@ -116,6 +116,7 @@ public class SaveExecutionTaskSettingCommandHandler
 		val scheduletimeData = new ScheduledJobUserData();
 		scheduletimeData.put("companyId", companyId);
 		scheduletimeData.put("execItemCd", command.getExecItemCd());
+		scheduletimeData.put("companyCd", AppContexts.user().companyCode());
 		
 		//Revalidate all cron expression and filter out invalid ones
 		Map<CronType, UkJobScheduleOptions> optionsList = lstcron.entrySet().stream()
