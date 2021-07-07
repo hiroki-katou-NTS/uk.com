@@ -108,7 +108,7 @@ module nts.uk.at.kdp003.a {
 
 			vm.$ajax('at', API.NOW)
 				.then((c) => {
-					const date = moment(c, 'YYYY-MM-DDTHH:mm:ss.zzzZ').toDate();
+					const date = moment(c, 'YYYY-MM-DDTHH:mm:ss').toDate();
 
 					vm.employeeData.baseDate(date);
 				});
