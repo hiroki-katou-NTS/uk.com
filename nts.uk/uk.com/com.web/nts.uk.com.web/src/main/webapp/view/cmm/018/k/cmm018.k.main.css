@@ -11,16 +11,12 @@
 	padding-top: 25px;
 }
 
-<<<<<<< HEAD
-#swap-list-gridArea2, #swap-list-grid2_displayContainer, #swap-list-grid2_scrollContainer, #swap-list-grid2_container{
-	height:160px !important;
-=======
-.approverSelect {
-	margin-top: 5px;
-}
+/*#swap-list-gridArea2, #swap-list-grid2_displayContainer, #swap-list-grid2_scrollContainer, #swap-list-grid2_container {*/
+/*	height: 160px !important;*/
+/*}*/
+
 #swap-list-gridArea2, #swap-list-grid2_displayContainer, #swap-list-grid2_scrollContainer {
 	height: 123px !important;
->>>>>>> uk/release_bug/main
 }
 
 #swap-list-grid2_container {
@@ -101,7 +97,6 @@ html{
 	margin-left: 23px !important;
 }
 
-<<<<<<< HEAD
 .top-16 {
 	margin-top: -16px;
 }
@@ -114,16 +109,16 @@ html{
 	position: absolute !important;
 	margin-left: 50px;
 	top: 120px;
-=======
-#swap-list-grid1_container {
-	height: 270px !important;
 }
 
+/*#swap-list-grid1_container {*/
+/*	height: 270px !important;*/
+/*}*/
+
 #swap-list-grid1_displayContainer, #swap-list-grid1_scrollContainer {
-	height: 246px !important;
+	border-bottom: 1px solid #eae8f2 !important;
 }
 
 #single-tree-grid-tree-grid_displayContainer, #single-tree-grid-tree-grid_scrollContainer {
-	height: 292px !important;
->>>>>>> uk/release_bug/main
+	height: 290px !important;
 }
