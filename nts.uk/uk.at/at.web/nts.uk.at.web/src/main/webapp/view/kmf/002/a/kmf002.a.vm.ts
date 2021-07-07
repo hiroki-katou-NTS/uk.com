@@ -10,7 +10,7 @@ module nts.uk.com.view.cmf003.i {
   @bean()
   export class ScreenModel extends ko.ViewModel {
     
-    managePublicHoliday: KnockoutObservable<number> = ko.observable(null);
+    managePublicHoliday: KnockoutObservable<number> = ko.observable(0);
     publicHdCarryOverDeadline: KnockoutObservable<number> = ko.observable(null);
     carryOverNumberOfPublicHdIsNegative: KnockoutObservable<number> = ko.observable(0);
     publicHolidayPeriod: KnockoutObservable<number> = ko.observable(null);
@@ -34,12 +34,13 @@ module nts.uk.com.view.cmf003.i {
       const vm = this;
       vm.$blockui("grayout");
       vm.getAllData().always(() => vm.$blockui("clear"));
-
+     
       //Init enum
       const enums = (__viewContext as any).enums;
       vm.companyManageClassification(_.reverse(enums.ManagementDistinction));
       vm.lstCarryOverDeadline(enums.PublicHolidayCarryOverDeadline);
       vm.lstManagementPeriod(enums.PublicHolidayPeriod);
+       $("#managePubHDDiv").focus();
     }
 
     private getAllData(): JQueryPromise<any> {

@@ -11,3 +11,7 @@
 #content-table tr {
 	border: 1px solid black;
 }
+
+#multi-list_scrollContainer {
+	overflow: hidden !important;
+}

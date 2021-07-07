@@ -365,16 +365,42 @@ module nts.uk.at.view {
             showYourDesire: number;//希望を表示するか、 (1:true,0:false)
             workAvaiOfOneDayDto: WorkAvailabilityOfOneDayDto;//一日分の勤務希望の表示情報
             workStyle : number;//Optional<出勤休日区分>
+			workTypeSettingName : WorkTypeSettingNameDto;
+			workTimeSettingName : WorkTimeSettingNameDto;
             constructor(workTimezoneCommonSet: commonKmk003.WorkTimezoneCommonSetDto,
                 listUsageTimeAndType: Array<UsageTimeAndType>,
                 showYourDesire: number,
                 workAvaiOfOneDayDto: WorkAvailabilityOfOneDayDto,
-                workStyle : number) {
+                workStyle : number,
+				workTypeSettingName : WorkTypeSettingNameDto,
+				workTimeSettingName : workTimeSettingName) {
                 this.workTimezoneCommonSet = workTimezoneCommonSet;
                 this.listUsageTimeAndType = listUsageTimeAndType;
                 this.showYourDesire = showYourDesire;
                 this.workAvaiOfOneDayDto = workAvaiOfOneDayDto;
                 this.workStyle = workStyle;
+				this.workTypeSettingName = workTypeSettingName;
+				this.workTimeSettingName = workTimeSettingName;
+            }
+        }
+		//Optional<勤務種類>
+		export class WorkTypeSettingNameDto {
+            workTypeName: string; //名称
+            workTypeAbName: string;//略名
+            constructor(workTypeName: string,
+                workTypeAbName: string) {
+                this.workTypeName = workTypeName;
+                this.workTypeAbName = workTypeAbName;
+            }
+        }
+		//Optional<就業時間帯の設定>
+		export class WorkTimeSettingNameDto {
+            workTimeName: string; //名称
+            workTimeAbName: string;//略名
+            constructor(workTimeName: string,
+                workTypeAbName: string) {
+                this.workTimeName = workTimeName;
+                this.workTimeAbName = workTimeAbName;
             }
         }
 
