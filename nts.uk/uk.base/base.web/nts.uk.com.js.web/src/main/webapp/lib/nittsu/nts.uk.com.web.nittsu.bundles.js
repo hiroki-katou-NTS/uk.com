@@ -569,7 +569,7 @@ var nts;
                         case 'Time':
                         case 'Clock':
                         case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
-                        case 'TimePoint': // ValidatorScriptではない。DynamicConstraintで使う？
+                        case 'TimePoint':// ValidatorScriptではない。DynamicConstraintで使う？
                             constraintText += (constraintText.length > 0) ? "/" : "";
                             constraintText += constraint.min + "～" + constraint.max;
                             break;
@@ -1893,12 +1893,9 @@ var nts;
 })(nts || (nts = {}));
 /// <reference path="reference.ts"/>
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -2692,7 +2689,6 @@ var nts;
                     milliseconds = (uk.util.isNullOrUndefined(milliseconds)) ? currentDate.getUTCMilliseconds() : milliseconds;
                     return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
                 }
-                // Return input time in UTC
                 else {
                     month = (uk.util.isNullOrUndefined(month)) ? 0 : month;
                     date = (uk.util.isNullOrUndefined(date)) ? 1 : date;
@@ -6206,11 +6202,9 @@ var nts;
                         if (uk.util.isNullOrUndefined(data)) {
                             transferData = data;
                         }
-                        // Data or KO data
                         else if (!_.isFunction(data) || ko.isObservable(data)) {
                             transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
                         }
-                        // Callback function
                         else {
                             transferData = data;
                         }
@@ -7166,6 +7160,8 @@ var nts;
                 var VERTICAL_SUM = "vert-sum";
                 var HORIZONTAL_SUM = "horz-sum";
                 var LEFT_HORZ_SUM = "left-horz-sum";
+                var RIGHT_HORZ_SUM = "right-horz-sum";
+                var DETAIL_HORZ_SCROLL = "detail-horz-scroll";
                 var CRUD = "crud";
                 var ADD_ROW = "add-row";
                 var DEL_ROWS = "delete-rows";
@@ -7189,6 +7185,7 @@ var nts;
                         this.updateMode = EDIT;
                         this.pasteOverWrite = true;
                         this.stickOverWrite = true;
+                        this.columnVirtualization = false;
                         this.overflowTooltipOn = false;
                         this.$container = $container[0];
                         this.$commander = options.primaryTable ? options.primaryTable[0] : null;
@@ -7214,6 +7211,7 @@ var nts;
                         this.pasteOverWrite = options.pasteOverWrite;
                         this.stickOverWrite = options.stickOverWrite;
                         this.viewMode = options.viewMode;
+                        this.columnVirtualization = options.columnVirtualization;
                         this.overflowTooltipOn = !uk.util.isNullOrUndefined(options.showTooltipIfOverflow)
                             ? options.showTooltipIfOverflow : false;
                         this.determination = options.determination;
@@ -7269,6 +7267,7 @@ var nts;
                         this.setBodyClass(this.detailContent, DETAIL);
                         this.detailContent.updateMode = this.updateMode;
                         this.detailContent.viewMode = this.viewMode;
+                        this.detailContent.columnVirtualization = this.columnVirtualization;
                         return this;
                     };
                     ExTable.prototype.VerticalSumHeader = function (verticalSumHeader) {
@@ -7299,6 +7298,16 @@ var nts;
                     ExTable.prototype.HorizontalSumContent = function (horizontalSumContent) {
                         this.horizontalSumContent = this.optionsCloned ? _.cloneDeep(horizontalSumContent) : horizontalSumContent;
                         this.setBodyClass(this.horizontalSumContent, HORIZONTAL_SUM);
+                        return this;
+                    };
+                    ExTable.prototype.RightHorzSumHeader = function (rightHorzSumHeader) {
+                        this.rightHorzSumHeader = this.optionsCloned ? _.cloneDeep(rightHorzSumHeader) : rightHorzSumHeader;
+                        this.setHeaderClass(this.rightHorzSumHeader, RIGHT_HORZ_SUM);
+                        return this;
+                    };
+                    ExTable.prototype.RightHorzSumContent = function (rightHorzSumContent) {
+                        this.rightHorzSumContent = this.optionsCloned ? _.cloneDeep(rightHorzSumContent) : rightHorzSumContent;
+                        this.setBodyClass(this.rightHorzSumContent, RIGHT_HORZ_SUM);
                         return this;
                     };
                     ExTable.prototype.setHeaderClass = function (options, part) {
@@ -7359,7 +7368,7 @@ var nts;
                             } };
                         var scrollWidth = helper.getScrollWidth();
                         var headerWrappers = [], bodyWrappers = [];
-                        var $frag = document.createDocumentFragment(), $detailHeader, $detailBody;
+                        var $frag = document.createDocumentFragment(), $detailHeader, $detailBody, $vertSumHeader;
                         for (var i = 0; i < self.headers.length; i++) {
                             if (!uk.util.isNullOrUndefined(self.headers[i])) {
                                 self.headers[i].overflow = "hidden";
@@ -7381,6 +7390,9 @@ var nts;
                                 headerWrappers.push($headerWrapper);
                                 if (self.headers[i].containerClass === HEADER_PRF + DETAIL) {
                                     $detailHeader = $headerWrapper;
+                                }
+                                else if (self.headers[i].containerClass === HEADER_PRF + VERTICAL_SUM) {
+                                    $vertSumHeader = $headerWrapper;
                                 }
                             }
                         }
@@ -7431,7 +7443,7 @@ var nts;
                                 }
                             }
                         }
-                        self.createHorzSums(pTable, $detailHeader, $detailBody, $frag);
+                        self.createHorzSums(pTable, $detailHeader, $detailBody, $vertSumHeader, $frag);
                         self.setupCrudArea();
                         self.$container.appendChild($frag);
                         self.generalSettings(headerWrappers, bodyWrappers);
@@ -7439,7 +7451,7 @@ var nts;
                     /**
                      * Create horizontal sums.
                      */
-                    ExTable.prototype.createHorzSums = function (table, $detailHeader, $detailContent, $frag) {
+                    ExTable.prototype.createHorzSums = function (table, $detailHeader, $detailContent, $vertSumHeader, $frag) {
                         var self = this;
                         //            let $detailHeader = self.$container.querySelector("." + HEADER_PRF + DETAIL);
                         //            let $detailContent = self.$container.querySelector("." + BODY_PRF + DETAIL);
@@ -7447,7 +7459,8 @@ var nts;
                         var bodyTop = headerTop + parseFloat(self.horzSumHeaderHeight) + DISTANCE + "px";
                         var sumPosLeft = $detailHeader.style.left;
                         var leftHorzWidth = parseInt(sumPosLeft) - DISTANCE;
-                        var $leftSumHeaderWrapper, $leftSumContentWrapper, $sumHeaderWrapper, $sumContentWrapper;
+                        var $leftSumHeaderWrapper, $leftSumContentWrapper, $sumHeaderWrapper, $sumContentWrapper, $rightSumHeaderWrapper, $rightSumContentWrapper;
+                        var rightHorzSumShown = !!$vertSumHeader && !!self.rightHorzSumHeader && !!self.rightHorzSumContent;
                         // Items summary
                         if (self.leftHorzSumHeader) {
                             self.leftHorzSumHeader.height = self.horzSumHeaderHeight;
@@ -7494,12 +7507,67 @@ var nts;
                             self.horizontalSumContent.width = horzSumWidth + "px";
                             $sumContentWrapper = render.createWrapper(bodyTop, sumPosLeft, self.horizontalSumContent);
                             table.owner.bodies.push($sumContentWrapper);
-                            self.horizontalSumContent.overflow = "scroll";
+                            if (rightHorzSumShown) {
+                                self.horizontalSumContent.overflowX = "scroll";
+                                self.horizontalSumContent.overflowY = "hidden";
+                            }
+                            else {
+                                self.horizontalSumContent.overflow = "scroll";
+                            }
                             $frag.appendChild($sumContentWrapper);
                             render.process($sumContentWrapper, self.horizontalSumContent, false, self.$container);
                             scroll.syncHorizontalScroll($leftSumHeaderWrapper, $leftSumContentWrapper);
-                            scroll.syncDoubDirVerticalScrolls([$leftSumContentWrapper, $sumContentWrapper]);
-                            scroll.bindVertWheel($sumContentWrapper, true);
+                            if (!rightHorzSumShown) {
+                                scroll.syncDoubDirVerticalScrolls([$leftSumContentWrapper, $sumContentWrapper]);
+                            }
+                            scroll.bindVertWheel($sumContentWrapper, !rightHorzSumShown);
+                        }
+                        if (rightHorzSumShown) {
+                            self.rightHorzSumHeader.height = self.horzSumHeaderHeight;
+                            self.rightHorzSumHeader.width = $vertSumHeader.style.width;
+                            self.rightHorzSumHeader.overflow = "hidden";
+                            self.rightHorzSumHeader.isHeader = true;
+                            $rightSumHeaderWrapper = render.createWrapper(headerTop + "px", $vertSumHeader.style.left, self.rightHorzSumHeader);
+                            table.owner.headers.push($rightSumHeaderWrapper);
+                            $rightSumHeaderWrapper.classList.add(HEADER);
+                            $frag.appendChild($rightSumHeaderWrapper);
+                            render.process($rightSumHeaderWrapper, self.rightHorzSumHeader, false, self.$container);
+                            self.rightHorzSumContent.rowHeight = self.horzSumBodyRowHeight;
+                            self.rightHorzSumContent.height = parseFloat(self.horzSumBodyHeight) + helper.getScrollWidth() + "px";
+                            var rightHorzSumWidth = parseFloat($vertSumHeader.style.width) + helper.getScrollWidth();
+                            self.rightHorzSumContent.width = rightHorzSumWidth + "px";
+                            $rightSumContentWrapper = render.createWrapper(bodyTop, $vertSumHeader.style.left, self.rightHorzSumContent);
+                            table.owner.bodies.push($rightSumContentWrapper);
+                            self.rightHorzSumContent.overflow = "scroll";
+                            $frag.appendChild($rightSumContentWrapper);
+                            render.process($rightSumContentWrapper, self.rightHorzSumContent, false, self.$container);
+                            scroll.syncDoubDirVerticalScrolls([$leftSumContentWrapper, $sumContentWrapper, $rightSumContentWrapper]);
+                            scroll.bindVertWheel($rightSumContentWrapper, true);
+                        }
+                        var $contentHorzScroll;
+                        if (self.columnVirtualization) {
+                            var contentHorzScrollOptions = {
+                                containerClass: BODY_PRF + DETAIL_HORZ_SCROLL,
+                                height: helper.getScrollWidth() + "px",
+                                width: $detailContent.style.width
+                            };
+                            var top_1 = parseFloat($detailContent.style.top) + parseFloat($detailContent.style.height);
+                            $contentHorzScroll = render.createWrapper(top_1 + "px", $detailContent.style.left, contentHorzScrollOptions);
+                            $contentHorzScroll.style.overflowX = "scroll";
+                            if ($vertSumHeader) {
+                                $contentHorzScroll.style.overflowY = "hidden";
+                            }
+                            else {
+                                $contentHorzScroll.style.overflowY = "scroll";
+                            }
+                            var $scrollContent = document.createElement("div");
+                            var $detailContentTbl = $detailContent.querySelector("." + (BODY_TBL_PRF + DETAIL));
+                            var contentWidth = Array.prototype.slice.call($detailContentTbl.querySelectorAll("col"))
+                                .reduce(function (width, col) { return width + parseFloat(col.style.width); }, 0);
+                            $scrollContent.style.width = contentWidth + "px";
+                            $scrollContent.style.height = "1px";
+                            $contentHorzScroll.appendChild($scrollContent);
+                            $frag.appendChild($contentHorzScroll);
                         }
                         if (self.$commander) {
                             self.$commander.addXEventListener(events.MOUSEIN_COLUMN, function (evt) {
@@ -7519,7 +7587,7 @@ var nts;
                         else if (self.$follower) {
                         }
                         else {
-                            scroll.syncDoubDirHorizontalScrolls([$detailHeader, $detailContent, $sumHeaderWrapper, $sumContentWrapper]);
+                            scroll.syncDoubDirHorizontalScrolls([$detailHeader, $detailContent, $sumHeaderWrapper, $sumContentWrapper, $contentHorzScroll]);
                         }
                     };
                     /**
@@ -7795,7 +7863,12 @@ var nts;
                         $container.appendChild($table);
                         var $tbody = $table.getElementsByTagName("tbody")[0];
                         if (!isUpdate) {
-                            $container.style.height = options.height;
+                            if (options.columnVirtualization) {
+                                $container.style.height = parseFloat(options.height) - helper.getScrollWidth() + "px";
+                            }
+                            else {
+                                $container.style.height = options.height;
+                            }
                             $container.style.width = options.width;
                         }
                         if (!uk.util.isNullOrUndefined(options.overflow))
@@ -7803,6 +7876,9 @@ var nts;
                         else if (!uk.util.isNullOrUndefined(options.overflowX) && !uk.util.isNullOrUndefined(options.overflowY)) {
                             $container.style.overflowX = options.overflowX;
                             $container.style.overflowY = options.overflowY;
+                        }
+                        if (options.columnVirtualization) {
+                            $container.style.overflowX = "hidden";
                         }
                         var $colGroup = document.createElement("colgroup");
                         $table.insertBefore($colGroup, $tbody);
@@ -8195,7 +8271,8 @@ var nts;
                                 var bodies = extable.owner.bodies;
                                 for (var i = 0; i < bodies.length; i++) {
                                     if (!helper.hasClass(bodies[i], BODY_PRF + LEFT_HORZ_SUM)
-                                        && !helper.hasClass(bodies[i], BODY_PRF + HORIZONTAL_SUM)) {
+                                        && !helper.hasClass(bodies[i], BODY_PRF + HORIZONTAL_SUM)
+                                        && !helper.hasClass(bodies[i], BODY_PRF + RIGHT_HORZ_SUM)) {
                                         var rowElm = bodies[i].getElementsByTagName("tr")[rowIndex];
                                         if (rowElm) {
                                             helper.addClass1n(rowElm.getElementsByTagName("td"), render.HIGHLIGHT_CLS);
@@ -8322,12 +8399,15 @@ var nts;
                                             return;
                                         helper.addClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
                                     });
-                                    var bodies = extable_1.owner.bodies, leftHorzSumBody = bodies.filter(function (b) { return helper.hasClass(b, BODY_PRF + LEFT_HORZ_SUM); })[0];
-                                    if (leftHorzSumBody) {
-                                        var rowElm = leftHorzSumBody.querySelector("tr:nth-of-type(" + (rowIndex + 1) + ")");
-                                        if (rowElm) {
-                                            helper.addClass1n(rowElm.children, render.HIGHLIGHT_CLS);
-                                        }
+                                    var bodies = extable_1.owner.bodies, leftRightHorzSumBody = bodies.filter(function (b) { return helper.hasClass(b, BODY_PRF + LEFT_HORZ_SUM)
+                                        || helper.hasClass(b, BODY_PRF + RIGHT_HORZ_SUM); });
+                                    if (leftRightHorzSumBody.length > 0) {
+                                        leftRightHorzSumBody.forEach(function (b) {
+                                            var rowElm = b.querySelector("tr:nth-of-type(" + (rowIndex + 1) + ")");
+                                            if (rowElm) {
+                                                helper.addClass1n(rowElm.children, render.HIGHLIGHT_CLS);
+                                            }
+                                        });
                                     }
                                     _.forEach(targetHeader.getElementsByTagName("tr"), function (t) {
                                         var tds = t.getElementsByTagName("td");
@@ -8374,12 +8454,15 @@ var nts;
                                             return;
                                         helper.removeClass1n(tds[colIndex], render.HIGHLIGHT_CLS);
                                     });
-                                    var bodies = extable_1.owner.bodies, leftHorzSumBody = bodies.filter(function (b) { return helper.hasClass(b, BODY_PRF + LEFT_HORZ_SUM); })[0];
-                                    if (leftHorzSumBody) {
-                                        var rowElm = leftHorzSumBody.querySelector("tr:nth-of-type(" + (rowIndex + 1) + ")");
-                                        if (rowElm) {
-                                            helper.removeClass1n(rowElm.children, render.HIGHLIGHT_CLS);
-                                        }
+                                    var bodies = extable_1.owner.bodies, leftRightHorzSumBody = bodies.filter(function (b) { return helper.hasClass(b, BODY_PRF + LEFT_HORZ_SUM)
+                                        || helper.hasClass(b, BODY_PRF + RIGHT_HORZ_SUM); });
+                                    if (leftRightHorzSumBody.length > 0) {
+                                        leftRightHorzSumBody.forEach(function (b) {
+                                            var rowElm = b.querySelector("tr:nth-of-type(" + (rowIndex + 1) + ")");
+                                            if (rowElm) {
+                                                helper.removeClass1n(rowElm.children, render.HIGHLIGHT_CLS);
+                                            }
+                                        });
                                     }
                                     _.forEach(targetHeader.getElementsByTagName("tr"), function (t) {
                                         var tds = t.getElementsByTagName("td");
@@ -8555,6 +8638,10 @@ var nts;
                         else if (options.containerClass === BODY_PRF + LEFTMOST) {
                             style = wrapperStyles(top, left, options.width, options.height);
                             style.borderBottom = "solid 1px #ABB7B8";
+                        }
+                        else if (options.containerClass === BODY_PRF + DETAIL_HORZ_SCROLL) {
+                            style = wrapperStyles(top, left, options.width, options.height);
+                            style.borderTop = "solid 1px #FFF";
                         }
                         else {
                             style = wrapperStyles(top, left, options.width, options.height);
@@ -9359,7 +9446,7 @@ var nts;
                                         else
                                             helper.addClass($childCells, makeup.class);
                                     }
-                                    else if (makeup.textColor) { // Don't set textColor
+                                    else if (makeup.textColor) {
                                         $cell.style.color = makeup.textColor;
                                     }
                                     else {
@@ -9674,7 +9761,7 @@ var nts;
                         var $grid = $exTable.querySelector("." + BODY_PRF + DETAIL);
                         var $body = !land ? $grid : helper.getTable($exTable, land);
                         var exTable = $.data($exTable, NAMESPACE);
-                        if (!forced && ( /*errors.occurred($exTable) ||*/selector.is($cell, "." + style.DET_CLS)
+                        if (!forced && (selector.is($cell, "." + style.DET_CLS)
                             || (land === BODY_PRF + DETAIL && exTable.detailContent.banEmptyInput
                                 && exTable.detailContent.banEmptyInput.some(function (m) { return m === exTable.viewMode; })
                                 && $cell.textContent === "")
@@ -9805,7 +9892,7 @@ var nts;
                                     $grid_1 = $exTable.querySelector("." + land);
                                 }
                                 var editor_1 = $.data($exTable, update.EDITOR);
-                                if ( /*errors.occurred($exTable) ||*/!editor_1)
+                                if (!editor_1)
                                     return;
                                 var visibleColumns = helper.getVisibleColumnsOn(!editor_1.land ? helper.getMainTable($exTable) : helper.getTable($exTable, editor_1.land));
                                 var columnDf_2;
@@ -10425,8 +10512,7 @@ var nts;
                         var exTable = $.data($exTable, NAMESPACE);
                         var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
                         var pk = helper.getPrimaryKey($grid), pkVal = gen.dataSource[rowIdx][pk];
-                        if (!gen || helper.isDetCell($grid, rowIdx, columnKey)
-                        /*|| helper.isXCell($grid, pkVal, columnKey, style.HIDDEN_CLS, style.SEAL_CLS)*/ )
+                        if (!gen || helper.isDetCell($grid, rowIdx, columnKey))
                             return;
                         var cData = gen.dataSource[rowIdx][columnKey];
                         var opt = gen.options, fieldArr = opt.view(opt.viewMode), sticker = $.data($grid, internal.STICKER);
@@ -10493,8 +10579,7 @@ var nts;
                         _.assignInWith(gen.dataSource[rowIdx], clonedData, function (objVal, srcVal, key, obj, src) {
                             if ((!exTable.stickOverWrite
                                 && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, objVal)))
-                                || helper.isDetCell($grid, rowIdx, key)
-                            /*|| helper.isXCell($grid, gen.dataSource[rowIdx][pk], key, style.HIDDEN_CLS, style.SEAL_CLS)*/ ) {
+                                || helper.isDetCell($grid, rowIdx, key)) {
                                 src[key] = objVal;
                                 delete origData[key];
                                 return objVal;
@@ -10927,8 +11012,7 @@ var nts;
                                 var cell = selectedCells[0];
                                 var ds = internal.getDataSource(self.$grid);
                                 var pk = helper.getPrimaryKey(self.$grid);
-                                if ( /*helper.isDetCell(self.$grid, cell.rowIndex, cell.columnKey)
-                                    ||*/helper.isXCell(self.$grid, ds[cell.rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/))
+                                if (helper.isXCell(self.$grid, ds[cell.rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/))
                                     return;
                                 this.mode = Mode.SINGLE;
                                 copiedData += _.isObject(selectedCells[0].value) ? JSON.stringify(selectedCells[0].value) : selectedCells[0].value;
@@ -10974,8 +11058,7 @@ var nts;
                                 }
                                 var ds = internal.getDataSource(self.$grid);
                                 var pk = helper.getPrimaryKey(self.$grid);
-                                if ( /*helper.isDetCell(self.$grid, rowIndex, cell.columnKey)
-                                    ||*/helper.isXCell(self.$grid, ds[rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/)) {
+                                if (helper.isXCell(self.$grid, ds[rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/)) {
                                     structure[rowIndex][columnIndex] = undefined;
                                 }
                                 else
@@ -12787,21 +12870,39 @@ var nts;
                         var height = window.innerHeight - parseInt($.data($container, internal.Y_OCCUPY)) - 100;
                         var $horzSumHeader, $horzSumBody, decreaseAmt;
                         wrappers = wrappers || selector.queryAll($container, "div[class*='" + BODY_PRF + "']").filter(function (e) {
-                            return !e.classList.contains(BODY_PRF + HORIZONTAL_SUM) && !e.classList.contains(BODY_PRF + LEFT_HORZ_SUM);
+                            return !e.classList.contains(BODY_PRF + HORIZONTAL_SUM) && !e.classList.contains(BODY_PRF + LEFT_HORZ_SUM)
+                                && !e.classList.contains(BODY_PRF + RIGHT_HORZ_SUM) && !e.classList.contains(BODY_PRF + DETAIL_HORZ_SCROLL);
                         });
+                        var $detailHorzScroll = $container.querySelector("." + (BODY_PRF + DETAIL_HORZ_SCROLL));
                         if (horzSumExists) {
                             $horzSumHeader = $container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM);
                             $horzSumBody = $container.querySelector("." + BODY_PRF + HORIZONTAL_SUM);
-                            decreaseAmt = parseFloat($horzSumHeader.style.height) + parseFloat($horzSumBody.style.height) + DISTANCE + SPACE;
-                            height -= decreaseAmt;
+                            if ($horzSumHeader.style.display !== "none") {
+                                decreaseAmt = parseFloat($horzSumHeader.style.height) + parseFloat($horzSumBody.style.height) + DISTANCE + SPACE;
+                                height -= decreaseAmt;
+                            }
                         }
+                        if (height <= 0)
+                            return;
                         _.forEach(wrappers, function ($wrapper) {
                             if (($wrapper.style.overflowX && $wrapper.style.overflowX === "scroll")
-                                || ($wrapper.style.overflow && $wrapper.style.overflow === "scroll")) {
-                                $wrapper.style.height = height + "px";
+                                || ($wrapper.style.overflow && $wrapper.style.overflow === "scroll")
+                                || ($wrapper.style.overflow && $wrapper.style.overflow === "hidden scroll")) {
+                                if ($wrapper.classList.contains(BODY_PRF + DETAIL) && $detailHorzScroll) {
+                                    var detailHeight = height - helper.getScrollWidth();
+                                    $wrapper.style.height = detailHeight + "px";
+                                    $detailHorzScroll.style.top = parseFloat($wrapper.style.top) + detailHeight + "px";
+                                }
+                                else {
+                                    $wrapper.style.height = height + "px";
+                                }
                             }
                             else {
-                                $wrapper.style.height = (height - helper.getScrollWidth()) + "px";
+                                var detailHeight = height - helper.getScrollWidth();
+                                $wrapper.style.height = detailHeight + "px";
+                                if ($wrapper.classList.contains(BODY_PRF + DETAIL) && $detailHorzScroll) {
+                                    $detailHorzScroll.style.top = parseFloat($wrapper.style.top) + detailHeight + "px";
+                                }
                             }
                         });
                         if (horzSumExists) {
@@ -12837,6 +12938,9 @@ var nts;
                         var $middleBody = $container.querySelector("." + (BODY_PRF + MIDDLE));
                         var $horzSumHeader = $container.querySelector("." + (HEADER_PRF + HORIZONTAL_SUM));
                         var $horzSumContent = $container.querySelector("." + (BODY_PRF + HORIZONTAL_SUM));
+                        var $rightHorzSumHeader = $container.querySelector("." + (HEADER_PRF + RIGHT_HORZ_SUM));
+                        var $rightHorzSumContent = $container.querySelector("." + (BODY_PRF + RIGHT_HORZ_SUM));
+                        var $detailHorzScroll = $container.querySelector("." + (BODY_PRF + DETAIL_HORZ_SCROLL));
                         var detailOffsetLeft = parseFloat($detailHeader.style.left), //selector.offset($detailHeader).left, 
                         width = window.innerWidth - detailOffsetLeft;
                         var scrollWidth = helper.getScrollWidth();
@@ -12844,16 +12948,22 @@ var nts;
                         if (adjustMiddle === true && $middleHeader) {
                             var $leftHorzSumHeader = $container.querySelector("." + (HEADER_PRF + LEFT_HORZ_SUM));
                             var $leftHorzSumBody = $container.querySelector("." + (BODY_PRF + LEFT_HORZ_SUM));
-                            var leftHorzSumWidth = void 0, horzSumLeft = void 0, middleWidth = parseFloat($middleHeader.style.width); //$middleHeader.clientWidth;
+                            var leftHorzSumWidth = void 0, horzSumLeft = void 0, rightHorzSumLeft = void 0, middleWidth = parseFloat($middleHeader.style.width); //$middleHeader.clientWidth;
                             if ($middleHeader.style.display !== "none") {
                                 width -= middleWidth;
                                 oMiddleWidth = middleWidth;
                                 var newDetailLeft = detailOffsetLeft + middleWidth;
                                 $detailHeader.style.left = newDetailLeft + "px";
                                 $detailBody.style.left = newDetailLeft + "px";
+                                if ($detailHorzScroll) {
+                                    $detailHorzScroll.style.left = newDetailLeft + "px";
+                                }
                                 if ($leftHorzSumHeader) {
                                     leftHorzSumWidth = parseFloat($leftHorzSumHeader.style.width) + middleWidth;
                                     horzSumLeft = parseFloat($horzSumHeader.style.left) + middleWidth;
+                                    if ($rightHorzSumHeader) {
+                                        rightHorzSumLeft = parseFloat($rightHorzSumHeader.style.left) + middleWidth;
+                                    }
                                 }
                             }
                             else {
@@ -12861,9 +12971,15 @@ var nts;
                                 var newDetailLeft = detailOffsetLeft - middleWidth;
                                 $detailHeader.style.left = newDetailLeft + "px";
                                 $detailBody.style.left = newDetailLeft + "px";
+                                if ($detailHorzScroll) {
+                                    $detailHorzScroll.style.left = newDetailLeft + "px";
+                                }
                                 if ($leftHorzSumHeader) {
                                     leftHorzSumWidth = parseFloat($leftHorzSumHeader.style.width) - middleWidth;
                                     horzSumLeft = parseFloat($horzSumHeader.style.left) - middleWidth;
+                                    if ($rightHorzSumHeader) {
+                                        rightHorzSumLeft = parseFloat($rightHorzSumHeader.style.left) - middleWidth;
+                                    }
                                 }
                             }
                             if ($leftHorzSumHeader) {
@@ -12871,6 +12987,10 @@ var nts;
                                 $leftHorzSumBody.style.width = leftHorzSumWidth + "px";
                                 $horzSumHeader.style.left = horzSumLeft + "px";
                                 $horzSumContent.style.left = horzSumLeft + "px";
+                                if ($rightHorzSumHeader) {
+                                    $rightHorzSumHeader.style.left = rightHorzSumLeft + "px";
+                                    $rightHorzSumContent.style.left = rightHorzSumLeft + "px";
+                                }
                             }
                         }
                         if ($vertSumHeader && $vertSumHeader.style.display !== "none") {
@@ -12889,6 +13009,9 @@ var nts;
                             }
                             $detailHeader.style.width = width + "px";
                             $detailBody.style.width = width + "px";
+                            if ($detailHorzScroll) {
+                                $detailHorzScroll.style.width = width + "px";
+                            }
                             if (storage.area.getPartWidths($container).isPresent()) {
                                 storage.area.save($container, $.data($detailHeader, internal.EX_PART), width);
                             }
@@ -12896,9 +13019,14 @@ var nts;
                                 $horzSumHeader.style.width = width + "px";
                             }
                             if ($horzSumContent) {
-                                $horzSumContent.style.width = (width + helper.getScrollWidth()) + "px";
+                                var horzSumWidth = width + helper.getScrollWidth();
+                                if ($rightHorzSumHeader && ($rightHorzSumHeader.style.display !== "none"
+                                    || $horzSumHeader.style.display === "none")) {
+                                    horzSumWidth = width;
+                                }
+                                $horzSumContent.style.width = horzSumWidth + "px";
                             }
-                            repositionVertSum($container, $vertSumHeader, $vertSumContent);
+                            repositionVertSum($container, $vertSumHeader, $vertSumContent, $rightHorzSumHeader, $rightHorzSumContent);
                             syncDetailAreaLine($container, $detailHeader, $detailBody);
                             if ($sup) {
                                 var $supHeader = $sup.querySelector("." + HEADER_PRF + DETAIL);
@@ -12925,6 +13053,9 @@ var nts;
                             $container.style.width = parseFloat($leftmostHeader.style.width) + oMiddleWidth + width + 15 + "px";
                         }
                         $detailBody.style.width = width + "px";
+                        if ($detailHorzScroll) {
+                            $detailHorzScroll.style.width = width + "px";
+                        }
                         if (storage.area.getPartWidths($container).isPresent()) {
                             storage.area.save($container, $.data($detailHeader, internal.EX_PART), width);
                         }
@@ -12997,21 +13128,31 @@ var nts;
                     function repositionHorzSum($container, $horzSumHeader, $horzSumBody) {
                         $horzSumHeader = $horzSumHeader || $container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM);
                         $horzSumBody = $horzSumBody || $container.querySelector("." + BODY_PRF + HORIZONTAL_SUM);
+                        var $rightHorzSumHeader = $container.querySelector("." + (HEADER_PRF + RIGHT_HORZ_SUM));
+                        var $rightHorzSumContent = $container.querySelector("." + (BODY_PRF + RIGHT_HORZ_SUM));
                         if (!$horzSumHeader)
                             return;
                         var headerTop = parseFloat($container.querySelector("." + HEADER_PRF + DETAIL).style.height)
                             + parseFloat($container.querySelector("." + BODY_PRF + DETAIL).style.height) + DISTANCE + SPACE;
+                        var $detailHorzScroll = $container.querySelector("." + (BODY_PRF + DETAIL_HORZ_SCROLL));
+                        if ($detailHorzScroll) {
+                            headerTop += helper.getScrollWidth();
+                        }
                         var bodyTop = headerTop + DISTANCE + parseFloat($horzSumHeader.style.height);
                         $container.querySelector("." + HEADER_PRF + LEFT_HORZ_SUM).style.top = headerTop + "px";
                         $container.querySelector("." + BODY_PRF + LEFT_HORZ_SUM).style.top = bodyTop + "px";
                         $horzSumHeader.style.top = headerTop + "px";
                         $horzSumBody.style.top = bodyTop + "px";
+                        if ($rightHorzSumHeader && $rightHorzSumContent) {
+                            $rightHorzSumHeader.style.top = headerTop + "px";
+                            $rightHorzSumContent.style.top = bodyTop + "px";
+                        }
                     }
                     resize.repositionHorzSum = repositionHorzSum;
                     /**
                      * Reposition vertSum.
                      */
-                    function repositionVertSum($container, $vertSumHeader, $vertSumContent) {
+                    function repositionVertSum($container, $vertSumHeader, $vertSumContent, $rightHorzSumHeader, $rightHorzSumContent) {
                         $vertSumHeader = $vertSumHeader || $container.querySelector("." + HEADER_PRF + VERTICAL_SUM);
                         $vertSumContent = $vertSumContent || $container.querySelector("." + BODY_PRF + VERTICAL_SUM);
                         var $detailHeader = $container.querySelector("." + HEADER_PRF + DETAIL);
@@ -13019,6 +13160,10 @@ var nts;
                         var vertSumLeft = parseFloat(posLeft) + parseFloat($detailHeader.style.width) + DISTANCE;
                         $vertSumHeader.style.left = vertSumLeft + "px";
                         $vertSumContent.style.left = vertSumLeft + "px";
+                        if ($rightHorzSumHeader && $rightHorzSumContent) {
+                            $rightHorzSumHeader.style.left = vertSumLeft + "px";
+                            $rightHorzSumContent.style.left = vertSumLeft + "px";
+                        }
                     }
                     resize.repositionVertSum = repositionVertSum;
                     /**
@@ -13983,10 +14128,14 @@ var nts;
                                     if (!det) {
                                         det = {};
                                     }
+                                    var opt = gen.options;
+                                    if (!opt)
+                                        return;
                                     var xRows = [];
                                     var xCellsInColumn = _.filter(ds, function (r, i) {
                                         if (helper.isXCell($main, r[primaryKey], coord.columnKey, style.HIDDEN_CLS, style.SEAL_CLS)
-                                            || _.some(emptyCells[i], function (c) { return c === coord.columnKey; })) {
+                                            || _.some(emptyCells[i], function (c) { return c === coord.columnKey; })
+                                            || helper.isEmpty(helper.viewData(opt.view, opt.viewMode, r[coord.columnKey]))) {
                                             xRows.push(i);
                                             return true;
                                         }
@@ -14026,7 +14175,8 @@ var nts;
                                     _.forEach(ds, function (item, index) {
                                         if (index >= start && index < end) {
                                             var $c = selection.cellAt($main, index, coord.columnKey);
-                                            if ($c === intan.NULL || !$c || !helper.isDetable($c))
+                                            if ($c === intan.NULL || !$c || !helper.isDetable($c)
+                                                || helper.isEmpty(helper.viewData(opt.view, opt.viewMode, item[coord.columnKey])))
                                                 return;
                                             helper.markCellWith(style.DET_CLS, $c);
                                         }
@@ -14078,11 +14228,16 @@ var nts;
                                         var colKeys = _.map(helper.gridVisibleColumns($main), "key");
                                         var det = $.data($main, internal.DET);
                                         var rowDet;
+                                        var gen = $.data($main, internal.TANGI) || $.data($main, internal.CANON);
+                                        var opt = gen.options;
+                                        if (!opt)
+                                            return;
                                         var undetables = [];
                                         var detables = selector.queryAll($targetRow, "td").filter(function (e) {
                                             return e.style.display !== "none";
                                         }).filter(function (e, i) {
-                                            if (!helper.isDetable(e)) {
+                                            if (!helper.isDetable(e)
+                                                || helper.isEmpty(helper.viewData(opt.view, opt.viewMode, ds[coord.rowIdx][colKeys[i]]))) {
                                                 undetables.push(i);
                                                 return false;
                                             }
@@ -14167,6 +14322,12 @@ var nts;
                             return;
                         var $main = helper.getMainTable($tbl);
                         var ds = internal.getDataSource($main);
+                        var gen = $.data($main, internal.TANGI) || $.data($main, internal.CANON);
+                        var opt = gen.options;
+                        if (!opt)
+                            return;
+                        if (helper.isEmpty(helper.viewData(opt.view, opt.viewMode, ds[rowIdx][columnKey])))
+                            return;
                         var det = $.data($main, internal.DET);
                         if (!det) {
                             det = {};
@@ -14367,6 +14528,8 @@ var nts;
                         $container.find("." + BODY_PRF + LEFT_HORZ_SUM).hide();
                         $container.find("." + HEADER_PRF + HORIZONTAL_SUM).hide();
                         $container.find("." + BODY_PRF + HORIZONTAL_SUM).hide();
+                        $container.find("." + (HEADER_PRF + RIGHT_HORZ_SUM)).hide();
+                        $container.find("." + (BODY_PRF + RIGHT_HORZ_SUM)).hide();
                         resize.fitWindowHeight($container[0], undefined, false);
                     }
                     /**
@@ -14377,6 +14540,8 @@ var nts;
                         $container.find("." + BODY_PRF + LEFT_HORZ_SUM).show();
                         $container.find("." + HEADER_PRF + HORIZONTAL_SUM).show();
                         $container.find("." + BODY_PRF + HORIZONTAL_SUM).show();
+                        $container.find("." + (HEADER_PRF + RIGHT_HORZ_SUM)).show();
+                        $container.find("." + (BODY_PRF + RIGHT_HORZ_SUM)).show();
                         resize.fitWindowHeight($container[0], undefined, true);
                     }
                     /**
@@ -14388,13 +14553,23 @@ var nts;
                             return;
                         $vertSumHeader.hide();
                         $container.find("." + BODY_PRF + VERTICAL_SUM).hide();
+                        var $rightHorzSumHeader = $container.find("." + (HEADER_PRF + RIGHT_HORZ_SUM));
+                        $rightHorzSumHeader.hide();
+                        $container.find("." + (BODY_PRF + RIGHT_HORZ_SUM)).hide();
                         var $detailBody = $container.find("." + (BODY_PRF + DETAIL));
                         if (!helper.hasScrollBar($detailBody[0], true)) {
                             $container.css("width", parseFloat($container.css("width")) - parseFloat($vertSumHeader.css("width")));
                         }
+                        var $detailHorzScroll = $container.find("." + (BODY_PRF + DETAIL_HORZ_SCROLL));
+                        if ($detailHorzScroll.length > 0) {
+                            $detailHorzScroll.css("overflow-y", "scroll");
+                        }
                         resize.fitWindowWidth($container[0]);
                         $detailBody.css("max-width", parseFloat($detailBody.css("max-width")) + helper.getScrollWidth() + "px");
                         scroll.unbindVertWheel($container.find("." + BODY_PRF + DETAIL)[0]);
+                        if ($rightHorzSumHeader.css("display") === "none") {
+                            scroll.unbindVertWheel($container.find("." + (BODY_PRF + HORIZONTAL_SUM))[0]);
+                        }
                     }
                     /**
                      * Show vertSum.
@@ -14407,9 +14582,19 @@ var nts;
                             return;
                         $vertSumHeader.show();
                         $vertSumBody.show();
+                        var $rightHorzSumHeader = $container.find("." + (HEADER_PRF + RIGHT_HORZ_SUM));
+                        $rightHorzSumHeader.show();
+                        $container.find("." + (BODY_PRF + RIGHT_HORZ_SUM)).show();
+                        var $detailHorzScroll = $container.find("." + (BODY_PRF + DETAIL_HORZ_SCROLL));
+                        if ($detailHorzScroll.length > 0) {
+                            $detailHorzScroll.css("overflow-y", "hidden");
+                        }
                         resize.fitWindowWidth($container[0]);
                         $detailBody.css("max-width", parseFloat($detailBody.css("max-width")) - helper.getScrollWidth() + "px");
                         scroll.bindVertWheel($detailBody[0]);
+                        if ($rightHorzSumHeader.css("display") !== "none") {
+                            scroll.bindVertWheel($container.find("." + (BODY_PRF + HORIZONTAL_SUM))[0]);
+                        }
                         $vertSumBody.scrollTop($detailBody.scrollTop());
                         if (!helper.hasScrollBar($detailBody[0], true)) {
                             $container.css("width", parseFloat($container.css("width")) + parseFloat($vertSumHeader.css("width")));
@@ -14469,6 +14654,9 @@ var nts;
                                 break;
                             case "horizontalSummaries":
                                 updateHorzSum($container, header, body);
+                                break;
+                            case "rightHorizontalSummaries":
+                                updateRightHorzSum($container, header, body);
                                 break;
                         }
                     }
@@ -14651,6 +14839,27 @@ var nts;
                             var $body = $container.find("." + BODY_PRF + HORIZONTAL_SUM);
                             $body.empty();
                             render.process($body[0], exTable.horizontalSumContent, true);
+                        }
+                    }
+                    /**
+                     * Update rightHorzSum.
+                     */
+                    function updateRightHorzSum($container, header, body) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (header) {
+                            _.assignIn(exTable.rightHorzSumHeader, header);
+                            var $header = $container.find("." + HEADER_PRF + RIGHT_HORZ_SUM);
+                            var pu = $header.find("table").data(internal.POPUP);
+                            $header.empty();
+                            render.process($header[0], exTable.rightHorzSumHeader, true);
+                            if (pu && pu.css("display") !== "none")
+                                pu.hide();
+                        }
+                        if (body) {
+                            _.assignIn(exTable.rightHorzSumContent, body);
+                            var $body = $container.find("." + BODY_PRF + RIGHT_HORZ_SUM);
+                            $body.empty();
+                            render.process($body[0], exTable.rightHorzSumContent, true);
                         }
                     }
                     /**
@@ -17858,7 +18067,6 @@ var nts;
                                 $element.attr('tabindex', 0);
                             }
                             $element
-                                // delegate event for change template (on old filter box)
                                 .on(SHOWVALUE, function (evt) {
                                 var data = $element.data(DATA), cws = data[CWIDTH], ks = _.keys(cws);
                                 var option = _.find(data[DATA], function (t) { return t[optionsValue] == data[VALUE]; }), _template = template;
@@ -17889,7 +18097,6 @@ var nts;
                                     }
                                 }
                             })
-                                // define event changed for save default data
                                 .on(CHANGED, function (evt, key, value) {
                                 if (value === void 0) { value = undefined; }
                                 var data = $element.data(DATA) || {};
@@ -17898,7 +18105,6 @@ var nts;
                                     $element.data(DATA, data);
                                 }
                             })
-                                // define event validate for check require
                                 .on(VALIDATE, function (evt, ui) {
                                 var data = $element.data(DATA), value = data[VALUE];
                                 if ((ui ? data[CHANGED] : true) && data[ENABLE] && data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNil(value))) {
@@ -17918,7 +18124,6 @@ var nts;
                                     }
                                 }
                             })
-                                // delegate open or close event on enter key
                                 .on(KEYDOWN, function (evt, ui) {
                                 if ($element.data(IGCOMB)) {
                                     if ([13].indexOf(evt.which || evt.keyCode) > -1) {
@@ -18210,7 +18415,6 @@ var nts;
                             var sto = setTimeout(function () {
                                 if ($element.data("igCombo")) {
                                     $element
-                                        // enable or disable 
                                         .igCombo(OPTION, "disabled", !enable);
                                     clearTimeout(sto);
                                 }
@@ -18223,7 +18427,6 @@ var nts;
                                     $element.igCombo(OPTION, "dataSource", options);
                                 }
                                 $element
-                                    // set new value
                                     .igCombo("value", value);
                                 if (!enable) {
                                     $element.removeAttr(TAB_INDEX);
@@ -18240,7 +18443,7 @@ var nts;
                                     if (width != MINWIDTH) {
                                         $element.igCombo("option", "width", width);
                                     }
-                                    else { // auto width
+                                    else {
                                         $element
                                             .igCombo("option", "width", (_.sum(_.map(cws, function (c) { return c; })) * WoC + 60) + 'px');
                                     }
@@ -19602,7 +19805,6 @@ var nts;
                                 var $container = $dialog.closest("[role='dialog']");
                                 $container
                                     .show()
-                                    // hide "x" button
                                     .find(".ui-dialog-titlebar-close").hide();
                                 //$dialog.dialog("open");
                                 var $dialogs = window.top.$('body>[role="dialog"]').toArray();
@@ -20246,10 +20448,10 @@ var nts;
                                 }
                                 if (constraint) {
                                     var primitive = __viewContext.primitiveValueConstraints[constraint];
-                                    if (primitive) { // if primitive is avaiable
+                                    if (primitive) {
                                         var min = primitive.min, max = primitive.max, maxL = primitive.maxLength, dlen = primitive.mantissaMaxLength || 0;
                                         switch (primitive.valueType) {
-                                            case 'String': // check length
+                                            case 'String':// check length
                                                 if (maxL && ival.length > maxL) {
                                                     ival = dval;
                                                 }
@@ -20299,7 +20501,7 @@ var nts;
                                                         ival = dval;
                                                         $input.val(dval);
                                                     }
-                                                    else { // delete event
+                                                    else {
                                                         if (ival.match(/^0\d+$/)) {
                                                             ival = ival.replace(/^0+/, '0');
                                                             ival = Number(ival).toString();
@@ -20341,7 +20543,7 @@ var nts;
                                                         ival = dval;
                                                         $input.val(dval);
                                                     }
-                                                    else { // delete event
+                                                    else {
                                                         if (ival.match(/^0\d+$/)) {
                                                             ival = ival.replace(/^0+/, '0');
                                                             ival = Number(ival).toString();
@@ -20373,7 +20575,7 @@ var nts;
                                                         ival = dval;
                                                         $input.val(dval);
                                                     }
-                                                    else { // delete event
+                                                    else {
                                                         if (ival.match(/^0\d+$/)) {
                                                             ival = ival.replace(/^0+/, '0');
                                                             ival = Number(ival).toString();
@@ -20926,7 +21128,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
+                            var isIE = false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -23507,16 +23709,13 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="../../reference.ts"/>
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
 };
 var nts;
 (function (nts) {
@@ -28092,7 +28291,7 @@ var nts;
                             if (_.has(_mDesc.fixedColIdxes, "rowNumber")) {
                                 no = _mDesc.fixedColIdxes.rowNumber;
                                 var tRow = _mDesc.fixedRows[idx][no];
-                                for (var i = /*idx + 2*/ 0; i < _mDesc.fixedRows.length; i++) {
+                                for (var i = 0; i < _mDesc.fixedRows.length; i++) {
                                     noc = _mDesc.fixedRows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -28125,7 +28324,7 @@ var nts;
                             if (_.has(_mDesc.colIdxes, "rowNumber")) {
                                 no = _mDesc.colIdxes.rowNumber;
                                 var tRow = _mDesc.rows[idx][no];
-                                for (var i = /*idx + 2*/ 0; i < _mDesc.rows.length; i++) {
+                                for (var i = 0; i < _mDesc.rows.length; i++) {
                                     noc = _mDesc.rows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -30288,7 +30487,7 @@ var nts;
                                 var check = $cell.querySelector("input[type='checkbox']");
                                 if (!check)
                                     return;
-                                if (val) { //&& check.getAttribute("checked") !== "checked") {
+                                if (val) {
                                     check.setAttribute("checked", "checked");
                                     check.checked = true;
                                     var evt = document.createEvent("HTMLEvents");
@@ -30297,7 +30496,7 @@ var nts;
                                     evt.checked = val;
                                     check.dispatchEvent(evt);
                                 }
-                                else if (!val) { // && check.getAttribute("checked") === "checked") {
+                                else if (!val) {
                                     check.removeAttribute("checked");
                                     check.checked = false;
                                     var evt = document.createEvent("HTMLEvents");
@@ -33280,7 +33479,7 @@ var nts;
                                         data = data.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" });
                                     }
                                     var tDate = moment.utc($editor.value, ctrl.format, true);
-                                    if ( /*data !== tDate && !d.classList.contains(khl.ERROR_CLS) &&*/_.isFunction(ctrl.inputProcess)) {
+                                    if (_.isFunction(ctrl.inputProcess)) {
                                         ctrl.inputProcess(tDate.isValid() ? tDate.format(ctrl.format[0]) : $editor.value, _dataSource[coord.rowIdx]);
                                     }
                                     su.endEdit(_$grid[0]);
@@ -33592,16 +33791,16 @@ var nts;
                             var list = $dd.querySelector(".mcombo-list");
                             var items = list.querySelectorAll("li");
                             if (items) {
-                                var top_1 = 0, selected_6;
+                                var top_2 = 0, selected_6;
                                 _.forEach(items, function (li) {
                                     if (li.classList.contains("selecteditem")) {
                                         selected_6 = true;
                                         return false;
                                     }
-                                    top_1 += 26;
+                                    top_2 += 26;
                                 });
-                                if (top_1 >= 0 && selected_6)
-                                    list.scrollTop = top_1;
+                                if (top_2 >= 0 && selected_6)
+                                    list.scrollTop = top_2;
                                 else
                                     list.scrollTop = 0;
                             }
@@ -36159,19 +36358,29 @@ var nts;
                         this.definedType = {};
                         this.gcChart = {};
                         this.lineLock = {};
-                        this.dragInsert = false;
+                        this.snatchInterval = 1;
+                        this.mode = "normal";
+                        this.metaholder = {};
+                        this.metaresize = {};
                         if (_.isNil(chartArea)) {
                             chart_1.warning.push(new Warn("chartArea is undefined."));
                         }
                         this.chartArea = chartArea;
+                        this._init();
                     }
+                    Ruler.prototype.loggable = function (val) {
+                        var __lg = function () {
+                            return val;
+                        };
+                        return __lg;
+                    };
                     Ruler.prototype.addType = function (options) {
                         var self = this;
                         if (_.isNil(options.name)) {
                             chart_1.warning.push(new Warn("Set type name"));
                             return;
                         }
-                        self.definedType[options.name] = new DefinedType(options);
+                        self.definedType[options.name] = new DefinedType(options, self);
                         if (options.locked) {
                             self.lineLock[options.lineNo] = true;
                         }
@@ -36208,15 +36417,18 @@ var nts;
                             }
                         }
                         if (chart.title) {
-                            var titleTag = chart_1.pDiv.cloneNode(true);
-                            titleTag.className = "chart-name";
-                            titleTag.textContent = chart.title;
-                            chart.html.appendChild(titleTag);
+                            //                let titleTag = pDiv.cloneNode(true);
+                            //                titleTag.className = "chart-name";
+                            //                titleTag.textContent = chart.title;
+                            //                chart.html.appendChild(titleTag);
+                            chart.html.textContent = chart.title;
                         }
                         if (show) {
                             self.chartArea.appendChild(chart.html);
                         }
                         var docMove = function () {
+                            if (self.mode !== "normal")
+                                return;
                             event.preventDefault();
                             if (_.keys(self.slideTrigger).length === 0)
                                 return;
@@ -36237,6 +36449,8 @@ var nts;
                                 var lineCharts_1 = self.gcChart[chart.lineNo];
                                 if (_(lineCharts_1).keys().find(function (k) {
                                     var sameLineChart = lineCharts_1[k];
+                                    if (sameLineChart.html.style.display === "none")
+                                        return false;
                                     return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
                                         && !sameLineChart.bePassedThrough
                                         && ((pDec_1.end > sameLineChart.start && pDec_1.end < sameLineChart.end)
@@ -36246,11 +36460,13 @@ var nts;
                                 if (parentChart && ((diff > 0 && pDec_1.end > parentChart.end) || (diff < 0 && pDec_1.start < parentChart.start)))
                                     return;
                                 if (parentChart && _.find(parentChart.children, function (child) {
-                                    return child.id !== chart.id && !child.bePassedThrough
+                                    return child.id !== chart.id && !child.bePassedThrough && child.html.style.display !== "none"
                                         && ((chart.start >= child.end && pDec_1.start < child.end) || (chart.end <= child.start && pDec_1.end > child.start));
                                 }))
                                     return;
                                 _.forEach(chart.children, function (child) {
+                                    if (child.html.style.display === "none")
+                                        return;
                                     var childSlide;
                                     if (child.followParent) {
                                         childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
@@ -36304,12 +36520,18 @@ var nts;
                                 var lineCharts_2 = self.gcChart[chart.lineNo];
                                 if (_(lineCharts_2).keys().find(function (k) {
                                     var sameLineChart = lineCharts_2[k];
+                                    if (sameLineChart.html.style.display === "none")
+                                        return false;
                                     return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
                                         && !sameLineChart.bePassedThrough
                                         && (nearestLine < chart.start && pDec_2.start < sameLineChart.end && chart.end > sameLineChart.end));
                                 }))
                                     return;
+                                self.slideTrigger.rangeMin = Math.min(nearestLine, self.slideTrigger.rangeMin || 0);
+                                self.slideTrigger.rangeMax = Math.max(nearestLine, self.slideTrigger.rangeMax || 0);
                                 _.forEach(chart.children, function (child) {
+                                    if (child.html.style.display === "none")
+                                        return;
                                     var childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
                                     if (!childSlide)
                                         return;
@@ -36327,13 +36549,14 @@ var nts;
                                             }
                                             else if (nearestLine < child.start) {
                                                 if (!self.chartArea.contains(child.html)) {
-                                                    if (self.slideTrigger.start <= child.end)
+                                                    if (self.slideTrigger.start <= child.end
+                                                        && self.slideTrigger.rangeMax < child.end)
                                                         return;
                                                     self.chartArea.appendChild(child.html);
                                                 }
                                                 var maxWidth = (Math.min(child.end, chart.end) - child.start) * child.unitToPx - 1, currentWidth = parseFloat(child.html.style.width);
                                                 if (currentWidth !== maxWidth) {
-                                                    child.reposition({ width: maxWidth, left: parseFloat(child.html.style.left) - parseFloat(maxWidth - currentWidth) });
+                                                    child.reposition({ width: maxWidth, left: child.start * child.unitToPx });
                                                 }
                                                 if (self.slideTrigger.edgeCharts.length > 0) {
                                                     _.remove(self.slideTrigger.edgeCharts, function (c) { return c.id === child.id; });
@@ -36370,12 +36593,18 @@ var nts;
                                 var lineCharts_3 = self.gcChart[chart.lineNo];
                                 if (_(lineCharts_3).keys().find(function (k) {
                                     var sameLineChart = lineCharts_3[k];
+                                    if (sameLineChart.html.style.display === "none")
+                                        return false;
                                     return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
                                         && !sameLineChart.bePassedThrough
                                         && (nearestLine > chart.end && pDec_3.end > sameLineChart.start && chart.start < sameLineChart.start));
                                 }))
                                     return;
+                                self.slideTrigger.rangeMin = Math.min(nearestLine, self.slideTrigger.rangeMin || 0);
+                                self.slideTrigger.rangeMax = Math.max(nearestLine, self.slideTrigger.rangeMax || 0);
                                 _.forEach(chart.children, function (child) {
+                                    if (child.html.style.display === "none")
+                                        return;
                                     var childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
                                     if (!childSlide)
                                         return;
@@ -36393,7 +36622,9 @@ var nts;
                                             }
                                             else if (nearestLine > child.end) {
                                                 if (!self.chartArea.contains(child.html)) {
-                                                    if (self.slideTrigger.end > child.start)
+                                                    console.log(child.id + "; slideTriggerEnd: " + self.slideTrigger.end + "; start: " + child.start);
+                                                    if (self.slideTrigger.end > child.start
+                                                        && self.slideTrigger.rangeMin > child.start)
                                                         return;
                                                     self.chartArea.appendChild(child.html);
                                                 }
@@ -36422,6 +36653,8 @@ var nts;
                             }
                         };
                         var docUp = function () {
+                            if (self.mode !== "normal")
+                                return;
                             _.forEach(chart.children, function (child) {
                                 if (child.pin && child.rollup && child.roundEdge) {
                                     if (self.slideTrigger.holdPos === HOLD_POS.START
@@ -36473,6 +36706,76 @@ var nts;
                             chart.html.dispatchEvent(e);
                         };
                         chart.html.addEventListener("mousedown", function () {
+                            if (self.mode !== "normal") {
+                                if (chart.canPasteResize) {
+                                    var rect = chart.html.getBoundingClientRect();
+                                    event.offsetXRecalculated = event.clientX - rect.left;
+                                    var holdPos_1 = self.getHoldPos(chart);
+                                    if (_.isNil(chart.parent))
+                                        return;
+                                    if (holdPos_1 === HOLD_POS.START) {
+                                        self.metaresize.chart = chart;
+                                        self.metaresize.graspPos = holdPos_1;
+                                        self.metaresize.start = chart.start;
+                                        self.metaresize.end = chart.end;
+                                        self.metaresize.left = parseFloat(chart.html.style.left);
+                                        self.metaresize.offsetLeft = chart.html.getBoundingClientRect().left;
+                                        self.metaresize.isPressed = true;
+                                        var parent_2 = self.gcChart[chart.lineNo][chart.parent];
+                                        _.forEach(parent_2.children, function (child) {
+                                            if (child.html.style.display !== "none"
+                                                && child.id !== chart.id && child.end === chart.start && child.canPaste) {
+                                                self.metaresize.adjChart = child;
+                                                return false;
+                                            }
+                                        });
+                                        document.addEventListenerNS("mousemove.pasteResize", manipulationMode.resizeMove.bind(self));
+                                        document.addEventListenerNS("mouseup.pasteResize", manipulationMode.resizeUp.bind(self));
+                                        return;
+                                    }
+                                    else if (holdPos_1 === HOLD_POS.END) {
+                                        self.metaresize.chart = chart;
+                                        self.metaresize.graspPos = holdPos_1;
+                                        self.metaresize.start = chart.start;
+                                        self.metaresize.end = chart.end;
+                                        self.metaresize.offsetLeft = chart.html.getBoundingClientRect().left;
+                                        self.metaresize.isPressed = true;
+                                        var parent_3 = self.gcChart[chart.lineNo][chart.parent];
+                                        _.forEach(parent_3.children, function (child) {
+                                            if (child.html.style.display !== "none"
+                                                && child.id !== chart.id && child.start === chart.end && child.canPaste) {
+                                                self.metaresize.adjChart = child;
+                                                return false;
+                                            }
+                                        });
+                                        document.addEventListenerNS("mousemove.pasteResize", manipulationMode.resizeMove.bind(self));
+                                        document.addEventListenerNS("mouseup.pasteResize", manipulationMode.resizeUp.bind(self));
+                                        return;
+                                    }
+                                }
+                                if (!self.metaholder.hasOwnProperty("start"))
+                                    return;
+                                chart.html.style.cursor = "";
+                                self.metaholder.id = "pgc" + support.replaceAll(uk.util.randomId(), '-', '');
+                                self.metaholder.ancestorChart = chart;
+                                self.metaholder.isPressed = true;
+                                self.addChartWithType(self.pasteBand.typeName, {
+                                    id: self.metaholder.id,
+                                    parent: chart.parent || chart.id,
+                                    start: self.metaholder.start,
+                                    end: self.metaholder.end,
+                                    lineNo: self.metaholder.lineNo,
+                                    color: self.metaholder.color,
+                                    zIndex: self.pasteBand.zIndex || 1000
+                                });
+                                if (self.mode === "paste") {
+                                    self.metaholder.tempStart = self.metaholder.start;
+                                    self.metaholder.tempEnd = self.metaholder.end;
+                                }
+                                document.addEventListenerNS("mousemove.paste", manipulationMode.pasteMove.bind(self));
+                                document.addEventListenerNS("mouseup.paste", manipulationMode.pasteUp.bind(self));
+                                return;
+                            }
                             var holdPos = self.getHoldPos(chart);
                             if (chart.pin) {
                                 //                    if (chart.rollup) {
@@ -36529,7 +36832,7 @@ var nts;
                             document.addEventListener("mouseup", docUp);
                         });
                         chart.html.addEventListener("mousemove", function () {
-                            if (self.dragInsert) {
+                            if (self.mode !== "normal") {
                                 chart.html.style.cursor = "";
                                 return;
                             }
@@ -36569,24 +36872,25 @@ var nts;
                     };
                     Ruler.prototype.getHoldPos = function (chart) {
                         var self = this;
-                        if (self.lineLock[chart.lineNo] /*|| chart.fixed === CHART_FIXED.BOTH*/)
+                        if (self.lineLock[chart.lineNo] && self.mode === "normal")
                             return HOLD_POS.OUT;
                         var parentChart;
                         if (chart.parent) {
                             parentChart = self.gcChart[chart.lineNo][chart.parent];
                         }
+                        var offsetX = event.offsetXRecalculated || event.offsetX;
                         if (chart.fixed === CHART_FIXED.BOTH && parentChart
                             && ((chart.start > parentChart.start && chart.end < parentChart.end)
                                 || ((chart.start === parentChart.start || chart.end === parentChart.end)
                                     && (chart.end - chart.start) * chart.unitToPx <= chart.drawerSize + 2))
-                            && (event.offsetX < chart.drawerSize || parseFloat(chart.html.style.width) - chart.drawerSize < event.offsetX)) {
+                            && (offsetX < chart.drawerSize || parseFloat(chart.html.style.width) - chart.drawerSize < offsetX)) {
                             return HOLD_POS.BODY;
                         }
-                        else if (chart.fixed !== CHART_FIXED.START && event.offsetX < chart.drawerSize) {
+                        else if (chart.fixed !== CHART_FIXED.START && offsetX < chart.drawerSize) {
                             return HOLD_POS.START;
                         }
                         else if (chart.fixed !== CHART_FIXED.END
-                            && parseFloat(chart.html.style.width) /*(chart.end - chart.start) * chart.unitToPx*/ - chart.drawerSize < event.offsetX) {
+                            && parseFloat(chart.html.style.width) /*(chart.end - chart.start) * chart.unitToPx*/ - chart.drawerSize < offsetX) {
                             return HOLD_POS.END;
                         }
                         else {
@@ -36606,17 +36910,23 @@ var nts;
                                 }
                             });
                         }
-                        return self.addChart(options);
+                        var chart = self.addChart(options);
+                        if (!chartType.list)
+                            chartType.list = [chart];
+                        else
+                            chartType.list.push(chart);
+                        return chart;
                     };
                     Ruler.prototype.setLock = function (lines, lock) {
                         var self = this;
                         _.forEach(lines, function (line) { return self.lineLock[line] = lock; });
                     };
                     Ruler.prototype.setSnatchInterval = function (interval) {
-                        this.snatchInterval = interval;
-                    };
-                    Ruler.prototype.setDragInsert = function (insert) {
-                        this.dragInsert = insert;
+                        var self = this;
+                        self.snatchInterval = interval;
+                        if (!_.isNil(self.pasteBand)) {
+                            self.pasteBand.blockSize = interval;
+                        }
                     };
                     Ruler.prototype.replaceAt = function (lineNo, charts, id) {
                         if (_.isNil(lineNo) || _.isNil(charts) || charts.length === 0)
@@ -36713,8 +37023,7 @@ var nts;
                             var pDec_4 = { width: self.slideTrigger.length + (self.slideTrigger.start - start) * chart.unitToPx, left: start * chart.unitToPx, start: start };
                             if (chart.limitStartMin > pDec_4.start || chart.limitStartMax < pDec_4.start)
                                 return;
-                            if (pDec_4.start + self._getSnatchInterval(chart) > chart.end
-                                || (parentChart && !self.slideTrigger.overlap && pDec_4.start < parentChart.start))
+                            if ((parentChart && !self.slideTrigger.overlap && pDec_4.start < parentChart.start))
                                 return;
                             self.slideTrigger.ltr = start > chart.start;
                             _.forEach(chart.children, function (child) {
@@ -36760,8 +37069,7 @@ var nts;
                             var pDec_5 = { width: self.slideTrigger.length + (end - self.slideTrigger.end) * chart.unitToPx, end: end };
                             if (chart.limitEndMax < pDec_5.end || chart.limitEndMin > pDec_5.end)
                                 return;
-                            if (chart.start + self._getSnatchInterval(chart) > pDec_5.end
-                                || (parentChart && !self.slideTrigger.overlap && pDec_5.end > parentChart.end))
+                            if ((parentChart && !self.slideTrigger.overlap && pDec_5.end > parentChart.end))
                                 return;
                             self.slideTrigger.ltr = end > chart.end;
                             _.forEach(chart.children, function (child) {
@@ -36798,44 +37106,285 @@ var nts;
                         }
                         self.slideTrigger = {};
                     };
+                    Ruler.prototype.remove = function (chart, shadow) {
+                        if (_.isNil(chart))
+                            return;
+                        var self = this;
+                        chart.reposition({ width: 0 });
+                        if (shadow)
+                            return;
+                        delete self.gcChart[chart.lineNo][chart.id];
+                        var parent = self.gcChart[chart.lineNo][chart.parent];
+                        if (!parent)
+                            return;
+                        _.remove(parent.children, function (child) {
+                            return child.lineNo === chart.lineNo && child.id === chart.id;
+                        });
+                    };
+                    // TODO:
+                    Ruler.prototype.setMode = function (modeName) {
+                        var self = this;
+                        self.mode = modeName;
+                    };
+                    Ruler.prototype.pasteChart = function (options) {
+                        var self = this;
+                        self.pasteBand = options;
+                        if (_.isNil(options.blockSize)) {
+                            self.pasteBand.blockSize = self.snatchInterval;
+                        }
+                    };
                     Ruler.prototype._getSnatchInterval = function (chart) {
                         var self = this;
                         if (!_.isNil(self.snatchInterval))
                             return self.snatchInterval;
                         return chart.snatchInterval;
                     };
+                    Ruler.prototype._init = function () {
+                        var self = this;
+                        if (_.isNil(self.chartArea))
+                            return;
+                        self.addType({
+                            name: support.GGC,
+                            color: "#FFF",
+                            lineWidth: 30,
+                            canSlide: false,
+                            unitToPx: 4,
+                            canPaste: true,
+                            canPasteResize: true
+                        });
+                        self.chartArea.addEventListener("mousemove", function () {
+                            if (self.mode === "normal" || self.metaholder.isPressed || self.metaresize.isPressed)
+                                return;
+                            var pointElm = document.elementFromPoint(event.pageX, event.pageY);
+                            if (_.isNil(pointElm))
+                                return;
+                            if (pointElm.classList.contains("gantt-holder")) {
+                                var underlyChart = support.underElementFromPoint(pointElm, event.pageX, event.pageY);
+                                if (underlyChart.classList.contains("nts-ganttchart")) {
+                                    pointElm = underlyChart;
+                                    var rect = underlyChart.getBoundingClientRect();
+                                    event.offsetXRecalculated = event.clientX - rect.left;
+                                }
+                            }
+                            if (pointElm.classList.contains("chart-name")) {
+                                pointElm = support.closest(pointElm, ".nts-ganttchart");
+                            }
+                            else if (!pointElm.classList.contains("nts-ganttchart")) {
+                                if (self.chartArea.contains(self.placeholder)) {
+                                    self.placeholder.parentNode.removeChild(self.placeholder);
+                                }
+                                return;
+                            }
+                            var id = pointElm.getAttribute("id");
+                            if (_.isNil(id))
+                                return;
+                            var meta = id.split('-');
+                            if (meta.length < 2)
+                                return;
+                            self._tailor(event.pageX, self.gcChart[meta[0]][meta[1]]);
+                        });
+                    };
+                    Ruler.prototype._tailor = function (posX, chart) {
+                        var self = this;
+                        if (self.mode === "normal" || _.isNil(self.pasteBand) || _.isNil(chart))
+                            return;
+                        if (!chart.canPaste) {
+                            chart.html.style.cursor = "not-allowed";
+                            self.metaholder = {};
+                            return;
+                        }
+                        if (chart.canPasteResize) {
+                            var holdPos = self.getHoldPos(chart);
+                            if (holdPos === HOLD_POS.START || holdPos === HOLD_POS.END) {
+                                chart.cursor = "col-resize";
+                                chart.html.style.cursor = chart.cursor;
+                                if (self.chartArea.contains(self.placeholder)) {
+                                    self.placeholder.parentNode.removeChild(self.placeholder);
+                                }
+                                return;
+                            }
+                        }
+                        chart.html.style.cursor = "";
+                        if (_.isNil(self.placeholder)) {
+                            self.placeholder = chart_1.pDiv.cloneNode(true);
+                            self.placeholder.className = "gantt-holder";
+                            var width = self.pasteBand.blockSize * chart.unitToPx - 1;
+                            var cssText = "; position: absolute; width: " + width + "px; height: " + chart.chartWidth + "px; \n                    border: 1px solid #AAB7B8; z-index: 3000; background-color: #FFF; box-shadow: inset 1px 2px 3px 1px #AAB7B8;";
+                            self.placeholder.style.cssText = cssText;
+                            self.placeholder.addEventListener("mousedown", function () {
+                                if (!self.metaholder.hasOwnProperty("start"))
+                                    return;
+                                self.metaholder.id = "pgc" + support.replaceAll(uk.util.randomId(), '-', '');
+                                self.metaholder.isPressed = true;
+                                self.addChartWithType(self.pasteBand.typeName, {
+                                    id: self.metaholder.id,
+                                    parent: self.metaholder.ancestorChart.parent || self.metaholder.ancestorChart.id,
+                                    start: self.metaholder.start,
+                                    end: self.metaholder.end,
+                                    lineNo: self.metaholder.lineNo,
+                                    color: self.pasteBand.color,
+                                    zIndex: self.pasteBand.zIndex || 1000
+                                });
+                                if (self.mode === "paste") {
+                                    self.metaholder.tempStart = self.metaholder.start;
+                                    self.metaholder.tempEnd = self.metaholder.end;
+                                }
+                                document.addEventListenerNS("mousemove.paste", manipulationMode.pasteMove.bind(self));
+                                document.addEventListenerNS("mouseup.paste", manipulationMode.pasteUp.bind(self));
+                                self.placeholder.parentNode.removeChild(self.placeholder);
+                            });
+                        }
+                        var parent = chart;
+                        if (chart.parent) {
+                            parent = self.gcChart[chart.lineNo][chart.parent];
+                        }
+                        var offsetLeft = parent.html.getBoundingClientRect().left + document.body.scrollLeft, nearestLine = Math.floor((event.pageX - offsetLeft) / chart.unitToPx) + parent.start;
+                        var startX = event.pageX - nearestLine % self._getSnatchInterval(parent) * parent.unitToPx, startY = startX + self.pasteBand.blockSize * parent.unitToPx - 1;
+                        var startOverElm = document.elementFromPoint(startX, event.pageY);
+                        var endOverElm = document.elementFromPoint(startY, event.pageY);
+                        if (startOverElm.classList.contains("gantt-holder")) {
+                            startOverElm = support.underElementFromPoint(startOverElm, startX, event.pageY);
+                        }
+                        if (endOverElm.classList.contains("gantt-holder")) {
+                            endOverElm = support.underElementFromPoint(endOverElm, startY, event.pageY);
+                        }
+                        var startId = startOverElm.getAttribute("id"), endId = endOverElm.getAttribute("id"), parentId = parent.html.getAttribute("id"), startLine = nearestLine - nearestLine % self._getSnatchInterval(parent), endLine = startLine + self.pasteBand.blockSize;
+                        if (startId !== endId) {
+                            startLine = Math.max(parent.start, startLine);
+                            if (startOverElm.classList.contains("nts-ganttchart") && startId !== parentId) {
+                                var startOverChart = self.gcChart[parent.lineNo][startId.split('-')[1]];
+                                if (!startOverChart.canPaste) {
+                                    startLine = startOverChart.end;
+                                }
+                            }
+                            endLine = Math.min(parent.end, endLine);
+                            if (endOverElm.classList.contains("nts-ganttchart") && endId !== parentId) {
+                                var endOverChart = self.gcChart[parent.lineNo][endId.split('-')[1]];
+                                if (!endOverChart.canPaste) {
+                                    endLine = endOverChart.start;
+                                }
+                            }
+                        }
+                        else {
+                            var startOverChart = self.gcChart[parent.lineNo][startId.split('-')[1]];
+                            if (!startOverChart.canPaste) {
+                                chart.html.style.cursor = "not-allowed";
+                                return;
+                            }
+                            startLine = Math.max(parent.start, startLine);
+                            endLine = Math.min(parent.end, endLine);
+                        }
+                        if (startLine === endLine)
+                            return;
+                        self.metaholder.ancestorChart = parent;
+                        self.metaholder.start = startLine;
+                        self.metaholder.end = endLine;
+                        self.metaholder.lineNo = parent.lineNo;
+                        var length = (endLine - startLine) * parent.unitToPx - 1, currentLength = parseFloat(self.placeholder.style.width || 0);
+                        if (length !== currentLength) {
+                            self.placeholder.style.width = length + "px";
+                        }
+                        var posTop = parent.origin[1] + parent.lineNo * parent.lineWidth + Math.floor((parent.lineWidth - parent.chartWidth) / 2), posLeft = parent.origin[0] + self.metaholder.start * chart.unitToPx;
+                        self.placeholder.style.top = posTop + "px";
+                        self.placeholder.style.left = posLeft + "px";
+                        if (!self.chartArea.contains(self.placeholder)) {
+                            self.chartArea.appendChild(self.placeholder);
+                        }
+                    };
                     return Ruler;
                 }());
                 chart_1.Ruler = Ruler;
                 var DefinedType = /** @class */ (function () {
-                    function DefinedType(options) {
-                        this.name = options.name;
-                        this.parent = options.parent;
-                        this.title = options.title;
-                        this.lineNo = options.lineNo;
-                        this.color = options.color;
-                        this.followParent = options.followParent;
-                        this.canSlide = options.canSlide;
-                        this.cursor = options.cursor;
-                        this.limitStartMin = options.limitStartMin;
-                        this.limitStartMax = options.limitStartMax;
-                        this.limitEndMin = options.limitEndMin;
-                        this.limitEndMax = options.limitEndMax;
-                        this.unitToPx = options.unitToPx;
-                        this.fixed = options.fixed;
-                        this.locked = options.locked;
-                        this.chartWidth = options.chartWidth;
-                        this.lineWidth = options.lineWidth;
-                        this.snatchInterval = options.snatchInterval;
-                        this.drawerSize = options.drawerSize;
-                        this.bePassedThrough = options.bePassedThrough;
-                        this.pin = options.pin;
-                        this.pruneOnSlide = options.pruneOnSlide;
-                        this.rollup = options.rollup;
-                        this.roundEdge = options.roundEdge;
+                    function DefinedType(options, ruler) {
+                        var self = this;
+                        this.name = self.orElse(options.name);
+                        this.parent = self.orElse(options.parent);
+                        this.title = self.orElse(options.title);
+                        this.lineNo = self.orElse(options.lineNo);
+                        if (_.isFunction(options.color) && options.color.name === "__lg") {
+                            self.color = options.color();
+                            Object.defineProperty(self, "logColor", {
+                                get: function () { return self.color; },
+                                set: function (val) {
+                                    var list = (ruler.definedType[self.name] || {}).list;
+                                    _.forEach(list, function (c) {
+                                        c.style.backgroundColor = val;
+                                    });
+                                    self.color = val;
+                                }
+                            });
+                            options.color = function (val) {
+                                self.logColor = val;
+                            };
+                        }
+                        else {
+                            this.color = options.color;
+                        }
+                        if (_.isFunction(options.zIndex) && options.zIndex.name === "__lg") {
+                            self.zIndex = options.zIndex();
+                            Object.defineProperty(self, "logZIndex", {
+                                get: function () { return self.zIndex; },
+                                set: function (val) {
+                                    var list = (ruler.definedType[self.name] || {}).list;
+                                    _.forEach(list, function (c) {
+                                        c.style.zIndex = val;
+                                    });
+                                    self.zIndex = val;
+                                }
+                            });
+                            options.zIndex = function (val) {
+                                self.logZIndex = val;
+                            };
+                        }
+                        else {
+                            this.zIndex = options.zIndex;
+                        }
+                        if (_.isFunction(options.hide) && options.hide.name === "__lg") {
+                            self.hide = options.hide();
+                            Object.defineProperty(self, "logHide", {
+                                get: function () { return self.hide; },
+                                set: function (val) {
+                                    var list = (ruler.definedType[self.name] || {}).list;
+                                    _.forEach(list, function (c) {
+                                        c.style.display = (val ? "none" : "block");
+                                    });
+                                }
+                            });
+                            options.hide = function (val) {
+                                self.logHide = val;
+                            };
+                        }
+                        else {
+                            self.hide = options.hide;
+                        }
+                        this.followParent = self.orElse(options.followParent);
+                        this.canSlide = self.orElse(options.canSlide);
+                        this.cursor = self.orElse(options.cursor);
+                        this.limitStartMin = self.orElse(options.limitStartMin);
+                        this.limitStartMax = self.orElse(options.limitStartMax);
+                        this.limitEndMin = self.orElse(options.limitEndMin);
+                        this.limitEndMax = self.orElse(options.limitEndMax);
+                        this.unitToPx = self.orElse(options.unitToPx);
+                        this.fixed = self.orElse(options.fixed);
+                        this.locked = self.orElse(options.locked);
+                        this.chartWidth = self.orElse(options.chartWidth);
+                        this.lineWidth = self.orElse(options.lineWidth);
+                        this.snatchInterval = self.orElse(options.snatchInterval);
+                        this.drawerSize = self.orElse(options.drawerSize);
+                        this.bePassedThrough = self.orElse(options.bePassedThrough);
+                        this.pin = self.orElse(options.pin);
+                        this.pruneOnSlide = self.orElse(options.pruneOnSlide);
+                        this.rollup = self.orElse(options.rollup);
+                        this.roundEdge = self.orElse(options.roundEdge);
+                        this.canPaste = self.orElse(options.canPaste);
+                        this.canPasteResize = options.canPasteResize;
                         this.resizeFinished = options.resizeFinished;
                         this.dropFinished = options.dropFinished;
+                        this.pastingResizeFinished = options.pastingResizeFinished;
                     }
+                    DefinedType.prototype.orElse = function (option) {
+                        return _.isFunction(option) ? option() : option;
+                    };
                     return DefinedType;
                 }());
                 var GanttChart = /** @class */ (function () {
@@ -36861,6 +37410,8 @@ var nts;
                         this.pin = false;
                         this.pruneOnSlide = false;
                         this.roundEdge = false;
+                        this.canPaste = false;
+                        this.canPasteResize = false;
                         var self = this;
                         if (!_.keys(options).length)
                             return;
@@ -36889,9 +37440,9 @@ var nts;
                         var self = this, posTop = self.origin[1] + self.lineNo * self.lineWidth + Math.floor((self.lineWidth - self.chartWidth) / 2), posLeft = self.origin[0] + self.start * self.unitToPx, chart = document.createElement("div");
                         chart.setAttribute("id", self.lineNo + "-" + self.id);
                         chart.className = "nts-ganttchart";
-                        chart.style.cssText = "; position: absolute; top: " + posTop + "px; left: " + posLeft + "px; z-index: " + self.zIndex + "; \n                overflow: hidden; white-space: nowrap; width: " + ((self.end - self.start) * self.unitToPx - 1) + "px; height: " + self.chartWidth + "px;\n                background-color: " + self.color + "; cursor: " + self.cursor + "; border: 1px solid #AAB7B8; ";
+                        chart.style.cssText = "; position: absolute; top: " + posTop + "px; left: " + posLeft + "px; z-index: " + self.zIndex + "; \n                overflow: hidden; white-space: nowrap; width: " + ((self.end - self.start) * self.unitToPx - 1) + "px; height: " + self.chartWidth + "px;\n                background-color: " + self.color + "; cursor: " + self.cursor + "; border: 1px solid #AAB7B8; font-size: 13px;";
                         self.html = chart;
-                        self.html.addEventListener("selectstart", function () { return false; });
+                        self.html.onselectstart = function () { return false; };
                     };
                     GanttChart.prototype.reposition = function (style) {
                         var self = this;
@@ -36931,6 +37482,9 @@ var nts;
                 }());
                 var support;
                 (function (support) {
+                    support.GGC = "GHOSTCHART";
+                    document.addEventListenerNS = Element.prototype.addEventListenerNS = addEventListener;
+                    document.removeEventListenerNS = Element.prototype.removeEventListenerNS = removeEventListener;
                     function ChartEvent(name, params) {
                         var evt;
                         params = params || { bubbles: false, cancelable: false, detail: null };
@@ -36944,6 +37498,69 @@ var nts;
                         return evt;
                     }
                     support.ChartEvent = ChartEvent;
+                    function addEventListener(event, cb, opts) {
+                        var self = this;
+                        if (!self.ns)
+                            self.ns = {};
+                        if (!self.ns[event])
+                            self.ns[event] = [cb];
+                        else
+                            self.ns[event].push(cb);
+                        self.addEventListener(event.split(".")[0], cb, opts);
+                    }
+                    ;
+                    function removeEventListener(event, cb) {
+                        var self = this;
+                        if (!self.ns)
+                            return;
+                        if (cb) {
+                            var keys = Object.keys(self.ns).filter(function (k) {
+                                return (k === event || k === event.split(".")[0])
+                                    && self.ns[k].indexOf(cb) > -1;
+                            });
+                            var key = void 0;
+                            if (keys.length > 0) {
+                                key = keys[0];
+                                self.ns[key].splice(self.ns[key].indexOf(cb), 1);
+                                if (self.ns[key].length === 0)
+                                    delete self.ns[key];
+                            }
+                            self.removeEventListener(event.split(".")[0], cb);
+                            return;
+                        }
+                        if (!self.ns[event])
+                            return;
+                        self.ns[event].forEach(function (e) {
+                            self.removeEventListener(event.split(".")[0], e);
+                        });
+                        delete self.ns[event];
+                    }
+                    function underElementFromPoint(pointElm, x, y) {
+                        var pe = pointElm.style.getPropertyValue("pointer-events"), priority = pointElm.style.getPropertyPriority("pointer-events");
+                        pointElm.style.setProperty("pointer-events", "none", "important");
+                        var under = document.elementFromPoint(x, y);
+                        pointElm.style.setProperty("pointer-events", pe, priority);
+                        return under;
+                    }
+                    support.underElementFromPoint = underElementFromPoint;
+                    function replaceAll(text, sym, rep) {
+                        if (_.isNil(text) || _.isNil(sym))
+                            return;
+                        if (typeof String.prototype.replaceAll === "function") {
+                            return text.replaceAll(sym, rep);
+                        }
+                        return text.replace(new RegExp(sym, "g"), rep);
+                    }
+                    support.replaceAll = replaceAll;
+                    function elementsFromPoint(x, y) {
+                        if (typeof document.elementsFromPoint === "function") {
+                            return document.elementsFromPoint(x, y);
+                        }
+                        if (typeof document.msElementsFromPoint === "function") {
+                            return document.msElementsFromPoint(x, y);
+                        }
+                    }
+                    support.elementsFromPoint = elementsFromPoint;
                     function nodeInsertedObserver(elm, cb) {
                         var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
                         if (MutationObserver) {
@@ -36960,7 +37577,463 @@ var nts;
                         elm.addEventListener("DOMNodeInserted", cb);
                     }
                     support.nodeInsertedObserver = nodeInsertedObserver;
+                    function closest(el, selector) {
+                        var matches;
+                        ['matches', 'webkitMatchesSelector', 'mozMatchesSelector', 'msMatchesSelector', 'oMatchesSelector'].some(function (fn) {
+                            if (typeof document.body[fn] === 'function') {
+                                matches = fn;
+                                return true;
+                            }
+                            return false;
+                        });
+                        var parent;
+                        while (el) {
+                            parent = el.parentElement;
+                            if (parent && parent[matches](selector)) {
+                                return parent;
+                            }
+                            el = parent;
+                        }
+                    }
+                    support.closest = closest;
                 })(support || (support = {}));
+                var manipulationMode;
+                (function (manipulationMode) {
+                    var PasteOptions = /** @class */ (function () {
+                        function PasteOptions() {
+                        }
+                        return PasteOptions;
+                    }());
+                    manipulationMode.PasteOptions = PasteOptions;
+                    var Metaholder = /** @class */ (function () {
+                        function Metaholder() {
+                        }
+                        return Metaholder;
+                    }());
+                    manipulationMode.Metaholder = Metaholder;
+                    var Metaresize = /** @class */ (function () {
+                        function Metaresize() {
+                        }
+                        return Metaresize;
+                    }());
+                    manipulationMode.Metaresize = Metaresize;
+                    function pasteMove() {
+                        var self = this;
+                        if (!self.metaholder.isPressed || self.mode === "paste")
+                            return;
+                        var chart = self.metaholder.ancestorChart;
+                        var startLine = chart.start, endLine = chart.end;
+                        if (chart.parent) {
+                            var parent_4 = self.gcChart[chart.lineNo][chart.parent];
+                            self.metaholder.parentChart = parent_4;
+                            if (chart.start < parent_4.start) {
+                                startLine = parent_4.start;
+                            }
+                            if (chart.end > parent_4.end) {
+                                endLine = parent_4.end;
+                            }
+                        }
+                        var offsetLeft = chart.html.getBoundingClientRect().left + document.body.scrollLeft, nearestLine = Math.round((event.pageX - offsetLeft) / chart.unitToPx) + startLine;
+                        if (nearestLine < self.metaholder.start) {
+                            nearestLine = nearestLine - nearestLine % self._getSnatchInterval(chart);
+                            var start = Math.max(nearestLine, startLine);
+                            self.extend(self.metaholder.lineNo, self.metaholder.id, start);
+                            self.metaholder.tempStart = start;
+                        }
+                        else if (nearestLine > self.metaholder.end) {
+                            nearestLine = nearestLine - nearestLine % self._getSnatchInterval(chart) + self._getSnatchInterval(chart);
+                            var end = Math.min(nearestLine, endLine);
+                            self.extend(self.metaholder.lineNo, self.metaholder.id, null, end);
+                            self.metaholder.tempEnd = end;
+                        }
+                        else {
+                            self.extend(self.metaholder.lineNo, self.metaholder.id, self.metaholder.start, self.metaholder.end);
+                            self.metaholder.tempStart = self.metaholder.start;
+                            self.metaholder.tempEnd = self.metaholder.end;
+                        }
+                    }
+                    manipulationMode.pasteMove = pasteMove;
+                    function pasteUp() {
+                        var self = this;
+                        document.removeEventListenerNS("mousemove.paste");
+                        document.removeEventListenerNS("mouseup.paste");
+                        var parent = self.metaholder.parentChart || self.metaholder.ancestorChart;
+                        var target = self.gcChart[self.metaholder.lineNo][self.metaholder.id], removed = [];
+                        _.forEach(parent.children, function (child) {
+                            if (child.id === self.metaholder.id || child.html.style.display === "none")
+                                return;
+                            if (target.start < child.start) {
+                                if (target.end === child.start && child.definedType === target.definedType) {
+                                    target.reposition({ end: child.end, width: (child.end - target.start) * target.unitToPx - 1 });
+                                    self.remove(child, true);
+                                    removed.push(child.id);
+                                }
+                                else if (child.start < target.end && target.end < child.end) {
+                                    if (!child.canPaste) {
+                                        target.reposition({ end: child.start, width: (child.start - target.start) * target.unitToPx - 1 });
+                                    }
+                                    else if (child.definedType !== target.definedType) {
+                                        child.reposition({ start: target.end, left: target.end * child.unitToPx, width: (child.end - target.end) * child.unitToPx - 1 });
+                                    }
+                                    else {
+                                        target.reposition({ end: child.end, width: (child.end - target.start) * child.unitToPx - 1 });
+                                        self.remove(child, true);
+                                        removed.push(child.id);
+                                    }
+                                }
+                                else if (target.end >= child.end && child.canPaste) {
+                                    self.remove(child, true);
+                                    removed.push(child.id);
+                                }
+                            }
+                            else if (target.start === child.start) {
+                                if (target.end < child.end) {
+                                    if (target.definedType !== child.definedType) {
+                                        child.reposition({ start: target.end, left: target.end * child.unitToPx, width: (child.end - target.end) * child.unitToPx - 1 });
+                                    }
+                                    else {
+                                        self.remove(target, true);
+                                        removed.push(target.id);
+                                        return false;
+                                    }
+                                }
+                                else {
+                                    self.remove(child, true);
+                                    removed.push(child.id);
+                                }
+                            }
+                            else if (target.start < child.end) {
+                                if (target.end < child.end) {
+                                    if (target.definedType !== child.definedType) {
+                                        var id = "pgc" + support.replaceAll(uk.util.randomId(), '-', '');
+                                        self.addChartWithType(child.definedType, {
+                                            id: id,
+                                            parent: child.parent,
+                                            start: target.end,
+                                            end: child.end,
+                                            lineNo: child.lineNo,
+                                            color: child.color,
+                                            zIndex: child.zIndex
+                                        });
+                                        child.reposition({ end: target.start, width: (target.start - child.start) * child.unitToPx - 1 });
+                                    }
+                                    else {
+                                        self.remove(target, true);
+                                        removed.push(target.id);
+                                        return false;
+                                    }
+                                }
+                                else {
+                                    if (!child.canPaste) {
+                                        var left = parseFloat(target.html.style.left) - (child.end - target.start) * target.unitToPx;
+                                        target.reposition({ start: child.end, left: left, width: (target.end - child.end) * target.unitToPx - 1 });
+                                    }
+                                    else if (target.definedType !== child.definedType) {
+                                        child.reposition({ end: target.start, width: (target.start - child.start) * child.unitToPx - 1 });
+                                    }
+                                    else {
+                                        child.reposition({ end: target.end, width: (target.end - child.start) * child.unitToPx - 1 });
+                                        self.remove(target, true);
+                                        removed.push(target.id);
+                                        target = child;
+                                    }
+                                }
+                            }
+                            else if (target.start === child.end && target.definedType === child.definedType) {
+                                child.reposition({ end: target.end, width: (target.end - child.start) * child.unitToPx - 1 });
+                                self.remove(target, true);
+                                removed.push(target.id);
+                                target = child;
+                            }
+                        });
+                        if (removed.length > 0) {
+                            removed.forEach(function (r) {
+                                delete self.gcChart[parent.lineNo][r];
+                            });
+                            _.remove(parent.children, function (child) {
+                                return _.some(removed, function (c) { return c === child.id; });
+                            });
+                        }
+                        if (typeof target.pastingResizeFinished === "function") {
+                            target.pastingResizeFinished(target.lineNo, target.definedType, self.metaholder.tempStart, self.metaholder.tempEnd);
+                        }
+                        self.metaholder = {};
+                    }
+                    manipulationMode.pasteUp = pasteUp;
+                    function resizeMove() {
+                        var self = this;
+                        var chart = self.metaresize.chart;
+                        var parent = self.gcChart[chart.lineNo][chart.parent];
+                        if (!parent)
+                            return;
+                        var offsetLeft = self.metaresize.offsetLeft + document.body.scrollLeft, nearestLine = Math.round((event.pageX - offsetLeft) / chart.unitToPx) + self.metaresize.start;
+                        if (nearestLine % self._getSnatchInterval(chart) !== 0)
+                            return;
+                        if (self.metaresize.graspPos === HOLD_POS.END) {
+                            if (nearestLine > self.metaresize.end) {
+                                var cantPasteChart_1;
+                                if (!self.metaresize.adjChart) {
+                                    var minStart_1 = 9999;
+                                    _.forEach(parent.children, function (child) {
+                                        if (child.html.style.display === "none")
+                                            return;
+                                        if (nearestLine >= child.start && self.metaresize.start < child.start && child.start < minStart_1
+                                            && child.id !== chart.id && child.canPaste) {
+                                            self.metaresize.adjChart = child;
+                                            minStart_1 = child.start;
+                                        }
+                                        if (!child.canPaste && nearestLine >= child.start && nearestLine <= child.end) {
+                                            cantPasteChart_1 = child;
+                                        }
+                                    });
+                                }
+                                else {
+                                    _.forEach(parent.children, function (child) {
+                                        if (child.html.style.display === "none")
+                                            return;
+                                        if (!child.canPaste && nearestLine >= child.start && nearestLine <= child.end) {
+                                            cantPasteChart_1 = child;
+                                            return false;
+                                        }
+                                    });
+                                }
+                                if (!self.metaresize.adjChart) {
+                                    var end = Math.min(nearestLine, parent.end);
+                                    if (cantPasteChart_1) {
+                                        end = Math.min(end, cantPasteChart_1.start);
+                                    }
+                                    chart.reposition({ end: end, width: (end - self.metaresize.start) * chart.unitToPx - 1 });
+                                    self.metaresize.tempEnd = end;
+                                }
+                                else if (self.metaresize.chart.definedType !== self.metaresize.adjChart.definedType) {
+                                    var adjChart = self.metaresize.adjChart;
+                                    if (cantPasteChart_1) {
+                                        chart.reposition({ end: cantPasteChart_1.start, width: (cantPasteChart_1.start - self.metaresize.start) * chart.unitToPx - 1 });
+                                        self.metaresize.tempEnd = cantPasteChart_1.start;
+                                        adjChart.reposition({
+                                            start: cantPasteChart_1.end,
+                                            left: parseFloat(adjChart.html.style.left) + (cantPasteChart_1.end - adjChart.start) * adjChart.unitToPx,
+                                            width: (adjChart.end - cantPasteChart_1.end) * adjChart.unitToPx - 1
+                                        });
+                                    }
+                                    else {
+                                        var maxAdjStart = void 0;
+                                        if (adjChart.end % self._getSnatchInterval(adjChart) !== 0) {
+                                            maxAdjStart = adjChart.end - adjChart.end % self._getSnatchInterval(adjChart);
+                                        }
+                                        else {
+                                            maxAdjStart = adjChart.end - self._getSnatchInterval(adjChart);
+                                        }
+                                        var end = Math.min(nearestLine, maxAdjStart, parent.end);
+                                        chart.reposition({ end: end, width: (end - self.metaresize.start) * chart.unitToPx - 1 });
+                                        self.metaresize.tempEnd = end;
+                                        self.metaresize.adjChart.reposition({
+                                            start: end,
+                                            left: parseFloat(adjChart.html.style.left) + (end - adjChart.start) * adjChart.unitToPx,
+                                            width: (adjChart.end - end) * adjChart.unitToPx - 1
+                                        });
+                                    }
+                                }
+                                else {
+                                    var adjChart = self.metaresize.adjChart;
+                                    var end = Math.min(Math.max(nearestLine, adjChart.end), parent.end);
+                                    chart.reposition({ end: end, width: (end - self.metaresize.start) * chart.unitToPx - 1 });
+                                    self.metaresize.tempEnd = end;
+                                    self.remove(adjChart);
+                                }
+                            }
+                            else {
+                                var minEnd = void 0, snatch = self._getSnatchInterval(chart), cantPasteChart_2;
+                                _.forEach(parent.children, function (child) {
+                                    if (child.html.style.display === "none")
+                                        return;
+                                    if (!child.canPaste && child.id !== chart.id && nearestLine >= child.start && nearestLine <= child.end) {
+                                        cantPasteChart_2 = child;
+                                        return false;
+                                    }
+                                });
+                                if (!_.isNil(cantPasteChart_2)) {
+                                    chart.reposition({ end: cantPasteChart_2.start, width: (cantPasteChart_2.start - self.metaresize.start) * chart.unitToPx - 1 });
+                                    self.metaresize.tempEnd = cantPasteChart_2.start;
+                                    if (self.metaresize.adjChart && self.metaresize.adjChart.id !== cantPasteChart_2.id) {
+                                        var adjChart = self.metaresize.adjChart;
+                                        self.metaresize.adjChart.reposition({
+                                            start: cantPasteChart_2.end,
+                                            left: parseFloat(adjChart.html.style.left) - (adjChart.start - cantPasteChart_2.end) * adjChart.unitToPx,
+                                            width: (adjChart.end - cantPasteChart_2.end) * adjChart.unitToPx - 1
+                                        });
+                                    }
+                                }
+                                else {
+                                    if (self.metaresize.start % self._getSnatchInterval(chart) === 0) {
+                                        minEnd = self.metaresize.start + snatch;
+                                    }
+                                    else {
+                                        minEnd = self.metaresize.start + (snatch - (self.metaresize.start % snatch));
+                                    }
+                                    var end = Math.max(nearestLine, minEnd);
+                                    chart.reposition({ end: end, width: (end - self.metaresize.start) * chart.unitToPx - 1 });
+                                    self.metaresize.tempEnd = end;
+                                    if (self.metaresize.adjChart) {
+                                        var adjChart = self.metaresize.adjChart;
+                                        self.metaresize.adjChart.reposition({
+                                            start: end,
+                                            left: parseFloat(adjChart.html.style.left) - (adjChart.start - end) * adjChart.unitToPx,
+                                            width: (adjChart.end - end) * adjChart.unitToPx - 1
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                        else if (self.metaresize.graspPos === HOLD_POS.START) {
+                            if (nearestLine < self.metaresize.start) {
+                                var cantPasteChart_3;
+                                if (!self.metaresize.adjChart) {
+                                    var maxEnd_1 = 0;
+                                    _.forEach(parent.children, function (child) {
+                                        if (child.html.style.display === "none")
+                                            return;
+                                        if (nearestLine <= child.end && child.start < self.metaresize.start && child.end > maxEnd_1
+                                            && child.id !== chart.id && child.canPaste) {
+                                            self.metaresize.adjChart = child;
+                                            maxEnd_1 = child.end;
+                                        }
+                                        if (!child.canPaste && nearestLine >= child.start && nearestLine <= child.end) {
+                                            cantPasteChart_3 = child;
+                                        }
+                                    });
+                                }
+                                else {
+                                    _.forEach(parent.children, function (child) {
+                                        if (child.html.style.display === "none")
+                                            return;
+                                        if (!child.canPaste && nearestLine >= child.start && nearestLine <= child.end) {
+                                            cantPasteChart_3 = child;
+                                            return false;
+                                        }
+                                    });
+                                }
+                                if (!self.metaresize.adjChart) {
+                                    var start = Math.max(nearestLine, parent.start);
+                                    if (cantPasteChart_3) {
+                                        start = Math.max(start, cantPasteChart_3.end);
+                                    }
+                                    chart.reposition({
+                                        start: start,
+                                        left: self.metaresize.left - (self.metaresize.start - start) * chart.unitToPx,
+                                        width: (self.metaresize.end - start) * chart.unitToPx - 1
+                                    });
+                                    self.metaresize.tempStart = start;
+                                }
+                                else if (self.metaresize.chart.definedType !== self.metaresize.adjChart.definedType) {
+                                    var minAdjEnd = void 0, adjChart = self.metaresize.adjChart, snatch = self._getSnatchInterval(chart);
+                                    if (cantPasteChart_3) {
+                                        chart.reposition({
+                                            start: cantPasteChart_3.end,
+                                            left: self.metaresize.left - (self.metaresize.start - cantPasteChart_3.end) * chart.unitToPx,
+                                            width: (self.metaresize.end - cantPasteChart_3.end) * chart.unitToPx - 1
+                                        });
+                                        self.metaresize.tempStart = cantPasteChart_3.end;
+                                        adjChart.reposition({
+                                            end: cantPasteChart_3.start,
+                                            width: (cantPasteChart_3.start - adjChart.start) * adjChart.unitToPx - 1
+                                        });
+                                    }
+                                    else {
+                                        if (adjChart.start % snatch === 0) {
+                                            minAdjEnd = adjChart.start + snatch;
+                                        }
+                                        else {
+                                            minAdjEnd = adjChart.start + (snatch - (adjChart.start % snatch));
+                                        }
+                                        var end = Math.max(nearestLine, minAdjEnd, parent.start);
+                                        chart.reposition({
+                                            start: end,
+                                            left: self.metaresize.left - (self.metaresize.start - end) * chart.unitToPx,
+                                            width: (self.metaresize.end - end) * chart.unitToPx - 1
+                                        });
+                                        self.metaresize.tempStart = end;
+                                        adjChart.reposition({
+                                            end: end,
+                                            width: (end - adjChart.start) * adjChart.unitToPx - 1
+                                        });
+                                    }
+                                }
+                                else {
+                                    var adjChart = self.metaresize.adjChart;
+                                    var start = Math.max(Math.min(nearestLine, adjChart.start), parent.start);
+                                    chart.reposition({
+                                        start: start,
+                                        left: self.metaresize.left - (self.metaresize.start - start) * chart.unitToPx,
+                                        width: (self.metaresize.end - start) * chart.unitToPx - 1
+                                    });
+                                    self.metaresize.tempStart = start;
+                                    self.remove(adjChart);
+                                }
+                            }
+                            else {
+                                var minStart = void 0, snatch = self._getSnatchInterval(chart), cantPasteChart_4;
+                                _.forEach(parent.children, function (child) {
+                                    if (child.html.style.display === "none")
+                                        return;
+                                    if (!child.canPaste && nearestLine >= child.start && nearestLine <= child.end) {
+                                        cantPasteChart_4 = child;
+                                        return false;
+                                    }
+                                });
+                                if (cantPasteChart_4) {
+                                    chart.reposition({
+                                        start: cantPasteChart_4.end,
+                                        left: self.metaresize.left + (cantPasteChart_4.end - self.metaresize.start) * chart.unitToPx,
+                                        width: (self.metaresize.end - cantPasteChart_4.end) * chart.unitToPx - 1
+                                    });
+                                    self.metaresize.tempStart = cantPasteChart_4.end;
+                                    var adjChart = self.metaresize.adjChart;
+                                    if (adjChart) {
+                                        adjChart.reposition({
+                                            end: cantPasteChart_4.start,
+                                            width: (cantPasteChart_4.start - adjChart.start) * adjChart.unitToPx - 1
+                                        });
+                                    }
+                                }
+                                else {
+                                    if (self.metaresize.end % snatch === 0) {
+                                        minStart = self.metaresize.end - snatch;
+                                    }
+                                    else {
+                                        minStart = self.metaresize.end - self.metaresize.end % snatch;
+                                    }
+                                    var start = Math.min(nearestLine, minStart, parent.end);
+                                    chart.reposition({
+                                        start: start,
+                                        left: self.metaresize.left + (start - self.metaresize.start) * chart.unitToPx,
+                                        width: (self.metaresize.end - start) * chart.unitToPx - 1
+                                    });
+                                    self.metaresize.tempStart = start;
+                                    if (self.metaresize.adjChart) {
+                                        var adjChart = self.metaresize.adjChart;
+                                        adjChart.reposition({
+                                            end: start,
+                                            width: (start - adjChart.start) * adjChart.unitToPx - 1
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    manipulationMode.resizeMove = resizeMove;
+                    function resizeUp() {
+                        var self = this;
+                        document.removeEventListenerNS("mousemove.pasteResize");
+                        document.removeEventListenerNS("mouseup.pasteResize");
+                        var chart = self.metaresize.chart;
+                        if (typeof chart.pastingResizeFinished === "function") {
+                            chart.pastingResizeFinished(chart.lineNo, chart.definedType, self.metaresize.tempStart, self.metaresize.tempEnd);
+                        }
+                        self.metaresize = {};
+                    }
+                    manipulationMode.resizeUp = resizeUp;
+                })(manipulationMode || (manipulationMode = {}));
                 var Warn = /** @class */ (function () {
                     function Warn(msg) {
                         this.message = msg;
@@ -37071,8 +38144,8 @@ var nts;
                                 if ($functionsArea.length == 0) {
                                     $functionsArea = $("#functions-area-bottom");
                                     if ($functionsArea.find(".nts-guide-link").length == 0) {
-                                        var top_2 = ($functionsArea.height() - 24) / 2;
-                                        $functionsArea.append(self.link(top_2, self.configs[0]));
+                                        var top_3 = ($functionsArea.height() - 24) / 2;
+                                        $functionsArea.append(self.link(top_3, self.configs[0]));
                                     }
                                     if (!$functionsArea.prev().is(".nts-guide-area")) {
                                         $functionsArea.before(self.textArea(self.configs[0], Position.BOTTOM));
@@ -37080,8 +38153,8 @@ var nts;
                                     return;
                                 }
                                 if ($functionsArea.find(".nts-guide-link").length == 0) {
-                                    var top_3 = ($functionsArea.height() - 22) / 2;
-                                    $functionsArea.append(self.link(top_3, self.configs[0]));
+                                    var top_4 = ($functionsArea.height() - 22) / 2;
+                                    $functionsArea.append(self.link(top_4, self.configs[0]));
                                 }
                                 if (!$functionsArea.next().is(".nts-guide-area")) {
                                     $functionsArea.after(self.textArea(self.configs[0]));
@@ -37092,8 +38165,8 @@ var nts;
                                     var $tab = $("#" + tabConfig.tabId);
                                     var $contentHeader = $tab.find(".sidebar-content-header");
                                     if ($contentHeader.find(".nts-guide-link").length == 0) {
-                                        var top_4 = ($contentHeader.height() - 18) / 2;
-                                        $contentHeader.append(self.link(top_4, tabConfig));
+                                        var top_5 = ($contentHeader.height() - 18) / 2;
+                                        $contentHeader.append(self.link(top_5, tabConfig));
                                     }
                                     if (!$contentHeader.next().is(".nts-guide-area")) {
                                         $contentHeader.after(self.textArea(tabConfig));
@@ -37132,13 +38205,6 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="./viewcontext.d.ts" />
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 /** Create new ViewModel and automatic binding to __viewContext */
 function bean(dialogOption) {
     return function (ctor) {
@@ -37313,13 +38379,13 @@ function component(options) {
 }
 function handler(params) {
     return function (constructor) {
-        var _a;
         ko.bindingHandlers[params.bindingName] = new constructor();
         ko.virtualElements.allowedBindings[params.bindingName] = !!params.virtual;
         // block rewrite binding
         if (params.validatable) {
             ko.utils.extend(ko.expressionRewriting.bindingRewriteValidators, (_a = {}, _a[params.bindingName] = false, _a));
         }
+        var _a;
     };
 }
 var nts;
@@ -37687,7 +38753,6 @@ var nts;
                                     .resolve(true)
                                     .then(function () {
                                     return $storeSession(name, params)
-                                        // for old page
                                         .then(function () { return windows.setShared(name, params); });
                                 })
                                     .then(function () { return $storeSession(name); });
@@ -37735,7 +38800,6 @@ var nts;
                             return $.Deferred()
                                 .resolve(true)
                                 .then(function () { return $('.nts-input').ntsError('clear'); })
-                                // if some element remove before clear func call
                                 .then(function () { return kvm.errorDialogViewModel.errors([]); })
                                 .then(function () { return !$('.nts-input').ntsError('hasError'); });
                         }
@@ -37793,7 +38857,6 @@ var nts;
                     }
                     return $.Deferred()
                         .resolve(true)
-                        /** Nếu có lỗi thì trả về false, không thì true */
                         .then(function () { return !$('.nts-input').ntsError('hasError'); });
                     ;
                 };
@@ -37803,9 +38866,7 @@ var nts;
                     if (args.length === 0) {
                         return $.Deferred()
                             .resolve(true)
-                            /** Gọi xử lý validate của kiban */
                             .then(function () { return $('.nts-input').trigger("validate"); })
-                            /** Nếu có lỗi thì trả về false, không thì true */
                             .then(function () { return !$('.nts-input').ntsError('hasError'); });
                     }
                     else if (args.length === 1) {
@@ -37818,18 +38879,14 @@ var nts;
                         }
                         return $.Deferred()
                             .resolve(true)
-                            /** Gọi xử lý validate của kiban */
                             .then(function () { return $(selectors_1).trigger("validate"); })
-                            /** Nếu có lỗi thì trả về false, không thì true */
                             .then(function () { return !$(selectors_1).ntsError('hasError'); });
                     }
                     else {
                         var selectors_2 = args.join(', ');
                         return $.Deferred()
                             .resolve(true)
-                            /** Gọi xử lý validate của kiban */
                             .then(function () { return $(selectors_2).trigger("validate"); })
-                            /** Nếu có lỗi thì trả về false, không thì true */
                             .then(function () { return !$(selectors_2).ntsError('hasError'); });
                     }
                 };
@@ -39215,8 +40272,7 @@ var nts;
                         var currentColumns = $grid.igGrid("option", "columns");
                         currentColumns.push({
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                            width: 60,
-                            formatter: function createButton(deleteField, row) {
+                            width: 60, formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
                                 var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);
@@ -39395,7 +40451,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
+                            var isIE = false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -45398,7 +46454,7 @@ var nts;
                             if (!loader) {
                                 $grid.data(internal.LOADER, new Loader(demandLoadFt.allKeysPath, demandLoadFt.pageRecordsPath));
                             }
-                            else if (loader.keys) { // Switch sheet
+                            else if (loader.keys) {
                                 pageSize = setting.pageSize;
                                 return false;
                             }
@@ -46221,7 +47277,7 @@ var nts;
                             $(window).on("mousedown.popup", function (e) {
                                 if (!$(e.target).is(control) // Target isn't Popup
                                     && control.has(e.target).length === 0 // Target isn't Popup's children
-                                    && !$(e.target).is(setting.trigger)) { // Target isn't Trigger element
+                                    && !$(e.target).is(setting.trigger)) {
                                     hide(control);
                                 }
                             });
@@ -50674,7 +51730,6 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                             if (sourceParent) {
                                 $(sourceParent === targetParent ? this : ui.sender || this).sortable("cancel");
                             }
-                            //for a draggable item just remove the element
                             else {
                                 $(el).remove();
                             }
@@ -50702,7 +51757,7 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                                 //rendering is handled by manipulating the observableArray; ignore dropped element
                                 self.dataSet(el, self.ITEMKEY, null);
                             }
-                            else { //employ the strategy of moving items
+                            else {
                                 if (targetIndex >= 0) {
                                     if (sourceParent) {
                                         if (sourceParent !== targetParent) {
@@ -50806,7 +51861,6 @@ var nts;
                             var $element = $(element);
                             var rounded = valueAccessor();
                             $element
-                                // prevent tabable to out of popup control
                                 .on("keydown", ":tabbable", function (evt) {
                                 if (ko.unwrap(rounded)) {
                                     var fable = $element
@@ -51201,7 +52255,6 @@ var nts;
                                 }
                             })
                                 .find('.ui-resizable-s')
-                                // support quick toggle widget height
                                 .on('dblclick', function () {
                                 var fx = element.style.height;
                                 mkv

@@ -34,7 +34,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
