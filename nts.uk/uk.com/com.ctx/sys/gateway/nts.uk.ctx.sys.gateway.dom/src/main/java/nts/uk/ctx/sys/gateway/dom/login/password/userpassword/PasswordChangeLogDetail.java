@@ -16,7 +16,7 @@ public class PasswordChangeLogDetail implements DomainValue {
 	private final GeneralDateTime changedDateTime;
 	
 	/** パスワード */
-	private final String hashedPassword;
+	private final HashedLoginPassword hashedPassword;
 	
 	/**
 	 * 日齢
