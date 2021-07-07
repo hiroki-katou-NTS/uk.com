@@ -104,7 +104,7 @@ module nts.uk.at.view.kwr003.b {
         vm.shareParam.itemNameLine.displayFlag = vm.isDisplayItemName();
         vm.shareParam.itemNameLine.displayInputCategory = 1;
         vm.shareParam.itemNameLine.name = vm.attendanceItemName();
-        vm.shareParam.attribute.selectionCategory = 1;
+        vm.shareParam.attribute.selectionCategory = 2;
         vm.shareParam.attribute.selected = vm.comboSelected();
         vm.shareParam.selectedTime = vm.tableSelected();
         vm.shareParam.attendanceItems = vm.diligenceProjects();

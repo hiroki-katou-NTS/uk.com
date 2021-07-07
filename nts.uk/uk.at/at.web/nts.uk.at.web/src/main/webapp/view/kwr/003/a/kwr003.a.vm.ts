@@ -12,6 +12,7 @@ module nts.uk.at.view.kwr003.a {
     exportExcelPDF: 'at/function/kwr/003/report/export',
     getSettingListWorkStatus: 'at/function/kwr/003/a/listworkstatus',
     checkDailyAuthor: 'at/function/kwr/checkdailyauthor',
+      getInitDateLoginEmployee:'at/function/kwr/initdateloginemployee'
   };
 
   @bean()
@@ -23,7 +24,7 @@ module nts.uk.at.view.kwr003.a {
     // end variable of CCG001
 
     //panel left
-    dpkYearMonth: KnockoutObservable<string> = ko.observable(moment().format('YYYYMM'));
+    dpkYearMonth: KnockoutObservable<string> = ko.observable(null);
 
     //panel right
     rdgSelectedId: KnockoutObservable<number> = ko.observable(0);
@@ -65,8 +66,10 @@ module nts.uk.at.view.kwr003.a {
     constructor(params: any) {
       super();
       const vm = this;
-
-
+        vm.$ajax(PATH.getInitDateLoginEmployee).done((data) => {
+          if(!_.isNil(data))
+            vm.dpkYearMonth(data);
+        });
       //パラメータ.就業担当者であるか = true || false
       vm.isWorker(vm.$user.role.isInCharge.attendance);
 
@@ -237,7 +240,7 @@ module nts.uk.at.view.kwr003.a {
         code: null, //項目選択コード
         name: null,
         settingId: null,
-        standOrFree: vm.rdgSelectedId() //設定区分								
+        standOrFree: vm.rdgSelectedId() //設定区分
       }
 
       if (!_.isNil(attendence) && !_.isNil(attendence.code)) {
@@ -245,7 +248,7 @@ module nts.uk.at.view.kwr003.a {
           code: attendence.code, //項目選択コード
           name: attendence.name,
           settingId: attendence.id,
-          standOrFree: vm.rdgSelectedId() //設定区分								
+          standOrFree: vm.rdgSelectedId() //設定区分
         }
       }
 
@@ -260,14 +263,14 @@ module nts.uk.at.view.kwr003.a {
 
     /**
      * Gets setting listwork status
-     * @param type 
+     * @param type
      * 定型選択	: 0
      * 自由設定 : 1
      */
     getSettingListWorkStatus(type: number, dataFromB?: any) {
       const vm = this;
       let listWorkStatus: Array<ItemModel> = [];
-      //定型選択		
+      //定型選択
       vm.$ajax(PATH.getSettingListWorkStatus, { setting: type }).done((data) => {
         if (!_.isNil(data)) {
           let selectedCode: any = null;
@@ -320,7 +323,7 @@ module nts.uk.at.view.kwr003.a {
         hasError.focusId = 'kcp005';
         return hasError;
       }
-      //自由設定が選択されていません。 
+      //自由設定が選択されていません。
       if (vm.rdgSelectedId() === 1 && nts.uk.util.isNullOrEmpty(vm.freeSelectedCode())) {
         vm.$dialog.error({ messageId: 'Msg_1815' }).then(() => { });
 
@@ -329,7 +332,7 @@ module nts.uk.at.view.kwr003.a {
         //$('#' + hasError.focusId).ntsError('check');
         return hasError;
       }
-      //定型選択が選択されていません。 
+      //定型選択が選択されていません。
       if (vm.rdgSelectedId() === 0 && nts.uk.util.isNullOrEmpty(vm.standardSelectedCode())) {
         vm.$dialog.error({ messageId: 'Msg_1818' }).then(() => { });
         hasError.error = true;
@@ -365,7 +368,7 @@ module nts.uk.at.view.kwr003.a {
         return;
       }
 
-      //save conditions 
+      //save conditions
       let multiSelectedCode: Array<string> = vm.multiSelectedCode();
       let lstEmployeeIds: Array<string> = [];
       _.forEach(multiSelectedCode, (employeeCode) => {
@@ -388,7 +391,7 @@ module nts.uk.at.view.kwr003.a {
         let params = {
           mode: mode, //ExcelPdf区分
           lstEmpIds: lstEmployeeIds, //社員リスト
-          targetDate: vm.dpkYearMonth(), //対象年月,          
+          targetDate: vm.dpkYearMonth(), //対象年月,
           isZeroDisplay: vm.zeroDisplayClassification() ? true : false,//ゼロ表示区分選択肢
           pageBreak: vm.pageBreakSpecification() ? true : false, //改ページ指定選択肢,
           standardFreeClassification: vm.rdgSelectedId(), //自由設定: A5_4_2   || 定型選択 : A5_3_2,
@@ -399,7 +402,7 @@ module nts.uk.at.view.kwr003.a {
         nts.uk.request.exportFile(PATH.exportExcelPDF, params).done((response) => {
           vm.$blockui('hide');
         }).fail((err) => {
-          vm.$dialog.error({ messageId: err.messageId }).then(() => { //'Msg_1816' 
+          vm.$dialog.error({ messageId: err.messageId }).then(() => { //'Msg_1816'
             vm.$blockui('hide');
             if (mode === 1)
               $('#btnExportExcel').focus();
@@ -440,7 +443,7 @@ module nts.uk.at.view.kwr003.a {
         employeeId: string = vm.$user.employeeId;
 
       let storageKey: string = KWR003_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
-     
+
       vm.$window.storage(storageKey).then((data: WorkScheduleOutputConditions) => {
         if (!_.isNil(data)) {
           let standardCode = _.find(vm.settingListItems1(), ['code', data.standardSelectedCode]);

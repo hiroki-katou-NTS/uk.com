@@ -2,6 +2,7 @@
 
 module nts.uk.at.view.kwr004.a {
   import common = nts.uk.at.view.kwr004.common;
+    import getProcessingDate = nts.uk.at.kaf021.common.getProcessingDate;
 
 
   const WORK_STATUS = 'WorkStatus';
@@ -13,6 +14,7 @@ module nts.uk.at.view.kwr004.a {
     getPermission51: 'at/screen/kwr004/a/initScreen',
     exportExcel: 'at/function/kwr004/report/export',
     getSettingList: 'at/screen/kwr004/a/getSetting',
+      getInitDateLoginEmployee:'at/function/kwr/initdateloginemployee'
   };
 
   @bean()
@@ -68,14 +70,13 @@ module nts.uk.at.view.kwr004.a {
       super();
       const vm = this;
       vm.enum = __viewContext.enums.SettingClassificationCommon;
-
       let companyId: string = vm.$user.companyId,
         employeeId: string = vm.$user.employeeId;
       const storageKey: string = KWR004_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
       vm.storageKey(storageKey);
 
       //get settings for Stand or Free
-      vm.getSettingListItems(0); //定型選択      
+      vm.getSettingListItems(0); //定型選択
       vm.getSettingListItems(1); //自由設定
 
       vm.rdgSelectedId.subscribe((value) => {
@@ -291,20 +292,26 @@ module nts.uk.at.view.kwr004.a {
               name: vm.$i18n('KWR004_15'),
               enable: result.hasAuthority
             });
+              vm.$ajax(PATH.getInitDateLoginEmployee).done((data) => {
+                  if(!_.isNil(data))
+                      vm.dpkYearMonth(data);
+                  let date = data + '01';
+                  let processingDate = moment(date,"YYYY/MM/DD").toDate();
+                  let yearInit = null;
+                  //システム日付の月　＜　期首月　
 
-            //システム日付の月　＜　期首月　
-            if (_.toInteger(result.startMonth) > _.toInteger(moment().format('MM'))) {
-              endDate = moment(currentYear + '/' + result.startMonth + '/01').toDate();
-              startDate = moment(endDate).subtract(1, 'year').add(1, 'month').toDate();
-            } else { //システム日付の月　＞=　期首月　
-              startDate = moment(currentYear + '/' + result.startMonth + '/01').toDate();
-              endDate = moment(startDate).add(1, 'year').subtract(1, 'month').toDate();
-            }
-
-            vm.periodDate({
-              startDate: startDate,
-              endDate: endDate
-            });
+                  if (_.toInteger(result.startMonth) > _.toInteger(processingDate.getMonth())) {
+                      yearInit = processingDate.getFullYear() -1;
+                  } else { //システム日付の月　＞=　期首月　
+                      yearInit = processingDate.getFullYear();
+                  }
+                  startDate = moment(yearInit + '/' + result.startMonth + '/01').toDate();
+                  endDate = moment(startDate).add(11, 'month').toDate();
+                  vm.periodDate({
+                      startDate: startDate,
+                      endDate: endDate
+                  });
+              });
           }
         })
         .fail();
@@ -350,7 +357,7 @@ module nts.uk.at.view.kwr004.a {
         return;
       }
 
-      //save conditions 
+      //save conditions
       let multiSelectedCode: Array<string> = vm.multiSelectedCode();
       let lstEmployeeIds: Array<string> = [];
       _.forEach(multiSelectedCode, (employeeCode) => {
@@ -374,7 +381,7 @@ module nts.uk.at.view.kwr004.a {
         let params = {
           mode: 2, // ExcelPdf区分: 1 - PDF, 2 - EXCEL
           lstEmpIds: lstEmployeeIds, //社員リスト
-          startMonth: moment(vm.periodDate().startDate).format('YYYYMM'), //期間入力 - 開始月   
+          startMonth: moment(vm.periodDate().startDate).format('YYYYMM'), //期間入力 - 開始月
           endMonth: moment(vm.periodDate().endDate).format('YYYYMM'),//期間入力 - 終了月
           isZeroDisplay: vm.zeroDisplayClassification() ? true : false,//ゼロ表示区分選択肢
           settingId: settingId, //ゼロ表示区分選択肢
@@ -411,7 +418,7 @@ module nts.uk.at.view.kwr004.a {
         hasError.focusId = 'kcp005';
         return hasError;
       }
-      //自由設定が選択されていません。 
+      //自由設定が選択されていません。
       if (vm.rdgSelectedId() === 1 && nts.uk.util.isNullOrEmpty(vm.freeSelectedCode())) {
         vm.$dialog.error({ messageId: 'Msg_1864' }).then(() => { });
 
@@ -420,7 +427,7 @@ module nts.uk.at.view.kwr004.a {
         //$('#' + hasError.focusId).ntsError('check');
         return hasError;
       }
-      //定型選択が選択されていません。 
+      //定型選択が選択されていません。
       if (vm.rdgSelectedId() === 0 && nts.uk.util.isNullOrEmpty(vm.standardSelectedCode())) {
         vm.$dialog.error({ messageId: 'Msg_1863' }).then(() => { });
         hasError.error = true;
@@ -454,7 +461,7 @@ module nts.uk.at.view.kwr004.a {
     getWorkScheduleOutputConditions() {
       const vm = this;
       const key = vm.storageKey();
-      
+
       vm.$window.storage(key).then((data: any) => {
         if (!_.isNil(data)) {
           let standardCode = _.find(vm.settingListItems1(), ['code', data.standardSelectedCode]);

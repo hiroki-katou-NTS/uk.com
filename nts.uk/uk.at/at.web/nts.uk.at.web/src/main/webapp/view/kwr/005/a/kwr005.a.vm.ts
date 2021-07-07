@@ -11,6 +11,7 @@ module nts.uk.at.view.kwr005.a {
     getSettingListWorkStatus: 'at/function/kwr/005/a/listworkledger',
     checkDailyAuthor: 'at/function/kwr/checkdailyauthor',
     getStartFromMonthly: 'at/function/kwr/005/a/beginningmonth',
+      getInitDateLoginEmployee:'at/function/kwr/initdateloginemployee'
     //getInit: 'at/screen/kwr/005/b/getinfor',    
   };
 
@@ -487,15 +488,26 @@ module nts.uk.at.view.kwr005.a {
       vm.$ajax(PATH.getStartFromMonthly)
         .done((result) => {
           if (result && _.isNumber(result.startMonth)) {
-            //システム日付の月　＜　期首月　
-            const startMonth = _.toInteger(result.startMonth);
-            if (startMonth > _.toInteger(moment().format('MM'))) {
-              endDate = moment(currentYear + '/' + startMonth + '/01').toDate();
-              startDate = moment(endDate).subtract(1, 'year').add(1, 'month').toDate();
-            } else { //システム日付の月　＞=　期首月　
-              startDate = moment(currentYear + '/' + startMonth + '/01').toDate();
-              endDate = moment(startDate).add(1, 'year').subtract(1, 'month').toDate();
-            }
+              vm.$ajax(PATH.getInitDateLoginEmployee).done((data) => {
+                  if(!_.isNil(data))
+                      vm.dpkYearMonth(data);
+                  let date = data + '01';
+                  let processingDate = moment(date,"YYYY/MM/DD").toDate();
+                  let yearInit = null;
+                  //システム日付の月　＜　期首月　
+
+                  if (_.toInteger(result.startMonth) > _.toInteger(processingDate.getMonth())) {
+                      yearInit = processingDate.getFullYear() -1;
+                  } else { //システム日付の月　＞=　期首月　
+                      yearInit = processingDate.getFullYear();
+                  }
+                  startDate = moment(yearInit + '/' + result.startMonth + '/01').toDate();
+                  endDate = moment(startDate).add(11, 'month').toDate();
+                  vm.periodDate({
+                      startDate: startDate,
+                      endDate: endDate
+                  });
+              });
 
             vm.periodDate({
               startDate: startDate,
