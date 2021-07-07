@@ -2460,7 +2460,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 read: () => {
                     const validRange = ko.unwrap<DateRangeInput>(params.validRange);
 
-                    vm.calendar.setOption('validRange', validRange);
+                    vm.calendar.setOption('validRange', {end: '9999-12-32'});
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
