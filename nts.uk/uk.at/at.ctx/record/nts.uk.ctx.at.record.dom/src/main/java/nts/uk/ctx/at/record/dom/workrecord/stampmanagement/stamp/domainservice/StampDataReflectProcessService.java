@@ -4,10 +4,14 @@ import java.util.Optional;
 
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
+//import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
@@ -23,22 +27,43 @@ public class StampDataReflectProcessService {
 	// [1] 反映する
 	public static StampDataReflectResult reflect(Require require, Optional<String> employeeId, StampRecord stampRecord,
 			Optional<Stamp> stamp) {
-		//$反映対象日 = [prv-3] いつの日別実績に反映するか(require, 社員ID, 打刻)		
-		Optional<GeneralDate> reflectDate = reflectDailyResult(require, employeeId, stamp);
-		// $AtomTask = AtomTask:
-		AtomTask atomTask = AtomTask.of(() -> {
-			// require.打刻記録を追加する(打刻記録)
-			require.insert(stampRecord);
-			//prv-1] 弁当を自動予約する(打刻)
-			automaticallyBook(stampRecord, stamp);
-			//if not 打刻.isEmpty
-			if (stamp.isPresent()) {
-				require.insert(stamp.get());
-			}
+		
+		//	$打刻記録
+		if (require.getStampRecord(stampRecord.getContractCode(), stampRecord.getStampNumber(),
+				stampRecord.getStampDateTime()).isPresent()) {
+			return new StampDataReflectResult(Optional.empty(), AtomTask.none());
+		}
+		
+		if (employeeId.isPresent()) {
+			// $反映対象日 = [prv-3] いつの日別実績に反映するか(require, 社員ID, 打刻)
+			Optional<GeneralDate> reflectDate = reflectDailyResult(require, employeeId, stamp);
+			// $AtomTask = AtomTask:
+			AtomTask atomTask = AtomTask.of(() -> {
+				// require.打刻記録を追加する(打刻記録)
+				require.insert(stampRecord);
+				// prv-1] 弁当を自動予約する(打刻)
+				automaticallyBook(stampRecord, stamp);
+				// if not 打刻.isEmpty
+				if (stamp.isPresent()) {
+					require.insert(stamp.get());
+				}
 
-		});
-		// return 打刻データ反映処理結果#打刻データ反映処理結果($反映対象日, $AtomTask)
-		return new StampDataReflectResult(reflectDate, atomTask);
+			});
+			// return 打刻データ反映処理結果#打刻データ反映処理結果($反映対象日, $AtomTask)
+			return new StampDataReflectResult(reflectDate, atomTask);
+		} else {
+
+			AtomTask atomTask = AtomTask.of(() -> {
+				// require.打刻記録を追加する(打刻記録)
+				require.insert(stampRecord);
+				// if not 打刻.isEmpty
+				if (stamp.isPresent()) {
+					require.insert(stamp.get());
+				}
+
+			});
+			return new StampDataReflectResult(Optional.empty(), atomTask);
+		}
 	}
 
 	/**
@@ -90,6 +115,10 @@ public class StampDataReflectProcessService {
 		public OutputCreateDailyResult createDataNewNotAsync(String employeeId,
 				DatePeriod periodTime, ExecutionAttr executionAttr, String companyId,
 				ExecutionTypeDaily executionType,Optional<EmpCalAndSumExeLog> empCalAndSumExeLog, Optional<Boolean> checkLock);
+		
+		//[R-4] 打刻記録を取得する
+		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
+				GeneralDateTime dateTime);
 
 	}
 }

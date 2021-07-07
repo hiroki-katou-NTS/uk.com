@@ -133,8 +133,6 @@ public class TemporarilyReflectStampDailyAttd {
 			break;
 		case START_OF_SUPPORT:
 		case END_OF_SUPPORT:	
-		case SUPPORT:
-		case TEMPORARY_SUPPORT_WORK:
 			//応援開始 OR 応援終了　OR　応援出勤　OR 臨時+応援出勤
 		reflectStampSupport.reflect(stamp, integrationOfDaily, stampReflectRangeOutput);
 			return listErrorMessageInfo;

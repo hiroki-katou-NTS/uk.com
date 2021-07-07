@@ -1,13 +1,9 @@
 package nts.uk.ctx.at.function.app.nrl.request;
 
-import java.util.Optional;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.tuple.Pair;
-
-import nts.arc.task.tran.AtomTask;
+import lombok.val;
 import nts.uk.ctx.at.function.app.nrl.Command;
 import nts.uk.ctx.at.function.app.nrl.DefaultValue;
 import nts.uk.ctx.at.function.app.nrl.data.ExchangeStruct;
@@ -16,10 +12,10 @@ import nts.uk.ctx.at.function.app.nrl.data.FieldName;
 import nts.uk.ctx.at.function.app.nrl.data.checker.FormatPattern;
 import nts.uk.ctx.at.function.app.nrl.exceptions.ErrorCode;
 import nts.uk.ctx.at.function.app.nrl.exceptions.InvalidFieldDataException;
+import nts.uk.ctx.at.function.app.nrl.response.NRLResponse;
 import nts.uk.ctx.at.function.app.nrl.xml.Element;
 import nts.uk.ctx.at.function.app.nrl.xml.Frame;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.ConvertTimeRecordStampAdapter;
-import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.StampDataReflectResultImport;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.StampReceptionDataImport;
 
 /**
@@ -82,12 +78,18 @@ public class TimeIORequest extends NRLRequest<Frame> {
 							.time(record.get(FieldName.HM)).overTimeHours(record.get(FieldName.IO_OTTIME))
 							.midnightTime(record.get(FieldName.IO_MIDNIGHTOT)).build();
 			
-			Pair<Optional<AtomTask>, Optional<StampDataReflectResultImport>> result = convertTRStampAdapter
+			val  result = convertTRStampAdapter
 					.convertData(empInfoTerCode, contractCode, stamData);
-			if (result.getLeft().isPresent())
-				result.getLeft().get().run();
-			if (result.getRight().isPresent())
-				result.getRight().get().getAtomTask().run();
+			if (!result.isPresent()) {
+				context.setResponse(NRLResponse
+						.noAccept(context.getTerminal().getNrlNo(), context.getTerminal().getMacAddress(), contractCode)
+						.build().addPayload(Frame.class, ErrorCode.PARAM.value));
+				return;
+			}
+			if (result.get().getLeft().isPresent())
+				result.get().getLeft().get().run();
+			if (result.get().getRight().isPresent())
+				result.get().getRight().get().getAtomTask().run();
 		}
 		
 		context.responseAccept();

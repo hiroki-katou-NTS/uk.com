@@ -10,6 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
@@ -17,19 +18,17 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ConvertEmbossCategory;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.CreateStampInfo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSerialNo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal.EmpInfoTerminalBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.FullIpAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MonitorIntervalTime;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.NRConvertInfo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.OutPlaceConvert;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.PartialIpAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting.ReqSettingBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.StampReceptionData;
@@ -40,6 +39,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.net.Ipv4Address;
 
@@ -67,11 +67,15 @@ public class ConvertTimeRecordStampServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
+		CreateStampInfo temFix = new CreateStampInfo(
+				new NRConvertInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.of(GoingOutReason.PRIVATE)),
+						NotUseAtr.NOT_USE),
+				Optional.empty(), Optional.empty());
+		
 		empInfoTer = Optional.of(new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")),
 				new MacAddress("AABBCCDD"), new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")),
 				new EmpInfoTerminalName(""), new ContractCode("1"))
-						.createStampInfo(new CreateStampInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.empty()),
-								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty(), Optional.empty()))
+						.createStampInfo(temFix)
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build());
 	}
 
@@ -79,10 +83,9 @@ public class ConvertTimeRecordStampServiceTest {
 	public void testEmpInfoTerNoPresent() {
 		StampReceptionData dataNR = new StampDataBuilder("1", "A", "1", "A", "200303", "01").time("0101")
 				.overTimeHours("1101").midnightTime("1201").build();
-		Pair<Optional<AtomTask>, Optional<StampDataReflectResult>> resultActual = ConvertTimeRecordStampService
+		val resultActual = ConvertTimeRecordStampService
 				.convertData(require, empInfoTerCode, contractCode, dataNR);
-		assertThat(resultActual.getLeft()).isEqualTo(Optional.empty());
-		assertThat(resultActual.getRight()).isEqualTo(Optional.empty());
+		assertThat(resultActual).isEmpty();
 
 	}
 
@@ -105,10 +108,9 @@ public class ConvertTimeRecordStampServiceTest {
 			}
 		};
 
-		Pair<Optional<AtomTask>, Optional<StampDataReflectResult>> resultActual = ConvertTimeRecordStampService
+		Optional<Pair<Optional<AtomTask>, Optional<StampDataReflectResult>>> resultActual = ConvertTimeRecordStampService
 				.convertData(require, empInfoTerCode, contractCode, dataNR);
-		assertThat(resultActual.getLeft()).isEqualTo(Optional.empty());
-		assertThat(resultActual.getRight()).isEqualTo(Optional.empty());
+		assertThat(resultActual).isEmpty();
 
 	}
 
@@ -138,10 +140,9 @@ public class ConvertTimeRecordStampServiceTest {
 			}
 		};
 
-		Pair<Optional<AtomTask>, Optional<StampDataReflectResult>> resultActual = ConvertTimeRecordStampService
+		val resultActual = ConvertTimeRecordStampService
 				.convertData(require, empInfoTerCode, contractCode, dataNR);
-		assertThat(resultActual.getLeft()).isEqualTo(Optional.empty());
-		assertThat(resultActual.getRight()).isEqualTo(Optional.empty());
+		assertThat(resultActual.get().getLeft()).isEmpty();
 
 	}
 
@@ -164,10 +165,9 @@ public class ConvertTimeRecordStampServiceTest {
 			}
 		};
 
-		Pair<Optional<AtomTask>, Optional<StampDataReflectResult>> resultActual = ConvertTimeRecordStampService
+		val resultActual = ConvertTimeRecordStampService
 				.convertData(require, empInfoTerCode, contractCode, dataNR);
-		assertThat(resultActual.getLeft()).isEqualTo(Optional.empty());
-		assertThat(resultActual.getRight()).isEqualTo(Optional.empty());
+		assertThat(resultActual.get().getLeft()).isEmpty();
 
 	}
 
@@ -196,10 +196,10 @@ public class ConvertTimeRecordStampServiceTest {
 			}
 		};
 
-		Pair<Optional<AtomTask>, Optional<StampDataReflectResult>> resultActual = ConvertTimeRecordStampService
+		val resultActual = ConvertTimeRecordStampService
 				.convertData(require, empInfoTerCode, contractCode, dataNR);
-		assertThat(resultActual.getLeft()).isEqualTo(Optional.empty());
-		NtsAssert.atomTask(() -> resultActual.getRight().get().getAtomTask(),
+		assertThat(resultActual.get().getLeft()).isEqualTo(Optional.empty());
+		NtsAssert.atomTask(() -> resultActual.get().getRight().get().getAtomTask(),
 				any -> require.insert((StampRecord) (any.get())), any -> require.insert((Stamp) (any.get())));
 	}
 }

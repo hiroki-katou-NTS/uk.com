@@ -29,7 +29,7 @@ public class SendReasonApplicationService {
 
 		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 
-		if (!requestSetting.isPresent() || requestSetting.get().isApplicationReason())
+		if (!requestSetting.isPresent())
 			return Collections.emptyList();
 
 		List<ApplicationReasonRc> lstAppReason = require.getReasonByAppType(requestSetting.get().getCompanyId().v(),

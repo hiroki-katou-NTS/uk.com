@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
@@ -23,8 +24,10 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdail
 import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.TemporarilyReflectStampDailyAttd;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.EnterStampForSharedStampService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
@@ -230,6 +233,12 @@ public class RegisterNameSelectionCommandHandler
 		public List<ErrorMessageInfo> reflectStamp(Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
 				IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt) {
 			return this.temporarilyReflectStampDailyAttd.reflectStamp(stamp, stampReflectRangeOutput, integrationOfDaily, changeDailyAtt);
+		}
+		
+		@Override
+		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
+				GeneralDateTime dateTime) {
+			return stampRecordRepo.get(contractCode.v(), stampNumber.v(), dateTime);
 		}
 	}
 }

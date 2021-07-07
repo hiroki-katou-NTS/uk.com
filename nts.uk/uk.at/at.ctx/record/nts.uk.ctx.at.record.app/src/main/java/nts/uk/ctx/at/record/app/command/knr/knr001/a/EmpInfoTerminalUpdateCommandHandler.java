@@ -8,20 +8,17 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ConvertEmbossCategory;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.CreateStampInfo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerMemo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSerialNo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.FullIpAddress;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.IPAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MonitorIntervalTime;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.NRConvertInfo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.OutPlaceConvert;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.PartialIpAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.EmpInfoTerminalRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
@@ -48,6 +45,12 @@ public class EmpInfoTerminalUpdateCommandHandler extends CommandHandler<EmpInfoT
 
 		EmpInfoTerminalResgiterAndUpdateCommand command = context.getCommand();
 
+		//TODO: set value to dto (temporary fixed) #20210520
+		CreateStampInfo temFix = new CreateStampInfo(
+				new NRConvertInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.of(GoingOutReason.PRIVATE)),
+						NotUseAtr.NOT_USE),
+				Optional.ofNullable(command.getWorkLocationCode() == null ? null
+						: new WorkLocationCD(command.getWorkLocationCode())), Optional.empty());
 		// 5: set()
 		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminal.EmpInfoTerminalBuilder(
 				Optional.ofNullable(command.getIpAddress1() == null ? null 
@@ -55,15 +58,7 @@ public class EmpInfoTerminalUpdateCommandHandler extends CommandHandler<EmpInfoT
 				new MacAddress(command.getMacAddress()),
 				new EmpInfoTerminalCode(command.getEmpInfoTerCode()), Optional.ofNullable(command.getTerSerialNo()).map(e -> new EmpInfoTerSerialNo(e)),
 				new EmpInfoTerminalName(command.getEmpInfoTerName()), new ContractCode(contractCode))
-						.createStampInfo(new CreateStampInfo(
-								new OutPlaceConvert(NotUseAtr.valueOf(command.getReplace()),
-										Optional.ofNullable(command.getGoOutReason() == null ? null
-												: GoingOutReason.valueOf(command.getGoOutReason()))),
-								new ConvertEmbossCategory(NotUseAtr.valueOf(command.getEntranceExit()),
-										NotUseAtr.valueOf(command.getOutSupport())),
-								Optional.ofNullable(command.getWorkLocationCode() == null ? null
-										: new WorkLocationCD(command.getWorkLocationCode())),
-								Optional.empty()))
+						.createStampInfo(temFix)
 						.modelEmpInfoTer(ModelEmpInfoTer.valueOf(command.getModelEmpInfoTer()))
 						.intervalTime(new MonitorIntervalTime(command.getIntervalTime()))
 						.empInfoTerMemo(Optional.ofNullable(command.getMemo()).map(e -> new EmpInfoTerMemo(e)))

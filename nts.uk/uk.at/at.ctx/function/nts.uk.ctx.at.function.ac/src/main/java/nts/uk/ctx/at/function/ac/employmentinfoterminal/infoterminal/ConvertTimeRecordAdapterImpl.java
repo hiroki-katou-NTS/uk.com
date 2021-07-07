@@ -7,12 +7,12 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.ConvertTimeRecordStampAdapter;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.StampDataReflectResultImport;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.StampReceptionDataImport;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.ConvertTimeRecordStampPub;
-import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.StampDataReflectResultExport;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.StampReceptionDataExport;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.StampReceptionDataExport.StampDataExportBuilder;
 
@@ -27,10 +27,10 @@ public class ConvertTimeRecordAdapterImpl implements ConvertTimeRecordStampAdapt
 	private ConvertTimeRecordStampPub timeRecordStampPub;
 
 	@Override
-	public Pair<Optional<AtomTask>, Optional<StampDataReflectResultImport>> convertData(String empInfoTerCode,
+	public Optional<Pair<Optional<AtomTask>, Optional<StampDataReflectResultImport>>> convertData(String empInfoTerCode,
 			String contractCode, StampReceptionDataImport stampReceptData) {
 
-		Pair<Optional<AtomTask>, Optional<StampDataReflectResultExport>> convertData = timeRecordStampPub
+		val convertDataOpt = timeRecordStampPub
 				.convertData(empInfoTerCode, contractCode,
 						new StampReceptionDataExport(new StampDataExportBuilder(stampReceptData.getIdNumber(),
 								stampReceptData.getCardCategory(), stampReceptData.getShift(),
@@ -38,11 +38,11 @@ public class ConvertTimeRecordAdapterImpl implements ConvertTimeRecordStampAdapt
 								stampReceptData.getSupportCode()).overTimeHours(stampReceptData.getOverTimeHours())
 										.midnightTime(stampReceptData.getMidnightTime())
 										.time(stampReceptData.getTime())));
-		return Pair.of(convertData.getLeft(),
+		return convertDataOpt.map(convertData -> Pair.of(convertData.getLeft(),
 				convertData.getRight().isPresent()
 						? Optional.of(new StampDataReflectResultImport(convertData.getRight().get().getReflectDate(),
 								convertData.getRight().get().getAtomTask()))
-						: Optional.empty());
+						: Optional.empty()));
 	}
 
 }

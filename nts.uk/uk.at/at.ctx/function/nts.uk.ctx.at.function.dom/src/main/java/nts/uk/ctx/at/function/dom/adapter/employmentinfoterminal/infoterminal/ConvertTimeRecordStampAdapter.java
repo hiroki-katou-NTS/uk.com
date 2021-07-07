@@ -12,6 +12,6 @@ import nts.arc.task.tran.AtomTask;
  */
 public interface ConvertTimeRecordStampAdapter {
 
-	public Pair<Optional<AtomTask>, Optional<StampDataReflectResultImport>> convertData(String empInfoTerCode,
+	public Optional<Pair<Optional<AtomTask>, Optional<StampDataReflectResultImport>>> convertData(String empInfoTerCode,
 			String contractCode, StampReceptionDataImport stampReceptData);
 }

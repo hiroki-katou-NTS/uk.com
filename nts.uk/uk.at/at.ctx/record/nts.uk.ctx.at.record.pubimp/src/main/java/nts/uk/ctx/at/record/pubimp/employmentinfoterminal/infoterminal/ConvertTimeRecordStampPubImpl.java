@@ -97,14 +97,14 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 	private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
 
 	@Override
-	public Pair<Optional<AtomTask>, Optional<StampDataReflectResultExport>> convertData(String empInfoTerCode,
+	public Optional<Pair<Optional<AtomTask>, Optional<StampDataReflectResultExport>>> convertData(String empInfoTerCode,
 			String contractCode, StampReceptionDataExport stampReceptData) {
 
 		RequireImpl require = new RequireImpl(empInfoTerminalRepository, timeRecordReqSettingRepository,
 				stampDakokuRepository, createDailyResultDomainServiceNew, stampRecordRepository, stampCardRepository,
 				employeeManageRCAdapter, executionLog, createDailyResults, timeReflectFromWorkinfo, temporarilyReflectStampDailyAttd);
 
-		Pair<Optional<AtomTask>, Optional<StampDataReflectResult>> convertData = ConvertTimeRecordStampService
+		Optional<Pair<Optional<AtomTask>, Optional<StampDataReflectResult>>> convertDataOpt = ConvertTimeRecordStampService
 				.convertData(require, new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode),
 						new StampReceptionData(
 								new StampDataBuilder(stampReceptData.getIdNumber(), stampReceptData.getCardCategory(),
@@ -113,11 +113,11 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 												.overTimeHours(stampReceptData.getOverTimeHours())
 												.midnightTime(stampReceptData.getMidnightTime())
 												.time(stampReceptData.getTime())));
-		return Pair.of(convertData.getLeft(),
+		return convertDataOpt.map(convertData -> Pair.of(convertData.getLeft(),
 				convertData.getRight().isPresent()
 						? Optional.of(new StampDataReflectResultExport(convertData.getRight().get().getReflectDate(),
 								convertData.getRight().get().getAtomTask()))
-						: Optional.empty());
+						: Optional.empty()));
 	}
 
 	@AllArgsConstructor
@@ -154,7 +154,7 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		@Override
 		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
 				GeneralDateTime dateTime) {
-			return stampRecordRepository.findByKey(stampNumber, dateTime);
+			return stampRecordRepository.get(contractCode.v(), stampNumber.v(), dateTime);
 		}
 
 		@Override
