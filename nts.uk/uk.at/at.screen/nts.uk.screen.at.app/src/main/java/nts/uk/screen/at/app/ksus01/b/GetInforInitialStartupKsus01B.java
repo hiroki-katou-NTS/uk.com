@@ -13,7 +13,6 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.DateInMonth;
@@ -160,9 +159,15 @@ public class GetInforInitialStartupKsus01B {
 		
 		//	4: 集計する(社員別勤怠時間リスト): Map<社員ID, Map<集計対象の勤怠時間, BigDecimal>>
 		Map<EmployeeId, Map<AttendanceTimesForAggregation, BigDecimal>> totalWorkingTimeMap = WorkingTimeCounterService.get(integrationOfDailyList);
-		
+
+		AttendanceTimesForAggregation enum0 = null;
+		for(AttendanceTimesForAggregation enumConstant: AttendanceTimesForAggregation.class.getEnumConstants()) {
+			if(enumConstant.getValue() == 0) {
+				enum0 = enumConstant;
+			}
+		}
 		return new InforInitialDto(
-				totalWorkingTimeMap.get(empId).get(EnumAdaptor.valueOf(0, AttendanceTimesForAggregation.class)),
+				totalWorkingTimeMap.get(empId).get(enum0),
 				estimatedSalaryMonthlyMap.get(empId).getSalary(), 
 				estimatedSalaryCumulativeMap.get(empId).getSalary());
 	}

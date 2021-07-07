@@ -12,7 +12,7 @@
     </div>
     <div class="right-container">
         <!-- B1_4 -->
-        <span class="xxx-large blue bold">60</span>
+        <span class="xxx-large blue bold">{{totalWorkingTime}}</span>
         <!-- B1_5 -->
         <span class="bold blue">{{ "KSUS01_17" | i18n }}</span>
     </div>
@@ -24,7 +24,7 @@
     </div>
     <div class="right-container">
         <!-- B1_8 -->
-        <span class="xxx-large blue bold">50,000</span>
+        <span class="xxx-large blue bold">{{formatNumberSeparated(estimatedSalaryMonthly)}}</span>
         <!-- B1_9 -->
         <span class="bold blue">{{ "KSUS01_19" | i18n }}</span>
     </div>
@@ -38,7 +38,7 @@
     </div>
     <div class="center-container">
         <!-- B1_13 -->
-        <span class="xxx-large blue bold">2,050,000</span>
+        <span class="xxx-large blue bold">{{formatNumberSeparated(estimatedSalaryCumulative)}}</span>
         <!-- B1_14 -->
         <span class="bold blue">{{ "KSUS01_19" | i18n }}</span>
     </div>

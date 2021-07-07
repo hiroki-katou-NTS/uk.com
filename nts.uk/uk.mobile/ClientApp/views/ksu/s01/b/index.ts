@@ -19,13 +19,16 @@ export class KSUS01BComponent extends Vue {
     public startDate: string = '';
     public endDate: string = '';
 
+    public totalWorkingTime: number = 0;
+    public estimatedSalaryMonthly: number = 0;
+    public estimatedSalaryCumulative: number = 0;
+
     public created() {
         let self = this;
     }
 
     public mounted() {
         let self = this;
-        console.log(self.params, 'params');
 
         self.startDate = moment(self.params.targetPeriod.start, 'YYYY/MM/DD').format('M月D日');
         self.endDate = moment(self.params.targetPeriod.end, 'YYYY/MM/DD').format('M月D日');
@@ -37,10 +40,18 @@ export class KSUS01BComponent extends Vue {
         };
         self.$mask('show');
         self.$http.post('at', API.start, command).then((res: any) => {
-            console.log(res);
+            let data: InforInitialDto = res.data;
+
+            self.totalWorkingTime = data.totalWorkingTime;
+            self.estimatedSalaryMonthly = data.estimatedSalaryMonthly;
+            self.estimatedSalaryCumulative = data.estimatedSalaryCumulative;
         }).catch((error: any) => {
             // self.errorHandler(error);
         }).then(() => self.$mask('hide'));
+    }
+
+    public formatNumberSeparated(num): string {
+        return num.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
     }
 }
 
@@ -51,4 +62,10 @@ const API = {
 export interface AttendanceDto {
     attendanceStamp: string;
     leaveStamp: string;
+}
+
+export interface InforInitialDto {
+    totalWorkingTime: number;
+    estimatedSalaryMonthly: number;
+    estimatedSalaryCumulative: number;
 }

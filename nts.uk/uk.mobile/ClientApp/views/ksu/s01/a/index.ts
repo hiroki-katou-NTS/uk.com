@@ -171,7 +171,7 @@ export class KSUS01AComponent extends Vue {
             self.getInforOnTargetPeriod();
         }).catch((error: any) => {
             self.errorHandler(error);
-        }).then(() => self.$mask('hide'));
+        }).then(() => {});
 
         self.createDateHeaderList();
         self.createDateCellList();
