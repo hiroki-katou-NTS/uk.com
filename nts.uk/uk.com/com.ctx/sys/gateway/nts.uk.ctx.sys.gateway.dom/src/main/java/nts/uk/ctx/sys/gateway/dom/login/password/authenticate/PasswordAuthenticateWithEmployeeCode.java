@@ -10,13 +10,12 @@ import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify
 import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUser;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
 
 /**
  * 社員コードとパスワードで認証する
  */
 public class PasswordAuthenticateWithEmployeeCode {
-
+	
 	public static PasswordAuthenticationResult authenticate(
 			Require require,
 			IdentifiedEmployeeInfo identified,
@@ -27,21 +26,21 @@ public class PasswordAuthenticateWithEmployeeCode {
 		
 		// パスワード認証
 		val user = identified.getUser();
-		val userPassword = require.getLoginPasswordOfUser(user.getUserID());
-		if (userPassword.map(p -> !p.matches(password)).orElse(true)) {
+		val optUserPassword = require.getLoginPasswordOfUser(user.getUserID());
+		
+		
+		if (optUserPassword.map(p -> !p.matches(password)).orElse(true)) {
 			val atomTask = FailedPasswordAuthenticate.failed(require, identified, password);
 			return PasswordAuthenticationResult.failure(atomTask);
 		}
-
+		
 		// パスワードポリシーへの準拠チェック
 		val passwordPolicy = require.getPasswordPolicy(identified.getTenantCode());
-		val passwordPolicyResult = passwordPolicy
-				.map(p -> p.violatedOnLogin(require, user.getUserID(), password, userPassword.get().getPasswordState()))
-				.orElse(ValidationResultOnLogin.ok());
+		val passwordPolicyResult = passwordPolicy.violatedOnLogin(optUserPassword.get(), password);
 		
 		return PasswordAuthenticationResult.success(passwordPolicyResult);
 	}
-
+	
 	/**
 	 *ロックされているかチェックする 
 	 */
@@ -56,13 +55,12 @@ public class PasswordAuthenticateWithEmployeeCode {
 	
 	public static interface Require extends
 			FailedPasswordAuthenticate.Require,
-			PasswordPolicy.ValidateOnLoginRequire, 
 			EmployeeIdentify.Require{
 		
 		Optional<LoginPasswordOfUser> getLoginPasswordOfUser(String userId);
-
+		
 		Optional<AccountLockPolicy> getAccountLockPolicy(String tenantCode);
 		
-		Optional<PasswordPolicy> getPasswordPolicy(String tenantCode);
+		PasswordPolicy getPasswordPolicy(String tenantCode);
 	}
 }

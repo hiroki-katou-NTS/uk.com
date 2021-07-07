@@ -117,15 +117,9 @@ public class PasswordPolicy extends AggregateRoot {
 	 * @return 有効期限までの日数
 	 */
 	private int calculateRemainingDays(LoginPasswordOfUser changeLog) {
-		
-		if(changeLog.latestLog().isPresent()) {
-			// 前回変更してからの日数
-			int ageInDays = changeLog.latestLog().get().ageInDays();
-			// 有効日数から上の日数を引く
-			return validityPeriod.v().intValue() - ageInDays;
-		}
-		// TODO 「初期パスワードに変更履歴が作成されない問題」のため変更履歴がない場合はチェックを回避
-		// ※通知するかどうかの日数がMAX99のため100で回避
-		return 100;
+		// 前回変更してからの日数
+		int ageInDays = changeLog.latestLog().get().ageInDays();
+		// 有効日数から上の日数を引く
+		return validityPeriod.v().intValue() - ageInDays;
 	}
 }

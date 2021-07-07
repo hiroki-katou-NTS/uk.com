@@ -63,7 +63,7 @@ public class PasswordAuthenticateCommandRequire {
 	private AccountLockPolicyRepository accountLockPolicyRepo;
 	
 	@Inject
-	private LoginPasswordOfUserRepository passwordChangeLogRepo;
+	private LoginPasswordOfUserRepository loginPasswordOfUserRepo;
 	
 	
 	public Require createRequire(String tenantCode) {
@@ -99,8 +99,8 @@ public class PasswordAuthenticateCommandRequire {
 		}
 
 		@Override
-		public Optional<PasswordPolicy> getPasswordPolicy(String tenantCode) {
-			return passwordPolicyRepo.getPasswordPolicy(tenantCode);
+		public PasswordPolicy getPasswordPolicy(String tenantCode) {
+			return passwordPolicyRepo.getPasswordPolicy(tenantCode).get();
 		}
 
 		@Override
@@ -119,8 +119,8 @@ public class PasswordAuthenticateCommandRequire {
 		}
 
 		@Override
-		public LoginPasswordOfUser getPasswordChangeLog(String userId) {
-			return passwordChangeLogRepo.find(userId);
+		public Optional<LoginPasswordOfUser> getLoginPasswordOfUser(String userId) {
+			return loginPasswordOfUserRepo.find(userId);
 		}
 
 		@Override
