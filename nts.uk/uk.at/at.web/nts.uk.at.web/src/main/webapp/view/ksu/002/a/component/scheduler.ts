@@ -64,15 +64,15 @@ module nts.uk.ui.at.ksu002.a {
     }
 
 	 export class TotalData {
-		status0: KnockoutObservable<string> = ko.observable('');
-        dataInfo0: KnockoutObservable<string> = ko.observable('');
-        status1: KnockoutObservable<string> = ko.observable('');
-        dataInfo1: KnockoutObservable<string> = ko.observable('');
+		workingHoursTitle: KnockoutObservable<string> = ko.observable('');
+        workingTime: KnockoutObservable<string> = ko.observable('');
+        holidaysTitle: KnockoutObservable<string> = ko.observable('');
+        holidaysNumber: KnockoutObservable<string> = ko.observable('');
         constructor() {}
 		setStatusFisrt(){
 			let self = this;
-			self.status0('<span>'+getText('KSU002_25')+'<br/>'+getText('KSU002_25')+'</span>');
-			self.status1('<span class="fz12">'+getText('KSU002_26')+'</span>');
+			self.workingHoursTitle('<span>'+getText('KSU002_25')+'<br/>'+getText('KSU002_25')+'</span>');
+			self.holidaysTitle('<span class="fz12">'+getText('KSU002_26')+'</span>');
 		}		
 		update(){}
     }
@@ -118,7 +118,9 @@ module nts.uk.ui.at.ksu002.a {
             const clickCell = allBindingsAccessor.get('click-cell');
             const changeCell = allBindingsAccessor.get('change-cell');
             const tabIndex = element.getAttribute('tabindex') || allBindingsAccessor.get('tabindex') || '1';
-            const params = { width, baseDate, schedules, clickCell, tabIndex };
+			const reBidingData = allBindingsAccessor.get('reBidingData');
+			const rootVm = allBindingsAccessor.get('rootVm');
+            const params = { width, baseDate, schedules, clickCell, tabIndex, reBidingData, rootVm};
             const component = { name, params };
 
             element.classList.add('cf');
@@ -149,7 +151,9 @@ module nts.uk.ui.at.ksu002.a {
                 baseDate: $component.data.baseDate,
                 width: $component.data.width,
                 tabindex: $component.data.tabIndex,
-                click-cell: $component.data.clickCell
+                click-cell: $component.data.clickCell,
+				reBidingData: $component.data.reBidingData,
+				rootVm: $component.data.rootVm
             "></div>
             <div class="calendar cf">
                 <div class="filter cf">&nbsp;</div>
@@ -162,15 +166,15 @@ module nts.uk.ui.at.ksu002.a {
                         </div>
                     </div>
                     <div id="total" class="month">
-                        <!-- ko foreach: totalData -->
+                        <!-- ko foreach: weekSumData -->
                         <div class="week cf">
                             <div class="day">
-                                <div class="status" data-bind="html: status0"></div>
-                                <div class="data-info" data-bind="html: dataInfo0"></div>
+                                <div class="status" data-bind="html: workingHoursTitle"></div>
+                                <div class="data-info" data-bind="html: workingTime"></div>
                             </div>
                             <div class="day">
-                                <div class="status" data-bind="html: status1"></div>
-                                <div class="data-info" data-bind="html: dataInfo1"></div>
+                                <div class="status" data-bind="html: holidaysTitle"></div>
+                                <div class="data-info" data-bind="html: holidaysNumber"></div>
                             </div>
                         </div>
                         <!-- /ko -->
@@ -355,7 +359,7 @@ module nts.uk.ui.at.ksu002.a {
 					vertical-align: middle;
 				}
 				.scheduler #total .week .day div.data-info span{
-					font-size: 12px;
+					font-size: 14px;
 				}
 				.fz12{
 					font-size: 12px !important;
@@ -364,7 +368,7 @@ module nts.uk.ui.at.ksu002.a {
     })
     export class ShedulerComponent extends ko.ViewModel {
 
-		totalData: KnockoutObservableArray<TotalData>;
+		weekSumData: KnockoutObservableArray<TotalData>;
 
         constructor(private data: c.Parameter) {
             super();
@@ -375,7 +379,7 @@ module nts.uk.ui.at.ksu002.a {
 			});
 			tg[0].setStatusFisrt();
 			self.demoData(tg);
-			self.totalData = ko.observableArray(tg);
+			self.weekSumData = ko.observableArray(tg);
         }
 
         created() {
@@ -398,14 +402,14 @@ module nts.uk.ui.at.ksu002.a {
         }
 
 		demoData(tg: TotalData[]){
-			tg[0].dataInfo0('<span>(16:00)<br/>(-8:00)</span>');
-			tg[0].dataInfo1('<span>1</span>');
-			tg[1].dataInfo0('<span>(15:00)<br/>(-7:00)</span>');
-			tg[1].dataInfo1('<span>2</span>');
-			tg[2].dataInfo0('<span>(17:00)<br/>(-7:30)</span>');
-			tg[2].dataInfo1('<span>3</span>');
-			tg[4].dataInfo0('<span>(16:00)<br/>(-7:30)</span>');
-			tg[4].dataInfo1('<span>4</span>');
+			tg[0].workingTime('<span>16:00<br/>'+ getText('KSU002_15') +'-8:00'+getText('KSU002_16')+'</span>');
+			tg[0].holidaysNumber('<span>1</span>');
+			tg[1].workingTime('<span>15:00<br/>'+ getText('KSU002_15') +'-7:00'+getText('KSU002_16')+'</span>');
+			tg[1].holidaysNumber('<span>2</span>');
+			tg[2].workingTime('<span>17:00<br/>'+ getText('KSU002_15') +'-7:30'+getText('KSU002_16')+'</span>');
+			tg[2].holidaysNumber('<span>3</span>');
+			tg[4].workingTime('<span>16:00<br/>'+ getText('KSU002_15') +'-7:30'+getText('KSU002_16')+'</span>');
+			tg[4].holidaysNumber('<span>4</span>');
 		}
     }
 

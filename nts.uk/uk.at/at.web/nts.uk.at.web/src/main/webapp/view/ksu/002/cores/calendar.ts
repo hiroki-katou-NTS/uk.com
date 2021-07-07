@@ -1,6 +1,8 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.ui.calendar {
+	import getText = nts.uk.resource.getText;
+	
 	type BindingKey = 'date' | 'daisy' | 'holiday' | 'dataInfo';
 
 	export type CLICK_CELL = 'event' | 'holiday' | 'info';
@@ -39,6 +41,8 @@ module nts.uk.ui.calendar {
 		baseDate: KnockoutObservable<Date | DateRange>;
 		schedules: KnockoutObservableArray<DayData>;
 		clickCell: (target: CLICK_CELL, day: DayData) => void;
+		reBidingData: (rootVm: any) => void;
+		rootVm: any;
 	}
 
 	export enum COLOR_CLASS {
@@ -74,18 +78,62 @@ module nts.uk.ui.calendar {
 		IMPRINT_WTIME_BEGIN = 'imprint-wtime-begin',
 		IMPRINT_WTIME_FINISH = 'imprint-wtime-finsh',
 	}
+	const STYLE = `
+		 <style type="text/css" rel="stylesheet">
+            .calendar {display:inline-block}
+			.calendar .filter {height:35px; padding-bottom:5px}
+			.calendar .filter-title {float:left; margin-right:10px; line-height:32px}
+			.calendar .calendar-container {float:left; box-sizing:border-box; border:1px solid grey}
+			.calendar .calendar-container .title {padding:5px 0; background-color:#c7f391; border-bottom:1px solid grey}
+			.calendar .calendar-container .title .nts-datepicker-wrapper {margin:0 calc(50% - 76px)}
+			.calendar .calendar-container .title .nts-datepicker-wrapper>button,.calendar .calendar-container .title .nts-datepicker-wrapper>input {vertical-align:top}
+			.calendar .calendar-container .title .nts-datepicker-wrapper>input {height:20px}
+			.calendar .calendar-container .title .nts-datepicker-wrapper>button {height:29px}
+			.calendar .calendar-container .title .nts-datepicker-wrapper.arrow-bottom:after,.calendar .calendar-container .title .nts-datepicker-wrapper.arrow-bottom:before {left:45px}
+			.calendar .calendar-container .month.title {padding:0; min-height:18px}
+			.calendar .calendar-container .month.title .week .day .status {background-color:#c7f391!important; font-size:11px}
+			.calendar .calendar-container .month.title .week .day .status span {color:#404040; font-size:11px; font-weight:300}
+			.calendar .calendar-container .month.title .week .day.sunday .status span {color:red}
+			.calendar .calendar-container .month.title .week .day.saturday .status span {color:#00f}
+			.calendar .calendar-container .month .week {box-sizing:border-box}
+			.calendar .calendar-container .month .week:not(:last-child) {border-bottom:1px solid grey}
+			.calendar .calendar-container .month .week .day {float:left; width:100px; box-sizing:border-box}
+			.calendar .calendar-container .month .week .day:not(:last-child) {border-right:1px solid grey}
+			.calendar .calendar-container .month .week .day .status {position:relative; text-align:center}
+			.calendar .calendar-container .month .week .day .status span {color:#404040; font-size:9px; font-weight:600; display:block; line-height:18px}
+			.calendar .calendar-container .month .week .day .status span+span.sakura {top:0; right:0; width:16px; height:16px; position:absolute}
+			.calendar .calendar-container .month .week .day .status+.status {height:18px; font-size:11px; overflow:hidden; border-top:1px solid grey; border-bottom:1px solid grey}
+			.calendar .calendar-container .month .week .day .status {background-color:#edfac2}
+			.calendar .calendar-container .month .week .day.saturday .status {background-color:#8bd8ff}
+			.calendar .calendar-container .month .week .day.holiday .status,.calendar .calendar-container .month .week .day.sunday .status {background-color:#fabf8f}
+			.calendar .calendar-container .month .week .day.special .status {background-color:pink}
+			.calendar .calendar-container .month .week .day.current .status {background-color:#ff0}
+			.calendar .calendar-container .month:not(.title) .week .day.holiday .status,.calendar .calendar-container .month:not(.title) .week .day.holiday .status span {color:red}
+			.calendar .calendar-container .month .week .day .data-info {width:100%; min-height:40px; box-sizing:border-box}
+			.calendar .calendar-container .month .week .day.same-month .data-info {background-color:#fff}
+			.calendar .calendar-container .month .week .day.diff-month .data-info {background-color:#ddddd2}
+			.calendar .event-popper {top:0; left:0; z-index:-1; position:absolute; visibility:hidden; border:2px solid #ddd; background-color:#ccc; border-radius:5px; padding:5px; width:0; height:0}
+			.calendar .event-popper>.epc {position:relative; width:220px}
+			.calendar .event-popper:not(.hide-arrow)>.epc:before {content:''; top:2px; left:-14px; height:0; display:block; position:absolute; border-left:0; border-right:9px solid #ccc; border-top:7px solid transparent; border-bottom:7px solid transparent}
+			.calendar .event-popper>.epc>.data {overflow:hidden}
+			.calendar .event-popper>.epc>.data table {width:100%}
+			.calendar .event-popper>.epc>.data td:first-child {text-align:left; vertical-align:top}
+			.calendar .event-popper.show {z-index:9; position:fixed; visibility:visible; width:220px}
+        </style>
+        <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
+	`;
 
 	const D_FORMAT = 'YYYYMM';
 	const COMPONENT_NAME = 'calendar';
 	const COMPONENT_TEMP = `
         <div class="filter cf">
             <label class="filter-title" data-bind="i18n: 'KSU002_30'"></label>
-			<div data-bind="
+			<div class="filter-title" data-bind="
 				attr: {
 					'tabindex': $component.data.tabIndex
 				},
 				ntsComboBox: {
-					width: '100px',
+					width: '170px',
 					name: $component.$i18n('KSU002_30'),
 					value: $component.baseDate.start,
 					options: $component.baseDate.options,
@@ -96,9 +144,10 @@ module nts.uk.ui.calendar {
 					selectFirstIfNull: true,
 					visibleItemsCount: 7,
 					columns: [
-						{ prop: 'title', length: 10 },
+						{ prop: 'title', length: 5 },
 					]
 				}"></div>
+			<label class="filter-title" data-bind="i18n: 'KSU002_37'"></label>
 		</div>
         <div class="calendar-container">
             <div data-bind="if: !!ko.unwrap($component.baseDate.show), css: { 'title': !!ko.unwrap($component.baseDate.show) }">
@@ -127,183 +176,7 @@ module nts.uk.ui.calendar {
             </div>
 		</div>
 		<div data-bind="popper: true"></div>
-        <style type="text/css" rel="stylesheet">
-            .calendar {
-                display: inline-block;
-            }
-            .calendar .filter {
-			    height: 35px;
-                padding-bottom: 5px;
-            }
-            .calendar .filter-title {
-                float: left;
-                margin-right: 10px;
-                line-height: 32px;
-            }
-            .calendar .calendar-container {
-                float: left;
-                box-sizing: border-box;
-                border: 1px solid #808080;
-            }
-            .calendar .calendar-container .title {
-                padding: 5px 0;
-                background-color: #C7F391;
-                border-bottom: 1px solid #808080;
-            }
-            .calendar .calendar-container .title .nts-datepicker-wrapper {
-                margin: 0 calc(50% - 76px);
-            }
-			.calendar .calendar-container .title .nts-datepicker-wrapper>input,
-			.calendar .calendar-container .title .nts-datepicker-wrapper>button {
-				vertical-align: top;
-			}
-			.calendar .calendar-container .title .nts-datepicker-wrapper>input {
-				height: 20px;
-			}
-			.calendar .calendar-container .title .nts-datepicker-wrapper>button {
-				height: 29px;
-			}
-			.calendar .calendar-container .title .nts-datepicker-wrapper.arrow-bottom:before,
-			.calendar .calendar-container .title .nts-datepicker-wrapper.arrow-bottom:after {
-				left: 45px;
-			}
-            .calendar .calendar-container .month.title {
-				padding: 0;
-				min-height: 18px;
-            }
-            .calendar .calendar-container .month.title .week .day .status {
-                background-color: #C7F391 !important;
-				font-size: 11px;
-            }
-            .calendar .calendar-container .month.title .week .day .status span {
-                color: #404040;
-                font-size: 11px;
-                font-weight: 300;
-            }
-            .calendar .calendar-container .month.title .week .day.sunday .status span {
-                color: #f00;
-            }
-            .calendar .calendar-container .month.title .week .day.saturday .status span {
-                color: #0000ff;
-            }
-            .calendar .calendar-container .month .week {
-                box-sizing: border-box;
-            }
-            .calendar .calendar-container .month .week:not(:last-child)  {
-                border-bottom: 1px solid #808080;
-            }
-            .calendar .calendar-container .month .week .day {
-                float: left;
-				width: 100px;
-                box-sizing: border-box;
-            }
-            .calendar .calendar-container .month .week .day:not(:last-child) {
-                border-right: 1px solid #808080;
-            }
-            .calendar .calendar-container .month .week .day .status {
-				position: relative;
-                text-align: center;
-            }
-            .calendar .calendar-container .month .week .day .status span {
-                color: #404040;
-                font-size: 9px;
-				font-weight: 600;
-				display: block;
-    			line-height: 18px;
-            }
-            .calendar .calendar-container .month .week .day .status span+span.sakura {
-			    top: 0px;
-			    right: 0px;
-			    width: 16px;
-			    height: 16px;
-			    position: absolute;
-            }
-            .calendar .calendar-container .month .week .day .status+.status {
-				height: 18px;
-				font-size: 11px;
-				overflow: hidden;
-                border-top: 1px solid #808080;
-                border-bottom: 1px solid #808080;
-            }
-            .calendar .calendar-container .month .week .day .status {
-                background-color: #EDFAC2;
-			}
-            .calendar .calendar-container .month .week .day.saturday .status {
-                background-color: #8bd8ff;
-            }
-            .calendar .calendar-container .month .week .day.sunday .status,
-            .calendar .calendar-container .month .week .day.holiday .status {
-                background-color: #FABF8F;
-            }
-            .calendar .calendar-container .month .week .day.special .status {
-                background-color: rgb(255, 192, 203);
-			}
-            .calendar .calendar-container .month .week .day.current .status {
-                background-color: #ffff00;
-			}
-            .calendar .calendar-container .month:not(.title) .week .day.holiday .status,
-            .calendar .calendar-container .month:not(.title) .week .day.holiday .status span {
-                color: #f00;
-			}
-            .calendar .calendar-container .month .week .day .data-info {
-                width: 100%;
-                min-height: 40px;
-                box-sizing: border-box;
-            }
-            .calendar .calendar-container .month .week .day.same-month .data-info {
-                background-color: #ffffff;
-			}
-			.calendar .calendar-container .month .week .day.diff-month .data-info {
-				background-color: #ddddd2;
-			}
-			.calendar .event-popper {
-				top: 0px;
-				left: 0px;
-				z-index: -1;
-				position: absolute;
-				visibility: hidden;
-				border: 2px solid #ddd;
-				background-color: #ccc;
-				border-radius: 5px;
-				padding: 5px;
-				width: 0;
-				height: 0;
-			}
-			.calendar .event-popper>.epc {
-				position: relative;
-				width: 220px;
-			}
-			.calendar .event-popper:not(.hide-arrow)>.epc:before {
-				content: '';
-				top: 2px;
-				left: -14px;
-				height: 0px;
-				display: block;
-				position: absolute;
-				border-left: 0;
-				border-right: 9px solid #ccc;
-				border-top: 7px solid transparent;
-				border-bottom: 7px solid transparent;
-			}
-			.calendar .event-popper>.epc>.data {
-				overflow: hidden;
-			}
-			.calendar .event-popper>.epc>.data table {
-				width: 100%;
-			}
-			.calendar .event-popper>.epc>.data td:first-child {
-				text-align: left;
-    			vertical-align: top;
-			}
-			.calendar .event-popper.show {
-				z-index: 9;
-				position: fixed;
-				visibility: visible;
-				width: 220px;
-			}
-        </style>
-        <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
-	`;
+	` + STYLE;
 
 	@handler({
 		bindingName: 'popper'
@@ -592,7 +465,9 @@ module nts.uk.ui.calendar {
 			const baseDate = allBindingsAccessor.get('baseDate');
 			const clickCell = allBindingsAccessor.get('click-cell');
 			const tabIndex = element.getAttribute('tabindex') || allBindingsAccessor.get('tabindex') || '1';
-			const params = { width, baseDate, schedules, tabIndex, clickCell };
+			const reBidingData = allBindingsAccessor.get('reBidingData');
+			const rootVm = allBindingsAccessor.get('rootVm');
+			const params = { width, baseDate, schedules, tabIndex, clickCell, reBidingData, rootVm};
 			const component = { name, params };
 
 			element.classList.add('cf');
@@ -628,6 +503,8 @@ module nts.uk.ui.calendar {
 		};
 
 		schedules!: KnockoutComputed<Schedule>;
+		
+		startDaySelected: KnockoutObservable<boolean> = ko.observable(false);
 
 		constructor(private data: Parameter) {
 			super();
@@ -641,7 +518,9 @@ module nts.uk.ui.calendar {
 					width: ko.observable(630),
 					baseDate: ko.observable(date),
 					schedules: ko.observableArray([]),
-					clickCell: () => { }
+					clickCell: () => { },
+					reBidingData: () => { },
+					rootVm: null
 				};
 			}
 
@@ -681,14 +560,16 @@ module nts.uk.ui.calendar {
 			const { data, baseDate } = vm;
 			const { options, start } = baseDate;
 
-			const startDate = moment().startOf('week');
-			const listDates = _.range(0, 7)
-				.map(m => startDate.clone().add(m, 'day'))
-				.map(d => ({
-					id: d.get('day'),
-					title: d.format('dddd')
-				}));
-
+			const listDates = ([
+					{ id: 1, title: "月曜日" + getText('KSU002_38')},
+                    { id: 2, title: "火曜日"},
+                    { id: 3, title: "水曜日"},
+                    { id: 4, title: "木曜日"},
+                    { id: 5, title: "金曜日"},
+                    { id: 6, title: "土曜日"},
+                    { id: 7, title: "日曜日"}
+                ]);
+			
 			vm.$window
 				.storage(KSU_USER_DATA)
 				.then((v: StorageData) => {
@@ -724,7 +605,16 @@ module nts.uk.ui.calendar {
 								vm.$window.storage(KSU_USER_DATA, { fdate, wtimec: null, wtypec: null });
 							}
 						});
+					if(fdate == 1){
+						vm.startDaySelected(true);
+					}else {
+						vm.startDaySelected(false);
+					}
 				});
+			vm.startDaySelected.subscribe(() => {
+				data.baseDate(data.baseDate());
+				vm.data.reBidingData(vm.data.rootVm);
+			});
 
 			vm.baseDate.model
 				.subscribe((date: string) => {
@@ -837,7 +727,7 @@ module nts.uk.ui.calendar {
 					const schedules = ko.unwrap(data.schedules);
 					const [first] = schedules;
 					const [last] = schedules.slice(-1);
-					const start = moment(_.isDate(baseDate) ? baseDate : baseDate.begin).startOf('day');
+					const start = moment(_.isDate(baseDate) ? baseDate : baseDate.begin).startOf(vm.startDaySelected() ? 'week' : 'day');
 					const isStartDate = (d: moment.Moment) => {
 						if (d.get('date') === 1) {
 							return true;
@@ -849,9 +739,9 @@ module nts.uk.ui.calendar {
 
 						return false;
 					};
-					const initRange = (diff: number) => {
+					const initRange = (diff: number, nstart: Date) => {
 						const daysOfMonth = _.range(0, Math.abs(diff + 1), 1)
-							.map((d) => start.clone().add(d, 'day'))
+							.map((d) => moment(nstart).clone().add(d, 'day'))
 							.map((d) => ({
 								date: d.toDate(),
 								inRange: true,
@@ -866,32 +756,50 @@ module nts.uk.ui.calendar {
 
 					if (_.isDate(baseDate)) {
 						if (!schedules.length || !start.isSame(first.date, 'month')) {
+							
 							const start = moment(baseDate).startOf('month').startOf('day');
 							const end = moment(baseDate).endOf('month').endOf('day');
-							const diff = end.diff(start, 'day');
+							
+							let tg = vm.calculateDays(start.toDate(), end.toDate());
+							
+							const diff = moment(tg.end).diff(tg.start, 'day');
 
-							initRange(diff);
+							initRange(diff, tg.start);
 						}
 					} else {
-						const { begin, finish } = baseDate;
+						let tg = vm.calculateDays(baseDate.begin, baseDate.finish);
+						const { begin, finish } = { begin: moment(tg.start), finish: moment(tg.end)};
 						const initDate = () => {
 							const diff = moment(finish).diff(begin, 'day');
 
-							initRange(diff);
+							initRange(diff, tg.start);
 						};
+						
+						initDate();
 
-						if (!first || !last) {
-							initDate();
-						} else {
-							const notStart = !moment(begin).isSame(first.date, 'date');
-							const notEnd = !moment(finish).isSame(last.date, 'date');
-
-							if (notStart && notEnd) {
-								initDate();
-							}
-						}
+//						if (!first || !last) {
+//							initDate();
+//						} else {
+//							const notStart = !moment(begin).isSame(first.date, 'date');
+//							const notEnd = !moment(finish).isSame(last.date, 'date');
+//
+//							if (notStart && notEnd) {
+//								initDate();
+//							}
+//						}
 					}
 				});
+		}
+		
+		calculateDays(start: Date, end: Date): ({start: Date, end: Date}){
+			let self = this;
+			let nStart = moment(start);
+			let nEnd = moment(end);
+			if(self.startDaySelected()){
+				nStart.add((self.baseDate.start() <= end.getDay() ? start.getDay() - self.baseDate.start(): start.getDay() + 7 - self.baseDate.start()) * -1, 'day');
+				nEnd.add(self.baseDate.start() > end.getDay() ? self.baseDate.start() - end.getDay() : self.baseDate.start() + 6 - end.getDay(),'day');
+			}
+			return {start: nStart.toDate(), end: nEnd.toDate()};
 		}
 	}
 

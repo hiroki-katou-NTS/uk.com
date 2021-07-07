@@ -1,32 +1,32 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.ui.at.ksu002.a {
+	import getText = nts.uk.resource.getText;
+	
 	const template = `
     <div class="workhour-info">
         <span data-bind="i18n: 'KSU002_33'"></span>
         <span data-bind="i18n: 'KSU002_7'"></span>
-        <span data-bind="i18n: '160:00'"></span>
-        <span data-bind="i18n: 'KSU002_34'"></span>
+        <span data-bind="text: workingHoursMonth"></span>
+        <span style="margin-left: 15px;" data-bind="i18n: 'KSU002_34'"></span>
         <span data-bind="i18n: 'KSU002_7'"></span>
-        <span data-bind="i18n: '24:00'"></span>
+        <span data-bind="text: workingHoursWeek"></span>
     </div>
     <table>
         <tbody>
             <tr>
-                <th data-bind="i18n: 'KSU002_14'"></th>
+                <th colspan="2" data-bind="i18n: 'KSU002_14'"></th>
+            </tr>
+            <tr>
+                <td colspan="2" data-bind="text: compareWorkingHours"></td>
+            </tr>
+            <tr>
                 <th data-bind="i18n: 'KSU002_18'"></th>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-            </tr>
-            <tr>
-                <th data-bind="i18n: 'KSU002_17'"></th>
                 <th data-bind="i18n: 'KSU002_19'"></th>
             </tr>
             <tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
+                <td data-bind="text: workingDays"></td>
+                <td data-bind="text: holidayDay"></td>
             </tr>
         </tbody>
     </table>
@@ -90,9 +90,16 @@ module nts.uk.ui.at.ksu002.a {
 		template
 	})
 	export class WorkHourOfMonthComponent extends ko.ViewModel {
+		workingHoursMonth: KnockoutObservable<string> = ko.observable('160:00');
+		workingHoursWeek: KnockoutObservable<string> = ko.observable('48:00');
+		compareWorkingHours: KnockoutObservable<string> = ko.observable('');
+		workingDays: KnockoutObservable<string> = ko.observable('22');
+		holidayDay: KnockoutObservable<string> = ko.observable('1');
 		constructor(private data: Parameter) {
 			super();
-		} 
+			let self = this;
+			self.compareWorkingHours('150:00 '+ getText('KSU002_15') +'-10:00'+ getText('KSU002_16'));
+		}
 	}
 
 	interface Parameter { 
