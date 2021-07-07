@@ -88,17 +88,24 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 		else {
 			// 「次回実行日時（スケジュールID）」が現在のシステム日時を過ぎているか判定する
 			// 次回実行日時（スケジュールID） ＞ システム日時
-			if (this.isAfterAndWithinDay(oNextExecScheduleDateTime, now)) {
+			if (nextExecScheduleDateTime.after(now) && ((oNextExecRepScheduleDateTime.isPresent()
+					// Check if scheduleId has passed the limit datetime and move on to the next ID
+					&& oNextExecRepScheduleDateTime.get().after(nextExecScheduleDateTime))
+					|| (oNextExecEndScheduleDateTime.isPresent()
+							&& oNextExecEndScheduleDateTime.get().after(nextExecScheduleDateTime)))) {
 				// 次回実行日時（スケジュールID）を次回実行日時とする
 				nextExecDateTime = nextExecScheduleDateTime;
 			}
 			// 次回実行日時（スケジュールID）<= システム日時 < 次回実行日時（1日の繰り返しスケジュールID）
-			else if (this.isAfterAndWithinDay(oNextExecRepScheduleDateTime, now)) {
+			else if (oNextExecRepScheduleDateTime.isPresent() && oNextExecRepScheduleDateTime.get().after(now)
+					// Check if repeatScheduleId has passed the limit datetime and move on to endScheduleId
+					&& oNextExecEndScheduleDateTime.isPresent()
+					&& oNextExecEndScheduleDateTime.get().after(oNextExecRepScheduleDateTime.get())) {
 				// 次回実行日時（1日の繰り返しスケジュールID）を次回実行日時とする
 				nextExecDateTime = oNextExecRepScheduleDateTime.get();
 			}
 			// 次回実行日時（1日の繰り返しスケジュールID）<= システム日時
-			else if (this.isAfterAndWithinDay(oNextExecEndScheduleDateTime, now)) {
+			else if (oNextExecEndScheduleDateTime.isPresent() && oNextExecEndScheduleDateTime.get().after(now)) {
 				// 次回実行日時（終了処理スケジュールID）を次回実行日時とする
 				nextExecDateTime = oNextExecEndScheduleDateTime.get();
 			}
@@ -133,17 +140,6 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 			return null;
 		}
 		return nextExecDateTime;
-	}
-	
-	private boolean isAfterAndWithinDay(Optional<GeneralDateTime> nextExecDateTime, GeneralDateTime now) {
-		if (!nextExecDateTime.isPresent()) {
-			return false;
-		}
-		if (nextExecDateTime.get().toLocalDate().isEqual(now.toLocalDate())) {
-			return nextExecDateTime.get().after(now);
-		} else {
-			return false;
-		}
 	}
 
 	@Override
