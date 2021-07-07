@@ -16,7 +16,7 @@ import nts.uk.shr.com.url.RegisterEmbededURL;
 public class ForgotPasswordCommandHandler extends CommandHandler<ForgotPasswordCommand> {
 	
 	@Inject
-	private ForgotPasswordCommandRequire requireProvider;
+	private ChangePasswordCommandRequire requireProvider;
 	
 	@Inject
 	private TransactionService transaction;
