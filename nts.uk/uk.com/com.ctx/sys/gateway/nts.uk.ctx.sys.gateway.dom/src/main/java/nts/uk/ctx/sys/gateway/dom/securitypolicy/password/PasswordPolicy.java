@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUser;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.PasswordState;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.complexity.PasswordComplexityRequirement;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
-import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 @Getter
 /**
@@ -72,7 +72,7 @@ public class PasswordPolicy extends AggregateRoot {
 	public ValidationResultOnLogin violatedOnLogin(ValidateOnLoginRequire require,
 			String userId,
 			String password,
-			PassStatus passwordStatus) {
+			PasswordState passwordStatus) {
 		
 		// ポリシー利用しない
 		if (!isUse) {
@@ -80,12 +80,12 @@ public class PasswordPolicy extends AggregateRoot {
 		}
 
 		// パスワードリセット
-		if (passwordStatus.equals(PassStatus.Reset)) {
+		if (passwordStatus.equals(PasswordState.RESET)) {
 			return ValidationResultOnLogin.reset();
 		}
 		
 		// 初期パスワード
-		if (initialPasswordChange && passwordStatus.equals(PassStatus.InitPassword)) {
+		if (initialPasswordChange && passwordStatus.equals(PasswordState.INITIAL)) {
 			return ValidationResultOnLogin.initial();
 		}
 		

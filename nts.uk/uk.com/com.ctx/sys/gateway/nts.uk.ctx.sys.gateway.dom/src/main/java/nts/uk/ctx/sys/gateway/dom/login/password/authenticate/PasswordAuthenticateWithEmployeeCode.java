@@ -7,6 +7,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUser;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
@@ -26,15 +27,17 @@ public class PasswordAuthenticateWithEmployeeCode {
 		
 		// パスワード認証
 		val user = identified.getUser();
-		if (!user.isCorrectPassword(password)) {
+		val userPassword = require.getLoginPasswordOfUser(user.getUserID());
+		if (userPassword.map(p -> !p.matches(password)).orElse(true)) {
 			val atomTask = FailedPasswordAuthenticate.failed(require, identified, password);
 			return PasswordAuthenticationResult.failure(atomTask);
 		}
 
 		// パスワードポリシーへの準拠チェック
 		val passwordPolicy = require.getPasswordPolicy(identified.getTenantCode());
-		val passwordPolicyResult = passwordPolicy.map(p -> p.violatedOnLogin(require, user.getUserID(), password, user.getPassStatus()))
-												.orElse(ValidationResultOnLogin.ok());
+		val passwordPolicyResult = passwordPolicy
+				.map(p -> p.violatedOnLogin(require, user.getUserID(), password, userPassword.get().getPasswordState()))
+				.orElse(ValidationResultOnLogin.ok());
 		
 		return PasswordAuthenticationResult.success(passwordPolicyResult);
 	}
@@ -55,6 +58,8 @@ public class PasswordAuthenticateWithEmployeeCode {
 			FailedPasswordAuthenticate.Require,
 			PasswordPolicy.ValidateOnLoginRequire, 
 			EmployeeIdentify.Require{
+		
+		Optional<LoginPasswordOfUser> getLoginPasswordOfUser(String userId);
 
 		Optional<AccountLockPolicy> getAccountLockPolicy(String tenantCode);
 		

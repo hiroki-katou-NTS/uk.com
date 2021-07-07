@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDateTime;
@@ -14,36 +13,42 @@ import nts.arc.time.GeneralDateTime;
  * パスワード変更履歴
  * 最初のパスワードを設定した時点から履歴は存在するため、detailsが空になることはない
  */
-@RequiredArgsConstructor
 @Getter
 public class LoginPasswordOfUser implements DomainAggregate {
 
 	/** ユーザID */
 	private final String userId;
 	
-	/** 変更ログリスト */
-	private final List<PasswordChangeLogDetail> details;
+	/** パスワード状態 */
+	private PasswordState passwordState;
 	
-	/**
-	 * 最初のパスワード
-	 * @param userId
-	 * @param hashedPassword
-	 * @return
-	 */
-	public static LoginPasswordOfUser firstPassword(String userId, String hashedPassword) {
-		
-		val log = new LoginPasswordOfUser(userId, new ArrayList<>());
-		log.add(new PasswordChangeLogDetail(GeneralDateTime.now(), hashedPassword));
-		
-		return log;
+	/** 変更ログリスト */
+	private List<PasswordChangeLogDetail> details;
+
+	public LoginPasswordOfUser(String userId, PasswordState passwordState, List<PasswordChangeLogDetail> details) {
+		this.userId = userId;
+		this.passwordState = passwordState;
+		this.details = new ArrayList<>(details);
 	}
 	
 	/**
-	 * ログ追加
-	 * @param newDetail
+	 * 現在のパスワードを照合する
+	 * @param matchingPasswordPlainText
+	 * @return
 	 */
-	public void add(PasswordChangeLogDetail newDetail) {
-		details.add(newDetail);
+	public boolean matches(String matchingPasswordPlainText) {
+		val hash = HashedLoginPassword.hash(matchingPasswordPlainText, userId);
+		return currentPassword().map(c -> c.equals(hash)).orElse(false);
+	}
+	
+	/**
+	 * 変更する
+	 * @param newPasswordPlainText
+	 * @param changedAt
+	 */
+	public void change(String newPasswordPlainText, GeneralDateTime changedAt) {
+		val hash = HashedLoginPassword.hash(newPasswordPlainText, userId);
+		details.add(new PasswordChangeLogDetail(changedAt, hash));
 	}
 	
 	/**
@@ -59,5 +64,9 @@ public class LoginPasswordOfUser implements DomainAggregate {
 				.sorted((a, b) -> a.ageInDays() - b.ageInDays())
 				.findFirst()
 				.get());
+	}
+
+	private Optional<HashedLoginPassword> currentPassword() {
+		return latestLog().map(l -> l.getHashedPassword());
 	}
 }
