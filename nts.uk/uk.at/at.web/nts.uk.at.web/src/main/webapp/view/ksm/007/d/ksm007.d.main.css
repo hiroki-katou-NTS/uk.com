@@ -11,6 +11,7 @@ flex-direction: column;
 
 .control-group {
   display: inline-flex;
+  align-items: center;
 }
 
 div#master-wrapper div#master-content>div[id^="contents-area"]:first-child {
