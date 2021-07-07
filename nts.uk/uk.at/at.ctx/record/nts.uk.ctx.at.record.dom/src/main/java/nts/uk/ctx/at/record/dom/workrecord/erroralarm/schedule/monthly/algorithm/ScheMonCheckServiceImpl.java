@@ -1616,12 +1616,14 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				CheckedTimeDuration endTime = new CheckedTimeDuration(endValue.intValue());
 				endValueStr = endTime.getTimeWithFormat();
 			}
+			break;
 		case NUMBER_DAYS:
 		case REMAIN_NUMBER:
 			startValueStr = startValue.toString();
 			if (endValue != null) {
 				endValueStr = endValue.toString();
 			}
+			break;
 		default:
 			break;
 		}
