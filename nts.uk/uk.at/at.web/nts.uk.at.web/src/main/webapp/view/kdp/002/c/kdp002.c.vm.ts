@@ -348,7 +348,10 @@ module nts.uk.at.view.kdp002.c {
 			 * Close dialog
 			 */
 			public registerDailyIdentify(): void {
-				service.registerDailyIdentify().done(() => {
+				const vm = this;
+				const param = {sid: vm.infoEmpFromScreenA.employeeId};
+
+				service.registerDailyIdentify(param).done(() => {
 					nts.uk.ui.dialog.info({ messageId: "Msg_15" })
 						.then(() => {
 							nts.uk.ui.windows.close();
