@@ -4,13 +4,13 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.val;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
  * 受入コード変換
  */
 @Getter
-public class ExternalImportCodeConvert extends AggregateRoot {
+public class ExternalImportCodeConvert implements DomainAggregate {
 	
 	/** 会社ID */
 	private String companyId;
