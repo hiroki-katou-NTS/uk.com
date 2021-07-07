@@ -405,6 +405,10 @@
 	margin-left: 10px;
 }
 
+.mgrid-sheet {
+	background-color: #f1fdfb;
+}
+
 .mgrid-sheet-nav {
 	float: left;
 	position: relative;
@@ -434,6 +438,7 @@
 	padding-left: 8px;
 	border-radius: 2px;
 	width: 80px;
+	background-color: #ffffff;
 }
 
 .mgrid-sheet-button:not(.ui-state-active):hover {
@@ -447,8 +452,9 @@
 
 .mgrid-sheet-button.ui-state-active {
 	border-width: 0px;
-	background: #F9FBF9;
+	background-color: #c0f5ec;
 	color: #000;
+	box-shadow: 0px 8px 12px rgba(199, 255, 241, 0.6);
 }
 
 .mgrid-sheet-button.ui-state-active:after {

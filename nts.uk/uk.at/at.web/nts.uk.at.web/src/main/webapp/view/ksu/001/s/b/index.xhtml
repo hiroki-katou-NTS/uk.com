@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width:800, height:440};</script>
+			<script>var dialogSize = { width:800, height:397};</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.sb.main.css" />
 			<com:scriptfile path="ksu001.sb.service.js" />
@@ -31,7 +31,7 @@
 							}"></table>
 				</div>
 			</div>
-			<div id="functions-area-bottom">
+			<div id="functions-area-bottom" style = "position: absolute;">
 
 				<button id="cancel" data-bind="click : cancel_Dialog">#{i18n.getText('KSU001_4053')}</button>
 			</div>

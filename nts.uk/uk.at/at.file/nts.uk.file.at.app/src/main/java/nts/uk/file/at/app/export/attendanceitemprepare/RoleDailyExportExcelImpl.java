@@ -382,8 +382,8 @@ public class RoleDailyExportExcelImpl {
                          if(color!=null){
                         	 data.put("ヘッダー色", color.replace("#", ""));
                          }
-    	                    TimeInputUnit timeInputUnit = EnumAdaptor.valueOf(controlItem.getInputUnitOfTimeItem()==null?0:controlItem.getInputUnitOfTimeItem(), TimeInputUnit.class);
-    	                    data.put("丸め単位", timeInputUnit.nameId);
+//    	                    TimeInputUnit timeInputUnit = EnumAdaptor.valueOf(controlItem.getInputUnitOfTimeItem()==null?0:controlItem.getInputUnitOfTimeItem(), TimeInputUnit.class);
+    	                    data.put("丸め単位", controlItem.getInputUnitOfTimeItem()==null?0:controlItem.getInputUnitOfTimeItem());
                         if(c.getTypeOfAttendanceItem()==null||c.getTypeOfAttendanceItem()!=5){
     	                    	data.put("丸め単位","");
     	                } 

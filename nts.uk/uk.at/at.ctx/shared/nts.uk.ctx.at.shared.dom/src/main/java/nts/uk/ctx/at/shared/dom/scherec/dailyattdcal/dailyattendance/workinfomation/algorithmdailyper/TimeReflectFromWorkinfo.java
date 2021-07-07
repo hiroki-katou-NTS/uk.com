@@ -404,7 +404,7 @@ public class TimeReflectFromWorkinfo {
 		// 1日半日出勤・1日休日系の判定
 		// 打刻反映時の出勤休日扱いチェック
 		WorkStyle workStyle = basicScheduleService
-				.checkWorkDay(scheduleWorkInfor.get().getWorkTyle());
+				.checkWorkDay(scheduleWorkInfor.get().getWorkType());
 		StampReflectRangeOutput stampReflectRangeOutput = null;
 
 		if (workStyle != WorkStyle.ONE_DAY_REST) {
@@ -486,7 +486,7 @@ public class TimeReflectFromWorkinfo {
 		// Imported(就業.勤務実績)「勤務予定基本情報」を取得する
 		Optional<WorkScheduleWorkSharedImport> scheduleWorkInfor = workScheWorkInforSharedAdapter.get(employeeId, processingDate);
 		if (scheduleWorkInfor.isPresent()) {
-			return scheduleWorkInfor.get().getWorkTyle();
+			return scheduleWorkInfor.get().getWorkType();
 		} 
 		return null;
 	}

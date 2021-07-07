@@ -95,13 +95,16 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			
 			vm.urlParam = $(location).attr('search').split("=")[1];
 			let dataTransfer: DataTransfer;
-			if (_.isNil(params)) {
-				dataTransfer = __viewContext.transferred.value; // from spr		
+			if(nts.uk.request.location.current.isFromMenu) {
+				sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');	
+			} else {
+				if(!_.isNil(__viewContext.transferred.value)) {
+					vm.isFromOther = true;
+					dataTransfer = __viewContext.transferred.value; // from spr		
+					params = __viewContext.transferred.value;
+				}
 			}
-			if(!_.isNil(__viewContext.transferred.value)) {
-				vm.isFromOther = true;
-			}
-			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
+			
 			//__viewContext.transferred.value = undefined;
 			
 			vm.application = ko.observable(new Application(ko.toJS(vm.appType)));

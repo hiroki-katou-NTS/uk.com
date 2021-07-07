@@ -33,41 +33,126 @@ module nts.uk.at.view.kmk005.b {
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-
-                service.getListSpecialBonusPayTimeItem().done(function(item: Array<any>) {
-                    if (item === undefined || item.length == 0) {
-                        for (i = 0; i < 10; i++) {
-                            self.timeItemSpecList.push(
-                                new TimeItem(
-                                    "", 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 1, "" 
-                                ));
-                        }
-                    } else {
-                        let name = '#[KMK005_';
-                        let i = 150;
-                        item.forEach(function(item) {
-                            self.timeItemSpecList.push(new TimeItem(item.timeItemName, item.useAtr, item.timeItemNo, item.timeItemTypeAtr, item.timeItemId ,  name + i++ + ']'));
-                        });
-                    }
-                });
                 service.getListBonusPTimeItem().done(function(item: Array<any>) {
                     if (item === undefined || item.length == 0) {
-                        for (i = 0; i < 10; i++) {
-                            self.timeItemList.push(
-                                new TimeItem(
-                                    "", 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 0, ""
-                                ));
-                        }
+//                                             let name = '#[KMK005_';
+//                                                let j = 140;
+//                                                for (i = 0; i < 10; i++) {
+//                                                   self.timeItemList.push(
+//                                                        new TimeItem(
+//                                                            "", 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 0, "" , name + (i++ + j + ']')
+//                                                        ));
+//                                                }
+                        self.timeItemList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 22), 0, "", '#[KMK005_140]'
+                            ));
+                        self.timeItemList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 23), 0, "", '#[KMK005_141]'
+                            ));
+                        self.timeItemList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 24), 0, "", '#[KMK005_142]'
+                            ));
+                        self.timeItemList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 25), 0, "", '#[KMK005_143]'
+                            ));
+                        self.timeItemList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 26), 0, "", '#[KMK005_144]'
+                            ));
+                        self.timeItemList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 27), 0, "", '#[KMK005_145]'
+                            ));
+                        self.timeItemList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 28), 0, "", '#[KMK005_146]'
+                            ));
+                        self.timeItemList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 29), 0, "", '#[KMK005_147]'
+                            ));
+                        self.timeItemList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 30), 0, "", '#[KMK005_148]'
+                            ));
+                        self.timeItemList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 31), 0, "", '#[KMK005_149]'
+                            ));
+
                         $($(".itemName[disabled!='disabled']")[0]).focus();
                     } else {
-                         let name = '#[KMK005_';
+                        let name = '#[KMK005_';
                         let i = 140;
                         item.forEach(function(item) {
-                            self.timeItemList.push(new TimeItem(item.timeItemName, item.useAtr, item.timeItemNo, item.timeItemTypeAtr, item.timeItemId ,name + i++ + ']' ));
+                            self.timeItemList.push(new TimeItem(item.timeItemName, item.useAtr, item.timeItemNo, item.timeItemTypeAtr, item.timeItemId, name + i++ + ']'));
                         })
                         $($(".itemName[disabled!='disabled']")[0]).focus();
                     }
                 });
+
+                service.getListSpecialBonusPayTimeItem().done(function(item: Array<any>) {
+                    if (item === undefined || item.length == 0) {
+//                                                for (i = 0; i < 10; i++) {
+//                                                    self.timeItemSpecList.push(
+//                                                       new TimeItem(
+//                                                            "", 1, nts.uk.resource.getText("KMK005_" + (22 + i)), 1, "" 
+//                                                      ));
+//                                               }
+                        self.timeItemSpecList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 22), 0, "", '#[KMK005_150]'
+                            ));
+                        self.timeItemSpecList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 23), 0, "", '#[KMK005_151]'
+                            ));
+                        self.timeItemSpecList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 24), 0, "", '#[KMK005_152]'
+                            ));
+                        self.timeItemSpecList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 25), 0, "", '#[KMK005_153]'
+                            ));
+                        self.timeItemSpecList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 26), 0, "", '#[KMK005_154]'
+                            ));
+                        self.timeItemSpecList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 27), 0, "", '#[KMK005_155]'
+                            ));
+                        self.timeItemSpecList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 28), 0, "", '#[KMK005_156]'
+                            ));
+                        self.timeItemSpecList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 29), 0, "", '#[KMK005_157]'
+                            ));
+                        self.timeItemSpecList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 30), 0, "", '#[KMK005_158]'
+                            ));
+                        self.timeItemSpecList.push(
+                            new TimeItem(
+                                "", 1, nts.uk.resource.getText("KMK005_" + 31), 0, "", '#[KMK005_159]'
+                            ));
+
+                    } else {
+                        let name = '#[KMK005_';
+                        let i = 150;
+                        item.forEach(function(item) {
+                            self.timeItemSpecList.push(new TimeItem(item.timeItemName, item.useAtr, item.timeItemNo, item.timeItemTypeAtr, item.timeItemId, name + i++ + ']'));
+                        });
+                    }
+                });
+
 
                 dfd.resolve();
 
@@ -109,7 +194,7 @@ module nts.uk.at.view.kmk005.b {
                         })
 
                     }).fail(function(res) {
-                         nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                     });
                 }
             }
@@ -129,7 +214,7 @@ module nts.uk.at.view.kmk005.b {
             timeItemTypeAtr: KnockoutObservable<number>;
             timeItemId: KnockoutObservable<string>;
             nameValidate: KnockoutObservable<string>;
-            constructor(timeItemName: string, useAtr: number, timeItemNo: number, timeItemTypeAtr: number, timeItemId: string , nameValidate: string) {
+            constructor(timeItemName: string, useAtr: number, timeItemNo: number, timeItemTypeAtr: number, timeItemId: string, nameValidate: string) {
                 var self = this;
                 self.timeItemName = ko.observable(timeItemName);
                 self.useAtr = ko.observable(useAtr);

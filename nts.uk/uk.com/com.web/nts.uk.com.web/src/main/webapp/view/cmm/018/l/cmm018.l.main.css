@@ -5,3 +5,7 @@
 #spBaseDate {
 	width: 215px;
 }
+
+.datepicker-container {
+	top: 5px !important;
+}

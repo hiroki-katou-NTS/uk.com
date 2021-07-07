@@ -22,9 +22,9 @@ module cps007.a.vm {
             let styles = '';
             let lstControlHeight = window.innerHeight - 372;
             if(lstControlHeight >= 347) {
-                styles += '#cps007_lst_control_grid_container { height: 347px !important; }';  
+                styles += '#cps007_lst_control { height: 347px; }';  
             } else {
-                styles += '#cps007_lst_control_grid_container { height: ' + lstControlHeight + 'px !important; }';
+                styles += '#cps007_lst_control { height: ' + lstControlHeight + 'px; }';
             } 
             let panelHeight = window.innerHeight - 169;
             

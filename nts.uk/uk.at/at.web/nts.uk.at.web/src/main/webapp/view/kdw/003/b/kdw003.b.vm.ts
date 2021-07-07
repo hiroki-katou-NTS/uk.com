@@ -3,6 +3,7 @@ module nts.uk.at.view.kdw003.b {
         import getText = nts.uk.resource.getText;
         import block = nts.uk.ui.block;
         import jump = window.parent.nts.uk.request.jump;
+        let __viewContext: any = window["__viewContext"] || {};
 
         export class ScreenModel {
             lstError: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -94,6 +95,15 @@ module nts.uk.at.view.kdw003.b {
     
                         if (arrErrorCode.length != 0) {
                             service.getErrAndAppTypeCd(arrErrorCode).done((data1) => {
+                                let app = [];
+                                let appTypeEnum = __viewContext.enums.ApplicationType;  
+                                _.each(data1.mapErrCdAppTypeCd, e => {
+                                    _.each(e, f => {
+                                        app = _.filter(appTypeEnum, function(o) { return o.value == f.value; });
+                                        f.fieldName =  app.length > 0 ? app[0].name : f.fieldName;
+                                    });
+                                });
+                                
                                 self.lstError(arr.map((d) => { 
                                     return new ErrorReferModel(d, data1.employeeIdLogin, !!data1.mapErrCdAppTypeCd[d.errorCode] ? data1.mapErrCdAppTypeCd[d.errorCode] : []); 
                                 }));

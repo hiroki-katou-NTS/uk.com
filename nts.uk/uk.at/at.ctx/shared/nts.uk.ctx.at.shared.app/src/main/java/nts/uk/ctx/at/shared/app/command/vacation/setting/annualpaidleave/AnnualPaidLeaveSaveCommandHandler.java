@@ -265,7 +265,7 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         command.setMaxNumberCompany(null);
         // TODO: Check value default
         command.setMaxRemainingDay(null);
-        command.setNumberYearRetain(null);
+        command.setNumberYearRetain(2);
         command.setYearlyOfDays(null);
         command.setRoundProcessCla(RoundProcessingClassification.TruncateOnDay0.value);
         // =======
@@ -280,5 +280,8 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         command.setReference(MaxDayReference.CompanyUniform.value);
         command.setMaxTimeDay(null);
         command.setRoundProcessClassific(TimeAnnualRoundProcesCla.TruncateOnDay0.value);
+        //
+        command.setUniformTime(0);
+        command.setContractTimeRound(0);
     }
 }

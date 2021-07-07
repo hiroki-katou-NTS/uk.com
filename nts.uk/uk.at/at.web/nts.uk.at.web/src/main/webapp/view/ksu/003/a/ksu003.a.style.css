@@ -4,15 +4,19 @@
 	margin-top: -5px;
 }
 
-#functions-area {
-	margin-top: -3px;
+#ui-area{
+	margin-top : -14px;
 }
 
+#functions-area {
+	min-height: 40px !important;
+}
 
 #extable-ksu003 {
 	width: auto !important;
 	margin-top: 3px;
 }
+
 
 #A1_1 {
 	margin-left: 0px !important;
@@ -142,8 +146,13 @@
 	margin-top: -10px;
 }
 
-#left-button, #left-button2 {
-	margin-left: -6px;
+#left-button2 {
+	margin-left: -4px;
+	margin-top: -3px;
+}
+
+#left-button {
+	margin-left: -5px;
 	margin-top: -3px;
 }
 
@@ -242,13 +251,14 @@ html {
 
 #down-button, #down-button2 {
 	margin-left: -6px;
+	margin-top: 2px;
 }
 
 .toDown {
 	width: 15px;
 	height: 27px;
 	float: left;
-	margin-left: -3px;
+	margin-left: -5px;
 }
 
 #A5_1 {
@@ -265,6 +275,7 @@ html {
 #sort-label-note {
 	float: left;
 	margin-top: 20px;
+	width: 257px !important;
 }
 
 .x-button {
@@ -272,13 +283,9 @@ html {
 	height: 22px !important;
 }
 
-#sort-label-note{
-	width: 215px !important;
-}
-
 #A3_4 {
 	height: 65px;
-	width: 200px !important;
+	width: 240px !important;
 	border: solid 6px #fff !important;
 	border-radius: 3.5px !important;
 	box-shadow: 1px 1px 5px 2px #888 !important;

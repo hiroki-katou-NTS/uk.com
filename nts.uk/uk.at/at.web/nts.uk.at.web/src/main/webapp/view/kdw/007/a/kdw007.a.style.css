@@ -11,7 +11,7 @@
 }
 
 #labelUseAtr {
-	width: 121px;
+	width: 69px;
 }
 
 #type-label, #remark-cancel-label, #color-label, #color-display-target-item-label,
@@ -20,7 +20,7 @@
 }
 
 #noticed-label, #boldAtr {
-	margin-left: 180px;
+	margin-left: 189px;
 }
 
 #noticed-label {
@@ -36,7 +36,6 @@
 	vertical-align: text-top;
 	height: 120px;
 	width: 400px;
-	margin-top: -20px;
 }
 
 .table-template td {

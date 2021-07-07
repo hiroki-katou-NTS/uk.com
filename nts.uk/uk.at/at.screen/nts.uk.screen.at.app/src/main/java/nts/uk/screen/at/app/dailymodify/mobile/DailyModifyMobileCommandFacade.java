@@ -139,6 +139,10 @@ public class DailyModifyMobileCommandFacade {
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
 		dCCalcTimeService.getWplPosId(dataParent.getItemValues());
+		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
+				.findAll(AppContexts.user().companyId()).stream()
+				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
+		
 		List<DailyModifyQuery> querys = dailyRCommandFacade.createQuerys(mapSidDate);
 		List<DailyModifyQuery> queryNotChanges = dailyRCommandFacade.createQuerys(mapSidDateNotChange);
 		// map to list result -> check error;
@@ -203,7 +207,7 @@ public class DailyModifyMobileCommandFacade {
 				if (AppContexts.optionLicense().customize().ootsuka()) {
 					 List<DPItemValue> lstItemValue = mapSidDateNotChange.get(Pair.of(x.getEmployeeId(), x.getDate()));
 					 if(lstItemValue.isEmpty()) {
-						 return  DailyRecordDto.from(domDaily);
+						 return  DailyRecordDto.from(domDaily, optionalMaster);
 					 }
 					 val itemValues = lstItemValue.stream()
 								.map(it -> new ItemValue(it.getValue(),
@@ -213,11 +217,12 @@ public class DailyModifyMobileCommandFacade {
 
 					DailyModifyRCResult updatedOoTsuka = DailyModifyRCResult.builder().employeeId(x.getEmployeeId())
 							.workingDate(x.getDate()).items(itemValues).completed();
-					EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(DailyRecordDto
-							.from(domDaily), updatedOoTsuka, AppContexts.user().companyId());
+					EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(
+							DailyRecordDto.from(domDaily, optionalMaster),
+							updatedOoTsuka, AppContexts.user().companyId());
 					return result.getCorrected();
 				}
-				return DailyRecordDto.from(domDaily);
+				return DailyRecordDto.from(domDaily, optionalMaster);
 			}).collect(Collectors.toList());
 			DailyCalcResult daiCalcResult = processDailyCalc.processDailyCalc(
 					new DailyCalcParam(mapSidDate, dataParent.getLstNotFoundWorkType(), resultOlds,
@@ -342,9 +347,7 @@ public class DailyModifyMobileCommandFacade {
 				errorMonthAfterCalc = errorMonth.getHasError();
 				if (!errorMonthAfterCalc) {
 					this.insertAllData.handlerInsertAllMonth(resultMonth.getLstMonthDomain(), monthParam);
-					Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
-							.findAll(AppContexts.user().companyId()).stream()
-							.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
+					
 					dataResultAfterIU.setDomainMonthOpt(resultMonth.getLstMonthDomain().isEmpty() ? Optional.empty()
 							: resultMonth.getLstMonthDomain().stream()
 									.map(x -> MonthlyRecordWorkDto.fromDtoWithOptional(x, optionalMaster)).findFirst());

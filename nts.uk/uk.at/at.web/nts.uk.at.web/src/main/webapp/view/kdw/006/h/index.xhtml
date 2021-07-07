@@ -34,8 +34,10 @@
 							height: 460,
 							options: items,
 							optionsValue: 'code',
-							columns: columns,
-							multiple: true,
+							columns: ko.observableArray([
+								{ headerText: 'コード', key: 'code', width: 100, hidden: true },
+								{ headerText: '名称', key: 'name', width: 250 },
+							]),
 							value: currentCodeList,
 							multiple: multicheck,
 							enable: true,

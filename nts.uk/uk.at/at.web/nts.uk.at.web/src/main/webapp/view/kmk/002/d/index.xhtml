@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 750,
+					width : 775,
 					height : 400
 				};
 			</script>
@@ -48,15 +48,11 @@
 						<tr>
 							<td>
 								<div style="display: flex">
-									<label id="radio-left-selection" tabindex="1" class="ntsRadioBox" style="margin-top: 6px; width: 85px">
-										<input type="radio" name="radio-left-item"
-											data-bind="name: '#[KMK002_63]',
-											checkedValue: 0,
-											checked: leftItem.settingMethod,
-											enable: true" />
-										<span class="box"></span>
-										<span class="label" data-bind="text: '#{i18n.getText('KMK002_64')}'"></span>
-									</label>
+										<label data-bind="ntsRadioButton: {
+										name: 'KMK002_63',
+										checkedValue: 0,
+										checked: leftItem.settingMethod,
+										optionText: 'KMK002_64'}"></label>
 									<div tabindex="2" id="cbb-left-item" class="inline-table"
 										data-bind="ntsComboBox: {
 										name: '#[KMK002_66]',
@@ -90,15 +86,11 @@
 							</td>
 							<td>
 								<div style="display: flex">
-								<label id="radio-right-selection" tabindex="5" class="ntsRadioBox" style="margin-top: 6px; width: 85px">
-									<input type="radio" name="radio-right-item"
-									data-bind="name: '#[KMK002_63]',
-									checkedValue: 0,
-									checked: rightItem.settingMethod,
-									enable: true" />
-									<span class="box"></span>
-									<span class="label" data-bind="text: '#{i18n.getText('KMK002_64')}'"></span>
-								</label>
+									<label data-bind="ntsRadioButton: {
+										name: 'KMK002_121',
+										checkedValue: 0,
+										checked: rightItem.settingMethod,
+										optionText: 'KMK002_64'}"></label>
 								<div tabindex="6" id="cbb-right-item" class="inline-table"
 									data-bind="ntsComboBox: {
 									name: '#[KMK002_66]',
@@ -119,15 +111,11 @@
 						<tr>
 							<td>
 								<div>
-									<label id="radio-left-input" tabindex="1" class="ntsRadioBox">
-										<input type="radio" name="radio-left-item"
-											data-bind="name: '#[KMK002_63]',
-											checkedValue: 1,
-											checked: leftItem.settingMethod,
-											enable: true" />
-										<span class="box"></span>
-										<span class="label" data-bind="text: '#{i18n.getText('KMK002_65')}'"></span>
-									</label>
+									<label data-bind="ntsRadioButton: {
+										name: 'KMK002_63',
+										checkedValue: 1,
+										checked: leftItem.settingMethod,
+										optionText: 'KMK002_65'}"></label>
 									<input tabindex="3" class="inputNumberic"
 										id="inp-left-item"
 										data-bind="ntsNumberEditor: {
@@ -145,15 +133,11 @@
 							</td>
 							<td>
 								<div>
-									<label id="radio-right-input" tabindex="5" class="ntsRadioBox">
-										<input type="radio" name="radio-right-item"
-											data-bind="name: '#[KMK002_63]',
-											checkedValue: 1,
-											checked: rightItem.settingMethod,
-											enable: true" />
-										<span class="box"></span>
-										<span class="label" data-bind="text: '#{i18n.getText('KMK002_65')}'"></span>
-									</label>
+										<label data-bind="ntsRadioButton: {
+										name: 'KMK002_121',
+										checkedValue: 1,
+										checked: rightItem.settingMethod,
+										optionText: 'KMK002_65'}"></label>
 									<input tabindex="7" id="inp-right-item" class="inputNumberic"
 										data-bind="ntsNumberEditor: {
 									  	name: '#[KMK002_67]',

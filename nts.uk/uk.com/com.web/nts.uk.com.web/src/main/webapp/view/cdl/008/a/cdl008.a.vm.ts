@@ -45,15 +45,6 @@ module nts.uk.com.view.cdl008.a {
                     self.baseDate(inputCDL008.baseDate);
                     self.isMultipleSelect = inputCDL008.isMultiple;
 
-                    ko.tasks.schedule(() => {
-                        let currentDialog = nts.uk.ui.windows.getSelf();
-                        if (self.isMultipleSelect) {
-                            currentDialog.setHeight(570);
-                        } else {
-                            currentDialog.setWidth(500);
-                        }
-                    });
-
                     if (_.isNil(inputCDL008.isShowBaseDate)) {
                         self.isMultipleUse = false;
                     } else {
@@ -88,6 +79,7 @@ module nts.uk.com.view.cdl008.a {
                     selectedId: null,
                     maxRows: 12,
                     tabindex: 1,
+                    width: 450,
                     systemType: self.selectedSystemType,
                     restrictionOfReferenceRange: self.restrictionOfReferenceRange,
                     isShowNoSelectRow: self.isDisplayUnselect(),

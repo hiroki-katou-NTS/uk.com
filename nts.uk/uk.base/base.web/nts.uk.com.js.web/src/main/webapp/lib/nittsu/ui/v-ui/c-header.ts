@@ -256,13 +256,38 @@ module nts.uk.ui.header {
                         vm
                             .$ajax('com', '/sys/portal/webmenu/program')
                             .then((response: { name: string }[]) => {
-                                const [first] = response;
-            
-                                if (first) {
-                                    const { name } = first;
-            
-                                    if (name) {
-                                        vm.pgName(name);
+                                if(!_.isEmpty($(".pg-name span").html())){
+                                    return;
+                                }
+                                let queryString = nts.uk.request.location.current.queryString;
+                                if (!_.isEmpty(queryString.items)) {
+                                    let queryStringArray = Object.keys(queryString.items).map((key) => {
+                                        return key + "=" + queryString.get(key);
+                                    })
+                                    const findResult = response.filter((el: any) => {
+                                        let findResult = _.find(queryStringArray, (query)=>{
+                                            return query == el.param;
+                                        });
+                                        return !_.isNil(findResult);
+                                    });
+                                    const pgName = findResult.length > 0 ? findResult[0] : response[0];
+                
+                                    if (pgName) {
+                                        const { name } = pgName;
+                
+                                        if (name) {
+                                            vm.pgName(name);
+                                        }
+                                    }
+                                } else {
+                                    const [first] = response;
+
+                                    if (first) {
+                                        const { name } = first;
+
+                                        if (name) {
+                                            vm.pgName(name);
+                                        }
                                     }
                                 }
                             });
@@ -441,6 +466,7 @@ module nts.uk.ui.header {
             if (item.url && item.url !== '-') {
                 bar.hover(false);
 
+                localStorage.setItem(nts.uk.request.IS_FROM_MENU, "true");
                 if (!item.queryString) {
                     window.location.href = item.url;
                 } else {

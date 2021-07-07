@@ -2268,9 +2268,9 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-		public ReservationOfMonthly reservation(String sid, GeneralDate date) {
+		public ReservationOfMonthly reservation(String sid, GeneralDate date, String companyID) {
 
-			return VerticalTotalAggregateService.aggregate(this, sid, date);
+			return VerticalTotalAggregateService.aggregate(this, sid, date, companyID);
 		}
 
 		@Override
@@ -2281,9 +2281,9 @@ public class RecordDomRequireService {
 
 		@Override
 		public List<BentoReservation> bentoReservation(List<ReservationRegisterInfo> inforLst, GeneralDate date,
-				boolean ordered) {
+				boolean ordered, String companyID) {
 
-			return bentoReservationRepo.findByOrderedPeriodEmpLst(inforLst, new DatePeriod(date, date), ordered);
+			return bentoReservationRepo.findByOrderedPeriodEmpLst(inforLst, new DatePeriod(date, date), ordered, companyID);
 		}
 
 		@Override

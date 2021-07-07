@@ -10,71 +10,81 @@ module nts.uk.at.view.kmk004.b {
 		<button tabindex="4" class="danger" data-bind="i18n: 'KMK004_227', click: remote, enable: checkDelete"></button>
 	</div>
 	<div class="view-d-kmk004">
-		<div class="left-content">
-			<div data-bind="component: {
-				name: 'kcp001',
-				params:{
-					emloyment: emloyment,
-					alreadySettings: alreadySettings,
-					isChange: change,
-					years: years
-				}
-			}"></div>
-		</div>
-		<div class="right-content">
-			<div>
-				<p class="title" data-bind="i18n: 'KMK004_228'"></p>
-				<hr></hr>
-				<div class="name" data-bind="i18n: emloyment.name"></div>
-				<div>
-					<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
-					<!-- ko if: checkSeting -->
-						<button tabindex="5" data-bind="i18n: 'KMK004_341', click: openDialogF"></button>
-					<!-- /ko -->
-					<!-- ko ifnot: checkSeting -->
-						<button tabindex="5" data-bind="i18n: 'KMK004_340', click: openDialogF"></button>
-					<!-- /ko -->
-				</div>
-				<div class ="setting" data-bind="component: {
-					name: 'basic-setting',
-					params:{
-						type: type,
-						selectId: emloyment.code,
-						change: change,
-						checkSeting: checkSeting
-					}
-				}"></div>
-				<div class="label1" data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
-				<div class="content-data">
-					<div>
-						<button tabindex="6" data-bind="i18n: 'KMK004_233', click: openDialogQ"></button>
-					</div>
-					<div class="year">
-						<div class= "box-year" data-bind="component: {
-							name: 'box-year',
-							params:{
-								selectedYear: selectedYear,
-								type: type,
-								years: years,
-								selectId: emloyment.code
-							}
-						}"></div>
-					</div>
-					<div tabindex="7" class= "time-work" data-bind="component: {
-						name: 'time-work',
-						params:{
-							type: type,
-							selectedYear: selectedYear,
-							years: years,
-							selectId: emloyment.code,
-							workTimes: workTimes,
-							yearDelete: yearDelete,
-							startDate: startDate
-						}
-					}"></div>
-				</div>
-			</div>
-		</div>
+		<table>
+			<tbody>
+				<tr>
+					<td style="vertical-align: baseline; border: solid 1px white;">
+						<div class="left-content">
+							<div data-bind="component: {
+								name: 'kcp001',
+								params:{
+									emloyment: emloyment,
+									alreadySettings: alreadySettings,
+									isChange: change,
+									years: years
+								}
+							}"></div>
+						</div>
+					</td>
+					<td style="border: hidden;">
+						<div class="right-content">
+							<div>
+								<p class="title" data-bind="i18n: 'KMK004_228'"></p>
+								<hr></hr>
+								<div class="name" data-bind="i18n: emloyment.name"></div>
+								<div >
+									<div data-bind="ntsFormLabel: {inline: true}, text: $i18n('KMK004_229')"></div>
+									<!-- ko if: checkSeting -->
+										<button tabindex="5" data-bind="i18n: 'KMK004_341', click: openDialogF"></button>
+									<!-- /ko -->
+									<!-- ko ifnot: checkSeting -->
+										<button tabindex="5" data-bind="i18n: 'KMK004_340', click: openDialogF"></button>
+									<!-- /ko -->
+								</div>
+								<div class ="setting" data-bind="component: {
+									name: 'basic-setting',
+									params:{
+										type: type,
+										selectId: emloyment.code,
+										change: change,
+										checkSeting: checkSeting
+									}
+								}"></div>
+								<div  class="label1" data-bind="ntsFormLabel: {inline: true}, text: $i18n('KMK004_232')"></div>
+								<div class="content-data">
+									<div >
+										<button tabindex="6" data-bind="i18n: 'KMK004_233', click: openDialogQ"></button>
+									</div>
+									<div class="year">
+										<div class= "box-year" data-bind="component: {
+											name: 'box-year',
+											params:{
+												selectedYear: selectedYear,
+												type: type,
+												years: years,
+												selectId: emloyment.code
+											}
+										}"></div>
+									</div>
+									<div tabindex="7" class= "time-work" data-bind="component: {
+										name: 'time-work',
+										params:{
+											type: type,
+											selectedYear: selectedYear,
+											years: years,
+											selectId: emloyment.code,
+											workTimes: workTimes,
+											yearDelete: yearDelete,
+											startDate: startDate
+										}
+									}"></div>
+								</div>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	<div>
 	`;
 
@@ -144,6 +154,7 @@ module nts.uk.at.view.kmk004.b {
 				.subscribe(() => {
 					$(document).ready(function () {
 						$('#list-box').focus();
+						// Fix bug render edge
 					});
 				});
 		}

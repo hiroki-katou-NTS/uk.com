@@ -1,5 +1,5 @@
 .kwr006-contents .panel {
-	margin: 20px;
+	margin: 0px 20px;
 	width: 50%;
 }
 
@@ -11,16 +11,13 @@
 	vertical-align: top;
 }
 
-.right {
-	margin-top: 20px;
-}
-
 .C3_2 {
 	width: 50px;
 }
 
 .label-name {
-	width: 199px;
+	width: 140px;
+	float: left;
 }
 
 .row {
@@ -78,8 +75,9 @@
 	width: 800px;
 }
 
-.nts-switch-button {
+.switchbox-wrappers .radio-wrapper span {
 	width: 80px;
+	text-align: center;
 }
 
 .check-box-list li.style-normal {
@@ -138,4 +136,7 @@
 }
 .ntsSwapSearchRight #swap-list-search-area-input {
 	width: 220px !important;
+}
+.td-left .ntsSearchBox {
+	width: 162px !important;
 }

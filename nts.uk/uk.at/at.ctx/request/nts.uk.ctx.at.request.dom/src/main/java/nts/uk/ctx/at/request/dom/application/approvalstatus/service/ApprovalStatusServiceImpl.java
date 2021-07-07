@@ -98,7 +98,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApproveImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverEmpImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.EmpPerformMonthParamAt;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Request533Import;
@@ -114,7 +113,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.mail.SendMailFailedException;
@@ -307,7 +305,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public SendMailResultOutput sendTestMail(int mailType) {
+	public SendMailResultOutput sendTestMail(int mailType, boolean screenUrlApprovalEmbed, boolean screenUrlDayEmbed, boolean screenUrlMonthEmbed) {
 		// 会社ID
 		String cid = AppContexts.user().companyId();
 		// アルゴリズム「承認状況メール本文取得」を実行する
@@ -326,14 +324,38 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// ログイン者よりメール送信内容を作成する(create nội dung send mail theo người login)
 		List<MailTransmissionContentOutput> listMailContent = new ArrayList<MailTransmissionContentOutput>();
 		listMailContent.add(new MailTransmissionContentOutput(sid, sName, mailAddr, subject, text));
+		// 送信区分の編集
+		ApprovalStatusMailType mailTypeEnum = EnumAdaptor.valueOf(mailType, ApprovalStatusMailType.class);
+		boolean transmissionAtr = false;
+		switch (mailTypeEnum) {
+		case DAILY_UNCONFIRM_BY_PRINCIPAL:
+			transmissionAtr = false;
+			break;
+		case DAILY_UNCONFIRM_BY_CONFIRMER:
+			transmissionAtr = true;
+			break;
+		case MONTHLY_UNCONFIRM_BY_PRINCIPAL:
+			transmissionAtr = false;
+			break;
+		case MONTHLY_UNCONFIRM_BY_CONFIRMER:
+			transmissionAtr = true;
+			break;
+		case APP_APPROVAL_UNAPPROVED:
+			transmissionAtr = true;
+			break;
+		case WORK_CONFIRMATION:
+			transmissionAtr = true;
+			break;
+		default:
+			break;
+		}
 		// アルゴリズム「承認状況メール送信実行」を実行する
-		return this.exeApprovalStatusMailTransmission(listMailContent, domain,
-				EnumAdaptor.valueOf(mailType, ApprovalStatusMailType.class));
+		return this.exeApprovalStatusMailTransmission(listMailContent, domain, transmissionAtr, screenUrlApprovalEmbed, screenUrlDayEmbed, screenUrlMonthEmbed);
 	}
 
 	@Override
-	public SendMailResultOutput exeApprovalStatusMailTransmission(List<MailTransmissionContentOutput> listMailInput,
-			ApprovalStatusMailTemp domain, ApprovalStatusMailType mailType) {
+	public SendMailResultOutput exeApprovalStatusMailTransmission(List<MailTransmissionContentOutput> listMailInput, ApprovalStatusMailTemp domain, 
+			boolean transmissionAtr, boolean screenUrlApprovalEmbed, boolean screenUrlDayEmbed, boolean screenUrlMonthEmbed) {
 		//メール送信内容(リスト)
 		List<String> listError = new ArrayList<>();
 		//社員の名称（ビジネスネーム）、社員コードを取得する RQ228
@@ -357,7 +379,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				continue;
 			}
 			// アルゴリズム「承認状況メール埋込URL取得」を実行する
-			String embeddedURL = this.getEmbeddedURL(mailTransmission.getSId(), domain, mailType);
+			String embeddedURL = this.getEmbeddedURL(mailTransmission.getSId(), domain, transmissionAtr, screenUrlApprovalEmbed, screenUrlDayEmbed, screenUrlMonthEmbed);
 			try {
 				// アルゴリズム「メールを送信する」を実行する
 				mailsender.sendFromAdmin(mailTransmission.getMailAddr(),
@@ -384,12 +406,13 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	/**
 	 * 承認状況メール埋込URL取得
 	 */
-	private String getEmbeddedURL(String eid, ApprovalStatusMailTemp domain, ApprovalStatusMailType mailType) {
+	private String getEmbeddedURL(String eid, ApprovalStatusMailTemp domain, boolean transmissionAtr, 
+			boolean screenUrlApprovalEmbed, boolean screenUrlDayEmbed, boolean screenUrlMonthEmbed) {
 		List<String> listUrl = new ArrayList<>();
 		String contractCD = AppContexts.user().contractCode();
 		String employeeCD = AppContexts.user().employeeCode();
 		// 承認状況メールテンプレート.URL承認埋込
-		if (NotUseAtr.USE.equals(domain.getUrlApprovalEmbed())) {
+		if (screenUrlApprovalEmbed) {
 			List<UrlTaskIncre> listTask = new ArrayList<>();
 			listTask.add(new UrlTaskIncre("", "", "", "activeMode", "approval", UrlParamAtr.URL_PARAM));
 			// アルゴリズム「埋込URL情報登録」を実行する
@@ -397,13 +420,13 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			listUrl.add(url1);
 		}
 		// 承認状況メールテンプレート.URL日別埋込
-		if (NotUseAtr.USE.equals(domain.getUrlDayEmbed())) {
+		if (screenUrlDayEmbed) {
 			List<UrlTaskIncre> listTask = new ArrayList<>();
-			if (ApprovalStatusMailType.DAILY_UNCONFIRM_BY_CONFIRMER.equals(mailType)) {
+			if (transmissionAtr) {
 				// アルゴリズム「埋込URL情報登録」を実行する
 				String url2 = registerEmbededURL.embeddedUrlInfoRegis("KDW004", "A", 1, 1, eid, contractCD, "", employeeCD, 0, listTask);
 				listUrl.add(url2);
-			} else if (ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL.equals(mailType)){
+			} else {
 				listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "screenMode", "normal"));
 				listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "errorRef", "true"));
 				listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "changePeriod", "true"));
@@ -413,14 +436,14 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			}
 		}
 		// 承認状況メールテンプレート.URL月別埋込
-		if (NotUseAtr.USE.equals(domain.getUrlMonthEmbed())) {
+		if (screenUrlMonthEmbed) {
 			List<UrlTaskIncre> listTask = new ArrayList<>();
-			if (ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_CONFIRMER==mailType) {
+			if (transmissionAtr) {
 				listTask.add(new UrlTaskIncre("", "", "", "activeMode", "approval", UrlParamAtr.URL_PARAM));
 				// アルゴリズム「埋込URL情報登録」を実行する
 				String url3 = registerEmbededURL.embeddedUrlInfoRegis("KMW003", "A", 1, 1, eid, contractCD, "", employeeCD, 0, listTask);
 				listUrl.add(url3);
-			} else if (ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_PRINCIPAL==mailType) {
+			} else {
 				listTask.add(new UrlTaskIncre("", "", "", "activeMode", "normal", UrlParamAtr.URL_PARAM));
 				// アルゴリズム「埋込URL情報登録」を実行する
 				String url3 = registerEmbededURL.embeddedUrlInfoRegis("KMW003", "A", 1, 1, eid, contractCD, "", employeeCD, 0, listTask);
@@ -430,8 +453,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		if (listUrl.size() == 0) {
 			return "";
 		}
-		String url = StringUtils.join(listUrl, System.lineSeparator());
-		return System.lineSeparator() + TextResource.localize("KAF018_190") + System.lineSeparator() + url;
+		String url = StringUtils.join(listUrl, System.lineSeparator() + TextResource.localize("KAF018_510") + System.lineSeparator());
+		return System.lineSeparator() + TextResource.localize("KAF018_510") + System.lineSeparator() + url;
 	}
 
 	@Override
@@ -1383,7 +1406,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public SendMailResultOutput sendMailToDestination(ApprovalStatusMailTemp approvalStatusMailTemp, List<ApprSttWkpEmpMailOutput> wkpEmpMailLst) {
+	public SendMailResultOutput sendMailToDestination(ApprovalStatusMailTemp approvalStatusMailTemp, List<ApprSttWkpEmpMailOutput> wkpEmpMailLst,
+			boolean screenUrlApprovalEmbed, boolean screenUrlDayEmbed, boolean screenUrlMonthEmbed) {
 		List<MailTransmissionContentOutput> listMailInput = wkpEmpMailLst.stream().filter(x -> x.getCountEmp() > 0 && x.getEmpMailLst().size() > 0)
 				.map(x -> x.getEmpMailLst()
 						.stream().map(y -> new MailTransmissionContentOutput(
@@ -1409,8 +1433,32 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			// メッセージ（Msg_787)を表示する
 			throw new BusinessException("Msg_787");
 		}
+		// 起動区分から送信区分を編集する
+		boolean transmissionAtr = false;
+		switch (approvalStatusMailTemp.getMailType()) {
+		case DAILY_UNCONFIRM_BY_PRINCIPAL:
+			transmissionAtr = false;
+			break;
+		case DAILY_UNCONFIRM_BY_CONFIRMER:
+			transmissionAtr = true;
+			break;
+		case MONTHLY_UNCONFIRM_BY_PRINCIPAL:
+			transmissionAtr = false;
+			break;
+		case MONTHLY_UNCONFIRM_BY_CONFIRMER:
+			transmissionAtr = true;
+			break;
+		case APP_APPROVAL_UNAPPROVED:
+			transmissionAtr = true;
+			break;
+		case WORK_CONFIRMATION:
+			transmissionAtr = true;
+			break;
+		default:
+			break;
+		}
 		// アルゴリズム「承認状況メール送信実行」を実行する
-		return this.exeApprovalStatusMailTransmission(listMailInput, approvalStatusMailTemp, approvalStatusMailTemp.getMailType());
+		return this.exeApprovalStatusMailTransmission(listMailInputNotDuplicate, approvalStatusMailTemp, transmissionAtr, screenUrlApprovalEmbed, screenUrlDayEmbed, screenUrlMonthEmbed);
 	}
 
 	@Override

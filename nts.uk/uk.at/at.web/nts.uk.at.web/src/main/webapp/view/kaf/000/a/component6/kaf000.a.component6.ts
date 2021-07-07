@@ -62,6 +62,9 @@ module nts.uk.at.view.kaf000.a.component6.viewmodel {
 
 		openApproverDetail() {
 			const vm = this;
+			if (!vm.approvalRootDisp()) {
+				return;
+			}
 			let appDispInfoStartupOutput = vm.appDispInfoStartupOutput(),
 				isAgentMode = vm.isAgentMode(),
 				approvalRootState = vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opListApprovalPhaseState,

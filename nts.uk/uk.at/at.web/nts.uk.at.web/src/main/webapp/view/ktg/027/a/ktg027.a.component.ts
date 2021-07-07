@@ -49,7 +49,7 @@ module nts.uk.at.view.ktg027.a {
                                 <div data-bind="ntsFormLabel: { required: false, text: $component.$i18n('KTG027_5') }"></div>
                             </th>
                             <th style="padding-right: 5px;">
-                                <div data-bind="ntsDatePicker: {
+                                <div id="ktg027-datepick" data-bind="ntsDatePicker: {
                                     name: $component.$i18n('KTG027_1'),
                                     value: $component.targetYear,
                                     dateFormat: 'yearmonth',
@@ -339,8 +339,8 @@ module nts.uk.at.view.ktg027.a {
                     { colorCode: '#00CC00', labelText: vm.$i18n('KTG027_3') },
                 ],
                 template :
-                '<div class="legend-item-label" style="color: #{colorCode};">'
-                + '<div data-bind="ntsFormLabel: { required: false }">#{labelText}</div>'
+                '<div class="legend-item-label">'
+                + '<div style="color: #{colorCode};" data-bind="ntsFormLabel: { required: false }">#{labelText}</div>'
                 + '</div>'
             };
 
@@ -354,13 +354,17 @@ module nts.uk.at.view.ktg027.a {
 
                     vm.targetYear
                         .subscribe((ym: string | null) => {
-                            if (typeof ym === 'string') {
-                                vm.$window.storage('KTG027_TARGET', {
-                                    isRefresh: false,
-                                    target: ym
-                                });
-                                vm.loadData(ym, closureId);
-                            }
+                            vm.$validate('#ktg027-datepick').then(valid => {
+                                if (!valid || _.isEmpty(ym)) return;
+
+                                if (typeof ym === 'string') {
+                                    vm.$window.storage('KTG027_TARGET', {
+                                        isRefresh: false,
+                                        target: ym
+                                    });
+                                    vm.loadData(ym, closureId);
+                                }
+                            });
                         });
 
                     vm.$window.storage('KTG027_TARGET').then((rs: {isRefresh: boolean, target: any}) => {

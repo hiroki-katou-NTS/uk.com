@@ -43,6 +43,9 @@ module cps002.f.vm {
                     //for no show child item
                     let datalist = _.filter(data, (item: any) => { return item.itemParentCd == null });
                     self.lstPerInfoItemDef(datalist);
+                    setTimeout(() => {
+                        $("#multiList_headers th:first-child").append(nts.uk.resource.getText("CPS002_74"));
+                    }, 100);
                     //contant all checked id
                     let perItemCopy = _.filter(data, function(item: IPerInfoItemDef) { return item.alreadyItemDefCopy == true; }).map(function(item) { return item.id; });
                     self.checkedIds(perItemCopy);

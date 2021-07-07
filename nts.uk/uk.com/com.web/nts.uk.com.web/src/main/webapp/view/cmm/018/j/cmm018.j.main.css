@@ -63,3 +63,7 @@ body {
 	color: #999999;
 	border-color: #999999 !important;
 }
+
+.datepicker-container {
+	top: 45px !important;
+}

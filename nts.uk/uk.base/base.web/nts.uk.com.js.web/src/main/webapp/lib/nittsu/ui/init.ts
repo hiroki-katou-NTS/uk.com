@@ -143,12 +143,14 @@ module nts.uk.ui {
         });
 
         const startP = function () {
-            if (!cantCall()) {
-                _start.apply(__viewContext, [__viewContext]);
-            } else {
-                loadEmployeeCodeConstraints()
-                    .always(() => _start.apply(__viewContext, [__viewContext]));
-            }
+            setTimeout(() => {
+                if (!cantCall()) {
+                    _start.apply(__viewContext, [__viewContext]);
+                } else {
+                    loadEmployeeCodeConstraints()
+                        .always(() => _start.apply(__viewContext, [__viewContext]));
+                }
+            }, 1);
         };
 
         const noSessionWebScreens = [

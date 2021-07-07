@@ -163,6 +163,10 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                         if (self.screenMode() == ScreenMode.Daily && self.isNewMode() == true) {
                             self.newTab();
                         }
+
+                        if (self.showTypeAtr() == 1) {
+                            self.selectedTab('tab-5');
+                        } 
                     }
                 setTimeout(() => {
                     nts.uk.ui.block.clear();

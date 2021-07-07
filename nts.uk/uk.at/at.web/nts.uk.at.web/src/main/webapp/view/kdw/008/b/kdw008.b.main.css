@@ -29,13 +29,13 @@
 	margin-left: 20px;
 } */
 #messageSwaplist {
-	margin-left: 435px;
+	margin-left: 412px;
 	width: 48%;
 	margin-bottom: -10px;
 }
 
 #swap-list2_container, #swap-list_container, #swap-list3_container, #swap-list21_container {
-	display: inline-block;;
+	display: inline-block;
 }
 
 #swap-list2 .ui-icon-triangle-1-e {
@@ -88,9 +88,15 @@
 	width: 318px !important;
 }
 
-#swap-list2-search-area-input,
-#swap-list-search-area-input,
-#swap-list3-search-area-input {
+.ntsSwapSearchLeft #swap-list2-search-area-input,
+.ntsSwapSearchLeft #swap-list-search-area-input,
+.ntsSwapSearchLeft #swap-list3-search-area-input {
+	width: 171px !important;
+}
+
+.ntsSwapSearchRight #swap-list2-search-area-input,
+.ntsSwapSearchRight #swap-list-search-area-input,
+.ntsSwapSearchRight #swap-list3-search-area-input {
 	width: 210px !important;
 }
 

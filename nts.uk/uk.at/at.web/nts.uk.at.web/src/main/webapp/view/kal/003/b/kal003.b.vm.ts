@@ -1091,7 +1091,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
             windows.setShared("kml001selectAbleCodeList", self.listAllWorkingTime);
             //selected items
             windows.setShared("kml001selectedCodeList", lstSelectedCode);
-            windows.setShared("kdl00showNoSelectionRow", true);
+            windows.setShared("kdl00showNoSelectionRow", false);
             windows.sub.modal("/view/kdl/001/a/index.xhtml",
                 { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function(): any {
                     $(".nts-input").ntsError("clear");

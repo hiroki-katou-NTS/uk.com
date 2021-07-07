@@ -13,9 +13,11 @@ import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.reasonappdaily.ApplicationReasonInfo;
 import nts.uk.ctx.at.request.dom.reasonappdaily.ApplicationTypeReason;
@@ -48,16 +50,19 @@ public class ReflectApplicationReason {
 		ITEMCONTENT.addAll(ItemContent.create(881, 15, null));
 	}
 
-	public static Optional<AtomTask> reflectReason(Require require, Application application, GeneralDate dateRefer) {
+	public static Optional<AtomTask> reflectReason(Require require, Application application, GeneralDate dateRefer, GeneralDateTime reflectTime) {
 
 		// 申請があるかのチェック
 		if (!application.getOpAppReason().isPresent() && !application.getOpAppStandardReasonCD().isPresent()) {
 			return Optional.empty();
 		}
 
-		// TODO: 日別実績の申請理由を取得--- chua co don xin lam them Optional.empty
+		// 日別実績の申請理由を取得
 		List<ReasonApplicationDailyResult> lstReasonDai = require.findReasonAppDaily(application.getEmployeeID(),
-				dateRefer, application.getPrePostAtr(), application.getAppType(), Optional.empty());
+				dateRefer, application.getPrePostAtr(), application.getAppType(),
+				application.getAppType() == ApplicationType.OVER_TIME_APPLICATION ? Optional.of(
+						EnumAdaptor.valueOf(((AppOverTime) application).getOverTimeClf().value, OvertimeAppAtr.class))
+						: Optional.empty());
 
 		AtomTask task = AtomTask.of(() -> {
 			if (lstReasonDai.isEmpty()) {
@@ -79,7 +84,7 @@ public class ReflectApplicationReason {
 			Map<Integer, String> mapItemDomain = createMap(lstReasonDai, application);
 			// 申請理由の編集状態と履歴を作成する
 			require.processCreateHist(application.getEmployeeID(), dateRefer, application.getAppID(),
-					ScheduleRecordClassifi.RECORD, mapItemDomain);
+					ScheduleRecordClassifi.RECORD, mapItemDomain, reflectTime);
 		});
 
 		return Optional.of(task);
@@ -140,9 +145,12 @@ public class ReflectApplicationReason {
 	}
 
 	public static ReasonApplicationDailyResult createReason(Application application, GeneralDate date) {
-		// TODO: chua co don xin lam them Optional.empty
-		return new ReasonApplicationDailyResult(application.getEmployeeID(), date,
-				new ApplicationTypeReason(application.getAppType(), Optional.empty()), application.getPrePostAtr(),
+		return new ReasonApplicationDailyResult(application.getEmployeeID(), date, new ApplicationTypeReason(
+				application.getAppType(),
+				application.getAppType() == ApplicationType.OVER_TIME_APPLICATION ? Optional.of(
+						EnumAdaptor.valueOf(((AppOverTime) application).getOverTimeClf().value, OvertimeAppAtr.class))
+						: Optional.empty()),
+				application.getPrePostAtr(),
 				new ApplicationReasonInfo(application.getOpAppStandardReasonCD().orElse(null),
 						application.getOpAppReason().orElse(null)));
 	}
@@ -157,6 +165,6 @@ public class ReflectApplicationReason {
 
 		// CreateEditStatusHistAppReasonAdapter.process
 		public void processCreateHist(String employeeId, GeneralDate date, String appId,
-				ScheduleRecordClassifi classification, Map<Integer, String> mapValue);
+				ScheduleRecordClassifi classification, Map<Integer, String> mapValue, GeneralDateTime reflectTime);
 	}
 }

@@ -13,6 +13,7 @@ import nts.uk.ctx.pereg.dom.person.setting.init.category.PerInfoInitValSetCtgRep
 import nts.uk.ctx.pereg.dom.person.setting.init.category.PerInfoInitValueSettingCtg;
 import nts.uk.ctx.pereg.infra.entity.person.info.setting.initvalue.PpemtPersonInitValueSettingCtg;
 import nts.uk.ctx.pereg.infra.entity.person.info.setting.initvalue.PpemtPersonInitValueSettingCtgPk;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoInitValSetCtgRepository {
@@ -39,7 +40,9 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 			+ " ON c.settingCtgPk.perInfoCtgId = b.ppemtPerInfoCtgPK.perInfoCtgId" + " LEFT JOIN PpemtCtgCommon cm "
 			+ " ON b.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd" + " LEFT JOIN PpemtCtgSort e"
 			+ " ON c.settingCtgPk.perInfoCtgId = e.ppemtPerInfoCtgPK.perInfoCtgId" + " AND b.cid = e.cid "
-			+ " WHERE b.abolitionAtr = 0 " + " AND c.settingCtgPk.settingId = :settingId" + " ORDER BY e.disporder ";
+			+ " WHERE b.abolitionAtr = 0 " + " AND c.settingCtgPk.settingId = :settingId"
+			+ " AND cm.ppemtPerInfoCtgCmPK.contractCd = :contractCd " 
+			+ " ORDER BY e.disporder ";
 
 	private final static String SEL_ALL_CTG_BY_SET_ID_1 = " SELECT c FROM PpemtPersonInitValueSettingCtg c"
 			+ " WHERE c.settingCtgPk.settingId =:settingId";
@@ -86,7 +89,10 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 
 	@Override
 	public List<InitValSettingCtg> getAllCategoryBySetId(String settingId) {
-		return this.queryProxy().query(SEL_CTG_BY_SET_ID, Object[].class).setParameter("settingId", settingId)
+		String contractCd = AppContexts.user().contractCode();
+		return this.queryProxy().query(SEL_CTG_BY_SET_ID, Object[].class)
+				.setParameter("settingId", settingId)
+				.setParameter("contractCd", contractCd)
 				.getList(c -> toValSettingDomain(c));
 	}
 

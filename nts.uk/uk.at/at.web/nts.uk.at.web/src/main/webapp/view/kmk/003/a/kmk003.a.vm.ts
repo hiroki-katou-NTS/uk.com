@@ -258,11 +258,11 @@ module nts.uk.at.view.kmk003.a {
                 self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe((val) => {
 
                     if (val == EnumWorkForm.FLEX ){
-                        $('.tabs-list').find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_317'));
+                        $($('.tabs-list')[0]).find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_317'));
                         $('#tab-panel > .tabs-content').removeClass('left-122');
                         $('#tab-panel > .tabs-content').addClass('left-178');
                     } else {
-                        $('.tabs-list').find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_18'));
+                        $($('.tabs-list')[0]).find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_18'));
                         $('#tab-panel > .tabs-content').removeClass('left-178');
                         $('#tab-panel > .tabs-content').addClass('left-122');
                     }
@@ -607,11 +607,11 @@ module nts.uk.at.view.kmk003.a {
                 _.find(_self.tabs(),['id', TabID.TAB17]).setVisible(_self.otsukaMode());
 
                 if (_self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr() === WorkTimeDailyAtr.FLEX_WORK ){
-                    $('.tabs-list').find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_317'));
+                    $($('.tabs-list')[0]).find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_317'));
                     $('#tab-panel > .tabs-content').removeClass('left-122');
                     $('#tab-panel > .tabs-content').addClass('left-178');
                 } else{
-                    $('.tabs-list').find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_18'));
+                    $($('.tabs-list')[0]).find('label:nth-child(2)').find('span').html(nts.uk.resource.getText('KMK003_18'));
                     $('#tab-panel > .tabs-content').removeClass('left-178');
                     $('#tab-panel > .tabs-content').addClass('left-122');
                 }
@@ -1611,7 +1611,7 @@ module nts.uk.at.view.kmk003.a {
             public setEnums(enums: WorkTimeSettingEnumDto): void {
                 let self = this;
                 self.workTimeAtrEnums = _.cloneDeep(enums.workTimeDailyAtr);
-                self.workTimeMethodEnums = _.cloneDeep(enums.workTimeMethodSet);
+                self.workTimeMethodEnums = _.cloneDeep(_.filter(enums.workTimeMethodSet, (item) => {return item.value != 1}));
                 let all = <EnumConstantDto>{};
                 all.value = 3;
                 all.localizedName = "全て";

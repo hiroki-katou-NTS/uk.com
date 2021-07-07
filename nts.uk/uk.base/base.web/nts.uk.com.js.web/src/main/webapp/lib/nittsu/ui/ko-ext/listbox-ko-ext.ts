@@ -5,9 +5,9 @@ module nts.uk.ui.koExtentions {
     export module listbox {
         const { randomId } = nts.uk.util;
 
-        const ROW_HEIGHT: number = 35;
-        const GRID_HEADER_HEIGHT: number = 46;
-        const SCROLL_WIDTH = 20;
+        const ROW_HEIGHT: number = 23;
+        const GRID_HEADER_HEIGHT: number = 24;
+        const SCROLL_WIDTH = 17;
 
         @handler({
             bindingName: 'ntsListBox'

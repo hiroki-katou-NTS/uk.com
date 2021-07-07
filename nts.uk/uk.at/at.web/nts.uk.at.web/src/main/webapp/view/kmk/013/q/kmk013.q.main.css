@@ -251,5 +251,5 @@
 }
 
 .tabs-panel.has-content {
-	overflow: initial;
+	overflow: visible;
 }

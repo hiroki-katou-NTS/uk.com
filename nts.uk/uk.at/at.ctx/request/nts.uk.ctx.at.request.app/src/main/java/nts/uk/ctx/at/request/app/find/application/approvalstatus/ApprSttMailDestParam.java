@@ -18,4 +18,19 @@ public class ApprSttMailDestParam {
 	private ApprovalStatusMailTempCommand command;
 	
 	private List<ApprSttWkpEmpMailOutput> wkpEmpMailLst;
+	
+	/**
+    * 画面の承認URL
+    */
+    private boolean screenUrlApprovalEmbed;
+    
+    /**
+    * 画面の日別URL
+    */
+    private boolean screenUrlDayEmbed;
+    
+    /**
+    * 画面の月別URL
+    */
+    private boolean screenUrlMonthEmbed;
 }

@@ -157,6 +157,13 @@ module knr002.f {
                     dialog.confirm({ messageId: "Msg_2020", messageParams: [x, y.substring(1, y.length - 1)] }).ifYes(() => {
                         blockUI.invisible();
                         service.recovery(self.empInfoTerCode(), self.selectedList).done(() => {
+
+                            let updateRemoteInput = {
+                                listEmpTerminalCode: self.selectedList
+                            }
+
+                            service.updateRemoteSettings(updateRemoteInput).done(() => {});
+
                             nts.uk.ui.windows.close();
                             }).fail((err) => {
                                 dialog.error({ messageId: err.messageId });

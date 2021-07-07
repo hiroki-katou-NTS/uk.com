@@ -4,7 +4,7 @@ import IDisplayFlexBasicSettingByCompanyDto = nts.uk.at.kmk004.components.flex.I
 
 const template = `
 	<div   style="margin-top: 10px; margin-bottom:15px;"  >
-		<div data-bind="ntsFormLabel: {inline:true} , i18n: 'KMK004_229'"></div>
+		<div data-bind="ntsFormLabel: {inline:true , text: $i18n('KMK004_229')} "></div>
 		<button data-bind="enable:enableKButton() == true,click: openKDialog , i18n:getTextKButton()" ></button>
 	</div>
 	<div data-bind="visible:screenData().flexMonthActCalSet() != null" class="div_line" 

@@ -25,6 +25,8 @@ import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
@@ -49,6 +51,9 @@ public class ProcessDailyCalc {
 
 	@Inject
 	private DailyRecordWorkCommandHandler handler;
+	
+	@Inject
+	private OptionalItemRepository optionalMasterRepo;
 
 	private Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> checkBeforeCalc(DailyCalcParam param,
 			List<DailyRecordDto> dailyEdits) {
@@ -109,9 +114,12 @@ public class ProcessDailyCalc {
 		return lstResultReturnDailyError;
 	}
 
-	public ErrorAfterCalcDaily checkErrorAfterCalcDaily(RCDailyCorrectionResult resultIU,
+	private ErrorAfterCalcDaily checkErrorAfterCalcDaily(RCDailyCorrectionResult resultIU,
 			List<DailyModifyResult> resultOlds, DateRange range, List<DailyRecordDto> dailyDtoEditAll,
 			List<DPItemValue> lstItemEdits) {
+		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
+				.findAll(AppContexts.user().companyId()).stream()
+				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
 		Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> resultErrorDaily = new HashMap<>();
 		Map<Integer, List<DPItemValue>> resultErrorMonth = new HashMap<>();
 		boolean hasError = false;
@@ -125,7 +133,7 @@ public class ProcessDailyCalc {
 		}
 
 		// 残数系のエラーチェック（月次集計なし）
-		val sidChange = ProcessCommonCalc.itemInGroupChange(resultIU.getLstDailyDomain(), resultOlds);
+		val sidChange = ProcessCommonCalc.itemInGroupChange(resultIU.getLstDailyDomain(), resultOlds, optionalMaster);
 		val pairError = resCommandFacade.mapDomainMonthChange(sidChange, resultIU.getLstDailyDomain(),
 				resultIU.getLstMonthDomain(), dailyDtoEditAll, range, lstItemEdits);
 		Map<Integer, List<DPItemValue>> errorMonth = validatorDataDaily.errorMonthNew(pairError.getErrorMonth());

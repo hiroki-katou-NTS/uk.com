@@ -49,13 +49,10 @@ module nts.uk.at.view.kdp002.a {
                 let dfd = $.Deferred<void>();
                 nts.uk.ui.block.grayout();
 
-                service.getWorkManagementMultiple()
-                    .done((result: boolean) => {
-                        self.workManagementMultiple(!result);
-                    });
-
-                service.startPage()
-                    .done((res: IStartPage) => {
+                service.getWorkManagementMultiple().done((result: boolean) => {
+					self.workManagementMultiple(!result);	
+                    
+                	service.startPage().done((res: IStartPage) => {
                         self.stampSetting(res.stampSetting);
 
                         self.stampTab().bindData(res.stampSetting.pageLayouts);
@@ -79,6 +76,7 @@ module nts.uk.at.view.kdp002.a {
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
+				});
                 return dfd.promise();
             }
 
@@ -224,19 +222,9 @@ module nts.uk.at.view.kdp002.a {
                 }
 
                 service.getError(data).done((res) => {
-                    var timeNow = vm.$date.today().getDate().toString() + vm.$date.today().getMonth().toString() + vm.$date.today().getFullYear().toString();
 
                     if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
-                        var showViewT = 0;
-                        _.forEach(res.dailyAttdErrorInfos, ((value) => {
-                            var date: Date = new Date(value.lastDateError);
-                            var timeResult = date.getDate().toString() + date.getMonth().toString() + date.getFullYear().toString();
-                            if (timeResult > timeNow) {
-                                showViewT++;
-                            }
-                        }));
-                        if (showViewT == 0) {
-                            nts.uk.ui.windows.setShared('KDP010_2T', res, true);
+                        nts.uk.ui.windows.setShared('KDP010_2T', res, true);
                             nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function (): any {
                                 let returnData = nts.uk.ui.windows.getShared('KDP010_T');
                                 if (!returnData.isClose && returnData.errorDate) {
@@ -246,12 +234,10 @@ module nts.uk.at.view.kdp002.a {
                                     nts.uk.request.jump(returnData.btn.screen, transfer);
                                 }
                             });
-                        }
                     }
                 });
             }
         }
-
     }
     export enum Mode {
         Personal = 1, // 個人

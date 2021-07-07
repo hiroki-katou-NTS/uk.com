@@ -107,7 +107,7 @@ module nts.uk.at.view.kdp002.c {
 					}
 				}else{
 					if(self.showBtnNoti()){
-						self.$window.size(595, 450);
+						self.$window.size(600, 450);
 					}else{
 						self.$window.size(565, 450);
 					}					

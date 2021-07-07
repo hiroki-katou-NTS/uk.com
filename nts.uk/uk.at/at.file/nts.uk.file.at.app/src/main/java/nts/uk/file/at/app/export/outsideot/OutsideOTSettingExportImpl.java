@@ -5,10 +5,7 @@
 package nts.uk.file.at.app.export.outsideot;
 
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
-import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceNameDivergenceDto;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
@@ -18,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.OvertimeNameLangRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.file.at.app.export.outsideot.data.OutsideOTBRDItemNameLangData;
 import nts.uk.file.at.app.export.outsideot.data.OvertimeNameLanguageData;
 import nts.uk.shr.com.context.AppContexts;
@@ -62,17 +60,20 @@ public class OutsideOTSettingExportImpl implements MasterListData {
     /**
      * The daily attendance item repository.
      */
-    @Inject
-    private DailyAttendanceItemRepository dailyAttendanceItemRepository;
-
-    @Inject
-    private MonthlyAttendanceItemRepository monthlyAttendanceItemRepository;
+//    @Inject
+//    private DailyAttendanceItemRepository dailyAttendanceItemRepository;
+//
+//    @Inject
+//    private MonthlyAttendanceItemRepository monthlyAttendanceItemRepository;
 
     /**
      * The outside OT setting repository.
      */
     @Inject
     private OutsideOTSettingRepository outsideOTSettingRepository;
+
+    @Inject
+    private CompanyMonthlyItemService companyMonthlyItemService;
 
     /**
      * The Constant TOTA_NUMBER_COLS_A9_5.
@@ -470,15 +471,12 @@ public class OutsideOTSettingExportImpl implements MasterListData {
             language.setIsUse(false);
             breakdownNameLanguageData.add(language);
         }
-//        Map<Integer, DailyAttendanceItem> mapAttendanceItem = this.dailyAttendanceItemRepository
-//                .getList(companyId).stream().collect(Collectors.toMap((attendanceItem -> {
-//                    return attendanceItem.getAttendanceItemId();
-//                }), Function.identity()));
-        Map<Integer, MonthlyAttendanceItem> mapAttendanceItem = this.monthlyAttendanceItemRepository
-                .findAll(companyId).stream().collect(Collectors.toMap((attendanceItem -> {
-                    return attendanceItem.getAttendanceItemId();
-                }), Function.identity()));
 
+        Map<Integer, AttendanceNameDivergenceDto> mapAttendanceItem = companyMonthlyItemService
+                .getMonthlyItems(companyId, Optional.empty(), Collections.emptyList(), Collections.emptyList())
+                .stream().map(x -> new AttendanceNameDivergenceDto(x.getAttendanceItemId(),
+                        x.getAttendanceItemName(), x.getAttendanceItemDisplayNumber()))
+                .collect(Collectors.toMap((AttendanceNameDivergenceDto::getAttendanceItemId), Function.identity()));
 
         if (!this.isLanugeJapan(query.getLanguageId())) {
             this.outsideOTBRDItemLangRepository.findAll(companyId, query.getLanguageId())
@@ -513,7 +511,7 @@ public class OutsideOTSettingExportImpl implements MasterListData {
                         breakdownItem.getAttendanceItemIds().forEach(attendanceItemId -> {
                             String attendanceItemName = "";
                             if (mapAttendanceItem.containsKey(attendanceItemId)) {
-                                attendanceItemName = mapAttendanceItem.get(attendanceItemId).getAttendanceName().v();
+                                attendanceItemName = mapAttendanceItem.get(attendanceItemId).getAttendanceItemName();
                             }
                             startCol++;
                             dynamicColumns.add(NUMBER_COLS + startCol);

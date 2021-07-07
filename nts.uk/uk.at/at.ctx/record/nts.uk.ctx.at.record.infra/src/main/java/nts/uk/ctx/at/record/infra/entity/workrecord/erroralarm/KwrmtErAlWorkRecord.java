@@ -714,6 +714,8 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 	
 	public static ErrorAlarmCondition toConditionDomain(KwrmtErAlWorkRecord entity, KrcmtErAlCondition alCon) {
 		ErrorAlarmCondition condition = ErrorAlarmCondition.init();
+		if(alCon == null)
+			return new ErrorAlarmCondition(entity.eralCheckId, "");
 		condition.setDisplayMessage(alCon.messageDisplay);
 		condition.setContinuousPeriod(alCon.continuousPeriod);
 		if (!entity.fixedAtr) {

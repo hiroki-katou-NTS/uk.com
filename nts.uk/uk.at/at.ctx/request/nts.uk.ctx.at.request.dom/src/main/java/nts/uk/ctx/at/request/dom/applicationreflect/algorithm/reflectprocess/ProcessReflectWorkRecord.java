@@ -8,6 +8,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.adapter.scherec.convert.ConvertApplicationToShare;
 import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition;
@@ -42,11 +43,13 @@ public class ProcessReflectWorkRecord {
 		}
 
 		List<AtomTask> tasks = new ArrayList<>();
+		GeneralDateTime reflectTime = GeneralDateTime.now();
 		// 勤務実績に反映 -- in process
-		Pair<ReflectStatusResult, Optional<AtomTask>> result = require.processWork(ConvertApplicationToShare.toAppliction(application), targetDate, statusWorkRecord);
+		Pair<ReflectStatusResult, Optional<AtomTask>> result = require
+				.processWork(ConvertApplicationToShare.toAppliction(application), targetDate, statusWorkRecord, reflectTime);
 		result.getRight().ifPresent(x -> tasks.add(x));
 		// 申請理由の反映-- in process chua co don xin lam them
-		Optional<AtomTask> task = ReflectApplicationReason.reflectReason(require, application, targetDate);
+		Optional<AtomTask> task = ReflectApplicationReason.reflectReason(require, application, targetDate, reflectTime);
 		task.ifPresent(x -> tasks.add(x));
 
 		return Pair.of(ProcessReflectWorkSchedule.statusResult(result.getLeft(), statusWorkRecord), Optional.of(AtomTask.bundle(tasks)));
@@ -68,6 +71,6 @@ public class ProcessReflectWorkRecord {
 
 		// ReflectApplicationWorkRecordAdapter
 		public Pair<ReflectStatusResult, Optional<AtomTask>> processWork(ApplicationShare application, GeneralDate date,
-				ReflectStatusResult reflectStatus);
+				ReflectStatusResult reflectStatus, GeneralDateTime reflectTime);
 	}
 }
