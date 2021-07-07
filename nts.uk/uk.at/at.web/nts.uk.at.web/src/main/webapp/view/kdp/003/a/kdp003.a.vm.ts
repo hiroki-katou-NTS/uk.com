@@ -1148,6 +1148,12 @@ module nts.uk.at.kdp003.a {
 													const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
 													const { USE } = NotUseAtr;
 
+													const param = {
+														sid: employeeId,
+														date: vm.$date.now()
+													}
+													vm.$ajax('at', API.CREATE_DAILY, param);
+
 													vm.playAudio(btn.audioType);
 													const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
 
@@ -1200,6 +1206,12 @@ module nts.uk.at.kdp003.a {
 												const { stampResultDisplay } = fingerStampSetting;
 												const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
 												const { USE } = NotUseAtr;
+
+												const param = {
+													sid: employeeId,
+													date: vm.$date.now()
+												}
+												vm.$ajax('at', API.CREATE_DAILY, param);
 
 												vm.playAudio(btn.audioType);
 												const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
