@@ -126,7 +126,7 @@ public class VacationAppReflectOption extends DomainObject {
 		// [出退勤を反映する]をチェック
 		if (this.getReflectAttendance() == NotUseAtr.USE) {
 			// 出退勤の反映
-			lstItemId.addAll(ReflectAttendance.reflect(require, cid, workingHours, ScheduleRecordClassifi.SCHEDULE, dailyApp,
+			lstItemId.addAll(ReflectAttendance.reflect(require, cid, workingHours, ScheduleRecordClassifi.RECORD, dailyApp,
 					Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
 		}
 
