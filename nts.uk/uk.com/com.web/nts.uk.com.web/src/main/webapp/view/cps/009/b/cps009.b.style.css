@@ -18,10 +18,10 @@
 	background-color: #C7F391;
 }
 
-#registration {
-	margin-top: 3px !important;
-}
-
 #grid0 td[role="gridcell"] {
 	white-space: nowrap;
+}
+
+#grid0_virtualContainer {
+	margin-top: -9px !important;
 }
