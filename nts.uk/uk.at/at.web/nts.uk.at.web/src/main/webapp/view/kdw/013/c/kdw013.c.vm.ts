@@ -722,8 +722,8 @@ module nts.uk.ui.at.kdw013.c {
                         const params: SelectWorkItemParam = {
                             refDate: moment(start).format(DATE_TIME_FORMAT),
                             employeeId,
-                            taskCode:"",
-                            taskFrameNo: 1
+                            taskCode,
+                            taskFrameNo: 2
                         };
 
                         vm
@@ -753,8 +753,8 @@ module nts.uk.ui.at.kdw013.c {
                         const params: SelectWorkItemParam = {
                             refDate: moment(start).format(DATE_TIME_FORMAT),
                             sId: employeeId,
-                            taskCode:vm.model.task1(),
-                            taskFrameNo: 2
+                            taskCode,
+                            taskFrameNo: 3
                         };
 
                         vm
@@ -784,8 +784,8 @@ module nts.uk.ui.at.kdw013.c {
                         const params: SelectWorkItemParam = {
                             refDate: moment(start).format(DATE_TIME_FORMAT),
                             sId: employeeId,
-                            taskCode:vm.model.task2(),
-                            taskFrameNo: 3
+                            taskCode,
+                            taskFrameNo: 4
                         };
 
                         vm
@@ -815,8 +815,8 @@ module nts.uk.ui.at.kdw013.c {
                         const params: SelectWorkItemParam = {
                             refDate: moment(start).format(DATE_TIME_FORMAT),
                             sId: employeeId,
-                            taskCode:vm.model.task3(),
-                            taskFrameNo: 4
+                            taskCode,
+                            taskFrameNo: 5
                         };
 
                         vm

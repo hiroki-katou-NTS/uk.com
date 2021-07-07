@@ -106,7 +106,7 @@ public class KDW013WebService {
 	@POST
 	@Path("c/select")
 	public List<TaskDto> selectWorkItem(SelectWorkItemParam param) {
-		return StartWorkInputPanelDto.setTaskListDto(selectWorkItem.select(param.getSId(), param.getRefDate(),
+		return StartWorkInputPanelDto.setTaskListDto(selectWorkItem.select(param.getEmployeeId(), param.getRefDate(),
 				new TaskFrameNo(param.getTaskFrameNo()), Optional.of(new TaskCode(param.getTaskCode()))));
 	}
 
