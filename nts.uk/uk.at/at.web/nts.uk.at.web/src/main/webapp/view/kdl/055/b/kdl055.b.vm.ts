@@ -310,7 +310,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                     }
                 }
                 request.isRegistered = 0;
-                request.dispItemCol = true;
+                request.dispItemCol = false;
 
                 if (request.errorRegistrationList.length > 0) {
                     vm.$window.modeless('at', '/view/kdl/053/a/index.xhtml', request).then(() => {
@@ -349,7 +349,8 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             });
 
             // dataSources
-            let listPersonEmp = data.listPersonEmp;
+            // let listPersonEmp = data.listPersonEmp;
+            let listPersonEmp = _.sortBy(data.listPersonEmp, ['employeeCode', 'businessName']);
             let results = data.importResult.results;
 
             _.forEach(listPersonEmp, (emp) => {
