@@ -172,7 +172,7 @@ public class RegisterWorkManHoursCommandHandler
 
 		@Override
 		public void update(OuenWorkTimeSheetOfDaily domain) {
-			ouenWorkTimeSheetOfDailyRepo.update(Collections.singletonList(domain));
+			ouenWorkTimeSheetOfDailyRepo.persist(Collections.singletonList(domain));
 
 		}
 

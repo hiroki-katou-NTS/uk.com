@@ -148,6 +148,11 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		});
 		this.update(domain);
 	}
+	
+	@Override
+	public void persist(List<OuenWorkTimeSheetOfDaily> domain) {
+		this.insert(domain);
+	}
 
 	private void updateData(KrcdtDayOuenTimeSheet entityOld, KrcdtDayOuenTimeSheet dataUpdate) {
 		entityOld.startTime = dataUpdate.startTime;
