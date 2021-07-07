@@ -39,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
@@ -178,6 +179,11 @@ public class AppCancelTempRequireService {
 			@Override
 			public Optional<ClosureEmployment> findByEmploymentCD(String companyID, String employmentCD) {
 				return closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
+			}
+
+			@Override
+			public List<Closure> closureActive(String companyId, UseClassification useAtr) {
+				return closureRepo.findAllActive(companyId, useAtr);
 			}
 		};
 	}
