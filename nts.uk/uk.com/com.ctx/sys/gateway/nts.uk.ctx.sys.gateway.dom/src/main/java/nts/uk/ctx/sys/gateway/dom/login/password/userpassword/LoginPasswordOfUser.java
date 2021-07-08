@@ -76,7 +76,7 @@ public class LoginPasswordOfUser implements DomainAggregate {
 	 * @return
 	 */
 	public List<PasswordChangeLogDetail> getLatestPasswords(int historyLength) {
-		return getDetailsSorted().subList(0, historyLength);
+		return getDetailsSorted().subList(0, Math.min(historyLength, details.size()));
 	}
 	
 	private List<PasswordChangeLogDetail> getDetailsSorted() {
