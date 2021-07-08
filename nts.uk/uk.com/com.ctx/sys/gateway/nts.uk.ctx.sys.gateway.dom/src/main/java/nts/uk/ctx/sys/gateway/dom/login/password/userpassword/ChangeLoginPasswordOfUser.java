@@ -59,7 +59,7 @@ public class ChangeLoginPasswordOfUser {
 	private static BundledBusinessException bundled(String messageId) {
 		// 通常であればBusinessException単体でいいが、既存の呼び出し側がBundledを前提としている
 		val ex = BundledBusinessException.newInstance();
-		ex.addMessage("Msg_961");
+		ex.addMessage(messageId);
 		return ex;
 	}
 	
