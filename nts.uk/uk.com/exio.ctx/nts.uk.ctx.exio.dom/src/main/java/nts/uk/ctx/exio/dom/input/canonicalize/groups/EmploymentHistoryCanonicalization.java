@@ -23,18 +23,11 @@ public class EmploymentHistoryCanonicalization
 			int itemNoEndDate,
 			int itemNoHistoryId,
 			EmployeeCodeCanonicalization employeeCodeCanonicalization) {
-		
 		super(itemNoStartDate, itemNoEndDate, itemNoHistoryId, employeeCodeCanonicalization);
 	}
 
 	public EmploymentHistoryCanonicalization(GroupWorkspace workspace) {
-		this(
-				workspace.getItemByName("開始日").getItemNo(),
-				workspace.getItemByName("終了日").getItemNo(),
-				workspace.getItemByName("HIST_ID").getItemNo(),
-				new EmployeeCodeCanonicalization(
-						workspace.getItemByName("社員コード").getItemNo(),
-						workspace.getItemByName("SID").getItemNo()));
+		super(workspace, new EmployeeCodeCanonicalization(workspace));
 	}
 	
 	@Override

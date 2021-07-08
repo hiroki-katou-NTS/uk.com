@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import lombok.AllArgsConstructor;
 import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
@@ -13,12 +14,14 @@ import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
+import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
 
 /**
  * 社員コードを社員IDに正準化する
  * 複数レコードを処理する場合は、行数（メモリ負荷）が予測できないので、1行ずつ処理してConsumerで結果を送り返す設計思想としてある
  */
 @Value
+@AllArgsConstructor
 public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 	
 	/** 社員コードの項目No */
@@ -26,6 +29,11 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 	
 	/** 社員IDの項目No */
 	final int itemNoEmployeeId;
+	
+	public EmployeeCodeCanonicalization(GroupWorkspace workspace) {
+		itemNoEmployeeCode = workspace.getItemByName("社員コード").getItemNo();
+		itemNoEmployeeId = workspace.getItemByName("SID").getItemNo();
+	}
 
 	/**
 	 * 正準化する

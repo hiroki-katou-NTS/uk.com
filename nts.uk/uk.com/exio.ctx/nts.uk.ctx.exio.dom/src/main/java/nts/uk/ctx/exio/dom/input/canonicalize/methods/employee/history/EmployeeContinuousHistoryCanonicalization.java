@@ -25,6 +25,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
+import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.History;
 
@@ -50,6 +51,16 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 	
 	/** 社員コードの正準化 */
 	final EmployeeCodeCanonicalization employeeCodeCanonicalization;
+	
+	protected EmployeeContinuousHistoryCanonicalization(
+			GroupWorkspace workspace,
+			EmployeeCodeCanonicalization employeeCodeCanonicalization) {
+		
+		itemNoStartDate = workspace.getItemByName("開始日").getItemNo();
+		itemNoEndDate = workspace.getItemByName("終了日").getItemNo();
+		itemNoHistoryId = workspace.getItemByName("HIST_ID").getItemNo();
+		this.employeeCodeCanonicalization = employeeCodeCanonicalization;
+	}
 
 	/**
 	 * 対象の履歴のドメインを取得する
