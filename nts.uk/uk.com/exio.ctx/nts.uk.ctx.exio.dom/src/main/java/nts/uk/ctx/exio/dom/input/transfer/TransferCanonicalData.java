@@ -38,11 +38,8 @@ public class TransferCanonicalData {
 		return transfer(require, context, Arrays.asList(where));
 	}
 	
-	private static AtomTask transfer(Require require, ExecutionContext context, List<WhereSentence> wherelist) {
+	private static AtomTask transfer(Require require, ExecutionContext context, List<WhereSentence> whereList) {
 		
-		List<String> importingItem = new ArrayList<>(require.getImportingDataMeta(context).getItemNames());
-		importingItem.add("CONTRACT_CD");
-		importingItem.add("CID");
 		
 		ConversionCodeType cct = context.getMode().getType();
 		
@@ -51,46 +48,64 @@ public class TransferCanonicalData {
 		ConversionSource source = require.getConversionSource(importingGroup.getName());
 		ConversionSource sourceWithSuffix = editSourceTableName(source, context, importingGroup.getName());
 		List<ConversionTable> conversionTables = require.getConversionTable(sourceWithSuffix, importingGroup.getName(), cct);
-		
-		List<ConversionSQL> conversionSql = new ArrayList<>();
-		for(ConversionTable conversionTable : conversionTables) {
-			wherelist.stream().forEach(where -> {
-				conversionTable.getWhereList().add(where);
-			});
-			
-			// 受入項目の列名リストを元に移送する列をフィルタ
-			ConversionTable filteredConversionTable = new ConversionTable(
-					conversionTable.getSpec(),
-					conversionTable.getTargetTableName(),
-					conversionTable.getDateColumnName(),
-					conversionTable.getStartDateColumnName(),
-					conversionTable.getEndDateColumnName(),
-					conversionTable.getWhereList(),
-					conversionTable.getConversionMap().stream()
-						.filter(m -> importingItem.contains(((NotChangePattern) m.getPattern()).getSourceColumn()))
-						.collect(toList())
-					);
-			
-			// TODO: Insert & Update両方のモードは未対応
-			if(context.getMode().getType() == ConversionCodeType.INSERT) {
-				conversionSql.add(filteredConversionTable.createConversionSql());
-			}
-			else {
-				conversionSql.add(filteredConversionTable.createUpdateConversionSql());
-			}
-		}
+
+		List<String> importingItem = getImportingItemNames(require, context);
+		val sqls = conversionTables.stream()
+				.map(t -> createConversionSql(context, whereList, importingItem, t))
+				.collect(toList());
 
 		// 移送処理の実行
 		return AtomTask.of(() -> {
-			require.execute(conversionSql);
+			require.execute(sqls);
 		});
+	}
+
+	private static List<String> getImportingItemNames(Require require, ExecutionContext context) {
+		
+		List<String> itemNames = new ArrayList<>();
+		itemNames.addAll(require.getImportingDataMeta(context).getItemNames());
+		itemNames.add("CONTRACT_CD");
+		itemNames.add("CID");
+		
+		return itemNames;
+	}
+
+	private static ConversionSQL createConversionSql(
+			ExecutionContext context,
+			List<WhereSentence> whereList,
+			List<String> importingItemNames,
+			ConversionTable conversionTable) {
+		
+		conversionTable.getWhereList().addAll(whereList);
+		
+		// 受入項目の列名リストを元に移送する列をフィルタ
+		ConversionTable filteredConversionTable = new ConversionTable(
+				conversionTable.getSpec(),
+				conversionTable.getTargetTableName(),
+				conversionTable.getDateColumnName(),
+				conversionTable.getStartDateColumnName(),
+				conversionTable.getEndDateColumnName(),
+				conversionTable.getWhereList(),
+				conversionTable.getConversionMap().stream()
+					.filter(m -> importingItemNames.contains(((NotChangePattern) m.getPattern()).getSourceColumn()))
+					.collect(toList())
+				);
+		
+		// TODO: Insert & Update両方のモードは未対応
+		ConversionSQL conversionSql;
+		if(context.getMode().getType() == ConversionCodeType.INSERT) {
+			conversionSql = filteredConversionTable.createConversionSql();
+		}
+		else {
+			conversionSql = filteredConversionTable.createUpdateConversionSql();
+		}
+		return conversionSql;
 	}
 	
 	private static ConversionSource editSourceTableName(ConversionSource base, ExecutionContext context, String groupName) {
 		
 		val tableName = new WorkspaceTableName(context, groupName);
 		
-		// TODO: 正準化テーブルのサフィックスの付与ルールは適正なクラスに委譲予定
 		return new ConversionSource(
 				base.getSourceId(),
 				base.getCategory(),
