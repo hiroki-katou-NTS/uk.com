@@ -18,25 +18,22 @@ import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 @Getter
 @AllArgsConstructor
 public class ReviseItem extends AggregateRoot {
-	
+
 	/** 会社ID */
 	private String companyId;
-	
+
 	/** 受入設定コード */
 	private ExternalImportCode externalImportCode;
-	
+
 	/** 受入項目NO */
 	private int importItemNumber;
-	
-	/** 項目型 */
-	private ItemType itemType;
-	
+
 	/** 値の編集 */
 	private ReviseValue revisingValue;
-	
+
 	/** コード変換コード */
 	private Optional<CodeConvertCode> codeConvertCode;
-	
+
 	/**
 	 * 編集する
 	 * @param require
@@ -46,10 +43,10 @@ public class ReviseItem extends AggregateRoot {
 	 * @return
 	 */
 	public RevisedItemResult revise(Require require, ExecutionContext context, String targetValue) {
-		
+
 		// 値の編集
 		val result = this.revisingValue.revise(targetValue);
-		
+
 		// コード変換
 		if(this.codeConvertCode.isPresent()) {
 			val optConvertor = require.getCodeConvert(context.getCompanyId(), this.codeConvertCode.get());
@@ -60,7 +57,7 @@ public class ReviseItem extends AggregateRoot {
 		}
 		return new RevisedItemResult(importItemNumber, result, Optional.empty());
 	}
-	
+
 	public interface Require{
 		Optional<ExternalImportCodeConvert> getCodeConvert(String companyId, CodeConvertCode code);
 	}
