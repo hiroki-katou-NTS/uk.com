@@ -31,18 +31,6 @@ public class RegistrationUserWS extends WebService {
 	@Inject
 	private RegistrationUserFinder registrationUserFinder;
 
-	/** The add registration user command handler. */
-	@Inject
-	private AddRegistrationUserCommandHandler addRegistrationUserCommandHandler;
-
-	/** The delete registration user command handler. */
-	@Inject
-	private DeleteRegistrationUserCommandHandler deleteRegistrationUserCommandHandler;
-
-	/** The update registration user command handler. */
-	@Inject
-	private UpdateRegistrationUserCommandHandler updateRegistrationUserCommandHandler;
-
 	/**
 	 * Find company import list.
 	 *
@@ -53,7 +41,7 @@ public class RegistrationUserWS extends WebService {
 	public List<CompanyImportDto> findCompanyImportList() {
 		return this.registrationUserFinder.getCompanyImportList();
 	}
-
+	
 	/**
 	 * Gets the list user.
 	 *
@@ -65,7 +53,7 @@ public class RegistrationUserWS extends WebService {
 	public List<UserDto> getListUser(@PathParam("cid") String cid) {
 		return this.registrationUserFinder.getLoginUserListByCurrentCID(cid);
 	}
-
+	
 	/**
 	 * Gets the all user.
 	 *
@@ -76,41 +64,4 @@ public class RegistrationUserWS extends WebService {
 	public List<UserDto> getAllUser() {
 		return this.registrationUserFinder.getLoginUserListByContractCode();
 	}
-
-	/**
-	 * Register user.
-	 *
-	 * @param command the command
-	 * @return the string
-	 */
-	@POST
-	@Path("register")
-	public JavaTypeResult<String> registerUser(AddRegistrationUserCommand command) {
-		return new JavaTypeResult<String>(addRegistrationUserCommandHandler.handle(command));
-	}
-
-	/**
-	 * Update user.
-	 *
-	 * @param command the command
-	 * @return the string
-	 */
-	@POST
-	@Path("update")
-	public void updateUser(UpdateRegistrationUserCommand command) {
-		this.updateRegistrationUserCommandHandler.handle(command);
-	}
-
-	/**
-	 * Delete.
-	 *
-	 * @param command the command
-	 * @return the string
-	 */
-	@POST
-	@Path("delete")
-	public void delete(DeleteRegistrationUserCommand command) {
-		this.deleteRegistrationUserCommandHandler.handle(command);
-	}
-
 }

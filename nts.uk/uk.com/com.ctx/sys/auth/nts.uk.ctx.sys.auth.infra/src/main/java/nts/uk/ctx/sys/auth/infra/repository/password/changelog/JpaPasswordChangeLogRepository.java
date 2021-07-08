@@ -39,20 +39,6 @@ public class JpaPasswordChangeLogRepository extends JpaRepository implements Pas
 	 * 
 	 * @see
 	 * nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository#
-	 * register(nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog)
-	 */
-	@Override
-	public void add(PasswordChangeLog passwordChangeLog) {
-		SacdtPasswordChangeLog entity = new SacdtPasswordChangeLog(new SacdtPasswordChangeLogPK());
-		passwordChangeLog.saveToMemento(new JpaPasswordChangeLogSetMemento(entity));
-		this.commandProxy().insert(entity);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository#
 	 * findByUserId(java.lang.String, int)
 	 */
 	@Override

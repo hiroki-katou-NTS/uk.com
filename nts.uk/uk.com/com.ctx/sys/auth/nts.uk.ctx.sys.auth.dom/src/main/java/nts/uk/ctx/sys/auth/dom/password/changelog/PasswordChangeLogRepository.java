@@ -10,7 +10,7 @@ import java.util.List;
  * The Interface PasswordChangeLogRepository.
  */
 public interface PasswordChangeLogRepository {
-
+	
 	/**
 	 * Find by user id.
 	 *
@@ -19,13 +19,7 @@ public interface PasswordChangeLogRepository {
 	 * @return the list
 	 */
 	List<PasswordChangeLog> findByUserId(String userID, int limitNumber);
-
-	/**
-	 * Adds the.
-	 *
-	 * @param passwordChangeLog the password change log
-	 */
-	void add(PasswordChangeLog passwordChangeLog);
+	
 	/**
 	 * get list パスワード変更ログ
 	 * @param ユーザID userId
