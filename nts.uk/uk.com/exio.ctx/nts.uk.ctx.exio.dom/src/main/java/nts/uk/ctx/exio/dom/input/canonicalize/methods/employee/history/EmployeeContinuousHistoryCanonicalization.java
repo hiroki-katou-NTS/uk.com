@@ -16,6 +16,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
@@ -75,27 +76,14 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 	@Override
 	public void canonicalize(GroupCanonicalization.RequireCanonicalize require, ExecutionContext context) {
 		
-		List<String> employeeCodes = require.getStringsOfRevisedData(
-				context,
-				employeeCodeCanonicalization.getItemNoEmployeeCode());
-		
-		for (String employeeCode : employeeCodes) {
-			canonicalize(require, context, employeeCode).forEach(result -> {
+		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interm -> {
+			
+			val results = canonicalizeHistory(require, context, interm);
+			
+			results.forEach(result -> {
 				require.save(context, result.complete());
 			});
-		}
-	}
-
-	private List<IntermediateResult> canonicalize(
-			GroupCanonicalization.RequireCanonicalize require,
-			ExecutionContext context,
-			String employeeCode) {
-		
-		val employeeCanonicalized = employeeCodeCanonicalization
-				.canonicalize(require, context, employeeCode)
-				.collect(toList());
-		
-		return canonicalizeHistory(require, context, employeeCanonicalized);
+		});
 	}
 
 	/**

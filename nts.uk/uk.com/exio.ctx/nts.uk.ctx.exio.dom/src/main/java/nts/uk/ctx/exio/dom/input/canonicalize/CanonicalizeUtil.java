@@ -1,9 +1,15 @@
 package nts.uk.ctx.exio.dom.input.canonicalize;
 
+import static java.util.stream.Collectors.*;
+
+import java.util.List;
 import java.util.function.Consumer;
 
+import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 
 public class CanonicalizeUtil {
@@ -17,6 +23,26 @@ public class CanonicalizeUtil {
 		
 		for (int rowNo = 1; rowNo <= rowsCount; rowNo++) {
 			require.getRevisedDataRecordByRowNo(context, rowNo).ifPresent(process);
+		}
+	}
+	
+	public static void forEachEmployee(
+			CanonicalizationMethod.Require require,
+			ExecutionContext context,
+			EmployeeCodeCanonicalization employeeCodeCanonicalization,
+			Consumer<List<IntermediateResult>> process) {
+		
+		List<String> employeeCodes = require.getStringsOfRevisedData(
+				context,
+				employeeCodeCanonicalization.getItemNoEmployeeCode());
+		
+		for (String employeeCode : employeeCodes) {
+			
+			val employeeCanonicalized = employeeCodeCanonicalization
+					.canonicalize(require, context, employeeCode)
+					.collect(toList());
+			
+			process.accept(employeeCanonicalized);
 		}
 	}
 }
