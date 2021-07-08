@@ -12,7 +12,7 @@ import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 @Getter
 public class ImportingUserCondition implements DomainAggregate{
 	
-	/*会社ID */
+	/** 会社ID */
 	private String companyId;
 	
 	/** 受入設定コード */
