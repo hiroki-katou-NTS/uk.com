@@ -76,11 +76,6 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         pageSetup.setHeader(0, "&7&\"MSゴシック\"" + companyName);
         pageSetup.setHeader(1, "&12&\"MSゴシック,Bold\""
                 + dataSource.getTitle());
-        pageSetup.setBottomMarginInch(0.8);
-        pageSetup.setTopMarginInch(2);
-        pageSetup.setLeftMarginInch(1.0);
-        pageSetup.setRightMarginInch(1.0);
-        pageSetup.setHeaderMarginInch(1.0);
         pageSetup.setCenterHorizontally(true);
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
@@ -315,26 +310,20 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         cells.merge(countRow + 1, 0, 2, 3, true, true);
         val maxColumnData = MAX_COL_IN_PAGE;
         cells.get(countRow + 1, 0).setValue(TextResource.localize("KWR003_402"));
-
         cells.get(countRow + 1, maxColumnData + 4).setValue(TextResource.localize("KWR003_403"));
         cells.merge(countRow + 1, maxColumnData + 3, 2, 2, true, true);
         for (int i = 0; i < maxColumnData; i++) {
             GeneralDate loopDate = startDate.addDays(i);
             if (!loopDate.beforeOrEquals(datePeriod.end())) {
-                cells.setColumnWidth(3 + i, 2.8);
                 cells.get(countRow + 1, i + 3).setValue("");
                 cells.get(countRow + 2, i + 3).setValue("");
             } else {
-                cells.setColumnWidth(3 + i, 2.8);
-
                 cells.get(countRow + 1, i + 3).setValue(loopDate.day());
                 cells.get(countRow + 2, i + 3).setValue("("
                         + getDayOfWeekJapan(loopDate, DAY_OF_WEEK_FORMAT_JP + ")"));
             }
-
         }
     }
-
     private String getDayOfWeekJapan(GeneralDate date, String formatDate) {
         SimpleDateFormat jp = new SimpleDateFormat(formatDate, Locale.JAPAN);
         return jp.format(date.date());

@@ -76,11 +76,6 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
         String companyName = dataSource.getCompanyName();
         pageSetup.setFitToPagesTall(0);
         pageSetup.setFitToPagesWide(0);
-        pageSetup.setBottomMarginInch(1.5);
-        pageSetup.setTopMarginInch(1.5);
-        pageSetup.setLeftMarginInch(1.0);
-        pageSetup.setRightMarginInch(1.0);
-        pageSetup.setHeaderMarginInch(0.8);
         pageSetup.setCenterHorizontally(true);
         pageSetup.setHeader(0, "&9&\"ＭＳ フォントサイズ\"" + companyName);
         pageSetup.setHeader(1, "&16&\"ＭＳ フォントサイズ,Bold\""
