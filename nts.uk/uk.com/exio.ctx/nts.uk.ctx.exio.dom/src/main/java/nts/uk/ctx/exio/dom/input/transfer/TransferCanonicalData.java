@@ -54,16 +54,16 @@ public class TransferCanonicalData {
 	
 	private static AtomTask transfer(Require require, ExecutionContext context, List<WhereSentence> whereList) {
 		
-		ImportingGroup importingGroup = require.getImportingGroup(context.getGroupId());
+		val importingGroup = require.getImportingGroup(context.getGroupId());
 		
-		List<ConversionTable> conversionTables = require.getConversionTable(
+		val conversionTables = require.getConversionTable(
 				getConversionSource(require, context),
 				importingGroup.getName(),
 				context.getMode().getType());
 
-		List<String> importingItem = getImportingItemNames(require, context);
+		val itemNames = getImportingItemNames(require, context);
 		val sqls = conversionTables.stream()
-				.map(t -> createConversionSql(context, whereList, importingItem, t))
+				.map(t -> createConversionSql(context, whereList, itemNames, t))
 				.collect(toList());
 
 		// 移送処理の実行
@@ -104,23 +104,22 @@ public class TransferCanonicalData {
 				);
 		
 		// TODO: Insert & Update両方のモードは未対応
-		ConversionSQL conversionSql;
 		if(context.getMode().getType() == ConversionCodeType.INSERT) {
-			conversionSql = filteredConversionTable.createConversionSql();
+			return filteredConversionTable.createConversionSql();
 		}
 		else {
-			conversionSql = filteredConversionTable.createUpdateConversionSql();
+			return filteredConversionTable.createUpdateConversionSql();
 		}
-		return conversionSql;
 	}
 	
 	private static ConversionSource getConversionSource(Require require, ExecutionContext context) {
 		
-		ImportingGroup importingGroup = require.getImportingGroup(context.getGroupId());
-		ConversionSource base = require.getConversionSource(importingGroup.getName());
+		val importingGroup = require.getImportingGroup(context.getGroupId());
+		val base = require.getConversionSource(importingGroup.getName());
 		
 		val tableName = new WorkspaceTableName(context, importingGroup.getName());
 		
+		// Source側のテーブル名を一時テーブルの名前に変更する必要がある
 		return new ConversionSource(
 				base.getSourceId(),
 				base.getCategory(),
