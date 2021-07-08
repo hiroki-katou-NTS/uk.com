@@ -59,6 +59,7 @@ public class LoginPasswordOfUser implements DomainAggregate {
 	 */
 	public void change(String newPasswordPlainText, GeneralDateTime changedAt) {
 		val hash = HashedLoginPassword.hash(newPasswordPlainText, userId);
+		passwordState = PasswordState.OFFICIAL;
 		details.add(new PasswordChangeLogDetail(changedAt, hash));
 	}
 	
