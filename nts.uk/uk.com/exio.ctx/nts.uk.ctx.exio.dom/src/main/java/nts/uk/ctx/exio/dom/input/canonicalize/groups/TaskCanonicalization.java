@@ -14,6 +14,7 @@ import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
@@ -54,24 +55,17 @@ public class TaskCanonicalization implements GroupCanonicalization {
 		// 重複チェック用のセット
 		Set<UniqueKey> importingKeys = new HashSet<>();
 		
-		int rowsCount = require.getMaxRowNumberOfRevisedData(context);
-		for (int rowNo = 1; rowNo <= rowsCount; rowNo++) {
-			
-			val revisedDataOpt = require.getRevisedDataRecordByRowNo(context, rowNo);
-			if (!revisedDataOpt.isPresent()) {
-				continue;
-			}
-			
-			val revisedData = revisedDataOpt.get();
+		CanonicalizeUtil.forEachRow(require, context, revisedData -> {
 			
 			val uniqueKey = new UniqueKey(revisedData);
 			if (importingKeys.contains(uniqueKey)) {
 				throw new RuntimeException("重複データ" + uniqueKey);
 			}
+			
 			importingKeys.add(uniqueKey);
 			
 			canonicalize(require, context, revisedData);
-		}
+		});
 		
 		return meta;
 	}
