@@ -4,9 +4,8 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.exio.dom.input.DataItem;
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.CodeConvertCode;
 import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvert;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
@@ -16,7 +15,7 @@ import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
  */
 @Getter
 @AllArgsConstructor
-public class ReviseItem extends AggregateRoot {
+public class ReviseItem implements DomainAggregate {
 
 	/** 会社ID */
 	private String companyId;
@@ -41,14 +40,14 @@ public class ReviseItem extends AggregateRoot {
 	 * @param targetValue
 	 * @return
 	 */
-	public DataItem revise(Require require, ExecutionContext context, String targetValue) {
+	public DataItem revise(Require require, String targetValue) {
 
 		// 値の編集
 		Object result = this.revisingValue.revise(targetValue);
 
 		// コード変換
 		Object value = codeConvertCode
-				.flatMap(ccc -> require.getCodeConvert(context.getCompanyId(), ccc))
+				.flatMap(ccc -> require.getCodeConvert(companyId, ccc))
 				.map(c -> c.convert(result.toString()).v())
 				.map(v -> (Object) v)
 				.orElse(result);

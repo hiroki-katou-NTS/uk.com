@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.DataItemList;
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
@@ -52,14 +51,11 @@ public class ExternalImportAssemblyMethod {
 	 * @param csvRecord
 	 * @return
 	 */
-	public Optional<RevisedDataRecord> assemble(Require require, ExecutionContext context, CsvRecord csvRecord){
+	public Optional<RevisedDataRecord> assemble(Require require, ImportingGroupId groupId, CsvRecord csvRecord){
 		
 		val importData = new DataItemList();
 		
-		// CSVの取込内容を組み立てる
-		importData.addAll(assembleImportingItems(require, context, csvRecord));
-		
-		// 固定値項目の組み立て
+		importData.addAll(assembleImportingItems(require, groupId, csvRecord));
 		importData.addAll(assembleFixedItems());
 		
 		if(importData.isEmpty()) {
@@ -70,32 +66,42 @@ public class ExternalImportAssemblyMethod {
 		return Optional.of(new RevisedDataRecord(csvRecord.getRowNo(), importData));
 	}
 
-	private DataItemList assembleImportingItems(Require require, ExecutionContext context, CsvRecord csvRecord) {
+	/**
+	 * 受入項目を組み立てる
+	 * @param require
+	 * @param context
+	 * @param csvRecord
+	 * @return
+	 */
+	private DataItemList assembleImportingItems(Require require, ImportingGroupId groupId, CsvRecord csvRecord) {
 		
 		return csvImportItem.stream()
-				.map(m -> assembleImportingItem(require, context, csvRecord, m))
+				.map(m -> assembleImportingItem(require, groupId, csvRecord, m))
 				.collect(collectingAndThen(toList(), DataItemList::new));
 	}
 
 	private DataItem assembleImportingItem(
-			Require require, ExecutionContext context, CsvRecord csvRecord, ImportItemMapping mapping) {
+			Require require, ImportingGroupId groupId, CsvRecord csvRecord, ImportItemMapping mapping) {
 		
 		val itemNo = mapping.getImportItemNumber();
 		val csvValue = csvRecord.getItemByColumnNo(mapping.getCsvColumnNumber());
 		
 		// 項目の編集
-		return require.getRevise(context.getCompanyId(), context.getExternalImportCode(), itemNo)
-				.map(r -> r.revise(require, context, csvValue))
-				.orElseGet(() -> noRevise(require, context, itemNo, csvValue));
+		return require.getRevise(companyId, settingCode, itemNo)
+				.map(r -> r.revise(require, csvValue))
+				.orElseGet(() -> noRevise(require, groupId, itemNo, csvValue));
 	}
 
-	private DataItem noRevise(Require require, ExecutionContext context, final int itemNo, String csvValue) {
+	private static DataItem noRevise(Require require, ImportingGroupId groupId, int itemNo, String csvValue) {
 		
-		Object value = require.getImportableItem(context.getGroupId(), itemNo).parse(csvValue);
+		Object value = require.getImportableItem(groupId, itemNo).parse(csvValue);
 		return new DataItem(itemNo, value);
 	}
 	
-	// 固定値項目の組み立て
+	/**
+	 * 固定値項目を組み立てる
+	 * @return
+	 */
 	private DataItemList assembleFixedItems() {
 		
 		return fixedItem.stream()
