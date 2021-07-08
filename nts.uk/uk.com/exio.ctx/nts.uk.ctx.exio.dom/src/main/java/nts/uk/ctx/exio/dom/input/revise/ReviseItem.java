@@ -21,10 +21,10 @@ public class ReviseItem implements DomainAggregate {
 	private String companyId;
 
 	/** 受入設定コード */
-	private ExternalImportCode externalImportCode;
-
+	private ExternalImportCode settingCode;
+	
 	/** 受入項目NO */
-	private int importItemNumber;
+	private int itemNo;
 
 	/** 値の編集 */
 	private ReviseValue revisingValue;
