@@ -82,12 +82,12 @@ public class PasswordPolicy extends AggregateRoot {
 	 */
 	public ValidationResultOnLogin violatedOnLogin(LoginPasswordOfUser changeLog, String passwordPlainText) {
 		
-		PasswordState passwordStatus = changeLog.getPasswordState();
-		
 		// ポリシー利用しない
 		if (!isUse) {
 			return ValidationResultOnLogin.ok();
 		}
+		
+		PasswordState passwordStatus = changeLog.getPasswordState();
 
 		// パスワードリセット
 		if (passwordStatus.equals(PasswordState.RESET)) {
@@ -100,9 +100,11 @@ public class PasswordPolicy extends AggregateRoot {
 		}
 		
 		// パスワードをチェック
-		val violations = validate(changeLog, passwordPlainText);
-		if (loginCheck && violations.size() > 0) {
-			return ValidationResultOnLogin.complexityError(violations.stream().map(v -> v.getErrorMessageId()).collect(toList()));
+		if (loginCheck) {
+			val violations = validate(changeLog, passwordPlainText);
+			if (!violations.isEmpty()) {
+				return ValidationResultOnLogin.complexityError(violations.stream().map(v -> v.getErrorMessageId()).collect(toList()));
+			}
 		}
 		
 		// 有効期限をチェック
