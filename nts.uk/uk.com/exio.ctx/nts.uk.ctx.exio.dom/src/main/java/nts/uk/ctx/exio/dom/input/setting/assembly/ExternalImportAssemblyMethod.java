@@ -57,10 +57,10 @@ public class ExternalImportAssemblyMethod {
 		val importData = new DataItemList();
 		
 		// CSVの取込内容を組み立てる
-		importData.addAll(assembleInternal(require, context, csvRecord));
+		importData.addAll(assembleImportingItems(require, context, csvRecord));
 		
 		// 固定値項目の組み立て
-		importData.addAll(assembleFixedItem(fixedItem));
+		importData.addAll(assembleFixedItems());
 		
 		if(importData.isEmpty()) {
 			// 受け入れられるデータがない
@@ -70,25 +70,23 @@ public class ExternalImportAssemblyMethod {
 		return Optional.of(new RevisedDataRecord(csvRecord.getRowNo(), importData));
 	}
 
-	private DataItemList assembleInternal(Require require, ExecutionContext context, CsvRecord csvRecord) {
+	private DataItemList assembleImportingItems(Require require, ExecutionContext context, CsvRecord csvRecord) {
 		
-		val revisedResults = new DataItemList();
+		return csvImportItem.stream()
+				.map(m -> assembleImportingItem(require, context, csvRecord, m))
+				.collect(collectingAndThen(toList(), DataItemList::new));
+	}
+
+	private DataItem assembleImportingItem(
+			Require require, ExecutionContext context, CsvRecord csvRecord, ImportItemMapping mapping) {
 		
-		// マッピング内の項目数処理する
-		for (val mapping : csvImportItem) {
-			
-			val itemNo = mapping.getImportItemNumber();
-			val csvValue = csvRecord.getItemByColumnNo(mapping.getCsvColumnNumber());
-			
-			// 項目の編集
-			DataItem revised = require.getRevise(context.getCompanyId(), context.getExternalImportCode(), itemNo)
-					.map(r -> r.revise(require, context, csvValue))
-					.orElseGet(() -> noRevise(require, context, itemNo, csvValue));
-			
-			revisedResults.add(revised);
-		}
+		val itemNo = mapping.getImportItemNumber();
+		val csvValue = csvRecord.getItemByColumnNo(mapping.getCsvColumnNumber());
 		
-		return revisedResults;
+		// 項目の編集
+		return require.getRevise(context.getCompanyId(), context.getExternalImportCode(), itemNo)
+				.map(r -> r.revise(require, context, csvValue))
+				.orElseGet(() -> noRevise(require, context, itemNo, csvValue));
 	}
 
 	private DataItem noRevise(Require require, ExecutionContext context, final int itemNo, String csvValue) {
@@ -98,14 +96,15 @@ public class ExternalImportAssemblyMethod {
 	}
 	
 	// 固定値項目の組み立て
-	private static DataItemList assembleFixedItem(List<FixedItemMapping> items) {
+	private DataItemList assembleFixedItems() {
 		
-		return items.stream()
+		return fixedItem.stream()
 				.map(f -> new DataItem(f.getImportItemNumber(), f.getValue()))
 				.collect(Collectors.collectingAndThen(toList(), DataItemList::new));
 	}
 	
 	public List<Integer> getAllItemNo() {
+		
 		return Stream.concat(
 				csvImportItem.stream().map(i -> i.getImportItemNumber()),
 				fixedItem.stream().map(i -> i.getImportItemNumber()))
