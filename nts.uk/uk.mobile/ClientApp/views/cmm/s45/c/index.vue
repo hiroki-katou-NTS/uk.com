@@ -219,15 +219,15 @@
       </div>
     </div>
     <div
-      class="fixed-action-btn" v-show="displayEditFloat && isLoadingComplete"
+      class="fixed-action-btn" v-show="displayEditFloat && isLoadingComplete && !appState.pastApp"
       v-float-action="{ icon: 'fas fa-pen', background: 'uk-bg-sea-green', forceground: 'uk-text-dark-gray' }"
     >
       <ul>
-        <li class="uk-bg-white" v-on:click="deleteApp" v-show="displayDeleteButton && appState.pastApp">
+        <li class="uk-bg-white" v-on:click="deleteApp" v-show="displayDeleteButton">
           <span class="uk-text-dark-gray">{{'CMMS45_60' | i18n}}</span>
           <i class="fas fa-trash-alt uk-text-dark-gray"></i>
         </li>
-        <li class="uk-bg-white" v-on:click="updateApp" v-show="displayUpdateButton && appState.pastApp">
+        <li class="uk-bg-white" v-on:click="updateApp" v-show="displayUpdateButton">
           <span class="uk-text-dark-gray">{{'CMMS45_61' | i18n}}</span>
           <i class="fas fa-pen uk-text-dark-gray"></i>
         </li>
