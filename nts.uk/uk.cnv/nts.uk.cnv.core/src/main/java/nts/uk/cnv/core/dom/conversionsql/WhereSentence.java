@@ -15,16 +15,20 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class WhereSentence {
 	/** 左辺 */
-	private ColumnName left;
+	private final ColumnName left;
 
 	/** 比較演算子 */
-	private RelationalOperator operator;
+	private final RelationalOperator operator;
 
 	/**
 	 * 右辺
 	 * 比較演算子がIsNullまたはIsNotNullの場合はempty
 	 */
-	private Optional<ColumnExpression> right;
+	private final Optional<ColumnExpression> right;
+	
+	public static WhereSentence equal(String column, ColumnExpression right) {
+		return new WhereSentence(new ColumnName(column), RelationalOperator.Equal, Optional.of(right));
+	}
 
 	private String sql() {
 		return left.sql() + " " + operator.getSign() + " " + right.orElse(new ColumnExpression("")).sql();

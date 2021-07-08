@@ -27,6 +27,10 @@ public class ColumnExpression {
 		this.tableAlias = Optional.empty();
 		this.expression = expression;
 	}
+	
+	public static ColumnExpression stringLiteral(String value) {
+		return new ColumnExpression("'" + value + "'");
+	}
 
 	public String sql() {
 		return

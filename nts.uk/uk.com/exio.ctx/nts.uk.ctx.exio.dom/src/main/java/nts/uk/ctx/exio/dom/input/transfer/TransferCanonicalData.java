@@ -6,14 +6,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
-import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
-import nts.uk.cnv.core.dom.conversionsql.RelationalOperator;
 import nts.uk.cnv.core.dom.conversionsql.WhereSentence;
 import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
@@ -30,20 +27,15 @@ import nts.uk.ctx.exio.dom.input.workspace.WorkspaceTableName;
  * @author ai_muto
  */
 public class TransferCanonicalData {
-	private static final String EMPROYEE_ID_COLUMN_NAME = "SID";
 	
 	public static AtomTask transferAll(Require require, ExecutionContext context) {
 		return transfer(require, context, Collections.emptyList());
 	}
 	
 	public static AtomTask transferByEmployee(Require require, ExecutionContext context, String employeeId) {
-		WhereSentence whereSentence = new WhereSentence(
-				new ColumnName(EMPROYEE_ID_COLUMN_NAME),
-				RelationalOperator.Equal,
-				Optional.of(new ColumnExpression("'" + employeeId + "'"))
-			);
 		
-		return transfer(require, context, Arrays.asList(whereSentence));
+		val where = WhereSentence.equal("SID", ColumnExpression.stringLiteral(employeeId));
+		return transfer(require, context, Arrays.asList(where));
 	}
 	
 	private static AtomTask transfer(Require require, ExecutionContext context, List<WhereSentence> wherelist) {
