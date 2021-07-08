@@ -46,9 +46,15 @@ public class PasswordPolicy extends AggregateRoot {
 	// ログイン時にポリシーチェック実施
 	private boolean loginCheck;
 
-	public PasswordPolicy(ContractCode contractCode, NotificationPasswordChange notificationPasswordChange,
-			boolean loginCheck, boolean initialPasswordChange, boolean isUse, PasswordHistoryCount historyCount,
-			PasswordValidityPeriod validityPeriod, PasswordComplexityRequirement complexityRequirement) {
+	public PasswordPolicy(
+			ContractCode contractCode,
+			NotificationPasswordChange notificationPasswordChange,
+			boolean loginCheck,
+			boolean initialPasswordChange,
+			boolean isUse,
+			PasswordHistoryCount historyCount,
+			PasswordValidityPeriod validityPeriod,
+			PasswordComplexityRequirement complexityRequirement) {
 		super();
 		this.contractCode = contractCode;
 		this.notificationPasswordChange = notificationPasswordChange;
@@ -76,12 +82,12 @@ public class PasswordPolicy extends AggregateRoot {
 	 */
 	public ValidationResultOnLogin violatedOnLogin(LoginPasswordOfUser changeLog, String passwordPlainText) {
 		
-		PasswordState passwordStatus = changeLog.getPasswordState();
-		
 		// ポリシー利用しない
 		if (!isUse) {
 			return ValidationResultOnLogin.ok();
 		}
+		
+		PasswordState passwordStatus = changeLog.getPasswordState();
 
 		// パスワードリセット
 		if (passwordStatus.equals(PasswordState.RESET)) {
@@ -94,9 +100,11 @@ public class PasswordPolicy extends AggregateRoot {
 		}
 		
 		// パスワードをチェック
-		val violations = validate(changeLog, passwordPlainText);
-		if (loginCheck && violations.size() > 0) {
-			return ValidationResultOnLogin.complexityError(violations.stream().map(v -> v.getErrorMessageId()).collect(toList()));
+		if (loginCheck) {
+			val violations = validate(changeLog, passwordPlainText);
+			if (!violations.isEmpty()) {
+				return ValidationResultOnLogin.complexityError(violations.stream().map(v -> v.getErrorMessageId()).collect(toList()));
+			}
 		}
 		
 		// 有効期限をチェック
@@ -113,6 +121,7 @@ public class PasswordPolicy extends AggregateRoot {
 				return ValidationResultOnLogin.expiresSoon(remainingDays);
 			}
 		}
+		
 		// 問題なし
 		return ValidationResultOnLogin.ok();
 	}
@@ -140,6 +149,11 @@ public class PasswordPolicy extends AggregateRoot {
 		return errors;
 	}
 	
+	/**
+	 * 最新のパスワードと重複があるかチェック
+	 * @param changeLog
+	 * @return
+	 */
 	private boolean duplicatesLatestPassword(LoginPasswordOfUser changeLog) {
 		
 		// 最新のものとの重複チェックなので、+1が必要

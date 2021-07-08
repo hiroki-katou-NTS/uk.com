@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.login.password.userpassword;
+﻿package nts.uk.ctx.sys.gateway.dom.login.password.userpassword;
 
 import static java.util.stream.Collectors.*;
 
@@ -25,7 +25,6 @@ public class LoginPasswordOfUser implements DomainAggregate {
 	/** パスワードの状態 */
 	private PasswordState passwordState;
 	
-	/** パスワードの履歴 */
 	private List<PasswordChangeLogDetail> details;
 	
 	public LoginPasswordOfUser(String userId, PasswordState passwordState, List<PasswordChangeLogDetail> details) {

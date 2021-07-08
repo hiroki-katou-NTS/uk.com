@@ -16,6 +16,7 @@ import mockit.Mocked;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.FailedPasswordAuthenticate.Require;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUser;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.LockOutMessage;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
@@ -31,6 +32,7 @@ public class PasswordAuthenticateWithEmployeeCodeTest {
 	@Mocked PasswordPolicy passwordPolicy;
 	@Mocked PassStatus passStatus;
 	@Mocked ValidationResultOnLogin validationResultOnLogin;
+	@Mocked LoginPasswordOfUser userPassword;
 	
 	@Injectable PasswordAuthenticateWithEmployeeCode.Require require;
 	
@@ -94,10 +96,10 @@ public class PasswordAuthenticateWithEmployeeCodeTest {
 			accountLockPolicy.isLocked(require, Dummy.userId);
 			result = false;
 			
-			idenEmpInfo.getUser();
-			result = user;
+			require.getLoginPasswordOfUser(Dummy.userId);
+			result = Optional.of(userPassword);
 			
-			user.isCorrectPassword(Dummy.password);
+			userPassword.matches(Dummy.password);
 			result = false;
 		}};
 		
@@ -121,47 +123,18 @@ public class PasswordAuthenticateWithEmployeeCodeTest {
 			accountLockPolicy.isLocked(require, Dummy.userId);
 			result = false;
 			
-			idenEmpInfo.getUser();
-			result = user;
-			
-			user.isCorrectPassword(Dummy.password);
+			require.getLoginPasswordOfUser(Dummy.userId);
+			result = Optional.of(userPassword);
+
+			userPassword.matches(Dummy.password);
 			result = true;
 			
 			require.getPasswordPolicy(Dummy.tenantCd);
-			result = Optional.of(passwordPolicy);
+			result = passwordPolicy;
 		}};
 		
 		val result = PasswordAuthenticateWithEmployeeCode.authenticate(require, idenEmpInfo, Dummy.password);
 		assertThat(result.isSuccess()).isTrue();
 	}
 	
-	@Test
-	public void success_authenticate_Not_PasswordPolicy() {
-		
-		new Expectations() {{
-			idenEmpInfo.getTenantCode();
-			result = Dummy.tenantCd;
-			
-			idenEmpInfo.getUserId();
-			result = Dummy.userId;
-			
-			require.getAccountLockPolicy(Dummy.tenantCd);
-			result = Optional.of(accountLockPolicy);
-			
-			accountLockPolicy.isLocked(require, Dummy.userId);
-			result = false;
-			
-			idenEmpInfo.getUser();
-			result = user;
-			
-			user.isCorrectPassword(Dummy.password);
-			result = true;
-			
-			require.getPasswordPolicy(Dummy.tenantCd);
-			result = Optional.empty();
-		}};
-		
-		val result = PasswordAuthenticateWithEmployeeCode.authenticate(require, idenEmpInfo, Dummy.password);
-		assertThat(result.isSuccess()).isTrue();
-	}
 }

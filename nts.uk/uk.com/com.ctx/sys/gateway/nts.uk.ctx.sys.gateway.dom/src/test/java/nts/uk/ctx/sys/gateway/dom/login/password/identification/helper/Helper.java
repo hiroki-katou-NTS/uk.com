@@ -11,8 +11,6 @@ import nts.uk.ctx.sys.shared.dom.user.ContractCode;
 import nts.uk.ctx.sys.shared.dom.user.DisabledSegment;
 import nts.uk.ctx.sys.shared.dom.user.LoginID;
 import nts.uk.ctx.sys.shared.dom.user.User;
-import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
-import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 public class Helper {
 	public static EmployeeDataMngInfoImport dummyImported = 
@@ -36,7 +34,6 @@ public class Helper {
 		static final User BASE = new User(
 				DUMMY.USER_ID, 
 				false, 
-				new HashPassword(DUMMY.HASHPASSWORD), 
 				new LoginID(DUMMY.LOGIN_ID),
 				new ContractCode(DUMMY.CONTRACT_CODE), 
 				GeneralDate.min(), 
@@ -44,8 +41,7 @@ public class Helper {
 				DisabledSegment.False, 
 				Optional.empty(), 
 				Optional.empty(), 
-				Optional.empty(), 
-				PassStatus.InitPassword);
+				Optional.empty());
 		
 		public static class Builder{
 			String userID = BASE.getUserID();
@@ -70,7 +66,6 @@ public class Helper {
 				return new User(
 						this.userID, 
 						BASE.isDefaultUser(), 
-						BASE.getPassword(),
 						BASE.getLoginID(),
 						BASE.getContractCode(),
 						expirationDate,
@@ -78,8 +73,7 @@ public class Helper {
 						BASE.getMultiCompanyConcurrent(),
 						BASE.getMailAddress(),
 						BASE.getUserName(),
-						BASE.getAssociatedPersonID(),
-						BASE.getPassStatus());
+						BASE.getAssociatedPersonID());
 			}
 		}
 	}

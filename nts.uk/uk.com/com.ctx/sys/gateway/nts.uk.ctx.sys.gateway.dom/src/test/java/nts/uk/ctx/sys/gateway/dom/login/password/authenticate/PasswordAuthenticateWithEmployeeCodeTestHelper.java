@@ -7,15 +7,13 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyTestHelper;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.Helper;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.shared.dom.employee.SDelAtr;
 import nts.uk.ctx.sys.shared.dom.user.ContractCode;
 import nts.uk.ctx.sys.shared.dom.user.DisabledSegment;
 import nts.uk.ctx.sys.shared.dom.user.LoginID;
 import nts.uk.ctx.sys.shared.dom.user.User;
-import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
-import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 public class PasswordAuthenticateWithEmployeeCodeTestHelper {
 	
@@ -34,7 +32,6 @@ public class PasswordAuthenticateWithEmployeeCodeTestHelper {
 			new User(
 					DUMMY.USER_ID,
 					DUMMY.IS_DEFAULT,
-					new HashPassword(DUMMY.PASSWORD),
 					new LoginID(DUMMY.LOGIN_ID),
 					new ContractCode(DUMMY.CONTRACT_CD),
 					DUMMY.DATE,
@@ -42,8 +39,7 @@ public class PasswordAuthenticateWithEmployeeCodeTestHelper {
 					DisabledSegment.False,
 					Optional.empty(),
 					Optional.empty(),
-					Optional.empty(),
-					PassStatus.InitPassword
+					Optional.empty()
 					);
 	
 	public static class DUMMY{
@@ -64,6 +60,6 @@ public class PasswordAuthenticateWithEmployeeCodeTestHelper {
 		static final FailedAuthenticateTask FAILED_TASKS = new FailedAuthenticateTask(Optional.of(AtomTask.none()),Optional.of(AtomTask.none()));
 		static final EmployeeDataMngInfoImport IMPORTED = FailedPasswordHelper.IMPORTED;
 		static final IdentifiedEmployeeInfo EMP_INFO = new IdentifiedEmployeeInfo(PasswordAuthenticateWithEmployeeCodeTestHelper.IMPORTED, PasswordAuthenticateWithEmployeeCodeTestHelper.USER);
-		static final PasswordPolicy PASSWORD_POLICY = 	PasswordPolicyTestHelper.DUMMY.PASSWORD_POLICY;
+		static final PasswordPolicy PASSWORD_POLICY = 	Helper.Policy.builder().build();
 	}
 }
