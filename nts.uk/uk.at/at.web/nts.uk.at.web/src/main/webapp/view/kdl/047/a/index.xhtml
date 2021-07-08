@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 500, height: 630 };</script>
+			<script>var dialogSize = { width: 615, height: 630 };</script>
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.FormOutputItemName
@@ -90,7 +90,7 @@
 						<div
 							id="A5_3"
 							tabindex="3"
-							style="width: 450px"
+							style="width: 565px"
 							data-bind="ntsSearchBox:	{
 									items: tableDatas,
 									searchMode: 'filter',
@@ -108,8 +108,8 @@
 							tabindex="4"
 							data-bind="ntsGridList: {
 								name: '#[KDL047_5]',
-								height: 400,
-								width: 450,
+								height: 515,
+								width: 565,
 								columns: tableColumns,
 								options: tableDatas,
 								optionsValue: 'id',

@@ -19,8 +19,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				style="background-color: inherit; height: calc(100vh - 137px);">
 				<div class="two-panel" style="height: 100%; width: 1260px">
 					<div class="left-panel"
-						style="width: calc(1260px - 388px); height: inherit">
-						<div style="height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px; overflow-x: hidden">
+						style="width: calc(1260px - 388px); height: inherit; padding-bottom: 5px;">
+						<div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px; overflow-x: hidden">
 							<div class="table"
 								style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
 								<div class="cell" style="vertical-align: middle;">
@@ -109,8 +109,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							</div>                          
 						</div>
 					</div>
-					<div class="right-panel" style="width: 388px; height: inherit; padding-right: 0px">
-						<div style="height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden">
+					<div class="right-panel" style="width: 388px; padding-bottom: 5px; height: inherit; padding-right: 0px">
+						<div style="border: 1px solid #CCC; height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden">
 							<div style="padding-top: 10px"
 								data-bind="component: { name: 'kaf000-b-component1', 
 									params: {
@@ -883,6 +883,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				
 				overTimeWorks.push(item);
 			}
+			/*
+			
 			{
 				let item = new OvertimeWork();
 				let nextMonth = res.infoNoBaseDate.agreeOverTimeOutput.nextMonth;
@@ -928,6 +930,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				}
 				overTimeWorks.push(item);
 			}
+			 */
 			self.overTimeWork(overTimeWorks);
 		}
 		
@@ -3098,15 +3101,15 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 	}
 	const COLOR_36 = {
 		// 36協定エラー
-		error: '#FD4D4D',
+		error: 'bg-36contract-error',
 		// 36協定アラーム
-		alarm: '#F6F636',
+		alarm: 'bg-36contract-alarm',
 		// 36協定特例
-		exceptions: '#eb9152',
+		exceptions: 'bg-36contract-exception',
 		// 36協定エラー文字
-		error_letter: '#ffffff',
+		error_letter: 'color-36contract-error',
 		// 36協定アラーム文字
-		alarm_character: '#ff0000'
+		alarm_character: 'color-36contract-alarm'
 		
 	}
 	export enum MODE {

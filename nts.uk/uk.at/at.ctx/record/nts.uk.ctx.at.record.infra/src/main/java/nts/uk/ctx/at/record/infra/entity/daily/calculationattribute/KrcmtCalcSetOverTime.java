@@ -17,6 +17,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -53,6 +59,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 	})
 public class KrcmtCalcSetOverTime extends ContractUkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
+    public static final JpaEntityMapper<KrcmtCalcSetOverTime> MAPPER = new JpaEntityMapper<>(KrcmtCalcSetOverTime.class);
     @Id
     @Basic(optional = false)
     @NotNull
@@ -133,6 +140,23 @@ public class KrcmtCalcSetOverTime extends ContractUkJpaEntity implements Seriali
         this.legalMidOtLimitSet = legalMidOtLimitSet;
     }
 
+	public static KrcmtCalcSetOverTime toEntity(AutoCalOvertimeSetting domain, String overTimeWorkId) {
+		return new KrcmtCalcSetOverTime(
+				overTimeWorkId,
+				domain.getEarlyOtTime().getCalAtr().value,
+				domain.getEarlyOtTime().getUpLimitORtSet().value,
+				domain.getEarlyMidOtTime().getCalAtr().value,
+				domain.getEarlyMidOtTime().getUpLimitORtSet().value,
+				domain.getNormalOtTime().getCalAtr().value,
+				domain.getNormalOtTime().getUpLimitORtSet().value,
+				domain.getNormalMidOtTime().getCalAtr().value,
+				domain.getNormalMidOtTime().getUpLimitORtSet().value,
+				domain.getLegalOtTime().getCalAtr().value,
+				domain.getLegalOtTime().getUpLimitORtSet().value,
+				domain.getLegalMidOtTime().getCalAtr().value,
+				domain.getLegalMidOtTime().getUpLimitORtSet().value);
+	}
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -156,6 +180,28 @@ public class KrcmtCalcSetOverTime extends ContractUkJpaEntity implements Seriali
     public String toString() {
         return "entities.KrcmtCalcSetOverTime[ overTimeWorkId=" + overTimeWorkId + " ]";
     }
+
+	public AutoCalOvertimeSetting toDomain() {
+		return new AutoCalOvertimeSetting(
+				new AutoCalSetting(
+						EnumAdaptor.valueOf(this.earlyOverTimeLimitSet, TimeLimitUpperLimitSetting.class),
+						EnumAdaptor.valueOf(this.earlyOverTimeCalAtr, AutoCalAtrOvertime.class)),
+				new AutoCalSetting(
+						EnumAdaptor.valueOf(this.earlyMidOtLimitSet, TimeLimitUpperLimitSetting.class),
+						EnumAdaptor.valueOf(this.earlyMidOtCalAtr, AutoCalAtrOvertime.class)),
+				new AutoCalSetting(
+						EnumAdaptor.valueOf(this.normalOverTimeLimitSet, TimeLimitUpperLimitSetting.class),
+						EnumAdaptor.valueOf(this.normalOverTimeCalAtr, AutoCalAtrOvertime.class)),
+				new AutoCalSetting(
+						EnumAdaptor.valueOf(this.normalMidOtLimitSet, TimeLimitUpperLimitSetting.class),
+						EnumAdaptor.valueOf(this.normalMidOtCalAtr, AutoCalAtrOvertime.class)),
+				new AutoCalSetting(
+						EnumAdaptor.valueOf(this.legalOverTimeLimitSet, TimeLimitUpperLimitSetting.class),
+						EnumAdaptor.valueOf(this.legalOverTimeCalAtr, AutoCalAtrOvertime.class)),
+				new AutoCalSetting(
+						EnumAdaptor.valueOf(this.legalMidOtLimitSet, TimeLimitUpperLimitSetting.class),
+						EnumAdaptor.valueOf(this.legalMidOtCalAtr, AutoCalAtrOvertime.class)));
+	}
 
 	@Override
 	protected Object getKey() {

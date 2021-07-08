@@ -1,9 +1,9 @@
 import { component, Prop, Watch } from '@app/core/component';
 import * as _ from 'lodash';
 import { IParams, IOptionalItemAppSet, OptionalItemApplication, optionalItems, IControlOfAttendanceItemsDto, IOptionalItemDto } from '../a/define';
-import { KafS00AComponent, KAFS00AParams } from '../../s00/a';
-import { KafS00BComponent, KAFS00BParams, ScreenMode } from '../../s00/b';
-import { KafS00CComponent, KAFS00CParams } from '../../s00/c';
+import { KafS00AComponent } from '../../s00/a';
+import { KafS00BComponent, ScreenMode } from '../../s00/b';
+import { KafS00CComponent } from '../../s00/c';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
 import { IAppDispInfoStartupOutput, IApplication, IRes } from '../../s04/a/define';
 import { CmmS45CComponent } from '../../../cmm/s45/c/index';
@@ -44,14 +44,12 @@ import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 })
 export class KafS20A2Component extends KafS00ShrComponent {
     public title: string = 'KafS20A2';
-    public kafS00AParams: KAFS00AParams | null = null;
-    public kafS00BParams: KAFS00BParams | null = null;
-    public kafS00CParams: KAFS00CParams | null = null;
     public appDispInfoStartupOutput: IAppDispInfoStartupOutput | null = null;
     public application!: IApplication;
     public optionalItemApplication: OptionalItemApplication[] = [];
     public isValidateAll: boolean = true;
-    public mode: boolean = true;
+    @Prop({ default: () => true })
+    public mode: boolean;
 
     @Prop({ default: () => [] })
     public readonly settingItems!: IOptionalItemAppSet;
@@ -62,95 +60,13 @@ export class KafS20A2Component extends KafS00ShrComponent {
     @Watch('appDispInfoStartupOutput', { deep: true, immediate: true })
     public appDispInfoStartupOutputWatcher(value: IAppDispInfoStartupOutput | null) {
         const vm = this;
-
         vm.$auth.user.then((user: any) => {
             if (value) {
-                const { companyId, employeeId } = user;
-                const { appDispInfoWithDateOutput, appDispInfoNoDateOutput } = value;
-                const { approvalFunctionSet, empHistImport } = appDispInfoWithDateOutput;
-
-                const { appUseSetLst } = approvalFunctionSet;
-                const { employmentCode } = empHistImport;
-                const { applicationSetting, displayStandardReason, displayAppReason, reasonTypeItemLst } = appDispInfoNoDateOutput;
-
-                const { appDisplaySetting, appTypeSetting, appLimitSetting } = applicationSetting;
-                const { receptionRestrictionSetting } = applicationSetting;
-
+                vm.updateKaf000_A_Params(user);
+                vm.updateKaf000_B_Params(vm.mode);
+                vm.updateKaf000_C_Params(vm.mode);
                 if (vm.mode) {
-                    vm.kafS00AParams = {
-                        applicationUseSetting: appUseSetLst[0],
-                        companyID: companyId,
-                        employeeID: employeeId,
-                        employmentCD: employmentCode,
-                        receptionRestrictionSetting: receptionRestrictionSetting[0],
-                        opOvertimeAppAtr: null,
-                    };
-                    vm.kafS00BParams = {
-                        appDisplaySetting,
-                        newModeContent: {
-                            useMultiDaySwitch: false,
-                            initSelectMultiDay: false,
-                            appTypeSetting,
-                            appDate: null,
-                            dateRange: null,
-                        },
-                        mode: ScreenMode.NEW,
-                        detailModeContent: null
-                    };
-
-                    vm.kafS00CParams = {
-                        displayFixedReason: displayStandardReason,
-                        displayAppReason,
-                        reasonTypeItemLst,
-                        appLimitSetting,
-                        opAppStandardReasonCD: vm.application.opAppStandardReasonCD,
-                        opAppReason: null
-                    };
-                }
-                if (!vm.mode) {
-                    const { params } = vm;
-                    const { appDispInfoStartupOutput } = params;
-                    const { appDetailScreenInfo, appDispInfoNoDateOutput } = appDispInfoStartupOutput;
-
-
-                    const { application } = appDetailScreenInfo;
-                    const { employeeID, opAppStartDate, opAppEndDate, prePostAtr, opAppStandardReasonCD, opAppReason } = application;
-                    const { employeeInfoLst } = appDispInfoNoDateOutput;
-
-                    vm.kafS00AParams = {
-                        applicationUseSetting: appUseSetLst[0],
-                        companyID: companyId,
-                        employeeID,
-                        employmentCD: employmentCode,
-                        receptionRestrictionSetting: receptionRestrictionSetting[0],
-                        opOvertimeAppAtr: null,
-                    };
-                    vm.kafS00BParams = {
-                        appDisplaySetting,
-                        newModeContent: {
-                            useMultiDaySwitch: true,
-                            initSelectMultiDay: false,
-                            appTypeSetting,
-                            appDate: null,
-                            dateRange: null,
-                        },
-                        mode: ScreenMode.DETAIL,
-                        detailModeContent: {
-                            startDate: opAppStartDate,
-                            endDate: opAppEndDate,
-                            employeeName: employeeInfoLst[0].bussinessName,
-                            prePostAtr,
-                        }
-                    };
-
-                    vm.kafS00CParams = {
-                        displayFixedReason: displayStandardReason,
-                        displayAppReason,
-                        reasonTypeItemLst,
-                        appLimitSetting,
-                        opAppStandardReasonCD,
-                        opAppReason,
-                    };
+                    vm.kaf000_B_Params.newModeContent.useMultiDaySwitch = false;
                 }
             }
         });
