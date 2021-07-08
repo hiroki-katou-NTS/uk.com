@@ -578,7 +578,6 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				old.grantDate = gd.value;
 			});
 		}
-		
 		this.commandProxy().update(old);
 
 		KshmtHdspGrantDeadlinePK grantPeriodicPK = new KshmtHdspGrantDeadlinePK(
@@ -586,6 +585,14 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				specialHoliday.getSpecialHolidayCode().v());
 		
 		GrantDeadline grantPeriodic = null;
+		/** #118010s */
+		// reset [KSHMT_HDSP_GRANT]
+		KshmtHdspGrantPK oldHDSPGrantPK = new KshmtHdspGrantPK(specialHoliday.getCompanyId(), specialHoliday.getSpecialHolidayCode().v());
+		KshmtHdspGrant oldHDSPGrant = this.queryProxy().find(oldHDSPGrantPK, KshmtHdspGrant.class).orElse(null);
+		oldHDSPGrant.grantedDays = 0;
+		oldHDSPGrant.grantMd = null;
+		this.commandProxy().update(oldHDSPGrant);
+		/** #118010e */
 		
 		switch (specialHoliday.getGrantRegular().getTypeTime()) {
 			case REFER_GRANT_DATE_TBL:
