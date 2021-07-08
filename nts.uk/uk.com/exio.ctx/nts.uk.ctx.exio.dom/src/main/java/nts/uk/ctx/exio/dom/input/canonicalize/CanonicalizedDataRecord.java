@@ -7,7 +7,7 @@ import lombok.Value;
 import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.DataItemList;
-import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.reviseddata.RevisedDataRecord;
 
 /**
  * 正準化データ1行分

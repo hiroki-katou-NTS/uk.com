@@ -15,6 +15,8 @@ import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
 
 public class ReviseItemTest {
 	@Mocked ReviseValue reviseValue;

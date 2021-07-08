@@ -7,7 +7,7 @@ import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
-import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.reviseddata.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
 import nts.uk.ctx.exio.dom.input.workspace.item.WorkspaceItem;
 

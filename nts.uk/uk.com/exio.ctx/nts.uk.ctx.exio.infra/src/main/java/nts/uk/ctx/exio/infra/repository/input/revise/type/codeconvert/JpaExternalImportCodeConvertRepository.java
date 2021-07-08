@@ -9,10 +9,10 @@ import org.apache.commons.lang3.BooleanUtils;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.CodeConvertCode;
-import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.CodeConvertDetail;
-import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvert;
-import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvertRepository;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.codeconvert.CodeConvertCode;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.codeconvert.CodeConvertDetail;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.codeconvert.ExternalImportCodeConvert;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.codeconvert.ExternalImportCodeConvertRepository;
 import nts.uk.ctx.exio.infra.entity.input.revise.type.codeconvert.XimmtCodeConvert;
 import nts.uk.ctx.exio.infra.entity.input.revise.type.codeconvert.XimmtCodeConvertDetail;
 

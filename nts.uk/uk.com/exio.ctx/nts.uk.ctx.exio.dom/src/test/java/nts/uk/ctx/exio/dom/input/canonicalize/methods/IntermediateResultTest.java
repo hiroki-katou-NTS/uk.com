@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.DataItemList;
-import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.reviseddata.RevisedDataRecord;
 
 public class IntermediateResultTest {
 

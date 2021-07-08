@@ -9,7 +9,10 @@ import mockit.Expectations;
 import mockit.Mocked;
 import mockit.Verifications;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
-import nts.uk.ctx.exio.dom.input.revise.type.RangeOfValue;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.RangeOfValue;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.FixedLength;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.FixedLengthReviseMethod;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.StringRevise;
 
 public class StringReviseTest {
 	
