@@ -62,10 +62,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 			String employeeId);
 	
 	@Override
-	public ImportingDataMeta canonicalize(
-			GroupCanonicalization.RequireCanonicalize require,
-			ExecutionContext context,
-			ImportingDataMeta meta) {
+	public void canonicalize(GroupCanonicalization.RequireCanonicalize require, ExecutionContext context) {
 		
 		List<String> employeeCodes = require.getStringsOfRevisedData(
 				context,
@@ -76,11 +73,6 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 				require.save(context, result.complete());
 			});
 		}
-		
-		// TODO: この知識は誰が持つべき？
-		return meta
-				.addItem("SID")
-				.addItem("HIST_ID");
 	}
 
 	private List<IntermediateResult> canonicalize(
@@ -323,5 +315,11 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 	
 	private int itemNoEmployeeId() {
 		return employeeCodeCanonicalization.getItemNoEmployeeId();
+	}
+	
+	@Override
+	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
+		return employeeCodeCanonicalization.appendMeta(source)
+				.addItem("HIST_ID");
 	}
 }

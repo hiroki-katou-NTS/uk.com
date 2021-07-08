@@ -41,10 +41,7 @@ public class DailyPerformanceCanonicalization implements GroupCanonicalization {
 	 * 正準化する
 	 */
 	@Override
-	public ImportingDataMeta canonicalize(
-			GroupCanonicalization.RequireCanonicalize require,
-			ExecutionContext context,
-			ImportingDataMeta meta) {
+	public void canonicalize(GroupCanonicalization.RequireCanonicalize require, ExecutionContext context) {
 
 		List<String> employeeCodes = require.getStringsOfRevisedData(
 				context,
@@ -67,8 +64,6 @@ public class DailyPerformanceCanonicalization implements GroupCanonicalization {
 			});
 			
 		}
-		
-		return meta.addItem("SID");
 	}
 	
 	private void canonicalize(
@@ -163,5 +158,10 @@ public class DailyPerformanceCanonicalization implements GroupCanonicalization {
 	@Override
 	public int getItemNoOfEmployeeId() {
 		return employeeCodeCanonicalization.getItemNoEmployeeId();
+	}
+
+	@Override
+	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
+		return employeeCodeCanonicalization.appendMeta(source);
 	}
 }

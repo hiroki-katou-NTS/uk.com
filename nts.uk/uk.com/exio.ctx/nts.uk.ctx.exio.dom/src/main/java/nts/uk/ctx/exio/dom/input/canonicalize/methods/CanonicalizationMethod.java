@@ -30,6 +30,13 @@ public interface CanonicalizationMethod {
 			Require require,
 			ExecutionContext context,
 			Consumer<IntermediateResult> intermediateResultProvider);
+	
+	/**
+	 * メタ情報を追記する
+	 * @param source
+	 * @return
+	 */
+	ImportingDataMeta appendMeta(ImportingDataMeta source);
 
 	public static interface Require extends
 			ImportingDataMeta.Require,

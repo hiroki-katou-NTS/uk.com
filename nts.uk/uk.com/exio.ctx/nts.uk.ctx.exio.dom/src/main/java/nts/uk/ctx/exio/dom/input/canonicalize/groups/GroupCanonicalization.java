@@ -21,7 +21,14 @@ public interface GroupCanonicalization {
 	 * @param require
 	 * @param context
 	 */
-	ImportingDataMeta canonicalize(RequireCanonicalize require, ExecutionContext context, ImportingDataMeta meta);
+	void canonicalize(RequireCanonicalize require, ExecutionContext context);
+	
+	/**
+	 * メタ情報を追記する
+	 * @param source
+	 * @return
+	 */
+	ImportingDataMeta appendMeta(ImportingDataMeta source);
 	
 	/**
 	 * 受入に影響される既存データを補正する

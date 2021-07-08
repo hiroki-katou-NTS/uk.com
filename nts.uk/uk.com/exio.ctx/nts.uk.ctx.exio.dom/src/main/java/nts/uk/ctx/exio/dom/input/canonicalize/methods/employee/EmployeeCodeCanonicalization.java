@@ -11,6 +11,7 @@ import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 
 /**
@@ -101,5 +102,10 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 	public static interface Require {
 		
 		Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeCode(String employeeCode);
+	}
+
+	@Override
+	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
+		return source.addItem("SID");
 	}
 }

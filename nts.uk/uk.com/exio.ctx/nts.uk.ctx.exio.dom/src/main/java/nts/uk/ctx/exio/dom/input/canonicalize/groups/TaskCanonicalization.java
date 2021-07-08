@@ -47,10 +47,9 @@ public class TaskCanonicalization implements GroupCanonicalization {
 	 * レコード数が多いことが予想されるので、1行ずつ処理する
 	 */
 	@Override
-	public ImportingDataMeta canonicalize(
+	public void canonicalize(
 			GroupCanonicalization.RequireCanonicalize require,
-			ExecutionContext context,
-			ImportingDataMeta meta) {
+			ExecutionContext context) {
 		
 		// 重複チェック用のセット
 		Set<UniqueKey> importingKeys = new HashSet<>();
@@ -66,8 +65,6 @@ public class TaskCanonicalization implements GroupCanonicalization {
 			
 			canonicalize(require, context, revisedData);
 		});
-		
-		return meta;
 	}
 	
 	private void canonicalize(
@@ -156,5 +153,10 @@ public class TaskCanonicalization implements GroupCanonicalization {
 	@Override
 	public int getItemNoOfEmployeeId() {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
+		return source;
 	}
 }

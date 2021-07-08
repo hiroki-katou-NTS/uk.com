@@ -32,7 +32,8 @@ public class CanonicalizeRevisedData {
 
 		val canonicalization = GroupCanonicalizations.get(require, context.getGroupId());
 		
-		val metaCanonicalized = canonicalization.canonicalize(require, context, meta);
+		canonicalization.canonicalize(require, context);
+		val metaCanonicalized = canonicalization.appendMeta(meta);
 		
 		require.save(metaCanonicalized);
 	}
