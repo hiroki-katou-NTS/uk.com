@@ -186,6 +186,7 @@ module nts.uk.ui.at.ksu002.a {
 
 				vm.$errors('clear')
 					.then(() => vm.$blockui('grayout'))
+					.then(() => vm.dayStartWeek(0))
 					.then(() => vm.$ajax('at', API.GSCHE, command))
 					.then((response: WorkSchedule<string>[]) => _.chain(response)
 						.orderBy(['date'])
@@ -323,7 +324,6 @@ module nts.uk.ui.at.ksu002.a {
 							});
 							vm.schedules(clones);
 							vm.schedules.reset();
-							vm.dayStartWeek(0);
 						}
 					}).always(() => vm.$blockui('hide'));
 			};
