@@ -14,21 +14,20 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDateTime;
 
 /**
- * パスワード変更履歴
- * 最初のパスワードを設定した時点から履歴は存在するため、detailsが空になることはない
+ * ユーザーのログインパスワード
  */
 @Getter
 public class LoginPasswordOfUser implements DomainAggregate {
-
+	
 	/** ユーザID */
 	private final String userId;
 	
-	/** パスワード状態 */
+	/** パスワードの状態 */
 	private PasswordState passwordState;
 	
-	/** 変更ログリスト */
+	/** パスワードの履歴 */
 	private List<PasswordChangeLogDetail> details;
-
+	
 	public LoginPasswordOfUser(String userId, PasswordState passwordState, List<PasswordChangeLogDetail> details) {
 		this.userId = userId;
 		this.passwordState = passwordState;
@@ -42,6 +41,12 @@ public class LoginPasswordOfUser implements DomainAggregate {
 				Collections.emptyList());
 	}
 	
+	/**
+	 * 初期パスワードを発行
+	 * @param userId
+	 * @param passwordPlainText
+	 * @return
+	 */
 	public static LoginPasswordOfUser initialPassword(String userId, String passwordPlainText) {
 		return new LoginPasswordOfUser(
 				userId, 
@@ -58,7 +63,7 @@ public class LoginPasswordOfUser implements DomainAggregate {
 	 * @return
 	 */
 	public boolean matches(String matchingPasswordPlainText) {
-		return getLatestPassword().map(c -> c.getHashedPassword().equals(hash(matchingPasswordPlainText))).orElse(false);
+		return getLatestPassword().map(c -> c.getHashedPassword().matches(matchingPasswordPlainText, userId)).orElse(false);
 	}
 	
 	/**

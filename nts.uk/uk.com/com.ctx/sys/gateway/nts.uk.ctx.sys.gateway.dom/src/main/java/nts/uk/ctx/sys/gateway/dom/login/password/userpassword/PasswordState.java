@@ -3,6 +3,9 @@ package nts.uk.ctx.sys.gateway.dom.login.password.userpassword;
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 
+/**
+ * パスワードの状態
+ */
 @RequiredArgsConstructor
 public enum PasswordState {
 	
@@ -16,7 +19,7 @@ public enum PasswordState {
 	RESET(2);
 	
 	public final int value;
-
+	
 	public static PasswordState valueOf(int value) {
 		return EnumAdaptor.valueOf(value, PasswordState.class);
 	}
