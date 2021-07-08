@@ -21,6 +21,7 @@ import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.FixedItemMapping;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportItemMapping;
+import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingCsvItem;
 
 /**
  * 受入データの組み立て方法
@@ -76,26 +77,23 @@ public class ExternalImportAssemblyMethod {
 	private DataItemList assembleImportingItems(Require require, ImportingGroupId groupId, CsvRecord csvRecord) {
 		
 		return csvImportItem.stream()
-				.map(m -> assembleImportingItem(require, groupId, csvRecord, m))
+				.map(m -> assembleImportingItem(require, groupId, m.read(csvRecord)))
 				.collect(collectingAndThen(toList(), DataItemList::new));
 	}
 
-	private DataItem assembleImportingItem(
-			Require require, ImportingGroupId groupId, CsvRecord csvRecord, ImportItemMapping mapping) {
+	private DataItem assembleImportingItem(Require require, ImportingGroupId groupId, ImportingCsvItem csvItem) {
 		
-		val itemNo = mapping.getItemNo();
-		val csvValue = csvRecord.getItemByColumnNo(mapping.getCsvColumnNo());
-		
-		// 項目の編集
-		return require.getRevise(companyId, settingCode, itemNo)
-				.map(r -> r.revise(require, csvValue))
-				.orElseGet(() -> noRevise(require, groupId, itemNo, csvValue));
+		return require.getRevise(companyId, settingCode, csvItem.getItemNo())
+				.map(r -> r.revise(require, csvItem.getCsvValue()))
+				.orElseGet(() -> noRevise(require, groupId, csvItem));
 	}
 
-	private static DataItem noRevise(Require require, ImportingGroupId groupId, int itemNo, String csvValue) {
+	private static DataItem noRevise(Require require, ImportingGroupId groupId, ImportingCsvItem csvItem) {
 		
-		Object value = require.getImportableItem(groupId, itemNo).parse(csvValue);
-		return new DataItem(itemNo, value);
+		Object value = require.getImportableItem(groupId, csvItem.getItemNo())
+				.parse(csvItem.getCsvValue());
+		
+		return new DataItem(csvItem.getItemNo(), value);
 	}
 	
 	/**
