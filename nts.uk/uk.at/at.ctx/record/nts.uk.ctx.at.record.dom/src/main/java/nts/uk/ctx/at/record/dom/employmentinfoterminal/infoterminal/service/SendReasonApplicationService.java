@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.record.dom.adapter.application.setting.ApplicationReasonRc;
+import nts.uk.ctx.at.record.dom.adapter.application.setting.HolidayAppTypeRC;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.NRHelper;
@@ -51,10 +52,11 @@ public class SendReasonApplicationService {
 					.collect(Collectors.toList());
 
 		case ABSENCE_APPLICATION:
-
-			return appType.reasonTemp.stream()
-					.map(x -> new SendReasonApplication(String.valueOf(20 + x.getLeft()), x.getRight()))
-					.collect(Collectors.toList());
+			if (appType.getOpHolidayAppType().get() == HolidayAppTypeRC.ANNUAL_PAID_LEAVE.value)
+				return appType.reasonTemp.stream()
+						.map(x -> new SendReasonApplication(String.valueOf(20 + x.getLeft()), x.getRight()))
+						.collect(Collectors.toList());
+			else return new ArrayList<>();
 
 		case WORK_CHANGE_APPLICATION:
 
