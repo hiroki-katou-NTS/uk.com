@@ -816,6 +816,12 @@ module nts.uk.ui.at.kdw013.calendar {
                     return _.values(ko.unwrap(this.$styles)).join('\n');
                 }
             });
+            
+            this.params.employee
+                .subscribe((value) => {
+                    this.popupPosition.event(null);
+                    this.popupPosition.setting(null);
+                });
         }
 
         public mounted() {
@@ -1605,7 +1611,8 @@ module nts.uk.ui.at.kdw013.calendar {
                                 [BORDER_COLOR]: BLACK,
                                 [GROUP_ID]: SELECTED,
                                 extendedProps: {
-                                    status: 'new'
+                                    status: 'new',
+                                    employeeId: vm.params.employee() || vm.$user.employeeId
                                 }
                             });
 
@@ -2099,7 +2106,8 @@ module nts.uk.ui.at.kdw013.calendar {
                             [BORDER_COLOR]: BLACK,
                             [GROUP_ID]: SELECTED,
                             extendedProps: {
-                                status: 'new'
+                                status: 'new',
+                                employeeId: vm.params.employee() || vm.$user.employeeId
                             }
                         });
 

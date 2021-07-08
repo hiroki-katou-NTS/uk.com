@@ -595,7 +595,7 @@ module nts.uk.ui.at.kdw013.c {
 
                             const params: StartWorkInputPanelParam = {
                                 refDate: moment(start).toISOString(),
-                                employeeId,
+                                employeeId: employeeId,
                                 workGroupDto: {
                                     workCD1,
                                     workCD2,
