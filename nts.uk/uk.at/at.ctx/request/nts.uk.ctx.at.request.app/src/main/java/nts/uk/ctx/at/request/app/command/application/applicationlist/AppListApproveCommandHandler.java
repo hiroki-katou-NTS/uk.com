@@ -1,9 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.applicationlist;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -20,7 +18,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.AsyncTask;
 import nts.arc.task.parallel.ManagedParallelWithContext;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.application.common.ApproveAppHandler;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -30,11 +27,14 @@ import nts.uk.ctx.at.request.dom.application.applist.service.ApplyActionContent;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApprovalListService;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 import nts.uk.ctx.at.request.dom.application.applist.service.WorkMotionData;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailServerSetImport;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.ApprovalProcessParam;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.AppReflectManagerFromRecord;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.shr.com.context.AppContexts;
@@ -54,9 +54,6 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 	private ApproveAppHandler approveAppHandler;
 	
 	@Inject
-	private CommonAlgorithm commonAlgorithm;
-	
-	@Inject
 	private ManagedParallelWithContext parallel;
 	
 	@Inject
@@ -70,6 +67,12 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 	
 	@Resource
 	private ManagedExecutorService executerService;
+	
+	@Inject
+	private ApplicationSettingRepository applicationSettingRepository;
+	
+	@Inject
+	private EnvAdapter envAdapter;
 	
 	/**
 	 * refactor 4
@@ -140,17 +143,16 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 	public Pair<Boolean, String> approveSingleApp(String companyID, ListOfApplicationCmd listOfApplicationCmd, List<ListOfAppTypes> listOfAppTypes) {
 		try {
 			Application application = listOfApplicationCmd.toDomain().getApplication();
-			// ドメインモデル「申請設定」を取得し申請表示情報として作成する
-			AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
-					companyID, 
-					application.getAppType(), 
-					Collections.emptyList(), 
-					new DatePeriod(application.getOpAppStartDate().get().getApplicationDate(), application.getOpAppEndDate().get().getApplicationDate()).datesBetween(), 
-					true,
-					Optional.empty(),
-					Optional.empty());
+			// ドメインモデル「申請設定」を取得する
+			ApplicationSetting applicationSetting = applicationSettingRepository.findByCompanyId(companyID).get();
+			// アルゴリズム「メールサーバを設定したかチェックする」を実行する
+			MailServerSetImport mailServerSetImport = envAdapter.checkMailServerSet(companyID);
+			// 「承認時の設定パラメータ」を作成する
+			ApprovalProcessParam approvalProcessParam = new ApprovalProcessParam(
+					mailServerSetImport.isMailServerSet(),
+					applicationSetting.getAppTypeSettings().stream().filter(x -> x.getAppType()==application.getAppType()).findAny().orElse(null));
 			// アルゴリズム「承認する」を実行する
-			ApproveProcessResult approveProcessResult = approveAppHandler.approve(companyID, application.getAppID(), application, appDispInfoStartupOutput, 
+			ApproveProcessResult approveProcessResult = approveAppHandler.approve(companyID, application.getAppID(), application, approvalProcessParam, 
 					"", listOfAppTypes, true);
 			if(approveProcessResult.isProcessDone()) {
 				return Pair.of(true, "");
