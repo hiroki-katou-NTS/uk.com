@@ -4,7 +4,6 @@ package nts.uk.ctx.exio.dom.input.validation.condition.user;
 import java.util.Optional;
 
 import nts.uk.ctx.exio.dom.input.DataItem;
-import nts.uk.ctx.exio.dom.input.validation.Validation;
 
 public interface ComparableValidation <T extends Comparable<T>> extends Validation{
 	

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
-import nts.uk.ctx.exio.dom.input.validation.Validation;
+import nts.uk.ctx.exio.dom.input.validation.condition.user.Validation;
 
 /**
  * 受入時のユーザ条件

@@ -6,9 +6,9 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.exio.dom.input.DataItem;
-import nts.uk.ctx.exio.dom.input.validation.Validation;
 import nts.uk.ctx.exio.dom.input.validation.condition.user.ComparableValidation;
 import nts.uk.ctx.exio.dom.input.validation.condition.user.CompareValueCondition;
+import nts.uk.ctx.exio.dom.input.validation.condition.user.Validation;
 
 /**
  * 受入条件実数

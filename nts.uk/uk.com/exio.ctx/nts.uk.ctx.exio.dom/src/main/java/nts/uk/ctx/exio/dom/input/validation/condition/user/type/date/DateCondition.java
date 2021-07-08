@@ -6,9 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.input.DataItem;
-import nts.uk.ctx.exio.dom.input.validation.Validation;
 import nts.uk.ctx.exio.dom.input.validation.condition.user.ComparableValidation;
 import nts.uk.ctx.exio.dom.input.validation.condition.user.CompareValueCondition;
+import nts.uk.ctx.exio.dom.input.validation.condition.user.Validation;
 
 /**
  * 日付条件
