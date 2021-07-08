@@ -76,19 +76,22 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
     private void printContents(Worksheet worksheet, WorkLedgerExportDataSource dataSource) throws Exception {
         HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
         List<WorkLedgerDisplayContent> listContent = dataSource.getListContent();
-        int count = 0;
+        int count = 10;
         int itemOnePage = 0;
         Cells cells = worksheet.getCells();
         for (int i = 0; i < listContent.size(); i++) {
             val yearMonths = dataSource.getYearMonthPeriod().yearMonthsBetween();
             val content = listContent.get(i);
+            cells.copyRow(cells, 0, count);
+            cells.copyRow(cells, 1, count + 1);
+            cells.copyRow(cells, 2, count + 2);
+            cells.clearContents(count, 0, cells.getMaxRow(), 15);
             if (i >= 1) {
                 itemOnePage = 0;
                 pageBreaks.add(count);
-                cells.copyRow(cells, 0, count);
-                cells.copyRow(cells, 1, count + 1);
-                cells.copyRow(cells, 2, count + 2);
-                cells.clearContents(count, 0, cells.getMaxRow(), 15);
+                for (int index = 0; index < 15; index++) {
+                    setBottomBorderStyle(cells.get(count -1, index));
+                }
             }
             cells.get(count, 0).setValue(TextResource.localize("KWR005_301")  + content.getWorkplaceCode() + " " + content.getWorkplaceName());
             cells.get(count, 6).setValue(TextResource.localize(TextResource.localize("KWR005_303")) +
@@ -104,6 +107,9 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                 if (itemOnePage >= NUMBER_ROW_OF_PAGE) {
                     itemOnePage = 0;
                     pageBreaks.add(count);
+                    for (int index = 0; index < 15; index++) {
+                        setBottomBorderStyle(cells.get(count -1, index));
+                    }
                     cells.copyRow(cells, 0, count);
                     cells.copyRow(cells, 1, count + 1);
                     cells.copyRow(cells, 2, count + 2);
@@ -112,17 +118,17 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                             this.toYearMonthString(dataSource.getYearMonthPeriod().start()) + TextResource.localize("KWR005_305") +
                             this.toYearMonthString(dataSource.getYearMonthPeriod().end()));
 
-                    cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
-                    cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + content.getEmployeeCode() + "　" + content.getEmployeeName());
+                    cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + content.getWorkplaceCode() + " " + content.getWorkplaceName());
+                    cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + content.getEmployeeCode() + " " + content.getEmployeeName());
 
                     printDate(worksheet, count + 2, yearMonths);
                     count += 3;
 
                 }
                 if (j % 2 == 0) {
-                    cells.copyRow(cells, 3, count);
+                    cells.copyRow(cells, 5, count);
                 } else {
-                    cells.copyRow(cells, 4, count);
+                    cells.copyRow(cells, 6, count);
                 }
                 cells.clearContents(count, 0, cells.getMaxRow(), 15);
                 cells.merge(count, 0, 1, 2, true, true);
@@ -160,22 +166,19 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
         }
         PageSetup pageSetup = worksheet.getPageSetup();
         pageSetup.setPrintArea(PRINT_AREA + count);
-        for (int index = 0; index < 14; index++) {
-            setBottomBorderStyle(cells.get(count, index));
+        for (int index = 0; index < 15; index++) {
+            setBottomBorderStyle(cells.get(count -1, index));
         }
-        cells.removeDuplicates(count+1,0,cells.getMaxRow(),cells.getMaxColumn());
+        cells.deleteRows(0,10);
 
     }
     private void setBottomBorderStyle(Cell cell) {
         Style style = cell.getStyle();
-        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
         cell.setStyle(style);
     }
     private void printDate(Worksheet worksheet, int rowCount, List<YearMonth> yearMonths) {
         Cells cells = worksheet.getCells();
-        for (int i = 0; i < 15 ; i++) {
-            cells.setColumnWidthInch(i, 0.62);
-        }
         for (int mi = 0; mi < yearMonths.size(); mi++) {
            
             val yearMonth = yearMonths.get(mi);

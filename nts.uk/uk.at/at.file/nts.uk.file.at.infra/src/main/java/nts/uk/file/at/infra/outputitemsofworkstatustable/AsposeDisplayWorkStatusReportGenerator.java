@@ -39,7 +39,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
     private static final String PRINT_AREA = "A1:AJ";
     private static final int EXPORT_EXCEL = 2;
     private static final int EXPORT_PDF = 1;
-    private static final int MAX_EMP_IN_PAGE = 33;
+    private static final int MAX_EMP_IN_PAGE = 34;
     private static final int MAX_COL_IN_PAGE = 31;
 
     @Override
@@ -91,30 +91,21 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
     }
 
     private void printContents(Worksheet worksheet, OutPutWorkStatusContent content) throws Exception {
-        int countRow = 0;
+        int countRow = 10;
         Cells cells = worksheet.getCells();
-        GeneralDate endDate = content.getPeriod().end();
-        int maxColumnData = MAX_COL_IN_PAGE + 5;
-        int maxColumn = cells.getMaxColumn();
-        int maxRow = cells.getMaxRow();
-        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM");
-        String date = DATE_FORMAT.format(endDate.date());
-        cells.clearContents(0, 0, maxRow, maxColumn);
-        cells.merge(0, 0, 1, maxColumnData);
-        cells.get(0, 0).setValue(TextResource.localize("KWR003_401") + date);
-
         if (content.getExcelDtoList().size() > 0) {
-            printDayOfWeekHeader(worksheet, content.getPeriod(), countRow);
-            printData(worksheet, content);
+            printDayOfWeekHeader(worksheet, content, countRow);
+            countRow +=3;
+            printData(worksheet, content,countRow);
         }
+        cells.deleteRows(0,10);
     }
 
-    private void printData(Worksheet worksheet, OutPutWorkStatusContent content) throws Exception {
+    private void printData(Worksheet worksheet, OutPutWorkStatusContent content,int countRow) throws Exception {
         boolean isWplPrinted;
         Cells cells = worksheet.getCells();
         HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
         int pages = 1;
-        int countRow = 3;
         int countItem = 3;
         val isZeroDisplay = content.isZeroDisplay();
         int maxColumnData = MAX_COL_IN_PAGE + 5;
@@ -126,10 +117,13 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
             // Check and break page
             if (content.isPageBreak()) {
                 if (q != 0) {
+                    for (int index = 0; index <= 35; index++) {
+                        setBottomBorderStyle(cells.get(countRow-1 , index));
+                    }
                     pageBreaks.add(countRow);
                     pages++;
                     // countRow = MAX_EMP_IN_PAGE * q;
-                    cells.copyRows(cells, 0, countRow, 3);
+                    cells.copyRows(cells, 10, countRow, 3);
                     countRow += 3;
                     countItem = 3;
                 }
@@ -153,10 +147,13 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                 if (content.isPageBreak()) {
                     val check = checkAndBreakPage(worksheet, countItem, pages);
                     if (check != null) {
+                        for (int index = 0; index <= 35; index++) {
+                            setBottomBorderStyle(cells.get(countRow-1 , index));
+                        }
                         //countRow = check.getCount();
                         if (check.isBreak()) {
                             pages += 1;
-                            cells.copyRows(cells, 0, countRow, 3);
+                            cells.copyRows(cells, 10, countRow, 3);
                             countRow += 3;
                             countItem = 3;
                             cells.copyRow(cells, 3, countRow);
@@ -181,11 +178,14 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                         countRow--;
 
                     }
+                    for (int index = 0; index <= 35; index++) {
+                        setBottomBorderStyle(cells.get(countRow-1 , index));
+                    }
                     pageBreaks.add(countRow);
                     pages++;
                     //countRow += MAX_EMP_IN_PAGE - countItem;
                     pages += 1;
-                    cells.copyRows(cells, 0, countRow, 3);
+                    cells.copyRows(cells, 10, countRow, 3);
                     countRow += 3;
                     countItem = 3;
                     cells.copyRow(cells, 3, countRow);
@@ -214,8 +214,11 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                         if (check != null) {
                             countRow = check.getCount();
                             if (check.isBreak()) {
+                                for (int index = 0; index <= 35; index++) {
+                                    setBottomBorderStyle(cells.get(countRow-1 , index));
+                                }
                                 pages += 1;
-                                cells.copyRows(cells, 0, countRow, 3);
+                                cells.copyRows(cells, 10, countRow, 3);
                                 countRow += 3;
                                 countItem = 3;
                                 cells.copyRow(cells, 3, countRow);
@@ -245,9 +248,9 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                             )).collect(Collectors.toList());
                     if (listItem.size() == 0) {
                         if (k % 2 == 0) {
-                            cells.copyRow(cells, 5, countRow);
+                            cells.copyRow(cells, 7, countRow);
                         } else {
-                            cells.copyRow(cells, 6, countRow);
+                            cells.copyRow(cells, 8, countRow);
                         }
                         cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
                         cells.get(countRow, 1).setValue(itemOneLine.getOutPutItemName());
@@ -256,9 +259,9 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                         continue;
                     }
                     if (k % 2 == 0) {
-                        cells.copyRow(cells, 5, countRow);
+                        cells.copyRow(cells, 7, countRow);
                     } else {
-                        cells.copyRow(cells, 6, countRow);
+                        cells.copyRow(cells, 8, countRow);
                     }
                     cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
 
@@ -287,14 +290,17 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
             }
 
         }
+        for (int index = 0; index <= 35; index++) {
+            setBottomBorderStyle(cells.get(countRow-1 , index));
+        }
         PageSetup pageSetup = worksheet.getPageSetup();
-        cells.deleteRow(countRow);
         pageSetup.setPrintArea(PRINT_AREA + countRow);
     }
 
     private PrintPage checkAndBreakPage(Worksheet worksheet, int countRowItem, int numberPage) {
         HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
         if (countRowItem > MAX_EMP_IN_PAGE) {
+
             pageBreaks.add(countRowItem);
             return new PrintPage(
                     numberPage + 1,
@@ -304,9 +310,17 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         return null;
     }
 
-    private void printDayOfWeekHeader(Worksheet worksheet, DatePeriod datePeriod, int countRow) {
+    private void printDayOfWeekHeader(Worksheet worksheet, OutPutWorkStatusContent content, int countRow) throws Exception {
         Cells cells = worksheet.getCells();
+        cells.copyRows(cells, 0, countRow, 3);
+        GeneralDate endDate = content.getPeriod().end();
+        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM");
+        String date = DATE_FORMAT.format(endDate.date());
+        cells.merge(countRow, 0, 1, MAX_COL_IN_PAGE + 5);
+        cells.get(countRow, 0).setValue(TextResource.localize("KWR003_401") + date);
+        DatePeriod datePeriod = content.getPeriod();
         GeneralDate startDate = datePeriod.start();
+
         cells.merge(countRow + 1, 0, 2, 3, true, true);
         val maxColumnData = MAX_COL_IN_PAGE;
         cells.get(countRow + 1, 0).setValue(TextResource.localize("KWR003_402"));
@@ -418,7 +432,11 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         private DailyValue dailyValue;
         private GeneralDate date;
     }
-
+    private void setBottomBorderStyle(Cell cell) {
+        Style style = cell.getStyle();
+        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
+        cell.setStyle(style);
+    }
     @AllArgsConstructor
     @Getter
     @Setter
