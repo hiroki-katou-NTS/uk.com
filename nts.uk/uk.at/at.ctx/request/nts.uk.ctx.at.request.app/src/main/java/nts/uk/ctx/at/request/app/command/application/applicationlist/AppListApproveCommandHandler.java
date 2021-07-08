@@ -103,7 +103,7 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 			workMotionData.setPreAppConfirm(ApplyActionContent.NOT_CONFIRM);
 		}
 		// 表示されている申請一覧リストの1行目より最終行まで繰返し (Vong lap tu don day tien den don cuoi cung dang hien thi tren man hinh)
-		this.parallel.forEach(listOfApplicationCmds, listOfApplicationCmd -> {
+		listOfApplicationCmds.forEach(listOfApplicationCmd -> {
 			// 対象の申請が未承認の申請の場合
 			// xử lý trên UI
 			// INPUT「一括承認」＝True
@@ -170,7 +170,7 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 		if(CollectionUtil.isEmpty(listOfApplicationCmds)) {
 			return result;
 		}
-		this.parallel.forEach(listOfApplicationCmds, listOfApplicationCmd -> {
+		listOfApplicationCmds.forEach(listOfApplicationCmd -> {
 			Pair<Boolean, String> pair = this.approveSingleApp(companyID, listOfApplicationCmd, listOfAppTypes);
 			if(pair.getLeft()) {
 				result.getSuccessMap().put(listOfApplicationCmd.getAppID(), pair.getRight());

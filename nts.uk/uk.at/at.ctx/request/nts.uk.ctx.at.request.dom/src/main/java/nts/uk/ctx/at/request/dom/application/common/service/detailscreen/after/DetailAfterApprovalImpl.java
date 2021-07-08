@@ -10,6 +10,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproveResultImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.ProcessApprovalOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.ApprovalMailSendCheck;
@@ -40,9 +41,9 @@ public class DetailAfterApprovalImpl implements DetailAfterApproval {
 		ProcessApprovalOutput processApprovalOutput = new ProcessApprovalOutput();
 		String loginEmployeeID = AppContexts.user().employeeId();
 		// 2.承認する(ApproveService)
-		Integer phaseNumber = approvalRootStateAdapter.doApprove(appID, loginEmployeeID, memo);
+		ApproveResultImport approveResultImport = approvalRootStateAdapter.doApprove(appID, loginEmployeeID, memo);
 		// アルゴリズム「承認全体が完了したか」を実行する ( Thực hiện thuật toán ''Đã hoàn thành toàn bộ approve hay chưa"
-		Boolean allApprovalFlg = approvalRootStateAdapter.isApproveAllComplete(appID);
+		Boolean allApprovalFlg = approvalRootStateAdapter.isApproveAllComplete(approveResultImport.getApprovalRootState());
 		String reflectAppId = "";
 		if(allApprovalFlg.equals(Boolean.TRUE)){
 			// 反映状態を「反映待ち」に変更する
@@ -85,7 +86,7 @@ public class DetailAfterApprovalImpl implements DetailAfterApproval {
 		List<String> approverLstResult = approvalMailSendCheck.sendMailApprover(
 				appTypeSetting,
 				application, 
-				phaseNumber);
+				approveResultImport.getApprovalPhaseNumber());
 		processApprovalOutput.setApproverLst(approverLstResult);
 		processApprovalOutput.setAppID(appID);
 		processApprovalOutput.setReflectAppId(reflectAppId);
