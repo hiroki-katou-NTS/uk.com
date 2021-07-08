@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.setting.assembly.revise.reviseddata;
+package nts.uk.ctx.exio.dom.input.setting.assembly;
 
 import java.util.Optional;
 

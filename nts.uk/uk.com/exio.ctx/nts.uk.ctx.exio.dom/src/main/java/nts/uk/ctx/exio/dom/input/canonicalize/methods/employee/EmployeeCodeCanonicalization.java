@@ -11,7 +11,7 @@ import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.reviseddata.RevisedDataRecord;
+import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 
 /**
  * 社員コードを社員IDに正準化する

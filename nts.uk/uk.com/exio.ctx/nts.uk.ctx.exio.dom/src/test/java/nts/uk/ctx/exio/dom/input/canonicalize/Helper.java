@@ -11,7 +11,7 @@ import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.reviseddata.RevisedDataRecord;
+import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 
 public class Helper {
 

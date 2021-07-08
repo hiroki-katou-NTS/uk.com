@@ -21,7 +21,6 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.FixedItemMapping;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportItemMapping;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingCsvItem;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.reviseddata.RevisedDataRecord;
 
 /**
  * 受入データの組み立て方法
