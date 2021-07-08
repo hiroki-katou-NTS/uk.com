@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
-import nts.uk.ctx.exio.dom.input.validation.condition.ImportingUserCondition;
-import nts.uk.ctx.exio.dom.input.validation.condition.system.ValidateSystemRange;
+import nts.uk.ctx.exio.dom.input.validation.system.ValidateSystemRange;
+import nts.uk.ctx.exio.dom.input.validation.user.ImportingUserCondition;
 
 /**
  * 値の検証　とは誰に何を指示することなのか知っている。

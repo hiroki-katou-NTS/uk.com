@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.validation.condition.user;
+package nts.uk.ctx.exio.dom.input.validation.user;
 /**
  * 値の比較条件
  */

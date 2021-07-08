@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.validation.condition.system;
+package nts.uk.ctx.exio.dom.input.validation.system;
 
 import java.util.ArrayList;
 import java.util.List;

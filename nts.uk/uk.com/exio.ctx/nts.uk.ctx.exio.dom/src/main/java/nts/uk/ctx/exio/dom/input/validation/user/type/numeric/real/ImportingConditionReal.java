@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.validation.condition.user.type.numeric.real;
+package nts.uk.ctx.exio.dom.input.validation.user.type.numeric.real;
 
 import java.math.BigDecimal;
 

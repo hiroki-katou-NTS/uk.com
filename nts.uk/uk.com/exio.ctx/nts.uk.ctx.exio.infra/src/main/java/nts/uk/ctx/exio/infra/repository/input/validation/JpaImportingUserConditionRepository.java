@@ -6,8 +6,8 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.exio.dom.input.validation.ImportingUserConditionRepository;
-import nts.uk.ctx.exio.dom.input.validation.condition.ImportingUserCondition;
+import nts.uk.ctx.exio.dom.input.validation.user.ImportingUserCondition;
+import nts.uk.ctx.exio.dom.input.validation.user.ImportingUserConditionRepository;
 import nts.uk.ctx.exio.infra.entity.input.validation.XimmtValidValue;
 
 @Stateless

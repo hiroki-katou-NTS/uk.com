@@ -8,10 +8,10 @@ import org.junit.Test;
 
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.validation.ValidationHelper.DUMMY;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.CompareValueCondition;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.Validation;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.type.numeric.integer.ImportingConditionInteger;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.type.numeric.integer.IntegerCondition;
+import nts.uk.ctx.exio.dom.input.validation.user.CompareValueCondition;
+import nts.uk.ctx.exio.dom.input.validation.user.Validation;
+import nts.uk.ctx.exio.dom.input.validation.user.type.numeric.integer.ImportingConditionInteger;
+import nts.uk.ctx.exio.dom.input.validation.user.type.numeric.integer.IntegerCondition;
 
 public class TargetEqualCond1 {
 

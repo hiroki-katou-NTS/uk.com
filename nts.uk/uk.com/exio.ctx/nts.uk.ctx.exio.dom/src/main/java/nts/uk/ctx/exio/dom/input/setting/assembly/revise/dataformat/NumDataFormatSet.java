@@ -12,7 +12,7 @@ import nts.uk.ctx.exio.dom.dataformat.value.DecimalDivision;
 import nts.uk.ctx.exio.dom.dataformat.value.DecimalPointClassification;
 import nts.uk.ctx.exio.dom.dataformat.value.Rounding;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.codeconvert.CodeConvertCode;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.type.numeric.real.ImportingConditionReal;
+import nts.uk.ctx.exio.dom.input.validation.user.type.numeric.real.ImportingConditionReal;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**

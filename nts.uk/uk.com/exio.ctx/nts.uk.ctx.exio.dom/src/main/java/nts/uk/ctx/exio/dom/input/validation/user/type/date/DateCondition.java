@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.validation.condition.user.type.date;
+package nts.uk.ctx.exio.dom.input.validation.user.type.date;
 
 import java.util.Optional;
 
@@ -6,9 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.input.DataItem;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.ComparableValidation;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.CompareValueCondition;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.Validation;
+import nts.uk.ctx.exio.dom.input.validation.user.ComparableValidation;
+import nts.uk.ctx.exio.dom.input.validation.user.CompareValueCondition;
+import nts.uk.ctx.exio.dom.input.validation.user.Validation;
 
 /**
  * 日付条件

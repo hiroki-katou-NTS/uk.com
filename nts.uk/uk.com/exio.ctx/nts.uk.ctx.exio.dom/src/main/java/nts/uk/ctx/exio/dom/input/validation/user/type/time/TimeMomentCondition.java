@@ -1,13 +1,13 @@
-package nts.uk.ctx.exio.dom.input.validation.condition.user.type.time;
+package nts.uk.ctx.exio.dom.input.validation.user.type.time;
 
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.exio.dom.input.DataItem;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.ComparableValidation;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.CompareValueCondition;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.Validation;
+import nts.uk.ctx.exio.dom.input.validation.user.ComparableValidation;
+import nts.uk.ctx.exio.dom.input.validation.user.CompareValueCondition;
+import nts.uk.ctx.exio.dom.input.validation.user.Validation;
 
 /**
  * 時刻条件

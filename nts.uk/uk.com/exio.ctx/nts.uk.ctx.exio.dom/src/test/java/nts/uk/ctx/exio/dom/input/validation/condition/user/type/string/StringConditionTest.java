@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
 import lombok.val;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.CompareStringCondition;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.Validation;
 import nts.uk.ctx.exio.dom.input.validation.condition.user.type.string.Helper.DUMMY;
+import nts.uk.ctx.exio.dom.input.validation.user.CompareStringCondition;
+import nts.uk.ctx.exio.dom.input.validation.user.Validation;
 
 public class StringConditionTest {
 

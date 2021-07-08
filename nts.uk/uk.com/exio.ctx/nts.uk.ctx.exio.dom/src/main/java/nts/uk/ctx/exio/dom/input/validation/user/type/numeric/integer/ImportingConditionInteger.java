@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.validation.condition.user.type.numeric.integer;
+package nts.uk.ctx.exio.dom.input.validation.user.type.numeric.integer;
 
 import nts.arc.primitive.LongPrimitiveValue;
 import nts.arc.primitive.constraint.LongMaxValue;

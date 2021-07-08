@@ -11,7 +11,7 @@ import nts.uk.ctx.exio.dom.dataformat.value.DecimalSelection;
 import nts.uk.ctx.exio.dom.dataformat.value.DelimiterSetting;
 import nts.uk.ctx.exio.dom.dataformat.value.HourlySegment;
 import nts.uk.ctx.exio.dom.dataformat.value.TimeRounding;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.type.time.ImportingConditionTime;
+import nts.uk.ctx.exio.dom.input.validation.user.type.time.ImportingConditionTime;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**

@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.validation.condition.user.type.string;
+package nts.uk.ctx.exio.dom.input.validation.user.type.string;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

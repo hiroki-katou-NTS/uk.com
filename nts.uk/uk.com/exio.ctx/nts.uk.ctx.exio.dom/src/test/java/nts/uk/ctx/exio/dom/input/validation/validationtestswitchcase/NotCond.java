@@ -8,9 +8,9 @@ import org.junit.Test;
 
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.validation.ValidationHelper.DUMMY;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.CompareValueCondition;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.Validation;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.type.date.DateCondition;
+import nts.uk.ctx.exio.dom.input.validation.user.CompareValueCondition;
+import nts.uk.ctx.exio.dom.input.validation.user.Validation;
+import nts.uk.ctx.exio.dom.input.validation.user.type.date.DateCondition;
 
 public class NotCond {
 	@Test

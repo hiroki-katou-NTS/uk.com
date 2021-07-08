@@ -15,14 +15,14 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
-import nts.uk.ctx.exio.dom.input.validation.condition.ImportingUserCondition;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.Validation;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.type.date.DateCondition;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.type.numeric.integer.IntegerCondition;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.type.numeric.real.RealCondition;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.type.string.StringCondition;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.type.time.TimeCondition;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.type.time.TimeMomentCondition;
+import nts.uk.ctx.exio.dom.input.validation.user.ImportingUserCondition;
+import nts.uk.ctx.exio.dom.input.validation.user.Validation;
+import nts.uk.ctx.exio.dom.input.validation.user.type.date.DateCondition;
+import nts.uk.ctx.exio.dom.input.validation.user.type.numeric.integer.IntegerCondition;
+import nts.uk.ctx.exio.dom.input.validation.user.type.numeric.real.RealCondition;
+import nts.uk.ctx.exio.dom.input.validation.user.type.string.StringCondition;
+import nts.uk.ctx.exio.dom.input.validation.user.type.time.TimeCondition;
+import nts.uk.ctx.exio.dom.input.validation.user.type.time.TimeMomentCondition;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**

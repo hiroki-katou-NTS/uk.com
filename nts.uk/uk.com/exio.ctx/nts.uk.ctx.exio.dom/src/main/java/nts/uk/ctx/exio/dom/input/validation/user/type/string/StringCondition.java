@@ -1,11 +1,11 @@
-package nts.uk.ctx.exio.dom.input.validation.condition.user.type.string;
+package nts.uk.ctx.exio.dom.input.validation.user.type.string;
 
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.exio.dom.input.DataItem;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.CompareStringCondition;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.Validation;
+import nts.uk.ctx.exio.dom.input.validation.user.CompareStringCondition;
+import nts.uk.ctx.exio.dom.input.validation.user.Validation;
 
 /**
  * 文字条件

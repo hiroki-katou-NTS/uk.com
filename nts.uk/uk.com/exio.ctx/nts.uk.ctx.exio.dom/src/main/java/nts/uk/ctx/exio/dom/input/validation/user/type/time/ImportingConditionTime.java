@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.validation.condition.user.type.time;
+package nts.uk.ctx.exio.dom.input.validation.user.type.time;
 
 import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;

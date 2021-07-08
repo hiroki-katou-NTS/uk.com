@@ -3,8 +3,10 @@ package nts.uk.ctx.exio.dom.input.validation.condition.user.type.string;
 import java.util.Optional;
 
 import nts.uk.ctx.exio.dom.input.DataItem;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.CompareStringCondition;
-import nts.uk.ctx.exio.dom.input.validation.condition.user.Validation;
+import nts.uk.ctx.exio.dom.input.validation.user.CompareStringCondition;
+import nts.uk.ctx.exio.dom.input.validation.user.Validation;
+import nts.uk.ctx.exio.dom.input.validation.user.type.string.ImportingStringCondition;
+import nts.uk.ctx.exio.dom.input.validation.user.type.string.StringCondition;
 
 public class Helper {
 	static Validation notCompare = new StringCondition(CompareStringCondition.NOT_COND,Optional.empty());
