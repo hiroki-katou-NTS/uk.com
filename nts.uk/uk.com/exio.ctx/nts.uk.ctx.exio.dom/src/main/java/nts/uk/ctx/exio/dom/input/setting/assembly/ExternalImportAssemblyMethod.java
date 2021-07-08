@@ -2,7 +2,6 @@ package nts.uk.ctx.exio.dom.input.setting.assembly;
 
 import static java.util.stream.Collectors.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -18,7 +17,6 @@ import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.revise.ReviseItem;
-import nts.uk.ctx.exio.dom.input.revise.RevisedItemResult;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.FixedItemMapping;
@@ -58,12 +56,7 @@ public class ExternalImportAssemblyMethod {
 		val importData = new DataItemList();
 		
 		// CSVの取込内容を組み立てる
-		val csvAssemblyResult = assembleInternal(require, context, csvRecord);
-		if(csvAssemblyResult.isIncorrectData()) {
-			// 不正なデータが1件でもあれば処理中の行は取り込まない
-			return Optional.empty();
-		}
-		importData.addItemList(csvAssemblyResult.getAssemblyItem());
+		importData.addItemList(assembleInternal(require, context, csvRecord));
 		
 		// 固定値項目の組み立て
 		importData.addItemList(assembleFixedItem(fixedItem));
@@ -76,10 +69,9 @@ public class ExternalImportAssemblyMethod {
 		return Optional.of(new RevisedDataRecord(csvRecord.getRowNo(), importData));
 	}
 
-	private AssemblyResult assembleInternal(Require require, ExecutionContext context, CsvRecord csvRecord) {
+	private DataItemList assembleInternal(Require require, ExecutionContext context, CsvRecord csvRecord) {
 		
-		val revisedResults = new ArrayList<RevisedItemResult>();
-		val assemblyItems = new DataItemList();
+		val revisedResults = new DataItemList();
 		
 		// マッピング内の項目数処理する
 		for (val mapping : csvImportItem) {
@@ -87,22 +79,21 @@ public class ExternalImportAssemblyMethod {
 			val itemNo = mapping.getImportItemNumber();
 			val csvValue = csvRecord.getItemByColumnNo(mapping.getCsvColumnNumber());
 			
-			// 項目の編集を取得
-			val revisionist = require.getRevise(context.getCompanyId(), context.getExternalImportCode(), itemNo);
-			if(revisionist.isPresent()) {
-				// 編集あり
-				val revisedResult =revisionist.get().revise(require, context, csvValue);
-				revisedResults.add(revisedResult);
-				assemblyItems.addObject(itemNo, revisedResult.getObjectValue());
-			}
-			else {
-				// 編集なし
-				// 受入項目NOに対応する項目型に沿って型を変換する
-				assemblyItems.addObject(itemNo, require.getImportableItem(context.getGroupId(), itemNo).parse(csvValue));
-			}
+			// 項目の編集
+			DataItem revised = require.getRevise(context.getCompanyId(), context.getExternalImportCode(), itemNo)
+					.map(r -> r.revise(require, context, csvValue))
+					.orElseGet(() -> noRevise(require, context, itemNo, csvValue));
+			
+			revisedResults.add(revised);
 		}
 		
-		return new AssemblyResult(assemblyItems, revisedResults);
+		return revisedResults;
+	}
+
+	private DataItem noRevise(Require require, ExecutionContext context, final int itemNo, String csvValue) {
+		
+		Object value = require.getImportableItem(context.getGroupId(), itemNo).parse(csvValue);
+		return new DataItem(itemNo, value);
 	}
 	
 	// 固定値項目の組み立て

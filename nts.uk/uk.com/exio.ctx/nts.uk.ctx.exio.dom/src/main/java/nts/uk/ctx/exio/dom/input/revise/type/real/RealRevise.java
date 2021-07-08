@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.exio.dom.input.revise.RevisedValueResult;
 import nts.uk.ctx.exio.dom.input.revise.ReviseValue;
 import nts.uk.ctx.exio.dom.input.revise.type.RangeOfValue;
 
@@ -25,7 +24,7 @@ public class RealRevise implements ReviseValue {
 	
 	
 	@Override
-	public RevisedValueResult revise(String target) {
+	public Object revise(String target) {
 		String strResult = target;
 		if(useSpecifyRange) {
 			// 値の有効範囲を指定する場合
@@ -43,27 +42,13 @@ public class RealRevise implements ReviseValue {
 	}
 	
 	// 文字列　→　整数　→　実数変換
-	private RevisedValueResult stringToIntToDecimal(String resultStr) {
-		Long intResult;
-		try {
-			intResult = Long.parseLong(resultStr);
-		}
-		catch(Exception e){
-			return RevisedValueResult.failed("Msg_1017");
-		}
-		BigDecimal resultDecimal = decimalize(intResult);
-		return RevisedValueResult.succeeded(resultDecimal);
+	private BigDecimal stringToIntToDecimal(String resultStr) {
+		return decimalize(Long.parseLong(resultStr));
 	}
 	
 	//　文字列　→　実数変換
-	private RevisedValueResult stringToDecimal(String resultStr) {
-		try {
-			BigDecimal decimalResult = new BigDecimal(resultStr);
-			return RevisedValueResult.succeeded(decimalResult);
-		}
-		catch(Exception e){
-			return RevisedValueResult.failed("Msg_1017");
-		}
+	private BigDecimal stringToDecimal(String resultStr) {
+		return new BigDecimal(resultStr);
 	}
 	
 	// 小数化

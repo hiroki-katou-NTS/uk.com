@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.exio.dom.input.revise.ReviseValue;
-import nts.uk.ctx.exio.dom.input.revise.RevisedValueResult;
 import nts.uk.ctx.exio.dom.input.revise.type.RangeOfValue;
 
 /**
@@ -33,7 +32,7 @@ public class TimeRevise implements ReviseValue {
 	private TimeRounding rounding;
 
 	@Override
-	public RevisedValueResult revise(String target) {
+	public Object revise(String target) {
 		String strTarget = target;
 		if(useSpecifyRange) {
 			// 値の有効範囲を指定する場合
@@ -54,6 +53,6 @@ public class TimeRevise implements ReviseValue {
 			// 端数処理を用いて端数を処理
 			longResult = rounding.round(decimalTarget);
 		}
-		return RevisedValueResult.succeeded(longResult);
+		return longResult;
 	}
 }

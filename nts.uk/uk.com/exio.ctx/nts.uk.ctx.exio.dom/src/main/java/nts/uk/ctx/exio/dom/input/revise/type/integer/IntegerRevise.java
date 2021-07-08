@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.exio.dom.input.revise.ReviseValue;
-import nts.uk.ctx.exio.dom.input.revise.RevisedValueResult;
 import nts.uk.ctx.exio.dom.input.revise.type.RangeOfValue;
 
 /**
@@ -20,23 +19,20 @@ public class IntegerRevise implements ReviseValue {
 	private Optional<RangeOfValue> rangeOfValue;
 	
 	@Override
-	public RevisedValueResult revise(String target) {
+	public Object revise(String target) {
+		
 		String strResult = target;
-		if(useSpecifyRange) {
+		
+		if (useSpecifyRange) {
 			// 値の有効範囲を指定する場合
 			strResult = this.rangeOfValue.get().extract(strResult);
 		}
+		
 		return stringToInt(strResult);
 	}
 	
 	// 文字列→整数変換
-	private RevisedValueResult stringToInt(String resultStr) {
-		try {
-			Long resultInt = Long.parseLong(resultStr);
-			return RevisedValueResult.succeeded(resultInt);
-		}
-		catch(Exception e){
-			return RevisedValueResult.failed("Msg_1017");
-		}
+	private Long stringToInt(String resultStr) {
+		return Long.parseLong(resultStr);
 	}
 }

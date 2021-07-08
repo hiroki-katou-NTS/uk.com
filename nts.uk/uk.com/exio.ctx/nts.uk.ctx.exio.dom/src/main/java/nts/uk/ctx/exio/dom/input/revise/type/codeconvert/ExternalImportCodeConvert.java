@@ -42,18 +42,18 @@ public class ExternalImportCodeConvert implements DomainAggregate {
 	 * @param target
 	 * @return
 	 */
-	public CodeConvertResult convert(String target) {
+	public CodeConvertValue convert(String target) {
 		for (val detail : convertDetails) {
 			if (detail.getTargetCode().toString().equals(target)) {
-				return CodeConvertResult.succeeded(detail.getSystemCode());
+				return detail.getSystemCode();
 			}
-			
 		}
+		
 		if(importWithoutSetting) {
 			// 変換対象外を受け入れる設定のためINPUTを変換値として返す
-			return CodeConvertResult.succeeded(new CodeConvertValue(target));
+			return new CodeConvertValue(target);
 		}
-		// 変換対象がない場合はempty
-		return CodeConvertResult.failed();
+		
+		throw new RuntimeException("TODO: エラー時の処理");
 	}
 }

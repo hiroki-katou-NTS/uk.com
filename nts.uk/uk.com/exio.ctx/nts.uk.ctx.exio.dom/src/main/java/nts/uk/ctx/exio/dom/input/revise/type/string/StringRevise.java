@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.exio.dom.input.revise.ReviseValue;
-import nts.uk.ctx.exio.dom.input.revise.RevisedValueResult;
 import nts.uk.ctx.exio.dom.input.revise.type.RangeOfValue;
 
 @AllArgsConstructor
@@ -23,7 +22,7 @@ public class StringRevise implements ReviseValue {
 	private Optional<FixedLength> fixedLength;
 	
 	@Override
-	public RevisedValueResult revise(String target) {
+	public Object revise(String target) {
 		
 		String strResult = target;
 		
@@ -41,6 +40,6 @@ public class StringRevise implements ReviseValue {
 			}
 		}
 		
-		return RevisedValueResult.succeeded(strResult);
+		return strResult;
 	}
 }

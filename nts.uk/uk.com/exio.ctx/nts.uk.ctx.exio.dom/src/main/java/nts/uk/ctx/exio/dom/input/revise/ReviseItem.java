@@ -4,10 +4,9 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.CodeConvertCode;
 import nts.uk.ctx.exio.dom.input.revise.type.codeconvert.ExternalImportCodeConvert;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
@@ -42,20 +41,19 @@ public class ReviseItem extends AggregateRoot {
 	 * @param targetValue
 	 * @return
 	 */
-	public RevisedItemResult revise(Require require, ExecutionContext context, String targetValue) {
+	public DataItem revise(Require require, ExecutionContext context, String targetValue) {
 
 		// 値の編集
-		val result = this.revisingValue.revise(targetValue);
+		Object result = this.revisingValue.revise(targetValue);
 
 		// コード変換
-		if(this.codeConvertCode.isPresent()) {
-			val optConvertor = require.getCodeConvert(context.getCompanyId(), this.codeConvertCode.get());
-			if(optConvertor.isPresent()) {
-				val cnvResult = optConvertor.get().convert(result.getRevisedvalue().get().toString());
-				return new RevisedItemResult(importItemNumber, result, Optional.of(cnvResult));
-			}
-		}
-		return new RevisedItemResult(importItemNumber, result, Optional.empty());
+		Object value = codeConvertCode
+				.flatMap(ccc -> require.getCodeConvert(context.getCompanyId(), ccc))
+				.map(c -> c.convert(result.toString()).v())
+				.map(v -> (Object) v)
+				.orElse(result);
+		
+		return new DataItem(importItemNumber, value);
 	}
 
 	public interface Require{
