@@ -2321,6 +2321,9 @@ module nts.uk.ui.at.kdw013.calendar {
             ko.computed({
                 read: () => {
                     const sc = ko.unwrap<number>(scrollTime);
+                    const fd = ko.unwrap<number>(firstDay);
+                    const sd = ko.unwrap<number>(params.slotDuration);
+                    
                     setTimeout(() => {
                         vm.calendar.scrollToTime(formatTime(sc));
                     }, 500);
