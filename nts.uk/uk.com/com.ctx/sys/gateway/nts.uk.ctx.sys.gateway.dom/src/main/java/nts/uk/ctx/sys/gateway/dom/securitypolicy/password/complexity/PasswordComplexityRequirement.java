@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.ViolationInfo;
 
 /**
  * 複雑さ
@@ -43,9 +44,9 @@ public class PasswordComplexityRequirement implements DomainValue {
 	 * @param password
 	 * @return
 	 */
-	public List<String> validatePassword(String password) {
+	public List<ViolationInfo> validatePassword(String password) {
 		
-		List<String> errorList = new ArrayList<String>();
+		List<ViolationInfo> errorList = new ArrayList<>();
 		
 		
 		int alphabets = 0;
@@ -65,22 +66,22 @@ public class PasswordComplexityRequirement implements DomainValue {
 		
 		// 総桁数不足
 		if (password.length() < minimumLength.v()) {
-			errorList.add("Msg_1186");
+			errorList.add(new ViolationInfo("Msg_1186", minimumLength.v()));
 		}
 
 		// 英字桁数不足
 		if (alphabets < alphabetDigits.v()) {
-			errorList.add("Msg_1188");
+			errorList.add(new ViolationInfo("Msg_1188", alphabetDigits.v()));
 		}
 
 		// 数字桁数不足
 		if (numerals < numeralDigits.v()) {
-			errorList.add("Msg_1189");
+			errorList.add(new ViolationInfo("Msg_1189", numeralDigits.v()));
 		}
 
 		// 記号桁数不足
 		if (symbols < symbolDigits.v()) {
-			errorList.add("Msg_1190");
+			errorList.add(new ViolationInfo("Msg_1190", symbolDigits.v()));
 		}
 		
 		return errorList;

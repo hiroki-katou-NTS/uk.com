@@ -26,9 +26,15 @@ public class PasswordAuthenticateWithEmployeeCode {
 		checkLockout(require, identified);
 		
 		// パスワード認証
-		val user = identified.getUser();
-		val userPassword = require.getLoginPasswordOfUser(user.getUserID());
-		if (userPassword.map(p -> !p.matches(password)).orElse(true)) {
+		val userPasswordOpt = require.getLoginPasswordOfUser(identified.getUserId());
+		if (!userPasswordOpt.isPresent()) {
+			val atomTask = FailedPasswordAuthenticate.failed(require, identified, password);
+			return PasswordAuthenticationResult.failure(atomTask);
+		}
+		
+		val userPassword = userPasswordOpt.get();
+		
+		if (!userPassword.matches(password)) {
 			val atomTask = FailedPasswordAuthenticate.failed(require, identified, password);
 			return PasswordAuthenticationResult.failure(atomTask);
 		}
@@ -36,7 +42,7 @@ public class PasswordAuthenticateWithEmployeeCode {
 		// パスワードポリシーへの準拠チェック
 		val passwordPolicy = require.getPasswordPolicy(identified.getTenantCode());
 		val passwordPolicyResult = passwordPolicy
-				.map(p -> p.violatedOnLogin(require, user.getUserID(), password, userPassword.get().getPasswordState()))
+				.map(p -> p.violatedOnLogin(userPassword, password))
 				.orElse(ValidationResultOnLogin.ok());
 		
 		return PasswordAuthenticationResult.success(passwordPolicyResult);
@@ -56,7 +62,6 @@ public class PasswordAuthenticateWithEmployeeCode {
 	
 	public static interface Require extends
 			FailedPasswordAuthenticate.Require,
-			PasswordPolicy.ValidateOnLoginRequire, 
 			EmployeeIdentify.Require{
 		
 		Optional<LoginPasswordOfUser> getLoginPasswordOfUser(String userId);

@@ -1,6 +1,10 @@
 package nts.uk.ctx.sys.gateway.dom.login.password.userpassword;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +33,13 @@ public class LoginPasswordOfUser implements DomainAggregate {
 		this.userId = userId;
 		this.passwordState = passwordState;
 		this.details = new ArrayList<>(details);
+	}
+	
+	public static LoginPasswordOfUser empty(String userId) {
+		return new LoginPasswordOfUser(
+				userId,
+				PasswordState.INITIAL,
+				Collections.emptyList());
 	}
 	
 	/**
@@ -64,6 +75,21 @@ public class LoginPasswordOfUser implements DomainAggregate {
 				.sorted((a, b) -> a.ageInDays() - b.ageInDays())
 				.findFirst()
 				.get());
+	}
+	
+	/**
+	 * パスワードを新しいものから指定数分だけ取得する
+	 * @param historyLength 過去何回分の履歴を遡るか（1なら最新のもの1つだけ）
+	 * @return
+	 */
+	public List<PasswordChangeLogDetail> getLatestPasswords(int historyLength) {
+		return getDetailsSorted().subList(0, historyLength);
+	}
+	
+	private List<PasswordChangeLogDetail> getDetailsSorted() {
+		return details.stream()
+				.sorted(Comparator.comparing(PasswordChangeLogDetail::getChangedDateTime).reversed())
+				.collect(toList());
 	}
 
 	private Optional<HashedLoginPassword> currentPassword() {
