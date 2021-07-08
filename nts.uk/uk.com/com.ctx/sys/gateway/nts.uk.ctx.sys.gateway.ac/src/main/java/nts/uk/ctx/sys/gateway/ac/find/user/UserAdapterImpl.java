@@ -12,7 +12,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.pub.user.ChangeUserPasswordPublisher;
 import nts.uk.ctx.sys.auth.pub.user.CheckBeforeChangePassOutput;
 import nts.uk.ctx.sys.auth.pub.user.CheckBeforePasswordPublisher;
 import nts.uk.ctx.sys.auth.pub.user.PasswordMessageObject;
@@ -39,9 +38,6 @@ public class UserAdapterImpl implements UserAdapter {
 
 	@Inject
 	private CheckBeforePasswordPublisher checkPasswordPublisher;
-
-	@Inject
-	private ChangeUserPasswordPublisher changeUserPasswordPublisher;
 
 	@Inject
 	private GetUserPublish getUserPublish ;
@@ -129,7 +125,7 @@ public class UserAdapterImpl implements UserAdapter {
 				userInfo.getExpirationDate(),
 				Integer.valueOf( userInfo.getPassStatus())));
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -161,7 +157,7 @@ public class UserAdapterImpl implements UserAdapter {
 		}
 		return Optional.empty();
 	}
-
+	
 	@Override
 	public Optional<UserInforExImport> getByEmpID(String empID) {
 		return userPublisher.getByEmpID(empID)
@@ -179,39 +175,10 @@ public class UserAdapterImpl implements UserAdapter {
 	public CheckBeforeChangePass passwordPolicyCheckForSubmit(String userId, String newPass, String contractCode) {
 		CheckBeforeChangePassOutput result = this.checkPasswordPublisher.passwordPolicyCheckForSubmit(userId, newPass,
 				contractCode);
-
+		
 		return new CheckBeforeChangePass(result.isError(), this.convert(result.getMessage()));
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#
-	 * checkBeforeChangePassword(java.lang.String, java.lang.String,
-	 * java.lang.String, java.lang.String)
-	 */
-	@Override
-	public CheckBeforeChangePass checkBeforeChangePassword(String userId, String currentPass, String newPass,
-			String reNewPass) {
-		CheckBeforeChangePassOutput result = this.checkPasswordPublisher.checkBeforeChangePassword(userId, currentPass,
-				newPass, reNewPass);
-		return new CheckBeforeChangePass(result.isError(), this.convert(result.getMessage()));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#
-	 * checkBeforeResetPassword(java.lang.String, java.lang.String,
-	 * java.lang.String)
-	 */
-	@Override
-	public CheckBeforeChangePass checkBeforeResetPassword(String userId, String newPass, String reNewPass) {
-		CheckBeforeChangePassOutput result = this.checkPasswordPublisher.checkBeforeResetPassword(userId, newPass,
-				reNewPass);
-		return new CheckBeforeChangePass(result.isError(), this.convert(result.getMessage()));
-	}
-
+	
 	/**
 	 * Convert.
 	 *
@@ -225,30 +192,18 @@ public class UserAdapterImpl implements UserAdapter {
 			return new PasswordMessageImport(item.getMessage(), item.getParam());
 		}).collect(Collectors.toList());
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#updatePassword(java.
-	 * lang.String, java.lang.String)
-	 */
-	@Override
-	public void updatePassword(String userId, String newPassword) {
-		changeUserPasswordPublisher.changePass(userId, newPassword);
-	}
 	
 	@Override
 	public Optional<UserImportNew> getByUserIDandDate(String userId , GeneralDate systemDate) {
 		Optional<UserExport> user = this.userPublisher.getByUserIDandDate(userId, systemDate);
-
+		
 		// Check found or not!
 		if (user.isPresent()) {
 			return this.covertToImportDomainNew(user);
 		}
 		return Optional.empty();
 	}
-
+	
 	@Override
 	public List<UserDto> getUser(List<String> userIds) {
 		return this.getUserPublish.getUser(userIds).stream().map(item -> {

@@ -137,8 +137,8 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 	
 	// ログイン成功時の処理
 	@Override
-	protected ValidateInfo loginCompleted(Require require, AuthenResult state) {
-		return ValidateInfo.successToValidSaml(state.requestUrl);
+	protected ValidateInfo loginCompleted(Require require, AuthenResult state, Optional<String> msg) {
+		return ValidateInfo.successToValidSaml(state.requestUrl, msg);
 	}
 	
 	@Value

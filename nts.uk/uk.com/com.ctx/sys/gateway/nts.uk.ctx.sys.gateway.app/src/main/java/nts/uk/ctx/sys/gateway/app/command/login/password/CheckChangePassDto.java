@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.app.command.login.password;
 
+import java.util.Optional;
+
 import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin.Status;
@@ -72,7 +74,7 @@ public class CheckChangePassDto {
 	}
 	
 	// パスワード認証による認証に成功
-	public static CheckChangePassDto successToAuthPassword(AuthenticationResult authen) {
+	public static CheckChangePassDto successToAuthPassword(AuthenticationResult authen, Optional<String> msg) {
 		val passwordValidation = authen.getPasswordValidation().get();
 		// パスワードの変更が必要な場合
 		if(passwordValidation.getStatus().isNeedToChangePassword()) {
@@ -82,6 +84,14 @@ public class CheckChangePassDto {
 		if(passwordValidation.getStatus() == Status.EXPIRES_SOON) {
 			return new CheckChangePassDto(passwordValidation.getStatus().getMessageId(), passwordValidation.getRemainingDays().get());
 		}
+		
+		// システム利用停止中の警告がある場合
+		if(msg.isPresent()) {
+			val dto = new CheckChangePassDto(false, null, false);
+			dto.setSuccessMsg(msg.get());
+			return dto;
+		}
+		
 		// 特に問題なし
 		return new CheckChangePassDto(false, null, false);
 	}
