@@ -47,6 +47,7 @@ import nts.uk.ctx.at.shared.dom.scherec.application.optional.OptionalItemApplica
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.ApplicationTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AttendanceTypeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.overtime.HolidayMidNightTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.OverTimeShiftNightShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.OvertimeApplicationSettingShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.ReasonDivergenceShare;
@@ -250,7 +251,10 @@ public class ConvertApplicationToShare {
 							x.getApplicationTime().v());
 				}).collect(Collectors.toList()), appTime.getFlexOverTime(),
 				appTime.getOverTimeShiftNight().map(x -> {
-					return new OverTimeShiftNightShare(null, x.getMidNightOutSide(), x.getOverTimeMidNight());// TODO
+					return new OverTimeShiftNightShare(x.getMidNightHolidayTimes().stream().map(y -> {
+						return new HolidayMidNightTimeShare(y.getAttendanceTime(), y.getLegalClf());
+					}).collect(Collectors.toList()), 
+							x.getMidNightOutSide(), x.getOverTimeMidNight());
 				}), appTime.getAnyItem().orElse(new ArrayList<>()), //
 				appTime.getReasonDissociation()
 						.map(x -> x.stream()

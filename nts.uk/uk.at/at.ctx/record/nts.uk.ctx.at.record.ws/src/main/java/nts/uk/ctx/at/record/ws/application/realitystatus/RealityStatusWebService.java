@@ -37,12 +37,6 @@ public class RealityStatusWebService extends WebService {
 	}
 
 	@POST
-	@Path("exeSendUnconfirmedMail")
-	public SendMailResultDto exeSendUnconfirmedMail(ExeSendUnconfirmMailParam obj) {
-		return realityStatusFinder.exeSendUnconfirmMail(obj);
-	}
-
-	@POST
 	@Path("getUseSetting")
 	public UseSetingDto getUseSetting() {
 		return realityStatusFinder.getUseSetting();

@@ -28,7 +28,7 @@
 				<button tabindex="2" id="btnExportPdf" class="proceed" data-bind="click: processPdf, enable: $root.errors.isEmpty">#{i18n.getText('KWR001_6')}</button>
 			</div>
 			
-			<div id="content-area">
+			<div id="contents-area" class="kwr001-contents">
 				<div id="ccgcomponent"></div>
 				<div id="list-employee" class="pull-left fixed-flex-layout-left" style="margin-top: 30px; margin-left: 30px;"></div>
 			
@@ -58,7 +58,7 @@
 						</td>
 						
 						<td class="td-right">
-							<div class="right" style="width:700px;">
+							<div class="right" style="width:600px;">
 								<!-- A4_1 -->
 								<div class="panel panel-frame" id="output-setting-content">
 									<div class="row">
@@ -83,8 +83,8 @@
 									<div class="row">
 										<table>
 											<colgroup>
-												<col width="145px" />
-												<col width="70px" />
+												<col width="120px" />
+												<col width="115px" />
 												<col width="100px" />
 												<col width="70px" />
 											</colgroup>
@@ -96,7 +96,7 @@
 												<!-- A7_2 -->
 												<td class="pt-7">
 													<span class="ntsControl">
-														<label class="ntsRadioBox">
+														<label class="with-text radio-wrapper nts-input">
 															<input
 																type="radio"
 																name="textRadioA7_18"
@@ -140,7 +140,7 @@
 												<td>
 													<!-- A7_7 -->
 													<span class="ntsControl">
-														<label class="ntsRadioBox">
+														<label class="with-text radio-wrapper nts-input">
 															<input
 																tabindex="7"
 																type="radio"

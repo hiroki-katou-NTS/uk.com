@@ -1,30 +1,50 @@
 module nts.uk.at.view.kaf002_ref.m.viewmodel {
     const template = `
 
-<div id="tab-panel" style="width: 485px !important;"
-    data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}, if: tabs">
+<div
+	id="kaf002TabPanel"
+	data-bind="ntsTabPanel: { dataSource:  $component.tabs, active: selectedTab }" style="width: 450px">
+	<div data-bind="if: comment1().content != ''" >
+		<div
+			data-bind="text: comment1().content,
+					   style: {color: comment1().color,
+					   marginBottom:'9px',
+					   fontWeight: comment1().isBold ? 'bold' : 'normal'}"
+			class="label"
+			style="white-space: break-spaces; width: auto !important">
+			
+		</div>
+	</div>
 
+	<div data-bind="foreach: $component.nameGrids">
+		<div
+			data-bind="css: { 'hidden': $component.selectedTab() !== 'tab-' + ($index() + 1) }">
+			<table data-bind="attr: { 'id': $data }"></table>
+		</div>
+	</div>
 
-    <!-- ko foreach: nameGrids, -->
-    <div style="padding-bottom: 20px"
-        data-bind="attr: {'role': 'tabpanel','class': 'tab-content-'+ String($index() +1) + ' ui-tabs-panel ui-corner-bottom ui-widget-content ' + ($index() +1 == 1 ? '' : 'disappear'), 'id': 'tab-'+ String($index() +1), 'aria-labelledby': 'ui-id-' + String($index() +1) , 'aria-hidden': $index() +1 == 1 ? 'false' : 'true'}">
-        <table data-bind="attr: {'id': $data}"></table>
-
-    </div>
-    <!-- /ko -->
+	<div data-bind="if: comment2().content != ''" >
+		<div
+			data-bind="text: comment2().content,
+					   style: {color: comment2().color,
+					   marginTop:'10px',
+					   fontWeight: comment2().isBold ? 'bold' : 'normal'}"
+			class="label"
+			style="white-space: break-spaces; width: auto !important">
+			
+		</div>
+	</div>
 
 
 </div>
+`;
 
-
-    `
-
-    @component( {
+    @component({
         name: 'kaf002-m',
         template: template
-    } )
+    })
     class Kaf002MViewModel extends ko.ViewModel {
-        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
+        tabs: KnockoutObservableArray<any> = ko.observableArray([]);
 
         selectedTab: KnockoutObservable<string>;
 
@@ -54,9 +74,30 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         selectedTemp: any;
         reasonList: Array<GoOutTypeDispControl>;
         mode: KnockoutObservable<number>;
-        created(params) {
+
+		comment1: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
+        comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
+
+        created(params: any) {
 
             const self = this;
+			
+			const comment1 = params.comment1 as KnockoutObservable<Comment>;
+			self.comment1(ko.unwrap(comment1));
+			comment1.subscribe((comment) => {
+				if (comment) {
+					self.comment1(comment);
+				}
+			})
+			const comment2 = params.comment2 as KnockoutObservable<Comment>;
+			self.comment2(ko.unwrap(comment2));
+			comment2.subscribe((comment) => {
+				if (comment) {
+					self.comment2(comment);
+				}
+			})
+
+
             self.mode = params.mode;
             self.reasonList = params.reasonList
             self.tabMs = params.tabMs;
@@ -68,130 +109,84 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 if (ko.toJS(data)) {
                     self.dataSource = self.dataSourceOb();
                     self.loadAll();
-                }
+					
+            	}
             });
             self.initDataSource();
             // param of parent
-            let nameGridsArray = [];
-            let paramTabs = [];
+            let nameGridsArray = [] as Array<any>;
+            let paramTabs = [] as Array<any>;
             self.enableList = [];
             self.isLinkList = [];
-            _.each( self.tabMs, ( item, index ) => {
+            _.each(self.tabMs, (item, index) => {
 
                 let paramTab = {
-                    id: 'tab-' + String( index + 1 ), title: item.title, content: '.tab-content-' + String( index + 1 ), enable: ko.observable( item.enable ), visible: ko.observable( item.visible )
+                    id: 'tab-' + String(index + 1), title: item.title, content: '.tab-content-' + String(index + 1), enable: ko.observable(item.enable), visible: ko.observable(item.visible)
                 };
-                paramTabs.push( paramTab );
+                paramTabs.push(paramTab);
                 self.enableList.push(ko.observable(false));
                 self.isLinkList.push(true);
-                nameGridsArray.push('grid' +String(index +1));
-            } );
+                nameGridsArray.push('grid' + String(index + 1));
+            });
             self.nameGrids = ko.observableArray(nameGridsArray);
-            self.tabs = ko.observableArray(paramTabs);
+            self.tabs(paramTabs);
             // must assign param.tabs at mounted since tabs is not render
             self.tabsTemp = params.tabs;
             // select first tab
-            self.selectedTab = ko.observable( paramTabs[0].id );
+            self.selectedTab = ko.observable(paramTabs[0].id);
             self.selectedTemp = params.selectedTab;
             self.selectedTab.subscribe(value => {
-                let isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
                 
-                if (value) {
-                    // fix UI on IE
-                    let el = $('#' + value);
-                    let elChrome = $('#tab-panel');
-                    
-                    if (value == 'tab-1') {
-                        self.selectedTemp(0);
-                        if (isChrome) {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                elChrome.css('width', '450px');
-                            } else {
-                                elChrome.css('width', '550px');
-                            }  
-                        } else {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                el.css('width', '410px');
-                            } else {
-                                el.css('width', '510px');
-                            }
-                        }
-                    } else if (value == 'tab-2') {
-                        self.selectedTemp(1);
-                        if (isChrome) {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                elChrome.css('width', '590px');
-                            } else {
-                                elChrome.css('width', '690px');
-                            }                            
-                        } else {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                el.css('width', '550px');
-                            } else {
-                                el.css('width', '650px');
-                            } 
-                        }
-                    } else if (value == 'tab-3') {
-                        self.selectedTemp(5);
-                        if (isChrome) {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                elChrome.css('width', '450px');
-                            } else {
-                                elChrome.css('width', '550px');
-                            }                            
-                        } else {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                el.css('width', '410px');
-                            } else {
-                                el.css('width', '510px');
-                            }  
-                        }
-                    } else if (value == 'tab-4') {
-                        self.selectedTemp(2);
-                        if (isChrome) {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                elChrome.css('width', '450px');
-                            } else {
-                                elChrome.css('width', '550px');
-                            }   
-                        } else {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                el.css('width', '410px');
-                            } else {
-                                el.css('width', '510px');
-                            } 
-                        }
-                    } else if (value == 'tab-5') {
-                        self.selectedTemp(4);
-                        if (isChrome) {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                elChrome.css('width', '450px');
-                            } else {
-                                elChrome.css('width', '550px');
-                            }                            
-                        } else {
-                            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                                el.css('width', '410px');
-                            } else {
-                                el.css('width', '510px');
-                            }
-                        }
-                    }
+				if (self.isPreAtr()) {
+					if (self.selectedTab() == 'tab-2') {
+							$('#kaf002TabPanel').width(580)							
+					} else {
+							$('#kaf002TabPanel').width(450)							
+					}
+				
+				} else {
+					if (self.selectedTab() == 'tab-2') {
+							$('#kaf002TabPanel').width(680)							
+					} else {
+							$('#kaf002TabPanel').width(550)							
+					}
+				}
+				if (value) {
+					
+					if (value == 'tab-1') {
+	                        self.selectedTemp(0);
+	                   
+	                } else if (value == 'tab-2') {
+	                    self.selectedTemp(1);
+	                   
+	                } else if (value == 'tab-3') {
+	                    self.selectedTemp(5);
+	                   
+	                } else if (value == 'tab-4') {
+	                    self.selectedTemp(2);
+	                   
+	                } else if (value == 'tab-5') {
+	                    self.selectedTemp(4);
+	                    
+	                }
+				}
+				
 
-                }
+                
             })
             self.isPreAtr.subscribe((value) => {
-               if(!_.isNull(value) && self.mode() == 0) {
-                   self.loadAll();
-               }
+                if (!_.isNull(value) && self.mode() == 0) {
+                    self.loadAll();
+					
+                }
 
             });
-            
-            
+
+
 
         }
         createdReasonItem(reasonList: Array<GoOutTypeDispControl>) {
-            let comboItems = [];
+            let comboItems = [] as Array<any>;
             _.forEach(reasonList, (e: GoOutTypeDispControl) => {
                 if (e.goOutType == 0) {
                     comboItems.push(new ItemModel('0', '私用'));
@@ -224,74 +219,57 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 			})
             self.loadGrid(ko.toJS(self.nameGrids)[index], s, s[0].typeStamp);
             self.binding();
-            self.disableControl();                
+            self.disableControl();
         }
         binding() {
             let self = this;
             _.each(document.getElementsByClassName('startTime'), (item, index) => {
-                if(!$('.startTime')[index]) return;
+                if (!$('.startTime')[index]) return;
                 ko.cleanNode($('.startTime')[index]);
                 ko.applyBindings(self, item);
-             });
+            });
 
             _.each(document.getElementsByClassName('endTime'), (item, index) => {
                 if (!$('.endTime')[index]) return;
                 ko.cleanNode($('.endTime')[index]);
                 ko.applyBindings(self, item);
-             });
+            });
 
             _.each(document.getElementsByClassName('flag'), (item, index) => {
                 if (!$('.flag')[index]) return;
                 ko.cleanNode($('.flag')[index]);
                 ko.applyBindings(self, item);
-             });
-             _.each(ko.toJS(self.nameGrids), (item, index) => {
-                 if (!$('#' + item + '_flag')[0]) return;
-                 ko.cleanNode($('#' + item + '_flag')[0]);
-                 ko.applyBindings(self, document.getElementById(item+'_flag'));
-             });
+            });
+            _.each(ko.toJS(self.nameGrids), (item, index) => {
+                if (!$('#' + item + '_flag')[0]) return;
+                ko.cleanNode($('#' + item + '_flag')[0]);
+                ko.applyBindings(self, document.getElementById(item + '_flag'));
+            });
         }
         mounted() {
             const self = this;
             // change tabs by root component
             self.tabsTemp(self.tabs());
             self.loadAll();
+			self.selectedTab(_.find(self.tabs(), item => item.visible()).id)
 
         }
         loadAll() {
             const self = this;
-            let isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
-            if (isChrome) {
-                if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                    if (self.selectedTab() == 'tab-2') {
-                        $('#tab-panel').css('width', '590px');
-                    } else {
-                        $('#tab-panel').css('width', '450px');
-                    }
-                } else {
-                    if (self.selectedTab() == 'tab-2') {
-                        $('#tab-panel').css('width', '690px');
-                    } else {
-                        $('#tab-panel').css('width', '550px');
-                    }
-                }
-                
-            } else {
-                if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
-                    if (self.selectedTab() == 'tab-2') {
-                        $('#' + self.selectedTab()).css('width', '550px');
-                    } else {
-                        $('#' + self.selectedTab()).css('width', '410px');
-                    }
-                } else {
-                    if (self.selectedTab() == 'tab-2') {
-                        $('#' + self.selectedTab()).css('width', '650px');
-                    } else {
-                        $('#' + self.selectedTab()).css('width', '510px');
-                    }
-                }
-                
-            }
+            if (self.isPreAtr()) {
+				if (self.selectedTab() == 'tab-2') {
+						$('#kaf002TabPanel').width(580)							
+				} else {
+						$('#kaf002TabPanel').width(450)							
+				}
+				
+			} else {
+				if (self.selectedTab() == 'tab-2') {
+						$('#kaf002TabPanel').width(680)							
+				} else {
+						$('#kaf002TabPanel').width(550)							
+				}
+			}
             if (_.isEmpty(self.dataSource)) return;
 
             _.each(self.dataSource, (item, index) => {
@@ -307,27 +285,27 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         }
                         if (self.mode() == 0) {
                             if (i.typeStamp == STAMPTYPE.GOOUT_RETURNING) {
-                                i.typeReason = String (self.createdReasonItem(self.reasonList)[0].code);                            
+                                i.typeReason = String(self.createdReasonItem(self.reasonList)[0].code);
                             }
-                            
+
                         }
                         // set again id if remove tab1 with 2 first element
-                        i.id = indexI +1;
+                        i.id = indexI + 1;
                         i.index = index;
                         // change text element to know value biding from array
                         i.changeElement();
 
                         if (ko.toJS(self.isPreAtr)) {
-//                            self.isVisibleComlumn = false; 
+                            //                            self.isVisibleComlumn = false; 
                             i.changeElementByPreAtr();
                         }
 
                     });
 
                 }
-             });
+            });
             _.each(self.dataSource, (item, index) => {
-                if(!_.isEmpty(item)) {
+                if (!_.isEmpty(item)) {
                     self.loadGrid(ko.toJS(self.nameGrids)[index], item, item[0].typeStamp);
                 }
             })
@@ -340,9 +318,9 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             if (self.mode() == 2) {
                 var loop = window.setInterval(function () {
                     if ($('.startTime input') && $('.endTime input') && $('.enableFlag input')) {
-                        _.forEach($('.startTime input'), i => { $(i).prop('disabled', true)});
-                        _.forEach($('.endTime input'), i => { $(i).prop('disabled', true)});
-                        _.forEach($('.enableFlag input'), i => { $(i).prop('disabled', true)});
+                        _.forEach($('.startTime input'), i => { $(i).prop('disabled', true) });
+                        _.forEach($('.endTime input'), i => { $(i).prop('disabled', true) });
+                        _.forEach($('.enableFlag input'), i => { $(i).prop('disabled', true) });
                         window.clearInterval(loop);
                     }
                 }, 100);
@@ -350,42 +328,41 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         }
         constructor() {
             super();
-            
+
         }
 
         initDataSource() {
             const self = this;
             _.each(self.dataSource, (item, index) => {
-               _.forEach(item, i => {
-                   i.index = index;
+                _.forEach(item, i => {
+                    i.index = index;
 
-                   // change text element to know value biding from array
-                   i.changeElement();
-               });
+                    // change text element to know value biding from array
+                    i.changeElement();
+                });
             });
 
         }
 
-        loadGrid(id: string,items: any, type: number) {
+        loadGrid(id: string, items: any, type: number) {
             const self = this;
-            let isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
-            if (!id) {
+            
+			
+			if (!id || !items) return;
+			
+            const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
 
-                return;
+			
+			
+			
+            if ($('#' + id + '_container').length) {
+                $('#' + id).ntsGrid("destroy");
             }
-                if (!items) {
-
-                return;
-            }
-            if($('#'+id + '_container').length > 0){
-                $('#'+id).ntsGrid("destroy");
-            }
-            let statesTable = [];
+            let statesTable = [] as Array<any>;
             let numberDisable = 0;
-            let isGreater_10 = items.length > 10;
 
             for (let i = 1; i < items.length + 1; i++) {
-                if (!ko.toJS(items[i-1].flagEnable)) {
+                if (!ko.toJS(items[i - 1].flagEnable)) {
                     numberDisable++;
                 }
 
@@ -393,7 +370,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             if (self.enableList) {
                 _.each(self.enableList, (item, index) => {
                     if (index == items[0].index) {
-                        item.subscribe( (value) => {
+                        item.subscribe((value) => {
                             _.forEach(self.dataSource[index], i => {
                                 if (ko.toJS(i.flagEnable)) {
                                     i.flagObservable(value);
@@ -430,17 +407,13 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
 
             }
-
-	
-
-
-//
+            //
             let headerFlagContent = '';
             let dataSource;
             _.each(self.isLinkList, (i, index) => {
                 if (items[0].index == index) {
                     let paramString = 'enableList[' + String(index) + ']';
-                    headerFlagContent = numberDisable != items.length ? '<div class="ntsCheckbox-002" style="display: block" align="center" data-bind="ntsCheckBox: { checked: ' + paramString +'}">' + self.$i18n('KAF002_72')+ '</div>' : '<div style="display: block" align="center">' + self.$i18n('KAF002_72')+ '</div>';
+                    headerFlagContent = numberDisable != items.length ? '<div class="ntsCheckbox-002" style="display: block" align="center" data-bind="ntsCheckBox: { checked: ' + paramString + '}">' + self.$i18n('KAF002_72') + '</div>' : '<div style="display: block" align="center">' + self.$i18n('KAF002_72') + '</div>';
 
                     dataSource = items.length >= 10 && self.isLinkList[index] ? items.slice(0, 3) : items;
                 }
@@ -448,65 +421,66 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             });
 
             let optionGrid = {
-                    width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '420px' : '517px',
-                    height: isChrome ? '310px' : (ko.toJS(self.isPreAtr) ? '300px' : '320px'),
-                    dataSource: dataSource,
-                    primaryKey: 'id',
-                    virtualization: true,
-                    virtualizationMode: 'continuous',
-                    hidePrimaryKey: true,
-                    columns: [
-                        { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
-                        { headerText: '', key: 'text1', dataType: 'string', width: '120px' },
-                        { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '140px' },
-                        { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '140px'},
-                        { headerText: headerFlagContent, key: 'flag', dataType: 'string', width: '100px' }
+                width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '420px' : '520px',
+                height: isChrome ? (ko.toJS(self.isPreAtr) ? '310px' : '340px') : (ko.toJS(self.isPreAtr) ? '310px' : '340px'),
+                dataSource: dataSource,
+                primaryKey: 'id',
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                hidePrimaryKey: true,
+                columns: [
+                    { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
+                    { headerText: '', key: 'text1', dataType: 'string', width: '120px' },
+                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '140px' },
+                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '140px' },
+                    { headerText: headerFlagContent, key: 'flag', dataType: 'string', width: '100px' }
 
-                    ],
-                    features: [{ name: 'Resizing',
-                                    columnSettings: [{
-                                        columnKey: 'id', allowResizing: false, minimumWidth: 30
-                                    },  {
-                                        columnKey: 'startTime', allowResizing: false, minimumWidth: 30
-                                    }, {
-                                        columnKey: 'endTime', allowResizing: false, minimumWidth: 30
-                                    }, {
-                                        columnKey: 'flag', allowResizing: false, minimumWidth: 30
-                                    }
-                                    ]
-                                },
-                                {
-                                    name: 'Selection',
-                                    mode: 'row',
-                                    multipleSelection: true
-                                }
-                    ],
-                    ntsFeatures: [
-                        {
-                            name: 'CellState',
-                            rowId: 'rowId',
-                            columnKey: 'columnKey',
-                            state: 'state',
-                            states: statesTable
-                        }
-                        ],
-                    ntsControls: [
+                ],
+                features: [{
+                    name: 'Resizing',
+                    columnSettings: [{
+                        columnKey: 'id', allowResizing: false, minimumWidth: 30
+                    }, {
+                        columnKey: 'startTime', allowResizing: false, minimumWidth: 30
+                    }, {
+                        columnKey: 'endTime', allowResizing: false, minimumWidth: 30
+                    }, {
+                        columnKey: 'flag', allowResizing: false, minimumWidth: 30
+                    }
+                    ]
+                },
+                {
+                    name: 'Selection',
+                    mode: 'row',
+                    multipleSelection: true
+                }
+                ],
+                ntsFeatures: [
+                    {
+                        name: 'CellState',
+                        rowId: 'rowId',
+                        columnKey: 'columnKey',
+                        state: 'state',
+                        states: statesTable
+                    }
+                ],
+                ntsControls: [
 
-                               ]
+                ]
 
-                    };
+            };
 
             let comboColumns = [
-                                { prop: 'name', length: 6 }];
-            let comboItems = self.mode() == 0 ? self.createdReasonItem(self.reasonList)  
-                            : 
-                            [ new ItemModel('0', '私用'),
-                               new ItemModel('1', '公用'),
-                               new ItemModel('2', '有償'),
-                               new ItemModel('3', '組合')];
+                { prop: 'name', length: 6 }];
+            let comboItems = self.mode() == 0 ? self.createdReasonItem(self.reasonList)
+                :
+                [new ItemModel('0', '私用'),
+                new ItemModel('1', '公用'),
+                new ItemModel('2', '有償'),
+                new ItemModel('3', '組合')];
             let option2 = {
               width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '555px' : '655px',
-              height: isChrome ? '310px' : (ko.toJS(self.isPreAtr) ? '300px' : '320px'),
+              height: isChrome ? (ko.toJS(self.isPreAtr) ? '310px' : '340px') : (ko.toJS(self.isPreAtr) ? '310px' : '340px'),
               dataSource: dataSource,
               primaryKey: 'id',
               virtualization: true,
@@ -558,33 +532,32 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
 
             if (type == STAMPTYPE.GOOUT_RETURNING) {
-                if ($('#' + id)) {
+                if ($('#' + id).length) {
                     $('#' + id).ntsGrid(option2);
                 }
-            }else {
-                if ($('#' + id)) {
+            } else {
+                if ($('#' + id).length) {
                     $('#' + id).ntsGrid(optionGrid);
                 }
             }
             // if isCondition2 => error state of text1
-            let nameAtr = 'td[aria-describedby ="'+ id +'_text1"]';
+            let nameAtr = 'td[aria-describedby ="' + id + '_text1"]';
             if ($(nameAtr)) {
                 $(nameAtr).addClass('titleColor');
             }
             // add row to display expand row
             if (items.length >= 10 && self.isLinkList[items[0].index]) {
-                if ($('#' + id)) {
-//                    $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div id="moreRow'+ String(items[0].index) + '" style="display: block" align="center"><a data-bind="ntsLinkButton: { action: doSomething.bind($data, dataSource['+ items[0].index +']) }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
-                    $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div id="moreRow'+ String(items[0].index) + '" style="display: block" align="center"><a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource['+ items[0].index +']) , text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
+                if ($('#' + id).length) {
+                    $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div id="moreRow' + String(items[0].index) + '" style="display: block" align="center"><a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource[' + items[0].index + ']) , text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
                 }
 
             } else {
                 self.isLinkList[items[0].index] = false;
             }
 
-            let moreRow = document.getElementById('moreRow'+String(items[0].index));
+            let moreRow = document.getElementById('moreRow' + String(items[0].index));
             if (moreRow && self.isLinkList[items[0].index]) {
-                    ko.applyBindings(self, moreRow);
+                ko.applyBindings(self, moreRow);
             }
 
 
@@ -596,16 +569,16 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
     export class GridItem {
         id: number;
         flag: string;
-        startTimeRequest: KnockoutObservable<number> = ko.observable( null );
-        endTimeRequest: KnockoutObservable<number> = ko.observable( null );
+        startTimeRequest: KnockoutObservable<number> = ko.observable(null);
+        endTimeRequest: KnockoutObservable<number> = ko.observable(null);
         startTimeActual: number;
         endTimeActual: number
         typeReason?: string;
         startTime: string;
         endTime: string;
         text1: string;
-        flagObservable: KnockoutObservable<boolean> = ko.observable( false );
-        flagEnable: KnockoutObservable<boolean> = ko.observable( true );
+        flagObservable: KnockoutObservable<boolean> = ko.observable(false);
+        flagEnable: KnockoutObservable<boolean> = ko.observable(true);
         index: number;
 		nameStart: string;
 		nameEnd: string;
@@ -618,8 +591,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             self.typeReason = dataObject.opGoOutReasonAtr ? String(dataObject.opGoOutReasonAtr) : (STAMPTYPE.GOOUT_RETURNING == typeStamp ? '0' : null);
             self.startTimeActual = dataObject.opStartTime;
             self.endTimeActual = dataObject.opEndTime;
-            if ( _.isNull( dataObject.opStartTime ) && _.isNull( dataObject.opEndTime ) ) {
-                self.flagEnable( false );
+            if (_.isNull(dataObject.opStartTime) && _.isNull(dataObject.opEndTime)) {
+                self.flagEnable(false);
             }
             let parseTime = nts.uk.time.minutesBased.clock.dayattr;
             let start = _.isNull(self.startTimeActual) ? '--:--' : parseTime.create(self.startTimeActual).shortText;
@@ -681,16 +654,16 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '</div>'
                 + '</div>';
 
-            this.flag = '<div  style="display: block" align="center" data-bind="css: !' + param + '[' + idGetList + '].flagEnable ? \'disableFlag\' : \'enableFlag\' , ntsCheckBox: {enable: ' + param + '[' + idGetList + '].flagEnable, checked: ' + param + '[' + idGetList + '].flagObservable}"></div>';
+            this.flag = '<div align="center" data-bind="css: !' + param + '[' + idGetList + '].flagEnable ? \'disableFlag\' : \'enableFlag\' , ntsCheckBox: {enable: ' + param + '[' + idGetList + '].flagEnable, checked: ' + param + '[' + idGetList + '].flagObservable}"></div>';
         }
 
 
-        public changeElement () {
+        public changeElement() {
             let self = this;
             let parseTime = nts.uk.time.minutesBased.clock.dayattr;
             let start = _.isNull(self.startTimeActual) ? '--:--' : parseTime.create(self.startTimeActual).shortText;
             let end = _.isNull(self.endTimeActual) ? '--:--' : parseTime.create(self.endTimeActual).shortText;
-            let param = 'dataSource[' + String(self.index) +']';
+            let param = 'dataSource[' + String(self.index) + ']';
 
             let idGetList = self.id - 1;
             this.startTime = '<div class="startTime" style="display: block; margin: 0px 5px 5px 5px">'
@@ -710,11 +683,11 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '</div>'
                 + '</div>';
 
-            this.flag = '<div class="flag" style="display: block" align="center" data-bind="css: !' + param + '[' + idGetList + '].flagEnable ? \'disableFlag\' : \'enableFlag\' , ntsCheckBox: {enable: ' + param + '[' + idGetList + '].flagEnable, checked: ' + param + '[' + idGetList + '].flagObservable}"></div>';
+            this.flag = '<div class="flag" align="center" data-bind="css: !' + param + '[' + idGetList + '].flagEnable ? \'disableFlag\' : \'enableFlag\' , ntsCheckBox: {enable: ' + param + '[' + idGetList + '].flagEnable, checked: ' + param + '[' + idGetList + '].flagObservable}"></div>';
         }
         public changeElementByPreAtr() {
             const self = this;
-            let param = 'dataSource[' + String(self.index) +']';
+            let param = 'dataSource[' + String(self.index) + ']';
             let idGetList = self.id - 1;
             self.flagObservable(false);
             this.startTime = '<div class="startTime" style="display: block; margin: 0px 5px 5px 5px">'
@@ -778,7 +751,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
         opStartTime: number;
 
-        constructor( index: number ) {
+        constructor(index: number) {
             this.opWorkLocationCD = null;
             this.opGoOutReasonAtr = null;
             this.frameNo = index;
@@ -793,7 +766,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         code: string;
         name: string;
 
-        constructor( code: string, name: string ) {
+        constructor(code: string, name: string) {
             this.code = code;
             this.name = name;
         }
@@ -803,26 +776,26 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         rowId: number;
         columnKey: string;
         state: Array<any>;
-        constructor( rowId: string, columnKey: string, state: Array<any> ) {
+        constructor(rowId: string, columnKey: string, state: Array<any>) {
             this.rowId = rowId;
             this.columnKey = columnKey;
             this.state = state;
         }
     }
     export enum STAMPTYPE {
-//        出勤／退勤
+        //        出勤／退勤
         ATTENDENCE = 0,
-//        育児
+        //        育児
         PARENT = 2,
-//        外出／戻り
+        //        外出／戻り
         GOOUT_RETURNING = 1,
-//        応援
+        //        応援
         CHEERING = 3,
-//        臨時
+        //        臨時
         EXTRAORDINARY = 4,
-//        休憩
+        //        休憩
         BREAK = 5,
-//        介護
+        //        介護
         NURSE = 6,
 
     }
@@ -835,5 +808,33 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             this.enable = enable;
             this.visible = visible;
         }
+    }
+
+    @handler({
+        bindingName: 'fx-grid'
+    })
+    export class FxGridBindingHandler implements KnockoutBindingHandler {
+        init = (element: HTMLElement, valueAccessor: () => any): void | { controlsDescendantBindings: boolean; } => {
+            const options = valueAccessor();
+            
+            $(element).ntsGrid(options);
+
+        }
+    }
+
+	class Comment{
+        public content: string;
+        public isBold: boolean;
+        public color: string;
+        constructor( content: string, isBold: boolean, color: string) {
+            this.content = content;
+            this.isBold = isBold;
+            this.color = color;
+        }
+        toHtml() {
+            const self = this;
+            return '<div style= {}>' + self.content + '</div>'
+        }
+        
     }
 }

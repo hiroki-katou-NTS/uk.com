@@ -5,7 +5,12 @@ module knr002.d.service {
         getDestinationCopyList: "screen/at/destinationcopy/getDestinationCopyList",
         checkRemoteSettingsToCopy: "screen/at/checkremotesetting/check",
         registerAndSubmitChanges: "at/record/knr002/cmd/c/registerAndSubmit",
+        updateRemoteSettings: 'screen/knr002/c/updateRemoteSetting'
     };
+
+    export function updateRemoteSettings(input: any): JQueryPromise<any> {
+        return ajax(paths.updateRemoteSettings, input);
+    }
 
     /**
     * Get Destination Copy List

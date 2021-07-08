@@ -56,7 +56,6 @@ td .form-label {
 
 .blockrow {
     display: block;
-    margin-left: 10px;
     height: 30px;
 }
 
@@ -66,6 +65,28 @@ td .form-label {
 
 .radio-wrapper {
     margin-left: 10px;
+    min-width: 115px;
+}
+
+#fixed-table-a7 .radio-wrapper {
+    min-width: 0;
+}
+
+#fixed-table-k2 .two-radio .radio-wrapper:first-child {
+    min-width: 115px;
+}
+
+#fixed-table-k2 .three-radio .radio-wrapper:first-child {
+    min-width: 119px;
+}
+
+.switchbox-wrappers .radio-wrapper {
+    min-width: 0;
+    margin-left: 0;
+}
+
+.switchbox-wrappers span {
+    min-width: 75px;
 }
 
 #b30 .label:nth-child(3) {
@@ -73,10 +94,8 @@ td .form-label {
     white-space: normal;
 }
 
-.vertical-radio .ntsRadioBox {
+.vertical-radio .radio-wrapper {
     display: block;
-    padding: 5px 0;
-    width: 100%;
 }
 
 .panel.panel-frame {
@@ -101,4 +120,29 @@ td .form-label {
 
 .label-holiday {
     padding-left: 30px;
+}
+
+#contents-area {
+    padding: 0 10px !important;
+}
+
+/*#tab-panel {*/
+/*    height: inherit;*/
+/*}*/
+
+#tab-panel {
+    height: inherit;
+}
+
+#tab-panel .tabs-content {
+    height: 100%;
+    overflow-y: auto;
+}
+
+div[class^="tab-content-"] .nts-fixed-table {
+    display: table !important;
+}
+
+.tabs-list > .radio-wrapper {
+    height: 25px;
 }

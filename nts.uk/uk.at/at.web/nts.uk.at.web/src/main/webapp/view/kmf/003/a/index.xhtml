@@ -66,7 +66,7 @@
 					<div class="input-form">
 						<table id="tbl-grant-hd-set">
 							<tr>
-								<td width="200"><div
+								<td width="150"><div
 										data-bind="ntsFormLabel: {required: true, constraint:['YearHolidayCode','YearHolidayName']}">#{i18n.getText('KMF003_10')}</div></td>
 								<td><input class="input-code" id="input-code"
 									data-bind="ntsTextEditor: { value: code, enable: editMode, constraint: 'YearHolidayCode', required: true, name: '#[KMF003_11]', immediate: false, option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({autofill: true, filldirection: 'left'}))}" /> <input
@@ -104,7 +104,7 @@
 							<tr></tr>
 							<tr>
 								<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF003_19')}</div></td>
-								<td>
+								<td style="display: flex">
 									<div class="cf"
 										data-bind="ntsSwitchButton: {
 										options: A7_4Data,
@@ -112,7 +112,7 @@
 										optionsText: 'name',
 										value: A7_4SelectedRuleCode,
 										enable: true }"></div>
-									<label class="a9_6">#{i18n.getText('KMF003_32')}</label>
+									<label style="padding-top: 5px" class="a9_6">#{i18n.getText('KMF003_32')}</label>
 								</td>
 							</tr>
 						</table>
@@ -121,7 +121,7 @@
 	
 						<table class="bottom-form" id="tbl-condition">
 							<tr>
-								<td width="200"></td>
+								<td width="140"></td>
 								<td width="20"></td>
 								<td width="80">
 									<div data-bind="visible:A7_4SelectedRuleCode() ==0">

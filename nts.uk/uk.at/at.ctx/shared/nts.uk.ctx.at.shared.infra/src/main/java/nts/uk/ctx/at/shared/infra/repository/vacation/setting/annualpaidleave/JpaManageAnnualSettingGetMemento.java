@@ -76,6 +76,9 @@ public class JpaManageAnnualSettingGetMemento implements ManageAnnualSettingGetM
      */
     @Override
     public boolean getIsWorkDayCalculate() {
+    	if(this.entity.getIsWorkDayCal() == null)
+    		return true;
+    	
         return this.entity.getIsWorkDayCal() == 1 ? true : false;
     }
 

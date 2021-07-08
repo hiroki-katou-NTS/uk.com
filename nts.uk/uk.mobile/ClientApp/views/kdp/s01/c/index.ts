@@ -64,7 +64,7 @@ export class KdpS01CComponent extends Vue {
                 if (item) {
                     vm.screenData.date = item.stampTimeWithSec;
                     vm.screenData.stampAtr = item.stampArtName;
-                    vm.screenData.localtion = [item.workLocationCD, item.workLocationName].join(' ');
+                    vm.screenData.localtion = data.workplaceName;
                 }
 
             }

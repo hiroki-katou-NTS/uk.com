@@ -45,10 +45,6 @@ module nts.uk.at.view.kmf001.a.viewmodel {
         public openKMF001L(): void {
             nts.uk.request.jump("/view/kmf/001/l/index.xhtml", {});
         }
-        //ScreenM
-        public openKMF001M(): void {
-            nts.uk.request.jump("/view/kmf/001/m/index.xhtml", {});
-        }
         
        public openKMK007B(): void {
            var self = this;

@@ -72,13 +72,6 @@ public class KrcmtStampCommunal extends ContractUkJpaEntity implements Serializa
 	public String textColor;
 	
 	/**
-	 * 背景色
-	 */
-	@Basic(optional = false)
-	@Column(name = "BACK_GROUND_COLOR")
-	public String backGroundColor;
-	
-	/**
 	 * 氏名選択利用する
 	 */
 	@Basic(optional = false)
@@ -125,7 +118,6 @@ public class KrcmtStampCommunal extends ContractUkJpaEntity implements Serializa
 				domain.getDisplaySetStampScreen().getCorrectionInterval().v(), 
 				domain.getDisplaySetStampScreen().getResultDisplayTime().v(), 
 				domain.getDisplaySetStampScreen().getSettingDateTimeColor().getTextColor().v(), 
-				domain.getDisplaySetStampScreen().getSettingDateTimeColor().getBackGroundColor().v(), 
 				domain.isNameSelectArt() ? 1: 0, 
 				domain.isPasswordRequiredArt() ? 1: 0, 
 				domain.isEmployeeAuthcUseArt() ? 1: 0, 
@@ -139,8 +131,7 @@ public class KrcmtStampCommunal extends ContractUkJpaEntity implements Serializa
 					new DisplaySettingsStampScreen(
 						new CorrectionInterval(this.correctionInterval), 
 						new SettingDateTimeColorOfStampScreen(
-							new ColorCode(this.textColor),
-							new ColorCode(this.backGroundColor)),
+							new ColorCode(this.textColor)),
 						new ResultDisplayTime(this.resultDisplayTime)),
 					this.listKrcmtStampPageLayout.stream().map(c->c.toDomain()).collect(Collectors.toList()),
 					this.nameSelectArt == 1,

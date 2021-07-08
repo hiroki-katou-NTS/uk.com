@@ -5,7 +5,7 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/freelayout.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 
 			<com:scriptfile set="IGNITE" />
@@ -27,7 +27,7 @@
 			<div id="contents-area">
 				<div id="title" data-bind= "text: title" ></div>
 				<hr></hr>
-				<div id="message" data-bind= "text: message" ></div>
+				<div id="Pmessage" data-bind= "text: message" ></div>
 				<!-- P2_1 -->
 				<div
 					data-bind="ntsFormLabel: { required: true, text: $i18n('KMK004_308') }"></div>
@@ -47,13 +47,13 @@
 					data-bind="ntsTimeEditor: { value: screenPData.deforLaborTimeComDto.weeklyTime.time, inputFormat: 'time', mode: 'time', required: true, constraint: 'WeeklyTime', name: '#[KMK004_310]' }" />
 				<br></br>
 				<!-- P3_1 -->
-				<div
+				<div style="margin-top: 10px;"
 					data-bind="ntsFormLabel: { required: false, text: $i18n('KMK004_311') }"></div>
 				<br></br>
 
 				<table id = "table">
 					<tr>
-						<td>
+						<td style="padding-top: 5px;">
 							<!-- P3_2 --> <label class="child-row"
 							data-bind="text: $i18n('KMK004_312')"></label>
 						</td>

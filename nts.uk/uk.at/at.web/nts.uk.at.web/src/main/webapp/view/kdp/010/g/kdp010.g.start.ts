@@ -1,9 +1,8 @@
 module nts.uk.at.view.kdp010.g {
-    let __viewContext: any = window["__viewContext"] || {};
-    __viewContext.ready(function() {
-        let screenModel = new viewmodel.ScreenModel();
-        screenModel.startPage().done(() => {
-            __viewContext.bind(screenModel);
-        });
+	__viewContext.ready(function() {
+        var screenModel = new viewmodel.ScreenModel();
+		screenModel.start().done(() => {
+			__viewContext.bind(screenModel);	
+		});
     });
 }

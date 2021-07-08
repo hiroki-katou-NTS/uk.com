@@ -5,7 +5,9 @@ import { _, Vue, moment } from '@app/provider';
 const basePath = 'at/record/stamp/smart-phone/';
 
 const servicePath = {
-    getStampResult: basePath + 'get-stamp-result-screen-b'
+    getStampResult: basePath + 'get-stamp-result-screen-b',
+    getEmojiSetting: 'at/record/stamp/setting_emoji_stamp',
+    registerEmoji: 'at/record/stamp/regis_emotional_state'
 };
 
 @component({
@@ -20,6 +22,8 @@ const servicePath = {
 export class KdpS01BComponent extends Vue {
     @Prop({ default: () => ({}) })
     public params!: model.IScreenBParam;
+    public isEmotionMode: boolean = false;
+    public employeeId: string;
 
     public screenData: IScreenData = {
         employeeCode: '000001',
@@ -27,7 +31,7 @@ export class KdpS01BComponent extends Vue {
         date: new Date(),
         stampAtr: '出勤',
         stampCard: 'A1234567890',
-        localtion: '000　本社'
+        localtion: '本社'
     };
 
     private interval: any;
@@ -61,19 +65,27 @@ export class KdpS01BComponent extends Vue {
                 vm.$modal.error('Not Found Stamp Data');
             }
 
-            vm.screenData.localtion = [data.workLocationCd, data.workLocationName].join(' ');
+            vm.screenData.localtion = data.workplaceName;
             vm.$auth.user.then((user) => {
                 vm.screenData.employeeCode = user.employeeCode;
                 vm.screenData.employeeName = data.empInfo.pname;
+                vm.employeeId = user.employeeId;
             });
-
-
 
         }).catch((res: any) => {
             vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         });
 
-        vm.InitCountTime();
+        vm.$http.post('at', servicePath.getEmojiSetting).then((result: any) => {
+           
+            if (result.data == true && _.includes (['出勤', '出勤応援'], vm.screenData.stampAtr)) {
+                vm.isEmotionMode = true;
+            }
+
+            if (!vm.isEmotionMode) {
+                vm.InitCountTime();
+            }
+        });
 
     }
 
@@ -102,6 +114,19 @@ export class KdpS01BComponent extends Vue {
         }
 
     }
+
+    public clickEmoji(type: number) {
+        let vm = this,
+            command = {
+                sid: vm.employeeId, //社員ID
+                emoji: type, //感情種類
+                date: moment(vm.$dt.now) //年月日
+            };
+        vm.$http.post('at', servicePath.registerEmoji, command).then((result: any) => {
+            vm.$close();
+        });
+    }
+
 }
 
 interface IScreenData {
@@ -112,6 +137,7 @@ interface IScreenData {
     stampCard: string;
     localtion: string;
 }
+
 
 
 

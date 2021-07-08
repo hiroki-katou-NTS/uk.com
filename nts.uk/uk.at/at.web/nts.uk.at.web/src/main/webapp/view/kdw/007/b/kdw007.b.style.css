@@ -19,7 +19,7 @@
 }
 
 #compareOperator-cbb {
-	margin-right: 50px;
+	margin-right: 15px;
 }
 
 #conditionAtr-cbb {
@@ -32,4 +32,12 @@
 
 [dropdown-for="compareOperator-cbb"] .nts-combo-column-0 {
   width: 240px !important;
+}
+
+.d-flex {
+	display: flex;
+}
+
+#endValue {
+	border-color: #EAE8F2 !important;
 }

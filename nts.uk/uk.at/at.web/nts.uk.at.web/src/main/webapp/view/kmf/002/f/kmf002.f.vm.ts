@@ -56,7 +56,7 @@ module nts.uk.at.view.kmf002.f {
                             self.isManageEmpPublicHd(BoolValue.TRUE);
                         }
                     }
-                });                
+                });   
             }
             
             private notifyVariableChange(): void {
@@ -69,44 +69,38 @@ module nts.uk.at.view.kmf002.f {
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 $( "#selectUnitCheck" ).focus();
-                var dfd = $.Deferred<any>();
-                self.isManageWkpPublicHd(nts.uk.ui.windows.getShared('isManageWkpPublicHd'));
-                self.isManageEmpPublicHd(nts.uk.ui.windows.getShared('isManageEmpPublicHd'));
-                self.isManageEmployeePublicHd(nts.uk.ui.windows.getShared('isManageEmployeePublicHd'));
-                self.notifyVariableChange();
-                if (self.isManageEmpPublicHd() == BoolValue.FALSE && self.isManageWkpPublicHd()  == BoolValue.FALSE){
-                    self.selectUnitCheck(false);
-                } else {
-                    self.selectUnitCheck(true);
-                    if (self.isManageEmpPublicHd() == BoolValue.TRUE) {
-                        self.valueDefaultTypeSelect(0);
-                    } else {
-                        self.valueDefaultTypeSelect(1);
-                    }
-                }
-                
-                if (self.isManageEmployeePublicHd() == BoolValue.TRUE) {
-                    self.selectEmployee(true);
-                } else {
-                    self.selectEmployee(false);    
-                }
-                
-                dfd.resolve();
-                
-                return dfd.promise();
+                return service.findAll().then(data => {
+                  self.isManageEmpPublicHd(data.isManageEmpPublicHd);
+                  self.isManageEmployeePublicHd(data.isManageEmployeePublicHd);
+                  self.isManageWkpPublicHd(data.isManageWkpPublicHd);
+                  self.notifyVariableChange();
+
+                  if (self.isManageEmpPublicHd() == BoolValue.FALSE && self.isManageWkpPublicHd()  == BoolValue.FALSE){
+                      self.selectUnitCheck(false);
+                  } else {
+                      self.selectUnitCheck(true);
+                  }
+                  if (self.isManageEmpPublicHd() == BoolValue.TRUE) {
+                      self.valueDefaultTypeSelect(0);
+                  } else {
+                      self.valueDefaultTypeSelect(1);
+                  }
+                  
+                  if (self.isManageEmployeePublicHd() == BoolValue.TRUE) {
+                      self.selectEmployee(true);
+                  } else {
+                      self.selectEmployee(false);    
+                  }
+                });
             }
             
             private closeSaveDialog(): void {
                 let self = this;
-                nts.uk.ui.windows.setShared('saveManageUnit', true);
-                nts.uk.ui.windows.setShared('isManageWkpPublicHd', self.isManageWkpPublicHd());
-                nts.uk.ui.windows.setShared('isManageEmpPublicHd', self.isManageEmpPublicHd());
-                nts.uk.ui.windows.setShared('isManageEmployeePublicHd', self.isManageEmployeePublicHd());  
-                nts.uk.ui.windows.close();  
+                service.saveManageUnit(self.isManageEmployeePublicHd(), self.isManageWkpPublicHd(), self.isManageEmpPublicHd())
+                .always(() => nts.uk.ui.windows.close());  
             }
             
             private closeDialog(): void {
-                nts.uk.ui.windows.setShared('saveManageUnit', false);
                 nts.uk.ui.windows.close();
             }
         }

@@ -103,7 +103,7 @@ module nts.uk.com.view.cmm048.a {
       title: this.generateTitleTab(this.$i18n('CMM048_92'), 'setting'),
       content: '.tab-content-1',
       enable: ko.observable(true),
-      visible: ko.observable(true),
+      visible: ko.observable(true)
     },
     {
       id: 'tab-2',

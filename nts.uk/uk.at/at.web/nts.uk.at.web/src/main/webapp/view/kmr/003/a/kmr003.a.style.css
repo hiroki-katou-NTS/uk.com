@@ -38,3 +38,7 @@
 button.nts-switch-button{
     min-width: 100px;
 }
+.custom-label label.with-text > span {
+	min-width: 100px;
+	text-align: center;
+}

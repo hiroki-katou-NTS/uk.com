@@ -147,7 +147,9 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 					
 					
 					List<Integer> listAtdtemId = new ArrayList<>();
-					listAtdtemId.add(c.getTotalCondition().getAtdItemId().get());
+					if (c.getTotalCondition().getAtdItemId().isPresent()){
+						listAtdtemId.add(c.getTotalCondition().getAtdItemId().get());
+					}
 					
 					List<DailyAttendanceItemNameAdapterDto> dailyAttendanceItemDomainServiceDtos = this.dailyAttendanceItemNameAdapter
 							.getDailyAttendanceItemName(listAtdtemId);

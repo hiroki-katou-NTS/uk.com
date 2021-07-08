@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.app.command.kdp.kdp010.a;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -11,23 +10,25 @@ import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.PortalStampSettings
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.SettingsSmartphoneStampCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.SettingsUsingEmbossingCommand;
 import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.StampSetCommunalCommand;
+import nts.uk.ctx.at.record.app.command.kdp.kdp010.a.command.StampSettingOfRICOHCopierCommand;
 import nts.uk.ctx.at.record.app.command.stamp.management.StampPageLayoutCommand;
+import nts.uk.ctx.at.record.app.find.stamp.management.NoticeSetAndAupUseArtDto;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInput;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputRepository;
+import nts.uk.ctx.at.record.dom.stamp.application.MapAddress;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossingRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.NumberAuthenfailures;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingDateTimeColorOfStampScreen;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
-import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStampRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.stampsettingofRICOHcopier.StampSettingOfRICOHCopier;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.stampsettingofRICOHcopier.StampSettingOfRICOHCopierRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampinputfunctionsettings.notificationmessagesettings.NoticeSetRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class TimeStampInputSettingsCommandHandler {
@@ -46,6 +47,15 @@ public class TimeStampInputSettingsCommandHandler {
 	
 	@Inject
 	private SettingsUsingEmbossingRepository settingsUsingEmbossingRepo;
+	
+	@Inject
+	private NoticeSetRepository noticeSetRepo;
+	
+	@Inject
+	private StampSettingOfRICOHCopierRepository stampSettingOfRICOHCopierRepo;
+	
+	@Inject
+	private StampSetPerRepository stampSetPerRepo;
 	
 	/**打刻の前準備(ポータル)を登録する*/
 	public void savePortalStampSettings(PortalStampSettingsCommand command) {
@@ -81,9 +91,12 @@ public class TimeStampInputSettingsCommandHandler {
 		Optional<CommonSettingsStampInput> commonDomain = commonSettingsStampInputRepo.get(companyId);
 		if (commonDomain.isPresent()) {
 			commonDomain.get().setGooglemap(command.getGoogleMap() == 1);
+			if(!commonDomain.get().getMapAddres().isPresent()) {
+				commonDomain.get().setMapAddres(Optional.of(new MapAddress("https://www.google.co.jp/maps/place/")));
+			}
 			commonSettingsStampInputRepo.update(commonDomain.get());
 		} else {
-//			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(companyId, new ArrayList<String>(), command.getGoogleMap() == 1, Optional.empty()));
+			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(companyId, command.getGoogleMap() == 1, Optional.of(new MapAddress("https://www.google.co.jp/maps/place/")), NotUseAtr.NOT_USE));
 		}
 	}
 	
@@ -92,55 +105,72 @@ public class TimeStampInputSettingsCommandHandler {
 		settingsUsingEmbossingRepo.save(command.toDomain());
 	}
 	
-	/**打刻レイアウト(スマホ)の設定内容を更新する(Update)*/
-	public void savePageLayoutSettingsSmartphone(StampPageLayoutCommand command) {
-		String companyId = AppContexts.user().companyId();
-		Optional<SettingsSmartphoneStamp> oldDomain = settingsSmartphoneStampRepo.get(companyId);
-		if(oldDomain.isPresent()) {
-			oldDomain.get().setPageLayoutSettings(Arrays.asList(command.toDomain()));
-			settingsSmartphoneStampRepo.save(oldDomain.get());
-		}else {
-			DisplaySettingsStampScreen displaySettingsStampScreen = new DisplaySettingsStampScreen(
-					new CorrectionInterval(10), 
-					new SettingDateTimeColorOfStampScreen(new ColorCode("#ffffff"), new ColorCode("#0033cc")), 
-					new ResultDisplayTime(3));
-			SettingsSmartphoneStamp setting = new SettingsSmartphoneStamp(companyId, displaySettingsStampScreen, Arrays.asList(command.toDomain()), false);
-			settingsSmartphoneStampRepo.save(setting);
-//			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(companyId, new ArrayList<String>(), false, Optional.empty()));
-		}
-	}
-	
 	/**打刻レイアウト(スマホ)の設定内容を削除する(Delete)*/
 	public void delPageLayoutSettingsSmartphone() {
 		String companyId = AppContexts.user().companyId();
 		Optional<SettingsSmartphoneStamp> oldDomain = settingsSmartphoneStampRepo.get(companyId);
 		if(oldDomain.isPresent()) {
-			oldDomain.get().setPageLayoutSettings(new ArrayList<StampPageLayout>());
+			oldDomain.get().deletePage();
 			settingsSmartphoneStampRepo.save(oldDomain.get());
 		}
 	}
 
 	public void saveStampPageLayout(StampPageLayoutCommand command) {
 		String companyId = AppContexts.user().companyId();
-		Optional<StampSetCommunal> domainPre = stampSetCommunalRepo.gets(companyId);
-		if (domainPre.isPresent()) {
-			domainPre.get().getLstStampPageLayout().removeIf(c->c.getPageNo().v() == command.getPageNo());
-			domainPre.get().getLstStampPageLayout().add(command.toDomain());
-			stampSetCommunalRepo.save(domainPre.get());
+		if(command.getStampMeans() == 0) {
+			Optional<StampSetCommunal> domain = stampSetCommunalRepo.gets(companyId);
+			if (domain.isPresent()) {
+				domain.get().updatePage(command.toDomain());
+				stampSetCommunalRepo.save(domain.get());
+			}
+		}else if(command.getStampMeans() == 1){
+			Optional<StampSettingPerson> domain = stampSetPerRepo.getStampSet(companyId);
+			if(domain.isPresent()) {
+				domain.get().updatePage(command.toDomain());
+				stampSetPerRepo.update(domain.get());
+			}
+		}else if(command.getStampMeans() == 3){
+			Optional<SettingsSmartphoneStamp> oldDomain = settingsSmartphoneStampRepo.get(companyId);
+			if(oldDomain.isPresent()) {
+				oldDomain.get().updatePage(command.toDomain());
+				settingsSmartphoneStampRepo.save(oldDomain.get());
+			}
+		}else if(command.getStampMeans() == 5){
+			Optional<StampSettingOfRICOHCopier> domain = stampSettingOfRICOHCopierRepo.get(companyId);
+			if(domain.isPresent()) {
+				domain.get().updatePage(command.toDomain());
+				stampSettingOfRICOHCopierRepo.update(domain.get());
+			}
+		}
+		//không quan tâm trường hợp không tồn tại data
+		//http://192.168.50.4:3000/issues/115467
+	}
+	
+	public void saveNoticeSetAndAupUseArt(NoticeSetAndAupUseArtDto command) {
+		String cid = AppContexts.user().companyId();
+		if(noticeSetRepo.get(cid).isPresent()) {
+			noticeSetRepo.update(command.getNoticeSet().toDomain());
 		}else {
-			DisplaySettingsStampScreen displaySettingsStampScreen = new DisplaySettingsStampScreen(
-					new CorrectionInterval(10), 
-					new SettingDateTimeColorOfStampScreen(new ColorCode("#ffffff"), new ColorCode("#0033cc")), 
-					new ResultDisplayTime(3));
-			StampSetCommunal domain = new StampSetCommunal(
-					companyId, 
-					displaySettingsStampScreen, 
-					Arrays.asList(command.toDomain()), 
-					false,
-					true, 
-					false, 
-					Optional.of(new NumberAuthenfailures(1)));
-			stampSetCommunalRepo.save(domain);
+			noticeSetRepo.insert(command.getNoticeSet().toDomain());
+		}
+		Optional<CommonSettingsStampInput> c= commonSettingsStampInputRepo.get(cid);
+		if(c.isPresent()) {
+			c.get().setSupportUseArt(NotUseAtr.valueOf(command.getSupportUseArt()));
+			commonSettingsStampInputRepo.update(c.get());
+		}else {
+			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(cid, false, Optional.of(new MapAddress("https://www.google.co.jp/maps/place/")), NotUseAtr.valueOf(command.getSupportUseArt())));
+		}
+	}
+	
+	public void saveStampSettingOfRICOHCopier(StampSettingOfRICOHCopierCommand command) {
+		String cid = AppContexts.user().companyId();
+		Optional<StampSettingOfRICOHCopier> oldDomain = stampSettingOfRICOHCopierRepo.get(cid);
+		StampSettingOfRICOHCopier saveDomain = command.toDomain();
+		if(oldDomain.isPresent()) {
+			saveDomain.setPageLayoutSettings(saveDomain.getPageLayoutSettings());
+			stampSettingOfRICOHCopierRepo.update(command.toDomain());;
+		}else {
+			stampSettingOfRICOHCopierRepo.insert(command.toDomain());
 		}
 	}
 }

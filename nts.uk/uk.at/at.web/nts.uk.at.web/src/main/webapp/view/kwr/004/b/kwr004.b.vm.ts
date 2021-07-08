@@ -946,7 +946,7 @@ module nts.uk.at.view.kwr004.b {
     selectedTimeList: KnockoutObservableArray<selectedTimeList> = ko.observableArray([]);
     dailyAttributes: KnockoutObservableArray<any> = ko.observableArray([]);
     type: boolean = false;
-    temp: number = null;
+    independentCalcClassicProgrammaticChange: boolean = false;
     constructor(
       id?: number,
       name?: string,
@@ -969,17 +969,28 @@ module nts.uk.at.view.kwr004.b {
       this.dailyAttributes(dailyAttributes || []);
       this.type = type;
       this.selectedTime = selectedTime;
-      this.temp = indCalcClassic;
-      this.independentCalcClassic.subscribe((value)=>{
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_2087" }).ifYes(()=>{
-                // if yes
-                this.temp = value;
-            }).ifNo(()=>{
-                // if no
-                this.independentCalcClassic(this.temp);
-            });
 
-        })
+      this.independentCalcClassic.subscribe((oldValue) => {
+        if (!this.independentCalcClassicProgrammaticChange && !_.isEmpty(this.selectionItem())) {
+            const oldSelectedTimeList = this.selectedTimeList();
+            const oldSelectionItem = this.selectionItem();
+            const oldSelectedTime = this.selectedTime;
+            const oldDailyAttributes = this.dailyAttributes();
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_2087" }).ifYes(()=>{
+                // if yes do nothing
+            }).ifNo(()=>{
+                // if no reset value
+                this.independentCalcClassicProgrammaticChange = true;
+                this.independentCalcClassic(oldValue);
+                this.selectedTimeList(oldSelectedTimeList);
+                this.selectionItem(oldSelectionItem);
+                this.selectedTime = oldSelectedTime;
+                this.dailyAttributes(oldDailyAttributes);
+            });
+        } else {
+          this.independentCalcClassicProgrammaticChange = false;
+        }
+      }, null, "beforeChange");
 
 
     }

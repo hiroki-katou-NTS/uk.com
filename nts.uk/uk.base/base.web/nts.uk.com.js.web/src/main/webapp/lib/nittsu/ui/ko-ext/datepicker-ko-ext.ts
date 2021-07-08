@@ -108,7 +108,7 @@ module nts.uk.ui.koExtentions {
             if (data.dateFormat === "YYYY") {                
                 let $yearType = $("<label/>").attr("for", idString)
                                                 .css({ "position": "absolute",
-                                                      "line-height": "30px",
+                                                      "line-height": "35px",
                                                       "right": jumpButtonsDisplay ? "40px" : "5px"});
                 let labelText = fiscalYear ? "年度" : "年"; 
                 $yearType.text(labelText);

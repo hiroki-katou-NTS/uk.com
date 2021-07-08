@@ -37,31 +37,32 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="kmk-004l" data-bind="let: { selected: ko.observable('Com_Company') }">
-				<div id="sidebar-area" data-bind="component: {
-						name: 'ko-panel',
-						params:{ 
-							model: selected
-						}
-					}">
-				</div>
-				<div class="cf content-area">
-					<div data-bind="if: selected() === 'Com_Company'">
-						<div data-bind="component: { name: 'view-l', params: {} }"></div>
+			<div id="contents-area" style="padding: 0; overflow: hidden;">
+				<div class="kmk-004l" data-bind="let: { selected: ko.observable('Com_Company') }">
+					<div id="sidebar-area" data-bind="component: {
+							name: 'ko-panel',
+							params:{ 
+								model: selected
+							}
+						}">
 					</div>
-					<div data-bind="if: selected() === 'Com_Workplace'">
-						<div data-bind="component: { name: 'view-m', params: {} }"></div>
-					</div>
-					<div data-bind="if: selected() === 'Com_Person'">
-						<div data-bind="component: { name: 'view-o', params: {} }"></div>
-					</div>
-					<div data-bind="if: selected() === 'Com_Employment'">
-						<div data-bind="component: { name: 'view-n', params: {} }"></div>
+					<div class="cf content-area">
+						<div data-bind="if: selected() === 'Com_Company'">
+							<div data-bind="component: { name: 'view-l', params: {} }"></div>
+						</div>
+						<div data-bind="if: selected() === 'Com_Workplace'">
+							<div data-bind="component: { name: 'view-m', params: {} }"></div>
+						</div>
+						<div data-bind="if: selected() === 'Com_Person'">
+							<div data-bind="component: { name: 'view-o', params: {} }"></div>
+						</div>
+						<div data-bind="if: selected() === 'Com_Employment'">
+							<div data-bind="component: { name: 'view-n', params: {} }"></div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</ui:define>
-
 	</ui:composition>
 </body>
 

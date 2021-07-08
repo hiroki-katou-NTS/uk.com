@@ -37,16 +37,19 @@
 }
 .button-head {
   height: 40px;
+  border-bottom: solid 1px #dedede;
+  padding-bottom: 3px;
 }
 .text {
-  margin-left: 15px;
+  margin-left: 8px;
+  padding-top: 7px;
 }
 .table-ccg005-b {
   display: inline-block;
 }
 
 .table-left {
-  margin-left: 15px;
+  margin-left: 8px;
 }
 
 .table-right {

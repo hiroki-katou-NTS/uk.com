@@ -51,7 +51,7 @@ table#table tr td.title {
 	padding: 10px;
 }
 
-#setting_tbl {
+.setting_tbl {
 	margin-left: 50px;
 }
 
@@ -113,7 +113,7 @@ table#table tr td.title {
 	width: 40px;
 }
 .radio_group_width{
-	width : 230px;
+	width : 240px;
 }
 .text_width {
 	width: 50px;

@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.CreateStampInfo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
@@ -35,7 +36,8 @@ public class WorkInformationStamp implements DomainValue {
 
 	// 打刻場所コード
 	@Getter
-	private final Optional<WorkLocationCD> workLocationCD;
+	@Setter
+	private Optional<WorkLocationCD> workLocationCD;
 
 	// 	応援カード番号
 	@Getter

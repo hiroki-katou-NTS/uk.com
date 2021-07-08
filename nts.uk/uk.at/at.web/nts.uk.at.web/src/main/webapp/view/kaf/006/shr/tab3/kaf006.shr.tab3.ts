@@ -4,31 +4,31 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
         name: 'kaf006-shr-tab3',
         template: `
         <div id="kaf006tab3">
-            <div style="margin-top: 10px;" data-bind="ntsCheckBox: {
+            <div data-bind="ntsCheckBox: {
                 checked: isChangeWorkHour,
                 text: $i18n('KAF006_18'),
                 enable: $parent.updateMode
-            }, visible: $parent.condition11"></div>
-            <div style="width: 700px;">
-                <hr data-bind="visible: $parent.condition11" />
+            }, visible: $parent.condition11" style="margin-top: -5px"></div>
+            <div style="width: 700px;" data-bind="visible: $parent.condition11">
+                <hr/>
             </div>
-            <div class="table" data-bind="visible: $parent.condition11">
+            <div class="table mv-13" data-bind="visible: $parent.condition11">
                 <div class="cell col-1"></div>
                 <div class="cell">
-                    <div style="padding-bottom: 5px;">
+                    <div>
                         <div class="cell col-1">
                             <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_19')"></div>
                         </div>
-                        <div class="cell">
+                        <div class="cell" style="vertical-align: middle">
                             <button style="margin-right: 5px;" data-bind="text: $i18n('KAF006_20'), enable: $parent.isChangeWorkHour() && $parent.updateMode(), click: openKDL003"></button>
                         </div>
-                        <div class="cell" data-bind="text: $parent.selectedWorkTimeDisp"></div>
+                        <div class="cell valign-center" data-bind="text: $parent.selectedWorkTimeDisp"></div>
                     </div>
-                    <div style="padding-bottom: 5px;">
+                    <div style="padding-top: 10px;">
                         <div class="cell col-1">
                             <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_22')"></div>
                         </div>
-                        <div class="cell">
+                        <div class="cell valign-center">
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_58'),
                                 value: $parent.startTime1,
@@ -52,11 +52,11 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                             }" />
                         </div>
                     </div>
-                    <div style="padding-bottom: 5px;" data-bind="visible: $parent.condition12">
+                    <div style="padding-top: 10px;" data-bind="visible: $parent.condition12">
                         <div class="cell col-1">
                             <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_23')"></div>
                         </div>
-                        <div class="cell">
+                        <div class="cell valign-center">
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_60'),
                                 value: $parent.startTime2,
@@ -82,13 +82,13 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                     </div>
                 </div>
             </div>
-            <div class="table">
+            <div class="table" data-bind="visible: $parent.condition9">
                 <div class="cell" style="width: 500px">
-                    <div class="table">
+                    <div class="table" style="padding-bottom: 13px" data-bind="visible: $parent.condition6">
                         <div class="cell col-1" data-bind="visible: $parent.condition6">
                             <div class="cell valign-center required" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_33')"></div>
                         </div>
-                        <div class="cell" data-bind="visible: $parent.condition6">
+                        <div class="cell valign-center" data-bind="visible: $parent.condition6">
                             <div id="relation-list" style="vertical-align: bottom;" data-bind="ntsComboBox: {
                                 name: $i18n('KAF006_33'),
                                 options: dateSpecHdRelationLst,
@@ -99,17 +99,19 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                                 enable: $parent.updateMode
                             }"></div>
                         </div>
-                        <div class="cell valign-center" data-bind="ntsCheckBox: {
-                            checked: $parent.isCheckMourn,
-                            text: $i18n('KAF006_34'),
-                            enable: $parent.isDispMourn() && $parent.updateMode()
-                        }, visible: $parent.condition7"></div>
+                        <div class="cell valign-center" style="padding-left: 10px;">
+                            <div class="cell valign-center" data-bind="ntsCheckBox: {
+                                checked: $parent.isCheckMourn,
+                                text: $i18n('KAF006_34'),
+                                enable: $parent.isDispMourn && $parent.updateMode
+                            }, visible: $parent.condition7"></div>
+                        </div>
                     </div>
-                    <div class="table" style="margin-top: 5px;" data-bind="visible: $parent.condition8">
+                    <div class="table" data-bind="visible: $parent.condition8">
                         <div class="cell col-1">
                             <div class="cell valign-center required" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_43')"></div>
                         </div>
-                        <div class="cell">
+                        <div class="cell valign-center">
                             <input id="relaReason" style="width: 350px; vertical-align: bottom;" data-bind="ntsTextEditor: {
                                 value: relationshipReason,
                                 name: $i18n('KAF006_43'),
@@ -126,16 +128,20 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                     <div style="margin-left: 10px; white-space: pre-wrap;" class="panel panel-frame" data-bind="text: $parent.maxNumberOfDay"></div>
                 </div>
             </div>
-            <div class="table" data-bind="visible: $parent.condition15">
+            <div class="table mv-13" data-bind="visible: $parent.condition15">
                 <div class="cell col-1">
                     <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_88')"></div>
                 </div>
                 <div class="cell valign-center">
-                    <button style="width: 60px; margin-right: 5px;" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()) && $parent.updateMode() && $parent.checkAppDate(), click: openKDL036"></button>
-                    <div style="display: inline-block" data-bind="text: $i18n('KAF006_89')"></div>
+                    <div style="vertical-align: middle; display: inline-block">
+                        <button style="width: 60px; margin-right: 5px;" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()) && $parent.updateMode() && $parent.checkAppDate(), click: openKDL036"></button>
+                    </div>
+                    <div style="vertical-align: middle; display: inline-block">
+                        <div style="display: inline-block; vertical-align: top;" data-bind="text: $i18n('KAF006_89')"></div>
+                    </div>
                 </div>
             </div>
-            <div class="table" style="margin: 10px 0;" data-bind="visible: $parent.condition15">
+            <div class="table mv-13" style="margin: 10px 0;" data-bind="visible: $parent.condition15() && $parent.leaveComDayOffManas().length > 0">
                 <div class="cell col-1"></div>
                 <div class="cell">
                     <table data-bind="visible: $parent.leaveComDayOffManas().length > 0">
@@ -157,16 +163,20 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                 </div>
             </div>
 
-            <div class="table" data-bind="visible: $parent.condition14">
+            <div class="table mv-13" data-bind="visible: $parent.condition14">
                 <div class="cell col-1">
                     <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_48')"></div>
                 </div>
                 <div class="cell valign-center">
-                    <button style="width: 60px; margin-right: 5px;" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()) && $parent.updateMode() && $parent.checkAppDate(), click: openKDL035"></button>
-                    <div style="display: inline-block" data-bind="text: $i18n('KAF006_62')"></div>
+                    <div style="vertical-align: middle; display: inline-block">
+                        <button style="width: 60px; margin-right: 5px;" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()) && $parent.updateMode() && $parent.checkAppDate(), click: openKDL035"></button>
+                    </div>
+                    <div style="vertical-align: middle; display: inline-block">
+                        <div style="display: inline-block; vertical-align: top;" data-bind="text: $i18n('KAF006_62')"></div>
+                    </div>
                 </div>
             </div>
-            <div class="table" style="margin: 10px 0;" data-bind="visible: $parent.condition14">
+            <div class="table mv-13" style="margin: 10px 0;" data-bind="visible: $parent.condition14() && $parent.payoutSubofHDManagements().length > 0">
                 <div class="cell col-1"></div>
                 <div class="cell">
                     <table data-bind="visible: $parent.payoutSubofHDManagements().length > 0" >

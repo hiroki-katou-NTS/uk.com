@@ -36,6 +36,10 @@ module nts.uk.at.view.kdl047.a.screenModel {
     isEnableTextEditor: KnockoutObservable<boolean> = ko.observable(false);
     isEnableComboBox: KnockoutObservable<boolean> = ko.observable(false);
 
+    isEmptyLayoutCode: KnockoutComputed<boolean> = ko.computed(() => _.isEmpty(this.layoutCode()));
+    isEmptyLayoutName: KnockoutComputed<boolean> = ko.computed(() => _.isEmpty(this.layoutName()));
+    isEmptyComment: KnockoutComputed<boolean> = ko.computed(() => _.isEmpty(this.comment()));
+
     filterObject: KnockoutComputed<{attendanceAtr: number, masterType: number}> = ko.computed(() => {
       return this.selectedCode() === 1
         ? {attendanceAtr: 0, masterType: 1}

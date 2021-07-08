@@ -22,6 +22,9 @@ public class RefectActualResultCommand {
 	@Getter
 	private String cardNumberSupport;
 
+	@Getter
+	private String workPlaceId;
+	
 	/**
 	 * 打刻場所コード 勤務場所コード old
 	 */
@@ -42,7 +45,7 @@ public class RefectActualResultCommand {
 
 	public RefectActualResult toDomainValue() {
 		WorkInformationStamp workInformationStamp = new WorkInformationStamp(
-				Optional.empty(), 
+				this.workPlaceId == null ? Optional.empty() : Optional.of(this.workPlaceId), 
 				Optional.empty(),
 				this.workLocationCD    == null ? Optional.empty() : Optional.of(new WorkLocationCD(this.workLocationCD)),
 				this.cardNumberSupport == null ? Optional.empty() : Optional.of(new SupportCardNumber(Integer.valueOf(this.cardNumberSupport))));	

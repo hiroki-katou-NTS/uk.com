@@ -67,6 +67,10 @@
 				<!-- body right -->
 				<div class="fixed-flex-layout-right">
 					<table class="layout-table">
+            <colgroup>
+              <col width="180px" />
+              <col width="*" />
+            </colgroup>
 						<!-- row 1 -->
 						<tr>
 							<td>
@@ -78,7 +82,7 @@
 								data-bind="ntsTextEditor: {value: roleCode, name:'#{i18n.getText('CAS005_31')}', constraint: 'RoleCode',required: true, enable : enableRoleCode }" />
 								<input tabindex="8" id="roleNameFocus"
 								style="margin-left: 11px;"
-								data-bind="ntsTextEditor:  {value: roleName, name:'#{i18n.getText('CAS005_32')}', constraint: 'RoleName',required: true}" /></td>
+								data-bind="ntsTextEditor:  {value: roleName, name:'#{i18n.getText('CAS005_32')}', constraint: 'RoleName',required: true, option: { width: '200px' }}" /></td>
 						</tr>
 						<!-- row 2 -->
 						<tr>
@@ -255,8 +259,8 @@
 						<tr>
 							<td colspan="2">
 								<div data-bind="with: componentCcg026">
-									<ui:include src="/view/ccg/026/component/index.xhtml" />
-								</div>
+                  <ui:include src="/view/ccg/026/component/index.xhtml" />
+                </div>
 							</td>
 						</tr>
 

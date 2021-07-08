@@ -87,11 +87,10 @@ td:nth-child(3), td:nth-child(4), td:nth-child(5) {
 .fixed-flex-layout-left {
 	width: 325px !important;
     height: 268px !important;
+	margin-left: 30px;
 }
 
-.leftLabel {
-	
-}
+
 /*
 .copy {
 	margin-left: 540px !important;

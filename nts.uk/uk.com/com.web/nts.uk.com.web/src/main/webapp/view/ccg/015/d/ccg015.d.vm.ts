@@ -44,11 +44,11 @@ module nts.uk.com.view.ccg015.d {
       ]);
       vm.columnsFlowMenu([
         { headerText: vm.$i18n('CCG015_68'), width: "50px", key: 'flowCode' },
-        { headerText: vm.$i18n('CCG015_69'), width: "260px", key: 'flowName' },
+        { headerText: vm.$i18n('CCG015_69'), width: "300px", key: 'flowName' },
       ]);
       vm.columnsTopPagePart([
         { headerText: vm.$i18n('CCG015_68'), width: "50px", key: 'flowCode' },
-        { headerText: vm.$i18n('CCG015_69'), width: "260px", key: 'flowName' },
+        { headerText: vm.$i18n('CCG015_69'), width: "300px", key: 'flowName' },
       ]);
       vm.layoutType.subscribe(value => {
         vm.$errors('clear');

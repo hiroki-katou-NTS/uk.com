@@ -2,6 +2,7 @@
 module nts.uk.at.view.ksm011.b.tabs.tab2 {
   const PATH = {
     registerRulesOrgShiftTable: 'at/schedule/shift/table/organization/register',
+    deleteRulesOrgShiftTable: 'at/schedule/shift/table/organization/delete',
     getRulesOfOrgShiftTable: 'screen/at/shift/table/retrievingOrgShiftTableRule',
     getAllRulesOfOrgShiftTable: 'screen/at/shift/table/setTissueList',
   };
@@ -35,6 +36,9 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
     currentNames: KnockoutObservable<string> = ko.observable(null);
 
     active: KnockoutObservable<boolean> = ko.observable(false);
+    enableDeleteButton: KnockoutComputed<boolean>;
+    enableWorkRequestInput: KnockoutComputed<boolean>;
+
     constructor(params: any) {
       super();
       const vm = this;
@@ -87,6 +91,21 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
         console.log(value);
       });
       vm.getAlreadySetting();
+      vm.enableDeleteButton = ko.computed(() => {
+          if (vm.replaceThisVar() == 0) {
+              if (vm.alreadySettingWorkplaces().map(i => i.workplaceId).indexOf(vm.selectedWkpId()) >= 0) {
+                  return true;
+              }
+          } else {
+              if (vm.alreadySettingWorkplaceGroups().indexOf(vm.selectedWkpGroupId()) >= 0) {
+                  return true;
+              }
+          }
+          return false;
+      });
+      vm.enableWorkRequestInput = ko.computed(() => {
+          return vm.workRequest() == 1;
+      });
     }
 
     mounted() {
@@ -102,31 +121,57 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
     //会社のシフト表のルールを登録する
     registerRulesCompanyShiftTable() {
       const vm = this;
+        vm.$validate('.nts-input').then(function (valid) {
+            if (valid) {
+                vm.$blockui('show');
+                let params = {
+                    organizationSelection: {
+                        UnitSelected: vm.replaceThisVar(),
+                        OrganizationIdSelected: vm.replaceThisVar() == 0 ? vm.selectedWkpId() : vm.selectedWkpGroupId(),
+                    },
+                    usePublicAtr: vm.publicMethod(),//公開機能の利用区分
+                    useWorkAvailabilityAtr: vm.workRequest(),//勤務希望の利用区分
+                    holidayMaxDays: vm.maxDesiredHolidays(),//希望休日の上限日数入力
+                    closureDate: vm.deadlineSelected(),//締め日
+                    availabilityDeadLine: vm.deadlineWorkSelected(),//締切日
+                    availabilityAssignMethod: vm.workRequestInputSelected()//入力方法の利用区分
+                };
 
-      vm.$blockui('show');
-      let params = {
-          organizationSelection: {
-              UnitSelected: vm.replaceThisVar(),
-              OrganizationIdSelected: vm.replaceThisVar() == 0 ? vm.selectedWkpId() : vm.selectedWkpGroupId(),
-          },
-          usePublicAtr: vm.publicMethod(),//公開機能の利用区分
-          useWorkAvailabilityAtr: vm.workRequest(),//勤務希望の利用区分
-          holidayMaxDays: vm.maxDesiredHolidays(),//希望休日の上限日数入力
-          closureDate: vm.deadlineSelected(),//締め日
-          availabilityDeadLine: vm.deadlineWorkSelected(),//締切日
-          availabilityAssignMethod: vm.workRequestInputSelected()//入力方法の利用区分
-      };
-
-      vm.$ajax(PATH.registerRulesOrgShiftTable, params).done((data) => {
-        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-            vm.getAlreadySetting();
+                vm.$ajax(PATH.registerRulesOrgShiftTable, params).done((data) => {
+                    vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+                        vm.getAlreadySetting();
+                    });
+                }).fail((error) => {
+                    vm.$dialog.error(error);
+                }).always(() => {
+                    vm.$blockui('hide');
+                });
+            }
         });
-      }).fail((error) => {
-        vm.$dialog.error(error);
-      }).always(() => {
-        vm.$blockui('hide');
-      });
+    }
 
+    deleteRulesCompanyShiftTable() {
+      const vm = this;
+      vm.$dialog.confirm({ messageId: "Msg_18" }).then((result) => {
+          if (result === 'yes') {
+              vm.$blockui('show');
+              let params = {
+                  organizationSelection: {
+                      UnitSelected: vm.replaceThisVar(),
+                      OrganizationIdSelected: vm.replaceThisVar() == 0 ? vm.selectedWkpId() : vm.selectedWkpGroupId(),
+                  }
+              };
+              vm.$ajax(PATH.deleteRulesOrgShiftTable, params).done((data) => {
+                  vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
+                      vm.getAlreadySetting();
+                  });
+              }).fail((error) => {
+                  vm.$dialog.error(error);
+              }).always(() => {
+                  vm.$blockui('hide');
+              });
+          }
+      });
     }
 
     //Get the rules of the company shift table
@@ -152,7 +197,7 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
           vm.deadlineWorkSelected(0); //Ba4_11				締切日
           vm.workRequestInputSelected(1); //Ba4_13				入力方法の利用区分
         }
-        $(".switchButton-wrapper")[4].focus();
+        $("#Bb3_2").focus();
       }).fail((error) => {
         vm.$dialog.error(error);
       }).always(() => {
@@ -170,6 +215,9 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
                   isAlreadySetting: true
               })));
               vm.alreadySettingWorkplaceGroups(data.workPlaceGroupList || []);
+          } else {
+              vm.alreadySettingWorkplaces([]);
+              vm.alreadySettingWorkplaceGroups([]);
           }
       }).fail((error) => {
           vm.$dialog.error(error);

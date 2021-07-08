@@ -8,7 +8,9 @@ import java.io.Serializable;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
@@ -76,7 +78,11 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
         memento.setTimeManageType(this.timeManageType);
         memento.setTimeUnit(this.timeUnit);
         memento.setMaxYearDayLeave(this.maxYearDayLeave);
-        memento.setRoundProcessClassific(this.roundProcessClassific);
+        if(this.roundProcessClassific == null){
+        memento.setRoundProcessClassific(EnumAdaptor.valueOf(0, TimeAnnualRoundProcesCla.class));
+        }else{
+        	  memento.setRoundProcessClassific(this.roundProcessClassific);	
+        }
         memento.setTimeAnnualLeaveTimeDay(this.timeAnnualLeaveTimeDay);
     }
 }

@@ -26,10 +26,11 @@ public class StampResultConfirmDto {
 	private String workPlaceName;
 	private String attendance;
 	private String leave;
+	private int setting;
 
 	public StampResultConfirmDto(List<DisplayScreenStampingResultDto> screenDisplays, List<AttItemName> dailyItems,
 			List<ItemValue> itemValues, List<WorkType> workTypes, List<WorkTimeSetting> workTimes,
-			ConfirmStatusActualResult cfsr, Optional<ItemValue> attendance, Optional<ItemValue> leave) {
+			ConfirmStatusActualResult cfsr, Optional<ItemValue> attendance, Optional<ItemValue> leave, int setting) {
 
 		for (DisplayScreenStampingResultDto display : screenDisplays) {
 			this.workPlaceName = display.getWorkPlaceName();
@@ -61,6 +62,8 @@ public class StampResultConfirmDto {
 								cfsr.getPermissionRelease() != null ? cfsr.getPermissionRelease().value : null);							
 			}
 		}
+		
+		this.setting = setting;
 
 	}
 

@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 700, height: 300 };</script>
+			<script>var dialogSize = { width: 700, height: 275 };</script>
 			<com:ValidatorScript>
 			nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode
 			nts.uk.ctx.sys.portal.dom.webmenu.WebMenuName
@@ -22,18 +22,8 @@
 			<com:stylefile path="../../common/common.css" />
 		</ui:define>
 		<ui:define name="content">
+      
 			<div id="content-area" class="body">
-				<div id="functions-area-bottom">
-					<div style="padding: 12px 20px;"
-						data-bind="ntsCheckBox: { checked: allowOverwrite, style: 'warnpanel', enable: true, text: '#{i18n.getText('CCG013_102')}' }"></div>
-					<div style="padding-bottom: 10px;"></div>
-					<button id="e1_10" class="x-large proceed"
-						data-bind="click: submit">#{i18n.getText('CCG013_60')}</button>
-					<button id="e1_11" class="large" data-bind="click: closeDialog">#{i18n.getText('CCG013_61')}</button>
-				</div>
-
-				<br />
-
 				<div class="functions-area-content">
 					<table class="contents-area">
 						<tr data-bind="with: currentWebMenu">
@@ -62,6 +52,13 @@
 					</table>
 				</div>
 			</div>
+      <br />
+      <div id="functions-area-bottom">
+        <div data-bind="ntsCheckBox: { checked: allowOverwrite, style: 'warnpanel', enable: true, text: '#{i18n.getText('CCG013_102')}' }"></div>
+        <div style="padding-bottom: 10px;"></div>
+        <button id="e1_10" class="x-large proceed" data-bind="click: submit">#{i18n.getText('CCG013_60')}</button>
+        <button id="e1_11" class="large" data-bind="click: closeDialog">#{i18n.getText('CCG013_61')}</button>
+      </div>
 		</ui:define>
 	</ui:composition>
 </body>

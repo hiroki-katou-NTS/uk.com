@@ -187,6 +187,15 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 vm.employeeName(info.selectedEmployee.employeeName);
                 vm.closureId(info.closureId);
                 vm.residualNumber(info.residualNumber);
+
+                // //Fix lỗi không bind data (#117524)
+                // vm.workCode.valueHasMutated();
+                // vm.workplaceName.valueHasMutated();
+                // vm.employeeCode.valueHasMutated();
+                // vm.employeeId.valueHasMutated();
+                // vm.employeeName.valueHasMutated();
+                // vm.closureId.valueHasMutated();
+                // vm.residualNumber.valueHasMutated();
             }
 
             service.getByIdAndUnUse(vm.employeeId(),info.closureId)

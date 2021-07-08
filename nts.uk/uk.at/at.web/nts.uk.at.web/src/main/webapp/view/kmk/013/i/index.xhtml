@@ -20,16 +20,18 @@
 				<button class="proceed save" data-bind="click: saveData" tabindex="2">#{i18n.getText('KMK013_225')}</button>
 			</div>
 			<div id="contents-area" class="table">
-				<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_306')}</div>
-				<div class="row-1">
-					<div class="name-switch">#{i18n.getText('KMK013_307')}</div>
-					<div id="switch" class="cf"
-						data-bind="ntsSwitchButton: {
-						options: roundingRules,
-						optionsValue: 'code',
-						name: '#{i18n.getText('KMK013_308')}',
-						optionsText:'name',
-						value: selectedRuleCode }, hasFocus: true" tabindex="3"></div>
+				<div class="control-group valign-center">
+					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_306')}</div>
+				</div>
+				<div class="control-group valign-center">
+					<span class="label child-lb">#{i18n.getText('KMK013_307')}</span>
+					<div data-bind="ntsSwitchButton: {
+										options: roundingRules,
+										optionsValue: 'code',
+										name: '#{i18n.getText('KMK013_308')}',
+										optionsText:'name',
+										value: selectedRuleCode
+								}, hasFocus: true" tabindex="3"></div>
 				</div>
 			</div>
 		</ui:define>

@@ -1,213 +1,58 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
-
-<head>
-	<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css" />
-</head>
-
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 530, height: 580 };</script>
+			<script>var dialogSize = { width: 430, height: 510 };</script>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="/view/kdp/share/kdp.main.css" />
-			<com:stylefile path="/view/kdp/010/g/main.css" />
+			<com:stylefile path="../main.css" />
+			<com:stylefile path="main.css" />
 			<com:scriptfile path="kdp010.g.vm.js" />
 			<com:scriptfile path="kdp010.g.start.js" />
-			<com:scriptfile path="kdp010.g.service.js" />
-			<com:EnumScript>
-				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonLayoutType
-			</com:EnumScript>
-			<com:ValidatorScript>
-				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageName
-				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageComment
-			</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area">
-				<button tabindex="1" id="button-add" class="proceed"
-					data-bind="click:registration">#{i18n.getText('KDP010_95')}</button>
-				<button tabindex="2" id="button-del" class="danger"
-					data-bind="click: deleteStamp, enable: isDel">#{i18n.getText('KDP010_96')}</button>
-				<button tabindex="3" id="button-cancel"
-					data-bind="click:closeDialog">#{i18n.getText('KDP010_128')}</button>
+			<div id="contents-area">		
+				<div class="contents-area" data-bind="with: settingsUsingEmbossing">
+					<div class="label-top">
+						<label>#{i18n.getText('KDP010_220')}</label>
+					</div>
+					<div class="label-middle margin-left5">
+						<label>#{i18n.getText('KDP010_221')}</label>
+					</div> 
+					<div class="check">
+						<div tabindex="3" data-bind="ntsCheckBox: { checked: name_selection, hasFocus: $parent.hasFocus}">#{i18n.getText('KDP010_222')}</div>
+					</div> 
+					<div class="check">
+						<div tabindex="4" data-bind="ntsCheckBox: { checked: finger_authc }">#{i18n.getText('KDP010_223')}</div>
+					</div> 
+					<div class="check">	
+						<div tabindex="5" data-bind="ntsCheckBox: { checked: ic_card }">#{i18n.getText('KDP010_224')}</div>
+					</div>
+					<div class="check">	
+						<div tabindex="6" data-bind="ntsCheckBox: { checked: ricohStamp}">#{i18n.getText('KDP010_229')}</div>
+					</div>
+					<div class="label-middle margin-left5">
+						<label>#{i18n.getText('KDP010_225')}</label>
+					</div>
+					<div class="check">
+						<div tabindex="7" data-bind="ntsCheckBox: { checked: indivition }">#{i18n.getText('KDP010_226')}</div>
+					</div> 
+					<div class="check">
+						<div tabindex="8" data-bind="ntsCheckBox: { checked: smart_phone }">#{i18n.getText('KDP010_227')}</div>
+					</div> 
+					<div class="check">
+						<div tabindex="9" data-bind="ntsCheckBox: { checked: portal }">#{i18n.getText('KDP010_228')}</div>
+					</div>
+				</div>
 			</div>
-			<div id="contents-area">
-				<div id="left-area">
-					<table>
-						<tr>
-							<!-- G2_1 -->
-							<td><label class="basic-label">#{i18n.getText('KDP010_97')}</label>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<!-- G2_2 -->
-								<div tabindex="4" id="combobox" class="cbx-days" data-bind="ntsComboBox: {
-											options: optionPage,
-											optionsValue: 'code',
-											value: selectedPage,
-											optionsText: 'name',
-											visibleItemsCount: 25,
-											enable: true,
-											dropDownAttachedToBody: true,
-											columns: [
-												{ prop: 'name'},
-											]}"></div>
-							</td>
-						</tr>
-					</table>
-				</div>
-				<div id="right-area">
-					<table class="basic-items">
-						<tr>
-							<td>
-								<!-- G3_1 -->
-								<div id="correc-label"
-									data-bind="ntsFormLabel: { required: true, constraint: 'StampPageName' }">
-									#{i18n.getText('KDP010_101')}
-								</div> <!-- G3_2 --> <input tabindex="6" id="correc-text"
-									data-bind="ntsTextEditor: {name: '#[KDP010_101]',required: true, value: pageName, constraint: 'StampPageName'}" />
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<!-- G4_1 -->
-								<div id="correc-label1" data-bind="ntsFormLabel: { required: true }">
-									#{i18n.getText('KDP010_102')}
-								</div>
-							</td>
-							<td>
-								<!-- G4_2 -->
-								<div tabindex="7" id="combobox1" class="cbx-days" data-bind="ntsComboBox: {
-											options: optionLayout,
-											optionsValue: 'value',
-											value: selectedLayout,
-											optionsText: 'name',
-											enable: true,
-											visibleItemsCount: 10,
-											columns: [
-												{ prop: 'name'},
-											]}">
-								</div>
-							</td>
-
-						</tr>
-						<tr>
-							<!-- G5_1 -->
-								<td>
-									<div id="comment"
-										data-bind="ntsFormLabel: { required: false, constraint: 'PageComment'  }">
-										#{i18n.getText('KDP010_103')}</div>
-										
-								</td>
-							
-							<!-- G5_2 -->
-							
-								<td>
-								<div id="comment-text"><textarea tabindex="8" id = "text-area-comment"
-										data-bind="ntsMultilineEditor: { name: '#[KDP010_103]',value: commentDaily, constraint: 'PageComment' }" /></div>
-									</td>
-							
-						</tr>
-					
-						<tr>
-							<!-- G6_1 -->
-							<td><div id="color"
-									data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_104')}</div>
-								<!-- G6_2 -->
-								<div tabindex="9" id="first-color-picker" class="colorpicker"
-									data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_104]' }" />
-							</td>
-						</tr>
-
-					</table>
-				</div>
-				<!-- G7 -->
-				<div id="item-panel" class="panel panel-frame item-panel">
-					<com:ko-if bind="selectedLayout() ==0 ">
-						<table>
-							<tr>
-								<td>
-									<button class="btn-name btn1 stamp-rec-btn" id="button1"
-										data-bind="click: openHDialog.bind($data,1), text: buttonInfo()[0].buttonName, style:{ 'background-color' :  $data.buttonInfo()[0].buttonColor(), color :  $data.buttonInfo()[0].textColor() }"></button>
-								</td>
-								<td>
-									<button class="btn-name btn2 stamp-rec-btn" id="button2"
-										data-bind="click: openHDialog.bind($data,2), text: buttonInfo()[1].buttonName, style:{ 'background-color' :  $data.buttonInfo()[1].buttonColor(), color :  $data.buttonInfo()[1].textColor()  }"></button>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<button class="btn-name btn3 stamp-rec-btn" id="button3"
-										data-bind="click: openHDialog.bind($data,3), text: buttonInfo()[2].buttonName, style:{ 'background-color' :  $data.buttonInfo()[2].buttonColor(), color :  $data.buttonInfo()[2].textColor()  }"></button>
-								</td>
-								<td>
-									<button class="btn-name btn4 stamp-rec-btn" id="button4"
-										data-bind="click: openHDialog.bind($data,4), text: buttonInfo()[3].buttonName, style:{ 'background-color' :  $data.buttonInfo()[3].buttonColor(), color :  $data.buttonInfo()[3].textColor()  }"></button>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<button class="btn-name btn5 stamp-rec-btn" id="button5"
-										data-bind="click: openHDialog.bind($data,5), text: buttonInfo()[4].buttonName, style:{ 'background-color' :  $data.buttonInfo()[4].buttonColor(), color :  $data.buttonInfo()[4].textColor()  }"></button>
-								</td>
-								<td>
-									<button class="btn-name btn6 stamp-rec-btn" id="button6"
-										data-bind="click: openHDialog.bind($data,6), text: buttonInfo()[5].buttonName, style:{ 'background-color' :  $data.buttonInfo()[5].buttonColor(), color :  $data.buttonInfo()[5].textColor()  }"></button>
-								</td>
-							</tr>
-						</table>
-
-					</com:ko-if>
-
-					<com:ko-if bind="selectedLayout() !=0 ">
-						<table>
-							<tr>
-								<td>
-								
-									<button class="btn-name-2 btn_1 stamp-square-btn" id="button1"
-										data-bind="click: openHDialog.bind($data,1), text: buttonInfo()[0].buttonName, style:{ 'background-color' :  buttonInfo()[0].buttonColor(), color :  buttonInfo()[0].textColor() }"></button>
-								</td>
-								<td>
-									<button class="btn-name-2 btn_2 stamp-square-btn" id="button2"
-										data-bind="click: openHDialog.bind($data,2), text: buttonInfo()[1].buttonName, style:{ 'background-color' :  $data.buttonInfo()[1].buttonColor(), color :  $data.buttonInfo()[1].textColor() }"></button>
-								</td>
-								<td>
-									<button class="btn-name-2 btn_3 stamp-square-btn" id="button3"
-										data-bind="click: openHDialog.bind($data,3), text: buttonInfo()[2].buttonName, style:{ 'background-color' :  $data.buttonInfo()[2].buttonColor(), color :  $data.buttonInfo()[2].textColor() }"></button>
-								</td>
-								<td>
-									<button class="btn-name-2 btn_4" id="button4"
-										data-bind="click: openHDialog.bind($data,4), text: buttonInfo()[3].buttonName, style:{ 'background-color' :  $data.buttonInfo()[3].buttonColor(), color :  $data.buttonInfo()[3].textColor() }"></button>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<button class="btn-name-2 btn_5 stamp-square-btn" id="button5"
-										data-bind="click: openHDialog.bind($data,5), text: buttonInfo()[4].buttonName, style:{ 'background-color' :  $data.buttonInfo()[4].buttonColor(), color :  $data.buttonInfo()[4].textColor() }"></button>
-								</td>
-								<td>
-									<button class="btn-name-2 btn_6 stamp-square-btn" id="button6"
-										data-bind="click: openHDialog.bind($data,6), text: buttonInfo()[5].buttonName, style:{ 'background-color' :  $data.buttonInfo()[5].buttonColor(), color :  $data.buttonInfo()[5].textColor() }"></button>
-								</td>
-								<td>
-									<button class="btn-name-2 btn_7 stamp-square-btn" id="button7"
-										data-bind="click: openHDialog.bind($data,7), text: buttonInfo()[6].buttonName, style:{ 'background-color' :  $data.buttonInfo()[6].buttonColor(), color :  $data.buttonInfo()[6].textColor() }"></button>
-								</td>
-								<td>
-									<button class="btn-name-2 btn_8 stamp-square-btn" id="button8"
-										data-bind="click: openHDialog.bind($data,8), text: buttonInfo()[7].buttonName, style:{ 'background-color' :  $data.buttonInfo()[7].buttonColor(), color :  $data.buttonInfo()[7].textColor() }"></button>
-								</td>
-							</tr>
-						</table>
-
-					</com:ko-if>
-
-				</div>
+			<div id="functions-area-bottom">
+				<button tabindex="10" class="proceed x-large" data-bind="click: save">#{i18n.getText('KDP010_10')}</button>
+				<button tabindex="11" data-bind="click: closeDialog">#{i18n.getText('KDP010_237')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

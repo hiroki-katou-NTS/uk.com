@@ -6,10 +6,6 @@
 	overflow: auto;
 }
 
-#functions-area-bottom {
-	height: 45px;
-}
-
 button.large {
 	min-width: 85px;
 }

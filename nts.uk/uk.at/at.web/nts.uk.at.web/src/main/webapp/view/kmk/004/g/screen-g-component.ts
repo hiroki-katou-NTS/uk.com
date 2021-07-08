@@ -125,6 +125,8 @@ class ScreenGComponent extends ko.ViewModel {
 	}
 
 	mounted() {
+        const vm = this;
+            
 	}
 
 }

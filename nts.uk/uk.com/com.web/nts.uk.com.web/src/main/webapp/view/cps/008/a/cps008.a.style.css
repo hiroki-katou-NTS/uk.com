@@ -3,7 +3,7 @@
 }
 
 #functions-area button+.ntsControl {
-	margin-left: 565px;
+	margin-left: 475px;
 }
 
 #functions-area, #contents-area {
@@ -33,9 +33,7 @@
 }
 
 #left-content {
-	margin-left: 10px;
-	margin-top: 12px;
-	padding: 20px;
+	margin-left: 20px;
 	float: left;
 	width: 20%;
 }
@@ -48,7 +46,6 @@ button.search-btn {
 
 #right-content {
 	margin-left: 30px;
-	margin-top: 14px;
 	float: left;
 	width: 65%;
 	position: relative;

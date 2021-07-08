@@ -3,6 +3,7 @@ import { dom, browser, $ } from '@app/utils';
 import { LanguageBar } from '@app/plugins/i18n';
 import { component, Watch } from '@app/core/component';
 import { Ccgs03AComponent } from 'views/ccg/s03/a';
+import EventBus from './sidemenu';
 
 // tslint:disable-next-line: variable-name
 const _NavMenu = Vue.observable({
@@ -33,8 +34,8 @@ const _NavMenu = Vue.observable({
         <a v-on:click="" class="navbar-brand mr-n2">{{pgName |i18n}}</a>
         <div class="d-flex justify-content-end align-items-center">
             <div class="div-ccgs08">
-                <img :class="isNewNotice ? 'left-style' : ''" :src="iconNotice" class="img-notice" @click="showCcg003()">
-                <img v-if="isNewNotice" :src="redCircle" class="img-red-circle">
+                <img :class="isNewNotice ? 'left-style' : ''" src="/nts.uk.mobile.web/dist/resources/164.png" class="img-notice" @click="showCcg003()">
+                <img v-if="isNewNotice" src="/nts.uk.mobile.web/dist/resources/165.png" class="img-red-circle">
             </div>
             <button class="navbar-toggler dropdown-toggle" v-on:click="show = !show"></button>
         </div>
@@ -80,9 +81,7 @@ const _NavMenu = Vue.observable({
 })
 export class NavMenuBar extends Vue {
     public active: any = {};
-    private isNewNotice: boolean = false;
-    public iconNotice: string = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAhCAYAAACm75niAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGESURBVFhH7ZjPSsNAEMa/SbSHWoOCxT/Qi3jwxeJD6Yt5EC8BrfRQSNFDMTvObqahsU0jgmsX9ndodibN7pf0S3d2CUq1uGLiKQhGM/uGVXaGNJs5ze6jKoec4MM29x7GAZLsk8g+6YRfNB0GBicgLuUmAiTRY3BE4b6Jwn0ThfsmWOGdExBLNcA4lzubPmhKZqyLnPDmzmzD4AhEl9Lpk7uG6SZnfpU+3t357xgMRIGMwcXaGKd5grlG3XQKt52m2bIpwlZU5UDqmqVGbQxNkB4XrWuqxURKikKjNiJSxpi3vi967uWQ11E30eO+2WkVsUTjvRWSFw92W2XdrxbJ5busIn7eGEPotUqsDn0ThfsmCvdNFO6bcIUbjLQZDnZTyFVmXJLMngFNoMltbRXKmAyGLrfPMFInmkaPtK0WbrALAfCz227sg+0zoOtmEfEXUIY7bdZW6aMqx7J4mGm0icG42UX1xY/+VZwo+YkMDjVT42LJ+xb9K+zurn2Z7VFT/wDwBQ1Zgov2L8soAAAAAElFTkSuQmCC';
-    public redCircle: string = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAANCAYAAACdKY9CAAAAQ0lEQVQoU2NkQANvZVT+IwsJP7nDiMyHc9AVohsE0wjWQEgxTDNIE+kaiDUdZgvjcNBA+2CFBReh0EKJaeRkQCgtAQBEFSrqz4IE/AAAAABJRU5ErkJggg==';
+    public isNewNotice: boolean = false;
 
     @Watch('show', { immediate: true })
     public toggleMaskLayer(show: boolean) {
@@ -122,6 +121,7 @@ export class NavMenuBar extends Vue {
         const vm = this;
         dom.registerEventHandler(window, 'resize', resize);
         vm.$mask('show', { message: true });
+        EventBus.$on('hideSideBar', vm.checkIsNewMsg);
     }
 
     public mounted() {

@@ -6,7 +6,7 @@ module nts.uk.at.view.kdl003.a {
             __viewContext.bind(screenModel);
             $("[tabindex='2']").focus();
             $("#inputStartTime").focus();
-            $("#list-worktype").igGrid("container").focus();
+          //  $("#list-worktype").igGrid("container").focus();
         });
     });
 }

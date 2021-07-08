@@ -31,10 +31,10 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.S
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeCard;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -42,6 +42,8 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
+import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
+import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -88,6 +90,9 @@ public class StampSettingsEmbossFinder {
 	
 	@Inject
 	protected WorkingConditionItemRepository workingConditionItemRepo;
+	
+	@Inject
+	private WorkManagementMultipleRepository workManagementMultipleRepository;
 
 	public KDP002AStartPageOutput getSettings() {
 
@@ -109,17 +114,26 @@ public class StampSettingsEmbossFinder {
 		// 2
 		Optional<StampResultDisplay> stampResultDisplay = stampResultDisplayRepository.getStampSet(companyId);
 
-		// 3 DS: タイムカードを取得する
+		// 3 AR: 複数回勤務管理
+		
+		Optional<WorkManagementMultiple> workmanager = this.workManagementMultipleRepository.findByCode(companyId);
+		
+		// 4 DS: タイムカードを取得する
 		TimeCard timeCard = getTimeCard(employeeId, GeneralDate.today());
 
-		// 4  DS 社員の打刻一覧を取得する
+		// 5  DS 社員の打刻一覧を取得する
 		DatePeriod period = new DatePeriod(GeneralDate.today().addDays(-3), GeneralDate.today());
 		List<EmployeeStampInfo> employeeStampDatas = getEmployeeStampDatas(period, employeeId);
 
-		// 5 抑制する打刻種類を取得する
+		// 6 抑制する打刻種類を取得する
 		StampToSuppress stampToSuppress = getStampToSuppress(employeeId);
 
-		return new KDP002AStartPageOutput(stampSetting, stampResultDisplay, timeCard, employeeStampDatas, stampToSuppress);
+		return new KDP002AStartPageOutput(stampSetting,
+				stampResultDisplay,
+				timeCard,
+				employeeStampDatas,
+				stampToSuppress,
+				workmanager.map(m -> m.getUseATR().value).orElse(0));
 	}
 
 	public List<EmployeeStampInfo> getEmployeeStampDatas(DatePeriod period, String employeeId) {

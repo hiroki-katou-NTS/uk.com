@@ -55,7 +55,7 @@ module nts.uk.at.view.kwr001.a {
 
             // dropdownlist A9_2
             itemListTypePageBrake: KnockoutObservableArray<ItemModel>;
-            selectedCodeA9_2: KnockoutObservable<number>;
+            selectedCodeA9_2: KnockoutObservable<string>;
             
             // radio button group A13_1
             itemListConditionSet: KnockoutObservableArray<any>;
@@ -245,8 +245,8 @@ module nts.uk.at.view.kwr001.a {
                 
                 // TODO: hoangdd - goi service lay enum thay cho viec set cung resource
                 self.dataOutputType = ko.observableArray([
-                    { code: '0', name: nts.uk.resource.getText("KWR001_10") },
-                    { code: '1', name: nts.uk.resource.getText("KWR001_11") }
+                    { code: 0, name: nts.uk.resource.getText("KWR001_10") },
+                    { code: 1, name: nts.uk.resource.getText("KWR001_11") }
                 ]);
                 self.selectedDataOutputType = ko.observable(0);
                 self.selectedDataOutputType.subscribe(function(value) {
@@ -268,7 +268,7 @@ module nts.uk.at.view.kwr001.a {
                     new ItemModel('2', nts.uk.resource.getText('KWR001_163'))
                 ]);
                 
-                self.selectedCodeA9_2 = ko.observable(0);
+                self.selectedCodeA9_2 = ko.observable('0');
                 
                 self.selectedCodeA7_3 = ko.observable(''); 
                 self.selectedCodeA7_8 = ko.observable(''); 
@@ -317,7 +317,7 @@ module nts.uk.at.view.kwr001.a {
                     isShowSelectAllButton: self.isShowSelectAllButton(),
                     isSelectAllAfterReload: true,
                     tabindex: 5,
-                    maxRows: 17
+                    maxRows: 20
                 };
                 // end define KCP005
             }
@@ -369,7 +369,7 @@ module nts.uk.at.view.kwr001.a {
                     let workScheduleOutputCondition: WorkScheduleOutputConditionDto = data;
                     self.selectedDataOutputType(workScheduleOutputCondition.outputType);
                     self.selectedCodeA7_3(workScheduleOutputCondition.code);
-                    self.selectedCodeA9_2(workScheduleOutputCondition.pageBreakIndicator);
+                    self.selectedCodeA9_2(workScheduleOutputCondition.pageBreakIndicator.toString());
                     self.checkedA10_2(workScheduleOutputCondition.settingDetailTotalOutput.details);
                     self.checkedA10_3(workScheduleOutputCondition.settingDetailTotalOutput.personalTotal);
                     self.checkedA10_4(workScheduleOutputCondition.settingDetailTotalOutput.workplaceTotal);
@@ -425,7 +425,7 @@ module nts.uk.at.view.kwr001.a {
                 // start component CCG001
                 // start component KCP005
                 $.when($('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption), 
-                            $('#component-items-list').ntsListComponent(self.listComponentOption)).done(function() {
+                    $('#component-items-list').ntsListComponent(self.listComponentOption)).done(function() {
                     $('.ntsStartDatePicker').focus();
                     blockUI.clear();
                 });
@@ -864,7 +864,7 @@ module nts.uk.at.view.kwr001.a {
                                                                                         , userId
                                                                                         , self.selectedDataOutputType()
                                                                                         , codeChoose
-                                                                                        , self.selectedCodeA9_2()
+                                                                                        , Number(self.selectedCodeA9_2())
                                                                                         , workScheduleSettingTotalOutput
                                                                                         , self.selectedCodeA13_1()
                                                                                         , selectionType

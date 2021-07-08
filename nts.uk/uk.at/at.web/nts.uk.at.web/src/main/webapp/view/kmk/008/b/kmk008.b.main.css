@@ -34,7 +34,8 @@
 }
 
 .tabpanel-1-contents-area-right {
-	width: 686px;
+	width: 870px;
+  height: 450px;
 	margin-top: 25px;
 	display: inline-block;
 	clean: right;
@@ -51,7 +52,7 @@
 }
 
 .table-basic-setting-list {
-	width: 673px;
+	width: 836px;
 }
 
 .ml10 {
@@ -112,7 +113,6 @@ th {
 
 td.wrap-white-space-pre-line {
 	white-space: pre-line !important;
-	word-break: keep-all;
 	padding: 3px;
 }
 

@@ -10,7 +10,7 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApplicationEmailBody
 			</com:ValidatorScript>
-			<script>var dialogSize = { width: 870, height: 625 };</script>
+			<script>var dialogSize = { width: 870, height: 650 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="kdl030.a.start.js" />
 			<com:scriptfile path="kdl030.a.vm.js" />
@@ -19,19 +19,19 @@
 		</ui:define>
 		<ui:define name="content">
 			
-			<div id="contents-area" style="width: 850px; height: 620px">
+			<div id="contents-area" style="width: 850px;">
 				<!-- A1_1 承認者にメールを送信します。 -->
 				<div class="label-div" style="margin-left: 25px;">
 					<label>#{i18n.getText('KDL030_2')}</label>
 				</div>
-				<div class="table valign-center" data-bind="if: isExpandMode" style="margin-left: 22px">
+				<div class="table valign-center" data-bind="if: isExpandMode" style="margin-left: 22px; margin-top: 5px">
 					<div id="checkSendApplicant" data-bind="i18n: 'KDL030_36', ntsCheckBox: { checked: isSendApplicant }"></div>
 				</div>
 				<div class="table valign-center">
 					<div class="cell">
 						<!-- A2_1 送信対象者 -->
 						<div data-bind="if: !(isExpandMode)">
-							<div id="A2_1" style="width: 104px;"
+							<div id="A2_1" style="width: 94px;"
 								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDL030_3')}</div>
 						</div>
 						
@@ -45,7 +45,7 @@
 								</com:ko-if>
 								<th style="width: 70px;" data-bind="text: $i18n('KDL030_10')"></th>
 								<th style="width: 78px;" data-bind="text: $i18n('KDL030_11')"></th>
-								<th style="width: 250px;" data-bind="text: $i18n('KDL030_12')"></th>
+								<th style="width: 260px;" data-bind="text: $i18n('KDL030_12')"></th>
 								<th style="width: 70px;" data-bind="text: $i18n('KDL030_13')"></th>
 								<th style="width: 170px;" data-bind="text: $i18n('KDL030_14')"></th>
 							</tr>
@@ -64,7 +64,7 @@
 												bind="$vm.isFirstIndexPhase(appSendMailByEmp, loopPhase, loopFrame, loopApprover) &amp;&amp; ($vm.isExpandMode) ">
 												<td data-bind="attr: {rowspan: ko.pureComputed(function() { return $vm.phaseCount(appSendMailByEmp.approvalRoot.listApprovalPhaseStateDto())}) }">
 													<span data-bind="text: ko.pureComputed(function() {return $vm.getApplicantName(appSendMailByEmp)}) , attr: {'class' : $vm.checkApproverTwo(appSendMailByEmp) }"
-														  style="width: 100px;" ></span>
+														  style="width: 100px; vertical-align: middle;" ></span>
 												</td>
 											</com:ko-if>
 											<com:ko-if bind="$vm.isFirstIndexFrame(loopPhase, loopFrame, loopApprover)">
@@ -72,21 +72,20 @@
 					                					text: $vm.getPhaseLabel(loopPhase.phaseOrder())" style="width: 70px;"
 													class="bg-green"></td>
 											</com:ko-if>
-											<com:ko-if bind="$vm.isFirstIndexApprover(loopFrame, loopApprover)">
-												<td style="width: 78px; text-align: left;" class="bg-green"
-													data-bind="attr: {rowspan: ko.pureComputed(function() { return $vm.approverCount(loopFrame.listApprover())}) }">
-									            	<span style="padding-left: 5px;"
-														  data-bind="text: $vm.getApproverLabel(loopPhase, loopFrame, loopApprover)">
+											<com:ko-if bind="$index() !==  undefined">
+												<td style="width: 78px; text-align: left;" class="bg-green">
+									            	<span data-bind="text: $vm.getApproverLabelNew(loopPhase.listApprovalFrame, loopApprover, $parentContext.$index(), $index())">
 									            	</span>
 												</td>
+											
 											</com:ko-if>
-											<td style="width: 250px;">
-								                <span class="limited-label" style="width: 250px;"
+											<td style="width: 260px;">
+								                <span class="limited-label" style="width: 260px; vertical-align: middle;"
 													  data-bind="text: ko.pureComputed(function() { return $vm.getApproverAtr(loopApprover)})">
 								                </span>
 											</td>
 											<td style="width: 70px;">
-												<span class="limited-label" style="width: 70px;"
+												<span class="limited-label" style="width: 70px; vertical-align: middle;"
 													  data-bind="text: loopApprover.approvalAtrName"></span>
 											</td>
 											<td style="width: 170px;">
@@ -116,18 +115,19 @@
 				</div>
 				<div class="table valign-center">
 				</div>
-				<div class="table valign-center">
-					<div class="cell">
+				<div class="table valign-center" style="margin-bottom: 0px">
+					<div class="cell" style="width: 102px;">
 						<div id="A4_1" class="column1"
 							data-bind="ntsFormLabel: { required : true,  constraint: 'ApplicationEmailBody' }">#{i18n.getText('KDL030_6')}</div>
 					</div>
 					<div class="cell column2">
 						<textarea id="A4_2"
-							data-bind="ntsMultilineEditor: { 
+							data-bind="ntsMultilineEditor: {
 									name: '#[KDL030_6]',
 									value: mailContent,
 									required : true,
-									constraint: 'ApplicationEmailBody' }" />
+									constraint: 'ApplicationEmailBody' },
+									style: {height: isExpandMode ? '140px' : '170px'}" />
 					</div>
 				</div>
 			</div>

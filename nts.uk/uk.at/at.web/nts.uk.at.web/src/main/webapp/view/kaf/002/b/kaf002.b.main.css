@@ -6,13 +6,15 @@ input {
 }
 .inlineBlockFirst {
 	display: inline-block;
+	margin-top: -20px;
 }
 .labelFirst {
 	float: left;
+	width: 112px;
 }
 .blockSecond {
 	display: block;
-	margin-top: 10px;
+	margin-top: 7px;
 	margin-left: 40px;
 }
 .inputBlockSecond {
@@ -55,10 +57,13 @@ input {
 	margin: 30px 0px 50px 30px;
 }
 
+/*
+
 .header {
 	border-bottom: 2px solid #808080;
 	padding-bottom: 10px;
 }
+*/
 /*Set margin button */
 .location-button-009 {
 	margin: 0px 0px 0px -130px;
@@ -192,4 +197,13 @@ div.form-label.broken {
 }
 .centerCheckBox .secondCheckBox {
 	display: inline-block; margin-left: 88px
+}
+
+.marginCustome1 {
+	margin-top: 5px !important;
+	margin-bottom: 22px !important;
+}
+.marginCustome2 {
+	margin-top: 2px !important;
+	margin-bottom: 22px !important;
 }

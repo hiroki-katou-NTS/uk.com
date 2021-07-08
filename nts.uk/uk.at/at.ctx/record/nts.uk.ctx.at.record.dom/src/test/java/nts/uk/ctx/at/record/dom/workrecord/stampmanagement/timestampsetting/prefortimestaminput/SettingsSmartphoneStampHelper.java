@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -18,9 +19,9 @@ public class SettingsSmartphoneStampHelper {
 	public static SettingsSmartphoneStamp getSettingsSmartphoneStampDefault() {
 
 		return new SettingsSmartphoneStamp("000-0000000001", new DisplaySettingsStampScreen(new CorrectionInterval(1), // dummy
-				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DUMMY")),
+				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 				new ResultDisplayTime(1)), // dummy
-				new ArrayList<StampPageLayout>(), true);
+				new ArrayList<StampPageLayout>(), true, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 	}
 
 	public static SettingsSmartphoneStamp getSettingsSmartphoneStamp() {
@@ -31,7 +32,8 @@ public class SettingsSmartphoneStampHelper {
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.CANCEL_RESERVATION, Optional.empty()),
 				NotUseAtr.NOT_USE,
-				AudioType.GOOD_JOB));
+				AudioType.GOOD_JOB,
+				Optional.of(SupportWplSet.SELECT_AT_THE_TIME_OF_STAMPING)));
 		
 		lstSPL.add(new StampPageLayout(new PageNo(1),
 				new StampPageName("DUMMY"),
@@ -40,9 +42,9 @@ public class SettingsSmartphoneStampHelper {
 				lstBS));
 		
 		return new SettingsSmartphoneStamp("000-0000000001", new DisplaySettingsStampScreen(new CorrectionInterval(1), // dummy
-				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY"), new ColorCode("DUMMY")),
+				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 				new ResultDisplayTime(1)), // dummy
-				lstSPL, true);
+				lstSPL, true, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 	}
 	
 	public static Optional<ButtonSettings> getOPTButtonSeting(){
@@ -50,7 +52,8 @@ public class SettingsSmartphoneStampHelper {
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.CANCEL_RESERVATION, Optional.empty()),
 				NotUseAtr.NOT_USE,
-				AudioType.GOOD_JOB);
+				AudioType.GOOD_JOB,
+				Optional.of(SupportWplSet.SELECT_AT_THE_TIME_OF_STAMPING));
 		
 		return Optional.ofNullable(bSettings);
 	}

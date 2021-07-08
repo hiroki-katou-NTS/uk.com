@@ -451,8 +451,11 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         // アルゴリズム「自動実行登録処理」を実行する
         this.updateDomains(execItemCd, execType, companyId, execId, execSetting, procExecLog, lastExecDateTime,
                 processExecutionLogManage, dateTimeOutput);
-        //アルゴリズム「実行状態ログファイル作成処理」を実行する
-        createLogFileExecution.createLogFile(companyId, execItemCd);
+        // 実行時情報「アプリケーションコンテキスト．オプションライセンス．カスタマイズ．大塚」をチェックする
+     	if (AppContexts.optionLicense().customize().ootsuka()) {
+     		//アルゴリズム「実行状態ログファイル作成処理」を実行する
+            createLogFileExecution.createLogFile(companyId, execItemCd);
+     	}
         
         //更新処理自動実行エラーからトップページアラームを作成する
         DefaultRequireImpl rq = new DefaultRequireImpl(processExecutionLogManageRepository, employeeManageAdapter, topPageAlarmAdapter);

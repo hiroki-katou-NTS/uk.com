@@ -51,6 +51,11 @@ public class SettingsUsingEmbossing implements DomainAggregate {
 	 */
 	private boolean smart_phone;
 	
+	/**
+	 *  RICOH複写機打刻
+	 */
+	private boolean ricohStamp;
+	
 	//"[1] 打刻利用できるか	"
 	public boolean canUsedStamping (StampMeans stampMeans) {
 		switch (stampMeans) {
@@ -66,6 +71,8 @@ public class SettingsUsingEmbossing implements DomainAggregate {
 			return this.portal;
 		case SMART_PHONE:
 			return this.smart_phone;
+		case RICOH_COPIER:
+			return this.ricohStamp;
 		default:
 			return true;
 		}

@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
                 var dialogSize = {
-                    width : 450,
-                    height : 550
+                    width : 460,
+                    height : 605
                 };
             </script>
 			<com:scriptfile set="IGNITE" />
@@ -21,8 +21,8 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area">
-				<div style="padding: 20px">
+			<div id="contents-area">
+				<div style="padding: 0px 20px">
 					<div class="valign-center control-group">
 						<div style="width: 90px" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KFP001_28')}</div>
 						<span class="label" style="padding-right: 30px" data-bind="text: code"></span>
@@ -39,7 +39,7 @@
 						<span class="label" data-bind="text: targetNum"></span>
 					</div>
 					<table id="single-list" tabindex="1" data-bind="ntsGridList: {								
-						rows: 10,
+						rows: 9,
 						dataSource: items,
 						name: '#[KFP001_46]',
 						primaryKey: 'employeeId',

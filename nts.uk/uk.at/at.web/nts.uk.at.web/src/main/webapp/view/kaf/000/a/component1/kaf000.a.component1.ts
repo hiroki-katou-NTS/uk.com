@@ -4,14 +4,17 @@ module nts.uk.at.view.kaf000.a.component1.viewmodel {
     @component({
         name: 'kaf000-a-component1',
         template: `
-            <div id="kaf000-a-component1" data-bind="if: displayArea">
+            <div id="kaf000-a-component1">
 				<div data-bind="if: displayMsg">
-					<div class="message-td-1" data-bind="text: $i18n('KAF000_1')"></div>
-					<div class="message-td-2" data-bind="html: message"></div>
+					<div class="message-div">
+						<div style="word-break: break-all; word-wrap: break-word; line-height: 1.6;" data-bind="html: message"></div>
+					</div>
 				</div>
 				<div data-bind="if: displayDeadline">
-					<div class="message-td-1" data-bind="text: $i18n('KAF000_2')"></div>
-					<div class="message-td-2" data-bind="text: deadline"></div>	
+					<div class="message-div">
+						<div data-bind="text: $i18n('KAF000_2')" style="padding-top: 20px; padding-bottom: 10px; font-weight: bold;"></div>
+						<div data-bind="html: deadline" style="line-height: 1.8;"></div>
+					</div>
 				</div>
 			</div>
         `
@@ -21,7 +24,6 @@ module nts.uk.at.view.kaf000.a.component1.viewmodel {
         appDispInfoStartupOutput: any;
         message: KnockoutObservable<string>;
         deadline: KnockoutObservable<string>;
-        displayArea: KnockoutObservable<boolean>;
         displayMsg: KnockoutObservable<boolean>;
         displayDeadline: KnockoutObservable<boolean>;
 
@@ -31,9 +33,6 @@ module nts.uk.at.view.kaf000.a.component1.viewmodel {
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.message = ko.observable("line111111111111111111");
             vm.deadline = ko.observable("line222222222222222222");
-            vm.displayArea = ko.pureComputed(() => {
-                return vm.displayMsg() || vm.displayDeadline();
-            });
             vm.displayMsg = ko.observable(false);
             vm.displayDeadline = ko.observable(false);
 

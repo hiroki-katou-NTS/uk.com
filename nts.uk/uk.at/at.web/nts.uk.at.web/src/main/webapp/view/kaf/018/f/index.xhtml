@@ -20,14 +20,14 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div class="table" style="margin-left: 5px; margin-top: 10px;">
-					<div class="cell valign-center">
-						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_370')}</div>
+					<div class="cell valign-center" style="width: 75px">
+						<div style="position: relative; top: -5px" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_370')}</div>
 					</div>
 					<div class="cell valign-center">
-						<div class="limited-label label" style="width: 110px;"  data-bind="text: closureItem.closureName"></div>
+						<div class="limited-label label"  data-bind="text: closureItem.closureName"></div>
 					</div>
 					<div class="cell valign-center">
-						<div class="limited-label label" style="width: 300px;">
+						<div class="limited-label label" style="width: 300px; margin-left: 15px;">
 							<span data-bind="text: startDate"></span>
 							<span>#{i18n.getText('KAF018_371')}</span>
 							<span data-bind="text: endDate"></span>
@@ -39,11 +39,11 @@
 						<button data-bind="click: back, enable: enableBack"><i class="img-icon icon-prev"></i></button>
 						<button data-bind="click: next, enable: enableNext"><i class="img-icon icon-next"></i></button>
 					</div>
-					<div class="cell valign-center" style="width: calc(100vw - 475px)" data-bind="with: currentApprSttExeDto">
+					<div class="cell valign-center" style="width: calc(100vw - 475px); padding-top: 5px" data-bind="with: currentApprSttExeDto">
 						<span style="margin-left: 10px" data-bind="text: wkpCD"></span>
 						<span data-bind="text: '　　　　' + wkpName"></span>
 					</div>
-					<div class="cell valign-center" style="width: 170px; text-align: right;">
+					<div class="cell valign-center" style="width: 170px; text-align: right; padding-top: 5px">
 						<button style="margin-right: 100px;" data-bind="ntsLegendButton: legendWithTemplateOptions">#{i18n.getText('KAF018_402')}</button>
 					</div>
 				</div>

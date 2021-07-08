@@ -1,0 +1,77 @@
+#functions-area button.danger{
+	margin: 0 10px;
+}
+
+.contents-area{
+	padding: 0!important;
+}
+
+.contents-area .row{
+    margin: 5px 10px 5px 20px;
+}
+
+.contents-area .row textarea{
+	height: 105px;
+	width: 260px;
+}
+
+.contents-area .row .form-label{
+	vertical-align: top;
+    width: 100px;
+}
+
+.contents-area .title label{
+	margin-left: 30px;
+}
+
+.buton-setting{
+    display: inline-block;
+    margin-top: 4px;
+}
+
+.buton-setting td{
+    width: 118px;
+}
+
+.buton-setting button{
+    width: 110px;
+    height: 110px;
+    margin: 0 0 7px 0px;
+    border-radius: 7px;
+    padding: 0;
+    box-shadow: 1px 1px 2px 1px #808080;
+    border: 0;
+}
+.buton-setting button div{
+	margin-top: 10px;
+	height: 17px;
+	font-size: 17px;
+}
+.buton-setting button div.twoRow{
+    font-size: 11px;
+    height: 25px;
+    margin: 2px;
+    position: relative;
+    bottom: -8px;
+    word-break: break-all;
+    white-space: break-spaces;
+} 
+
+.popup-area table{
+    border: solid 1px #b1b1b1;
+}
+.popup-area tr td {
+	padding: 4px 6px;
+}
+.popup-area tr td div{
+    cursor: pointer;
+    width: fit-content;
+}
+.popup-area tr td div:focus{
+	outline-width: 0;
+}
+.popup-area tr td div:hover {
+	color: #30CC40;
+    background: linear-gradient(0deg, rgba(68,224,140,0.1), rgba(68,224,140,0.1)),#fff;
+    box-shadow: 0px 8px 10px rgb(22 154 28 / 10%);
+}

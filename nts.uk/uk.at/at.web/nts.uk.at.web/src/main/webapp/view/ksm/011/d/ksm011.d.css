@@ -42,10 +42,10 @@
   width: 70px;
 }
 
-#contents-area .sub-group .ntsRadioBox {
+#contents-area .sub-group .radio-wrappers:not(.switchbox-wrappers) .radio-wrapper  {
   display: block;
 }
-#contents-area .sub-group .ntsRadioBox:first-child {
+#contents-area .sub-group .radio-wrappers:not(.switchbox-wrappers) .radio-wrapper:first-child {
   margin-bottom: 15px;
 }
 #contents-area .sub-group .table .cell-left {

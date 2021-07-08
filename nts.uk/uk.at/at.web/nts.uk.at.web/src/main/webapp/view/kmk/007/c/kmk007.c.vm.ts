@@ -28,6 +28,7 @@ module nts.uk.at.view.kmk007.c.viewmodel {
             }
             
             self.items = ko.observableArray(self.oldDataItems());
+            self.items.valueHasMutated();
         }
 
         startPage(): JQueryPromise<any> {

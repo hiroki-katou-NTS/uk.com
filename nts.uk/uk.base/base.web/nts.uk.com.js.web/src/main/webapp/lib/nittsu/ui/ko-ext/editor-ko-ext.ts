@@ -267,7 +267,7 @@ module nts.uk.ui.koExtentions {
             self.setWidthByConstraint(constraintName, $input);
             
             $input.addClass('nts-editor nts-input');
-            $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
+            $input.wrap("<div class='nts-editor-wrapped ntsControl' />");
 
             setEnterHandlerIfRequired($input, data);
             

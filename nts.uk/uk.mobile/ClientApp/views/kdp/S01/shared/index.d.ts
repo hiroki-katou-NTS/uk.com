@@ -24,6 +24,9 @@ export module model {
         // 打刻ボタンを抑制する
         buttonEmphasisArt: boolean;
 
+        // 位置情報を利用する
+	    locationInfoUse: boolean;
+
     }
 
     export interface IStampPageLayoutDto {
@@ -62,11 +65,16 @@ export module model {
 
         usrArt: number;
 
-        buttonType: IButtonTypeDto
+        buttonType: IButtonTypeDto;
+        
+        icon: string;
     }
 
     export interface IButtonTypeDto {
-
+        /** 予約区分 */
+	    reservationArt: number;
+        
+        /** 打刻種類 */
         stampType: IStampTypeDto;
     }
 
@@ -256,6 +264,7 @@ export module model {
         workLocationName: string;
         workLocationCd: string;
         empInfo: IEmployeeRecordImport;
+        workplaceName: string;
     }
 
     interface IEmployeeRecordImport {
@@ -355,6 +364,8 @@ export module model {
         workTimeName: string;
 
         empInfo: IEmployeeRecordImport;
+
+        workplaceName: string;
 
     }
 

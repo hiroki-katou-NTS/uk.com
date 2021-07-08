@@ -15,6 +15,7 @@
 .error-content {
 	font-size: 1.5rem;
 	padding-top: 20px;
+	height: 34px;
 }
 
 .retry-btn {
@@ -41,3 +42,4 @@
 .contents {
 	padding: 20px;
 }
+

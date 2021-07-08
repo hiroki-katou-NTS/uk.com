@@ -3,56 +3,48 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
     import setShared = nts.uk.ui.windows.setShared;
 
     const template = `
-    <div id="kaf012-share-component1" class="control-group valign-top label warning">
-        <div style="display: inline-block" data-bind="text: $i18n('KAF012_2')"/>
-        <table id="remaining-table">
-            <thead>
-                <tr class="bg-green">
-                    <th data-bind="css: { hidden: !display1() }">
-                        <span data-bind="text: $i18n('KAF012_3')"/>
-                    </th>
-                    <th data-bind="css: { hidden: !display2() }">
-                        <span data-bind="text: $i18n('KAF012_4')"/>
-                    </th>
-                    <th data-bind="css: { hidden: !display3() }">
-                        <span data-bind="text: $i18n('Com_ChildNurseHoliday')"/>
-                    </th>
-                    <th data-bind="css: { hidden: !display4() }">
-                        <span data-bind="text: $i18n('Com_CareHoliday')"/>
-                    </th>
-                    <th data-bind="css: { hidden: !display5() }">
-                        <span data-bind="text: $i18n('Com_ExsessHoliday')"/>
-                    </th>
-                    <th data-bind="css: { hidden: !display6() }">
-                        <span data-bind="text: $i18n('KAF012_46')"/>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td data-bind="css: { hidden: !display1() }">
-                        <a class="hyperlink" href="" data-bind="text: substituteRemaining, click: openKDL005"/>
-                    </td>
-                    <td data-bind="css: { hidden: !display2() }">
-                        <a class="hyperlink" href="" data-bind="text: annualRemaining, click: openKDL020"/>
-                    </td>
-                    <td data-bind="css: { hidden: !display3() }">
-                        <a class="hyperlink" href="" data-bind="text: childNursingRemaining, click: openKDL051"/>
-                    </td>
-                    <td data-bind="css: { hidden: !display4() }">
-                        <a class="hyperlink" href="" data-bind="text: nursingRemaining, click: openKDL052"/>
-                    </td>
-                    <td data-bind="css: { hidden: !display5() }">
-                        <a class="hyperlink" href="" data-bind="text: super60HRemaining, click: openKDL017"/>
-                    </td>
-                    <td data-bind="css: { hidden: !display6() }">
-                        <span class="label" data-bind="text: specialRemaining"/>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    `;
+    <div id="kaf012-share-component1" class="control-group">
+        <div class="cell" style="font-weight: bold" data-bind="text: $i18n('KAF012_2')"></div>
+        <div class="space-between-table ">
+            <!-- ko if: display1() -->
+            <div class="row-underline" style="display: flex; justify-content: space-between">
+                <div data-bind="ntsFormLabel: {}, text: $i18n('KAF012_3')"></div>
+                <a class="hyperlink" href="" data-bind="text: substituteRemaining, click: openKDL005"></a>
+            </div>
+            <!-- /ko -->
+            <!-- ko if: display2() -->
+            <div class="row-underline" style="display: flex; justify-content: space-between">
+                <div data-bind="ntsFormLabel: {}, text: $i18n('KAF012_4')"></div>
+                <a class="hyperlink" href="" data-bind="text: annualRemaining, click: openKDL020"></a>
+            </div>
+            <!-- /ko -->
+            <!-- ko if: display3() -->
+            <div class="row-underline" style="display: flex; justify-content: space-between">
+                <div data-bind="ntsFormLabel: {}, text: $i18n('Com_ChildNurseHoliday')"></div>
+                <a class="hyperlink" href="" data-bind="text: childNursingRemaining, click: openKDL051"></a>
+            </div>
+            <!-- /ko -->
+            <!-- ko if: display4() -->
+            <div class="row-underline"  style="display: flex; justify-content: space-between">
+                <div data-bind="ntsFormLabel: {}, text: $i18n('Com_CareHoliday')"></div>
+                <a class="hyperlink" href="" data-bind="text: nursingRemaining, click: openKDL052"></a>
+            </div>
+            <!-- /ko -->
+            <!-- ko if: display5() -->
+            <div class="row-underline" style="display: flex; justify-content: space-between">
+                <div data-bind="ntsFormLabel: {}, text: $i18n('Com_ExsessHoliday')"></div>
+                <a class="hyperlink" href="" data-bind="text: super60HRemaining, click: openKDL017"></a>
+            </div>
+            <!-- /ko -->
+            <!-- ko if: display6() -->
+            <div class="row-underline"  style="display: flex; justify-content: space-between">
+                <div data-bind="ntsFormLabel: {}, text: $i18n('KAF012_46')"></div>
+                <span data-bind="text: specialRemaining"></span>
+            </div>
+            <!-- /ko -->
+        </div>
+        <div class="end-line"></div>
+    </div>`;
 
     @component({
         name: 'kaf012-share-component1',
@@ -247,7 +239,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
             let vm = this;
             const data = {
                 employeeIds: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
-                baseDate: new Date(vm.timeLeaveRemaining().remainingStart).toISOString()
+                baseDate: new Date(vm.timeLeaveRemaining().remainingStart)
             };
             setShared('KDL051A_PARAM', data);
             if(data.employeeIds.length > 1 ) {

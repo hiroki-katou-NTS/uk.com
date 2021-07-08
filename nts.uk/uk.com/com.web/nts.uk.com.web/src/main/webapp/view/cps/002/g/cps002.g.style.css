@@ -10,35 +10,32 @@ input.txtEmpCodeFirstChar {
 }
 
 .tblContent td {
-	padding: 10px 0px;
+	padding: 5px 0px;
 }
 
 .tblContent td:first-child {
 	vertical-align: top;
 }
 
-.tblContent td div {
-	margin: 5px 0px;
-}
-
-#empInitGroup .ntsRadioBox:not(:first-child), #initCardNoGroup .ntsRadioBox:not(:first-child){
-	width: 100%;
+#empInitGroup .radio-wrapper:not(:first-child), #initCardNoGroup .radio-wrapper:not(:first-child){
+	width: 90%;
 	margin-top: 5px;
 }
 
 #empCodeLetter {
 	position: absolute;
 	left: 80px;
-	top: 5px;
+	top: 12px;
 }
 
 #cardNoLetter {
 	position: absolute;
 	left: 80px;
-	top: 5px;
+	top: 12px;
 }
 
 #empInitGroup, #initCardNoGroup {
 	padding-top: 10px;
 	margin-top: -5px;
 }
+

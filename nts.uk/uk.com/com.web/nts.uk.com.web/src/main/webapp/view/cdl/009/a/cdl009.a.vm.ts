@@ -59,7 +59,7 @@ module nts.uk.com.view.cdl009.a {
                     isDialog: true,
                     employeeInputList: self.employeeList,
                     maxRows: 12,
-                    width: 474
+                    width: 445
                 };
                 // Set SelectedCode to listComponentOpt (Depend on isMultiSelect)
                 if (self.isMultiSelect()) {

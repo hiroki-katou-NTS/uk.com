@@ -1,5 +1,5 @@
 #lstData {
-	margin-left: 30px;
+	margin-left: 20px;
 }
 
 .btnMenu {
@@ -20,4 +20,8 @@
 #inpSearch {
 	width: 440px;
 	margin-bottom: 15px;
+}
+
+#inpSearch .ntsSearchBox {
+	width: 298px !important;
 }

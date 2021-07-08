@@ -14,7 +14,8 @@
 }
 
 .tab_5_checkbox {
-	padding: 20px 0px 10px 0px;
+	margin-top: 20px;
+	margin-bottom: 10px;
 }
 
 .tab_5_td_cell {
@@ -32,4 +33,8 @@
 
 .mb-20 {
 	margin-bottom: 20px;
+}
+
+#flexOneDay {
+	margin-top: 20px;
 }

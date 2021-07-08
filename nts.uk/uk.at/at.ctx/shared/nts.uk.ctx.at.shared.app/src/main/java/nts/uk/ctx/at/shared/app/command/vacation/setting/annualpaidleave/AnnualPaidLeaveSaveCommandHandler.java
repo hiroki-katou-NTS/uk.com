@@ -108,10 +108,10 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
                  }
 
                  //get timeManageType from DB
-                 int maxManageSemiVacationDB = domain != null ? domain.getManageAnnualSetting().getHalfDayManage().getManageType().value : -1;
+                /* int maxManageSemiVacationDB = domain != null ? domain.getManageAnnualSetting().getHalfDayManage().getManageType().value : -1;
                  //check timeManageType change
-                 boolean maxManageSemiVacation = command.getMaxManageSemiVacation() != maxManageSemiVacationDB;
-                 if(maxManageSemiVacation){
+                 boolean maxManageSemiVacation = command.getMaxManageSemiVacation() != maxManageSemiVacationDB;*/
+                 if(command.getMaxManageSemiVacation().intValue() == 1){
                 	 boolean flatManage = command.getMaxManageSemiVacation() == ManageDistinct.YES.value;
                 	 val manageAnnualSettingEvent = new ManageAnnualSettingDomainEvent(flatManage);
                      manageAnnualSettingEvent.toBePublished();
@@ -150,10 +150,10 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
             }
 
             //get timeManageType from DB
-            int maxManageSemiVacationDB = domain != null ? domain.getManageAnnualSetting().getHalfDayManage().getManageType().value : -1;
+           // maxManageSemiVacationDB = domain != null ? domain.getManageAnnualSetting().getHalfDayManage().getManageType().value : -1;
             //check timeManageType change
-            boolean maxManageSemiVacation = command.getMaxManageSemiVacation() != maxManageSemiVacationDB;
-            if(maxManageSemiVacation){
+          //  boolean maxManageSemiVacation = command.getMaxManageSemiVacation() != maxManageSemiVacationDB;
+            if(command.getMaxManageSemiVacation().intValue() == 1){
            	 boolean flatManage = command.getMaxManageSemiVacation() == ManageDistinct.YES.value;
            	 val manageAnnualSettingEvent = new ManageAnnualSettingDomainEvent(flatManage);
                 manageAnnualSettingEvent.toBePublished();
@@ -180,10 +180,25 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
             // Manage Annual Setting
             command.setAddAttendanceDay(
                     setttingDB.getManageAnnualSetting().isWorkDayCalculate() == TRUE ? BIT_TRUE : BIT_FALSE);
-            command.setMaxManageSemiVacation(setttingDB.getManageAnnualSetting().getHalfDayManage().manageType.value);
+			if (setttingDB.getManageAnnualSetting().getHalfDayManage().manageType == null) {
+				command.setMaxManageSemiVacation(0);
+			} else {
+				command.setMaxManageSemiVacation(
+						setttingDB.getManageAnnualSetting().getHalfDayManage().manageType.value);
+			}
+			if(setttingDB.getManageAnnualSetting().getHalfDayManage().reference == null) {
+				command.setMaxNumberSemiVacation(0);	
+			}else{
             command.setMaxNumberSemiVacation(setttingDB.getManageAnnualSetting().getHalfDayManage().reference.value);
-            command.setMaxNumberCompany(setttingDB.getManageAnnualSetting().getHalfDayManage()
-                    .maxNumberUniformCompany.v());
+            }
+            if(setttingDB.getManageAnnualSetting().getHalfDayManage()
+                    .maxNumberUniformCompany.v() == null){
+            	command.setMaxNumberCompany(5);	
+            }else{
+            	command.setMaxNumberCompany(setttingDB.getManageAnnualSetting().getHalfDayManage()
+                        .maxNumberUniformCompany.v());	
+            }
+            
  //           command.setMaxGrantDay(setttingDB.getManageAnnualSetting().getMaxGrantDay().v());
 //            command.setMaxRemainingDay(setttingDB.getManageAnnualSetting().getRemainingNumberSetting()
 //                    .remainingDayMaxNumber.v());
@@ -194,11 +209,19 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
 //                    .remainingNumberDisplay.value);
 //            command.setNextGrantDayDisplay(setttingDB.getManageAnnualSetting().getDisplaySetting()
 //                    .nextGrantDayDisplay.value);
+            if(setttingDB.getManageAnnualSetting().getRemainingNumberSetting()
+                    .retentionYear.v() == null){
+            	command.setNumberYearRetain(2);
+            }else{
             command.setNumberYearRetain(setttingDB.getManageAnnualSetting().getRemainingNumberSetting()
-                    .retentionYear.v());
+                    .retentionYear.v());}
             command.setAnnualPriority(setttingDB.getAcquisitionSetting().annualPriority.value);
             command.setYearlyOfDays(setttingDB.getManageAnnualSetting().getYearlyOfNumberDays().v());
-            command.setRoundProcessCla(setttingDB.getManageAnnualSetting().getHalfDayManage().roundProcesCla.value);
+			if (setttingDB.getManageAnnualSetting().getHalfDayManage().roundProcesCla == null) {
+				command.setRoundProcessCla(0);
+			} else {
+				command.setRoundProcessCla(setttingDB.getManageAnnualSetting().getHalfDayManage().roundProcesCla.value);
+			}
 
             // Time Leave Setting
             command.setTimeManageType(setttingDB.getTimeSetting().getTimeManageType().value);
@@ -242,7 +265,7 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         command.setMaxNumberCompany(null);
         // TODO: Check value default
         command.setMaxRemainingDay(null);
-        command.setNumberYearRetain(null);
+        command.setNumberYearRetain(2);
         command.setYearlyOfDays(null);
         command.setRoundProcessCla(RoundProcessingClassification.TruncateOnDay0.value);
         // =======
@@ -257,5 +280,8 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         command.setReference(MaxDayReference.CompanyUniform.value);
         command.setMaxTimeDay(null);
         command.setRoundProcessClassific(TimeAnnualRoundProcesCla.TruncateOnDay0.value);
+        //
+        command.setUniformTime(0);
+        command.setContractTimeRound(0);
     }
 }

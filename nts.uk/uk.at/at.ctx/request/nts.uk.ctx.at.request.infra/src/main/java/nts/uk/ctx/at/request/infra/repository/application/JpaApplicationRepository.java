@@ -509,7 +509,6 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	public void remove(String appID) {
 		String companyID = AppContexts.user().companyId();
 		this.commandProxy().remove(KrqdtApplication.class, new KrqdpApplication(companyID, appID));
-		this.getEntityManager().flush();
 	}
 
 	@Override

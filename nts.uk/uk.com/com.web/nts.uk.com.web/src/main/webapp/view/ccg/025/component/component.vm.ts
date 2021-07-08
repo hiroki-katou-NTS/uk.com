@@ -50,7 +50,7 @@ module nts.uk.com.view.ccg025.a.component {
                     self.currentCode = ko.observable("");
                     self.columns = ko.observableArray([
                         { headerText: '', prop: 'roleId', width: 100, hidden: true },
-                        { headerText: getText("CCG025_3"), prop: 'roleCode', width: 40 },
+                        { headerText: getText("CCG025_3"), prop: 'roleCode', width: 60 },
                         { headerText: getText("CCG025_4"), prop: 'roleName', width: 233, formatter: _.escape },
                         {
                             headerText: getText("CCG025_9"), prop: 'configured', width: 80, hidden: !self.isAlreadySetting(),

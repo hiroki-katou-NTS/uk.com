@@ -36,6 +36,7 @@ module cas009.a.viewmodel {
         });
 
         enableDetail: KnockoutObservable<boolean> = ko.observable(true);
+        isNewMode: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
             let self = this,
@@ -61,6 +62,7 @@ module cas009.a.viewmodel {
                     role.assignAtr(exist.assignAtr);
                     role.referFutureDate(exist.referFutureDate || false);
                     role.employeeReferenceRange(exist.employeeReferenceRange || 0);
+                    self.isNewMode(false);
                 } else {
                     role.roleName('');
                     role.roleCode('');
@@ -72,6 +74,7 @@ module cas009.a.viewmodel {
                     }
                     role.referFutureDate(false);
                     role.employeeReferenceRange(0);
+                    self.isNewMode(true);
                 }
 
                 // subscribe for focus and clear errors

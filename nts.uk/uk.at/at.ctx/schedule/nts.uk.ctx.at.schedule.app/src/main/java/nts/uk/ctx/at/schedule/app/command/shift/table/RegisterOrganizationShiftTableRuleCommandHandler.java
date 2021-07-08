@@ -58,26 +58,13 @@ public class RegisterOrganizationShiftTableRuleCommandHandler extends CommandHan
                 ? Collections.singletonList(AssignmentMethod.HOLIDAY)
                 : Collections.singletonList(AssignmentMethod.SHIFT);
 
-        ShiftTableRule shiftTableRule;
-        /** Case シフト表のルール．勤務希望運用区分 = する */
-        if (command.getUseWorkAvailabilityAtr() == 1) {
-            shiftTableRule = ShiftTableRule.create(
-                    NotUseAtr.valueOf(command.getUsePublicAtr()),
-                    NotUseAtr.valueOf(command.getUseWorkAvailabilityAtr()),
-                    shiftTableSetting,
-                    availabilityAssignMethodList,
-                    Optional.of(new FromNoticeDays(command.getUseWorkAvailabilityAtr()))
-            );
-        } else {
-            shiftTableRule = ShiftTableRule.create(
-                    NotUseAtr.valueOf(command.getUsePublicAtr()),
-                    NotUseAtr.valueOf(command.getUseWorkAvailabilityAtr()),
-                    Optional.empty(),
-                    availabilityAssignMethodList,
-                    Optional.of(new FromNoticeDays(command.getUseWorkAvailabilityAtr()))
-            );
-        }
-
+        ShiftTableRule shiftTableRule = ShiftTableRule.create(
+                NotUseAtr.valueOf(command.getUsePublicAtr()),
+                NotUseAtr.valueOf(command.getUseWorkAvailabilityAtr()),
+                shiftTableSetting,
+                availabilityAssignMethodList,
+                Optional.of(new FromNoticeDays(command.getUseWorkAvailabilityAtr()))
+        );
 
         /** Declare shared variables **/
         String companyId = AppContexts.user().companyId();

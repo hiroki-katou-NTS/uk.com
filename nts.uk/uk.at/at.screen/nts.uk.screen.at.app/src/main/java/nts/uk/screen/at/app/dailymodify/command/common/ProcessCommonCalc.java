@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.ItemFlex;
@@ -42,8 +43,8 @@ public class ProcessCommonCalc {
 	}
 
 	public static List<Pair<String, GeneralDate>> itemInGroupChange(List<IntegrationOfDaily> domainDailyNew,
-			List<DailyModifyResult> resultOlds) {
-		List<DailyRecordDto> dtoNews = domainDailyNew.stream().map(x -> DailyRecordDto.from(x))
+			List<DailyModifyResult> resultOlds, Map<Integer, OptionalItem> optionalMaster) {
+		List<DailyRecordDto> dtoNews = domainDailyNew.stream().map(x -> DailyRecordDto.from(x, optionalMaster))
 				.collect(Collectors.toList());
 		// 暫定データを登録する - Register provisional data
 		List<DailyModifyResult> resultNews = AttendanceItemUtil

@@ -13,11 +13,13 @@
 					nts.uk.shr.com.primitive.sample.CommonAmount
    				</com:ValidatorScript>
 				<script>var dialogSize = { width: 300, height: 200 };</script>
+
 				<com:scriptfile set="IGNITE" />
+				
 				<com:stylefile path="../../catalog/catalog.css" />
-				<com:scriptfile path="start.js" />
-				<com:scriptfile path="viewmodel.js" />
 				<com:scriptfile path="../../catalog/catalog.js" />
+
+				<com:scriptfile path="viewmodel.js" />
 			</ui:define>
 			
 			<ui:define name="content">
@@ -27,9 +29,10 @@
 					<div id="content" class="cf">
 						<h1>TabPanel</h1>
 						<h2>Overview</h2>
-						<div class="cf flex">
-							<div style="width: 50%; padding-right: 10px; border-right: 1px solid #ccc;">
-								<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab, direction: 'vertical' }">
+						<div class="cf">
+							<div>
+								<div data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab, direction: 'vertical-link' }"></div>
+								<div data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab, direction: $vm.direction }">
 									<div class="tab-content-1">
 										<span>Tab Content 1</span><br/>
 										<div id="tab-panel2" data-bind="ntsTabPanel: { dataSource: tabs2, active: selectedTab2, direction: 'horizontal' }">

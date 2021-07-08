@@ -17,7 +17,8 @@
 a.fc-more {vertical-align: top; font-size: 8px !IMPORTANT;}
 
 .holiday span {font-weight: 300 !IMPORTANT;color: white !IMPORTANT;}
-.holiday-header span {background-color: #FABF8F !IMPORTANT; color: red;width: initial; width: auto; height: 12px;}
+.holiday-header {background-color: #FABF8F !IMPORTANT;}
+.holiday-header span {color: red;width: initial; width: auto; height: 12px;}
 .button-event {width: 14px;cursor:pointer;position: absolute;display: inline-block;top: 1px;right: 3px;background-repeat: no-repeat;}
 .button-cell {width: 30px;height: 20px !IMPORTANT;position: absolute;top: 20px;right: 2px; z-index: 10;font-size: 10px !important;}
 .button-cell:active {top: 27px !IMPORTANT;}

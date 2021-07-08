@@ -29,17 +29,19 @@ export class KdpS01TComponent extends Vue {
 
     public goto(button) {
         let vm = this,
-            url = button.screen + 'S' + button.screenCd.slice(1) + button.screenId.toLowerCase(),
+            url = button.screen + 's' + button.screenCd.slice(1) + button.screenId.toLowerCase(),
             param;
 
-        if (button.queryString) {
-            let value = button.queryString.split('=')[1];
-            param = { value };
+        vm.$goto(url);
+        // hien tai khong can param
+        // if (button.queryString) {
+        //     let value = button.queryString.split('=')[1];
+        //     param = { value };
 
-            vm.$goto(url, param);
-        } else {
-            vm.$goto(url);
-        }
+        //     vm.$goto(url, param);
+        // } else {
+        //     vm.$goto(url);
+        // }
 
     }
 

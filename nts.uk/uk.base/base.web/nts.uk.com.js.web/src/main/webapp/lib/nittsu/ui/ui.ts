@@ -1,78 +1,80 @@
 /// <reference path="../reference.ts"/>
 
 module nts.uk.ui {
-    
-    export module toBeResource {
-        export let yes = "はい";
-        export let no = "いいえ";
-        export let cancel = "キャンセル";
-        export let close = "閉じる";
-        export let info = "情報";
-        export let warn = "警告";
-        export let error = "エラー";
-        export let confirm = "確認";
-        export let unset = "未設定";
-        export let errorContent = "エラー内容";
-        export let errorCode = "エラーコード";
-        export let errorList = "エラー一覧";
-        export let errorPoint = "エラー箇所";
-        export let errorDetail = "エラー詳細";
-        export let tab = "タブ";
-        export let plzWait = "お待ちください";
-        export let targetNotFound = "対象データがありません"; // FND_E_SEARCH_NOHITと統合したい
-        export let clear = "解除";
-        export let searchBox = "検索テキストボックス";
-        export let addNewRow = "新規行の追加";
-        export let deleteRow = "行の削除";
-        export let selectMenu = "メニュー選択";
-        export let manual = "マニュアル";
-        export let logout = "ログアウト";
-        export let settingPersonal = "個人情報の設定";
-        export let weekDaysShort = [ "日", "月", "火", "水", "木", "金", "土" ];
-        export let searchByCodeName = "コード・名称で検索・・・";
-        export let search = "検索";
-        export let filter = "絞り込み";
-        export let code = "コード";
-        export let codeAndName = "コード／名称";
-        export let alphaNumeric = "半角英数字";
-        export let katakana = "カタカナ";
-        export let kana = "カナ";
-        export let otherColors = "その他の色";
-        export let hide = "隠す";
-        export let decide = "確定";
-        export let refer = "参照";
-        export let selectViewArea = "表示エリアを選択する";
-        export let showInsideAreaToMain = "のエリア内をメイン画面に表示します。";
-        export let dragAndDropToChangeArea = "マウスのドラッグ＆ドロップでエリアを変更できます。";
-        export let invalidImageData = "不正な画像データです。";
-        export let legendExample = "凡例";
-    }
 
+    export module toBeResource {
+        export const yes = "はい";
+        export const no = "いいえ";
+        export const cancel = "キャンセル";
+        export const close = "閉じる";
+        export const info = "情報";
+        export const warn = "警告";
+        export const error = "エラー";
+        export const confirm = "確認";
+        export const unset = "未設定";
+        export const errorContent = "エラー内容";
+        export const errorCode = "エラーコード";
+        export const errorList = "エラー一覧";
+        export const errorPoint = "エラー箇所";
+        export const errorDetail = "エラー詳細";
+        export const tab = "タブ";
+        export const plzWait = "お待ちください";
+        export const targetNotFound = "対象データがありません"; // FND_E_SEARCH_NOHITと統合したい
+        export const clear = "解除";
+        export const searchBox = "検索テキストボックス";
+        export const addNewRow = "新規行の追加";
+        export const deconsteRow = "行の削除";
+        export const selectMenu = "メニュー選択";
+        export const manual = "マニュアル";
+        export const logout = "ログアウト";
+        export const settingPersonal = "個人情報の設定";
+        export const weekDaysShort = ["日", "月", "火", "水", "木", "金", "土"];
+        export const searchByCodeName = "コード・名称で検索・・・";
+        export const search = "検索";
+        export const filter = "絞り込み";
+        export const code = "コード";
+        export const codeAndName = "コード／名称";
+        export const alphaNumeric = "半角英数字";
+        export const katakana = "カタカナ";
+        export const kana = "カナ";
+        export const otherColors = "その他の色";
+        export const hide = "隠す";
+        export const decide = "確定";
+        export const refer = "参照";
+        export const selectViewArea = "表示エリアを選択する";
+        export const showInsideAreaToMain = "のエリア内をメイン画面に表示します。";
+        export const dragAndDropToChangeArea = "マウスのドラッグ＆ドロップでエリアを変更できます。";
+        export const invalidImageData = "不正な画像データです。";
+        export const legendExample = "凡例";
+    }
 
     export function localize(textId: string): string {
         return textId;
     }
-    
-    export function writeViewConstraint(constraint: any){
-        if(nts.uk.util.isNullOrUndefined(__viewContext.primitiveValueConstraints)){
-            __viewContext.primitiveValueConstraints = {};
+
+    export function writeViewConstraint(constraint: any) {
+        if (_.isNil(__viewContext.primitiveValueConstraints)) {
+            _.extend(__viewContext, {
+                primitiveValueConstraints: {}
+            });
         }
+
         __viewContext.primitiveValueConstraints[constraint.itemCode] = constraint;
     }
 
+    export const confirmSave = function (dirtyChecker: DirtyChecker) {
+        const frame = windows.getSelf();
 
-    export var confirmSave: (dirtyChecker: DirtyChecker) => any;
-    confirmSave = function(dirtyChecker: DirtyChecker) {
-        var frame = windows.getSelf();
-        if (frame.$dialog === undefined || frame.$dialog === null) {
+        if (_.isNil(frame.$dialog)) {
             confirmSaveWindow(dirtyChecker);
         } else {
             confirmSaveDialog(dirtyChecker, frame.$dialog);
         }
     }
+
     function confirmSaveWindow(dirtyChecker: DirtyChecker) {
 
-        var beforeunloadHandler = function(e) {
+        var beforeunloadHandler = function (e) {
             if (dirtyChecker.isDirty()) {
                 return "ban co muon save hok?";
                 //return nts.ui.message('Com_0000105');
@@ -84,14 +86,14 @@ module nts.uk.ui {
 
     function confirmSaveDialog(dirtyChecker: DirtyChecker, dialog: JQuery) {
         //dialog* any;
-        var beforeunloadHandler = function(e) {
+        var beforeunloadHandler = function (e) {
             if (dirtyChecker.isDirty()) {
                 e.preventDefault();
                 nts.uk.ui.dialog.confirm("Are you sure you want to leave the page?")
-                    .ifYes(function() {
+                    .ifYes(function () {
                         dirtyChecker.reset();
                         dialog.dialog("close");
-                    }).ifNo(function() {
+                    }).ifNo(function () {
                     })
                 //return nts.ui.message('Com_0000105');
             }
@@ -105,7 +107,7 @@ module nts.uk.ui {
     };
 
     export function confirmSaveDisableDialog(dialog) {
-        dialog.on("dialogbeforeclose", function() { });
+        dialog.on("dialogbeforeclose", function () { });
     };
 
     export function confirmSaveEnable(beforeunloadHandler) {
@@ -121,25 +123,25 @@ module nts.uk.ui {
      * Using for blocking UI when action in progress
      */
     export module block {
-        export function clear(el: HTMLElement = document.body) {
+        export function clear() {
             const fadeOut = 200;
 
-            $(el).unblock({ fadeOut });
+            $(document.body).unblock({ fadeOut });
         }
 
-        export function grayout(el: HTMLElement = document.body) {
+        export function grayout() {
             const fadeIn = 200;
             const message: string = toBeResource.plzWait;
             const css = { width: '220px', 'line-height': '32px' };
 
-            $(el).block({ message, fadeIn, css });
+            $(document.body).block({ message, fadeIn, css });
         }
 
-        export function invisible(el: HTMLElement = document.body) {
+        export function invisible() {
             const message: null = null;
             const overlayCSS = { opacity: 0 };
 
-            $(el).block({ message, overlayCSS });
+            $(document.body).block({ message, overlayCSS });
         }
     }
 
@@ -193,23 +195,23 @@ module nts.uk.ui {
                         });
                         return;
                     }
-                    
+
                     $label.bind('mouseleave.limitedlabel', () => {
                         $label.unbind('mouseleave.limitedlabel');
                         $view.remove();
                     });
-                    
-                    $label.on('remove', function() {
+
+                    $label.on('remove', function () {
                         $view.remove();
                     });
                 }
             });
         });
-        
+
         function isOverflow($label) {
-            if ( $label[0].nodeName === "INPUT"
+            if ($label[0].nodeName === "INPUT"
                 && (window.navigator.userAgent.indexOf("MSIE") > -1
-                || !!window.navigator.userAgent.match(/trident/i))) {
+                    || !!window.navigator.userAgent.match(/trident/i))) {
                 let $div = $("<div/>").appendTo($(document.body));
                 let style = $label[0].currentStyle;
                 if (style) {
@@ -217,45 +219,45 @@ module nts.uk.ui {
                         $div[0].style[p] = style[p];
                     }
                 }
-                
+
                 $div.html($label.val());
                 let width = $div.outerWidth();
                 let scrollWidth = $div[0].scrollWidth;
                 $div.remove();
                 return width < scrollWidth;
             }
-            
+
             return $label[0].offsetWidth < $label[0].scrollWidth;
         }
     }
-    
+
     export module keyboardStream {
-        
+
         let _lastKey: { code: number, time: Date } = {
             code: undefined,
             time: undefined
         };
-        
+
         export function lastKey(): { code: number, time: Date } {
             return {
                 code: _lastKey.code,
                 time: _lastKey.time
             };
         }
-        
+
         export function wasKeyDown(keyCode: number, millisToExpire: number): boolean {
-            
+
             return _lastKey.code === keyCode
                 && (+new Date() - +_lastKey.time <= millisToExpire);
         }
-        
+
         $(() => {
-            
+
             $(window).on("keydown", e => {
                 _lastKey.code = e.keyCode;
                 _lastKey.time = new Date();
             });
-            
+
         });
     }
 

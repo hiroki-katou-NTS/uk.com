@@ -12,7 +12,7 @@
       <com:scriptfile set="IGNITE" />
       <com:stylefile path="ccg015.d.style.css" />
       <com:scriptfile path="ccg015.d.vm.js" />
-      <script>var dialogSize = { width: 1100, height: 700 };</script>
+      <script>var dialogSize = { width: 995, height: 620 };</script>
       <com:ValidatorScript>
         nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.URL
       </com:ValidatorScript>
@@ -42,7 +42,8 @@
                     <span class="label">#{i18n.getText('CCG015_66')}</span>
                   </div>
                   <!-- D2_2 -->
-                  <div class="ml-40" id="D2_2" data-bind="ntsComboBox: {
+                  <div class="ml-25" id="D2_2" data-bind="ntsComboBox: {
+                    width: 240,
                     options: itemList,
                     optionsValue: 'code',
                     visibleItemsCount: 5,
@@ -50,7 +51,8 @@
                     optionsText: 'name',
                     editable: false,
                     enable: true,
-                    required: isRequired }">
+                    required: isRequired
+                  }">
                   </div>
                 </div>
               </td>
@@ -73,7 +75,7 @@
                       <table id="multi-list2" data-bind="ntsGridList: {
                           options: listFlowMenu,
                           optionsValue: 'flowCode',
-                          rows: 15,
+                          rows: 11,
                           columns: columnsFlowMenu,
                           multiple: false,
                           value: flowMenuSelectedCode
@@ -86,7 +88,7 @@
                       <table id="multi-list2" data-bind="ntsGridList: {
                           options: listTopPagePart,
                           optionsValue: 'flowCode',
-                          rows: 15,
+                          rows: 11,
                           columns: columnsTopPagePart,
                           multiple: false,
                           value: toppageSelectedCode
@@ -99,7 +101,7 @@
                       <div id="D5_1" class="w-100" data-bind="ntsFormLabel: {required: true}">
                         <span class="label">#{i18n.getText('CCG015_71')}</span>
                       </div>
-                      <div class="w-380 mt-10">
+                      <div class="w-350 mt-10">
                         <!-- D5_2 -->
                         <textarea id="D5_2" class="fix_width_text_area" data-bind="ntsMultilineEditor: {
                           value: url,

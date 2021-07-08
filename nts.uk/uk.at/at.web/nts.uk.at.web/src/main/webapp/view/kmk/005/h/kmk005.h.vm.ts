@@ -6,7 +6,7 @@ module nts.uk.at.view.kmk005.h {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    
+
     let __viewContext: any = window["__viewContext"] || {};
 
     export module viewmodel {
@@ -23,7 +23,7 @@ module nts.uk.at.view.kmk005.h {
                 isShowSelectButton: false,
                 baseDate: ko.observable(new Date()),
                 selectedId: undefined,
-                alreadySettingList: ko.observableArray([]),                
+                alreadySettingList: ko.observableArray([]),
                 systemType: 2
             };
 
@@ -39,52 +39,74 @@ module nts.uk.at.view.kmk005.h {
 
                 tree.alreadySettingList.removeAll();
 
-//                self.model().wid.subscribe(wild => {
-//                    let data: Array<any> = flat(_.isFunction($('#tree-grid')['getDataList']) ? $('#tree-grid')['getDataList']() : [] || [], 'childs'),
-//                        item = _.find(data, m => m.workplaceId == wild);
-//
-//                    if (item) {
-//                        self.model().wname(item.name);
-//                    } else {
-//                        self.model().wname(getText("KDL007_6"));
-//                    }
-//
-//                    service.getSetting(wild).done(x => {
-//                        if (x) {
-//                            self.model().id(x.bonusPaySettingCode);
-//                            service.getName(x.bonusPaySettingCode).done(m => {
-//                                if (m) {
-//                                    self.model().name(m.name)
-//                                } else {
-//                                    self.model().id('');
-//                                    self.model().name(getText("KDL007_6"));
-//                                }
-//                            }).fail(x => alert(x));
-//                        } else {
-//                            self.model().id('');
-//                            self.model().name(getText("KDL007_6"));
-//                        }
-//
-//                    }).fail(x => alert(x));
-//
-//                });
-//
-//                // call start after tree-grid initial
-//                $('#tree-grid')['ntsTreeComponent'](self.treeGrid).done(() => { self.start(); });
+                //                self.model().wid.subscribe(wild => {
+                //                    let data: Array<any> = flat(_.isFunction($('#tree-grid')['getDataList']) ? $('#tree-grid')['getDataList']() : [] || [], 'childs'),
+                //                        item = _.find(data, m => m.workplaceId == wild);
+                //
+                //                    if (item) {
+                //                        self.model().wname(item.name);
+                //                    } else {
+                //                        self.model().wname(getText("KDL007_6"));
+                //                    }
+                //
+                //                    service.getSetting(wild).done(x => {
+                //                        if (x) {
+                //                            self.model().id(x.bonusPaySettingCode);
+                //                            service.getName(x.bonusPaySettingCode).done(m => {
+                //                                if (m) {
+                //                                    self.model().name(m.name)
+                //                                } else {
+                //                                    self.model().id('');
+                //                                    self.model().name(getText("KDL007_6"));
+                //                                }
+                //                            }).fail(x => alert(x));
+                //                        } else {
+                //                            self.model().id('');
+                //                            self.model().name(getText("KDL007_6"));
+                //                        }
+                //
+                //                    }).fail(x => alert(x));
+                //
+                //                });
+                //
+                //                // call start after tree-grid initial
+                //                $('#tree-grid')['ntsTreeComponent'](self.treeGrid).done(() => { self.start(); });
             }
-            
-            loadFirst(){
+
+
+
+            start() {
+                let self = this;
+                let tree = self.treeGrid;
+                let model = self.model();
+                let wids: Array<string> = flat($('#tree-grid')['getDataList'](), 'children').map(x => x.id);
+                model.wid(wids[0]);
+                // get ready setting list
+                tree.alreadySettingList.removeAll();
+                service.getData(wids).done((resp: Array<any>) => {
+                    if (resp && resp.length) {
+                        _.each(resp, x => tree.alreadySettingList.push({ workplaceId: x.workplaceId, isAlreadySetting: true }));
+                    }
+
+                    // call subscribe function of wid
+                    model.id.valueHasMutated();
+                    model.wid.valueHasMutated();
+                }).fail(x => alert(x));
+            }
+
+            loadFirst() {
                 var self = this;
-                 self.model().wid.subscribe(wild => {
-                    let data: Array<any> = flat(_.isFunction($('#tree-grid')['getDataList']) ? $('#tree-grid')['getDataList']() : [] || [], 'childs'),
-                        item = _.find(data, m => m.workplaceId == wild);
+                console.log("loadfirst"); 
+                self.model().wid.subscribe(wild => {
+                    let data: Array<any> = flat(_.isFunction($('#tree-grid')['getDataList']) ? $('#tree-grid')['getDataList']() : [] || [], 'children');
+                    let item = _.find(data, m => m.id == wild);
 
                     if (item) {
                         self.model().wname(item.name);
                     } else {
                         self.model().wname(getText("KDL007_6"));
                     }
-
+ 
                     service.getSetting(wild).done(x => {
                         if (x) {
                             self.model().id(x.bonusPaySettingCode);
@@ -101,33 +123,13 @@ module nts.uk.at.view.kmk005.h {
                             self.model().name(getText("KDL007_6"));
                         }
 
-                    }).fail(x => alert(x));
+                    }).fail(x => alert(x)); 
 
                 });
 
                 // call start after tree-grid initial
                 $('#tree-grid')['ntsTreeComponent'](self.treeGrid).done(() => { self.start(); });
             }
-
-            start() {
-                let self = this,
-                    tree = self.treeGrid,
-                    model = self.model(),
-                    wids: Array<string> = flat($('#tree-grid')['getDataList'](), 'childs').map(x => x.workplaceId);
-                model.wid(wids[0]);
-                // get ready setting list
-                tree.alreadySettingList.removeAll();
-                service.getData(wids).done((resp: Array<any>) => {
-                    if (resp && resp.length) {
-                        _.each(resp, x => tree.alreadySettingList.push({ workplaceId: x.workplaceId, isAlreadySetting: true }));
-                    }
-
-                    // call subscribe function of wid
-                    model.id.valueHasMutated();
-                    model.wid.valueHasMutated();
-                }).fail(x => alert(x));
-            }
-
             openBonusPaySettingDialog() {
                 let self = this,
                     model: BonusPaySetting = self.model();

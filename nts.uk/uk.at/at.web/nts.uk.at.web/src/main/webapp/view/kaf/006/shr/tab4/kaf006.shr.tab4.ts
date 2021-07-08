@@ -5,31 +5,31 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
         name: 'kaf006-shr-tab4',
         template: `
         <div id="kaf006tab4">
-            <div style="margin-top: 10px;" data-bind="ntsCheckBox: {
+            <div data-bind="ntsCheckBox: {
                 checked: isChangeWorkHour,
                 text: $i18n('KAF006_18'),
                 enable: $parent.updateMode
-            }, visible: $parent.condition11"></div>
+            }, visible: $parent.condition11" style="margin-top: -5px"></div>
             <div style="width: 700px;">
                 <hr data-bind="visible: $parent.condition11" />
             </div>
-            <div class="table" data-bind="visible: $parent.condition11">
+            <div class="table mv-13" data-bind="visible: $parent.condition11">
                 <div class="cell col-1"></div>
                 <div class="cell">
-                    <div style="padding-bottom: 5px;">
+                    <div>
                         <div class="cell col-1">
                             <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_19')"></div>
                         </div>
-                        <div class="cell">
+                        <div class="cell" style="vertical-align: middle">
                             <button style="margin-right: 5px;" data-bind="text: $i18n('KAF006_20'), enable: $parent.isChangeWorkHour() && $parent.updateMode(), click: openKDL003"></button>
                         </div>
-                        <div class="cell" data-bind="text: $parent.selectedWorkTimeDisp"></div>
+                        <div class="cell valign-center" data-bind="text: $parent.selectedWorkTimeDisp"></div>
                     </div>
-                    <div style="padding-bottom: 5px;">
+                    <div style="padding-top: 10px;">
                         <div class="cell col-1">
                             <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_22')"></div>
                         </div>
-                        <div class="cell">
+                        <div class="cell valign-center">
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_58'),
                                 value: $parent.startTime1,
@@ -53,11 +53,11 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                             }" />
                         </div>
                     </div>
-                    <div style="padding-bottom: 5px;" data-bind="visible: $parent.condition12">
+                    <div style="padding-top: 10px;" data-bind="visible: $parent.condition12">
                         <div class="cell col-1">
                             <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_23')"></div>
                         </div>
-                        <div class="cell">
+                        <div class="cell valign-center">
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_60'),
                                 value: $parent.startTime2,
@@ -83,18 +83,22 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                     </div>
                 </div>
             </div>
-            <div class="table" data-bind="visible: $parent.condition15">
+            <div class="table mv-13" data-bind="visible: $parent.condition15">
                 <div class="cell col-1">
                     <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_88')"></div>
                 </div>
                 <div class="cell valign-center">
-                    <button style="width: 60px; margin-right: 5px;" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()) && $parent.updateMode() && $parent.checkAppDate(), click: openKDL036"></button>
-                    <div style="display: inline-block" data-bind="text: $i18n('KAF006_89')"></div>
+                    <div style="vertical-align: middle; display: inline-block">
+                        <button style="width: 60px; margin-right: 5px;" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()) && $parent.updateMode() && $parent.checkAppDate(), click: openKDL036"></button>
+                    </div>
+                    <div style="vertical-align: middle; display: inline-block">
+                        <div style="display: inline-block; vertical-align: top;" data-bind="text: $i18n('KAF006_89')"></div>
+                    </div>
                 </div>
             </div>
-            <div class="table" style="margin: 10px 0;" data-bind="visible: $parent.condition15">
+            <div class="table mv-13" data-bind="visible: $parent.condition15() && $parent.leaveComDayOffManas().length > 0">
                 <div class="cell col-1"></div>
-                <div class="cell">
+                <div class="cell valign-center">
                     <table data-bind="visible: $parent.leaveComDayOffManas().length > 0">
                         <thead>
                             <tr class="text-center bg-green">
@@ -114,18 +118,22 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                 </div>
             </div>
 
-            <div class="table" data-bind="visible: $parent.condition14">
+            <div class="table mv-13" data-bind="visible: $parent.condition14">
                 <div class="cell col-1">
                     <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_48')"></div>
                 </div>
                 <div class="cell valign-center">
-                    <button style="width: 60px; margin-right: 5px;" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()) && $parent.updateMode() && $parent.checkAppDate(), click: openKDL035"></button>
-                    <div style="display: inline-block" data-bind="text: $i18n('KAF006_62')"></div>
+                    <div style="vertical-align: middle; display: inline-block">
+                        <button style="width: 60px; margin-right: 5px;" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()) && $parent.updateMode() && $parent.checkAppDate(), click: openKDL035"></button>
+                    </div>
+                    <div style="vertical-align: middle; display: inline-block">
+                        <div style="display: inline-block; vertical-align: top;" data-bind="text: $i18n('KAF006_62')"></div>
+                    </div>
                 </div>
             </div>
-            <div class="table" style="margin: 10px 0;" data-bind="visible: $parent.condition14">
+            <div class="table mv-13" data-bind="visible: $parent.condition14() && $parent.payoutSubofHDManagements().length > 0">
                 <div class="cell col-1"></div>
-                <div class="cell">
+                <div class="cell valign-center">
                     <table data-bind="visible: $parent.payoutSubofHDManagements().length > 0" >
                         <thead>
                             <tr class="bg-green">

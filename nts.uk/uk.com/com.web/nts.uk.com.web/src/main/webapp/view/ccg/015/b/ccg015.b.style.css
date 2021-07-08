@@ -125,7 +125,7 @@ height: 550px;
 }
 
 .contentsRL {
-width: 245px;
+width: 262px;
 }
 
 .contentsRR {
@@ -197,6 +197,7 @@ margin-top: 20px;
 
 .button-fix {
   width: 180px;
+  height: 50px;
   display: flex;
 }
 
@@ -210,4 +211,24 @@ margin-top: 20px;
 }
 .size100 {
   width: 100px;
+}
+
+#btn-1, #btn-3 {
+  width: 125px;
+}
+
+#btn-2 {
+  width: 145px;
+}
+
+.plus-icon {
+  padding-top: 28px;
+}
+
+.cell {
+  padding-right: 7px !important;
+}
+
+.pl-30 {
+  padding-left: 30px;
 }

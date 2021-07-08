@@ -1,37 +1,23 @@
-#functions-area button.danger{
+.margin-left-20 {
 	margin-left: 20px;
-    margin-right: 5px;
+}
+.form-data tr td:nth-child(1) {
+	width: 110px;
+}
+.form-data {
+	margin-left: 12px;
+   	min-height: 333px;
+}
+.form-data tr {
+	height: 40px;
 }
 
-.contents-area .row{
-    margin: 15px 10px 15px 30px;
-}
-
-.contents-area .row textarea{
-	width: 300px;
-	height: 105px;
-}
-
-.contents-area .row .form-label{
+.form-data tr:nth-child(1)  label.radio-wrapper:nth-child(2){
+	margin-left: 70px;
+} 
+.rowHelpButton .ntsHelpButton{
 	vertical-align: top;
-    width: 130px;
 }
-
-.contents-area .title label{
-	margin-left: 30px;
-}
-
-.buton-setting{
-    display: inline-block;
-    margin-top: 28px;
-}
-
-.buton-setting td{
-    width: 110px;
-}
-
-.buton-setting button{
-    width: 90px;
-    height: 50px;
-    margin: 10px 20px 10px 0;
+.rowHelpButton .ntsHelpButton button{
+	top: 0 !important;
 }

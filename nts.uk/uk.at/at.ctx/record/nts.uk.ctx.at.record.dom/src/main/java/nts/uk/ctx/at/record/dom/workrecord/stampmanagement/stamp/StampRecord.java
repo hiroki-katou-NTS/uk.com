@@ -1,12 +1,9 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 
@@ -39,22 +36,6 @@ public class StampRecord implements DomainAggregate {
 	 */
 	@Getter
 	private final StampTypeDisplay stampTypeDisplay;
-
-	/**
-	 * 就業情報端末コード
-	 */
-	@Getter
-	private final Optional<EmpInfoTerminalCode> empInfoTerCode;
-
-	/**
-	 * [C-0] 打刻記録(契約コード, 打刻カード番号, 	日時, 表示する打刻区分, Optional<就業情報端末コード>)
-	 * @param contractCode
-	 * @param stampNumber
-	 * @param stampDateTime
-	 * @param stampTypeDisplay
-	 * @param empInfoTerCode
-	 */
-
 
 	public String retriveKey() {
 		return this.getStampNumber()+ this.getStampDateTime().toString();

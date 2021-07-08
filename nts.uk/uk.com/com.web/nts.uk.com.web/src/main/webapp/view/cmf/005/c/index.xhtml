@@ -99,23 +99,23 @@
       <div id="contents-area">
         <div class="content">
           <div class="fixed-flex-layout-left">
-            <!-- C11_1 削除セット選択(パネル) -->
+            <!-- C8_1 削除セット選択(パネル) -->
             <div
               data-bind="ntsPanel: { height: '540px', direction: 'right', showIcon: true, visible: true }">
               <div class="valign-center halign-center">
-                <!-- C11_2 絞り込み検索 -->
-                <div id="C11_1" data-bind="ntsSearchBox: {
+                <!-- C8_2 絞り込み検索 -->
+                <div id="C8_2" data-bind="ntsSearchBox: {
                   searchMode: 'highlight',
                   targetKey: 'displayCode',
-                  comId: 'C12',
+                  comId: 'C9',
                   items: patternList,
                   selected: selectedPatternCode,
                   selectedKey: 'displayCode',
                   mode: 'igGrid',
                   fields: ['displayCode', 'patternName']
                 }" tabindex="5" />
-                <!-- C12 削除セット一覧 -->
-                <table id="C12" data-bind="ntsGridList: {
+                <!-- C9 削除セット一覧 -->
+                <table id="C9" data-bind="ntsGridList: {
                   name: '#[CMF005_143]',
                   options: patternList,
                   optionsValue: 'displayCode',
@@ -185,7 +185,7 @@
                 disableMoveButton: disableMoveButton,
                 showSearchBox: { showLeft : true},
                 showSort: { showLeft: true, showRight: false },
-								height: 330,
+								height: 470,
 								dataSource: categoriesFiltered,
 								primaryKey: 'id',
                 leftColumns: leftColumns,

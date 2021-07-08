@@ -19,23 +19,22 @@ th {
 .div-table {
 	width: 775px;
     display: block;
-    
-    height: 350px;
+    height: 340px;
     margin: 20px;
 }
 thead, tbody {
 	width: 100%;
 	display: block;
 }
-thead {
-	height: 100px;
-}
 thead label {
 	font-weight: bold;
 }
-tbody {
-	height: 410px;
-	overflow-y: scroll;
+#cmm-001-e-table {
+  height: 315px !important;
+}
+#cmm-001-e-table tbody {
+    height: 250px !important;
+    overflow-y: scroll;
     overflow-x: hidden;
 }
 .selected { background-color: #CEE6FF; }
@@ -43,7 +42,7 @@ td.border-custom {
 	border-top: none;
  }
 .caret-bottom.outline {
-    margin-left: 120px;
+    margin-left: 95px;
     font-size: 30px;
 }
 .nts-switch-button {

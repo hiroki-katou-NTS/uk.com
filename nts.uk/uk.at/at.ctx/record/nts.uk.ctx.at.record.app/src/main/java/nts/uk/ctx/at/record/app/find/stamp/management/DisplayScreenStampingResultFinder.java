@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.record.app.find.stamp.management;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +15,8 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampDataOfEmployeesDto;
+import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workplace.WorkplaceInforImport;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
@@ -45,6 +50,9 @@ public class DisplayScreenStampingResultFinder {
 
 	@Inject
 	private StampDakokuRepository stampDakokuRepository;
+	
+	@Inject
+	private SyWorkplaceAdapter syWorkplaceAdapter;
 
 	public List<DisplayScreenStampingResultDto> getDisplay(DatePeriod datePerriod, String employeeId) {
 		List<String> listWorkLocationCode = new ArrayList<>();
@@ -99,8 +107,40 @@ public class DisplayScreenStampingResultFinder {
 				}
 			}
 			
+			//職場ID
+			String wkpId =  listStampDataOfEmployees.stream()
+					.map(x -> x.getListStampInfoDisp())
+					.flatMap(Collection::stream)
+					.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime))
+					.findFirst()
+					.map(x -> x.getStamp()
+							.stream()
+							.findFirst()
+							.map(stamp -> stamp.getRefActualResults().getWorkInforStamp()
+									.map(wInfo -> wInfo.getWorkplaceID()
+											.map(w -> w!= null ? w : null)
+											.orElse(null))
+											.orElse(null))
+										.orElse(null))
+								.orElse(null);
+							
+			//基準日
+			GeneralDate refDate = listStampDataOfEmployees.stream()
+					.map(x -> x.getListStampInfoDisp())
+					.flatMap(Collection::stream)
+					.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime))
+					.findFirst()
+					.map(x -> x.getStampDatetime().toDate())
+					.orElse(null);
+			
+			//[No.560]職場IDから職場の情報をすべて取得する
+			List<WorkplaceInforImport> listWorkPlaceInfoExport = syWorkplaceAdapter.getWorkplaceInforByWkpIds(AppContexts.user().companyId(), Collections.singletonList(wkpId), refDate);
+			
+			String workplaceCd = listWorkPlaceInfoExport.isEmpty() ? "" : listWorkPlaceInfoExport.get(0).getWorkplaceCode();
+			String workplaceName = listWorkPlaceInfoExport.isEmpty() ? "" : listWorkPlaceInfoExport.get(0).getWorkplaceDisplayName();
+			
 			DisplayScreenStampingResultDto data = new DisplayScreenStampingResultDto(workLocationName,
-					new StampDataOfEmployeesDto(stampDataOfEmployees));
+					new StampDataOfEmployeesDto(stampDataOfEmployees), workplaceCd, workplaceName);
 			res.add(data);		
 		}
 		return res;

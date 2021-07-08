@@ -27,8 +27,8 @@ function initGrid() {
         enter: 'below',
         columns: [
             { headerText: '', key: 'categoryId', dataType: "string", width: "50px", height: "40px", hidden: true },
-            { headerText: text('CAS001_30'), key: "otherAuth", dataType: "boolean", width: "40px", height: "40px", ntsControl: 'Checkbox', showHeaderCheckbox: true },
-            { headerText: text('CAS001_31'), key: "selfAuth", dataType: "boolean", width: "40px", height: "40px", ntsControl: 'Checkbox1', showHeaderCheckbox: true},
+            { headerText: text('CAS001_30'), key: "otherAuth", dataType: "boolean", width: "38px", height: "40px", ntsControl: 'Checkbox', showHeaderCheckbox: true },
+            { headerText: text('CAS001_31'), key: "selfAuth", dataType: "boolean", width: "38px", height: "40px", ntsControl: 'Checkbox1', showHeaderCheckbox: true},
             { headerText: text('CAS001_21'), key: "categoryName", dataType: "string", width: "300px", height: "40px" }
         ],
         ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },

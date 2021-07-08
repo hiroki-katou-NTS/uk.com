@@ -89,7 +89,7 @@ public class WwfdtApprovalFrameDay extends ContractUkJpaEntity {
 				.confirmAtr(frame.getConfirmAtr().value)
 				.approverID(approver.getApprovalAtr().value == 1 && Strings.isNullOrEmpty(approver.getAgentID()) ? approver.getApproverID() : "")
 				.representerID(approver.getAgentID())
-				.approvalReason(approver.getApprovalReason())
+				.approvalReason(approver.getApprovalReason().v())
 				.listWwfdtApproverDay(Arrays.asList(WwfdtApproverDay.fromDomain(companyID, rootId, phaseOrder, frame, approver)))
 				.build();
 	}

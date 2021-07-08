@@ -1,6 +1,5 @@
 #role {
 	margin-left: 7px;
-	margin-top: 5px;
 }
 
 #roleCode {
@@ -20,7 +19,7 @@
 	padding-top: 25px;
 }
 .distane {
-	margin-bottom: 5px;
+	width: 120px;
 }
 
 #grid_container {
@@ -36,6 +35,7 @@
 
 #functions-area-bottom {
 	height: 57px !important;
+	bottom: 10px;
 }
 
  #grid_otherAuth > span > div > label > span.label{
@@ -51,4 +51,8 @@
 }
 #grid_selfAuth > span > div > label > span.box{
 	margin-top: 20px;
+}
+
+.cas-001-d-content {
+	padding: 0px 10px !important;
 }

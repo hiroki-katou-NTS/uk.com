@@ -49,7 +49,7 @@
 									}"></table>
               </div>
             </td>
-            <td id="contents-right" class="w-100">
+            <td id="contents-right" class="w-100 pl-30">
               <table id="tableRight table_data" class="w-100">
                 <tr data-bind="with: topPageModel" class="w-100">
                   <td class="contentsRL">
@@ -149,22 +149,22 @@
                       <com:ko-if bind="isVisiableButton1()">
                         <!-- B6_2 -->
                         <button class="button-fix" id="B6_2" data-bind="click: openDialogButton1, disable: isDisableButton">
-                          <i data-bind="ntsIcon: { no: 176, width: 20, height: 20 }" class="mr-5"></i>
-                          <label data-bind="text: button1Text"></label>
+                          <i data-bind="ntsIcon: { no: 176, width: 20, height: 20 }" class="plus-icon mr-5"></i>
+                          <label id="btn-1" data-bind="text: button1Text"></label>
                         </button>
                       </com:ko-if>
                       <com:ko-if bind="isVisiableButton2()">
                         <!-- B6_3 -->
                         <button class="ml-20 button-fix" id="B6_3" data-bind="click: openDialogButton2, disable: isDisableButton">
-                          <i data-bind="ntsIcon: { no: 176, width: 20, height: 20 }" class="mr-5"></i>
-                          <label data-bind="text: button2Text"></label>
+                          <i data-bind="ntsIcon: { no: 176, width: 20, height: 20 }" class="plus-icon mr-5"></i>
+                          <label id="btn-2" data-bind="text: button2Text"></label>
                         </button>
                       </com:ko-if>
                       <com:ko-if bind="isVisiableButton3()">
                         <!-- B6_4 -->
                         <button class="ml-20 button-fix" id="B6_4" data-bind="click: openDialogButton3, disable: isDisableButton">
-                          <i data-bind="ntsIcon: { no: 176, width: 20, height: 20 }" class="mr-5"></i>
-                          #{i18n.getText('CCG015_61')}
+                          <i data-bind="ntsIcon: { no: 176, width: 20, height: 20 }" class="plus-icon mr-5"></i>
+                          <label id="btn-3">#{i18n.getText('CCG015_61')}</label>
                         </button>
                       </com:ko-if>
                     </div>
@@ -174,7 +174,7 @@
                 <tr>
                   <td>
                     <!-- B7 -->
-                    <span class="ml-15 size08" id="B7">#{i18n.getText('CCG015_26')}</span>
+                    <span class="size08" id="B7">#{i18n.getText('CCG015_26')}</span>
                   </td>
                   <td class="inline-row w-100 pad-left-20">
                     <div class="inline-row">

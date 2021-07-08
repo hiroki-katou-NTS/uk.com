@@ -12,12 +12,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossingRepository;
 import nts.uk.ctx.bs.company.pub.company.CompanyExportForKDP003;
 import nts.uk.ctx.bs.company.pub.company.ICompanyPub;
 import nts.uk.screen.at.app.query.kdp.kdp003.f.dto.GetListCompanyHasStampedDto;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author laitv 
@@ -37,15 +37,22 @@ public class GetListCompanyhaveBeenStamped {
 	 * 【input】 ・会社ID(Optional) 
 	 * 【output】 ・打刻会社一覧
 	 */
-	public List<GetListCompanyHasStampedDto> getListOfCompaniesHaveBeenStamped(Optional<String> cid) {
+	public List<GetListCompanyHasStampedDto> getListOfCompaniesHaveBeenStamped(Optional<String> cid, GetLoginSettingsStampParam param) {
 		// 1.get
 		//fix contractCode request UI ,AO  ※2020/4　の説明ではASP認証について内容が存在しないため、契約コードは「000000000000」で実施してください
 		
-		String contractCd = "000000000000" ;
+		//String contractCd = "000000000004" ;
+		// String contractCd = AppContexts.user().contractCode();
+		
+		if (StringUtil.isNullOrEmpty(param.contractCode, true)) {
+		//if (param.contractCode.equals("null")){
+			throw new RuntimeException("No contractCode data in localstore");
+		}
+		
 		Boolean isAbolition = false;
 		List<GetListCompanyHasStampedDto> resultList = new ArrayList<>();
 		
-		List<CompanyExportForKDP003> listCompany = companyPub.get(contractCd, cid, isAbolition);
+		List<CompanyExportForKDP003> listCompany = companyPub.get(param.contractCode, cid, isAbolition);
 
 		List<String> companyIds = listCompany.stream().map(m -> m.getCompanyId()).collect(Collectors.toList());
 

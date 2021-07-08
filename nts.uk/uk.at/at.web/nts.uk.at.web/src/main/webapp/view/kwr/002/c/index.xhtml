@@ -9,7 +9,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 950, height: 700 };</script>
+			<script>var dialogSize = { width: 950, height: 750 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName
 			</com:ValidatorScript>
@@ -23,7 +23,7 @@
 			<div id="functions-area">
 				<div class="form-label">
 					<span style="margin-right: 15px"
-						data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KWR002_60')}</span>
+						data-bind="ntsFormLabel: {}">#{i18n.getText('KWR002_60')}</span>
 					<span class="label layout-info"
 						data-bind="text:attendanceCode"></span> <span class="label"
 						data-bind="text:attendanceName"></span>
@@ -34,7 +34,7 @@
 				<div>
 					<table>
 						<colgroup>
-							<col width="70px" />
+							<col width="150px" />
 							<col width="*" />
 						</colgroup>
 
@@ -367,11 +367,11 @@
 							</div>
 							<div class="tab-content-2" id="monthly-tab"
 								tabindex="10">
-								<div class="row-inline" data-bind="visible: useMonthApproverConfirm">
+								<div class="row-inline" style="margin-bottom: 10px;" data-bind="visible: useMonthApproverConfirm">
 									<!-- C18_1 -->
 									<div class="form-label"	data-bind="ntsFormLabel: {}">#{i18n.getText('KWR002_194')}</div>
 									<!-- C18_2 -->
-									<div class="switch" id ="switch-button" tabindex="40"
+									<div class="switch" id ="switch-button" style="vertical-align: middle; display: inline-block;" tabindex="40"
 										data-bind="ntsSwitchButton: {
 										options: confirmedDisplay,
 										optionsValue: 'value',

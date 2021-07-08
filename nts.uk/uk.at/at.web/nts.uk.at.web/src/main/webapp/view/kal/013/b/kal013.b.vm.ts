@@ -9,7 +9,7 @@ module nts.uk.at.view.kal013.b {
     const PATH_API = {
        GET_ENUM_OPERATOR: "at/record/alarmwrkp/screen/getEnumCompareType",
         GET_ATTENDANCEITEM: "at/record/businesstype/attendanceItem/getListMonthlyByAttendanceAtr/",
-        GET_ATTENDANCEITEMNAME_BYCODE: "at/record/divergencetime/setting/AttendanceDivergenceName",
+        GET_ATTENDANCEITEMNAME_BYCODE: "at/record/divergencetime/setting/getMonthlyAttendanceDivergenceName",
         GET_BONUS_PAY_SET: "at/share/bonusPaySetting/getAllBonusPaySetting"
 
     };

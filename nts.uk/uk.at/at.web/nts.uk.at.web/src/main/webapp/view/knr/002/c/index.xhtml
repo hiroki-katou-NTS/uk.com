@@ -42,7 +42,7 @@
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KNR002_79')}</div>
 							</div>
 							<div class="third-line d-flex">
-								<div
+								<div id="column-1"
 									data-bind="ntsPanel:{width: '250px', height: '378px', direction: 'right', showIcon: false, visible: true}">
 									<div style="float:left; margin-bottom: 10px;">
 										<div style="width: 188px"
@@ -94,7 +94,7 @@
 													</div>
 												</div>
 												<div class="change-value d-flex">
-													<div data-bind="ntsFormLabel: {required: true}">
+													<div style="width: 50px;" data-bind="ntsFormLabel: {required: true}">
 														#{i18n.getText('KNR002_202')}</div>
 													<input id="C6_5" data-bind="ntsTextEditor: {value: updateValue, name: '#[KNR002_203]', required: true, constraint: 'SettingValue', option: {width: '163px'}}" />
 												</div>
@@ -123,9 +123,9 @@
 													</div>
 												</div>
 												<div class="change-value d-flex">
-													<div data-bind="ntsFormLabel: {required: true}">
+													<div style="width: 50px;" data-bind="ntsFormLabel: {required: true}">
 														#{i18n.getText('KNR002_202')}</div>
-													<input id="C7_7" data-bind="ntsNumberEditor: {value: updateValue, name: '#[KNR002_209]', required: true, constraint: 'SettingValue', option: {width: '35px'}}" />
+													<input id="C7_7" data-bind="ntsTextEditor: {value: updateValue, name: '#[KNR002_209]', required: true, constraint: 'SettingValue', option: {width: '35px'}}" />
 												</div>
 												<div class="letter-pnl">
 													<div>
@@ -155,7 +155,7 @@
 												<div class="change-value d-flex">
 													<div data-bind="ntsFormLabel: {required: true}">
 														#{i18n.getText('KNR002_202')}</div>
-													<input id="C8_5" style="margin-right: 2px;"
+													<input id="C8_5" style="margin-right: 2px; margin-left: 18px;"
 														data-bind="ntsNumberEditor: {value: ipAddress1, name: '#[KNR002_217]', constraint: 'PartialIpAddress', required: true, option: {width: '25px'}}" />
 													<div class="dot"><span>#{i18n.getText('KNR002_221')}</span></div>
 													<input id="C8_6" style="margin-right: 2px;"

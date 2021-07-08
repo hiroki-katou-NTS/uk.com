@@ -32,8 +32,7 @@
     </ui:define>
     <ui:define name="content">
       <div id="functions-area">
-          <div style="height: 30px;
-              display: inline;">
+          <div style="display: inline;">
               <label id="A1_5" data-bind="text: itemLayoutA1_7,
                 css: {
                   hidden: !$vm.isShowSwitch()
@@ -47,12 +46,17 @@
             value: $vm.currentOrNextMonth,
           }, css: {
             hidden: !$vm.isShowSwitch()
-          }">
+          }" style="display: inline;">
         </div>
+        
         <button class="btn-refresh" tabindex="4"
-          data-bind="click: function() { $vm.refreshLayout() }, css: { hidden: !$vm.isShowButtonRefresh() }"></button>
+          data-bind="click: function() { $vm.callApiTopPage() }, css: { hidden: !$vm.isShowButtonRefresh() }">
+          <i data-bind="ntsIcon: { no: 194, width: 30, height: 30 }" class="menu-icon"></i>
+        </button>
         <button class="btn-setting" tabindex="4"
-          data-bind="click: function() { $vm.openScreenE() }, css: { hidden: !$vm.isShowButtonSetting() }"></button>
+          data-bind="click: function() { $vm.openScreenE() }, css: { hidden: !$vm.isShowButtonSetting() }">
+          <i data-bind="ntsIcon: { no: 5, width: 30, height: 30 }" class="menu-icon"></i>
+        </button>
       </div>
       <div id="contents-area">
         <div class="widget-home cf" data-bind="css: $vm.classLayoutName">
