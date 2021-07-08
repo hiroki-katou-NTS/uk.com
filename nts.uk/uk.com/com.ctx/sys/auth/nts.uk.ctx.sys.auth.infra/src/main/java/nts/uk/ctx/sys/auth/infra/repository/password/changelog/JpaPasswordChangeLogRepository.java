@@ -4,25 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.infra.repository.password.changelog;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
 import nts.uk.ctx.sys.auth.infra.entity.password.changelog.SacdtPasswordChangeLog;
-import nts.uk.ctx.sys.auth.infra.entity.password.changelog.SacdtPasswordChangeLogPK;
-import nts.uk.ctx.sys.auth.infra.entity.password.changelog.SacdtPasswordChangeLogPK_;
-import nts.uk.ctx.sys.auth.infra.entity.password.changelog.SacdtPasswordChangeLog_;
 import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
 
 /**

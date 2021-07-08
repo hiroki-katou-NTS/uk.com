@@ -101,7 +101,7 @@ public class UserAdapterImpl implements UserAdapter {
 				userName(userInfo.getUserName()).
 				mailAddress(userInfo.getMailAddress()).
 				loginId(userInfo.getLoginID())
-				.associatePersonId(userInfo.getAssociatedPersonID()).password(userInfo.getPassword())
+				.associatePersonId(userInfo.getAssociatedPersonID())
 				.expirationDate(userInfo.getExpirationDate()).contractCode(userInfo.getContractCode()).build());
 	}
 
@@ -120,10 +120,8 @@ public class UserAdapterImpl implements UserAdapter {
 				userInfo.getMailAddress(),
 				userInfo.getLoginID(),
 				userInfo.getAssociatedPersonID(),
-				userInfo.getPassword(),
 				userInfo.getContractCode(),
-				userInfo.getExpirationDate(),
-				Integer.valueOf( userInfo.getPassStatus())));
+				userInfo.getExpirationDate()));
 	}
 	
 	/*
@@ -135,9 +133,10 @@ public class UserAdapterImpl implements UserAdapter {
 	@Override
 	public List<UserImport> getListUsersByListPersonIds(List<String> listPersonIds) {
 		return this.userPublisher.getListUserByListAsId(listPersonIds).stream()
-				.map(userInfo -> UserImport.builder().userId(userInfo.getUserID()).userName(userInfo.getUserName())
+				.map(userInfo -> UserImport.builder().userId(
+						userInfo.getUserID()).userName(userInfo.getUserName())
 						.mailAddress(userInfo.getMailAddress()).loginId(userInfo.getLoginID())
-						.associatePersonId(userInfo.getAssociatedPersonID()).password(userInfo.getPassword())
+						.associatePersonId(userInfo.getAssociatedPersonID())
 						.expirationDate(userInfo.getExpirationDate()).contractCode(userInfo.getContractCode()).build())
 				.collect(Collectors.toList());
 	}
@@ -213,7 +212,6 @@ public class UserAdapterImpl implements UserAdapter {
 		     dto.setUserName(item.getUserName().get());
 		     dto.setAssociatedPersonID(item.getAssociatedPersonID().get());
 		     dto.setMailAddress(item.getMailAddress().get());
-		     dto.setPassword(item.getPassword());
 		     return dto;
 		    }).collect(Collectors.toList());
 	}

@@ -8,14 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.sys.auth.app.command.registration.user.AddRegistrationUserCommand;
-import nts.uk.ctx.sys.auth.app.command.registration.user.AddRegistrationUserCommandHandler;
-import nts.uk.ctx.sys.auth.app.command.registration.user.DeleteRegistrationUserCommand;
-import nts.uk.ctx.sys.auth.app.command.registration.user.DeleteRegistrationUserCommandHandler;
-import nts.uk.ctx.sys.auth.app.command.registration.user.UpdateRegistrationUserCommand;
-import nts.uk.ctx.sys.auth.app.command.registration.user.UpdateRegistrationUserCommandHandler;
 import nts.uk.ctx.sys.auth.app.find.registration.user.CompanyImportDto;
 import nts.uk.ctx.sys.auth.app.find.registration.user.RegistrationUserFinder;
 import nts.uk.ctx.sys.auth.app.find.registration.user.UserDto;
@@ -26,11 +19,11 @@ import nts.uk.ctx.sys.auth.app.find.registration.user.UserDto;
 @Path("ctx/sys/auth/regis/user")
 @Produces("application/json")
 public class RegistrationUserWS extends WebService {
-
+	
 	/** The registration user finder. */
 	@Inject
 	private RegistrationUserFinder registrationUserFinder;
-
+	
 	/**
 	 * Find company import list.
 	 *

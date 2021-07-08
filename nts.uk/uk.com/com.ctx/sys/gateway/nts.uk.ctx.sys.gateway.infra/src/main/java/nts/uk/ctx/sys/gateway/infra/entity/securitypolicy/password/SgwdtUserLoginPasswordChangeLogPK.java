@@ -12,9 +12,7 @@ import lombok.Setter;
 import nts.arc.time.GeneralDateTime;
 
 /**
- * パスワード変更履歴PK
- * 
- * @author hiroki_katou
+ * ユーザーのログインパスワード変更履歴PK
  *
  */
 @AllArgsConstructor
@@ -22,7 +20,7 @@ import nts.arc.time.GeneralDateTime;
 @Getter
 @Setter
 @Embeddable
-public class SgwdtPasswordChangeLogPK implements Serializable {
+public class SgwdtUserLoginPasswordChangeLogPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/** ユーザID */
