@@ -2,12 +2,9 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
  * 

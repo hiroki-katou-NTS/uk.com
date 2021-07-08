@@ -5,11 +5,10 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
 import java.util.Optional;
 
-import org.eclipse.persistence.internal.xr.ValueObject;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -20,7 +19,7 @@ import nts.arc.time.GeneralDate;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ImprintReflectionState extends ValueObject {
+public class ImprintReflectionState implements DomainValue {
 
 	//反映済み区分
 	private boolean reflectedCategory;

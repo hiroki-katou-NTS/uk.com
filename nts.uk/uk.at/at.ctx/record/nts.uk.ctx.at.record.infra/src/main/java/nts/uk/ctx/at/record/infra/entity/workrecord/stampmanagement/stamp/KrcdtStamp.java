@@ -237,6 +237,14 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 		this.workplaceId = (stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getWorkplaceID().isPresent()) ? stamp.getRefActualResults().getWorkInforStamp().get().getWorkplaceID().get() : null;
 		this.timeRecordCode = (stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().isPresent()) ? stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().get().toString() : null;
 		
+		// ver6,ver7
+		this.reflectedIntoDate = stamp.getImprintReflectionStatus().getReflectedDate().orElse(null);
+		this.taskCd1 = (stamp.getRefActualResults() != null && stamp.getRefActualResults().getWork().isPresent() && stamp.getRefActualResults().getWork().get().getWorkCD1() != null) ? stamp.getRefActualResults().getWork().get().getWorkCD1().toString() : null;
+		this.taskCd2 = (stamp.getRefActualResults() != null && stamp.getRefActualResults().getWork().isPresent() && stamp.getRefActualResults().getWork().get().getWorkCD2().isPresent()) ? stamp.getRefActualResults().getWork().get().getWorkCD2().get().v() : null;
+		this.taskCd3 = (stamp.getRefActualResults() != null && stamp.getRefActualResults().getWork().isPresent() && stamp.getRefActualResults().getWork().get().getWorkCD3().isPresent()) ? stamp.getRefActualResults().getWork().get().getWorkCD3().get().v() : null;
+		this.taskCd4 = (stamp.getRefActualResults() != null && stamp.getRefActualResults().getWork().isPresent() && stamp.getRefActualResults().getWork().get().getWorkCD4().isPresent()) ? stamp.getRefActualResults().getWork().get().getWorkCD4().get().v() : null;
+		this.taskCd5 = (stamp.getRefActualResults() != null && stamp.getRefActualResults().getWork().isPresent() && stamp.getRefActualResults().getWork().get().getWorkCD5().isPresent()) ? stamp.getRefActualResults().getWork().get().getWorkCD5().get().v() : null;
+		
 		return this;
 	}
 
