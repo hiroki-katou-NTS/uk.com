@@ -589,9 +589,11 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		// reset [KSHMT_HDSP_GRANT]
 		KshmtHdspGrantPK oldHDSPGrantPK = new KshmtHdspGrantPK(specialHoliday.getCompanyId(), specialHoliday.getSpecialHolidayCode().v());
 		KshmtHdspGrant oldHDSPGrant = this.queryProxy().find(oldHDSPGrantPK, KshmtHdspGrant.class).orElse(null);
-		oldHDSPGrant.grantedDays = 0;
-		oldHDSPGrant.grantMd = null;
-		this.commandProxy().update(oldHDSPGrant);
+		if(oldHDSPGrant != null) {
+			oldHDSPGrant.grantedDays = 0;
+			oldHDSPGrant.grantMd = null;
+			this.commandProxy().update(oldHDSPGrant);
+		}
 		/** #118010e */
 		
 		switch (specialHoliday.getGrantRegular().getTypeTime()) {
