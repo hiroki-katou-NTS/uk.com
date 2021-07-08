@@ -223,11 +223,11 @@
       v-float-action="{ icon: 'fas fa-pen', background: 'uk-bg-sea-green', forceground: 'uk-text-dark-gray' }"
     >
       <ul>
-        <li class="uk-bg-white" v-on:click="deleteApp" v-show="displayDeleteButton">
+        <li class="uk-bg-white" v-on:click="deleteApp" v-show="displayDeleteButton && appState.pastApp">
           <span class="uk-text-dark-gray">{{'CMMS45_60' | i18n}}</span>
           <i class="fas fa-trash-alt uk-text-dark-gray"></i>
         </li>
-        <li class="uk-bg-white" v-on:click="updateApp" v-show="displayUpdateButton">
+        <li class="uk-bg-white" v-on:click="updateApp" v-show="displayUpdateButton && appState.pastApp">
           <span class="uk-text-dark-gray">{{'CMMS45_61' | i18n}}</span>
           <i class="fas fa-pen uk-text-dark-gray"></i>
         </li>

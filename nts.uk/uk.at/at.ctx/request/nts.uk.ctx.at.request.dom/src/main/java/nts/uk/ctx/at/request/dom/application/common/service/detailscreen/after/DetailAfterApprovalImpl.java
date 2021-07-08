@@ -11,7 +11,6 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.ProcessApprovalOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.ApprovalMailSendCheck;
 import nts.uk.shr.com.context.AppContexts;
@@ -37,7 +36,7 @@ public class DetailAfterApprovalImpl implements DetailAfterApproval {
 	private ApplicationRepository applicationRepository;
 	
 	@Override
-	public ProcessApprovalOutput doApproval(String companyID, String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput, String memo) {
+	public ProcessApprovalOutput doApproval(String companyID, String appID, Application application, ApprovalProcessParam approvalProcessParam, String memo) {
 		ProcessApprovalOutput processApprovalOutput = new ProcessApprovalOutput();
 		String loginEmployeeID = AppContexts.user().employeeId();
 		// 2.承認する(ApproveService)
@@ -69,15 +68,14 @@ public class DetailAfterApprovalImpl implements DetailAfterApproval {
 			}
 			applicationRepository.update(application);
 			// INPUT．申請表示情報．申請表示情報(基準日関係なし)．メールサーバ設定済区分をチェックする
-			if(!appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet()) {
+			if(!approvalProcessParam.isMailServerSet()) {
 				processApprovalOutput.setAppID(appID);
 				processApprovalOutput.setReflectAppId(reflectAppId);
 				return processApprovalOutput;
 			}
 		}
 		// アルゴリズム「承認処理後にメールを自動送信するか判定」を実行する ( Thực hiện thuật toán「Xác định có tự động gửi thư sau khi xử lý phê duyệt hay không」 
-		AppTypeSetting appTypeSetting = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
-				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().orElse(null);
+		AppTypeSetting appTypeSetting = approvalProcessParam.getAppTypeSetting();
 		String applicantResult = approvalMailSendCheck.sendMailApplicant(
 				appTypeSetting,
 				application, 
