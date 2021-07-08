@@ -46,9 +46,15 @@ public class PasswordPolicy extends AggregateRoot {
 	// ログイン時にポリシーチェック実施
 	private boolean loginCheck;
 
-	public PasswordPolicy(ContractCode contractCode, NotificationPasswordChange notificationPasswordChange,
-			boolean loginCheck, boolean initialPasswordChange, boolean isUse, PasswordHistoryCount historyCount,
-			PasswordValidityPeriod validityPeriod, PasswordComplexityRequirement complexityRequirement) {
+	public PasswordPolicy(
+			ContractCode contractCode,
+			NotificationPasswordChange notificationPasswordChange,
+			boolean loginCheck,
+			boolean initialPasswordChange,
+			boolean isUse,
+			PasswordHistoryCount historyCount,
+			PasswordValidityPeriod validityPeriod,
+			PasswordComplexityRequirement complexityRequirement) {
 		super();
 		this.contractCode = contractCode;
 		this.notificationPasswordChange = notificationPasswordChange;
@@ -113,6 +119,7 @@ public class PasswordPolicy extends AggregateRoot {
 				return ValidationResultOnLogin.expiresSoon(remainingDays);
 			}
 		}
+		
 		// 問題なし
 		return ValidationResultOnLogin.ok();
 	}
@@ -140,6 +147,11 @@ public class PasswordPolicy extends AggregateRoot {
 		return errors;
 	}
 	
+	/**
+	 * 最新のパスワードと重複があるかチェック
+	 * @param changeLog
+	 * @return
+	 */
 	private boolean duplicatesLatestPassword(LoginPasswordOfUser changeLog) {
 		
 		// 最新のものとの重複チェックなので、+1が必要
