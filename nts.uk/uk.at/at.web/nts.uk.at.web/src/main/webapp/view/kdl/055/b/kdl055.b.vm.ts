@@ -267,6 +267,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
 
             let mappingErrorList = param.mappingErrorList;
             let errors: any[] = [];
+            let results = vm.data.importResult.results;
             
             _.forEach(mappingErrorList, (error: MappingErrorOutput) => {
                 let err: any = { columnKey: 'nameHeader', id: null, index: null, message: error.errorMessage };
@@ -285,10 +286,13 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                 if (error.date) {
                     err.columnKey = error.date;
                 }
-                
-                if (err.index != null) {
-                    errors.push(err);
-                }
+                _.forEach(results, (result: ImportResultDetail) => {
+                    if (result.employeeId === err.id) {
+                        if ([6, 7].includes(result.status) && err.index != null) {
+                            errors.push(err);
+                        }
+                    }
+                });
             });
 
             $("#grid").mGrid("setErrors", errors);
@@ -363,7 +367,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                         // record[result.ymd] = result.importCode;
                         record[result.ymd] = result.importCode;
                         
-                        if ([2, 3, 4, 5, 9].includes(result.status) || (result.status === 9 && !vm.overwrite)) {
+                        if ([2, 3, 4, 5, 8].includes(result.status) || (result.status === 9 && !vm.overwrite)) {
                             cellStates.push({ rowId: emp.employeeId, columnKey: result.ymd, state: ["mgrid-disable", "align-center"]});
                         } else {
                             cellStates.push({ rowId: emp.employeeId, columnKey: result.ymd, state: ["align-center"]});
