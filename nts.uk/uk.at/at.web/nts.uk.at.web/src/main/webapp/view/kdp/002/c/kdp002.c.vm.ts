@@ -287,11 +287,8 @@ module nts.uk.at.view.kdp002.c {
 				const vm = this;
 				const mockvm = new ko.ViewModel();
 
-				let startDate = mockvm.$date.now();
-				startDate.setDate(startDate.getDate() - 3);
-
 				const param = {
-					startDate: startDate,
+					startDate: mockvm.$date.now(),
 					endDate: mockvm.$date.now(),
 					sid: vm.infoEmpFromScreenA.employeeId
 				}

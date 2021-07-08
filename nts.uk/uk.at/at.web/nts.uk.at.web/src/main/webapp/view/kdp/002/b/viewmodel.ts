@@ -353,10 +353,8 @@ class KDP002BViewModel extends ko.ViewModel {
 
     getNotification() {
         const vm = this;
-        let startDate = vm.$date.now();
-        startDate.setDate(startDate.getDate() - 3);
         const param = {
-            startDate: startDate,
+            startDate: vm.$date.now(),
             endDate: vm.$date.now(),
             sid: vm.infoEmpFromScreenA.employeeId
         }
