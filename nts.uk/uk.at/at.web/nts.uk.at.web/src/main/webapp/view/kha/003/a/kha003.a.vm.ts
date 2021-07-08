@@ -36,6 +36,7 @@ module nts.uk.at.kha003.a {
 
         layoutSettings: KnockoutObservableArray<any>;
         isUpdateMode: KnockoutObservable<boolean>;
+        isExecutionMode: KnockoutObservable<boolean>;
         isInit: boolean = true;
         isOutPutAll: KnockoutObservable<boolean>;
 
@@ -64,6 +65,7 @@ module nts.uk.at.kha003.a {
             vm.isA71Enable = ko.observable(true);
             vm.isA72Enable = ko.observable(true);
             vm.isUpdateMode = ko.observable(false);
+            vm.isExecutionMode = ko.observable(false);
             vm.isOutPutAll = ko.observable(false);
         }
 
@@ -74,10 +76,26 @@ module nts.uk.at.kha003.a {
                 vm.$errors("clear");
                 if (newValue != "") {
                     vm.getScreenDetails(newValue).done(() => {
-                        this.isUpdateMode(true);
+                        vm.isUpdateMode(true);
+                        vm.isExecutionMode(true);
                         $('#A4_3').focus();
                     });
                 }
+            });
+
+            vm.manHour.name.subscribe((newValue: any) => {
+                vm.excutionModeToUpDateMode();
+            });
+
+            vm.selectedIdA622.subscribe((newValue: any) => {
+                vm.excutionModeToUpDateMode();
+            });
+
+            vm.selectedId.subscribe((newValue: any) => {
+                vm.excutionModeToUpDateMode();
+            });
+            vm.isA71Checked.subscribe((newValue: any) => {
+                vm.excutionModeToUpDateMode();
             });
 
             vm.summaryItems.subscribe((newValue: any) => {
@@ -125,10 +143,11 @@ module nts.uk.at.kha003.a {
                         $(this).children().removeClass('bacg-active').addClass('bacg-inactive');
                         $('#append_area').append('<div class="cell valign-center">\n' +
                             '                                        <div style="background-color: #e7d3193b" class="panel  item_a_6_4_to_67">\n' +
-                            '                                            <button id="' + itemId + '" class="button_top_right_corner"><i class="icon icon-close"></i></button>\n' +
+                            '                                            <button tabindex="-1" id="' + itemId + '" class="button_top_right_corner"><i class="icon icon-close"></i></button>\n' +
                             '                                            <span data-itemtype="' + itemtype + '"  class="label layout-setting summary-item" style="display: table;margin: 71px auto;">' + $(this).children().html() + '</span>\n' +
                             '                                        </div>\n' +
                             '                                    </div>');
+                        vm.excutionModeToUpDateMode();
                     }
                     if (itemCount >= 3) {
                         $('#append_note').hide();
@@ -150,6 +169,7 @@ module nts.uk.at.kha003.a {
                     if ($('#append_area .cell').length <= 3) {
                         $('#append_note').show();
                     }
+                    vm.excutionModeToUpDateMode();
                     matchWidth();
                 });
             });
@@ -157,6 +177,14 @@ module nts.uk.at.kha003.a {
 
         mounted() {
             const vm = this;
+        }
+
+        excutionModeToUpDateMode() {
+            const vm = this;
+            if (vm.isExecutionMode()) {
+                vm.isExecutionMode(false);
+                vm.isUpdateMode(true);
+            }
         }
 
 
@@ -170,7 +198,6 @@ module nts.uk.at.kha003.a {
             const vm = this;
             let dfd = $.Deferred<any>();
             if (code != "") {
-                //  $("#I6_3").focus();
                 vm.$blockui("invisible");
                 vm.$ajax(API.FIND + "/" + code).then(data => {
                     vm.manHour.code(data.code);
@@ -203,6 +230,7 @@ module nts.uk.at.kha003.a {
                 }).fail(err => {
                     dfd.reject();
                 }).always(() => vm.$blockui("clear"));
+                vm.isExecutionMode(true);
             }
             return dfd.promise();
         }
@@ -225,7 +253,6 @@ module nts.uk.at.kha003.a {
                     vm.isUpdateMode(true);
                     vm.currentCode("");
                     vm.currentCode(data.manHoursSummaryTables[0].code);
-                    // $("#I6_3").focus();
                 }
                 if (data.manHoursSummaryTables.length <= 0) {
                     vm.isUpdateMode(false)
@@ -273,8 +300,11 @@ module nts.uk.at.kha003.a {
             vm.isUpdateMode(false);
             vm.currentCode('');
             vm.manHour.code('');
-            vm.manHour.name('')
+            vm.manHour.name('');
             vm.summaryItems([]);
+            vm.selectedIdA622(0);
+            vm.selectedId(0);
+            vm.isExecutionMode(false);
         }
 
         /**
@@ -307,6 +337,7 @@ module nts.uk.at.kha003.a {
                         summaryItems: summaryItemsParams
                     };
                     vm.$blockui("invisible");
+                    vm.isExecutionMode(true);
                     vm.$ajax(vm.isUpdateMode() ? API.UPDATE : API.REGISTER, command).done((data) => {
                         vm.$dialog.info({messageId: "Msg_15"})
                             .then(() => {
@@ -320,6 +351,7 @@ module nts.uk.at.kha003.a {
                         vm.$dialog.error({messageId: error.messageId});
                     }).always(() => {
                         vm.$blockui("clear");
+                        vm.isExecutionMode(true);
                     });
                 }
             });
@@ -336,10 +368,16 @@ module nts.uk.at.kha003.a {
                 code: vm.manHour.code(),
                 name: vm.manHour.name()
             }
+            vm.isExecutionMode(true);
             vm.$window.storage('kha003ERequiredData', shareData).then(() => {
                 vm.$window.modal("/view/kha/003/e/index.xhtml").then(() => {
+                    vm.isInit = false;
                     vm.loadScreenListData()
+                    vm.$window.storage('kha003EShareData').done((data) => {
+                        vm.currentCode(data.duplicatedCode);
+                    })
                 });
+                vm.isExecutionMode(true);
             });
         }
 
@@ -380,6 +418,7 @@ module nts.uk.at.kha003.a {
          * */
         clickDeleteButton() {
             const vm = this;
+            vm.isExecutionMode(true);
             vm.$dialog.confirm({messageId: "Msg_18"}).then((result: 'yes' | 'cancel') => {
                 if (result === 'yes') {
                     var selectableCode = vm.getSelectableCode(vm.items(), vm.manHour.code());
@@ -403,9 +442,9 @@ module nts.uk.at.kha003.a {
                     }).always(() => {
                         vm.$blockui("clear");
                         vm.$errors("clear");
+                        vm.isExecutionMode(true);
                     });
                 }
-                $("#J3_3").focus();
             });
         }
 
@@ -429,7 +468,80 @@ module nts.uk.at.kha003.a {
             vm.selectedId(0);
             vm.$window.storage('kha003AShareData', shareData).then(() => {
                 vm.$window.modal("/view/kha/003/b/index.xhtml").then(() => {
-
+                    vm.$window.storage('kha003BShareData').done((data: any) => {
+                        if (!data.isCancel) {
+                            var rows: any = [];
+                            rows.push(['職場別作業集計表']);
+                            rows.push([data.datePriod]);
+                            var masterNameInfo = data.masterNameInfo;
+                            rows.push(
+                                [
+                                    '社員コード',
+                                    '社員名',
+                                    '日付',
+                                    '所属職場コード',
+                                    '所属職場名称',
+                                    '勤務職場コード',
+                                    '勤務職場名称',
+                                    '応援勤務枠NO',
+                                    vm.taskFrameSettingA56.taskFrameName() + vm.$i18n('KHA003_112'),
+                                    vm.taskFrameSettingA56.taskFrameName() + vm.$i18n('KHA003_113'),
+                                    vm.taskFrameSettingA57.taskFrameName() + vm.$i18n('KHA003_112'),
+                                    vm.taskFrameSettingA57.taskFrameName() + vm.$i18n('KHA003_113'),
+                                    vm.taskFrameSettingA58.taskFrameName() + vm.$i18n('KHA003_112'),
+                                    vm.taskFrameSettingA58.taskFrameName() + vm.$i18n('KHA003_113'),
+                                    vm.taskFrameSettingA59.taskFrameName() + vm.$i18n('KHA003_112'),
+                                    vm.taskFrameSettingA59.taskFrameName() + vm.$i18n('KHA003_113'),
+                                    vm.taskFrameSettingA510.taskFrameName() + vm.$i18n('KHA003_112'),
+                                    vm.taskFrameSettingA510.taskFrameName() + vm.$i18n('KHA003_113'),
+                                    '総労働時間'
+                                ]
+                            );
+                            data.workDetailDataList.forEach((data: any) => {
+                                let affWorkPlace = this.getcodeAndName(data.affWorkplaceId, masterNameInfo.affWorkplaceInfoList, 0);
+                                let workPlace = this.getcodeAndName(data.workplaceId, masterNameInfo.affWorkplaceInfoList, 1);
+                                let empInfo = this.getcodeAndName(data.employeeId, masterNameInfo.employeeInfoList, 2);
+                                let task1 = this.getcodeAndName(data.workCode1, masterNameInfo.task1List, null);
+                                let task2 = this.getcodeAndName(data.workCode2, masterNameInfo.task2List, null);
+                                let task3 = this.getcodeAndName(data.workCode3, masterNameInfo.task3List, null);
+                                let task4 = this.getcodeAndName(data.workCode4, masterNameInfo.task4List, null);
+                                let task5 = this.getcodeAndName(data.workCode5, masterNameInfo.task5List, null);
+                                rows.push([
+                                    empInfo ? empInfo.employeeCode : '',
+                                    empInfo ? empInfo.employeeName : '',
+                                    data.date,
+                                    affWorkPlace ? affWorkPlace.workplaceCode : '',
+                                    affWorkPlace ? affWorkPlace.workplaceName : '',
+                                    workPlace ? workPlace.workplaceCode : '',
+                                    workPlace ? workPlace.workplaceName : '',
+                                    data.supportWorkFrameNo,
+                                    task1 ? task1.code : '',
+                                    task1 ? task1.taskName : '',
+                                    task2 ? task2.code : '',
+                                    task2 ? task2.taskName : '',
+                                    task3 ? task3.code : '',
+                                    task3 ? task3.taskName : '',
+                                    task4 ? task4.code : '',
+                                    task4 ? task4.taskName : '',
+                                    task5 ? task5.code : '',
+                                    task5 ? task5.taskName : '',
+                                    data.totalWorkingHours
+                                ])
+                            });
+                            var csvContent = rows.join("\n");
+                            var link = window.document.createElement("a");
+                            link.setAttribute("href", "data:text/csv;charset=utf-8,%EF%BB%BF" + encodeURI(csvContent));
+                            var currentdate = new Date();
+                            var pathSuffix = currentdate.getFullYear() + ""
+                                + (currentdate.getMonth() + 1) + ""
+                                + currentdate.getDate() + "  "
+                                + currentdate.getHours() + ""
+                                + currentdate.getMinutes() + ""
+                                + currentdate.getSeconds()
+                            link.setAttribute("download", "全て出力_" + pathSuffix + ".csv");
+                            link.click();
+                        }
+                    })
                 });
             });
         }
@@ -490,6 +602,42 @@ module nts.uk.at.kha003.a {
 
                 });
             });
+        }
+
+        /**
+         * function for get code and name from the last list
+         *
+         * @param identifier
+         * @param taskList
+         * @param type         *
+         * @author rafiqul.islam
+         * */
+        private getcodeAndName(identifier: any, taskList: any, type: any) {
+            let info = null;
+            identifier = identifier.trim();
+            for (let element of taskList) {
+                //check aff work place
+                if (type == 0 && element.workplaceId === identifier) {
+                    info = element;
+                    break;
+                }
+                // check work place
+                if (type == 1 && element.workplaceId === identifier) {
+                    info = element;
+                    break;
+                }
+                // check employee
+                if (type == 2 && element.sid === identifier) {
+                    info = element;
+                    break;
+                }
+                // check task1~task5
+                if (type == null && element.code === identifier) {
+                    info = element;
+                    break;
+                }
+            }
+            return info;
         }
     }
 

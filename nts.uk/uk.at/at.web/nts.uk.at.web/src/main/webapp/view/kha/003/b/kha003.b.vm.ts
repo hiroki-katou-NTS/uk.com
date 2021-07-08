@@ -20,7 +20,6 @@ module nts.uk.at.kha003.b {
             vm.enable = ko.observable(true);
             vm.required = ko.observable(true);
             var date = new Date();
-            var today = vm.startOfMonth(date);
             var firstDay = new Date(date.getFullYear(), date.getMonth(), 1).toDateString();
             var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).toDateString();
             vm.startDateString = ko.observable("");
@@ -38,7 +37,7 @@ module nts.uk.at.kha003.b {
             });
         }
 
-        public formatDate(date:any) {
+        public formatDate(date: any) {
             var d = new Date(date),
                 month = '' + (d.getMonth() + 1),
                 day = '' + d.getDate(),
@@ -74,7 +73,13 @@ module nts.uk.at.kha003.b {
          * Event on click cancel button.
          */
         public cancel(): void {
-            nts.uk.ui.windows.close();
+            const vm = this;
+            let shareData = {
+                isCancel: true
+            }
+            vm.$window.storage('kha003BShareData', shareData).then(() => {
+                nts.uk.ui.windows.close();
+            })
         }
 
         /**
@@ -85,13 +90,6 @@ module nts.uk.at.kha003.b {
             let dfd = $.Deferred<any>();
             //  $("#I6_3").focus();
             vm.$blockui("invisible");
-
-
-            let startDateString = 0;
-            if (vm.totalUnit() == 0) {
-            } else {
-
-            }
             let command = {
                 startDate: vm.totalUnit() == 0 ? vm.dateValue().startDate : null,
                 endDate: vm.totalUnit() == 0 ? vm.dateValue().endDate : null,
@@ -100,6 +98,8 @@ module nts.uk.at.kha003.b {
                 totalUnit: vm.totalUnit()
             }
             vm.$ajax(API.getData, command).then(data => {
+                data.datePriod = vm.dateValue().startDate + " ~ " + vm.dateValue().endDate;
+                data.isCancel = false;
                 console.log("csv data:" + data)
                 vm.$window.storage('kha003BShareData', data).then(() => {
                     nts.uk.ui.windows.close();

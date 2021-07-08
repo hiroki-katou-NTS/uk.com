@@ -20,16 +20,16 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--A1_1-->
-            <button data-bind="click:clickNewButton">#{i18n.getText('KHA003_10')}</button>
+            <button tabindex="-1" data-bind="click:clickNewButton">#{i18n.getText('KHA003_10')}</button>
             <!--A1_2-->
             <button tabindex="5" class="proceed"
-                    data-bind="click:clickRegistrationButton">#{i18n.getText('KHA003_11')}</button>
+                    data-bind="click:clickRegistrationButton, enable:vm.isExecutionMode() ? false:true">#{i18n.getText('KHA003_11')}</button>
             <!--A1_3-->
-            <button data-bind="click:clickDuplicateButton, enable:vm.isUpdateMode()">#{i18n.getText('KHA003_12')}</button>
+            <button tabindex="3" data-bind="click:clickDuplicateButton, enable:vm.isUpdateMode()">#{i18n.getText('KHA003_12')}</button>
             <!--A1_4-->
-            <button class="danger" data-bind="click:clickDeleteButton, enable:vm.isUpdateMode()">#{i18n.getText('KHA003_13')}</button>
+            <button tabindex="-1" class="danger" data-bind="click:clickDeleteButton, enable:vm.isUpdateMode()">#{i18n.getText('KHA003_13')}</button>
             <!--A1_5-->
-            <button data-bind="click:clickOutputAllButton, enable:vm.isUpdateMode()">#{i18n.getText('KHA003_14')}</button>
+            <button tabindex="-1" data-bind="click:clickOutputAllButton, enable:vm.isUpdateMode()">#{i18n.getText('KHA003_14')}</button>
         </div>
         <div id="contents-area">
             <div class="table" style="margin-top: 8px;">
@@ -37,7 +37,7 @@
                     <!--A2_1-->
                     <div data-bind="ntsPanel:{width: '350px', height: '400px', direction: 'right', showIcon: true, visible: true}">
                         <!--A2_2-->
-                        <div style="width: 300px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'single-list',
+                        <div tabindex="-1" style="width: 300px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'single-list',
 	                     items: items, selected: currentCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}"/>
                         <!--A3-->
                         <table tabindex="1" id="single-list" data-bind="ntsGridList: {
@@ -63,7 +63,7 @@
                         <div class="cell valign-center">
                             <!-- A4_2 -->
                             <input tabindex="2" class="width-common" id="A4_2"
-                                   data-bind="ntsTextEditor: {constraint: 'ManHourSummaryTableCode', value: manHour.code,enable: vm.isUpdateMode() ? false:true,required: true, name: '#[KHA003_21]'}, style: {marginRight: '5px'}"/>
+                                   data-bind="ntsTextEditor: {constraint: 'ManHourSummaryTableCode', value: manHour.code,enable: (vm.isUpdateMode() || vm.isExecutionMode()) ? false:true,required: true, name: '#[KHA003_21]'}, style: {marginRight: '5px'}"/>
                         </div>
                         <div class="cell valign-center">
                              <!-- A4_3 -->
@@ -147,7 +147,7 @@
                                     <div id="append_area" data-bind="foreach: summaryItems">
                                         <div class="cell valign-center">
                                             <div style="background-color: #e7d3193b" class="panel  item_a_6_4_to_67">
-                                                <button data-bind="attr:{id: 'item_type_' + summaryItemType}" class="button_top_right_corner"><i class="icon icon-close"></i></button>
+                                                <button tabindex="-1" data-bind="attr:{id: 'item_type_' + summaryItemType}" class="button_top_right_corner"><i class="icon icon-close"></i></button>
                                                 <span class="label layout-setting summary-item" data-bind="text:itemTypeName, attr: {'data-itemtype': summaryItemType}" style="display: table;margin: 71px auto;"></span>
                                             </div>
                                         </div>
@@ -189,13 +189,13 @@
                     <div class="table">
                         <div class="cell valign-center">
                             <!--A7_1-->
-                            <div data-bind="ntsCheckBox: { checked: isA71Checked, enable: isA71Enable, text: '#{i18n.getText('KHA003_39')}' }"></div>
+                            <div tabindex="-1" data-bind="ntsCheckBox: { checked: isA71Checked, enable: isA71Enable, text: '#{i18n.getText('KHA003_39')}' }"></div>
                         </div>
                     </div>
                     <div class="table" style="width: 100%;text-align: center">
                         <div class="cell valign-center">
-                            <!--A8_2-->
-                            <button data-bind="click:clickRunButton, style: {width: '60%', height:'44px'}, attr:{ class:isA72Enable ? 'proceed':''}">#{i18n.getText('KHA003_40')}</button>
+                            <!--A8_1-->
+                            <button tabindex="4" data-bind="click:clickRunButton, enable:vm.isExecutionMode() ? true:false, style: {width: '60%', height:'44px'}, attr:{ class:isExecutionMode() ? 'proceed':''}">#{i18n.getText('KHA003_40')}</button>
                         </div>
                     </div>
                 </div>

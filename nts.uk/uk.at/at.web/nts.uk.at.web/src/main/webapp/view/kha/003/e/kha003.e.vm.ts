@@ -22,7 +22,7 @@ module nts.uk.at.kha003.e {
             const vm = this;
             vm.enable = ko.observable(true);
             vm.required = ko.observable(true);
-            vm.isCopy = ko.observable(true);
+            vm.isCopy = ko.observable(false);
 
             vm.startDateString = ko.observable("");
             vm.endDateString = ko.observable("");
@@ -66,7 +66,7 @@ module nts.uk.at.kha003.e {
          */
         public decide(): void {
             const vm = this;
-            vm.$validate('#E1_7', '#E1_4').then((valid: boolean) => {
+            vm.$validate('#E1_7', '#E1_8').then((valid: boolean) => {
                 if (!valid) {
                     return;
                 }
@@ -81,8 +81,12 @@ module nts.uk.at.kha003.e {
                     vm.$ajax(vm.isUpdateMode() ? API.update : API.create, command).done((data) => {
                         vm.$dialog.info({messageId: "Msg_15"})
                             .then(() => {
-                                $("#A4_3").focus();
-                                nts.uk.ui.windows.close();
+                                let shareData={
+                                    duplicatedCode:vm.e1718ManHour.code()
+                                }
+                                vm.$window.storage('kha003EShareData',shareData).then(() => {
+                                    nts.uk.ui.windows.close();
+                                })
                             });
                     }).fail(function (error) {
                         vm.$dialog.error({messageId: error.messageId});

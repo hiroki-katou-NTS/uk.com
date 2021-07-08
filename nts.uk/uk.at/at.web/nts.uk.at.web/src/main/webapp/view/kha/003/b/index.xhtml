@@ -25,12 +25,13 @@
                     <div data-bind="ntsFormLabel: { enable: true, required:true }">#{i18n.getText('KHA003_50')}</div>
                 </div>
                 <!-- B1_2 -->
-                <div data-bind="if:vm.totalUnit() == 0" class="cell valign-center" style="text-align: center">
-                    <div id="B1_2" tabindex="1" data-bind="ntsDateRangePicker: {
+                <div tabindex="1" data-bind="if:vm.totalUnit() == 0" class="cell valign-center" style="text-align: center">
+                    <div id="B1_2" tabindex="-1" data-bind="ntsDateRangePicker: {
                       required: true,
                       enable: enable,
                       showNextPrevious: true,
                       value: dateValue,
+                     name:'#[KHA003_51]',
                       maxRange: 'oneMonth'
                      }"/>
                 </div>
@@ -42,12 +43,14 @@
                       showNextPrevious: true,
                       type: 'yearmonth',
                       value: dateValue,
+                      name:'#[KHA003_52]',
                       maxRange: 'oneMonth'
                      }"/>
                 </div>
             </div>
         </div>
         <div id="functions-area-bottom">
+            <!-- B2_1 -->
                 <button id="btn-f-close" tabindex="3" class="large proceed"
                         data-bind="click:decide,enable: $root.errors.isEmpty">#{i18n.getText('KHA003_53')}</button>
             <!-- B2_2 -->
