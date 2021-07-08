@@ -204,7 +204,9 @@ public class RegisterDailyWork {
 				check = true;
 			}
 			if(check) {
-				datas.add(item);
+				if(!datas.stream().filter(c->c.getWorkNo().v() == item.getWorkNo().v()).findFirst().isPresent()) {
+					datas.add(item);
+				}
 			}
 		}
 		
