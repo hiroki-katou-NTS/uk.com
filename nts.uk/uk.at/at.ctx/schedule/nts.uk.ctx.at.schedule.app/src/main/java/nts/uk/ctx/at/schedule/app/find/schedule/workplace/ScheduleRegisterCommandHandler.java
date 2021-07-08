@@ -136,7 +136,7 @@ public class ScheduleRegisterCommandHandler {
         List<EmployeeImport> employeeImports = empEmployeeAdapter.findByEmpId(employeeIds);
         employeeImports.stream().forEach(x -> {
             ResultOfRegisteringWorkSchedule result = resultOfRegisteringWorkSchedule.stream()
-                    .filter(y -> y.getErrorInformation().get(0).getEmployeeId().equals(x.getEmployeeId())).findFirst().get();
+                    .filter(y -> y.isHasError() ? y.getErrorInformation().get(0).getEmployeeId().equals(x.getEmployeeId()) : y.isHasError()).findFirst().get();
             RegisterWorkScheduleOutput output = new RegisterWorkScheduleOutput(
                     x.getEmployeeCode(), 
                     x.getEmployeeName(), 
