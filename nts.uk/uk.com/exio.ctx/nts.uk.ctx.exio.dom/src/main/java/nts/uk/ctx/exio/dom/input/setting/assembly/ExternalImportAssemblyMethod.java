@@ -37,10 +37,10 @@ public class ExternalImportAssemblyMethod {
 	private ExternalImportCode settingCode;
 	
 	/** CSV受入項目 */
-	private List<ImportItemMapping> csvImportItem;
+	private List<ImportItemMapping> csvImportItems;
 	
 	/** 固定値項目 */
-	private List<FixedItemMapping> fixedItem;
+	private List<FixedItemMapping> fixedItems;
 	
 	/** CSVファイル情報 */
 	private ExternalImportCsvFileInfo csvFileInfo;
@@ -76,7 +76,7 @@ public class ExternalImportAssemblyMethod {
 	 */
 	private DataItemList assembleImportingItems(Require require, ImportingGroupId groupId, CsvRecord csvRecord) {
 		
-		return csvImportItem.stream()
+		return csvImportItems.stream()
 				.map(m -> assembleImportingItem(require, groupId, m.read(csvRecord)))
 				.collect(collectingAndThen(toList(), DataItemList::new));
 	}
@@ -102,7 +102,7 @@ public class ExternalImportAssemblyMethod {
 	 */
 	private DataItemList assembleFixedItems() {
 		
-		return fixedItem.stream()
+		return fixedItems.stream()
 				.map(f -> new DataItem(f.getImportItemNumber(), f.getValue()))
 				.collect(Collectors.collectingAndThen(toList(), DataItemList::new));
 	}
@@ -110,8 +110,8 @@ public class ExternalImportAssemblyMethod {
 	public List<Integer> getAllItemNo() {
 		
 		return Stream.concat(
-				csvImportItem.stream().map(i -> i.getItemNo()),
-				fixedItem.stream().map(i -> i.getImportItemNumber()))
+				csvImportItems.stream().map(i -> i.getItemNo()),
+				fixedItems.stream().map(i -> i.getImportItemNumber()))
 				.collect(toList());
 	}
 	
