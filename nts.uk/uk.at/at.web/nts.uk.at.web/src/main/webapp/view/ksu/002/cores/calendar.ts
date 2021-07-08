@@ -677,9 +677,6 @@ module nts.uk.ui.calendar {
 						};
 					}
 
-					const [begin] = raws;
-					const [finsh] = raws.slice(-1);
-
 					const initRange = (start: moment.Moment, diff: number): DayData[] => _.range(0, Math.abs(diff), 1)
 						.map((d) => start.clone().add(d, 'day'))
 						.map((d) => ({
@@ -691,12 +688,28 @@ module nts.uk.ui.calendar {
 							className: ko.observableArray([])
 						}));
 
-					const start1 = moment(begin.date).startOf('week');
-					const start2 = moment(finsh.date).add(1, 'day');
-					const diff1 = start1.diff(begin.date, 'day');
-
-					const befores = initRange(start1, diff1);
-					const afters = initRange(start2, 42 - befores.length - raws.length);
+					let days: any[] = [];
+					let rawsfilter: any[] = [];
+					
+					if(vm.startDaySelected() == true){
+						rawsfilter = raws;
+						days = _.chunk([...raws], 7);
+					}else{
+						_.each(raws, (raw: any)=>{
+							if(vm.data.baseDate().begin <= raw.date && raw.date <= vm.data.baseDate().finish){
+								rawsfilter.push(raw);		
+							}
+						});
+						const [begin] = rawsfilter;
+						const [finsh] = rawsfilter.slice(-1);
+						const start1 = moment(begin.date).startOf('week');
+						const start2 = moment(finsh.date).add(1, 'day');
+						const diff1 = start1.diff(begin.date, 'day');
+	
+						const befores = initRange(start1, diff1);
+						const afters = initRange(start2, 42 - befores.length - rawsfilter.length);
+						days = _.chunk([...befores, ...rawsfilter, ...afters], 7);
+					}
 
 					moment.updateLocale(locale, {
 						week: {
@@ -704,13 +717,11 @@ module nts.uk.ui.calendar {
 							doy: 0
 						}
 					});
+//					vm.$nextTick(() => $(vm.$el).find('[data-bind]').removeAttr('data-bind'));
 
-					vm.$nextTick(() => $(vm.$el).find('[data-bind]').removeAttr('data-bind'));
-
-					const days = _.chunk([...befores, ...raws, ...afters], 7);
 					const [titles] = days;
 
-					return { raws, days, titles };
+					return { rawsfilter, days, titles };
 				},
 				owner: vm
 			});
@@ -762,14 +773,14 @@ module nts.uk.ui.calendar {
 							const start = moment(baseDate).startOf('month').startOf('day');
 							const end = moment(baseDate).endOf('month').endOf('day');
 							
-							let datePeriod = calculateDaysStartEndWeek(start.toDate(), end.toDate(), vm.baseDate.start(), vm.startDaySelected());
+							let datePeriod = calculateDaysStartEndWeek(start.toDate(), end.toDate(), vm.baseDate.start(), true);
 							
 							const diff = moment(datePeriod.end).diff(datePeriod.start, 'day');
 
 							initRange(diff, datePeriod.start);
 						}
 					} else {
-						let datePeriod = calculateDaysStartEndWeek(baseDate.begin, baseDate.finish, vm.baseDate.start(), vm.startDaySelected());
+						let datePeriod = calculateDaysStartEndWeek(baseDate.begin, baseDate.finish, vm.baseDate.start(), true);
 						const { begin, finish } = { begin: moment(datePeriod.start), finish: moment(datePeriod.end)};
 						const initDate = () => {
 							const diff = moment(finish).diff(begin, 'day');
