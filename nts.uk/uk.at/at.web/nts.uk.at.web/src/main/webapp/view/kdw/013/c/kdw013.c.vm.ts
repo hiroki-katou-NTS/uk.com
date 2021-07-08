@@ -579,7 +579,7 @@ module nts.uk.ui.at.kdw013.c {
                             const { extendedProps, start, end } = event as any as calendar.EventRaw;
                             const {
                                 remarks,
-                                sId,
+                                employeeId,
                                 workCD1,
                                 workCD2,
                                 workCD3,
@@ -595,7 +595,7 @@ module nts.uk.ui.at.kdw013.c {
 
                             const params: StartWorkInputPanelParam = {
                                 refDate: moment(start).toISOString(),
-                                sId,
+                                employeeId,
                                 workGroupDto: {
                                     workCD1,
                                     workCD2,
