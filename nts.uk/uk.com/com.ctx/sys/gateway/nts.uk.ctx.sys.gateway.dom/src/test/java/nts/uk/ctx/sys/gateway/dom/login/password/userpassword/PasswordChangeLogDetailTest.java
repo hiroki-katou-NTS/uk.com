@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog;
+package nts.uk.ctx.sys.gateway.dom.login.password.userpassword;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -19,7 +19,7 @@ public class PasswordChangeLogDetailTest {
 		GeneralDateTime.FAKED_NOW = GeneralDateTime.midnightOf(today);
 		
 		val changedAt = today.addDays(-30);
-		val target = new PasswordChangeLogDetail(GeneralDateTime.midnightOf(changedAt), "hash");
+		val target = new PasswordChangeLogDetail(GeneralDateTime.midnightOf(changedAt), new HashedLoginPassword("hash"));
 		
 		int actual = target.ageInDays();
 		assertThat(actual).isEqualTo(30);
@@ -28,7 +28,7 @@ public class PasswordChangeLogDetailTest {
 	@Test
 	public void getter() {
 		
-		val target = new PasswordChangeLogDetail(GeneralDateTime.now(), "hash");
+		val target = new PasswordChangeLogDetail(GeneralDateTime.now(), new HashedLoginPassword("hash"));
 		NtsAssert.invokeGetters(target);
 	}
 }
