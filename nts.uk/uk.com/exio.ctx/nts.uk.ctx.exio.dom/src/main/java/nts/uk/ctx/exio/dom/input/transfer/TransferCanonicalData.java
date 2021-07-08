@@ -28,26 +28,38 @@ import nts.uk.ctx.exio.dom.input.workspace.WorkspaceTableName;
  */
 public class TransferCanonicalData {
 	
+	/**
+	 * 全データを一括で移送する
+	 * @param require
+	 * @param context
+	 * @return
+	 */
 	public static AtomTask transferAll(Require require, ExecutionContext context) {
 		return transfer(require, context, Collections.emptyList());
 	}
 	
+	/**
+	 * データを社員ごとに移送する
+	 * @param require
+	 * @param context
+	 * @param employeeId
+	 * @return
+	 */
 	public static AtomTask transferByEmployee(Require require, ExecutionContext context, String employeeId) {
 		
 		val where = WhereSentence.equal("SID", ColumnExpression.stringLiteral(employeeId));
+		
 		return transfer(require, context, Arrays.asList(where));
 	}
 	
 	private static AtomTask transfer(Require require, ExecutionContext context, List<WhereSentence> whereList) {
 		
-		
-		ConversionCodeType cct = context.getMode().getType();
-		
 		ImportingGroup importingGroup = require.getImportingGroup(context.getGroupId());
 		
-		ConversionSource source = require.getConversionSource(importingGroup.getName());
-		ConversionSource sourceWithSuffix = editSourceTableName(source, context, importingGroup.getName());
-		List<ConversionTable> conversionTables = require.getConversionTable(sourceWithSuffix, importingGroup.getName(), cct);
+		List<ConversionTable> conversionTables = require.getConversionTable(
+				getConversionSource(require, context),
+				importingGroup.getName(),
+				context.getMode().getType());
 
 		List<String> importingItem = getImportingItemNames(require, context);
 		val sqls = conversionTables.stream()
@@ -102,9 +114,12 @@ public class TransferCanonicalData {
 		return conversionSql;
 	}
 	
-	private static ConversionSource editSourceTableName(ConversionSource base, ExecutionContext context, String groupName) {
+	private static ConversionSource getConversionSource(Require require, ExecutionContext context) {
 		
-		val tableName = new WorkspaceTableName(context, groupName);
+		ImportingGroup importingGroup = require.getImportingGroup(context.getGroupId());
+		ConversionSource base = require.getConversionSource(importingGroup.getName());
+		
+		val tableName = new WorkspaceTableName(context, importingGroup.getName());
 		
 		return new ConversionSource(
 				base.getSourceId(),
