@@ -3,13 +3,13 @@ package nts.uk.ctx.sys.gateway.dom.login.password.userpassword;
 import static java.util.stream.Collectors.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
-import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDateTime;
 
@@ -42,14 +42,23 @@ public class LoginPasswordOfUser implements DomainAggregate {
 				Collections.emptyList());
 	}
 	
+	public static LoginPasswordOfUser initialPassword(String userId, String passwordPlainText) {
+		return new LoginPasswordOfUser(
+				userId, 
+				PasswordState.INITIAL, 
+				Arrays.asList(new PasswordChangeLogDetail(
+						GeneralDateTime.now(), 
+						HashedLoginPassword.hash(passwordPlainText, userId))));
+	}
+	
+	
 	/**
 	 * 現在のパスワードを照合する
 	 * @param matchingPasswordPlainText
 	 * @return
 	 */
 	public boolean matches(String matchingPasswordPlainText) {
-		val hash = HashedLoginPassword.hash(matchingPasswordPlainText, userId);
-		return getLatestPassword().map(c -> c.getHashedPassword().equals(hash)).orElse(false);
+		return getLatestPassword().map(c -> c.getHashedPassword().equals(hash(matchingPasswordPlainText))).orElse(false);
 	}
 	
 	/**
@@ -58,8 +67,7 @@ public class LoginPasswordOfUser implements DomainAggregate {
 	 * @param changedAt
 	 */
 	public void change(String newPasswordPlainText, GeneralDateTime changedAt) {
-		val hash = HashedLoginPassword.hash(newPasswordPlainText, userId);
-		details.add(new PasswordChangeLogDetail(changedAt, hash));
+		details.add(new PasswordChangeLogDetail(changedAt, hash(newPasswordPlainText)));
 	}
 	
 	/**
@@ -83,5 +91,14 @@ public class LoginPasswordOfUser implements DomainAggregate {
 		return details.stream()
 				.sorted(Comparator.comparing(PasswordChangeLogDetail::getChangedDateTime).reversed())
 				.collect(toList());
+	}
+	
+	/**
+	 * パスワードをハッシュ化する
+	 * @param passwordPlainText
+	 * @return
+	 */
+	private HashedLoginPassword hash(String passwordPlainText) {
+		return HashedLoginPassword.hash(passwordPlainText, userId);
 	}
 }
