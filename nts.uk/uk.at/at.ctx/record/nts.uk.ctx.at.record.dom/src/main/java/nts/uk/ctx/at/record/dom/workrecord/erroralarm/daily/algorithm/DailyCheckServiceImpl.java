@@ -1550,7 +1550,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		List<StampNumber> stampNumber = lstStampCard.stream().map(x-> x.getStampNumber()).collect(Collectors.toList());
 		//ドメインモデル「打刻」を取得する
 		List<Stamp> lstStampDakoku = stampDakokuRepo.get(AppContexts.user().contractCode(), stampNumber, baseDate)
-				.stream().filter(a -> a.isReflectedCategory() && a.getStampDateTime().toDate().equals(baseDate))
+				.stream().filter(a -> a.getImprintReflectionStatus().isReflectedCategory() && a.getStampDateTime().toDate().equals(baseDate))
 				.collect(Collectors.toList());
 		if(lstStampDakoku.isEmpty()) return result;
 		String strClockArt = lstStampDakoku.stream().map(x -> x.getType().getChangeClockArt().nameId).collect(Collectors.joining(","));

@@ -13,11 +13,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.ImprintReflectionState;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
@@ -31,6 +33,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -173,7 +177,33 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 	@Basic(optional = true)
 	@Column(name = "TIME_RECORD_CODE")
 	public String timeRecordCode;
+	
+	// ver6	ver7		
+	// 反映された年月日
+	@Basic(optional = true)
+	@Column(name = "REFLECTED_INTO_DATE")
+	public GeneralDate reflectedIntoDate;
 
+	@Basic(optional = true)
+	@Column(name = "TASK_CD1")
+	public String taskCd1;
+	
+	@Basic(optional = true)
+	@Column(name = "TASK_CD2")
+	public String taskCd2;
+	
+	@Basic(optional = true)
+	@Column(name = "TASK_CD3")
+	public String taskCd3;
+	
+	@Basic(optional = true)
+	@Column(name = "TASK_CD4")
+	public String taskCd4;
+	
+	@Basic(optional = true)
+	@Column(name = "TASK_CD5")
+	public String taskCd5;
+	
 	@Override
 	protected Object getKey() {
 		return this.pk;
@@ -186,7 +216,7 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 		this.preClockArt = stamp.getType().getSetPreClockArt().value;
 		this.changeHalfDay = stamp.getType().isChangeHalfDay();
 		this.goOutArt = stamp.getType().getGoOutArt().isPresent() ? stamp.getType().getGoOutArt().get().value : null;
-		this.reflectedAtr = stamp.isReflectedCategory();
+		this.reflectedAtr = stamp.getImprintReflectionStatus().isReflectedCategory();
 		this.suportCard = (stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().isPresent())
 				? stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().get().v()
 				: null;
@@ -230,17 +260,26 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 				this.workplaceId  == null ? Optional.empty() : Optional.of(this.workplaceId), 
 				this.timeRecordCode == null ? Optional.empty() : Optional.of(new EmpInfoTerminalCode(this.timeRecordCode)),
 				this.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(this.stampPlace)), 
-				this.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(this.suportCard)));				
+				this.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(this.suportCard)));
+		
+		WorkGroup workGroup = WorkGroup.create(
+				new WorkCode(this.taskCd1),
+				Optional.of(new WorkCode(this.taskCd2)), 
+				Optional.of(new WorkCode(this.taskCd3)), 
+				Optional.of(new WorkCode(this.taskCd4)), 
+				Optional.of(new WorkCode(this.taskCd5)));
 		
 		val refectActualResult = new RefectActualResult(workInformationStamp,
 				this.workTime == null ? null : new WorkTimeCode(this.workTime),
-				overtime );
+				overtime, workGroup );
+		
+		val imprintReflectionState = new ImprintReflectionState(this.reflectedAtr, Optional.ofNullable(this.reflectedIntoDate));
 		
 		return new Stamp(new ContractCode(this.pk.contractCode) ,
 						stampNumber, 
 						this.pk.stampDateTime,
 						relieve, stampType, refectActualResult,
-						this.reflectedAtr, Optional.ofNullable(geoLocation), Optional.empty());
+						imprintReflectionState, Optional.ofNullable(geoLocation), Optional.empty());
 
 	}
 	

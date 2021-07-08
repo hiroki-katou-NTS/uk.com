@@ -44,7 +44,7 @@ public class StampTest {
 		Optional<GeoCoordinate> locationInfor = Optional.ofNullable(StampHelper.getGeoCoordinateDefault()) ;
 		ContractCode contactCode = new ContractCode("DUMMY");
 		Stamp stamp = new Stamp(contactCode, cardNumber, stampDateTime, relieve, type, refActualResults, locationInfor);
-		assertThat(stamp.isReflectedCategory()).isFalse();
+		assertThat(stamp.getImprintReflectionStatus().isReflectedCategory()).isFalse();
 		NtsAssert.invokeGetters(stamp);
 	}
 	

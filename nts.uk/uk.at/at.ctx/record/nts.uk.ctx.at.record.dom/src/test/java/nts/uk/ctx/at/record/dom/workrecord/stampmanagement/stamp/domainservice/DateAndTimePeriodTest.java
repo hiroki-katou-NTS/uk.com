@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +16,6 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetStampTypeToSuppressService.Require;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.SingleDayScheduleSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
@@ -25,7 +25,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkByIndividualWorkDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * 
@@ -69,7 +68,7 @@ public class DateAndTimePeriodTest implements SingleDayScheduleGetMemento{
 	@Test
 	public void test_workTimeCode_NotNull() {
 		DateAndTimePeriod dateAndTimePeriod = DomainServiceHeplper.getDateAndTimePeriodDefault();
-		SingleDaySchedule single = new SingleDaySchedule("workTypeCode", null, Optional.of("workTimeCode"));
+		SingleDaySchedule single = new SingleDaySchedule(new ArrayList<>(), Optional.of("workTimeCode"));
 		PersonalWorkCategory perWorkCat = new PersonalWorkCategory(single);
 		WorkByIndividualWorkDay data = new WorkByIndividualWorkDay(perWorkCat, null);
 		WorkingConditionItem item = new WorkingConditionItem("", null, 
@@ -118,7 +117,7 @@ public class DateAndTimePeriodTest implements SingleDayScheduleGetMemento{
 	public void test_optPredetemineTimeSetting() {
 		DateAndTimePeriod dateAndTimePeriod = DomainServiceHeplper.getDateAndTimePeriodDefault();
 		Optional<String> workTimeCode = Optional.of("workTimeCode");
-		SingleDaySchedule single = new SingleDaySchedule("workTypeCode", null, workTimeCode);
+		SingleDaySchedule single = new SingleDaySchedule(new ArrayList<>(), workTimeCode);
 		PersonalWorkCategory perWorkCat = new PersonalWorkCategory(single);
 		WorkByIndividualWorkDay data = new WorkByIndividualWorkDay(perWorkCat, null);
 		WorkingConditionItem item = new WorkingConditionItem("", null, 
@@ -149,7 +148,7 @@ public class DateAndTimePeriodTest implements SingleDayScheduleGetMemento{
 	public void test_optPredetemineTimeSettingSmall() {
 		DateAndTimePeriod dateAndTimePeriod = DomainServiceHeplper.getDateAndTimePeriodDefault();
 		Optional<String> workTimeCode = Optional.of("workTimeCode");
-		SingleDaySchedule single = new SingleDaySchedule("workTypeCode", null, workTimeCode);
+		SingleDaySchedule single = new SingleDaySchedule(new ArrayList<>(), workTimeCode);
 		PersonalWorkCategory perWorkCat = new PersonalWorkCategory(single);
 		WorkByIndividualWorkDay data = new WorkByIndividualWorkDay(perWorkCat, null);
 		WorkingConditionItem item = new WorkingConditionItem("", null, 
@@ -174,12 +173,6 @@ public class DateAndTimePeriodTest implements SingleDayScheduleGetMemento{
 		DateAndTimePeriod resultValue = new DateAndTimePeriod(GeneralDateTime.now(), GeneralDateTime.now());
 		assertThat(testResult.getStatDateTime().minutes()).isEqualTo(resultValue.getStatDateTime().minutes());
 		assertThat(testResult.getEndDateTime().minutes()).isEqualTo(resultValue.getEndDateTime().minutes());
-	}
-
-	@Override
-	public Optional<WorkTypeCode> getWorkTypeCode() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

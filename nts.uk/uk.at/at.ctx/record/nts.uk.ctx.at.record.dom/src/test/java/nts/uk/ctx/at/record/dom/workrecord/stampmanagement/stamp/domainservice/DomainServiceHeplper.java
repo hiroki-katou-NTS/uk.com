@@ -129,7 +129,7 @@ public class DomainServiceHeplper {
 	}
 	
 	public static WorkingConditionItem getWorkingCondWorktimeIsNull() {
-		SingleDaySchedule weekdayTime = new  SingleDaySchedule("workType", new ArrayList<>(), Optional.empty());
+		SingleDaySchedule weekdayTime = new  SingleDaySchedule(new ArrayList<>(), Optional.empty());
 		PersonalWorkCategory workCategory = new PersonalWorkCategory(weekdayTime);
 		WorkByIndividualWorkDay result = new WorkByIndividualWorkDay(workCategory, null);
 		WorkingConditionItem data = new WorkingConditionItem(null, null, result, null,
@@ -138,7 +138,7 @@ public class DomainServiceHeplper {
 		return data;
 	}
 	public static WorkingConditionItem getWorkingCondWorktimeNotNull() {
-		SingleDaySchedule weekdayTime = new  SingleDaySchedule("workType", new ArrayList<>(), Optional.of("workTime"));
+		SingleDaySchedule weekdayTime = new  SingleDaySchedule(new ArrayList<>(), Optional.of("workTime"));
 		PersonalWorkCategory workCategory = new PersonalWorkCategory(weekdayTime);
 		WorkByIndividualWorkDay result = new WorkByIndividualWorkDay(workCategory, null);
 		WorkingConditionItem data = new WorkingConditionItem(null, null, result, null,

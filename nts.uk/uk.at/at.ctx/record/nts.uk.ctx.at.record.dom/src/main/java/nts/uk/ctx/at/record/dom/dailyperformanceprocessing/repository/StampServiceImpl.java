@@ -83,10 +83,10 @@ public class StampServiceImpl implements StampDomainService {
 					if (x.getStampDateTime().year()==date.year()&& x.getStampDateTime().month() == date.month() && x.getStampDateTime().day() == date.day()
 							&& attendanceClock >= stampRange.getStart().v().intValue()
 							&& attendanceClock <= stampRange.getEnd().v().intValue()
-							&& x.isReflectedCategory() == false) {//打刻．反映済み区分　=　false
+							&& x.getImprintReflectionStatus().isReflectedCategory() == false) {//打刻．反映済み区分　=　false
 						lstStampOutput.add(x);
 					}
-					lstStampOutput.addAll(findStempItemNext(listStamp, date.addDays(1), stampRange, x.isReflectedCategory()));
+					lstStampOutput.addAll(findStempItemNext(listStamp, date.addDays(1), stampRange, x.getImprintReflectionStatus().isReflectedCategory()));
 				}
             	listStamp = listStamp.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
             	listStamp.sort(Comparator.comparing(Stamp::getStampDateTime));
@@ -102,7 +102,7 @@ public class StampServiceImpl implements StampDomainService {
 						&& attendanceClock <= stampRange.getEnd().v().intValue()) {
 					lstStampOutput.add(x);
 				}
-				lstStampOutput.addAll(findStempItemNext(listStamp, date.addDays(1), stampRange, x.isReflectedCategory()));
+				lstStampOutput.addAll(findStempItemNext(listStamp, date.addDays(1), stampRange, x.getImprintReflectionStatus().isReflectedCategory()));
 			};
 			lstStampOutput = lstStampOutput.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
 			lstStampOutput.sort(Comparator.comparing(Stamp::getStampDateTime));
@@ -145,7 +145,7 @@ public class StampServiceImpl implements StampDomainService {
 		} else {
 			listStamp = stampDakokuRepository.getByDateTimeperiod(lstStampCard.stream().map(c->c.getStampNumber().v()).collect(Collectors.toList()),companyId, start, end)
 					.stream()
-					.filter(c -> !c.isReflectedCategory()).collect(Collectors.toList());
+					.filter(c -> !c.getImprintReflectionStatus().isReflectedCategory()).collect(Collectors.toList());
 		}
 		listStamp.stream().sorted(Comparator.comparing(Stamp::getStampDateTime)).collect(Collectors.toList());
 		return listStamp;
