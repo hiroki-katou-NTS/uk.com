@@ -1,6 +1,11 @@
 package nts.uk.ctx.sys.gateway.dom.securitypolicy.password;
 
+import static java.util.stream.Collectors.*;
+
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.val;
@@ -88,10 +93,10 @@ public class PasswordPolicy extends AggregateRoot {
 			return ValidationResultOnLogin.initial();
 		}
 		
-		// 文字構成をチェック
-		val errorList = complexityRequirement.validatePassword(passwordPlainText);
-		if (loginCheck && errorList.size() > 0) {
-			return ValidationResultOnLogin.complexityError(errorList);
+		// パスワードをチェック
+		val violations = validate(changeLog, passwordPlainText);
+		if (loginCheck && violations.size() > 0) {
+			return ValidationResultOnLogin.complexityError(violations.stream().map(v -> v.getErrorMessageId()).collect(toList()));
 		}
 		
 		// 有効期限をチェック
@@ -113,12 +118,50 @@ public class PasswordPolicy extends AggregateRoot {
 	}
 	
 	/**
+	 * パスワードの状態がポリシーに適合しているか検証する
+	 * @param changeLog パスワードの履歴（currentPasswordPlainTextを含むこと）
+	 * @param currentPasswordPlainText 現在のパスワードの平文
+	 * @return
+	 */
+	public List<ViolationInfo> validate(LoginPasswordOfUser changeLog, String currentPasswordPlainText) {
+
+		if (!isUse) {
+			return Collections.emptyList();
+		}
+		
+		List<ViolationInfo> errors = new ArrayList<>();
+		
+		errors.addAll(complexityRequirement.validatePassword(currentPasswordPlainText));
+		
+		if (duplicatesLatestPassword(changeLog)) {
+			errors.add(new ViolationInfo("Msg_1187", historyCount.v().intValue()));
+		}
+		
+		return errors;
+	}
+	
+	private boolean duplicatesLatestPassword(LoginPasswordOfUser changeLog) {
+		
+		// 最新のものとの重複チェックなので、+1が必要
+		val logs = changeLog.getLatestPasswords(historyCount.v().intValue() + 1);
+		
+		if (logs.size() <= 1) {
+			return false;
+		}
+		
+		val latest = logs.get(0);
+		val olds = logs.subList(1, Math.max(historyCount.v().intValue(), logs.size()));
+		
+		return olds.stream().anyMatch(o -> o.getHashedPassword().equals(latest.getHashedPassword()));
+	}
+	
+	/**
 	 * 有効期限が切れるまでの残日数を求める
 	 * @return 有効期限までの日数
 	 */
 	private int calculateRemainingDays(LoginPasswordOfUser changeLog) {
 		// 前回変更してからの日数
-		int ageInDays = changeLog.latestLog().get().ageInDays();
+		int ageInDays = changeLog.getLatestPassword().get().ageInDays();
 		// 有効日数から上の日数を引く
 		return validityPeriod.v().intValue() - ageInDays;
 	}

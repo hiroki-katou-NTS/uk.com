@@ -25,18 +25,17 @@ public class PasswordAuthenticateWithEmployeeCode {
 		checkLockout(require, identified);
 		
 		// パスワード認証
-		val user = identified.getUser();
-		val optUserPassword = require.getLoginPasswordOfUser(user.getUserID());
-		
-		
-		if (optUserPassword.map(p -> !p.matches(password)).orElse(true)) {
+		val userPasswordOpt = require.getLoginPasswordOfUser(identified.getUserId());
+		if (!userPasswordOpt.map(p -> p.matches(password)).orElse(true)) {
 			val atomTask = FailedPasswordAuthenticate.failed(require, identified, password);
 			return PasswordAuthenticationResult.failure(atomTask);
 		}
 		
+		val userPassword = userPasswordOpt.get();
+		
 		// パスワードポリシーへの準拠チェック
 		val passwordPolicy = require.getPasswordPolicy(identified.getTenantCode());
-		val passwordPolicyResult = passwordPolicy.violatedOnLogin(optUserPassword.get(), password);
+		val passwordPolicyResult = passwordPolicy.violatedOnLogin(userPassword, password);
 		
 		return PasswordAuthenticationResult.success(passwordPolicyResult);
 	}

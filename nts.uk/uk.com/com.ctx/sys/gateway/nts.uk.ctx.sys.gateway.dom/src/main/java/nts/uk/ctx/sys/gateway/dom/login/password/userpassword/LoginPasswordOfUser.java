@@ -1,6 +1,10 @@
 package nts.uk.ctx.sys.gateway.dom.login.password.userpassword;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +35,13 @@ public class LoginPasswordOfUser implements DomainAggregate {
 		this.details = new ArrayList<>(details);
 	}
 	
+	public static LoginPasswordOfUser empty(String userId) {
+		return new LoginPasswordOfUser(
+				userId,
+				PasswordState.INITIAL,
+				Collections.emptyList());
+	}
+	
 	/**
 	 * 現在のパスワードを照合する
 	 * @param matchingPasswordPlainText
@@ -38,7 +49,7 @@ public class LoginPasswordOfUser implements DomainAggregate {
 	 */
 	public boolean matches(String matchingPasswordPlainText) {
 		val hash = HashedLoginPassword.hash(matchingPasswordPlainText, userId);
-		return currentPassword().map(c -> c.equals(hash)).orElse(false);
+		return getLatestPassword().map(c -> c.getHashedPassword().equals(hash)).orElse(false);
 	}
 	
 	/**
@@ -52,21 +63,25 @@ public class LoginPasswordOfUser implements DomainAggregate {
 	}
 	
 	/**
-	 * 最新（少なくとも最初のパスワードの分は必ず存在する）
+	 * 最新のパスワード
 	 * @return
 	 */
-	public Optional<PasswordChangeLogDetail> latestLog() {
-		if(this.details.isEmpty()) {
-			// TODO 「初期パスワードに変更履歴が作成されない問題」のため暫定対応
-			return Optional.empty();
-		}
-		return Optional.of(details.stream()
-				.sorted((a, b) -> a.ageInDays() - b.ageInDays())
-				.findFirst()
-				.get());
+	public Optional<PasswordChangeLogDetail> getLatestPassword() {
+		return getLatestPasswords(1).stream().findFirst();
 	}
-
-	private Optional<HashedLoginPassword> currentPassword() {
-		return latestLog().map(l -> l.getHashedPassword());
+	
+	/**
+	 * パスワードを新しいものから指定数分だけ取得する
+	 * @param historyLength 過去何回分の履歴を遡るか（1なら最新のもの1つだけ）
+	 * @return
+	 */
+	public List<PasswordChangeLogDetail> getLatestPasswords(int historyLength) {
+		return getDetailsSorted().subList(0, Math.min(historyLength, details.size()));
+	}
+	
+	private List<PasswordChangeLogDetail> getDetailsSorted() {
+		return details.stream()
+				.sorted(Comparator.comparing(PasswordChangeLogDetail::getChangedDateTime).reversed())
+				.collect(toList());
 	}
 }

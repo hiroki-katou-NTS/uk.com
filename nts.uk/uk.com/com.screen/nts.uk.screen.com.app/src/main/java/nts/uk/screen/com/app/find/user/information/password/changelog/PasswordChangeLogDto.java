@@ -39,8 +39,8 @@ public class PasswordChangeLogDto {
 		return domain == null ? null : new PasswordChangeLogDto(
 				null,
 				domain.getUserId(),
-				domain.latestLog().isPresent() ? domain.latestLog().get().getChangedDateTime() : null,
-				domain.latestLog().isPresent() ? domain.latestLog().get().getHashedPassword().toString() : null
+				domain.getLatestPassword().isPresent() ? domain.getLatestPassword().get().getChangedDateTime() : null,
+				domain.getLatestPassword().isPresent() ? domain.getLatestPassword().get().getHashedPassword().toString() : null
 				);
 	}
 }
