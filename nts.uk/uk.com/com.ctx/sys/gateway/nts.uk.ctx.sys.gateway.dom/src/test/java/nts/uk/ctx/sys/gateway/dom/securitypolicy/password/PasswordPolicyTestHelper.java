@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.HashedLoginPassword;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.complexity.PasswordComplexityRequirement;
 import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
@@ -40,7 +41,7 @@ public class PasswordPolicyTestHelper {
 		public final static PassStatus PASSSTATUES = PassStatus.Official; 
 		public final static ContractCode CONTRACT_CD = new ContractCode("contractCode");
 		public final static String USER_ID = "user";
-		public final static String PASSWORD = "passwprd";
+		public final static HashedLoginPassword PASSWORD = HashedLoginPassword.hash("password", USER_ID);
 		public final static NotificationPasswordChange NOTICE_PASSWORD_CHANGE = new NotificationPasswordChange(BigDecimal.valueOf(999999999));
 		public final static boolean IS_USE = true;
 		public final static boolean IS_LOGIN = true;

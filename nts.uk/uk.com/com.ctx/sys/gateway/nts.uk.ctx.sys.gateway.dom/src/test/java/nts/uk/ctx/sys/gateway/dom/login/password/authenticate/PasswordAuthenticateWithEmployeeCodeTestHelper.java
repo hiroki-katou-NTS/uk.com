@@ -14,8 +14,6 @@ import nts.uk.ctx.sys.shared.dom.user.ContractCode;
 import nts.uk.ctx.sys.shared.dom.user.DisabledSegment;
 import nts.uk.ctx.sys.shared.dom.user.LoginID;
 import nts.uk.ctx.sys.shared.dom.user.User;
-import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
-import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 public class PasswordAuthenticateWithEmployeeCodeTestHelper {
 	
@@ -34,7 +32,6 @@ public class PasswordAuthenticateWithEmployeeCodeTestHelper {
 			new User(
 					DUMMY.USER_ID,
 					DUMMY.IS_DEFAULT,
-					new HashPassword(DUMMY.PASSWORD),
 					new LoginID(DUMMY.LOGIN_ID),
 					new ContractCode(DUMMY.CONTRACT_CD),
 					DUMMY.DATE,
@@ -42,8 +39,7 @@ public class PasswordAuthenticateWithEmployeeCodeTestHelper {
 					DisabledSegment.False,
 					Optional.empty(),
 					Optional.empty(),
-					Optional.empty(),
-					PassStatus.InitPassword
+					Optional.empty()
 					);
 	
 	public static class DUMMY{

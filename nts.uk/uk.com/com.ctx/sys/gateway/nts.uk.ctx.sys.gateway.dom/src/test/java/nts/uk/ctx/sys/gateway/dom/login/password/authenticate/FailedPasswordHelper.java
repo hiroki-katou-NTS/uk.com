@@ -15,8 +15,6 @@ import nts.uk.ctx.sys.shared.dom.user.ContractCode;
 import nts.uk.ctx.sys.shared.dom.user.DisabledSegment;
 import nts.uk.ctx.sys.shared.dom.user.LoginID;
 import nts.uk.ctx.sys.shared.dom.user.User;
-import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
-import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 public class FailedPasswordHelper {
 	
@@ -26,7 +24,6 @@ public class FailedPasswordHelper {
 			new User(
 					DUMMY.USER_ID,
 					DUMMY.IS_DEFAULT,
-					new HashPassword(DUMMY.PASSWORD),
 					new LoginID(DUMMY.LOGIN_ID),
 					new ContractCode(DUMMY.CONTRACT_CODE),
 					DUMMY.DATE,
@@ -34,8 +31,7 @@ public class FailedPasswordHelper {
 					DisabledSegment.False,
 					Optional.empty(),
 					Optional.empty(),
-					Optional.empty(),
-					PassStatus.InitPassword
+					Optional.empty()
 					);
 	
 	static EmployeeDataMngInfoImport IMPORTED = 
