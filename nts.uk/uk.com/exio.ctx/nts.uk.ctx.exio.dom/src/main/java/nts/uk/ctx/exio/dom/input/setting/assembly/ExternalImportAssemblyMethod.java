@@ -83,8 +83,8 @@ public class ExternalImportAssemblyMethod {
 	private DataItem assembleImportingItem(
 			Require require, ImportingGroupId groupId, CsvRecord csvRecord, ImportItemMapping mapping) {
 		
-		val itemNo = mapping.getImportItemNumber();
-		val csvValue = csvRecord.getItemByColumnNo(mapping.getCsvColumnNumber());
+		val itemNo = mapping.getItemNo();
+		val csvValue = csvRecord.getItemByColumnNo(mapping.getCsvColumnNo());
 		
 		// 項目の編集
 		return require.getRevise(companyId, settingCode, itemNo)
@@ -112,7 +112,7 @@ public class ExternalImportAssemblyMethod {
 	public List<Integer> getAllItemNo() {
 		
 		return Stream.concat(
-				csvImportItem.stream().map(i -> i.getImportItemNumber()),
+				csvImportItem.stream().map(i -> i.getItemNo()),
 				fixedItem.stream().map(i -> i.getImportItemNumber()))
 				.collect(toList());
 	}

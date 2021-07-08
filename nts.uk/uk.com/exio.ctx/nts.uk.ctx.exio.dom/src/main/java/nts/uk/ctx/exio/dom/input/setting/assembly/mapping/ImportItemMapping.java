@@ -11,9 +11,9 @@ import lombok.Getter;
 public class ImportItemMapping {
 	
 	/** 受入項目NO */
-	private int importItemNumber;
+	private int itemNo;
 	
 	/** CSV列番号 */
-	private int csvColumnNumber;
+	private int csvColumnNo;
 	
 }

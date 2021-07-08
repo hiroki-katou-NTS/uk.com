@@ -52,7 +52,7 @@ public class ReviseItem implements DomainAggregate {
 				.map(v -> (Object) v)
 				.orElse(result);
 		
-		return new DataItem(importItemNumber, value);
+		return new DataItem(itemNo, value);
 	}
 
 	public interface Require{
