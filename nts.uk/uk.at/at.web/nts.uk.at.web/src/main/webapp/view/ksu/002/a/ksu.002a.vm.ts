@@ -851,21 +851,25 @@ module nts.uk.ui.at.ksu002.a {
 		editStateSetting: EDIT_STATE;
 	}
 }
-function calculateDaysStartEndWeek(start: Date, end: Date, dayStartWeek: number, isdayStartWeek: boolean): ({start: Date, end: Date}){
-	let nStart = moment(start);
-	let nEnd = moment(end);
-	if(isdayStartWeek){
-		if(start.getDay() > dayStartWeek){
-			nStart.add((start.getDay() - dayStartWeek) * -1, 'day');
-		}else if(start.getDay() < dayStartWeek){ 
-			nStart.add((start.getDay() + 7 - dayStartWeek) * -1, 'day');					
-		}
-		
-		if(end.getDay() >= dayStartWeek){
-			nEnd.add((dayStartWeek + 6 - end.getDay()), 'day');
-		}else if(end.getDay() < dayStartWeek){ 
-			nEnd.add((dayStartWeek - end.getDay() - 1), 'day');
-		}
+function calculateDaysStartEndWeek(start: Date, end: Date, settingDayStart: number, isSelectedSettingDayStart: boolean): ({start: Date, end: Date}){
+	if(isSelectedSettingDayStart){
+		const locale = moment.locale();
+		moment.updateLocale(locale, {
+			week: {
+				dow: settingDayStart,
+				doy: 0
+			}
+		});
+		let nStart = moment(start).startOf('week')
+		let nEnd = moment(end).endOf('week')
+		moment.updateLocale(locale, {
+			week: {
+				dow: 0,
+				doy: 0
+			}
+		});
+		return {start: nStart.toDate(), end: nEnd.toDate()};
+	}else{
+		return {start: start, end: end};
 	}
-	return {start: nStart.toDate(), end: nEnd.toDate()};
 }

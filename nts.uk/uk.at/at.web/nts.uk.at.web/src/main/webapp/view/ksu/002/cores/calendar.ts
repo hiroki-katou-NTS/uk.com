@@ -689,14 +689,17 @@ module nts.uk.ui.calendar {
 						}));
 
 					let days: any[] = [];
-					let rawsfilter: any[] = [];
+					let rawsfilter: DayData[] = [];
 					
 					if(vm.startDaySelected() == true){
 						rawsfilter = raws;
-						days = _.chunk([...raws], 7);
+						const [finsh] = rawsfilter.slice(-1);
+						const start2 = moment(finsh.date).add(1, 'day');
+						const afters = initRange(start2, 42 - rawsfilter.length);
+						days = _.chunk([...raws, ...afters], 7);
 					}else{
 						_.each(raws, (raw: any)=>{
-							if(vm.data.baseDate().begin <= raw.date && raw.date <= vm.data.baseDate().finish){
+							if(new Date(vm.data.baseDate().begin.toDateString()) <= new Date(raw.date.toDateString()) && new Date(raw.date.toDateString()) <= new Date(vm.data.baseDate().finish.toDateString())){
 								rawsfilter.push(raw);		
 							}
 						});
