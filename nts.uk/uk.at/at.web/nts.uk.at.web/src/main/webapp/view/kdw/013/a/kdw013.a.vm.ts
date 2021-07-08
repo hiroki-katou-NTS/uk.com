@@ -657,6 +657,7 @@ module nts.uk.ui.at.kdw013.a {
 
                             // update confirmers
                             $datas.valueHasMutated();
+                            vm.dataChanged(false);
                         } else {
                             $datas({ lstComfirmerDto, lstWorkRecordDetailDto: [], workCorrectionStartDate: '', workGroupDtos: [] });
                         }
@@ -698,6 +699,7 @@ module nts.uk.ui.at.kdw013.a {
 
                             // update confirmers
                             $datas.valueHasMutated();
+                            vm.dataChanged(false);
                         } else {
                             $datas({ lstComfirmerDto, lstWorkRecordDetailDto: [], workCorrectionStartDate: '', workGroupDtos: [] });
                         }
