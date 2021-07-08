@@ -91,6 +91,15 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                 targets: targets,
                 overwrite: vm.overwrite
             }
+            // close KDL053
+            if (vm.windows_lst) {
+                let selfId = nts.uk.ui.windows.selfId;
+                for (let id in vm.windows_lst) {
+                    if (nts.uk.ui.windows.container.windows[id].parent && nts.uk.ui.windows.container.windows[id].parent.id == selfId) {
+                        nts.uk.ui.windows.close(id);
+                    }
+                }
+            }
 
             vm.$blockui('show');
             vm.$ajax(paths.register, command).done((res) => {
@@ -98,11 +107,6 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                     // reset list data fail
                     vm.data.mappingErrorList = [];
 
-                    // close KDL053
-                    let btnCloseKDL053 = $('#btnClose');
-                    if (!_.isEmpty(btnCloseKDL053)) {
-                        btnCloseKDL053.click();
-                    }
                     if (res.length > 0) {
                         let request: any = {};
                         request.errorRegistrationList = [];
@@ -218,16 +222,11 @@ module nts.uk.at.view.kdl055.b.viewmodel {
 
         close() {
             const vm = this;
-            // let selfId = nts.uk.ui.windows.selfId;
-            // let btnCloseKDL053 = nts.uk.ui.windows.container.windows[selfId].$iframe.find('#btnClose');
-            // if (!_.isEmpty(btnCloseKDL053)) {
-            //     btnCloseKDL053.click();
-            // }
             if (vm.windows_lst) {
                 let selfId = nts.uk.ui.windows.selfId;
                 for (let id in vm.windows_lst) {
                     if (nts.uk.ui.windows.container.windows[id].parent && nts.uk.ui.windows.container.windows[id].parent.id == selfId) {
-                        nts.uk.ui.windows.container.windows[id].close();
+                        nts.uk.ui.windows.close(id);
                     }
                 }
             }

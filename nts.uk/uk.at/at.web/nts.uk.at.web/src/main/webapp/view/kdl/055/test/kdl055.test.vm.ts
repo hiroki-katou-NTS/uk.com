@@ -150,10 +150,6 @@ module nts.uk.at.view.kdl055.test.viewmodel {
                 let paramB = getShared('paramB');
                 if (paramB) {
                     return vm.$window.modal('at', '/view/kdl/055/b/index.xhtml', paramB).then(() => {
-                        let btnCloseKDL053 = $('#btnClose');
-                        if (!_.isEmpty(btnCloseKDL053)) {
-                            btnCloseKDL053.click();
-                        }
                         vm.openDialog();
                     });
                 }
