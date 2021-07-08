@@ -502,7 +502,7 @@ module nts.uk.ui.calendar {
 
 		schedules!: KnockoutComputed<Schedule>;
 		
-		startDaySelected: KnockoutObservable<boolean> = ko.observable(false);
+		startDaySelected: KnockoutObservable<boolean> = ko.observable(null);
 
 		constructor(private data: Parameter) {
 			super();
@@ -613,9 +613,9 @@ module nts.uk.ui.calendar {
 						vm.startDaySelected(false);
 					}
 				});
-			vm.startDaySelected.subscribe(() => {
-				data.baseDate(data.baseDate());
-				vm.data.rootVm.rebidingData();
+			vm.startDaySelected.subscribe((newValue: boolean) => {
+//				data.baseDate(data.baseDate());
+//				vm.data.rootVm.rebidingData();
 			});
 
 			vm.baseDate.model
