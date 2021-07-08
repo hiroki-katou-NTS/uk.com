@@ -161,7 +161,7 @@ public class PasswordPolicy extends AggregateRoot {
 	 */
 	private int calculateRemainingDays(LoginPasswordOfUser changeLog) {
 		// 前回変更してからの日数
-		int ageInDays = changeLog.latestLog().get().ageInDays();
+		int ageInDays = changeLog.getLatestPassword().get().ageInDays();
 		// 有効日数から上の日数を引く
 		return validityPeriod.v().intValue() - ageInDays;
 	}

@@ -49,7 +49,7 @@ public class LoginPasswordOfUser implements DomainAggregate {
 	 */
 	public boolean matches(String matchingPasswordPlainText) {
 		val hash = HashedLoginPassword.hash(matchingPasswordPlainText, userId);
-		return currentPassword().map(c -> c.equals(hash)).orElse(false);
+		return getLatestPassword().map(c -> c.getHashedPassword().equals(hash)).orElse(false);
 	}
 	
 	/**
@@ -63,18 +63,11 @@ public class LoginPasswordOfUser implements DomainAggregate {
 	}
 	
 	/**
-	 * 最新（少なくとも最初のパスワードの分は必ず存在する）
+	 * 最新のパスワード
 	 * @return
 	 */
-	public Optional<PasswordChangeLogDetail> latestLog() {
-		if(this.details.isEmpty()) {
-			// TODO 「初期パスワードに変更履歴が作成されない問題」のため暫定対応
-			return Optional.empty();
-		}
-		return Optional.of(details.stream()
-				.sorted((a, b) -> a.ageInDays() - b.ageInDays())
-				.findFirst()
-				.get());
+	public Optional<PasswordChangeLogDetail> getLatestPassword() {
+		return getLatestPasswords(1).stream().findFirst();
 	}
 	
 	/**
@@ -90,9 +83,5 @@ public class LoginPasswordOfUser implements DomainAggregate {
 		return details.stream()
 				.sorted(Comparator.comparing(PasswordChangeLogDetail::getChangedDateTime).reversed())
 				.collect(toList());
-	}
-
-	private Optional<HashedLoginPassword> currentPassword() {
-		return latestLog().map(l -> l.getHashedPassword());
 	}
 }
