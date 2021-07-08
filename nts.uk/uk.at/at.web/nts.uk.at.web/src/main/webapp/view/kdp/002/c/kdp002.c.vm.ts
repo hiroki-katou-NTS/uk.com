@@ -2,6 +2,10 @@
 
 module nts.uk.at.view.kdp002.c {
 
+	const kDP002RequestUrl = {
+		FINGER_STAMP_SETTING: 'at/record/stamp/finger/get-finger-stamp-setting'
+	}
+
 	interface TimeClock {
 		tick: number;
 		now: KnockoutObservable<Date>;
@@ -79,6 +83,7 @@ module nts.uk.at.view.kdp002.c {
 			value5: KnockoutObservable<string> = ko.observable('');
 
 			showBtnNoti: KnockoutObservable<boolean | null> = ko.observable(null);
+			noticeSetting: KnockoutObservable<INoticeSet> = ko.observable(null);
 
 			constructor() {
 				super();
@@ -95,6 +100,10 @@ module nts.uk.at.view.kdp002.c {
 				});
 				self.laceName.subscribe(() => {
 					self.setSizeDialog();
+				});
+				self.$ajax(kDP002RequestUrl.FINGER_STAMP_SETTING)
+				.then((data: any) => {
+					self.noticeSetting(data.noticeSetDto);
 				});
 			}
 
@@ -329,7 +338,7 @@ module nts.uk.at.view.kdp002.c {
 
 			openDialogU() {
 				const vm = this;
-				const params = { sid: vm.infoEmpFromScreenA.employeeId, data: ko.unwrap(vm.notificationStamp) };
+				const params = { sid: vm.infoEmpFromScreenA.employeeId, data: ko.unwrap(vm.notificationStamp), setting: ko.unwrap(vm.noticeSetting) };
 				vm.$window.modal('/view/kdp/002/u/index.xhtml', params)
 					.then(() => {
 						vm.modeShowPointNoti(false);
