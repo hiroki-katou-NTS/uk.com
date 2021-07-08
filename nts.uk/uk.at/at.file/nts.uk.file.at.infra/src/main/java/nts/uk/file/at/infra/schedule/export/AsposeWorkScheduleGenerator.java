@@ -16,6 +16,7 @@ import com.aspose.cells.Color;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.Style;
 import com.aspose.cells.StyleFlag;
+import com.aspose.cells.TextAlignmentType;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.pdf.HorizontalAlignment;
@@ -138,7 +139,8 @@ public class AsposeWorkScheduleGenerator extends AsposeCellsReportGenerator impl
                 Cell cell = cells.get(i + 1, j + 2);
                 this.setBorder(cell);
                 Style style = cell.getStyle();
-                style.setHorizontalAlignment(HorizontalAlignment.Center);
+                style.setHorizontalAlignment(TextAlignmentType.CENTER);
+                style.setVerticalAlignment(TextAlignmentType.CENTER);
                 cell.setStyle(style);
             }
         }
