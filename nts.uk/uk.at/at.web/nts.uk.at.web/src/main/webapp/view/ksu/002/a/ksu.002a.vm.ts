@@ -175,12 +175,12 @@ module nts.uk.ui.at.ksu002.a {
 			initEvent();
 			const loadData = () => {
 				
-				let tg = calculateDaysStartEndWeek(moment(dr.begin).toDate(),moment(dr.finish).toDate(), vm.dayStartWeek(), true);
+				let datePeriod = calculateDaysStartEndWeek(moment(dr.begin).toDate(),moment(dr.finish).toDate(), vm.dayStartWeek(), true);
 				
 				const command = {
 					listSid: [vm.$user.employeeId],
-					startDate: moment(tg.start).toISOString(),
-					endDate: moment(tg.end).toISOString(),
+					startDate: moment(datePeriod.start).toISOString(),
+					endDate: moment(datePeriod.end).toISOString(),
 					actualData: vm.achievement() === ACHIEVEMENT.YES
 				};
 
@@ -198,7 +198,7 @@ module nts.uk.ui.at.ksu002.a {
 					.then((response: WorkSchedule<moment.Moment>[]) => {
 						if (response && response.length) {
 							vm.data = response;
-							vm.bidingData(vm);
+							vm.bidingData();
 						}
 						vm.dayStartWeek(0);
 						vm.$blockui('hide')
@@ -268,12 +268,12 @@ module nts.uk.ui.at.ksu002.a {
 				.subscribe((arch) => {
 					const { begin, finish } = vm.baseDate();
 					
-					let tg = calculateDaysStartEndWeek(moment(begin).toDate(),moment(finish).toDate(), vm.dayStartWeek(), true);
+					let datePeriod = calculateDaysStartEndWeek(moment(begin).toDate(),moment(finish).toDate(), vm.dayStartWeek(), true);
 
 					const command = {
 						listSid: [vm.$user.employeeId],
-						startDate: moment(tg.start).toISOString(),
-						endDate: moment(tg.end).toISOString()
+						startDate: moment(datePeriod.start).toISOString(),
+						endDate: moment(datePeriod.end).toISOString()
 					};
 
 					if (arch === ACHIEVEMENT.NO) {
@@ -288,22 +288,26 @@ module nts.uk.ui.at.ksu002.a {
 						.then(() => vm.$ajax('at', API.GSCHER, command))
 						.then((response: Achievement[]) => {
 							vm.dataDaily = response;
-							vm.bidingDataDaily(vm);
+							vm.bidingDataDaily();
 						})
 						.always(() => vm.$blockui('clear'));
 				});
 		}
 		
-		rebidingData(vm: any){
-			if(vm.achievement)
+		rebidingData(){
+			let vm = this;
+			if(vm.achievement() === ACHIEVEMENT.NO){
+				vm.bidingData();
+			}else{
+				vm.bidingDataDaily();
+			}
 		}
 		
-		bidingDataDaily(vm: any): void {
+		bidingDataDaily(): void {
+			let vm = this;
 			const { IMPRINT } = EDIT_STATE;
 			const schedules: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
-			$.Deferred()
-			.resolve(true)
-			.then(() => {
+			
 				let response = vm.dataDaily;
 				if (response.length === 0) {
 					return;
@@ -329,8 +333,6 @@ module nts.uk.ui.at.ksu002.a {
 						};
 					}
 				});
-			})
-			.then(() => {
 				// reset data
 				_.each(schedules, (sc) => {
 					const { data } = sc;
@@ -376,7 +378,6 @@ module nts.uk.ui.at.ksu002.a {
 
 				// reset state of memento
 				vm.schedules.reset();
-			});
 		}
 
 		mounted() {
@@ -385,7 +386,8 @@ module nts.uk.ui.at.ksu002.a {
 			//$(vm.$el).find('[data-bind]').removeAttr('data-bind');
 		}
 		
-		bidingData(vm: any): void {
+		bidingData(): void {
+			let vm = this;
 			const { NO } = ACHIEVEMENT;
 			const arch = ko.unwrap(vm.achievement);
 			const clones: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
@@ -865,4 +867,22 @@ module nts.uk.ui.at.ksu002.a {
 		// 編集状態: 日別実績の編集状態
 		editStateSetting: EDIT_STATE;
 	}
+}
+function calculateDaysStartEndWeek(start: Date, end: Date, dayStartWeek: number, isdayStartWeek: boolean): ({start: Date, end: Date}){
+	let nStart = moment(start);
+	let nEnd = moment(end);
+	if(isdayStartWeek){
+		if(start.getDay() > dayStartWeek){
+			nStart.add((start.getDay() - dayStartWeek) * -1, 'day');
+		}else if(start.getDay() < dayStartWeek){ 
+			nStart.add((start.getDay() + 7 - dayStartWeek) * -1, 'day');					
+		}
+		
+		if(end.getDay() >= dayStartWeek){
+			nEnd.add((dayStartWeek + 6 - end.getDay()), 'day');
+		}else if(end.getDay() < dayStartWeek){ 
+			nEnd.add((dayStartWeek - end.getDay() - 1), 'day');
+		}
+	}
+	return {start: nStart.toDate(), end: nEnd.toDate()};
 }

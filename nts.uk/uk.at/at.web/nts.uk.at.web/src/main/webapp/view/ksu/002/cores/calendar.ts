@@ -41,7 +41,6 @@ module nts.uk.ui.calendar {
 		baseDate: KnockoutObservable<Date | DateRange>;
 		schedules: KnockoutObservableArray<DayData>;
 		clickCell: (target: CLICK_CELL, day: DayData) => void;
-		reBidingData: (rootVm: any) => void;
 		rootVm: any;
 	}
 
@@ -465,9 +464,8 @@ module nts.uk.ui.calendar {
 			const baseDate = allBindingsAccessor.get('baseDate');
 			const clickCell = allBindingsAccessor.get('click-cell');
 			const tabIndex = element.getAttribute('tabindex') || allBindingsAccessor.get('tabindex') || '1';
-			const reBidingData = allBindingsAccessor.get('reBidingData');
 			const rootVm = allBindingsAccessor.get('rootVm');
-			const params = { width, baseDate, schedules, tabIndex, clickCell, reBidingData, rootVm};
+			const params = { width, baseDate, schedules, tabIndex, clickCell, rootVm};
 			const component = { name, params };
 
 			element.classList.add('cf');
@@ -519,7 +517,6 @@ module nts.uk.ui.calendar {
 					baseDate: ko.observable(date),
 					schedules: ko.observableArray([]),
 					clickCell: () => { },
-					reBidingData: () => { },
 					rootVm: null
 				};
 			}
@@ -618,8 +615,7 @@ module nts.uk.ui.calendar {
 				});
 			vm.startDaySelected.subscribe(() => {
 				data.baseDate(data.baseDate());
-				if(vm.data.rootVm)
-				vm.data.rootVm.bidingData(vm.data.rootVm);
+				vm.data.rootVm.rebidingData();
 			});
 
 			vm.baseDate.model
@@ -766,33 +762,22 @@ module nts.uk.ui.calendar {
 							const start = moment(baseDate).startOf('month').startOf('day');
 							const end = moment(baseDate).endOf('month').endOf('day');
 							
-							let tg = calculateDaysStartEndWeek(start.toDate(), end.toDate(), vm.baseDate.start(), vm.startDaySelected());
+							let datePeriod = calculateDaysStartEndWeek(start.toDate(), end.toDate(), vm.baseDate.start(), vm.startDaySelected());
 							
-							const diff = moment(tg.end).diff(tg.start, 'day');
+							const diff = moment(datePeriod.end).diff(datePeriod.start, 'day');
 
-							initRange(diff, tg.start);
+							initRange(diff, datePeriod.start);
 						}
 					} else {
-						let tg = calculateDaysStartEndWeek(baseDate.begin, baseDate.finish, vm.baseDate.start(), vm.startDaySelected());
-						const { begin, finish } = { begin: moment(tg.start), finish: moment(tg.end)};
+						let datePeriod = calculateDaysStartEndWeek(baseDate.begin, baseDate.finish, vm.baseDate.start(), vm.startDaySelected());
+						const { begin, finish } = { begin: moment(datePeriod.start), finish: moment(datePeriod.end)};
 						const initDate = () => {
 							const diff = moment(finish).diff(begin, 'day');
 
-							initRange(diff, tg.start);
+							initRange(diff, datePeriod.start);
 						};
 						
 						initDate();
-
-//						if (!first || !last) {
-//							initDate();
-//						} else {
-//							const notStart = !moment(begin).isSame(first.date, 'date');
-//							const notEnd = !moment(finish).isSame(last.date, 'date');
-//
-//							if (notStart && notEnd) {
-//								initDate();
-//							}
-//						}
 					}
 				});
 		}
@@ -815,22 +800,4 @@ module nts.uk.ui.calendar {
 		start: KnockoutObservable<number | null>;
 		options: KnockoutObservableArray<DateOption>;
 	}
-}
-var calculateDaysStartEndWeek = function(start: Date, end: Date, dayStartWeek: number, isdayStartWeek: boolean): ({start: Date, end: Date}){
-	let nStart = moment(start);
-	let nEnd = moment(end);
-	if(isdayStartWeek){
-		if(start.getDay() > dayStartWeek){
-			nStart.add((start.getDay() - dayStartWeek) * -1, 'day');
-		}else if(start.getDay() < dayStartWeek){ 
-			nStart.add((start.getDay() + 7 - dayStartWeek) * -1, 'day');					
-		}
-		
-		if(end.getDay() >= dayStartWeek){
-			nEnd.add((dayStartWeek + 6 - end.getDay()), 'day');
-		}else if(end.getDay() < dayStartWeek){ 
-			nEnd.add((dayStartWeek - end.getDay() - 1), 'day');
-		}
-	}
-	return {start: nStart.toDate(), end: nEnd.toDate()};
 }

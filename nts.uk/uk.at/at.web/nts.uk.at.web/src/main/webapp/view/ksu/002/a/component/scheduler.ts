@@ -100,59 +100,13 @@ module nts.uk.ui.at.ksu002.a {
     }
 
     const COMPONENT_NAME = 'scheduler';
-
-    const API_VALID = '/screen/ksu/ksu002/checkTimeIsIncorrect';
-
-    @handler({
-        bindingName: COMPONENT_NAME,
-        validatable: true,
-        virtual: false
-    })
-    export class SchedulerComponentBindingHandler implements KnockoutBindingHandler {
-        init(element: HTMLElement, valueAccessor: () => c.DayData<ObserverScheduleData>[], allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
-            const name = COMPONENT_NAME;
-            const schedules = valueAccessor();
-            const mode = allBindingsAccessor.get('mode');
-            const width = allBindingsAccessor.get('width');
-            const baseDate = allBindingsAccessor.get('baseDate');
-            const clickCell = allBindingsAccessor.get('click-cell');
-            const changeCell = allBindingsAccessor.get('change-cell');
-            const tabIndex = element.getAttribute('tabindex') || allBindingsAccessor.get('tabindex') || '1';
-			const reBidingData = allBindingsAccessor.get('reBidingData');
-			const rootVm = allBindingsAccessor.get('rootVm');
-            const params = { width, baseDate, schedules, clickCell, tabIndex, reBidingData, rootVm};
-            const component = { name, params };
-
-            element.classList.add('cf');
-            element.classList.add('scheduler');
-            element.removeAttribute('tabindex');
-
-            const binding = bindingContext
-                .extend({
-                    $change: changeCell,
-                    $tabindex: tabIndex,
-                    $editable: ko.computed({
-                        read: () => {
-                            return ko.unwrap(mode) === 'edit';
-                        }
-                    })
-                });
-
-            ko.applyBindingsToNode(element, { component }, binding);
-
-            return { controlsDescendantBindings: true };
-        }
-    }
-
-    @component({
-        name: COMPONENT_NAME,
-        template: `<div data-bind="
+	const COMPONENT_TEMP = `
+			<div data-bind="
                 calendar: $component.data.schedules,
                 baseDate: $component.data.baseDate,
                 width: $component.data.width,
                 tabindex: $component.data.tabIndex,
                 click-cell: $component.data.clickCell,
-				reBidingData: $component.data.reBidingData,
 				rootVm: $component.data.rootVm
             "></div>
             <div class="calendar cf">
@@ -182,189 +136,89 @@ module nts.uk.ui.at.ksu002.a {
                 </div>
             </div>
             <style type="text/css" rel="stylesheet">
-                .scheduler .data-info {
-                    min-height: 48px !important;
-                }
-                .scheduler .data-info .work-type .join,
-                .scheduler .data-info .work-type .leave {
-                    overflow: hidden;
-                    border-bottom: 1px dashed #b9b9b9;
-                }
-                .scheduler .data-info .work-type .join,
-                .scheduler .data-info .work-time .join {
-                    border-right: 1px dashed #b9b9b9;
-                }
-                .scheduler .data-info .work-type .join,
-                .scheduler .data-info .work-type .leave,
-                .scheduler .data-info .work-time .join,
-                .scheduler .data-info .work-time .leave {
-                    color: #000;
-                    float: left;
-                    width: 50%;
-                    height: 24px;
-                    line-height: 23px;
-                    font-size: 12px;
-                    text-align: center;
-                    box-sizing: border-box;
-                    white-space: nowrap;
-                    outline: none;
-                }
-                .scheduler .data-info .join *,
-                .scheduler .data-info .leave *{
-                    display: block;
-                    width: 100%;
-                    height: 100%;
-                    box-sizing: border-box;                    
-                }
-                .scheduler .join input,
-                .scheduler .leave input {
-                    color: #000;
-                    padding: 0 !important;
-                    text-align: center !important;
-                    font-size: 13px !important;
-                    border-radius: 0 !important;
-                    border: 0 !important;
-                    cursor: pointer;
-                    background-color: transparent;
-                    position: relative;
-                    z-index: 2;
-                }
-                .scheduler .join:focus input,
-                .scheduler .leave:focus input,
-                .scheduler .join[data-click="1"] input,
-                .scheduler .leave[data-click="1"] input {
-                    color: #fff;
-                    box-shadow: 0px 0px 0px 2px #000 !important;
-                    background-color: #007fff !important;
-                    z-index: 3;
-                }
-                .scheduler .ntsControl input:focus {
-                    z-index: 3;
-                    color: #000;
-                    box-shadow: 0px 0px 0px 2px #000 !important;
-                    background-color: #fff !important;
-                }
-                .scheduler .ntsControl.error input {
-                    color: #000;
-                    box-shadow: 0px 0px 0px 2px #ff6666 !important;
-                    background-color: transparent !important;
-                }
-                .scheduler .ntsControl.error input:focus,
-                .scheduler .join:focus .ntsControl.error input,
-                .scheduler .leave:focus .ntsControl.error input,
-                .scheduler .join[data-click="1"] .ntsControl.error input,
-                .scheduler .leave[data-click="1"] .ntsControl.error input {
-                    z-index: 3;
-                    color: #000;
-                    box-shadow: 0px 0px 0px 2px #ff6666 !important;
-                    background-color: #007fff !important;                    
-                }
-                .scheduler .calendar {
-                    float: left;
-                    display: block;
-                }
-                .scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtype:not(.confirmed):not(.achievement) .data-info .work-type .join,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtime:not(.confirmed):not(.achievement) .data-info .work-type .leave,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtime-begin:not(.confirmed):not(.achievement) .data-info .work-time .join input,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtime-finish:not(.confirmed):not(.achievement) .data-info .work-time .leave input {
-                    background-color: #bfea60;
-                }
-                .scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtype:not(.confirmed):not(.achievement) .data-info .work-type .join,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtime:not(.confirmed):not(.achievement) .data-info .work-type .leave,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtime-begin:not(.confirmed):not(.achievement) .data-info .work-time .join,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtime-finish:not(.confirmed):not(.achievement) .data-info .work-time .leave {
-                    background-color: #cee6ff;
-                }
-                .scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtype:not(.confirmed):not(.achievement) .data-info .work-type .join,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtime:not(.confirmed):not(.achievement) .data-info .work-type .leave,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtime-begin:not(.confirmed):not(.achievement) .data-info .work-time .join,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtime-finish:not(.confirmed):not(.achievement) .data-info .work-time .leave {
-                    background-color: #94b7fe;
-                }
-                .scheduler .calendar .calendar-container .month .week .day.same-month.confirmed .data-info {
-                    background-color: #eccefb;
-                }
-                .scheduler .calendar .calendar-container .month .week .day.same-month.need-2work .data-info {
-                    background-color: #ddddd2;                    
-                }
-                .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info {
-                    background-color: #ddddd2;
-                }
-                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-holiday .data-info .work-type .join,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-holiday .data-info .work-type .leave {
-                    color: #f00;
-                }
-                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-morning .data-info .work-type .join,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-morning .data-info .work-type .leave,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-afternoon .data-info .work-type .join,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-afternoon .data-info .work-type .leave {
-                    color: #FF7F27;
-                }
-                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-fulltime .data-info .work-type .join,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.classification-fulltime .data-info .work-type .leave {
-                    color: #0000ff;
-                }
-                .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info .work-type .join,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info .work-type .leave,
-                .scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info .work-time input {
-                    color: #008000;
-                }
-                .scheduler .calendar+.calendar {
-                    width: 201px;
-                }
-                .scheduler .calendar+.calendar .calendar-container {
-                    border-left: 0;
-                }
-                .scheduler .calendar+.calendar .calendar-container .month .week:not(:first-child) .day {
-                    border-right: 0;
-                }
-                .scheduler .calendar+.calendar .calendar-container .month .week:not(:first-child) .day:not(:last-child) .data-info {
-                    border-right: 1px solid #808080;
-                }
-                .scheduler .calendar+.calendar .filter {
-                    line-height: 35px;
-                }
-                .scheduler .calendar+.calendar .month.title .day {
-                    width: 100% !important;
-                }
-                .scheduler .calendar+.calendar .month+.month .day {
-                    height: 86px !important;
-                }
-                .scheduler .calendar+.calendar .month+.month .day .status {
-                    display: block;
-                    height: 38px;
-                    background-color: #d9d9d9;
-                    box-sizing: border-box;
-                    border-bottom: 1px solid #808080;
-                    padding: 0 20px;
-                }
-                .scheduler .calendar+.calendar .month+.month .day .status.wk-hours {
-                    overflow: hidden;
-                    background-color: #FFC91D;
-                }
-                .scheduler .calendar+.calendar .month+.month .day .status.full-height>span {
-                    font-size: 12px;
-                    line-height: 37px;
-                }
-				.scheduler #total .week:first-child .day .status{
-					background-color: #FFC91D;
-				}
-				.scheduler #total .week .day div{
-				    display: table;
-				    width: 100%;
-				    text-align: center;
-				}
-				.scheduler #total .week .day div span{
-					display: table-cell;
-					vertical-align: middle;
-				}
-				.scheduler #total .week .day div.data-info span{
-					font-size: 14px;
-				}
-				.fz12{
-					font-size: 12px !important;
-				}
-            </style>`
+                .scheduler .data-info{min-height:48px!important}
+				.scheduler .data-info .work-type .join,.scheduler .data-info .work-type .leave{overflow:hidden;border-bottom:1px dashed #b9b9b9}
+				.scheduler .data-info .work-time .join,.scheduler .data-info .work-type .join{border-right:1px dashed #b9b9b9}
+				.scheduler .data-info .work-time .join,.scheduler .data-info .work-time .leave,.scheduler .data-info .work-type .join,.scheduler .data-info .work-type .leave{color:#000;float:left;width:50%;height:24px;line-height:23px;font-size:12px;text-align:center;box-sizing:border-box;white-space:nowrap;outline:0}
+				.scheduler .data-info .join *,.scheduler .data-info .leave *{display:block;width:100%;height:100%;box-sizing:border-box}
+				.scheduler .join input,.scheduler .leave input{color:#000;padding:0!important;text-align:center!important;font-size:13px!important;border-radius:0!important;border:0!important;cursor:pointer;background-color:transparent;position:relative;z-index:2}
+				.scheduler .join:focus input,.scheduler .join[data-click="1"] input,.scheduler .leave:focus input,.scheduler .leave[data-click="1"] input{color:#fff;box-shadow:0 0 0 2px #000!important;background-color:#007fff!important;z-index:3}
+				.scheduler .ntsControl input:focus{z-index:3;color:#000;box-shadow:0 0 0 2px #000!important;background-color:#fff!important}
+				.scheduler .ntsControl.error input{color:#000;box-shadow:0 0 0 2px #f66!important;background-color:transparent!important}
+				.scheduler .join:focus .ntsControl.error input,.scheduler .join[data-click="1"] .ntsControl.error input,.scheduler .leave:focus .ntsControl.error input,.scheduler .leave[data-click="1"] .ntsControl.error input,.scheduler .ntsControl.error input:focus{z-index:3;color:#000;box-shadow:0 0 0 2px #f66!important;background-color:#007fff!important}
+				.scheduler .calendar{float:left;display:block}
+				.scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtime-begin:not(.confirmed):not(.achievement) .data-info .work-time .join input,.scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtime-finish:not(.confirmed):not(.achievement) .data-info .work-time .leave input,.scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtime:not(.confirmed):not(.achievement) .data-info .work-type .leave,.scheduler .calendar .calendar-container .month .week .day.same-month.reflected-wtype:not(.confirmed):not(.achievement) .data-info .work-type .join{background-color:#bfea60}
+				.scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtime-begin:not(.confirmed):not(.achievement) .data-info .work-time .join,.scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtime-finish:not(.confirmed):not(.achievement) .data-info .work-time .leave,.scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtime:not(.confirmed):not(.achievement) .data-info .work-type .leave,.scheduler .calendar .calendar-container .month .week .day.same-month.other-alter-wtype:not(.confirmed):not(.achievement) .data-info .work-type .join{background-color:#cee6ff}
+				.scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtime-begin:not(.confirmed):not(.achievement) .data-info .work-time .join,.scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtime-finish:not(.confirmed):not(.achievement) .data-info .work-time .leave,.scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtime:not(.confirmed):not(.achievement) .data-info .work-type .leave,.scheduler .calendar .calendar-container .month .week .day.same-month.self-alter-wtype:not(.confirmed):not(.achievement) .data-info .work-type .join{background-color:#94b7fe}
+				.scheduler .calendar .calendar-container .month .week .day.same-month.confirmed .data-info{background-color:#eccefb}
+				.scheduler .calendar .calendar-container .month .week .day.same-month.need-2work .data-info{background-color:#ddddd2}
+				.scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info{background-color:#ddddd2}
+				.scheduler .calendar .calendar-container .month .week .day.same-month.classification-holiday .data-info .work-type .join,.scheduler .calendar .calendar-container .month .week .day.same-month.classification-holiday .data-info .work-type .leave{color:red}
+				.scheduler .calendar .calendar-container .month .week .day.same-month.classification-afternoon .data-info .work-type .join,.scheduler .calendar .calendar-container .month .week .day.same-month.classification-afternoon .data-info .work-type .leave,.scheduler .calendar .calendar-container .month .week .day.same-month.classification-morning .data-info .work-type .join,.scheduler .calendar .calendar-container .month .week .day.same-month.classification-morning .data-info .work-type .leave{color:#ff7f27}
+				.scheduler .calendar .calendar-container .month .week .day.same-month.classification-fulltime .data-info .work-type .join,.scheduler .calendar .calendar-container .month .week .day.same-month.classification-fulltime .data-info .work-type .leave{color:#00f}
+				.scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info .work-time input,.scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info .work-type .join,.scheduler .calendar .calendar-container .month .week .day.same-month.achievement .data-info .work-type .leave{color:green}
+				.scheduler .calendar+.calendar{width:201px}
+				.scheduler .calendar+.calendar .calendar-container{border-left:0}
+				.scheduler .calendar+.calendar .calendar-container .month .week:not(:first-child) .day{border-right:0}
+				.scheduler .calendar+.calendar .calendar-container .month .week:not(:first-child) .day:not(:last-child) .data-info{border-right:1px solid grey}
+				.scheduler .calendar+.calendar .filter{line-height:35px}
+				.scheduler .calendar+.calendar .month.title .day{width:100%!important}
+				.scheduler .calendar+.calendar .month+.month .day{height:86px!important}
+				.scheduler .calendar+.calendar .month+.month .day .status{display:block;height:38px;background-color:#d9d9d9;box-sizing:border-box;border-bottom:1px solid grey;padding:0 20px}
+				.scheduler .calendar+.calendar .month+.month .day .status.wk-hours{overflow:hidden;background-color:#ffc91d}
+				.scheduler .calendar+.calendar .month+.month .day .status.full-height>span{font-size:12px;line-height:37px}
+				.scheduler #total .week:first-child .day .status{background-color:#ffc91d}
+				.scheduler #total .week .day div{display:table;width:100%;text-align:center}
+				.scheduler #total .week .day div span{display:table-cell;vertical-align:middle}
+				.scheduler #total .week .day div.data-info span{font-size:14px}
+				.fz12{font-size:12px!important}
+            </style>`;
+
+    const API_VALID = '/screen/ksu/ksu002/checkTimeIsIncorrect';
+
+    @handler({
+        bindingName: COMPONENT_NAME,
+        validatable: true,
+        virtual: false
+    })
+    export class SchedulerComponentBindingHandler implements KnockoutBindingHandler {
+        init(element: HTMLElement, valueAccessor: () => c.DayData<ObserverScheduleData>[], allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+            const name = COMPONENT_NAME;
+            const schedules = valueAccessor();
+            const mode = allBindingsAccessor.get('mode');
+            const width = allBindingsAccessor.get('width');
+            const baseDate = allBindingsAccessor.get('baseDate');
+            const clickCell = allBindingsAccessor.get('click-cell');
+            const changeCell = allBindingsAccessor.get('change-cell');
+            const tabIndex = element.getAttribute('tabindex') || allBindingsAccessor.get('tabindex') || '1';
+			const rootVm = allBindingsAccessor.get('rootVm');
+            const params = { width, baseDate, schedules, clickCell, tabIndex, rootVm};
+            const component = { name, params };
+
+            element.classList.add('cf');
+            element.classList.add('scheduler');
+            element.removeAttribute('tabindex');
+
+            const binding = bindingContext
+                .extend({
+                    $change: changeCell,
+                    $tabindex: tabIndex,
+                    $editable: ko.computed({
+                        read: () => {
+                            return ko.unwrap(mode) === 'edit';
+                        }
+                    })
+                });
+
+            ko.applyBindingsToNode(element, { component }, binding);
+
+            return { controlsDescendantBindings: true };
+        }
+    }
+
+    @component({
+        name: COMPONENT_NAME,
+        template: COMPONENT_TEMP
     })
     export class ShedulerComponent extends ko.ViewModel {
 
@@ -421,6 +275,42 @@ module nts.uk.ui.at.ksu002.a {
         const MSG_2058 = 'Msg_2058';
         const VALIDATE = 'validate';
         const COMPONENT_NAME = 'scheduler-data-info';
+		const COMPONENT_TEMP = `
+            <div class="work-type cf">
+                <div class="join" data-bind="i18n: text.wtype"></div>
+                <div class="leave" data-bind="i18n: text.wtime"></div>
+            </div>
+            <div class="work-time cf">
+                <div class="join">
+                    <input class="begin" tabindex="-1" data-bind="
+                        ntsTimeWithDayEditor: {
+                            name: $component.$i18n('KSU002_28'),
+                            constraint: 'TimeWithDayAttr',
+                            mode: 'time',
+                            inputFormat: 'time',
+                            value: $component.model.begin,
+                            required: $component.model.required,
+                            option: {
+                                timeWithDay: false
+                            }
+                        }" />
+                </div>
+                <div class="leave">
+                    <input class="finish" tabindex="-1" data-bind="
+                        ntsTimeWithDayEditor: {
+                            name: $component.$i18n('KSU002_29'),
+                            constraint: 'TimeWithDayAttr',
+                            mode: 'time',
+                            inputFormat: 'time',
+                            value: $component.model.finish,
+                            required: $component.model.required,
+                            option: {
+                                timeWithDay: false
+                            }
+                        }" />
+                </div>
+            </div>
+            `;
 
         @handler({
             bindingName: COMPONENT_NAME,
@@ -650,42 +540,7 @@ module nts.uk.ui.at.ksu002.a {
 
         @component({
             name: COMPONENT_NAME,
-            template: `
-            <div class="work-type cf">
-                <div class="join" data-bind="i18n: text.wtype"></div>
-                <div class="leave" data-bind="i18n: text.wtime"></div>
-            </div>
-            <div class="work-time cf">
-                <div class="join">
-                    <input class="begin" tabindex="-1" data-bind="
-                        ntsTimeWithDayEditor: {
-                            name: $component.$i18n('KSU002_28'),
-                            constraint: 'TimeWithDayAttr',
-                            mode: 'time',
-                            inputFormat: 'time',
-                            value: $component.model.begin,
-                            required: $component.model.required,
-                            option: {
-                                timeWithDay: false
-                            }
-                        }" />
-                </div>
-                <div class="leave">
-                    <input class="finish" tabindex="-1" data-bind="
-                        ntsTimeWithDayEditor: {
-                            name: $component.$i18n('KSU002_29'),
-                            constraint: 'TimeWithDayAttr',
-                            mode: 'time',
-                            inputFormat: 'time',
-                            value: $component.model.finish,
-                            required: $component.model.required,
-                            option: {
-                                timeWithDay: false
-                            }
-                        }" />
-                </div>
-            </div>
-            `
+            template: COMPONENT_TEMP
         })
         export class DataInfoComponent extends ko.ViewModel {
             model: WorkTimeRange & {
