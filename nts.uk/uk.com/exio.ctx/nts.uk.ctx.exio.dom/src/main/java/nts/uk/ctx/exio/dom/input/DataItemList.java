@@ -9,7 +9,6 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * DataItemのリストにやらせたいことが色々あるのでクラス化したやつ
@@ -31,15 +30,6 @@ public class DataItemList extends ArrayList<DataItem> {
 				.findFirst();
 	}
 	
-	public DataItemList addItemList(DataItemList itemList) {
-		this.addAll(itemList);
-		return this;
-	}
-	
-	public DataItemList addObject(int itemNo, Object value) {
-		return addItem(DataItem.of(itemNo, value));
-	}
-		
 	public DataItemList add(int itemNo, String value) {
 		return addItem(DataItem.of(itemNo, value));
 	}
@@ -59,12 +49,6 @@ public class DataItemList extends ArrayList<DataItem> {
 	private DataItemList addItem(DataItem item) {
 		this.add(item);
 		return this;
-	}
-	
-	public DatePeriod getPeriod(int itemNoStartDate, int itemNoEndDate) {
-		val start = getItemByNo(itemNoStartDate).get().getDate();
-		val end = getItemByNo(itemNoEndDate).get().getDate();
-		return new DatePeriod(start, end);
 	}
 	
 	/**

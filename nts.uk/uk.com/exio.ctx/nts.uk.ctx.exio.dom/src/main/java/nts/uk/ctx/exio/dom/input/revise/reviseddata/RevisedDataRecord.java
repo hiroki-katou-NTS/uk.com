@@ -23,6 +23,6 @@ public class RevisedDataRecord {
 	}
 	
 	public void addItemList(DataItemList itemList) {
-		this.items.addItemList(itemList);
+		this.items.addAll(itemList);
 	}
 }

@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.dom.input;
 
-import static nts.arc.time.GeneralDate.*;
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.Test;
@@ -28,18 +27,6 @@ public class DataItemListTest {
 				.add(2, "c");
 		
 		assertThat(target.getItemByNo(3).isPresent()).isFalse();
-	}
-
-	@Test
-	public void getPeriod() {
-		val target = new DataItemList()
-				.add(0, "a")
-				.add(1, ymd(2000, 1, 1))
-				.add(2, ymd(2000, 1, 5));
-		
-		val actual = target.getPeriod(1, 2);
-		assertThat(actual.start()).isEqualTo(ymd(2000, 1, 1));
-		assertThat(actual.end()).isEqualTo(ymd(2000, 1, 5));
 	}
 	
 	@Test

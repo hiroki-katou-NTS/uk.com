@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lombok.AllArgsConstructor;
@@ -56,10 +57,10 @@ public class ExternalImportAssemblyMethod {
 		val importData = new DataItemList();
 		
 		// CSVの取込内容を組み立てる
-		importData.addItemList(assembleInternal(require, context, csvRecord));
+		importData.addAll(assembleInternal(require, context, csvRecord));
 		
 		// 固定値項目の組み立て
-		importData.addItemList(assembleFixedItem(fixedItem));
+		importData.addAll(assembleFixedItem(fixedItem));
 		
 		if(importData.isEmpty()) {
 			// 受け入れられるデータがない
@@ -99,13 +100,9 @@ public class ExternalImportAssemblyMethod {
 	// 固定値項目の組み立て
 	private static DataItemList assembleFixedItem(List<FixedItemMapping> items) {
 		
-		val importData = new DataItemList();
-		
-		for (int i = 0; i < items.size(); i++) {
-			importData.add(DataItem.of(items.get(i).getImportItemNumber(), items.get(i).getValue()));
-		}
-		
-		return importData;
+		return items.stream()
+				.map(f -> new DataItem(f.getImportItemNumber(), f.getValue()))
+				.collect(Collectors.collectingAndThen(toList(), DataItemList::new));
 	}
 	
 	public List<Integer> getAllItemNo() {
