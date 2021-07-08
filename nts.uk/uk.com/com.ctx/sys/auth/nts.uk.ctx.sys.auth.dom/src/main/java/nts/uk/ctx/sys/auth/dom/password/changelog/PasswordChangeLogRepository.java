@@ -12,15 +12,6 @@ import java.util.List;
 public interface PasswordChangeLogRepository {
 	
 	/**
-	 * Find by user id.
-	 *
-	 * @param userID the user ID
-	 * @param limitNumber the limit number
-	 * @return the list
-	 */
-	List<PasswordChangeLog> findByUserId(String userID, int limitNumber);
-	
-	/**
 	 * get list パスワード変更ログ
 	 * @param ユーザID userId
 	 * @return
