@@ -47,7 +47,7 @@
 				<div class="container cf">
 					<div id="left-content" class="fixed-flex-layout-left"
 						data-bind="with: $vm.component025">
-						<div id='list_role' tabindex="6">
+						<div id='list_role' tabindex="4" data-bind="ntsPanel:{direction: '', showIcon: false, visible: true}" style="display: table">
 							<ui:include src="/view/ccg/025/component/index.xhtml" />
 						</div>
 					</div>
@@ -63,7 +63,7 @@
 							<input data-bind="
 									attr: {
 										id: 'roleCode',
-										tabindex: 7
+										tabindex: 5
 									},
 									ntsTextEditor: {
 										 name: '#[CAS009_6]',
@@ -77,7 +77,7 @@
 							<input data-bind="
 									attr: {
 										id: 'roleName',
-										tabindex: 8
+										tabindex: 6
 									},
 									ntsTextEditor: {
 										 name: '#[CAS009_7]',
@@ -93,7 +93,7 @@
 							<span data-bind="if: assignAtr() == 0">#{i18n.getText('CAS009_9')}</span>
 							<com:ko-if bind="assignAtr() == 1">
 								<div data-bind="attr: {
-												tabindex: 10,
+												tabindex: 7,
 												id: 'combo-box'
 											},
 											ntsComboBox: {
@@ -118,7 +118,7 @@
 														require: true,
 														text: 'CAS009_14'
 													},
-													tabindex: 12,
+													tabindex: 8,
 													roleId: roleId,
 													roleType: 8,
 													changeData: permisions,

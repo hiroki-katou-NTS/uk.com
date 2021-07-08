@@ -179,6 +179,7 @@ module nts.uk.com.view.cas009.a.viewmodel {
         createNew() {
             let vm = this, role = vm.selectedRole;
             role.roleId(undefined);
+            role.roleId.valueHasMutated();
         }
 
         // open dialog
@@ -206,18 +207,19 @@ module nts.uk.com.view.cas009.a.viewmodel {
             });
 
             vm.$ajax("com", API.savePermission, command).done(() => {
-                vm.$dialog.info({ messageId: "Msg_15" });
-                vm.getListRole(command.roleId).done(() => {
-                    let exist: IRole = _.find(vm.listRole(), o => o.roleCode == command.roleCode);
+                vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+                    vm.getListRole(command.roleId).done(() => {
+                        let exist: IRole = _.find(vm.listRole(), o => o.roleCode == command.roleCode);
 
-                    if (!exist) {
-                        role.roleId(undefined);
-                    } else {
-                        role.roleId(exist.roleId);
-                    }
-                }).always(() => {
-                    vm.$blockui("hide");
-                    nts.uk.ui.errors.clearAll();
+                        if (!exist) {
+                            role.roleId(undefined);
+                        } else {
+                            role.roleId(exist.roleId);
+                        }
+                    }).always(() => {
+                        vm.$blockui("hide");
+                        nts.uk.ui.errors.clearAll();
+                    });
                 });
             }).fail((error) => {
                 vm.$dialog.error(error);
@@ -243,25 +245,25 @@ module nts.uk.com.view.cas009.a.viewmodel {
                         if (value == "yes") {
                             vm.$blockui("show");
                             vm.$ajax("com", API.removePermission, _.pick(role, ["roleId", "assignAtr"])).done(() => {
-                                vm.$dialog.info({messageId: "Msg_16"});
+                                vm.$dialog.info({messageId: "Msg_16"}).then(() => {
+                                    vm.getListRole().done(() => {
+                                        let roles: Array<IRole> = ko.toJS(vm.listRole),
+                                            selected: IRole = roles[index];
 
-                                vm.getListRole().done(() => {
-                                    let roles: Array<IRole> = ko.toJS(vm.listRole),
-                                        selected: IRole = roles[index];
-
-                                    if (_.size(roles)) {
-                                        if (selected) {
-                                            vm.selectedRole.roleId(selected.roleId);
+                                        if (_.size(roles)) {
+                                            if (selected) {
+                                                vm.selectedRole.roleId(selected.roleId);
+                                            } else {
+                                                vm.selectedRole.roleId(roles[0].roleId);
+                                            }
+                                            vm.selectedRole.roleId.valueHasMutated();
                                         } else {
-                                            vm.selectedRole.roleId(roles[0].roleId);
+                                            vm.createNew();
                                         }
-                                        vm.selectedRole.roleId.valueHasMutated();
-                                    } else {
-                                        vm.createNew();
-                                    }
-                                }).always(() => {
-                                    vm.$blockui("hide");
-                                    nts.uk.ui.errors.clearAll();
+                                    }).always(() => {
+                                        vm.$blockui("hide");
+                                        nts.uk.ui.errors.clearAll();
+                                    });
                                 });
                             }).fail((error) => {
                                 vm.$dialog.error(error);
