@@ -12,6 +12,7 @@ module nts.uk.com.view.ccg025.a.component {
         isResize?: boolean;
         rows?: number;
         isAlreadySetting?: any;
+        selectType?: number;
     }
 
     export module viewmodel {
@@ -23,7 +24,8 @@ module nts.uk.com.view.ccg025.a.component {
             private defaultOption: Option = {
                 multiple: true,
                 showEmptyItem: false,
-                isResize: false
+                isResize: false,
+                rows: 15
             };
             private setting: Option;
             private searchMode: string;
@@ -95,14 +97,36 @@ module nts.uk.com.view.ccg025.a.component {
                     }));
                     self.addEmptyItem();
 
-                    // Select item base on param code
-                    if (!isNullOrUndefined(self.setting.currentCode)) {
-                        self.currentCode(self.setting.currentCode);
-                    } else if (!!selectedRoleId) {
-                        self.setting.multiple ? self.currentCode([selectedRoleId]) : self.currentCode(selectedRoleId);
+                    if (!isNullOrUndefined(self.setting.selectType)) {
+                        switch (self.setting.selectType) {
+                            case 1: // selected list
+                                self.setting.multiple ? self.currentCode(self.setting.currentCode || []) : self.currentCode(self.setting.currentCode);
+                                break;
+                            case 2: // select all
+                                if (self.setting.multiple) {
+                                    self.currentCode(self.listRole().map(r => r.roleId));
+                                }
+                                break;
+                            case 3: // select first
+                                self.selectFirstItem();
+                                break;
+                            case 4: // select none
+                                self.setting.multiple ? self.currentCode([]) : self.currentCode(undefined);
+                                break;
+                            default:
+                                break;
+                        }
                     } else {
-                        self.selectFirstItem();
+                        // Select item base on param code
+                        if (!isNullOrUndefined(self.setting.currentCode)) {
+                            self.currentCode(self.setting.currentCode);
+                        } else if (!!selectedRoleId) {
+                            self.setting.multiple ? self.currentCode([selectedRoleId]) : self.currentCode(selectedRoleId);
+                        } else {
+                            self.selectFirstItem();
+                        }
                     }
+
                     dfd.resolve(data);
                 }).fail(function(res: any) {
                     dfd.reject();

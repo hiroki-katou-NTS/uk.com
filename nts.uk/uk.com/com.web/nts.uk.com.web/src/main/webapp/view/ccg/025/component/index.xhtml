@@ -11,7 +11,7 @@
 		<div class="caret-right caret-background">
 			<div class="control-group valign-center" data-bind="if: displayRoleClassification()">
 				<div data-bind="ntsFormLabel: {required: true, text: '#{i18n.getText('CCG025_2')}'}"/>
-				<div style="display: inline-block"
+				<div id="ccg025-switch" style="display: inline-block"
 						data-bind="ntsSwitchButton: {
 									name: '#[CCG025_2]',
 									options: [
@@ -22,12 +22,12 @@
 									optionsText: 'name',
 									value: roleClassification,
 									required: true,
-									enable: true }"/>
+									enable: true }, attr: {tabindex: setting.tabindex}"/>
+				<hr/>
 			</div>
 			<table id="multi-list"
 				data-bind="attr: {tabindex: setting.tabindex}, 
 					   ntsGridList: {
-							height: 320,
 							dataSource: listRole ,
 							primaryKey: 'roleId',
 							columns: columns,
@@ -38,6 +38,16 @@
 						}">
 			</table>
 		</div>
+		<style>
+			#ccg025-switch .nts-switch-button {
+				width: 70px;
+			}
+			#ccg025-switch .radio-wrapper {
+				width: 70px;
+				flex-direction: column;
+				text-align: center;
+			}
+		</style>
 	</ui:composition>
 </body>
 </html>

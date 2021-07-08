@@ -65,6 +65,25 @@
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {required: false, text: 'isAlreadySetting'}"/>
 						<div data-bind="ntsCheckBox: { checked: isAlreadySetting }"> </div>
+						<button data-bind="visible: isAlreadySetting(), click: setConfigured">Set</button>
+						<button data-bind="visible: isAlreadySetting(), click: unSetConfigured">Unset</button>
+					</div>
+					<div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: {required: false, text: 'showEmptyItem'}"/>
+						<div data-bind="ntsCheckBox: { checked: showEmptyItem }"> </div>
+					</div>
+					<div class="control-group valign-center">
+						<div data-bind="ntsFormLabel: {}">Select Type:</div>
+						<div data-bind="ntsRadioBoxGroup: {
+                                    options: selectTypes,
+                                    optionsValue: 'value',
+                                    optionsText: 'name',
+                                    value: selectType,
+                                    enable: true}"/>
+					</div>
+					<div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: {required: false, text: 'rows'}"/>
+						<input data-bind="ntsNumberEditor: {value: rows}" />
 					</div>
 					<br />
 					<div data-bind="with: componentViewmodel">
