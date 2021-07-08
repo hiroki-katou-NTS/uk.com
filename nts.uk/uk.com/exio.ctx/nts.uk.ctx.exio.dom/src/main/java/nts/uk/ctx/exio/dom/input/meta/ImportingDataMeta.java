@@ -8,8 +8,8 @@ import java.util.List;
 import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
-import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 
 /**
  * 受入データのメタ情報

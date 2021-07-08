@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
 import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspaceRepository;
 import nts.uk.ctx.exio.dom.input.workspace.item.WorkspaceItem;

@@ -4,9 +4,9 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
-import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
-import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupRepository;
+import nts.uk.ctx.exio.dom.input.group.ImportingGroup;
+import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.group.ImportingGroupRepository;
 import nts.uk.ctx.exio.infra.entity.input.importableitem.group.XimctGroup;
 
 @Stateless

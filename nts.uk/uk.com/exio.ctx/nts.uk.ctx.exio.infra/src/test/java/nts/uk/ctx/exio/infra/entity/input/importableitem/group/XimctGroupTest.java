@@ -12,9 +12,9 @@ import org.junit.runner.RunWith;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
-import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
-import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
-import nts.uk.ctx.exio.dom.input.importableitem.group.TransactionUnit;
+import nts.uk.ctx.exio.dom.input.group.ImportingGroup;
+import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.group.TransactionUnit;
 
 @RunWith(Enclosed.class)
 public class XimctGroupTest {

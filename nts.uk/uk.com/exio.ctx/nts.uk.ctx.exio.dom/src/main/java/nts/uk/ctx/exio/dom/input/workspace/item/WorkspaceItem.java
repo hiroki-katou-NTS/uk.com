@@ -1,8 +1,8 @@
 package nts.uk.ctx.exio.dom.input.workspace.item;
 
 import lombok.Value;
+import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
-import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataTypeConfiguration;
 
 /**

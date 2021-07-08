@@ -18,7 +18,7 @@ import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
-import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
+import nts.uk.ctx.exio.dom.input.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.revise.reviseddata.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.workspace.TemporaryTable;
 import nts.uk.ctx.exio.dom.input.workspace.WorkspaceTableName;

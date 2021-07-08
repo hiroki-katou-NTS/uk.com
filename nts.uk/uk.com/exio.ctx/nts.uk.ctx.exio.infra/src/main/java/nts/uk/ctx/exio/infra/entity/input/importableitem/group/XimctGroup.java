@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
-import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroup;
-import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
-import nts.uk.ctx.exio.dom.input.importableitem.group.TransactionUnit;
+import nts.uk.ctx.exio.dom.input.group.ImportingGroup;
+import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.group.TransactionUnit;
 
 @Entity
 @Table(name = "XIMCT_GROUP")

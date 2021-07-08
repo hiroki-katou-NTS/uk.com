@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.importableitem.group;
+package nts.uk.ctx.exio.dom.input.group;
 
 import java.util.Set;
 

@@ -1,13 +1,13 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.groups;
 
-import static nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId.*;
+import static nts.uk.ctx.exio.dom.input.group.ImportingGroupId.*;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 import lombok.val;
-import nts.uk.ctx.exio.dom.input.importableitem.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
 
 /**
