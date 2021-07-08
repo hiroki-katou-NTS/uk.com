@@ -6,7 +6,7 @@ module nts.uk.at.view.kdr004.a {
     const KWR005_SAVE_DATA = 'WORK_SCHEDULE_STATUS_OUTPUT_CONDITIONS';
 
     const PATH = {
-        exportExcelPDF: '',
+        exportExcelPDF: 'at/function/holidayconfirmationtable/exportKdr004',
     };
 
     @bean()
@@ -21,7 +21,7 @@ module nts.uk.at.view.kdr004.a {
         dpkYearMonth: KnockoutObservable<number> = ko.observable(202010);
 
         //panel right
-        rdgSelectedId: KnockoutObservable<number> = ko.observable(0);
+        rdgSelectedId: KnockoutObservableArray<number> = ko.observableArray([]);
 
         zeroDisplayClassification: KnockoutObservable<number> = ko.observable(0);
         pageBreakSpecification: KnockoutObservable<number> = ko.observable(0);
@@ -63,9 +63,9 @@ module nts.uk.at.view.kdr004.a {
 
             vm.rdgSelectedId.subscribe((value) => {
                 //focus
-                let focusId = value === 0 ? '#KWR005_105' : '#KWR005_106';
-                $(focusId).focus();
-                nts.uk.ui.errors.clearAll();
+                // let focusId = value.indexOf(0) >= 0 ? '#KWR005_105' : '#KWR005_106';
+                // $(focusId).focus();
+                // nts.uk.ui.errors.clearAll();
             });
 
             vm.CCG001_load();
@@ -278,6 +278,18 @@ module nts.uk.at.view.kdr004.a {
                 if (!_.isNil(employee)) {
                     lstEmployeeIds.push(employee.id);
                 }
+            });
+            vm.$blockui("show");
+            nts.uk.request.exportFile(PATH.exportExcelPDF, {
+                employeeIds: lstEmployeeIds,
+                haveMoreHolidayThanDrawOut: vm.rdgSelectedId().indexOf(0) >= 0,
+                haveMoreDrawOutThanHoliday: vm.rdgSelectedId().indexOf(1) >= 0,
+                howToPrintDate: vm.zeroDisplayClassification(),
+                pageBreak: vm.pageBreakSpecification()
+            }).fail(error => {
+                vm.$dialog.error(error);
+            }).always(() => {
+                vm.$blockui("hide");
             });
         }
 
