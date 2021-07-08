@@ -31,7 +31,7 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
     private static final String TEMPLATE_FILE_ADD = "report/KWR005.xlsx";
     private static final String EXCEL_EXT = ".xlsx";
     private static final String PRINT_AREA = "A1:O";
-    private static final int NUMBER_ROW_OF_PAGE = 29;
+    private static final int NUMBER_ROW_OF_PAGE = 36;
 
     @Override
     public void generate(FileGeneratorContext generatorContext, WorkLedgerExportDataSource dataSource) {
@@ -59,24 +59,18 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         String companyName = dataSource.getCompanyName();
-        pageSetup.setHeader(0, "&7&\"ＭＳ フォントサイズ\"" + companyName);
-        pageSetup.setHeader(1, "&12&\"ＭＳ フォントサイズ,Bold\""
+        pageSetup.setHeader(0, "&7&\"MSゴシック\"" + companyName);
+        pageSetup.setHeader(1, "&12&\"MSゴシック,Bold\""
                 + dataSource.getTitle());
 
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
-        pageSetup.setHeader(2, "&7&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
+        pageSetup.setHeader(2, "&7&\"MS MSゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
         pageSetup.setFitToPagesTall(0);
         pageSetup.setFitToPagesWide(0);
         pageSetup.setZoom(100);
-        pageSetup.setBottomMarginInch(0.8);
-        pageSetup.setTopMarginInch(2);
-        pageSetup.setLeftMarginInch(1.0);
-        pageSetup.setRightMarginInch(1.0);
-        pageSetup.setHeaderMarginInch(1);
         pageSetup.setCenterHorizontally(true);
-
     }
 
     private void printContents(Worksheet worksheet, WorkLedgerExportDataSource dataSource) throws Exception {
@@ -132,20 +126,7 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                 }
                 cells.clearContents(count, 0, cells.getMaxRow(), 15);
                 cells.merge(count, 0, 1, 2, true, true);
-                //Cell cell = cells.get(count, 0);
-                //Style style = cell.getStyle();
-                //style.setVerticalAlignment(TextAlignmentType.LEFT);
-                //if(dataSource.isCode() && checkCode(oneLine.getPrimitiveValue())){
-                //    val stringCode = "'" + String.valueOf(oneLine.getCode());
-                //    cells.get(count, 0).setValue(stringCode);
-                //   cell.setStyle(style);
-                //    cells.setStyle(style);
-
-                //}else {
-                    cells.get(count, 0).setValue(oneLine.getAttendanceItemName());
-                //    cell.setStyle(style);
-                //   cells.setStyle(style);
-                //}
+                cells.get(count, 0).setValue(oneLine.getAttendanceItemName());
                 cells.get(count, 14).getStyle()
                         .setVerticalAlignment(TextAlignmentType.RIGHT);
                 cells.get(count, 14).setValue(oneLine.getTotal());
