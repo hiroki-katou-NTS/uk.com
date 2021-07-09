@@ -11,6 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
@@ -26,7 +27,7 @@ public class OuenWorkTimeSheetOfDailyHelper {
 	
 	public static OuenWorkTimeSheetOfDaily getOuenWorkTimeSheetOfDailyDefault() {
 		OuenWorkTimeSheetOfDailyAttendance ouenTimeSheet = OuenWorkTimeSheetOfDailyAttendance.create(
-				1, 
+				SupportFrameNo.of(1), 
 				WorkContent.create( 
 						WorkplaceOfWorkEachOuen.create(new WorkplaceId("workplaceId"), new WorkLocationCD("WCD")), 
 						Optional.empty(), Optional.empty()), 
@@ -40,7 +41,7 @@ public class OuenWorkTimeSheetOfDailyHelper {
 	
 	public static List<OuenWorkTimeSheetOfDailyAttendance> getListOuenWorkTime() {
 		
-		OuenWorkTimeSheetOfDailyAttendance attendance = OuenWorkTimeSheetOfDailyAttendance.create(1,
+		OuenWorkTimeSheetOfDailyAttendance attendance = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1),
 				WorkContent.create(
 						WorkplaceOfWorkEachOuen.create(new WorkplaceId("DUMMY"),new WorkLocationCD("1")),
 						Optional.empty(), Optional.empty()),

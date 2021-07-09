@@ -56,6 +56,8 @@ public class CalculateAttendanceTimeBySupportWorkServiceHelper {
 				new ArrayList<>(),
 				Optional.empty(),
 				new ArrayList<>(),
+				new ArrayList<>(),
+				new ArrayList<>(),
 				Optional.empty());
 				
 				return integrationOfDaily;

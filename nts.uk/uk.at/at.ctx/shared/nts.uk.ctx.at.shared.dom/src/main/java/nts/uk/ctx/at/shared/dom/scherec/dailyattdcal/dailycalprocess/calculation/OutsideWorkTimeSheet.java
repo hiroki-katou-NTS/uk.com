@@ -299,4 +299,20 @@ public class OutsideWorkTimeSheet {
 				Optional.of(new OverTimeSheet(overDayEnd.getOverTimeList())),
 				Optional.of(new HolidayWorkTimeSheet(overDayEnd.getHolList())));
 	}
+	
+	/**
+	 * 指定した時間帯に絞り込む
+	 * @param timeSpan 時間帯
+	 */
+	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
+		if(this.overTimeWorkSheet.isPresent()) {
+			//残業時間帯を指定した時間帯に絞り込む
+			this.overTimeWorkSheet.get().reduceRange(timeSpan);
+		}
+		
+		if(this.holidayWorkTimeSheet.isPresent()) {
+			//休出時間帯を指定した時間帯に絞り込む
+			this.holidayWorkTimeSheet.get().reduceRange(timeSpan);
+		}
+	}
 }

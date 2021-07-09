@@ -196,7 +196,7 @@ public class RegisterWorkManHoursCommandHandler
 
 		@Override
 		public Optional<OuenWorkTimeOfDaily> getOuenWorkTimeOfDaily(String empId, GeneralDate ymd) {
-			return Optional.ofNullable(ouenWorkTimeOfDailyRepo.find(empId, ymd));
+			return ouenWorkTimeOfDailyRepo.find(empId, ymd);
 
 		}
 

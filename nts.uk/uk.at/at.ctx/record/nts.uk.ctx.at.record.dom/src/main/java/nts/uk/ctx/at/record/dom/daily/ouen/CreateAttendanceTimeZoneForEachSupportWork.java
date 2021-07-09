@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
@@ -41,7 +42,7 @@ public class CreateAttendanceTimeZoneForEachSupportWork {
 
 			Optional<OuenWorkTimeSheetOfDailyAttendance> oldTime = ouenWorkTimeSheetOfDaily == null ? Optional.empty()
 					: ouenWorkTimeSheetOfDaily.getOuenTimeSheet().stream()
-							.filter(oen -> oen.getWorkNo() == wd.getSupportFrameNo().v()).findFirst();
+							.filter(oen -> oen.getWorkNo().v() == wd.getSupportFrameNo().v()).findFirst();
 			//	[prv-1] 応援作業時間帯を作成する(require,社員ID,年月日,$,$旧の作業時間帯)	
 			return createSupportWorkTimeZone(require, empId, ymd, wd, oldTime);
 
@@ -99,7 +100,7 @@ public class CreateAttendanceTimeZoneForEachSupportWork {
 	private static OuenWorkTimeSheetOfDailyAttendance createNewOuenWorkTimeSheetOfDailyAttendance(Require require, String empId, GeneralDate ymd, WorkDetailsParam workDetailsParam) {
 		//	$職場ID = require.所属職場を取得する(社員ID,年月日)
 		String workplateID = require.getAffWkpHistItemByEmpDate(empId, ymd);
-		return OuenWorkTimeSheetOfDailyAttendance.create(workDetailsParam.getSupportFrameNo().v(), 
+		return OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(workDetailsParam.getSupportFrameNo().v()), 
 				WorkContent.create(WorkplaceOfWorkEachOuen.create(new WorkplaceId(workplateID), workDetailsParam.getWorkLocationCD().orElse(null)), workDetailsParam.getWorkGroup(), workDetailsParam.getRemarks()), 
 				//đã xác nhận QA: http://192.168.50.4:3000/issues/115977
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1), Optional.ofNullable(workDetailsParam.getTimeZone().getStart()), Optional.ofNullable(workDetailsParam.getTimeZone().getEnd())));

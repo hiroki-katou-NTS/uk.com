@@ -1268,4 +1268,40 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		}
 		return results;
 	}
+	
+	/**
+	 * 指定した時間帯に絞り込む
+	 * @param timeSpan 時間帯
+	 */
+	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
+		Optional<TimeSpanForDailyCalc> duplicates = this.timeSheet.getDuplicatedWith(timeSpan);
+		if(!duplicates.isPresent())
+			return;
+		
+		//時間帯を変更する
+		this.shiftTimeSheet(duplicates.get());
+		
+		//外出の相殺時間を削除する
+		this.deleteOffsetTimeOfGoOut();
+		
+		//加給時間帯、特定加給時間帯、深夜時間帯を指定した時間帯に絞り込む
+		this.reduceRangeOfBonusPay(duplicates.get());
+		this.reduceRangeOfSpecBonusPay(duplicates.get());
+		this.reduceRangeOfMidnight(duplicates.get());
+		
+		//遅刻時間帯を指定した時間帯に絞り込む
+		if(this.lateTimeSheet.isPresent())
+			this.lateTimeSheet.get().reduceRange(duplicates.get());
+		
+		//早退時間帯を指定した時間帯に絞り込む
+		if(this.leaveEarlyTimeSheet.isPresent())
+			this.leaveEarlyTimeSheet.get().reduceRange(duplicates.get());
+		
+		//所定内時間帯を指定した時間帯に絞り込む
+		if(this.premiumTimeSheetInPredetermined.isPresent())
+			this.premiumTimeSheetInPredetermined.get().reduceRange(duplicates.get());
+		
+		//遅刻早退控除前時間帯を変更する
+		this.beforeLateEarlyTimeSheet = duplicates.get();
+	}
 }

@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionOffSetTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeVacationOffSetItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
@@ -90,6 +91,20 @@ public class LateLeaveEarlyTimeSheet extends TimeVacationOffSetItem{
 		}
 		// 遅刻時間帯.終了時刻を返す
 		return lateTimeSheet.getEnd();
+	}
+
+	private LateLeaveEarlyTimeSheet(
+			TimeSpanForDailyCalc timeSheet,
+			TimeRoundingSetting rounding,
+			List<TimeSheetOfDeductionItem> recordedTimeSheet,
+			List<TimeSheetOfDeductionItem> deductionTimeSheet,
+			Optional<DeductionOffSetTime> deductionOffSetTime) {
+		super(timeSheet, rounding);
+		this.timeSheet = timeSheet;
+		this.rounding = rounding;
+		this.deductionTimeSheet = deductionTimeSheet;
+		this.recordedTimeSheet = recordedTimeSheet;
+		this.deductionOffSetTime = deductionOffSetTime;
 	}
 	
 	/**
@@ -233,5 +248,22 @@ public class LateLeaveEarlyTimeSheet extends TimeVacationOffSetItem{
 				this.grantRoundingDeductionOrAppropriate(ActualWorkTimeSheetAtr.WithinWorkTime, dedAtr, commonSet);
 			}
 		});
+	}
+	
+	/**
+	 * 遅刻早退時間帯を指定した時間帯に絞り込む
+	 * @param timeSpan 時間帯
+	 */
+	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
+		Optional<TimeSpanForDailyCalc> duplicates = this.timeSheet.getDuplicatedWith(timeSpan);
+		if(!duplicates.isPresent())
+			return;
+		
+		//時間帯を変更する
+		this.shiftTimeSheet(duplicates.get());
+		
+		//控除相殺時間を削除する
+		if(this.deductionOffSetTime.isPresent())
+			this.deductionOffSetTime = Optional.empty();
 	}
 }
