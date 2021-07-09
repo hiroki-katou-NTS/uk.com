@@ -97,6 +97,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                 for (let id in vm.windows_lst) {
                     if (nts.uk.ui.windows.container.windows[id].parent && nts.uk.ui.windows.container.windows[id].parent.id == selfId) {
                         nts.uk.ui.windows.close(id);
+                        vm.isOpenKDL053 = false;
                     }
                 }
             }
@@ -227,6 +228,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                 for (let id in vm.windows_lst) {
                     if (nts.uk.ui.windows.container.windows[id].parent && nts.uk.ui.windows.container.windows[id].parent.id == selfId) {
                         nts.uk.ui.windows.close(id);
+                        vm.isOpenKDL053 = false;
                     }
                 }
             }
@@ -322,7 +324,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                         vm.isOpenKDL053 = false;
                     });
                 }
-                // vm.isOpenKDL053 = true;
+                vm.isOpenKDL053 = true;
             } else {
                 $('#register').focus();
             }
