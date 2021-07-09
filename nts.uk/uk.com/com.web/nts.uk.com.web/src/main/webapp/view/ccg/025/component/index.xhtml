@@ -8,7 +8,7 @@
 	<ui:composition>
 		<!-- <div style="width: 350px" data-bind="ntsSearchBox: {searchMode: searchMode, targetKey: 'roleCode', comId: 'multi-list', 
 				items: listRole,  selectedKey: 'roleCode', fields: ['name', 'roleCode'], mode: 'igGrid'}" /> -->
-		<div class="caret-right caret-background">
+		<div class="caret-right caret-background" id="ccg025-component">
 			<div class="control-group valign-center" data-bind="if: displayRoleClassification()">
 				<div data-bind="ntsFormLabel: {required: true, text: '#{i18n.getText('CCG025_2')}'}"/>
 				<div id="ccg025-switch" style="display: inline-block"
@@ -25,7 +25,7 @@
 									enable: true }, attr: {tabindex: setting.tabindex}"/>
 				<hr/>
 			</div>
-			<table id="multi-list"
+			<table id="ccg025-list"
 				data-bind="attr: {tabindex: setting.tabindex}, 
 					   ntsGridList: {
 							dataSource: listRole ,
@@ -47,6 +47,9 @@
 				flex-direction: column;
 				text-align: center;
 			}
+            #ccg025-list_displayContainer td {
+                height: 24px;
+            }
 		</style>
 	</ui:composition>
 </body>
