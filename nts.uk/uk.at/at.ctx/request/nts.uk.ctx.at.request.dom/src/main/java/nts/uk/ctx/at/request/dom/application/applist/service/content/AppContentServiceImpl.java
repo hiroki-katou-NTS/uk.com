@@ -351,9 +351,12 @@ public class AppContentServiceImpl implements AppContentService {
 				result += " " + I18NText.getText("CMM045_252");
 			}
 			// 申請内容　+＝　Input．勤務時間開始1
+			result += " ";
 			result += workTimeStart1 == null ? "" : workTimeStart1.getInDayTimeWithFormat();
 			// Input．勤務直帰1をチェック
-			result += I18NText.getText("CMM045_100");
+			if(workTimeStart1!=null || workTimeEnd1!=null) {
+				result += I18NText.getText("CMM045_100");
+			}
 			if(goBackAtr1 == NotUseAtr.USE) {
 				// 申請内容　+＝　#CMM045_100　+　#CMM045_252
 				result += I18NText.getText("CMM045_252");
@@ -373,12 +376,19 @@ public class AppContentServiceImpl implements AppContentService {
 			}
 		}
 		if(appType == ApplicationType.WORK_CHANGE_APPLICATION) {
-			if(workTimeStart2!=null && workTimeEnd2!=null) {
+			if(workTimeStart2!=null || workTimeEnd2!=null) {
 				// 申請内容　+＝　’　’＋Input．勤務時間開始2＋#CMM045_100＋Input．勤務時間終了2
-				result += " " + workTimeStart2.getInDayTimeWithFormat() + I18NText.getText("CMM045_100") + workTimeEnd2.getInDayTimeWithFormat();
+				result += " ";
+				result += workTimeStart2 == null ? "" : workTimeStart2.getInDayTimeWithFormat();
+				result += I18NText.getText("CMM045_100");
+				result += workTimeEnd2 == null ? "" : workTimeEnd2.getInDayTimeWithFormat();
 			}
 			if(!(breakTimeStart1==null || breakTimeStart1.v()==0 || breakTimeEnd1 == null || breakTimeEnd1.v()==0)) {
-				result += " " + I18NText.getText("CMM045_251") + breakTimeStart1.getInDayTimeWithFormat() + breakTimeEnd1.getInDayTimeWithFormat();
+				result += " ";
+				result += I18NText.getText("CMM045_251");
+				result += breakTimeStart1 == null ? "" : breakTimeStart1.getInDayTimeWithFormat();
+				result += I18NText.getText("CMM045_100");
+				result += breakTimeEnd1 == null ? "" : breakTimeEnd1.getInDayTimeWithFormat();
 			}
 		}
 		// 申請理由内容　＝　申請内容の申請理由
