@@ -36,6 +36,7 @@ public class VacationAppReflectOption extends DomainObject {
      * 1日休暇の場合は出退勤を削除
      */
     private NotUseAtr oneDayLeaveDeleteAttendance;
+    
 
     /**
      * 出退勤を反映する
@@ -75,14 +76,7 @@ public class VacationAppReflectOption extends DomainObject {
 
 		// 始業終業の反映
 		lstItemId.addAll(ReflectStartEndWork.reflect(require, cid, dailyApp, workingHours, prePostAtr));
-
-		// [出退勤を反映する]をチェック
-		if (this.getReflectAttendance() == NotUseAtr.USE) {
-			// 出退勤の反映
-			lstItemId.addAll(ReflectAttendance.reflect(require, cid, workingHours, ScheduleRecordClassifi.RECORD, dailyApp,
-					Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
-		}
-
+		
 		// [1日休暇の場合は出退勤を削除]をチェック
 		if (this.getOneDayLeaveDeleteAttendance() == NotUseAtr.USE) {
 
@@ -123,12 +117,9 @@ public class VacationAppReflectOption extends DomainObject {
 		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require, cid, workInfoDto, dailyApp, Optional.of(true),
 				Optional.of(reflectWorkTime)));
 
-		// [出退勤を反映する]をチェック
-		if (this.getReflectAttendance() == NotUseAtr.USE) {
-			// 出退勤の反映
-			lstItemId.addAll(ReflectAttendance.reflect(require, cid, workingHours, ScheduleRecordClassifi.RECORD, dailyApp,
-					Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
-		}
+		// 出退勤の反映
+		lstItemId.addAll(ReflectAttendance.reflect(require, cid, workingHours, ScheduleRecordClassifi.RECORD, dailyApp,
+				Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
 
 		return new DailyAfterAppReflectResult(dailyApp, lstItemId);
 	}
