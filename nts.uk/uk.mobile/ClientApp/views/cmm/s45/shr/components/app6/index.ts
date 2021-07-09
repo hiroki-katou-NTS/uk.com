@@ -651,6 +651,14 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
 
         self.workInfo = workInfo;
     }
+    //  休日出勤申請起動時の表示情報．休出申請設定．残業休出申請共通設定」．時間外表示区分＝表示する
+    public get c1() {
+        const self = this;
+
+        const displayAtr = _.get(self.dataOutput, 'appHdWorkDispInfo.holidayWorkAppSet.overtimeLeaveAppCommonSet.extratimeDisplayAtr');
+
+        return displayAtr == NotUseAtr.USE;
+    }
 
     //  「休日出勤申請起動時の表示情報．申請表示情報．申請設定（基準日関係なし）．複数回勤務の管理」＝TRUE
     public get c3() {

@@ -129,7 +129,7 @@
     </div>    
 
     <!-- Break -->
-    <div v-if="$appContext.c4" class="card card-label">
+    <div v-if="$appContext.c1" class="card card-label">
       <!--A1_7_1-->
       <div class="card-header uk-bg-accordion mt-2 mb-n2">
         <span>{{ "KAFS10_9" | i18n }}</span>

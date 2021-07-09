@@ -79,12 +79,12 @@
     </div>
 
     <!-- B4_1 -->
-    <div class="card card-label" v-if="c4">
+    <div class="card card-label" v-if="c1">
         <div class="card-header uk-bg-accordion mt-2 headerDiv">
             <span class="textPosition">{{ "KAFS10_9" | i18n }}</span>
         </div>
     </div>
-    <div v-if="c4">
+    <div v-if="c1">
         <div 
         v-for="(item, index) in breakTimes"
         v-bind:key="index"
