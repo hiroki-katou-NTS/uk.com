@@ -29,7 +29,7 @@ public class VerifyEmployeeCodeAndPassword {
 		
 		// 	if $社員.isEmpty	
 		if (!employeeInfo.isPresent()) {
-			return InspectionResult.create2();
+			return InspectionResult.userVerificationFailure();
 		}
 		
 		// 	$ユーザ = require.ユーザを取得する($社員.個人ID)
@@ -37,16 +37,16 @@ public class VerifyEmployeeCodeAndPassword {
 		
 		// 	if $ユーザ.isEmpty
 		if (!user.isPresent()) {
-			return InspectionResult.create2();
+			return InspectionResult.userVerificationFailure();
 		}
 		
 		// 	if パスワード.isPresent
 		if (!user.get().getPassword().toString().equals(password.get())) {
-			return InspectionResult.create3();
+			return InspectionResult.passwordVerificationFailed();
 		}
 		
 		// 	return 検証結果#検証成功($社員)
-		return InspectionResult.create1(employeeInfo.get());
+		return InspectionResult.verificationSuccess(employeeInfo.get());
 	}
 	
 
