@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.app.command.workrecord.workmanagement.manhoursummar
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.DetailFormatSetting;
 import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.DisplayFormat;
@@ -42,7 +41,7 @@ public class RegisterOrUpdateManHourSummaryTableDuplicateCommand {
 
     public ManHourSummaryTableFormat toDomain(ManHourSummaryTableFormat copy) {
         if (this.isCopy()) {
-            val manHourSummaryTableFormat = new ManHourSummaryTableFormat(
+            return new ManHourSummaryTableFormat(
                     new ManHourSummaryTableCode(this.getSourcecode()),
                     new ManHourSummaryTableName(this.getName()),
                     new DetailFormatSetting(
@@ -54,7 +53,6 @@ public class RegisterOrUpdateManHourSummaryTableDuplicateCommand {
                                     .collect(Collectors.toList())
                     )
             );
-            return manHourSummaryTableFormat;
         } else {
             return new ManHourSummaryTableFormat(
                     new ManHourSummaryTableCode(this.getSourcecode()),

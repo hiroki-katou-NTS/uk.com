@@ -210,6 +210,7 @@ module nts.uk.at.kha003.a {
                     let type0Name = vm.$i18n('KHA003_24');
                     let type1Name = vm.$i18n('KHA003_25');
                     let type2Name = vm.$i18n('KHA003_26');
+                    $('#append_area').empty();
                     vm.summaryItems([]);
                     vm.summaryItems(_.map(data.summaryItems, function (item: any) {
                         let itemTypeName = '';
