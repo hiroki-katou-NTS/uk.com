@@ -33,7 +33,8 @@ public class VerifyEmployeeCodeAndPasswordTest {
 	private User user = User.createFromJavatype("Dummy", true, "qwerty", "Dummy", "Dummy", GeneralDate.today(), 1, 1,
 			"Dummy", "Dummy", "Dummy", 1);
 
-	// $社員 = require.社員を取得する(会社ID,社員コード)
+	// if $社員.isEmpty
+	// return 検証結果#ユーザ検証失敗()
 	@Test
 	public void test() {
 
@@ -50,6 +51,7 @@ public class VerifyEmployeeCodeAndPasswordTest {
 	}
 
 	// if $ユーザ.isEmpty
+	// return 検証結果#ユーザ検証失敗()
 	@Test
 	public void test1() {
 		GetAnEmployeeImported employee = new GetAnEmployeeImported("Dummy", "Dummy", "Dummy", "Dummy"); // dummy
@@ -69,7 +71,8 @@ public class VerifyEmployeeCodeAndPasswordTest {
 		assertThat(result.getVerificationFailureMessage().get()).isEqualTo("Msg_301");
 	}
 
-	// if $ユーザ.isEmpty
+	// if not $ユーザ.認証チェック(パスワード)
+	// return 検証結果#パスワード検証失敗()
 	@Test
 	public void test2() {
 		GetAnEmployeeImported employee = new GetAnEmployeeImported("Dummy", "Dummy", "Dummy", "Dummy"); // dummy
