@@ -157,10 +157,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // 個人計カテゴリ
         useCategoriesPersonal: KnockoutObservableArray<any> = ko.observableArray([]);
         useCategoriesPersonalValue: KnockoutObservable<number> = ko.observable(null);
+		dataAggreratePersonal: any = null;
         
         // 職場計カテゴリ
         useCategoriesWorkplace: KnockoutObservableArray<any> = ko.observableArray([]);
         useCategoriesWorkplaceValue: KnockoutObservable<any> = ko.observable(null);
+		dataAggrerateWorkplace: any = null;
         
         // 締め日 (Deadline) , 初期起動時の期間 ( Initial startup period )
         closeDate = null;
@@ -1783,12 +1785,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.detailHeaderDeco = detailHeaderDeco;
             self.detailContentDeco = detailContentDeco;
             self.detailContentDecoModeConfirm = detailContentDecoModeConfirm;
-
-            self.createVertSumData(data);
-            self.createHorzSumData(data);
+			
+			if(data.aggreratePersonal) {
+				self.dataAggreratePersonal = data.aggreratePersonal;	
+			}
+			if(data.aggrerateWorkplace) {
+				self.dataAggrerateWorkplace = data.aggrerateWorkplace;	
+			}
+            self.createVertSumData();
+            self.createHorzSumData();
 
             self.horizontalDetailColumns = horizontalDetailColumns;
-            
+			if(!data.aggreratePersonal) {
+				self.updateVertSumGrid();	
+			}
+			if(!data.aggrerateWorkplace) {
+				self.updateHorzSumGrid();	
+			}            
+
             let empLogin = _.filter(detailContentDs, function(o) { return o.employeeId == self.employeeIdLogin; });
             if (empLogin.length > 0) {
                 self.keyGrid = empLogin[0].sid;
@@ -2503,7 +2517,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#extable").exTable("saveScroll");
         }
 
-        createVertSumData(data: any) {
+        createVertSumData() {
             let self = this,
                 detailContentDs = self.detailContentDs,
                 vertSumColumns: any = [],
@@ -2518,7 +2532,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         { headerText: getText("KSU001_19"), key: "salary", width: "100px" },
                     ];
                     _.forEach(detailContentDs, (item: any, index) => {
-                        let object: any = _.find(data.aggreratePersonal.estimatedSalary, loopItem => loopItem.sid==item.employeeId);
+                        let object: any = _.find(self.dataAggreratePersonal.estimatedSalary, loopItem => loopItem.sid==item.employeeId);
                         if(object) {
                             vertSumContentDs.push({ 
 								empID: item.employeeId, 
@@ -2541,7 +2555,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         { headerText: getText("KSU001_19"), key: "salary", width: "100px" },
                     ];
                     _.forEach(detailContentDs, (item: any, index) => {
-                        let object: any = _.find(data.aggreratePersonal.estimatedSalary, loopItem => loopItem.sid==item.employeeId);
+                        let object: any = _.find(self.dataAggreratePersonal.estimatedSalary, loopItem => loopItem.sid==item.employeeId);
                         if(object) {
                             vertSumContentDs.push({ 
 								empID: item.employeeId, 
@@ -2565,7 +2579,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         { headerText: getText("KSU001_51"), key: "colum3", width: "100px" },
                     ];
                     _.forEach(detailContentDs, (item: any) => {
-                        let object: any = _.find(data.aggreratePersonal.workHours, loopItem => loopItem.sid==item.employeeId);
+                        let object: any = _.find(self.dataAggreratePersonal.workHours, loopItem => loopItem.sid==item.employeeId);
                         if(object) {
                             // enum AttendanceTimesForAggregation
                             let colum1Object = _.find(object.workHours, (objectItem: any) => objectItem.key==AttendanceTimesForAggregation.WORKING_TOTAL),
@@ -2590,7 +2604,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         { headerText: getText("KSU001_63"), key: "colum2", width: "100px" },
                     ];
                     _.forEach(detailContentDs, (item: any) => {
-                        let object: any = _.find(data.aggreratePersonal.workHours, loopItem => loopItem.sid==item.employeeId);
+                        let object: any = _.find(self.dataAggreratePersonal.workHours, loopItem => loopItem.sid==item.employeeId);
                         if(object) {
                             // WorkClassificationAsAggregationTarget
                             let colum1Object = _.find(object.workHours, (objectItem: any) => objectItem.key==WorkClassificationAsAggregationTarget.WORKING),
@@ -2608,7 +2622,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     
                 // 回数集計１
                 case PersonalCounterCategory.TIMES_COUNTING_1: 
-                    let timeCount1: Array<any> = data.aggreratePersonal.timeCount,
+                    let timeCount1: Array<any> = self.dataAggreratePersonal.timeCount,
                         timeCount1Value = _.filter(timeCount1, item => !_.isEmpty(item.totalTimesMapDto));
                     if(_.isEmpty(timeCount1Value)) {
                         group = [
@@ -2653,7 +2667,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     
                 // 回数集計２
                 case PersonalCounterCategory.TIMES_COUNTING_2: 
-                    let timeCount2: Array<any> = data.aggreratePersonal.timeCount,
+                    let timeCount2: Array<any> = self.dataAggreratePersonal.timeCount,
                         timeCount2Value = _.filter(timeCount2, item => !_.isEmpty(item.totalTimesMapDto));
                     if(_.isEmpty(timeCount2Value)) {
                         group = [
@@ -2698,7 +2712,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     
                 // 回数集計３
                 case PersonalCounterCategory.TIMES_COUNTING_3: 
-                    let timeCount3: Array<any> = data.aggreratePersonal.timeCount,
+                    let timeCount3: Array<any> = self.dataAggreratePersonal.timeCount,
                         timeCount3Value = _.filter(timeCount3, item => !_.isEmpty(item.totalTimesMapDto));
                     if(_.isEmpty(timeCount3Value)) {
                         group = [
@@ -2755,7 +2769,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.vertContentDeco = vertContentDeco; 
         }
         
-        createHorzSumData(data: any) {
+        createHorzSumData() {
             let self = this,
                 keys = _.keys(new ExItem(undefined, null, null, null, true, self.arrDay)),
                 leftHorzContentDs: any = [],
@@ -2771,7 +2785,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     leftHorzContentDs.push({ id: 'id5', title: getText("KSU001_58"), subtitle: getText("KSU001_59") });
                     leftHorzContentDs.push({ id: 'id6', title: '', subtitle: getText("KSU001_60") });
                     leftHorzContentDs.push({ id: 'id7', title: '', subtitle: getText("KSU001_61") });
-                    let laborCostAndTime: Array<any> = data.aggrerateWorkplace.laborCostAndTime,
+                    let laborCostAndTime: Array<any> = self.dataAggrerateWorkplace.laborCostAndTime,
                         laborCostAndTimeValue = _.filter(laborCostAndTime, item => !_.isEmpty(item.laborCostAndTime));
                     if(_.isEmpty(laborCostAndTimeValue)) {
 						for(let i=1; i<=7; i++) {
@@ -2835,7 +2849,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     
                 // 外部予算実績
                 case WorkplaceCounterCategory.EXTERNAL_BUDGET: 
-                    let externalBudget: Array<any> = data.aggrerateWorkplace.externalBudget,
+                    let externalBudget: Array<any> = self.dataAggrerateWorkplace.externalBudget,
                         externalBudgetValue = _.filter(externalBudget, item => !_.isEmpty(item.externalBudget));
                     if(_.isEmpty(externalBudgetValue)) {
 						let objectExternalBudget = {};
@@ -2872,7 +2886,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     
                 // 回数集計
                 case WorkplaceCounterCategory.TIMES_COUNTING: 
-                    let timeCount: Array<any> = data.aggrerateWorkplace.timeCount,
+                    let timeCount: Array<any> = self.dataAggrerateWorkplace.timeCount,
                         timeCountValue = _.filter(timeCount, item => !_.isEmpty(item.timeCount));
                     if(_.isEmpty(timeCountValue)) {
 						let objectTimeCount = {};
@@ -2909,7 +2923,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     
                 // 就業時間帯別の利用人数
                 case WorkplaceCounterCategory.WORKTIME_PEOPLE: 
-                    let peopleMethod: Array<any> = data.aggrerateWorkplace.peopleMethod,
+                    let peopleMethod: Array<any> = self.dataAggrerateWorkplace.peopleMethod,
                         peopleMethodValue = _.filter(peopleMethod, item => !_.isEmpty(item.peopleMethod));
                     if(_.isEmpty(peopleMethodValue)) {
 						leftHorzContentDs.push({ id: 'id1', title: '', subtitle: '' });
@@ -2963,7 +2977,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     
                 // 雇用人数
                 case WorkplaceCounterCategory.EMPLOYMENT_PEOPLE: 
-                    let employment: Array<any> = data.aggrerateWorkplace.aggrerateNumberPeople.employment,
+                    let employment: Array<any> = self.dataAggrerateWorkplace.aggrerateNumberPeople.employment,
                         employmentValue = _.filter(employment, item => !_.isEmpty(item.numberPeople));
                     if(_.isEmpty(employmentValue)) {
 						let objectEmployment = {};
@@ -3000,7 +3014,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     
                 // 分類人数
                 case WorkplaceCounterCategory.CLASSIFICATION_PEOPLE: 
-                    let classification: Array<any> = data.aggrerateWorkplace.aggrerateNumberPeople.classification,
+                    let classification: Array<any> = self.dataAggrerateWorkplace.aggrerateNumberPeople.classification,
                         classificationValue = _.filter(classification, item => !_.isEmpty(item.numberPeople));
                     if(_.isEmpty(classificationValue)) {
 						let objectClassification = {};
@@ -3037,7 +3051,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     
                 // 職位人数
                 case WorkplaceCounterCategory.POSITION_PEOPLE: 
-                    let jobTitleInfo: Array<any> = data.aggrerateWorkplace.aggrerateNumberPeople.jobTitleInfo,
+                    let jobTitleInfo: Array<any> = self.dataAggrerateWorkplace.aggrerateNumberPeople.jobTitleInfo,
                         jobTitleInfoValue = _.filter(jobTitleInfo, item => !_.isEmpty(item.numberPeople))
                     if(_.isEmpty(jobTitleInfoValue)) {
 						let objectJobTitle = {};
@@ -5599,13 +5613,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let aggrerateWorkplace = data.aggrerateWorkplace; // Data A12
                 let externalBudget     = data.externalBudget; 
                 
+				if(data.aggreratePersonal) {
+					self.dataAggreratePersonal = data.aggreratePersonal;	
+				}
+				if(data.aggrerateWorkplace) {
+					self.dataAggrerateWorkplace = data.aggrerateWorkplace;	
+				}
                 if(updateA11){
-                    self.createVertSumData(data);
+                    self.createVertSumData();
                     self.updateVertSumGrid();
                 }
                 
                 if(updateA12){
-                    self.createHorzSumData(data);
+                    self.createHorzSumData();
                     self.updateHorzSumGrid();
                 }
                 nts.uk.ui.block.clear();
