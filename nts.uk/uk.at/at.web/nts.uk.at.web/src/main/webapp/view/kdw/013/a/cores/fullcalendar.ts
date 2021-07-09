@@ -2300,7 +2300,7 @@ module nts.uk.ui.at.kdw013.calendar {
             // set editable
             ko.computed({
                 read: () => {
-                    const ed = false;
+                    const ed = true;
 
                     vm.calendar.setOption('editable', ed);
                     vm.calendar.setOption('droppable', ed);
