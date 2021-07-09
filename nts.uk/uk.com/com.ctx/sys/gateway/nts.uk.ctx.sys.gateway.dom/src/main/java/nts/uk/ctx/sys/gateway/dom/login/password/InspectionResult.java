@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.gateway.dom.login.password;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.sys.shared.dom.employee.GetAnEmployeeImported;
 
@@ -13,6 +14,7 @@ import nts.uk.ctx.sys.shared.dom.employee.GetAnEmployeeImported;
  */
 
 @Data
+@AllArgsConstructor
 public class InspectionResult {
 
 	// 検証成功
@@ -28,30 +30,21 @@ public class InspectionResult {
 	 * 	[C-1] 検証成功
 	 * @param employee
 	 */
-	public InspectionResult(GetAnEmployeeImported employee) {
-		super();
-		this.verificationSuccess = true;
-		this.employeeInformation = Optional.ofNullable(employee);
-		this.verificationFailureMessage = Optional.empty();
+	public static InspectionResult create1 (GetAnEmployeeImported employee) {
+		return new InspectionResult(true, Optional.ofNullable(employee), Optional.empty());
 	}
 	
 	/**
 	 * 	[C-2] ユーザ検証失敗
 	 */
-	public InspectionResult() {
-		super();
-		this.verificationSuccess = false;
-		this.employeeInformation = Optional.empty();
-		this.verificationFailureMessage = Optional.of("Msg_301");
+	public static InspectionResult create2() {
+		return new InspectionResult(false, Optional.empty(), Optional.of("Msg_301"));
 	}
 	
 	/**
 	 * 	[C-3] パスワード検証失敗
 	 */
-	public InspectionResult(String param) {
-		super();
-		this.verificationSuccess = false;
-		this.employeeInformation = Optional.empty();
-		this.verificationFailureMessage = Optional.of("Msg_302");
+	public static InspectionResult create3() {
+		return new InspectionResult(false, Optional.empty(), Optional.of("Msg_302"));
 	}
 }
