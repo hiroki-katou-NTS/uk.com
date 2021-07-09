@@ -22,9 +22,6 @@ public class ImportingUserCondition implements DomainAggregate{
 	/** 項目No */
 	private int itemNo;
 
-	/**項目型 */
-	private ItemType itemType;
-
 	/** 条件 */
 	private Validation validation;
 

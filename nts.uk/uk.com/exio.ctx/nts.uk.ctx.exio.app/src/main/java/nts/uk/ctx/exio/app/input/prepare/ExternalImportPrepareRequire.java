@@ -51,73 +51,73 @@ import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspaceRepository;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ExternalImportPrepareRequire {
-	
+
 	public Require create(String companyId) {
-		
+
 		return EmbedStopwatch.embed(new RequireImpl(companyId));
 	}
-	
+
 	public static interface Require extends
 			PrepareImporting.Require,
 			ExternalImportWorkspaceRepository.Require {
-		
+
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
 	}
-	
+
 	@Inject
 	private ImportingUserConditionRepository importingUserConditionRepo;
-	
+
 	@Inject
 	private ImportableItemsRepository importableItemsRepo;
-	
+
 	@Inject
 	private ImportingGroupRepository importingGroupRepo;
-	
+
 	@Inject
 	private GroupWorkspaceRepository groupWorkspaceRepo;
-	
+
 	@Inject
 	private ExternalImportWorkspaceRepository workspaceRepo;
-	
+
 	@Inject
 	private ExternalImportExistingRepository existingRepo;
-	
+
 	@Inject
 	private ImportingDataMetaRepository metaRepo;
-	
+
 	@Inject
 	private EmployeeDataMngInfoRepository employeeDataMngInfoRepo;
-	
+
 	@Inject
 	private EmploymentHistoryRepository employmentHistoryRepo;
-	
+
 	@Inject
 	private TaskingRepository taskingRepo;
-	
+
 	@Inject
 	private WorkInformationRepository workInformationRepo;
-	
+
 	@Inject
 	private ExternalImportSettingRepository settingRepo;
-	
+
 	@Inject
 	private ReviseItemRepository reviseItemRepo;
-	
+
 	@Inject
 	private ExternalImportCodeConvertRepository codeConvertRepo;
-	
+
 	public class RequireImpl implements Require {
-		
+
 		private final String companyId ;
-		
+
 		public RequireImpl(String companyId) {
 			this.companyId = companyId;
 		}
-		
+
 
 		/***** 外部受入関連 *****/
 
-		
+
 		@Override
 		public Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode) {
 			return settingRepo.get(companyId, settingCode);
@@ -127,36 +127,36 @@ public class ExternalImportPrepareRequire {
 		public ImportingGroup getImportingGroup(ImportingGroupId groupId) {
 			return importingGroupRepo.find(groupId);
 		}
-		
+
 		@Override
 		public GroupWorkspace getGroupWorkspace(ImportingGroupId groupId) {
 			return groupWorkspaceRepo.get(groupId);
 		}
-		
+
 		@Override
 		public Optional<ReviseItem> getRevise(String companyId, ExternalImportCode importCode, int importItemNumber) {
 			return reviseItemRepo.get(companyId, importCode, importItemNumber);
 		}
-		
+
 		@Override
 		public Optional<ExternalImportCodeConvert> getCodeConvert(String companyId, CodeConvertCode code) {
 			return codeConvertRepo.get(companyId, code);
 		}
-		
+
 		@Override
 		public ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo) {
 			return importableItemsRepo.get(groupId, itemNo)
 					.orElseThrow(() -> new RuntimeException("not found: " + groupId + ", " + itemNo));
 		}
-		
+
 		@Override
-		public List<ImportingUserCondition> getImportingUserCondition(String settingCode,
-				List<Integer> itemNo) {
+		public Optional<ImportingUserCondition> getImportingUserCondition(String settingCode,
+				int itemNo) {
 			return importingUserConditionRepo.get(companyId, settingCode, itemNo);
 		}
-		
+
 		/***** Workspace *****/
-		
+
 		@Override
 		public void setupWorkspace(ExecutionContext context) {
 			workspaceRepo.setup(this, context);
@@ -168,37 +168,37 @@ public class ExternalImportPrepareRequire {
 		public void save(ExecutionContext context, AnyRecordToDelete toDelete) {
 			existingRepo.save(context, toDelete);
 		}
-		
+
 		@Override
 		public void save(ExecutionContext context, AnyRecordToChange recordToChange) {
 			existingRepo.save(context, recordToChange);
 		}
-		
+
 		@Override
 		public void save(ExecutionContext context, RevisedDataRecord revisedDataRecord) {
 			workspaceRepo.save(this, context, revisedDataRecord);
 		}
-		
+
 		@Override
 		public void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord) {
 			workspaceRepo.save(this, context, canonicalizedDataRecord);
 		}
-		
+
 		@Override
 		public int getMaxRowNumberOfRevisedData(ExecutionContext context) {
 			return workspaceRepo.getMaxRowNumberOfRevisedData(this, context);
 		}
-		
+
 		@Override
 		public List<String> getStringsOfRevisedData(ExecutionContext context, int itemNo) {
 			return workspaceRepo.getStringsOfRevisedData(this, context, itemNo);
 		}
-		
+
 		@Override
 		public Optional<RevisedDataRecord> getRevisedDataRecordByRowNo(ExecutionContext context, int rowNo) {
 			return workspaceRepo.findRevisedByRowNo(this, context, rowNo);
 		}
-		
+
 		@Override
 		public List<RevisedDataRecord> getRevisedDataRecordWhere(
 				ExecutionContext context, int itemNoCondition, String conditionString) {
@@ -210,23 +210,23 @@ public class ExternalImportPrepareRequire {
 			metaRepo.save(meta);
 		}
 
-		
+
 		/***** domains for canonicalization *****/
-		
+
 		@Override
 		public Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeCode(String employeeCode) {
 			return employeeDataMngInfoRepo.findByScdNotDel(employeeCode, companyId);
 		}
-		
+
 		@Override
 		public Optional<EmploymentHistory> getEmploymentHistory(String employeeId) {
 			return employmentHistoryRepo.getByEmployeeIdDesc(companyId, employeeId);
 		}
-		
+
 		public Optional<Task> getTask(String companyId, int taskFrameNo, String taskCode) {
 			return taskingRepo.getOptionalTask(companyId, new TaskFrameNo(taskFrameNo), new TaskCode(taskCode));
 		}
-		
+
 		@Override
 		public Optional<WorkInfoOfDailyPerformance> getWorkInfoOfDailyPerformance(String employeeId, GeneralDate date) {
 			return workInformationRepo.find(employeeId, date);

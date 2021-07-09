@@ -1,7 +1,7 @@
 package nts.uk.ctx.exio.dom.input.validation.user;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface ImportingUserConditionRepository {
-	List<ImportingUserCondition> get(String companyId, String settingCode, List<Integer> itemNoList);
+	Optional<ImportingUserCondition> get(String companyId, String settingCode, int itemNo);
 }
