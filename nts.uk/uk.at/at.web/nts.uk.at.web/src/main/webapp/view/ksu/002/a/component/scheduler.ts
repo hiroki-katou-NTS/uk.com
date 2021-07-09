@@ -71,10 +71,14 @@ module nts.uk.ui.at.ksu002.a {
         constructor() {}
 		setStatusFisrt(){
 			let self = this;
-			self.workingHoursTitle('<span>'+getText('KSU002_25')+'<br/>'+getText('KSU002_25')+'</span>');
+			self.workingHoursTitle('<span>'+getText('KSU002_25')+'<br/>'+getText('KSU002_35')+'</span>');
 			self.holidaysTitle('<span class="fz12">'+getText('KSU002_26')+'</span>');
 		}		
-		update(){}
+		update(workingTime: string, overUnder: string, holidaysNumber: string){
+			let self = this;
+			self.workingTime('<span>'+workingTime+'<br/>'+ getText('KSU002_15') + overUnder +getText('KSU002_16')+'</span>');
+			self.holidaysNumber('<span>'+ holidaysNumber +'</span>');
+		}
     }
 
     export enum EDIT_STATE {
@@ -229,10 +233,11 @@ module nts.uk.ui.at.ksu002.a {
 			let self = this;
 			let tg: TotalData[] = [];
 			_.forEach([0,1,2,3,4,5], e => {
-				tg.push(new TotalData());
+				let t = new TotalData();
+				t.update('16:00', '-8:00', '1');
+				tg.push(t);
 			});
 			tg[0].setStatusFisrt();
-			self.demoData(tg);
 			self.weekSumData = ko.observableArray(tg);
         }
 
@@ -255,16 +260,6 @@ module nts.uk.ui.at.ksu002.a {
                 });
         }
 
-		demoData(tg: TotalData[]){
-			tg[0].workingTime('<span>16:00<br/>'+ getText('KSU002_15') +'-8:00'+getText('KSU002_16')+'</span>');
-			tg[0].holidaysNumber('<span>1</span>');
-			tg[1].workingTime('<span>15:00<br/>'+ getText('KSU002_15') +'-7:00'+getText('KSU002_16')+'</span>');
-			tg[1].holidaysNumber('<span>2</span>');
-			tg[2].workingTime('<span>17:00<br/>'+ getText('KSU002_15') +'-7:30'+getText('KSU002_16')+'</span>');
-			tg[2].holidaysNumber('<span>3</span>');
-			tg[4].workingTime('<span>16:00<br/>'+ getText('KSU002_15') +'-7:30'+getText('KSU002_16')+'</span>');
-			tg[4].holidaysNumber('<span>4</span>');
-		}
     }
 
     export module controls {
