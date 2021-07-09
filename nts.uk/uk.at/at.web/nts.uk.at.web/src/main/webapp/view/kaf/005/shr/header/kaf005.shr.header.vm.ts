@@ -4,17 +4,17 @@ module nts.uk.at.view.kaf005.shr.header.viewmodel {
 	<div data-bind="if: visibleModel.c6()">
 		<div class="cf valign-center control-group"
 			data-bind="style: {padding: '10px 10px 10px 12px'}"
-			style="margin-left: -2px; background: #f8efd4; width: 780px;">
+			style="margin-left: -2px; background: #f8efd4;">
 			<!--A2_7 時間外労働ラベル-->
 			<div class="pull-left" data-bind="text: $i18n('KAF005_23')"></div>
-			<div class="pull-left" style="margin-left: 16px">
+			<div>
 				<table id="kaf005_overtimeAgreement_table">
 					<colgroup>
-						<col width="85px" />
+						<col width="80px" />
 						<col width="70px" />
 						<col width="70px" />
-						<col width="70px" />
-						<col width="70px" />
+						<!--<col width="70px" />-->
+						<!--<col width="70px" />-->
 					</colgroup>
 					<thead>
 						<tr>
@@ -28,11 +28,11 @@ module nts.uk.at.view.kaf005.shr.header.viewmodel {
 							<th class="kaf005_overtimeAgreement_header"
 								data-bind="text: $i18n('KAF005_26')"></th>
 							<!--A2_12  申請ラベル-->
-							<th class="kaf005_overtimeAgreement_header" style="display: none"
-								data-bind="text: $i18n('KAF005_27')"></th>
+<!--							<th class="kaf005_overtimeAgreement_header" style="display: none"-->
+<!--								data-bind="text: $i18n('KAF005_27')"></th>-->
 							<!--A2_13  合計ラベル-->
-							<th class="kaf005_overtimeAgreement_header" style="display: none"
-								data-bind="text: $i18n('KAF005_28')"></th>
+<!--							<th class="kaf005_overtimeAgreement_header" style="display: none"-->
+<!--								data-bind="text: $i18n('KAF005_28')"></th>-->
 						</tr>
 					</thead>
 					<tbody data-bind="foreach: overTimeWork">
@@ -47,11 +47,11 @@ module nts.uk.at.view.kaf005.shr.header.viewmodel {
 							<td
 								data-bind="text: $parent.getFormatTime(actualTime()), attr: { class: backgroundColor() + ' ' + textColor() }"></td>
 							<!--A2_17  申請ラベル-->
-							<td style="display: none"
-								data-bind="text: appTime, attr: { class: backgroundColor() + ' ' + textColor() }"></td>
+<!--							<td style="display: none"-->
+<!--								data-bind="text: appTime, attr: { class: backgroundColor() + ' ' + textColor() }"></td>-->
 							<!--A2_18  合計ラベル-->
-							<td style="display: none"
-								data-bind="text: totalTime, attr: { class: backgroundColor() + ' ' + textColor() }"></td>
+<!--							<td style="display: none"-->
+<!--								data-bind="text: totalTime, attr: { class: backgroundColor() + ' ' + textColor() }"></td>-->
 						</tr>
 					</tbody>
 				</table>
