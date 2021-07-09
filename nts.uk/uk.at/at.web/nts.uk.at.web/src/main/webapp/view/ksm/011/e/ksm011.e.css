@@ -24,6 +24,7 @@ div#contents-area {
 
 #tab-panel {
   width: 700px;
+  overflow: visible;
 }
 
 .divi .control-group .label:first-child {
