@@ -5,6 +5,7 @@ import { KdpS01BComponent } from '../b/index';
 import { KdpS01CComponent } from '../c/index';
 import { KdpS01SComponent } from '../s/index';
 import { KdpS01TComponent } from '../t/index';
+import { KdpS01LComponent } from '../l/index';
 
 const basePath = 'at/record/stamp/smart-phone/';
 
@@ -29,7 +30,8 @@ const servicePath = {
         'screenB': KdpS01BComponent,
         'screenC': KdpS01CComponent,
         'screenS': KdpS01SComponent,
-        'screenT': KdpS01TComponent
+        'screenT': KdpS01TComponent,
+        'screenL': KdpS01LComponent
     }
 })
 
@@ -381,6 +383,13 @@ export class KdpS01AComponent extends Vue {
     public openDialogT(data) {
         let vm = this;
         vm.$modal(KdpS01TComponent, data, { title: 'KDPS01_23' }).then(() => {
+
+        });
+    }
+
+    public openDialogL() {
+        let vm = this;
+        vm.$modal(KdpS01LComponent, null, { title: 'KDPS01_15' }).then(() => {
 
         });
     }
