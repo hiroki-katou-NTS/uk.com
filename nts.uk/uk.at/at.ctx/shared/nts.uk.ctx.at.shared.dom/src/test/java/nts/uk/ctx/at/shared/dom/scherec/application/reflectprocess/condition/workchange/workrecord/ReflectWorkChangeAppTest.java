@@ -52,7 +52,7 @@ public class ReflectWorkChangeAppTest {
 		actualResult.addAll(reflectWorkChange.reflectRecord(require, createAppChange(ScheduleRecordClassifi.RECORD),
 				dailyApp));
 
-		assertThat(actualResult).isEqualTo(Arrays.asList(34, 41, 44, 31));
+		assertThat(actualResult).isEmpty();
 
 	}
 
