@@ -508,7 +508,7 @@ module nts.uk.ui.at.kdw013.a {
         saveData() {
             const vm = this;
             const { events, dateRange } = vm;
-            const { HAND_CORRECTION_MYSELF } = EditStateSetting;
+            const { HAND_CORRECTION_MYSELF, HAND_CORRECTION_OTHER } = EditStateSetting;
             const { start, end } = ko.unwrap(dateRange);
 
             if (!start || !end) {
@@ -531,11 +531,13 @@ module nts.uk.ui.at.kdw013.a {
     
             let sid = vm.employee() ? vm.employee() : vm.$user.employeeId;
     
+            let editStateSetting = !vm.employee() ? HAND_CORRECTION_OTHER : vm.employee() != vm.$user.employeeId ? HAND_CORRECTION_OTHER : HAND_CORRECTION_MYSELF;
+    
             let mode =  vm.editable() ? 0 : vm.employee() === vm.$user.employeeId ? 0 : 1;
 
             const command: RegisterWorkContentCommand = {
                 changedDate: moment().format(DATE_TIME_FORMAT),
-                editStateSetting: HAND_CORRECTION_MYSELF,
+                editStateSetting,
                 employeeId: sid,
                 mode,
                 workDetails: dateRanges().map((date) => {

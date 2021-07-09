@@ -85,6 +85,7 @@ public class RegisterWorkContentHandler {
 
 		List<WorkDetailCommand> lstWorkDetailCmd = command.getWorkDetails();
 		
+		TimeChangeMeans changeMean = param.getEditStateSetting().equals(EditStateSetting.HAND_CORRECTION_MYSELF)? TimeChangeMeans.HAND_CORRECTION_PERSON :TimeChangeMeans.HAND_CORRECTION_OTHERS ;
 		List<WorkDetail> workDetails = lstWorkDetailCmd.stream()
 				.map(workDetail -> {
 					 AtomicInteger count = new AtomicInteger(1);
@@ -94,9 +95,9 @@ public class RegisterWorkContentHandler {
 									.map(workDetailParam -> new WorkDetailsParam(new SupportFrameNo(getSupNo(workDetail.getLstWorkDetailsParamCommand(),workDetailParam.getSupportFrameNo(),count)
 											),
 											new TimeZone(
-													new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.HAND_CORRECTION_PERSON, Optional.empty()),
+													new WorkTimeInformation(new ReasonTimeChange(changeMean, Optional.empty()),
 															new TimeWithDayAttr(workDetailParam.getTimeZone().getStart())),
-													new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.HAND_CORRECTION_PERSON, Optional.empty()),
+													new WorkTimeInformation(new ReasonTimeChange(changeMean, Optional.empty()),
 															new TimeWithDayAttr(workDetailParam.getTimeZone().getEnd())),
 													Optional.empty()),
 											Optional.ofNullable(WorkGroup.create(workDetailParam.getWorkGroup().getWorkCD1(),
