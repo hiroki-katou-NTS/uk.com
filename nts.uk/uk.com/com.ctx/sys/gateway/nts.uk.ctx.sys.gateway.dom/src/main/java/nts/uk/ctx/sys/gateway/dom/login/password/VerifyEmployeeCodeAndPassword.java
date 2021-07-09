@@ -28,7 +28,7 @@ public class VerifyEmployeeCodeAndPassword {
 		Optional<GetAnEmployeeImported> employeeInfo = require.getEmployee(cid, employeeCode);
 		
 		// 	if $社員.isEmpty	
-		if (employeeInfo.isPresent()) {
+		if (!employeeInfo.isPresent()) {
 			return InspectionResult.create2();
 		}
 		
@@ -36,12 +36,12 @@ public class VerifyEmployeeCodeAndPassword {
 		Optional<User> user = require.getByAssociatedPersonId(employeeInfo.get().getPersonalId());
 		
 		// 	if $ユーザ.isEmpty
-		if (user.isPresent()) {
+		if (!user.isPresent()) {
 			return InspectionResult.create2();
 		}
 		
 		// 	if パスワード.isPresent
-		if (!user.get().isCorrectPassword(password.get())) {
+		if (!user.get().getPassword().toString().equals(password.get())) {
 			return InspectionResult.create3();
 		}
 		
