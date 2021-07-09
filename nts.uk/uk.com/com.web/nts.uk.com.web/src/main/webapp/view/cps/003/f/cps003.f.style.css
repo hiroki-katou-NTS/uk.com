@@ -18,12 +18,12 @@
 }
 
 #contents-area .form-group.change-box,
-#contents-area .form-group.radio-wrapper {
+#contents-area .form-group.radio-wrappers {
 	margin-left: 30px;
 }
 
 #contents-area .form-group.filter-box {
-	margin-left: 30px;
+	margin-left: 60px;
 }
 
 #contents-area .form-group.change-box>.change-desc,

@@ -89,3 +89,20 @@ html, body {
 .pad_left_678px .nts-editor-wrapped.ntsControl.symbol.symbol-right{
 	line-height: 25px!important; 
 }
+
+.value-input.needcheck, .value-input.need-check {
+  margin-bottom: 6px;
+}
+
+#btnSettingBA1_3, #btnSettingBA2_2 {
+  margin-bottom: 2px;
+}
+
+#ba1_5_target_working_hours {
+  float: left;
+  margin-left: 72px;
+}
+
+.pt-6 {
+  padding-top: 6px;
+}
