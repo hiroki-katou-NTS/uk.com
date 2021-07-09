@@ -18,13 +18,13 @@ import nts.uk.ctx.sys.shared.dom.employee.GetAnEmployeeImported;
 public class InspectionResult {
 
 	// 検証成功
-	private boolean verificationSuccess;
+	private final boolean verificationSuccess;
 	
 	// 社員情報
-	private Optional<GetAnEmployeeImported> employeeInformation;
+	private final Optional<GetAnEmployeeImported> employeeInformation;
 	
 	// 検証失敗メッセージ
-	private Optional<String> verificationFailureMessage;
+	private final Optional<String> verificationFailureMessage;
 	
 	/**
 	 * 	[C-1] 検証成功
