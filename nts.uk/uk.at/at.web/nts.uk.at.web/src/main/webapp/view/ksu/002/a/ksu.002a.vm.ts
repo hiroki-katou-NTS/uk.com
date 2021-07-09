@@ -150,6 +150,7 @@ module nts.uk.ui.at.ksu002.a {
 
 		mode: KnockoutObservable<EDIT_MODE> = ko.observable('copy');
 		baseDate: KnockoutObservable<c.DateRange | null> = ko.observable(null);
+		baseDateKCP015: KnockoutObservable<Date> = ko.observable(null);
 		schedules: m.MementoObservableArray<DayDataRawObsv> = ko.observableArray([]).extend({ memento }) as any;
 
 		workplaceId: KnockoutObservable<string> = ko.observable('');
@@ -355,6 +356,7 @@ module nts.uk.ui.at.ksu002.a {
 			vm.baseDate
 				.subscribe((d: c.DateRange) => {
 					if (!d) {
+						vm.baseDateKCP015(null);
 						dr.begin = null;
 						dr.finish = null;
 
@@ -367,6 +369,7 @@ module nts.uk.ui.at.ksu002.a {
 					const { begin, finish } = d;
 
 					if (!begin || !finish) {
+						vm.baseDateKCP015(null);
 						dr.begin = null;
 						dr.finish = null;
 
@@ -377,12 +380,13 @@ module nts.uk.ui.at.ksu002.a {
 					}
 
 					if (moment(begin).isSame(dr.begin, 'date') && moment(finish).isSame(dr.finish, 'date')) {
+						vm.baseDateKCP015(null);
 						return;
 					}
 
 					dr.begin = begin;
 					dr.finish = finish;
-
+					vm.baseDateKCP015(dr.finish);
 					loadData();
 				});
 
