@@ -28,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkinputRemarks;
@@ -136,12 +137,12 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		OuenWorkTimeSheetOfDaily lstDomainOld = this.find(domain.get(0).getEmpId(), domain.get(0).getYmd());
 		if(lstDomainOld != null) {
 			List<OuenWorkTimeSheetOfDailyAttendance> dataOld = lstDomainOld.getOuenTimeSheet().stream().filter(x -> {
-				return x.getWorkNo() != i.pk.ouenNo;
+				return x.getWorkNo().v() != i.pk.ouenNo;
 			}).collect(Collectors.toList());
 			
 			if(!dataOld.isEmpty()) {
 				for (OuenWorkTimeSheetOfDailyAttendance atd : dataOld) {
-					this.removePK(i.pk.sid, i.pk.ymd, atd.getWorkNo());
+					this.removePK(i.pk.sid, i.pk.ymd, atd.getWorkNo().v());
 				}
 			}
 		}
@@ -182,7 +183,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 	
 	public OuenWorkTimeSheetOfDaily toDomain(List<KrcdtDayOuenTimeSheet> es) {
 		List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = es.stream().map(ots -> OuenWorkTimeSheetOfDailyAttendance.create(
-				ots.pk.ouenNo, 
+				SupportFrameNo.of(ots.pk.ouenNo), 
 				WorkContent.create(
 						WorkplaceOfWorkEachOuen.create(new WorkplaceId(ots.workplaceId), new WorkLocationCD(ots.workLocationCode)), 
 						Optional.of(WorkGroup.create(ots.workCd1, ots.workCd2, ots.workCd3, ots.workCd4, ots.workCd5)),

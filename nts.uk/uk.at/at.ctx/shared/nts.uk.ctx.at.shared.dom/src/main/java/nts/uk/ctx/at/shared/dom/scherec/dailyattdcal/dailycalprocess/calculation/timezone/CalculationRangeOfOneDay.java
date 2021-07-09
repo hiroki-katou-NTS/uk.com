@@ -1312,6 +1312,25 @@ public class CalculationRangeOfOneDay {
 		return true;
 	}
 	
+	/**指定した時間帯に絞り込む
+	 * @param timeSpan 変更する時間
+	 */
+	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
+		Optional<TimeSpanForDailyCalc> duplicates = this.oneDayOfRange.getDuplicatedWith(timeSpan);
+		if(!duplicates.isPresent())
+			return;
+		
+		this.oneDayOfRange = duplicates.get();
+		
+		if(this.withinWorkingTimeSheet.isPresent())
+			//就業時間内時間帯を指定した時間帯に絞り込む
+			this.withinWorkingTimeSheet.get().reduceRange(duplicates.get());
+		
+		if(this.outsideWorkTimeSheet.isPresent())
+			//就業時間外時間帯を指定した時間帯に絞り込む
+			this.outsideWorkTimeSheet.get().reduceRange(duplicates.get());
+	}
+
 	/**
 	 * 勤務実績と勤務予定の勤務情報を比較
 	 * @param workNo

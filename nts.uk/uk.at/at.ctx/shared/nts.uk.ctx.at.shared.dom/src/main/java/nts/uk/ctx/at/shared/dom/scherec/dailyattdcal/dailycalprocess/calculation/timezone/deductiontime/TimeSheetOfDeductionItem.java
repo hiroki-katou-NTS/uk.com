@@ -823,6 +823,29 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 				
 	}
 	
+	/**
+	 * 外出の相殺時間を削除する
+	 * （私用外出、組合外出の相殺時間のみを削除して返す）
+	 * @return
+	 */
+	public TimeSheetOfDeductionItem getAfterDeleteOffsetTime() {
+		if(this.deductionAtr.isGoOut() 
+				&& this.goOutReason.isPresent()?this.goOutReason.get().isPrivateOrUnion():false) {
+			return new TimeSheetOfDeductionItem(
+					this.timeSheet,
+					this.rounding,
+					this.recordedTimeSheet,
+					this.deductionTimeSheet,
+					this.workingBreakAtr,
+					this.goOutReason,
+					this.breakAtr,
+					this.shortTimeSheetAtr,
+					this.deductionAtr,
+					this.childCareAtr);
+		}
+		return this;
+	}
+
 	public TimeSheetOfDeductionItem clone() {
 		TimeSheetOfDeductionItem clone = new TimeSheetOfDeductionItem(
 				this.timeSheet,

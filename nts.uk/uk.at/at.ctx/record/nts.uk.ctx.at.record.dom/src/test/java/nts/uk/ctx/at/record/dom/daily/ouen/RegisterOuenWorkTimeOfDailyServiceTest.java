@@ -14,6 +14,7 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 
 /**
  * 
@@ -30,7 +31,7 @@ public class RegisterOuenWorkTimeOfDailyServiceTest {
 	private GeneralDate ymd = GeneralDate.today();
 	private List<OuenWorkTimeOfDailyAttendance> ouenTimes = new ArrayList<>();
 
-	OuenWorkTimeOfDailyAttendance quen = OuenWorkTimeOfDailyAttendance.create(1, null, null, null, null);
+	OuenWorkTimeOfDailyAttendance quen = OuenWorkTimeOfDailyAttendance.create(SupportFrameNo.of(1), null, null, null, null);
 
 	// $実績の作業時間 notIsPresent
 	@Test

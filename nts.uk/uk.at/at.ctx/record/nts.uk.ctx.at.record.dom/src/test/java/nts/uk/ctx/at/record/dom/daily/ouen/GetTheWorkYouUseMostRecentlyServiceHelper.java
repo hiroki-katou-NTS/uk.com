@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkinputRemarks;
@@ -33,7 +34,7 @@ public class GetTheWorkYouUseMostRecentlyServiceHelper {
 		GeneralDate ymd = GeneralDate.today();
 
 		OuenWorkTimeSheetOfDailyAttendance attendance1 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1,
+				SupportFrameNo.of(1),
 				WorkContent.create(
 						WorkplaceOfWorkEachOuen.create(
 								new WorkplaceId("WorkplaceId"),
@@ -50,7 +51,7 @@ public class GetTheWorkYouUseMostRecentlyServiceHelper {
 						Optional.of(WorkTimeInformation.createByAutomaticSet(new TimeWithDayAttr(1080)))));
 
 		OuenWorkTimeSheetOfDailyAttendance attendance2 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1,
+				SupportFrameNo.of(1),
 				WorkContent.create(
 						WorkplaceOfWorkEachOuen.create(
 								new WorkplaceId("WorkplaceId"),
@@ -67,7 +68,7 @@ public class GetTheWorkYouUseMostRecentlyServiceHelper {
 						Optional.of(WorkTimeInformation.createByAutomaticSet(new TimeWithDayAttr(1080)))));
 		
 		OuenWorkTimeSheetOfDailyAttendance attendance3 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1,
+				SupportFrameNo.of(1),
 				WorkContent.create(
 						WorkplaceOfWorkEachOuen.create(
 								new WorkplaceId("WorkplaceId"),
@@ -84,7 +85,7 @@ public class GetTheWorkYouUseMostRecentlyServiceHelper {
 						Optional.of(WorkTimeInformation.createByAutomaticSet(new TimeWithDayAttr(1080)))));
 		
 		OuenWorkTimeSheetOfDailyAttendance attendance4 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1,
+				SupportFrameNo.of(1),
 				WorkContent.create(
 						WorkplaceOfWorkEachOuen.create(
 								new WorkplaceId("WorkplaceId"),
@@ -101,7 +102,7 @@ public class GetTheWorkYouUseMostRecentlyServiceHelper {
 						Optional.of(WorkTimeInformation.createByAutomaticSet(new TimeWithDayAttr(1080)))));
 		
 		OuenWorkTimeSheetOfDailyAttendance attendance5 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1,
+				SupportFrameNo.of(1),
 				WorkContent.create(
 						WorkplaceOfWorkEachOuen.create(
 								new WorkplaceId("WorkplaceId"),
@@ -118,7 +119,7 @@ public class GetTheWorkYouUseMostRecentlyServiceHelper {
 						Optional.of(WorkTimeInformation.createByAutomaticSet(new TimeWithDayAttr(1080)))));
 
 		OuenWorkTimeSheetOfDailyAttendance attendance6 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1,
+				SupportFrameNo.of(1),
 				WorkContent.create(
 						WorkplaceOfWorkEachOuen.create(
 								new WorkplaceId("WorkplaceId"),
@@ -135,7 +136,7 @@ public class GetTheWorkYouUseMostRecentlyServiceHelper {
 						Optional.of(WorkTimeInformation.createByAutomaticSet(new TimeWithDayAttr(1080)))));
 		
 		OuenWorkTimeSheetOfDailyAttendance attendance7 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1,
+				SupportFrameNo.of(1),
 				WorkContent.create(
 						WorkplaceOfWorkEachOuen.create(
 								new WorkplaceId("WorkplaceId"),
@@ -152,7 +153,7 @@ public class GetTheWorkYouUseMostRecentlyServiceHelper {
 						Optional.of(WorkTimeInformation.createByAutomaticSet(new TimeWithDayAttr(1080)))));
 		
 		OuenWorkTimeSheetOfDailyAttendance attendance8 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1,
+				SupportFrameNo.of(1),
 				WorkContent.create(
 						WorkplaceOfWorkEachOuen.create(
 								new WorkplaceId("WorkplaceId"),
@@ -169,7 +170,7 @@ public class GetTheWorkYouUseMostRecentlyServiceHelper {
 						Optional.of(WorkTimeInformation.createByAutomaticSet(new TimeWithDayAttr(1080)))));
 		
 		OuenWorkTimeSheetOfDailyAttendance attendance9 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1,
+				SupportFrameNo.of(1),
 				WorkContent.create(
 						WorkplaceOfWorkEachOuen.create(
 								new WorkplaceId("WorkplaceId"),
@@ -186,7 +187,7 @@ public class GetTheWorkYouUseMostRecentlyServiceHelper {
 						Optional.of(WorkTimeInformation.createByAutomaticSet(new TimeWithDayAttr(1080)))));
 		
 		OuenWorkTimeSheetOfDailyAttendance attendance10 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1,
+				SupportFrameNo.of(1),
 				WorkContent.create(
 						WorkplaceOfWorkEachOuen.create(
 								new WorkplaceId("WorkplaceId"),
@@ -203,7 +204,7 @@ public class GetTheWorkYouUseMostRecentlyServiceHelper {
 						Optional.of(WorkTimeInformation.createByAutomaticSet(new TimeWithDayAttr(1080)))));
 		
 		OuenWorkTimeSheetOfDailyAttendance attendance11 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1,
+				SupportFrameNo.of(1),
 				WorkContent.create(
 						WorkplaceOfWorkEachOuen.create(
 								new WorkplaceId("WorkplaceId"),

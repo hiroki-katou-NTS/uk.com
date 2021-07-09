@@ -923,6 +923,7 @@ public class OverTimeSheet {
 		}
 	}
 	
+
 	/**
 	 * 残業時間帯に含まない時間帯の取得
 	 * @param timeSpan 計算用時間帯
@@ -963,5 +964,22 @@ public class OverTimeSheet {
 		
 		//WorkTypeRepository.findByPK
 		Optional<WorkType> findByPK(String companyId, String workTypeCd);
+	}
+
+	/**
+	 * 指定した時間帯に絞り込む
+	 * @param timeSpan 時間帯
+	 */
+	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
+		List<OverTimeFrameTimeSheetForCalc> frames = this.frameTimeSheets.stream()
+				.filter(t -> t.getTimeSheet().checkDuplication(timeSpan).isDuplicated())
+				.collect(Collectors.toList());
+		
+		for(int i=0; i<frames.size(); i++) {
+			//残業枠時間帯を指定した時間帯に絞り込む
+			frames.get(i).reduceRange(timeSpan);
+		this.frameTimeSheets.clear();
+		this.frameTimeSheets.addAll(frames);
+		}
 	}
 }

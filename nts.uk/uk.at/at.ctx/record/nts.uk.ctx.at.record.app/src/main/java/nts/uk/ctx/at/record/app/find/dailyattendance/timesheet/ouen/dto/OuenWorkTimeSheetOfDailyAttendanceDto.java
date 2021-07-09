@@ -28,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkinputRemarks;
@@ -69,7 +70,7 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 		if(domain != null){
 			dto.setEmployeeId(sid);
 			dto.setDate(ymd);
-			dto.setNo(domain.getWorkNo());
+			dto.setNo(domain.getWorkNo().v());
 			dto.setWorkContent(new WorkContentDto( 
 					new WorkplaceOfWorkEachOuenDto(
 							domain.getWorkContent().getWorkplace().getWorkplaceId() == null ? null : domain.getWorkContent().getWorkplace().getWorkplaceId().v(),
@@ -226,7 +227,7 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 		}
 		
 		TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(this.timeSheet == null ? 1 : this.timeSheet.getNo()), Optional.ofNullable(start), Optional.ofNullable(end));
-		OuenWorkTimeSheetOfDailyAttendance attendance = OuenWorkTimeSheetOfDailyAttendance.create(this.no, workContent, timeSheet);
+		OuenWorkTimeSheetOfDailyAttendance attendance = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(this.no), workContent, timeSheet);
 		return attendance;
 	}
 }

@@ -438,4 +438,28 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 		AttendanceTime calcTime = this.getMidNightTimeSheet().calcTotalTime();
 		return TimeDivergenceWithCalculation.createTimeWithCalculation(time, calcTime);
 	}
+	
+	/**
+	 * 加給時間帯を指定した時間帯に絞り込む
+	 * @param timeSpan 時間帯
+	 */
+	public void reduceRangeOfBonusPay(TimeSpanForDailyCalc timeSpan) {
+		this.bonusPayTimeSheet = this.getDuplicatedBonusPayNotStatic(this.bonusPayTimeSheet, timeSpan);
+	}
+	
+	/**
+	 * 特定加給時間帯を指定した時間帯に絞り込む
+	 * @param timeSpan 時間帯
+	 */
+	public void reduceRangeOfSpecBonusPay(TimeSpanForDailyCalc timeSpan) {
+		this.specBonusPayTimesheet = this.getDuplicatedSpecBonusPayzNotStatic(this.specBonusPayTimesheet, timeSpan);
+	}
+	
+	/**
+	 * 深夜時間帯を指定した時間帯に絞り込む
+	 * @param timeSpan 時間帯
+	 */
+	public void reduceRangeOfMidnight(TimeSpanForDailyCalc timeSpan) {
+		this.midNightTimeSheet = this.midNightTimeSheet.getDuplicateRangeTimeSheet(timeSpan);
+	}
 }

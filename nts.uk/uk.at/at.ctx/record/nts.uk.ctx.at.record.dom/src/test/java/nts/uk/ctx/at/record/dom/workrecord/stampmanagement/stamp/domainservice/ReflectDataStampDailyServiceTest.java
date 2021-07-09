@@ -91,6 +91,8 @@ public class ReflectDataStampDailyServiceTest {
 								new ArrayList<>(),
 								Optional.empty(),
 								new ArrayList<>(),
+								new ArrayList<>(),
+								new ArrayList<>(),
 								Optional.empty()));
 				
 				result = resultData;
@@ -140,6 +142,8 @@ public class ReflectDataStampDailyServiceTest {
 								Optional.empty(), 
 								new ArrayList<>(),
 								Optional.empty(),
+								new ArrayList<>(),
+								new ArrayList<>(),
 								new ArrayList<>(),
 								Optional.empty()));
 				
@@ -201,6 +205,8 @@ public class ReflectDataStampDailyServiceTest {
 								Optional.empty(), 
 								new ArrayList<>(),
 								Optional.empty(),
+								new ArrayList<>(),
+								new ArrayList<>(),
 								new ArrayList<>(),
 								Optional.empty()));
 				

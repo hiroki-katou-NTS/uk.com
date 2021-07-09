@@ -596,4 +596,21 @@ public class LeaveEarlyTimeSheet {
 				timeVacationUseTime,
 				NotUseAtr.NOT_USE));
 	}
+	
+	/**
+	 * 早退時間帯を指定した時間帯に絞り込む
+	 * @param timeSpan 時間帯
+	 */
+	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
+		if(this.forRecordTimeSheet.isPresent()) {
+			//計上用時間帯を変更する
+			this.forRecordTimeSheet.get().reduceRange(timeSpan);
+		}
+		if(this.forDeducationTimeSheet.isPresent()) {
+			//控除用時間帯を変更する
+			this.forDeducationTimeSheet.get().reduceRange(timeSpan);
+		}
+		//相殺時間を削除する
+		this.OffsetTime = Optional.empty();
+	}
 }
