@@ -361,7 +361,7 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 				Optional<BsymtAffJobTitleHist> filterHist = listHists.stream().filter(hist -> hist.hisId.equalsIgnoreCase(histItem.getHistoryId())).findFirst();
 				if(filterHist.isPresent()) {
 					DatePeriod period = new DatePeriod(filterHist.get().strDate, filterHist.get().endDate);
-					return new AffJobTitleHistoryItemWithPeriod(period, histItem);
+					return new AffJobTitleHistoryItemWithPeriod(period.start(), period.end(), histItem.getHistoryId(), histItem.getEmployeeId(), histItem.getJobTitleId());
 				}
 				return null;
 			})

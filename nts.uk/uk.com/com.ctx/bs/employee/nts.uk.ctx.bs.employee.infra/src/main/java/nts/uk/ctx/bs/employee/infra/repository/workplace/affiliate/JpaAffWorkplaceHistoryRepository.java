@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -94,8 +95,8 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	
 	private static final String GET_AFF_WKP_HISTS = "SELECT aw FROM BsymtAffiWorkplaceHist aw"
 			+ " WHERE aw.sid IN :sids"
-			+ " AND aw.strDate <= :startDate"
-			+ " AND aw.endDate >= :endDate";
+			+ " AND aw.strDate <= :endDate"
+			+ " AND aw.endDate >= :startDate";
 	
 	private static final String GET_HIST_ITEMS = "SELECT awit FROM BsymtAffiWorkplaceHistItem awit"
 			+ " WHERE awit.hisId IN :hisIds";
@@ -106,8 +107,8 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	
 	private static final String EMP_HAS_CHANGED_WKP_WITHIN_PERIOD = "SELECT m.sid FROM BsymtAffiWorkplaceHist m"
 			+ " WHERE m.cid = :cid"
-			+ " AND m.strDate <= :startDate"
-			+ " AND m.endDate >= :endDate";
+			+ " AND m.strDate >= :startDate"
+			+ " AND m.endDate <= :endDate";
 	
 	/**
 	 * Convert from domain to entity
@@ -682,24 +683,29 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		List<AffWorkplaceHistory> wkpHists = this.getAffWkpHists(sids, period);
 		
 		// $汎用履歴リスト = $職場履歴リスト： flatMap　$.履歴項目リスト
-		Stream<DateHistoryItem> genericHists = wkpHists.stream().flatMap(c -> c.getHistoryItems().stream());
+		Supplier<Stream<DateHistoryItem>> genericHists = () -> wkpHists.stream().flatMap(c -> c.getHistoryItems().stream());
 		
 		// $履歴IDリスト = $汎用履歴リスト: map $.履歴ID
-		List<String> histIds = genericHists.map(c -> c.identifier()).collect(Collectors.toList());
+		List<String> histIds = genericHists.get().map(c -> c.identifier()).collect(Collectors.toList());
 		
 		// $履歴項目リスト = [2] Get($履歴IDリスト)
 		List<AffWorkplaceHistoryItem> histItems = this.getHistItems(histIds);
 		
 		// Return
 		return histItems.stream().map(mapper -> {
-				Optional<DateHistoryItem> genericHist = genericHists
+				Optional<DateHistoryItem> genericHist = genericHists.get()
 						.filter(hst -> hst.identifier().equals(mapper.getHistoryId()))
 						.findFirst();
 				
 				if (genericHist.isPresent()) {
 					
 					DatePeriod datePeriod = genericHist.get().span();
-					return new AffWorkplaceHistoryItemWPeriod(datePeriod, mapper);
+					return new AffWorkplaceHistoryItemWPeriod(datePeriod.start(),
+							datePeriod.end(),
+							mapper.getHistoryId(),
+							mapper.getEmployeeId(),
+							mapper.getWorkplaceId(),
+							mapper.getNormalWorkplaceId());
 				}
 				
 				return null;

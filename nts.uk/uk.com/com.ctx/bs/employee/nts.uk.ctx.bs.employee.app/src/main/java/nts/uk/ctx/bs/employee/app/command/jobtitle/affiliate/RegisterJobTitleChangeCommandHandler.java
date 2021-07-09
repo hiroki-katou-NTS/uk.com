@@ -17,14 +17,14 @@ import nts.uk.shr.pereg.app.command.PeregCommandHandlerCollector;
  *
  */
 @Stateless
-public class RegisterJobTitleChangeCommandHandler extends CommandHandler<AddAffJobTitleMainCommand>{
+public class RegisterJobTitleChangeCommandHandler extends CommandHandler<Object>{
 
 	@Inject
 	private PeregCommandHandlerCollector peregCommandHandlerCollector;
 	
 	@Transactional(rollbackOn = Exception.class)
 	@Override
-	protected void handle(CommandHandlerContext<AddAffJobTitleMainCommand> context) {
+	protected void handle(CommandHandlerContext<Object> context) {
 		val handler = this.peregCommandHandlerCollector
 				.collectAddHandlers()
 				.stream()

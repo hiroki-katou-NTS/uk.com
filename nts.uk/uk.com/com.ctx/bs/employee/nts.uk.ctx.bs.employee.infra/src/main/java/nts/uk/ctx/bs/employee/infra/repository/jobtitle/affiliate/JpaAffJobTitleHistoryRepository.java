@@ -61,7 +61,7 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 	
 	private static final String GET_SIDS_BY_SIDS_DATE = "SELECT m FROM BsymtAffJobTitleHist m"
 			+ " WHERE m.sid IN :sids "
-			+ "	AND m.strDate = baseDate";
+			+ "	AND m.strDate = :baseDate";
 	
 	private static final String GET_SIDS_BY_PERIOD = "SELECT m FROM BsymtAffJobTitleHist m"
 			+ " WHERE m.cid = :cid "

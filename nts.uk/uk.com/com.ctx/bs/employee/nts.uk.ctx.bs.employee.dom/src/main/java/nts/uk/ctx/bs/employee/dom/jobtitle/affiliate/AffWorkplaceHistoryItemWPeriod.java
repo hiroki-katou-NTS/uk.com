@@ -2,8 +2,7 @@ package nts.uk.ctx.bs.employee.dom.jobtitle.affiliate;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
+import nts.arc.time.GeneralDate;
 
 /**
  * 期間付き職場履歴項目
@@ -14,9 +13,15 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 @Getter
 public class AffWorkplaceHistoryItemWPeriod {
 	
-	// 期間
-	private DatePeriod period;
+	private GeneralDate startDate;
 	
-	// 履歴項目
-	private AffWorkplaceHistoryItem item;
+	private GeneralDate endDate;
+	
+	private String historyId;
+	
+	private String employeeId;
+	
+	private String  workplaceId;
+	
+	private String  normalWorkplaceId;
 }

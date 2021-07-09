@@ -91,7 +91,8 @@
 }
 
 .custom-link {
-	color: #0D86D1 !important;
 	text-decoration: underline;
 	cursor: pointer;
 }
+
+.red { color: #FF0000 !important; }

@@ -62,11 +62,11 @@ public class TransferListScreenQuery {
 		
 		// A＝List<期間付き職場履歴項目>：flatmap　$.社員ID
 		Stream<String> awhItems = empsChangeHistory.getAwhItems().stream()
-				.flatMap(mapper -> Stream.of(mapper.getItem().getEmployeeId()));
+				.flatMap(mapper -> Stream.of(mapper.getEmployeeId()));
 		
 		// B＝List<期間付き職位履歴項目>：flatmap　$.社員ID
 		Stream<String> ajthItems = empsChangeHistory.getAjthItems().stream()
-				.flatMap(mapper -> Stream.of(mapper.getJobTitleHistoryItem().getEmployeeId()));
+				.flatMap(mapper -> Stream.of(mapper.getEmployeeId()));
 		
 		// 社員名称リスト＝A＋B distinct
 		List<String> sids = Stream.concat(awhItems, ajthItems)
@@ -79,7 +79,7 @@ public class TransferListScreenQuery {
 		
 		// 職場名称リスト＝List<期間付き職場履歴項目>：flatmap　$．所属職場履歴項目．職場ID distinct
 		List<String> wkpList = empsChangeHistory.getAwhItems().stream()
-				.flatMap(mapper -> Stream.of(mapper.getItem().getWorkplaceId()))
+				.flatMap(mapper -> Stream.of(mapper.getWorkplaceId()))
 				.distinct()
 				.collect(Collectors.toList());
 		
@@ -88,7 +88,7 @@ public class TransferListScreenQuery {
 		
 		// 職位名称リスト＝List<期間付き職位履歴項目>：flatmap　$．所属職位履歴項目．職位ID distinct
 		List<String> jtList = empsChangeHistory.getAjthItems().stream()
-				.flatMap(mapper -> Stream.of(mapper.getJobTitleHistoryItem().getJobTitleId()))
+				.flatMap(mapper -> Stream.of(mapper.getJobTitleId()))
 				.distinct()
 				.collect(Collectors.toList());
 		

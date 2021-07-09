@@ -153,7 +153,7 @@ public class AttendanceInformationScreenQuery {
 
 		// 8: 申請情報を取得する(社員IDリスト, 期間, 反映状態リスト): Map<社員ID、List<申請>>
 		List<Integer> listReflecInfor = new ArrayList<>();
-		listReflecInfor.add(ReflectedState.REFLECTED.value);
+		listReflecInfor.add(ReflectedState.CANCELED.value);
 		listReflecInfor.add(ReflectedState.REMAND.value);
 		listReflecInfor.add(ReflectedState.DENIAL.value);
 		Map<String, List<Application>> mapListApplication = appRepo.getMapListApplicationNew(sids,
@@ -182,8 +182,8 @@ public class AttendanceInformationScreenQuery {
 			// 14: create()
 			List<ApplicationDto> applicationDtos = applications.stream()
 					.map(item -> ApplicationDto.toDto(item, mapAppIdAndOTAttr))
-					.collect(Collectors.toMap(ApplicationDto::getAppType, p -> p, (p, q) -> p)).values().stream()
-						.collect(Collectors.toList());
+					.collect(Collectors.toMap(item -> (item.getAppType() + "-" + item.getOtherType()), p -> p, (p, q) -> p))
+					.values().stream().collect(Collectors.toList());
 			
 			// 6: create() - start
 			String sid = empId.getSid();
