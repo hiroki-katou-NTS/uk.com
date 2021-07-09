@@ -154,4 +154,10 @@ public class OperationSettingWebservice extends WebService {
 	public List<EnumConstant> getApplicationType() {
 		return appTypeFinder.getAppWithOvertimeInfo();
 	}
+	@POST
+	@Path("licenseCheck")
+	public boolean licenseCheck() {
+		boolean check = AppContexts.optionLicense().customize().ootsuka();
+		return check;
+	}
 }

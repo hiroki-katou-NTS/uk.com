@@ -15,9 +15,12 @@ module nts.uk.at.view.kdw006.c.viewmodel {
         sideBar: KnockoutObservable<number>;
         appType: KnockoutObservable<string>;
         appTypeEnum : KnockoutObservableArray<any>;
-
+        checkBox51: KnockoutObservable<boolean>;
+        checkBox61  KnockoutObservable<boolean>;
         constructor() {
             let self = this;
+            self.checkBox51 = ko.observable(false);
+            self.checkBox61 = ko.observable(false);
             self.itemList = ko.observableArray([]);
             self.hiddenYourself = ko.observable(true);
             self.hiddenSuper = ko.observable(true);
@@ -113,7 +116,7 @@ module nts.uk.at.view.kdw006.c.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             nts.uk.ui.block.grayout();
-            $.when(self.getIdentity(), self.getApproval(), self.getDaily(), self.getMonthly(), self.getAppType()).done(() => {
+            $.when(self.getIdentity(), self.getApproval(), self.getDaily(), self.getMonthly(), self.getAppType() ,self.licenseCheck()).done(() => {
                 dfd.resolve();
             }).always(() => {
                 nts.uk.ui.errors.clearAll();
@@ -199,6 +202,19 @@ module nts.uk.at.view.kdw006.c.viewmodel {
                 } else {
                     dfd.resolve();
                 }
+            });
+            return dfd.promise();
+        }
+        
+         licenseCheck(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            service.licenseCheck().done(function(data: any) {
+                 if(data == true){
+                     self.checkBox51(true);
+                     self.checkBox61(true);
+                 }   
+                dfd.resolve();
             });
             return dfd.promise();
         }
