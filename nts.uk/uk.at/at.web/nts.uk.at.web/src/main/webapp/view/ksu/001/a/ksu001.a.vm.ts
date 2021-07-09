@@ -3211,8 +3211,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let leftHorzSumContent = self.createLeftHorzSumContent();
             let horizontalSumHeader = self.createHorizontalSumHeader();
             let horizontalSumContent = self.createHorizontalSumContent();
+			let rightHorzSumHeader = self.createRightHorzSumHeader();
+			let rightHorzSumContent = self.createRightHorzSumContent();
             $("#extable").exTable("updateTable", "leftHorizontalSummaries", leftHorzSumHeader, leftHorzSumContent);
             $("#extable").exTable("updateTable", "horizontalSummaries", horizontalSumHeader, horizontalSumContent);
+			$("#extable").exTable("updateTable", "rightHorizontalSummaries", rightHorzSumHeader, rightHorzSumContent);
             if (self.showA12()) {
                 $("#horzDropDown").html(function() { return $('#horzDiv'); });
                 $('#horzDiv').css('display', '');
