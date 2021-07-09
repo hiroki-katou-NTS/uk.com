@@ -21,8 +21,6 @@
 
                     <div class="working">
                         <!-- L2_1 検索作業名 -->
-                        <!-- <div style="width: 700px" data-bind="ntsSearchBox: {label: '#{i18n.getText('KDP002_66')}', targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource, 
-                        searchText: 'test',	selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" ></div> -->
                        	<input data-bind="ntsTextEditor: {
 								value: searchValue,
 								option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -32,16 +30,19 @@
 					            	textalign: 'left'
 					            }))
              			}" />
-                        <!-- L2_2 検索ボタン -->
-                        <button tabindex="2" class="small" data-bind="i18n: 'KDP002_68', click: onClickSearch"></button>
-                        <!-- L2_3 解除ボタン -->
-                        <button tabindex="3" class="small" data-bind="i18n: 'KDP002_69', click: onClickCancel"></button>
+                        <div style="display: inline-block">
+                             <!-- L2_2 検索ボタン -->
+                            <button tabindex="2" class="small" data-bind="i18n: 'KDP002_68', click: onClickSearch"></button>
+                            <!-- L2_3 解除ボタン -->
+                            <button tabindex="3" class="small" data-bind="i18n: 'KDP002_69', click: onClickCancel"></button>
+                        </div>
+                       
                     </div>
 
                     <div class="content">
                         <!-- L10_1 前へ -->
                         <div class="btn-back" data-bind="if: displayBackNextBtn">
-                            <button class="small" tabindex="10" data-bind="click: onClickBack, enable: checkBack"><i class="icon icon-button-arrow-left"></i></button>
+                            <button class="small" tabindex="10" data-bind="click: onClickBack, visible: checkBack"><i class="icon icon-button-arrow-left"></i></button>
                         </div>
                         <!-- L3_1 ~ L3_6 作業内容 -->
                         <div class="task" data-bind="foreach: { data: $vm.taskButtons, as: 'col'}, firstFocus: $vm.taskButtons">
@@ -51,14 +52,14 @@
                         </div>
                         <!-- L10_2 次へ -->
                         <div class="btn-next" data-bind="if: $vm.displayBackNextBtn">
-                            <button class="small" tabindex="11" data-bind="click: onClickNext, enable: checkNext"><i class="icon icon-button-arrow-right"></i></button>
+                            <button class="small" tabindex="11" data-bind="click: onClickNext, visible: checkNext"><i class="icon icon-button-arrow-right"></i></button>
                         </div>
                     </div>
                 </div>
             </div>
             <div id="functions-area-bottom">
                 <!-- L20 戻る -->
-                <button tabindex ="12" class="normal" data-bind="i18n: 'KDP002_72', click: onClickReturn"></button>
+                <button tabindex ="12" class="normal" data-bind="i18n: 'KDP002_72', click: onClickReturn, visible: isVisibleReturnBtn"></button>
             </div>
         </ui:define>
     </ui:composition>
