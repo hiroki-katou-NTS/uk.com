@@ -1,58 +1,75 @@
 package nts.uk.ctx.exio.dom.input.validation;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
-import nts.uk.ctx.exio.dom.input.validation.system.ValidateSystemRange;
 import nts.uk.ctx.exio.dom.input.validation.user.ImportingUserCondition;
 
 /**
- * 値の検証　とは誰に何を指示することなのか知っている。
+ * 値の検証
+ *
+ * 渡された値がシステム要件を満たすか、ユーザーの要件を満たすのかをチェックする
+ *
  */
 public class ValidateData{
-	
+
 	/**
 	 * 妥当な数値であるか検証する
 	 */
-	public static boolean validate(ValidateRequire require, ExecutionContext context, RevisedDataRecord record) {
-		return ValidateSystemRange.validate(require, context, record)
+	public static boolean validate(ValidateRequire require, ExecutionContext context,
+			RevisedDataRecord record) {
+
+		return validateBySystem(require, context, record)
 			 && validateByUserCondition(require, context, record);
+
 	}
-	
+
+	private static boolean validateBySystem(
+			ValidateRequire require,
+			ExecutionContext context,
+			RevisedDataRecord record ) {
+
+		for (val recordItem : record.getItems()) {
+			if(!require.getImportableItem(context.getGroupId(), recordItem.getItemNo())
+					.validate(recordItem)) {
+
+				return false;
+			}
+		}
+		return true;
+
+
+	}
+
 	/**
-	 * ユーザ設定と呼ばれている方の設定で値を検証 
-	 * @return 
+	 * ユーザ設定と呼ばれている方の設定で値を検証
+	 * @return
 	 */
 	private static boolean validateByUserCondition(
 			ValidateRequire require,
 			ExecutionContext context,
 			RevisedDataRecord record ){
-		val masters = getUserConditions(require, context, record);
-		
-		List<Boolean> successFlags = new ArrayList<Boolean>();
-		record.getItems().stream().forEach(item ->{
-			masters.forEach(master -> {
-				if(master.getItemNo() == item.getItemNo()) {
-					successFlags.add(master.getValidation().validate(item));
-				}
-			});
-		});
-		//falseが含まれてたら失敗したことを伝えたい
-		return !successFlags.contains(false);
+
+		for(val item : record.getItems()) {
+
+			val condition = require.getImportingUserCondition(context.getSettingCode(), item.getItemNo());
+			if (condition.isPresent() && !condition.get().validate(item)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
-	private static List<ImportingUserCondition> getUserConditions(ValidateRequire require, ExecutionContext context, RevisedDataRecord record ) {
-		val itemNoList = record.getItems().stream().map(item -> item.getItemNo()).collect(Collectors.toList());
-		return require.getImportingUserCondition(context.getSettingCode(), itemNoList);
-	}
-	
-	
-	
-	public static interface ValidateRequire extends ValidateSystemRange.SystemRequire{
-		List<ImportingUserCondition> getImportingUserCondition(String settingCode, List<Integer> itemNo);
+
+	public static interface ValidateRequire{
+
+		ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo);
+
+		Optional<ImportingUserCondition> getImportingUserCondition(String settingCode, int itemNo);
 	}
 }
