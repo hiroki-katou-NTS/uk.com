@@ -69,7 +69,6 @@ public class ChangeLoginPasswordOfUser {
 		return ex;
 	}
 	
-	
 	public static interface Require {
 		
 		PasswordPolicy getPasswordPolicy();
