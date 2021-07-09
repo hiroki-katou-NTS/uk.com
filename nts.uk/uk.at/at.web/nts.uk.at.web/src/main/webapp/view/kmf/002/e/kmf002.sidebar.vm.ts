@@ -243,21 +243,44 @@ module nts.uk.at.view.kmf002.e.sidebar {
                 let self = this;
                 var dfd = $.Deferred();
                 $.when(service.findAll()).done(function(data: any) {  
-                    if (!_.isUndefined(data) && !_.isNull(data) && !_.isEmpty(data)) {
-                        self.managePublicHoliday(data.managePublicHoliday);
-                        
-                        self.carryOverNumberOfPublicHdIsNegative(data.carryOverNumberOfPublicHdIsNegative);
-                        self.publicHolidayPeriod(data.publicHolidayPeriod);
-                        self.publicHdCarryOverDeadline(data.publicHdCarryOverDeadline);                       
-                    } else {
+//                    if (!_.isUndefined(data) && !_.isNull(data) && !_.isEmpty(data)) {
+//                        self.managePublicHoliday(data.managePublicHoliday);
+//                        
+//                        self.carryOverNumberOfPublicHdIsNegative(data.carryOverNumberOfPublicHdIsNegative);
+//                        self.publicHolidayPeriod(data.publicHolidayPeriod);
+//                        self.publicHdCarryOverDeadline(data.publicHdCarryOverDeadline);                       
+//                    } else {
+//                        self.managePublicHoliday(ManagePubHD.MANAGE);
+//                        self.enableCarryOverDeadline(true);    
+//                        self.enableCarryOverNumberOfPublicHdIsNegative(true);
+//                        self.enablePubHDPeriod(true);       
+//                        self.isDisableSetUnitBtn(false) ;
+//                        
+//                    }
+                    if (data.managePublicHoliday == null) {
                         self.managePublicHoliday(ManagePubHD.MANAGE);
-                        self.enableCarryOverDeadline(true);    
-                        self.enableCarryOverNumberOfPublicHdIsNegative(true);
-                        self.enablePubHDPeriod(true);       
                         self.isDisableSetUnitBtn(false) ;
                         
+                    } else {
+                        self.managePublicHoliday(data.managePublicHoliday)
                     }
-
+                    if (data.carryOverNumberOfPublicHdIsNegative == null) {
+                        self.enableCarryOverNumberOfPublicHdIsNegative(true);
+                    }
+                    else {
+                        self.carryOverNumberOfPublicHdIsNegative(data.carryOverNumberOfPublicHdIsNegative);
+                    }
+                    if (data.publicHolidayPeriod == null) {
+                        self.enablePubHDPeriod(true);
+                    } else {
+                        self.publicHolidayPeriod(data.publicHolidayPeriod);
+                    }
+                    if (data.publicHdCarryOverDeadline == null) {
+                        self.enableCarryOverDeadline(true);
+                    }
+                    else {
+                        self.publicHdCarryOverDeadline(data.publicHdCarryOverDeadline);
+                    }
                     // notify variable observable
                     // self.managePublicHoliday.valueHasMutated();
                     // self.publicHolidayPeriod.valueHasMutated();
