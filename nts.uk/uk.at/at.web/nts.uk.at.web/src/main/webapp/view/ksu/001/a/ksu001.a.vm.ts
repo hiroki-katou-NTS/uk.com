@@ -158,11 +158,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         useCategoriesPersonal: KnockoutObservableArray<any> = ko.observableArray([]);
         useCategoriesPersonalValue: KnockoutObservable<number> = ko.observable(null);
 		dataAggreratePersonal: any = null;
+		useCategoriesPersonalFull: any = [];
         
         // 職場計カテゴリ
         useCategoriesWorkplace: KnockoutObservableArray<any> = ko.observableArray([]);
         useCategoriesWorkplaceValue: KnockoutObservable<any> = ko.observable(null);
 		dataAggrerateWorkplace: any = null;
+		useCategoriesWorkplaceFull: any = [];
         
         // 締め日 (Deadline) , 初期起動時の期間 ( Initial startup period )
         closeDate = null;
@@ -459,12 +461,40 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
 
             service.getDataStartScreen(param).done((data: any) => {
-				_.remove(data.dataBasicDto.useCategoriesPersonal, (item: any) => _.includes([2, 4, 5], item.value));
-				if(!self.checkVisableByAuth(data.dataBasicDto.scheModifyAuthCtrlByWorkplace, 14)) {
-					_.remove(data.dataBasicDto.useCategoriesPersonal, (item: any) => _.includes([0, 1], item.value));
-				}
-                _.remove(data.dataBasicDto.useCategoriesWorkplace, (item: any) => item.value == 4);
+                // khởi tạo data localStorage khi khởi động lần đầu.
+				self.creatDataLocalStorege(data);
+
+                self.displayButtonsHerder(data);
+                
+                self.checkSettingOpenKsu003(data);
+                
+                viewMode = self.selectedModeDisplayInBody();
+                // trong trưởng hợp ở localstorage lưu viewMode = time, và updateMode = edit
+                // Nhưng khi lấy setting từ server về lại chỉ có 2 viewMode là shortName và shift 
+                // => phải set là updateMode , vì 2 mode shortName và shift không có updateMode = edit 
+                if (viewMode != 'time' && updateMode == 'edit'){
+                    updateMode = 'stick';
+                    self.userInfor.updateMode = 'stick';
+                    characteristics.save(self.KEY, self.userInfor);
+                 }
 				
+				self.useCategoriesPersonalFull = _.cloneDeep(data.dataBasicDto.useCategoriesPersonal);
+				self.useCategoriesWorkplaceFull = _.cloneDeep(data.dataBasicDto.useCategoriesWorkplace);
+				_.remove(data.dataBasicDto.useCategoriesPersonal, (item: any) => _.includes([
+					PersonalCounterCategory.STANDARD_WORKING_HOURS_COMPARISON, 
+					PersonalCounterCategory.NIGHT_SHIFT_HOURS, 
+					PersonalCounterCategory.WEEKS_HOLIDAY_DAYS], item.value));
+				if(!self.checkVisableByAuth(data.dataBasicDto.scheModifyAuthCtrlByWorkplace, 14)) {
+					_.remove(data.dataBasicDto.useCategoriesPersonal, (item: any) => _.includes([
+						PersonalCounterCategory.MONTHLY_EXPECTED_SALARY, 
+						PersonalCounterCategory.CUMULATIVE_ESTIMATED_SALARY], item.value));
+				}
+                _.remove(data.dataBasicDto.useCategoriesWorkplace, (item: any) => item.value == WorkplaceCounterCategory.TIMEZONE_PEOPLE);
+				if(viewMode == 'shift') {
+					_.remove(data.dataBasicDto.useCategoriesWorkplace, (item: any) => _.includes([
+						WorkplaceCounterCategory.LABOR_COSTS_AND_TIME, 
+						WorkplaceCounterCategory.EXTERNAL_BUDGET], item.value));
+				}
                 self.useCategoriesPersonal(data.dataBasicDto.useCategoriesPersonal);
                 self.useCategoriesWorkplace(data.dataBasicDto.useCategoriesWorkplace);
 
@@ -488,6 +518,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 						self.useCategoriesWorkplaceValue(_.head(self.useCategoriesWorkplace()).value);	
 					}
                 }
+				self.userInfor.useCategoriesPersonalValue = self.useCategoriesPersonalValue();
+				self.userInfor.useCategoriesWorkplaceValue = self.useCategoriesWorkplaceValue();
+                characteristics.save(self.KEY, self.userInfor);
                 self.useCategoriesPersonalValue.subscribe(value => {
                     self.userInfor.useCategoriesPersonalValue = value;
                     characteristics.save(self.KEY, self.userInfor);
@@ -507,23 +540,36 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     // $("#cacheDiv").append($('#horzDiv'));
                     self.getAggregatedInfo(false, true);
                 });
-                
-                // khởi tạo data localStorage khi khởi động lần đầu.
-                self.creatDataLocalStorege(data);
-                
-                self.displayButtonsHerder(data);
-                
-                self.checkSettingOpenKsu003(data);
-                
-                viewMode = self.selectedModeDisplayInBody();
-                // trong trưởng hợp ở localstorage lưu viewMode = time, và updateMode = edit
-                // Nhưng khi lấy setting từ server về lại chỉ có 2 viewMode là shortName và shift 
-                // => phải set là updateMode , vì 2 mode shortName và shift không có updateMode = edit 
-                if (viewMode != 'time' && updateMode == 'edit'){
-                    updateMode = 'stick';
-                    self.userInfor.updateMode = 'stick';
-                    characteristics.save(self.KEY, self.userInfor);
-                 }
+
+				self.selectedModeDisplayInBody.subscribe((value: any) => {
+					if(value == 'shift') {
+						let newLst = _.filter(self.useCategoriesWorkplace(), (item: any) => !_.includes(
+						[WorkplaceCounterCategory.LABOR_COSTS_AND_TIME, WorkplaceCounterCategory.EXTERNAL_BUDGET], item.value));
+						if(!_.isEmpty(newLst)) {
+							self.useCategoriesWorkplace(newLst);
+							self.showA12(true);
+							$('#horzDiv').css('display', '');
+						} else {
+							self.showA12(false);
+							$('#horzDiv').css('display', 'none');
+						}
+					} else {
+						let addLst = _.filter(self.useCategoriesWorkplaceFull, (item: any) => _.includes([
+							WorkplaceCounterCategory.LABOR_COSTS_AND_TIME, 
+							WorkplaceCounterCategory.EXTERNAL_BUDGET], item.value));
+						if(!_.isEmpty(addLst)) {
+							self.useCategoriesWorkplace(_.sortBy(_.union(self.useCategoriesWorkplace(), addLst), ['value']));	
+						}
+						if(_.isEmpty(self.useCategoriesWorkplace())) {
+							self.showA12(false);
+							$('#horzDiv').css('display', 'none');
+						} else {
+							self.showA12(true);
+							$('#horzDiv').css('display', '');
+						}
+					}
+				});
+
                 // ngày có thể chỉnh sửa schedule
                 self.scheduleModifyStartDate = data.dataBasicDto.scheduleModifyStartDate;
                 self.saveDataGrid(data);
@@ -622,15 +668,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 data.workType = {};
                 data.workTime = {};
                 data.shiftMasterWithWorkStyleLst = [];
-				data.useCategoriesPersonalValue = self.useCategoriesPersonalValue();
-				data.useCategoriesWorkplaceValue = self.useCategoriesWorkplaceValue();
                 self.userInfor = data;
                 characteristics.save(self.KEY, self.userInfor);
             } else {
                 self.userInfor.disPlayFormat = dataSetting.dataBasicDto.viewModeSelected;
                 self.userInfor.achievementDisplaySelected = false;
-				self.userInfor.useCategoriesPersonalValue = self.useCategoriesPersonalValue();
-				self.userInfor.useCategoriesWorkplaceValue = self.useCategoriesWorkplaceValue();
                 characteristics.save(self.KEY, self.userInfor);
             }
         }
