@@ -2,6 +2,10 @@
     padding: 20px;
 }
 
+#right-content {
+    padding-top: 30px;
+}
+
 .color-header {
     background-color: #CFF1A5;
     white-space: normal !important;

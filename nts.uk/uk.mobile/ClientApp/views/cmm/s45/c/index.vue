@@ -219,7 +219,7 @@
       </div>
     </div>
     <div
-      class="fixed-action-btn" v-show="displayEditFloat && isLoadingComplete"
+      class="fixed-action-btn" v-show="displayEditFloat && isLoadingComplete && !appState.pastApp"
       v-float-action="{ icon: 'fas fa-pen', background: 'uk-bg-sea-green', forceground: 'uk-text-dark-gray' }"
     >
       <ul>
