@@ -594,7 +594,13 @@ export class CmmS45BComponent extends Vue {
         if (self.modeAppr && self.lstAppr.length > 0) {
             lstAppID = self.lstAppr;
         } else {
-            lstAppID = this.findLstIdDisplay();
+            self.filterByAppType.forEach((app) => {
+                app.lstApp.forEach((item) => {
+                    if (item.appStatusNo == 5) {
+                        lstAppID.push(item.id);
+                    }
+                });
+            });
         }
         let lstAppr = [];
         let lstApplicationTemp = self.data.appListInfoDto.appLst as ListOfApplication;
