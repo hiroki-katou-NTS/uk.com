@@ -220,7 +220,14 @@ import kibanTimer = nts.uk.ui.sharedvm.KibanTimer;
              */
             private exportFileError(): void{
                 var self = this;
-                service.exportScheduleErrorLog(self.inputData.executionId);    
+                service.exportScheduleErrorLog(self.inputData.executionId).then(() => {
+                  // resize windows
+                  let windowSize = nts.uk.ui.windows.getSelf();
+                  windowSize.$dialog.dialog('option', {
+                      width: 750,
+                      height: 630
+                  });
+                });    
             }
 
         }     
