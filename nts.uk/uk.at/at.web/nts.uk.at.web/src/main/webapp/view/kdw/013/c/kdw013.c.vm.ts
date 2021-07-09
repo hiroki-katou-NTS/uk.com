@@ -556,7 +556,7 @@ module nts.uk.ui.at.kdw013.c {
                     $raw
                 };
             };
-            const getmapperList = (tasks: TaskDto[]) => {
+            const getmapperList = (tasks: TaskDto[], code?) => {
                 const lst: DropdownItem[] = [{
                     id: '',
                     code: '',
@@ -564,6 +564,20 @@ module nts.uk.ui.at.kdw013.c {
                     $raw: null,
                     selected: false
                 }];
+                
+                if (code) {
+                    let taskSelected = _.find(tasks, { 'code': code });
+
+                    if (!taskSelected) {
+                        lst.push({
+                            id: code,
+                            code,
+                            name: vm.$i18n('KDW013_40'),
+                            selected: false,
+                            $raw: null
+                        });
+                    }
+                }
 
                 _.each(tasks, (t: TaskDto) => {
                     lst.push(mapper(t));
@@ -618,37 +632,6 @@ module nts.uk.ui.at.kdw013.c {
                         if (response) {
                             vm.params.$share(response);
                             const { taskListDto1, taskListDto2, taskListDto3, taskListDto4, taskListDto5 } = response;
-
-                            if (taskListDto1) {
-                                taskList1(getmapperList(taskListDto1));
-                            } else {
-                                taskList1([]);
-                            }
-
-                            if (taskListDto2) {
-                                taskList2(getmapperList(taskListDto2));
-                            } else {
-                                taskList2([]);
-                            }
-
-                            if (taskListDto3) {
-                                taskList3(getmapperList(taskListDto3));
-                            } else {
-                                taskList3([]);
-                            }
-
-                            if (taskListDto4) {
-                                taskList4(getmapperList(taskListDto4));
-                            } else {
-                                taskList4([]);
-                            }
-
-                            if (taskListDto5) {
-                                taskList5(getmapperList(taskListDto5));
-                            } else {
-                                taskList5([]);
-                            }
-
                             // update selected
                             if (event) {
                                 const { extendedProps } = event as any as calendar.EventRaw;
@@ -675,6 +658,37 @@ module nts.uk.ui.at.kdw013.c {
                                 task5(null);
                                 workLocation(null);
                             }
+                            if (taskListDto1) {
+                                taskList1(getmapperList(taskListDto1, task1()));
+                            } else {
+                                taskList1([]);
+                            }
+
+                            if (taskListDto2) {
+                                taskList2(getmapperList(taskListDto2, task2()));
+                            } else {
+                                taskList2([]);
+                            }
+
+                            if (taskListDto3) {
+                                taskList3(getmapperList(taskListDto3, task3()));
+                            } else {
+                                taskList3([]);
+                            }
+
+                            if (taskListDto4) {
+                                taskList4(getmapperList(taskListDto4, task4()));
+                            } else {
+                                taskList4([]);
+                            }
+
+                            if (taskListDto5) {
+                                taskList5(getmapperList(taskListDto5, task5()));
+                            } else {
+                                taskList5([]);
+                            }
+
+                            
                         }
 
                         return true;

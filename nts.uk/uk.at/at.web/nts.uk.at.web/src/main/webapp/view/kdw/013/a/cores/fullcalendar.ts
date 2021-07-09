@@ -1483,30 +1483,30 @@ module nts.uk.ui.at.kdw013.calendar {
             const updateEvents = () => {
                 const sltds = vm.selectedEvents;
                 const isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => formatDate(e.start) === formatDate(m.start));
-
-                const events = ko
-                    .unwrap<EventRaw[]>(params.events)
+    
+                const events = ko.unwrap<EventRaw[]>(params.events);
+                let mapppedEvents =    _.chain(events)
                     .filter(({ extendedProps }) => extendedProps.status !== 'delete')
-                    .map((m) => ({
-                        ...m,
+                    .map((e) => ({
+                        ...e,
                         id: randomId(),
-                        start: formatDate(m.start),
-                        end: formatDate(m.end),
-                        [GROUP_ID]: isSelected(m) ? SELECTED : '',
-                        [BORDER_COLOR]: isSelected(m) ? BLACK : TRANSPARENT,
-                        [DURATION_EDITABLE]: isSelected(m) ? sltds.length < 2 : true,
+                        start: formatDate(_.get(e,'start')),
+                        end: formatDate(_.get(e,'end')),
+                        [GROUP_ID]: isSelected(e) ? SELECTED : '',
+                        [BORDER_COLOR]: isSelected(e) ? BLACK : TRANSPARENT,
+                        [DURATION_EDITABLE]: isSelected(e) ? sltds.length < 2 : true,
                         extendedProps: {
-                            ...m.extendedProps,
-                            status: m.extendedProps.status || 'normal'
+                            ...e.extendedProps,
+                            status: e.extendedProps.status || 'normal'
                         }
-                    }));
+                    })).value();
 
                 // clear old events
                 vm.calendar.removeAllEvents();
                 vm.calendar.removeAllEventSources();
 
                 // set new events
-                vm.calendar.setOption('events', events);
+                vm.calendar.setOption('events', mapppedEvents);
                 // _.each(events, (e: EventRaw) => vm.calendar.addEvent(e));
 
                 vm.selectedEvents = [];
@@ -2300,17 +2300,11 @@ module nts.uk.ui.at.kdw013.calendar {
             // set editable
             ko.computed({
                 read: () => {
-                    const ed = true;
+                    const ed = false;
 
                     vm.calendar.setOption('editable', ed);
                     vm.calendar.setOption('droppable', ed);
                     vm.calendar.setOption('selectable', ed);
-
-                    if (ed !== false) {
-                        $el.find('.fc-copy-day-button').removeAttr('disabled');
-                    } else {
-                        $el.find('.fc-copy-day-button').attr('disabled', 'disabled');
-                    }
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
