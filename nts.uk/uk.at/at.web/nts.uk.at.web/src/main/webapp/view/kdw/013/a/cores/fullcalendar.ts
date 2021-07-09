@@ -1482,7 +1482,7 @@ module nts.uk.ui.at.kdw013.calendar {
             };
             const updateEvents = () => {
                 const sltds = vm.selectedEvents;
-                const isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => formatDate(e.start) === formatDate(m.start));
+                const isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')));
     
                 const events = ko.unwrap<EventRaw[]>(params.events);
                 let mapppedEvents =    _.chain(events)
