@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.AutoCreateStampCardNumberSe
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardCreateResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AssignmentMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AudioType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonDisSet;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonName;
@@ -121,7 +122,8 @@ public class EnterStampFromPortalServiceTest {
 				new ButtonType(ReservationArt.NONE, Optional.empty()),
 				NotUseAtr.USE,
 				AudioType.NONE,
-				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE),
+				Optional.of(AssignmentMethod.SELECT_AT_THE_TIME_OF_STAMPING)));
 		
 		PortalStampSettings portalStampSettings = new PortalStampSettings("DUMMY", displaySettingsStamScreen, buttonSettings, true, true, true, true);
 		

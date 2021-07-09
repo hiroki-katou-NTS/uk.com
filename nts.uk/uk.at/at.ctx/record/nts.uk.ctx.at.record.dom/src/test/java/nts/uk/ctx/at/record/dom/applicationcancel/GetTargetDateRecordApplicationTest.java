@@ -27,6 +27,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppRecordImageShare;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
 @RunWith(JMockit.class)
@@ -48,6 +50,7 @@ public class GetTargetDateRecordApplicationTest {
 	@Test
 	public void test() {
 		AppRecordImageShare appShare = ReflectApplicationHelper.createAppRecord();
+		WorkGroup group = new WorkGroup(new WorkCode("DUMMY"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()); //dummy
 
 		new Expectations() {
 			{
@@ -71,7 +74,7 @@ public class GetTargetDateRecordApplicationTest {
 						SetPreClockArt.NONE, // 所定時刻セット区分
 						ChangeClockArt.GOING_TO_WORK,//時刻変更区分
 						ChangeCalArt.NONE),//計算区分変更対象
-				new RefectActualResult(null, null, null), 
+				new RefectActualResult(null, null, null, group), 
 				Optional.empty());
 
 		assertStamp(actualResult.getRight().get(), expectedResult);

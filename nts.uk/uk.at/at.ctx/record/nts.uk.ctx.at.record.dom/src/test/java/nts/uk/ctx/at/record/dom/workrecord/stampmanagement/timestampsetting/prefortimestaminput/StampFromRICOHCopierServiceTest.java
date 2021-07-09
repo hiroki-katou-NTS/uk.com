@@ -66,7 +66,8 @@ public class StampFromRICOHCopierServiceTest {
 				new ButtonType(ReservationArt.CANCEL_RESERVATION, Optional.empty()),
 				NotUseAtr.NOT_USE,
 				AudioType.GOOD_JOB,
-				Optional.of(SupportWplSet.SELECT_AT_THE_TIME_OF_STAMPING)));
+				Optional.of(SupportWplSet.SELECT_AT_THE_TIME_OF_STAMPING),
+				Optional.of(AssignmentMethod.SELECT_AT_THE_TIME_OF_STAMPING)));
 		
 		stampSettingOfRICOHCopier.addPage(new StampPageLayout(new PageNo(1),
 				new StampPageName("DUMMY"),
@@ -102,7 +103,8 @@ public class StampFromRICOHCopierServiceTest {
 				new ButtonType(ReservationArt.CANCEL_RESERVATION, Optional.empty()),
 				NotUseAtr.NOT_USE,
 				AudioType.GOOD_JOB,
-				Optional.of(SupportWplSet.SELECT_AT_THE_TIME_OF_STAMPING)));
+				Optional.of(SupportWplSet.SELECT_AT_THE_TIME_OF_STAMPING),
+				Optional.of(AssignmentMethod.SELECT_AT_THE_TIME_OF_STAMPING)));
 		
 		stampSettingOfRICOHCopier.addPage(new StampPageLayout(new PageNo(1),
 				new StampPageName("DUMMY"),

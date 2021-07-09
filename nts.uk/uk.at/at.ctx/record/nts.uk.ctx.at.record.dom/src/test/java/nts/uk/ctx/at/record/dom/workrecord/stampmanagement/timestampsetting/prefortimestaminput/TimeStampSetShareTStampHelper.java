@@ -25,21 +25,24 @@ public class TimeStampSetShareTStampHelper {
 				new ButtonType(ReservationArt.RESERVATION, Optional.empty()),
 				NotUseAtr.USE,
 				AudioType.NONE,
-				Optional.of(SupportWplSet.SELECT_AT_THE_TIME_OF_STAMPING)));
+				Optional.of(SupportWplSet.SELECT_AT_THE_TIME_OF_STAMPING),
+				Optional.of(AssignmentMethod.SELECT_AT_THE_TIME_OF_STAMPING)));
 		
 		lstButtonSet.add(new ButtonSettings(new ButtonPositionNo(3),
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.RESERVATION, Optional.empty()),
 				NotUseAtr.USE,
 				AudioType.NONE,
-				Optional.of(SupportWplSet.SELECT_AT_THE_TIME_OF_STAMPING)));
+				Optional.of(SupportWplSet.SELECT_AT_THE_TIME_OF_STAMPING),
+				Optional.of(AssignmentMethod.SELECT_AT_THE_TIME_OF_STAMPING)));
 		
 		lstButtonSet.add(new ButtonSettings(new ButtonPositionNo(4),
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.RESERVATION, Optional.empty()),
 				NotUseAtr.USE,
 				AudioType.NONE,
-				Optional.of(SupportWplSet.SELECT_AT_THE_TIME_OF_STAMPING)));
+				Optional.of(SupportWplSet.SELECT_AT_THE_TIME_OF_STAMPING),
+				Optional.of(AssignmentMethod.SELECT_AT_THE_TIME_OF_STAMPING)));
 		
 		
 		lstStampPageLayout.add(new StampPageLayout(new PageNo(1),

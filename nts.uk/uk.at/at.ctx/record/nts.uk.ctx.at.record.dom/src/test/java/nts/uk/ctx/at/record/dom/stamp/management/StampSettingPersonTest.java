@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Button;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.Layout.Comment;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampFunctionAvailableService.Require;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AssignmentMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AudioType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonDisSet;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonLayoutType;
@@ -125,7 +126,8 @@ public class StampSettingPersonTest {
 				new ButtonType(ReservationArt.RESERVATION, null),
 				NotUseAtr.USE,
 				AudioType.GOOD_MORNING,
-				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE),
+				Optional.of(AssignmentMethod.SELECT_AT_THE_TIME_OF_STAMPING)));
 		
 		assertThat(stambutton).isNotEqualTo(buttonSettings);
 
