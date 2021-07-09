@@ -18,6 +18,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 /**
@@ -26,6 +28,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
  *
  */
 public class StampHelper {
+	
+	public static WorkGroup group = new WorkGroup(new WorkCode("DUMMY"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()); //dummy
 
 	public static Stamp getStampDefault() {
 		return new Stamp(new ContractCode("DUMMY"),
@@ -46,7 +50,8 @@ public class StampHelper {
 						new WorkTimeCode("workTimeCode"), 
 						new OvertimeDeclaration(
 								new AttendanceTime(0),
-								new AttendanceTime(0))),
+								new AttendanceTime(0)), 
+						group),
 				false,Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty()
 				);
@@ -72,7 +77,8 @@ public class StampHelper {
 						new WorkTimeCode("workTimeCode"), 
 						new OvertimeDeclaration(
 								new AttendanceTime(1),
-								new AttendanceTime(2))),
+								new AttendanceTime(2)),
+						group),
 				true,Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty());
 	}
@@ -97,7 +103,8 @@ public class StampHelper {
 						new WorkTimeCode("workTimeCode"), 
 						new OvertimeDeclaration(
 								new AttendanceTime(1),
-								new AttendanceTime(2))),
+								new AttendanceTime(2)),
+						group),
 				false,Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty()
 				);
@@ -113,7 +120,8 @@ public class StampHelper {
 						Optional.of(new WorkLocationCD("workLocationCD")), 
 								Optional.of(new SupportCardNumber(9999))),
 						new WorkTimeCode("workTimeCode"),
-						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
+						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0)),
+						group),
 				false,Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty())
 				);
@@ -125,7 +133,8 @@ public class StampHelper {
 						Optional.of(new WorkLocationCD("workLocationCD")), 
 								Optional.of(new SupportCardNumber(9999))),
 						new WorkTimeCode("workTimeCode"),
-						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
+						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0)),
+						group),
 				false,Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty())
 				);
@@ -156,7 +165,8 @@ public class StampHelper {
 				Optional.of(new WorkLocationCD("workLocationCD")), 
 						Optional.of(new SupportCardNumber(9999))),
 				new WorkTimeCode("workTimeCode"),
-				getOvertimeDeclarationDefault());
+				getOvertimeDeclarationDefault(),
+				group);
 	}
 	
 	public static Relieve getRelieveDefault() {
