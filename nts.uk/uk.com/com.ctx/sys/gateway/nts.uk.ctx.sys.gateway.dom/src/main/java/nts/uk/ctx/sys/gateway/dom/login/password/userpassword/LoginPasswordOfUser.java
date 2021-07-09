@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.sys.gateway.dom.login.password.userpassword;
+package nts.uk.ctx.sys.gateway.dom.login.password.userpassword;
 
 import static java.util.stream.Collectors.*;
 

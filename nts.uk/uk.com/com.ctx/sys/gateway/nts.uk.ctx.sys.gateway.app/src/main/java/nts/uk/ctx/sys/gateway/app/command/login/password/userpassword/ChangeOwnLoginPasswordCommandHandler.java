@@ -17,7 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class ChangeOwnLoginPasswordCommandHandler extends CommandHandler<ChangeOwnLoginPasswordCommand>{
+public class ChangeOwnLoginPasswordCommandHandler extends CommandHandler<ChangeOwnLoginPasswordCommand> {
 	
 	@Inject
 	private ChangeLoginPasswordCommandRequire requireProvider;
@@ -31,12 +31,13 @@ public class ChangeOwnLoginPasswordCommandHandler extends CommandHandler<ChangeO
 		val require = requireProvider.create();
 		val command = context.getCommand();
 		
-		val atomTask = ChangeLoginPasswordOfUser.change(require, AppContexts.user().userId(), command.getNewPassword(), command.getConfirmPassword());
+		val atomTask = ChangeLoginPasswordOfUser.change(require, AppContexts.user().userId(), command.getNewPassword(),
+				command.getConfirmPassword());
 		
 		transaction.execute(atomTask);
 	}
 	
-	public static interface Require extends ChangeLoginPasswordOfUser.Require{
+	public static interface Require extends ChangeLoginPasswordOfUser.Require {
 		
 	}
 }

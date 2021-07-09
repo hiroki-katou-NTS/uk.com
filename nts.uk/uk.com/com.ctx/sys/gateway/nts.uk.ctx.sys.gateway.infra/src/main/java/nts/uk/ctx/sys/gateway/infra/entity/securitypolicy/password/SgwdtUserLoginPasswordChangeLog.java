@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.HashedLoginPassword;
 import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUser;
@@ -20,6 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * ユーザーのログインパスワード変更履歴
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Entity
 @Table(name="SGWDT_USER_LOGIN_PASSWORD_CHANGE_LOG")
