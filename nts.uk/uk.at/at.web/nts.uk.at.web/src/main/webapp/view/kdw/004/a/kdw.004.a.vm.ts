@@ -294,10 +294,11 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     transitionDesScreen: '/view/kdw/004/a/index.xhtml'
                 },
                 extractionParam: DPCorrectionExtractionParam = {
-                    displayFormat: DPCorrectionDisplayFormat.INDIVIDUAL,
+                    displayFormat: DPCorrectionDisplayFormat.DATE,
                     startDate: startDate,
                     endDate: startDate,
-                    lstExtractedEmployee: _.map(self.lstData, data => data.employeeId),
+                    // lstExtractedEmployee: _.map(self.lstData, data => data.employeeId),
+                    lstExtractedEmployee: [employeeId],
                     dateTarget: startDate,
                     individualTarget: employeeId,
                     startDateKDW004: self.startDateExtract,
