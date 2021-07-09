@@ -94,8 +94,12 @@ public class BreakTimeSheetCorrector {
 			
 			return BreakTimeType.CANT_CHECK;
 		}
-		val workTimeSet = require.workTimeSetting(cid, wtc).orElse(null);
 		
+		val workTimeSet = require.workTimeSetting(cid, wtc).orElse(null);
+		if (workTimeSet == null) {
+			
+			return BreakTimeType.CANT_CHECK;
+		}
 		/**　勤務情報の就業時間帯が固定勤務かをチェックする　*/
 		if(workTimeSet.getWorkTimeDivision().getWorkTimeMethodSet() == WorkTimeMethodSet.FIXED_WORK) {
 

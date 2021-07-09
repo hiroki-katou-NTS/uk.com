@@ -63,12 +63,10 @@ public class ReflectWorkChangeApp implements DomainAggregate {
 				Optional.of(appWorkChange.getOpWorkTypeCD().isPresent()),
 				Optional.of(appWorkChange.getOpWorkTimeCD().isPresent())));
 
-		// [出退勤を反映するか]をチェック
-		if (this.getWhetherReflectAttendance() == NotUseAtr.USE) {
-			/// 出退勤の反映員 in process
-			lstItemId.addAll(ReflectAttendance.reflect(require, companyID, appWorkChange.getTimeZoneWithWorkNoLst(),
-					ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
-		}
+		/// 出退勤の反映
+		lstItemId.addAll(ReflectAttendance.reflect(require, companyID, appWorkChange.getTimeZoneWithWorkNoLst(),
+				ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true),
+				Optional.of(TimeChangeMeans.APPLICATION)));
 
 		// 直行直帰区分の反映
 		lstItemId.addAll(ReflectDirectBounceClassifi.reflect(dailyApp, appWorkChange.getStraightBack(),
@@ -99,15 +97,6 @@ public class ReflectWorkChangeApp implements DomainAggregate {
 		lstItemId.addAll(ReflectStartEndWork.reflect(require, companyID, dailyApp, appWorkChange.getTimeZoneWithWorkNoLst(),
 				appWorkChange.getPrePostAtr()));
 
-		// [出退勤を反映するか]をチェック
-
-		// [出退勤を反映するか]をチェック
-		if (this.getWhetherReflectAttendance() == NotUseAtr.USE) {
-			/// 出退勤の反映
-			lstItemId.addAll(ReflectAttendance.reflect(require, companyID, appWorkChange.getTimeZoneWithWorkNoLst(),
-					ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
-		}
-
 		// 直行直帰区分の反映
 		lstItemId.addAll(ReflectDirectBounceClassifi.reflect(dailyApp, appWorkChange.getStraightBack(),
 				appWorkChange.getStraightGo()));
@@ -115,7 +104,7 @@ public class ReflectWorkChangeApp implements DomainAggregate {
 		return lstItemId;
 	}
 
-	public static interface Require extends ReflectWorkInformation.Require, ReflectStartEndWork.Require, ReflectAttendance.Require {
+	public static interface Require extends ReflectWorkInformation.Require, ReflectStartEndWork.Require {
 
 	}
 
