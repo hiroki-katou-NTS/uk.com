@@ -38,6 +38,7 @@ public class ButtonSettings {
 	@Getter
 	private Optional<SupportWplSet> supportWplSet;
 
+	/** ボタン詳細設定リスト */
 	@Getter
 	private Optional<AssignmentMethod> taskChoiceArt;
 	
