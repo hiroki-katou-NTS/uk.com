@@ -151,6 +151,10 @@ module nts.uk.com.view.ccg025.a.component {
                     self.setting.multiple
                         ? self.currentCode([self.listRole()[0].roleId])
                         : self.currentCode(self.listRole()[0].roleId);
+                } else {
+                    self.setting.multiple
+                        ? self.currentCode([])
+                        : self.currentCode(undefined);
                 }
             }
 
