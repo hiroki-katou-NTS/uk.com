@@ -302,7 +302,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 					AttendanceTimeOfMonthly attendanceTimeOfMonthly = null;
 					if(lstMonthly.isPresent()) {
 						attendanceTimeOfMonthly = lstMonthly.get();
-					}
+					}					
 					
 					// 勤務予定を探す
 					//条件：
@@ -355,8 +355,8 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 				Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
 				if(optWorkPlaceHistImportAl.isPresent()) {
 					Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get().getLstWkpIdAndPeriod().stream()
-							.filter(x -> x.getDatePeriod().start().beforeOrEquals(dPeriod.start()) 
-									&& x.getDatePeriod().end().afterOrEquals(dPeriod.end())).findFirst();
+							.filter(x -> x.getDatePeriod().start().beforeOrEquals(dPeriod.end())
+									&& x.getDatePeriod().end().afterOrEquals(dPeriod.start())).findFirst();
 					if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
 						wplId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
 					}

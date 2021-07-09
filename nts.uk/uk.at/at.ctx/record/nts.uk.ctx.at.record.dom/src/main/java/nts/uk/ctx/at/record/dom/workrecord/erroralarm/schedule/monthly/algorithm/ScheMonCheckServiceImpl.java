@@ -247,7 +247,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 									&& x.getYmd().afterOrEquals(exMon.firstGeneralDate()) && x.getYmd().beforeOrEquals(exMon.lastGeneralDate()))
 							.collect(Collectors.toList());
 					
-					// 月別実績を探す
+					// 月別実績を探す update by #117229
 					// 条件：
 					// ・社員ID　＝　ループ中の社員ID
 					// ・年月　＝　ループ中の年月
@@ -259,12 +259,16 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 					if(attendanceTimeOfMonOpt.isPresent()) {
 						attendanceTimeOfMon = attendanceTimeOfMonOpt.get();
 					}
-
+					
+					// 職場ID　＝　Input．List＜社員IDと職場履歴＞から絞り込む update by #117211
+					// ・社員ID　＝　ループ中の社員ID
+					// ・期間．開始日　＜＝　ループ中の年月．終了日
+					// ・期間．終了日　＞＝　ループ中の年月．開始日
 					String wplId = "";
 					Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = wplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
 					if(optWorkPlaceHistImportAl.isPresent()) {
 						Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get().getLstWkpIdAndPeriod().stream()
-								.filter(x -> x.getDatePeriod().start().beforeOrEquals(exMon.firstGeneralDate()) 
+								.filter(x -> x.getDatePeriod().start().beforeOrEquals(exMon.lastGeneralDate()) 
 										&& x.getDatePeriod().end().afterOrEquals(exMon.firstGeneralDate())).findFirst();
 						if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
 							wplId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
@@ -1251,7 +1255,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	}
 	
 	/**
-	 * 比較対象基準時間を計算 QA#115653
+	 * 比較対象基準時間を計算 QA#11565w
 	 * @param usageUnitSetting 労働時間と日数の設定の利用単位の設定
 	 * @param monthlyWorkTimeSetComOpt Optional＜会社別月単位労働時間＞
 	 * @param monthlyWorkTimeSetEmpOpt Optional＜雇用別月単位労働時間＞
@@ -1610,12 +1614,14 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				CheckedTimeDuration endTime = new CheckedTimeDuration(endValue.intValue());
 				endValueStr = endTime.getTimeWithFormat();
 			}
+			break;
 		case NUMBER_DAYS:
 		case REMAIN_NUMBER:
 			startValueStr = startValue.toString();
 			if (endValue != null) {
 				endValueStr = endValue.toString();
 			}
+			break;
 		default:
 			break;
 		}
