@@ -179,6 +179,9 @@ module nts.uk.at.kha003.a {
             const vm = this;
         }
 
+        /**
+         * Function for making execution mode to update mode
+         * */
         excutionModeToUpDateMode() {
             const vm = this;
             if (vm.isExecutionMode()) {
@@ -186,7 +189,6 @@ module nts.uk.at.kha003.a {
                 vm.isUpdateMode(true);
             }
         }
-
 
         /**
          * get screen details

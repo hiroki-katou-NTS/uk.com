@@ -3882,6 +3882,19 @@ public class ProgramsManager {
 										    		, "KWR008_100"
 										    		, "/view/kwr/008/c/index.xhtml");
 
+
+    /**
+     * KHA003
+     */
+    public static final Program KHA003A = new Program(WebAppId.AT, ProgramIdConsts.KHA003A, "KHA003_1",
+            "/view/kha/003/a/index.xhtml");
+    public static final Program KHA003B = new Program(WebAppId.AT, ProgramIdConsts.KHA003B, "KHA003_2",
+            "/view/kha/003/b/index.xhtml");
+    public static final Program KHA003C = new Program(WebAppId.AT, ProgramIdConsts.KHA003C, "KHA003_3",
+            "/view/kha/003/c/index.xhtml");
+    public static final Program KHA003E = new Program(WebAppId.AT, ProgramIdConsts.KHA003E, "KHA003_5",
+            "/view/kha/003/e/index.xhtml");
+
     /**
      * All programs map.
      */

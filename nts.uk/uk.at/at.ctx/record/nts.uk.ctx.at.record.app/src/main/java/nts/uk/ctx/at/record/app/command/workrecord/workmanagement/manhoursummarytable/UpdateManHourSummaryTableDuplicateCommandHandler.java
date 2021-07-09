@@ -33,34 +33,7 @@ public class UpdateManHourSummaryTableDuplicateCommandHandler extends CommandHan
     protected void handle(CommandHandlerContext<RegisterOrUpdateManHourSummaryTableDuplicateCommand> commandHandlerContext) {
         RegisterOrUpdateManHourSummaryTableDuplicateCommand command = commandHandlerContext.getCommand();
         if (command == null){ return ;}
-
-        if (command.isCopy()) {
-            val copy = this.repository.get(AppContexts.user().companyId(), command.getDestinationCode()).get();
-            val manHourSummaryTableFormat = new ManHourSummaryTableFormat(
-                    new ManHourSummaryTableCode(command.getSourcecode()),
-                    new ManHourSummaryTableName(command.getName()),
-                    new DetailFormatSetting(
-                            DisplayFormat.of(copy.getDetailFormatSetting().getDisplayFormat().value),
-                            TotalUnit.of(copy.getDetailFormatSetting().getTotalUnit().value),
-                            EnumAdaptor.valueOf(copy.getDetailFormatSetting().getDisplayVerticalHorizontalTotal().value, NotUseAtr.class),
-                            copy.getDetailFormatSetting().getSummaryItemList().stream().map(item -> new SummaryItem(item.getHierarchicalOrder(),
-                                    SummaryItemType.of(item.getSummaryItemType().value)))
-                                    .collect(Collectors.toList())
-                    )
-            );
-            this.repository.update(manHourSummaryTableFormat);
-        } else {
-            val manHourSummaryTableFormat = new ManHourSummaryTableFormat(
-                    new ManHourSummaryTableCode(command.getSourcecode()),
-                    new ManHourSummaryTableName(command.getName()),
-                    new DetailFormatSetting(
-                            DisplayFormat.of(0),
-                            TotalUnit.of(0),
-                            EnumAdaptor.valueOf(0, NotUseAtr.class),
-                            Collections.emptyList()
-                    )
-            );
-            this.repository.update(manHourSummaryTableFormat);
-        }
+        val copy = this.repository.get(AppContexts.user().companyId(), command.getDestinationCode()).get();
+        this.repository.update(command.toDomain(copy));
     }
 }

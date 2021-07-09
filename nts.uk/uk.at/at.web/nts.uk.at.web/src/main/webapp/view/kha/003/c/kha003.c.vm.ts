@@ -217,7 +217,7 @@ module nts.uk.at.kha003.c {
             if (vm.c41isVisible() && vm.c44CurrentCodeList().length <= 0) {
                 return true;
             }
-            if (vm.c21isVisible() && vm.c54CurrentCodeList().length <= 0) {
+            if (vm.c51isVisible() && vm.c54CurrentCodeList().length <= 0) {
                 return true;
             }
             return false;
