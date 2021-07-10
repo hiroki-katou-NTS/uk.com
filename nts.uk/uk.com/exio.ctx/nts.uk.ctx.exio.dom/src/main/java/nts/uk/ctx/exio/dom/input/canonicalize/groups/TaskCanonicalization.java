@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -123,6 +124,8 @@ public class TaskCanonicalization implements GroupCanonicalization {
 	 * 作業のユニークキー
 	 */
 	@RequiredArgsConstructor
+	@EqualsAndHashCode
+	@ToString
 	private class UniqueKey {
 		
 		/** 作業枠NO */
