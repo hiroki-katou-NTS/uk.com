@@ -11,7 +11,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 
 /**
- * DataItemのリストにやらせたいことが色々あるのでクラス化したやつ
+ * 1項目分のデータ一覧
  */
 @SuppressWarnings("serial")
 public class DataItemList extends ArrayList<DataItem> {
