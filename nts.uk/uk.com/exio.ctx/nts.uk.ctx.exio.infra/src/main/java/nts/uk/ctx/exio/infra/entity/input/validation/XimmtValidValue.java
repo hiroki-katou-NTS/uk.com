@@ -34,43 +34,44 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Table(name = "XIMMT_VALID_VALUE")
 public class XimmtValidValue extends ContractUkJpaEntity implements Serializable{
-	
+
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	private XimmtValidValuePK pk;
-	
+
 	@Column(name = "ITEM_TYPE")
 	private int itemType;
-	
+
 	@Column(name = "COMPARE_CONDITION")
 	private int compareConditon;
-	
+
 	@Column(name = "NUMERIC1")
 	private BigDecimal numeric1;
-	
+
 	@Column(name = "NUMERIC2")
 	private BigDecimal numeric2;
-	
+
 	@Column(name = "DATE1")
 	private GeneralDate date1;
 
 	@Column(name = "DATE2")
 	private GeneralDate date2;
-	
+
 	@Column(name = "STRING1")
-	private String string1;	
-	
+	private String string1;
+
 	@Override
 	protected Object getKey() {
 		return pk;
 	}
-	
+
 	public static final JpaEntityMapper<XimmtValidValue> MAPPER = new JpaEntityMapper<>(XimmtValidValue.class);
-	
+
 	public ImportingUserCondition toDomain() {
 		Validation validation = getValidation();
-		return new ImportingUserCondition(this.pk.getCompanyId(), this.pk.getSettingCode(), this.pk.getItemNo(), EnumAdaptor.valueOf(itemType, ItemType.class), validation);
+		return new ImportingUserCondition(this.pk.getCompanyId(), this.pk.getSettingCode(),
+				this.pk.getItemNo(), validation);
 	}
 
 	private Validation getValidation() {

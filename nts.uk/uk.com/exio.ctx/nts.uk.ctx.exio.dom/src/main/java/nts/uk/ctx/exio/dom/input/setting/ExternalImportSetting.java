@@ -19,25 +19,25 @@ import nts.uk.ctx.exio.dom.input.validation.ValidateData;
 @Getter
 @AllArgsConstructor
 public class ExternalImportSetting implements DomainAggregate {
-	
+
 	/** 会社ID */
 	private String companyId;
-	
+
 	/** 受入設定コード */
 	private ExternalImportCode code;
-	
+
 	/** 受入設定名称 */
 	private ExternalImportName name;
-	
+
 	/** 受入グループID */
 	private int externalImportGroupId;
-	
+
 	/** 受入モード */
 	private ImportingMode importingMode;
-	
+
 	/** 組立方法 */
 	private ExternalImportAssemblyMethod assembly;
-	
+
 	public void assemble(RequireAssemble require, ExecutionContext context, InputStream csvFileStream) {
 
 		assembly.getCsvFileInfo().parse(
@@ -56,25 +56,25 @@ public class ExternalImportSetting implements DomainAggregate {
 			RequireAssemble require,
 			ExecutionContext context,
 			CsvRecord csvRecord) {
-		
+
 		val optRevisedData = assembly.assemble(require, context.getGroupId(), csvRecord);
 		if(!optRevisedData.isPresent()) {
 			// データの組み立て結果が空の場合
 			return;
 		}
-		
+
 		val revisedData = optRevisedData.get();
-		
+
 		ValidateData.validate(require, context, revisedData);
-		
+
 		require.save(context, revisedData);
 	}
-	
+
 	public static interface RequireAssemble extends
 			ExternalImportAssemblyMethod.Require,
 			ValidateData.ValidateRequire {
-		
+
 		void save(ExecutionContext context, RevisedDataRecord revisedDataRecord);
 	}
-	
+
 }

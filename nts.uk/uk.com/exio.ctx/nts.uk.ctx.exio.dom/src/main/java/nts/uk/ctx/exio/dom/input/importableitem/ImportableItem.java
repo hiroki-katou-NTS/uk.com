@@ -21,17 +21,21 @@ public class ImportableItem implements DomainAggregate{
 	private ItemType itemType;
 	private boolean required;
 	private Optional<DomainConstraint> domainConstraint;
-	
+
 	public boolean validate(DataItem dataItem) {
-		if(required && dataItem.getValue() == null) {
+
+		if(required && dataItem.isEmpty()) {
 			return false;
 		}
-		
-		return domainConstraint.map(constraint -> constraint.validate(dataItem.getValue()))
+
+
+		return domainConstraint
+				.map(c -> c.validate(dataItem.getValue()))
 				//↓はそもそも制限が無いという意図.
 				.orElse(true);
 	}
-	
+
+
 	/**
 	 * 型を変換する
 	 * @param value
