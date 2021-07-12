@@ -9,8 +9,12 @@ module nts.uk.com.view.cas005.a {
             updateRoleCas005 :"screen/sys/auth/cas005/updaterolecas005",
             deleteRoleCas005 :"screen/sys/auth/cas005/deleterolecas005",
             getRoleByRoleTiesById :"sys/portal/webmenu/webmenulinking/getrolebyroletiesbyid",
-            getEmploymentRoleById : "at/auth/workplace/employmentrole/getemploymentrolebyid"
-            
+            getEmploymentRoleById : "at/auth/workplace/employmentrole/getemploymentrolebyid",
+
+            // ①<<ScreenQuery>> Webメニューリストを取得する
+            findAllMenu : "sys/portal/webmenu/findallmenu",
+            // ②<<ScreenQuery>>ロールとWebメニュー紐付けを取得する
+            findRoleAndWebMenu : "sys/portal/webmenu/findroleandwebmenu"
         }
         
         //get list web menu 
@@ -65,10 +69,13 @@ module nts.uk.com.view.cas005.a {
                         reportType: 0};
             return nts.uk.request.exportFile('/masterlist/report/print',_params);
         }
-
-        
-        
-        
+        // GET LIST
+        export function findAllMenu() : JQueryPromise<any>{
+            return nts.uk.request.ajax("com",paths.findAllMenu);
+        }  // GET LIST
+        export function findRoleAndWebMenu() : JQueryPromise<any>{
+            return nts.uk.request.ajax("com",paths.findRoleAndWebMenu);
+        }
     }
 }
     

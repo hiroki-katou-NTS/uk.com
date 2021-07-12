@@ -44,7 +44,8 @@ public class CreateRoleCas005CmdHandler extends CommandHandler<RoleCas005Command
                 data.getName(),
                 data.getContractCode(),
                 data.getAssignAtr(),
-                data.getCompanyId()
+                data.getCompanyId(),
+                data.getApprovalAuthority()
         );
         data.setRoleId(addRoleCommandHandler.handle(addRoleCommand));
         if (!data.getRoleId().isEmpty()) {

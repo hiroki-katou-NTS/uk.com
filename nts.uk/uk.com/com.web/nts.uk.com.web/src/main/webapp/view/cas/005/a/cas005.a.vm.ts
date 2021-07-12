@@ -634,7 +634,8 @@ module nts.uk.com.view.cas005.a {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 block.invisible();
-                service.getListWebMenu().done(function(data) {
+                //service.getListWebMenu().done(function(data) {
+                service.findAllMenu().done(function(data) {
                     self.listWebMenu(data);
                     dfd.resolve(data);
                 }).fail(function(res: any) {

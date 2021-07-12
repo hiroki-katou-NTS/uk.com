@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Optional;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -38,4 +40,5 @@ public class RoleCas005Command {
 
     private int futureDateRefPermit;
 
+    private Boolean approvalAuthority;
 }

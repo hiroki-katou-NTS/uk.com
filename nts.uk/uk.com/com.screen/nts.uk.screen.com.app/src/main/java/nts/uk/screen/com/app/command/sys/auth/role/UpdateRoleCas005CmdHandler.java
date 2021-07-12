@@ -44,7 +44,9 @@ public class UpdateRoleCas005CmdHandler extends CommandHandler<RoleCas005Command
                 data.getName(),
                 data.getContractCode(),
                 data.getAssignAtr(),
-                AppContexts.user().companyId()
+                AppContexts.user().companyId(),
+                data.getApprovalAuthority()
+
         );
         updateRoleCommandHandler.handle(updateRoleCommand);
         //update RoleByRoleTies
