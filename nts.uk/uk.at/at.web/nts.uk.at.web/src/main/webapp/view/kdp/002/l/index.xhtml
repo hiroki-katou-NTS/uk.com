@@ -21,7 +21,7 @@
 
                     <div class="working">
                         <!-- L2_1 検索作業名 -->
-                       	<input data-bind="ntsTextEditor: {
+                       	<input tabindex="1" data-bind="ntsTextEditor: {
 								value: searchValue,
 								option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
 					            	textmode: 'text',
@@ -41,7 +41,7 @@
 
                     <div class="content">
                         <!-- L10_1 前へ -->
-                        <div class="btn-back" data-bind="if: displayBackNextBtn">
+                        <div class="btn-back">
                             <button class="small" tabindex="10" data-bind="click: onClickBack, visible: checkBack"><i class="icon icon-button-arrow-left"></i></button>
                         </div>
                         <!-- L3_1 ~ L3_6 作業内容 -->
@@ -51,7 +51,7 @@
                             </div>
                         </div>
                         <!-- L10_2 次へ -->
-                        <div class="btn-next" data-bind="if: $vm.displayBackNextBtn">
+                        <div class="btn-next">
                             <button class="small" tabindex="11" data-bind="click: onClickNext, visible: checkNext"><i class="icon icon-button-arrow-right"></i></button>
                         </div>
                     </div>
@@ -59,7 +59,7 @@
             </div>
             <div id="functions-area-bottom">
                 <!-- L20 戻る -->
-                <button tabindex ="12" class="normal" data-bind="i18n: 'KDP002_72', click: onClickReturn, visible: isVisibleReturnBtn"></button>
+                <button tabindex ="12" class="normal" data-bind="i18n: 'KDP002_72', click: onClickBack, visible: checkBack"></button>
             </div>
         </ui:define>
     </ui:composition>
