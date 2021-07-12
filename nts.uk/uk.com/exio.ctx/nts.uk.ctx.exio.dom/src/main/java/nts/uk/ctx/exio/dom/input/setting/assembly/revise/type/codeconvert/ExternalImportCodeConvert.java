@@ -4,22 +4,13 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.val;
-import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * 受入コード変換
  */
 @Getter
-public class ExternalImportCodeConvert implements DomainAggregate {
-	
-	/** 会社ID */
-	private String companyId;
-	
-	/** コード変換コード*/
-	private CodeConvertCode convertCode;
-	
-	/** コード変換名称 */
-	private CodeConvertName convertName;
+public class ExternalImportCodeConvert extends DomainObject {
 	
 	/** 変換対象外を受け入れる */
 	private boolean importWithoutSetting;
@@ -27,12 +18,8 @@ public class ExternalImportCodeConvert implements DomainAggregate {
 	/** コード変換 */
 	private List<CodeConvertDetail> convertDetails;
 	
-	public ExternalImportCodeConvert(String companyId, String convertCode, String convertName, boolean importWithoutSetting,
-			List<CodeConvertDetail> listConvertDetails) {
+	public ExternalImportCodeConvert(boolean importWithoutSetting, List<CodeConvertDetail> listConvertDetails) {
 		super();
-		this.companyId = companyId;
-		this.convertCode = new CodeConvertCode(convertCode);
-		this.convertName = new CodeConvertName(convertName);
 		this.importWithoutSetting = importWithoutSetting;
 		this.convertDetails = listConvertDetails;
 	}

@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.RangeOfValue;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.codeconvert.ExternalImportCodeConvert;
 
 /**
  * 整数型編集
@@ -18,6 +19,9 @@ public class IntegerRevise implements ReviseValue {
 	/** 値の有効範囲 */
 	private Optional<RangeOfValue> rangeOfValue;
 	
+	/** コード変換 */
+	private Optional<ExternalImportCodeConvert> codeConvert;
+	
 	@Override
 	public Object revise(String target) {
 		
@@ -26,6 +30,10 @@ public class IntegerRevise implements ReviseValue {
 		if (useSpecifyRange) {
 			// 値の有効範囲を指定する場合
 			strResult = this.rangeOfValue.get().extract(strResult);
+		}
+		
+		if(codeConvert.isPresent()) {
+			strResult = this.codeConvert.get().convert(strResult).toString();
 		}
 		
 		return stringToInt(strResult);
