@@ -100,6 +100,7 @@ module nts.uk.at.kha003.b {
             vm.$ajax(API.getData, command).then(data => {
                 data.datePriod = vm.dateValue().startDate + " ~ " + vm.dateValue().endDate;
                 data.isCancel = false;
+                data.dateRange=vm.dateValue();
                 console.log("csv data:" + data)
                 vm.$window.storage('kha003BShareData', data).then(() => {
                     nts.uk.ui.windows.close();

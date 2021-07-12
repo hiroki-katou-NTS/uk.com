@@ -32,6 +32,7 @@ module nts.uk.at.kha003.c {
         c31isVisible: KnockoutObservable<boolean>;
         c41isVisible: KnockoutObservable<boolean>;
         c51isVisible: KnockoutObservable<boolean>;
+        dateRange: KnockoutObservable<any>;
 
         constructor() {
             super();
@@ -69,11 +70,15 @@ module nts.uk.at.kha003.c {
             vm.c31isVisible = ko.observable(false);
             vm.c41isVisible = ko.observable(false);
             vm.c51isVisible = ko.observable(false);
+            vm.dateRange = ko.observable();
         }
 
         created() {
             const vm = this;
             _.extend(window, {vm});
+            vm.$window.storage('kha003BShareData').done((data) => {
+                vm.dateRange(data.dateRange);
+            })
             vm.c24CurrentCodeList.subscribe((newValue: any) => {
                 vm.$errors("clear");
             });
@@ -118,6 +123,12 @@ module nts.uk.at.kha003.c {
             })
         }
 
+        /**
+         * function for get item data to map with UI
+         * @param taskCode
+         * @param data
+         * @author rafiqul.islam
+         */
         getItemData(taskCode: any, data: any) {
             let itemList: any = [];
             let task = data.masterNameInfo;
@@ -194,6 +205,7 @@ module nts.uk.at.kha003.c {
                         c34CurrentCodeList: vm.c34CurrentCodeList(),
                         c44CurrentCodeList: vm.c44CurrentCodeList(),
                         c54CurrentCodeList: vm.c54CurrentCodeList(),
+                        dateRange: vm.dateRange()
                     }
                     vm.$window.storage('kha003CShareData', shareData).then(() => {
                         vm.$jump('/view/kha/003/d/index.xhtml');
@@ -204,7 +216,7 @@ module nts.uk.at.kha003.c {
         }
 
         /**
-         * Event on click decide button.
+         * function for check if any selected dialog has empty selected list or not
          */
         public ifAnyDialogNotSelected(): boolean {
             const vm = this;
