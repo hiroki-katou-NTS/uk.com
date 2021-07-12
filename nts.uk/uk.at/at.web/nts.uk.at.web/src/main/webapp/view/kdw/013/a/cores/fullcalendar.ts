@@ -3198,20 +3198,20 @@ module nts.uk.ui.at.kdw013.calendar {
                                             optionsText: 'title',
                                             optionsValue: 'id'
                                         ">
-                                        <option></option>
                                     </select>
                                 </td>
                             </tr>
                             <tr>
                                 <td data-bind="i18n: 'KDW013_14'"></td>
                                 <td>
-                                <select class="nts-input" data-bind="
+                                <select data-bind="
                                         value: $component.params.scrollTime,
                                         options: $component.timeList,
                                         optionsText: 'text',
-                                        optionsValue: 'value'
+                                        optionsValue: 'value',
+                                        visibleItemsCount:5
                                     ">
-                                    <option></option>
+                                </select>
                                 </td>
                             </tr>
                             <tr>
@@ -3223,7 +3223,6 @@ module nts.uk.ui.at.kdw013.calendar {
                                             optionsText: 'title',
                                             optionsValue: 'id'
                                         ">
-                                        <option></option>
                                     </select>
                                 </td>
                             </tr>

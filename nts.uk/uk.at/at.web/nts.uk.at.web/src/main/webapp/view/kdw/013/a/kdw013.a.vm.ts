@@ -531,7 +531,7 @@ module nts.uk.ui.at.kdw013.a {
     
             let sid = vm.employee() ? vm.employee() : vm.$user.employeeId;
     
-            let editStateSetting = !vm.employee() ? HAND_CORRECTION_OTHER : vm.employee() != vm.$user.employeeId ? HAND_CORRECTION_OTHER : HAND_CORRECTION_MYSELF;
+            let editStateSetting = vm.employee() ? HAND_CORRECTION_OTHER : vm.employee() != vm.$user.employeeId ? HAND_CORRECTION_OTHER : HAND_CORRECTION_MYSELF;
     
             let mode =  vm.editable() ? 0 : vm.employee() === vm.$user.employeeId ? 0 : 1;
 
@@ -734,7 +734,7 @@ module nts.uk.ui.at.kdw013.a {
             <div data-bind="ntsComboBox: {
                 name: $component.$i18n('KDW013_5'),
                 options: $component.departments,
-                visibleItemsCount: 20,
+                visibleItemsCount: 14,
                 value: $component.department,
                 editable: true,
                 selectFirstIfNull: true,
