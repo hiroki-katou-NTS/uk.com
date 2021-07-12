@@ -37,7 +37,7 @@ module nts.custombinding {
                 }
                 .cps003.setting-dialog .form-group {
                     position: relative;
-                    margin-bottom: 15px;
+                    margin-bottom: 5px;
                 }
                 .cps003.setting-dialog .form-group>* {
                     vertical-align: middle;                    
@@ -45,7 +45,7 @@ module nts.custombinding {
                 .cps003.setting-dialog .ui-igcombo-wrapper {                    
                     position: absolute;
                     top: 1px;
-                    left: 210px;
+                    left: 205px;
                 }
                 .cps003.setting-dialog .form-group .checkbox-multi {
                     margin-top: -30px;
@@ -53,6 +53,7 @@ module nts.custombinding {
                 }
                 .cps003.setting-dialog .form-group .checkbox-multi .checkbox-wrapper {
                     display: block;
+                    padding-top: 0px;
                 }
                 .cps003.setting-dialog .form-group.btn-group {
                     text-align: center;

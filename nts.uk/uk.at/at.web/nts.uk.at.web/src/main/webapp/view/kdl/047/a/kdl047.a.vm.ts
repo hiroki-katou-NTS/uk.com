@@ -27,7 +27,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
     tableColumns: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([
       { headerText: 'ID', prop: 'id', hidden: true },
       { headerText: this.$i18n('KDL047_6'), prop: 'code', width: 100 },
-      { headerText: this.$i18n('KDL047_7'), prop: 'name', width: 300 }
+      { headerText: this.$i18n('KDL047_7'), prop: 'name', width: 415 }
     ]);
     objectDisplay: AttendanceItemShare = new AttendanceItemShare();
 
