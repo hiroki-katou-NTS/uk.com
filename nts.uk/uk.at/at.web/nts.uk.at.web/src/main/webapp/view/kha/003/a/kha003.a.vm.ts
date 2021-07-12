@@ -100,6 +100,7 @@ module nts.uk.at.kha003.a {
 
             vm.summaryItems.subscribe((newValue: any) => {
                 console.log("data:" + newValue);
+                vm.$errors("clear", "#append_area");
                 if (newValue.length == 4) {
                     $('#append_note').hide();
                 } else {
@@ -138,6 +139,7 @@ module nts.uk.at.kha003.a {
                 },
                 stop: function (e, ui) {
                     var html = ui.helper;
+                    vm.$errors("clear", "#append_area");
                     if (itemCount <= 3) {
                         $(this).css({'pointer-events': 'none'});
                         $(this).children().removeClass('bacg-active').addClass('bacg-inactive');
@@ -300,7 +302,6 @@ module nts.uk.at.kha003.a {
          * */
         clickNewButton() {
             const vm = this;
-            vm.isUpdateMode(false);
             vm.currentCode('');
             vm.manHour.code('');
             vm.manHour.name('');
@@ -308,6 +309,7 @@ module nts.uk.at.kha003.a {
             vm.selectedIdA622(0);
             vm.selectedId(0);
             vm.isExecutionMode(false);
+            vm.isUpdateMode(false);
         }
 
         /**
@@ -330,6 +332,9 @@ module nts.uk.at.kha003.a {
                 if (!valid) {
                     return;
                 }
+                if (summaryItemsParams.length === 0) {
+                    vm.$errors("#append_area", "Msg_2174");
+                }
                 else {
                     let command = {
                         code: vm.manHour.code(),
@@ -340,21 +345,21 @@ module nts.uk.at.kha003.a {
                         summaryItems: summaryItemsParams
                     };
                     vm.$blockui("invisible");
-                    vm.isExecutionMode(true);
                     vm.$ajax(vm.isUpdateMode() ? API.UPDATE : API.REGISTER, command).done((data) => {
                         vm.$dialog.info({messageId: "Msg_15"})
                             .then(() => {
+                                vm.isExecutionMode(true);
                                 vm.isInit = false;
                                 vm.loadScreenListData();
                                 vm.currentCode(command.code);
                                 vm.getScreenDetails(command.code);
                                 $("#A4_3").focus();
+                                vm.isExecutionMode(true);
                             });
                     }).fail(function (error) {
                         vm.$dialog.error({messageId: error.messageId});
                     }).always(() => {
                         vm.$blockui("clear");
-                        vm.isExecutionMode(true);
                     });
                 }
             });
