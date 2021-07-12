@@ -806,6 +806,8 @@ public class ProgramsManager {
             "/view/kdw/006/e/index.xhtml");
     public static final Program KDW006G = new Program(WebAppId.AT, ProgramIdConsts.KDW006G, "KDW006_71",
             "/view/kdw/006/g/index.xhtml");
+    public static final Program KDW006I = new Program(WebAppId.AT, ProgramIdConsts.KDW006I, "KDW006_232",
+            "/view/kdw/006/i/index.xhtml");
     public static final Program KDW006H = new Program(WebAppId.AT, ProgramIdConsts.KDW006H, "KDW006_305",
             "/view/kdw/006/h/index.xhtml");
 

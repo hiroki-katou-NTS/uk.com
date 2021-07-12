@@ -130,6 +130,8 @@ public class CreateDailyOneDay {
 				new ArrayList<>(),
 				Optional.empty(),
 				new ArrayList<>(),
+				new ArrayList<>(),
+				new ArrayList<>(),
 				Optional.empty());
 	}
 

@@ -257,8 +257,11 @@ public class ManageReGetClass {
 	 * 「遅刻早退を控除する」を取得する
 	 * @return 遅刻早退を控除する
 	 */
-	public Optional<DeductLeaveEarly> getLeaveLateSet() {
-		return Optional.of(this.personDailySetting.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly());
+	public DeductLeaveEarly getLeaveLateSet() {
+		if(!this.getHolidayCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent())
+			return DeductLeaveEarly.createAllTrue();
+			
+		return this.getHolidayCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly();
 	}
 	
 	/**
@@ -286,5 +289,13 @@ public class ManageReGetClass {
 	 */
 	public AddSetting getAddSetting() {
 		return this.personDailySetting.getAddSetting();
+	}
+	
+	/**
+	 * 1日の計算範囲を指定した時間帯に絞り込む
+	 * @param timeSpan 時間帯
+	 */
+	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
+		this.calculationRangeOfOneDay.reduceRange(timeSpan);
 	}
 }

@@ -943,9 +943,10 @@ public class DailyPerformanceCorrectionProcessor {
 						screenDto.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
 					}
 					// thieu check khi co data
-				} else if (selfConfirmError == YourselfConfirmError.CANNOT_REGISTER_WHEN_ERROR.value) {
-					// co the dang ky data nhưng ko đăng ký được check box
-				}
+				} 
+//				else if (selfConfirmError == YourselfConfirmError.CANNOT_REGISTER_WHEN_ERROR.value) {
+//					// co the dang ky data nhưng ko đăng ký được check box
+//				}
 			}
 		}
 
@@ -963,9 +964,10 @@ public class DailyPerformanceCorrectionProcessor {
 					screenDto.setCellSate(data.getId(), DPText.LOCK_APPROVAL, DPText.STATE_DISABLE);
 				}
 				// thieu check khi co data
-			} else if (supervisorConfirmError == YourselfConfirmError.CANNOT_REGISTER_WHEN_ERROR.value) {
-				// co the dang ky data nhưng ko đăng ký được check box
-			}
+			} 
+//			else if (supervisorConfirmError == YourselfConfirmError.CANNOT_REGISTER_WHEN_ERROR.value) {
+//				// co the dang ky data nhưng ko đăng ký được check box
+//			}
 
 			// disable, enable checkbox with approveRootStatus
 //			if (approveRootStatus == null)

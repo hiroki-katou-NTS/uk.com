@@ -943,4 +943,22 @@ public class HolidayWorkTimeSheet{
 			}
 		}
 	}
+	
+	/**
+	 * 指定した時間帯に絞り込む
+	 * @param timeSpan 時間帯
+	 */
+	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
+		List<HolidayWorkFrameTimeSheetForCalc> frames = this.workHolidayTime.stream()
+				.filter(t -> t.getTimeSheet().checkDuplication(timeSpan).isDuplicated())
+				.collect(Collectors.toList());
+		
+		for(int i=0; i<frames.size(); i++) {
+			//休出枠時間帯を指定した時間帯に絞り込む
+			frames.get(i).reduceRange(timeSpan);
+		}
+		
+		this.workHolidayTime.clear();
+		this.workHolidayTime.addAll(frames);
+	}
 }

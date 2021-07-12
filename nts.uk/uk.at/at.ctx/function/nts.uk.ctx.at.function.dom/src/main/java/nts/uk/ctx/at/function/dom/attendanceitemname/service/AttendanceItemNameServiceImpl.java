@@ -153,9 +153,10 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 	@Override
 	public List<AttItemName> getNameOfAttendanceItem(List<Integer> attendanceItemIds, TypeOfItem type) {
 		List<AttItemName> attendanceItems = this.getAttendanceItemName(attendanceItemIds, type);
-		// 対応するドメインモデル 「勤怠項目と枠の紐付け」 を取得する
+		// 	対応するドメインモデル 「勤怠項目と枠の紐付け」 を取得する
 		List<AttendanceItemLinking> attendanceItemAndFrameNos = this.attendanceItemLinkingRepository
 				.getFullDataByAttdIdAndType(attendanceItemIds, type);
+		
 		return this.getNameOfAttendanceItem(attendanceItems, attendanceItemAndFrameNos);
 	}
 	
@@ -170,18 +171,21 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
+	// to ver7
 	public List<AttItemName> getNameOfAttendanceItem(TypeOfItem type, List<AttItemName> attendanceItems) {
 		List<Integer> attendanceItemIds = attendanceItems.stream().map(x -> x.getAttendanceItemId())
 				.collect(Collectors.toList());
 		attendanceItems = this.getAttendanceItemName(attendanceItems);
-		// 対応するドメインモデル 「勤怠項目と枠の紐付け」 を取得する
+		// 	対応するドメインモデル 「勤怠項目と枠の紐付け」 を取得する
 		List<AttendanceItemLinking> attendanceItemAndFrameNos = this.attendanceItemLinkingRepository
 				.getFullDataByAttdIdAndType(attendanceItemIds, type);
+		// to ver7
 		return this.getNameOfAttendanceItem(attendanceItems, attendanceItemAndFrameNos);
 	}
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
+	// to ver7
 	public List<AttItemName> getNameOfAttendanceItem(List<AttItemName> attendanceItems,
 			List<AttendanceItemLinking> attendanceItemAndFrameNos) {
 		LoginUserContext login = AppContexts.user();
@@ -191,12 +195,13 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 				.collect(Collectors.toMap(AttItemName::getAttendanceItemId, x -> x));
 		Map<Integer, AttendanceItemLinking> mapItemLinking = attendanceItemAndFrameNos.stream().distinct()
 				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
+		
 		for (AttendanceItemLinking link : attendanceItemAndFrameNos) {
 			int id = link.getAttendanceItemId();
 			if (mapAttendanceItems.containsKey(id)) {
 				mapAttendanceItems.get(id).setFrameCategory(link.getFrameCategory().value);
 				mapAttendanceItems.get(id).setTypeOfAttendanceItem(link.getTypeOfAttendanceItem().value);
-			} /*else {
+			} /*else { 
 				mapAttendanceItems.get(id).setFrameCategory(null);
 				mapAttendanceItems.get(id).setTypeOfAttendanceItem(null);
 			}*/
@@ -299,6 +304,7 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 		attendanceItems = mapAttendanceItems.values().stream().collect(Collectors.toList());
 		for (AttItemName item : attendanceItems) {
 			String attName = item.getAttendanceItemName();
+			// to ver7
 			if (item.getFrameCategory() == null) {
 				continue;
 			}

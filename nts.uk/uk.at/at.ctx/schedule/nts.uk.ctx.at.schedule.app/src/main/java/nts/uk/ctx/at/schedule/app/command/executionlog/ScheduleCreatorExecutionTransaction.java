@@ -599,7 +599,7 @@ public class ScheduleCreatorExecutionTransaction {
 					result.getWorkSchedule().getLstBreakTime(), result.getWorkSchedule().getOptAttendanceTime(),
 					result.getWorkSchedule().getOptTimeLeaving(), result.getWorkSchedule().getOptSortTimeWork(),
 					Optional.empty(), Optional.empty(), Optional.empty(), result.getWorkSchedule().getLstEditState(),
-					Optional.empty(), new ArrayList<>(), Optional.empty());
+					Optional.empty(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty());
 			// // 勤務予定。編集状態一覧から項目IDを取得する - TQP
 			List<Integer> attendanceItemIdList = integrationOfDaily.getEditState().stream()
 					.map(editState -> editState.getAttendanceItemId()).distinct().collect(Collectors.toList());

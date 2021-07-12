@@ -204,6 +204,7 @@ public class ProgramIdConsts {
 	public static final String KDW006D = "KDW006D";
 	public static final String KDW006E = "KDW006E";
 	public static final String KDW006G = "KDW006G";
+	public static final String KDW006I = "KDW006I";
 	public static final String KDW006H = "KDW006H";
 
 	public static final String KDW009A = "KDW009A";

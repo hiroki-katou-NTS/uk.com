@@ -35,7 +35,7 @@ public class CancelSupportStartEnd {
 		// [input. 打刻取消(List)]でループ
 		listDestinationTimeApp.stream().forEach(data -> {
 			Optional<OuenWorkTimeSheetOfDailyAttendance> ouenOpt = dailyApp.getOuenTimeSheet().stream()
-					.filter(x -> x.getWorkNo() == data.getSupportWork().orElse(Integer.MAX_VALUE)).findFirst();
+					.filter(x -> x.getWorkNo().v() == data.getSupportWork().orElse(Integer.MAX_VALUE)).findFirst();
 
 			if (ouenOpt.isPresent()) {
 				// 処理中の応援枠NOがキーとなる[応援]をクリアする

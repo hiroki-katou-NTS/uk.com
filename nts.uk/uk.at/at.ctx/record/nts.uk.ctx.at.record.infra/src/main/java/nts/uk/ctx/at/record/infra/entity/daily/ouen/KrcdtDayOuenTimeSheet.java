@@ -11,6 +11,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -98,7 +99,7 @@ public class KrcdtDayOuenTimeSheet extends ContractCompanyUkJpaEntity implements
 			KrcdtDayOuenTimeSheet entity = new KrcdtDayOuenTimeSheet();
 			
 			entity.pk = new KrcdtDayOuenTimePK(domain.getEmpId(), 
-					domain.getYmd(), oTimeSheetAtt.getWorkNo());
+					domain.getYmd(), oTimeSheetAtt.getWorkNo().v());
 			
 			entity.workplaceId = oTimeSheetAtt.getWorkContent().getWorkplace().getWorkplaceId() == null ? null : oTimeSheetAtt.getWorkContent().getWorkplace().getWorkplaceId().v();		
 			entity.workLocationCode = !oTimeSheetAtt.getWorkContent().getWorkplace().getWorkLocationCD().isPresent() ? null 

@@ -109,7 +109,8 @@ public class DailyResultAccordScheduleStatusServiceTest {
 		IntegrationOfDaily integrationOfDaily = new IntegrationOfDaily("emp1", GeneralDate.today(), null, null, null, 
 				Optional.empty(), new ArrayList<>(), Optional.empty(), new BreakTimeOfDailyAttd(),
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), 
-				Optional.empty(), new ArrayList<>(), Optional.empty(), new ArrayList<>(), Optional.empty()) ;
+				Optional.empty(), new ArrayList<>(), Optional.empty(), new ArrayList<>(), new ArrayList<>(),
+				new ArrayList<>(), Optional.empty()) ;
 		
 		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),
 				ScheManaStatus.DO_NOT_MANAGE_SCHEDULE, Optional.empty(), Optional.empty());

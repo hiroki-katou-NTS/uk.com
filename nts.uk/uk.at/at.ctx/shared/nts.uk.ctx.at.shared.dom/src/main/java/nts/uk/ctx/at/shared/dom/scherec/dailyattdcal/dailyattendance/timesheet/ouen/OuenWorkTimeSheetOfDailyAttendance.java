@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen;
 
+
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 
@@ -8,7 +9,7 @@ import nts.arc.layer.dom.objecttype.DomainObject;
 public class OuenWorkTimeSheetOfDailyAttendance implements DomainObject {
 
 	/** 応援勤務枠No: 応援勤務枠No supportNo*/
-	private int workNo;
+	private SupportFrameNo workNo;
 
 	/** 作業内容: 作業内容 */
 	private WorkContent workContent;
@@ -16,7 +17,7 @@ public class OuenWorkTimeSheetOfDailyAttendance implements DomainObject {
 	/** 時間帯: 時間帯別勤怠の時間帯 */
 	private TimeSheetOfAttendanceEachOuenSheet timeSheet;
 
-	private OuenWorkTimeSheetOfDailyAttendance(int workNo, WorkContent workContent, 
+	private OuenWorkTimeSheetOfDailyAttendance(SupportFrameNo workNo, WorkContent workContent, 
 			TimeSheetOfAttendanceEachOuenSheet timeSheet) {
 		super();
 		this.workNo = workNo;
@@ -24,13 +25,13 @@ public class OuenWorkTimeSheetOfDailyAttendance implements DomainObject {
 		this.timeSheet = timeSheet;
 	}
 	
-	public static OuenWorkTimeSheetOfDailyAttendance create(int workNo, WorkContent workContent, 
+	public static OuenWorkTimeSheetOfDailyAttendance create(SupportFrameNo workNo, WorkContent workContent, 
 			TimeSheetOfAttendanceEachOuenSheet timeSheet) {
 		
 		return new OuenWorkTimeSheetOfDailyAttendance(workNo, workContent, timeSheet);
 	}
 
 	public void setWorkNo(int workNo) {
-		this.workNo = workNo;
+		this.workNo = SupportFrameNo.of(workNo);
 	}
 }

@@ -342,4 +342,23 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 		}
 		return endTime;
 	}
+	
+	/**
+	 * 指定した時間帯に絞り込む
+	 * @param timeSpan 時間帯
+	 */
+	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
+		Optional<TimeSpanForDailyCalc> duplicates = this.timeSheet.getDuplicatedWith(timeSpan);
+		if(!duplicates.isPresent())
+			return;
+		
+		//時間帯を変更する
+		this.shiftTimeSheet(duplicates.get());
+		//外出の相殺時間を削除する
+		this.deleteOffsetTimeOfGoOut();
+		//加給時間帯、特定加給時間帯、深夜時間帯を指定した時間帯に絞り込む
+		this.reduceRangeOfBonusPay(duplicates.get());
+		this.reduceRangeOfSpecBonusPay(duplicates.get());
+		this.reduceRangeOfMidnight(duplicates.get());
+	}
 }

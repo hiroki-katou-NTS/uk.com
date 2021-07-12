@@ -37,35 +37,47 @@ public class AtItemNameAcFinder implements AtItemNameAdapter {
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
+	//	to ver7
 	public List<AttItemName> getNameOfDailyAttendanceItem(List<DailyAttendanceItem> attendanceItems) {
 		List<AttItemName> attItemName = attendanceItems.stream().map(x -> {
 			AttItemName dto = new AttItemName();
 			dto.setAttendanceItemId(x.getAttendanceItemId());
+			// to ver7
+			dto.setDisplayName(x.getDisplayName().isPresent() ? x.getDisplayName().get().v() : "");
 			dto.setAttendanceItemName(x.getAttendanceName().v());
 			dto.setAttendanceItemDisplayNumber(x.getDisplayNumber());
 			dto.setNameLineFeedPosition(x.getNameLineFeedPosition());
 			dto.setUserCanUpdateAtr(x.getUserCanUpdateAtr().value);
 			dto.setTypeOfAttendanceItem(x.getDailyAttendanceAtr().value);
+			// to ver7
+			dto.setFrameCategory(null);
+			dto.setAttendanceAtr(x.getDailyAttendanceAtr().value); //because dto.typeOfAttendanceItem is override in AttendanceItemNameService.getNameOfAttendanceItem()
 			return dto;
 		}).collect(Collectors.toList());
-
+		// to ver7
 		return attendanceItemNameService.getNameOfAttendanceItem(TypeOfItem.Daily, attItemName);
 	}
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
+	// to ver7
 	public List<AttItemName> getNameOfMonthlyAttendanceItem(List<MonthlyAttendanceItem> attendanceItems) {
 		List<AttItemName> attItemName = attendanceItems.stream().map(x -> {
 			AttItemName dto = new AttItemName();
 			dto.setAttendanceItemId(x.getAttendanceItemId());
 			dto.setAttendanceItemName(x.getAttendanceName().v());
+			// to ver7
+			dto.setDisplayName(x.getDisplayName().isPresent() ? x.getDisplayName().get().v() : "");
 			dto.setAttendanceItemDisplayNumber(x.getDisplayNumber());
 			dto.setNameLineFeedPosition(x.getNameLineFeedPosition());
 			dto.setUserCanUpdateAtr(x.getUserCanUpdateAtr().value);
 			dto.setTypeOfAttendanceItem(x.getMonthlyAttendanceAtr().value);
+			// to ver7
+			dto.setFrameCategory(null);
+			dto.setAttendanceAtr(x.getMonthlyAttendanceAtr().value); //because dto.typeOfAttendanceItem is override in AttendanceItemNameService.getNameOfAttendanceItem()
 			return dto;
 		}).collect(Collectors.toList());
-
+		// to ver7
 		return attendanceItemNameService.getNameOfAttendanceItem(TypeOfItem.Monthly, attItemName);
 	}
 
