@@ -35,7 +35,7 @@ public class JpaLoginPasswordOfUserRepository extends JpaRepository implements L
 				.setParameter("userId", userId)
 				.getSingle();
 		
-		if(entities.isPresent()) {
+		if(!entities.isPresent()) {
 			return Optional.empty();
 		}
 		
