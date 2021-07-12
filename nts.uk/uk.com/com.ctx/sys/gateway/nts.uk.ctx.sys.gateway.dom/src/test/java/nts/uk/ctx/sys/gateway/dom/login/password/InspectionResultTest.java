@@ -17,7 +17,7 @@ public class InspectionResultTest {
 	@Test
 	public void testC1() {
 		GetAnEmployeeImported employee = new GetAnEmployeeImported("Dummy", "Dummy", "Dummy", "Dummy"); //dummy
-		InspectionResult result = InspectionResult.create1(employee);
+		InspectionResult result = InspectionResult.verificationSuccess(employee);
 		assertThat(result.isVerificationSuccess()).isEqualTo(true);
 		assertThat(result.getEmployeeInformation().get().getCid()).isEqualTo("Dummy");
 		assertThat(result.getEmployeeInformation().get().getEmployeeCode()).isEqualTo("Dummy");
@@ -28,7 +28,7 @@ public class InspectionResultTest {
 	
 	@Test
 	public void testC2() {
-		InspectionResult result = InspectionResult.create2();
+		InspectionResult result = InspectionResult.userVerificationFailure();
 		assertThat(result.isVerificationSuccess()).isEqualTo(false);
 		assertThat(result.getEmployeeInformation().isPresent()).isFalse();
 		assertThat(result.getVerificationFailureMessage().get()).isEqualTo("Msg_301");
@@ -36,7 +36,7 @@ public class InspectionResultTest {
 	
 	@Test
 	public void testC3() {
-		InspectionResult result = InspectionResult.create3();
+		InspectionResult result = InspectionResult.passwordVerificationFailed();
 		assertThat(result.isVerificationSuccess()).isEqualTo(false);
 		assertThat(result.getEmployeeInformation().isPresent()).isFalse();
 		assertThat(result.getVerificationFailureMessage().get()).isEqualTo("Msg_302");

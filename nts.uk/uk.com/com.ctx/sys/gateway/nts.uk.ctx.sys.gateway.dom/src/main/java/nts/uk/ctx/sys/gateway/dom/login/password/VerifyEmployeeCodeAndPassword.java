@@ -28,25 +28,25 @@ public class VerifyEmployeeCodeAndPassword {
 		Optional<GetAnEmployeeImported> employeeInfo = require.getEmployee(cid, employeeCode);
 		
 		// 	if $社員.isEmpty	
-		if (employeeInfo.isPresent()) {
-			return InspectionResult.create2();
+		if (!employeeInfo.isPresent()) {
+			return InspectionResult.userVerificationFailure();
 		}
 		
 		// 	$ユーザ = require.ユーザを取得する($社員.個人ID)
 		Optional<User> user = require.getByAssociatedPersonId(employeeInfo.get().getPersonalId());
 		
 		// 	if $ユーザ.isEmpty
-		if (user.isPresent()) {
-			return InspectionResult.create2();
+		if (!user.isPresent()) {
+			return InspectionResult.userVerificationFailure();
 		}
 		
 		// 	if パスワード.isPresent
-		if (!user.get().isCorrectPassword(password.get())) {
-			return InspectionResult.create3();
+		if (!user.get().getPassword().toString().equals(password.get())) {
+			return InspectionResult.passwordVerificationFailed();
 		}
 		
 		// 	return 検証結果#検証成功($社員)
-		return InspectionResult.create1(employeeInfo.get());
+		return InspectionResult.verificationSuccess(employeeInfo.get());
 	}
 	
 

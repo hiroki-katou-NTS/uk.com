@@ -30,21 +30,21 @@ public class InspectionResult {
 	 * 	[C-1] 検証成功
 	 * @param employee
 	 */
-	public static InspectionResult create1 (GetAnEmployeeImported employee) {
+	public static InspectionResult verificationSuccess (GetAnEmployeeImported employee) {
 		return new InspectionResult(true, Optional.ofNullable(employee), Optional.empty());
 	}
 	
 	/**
 	 * 	[C-2] ユーザ検証失敗
 	 */
-	public static InspectionResult create2() {
+	public static InspectionResult userVerificationFailure() {
 		return new InspectionResult(false, Optional.empty(), Optional.of("Msg_301"));
 	}
 	
 	/**
 	 * 	[C-3] パスワード検証失敗
 	 */
-	public static InspectionResult create3() {
+	public static InspectionResult passwordVerificationFailed() {
 		return new InspectionResult(false, Optional.empty(), Optional.of("Msg_302"));
 	}
 }
