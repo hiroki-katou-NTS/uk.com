@@ -66,7 +66,9 @@ public class CalculateAttendanceTimeBySupportWorkService {
 				return c.getTimeLeavingWorks().stream().filter(e -> e.getWorkNo().v() == 1).findAny();
 			}).orElse(Optional.empty());
 			//if $出退勤.出勤.isPresent　AND　$出退勤.退勤.isEmpty		
-			if(timeLeavingWorks.isPresent() && timeLeavingWorks.get().getLeaveTime().isPresent() && !timeLeavingWorks.get().getLeaveStamp().isPresent()) {
+			if(timeLeavingWorks.isPresent() 
+					&& timeLeavingWorks.get().getAttendanceStamp().isPresent() 
+					&& !timeLeavingWorks.get().getLeaveStamp().isPresent()) {
 				//$出退勤.退勤.打刻.時刻.時刻変更理由.時刻変更手段	時刻変更手段.手修正(本人)		
 				//$出退勤.退勤.打刻.時刻.時刻変更理由.打刻方法	Optional.empty
 				//$出退勤.退勤.打刻.時刻.時刻	日時#今()

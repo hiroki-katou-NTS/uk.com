@@ -53,6 +53,7 @@ public class WorkGroupTest {
 		NtsAssert.invokeGetters(workGroup);
 	}
 
+	//
 	@Test
 	public void testContracter1() {
 		WorkGroup workGroup = WorkGroup.create(new WorkCode("WorkCode"), Optional.of(new WorkCode("WorkCode1")),
@@ -66,6 +67,7 @@ public class WorkGroupTest {
 		assertThat(workGroup.getWorkCD5().get().v()).isEqualTo("WorkCode4");
 	}
 
+	//
 	@Test
 	public void testContracter2() {
 		WorkGroup workGroup = WorkGroup.create("WorkCode", "WorkCode1", "WorkCode2", "WorkCode3", "WorkCode4");
@@ -101,7 +103,7 @@ public class WorkGroupTest {
 		assertThat(b).isFalse();
 	}
 
-	// if(!workContent.isPresent()) return true;
+	// // if(!workContent.isPresent()) return true;
 	@Test
 	public void testPublic1_2() {
 
@@ -121,38 +123,125 @@ public class WorkGroupTest {
 				require.getTaskFrameUsageSetting();
 				result = taskFrameUsageSetting;
 
-				require.getTask(taskFrameNo, new WorkCode("DUMMY"));
+				require.getTask(taskFrameNo, new WorkCode("WorkCode"));
 				result = Optional.ofNullable(task);
 			}
 		};
 
 		boolean b = workGroup.checkWorkContents(require);
-		assertThat(b).isFalse();
+		assertThat(b).isTrue();
 	}
 
-	// if(!workContent.isPresent()) return true;
+	// [2] 作業内容の有効期限を確認する => Error
 	@Test
-	public void testPublic12_1() {
+	public void testPublic2_1() {
 
 		frameSettingList.add(
 				new TaskFrameSetting(taskFrameNo, new TaskFrameName("DUMMY"), EnumAdaptor.valueOf(1, UseAtr.class)));
 		frameSettingList.add(
 				new TaskFrameSetting(taskFrameNo, new TaskFrameName("DUMMY1"), EnumAdaptor.valueOf(0, UseAtr.class)));
-		
-		WorkGroup workGroup = WorkGroup.create("WorkCode", "WorkCode1", "WorkCode2", "WorkCode3", "WorkCode4");
+
+		WorkGroup workGroup = WorkGroup.create("WorkCode", null, null, null, null);
 
 		TaskFrameUsageSetting taskFrameUsageSetting = new TaskFrameUsageSetting(frameSettingList);
 
 		new Expectations() {
 			{
 				require.getTask(taskFrameNo, code);
+				result = Optional.empty();
 
 				require.getTaskFrameUsageSetting();
 				result = taskFrameUsageSetting;
 			}
 		};
 
-		NtsAssert.businessException("Msg_2080", 
-				() -> workGroup.checkExpirationDate(require, date));
+		NtsAssert.businessException("Msg_2080", () -> workGroup.checkExpirationDate(require, date));
+	}
+
+	// [2] 作業内容の有効期限を確認する => NotError
+	@Test
+	public void testPublic2_2() {
+
+		frameSettingList.add(
+				new TaskFrameSetting(taskFrameNo, new TaskFrameName("DUMMY"), EnumAdaptor.valueOf(1, UseAtr.class)));
+		frameSettingList.add(
+				new TaskFrameSetting(taskFrameNo, new TaskFrameName("DUMMY1"), EnumAdaptor.valueOf(0, UseAtr.class)));
+
+		WorkGroup workGroup = WorkGroup.create("WorkCode", null, null, null, null);
+
+		Task task = new Task(new TaskCode("Code"), taskFrameNo, null, new ArrayList<>(), new DatePeriod(date, date),
+				null);
+
+		TaskFrameUsageSetting taskFrameUsageSetting = new TaskFrameUsageSetting(frameSettingList);
+
+		new Expectations() {
+			{
+				require.getTask(taskFrameNo, code);
+				result = Optional.of(task);
+
+				require.getTaskFrameUsageSetting();
+				result = taskFrameUsageSetting;
+			}
+		};
+
+		workGroup.checkExpirationDate(require, date);
+	}
+
+	// if(!this.workCD1.v().equals(workGroup.getWorkCD1().v()))
+	@Test
+	public void testMethodCompare1() {
+		WorkGroup workGroup = WorkGroup.create("WorkCode", null, null, null, null);
+		WorkGroup workGroup1 = WorkGroup.create("WorkCode1", null, null, null, null);
+
+		assertThat(workGroup.compare(workGroup1)).isFalse();
+	}
+
+	// if (!StringUtils.equals(this.workCD2.map(x ->
+	// x.v()).orElse(null),workGroup.workCD2.map(x -> x.v()).orElse(null)))
+	@Test
+	public void testMethodCompare2() {
+		WorkGroup workGroup = WorkGroup.create("WorkCode", "WorkCode2", null, null, null);
+		WorkGroup workGroup1 = WorkGroup.create("WorkCode", null, null, null, null);
+
+		assertThat(workGroup.compare(workGroup1)).isFalse();
+	}
+
+	// if (!StringUtils.equals(this.workCD3.map(x ->
+	// x.v()).orElse(null),workGroup.workCD3.map(x -> x.v()).orElse(null)))
+	@Test
+	public void testMethodCompare3() {
+		WorkGroup workGroup = WorkGroup.create("WorkCode", "WorkCode2", "WorkCode3", null, null);
+		WorkGroup workGroup1 = WorkGroup.create("WorkCode", "WorkCode2", null, null, null);
+
+		assertThat(workGroup.compare(workGroup1)).isFalse();
+	}
+
+	// if (!StringUtils.equals(this.workCD4.map(x ->
+	// x.v()).orElse(null),workGroup.workCD4.map(x -> x.v()).orElse(null)))
+	@Test
+	public void testMethodCompare4() {
+		WorkGroup workGroup = WorkGroup.create("WorkCode", "WorkCode2", "WorkCode3", "WorkCode4", null);
+		WorkGroup workGroup1 = WorkGroup.create("WorkCode", "WorkCode2", "WorkCode3", null, null);
+
+		assertThat(workGroup.compare(workGroup1)).isFalse();
+	}
+
+	// if (!StringUtils.equals(this.workCD5.map(x ->
+	// x.v()).orElse(null),workGroup.workCD5.map(x -> x.v()).orElse(null)))
+	@Test
+	public void testMethodCompare5() {
+		WorkGroup workGroup = WorkGroup.create("WorkCode", "WorkCode2", "WorkCode3", "WorkCode4", "WorkCode5");
+		WorkGroup workGroup1 = WorkGroup.create("WorkCode", "WorkCode2", "WorkCode3", "WorkCode4", null);
+
+		assertThat(workGroup.compare(workGroup1)).isFalse();
+	}
+
+	// Return True
+	@Test
+	public void testMethodCompare6() {
+		WorkGroup workGroup = WorkGroup.create("WorkCode", "WorkCode2", "WorkCode3", "WorkCode4", "WorkCode5");
+		WorkGroup workGroup1 = WorkGroup.create("WorkCode", "WorkCode2", "WorkCode3", "WorkCode4", "WorkCode5");
+
+		assertThat(workGroup.compare(workGroup1)).isTrue();
 	}
 }

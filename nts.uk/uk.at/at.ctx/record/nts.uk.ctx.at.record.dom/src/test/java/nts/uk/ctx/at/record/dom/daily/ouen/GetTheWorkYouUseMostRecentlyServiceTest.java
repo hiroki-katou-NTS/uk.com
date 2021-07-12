@@ -68,11 +68,16 @@ public class GetTheWorkYouUseMostRecentlyServiceTest {
 		List<WorkGroup> result = GetTheWorkYouUseMostRecentlyService.get(require, empId);
 		assertThat(result.isEmpty()).isFalse();
 		assertThat(result.size()).isEqualTo(10);
-		assertThat(result.get(5).getWorkCD1().v()).isEqualTo("000060");
-		assertThat(result.get(5).getWorkCD2().get().v()).isEqualTo("000061");
-		assertThat(result.get(5).getWorkCD3().get().v()).isEqualTo("000062");
-		assertThat(result.get(5).getWorkCD4().get().v()).isEqualTo("000063");
-		assertThat(result.get(5).getWorkCD5().get().v()).isEqualTo("000064");
+		assertThat(result.get(0).getWorkCD1().v()).isEqualTo("0000010");
+		assertThat(result.get(1).getWorkCD1().v()).isEqualTo("0000011");
+		assertThat(result.get(2).getWorkCD1().v()).isEqualTo("0000012");
+		assertThat(result.get(3).getWorkCD1().v()).isEqualTo("0000013");
+		assertThat(result.get(4).getWorkCD1().v()).isEqualTo("0000014");
+		assertThat(result.get(5).getWorkCD1().v()).isEqualTo("0000015");
+		assertThat(result.get(6).getWorkCD1().v()).isEqualTo("0000016");
+		assertThat(result.get(7).getWorkCD1().v()).isEqualTo("0000017");
+		assertThat(result.get(8).getWorkCD1().v()).isEqualTo("0000018");
+		assertThat(result.get(9).getWorkCD1().v()).isEqualTo("0000019");
 	}
 
 }
