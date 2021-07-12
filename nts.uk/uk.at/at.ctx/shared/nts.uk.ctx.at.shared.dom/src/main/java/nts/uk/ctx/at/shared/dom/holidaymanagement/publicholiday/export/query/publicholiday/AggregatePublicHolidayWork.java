@@ -14,6 +14,7 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.PublicHolidayMonthSetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardData;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.GetRemainingNumberPublicHolidayService.RequireM1;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayCarryForwardInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayCarryForwardInformationOutput;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayDigestionInformation;
@@ -72,9 +73,9 @@ public class AggregatePublicHolidayWork {
 	
 	/**
 	 * 公休消化情報を作成する
-	 * @param publicHolidayCarryForwardData
-	 * @param tempPublicHolidayManagement
-	 * @return
+	 * @param publicHolidayCarryForwardData List<公休繰越データ>
+	 * @param tempPublicHolidayManagement List<暫定公休管理データ>
+	 * @return PublicHolidayDigestionInformation 公休消化情報
 	 */
 	public PublicHolidayDigestionInformation createDigestionInformation (
 			List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData,
@@ -95,9 +96,8 @@ public class AggregatePublicHolidayWork {
 		
 	/**
 	 * 翌月繰越数を求める
-	 * @param publicHolidayCarryForwardData 繰越データ
+	 * @param publicHolidayCarryForwardData List<公休繰越データ>
 	 * @param numberOfAcquisitions　取得数
-	 * @return
 	 */
 	public void calculateCarriedForward(
 			List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData,
@@ -183,19 +183,21 @@ public class AggregatePublicHolidayWork {
 	
 	/**
 	 * 公休繰越情報を作成する
-	 * @param employeeId
-	 * @param publicHolidayCarryForwardData
-	 * @param publicHolidaySetting 公休
-	 * @return 公休繰越情報OUTPUT
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param publicHolidayCarryForwardData　List<公休繰越データ>
+	 * @param Require
+	 * @return PublicHolidayCarryForwardInformationOutput 公休繰越情報OUTPUT
 	 */
 	public PublicHolidayCarryForwardInformationOutput calculateCarriedForwardInformation(
+			String companyId,
 			String employeeId,
 			List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData, 
-			PublicHolidaySetting publicHolidaySetting){
+			 RequireM1 require){
 		
 		//集計期間の繰越データ作成
 		Optional<PublicHolidayCarryForwardData> CarryForwardData = 
-				createPublicHolidayCarryForwardData(employeeId, publicHolidaySetting);
+				createPublicHolidayCarryForwardData(companyId, employeeId, require);
 		if(CarryForwardData.isPresent()){
 			publicHolidayCarryForwardData.add(CarryForwardData.get());
 		}
@@ -216,12 +218,16 @@ public class AggregatePublicHolidayWork {
 	
 	/**
 	 * 集計期間の繰越データ作成
+	 * @param companyId 会社ID
 	 * @param employeeId　社員ID
-	 * @param publicHolidaySetting　公休設定
+	 * @param require
 	 * @return　PublicHolidayCarryForwardData　公休繰越データ
 	 */
 	private Optional<PublicHolidayCarryForwardData> createPublicHolidayCarryForwardData(
-			String employeeId, PublicHolidaySetting publicHolidaySetting){
+			String companyId, String employeeId, RequireM1 require){
+		
+		
+		PublicHolidaySetting publicHolidaySetting = require.publicHolidaySetting(companyId);
 		
 		if(!this.numberCarriedForward.isPresent()){
 			return Optional.empty(); 

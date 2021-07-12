@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.bs.company.dom.company.AbolitionAtr;
 import nts.uk.ctx.bs.company.dom.company.AddInfor;
@@ -240,7 +239,7 @@ public class CompanyPubImp implements ICompanyPub {
 		return result;
 	}
 	
-	//暦の年月から年月期間を作成する
+	//暦の年月から年月期間を取得する
 	@Override
 	public Optional<YearMonthPeriod> createPeriod(String cid, YearMonth yearMonth){
 		Optional<Company> company = this.repo.getComanyInfoByCid(cid);
@@ -249,6 +248,6 @@ public class CompanyPubImp implements ICompanyPub {
 			return Optional.empty();
 		}
 
-		return Optional.of(company.get().createPeriod(yearMonth));
+		return Optional.of(company.get().getYearMonthPeriod(yearMonth));
 	}
 }

@@ -106,7 +106,10 @@ public class GetRemainingNumberPublicHolidayService {
 			//繰越データを作成
 			PublicHolidayCarryForwardInformationOutput CarryForwardInformation=
 					publicHolidayWork.calculateCarriedForwardInformation(
-							employeeId,publicHolidayCarryForwardData,publicHolidaySetting);
+							companyId,
+							employeeId,
+							publicHolidayCarryForwardData,
+							require);
 
 			
 			publicHolidayInformation.add(new PublicHolidayInformation(publicHolidayWork.getYearMonth(),

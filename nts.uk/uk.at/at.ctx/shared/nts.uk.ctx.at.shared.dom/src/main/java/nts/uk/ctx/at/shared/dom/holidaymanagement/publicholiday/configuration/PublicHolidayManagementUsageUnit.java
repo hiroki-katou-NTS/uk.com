@@ -65,7 +65,7 @@ public class PublicHolidayManagementUsageUnit extends AggregateRoot{
 	 * @return List<PublicHolidayMonthSetting>
 	 */
 	public List<PublicHolidayMonthSetting> GetNumberofPublicHoliday(
-			RequireM1 require, String companyID, String employeeId, List<AggregationPeriodList> periodList, GeneralDate criteriaDate){
+			RequireM1 require, String companyID, String employeeId, List<AggregationPeriod> periodList, GeneralDate criteriaDate){
 		
 		List<PublicHolidayMonthSetting> publicHolidayMonthSetting = new ArrayList<>();
 		List<PublicHolidayMonthSetting> empPublicHolidayMonthSetting= new ArrayList<>();
@@ -131,7 +131,7 @@ public class PublicHolidayManagementUsageUnit extends AggregateRoot{
 	
 	//雇用月間日数設定を取得する
 	private List<PublicHolidayMonthSetting> getEmploymentMonthDaySetting(
-			RequireM1 require, String companyID, String employeeId,	List<AggregationPeriodList> periodList, GeneralDate criteriaDate){
+			RequireM1 require, String companyID, String employeeId,	List<AggregationPeriod> periodList, GeneralDate criteriaDate){
 		
 		//社員と基準日から雇用履歴項目を取得する
 		List<String> employeeIds = new ArrayList<>();
@@ -156,7 +156,7 @@ public class PublicHolidayManagementUsageUnit extends AggregateRoot{
 	
 	//職場月間日数設定を取得する
 	private List<PublicHolidayMonthSetting> getWkpPublicHolidayMonthSetting(
-			RequireM1 require, String companyID, String employeeId,	List<AggregationPeriodList> periodList, GeneralDate criteriaDate){
+			RequireM1 require, String companyID, String employeeId,	List<AggregationPeriod> periodList, GeneralDate criteriaDate){
 		
 		//社員と基準日から所属職場履歴項目を取得する
 		Optional<SharedAffWorkPlaceHisImport> affWorkplaceHistoryItem = require.getAffWorkPlaceHis(employeeId, criteriaDate);

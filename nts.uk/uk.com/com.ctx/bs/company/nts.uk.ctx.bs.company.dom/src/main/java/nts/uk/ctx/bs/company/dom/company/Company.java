@@ -6,10 +6,8 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.company.dom.company.primitive.ABName;
@@ -156,9 +154,9 @@ public class Company extends AggregateRoot {
 		return result;
 	}
 	
-	//[3]暦の年月から年月期間を作成する
+	//[3]暦の年月から年月期間を取得する
 	
-	public YearMonthPeriod createPeriod(YearMonth yearMonth){
+	public YearMonthPeriod getYearMonthPeriod(YearMonth yearMonth){
 		return  getPeriodTheYear(getYearBySpecifying(yearMonth).v());
 		
 

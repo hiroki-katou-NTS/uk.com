@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 
 /**
@@ -44,7 +43,7 @@ public interface CompanyAdapter {
 	// 年度の期間を取得
 	YearMonthPeriod get(String cid, int year);
 	
-	//暦の年月から年月期間を作成する
-	Optional<YearMonthPeriod> createPeriod(String cid, YearMonth yearMonth);
+	//暦の年月から年月期間を取得する
+	Optional<YearMonthPeriod> getYearMonthPeriod(String cid, YearMonth yearMonth);
 
 }
