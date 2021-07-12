@@ -3,85 +3,35 @@
 module nts.uk.at.view.kdr004.a {
     import common = nts.uk.at.view.kdr004.common;
 
-    const KWR005_SAVE_DATA = 'WORK_SCHEDULE_STATUS_OUTPUT_CONDITIONS';
-
     const PATH = {
         exportExcelPDF: 'at/function/holidayconfirmationtable/exportKdr004',
     };
 
     @bean()
     class ViewModel extends ko.ViewModel {
-
         // start variable of CCG001
         ccg001ComponentOption: common.GroupOption;
-        closureId: KnockoutObservable<number> = ko.observable(null);
-        // end variable of CCG001
-
-        //panel left
-        dpkYearMonth: KnockoutObservable<number> = ko.observable(202010);
-
-        //panel right
-        rdgSelectedId: KnockoutObservableArray<number> = ko.observableArray([]);
 
         zeroDisplayClassification: KnockoutObservable<number> = ko.observable(0);
         pageBreakSpecification: KnockoutObservable<number> = ko.observable(0);
-        isWorker: KnockoutObservable<boolean> = ko.observable(true);
 
         // start declare KCP005
         listComponentOption: any;
-        selectedCode: KnockoutObservable<string>;
         multiSelectedCode: KnockoutObservableArray<string>;
-        isShowAlreadySet: KnockoutObservable<boolean>;
         alreadySettingList: KnockoutObservableArray<common.UnitAlreadySettingModel>;
-        isDialog: KnockoutObservable<boolean>;
-        isShowNoSelectRow: KnockoutObservable<boolean>;
-        isMultiSelect: KnockoutObservable<boolean>;
-        isShowWorkPlaceName: KnockoutObservable<boolean>;
-        isShowSelectAllButton: KnockoutObservable<boolean>;
-        disableSelection: KnockoutObservable<boolean>;
-
         employeeList: KnockoutObservableArray<common.UnitModel>;
-        baseDate: KnockoutObservable<Date>;
         // end KCP005
 
-        mode: KnockoutObservable<common.UserSpecificInformation> = ko.observable(null);
+        haveMoreHolidayThanDrawOut: KnockoutObservable<boolean> = ko.observable(false);
+        haveMoreDrawOutThanHoliday: KnockoutObservable<boolean> = ko.observable(false);
 
-        isPermission51: KnockoutObservable<boolean> = ko.observable(false);
-        itemSelection: KnockoutObservableArray<any> = ko.observableArray([]);
-
-        periodDate: KnockoutObservable<any> = ko.observable(null);
-
-        constructor(params: any) {
-            super();
+        created() {
             const vm = this;
-
-
-            //パラメータ.就業担当者であるか = true || false
-            vm.isWorker(vm.$user.role.isInCharge.attendance);
-            vm.getItemSelection();
-            vm.getWorkScheduleOutputConditions();
-
-            vm.rdgSelectedId.subscribe((value) => {
-                //focus
-                // let focusId = value.indexOf(0) >= 0 ? '#KWR005_105' : '#KWR005_106';
-                // $(focusId).focus();
-                // nts.uk.ui.errors.clearAll();
-            });
-
             vm.CCG001_load();
             vm.KCP005_load();
-
-        }
-
-        created(params: any) {
-            const vm = this;
-
-            vm.periodDate({startDate: '2017/02/02', endDate: '2017/02/02'});
         }
 
         mounted() {
-            const vm = this;
-
             $('#kcp005 table').attr('tabindex', '-1');
             $('#btnExportExcel').focus();
         }
@@ -131,10 +81,9 @@ module nts.uk.at.view.kdr004.a {
                  * @param: data: the data return from CCG001
                  */
                 returnDataFromCcg001: function (data: common.Ccg001ReturnedData) {
-                    vm.closureId(data.closureId);
                     vm.getListEmployees(data);
                 }
-            }
+            };
             // Start component
             $('#CCG001').ntsGroupComponent(vm.ccg001ComponentOption);
         }
@@ -143,34 +92,22 @@ module nts.uk.at.view.kdr004.a {
             const vm = this;
 
             // start define KCP005
-            vm.baseDate = ko.observable(new Date());
-            vm.selectedCode = ko.observable('1');
             vm.multiSelectedCode = ko.observableArray([]);
-            vm.isShowAlreadySet = ko.observable(false);
-            vm.alreadySettingList = ko.observableArray([
-                {code: '1', isAlreadySetting: true},
-                {code: '2', isAlreadySetting: true}
-            ]);
-            vm.isDialog = ko.observable(true);
-            vm.isShowNoSelectRow = ko.observable(false);
-            vm.isMultiSelect = ko.observable(true);
-            vm.isShowWorkPlaceName = ko.observable(true);
-            vm.isShowSelectAllButton = ko.observable(true);
-            //vm.disableSelection = ko.observable(false);
+            vm.alreadySettingList = ko.observableArray([]);
             vm.employeeList = ko.observableArray<common.UnitModel>([]);
 
             vm.listComponentOption = {
-                isShowAlreadySet: vm.isShowAlreadySet(),
-                isMultiSelect: vm.isMultiSelect(),
+                isShowAlreadySet: false,
+                isMultiSelect: true,
                 listType: common.ListType.EMPLOYEE,
                 employeeInputList: vm.employeeList,
                 selectType: common.SelectType.SELECT_BY_SELECTED_CODE,
                 selectedCode: vm.multiSelectedCode,
-                isDialog: vm.isDialog(),
-                isShowNoSelectRow: vm.isShowNoSelectRow(),
+                isDialog: true,
+                isShowNoSelectRow: false,
                 alreadySettingList: vm.alreadySettingList,
-                isShowWorkPlaceName: vm.isShowWorkPlaceName(),
-                isShowSelectAllButton: vm.isShowSelectAllButton(),
+                isShowWorkPlaceName: true,
+                isShowSelectAllButton: true,
                 isSelectAllAfterReload: false,
                 tabindex: 5,
                 maxRows: 15
@@ -282,72 +219,22 @@ module nts.uk.at.view.kdr004.a {
             vm.$blockui("show");
             nts.uk.request.exportFile(PATH.exportExcelPDF, {
                 employeeIds: lstEmployeeIds,
-                haveMoreHolidayThanDrawOut: vm.rdgSelectedId().indexOf(0) >= 0,
-                haveMoreDrawOutThanHoliday: vm.rdgSelectedId().indexOf(1) >= 0,
+                haveMoreHolidayThanDrawOut: vm.haveMoreHolidayThanDrawOut(),
+                haveMoreDrawOutThanHoliday: vm.haveMoreDrawOutThanHoliday(),
                 howToPrintDate: vm.zeroDisplayClassification(),
                 pageBreak: vm.pageBreakSpecification()
             }).fail(error => {
-                vm.$dialog.error(error);
+                vm.$dialog.error(error).then(() => {
+                    if (error.messageId == "Msg_1926") $("#kcp005").focus()
+                });
             }).always(() => {
                 vm.$blockui("hide");
             });
         }
 
-        saveWorkScheduleOutputConditions(): JQueryPromise<void> {
-            let vm = this,
-                dfd = $.Deferred<void>(),
-                companyId: string = vm.$user.companyId,
-                employeeId: string = vm.$user.employeeId;
-
-            let data: WorkScheduleOutputConditions = {
-                itemSelection: vm.rdgSelectedId(), //項目選択
-                zeroDisplayClassification: vm.zeroDisplayClassification(), //自由の選択済みコード
-                pageBreakSpecification: vm.pageBreakSpecification() //改ページ指定
-            };
-
-            let storageKey: string = KWR005_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
-            vm.$window.storage(storageKey, data).then(() => {
-                dfd.resolve();
-            });
-
-            return dfd.promise();
-        }
-
-        getWorkScheduleOutputConditions() {
-            const vm = this,
-                //dfd = $.Deferred<void>(),
-                companyId: string = vm.$user.companyId,
-                employeeId: string = vm.$user.employeeId;
-
-            let storageKey: string = KWR005_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
-
-            vm.$window.storage(storageKey).then((data: WorkScheduleOutputConditions) => {
-
-                if (!_.isNil(data)) {
-                    let zeroDisplay = _.isEmpty(data.zeroDisplayClassification) ? 0 : data.zeroDisplayClassification;
-                    let pageBreak = _.isEmpty(data.pageBreakSpecification) ? 0 : data.pageBreakSpecification;
-                    vm.rdgSelectedId(!vm.isPermission51() ? 0 : data.itemSelection); //項目選択
-                    vm.zeroDisplayClassification(data.zeroDisplayClassification); //自由の選択済みコード
-                    vm.pageBreakSpecification(data.pageBreakSpecification); //改ページ指定
-                }
-            }).always(() => {
-            });
-        }
-
-        getItemSelection() {
-            const vm = this;
-            vm.itemSelection.push({id: 0, name: vm.$i18n('KDR004_11')});
-            vm.itemSelection.push({id: 1, name: vm.$i18n('KDR004_12')});
-        }
-
     }
 
     //=================================================================
-    export interface WorkScheduleOutputConditions {
-        itemSelection?: number, //項目選択
-        zeroDisplayClassification?: number, //自由の選択済みコード
-        pageBreakSpecification?: number //改ページ指定
-    }
 
     export class ItemModel {
         id: string;

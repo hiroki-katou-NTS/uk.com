@@ -46,79 +46,54 @@
             <div class="pull-left fixed-flex-layout-right">
                 <!-- A3_1-->
                 <div class="panel panel-frame">
-                    <div class="panel-row">
-                        <div class="row-left" style="width: 300px;">
-                            <div
-                                    class="label"
-                                    data-bind="ntsFormLabel: {}, text: $i18n('KDR004_110')"
-                            ></div>
+                    <div class="panel-row" style="display: flex;">
+                        <div style="flex-shrink: 0;" data-bind="ntsFormLabel: {text: $i18n('KDR004_110')}">
                         </div>
-                        <div class="row-right">
-                            <div class="radios-group" style="width: 300px;">
-                                <!-- A3_6_1 --> <!-- A3_6_2 -->
-                                <div tabindex="3"
-                                     data-bind="ntsMultiCheckBox: {
-                                      options: itemSelection,
-                                      optionsValue: 'id',
-                                      optionsText: 'name',
-                                      value: rdgSelectedId,
-                                      enable: true
-                                    }"
-                                ></div>
-                            </div>
+                        <div style="display: inline-block">
+                            <!-- A3_6_1 --> <!-- A3_6_2 -->
+                            <div tabindex="3"
+                                 data-bind="ntsCheckBox: { checked: haveMoreHolidayThanDrawOut }"
+                            >#{i18n.getText('KDR004_11')}</div>
+                            <div tabindex="3"
+                                 data-bind="ntsCheckBox: { checked: haveMoreDrawOutThanHoliday }"
+                            >#{i18n.getText('KDR004_12')}</div>
                         </div>
                     </div>
-                    <div class="panel-row">
-                        <div class="row-left" style="width: 300px;">
-                            <!-- A4_1-->
-                            <div
-                                    class="label"
-                                    data-bind="ntsFormLabel: {}, text: $i18n('KDR004_13')"
-                            ></div>
+                    <div class="panel-row valign-center">
+                        <div data-bind="ntsFormLabel: {text: $i18n('KDR004_13')}">
                         </div>
-                        <div class="row-right row-switch-button">
-                            <!-- A4_2 -->
-                            <div
-                                    tabindex="5"
-                                    class="cf"
-                                    data-bind="ntsSwitchButton: {
-                    name: '#[KDR004_13]',
-                    options: [
-                      { code: 1, name: $i18n('KDR004_14')},
-                      { code: 0, name: $i18n('KDR004_15')}
-                    ],
-                    optionsValue: 'code',
-                    optionsText: 'name',
-                    value: zeroDisplayClassification
-                  }"
-                            ></div>
+                        <!-- A4_2 -->
+                        <div tabindex="5"
+                            class="cf"
+                            data-bind="ntsSwitchButton: {
+                                                name: '#[KDR004_13]',
+                                                options: [
+                                                  { code: 1, name: $i18n('KDR004_14')},
+                                                  { code: 0, name: $i18n('KDR004_15')}
+                                                ],
+                                                optionsValue: 'code',
+                                                optionsText: 'name',
+                                                value: zeroDisplayClassification
+                                              }">
                         </div>
                     </div>
-                    <div class="panel-row">
-                        <div class="row-left" style="width: 300px;">
-                            <!-- A5_1-->
-                            <div
-                                    class="label"
-                                    data-bind="ntsFormLabel: {}, text: $i18n('KDR004_16')"
-                            ></div>
+                    <div class="panel-row valign-center">
+                        <!-- A5_1-->
+                        <div data-bind="ntsFormLabel: {text: $i18n('KDR004_16')}">
                         </div>
-                        <div class="row-right row-switch-button">
-                            <!-- A5_2 -->
-                            <div
-                                    tabindex="6"
-                                    class="cf"
-                                    data-bind="ntsSwitchButton: {
-                    name: '#[KDR004_16]',
-                    options: [
-                      { code: 0, name: $i18n('KDR004_17')},
-                      { code: 1, name: $i18n('KDR004_18')},
-                      { code: 2, name: $i18n('KDR004_19')}
-                    ],
-                    optionsValue: 'code',
-                    optionsText: 'name',
-                    value: pageBreakSpecification
-                  }"
-                            ></div>
+                        <!-- A5_2 -->
+                        <div tabindex="6"
+                             data-bind="ntsSwitchButton: {
+                                                name: '#[KDR004_16]',
+                                                options: [
+                                                  { code: 0, name: $i18n('KDR004_17')},
+                                                  { code: 1, name: $i18n('KDR004_18')},
+                                                  { code: 2, name: $i18n('KDR004_19')}
+                                                ],
+                                                optionsValue: 'code',
+                                                optionsText: 'name',
+                                                value: pageBreakSpecification
+                                              }">
                         </div>
                     </div>
                 </div>

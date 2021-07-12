@@ -25,42 +25,19 @@
     padding: 0 !important;
 }
 .kdr-004 .panel .panel-row {
-    display: flex;
     margin-bottom: 25px;
 }
 
-.kdr-004 .panel .panel-row .row-left {
-    width: 200px;
+.panel-row .form-label {
+    width: 220px;
+}
 
-}
-.kdr-004 .panel .panel-row .row-left .label {
-    display: flex;
-    align-items: center;
-}
-.kdr-004 .panel .panel-row .row-right {
-    display: flex;
-    width: calc(100% - 140px);
-}
-.kdr-004 .panel .row-right .radios-group {
-    padding-top: 5px;
-    width: 110px;
-}
-.kdr-004 .panel .row-right .radios-group .ntsRadioBox:first-child {
-    margin-bottom: 20px;
-}
-.kdr-004 .panel .row-right .text-box-button {
-    flex: 2;
-}
-.kdr-004 .panel .text-box-button .item {
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-}
-.kdr-004 .panel .text-box-button .item .ui-igcombo-wrapper {
-    margin-right: 10px;
-    width: calc(100% - 30px);
-}
 .kdr-004 .panel .switchButton-wrapper button {
     width: 65px;
 }
 
+.kdr-004 .panel .switchbox-wrappers .radio-wrapper {
+    flex-direction: column;
+    width: 65px;
+    text-align: center;
+}
