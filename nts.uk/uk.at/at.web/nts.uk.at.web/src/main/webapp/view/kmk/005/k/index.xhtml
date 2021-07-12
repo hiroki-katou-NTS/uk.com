@@ -5,7 +5,8 @@
 				direction: 'right', 
 				showIcon: true, 
 				visible: true}">
-		<div class="form-group filter-group" data-bind="with: filter">
+		<div style = "float: left ; padding-top: 10px;">		
+		<div class="form-group filter-group" data-bind="with: filter" >
 			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK005_85')}</div>
 			<div
 				data-bind="ntsComboBox: {
@@ -53,7 +54,6 @@
 			<button class="caret-bottom" data-bind="click: $parent.search.bind($parent)">#{i18n.getText('KMK005_79')}</button>
 			<button data-bind="click: $parent.returnData.bind($parent)">#{i18n.getText('KMK005_93')}</button>
 		</div>
-		<div style="display : flex">
 			<div id="k_gridlist-div" data-bind="with: model">
 				<table id="k_gridlist-tbl"
 					data-bind="ntsGridList: {
@@ -73,6 +73,8 @@
 			                ]
 						}"></table>
 			</div >
+		</div>
+	
 			<div class="information" data-bind="with: model">
 				<label>#{i18n.getText('KMK005_75',['#KMK005_44'])}</label>
 				<hr />
@@ -87,7 +89,6 @@
 					<label data-bind="text: bpsn"></label>
 				</div>
 			</div>
-		</div>
 	</div>
 	
 </div>
