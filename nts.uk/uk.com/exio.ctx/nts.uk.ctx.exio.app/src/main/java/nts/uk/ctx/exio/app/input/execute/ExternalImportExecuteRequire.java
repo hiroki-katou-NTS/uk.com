@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.exio.dom.input.ExecuteImporting;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecordRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRepository;
@@ -75,7 +76,7 @@ public class ExternalImportExecuteRequire {
 	private GroupWorkspaceRepository groupWorkspaceRepo;
 	
 	@Inject
-	private ExternalImportWorkspaceRepository workspaceRepo;
+	private CanonicalizedDataRecordRepository canonicalizedDataRecordRepo;
 	
 	@Inject
 	private ExternalImportExistingRepository existingRepo;
@@ -115,7 +116,7 @@ public class ExternalImportExecuteRequire {
 
 		@Override
 		public List<String> getAllEmployeeIdsOfCanonicalizedData(ExecutionContext context) {
-			return workspaceRepo.getAllEmployeeIdsOfCanonicalizedData(this, context);
+			return canonicalizedDataRecordRepo.getAllEmployeeIds(this, context);
 		}
 
 		@Override

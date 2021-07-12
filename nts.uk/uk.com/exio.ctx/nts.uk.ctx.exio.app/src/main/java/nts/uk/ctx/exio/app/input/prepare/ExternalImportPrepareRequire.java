@@ -23,6 +23,7 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.PrepareImporting;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
+import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecordRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRepository;
@@ -37,6 +38,7 @@ import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
+import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecordRepository;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItemRepository;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.codeconvert.CodeConvertCode;
@@ -78,6 +80,12 @@ public class ExternalImportPrepareRequire {
 
 	@Inject
 	private ExternalImportWorkspaceRepository workspaceRepo;
+	
+	@Inject
+	private RevisedDataRecordRepository revisedDataRecordRepo;
+	
+	@Inject
+	private CanonicalizedDataRecordRepository canonicalizedDataRecordRepo;
 
 	@Inject
 	private ExternalImportExistingRepository existingRepo;
@@ -176,33 +184,33 @@ public class ExternalImportPrepareRequire {
 
 		@Override
 		public void save(ExecutionContext context, RevisedDataRecord revisedDataRecord) {
-			workspaceRepo.save(this, context, revisedDataRecord);
+			revisedDataRecordRepo.save(this, context, revisedDataRecord);
 		}
 
 		@Override
 		public void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord) {
-			workspaceRepo.save(this, context, canonicalizedDataRecord);
+			canonicalizedDataRecordRepo.save(this, context, canonicalizedDataRecord);
 		}
 
 		@Override
 		public int getMaxRowNumberOfRevisedData(ExecutionContext context) {
-			return workspaceRepo.getMaxRowNumberOfRevisedData(this, context);
+			return revisedDataRecordRepo.getMaxRowNumber(this, context);
 		}
 
 		@Override
 		public List<String> getStringsOfRevisedData(ExecutionContext context, int itemNo) {
-			return workspaceRepo.getStringsOfRevisedData(this, context, itemNo);
+			return revisedDataRecordRepo.getStrings(this, context, itemNo);
 		}
 
 		@Override
 		public Optional<RevisedDataRecord> getRevisedDataRecordByRowNo(ExecutionContext context, int rowNo) {
-			return workspaceRepo.findRevisedByRowNo(this, context, rowNo);
+			return revisedDataRecordRepo.findByRowNo(this, context, rowNo);
 		}
 
 		@Override
 		public List<RevisedDataRecord> getRevisedDataRecordWhere(
 				ExecutionContext context, int itemNoCondition, String conditionString) {
-			return workspaceRepo.findRevisedWhere(this, context, itemNoCondition, conditionString);
+			return revisedDataRecordRepo.findByCriteria(this, context, itemNoCondition, conditionString);
 		}
 
 		@Override

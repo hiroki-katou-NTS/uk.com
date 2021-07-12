@@ -36,6 +36,14 @@ public class WorkspaceSql {
 	private final GroupWorkspace workspace;
 	private final JdbcProxy jdbcProxy;
 	
+	public static WorkspaceSql create(Require require, ExecutionContext context, JdbcProxy jdbcProxy) {
+
+		val group = require.getImportingGroup(context.getGroupId());
+		val workspace = require.getGroupWorkspace(context.getGroupId());
+		
+		return new WorkspaceSql(context, group, workspace, jdbcProxy);
+	}
+	
 	/**
 	 * 編集済み用のCREATE TABLEを実行する
 	 * @param require
