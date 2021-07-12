@@ -52,9 +52,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.child
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM4;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM5;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM6;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.export.pererror.CreatePerErrorsFromLeaveErrors;
@@ -205,8 +202,8 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 	 * @param interimRemainMngMode 暫定残数データ管理モード
 	 * @param isCalcAttendanceRate 出勤率計算フラグ
 	 */
-	public void annualAndReserveLeaveRemain(RequireM6 require, CacheCarrier cacheCarrier, DatePeriod period,
-			InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate) {
+	public void annualAndReserveLeaveRemain(GetDaysForCalcAttdRate.RequireM2 require, CacheCarrier cacheCarrier, 
+			DatePeriod period, InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate) {
 
 		// 暫定残数データを年休・積立年休に絞り込む
 		List<TempAnnualLeaveMngs> tmpAnnualLeaveMngs = new ArrayList<>();
@@ -348,8 +345,8 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 	 * @param period 期間
 	 * @param interimRemainMngMode 暫定残数データ管理モード
 	 */
-	public void absenceLeaveRemain(RequireM5 require, CacheCarrier cacheCarrier, DatePeriod period,
-			InterimRemainMngMode interimRemainMngMode) {
+	public void absenceLeaveRemain(NumberCompensatoryLeavePeriodQuery.Require require, CacheCarrier cacheCarrier, 
+			DatePeriod period, InterimRemainMngMode interimRemainMngMode) {
 
 		// 暫定残数データを振休・振出に絞り込む
 		List<InterimRemain> interimMng = new ArrayList<>();
@@ -410,8 +407,8 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 	 * @param period 期間
 	 * @param interimRemainMngMode 暫定残数データ管理モード
 	 */
-	public void dayoffRemain(RequireM4 require, CacheCarrier cacheCarrier, DatePeriod period,
-			InterimRemainMngMode interimRemainMngMode) {
+	public void dayoffRemain(NumberRemainVacationLeaveRangeQuery.Require require, CacheCarrier cacheCarrier, 
+			DatePeriod period, InterimRemainMngMode interimRemainMngMode) {
 
 		// 暫定残数データを休出・代休に絞り込む
 		List<InterimRemain> interimMng = new ArrayList<>();
