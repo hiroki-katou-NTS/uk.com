@@ -15,6 +15,7 @@ module nts.uk.ui.at.ksu002.a {
 		GSCHE: '/screen/ksu/ksu002/displayInWorkInformation',
 		GSCHER: '/screen/ksu/ksu002/getDataDaily',
 		SAVE_DATA: '/screen/ksu/ksu002/regisWorkSchedule',
+		GET_START_DAY_OF_WEEK: '/ctx/at/shared/workrule/weekmanage/find'
 	};
 
 	const memento: m.Options = {
@@ -165,8 +166,20 @@ module nts.uk.ui.at.ksu002.a {
 		
 		dayStartWeek: KnockoutObservable<number> = ko.observable(null);
 		
+		readyLoadData: boolean = false;
+		
 		created() {
 			const vm = this;
+			//<<Query>> 週の管理を取得する
+			vm.$ajax('at', API.GET_START_DAY_OF_WEEK).done((data: any) => {
+				vm.dayStartWeek(data.dayOfWeek);	
+				if(vm.readyLoadData){
+					loadData();
+				}else{
+					vm.readyLoadData = true;					
+				}
+			});
+			
 			vm.employeeId = ko.observableArray([vm.$user.employeeId]);
 			const dr: c.DateRange = {
 				begin: null,
@@ -187,7 +200,6 @@ module nts.uk.ui.at.ksu002.a {
 
 				vm.$errors('clear')
 					.then(() => vm.$blockui('grayout'))
-					.then(() => vm.dayStartWeek(0))
 					.then(() => vm.$ajax('at', API.GSCHE, command))
 					.then((response: WorkSchedule<string>[]) => _.chain(response)
 						.orderBy(['date'])
@@ -387,7 +399,11 @@ module nts.uk.ui.at.ksu002.a {
 					dr.begin = begin;
 					dr.finish = finish;
 					vm.baseDateKCP015(dr.finish);
-					loadData();
+					if(vm.readyLoadData){
+						loadData();
+					}else{
+						vm.readyLoadData = true;
+					}
 				});
 
 			// UI-4
@@ -860,7 +876,7 @@ function calculateDaysStartEndWeek(start: Date, end: Date, settingDayStart: numb
 		const locale = moment.locale();
 		moment.updateLocale(locale, {
 			week: {
-				dow: settingDayStart,
+				dow: settingDayStart - 1,
 				doy: 0
 			}
 		});

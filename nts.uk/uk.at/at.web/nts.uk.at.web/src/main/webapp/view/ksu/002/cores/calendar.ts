@@ -556,13 +556,13 @@ module nts.uk.ui.calendar {
 			const vm = this;
 			const { data, baseDate } = vm;
 			let options = [
-					{ id: 0, title: getText('KSU002_39')},
-					{ id: 1, title: getText('KSU002_40')},
-                    { id: 2, title: getText('KSU002_41')},
-                    { id: 3, title: getText('KSU002_42')},
-                    { id: 4, title: getText('KSU002_43')},
-                    { id: 5, title: getText('KSU002_44')},
-                    { id: 6, title: getText('KSU002_45')}
+					{ id: 1, title: getText('KSU002_39')},
+					{ id: 2, title: getText('KSU002_40')},
+                    { id: 3, title: getText('KSU002_41')},
+                    { id: 4, title: getText('KSU002_42')},
+                    { id: 5, title: getText('KSU002_43')},
+                    { id: 6, title: getText('KSU002_44')},
+                    { id: 7, title: getText('KSU002_45')}
                 ];
 			baseDate.options(options);
 			vm.data.rootVm.dayStartWeek.subscribe((item: any) => {
@@ -647,7 +647,7 @@ module nts.uk.ui.calendar {
 
 					moment.updateLocale(locale, {
 						week: {
-							dow: ko.unwrap(startDate),
+							dow: ko.unwrap(startDate - 1),
 							doy: 0
 						}
 					});
