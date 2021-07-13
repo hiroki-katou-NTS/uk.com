@@ -14,26 +14,10 @@
 	justify-content: center;
 }
 
-/* .icon-warning {
-	margin-right: 3px;
-	background-image: url(images/icon_warning.png);
-	background-size: 20px;
-  width: 20px;
-	height: 20px;
-} */
-
-/* .icon-start {
-	margin-right: 3px;
-	background-image: url(images/icon_start.png);
-	background-size: 20px;
-  width: 20px;
-	height: 20px;
+.button-process-start, .button-process-stop {
+  border: none;
+  box-shadow: none;
+  transform: none !important;
+  background-color: transparent !important;
+  padding: 0 7px !important;
 }
-
-.icon-stop {
-	margin-right: 3px;
-	background-image: url(images/icon_stop.png);
-	background-size: 20px;
-	width: 20px;
-	height: 20px;
-} */

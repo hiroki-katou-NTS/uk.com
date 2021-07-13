@@ -180,7 +180,7 @@ module nts.uk.at.view.kbt002.f {
               width: 50,
               formatter: (value: any, record: ExecutionItemInfomationModel) => {
                 const enabled = (record.execStatus === 1 || record.execStatus === 2) && (record.overallStatus !== 0 && record.overallStatus !== 3);
-                const $button = $("<button>", { "class": "setting small button-open-g", "tabindex": 8, "disabled": !enabled, "text": vm.$i18n("KBT002_144") });
+                const $button = $("<button>", { "class": "setting small button-open-g", "tabindex": 5, "disabled": !enabled, "text": vm.$i18n("KBT002_144") });
                 $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
                 return $button[0].outerHTML;
               }
@@ -192,7 +192,7 @@ module nts.uk.at.view.kbt002.f {
               width: 70,
               formatter: (value: number, record: ExecutionItemInfomationModel) => {
                 const enabled: boolean = (record.execStatus === 1 || record.execStatus === 2);
-                const $button = $("<button>", { "class": "btn-center setting small button-process-start", "tabindex": 5, "disabled": !enabled });
+                const $button = $("<button>", { "class": "btn-center setting small button-process-start", "tabindex": 6, "disabled": !enabled });
                 $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
                 $button.append(`<i class="img-icon icon-start" data-bind="ntsIcon: { no: 226, width: 25, height: 25 }"></i>${vm.$i18n('KBT002_262')}`);
                 return $button[0].outerHTML;
@@ -204,7 +204,7 @@ module nts.uk.at.view.kbt002.f {
               width: 70,
               formatter: (value: number, record: ExecutionItemInfomationModel) => {
                 const enabled: boolean = (record.execStatus === 0);
-                const $button = $("<button>", { "class": "btn-center setting small button-process-stop", "tabindex": 6, "disabled": !enabled });
+                const $button = $("<button>", { "class": "btn-center setting small button-process-stop", "tabindex": 7, "disabled": !enabled });
                 $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
                 $button.append(`<i class="img-icon icon-stop" data-bind="ntsIcon: { no: 227, width: 25, height: 25 }"></i>${vm.$i18n('KBT002_133')}`);
                 return $button[0].outerHTML;
@@ -252,7 +252,7 @@ module nts.uk.at.view.kbt002.f {
           _.forEach(vm.dataSource(), item => {
             const $switch = $(`.nts-grid-control-isTaskExecution-${nts.uk.text.padLeft(item.execItemCd, '0', 2)}`);
             // Add tabindex for switch
-            $switch.attr("tabindex", "7");
+            $switch.find("button:first-child()").attr("tabindex", "8");
             // Disable F3_7
             if (!item.executionTaskSetting) {
               $switch.find("button").attr("disabled", "disabled");
