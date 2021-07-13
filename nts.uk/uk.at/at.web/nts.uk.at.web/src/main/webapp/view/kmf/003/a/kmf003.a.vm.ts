@@ -851,6 +851,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.A7_4SelectedRuleCode.subscribe(function(value) {
                 // clear all error
                 nts.uk.ui.errors.clearAll();
+				$('#monthdays').trigger('validate')
+				$('#input-name').trigger('validate')
                 
                 if(value == 0){
                     self.symbols("%");
@@ -955,7 +957,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.useCls02.subscribe(function(value) {
                 // clear all error
                 nts.uk.ui.errors.clearAll();
-                
+                $('#monthdays').trigger('validate')
+				$('#input-name').trigger('validate')
                 if(value == true){
                     self.conditionValue02Enable(true);
                     self.btnSetting02Enable(!self.editMode());
@@ -1012,7 +1015,9 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.useCls03.subscribe(function(value) {
                 // clear all error
                 nts.uk.ui.errors.clearAll();
-                
+                $('#monthdays').trigger('validate')
+				$('#input-name').trigger('validate')
+				
                 if(value == true){
                     self.conditionValue03Enable(true);
                     self.btnSetting03Enable(!self.editMode());
@@ -1082,6 +1087,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.useCls04.subscribe(function(value) {
                 // clear all error
                 nts.uk.ui.errors.clearAll();
+				$('#monthdays').trigger('validate')
+				$('#input-name').trigger('validate')
                 
                 if(value == true){
                     self.conditionValue04Enable(true);
@@ -1148,7 +1155,9 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.useCls05.subscribe(function(value) {
                 // clear all error
                 nts.uk.ui.errors.clearAll();
-                
+                $('#monthdays').trigger('validate')
+				$('#input-name').trigger('validate')
+				
                 if(value == true ){
                     self.conditionValue05Enable(true);
                     self.btnSetting05Enable(!self.editMode());
