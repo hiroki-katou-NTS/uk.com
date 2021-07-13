@@ -29,13 +29,10 @@ import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-//public class ManHourAggregationResultExportService extends ExportService<AggregationResultQuery> {
-public class ManHourAggregationResultExportService extends ExportService<List<RegistrationErrorListDto>> {
+public class ManHourAggregationResultExportService extends ExportService<ManHourDataSummaryQuery> {
+//public class ManHourAggregationResultExportService extends ExportService<List<RegistrationErrorListDto>> {
     @Inject
     private CSVReportGenerator generator;
-
-    @Inject
-    private CreateAggregationManHourResult createAggregationManHourResult;
 
     private static final String CODE_HEADER = "KHA003_103";
 
@@ -52,32 +49,29 @@ public class ManHourAggregationResultExportService extends ExportService<List<Re
     private static final String DATE_FORMAT = "yyyy/MM/dd";
 
     @Override
-//    protected void handle(ExportServiceContext<AggregationResultQuery> exportServiceContext) {
-    protected void handle(ExportServiceContext<List<RegistrationErrorListDto>> exportServiceContext) {
-//        val query = exportServiceContext.getQuery();
-//        if (query == null) return;
-        AggregationResultQuery query = new AggregationResultQuery(
-                "01", null, Collections.emptyList(),
-                new ManHourPeriod(
-                        0,
-                        "2021/06/01",
-                        "2021/06/03",
-                        "2021/06",
-                        "2021/06"
-                )
-        );
+    protected void handle(ExportServiceContext<ManHourDataSummaryQuery> exportServiceContext) {
+//    protected void handle(ExportServiceContext<List<RegistrationErrorListDto>> exportServiceContext) {
+        val query = exportServiceContext.getQuery();
+        if (query == null) return;
+//        AggregationResultQuery query = new AggregationResultQuery(
+//                "01", null, Collections.emptyList(),
+//                new ManHourPeriod(
+//                        0,
+//                        "2021/06/01",
+//                        "2021/06/03",
+//                        "2021/06",
+//                        "2021/06"
+//                )
+//        );
 
         String executionTime = GeneralDateTime.now().toString().replaceAll("[/:\\s]", "");
 
-        // Get data result
-//        ManHourAggregationResultDto data = this.createAggregationManHourResult.get(query.getCode(), query.getMasterNameInfo(), query.getWorkDetailList(),
-//                query.getDateList(), query.getYearMonthList());
-        ManHourAggregationResultDto data = new ManHourAggregationResultDto(
-                Dummy.SummaryTableFormat.create(),
-                Dummy.SummaryTableOutputContent.create());
-        val detailFormatSetting = data.getSummaryTableFormat().getDetailFormatSetting();
+//        ManHourAggregationResultDto data = new ManHourAggregationResultDto(
+//                Dummy.SummaryTableFormat.create(),
+//                Dummy.SummaryTableOutputContent.create());
+        val detailFormatSetting = query.getSummaryTableFormat().getDetailFormatSetting();
         val displayFormat = detailFormatSetting.getDisplayFormat();
-        val outputContent = data.getOutputContent();
+        val outputContent = query.getOutputContent();
         val totalUnit = detailFormatSetting.getTotalUnit();
         int maxRangeDate = totalUnit == TotalUnit.DATE ? query.getPeriod().getDateList().size() : query.getPeriod().getYearMonthList().size();
 
@@ -237,7 +231,7 @@ public class ManHourAggregationResultExportService extends ExportService<List<Re
      * @param isDispTotal
      * @return
      */
-    private List<String> createTextHeader(AggregationResultQuery query, DetailFormatSetting detailSetting, boolean isDispTotal) {
+    private List<String> createTextHeader(ManHourDataSummaryQuery query, DetailFormatSetting detailSetting, boolean isDispTotal) {
         List<String> lstHeader = new ArrayList<>();
         // Sort before adding
         val sortedList = detailSetting.getSummaryItemList().stream().sorted(Comparator.comparing(SummaryItem::getHierarchicalOrder)).collect(Collectors.toList());
@@ -268,24 +262,24 @@ public class ManHourAggregationResultExportService extends ExportService<List<Re
      * @param displayFormat
      * @return String
      */
-    private Double formatValue(Double value, DisplayFormat displayFormat) {
-        Double targetValue = null;
+    private String formatValue(Double value, DisplayFormat displayFormat) {
+        String targetValue = null;
         switch (displayFormat) {
             case DECIMAL:
                 BigDecimal decimaValue = new BigDecimal(value);
                 decimaValue = decimaValue.divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
-                targetValue = decimaValue.doubleValue();
+                targetValue = String.valueOf(decimaValue.doubleValue());
                 break;
             case HEXA_DECIMAL:
                 BigDecimal decimalValue = new BigDecimal(value);
                 BigDecimal intValue = decimalValue.divideToIntegralValue(BigDecimal.valueOf(60));
                 BigDecimal remainValue = decimalValue.subtract(intValue.multiply(BigDecimal.valueOf(60)));
-                decimalValue = intValue.add(remainValue.divide(BigDecimal.valueOf(100), 3, RoundingMode.UNNECESSARY));
-                targetValue = decimalValue.doubleValue();
+                StringBuilder sb = new StringBuilder();
+                targetValue = sb.append(intValue).append(":").append(remainValue).toString();
                 break;
             case MINUTE:
-                NumberFormat df = new DecimalFormat("#0.0");
-                targetValue = new Double(df.format(value));
+                DecimalFormat df = new DecimalFormat("#,###");
+                targetValue = df.format(value);
                 break;
         }
 
