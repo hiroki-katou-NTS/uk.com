@@ -193,8 +193,8 @@ module nts.uk.ui.at.ksu002.a {
 				
 				const command = {
 					listSid: [vm.$user.employeeId],
-					startDate: moment(datePeriod.start).toISOString(),
-					endDate: moment(datePeriod.end).toISOString(),
+					startDate: moment(datePeriod.start).format('YYYY/MM/DD'),
+					endDate: moment(datePeriod.end).format('YYYY/MM/DD'),
 					actualData: vm.achievement() === ACHIEVEMENT.YES
 				};
 
@@ -416,8 +416,8 @@ module nts.uk.ui.at.ksu002.a {
 
 					const command = {
 						listSid: [vm.$user.employeeId],
-						startDate: moment(datePeriod.start).toISOString(),
-						endDate: moment(datePeriod.end).toISOString()
+						startDate: moment(datePeriod.start).format('YYYY/MM/DD'),
+						endDate: moment(datePeriod.end).format('YYYY/MM/DD')
 					};
 					
 					const schedules: DayDataMementoObsv[] = ko.unwrap(vm.schedules);

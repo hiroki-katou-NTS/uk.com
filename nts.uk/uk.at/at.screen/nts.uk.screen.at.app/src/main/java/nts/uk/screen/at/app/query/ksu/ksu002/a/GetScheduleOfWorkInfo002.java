@@ -83,7 +83,7 @@ public class GetScheduleOfWorkInfo002 {
 
 		// step 1 start
 		// call 予定管理状態に応じて勤務予定を取得する
-		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
+		DatePeriod period = new DatePeriod(param.getStartDate(), param.getEndDate());
 		RequireImpl RequireImpl = new RequireImpl(param.listSid, period, workScheduleRepo, empComHisAdapter,
 				workCondRepo, empLeaveHisAdapter, empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
 

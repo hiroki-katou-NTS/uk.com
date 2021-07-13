@@ -16,8 +16,16 @@ import nts.arc.time.GeneralDate;
 @NoArgsConstructor
 public class DisplayInWorkInfoInput {
 	public List<String> listSid;
-	public GeneralDate startDate;
-	public GeneralDate endDate;
+	public String startDate;
+	public String endDate;
 	public boolean actualData;
+	
+	public GeneralDate getStartDate() {
+		return GeneralDate.fromString(startDate, "yyyy/MM/dd");
+	}
+	
+	public GeneralDate getEndDate() {
+		return GeneralDate.fromString(endDate, "yyyy/MM/dd");
+	}
 	
 }
