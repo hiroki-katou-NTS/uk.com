@@ -53,7 +53,7 @@ public class SgwdtUserLoginPasswordChangeLog extends ContractUkJpaEntity{
 						new SgwdtUserLoginPasswordChangeLogPK(
 								password.getUserId(), 
 								d.getChangedDateTime()), 
-						d.getHashedPassword().toString()))
+						d.getHashedPassword().getHash()))
 				.collect(Collectors.toList());
 	}
 }

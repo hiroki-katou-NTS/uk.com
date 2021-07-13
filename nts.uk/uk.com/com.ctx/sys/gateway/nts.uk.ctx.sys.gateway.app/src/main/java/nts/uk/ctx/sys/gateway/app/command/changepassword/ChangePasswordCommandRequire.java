@@ -19,18 +19,18 @@ import nts.uk.shr.com.context.AppContexts;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ChangePasswordCommandRequire {
 	
+	@Inject
+	private PasswordPolicyRepository passwordPolicyRepo;
+	
+	@Inject
+	private LoginPasswordOfUserRepository loginPasswordOfUserRepo;
+	
 	public Require createRequire() {
 		return new RequireImpl();
 	}
 	
 	@RequiredArgsConstructor
 	public class RequireImpl implements Require {
-		
-		@Inject
-		private PasswordPolicyRepository passwordPolicyRepo;
-		
-		@Inject
-		private LoginPasswordOfUserRepository loginPasswordOfUserRepo;
 		
 		@Override
 		public PasswordPolicy getPasswordPolicy() {

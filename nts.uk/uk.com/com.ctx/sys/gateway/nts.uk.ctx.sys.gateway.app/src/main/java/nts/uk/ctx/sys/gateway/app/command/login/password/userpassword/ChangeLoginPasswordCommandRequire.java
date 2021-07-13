@@ -5,16 +5,26 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.ChangeLoginPasswordOfUser.Require;
 import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUser;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUserRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ChangeLoginPasswordCommandRequire {
+	
+	@Inject
+	private PasswordPolicyRepository passwordPolicyRepo;
+	
+	@Inject
+	private LoginPasswordOfUserRepository loginPasswordOfUserRepo;
 	
 	public Require create() {
 		return EmbedStopwatch.embed(new RequireImpl());
@@ -25,20 +35,17 @@ public class ChangeLoginPasswordCommandRequire {
 		
 		@Override
 		public PasswordPolicy getPasswordPolicy() {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return passwordPolicyRepo.getPasswordPolicy(AppContexts.user().contractCode()).get();
 		}
 		
 		@Override
 		public Optional<LoginPasswordOfUser> getLoginPasswordOfUser(String userId) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return loginPasswordOfUserRepo.find(userId);
 		}
 		
 		@Override
 		public void save(LoginPasswordOfUser password) {
-			// TODO 自動生成されたメソッド・スタブ
-			
+			loginPasswordOfUserRepo.save(password);
 		}
 	}
 }
