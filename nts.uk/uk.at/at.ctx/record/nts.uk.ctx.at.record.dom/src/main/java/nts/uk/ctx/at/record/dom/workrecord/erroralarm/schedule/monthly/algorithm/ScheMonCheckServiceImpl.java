@@ -88,6 +88,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employment.Emplo
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySettingRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.CarryforwardSetInShortageFlex;
@@ -1016,14 +1017,15 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			
 			// 比較対象基準時間を計算
 			Double totalComparsion = 0.0;
-			if (!prepareData.getUsageUnitSetting().isPresent()) {
+			if (prepareData.getUsageUnitSetting().isPresent()) {
 				totalComparsion = calReferenceTimeForComparison(
 						prepareData.getUsageUnitSetting().get(), 
 						monthlyWorkTimeSetComOpt, 
 						monthlyWorkTimeSetEmpOpt, 
 						monthlyWorMonthlyWorkTimeSetWkpOpt, 
 						monthlyWorkTimeSetShasOpt,
-						monthlyWorkTimeSetAtr);
+						monthlyWorkTimeSetAtr,
+						ym);
 			}
 			
 			// 比率を加算
@@ -1083,14 +1085,15 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			
 			// 比較対象基準時間を計算
 			Double totalComparsionDayOff = 0.0;
-			if (!prepareData.getUsageUnitSetting().isPresent()) {
+			if (prepareData.getUsageUnitSetting().isPresent()) {
 				totalComparsionDayOff = calReferenceTimeForComparison(
 						prepareData.getUsageUnitSetting().get(), 
 						monthlyWorkTimeSetComOpt, 
 						monthlyWorkTimeSetEmpOpt, 
 						monthlyWorMonthlyWorkTimeSetWkpOpt, 
 						monthlyWorkTimeSetShasOpt,
-						monthlyWorkTimeSetAtr);
+						monthlyWorkTimeSetAtr,
+						ym);
 			}
 			
 			// 比率を加算
@@ -1140,14 +1143,15 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			
 			// 比較対象基準時間を計算
 			Double totalComparsionPubHoliday = 0.0;
-			if (!prepareData.getUsageUnitSetting().isPresent()) {
+			if (prepareData.getUsageUnitSetting().isPresent()) {
 				totalComparsionPubHoliday = calReferenceTimeForComparison(
 						prepareData.getUsageUnitSetting().get(), 
 						monthlyWorkTimeSetComOpt, 
 						monthlyWorkTimeSetEmpOpt, 
 						monthlyWorMonthlyWorkTimeSetWkpOpt, 
 						monthlyWorkTimeSetShasOpt,
-						monthlyWorkTimeSetAtr);
+						monthlyWorkTimeSetAtr,
+						ym);
 			}
 			
 			// 繰越区分を取得
@@ -1261,6 +1265,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	 * @param monthlyWorkTimeSetEmpOpt Optional＜雇用別月単位労働時間＞
 	 * @param monthlyWorkTimeSetWkpOpt Optional＜職場別月単位労働時間＞
 	 * @param monthlyWorkTimeSetShas Optional＜社員別月単位労働時間＞
+	 * @param ym 年月　＃117183
 	 * 
 	 * @return
 	 */
@@ -1270,7 +1275,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			Optional<MonthlyWorkTimeSetEmp> monthlyWorkTimeSetEmpOpt,
 			Optional<MonthlyWorkTimeSetWkp> monthlyWorkTimeSetWkpOpt,
 			Optional<MonthlyWorkTimeSetSha> monthlyWorkTimeSetShasOpt,
-			MonthlyWorkTimeSetAtr monthlyWorkTimeSetAtr) {
+			MonthlyWorkTimeSetAtr monthlyWorkTimeSetAtr,
+			YearMonth ym) {
 		// 社員の労働時間と日数の管理をするかチェック
 		// Input．社員別月単位労働時間　！＝　Empty AND Input．労働時間と日数の設定の利用単位の設定．社員の労働時間と日数の管理をする　＝＝　True
 		if (monthlyWorkTimeSetShasOpt.isPresent() && usageUnitSetting.isEmployee()) {
@@ -1494,6 +1500,21 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		}
 		
 		AggrResultOfAnnualLeave annualLeaveInfo = aggResult.getAnnualLeave().get();
+		
+		// #117176
+		// 取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休未消化数　！＝Empty
+		// AND
+		// 取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休未消化数．日数　＞０　		
+		if (!annualLeaveInfo.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveUndigestNumber().isPresent()) {
+			return output;
+		}
+		
+		// 取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休未消化数
+		AnnualLeaveUndigestNumber annualLeaveUndigestNumber = annualLeaveInfo.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveUndigestNumber().get();
+		if (annualLeaveUndigestNumber.getDays().v() <= 0) {
+			return output;
+		}
+		
 		AnnualLeaveRemainingNumber remainingNumber = annualLeaveInfo.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber();
 		
 		// 取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．残数．合計．合計残日数　＞　０
@@ -1504,12 +1525,12 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		if (remainingNumber.getTotalRemainingTime().isPresent()) {
 			Double totalRemainingTime = remainingNumber.getTotalRemainingTime().get().v().doubleValue();
 			output.totalRemainingTimes = totalRemainingTime;
-			check = check || totalRemainingTime > 0;
+//			check = check || totalRemainingTime > 0;
 		}
 		
-		if (!check) {
-			return output;
-		}
+//		if (!check) {
+//			return output;
+//		}
 		
 		output.totalRemainingDays = totalRemainingDays;
 		
@@ -1563,18 +1584,35 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			output.workTypeMap.put(exDate, workType.getDailyWork().getClassification());
 		}
 		
+		// ・作成したList＜年月日、勤務分類＞
+		// ・取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．残数．合計．合計残日数
+		// ・取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．残数．合計．合計残時間数
 		return output;
 	}
 	
 	/**
 	 * 勤務種類の分類が年休かチェック
-	 * @return
+	 * #117176
+	 * 勤務種類の分類 == 欠勤 OR 代休 OR 振休 OR 時間消化休暇
+	 * @return true if is annual level
 	 */
 	private boolean isAnnualOrSpecialHoliday(DailyWork dailyWork) {
 		if(dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
-			return dailyWork.getOneDay().isAnnualLeave();
+			return isAnnualLevel(dailyWork.getOneDay());
 		}
-		return dailyWork.getAfternoon().isAnnualLeave() || dailyWork.getMorning().isAnnualLeave();
+		return isAnnualLevel(dailyWork.getAfternoon()) || isAnnualLevel(dailyWork.getMorning());
+	}
+	
+	private boolean isAnnualLevel(WorkTypeClassification workTypeCls) {
+		switch(workTypeCls){
+			case Absence:
+			case SubstituteHoliday:
+			case Pause:
+			case TimeDigestVacation:
+				return true;
+			default:
+				return false;
+		}
 	}
 	
 	/**
