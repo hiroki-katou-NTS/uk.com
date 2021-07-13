@@ -59,7 +59,8 @@ module nts.uk.com.view.cas005.a.viewmodel {
                             vm.selectedRole.approvalAuthority(null);
                             vm.selectedRole.webMenuCd(data.roleByRoleTies ? data.roleByRoleTies.webMenuCd : 1);
                         } else {
-                            vm.selectedRole.approvalAuthority(data.role.approvalAuthority || 0);
+                            let app = data.role.approvalAuthority == true ? 1: 0;
+                            vm.selectedRole.approvalAuthority(app);
                             vm.selectedRole.webMenuCd(null);
                         }
                     }).fail(error => {

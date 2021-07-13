@@ -44,7 +44,7 @@ public class UpdateRoleCas005CmdHandler extends CommandHandler<RoleCas005Command
                 data.getContractCode(),
                 data.getAssignAtr(),
                 AppContexts.user().companyId(),
-                data.getApprovalAuthority()
+                data.getApprovalAuthority() != null && (data.getApprovalAuthority() == 1)
 
         );
         updateRoleCommandHandler.handle(updateRoleCommand);

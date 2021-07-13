@@ -40,5 +40,5 @@ public class RoleCas005Command {
 
     private int futureDateRefPermit;
 
-    private Boolean approvalAuthority;
+    private Integer approvalAuthority;
 }
