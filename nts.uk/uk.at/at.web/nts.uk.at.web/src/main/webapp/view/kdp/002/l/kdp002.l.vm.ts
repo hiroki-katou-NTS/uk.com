@@ -57,7 +57,7 @@ module nts.uk.at.view.kdp002.l {
 
         checkReturn: KnockoutObservable<boolean> = ko.observable(false);
         
-        searchValue: KnockoutObservable<string> = ko.observable(''); ;
+        searchValue: KnockoutObservable<string> = ko.observable('');
         
         taskArray: TaskInfo[][] = [];
 
@@ -66,6 +66,8 @@ module nts.uk.at.view.kdp002.l {
 		currentCodeList: KnockoutObservableArray<string>;
 
         empId: string;
+
+        frameName: KnockoutObservable<string> = ko.observable('');
 
         created(param: IParam) {
             const vm = this;
@@ -81,11 +83,27 @@ module nts.uk.at.view.kdp002.l {
             let taskParam: ITaskParam = {employeeId: vm.empId, workFrameNo: 1, upperWorkCode: ''};
            
             vm.getTask(taskParam);
+            vm.frameName(vm.getFrameName(1));
 			vm.reload(0);
+
+            if (ko.unwrap(vm.framePosition) < vm.taskArray.length - 1) {
+                vm.checkNext(true);
+            } else {
+                vm.checkNext(false);
+            }
+
+            if (vm.framePosition() == 0) {
+                vm.checkReturn(true);
+            }
+           
         }
 
         mounted() {
             const vm = this;
+
+            $(document).ready(function () {
+                $( "#L2_1" ).focus();
+            });
 
             vm.framePosition
                 .subscribe(() => {
@@ -109,8 +127,6 @@ module nts.uk.at.view.kdp002.l {
                         vm.checkReturn(true);
                     }
                 });
-
-            $( "#L2_1" ).focus();
 
             // Trigger button click on enter
             $( "#L2_1" ).keyup((event: any) => {
@@ -265,11 +281,11 @@ module nts.uk.at.view.kdp002.l {
 
             let settingWorkFrame: TaskFrameSetting[] = [{
                 frameNo: 1,
-                frameName: '枠名１',
+                frameName: '枠名１.',
                 useAtr: 1
             },
             {
-                frameNo: 2,
+                frameNo: 1,
                 frameName: '枠名2',
                 useAtr: 1
             }
@@ -278,6 +294,11 @@ module nts.uk.at.view.kdp002.l {
             vm.taskArray = _.chunk(taskInfos, 6);
             vm.framePosition.valueHasMutated();
 
+        }
+
+        getFrameName(frameNo: number) {
+            const vm = this;
+            return _.find(ko.unwrap(vm.settingWorkFrame), ['frameNo', frameNo]).frameName;
         }
 
         reload(index: number) {
@@ -352,19 +373,19 @@ module nts.uk.at.view.kdp002.l {
     }
 
 interface TaskInfo {
-    code: String; // コード
+    code: string; // コード
     taskFrameNo: number; // 作業枠NO
     displayInfo: TaskDisplayInfo; // 表示情報 : 作業表示情報
-    childTasks: String []; // 子作業一覧
+    childTasks: string []; // 子作業一覧
 }
 
 interface TaskDisplayInfo {
-    taskName: String; //名称
+    taskName: string; //名称
 }
 
 interface TaskFrameSetting {
     frameNo: number; // 作業枠NO
-    frameName: String; // 作業枠名
+    frameName: string; // 作業枠名
     useAtr: number; // するしない区分
 }
 
