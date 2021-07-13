@@ -17,10 +17,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTe
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.MngHistDataAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SeqVacationAssociationInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.*;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.MonthlyVacationDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.MonthlyVacationRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.MonthlyVacationUsageTime;
@@ -63,8 +60,16 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
     @Inject
     private RemainNumberTempRequireService requireService;
 
-    public List<DisplayContentsOfSubLeaveConfirmationTable> getDisplayContent(GeneralDate referenceDate, List<EmployeeInfor> basicInfoImportList,
-                                                                              ManagermentAtr mngAtr, boolean moreSubstituteHolidaysThanHolidays, boolean moreHolidaysThanSubstituteHolidays, List<WorkplaceInfor> lstWorkplaceInfo) {
+    private static final int DAY = 1;
+    private static final int TIME = 2;
+
+    public List<DisplayContentsOfSubLeaveConfirmationTable> getDisplayContent(GeneralDate referenceDate,
+                                                                              List<EmployeeInfor> basicInfoImportList,
+                                                                              Integer mngAtr,
+                                                                              boolean linkingMng,
+                                                                              boolean moreSubstituteHolidaysThanHolidays,
+                                                                              boolean moreHolidaysThanSubstituteHolidays,
+                                                                              List<WorkplaceInfor> lstWorkplaceInfo) {
 
 
         val mapEmployee = basicInfoImportList.stream()
@@ -120,7 +125,7 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
             NumberOfSubstituteHoliday numberOfRemaining = null;
             NumberOfUndigestedSubstitutes undeterminedNumber = null;
             Boolean er = false;
-            if (mngAtr.equals(ManagermentAtr.DAYS)) {
+            if (mngAtr != null && mngAtr == DAY) {
                 numberCarriedForward = new NumberOfSubstituteHolidayCarriedForward(
                         new LeaveRemainingDayNumber(substituteHolidayAggrResult.getCarryoverDay().v()),
                         Optional.empty());
@@ -142,9 +147,8 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                         Optional.empty());
                 //・ER　＝残数．日数が負の場合、ture
                 er = substituteHolidayAggrResult.getRemainDay() == null || substituteHolidayAggrResult.getRemainDay().v() < 0;
-
             }
-            if (mngAtr.equals(ManagermentAtr.TIMES)) {
+            if (mngAtr != null && mngAtr == TIME) {
                 // ・繰越数　．時間＝代休の集計結果．繰越時間
                 numberCarriedForward = new NumberOfSubstituteHolidayCarriedForward(
                         null,
@@ -199,7 +203,8 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                         //  ・発生取得明細(i)．状態　　　　　　＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．状態
                         status = EnumAdaptor.valueOf(acctAbsenDetail.getDataAtr().value, MngHistDataAtr.class);
                         // ・発生取得明細(i)．期限日　　　　　＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．休暇発生明細．期限日
-                        deadline = null; // TODO PHẢI QA.
+                        UnbalanceVacation rss = (UnbalanceVacation) acctAbsenDetail;
+                        deadline = rss.getDeadline(); // TODO PHẢI QA.
                         //　・発生取得明細(i)．当月で期限切れ　＝※１
                         isExpiredInCurrentMonth = Optional.of(isExpired);
                     } else if (occurrenceDigClass.equals(OccurrenceDigClass.DIGESTION)) {
@@ -220,20 +225,22 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                 }
                 List<SeqVacationAssociationInfo> lstSeqVacation = substituteHolidayAggrResult
                         .getLstSeqVacation();
-                for (int j = 0; j < lstSeqVacation.size(); j++) {
-                    val lstSeqVacationItem = lstSeqVacation.get(i);
-                    //・紐付け情報(j)．発生日　＝代休の集計結果．逐次休暇の紐付け情報(j)．発生日
-                    GeneralDate ymd = lstSeqVacationItem.getOutbreakDay();
-                    // ・紐付け情報(j)．使用日　＝代休の集計結果．逐次休暇の紐付け情報(j)．使用日
-                    MonthlyVacationDays dateOfUse = new MonthlyVacationDays(
-                            lstSeqVacationItem.getDayNumberUsed().v()
-                    );
-                    //・紐付け情報(j)．使用日数＝代休の集計結果．逐次休暇の紐付け情報(j)．使用日数
-                    GeneralDate occurrenceDate = lstSeqVacationItem.getDateOfUse();
-                    listTyingInformation.add(new LinkingInformation(
-                            ymd,
-                            dateOfUse,
-                            occurrenceDate));
+                if (linkingMng) {
+                    for (int j = 0; j < lstSeqVacation.size(); j++) {
+                        val lstSeqVacationItem = lstSeqVacation.get(i);
+                        //・紐付け情報(j)．発生日　＝代休の集計結果．逐次休暇の紐付け情報(j)．発生日
+                        GeneralDate ymd = lstSeqVacationItem.getOutbreakDay();
+                        // ・紐付け情報(j)．使用日　＝代休の集計結果．逐次休暇の紐付け情報(j)．使用日
+                        MonthlyVacationDays dateOfUse = new MonthlyVacationDays(
+                                lstSeqVacationItem.getDayNumberUsed().v()
+                        );
+                        //・紐付け情報(j)．使用日数＝代休の集計結果．逐次休暇の紐付け情報(j)．使用日数
+                        GeneralDate occurrenceDate = lstSeqVacationItem.getDateOfUse();
+                        listTyingInformation.add(new LinkingInformation(
+                                ymd,
+                                dateOfUse,
+                                occurrenceDate));
+                    }
                 }
             }
             SubstituteHolidayOccurrenceInfo observationOfExitLeave = new SubstituteHolidayOccurrenceInfo(
@@ -267,9 +274,9 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
         return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 
-    private boolean checkShow(ManagermentAtr mngAtr, boolean moreSubstituteHolidaysThanHolidays,
+    private boolean checkShow(Integer mngAtr, boolean moreSubstituteHolidaysThanHolidays,
                               boolean moreHolidaysThanSubstituteHolidays, SubstituteHolidayAggrResult substituteHolidayAggrResult) {
-        if (mngAtr.equals(ManagermentAtr.DAYS)) {
+        if (mngAtr != null && mngAtr == DAY) {
 
             //　・「代休が休出より多い人」のチェックボックスが☑されている場合は、代休の集計結果．繰越日数＋代休の集計結果．発生日数＜代休の集計結果．使用日数
             //　・「休出が代休より多い人」のチェックボックスが☑されている場合は、代休の集計結果．繰越日数＋代休の集計結果．発生日数＞代休の集計結果．使用日数
@@ -293,7 +300,7 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                         - (substituteHolidayAggrResult.getDayUse() != null ? substituteHolidayAggrResult.getDayUse().v() : 0);
                 if (checkShow == 0) return false;
             }
-        } else if (mngAtr.equals(ManagermentAtr.TIMES)) {
+        } else if (mngAtr != null && mngAtr == TIME) {
             //　・「代休が休出より多い人」のチェックボックスが☑されている場合は、代休の集計結果．繰越時間＋代休の集計結果．発生時間＜代休の集計結果．使用時間
             //　・「休出が代休より多い人」のチェックボックスが☑されている場合は、代休の集計結果．繰越時間＋代休の集計結果．発生時間＞代休の集計結果．使用時間
             //　・両方☑されている場合は、　　　　　　　　　　　　　　　　　　　　代休の集計結果．繰越時間＋代休の集計結果．発生時間≠代休の集計結果．使用時間

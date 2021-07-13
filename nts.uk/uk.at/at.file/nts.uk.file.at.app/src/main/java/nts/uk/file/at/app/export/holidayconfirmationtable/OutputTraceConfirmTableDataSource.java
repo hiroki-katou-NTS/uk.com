@@ -13,4 +13,5 @@ import java.util.List;
 public class OutputTraceConfirmTableDataSource {
     List<DisplayContentsOfSubLeaveConfirmationTable> leaveConfirmationTables;
     CompanyBsImport companyInfo;
+    CreateTraceConfirmationTableFileQuery query;
 }

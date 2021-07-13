@@ -14,12 +14,12 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceConfigInfoAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureIdPresentClosingPeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureIdPresentClosingPeriods;
-
-
-import nts.uk.ctx.bs.company.dom.company.*;
+import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.SysAuthWorkplaceAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
@@ -31,9 +31,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -81,18 +79,20 @@ public class OutputTraceConfirmationTableService extends ExportService<CreateTra
         Optional<ClosureIdPresentClosingPeriod> employeeBasicInfoImport =
                 closingPeriods.stream().filter(x -> x.getClosureId().equals(1)).findFirst();
         DatePeriod datePeriod = null;
+        GeneralDate endDate = null;
+        GeneralDate startDate = null;
         if (employeeBasicInfoImport.isPresent()) {
             YearMonth processingYm = employeeBasicInfoImport.get()
                     .getCurrentClosingPeriod().getProcessingYm();
-            val startDate = processingYm.firstGeneralDate();
-            val endDate = processingYm.lastGeneralDate();
+            startDate = processingYm.firstGeneralDate();
+            endDate = processingYm.lastGeneralDate();
 
             datePeriod = new DatePeriod(startDate, endDate);
         }
 
         // 2--③= Call [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
         List<EmployeeBasicInfoImport> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, false);
-        GeneralDate referenceDate = datePeriod == null ? null : datePeriod.end();
+        GeneralDate referenceDate = endDate;
         val listemployees = lstEmployeeInfo.stream()
                 .map(EmployeeBasicInfoImport::getSid).collect(Collectors.toList());
         // 3--④= Call 会社を取得する
@@ -101,6 +101,7 @@ public class OutputTraceConfirmationTableService extends ExportService<CreateTra
         // 4--⑤= Call 社員ID（List）と基準日から所属職場IDを取得
         List<AffAtWorkplaceImport> lstAffAtWorkplaceImport = affWorkplaceAdapter
                 .findBySIdAndBaseDate(listemployees, referenceDate);
+
         val listWorkplaceId = lstAffAtWorkplaceImport.stream().map(AffAtWorkplaceImport::getWorkplaceId)
                 .collect(Collectors.toList());
         List<EmployeeInfor> employeeInfoList = new ArrayList<>();
@@ -113,17 +114,50 @@ public class OutputTraceConfirmationTableService extends ExportService<CreateTra
                     wpl.isPresent() ? wpl.get().getWorkplaceId() : null
             ));
         });
-        // 4.1-⑥
-        List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter
-                .getWorkplaceInforByWkpIds(cid, listWorkplaceId, referenceDate);
+        //4.1-⑥
+        // [No.560]職場IDから職場の情報をすべて取得する
+        List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter.getWorkplaceInforByWkpIds(
+                cid,
+                lstAffAtWorkplaceImport.stream().map(AffAtWorkplaceImport::getWorkplaceId).distinct().collect(Collectors.toList()),
+                referenceDate
+        );
+
+        // 5 - ⑦ get 代休管理設定
+        CompensatoryLeaveComSetting comSubstVacation = compensLeaveComSetRepo.find(cid);
+
+        Integer mngUnit = null; // 管理単位(1:日数管理/2:時間管理)
+        boolean linkingMng = false;
+        if (comSubstVacation != null) {
+            if (comSubstVacation.getIsManaged() == ManageDistinct.NO) {
+                mngUnit = 1;
+                linkingMng = false;
+            } else if (comSubstVacation.getIsManaged() == ManageDistinct.YES
+                    && comSubstVacation.getCompensatoryDigestiveTimeUnit().getIsManageByTime() == ManageDistinct.NO
+                    && comSubstVacation.getLinkingManagementATR() == ManageDistinct.YES) {
+                mngUnit = 1;
+                linkingMng = true;
+            } else if (comSubstVacation.getIsManaged() != ManageDistinct.YES
+                    && comSubstVacation.getCompensatoryDigestiveTimeUnit().getIsManageByTime() == ManageDistinct.NO
+                    && comSubstVacation.getLinkingManagementATR() == ManageDistinct.NO) {
+                mngUnit = 1;
+                linkingMng = false;
+
+            } else if (comSubstVacation.getIsManaged() != ManageDistinct.YES
+                    && comSubstVacation.getCompensatoryDigestiveTimeUnit().getIsManageByTime() == ManageDistinct.NO) {
+                mngUnit = 2;
+                linkingMng = false;
+            }
+        }
+
         val listDetail = leaveQuery.getDisplayContent(
                 referenceDate,
                 employeeInfoList,
-                query.getMngAtr(),
+                mngUnit,
+                linkingMng,
                 query.isMoreSubstituteHolidaysThanHolidays(),
                 query.isMoreHolidaysThanSubstituteHolidays(),
                 lstWorkplaceInfo);
-        val dataSource = new OutputTraceConfirmTableDataSource(listDetail,companyInfo);
+        val dataSource = new OutputTraceConfirmTableDataSource(listDetail, companyInfo,query);
         // 5-- ⑦ get 代休管理設定
         reportGenerator.generate(exportServiceContext.getGeneratorContext(), dataSource);
     }
