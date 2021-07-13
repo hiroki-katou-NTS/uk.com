@@ -54,6 +54,8 @@ module nts.uk.at.view.kdp002.l {
         checkBack: KnockoutObservable<boolean> = ko.observable(false);
 
         checkNext: KnockoutObservable<boolean> = ko.observable(false);
+
+        checkReturn: KnockoutObservable<boolean> = ko.observable(false);
         
         searchValue: KnockoutObservable<string> = ko.observable(''); ;
         
@@ -102,7 +104,72 @@ module nts.uk.at.view.kdp002.l {
                             vm.checkNext(false);
                         }
                     }
+
+                    if (vm.framePosition() == 0) {
+                        vm.checkReturn(true);
+                    }
                 });
+
+            $( "#L2_1" ).focus();
+
+            // Trigger button click on enter
+            $( "#L2_1" ).keyup((event: any) => {
+                if (event.keyCode === 13) {
+                    vm.onClickSearch();
+                }
+            });
+        }
+
+        getChildTask() {
+            const vm = this;
+
+             //Get from API
+             let childTaskInfos: TaskInfo[]  = [{
+                code: '1',
+                taskFrameNo: 1,
+                displayInfo: {taskName: 'child1名駅広場'},
+                childTasks: ['1','2']
+            },
+            {
+                code: '2',
+                taskFrameNo: 1,
+                displayInfo: {taskName: 'child2栄１丁目t'},
+                childTasks: ['1','2']
+            },
+            {
+                code: '3',
+                taskFrameNo: 1,
+                displayInfo: {taskName: 'child3栄１丁目t'},
+                childTasks: ['1','2']
+            },
+            {
+                code: '4',
+                taskFrameNo: 1,
+                displayInfo: {taskName: 'child4栄１丁目t'},
+                childTasks: ['1','2']
+            },
+            {
+                code: '5',
+                taskFrameNo: 1,
+                displayInfo: {taskName: 'child5栄１丁目t'},
+                childTasks: ['1','2']
+            },
+            {
+                code: '6',
+                taskFrameNo: 1,
+                displayInfo: {taskName: 'child6栄１丁目t'},
+                childTasks: ['1','2']
+            },
+            {
+                code: "7",
+                taskFrameNo: 1,
+                displayInfo: {taskName: 'child7栄１丁目t'},
+                childTasks: ['1','2']
+            }
+    ];
+            vm.model(childTaskInfos);
+            vm.taskArray = _.chunk(childTaskInfos, 6);
+            vm.framePosition.valueHasMutated();
         }
 
         getTask(param: ITaskParam) {
@@ -226,14 +293,26 @@ module nts.uk.at.view.kdp002.l {
 
         onClickSearch() {
             const vm = this;
-            let taskParam: ITaskParam = {employeeId: vm.empId, workFrameNo: 1, upperWorkCode: ''};
-            vm.getTask(taskParam);
-            let results =_.filter(ko.unwrap(vm.model), function(item){
-                return item.displayInfo.taskName.indexOf(ko.unwrap(vm.searchValue)) > -1 || item.code.indexOf(ko.unwrap(vm.searchValue)) > -1 ;
-                });
-                
-            vm.taskArray = _.chunk(results, 6);
-            vm.framePosition.valueHasMutated();
+
+            // L2_1が未入力の場合
+            if (vm.searchValue() == '') {
+                vm.$dialog.error({ messageId: 'MsgB_24' });
+            } else {
+                let taskParam: ITaskParam = {employeeId: vm.empId, workFrameNo: 1, upperWorkCode: ''};
+                vm.getTask(taskParam);
+                let results =_.filter(ko.unwrap(vm.model), function(item){
+                    return item.displayInfo.taskName.indexOf(ko.unwrap(vm.searchValue)) > -1 || item.code.indexOf(ko.unwrap(vm.searchValue)) > -1 ;
+                    });
+    
+                // L2_1の文字を含む作業見つからなかった場合
+                if (results.length == 0) {
+                    vm.$dialog.error({ messageId: 'MsgB_25' });
+                } else {
+                    vm.taskArray = _.chunk(results, 6);
+                    vm.framePosition.valueHasMutated();
+                }
+            }
+
         }
 
 		onClickCancel() {
@@ -252,6 +331,22 @@ module nts.uk.at.view.kdp002.l {
         onClickNext() {
             const vm = this;
             vm.framePosition(ko.unwrap(vm.framePosition) + 1);
+        }
+
+        onClickReturn() {
+            const vm = this;
+            if (vm.framePosition() != 0) {
+                vm.onClickBack();
+            } else {
+                vm.$window.close();
+            }
+        }
+
+        onSelect(code: string) {
+            const vm = this;
+            vm.getChildTask();
+            vm.reload(0);
+            vm.framePosition(0);
         }
 
     }

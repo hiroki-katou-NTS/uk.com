@@ -21,7 +21,7 @@
 
                     <div class="working">
                         <!-- L2_1 検索作業名 -->
-                       	<input tabindex="1" data-bind="ntsTextEditor: {
+                       	<input id="L2_1" tabindex="1" data-bind="ntsTextEditor: {
 								value: searchValue,
 								option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
 					            	textmode: 'text',
@@ -47,7 +47,7 @@
                         <!-- L3_1 ~ L3_6 作業内容 -->
                         <div class="task" data-bind="foreach: { data: $vm.taskButtons, as: 'col'}, firstFocus: $vm.taskButtons">
                             <div class="column" data-bind="foreach: {data: col, as: 'row' }">
-                                <button class="large" data-bind="i18n: row.displayInfo.taskName, click: function() { $vm.seleceted.apply($vm, [row.code]) } "></button>
+                                <button class="large" data-bind="i18n: row.displayInfo.taskName, click: function() { $vm.onSelect.apply($vm, [row.code]) } "></button>
                             </div>
                         </div>
                         <!-- L10_2 次へ -->
@@ -59,7 +59,7 @@
             </div>
             <div id="functions-area-bottom">
                 <!-- L20 戻る -->
-                <button tabindex ="12" class="normal" data-bind="i18n: 'KDP002_72', click: onClickBack, visible: checkBack"></button>
+                <button tabindex ="12" class="normal" data-bind="i18n: 'KDP002_72', click: onClickReturn, visible: checkReturn"></button>
             </div>
         </ui:define>
     </ui:composition>
