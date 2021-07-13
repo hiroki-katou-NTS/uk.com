@@ -59,8 +59,8 @@ public class CreateRoleCas005CmdHandler extends CommandHandler<RoleCas005Command
             }
             //insert EmploymentRole
             CreateEmploymentRoleCmd createEmploymentRoleCmd = new CreateEmploymentRoleCmd(
-                    AppContexts.user().companyId(),
                     data.getRoleId(),
+                    AppContexts.user().companyId(),
                     EnumAdaptor.valueOf(data.getFutureDateRefPermit(), NotUseAtr.class)
             );
             createEmploymentRoleCmdHandler.handle(createEmploymentRoleCmd);

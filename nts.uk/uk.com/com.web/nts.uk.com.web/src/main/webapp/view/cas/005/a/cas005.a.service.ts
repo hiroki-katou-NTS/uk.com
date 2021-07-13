@@ -73,8 +73,8 @@ module nts.uk.com.view.cas005.a {
         export function findAllMenu() : JQueryPromise<any>{
             return nts.uk.request.ajax("com",paths.findAllMenu);
         }  // GET LIST
-        export function findRoleAndWebMenu() : JQueryPromise<any>{
-            return nts.uk.request.ajax("com",paths.findRoleAndWebMenu);
+        export function findRoleAndWebMenu(command : any) : JQueryPromise<any>{
+            return nts.uk.request.ajax("com",paths.findRoleAndWebMenu,command);
         }
     }
 }
