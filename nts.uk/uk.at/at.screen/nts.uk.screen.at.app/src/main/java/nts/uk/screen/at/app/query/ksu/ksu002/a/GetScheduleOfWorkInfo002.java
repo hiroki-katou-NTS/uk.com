@@ -44,7 +44,6 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.screen.at.app.ksu001.processcommon.CreateWorkScheduleWorkInfor;
@@ -174,9 +173,6 @@ public class GetScheduleOfWorkInfo002 {
 		private WorkTimeSettingRepository workTimeSettingRepository;
 
 		@Inject
-		private WorkTimeSettingService workTimeSettingService;
-
-		@Inject
 		private BasicScheduleService basicScheduleService;
 
 		@Override
@@ -193,13 +189,6 @@ public class GetScheduleOfWorkInfo002 {
 		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
-
-		// fix bug 113211
-//		@Override
-//		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd,
-//				Integer workNo) {
-//			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
-//		}
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
@@ -316,4 +305,5 @@ public class GetScheduleOfWorkInfo002 {
 			return data;
 		}
 	}
+	
 }

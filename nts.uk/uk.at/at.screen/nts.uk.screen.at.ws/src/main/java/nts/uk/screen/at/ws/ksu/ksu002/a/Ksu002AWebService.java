@@ -80,7 +80,14 @@ public class Ksu002AWebService extends WebService {
 	public List<WorkScheduleWorkInforDto> getScheduleActualOfWorkInfo(DisplayInWorkInfoInput param) {
 		return this.getScheduleActualOfWorkInfo002.getDataScheduleAndAactualOfWorkInfo(param);
 	}
-
+	
+	//期間に応じる基本情報を取得する
+	@POST
+	@Path("getlegalworkinghours")
+	public List<WorkScheduleWorkInforDto> getlegalworkinghours(DisplayInWorkInfoInput param) {
+		return this.getScheduleActualOfWorkInfo002.getDataScheduleAndAactualOfWorkInfo(param);
+	}
+	
 	@POST
 	@Path("getDataDaily")
 	public List<WorkScheduleWorkInforDto.Achievement> getDataDaily(DisplayInWorkInfoInput param) {

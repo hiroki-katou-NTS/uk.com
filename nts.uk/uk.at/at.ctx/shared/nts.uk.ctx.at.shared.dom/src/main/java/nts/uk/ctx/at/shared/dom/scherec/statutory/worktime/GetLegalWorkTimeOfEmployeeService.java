@@ -9,8 +9,6 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonAndWeekStatutoryTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyFlexStatutoryLaborTime;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryWorkingHours.RequireM1;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryWorkingHours.RequireM4;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.ReferencePredTimeOfFlex;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -102,7 +100,7 @@ public class GetLegalWorkTimeOfEmployeeService {
 		return Optional.of(LegalWorkTimeOfEmployee.createOnlyMonthTime(sid, workTime));
 	}
 	
-	public static interface Require extends RequireM1, RequireM4{
+	public static interface Require {
 		/**
 		 * 社員を指定して年月日時点の履歴項目を取得する
 		 * @param sid 社員ID

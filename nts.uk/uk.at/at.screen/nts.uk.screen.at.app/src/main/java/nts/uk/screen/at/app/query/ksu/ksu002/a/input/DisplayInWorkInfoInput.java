@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -26,6 +27,10 @@ public class DisplayInWorkInfoInput {
 	
 	public GeneralDate getEndDate() {
 		return GeneralDate.fromString(endDate, "yyyy/MM/dd");
+	}
+	
+	public DatePeriod getPeriod() {
+		return new DatePeriod(getStartDate(), getEndDate());
 	}
 	
 }
