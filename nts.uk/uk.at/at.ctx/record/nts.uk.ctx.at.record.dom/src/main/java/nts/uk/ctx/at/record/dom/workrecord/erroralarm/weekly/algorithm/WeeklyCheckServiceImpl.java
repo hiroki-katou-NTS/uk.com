@@ -151,7 +151,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 						for (AttendanceTimeOfWeekly attWeekly : attendanceTimeOfWeeklyYms) {
 							// 任意抽出条件のアラーム値を作成する
 							ExtractResultDetailAndCount extractDetail = createAlarmExtraction(
-									attWeekly, weeklyCond, count, attendanceItemMap, cid, sid, wpkId, ym, attendanceTimeOfWeeklyYms.size(),
+									attWeekly, weeklyCond, count, attendanceItemMap, cid, sid, wpkId, ym,
 									attendanceTimeOfWeeklys);
 							count = extractDetail.count;
 							if (extractDetail.detail == null) {
@@ -234,7 +234,6 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			String sid,
 			String wpkId,
 			YearMonth ym,
-			int sizeWeeklyActualAttendanceTime,
 			List<AttendanceTimeOfWeekly> attWeeklyBySid) {
 		
 		boolean check = false;
@@ -272,7 +271,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		case CONTINUOUS_DAY:
 			// 連続の項目の実績をチェック
 			continuousOutput = checkPerformanceOfConsecutiveItem(
-					attWeekly, weeklyCond, cond, itemValues, count, currentIndex, sizeWeeklyActualAttendanceTime, attWeeklyBySid);
+					attWeekly, weeklyCond, cond, itemValues, count, currentIndex, attWeeklyBySid.size(), attWeeklyBySid);
 			count = continuousOutput.count;
 			check = continuousOutput.check;
 			break;			
