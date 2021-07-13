@@ -1054,8 +1054,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			
 			// アラーム内容
 			String param0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId, scheCondMon.getCheckItemType());
-			String param1 = String.valueOf(totalComparsion);
-			String param2 = String.valueOf(totalWorkingTime);
+			String param1 = formatTime(totalComparsion.intValue());
+			String param2 = formatTime(totalWorkingTime.intValue());
 			alarmContent = TextResource.localize("KAL010_1117", param0, param1, param2);
 			
 			checkValue = TextResource.localize("KAL010_1123", param2);
@@ -1122,8 +1122,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			
 			// アラーム内容
 			String paramDayOff0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId, scheCondMon.getCheckItemType());
-			String paramDayOff1 = String.valueOf(totalComparsionDayOff);
-			String paramDayOff2 = String.valueOf(totalWorkingTimeDayOff);
+			String paramDayOff1 = formatTime(totalComparsionDayOff.intValue());
+			String paramDayOff2 = formatTime(totalWorkingTimeDayOff.intValue());
 			alarmContent = TextResource.localize("KAL010_1117", paramDayOff0, paramDayOff1, paramDayOff2);
 			
 			checkValue = TextResource.localize("KAL010_1124", paramDayOff2);
@@ -1189,10 +1189,10 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			if (ym.greaterThanOrEqualTo(closureIdPresentClosingPeriod.getCurrentClosingPeriod().getProcessingYm()) 
 					&& carryforwardSet != null
 					&& CarryforwardSetInShortageFlex.NEXT_MONTH_CARRYFORWARD == carryforwardSet) {
-				// 合計就業時間　＝　取得した合計就業時間　－　Input．前月の月別実績．勤怠時間．月の計算．フレックス時間．フレックス不足時間
+				// 合計就業時間　＝　取得した合計就業時間　－　Input．前月の月別実績．勤怠時間．月の計算．フレックス時間．フレックス不足時間 TODO
 				totalWorkingTimePubHoliday = attendanceTimeOfMonthly.getMonthlyCalculation().getFlexTime().getFlexShortageTime().v().doubleValue();
 			} else {
-				// 合計就業時間　＝　取得した合計就業時間
+				// 合計就業時間　＝　取得した合計就業時間 TODO
 			}
 			
 			Double ratioPubHoliday = 0.0;
@@ -1217,8 +1217,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			
 			// アラーム内容
 			String paramPub0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId, scheCondMon.getCheckItemType());
-			String paramPub1 = String.valueOf(totalComparsionPubHoliday);
-			String paramPub2 = String.valueOf(totalWorkingTimePubHoliday);
+			String paramPub1 = formatTime(totalComparsionPubHoliday.intValue());
+			String paramPub2 = formatTime(totalWorkingTimePubHoliday.intValue());
 			alarmContent = TextResource.localize("KAL010_1117", paramPub0, paramPub1, paramPub2);
 			
 			checkValue = TextResource.localize("KAL010_1125", paramPub2);
@@ -1678,6 +1678,19 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		}
 		
 		return variable0;
+	}
+	
+	/**
+	 * Format time
+	 * because not defined primitive value => function created!
+	 * @param value integer value time
+	 * @return format time HH:MM
+	 */
+	private String formatTime(int value) {
+		int hours = Math.abs(value) / 60;
+		int minute = Math.abs(value) % 60;
+		
+		return hours + ":" + (minute < 10 ? "0" + minute : minute); 
 	}
 	
 	/**
