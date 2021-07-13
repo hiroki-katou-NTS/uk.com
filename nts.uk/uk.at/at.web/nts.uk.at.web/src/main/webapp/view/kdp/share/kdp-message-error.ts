@@ -1,4 +1,4 @@
-/// <reference path="../../../lib/nittsu/viewcontext.d.ts" />
+ /// <reference path="../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kdp.share {
 
@@ -13,6 +13,10 @@ module nts.uk.at.view.kdp.share {
     };
 
     const template = `
+    <div class="error">
+        <div class="title-error" data-bind="i18n: 'KDP003_91'", style="color: white;"></div>
+        <span class="text-error" data-bind="i18n: '本日１０：００よりをメンテナンスのためシステムを停止致します。'" style="color: white;"></span>
+    </div>
     <div class="company" data-bind="style: { 'background-color': $component.headOfficeNotice.backGroudColor }">
         <div class="title-company" data-bind="i18n: $component.headOfficeNotice.title,
             style: { 'color': $component.headOfficeNotice.textColor }"></div>
@@ -49,15 +53,33 @@ module nts.uk.at.view.kdp.share {
 
         .kdp-message-error .company {
             padding: 5px 3px;
-            height: 47px;
-            max-height: 47px;
+            height: 55px;
+            max-height: 55px;
             word-break: break-all;
             text-overflow: ellipsis;
             overflow: hidden;
             box-sizing: border-box;
         }
 
+        .kdp-message-error .error {
+            padding: 5px 3px;
+            height: 55px;
+            max-height: 55px;
+            word-break: break-all;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            box-sizing: border-box;
+            background: #FD4D4D;
+            margin-bottom: 5px;
+        }
+
         .kdp-message-error .company .title-company {
+            box-sizing: border-box;
+            float: left;
+            height: 100px;
+        }
+
+        .kdp-message-error .error .title-error {
             box-sizing: border-box;
             float: left;
             height: 100px;

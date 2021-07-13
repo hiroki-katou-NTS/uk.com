@@ -1,40 +1,49 @@
 module nts.uk.at.view.kdp010.i {
 	import block = nts.uk.ui.block;
-    import info = nts.uk.ui.dialog.info;
+	import info = nts.uk.ui.dialog.info;
 	import error = nts.uk.ui.dialog.error;
-    import errors = nts.uk.ui.errors;
+	import errors = nts.uk.ui.errors;
 	import ajax = nts.uk.request.ajax;
 	export module viewmodel {
 		const paths: any = {
-	        getSettingCommonStamp: "at/record/stamp/timestampinputsetting/getSettingCommonStamp"
-	    }
+			getSettingCommonStamp: "at/record/stamp/timestampinputsetting/getSettingCommonStamp"
+		}
 		export class ScreenModel {
 			// H1_2
 			optionHighlight: KnockoutObservableArray<any> = ko.observableArray([
 				{ id: 1, name: nts.uk.resource.getText("KDP010_108") },
 				{ id: 0, name: nts.uk.resource.getText("KDP010_109") }
 			]);
-			
+
 			selectedHighlight: KnockoutObservable<number> = ko.observable(1);
-			
+
 			// H2_2
 			contentsStampType: KnockoutObservableArray<any> = ko.observableArray([]);
 			selectedDay: KnockoutObservable<number> = ko.observable(1);
 			selectedDayOld: KnockoutObservable<number> = ko.observable(1);
-			
+
 			supportWplSetOption: KnockoutObservableArray<any> = ko.observableArray([
 				{ id: 0, name: nts.uk.resource.getText("KDP010_341") },
 				{ id: 1, name: nts.uk.resource.getText("KDP010_342") }
 			]);
+
 			supportWplSet: KnockoutObservable<number> = ko.observable(0);
-			supportWplSetEnable: KnockoutObservable<boolean> = ko.computed(():boolean => {
+
+			assignmentMethodOption: KnockoutObservableArray<any> = ko.observableArray([
+				{ id: 0, name: nts.uk.resource.getText("KDP010_345") },
+				{ id: 1, name: nts.uk.resource.getText("KDP010_346") }
+			]);
+
+			assignmentMethod: KnockoutObservable<number> = ko.observable(0);
+
+			supportWplSetEnable: KnockoutObservable<boolean> = ko.computed((): boolean => {
 				return this.selectedHighlight() == 1 && (this.selectedDay() == 14 || this.selectedDay() == 16 || this.selectedDay() == 17 || this.selectedDay() == 18);
 			});
-			
+
 			// H3_2
 			optionStamping: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.GoingOutReason);
 			selectedStamping: KnockoutObservable<number> = ko.observable(0);
-			selectedStampingEnable: KnockoutObservable<boolean> = ko.computed(():boolean => {
+			selectedStampingEnable: KnockoutObservable<boolean> = ko.computed((): boolean => {
 				return this.selectedHighlight() == 1 && this.selectedDay() == 8;
 			});
 
@@ -64,31 +73,31 @@ module nts.uk.at.view.kdp010.i {
 			lstData: StampTypeCommand = null;
 			isFocus: KnockoutObservable<boolean> = ko.observable(true);
 			isChange: KnockoutObservable<number> = ko.observable(0);
-			checkGoOut :  KnockoutObservable<number> = ko.observable(0);
-            
-            showSelectedAudio = ko.observable(false);
+			checkGoOut: KnockoutObservable<number> = ko.observable(0);
+
+			showSelectedAudio = ko.observable(false);
 			constructor() {
 				let self = this;
 				self.selectedDay.subscribe((newValue) => {
 					self.getDataFromContents(newValue);
 					if (self.isChange() == 0) {
-						let name = _.find(self.lstContents(), function(itemEmp) { return itemEmp.value == newValue; });
+						let name = _.find(self.lstContents(), function (itemEmp) { return itemEmp.value == newValue; });
 						self.simpleValue(name.name);
 					}
-					
-					if(!_.isNil(newValue) && newValue == 8 && self.checkGoOut() != 1){
+
+					if (!_.isNil(newValue) && newValue == 8 && self.checkGoOut() != 1) {
 						self.selectedStamping(0);
 					}
-					
-					if(!_.isNil(newValue) && newValue != 8){
+
+					if (!_.isNil(newValue) && newValue != 8) {
 						self.selectedStamping(0);
 					}
-					
+
 				})
 
-				self.simpleValue.subscribe(function(codeChanged: string) {
-						self.simpleValue($.trim(self.simpleValue()));
-					});
+				self.simpleValue.subscribe(function (codeChanged: string) {
+					self.simpleValue($.trim(self.simpleValue()));
+				});
 
 				self.selectedHighlight.subscribe((newValue) => {
 					if (self.selectedHighlight() == 1)
@@ -96,9 +105,9 @@ module nts.uk.at.view.kdp010.i {
 				})
 				$('.ntsRadioBox').focus();
 			}
-            /**
-             * start page  
-             */
+			/**
+			 * start page  
+			 */
 			public startPage(): JQueryPromise<any> {
 				let self = this,
 					dfd = $.Deferred();
@@ -108,28 +117,28 @@ module nts.uk.at.view.kdp010.i {
 				self.getDataFromContents(self.selectedDay());
 				block.invisible();
 				let tg = __viewContext.enums.ContentsStampType;
-				ajax(paths.getSettingCommonStamp).done(function(data: any) {
-					if(!data.supportUse){
-						_.remove(tg, (n:any) => {return n.value == 14 || n.value == 15 || n.value == 16 || n.value == 17 || n.value == 18;});
+				ajax(paths.getSettingCommonStamp).done(function (data: any) {
+					if (!data.supportUse) {
+						_.remove(tg, (n: any) => { return n.value == 14 || n.value == 15 || n.value == 16 || n.value == 17 || n.value == 18; });
 					}
-					if(!data.temporaryUse){
-						_.remove(tg, (n:any) => {return n.value == 12 || n.value == 13;});
+					if (!data.temporaryUse) {
+						_.remove(tg, (n: any) => { return n.value == 12 || n.value == 13; });
 					}
 					self.contentsStampType(tg);
 					dfd.resolve();
-				}).fail(function(res:any) {
+				}).fail(function (res: any) {
 					error({ messageId: res.messageId });
 				}).always(() => {
 					block.clear();
 				});
 				return dfd.promise();
 			}
-			
+
 			public getDataStamp() {
 
 				let self = this;
 				self.dataShare = nts.uk.ui.windows.getShared('KDP010_G');
-                self.showSelectedAudio(self.dataShare.fromScreen === 'A');
+				self.showSelectedAudio(self.dataShare.fromScreen === 'A');
 				self.buttonPositionNo(self.dataShare.buttonPositionNo);
 				if (self.dataShare.dataShare != undefined) {
 					let data = self.dataShare.dataShare.lstButtonSet ? self.dataShare.dataShare.lstButtonSet.filter(x => x.buttonPositionNo == self.dataShare.buttonPositionNo)[0] : self.dataShare.dataShare;
@@ -144,24 +153,24 @@ module nts.uk.at.view.kdp010.i {
 						self.getTypeButton(data);
 						self.supportWplSet((data.supportWplSet == null || data.supportWplSet == undefined) ? 0 : data.supportWplSet);
 					} else {
-						let name = _.find(self.lstContents(), function(itemEmp) { return itemEmp.value == 1; });
+						let name = _.find(self.lstContents(), function (itemEmp) { return itemEmp.value == 1; });
 						self.simpleValue(name.name);
 					}
 				}
-				$(document).ready(function() {
+				$(document).ready(function () {
 					$('#highlight-radio').focus();
 				});
 			}
 
 			public getSimpleValue(value: number) {
 				let self = this;
-				let name = _.find(self.lstContents(), function(itemEmp) { return itemEmp.value == 1; });
+				let name = _.find(self.lstContents(), function (itemEmp) { return itemEmp.value == 1; });
 				self.simpleValue(name.name);
 			}
 
-            /**
-             * Pass Data to A
-             */
+			/**
+			 * Pass Data to A
+			 */
 			public passData(): void {
 				let self = this;
 				$('#correc').trigger("validate");
@@ -189,7 +198,7 @@ module nts.uk.at.view.kdp010.i {
 					}),
 					usrArt: self.selectedHighlight(),
 					audioType: self.selectedAudio(),
-					supportWplSet: self.supportWplSetEnable()?self.supportWplSet():null
+					supportWplSet: self.supportWplSetEnable() ? self.supportWplSet() : null
 				});
 
 				if (self.dataShare.dataShare == undefined || self.dataShare.dataShare.lstButtonSet == undefined) {
@@ -212,10 +221,10 @@ module nts.uk.at.view.kdp010.i {
 			}
 			public getTypeButton(data: any): void {
 				let self = this,
-					changeClockArt = data.buttonType.stampType == null ? null: data.buttonType.stampType.changeClockArt,
-					changeCalArt = data.buttonType.stampType == null ? null: data.buttonType.stampType.changeCalArt,
-					setPreClockArt = data.buttonType.stampType == null ? null: data.buttonType.stampType.setPreClockArt,
-					changeHalfDay = data.buttonType.stampType == null ? null: data.buttonType.stampType.changeHalfDay,
+					changeClockArt = data.buttonType.stampType == null ? null : data.buttonType.stampType.changeClockArt,
+					changeCalArt = data.buttonType.stampType == null ? null : data.buttonType.stampType.changeCalArt,
+					setPreClockArt = data.buttonType.stampType == null ? null : data.buttonType.stampType.setPreClockArt,
+					changeHalfDay = data.buttonType.stampType == null ? null : data.buttonType.stampType.changeHalfDay,
 					reservationArt = data.buttonType.reservationArt;
 				let typeNumber = self.checkType(changeClockArt, changeCalArt, setPreClockArt, changeHalfDay, reservationArt);
 				self.selectedDay(typeNumber);
@@ -357,9 +366,9 @@ module nts.uk.at.view.kdp010.i {
 
 			}
 
-            /**
-             * Close dialog
-             */
+			/**
+			 * Close dialog
+			 */
 			public closeDialog(): void {
 				let self = this;
 				nts.uk.ui.windows.close();
@@ -516,10 +525,10 @@ module nts.uk.at.view.kdp010.i {
 		changeClockArt: number;
 		changeCalArt: number;
 	}
-	__viewContext.ready(function() {
-        var screenModel = new viewmodel.ScreenModel();
-        screenModel.startPage().done(function() {
-            __viewContext.bind(screenModel);
-        });   
-    });
+	__viewContext.ready(function () {
+		var screenModel = new viewmodel.ScreenModel();
+		screenModel.startPage().done(function () {
+			__viewContext.bind(screenModel);
+		});
+	});
 }

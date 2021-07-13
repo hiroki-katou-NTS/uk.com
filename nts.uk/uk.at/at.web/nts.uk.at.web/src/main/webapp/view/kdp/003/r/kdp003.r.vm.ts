@@ -12,6 +12,9 @@ module nts.uk.at.kdp003.r {
 
     @bean()
 	export class ViewModel extends ko.ViewModel {
+
+        notiErrorSystem: KnockoutObservable<boolean| null> = ko.observable(false);
+
         // ver50
         // R5 利用停止前内容
         // beforeStopNoticeList: KnockoutObservableArray<any> = ko.observableArray([]);

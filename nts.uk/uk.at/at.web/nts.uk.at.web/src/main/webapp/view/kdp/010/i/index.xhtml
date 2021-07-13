@@ -95,6 +95,22 @@
 							<button style="top: 5px;" data-bind="ntsHelpButton: {textId: 'KDP010_343', position: 'bottom center' }, enable: supportWplSetEnable">？</button>
 						</td>
 					</tr>
+					<!-- H9 -->
+					<tr>
+						<td>
+							<!-- H9_1 -->
+							<div class="margin-left-20" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_344')}</div>
+						</td>
+						<td class="rowHelpButton">
+							<!-- H8_2 -->
+							<div style="display: inline-block;" tabindex="3" data-bind="ntsRadioBoxGroup: {
+												name: '#[KDP010_344]',
+												options: assignmentMethodOption,
+												optionsValue: 'id',
+												optionsText: 'name',
+												value: assignmentMethod}"></div>
+						</td>
+					</tr>
 					<tr>
 						<td>
 							<!-- H4_1 -->
@@ -127,6 +143,7 @@
 							<div tabindex="6" class="colorpicker" data-bind="ntsColorPicker: {value: backgroundColors, width: 50, name:'#[KDP010_119]', enable: selectedHighlight() == 1 }" />
 						</td>
 					</tr>
+					
 					<com:ko-if bind = "showSelectedAudio">
 						<tr>
 							<td>
