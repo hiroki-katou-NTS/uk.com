@@ -30,17 +30,19 @@ public class JpaRoleByRoleTiesRepository extends JpaRepository implements  RoleB
 	}
 
 	@Override
-	public void deleteRoleByRoleTies(String roleId) {
-		this.commandProxy().remove(SptmtRoleByRoleTies.class,roleId);
+	public void deleteRoleByRoleTies(String roleId, String companyId) {
+		//TODO　修正お願いいたします。
+		//this.commandProxy().remove(SptmtRoleByRoleTies.class,roleId);
 	}
 
-	@Override
+//	TODO　削除お願いいたします。
+/*	@Override
 	public Optional<RoleByRoleTies> getRoleByRoleTiesById(String roleId) {
 		Optional<RoleByRoleTies> data = this.queryProxy().query(GET_ROLE_BY_ROLE_TIES_BY_CODE,SptmtRoleByRoleTies.class)
 				.setParameter("roleId", roleId)
 				.getSingle(c->c.toDomain());
 		return data;
-	}
+	}*/
 	
 	@Override
 	public Optional<RoleByRoleTies> getByRoleIdAndCompanyId(String roleId, String companyId) {

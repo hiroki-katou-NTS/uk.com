@@ -26,6 +26,7 @@ public class SptmtRoleByRoleTies extends ContractUkJpaEntity implements Serializ
 	@Column(name = "WEB_MENU_CD")
 	public String webMenuCd;
 	
+	//TODO 元々ROLE_IDがprimaryKeyですが、今回はprimaryKey 「ROLE_ID」と「CID」 になりました。
 	@Column(name = "CID")
 	public String companyId;
 	
@@ -46,13 +47,13 @@ public class SptmtRoleByRoleTies extends ContractUkJpaEntity implements Serializ
 	public RoleByRoleTies toDomain() {
 		return new RoleByRoleTies(
 				this.roleId,
-				new WebMenuCode(this.webMenuCd),
-				this.companyId
+				this.companyId,
+				new WebMenuCode(this.webMenuCd)
 				);
 	}
 
 
-	public SptmtRoleByRoleTies(String roleId,String webMenuCd, String companyId) {
+	public SptmtRoleByRoleTies(String roleId, String webMenuCd, String companyId) {
 		super();
 		this.roleId = roleId;
 		this.webMenuCd = webMenuCd;
