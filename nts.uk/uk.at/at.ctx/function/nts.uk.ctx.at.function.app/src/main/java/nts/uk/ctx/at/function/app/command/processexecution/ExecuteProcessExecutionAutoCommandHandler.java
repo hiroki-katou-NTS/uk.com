@@ -75,6 +75,7 @@ import nts.uk.ctx.at.function.dom.processexecution.ProcessExecType;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionService;
 import nts.uk.ctx.at.function.dom.processexecution.ServerExternalOutputAdapter;
 import nts.uk.ctx.at.function.dom.processexecution.ServerExternalOutputImport;
+import nts.uk.ctx.at.function.dom.processexecution.TempAbsenceHistoryService;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.createfromupdateautorunerror.CreateFromUpdateAutoRunError;
 import nts.uk.ctx.at.function.dom.processexecution.createfromupdateautorunerror.DefaultRequireImpl;
@@ -100,7 +101,6 @@ import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLo
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionRepository;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSetting;
-import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.RepeatContentItem;
 import nts.uk.ctx.at.function.dom.processexecution.updatelogafterprocess.UpdateLogAfterProcess;
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessautoexeclog.overallerrorprocess.ErrorConditionOutput;
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessautoexeclog.overallerrorprocess.OverallErrorProcess;
@@ -150,6 +150,7 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.SpecifyCreation;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
+import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.TempAbsenceImport;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeService;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
@@ -323,6 +324,9 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	
 	@Inject
 	private ByPeriodAggregationService byPeriodAggregationService;
+	
+	@Inject
+	private TempAbsenceHistoryService tempAbsenceHistoryService;
 	
 	@Override
 	public boolean keepsTrack() {
@@ -974,7 +978,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 //					this.scheduleExecution.handle(ctx);
 //					handle = this.scheduleExecution.handle(scheduleCommand);
 					CountDownLatch countDownLatch = new CountDownLatch(1);
-					AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false)
+					AsyncTask task = AsyncTask.builder().keepsTrack(false)
 							.threadName(this.getClass().getName()).build(() -> {
 								scheduleCommand.setCountDownLatch(countDownLatch);
 								AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCommand);
@@ -1031,11 +1035,12 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 						boolean isTransfer = procExec.getReExecCondition().getRecreateTransfer().equals(NotUseAtr.USE);
 						boolean isWorkType = procExec.getReExecCondition().getRecreatePersonChangeWkt()
 								.equals(NotUseAtr.USE);
+						boolean isLeave = procExec.getReExecCondition().getRecreateLeave().isUse();
 
 						// 異動者・勤務種別変更者の作成対象期間の計算（個人別）
 						listApprovalPeriodByEmp = calPeriodTransferAndWorktype.calPeriodTransferAndWorktype(companyId,
 								listEmp, new DatePeriod(filterData.getStartDate(), endDate.get()),
-								isTransfer, isWorkType);
+								isTransfer, isWorkType, isLeave);
 						List<DatePeriod> targetDates = listApprovalPeriodByEmp.stream()
 								.map(ApprovalPeriodByEmp::getListPeriod)
 								.flatMap(List::stream)
@@ -1055,7 +1060,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 							// AsyncCommandHandlerContext<>(scheduleCreatorExecutionOneEmp1);
 							// this.scheduleExecution.handle(ctx);
 							CountDownLatch countDownLatch = new CountDownLatch(1);
-							AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false)
+							AsyncTask task = AsyncTask.builder().keepsTrack(false)
 									.threadName(this.getClass().getName()).build(() -> {
 										scheduleCreatorExecutionOneEmp.setCountDownLatch(countDownLatch);
 										AsyncTaskInfo handle1 = this.scheduleExecution
@@ -1479,6 +1484,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 							DatePeriod datePeriod = new DatePeriod(calculateDate, maxDate);
 							List<DatePeriod> listDatePeriodWorkplace = new ArrayList<>();
 							List<DatePeriod> listDatePeriodWorktype = new ArrayList<>();
+							List<DatePeriod> listDatePeriodLeave = new ArrayList<>();
 							List<DatePeriod> listDatePeriodAll = new ArrayList<>();
 							// INPUT．「異動時に再作成」をチェックする
 							if (procExec.getReExecCondition().getRecreateTransfer()
@@ -1515,8 +1521,18 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 								listDatePeriodWorktype = wkTypeInfoChangePeriod.getWkTypeInfoChangePeriod(empLeader, datePeriod, 
 																					listBusinessTypeOfEmpDto, true);
 							}
+							// INPUT．「休職・休業者再作成」をチェックする
+                            if (procExec.getReExecCondition().getRecreateLeave().isUse()) {
+                            	// 社員（List）と期間から休職休業を取得する
+                            	TempAbsenceImport tempAbsence = this.tempAbsenceHistoryService
+                            			.getTempAbsence(companyId, datePeriod, Arrays.asList(empLeader));
+                            	// 休職休業履歴変更期間を求める
+                            	listDatePeriodLeave = this.tempAbsenceHistoryService
+                            			.findChangingLeaveHistoryPeriod(empLeader, datePeriod, tempAbsence,
+                            					procExec.getReExecCondition().getRecreateLeave().isUse());
+                            }
 							listDatePeriodAll
-									.addAll(createListAllPeriod(listDatePeriodWorkplace, listDatePeriodWorktype));
+									.addAll(createListAllPeriod(listDatePeriodWorkplace, listDatePeriodWorktype, listDatePeriodLeave));
 
 							// 取り除いた期間をOUTPUT「承認結果の反映対象期間（List）」に追加する
 							listApprovalPeriodByEmp.add(new ApprovalPeriodByEmp(empLeader, listDatePeriodAll));
@@ -1567,11 +1583,12 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		return new OutputCreateScheduleAndDaily(true, listApprovalPeriodByEmp);
 	}
 
-	private List<DatePeriod> createListAllPeriod(List<DatePeriod> list1, List<DatePeriod> list2) {
+	private List<DatePeriod> createListAllPeriod(List<DatePeriod> list1, List<DatePeriod> list2, List<DatePeriod> list3) {
 //		List<DatePeriod> listResult = new ArrayList<>();
 		List<DatePeriod> listAll = new ArrayList<>();
 		listAll.addAll(list1);
 		listAll.addAll(list2);
+		listAll.addAll(list3);
 //		listAll.sort((x, y) -> x.start().compareTo(y.start()));
 //
 //		for(int i = 0;i< listAll.size();i++) {
@@ -3513,9 +3530,11 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 						Optional.of(procExec.getExecScope().getWorkplaceIdList()), Optional.empty());
 				// Step ドメインモデル「任意期間集計実行ログ」を新規登録する - Registering a new domain model 任意期間集計実行ログ
 				// (AggrPeriodExcution)
+				int executionAtr = nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodexcution.
+						ExecutionAtr.AUTOMATIC_EXECUTION.value;
 				AggrPeriodExcutionImport aggrPeriodExcution = AggrPeriodExcutionImport.builder().companyId(companyId)
 						.aggrId(execId).aggrFrameCode(aggrFrameCode).executionEmpId("System")
-						.startDateTime(GeneralDateTime.now()).executionAtr(ExecutionAtr.AUTOMATIC.value)
+						.startDateTime(GeneralDateTime.now()).executionAtr(executionAtr)
 						.executionStatus(Optional.empty()).presenceOfError(PresenceOfError.NO_ERROR.value)
 						.endDateTime(GeneralDateTime.now()).build();
 				this.aggrPeriodExcutionAdapter.addExcution(aggrPeriodExcution);
