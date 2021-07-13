@@ -42,12 +42,15 @@
                 <button class="proceed"
                     data-bind="enable: $root.errors.isEmpty, click: $vm.register, enable: $root.errors.isEmpty">#{i18n.getText('KAF004_8')}</button>
 
-                    <span data-bind="component: { name: 'kaf000-a-component7',
+				<div
+					data-bind="component: { name: 'kaf000-a-component7',
 											params: {
 												appType: appType,
 												checkBoxValue: isSendMail,
-												appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
-                                            } }"></span>
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"
+					style="display: inline-block;"></div>
+
             </div>
 			<div style="display: inline-block; position: absolute; z-index: 10; margin-left: 70px;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
             <div id="contents-area" style="background-color: inherit; ">
