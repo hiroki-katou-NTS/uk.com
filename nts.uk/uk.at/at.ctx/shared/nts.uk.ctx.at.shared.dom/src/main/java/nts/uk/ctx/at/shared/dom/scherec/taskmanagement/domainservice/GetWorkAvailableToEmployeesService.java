@@ -41,7 +41,7 @@ public class GetWorkAvailableToEmployeesService {
      */
     public static List<Task> get(Require require, String companyID, String employeeID, GeneralDate date, TaskFrameNo taskFrameNo, Optional<TaskCode> taskCodes) {
     	//	$作業枠利用設定 = require.作業枠利用設定を取得する()	
-    	TaskFrameUsageSetting taskFrameUsageSetting = require.getTask();
+    	TaskFrameUsageSetting taskFrameUsageSetting = require.getWorkFrameUsageSetting(companyID);
     	
     	//$作業枠設定 = $作業枠利用設定.枠設定:																		
     		//filter $.作業枠NO = 作業枠NO																	
@@ -63,7 +63,7 @@ public class GetWorkAvailableToEmployeesService {
     	//if 作業枠NO <> 1 AND 上位枠作業コード.isPresent
     	if(taskFrameNo.v() != 1 && taskCodes.isPresent()) {
     		//$親作業 = require.親作業を取得する(作業枠NO-1, 上位枠作業コード)
-    		Optional<Task> task = require.getOptionalTask(taskFrameNo, taskCodes.get());
+    		Optional<Task> task = require.getOptionalTask(companyID, taskFrameNo, taskCodes.get());
     		//if not $親作業.isEmpty
     		if(task.isPresent())
     			//$子作業 = $親作業.子作業一覧	
@@ -73,7 +73,7 @@ public class GetWorkAvailableToEmployeesService {
     	//if $子作業.isEmpty AND $絞込作業.isEmpty
     	if(childTaskList.isEmpty() && listTaskCode.isEmpty())
     		//return require.全ての作業を取得する(基準日, 作業枠NO)
-    		return require.getTask(date, Arrays.asList(taskFrameNo));
+    		return require.getListTask(companyID, date, Arrays.asList(taskFrameNo));
     	
     	List<TaskCode> childTaskListfilter = new ArrayList<TaskCode>();
     	//if 子作業.isPresent AND $絞込作業.isPresent
@@ -86,7 +86,7 @@ public class GetWorkAvailableToEmployeesService {
     		childTaskListfilter = childTaskList;
     		
     	//	return require.利用可能作業を取得する(基準日, 作業枠NO, $利用可能作業)	
-    	return require.getListTask(date, taskFrameNo, childTaskListfilter);
+    	return require.getListTask(companyID, date, taskFrameNo, childTaskListfilter);
     }
 //■Private
     /**
@@ -108,7 +108,7 @@ public class GetWorkAvailableToEmployeesService {
     		//$作業CDリスト = $職場別作業の絞込.作業一覧
     		result = narrowingDownTaskByWorkplace.get().getTaskCodeList();
     	//$社員別作業の絞込 = require.社員別作業の絞込を取得する(社員ID, 作業枠NO)	
-    	List<TaskAssignEmployee> taskAssignEmployee = require.getTaskAssignEmployee(employeeID, taskFrameNo);
+    	List<TaskAssignEmployee> taskAssignEmployee = require.get(employeeID, taskFrameNo.v());
     	//$社員別作業コード = $社員別作業の絞込: map $.作業コード	
     	List<TaskCode> taskCodeByEmployee = taskAssignEmployee.stream().map(c->c.getTaskCode()).collect(Collectors.toList());
     	//return $作業CDリスト.add($社員別作業コード)																
@@ -120,18 +120,18 @@ public class GetWorkAvailableToEmployeesService {
     public interface Require extends NarrowingDownTaskByWorkplaceFromEmployeesService.Require {
          // [R-1] 作業枠利用設定を取得する
          // 作業枠利用設定Repository.Get(会社ID)	
-        TaskFrameUsageSetting getTask();
+    	TaskFrameUsageSetting getWorkFrameUsageSetting(String cid);
          // [R-2] 全ての作業を取得する
          // 作業Repository.Get(会社ID,基準日,作業枠リスト)
-        List<Task> getTask(GeneralDate date, List<TaskFrameNo> TaskFrameNo);
+    	List<Task> getListTask(String cid, GeneralDate referenceDate, List<TaskFrameNo> taskFrameNos);
          // [R-3] 利用可能作業を取得する
          // 作業Repository.Get(会社ID,基準日,作業枠NO,作業コードリスト)
-        List<Task> getListTask(GeneralDate referenceDate, TaskFrameNo taskFrameNo, List<TaskCode> codes);
+    	List<Task> getListTask(String cid, GeneralDate referenceDate, TaskFrameNo taskFrameNo, List<TaskCode> codes);
          // [R-4] 親作業を取得する
          // 作業Repository.Get(会社ID,作業枠NO,コード)
-        Optional<Task> getOptionalTask(TaskFrameNo taskFrameNo, TaskCode codes);
+    	Optional<Task> getOptionalTask(String cid, TaskFrameNo taskFrameNo, TaskCode code);
          // [R-5] 社員別作業の絞込を取得する
          // 個人割り当て作業Repository.Get(社員ID,作業枠NO)
-        List<TaskAssignEmployee> getTaskAssignEmployee(String employeeId, TaskFrameNo taskFrameNo);
+    	List<TaskAssignEmployee> get(String employeeId, int taskFrameNo);
     }
 }
