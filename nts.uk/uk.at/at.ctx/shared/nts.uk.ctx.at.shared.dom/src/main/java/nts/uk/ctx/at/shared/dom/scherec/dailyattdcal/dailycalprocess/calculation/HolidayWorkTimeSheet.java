@@ -395,7 +395,9 @@ public class HolidayWorkTimeSheet{
 			val beforeApp = holidayOfDaily.getHolidayWorkFrameTime().stream()
 					.filter(x -> x.getHolidayFrameNo().v().intValue() == holTime.getHolidayFrameNo().v().intValue()).findFirst()
 					.map(x -> x.getBeforeApplicationTime()).orElse(Finally.of(new AttendanceTime(0)));
-			holTime.addBeforeTime(beforeApp.isPresent() ? beforeApp.get() : new AttendanceTime(0));
+			if(holTime.getBeforeApplicationTime().isPresent()){
+				holTime.setBeforeApplicationTime(Finally.of(beforeApp.isPresent() ? beforeApp.get() : new AttendanceTime(0)));
+			}; 
 		});
 		
 		//補正処理を実行する為に、日別勤怠の休出時間のインスタンスを作成
