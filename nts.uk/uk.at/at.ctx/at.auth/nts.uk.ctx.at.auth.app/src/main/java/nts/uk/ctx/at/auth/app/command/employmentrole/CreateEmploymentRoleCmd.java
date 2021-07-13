@@ -3,12 +3,7 @@ package nts.uk.ctx.at.auth.app.command.employmentrole;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.auth.dom.employmentrole.DisabledSegment;
-import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeRefRange;
-import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmploymentRole;
-import nts.uk.ctx.at.auth.dom.employmentrole.ScheduleEmployeeRef;
 
 @Getter
 @Setter
@@ -55,7 +50,8 @@ public class CreateEmploymentRoleCmd {
 	}
 	
 	public EmploymentRole toDomain() {
-		return new  EmploymentRole(
+		//TODO 修正お願いいたします。
+		/*		return new  EmploymentRole(
 				this.companyId,
 				this.roleId,
 				EnumAdaptor.valueOf(this.scheduleEmployeeRef, ScheduleEmployeeRef.class),
@@ -63,7 +59,8 @@ public class CreateEmploymentRoleCmd {
 				EnumAdaptor.valueOf(this.employeeRefSpecAgent,EmployeeRefRange.class),
 				EnumAdaptor.valueOf(this.presentInqEmployeeRef,EmployeeReferenceRange.class),
 				EnumAdaptor.valueOf(this.futureDateRefPermit,DisabledSegment.class)
-				);
+				);*/
+		return null;
 	}
 	
 }

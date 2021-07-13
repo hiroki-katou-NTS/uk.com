@@ -6,14 +6,10 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.auth.dom.employmentrole.DisabledSegment;
-import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeRefRange;
-import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmploymentRole;
-import nts.uk.ctx.at.auth.dom.employmentrole.ScheduleEmployeeRef;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
@@ -25,7 +21,7 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
 	private static final long serialVersionUID = -5374494134003331017L;
 
 	@EmbeddedId
-	public KacmtEmploymentRolePK kacmtEmploymentRolePK;
+	public KacmtRoleAttendancePK kacmtRoleAttendancePK;
 	
 	@Column(name = "SCHEDULE_EMPLOYEE_REF")
 	public int scheduleEmployeeRef;
@@ -44,12 +40,13 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
 
 	@Override
 	protected Object getKey() {
-		return this.kacmtEmploymentRolePK;
+		return this.kacmtRoleAttendancePK;
 	}
 	
 
 	public EmploymentRole toDomain() {
-		return new EmploymentRole(
+		//TODO create domain 
+/*		return new EmploymentRole(
 			this.kacmtEmploymentRolePK.companyID,
 			this.kacmtEmploymentRolePK.roleID,
 			EnumAdaptor.valueOf(this.scheduleEmployeeRef, ScheduleEmployeeRef.class),
@@ -58,18 +55,20 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
 			EnumAdaptor.valueOf(this.presentInqEmployeeRef,EmployeeReferenceRange.class),
 			EnumAdaptor.valueOf(this.futureDateRefPermit,DisabledSegment.class)
 		);
+*/
+		return null;
 	}
 
-	public KacmtRoleAttendance(KacmtEmploymentRolePK kacmtEmploymentRolePK) {
+	public KacmtRoleAttendance(KacmtRoleAttendancePK kacmtRoleAttendancePK) {
 		super();
-		this.kacmtEmploymentRolePK = kacmtEmploymentRolePK;
+		this.kacmtRoleAttendancePK = kacmtRoleAttendancePK;
 	}
 
 
-	public KacmtRoleAttendance(KacmtEmploymentRolePK kacmtEmploymentRolePK, int scheduleEmployeeRef,
+	public KacmtRoleAttendance(KacmtRoleAttendancePK kacmtRoleAttendancePK, int scheduleEmployeeRef,
 			int bookEmployeeRef, int employeeRefSpecAgent, int presentInqEmployeeRef, int futureDateRefPermit) {
 		super();
-		this.kacmtEmploymentRolePK = kacmtEmploymentRolePK;
+		this.kacmtRoleAttendancePK = kacmtRoleAttendancePK;
 		this.scheduleEmployeeRef = scheduleEmployeeRef;
 		this.bookEmployeeRef = bookEmployeeRef;
 		this.employeeRefSpecAgent = employeeRefSpecAgent;
@@ -78,14 +77,16 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
 	}
 	
 	public static KacmtRoleAttendance toEntity(EmploymentRole domain) {
-		return new KacmtRoleAttendance(
+//TODO create entity KacmtRoleAttendance
+/*		return new KacmtRoleAttendance(
 				new KacmtEmploymentRolePK(domain.getCompanyId(),domain.getRoleId()),
 				domain.getScheduleEmployeeRef().value,
 				domain.getBookEmployeeRef().value,
 				domain.getEmployeeRefSpecAgent().value,
 				domain.getPresentInqEmployeeRef().value,
 				domain.getFutureDateRefPermit().value
-				);
+				);*/
+		return null;
 	}
 
 }

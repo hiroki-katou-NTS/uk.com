@@ -21,7 +21,7 @@ public class AddRoleCommandHandler extends CommandHandlerWithResult<AddRoleComma
 	protected String handle(CommandHandlerContext<AddRoleCommand> context) {
 		AddRoleCommand role = context.getCommand();
 		Role newRole = role.toDomain();
-		Optional<Role> checkData = repo.findRoleByRoleCode(newRole.getCompanyId(),newRole.getRoleCode().v(),newRole.getRoleType().value);
+		Optional<Role> checkData = repo.findRoleByRoleCode(newRole.getCompanyId(),newRole.getRoleCode().v(),newRole.getRoleType().value);//TODO 削除予定です
 		if(checkData.isPresent()) {
 			throw new BusinessException("Msg_3");
 		} else {

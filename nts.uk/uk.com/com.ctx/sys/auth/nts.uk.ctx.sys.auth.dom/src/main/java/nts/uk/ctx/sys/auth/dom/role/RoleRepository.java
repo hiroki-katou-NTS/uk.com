@@ -34,6 +34,7 @@ public interface RoleRepository {
 	 * @param RoleType
 	 * @return
 	 */
+	//TODO method [exists]があるので、このメソッド「findRoleByRoleCode」を削除予定です
 	Optional<Role> findRoleByRoleCode(String companyId,String roleCode, int roleType);
 	
 
@@ -134,4 +135,15 @@ public interface RoleRepository {
 	 * @return
 	 */
 	Map<String, String> findRoleIdAndNameByListRoleId(String cid, List<String> roleIds);
+	
+	/**
+	 * exists(会社ID, ロール種類, 担当区分毎に, ロールコード)
+	 * @param cid 会社ID
+	 * @param roleType ロール種類
+	 * @param assignAtr 担当区分
+	 * @param roleCode ロールコード
+	 * @return
+	 */
+	boolean exists(String cid, RoleType roleType, RoleAtr assignAtr, RoleCode roleCode);
+	
 }

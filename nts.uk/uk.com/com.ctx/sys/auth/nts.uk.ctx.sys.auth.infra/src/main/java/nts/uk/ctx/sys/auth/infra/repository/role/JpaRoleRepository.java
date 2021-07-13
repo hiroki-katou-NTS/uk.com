@@ -29,11 +29,12 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.role.Role;
+import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
+import nts.uk.ctx.sys.auth.dom.role.RoleCode;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
+import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtRole_;
-
-
 /**
  * The Class JpaRoleRepository.
  */
@@ -193,8 +194,8 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		return this.queryProxy().query(query, SacmtRole.class)
 				.setParameter("roleId", roleId).getList().stream().map(x ->new Role(new JpaRoleGetMemento(x))).findFirst();
 	}
-
-	@Override
+    //TODO method [exists]があるので、このメソッド「findRoleByRoleCode」を削除予定です
+    @Override
 	public Optional<Role> findRoleByRoleCode(String companyId,String roleCode, int roleType) {
 		String query ="SELECT e FROM SacmtRole e WHERE e.code = :code AND e.roleType = :roleType "
 				+ " AND e.cid = :companyId ";
@@ -247,6 +248,12 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 			}
 		});
 		return result;
+	}
+
+	@Override
+	public boolean exists(String cid, RoleType roleType, RoleAtr assignAtr, RoleCode roleCode) {
+		//TODO 会社ID、ロール種類、担当区分毎に、ロールコードが重複チェックするので、実装お願いします。
+		return false;
 	}
 
 }
