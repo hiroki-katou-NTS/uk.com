@@ -47,7 +47,7 @@
 				<div class="container cf">
 					<div id="left-content" class="fixed-flex-layout-left"
 						data-bind="with: $vm.component025">
-						<div id='list_role' tabindex="4" data-bind="ntsPanel:{direction: '', showIcon: false, visible: true}" style="display: table">
+						<div id='list_role' tabindex="4">
 							<ui:include src="/view/ccg/025/component/index.xhtml" />
 						</div>
 					</div>
@@ -115,7 +115,7 @@
 						<ccg026-component
 								params="{
 													label: {
-														require: true,
+														require: false,
 														text: 'CAS009_14'
 													},
 													tabindex: 8,

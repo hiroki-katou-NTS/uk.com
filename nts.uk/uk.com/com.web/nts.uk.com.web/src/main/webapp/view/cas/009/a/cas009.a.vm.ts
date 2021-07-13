@@ -3,8 +3,6 @@ module nts.uk.com.view.cas009.a.viewmodel {
     import ComponentModelCCG025 = nts.uk.com.view.ccg025.a.component.viewmodel.ComponentModel;
 
     const API = {
-        hasRole: 'ctx/sys/auth/role/user/has/role/8',
-        getRole: 'ctx/sys/auth/role/find/person/role',
         savePermission: 'ctx/com/screen/person/role/register',
         removePermission: 'ctx/com/screen/person/role/delete',
         permissionPersonInfo: 'ctx/pereg/functions/auth/find-with-role',
@@ -22,8 +20,6 @@ module nts.uk.com.view.cas009.a.viewmodel {
             multiple: false,
             rows: 15
         });
-
-        // enableDetail: KnockoutObservable<boolean> = ko.observable(true);
 
         created() {
             const vm = this;
@@ -50,26 +46,24 @@ module nts.uk.com.view.cas009.a.viewmodel {
                     exist: IRole = _.find(roles, (r: IRole) => _.isEqual(r.roleId, rid));
 
                 if (exist) {
+                    vm.$blockui("show");
                     vm.selectedRole.roleName(exist.name);
-                    vm.selectedRole.roleCode(exist.roleCode)
+                    vm.selectedRole.roleCode(exist.roleCode);
 
-                    // vm.selectedRole.assignAtr(exist.assignAtr);
-                    // vm.selectedRole.referFutureDate(exist.referFutureDate || false);
                     vm.selectedRole.employeeReferenceRange(exist.employeeReferenceRange || 0);
                     vm.$ajax("com", API.permissionPersonInfo, rid).done((data: any) => {
                         vm.selectedRole.permisions(data);
                         vm.selectedRole.permisions.valueHasMutated();
+                    }).fail(error => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("hide");
                     });
                 } else {
+                    vm.$blockui("show");
                     vm.selectedRole.roleName('');
                     vm.selectedRole.roleCode('');
 
-                    // if (!_.isEqual(vm.selectedRole.assignAtr(), 0)) {
-                    //     vm.selectedRole.assignAtr(0);
-                    // } else {
-                    //     vm.selectedRole.assignAtr.valueHasMutated();
-                    // }
-                    // vm.selectedRole.referFutureDate(false);
                     vm.selectedRole.employeeReferenceRange(_.isEqual(vm.selectedRole.assignAtr(), 0) ? 0 : 1);
                     vm.$ajax("com", API.permissionPersonInfo, undefined).done((data: any) => {
                         vm.selectedRole.permisions(data);
@@ -83,6 +77,10 @@ module nts.uk.com.view.cas009.a.viewmodel {
                             });
                         }
                         vm.selectedRole.permisions.valueHasMutated();
+                    }).fail(error => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("hide");
                     });
                 }
 
@@ -108,8 +106,6 @@ module nts.uk.com.view.cas009.a.viewmodel {
             let vm = this, role = vm.selectedRole;
 
             vm.$blockui("show");
-            // vm.$ajax(API.hasRole).done(enableDetail => {
-            //     vm.enableDetail(enableDetail);
 
             // get list role
             vm.getListRole().done(() => {
@@ -127,25 +123,7 @@ module nts.uk.com.view.cas009.a.viewmodel {
                 vm.$blockui("hide");
                 nts.uk.ui.errors.clearAll();
             });
-            // }).fail(error => {
-            //     vm.$dialog.error(error).then(() => {
-            //         vm.$blockui("hide");
-            //     });
-            // });
         };
-
-        /**
-         * export excel
-         */
-        exportExcel(){
-            // cas009.a.exportExcel().done(function(data) {
-            //
-            // }).fail(function(res: any) {
-            //     nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
-            // }).always(()=>{
-            //     block.clear();
-            // });
-        }
 
         getListRole(roleId?: string) {
             let vm = this, dfd = $.Deferred();
@@ -154,22 +132,10 @@ module nts.uk.com.view.cas009.a.viewmodel {
                 let roles: Array<IRole> = ko.toJS(vm.listRole),
                     roleIds: Array<string> = _.map(roles, (x: IRole) => x.roleId);
 
-                if (_.size(roleIds)) {
-                    vm.$ajax("com", API.getRole, roleIds).done(resp => {
-                        _.each(vm.listRole(), (r: IRole) => {
-                            let pinfo: IRole = _.find(resp, (o: IRole) => o.roleId == r.roleId);
-                            if (pinfo) {
-                                r.referFutureDate = pinfo.referFutureDate;
-                            } else {
-                                r.referFutureDate = false;
-                            }
-                        });
-                        dfd.resolve();
-                    });
-                } else {
+                if (!_.size(roleIds)) {
                     vm.createNew();
-                    dfd.resolve();
                 }
+                dfd.resolve();
             });
 
             return dfd.promise();
@@ -181,9 +147,6 @@ module nts.uk.com.view.cas009.a.viewmodel {
             role.roleId(undefined);
             role.roleId.valueHasMutated();
         }
-
-        // open dialog
-        // openDialog = () => { modal("../b/index.xhtml").onClosed(() => { }); }
 
         // save change of role
         save() {
@@ -304,7 +267,6 @@ module nts.uk.com.view.cas009.a.viewmodel {
         roleName: KnockoutObservable<string> = ko.observable('');
 
         assignAtr: KnockoutObservable<number> = ko.observable(1);
-        referFutureDate: KnockoutObservable<boolean> = ko.observable(false);
         employeeReferenceRange: KnockoutObservable<number> = ko.observable(1);
 
         roleCodeFocus: KnockoutObservable<boolean> = ko.observable(true);
