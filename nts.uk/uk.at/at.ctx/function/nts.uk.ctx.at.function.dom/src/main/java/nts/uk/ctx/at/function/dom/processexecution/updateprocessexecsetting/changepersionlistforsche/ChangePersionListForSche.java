@@ -12,6 +12,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.AffWorkplaceHistoryImport;
@@ -48,7 +50,7 @@ public class ChangePersionListForSche {
 	@Inject
 	private BusinessTypeEmpOfHistoryRepository businessTypeEmpOfHistoryRepository;
 
-	public GeneralDate filterEmployeeList(UpdateProcessAutoExecution procExec, List<String> employeeIdList) {
+	public EmployeeDataDto filterEmployeeList(UpdateProcessAutoExecution procExec, List<String> employeeIdList) {
 		String companyId = AppContexts.user().companyId();
 		// 社員ID（異動者）（List）
     	List<String> transferList = new ArrayList<>();
@@ -102,7 +104,7 @@ public class ChangePersionListForSche {
 		employeeIdList = new ArrayList<>(Stream.of(transferList, changeWorktypeList, absenceList)
 				.flatMap(Collection::stream)
 				.collect(Collectors.toSet()));
-		return closurePeriod.start();
+		return new EmployeeDataDto(employeeIdList, closurePeriod.start());
 	}
 
 	private DatePeriod findClosureMinMaxPeriod(String companyId, List<Closure> closureList) {
@@ -122,5 +124,12 @@ public class ChangePersionListForSche {
 		}
 
 		return new DatePeriod(startYearMonth, endYearMonth);
+	}
+	
+	@Data
+	@AllArgsConstructor
+	public class EmployeeDataDto {
+		private List<String> employeeIds;
+		private GeneralDate startDate;
 	}
 }

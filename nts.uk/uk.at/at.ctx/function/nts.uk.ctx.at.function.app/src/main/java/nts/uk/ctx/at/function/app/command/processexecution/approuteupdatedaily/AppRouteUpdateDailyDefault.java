@@ -159,7 +159,7 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 //							listEmp, 
 //							maxPeriodBetweenCalAndCreate, procExec);
 					//Input = output
-					changePersionListForSche.filterEmployeeList(procExec, listEmp);
+					listEmp = changePersionListForSche.filterEmployeeList(procExec, listEmp).getEmployeeIds();
 				}
 			}
 			

@@ -100,12 +100,14 @@ import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLo
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionRepository;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSetting;
+import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.RepeatContentItem;
 import nts.uk.ctx.at.function.dom.processexecution.updatelogafterprocess.UpdateLogAfterProcess;
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessautoexeclog.overallerrorprocess.ErrorConditionOutput;
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessautoexeclog.overallerrorprocess.OverallErrorProcess;
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.changepersionlist.ChangePersionList;
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.changepersionlist.ListLeaderOrNotEmp;
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.changepersionlistforsche.ChangePersionListForSche;
+import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.changepersionlistforsche.ChangePersionListForSche.EmployeeDataDto;
 import nts.uk.ctx.at.function.dom.statement.EmployeeGeneralInfoAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
@@ -1014,8 +1016,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			// 異動者・新入社員のみ作成の場合
 			else {
 				// 対象社員を絞り込む
-				GeneralDate startDate = this.changePersionListForSche.filterEmployeeList(procExec, listEmp);
-				
+				EmployeeDataDto filterData = this.changePersionListForSche.filterEmployeeList(procExec, listEmp);
+				listEmp = filterData.getEmployeeIds();
 				// 社員ID（異動者、勤務種別変更者）（List）のみ
 				if (!CollectionUtil.isEmpty(listEmp) && !checkStopExec) {
 					// 異動者、勤務種別変更者、休職者・休業者の期間の計算 (RQ 439)
@@ -1032,7 +1034,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 
 						// 異動者・勤務種別変更者の作成対象期間の計算（個人別）
 						listApprovalPeriodByEmp = calPeriodTransferAndWorktype.calPeriodTransferAndWorktype(companyId,
-								listEmp, new DatePeriod(startDate, endDate.get()),
+								listEmp, new DatePeriod(filterData.getStartDate(), endDate.get()),
 								isTransfer, isWorkType);
 						List<DatePeriod> targetDates = listApprovalPeriodByEmp.stream()
 								.map(ApprovalPeriodByEmp::getListPeriod)
