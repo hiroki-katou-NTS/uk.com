@@ -17,6 +17,7 @@ import nts.uk.screen.at.app.kha003.d.ManHourAggregationResultDto;
 import nts.uk.screen.at.app.kha003.d.CreateAggregationManHourResult;
 import nts.uk.screen.at.app.kha003.d.AggregationResultQuery;
 import nts.uk.screen.at.app.kha003.exportcsv.ManHourAggregationResultExportService;
+import nts.uk.screen.at.app.kha003.exportcsv.ManHourDataSummaryQuery;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -104,15 +105,9 @@ public class ManHoursWebService extends WebService {
 
     @POST
     @Path("d/export-csv")
-    public ExportServiceResult generateCsv(List<RegistrationErrorListDto> query) {
+    public ExportServiceResult generateCsv(ManHourDataSummaryQuery query) {
         return this.exportCsvService.start(query);
     }
-
-//    @POST
-//    @Path("export-excel")
-//    public ExportServiceResult generate(ArbitraryPeriodSummaryTableFileQuery fileQuery) {
-//        return service.start(fileQuery);
-//    }
 
     @POST
     @Path("e/register")

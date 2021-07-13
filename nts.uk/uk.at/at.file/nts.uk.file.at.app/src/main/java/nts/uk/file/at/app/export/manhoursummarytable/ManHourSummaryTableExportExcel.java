@@ -28,18 +28,18 @@ public class ManHourSummaryTableExportExcel extends ExportService<ManHourSummary
     @Override
     protected void handle(ExportServiceContext<ManHourSummaryTableQuery> exportServiceContext) {
         val generatorContext = exportServiceContext.getGeneratorContext();
-//        val query = exportServiceContext.getQuery();
-        ManHourSummaryTableQuery query = new ManHourSummaryTableQuery(
-                Dummy.SummaryTableFormat.create(),
-                Dummy.SummaryTableOutputContent.create(),
-                new ManHourPeriod(
-                        0,
-                        "2021/06/01",
-                        "2021/06/03",
-                        "2021/06",
-                        "2021/06"
-                )
-        );
+        val query = exportServiceContext.getQuery();
+//        ManHourSummaryTableQuery query = new ManHourSummaryTableQuery(
+//                Dummy.SummaryTableFormat.create(),
+//                Dummy.SummaryTableOutputContent.create(),
+//                new ManHourPeriod(
+//                        0,
+//                        "2021/06/01",
+//                        "2021/06/03",
+//                        "2021/06",
+//                        "2021/06"
+//                )
+//        );
 
         CountTotalLevel totalLevelObj = new CountTotalLevel(0);
         countHierarchy(query.getOutputContent().getItemDetails(), totalLevelObj);

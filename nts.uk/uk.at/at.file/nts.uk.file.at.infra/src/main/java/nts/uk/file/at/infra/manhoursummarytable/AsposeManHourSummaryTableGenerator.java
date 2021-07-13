@@ -110,15 +110,7 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         cells.copyRows(cellsTemplate, 0, 0, 3);  // Copy 3 row
 
         // Delete column name thừa
-        if (totalLevel == 1) {
-            cells.deleteColumns(1, 3, true);
-        }
-        if (totalLevel == 2) {
-            cells.deleteColumns(2, 2, true);
-        }
-        if (totalLevel == 3) {
-            cells.deleteColumns(3, 1, true);
-        }
+        cells.deleteColumns(0, totalLevel == 1 ? 3 : totalLevel == 2 ? 2 : 1, true);
 
         // Check total column
         int maxColumnTemplate = isDisplayTotal ? MAX_COLUMN_TEMPLATE : (MAX_COLUMN_TEMPLATE - 1);
@@ -165,18 +157,7 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
 
         // Xoa column date thừa
         if (columnHandle > 0) {
-//            if (totalLevel == 1) {
-//                cells.deleteColumns(headerList.size(), columnHandle - 3, true);
-//            }
-//            if (totalLevel == 2) {
-//                cells.deleteColumns(headerList.size(), columnHandle - 2, true);
-//            }
-//            if (totalLevel == 3) {
-//                cells.deleteColumns(headerList.size(), columnHandle - 1, true);
-//            }
-//            if (totalLevel == 4) {
-                cells.deleteColumns(headerList.size(), columnHandle, true);
-//            }
+            cells.deleteColumns(headerList.size(), columnHandle, true);
         }
     }
 
@@ -185,11 +166,13 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         int countRow = 3;
         for (int i = 1; i <= itemDetails.size(); i++) {
             SummaryItemDetail level1 = itemDetails.get(i - 1);
-            cells.copyRows(cellsTemplate, 4, countRow, 1);
+            cells.copyRows(cellsTemplate, isDispTotal ? 11 : 8, countRow, 1);
             cells.get(countRow, 0).setValue(level1.getDisplayInfo().getName());
-            cells.get(countRow, 1).setValue("");
-            cells.get(countRow, 2).setValue("");
-            cells.get(countRow, 3).setValue("");
+            // Border
+            Cell cell = cells.get(countRow, 0);
+            Style style = cell.getStyle();
+            style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.HAIR, Color.getBlack());
+            cell.setStyle(style);
             val workingTimeMap1 = this.getWorkingTimeByDate(unit, level1.getVerticalTotalList());
             for (int c = 1; c < maxDateRange + 1; c++) {
                 cells.get(countRow, c).setValue(formatValue(Double.valueOf(workingTimeMap1.getOrDefault(headerList.get(c), 0)), dispFormat));
@@ -204,6 +187,11 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         if (isDispTotal) { // Tong chieu doc cua level 1
             cells.copyRows(cellsTemplate, 37, countRow, 1);
             printAllTotalByVertical(cells, outputContent, maxDateRange, headerList, dispFormat, unit, countRow, 0);
+            setBorderStyleForTotal(cells.get(countRow, 1));
+        } else {
+            for (int j = 0; j < headerList.size(); j++) {
+                setBorderBottomStyle(cells.get(countRow - 1, j));
+            }
         }
     }
 
@@ -215,13 +203,11 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
             int mergeIndexLv1 = countRow;
             List<SummaryItemDetail> childHierarchyList = level1.getChildHierarchyList();
             for (int i = 1; i <= childHierarchyList.size(); i++) {
+                cells.copyRows(cellsTemplate, isDispTotal ? 11 : 8, countRow, 1);
                 SummaryItemDetail level2 = childHierarchyList.get(i - 1);
-                cells.copyRows(cellsTemplate, 4, countRow, 1);
                 cells.get(countRow, 0).setValue(!isPrintNameLv1 ? level1.getDisplayInfo().getName() : "");
                 isPrintNameLv1 = true;
                 cells.get(countRow, 1).setValue(level2.getDisplayInfo().getName());
-                cells.get(countRow, 2).setValue("");
-                cells.get(countRow, 3).setValue("");
                 val workingTimeMap2 = this.getWorkingTimeByDate(unit, level2.getVerticalTotalList());
                 for (int c = 2; c < maxDateRange + 2; c++) {
                     cells.get(countRow, c).setValue(formatValue(Double.valueOf(workingTimeMap2.getOrDefault(headerList.get(c), 0)), dispFormat));
@@ -238,12 +224,16 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                 printTotalByVerticalOfEachLevel(cells, level1, maxDateRange, headerList, dispFormat, unit, countRow, 1, 0);
                 countRow++;
             }
-            cells.merge(mergeIndexLv1, 0, countRow - mergeIndexLv1 - 1, 1, true, true);
+            cells.merge(mergeIndexLv1, 0, isDispTotal ? countRow - mergeIndexLv1 - 1 : countRow - mergeIndexLv1, 1, true, true);
             setVerticalAlignment(cells.get(mergeIndexLv1, 1));
+            for (int j = 0; j < headerList.size(); j++) {
+                setBorderBottomStyle(cells.get(countRow - 1, j));
+            }
         }
         if (isDispTotal) { // Tong chieu doc cua level 1
             cells.copyRows(cellsTemplate, 37, countRow, 1);
             printAllTotalByVertical(cells, outputContent, maxDateRange, headerList, dispFormat, unit, countRow, 1);
+            setBorderStyleForTotal(cells.get(countRow, 2));
         }
     }
 
@@ -258,14 +248,21 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                 int mergeIndexLv2 = countRow;
                 List<SummaryItemDetail> childHierarchyList = level2.getChildHierarchyList();
                 for (int i = 1; i <= childHierarchyList.size(); i++) {
+                    if (isDispTotal) {
+                        cells.copyRows(cellsTemplate, 6, countRow, 1);
+                    } else {
+                        if (i == childHierarchyList.size()) {
+                            cells.copyRows(cellsTemplate, 8, countRow, 1);
+                        } else {
+                            cells.copyRows(cellsTemplate, 5, countRow, 1);
+                        }
+                    }
                     SummaryItemDetail level3 = childHierarchyList.get(i - 1);
-                    cells.copyRows(cellsTemplate, 4, countRow, 1);
                     cells.get(countRow, 0).setValue(!isPrintNameLv1 ? level1.getDisplayInfo().getName() : "");
                     isPrintNameLv1 = true;
                     cells.get(countRow, 1).setValue(!isPrintNameLv2 ? level2.getDisplayInfo().getName() : "");
                     isPrintNameLv2 = true;
                     cells.get(countRow, 2).setValue(level3.getDisplayInfo().getName());
-                    cells.get(countRow, 3).setValue("");
                     val workingTimeMap3 = this.getWorkingTimeByDate(unit, level3.getVerticalTotalList());
                     for (int c = 3; c < maxDateRange + 3; c++) {
                         cells.get(countRow, c).setValue(formatValue(Double.valueOf(workingTimeMap3.getOrDefault(headerList.get(c), 0)), dispFormat));
@@ -278,31 +275,35 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                     countRow++;
                 }
                 if (isDispTotal) { // Tong chieu doc level 3
-                    cells.copyRows(cellsTemplate, 12, countRow, 1);
+                    cells.copyRows(cellsTemplate, 11, countRow, 1);
                     printTotalByVerticalOfEachLevel(cells, level2, maxDateRange, headerList, dispFormat, unit, countRow, 2, 1);
                     countRow++;
                 }
-                cells.merge(mergeIndexLv2, 1, countRow - mergeIndexLv2 - 1, 1, true, true);
+                cells.merge(mergeIndexLv2, 1, isDispTotal ? countRow - mergeIndexLv2 - 1 : countRow - mergeIndexLv2, 1, true, true);
                 setVerticalAlignment(cells.get(mergeIndexLv2, 2));
             }
             if (isDispTotal) { // Tong chieu doc level 2
-                cells.copyRows(cellsTemplate, 11, countRow, 1);
+                cells.copyRows(cellsTemplate, 21, countRow, 1);
                 printTotalByVerticalOfEachLevel(cells, level1, maxDateRange, headerList, dispFormat, unit, countRow, 2, 0);
                 countRow++;
             }
-            cells.merge(mergeIndexLv1, 0, countRow - mergeIndexLv1 - 1, 1, true, true);
+            cells.merge(mergeIndexLv1, 0, isDispTotal ? countRow - mergeIndexLv1 - 1 : countRow - mergeIndexLv1, 1, true, true);
             setVerticalAlignment(cells.get(mergeIndexLv1, 1));
+            for (int j = 0; j < headerList.size(); j++) {
+                setBorderBottomStyle(cells.get(countRow - 1, j));
+            }
         }
         if (isDispTotal) { // Tong chieu doc cua level 1
             cells.copyRows(cellsTemplate, 37, countRow, 1);
             printAllTotalByVertical(cells, outputContent, maxDateRange, headerList, dispFormat, unit, countRow, 2);
+            cells.merge(countRow, 0, 1, 3, true,true);
+            setBorderStyleForTotal(cells.get(countRow, 3));
         }
     }
 
     private void printData4Level(Cells cellsTemplate, Cells cells, ManHourSummaryTableOutputContent outputContent, boolean isDispTotal, int maxDateRange, List<String> headerList, DisplayFormat dispFormat, TotalUnit unit) throws Exception {
         List<SummaryItemDetail> itemDetails = outputContent.getItemDetails();
         int countRow = 3;
-        cells.get(0, 5).getStyle().setBackgroundColor(Color.getRed());
         for (SummaryItemDetail level1 : itemDetails) {
             boolean isPrintNameLv1 = false;
             int mergeIndexLv1 = countRow;
@@ -314,10 +315,14 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                     int mergeIndexLv3 = countRow;
                     List<SummaryItemDetail> childHierarchyList = level3.getChildHierarchyList();
                     for (int i = 1; i <= childHierarchyList.size(); i++) {
-                        if (i == childHierarchyList.size() && !isDispTotal) {
-                            cells.copyRows(cellsTemplate, 14, countRow, 1);
-                        } else {
+                        if (isDispTotal) {
                             cells.copyRows(cellsTemplate, 4, countRow, 1);
+                        } else {
+                            if (i == childHierarchyList.size()) {
+                                cells.copyRows(cellsTemplate, 8, countRow, 1);
+                            } else {
+                                cells.copyRows(cellsTemplate, 5, countRow, 1);
+                            }
                         }
 
                         SummaryItemDetail level4 = childHierarchyList.get(i - 1);
@@ -362,6 +367,9 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
             }
             cells.merge(mergeIndexLv1, 0, isDispTotal ? countRow - mergeIndexLv1 - 1 : countRow - mergeIndexLv1, 1, true, true);
             setVerticalAlignment(cells.get(mergeIndexLv1, 0));
+            for (int j = 0; j < headerList.size(); j++) {
+                setBorderBottomStyle(cells.get(countRow - 1, j));
+            }
         }
         if (isDispTotal) { // Tong chieu doc cua level 1
             cells.copyRows(cellsTemplate, 37, countRow, 1);
@@ -444,24 +452,24 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
      * @param displayFormat
      * @return String
      */
-    private Double formatValue(Double value, DisplayFormat displayFormat) {
-        Double targetValue = null;
+    private String formatValue(Double value, DisplayFormat displayFormat) {
+        String targetValue = null;
         switch (displayFormat) {
             case DECIMAL:
                 BigDecimal decimaValue = new BigDecimal(value);
                 decimaValue = decimaValue.divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
-                targetValue = decimaValue.doubleValue();
+                targetValue = String.valueOf(decimaValue.doubleValue());
                 break;
             case HEXA_DECIMAL:
                 BigDecimal decimalValue = new BigDecimal(value);
                 BigDecimal intValue = decimalValue.divideToIntegralValue(BigDecimal.valueOf(60));
                 BigDecimal remainValue = decimalValue.subtract(intValue.multiply(BigDecimal.valueOf(60)));
-                decimalValue = intValue.add(remainValue.divide(BigDecimal.valueOf(100), 3, RoundingMode.UNNECESSARY));
-                targetValue = decimalValue.doubleValue();
+                StringBuilder sb = new StringBuilder();
+                targetValue = sb.append(intValue).append(":").append(remainValue).toString();
                 break;
             case MINUTE:
-                NumberFormat df = new DecimalFormat("#0.0");
-                targetValue = new Double(df.format(value));
+                DecimalFormat df = new DecimalFormat("#,###");
+                targetValue = df.format(value);
                 break;
         }
 
@@ -474,14 +482,21 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         cell.setStyle(style);
     }
 
-//    private void setBorderStyle(Cell cell) {
-//        Style style = cell.getStyle();
-//        style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
-//        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-//        style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
-//        style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
-//        cell.setStyle(style);
-//    }
+    private void setBorderStyleForTotal(Cell cell) {
+        Style style = cell.getStyle();
+        style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+        style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
+        style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
+        style.setVerticalAlignment(TextAlignmentType.LEFT);
+        cell.setStyle(style);
+    }
+
+    private void setBorderBottomStyle(Cell cell) {
+        Style style = cell.getStyle();
+        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+        cell.setStyle(style);
+    }
 
     private void setHorizontalAlignment(Cell cell) {
         Style style = cell.getStyle();

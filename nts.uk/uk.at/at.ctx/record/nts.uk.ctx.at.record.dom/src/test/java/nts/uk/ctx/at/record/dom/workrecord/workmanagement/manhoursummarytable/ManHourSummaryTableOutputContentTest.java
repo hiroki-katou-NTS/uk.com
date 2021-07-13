@@ -65,7 +65,7 @@ public class ManHourSummaryTableOutputContentTest {
                     x -> x.getDisplayInfo().getCode(),
                     x -> x.getDisplayInfo().getName(),
                     x -> x.getTotalPeriod().get()
-            ).containsExactly("01", "01", "NAME1", 2);
+            ).containsExactly("01", "01", "NAME1", 6);
             assertThat(instance.getItemDetails().get(0).getVerticalTotalList())
                     .extracting(
                             VerticalValueDaily::getWorkingHours,
@@ -84,7 +84,7 @@ public class ManHourSummaryTableOutputContentTest {
                         x -> x.getDisplayInfo().getCode(),
                         x -> x.getDisplayInfo().getName(),
                         x -> x.getTotalPeriod().get()
-                ).containsExactly("011", "011", "NAME11", 2);
+                ).containsExactly("011", "011", "NAME11", 6);
                 assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0).getVerticalTotalList())
                         .extracting(
                                 VerticalValueDaily::getWorkingHours,
@@ -104,7 +104,7 @@ public class ManHourSummaryTableOutputContentTest {
                         x -> x.getDisplayInfo().getCode(),
                         x -> x.getDisplayInfo().getName(),
                         x -> x.getTotalPeriod().get()
-                ).containsExactly("021", "021", "NAME21", 4);
+                ).containsExactly("021", "021", "NAME21", 12);
                 assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1).getVerticalTotalList())
                         .extracting(
                                 VerticalValueDaily::getWorkingHours,
@@ -126,7 +126,7 @@ public class ManHourSummaryTableOutputContentTest {
                     x -> x.getDisplayInfo().getCode(),
                     x -> x.getDisplayInfo().getName(),
                     x -> x.getTotalPeriod().get()
-            ).containsExactly("02", "02", "NAME2", 4);
+            ).containsExactly("02", "02", "NAME2", 12);
             assertThat(instance.getItemDetails().get(1).getVerticalTotalList())
                     .extracting(
                             VerticalValueDaily::getWorkingHours,
@@ -145,7 +145,7 @@ public class ManHourSummaryTableOutputContentTest {
                         x -> x.getDisplayInfo().getCode(),
                         x -> x.getDisplayInfo().getName(),
                         x -> x.getTotalPeriod().get()
-                ).containsExactly("011", "011", "NAME11", 2);
+                ).containsExactly("011", "011", "NAME11", 6);
                 assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0).getVerticalTotalList())
                         .extracting(
                                 VerticalValueDaily::getWorkingHours,
@@ -165,7 +165,7 @@ public class ManHourSummaryTableOutputContentTest {
                         x -> x.getDisplayInfo().getCode(),
                         x -> x.getDisplayInfo().getName(),
                         x -> x.getTotalPeriod().get()
-                ).containsExactly("021", "021", "NAME21", 4);
+                ).containsExactly("021", "021", "NAME21", 12);
                 assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1).getVerticalTotalList())
                         .extracting(
                                 VerticalValueDaily::getWorkingHours,
@@ -206,7 +206,7 @@ public class ManHourSummaryTableOutputContentTest {
                     x -> x.getDisplayInfo().getCode(),
                     x -> x.getDisplayInfo().getName(),
                     x -> x.getTotalPeriod().get()
-            ).containsExactly("01", "01", "NAME1", 2);
+            ).containsExactly("01", "01", "NAME1", 6);
             assertThat(instance.getItemDetails().get(0).getVerticalTotalList())
                     .extracting(
                             VerticalValueDaily::getWorkingHours,
@@ -225,7 +225,7 @@ public class ManHourSummaryTableOutputContentTest {
                         x -> x.getDisplayInfo().getCode(),
                         x -> x.getDisplayInfo().getName(),
                         x -> x.getTotalPeriod().get()
-                ).containsExactly("011", "011", "NAME11", 2);
+                ).containsExactly("011", "011", "NAME11", 6);
                 assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0).getVerticalTotalList())
                         .extracting(
                                 VerticalValueDaily::getWorkingHours,
@@ -245,7 +245,7 @@ public class ManHourSummaryTableOutputContentTest {
                         x -> x.getDisplayInfo().getCode(),
                         x -> x.getDisplayInfo().getName(),
                         x -> x.getTotalPeriod().get()
-                ).containsExactly("021", "021", "NAME21", 4);
+                ).containsExactly("021", "021", "NAME21", 12);
                 assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1).getVerticalTotalList())
                         .extracting(
                                 VerticalValueDaily::getWorkingHours,
@@ -267,7 +267,7 @@ public class ManHourSummaryTableOutputContentTest {
                     x -> x.getDisplayInfo().getCode(),
                     x -> x.getDisplayInfo().getName(),
                     x -> x.getTotalPeriod().get()
-            ).containsExactly("02", "02", "NAME2", 4);
+            ).containsExactly("02", "02", "NAME2", 12);
             assertThat(instance.getItemDetails().get(1).getVerticalTotalList())
                     .extracting(
                             VerticalValueDaily::getWorkingHours,
@@ -286,7 +286,7 @@ public class ManHourSummaryTableOutputContentTest {
                         x -> x.getDisplayInfo().getCode(),
                         x -> x.getDisplayInfo().getName(),
                         x -> x.getTotalPeriod().get()
-                ).containsExactly("011", "011", "NAME11", 2);
+                ).containsExactly("011", "011", "NAME11", 6);
                 assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0).getVerticalTotalList())
                         .extracting(
                                 VerticalValueDaily::getWorkingHours,
@@ -306,7 +306,7 @@ public class ManHourSummaryTableOutputContentTest {
                         x -> x.getDisplayInfo().getCode(),
                         x -> x.getDisplayInfo().getName(),
                         x -> x.getTotalPeriod().get()
-                ).containsExactly("021", "021", "NAME21", 4);
+                ).containsExactly("021", "021", "NAME21", 12);
                 assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1).getVerticalTotalList())
                         .extracting(
                                 VerticalValueDaily::getWorkingHours,
@@ -400,7 +400,7 @@ public class ManHourSummaryTableOutputContentTest {
                     x -> x.getDisplayInfo().getCode(),
                     x -> x.getDisplayInfo().getName(),
                     x -> x.getTotalPeriod().get()
-            ).containsExactly("01", "01", "NAME1", 2);
+            ).containsExactly("01", "01", "NAME1", 6);
             assertThat(instance.getItemDetails().get(0).getVerticalTotalList())
                     .extracting(
                             VerticalValueDaily::getWorkingHours,
@@ -419,7 +419,7 @@ public class ManHourSummaryTableOutputContentTest {
                         x -> x.getDisplayInfo().getCode(),
                         x -> x.getDisplayInfo().getName(),
                         x -> x.getTotalPeriod().get()
-                ).containsExactly("011", "011", "NAME11", 2);
+                ).containsExactly("011", "011", "NAME11", 6);
                 assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0).getVerticalTotalList())
                         .extracting(
                                 VerticalValueDaily::getWorkingHours,
@@ -439,7 +439,7 @@ public class ManHourSummaryTableOutputContentTest {
                         x -> x.getDisplayInfo().getCode(),
                         x -> x.getDisplayInfo().getName(),
                         x -> x.getTotalPeriod().get()
-                ).containsExactly("021", "021", "NAME21", 4);
+                ).containsExactly("021", "021", "NAME21", 12);
                 assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1).getVerticalTotalList())
                         .extracting(
                                 VerticalValueDaily::getWorkingHours,
@@ -461,7 +461,7 @@ public class ManHourSummaryTableOutputContentTest {
                     x -> x.getDisplayInfo().getCode(),
                     x -> x.getDisplayInfo().getName(),
                     x -> x.getTotalPeriod().get()
-            ).containsExactly("02", "02", "NAME2", 4);
+            ).containsExactly("02", "02", "NAME2", 12);
             assertThat(instance.getItemDetails().get(1).getVerticalTotalList())
                     .extracting(
                             VerticalValueDaily::getWorkingHours,
@@ -480,7 +480,7 @@ public class ManHourSummaryTableOutputContentTest {
                         x -> x.getDisplayInfo().getCode(),
                         x -> x.getDisplayInfo().getName(),
                         x -> x.getTotalPeriod().get()
-                ).containsExactly("011", "011", "NAME11", 2);
+                ).containsExactly("011", "011", "NAME11", 6);
                 assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0).getVerticalTotalList())
                         .extracting(
                                 VerticalValueDaily::getWorkingHours,
@@ -500,7 +500,7 @@ public class ManHourSummaryTableOutputContentTest {
                         x -> x.getDisplayInfo().getCode(),
                         x -> x.getDisplayInfo().getName(),
                         x -> x.getTotalPeriod().get()
-                ).containsExactly("021", "021", "NAME21", 4);
+                ).containsExactly("021", "021", "NAME21", 12);
                 assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1).getVerticalTotalList())
                         .extracting(
                                 VerticalValueDaily::getWorkingHours,
@@ -541,7 +541,7 @@ public class ManHourSummaryTableOutputContentTest {
                     x -> x.getDisplayInfo().getCode(),
                     x -> x.getDisplayInfo().getName(),
                     x -> x.getTotalPeriod().get()
-            ).containsExactly("01", "01", "NAME1", 2);
+            ).containsExactly("01", "01", "NAME1", 6);
             assertThat(instance.getItemDetails().get(0).getVerticalTotalList())
                     .extracting(
                             VerticalValueDaily::getWorkingHours,
@@ -560,7 +560,7 @@ public class ManHourSummaryTableOutputContentTest {
                         x -> x.getDisplayInfo().getCode(),
                         x -> x.getDisplayInfo().getName(),
                         x -> x.getTotalPeriod().get()
-                ).containsExactly("011", "011", "NAME11", 2);
+                ).containsExactly("011", "011", "NAME11", 6);
                 assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(0).getVerticalTotalList())
                         .extracting(
                                 VerticalValueDaily::getWorkingHours,
@@ -580,7 +580,7 @@ public class ManHourSummaryTableOutputContentTest {
                         x -> x.getDisplayInfo().getCode(),
                         x -> x.getDisplayInfo().getName(),
                         x -> x.getTotalPeriod().get()
-                ).containsExactly("021", "021", "NAME21", 4);
+                ).containsExactly("021", "021", "NAME21", 12);
                 assertThat(instance.getItemDetails().get(0).getChildHierarchyList().get(1).getVerticalTotalList())
                         .extracting(
                                 VerticalValueDaily::getWorkingHours,
@@ -602,7 +602,7 @@ public class ManHourSummaryTableOutputContentTest {
                     x -> x.getDisplayInfo().getCode(),
                     x -> x.getDisplayInfo().getName(),
                     x -> x.getTotalPeriod().get()
-            ).containsExactly("02", "02", "NAME2", 4);
+            ).containsExactly("02", "02", "NAME2", 12);
             assertThat(instance.getItemDetails().get(1).getVerticalTotalList())
                     .extracting(
                             VerticalValueDaily::getWorkingHours,
@@ -621,7 +621,7 @@ public class ManHourSummaryTableOutputContentTest {
                         x -> x.getDisplayInfo().getCode(),
                         x -> x.getDisplayInfo().getName(),
                         x -> x.getTotalPeriod().get()
-                ).containsExactly("011", "011", "NAME11", 2);
+                ).containsExactly("011", "011", "NAME11", 6);
                 assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(0).getVerticalTotalList())
                         .extracting(
                                 VerticalValueDaily::getWorkingHours,
@@ -641,7 +641,7 @@ public class ManHourSummaryTableOutputContentTest {
                         x -> x.getDisplayInfo().getCode(),
                         x -> x.getDisplayInfo().getName(),
                         x -> x.getTotalPeriod().get()
-                ).containsExactly("021", "021", "NAME21", 4);
+                ).containsExactly("021", "021", "NAME21", 12);
                 assertThat(instance.getItemDetails().get(1).getChildHierarchyList().get(1).getVerticalTotalList())
                         .extracting(
                                 VerticalValueDaily::getWorkingHours,

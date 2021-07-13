@@ -15,11 +15,11 @@ public class Dummy {
                     new ManHourSummaryTableCode("01"),
                     new ManHourSummaryTableName("test"),
                     new DetailFormatSetting(
-                            DisplayFormat.MINUTE,
+                            DisplayFormat.HEXA_DECIMAL,
                             TotalUnit.DATE,
                             NotUseAtr.USE,
                             Arrays.asList(
-                                    new SummaryItem(1, SummaryItemType.EMPLOYEE),
+//                                    new SummaryItem(1, SummaryItemType.EMPLOYEE),
                                     new SummaryItem(1, SummaryItemType.TASK1),
                                     new SummaryItem(1, SummaryItemType.TASK3),
                                     new SummaryItem(1, SummaryItemType.TASK5)
@@ -34,37 +34,38 @@ public class Dummy {
             List<SummaryItemDetail> itemDetails = Arrays.asList(
                     new SummaryItemDetail(
                             "01",
-                            new DisplayInformation("01", "LEVEL1_01"),
+                            new DisplayInformation("01", "A作業"),
                             Arrays.asList(
                                     new SummaryItemDetail(
                                             "0101",
-                                            new DisplayInformation("0101", "LEVEL2_01"),
+                                            new DisplayInformation("0101", "AA作業"),
                                             Arrays.asList(
                                                     new SummaryItemDetail(
                                                             "010101",
-                                                            new DisplayInformation("A01010101", "LEVEL3_01"),
-                                                            Arrays.asList(
-                                                                    new SummaryItemDetail(
-                                                                            "010101",
-                                                                            new DisplayInformation("A01010101", "LEVEL4_01"),
-                                                                            Collections.emptyList(),
-                                                                            Arrays.asList(
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                                                            Optional.of(3)
-                                                                    ),
-                                                                    new SummaryItemDetail(
-                                                                            "010101",
-                                                                            new DisplayInformation("A01010101", "LEVEL4_02"),
-                                                                            Collections.emptyList(),
-                                                                            Arrays.asList(
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                                                            Optional.of(6)
-                                                                    )
-                                                            ),
+                                                            new DisplayInformation("A01010101", "AAA作業"),
+//                                                            Arrays.asList(
+//                                                                    new SummaryItemDetail(
+//                                                                            "010101",
+//                                                                            new DisplayInformation("A01010101", "LEVEL4_01"),
+//                                                                            Collections.emptyList(),
+//                                                                            Arrays.asList(
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+//                                                                            Optional.of(3)
+//                                                                    ),
+//                                                                    new SummaryItemDetail(
+//                                                                            "010101",
+//                                                                            new DisplayInformation("A01010101", "LEVEL4_02"),
+//                                                                            Collections.emptyList(),
+//                                                                            Arrays.asList(
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+//                                                                            Optional.of(6)
+//                                                                    )
+//                                                            ),
+                                                            Collections.emptyList(),
                                                             Arrays.asList(
                                                                     new VerticalValueDaily(3, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
                                                                     new VerticalValueDaily(3, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
@@ -73,29 +74,30 @@ public class Dummy {
                                                     ),
                                                     new SummaryItemDetail(
                                                             "010102",
-                                                            new DisplayInformation("A01010101", "LEVEL3_02"),
-                                                            Arrays.asList(
-                                                                    new SummaryItemDetail(
-                                                                            "010101",
-                                                                            new DisplayInformation("A01010101", "LEVEL4_02"),
-                                                                            Collections.emptyList(),
-                                                                            Arrays.asList(
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                                                            Optional.of(3)
-                                                                    ),
-                                                                    new SummaryItemDetail(
-                                                                            "010102",
-                                                                            new DisplayInformation("A01010102", "LEVEL4_02"),
-                                                                            Collections.emptyList(),
-                                                                            Arrays.asList(
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                                                            Optional.of(6)
-                                                                    )
-                                                            ),
+                                                            new DisplayInformation("A01010101", "AAB作業"),
+//                                                            Arrays.asList(
+//                                                                    new SummaryItemDetail(
+//                                                                            "010101",
+//                                                                            new DisplayInformation("A01010101", "LEVEL4_03"),
+//                                                                            Collections.emptyList(),
+//                                                                            Arrays.asList(
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+//                                                                            Optional.of(3)
+//                                                                    ),
+//                                                                    new SummaryItemDetail(
+//                                                                            "010102",
+//                                                                            new DisplayInformation("A01010102", "LEVEL4_04"),
+//                                                                            Collections.emptyList(),
+//                                                                            Arrays.asList(
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+//                                                                            Optional.of(6)
+//                                                                    )
+//                                                            ),
+                                                            Collections.emptyList(),
                                                             Arrays.asList(
                                                                     new VerticalValueDaily(3, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
                                                                     new VerticalValueDaily(3, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
@@ -104,41 +106,42 @@ public class Dummy {
                                                     )
                                             ),
                                             Arrays.asList(
-                                                    new VerticalValueDaily(9, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                    new VerticalValueDaily(9, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                    new VerticalValueDaily(9, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                            Optional.of(27)
+                                                    new VerticalValueDaily(6, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+                                                    new VerticalValueDaily(6, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+                                                    new VerticalValueDaily(6, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+                                            Optional.of(18)
                                     ),
                                     // LEVEL1_02
                                     new SummaryItemDetail(
                                             "0102",
-                                            new DisplayInformation("0102", "LEVEL2_02"),
+                                            new DisplayInformation("0102", "AB作業"),
                                             Arrays.asList(
                                                     new SummaryItemDetail(
                                                             "010201",
-                                                            new DisplayInformation("010201", "LEVEL3_02"),
-                                                            Arrays.asList(
-                                                                    new SummaryItemDetail(
-                                                                            "010201",
-                                                                            new DisplayInformation("010201", "LEVEL4_02"),
-                                                                            Collections.emptyList(),
-                                                                            Arrays.asList(
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                                                            Optional.of(3)
-                                                                    ),
-                                                                    new SummaryItemDetail(
-                                                                            "010202",
-                                                                            new DisplayInformation("010202", "LEVEL4_02"),
-                                                                            Collections.emptyList(),
-                                                                            Arrays.asList(
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                                                            Optional.of(6)
-                                                                    )
-                                                            ),
+                                                            new DisplayInformation("010201", "ABA作業"),
+//                                                            Arrays.asList(
+//                                                                    new SummaryItemDetail(
+//                                                                            "010201",
+//                                                                            new DisplayInformation("010201", "LEVEL4_05"),
+//                                                                            Collections.emptyList(),
+//                                                                            Arrays.asList(
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+//                                                                            Optional.of(3)
+//                                                                    ),
+//                                                                    new SummaryItemDetail(
+//                                                                            "010202",
+//                                                                            new DisplayInformation("010202", "LEVEL4_06"),
+//                                                                            Collections.emptyList(),
+//                                                                            Arrays.asList(
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+//                                                                            Optional.of(6)
+//                                                                    )
+//                                                            ),
+                                                            Collections.emptyList(),
                                                             Arrays.asList(
                                                                     new VerticalValueDaily(3, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
                                                                     new VerticalValueDaily(3, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
@@ -147,29 +150,30 @@ public class Dummy {
                                                     ),
                                                     new SummaryItemDetail(
                                                             "010202",
-                                                            new DisplayInformation("010202", "LEVEL3_02"),
-                                                            Arrays.asList(
-                                                                    new SummaryItemDetail(
-                                                                            "01020201",
-                                                                            new DisplayInformation("01020201", "LEVEL4_02"),
-                                                                            Collections.emptyList(),
-                                                                            Arrays.asList(
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                                                            Optional.of(3)
-                                                                    ),
-                                                                    new SummaryItemDetail(
-                                                                            "01020202",
-                                                                            new DisplayInformation("01020202", "LEVEL4_02"),
-                                                                            Collections.emptyList(),
-                                                                            Arrays.asList(
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                                                            Optional.of(6)
-                                                                    )
-                                                            ),
+                                                            new DisplayInformation("010202", "ABB作業"),
+//                                                            Arrays.asList(
+//                                                                    new SummaryItemDetail(
+//                                                                            "01020201",
+//                                                                            new DisplayInformation("01020201", "LEVEL4_07"),
+//                                                                            Collections.emptyList(),
+//                                                                            Arrays.asList(
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+//                                                                            Optional.of(3)
+//                                                                    ),
+//                                                                    new SummaryItemDetail(
+//                                                                            "01020202",
+//                                                                            new DisplayInformation("01020202", "LEVEL4_08"),
+//                                                                            Collections.emptyList(),
+//                                                                            Arrays.asList(
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+//                                                                            Optional.of(6)
+//                                                                    )
+//                                                            ),
+                                                            Collections.emptyList(),
                                                             Arrays.asList(
                                                                     new VerticalValueDaily(3, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
                                                                     new VerticalValueDaily(3, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
@@ -178,51 +182,52 @@ public class Dummy {
                                                     )
                                             ),
                                             Arrays.asList(
-                                                    new VerticalValueDaily(18, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                    new VerticalValueDaily(18, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                    new VerticalValueDaily(18, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                            Optional.of(54)
+                                                    new VerticalValueDaily(6, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+                                                    new VerticalValueDaily(6, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+                                                    new VerticalValueDaily(6, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+                                            Optional.of(18)
                                     )
                             ),
                             Arrays.asList(
-                                    new VerticalValueDaily(3, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                    new VerticalValueDaily(6, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                    new VerticalValueDaily(9, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                            Optional.of(18)
+                                    new VerticalValueDaily(12, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+                                    new VerticalValueDaily(12, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+                                    new VerticalValueDaily(12, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+                            Optional.of(36)
                     ),
                     new SummaryItemDetail(
-                            "01",
-                            new DisplayInformation("01", "LEVEL1_01"),
+                            "02",
+                            new DisplayInformation("02", "B作業"),
                             Arrays.asList(
                                     new SummaryItemDetail(
-                                            "0101",
-                                            new DisplayInformation("0101", "LEVEL2_01"),
+                                            "0202",
+                                            new DisplayInformation("0202", "BA作業"),
                                             Arrays.asList(
                                                     new SummaryItemDetail(
                                                             "010101",
-                                                            new DisplayInformation("A01010101", "LEVEL3_01"),
-                                                            Arrays.asList(
-                                                                    new SummaryItemDetail(
-                                                                            "010101",
-                                                                            new DisplayInformation("A01010101", "LEVEL4_01"),
-                                                                            Collections.emptyList(),
-                                                                            Arrays.asList(
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                                                            Optional.of(3)
-                                                                    ),
-                                                                    new SummaryItemDetail(
-                                                                            "010101",
-                                                                            new DisplayInformation("A01010101", "LEVEL4_02"),
-                                                                            Collections.emptyList(),
-                                                                            Arrays.asList(
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                                                            Optional.of(6)
-                                                                    )
-                                                            ),
+                                                            new DisplayInformation("A01010101", "BAA作業"),
+//                                                            Arrays.asList(
+//                                                                    new SummaryItemDetail(
+//                                                                            "010101",
+//                                                                            new DisplayInformation("A01010101", "LEVEL4_09"),
+//                                                                            Collections.emptyList(),
+//                                                                            Arrays.asList(
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+//                                                                            Optional.of(3)
+//                                                                    ),
+//                                                                    new SummaryItemDetail(
+//                                                                            "010101",
+//                                                                            new DisplayInformation("A01010101", "LEVEL4_10"),
+//                                                                            Collections.emptyList(),
+//                                                                            Arrays.asList(
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+//                                                                            Optional.of(6)
+//                                                                    )
+//                                                            ),
+                                                            Collections.emptyList(),
                                                             Arrays.asList(
                                                                     new VerticalValueDaily(3, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
                                                                     new VerticalValueDaily(3, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
@@ -231,29 +236,30 @@ public class Dummy {
                                                     ),
                                                     new SummaryItemDetail(
                                                             "010102",
-                                                            new DisplayInformation("A01010101", "LEVEL3_02"),
-                                                            Arrays.asList(
-                                                                    new SummaryItemDetail(
-                                                                            "010101",
-                                                                            new DisplayInformation("A01010101", "LEVEL4_02"),
-                                                                            Collections.emptyList(),
-                                                                            Arrays.asList(
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                                                            Optional.of(3)
-                                                                    ),
-                                                                    new SummaryItemDetail(
-                                                                            "010102",
-                                                                            new DisplayInformation("A01010102", "LEVEL4_02"),
-                                                                            Collections.emptyList(),
-                                                                            Arrays.asList(
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                                                            Optional.of(6)
-                                                                    )
-                                                            ),
+                                                            new DisplayInformation("A01010101", "BAB作業"),
+//                                                            Arrays.asList(
+//                                                                    new SummaryItemDetail(
+//                                                                            "010101",
+//                                                                            new DisplayInformation("A01010101", "LEVEL4_11"),
+//                                                                            Collections.emptyList(),
+//                                                                            Arrays.asList(
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+//                                                                            Optional.of(3)
+//                                                                    ),
+//                                                                    new SummaryItemDetail(
+//                                                                            "010102",
+//                                                                            new DisplayInformation("A01010102", "LEVEL4_12"),
+//                                                                            Collections.emptyList(),
+//                                                                            Arrays.asList(
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+//                                                                            Optional.of(6)
+//                                                                    )
+//                                                            ),
+                                                            Collections.emptyList(),
                                                             Arrays.asList(
                                                                     new VerticalValueDaily(3, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
                                                                     new VerticalValueDaily(3, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
@@ -262,41 +268,42 @@ public class Dummy {
                                                     )
                                             ),
                                             Arrays.asList(
-                                                    new VerticalValueDaily(9, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                    new VerticalValueDaily(9, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                    new VerticalValueDaily(9, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                            Optional.of(27)
+                                                    new VerticalValueDaily(6, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+                                                    new VerticalValueDaily(6, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+                                                    new VerticalValueDaily(6, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+                                            Optional.of(18)
                                     ),
                                     // LEVEL1_02
                                     new SummaryItemDetail(
-                                            "0102",
-                                            new DisplayInformation("0102", "LEVEL2_02"),
+                                            "0202",
+                                            new DisplayInformation("0102", "BB作業"),
                                             Arrays.asList(
                                                     new SummaryItemDetail(
                                                             "010201",
-                                                            new DisplayInformation("010201", "LEVEL3_02"),
-                                                            Arrays.asList(
-                                                                    new SummaryItemDetail(
-                                                                            "010201",
-                                                                            new DisplayInformation("010201", "LEVEL4_02"),
-                                                                            Collections.emptyList(),
-                                                                            Arrays.asList(
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                                                            Optional.of(3)
-                                                                    ),
-                                                                    new SummaryItemDetail(
-                                                                            "010202",
-                                                                            new DisplayInformation("010202", "LEVEL4_02"),
-                                                                            Collections.emptyList(),
-                                                                            Arrays.asList(
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                                                            Optional.of(6)
-                                                                    )
-                                                            ),
+                                                            new DisplayInformation("010201", "BBA作業"),
+//                                                            Arrays.asList(
+//                                                                    new SummaryItemDetail(
+//                                                                            "010201",
+//                                                                            new DisplayInformation("010201", "LEVEL4_13"),
+//                                                                            Collections.emptyList(),
+//                                                                            Arrays.asList(
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+//                                                                            Optional.of(3)
+//                                                                    ),
+//                                                                    new SummaryItemDetail(
+//                                                                            "010202",
+//                                                                            new DisplayInformation("010202", "LEVEL4_14"),
+//                                                                            Collections.emptyList(),
+//                                                                            Arrays.asList(
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+//                                                                            Optional.of(6)
+//                                                                    )
+//                                                            ),
+                                                            Collections.emptyList(),
                                                             Arrays.asList(
                                                                     new VerticalValueDaily(3, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
                                                                     new VerticalValueDaily(3, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
@@ -305,29 +312,30 @@ public class Dummy {
                                                     ),
                                                     new SummaryItemDetail(
                                                             "010202",
-                                                            new DisplayInformation("010202", "LEVEL3_02"),
-                                                            Arrays.asList(
-                                                                    new SummaryItemDetail(
-                                                                            "01020201",
-                                                                            new DisplayInformation("01020201", "LEVEL4_02"),
-                                                                            Collections.emptyList(),
-                                                                            Arrays.asList(
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                                                            Optional.of(3)
-                                                                    ),
-                                                                    new SummaryItemDetail(
-                                                                            "01020202",
-                                                                            new DisplayInformation("01020202", "LEVEL4_02"),
-                                                                            Collections.emptyList(),
-                                                                            Arrays.asList(
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                                                            Optional.of(6)
-                                                                    )
-                                                            ),
+                                                            new DisplayInformation("010202", "BBB作業"),
+//                                                            Arrays.asList(
+//                                                                    new SummaryItemDetail(
+//                                                                            "01020201",
+//                                                                            new DisplayInformation("01020201", "LEVEL4_15"),
+//                                                                            Collections.emptyList(),
+//                                                                            Arrays.asList(
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(1, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+//                                                                            Optional.of(3)
+//                                                                    ),
+//                                                                    new SummaryItemDetail(
+//                                                                            "01020202",
+//                                                                            new DisplayInformation("01020202", "LEVEL4_16"),
+//                                                                            Collections.emptyList(),
+//                                                                            Arrays.asList(
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+//                                                                                    new VerticalValueDaily(2, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+//                                                                            Optional.of(6)
+//                                                                    )
+//                                                            ),
+                                                            Collections.emptyList(),
                                                             Arrays.asList(
                                                                     new VerticalValueDaily(3, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
                                                                     new VerticalValueDaily(3, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
@@ -336,29 +344,30 @@ public class Dummy {
                                                     )
                                             ),
                                             Arrays.asList(
-                                                    new VerticalValueDaily(9, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                                    new VerticalValueDaily(9, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                                    new VerticalValueDaily(9, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                                            Optional.of(27)
+                                                    new VerticalValueDaily(6, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+                                                    new VerticalValueDaily(6, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+                                                    new VerticalValueDaily(6, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+                                            Optional.of(18)
                                     )
                             ),
                             Arrays.asList(
-                                    new VerticalValueDaily(18, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                                    new VerticalValueDaily(18, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                                    new VerticalValueDaily(18, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
-                            Optional.of(54)
+                                    new VerticalValueDaily(12, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+                                    new VerticalValueDaily(12, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+                                    new VerticalValueDaily(12, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))),
+//                            Optional.of(36)
+                            Optional.of(2000)
                     )
             );
 
             List<VerticalValueDaily> verticalTotalValues = Arrays.asList(
-                    new VerticalValueDaily(36, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
-                    new VerticalValueDaily(36, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
-                    new VerticalValueDaily(36, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))
+                    new VerticalValueDaily(24500, null, GeneralDate.fromString("2021/06/01", DATE_FORMAT)),
+                    new VerticalValueDaily(24600, null, GeneralDate.fromString("2021/06/02", DATE_FORMAT)),
+                    new VerticalValueDaily(24700, null, GeneralDate.fromString("2021/06/03", DATE_FORMAT))
             );
             return new ManHourSummaryTableOutputContent(
                     itemDetails,
                     verticalTotalValues,
-                    Optional.of(108)
+                    Optional.of(7200)
             );
         }
     }
