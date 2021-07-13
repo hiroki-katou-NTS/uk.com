@@ -16,7 +16,7 @@ module nts.uk.at.view.kdw006.c.viewmodel {
         appType: KnockoutObservable<string>;
         appTypeEnum : KnockoutObservableArray<any>;
         checkBox51: KnockoutObservable<boolean>;
-        checkBox61  KnockoutObservable<boolean>;
+        checkBox61:  KnockoutObservable<boolean>;
         constructor() {
             let self = this;
             self.checkBox51 = ko.observable(false);
