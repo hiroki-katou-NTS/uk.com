@@ -30,7 +30,7 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
     public String companyID;
 
     @Column(name = "FUTURE_DATE_REF_PERMIT")
-    public boolean futureDateRefPermit;
+    public int futureDateRefPermit;
 
     @Override
     protected Object getKey() {
@@ -41,7 +41,7 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
         return new EmploymentRole(
                 this.roleID,
                 this.companyID,
-                EnumAdaptor.valueOf(futureDateRefPermit ? 1 : 0, NotUseAtr.class)
+                EnumAdaptor.valueOf(futureDateRefPermit, NotUseAtr.class)
         );
     }
     public KacmtRoleAttendance(String roleID) {
@@ -52,7 +52,7 @@ public class KacmtRoleAttendance extends ContractUkJpaEntity implements Serializ
         return new KacmtRoleAttendance(
                 domain.getRoleId(),
                 domain.getCompanyId(),
-                domain.getFutureDateRefPermit().equals(NotUseAtr.USE)
+                domain.getFutureDateRefPermit().value
         );
     }
 

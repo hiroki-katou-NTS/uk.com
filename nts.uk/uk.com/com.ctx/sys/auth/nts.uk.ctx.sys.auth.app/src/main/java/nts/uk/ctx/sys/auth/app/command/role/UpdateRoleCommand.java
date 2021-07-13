@@ -70,7 +70,7 @@ public class UpdateRoleCommand {
 	public Role toDomain() {
 		
 		return new Role(
-				IdentifierUtil.randomUniqueId(),
+				this.roleId,
 				new ContractCode(AppContexts.user().contractCode()),
 				AppContexts.user().companyId(),
 				new RoleCode(this.roleCode),

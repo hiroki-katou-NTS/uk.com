@@ -36,7 +36,7 @@ public class JpaEmploymentRoleRepository extends JpaRepository implements Employ
 			val domain = new EmploymentRole(
 					entity.roleID,
 					entity.companyID,
-					EnumAdaptor.valueOf(entity.futureDateRefPermit ? 1 : 0, NotUseAtr.class)
+					EnumAdaptor.valueOf(entity.futureDateRefPermit, NotUseAtr.class)
 			);
 			return Optional.of(domain);
 

@@ -1,13 +1,12 @@
 package nts.uk.screen.com.app.command.sys.auth.role;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.auth.app.command.employmentrole.CreateEmploymentRoleCmd;
 import nts.uk.ctx.at.auth.app.command.employmentrole.CreateEmploymentRoleCmdHandler;
 import nts.uk.ctx.sys.auth.app.command.role.AddRoleCommand;
 import nts.uk.ctx.sys.auth.app.command.role.AddRoleCommandHandler;
-import nts.uk.ctx.sys.auth.app.command.wplmanagementauthority.CreateWorkPlaceAuthorityCmdHandler;
+//import nts.uk.ctx.sys.auth.app.command.wplmanagementauthority.CreateWorkPlaceAuthorityCmdHandler;
 import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
 import nts.uk.ctx.sys.portal.app.command.webmenu.webmenulinking.AddRoleByRoleTiesCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.webmenu.webmenulinking.RoleByRoleTiesCommand;
@@ -29,8 +28,8 @@ public class CreateRoleCas005CmdHandler extends CommandHandler<RoleCas005Command
     @Inject
     private CreateEmploymentRoleCmdHandler createEmploymentRoleCmdHandler;
 
-    @Inject
-    private CreateWorkPlaceAuthorityCmdHandler createWorkPlaceAuthorityCmdHandler;
+//    @Inject
+//    private CreateWorkPlaceAuthorityCmdHandler createWorkPlaceAuthorityCmdHandler;
 
     @Override
     protected void handle(CommandHandlerContext<RoleCas005Command> context) {
@@ -59,9 +58,9 @@ public class CreateRoleCas005CmdHandler extends CommandHandler<RoleCas005Command
             }
             //insert EmploymentRole
             CreateEmploymentRoleCmd createEmploymentRoleCmd = new CreateEmploymentRoleCmd(
-                    AppContexts.user().companyId(),
                     data.getRoleId(),
-                    EnumAdaptor.valueOf(data.getFutureDateRefPermit(), NotUseAtr.class)
+                    AppContexts.user().companyId(),
+                    NotUseAtr.NOT_USE
             );
             createEmploymentRoleCmdHandler.handle(createEmploymentRoleCmd);
         }
