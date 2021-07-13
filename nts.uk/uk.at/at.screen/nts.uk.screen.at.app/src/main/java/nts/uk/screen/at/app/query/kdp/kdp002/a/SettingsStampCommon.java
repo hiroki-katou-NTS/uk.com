@@ -7,6 +7,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInput;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputRepository;
+import nts.uk.ctx.at.shared.app.query.task.GetTaskOperationSettingQuery;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsettings.TaskOperationSetting;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -27,6 +29,8 @@ public class SettingsStampCommon {
 	@Inject
 	private TemporaryWorkUseManageRepository temporaryWorkUseManage;
 	
+	@Inject
+	private GetTaskOperationSettingQuery gettask;
 	
 	
 	public SettingsStampCommonDto getSettingCommonStamp() {
@@ -46,6 +50,10 @@ public class SettingsStampCommon {
 		if (temporaryWorkUseManage.isPresent()) {
 			result.setTemporaryUse(temporaryWorkUseManage.get().getUseClassification().value == 1 ? true : false);
 		}
+		
+		Optional<TaskOperationSetting> taskOperationSetting = gettask.getTasksOperationSetting(cid);
+		
+		result.setAddWorkUse(taskOperationSetting.map(m -> m.getTaskOperationMethod().value == 1 ? true : false).orElse(false));
 		
 		return result;
 	}
