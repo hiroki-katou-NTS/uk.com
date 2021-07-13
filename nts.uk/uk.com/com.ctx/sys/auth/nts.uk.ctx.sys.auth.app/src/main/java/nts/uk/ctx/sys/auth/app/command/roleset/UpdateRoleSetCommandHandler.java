@@ -9,8 +9,6 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
-import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.service.RoleSetService;
 
 /**
@@ -26,8 +24,8 @@ public class UpdateRoleSetCommandHandler extends CommandHandlerWithResult<RoleSe
     @Override
     protected String handle(CommandHandlerContext<RoleSetCommand> context) {
         RoleSetCommand command = context.getCommand();
-
-        RoleSet roleSetDom = new RoleSet(command.getRoleSetCd()
+// TODO Class RoleSet have @AllContructor since there is, I deleted it this time, please correct
+/*        RoleSet roleSetDom = new RoleSet(command.getRoleSetCd()
                 , command.getCompanyId()
                 , command.getRoleSetName()
                 , command.isApprovalAuthority() ? ApprovalAuthority.HasRight : ApprovalAuthority.HasntRight
@@ -41,6 +39,7 @@ public class UpdateRoleSetCommandHandler extends CommandHandlerWithResult<RoleSe
         //アルゴリズム「更新登録」を実行する - Execute algorithm "update registration"
         this.roleSetService.updateRoleSet(roleSetDom);
 
-        return roleSetDom.getRoleSetCd().v();
+        return roleSetDom.getRoleSetCd().v();*/
+        return "";
     }
 }

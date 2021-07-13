@@ -4,82 +4,73 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.roleset;
 
+import java.util.Optional;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 
 /**
- * ロールセット - Class RoleSet.
+ * ロールセット
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.権限管理.ロールセット.ロールセット
  * @author HieuNV
  */
 @Getter
+@AllArgsConstructor
 public class RoleSet extends AggregateRoot {
-
-    /** ロールセットコード. */
-    private RoleSetCode roleSetCd;
 
     /** 会社ID */
     private String companyId;
 
-    /** ロールセット名称*/
+    /** コード */
+    private RoleSetCode roleSetCd;
+
+    /** 名称*/
     private RoleSetName roleSetName;
 
     /** 承認権限*/
     private ApprovalAuthority approvalAuthority;
+    
+    /** 就業ロール */
+    private Optional<String> employmentRoleId;
 
-    /** ロールID: オフィスヘルパーロール */
-    private String officeHelperRoleId;
+    /** 個人情報ロール */
+    private Optional<String> personInfRoleId;
 
-    /** ロールID: マイナンバーロール */
-    private String myNumberRoleId;
+    /** 給与ロール */
+    private Optional<String> salaryRoleId;
+    
+    /** 人事ロール */
+    private Optional<String> hRRoleId;
+    
+    /** マイナンバーロール */
+    private Optional<String> myNumberRoleId;
 
-    /** ロールID: 人事ロール */
-    private String hRRoleId;
-
-    /** ロールID: 個人情報ロール */
-    private String personInfRoleId;
-
-    /** ロールID: 就業ロール */
-    private String employmentRoleId;
-
-    /** ロールID: 給与ロール */
-    private String salaryRoleId;
-
+    /**  オフィスヘルパーロール */
+    private Optional<String> officeHelperRoleId;
+    
     /**
-     * Instantiates a new role set.
-     *
-     * @param roleSetCd
-     * @param companyId
-     * @param roleSetName
-     * @param approvalAuthority
-     * @param officeHelperRoleId
-     * @param myNumberRoleId
-     * @param hRRoleId
-     * @param personInfRoleId
-     * @param employmentRoleId
-     * @param salaryRoleId
+     * 作る
+     * @param cid 会社ID
+     * @param roleSetCd コード
+     * @param roleSetName 名称
+     * @param attendanceRoleId 就業ロール
+     * @param personInfoRoleId 個人情報ロール	
+     * @return
      */
-    public RoleSet(String roleSetCd
-            , String companyId
-            , String roleSetName
-            , ApprovalAuthority approvalAuthority
-            , String officeHelperRoleId
-            , String myNumberRoleId
-            , String hRRoleId
-            , String personInfRoleId
-            , String employmentRoleId
-            , String salaryRoleId) {
-        super();
-        this.roleSetCd             = new RoleSetCode(roleSetCd);
-        this.companyId             = companyId;
-        this.roleSetName         = new RoleSetName(roleSetName);
-        this.approvalAuthority     = approvalAuthority;
-        this.officeHelperRoleId = officeHelperRoleId;
-        this.myNumberRoleId     = myNumberRoleId;
-        this.hRRoleId             = hRRoleId;
-        this.personInfRoleId     = personInfRoleId;
-        this.employmentRoleId     = employmentRoleId;
-        this.salaryRoleId         = salaryRoleId;
+    public static RoleSet create(String cid
+    		,	String roleSetCd
+    		,	String roleSetName
+    		,	Optional<String> attendanceRoleId
+    		,	Optional<String> personInfoRoleId) {
+    	return new RoleSet(cid
+    			,	new RoleSetCode(roleSetCd)
+    			,	new RoleSetName(roleSetName)
+    			,	ApprovalAuthority.HasRight //今、承認権限の値 = あり、今後　承認権限を削除するつもりです。
+    			,	attendanceRoleId, personInfoRoleId
+    			,	Optional.empty(),	Optional.empty()
+    			,	Optional.empty(),	Optional.empty() );
     }
 
     /**
@@ -118,33 +109,47 @@ public class RoleSet extends AggregateRoot {
      * remove value of PersonInfRole field
      */
     public void removePersonInfRole() {
-        this.personInfRoleId = null;
+        this.personInfRoleId = Optional.empty();
     }
     
     /**
      * remove value of PersonInfRole field
      */
     public void setEmploymentRoleId() {
-        this.employmentRoleId = null;
+        this.employmentRoleId = Optional.empty();
     }
     
-    /** Get RoleID by RoleType */
+    /**
+     * get roleID by roleType
+     * @param roleType ロール種類
+     * @return
+     */
     public String getRoleIDByRoleType(RoleType roleType) {
     	switch(roleType) {
 	    	case EMPLOYMENT:
-	    		return this.employmentRoleId;
+	    		return convertToString(this.employmentRoleId);
 	    	case SALARY:
-	    		return this.salaryRoleId;
+	    		return convertToString(this.salaryRoleId);
 	    	case HUMAN_RESOURCE:
-	    		return this.hRRoleId;
+	    		return convertToString(this.hRRoleId);
 	    	case OFFICE_HELPER:
-	    		return this.officeHelperRoleId;
+	    		return convertToString(this.officeHelperRoleId);
 	    	case MY_NUMBER:
-	    		return this.myNumberRoleId;
+	    		return this.convertToString(this.myNumberRoleId);
 	    	case PERSONAL_INFO:
-	    		return this.personInfRoleId;
+	    		return convertToString(this.personInfRoleId);
     		default:
     			return "";
     	}
+    }
+    
+    /**
+     * convert roleID to string
+     * roleId == empty, return ""
+     * @param roleID
+     * @return
+     */
+    private String convertToString(Optional<String> roleID) {
+    	return roleID.isPresent()? roleID.get(): "";
     }
 }
