@@ -8,9 +8,12 @@
 	<ui:composition>
 		<!-- <div style="width: 350px" data-bind="ntsSearchBox: {searchMode: searchMode, targetKey: 'roleCode', comId: 'multi-list', 
 				items: listRole,  selectedKey: 'roleCode', fields: ['name', 'roleCode'], mode: 'igGrid'}" /> -->
-		<div class="caret-right caret-background" id="ccg025-component">
+		<div id="ccg025-component" class="panel" style="display: inline-block;"
+			 data-bind="css: {
+					ntsPanel: !setting.onDialog
+			  }">
 			<div class="control-group valign-center" data-bind="if: displayRoleClassification()">
-				<div data-bind="ntsFormLabel: {required: true, text: '#{i18n.getText('CCG025_2')}'}"/>
+				<div data-bind="ntsFormLabel: {required: false, text: '#{i18n.getText('CCG025_2')}'}, style: {width: setting.isAlreadySetting ? '245px' : '165px'}"/>
 				<div id="ccg025-switch" style="display: inline-block"
 						data-bind="ntsSwitchButton: {
 									name: '#[CCG025_2]',

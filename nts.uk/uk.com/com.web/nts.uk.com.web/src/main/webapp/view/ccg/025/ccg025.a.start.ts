@@ -11,6 +11,7 @@ module nts.uk.com.view.ccg025.a {
         roleType: KnockoutObservable<number>;
         roleAtr: KnockoutObservable<number>;
         multiple: KnockoutObservable<boolean>;
+        onDialog: KnockoutObservable<boolean>;
         isAlreadySetting: KnockoutObservable<boolean>;
         showEmptyItem: KnockoutObservable<boolean>;
         selectType: KnockoutObservable<number>;
@@ -24,6 +25,7 @@ module nts.uk.com.view.ccg025.a {
             self.roleType = ko.observable(0);
             self.roleAtr = ko.observable(null);
             self.multiple = ko.observable(false);
+            self.onDialog = ko.observable(false);
             self.isAlreadySetting = ko.observable(false);
             self.showEmptyItem = ko.observable(false);
             self.selectType = ko.observable(1);
@@ -55,7 +57,8 @@ module nts.uk.com.view.ccg025.a {
                     rows: self.rows(),
                     tabindex: 0,
                     showEmptyItem: self.showEmptyItem(),
-                    selectType: self.selectType()
+                    selectType: self.selectType(),
+                    onDialog: self.onDialog()
                 }));
                 self.componentViewmodel().startPage();
             });
@@ -68,7 +71,8 @@ module nts.uk.com.view.ccg025.a {
                     rows: self.rows(),
                     tabindex: 0,
                     showEmptyItem: self.showEmptyItem(),
-                    selectType: self.selectType()
+                    selectType: self.selectType(),
+                    onDialog: self.onDialog()
                 }));
                 self.componentViewmodel().startPage();
             });
@@ -81,7 +85,8 @@ module nts.uk.com.view.ccg025.a {
                     rows: self.rows(),
                     tabindex: 0,
                     showEmptyItem: self.showEmptyItem(),
-                    selectType: self.selectType()
+                    selectType: self.selectType(),
+                    onDialog: self.onDialog()
                 }));
                 self.componentViewmodel().startPage();
             });
@@ -94,7 +99,8 @@ module nts.uk.com.view.ccg025.a {
                     rows: self.rows(),
                     tabindex: 0,
                     showEmptyItem: self.showEmptyItem(),
-                    selectType: self.selectType()
+                    selectType: self.selectType(),
+                    onDialog: self.onDialog()
                 }));
                 self.componentViewmodel().startPage();
             });
@@ -107,7 +113,8 @@ module nts.uk.com.view.ccg025.a {
                     rows: value,
                     tabindex: 0,
                     showEmptyItem: self.showEmptyItem(),
-                    selectType: self.selectType()
+                    selectType: self.selectType(),
+                    onDialog: self.onDialog()
                 }));
                 self.componentViewmodel().startPage();
             });
@@ -120,7 +127,8 @@ module nts.uk.com.view.ccg025.a {
                     rows: self.rows(),
                     tabindex: 0,
                     showEmptyItem: value,
-                    selectType: self.selectType()
+                    selectType: self.selectType(),
+                    onDialog: self.onDialog()
                 }));
                 self.componentViewmodel().startPage();
             });
@@ -133,7 +141,22 @@ module nts.uk.com.view.ccg025.a {
                     rows: self.rows(),
                     tabindex: 0,
                     showEmptyItem: self.showEmptyItem(),
-                    selectType: value
+                    selectType: value,
+                    onDialog: self.onDialog()
+                }));
+                self.componentViewmodel().startPage();
+            });
+            self.onDialog.subscribe(value => {
+                self.componentViewmodel(new ComponentModel({
+                    roleType: self.roleType(),
+                    roleAtr: self.roleAtr(),
+                    multiple: self.multiple(),
+                    isAlreadySetting: self.isAlreadySetting(),
+                    rows: self.rows(),
+                    tabindex: 0,
+                    showEmptyItem: self.showEmptyItem(),
+                    selectType: self.selectType(),
+                    onDialog: value
                 }));
                 self.componentViewmodel().startPage();
             });

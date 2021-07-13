@@ -59,6 +59,10 @@
 						</div>
 					</div>
 					<div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: {required: false, text: 'onDialog'}"/>
+						<div data-bind="ntsCheckBox: { checked: onDialog }"> </div>
+					</div>
+					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {required: false, text: 'multiple'}"/>
 						<div data-bind="ntsCheckBox: { checked: multiple }"> </div>
 					</div>
@@ -87,10 +91,7 @@
 					</div>
 					<br />
 					<div data-bind="with: componentViewmodel">
-						<div id="pannel-top"
-							data-bind="ntsPanel:{direction: '', showIcon: false, visible: true}" style="display: table">
-							<ui:include src="component/index.xhtml" />
-						</div>
+						<ui:include src="component/index.xhtml" />
 						<div>
 							<b>CurrentCode:</b> <span
 								data-bind="text: ko.toJSON(currentCode)"></span>

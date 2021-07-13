@@ -13,6 +13,7 @@ module nts.uk.com.view.ccg025.a.component {
         rows?: number;
         isAlreadySetting?: any;
         selectType?: number;
+        onDialog?: boolean;
     }
 
     export module viewmodel {
