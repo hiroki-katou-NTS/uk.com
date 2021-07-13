@@ -2414,24 +2414,24 @@ module cmm045.a.viewmodel {
 			let item = itemLst[0];
 			if(item.appType!=AppType.OVER_TIME_APPLICATION && item.appType!=AppType.HOLIDAY_WORK_APPLICATION) {
 				itemConfirmLst.push(item);
-				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false).then((result: any) => {
+				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAll, notConfirmAll).then((result: any) => {
 					return dfd.resolve(result);
 				});
 			}
 			if(_.isEmpty(item.opBackgroundColor)) {
 				itemConfirmLst.push(item);
-				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false).then((result: any) => {
+				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAll, notConfirmAll).then((result: any) => {
 					return dfd.resolve(result);
 				});
 			}
 			if(notConfirmAll) {
-				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, true).then((result: any) => {
+				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAll, notConfirmAll).then((result: any) => {
 					return dfd.resolve(result);
 				});
 			}
 			if(confirmAll) {
 				itemConfirmLst.push(item);
-				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, true, false).then((result: any) => {
+				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAll, notConfirmAll).then((result: any) => {
 					return dfd.resolve(result);
 				});
 			}
