@@ -152,7 +152,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 							// 任意抽出条件のアラーム値を作成する
 							ExtractResultDetailAndCount extractDetail = createAlarmExtraction(
 									attWeekly, weeklyCond, count, attendanceItemMap, cid, sid, wpkId, ym, attendanceTimeOfWeeklyYms.size(),
-									attendanceTimeOfWeeklyYms);
+									attendanceTimeOfWeeklys);
 							count = extractDetail.count;
 							if (extractDetail.detail == null) {
 								continue;
