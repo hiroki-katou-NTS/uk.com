@@ -460,7 +460,7 @@ public class ScheduleCreatorExecutionTransaction {
 			}
 		}
 
-		// else 取得できない
+		// else 取得できない - enum chưa có cái này
 		// 空の勤務予定を作成する
 		// データ（処理状態付き）を生成して返す
 		return new DataProcessingStatusResult(CID, null,
@@ -907,7 +907,7 @@ public class ScheduleCreatorExecutionTransaction {
 		Optional<ScheManaStatuTempo> optEmploymentInfo = Optional.empty();
 		if (!masterCache.getListManaStatuTempo().isEmpty()) { // lấy dữ liệu theo ngày
 			optEmploymentInfo = masterCache.getListManaStatuTempo().stream()
-					.filter(employmentInfo -> employmentInfo.getDate().equals(dateInPeriod)).findFirst();
+					.filter(employmentInfo -> employmentInfo.getDate().equals(dateInPeriod) && employmentInfo.getEmployeeID().equals(creator.getEmployeeId())).findFirst();
 		}
 		// データなし
 		// 社員の在職状態を確認する

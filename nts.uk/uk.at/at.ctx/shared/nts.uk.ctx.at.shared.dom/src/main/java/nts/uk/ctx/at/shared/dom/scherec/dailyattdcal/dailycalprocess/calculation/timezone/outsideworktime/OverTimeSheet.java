@@ -516,10 +516,10 @@ public class OverTimeSheet {
 	
 		return this.frameTimeSheets.stream().map(tc -> {
 			val mapData = tc.changeNotWorkFrameTimeSheet();
-			//B.計算残業時間←A.枠時間.残業時間.時間
-			mapData.setOverTimeCalc(tc.getFrameTime().getOverTimeWork().getTime());
-			//B.計算振替残業時間←A.枠時間.振替時間.時間
-			mapData.setTranferTimeCalc(tc.getFrameTime().getTransferTime().getTime());
+			//B.計算残業時間←A.枠時間.残業時間.計算時間
+			mapData.setOverTimeCalc(tc.getFrameTime().getOverTimeWork().getCalcTime());
+			//B.計算振替残業時間←A.枠時間.振替時間.計算時間
+			mapData.setTranferTimeCalc(tc.getFrameTime().getTransferTime().getCalcTime());
 			//残業枠時間帯の作成
 			return mapData;
 		}).sorted((first, second) -> first.getFrameNo().v().compareTo(second.getFrameNo().v()))

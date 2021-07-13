@@ -224,7 +224,7 @@ public class RegisterDailyWork {
 	}
 	
 	private boolean checkWorkStamp (Optional<WorkStamp> ws) {
-		if(ws.isPresent() && ws.get().getTimeDay().getTimeWithDay().isPresent() && ws.get().getTimeDay().getTimeWithDay().get().v() !=0) {
+		if(ws.isPresent() && ws.get().getTimeDay().getTimeWithDay().isPresent()) {
 			return true;
 		}
 		return false;
