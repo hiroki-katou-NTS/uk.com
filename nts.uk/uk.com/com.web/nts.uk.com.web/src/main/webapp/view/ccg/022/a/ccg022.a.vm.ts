@@ -101,7 +101,7 @@ module nts.uk.com.view.ccg022.a.screenModel {
                 self.usageStopMessage(setting ? setting.usageStopMessage : "");
                 self.selectedStopMode(setting ? setting.stopMode : 1);
                 self.stopMessage(setting ? setting.stopMessage : "");
-                self.isSelectedStop(setting.systemStatus==3);
+                self.isSelectedStop(setting ? setting.systemStatus==3 : false);
             }
         }
 
