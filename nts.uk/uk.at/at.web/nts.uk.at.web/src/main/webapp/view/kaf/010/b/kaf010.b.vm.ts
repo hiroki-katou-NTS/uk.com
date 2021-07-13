@@ -103,8 +103,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                                 appType: appType,
                                 appDispInfoStartupOutput: appDispInfoStartupOutput	
                             } }"></div>
-                    <div
-		data-bind="component: { name: 'kaf010-share-header',
+                    <div style="padding: 15px 15px 0"
+						data-bind="component: { name: 'kaf010-share-header',
 											params: {
 												overTimeWork: overTimeWork
 											}
