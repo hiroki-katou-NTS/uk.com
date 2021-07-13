@@ -562,7 +562,6 @@ module nts.uk.at.kha003.a {
         clickRunButton() {
             const vm = this;
             vm.isOutPutAll(false);
-            vm.selectedId(0);
             var c21 = {};
             var c31 = {};
             var c41 = {};

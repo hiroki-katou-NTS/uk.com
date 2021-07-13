@@ -7,6 +7,7 @@ module nts.uk.at.kha003.d {
     @bean()
     export class ViewModel extends ko.ViewModel {
         dateHeaders: KnockoutObservableArray<DateHeader>;
+        tableDataList: KnockoutObservableArray<any>;
         c21Params: KnockoutObservable<any>;
         c31Params: KnockoutObservable<any>;
         c41Params: KnockoutObservable<any>;
@@ -30,6 +31,9 @@ module nts.uk.at.kha003.d {
             vm.c51Text = ko.observable();
             vm.dateRange = ko.observable();
             vm.dateHeaders = ko.observableArray([]);
+            vm.tableDataList =ko .observableArray([
+                1,2,3,4,5,6,7,8,9,10
+            ]);
         }
 
         created() {
@@ -54,6 +58,41 @@ module nts.uk.at.kha003.d {
                 vm.dateRange(data.dateRange);
                 vm.getDateRange(vm.dateRange().startDate, vm.dateRange().endDate)
             })
+        }
+
+        /**
+         * function for D1_4 back to kha003 A screen
+         */
+        backToAScreen(){
+            let vm=this;
+            vm.$jump('/view/kha/003/a/index.xhtml');
+        }
+
+        /**
+         * function export excell data
+         */
+        exportExcell(){
+            let vm=this;
+            alert("TODO integrate with server")
+        }
+
+        /**
+         * function export csv data
+         */
+        exportCsv(){
+            let vm=this;
+            alert("TODO integrate with server")
+        }
+
+
+        /**
+         * function for display kha003 C screen
+         */
+        displayKha003CScreen(){
+            let vm=this;
+            vm.$window.modal("/view/kha/003/c/index.xhtml").then(() => {
+
+            });
         }
 
         /**
