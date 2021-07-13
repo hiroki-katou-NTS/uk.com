@@ -121,7 +121,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 				style="width: 388px; padding-bottom: 5px; height: inherit; overflow-y: hidden; padding-right: 0px">
 				<div
 					style="border: 1px solid #CCC; height: inherit; background-color: #fff;">
-					<div style="padding-top: 10px"
+					<div 
 						data-bind="component: { name: 'kaf000-b-component1', 
                             params: {
                                 appType: appType,
