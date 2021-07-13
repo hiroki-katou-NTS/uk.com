@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.task.schedule.cron.CronExpressionBuilder;
 //import nts.arc.primitive.TimeAsMinutesPrimitiveValue;
 import nts.arc.task.schedule.cron.CronSchedule;
 import nts.arc.task.schedule.job.jobdata.ScheduledJobUserData;
@@ -306,6 +308,28 @@ public class SaveExecutionTaskSettingCommandHandler
 //			repeatContent = 0;
 //		}
 		switch (EnumAdaptor.valueOf(repeatContent, RepeatContentItem.class)) {
+		case ONCE_TIME:
+			GeneralDateTime now = GeneralDateTime.now();
+			Integer timeSystem = now.minutes() + now.hours() * 60;
+			GeneralDate today = now.toDate();
+			GeneralDate startDate = command.getStartDate();
+			// →次回実行日時の日付がシステム日付で、システム日時が次回実行日時の開始時刻を過ぎていたら
+			if (startDate.equals(today)) {
+				if (startTime < timeSystem) {
+					// 開始日をシステム日付の 次の日付にする。
+					startDate = today.addDays(1);
+				}
+			}
+			// →次回実行日時がシステム日時より前であった場合
+			else if (startDate.before(today)) {
+				// 開始日をシステム日付にする。
+				startDate = today;
+			}
+			CronSchedule cron = CronExpressionBuilder.startBuildExpression()
+					.seconds(0).minutes(startMinute).hours(startHours)
+					.dayOfMonths(startDate.day()).months(startDate.month()).years(startDate.year())
+					.build();
+			return Collections.singletonMap(CronType.START, cron);
 		case WEEKLY_DAYS: // day
 			if (repeatMinute == null) {
 				cronExpress.append("0 " + startMinute + " " + startHours + " * * ? ");
