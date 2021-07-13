@@ -36,7 +36,7 @@ public class AggregatePastMonthsPeriodService {
 			
 			/** 月集計期間を求める */
 			val aggrMonthPeriod = getAggrMonthPeriod(require, cacheCarrier, cid, sid, 
-					aggrStartDate, aggrPeriod, aggrPeriods);
+					closureStartDate, aggrPeriod, aggrPeriods);
 			
 			if (!aggrMonthPeriod.isPresent() || aggrMonthPeriod.get().getPeriod().datesBetween().size() == 0) {
 				
@@ -49,7 +49,7 @@ public class AggregatePastMonthsPeriodService {
 			/** 締め開始日を判断する */
 			closureStartDate = aggrMonthPeriod.get().getPeriod().end().addDays(1);
 		}
-		return new ArrayList<>();
+		return aggrPeriods;
 	}
 	
 	/** 月集計期間を求める*/
