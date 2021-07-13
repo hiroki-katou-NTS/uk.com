@@ -117,7 +117,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 										appType: appType,
 										appDispInfoStartupOutput: appDispInfoStartupOutput	
 									} }"></div>
-							<div style="padding: 10px 15px 0"
+							<div style="padding: 20px 15px 0"
 									data-bind="component: { name: 'kaf005-share-header',
 													params: {
 														overTimeWork: overTimeWork
