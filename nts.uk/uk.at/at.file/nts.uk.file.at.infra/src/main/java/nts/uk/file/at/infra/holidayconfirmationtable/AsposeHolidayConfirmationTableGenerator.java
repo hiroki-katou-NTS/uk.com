@@ -70,7 +70,7 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
 
     private void setPageHeader(AsposeCellsReportContext reportContext, Kdr004DataSource dataSource, String menuName) {
         reportContext.setHeader(0, "&7&\"MS ゴシック\"" + dataSource.getCompanyInfo().getCompanyName());
-        reportContext.setHeader(1, "&12&\"MS ゴシック\"" + menuName);
+        reportContext.setHeader(1, "&12&\"MS ゴシック,Bold\"" + menuName);
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm");
         reportContext.setHeader(2, "&7&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage&P ");
     }
