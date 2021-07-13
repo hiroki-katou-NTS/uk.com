@@ -335,8 +335,7 @@ public class WorkSchedule implements DomainAggregate {
 	 * @return
 	 */
 	public Map<TimezoneToUseHourlyHoliday, TimeVacation> getTimeVacation() {
-		return GettingTimeVacactionService.get(		this.optTimeLeaving, this.optAttendanceTime
-												,	this.outingTime);
+		return GettingTimeVacactionService.get(this.optTimeLeaving, this.optAttendanceTime,	this.outingTime);
 	}
 
 	/**
