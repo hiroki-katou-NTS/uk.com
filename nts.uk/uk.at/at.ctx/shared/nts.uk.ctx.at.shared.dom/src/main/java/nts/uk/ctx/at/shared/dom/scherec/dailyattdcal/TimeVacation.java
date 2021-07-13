@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
+package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal;
 
 import java.util.List;
 
