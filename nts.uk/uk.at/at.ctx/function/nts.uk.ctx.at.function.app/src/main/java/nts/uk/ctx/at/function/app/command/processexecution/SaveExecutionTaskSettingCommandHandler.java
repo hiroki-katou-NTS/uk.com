@@ -129,13 +129,7 @@ public class SaveExecutionTaskSettingCommandHandler
 		//Tạo thêm job cho endTime nếu tồn tại endTime
 		String finishCron = "";
 		if (command.getEndTimeCls() == 1) {
-			String dateCron = "";
-			if (command.getEndDateCls() == 1) {
-				GeneralDate endDate = command.getEndDate(); 
-				dateCron =" " + endDate.day() + " " + endDate.month() + " " + endDate.year();
-			} else {
-				dateCron = " * * ?"; 
-			}
+			String dateCron = " * * ?"; 
 			
 			finishCron = "0 " + command.getEndTime() % 60 + " " + command.getEndTime() / 60 + dateCron;
 			
