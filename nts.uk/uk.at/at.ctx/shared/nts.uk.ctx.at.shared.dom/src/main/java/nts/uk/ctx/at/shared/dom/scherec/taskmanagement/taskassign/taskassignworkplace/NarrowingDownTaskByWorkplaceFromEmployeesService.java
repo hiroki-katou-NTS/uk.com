@@ -30,7 +30,7 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesService {
      */
     public static Optional<NarrowingDownTaskByWorkplace> get(Require require, String companyID, String employeeID, GeneralDate date,TaskFrameNo taskFrameNo) {
     	//	$職場リスト = require.職場を取得する(会社ID,社員ID,基準日)
-    	List<String> listWpkIds = require.findWpkIdsBySid(employeeID, companyID, date);
+    	List<String> listWpkIds = require.findWpkIdsBySid(companyID, employeeID, date);
 		//$職場リスト :				※注意：$職場リストを順番にループすること										
     	for (String wpkId : listWpkIds) {
     		//$職場別作業の絞込 = require.職場別作業の絞込を取得する($)
