@@ -22,7 +22,7 @@
                             <i data-bind="ntsIcon: { no: 175, width: 30, height: 30 }"></i>
                         </div>
                         <div class="box-content" data-bind="style: { 'background-color': $parent.noticeSetting.personMsgColor.backGroundColor }">
-                            <span class="content" data-bind="i18n: $data.notificationMessage, style: { 'color': $parent.noticeSetting.personMsgColor.textColor }"></span>
+                            <span class="content" id="notification" data-bind="i18n: $data.notificationMessage, style: { 'color': $parent.noticeSetting.personMsgColor.textColor }"></span>
                             <div class="content">
                                 <span data-bind="i18n: 'CCG003_8', params: [$data.creator], style: { 'color': $parent.noticeSetting.personMsgColor.textColor } "></span>
                             </div>
