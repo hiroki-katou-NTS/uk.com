@@ -43,7 +43,7 @@ public class GetTargetTime {
 			// 残業時間
 			// 1: <call>()
 			if (i.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
-					.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent() && mode == 1) {
+					.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent() && mode == 0) {
 				// 1.1: 残業合計時間の計算する(): 勤怠時間
 				OverTimeOfDaily overTimeWork = i.getAttendanceTimeOfDailyPerformance().get()
 						.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()
@@ -69,7 +69,7 @@ public class GetTargetTime {
 			// 休出時間
 			// 2: <call>()
 			if (i.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
-					.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent() && mode == 1) {
+					.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent() && mode == 0) {
 				// 2.1: 休出合計時間():勤怠時間
 				HolidayWorkTimeOfDaily holidayTime = i.getAttendanceTimeOfDailyPerformance().get()
 						.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()

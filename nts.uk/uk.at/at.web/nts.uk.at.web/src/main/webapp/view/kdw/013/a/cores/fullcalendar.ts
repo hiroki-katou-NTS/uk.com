@@ -1570,7 +1570,8 @@ module nts.uk.ui.at.kdw013.calendar {
                 slotEventOverlap: false,
                 eventOverlap: false,
                 selectOverlap: false,
-                eventLimit: true, 
+                eventLimit: true,
+                hiddenDays: [], 
                 views: {
                     timeGrid: {
                         eventLimit: 20
