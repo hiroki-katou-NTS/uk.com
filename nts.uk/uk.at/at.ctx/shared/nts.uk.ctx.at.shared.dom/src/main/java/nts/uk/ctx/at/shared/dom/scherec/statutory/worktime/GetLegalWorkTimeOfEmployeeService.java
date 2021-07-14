@@ -102,7 +102,7 @@ public class GetLegalWorkTimeOfEmployeeService {
 		return Optional.of(LegalWorkTimeOfEmployee.createOnlyMonthTime(sid, workTime));
 	}
 	
-	public static interface Require extends RequireM1, RequireM4{
+	public static interface Require{
 		/**
 		 * 社員を指定して年月日時点の履歴項目を取得する
 		 * @param sid 社員ID
