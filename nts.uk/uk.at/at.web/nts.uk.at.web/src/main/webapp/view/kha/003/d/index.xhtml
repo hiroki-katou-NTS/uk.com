@@ -21,14 +21,14 @@
         <div id="functions-area">
             <!--D1_4-->
             <a class="goback"
-               data-bind="ntsLinkButton: { jump: '/view/kha/003/a/index.xhtml' }">#{i18n.getText('KHA003_73')}</a>
+               data-bind="ntsLinkButton: { }, click:backToAScreen">#{i18n.getText('KHA003_73')}</a>
             <!--D1_1-->
             <button tabindex="5" class="proceed"
-                    data-bind="">#{i18n.getText('KHA003_70')}</button>
+                    data-bind="click:exportExcell">#{i18n.getText('KHA003_70')}</button>
             <!--D1_2-->
-            <button class="proceed" data-bind="">#{i18n.getText('KHA003_71')}</button>
+            <button class="proceed" data-bind="click:exportCsv">#{i18n.getText('KHA003_71')}</button>
             <!--D1_3-->
-            <button data-bind="">#{i18n.getText('KHA003_72')}</button>
+            <button data-bind="click:displayKha003CScreen">#{i18n.getText('KHA003_72')}</button>
         </div>
         <div id="contents-area">
             <div class="table cmm045-div-table ">
@@ -38,8 +38,10 @@
                         <td style="text-align: center; padding: 5px;" data-bind="text:text"></td>
                     </tr>
                     </thead>
-                    <tbody>
-
+                    <tbody data-bind="foreach: { data: tableDataList, as: 'prent' }">
+                        <tr data-bind="foreach:vm.dateHeaders()">
+                            <td style="text-align: center; padding: 5px;" data-bind="text:prent"></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
