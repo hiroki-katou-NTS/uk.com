@@ -60,12 +60,12 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                     </div>
                     <div class="right-panel" style="width: 388px; padding-bottom: 5px; height: inherit; padding-right: 0px">
                         <div style="border: 1px solid #CCC; height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden">
-                            <div style="margin: 10px" data-bind="component: { name: 'kaf000-b-component1', 
+                            <div  data-bind="component: { name: 'kaf000-b-component1', 
                                     params: {
                                         appType: appType,
                                         appDispInfoStartupOutput: appDispInfoStartupOutput	
                                     } }"></div>
-                            <div style="margin: 10px" data-bind="component: { name: 'kaf000-b-component9',
+                            <div data-bind="component: { name: 'kaf000-b-component9',
                                     params: {
                                         appType: appType,
                                         application: application,

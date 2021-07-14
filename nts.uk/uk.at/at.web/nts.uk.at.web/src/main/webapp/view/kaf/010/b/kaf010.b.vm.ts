@@ -98,13 +98,13 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             </div>
             <div class="right-panel" style="width: 388px; padding-bottom: 5px; height: inherit; padding-right: 0px">
                 <div style="border: 1px solid #CCC; height: inherit; background-color: #fff; overflow-x: hidden; overflow-y: auto">
-                    <div style="padding-top: 10px" data-bind="component: { name: 'kaf000-b-component1', 
+                    <div data-bind="component: { name: 'kaf000-b-component1', 
                             params: {
                                 appType: appType,
                                 appDispInfoStartupOutput: appDispInfoStartupOutput	
                             } }"></div>
-                    <div
-		data-bind="component: { name: 'kaf010-share-header',
+                    <div style="padding: 15px 15px 0"
+						data-bind="component: { name: 'kaf010-share-header',
 											params: {
 												overTimeWork: overTimeWork
 											}

@@ -20,7 +20,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				<div class="two-panel" style="height: 100%; width: 1260px">
 					<div class="left-panel"
 						style="width: calc(1260px - 388px); height: inherit; padding-bottom: 5px;">
-						<div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px; overflow-x: hidden">
+						<div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px; overflow-x: hidden"> 
 							<div class="table"
 								style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
 								<div class="cell" style="vertical-align: middle;">
@@ -111,18 +111,20 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					</div>
 					<div class="right-panel" style="width: 388px; padding-bottom: 5px; height: inherit; padding-right: 0px">
 						<div style="border: 1px solid #CCC; height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden">
-							<div style="padding-top: 10px"
+							<div
 								data-bind="component: { name: 'kaf000-b-component1', 
 									params: {
 										appType: appType,
 										appDispInfoStartupOutput: appDispInfoStartupOutput	
 									} }"></div>
-							<div
+<!--							<div data-bind="if: visibleModel.c6()">-->
+								<div
 									data-bind="component: { name: 'kaf005-share-header',
 													params: {
 														overTimeWork: overTimeWork
 													}
-													}"></div>        
+													}"></div>   
+<!--							</div>     -->
 							<div
 								data-bind="component: { name: 'kaf000-b-component9',
 									params: {
