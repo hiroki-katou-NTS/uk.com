@@ -142,43 +142,43 @@ module nts.uk.at.view.kdp002.l {
              //Get from API
              let childTaskInfos: TaskInfo[]  = [{
                 code: '1',
-                taskFrameNo: 1,
+                taskFrameNo: 2,
                 displayInfo: {taskName: 'child1名駅広場'},
                 childTasks: ['1','2']
             },
             {
                 code: '2',
-                taskFrameNo: 1,
+                taskFrameNo: 2,
                 displayInfo: {taskName: 'child2栄１丁目t'},
                 childTasks: ['1','2']
             },
             {
                 code: '3',
-                taskFrameNo: 1,
+                taskFrameNo: 2,
                 displayInfo: {taskName: 'child3栄１丁目t'},
                 childTasks: ['1','2']
             },
             {
                 code: '4',
-                taskFrameNo: 1,
+                taskFrameNo: 2,
                 displayInfo: {taskName: 'child4栄１丁目t'},
                 childTasks: ['1','2']
             },
             {
                 code: '5',
-                taskFrameNo: 1,
+                taskFrameNo: 2,
                 displayInfo: {taskName: 'child5栄１丁目t'},
                 childTasks: ['1','2']
             },
             {
                 code: '6',
-                taskFrameNo: 1,
+                taskFrameNo: 2,
                 displayInfo: {taskName: 'child6栄１丁目t'},
                 childTasks: ['1','2']
             },
             {
                 code: "7",
-                taskFrameNo: 1,
+                taskFrameNo: 2,
                 displayInfo: {taskName: 'child7栄１丁目t'},
                 childTasks: ['1','2']
             }
@@ -330,7 +330,7 @@ module nts.uk.at.view.kdp002.l {
                     vm.$dialog.error({ messageId: 'MsgB_25' });
                 } else {
                     vm.taskArray = _.chunk(results, 6);
-                    vm.framePosition.valueHasMutated();
+                   	vm.reload(0);
                 }
             }
 
@@ -339,9 +339,12 @@ module nts.uk.at.view.kdp002.l {
 		onClickCancel() {
             const vm = this;
             let taskParam: ITaskParam = {employeeId: vm.empId, workFrameNo: 1, upperWorkCode: ''};
-            vm.getTask(taskParam);
-            vm.searchValue('');
-			vm.reload(0);
+            if (ko.unwrap(vm.searchValue) != '') {
+                vm.getTask(taskParam);
+                vm.searchValue('');
+                vm.reload(0);
+            }
+			
 		}
 
         onClickBack() {
@@ -359,7 +362,14 @@ module nts.uk.at.view.kdp002.l {
             if (vm.framePosition() != 0) {
                 vm.onClickBack();
             } else {
-                vm.$window.close();
+
+                if (ko.unwrap(vm.model)[0].taskFrameNo != 1) {
+                    vm.getTask({employeeId: vm.empId, workFrameNo: 1, upperWorkCode: ''});
+                    vm.reload(0);
+                } else {
+                    vm.$window.close();
+                }
+                
             }
         }
 
