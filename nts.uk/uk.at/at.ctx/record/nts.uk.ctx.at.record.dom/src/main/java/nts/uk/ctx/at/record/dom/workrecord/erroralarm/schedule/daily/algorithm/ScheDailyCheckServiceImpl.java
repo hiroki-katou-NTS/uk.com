@@ -291,9 +291,10 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					
 					// 勤務種類でフィルタする
 					applicableAtr = checkWorkType(lstWorkTypeCode, targetWorkType, workTypeCode);
-					
-					// 予定時間をチェック
-					applicableAtr = checkTime(condTime.getCheckedCondition(), workSched);
+					if (applicableAtr) {
+						// 予定時間をチェック
+						applicableAtr = checkTime(condTime.getCheckedCondition(), workSched);
+					}
 				}
 				
 				if (DaiCheckItemType.CONTINUOUS_TIME == scheCondItem.getCheckItemType()) {
@@ -304,9 +305,10 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					
 					// 勤務種類でフィルタする
 					applicableAtr = checkWorkType(lstWorkTypeCode, targetWorkType, workTypeCode);
-					
-					// 予定時間をチェック
-					applicableAtr = checkTime(condContinuousTime.getCheckedCondition(), workSched);
+					if (applicableAtr) {
+						// 予定時間をチェック
+						applicableAtr = checkTime(condContinuousTime.getCheckedCondition(), workSched);
+					}
 				}
 				
 				// ループ中のスケジュール日次の任意抽出条件．連続時間帯の抽出条件をチェック
