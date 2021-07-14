@@ -17,7 +17,6 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRe
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignemployee.TaskAssignEmployee;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignworkplace.NarrowingDownTaskByWorkplace;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameSetting;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageSetting;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
@@ -73,13 +72,17 @@ public class GetEmployeeWorkByStamping {
 		TaskFrameUsageSetting taskFrame = taskFrameRepo.getWorkFrameUsageSetting(cid);
 
 		if (taskFrame != null) {
-			Optional<TaskFrameSetting> frameInfo = taskFrame.getFrameSettingList().stream()
-					.filter(f -> f.getTaskFrameNo().v() == param.getWorkFrameNo()).findFirst();
-
-			result.setTaskFrameUsageSetting(
-					new TaskFrameUsageSettingDto(frameInfo.map(m -> m.getTaskFrameNo().v()).orElse(null),
-							frameInfo.map(m -> m.getTaskFrameName().v()).orElse(null),
-							frameInfo.map(m -> m.getUseAtr().value == 1 ? true : false).orElse(false)));
+			if (!taskFrame.getFrameSettingList().isEmpty()) {
+				result.setTaskFrameUsageSetting(new TaskFrameUsageSettingDto(
+						taskFrame.getFrameSettingList()
+						.stream()
+						.map(m -> {
+							return new TaskFrameSettingDto(
+									m.getTaskFrameNo().v(),
+									m.getTaskFrameName().v(),
+									m.getUseAtr().value == 1 ? true : false); 
+						}).collect(Collectors.toList())));
+			}
 		}
 
 		List<Task> tasks = getWork.get(require, cid, param.getSid(), today, new TaskFrameNo(param.getWorkFrameNo()),
