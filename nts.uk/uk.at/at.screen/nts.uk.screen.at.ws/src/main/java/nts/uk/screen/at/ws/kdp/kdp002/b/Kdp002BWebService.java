@@ -18,6 +18,9 @@ import nts.uk.screen.at.app.query.kdp.kdp002.b.GetSettingNoti;
 import nts.uk.screen.at.app.query.kdp.kdp002.b.RegisterEmotionalStateCommand;
 import nts.uk.screen.at.app.query.kdp.kdp002.b.RegisterEmotionalStateCommandhandler;
 import nts.uk.screen.at.app.query.kdp.kdp002.b.SettingEmojiByStamp;
+import nts.uk.screen.at.app.query.kdp.kdp002.l.GetEmployeeWorkByStamping;
+import nts.uk.screen.at.app.query.kdp.kdp002.l.GetEmployeeWorkByStampingDto;
+import nts.uk.screen.at.app.query.kdp.kdp002.l.GetEmployeeWorkByStampingInput;
 
 /**
  * 
@@ -48,6 +51,9 @@ public class Kdp002BWebService {
 	
 	@Inject
 	private CreateDailyAchievementsFromStamp createDailyAchievementsFromStamp;
+	
+	@Inject
+	private GetEmployeeWorkByStamping getEmployeeWorkByStamping;
 	
 	@POST 
 	@Path("notification_by_stamp")
@@ -91,5 +97,11 @@ public class Kdp002BWebService {
 	@Path("craeteDaily")
 	public CreateDailyAchievementsFromStampDto createDaily(CreateDailyParam param) {
 		return this.createDailyAchievementsFromStamp.createDaily(param);
+	}
+	
+	@POST 
+	@Path("employee_work_by_stamping")
+	public GetEmployeeWorkByStampingDto getEmployeeWorkByStamping(GetEmployeeWorkByStampingInput param){
+		return getEmployeeWorkByStamping.getEmployeeWorkByStamping(param);
 	}
 }
