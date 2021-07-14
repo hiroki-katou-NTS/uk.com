@@ -13,9 +13,11 @@
 }
 
 .panel_common {
-    height: 60px;
+    height: 80px;
     vertical-align: middle;
-    padding-top: 47px;
+    padding-top: 30px;
+    width: 70px;
+    word-break: break-all;
 }
 
 .bacg-active {
@@ -49,4 +51,8 @@
     position: absolute;
     top: 0;
     right: 0;
+}
+
+span.label.layout-setting.summary-item {
+    word-break: break-all;
 }

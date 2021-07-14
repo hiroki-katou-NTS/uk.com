@@ -49,15 +49,15 @@ module nts.uk.at.kha003.a {
             vm.summaryItems = ko.observableArray([]);
             vm.layoutSettings = ko.observableArray([]);
             vm.itemList = ko.observableArray([
-                new BoxModel(0, this.$i18n('KHA003_28')),
-                new BoxModel(1, this.$i18n('KHA003_29')),
+                new BoxModel(0, vm.$i18n('KHA003_28')),
+                new BoxModel(1, vm.$i18n('KHA003_29')),
             ]);
             vm.selectedId = ko.observable(0);
             vm.enable = ko.observable(true);
             vm.itemListA622 = ko.observableArray([
-                new BoxModel(0, this.$i18n('KHA003_32') + this.$i18n('KHA003_35')),
-                new BoxModel(1, this.$i18n('KHA003_33') + this.$i18n('KHA003_36')),
-                new BoxModel(2, this.$i18n('KHA003_34') + this.$i18n('KHA003_37')),
+                new BoxModel(0, vm.$i18n('KHA003_32') + "<br/>" + vm.$i18n('KHA003_35')),
+                new BoxModel(1, vm.$i18n('KHA003_33') + "<br/>" + vm.$i18n('KHA003_36')),
+                new BoxModel(2, vm.$i18n('KHA003_34') + "<br/>" + vm.$i18n('KHA003_37')),
             ]);
             vm.selectedIdA622 = ko.observable(0);
             vm.enableA622 = ko.observable(true);
@@ -154,13 +154,9 @@ module nts.uk.at.kha003.a {
                     if (itemCount >= 3) {
                         $('#append_note').hide();
                     }
-                    matchWidth();
+                    vm.matchWidth();
                 }
             });
-
-            function matchWidth() {
-                $('#free_area').css("width", $('#appen_parent').width());
-            }
 
             $(document).ready(function () {
                 $('#append_area').on('click', ".button_top_right_corner", function (e) {
@@ -172,13 +168,20 @@ module nts.uk.at.kha003.a {
                         $('#append_note').show();
                     }
                     vm.excutionModeToUpDateMode();
-                    matchWidth();
+                    vm.matchWidth();
                 });
             });
         }
 
         mounted() {
             const vm = this;
+        }
+
+        /**
+         * function for match with
+         * */
+        matchWidth() {
+            $('#free_area').css("width", $('#appen_parent').width());
         }
 
         /**
@@ -231,6 +234,7 @@ module nts.uk.at.kha003.a {
                             itemTypeName: itemTypeName
                         }
                     }));
+                    vm.matchWidth();
                     dfd.resolve();
                 }).fail(err => {
                     dfd.reject();
@@ -263,27 +267,27 @@ module nts.uk.at.kha003.a {
                     vm.isUpdateMode(false)
                 }
                 data.taskFrameSettings.forEach(function (value: any) {
-                    if (value.taskFrameNo == 1) {
+                    if (value.taskFrameNo == 1 && value.useAtr == 1) {
                         vm.taskFrameSettingA56.taskFrameNo(value.taskFrameNo);
                         vm.taskFrameSettingA56.taskFrameName(value.taskFrameName);
                         vm.taskFrameSettingA56.useAtr(value.useAtr);
                     }
-                    if (value.taskFrameNo == 2) {
+                    if (value.taskFrameNo == 2 && value.useAtr == 1) {
                         vm.taskFrameSettingA57.taskFrameNo(value.taskFrameNo);
                         vm.taskFrameSettingA57.taskFrameName(value.taskFrameName);
                         vm.taskFrameSettingA57.useAtr(value.useAtr);
                     }
-                    if (value.taskFrameNo == 3) {
+                    if (value.taskFrameNo == 3 && value.useAtr == 1) {
                         vm.taskFrameSettingA58.taskFrameNo(value.taskFrameNo);
                         vm.taskFrameSettingA58.taskFrameName(value.taskFrameName);
                         vm.taskFrameSettingA58.useAtr(value.useAtr);
                     }
-                    if (value.taskFrameNo == 4) {
+                    if (value.taskFrameNo == 4 && value.useAtr == 1) {
                         vm.taskFrameSettingA59.taskFrameNo(value.taskFrameNo);
                         vm.taskFrameSettingA59.taskFrameName(value.taskFrameName);
                         vm.taskFrameSettingA59.useAtr(value.useAtr);
                     }
-                    if (value.taskFrameNo == 5) {
+                    if (value.taskFrameNo == 5 && value.useAtr == 1) {
                         vm.taskFrameSettingA510.taskFrameNo(value.taskFrameNo);
                         vm.taskFrameSettingA510.taskFrameName(value.taskFrameName);
                         vm.taskFrameSettingA510.useAtr(value.useAtr);
