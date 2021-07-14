@@ -53,14 +53,14 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	public String findWorkTypeName(List<WorkType> lstWkType, String wkTypeCd) {
 		if (lstWkType.isEmpty()) {
 			Optional<WorkType> wt = repoWorkType.findByPK(AppContexts.user().companyId(), wkTypeCd);
-			return wt.isPresent() ? wt.get().getName().v() : wkTypeCd + "マスタ未登録";
+			return wt.isPresent() ? wt.get().getName().v() : "マスタ未登録";
 		}
 		for (WorkType workType : lstWkType) {
 			if (workType.getWorkTypeCode().v().equals(wkTypeCd)) {
 				return workType.getName().v();
 			}
 		}
-		return wkTypeCd + "マスタ未登録";
+		return "マスタ未登録";
 	}
 
 	/**
@@ -74,15 +74,14 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	public String findWorkTimeName(List<WorkTimeSetting> lstWkTime, String wkTimeCd) {
 		if (lstWkTime.isEmpty()) {
 			Optional<WorkTimeSetting> workTime = repoworkTime.findByCode(AppContexts.user().companyId(), wkTimeCd);
-			return workTime.isPresent() ? workTime.get().getWorkTimeDisplayName().getWorkTimeName().v()
-					: wkTimeCd + "マスタ未登録";
+			return workTime.isPresent() ? workTime.get().getWorkTimeDisplayName().getWorkTimeName().v() : "マスタ未登録";
 		}
 		for (WorkTimeSetting workTime : lstWkTime) {
 			if (workTime.getWorktimeCode().v().equals(wkTimeCd)) {
 				return workTime.getWorkTimeDisplayName().getWorkTimeName().v();
 			}
 		}
-		return wkTimeCd + "マスタ未登録";
+		return "マスタ未登録";
 	}
 
 }
