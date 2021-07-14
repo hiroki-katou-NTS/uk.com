@@ -17,9 +17,6 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.exio.dom.input.ExecuteImporting;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
@@ -90,9 +87,6 @@ public class ExternalImportExecuteRequire {
 	private DomainDataRepository domainDataRepo;
 	
 	@Inject
-	private TaskingRepository taskingRepo;
-	
-	@Inject
 	private WorkInformationRepository workInformationRepo;
 	
 	@Inject
@@ -102,6 +96,7 @@ public class ExternalImportExecuteRequire {
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 	public class RequireImpl implements Require {
 		
+		@SuppressWarnings("unused")
 		private final String companyId;
 
 		@Override
