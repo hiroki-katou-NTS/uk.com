@@ -102,8 +102,6 @@ public class OutputTraceConfirmationTableService extends ExportService<CreateTra
         List<AffAtWorkplaceImport> lstAffAtWorkplaceImport = affWorkplaceAdapter
                 .findBySIdAndBaseDate(listemployees, referenceDate);
 
-        val listWorkplaceId = lstAffAtWorkplaceImport.stream().map(AffAtWorkplaceImport::getWorkplaceId)
-                .collect(Collectors.toList());
         List<EmployeeInfor> employeeInfoList = new ArrayList<>();
         lstEmployeeInfo.forEach(e -> {
             val wpl = lstAffAtWorkplaceImport.stream().filter(i -> i.getEmployeeId().equals(e.getSid())).findFirst();
@@ -157,7 +155,7 @@ public class OutputTraceConfirmationTableService extends ExportService<CreateTra
                 query.isMoreSubstituteHolidaysThanHolidays(),
                 query.isMoreHolidaysThanSubstituteHolidays(),
                 lstWorkplaceInfo);
-        val dataSource = new OutputTraceConfirmTableDataSource(listDetail, companyInfo,query);
+        val dataSource = new OutputTraceConfirmTableDataSource(listDetail, companyInfo,query,linkingMng, mngUnit,comSubstVacation);
         // 5-- ⑦ get 代休管理設定
         reportGenerator.generate(exportServiceContext.getGeneratorContext(), dataSource);
     }

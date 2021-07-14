@@ -3,10 +3,10 @@
 module nts.uk.at.view.kdr003.a {
     import common = nts.uk.at.view.kdr003.common;
 
-    const KWR005_SAVE_DATA = 'WORK_SCHEDULE_STATUS_OUTPUT_CONDITIONS';
+    const KDR003 = 'KDR003_OUTPUT_CONDITIONS';
 
     const PATH = {
-        exportExcelPDF: '',
+        exportExcelPDF: 'at/function/holidayconfirmationtable/export',
         getSettingListWorkStatus: '',
         checkDailyAuthor: '',
         getStartFromMonthly: '',
@@ -59,43 +59,28 @@ module nts.uk.at.view.kdr003.a {
         itemSelection: KnockoutObservableArray<any> = ko.observableArray([]);
 
         periodDate: KnockoutObservable<any> = ko.observable(null);
-
+        moreSubstituteHolidaysThanHolidays: KnockoutObservable<boolean> = ko.observable(false);
+        moreHolidaysThanSubstituteHolidays: KnockoutObservable<boolean> = ko.observable(false);
         constructor(params: any) {
             super();
             const vm = this;
 
-
             //パラメータ.就業担当者であるか = true || false
             vm.isWorker(vm.$user.role.isInCharge.attendance);
             vm.getItemSelection();
-            vm.getWorkScheduleOutputConditions();
-
-            vm.rdgSelectedId.subscribe((value) => {
-                vm.isEnableSelectedCode(value === common.StandardOrFree.Standard);
-                //focus
-                let focusId = value === 0 ? '#KWR005_105' : '#KWR005_106';
-                $(focusId).focus();
-                nts.uk.ui.errors.clearAll();
-            });
-
             vm.CCG001_load();
             vm.KCP005_load();
-
         }
-
         created(params: any) {
             const vm = this;
 
             vm.periodDate({startDate: '2017/02/02', endDate: '2017/02/02'});
         }
-
         mounted() {
             const vm = this;
-
             $('#kcp005 table').attr('tabindex', '-1');
             $('#btnExportExcel').focus();
         }
-
         CCG001_load() {
             const vm = this;
             // Set component option
@@ -151,7 +136,6 @@ module nts.uk.at.view.kdr003.a {
             // Start component
             $('#CCG001').ntsGroupComponent(vm.ccg001ComponentOption);
         }
-
         KCP005_load() {
             const vm = this;
 
@@ -292,86 +276,19 @@ module nts.uk.at.view.kdr003.a {
                     lstEmployeeIds.push(employee.id);
                 }
             });
-
-            vm.saveWorkScheduleOutputConditions().done(() => {
-                vm.$blockui('grayout');
-
-                let findObj = null;
-
-                if (vm.rdgSelectedId() === 0) {
-                    findObj = _.find(vm.settingListItems1(), (x) => x.code === vm.standardSelectedCode());
-                } else {
-                    findObj = _.find(vm.settingListItems2(), (x) => x.code === vm.freeSelectedCode());
-                }
-
-                let params = {
-                    //mode: mode, //ExcelPdf区分
-                    lstEmpIds: lstEmployeeIds, //社員リスト
-                    startMonth: _.toInteger(vm.periodDate().startDate), //対象年月,
-                    endMonth: _.toInteger(vm.periodDate().endDate),
-                    isZeroDisplay: vm.zeroDisplayClassification() ? true : false,//ゼロ表示区分選択肢
-                    code: vm.pageBreakSpecification() ? true : false, //改ページ指定選択肢,
-                    standardFreeClassification: vm.rdgSelectedId(), //自由設定: A5_4_2   || 定型選択 : A5_3_2,
-                    settingId: findObj.id, //ゼロ表示区分,
-                    closureId: vm.closureId() //締め日
-                }
-
-                nts.uk.request.exportFile(PATH.exportExcelPDF, params).done((response) => {
-                    vm.$blockui('hide');
-                }).fail((error) => {
-                    vm.$dialog.error({messageId: error.messageId}).then(() => {
-                        $('#kcp005').focus();
-                        vm.$blockui('hide');
-                    });
-                }).always(() => vm.$blockui('hide'));
-            });
-            //create an excel file and redirect to download
-        }
-
-        saveWorkScheduleOutputConditions(): JQueryPromise<void> {
-            let vm = this,
-                dfd = $.Deferred<void>(),
-                companyId: string = vm.$user.companyId,
-                employeeId: string = vm.$user.employeeId;
-
-            let data: WorkScheduleOutputConditions = {
-                itemSelection: vm.rdgSelectedId(), //項目選択
-                standardSelectedCode: vm.standardSelectedCode(), //定型選択
-                freeSelectedCode: vm.freeSelectedCode(), //自由設定
-                zeroDisplayClassification: vm.zeroDisplayClassification(), //自由の選択済みコード
-                pageBreakSpecification: vm.pageBreakSpecification() //改ページ指定
-            };
-
-            let storageKey: string = KWR005_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
-            vm.$window.storage(storageKey, data).then(() => {
-                dfd.resolve();
-            });
-
-            return dfd.promise();
-        }
-
-        getWorkScheduleOutputConditions() {
-            const vm = this,
-                //dfd = $.Deferred<void>(),
-                companyId: string = vm.$user.companyId,
-                employeeId: string = vm.$user.employeeId;
-
-            let storageKey: string = KWR005_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
-
-            vm.$window.storage(storageKey).then((data: WorkScheduleOutputConditions) => {
-
-                if (!_.isNil(data)) {
-                    let standardCode = _.find(vm.settingListItems1(), ['code', data.standardSelectedCode]);
-                    let freeCode = _.find(vm.settingListItems2(), ['code', data.freeSelectedCode]);
-                    let zeroDisplay = _.isEmpty(data.zeroDisplayClassification) ? 0 : data.zeroDisplayClassification;
-                    let pageBreak = _.isEmpty(data.pageBreakSpecification) ? 0 : data.pageBreakSpecification;
-                    vm.rdgSelectedId(!vm.isPermission51() ? 0 : data.itemSelection); //項目選択
-                    vm.standardSelectedCode(!_.isNil(standardCode) ? data.standardSelectedCode : null); //定型選択
-                    vm.freeSelectedCode(!_.isNil(freeCode) ? data.freeSelectedCode : null); //自由設定
-                    vm.zeroDisplayClassification(data.zeroDisplayClassification); //自由の選択済みコード
-                    vm.pageBreakSpecification(data.pageBreakSpecification); //改ページ指定
-                }
+            vm.$blockui("show");
+            nts.uk.request.exportFile(PATH.exportExcelPDF, {
+                employeeIds: lstEmployeeIds,
+                moreSubstituteHolidaysThanHolidays: vm.moreSubstituteHolidaysThanHolidays(),
+                moreHolidaysThanSubstituteHolidays: vm.moreHolidaysThanSubstituteHolidays(),
+                howToPrintDate: vm.zeroDisplayClassification(),
+                pageBreak: vm.pageBreakSpecification()
+            }).fail(error => {
+                vm.$dialog.error(error).then(() => {
+                    if (error.messageId == "Msg_1926") $("#kcp005").focus()
+                });
             }).always(() => {
+                vm.$blockui("hide");
             });
         }
 

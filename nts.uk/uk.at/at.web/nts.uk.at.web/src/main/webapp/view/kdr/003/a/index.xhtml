@@ -60,15 +60,12 @@
                         <div class="row-right">
                             <div class="radios-group" style="width: 300px;">
                                 <!-- A5_2 -->
-                                <div tabindex="5"
-                                     data-bind="ntsMultiCheckBox: {
-                                      options: itemSelection,
-                                      optionsValue: 'id',
-                                      optionsText: 'name',
-                                      value: rdgSelectedId,
-                                      enable: true
-                                    }"
-                                ></div>
+                                <div tabindex="3"
+                                     data-bind="ntsCheckBox: { checked: moreSubstituteHolidaysThanHolidays }"
+                                >#{i18n.getText('KDR003_11')}</div>
+                                <div tabindex="3"
+                                     data-bind="ntsCheckBox: { checked: moreHolidaysThanSubstituteHolidays }"
+                                >#{i18n.getText('KDR003_12')}</div>
                             </div>
                         </div>
                     </div>
