@@ -891,9 +891,13 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				String alarmContent = alarmMessage;
 				String comment = fixScheCondItem.getMessageDisp() != null && fixScheCondItem.getMessageDisp().isPresent() 
 						? fixScheCondItem.getMessageDisp().get().v() : Strings.EMPTY;
+						
+				// アラーム項目　＝　Input．スケジュール月次の固有抽出項目．名称　（NO　＝　ループ中のNO）
+				Optional<FixedExtractionSDailyItems> alarmNameOpt = fixedItems.stream().filter(x -> x.getFixedCheckDayItems().equals(fixedAtr)).findFirst();
+				
 				this.createExtractAlarm(sid,
 						exDate,
-						fixedAtr.nameId,
+						alarmNameOpt.isPresent() ? alarmNameOpt.get().getDailyCheckName().v() : Strings.EMPTY,
 						alarmContent,
 						Optional.ofNullable(comment),
 						checkValue,
