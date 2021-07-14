@@ -72,25 +72,25 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode) {
 		String contractCode = AppContexts.user().contractCode();
 		
+		// 週次の勤怠項目を取得する
+		Map<Integer, String> attendanceItemMap = weeklyAttendanceItemService.getAttendanceItem(cid);
+		
+		// 週別実績の値を取得
+		// QA#116337
+		List<AttendanceTimeOfWeekly> attendanceTimeOfWeeklys = getWeeklyPerformanceService.getValues(lstSid, period);
+		
+		// ドメインモデル「週別実績の抽出条件」を取得する
+		// 条件: ID　＝　Input．週次のアラームチェック条件．チェック条件．任意抽出条件
+		// Output: List＜週別実績の任意抽出条件＞
+		List<ExtractionCondScheduleWeekly> weeklyConds = extractionCondScheduleWeeklyRepository.getScheAnyCond(
+				contractCode, cid, listOptionalItem).stream().filter(x -> x.isUse()).collect(Collectors.toList());
+		
 		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
 			synchronized (this) {
 				if (shouldStop.get()) {
 					return;
 				}
 			}
-			
-			// 週次の勤怠項目を取得する
-			Map<Integer, String> attendanceItemMap = weeklyAttendanceItemService.getAttendanceItem(cid);
-			
-			// 週別実績の値を取得
-			// QA#116337
-			List<AttendanceTimeOfWeekly> attendanceTimeOfWeeklys = getWeeklyPerformanceService.getValues(lstSid, period);
-			
-			// ドメインモデル「週別実績の抽出条件」を取得する
-			// 条件: ID　＝　Input．週次のアラームチェック条件．チェック条件．任意抽出条件
-			// Output: List＜週別実績の任意抽出条件＞
-			List<ExtractionCondScheduleWeekly> weeklyConds = extractionCondScheduleWeeklyRepository.getScheAnyCond(
-					contractCode, cid, listOptionalItem).stream().filter(x -> x.isUse()).collect(Collectors.toList());
 			
 			// Input．List＜社員ID＞をループ
 			for (String sid: emps) {
