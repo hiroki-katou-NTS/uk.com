@@ -243,7 +243,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 				));
 			}
 			
-			parallelManager.forEach(CollectionUtil.partitionBySize(listSid, 5), emps -> {
+			parallelManager.forEach(CollectionUtil.partitionBySize(listSid, 100), emps -> {
 				synchronized (this) {
 					if (shouldStop.get()) {
 						return;
