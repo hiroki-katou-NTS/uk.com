@@ -57,7 +57,7 @@ public class JpaScheduleMethodSetMemento implements ScheduleMethodSetMemento {
 	public void setWorkScheduleBusCal(Optional<WorkScheduleBusCal> workScheduleBusCal) {
 		if (!workScheduleBusCal.isPresent()) {
 			this.entity.setRefBusinessDayCalendar(null);
-			this.entity.setRefBasicWork(null);
+//			this.entity.setRefBasicWork(null);
 			this.entity.setRefWorkingHours(null);
 			return;
 		}

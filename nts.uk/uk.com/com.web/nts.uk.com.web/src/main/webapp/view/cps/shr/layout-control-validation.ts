@@ -1060,6 +1060,43 @@ module nts.layout {
                     }
 
                     if (!workType) {
+                        if(workTime) {
+                            // handle click event of workTime
+                            workTime.ctrl
+                            .data('safeClick', new Date().getTime())
+                            .on('click', () => {
+                                let timeClick = new Date().getTime(),
+                                    safeClick = workTime.ctrl.data('safeClick');
+
+                                // prevent multi click
+                                workTime.ctrl.data('safeClick', timeClick);
+                                if (timeClick - safeClick <= 500) {
+                                    return;
+                                }
+                                setShared("kml001multiSelectMode", false);
+                                setShared("kml001selectedCodeList", _.isNil(workTime.data.value()) ? [] : [workTime.data.value()]);
+                                setShared("kml001isSelection", true);
+                                setShared("kml001selectAbleCodeList", _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue), true);
+
+                                modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
+                                    let childData: Array<any> = getShared('kml001selectedTimes');
+                                    if (childData) {
+                                        if (childData.length > 0) {
+                                            let data: any = childData[0];
+                                            setData(workTime, data.selectedWorkTimeCode);
+
+                                            firstTimes && setData(firstTimes.start, data.first && data.first.start);
+                                            firstTimes && setData(firstTimes.end, data.first && data.first.end);
+
+                                            secondTimes && setData(secondTimes.start, data.second && data.second.start);
+                                            secondTimes && setData(secondTimes.end, data.second && data.second.end);
+
+                                            validateEditable(group, workTime.data.value);
+                                        }
+                                    }
+                                });
+                            });
+                        }
                         return;
                     }
 
@@ -1403,18 +1440,20 @@ module nts.layout {
                 CS00020_IS00123.data.value.subscribe(v => {
                     switch (v) {
                         case "0":
+                        case "1":
+                        case "2":
                             CS00020_IS00124 && CS00020_IS00124.data.editable(true);
                             CS00020_IS00125 && CS00020_IS00125.data.editable(true);
                             CS00020_IS00126 && CS00020_IS00126.data.editable(true);
                             CS00020_IS00127 && CS00020_IS00127.data.editable(false);
                             break;
-                        case "1":
+                        case "3":
                             CS00020_IS00124 && CS00020_IS00124.data.editable(false);
                             CS00020_IS00125 && CS00020_IS00125.data.editable(false);
                             CS00020_IS00126 && CS00020_IS00126.data.editable(true);
                             CS00020_IS00127 && CS00020_IS00127.data.editable(true);
                             break;
-                        case "2":
+                        case "4":
                             CS00020_IS00124 && CS00020_IS00124.data.editable(false);
                             CS00020_IS00125 && CS00020_IS00125.data.editable(false);
                             CS00020_IS00126 && CS00020_IS00126.data.editable(false);
