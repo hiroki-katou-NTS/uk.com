@@ -1573,6 +1573,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 eventLimit: true,
                 hiddenDays: [],
                 validRange: { end: '9999-12-32' },
+                direction: 'ltr',
                 views: {
                     timeGrid: {
                         eventLimit: 20
