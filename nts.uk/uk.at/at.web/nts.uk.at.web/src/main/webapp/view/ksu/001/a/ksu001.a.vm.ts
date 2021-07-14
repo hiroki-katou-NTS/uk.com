@@ -2578,14 +2578,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         if(object) {
                             vertSumContentDs.push({ 
 								empID: item.employeeId, 
+								sid: item.sid, 
 								criterion: nts.uk.ntsNumber.formatNumber(object.criterion, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})), 
 								salary: nts.uk.ntsNumber.formatNumber(object.salary, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})) 
 							});
                             if(!_.isEmpty(object.background)) {
-                                vertContentDeco.push(new CellColor("salary", index.toString(), "bg-daily-alter-self", 0));  
+                                vertContentDeco.push(new CellColor("salary", item.sid, "#" + object.background));
                             }
                         } else {
-                            vertSumContentDs.push({ empID: item.employeeId, criterion: null, salary: null });
+                            vertSumContentDs.push({ empID: item.employeeId, sid: item.sid, criterion: null, salary: null });
                         }
                     });
                     break;
@@ -2601,14 +2602,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         if(object) {
                             vertSumContentDs.push({ 
 								empID: item.employeeId, 
+								sid: item.sid, 
 								criterion: nts.uk.ntsNumber.formatNumber(object.criterion, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})), 
 								salary: nts.uk.ntsNumber.formatNumber(object.salary, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})) 
 							});
                             if(!_.isEmpty(object.background)) {
-                                vertContentDeco.push(new CellColor("salary", index.toString(), "bg-daily-alter-self", 0));  
+                                vertContentDeco.push(new CellColor("salary", item.sid, "#" + object.background));  
                             }
                         } else {
-                            vertSumContentDs.push({ empID: item.employeeId, criterion: null, salary: null });
+                            vertSumContentDs.push({ empID: item.employeeId, sid: item.sid, criterion: null, salary: null });
                         }
                     });
                     break;
@@ -2629,12 +2631,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 colum3Object = _.find(object.workHours, (objectItem: any) => objectItem.key==AttendanceTimesForAggregation.WORKING_EXTRA);
                             vertSumContentDs.push({ 
                                 empID: item.employeeId, 
+								sid: item.sid,
                                 colum1: _.isEmpty(colum1Object) ? '' : nts.uk.time.format.byId("Time_Short_HM", colum1Object.value), 
                                 colum2: _.isEmpty(colum2Object) ? '' : nts.uk.time.format.byId("Time_Short_HM", colum2Object.value), 
                                 colum3: _.isEmpty(colum3Object) ? '' : nts.uk.time.format.byId("Time_Short_HM", colum3Object.value)
                             });
                         } else {
-                            vertSumContentDs.push({ empID: item.employeeId, colum1: null, colum2: null, colum3: null });
+                            vertSumContentDs.push({ empID: item.employeeId, sid: item.sid, colum1: null, colum2: null, colum3: null });
                         }
                     });
                     break;
@@ -2653,11 +2656,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 colum2Object = _.find(object.workHours, (objectItem: any) => objectItem.key==WorkClassificationAsAggregationTarget.HOLIDAY);
                             vertSumContentDs.push({ 
                                 empID: item.employeeId, 
+								sid: item.sid,
                                 colum1: _.isEmpty(colum1Object) ? '' : nts.uk.ntsNumber.formatNumber(colum1Object.value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 1})), 
                                 colum2: _.isEmpty(colum2Object) ? '' : nts.uk.ntsNumber.formatNumber(colum2Object.value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 1}))
                             });
                         } else {
-                            vertSumContentDs.push({ empID: item.employeeId, colum1: null, colum2: null });
+                            vertSumContentDs.push({ empID: item.employeeId, sid: item.sid, colum1: null, colum2: null });
                         }
                     });
                     break;
@@ -2671,7 +2675,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             { headerText: "", key: "colum1", width: "100px" },
                         ];
 						_.forEach(detailContentDs, (item: any) => {
-	                    	vertSumContentDs.push({ empID: item.employeeId, colum1: null });
+	                    	vertSumContentDs.push({ empID: item.employeeId, sid: item.sid, colum1: null });
 	                    });
                         break;
                     }
@@ -2685,7 +2689,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					_.forEach(_.values(_.groupBy(sumData1, 'totalCountNo')), (groupItem: Array<any>, index: number) => {
 						group.push({ headerText: _.get(_.head(groupItem), 'totalTimesName'), key: "colum" + (index+1), width: "100px" });
 	                    _.forEach(detailContentDs, (item: any) => {
-	                        let pushObject = { empID: item.employeeId },
+	                        let pushObject = { empID: item.employeeId, sid: item.sid },
 								object: any = _.find(groupItem, loopItem => loopItem.sid==item.employeeId),
 								existItem = _.find(vertSumContentDs, (vertSumContentDsItem: any) => vertSumContentDsItem.empID==pushObject.empID);
 	                        if(object) {
@@ -2716,7 +2720,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             { headerText: "", key: "colum1", width: "100px" },
                         ];
 						_.forEach(detailContentDs, (item: any) => {
-	                    	vertSumContentDs.push({ empID: item.employeeId, colum1: null });
+	                    	vertSumContentDs.push({ empID: item.employeeId, sid: item.sid, colum1: null });
 	                    });
                         break;
                     }
@@ -2730,7 +2734,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     _.forEach(_.values(_.groupBy(sumData2, 'totalCountNo')), (groupItem: Array<any>, index: number) => {
 						group.push({ headerText: _.get(_.head(groupItem), 'totalTimesName'), key: "colum" + (index+1), width: "100px" });
 	                    _.forEach(detailContentDs, (item: any) => {
-	                        let pushObject = { empID: item.employeeId },
+	                        let pushObject = { empID: item.employeeId, sid: item.sid },
 								object: any = _.find(groupItem, loopItem => loopItem.sid==item.employeeId),
 								existItem = _.find(vertSumContentDs, (vertSumContentDsItem: any) => vertSumContentDsItem.empID==pushObject.empID);
 	                        if(object) {
@@ -2761,7 +2765,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             { headerText: "", key: "colum1", width: "100px" },
                         ];
 						_.forEach(detailContentDs, (item: any) => {
-	                    	vertSumContentDs.push({ empID: item.employeeId, colum1: null });
+	                    	vertSumContentDs.push({ empID: item.employeeId, sid: item.sid, colum1: null });
 	                    });
                         break;
                     }
@@ -2775,7 +2779,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     _.forEach(_.values(_.groupBy(sumData3, 'totalCountNo')), (groupItem: Array<any>, index: number) => {
 						group.push({ headerText: _.get(_.head(groupItem), 'totalTimesName'), key: "colum" + (index+1), width: "100px" });
 	                    _.forEach(detailContentDs, (item: any) => {
-	                        let pushObject = { empID: item.employeeId },
+	                        let pushObject = { empID: item.employeeId, sid: item.sid },
 								object: any = _.find(groupItem, loopItem => loopItem.sid==item.employeeId),
 								existItem = _.find(vertSumContentDs, (vertSumContentDsItem: any) => vertSumContentDsItem.empID==pushObject.empID);
 	                        if(object) {
@@ -3153,7 +3157,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 vertSumContent = {
                 columns: self.vertSumColumns,
                 dataSource: self.vertSumContentDs,
-                primaryKey: "empId",
+                primaryKey: "sid",
                 features: [{
                     name: "BodyCellStyle",
                     decorator: self.vertContentDeco
