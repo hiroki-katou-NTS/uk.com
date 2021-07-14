@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.history;
+package nts.uk.ctx.exio.dom.input.canonicalize.groups.generic;
 
 import static java.util.stream.Collectors.*;
 
