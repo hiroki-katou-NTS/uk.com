@@ -24,7 +24,7 @@ module nts.uk.at.view.kdr003.a {
         freeSelectedCode: KnockoutObservable<string> = ko.observable(null);
         isEnableSelectedCode: KnockoutObservable<boolean> = ko.observable(true);
 
-        zeroDisplayClassification: KnockoutObservable<number> = ko.observable(0);
+        howToPrintDate: KnockoutObservable<number> = ko.observable(0);
         pageBreakSpecification: KnockoutObservable<number> = ko.observable(0);
         isWorker: KnockoutObservable<boolean> = ko.observable(true);
         settingListItems1: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
@@ -240,10 +240,10 @@ module nts.uk.at.view.kdr003.a {
             });
             vm.$blockui("show");
             nts.uk.request.exportFile(PATH.exportExcelPDF, {
-                employeeIds: lstEmployeeIds,
+                listEmployeeId: lstEmployeeIds,
                 moreSubstituteHolidaysThanHolidays: vm.moreSubstituteHolidaysThanHolidays(),
                 moreHolidaysThanSubstituteHolidays: vm.moreHolidaysThanSubstituteHolidays(),
-                howToPrintDate: vm.zeroDisplayClassification(),
+                howToPrintDate: vm.howToPrintDate(),
                 pageBreak: vm.pageBreakSpecification()
             }).fail(error => {
                 vm.$dialog.error(error).then(() => {

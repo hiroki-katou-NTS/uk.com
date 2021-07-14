@@ -85,7 +85,8 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
     }
 
     private void printSubHeader(Cells cells, OutputTraceConfirmTableDataSource dataSource) {
-        cells.get(USER_GUIDE_COL + (SUB_HEADER_ROW + 1)).setValue(TextResource.localize("KDR003_20"));
+        val st = dataSource.getMngUnit()!=null && dataSource.getMngUnit()== 2 ? TextResource.localize("KDR003_19") : TextResource.localize("KDR003_20");
+        cells.get(USER_GUIDE_COL + (SUB_HEADER_ROW + 1)).setValue(st);
         cells.get(EXPIRATION_COL + (SUB_HEADER_ROW + 1)).setValue(TextResource.localize("KDR003_123") + dataSource.getComSubstVacation().getCompensatoryAcquisitionUse().getExpirationTime().nameId);
     }
 

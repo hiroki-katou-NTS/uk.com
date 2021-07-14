@@ -315,6 +315,6 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                 if (checkShow == 0) return false;
             }
         }
-        return false;
+        return true;
     }
 }
