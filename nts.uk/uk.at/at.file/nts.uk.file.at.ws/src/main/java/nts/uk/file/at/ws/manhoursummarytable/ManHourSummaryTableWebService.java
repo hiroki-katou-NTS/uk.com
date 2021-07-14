@@ -10,7 +10,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-@Path("at/function/kha/003/d/report")
+@Path("at/function/kha/003/d/report/")
 @Produces("application/json")
 public class ManHourSummaryTableWebService extends WebService {
    @Inject

@@ -99,7 +99,7 @@ public class ManHoursWebService extends WebService {
     @POST
     @Path("d/aggregation-result")
     public ManHourAggregationResultDto aggregationResult(AggregationResultQuery param) {
-        return this.aggregationResult.get(param.getCode(), param.getMasterNameInfo(), param.getWorkDetailList(),
+        return this.aggregationResult.get(param.getCode(), param.getMasterNameInfo(), param.toWorkDetailData(),
                 param.getPeriod().getDateList(), param.getPeriod().getYearMonthList());
     }
 
