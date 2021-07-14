@@ -8,6 +8,7 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.AffComHistItemImport;
+import nts.uk.ctx.at.function.dom.adapter.AffCompanyHistImport;
 import nts.uk.ctx.at.function.dom.adapter.EmployeeHistWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
@@ -70,22 +71,19 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                                                                               boolean moreSubstituteHolidaysThanHolidays,
                                                                               boolean moreHolidaysThanSubstituteHolidays,
                                                                               List<WorkplaceInfor> lstWorkplaceInfo) {
-
-
         val mapEmployee = basicInfoImportList.stream()
                 .filter(distinctByKey(EmployeeInfor::getEmployeeId)).collect(Collectors.toMap(EmployeeInfor::getEmployeeId, e -> e));
         val mapWplInfo = lstWorkplaceInfo.stream().filter(distinctByKey(WorkplaceInfor::getWorkplaceId))
                 .collect(Collectors.toMap(WorkplaceInfor::getWorkplaceId, e -> e));
         // 1. ① Get(「２」List<社員情報>．社員ID):所属会社履歴（社員別）
         val listSid = new ArrayList<>(mapEmployee.keySet());
-        val listCompanyHist = employeeHistWorkRecordAdapter.getWplByListSid(listSid);
+        List<AffCompanyHistImport> listCompanyHist = employeeHistWorkRecordAdapter.getWplByListSid(listSid);
         // 2. ② Call 社員に対応する締め期間を取得する
         // 社員に対応する締め期間を取得する
         val cid = AppContexts.user().companyId();
         List<DisplayContentsOfSubLeaveConfirmationTable> rs = new ArrayList<>();
-        for (val item : listCompanyHist) {
+        for (EmployeeInfor item : basicInfoImportList) {
             val sid = item.getEmployeeId();
-
             // Call 社員に対応する締め期間を取得する
             DatePeriod period = ClosureService.findClosurePeriod(
                     ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
@@ -172,75 +170,71 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                 //・ER　＝残数．日数が負の場合、ture
                 er = substituteHolidayAggrResult.getRemainDay() == null || substituteHolidayAggrResult.getRemainTime().v() < 0;
             }
-            List<AffComHistItemImport> lstAffComHistItem = item.getLstAffComHistItem();
+            List<AffCompanyHistImport> lstAffComHistItem = listCompanyHist.stream()
+                    .filter(i -> i.getEmployeeId().equals(item.getEmployeeId()))
+                    .collect(Collectors.toList());
             List<OccurrenceAcquisitionDetails> occurrenceAcquisitionDetailsList = new ArrayList<>();
             List<LinkingInformation> listTyingInformation = new ArrayList<>();
-            for (int i = 0; i < lstAffComHistItem.size(); i++) {
-                val affComHistItem = lstAffComHistItem.get(i);
-                //逐次発生の休暇明細一覧
-                val lstAcctAbsenDetail = substituteHolidayAggrResult
-                        .getVacationDetails().getLstAcctAbsenDetail();
-                for (int j = 0; j < lstAcctAbsenDetail.size(); j++) {
-                    val acctAbsenDetail = lstAcctAbsenDetail.get(j);
-                    val dateOptional = acctAbsenDetail.getDateOccur().getDayoffDate();
-                    //※１
-                    Boolean isExpired = (dateOptional.isPresent() &&
-                            affComHistItem.getDatePeriod().start().beforeOrEquals(dateOptional.get())
-                            && (dateOptional.get()).beforeOrEquals(affComHistItem.getDatePeriod().end()));
-                    //　・発生取得明細(i)．発生消化区分　　　＝ 代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．発生消化区分
-                    OccurrenceDigClass occurrenceDigClass = acctAbsenDetail.getOccurrentClass();
-                    CompensatoryDayoffDate date = null;
-                    AccumulationAbsenceDetail.NumberConsecuVacation numberConsecuVacation = null;
-                    MngHistDataAtr status = null;
-                    GeneralDate deadline = null;
-                    Optional<Boolean> isExpiredInCurrentMonth = Optional.empty();
-                    //　【発生消化区分:発生の場合】
-                    if (occurrenceDigClass.equals(OccurrenceDigClass.OCCURRENCE)) {
-                        //　・発生取得明細(i)．年月日　　　　　＝ 代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．年月日
-                        date = acctAbsenDetail.getDateOccur();
-                        //  ・発生取得明細(i)．発生使用数．日数＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．発生数．日数
-                        numberConsecuVacation = acctAbsenDetail.getNumberOccurren();
-                        //  ・発生取得明細(i)．状態　　　　　　＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．状態
-                        status = EnumAdaptor.valueOf(acctAbsenDetail.getDataAtr().value, MngHistDataAtr.class);
-                        // ・発生取得明細(i)．期限日　　　　　＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．休暇発生明細．期限日
-                        UnbalanceVacation rss = (UnbalanceVacation) acctAbsenDetail;
-                        deadline = rss.getDeadline(); // TODO PHẢI QA.
-                        //　・発生取得明細(i)．当月で期限切れ　＝※１
-                        isExpiredInCurrentMonth = Optional.of(isExpired);
-                    } else if (occurrenceDigClass.equals(OccurrenceDigClass.DIGESTION)) {
-                        // 　・発生取得明細(i)．年月日　　　　　＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．年月日
-                        date = acctAbsenDetail.getDateOccur();
-                        //   ・発生取得明細(i)．発生使用数．日数＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．発生数．日数
-                        numberConsecuVacation = acctAbsenDetail.getNumberOccurren();
-                        //　・発生取得明細(i)．状態　　　　　　＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．状態
-                        status = EnumAdaptor.valueOf(acctAbsenDetail.getDataAtr().value, MngHistDataAtr.class);
+            for (AffCompanyHistImport affComHistItems : lstAffComHistItem) {
+                for (val affComHistItem : affComHistItems.getLstAffComHistItem()) {
+                    for (val acctAbsenDetail : substituteHolidayAggrResult.getVacationDetails().getLstAcctAbsenDetail()) {
+                        val dateOptional = acctAbsenDetail.getDateOccur().getDayoffDate();
+                        //※１
+                        Boolean isExpired = (dateOptional.isPresent() && affComHistItem.getDatePeriod().start().beforeOrEquals(dateOptional.get())
+                                && (dateOptional.get()).beforeOrEquals(affComHistItem.getDatePeriod().end()));
+                        //　・発生取得明細(i)．発生消化区分　　　＝ 代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．発生消化区分
+                        OccurrenceDigClass occurrenceDigClass = acctAbsenDetail.getOccurrentClass();
+                        CompensatoryDayoffDate date = null;
+                        AccumulationAbsenceDetail.NumberConsecuVacation numberConsecuVacation = null;
+                        MngHistDataAtr status = null;
+                        GeneralDate deadline = null;
+                        Optional<Boolean> isExpiredInCurrentMonth = Optional.empty();
+                        //　【発生消化区分:発生の場合】
+                        if (occurrenceDigClass.equals(OccurrenceDigClass.OCCURRENCE)) {
+                            //　・発生取得明細(i)．年月日　　　　　＝ 代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．年月日
+                            date = acctAbsenDetail.getDateOccur();
+                            //  ・発生取得明細(i)．発生使用数．日数＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．発生数．日数
+                            numberConsecuVacation = acctAbsenDetail.getNumberOccurren();
+                            //  ・発生取得明細(i)．状態　　　　　　＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．状態
+                            status = EnumAdaptor.valueOf(acctAbsenDetail.getDataAtr().value, MngHistDataAtr.class);
+                            // ・発生取得明細(i)．期限日　　　　　＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．休暇発生明細．期限日
+                            UnbalanceVacation rss = (UnbalanceVacation) acctAbsenDetail;
+                            deadline = rss.getDeadline(); // TODO PHẢI QA.
+                            //　・発生取得明細(i)．当月で期限切れ　＝※１
+                            isExpiredInCurrentMonth = Optional.of(isExpired);
+                        } else if (occurrenceDigClass.equals(OccurrenceDigClass.DIGESTION)) {
+                            // 　・発生取得明細(i)．年月日　　　　　＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．年月日
+                            date = acctAbsenDetail.getDateOccur();
+                            //   ・発生取得明細(i)．発生使用数．日数＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．発生数．日数
+                            numberConsecuVacation = acctAbsenDetail.getNumberOccurren();
+                            //　・発生取得明細(i)．状態　　　　　　＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．状態
+                            status = EnumAdaptor.valueOf(acctAbsenDetail.getDataAtr().value, MngHistDataAtr.class);
+                        }
+                        occurrenceAcquisitionDetailsList.add(new OccurrenceAcquisitionDetails(
+                                date,
+                                status,
+                                numberConsecuVacation,
+                                occurrenceDigClass,
+                                isExpiredInCurrentMonth,
+                                deadline));
                     }
-                    occurrenceAcquisitionDetailsList.add(new OccurrenceAcquisitionDetails(
-                            date,
-                            status,
-                            numberConsecuVacation,
-                            occurrenceDigClass,
-                            isExpiredInCurrentMonth,
-                            deadline));
                 }
-                List<SeqVacationAssociationInfo> lstSeqVacation = substituteHolidayAggrResult
-                        .getLstSeqVacation();
-                if (linkingMng) {
-                    for (int j = 0; j < lstSeqVacation.size(); j++) {
-                        val lstSeqVacationItem = lstSeqVacation.get(i);
-                        //・紐付け情報(j)．発生日　＝代休の集計結果．逐次休暇の紐付け情報(j)．発生日
-                        GeneralDate ymd = lstSeqVacationItem.getOutbreakDay();
-                        // ・紐付け情報(j)．使用日　＝代休の集計結果．逐次休暇の紐付け情報(j)．使用日
-                        MonthlyVacationDays dateOfUse = new MonthlyVacationDays(
-                                lstSeqVacationItem.getDayNumberUsed().v()
-                        );
-                        //・紐付け情報(j)．使用日数＝代休の集計結果．逐次休暇の紐付け情報(j)．使用日数
-                        GeneralDate occurrenceDate = lstSeqVacationItem.getDateOfUse();
-                        listTyingInformation.add(new LinkingInformation(
-                                ymd,
-                                dateOfUse,
-                                occurrenceDate));
-                    }
+            }
+            List<SeqVacationAssociationInfo> lstSeqVacation = substituteHolidayAggrResult
+                    .getLstSeqVacation();
+            if (linkingMng) {
+                for (SeqVacationAssociationInfo lstSeqVacationItem : lstSeqVacation) {
+                    //・紐付け情報(j)．発生日　＝代休の集計結果．逐次休暇の紐付け情報(j)．発生日
+                    GeneralDate ymd = lstSeqVacationItem.getOutbreakDay();
+                    // ・紐付け情報(j)．使用日　＝代休の集計結果．逐次休暇の紐付け情報(j)．使用日
+                    MonthlyVacationDays dateOfUse = new MonthlyVacationDays(
+                            lstSeqVacationItem.getDayNumberUsed().v());
+                    //・紐付け情報(j)．使用日数＝代休の集計結果．逐次休暇の紐付け情報(j)．使用日数
+                    GeneralDate occurrenceDate = lstSeqVacationItem.getDateOfUse();
+                    listTyingInformation.add(new LinkingInformation(
+                            ymd,
+                            dateOfUse,
+                            occurrenceDate));
                 }
             }
             SubstituteHolidayOccurrenceInfo observationOfExitLeave = new SubstituteHolidayOccurrenceInfo(
@@ -250,17 +244,14 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                     occurrenceAcquisitionDetailsList,
                     totalNumberOfSubstituteHolidays,
                     listTyingInformation,
-                    numberCarriedForward
-            );
+                    numberCarriedForward);
             val sub = new DisplayContentsOfSubLeaveConfirmationTable(
                     employeeCode,
                     employeeName,
                     workplaceCode,
                     workplaceName,
                     hierarchyCode,
-                    Optional.of(observationOfExitLeave)
-
-            );
+                    Optional.of(observationOfExitLeave));
             rs.add(sub);
         }
         if (rs.isEmpty()) {

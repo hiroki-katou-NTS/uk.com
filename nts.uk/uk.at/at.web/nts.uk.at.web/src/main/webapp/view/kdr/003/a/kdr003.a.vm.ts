@@ -2,14 +2,8 @@
 
 module nts.uk.at.view.kdr003.a {
     import common = nts.uk.at.view.kdr003.common;
-
-    const KDR003 = 'KDR003_OUTPUT_CONDITIONS';
-
     const PATH = {
         exportExcelPDF: 'at/function/holidayconfirmationtable/export',
-        getSettingListWorkStatus: '',
-        checkDailyAuthor: '',
-        getStartFromMonthly: '',
     };
 
     @bean()
@@ -36,7 +30,7 @@ module nts.uk.at.view.kdr003.a {
         settingListItems1: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         settingListItems2: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
-        // start declare KCP005
+        // start declare KCP005`
         listComponentOption: any;
         selectedCode: KnockoutObservable<string>;
         multiSelectedCode: KnockoutObservableArray<string>;
@@ -51,8 +45,6 @@ module nts.uk.at.view.kdr003.a {
 
         employeeList: KnockoutObservableArray<common.UnitModel>;
         baseDate: KnockoutObservable<Date>;
-        // end KCP005
-
         mode: KnockoutObservable<common.UserSpecificInformation> = ko.observable(null);
 
         isPermission51: KnockoutObservable<boolean> = ko.observable(false);
@@ -61,26 +53,27 @@ module nts.uk.at.view.kdr003.a {
         periodDate: KnockoutObservable<any> = ko.observable(null);
         moreSubstituteHolidaysThanHolidays: KnockoutObservable<boolean> = ko.observable(false);
         moreHolidaysThanSubstituteHolidays: KnockoutObservable<boolean> = ko.observable(false);
+
         constructor(params: any) {
             super();
             const vm = this;
-
             //パラメータ.就業担当者であるか = true || false
             vm.isWorker(vm.$user.role.isInCharge.attendance);
             vm.getItemSelection();
             vm.CCG001_load();
             vm.KCP005_load();
         }
+
         created(params: any) {
             const vm = this;
-
-            vm.periodDate({startDate: '2017/02/02', endDate: '2017/02/02'});
         }
+
         mounted() {
             const vm = this;
             $('#kcp005 table').attr('tabindex', '-1');
             $('#btnExportExcel').focus();
         }
+
         CCG001_load() {
             const vm = this;
             // Set component option
@@ -98,9 +91,6 @@ module nts.uk.at.view.kdr003.a {
 
                 /** Required parameter */
                 baseDate: moment().toISOString(), //基準日
-                //periodStartDate: periodStartDate, //対象期間開始日
-                //periodEndDate: periodEndDate, //対象期間終了日
-                //dateRangePickerValue: vm.datepickerValue
                 inService: true, //在職区分 = 対象
                 leaveOfAbsence: true, //休職区分 = 対象
                 closed: true, //休業区分 = 対象
@@ -122,20 +112,15 @@ module nts.uk.at.view.kdr003.a {
                 showJobTitle: true,// 職位条件
                 showWorktype: true,// 勤種条件
                 isMutipleCheck: true,// 選択モード
-
                 tabindex: -1,
-                /**
-                 * vm-defined function: Return data from CCG001
-                 * @param: data: the data return from CCG001
-                 */
                 returnDataFromCcg001: function (data: common.Ccg001ReturnedData) {
                     vm.closureId(data.closureId);
                     vm.getListEmployees(data);
                 }
             }
-            // Start component
             $('#CCG001').ntsGroupComponent(vm.ccg001ComponentOption);
         }
+
         KCP005_load() {
             const vm = this;
 
@@ -176,17 +161,11 @@ module nts.uk.at.view.kdr003.a {
             $('#kcp005').ntsListComponent(vm.listComponentOption)
         }
 
-        /**
-         *  get employees from CCG001
-         */
-
         getListEmployees(data: common.Ccg001ReturnedData) {
             let vm = this,
                 multiSelectedCode: Array<string> = [],
                 employeeSearchs: Array<common.UnitModel> = [];
-
             let newListEmployee: Array<any> = vm.removeDuplicateItem(data.listEmployee);
-
             _.forEach(newListEmployee, function (value: any) {
                 var employee: common.UnitModel = {
                     id: value.employeeId,
@@ -202,17 +181,6 @@ module nts.uk.at.view.kdr003.a {
             vm.multiSelectedCode(multiSelectedCode);
         }
 
-        /**
-         * Duplicate Setting
-         * */
-
-        /**
-         * Gets setting listwork status
-         * @param type
-         * 定型選択    : 0
-         * 自由設定 : 1
-         */
-
         checkErrorConditions() {
             const vm = this;
 
@@ -220,14 +188,12 @@ module nts.uk.at.view.kdr003.a {
                 error: false,
                 focusId: ''
             };
-
             if (nts.uk.ui.errors.hasError()) {
                 hasError.error = true;
                 hasError.focusId = '';
                 return hasError;
             }
 
-            //【社員】が選択されていません。
             if (nts.uk.util.isNullOrEmpty(vm.multiSelectedCode())) {
                 vm.$dialog.error({messageId: 'Msg_1923'}).then(() => {
                 });
@@ -235,10 +201,7 @@ module nts.uk.at.view.kdr003.a {
                 hasError.focusId = 'kcp005';
                 return hasError;
             }
-            //自由設定が選択されていません。
-
             return hasError;
-            //勤務状況表の対象ファイルを出力する | 対象データがありません
         }
 
         removeDuplicateItem(listItems: Array<any>): Array<any> {
@@ -249,7 +212,6 @@ module nts.uk.at.view.kdr003.a {
                     return x.employeeCode === element.employeeCode;
                 });
             });
-
             return newListItems;
         }
 
@@ -294,31 +256,10 @@ module nts.uk.at.view.kdr003.a {
 
         getItemSelection() {
             const vm = this;
-
             vm.itemSelection.push({id: 0, name: vm.$i18n('KDR003_10')});
             vm.itemSelection.push({id: 1, name: vm.$i18n('KDR003_11')});
         }
 
     }
 
-    //=================================================================
-    export interface WorkScheduleOutputConditions {
-        itemSelection?: number, //項目選択
-        standardSelectedCode?: string, //定型選択
-        freeSelectedCode?: string, //自由設定
-        zeroDisplayClassification?: number, //自由の選択済みコード
-        pageBreakSpecification?: number //改ページ指定
-    }
-
-    export class ItemModel {
-        id: string;
-        code: string;
-        name: string;
-
-        constructor(code?: string, name?: string, id?: string) {
-            this.code = code;
-            this.name = name;
-            this.id = id;
-        }
-    }
 }
