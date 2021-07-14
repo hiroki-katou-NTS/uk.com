@@ -17,11 +17,12 @@ public class XimmtCodeConvertPK implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
-	/* 会社ID */
 	@Column(name = "CID")
 	private String companyId;
 	
-	/* コード変換コード */
-	@Column(name = "CODE")
-	private String code;
+	@Column(name = "SETTING_CODE")
+	private int settingCode;
+	
+	@Column(name = "ITEM_NO")
+	private int itemNo;
 }

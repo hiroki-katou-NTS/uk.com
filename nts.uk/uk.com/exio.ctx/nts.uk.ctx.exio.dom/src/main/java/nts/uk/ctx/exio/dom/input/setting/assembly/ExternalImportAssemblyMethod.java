@@ -83,7 +83,7 @@ public class ExternalImportAssemblyMethod {
 	private DataItem assembleImportingItem(Require require, ImportingGroupId groupId, ImportingCsvItem csvItem) {
 		
 		return require.getRevise(companyId, settingCode, csvItem.getItemNo())
-				.map(r -> r.revise(require, csvItem.getCsvValue()))
+				.map(r -> r.revise(csvItem.getCsvValue()))
 				.orElseGet(() -> noRevise(require, groupId, csvItem));
 	}
 
@@ -114,7 +114,7 @@ public class ExternalImportAssemblyMethod {
 				.collect(toList());
 	}
 	
-	public interface Require extends ReviseItem.Require {
+	public interface Require {
 
 		Optional<ReviseItem> getRevise(String companyId, ExternalImportCode importCode, int importItemNumber);
 		

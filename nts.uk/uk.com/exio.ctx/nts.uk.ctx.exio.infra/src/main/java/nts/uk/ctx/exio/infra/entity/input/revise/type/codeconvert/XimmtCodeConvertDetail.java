@@ -42,8 +42,6 @@ public class XimmtCodeConvertDetail extends ContractUkJpaEntity implements Seria
 	
 	public CodeConvertDetail toDomain() {
 		return new CodeConvertDetail(
-				pk.getCompanyId(), 
-				pk.getConvertCode(), 
 				pk.getTargetCode(), 
 				systemCode);
 	}

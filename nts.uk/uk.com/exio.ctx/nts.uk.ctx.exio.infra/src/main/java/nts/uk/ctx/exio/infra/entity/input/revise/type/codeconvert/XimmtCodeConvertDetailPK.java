@@ -20,8 +20,11 @@ public class XimmtCodeConvertDetailPK implements Serializable {
 	@Column(name = "CID")
 	private String companyId;
 	
-	@Column(name = "CONVERT_CODE")
-	private String convertCode;
+	@Column(name = "SETTING_CODE")
+	private int settingCode;
+	
+	@Column(name = "ITEM_NO")
+	private int itemNo;
 	
 	@Column(name = "TARGET_CODE")
 	private String targetCode;
