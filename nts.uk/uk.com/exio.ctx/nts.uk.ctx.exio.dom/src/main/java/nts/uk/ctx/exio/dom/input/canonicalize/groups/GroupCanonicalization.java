@@ -9,7 +9,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.generic.EmployeeContinuousHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.generic.IndependentCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 
 /**
@@ -50,8 +50,10 @@ public interface GroupCanonicalization {
 	int getItemNoOfEmployeeId();
 	
 	public static interface RequireCanonicalize extends
-		CanonicalizationMethod.Require,
+		CanonicalizationMethodRequire,
 		IndependentCanonicalization.RequireCanonicalize,
+		EmployeeContinuousHistoryCanonicalization.RequireCanonicalize,
+		EmploymentHistoryCanonicalization.RequireGetHistory,
 		DailyPerformanceCanonicalization.RequireCanonicalize {
 		
 		void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord);

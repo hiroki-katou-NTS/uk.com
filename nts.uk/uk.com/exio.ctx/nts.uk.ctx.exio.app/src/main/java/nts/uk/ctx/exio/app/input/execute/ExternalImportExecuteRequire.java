@@ -145,11 +145,6 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public void deleteTask(int taskFrameNo, String taskCode) {
-			taskingRepo.delete(companyId, new TaskFrameNo(taskFrameNo), new TaskCode(taskCode));			
-		}
-
-		@Override
 		public void changeEmploymentHistory(String employeeId, DateHistoryItem historyItem) {
 			employmentHistoryRepo.update(historyItem);
 		}

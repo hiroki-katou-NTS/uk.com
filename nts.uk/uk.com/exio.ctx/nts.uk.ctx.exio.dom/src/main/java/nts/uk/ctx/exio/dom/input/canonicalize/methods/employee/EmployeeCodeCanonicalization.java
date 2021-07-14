@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.methods.employee;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import lombok.AllArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.val;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
@@ -22,7 +21,7 @@ import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
  */
 @Value
 @AllArgsConstructor
-public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
+public class EmployeeCodeCanonicalization {
 	
 	/** 社員コードの項目No */
 	final int itemNoEmployeeCode;
@@ -36,32 +35,13 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 	}
 
 	/**
-	 * 正準化する
-	 */
-	@Override
-	public void canonicalize(
-			CanonicalizationMethod.Require require,
-			ExecutionContext context,
-			Consumer<IntermediateResult> intermediateResultProvider) {
-		
-		int rows = require.getMaxRowNumberOfRevisedData(context);
-		for (int rowNo = 0; rowNo < rows; rowNo++) {
-			
-			val revisedData = require.getRevisedDataRecordByRowNo(context, rowNo).get();
-			val result = canonicalize(require, revisedData);
-			
-			intermediateResultProvider.accept(result);
-		}
-	}
-
-	/**
 	 * 渡された編集済みデータを正準化する
 	 * @param require
 	 * @param revisedData
 	 * @return
 	 */
 	public IntermediateResult canonicalize(
-			CanonicalizationMethod.Require require,
+			CanonicalizationMethodRequire require,
 			RevisedDataRecord revisedData) {
 		
 		String employeeCode = revisedData.getItemByNo(itemNoEmployeeCode).get().getString();
@@ -77,7 +57,7 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 	 * @return
 	 */
 	public Stream<IntermediateResult> canonicalize(
-			CanonicalizationMethod.Require require,
+			CanonicalizationMethodRequire require,
 			ExecutionContext context,
 			String employeeCode) {
 		
@@ -92,7 +72,7 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 				.map(revisedData -> canonicalize(revisedData, employeeId));
 	}
 
-	private static String getEmployeeId(CanonicalizationMethod.Require require, String employeeCode) {
+	private static String getEmployeeId(CanonicalizationMethodRequire require, String employeeCode) {
 		
 		return require.getEmployeeDataMngInfoByEmployeeCode(employeeCode)
 				.orElseThrow(() -> new RuntimeException("社員が存在しない: " + employeeCode))
@@ -112,7 +92,6 @@ public class EmployeeCodeCanonicalization implements CanonicalizationMethod {
 		Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeCode(String employeeCode);
 	}
 
-	@Override
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
 		return source.addItem("SID");
 	}

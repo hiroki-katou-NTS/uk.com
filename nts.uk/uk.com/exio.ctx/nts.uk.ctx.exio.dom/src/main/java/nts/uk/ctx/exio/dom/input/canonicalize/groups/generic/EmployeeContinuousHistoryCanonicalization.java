@@ -22,7 +22,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.EmploymentHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
@@ -173,7 +173,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 	 * @param addingItems
 	 */
 	private void removeDuplications(
-			CanonicalizationMethod.Require require,
+			CanonicalizationMethodRequire require,
 			ExecutionContext context,
 			String employeeId,
 			List<Container> addings,
@@ -207,7 +207,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 	 * @return 追加する履歴項目
 	 */
 	private void adjustAdding(
-			CanonicalizationMethod.Require require,
+			CanonicalizationMethodRequire require,
 			ExecutionContext context,
 			String employeeId,
 			DateHistoryItem addingItem,

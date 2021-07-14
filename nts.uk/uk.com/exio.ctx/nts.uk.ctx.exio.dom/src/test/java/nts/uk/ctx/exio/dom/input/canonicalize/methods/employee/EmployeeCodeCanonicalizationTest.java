@@ -9,12 +9,12 @@ import mockit.Expectations;
 import mockit.Injectable;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.exio.dom.input.canonicalize.Helper;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
 
 public class EmployeeCodeCanonicalizationTest {
 
 	@Injectable
-	CanonicalizationMethod.Require require;
+	CanonicalizationMethodRequire.Require require;
 	
 	@Test
 	public void single(@Injectable EmployeeDataMngInfo employeeData) {

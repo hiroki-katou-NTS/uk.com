@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
@@ -15,7 +15,7 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 public class CanonicalizeUtil {
 
 	public static void forEachRow(
-			CanonicalizationMethod.Require require,
+			CanonicalizationMethodRequire require,
 			ExecutionContext context,
 			Consumer<RevisedDataRecord> process) {
 
@@ -27,7 +27,7 @@ public class CanonicalizeUtil {
 	}
 	
 	public static void forEachEmployee(
-			CanonicalizationMethod.Require require,
+			CanonicalizationMethodRequire require,
 			ExecutionContext context,
 			EmployeeCodeCanonicalization employeeCodeCanonicalization,
 			Consumer<List<IntermediateResult>> process) {
