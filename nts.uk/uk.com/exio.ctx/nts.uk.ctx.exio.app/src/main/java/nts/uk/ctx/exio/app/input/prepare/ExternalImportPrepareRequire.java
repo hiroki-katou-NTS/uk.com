@@ -24,6 +24,8 @@ import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.PrepareImporting;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecordRepository;
+import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
+import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRepository;
@@ -92,6 +94,9 @@ public class ExternalImportPrepareRequire {
 
 	@Inject
 	private ImportingDataMetaRepository metaRepo;
+	
+	@Inject
+	private DomainDataRepository domainDataRepo;
 
 	@Inject
 	private EmployeeDataMngInfoRepository employeeDataMngInfoRepo;
@@ -238,6 +243,11 @@ public class ExternalImportPrepareRequire {
 		@Override
 		public Optional<WorkInfoOfDailyPerformance> getWorkInfoOfDailyPerformance(String employeeId, GeneralDate date) {
 			return workInformationRepo.find(employeeId, date);
+		}
+
+		@Override
+		public boolean existsDomainData(DomainDataId id) {
+			return domainDataRepo.exists(id);
 		}
 
 

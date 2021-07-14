@@ -50,6 +50,39 @@ public class StringifiedValue {
 		return of(value.toString(DATE_FORMAT));
 	}
 	
+	public static StringifiedValue create(Object value) {
+		
+		if (value == null) {
+			return nullValue();
+		}
+		
+		if (value instanceof String) {
+			return of((String) value);
+		}
+		
+		if (value instanceof Integer) {
+			return of((Integer) value);
+		}
+		
+		if (value instanceof Long) {
+			return of((Long) value);
+		}
+		
+		if (value instanceof Double) {
+			return of((Double) value);
+		}
+		
+		if (value instanceof BigDecimal) {
+			return of((BigDecimal) value);
+		}
+		
+		if (value instanceof GeneralDate) {
+			return of((GeneralDate) value);
+		}
+		
+		throw new RuntimeException("not supported: " + value);
+	}
+	
 	public String asString() {
 		return value;
 	}

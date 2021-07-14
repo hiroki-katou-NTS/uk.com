@@ -48,12 +48,12 @@ public class LayoutAnyRecordToDelete {
 		
 		String id = IdentifierUtil.randomUniqueId();
 		
-		record.getPrimaryKeys().forEach((itemNo, value) -> {
+		record.getPrimaryKeys().forEach(key -> {
 			
 			String sql = "insert into " + tableName() + " values ("
 					+ "'" + id + "'"
-					+ ", " + itemNo
-					+ ", '" + value.asString() + "'"
+					+ ", " + key.getItemNo()
+					+ ", '" + key.getValue().asString() + "'"
 					+ ")";
 			
 			jdbcProxy.query(sql).execute();

@@ -1,6 +1,10 @@
 package nts.uk.ctx.exio.dom.input.workspace.datatype;
 
+import java.math.BigDecimal;
+
 import lombok.RequiredArgsConstructor;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 
 /**
@@ -31,6 +35,26 @@ public enum DataType {
 			return DataType.DATE;
 		default:
 			throw new RuntimeException("unknown: " + itemType);
+		}
+	}
+	
+	public void setParam(NtsStatement statement, String paramName, Object paramValue) {
+		
+		switch (this) {
+		case STRING:
+			statement.paramString(paramName, (String) paramValue);
+			break;
+		case INT:
+			statement.paramInt(paramName, (Integer) paramValue);
+			break;
+		case REAL:
+			statement.paramDecimal(paramName, (BigDecimal) paramValue);
+			break;
+		case DATE:
+			statement.paramDate(paramName, (GeneralDate) paramValue);
+			break;
+		default:
+			throw new RuntimeException("unknown: " + this + ", " + paramName + " = " + paramValue);
 		}
 	}
 }

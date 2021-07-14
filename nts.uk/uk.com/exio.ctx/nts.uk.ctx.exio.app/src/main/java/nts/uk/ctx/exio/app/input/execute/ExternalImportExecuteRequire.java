@@ -24,6 +24,8 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository
 import nts.uk.ctx.exio.dom.input.ExecuteImporting;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecordRepository;
+import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
+import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRepository;
@@ -83,6 +85,9 @@ public class ExternalImportExecuteRequire {
 	
 	@Inject
 	private ImportingDataMetaRepository metaRepo;
+	
+	@Inject
+	private DomainDataRepository domainDataRepo;
 	
 	@Inject
 	private TaskingRepository taskingRepo;
@@ -182,6 +187,11 @@ public class ExternalImportExecuteRequire {
 		@Override
 		public ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo) {
 			return importableItemsRepo.get(groupId, itemNo).get();
+		}
+
+		@Override
+		public void deleteDomainData(DomainDataId id) {
+			domainDataRepo.delete(id);
 		}
 		
 	}

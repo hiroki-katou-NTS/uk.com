@@ -1,7 +1,7 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.existing;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Value;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
@@ -20,18 +20,22 @@ public class AnyRecordToDelete {
 	 * Key: 受入項目NO
 	 * Value: 主キー値を文字列化したもの
 	 */
-	Map<Integer, StringifiedValue> primaryKeys;
+	List<AnyRecordItem> primaryKeys;
 	
 	public static AnyRecordToDelete create(ExecutionContext context) {
-		return new AnyRecordToDelete(context.getCompanyId(), new HashMap<>());
+		return new AnyRecordToDelete(context.getCompanyId(), new ArrayList<>());
 	}
 	
 	public AnyRecordToDelete addKey(int itemNo, StringifiedValue value) {
-		primaryKeys.put(itemNo, value);
+		primaryKeys.add(new AnyRecordItem(itemNo, value));
 		return this;
 	}
 	
 	public StringifiedValue getKey(int itemNo) {
-		return primaryKeys.get(itemNo);
+		return primaryKeys.stream()
+				.filter(k -> k.getItemNo() == itemNo)
+				.findFirst()
+				.get()
+				.getValue();
 	}
 }

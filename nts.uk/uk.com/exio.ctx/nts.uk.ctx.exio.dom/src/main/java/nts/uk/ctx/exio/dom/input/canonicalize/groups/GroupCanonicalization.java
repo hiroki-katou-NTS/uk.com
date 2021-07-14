@@ -7,6 +7,7 @@ import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
+import nts.uk.ctx.exio.dom.input.canonicalize.groups.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethod;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.history.EmployeeContinuousHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
@@ -50,14 +51,14 @@ public interface GroupCanonicalization {
 	
 	public static interface RequireCanonicalize extends
 		CanonicalizationMethod.Require,
-		TaskCanonicalization.RequireCanonicalize,
+		IndependentCanonicalization.RequireCanonicalize,
 		DailyPerformanceCanonicalization.RequireCanonicalize {
 		
 		void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord);
 	}
 	
 	public static interface RequireAdjsut extends
-		TaskCanonicalization.RequireAdjust,
+		IndependentCanonicalization.RequireAdjust,
 		EmployeeContinuousHistoryCanonicalization.RequireAdjust,
 		DailyPerformanceCanonicalization.RequireAdjust {
 		
