@@ -43,7 +43,7 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesServiceTest {
 
 		new Expectations() {
 			{
-				require.findWpkIdsBySid(employeeID, date);
+				require.findWpkIdsBySid(employeeID, companyID, date);
 			}
 		};
 
@@ -64,10 +64,10 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesServiceTest {
 
 		new Expectations() {
 			{
-				require.findWpkIdsBySid(employeeID, date);
+				require.findWpkIdsBySid(employeeID, companyID, date);
 				result = listWpkIds;
 
-				require.getNarrowingDownTaskByWorkplace("0000001", taskFrameNo);
+				require.getOptionalWork("0000001", taskFrameNo);
 			}
 		};
 
@@ -88,10 +88,10 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesServiceTest {
 
 		new Expectations() {
 			{
-				require.findWpkIdsBySid(employeeID, date);
+				require.findWpkIdsBySid(employeeID, companyID, date);
 				result = listWpkIds;
 
-				require.getNarrowingDownTaskByWorkplace("0000001", taskFrameNo);
+				require.getOptionalWork("0000001", taskFrameNo);
 				result = Optional.of(narrowingDownTask2);
 			}
 		};
@@ -115,10 +115,10 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesServiceTest {
 
 				new Expectations() {
 					{
-						require.findWpkIdsBySid(employeeID, date);
+						require.findWpkIdsBySid(employeeID, companyID, date);
 						result = listWpkIds;
 
-						require.getNarrowingDownTaskByWorkplace("0000002", taskFrameNo);
+						require.getOptionalWork("0000002", taskFrameNo);
 						result = Optional.of(narrowingDownTask2);
 					}
 				};

@@ -76,40 +76,39 @@ public class GetAvailableWorking {
 		private NarrowingByWorkplaceRepository narrowRepo;
 
 		@Override
-		public List<String> findWpkIdsBySid(String employeeID, GeneralDate date) {
-			return employeeAdapter.findWpkIdsBySid(AppContexts.user().companyId(), employeeID, date);
+		public List<String> findWpkIdsBySid(String companyId, String sid, GeneralDate date) {
+			return employeeAdapter.findWpkIdsBySid(companyId, sid, date);
 		}
 
 		@Override
-		public Optional<NarrowingDownTaskByWorkplace> getNarrowingDownTaskByWorkplace(String workPlaceId,
-				TaskFrameNo taskFrameNo) {
+		public Optional<NarrowingDownTaskByWorkplace> getOptionalWork(String workPlaceId, TaskFrameNo taskFrameNo) {
 			return narrowRepo.getOptionalWork(workPlaceId, taskFrameNo);
 		}
 
 		@Override
-		public TaskFrameUsageSetting getTask() {
-			return taskFrameUsageSettingRepository.getWorkFrameUsageSetting(AppContexts.user().companyId());
+		public TaskFrameUsageSetting getWorkFrameUsageSetting(String cid) {
+			return taskFrameUsageSettingRepository.getWorkFrameUsageSetting(cid);
 		}
 
 		@Override
-		public List<Task> getTask(GeneralDate date, List<TaskFrameNo> taskFrameNo) {
-			return taskingRepo.getListTask(AppContexts.user().companyId(), date, taskFrameNo);
+		public List<Task> getListTask(String cid, GeneralDate referenceDate, List<TaskFrameNo> taskFrameNos) {
+			return taskingRepo.getListTask(cid, referenceDate, taskFrameNos);
 		}
 
 		@Override
-		public List<Task> getListTask(GeneralDate referenceDate, TaskFrameNo taskFrameNo, List<TaskCode> codes) {
-			return taskingRepo.getListTask(AppContexts.user().companyId(), referenceDate, taskFrameNo, codes);
+		public List<Task> getListTask(String cid, GeneralDate referenceDate, TaskFrameNo taskFrameNo,
+				List<TaskCode> codes) {
+			return taskingRepo.getListTask(cid, referenceDate, taskFrameNo, codes);
 		}
 
 		@Override
-		public Optional<Task> getOptionalTask(TaskFrameNo taskFrameNo, TaskCode code) {
-			return taskingRepo.getOptionalTask(AppContexts.user().companyId(), taskFrameNo, code);
+		public Optional<Task> getOptionalTask(String cid, TaskFrameNo taskFrameNo, TaskCode code) {
+			return taskingRepo.getOptionalTask(cid, taskFrameNo, code);
 		}
 
 		@Override
-		public List<TaskAssignEmployee> getTaskAssignEmployee(String employeeId, TaskFrameNo taskFrameNo) {
-			return taskAssignEmployeeRepo.get(employeeId, taskFrameNo.v());
+		public List<TaskAssignEmployee> get(String employeeId, int taskFrameNo) {
+			return taskAssignEmployeeRepo.get(employeeId, taskFrameNo);
 		}
-
 	}
 }

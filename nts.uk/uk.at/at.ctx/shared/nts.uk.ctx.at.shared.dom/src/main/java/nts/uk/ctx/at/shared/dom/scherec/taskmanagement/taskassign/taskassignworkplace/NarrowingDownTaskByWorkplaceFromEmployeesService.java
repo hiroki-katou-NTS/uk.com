@@ -30,11 +30,11 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesService {
      */
     public static Optional<NarrowingDownTaskByWorkplace> get(Require require, String companyID, String employeeID, GeneralDate date,TaskFrameNo taskFrameNo) {
     	//	$職場リスト = require.職場を取得する(会社ID,社員ID,基準日)
-    	List<String> listWpkIds = require.findWpkIdsBySid(employeeID, date);
+    	List<String> listWpkIds = require.findWpkIdsBySid(companyID, employeeID, date);
 		//$職場リスト :				※注意：$職場リストを順番にループすること										
     	for (String wpkId : listWpkIds) {
     		//$職場別作業の絞込 = require.職場別作業の絞込を取得する($)
-    		Optional<NarrowingDownTaskByWorkplace> narrowingDownTaskByWorkplace = require.getNarrowingDownTaskByWorkplace(wpkId, taskFrameNo);
+    		Optional<NarrowingDownTaskByWorkplace> narrowingDownTaskByWorkplace = require.getOptionalWork(wpkId, taskFrameNo);
     		//if $職場別作業の絞込.isPresent()																		
     			//return $職場別作業の絞込
     		if(narrowingDownTaskByWorkplace.isPresent())
@@ -47,9 +47,9 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesService {
     public interface Require {
          // [R-1] 職場を取得する
          // アルゴリズム.所属職場を含む上位職場を取得(会社ID,社員ID,基準日)
-    	List<String> findWpkIdsBySid(String employeeID, GeneralDate date);
+    	List<String> findWpkIdsBySid(String companyId, String sid, GeneralDate date);
          // [R-2] 職場別作業の絞込を取得する
          // 職場別作業の絞込Repository.Get(職場ID,作業枠NO)
-    	Optional<NarrowingDownTaskByWorkplace> getNarrowingDownTaskByWorkplace(String workPlaceId, TaskFrameNo taskFrameNo);
+    	Optional<NarrowingDownTaskByWorkplace> getOptionalWork(String workPlaceId, TaskFrameNo taskFrameNo);
     }
 }

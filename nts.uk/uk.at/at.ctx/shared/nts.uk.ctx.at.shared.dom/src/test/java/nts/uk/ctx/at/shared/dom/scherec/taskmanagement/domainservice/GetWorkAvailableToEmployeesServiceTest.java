@@ -50,7 +50,7 @@ public class GetWorkAvailableToEmployeesServiceTest {
 
 		new Expectations() {
 			{
-				require.getTask();
+				require.getWorkFrameUsageSetting(companyID);
 			}
 		};
 
@@ -68,13 +68,13 @@ public class GetWorkAvailableToEmployeesServiceTest {
 
 		new Expectations() {
 			{
-				require.getTask();
+				require.getWorkFrameUsageSetting(companyID);
 				result = taskFrameUsageSetting;
 				
-				require.getListTask(date, taskFrameNo, new ArrayList<>());
+				require.getListTask(companyID, date, taskFrameNo, new ArrayList<>());
 				result = tasks;
 
-				require.getOptionalTask(taskFrameNo, new TaskCode("DUMMY"));
+				require.getOptionalTask(companyID, taskFrameNo, new TaskCode("DUMMY"));
 			}
 		};
 
@@ -93,13 +93,13 @@ public class GetWorkAvailableToEmployeesServiceTest {
 
 		new Expectations() {
 			{
-				require.getTask();
+				require.getWorkFrameUsageSetting(companyID);
 				result = taskFrameUsageSetting;
 
-				require.getOptionalTask(taskFrameNo, new TaskCode("DUMMY"));
+				require.getOptionalTask(companyID, taskFrameNo, new TaskCode("DUMMY"));
 				result = Optional.of(task);
 
-				require.getListTask(date, taskFrameNo, new ArrayList<>());
+				require.getListTask(companyID, date, taskFrameNo, new ArrayList<>());
 				result = tasks;
 
 			}
@@ -131,13 +131,13 @@ public class GetWorkAvailableToEmployeesServiceTest {
 
 		new Expectations() {
 			{
-				require.getOptionalTask(taskFrameNo, new TaskCode("DUMMY"));
+				require.getOptionalTask(companyID, taskFrameNo, new TaskCode("DUMMY"));
 				result = optTask;
 
-				require.getTask();
+				require.getWorkFrameUsageSetting(companyID);
 				result = taskFrameUsageSetting;
 
-				require.getListTask(date, taskFrameNo, new ArrayList<>());
+				require.getListTask(companyID, date, taskFrameNo, new ArrayList<>());
 				result = tasks;
 			}
 		};
