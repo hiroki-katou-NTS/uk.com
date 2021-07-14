@@ -9,6 +9,9 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.bs.employee.app.command.employee.CancelExecuteTransferCommand;
+import nts.uk.ctx.bs.employee.app.command.employee.CancelExecuteTransferCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.employee.CancelExecuteTransferResult;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate.AddAffJobTitleMainCommand;
 import nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate.RegisterJobTitleChangeCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.AddAffWorkHistoryCommandHandler;
@@ -49,6 +52,9 @@ public class Cmm015WebService extends WebService {
 	@Inject
 	private TransfereeOnApprovedScreenQuery transfereeOnApprovedScreenQuery;
 	
+	@Inject
+	private CancelExecuteTransferCommandHandler cancelExecuteTransferCommandHandler;
+	
 	@Path("getEmployeesInWorkplace")
     @POST
 	public List<EmployeesInWorkplace> getEmployeesInWorkplace(EmployeesInWorkplaceParams params) {
@@ -87,6 +93,12 @@ public class Cmm015WebService extends WebService {
 	@Path("transOnApproved")
 	@POST
 	public TransfereeOnApproved transOnApproved(TransOnApprovedParam param) {
-		return this.transfereeOnApprovedScreenQuery.check(param.getSids(), param.getBasedate());
+		return this.transfereeOnApprovedScreenQuery.check(param.getSids(), param.getBaseDate());
+	}
+	
+	@Path("cancelExecuteTransfer")
+	@POST
+	public CancelExecuteTransferResult cancelExecuteTransfer(CancelExecuteTransferCommand command) {
+		return this.cancelExecuteTransferCommandHandler.handle(command);
 	}
 }

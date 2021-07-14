@@ -15,19 +15,18 @@
 			</script>
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area" style="border: 0px; min-height: 15px;"></div>
 			<div id="contents-area" style="padding: 10px 20px;">
 				<div id="top-content" class="flex valign-center">
 					<div id="A1_1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM015_10')}</div>
-					<div id="A1_2" style="margin-left: 15px;"
+					<div id="A1_2" style="margin-left: 15px;" tabindex="1"
 						data-bind="ntsDatePicker: { name: '#[CMM015_10]', value: transferDate, required: true }"
 					></div>
-					<button id="A1_3" data-bind="click: clickMeans">#{i18n.getText('CMM015_11')}</button>
+					<button id="A1_3" tabindex="2" data-bind="click: clickMeans">#{i18n.getText('CMM015_11')}</button>
 				</div>
 
 				<div class="middle-content flex valign-center">
 					<div class="left">
-						<div id ="A2_1" class="panel panel-left">
+						<div id ="A2_1" class="panel panel-left" style="padding: 5px 10px 0px 10px;">
 							<div class="top flex valign-center">
 								<div id ="A2_2" class="label">#{i18n.getText('CMM015_12')}</div>
 								<div id ="A2_3" class="label">#{i18n.getText('CMM015_13')}</div>
@@ -46,7 +45,7 @@
 					</div>
 					<div class="center"></div>
 					<div class="right">
-						<div id="A5_1" class="panel panel-right">
+						<div id="A5_1" class="panel panel-right" style="padding: 5px 10px 0px 10px;">
 							<div class="top flex valign-center">
 								<div id ="A5_2" class="label">#{i18n.getText('CMM015_19')}</div>
 								<div id ="A5_3" class="label">#{i18n.getText('CMM015_20')}</div>
@@ -56,7 +55,7 @@
 								<div id="tree-grid-right"></div>
 							</div>
 							<div class="bottom flex valign-center">
-								<div id="A7_1" data-bind="ntsCheckBox: { checked: incumbentRight, text: '#{i18n.getText('CMM015_14')}' }"></div>
+								<div id="A7_1" data-bind="ntsCheckBox: { checked: incumbentRight, text: '#{i18n.getText('CMM015_14') }' }"></div>
 								<div id="A7_2" data-bind="ntsCheckBox: { checked: closedRight, text: '#{i18n.getText('CMM015_15')}' }"></div>
 								<div id="A7_3" data-bind="ntsCheckBox: { checked: leaveRight, text: '#{i18n.getText('CMM015_16')}' }"></div>
 								<div id="A7_4" data-bind="ntsCheckBox: { checked: retireeRight, text: '#{i18n.getText('CMM015_17')}' }"></div>
@@ -81,10 +80,10 @@
 								}"></div>
 							</div>
 							<div class="middle">
-								<table id="A9" data-bind="ntsGridList: {
+								<table id="A9" tabindex="4" data-bind="ntsGridList: {
 									name: '#[CMM015_18]',
 									width: 410,
-									rows: 8,
+									rows: 5,
 									dataSource: tableDatasSource,
 									primaryKey: 'id',
 									columns: columnsSource,
@@ -95,7 +94,9 @@
 						</div>
 					</div>
 					<div class="center">
-						<button id="A11_1" class="large proceed auto-height" data-bind="enable: enableTransferDate(), click: onClickRegister">
+						<button id="A11_1" style="margin-top: 50px;"
+							class="large proceed auto-height"
+							data-bind="enable: enableTransferDate(), click: onClickRegister">
 							#{i18n.getText('CMM015_24')}
 						</button>
 					</div>
@@ -114,10 +115,10 @@
 								}"></div>
 							</div>
 							<div class="middle">
-								<table id="A13" data-bind="ntsGridList: {
+								<table id="A13" tabindex="6" data-bind="ntsGridList: {
 									name: '#[CMM015_30]',
 									width: 500,
-									rows: 8,
+									rows: 5,
 									dataSource: tableDatasDest,
 									primaryKey: 'id',
 									columns: columnsDest,
@@ -146,15 +147,14 @@
 							<div id="A17_2" tabindex="7" data-bind="ntsDateRangePicker: {
 									required: false, showNextPrevious: false, value: dateValue
 							}"></div>
-							<button id="A17_3" data-bind="click: onClickTransfer">#{i18n.getText('CMM015_42')}</button>
+							<button id="A17_3" tabindex="8" data-bind="click: onClickTransfer">#{i18n.getText('CMM015_42')}</button>
 						</div>
 						<div class="right">
-							<button id="A17_4" class="danger large">#{i18n.getText('CMM015_43')}</button>
+							<button id="A17_4" class="danger large" data-bind="click: cancelExecuteTransfer">#{i18n.getText('CMM015_43')}</button>
 						</div>
 					</div>
 					<table id="A18" data-bind="ntsGridList: {
 						name: '#[CMM015_44]',
-						width: 1100,
 						rows: 15,
 						dataSource: tableDatasHistory,
 						primaryKey: 'key',

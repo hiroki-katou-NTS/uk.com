@@ -9,7 +9,8 @@ module cmm015.a.viewmodel {
         regisJTC: 'com/screen/cmm015/regisJTC', //職位異動の登録をする
         createTransferList: 'com/screen/cmm015/createTransferList',//異動一覧を作成する
         addAWH: 'com/screen/cmm015/addAWH',
-        transOnApproved: 'com/screen/cmm015/transOnApproved'
+        transOnApproved: 'com/screen/cmm015/transOnApproved',
+        cancelExecuteTransfer: 'com/screen/cmm015/cancelExecuteTransfer'
     };
 
     const MAX_DATE: string = '9999/12/31';
@@ -18,9 +19,7 @@ module cmm015.a.viewmodel {
 
     @bean()
     export class ScreenModel extends ko.ViewModel {
-
         transferDate: KnockoutObservable<string> = ko.observable('');
-        
         treeGridLeft: any;
         treeGridRight: any;
 
@@ -45,12 +44,10 @@ module cmm015.a.viewmodel {
         columnsSource: KnockoutObservableArray<any>;
         tableDatasSource: KnockoutObservableArray<DataTable> = ko.observableArray([]);
         currentCodeListSource: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectedIndexSource: number = 0;
 
         columnsDest: KnockoutObservableArray<any>;
         tableDatasDest: KnockoutObservableArray<DataTable> = ko.observableArray([]);
         currentCodeListDest: KnockoutObservable<string> = ko.observable('');
-        selectedIndexDest: number = 1;
 
         columnsHistory: KnockoutObservableArray<any>;
         tableDatasHistory: KnockoutObservableArray<DataTableHistory> = ko.observableArray([]);
@@ -74,9 +71,18 @@ module cmm015.a.viewmodel {
 
         transfereeOnApproved: KnockoutObservable<TransfereeOnApproved> = ko.observable({} as any);
 
+        // Data SQ 異動一覧を作成する
+        awhItems: any[];
+        ajthItems: any[];
+        empInfors: any[];
+        wkpListInfo: any[];
+        jtInfor: any[];
+
+        isStartpage = true;
+        isReloadKcp = false;
+
         created() {
             const vm = this;
-            vm.$i18n('CMM015_52');
             vm.treeGridLeft = {
                 isShowAlreadySet: false,
                 isMultipleUse: true,
@@ -84,10 +90,10 @@ module cmm015.a.viewmodel {
                 startMode: 0,
                 selectedId: vm.selectedIdLeft,
                 baseDate: vm.baseDateLeft,
-                selectType: 3,
+                selectType: 4,
                 isShowSelectButton: false,
                 isDialog: false,
-                maxRows: 11,
+                maxRows: 5,
                 tabindex: 3,
                 systemType : 2,
                 listDataDisplay: vm.listDataLeft,
@@ -101,11 +107,11 @@ module cmm015.a.viewmodel {
                 startMode: 0,
                 selectedId: vm.selectedIdRight,
                 baseDate: vm.baseDateRight,
-                selectType: 3,
+                selectType: 4,
                 isShowSelectButton: false,
                 isDialog: false,
-                maxRows: 11,
-                tabindex: 3,
+                maxRows: 5,
+                tabindex: 5,
                 systemType : 2,
                 listDataDisplay: vm.listDataRight,
                 hasPadding: false
@@ -122,33 +128,42 @@ module cmm015.a.viewmodel {
                 { headerText: '', key: 'id', hidden: true },
                 { headerText: '', key: 'css', hidden: true },
                 { headerText: '', key: 'jtID', hidden: true },
+                { headerText: '', key: 'cssWKP', hidden: true },
+                { headerText: '', key: 'cssJT', hidden: true },
                 {
                     headerText: vm.$i18n('CMM015_21'), key: 'code', width: 115, headerCssClass: 'text-left',
-                    template: '<div class="${cssWKP}">${code}</div>'
+                    template: '<div style="color: ${cssWKP}">${code}</div>'
                 },
                 {
                     headerText: vm.$i18n('CMM015_22'), key: 'name', width: 140, headerCssClass: 'text-left',
-                    template: '<div class="${cssWKP}">${name}</div>'
+                    template: '<div style="color: ${cssWKP}">${name}</div>'
                 },
                 {
                     headerText: vm.$i18n('CMM015_23'), key: 'jt', width: 120, headerCssClass: 'text-left',
-                    template: '<div class="${cssJT}">${jt}</div>'
+                    template: '<div style="color: ${cssJT}">${jt}</div>'
                 },
                 {
                     headerText: vm.$i18n('CMM015_23'), key: 'jtc', width: 100, headerCssClass: 'text-left',
-                    template: '<a class="custom-link ${cssJT}" jtid="${jtID}" emp="${id}" style="color: #0D86D1">${jtc}</a>'
+                    template: '<a class="custom-link" jtid="${jtID}" emp="${id}" style="color: ${cssJT}">${jtc}</a>'
                 }
             ]);
 
             vm.columnsHistory = ko.observableArray([
                 { headerText: '', key: 'key', hidden: true },
-                { headerText: vm.$i18n('CMM015_45'), key: 'startDate', width: 120, headerCssClass: 'text-left' },
-                { headerText: vm.$i18n('CMM015_46'), key: 'sCD', width: 80, headerCssClass: 'text-left' },
+                { headerText: '', key: 'bgPostWkp', hidden: true},
+                { headerText: vm.$i18n('CMM015_45'), key: 'startDate', width: 100, headerCssClass: 'text-left' },
+                { headerText: vm.$i18n('CMM015_46'), key: 'sCD', width: 130, headerCssClass: 'text-left' },
                 { headerText: vm.$i18n('CMM015_47'), key: 'sName', width: 140, headerCssClass: 'text-left' },
                 { headerText: vm.$i18n('CMM015_48'), key: 'prevWkpName', width: 220, headerCssClass: 'text-left' },
-                { headerText: vm.$i18n('CMM015_49'), key: 'prevPositionName', width: 140, headerCssClass: 'text-left' },
-                { headerText: vm.$i18n('CMM015_50'), key: 'postWkpName', width: 240, headerCssClass: 'text-left dest-wkp'},
-                { headerText: vm.$i18n('CMM015_51'), key: 'postPositionName', width: 140, headerCssClass: 'text-left dest-wkp' }
+                { headerText: vm.$i18n('CMM015_49'), key: 'prevPositionName', width: 135, headerCssClass: 'text-left' },
+                {
+                    headerText: vm.$i18n('CMM015_50'),
+                    key: 'postWkpName',
+                    width: 220,
+                    headerCssClass: 'text-left dest-wkp',
+                    template: '<div style="background: ${bgPostWkp}">${postWkpName}</div>'
+                },
+                { headerText: vm.$i18n('CMM015_51'), key: 'postPositionName', width: 135, headerCssClass: 'text-left dest-wkp' }
             ]);
 
             vm.baseDateLeftText = ko.computed(() => {
@@ -159,12 +174,11 @@ module cmm015.a.viewmodel {
                 const date = moment.utc(vm.baseDateRight()).format('YYYY/MM/DD');
                 return (nts.uk.time as any).applyFormat('Long_YMD', [date]);
             });
-            
+
         }
 
         mounted() {
             const vm = this;
-            vm.startPage();
             vm.startDateString.subscribe(value => {
                 vm.dateValue().startDate = value;
                 vm.dateValue.valueHasMutated();        
@@ -175,11 +189,26 @@ module cmm015.a.viewmodel {
                 vm.dateValue.valueHasMutated();      
             });
 
-            vm.selectedIdLeft.subscribe(() => {
+            vm.selectedIdLeft.subscribe(value => {
+                if (!value) {
+                    return;
+                }
+
+                if (vm.isReloadKcp) {
+                    return;
+                }
                 vm.loadDataWkp(Table.LEFT);
             });
 
-            vm.selectedIdRight.subscribe(() => {
+            vm.selectedIdRight.subscribe(value => {
+                if (!value) {
+                    return;
+                }
+
+                if (vm.isReloadKcp) {
+                    vm.isReloadKcp = false;
+                    return;
+                }
                 vm.loadDataWkp(Table.RIGHT);
             });
 
@@ -217,48 +246,64 @@ module cmm015.a.viewmodel {
                             const data: DataTable = vm.tableDatasDest()[index];
                             if (vm.uiProcess20(data.jtID, output)) return;
 
+                            vm.$blockui('grayout');
                             // 職位異動の登録をする
                             vm
                                 .$ajax('com', API.regisJTC, {
                                     sid: data.id,
                                     jobTitleId: output,
-                                    startDate: moment.utc(vm.transferDate()).toISOString(),
-                                    endDate: moment.utc(MAX_DATE).toISOString()
+                                    startDate: moment.utc(vm.baseDateRight()).toISOString(),
+                                    endDate: moment.utc(new Date(MAX_DATE)).toISOString()
                                 })
                                 .then(() => {
                                     vm.loadDataWkp(Table.RIGHT);
                                     // UI処理[6]
                                     vm.currentCodeListDest('');
-                                    vm.getTransferOfDay(new Date(vm.transferDate()));
+                                    vm.getTransferOfDay(vm.baseDateRight());
                                     vm.createTransferList();
                                     vm.$dialog.info({ messageId: 'Msg_15' });
                                 })
                                 .fail(({messageId}) => vm.$dialog.error({ messageId: messageId }));
-                            
+                            vm.$blockui('clear');
                         }
                     });
             });
             
+            vm.startPage();
         }
 
         startPage() {
             const vm = this;
+            vm.$blockui('grayout');
             $.when(
                 $('#tree-grid-left').ntsTreeComponent(vm.treeGridLeft),
                 $('#tree-grid-right').ntsTreeComponent(vm.treeGridRight)
             )
-            .then(() => vm.getTransferOfDay(new Date()))
-            .then(() => vm.createTransferList());
+            .then(() => {
+                const idLeft = $($('#tree-grid-left [data-id]')[0]).attr('data-id');
+                const idRight = $($('#tree-grid-right [data-id]')[0]).attr('data-id');
+                if (idLeft) {
+                    vm.selectedIdLeft(idLeft);
+                }
+
+                if (idRight) {
+                    vm.selectedIdRight(idRight);
+                }
+            });
+
+            vm.createTransferList();
+            vm.$blockui('clear');
         }
 
         clickMeans() {
             const vm = this;
-            if (_.isNil(vm.transferDate())) {
-                vm.$dialog.error({ messageId: 'Msg_2115' });
+            if (_.isEmpty(vm.transferDate())) {
+                vm.$dialog.error({ messageId: 'Msg_2105' });
                 return;
             }
             vm.$validate('#A1_2').then(valid => {
                 if (!valid) {
+                    nts.uk.ui.errors.show();
                     vm.enableTransferDate(false);
                     return;
                 }
@@ -267,21 +312,30 @@ module cmm015.a.viewmodel {
                 vm.baseDateLeft(new Date(moment.utc(date).subtract(1, 'd').toString()));
                 vm.enableTransferDate(true);
                 vm
-                    .reloadKcp()
-                    .then(() => vm.getTransferOfDay(new Date(vm.transferDate())));
-
-            })
+                    .$blockui('grayout')
+                    .then(() => vm.reloadKcp())
+                    .then(() => vm.getTransferOfDay(new Date(vm.transferDate())))
+                    .always(() => vm.$blockui('clear'));
+            });
         }
 
         reloadKcp(): JQueryPromise<any> {
             const vm = this, dfd = $.Deferred();
+            const $selectedLeft = $(`#tree-grid-left [data-id="${vm.selectedIdLeft()}"]`);
+            const $selectedRight = $(`#tree-grid-right [data-id="${vm.selectedIdRight()}"]`);
+            // get selected index
+            let indexLeft = $selectedLeft.parent().children().index($selectedLeft);
+            let indexRight = $selectedRight.parent().children().index($selectedRight);
+
             $('#tree-grid-left').ntsTreeComponent(vm.treeGridLeft);
             $('#tree-grid-right').ntsTreeComponent(vm.treeGridRight);
-
-            vm
-                .loadDataWkp(Table.LEFT)
-                .then(() => vm.loadDataWkp(Table.RIGHT))
-                .then(() => dfd.resolve())
+            vm.isReloadKcp = true;
+            $
+                .when(vm.loadDataWkp(Table.LEFT), vm.loadDataWkp(Table.RIGHT))
+                .then(() => {
+                    vm.setSelectedDataKcp(indexLeft, indexRight);
+                    dfd.resolve();
+                })
                 .fail(err => {
                     vm.$dialog.error(err);
                     dfd.reject();
@@ -289,9 +343,36 @@ module cmm015.a.viewmodel {
             return dfd.promise();
         }
 
+        setSelectedDataKcp(indexLeft: number, indexRight: number) {
+            const vm = this;
+            const dataLengthLeft = $("#tree-grid-left [data-id]").length || 0;
+            const dataLengthRight = $("#tree-grid-right [data-id]").length || 0;
+            if (indexLeft >= dataLengthLeft) {
+                indexLeft = dataLengthLeft - 1;
+            }
+
+            if (indexLeft >= 0) {
+                const selectedId = $($("#tree-grid-left [data-id]")[indexLeft]).attr('data-id');
+                vm.selectedIdLeft(selectedId);
+            }
+
+            if (indexRight >= dataLengthRight) {
+                indexRight = dataLengthLeft - 1;
+            }
+
+            if (indexRight >= 0) {
+                const selectedId = $($("#tree-grid-right [data-id]")[indexRight]).attr('data-id');
+                vm.selectedIdRight(selectedId);
+            }
+
+        }
+
         onClickTransfer() {
             const vm = this;
-            vm.createTransferList();
+            vm
+                .$blockui('grayout')
+                .then(() => vm.createTransferList())
+                .always(() => this.$blockui('clear'));
         }
 
         /**
@@ -315,6 +396,7 @@ module cmm015.a.viewmodel {
                     endDate: moment.utc(new Date(MAX_DATE)).toISOString()
                 };
             });
+            vm.$blockui('grayout');
             vm
                 .$ajax('com', API.addAWH, param)
                 .then((res: any[]) => {
@@ -338,10 +420,7 @@ module cmm015.a.viewmodel {
                                 // 当日の異動を取得する
                                 return vm.getTransferOfDay(new Date(vm.transferDate()));
                             })
-                            .then(() => {
-                                // 異動一覧を作成する
-                                return vm.createTransferList();
-                            })
+                            .then(() => vm.createTransferList())
                             .then(() => {
                                 //UI処理[16]
                                 vm.currentCodeListSource.removeAll();
@@ -359,6 +438,7 @@ module cmm015.a.viewmodel {
                     }
                 })
                 .fail(err => vm.$dialog.error({ messageId: err.messageId }));
+            vm.$blockui('clear');
         }
 
         /**
@@ -367,7 +447,7 @@ module cmm015.a.viewmodel {
          */
         loadDataWkp(table: Table): JQueryPromise<any> {
             const vm = this, dfd = $.Deferred();
-            if (_.isNil(vm.selectedIdLeft()) && _.isNil(vm.selectedIdRight())) {
+            if (_.isEmpty(vm.selectedIdLeft()) && _.isEmpty(vm.selectedIdRight())) {
                 return dfd.promise();
             }
             const paramLeft = {
@@ -393,20 +473,37 @@ module cmm015.a.viewmodel {
             const param = isLeft ? paramLeft : paramRight;
             
             vm
-                .$blockui('grayout')
-                .then(() => vm.$ajax('com', API.getEmpInWkp, param))
+                .$ajax('com', API.getEmpInWkp, param)
                 .then((res: EmployeesInWorkplace[]) => {
-                    const tableDatas = _.map(res, item => new DataTable(item, isLeft ? '' : vm.$i18n('CMM015_35')));
+                    const tableDatas = _
+                        .map(res, item => new DataTable(item, isLeft ? '' : vm.$i18n('CMM015_35')))
+                        .sort((first, second) => {
+                            let firstOrder = first.od;
+                            let secondOrder = second.od;
+                            if (_.isNil(firstOrder)) {
+                                // if order is null, set data to the end of list
+                                firstOrder = Number.MAX_VALUE;
+                            }
+                            if (_.isNil(secondOrder)) {
+                                // if order is null, set data to the end of list
+                                secondOrder = Number.MAX_VALUE;
+                            }
+
+                            return firstOrder - secondOrder || first.code.localeCompare(second.code);
+                        });
 
                     if (isLeft) {
-                        vm.tableDatasSource.removeAll();
                         vm.currentCodeListSource.removeAll();
                         vm.tableDatasSource(tableDatas);
-
                     } else {
-                        vm.tableDatasDest.removeAll();
                         vm.currentCodeListDest('');
                         vm.tableDatasDest(tableDatas);
+
+                        if (vm.isStartpage && !_.isEmpty(tableDatas)) {
+                            vm
+                                .getTransferOfDay(new Date())
+                                .then(() => vm.isStartpage = false);
+                        }
                     }
                     dfd.resolve();
                 })
@@ -414,7 +511,6 @@ module cmm015.a.viewmodel {
                     vm.$dialog.error(err);
                     dfd.reject();
                 })
-                .always(() => vm.$blockui('clear'));
             return dfd.promise();
         }
 
@@ -467,10 +563,6 @@ module cmm015.a.viewmodel {
                 vm.$dialog.info(msg);
             }
         }
-        
-        uiProcess08() {
-
-        }
 
         uiProcess14(): boolean {
             const vm = this;
@@ -483,7 +575,7 @@ module cmm015.a.viewmodel {
 
         uiProcess17(errorList: string[]) {
             _.forEach(errorList, i => {
-                $(`#A9 [data-id=${i}]`).children().css({color: ERRORSCODE})
+                $(`#A9 [data-id="${i}"]`).children().css({color: ERRORSCODE})
             });
         }
 
@@ -499,24 +591,27 @@ module cmm015.a.viewmodel {
         //当日の異動を取得する
         getTransferOfDay(date: Date): JQueryPromise<any> {
             const vm = this, dfd = $.Deferred();
-            const dataTableDest = ko.unwrap<DataTable[]>(vm.tableDatasDest);
+            if (_.isEmpty(vm.tableDatasDest())) {
+                return dfd.promise();
+            }
+            let dataTableDest = ko.unwrap<DataTable[]>(vm.tableDatasDest);
             const sids: any[] = _.map(dataTableDest, e => e.id);
-            const baseDate = moment.utc(date).toISOString();
+            const baseDate = moment.utc(moment(date).format('YYYY-MM-DD')).toISOString();
             vm
                 .$ajax('com', API.getTransferOfDay, {sids, baseDate})
                 .then(({wkpEmployees, jtEmployees}: TransferOfDay) => {
-                    _.forEach(dataTableDest, (e, index) => {
-                        if (_.includes(wkpEmployees, e.id)) {
-                            // e.cssWKP = 'red';
-                            $($($('#A13 tr')[index]).children()[0]).css({ color: ERRORSCODE });
-                            $($($('#A13 tr')[index]).children()[1]).css({ color: ERRORSCODE });
+                    const data = _.map(vm.tableDatasDest(), i => {
+                        if (_.includes(wkpEmployees, i.id)) {
+                            i.cssWKP = `${ERRORSCODE} !important`;
                         }
-                        if (_.includes(jtEmployees, e.id)) {
-                            // e.cssJT = 'red'
-                            $($($('#A13 tr')[index]).children()[2]).css({ color: ERRORSCODE });
-                            $($($('#A13 tr')[index]).children()[3]).css({ color: ERRORSCODE });
+
+                        if (_.includes(jtEmployees, i.id)) {
+                            i.cssJT = `${ERRORSCODE} !important`;
                         }
+                        return i;
                     });
+
+                    vm.tableDatasDest(data);
                     dfd.resolve();
                 })
                 .fail(err => {
@@ -526,14 +621,6 @@ module cmm015.a.viewmodel {
             
             return dfd.promise();
         }
-
-
-        // Data SQ 異動一覧を作成する
-        awhItems: any[];
-        ajthItems: any[];
-        empInfors: any[];
-        wkpListInfo: any[];
-        jtInfor: any[];
 
         //異動一覧を作成する
         createTransferList(): JQueryPromise<any> {
@@ -558,9 +645,10 @@ module cmm015.a.viewmodel {
                     dfd.resolve();
                 })
                 .fail(err => {
+                    vm.tableDatasHistory.removeAll();
                     vm.$dialog.error(err);
                     dfd.reject();
-                });
+                })
 
             return dfd.promise();
         }
@@ -588,17 +676,14 @@ module cmm015.a.viewmodel {
             const vm = this;
 
             const condition = (date: string): boolean => {
-                return moment.utc(new Date(date))
-                    .isBetween(
-                        moment.utc(new Date(vm.dateValue().startDate)),
-                        moment.utc(new Date(vm.dateValue().endDate))
-                    );
+                const startDate = moment.utc(new Date(vm.dateValue().startDate));
+                const endDate = moment.utc(new Date(vm.dateValue().endDate));
+                return moment.utc(new Date(date)).isSameOrAfter(startDate)
+                    && moment.utc(new Date(date)).isSameOrBefore(endDate);
             };
 
             const compare = (firstDate: string, secondDate: string): number => {
-                return moment
-                    .utc(new Date(firstDate))
-                    .isBefore(moment.utc(new Date(secondDate))) ? 1 : 0;
+                return moment(new Date(firstDate)).isSameOrAfter(moment(new Date(secondDate))) ? 1 : -1;
             };
 
             vm.awhItems.sort((first, second) => compare(first.startDate, second.startDate));
@@ -626,54 +711,161 @@ module cmm015.a.viewmodel {
             arr.sort((first, second) => compare(first.startDate, second.startDate));
 
             // Summarize the same employees and the same start date
-            const summarizeArr: HistoryItem[] = [];
-            _.forEach(arr, i => {
+            let summarizeArr: HistoryItem[] = [];
+            _.forEach(arr, (i, index) => {
                 let item = i;
 
-                const summarize =_.find(arr, j =>
-                    i.employeeId === j.employeeId &&
+                const summarize =_.find(arr, (j, jindex) =>
+                    i.employeeId === j.employeeId && index !== jindex &&
                     moment.utc(new Date(i.startDate)).isSame(moment.utc(new Date(j.startDate)))
                 );
-            
+                
                 if (summarize) {
+                    if (moment(new Date(item.endDate)).isBefore(moment(new Date(summarize.endDate)))) {
+                        summarize.endDate = item.endDate;
+                    } else {
+                        item.endDate = summarize.endDate;
+                    }
                     item = $.extend(item, summarize);
                 }
                 summarizeArr.push(item);
             });
             // Remove duplicate item
-            summarizeArr.filter((c, index) => summarizeArr.indexOf(c) === index);
-
+            summarizeArr = _.uniqBy(summarizeArr, i => `${i.employeeId} ${i.startDate}`);
             const displayData: DataTableHistory[] = _.map(summarizeArr, i => {
                 const post = i;
-                const startDate = i.startDate;
-                const theDayBefore = moment.utc(new Date(startDate)).subtract(1, 'd');
-                const prev = _.find(summarizeArr, j => moment.utc(new Date(j.endDate)).isSame(theDayBefore));
-                return new DataTableHistory(prev, post, vm.empInfors, vm.wkpListInfo, vm.jtInfor);
+                const compareDate = moment.utc(new Date(i.startDate)).subtract(1, 'd');
+
+                // Find previous item
+                const prevAWH = _.findLast(vm.awhItems, j =>
+                    moment.utc(new Date(j.startDate)).isSameOrBefore(compareDate)
+                    && j.employeeId === i.employeeId);
+                const prevJTH = _.findLast(vm.ajthItems, j =>
+                    moment.utc(new Date(j.startDate)).isSameOrBefore(compareDate)
+                    && j.employeeId === i.employeeId);
+                return new DataTableHistory(prevAWH, prevJTH, post, vm.empInfors, vm.wkpListInfo, vm.jtInfor);
+            });
+
+            displayData.sort((first, second) => {
+                return moment(new Date(first.startDate)).diff(moment(new Date(second.startDate)))
+                    || first.postPositionName.localeCompare(second.postPositionName)
+                    || first.sCD.localeCompare(second.sCD);
             });
 
             vm.tableDatasHistory(displayData);
         }
 
-
-        setSelectedRowKcp() {
+        cancelExecuteTransfer() {
             const vm = this;
-
-            const $selectedRight = $(`[data-id=${vm.selectedIdRight()}]`);
-            let indexRight = $selectedRight.parent().children().index($selectedRight);
-
-            const dataLength = $("#tree-grid-right [data-id]").length;
-            if (indexRight >= dataLength) {
-                indexRight = dataLength - 1;
+            $('#A18 tr').children().css({ color: '' });
+            $('#A18 tr').children().children().css({ color: '' });
+            if (_.isEmpty(vm.currentCodeListHistory())) {
+                vm.$dialog.error({ messageId: 'Msg_2115' });
+                return;
             }
 
-            if (indexRight >= 0) {
-                const selectedId = $($("#tree-grid-right [data-id]")[indexRight]).attr('data-id');
-                vm.selectedIdRight(selectedId);
+            const affWorkplaces: DeleteAffWorkplaceHistoryCommand[] = [];
+            const affJobTitles: DeleteAffJobTitleMainCommand[] = [];
+            const errList: string[] = [];
+            _.forEach(vm.currentCodeListHistory(), i => {
+                const selectedData = _.find(vm.tableDatasHistory(), item => item.key === i);
+                if (!selectedData) {
+                    return;
+                }
+
+                if (selectedData.endDate !== MAX_DATE) {
+                    errList.push(selectedData.key);
+                    return;
+                }
+
+                if (selectedData.wkpHID) {
+                    affWorkplaces.push(new DeleteAffWorkplaceHistoryCommand({
+                        employeeId: selectedData.sID,
+                        historyId: selectedData.wkpHID
+                    }));
+                }
+                
+                if (selectedData.postPositionHID) {
+                    affJobTitles.push(new DeleteAffJobTitleMainCommand({
+                        employeeId: selectedData.sID,
+                        histId: selectedData.postPositionHID
+                    }));
+                }
+            });
+
+            const errFnc = () => {
+                if (!_.isEmpty(errList)) {
+                    vm.$dialog.error('Msg_2203');
+                    _.forEach(errList, i => {
+                        $(`#A18 [data-id="${i}"]`).children().css({ color: ERRORSCODE });
+                        $(`#A18 [data-id="${i}"]`).children().children().css({ color: ERRORSCODE });
+                    });
+                }
+            };
+            if (errList.length === vm.currentCodeListHistory().length) {
+                errFnc();
+                return;
             }
+            
+            const param = { affWorkplaces, affJobTitles };
+            let affWorkplaceErr: any[] = [];
+            let affJobTitleErr: any[] = [];
+            vm
+                .$ajax('com', API.cancelExecuteTransfer, param)
+                .then((res: CancelExecuteTransferResult) => {
+                    affWorkplaceErr = res.affWorkplaceErr;
+                    affJobTitleErr = res.affJobTitleErr;
+                    vm.createTransferList();
+                    vm.loadDataWkp(Table.LEFT);
+                    return vm.loadDataWkp(Table.RIGHT);
+                })
+                .then(() => vm.getTransferOfDay(vm.baseDateRight()))
+                .then(() => {
+                    errFnc();
+                    const wkpErr = _.map(affWorkplaceErr, i => `${vm.$i18n.message(i.messageId)}<br/>`);
+                    const jtErr = _.map(affJobTitleErr, i => `${vm.$i18n.message(i.messageId)}<br/>`);
+                    const mergeErr = _.uniq([...wkpErr, ...jtErr]);
+                    
+                    const success = () => {
+                        vm.$dialog.info({ messageId: 'Msg_16' });
+                    };
+                    if (!_.isEmpty(mergeErr)) {
+                        vm.$dialog
+                            .error(mergeErr.join(''))
+                            .then(() => success());
+                    } else {
+                        success();
+                    }
+                    
+                })
         }
+
     }
 
     enum Table { LEFT, RIGHT }
+
+    class DeleteAffWorkplaceHistoryCommand {
+	    employeeId: string = '';
+	    historyId: string = '';
+
+        constructor(init: DeleteAffWorkplaceHistoryCommand) {
+            $.extend(this, init);
+        }
+    }
+
+    class DeleteAffJobTitleMainCommand {
+	    histId: string = '';
+	    employeeId: string = '';
+
+        constructor(init: DeleteAffJobTitleMainCommand) {
+            $.extend(this, init);
+        }
+    }
+
+    interface CancelExecuteTransferResult {
+        affWorkplaceErr: any[];
+        affJobTitleErr: any[];
+    }
 
     interface EmployeesInWorkplace {
         employeeCD: string;
@@ -705,8 +897,8 @@ module cmm015.a.viewmodel {
         jtID: string;
         od: number;
         jtc: string;
-        cssWKP: string;
         cssJT: string;
+        cssWKP: string;
 
         constructor(data: EmployeesInWorkplace, jtc: string) {
             const vm = this;
@@ -717,74 +909,85 @@ module cmm015.a.viewmodel {
             vm.jtID = data.jobtitleID;
             vm.od = data.order;
             vm.jtc = jtc;
-            vm.cssWKP = '';
-            vm.cssJT = '';
         }
     }
 
     class DataTableHistory {
-        key: string; 
-        dayBefore: string; //前日
-        startDate: string; //開始日
-        endDate: string; //終了日
-        sID: string; //社員ID
-        sCD: string; //社員CD
-        sName: string; //社員名称
-        prevWkpID: string; //前職場ID
-        prevWkpName: string; //前職場名称
-        prevWkpHID: string; //前職場履歴ID
-        postWkpID: string; //後職場ID
-        postWkpName: string; //後職場名称
-        wkpHID: string; //後職場履歴ID
-        prevPositionID: string; //前職位ID
-        prevPositionName: string; //前職位名称
-        prevPositionOrder: string; //前職位並び順
-        prevPositionHID: string; //前職位履歴ID
-        positionId: string; //後職位ID
-        postPositionName: string; //後職位名称
-        postPositionOrder: string; //後職位並び順
-        postPositionHID: string; //後職位履歴ID
+        key: string = ''; 
+        dayBefore: string = ''; //前日
+        startDate: string = ''; //開始日
+        endDate: string = ''; //終了日
+        sID: string = ''; //社員ID
+        sCD: string = ''; //社員CD
+        sName: string = ''; //社員名称
+        prevWkpID: string = ''; //前職場ID
+        prevWkpName: string = ''; //前職場名称
+        prevWkpHID: string = ''; //前職場履歴ID
+        postWkpID: string = ''; //後職場ID
+        postWkpName: string = ''; //後職場名称
+        wkpHID: string = ''; //後職場履歴ID
+        prevPositionID: string = ''; //前職位ID
+        prevPositionName: string = ''; //前職位名称
+        prevPositionOrder: string = ''; //前職位並び順
+        prevPositionHID: string = ''; //前職位履歴ID
+        positionId: string = ''; //後職位ID
+        postPositionName: string = ''; //後職位名称
+        postPositionOrder: string = ''; //後職位並び順
+        postPositionHID: string = ''; //後職位履歴ID
+        bgPostWkp: string = '';
 
-        constructor(prev: HistoryItem, post: HistoryItem, empInfors: any[], wkpListInfo: any[], jtInfor: any[]) {
-            this.endDate = MAX_DATE;
+        constructor(prevAWH: HistoryItem, prevAJH: HistoryItem, post: HistoryItem, empInfors: any[], wkpListInfo: any[], jtInfor: any[]) {
+            const self = this;
+            self.endDate = MAX_DATE;
             
-            if (prev) {
-                this.prevWkpID = prev.workplaceId;
-                this.prevWkpName = _.isNil(prev.workplaceId)
-                    ? getText('CMM015_52')
-                    : _.find(wkpListInfo, i => i.workplaceId = prev.workplaceId).workplaceName;
-                this.prevWkpHID = prev.wkpHID;
+            if (prevAWH) {
+                self.prevWkpID = prevAWH.workplaceId;
+                self.prevWkpName = _.isNil(prevAWH.workplaceId) || _.isEmpty(prevAWH.workplaceId)
+                    ? ''
+                    : _.find(wkpListInfo, i => i.workplaceId === prevAWH.workplaceId).workplaceName;
+                self.prevWkpHID = prevAWH.wkpHID;
+            }
 
-                this.prevPositionID = prev.jobTitleId;
-                const prevPosition = _.find(jtInfor, i => i.jobTitleId = prev.jobTitleId);
-                this.prevPositionName = prevPosition.workplaceName;
-                this.prevPositionOrder = prevPosition.order;
-                this.prevPositionHID = prev.jtHID;
+            if (prevAJH) {
+                self.prevPositionID = prevAJH.jobTitleId;
+                const prevPosition = _.find(jtInfor, i => i.jobTitleId === prevAJH.jobTitleId);
+                self.prevPositionName = prevPosition.jobTitleName;
+                self.prevPositionOrder = prevPosition.order;
+                self.prevPositionHID = prevAJH.jtHID;
             }
 
             if (post) {
-                this.dayBefore = moment.utc(new Date(post.startDate)).subtract(1, 'd').toString();
-                this.startDate = post.startDate;
-                this.sID = post.employeeId;
+                self.dayBefore = moment.utc(new Date(post.startDate)).subtract(1, 'd').toString();
+                self.startDate = post.startDate;
+                self.sID = post.employeeId;
                 const { employeeCode, businessName } = _.find(empInfors, i => i.employeeId === post.employeeId);
-                this.sCD = employeeCode;
-                this.sName = businessName;
-                this.postWkpID = post.workplaceId;
-                this.postWkpName = _.isNil(post.workplaceId)
-                    ? getText('CMM015_52')
-                    : _.find(wkpListInfo, i => i.workplaceId = post.workplaceId).workplaceName;
-                this.wkpHID = post.wkpHID;
-
-                this.positionId = post.jobTitleId;
-                const postPosition = _.find(jtInfor, i => i.jobTitleId = post.jobTitleId);
-                if (postPosition) {
-                    this.postPositionName = postPosition.workplaceName;
-                    this.postPositionOrder = postPosition.order;
+                self.sCD = employeeCode;
+                self.sName = businessName;
+                self.postWkpID = post.workplaceId;
+                if (_.isNil(post.workplaceId) || _.isEmpty(post.workplaceId)) {
+                    self.postWkpName = getText('CMM015_52');
+                    self.bgPostWkp = '#FFFFCC';
+                } else {
+                    self.postWkpName = _.find(wkpListInfo, i => i.workplaceId === post.workplaceId).workplaceName;
                 }
-                this.postPositionHID = post.jtHID;
+                self.wkpHID = post.wkpHID;
+
+                self.positionId = post.jobTitleId;
+                const postPosition = _.find(jtInfor, i => i.jobTitleId === post.jobTitleId);
+                if (postPosition) {
+                    self.postPositionName = postPosition.jobTitleName;
+                    self.postPositionOrder = postPosition.order;
+                }
+
+                if (_.isEmpty(self.postPositionName) && _.isEmpty(self.postPositionOrder)) {
+                    self.postPositionName = self.prevPositionName;
+                    self.postPositionOrder = self.prevPositionOrder;
+                }
+                self.postPositionHID = post.jtHID;
+                self.endDate = post.endDate;
             }
 
-            this.key = `${this.sID} ${this.startDate}`;
+            self.key = `${self.sID} ${self.startDate}`;
         }
     }
 

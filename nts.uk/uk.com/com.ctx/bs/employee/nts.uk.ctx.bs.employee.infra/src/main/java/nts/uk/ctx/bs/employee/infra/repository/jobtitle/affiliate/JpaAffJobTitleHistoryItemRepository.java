@@ -332,8 +332,8 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 	
 	private static final String GET_HIST_BY_SID_PERIOD = "SELECT m FROM BsymtAffJobTitleHist m"
 			+ " WHERE m.sid IN :sids "
-			+ " AND m.strDate >= :startDate "
-			+ "	AND m.strDate <= :endDate";
+			+ " AND m.strDate <= :endDate "
+			+ "	AND m.endDate >= :startDate";
 
 	@Override
 	public List<AffJobTitleHistoryItemWithPeriod> getBySidAndDatePeriod(List<String> sids, DatePeriod datePeriod) {

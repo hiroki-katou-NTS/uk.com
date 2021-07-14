@@ -8,5 +8,5 @@ import nts.arc.time.GeneralDate;
 @Getter
 public class TransOnApprovedParam {
 	private List<String> sids;
-	private GeneralDate basedate;
+	private GeneralDate baseDate;
 }

@@ -108,7 +108,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	private static final String EMP_HAS_CHANGED_WKP_WITHIN_PERIOD = "SELECT m.sid FROM BsymtAffiWorkplaceHist m"
 			+ " WHERE m.cid = :cid"
 			+ " AND m.strDate >= :startDate"
-			+ " AND m.endDate <= :endDate";
+			+ " AND m.strDate <= :endDate";
 	
 	/**
 	 * Convert from domain to entity
@@ -689,7 +689,10 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		List<String> histIds = genericHists.get().map(c -> c.identifier()).collect(Collectors.toList());
 		
 		// $履歴項目リスト = [2] Get($履歴IDリスト)
-		List<AffWorkplaceHistoryItem> histItems = this.getHistItems(histIds);
+		List<AffWorkplaceHistoryItem> histItems = new ArrayList<AffWorkplaceHistoryItem>();
+		if (!histIds.isEmpty()) {
+			histItems = this.getHistItems(histIds);
+		}
 		
 		// Return
 		return histItems.stream().map(mapper -> {
