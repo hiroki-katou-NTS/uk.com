@@ -329,6 +329,8 @@ module nts.uk.at.view.kbt002.b {
                         oldIndex++;
                       }
                       vm.getProcExecList(vm.execItemList()[oldIndex].execItemCode);
+                    } else {
+                      vm.getProcExecList();
                     }
                   });
               })
