@@ -83,6 +83,18 @@ module nts.uk.at.kha003.a {
                 }
             });
 
+            vm.isUpdateMode.subscribe((isUpdate: any) => {
+                if(!isUpdate){
+                    $("#A4_2").focus();
+                }
+            });
+
+            vm.isExecutionMode.subscribe((isTrue: any) => {
+                if(isTrue){
+                    $("#A4_3").focus();
+                }
+            });
+
             vm.manHour.name.subscribe((newValue: any) => {
                 vm.excutionModeToUpDateMode();
             });
@@ -314,6 +326,7 @@ module nts.uk.at.kha003.a {
             vm.selectedId(0);
             vm.isExecutionMode(false);
             vm.isUpdateMode(false);
+            $('#A4_2').focus();
         }
 
         /**
