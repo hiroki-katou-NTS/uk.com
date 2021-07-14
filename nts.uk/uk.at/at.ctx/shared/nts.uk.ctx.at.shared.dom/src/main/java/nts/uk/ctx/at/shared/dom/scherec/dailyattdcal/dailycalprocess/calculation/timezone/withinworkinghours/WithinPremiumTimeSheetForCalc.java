@@ -34,10 +34,9 @@ public class WithinPremiumTimeSheetForCalc extends ActualWorkingTimeSheet{
 	 */
 	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
 		Optional<TimeSpanForDailyCalc> duplicates = this.withinPremiumtimeSheet.getDuplicatedWith(timeSheet);
-		if(!duplicates.isPresent())
+		if(!duplicates.isPresent()) {
 			return;
-		
+		}
 		this.withinPremiumtimeSheet = duplicates.get();
-		
 	}
 }

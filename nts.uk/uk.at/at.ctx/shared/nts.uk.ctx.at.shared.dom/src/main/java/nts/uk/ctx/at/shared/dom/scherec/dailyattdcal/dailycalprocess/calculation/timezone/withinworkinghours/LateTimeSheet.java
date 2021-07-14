@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidayprio
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.ootsuka.OotsukaStaticService;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
@@ -776,15 +777,17 @@ public class LateTimeSheet {
 	/**
 	 * 遅刻時間帯を指定した時間帯に絞り込む
 	 * @param timeSpan 時間帯
+	 * @param deductionTimeSheet 控除時間帯
+	 * @param commonSet 就業時間帯の共通設定
 	 */
-	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
+	public void reduceRange(TimeSpanForDailyCalc timeSpan, DeductionTimeSheet deductionTimeSheet, WorkTimezoneCommonSet commonSet) {
 		if(this.forRecordTimeSheet.isPresent()) {
 			//計上用時間帯を変更する
-			this.forRecordTimeSheet.get().reduceRange(timeSpan);
+			this.forRecordTimeSheet.get().reduceRange(timeSpan, ActualWorkTimeSheetAtrForLate.Late, deductionTimeSheet, commonSet);
 		}
 		if(this.forDeducationTimeSheet.isPresent()) {
 			//控除用時間帯を変更する
-			this.forDeducationTimeSheet.get().reduceRange(timeSpan);
+			this.forDeducationTimeSheet.get().reduceRange(timeSpan, ActualWorkTimeSheetAtrForLate.Late, deductionTimeSheet, commonSet);
 		}
 		//相殺時間を削除する
 		this.OffsetTime = Optional.empty();

@@ -294,8 +294,9 @@ public class ManageReGetClass {
 	/**
 	 * 1日の計算範囲を指定した時間帯に絞り込む
 	 * @param timeSpan 時間帯
+	 * @param commonSet 就業時間帯の共通設定
 	 */
-	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
-		this.calculationRangeOfOneDay.reduceRange(timeSpan);
+	public void reduceRange(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
+		this.calculationRangeOfOneDay.reduceRange(timeSpan, commonSet);
 	}
 }

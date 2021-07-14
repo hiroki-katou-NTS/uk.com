@@ -43,7 +43,7 @@ public class SupportWorkTimeOfDailyAttendanceService {
 		
 		//日別勤怠の応援作業時間を計算する
 		return recordReGetClass.getIntegrationOfDaily().getOuenTimeSheet().stream()
-				.map(ouen -> OuenWorkTimeOfDailyAttendance.create(
+				.map(timeSheet -> OuenWorkTimeOfDailyAttendance.create(
 						scheduleReGetClass,
 						recordReGetClass,
 						workType,
@@ -53,7 +53,7 @@ public class SupportWorkTimeOfDailyAttendanceService {
 						calculateOfTotalConstraintTime,
 						converter,
 						recordReGetClass.getIntegrationOfDaily().getOuenTimeSheet(),
-						ouen))
+						timeSheet))
 				.collect(Collectors.toList());
 	}
 }

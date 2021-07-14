@@ -1807,15 +1807,16 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	/**
 	 * 指定した時間帯に絞り込む
 	 * @param timeSpan 時間帯
+	 * @param commonSet 就業時間帯の共通設定
 	 */
-	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
+	public void reduceRange(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
 		List<WithinWorkTimeFrame> frames = this.withinWorkTimeFrame.stream()
 				.filter(t -> t.getTimeSheet().checkDuplication(timeSpan).isDuplicated())
 				.collect(Collectors.toList());
 		
 		for(int i=0; i<frames.size(); i++) {
 			//就業時間内時間枠を指定した時間帯に絞り込む
-			frames.get(i).reduceRange(timeSpan);
+			frames.get(i).reduceRange(timeSpan, commonSet);
 		}
 		this.withinWorkTimeFrame.clear();
 		this.withinWorkTimeFrame.addAll(frames);

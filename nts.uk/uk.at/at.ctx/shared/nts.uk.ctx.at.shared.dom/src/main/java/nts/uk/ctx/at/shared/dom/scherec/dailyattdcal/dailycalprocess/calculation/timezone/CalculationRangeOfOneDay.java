@@ -59,6 +59,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySet
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FixedChangeAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowCalculateSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTSet;
@@ -1312,23 +1313,26 @@ public class CalculationRangeOfOneDay {
 		return true;
 	}
 	
-	/**指定した時間帯に絞り込む
+	/**
+	 * 指定した時間帯に絞り込む
 	 * @param timeSpan 変更する時間
+	 * @param commonSet 就業時間帯の共通設定
 	 */
-	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
-		Optional<TimeSpanForDailyCalc> duplicates = this.oneDayOfRange.getDuplicatedWith(timeSpan);
-		if(!duplicates.isPresent())
+	public void reduceRange(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
+		Optional<TimeSpanForDailyCalc> duplicate = this.oneDayOfRange.getDuplicatedWith(timeSpan);
+		if(!duplicate.isPresent()) {
 			return;
+		}
+		this.oneDayOfRange = duplicate.get();
 		
-		this.oneDayOfRange = duplicates.get();
-		
-		if(this.withinWorkingTimeSheet.isPresent())
+		if(this.withinWorkingTimeSheet.isPresent()) {
 			//就業時間内時間帯を指定した時間帯に絞り込む
-			this.withinWorkingTimeSheet.get().reduceRange(duplicates.get());
-		
-		if(this.outsideWorkTimeSheet.isPresent())
+			this.withinWorkingTimeSheet.get().reduceRange(duplicate.get(), commonSet);
+		}
+		if(this.outsideWorkTimeSheet.isPresent()) {
 			//就業時間外時間帯を指定した時間帯に絞り込む
-			this.outsideWorkTimeSheet.get().reduceRange(duplicates.get());
+			this.outsideWorkTimeSheet.get().reduceRange(duplicate.get(), commonSet);
+		}
 	}
 
 	/**

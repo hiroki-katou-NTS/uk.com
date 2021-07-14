@@ -79,7 +79,7 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 			OuenWorkTimeSheetOfDailyAttendance processingTimeSheet) {
 		
 		//勤務時間を計算する
-		OuenAttendanceTimeEachTimeSheet ouenAttendanceTime = OuenAttendanceTimeEachTimeSheet.create(
+		OuenAttendanceTimeEachTimeSheet attendanceTime = OuenAttendanceTimeEachTimeSheet.create(
 				scheduleReGetClass,
 				recordReGetClass,
 				workType,
@@ -91,7 +91,7 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 				processingTimeSheet);
 		
 		//移動時間を計算する
-		OuenMovementTimeEachTimeSheet ouenMovementTime = OuenMovementTimeEachTimeSheet.create(
+		OuenMovementTimeEachTimeSheet movementTime = OuenMovementTimeEachTimeSheet.create(
 				scheduleReGetClass,
 				recordReGetClass,
 				workType,
@@ -109,10 +109,10 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 		//金額を計算する
 		AttendanceAmountDaily amount = calcIncentiveAmount(
 				priceUnit,
-				ouenAttendanceTime.getTotalTime().minusMinutes(ouenAttendanceTime.getTotalPremiumTime().valueAsMinutes()),
-				ouenAttendanceTime.getTotalPremiumTime());
+				attendanceTime.getTotalTime().minusMinutes(attendanceTime.getTotalPremiumTime().valueAsMinutes()),
+				attendanceTime.getTotalPremiumTime());
 		
-		return new OuenWorkTimeOfDailyAttendance(processingTimeSheet.getWorkNo(), ouenAttendanceTime, ouenMovementTime, amount, priceUnit);
+		return new OuenWorkTimeOfDailyAttendance(processingTimeSheet.getWorkNo(), attendanceTime, movementTime, amount, priceUnit);
 	}
 	
 	/**

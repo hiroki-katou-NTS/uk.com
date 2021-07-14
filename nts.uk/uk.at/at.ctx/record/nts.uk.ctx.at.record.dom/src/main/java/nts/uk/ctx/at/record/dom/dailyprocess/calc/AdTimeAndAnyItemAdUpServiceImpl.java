@@ -123,8 +123,9 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 				anyItemValueOfDailyRepo.persistAndUpdate(new AnyItemValueOfDaily(d.getEmployeeId(), d.getYmd(), ai));
 			});
 			//応援作業別勤怠時間更新
+			ouenWorkTimeOfDailyRepo.remove(d.getEmployeeId(), d.getYmd());
 			if(!d.getOuenTime().isEmpty()) {
-				ouenWorkTimeOfDailyRepo.update(OuenWorkTimeOfDaily.create(d.getEmployeeId(), d.getYmd(), d.getOuenTime()));
+				ouenWorkTimeOfDailyRepo.insert(OuenWorkTimeOfDaily.create(d.getEmployeeId(), d.getYmd(), d.getOuenTime()));
 			}
 			// 編集状態更新
 			List<EditStateOfDailyPerformance> editStateList = new ArrayList<>();

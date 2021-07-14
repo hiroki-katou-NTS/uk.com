@@ -53,6 +53,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.GetSubHolOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
@@ -969,17 +970,18 @@ public class OverTimeSheet {
 	/**
 	 * 指定した時間帯に絞り込む
 	 * @param timeSpan 時間帯
+	 * @param commonSet 就業時間帯の共通設定
 	 */
-	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
+	public void reduceRange(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
 		List<OverTimeFrameTimeSheetForCalc> frames = this.frameTimeSheets.stream()
 				.filter(t -> t.getTimeSheet().checkDuplication(timeSpan).isDuplicated())
 				.collect(Collectors.toList());
 		
 		for(int i=0; i<frames.size(); i++) {
 			//残業枠時間帯を指定した時間帯に絞り込む
-			frames.get(i).reduceRange(timeSpan);
+			frames.get(i).reduceRange(timeSpan, commonSet);
+		}
 		this.frameTimeSheets.clear();
 		this.frameTimeSheets.addAll(frames);
-		}
 	}
 }

@@ -116,7 +116,7 @@ public class OuenWorkTimeOfDailyRepoImpl extends JpaRepository implements OuenWo
 		return new ArrayList<>();
 	}
 
-private OuenWorkTimeOfDailyAttendance toDomain(NtsResultRecord r) {
+	private OuenWorkTimeOfDailyAttendance toDomain(NtsResultRecord r) {
 		
 		List<MedicalCareTimeEachTimeSheet> medicalTimes = new ArrayList<>();
 		medicalTimes.add(MedicalCareTimeEachTimeSheet.create(
@@ -190,7 +190,7 @@ private OuenWorkTimeOfDailyAttendance toDomain(NtsResultRecord r) {
 			commandProxy().remove(e);
 		});
 	}
-
+	
 	public OuenWorkTimeOfDaily toDomain(List<KrcdtDayOuenTime> es) {
 		
 		if (es.isEmpty()) {
