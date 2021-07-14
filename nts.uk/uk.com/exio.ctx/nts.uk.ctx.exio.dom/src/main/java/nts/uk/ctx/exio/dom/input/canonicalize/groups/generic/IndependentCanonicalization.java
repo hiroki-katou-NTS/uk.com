@@ -21,6 +21,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
@@ -31,7 +32,7 @@ import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
 @RequiredArgsConstructor
 public abstract class IndependentCanonicalization implements GroupCanonicalization {
 	
-	private final GroupWorkspace workspace;
+	protected final GroupWorkspace workspace;
 	
 	protected abstract String getParentTableName();
 	
@@ -56,7 +57,9 @@ public abstract class IndependentCanonicalization implements GroupCanonicalizati
 			
 			importingKeys.add(key);
 			
-			canonicalize(require, context, revisedData, new KeyValues(key));
+			// データ自体を正準化する必要は無い
+			val intermResult = IntermediateResult.noChange(revisedData);
+			canonicalize(require, context, intermResult, new KeyValues(key));
 		});
 	}
 	
@@ -68,10 +71,10 @@ public abstract class IndependentCanonicalization implements GroupCanonicalizati
 				.collect(toList());
 	}
 
-	private void canonicalize(
+	protected void canonicalize(
 			GroupCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
-			RevisedDataRecord revisedData,
+			IntermediateResult intermResult,
 			KeyValues keyValues) {
 		
 		val domainDataId = createDomainDataId(getParentTableName(), getDomainDataKeys(), keyValues);
@@ -87,9 +90,7 @@ public abstract class IndependentCanonicalization implements GroupCanonicalizati
 			require.save(context, toDelete(context, workspace, keyValues));
 		}
 		
-		// データ自体を正準化する必要は無い
-		val result = CanonicalizedDataRecord.noChange(revisedData);
-		require.save(context, result);
+		require.save(context, intermResult.complete());
 	}
 	
 	private static AnyRecordToDelete toDelete(

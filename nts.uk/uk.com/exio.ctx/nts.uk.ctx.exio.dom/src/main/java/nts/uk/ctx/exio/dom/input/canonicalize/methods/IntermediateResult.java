@@ -28,6 +28,15 @@ public class IntermediateResult {
 	/** 正準化対象ではなかったデータ */
 	DataItemList itemsNotCanonicalize;
 	
+	public static IntermediateResult noChange(RevisedDataRecord revisedData) {
+		
+		return new IntermediateResult(
+				revisedData.getRowNo(),
+				new DataItemList(),
+				new DataItemList(),
+				new DataItemList(revisedData.getItems()));
+	}
+	
 	/**
 	 * 作る
 	 * @param source 全部入り
