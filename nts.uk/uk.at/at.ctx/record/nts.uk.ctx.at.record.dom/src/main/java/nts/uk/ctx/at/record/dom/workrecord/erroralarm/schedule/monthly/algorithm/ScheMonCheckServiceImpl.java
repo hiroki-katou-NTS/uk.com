@@ -222,7 +222,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			}
 			
 			// Input．List＜社員ID＞をループ
-			for (String sid: lstSid) {
+			for (String sid: emps) {
 				List<AlarmExtractInfoResult> lstExtractInfoResult = new ArrayList<>();
 				// Input．期間の開始月から終了月まで１ヶ月ごとにループ
 				List<YearMonth> months = dPeriod.yearMonthsBetween();
@@ -1190,9 +1190,9 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 					&& carryforwardSet != null
 					&& CarryforwardSetInShortageFlex.NEXT_MONTH_CARRYFORWARD == carryforwardSet) {
 				// 合計就業時間　＝　取得した合計就業時間　－　Input．前月の月別実績．勤怠時間．月の計算．フレックス時間．フレックス不足時間 TODO
-				totalWorkingTimePubHoliday = attendanceTimeOfMonthly.getMonthlyCalculation().getFlexTime().getFlexShortageTime().v().doubleValue();
+				totalWorkingTimePubHoliday = totalWorkingTimePubHoliday - attendanceTimeOfMonthly.getMonthlyCalculation().getFlexTime().getFlexShortageTime().v().doubleValue();
 			} else {
-				// 合計就業時間　＝　取得した合計就業時間 TODO
+				// 合計就業時間　＝　取得した合計就業時間
 			}
 			
 			Double ratioPubHoliday = 0.0;

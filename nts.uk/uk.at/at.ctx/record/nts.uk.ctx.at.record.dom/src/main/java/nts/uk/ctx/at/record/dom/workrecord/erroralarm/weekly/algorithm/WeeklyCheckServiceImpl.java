@@ -93,7 +93,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 					contractCode, cid, listOptionalItem).stream().filter(x -> x.isUse()).collect(Collectors.toList());
 			
 			// Input．List＜社員ID＞をループ
-			for (String sid: lstSid) {
+			for (String sid: emps) {
                 List<AlarmExtractInfoResult> lstExtractInfoResult = new ArrayList<>();
                 
 				// 取得したList＜週別実績の任意抽出条件＞をループする

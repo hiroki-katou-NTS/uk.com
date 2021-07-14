@@ -108,7 +108,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			}
 			
 			// Input．List＜社員ID＞をループ
-			for(String sid : lstSid) {
+			for(String sid : emps) {
 				List<AlarmExtractInfoResult> lstExtractInfoResult = new ArrayList<>();
 				// 任意抽出条件のアラーム値を作成する
 				OutputCheckResult checkTab2 = extractAlarmConditionTab2(
