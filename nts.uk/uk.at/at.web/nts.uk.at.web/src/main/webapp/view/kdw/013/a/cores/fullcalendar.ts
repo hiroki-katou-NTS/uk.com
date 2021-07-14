@@ -1182,7 +1182,6 @@ module nts.uk.ui.at.kdw013.calendar {
                         e.setProp(GROUP_ID, '');
 
                         e.setProp(BORDER_COLOR, TRANSPARENT);
-                        e.setProp(DURATION_EDITABLE, true);
                     }
                 });
             };
@@ -1483,7 +1482,8 @@ module nts.uk.ui.at.kdw013.calendar {
             const updateEvents = () => {
                 const sltds = vm.selectedEvents;
                 const isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')));
-    
+                const data = ko.unwrap(params.$datas);
+                const startDate =  moment(_.get(data,'workCorrectionStartDate'));
                 const events = ko.unwrap<EventRaw[]>(params.events);
                 let mapppedEvents =    _.chain(events)
                     .filter(({ extendedProps }) => extendedProps.status !== 'delete')
@@ -1494,17 +1494,16 @@ module nts.uk.ui.at.kdw013.calendar {
                         end: formatDate(_.get(e,'end')),
                         [GROUP_ID]: isSelected(e) ? SELECTED : '',
                         [BORDER_COLOR]: isSelected(e) ? BLACK : TRANSPARENT,
-                        [DURATION_EDITABLE]: isSelected(e) ? sltds.length < 2 : true,
+                        editable: startDate.isAfter(formatDate(_.get(e, 'start')) ) ? false : true,
                         extendedProps: {
                             ...e.extendedProps,
                             status: e.extendedProps.status || 'normal'
                         }
                     })).value();
-
+                
                 // clear old events
                 vm.calendar.removeAllEvents();
                 vm.calendar.removeAllEventSources();
-
                 // set new events
                 vm.calendar.setOption('events', mapppedEvents);
                 // _.each(events, (e: EventRaw) => vm.calendar.addEvent(e));
@@ -1533,7 +1532,6 @@ module nts.uk.ui.at.kdw013.calendar {
                             e.setProp(GROUP_ID, '');
 
                             e.setProp(BORDER_COLOR, TRANSPARENT);
-                            e.setProp(DURATION_EDITABLE, true);
                         }
                     });
 
@@ -1581,7 +1579,10 @@ module nts.uk.ui.at.kdw013.calendar {
                 // rerenderDelay: 500,
                 dateClick: (info) => {
                     const events = vm.calendar.getEvents();
-
+                    const data = ko.unwrap(params.$datas);
+                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
+                    
+                    
 
                     let hasEventNotSave = _.find(events, (e) => !_.get(e, 'extendedProps.id'));
 
@@ -1599,6 +1600,10 @@ module nts.uk.ui.at.kdw013.calendar {
                                     dataEvent.delete(false);
 
                                 });
+                            return;
+                        }
+                        
+                        if (startDate.isAfter(formatDate(info.date))) {
                             return;
                         }
                         
@@ -1646,7 +1651,6 @@ module nts.uk.ui.at.kdw013.calendar {
                                 e.setProp(GROUP_ID, '');
                                 // unselect events
                                 e.setProp(BORDER_COLOR, TRANSPARENT);
-                                e.setProp(DURATION_EDITABLE, true);
                             }
                         });
 
@@ -1849,6 +1853,14 @@ module nts.uk.ui.at.kdw013.calendar {
                         }
                     }
                 },
+                dayCellClassNames: (arg) => {
+                    if (arg.date > moment()) {
+                        return ['pika']
+                    } else {
+                        return ['mieo']
+                    }
+                }
+                ,
                 eventClick: ({ el, event, jsEvent, noCheckSave}) => {
                     const shift = ko.unwrap<boolean>(dataEvent.shift);
                     /**
@@ -1858,6 +1870,9 @@ module nts.uk.ui.at.kdw013.calendar {
                     const events = vm.calendar.getEvents();
                     
                     let hasEventNotSave = _.find(events, (e) => !_.get(e, 'extendedProps.id'));
+                    
+                    const data = ko.unwrap(params.$datas);
+                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
                     
                     if (hasEventNotSave && !noCheckSave) {
                         _.each(events, (e: EventApi) => {
@@ -1894,6 +1909,10 @@ module nts.uk.ui.at.kdw013.calendar {
                                 dataEvent.delete(false);
 
                             });
+                        return;
+                    }
+                    
+                    if (startDate.isAfter(formatDate(event.start))) {
                         return;
                     }
 
@@ -1971,7 +1990,6 @@ module nts.uk.ui.at.kdw013.calendar {
                     if (!!selecteds.length) {
                         // group selected event & disable resizeable
                         _.each(selecteds, (e: EventApi) => {
-                            e.setProp(DURATION_EDITABLE, selecteds.length === 1);
                             e.setProp(GROUP_ID, SELECTED);
                         });
                     }
@@ -2090,6 +2108,14 @@ module nts.uk.ui.at.kdw013.calendar {
                     console.log('stop', event.extendedProps);
                 },
                 select: ({ start, end }) => {
+                    
+                    const data = ko.unwrap(params.$datas);
+                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
+                    
+                    if (startDate.isAfter(formatDate(start))) {
+                        vm.calendar.unselect();
+                        return;
+                    }
 
                     // clean selection
                     vm.calendar.unselect();
@@ -2144,6 +2170,13 @@ module nts.uk.ui.at.kdw013.calendar {
                         textColor,
                         extendedProps
                     } = event;
+                    const data = ko.unwrap(params.$datas);
+                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
+                    
+                    if (startDate.isAfter(formatDate(start))) {
+                        event.remove();
+                        return;
+                    }
                     const sd = ko.unwrap(params.slotDuration);
                     const end = moment(start).add(sd, 'minute').toDate();
                 
