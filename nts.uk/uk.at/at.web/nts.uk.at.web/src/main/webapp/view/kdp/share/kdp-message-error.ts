@@ -1,4 +1,4 @@
- /// <reference path="../../../lib/nittsu/viewcontext.d.ts" />
+/// <reference path="../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kdp.share {
 
@@ -13,37 +13,44 @@ module nts.uk.at.view.kdp.share {
     };
 
     const template = `
-    <div class="error">
-        <div class="title-error" data-bind="i18n: 'KDP003_91'", style="color: white;"></div>
-        <span class="text-error" data-bind="i18n: '本日１０：００よりをメンテナンスのためシステムを停止致します。'" style="color: white;"></span>
-    </div>
-    <div class="company" data-bind="style: { 'background-color': $component.headOfficeNotice.backGroudColor }">
-        <div class="title-company" data-bind="i18n: $component.headOfficeNotice.title,
-            style: { 'color': $component.headOfficeNotice.textColor }"></div>
-        <span class="text-company" data-bind="i18n: $component.headOfficeNotice.contentMessager,
-            style: { 'color': $component.headOfficeNotice.textColor }"></span>
-    </div>
-    <div data-bind="style: { 'background-color': $component.workplaceNotice.backGroudColor }">
-        <div class="workPlace">
-            <div class="title">
-                <div class="name-title">
-                    <div style:"box-sizing: border-box" data-bind="i18n: $component.workplaceNotice.title,
-                        style: { 'color': $component.workplaceNotice.textColor}"></div>
-                </div>
-                <div class="btn-title">
-                    <button style="background-color: transparent;" 
-                            class="icon" 
-                            data-bind="ntsIcon: { no: 160, width: 30, height: 30 }, click: events.registerNoti.click">
-                    </button>
-                </div>
+    <div>
+        <!-- ko if: ko.toJS($component.modeSystemNoti) -->
+            <div data-bind="css: { 'error1': $component.state() === 'state1' , 'error2': $component.state() === 'state2'}">
+                <span class="text-error" data-bind="i18n: '本日１０：００よりをメンテナンスのためシステムを停止致します。'" style="color: white;"></span>
             </div>
-            <div class="content">
-                <div class="text-content" data-bind="i18n: $component.workplaceNotice.contentMessager,
-                    style: { 'color': $component.workplaceNotice.textColor}"></div>
-                    <button class="btn-content" data-bind="ntsIcon: { no: 161, width: 30, height: 30 }, click: events.shoNoti.click">
-                    </button>
-            <div>
+        <!-- /ko -->
+        <!-- ko if: $component.showCompanyNoti() -->
+            <div class="company" data-bind="style: { 'background-color': $component.headOfficeNotice.backGroudColor }">
+                <div class="title-company" data-bind="i18n: $component.headOfficeNotice.title,
+                    style: { 'color': $component.headOfficeNotice.textColor }"></div>
+                <span class="text-company" data-bind="i18n: $component.headOfficeNotice.contentMessager,
+                    style: { 'color': $component.headOfficeNotice.textColor }"></span>
+            </div>
+        <!-- /ko -->
+        <!-- ko if: ko.toJS($component.showMessage) -->
+            <div data-bind="style: { 'background-color': $component.workplaceNotice.backGroudColor }">
+                <div class="workPlace">
+                    <div class="title">
+                        <div class="name-title">
+                            <div style:"box-sizing: border-box" data-bind="i18n: $component.workplaceNotice.title,
+                                style: { 'color': $component.workplaceNotice.textColor}"></div>
+                        </div>
+                        <div class="btn-title">
+                            <button style="background-color: transparent;" 
+                                    class="icon" 
+                                    data-bind="ntsIcon: { no: 160, width: 30, height: 30 }, click: events.registerNoti.click">
+                            </button>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <div class="text-content" data-bind="i18n: $component.workplaceNotice.contentMessager,
+                            style: { 'color': $component.workplaceNotice.textColor}"></div>
+                            <button class="btn-content" data-bind="ntsIcon: { no: 161, width: 30, height: 30 }, click: events.shoNoti.click">
+                            </button>
+                        </div>
+                </div>
         </div>
+        <!-- /ko -->
     </div>
     <style>
         .kdp-message-error {
@@ -61,10 +68,22 @@ module nts.uk.at.view.kdp.share {
             box-sizing: border-box;
         }
 
-        .kdp-message-error .error {
+        .kdp-message-error .error1 {
             padding: 5px 3px;
-            height: 55px;
-            max-height: 55px;
+            height: 57px;
+            max-height: 57px;
+            word-break: break-all;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            box-sizing: border-box;
+            background: #FD4D4D;
+            margin-bottom: 5px;
+        }
+
+        .kdp-message-error .error2 {
+            padding: 5px 3px;
+            height: 120px;
+            max-height: 120px;
             word-break: break-all;
             text-overflow: ellipsis;
             overflow: hidden;
@@ -167,8 +186,15 @@ module nts.uk.at.view.kdp.share {
         messageNoti: KnockoutObservable<IMessage> = ko.observable();
         notiSet: KnockoutObservable<FingerStampSetting> = ko.observable();
 
+        modeSystemNoti: KnockoutObservable<boolean | null> = ko.observable(true);
+
+        showMessage: KnockoutObservable<boolean | null> = ko.observable(true);
+
         events!: ClickEvent;
 
+        state!: KnockoutComputed<String>;
+
+        showCompanyNoti: KnockoutComputed<boolean>;
 
         created(params?: MessageParam) {
             const vm = this;
@@ -215,6 +241,33 @@ module nts.uk.at.view.kdp.share {
 
             vm.messageNoti.subscribe(() => {
                 vm.reload();
+            });
+
+            vm.state = ko.computed({
+                read: () => {
+                    const checkShowSystem = ko.unwrap(vm.modeSystemNoti);
+                    const checkShowWorkPlace = ko.unwrap(vm.showMessage);
+
+                    if (checkShowSystem && checkShowWorkPlace) {
+                        return 'state1';
+                    }
+                    return 'state2';
+                }
+            });
+
+            vm.showCompanyNoti = ko.computed({
+                read: () => {
+                    const checkShowSystem = ko.unwrap(vm.modeSystemNoti);
+                    const checkShowWorkPlace = ko.unwrap(vm.showMessage);
+
+                    if (checkShowWorkPlace && checkShowSystem) {
+                        return false;
+                    }
+                    if (checkShowWorkPlace) {
+                        return true
+                    }
+                    return false;
+                }
             });
         }
 
