@@ -7,9 +7,13 @@ module nts.uk.at.view.kdp002.l {
     }
 
     interface ITaskParam {
-        employeeId: string; //社員ID
+        sid: string; //社員ID
         workFrameNo: number; //作業枠NO
-        upperWorkCode: string; //上位作業コード
+        upperFrameWorkCode: string; //上位作業コード
+    }
+
+    const API = {
+		GET_EMPLOYEE_TASKS: 'at/record/stamp/employee_work_by_stamping'
     }
 
     @handler({
@@ -61,7 +65,7 @@ module nts.uk.at.view.kdp002.l {
         
         taskArray: TaskInfo[][] = [];
 
-        settingWorkFrame: KnockoutObservableArray<TaskFrameSetting> = ko.observableArray([]);
+        workFrameSetting: KnockoutObservableArray<TaskFrameSetting> = ko.observableArray([]);
 
 		currentCodeList: KnockoutObservableArray<string>;
 
@@ -80,7 +84,7 @@ module nts.uk.at.view.kdp002.l {
             });
             vm.empId = param.employeeId
 
-            let taskParam: ITaskParam = {employeeId: vm.empId, workFrameNo: 1, upperWorkCode: ''};
+            let taskParam: ITaskParam = {sid: vm.empId, workFrameNo: 1, upperFrameWorkCode: ''};
            
             vm.getTask(taskParam);
             vm.frameName(vm.getFrameName(1));
@@ -136,169 +140,34 @@ module nts.uk.at.view.kdp002.l {
             });
         }
 
-        getChildTask() {
-            const vm = this;
-
-             //Get from API
-             let childTaskInfos: TaskInfo[]  = [{
-                code: '1',
-                taskFrameNo: 2,
-                displayInfo: {taskName: 'child1名駅広場'},
-                childTasks: ['1','2']
-            },
-            {
-                code: '2',
-                taskFrameNo: 2,
-                displayInfo: {taskName: 'child2栄１丁目t'},
-                childTasks: ['1','2']
-            },
-            {
-                code: '3',
-                taskFrameNo: 2,
-                displayInfo: {taskName: 'child3栄１丁目t'},
-                childTasks: ['1','2']
-            },
-            {
-                code: '4',
-                taskFrameNo: 2,
-                displayInfo: {taskName: 'child4栄１丁目t'},
-                childTasks: ['1','2']
-            },
-            {
-                code: '5',
-                taskFrameNo: 2,
-                displayInfo: {taskName: 'child5栄１丁目t'},
-                childTasks: ['1','2']
-            },
-            {
-                code: '6',
-                taskFrameNo: 2,
-                displayInfo: {taskName: 'child6栄１丁目t'},
-                childTasks: ['1','2']
-            },
-            {
-                code: "7",
-                taskFrameNo: 2,
-                displayInfo: {taskName: 'child7栄１丁目t'},
-                childTasks: ['1','2']
-            }
-    ];
-            vm.model(childTaskInfos);
-            vm.taskArray = _.chunk(childTaskInfos, 6);
-            vm.framePosition.valueHasMutated();
-        }
-
         getTask(param: ITaskParam) {
             const vm = this;
 
-             //Get from API
-             let taskInfos: TaskInfo[]  = [{
-                code: '1t',
-                taskFrameNo: 1,
-                displayInfo: {taskName: '名駅広場'},
-                childTasks: ['1','2']
-            },
-            {
-                code: '2a',
-                taskFrameNo: 1,
-                displayInfo: {taskName: '栄１丁目t'},
-                childTasks: ['1','2']
-            },
-			{
-                code: '3a',
-                taskFrameNo: 1,
-                displayInfo: {taskName: '名古屋市鶴舞図書館'},
-                childTasks: ['1','2']
-            },
-			{
-                code: '4t',
-                taskFrameNo: 1,
-                displayInfo: {taskName: '1広小路YYパーキング１２a'},
-                childTasks: ['1','2']
-            },
-			{
-                code: '5',
-                taskFrameNo: 1,
-                displayInfo: {taskName: '2広小路YYパーキング１２a'},
-                childTasks: ['1','2']
-            },
-			{
-                code: '6',
-                taskFrameNo: 1,
-                displayInfo: {taskName: '１２３４５６７８９０１２３４５６７８９０１２３４５t'},
-                childTasks: ['1','2']
-            },
-            {
-                code: '7',
-                taskFrameNo: 1,
-                displayInfo: {taskName: 'a3広小路YYパーキング１２３'},
-                childTasks: ['1','2']
-            },
-            {
-                code: '8',
-                taskFrameNo: 1,
-                displayInfo: {taskName: '4広小路YYパーキング１２３４５'},
-                childTasks: ['1','2']
-            },
-            {
-                code: '7t',
-                taskFrameNo: 1,
-                displayInfo: {taskName: '5広小路YYパーキング１２３'},
-                childTasks: ['1','2']
-            },
-            {
-                code: '8',
-                taskFrameNo: 1,
-                displayInfo: {taskName: '6広小路YYパーキング１２３４５'},
-                childTasks: ['1','2']
-            },
-            {
-                code: 'a9',
-                taskFrameNo: 1,
-                displayInfo: {taskName: '7広小路YYパーキング１２３'},
-                childTasks: ['1','2']
-            },
-            {
-                code: '10t',
-                taskFrameNo: 1,
-                displayInfo: {taskName: '8広小路YYパーキング１２３４５'},
-                childTasks: ['1','2']
-            },
-            {
-                code: '11',
-                taskFrameNo: 1,
-                displayInfo: {taskName: 'a9広小路YYパーキング１２３'},
-                childTasks: ['1','2']
-            },
-            {
-                code: '12',
-                taskFrameNo: 1,
-                displayInfo: {taskName: '10広小路YYパーキング１２３４５t'},
-                childTasks: ['1','2']
-            },
-        ];
-            vm.model(taskInfos);
+        vm.$ajax('at', API.GET_EMPLOYEE_TASKS, param)
+            .then((result: Result) => {
 
-            let settingWorkFrame: TaskFrameSetting[] = [{
-                frameNo: 1,
-                frameName: '枠名１.',
-                useAtr: 1
-            },
-            {
-                frameNo: 1,
-                frameName: '枠名2',
-                useAtr: 1
-            }
-        ];
-            vm.settingWorkFrame(settingWorkFrame);
-            vm.taskArray = _.chunk(taskInfos, 6);
-            vm.framePosition.valueHasMutated();
+                if (result) {
+                    if (result.taskFrameUsageSetting) {
+                        vm.workFrameSetting(result.taskFrameUsageSetting.taskFrameSetting);
+                    }
+                    vm.model(result.task);
+                    vm.taskArray = _.chunk(result.task, 6);
+                    vm.framePosition.valueHasMutated();
+                }
+
+            });
 
         }
 
         getFrameName(frameNo: number) {
             const vm = this;
-            return _.find(ko.unwrap(vm.settingWorkFrame), ['frameNo', frameNo]).frameName;
+
+            if (ko.unwrap(vm.workFrameSetting).length > 0) {
+                return _.find(ko.unwrap(vm.workFrameSetting), ['taskFrameNo', frameNo]).taskFrameName;
+            } else {
+                return '';
+            }
+            
         }
 
         reload(index: number) {
@@ -318,27 +187,45 @@ module nts.uk.at.view.kdp002.l {
             // L2_1が未入力の場合
             if (vm.searchValue() == '') {
                 vm.$dialog.error({ messageId: 'MsgB_24' });
+
             } else {
-                let taskParam: ITaskParam = {employeeId: vm.empId, workFrameNo: 1, upperWorkCode: ''};
-                vm.getTask(taskParam);
-                let results =_.filter(ko.unwrap(vm.model), function(item){
-                    return item.displayInfo.taskName.indexOf(ko.unwrap(vm.searchValue)) > -1 || item.code.indexOf(ko.unwrap(vm.searchValue)) > -1 ;
-                    });
+             
+                let taskParam: ITaskParam = {sid: vm.empId, workFrameNo: 1, upperFrameWorkCode: ''};
+
+                vm.$ajax('at', API.GET_EMPLOYEE_TASKS, taskParam)
+                    .then((result: Result) => {
     
-                // L2_1の文字を含む作業見つからなかった場合
-                if (results.length == 0) {
-                    vm.$dialog.error({ messageId: 'MsgB_25' });
-                } else {
-                    vm.taskArray = _.chunk(results, 6);
-                   	vm.reload(0);
-                }
+                        if (result) {
+                            if (result.taskFrameUsageSetting) {
+                                vm.workFrameSetting(result.taskFrameUsageSetting.taskFrameSetting);
+                            }
+                            vm.model(result.task);
+                        
+                        }
+    
+                    }).then(()=> {
+                        let results =_.filter(ko.unwrap(vm.model), function(item){
+                            return item.displayInfo.taskName.indexOf(ko.unwrap(vm.searchValue)) > -1 || item.code.indexOf(ko.unwrap(vm.searchValue)) > -1 ;
+                            });
+        
+                        // L2_1の文字を含む作業見つからなかった場合
+                        if (results.length == 0) {
+                            vm.$dialog.error({ messageId: 'MsgB_25' });
+                            vm.taskArray = _.chunk(ko.unwrap(vm.model), 6);
+                        } else {
+                            vm.taskArray = _.chunk(results, 6);
+                        }
+
+                        vm.reload(0);
+                        vm.framePosition.valueHasMutated();
+                    })
             }
 
         }
 
 		onClickCancel() {
             const vm = this;
-            let taskParam: ITaskParam = {employeeId: vm.empId, workFrameNo: 1, upperWorkCode: ''};
+            let taskParam: ITaskParam = {sid: vm.empId, workFrameNo: 1, upperFrameWorkCode: ''};
             if (ko.unwrap(vm.searchValue) != '') {
                 vm.getTask(taskParam);
                 vm.searchValue('');
@@ -363,11 +250,11 @@ module nts.uk.at.view.kdp002.l {
                 vm.onClickBack();
             } else {
 
-                if (ko.unwrap(vm.model)[0].taskFrameNo != 1) {
-                    vm.getTask({employeeId: vm.empId, workFrameNo: 1, upperWorkCode: ''});
+                if (ko.unwrap(vm.model)[0].frameNo != 1) {
+                    vm.getTask({sid: vm.empId, workFrameNo: 1, upperFrameWorkCode: ''});
                     vm.reload(0);
-                } else {
-                    vm.$window.close();
+                } else  {
+                    vm.closeDialogL();
                 }
                 
             }
@@ -375,18 +262,30 @@ module nts.uk.at.view.kdp002.l {
 
         onSelect(code: string) {
             const vm = this;
-            vm.getChildTask();
+
+            let frameNo = _.find(ko.unwrap(vm.model), ['code', code]).frameNo;
+
+            vm.getTask({sid: vm.empId, workFrameNo: frameNo + 1, upperFrameWorkCode: code})
+          
+            if (ko.unwrap(vm.model).length == 0) {
+                vm.closeDialogL();
+            }
             vm.reload(0);
             vm.framePosition(0);
-        }
+         }
+
+         closeDialogL() {
+            const vm = this;
+            vm.$window.close();
+         }
 
     }
 
 interface TaskInfo {
     code: string; // コード
-    taskFrameNo: number; // 作業枠NO
+    frameNo: number; // 作業枠NO
     displayInfo: TaskDisplayInfo; // 表示情報 : 作業表示情報
-    childTasks: string []; // 子作業一覧
+    childTaskList: string []; // 子作業一覧
 }
 
 interface TaskDisplayInfo {
@@ -394,9 +293,19 @@ interface TaskDisplayInfo {
 }
 
 interface TaskFrameSetting {
-    frameNo: number; // 作業枠NO
-    frameName: string; // 作業枠名
+    taskFrameNo: number; // 作業枠NO
+    taskFrameName: string; // 作業枠名
     useAtr: number; // するしない区分
+}
+
+interface TaskFrameSet {
+    taskFrameSetting: TaskFrameSetting [];
+}
+
+interface Result {
+    task: TaskInfo []; //List＜作業＞
+    taskFrameUsageSetting: TaskFrameSet; //作業枠利用設定
+
 }
 
 
