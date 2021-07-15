@@ -288,10 +288,10 @@ module nts.uk.at.view.kdw003.b {
                         jump("/view/kaf/007/a/index.xhtml", transfer);
                         break;
 
-                    //                        case 5:
-                    //                            //KAF008-出張申請
-                    //                            nts.uk.request.jump("/view/kaer);
-                    //                            break;
+                    case 5:
+                        //KAF008-出張申請 
+                        jump("/view/kaf/008/b/index.xhtml", transfer);
+                        break;
 
                     case 6:
                         //KAF009-直行直帰申請
@@ -305,48 +305,41 @@ module nts.uk.at.view.kdw003.b {
                         break;
 
                     case 8:
-                        //KAF002-打刻申請（外出許可）
-                        transfer.stampRequestMode = 0;
-                         transfer.screenMode = 1;
-                        jump("/view/kaf/002/b/index.xhtml", transfer);
+                        //KAF002-打刻申請（外出許可） 打刻申請
+                        jump("/view/kaf/002/a/index.xhtml", transfer);
                         break;
 
                     case 9:
                         //KAF002-打刻申請（出退勤打刻漏れ）
-                        transfer.stampRequestMode = 1;
-                         transfer.screenMode = 1;
+
                         jump("/view/kaf/002/b/index.xhtml", transfer);
                         break;
 
                     case 10:
                         //KAF002-打刻申請（打刻取消）
                         transfer.stampRequestMode = 2;
-                         transfer.screenMode = 1;
+                        transfer.screenMode = 1;
                         jump("/view/kaf/002/b/index.xhtml", transfer);
                         break;
 
                     case 11:
-                        //KAF002-打刻申請（レコーダイメージ）
-                        transfer.stampRequestMode = 3;
-                         transfer.screenMode = 1;
-                        jump("/view/kaf/002/b/index.xhtml", transfer);
+                        //遅刻早退取消申請
+                        jump("/view/kaf/004/a/index.xhtml", transfer);
                         break;
 
                     case 12:
-                        //KAF002-打刻申請（その他）
-                        transfer.stampRequestMode = 4;
-                         transfer.screenMode = 1;
-                        jump("/view/kaf/002/b/index.xhtml", transfer);
-                        break;
-                        
-                    //                        case 14:
-                    //                            //KAF004-遅刻早退取消申請
-                    //                            nts.uk.request.jump("/view/kaer);
-                    //                            break;
-
-                    case 14:
                         //KAF011-振休振出申請
                         jump("/view/kaf/011/a/index.xhtml", transfer);
+                        break;
+
+                    case 13:
+                        //任意申請
+                        nts.uk.request.jump("/view/kaf/020/a/index.xhtml", transfer);
+                        break;
+
+                    case 14:
+                        //申請一覧
+                        jump("/view/cmm/045/a/index.xhtml", transfer);
                         break;
                     default:
                         break;
