@@ -100,7 +100,7 @@ module nts.uk.ui.at.kdw013.a {
         dateRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({});
         initialView: KnockoutObservable<string> = ko.observable('oneDay');
         availableView: KnockoutObservableArray<calendar.InitialView> = ko.observableArray(['oneDay', 'fullWeek']);
-        validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({end: '9999-12-32'});
+        validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({end: '10000-01-01'});
 
         employee: KnockoutObservable<string> = ko.observable('');
 

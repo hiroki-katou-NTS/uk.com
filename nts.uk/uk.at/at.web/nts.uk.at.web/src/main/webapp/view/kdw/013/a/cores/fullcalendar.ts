@@ -674,7 +674,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     attendanceTimes: ko.observableArray([]),
                     breakTime: ko.observable(null),
                     businessHours: ko.observableArray([]),
-                    validRange: ko.observable({end: '9999-12-32'}),
+                    validRange: ko.observable({ start: null, end: null }),
                     event: {
                         datesSet: (__: Date, ___: Date) => { }
                     },
@@ -1571,8 +1571,6 @@ module nts.uk.ui.at.kdw013.calendar {
                 eventOverlap: false,
                 selectOverlap: false,
                 eventLimit: true,
-                hiddenDays: [],
-                validRange: { end: '9999-12-32' },
                 direction: 'ltr',
                 views: {
                     timeGrid: {
