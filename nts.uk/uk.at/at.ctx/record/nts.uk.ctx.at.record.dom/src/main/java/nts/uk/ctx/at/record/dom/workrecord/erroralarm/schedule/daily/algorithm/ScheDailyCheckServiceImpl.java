@@ -108,7 +108,7 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			}
 			
 			// Input．List＜社員ID＞をループ
-			for(String sid : lstSid) {
+			for(String sid : emps) {
 				List<AlarmExtractInfoResult> lstExtractInfoResult = new ArrayList<>();
 				// 任意抽出条件のアラーム値を作成する
 				OutputCheckResult checkTab2 = extractAlarmConditionTab2(
@@ -291,9 +291,10 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					
 					// 勤務種類でフィルタする
 					applicableAtr = checkWorkType(lstWorkTypeCode, targetWorkType, workTypeCode);
-					
-					// 予定時間をチェック
-					applicableAtr = checkTime(condTime.getCheckedCondition(), workSched);
+					if (applicableAtr) {
+						// 予定時間をチェック
+						applicableAtr = checkTime(condTime.getCheckedCondition(), workSched);
+					}
 				}
 				
 				if (DaiCheckItemType.CONTINUOUS_TIME == scheCondItem.getCheckItemType()) {
@@ -304,9 +305,10 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 					
 					// 勤務種類でフィルタする
 					applicableAtr = checkWorkType(lstWorkTypeCode, targetWorkType, workTypeCode);
-					
-					// 予定時間をチェック
-					applicableAtr = checkTime(condContinuousTime.getCheckedCondition(), workSched);
+					if (applicableAtr) {
+						// 予定時間をチェック
+						applicableAtr = checkTime(condContinuousTime.getCheckedCondition(), workSched);
+					}
 				}
 				
 				// ループ中のスケジュール日次の任意抽出条件．連続時間帯の抽出条件をチェック
@@ -969,9 +971,13 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 				String alarmContent = alarmMessage;
 				String comment = fixScheCondItem.getMessageDisp() != null && fixScheCondItem.getMessageDisp().isPresent() 
 						? fixScheCondItem.getMessageDisp().get().v() : Strings.EMPTY;
+						
+				// アラーム項目　＝　Input．スケジュール月次の固有抽出項目．名称　（NO　＝　ループ中のNO）
+				Optional<FixedExtractionSDailyItems> alarmNameOpt = fixedItems.stream().filter(x -> x.getFixedCheckDayItems().equals(fixedAtr)).findFirst();
+				
 				this.createExtractAlarm(sid,
 						exDate,
-						fixedAtr.nameId,
+						alarmNameOpt.isPresent() ? alarmNameOpt.get().getDailyCheckName().v() : Strings.EMPTY,
 						alarmContent,
 						Optional.ofNullable(comment),
 						checkValue,

@@ -72,6 +72,19 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode) {
 		String contractCode = AppContexts.user().contractCode();
 		
+		// 週次の勤怠項目を取得する
+		Map<Integer, String> attendanceItemMap = weeklyAttendanceItemService.getAttendanceItem(cid);
+		
+		// 週別実績の値を取得
+		// QA#116337
+		List<AttendanceTimeOfWeekly> attendanceTimeOfWeeklys = getWeeklyPerformanceService.getValues(lstSid, period);
+		
+		// ドメインモデル「週別実績の抽出条件」を取得する
+		// 条件: ID　＝　Input．週次のアラームチェック条件．チェック条件．任意抽出条件
+		// Output: List＜週別実績の任意抽出条件＞
+		List<ExtractionCondScheduleWeekly> weeklyConds = extractionCondScheduleWeeklyRepository.getScheAnyCond(
+				contractCode, cid, listOptionalItem).stream().filter(x -> x.isUse()).collect(Collectors.toList());
+		
 		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
 			synchronized (this) {
 				if (shouldStop.get()) {
@@ -79,21 +92,8 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 				}
 			}
 			
-			// 週次の勤怠項目を取得する
-			Map<Integer, String> attendanceItemMap = weeklyAttendanceItemService.getAttendanceItem(cid);
-			
-			// 週別実績の値を取得
-			// QA#116337
-			List<AttendanceTimeOfWeekly> attendanceTimeOfWeeklys = getWeeklyPerformanceService.getValues(lstSid, period);
-			
-			// ドメインモデル「週別実績の抽出条件」を取得する
-			// 条件: ID　＝　Input．週次のアラームチェック条件．チェック条件．任意抽出条件
-			// Output: List＜週別実績の任意抽出条件＞
-			List<ExtractionCondScheduleWeekly> weeklyConds = extractionCondScheduleWeeklyRepository.getScheAnyCond(
-					contractCode, cid, listOptionalItem).stream().filter(x -> x.isUse()).collect(Collectors.toList());
-			
 			// Input．List＜社員ID＞をループ
-			for (String sid: lstSid) {
+			for (String sid: emps) {
                 List<AlarmExtractInfoResult> lstExtractInfoResult = new ArrayList<>();
                 
 				// 取得したList＜週別実績の任意抽出条件＞をループする
@@ -115,20 +115,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 					}
 					
 					// Input．期間の開始月からループする
-					for (YearMonth ym: period.yearMonthsBetween()) {
-						// ・職場ID　＝　Input．List＜職場ID＞をループ中の年月日から探す
-						String wpkId = "";
-						Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = wplByListSidAndPeriods.stream()
-								.filter(x -> x.getEmployeeId().equals(sid)).findFirst();
-						if(optWorkPlaceHistImportAl.isPresent()) {
-							Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get().getLstWkpIdAndPeriod().stream()
-									.filter(x -> x.getDatePeriod().start().beforeOrEquals(ym.firstGeneralDate()) 
-											&& x.getDatePeriod().end().afterOrEquals(ym.lastGeneralDate())).findFirst();
-							if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
-								wpkId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
-							}
-						}
-						
+					for (YearMonth ym: period.yearMonthsBetween()) {						
 						// ループ中の社員の月の週別実績の勤務時間を絞り込み
 						// 期間．開始日　＞＝ （Input. 期間．開始日　＞　ループ中の年月．開始日　？　Input. 期間．開始日　：　ループ中の年月．開始日）　QA#115666
 						GeneralDate startCompare = period.start().after(ym.firstGeneralDate()) ? period.start() : ym.firstGeneralDate();
@@ -148,11 +135,11 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		            	});
 						
 						// 絞り込みしたList＜週別実績の勤怠時間＞をループする
-						for (AttendanceTimeOfWeekly attWeekly : attendanceTimeOfWeeklyYms) {
+						for (AttendanceTimeOfWeekly attWeekly : attendanceTimeOfWeeklyYms) {							
 							// 任意抽出条件のアラーム値を作成する
 							ExtractResultDetailAndCount extractDetail = createAlarmExtraction(
-									attWeekly, weeklyCond, count, attendanceItemMap, cid, sid, wpkId, ym, attendanceTimeOfWeeklyYms.size(),
-									attendanceTimeOfWeeklyYms);
+									attWeekly, weeklyCond, count, attendanceItemMap, cid, sid, ym,
+									attendanceTimeOfWeeklys, wplByListSidAndPeriods);
 							count = extractDetail.count;
 							if (extractDetail.detail == null) {
 								continue;
@@ -232,10 +219,9 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			Map<Integer, String> attendanceItemMap,
 			String cid,
 			String sid,
-			String wpkId,
 			YearMonth ym,
-			int sizeWeeklyActualAttendanceTime,
-			List<AttendanceTimeOfWeekly> attWeeklyBySid) {
+			List<AttendanceTimeOfWeekly> attWeeklyBySid,
+			List<WorkPlaceHistImportAl> wplByListSidAndPeriods) {
 		
 		boolean check = false;
 		ContinuousOutput continuousOutput = new ContinuousOutput();
@@ -272,7 +258,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		case CONTINUOUS_DAY:
 			// 連続の項目の実績をチェック
 			continuousOutput = checkPerformanceOfConsecutiveItem(
-					attWeekly, weeklyCond, cond, itemValues, count, currentIndex, sizeWeeklyActualAttendanceTime, attWeeklyBySid);
+					attWeekly, weeklyCond, cond, itemValues, count, currentIndex, attWeeklyBySid.size(), attWeeklyBySid);
 			count = continuousOutput.count;
 			check = continuousOutput.check;
 			break;			
@@ -307,6 +293,22 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		// 取得した該当区分　＝＝　True (QA#117728)
 		if (check) {
 			// 「抽出結果詳細」を作成
+						
+			// ・職場ID　＝　Input．List＜職場ID＞をループ中の年月日から探す
+			// Input．List＜職場履歴＞に
+			//   　職場履歴．期間．開始日＜＝アラーム項目日付＜＝職場履歴．期間．終了日　 ＃118576
+			String wpkId = "";
+			Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = wplByListSidAndPeriods.stream()
+					.filter(x -> x.getEmployeeId().equals(sid)).findFirst();
+			if(optWorkPlaceHistImportAl.isPresent()) {
+				Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get().getLstWkpIdAndPeriod().stream()
+						.filter(x -> x.getDatePeriod().start().beforeOrEquals(attWeekly.getPeriod().start())
+								&& x.getDatePeriod().end().afterOrEquals(attWeekly.getPeriod().start())).findFirst();
+				if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
+					wpkId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
+				}
+			}
+			
 			// アラーム項目日付　＝Input．週別実績の勤怠時間．期間．開始日
 			GeneralDate startDate = attWeekly.getPeriod().start();
 			if (weeklyCond.isContinuos()) {
@@ -331,7 +333,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 			// 	チェック項目の種類は連続じゃないの場合　－＞#KAL010_1308
 			String param1 = TextResource.localize("KAL010_1308");
 			// チェック項目の種類は連続じゃないの場合　－＞Input．週別実績の勤怠時間から計算した値 
-			String param2 = Strings.EMPTY;
+			String param2 = weeklyActualAttendanceTime;
 			if (weeklyCond.isContinuos()) {
 				String continuousPeriodValue = String.valueOf(weeklyCond.getContinuousPeriod().get().v());
 				param0 += TextResource.localize("KAL010_1312", continuousPeriodValue);
