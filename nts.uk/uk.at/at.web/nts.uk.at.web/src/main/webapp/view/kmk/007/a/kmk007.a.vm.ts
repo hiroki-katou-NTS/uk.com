@@ -243,14 +243,21 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                             cwt.abolishAtr(itemWorkType.abolishAtr);
                             cwt.memo(itemWorkType.memo);
                             cwt.workAtr(itemWorkType.workAtr);
-                            cwt.oneDayCls(itemWorkType.oneDayCls);
-                            cwt.morningCls(itemWorkType.morningCls);
-                            cwt.afternoonCls(itemWorkType.afternoonCls);
                             cwt.calculatorMethod(itemWorkType.calculatorMethod);
                         }
-                        self.setWorkTypeSet(cwt.oneDay(), itemWorkType.oneDay);
-                        self.setWorkTypeSet(cwt.morning(), itemWorkType.morning);
-                        self.setWorkTypeSet(cwt.afternoon(), itemWorkType.afternoon);
+                        if (cwt.workAtr() === 0) {
+                          cwt.oneDayCls(itemWorkType.oneDayCls);
+                          cwt.oneDayCls.valueHasMutated();
+                          self.setWorkTypeSet(cwt.oneDay(), itemWorkType.oneDay);
+                        } else if (cwt.workAtr() === 1) {
+                          cwt.morningCls(itemWorkType.morningCls);
+                          cwt.morningCls.valueHasMutated();
+                          cwt.afternoonCls(itemWorkType.afternoonCls);
+                          cwt.afternoonCls.valueHasMutated();
+                          self.setWorkTypeSet(cwt.morning(), itemWorkType.morning);
+                          self.setWorkTypeSet(cwt.afternoon(), itemWorkType.afternoon);
+                        }
+                        
                     });
                 } else {
                     self.isCreated(true);
@@ -486,6 +493,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
          * Check Calculator Method based on work type cls
          */
         private checkCalculatorMethod(workTypeSetCode: number): void {
+          console.log("TING")
             let self = this;
             if (self.langId() != 'ja') {
                 self.enableMethod(false);

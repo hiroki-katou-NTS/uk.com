@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.applicationlist;
 
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
@@ -36,10 +38,10 @@ public class ComplementLeaveAppLinkCmd {
 	
 	public ComplementLeaveAppLink toDomain() {
 		ComplementLeaveAppLink complementLeaveAppLink = new ComplementLeaveAppLink();
-		complementLeaveAppLink.setComplementLeaveFlg(complementLeaveFlg);
-		complementLeaveAppLink.setApplication(application.toDomain());
-		complementLeaveAppLink.setLinkAppID(linkAppID);
-		complementLeaveAppLink.setLinkAppDate(GeneralDate.fromString(linkAppDate, "yyyy/MM/dd"));
+		complementLeaveAppLink.setComplementLeaveFlg(complementLeaveFlg==null ? null : complementLeaveFlg);
+		complementLeaveAppLink.setApplication(application==null ? null : application.toDomain());
+		complementLeaveAppLink.setLinkAppID(Strings.isBlank(linkAppID) ? null : linkAppID);
+		complementLeaveAppLink.setLinkAppDate(Strings.isBlank(linkAppDate) ? null : GeneralDate.fromString(linkAppDate, "yyyy/MM/dd"));
 		return complementLeaveAppLink;
 	}
 }

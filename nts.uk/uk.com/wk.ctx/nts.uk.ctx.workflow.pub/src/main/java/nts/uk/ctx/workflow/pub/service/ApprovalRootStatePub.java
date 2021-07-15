@@ -12,6 +12,8 @@ import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateParam;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootOfEmployeeExport;
+import nts.uk.ctx.workflow.pub.service.export.ApprovalRootStateExport;
+import nts.uk.ctx.workflow.pub.service.export.ApproveResultExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproveRootStatusForEmpExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExportNew;
@@ -116,14 +118,14 @@ public interface ApprovalRootStatePub {
 	 * @param memo 承認コメン
 	 * @return 承認フェーズ枠番
 	 */
-	public Integer doApprove(String rootStateID, String employeeID, String memo);
+	public ApproveResultExport doApprove(String rootStateID, String employeeID, String memo);
 	
 	/**
 	 * 2.承認全体が完了したか
 	 * @param rootStateID インスタンスID
 	 * @return
 	 */
-	public Boolean isApproveAllComplete(String rootStateID);
+	public Boolean isApproveAllComplete(ApprovalRootStateExport approvalRootStateExport);
 	
 	/**
 	 * 一括解除する 
