@@ -12,9 +12,9 @@ module nts.uk.at.view.kdw003.b {
             isDisableExportCSV: KnockoutObservable<boolean> = ko.observable(false);
             messageAlert: KnockoutObservable<any> =  ko.observable(nts.uk.resource.getText('KDW003_63'));
             showMessage: KnockoutObservable<any> = ko.observable(false);
-
+            errName: : KnockoutObservable<any> = ko.observable('');
             constructor() {
-
+                
             }
 
             exportCSV(): void {
@@ -103,7 +103,6 @@ module nts.uk.at.view.kdw003.b {
                                         f.fieldName =  app.length > 0 ? app[0].name : f.fieldName;
                                     });
                                 });
-                                
                                 self.lstError(arr.map((d) => { 
                                     return new ErrorReferModel(d, data1.employeeIdLogin, !!data1.mapErrCdAppTypeCd[d.errorCode] ? data1.mapErrCdAppTypeCd[d.errorCode] : []); 
                                 }));
@@ -197,7 +196,7 @@ module nts.uk.at.view.kdw003.b {
                                 { key: "employeeName", width: "150px", headerText: getText('KDW003_33'), dataType: "string" },
                                 { key: "date", width: "130px", headerText: getText('KDW003_34'), dataType: "string" },
                                 { key: "errorCode", width: "50px", headerText: "コード", dataType: "string" },
-                                { key: "errorAlarmAtr", width: "130px", headerText: getText('KDW003_129'), dataType: "number" },
+                                { key: "errorAlarmAtr", width: "80px", headerText: getText('KDW003_129'), dataType: "string" },
                                 { key: "message", width: "300px", headerText: getText('KDW003_36'), dataType: "string" },
                                 { key: "itemName", width: "170px", headerText: getText('KDW003_37'), dataType: "string" },
                                 { key: "submitedName", width: "170px", headerText: getText('KDW003_62'), dataType: "string" },
@@ -369,6 +368,8 @@ module nts.uk.at.view.kdw003.b {
             boldAtr: boolean;
             messageColor: string;
             submitedName: string;
+            errorAlarmAtr: number;
+            
         }
 
         class ErrorReferModel {
@@ -417,6 +418,15 @@ module nts.uk.at.view.kdw003.b {
                 self.employeeIdLogin = employeeIdLogin;
                 self.arrAppTypeCode = arrAppTypeCode;
                 self.stateBtn = ((model.employeeId == employeeIdLogin) && (arrAppTypeCode.length > 0)) ? "" : "hidden";
+                  if(model.errorAlarmAtr == 0){
+                    self.errorAlarmAtr = nts.uk.resource.getText('KDW003_130');
+                    }
+                      if(model.errorAlarmAtr == 1){
+                    self.errorAlarmAtr = nts.uk.resource.getText('KDW003_131');
+                    }
+                      if(model.errorAlarmAtr == 2){
+                    self.errorAlarmAtr = '';
+                    } 
             }
         }
 
@@ -428,6 +438,8 @@ module nts.uk.at.view.kdw003.b {
             message: string;
             itemName: string;
             submitedName: string;
+            errorAlarmAtr: String;
+            
 
             constructor(model: IErrorReferModel) {
                 let self = this;
@@ -448,6 +460,16 @@ module nts.uk.at.view.kdw003.b {
                 self.errorCode = model.errorCode;
                 self.message = model.message;
                 self.itemName = model.itemName;
+                if(model.errorAlarmAtr == 0){
+                    self.errorAlarmAtr = nts.uk.resource.getText('KDW003_130');
+                    }
+                      if(model.errorAlarmAtr == 1){
+                    self.errorAlarmAtr = nts.uk.resource.getText('KDW003_131');
+                    }
+                      if(model.errorAlarmAtr == 2){
+                    self.errorAlarmAtr = '';
+                    }
+                
             }
         }
     }
